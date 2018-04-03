@@ -92,9 +92,6 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
       if (uf_scope)
         uf_scope.cache_name (nm);
     }
-
-  if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
-    error ("handles to nested functions are not yet supported");
 }
 
 octave_value_list

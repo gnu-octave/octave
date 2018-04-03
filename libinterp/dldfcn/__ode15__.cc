@@ -41,6 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #  if defined (HAVE_IDA_IDA_H)
 #    include <ida/ida.h>
+#  endif
+
+#  if defined (HAVE_IDA_IDA_DENSE_H)
 #    include <ida/ida_dense.h>
 #  endif
 

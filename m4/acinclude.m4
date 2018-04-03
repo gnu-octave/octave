@@ -1715,6 +1715,7 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   done
 
   if test $build_qt_gui = yes; then
+    BUILD_QT_SUMMARY_MSG="yes (version: $have_qt_version)"
     if test x"$have_qt_version" = x4; then
       AC_DEFINE(HAVE_QT4, 1, [Define to 1 if using Qt version 4.])
     fi
@@ -1722,6 +1723,11 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
     fi
   else
+    if test -n "$QT_MODULES_MISSING"; then
+      BUILD_QT_SUMMARY_MSG="no (missing:$QT_MODULES_MISSING)"
+    else
+      BUILD_QT_SUMMARY_MSG="no"
+    fi
     if test -n "$warn_qt_libraries"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
     fi
@@ -1915,6 +1921,16 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     [],
     [build_qt_gui=no
      warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
+
+  QT_MODULES_MISSING=
+  if test $build_qt_gui = no; then
+    ## Get list of modules that are missing
+    for pkg in $QT_MODULES; do
+      if ! $PKG_CONFIG --exists $pkg; then
+        QT_MODULES_MISSING="$QT_MODULES_MISSING $pkg"
+      fi
+    done
+  fi
 
   if test $build_qt_gui = yes; then
     ## Retrieve Qt compilation and linker flags
@@ -2216,6 +2232,36 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
   else
     warn_sundials_idaklu="SUNDIALS IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
     OCTAVE_CONFIGURE_WARNING([warn_sundials_idaklu])
+  fi
+])
+dnl
+dnl Check whether SUNDIALS IDA library has the IDADENSE linear solver.
+dnl The IDADENSE API was removed in SUNDIALS version 3.0.0.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDA_DENSE], [
+  AC_CHECK_HEADERS([ida/ida_dense.h ida_dense.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA includes the IDADENSE linear solver],
+    [octave_cv_sundials_ida_dense],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+         #if defined (HAVE_IDA_IDA_DENSE_H)
+         #include <ida/ida_dense.h>
+         #else
+         #include <ida_dense.h>
+         #endif
+         ]], [[
+         void *mem = 0;
+         long int num = 0;
+         IDADense (mem, num);
+      ]])],
+      octave_cv_sundials_ida_dense=yes,
+      octave_cv_sundials_ida_dense=no)
+    ])
+  if test $octave_cv_sundials_ida_dense = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_IDADENSE, 1,
+      [Define to 1 if SUNDIALS IDA includes the IDADENSE linear solver.])
+  else
+    warn_sundials_ida_dense="SUNDIALS IDA library does not include the IDADENSE linear solver, ode15i and ode15s will be disabled"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_ida_dense])
   fi
 ])
 dnl

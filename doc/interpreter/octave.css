@@ -62,7 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 /* Import web font Fantasque Sans Mono, Font Library Version 2016-04-05 */
 @font-face
 {
-  font-family: 'Fantasque Sans Mono';
+  font-family: 'Fantasque Sans Mono', 'Courier New', Cousine, Courier, monospace;
   src: local('Fantasque Sans Mono Bold'),
        local('FantasqueSansMono-Bold'),
        url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/a46033d3a07d9385620dc83b7655203f/FantasqueSansMonoBold.ttf') format('truetype');
@@ -72,7 +72,7 @@ along with Octave; see the file COPYING.  If not, see
 
 @font-face
 {
-  font-family: 'Fantasque Sans Mono';
+  font-family: 'Fantasque Sans Mono', 'Courier New', Cousine, Courier,  'monospace';
   src: local('Fantasque Sans Mono Bold Italic'),
        local('FantasqueSansMono-BoldItalic'),
        url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b0683ef4c834908aa372ec78dea42349/FantasqueSansMonoBoldItalic.ttf') format('truetype');
@@ -82,7 +82,7 @@ along with Octave; see the file COPYING.  If not, see
 
 @font-face
 {
-  font-family: 'Fantasque Sans Mono';
+  font-family: 'Fantasque Sans Mono', 'Courier New', Cousine, Courier, monospace;
   src: local('Fantasque Sans Mono Italic'),
        local('FantasqueSansMono-Italic'),
        url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/b78d0a48e4443f797e8d45dcf97594f7/FantasqueSansMonoItalic.ttf') format('truetype');
@@ -92,7 +92,7 @@ along with Octave; see the file COPYING.  If not, see
 
 @font-face
 {
-  font-family: 'Fantasque Sans Mono';
+  font-family: 'Fantasque Sans Mono', 'Courier New', Cousine, Courier, monospace;
   src: local('Fantasque Sans Mono Regular'),
        local('FantasqueSansMono-Regular'),
        url('https://fontlibrary.org/assets/fonts/fantasque-sans-mono/b0cbb25e73a9f8354e96d89524f613e7/f3fdc4f0f26e4431f54e8b552d55480c/FantasqueSansMonoRegular.ttf') format('truetype');
@@ -101,7 +101,7 @@ along with Octave; see the file COPYING.  If not, see
 }
 
 /* Use custom fonts */
-code, kbd, samp, tt, pre { font-family: 'Fantasque Sans Mono', monospace; }
+code, kbd, samp, tt, pre { font-family: 'Fantasque Sans Mono', 'Courier New', Cousine, Courier, monospace; }
 
 code, kbd, samp, tt {
   font-style: italic;

@@ -204,7 +204,7 @@ OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interprete
 octdoc_DATA += \
   $(OCTAVE_QTHELP_FILES)
 
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) %reldir%/mk-qthelp.pl
+$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \

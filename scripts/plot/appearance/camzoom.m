@@ -111,9 +111,9 @@ endfunction
 %!   x = camva ();
 %!   camzoom (2);
 %!   y = camva ();
-%!   ## Matlab 2014a
-%!   xm = 10.339584907202;
-%!   ym = 5.18033628450948;
+%!   ## Matlab 2016a
+%!   xm = 10.339584907201974;
+%!   ym = 5.1803362845094822;
 %!   assert (tand (x/2) / tand (y/2), tand (xm/2) / tand (ym/2), 2e-14)
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -129,8 +129,8 @@ endfunction
 %!   camzoom (5);
 %!   y = camva ();
 %!   ## Matlab 2014a
-%!   xm = 13.0746680295069;
-%!   ym = 2.62588066987212;
+%!   xm = 13.074668029506947;
+%!   ym = 2.6258806698721222;
 %!   assert (tand (x/2) / tand (y/2), tand (xm/2) / tand (ym/2), 2e-14)
 %! unwind_protect_cleanup
 %!   close (hf);

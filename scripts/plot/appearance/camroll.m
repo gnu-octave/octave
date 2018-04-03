@@ -123,12 +123,18 @@ endfunction
 %!   p = camup ();
 %!   ## from Matlab R2014a
 %!   q = [0.826398839602911  0.255644120004753  0.50170812412194];
+%!   ## from Matlab R2016a
+%!   q = [0.33969638129660373 0.02014238382998192 0.94031944194919104];
 %!   assert (p, q, 10*eps);
 %!   camroll (-30);
 %!   ## note it does not go back to [0 0 1]: instead orthog to camera view:
 %!   p = camup ();
+%!   ## The following assert doesn't seem to have any validation in Matlab R2016a
 %!   assert (dot (p, camtarget () - campos ()), 0, 32*eps);  # FIXME: looser tolerance needed on i386
+%!   ## from Matlab R2014a
 %!   q = [0.496200420425837  0.646660977913424  0.57932264103285];
+%!   ## from Matlab R2016a
+%!   q = [0.14033891839365262 0.18289323924769943 0.97306477226420207];
 %!   assert (p, q, 10*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -145,7 +151,8 @@ endfunction
 %!   camroll (hax1, 30);
 %!   x = camup (hax1);
 %!   y = camup (hax2);
-%!   assert (x, [0.660278 0.039151 0.750000], -1e-5)
+%!   ## from Matlab R2016a
+%!   assert (x, [0.66027810132845211 0.03915135893036471 0.75000000000000022], -1e-5)
 %!   assert (y, [0 0 1])
 %! unwind_protect_cleanup
 %!   close (hf);

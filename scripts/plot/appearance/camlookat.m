@@ -277,7 +277,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-## compare to matlab2014a output
+## compare to Matlab R2016a output
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -291,16 +291,16 @@ endfunction
 %!   axis tight
 %!   camlookat (s1);
 %!   assert (camtarget (), [-4 0 -1], -eps);
-%!   assert (campos (), [-22.806319527016 -24.5088727773662 16.8359421671461], -1e-7);
+%!   assert (campos (), [-22.806319527015962 -24.508872777366225 16.835942167146133], -1e-7);
 %!   camlookat (s2);
 %!   assert (camtarget (), [0 1.5 2], -eps);
-%!   assert (campos (), [-5.82093528266174 -6.08599055403138 7.52058391388657], -1e-7);
+%!   assert (campos (), [-5.8209352826617424 -6.0859905540313779 7.5205839138865720], -1e-7);
 %!   camlookat (s3);
-%!   assert (camtarget (), [0 0 0.1528529020838], 1e-10);
-%!   assert (campos (), [-30.3728392082653 -39.5826547014375 28.9585000034444], -1e-7);
+%!   assert (camtarget (), [0 0 0.15285290208388014], 1e-10);
+%!   assert (campos (), [-30.372839208265287 -39.582654701437512 28.958500003444449], -1e-7);
 %!   camlookat ();
 %!   assert (camtarget (), [-0.75 0 0.5], -eps);
-%!   assert (campos (), [-35.7955620339723 -45.6722656481532 33.7372645671114], -1e-7);
+%!   assert (campos (), [-35.795562033972338 -45.672265648153193 33.737264567111389], -1e-7);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -145,8 +145,8 @@ namespace QtHandles
               error ("getframe: unable to retrieve figure pixels");
           }
       }
-    
-     return retval;
-   }
+
+    return retval;
+  }
 
 };

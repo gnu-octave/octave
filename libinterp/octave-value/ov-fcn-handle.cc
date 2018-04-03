@@ -284,7 +284,8 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
           names.push_back (nm + ".mex");
           names.push_back (nm + ".m");
 
-          octave::load_path& lp = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
+          octave::load_path& lp =
+            octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
 
           octave::directory_path p (lp.system_path ());
 

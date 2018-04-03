@@ -243,12 +243,12 @@ namespace octave
   }
 
   enum dbstop_args
-    {
-      dbstop_in,
-      dbstop_at,
-      dbstop_if,
-      dbstop_none
-    };
+  {
+    dbstop_in,
+    dbstop_at,
+    dbstop_if,
+    dbstop_none
+  };
 
   // Parse parameters (args) of dbstop and dbclear commands.
   // For dbstop, who=="dbstop"; for dbclear, who=="dbclear".
@@ -587,7 +587,7 @@ namespace octave
       }
 
     octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-      || Vdebugging;
+                                         || Vdebugging;
 
     return retval;
   }
@@ -684,7 +684,7 @@ namespace octave
       }
 
     octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-      || Vdebugging;
+                                         || Vdebugging;
 
     return retval;
   }
@@ -719,7 +719,7 @@ namespace octave
              "unable to find function %s\n", fname.c_str ());
 
     octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-      || Vdebugging;
+                                         || Vdebugging;
 
     return retval;
   }
@@ -736,7 +736,7 @@ namespace octave
       }
 
     octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-      || Vdebugging;
+                                         || Vdebugging;
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)

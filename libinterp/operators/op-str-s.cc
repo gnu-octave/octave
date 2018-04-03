@@ -53,9 +53,10 @@ DEFNDCHARCATOP_FN (s_str, scalar, char_matrix_str, concat)
 void
 install_str_s_ops (octave::type_info& ti)
 {
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_scalar, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_str, octave_scalar,
+                       assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_char_matrix_sq_str, octave_scalar,
-                    assign);
+                       assign);
 
   INSTALL_CATOP_TI (ti, octave_char_matrix_str, octave_scalar, str_s);
   INSTALL_CATOP_TI (ti, octave_char_matrix_sq_str, octave_scalar, str_s);

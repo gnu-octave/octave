@@ -225,11 +225,11 @@ namespace octave
   public:
 
     enum special_conversion
-      {
-        whitespace_conversion = 1,
-        literal_conversion = 2,
-        null = 3
-      };
+    {
+      whitespace_conversion = 1,
+      literal_conversion = 2,
+      null = 3
+    };
 
     scanf_format_elt (const std::string& txt = "", int w = 0, bool d = false,
                       char typ = '\0', char mod = '\0',
@@ -1344,7 +1344,7 @@ namespace octave
   delimited_stream::delimited_stream (std::istream& is,
                                       const delimited_stream& ds)
     : delimited_stream (is, ds.delims, ds.longest, ds.bufsize)
-  {}
+  { }
 
   delimited_stream::~delimited_stream (void)
   {
@@ -1583,10 +1583,10 @@ namespace octave
   public:
 
     enum special_conversion
-      {
-        whitespace_conversion = 1,
-        literal_conversion = 2
-      };
+    {
+      whitespace_conversion = 1,
+      literal_conversion = 2
+    };
 
     textscan_format_elt (const std::string& txt, int w = 0, int p = -1,
                          int bw = 0, bool dis = false, char typ = '\0',
@@ -3074,7 +3074,7 @@ namespace octave
         if (last != std::istream::traits_type::eof ())
           {
             if (last == eol1 || last == eol2)
-                break;
+              break;
 
             retval = retval + static_cast<char> (last);
             for (int i = 0; i < delimiters.numel (); i++)
@@ -6588,10 +6588,10 @@ namespace octave
       input_buf_elts = block_size;
 
     octave_idx_type input_elt_size
-                                      = oct_data_conv::data_type_size (input_type);
+      = oct_data_conv::data_type_size (input_type);
 
-    ptrdiff_t input_buf_size
-                                      = static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
+    ptrdiff_t input_buf_size =
+      static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
 
     assert (input_buf_size >= 0);
 

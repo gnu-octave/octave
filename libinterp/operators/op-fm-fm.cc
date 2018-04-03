@@ -211,55 +211,61 @@ install_fm_fm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ge, octave_float_matrix, octave_float_matrix, ge);
   INSTALL_BINOP_TI (ti, op_gt, octave_float_matrix, octave_float_matrix, gt);
   INSTALL_BINOP_TI (ti, op_ne, octave_float_matrix, octave_float_matrix, ne);
-  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_matrix, octave_float_matrix, el_mul);
-  INSTALL_BINOP_TI (ti, op_el_div, octave_float_matrix, octave_float_matrix, el_div);
-  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_matrix, octave_float_matrix, el_pow);
-  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_float_matrix, octave_float_matrix, el_ldiv);
-  INSTALL_BINOP_TI (ti, op_el_and, octave_float_matrix, octave_float_matrix, el_and);
-  INSTALL_BINOP_TI (ti, op_el_or, octave_float_matrix, octave_float_matrix, el_or);
+  INSTALL_BINOP_TI (ti, op_el_mul, octave_float_matrix, octave_float_matrix,
+                    el_mul);
+  INSTALL_BINOP_TI (ti, op_el_div, octave_float_matrix, octave_float_matrix,
+                    el_div);
+  INSTALL_BINOP_TI (ti, op_el_pow, octave_float_matrix, octave_float_matrix,
+                    el_pow);
+  INSTALL_BINOP_TI (ti, op_el_ldiv, octave_float_matrix, octave_float_matrix,
+                    el_ldiv);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_float_matrix, octave_float_matrix,
+                    el_and);
+  INSTALL_BINOP_TI (ti, op_el_or, octave_float_matrix, octave_float_matrix,
+                    el_or);
   INSTALL_BINOP_TI (ti, op_el_and_not, octave_float_matrix, octave_float_matrix,
-                 el_and_not);
+                    el_and_not);
   INSTALL_BINOP_TI (ti, op_el_or_not, octave_float_matrix, octave_float_matrix,
-                 el_or_not);
+                    el_or_not);
   INSTALL_BINOP_TI (ti, op_el_not_and, octave_float_matrix, octave_float_matrix,
-                 el_not_and);
+                    el_not_and);
   INSTALL_BINOP_TI (ti, op_el_not_or, octave_float_matrix, octave_float_matrix,
-                 el_not_or);
+                    el_not_or);
   INSTALL_BINOP_TI (ti, op_trans_mul, octave_float_matrix, octave_float_matrix,
-                 trans_mul);
+                    trans_mul);
   INSTALL_BINOP_TI (ti, op_mul_trans, octave_float_matrix, octave_float_matrix,
-                 mul_trans);
+                    mul_trans);
   INSTALL_BINOP_TI (ti, op_herm_mul, octave_float_matrix, octave_float_matrix,
-                 trans_mul);
+                    trans_mul);
   INSTALL_BINOP_TI (ti, op_mul_herm, octave_float_matrix, octave_float_matrix,
-                 mul_trans);
+                    mul_trans);
   INSTALL_BINOP_TI (ti, op_trans_ldiv, octave_float_matrix, octave_float_matrix,
-                 trans_ldiv);
+                    trans_ldiv);
   INSTALL_BINOP_TI (ti, op_herm_ldiv, octave_float_matrix, octave_float_matrix,
-                 trans_ldiv);
+                    trans_ldiv);
 
   INSTALL_CATOP_TI (ti, octave_float_matrix, octave_float_matrix, fm_fm);
   INSTALL_CATOP_TI (ti, octave_matrix, octave_float_matrix, m_fm);
   INSTALL_CATOP_TI (ti, octave_float_matrix, octave_matrix, fm_m);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix,
-                    octave_float_matrix, assign);
+                       octave_float_matrix, assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix,
-                    octave_float_matrix, dbl_assign);
+                       octave_float_matrix, dbl_assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_null_matrix,
-                    null_assign);
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_null_str,
-                    null_assign);
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_null_sq_str,
-                    null_assign);
+                       null_assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_float_matrix, octave_float_matrix,
-                    assign_add);
+                       assign_add);
   INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_float_matrix, octave_float_matrix,
-                    assign_sub);
+                       assign_sub);
   INSTALL_ASSIGNOP_TI (ti, op_el_mul_eq, octave_float_matrix, octave_float_matrix,
-                    assign_el_mul);
+                       assign_el_mul);
   INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_float_matrix, octave_float_matrix,
-                    assign_el_div);
+                       assign_el_div);
 }

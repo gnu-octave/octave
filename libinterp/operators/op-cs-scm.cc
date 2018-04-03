@@ -145,13 +145,18 @@ DEFCONV (sparse_complex_matrix_conv, complex, sparse_complex_matrix)
 void
 install_cs_scm_ops (octave::type_info& ti)
 {
-  INSTALL_BINOP_TI (ti, op_add, octave_complex, octave_sparse_complex_matrix, add);
-  INSTALL_BINOP_TI (ti, op_sub, octave_complex, octave_sparse_complex_matrix, sub);
-  INSTALL_BINOP_TI (ti, op_mul, octave_complex, octave_sparse_complex_matrix, mul);
-  INSTALL_BINOP_TI (ti, op_div, octave_complex, octave_sparse_complex_matrix, div);
-  INSTALL_BINOP_TI (ti, op_pow, octave_complex, octave_sparse_complex_matrix, pow);
+  INSTALL_BINOP_TI (ti, op_add, octave_complex, octave_sparse_complex_matrix,
+                    add);
+  INSTALL_BINOP_TI (ti, op_sub, octave_complex, octave_sparse_complex_matrix,
+                    sub);
+  INSTALL_BINOP_TI (ti, op_mul, octave_complex, octave_sparse_complex_matrix,
+                    mul);
+  INSTALL_BINOP_TI (ti, op_div, octave_complex, octave_sparse_complex_matrix,
+                    div);
+  INSTALL_BINOP_TI (ti, op_pow, octave_complex, octave_sparse_complex_matrix,
+                    pow);
   INSTALL_BINOP_TI (ti, op_ldiv, octave_complex, octave_sparse_complex_matrix,
-                 ldiv);
+                    ldiv);
   INSTALL_BINOP_TI (ti, op_lt, octave_complex, octave_sparse_complex_matrix, lt);
   INSTALL_BINOP_TI (ti, op_le, octave_complex, octave_sparse_complex_matrix, le);
   INSTALL_BINOP_TI (ti, op_eq, octave_complex, octave_sparse_complex_matrix, eq);
@@ -159,23 +164,23 @@ install_cs_scm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_gt, octave_complex, octave_sparse_complex_matrix, gt);
   INSTALL_BINOP_TI (ti, op_ne, octave_complex, octave_sparse_complex_matrix, ne);
   INSTALL_BINOP_TI (ti, op_el_mul, octave_complex, octave_sparse_complex_matrix,
-                 el_mul);
+                    el_mul);
   INSTALL_BINOP_TI (ti, op_el_div, octave_complex, octave_sparse_complex_matrix,
-                 el_div);
+                    el_div);
   INSTALL_BINOP_TI (ti, op_el_pow, octave_complex, octave_sparse_complex_matrix,
-                 el_pow);
+                    el_pow);
   INSTALL_BINOP_TI (ti, op_el_ldiv, octave_complex, octave_sparse_complex_matrix,
-                 el_ldiv);
+                    el_ldiv);
   INSTALL_BINOP_TI (ti, op_el_and, octave_complex, octave_sparse_complex_matrix,
-                 el_and);
+                    el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_complex, octave_sparse_complex_matrix,
-                 el_or);
+                    el_or);
 
   INSTALL_CATOP_TI (ti, octave_complex, octave_sparse_complex_matrix, cs_scm);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_complex, octave_sparse_complex_matrix,
-                      octave_complex_matrix);
+                         octave_complex_matrix);
 
   INSTALL_WIDENOP_TI (ti, octave_complex, octave_sparse_complex_matrix,
-                   sparse_complex_matrix_conv);
+                      sparse_complex_matrix_conv);
 }

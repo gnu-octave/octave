@@ -112,33 +112,43 @@ install_sbm_b_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_eq, octave_sparse_bool_matrix, octave_bool, eq);
   INSTALL_BINOP_TI (ti, op_ne, octave_sparse_bool_matrix, octave_bool, ne);
 
-  INSTALL_BINOP_TI (ti, op_el_and, octave_sparse_bool_matrix, octave_bool, el_and);
+  INSTALL_BINOP_TI (ti, op_el_and, octave_sparse_bool_matrix, octave_bool,
+                    el_and);
   INSTALL_BINOP_TI (ti, op_el_or, octave_sparse_bool_matrix, octave_bool, el_or);
 
   INSTALL_CATOP_TI (ti, octave_sparse_bool_matrix, octave_bool, sbm_b);
   INSTALL_CATOP_TI (ti, octave_sparse_bool_matrix, octave_scalar, sbm_s);
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_bool, sm_b);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_bool, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_bool,
+                       assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_scalar,
-                    conv_and_assign);
+                       conv_and_assign);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_int8_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_int16_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_int32_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_int64_scalar,
-                    conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_int8_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_int16_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_int32_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_int64_scalar,
+                       conv_and_assign);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_uint8_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_uint16_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_uint32_scalar,
-                    conv_and_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix, octave_uint64_scalar,
-                    conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_uint8_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_uint16_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_uint32_scalar,
+                       conv_and_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_bool_matrix,
+                       octave_uint64_scalar,
+                       conv_and_assign);
 }

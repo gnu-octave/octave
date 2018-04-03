@@ -203,14 +203,20 @@ install_m_m_ops (octave::type_info& ti)
   INSTALL_CATOP_TI (ti, octave_matrix, octave_matrix, m_m);
 
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_matrix, assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_matrix, sgl_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_float_matrix, octave_matrix,
+                       sgl_assign);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_matrix,
+                       null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_str,
+                       null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_matrix, octave_null_sq_str,
+                       null_assign);
 
   INSTALL_ASSIGNOP_TI (ti, op_add_eq, octave_matrix, octave_matrix, assign_add);
   INSTALL_ASSIGNOP_TI (ti, op_sub_eq, octave_matrix, octave_matrix, assign_sub);
-  INSTALL_ASSIGNOP_TI (ti, op_el_mul_eq, octave_matrix, octave_matrix, assign_el_mul);
-  INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_matrix, octave_matrix, assign_el_div);
+  INSTALL_ASSIGNOP_TI (ti, op_el_mul_eq, octave_matrix, octave_matrix,
+                       assign_el_mul);
+  INSTALL_ASSIGNOP_TI (ti, op_el_div_eq, octave_matrix, octave_matrix,
+                       assign_el_div);
 }

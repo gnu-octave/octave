@@ -100,16 +100,16 @@ namespace octave
     void insert_global_actions (QList<QAction*>);
 
     enum shared_actions_idx
-      {
-        NEW_SCRIPT_ACTION = 0,
-        NEW_FUNCTION_ACTION,
-        OPEN_ACTION,
-        FIND_FILES_ACTION,
-        UNDO_ACTION,
-        COPY_ACTION,
-        PASTE_ACTION,
-        SELECTALL_ACTION
-      };
+    {
+      NEW_SCRIPT_ACTION = 0,
+      NEW_FUNCTION_ACTION,
+      OPEN_ACTION,
+      FIND_FILES_ACTION,
+      UNDO_ACTION,
+      COPY_ACTION,
+      PASTE_ACTION,
+      SELECTALL_ACTION
+    };
 
     void handle_enter_debug_mode (void);
     void handle_exit_debug_mode (void);

@@ -118,7 +118,7 @@ namespace QtHandles
     connect (list, SIGNAL (activated (const QModelIndex &)),
              SLOT (itemActivated (const QModelIndex &)));
     connect (list, SIGNAL (itemPressed (QListWidgetItem*)),
-           SLOT (itemPressed (QListWidgetItem*)));
+             SLOT (itemPressed (QListWidgetItem*)));
   }
 
   ListBoxControl::~ListBoxControl (void)
@@ -179,7 +179,7 @@ namespace QtHandles
         gh_manager::post_callback (m_handle, "callback");
       }
 
-      m_selectionChanged = false;
+    m_selectionChanged = false;
   }
 
   void
@@ -208,14 +208,14 @@ namespace QtHandles
       {
         switch (e->type ())
           {
-            case QEvent::KeyRelease:
-              if (m_selectionChanged)
-                sendSelectionChange ();
-              m_selectionChanged = false;
-              break;
+          case QEvent::KeyRelease:
+            if (m_selectionChanged)
+              sendSelectionChange ();
+            m_selectionChanged = false;
+            break;
 
-            default:
-              break;
+          default:
+            break;
           }
 
         return Object::eventFilter (watched, e);
@@ -228,41 +228,41 @@ namespace QtHandles
 
         switch (e->type ())
           {
-            case QEvent::MouseButtonPress:
-              {
-                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
+          case QEvent::MouseButtonPress:
+            {
+              QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
 
-                if (m->button () & Qt::RightButton)
-                  override_return = true;
-                else
-                  {
-                    if (! list->indexAt (m->pos ()).isValid ())
-                      override_return = true;
-                    m_selectionChanged = true;
-                  }
-                break;
-              }
-            case QEvent::MouseButtonRelease:
-              {
-                QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
-
-                if (m->button () & Qt::RightButton)
-                  override_return = true;
-
-                else if (! list->indexAt (m->pos ()).isValid ())
-                  {
-                    list->setCurrentRow (list->count () - 1);
+              if (m->button () & Qt::RightButton)
+                override_return = true;
+              else
+                {
+                  if (! list->indexAt (m->pos ()).isValid ())
                     override_return = true;
-                  }
-
-                if (m_selectionChanged)
-                  sendSelectionChange ();
-                m_selectionChanged = false;
-
-                break;
-              }
-            default:
+                  m_selectionChanged = true;
+                }
               break;
+            }
+          case QEvent::MouseButtonRelease:
+            {
+              QMouseEvent *m = dynamic_cast<QMouseEvent *> (e);
+
+              if (m->button () & Qt::RightButton)
+                override_return = true;
+
+              else if (! list->indexAt (m->pos ()).isValid ())
+                {
+                  list->setCurrentRow (list->count () - 1);
+                  override_return = true;
+                }
+
+              if (m_selectionChanged)
+                sendSelectionChange ();
+              m_selectionChanged = false;
+
+              break;
+            }
+          default:
+            break;
 
           }
         return BaseControl::eventFilter (watched, e) || override_return;

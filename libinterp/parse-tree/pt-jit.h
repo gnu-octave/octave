@@ -457,18 +457,24 @@ namespace octave
   public:
 
     static std::string generate_unique_forloop_name (void)
-    { return std::string ("jittedForLoop")
-        + std::to_string (next_forloop_number ++); }
+    {
+      return std::string ("jittedForLoop")
+             + std::to_string (next_forloop_number ++);
+    }
     // FIXME: Check that the identifier does not exist
 
     static std::string generate_unique_function_name (void)
-    { return std::string ("jittedFunction")
-        + std::to_string (next_function_number ++); }
+    {
+      return std::string ("jittedFunction")
+             + std::to_string (next_function_number ++);
+    }
     // FIXME: Check that the identifier does not exist
 
     static std::string generate_unique_module_name (void)
-    { return std::string ("octaveJITModule")
-        + std::to_string (next_module_number ++); }
+    {
+      return std::string ("octaveJITModule")
+             + std::to_string (next_module_number ++);
+    }
     // FIXME: Check that the identifier does not exist
 
   private:

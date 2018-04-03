@@ -178,8 +178,8 @@ SparseComplexMatrix::ishermitian (void) const
 }
 
 static const Complex
-  Complex_NaN_result (octave::numeric_limits<double>::NaN (),
-                      octave::numeric_limits<double>::NaN ());
+Complex_NaN_result (octave::numeric_limits<double>::NaN (),
+                    octave::numeric_limits<double>::NaN ());
 
 SparseComplexMatrix
 SparseComplexMatrix::max (int dim) const
@@ -3868,8 +3868,11 @@ SparseComplexMatrix::trisolve (MatrixType& mattype, const SparseMatrix& b,
 
           F77_INT tmp_err = 0;
 
-          F77_XFCN (zgttrf, ZGTTRF, (tmp_nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D),
-                                     F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, tmp_err));
+          F77_XFCN (zgttrf, ZGTTRF, (tmp_nr, F77_DBLE_CMPLX_ARG (DL),
+                                     F77_DBLE_CMPLX_ARG (D),
+                                     F77_DBLE_CMPLX_ARG (DU),
+                                     F77_DBLE_CMPLX_ARG (DU2),
+                                     pipvt, tmp_err));
 
           err = tmp_err;
 
@@ -3908,7 +3911,9 @@ SparseComplexMatrix::trisolve (MatrixType& mattype, const SparseMatrix& b,
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             tmp_nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU),
+                             tmp_nr, 1, F77_DBLE_CMPLX_ARG (DL),
+                             F77_DBLE_CMPLX_ARG (D),
+                             F77_DBLE_CMPLX_ARG (DU),
                              F77_DBLE_CMPLX_ARG (DU2), pipvt,
                              F77_DBLE_CMPLX_ARG (work), b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));
@@ -4194,8 +4199,11 @@ SparseComplexMatrix::trisolve (MatrixType& mattype,
 
           F77_INT tmp_err = 0;
 
-          F77_XFCN (zgttrf, ZGTTRF, (tmp_nr, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D),
-                                     F77_DBLE_CMPLX_ARG (DU), F77_DBLE_CMPLX_ARG (DU2), pipvt, tmp_err));
+          F77_XFCN (zgttrf, ZGTTRF, (tmp_nr, F77_DBLE_CMPLX_ARG (DL),
+                                     F77_DBLE_CMPLX_ARG (D),
+                                     F77_DBLE_CMPLX_ARG (DU),
+                                     F77_DBLE_CMPLX_ARG (DU2),
+                                     pipvt, tmp_err));
 
           err = tmp_err;
 
@@ -4235,7 +4243,9 @@ SparseComplexMatrix::trisolve (MatrixType& mattype,
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
-                             tmp_nr, 1, F77_DBLE_CMPLX_ARG (DL), F77_DBLE_CMPLX_ARG (D), F77_DBLE_CMPLX_ARG (DU),
+                             tmp_nr, 1, F77_DBLE_CMPLX_ARG (DL),
+                             F77_DBLE_CMPLX_ARG (D),
+                             F77_DBLE_CMPLX_ARG (DU),
                              F77_DBLE_CMPLX_ARG (DU2), pipvt,
                              F77_DBLE_CMPLX_ARG (Bx), b_nr, tmp_err
                              F77_CHAR_ARG_LEN (1)));

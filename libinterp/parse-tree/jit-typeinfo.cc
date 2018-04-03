@@ -303,7 +303,7 @@ namespace octave
       {
         // this code is similar to idx_vector::fill, but we avoid allocating an
         // idx_vector and its associated rep
-        octave_idx_type start = static_cast<octave_idx_type> (index->m_base) - 1;
+        octave_idx_type start = static_cast<octave_idx_type> (index->m_base)-1;
         octave_idx_type step = static_cast<octave_idx_type> (index->m_inc);
         octave_idx_type nelem = index->m_nelem;
         octave_idx_type final = start + nelem * step;
@@ -500,18 +500,18 @@ namespace octave
   std::ostream&
   operator<< (std::ostream& os, const jit_matrix& mat)
   {
-    return os << "Matrix[" << mat.m_ref_count << ", " << mat.m_slice_data << ", "
-              << mat.m_slice_len << ", " << mat.m_dimensions << ", "
-              << mat.m_array << ']';
+    return os << "Matrix[" << mat.m_ref_count << ", "
+              << mat.m_slice_data << ", " << mat.m_slice_len << ", "
+              << mat.m_dimensions << ", " << mat.m_array << ']';
   }
 
 
   // -------------------- jit_type --------------------
 
   jit_type::jit_type (const std::string& aname, jit_type *aparent,
-                      llvm::Type *allvm_type, bool askip_paren, int aid) :
-    m_name (aname), m_parent (aparent), m_llvm_type (allvm_type), m_id (aid),
-    m_depth (aparent ? aparent->m_depth + 1 : 0), m_skip_paren (askip_paren)
+                      llvm::Type *allvm_type, bool askip_paren, int aid)
+    : m_name (aname), m_parent (aparent), m_llvm_type (allvm_type), m_id (aid),
+      m_depth (aparent ? aparent->m_depth + 1 : 0), m_skip_paren (askip_paren)
   {
     std::memset (m_sret, 0, sizeof (m_sret));
     std::memset (m_pointer_arg, 0, sizeof (m_pointer_arg));
@@ -570,8 +570,8 @@ namespace octave
                               jit_convention::type acall_conv,
                               const llvm::Twine& aname, jit_type *aresult,
                               const std::vector<jit_type *>& aargs)
-    : m_module (amodule), m_result (aresult), m_args (aargs), m_call_conv (acall_conv),
-      m_can_error (false)
+    : m_module (amodule), m_result (aresult), m_args (aargs),
+      m_call_conv (acall_conv), m_can_error (false)
   {
     llvm::SmallVector<llvm::Type *, 15> llvm_args;
 
@@ -617,19 +617,21 @@ namespace octave
 #if defined (FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES)
       m_llvm_function->addFnAttr (llvm::Attributes::AlwaysInline);
 #else
-    m_llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
+      m_llvm_function->addFnAttr (llvm::Attribute::AlwaysInline);
 #endif
   }
 
   jit_function::jit_function (const jit_function& fn, jit_type *aresult,
                               const std::vector<jit_type *>& aargs)
-    : m_module (fn.m_module), m_llvm_function (fn.m_llvm_function), m_result (aresult),
-      m_args (aargs), m_call_conv (fn.m_call_conv), m_can_error (fn.m_can_error)
+    : m_module (fn.m_module), m_llvm_function (fn.m_llvm_function),
+      m_result (aresult), m_args (aargs), m_call_conv (fn.m_call_conv),
+      m_can_error (fn.m_can_error)
   { }
 
   jit_function::jit_function (const jit_function& fn)
-    : m_module (fn.m_module), m_llvm_function (fn.m_llvm_function), m_result (fn.m_result),
-      m_args (fn.m_args), m_call_conv (fn.m_call_conv), m_can_error (fn.m_can_error)
+    : m_module (fn.m_module), m_llvm_function (fn.m_llvm_function),
+      m_result (fn.m_result), m_args (fn.m_args), m_call_conv (fn.m_call_conv),
+      m_can_error (fn.m_can_error)
   { }
 
   void
@@ -686,7 +688,7 @@ namespace octave
     llvm::Function *parent = insert_block->getParent ();
     assert (parent);
 
-    // we insert allocas inside the prelude block to prevent stack overflows
+    // Insert allocas inside the prelude block to prevent stack overflows
     llvm::BasicBlock& prelude = parent->getEntryBlock ();
     llvm::IRBuilder<> pre_builder (&prelude, prelude.begin ());
 
@@ -879,7 +881,8 @@ namespace octave
     numel = std::max (numel, static_cast<octave_idx_type>(2));
 
     Array<octave_idx_type> idx (dim_vector (1, numel));
-    for (octave_idx_type i = 0; i < static_cast<octave_idx_type> (types.size ());
+    for (octave_idx_type i = 0;
+         i < static_cast<octave_idx_type> (types.size ());
          ++i)
       idx(i) = types[i]->type_id ();
 
@@ -961,7 +964,8 @@ namespace octave
 
   llvm::Value *
   jit_index_operation::create_arg_array (llvm::IRBuilderD& builder,
-                                         const jit_function& fn, size_t start_idx,
+                                         const jit_function& fn,
+                                         size_t start_idx,
                                          size_t end_idx) const
   {
     size_t n = end_idx - start_idx;
@@ -982,10 +986,8 @@ namespace octave
   // -------------------- jit_paren_subsref --------------------
 
   jit_paren_subsref::jit_paren_subsref (const jit_typeinfo& ti)
-    : jit_index_operation (ti, "()subsref"),
-      m_paren_scalar (nullptr)
-  {
-  }
+    : jit_index_operation (ti, "()subsref"), m_paren_scalar (nullptr)
+  { }
 
   jit_paren_subsref::~jit_paren_subsref (void)
   {
@@ -1037,8 +1039,7 @@ namespace octave
   // -------------------- jit_paren_subsasgn --------------------
 
   jit_paren_subsasgn::jit_paren_subsasgn (const jit_typeinfo& ti)
-    : jit_index_operation (ti, "()subsasgn"),
-      m_paren_scalar (nullptr)
+    : jit_index_operation (ti, "()subsasgn"), m_paren_scalar (nullptr)
   { }
 
   jit_paren_subsasgn::~jit_paren_subsasgn (void)
@@ -1143,7 +1144,8 @@ namespace octave
       m_create_undef_fn ("create_undef"),
       m_base_jit_module (new jit_module ("octaveJITBaseModule")),
       m_builder_ptr (new llvm::IRBuilderD (context)),
-      m_builder (*m_builder_ptr)  // FIXME: Use a pointer directly in the constructor, and get rid of this
+      // FIXME: Use a pointer directly in the constructor, and get rid of this
+      m_builder (*m_builder_ptr)
   {
     s_in_construction = true;
 
@@ -1157,7 +1159,8 @@ namespace octave
     m_any_t = llvm::StructType::create (context, "octave_base_value");
     m_any_t = m_any_t->getPointerTo ();
     m_any = do_register_new_type ("any", nullptr, m_any_t);
-    m_any_ptr = do_register_new_type ("any_ptr", nullptr, m_any_t->getPointerTo ());
+    m_any_ptr = do_register_new_type ("any_ptr", nullptr,
+                                      m_any_t->getPointerTo ());
 
     // jit_types: "scalar"     < "complex" < "any"
     //       and: "scalar_ptr" < (nullptr)
@@ -1167,17 +1170,22 @@ namespace octave
     m_complex_t = llvm::ArrayType::get (m_scalar_t, 2);
     m_complex = do_register_new_type ("complex", m_any, m_complex_t);
     m_scalar = do_register_new_type ("scalar", m_complex, m_scalar_t);
-    m_scalar_ptr = do_register_new_type ("scalar_ptr", nullptr, m_scalar_t->getPointerTo ());
+    m_scalar_ptr = do_register_new_type ("scalar_ptr", nullptr,
+                                         m_scalar_t->getPointerTo ());
 
     // jit_type: "bool" < "any"
     m_bool_t = llvm::Type::getInt1Ty (context);
     m_boolean = do_register_new_type ("bool", m_any, m_bool_t);
 
     // jit_types: "int8", "int16", "int32", "int64" < "any"
-    m_ints[ 8] = do_register_new_type ("int8",  m_any, llvm::Type::getIntNTy (context,  8));
-    m_ints[16] = do_register_new_type ("int16", m_any, llvm::Type::getIntNTy (context, 16));
-    m_ints[32] = do_register_new_type ("int32", m_any, llvm::Type::getIntNTy (context, 32));
-    m_ints[64] = do_register_new_type ("int64", m_any, llvm::Type::getIntNTy (context, 64));
+    m_ints[ 8] = do_register_new_type ("int8",  m_any,
+                                       llvm::Type::getIntNTy (context,  8));
+    m_ints[16] = do_register_new_type ("int16", m_any,
+                                       llvm::Type::getIntNTy (context, 16));
+    m_ints[32] = do_register_new_type ("int32", m_any,
+                                       llvm::Type::getIntNTy (context, 32));
+    m_ints[64] = do_register_new_type ("int64", m_any,
+                                       llvm::Type::getIntNTy (context, 64));
 
     // jit_type: "string" < "any"
     m_string_t = llvm::Type::getInt8Ty (context);
@@ -1231,8 +1239,10 @@ namespace octave
     m_range->mark_sret (jit_convention::external);
     m_range->mark_pointer_arg (jit_convention::external);
 
-    m_complex->set_pack (jit_convention::external, &jit_typeinfo::pack_complex);
-    m_complex->set_unpack (jit_convention::external, &jit_typeinfo::unpack_complex);
+    m_complex->set_pack (jit_convention::external,
+                         &jit_typeinfo::pack_complex);
+    m_complex->set_unpack (jit_convention::external,
+                           &jit_typeinfo::unpack_complex);
     m_complex->set_packed_type (jit_convention::external, m_complex_ret);
 
     if (sizeof (void *) == 4)
@@ -1248,7 +1258,8 @@ namespace octave
     m_base_jit_module->add_global_mapping (m_lerror_state, &error_state);
 
     // sig_atomic_type is going to be some sort of integer
-    m_sig_atomic_type = llvm::Type::getIntNTy (context, sizeof(sig_atomic_t) * 8);
+    m_sig_atomic_type = llvm::Type::getIntNTy (context,
+                                               sizeof(sig_atomic_t) * 8);
 
     m_loctave_interrupt_state = m_base_jit_module->create_global_variable
       (m_sig_atomic_type, false, "octave_interrupt_state");
@@ -1259,8 +1270,8 @@ namespace octave
     // generic call function
     {
       jit_type *int_t = do_get_intN (sizeof (octave_builtin::fcn) * 8);
-      m_any_call = create_external (JIT_FN (octave_jit_call), m_any, int_t, int_t,
-                                    m_any_ptr, int_t);
+      m_any_call = create_external (JIT_FN (octave_jit_call), m_any, int_t,
+                                    int_t, m_any_ptr, int_t);
     }
 
     // any with anything is an any op
@@ -1268,7 +1279,8 @@ namespace octave
     jit_type *binary_op_type = do_get_intN (sizeof (octave_value::binary_op) * 8);
     llvm::Type *llvm_bo_type = binary_op_type->to_llvm ();
     jit_function any_binary = create_external (JIT_FN (octave_jit_binary_any_any),
-                                               m_any, binary_op_type, m_any, m_any);
+                                               m_any, binary_op_type,
+                                               m_any, m_any);
     any_binary.mark_can_error ();
 
     for (size_t i = 0; i < octave_value::num_binary_ops; ++i)
@@ -1319,7 +1331,8 @@ namespace octave
     m_release_fn.add_overload (fn);
 
     // release matrix
-    fn = create_external (JIT_FN (octave_jit_release_matrix), nullptr, m_matrix);
+    fn = create_external (JIT_FN (octave_jit_release_matrix), nullptr,
+                          m_matrix);
     m_release_fn.add_overload (fn);
 
     // destroy
@@ -1344,11 +1357,13 @@ namespace octave
     add_binary_fcmp (m_scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
     add_binary_fcmp (m_scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero), nullptr);
+    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero),
+                                               nullptr);
     gripe_div0.mark_can_error ();
 
     // divide is annoying because it might error
-    fn = create_internal ("octave_jit_div_scalar_scalar", m_scalar, m_scalar, m_scalar);
+    fn = create_internal ("octave_jit_div_scalar_scalar", m_scalar, m_scalar,
+                          m_scalar);
     fn.mark_can_error ();
 
     llvm::BasicBlock *body = fn.new_block ();
@@ -1358,7 +1373,8 @@ namespace octave
       llvm::BasicBlock *normal_block = fn.new_block ("normal");
 
       llvm::Value *zero = llvm::ConstantFP::get (m_scalar_t, 0);
-      llvm::Value *check = m_builder.CreateFCmpUEQ (zero, fn.argument (m_builder, 1));
+      llvm::Value *check = m_builder.CreateFCmpUEQ (zero,
+                                                    fn.argument (m_builder, 1));
       m_builder.CreateCondBr (check, warn_block, normal_block);
 
       m_builder.SetInsertPoint (warn_block);
@@ -1381,8 +1397,8 @@ namespace octave
     // In general, the result of scalar ^ scalar is a complex number.  We might
     // be able to improve on this if we keep track of the range of values
     // variables can take on.
-    fn = create_external (JIT_FN (octave_jit_pow_scalar_scalar), m_complex, m_scalar,
-                          m_scalar);
+    fn = create_external (JIT_FN (octave_jit_pow_scalar_scalar), m_complex,
+                          m_scalar, m_scalar);
     m_binary_ops[octave_value::op_pow].add_overload (fn);
     m_binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -1545,8 +1561,8 @@ namespace octave
     }
     m_binary_ops[octave_value::op_sub].add_overload (fn);
 
-    fn = create_external (JIT_FN (octave_jit_pow_scalar_complex), m_complex, m_scalar,
-                          m_complex);
+    fn = create_external (JIT_FN (octave_jit_pow_scalar_complex), m_complex,
+                          m_scalar, m_complex);
     m_binary_ops[octave_value::op_pow].add_overload (fn);
     m_binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -1577,7 +1593,8 @@ namespace octave
     m_for_init_fn.add_overload (fn);
 
     // bounds check for for loop
-    fn = create_internal ("octave_jit_for_range_check", m_boolean, m_range, m_index);
+    fn = create_internal ("octave_jit_for_range_check", m_boolean, m_range,
+                          m_index);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     {
@@ -1590,7 +1607,8 @@ namespace octave
     m_for_check_fn.add_overload (fn);
 
     // index variabe for for loop
-    fn = create_internal ("octave_jit_for_range_idx", m_scalar, m_range, m_index);
+    fn = create_internal ("octave_jit_for_range_idx", m_scalar, m_range,
+                          m_index);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     {
@@ -1608,9 +1626,11 @@ namespace octave
 
     // logically true
     jit_function gripe_nantl
-      = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion), nullptr);
+      = create_external (JIT_FN (octave_jit_err_nan_to_logical_conversion),
+                         nullptr);
     gripe_nantl.mark_can_error ();
-    fn = create_internal ("octave_jit_logically_true_scalar", m_boolean, m_scalar);
+    fn = create_internal ("octave_jit_logically_true_scalar", m_boolean,
+                          m_scalar);
     fn.mark_can_error ();
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
@@ -1642,7 +1662,8 @@ namespace octave
     jit_function compute_nelem
       = create_external (JIT_FN (octave_jit_compute_nelem),
                          m_index, m_scalar, m_scalar, m_scalar);
-    fn = create_internal ("octave_jit_make_range", m_range, m_scalar, m_scalar, m_scalar);
+    fn = create_internal ("octave_jit_make_range", m_range, m_scalar, m_scalar,
+                          m_scalar);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     {
@@ -1653,8 +1674,8 @@ namespace octave
 
       llvm::Value *dzero = llvm::ConstantFP::get (m_scalar_t, 0);
       llvm::Value *izero = llvm::ConstantInt::get (m_index_t, 0);
-      llvm::Value *rng = llvm::ConstantStruct::get (m_range_t, dzero, dzero, dzero,
-                                                    izero, NULL);
+      llvm::Value *rng = llvm::ConstantStruct::get (m_range_t, dzero, dzero,
+                                                    dzero, izero, NULL);
       rng = m_builder.CreateInsertValue (rng, base, 0);
       rng = m_builder.CreateInsertValue (rng, limit, 1);
       rng = m_builder.CreateInsertValue (rng, inc, 2);
@@ -1669,8 +1690,8 @@ namespace octave
     jit_function ginvalid_index
       = create_external (JIT_FN (octave_jit_ginvalid_index), nullptr);
     jit_function gindex_range = create_external (JIT_FN (octave_jit_gindex_range),
-                                                 nullptr, jit_int, jit_int, m_index,
-                                                 m_index);
+                                                 nullptr, jit_int, jit_int,
+                                                 m_index, m_index);
 
     fn = create_internal ("()subsref", m_scalar, m_matrix, m_scalar);
     fn.mark_can_error ();
@@ -1734,10 +1755,10 @@ namespace octave
 
     // paren subsasgn
     jit_function resize_paren_subsasgn
-      = create_external (JIT_FN (octave_jit_paren_subsasgn_impl), m_matrix, m_matrix,
-                         m_index, m_scalar);
-    fn = create_internal ("octave_jit_paren_subsasgn", m_matrix, m_matrix, m_scalar,
-                          m_scalar);
+      = create_external (JIT_FN (octave_jit_paren_subsasgn_impl), m_matrix,
+                         m_matrix, m_index, m_scalar);
+    fn = create_internal ("octave_jit_paren_subsasgn", m_matrix, m_matrix,
+                          m_scalar, m_scalar);
     fn.mark_can_error ();
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
@@ -1801,12 +1822,13 @@ namespace octave
     }
     paren_subsasgn_fn.add_overload (fn);
 
-    fn = create_external (JIT_FN (octave_jit_paren_subsasgn_matrix_range), m_matrix,
-                          m_matrix, m_range, m_scalar);
+    fn = create_external (JIT_FN (octave_jit_paren_subsasgn_matrix_range),
+                          m_matrix, m_matrix, m_range, m_scalar);
     fn.mark_can_error ();
     paren_subsasgn_fn.add_overload (fn);
 
-    fn = create_internal ("octave_jit_end1_matrix", m_scalar, m_matrix, m_index, m_index);
+    fn = create_internal ("octave_jit_end1_matrix", m_scalar, m_matrix,
+                          m_index, m_index);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     {
@@ -1816,8 +1838,8 @@ namespace octave
     }
     m_end1_fn.add_overload (fn);
 
-    fn = create_external (JIT_FN (octave_jit_end_matrix),m_scalar, m_matrix, m_index,
-                          m_index);
+    fn = create_external (JIT_FN (octave_jit_end_matrix),m_scalar, m_matrix,
+                          m_index, m_index);
     m_end_fn.add_overload (fn);
 
     // -------------------- create_undef --------------------
@@ -1831,11 +1853,13 @@ namespace octave
     m_casts[m_range->type_id ()].stash_name ("(range)");
 
     // cast m_any <- matrix
-    fn = create_external (JIT_FN (octave_jit_cast_any_matrix), m_any, m_matrix);
+    fn = create_external (JIT_FN (octave_jit_cast_any_matrix), m_any,
+                          m_matrix);
     m_casts[m_any->type_id ()].add_overload (fn);
 
     // cast matrix <- any
-    fn = create_external (JIT_FN (octave_jit_cast_matrix_any), m_matrix, m_any);
+    fn = create_external (JIT_FN (octave_jit_cast_matrix_any), m_matrix,
+                          m_any);
     m_casts[m_matrix->type_id ()].add_overload (fn);
 
     // cast any <- range
@@ -1847,23 +1871,28 @@ namespace octave
     m_casts[m_range->type_id ()].add_overload (fn);
 
     // cast any <- scalar
-    fn = create_external (JIT_FN (octave_jit_cast_any_scalar), m_any, m_scalar);
+    fn = create_external (JIT_FN (octave_jit_cast_any_scalar), m_any,
+                          m_scalar);
     m_casts[m_any->type_id ()].add_overload (fn);
 
     // cast scalar <- any
-    fn = create_external (JIT_FN (octave_jit_cast_scalar_any), m_scalar, m_any);
+    fn = create_external (JIT_FN (octave_jit_cast_scalar_any), m_scalar,
+                          m_any);
     m_casts[m_scalar->type_id ()].add_overload (fn);
 
     // cast any <- complex
-    fn = create_external (JIT_FN (octave_jit_cast_any_complex), m_any, m_complex);
+    fn = create_external (JIT_FN (octave_jit_cast_any_complex), m_any,
+                          m_complex);
     m_casts[m_any->type_id ()].add_overload (fn);
 
     // cast complex <- any
-    fn = create_external (JIT_FN (octave_jit_cast_complex_any), m_complex, m_any);
+    fn = create_external (JIT_FN (octave_jit_cast_complex_any), m_complex,
+                          m_any);
     m_casts[m_complex->type_id ()].add_overload (fn);
 
     // cast complex <- scalar
-    fn = create_internal ("octave_jit_cast_complex_scalar", m_complex, m_scalar);
+    fn = create_internal ("octave_jit_cast_complex_scalar", m_complex,
+                          m_scalar);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     {
@@ -1873,7 +1902,8 @@ namespace octave
     m_casts[m_complex->type_id ()].add_overload (fn);
 
     // cast scalar <- complex
-    fn = create_internal ("octave_jit_cast_scalar_complex", m_scalar, m_complex);
+    fn = create_internal ("octave_jit_cast_scalar_complex", m_scalar,
+                          m_complex);
     body = fn.new_block ();
     m_builder.SetInsertPoint (body);
     fn.do_return (m_builder, complex_real (fn.argument (m_builder, 0)));
@@ -1925,7 +1955,8 @@ namespace octave
 
     add_builtin ("magic");
     register_generic ("magic", m_matrix, m_scalar);
-    register_generic ("magic", m_matrix, std::vector<jit_type *> (2, m_scalar));
+    register_generic ("magic", m_matrix,
+                      std::vector<jit_type *> (2, m_scalar));
 
     add_builtin ("eye");
     register_generic ("eye", m_matrix, m_scalar);
@@ -1952,7 +1983,8 @@ namespace octave
 
         m_grab_fn.add_overload (jit_function (grab_any, btype, args));
         m_release_fn.add_overload (jit_function (release_any, 0, args));
-        m_casts[m_any->type_id ()].add_overload (jit_function (any_id, m_any, args));
+        m_casts[m_any->type_id ()].add_overload (jit_function (any_id, m_any,
+                                                               args));
 
         args[0] = m_any;
         m_casts[btype->type_id ()].add_overload (jit_function (any_id, btype,
@@ -1990,7 +2022,8 @@ namespace octave
     assert ((name == "any") || (name == "any_ptr") ||
             (name == "scalar_ptr") || (parent != nullptr));
 
-    jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren, m_next_id++);
+    jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren,
+                                  m_next_id++);
     m_id_to_type.push_back (ret);
 
     m_casts.push_back (jit_operation ("(" + name + ")"));
@@ -2159,8 +2192,8 @@ namespace octave
     std::copy (args.begin (), args.end (), args1.begin () + 1);
 
     // The first argument will be the Octave function, but we already know that
-    // the function call is the equivalent of the intrinsic, so we ignore it and
-    // call the intrinsic with the remaining arguments.
+    // the function call is the equivalent of the intrinsic, so we ignore it
+    // and call the intrinsic with the remaining arguments.
     jit_function fn = create_internal (fn_name.str (), result, args1);
     llvm::BasicBlock *body = fn.new_block ();
     m_builder.SetInsertPoint (body);
@@ -2179,8 +2212,8 @@ namespace octave
   {
     symbol_table& symtab = __get_symbol_table__ ("jit_typeinfo::find_builtin");
 
-    // FIXME: Finalize what we want to store in octave_builtin, then add functions
-    // to access these values in octave_value
+    // FIXME: Finalize what we want to store in octave_builtin, then add
+    // functions to access these values in octave_value
     octave_value ov_builtin = symtab.find (name);
     return dynamic_cast<octave_builtin *> (ov_builtin.internal_rep ());
   }
@@ -2209,7 +2242,8 @@ namespace octave
         if (agrab.valid ())
           arg = agrab.call (m_builder, arg);
         jit_function acast = do_cast (m_any, args[i]);
-        array = m_builder.CreateInsertValue (array, acast.call (m_builder, arg), i);
+        array = m_builder.CreateInsertValue (array,
+                                             acast.call (m_builder, arg), i);
       }
 
     llvm::Value *array_mem = m_builder.CreateAlloca (array_t);
@@ -2223,7 +2257,8 @@ namespace octave
     llvm::Value *nargin = llvm::ConstantInt::get (intTy, args.size ());
     size_t result_int = reinterpret_cast<size_t> (result);
     llvm::Value *res_llvm = llvm::ConstantInt::get (intTy, result_int);
-    llvm::Value *ret = m_any_call.call (m_builder, fcn, nargin, array, res_llvm);
+    llvm::Value *ret = m_any_call.call (m_builder, fcn, nargin, array,
+                                        res_llvm);
 
     jit_function cast_result = do_cast (result, m_any);
     fn.do_return (m_builder, cast_result.call (m_builder, ret));
@@ -2316,12 +2351,12 @@ namespace octave
   {
     if (ov.is_function ())
       {
-        // FIXME: This is ugly, we need to finalize how we want to do this, then
-        // have octave_value fully support the needed functionality
+        // FIXME: This is ugly, we need to finalize how we want to do this,
+        // then have octave_value fully support the needed functionality
         octave_builtin *builtin
           = dynamic_cast<octave_builtin *> (ov.internal_rep ());
         return builtin && builtin->to_jit () ? builtin->to_jit ()
-          : m_unknown_function;
+                                             : m_unknown_function;
       }
 
     if (ov.is_range ())

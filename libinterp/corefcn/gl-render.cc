@@ -1066,8 +1066,8 @@ namespace octave
 
 #else
 
-  // This shouldn't happen because construction of opengl_renderer
-  // objects is supposed to be impossible if OpenGL is not available.
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
 
     octave_unused_parameter (width);
     octave_unused_parameter (height);
@@ -1217,9 +1217,9 @@ namespace octave
     bool layer2Dtop = props.get_layer2Dtop ();
     bool is2d = props.get_is2D ();
     bool isXOrigin = props.xaxislocation_is ("origin")
-                       && ! props.yscale_is ("log");
+                     && ! props.yscale_is ("log");
     bool isYOrigin = props.yaxislocation_is ("origin")
-                       && ! props.xscale_is ("log");
+                     && ! props.xscale_is ("log");
     bool boxFull = (props.get_boxstyle () == "full");
     double linewidth = props.get_linewidth ();
     double xPlane = props.get_xPlane ();
@@ -1448,8 +1448,7 @@ namespace octave
         double y_axis_pos = 0.;
         if (is_origin)
           {
-            y_axis_pos = math::max (math::min (0., y_max),
-                                            y_min);
+            y_axis_pos = math::max (math::min (0., y_max), y_min);
             glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
             glVertex3d (x_min, y_axis_pos, zpTick);
@@ -1632,8 +1631,7 @@ namespace octave
         double x_axis_pos = 0.;
         if (is_origin)
           {
-            x_axis_pos = math::max (math::min (0., x_max),
-                                            x_min);
+            x_axis_pos = math::max (math::min (0., x_max), x_min);
             glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
             glVertex3d (x_axis_pos, y_min, zpTick);

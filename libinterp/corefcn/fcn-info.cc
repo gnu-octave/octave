@@ -98,7 +98,7 @@ namespace octave
       {
         octave_value ov_fcn
           = load_fcn_from_file (file_name, dir_name, name,
-                                        package_name);
+                                package_name);
 
         if (ov_fcn.is_defined ())
           {
@@ -171,7 +171,7 @@ namespace octave
               {
                 octave_value ov_fcn
                   = load_fcn_from_file (file_name, dir_name,
-                                                dispatch_type);
+                                        dispatch_type);
 
                 if (ov_fcn.is_defined ())
                   {
@@ -592,7 +592,8 @@ namespace octave
     symbol_scope curr_scope
       = __get_current_scope__ ("fcn_info::fcn_info_rep::x_builtin_find");
 
-    octave_user_function *current_fcn = curr_scope ? curr_scope.function () : nullptr;
+    octave_user_function *current_fcn = curr_scope ? curr_scope.function ()
+                                                   : nullptr;
 
     if (current_fcn)
       {
@@ -719,8 +720,7 @@ namespace octave
             std::string dir_name = file_name.substr (0, pos);
 
             octave_value ov_fcn
-              = load_fcn_from_file (file_name, dir_name, "", "",
-                                            name, true);
+              = load_fcn_from_file (file_name, dir_name, "", "", name, true);
 
             if (ov_fcn.is_defined ())
               autoload_function = octave_value (ov_fcn);
@@ -742,16 +742,16 @@ namespace octave
       {
         std::string dir_name;
 
-        load_path& lp = __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
+        load_path& lp =
+          __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
 
 
         std::string file_name = lp.find_fcn (name, dir_name, package_name);
 
         if (! file_name.empty ())
           {
-            octave_value ov_fcn
-              = load_fcn_from_file (file_name, dir_name, "",
-                                            package_name);
+            octave_value ov_fcn =
+              load_fcn_from_file (file_name, dir_name, "", package_name);
 
             if (ov_fcn.is_defined ())
               function_on_path = ov_fcn;

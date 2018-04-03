@@ -47,15 +47,15 @@ namespace octave
     // If multiple markers are on the same line, the first one listed
     // is drawn at the back, so big ones should be first.
     enum editor_markers
-      {
-        breakpoint,
-        cond_break,
-        unsure_breakpoint,
-        bookmark,
-        debugger_position,
-        unsure_debugger_position,
-        selection
-      };
+    {
+      breakpoint,
+      cond_break,
+      unsure_breakpoint,
+      bookmark,
+      debugger_position,
+      unsure_debugger_position,
+      selection
+    };
 
     marker (QsciScintilla *edit_area, int original_linenr,
             editor_markers marker_type, const QString& condition = "");

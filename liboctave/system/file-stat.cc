@@ -168,11 +168,11 @@ namespace octave
     // Private stuff:
 
     file_stat::file_stat (const std::string& n, bool fl)
-        : base_file_stat (), file_name (n), follow_links (fl)
-      {
-        if (! file_name.empty ())
-          update_internal ();
-      }
+      : base_file_stat (), file_name (n), follow_links (fl)
+    {
+      if (! file_name.empty ())
+        update_internal ();
+    }
 
     file_stat::~file_stat () { }
 

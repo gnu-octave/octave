@@ -175,8 +175,9 @@ public:
 
 private:
   // Diagonal matrix solvers
-  ComplexMatrix dsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
-                        double& rcond, solve_singularity_handler sing_handler,
+  ComplexMatrix dsolve (MatrixType& mattype, const Matrix& b,
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
                         bool calc_cond = false) const;
 
   ComplexMatrix dsolve (MatrixType& mattype, const ComplexMatrix& b,
@@ -308,9 +309,10 @@ public:
   ComplexMatrix solve (MatrixType& mattype, const Matrix& b) const;
   ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& info) const;
-  ComplexMatrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
-                       double& rcond) const;
-  ComplexMatrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
+                       octave_idx_type& info, double& rcond) const;
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
+                       octave_idx_type& info,
                        double& rcond, solve_singularity_handler sing_handler,
                        bool singular_fallback = true) const;
 

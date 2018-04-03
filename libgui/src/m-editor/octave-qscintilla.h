@@ -45,11 +45,11 @@ namespace octave
     ~octave_qscintilla (void) = default;
 
     enum
-      {
-        ST_NONE = 0,
-        ST_LINE_COMMENT,
-        ST_BLOCK_COMMENT
-      };
+    {
+      ST_NONE = 0,
+      ST_LINE_COMMENT,
+      ST_BLOCK_COMMENT
+    };
 
     virtual void contextMenuEvent (QContextMenuEvent *e);
 

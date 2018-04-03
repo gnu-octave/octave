@@ -48,11 +48,13 @@ public:
     : sh_lib (), t_checked (), system_fcn_file ()
   { }
 
-  octave_dld_function (octave_builtin::fcn ff, const octave::dynamic_library& shl,
+  octave_dld_function (octave_builtin::fcn ff,
+                       const octave::dynamic_library& shl,
                        const std::string& nm = "",
                        const std::string& ds = "");
 
-  octave_dld_function (octave_builtin::meth mm, const octave::dynamic_library& shl,
+  octave_dld_function (octave_builtin::meth mm,
+                       const octave::dynamic_library& shl,
                        const std::string& nm = "",
                        const std::string& ds = "");
 

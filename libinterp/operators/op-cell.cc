@@ -62,7 +62,9 @@ install_cell_ops (octave::type_info& ti)
 
   INSTALL_ASSIGNANYOP_TI (ti, op_asn_eq, octave_cell, assign);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_matrix, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_matrix,
+                       null_assign);
   INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_cell, octave_null_sq_str,
+                       null_assign);
 }

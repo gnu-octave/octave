@@ -996,7 +996,7 @@ namespace QtHandles
                       && mode != "horizontal")
                     ap.pan ("vertical", factor);
                   else if (event->modifiers () == Qt::ShiftModifier
-                      && mode != "vertical")
+                           && mode != "vertical")
                     ap.pan ("horizontal", factor);
                 }
                 break;

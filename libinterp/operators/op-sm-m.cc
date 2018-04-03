@@ -149,8 +149,10 @@ install_sm_m_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_div, octave_sparse_matrix, octave_matrix, div);
   INSTALL_BINOP_TI (ti, op_pow, octave_sparse_matrix, octave_matrix, pow);
   INSTALL_BINOP_TI (ti, op_ldiv, octave_sparse_matrix, octave_matrix, ldiv);
-  INSTALL_BINOP_TI (ti, op_trans_mul, octave_sparse_matrix, octave_matrix, trans_mul);
-  INSTALL_BINOP_TI (ti, op_herm_mul, octave_sparse_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP_TI (ti, op_trans_mul, octave_sparse_matrix, octave_matrix,
+                    trans_mul);
+  INSTALL_BINOP_TI (ti, op_herm_mul, octave_sparse_matrix, octave_matrix,
+                    trans_mul);
   INSTALL_BINOP_TI (ti, op_lt, octave_sparse_matrix, octave_matrix, lt);
   INSTALL_BINOP_TI (ti, op_le, octave_sparse_matrix, octave_matrix, le);
   INSTALL_BINOP_TI (ti, op_eq, octave_sparse_matrix, octave_matrix, eq);
@@ -166,5 +168,6 @@ install_sm_m_ops (octave::type_info& ti)
 
   INSTALL_CATOP_TI (ti, octave_sparse_matrix, octave_matrix, sm_m);
 
-  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_matrix, assign);
+  INSTALL_ASSIGNOP_TI (ti, op_asn_eq, octave_sparse_matrix, octave_matrix,
+                       assign);
 }

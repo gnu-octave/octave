@@ -99,10 +99,10 @@ namespace octave
               bool relative = false);
 
     bool remove_oct (const std::string& fcn_name,
-                            dynamic_library& shl);
+                     dynamic_library& shl);
 
     bool remove_mex (const std::string& fcn_name,
-                            dynamic_library& shl);
+                     dynamic_library& shl);
 
   private:
 

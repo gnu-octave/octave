@@ -110,7 +110,8 @@ namespace octave
         //enable sorting (setting column and order after model was set)
         m_view->setSortingEnabled (true);
         // Initialize column order and width of the workspace
-        m_view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+        m_view->horizontalHeader ()->restoreState (
+          settings->value ("workspaceview/column_state").toByteArray ());
 
         // Set header properties for sorting
 #if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)

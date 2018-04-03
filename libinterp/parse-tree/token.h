@@ -37,33 +37,33 @@ namespace octave
   public:
 
     enum token_type
-      {
-        generic_token,
-        keyword_token,
-        string_token,
-        double_token,
-        ettype_token,
-        sym_rec_token,
-        scls_name_token,
-      };
+    {
+      generic_token,
+      keyword_token,
+      string_token,
+      double_token,
+      ettype_token,
+      sym_rec_token,
+      scls_name_token,
+    };
 
     enum end_tok_type
-      {
-        simple_end,
-        classdef_end,
-        enumeration_end,
-        events_end,
-        for_end,
-        function_end,
-        if_end,
-        methods_end,
-        parfor_end,
-        properties_end,
-        switch_end,
-        try_catch_end,
-        unwind_protect_end,
-        while_end,
-      };
+    {
+      simple_end,
+      classdef_end,
+      enumeration_end,
+      events_end,
+      for_end,
+      function_end,
+      if_end,
+      methods_end,
+      parfor_end,
+      properties_end,
+      switch_end,
+      try_catch_end,
+      unwind_protect_end,
+      while_end,
+    };
 
     token (int tv, int l = -1, int c = -1);
     token (int tv, bool is_keyword, int l = -1, int c = -1);

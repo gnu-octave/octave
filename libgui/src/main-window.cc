@@ -984,7 +984,7 @@ namespace octave
 
     QSettings *settings = resource_manager::get_settings ();
     bool is_internal = m_editor_window
-      && ! settings->value ("useCustomFileEditor",false).toBool ();
+                       && ! settings->value ("useCustomFileEditor",false).toBool ();
 
     // Create a NonModal message.
     QWidget *p = this;

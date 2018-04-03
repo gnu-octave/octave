@@ -537,8 +537,8 @@ namespace octave
             w = fcn->fcn_file_name ();
 
             if (w.empty ())
-              w = fcn->is_user_function ()
-                ? "command-line function" : "built-in function";
+              w = fcn->is_user_function () ? "command-line function"
+                                           : "built-in function";
           }
       }
 

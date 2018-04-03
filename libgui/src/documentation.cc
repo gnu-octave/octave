@@ -57,8 +57,8 @@ namespace octave
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
     if (collection.isEmpty ())
       collection = QString::fromStdString (octave::config::oct_doc_dir ()
-                                         + octave::sys::file_ops::dir_sep_str ()
-                                         + "octave_interpreter.qhc");
+                                           + octave::sys::file_ops::dir_sep_str ()
+                                           + "octave_interpreter.qhc");
 
     // Setup the help engine with the original collection, use a writable copy
     // of the original collection and load the help data
@@ -142,7 +142,7 @@ namespace octave
     connect(m_help_engine->indexWidget (),
             SIGNAL (linkActivated (const QUrl&, const QString&)),
             m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
-                                                       const QString&)));
+                                                      const QString&)));
 
     connect (m_filter, SIGNAL (editTextChanged (const QString&)),
              this, SLOT(filter_update (const QString&)));
@@ -257,7 +257,7 @@ namespace octave
       return;
 
     QString wildcard;
-    if (expression.contains(QLatin1Char('*')))
+    if (expression.contains (QLatin1Char('*')))
       wildcard = expression;
 
     m_help_engine->indexWidget ()->filterIndices(expression, wildcard);
@@ -335,13 +335,12 @@ namespace octave
   void documentation_browser::notice_settings (const QSettings *)
   { }
 
-  QVariant documentation_browser::loadResource (int type,
-                                                const QUrl &url)
-    {
-        if (url.scheme () == "qthelp")
-          return QVariant (m_help_engine->fileData(url));
-        else
-          return QTextBrowser::loadResource(type, url);
-    }
+  QVariant documentation_browser::loadResource (int type, const QUrl &url)
+  {
+    if (url.scheme () == "qthelp")
+      return QVariant (m_help_engine->fileData(url));
+    else
+      return QTextBrowser::loadResource(type, url);
+  }
 
 }

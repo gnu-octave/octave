@@ -738,14 +738,14 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
 
   DWORD length = 0;
   result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, nullptr, nullptr,
-                            &length);
+                             &length);
   if (result != ERROR_SUCCESS)
     return result;
 
   DWORD type = 0;
   OCTAVE_LOCAL_BUFFER (BYTE, data, length);
   result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, &type, data,
-                            &length);
+                             &length);
   if (result != ERROR_SUCCESS)
     return result;
 
@@ -880,7 +880,7 @@ On non-Windows platforms this function fails with an error.
     {
       if (args.length () < 3)
         error ("winqueryreg: if the first argument is 'name', "
-                            "ROOTKEY and SUBKEY must be given");
+               "ROOTKEY and SUBKEY must be given");
       get_names = true;
       rootkey_name =
         args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");

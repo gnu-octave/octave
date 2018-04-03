@@ -117,7 +117,7 @@ namespace octave
 
       if (a.dims () != b.dims ())
         err_nonconformant ("FloatGEPBALANCE",
-                                   n, n, b.rows(), b.cols());
+                           n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -184,7 +184,7 @@ namespace octave
 
       if (a.dims () != b.dims ())
         err_nonconformant ("ComplexGEPBALANCE",
-                                   n, n, b.rows(), b.cols());
+                           n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;
@@ -255,7 +255,7 @@ namespace octave
 
       if (a.dims () != b.dims ())
         err_nonconformant ("FloatComplexGEPBALANCE",
-                                   n, n, b.rows(), b.cols());
+                           n, n, b.rows(), b.cols());
 
       F77_INT info;
       F77_INT ilo;

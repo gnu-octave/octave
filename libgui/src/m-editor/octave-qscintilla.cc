@@ -332,10 +332,8 @@ namespace octave
                                                      QPoint *local_pos)
   {
     long position = SendScintilla (SCI_GETCURRENTPOS);
-    long point_x  = SendScintilla
-      (SCI_POINTXFROMPOSITION,0,position);
-    long point_y  = SendScintilla
-      (SCI_POINTYFROMPOSITION,0,position);
+    long point_x  = SendScintilla (SCI_POINTXFROMPOSITION,0,position);
+    long point_y  = SendScintilla (SCI_POINTYFROMPOSITION,0,position);
     *local_pos = QPoint (point_x,point_y);  // local cursor position
     *global_pos = mapToGlobal (*local_pos); // global position of cursor
   }
@@ -391,10 +389,12 @@ namespace octave
           if (comment)
             {
               // The commenting string is requested
-              if (settings->contains (oct_comment_str))   // new version (radio buttons)
+              if (settings->contains (oct_comment_str))
+                // new version (radio buttons)
                 comment_string = settings->value (oct_comment_str,
                                                   oct_comment_str_d).toInt ();
-              else                                         // old version (combo box)
+              else
+                // old version (combo box)
                 comment_string = settings->value (oct_comment_str_old,
                                                   oct_comment_str_d).toInt ();
 
@@ -807,7 +807,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                            , true
 #endif
-                           );
+                          );
 
             while (find_result_available)
               {
@@ -832,7 +832,7 @@ namespace octave
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                                , true
 #endif
-                               );
+                              );
               }
 
             // restore the visible area of the file, the cursor position,

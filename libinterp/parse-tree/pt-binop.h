@@ -142,11 +142,11 @@ namespace octave
   public:
 
     enum type
-      {
-        unknown,
-        bool_and,
-        bool_or
-      };
+    {
+      unknown,
+      bool_and,
+      bool_or
+    };
 
     tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
       : tree_binary_expression (l, c), m_etype (t) { }

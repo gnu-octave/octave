@@ -116,7 +116,7 @@ namespace octave
 
     static int sigbreak;
     static const bool have_sigbreak
-    = octave_get_sig_number ("SIGBREAK", &sigbreak);
+      = octave_get_sig_number ("SIGBREAK", &sigbreak);
 
     // Termination signals.
 

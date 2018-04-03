@@ -2778,7 +2778,7 @@ gcf (void)
   octave_value val = xget (0, "currentfigure");
 
   return val.isempty () ? octave::numeric_limits<double>::NaN ()
-                         : val.double_value ();
+                        : val.double_value ();
 }
 
 // This function is NOT equivalent to the scripting language function gca.
@@ -2788,7 +2788,7 @@ gca (void)
   octave_value val = xget (gcf (), "currentaxes");
 
   return val.isempty () ? octave::numeric_limits<double>::NaN ()
-                         : val.double_value ();
+                        : val.double_value ();
 }
 
 static void
@@ -4836,7 +4836,7 @@ axes::properties::init (void)
   xset (title.handle_value (), "__autopos_tag__", "title");
 
   double fs = labelfontsizemultiplier.double_value () *
-    fontsize.double_value ();
+              fontsize.double_value ();
   xset (xlabel.handle_value (), "fontsize", octave_value (fs));
   xset (ylabel.handle_value (), "fontsize", octave_value (fs));
   xset (zlabel.handle_value (), "fontsize", octave_value (fs));
@@ -6871,17 +6871,17 @@ axes::properties::update_units (const caseless_str& old_units)
                                                 parent_bb)),
                                                 false);
   outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (),
-                                                old_units, new_units,
-                                                parent_bb)),
-                                                false);
+                                                     old_units, new_units,
+                                                     parent_bb)),
+                                                     false);
   tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (),
-                                                old_units, new_units,
-                                                parent_bb)),
-                                                false);
+                                                  old_units, new_units,
+                                                  parent_bb)),
+                                                  false);
   looseinset.set (octave_value (convert_position (get_looseinset ().matrix_value (),
-                                                old_units, new_units,
-                                                parent_bb)),
-                                                false);
+                                                  old_units, new_units,
+                                                  parent_bb)),
+                                                  false);
 }
 
 void
@@ -7455,7 +7455,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                 tmp_lims(0) = std::pow (10., lo);
               if (is_negative)
                 {
-              double tmp = tmp_lims(0);
+                  double tmp = tmp_lims(0);
                   tmp_lims(0) = -tmp_lims(1);
                   tmp_lims(1) = -tmp;
                 }
@@ -9518,7 +9518,7 @@ uicontrol::properties::set_style (const octave_value& st)
   if (style_is ("listbox") || style_is ("popupmenu"))
     {
       Matrix v = value.get ().matrix_value ();
-      if(v.numel () == 1 && v (0) == 0)
+      if (v.numel () == 1 && v (0) == 0)
         value.set (octave_value (1));
     }
 }

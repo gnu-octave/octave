@@ -244,8 +244,8 @@ typedef double complex cmplx;
 #    endif
 #  else
 #    define C(a,b) ((a) + I*(b))
-#    define Inf (1./0.) 
-#    define NaN (0./0.) 
+#    define Inf (1./0.)
+#    define NaN (0./0.)
 #  endif
 
 static inline cmplx cpolar(double r, double t)

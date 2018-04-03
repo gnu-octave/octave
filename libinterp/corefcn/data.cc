@@ -1625,7 +1625,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("attempt_type_conversion");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 

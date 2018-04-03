@@ -442,8 +442,8 @@ namespace octave
 
           } while (flush != Z_FINISH);
 
-          if (status != Z_STREAM_END)
-            throw std::runtime_error ("failed to write file");
+        if (status != Z_STREAM_END)
+          throw std::runtime_error ("failed to write file");
       }
 
       void close (void)

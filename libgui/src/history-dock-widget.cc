@@ -273,7 +273,7 @@ namespace octave
     m_history_list_view->setAlternatingRowColors (true);
     m_history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
     m_history_list_view->setStatusTip (
-                                       tr ("Double-click a command to transfer it to the terminal."));
+      tr ("Double-click a command to transfer it to the terminal."));
     m_history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
     m_history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
     connect (m_history_list_view,
@@ -286,7 +286,7 @@ namespace octave
     m_filter->setMaxCount (MaxFilterHistory);
     m_filter->setInsertPolicy (QComboBox::NoInsert);
     m_filter->setSizeAdjustPolicy (
-                                   QComboBox::AdjustToMinimumContentsLengthWithIcon);
+      QComboBox::AdjustToMinimumContentsLengthWithIcon);
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_filter->setSizePolicy (sizePol);
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
@@ -321,7 +321,8 @@ namespace octave
       = settings->value ("history_dock_widget/filter_shown",true).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
-    m_filter->addItems (settings->value ("history_dock_widget/mru_list").toStringList ());
+    m_filter->addItems (
+      settings->value ("history_dock_widget/mru_list").toStringList ());
 
     bool filter_state
       = settings->value ("history_dock_widget/filter_active", false).toBool ();

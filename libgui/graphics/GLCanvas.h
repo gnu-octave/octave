@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #  if defined (HAVE_QT_OFFSCREEN)
 #    include <QOpenGLContext>
 #    include <QOffscreenSurface>
-#  endif  
+#  endif
 #elif defined (HAVE_QGLWIDGET)
 #  include <QGLWidget>
 #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
@@ -74,14 +74,14 @@ namespace QtHandles
     void wheelEvent (QWheelEvent *event);
     void keyPressEvent (QKeyEvent *event);
     void keyReleaseEvent (QKeyEvent *event);
-    
+
   private:
-    
+
     bool begin_rendering (void);
     void end_rendering (void);
 
 # if defined (HAVE_QT_OFFSCREEN)
-    QOpenGLContext m_os_context;    
+    QOpenGLContext m_os_context;
     QOffscreenSurface m_os_surface;
 # endif
   };

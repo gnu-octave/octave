@@ -855,7 +855,7 @@ namespace octave
 
   int
   fftw::fft (const double *in, Complex *out, size_t npts,
-                    size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -876,7 +876,7 @@ namespace octave
 
   int
   fftw::fft (const Complex *in, Complex *out, size_t npts,
-                    size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -895,8 +895,8 @@ namespace octave
 
   int
   fftw::ifft (const Complex *in, Complex *out, size_t npts,
-                     size_t nsamples, octave_idx_type stride,
-                     octave_idx_type dist)
+              size_t nsamples, octave_idx_type stride,
+              octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -919,7 +919,7 @@ namespace octave
 
   int
   fftw::fftNd (const double *in, Complex *out, const int rank,
-                      const dim_vector& dv)
+               const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -946,7 +946,7 @@ namespace octave
 
   int
   fftw::fftNd (const Complex *in, Complex *out, const int rank,
-                      const dim_vector& dv)
+               const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -965,7 +965,7 @@ namespace octave
 
   int
   fftw::ifftNd (const Complex *in, Complex *out, const int rank,
-                       const dim_vector& dv)
+                const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -989,7 +989,7 @@ namespace octave
 
   int
   fftw::fft (const float *in, FloatComplex *out, size_t npts,
-                    size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -1010,7 +1010,7 @@ namespace octave
 
   int
   fftw::fft (const FloatComplex *in, FloatComplex *out, size_t npts,
-                    size_t nsamples, octave_idx_type stride, octave_idx_type dist)
+             size_t nsamples, octave_idx_type stride, octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -1029,8 +1029,8 @@ namespace octave
 
   int
   fftw::ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
-                     size_t nsamples, octave_idx_type stride,
-                     octave_idx_type dist)
+              size_t nsamples, octave_idx_type stride,
+              octave_idx_type dist)
   {
     dist = (dist < 0 ? npts : dist);
 
@@ -1054,7 +1054,7 @@ namespace octave
 
   int
   fftw::fftNd (const float *in, FloatComplex *out, const int rank,
-                      const dim_vector& dv)
+               const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -1081,7 +1081,7 @@ namespace octave
 
   int
   fftw::fftNd (const FloatComplex *in, FloatComplex *out, const int rank,
-                      const dim_vector& dv)
+               const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)
@@ -1100,7 +1100,7 @@ namespace octave
 
   int
   fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
-                       const dim_vector& dv)
+                const dim_vector& dv)
   {
     octave_idx_type dist = 1;
     for (int i = 0; i < rank; i++)

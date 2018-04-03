@@ -255,8 +255,9 @@ public:
                        octave_idx_type& info) const;
   ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
                        octave_idx_type& info, double& rcon) const;
-  ComplexMatrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
-                       double& rcon, solve_singularity_handler sing_handler,
+  ComplexMatrix solve (MatrixType& mattype, const Matrix& b,
+                       octave_idx_type& info, double& rcon,
+                       solve_singularity_handler sing_handler,
                        bool singular_fallback = true,
                        blas_trans_type transt = blas_no_trans) const;
 

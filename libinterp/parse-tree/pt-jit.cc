@@ -154,7 +154,8 @@ namespace octave
     m_block->append (m_factory.create<jit_branch> (m_final_block));
     m_blocks.push_back (m_final_block);
 
-    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
+    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end ();
+         ++iter)
       {
         jit_variable *var = iter->second;
         const std::string& name = var->name ();
@@ -245,15 +246,17 @@ namespace octave
         return_value = get_variable (elt->name ());
       }
 
-    // FIXME: We should use live range analysis to delete variables where needed.
-    // For now we just delete everything at the end of the function.
-    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
+    // FIXME: We should use live range analysis to delete variables where
+    // needed.  For now we just delete everything at the end of the function.
+    for (variable_map::iterator iter = m_vmap.begin ();
+         iter != m_vmap.end ();
+         ++iter)
       {
         if (iter->second != return_value)
           {
             jit_call *call;
             call = m_factory.create<jit_call> (&jit_typeinfo::destroy,
-                                             iter->second);
+                                               iter->second);
             m_final_block->append (call);
           }
       }
@@ -368,12 +371,12 @@ namespace octave
   }
 
   void
-jit_convert::visit_decl_command (tree_decl_command&)
-{
-  throw jit_fail_exception ("No visit_decl_command implementation");
-}
+  jit_convert::visit_decl_command (tree_decl_command&)
+  {
+    throw jit_fail_exception ("No visit_decl_command implementation");
+  }
 
-void
+  void
   jit_convert::visit_decl_elt (tree_decl_elt&)
   {
     throw jit_fail_exception ("No visit_decl_elt implementation");
@@ -399,7 +402,7 @@ void
     m_breaks.clear ();
     m_continues.clear ();
 
-    // we need a variable for our iterator, because it is used in multiple blocks
+    // Need a variable for our iterator, because it is used in multiple blocks
     std::string iter_name = next_iterator ();
     jit_variable *iterator = m_factory.create<jit_variable> (iter_name);
     m_factory.create<jit_variable> (iter_name);
@@ -408,18 +411,19 @@ void
     jit_block *body = m_factory.create<jit_block> ("for_body");
     jit_block *tail = m_factory.create<jit_block> ("for_tail");
 
-    // do control expression, iter init, and condition check in prev_block (block)
+    // Do control expression, iter init, and condition check in prev_block
+    // (block).
     // if we are the top level for loop, the bounds is an input argument.
     jit_value *control = find_variable (next_for_bounds ());
     if (! control)
       control = visit (cmd.control_expr ());
     jit_call *init_iter = m_factory.create<jit_call> (jit_typeinfo::for_init,
-                                                    control);
+                                                      control);
     m_block->append (init_iter);
     m_block->append (m_factory.create<jit_assign> (iterator, init_iter));
 
-    jit_call *check = m_factory.create<jit_call> (jit_typeinfo::for_check, control,
-                                                iterator);
+    jit_call *check = m_factory.create<jit_call> (jit_typeinfo::for_check,
+                                                  control, iterator);
     m_block->append (check);
     m_block->append (m_factory.create<jit_cond_branch> (check, body, tail));
 
@@ -428,7 +432,7 @@ void
 
     // compute the syntactical iterator
     jit_call *idx_rhs = m_factory.create<jit_call> (jit_typeinfo::for_index,
-                                                  control, iterator);
+                                                    control, iterator);
     m_block->append (idx_rhs);
     do_assign (cmd.left_hand_side (), idx_rhs);
 
@@ -443,8 +447,8 @@ void
       {
         if (m_continues.empty ())
           {
-            // WTF are you doing user? Every branch was a break, why did you have
-            // a loop??? Users are silly people...
+            // WTF are you doing user?  Every branch was a break, why did you
+            // have a loop???  Users are silly people...
             finish_breaks (tail, m_breaks);
             m_blocks.push_back (tail);
             m_block = tail;
@@ -472,14 +476,14 @@ void
     m_block->append (iter_inc);
     m_block->append (m_factory.create<jit_assign> (iterator, iter_inc));
     check = m_block->append (m_factory.create<jit_call> (jit_typeinfo::for_check,
-                                                     control, iterator));
+                                                         control, iterator));
     m_block->append (m_factory.create<jit_cond_branch> (check, interrupt_check,
-                                                    tail));
+                                                        tail));
 
     m_block = interrupt_check;
     jit_error_check *ec
       = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                         body, m_final_block);
+                                           body, m_final_block);
     m_block->append (ec);
 
     // breaks will go to our tail
@@ -568,7 +572,7 @@ void
     std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
     entry_blocks[0] = m_block;
 
-    // we need to construct blocks first, because they have jumps to each other.
+    // Need to construct blocks first, because they have jumps to each other.
     tree_if_command_list::iterator iter = lst.begin ();
     ++iter;
     for (size_t i = 1; iter != lst.end (); ++iter, ++i)
@@ -611,8 +615,9 @@ void
                                                          : "ifelse_body");
             m_blocks.push_back (body);
 
-            jit_instruction *br = m_factory.create<jit_cond_branch> (check, body,
-                                                                   entry_blocks[i + 1]);
+            jit_instruction *br = m_factory.create<jit_cond_branch> (check,
+                                                                     body,
+                                                                     entry_blocks[i + 1]);
             m_block->append (br);
             m_block = body;
           }
@@ -816,7 +821,8 @@ void
             const jit_operation& fn = jit_typeinfo::print_value ();
             jit_const_string *name = m_factory.create<jit_const_string>
               (expr->name ());
-            m_block->append (m_factory.create<jit_call> (fn, name, expr_result));
+            m_block->append (m_factory.create<jit_call> (fn, name,
+                                                         expr_result));
           }
       }
   }
@@ -868,7 +874,7 @@ void
     if (last->is_default_case ())
       has_otherwise = 1;
 
-    std::vector<jit_block *> entry_blocks (case_blocks_num + 1 - has_otherwise);
+    std::vector<jit_block *> entry_blocks (case_blocks_num+1 - has_otherwise);
 
     // the first entry point is always the actual block.  Afterward, new blocks
     // are created for every case and the otherwise branch
@@ -935,7 +941,8 @@ void
         catch (const jit_break_exception&)
           { }
 
-        // each branch in the case statement will have different breaks/continues
+        // each branch in the case statement will have different
+        // breaks/continues
         current_breaks.splice (current_breaks.end (), m_breaks);
         current_continues.splice (current_continues.end (), m_continues);
       }
@@ -1019,7 +1026,7 @@ void
         m_block = interrupt_check;
         jit_error_check *ec
           = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                             cond_check, m_final_block);
+                                               cond_check, m_final_block);
         m_block->append (ec);
       }
 
@@ -1072,7 +1079,7 @@ void
         m_block = interrupt_check;
         jit_error_check *ec
           = m_factory.create<jit_error_check> (jit_error_check::var_interrupt,
-                                             cond_check, m_final_block);
+                                               cond_check, m_final_block);
         m_block->append (ec);
 
         m_blocks.push_back (cond_check);
@@ -1083,7 +1090,8 @@ void
         jit_value *check = visit (expr);
         check = create_checked (&jit_typeinfo::logically_true, check);
 
-        m_block->append (m_factory.create<jit_cond_branch> (check, tail, body));
+        m_block->append (m_factory.create<jit_cond_branch> (check, tail,
+                                                            body));
       }
 
     m_blocks.push_back (tail);
@@ -1113,8 +1121,8 @@ void
 
     jit_block *normal = m_factory.create<jit_block> (m_block->name ());
     jit_error_check *check
-      = m_factory.create<jit_error_check> (jit_error_check::var_error_state, ret,
-                                         normal, m_final_block);
+      = m_factory.create<jit_error_check> (jit_error_check::var_error_state,
+                                           ret, normal, m_final_block);
     m_block->append (check);
     m_blocks.push_back (normal);
     m_block = normal;
@@ -1250,7 +1258,8 @@ void
   }
 
   jit_value *
-  jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool artificial)
+  jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool
+                          artificial)
   {
     if (! exp)
       throw jit_fail_exception ("NULL lhs in assign");
@@ -1275,7 +1284,8 @@ void
                           bool print, bool artificial)
   {
     jit_variable *var = get_variable (lhs);
-    jit_assign *assign = m_block->append (m_factory.create<jit_assign> (var, rhs));
+    jit_assign *assign = m_block->append (m_factory.create<jit_assign> (var,
+                                                                        rhs));
 
     if (artificial)
       assign->mark_artificial ();
@@ -1320,11 +1330,12 @@ void
   {
     m_converting_function = false;
 
-    // for now just init arguments from entry, later we will have to do something
-    // more interesting
+    // for now just init arguments from entry, later we will have to do
+    // something more interesting
     jit_block *m_entry_block = blocks.front ();
     for (jit_block::iterator iter = m_entry_block->begin ();
-         iter != m_entry_block->end (); ++iter)
+         iter != m_entry_block->end ();
+         ++iter)
       if (jit_extract_argument *extract
           = dynamic_cast<jit_extract_argument *> (*iter))
         m_argument_vec.push_back (std::make_pair (extract->name (), true));
@@ -1343,7 +1354,8 @@ void
         m_prelude = llvm::BasicBlock::Create (context, "prelude", m_function);
         builder.SetInsertPoint (m_prelude);
 
-        // The jitted function will have only one function argument, of octave_base_value** type
+        // The jitted function will have only one function argument, of
+        // octave_base_value** type
         llvm::Value *arg = &*(m_function->arg_begin ());
 
         for (size_t i = 0; i < m_argument_vec.size (); ++i)
@@ -1379,7 +1391,7 @@ void
     assert (ret);
 
     m_creating = jit_function (&module, jit_convention::internal,
-                             "foobar", ret->result_type (), args);
+                               "foobar", ret->result_type (), args);
     m_function = m_creating.to_llvm ();
 
     try
@@ -1662,7 +1674,8 @@ void
     const jit_function& ol = me.overload ();
 
     jit_magic_end::context ctx = me.resolve_context ();
-    llvm::Value *ret = ol.call (builder, ctx.m_value, ctx.m_index, ctx.m_count);
+    llvm::Value *ret = ol.call (builder, ctx.m_value, ctx.m_index,
+                                ctx.m_count);
     me.stash_llvm (ret);
   }
 
@@ -1744,7 +1757,8 @@ void
     entry_block ().create_dom_tree ();
 
     // insert phi nodes where needed, this is done on a per variable basis
-    for (variable_map::const_iterator iter = m_vmap.begin (); iter != m_vmap.end ();
+    for (variable_map::const_iterator iter = m_vmap.begin ();
+         iter != m_vmap.end ();
          ++iter)
       {
         jit_block::df_set visited, added_phi;
@@ -1765,7 +1779,7 @@ void
                 if (! added_phi.count (dblock))
                   {
                     jit_phi *phi = m_factory.create<jit_phi> (iter->second,
-                                                            dblock->use_count ());
+                                                          dblock->use_count ());
                     dblock->prepend (phi);
                     added_phi.insert (dblock);
                   }
@@ -1789,7 +1803,8 @@ void
       return;
 
     // replace variables with their current SSA value
-    for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
+    for (jit_block::iterator iter = ablock.begin ();
+         iter != ablock.end ();
          ++iter)
       {
         jit_instruction *instr = *iter;
@@ -1813,7 +1828,8 @@ void
               phi->add_incoming (&ablock, var->top ());
             else
               {
-                // temporaries may have extranious phi nodes which can be removed
+                // temporaries may have extraneous phi nodes which can be
+                // removed
                 assert (! phi->use_count ());
                 assert (var->name ().size () && var->name ()[0] == '#');
                 phi->remove ();
@@ -1831,7 +1847,8 @@ void
   jit_infer::place_releases (void)
   {
     std::set<jit_value *> temporaries;
-    for (jit_block_list::iterator iter = m_blocks.begin (); iter != m_blocks.end ();
+    for (jit_block_list::iterator iter = m_blocks.begin ();
+         iter != m_blocks.end ();
          ++iter)
       {
         jit_block& ablock = **iter;
@@ -1915,8 +1932,8 @@ void
         jit_use *use = phi->first_use ();
         if (phi->use_count () == 1 && isa<jit_assign> (use->user ()))
           {
-            // instead of releasing on assign, release on all incoming branches,
-            // this can get rid of casts inside loops
+            // instead of releasing on assign, release on all incoming
+            // branches, this can get rid of casts inside loops
             for (size_t i = 0; i < phi->argument_count (); ++i)
               {
                 jit_value *arg = phi->argument (i);
@@ -1924,7 +1941,8 @@ void
                   continue;
 
                 jit_block *inc = phi->incoming (i);
-                jit_block *split = inc->maybe_split (m_factory, m_blocks, ablock);
+                jit_block *split = inc->maybe_split (m_factory, m_blocks,
+                                                     ablock);
                 jit_terminator *term = split->terminator ();
                 jit_call *release
                   = m_factory.create<jit_call> (jit_typeinfo::release, arg);
@@ -1941,7 +1959,8 @@ void
   void
   jit_infer::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
   {
-    for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
+    for (jit_block::iterator iter = ablock.begin ();
+         iter != ablock.end ();
          ++iter)
       {
         jit_instruction *instr = *iter;
@@ -1979,10 +1998,12 @@ void
 
     // FIXME: If we support try/catch or unwind_protect final_block
     //        may not be the destination
-    jit_block *split = ablock.maybe_split (m_factory, m_blocks, final_block ());
+    jit_block *split = ablock.maybe_split (m_factory, m_blocks,
+                                           final_block ());
     jit_terminator *term = split->terminator ();
     for (std::set<jit_value *>::const_iterator iter = temp.begin ();
-         iter != temp.end (); ++iter)
+         iter != temp.end ();
+         ++iter)
       {
         jit_value *value = *iter;
         jit_call *release
@@ -1995,7 +2016,8 @@ void
   void
   jit_infer::simplify_phi (void)
   {
-    for (jit_block_list::iterator biter = m_blocks.begin (); biter != m_blocks.end ();
+    for (jit_block_list::iterator biter = m_blocks.begin ();
+         biter != m_blocks.end ();
          ++biter)
       {
         jit_block &ablock = **biter;
@@ -2042,8 +2064,8 @@ void
     jit_memory_manager (const jit_memory_manager&) = delete;
     void operator= (const jit_memory_manager&) = delete;
   public:
-    jit_memory_manager () {}
-    virtual ~jit_memory_manager () {}
+    jit_memory_manager () { }
+    virtual ~jit_memory_manager () { }
 
     // The Kaleidoscope example in LLVM 3.8 indicates that
     // getPointerToNamedFunction has to be overloaded, but actually it is
@@ -2053,7 +2075,8 @@ void
     // Is it still useful to overload getPointerToNamedFunction to support
     // some older version of LLVM?  Are there others virtual functions
     // that must be overloaded?
-    virtual void* getPointerToNamedFunction (const std::string& name, bool abort_on_failure);
+    virtual void* getPointerToNamedFunction (const std::string& name, bool
+                                             abort_on_failure);
   };
 
   void*
@@ -2061,7 +2084,8 @@ void
                                                  bool abort_on_failure)
   {
     // Try the standard symbol resolution first, but ask it not to abort
-    void *pfn = llvm::RTDyldMemoryManager::getPointerToNamedFunction (name, false);
+    void *pfn = llvm::RTDyldMemoryManager::getPointerToNamedFunction (name,
+                                                                      false);
     if (pfn)
       return pfn;
 
@@ -2129,7 +2153,8 @@ void
       .setMCJITMemoryManager(llvm::make_unique<jit_memory_manager> ())
       .create ();
 
-    // Note: in some versions of LLVM, we should call .setUseMCJIT (true) before .create () ?
+    // Note: in some versions of LLVM, we should call .setUseMCJIT (true)
+    // before .create () ?
     // FIXME: autconf this
 
     if (e == nullptr)
@@ -2361,7 +2386,8 @@ void
                                    name, m_module);
   }
 
-  // Create or insert an LLVM Function declaration for an intrinsic and return it
+  // Create or insert an LLVM Function declaration for an intrinsic and return
+  // it
   llvm::Function*
   jit_module::get_intrinsic_declaration (size_t id,
                                          std::vector<llvm::Type*> types) const
@@ -2531,8 +2557,12 @@ void
         for (size_t i = 0; i < nargs; ++i)
           {
             llvm::Value *arg;
-            // arg = builder.CreateConstInBoundsGEP1_32 (wrapper_arg, i);                  // LLVM <= 3.6
-            arg = builder.CreateConstInBoundsGEP1_32 (any_t->to_llvm (), wrapper_arg, i);  // LLVM >= 3.7
+            // LLVM <= 3.6
+            // arg = builder.CreateConstInBoundsGEP1_32 (wrapper_arg, i);
+            / / LLVM >= 3.7
+            arg = builder.CreateConstInBoundsGEP1_32 (any_t->to_llvm (),
+                                                      wrapper_arg, i);
+        
             arg = builder.CreateLoad (arg);
 
             jit_type *arg_type = m_argument_types[i];
@@ -2544,7 +2574,8 @@ void
         if (raw_fn.result ())
           {
             jit_type *raw_result_t = raw_fn.result ();
-            const jit_function& cast = jit_typeinfo::cast (any_t, raw_result_t);
+            const jit_function& cast = jit_typeinfo::cast (any_t,
+                                                           raw_result_t);
             result = cast.call (builder, result);
           }
         else
@@ -2605,7 +2636,8 @@ void
     if (! m_function)
       return false;
 
-    // FIXME: figure out a way to delete ov_args so we avoid duplicating refcount
+    // FIXME: figure out a way to delete ov_args so we avoid duplicating
+    // refcount
     size_t nargs = ov_args.length ();
     std::vector<octave_base_value *> args (nargs);
     for (size_t i = 0; i < nargs; ++i)
@@ -2657,7 +2689,8 @@ void
     compile (tee, jit_typeinfo::type_of (for_bounds));
   }
 
-  jit_info::jit_info (tree_simple_for_command& tee, const octave_value& for_bounds)
+  jit_info::jit_info (tree_simple_for_command& tee,
+                      const octave_value& for_bounds)
     : m_llvm_function_name (tree_jit::generate_unique_forloop_name ()),
       m_function (nullptr)
   {

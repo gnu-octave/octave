@@ -97,7 +97,8 @@ namespace octave
              main_win (), SLOT (open_file (const QString&)));
 
     connect (this, SIGNAL (displayed_directory_changed (const QString&)),
-             main_win (), SLOT (set_current_working_directory (const QString&)));
+             main_win (),
+             SLOT (set_current_working_directory (const QString&)));
 
     // Create a toolbar
     m_navigation_tool_bar = new QToolBar ("", container);
@@ -833,11 +834,11 @@ namespace octave
 
   void files_dock_widget::popdownmenu_search_dir (bool)
   {
-    QString dir = QFileDialog::getExistingDirectory
-      (this, tr ("Set directory of file browser"),
-       m_file_system_model->rootPath (),
-       QFileDialog::ShowDirsOnly
-       | QFileDialog::DontUseNativeDialog);
+    QString dir = QFileDialog::getExistingDirectory (this,
+                     tr ("Set directory of file browser"),
+                     m_file_system_model->rootPath (),
+                     QFileDialog::ShowDirsOnly
+                     | QFileDialog::DontUseNativeDialog);
     set_current_directory (dir);
   }
 
@@ -862,7 +863,8 @@ namespace octave
 
     QString name = QInputDialog::getText (this, tr ("Create File"),
                                           tr ("Create file in\n","String ends with \\n!") + parent_dir,
-                                          QLineEdit::Normal, tr ("New File.txt"), &ok);
+                                          QLineEdit::Normal,
+                                          tr ("New File.txt"), &ok);
     if (ok && name.length () > 0)
       {
         name = parent_dir + '/' + name;
@@ -879,7 +881,8 @@ namespace octave
 
     QString name = QInputDialog::getText (this, tr ("Create Directory"),
                                           tr ("Create folder in\n","String ends with \\n!") + parent_dir,
-                                          QLineEdit::Normal, tr ("New Directory"), &ok);
+                                          QLineEdit::Normal,
+                                          tr ("New Directory"), &ok);
     if (ok && name.length () > 0)
       {
         QDir dir (parent_dir);

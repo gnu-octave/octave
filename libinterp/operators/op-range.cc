@@ -108,7 +108,7 @@ install_range_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_sub, octave_scalar, octave_range, subsr);
   INSTALL_BINOP_TI (ti, op_mul, octave_range, octave_scalar, mulrs);
   INSTALL_BINOP_TI (ti, op_mul, octave_scalar, octave_range, mulsr);
-  
+
   INSTALL_BINOP_TI (ti, op_el_mul, octave_range, octave_scalar, mulrs);
   INSTALL_BINOP_TI (ti, op_el_mul, octave_scalar, octave_range, mulsr);
   INSTALL_BINOP_TI (ti, op_el_pow, octave_scalar, octave_range, el_powsr);

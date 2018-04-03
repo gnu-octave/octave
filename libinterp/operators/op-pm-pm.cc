@@ -85,5 +85,6 @@ install_pm_pm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_pow, octave_perm_matrix, octave_scalar, pow);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_perm_matrix, octave_matrix, octave_matrix);
-  INSTALL_WIDENOP_TI (ti, octave_perm_matrix, octave_matrix, perm_matrix_to_matrix);
+  INSTALL_WIDENOP_TI (ti, octave_perm_matrix, octave_matrix,
+                      perm_matrix_to_matrix);
 }

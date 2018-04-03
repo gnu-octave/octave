@@ -82,7 +82,8 @@ get_valid_lexer_styles (QsciLexer *lexer, int styles[])
 }
 
 static void
-read_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer, QSettings *settings)
+read_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer,
+                     QSettings *settings)
 {
   lexer->readSettings (*settings);
   int styles[MaxLexerStyles];  // array for saving valid styles
@@ -175,10 +176,11 @@ read_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer, QSettings *setti
 }
 
 static void
-write_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer, QSettings *settings)
+write_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer,
+                      QSettings *settings)
 {
   QWidget *tab = ui->tabs_editor_lexers->
-    findChild <QWidget *> (QString (lexer->language ()) + "_styles");
+                 findChild <QWidget *> (QString (lexer->language ()) + "_styles");
   int styles[MaxLexerStyles];  // array for saving valid styles
                                // (enum is not continuous)
   int max_style = get_valid_lexer_styles (lexer, styles);
@@ -252,7 +254,8 @@ write_lexer_settings (Ui::settings_dialog *ui, QsciLexer *lexer, QSettings *sett
 
   lexer->writeSettings (*settings);
 
-  settings->setValue ("settings/last_editor_styles_tab", ui->tabs_editor_lexers->currentIndex ());
+  settings->setValue ("settings/last_editor_styles_tab",
+                      ui->tabs_editor_lexers->currentIndex ());
   settings->sync ();
 }
 

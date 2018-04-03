@@ -480,7 +480,8 @@ namespace octave
   }
 
   void
-  variable_editor_view::add_edit_actions (QMenu *menu, const QString& qualifier_string)
+  variable_editor_view::add_edit_actions (QMenu *menu,
+                                          const QString& qualifier_string)
   {
     menu->addAction (resource_manager::icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
@@ -1036,7 +1037,8 @@ namespace octave
   // Add an action to a menu or the widget itself.
 
   QAction*
-  variable_editor::add_action (QMenu *menu, const QIcon& icon, const QString& text,
+  variable_editor::add_action (QMenu *menu, const QIcon& icon,
+                               const QString& text,
                                const char *member)
   {
     QAction *a;
@@ -1403,19 +1405,19 @@ namespace octave
 
     if (m_table_colors.length () > 0)
       m_stylesheet += "QTableView::item{ foreground-color: "
-        + m_table_colors[0].name () +" }";
+                      + m_table_colors[0].name () +" }";
 
     if (m_table_colors.length () > 1)
       m_stylesheet += "QTableView::item{ background-color: "
-        + m_table_colors[1].name () +" }";
+                      + m_table_colors[1].name () +" }";
 
     if (m_table_colors.length () > 2)
       m_stylesheet += "QTableView::item{ selection-color: "
-        + m_table_colors[2].name () +" }";
+                      + m_table_colors[2].name () +" }";
 
     if (m_table_colors.length () > 3)
       m_stylesheet += "QTableView::item:selected{ background-color: "
-        + m_table_colors[3].name () +" }";
+                      + m_table_colors[3].name () +" }";
 
     if (m_table_colors.length () > 4 && m_alternate_rows)
       {

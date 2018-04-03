@@ -1481,7 +1481,8 @@ install_base_type_conversions (octave::type_info& ti)
 {
   INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_scalar, octave_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_matrix, octave_matrix);
-  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_complex, octave_complex_matrix);
+  INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_complex,
+                         octave_complex_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_complex_matrix,
                          octave_complex_matrix);
   INSTALL_ASSIGNCONV_TI (ti, octave_base_value, octave_range, octave_matrix);

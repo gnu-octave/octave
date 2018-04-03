@@ -914,7 +914,7 @@ namespace QtHandles
                                              tr ("Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
                                              nullptr,
                                              QFileDialog::DontUseNativeDialog);
-    }
+      }
 
     if (! file.isEmpty ())
       {

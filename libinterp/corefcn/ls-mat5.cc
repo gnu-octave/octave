@@ -1113,6 +1113,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         }
       }
       // Fall-through
+
     case MAT_FILE_STRUCT_CLASS:
       {
         octave_map m (dims);

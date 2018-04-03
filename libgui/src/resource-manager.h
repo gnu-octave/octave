@@ -38,7 +38,7 @@ namespace octave
 
   protected:
 
-    public:
+  public:
 
     resource_manager (void);
 

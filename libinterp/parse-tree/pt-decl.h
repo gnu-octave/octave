@@ -49,11 +49,11 @@ namespace octave
   public:
 
     enum decl_type
-      {
-        unknown,
-        global,
-        persistent
-      };
+    {
+      unknown,
+      global,
+      persistent
+    };
 
     tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
       : type (unknown), m_id (i), m_expr (e) { }
@@ -160,12 +160,12 @@ namespace octave
       std::list<std::string> retval;
 
       for (const tree_decl_elt *elt : *this)
-      {
-        std::string nm = elt->name ();
+        {
+          std::string nm = elt->name ();
 
-        if (! nm.empty ())
-          retval.push_back (nm);
-      }
+          if (! nm.empty ())
+            retval.push_back (nm);
+        }
 
       return retval;
     }

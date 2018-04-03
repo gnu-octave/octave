@@ -455,16 +455,16 @@ namespace octave
                                        &bytes_all_libs);
       }
 
-     if (got_libs)
+    if (got_libs)
       {
         for (size_t i = 0; i < (bytes_all_libs / size_lib); i++)
           {
-              // Check for function in library.
-              function = reinterpret_cast<void *>
-                           (GetProcAddress (h_libs[i], sym_name.c_str ()));
+            // Check for function in library.
+            function = reinterpret_cast<void *>
+                       (GetProcAddress (h_libs[i], sym_name.c_str ()));
 
-              if (function)
-                break;
+            if (function)
+              break;
           }
       }
 

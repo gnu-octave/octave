@@ -65,10 +65,10 @@ namespace octave
     static bool instance_ok (void);
 
     static void *
-      create_plan (int dir, const int rank, const dim_vector& dims,
-                   octave_idx_type howmany, octave_idx_type stride,
-                   octave_idx_type dist, const Complex *in,
-                   Complex *out)
+    create_plan (int dir, const int rank, const dim_vector& dims,
+                 octave_idx_type howmany, octave_idx_type stride,
+                 octave_idx_type dist, const Complex *in,
+                 Complex *out)
     {
       return instance_ok ()
         ? instance->do_create_plan (dir, rank, dims, howmany, stride,
@@ -77,9 +77,9 @@ namespace octave
     }
 
     static void *
-      create_plan (const int rank, const dim_vector& dims,
-                   octave_idx_type howmany, octave_idx_type stride,
-                   octave_idx_type dist, const double *in, Complex *out)
+    create_plan (const int rank, const dim_vector& dims,
+                 octave_idx_type howmany, octave_idx_type stride,
+                 octave_idx_type dist, const double *in, Complex *out)
     {
       return instance_ok ()
         ? instance->do_create_plan (rank, dims, howmany, stride, dist,
@@ -211,10 +211,10 @@ namespace octave
     static bool instance_ok (void);
 
     static void *
-      create_plan (int dir, const int rank, const dim_vector& dims,
-                   octave_idx_type howmany, octave_idx_type stride,
-                   octave_idx_type dist, const FloatComplex *in,
-                   FloatComplex *out)
+    create_plan (int dir, const int rank, const dim_vector& dims,
+                 octave_idx_type howmany, octave_idx_type stride,
+                 octave_idx_type dist, const FloatComplex *in,
+                 FloatComplex *out)
     {
       return instance_ok ()
         ? instance->do_create_plan (dir, rank, dims, howmany, stride,
@@ -223,9 +223,9 @@ namespace octave
     }
 
     static void *
-      create_plan (const int rank, const dim_vector& dims,
-                   octave_idx_type howmany, octave_idx_type stride,
-                   octave_idx_type dist, const float *in, FloatComplex *out)
+    create_plan (const int rank, const dim_vector& dims,
+                 octave_idx_type howmany, octave_idx_type stride,
+                 octave_idx_type dist, const float *in, FloatComplex *out)
     {
       return instance_ok ()
         ? instance->do_create_plan (rank, dims, howmany, stride, dist,

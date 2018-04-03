@@ -946,9 +946,8 @@ namespace octave
 
     // The big loop.
 
-    lexer *lxr = (application::interactive ()
-                          ? new lexer ()
-                          : new lexer (stdin));
+    lexer *lxr = (application::interactive () ? new lexer ()
+                                              : new lexer (stdin));
 
     parser parser (*lxr);
 

@@ -92,5 +92,6 @@ install_dm_dm_ops (octave::type_info& ti)
   INSTALL_BINOP_TI (ti, op_ldiv, octave_diag_matrix, octave_diag_matrix, ldiv);
 
   INSTALL_ASSIGNCONV_TI (ti, octave_diag_matrix, octave_matrix, octave_matrix);
-  INSTALL_WIDENOP_TI (ti, octave_diag_matrix, octave_matrix, diag_matrix_to_matrix);
+  INSTALL_WIDENOP_TI (ti, octave_diag_matrix, octave_matrix,
+                      diag_matrix_to_matrix);
 }

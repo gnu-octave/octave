@@ -248,7 +248,7 @@ generate_struct_completions (const std::string& text,
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("generate_struct_completions");
 
-        if (is_variable (symtab, base_name))
+      if (is_variable (symtab, base_name))
         {
           int parse_status;
 
@@ -2708,7 +2708,8 @@ bind_ans (const octave_value& val, bool print)
 void
 clear_mex_functions (void)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("clear_mex_functions");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("clear_mex_functions");
 
   symtab.clear_mex_functions ();
 }
@@ -2753,7 +2754,8 @@ lookup_function_handle (const std::string& nm)
 octave_value
 get_global_value (const std::string& nm, bool silent)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_global_value");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("get_global_value");
 
   octave_value val = symtab.global_varval (nm);
 
@@ -2766,7 +2768,8 @@ get_global_value (const std::string& nm, bool silent)
 void
 set_global_value (const std::string& nm, const octave_value& val)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_global_value");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("set_global_value");
 
   symtab.global_assign (nm, val);
 }
@@ -2774,7 +2777,8 @@ set_global_value (const std::string& nm, const octave_value& val)
 octave_value
 get_top_level_value (const std::string& nm, bool silent)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("get_top_level_value");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("get_top_level_value");
 
   octave_value val = symtab.top_level_varval (nm);
 
@@ -2787,7 +2791,8 @@ get_top_level_value (const std::string& nm, bool silent)
 void
 set_top_level_value (const std::string& nm, const octave_value& val)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("set_top_level_value");
+  octave::symbol_table& symtab =
+    octave::__get_symbol_table__ ("set_top_level_value");
 
   symtab.top_level_assign (nm, val);
 }

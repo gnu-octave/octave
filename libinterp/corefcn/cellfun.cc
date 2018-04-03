@@ -219,7 +219,8 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 }
 
 static void
-get_mapper_fun_options (octave::symbol_table& symtab, const octave_value_list& args,
+get_mapper_fun_options (octave::symbol_table& symtab,
+                        const octave_value_list& args,
                         int& nargin, bool& uniform_output,
                         octave_value& error_handler)
 {
@@ -499,7 +500,7 @@ v = cellfun (@@det, a); # faster
       }
   }
 
- nevermind:
+nevermind:
 
   // Extract cell arguments.
 
@@ -2204,8 +2205,8 @@ do_cellslices_nda (const NDA& array,
   octave_idx_type n = lb.numel ();
   Cell retval (1, n);
   if (array.isvector () && (dim == -1
-                             || (dim == 0 && array.columns () == 1)
-                             || (dim == 1 && array.rows () == 1)))
+                            || (dim == 0 && array.columns () == 1)
+                            || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n; i++)
         retval(i) = array.index (idx_vector (lb(i) - 1, ub(i)));

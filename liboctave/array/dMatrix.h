@@ -207,7 +207,8 @@ private:
 public:
   // Generic interface to solver with no probing of type
   Matrix solve (MatrixType& mattype, const Matrix& b) const;
-  Matrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info) const;
+  Matrix solve (MatrixType& mattype, const Matrix& b,
+                octave_idx_type& info) const;
   Matrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                 double& rcon) const;
   Matrix solve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,

@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QThread>
 
 #include "oct-mutex.h"
+#include "utils.h"
 
 #include "Object.h"
 #include "ObjectProxy.h"
@@ -134,11 +135,11 @@ namespace QtHandles
     if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                      Q_RETURN_ARG (uint8NDArray, retval)))
       {
-        QThread::msleep (100);
+        octave_sleep (0.1);
         if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                          Q_RETURN_ARG (uint8NDArray, retval)))
           {
-            QThread::msleep (200);
+            octave_sleep (0.2);
             if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                              Q_RETURN_ARG (uint8NDArray, retval)))
               error ("getframe: unable to retrieve figure pixels");

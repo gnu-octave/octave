@@ -552,8 +552,8 @@ permutation information.
 %! assert (P'*L*U*Q', B);
 
 %!error lu ()
-%!warning <function may fail>
-%! [l,u] = lu (sparse (magic (3)));
+%!testif HAVE_UMFPACK
+%! fail ("[l,u] = lu (sparse (magic (3)))", "warning", "function may fail");
 %!error <can not define pivoting threshold> lu ([1, 2; 3, 4], 2)
 
 */

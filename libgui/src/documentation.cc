@@ -87,10 +87,9 @@ namespace octave
                                   "documentation viewer. Only help texts in\n"
                                   "the Console Widget will be available."));
         if (m_help_engine)
-          {
-            delete m_help_engine;
-            m_help_engine = 0;
-          }
+          delete m_help_engine;
+        m_help_engine = 0;
+        return;
       }
 
     // The browser
@@ -188,11 +187,12 @@ namespace octave
   documentation::~documentation (void)
   {
     if (m_help_engine)
-      {
-        delete m_help_engine;
+      delete m_help_engine;
 
-        // Cleanup temporary file and directory
-        QFile file (m_collection);
+    // Cleanup temporary file and directory
+    QFile file (m_collection);
+    if (file.exists ())
+      {
         QFileInfo finfo (file);
         QString bname = finfo.fileName ();
         QDir dir = finfo.absoluteDir ();

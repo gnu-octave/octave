@@ -117,7 +117,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   ## Silence deprecation warnings
   warning ("off", "Octave:deprecated-property", "local");
-  
+
   ## create object
   if (strcmp (s.type, "root"))
     h = 0;

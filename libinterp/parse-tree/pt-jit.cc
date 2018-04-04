@@ -2562,7 +2562,7 @@ namespace octave
             / / LLVM >= 3.7
             arg = builder.CreateConstInBoundsGEP1_32 (any_t->to_llvm (),
                                                       wrapper_arg, i);
-        
+
             arg = builder.CreateLoad (arg);
 
             jit_type *arg_type = m_argument_types[i];

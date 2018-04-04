@@ -3507,7 +3507,6 @@ init_format_state (void)
   bank_format = false;
   hex_format = 0;
   bit_format = 0;
-  Vcompact_format = false;
   print_e = false;
   print_big_e = false;
   print_g = false;
@@ -3751,6 +3750,7 @@ set_format_style (int argc, const string_vector& argv)
       init_format_state ();
       set_output_prec (5);
       format = "short";
+      Vcompact_format = false;
     }
 
   format_string = format;
@@ -3938,6 +3938,9 @@ format and format spacing.
     }
   else
     {
+      if (args.length () > 0)
+        warning ("format: cannot query and set format at the same time, ignoring set operation");
+
       if (nargout >= 2)
         retval(1) = (Vcompact_format ? "compact" : "loose");
 
@@ -3971,6 +3974,25 @@ format and format spacing.
 %!   format (old_fmt);
 %!   format (old_spacing);
 %! end_unwind_protect
+
+%!test <*53427>
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format;          # reset format to short and loose
+%!   format compact;  # set compact format
+%!   format long;     # set long format
+%!   [fmt, spacing] = format ();
+%!   assert (fmt, "long");
+%!   assert (spacing, "compact");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
+
+## Test input validation
+%!test
+%! fail ("fmt = format ('long')", "warning", "cannot query and set format");
+
 */
 
 DEFUN (fixed_point_format, args, nargout,

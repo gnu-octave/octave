@@ -53,7 +53,7 @@ while ($_ = $octave_output[$idx++])
 # Sanity check that Octave script worked
 if ($#all_functions != $#where)
 {
-  die "Unequal number of functions and locations.  Parsing failed\n"; 
+  die "Unequal number of functions and locations.  Parsing failed\n";
 }
 
 # Second, remove functions based on directory location

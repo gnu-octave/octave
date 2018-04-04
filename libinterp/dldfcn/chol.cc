@@ -796,6 +796,8 @@ DEFUN_DLD (cholinsert, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})
 @deftypefnx {} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})
+Update a Cholesky factorization given a row or column to insert in the original factored matrix.
+
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
 triangular, return the Cholesky@tie{}factorization of
@@ -1048,6 +1050,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 DEFUN_DLD (choldelete, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{R1} =} choldelete (@var{R}, @var{j})
+Update a Cholesky factorization given a row or column to delete from the original factored matrix.
+
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
 triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
@@ -1170,6 +1174,8 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 DEFUN_DLD (cholshift, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})
+Update a Cholesky factorization given a range of columns to shift in the original factored matrix.
+
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
 triangular, return the Cholesky@tie{}factorization of

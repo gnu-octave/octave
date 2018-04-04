@@ -1711,6 +1711,12 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     if test $build_qt_gui = yes; then
       have_qt_version=$ver
       break
+    elif test -n "$QT_MODULES_AVAILABLE"; then
+      ## If some modules were found for $ver, then warn about possible
+      ## incomplete or broken Qt installation instead of checking for
+      ## next version in the list.
+      warn_qt_modules="Your installation of Qt version $ver appears incomplete or broken in some way.  Fix that or use --with-qt=VER to use another version."
+      break
     fi
   done
 
@@ -1727,6 +1733,9 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       BUILD_QT_SUMMARY_MSG="no (missing:$QT_MODULES_MISSING)"
     else
       BUILD_QT_SUMMARY_MSG="no"
+    fi
+    if test -n "$warn_qt_modules"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_modules])
     fi
     if test -n "$warn_qt_libraries"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
@@ -1917,20 +1926,23 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     ;;
   esac
 
+  ## Use this check to get info in the log file.
   PKG_CHECK_MODULES(QT, [$QT_MODULES],
     [],
     [build_qt_gui=no
      warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
 
+  ## Check the modules again individually to get lists of modules that
+  ## are available and/or missing
+  QT_MODULES_AVAILABLE=
   QT_MODULES_MISSING=
-  if test $build_qt_gui = no; then
-    ## Get list of modules that are missing
-    for pkg in $QT_MODULES; do
-      if ! $PKG_CONFIG --exists $pkg; then
-        QT_MODULES_MISSING="$QT_MODULES_MISSING $pkg"
-      fi
-    done
-  fi
+  for qt_mod in $QT_MODULES; do
+    if $PKG_CONFIG --exists $qt_mod; then
+      QT_MODULES_AVAILABLE="$QT_MODULES_AVAILABLE $qt_mod"
+    else
+      QT_MODULES_MISSING="$QT_MODULES_MISSING $qt_mod"
+    fi
+  done
 
   if test $build_qt_gui = yes; then
     ## Retrieve Qt compilation and linker flags

@@ -22,11 +22,11 @@
 ## @deftypefnx {} {[@var{t}, @var{y}, @var{te}, @var{ye}, @var{ie}] =} ode15i (@dots{})
 ## @deftypefnx {} {@var{solution} =} ode15i (@dots{})
 ## @deftypefnx {} {} ode15i (@dots{})
-##
 ## Solve a set of fully-implicit Ordinary Differential Equations (ODEs) or
-## Differential Algebraic Equations (DAEs) of index 1, with a variable step,
-## variable order BDF (Backward Differentiation Formula) method that ranges
-## from order 1 to 5.
+## index 1 Differential Algebraic Equations (DAEs).
+##
+## @code{ode15i} uses a variable step, variable order BDF (Backward
+## Differentiation Formula) method that ranges from order 1 to 5.
 ##
 ## @var{fun} is a function handle, inline function, or string containing the
 ## name of the function that defines the ODE: @code{0 = f(t,y,yp)}.  The

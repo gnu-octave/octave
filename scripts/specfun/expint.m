@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} expint (@var{x})
-## Compute the exponential integral:
+## Compute the exponential integral.
+##
+## The exponential integral is defined as:
 ##
 ## @tex
 ## $$

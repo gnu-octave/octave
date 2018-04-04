@@ -99,7 +99,10 @@ DEFUN (gsvd, args, nargout,
 @deftypefn  {} {@var{S} =} gsvd (@var{A}, @var{B})
 @deftypefnx {} {[@var{U}, @var{V}, @var{X}, @var{C}, @var{S}] =} gsvd (@var{A}, @var{B})
 @deftypefnx {} {[@var{U}, @var{V}, @var{X}, @var{C}, @var{S}] =} gsvd (@var{A}, @var{B}, 0)
-Compute the generalized singular value decomposition of (@var{A}, @var{B}):
+Compute the generalized singular value decomposition of (@var{A}, @var{B}).
+
+The generalized singular value decomposition is defined by the following
+relations:
 
 @tex
 $$ A = U C X^\dagger $$

@@ -1789,15 +1789,17 @@ DEFUN (octave_core_file_limit, args, nargout,
 @deftypefn  {} {@var{val} =} octave_core_file_limit ()
 @deftypefnx {} {@var{old_val} =} octave_core_file_limit (@var{new_val})
 @deftypefnx {} {} octave_core_file_limit (@var{new_val}, "local")
-Query or set the internal variable that specifies the maximum amount
-of memory (in kilobytes) of the top-level workspace that Octave will
-attempt to save when writing data to the crash dump file (the name of
-the file is specified by @var{octave_core_file_name}).
+Query or set the internal variable that specifies the maximum amount of memory
+that Octave will save when writing a crash dump file.
 
-If @var{octave_core_file_options} flags specify a binary format,
-then @var{octave_core_file_limit} will be approximately the maximum
-size of the file.  If a text file format is used, then the file could
-be much larger than the limit.  The default value is -1 (unlimited)
+The limit is measured in kilobytes and is applied to the top-level workspace.
+The name of the crash dump file is is specified by
+@var{octave_core_file_name}).
+
+If @var{octave_core_file_options} flags specify a binary format, then
+@var{octave_core_file_limit} will be approximately the maximum size of the
+file.  If a text file format is used, then the file could be much larger than
+the limit.  The default value is -1 (unlimited).
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

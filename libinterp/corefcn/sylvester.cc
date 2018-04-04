@@ -34,7 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN (sylvester, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{X} =} sylvester (@var{A}, @var{B}, @var{C})
-Solve the Sylvester equation
+Solve the Sylvester equation.
+
+The Sylvester equation is defined as:
 @tex
 $$
  A X + X B = C
@@ -47,7 +49,7 @@ A X + X B = C
 @end example
 
 @end ifnottex
-using standard @sc{lapack} subroutines.
+The solution is computed using standard @sc{lapack} subroutines.
 
 For example:
 

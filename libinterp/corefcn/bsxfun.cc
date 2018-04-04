@@ -321,19 +321,18 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 DEFMETHOD (bsxfun, interp,args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} bsxfun (@var{f}, @var{A}, @var{B})
-The binary singleton expansion function performs broadcasting,
-that is, it applies a binary function @var{f} element-by-element to two
-array arguments @var{A} and @var{B}, and expands as necessary
-singleton dimensions in either input argument.
+Apply a binary function @var{f} element-by-element to two array arguments
+@var{A} and @var{B}, expanding singleton dimensions in either input argument as
+necessary.
 
 @var{f} is a function handle, inline function, or string containing the name
-of the function to evaluate.  The function @var{f} must be capable of
-accepting two column-vector arguments of equal length, or one column vector
-argument and a scalar.
+of the function to evaluate.  The function @var{f} must be capable of accepting
+two column-vector arguments of equal length, or one column vector argument and
+a scalar.
 
 The dimensions of @var{A} and @var{B} must be equal or singleton.  The
-singleton dimensions of the arrays will be expanded to the same
-dimensionality as the other array.
+singleton dimensions of the arrays will be expanded to the same dimensionality
+as the other array.
 @seealso{arrayfun, cellfun}
 @end deftypefn */)
 {

@@ -134,7 +134,10 @@ DEFUN (qz, args, nargout,
 @deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] =} qz (@var{A}, @var{B})
 @deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}] =} qz (@var{A}, @var{B}, @var{opt})
 @deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}, @var{lambda}] =} qz (@var{A}, @var{B}, @var{opt})
-QZ@tie{}decomposition of the generalized eigenvalue problem
+Compute the QZ@tie{}decomposition of a generalized eigenvalue problem.
+
+The generalized eigenvalue problem is defined as
+
 @tex
 $$A x = \lambda B x$$
 @end tex

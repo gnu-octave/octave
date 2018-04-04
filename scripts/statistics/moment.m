@@ -22,7 +22,9 @@
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
 ## @deftypefnx {} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
-## Compute the @var{p}-th central moment of the vector @var{x}:
+## Compute the @var{p}-th central moment of the vector @var{x}.
+##
+## The @var{p}-th central moment of @var{x} is defined as:
 ##
 ## @tex
 ## $$

@@ -157,7 +157,9 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 DEFMETHOD (daspk, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
-Solve the set of differential-algebraic equations
+Solve a set of differential-algebraic equations.
+
+@code{daspk} solves the set of equations
 @tex
 $$ 0 = f (x, \dot{x}, t) $$
 with

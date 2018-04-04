@@ -1047,10 +1047,17 @@ DEFUNX ("errno", Ferrno, args, ,
 @deftypefn  {} {@var{err} =} errno ()
 @deftypefnx {} {@var{err} =} errno (@var{val})
 @deftypefnx {} {@var{err} =} errno (@var{name})
-Return the current value of the system-dependent variable errno,
-set its value to @var{val} and return the previous value, or return
-the named error code given @var{name} as a character string, or -1
-if @var{name} is not found.
+Query or set the system-dependent variable errno.
+
+When called with no inputs, return the current value of errno.
+
+When called with a numeric input @var{val}, set the current value of errno
+to the specified value.  The previous value of errno is returned as @var{err}.
+
+When called with a character string @var{name}, return the numeric value of
+errno which corresponds to the specified error code.  If @var{name} is not
+a recognized error code then -1 is returned.
+
 @seealso{errno_list}
 @end deftypefn */)
 {

@@ -196,7 +196,9 @@ DEFMETHOD (dasrt, interp, args, nargout,
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t})
 @deftypefnx {} {@dots{} =} dasrt (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
-Solve the set of differential-algebraic equations
+Solve a set of differential-algebraic equations.
+
+@code{dasrt} solves the set of equations
 @tex
 $$ 0 = f (x, \dot{x}, t) $$
 with

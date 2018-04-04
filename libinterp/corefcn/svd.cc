@@ -72,7 +72,10 @@ DEFUN (svd, args, nargout,
 @deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, "econ")
 @deftypefnx {} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, 0)
 @cindex singular value decomposition
-Compute the singular value decomposition of @var{A}
+Compute the singular value decomposition of @var{A}.
+
+The singular value decomposition is defined by the relation
+
 @tex
 $$
  A = U S V^{\dagger}

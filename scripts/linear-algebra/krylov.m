@@ -18,14 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {[@var{u}, @var{h}, @var{nu}] =} krylov (@var{A}, @var{V}, @var{k}, @var{eps1}, @var{pflg})
-## Construct an orthogonal basis @var{u} of block Krylov subspace
+## Construct an orthogonal basis @var{u} of a block Krylov subspace.
+##
+## The block Krylov subspace has the following form:
 ##
 ## @example
 ## [v a*v a^2*v @dots{} a^(k+1)*v]
 ## @end example
 ##
 ## @noindent
-## using Householder reflections to guard against loss of orthogonality.
+## The construction is made with Householder reflections to guard against loss
+## of orthogonality.
 ##
 ## If @var{V} is a vector, then @var{h} contains the Hessenberg matrix
 ## such that @nospell{@tcode{a*u == u*h+rk*ek'}}, in which

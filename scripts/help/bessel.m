@@ -22,7 +22,10 @@
 ## @deftypefnx {} {[@var{I}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
 ## @deftypefnx {} {[@var{K}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
 ## @deftypefnx {} {[@var{H}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
-## Compute Bessel or Hankel functions of various kinds:
+## Compute Bessel or Hankel functions of various kinds.
+##
+## All functions begin with the prefix @qcode{"bessel"}.  The list of
+## functions is:
 ##
 ## @table @code
 ## @item besselj

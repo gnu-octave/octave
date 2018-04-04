@@ -20,13 +20,26 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} issymmetric (@var{A})
 ## @deftypefnx {} {} issymmetric (@var{A}, @var{tol})
-## Return true if @var{A} is a symmetric matrix within the tolerance specified
-## by @var{tol}.
+## @deftypefnx {} {} issymmetric (@var{A}, @qcode{"skew"})
+## @deftypefnx {} {} issymmetric (@var{A}, @qcode{"skew"}, @var{tol})
+## Return true if @var{A} is a symmetric or skew-symmetric matrix within the
+## tolerance specified by @var{tol}.
 ##
 ## The default tolerance is zero (uses faster code).
 ##
-## Matrix @var{A} is considered symmetric if
+## The type of symmetry to check may be specified with the additional input
+## @qcode{"nonskew"} (default) for regular symmetry or @qcode{"skew"} for
+## skew-symmetry.
+##
+## Background: A matrix is symmetric if the transpose of the matrix is equal
+## to the original matrix: @w{@acode{@var{A} == @var{A}.'}}.  If a tolerance
+## is given then symmetry is determined by
 ## @code{norm (@var{A} - @var{A}.', Inf) / norm (@var{A}, Inf) < @var{tol}}.
+##
+## A matrix is skew-symmetric if the transpose of the matrix is equal to the
+## negative of the original matrix: @w{@acode{@var{A} == -@var{A}.'}}.  If a
+## tolerance is given then skew-symmetry is determined by
+## @code{norm (@var{A} + @var{A}.', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{ishermitian, isdefinite}
 ## @end deftypefn
 
@@ -34,20 +47,52 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function retval = issymmetric (A, tol = 0)
+function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
+  if (nargin == 2)
+    ## Decode whether second argument is skewopt or tol
+    if (isnumeric (skewopt))
+      tol = skewopt;
+      skewopt = "nonskew";
+    elseif (! ischar (skewopt))
+      error ("issymmetric: second argument must be a non-negative scalar TOL, or one of the strings: 'skew' / 'nonskew'");
+    endif 
+  endif
+
+  ## Validate inputs
   retval = (isnumeric (A) || islogical (A)) && issquare (A);
-  if (retval)
+  if (! retval)
+    return;
+  endif
+
+  if (! (strcmp (skewopt, "skew") || strcmp (skewopt, "nonskew")))
+    error ("issymmetric: SKEWOPT must be 'skew' or 'nonskew'");
+  endif
+
+  if (! (isnumeric (tol) && isscalar (tol) && tol >= 0))
+    error ("issymmetric: TOL must be a scalar >= 0");
+  endif
+
+  ## Calculate symmetry
+  if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
-      ## Handle large sparse matrices as well as full ones
-      retval = nnz (A != A.') == 0;
+      ## check for exact symmetry
+      retval = ! any (A != A.');
     else
-      norm_x = norm (A, inf);
-      retval = norm_x == 0 || norm (A - A.', inf) / norm_x <= tol;
+      norm_x = norm (A, Inf);
+      retval = norm_x == 0 || norm (A - A.', Inf) / norm_x <= tol;
+    endif
+  else
+    ## skew symmetry
+    if (tol == 0)
+      retval = ! any (A != -A.');
+    else
+      norm_x = norm (A, Inf);
+      retval = norm_x == 0 || norm (A + A.', Inf) / norm_x <= tol;
     endif
   endif
 
@@ -58,17 +103,28 @@ endfunction
 %!assert (! issymmetric ([1, 2]))
 %!assert (issymmetric ([]))
 %!assert (issymmetric ([1, 2; 2, 1]))
-%!assert (! (issymmetric ("test")))
 %!assert (issymmetric ([1, 2.1; 2, 1.1], 0.2))
 %!assert (issymmetric ([1, 2i; 2i, 1]))
+%!assert (issymmetric (speye (100)))
+%!assert (issymmetric (logical (eye (2))))
+%!assert (issymmetric ([0, 2; -2, 0], "skew"))
+%!assert (! issymmetric ([0, 2; -2, eps], "skew"))
+%!assert (issymmetric ([0, 2; -2, eps], "skew", eps))
+
+%!assert (! (issymmetric ("test")))
 %!assert (! (issymmetric ("t")))
 %!assert (! (issymmetric (["te"; "et"])))
-%!assert (issymmetric (speye (100000)))
-%!assert (issymmetric (logical (eye (2))))
-
+%!assert (! issymmetric ({1}))
 %!test
 %! s.a = 1;
 %! assert (! issymmetric (s));
 
-%!error issymmetric ([1, 2; 2, 1], 0, 0)
+## Test input validation
 %!error issymmetric ()
+%!error issymmetric (1,2,3,4)
+%!error <second argument must be> issymmetric (1, {"skew"})
+%!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")
+%!error <SKEWOPT must be 'skew' or 'nonskew'> issymmetric (1, "foobar")
+%!error <TOL must be a scalar .= 0> issymmetric (1, "skew", {1})
+%!error <TOL must be a scalar .= 0> issymmetric (1, "skew", [1 1])
+%!error <TOL must be a scalar .= 0> issymmetric (1, -1)

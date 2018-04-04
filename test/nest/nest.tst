@@ -60,7 +60,7 @@
 %! assert (f("foo"), "nested foo");
 %! assert (f("foo"), "nested foo");
 
-%!test <*39257>
+%!test <39257>
 %! f = no_closure (1);
 %! assert (f(), "nested");
 %! assert (f("foo"), "nested foo");

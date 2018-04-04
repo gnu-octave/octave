@@ -41,10 +41,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QShortcut>
 #include <QTabWidget>
+#include <QToolButton>
 #include <QVBoxLayout>
 
 #include "documentation.h"
+#include "resource-manager.h"
 
 namespace octave
 {
@@ -93,7 +96,44 @@ namespace octave
       }
 
     // The browser
-    m_doc_browser = new documentation_browser (m_help_engine, this);
+    QWidget *browser_find = new QWidget (this);
+    m_doc_browser = new documentation_browser (m_help_engine, browser_find);
+
+    QWidget *find_footer = new QWidget (browser_find);
+    QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
+    m_find_line_edit = new QLineEdit (find_footer);
+    connect (m_find_line_edit, SIGNAL (returnPressed (void)),
+             this, SLOT(find_forward (void)));
+    QToolButton *forward_button = new QToolButton (find_footer);
+    forward_button->setText (tr ("Search forward"));
+    forward_button->setToolTip (tr ("Search forward"));
+    forward_button->setIcon (resource_manager::icon ("go-down"));
+    connect (forward_button, SIGNAL (pressed (void)),
+             this, SLOT(find_forward (void)));
+    QToolButton *backward_button = new QToolButton (find_footer);
+    backward_button->setText (tr ("Search backward"));
+    backward_button->setToolTip (tr ("Search backward"));
+    backward_button->setIcon (resource_manager::icon ("go-up"));
+    connect (backward_button, SIGNAL (pressed (void)),
+             this, SLOT(find_backward (void)));
+    QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
+    h_box_find_footer->addWidget (find_label);
+    h_box_find_footer->addWidget (m_find_line_edit);
+    h_box_find_footer->addWidget (forward_button);
+    h_box_find_footer->addWidget (backward_button);
+    h_box_find_footer->setMargin (2);
+    find_footer->setLayout (h_box_find_footer);
+
+    QVBoxLayout *v_box_browser_find = new QVBoxLayout (browser_find);
+    v_box_browser_find->addWidget (m_doc_browser);
+    v_box_browser_find->addWidget (find_footer);
+    browser_find->setLayout (v_box_browser_find);
+
+    QShortcut *shortcut = new QShortcut(QKeySequence(tr("Ctrl+F")), browser_find);
+    shortcut->setContext(Qt::WidgetWithChildrenShortcut);
+    connect (shortcut, SIGNAL (activated (void)),
+             this, SLOT(toggle_hidden_find (void)));
+    find_footer->hide ();
 
     // Layout contents, index and search
     QTabWidget *navi = new QTabWidget (this);
@@ -176,7 +216,7 @@ namespace octave
 
     // Fill the splitter
     insertWidget (0, navi);
-    insertWidget (1, m_doc_browser);
+    insertWidget (1, browser_find);
     setStretchFactor (1, 1);
 
     // Initial view: Contents
@@ -273,6 +313,35 @@ namespace octave
 
     m_filter->insertItem (0, text);            // (re)insert at beginning
     m_filter->setCurrentIndex (0);
+  }
+
+  void documentation::find_forward (void)
+  {
+    if (! m_help_engine)
+      return;
+
+    m_doc_browser->find (m_find_line_edit->text ());
+  }
+
+  void documentation::find_backward (void)
+  {
+    if (! m_help_engine)
+      return;
+
+    m_doc_browser->find (m_find_line_edit->text (), QTextDocument::FindBackward);
+  }
+
+  void documentation::toggle_hidden_find (void)
+  {
+    if (! m_help_engine)
+      return;
+
+    m_find_line_edit->parentWidget ()->
+        setHidden (! m_find_line_edit->parentWidget ()->isHidden ());
+    if (m_find_line_edit->parentWidget ()->isHidden ())
+      m_doc_browser->setFocus ();
+    else
+      m_find_line_edit->setFocus ();
   }
 
   void documentation::registerDoc (const QString& qch)

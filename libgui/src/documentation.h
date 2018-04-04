@@ -86,11 +86,15 @@ namespace octave
     void global_search_finished (int hits);
     void filter_update (const QString& expression);
     void filter_update_history (void);
+    void find_forward (void);
+    void find_backward (void);
+    void toggle_hidden_find (void);
 
   private:
 
     QHelpEngine *m_help_engine;
     documentation_browser *m_doc_browser;
+    QLineEdit *m_find_line_edit;
     QComboBox *m_filter;
     QString m_collection;
 

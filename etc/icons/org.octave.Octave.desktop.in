@@ -2,6 +2,7 @@
 Name=GNU Octave
 Comment=Interactive programming environment for numerical computations
 Comment[de]=Interaktive Programmierumgebung für numerische Berechnungen
+Comment[fr]=Environnement de programmation interactif pour le calcul numérique
 Comment[es]=Entorno de programación interactiva para cálculos numéricos 
 Comment[ja]=数値計算のための対話的なプログラミング環境
 Comment[nl]=Interactieve programmeeromgeving voor numerieke berekeningen

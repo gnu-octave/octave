@@ -67,8 +67,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
-// #include <llvm/ExecutionEngine/JIT.h>  // old JIT, LLVM < 3.6.0
-#include <llvm/ExecutionEngine/MCJIT.h>   // MCJIT, LLVM >= 3.0.0
+// old JIT, LLVM < 3.6.0
+// #include <llvm/ExecutionEngine/JIT.h>
+// MCJIT, LLVM >= 3.0.0
+#include <llvm/ExecutionEngine/MCJIT.h>
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
 
 #if defined (LEGACY_PASSMANAGER)
@@ -1360,8 +1362,10 @@ namespace octave
 
         for (size_t i = 0; i < m_argument_vec.size (); ++i)
           {
-            // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);         // LLVM <= 3.6
-            llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);  // LLVM >= 3.7
+            // LLVM <= 3.6
+            // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
+            // LLVM >= 3.7
+            llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);
 
             m_arguments[m_argument_vec[i].first] = loaded_arg;
           }
@@ -2559,7 +2563,7 @@ namespace octave
             llvm::Value *arg;
             // LLVM <= 3.6
             // arg = builder.CreateConstInBoundsGEP1_32 (wrapper_arg, i);
-            / / LLVM >= 3.7
+            // LLVM >= 3.7
             arg = builder.CreateConstInBoundsGEP1_32 (any_t->to_llvm (),
                                                       wrapper_arg, i);
 

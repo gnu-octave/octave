@@ -929,6 +929,8 @@ bool check_index (const octave_value& i, bool vector_allowed = false)
 DEFUN_DLD (qrupdate, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})
+Update a QR factorization given update vectors or matrices.
+
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of
@@ -1091,6 +1093,9 @@ economized (R is square).
 DEFUN_DLD (qrinsert, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})
+Update a QR factorization given a row or column to insert in the original factored matrix.
+
+
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of
@@ -1287,6 +1292,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 DEFUN_DLD (qrdelete, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})
+Update a QR factorization given a row or column to delete from the original factored matrix.
+
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of
@@ -1532,6 +1539,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 DEFUN_DLD (qrshift, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})
+Update a QR factorization given a range of columns to shift in the original factored matrix.
+
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization

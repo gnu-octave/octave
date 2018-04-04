@@ -1414,9 +1414,11 @@ status flags.
 DEFUNX ("O_APPEND", FO_APPEND, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_APPEND ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate each write operation appends,
-or that may be passed to @code{fcntl} to set the write mode to append.
+Return the numerical value of the @code{O_APPEND} macro.
+
+@code{O_APPEND} is file status flag that may be returned by @code{fcntl}
+to indicate each write operation appends, or that may be passed to
+@code{fcntl} to set the write mode to append.
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1431,8 +1433,10 @@ or that may be passed to @code{fcntl} to set the write mode to append.
 DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_ASYNC ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate asynchronous I/O.
+Return the numerical value of the @code{O_ASYNC} macro.
+
+@code{O_ASYNC} is the file status flag that may be returned by
+@code{fcntl} to indicate asynchronous I/O.
 @seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1447,9 +1451,11 @@ returned by @code{fcntl} to indicate asynchronous I/O.
 DEFUNX ("O_CREAT", FO_CREAT, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_CREAT ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that a file should be created if it
-does not exist.
+Return the numerical value of the @code{O_CREAT}.
+
+@code{O_CREAT} is the file status flag that may be returned by
+@code{fcntl} to indicate that a file should be created if it does not
+exist.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1464,8 +1470,10 @@ does not exist.
 DEFUNX ("O_EXCL", FO_EXCL, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_EXCL ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that file locking is used.
+Return the numerical value of the @code{O_EXCL}.
+
+@code{O_EXCL} is the file status flag that may be returned by
+@code{fcntl} to indicate that file locking is used.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1480,9 +1488,11 @@ returned by @code{fcntl} to indicate that file locking is used.
 DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_NONBLOCK ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that non-blocking I/O is in use,
-or that may be passsed to @code{fcntl} to set non-blocking I/O.
+Return the numerical value of the @code{O_NONBLOCK}.
+
+@code{O_NONBLOCK} is the file status flag that may be returned by
+@code{fcntl} to indicate that non-blocking I/O is in use, or that may be
+passsed to @code{fcntl} to set non-blocking I/O.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1497,8 +1507,10 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.
 DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_RDONLY ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that a file is open for reading only.
+Return the numerical value of the @code{O_RDONLY}.
+
+@code{O_RDONLY} is the file status flag that may be returned by
+@code{fcntl} to indicate that a file is open for reading only.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1513,9 +1525,11 @@ returned by @code{fcntl} to indicate that a file is open for reading only.
 DEFUNX ("O_RDWR", FO_RDWR, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_RDWR ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that a file is open for both reading
-and writing.
+Return the numerical value of the @code{O_RDWR}.
+
+@code{O_RDWR} is the file status flag that may be returned by
+@code{fcntl} to indicate that a file is open for both reading and
+writing.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1530,9 +1544,10 @@ and writing.
 DEFUNX ("O_SYNC", FO_SYNC, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_SYNC ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that a file is open for synchronous
-I/O.
+Return the numerical value of the @code{O_SYNC}.
+
+@code{O_SYNC} is the file status flag that may be returned by
+@code{fcntl} to indicate that a file is open for synchronous I/O
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1547,9 +1562,11 @@ I/O.
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_TRUNC ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that if file exists, it should be
-truncated when writing.
+Return the numerical value of the @code{O_TRUNC}.
+
+@code{O_TRUNC} is the file status flag that may be returned by
+@code{fcntl} to indicate that if file exists, it should be truncated
+when writing.
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}
 @end deftypefn */)
 {
@@ -1564,8 +1581,10 @@ truncated when writing.
 DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} O_WRONLY ()
-Return the numerical value of the file status flag that may be
-returned by @code{fcntl} to indicate that a file is open for writing only.
+Return the numerical value of the @code{O_WRONLY}.
+
+@code{O_WRONLY} is the file status flag that may be returned by
+@code{fcntl} to indicate that a file is open for writing only
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}
 @end deftypefn */)
 {
@@ -1580,9 +1599,11 @@ returned by @code{fcntl} to indicate that a file is open for writing only.
 DEFUNX ("WNOHANG", FWNOHANG, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} WNOHANG ()
-Return the numerical value of the option argument that may be
-passed to @code{waitpid} to indicate that it should return its status
-immediately instead of waiting for a process to exit.
+Return the numerical value of the @code{WNOHANG} macro.
+
+@code{WNOHANG} is the option argument that may be passed to
+@code{waitpid} to indicate that it should return its status immediately
+instead of waiting for a process to exit.
 @seealso{waitpid, WUNTRACED, WCONTINUE}
 @end deftypefn */)
 {
@@ -1592,8 +1613,10 @@ immediately instead of waiting for a process to exit.
 DEFUNX ("WUNTRACED", FWUNTRACED, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} WUNTRACED ()
-Return the numerical value of the option argument that may be
-passed to @code{waitpid} to indicate that it should also return if the child
+Return the numerical value of the @code{WUNTRACED} macro.
+
+@code{WUNTRACED} is the option argument that may be passed to
+@code{waitpid} to indicate that it should also return if the child
 process has stopped but is not traced via the @code{ptrace} system call
 @seealso{waitpid, WNOHANG, WCONTINUE}
 @end deftypefn */)
@@ -1604,9 +1627,11 @@ process has stopped but is not traced via the @code{ptrace} system call
 DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {} WCONTINUE ()
-Return the numerical value of the option argument that may be
-passed to @code{waitpid} to indicate that it should also return if a stopped
-child has been resumed by delivery of a @code{SIGCONT} signal.
+Return the numerical value of the @code{WCONTINUE} macro.
+
+@code{WCONTINUE} is the option argument that may be passed to
+@code{waitpid} to indicate that it should also return if a stopped child
+has been resumed by delivery of a @code{SIGCONT} signal.
 @seealso{waitpid, WNOHANG, WUNTRACED}
 @end deftypefn */)
 {

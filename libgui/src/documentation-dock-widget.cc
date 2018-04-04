@@ -41,7 +41,6 @@ namespace octave
 
     m_docs = new octave::documentation (this);
     setWidget (m_docs);
-    setFocusProxy (m_docs);
 
     connect (p, SIGNAL (show_doc_signal (const QString&)),
              this, SLOT (showDoc (const QString&)));

@@ -582,7 +582,7 @@ Wil je die toch verwijderen?</translation>
         <translation>aanwijzer</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>Verschil met standaardgrootte</translation>
     </message>
@@ -2076,12 +2076,21 @@ Wil je die overschrijven?</translation>
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+75"/>
+        <location line="+10"/>
+        <location line="+211"/>
         <source>Octave Documentation</source>
         <translation>Octave documentatie</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-220"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
@@ -2090,7 +2099,7 @@ niet vinden. Alleen de helpteksten in de
 console widget zijn beschikbaar.</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+19"/>
         <source>Contents</source>
         <translation>Inhoud</translation>
     </message>
@@ -2109,6 +2118,11 @@ console widget zijn beschikbaar.</translation>
         <location line="-22"/>
         <source>Index</source>
         <translation>Index</translation>
+    </message>
+    <message>
+        <location line="+157"/>
+        <source>Unable to register help file %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2386,8 +2400,8 @@ niet openen om te schrijven: %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>convert line endings to &amp;windows (crlf)</source>
-        <translation>Zet regeleindes om naar Windows (CRLF)</translation>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2579,11 +2593,6 @@ niet openen om te schrijven: %2.</translation>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
-    <message>
-        <location line="+207"/>
-        <source>&amp;%1 %2</source>
-        <translation>&amp;%1 %2</translation>
-    </message>
 </context>
 <context>
     <name>octave::file_editor_tab</name>
@@ -2616,7 +2625,7 @@ niet openen om te schrijven: %2.</translation>
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -2625,7 +2634,7 @@ niet openen om te schrijven: %2.</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>Kan geen onderbrekingpunt in een aangepast bestand plaatsen.
@@ -2716,7 +2725,7 @@ Debuggen afsluiten en opslaan?</translation>
         <translation>Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -2734,27 +2743,20 @@ Wil je een andere naam kiezen?</translation>
     </message>
     <message>
         <location line="+20"/>
-        <source>The current codec %1
+        <source>The current encoding %1
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation>The huidige codec %1
-kan niet worden toegepast.
-
-Selecteer s.v.p. een andere of annuleer opslaan!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+11"/>
         <source>The current editor contents can not be encoded
-with the selected codec %1.
+with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another codec?</source>
-        <translation>De huidige gegevens in de editor kunnen niet 
-gecodeerd worden met de geselecteerde codec %1.
-Deze gebruiken resulteert in verlies van gegevens!
-
-Wil je een andere codec kiezen?</translation>
+Do you want to choose another encoding?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2818,7 +2820,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Om en om andere regelkleuren</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation>Voer pad- of bestandsnaam in</translation>
     </message>
@@ -2986,7 +2988,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation>New file.txt</translation>
     </message>
@@ -3004,7 +3006,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation>Nieuwe map</translation>
     </message>
@@ -3472,12 +3474,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -3488,12 +3490,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation>Blader door mappen</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
@@ -3530,7 +3532,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation>Bestand</translation>
     </message>
@@ -3893,7 +3895,7 @@ of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van O
         <translation>Widget in venster opnemen</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation>Widget laten zweven</translation>
     </message>
@@ -4801,7 +4803,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+791"/>
         <source>Variable Editor</source>
         <translation>Variable Editor</translation>
     </message>
@@ -4811,7 +4813,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Variabelen bewerken</translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+476"/>
         <source>Variable Editor Toolbar</source>
         <translation>Variable Editor Werkbalk</translation>
     </message>
@@ -4896,20 +4898,15 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1176"/>
         <source>Save Variable %1 As</source>
         <translation>Sla variable %1 op als</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>./%1.txt</source>
-        <translation>./%1.txt</translation>
     </message>
 </context>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation>Knippen</translation>
     </message>
@@ -5052,7 +5049,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Filter</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Bekijk variabelen in actieve werkruimte.&lt;br&gt;</translation>
     </message>
@@ -5186,7 +5183,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Toon EOL tekens</translation>
     </message>
     <message>
-        <location line="+784"/>
+        <location line="+309"/>
+        <source>Wrap long lines at current window border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+475"/>
         <source>Default EOL mode</source>
         <translation>Standaard EOL instelling</translation>
     </message>
@@ -5257,12 +5259,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>Lettertype</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>Toon regelnummers</translation>
     </message>
@@ -5318,12 +5320,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>Lettergrootte</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Zet focus op terminal wanneer een opdracht uit een ander widget wordt uitgevoerd</translation>
     </message>
@@ -5465,12 +5467,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+11"/>
         <source>Strings considered for uncommenting text</source>
-        <translation>Strings voor "uncommenting" tekst</translation>
+        <translation>Strings voor &quot;uncommenting&quot; tekst</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>String used for commenting selected text</source>
-        <translation>Strings voor "commenting" tekst</translation>
+        <translation>Strings voor &quot;commenting&quot; tekst</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -5508,12 +5510,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Achtergrond</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Wrap long lines at curent window border</source>
-        <translation>Breek lange regels af op vensterrand</translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+53"/>
         <source>Indentation</source>
         <translation>Inspringen</translation>
     </message>
@@ -5689,17 +5686,12 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Variable Editor</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation>Standaard regelhoogte</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation>3D {20?}</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation>Standaard kolombreedte</translation>
     </message>
@@ -5709,22 +5701,17 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Gebruik zelfde font als Terminal</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation>3D {2?}</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation>Automatisch aanpassen</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation>Plus fonthoogte</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation>Per kolom</translation>
     </message>
@@ -5734,7 +5721,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Uniform</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation>Variable Editor Kleuren</translation>
     </message>
@@ -5744,7 +5731,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Gebruik alternerende rijkleuren</translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>http proxy</translation>
     </message>
@@ -5829,7 +5816,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Wachtwoord:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Octave Instellingen</translation>
     </message>

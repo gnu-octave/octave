@@ -432,7 +432,10 @@
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de copier la collection d&apos;aide dans
+un fichier temporaire. Les fonctionnalités de
+recherche pourraient être affectées.
+%1</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -467,7 +470,7 @@ dans la console (commande &quot;help&quot;) sera accessible.</translation>
     <message>
         <location line="+157"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ajouter le fichier d&apos;aide %1.</translation>
     </message>
 </context>
 <context>
@@ -746,7 +749,7 @@ pour écrire : %2.</translation>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir les Fins de Lignes en &amp;Windows (LF)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1092,7 +1095,10 @@ Voulez vous choisir un autre nom?</translation>
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;encodage courant %1
+ne peut être utilisé.
+
+Choisissez-en un autre ou annulez la sauvegarde!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1101,7 +1107,10 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le contenu actuel de l&apos;éditeur ne peut être encodé
+en %1. Cela se traduirait par une perte de données!
+
+Voulez-vous choisir un autre encodage?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -3530,7 +3539,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     <message>
         <location line="+309"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>Replier les lignes en bord de fenêtre</translation>
     </message>
     <message>
         <location line="+475"/>

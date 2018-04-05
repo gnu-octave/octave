@@ -29,6 +29,7 @@
   <summary xml:lang="es">Entorno de programación interactiva para cálculos numéricos</summary>
   <summary xml:lang="ja">数値計算のための対話的なプログラミング環境</summary>
   <summary xml:lang="nl">Interactieve programmeeromgeving voor numerieke berekeningen</summary>
+  <summary xml:lang="zh">数值计算交互式编程环境</summary>
   <description>
     <p>
       GNU Octave is a high-level interpreted language, primarily intended for

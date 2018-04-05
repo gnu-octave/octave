@@ -88,13 +88,16 @@ namespace octave
     void filter_update_history (void);
     void find_forward (void);
     void find_backward (void);
-    void toggle_hidden_find (void);
+    void find_forward_from_anchor (const QString& text);
+    void record_anchor_position (void);
+    void handle_cursor_position_change (void);
 
   private:
 
     QHelpEngine *m_help_engine;
     documentation_browser *m_doc_browser;
     QLineEdit *m_find_line_edit;
+    int m_search_anchor_position;
     QComboBox *m_filter;
     QString m_collection;
 

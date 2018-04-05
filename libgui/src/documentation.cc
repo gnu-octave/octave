@@ -98,12 +98,16 @@ namespace octave
     // The browser
     QWidget *browser_find = new QWidget (this);
     m_doc_browser = new documentation_browser (m_help_engine, browser_find);
+    connect (m_doc_browser, SIGNAL (cursorPositionChanged (void)),
+             this, SLOT(handle_cursor_position_change (void)));
 
     QWidget *find_footer = new QWidget (browser_find);
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
     connect (m_find_line_edit, SIGNAL (returnPressed (void)),
              this, SLOT(find_forward (void)));
+    connect (m_find_line_edit, SIGNAL (textEdited (const QString&)),
+             this, SLOT(find_forward_from_anchor (const QString&)));
     QToolButton *forward_button = new QToolButton (find_footer);
     forward_button->setText (tr ("Search forward"));
     forward_button->setToolTip (tr ("Search forward"));
@@ -129,11 +133,30 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    QShortcut *shortcut = new QShortcut(QKeySequence(tr("Ctrl+F")), browser_find);
-    shortcut->setContext(Qt::WidgetWithChildrenShortcut);
-    connect (shortcut, SIGNAL (activated (void)),
-             this, SLOT(toggle_hidden_find (void)));
+    QShortcut *show_shortcut = new QShortcut (QKeySequence (QKeySequence::Find), browser_find);
+    show_shortcut->setContext(Qt::WindowShortcut);
+    connect (show_shortcut, SIGNAL (activated (void)),
+             m_find_line_edit->parentWidget (), SLOT (show (void)));
+    connect (show_shortcut, SIGNAL (activated (void)),
+             m_find_line_edit, SLOT (selectAll (void)));
+    connect (show_shortcut, SIGNAL (activated (void)),
+             m_find_line_edit, SLOT (setFocus (void)));
+    QShortcut *hide_shortcut = new QShortcut (QKeySequence (tr ("Escape")), m_find_line_edit);
+    hide_shortcut->setContext(Qt::WindowShortcut);
+    connect (hide_shortcut, SIGNAL (activated (void)),
+             m_find_line_edit->parentWidget (), SLOT(hide (void)));
+    connect (hide_shortcut, SIGNAL (activated (void)),
+             m_doc_browser, SLOT (setFocus (void)));
+    QShortcut *findnext_shortcut = new QShortcut (QKeySequence (QKeySequence::FindNext), browser_find);
+    findnext_shortcut->setContext(Qt::WindowShortcut);
+    connect (findnext_shortcut, SIGNAL (activated (void)),
+             this, SLOT(find_forward (void)));
+    QShortcut *findprev_shortcut = new QShortcut (QKeySequence (QKeySequence::FindPrevious), browser_find);
+    findprev_shortcut->setContext(Qt::WindowShortcut);
+    connect (findprev_shortcut, SIGNAL (activated (void)),
+             this, SLOT(find_backward (void)));
     find_footer->hide ();
+    m_search_anchor_position = 0;
 
     // Layout contents, index and search
     QTabWidget *navi = new QTabWidget (this);
@@ -321,6 +344,7 @@ namespace octave
       return;
 
     m_doc_browser->find (m_find_line_edit->text ());
+    record_anchor_position ();
   }
 
   void documentation::find_backward (void)
@@ -329,19 +353,35 @@ namespace octave
       return;
 
     m_doc_browser->find (m_find_line_edit->text (), QTextDocument::FindBackward);
+    record_anchor_position ();
   }
 
-  void documentation::toggle_hidden_find (void)
+  void documentation::find_forward_from_anchor (const QString& text)
   {
     if (! m_help_engine)
       return;
 
-    m_find_line_edit->parentWidget ()->
-        setHidden (! m_find_line_edit->parentWidget ()->isHidden ());
-    if (m_find_line_edit->parentWidget ()->isHidden ())
-      m_doc_browser->setFocus ();
-    else
-      m_find_line_edit->setFocus ();
+    QTextCursor textcur = m_doc_browser->textCursor ();
+    textcur.setPosition (m_search_anchor_position);
+    m_doc_browser->setTextCursor (textcur);
+    m_doc_browser->find (text);
+  }
+
+  void documentation::record_anchor_position (void)
+  {
+    if (! m_help_engine)
+      return;
+
+    m_search_anchor_position = m_doc_browser->textCursor ().position ();
+  }
+
+  void documentation::handle_cursor_position_change (void)
+  {
+    if (! m_help_engine)
+      return;
+
+    if (m_doc_browser->hasFocus ())
+      record_anchor_position ();
   }
 
   void documentation::registerDoc (const QString& qch)

@@ -55,7 +55,7 @@
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
-%!error <failed to read package> pkg ("install", "nonexistent.zip")
+%!error pkg ("install", "nonexistent.zip")
 
 # -local
 %!test

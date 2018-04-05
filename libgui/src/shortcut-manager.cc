@@ -584,7 +584,7 @@ namespace octave
         if (section == editor_file)
           {
             // Closing tabs now in global tab handling section
-            if (sc.m_description.mid (0,6) == "Close ")
+            if (sc.m_settings_key.contains ("editor_file:close"))
               section = main_tabs;
           }
 

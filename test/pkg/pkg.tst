@@ -16,108 +16,130 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
+############################################################
 ## Test suite for pkg.m
-# Test are organized first by action and then by options
-# All actions should be tested and ideally all options are tested
-#
+## Tests are organized first by action, and then by options.
+## All actions should be tested, and ideally all options are tested.
+############################################################
 
-%!shared mfile_pkg_name, mfile_pkg_zip, silent_pkg_install
-%! # A cell with all the packages for testing
-%! mfile_pkg_name = {'mfile_basic_test','mfile_minimal_test'};
-%! for i = 1:numel(mfile_pkg_name)
-%!  name = mfile_pkg_name{i};
-%!  mfile_pkg_zip{i} = sprintf ('%s.zip', name);
-%!  zip (mfile_pkg_zip{i}, name);
+%!shared old_prefix, old_archprefix, prefix, restorecfg, rmtmpdir, mfile_pkg_name, mfile_pkg_zip
+%!
+%! ## Do all tests in a temporary directory
+%! [old_prefix, old_archprefix] = pkg ("prefix");
+%! restorecfg = onCleanup (@() pkg ("prefix", old_prefix, old_archprefix));
+%! prefix = tempname ();
+%! [status] = mkdir (prefix);
+%! if (! status)
+%!   error ("pkg.tst: Could not create temporary directory for pkg testing");
+%!   return;  # abort further testing
+%! endif
+%! pkg ("prefix", prefix, prefix);
+%! rmtmpdir = @onCleanup (@() confirm_recursive_rmdir (0, "local") && rmdir (prefix, "s"));
+%!
+%! ## Create zip file packages of testing directories in prefix directory
+%! mfile_pkg_name = {"mfile_basic_test", "mfile_minimal_test"};
+%! mfile_pkg_zip = fullfile (prefix, strcat (mfile_pkg_name, ".zip"));
+%! for i = 1:numel (mfile_pkg_name)
+%!   zip (mfile_pkg_zip{i}, mfile_pkg_name{i});
 %! endfor
-%! # Avoids printing to stdout when installing
-%! silent_pkg_install =@(args) evalc (sprintf(['pkg install' ...
-%!                                    repmat(' %s',1,numel(args))], args{:}));
 
-## install/uninstall
-%!error pkg('install','nonexistent.zip')
+## Avoids printing to stdout when installing
+%!function silent_pkg_install (varargin) 
+%!  evalc (["pkg install", sprintf(" %s", varargin{:})]);
+%!endfunction
+
+## Action install/uninstall
 %!test
-%! for i = 1:numel(mfile_pkg_name)
-%!  silent_pkg_install (mfile_pkg_zip(i));
-%!  pkg ('uninstall', mfile_pkg_name{i});
+%! for i = 1:numel (mfile_pkg_name)
+%!   silent_pkg_install (mfile_pkg_zip{i});
+%!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
+%!
+%!error <failed to read package> pkg ("install", "nonexistent.zip")
 
-##
 # -local
 %!test
-%! for i = 1:numel(mfile_pkg_name)
-%!  silent_pkg_install ({'-local', mfile_pkg_zip{i}});
-%!  pkg ('uninstall', mfile_pkg_name{i});
+%! for i = 1:numel (mfile_pkg_name)
+%!   silent_pkg_install ("-local", mfile_pkg_zip{i});
+%!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 
-##
 # -forge (need check for options?)
+## FIXME: Need test
 # We do not test this yet ... fails if no internet connection
-# use dataframe which is a mfile only package
+# use dataframe which is an mfile only package
 #%!test
-#%! silent_pkg_install ({'-forge', 'dataframe'});
-#%! pkg ('uninstall' , 'dataframe');
+#%! silent_pkg_install ("-forge", "dataframe");
+#%! pkg ("uninstall", "dataframe");
 
-##
 # -nodeps
+## FIXME: Need test
 
-##
 # -verbose
+## FIXME: Need test
 
-## load/unload (within install/uninstall)
-%!error pkg('load','notinstalled');
+## Action load/unload (within install/uninstall)
 %!test
-%! for i = 1:numel(mfile_pkg_name)
+%! for i = 1:numel (mfile_pkg_name)
 %!  name = mfile_pkg_name{i};
-%!  silent_pkg_install ({'-local', mfile_pkg_zip{i}});
+%!  silent_pkg_install ("-local", mfile_pkg_zip{i});
 %!  unwind_protect
-%!    pkg ('load', name);
-%!    pkg ('unload', name);
+%!    pkg ("load", name);
+%!    pkg ("unload", name);
 %!  unwind_protect_cleanup
-%!    pkg ('uninstall', name);
+%!    pkg ("uninstall", name);
 %!  end_unwind_protect
 %! endfor
+%!
+%!error <package foobar is not installed> pkg ("load", "foobar");
 
-##
 # -nodeps
+## FIXME: Need test
 
-##
 # -verbose
+## FIXME: Need test
 
-## list
+## Action list
 %!test 
-%! [user_packages, system_packages] = pkg ('list');
+%! [user_packages, system_packages] = pkg ("list");
 
-##
 # -forge
 #%!test
-#%! oct_forge_pkgs = pkg ('list', '-forge');
+#%! oct_forge_pkgs = pkg ("list", "-forge");
 
-## describe
+## Action describe
 %!test
-%! silent_pkg_install ({'-local', mfile_pkg_zip{1}});
-%! [desc, flag] = pkg ('describe', mfile_pkg_name{1});
-%! pkg ('uninstall', mfile_pkg_name{1});
+%! silent_pkg_install ("-local", mfile_pkg_zip{1});
+%! [desc, flag] = pkg ("describe", mfile_pkg_name{1});
+%! ## FIXME: this only tests that the describe command runs,
+%! ##        not that the output is in anyway correct.
+%! pkg ("uninstall", mfile_pkg_name{1});
 
-##
 # -verbose
+## FIXME: Need test
 
-## prefix
+## Action prefix
 %!test
-%! pfx_old = pkg ('prefix');
+%! pfx_old = pkg ("prefix");
 %! unwind_protect
-%!   pfx_new = pkg('prefix', pwd ());
-%!   if (! strcmp (pfx_new, pwd ()))
-%!     error ()
-%!   endif
+%!   pfx_new = pkg ("prefix", pwd ());
+%!   assert (pfx_new, pwd ());
 %! unwind_protect_cleanup
-%!   pfx = pkg ('prefix', pfx_old);
+%!   pfx = pkg ("prefix", pfx_old);
 %! end_unwind_protect
 
-## These commands need testing
+## Action build
+## FIXME: Need test
 # pkg build -verbose /tmp image-*
+
+## Action rebuild
+## FIXME: Need test
 # pkg rebuild signal
 
-## Future
-%!error pkg ('whereis', 'myfunc.m')
-%!error pkg ('whereis', '-forge', 'myfunc.m')
+## Future commands
+%!error pkg ("whereis", "myfunc.m")
+%!error pkg ("whereis", "-forge", "myfunc.m")
 
+############################################################
+## End of Tests
+############################################################

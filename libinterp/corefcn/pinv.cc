@@ -155,6 +155,9 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 
 /*
 %!shared a, b, tol, hitol, d, u, x, y
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 42); # initialize generator to make behavior reproducible
 %! a = reshape (rand*[1:16], 4, 4);  # Rank 2 matrix
 %! b = pinv (a);
 %! tol = 4e-14;
@@ -163,7 +166,8 @@ tol = max ([rows(@var{x}), columns(@var{x})]) * norm (@var{x}) * eps
 %! u = rand (4);                     # Could be singular by freak accident
 %! x = inv (u)*d*u;
 %! y = pinv (x, sqrt (eps));
-%!
+
+## Verify Penrose conditions for pseudoinverse
 %!assert (a*b*a, a, tol)
 %!assert (b*a*b, b, tol)
 %!assert ((b*a)', b*a, tol)

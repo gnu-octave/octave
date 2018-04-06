@@ -54,7 +54,7 @@
         <translation>curseur</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>Différence avec la taille par défaut</translation>
     </message>
@@ -421,12 +421,24 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+75"/>
+        <location line="+10"/>
+        <location line="+211"/>
         <source>Octave Documentation</source>
         <translation>Documentation d&apos;Octave</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-220"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation>Impossible de copier la collection d&apos;aide dans
+un fichier temporaire. Les fonctionnalités de
+recherche pourraient être affectées.
+%1</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
@@ -435,7 +447,7 @@ pour le navigateur de documentation. Seule l&apos;aide
 dans la console (commande &quot;help&quot;) sera accessible.</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+19"/>
         <source>Contents</source>
         <translation>Contenu</translation>
     </message>
@@ -454,6 +466,11 @@ dans la console (commande &quot;help&quot;) sera accessible.</translation>
         <location line="-22"/>
         <source>Index</source>
         <translation>Index</translation>
+    </message>
+    <message>
+        <location line="+157"/>
+        <source>Unable to register help file %1.</source>
+        <translation>Impossible d&apos;ajouter le fichier d&apos;aide %1.</translation>
     </message>
 </context>
 <context>
@@ -731,8 +748,8 @@ pour écrire : %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>convert line endings to &amp;windows (crlf)</source>
-        <translation>Convertir les Fins de Lignes en &amp;Windows (CRLF)</translation>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
+        <translation>Convertir les Fins de Lignes en &amp;Windows (LF)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -924,11 +941,6 @@ pour écrire : %2.</translation>
         <source>Editor</source>
         <translation>Éditeur</translation>
     </message>
-    <message>
-        <location line="+207"/>
-        <source>&amp;%1 %2</source>
-        <translation>&amp;%1 %2</translation>
-    </message>
 </context>
 <context>
     <name>octave::file_editor_tab</name>
@@ -961,7 +973,7 @@ pour écrire : %2.</translation>
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -970,7 +982,7 @@ pour écrire : %2.</translation>
         <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>Impossible d&apos;ajouter un point d&apos;arrêt à un fichier modifié.
@@ -1061,7 +1073,7 @@ Quitter le mode déboguage et sauver?</translation>
         <translation>Tous les Fichiers (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1079,27 +1091,26 @@ Voulez vous choisir un autre nom?</translation>
     </message>
     <message>
         <location line="+20"/>
-        <source>The current codec %1
+        <source>The current encoding %1
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation>Le codec %1
+        <translation>L&apos;encodage courant %1
 ne peut être utilisé.
 
-Choisissez en un autre ou annulez la sauvegarde!</translation>
+Choisissez-en un autre ou annulez la sauvegarde!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>The current editor contents can not be encoded
-with the selected codec %1.
+with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another codec?</source>
+Do you want to choose another encoding?</source>
         <translation>Le contenu actuel de l&apos;éditeur ne peut être encodé
-avec le codec sélectionné %1.
-Cela mènerait à des pertes de données!
+en %1. Cela se traduirait par une perte de données!
 
-Voulez vous choisir un autre codec?</translation>
+Voulez-vous choisir un autre encodage?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -1163,7 +1174,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
         <translation>Alterner les couleurs des lignes</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation>Entrez le chemin ou le nom du fichier</translation>
     </message>
@@ -1331,7 +1342,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation>Nouveau Fichier.txt</translation>
     </message>
@@ -1349,7 +1360,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation>Nouveau répertoire</translation>
     </message>
@@ -1817,12 +1828,12 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation>À propos d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1833,12 +1844,12 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation>Naviguer dans les Répertoires</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Fichiers Octave (*.m);;Tous les fichiers (*)</translation>
     </message>
@@ -1874,7 +1885,7 @@ Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Oc
         <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
@@ -2237,7 +2248,7 @@ ou activez la connexion aux nouvelles dans l&apos;onglet &quot;Réseau&quot; du 
         <translation>Attacher la fenêtre</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation>Détacher la fenêtre</translation>
     </message>
@@ -3145,7 +3156,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+791"/>
         <source>Variable Editor</source>
         <translation>Éditeur de Variables</translation>
     </message>
@@ -3155,7 +3166,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Éditer les Variables.</translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+476"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barre d&apos;outils de l&apos;éditeur de variables</translation>
     </message>
@@ -3241,20 +3252,15 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1176"/>
         <source>Save Variable %1 As</source>
         <translation>Enregistrer la Variable %1 Sous</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>./%1.txt</source>
-        <translation>./%1.txt</translation>
     </message>
 </context>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
@@ -3397,7 +3403,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Filtrer</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Voir les variables dans l&apos;espace de travail.&lt;br&gt;</translation>
     </message>
@@ -3531,7 +3537,12 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Montrer les caractères de fin de ligne (EOL)</translation>
     </message>
     <message>
-        <location line="+784"/>
+        <location line="+309"/>
+        <source>Wrap long lines at current window border</source>
+        <translation>Replier les lignes en bord de fenêtre</translation>
+    </message>
+    <message>
+        <location line="+475"/>
         <source>Default EOL mode</source>
         <translation>Fin de ligne par défaut (EOL)</translation>
     </message>
@@ -3602,12 +3613,12 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>Police</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>Afficher les numéros des lignes</translation>
     </message>
@@ -3663,12 +3674,12 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>Taille de police</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Donner le focus au terminal en cas d&apos;exécution d&apos;une commande depuis une autre fenêtre</translation>
     </message>
@@ -3853,12 +3864,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Arrière plan</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Wrap long lines at curent window border</source>
-        <translation>Replier les lignes en bord de fenêtre</translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+53"/>
         <source>Indentation</source>
         <translation>Indentation</translation>
     </message>
@@ -4034,17 +4040,12 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Éditeur de Variables</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation>Hauteur de ligne par défaut</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation>20</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation>Largeur de colonne par défaut</translation>
     </message>
@@ -4054,22 +4055,17 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Utiliser la police de la fenêtre de commande</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation>2</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation>Ajustement automatique</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation>En plus de la hauteur de police</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation>Par colonne</translation>
     </message>
@@ -4079,7 +4075,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Uniforme</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation>Couleurs</translation>
     </message>
@@ -4089,7 +4085,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Alterner les couleurs des lignes</translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>Proxy HTTP</translation>
     </message>
@@ -4174,7 +4170,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Mot de passe :</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Préférences Octave</translation>
     </message>

@@ -112,14 +112,6 @@ function install (files, handle_deps, prefix, archprefix, verbose,
         filename = fullfile (packdir, "DESCRIPTION");
         desc = get_description (filename);
 
-        ## Verify that package name corresponds with filename.
-        [dummy, nm] = fileparts (tgz);
-        if ((length (nm) >= length (desc.name))
-            && ! strcmp (desc.name, nm(1:length (desc.name))))
-          error ("package name '%s' doesn't correspond to its filename '%s'",
-                 desc.name, nm);
-        endif
-
         ## Set default installation directory.
         desc.dir = fullfile (prefix, [desc.name "-" desc.version]);
 

@@ -1711,10 +1711,13 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     if test $build_qt_gui = yes; then
       have_qt_version=$ver
       break
-    elif test -n "$QT_MODULES_AVAILABLE" || -n "$QT_TOOLS_AVAILABLE"; then
+    elif test -n "$QT_MODULES_AVAILABLE"; then
       ## If some modules were found for $ver, then warn about possible
       ## incomplete or broken Qt installation instead of checking for
-      ## next version in the list.
+      ## next version in the list.  Don't attempt a similar check for
+      ## tools here becuase Qt4 and Qt5 tools may be installed with
+      ## the same name so determining whether there is a mix of versions
+      ## will require more work than just looking which tools are installed.
       warn_qt_modules="Your installation of Qt version $ver appears incomplete or broken in some way.  Fix that or use --with-qt=VER to use another version."
       break
     fi
@@ -1888,6 +1891,26 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
   fi
 ])
 dnl
+dnl OCTAVE_CHECK_QT_TOOL(TOOL)
+dnl
+AC_DEFUN([OCTAVE_CHECK_QT_TOOL], [
+  AC_CHECK_TOOLS(m4_toupper([$1])_QTVER, [$1-qt$qt_version])
+  if test -z "$m4_toupper([$1])_QTVER"; then
+    AC_CHECK_TOOLS(m4_toupper([$1]), [$1])
+    if test -n "$m4_toupper([$1])"; then
+      if test -n "$QTCHOOSER"; then
+        m4_toupper([$1])FLAGS="-qt$qt_version"
+      fi
+      QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE $1"
+    else
+      QT_TOOLS_MISSING="$QT_TOOLS_MISSING $1"
+    fi
+  else
+    m4_toupper([$1])="$m4_toupper([$1])_QTVER"
+    QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE $1"
+  fi
+])
+dnl
 dnl Check whether Qt VERSION is present, supports QtOpenGL and
 dnl QScintilla, and will work for Octave.
 dnl
@@ -1980,83 +2003,12 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   if test $build_qt_gui = yes; then
     AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
 
-    AC_CHECK_TOOLS(MOC_QTVER, [moc-qt$qt_version])
-    if test -z "$MOC_QTVER"; then
-      AC_CHECK_TOOLS(MOC, [moc])
-      if test -n "$MOC" && test -n "$QTCHOOSER"; then
-        MOCFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE moc"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING moc"
-      fi
-    else
-      MOC="$MOC_QTVER"
-    fi
-
-    AC_CHECK_TOOLS(UIC_QTVER, [uic-qt$qt_version])
-    if test -z "$UIC_QTVER"; then
-      AC_CHECK_TOOLS(UIC, [uic])
-      if test -n "$UIC" && test -n "$QTCHOOSER"; then
-        UICFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE uic"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING uic"
-      fi
-    else
-      UIC="$UIC_QTVER"
-    fi
-
-    AC_CHECK_TOOLS(RCC_QTVER, [rcc-qt$qt_version])
-    if test -z "$RCC_QTVER"; then
-      AC_CHECK_TOOLS(RCC, [rcc])
-      if test -n "$RCC" && test -n "$QTCHOOSER"; then
-        RCCFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE rcc"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING rcc"
-      fi
-    else
-      RCC="$RCC_QTVER"
-    fi
-
-    AC_CHECK_TOOLS(LRELEASE_QTVER, [lrelease-qt$qt_version])
-    if test -z "$LRELEASE_QTVER"; then
-      AC_CHECK_TOOLS(LRELEASE, [lrelease])
-      if test -n "$LRELEASE" && test -n "$QTCHOOSER"; then
-        LRELEASEFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE lrelease"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING lrelease"
-      fi
-    else
-      LRELEASE="$LRELEASE_QTVER"
-    fi
-
-    AC_CHECK_TOOLS(QCOLLECTIONGENERATOR_QTVER, [qcollectiongenerator-qt$qt_version])
-    if test -z "$QCOLLECTIONGENERATOR_QTVER"; then
-      AC_CHECK_TOOLS(QCOLLECTIONGENERATOR, [qcollectiongenerator])
-      if test -n "$QCOLLECTIONGENERATOR" && test -n "$QTCHOOSER"; then
-        QCOLLECTIONGENERATORFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE qcollectiongenerator"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING qcollectiongenerator"
-      fi
-    else
-      QCOLLECTIONGENERATOR="$QCOLLECTIONGENERATOR_QTVER"
-    fi
-
-    AC_CHECK_TOOLS(QHELPGENERATOR_QTVER, [qhelpgenerator-qt$qt_version])
-    if test -z "$QHELPGENERATOR_QTVER"; then
-      AC_CHECK_TOOLS(QHELPGENERATOR, [qhelpgenerator])
-      if test -n "$QHELPGENERATOR" && test -n "$QTCHOOSER"; then
-        QHELPGENERATORFLAGS="-qt$qt_version"
-        QT_TOOLS_AVAILABLE="$QT_TOOLS_AVAILABLE qhelpgenerator"
-      else
-        QT_TOOLS_MISSING="$QT_TOOLS_MISSING qhelpgenerator"
-      fi
-    else
-      QHELPGENERATOR="$QHELPGENERATOR_QTVER"
-    fi
+    OCTAVE_CHECK_QT_TOOL([moc])
+    OCTAVE_CHECK_QT_TOOL([uic])
+    OCTAVE_CHECK_QT_TOOL([rcc])
+    OCTAVE_CHECK_QT_TOOL([lrelease])
+    OCTAVE_CHECK_QT_TOOL([qcollectiongenerator])
+    OCTAVE_CHECK_QT_TOOL([qhelpgenerator])
 
     if test -n "$QT_TOOLS_MISSING"; then
       warn_qt_tools="one or more of the Qt utilities moc, uic, rcc, lrelease, qcollectiongenerator, and qhelpgenerator not found; disabling Qt GUI"

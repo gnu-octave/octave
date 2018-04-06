@@ -133,8 +133,11 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
     Use ishghandle or isgraphics if it is important not to include Java
     objects.
 
- ** Octave packages can be installed by providing an external URI to the
-    pkg function, like so `pkg install https://some-url.tar.gz'
+ ** The pkg command now accepts a URL as an argument, allowing a valid
+    Octave package to be installed from any remote host with one command,
+    for example
+
+      pkg install https://example.org/download/example-package.tar.gz
 
  ** The following statistical functions have been moved from core
     Octave to the statistics package available from Octave Forge.

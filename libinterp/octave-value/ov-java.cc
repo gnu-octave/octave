@@ -547,32 +547,48 @@ initialize_jvm (void)
   if (! create_vm || ! get_vm)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
-      // In windows, find the location of the JRE from the registry
+      // In Windows, find the location of the JRE from the registry
       // and load the symbol from the dll.
-      std::string key, value;
+      std::string key, jversion, value;
 
-      key = R"(software\javasoft\java runtime environment)";
+      // First search for JRE >= 9
+      key = R"(software\javasoft\jre)";
 
-      value = octave::sys::env::getenv ("JAVA_VERSION");
+      jversion = octave::sys::env::getenv ("JAVA_VERSION");
       octave_value regval;
       LONG retval;
-      if (value.empty ())
+      if (jversion.empty ())
         {
           value = "CurrentVersion";
           retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
 
           if (retval != ERROR_SUCCESS)
+            {
+              // Search for JRE < 9
+              key = R"(software\javasoft\java runtime environment)";
+              retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                         regval);
+            }
+
+          if (retval != ERROR_SUCCESS)
             error ("unable to find Java Runtime Environment: %s::%s",
                    key.c_str (), value.c_str ());
 
-          value = regval.xstring_value (
+          jversion = regval.xstring_value (
             "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
             value.c_str (), key.c_str ());
         }
 
-      key = key + '\\' + value;
+      key = key + '\\' + jversion;
       value = "RuntimeLib";
       retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      if (retval != ERROR_SUCCESS)
+        {
+          // Search for JRE < 9
+          key = R"(software\javasoft\java runtime environment\)" + jversion;
+          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+        }
+
       if (retval != ERROR_SUCCESS)
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());

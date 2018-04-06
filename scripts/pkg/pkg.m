@@ -399,6 +399,7 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
       local_files = {};
+      tmp_dir = tempname ();
       unwind_protect
 
         if (octave_forge)
@@ -417,7 +418,7 @@ function [local_packages, global_packages] = pkg (varargin)
           ## Try to download them.
           external_files_mask = ! cellfun (@exist, files, {"file"});
           if (any (external_files_mask))
-            [success, msg] = mkdir (tmp_dir = tempname ());
+            [success, msg] = mkdir (tmp_dir);
             if (success != 1)
               error ("pkg: failed to create temporary directory: %s", msg);
             endif

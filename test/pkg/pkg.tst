@@ -22,11 +22,13 @@
 ## All actions should be tested, and ideally all options are tested.
 ############################################################
 
-%!shared old_prefix, old_archprefix, prefix, restorecfg, rmtmpdir, mfile_pkg_name, mfile_pkg_zip
+%!shared old_prefix, old_archprefix, old_local_list, prefix, restorecfg, restorecache, rmtmpdir, mfile_pkg_name, mfile_pkg_zip
 %!
 %! ## Do all tests in a temporary directory
 %! [old_prefix, old_archprefix] = pkg ("prefix");
 %! restorecfg = onCleanup (@() pkg ("prefix", old_prefix, old_archprefix));
+%! old_local_list = pkg ("local_list");
+%! restorecache = onCleanup (@() pkg ("local_list", old_local_list));
 %! prefix = tempname ();
 %! [status] = mkdir (prefix);
 %! if (! status)
@@ -34,6 +36,7 @@
 %!   return;  # abort further testing
 %! endif
 %! pkg ("prefix", prefix, prefix);
+%! pkg ("local_list", fullfile (prefix, "octave_packages"));
 %! rmtmpdir = @onCleanup (@() confirm_recursive_rmdir (0, "local") && rmdir (prefix, "s"));
 %!
 %! ## Create zip file packages of testing directories in prefix directory

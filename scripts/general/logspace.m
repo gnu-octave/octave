@@ -97,6 +97,16 @@ endfunction
 %! assert (size (x2) == [1, 10] && abs (x2(1) - 10) < eps && abs (x2(10) - 100) < eps);
 %! assert (size (x3) == [1, 10] && abs (x3(1) - 10) < eps && abs (x3(10) - 0.01) < eps);
 %! assert (size (x4) == [1, 10] && abs (x4(1) - 10) < eps && abs (x4(10) - pi) < sqrt (eps));
+%!assert (logspace (Inf, Inf, 3), [Inf, Inf, Inf])
+%!assert (logspace (-Inf, -Inf, 3), [0, 0, 0])
+%!assert (logspace (-Inf, Inf, 3), [0, NaN, Inf])
+%!assert (logspace (Inf + 1i, Inf + 1i, 3), [-Inf + Inf * 1i, -Inf + Inf * 1i, -Inf + Inf * 1i])
+%!assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, -Inf + Inf * 1i])
+%!assert (logspace (0, Inf, 3), [1, Inf, Inf])
+%!assert (logspace (0, -Inf, 3), [1, 0, 0])
+%!assert (logspace (-Inf, 0, 3), [0, NaN, 1])
+%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
+%!assert (logspace (Inf, -Inf, 3), [Inf, NaN, 0])
 
 ## Test input validation
 %!error logspace ()

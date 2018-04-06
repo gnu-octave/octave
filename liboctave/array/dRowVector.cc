@@ -275,7 +275,7 @@ linspace (double x1, double x2, octave_idx_type n)
 
   retval(0) = x1;
 
-  double delta = (x2 - x1) / (n - 1);
+  double delta = (x1 == x2) ? 0 : ((x2 - x1) / (n - 1));
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + i*delta;
 

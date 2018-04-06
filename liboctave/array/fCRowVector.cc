@@ -434,7 +434,7 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n)
 
   retval(0) = x1;
 
-  FloatComplex delta = (x2 - x1) / (n - 1.0f);
+  FloatComplex delta = (x1 == x2) ? 0 : (x2 - x1) / (n - 1.0f);
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + static_cast<float> (i)*delta;
 

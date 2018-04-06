@@ -432,7 +432,7 @@ linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
 
   retval(0) = x1;
 
-  Complex delta = (x2 - x1) / (n - 1.0);
+  Complex delta = (x1 == x2) ? 0 : (x2 - x1) / (n - 1.0);
   for (octave_idx_type i = 1; i < n-1; i++)
     retval(i) = x1 + static_cast<double> (i)*delta;
 

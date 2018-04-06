@@ -36,7 +36,7 @@
 ## the first non-singleton dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods
-## used by R (@url{http://www.r-project.org/}).  The default value is
+## used by R (@url{https://www.r-project.org/}).  The default value is
 ## @w{@var{method} = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
@@ -131,7 +131,7 @@
 ## statistical packages, American Statistician, 50, 361--365.
 ##
 ## @item R: A Language and Environment for Statistical Computing;
-## @url{http://cran.r-project.org/doc/manuals/fullrefman.pdf}.
+## @url{https://cran.r-project.org/doc/manuals/fullrefman.pdf}.
 ## @end itemize
 ##
 ## Examples:
@@ -383,7 +383,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/).  The default is @var{method} = 7.
+## (https://www.r-project.org/).  The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
 ## Author: Ben Abbott <bpabbott@mac.com>

@@ -37,7 +37,7 @@
 ## The number of faces and vertices in the patch is reduced by iteratively
 ## collapsing the shortest edge of the patch to its midpoint (as discussed,
 ## e.g., here:
-## @url{http://libigl.github.io/libigl/tutorial/tutorial.html#meshdecimation}).
+## @url{https://libigl.github.io/libigl/tutorial/tutorial.html#meshdecimation}).
 ##
 ## Currently, only patches consisting of triangles are supported.  The
 ## resulting patch also consists only of triangles.

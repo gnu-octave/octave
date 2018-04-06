@@ -77,7 +77,7 @@ and storage given a priori knowledge of the particular class of problems
 that will be solved.  A good summary of the available techniques for storing
 sparse matrix is given by @nospell{Saad} @footnote{Y. Saad "SPARSKIT: A basic
 toolkit for sparse matrix computation", 1994,
-@url{http://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}}.
+@url{https://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}}.
 With full matrices, knowledge of the point of an element of the matrix
 within the matrix is implied by its position in the computers memory.
 However, this is not the case for sparse matrices, and so the positions
@@ -90,7 +90,7 @@ easy to grasp, but requires more storage than is strictly needed.
 
 The storage technique used within Octave is the compressed column
 format.  It is similar to the Yale format.
-@footnote{@url{http://en.wikipedia.org/wiki/Sparse_matrix#Yale_format}}
+@footnote{@url{https://en.wikipedia.org/wiki/Sparse_matrix#Yale_format}}
 In this format the position of each element in a row and the data are
 stored as previously.  However, if we assume that all elements in the
 same column are stored adjacent in the computers memory, then we only
@@ -795,7 +795,7 @@ solve, and perform one refinement iteration using @sc{umfpack}.
 a singular or near singular matrix, find a minimum norm solution using
 @sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse}
 packages were written by Tim Davis and are available at
-@url{http://www.cise.ufl.edu/research/sparse/}}.
+@url{http://faculty.cse.tamu.edu/davis/suitesparse.html}}.
 @end enumerate
 
 The band density is defined as the number of nonzero values in the band

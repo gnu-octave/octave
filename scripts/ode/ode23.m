@@ -85,7 +85,7 @@
 ## @end example
 ##
 ## Reference: For the definition of this method see
-## @url{http://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods}.
+## @url{https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods}.
 ## @seealso{odeset, odeget, ode45, ode15s}
 ## @end deftypefn
 

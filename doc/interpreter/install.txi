@@ -191,7 +191,7 @@ The following external packages are required:
 @table @asis
 @item BLAS
 Basic Linear Algebra Subroutine library.  Accelerated @sc{blas} libraries such
-as OpenBLAS (@url{http://www.openblas.net/}) or
+as OpenBLAS (@url{https://www.openblas.net/}) or
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommended for best
 performance.  The reference implementation (@url{http://www.netlib.org/blas})
 is slow, unmaintained, and suffers from certain bugs in corner case inputs.
@@ -200,14 +200,14 @@ is slow, unmaintained, and suffers from certain bugs in corner case inputs.
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
 
 @item PCRE
-The Perl Compatible Regular Expression library (@url{http://www.pcre.org}).
+The Perl Compatible Regular Expression library (@url{https://www.pcre.org}).
 @end table
 
 The following external package is optional but strongly recommended:
 
 @table @asis
 @item GNU Readline
-Command-line editing library (@url{www.gnu.org/s/readline}).
+Command-line editing library (@url{https://www.gnu.org/s/readline}).
 @end table
 
 If you wish to build Octave without GNU readline installed, you must use
@@ -218,12 +218,12 @@ The following external software packages are optional but recommended:
 @table @asis
 @item ARPACK
 Library for the solution of large-scale eigenvalue problems
-(@url{http://forge.scilab.org/index.php/p/arpack-ng}).  @sc{arpack} is
+(@url{https://forge.scilab.org/index.php/p/arpack-ng}).  @sc{arpack} is
 required to provide the functions @code{eigs} and @code{svds}.
 
 @item cURL
 Library for transferring data with URL syntax
-(@url{http://curl.haxx.se}).  cURL is required to provide the
+(@url{https://curl.haxx.se}).  cURL is required to provide the
 @code{urlread} and @code{urlwrite} functions and the @code{ftp} class.
 
 @item FFTW3
@@ -238,11 +238,11 @@ used to provide windows for Octave's OpenGL-based graphics functions.
 
 @item fontconfig
 Library for configuring and customizing font access
-(@url{http://www.freedesktop.org/wiki/Software/fontconfig}).  Fontconfig
+(@url{https://www.freedesktop.org/wiki/Software/fontconfig}).  Fontconfig
 is used to manage fonts for Octave's OpenGL-based graphics functions.
 
 @item FreeType
-Portable font engine (@url{http://www.freetype.org}).  FreeType is used
+Portable font engine (@url{https://www.freetype.org}).  FreeType is used
 to perform font rendering for Octave's OpenGL-based graphics functions.
 
 @item GLPK
@@ -250,7 +250,7 @@ GNU Linear Programming Kit (@url{https://www.gnu.org/software/glpk}).
 GPLK is required for the function @code{glpk}.
 
 @item @nospell{gl2ps}
-OpenGL to PostScript printing library (@url{http://www.geuz.org/gl2ps/}).
+OpenGL to PostScript printing library (@url{https://www.geuz.org/gl2ps/}).
 @nospell{gl2ps} is required for printing when using OpenGL-based
 graphics toolkits (currently either FLTK or Qt).
 
@@ -265,7 +265,7 @@ functions.
 
 @item HDF5
 Library for manipulating portable data files
-(@url{http://www.hdfgroup.org/HDF5}).  @sc{hdf5} is required for Octave's
+(@url{https://www.hdfgroup.org/HDF5}).  @sc{hdf5} is required for Octave's
 @code{load} and @code{save} commands to read and write HDF data files.
 
 @item Java Development Kit
@@ -275,12 +275,12 @@ although other JDK implementations may work.  Java is required to be able
 to call Java functions from within Octave.
 
 @item LLVM
-Compiler framework, (@url{http://www.llvm.org}).  LLVM is required for
+Compiler framework, (@url{https://www.llvm.org}).  LLVM is required for
 Octave's experimental just-in-time (JIT) compilation for speeding up the
 interpreter.
 
 @item OpenGL
-API for portable 2-D and 3-D graphics (@url{http://www.opengl.org}).  An
+API for portable 2-D and 3-D graphics (@url{https://www.opengl.org}).  An
 OpenGL implementation is required to provide Octave's OpenGL-based
 graphics functions.  Octave's OpenGL-based graphics functions usually
 outperform the gnuplot-based graphics functions because plot data can be
@@ -301,7 +301,7 @@ required to provide the functions @code{convhull}, @code{convhulln},
 
 @item QRUPDATE
 QR factorization updating library
-(@url{http://sourceforge.net/projects/qrupdate}).  QRUPDATE is used to
+(@url{https://sourceforge.net/projects/qrupdate}).  QRUPDATE is used to
 provide improved performance for the functions @code{qrdelete},
 @code{qrinsert}, @code{qrshift}, and @code{qrupdate}.
 
@@ -318,18 +318,18 @@ required are the GUI, core, and network modules.
 
 @item SuiteSparse
 Sparse matrix factorization library
-(@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse}).
+(@url{http://faculty.cse.tamu.edu/davis/suitesparse.html}).
 SuiteSparse is required to provide sparse matrix factorizations and
 solution of linear equations for sparse systems.
 
 @item SUNDIALS
 @nospell{The SUite of Nonlinear and DIfferential/ALgebraic Equation Solvers}
-(@url{http://computation.llnl.gov/projects/sundials}) is required for
+(@url{https://computation.llnl.gov/projects/sundials}) is required for
 the Ordinary Differential Equations (ODE) solvers @code{ode15i} and
 @code{ode15s}.
 
 @item zlib
-Data compression library (@url{http://zlib.net}).  The zlib library is
+Data compression library (@url{https://zlib.net}).  The zlib library is
 required for Octave's @code{load} and @code{save} commands to handle
 compressed data, including @sc{matlab} v5 MAT files.
 @end table
@@ -696,7 +696,7 @@ compiling Suite Sparse and Octave.  In the following we assume that
 you installed the @sc{lapack} library as $prefix64/lib/liblapack.a.
 @end itemize
 
-@item QRUPDATE (@url{http://sourceforge.net/projects/qrupdate})
+@item QRUPDATE (@url{https://sourceforge.net/projects/qrupdate})
 
 In the @file{Makeconf} file:
 
@@ -720,7 +720,7 @@ Run @code{make install} to install the library.
 @end itemize
 
 @item
-SuiteSparse (@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse})
+SuiteSparse (@url{http://faculty.cse.tamu.edu/davis/suitesparse.html})
 
 Pass the following options to @command{make} to enable 64-bit integers
 for @sc{blas} library calls.  On 64-bit Windows systems, use
@@ -753,7 +753,7 @@ done
 @noindent
 Other systems may require a different solution.
 
-@item @sc{arpack} (http://forge.scilab.org/index.php/p/arpack-ng/)
+@item @sc{arpack} (@url{https://forge.scilab.org/index.php/p/arpack-ng/})
 
 @itemize @minus
 @item Add @option{-fdefault-integer-8} to @env{FFLAGS} when running configure.

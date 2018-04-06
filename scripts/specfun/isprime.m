@@ -29,7 +29,7 @@
 ## This is equivalent to @code{isprime (abs (x))}.
 ##
 ## If @code{class (@var{x})} is complex, then primality is tested in the domain
-## of Gaussian integers (@url{http://en.wikipedia.org/wiki/Gaussian_integer}).
+## of Gaussian integers (@url{https://en.wikipedia.org/wiki/Gaussian_integer}).
 ## Some non-complex integers are prime in the ordinary sense, but not in the
 ## domain of Gaussian integers.  For example, @math{5 = (1+2i)*(1-2i)} shows
 ## that 5 is not prime because it has a factor other than itself and 1.

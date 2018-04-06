@@ -248,7 +248,7 @@
 ## @nospell{Y. Saad}, @cite{Iterative Methods for Sparse Linear Systems},
 ## @nospell{PWS} 1996. (condition number estimate from PCG)
 ## Revised version of this book is available online at
-## @url{http://www-users.cs.umn.edu/~saad/books.html}
+## @url{https://www-users.cs.umn.edu/~saad/books.html}
 ## @end enumerate
 ##
 ## @seealso{sparse, pcr, gmres, bicg, bicgstab, cgs}

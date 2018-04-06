@@ -123,13 +123,13 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate
 or out-of-order row indices.  @code{@var{stats}(8 : 20)} is always zero in
 the current version of @sc{ccolamd} (reserved for future use).
 
-The authors of the code itself are @nospell{S. Larimore, T. Davis}
-(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with
-@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation
+The authors of the code itself are @nospell{S. Larimore, T. Davis} and
+@nospell{S. Rajamanickam} in collaboration with @nospell{J. Bilbert and E. Ng}.
+Supported by the National Science Foundation
 @nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from
 @nospell{Sandia} National Lab.
-See @url{http://www.cise.ufl.edu/research/sparse} for
-ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
+See @url{http://faculty.cse.tamu.edu/davis/suitesparse.html} for ccolamd,
+csymamd, amd, colamd, symamd, and other related orderings.
 @seealso{colamd, csymamd}
 @end deftypefn */)
 {
@@ -388,13 +388,13 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate
 or out-of-order row indices.  @code{@var{stats}(8:20)} is always zero in
 the current version of @sc{ccolamd} (reserved for future use).
 
-The authors of the code itself are @nospell{S. Larimore, T. Davis}
-(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with
-@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation
+The authors of the code itself are @nospell{S. Larimore, T. Davis} and
+@nospell{S. Rajamanickam} in collaboration with @nospell{J. Bilbert and E. Ng}.
+Supported by the National Science Foundation
 @nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from
 @nospell{Sandia} National Lab.
-See @url{http://www.cise.ufl.edu/research/sparse} for
-ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
+See @url{http://faculty.cse.tamu.edu/davis/suitesparse.html} for ccolamd,
+colamd, csymamd, amd, colamd, symamd, and other related orderings.
 @seealso{symamd, ccolamd}
 @end deftypefn */)
 {

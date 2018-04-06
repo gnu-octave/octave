@@ -99,7 +99,7 @@ The National Science Foundation, through grant numbers @nospell{CTS-0105360},
 
 @item
 The industrial members of the Texas-Wisconsin Modeling and Control
-Consortium (@url{http://www.che.utexas.edu/twmcc, TWMCC}).
+Consortium (TWMCC).
 
 @item
 The @nospell{Paul A. Elfers} Endowed Chair in Chemical Engineering at the

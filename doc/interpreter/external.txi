@@ -1800,8 +1800,7 @@ $
 
 The Java Interface is designed for calling Java functions from within Octave.
 If you want to do the reverse, and call Octave from within Java, try a library
-like @code{javaOctave} (@url{https://kenai.com/projects/javaoctave/pages/Home})
-or @code{joPas} (@url{http://jopas.sourceforge.net/}).
+like @code{joPas} (@url{http://jopas.sourceforge.net}).
 
 @menu
 * Making Java Classes Available::

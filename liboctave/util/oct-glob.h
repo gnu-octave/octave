@@ -43,14 +43,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::fnmatch' instead")
-const auto octave_fnmatch = octave::sys::fnmatch;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::glob' instead")
-const auto octave_glob = octave::sys::glob;
-
-#endif
-
 #endif

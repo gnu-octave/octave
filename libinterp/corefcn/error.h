@@ -52,14 +52,6 @@ vmessage (const char *name, const char *fmt, va_list args);
 
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
-OCTAVE_DEPRECATED (4.2, "use 'print_usage' or 'verror' instead")
-OCTAVE_NORETURN OCTINTERP_API extern
-void vusage (const char *fmt, va_list args);
-
-OCTAVE_DEPRECATED (4.2, "use 'print_usage' or 'error' instead")
-OCTAVE_NORETURN OCTINTERP_API extern
-void usage (const char *fmt, ...);
-
 extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
 extern OCTINTERP_API void warning (const char *fmt, ...);
 

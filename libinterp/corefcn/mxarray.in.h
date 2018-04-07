@@ -303,12 +303,6 @@ protected:
 
   mxArray_base (const mxArray_base&) { }
 
-  OCTAVE_DEPRECATED (4.2, "use 'err_invalid_type' instead")
-  void invalid_type_error (void) const
-  {
-    error ("invalid type for operation");
-  }
-
   OCTAVE_NORETURN void err_invalid_type (void) const
   {
     error ("invalid type for operation");

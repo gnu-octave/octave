@@ -59,16 +59,6 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::round' instead")
-inline long double xround (long double x) { return octave::math::round (x); }
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::isnan' instead")
-inline bool xisnan (long double x) { return octave::math::isnan (x); }
-
-#endif
-
 #endif
 
 // FIXME: we define this by our own because some compilers, such as
@@ -993,18 +983,6 @@ namespace octave
     }
   }
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-template <typename T>
-OCTAVE_DEPRECATED (4.2, "use 'octave::math::isnan' instead")
-bool
-xisnan (const octave_int<T>& x)
-{
-  return octave::math::isnan (x);
-}
-
-#endif
 
 // FIXME: can/should any of these be inline?
 

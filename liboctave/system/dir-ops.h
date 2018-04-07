@@ -97,11 +97,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::dir_entry' instead")
-typedef octave::sys::dir_entry dir_entry;
-
-#endif
-
 #endif

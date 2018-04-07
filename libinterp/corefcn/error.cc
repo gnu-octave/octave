@@ -478,21 +478,6 @@ usage_1 (const char *id, const char *fmt, va_list args)
 }
 
 void
-vusage (const char *fmt, va_list args)
-{
-  usage_1 ("", fmt, args);
-}
-
-void
-usage (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  usage_1 ("", fmt, args);
-  va_end (args);
-}
-
-void
 vusage_with_id (const char *id, const char *fmt, va_list args)
 {
   usage_1 (id, fmt, args);

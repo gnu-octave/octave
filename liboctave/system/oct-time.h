@@ -536,23 +536,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::time' instead")
-typedef octave::sys::time octave_time;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::base_tm' instead")
-typedef octave::sys::base_tm octave_base_tm;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::localtime' instead")
-typedef octave::sys::localtime octave_localtime;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::gmtime' instead")
-typedef octave::sys::gmtime octave_gmtime;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::strptime' instead")
-typedef octave::sys::strptime octave_strptime;
-
-#endif
-
 #endif

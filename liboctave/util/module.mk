@@ -10,7 +10,6 @@ UTIL_INC = \
   %reldir%/functor.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
-  %reldir%/lo-array-gripes.h \
   %reldir%/lo-cutils.h \
   %reldir%/lo-hash.h \
   %reldir%/lo-ieee.h \
@@ -71,7 +70,6 @@ UTIL_SRC = \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
   %reldir%/lo-array-errwarn.cc \
-  %reldir%/lo-array-gripes.cc \
   %reldir%/lo-hash.cc \
   %reldir%/lo-ieee.cc \
   %reldir%/lo-regexp.cc \

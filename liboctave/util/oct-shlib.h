@@ -202,11 +202,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::dynamic_library' instead")
-typedef octave::dynamic_library octave_shlib;
-
-#endif
-
 #endif

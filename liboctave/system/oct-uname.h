@@ -94,11 +94,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::uname' instead")
-typedef octave::sys::uname octave_uname;
-
-#endif
-
 #endif

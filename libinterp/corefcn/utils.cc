@@ -235,12 +235,6 @@ done:
   return status;
 }
 
-int
-empty_arg (const char * /* name */, octave_idx_type nr, octave_idx_type nc)
-{
-  return (nr == 0 || nc == 0);
-}
-
 // See if the given file is in the path.
 
 std::string
@@ -534,80 +528,6 @@ contents_file_in_path (const std::string& dir)
 
       if (fs.exists ())
         retval = octave::sys::env::make_absolute (tcontents);
-    }
-
-  return retval;
-}
-
-// Deprecated in 4.2, remove in 4.6.
-// See if there is a .oct file in the path.
-// If so, return the full path to the file.
-
-std::string
-oct_file_in_path (const std::string& name)
-{
-  std::string retval;
-
-  int len = name.length ();
-
-  if (len > 0)
-    {
-      if (octave::sys::env::absolute_pathname (name))
-        {
-          octave::sys::file_stat fs (name);
-
-          if (fs.exists ())
-            retval = name;
-        }
-      else if (len > 4 && name.find (".oct", len-5))
-        {
-          octave::load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
-
-          retval = lp.find_oct_file (name.substr (0, len-4));
-        }
-      else
-        {
-          octave::load_path& lp = octave::__get_load_path__ ("oct_file_in_path");
-
-          retval = lp.find_oct_file (name);
-        }
-    }
-
-  return retval;
-}
-
-// Deprecated in 4.2, remove in 4.6.
-// See if there is a .mex file in the path.
-// If so, return the full path to the file.
-
-std::string
-mex_file_in_path (const std::string& name)
-{
-  std::string retval;
-
-  int len = name.length ();
-
-  if (len > 0)
-    {
-      if (octave::sys::env::absolute_pathname (name))
-        {
-          octave::sys::file_stat fs (name);
-
-          if (fs.exists ())
-            retval = name;
-        }
-      else if (len > 4 && name.find (".mex", len-5))
-        {
-          octave::load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
-
-          retval = lp.find_mex_file (name.substr (0, len-4));
-        }
-      else
-        {
-          octave::load_path& lp = octave::__get_load_path__ ("mex_file_in_path");
-
-          retval = lp.find_mex_file (name);
-        }
     }
 
   return retval;

@@ -33,7 +33,7 @@
 ## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
 ## parameters to @code{Afun} are passed after @var{x0}.
 ##
-## @var{A} has to be Hermitian and Positive Definite (@nospell{HPD}).  If
+## @var{A} has to be Hermitian and Positive Definite (@nospell{HPD})@.  If
 ## @code{pcg} detects @var{A} not to be positive definite, a warning
 ## is printed and the @var{flag} output is set.
 ##
@@ -456,190 +456,12 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
   endif
 endfunction
 
-%!test
-%! ## Check that all type of inputs work
-%! A = toeplitz (sparse ([2, 1 ,0, 0, 0]));
-%! b = A * ones (5, 1);
-%! M1 = diag (sqrt (diag (A)));
-%! M2 = M1; # M1 * M2 is the Jacobi preconditioner
-%! Afun = @(z) A*z;
-%! M1_fun = @(z) M1 \ z;
-%! M2_fun = @(z) M2 \ z;
-%! [x, flag, ~, iter] = pcg (A,b);
-%! assert (flag, 0)
-%! [x, flag, ~ , iter] = pcg (A, b, [], [], M1 * M2);
-%! assert (flag, 0)
-%! [x, flag, ~ , iter] = pcg (A, b, [], [], M1, M2);
-%! assert (flag, 0)
-%! [x, flag] = pcg (A, b, [], [], M1_fun, M2_fun);
-%! assert (flag, 0)
-%! [x, flag] = pcg (A, b,[],[], M1_fun, M2);
-%! assert (flag, 0)
-%! [x, flag] = pcg (A, b,[],[], M1, M2_fun);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b,[],[], M1 * M2);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b,[],[], M1, M2);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b,[],[], M1, M2_fun);
-%! assert (flag, 0)
-%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2_fun);
-%! assert (flag, 0)
-
-%!test
-%! ## solve small diagonal system
-%!
-%! N = 10;
-%! A = diag ([1:N]); b = rand (N, 1);
-%! X = A \ b;  # X is the true solution
-%! [x, flag] = pcg (A, b, [], N+1);
-%! assert (norm (x - X) / norm (X), 0, 1e-10);
-%! assert (flag, 0);
-
-%!test
-%! ## A not positive definite
-%! ## The indefiniteness of A is detected.
-%!
-%! N = 10;
-%! A = -diag ([1:N]); b = sum (A, 2);
-%! [x, flag] = pcg (A, b, [], N + 1);
-%! assert (flag, 4)
-
-
-%!test
-%! ## solve tridiagonal system, do not converge in default 20 iterations
-%! N = 100;
-%! A = zeros (N, N);
-%! for i = 1 : N - 1 # form 1-D Laplacian matrix
-%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
-%! endfor
-%! b = ones (N, 1);
-%! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, 1e-12);
-%! assert (flag);
-%! assert (relres >= 1.0);
-
-%!warning <iteration converged too fast>
-%! ## solve tridiagonal system with "perfect" preconditioner which converges
-%! ## in one iteration, so the eigest does not work and issues a warning.
-%!
-%! N = 100;
-%! A = zeros (N, N);
-%! for i = 1 : N - 1  # form 1-D Laplacian matrix
-%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
-%! endfor
-%! b = ones (N, 1);
-%! X = A \ b;  # X is the true solution
-%! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
-%! assert (norm (x - X) / norm (X), 0, 1e-6);
-%! assert (flag, 0);
-%! assert (iter, 1); # should converge in one iteration
-%! assert (isnan (eigest), isnan ([NaN, NaN]));
-
-%!test
-%! ## pcg detect a non-Hermitian matrix, with a considerable imaginary part
-%! ## With this example, Matlab doesn't recognize the wrong type of matrix and
-%! ## makes iterations until it reaches maxit
-%! N = 10;
-%! A = diag (1:N) + 1i * 1e-04;
-%! b = ones (N, 1);
-%! [x,flag] = pcg (A, b, []);
-%! assert (flag, 4)
-
-%!test
-%! ## The imaginary part is not influent (it is too small), so pcg doesn't stop
-%! N = 10;
-%! A = diag (1:N) + 1i * 1e-10;
-%! b = ones (N, 1);
-%! [x,flag] = pcg (A, b, [], N+1);
-%! assert (flag, 0)
-%! assert (x, A \ b, -1e-6)
-
-%!test
-%! ## pcg solves linear system with A Hermitian positive definite
-%! N = 20;
-%! A = toeplitz (sparse ([4, 1, zeros(1, 18)])) + ...
-%! 1i * toeplitz (sparse ([0, 1, zeros(1, 18)]), ...
-%! sparse ([0, -1, zeros(1,18)]));
-%! b = A * ones (N, 1);
-%! Hermitian_A = ishermitian (A);
-%! [x,flag] = pcg (A, b, [], 2*N);
-%! assert (Hermitian_A, true)
-%! assert (flag, 0)
-%! assert (x, ones (N, 1), -1e-4)
-
-%!testif HAVE_CHOLMOD
-%! ## pcg solves preconditioned linear system with A HPD
-%! N = 20;
-%! A = toeplitz (sparse ([4, 1, zeros(1, 18)])) + ...
-%! 1i * toeplitz (sparse ([0, 1, zeros(1, 18)]), ...
-%! sparse ([0, -1, zeros(1,18)]));
-%! b = A * ones (N, 1);
-%! M2 = chol (A + 0.1 * eye (N)); # factor of a perturbed matrix
-%! M = M2' * M2;
-%! Hermitian_A = ishermitian (A);
-%! Hermitian_M = ishermitian (M);
-%! [x,flag] = pcg (A, b, [], 2*N, M);
-%! assert (Hermitian_A, true)
-%! assert (Hermitian_M, true)
-%! assert (flag, 0)
-%! assert (x, ones (N, 1), -1e-4)
-
-%!test
-%! ## pcg recognizes that the preconditioner matrix is singular
-%! N = 3;
-%! A = toeplitz ([2, 1, 0]);
-%! M = [1 0 0; 0 1 0; 0 0 0]; # the last rows is zero
-%! [x, flag] = pcg (A, ones(3, 1), [], [], M);
-%! assert (flag, 2)
-
-%!test
-%! A = rand (4);
-%! A = A' * A;
-%! [x, flag] = pcg (A, zeros (4, 1), [], [], [], [], ones (4, 1));
-%! assert (x, zeros (4, 1))
-
-%!test
-%! A = single (1);
-%! b = 1;
-%! [x, flag] = pcg (A, b);
-%! assert (class (x), "single")
-
-%!test
-%! A = 1;
-%! b = single (1);
-%! [x, flag] = pcg (A, b);
-%! assert (class (x), "single")
-
-%!test
-%! A = single (1);
-%! b = single (1);
-%! [x, flag] = pcg (A, b);
-%! assert (class (x), "single")
-
-%!test
-%!function y = Afun (x)
-%!   A = toeplitz ([2, 1, 0, 0]);
-%!   y = A * x;
-%!endfunction
-%! [x, flag] = pcg ("Afun", [3; 4; 4; 3]);
-%! assert (x, ones(4, 1), 1e-6)
-
-%!test # unpreconditioned residual
-%! A = toeplitz (sparse ([4, 1, 0, 0, 0]));
-%! b = sum (A, 2);
-%! M = toeplitz (sparse ([2, 1, 0, 0, 0]));
-%! [x, flag, relres] = pcg (A, b, [], 2, M);
-%! assert (relres, norm ((b - A * x)) / norm (b), 8 * eps)
 
 %!demo # simplest use
 %! n = 10;
 %! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, n));
 %! b = A * ones (n, 1);
-%! M1 = ichol (A); # in this tridiagonal case it corresponds to chol (A)'
+%! M1 = ichol (A);  # for this tridiagonal case it corresponds to chol (A)'
 %! M2 = M1';
 %! M = M1 * M2;
 %! x = pcg (A, b);
@@ -652,27 +474,201 @@ endfunction
 %! M1fun = @(x) M1 \ x;
 %! M2fun = @(x) M2 \ x;
 %! x = pcg (Afun, b, 1e-6, 100, M1fun, M2fun);
-%! function y = Ap (A, x, p) # compute A^p * x
+%! function y = Ap (A, x, p)  # compute A^p * x
 %!    y = x;
 %!    for i = 1:p
 %!      y = A * y;
 %!    endfor
 %!  endfunction
 %! Afun = @(x, p) Ap (A, x, p);
-%! x = pcg (Afun, b, [], [], [], [], [], 2); # solution of A^2 * x = b
+%! ## solution of A^2 * x = b
+%! x = pcg (Afun, b, [], [], [], [], [], 2);
 
 %!demo
 %! n = 10;
 %! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, n));
 %! b = A * ones (n, 1);
-%! M1 = ichol (A + 0.1 * eye (n)); # factorization of A perturbed
+%! M1 = ichol (A + 0.1 * eye (n));  # Perturb the factorization of A
 %! M2 = M1';
 %! M = M1 * M2;
 %!
-%! ## reference solution computed by pcg after two iterations
+%! ## Reference solution computed by pcg after two iterations
 %! [x_ref, fl] = pcg (A, b, [], 2, M);
 %! x_ref
 %!
-%! ## split preconditioning
+%! ## Split preconditioning
 %! [y, fl] = pcg ((M1 \ A) / M2, M1 \ b, [], 2);
-%! x = M2 \ y # compare x and x_ref
+%! x = M2 \ y  # compare x and x_ref
+%!test
+%! ## Check that all type of inputs work
+%! A = toeplitz (sparse ([2, 1 ,0, 0, 0]));
+%! b = A * ones (5, 1);
+%! M1 = diag (sqrt (diag (A)));
+%! M2 = M1;  # M1 * M2 is the Jacobi preconditioner
+%! Afun = @(z) A*z;
+%! M1_fun = @(z) M1 \ z;
+%! M2_fun = @(z) M2 \ z;
+%! [x, flag, ~, iter] = pcg (A,b);
+%! assert (flag, 0);
+%! [x, flag, ~ , iter] = pcg (A, b, [], [], M1 * M2);
+%! assert (flag, 0);
+%! [x, flag, ~ , iter] = pcg (A, b, [], [], M1, M2);
+%! assert (flag, 0);
+%! [x, flag] = pcg (A, b, [], [], M1_fun, M2_fun);
+%! assert (flag, 0);
+%! [x, flag] = pcg (A, b,[],[], M1_fun, M2);
+%! assert (flag, 0);
+%! [x, flag] = pcg (A, b,[],[], M1, M2_fun);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b,[],[], M1 * M2);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b,[],[], M1, M2);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b,[],[], M1, M2_fun);
+%! assert (flag, 0);
+%! [x, flag] = pcg (Afun, b,[],[], M1_fun, M2_fun);
+%! assert (flag, 0);
+
+%!test
+%! ## solve a small diagonal system
+%! N = 10;
+%! A = diag ([1:N]);  b = rand (N, 1);
+%! [x, flag] = pcg (A, b, [], N+1);
+%! assert (flag, 0);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
+
+%!test
+%! ## A is not positive definite
+%! ## The indefiniteness of A is detected.
+%! N = 10;
+%! A = -diag ([1:N]);  b = sum (A, 2);
+%! [x, flag] = pcg (A, b, [], N + 1);
+%! assert (flag, 4);
+
+%!test
+%! ## solve tridiagonal system, do not converge in default 20 iterations
+%! N = 100;
+%! A = zeros (N, N);
+%! for i = 1 : N - 1  # form 1-D Laplacian matrix
+%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
+%! endfor
+%! b = ones (N, 1);
+%! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, 1e-12);
+%! assert (flag);
+%! assert (relres >= 1.0);
+
+%!warning <iteration converged too fast>
+%! ## solve tridiagonal system with "perfect" preconditioner which converges
+%! ## in one iteration, so the eigest does not work and issues a warning.
+%! N = 100;
+%! A = zeros (N, N);
+%! for i = 1 : N - 1  # form 1-D Laplacian matrix
+%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
+%! endfor
+%! b = ones (N, 1);
+%! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
+%! assert (flag, 0);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
+%! 
+%! assert (isnan (eigest), isnan ([NaN, NaN]));
+
+%!test
+%! ## pcg detect a non-Hermitian matrix, with a considerable imaginary part.
+%! ## In this example, Matlab does not recognize the wrong type of matrix and
+%! ## makes iterations until it reaches maxit.
+%! N = 10;
+%! A = diag (1:N) + 1e-4*i;
+%! b = ones (N, 1);
+%! [x, flag] = pcg (A, b, []);
+%! assert (flag, 4);
+
+%!test
+%! ## The imaginary part is not influent (it is too small), so pcg doesn't stop
+%! N = 10;
+%! A = diag (1:N) + 1e-10*i;
+%! b = ones (N, 1);
+%! [x, flag] = pcg (A, b, [], N+1);
+%! assert (flag, 0);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
+
+%!test
+%! ## pcg solves linear system with A Hermitian positive definite
+%! N = 20;
+%! A = sparse (toeplitz ([4, 1, zeros(1, 18)])) + ...
+%!     i * sparse (toeplitz ([0, 1, zeros(1, 18)], [0, -1, zeros(1,18)]));
+%! b = A * ones (N, 1);
+%! Hermitian_A = ishermitian (A);
+%! [x, flag] = pcg (A, b, [], 2*N);
+%! assert (Hermitian_A, true);
+%! assert (flag, 0);
+%! assert (x, ones (N, 1), -1e-4);
+
+%!testif HAVE_CHOLMOD
+%! ## pcg solves preconditioned linear system with A HPD
+%! N = 20;
+%! A = sparse (toeplitz ([4, 1, zeros(1, 18)])) + ...
+%!     i * sparse (toeplitz ([0, 1, zeros(1, 18)], [0, -1, zeros(1,18)]));
+%! b = A * ones (N, 1);
+%! M2 = chol (A + 0.1 * eye (N));  # Factor of a perturbed matrix
+%! M = M2' * M2;
+%! Hermitian_A = ishermitian (A);
+%! Hermitian_M = ishermitian (M);
+%! [x, flag] = pcg (A, b, [], 2*N, M);
+%! assert (Hermitian_A, true);
+%! assert (Hermitian_M, true);
+%! assert (flag, 0);
+%! assert (x, ones (N, 1), -1e-4);
+
+%!test
+%! ## pcg recognizes that the preconditioner matrix is singular
+%! N = 3;
+%! A = toeplitz ([2, 1, 0]);
+%! M = [1 0 0; 0 1 0; 0 0 0];  # the last row is zero
+%! [x, flag] = pcg (A, ones (3, 1), [], [], M);
+%! assert (flag, 2);
+
+%!test
+%! A = rand (4);
+%! A = A' * A;
+%! [x, flag] = pcg (A, zeros (4, 1), [], [], [], [], ones (4, 1));
+%! assert (x, zeros (4, 1));
+
+## Test return types
+%!test
+%! A = single (1);
+%! b = 1;
+%! [x, flag] = pcg (A, b);
+%! assert (class (x), "single");
+
+%!test
+%! A = 1;
+%! b = single (1);
+%! [x, flag] = pcg (A, b);
+%! assert (class (x), "single");
+
+%!test
+%! A = single (1);
+%! b = single (1);
+%! [x, flag] = pcg (A, b);
+%! assert (class (x), "single");
+
+%!test
+%!function y = Afun (x)
+%!   A = toeplitz ([2, 1, 0, 0]);
+%!   y = A * x;
+%!endfunction
+%! [x, flag] = pcg ("Afun", [3; 4; 4; 3]);
+%! assert (x, ones (4, 1), 1e-6);
+
+%!test
+%! ## unpreconditioned residual
+%! A = toeplitz (sparse ([4, 1, 0, 0, 0]));
+%! b = sum (A, 2);
+%! M = toeplitz (sparse ([2, 1, 0, 0, 0]));
+%! [x, flag, relres] = pcg (A, b, [], 2, M);
+%! assert (norm (b - A * x) / norm (b), relres,  8 * eps);
+

@@ -20,7 +20,7 @@
 ## @deftypefn  {} {@var{fname} =} tmpnam ()
 ## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir})
 ## @deftypefnx {} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
-## @code{tmpnam} is deprecated and will be removed in Octave version 4.8.
+## @code{tmpnam} is deprecated and will be removed in Octave version 6.
 ## Use @code{tempname} instead.
 ##
 ## Return a unique temporary filename as a string.

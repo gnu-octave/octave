@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} chop (@var{x}, @var{ndigits}, @var{base})
 ##
-## @code{chop} is deprecated and will be removed in Octave version 4.8.
+## @code{chop} is deprecated and will be removed in Octave version 6.
 ##
 ## Truncate elements of @var{x} to a length of @var{ndigits} such that the
 ## resulting numbers are exactly divisible by @var{base}.

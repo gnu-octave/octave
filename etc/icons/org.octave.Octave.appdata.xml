@@ -75,4 +75,8 @@
   <url type="faq">https://wiki.octave.org/FAQ</url>
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
+  <developer_name>John W. Eaton and others</developer_name>
+  <releases>
+    <release date="2018-03-13" version="4.2.2"/>
+  </releases>
 </component>

@@ -270,6 +270,8 @@ namespace octave
 
     static QStringList color_names (void);
 
+    void tab_to_front (void);
+
   public slots:
 
     void callUpdate (const QModelIndex&, const QModelIndex&);

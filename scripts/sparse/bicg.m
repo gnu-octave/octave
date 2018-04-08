@@ -536,6 +536,7 @@ endfunction
 %!testif HAVE_UMFPACK
 %! A = sparse (toeplitz ([2, 1, 0, 0, 0], [2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [M1, M2] = lu (A + eye (5));
 %! [x, flag] = bicg (A, b, [], 1, M1, M2);
 %! ## b has two columns!

@@ -20,11 +20,8 @@
 ## values (radio strings only) should not be accepted, in a given future
 ## version.  Don't forget to add a note in the NEWS file.
 
-%!function testprop (h, prop, vrs, val = [])
-%!  vrsmax = strsplit (vrs, ".");
-%!  vrscur = strsplit (version (), ".");
-%!  if (num2str (vrsmax{1}) < num2str (vrscur{1}) ||
-%!      num2str (vrsmax{2}) < num2str (vrscur{2}))
+%!function testprop (h, prop, removal_version, val = [])
+%!  if (compare_versions (version (), removal_version, ">="))
 %!    if (isempty (val) && isprop (h, prop))
 %!      error ("Please remove %s property %s", get (h, "type"), prop);
 %!    elseif (! isempty (val) && any (strcmp (val, set (h, prop))))

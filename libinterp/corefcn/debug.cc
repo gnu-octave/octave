@@ -1160,11 +1160,14 @@ the Octave prompt.
   if (args.length () != 0)
     print_usage ();
 
+  // FIXME: there are too many debug mode flags!
+
   Vdebugging = false;
 
   octave::tree_evaluator::reset_debug_state ();
+  octave::tree_evaluator::debug_mode = false;
 
-  octave_throw_interrupt_exception ();
+  throw octave::interrupt_exception ();
 
   return ovl ();
 }

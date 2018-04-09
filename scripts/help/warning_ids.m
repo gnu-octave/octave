@@ -182,8 +182,8 @@
 ## issued when Octave does not find the target of a file operation such as
 ## @code{load} or @code{fopen} directly, but is able to locate the file in
 ## Octave's search @code{path} for files.  The warning could indicate that a
-## different file target then the programmer intended is being used.
-## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
+## different file target than the programmer intended is being used.
+## By default, the @code{Octave:data-file-in-path} warning is enabled.
 ##
 ## @item Octave:function-name-clash
 ## If the @code{Octave:function-name-clash} warning is enabled, a

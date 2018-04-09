@@ -1079,6 +1079,7 @@ namespace octave
           }
 
         // Put existing variable in focus and raise
+        m_main->parentWidget ()->show ();
         existing_qdw->show ();
         existing_qdw->raise ();
         existing_qdw->activateWindow ();
@@ -1181,6 +1182,7 @@ namespace octave
     if (viewlist.size () == 1)
       m_tool_bar->setEnabled (true);
 
+    m_main->parentWidget ()->show ();
     page->show ();
     page->raise ();
     page->activateWindow ();

@@ -2761,9 +2761,10 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type=>De huidige inhoud van de editor kan niet worden gecodeerd
+        <translation>De huidige inhoud van de editor kan niet worden gecodeerd
 met de geselecteerde codering %1.
 Deze toch gebruiken leidt tot gegevensverlies!
+
 Wilt u een andere codering kiezen?</translation>
     </message>
     <message>

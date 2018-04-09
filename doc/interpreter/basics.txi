@@ -113,9 +113,9 @@ specified on the command line will override any value of
 in the system or user startup files that set the built-in variable
 @w{@env{EXEC_PATH}}.
 
-@item --force-gui
-@cindex @sortas{options, Octave command --force-gui} @ @ @code{--force-gui}
-Force the graphical user interface (GUI) to start.
+@item --gui
+@cindex @sortas{options, Octave command --gui} @ @ @code{--gui}
+Start the graphical user interface (GUI).
 
 @item  --help
 @itemx -h
@@ -165,7 +165,8 @@ Force readline use for command-line editing.
 @item --no-gui
 @cindex @sortas{options, Octave command --no-gui} @ @ @code{--no-gui}
 Disable the graphical user interface (GUI) and use the command line
-interface (CLI) instead.
+interface (CLI) instead.  This is the default behavior, but this option
+may be useful to override a previous @option{--gui}.
 
 @item  --no-history
 @itemx -H

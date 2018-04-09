@@ -11,7 +11,7 @@
 @copying
 Manual for the example-package for Octave.
 
-Copyright @copyright{} 2017 @email{Olaf Till <i7tiol@@t-online.de>}
+Copyright @copyright{} 2017-2018 @email{Olaf Till <i7tiol@@t-online.de>}
 
 You can redistribute this documentation and/or modify it under the terms
 of the GNU General Public License as published by the Free Software

@@ -1,4 +1,4 @@
-@c Copyright (C) 2012-2013 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -25,7 +25,7 @@
 @end macro
 
 @c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is 
+@c which is `XXX'.  This looks particularly bad when the macro body is
 @c single or double-quoted text, such as a property value `"position"'
 @ifinfo
 @rmacro qcode{arg}
@@ -46,7 +46,7 @@
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
 @c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior. 
+@c for HTML.  We use a simple blank line to produce the correct behavior.
 
 @macro seealso {args}
 @iftex

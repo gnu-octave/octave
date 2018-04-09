@@ -37,7 +37,7 @@
 ## see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are
 ## equivalent with the latter provided for @sc{matlab} compatibility.
 ##
-## @strong{Caution}: @code{tmpnam} will be removed in Octave version 4.8, or
+## @strong{Caution}: @code{tmpnam} will be removed in Octave version 6, or
 ## whatever the version number is two releases from 4.4. Use the equivalent
 ## @code{tempname} in all new code.
 ## @seealso{tempname, mkstemp, tempdir, P_tmpdir, tmpfile}

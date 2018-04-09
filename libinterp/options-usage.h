@@ -59,7 +59,8 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define DOC_CACHE_FILE_OPTION 2
 #define EVAL_OPTION 3
 #define EXEC_PATH_OPTION 4
-#define FORCE_GUI_OPTION 5 // ignored since Octave 4.4, remove for 4.8
+// FIXME: DEPRECATED: ignored since Octave 4.4, remove for version 6.
+#define FORCE_GUI_OPTION 5
 #define GUI_OPTION 5
 #define IMAGE_PATH_OPTION 6
 #define INFO_FILE_OPTION 7

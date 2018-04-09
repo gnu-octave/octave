@@ -34,7 +34,7 @@
 %!  endif
 %!endfunction
 
-## annotation rectangle "edgecolor" deprecated in 4.4, remove from 6.
+## annotation rectangle "edgecolor" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -45,7 +45,7 @@
 %! end_unwind_protect
 
 ## figure "doublebuffer, mincolormap, wvisual, wvisualmode, xdisplay,
-## xvisual, xvisualmode" deprecated in 4.4, remove from 6.
+## xvisual, xvisualmode" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -60,7 +60,7 @@
 %!   close (hf)
 %! end_unwind_protect
 
-## axes "drawmode" deprecated in 4.4, remove from 6.
+## axes "drawmode" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -71,7 +71,7 @@
 %! end_unwind_protect
 
 ## text/uicontrol/uipanel/uibuttongroup  "demi" and "light" values for
-## "fontweight" property are deprecated in 4.4, remove from 6.
+## "fontweight" property are deprecated in 4.4, remove from version 6:
 ##   * remove "demi" and "light" options in graphics.in.h,
 ##   QtHandlesUtils.cc and ft-text-renderer.cc
 ##   * remove warnings from update_fontweight in graphics.in.h

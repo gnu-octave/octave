@@ -1,4 +1,4 @@
-## Copyright (C) 2015 Markus Bergholz
+## Copyright (C) 2015-2018 Markus Bergholz
 ##
 ## This file is part of Octave.
 ##

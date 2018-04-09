@@ -36,7 +36,7 @@
 ## @seealso{double, char}
 ## @end deftypefn
 
-## Remove in version 4.8.
+## FIXME: DEPRECATED: Remove in version 6.
 
 function retval = toascii (str)
 

@@ -114,7 +114,7 @@ OCTAVE_DEPRECATED (4.2, "use 'err_not_implemented' instead")
 OCTAVE_NORETURN OCTINTERP_API extern void
 gripe_not_implemented (const char *);
 
-// FIXME: Deprecated in 4.2, remove in 4.6
+// FIXME: DEPRECATED: Deprecated in 4.2, remove in 5.0
 OCTAVE_DEPRECATED (4.2, "use 'err_disabled_feature' or 'warn_disabled_feature' instead")
 OCTAVE_NORETURN OCTINTERP_API extern void
 gripe_not_supported (const char *);

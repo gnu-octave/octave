@@ -114,7 +114,6 @@ COREFCN_SRC = \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \
   %reldir%/__lin_interpn__.cc \
-  %reldir%/__luinc__.cc \
   %reldir%/__magick_read__.cc \
   %reldir%/__pchip_deriv__.cc \
   %reldir%/__qp__.cc \

@@ -29,13 +29,13 @@
 ##
 ## @itemize
 ## @item @var{A} is the matrix of the linear system and it must be square.
-## @var{A} can be passed as a matrix, function handle, or inline
-## function @code{Afun} such that @code{Afun(x) = A * x}.  Additional
-## parameters to @code{Afun} are passed after @var{x0}.
+## @var{A} can be passed as a matrix, function handle, or inline function
+## @code{Afun} such that @code{Afun(x) = A * x}.  Additional parameters to
+## @code{Afun} may be passed after @var{x0}.
 ##
 ## @var{A} has to be Hermitian and Positive Definite (@nospell{HPD})@.  If
-## @code{pcg} detects @var{A} not to be positive definite, a warning
-## is printed and the @var{flag} output is set.
+## @code{pcg} detects @var{A} not to be positive definite, a warning is printed
+## and the @var{flag} output is set.
 ##
 ## @item
 ## @var{b} is the right-hand side vector.
@@ -54,7 +54,7 @@
 ## @item
 ## @var{m} is a @nospell{HPD} preconditioning matrix.  For any decomposition
 ## @code{@var{m} = @var{p1} * @var{p2}} such that
-## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is @nospell{HPD,} the
+## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2})}} is @nospell{HPD}, the
 ## conjugate gradient method is formally applied to the linear system
 ## @w{@code{inv (@var{p1}) * @var{A} * inv (@var{p2}) * @var{y} = inv
 ## (@var{p1}) * @var{b}}},
@@ -81,8 +81,8 @@
 ## @end itemize
 ##
 ## The arguments which follow @var{x0} are treated as parameters, and passed in
-## a proper way to any of the functions (@var{A} or @var{m1} or
-## @var{m2}) which are passed to @code{pcg}.
+## an appropriate manner to any of the functions (@var{A} or @var{m1} or
+## @var{m2}) that have been given to @code{pcg}.
 ## See the examples below for further details.
 ##
 ## The output arguments are:
@@ -91,13 +91,13 @@
 ## @item
 ## @var{x} is the computed approximation to the solution of
 ## @w{@code{@var{A} * @var{x} = @var{b}}}.  If the algorithm did not converge,
-## then @var{x} is the iterated which has the minimum residual.
+## then @var{x} is the iteration which has the minimum residual.
 ##
 ## @item
 ## @var{flag} reports on the convergence:
 ##
 ## @itemize
-## @item 0: The algorithm converged at the prescribed tolerance.
+## @item 0: The algorithm converged to within the prescribed tolerance.
 ##
 ## @item 1: The algorithm did not converge and it reached the maximum
 ## number of iterations.
@@ -105,9 +105,8 @@
 ## @item 2: The preconditioner matrix is singular.
 ##
 ## @item 3: The algorithm stagnated, i.e., the absolute value of the
-## difference between
-## the actual iteration @var{x} and the previous is less than
-## @code{@var{eps} * norm (@var{x},2)}.
+## difference between the current iteration @var{x} and the previous is less
+## than @code{@var{eps} * norm (@var{x},2)}.
 ##
 ## @item 4: The algorithm detects that the input (preconditioned) matrix is not
 ## @nospell{HPD}.

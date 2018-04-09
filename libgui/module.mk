@@ -17,6 +17,7 @@ octlib_LTLIBRARIES += %reldir%/liboctgui.la
 
 TRANSLATIONS = \
   %reldir%/languages/be_BY.ts \
+  %reldir%/languages/ca_ES.ts \
   %reldir%/languages/de_DE.ts \
   %reldir%/languages/en_US.ts \
   %reldir%/languages/es_ES.ts \

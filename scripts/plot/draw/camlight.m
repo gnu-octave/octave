@@ -250,13 +250,13 @@ endfunction
 %!   set (gca (), "cameratarget", [0.5 -0.3 -0.3]);
 %!   h = camlight (45, 20);
 %!   A = get (h, "position");
-%!   ## From maillist, someone tested on Matlab R2015b for OSX:
-%!   B = [-3.301207088157029 15.474861455795917 1.115828634895176];
+%!   ## From  Matlab R2016a for Windows:
+%!   B = [-3.3012070881570281 15.474861455795915 1.1158286348951763];
 %!   assert (A, B, -20*eps);
 %!
 %!   h = camlight (300, -190);
 %!   A = get (h, "position");
-%!   B = [-11.054849015640563 2.931330143100648 -11.315623892092518];
+%!   B = [-11.054849015640565 2.9313301431006460 -11.315623892092516];
 %!   assert (A, B, -20*eps);
 %! unwind_protect_cleanup
 %!   close (hf);

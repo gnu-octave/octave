@@ -149,14 +149,15 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fb = fun (b);
     nfev += 1;
   else
-    ## Try to get b.
-    if (a == 0)
-      aa = 1;
-    else
-      aa = a;
-    endif
-    for b = [0.9*aa, 1.1*aa, aa-1, aa+1, 0.5*aa 1.5*aa, -aa, 2*aa, -10*aa, 10*aa]
-      fb = fun (b); nfev += 1;
+    ## Try to find a value for b which brackets a zero-crossing
+
+    ## For very small values, switch to absolute rather than relative search
+    ifelse (abs (a) < .001, aa = sign (a) * 0.1, aa = a);
+    ## Search in an ever-widening range around the initial point.
+    for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000] 
+      b = aa + aa*srch; 
+      fb = fun (b);
+      nfev += 1;
       if (sign (fa) * sign (fb) <= 0)
         break;
       endif

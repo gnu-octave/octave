@@ -79,17 +79,20 @@ function camroll (varargin)
     hax = hax(1);
   endif
 
-  view_ax = camtarget (hax) - campos (hax);
+  dar = get (hax, "dataaspectratio");
+
+  view_ax = (camtarget (hax) - campos (hax)) ./ dar;
   view_ax /= norm (view_ax);
   ## orthogonalize the camup vector
-  up = camup (hax) - view_ax*dot (camup (hax), view_ax);
+  up = camup (hax) ./ dar;
+  up = up - view_ax * dot (up, view_ax);
   up /= norm (up);
 
   ## rotate the modified camup vector around the view axis
   up = num2cell (up);
   [up{:}] = __rotate_around_axis__ (up{:}, a, view_ax, [0 0 0]);
-  up = [up{:}];
-  camup (hax, up)
+  up = [up{:}] .* dar;
+  camup (hax, up / norm (up))
 
 endfunction
 
@@ -116,19 +119,24 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
+%!   hax = axes ("parent", hf);
 %!   peaks ();
-%!   p = camup ();
+%!   p = camup (hax);
 %!   assert (p, [0 0 1], eps);
-%!   camroll (30);
-%!   p = camup ();
-%!   ## from Matlab R2014a
-%!   q = [0.826398839602911  0.255644120004753  0.50170812412194];
+%!   camroll (hax, 30);
+%!   p = camup (hax);
+%!   ## from Matlab R2017b
+%!   q = [0.33969638129660373 0.02014238382998192 0.94031944194919104];
 %!   assert (p, q, 10*eps);
-%!   camroll (-30);
-%!   ## note it does not go back to [0 0 1]: instead orthog to camera view:
-%!   p = camup ();
-%!   assert (dot (p, camtarget () - campos ()), 0, 32*eps);  # FIXME: looser tolerance needed on i386
-%!   q = [0.496200420425837  0.646660977913424  0.57932264103285];
+%!   camroll (hax, -30);
+%!   ## Note: It does not go back to [0 0 1]: instead orthog to camera view:
+%!   p = camup (hax);
+%!   ## The "cameraupvector" is now perpendicular to the viewing vector
+%!   dar = get (hax, "dataaspectratio");
+%!   ## FIXME: looser tolerance needed on i386 for assert below
+%!   assert (dot (p./dar, (camtarget (hax) - campos (hax))./dar), 0, 32*eps);
+%!   ## from Matlab R2017b
+%!   q = [0.14033891839365262 0.18289323924769943 0.97306477226420207];
 %!   assert (p, q, 10*eps);
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -145,8 +153,10 @@ endfunction
 %!   camroll (hax1, 30);
 %!   x = camup (hax1);
 %!   y = camup (hax2);
-%!   assert (x, [0.660278 0.039151 0.750000], -1e-5)
-%!   assert (y, [0 0 1])
+%!   ## from Matlab R2016a
+%!   assert (x, [0.66027810132845211 0.03915135893036471 0.75000000000000022],
+%!           -1e-5);
+%!   assert (y, [0 0 1]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

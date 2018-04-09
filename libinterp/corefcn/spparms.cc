@@ -129,17 +129,8 @@ longer running time.
           for (int i = 0; i < len; i++)
             str[i] = tolower (str[i]);
 
-          if (str == "defaults" || str == "default")
-            {
-              // FIXME: deprecated in 4.0, remove "defaults" for 4.4 release
-              static bool warned = false;
-              if (! warned && str == "defaults")
-                {
-                  warning (R"(spparms: use "default" instead of "defaults")");
-                  warned = true;
-                }
-              octave_sparse_params::defaults ();
-            }
+          if (str == "default")
+            octave_sparse_params::defaults ();
           else if (str == "tight")
             octave_sparse_params::tight ();
           else

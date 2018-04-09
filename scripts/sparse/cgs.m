@@ -1,6 +1,6 @@
+## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ## Copyright (C) 2008-2018 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
-## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ##
 ## This file is part of Octave.
 ##
@@ -313,17 +313,19 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
 endfunction
 
+
 %!demo
-%! % Solve system of A*x=b
+%! ## Solve system of A*x=b
 %! A = [5 -1 3;-1 2 -2;3 -2 3];
 %! b = [7;-1;4];
 %! [a,b,c,d,e] = cgs (A,b)
 
-%!demo # simplest use
+%!demo
+%! ## simplest use case
 %! n = 20;
 %! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
 %!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
-%!     sparse (1, 2, 1, 1, n) * n / 2);
+%!               sparse (1, 2, 1, 1, n) * n / 2);
 %! b = A * ones (n, 1);
 %! [M1, M2] = ilu (A + 0.1 * eye (n));
 %! M = M1 * M2;
@@ -337,12 +339,13 @@ endfunction
 %! M1fun = @(z) M1 \ z;
 %! M2fun = @(z) M2 \ z;
 %! x = cgs (Afun, b, 1e-6, n, M1fun, M2fun);
-%! function y = Ap (A, x, z) # compute A^z * x or (A^z)' * x
-%!    y = x;
-%!    for i = 1:z
-%!      y = A * y;
-%!    endfor
-%!  endfunction
+%! function y = Ap (A, x, z)
+%!   ## compute A^z * x or (A^z)' * x
+%!   y = x;
+%!   for i = 1:z
+%!     y = A * y;
+%!   endfor
+%! endfunction
 %! Afun = @(x, p) Ap (A, x, p);
 %! x = cgs (Afun, b, [], 2*n, [], [], [], 2); # solution of A^2 * x = b
 
@@ -350,22 +353,23 @@ endfunction
 %! n = 10;
 %! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
 %!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
-%!     sparse (1, 2, 1, 1, n) * n / 2);
+%!               sparse (1, 2, 1, 1, n) * n / 2);
 %! b = A * ones (n, 1);
-%! [M1, M2] = ilu (A + 0.3 * eye (n)); # factorization of A perturbed
+%! [M1, M2] = ilu (A + 0.3 * speye (n));  # factorization of A perturbed
 %! M = M1 * M2;
 %!
-%! ## reference solution computed by cgs after one iteration
+%! ## Reference solution computed by cgs after one iteration
 %! [x_ref, fl] = cgs (A, b, [], 1, M);
 %! x_ref
 %!
 %! ## right preconditioning
 %! [y, fl] = cgs (A / M, b, [], 1);
-%! x = M \ y # compare x and x_ref
+%! ## Compare x and x_ref
+%! x = M \ y
 
 %!test
 %! ## Check that all type of inputs work
-%! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
+%! A = sparse (toeplitz ([2, 1, 0, 0, 0], [2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M1 = diag (sqrt (diag (A)));
 %! M2 = M1;
@@ -394,7 +398,7 @@ endfunction
 %! [x, flag] = cgs (Afun, b, [], maxit, M1_fun, M2_fun);
 %! assert (flag, 0);
 
-%!shared A, b, n, M
+%!shared n, A, b, tol, maxit, M
 %!
 %!test
 %! n = 100;
@@ -404,68 +408,67 @@ endfunction
 %! maxit = 1000;
 %! M = 4 * eye (n);
 %! [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M);
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
+
 %!
 %!test
-%! tol = 1e-8;
 %! maxit = 15;
 %! [x, flag, relres, iter, resvec] = cgs (@(x) A * x, b, tol, maxit, M);
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
 
 %!test
-%! n = 100;
-%! tol = 1e-8;
 %! a = sprand (n, n, .1);
 %! A = a'*a + 100 * eye (n);
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = cgs (A, b, tol, [], diag (diag (A)));
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
 
 %!test
 %! n = 5;
-%! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
+%! A = sparse (toeplitz ([2, 1, 0, 0, 0], [2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
-%! M = ones(n);
+%! M = ones (n);
 %! [x, flag] = cgs (A, b, [], [], M);
-%! assert (flag, 2)
+%! assert (flag, 2);
 
 %!test
 %! A = single (1);
 %! b = 1;
 %! [x, flag] = cgs (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = 1;
 %! b = single (1);
 %! [x, flag] = cgs (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = single (1);
 %! b = single (1);
 %! [x, flag] = cgs (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %!function y = Afun (x)
-%!   A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
-%!   y = A * x;
+%!  A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
+%!  y = A * x;
 %!endfunction
 %! [x, flag] = cgs ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones(4, 1), 1e-6)
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
 
 %!test
-%! ## test for a complex linear system
+%! ## test a complex linear system
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0])) + ...
 %! 1i * toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! [x, flag] = cgs (A, b);
-%! assert (flag, 0)
+%! assert (flag, 0);
 
-%!test # unpreconditioned residual
+%!test
+%! ## unpreconditioned residual
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = cgs (A, b, [], 3, M);
-%! assert (relres, norm (b - A * x) / norm (b), 8 * eps)
+%! assert (norm (b - A * x) / norm (b), relres, 8 * eps);

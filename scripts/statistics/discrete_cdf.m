@@ -1,5 +1,5 @@
-## Copyright (C) 2012 Rik Wehbring
 ## Copyright (C) 2010-2018 David Bateman
+## Copyright (C) 2012 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##

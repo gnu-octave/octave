@@ -176,8 +176,8 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
-        setFocus (Qt::OtherFocusReason);
         activateWindow();
+        setFocus (Qt::OtherFocusReason);
       }
     else
       {
@@ -1079,11 +1079,11 @@ namespace octave
           }
 
         // Put existing variable in focus and raise
-        QFocusEvent event (QEvent::FocusIn, Qt::OtherFocusReason);
-        QApplication::sendEvent (existing_qdw, &event);
         existing_qdw->show ();
         existing_qdw->raise ();
         existing_qdw->activateWindow ();
+        tab_to_front ();
+        existing_qdw->setFocus ();
 
         return;
       }
@@ -1184,6 +1184,29 @@ namespace octave
     page->show ();
     page->raise ();
     page->activateWindow ();
+    tab_to_front ();
+    page->setFocus ();
+  }
+
+  void
+  variable_editor::tab_to_front (void)
+  {
+    if (parent () != nullptr)
+      {
+        QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
+
+        foreach (QTabBar *tbar, barlist)
+          {
+            for (int i=0; i < tbar->count (); i++)
+              {
+                  if ((QWidget *) tbar->tabData (i).toULongLong () == this)
+                  {
+                    tbar->setCurrentIndex (i);
+                    return;
+                  }
+              }
+          }
+      }
   }
 
   void

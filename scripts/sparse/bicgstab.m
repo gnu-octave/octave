@@ -1,6 +1,6 @@
+## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ## Copyright (C) 2008-2018 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
-## Copyright (C) 2016-2018 Cristiano Dorigo, Octave Arena
 ##
 ## This file is part of Octave.
 ##
@@ -351,6 +351,53 @@ function [x_min, flag, relres, iter_min, resvec] = ...
 
 endfunction
 
+
+%!demo # simplest use
+%! n = 20;
+%! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
+%!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
+%!               sparse (1, 2, 1, 1, n) * n / 2);
+%! b = A * ones (n, 1);
+%! [M1, M2] = ilu (A + 0.1 * eye (n));
+%! M = M1 * M2;
+%! x = bicgstab (A, b, [], n);
+%! Afun = @(x) A * x;
+%! x = bicgstab (Afun, b, [], n);
+%! x = bicgstab (A, b, 1e-6, n, M);
+%! x = bicgstab (A, b, 1e-6, n, M1, M2);
+%! Mfun = @(z) M \ z;
+%! x = bicgstab (Afun, b, 1e-6, n, Mfun);
+%! M1fun = @(z) M1 \ z;
+%! M2fun = @(z) M2 \ z;
+%! x = bicgstab (Afun, b, 1e-6, n, M1fun, M2fun);
+%! function y = Ap (A, x, z)
+%!   ## compute A^z * x or (A^z)' * x
+%!   y = x;
+%!   for i = 1:z
+%!     y = A * y;
+%!   endfor
+%! endfunction
+%! Afun = @(x, p) Ap (A, x, p);
+%! x = bicgstab (Afun, b, [], 2 * n, [], [], [], 2); # solution of A^2 * x = b
+
+%!demo
+%! n = 10;
+%! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
+%!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
+%!               sparse (1, 2, 1, 1, n) * n / 2);
+%! b = A * ones (n, 1);
+%! [M1, M2] = ilu (A + 0.3 * eye (n));  # factorization of A perturbed
+%! M = M1 * M2;
+%!
+%! ## Reference solution computed by bicgstab after one iteration
+%! [x_ref, fl] = bicgstab (A, b, [], 1, M);
+%! x_ref
+%!
+%! ## right preconditioning
+%! [y, fl] = bicgstab (A / M, b, [], 1);
+%! ## Compare x and x_ref
+%! x = M \ y
+
 %!test
 %! ## Check that all type of inputs work
 %! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
@@ -382,9 +429,7 @@ endfunction
 %! [x, flag] = bicgstab (Afun, b, [], maxit, M1_fun, M2_fun);
 %! assert (flag, 0);
 
-%!shared A, b, n, M1, M2
-%!
-%!test
+%!shared n, A, b, tol, maxit, M1, M2
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
 %! b = sum (A, 2);
@@ -392,124 +437,82 @@ endfunction
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
-%! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2);
-%! assert (x, ones (size (b)), 1e-7);
-%!
+
 %!test
+%! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
+
 %!function y = afun (x, a)
 %!  y = a * x;
 %!endfunction
 %!
-%! tol = 1e-8;
-%! maxit = 15;
-%!
+%!test
 %! [x, flag, relres, iter, resvec] = bicgstab (@(x) afun (x, A), b,
 %!                                             tol, maxit, M1, M2);
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
 
 %!test
-%! n = 100;
-%! tol = 1e-8;
 %! a = sprand (n, n, .1);
-%! A = a'*a + 100 * eye (n);
+%! A = a'*a + 100 * speye (n);
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, [], diag (diag (A)));
-%! assert (x, ones (size (b)), 1e-7);
+%! assert (norm (b - A*x) / norm (b), 0, tol);
 
 %!test
 %! ## bicgstab solves complex linear systems
 %! A = [1 + 1i, 1 + 1i; 2 - 1i, 2 + 1i];
 %! b = A * [1; 1];
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b);
-%! assert (x, [1; 1], 1e-6);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
 
 %!test
-%! ## test with a non symmetric matrix
-%! A = diag(1:50);
-%! A (1,50) = 10000;
+%! ## test with a non-symmetric matrix
+%! A = diag (1:50);
+%! A(1,50) = 10000;
 %! b = ones (50,1);
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, [], 100);
-%! assert (flag, 0)
-%! assert (x, A \ b, 1e-05)
+%! assert (flag, 0);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
+
+%!test
 %! ## test that bicgstab detects a singular preconditioner
 %! M = ones (50);
 %! M(1,1) = 0;
 %! [x, flag] = bicgstab (A, b, [], 100, M);
-%! assert(flag, 2)
+%! assert (flag, 2);
 
 %!test
 %! A = single (1);
 %! b = 1;
 %! [x, flag] = bicgstab (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = 1;
 %! b = single (1);
 %! [x, flag] = bicgstab (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %! A = single (1);
 %! b = single (1);
 %! [x, flag] = bicgstab (A, b);
-%! assert (class (x), "single")
+%! assert (class (x), "single");
 
 %!test
 %!function y = Afun (x)
-%!   A = toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]);
-%!   y = A * x;
+%!  A = sparse (toeplitz ([2, 1, 0, 0], [2, -1, 0, 0]));
+%!  y = A * x;
 %!endfunction
-%! [x, flag] = bicgstab ("Afun", [1; 2; 2; 3]);
-%! assert (x, ones(4, 1), 1e-6)
+%!
+%! b = [1; 2; 2; 3];
+%! [x, flag] = bicgstab ("Afun", b);
+%! assert (norm (b - A*x) / norm (b), 0, 1e-6);
 
-%!test # unpreconditioned residual
-%! A = toeplitz (sparse ([2, 1, 0, 0, 0]), sparse ([2, -1, 0, 0, 0]));
+%!test
+%! ## unpreconditioned residual
+%! A = sparse (toeplitz ([2, 1, 0, 0, 0], [2, -1, 0, 0, 0]));
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = bicgstab (A, b, [], 2, M);
-%! assert (relres, norm (b - A * x) / norm (b), 8 * eps)
-
-%!demo # simplest use
-%! n = 20;
-%! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
-%!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
-%!     sparse (1, 2, 1, 1, n) * n / 2);
-%! b = A * ones (n, 1);
-%! [M1, M2] = ilu (A + 0.1 * eye (n));
-%! M = M1 * M2;
-%! x = bicgstab (A, b, [], n);
-%! Afun = @(x) A * x;
-%! x = bicgstab (Afun, b, [], n);
-%! x = bicgstab (A, b, 1e-6, n, M);
-%! x = bicgstab (A, b, 1e-6, n, M1, M2);
-%! Mfun = @(z) M \ z;
-%! x = bicgstab (Afun, b, 1e-6, n, Mfun);
-%! M1fun = @(z) M1 \ z;
-%! M2fun = @(z) M2 \ z;
-%! x = bicgstab (Afun, b, 1e-6, n, M1fun, M2fun);
-%! function y = Ap (A, x, z) # compute A^z * x or (A^z)' * x
-%!    y = x;
-%!    for i = 1:z
-%!      y = A * y;
-%!    endfor
-%!  endfunction
-%! Afun = @(x, p) Ap (A, x, p);
-%! x = bicgstab (Afun, b, [], 2 * n, [], [], [], 2); # solution of A^2 * x = b
-
-%!demo
-%! n = 10;
-%! A = toeplitz (sparse ([1, 1], [1, 2], [2, 1] * n ^ 2, 1, n))  + ...
-%!     toeplitz (sparse (1, 2, -1, 1, n) * n / 2, ...
-%!     sparse (1, 2, 1, 1, n) * n / 2);
-%! b = A * ones (n, 1);
-%! [M1, M2] = ilu (A + 0.3 * eye (n)); # factorization of A perturbed
-%! M = M1 * M2;
-%!
-%! ## reference solution computed by bicgstab after one iteration
-%! [x_ref, fl] = bicgstab (A, b, [], 1, M);
-%! x_ref
-%!
-%! ## right preconditioning
-%! [y, fl] = bicgstab (A / M, b, [], 1);
-%! x = M \ y # compare x and x_ref
+%! assert (norm (b - A * x) / norm (b), relres, 8*eps);

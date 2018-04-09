@@ -34,12 +34,12 @@
 %!  endif
 %!endfunction
 
-## patch/surface "normalmode" deprecated in 4.2, remove from 4.5.+
+## patch/surface "normalmode" deprecated in 4.2, remove from version 5.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hp = patch ();
-%!   testprop (hp, "normalmode", "4.4");
+%!   testprop (hp, "normalmode", "5.0");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -47,60 +47,61 @@
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hs = surface ();
-%!   testprop (hs, "normalmode", "4.4");
+%!   testprop (hs, "normalmode", "5.0");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
-## axes, "zero" value for "x/yaxislocation" deprecated in 4.2, remove from 4.5.+
+## axes, "zero" value for "x/yaxislocation" deprecated in 4.2, remove
+## from version 5.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ha = axes ();
-%!   testprop (ha, "xaxislocation", "4.4", "zero");
-%!   testprop (ha, "yaxislocation", "4.4", "zero");
+%!   testprop (ha, "xaxislocation", "5.0", "zero");
+%!   testprop (ha, "yaxislocation", "5.0", "zero");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
-## annotation rectangle "edgecolor" deprecated in 4.4, remove from 4.7.+
+## annotation rectangle "edgecolor" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ha = annotation ("rectangle");
-%!   testprop (ha, "edgecolor", "4.6");
+%!   testprop (ha, "edgecolor", "6.0");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 ## figure "doublebuffer, mincolormap, wvisual, wvisualmode, xdisplay,
-## xvisual, xvisualmode" deprecated in 4.4, remove from 4.7.+
+## xvisual, xvisualmode" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   testprop (hf, "doublebuffer", "4.6");
-%!   testprop (hf, "mincolormap", "4.6");
-%!   testprop (hf, "wvisual", "4.6");
-%!   testprop (hf, "wvisualmode", "4.6");
-%!   testprop (hf, "xdisplay", "4.6");
-%!   testprop (hf, "xvisual", "4.6");
-%!   testprop (hf, "xvisualmode", "4.6");
+%!   testprop (hf, "doublebuffer", "6.0");
+%!   testprop (hf, "mincolormap", "6.0");
+%!   testprop (hf, "wvisual", "6.0");
+%!   testprop (hf, "wvisualmode", "6.0");
+%!   testprop (hf, "xdisplay", "6.0");
+%!   testprop (hf, "xvisual", "6.0");
+%!   testprop (hf, "xvisualmode", "6.0");
 %! unwind_protect_cleanup
 %!   close (hf)
 %! end_unwind_protect
 
-## axes "drawmode" deprecated in 4.4, remove from 4.7.+
+## axes "drawmode" deprecated in 4.4, remove from version 6.
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ();
-%!   testprop (hax, "drawmode", "4.6");
+%!   testprop (hax, "drawmode", "6.0");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 ## text/uicontrol/uipanel/uibuttongroup  "demi" and "light" values for
-## "fontweight" property are deprecated in 4.4, remove from 4.7.+:
+## "fontweight" property are deprecated in 4.4, remove from version 6:
 ##   * remove "demi" and "light" options in graphics.in.h,
 ##   QtHandlesUtils.cc and ft-text-renderer.cc
 ##   * remove warnings from update_fontweight in graphics.in.h
@@ -108,17 +109,17 @@
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ht = text ();
-%!   testprop (ht, "fontweight", "4.6", "demi");
-%!   testprop (ht, "fontweight", "4.6", "light");
+%!   testprop (ht, "fontweight", "6.0", "demi");
+%!   testprop (ht, "fontweight", "6.0", "light");
 %!   hui = uicontrol ();
-%!   testprop (hui, "fontweight", "4.6", "demi");
-%!   testprop (hui, "fontweight", "4.6", "light");
+%!   testprop (hui, "fontweight", "6.0", "demi");
+%!   testprop (hui, "fontweight", "6.0", "light");
 %!   hui = uipanel ();
-%!   testprop (hui, "fontweight", "4.6", "demi");
-%!   testprop (hui, "fontweight", "4.6", "light");
+%!   testprop (hui, "fontweight", "6.0", "demi");
+%!   testprop (hui, "fontweight", "6.0", "light");
 %!   hui = uibuttongroup ();
-%!   testprop (hui, "fontweight", "4.6", "demi");
-%!   testprop (hui, "fontweight", "4.6", "light");
+%!   testprop (hui, "fontweight", "6.0", "demi");
+%!   testprop (hui, "fontweight", "6.0", "light");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

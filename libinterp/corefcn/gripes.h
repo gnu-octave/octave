@@ -20,7 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// FIXME: All gripe_XXX functions deprecated in 4.2.  Remove file in 4.6
+// FIXME: All gripe_XXX functions deprecated in 4.2.  Remove file in
+// version 5.
+
 #if ! defined (octave_gripes_h)
 #define octave_gripes_h 1
 

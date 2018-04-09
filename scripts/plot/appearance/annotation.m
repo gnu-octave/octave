@@ -480,7 +480,7 @@ function h = buildannot (hax, objtype, pos)
 
       hr = patch (x, y, "parent", h);
 
-      ## FIXME: Remove warn state switching in Octave 4.8
+      ## FIXME: DEPRECATED: Remove warn state switching in version 6.
       old_warn_state = warning ("off", "Octave:deprecated-property");
       propnames = rectprops ("names");
       for ii = 1:numel (propnames)
@@ -800,7 +800,7 @@ endfunction
 
 function props = rectprops (varargin)
 
-  ## FIXME: Remove "edgecolor" in Octave 4.8
+  ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
   props = {"color", "patchedgecolor", "k", ...
            "edgecolor", "patchedgecolor", "k", ...
            "facealpha", "patchfacealpha", 1, ...
@@ -1279,7 +1279,7 @@ function update_rect (h, ~, prop, hre, typ)
         set (hre, "edgecolor", get (h, prop));
 
       case "edgecolor"
-        ## FIXME: Remove "edgecolor" in Octave 4.8
+        ## FIXME: DEPRECATED: Remove "edgecolor" in version 6.
         warning ("Octave:deprecated-property",
                  ['annotation: Property "edgecolor" for ' typ ' annotations'...
                   ' is deprecated and will be removed from a future version'...

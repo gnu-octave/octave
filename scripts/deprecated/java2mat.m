@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} java2mat (@var{javaobj})
-## @code{java2mat} is deprecated and will be removed in Octave version 4.8.
+## @code{java2mat} is deprecated and will be removed in Octave version 6.
 ##
 ## For the next two releases, use @code{__java2mat__} if necessary, and file
 ## a bug report explaining your programming use of @code{java2mat} and how it

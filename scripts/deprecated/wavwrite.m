@@ -22,7 +22,7 @@
 ## @deftypefnx {} {} wavwrite (@var{y}, @var{fs}, @var{filename})
 ## @deftypefnx {} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
 ##
-## @code{wavwrite} is deprecated and will be removed in Octave version 4.6.
+## @code{wavwrite} is deprecated and will be removed in Octave version 5.
 ## Use @code{audiowrite} for the equivalent functionality.
 ##
 ## Write the audio signal @var{y} to the RIFF/WAVE sound file @var{filename}.

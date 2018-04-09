@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} sleep (@var{seconds})
 ##
-## @code{sleep} is deprecated and will be removed in Octave version 4.6.
+## @code{sleep} is deprecated and will be removed in Octave version 5.
 ## Use @code{pause} instead.
 ##
 ## Suspend the execution of the program for the given number of seconds.

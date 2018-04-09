@@ -20,7 +20,7 @@
 ## @deftypefn  {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{A}, @var{t})
 ## @deftypefnx {} {[@var{est}, @var{v}, @var{w}, @var{iter}] =} onenormest (@var{apply}, @var{apply_t}, @var{n}, @var{t})
 ##
-## @code{onenormest} is deprecated and will be removed in Octave version 4.6.
+## @code{onenormest} is deprecated and will be removed in Octave version 5.
 ## Use @code{normest1} for the equivalent functionality.
 ##
 ## Apply @nospell{Higham and Tisseur's} randomized block 1-norm estimator to

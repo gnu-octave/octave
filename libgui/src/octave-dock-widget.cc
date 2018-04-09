@@ -460,7 +460,7 @@ namespace octave
     // four incorrect keys are updated if still present in the settings files.
     // The keys are also used in the settings dialog, but
     // octave_dock_widget::handle_settings is already called at program start.
-    // These tests can be removed in a future version of Octave (version 4.8).
+    // These tests can be removed in a future version of Octave (version 6).
     resource_manager::update_settings_key ("Dockwidgets/title_bg_color",
                                            "DockWidgets/title_bg_color");
     resource_manager::update_settings_key ("Dockwidgets/title_bg_color_active",

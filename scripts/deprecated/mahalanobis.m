@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} mahalanobis (@var{x}, @var{y})
 ##
-## @code{mahalanobis} is deprecated and will be removed in Octave version 4.6.
+## @code{mahalanobis} is deprecated and will be removed in Octave version 5.
 ## See the @code{mahal} function in the statistics package from Octave-Forge
 ## for equivalent functionality.
 ##

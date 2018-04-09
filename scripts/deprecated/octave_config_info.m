@@ -21,7 +21,7 @@
 ## @deftypefnx {} {} octave_config_info (@var{option})
 ##
 ## @code{octave_config_info} is deprecated and will be removed in
-## Octave version 4.6.  Use @code{__have_feature__ (@var{option})} or
+## Octave version 5.  Use @code{__have_feature__ (@var{option})} or
 ## @code{__octave_config_info__} as a replacement.
 ##
 ## Return a structure containing configuration and installation

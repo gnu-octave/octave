@@ -26,7 +26,7 @@
 ## @deftypefnx {} {@var{sz} =} wavread (@var{filename}, "size")
 ## @deftypefnx {} {[@var{n_samp}, @var{n_chan}] =} wavread (@var{filename}, "size")
 ##
-## @code{wavread} is deprecated and will be removed in Octave version 4.6.
+## @code{wavread} is deprecated and will be removed in Octave version 5.
 ## Use @code{audioread} for the equivalent functionality.
 ##
 ## Read the audio signal @var{y} from the RIFF/WAVE sound file @var{filename}.

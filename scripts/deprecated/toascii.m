@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {} toascii (@var{str})
 ##
-## @code{toascii} is deprecated and will be removed in Octave version 4.8.
+## @code{toascii} is deprecated and will be removed in Octave version 6.
 ## Use @code{double} instead.
 ##
 ## Return ASCII representation of @var{str} in a matrix.
@@ -36,7 +36,7 @@
 ## @seealso{double, char}
 ## @end deftypefn
 
-## Remove in version 4.8.
+## FIXME: DEPRECATED: Remove in version 6.
 
 function retval = toascii (str)
 

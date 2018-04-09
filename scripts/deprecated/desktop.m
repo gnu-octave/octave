@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{used} =} desktop ("-inuse")
 ##
-## @code{desktop} is deprecated and will be removed in Octave version 4.8.
+## @code{desktop} is deprecated and will be removed in Octave version 6.
 ## Use @code{isguirunning} for the equivalent functionality.
 ##
 ## Return true if the desktop (GUI) is currently in use.

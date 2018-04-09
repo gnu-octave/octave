@@ -1551,10 +1551,10 @@ error estimate is computed from the L2-norm of the difference between two
 successive interpolations of the integrand over the nodes of the respective
 quadrature rules.
 
-@c FIXME: Remove in Octave version 4.8
+@c FIXME: DEPRECATED: Remove in Octave version 6.
 Implementation Note: For Octave versions @leq{} 4.2, @code{quadcc} accepted a
 single tolerance argument which specified the relative tolerance.  For
-versions 4.4 and 4.6, @code{quadcc} will issue a warning when called with a
+versions 4.4 and 5, @code{quadcc} will issue a warning when called with a
 single tolerance argument indicating that the meaning of this input has
 changed from relative tolerance to absolute tolerance.  The warning ID for this
 message is @qcode{"Octave:quadcc:RelTol-conversion"}.  The warning may be
@@ -1647,7 +1647,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 
       if (tol.numel () == 1)
         {
-          // FIXME: Remove warning in Octave version 4.8
+          // FIXME: DEPRECATED: Remove warning in Octave version 6.
           static bool do_warn = true;
           if (do_warn)
             {

@@ -3181,7 +3181,7 @@ public:
 
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
-      // FIXME: Remove in version 4.6
+      // FIXME: DEPRECATED: Remove in version 5.
       bool_property doublebuffer hd , "on"
       double_property mincolormap hd , 64
       string_property wvisual hmd , ""
@@ -3661,7 +3661,7 @@ public:
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
-      // FIXME: Remove "zero" in 4.6
+      // FIXME: DEPRECATED: Remove "zero" in version 5.
       radio_property xaxislocation u , "{bottom}|top|origin|zero"
       color_property xcolor mu , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
@@ -3679,7 +3679,7 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
-      // FIXME: Remove "zero" in 4.6
+      // FIXME: DEPRECATED: Remove "zero" in version 5.
       radio_property yaxislocation u , "{left}|right|origin|zero"
       color_property ycolor mu , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
@@ -3822,7 +3822,7 @@ public:
     }
     void update_yaxislocation (void)
     {
-      // FIXME: Remove warning with "zero" in 4.6
+      // FIXME: DEPRECATED: Remove warning with "zero" in version 5.
       if (yaxislocation_is ("zero"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'yaxislocation' to 'zero' is deprecated, "
@@ -3847,7 +3847,7 @@ public:
     }
     void update_xaxislocation (void)
     {
-      // FIXME: Remove warning with "zero" in 4.6
+      // FIXME: DEPRECATED: Remove warning with "zero" in version 5.
       if (xaxislocation_is ("zero"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'xaxislocation' to 'zero' is deprecated, "
@@ -4300,9 +4300,10 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      // FIXME: Remove erasemode property in version 4.6.  (rm all instances in file)
+      // FIXME: DEPRECATED: Remove erasemode property in version 5
+      // (rm all instances in file).
       radio_property erasemode h , "{normal}|none|xor|background"
-      // FIXME: Remove interpreter property in version 4.8
+      // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linejoin , "{round}|miter|chamfer"
       radio_property linestyle , "{-}|--|:|-.|none"
@@ -4513,7 +4514,8 @@ public:
     {
       update_font ();
       update_text_extent ();
-      // FIXME: Remove warning with demi and light in 4.7+
+      // FIXME: DEPRECATED: Remove warning with demi and light in
+      // version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -4869,7 +4871,7 @@ public:
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
-      // FIXME: Remove interpreter property in version 4.8
+      // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -5080,7 +5082,7 @@ public:
       radio_property facelighting , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
       radio_property facenormalsmode , "{auto}|manual"
-      // FIXME: Remove interpreter property in version 4.8
+      // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -5523,7 +5525,8 @@ public:
     void update_fontweight (void)
     {
       update_text_extent ();
-      // FIXME: Remove warning with demi and light in 4.7+
+      // FIXME: DEPRECATED: Remove warning with demi and light in
+      // version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5620,7 +5623,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: Remove this warning in 4.7+
+      // FIXME: DEPRECATED: Remove this warning in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5709,7 +5712,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: Remove this warning in 4.7+
+      // FIXME: DEPRECATED: Remove this warning in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \

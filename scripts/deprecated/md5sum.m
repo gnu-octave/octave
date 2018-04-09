@@ -20,7 +20,7 @@
 ## @deftypefn  {} {} md5sum (@var{file})
 ## @deftypefnx {} {} md5sum (@var{str}, @var{opt})
 ##
-## @code{md5sum} is deprecated and will be removed in Octave version 4.6.
+## @code{md5sum} is deprecated and will be removed in Octave version 5.
 ## For equivalent functionality replace calls like @code{md5sum (@var{file})}
 ## with:
 ##

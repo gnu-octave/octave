@@ -627,12 +627,12 @@ namespace octave
 
         if (action == OSC_IMPORT)
           file = QFileDialog::getOpenFileName (this,
-                                               tr ("Import shortcuts from file ..."), QString (),
+                                               tr ("Import shortcuts from file"), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
                                                nullptr, QFileDialog::DontUseNativeDialog);
         else if (action == OSC_EXPORT)
           file = QFileDialog::getSaveFileName (this,
-                                               tr ("Export shortcuts into file ..."), QString (),
+                                               tr ("Export shortcuts to file"), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
                                                nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -643,7 +643,7 @@ namespace octave
 
         if (! osc_settings)
           {
-            qWarning () << tr ("Failed to open %1 as octave shortcut file")
+            qWarning () << tr ("Failed to open %1 as Octave shortcut file")
                         .arg (file);
             return false;
           }

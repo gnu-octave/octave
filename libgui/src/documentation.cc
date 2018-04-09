@@ -88,7 +88,7 @@ namespace octave
         QMessageBox::warning (this, tr ("Octave Documentation"),
                               tr ("Could not setup the data required for the\n"
                                   "documentation viewer. Only help texts in\n"
-                                  "the Console Widget will be available."));
+                                  "the Command Window will be available."));
         if (m_help_engine)
           delete m_help_engine;
         m_help_engine = 0;

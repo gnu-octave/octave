@@ -177,7 +177,12 @@
 ## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
 ## enabled.
 ##
-## @item Octave:fopen-file-in-path
+## @item Octave:data-file-in-path
+## If the @code{Octave:data-file-in-path} warning is enabled, a warning is
+## issued when Octave does not find the target of a file operation such as
+## @code{load} or @code{fopen} directly, but is able to locate the file in
+## Octave's search @code{path} for files.  The warning could indicate that a
+## different file target then the programmer intended is being used.
 ## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
 ##
 ## @item Octave:function-name-clash
@@ -207,9 +212,6 @@
 ## By default, the @code{Octave:language-extension} warning is disabled.
 ## The @option{--traditional} or @option{--braindead} startup options for
 ## Octave may also be of use, @pxref{Command Line Options}.
-##
-## @item Octave:load-file-in-path
-## By default, the @code{Octave:load-file-in-path} warning is enabled.
 ##
 ## @item Octave:logical-conversion
 ## By default, the @code{Octave:logical-conversion} warning is enabled.

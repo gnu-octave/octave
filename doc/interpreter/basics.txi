@@ -267,9 +267,8 @@ and disable the following warnings
 @example
 @group
 Octave:abbreviated-property-match
-Octave:fopen-file-in-path
+Octave:data-file-in-path
 Octave:function-name-clash
-Octave:load-file-in-path
 Octave:possible-matlab-short-circuit-operator
 @end group
 @end example

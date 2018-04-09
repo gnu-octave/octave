@@ -2087,7 +2087,9 @@ Wil je die overschrijven?</translation>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon de help collectie niet naar een tijdelijk
+betand kopiëren. De zoekfunctie kan beinvloed zijn.
+%1</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2122,7 +2124,7 @@ console widget zijn beschikbaar.</translation>
     <message>
         <location line="+157"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan help bestand %1 niet registreren.</translation>
     </message>
 </context>
 <context>
@@ -2401,7 +2403,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet regeleindes om naar &amp;Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2747,7 +2749,10 @@ Wil je een andere naam kiezen?</translation>
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation type="unfinished"></translation>
+        <translation>The huidige codec %1
+kan niet worden toegepast.
+
+Selecteer s.v.p. een andere of annuleer opslaan!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2756,7 +2761,11 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
+        <translation>De huidige inhoud van de editor kan niet worden gecodeerd
+met de geselecteerde codering %1.
+Deze toch gebruiken leidt tot gegevensverlies!
+
+Wilt u een andere codering kiezen?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -5185,7 +5194,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+309"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>Breek lange regels af op huidige vensterrand</translation>
     </message>
     <message>
         <location line="+475"/>

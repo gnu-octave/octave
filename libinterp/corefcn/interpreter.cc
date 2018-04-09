@@ -1298,7 +1298,6 @@ namespace octave
     Fdisable_range (octave_value (true));
     Ffixed_point_format (octave_value (true));
     Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
-    Fpage_screen_output (octave_value (false));
     Fprint_empty_dimensions (octave_value (false));
     Fsave_default_options (octave_value ("-mat-binary"));
     Fstruct_levels_to_print (octave_value (0));

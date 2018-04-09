@@ -254,7 +254,6 @@ disable_permutation_matrix      = true
 disable_range                   = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
-page_screen_output              = false
 print_empty_dimensions          = false
 save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0

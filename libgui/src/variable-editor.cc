@@ -1029,6 +1029,7 @@ namespace octave
     m_main->setCentralWidget (central_mdiarea);
 
     setWidget (m_main);
+    setFocusProxy (m_main);
 
     connect (this, SIGNAL (command_signal (const QString&)),
              p, SLOT (execute_command_in_terminal (const QString&)));

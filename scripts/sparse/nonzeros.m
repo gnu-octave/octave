@@ -17,20 +17,24 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} nonzeros (@var{s})
-## Return a vector of the nonzero values of the sparse matrix @var{s}.
+## @deftypefn {} {@var{v} =} nonzeros (@var{A})
+## Return a column vector of the nonzero values of the matrix @var{A}.
 ## @seealso{find, nnz}
 ## @end deftypefn
 
-function t = nonzeros (s)
+function v = nonzeros (A)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  [~, ~, t] = find (s);
-
-  t = t(:);
+  if (issparse (A))
+    [~, ~, v] = find (A);
+    v = v(:);
+  else
+    v = A(find (A));
+    v = v(:);
+  endif
 
 endfunction
 
@@ -39,3 +43,7 @@ endfunction
 %!assert (nonzeros ([1,2,3,0]), [1;2;3])
 %!assert (nonzeros (sparse ([1,2;3,0])), [1;3;2])
 %!assert (nonzeros (sparse ([1,2,3,0])), [1;2;3])
+
+## Test input validation
+%!error nonzeros ()
+%!error nonzeros (1, 2)

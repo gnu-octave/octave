@@ -257,7 +257,7 @@ main (int argc, char **argv)
           start_gui = false;
           new_argv[k++] = argv[i];
         }
-      else if (! strcmp (argv[i], "--gui"))
+      else if (! strcmp (argv[i], "--gui") || ! strcmp (argv[i], "--force-gui"))
         {
           // If we see this option, then we fork and exec octave with
           // the --gui option, while continuing to handle signals in the

@@ -1029,6 +1029,7 @@ namespace octave
     m_main->setCentralWidget (central_mdiarea);
 
     setWidget (m_main);
+    setFocusProxy (m_main);
 
     connect (this, SIGNAL (command_signal (const QString&)),
              p, SLOT (execute_command_in_terminal (const QString&)));
@@ -1196,18 +1197,15 @@ namespace octave
     if (parent () != nullptr)
       {
         QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
+        QVariant this_value (reinterpret_cast<quintptr> (this));
 
         foreach (QTabBar *tbar, barlist)
-          {
-            for (int i=0; i < tbar->count (); i++)
+          for (int i = 0; i < tbar->count (); i++)
+            if (tbar->tabData (i) == this_value)
               {
-                  if ((QWidget *) tbar->tabData (i).toULongLong () == this)
-                  {
-                    tbar->setCurrentIndex (i);
-                    return;
-                  }
+                tbar->setCurrentIndex (i);
+                return;
               }
-          }
       }
   }
 

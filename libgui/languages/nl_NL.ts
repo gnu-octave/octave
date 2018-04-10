@@ -4711,8 +4711,8 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation>Importeer sneltoetsen uit bestand ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Importeer sneltoetsen uit bestand...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4722,8 +4722,8 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation>Exporteer sneltoetsen naar bestand ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation>Exporteer sneltoetsen naar bestand...</translation>
     </message>
     <message>
         <location line="+11"/>

@@ -3085,8 +3085,8 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation>Importa dreceres des d'un fitxer ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Importa dreceres des d'un fitxer...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3096,8 +3096,8 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation>Exporta dreceres a un fitxer ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation>Exporta dreceres a un fitxer...</translation>
     </message>
     <message>
         <location line="+11"/>

@@ -3065,8 +3065,8 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation>Tastenkürzel aus Datei importieren ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Tastenkürzel aus Datei importieren...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3076,7 +3076,7 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
+        <source>Export shortcuts into file...</source>
         <translation>Tastenkürzel in Datei exportieren...</translation>
     </message>
     <message>
@@ -3228,7 +3228,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
     <message>
         <location line="+2"/>
         <source>Another paste clipboard into variable data</source>
-        <translation>Tabelle aus Zwischenablage in Variabendaten einfügen</translation>
+        <translation>Tabelle aus Zwischenablage in Variablendaten einfügen</translation>
     </message>
     <message>
         <location line="+9"/>

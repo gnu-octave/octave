@@ -4675,8 +4675,8 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation type="unfinished">Inportatu lasterbideen fitxategia ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation type="unfinished">Inportatu lasterbideen fitxategia...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4686,8 +4686,8 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation type="unfinished">Esportatu lasterbideen fitxategia ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation type="unfinished">Esportatu lasterbideen fitxategia...</translation>
     </message>
     <message>
         <location line="+11"/>

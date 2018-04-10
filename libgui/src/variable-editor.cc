@@ -1197,18 +1197,15 @@ namespace octave
     if (parent () != nullptr)
       {
         QList<QTabBar *> barlist = main_win ()->findChildren<QTabBar *> ();
+        QVariant this_value (reinterpret_cast<quintptr> (this));
 
         foreach (QTabBar *tbar, barlist)
-          {
-            for (int i=0; i < tbar->count (); i++)
+          for (int i = 0; i < tbar->count (); i++)
+            if (tbar->tabData (i) == this_value)
               {
-                  if ((QWidget *) tbar->tabData (i).toULongLong () == this)
-                  {
-                    tbar->setCurrentIndex (i);
-                    return;
-                  }
+                tbar->setCurrentIndex (i);
+                return;
               }
-          }
       }
   }
 

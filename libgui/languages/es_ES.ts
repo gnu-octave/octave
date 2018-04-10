@@ -3077,8 +3077,8 @@ ya se utiliza para la acción
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation>Importar accesos directos de archivo ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Importar accesos directos de archivo...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3088,8 +3088,8 @@ ya se utiliza para la acción
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation>Exportar accesos directos al archivo ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation>Exportar accesos directos al archivo...</translation>
     </message>
     <message>
         <location line="+11"/>

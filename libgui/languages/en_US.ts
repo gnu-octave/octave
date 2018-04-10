@@ -2946,7 +2946,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
+        <source>Import shortcuts from file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2957,7 +2957,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
+        <source>Export shortcuts into file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

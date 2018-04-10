@@ -3091,7 +3091,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
+        <source>Import shortcuts from file...</source>
         <translation>Importa scorciatoie da file...</translation>
     </message>
     <message>
@@ -3102,7 +3102,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
+        <source>Export shortcuts into file...</source>
         <translation>Esporta scorciatoie su file...</translation>
     </message>
     <message>

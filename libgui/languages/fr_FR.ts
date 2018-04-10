@@ -3055,8 +3055,8 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation>Importer des raccourcis depuis un fichier ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Importer des raccourcis depuis un fichier...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3066,8 +3066,8 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation>Exporter les raccourcis vers un fichier ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation>Exporter les raccourcis vers un fichier...</translation>
     </message>
     <message>
         <location line="+11"/>

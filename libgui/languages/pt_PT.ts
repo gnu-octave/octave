@@ -3681,7 +3681,7 @@ Quer usar a tecla de atalho de qualquer forma, removendo-a da outra acção? </t
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
+        <source>Import shortcuts from file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3692,7 +3692,7 @@ Quer usar a tecla de atalho de qualquer forma, removendo-a da outra acção? </t
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
+        <source>Export shortcuts into file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -3660,8 +3660,8 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation type="unfinished">从文件导入快捷键 ...</translation>
+        <source>Import shortcuts from file...</source>
+        <translation type="unfinished">从文件导入快捷键...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3671,8 +3671,8 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
-        <translation type="unfinished">导出快捷键到文件 ...</translation>
+        <source>Export shortcuts into file...</source>
+        <translation type="unfinished">导出快捷键到文件...</translation>
     </message>
     <message>
         <location line="+11"/>

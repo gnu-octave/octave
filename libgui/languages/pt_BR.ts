@@ -3044,7 +3044,7 @@ Você deseja usar a tecla de atalho mesmo assim, removendo-a da outra ação?</t
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
+        <source>Import shortcuts from file...</source>
         <translation>Importar teclas de atalho de arquivo...</translation>
     </message>
     <message>
@@ -3055,7 +3055,7 @@ Você deseja usar a tecla de atalho mesmo assim, removendo-a da outra ação?</t
     </message>
     <message>
         <location line="-1"/>
-        <source>Export shortcuts into file ...</source>
+        <source>Export shortcuts into file...</source>
         <translation>Exportar teclas de atalho para arquivo...</translation>
     </message>
     <message>

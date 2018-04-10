@@ -439,8 +439,14 @@ b = sparse (i, j, v, sz(1), sz(2));
           // matrix.  Try to reuse the possibly cached index vector.
 
           // No need to catch index_exception, since arg is bool.
-          // Out-of-range errors have already set pos, and will be caught later.
-          retval(0) = arg.index_vector ().unmask ();
+          // Out-of-range errors have already set pos, and will be
+          // caught later.
+
+          octave_value result = arg.index_vector ().unmask ();
+
+          dim_vector dv = result.dims ();
+
+          retval(0) = (dv.isvector () ? result : result.reshape (dv.as_column ()));
         }
       else
         {
@@ -539,6 +545,9 @@ b = sparse (i, j, v, sz(1), sz(2));
 %!assert (find ([1, 0, 1, 0, 1]), [1, 3, 5])
 %!assert (find ([1; 0; 3; 0; 1]), [1; 3; 5])
 %!assert (find ([0, 0, 2; 0, 3, 0; -1, 0, 0]), [3; 5; 7])
+
+%!assert <*53603> (find (ones (1,1,2) > 0), [1;2])
+%!assert <*53603> (find (ones (1,1,1,3) > 0), [1;2;3])
 
 %!test
 %! [i, j, v] = find ([0, 0, 2; 0, 3, 0; -1, 0, 0]);

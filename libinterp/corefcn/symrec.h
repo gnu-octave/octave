@@ -528,7 +528,7 @@ namespace octave
                 m_fwd_rep.reset ();
               }
             else
-              t_fwd_rep->unbind_fwd_rep ();
+              t_fwd_rep->unbind_global_rep ();
           }
       }
 

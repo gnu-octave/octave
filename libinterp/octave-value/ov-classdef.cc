@@ -364,6 +364,22 @@ check_access (const cdef_class& cls, const octave_value& acc,
             panic_impossible ();
         }
     }
+  else if (acc.isobject ())
+    {
+      cdef_class ctx = get_class_context ();
+
+      // At this point, a class context is always required.
+      if (ctx.ok ())
+        {
+          if (ctx == cls)
+            return true;
+
+          cdef_class acc_cls (to_cdef (acc));
+
+          if (is_superclass (acc_cls, ctx))
+            return true;
+        }
+    }
   else if (acc.iscell ())
     {
       Cell acc_c = acc.cell_value ();

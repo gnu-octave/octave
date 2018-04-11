@@ -48,7 +48,7 @@
 %!assert (p.principle, 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
-%!xtest
+%!xtest <53614>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
 %!test <42510>
 %! assert (methods (p), {'amount'; 'foo_value_class'});

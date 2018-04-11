@@ -2308,6 +2308,8 @@ if test $check_fltk = yes; then
         ;;
       esac
     done
+    FLTK_CPPFLAGS=`echo "$FLTK_CPPFLAGS" | $SED -e 's/^ \+//'`
+
     ## Split -L and -l options into FLTK_LDFLAGS and FLTK_LIBS
     fltk_ldflags=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
     for fltk_option in $fltk_ldflags; do
@@ -2320,6 +2322,8 @@ if test $check_fltk = yes; then
         ;;
       esac
     done
+    FLTK_LIBS=`echo "$FLTK_LIBS" | $SED -e 's/^ \+//'`
+    FLTK_LDFLAGS=`echo "$FLTK_LDFLAGS" | $SED -e 's/^ \+//'`
 
     case $host_os in
       mingw*)

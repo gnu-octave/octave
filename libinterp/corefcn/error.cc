@@ -1420,21 +1420,20 @@ DEFMETHOD (warning, interp, args, nargout,
 @deftypefnx {} {} warning ("error", @var{id})
 @deftypefnx {} {} warning ("query", @var{id})
 @deftypefnx {} {} warning (@var{state}, @var{id}, "local")
-@deftypefnx {} {} warning (@var{stin})
-@deftypefnx {} {@var{stout} =} warning (@dots{})
-@deftypefnx {} {@var{mode_st} =} warning (@var{state}, @var{mode})
+@deftypefnx {} {} warning (@var{warning_struct})
+@deftypefnx {} {@var{warning_struct} =} warning (@dots{})
+@deftypefnx {} {@var{mode_struct} =} warning (@var{state}, @var{mode})
 @deftypefnx {} {} warning (@var{mode_st})
 
-Display a warning message or control the behavior of Octave's warning
-system.
+Display a warning message or control the behavior of Octave's warning system.
 
-The first call form uses a template @var{template} and optional
-additional arguments to display a message on the @code{stderr} stream.
-The message is formatted using the same rules as the @code{printf} family
-of functions (@pxref{Formatted Output}) and prefixed by the character
-string @samp{warning: }.  You should use this function when you want to
-notify the user of an unusual condition, but only when it makes sense for
-your program to go on.  For example:
+The first call form uses a template @var{template} and optional additional
+arguments to display a message on the @code{stderr} stream.  The message is
+formatted using the same rules as the @code{printf} family of functions
+(@pxref{Formatted Output}) and prefixed by the character string
+@w{@samp{warning: }}.  You should use this function when you want to notify the
+user of an unusual condition, but only when it makes sense for your program to
+go on.  For example:
 
 @example
 @group
@@ -1460,9 +1459,9 @@ The first input argument must be a string @var{state} (@qcode{"on"},
 @qcode{"off"}, @qcode{"error"}, or @qcode{"query"}) followed by an optional
 warning identifier @var{id} or @qcode{"all"} (default).
 
-The optional output argument @var{stout} is a structure or structure array
-with fields @qcode{"state"} and @qcode{"identifier"}.  The @var{state} argument
-may have the following values:
+The optional output argument @var{warning_struct} is a structure or structure
+array with fields @qcode{"state"} and @qcode{"identifier"}.  The @var{state}
+argument may have the following values:
 
 @table @asis
 @item @qcode{"on"}|@qcode{"off"}:
@@ -1477,10 +1476,10 @@ previous state @var{stout}.
 Return the current state of warnings identified by @var{id}.
 @end table
 
-A structure or structure array @var{stin}, with fields @qcode{"state"} and
-@qcode{"identifier"}, may be passed to achieve equivalent results.  The
-following example shows how to temporarily disable a warning and then restore
-its original state:
+A structure or structure array @var{warning_struct}, with fields
+@qcode{"state"} and @qcode{"identifier"}, may be given as an input to achieve
+equivalent results.  The following example shows how to temporarily disable a
+warning and then restore its original state:
 
 @example
 @group
@@ -1519,12 +1518,12 @@ enable/disable the display of additional information after the warning message
 In this case the @var{state} argument may only be @qcode{"on"} or
 @qcode{"off"}.
 
-Implementation Note: For compatibility with @sc{matlab}, escape
-sequences in @var{template} (e.g., @qcode{"@xbackslashchar{}n"} =>
-newline) are processed regardless of whether @var{template} has been defined
-with single quotes, as long as there are two or more input arguments.  To
-disable escape sequence expansion use a second backslash before the sequence
-(e.g., @qcode{"@xbackslashchar{}@xbackslashchar{}n"}) or use the
+Implementation Note: For compatibility with @sc{matlab}, escape sequences in
+@var{template} (e.g., @qcode{"@xbackslashchar{}n"} => newline) are processed
+regardless of whether @var{template} has been defined with single quotes, as
+long as there are two or more input arguments.  To disable escape sequence
+expansion use a second backslash before the sequence (e.g.,
+@qcode{"@xbackslashchar{}@xbackslashchar{}n"}) or use the
 @code{regexptranslate} function.
 @seealso{warning_ids, lastwarn, error}
 @end deftypefn */)

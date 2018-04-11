@@ -244,6 +244,13 @@ fix-file-perms-dist-hook:
 
 if AMCOND_ENABLE_HG_ID
 hg-id-dist-hook:
+	@test x"$(DIST_IGNORE_HG_STATE)" != x \
+	  || echo $(HG_ID_VAR) | $(GREP) '^[0-9a-f]\{12\}$$' >/dev/null 2>&1 \
+	  || { echo ; \
+	       echo "Packaging distribution requires a clean hg working tree with no uncommitted changes." ; \
+	       echo "Please commit or revert your changes first, or pass DIST_IGNORE_HG_STATE=1." ; \
+	       echo "Cannot package distribution!" ; \
+	       echo ; exit 1; }
 else
 hg-id-dist-hook:
 	@echo "WARNING: Octave was configured with --disable-hg-id" 1>&2

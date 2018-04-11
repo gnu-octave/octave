@@ -43,12 +43,12 @@ sources may be found under the Source Code tab on
 Installation
 ------------
 
-Octave requires approximately 1.4 GB of disk storage to unpack and
-compile from source (significantly less, 400 MB, if you don't compile
-with debugging symbols).  Once installed, Octave requires
-approximately 350 MB of disk space (again, considerably less, 70 MB,
-if you don't build shared libraries or the binaries and libraries do
-not include debugging symbols).
+Octave requires approximately 475 MB of disk storage to unpack and
+compile from source (significantly more, 3.8 GB, if you compile with
+debugging symbols).  Once installed, Octave requires approximately
+75 MB of disk space (again, considerably more, 415 MB, if you don't
+build shared libraries or the binaries and libraries include
+debugging symbols).
 
 To compile Octave, you will need a recent version of:
 

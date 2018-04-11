@@ -277,7 +277,9 @@ namespace octave
         {
           symbol_record& sr = nm_sr.second;
 
-          if (! (sr.is_persistent () || sr.is_forwarded ()))
+          if (sr.is_global ())
+            sr.unbind_global_rep ();
+          else if (! (sr.is_persistent () || sr.is_forwarded ()))
             sr.clear (m_context);
         }
     }

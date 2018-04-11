@@ -792,6 +792,10 @@ namespace octave
         m_rep->mark_hidden (name);
     }
 
+    // This function should only be called for the global
+    // symbol_scope, and that should only happen when it is added to
+    // the global symbol_scope.
+
     void mark_global (const std::string& name)
     {
       if (m_rep)

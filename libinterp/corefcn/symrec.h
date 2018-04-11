@@ -203,7 +203,7 @@ namespace octave
         // clear the local value.
 
         if (is_global ())
-          unbind_fwd_rep ();
+          unbind_global_rep ();
 
         if (! (is_hidden () || is_inherited ()))
           {
@@ -280,7 +280,7 @@ namespace octave
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           return t_fwd_rep->is_global ();
 
-        return m_storage_class & global;
+        return is_marked_global ();
       }
 
       bool is_persistent (void) const
@@ -361,6 +361,11 @@ namespace octave
       void mark_global (void)
       {
         m_storage_class |= global;
+      }
+
+      bool is_marked_global (void) const
+      {
+        return m_storage_class & global;
       }
 
       void mark_persistent (void)
@@ -482,49 +487,49 @@ namespace octave
 
         if (auto t_fwd_rep = m_fwd_rep.lock ())
           {
+            // If this is the symbol in the global scope, then don't
+            // forward again!
+
+            if (t_fwd_rep->is_marked_global ())
+              return;
+
             t_fwd_rep->bind_fwd_rep (fwd_scope, fwd_rep);
-            return;
           }
 
         m_fwd_scope = fwd_scope;
         m_fwd_rep = fwd_rep;
       }
 
-      void unbind_fwd_rep (bool recurse = true)
+      void unbind_fwd_rep (void)
       {
-        // When unbinding variables in a script scope, recurse will be
-        // false and we will only break the immediate link.  By doing
-        // that, we ensure that any variables that are made global in
-        // a script remain linked as globals in the enclosing scope.
-
-        // When unbinding variables in a (possibly nested) function
-        // scope, recurse will be true and we will break the link to
-        // the global scope, not just the immediate link to the parent
-        // scope of the nested function.
-
-        if (recurse)
-          {
-            if (auto t_fwd_rep = m_fwd_rep.lock ())
-              {
-                // Currently, it is only possible to have at most two
-                // levels of indirection here, either
-                //
-                //   nested function -> parent function -> global scope
-                //
-                // or
-                //
-                //   script -> top level scope -> global scope
-                //
-                // so we can break the recursion here by setting the
-                // argument to unbind_fwd_rep to false.
-
-                t_fwd_rep->unbind_fwd_rep (false);
-                return;
-              }
-          }
+        // When unbinding variables in a script scope, we only break
+        // the immediate link.  By doing that, we ensure that any
+        // variables that are made global in a script remain linked as
+        // globals in the enclosing scope.
 
         m_fwd_scope = std::weak_ptr<symbol_scope_rep> ();
         m_fwd_rep.reset ();
+      }
+
+      void unbind_global_rep (void)
+      {
+        // Break the link to the global symbol_record_rep.  These must
+        // forwarded, so we don't do anything unless the forward rep
+        // points to something.
+
+        if (auto t_fwd_rep = m_fwd_rep.lock ())
+          {
+            if (t_fwd_rep->is_marked_global ())
+              {
+                // The rep this object points to is in the global
+                // scope, so delete the link to it.
+
+                m_fwd_scope = std::weak_ptr<symbol_scope_rep> ();
+                m_fwd_rep.reset ();
+              }
+            else
+              t_fwd_rep->unbind_fwd_rep ();
+          }
       }
 
       std::shared_ptr<symbol_record_rep>
@@ -657,7 +662,6 @@ namespace octave
     void mark_formal (void) { m_rep->mark_formal (); }
     void mark_hidden (void) { m_rep->mark_hidden (); }
     void mark_inherited (void) { m_rep->mark_inherited (); }
-    void mark_global (void) { m_rep->mark_global (); }
     void mark_persistent (void) { m_rep->mark_persistent (); }
     void mark_added_static (void) { m_rep->mark_added_static (); }
 
@@ -669,6 +673,9 @@ namespace octave
     void unmark_persistent (void) { m_rep->unmark_persistent (); }
     void unmark_added_static (void) { m_rep->unmark_added_static (); }
 
+    bool is_marked_global (void) const { return m_rep->is_marked_global (); }
+    void mark_global (void) { m_rep->mark_global (); }
+
     void init_persistent (void) { m_rep->init_persistent (); }
 
     unsigned int storage_class (void) const { return m_rep->storage_class (); }
@@ -679,7 +686,7 @@ namespace octave
       m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
 
-    void unbind_fwd_rep (bool recurse = true) { m_rep->unbind_fwd_rep (recurse); }
+    void unbind_fwd_rep (void) { m_rep->unbind_fwd_rep (); }
 
     octave_value dump (context_id context) const
     {

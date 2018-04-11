@@ -12,6 +12,7 @@ TEST_FILES += \
   %reldir%/bug-38576.tst \
   %reldir%/bug-46330.tst \
   %reldir%/bug-49904.tst \
+  %reldir%/bug-53579.tst \
   %reldir%/bug-53599.tst \
   %reldir%/colormaps.tst \
   %reldir%/command.tst \

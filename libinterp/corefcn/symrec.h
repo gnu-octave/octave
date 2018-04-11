@@ -528,7 +528,7 @@ namespace octave
                 m_fwd_rep.reset ();
               }
             else
-              t_fwd_rep->unbind_fwd_rep ();
+              t_fwd_rep->unbind_global_rep ();
           }
       }
 
@@ -685,6 +685,8 @@ namespace octave
     {
       m_rep->bind_fwd_rep (fwd_scope, sr.m_rep);
     }
+
+    void unbind_global_rep (void) { m_rep->unbind_global_rep (); }
 
     void unbind_fwd_rep (void) { m_rep->unbind_fwd_rep (); }
 

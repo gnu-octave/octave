@@ -338,6 +338,8 @@ namespace octave
 
     void focusInEvent (QFocusEvent *ev);
 
+    void focusOutEvent (QFocusEvent *ev);
+
   private:
 
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
@@ -377,6 +379,8 @@ namespace octave
     QString m_current_focus_vname;
 
     QString m_hovered_focus_vname;
+
+    QWidget *m_variable_focus_widget;
   };
 }
 

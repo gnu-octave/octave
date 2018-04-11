@@ -4753,9 +4753,11 @@ namespace octave
         octave_function *tmpfcn
           = dyn_loader.load_oct (nm, file, relative_lookup);
 
-        tmpfcn->stash_package_name (package_name);
-
-        retval = octave_value (tmpfcn);
+        if (tmpfcn)
+          {
+            tmpfcn->stash_package_name (package_name);
+            retval = octave_value (tmpfcn);
+          }
       }
     else if (len > 4 && file.substr (len-4, len-1) == ".mex")
       {

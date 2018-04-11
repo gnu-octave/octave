@@ -1010,7 +1010,7 @@ endfunction
 ## Test 'xtest' keyword
 %!xtest
 %! assert (1, 1);      # Test passes
-%!xtest
+%!xtest <53613>
 %! assert (0, 1);      # Test fails
 
 ## Test comment block.  It can contain anything.

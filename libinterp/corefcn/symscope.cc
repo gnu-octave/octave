@@ -237,6 +237,6 @@ namespace octave
   symbol_scope_rep::unbind_script_symbols (void)
   {
     for (auto& nm_sr : m_symbols)
-      nm_sr.second.unbind_fwd_rep (false);
+      nm_sr.second.unbind_fwd_rep ();
   }
 }

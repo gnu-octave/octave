@@ -106,7 +106,8 @@
 ## difference between the current iteration @var{x} and the previous is less
 ## than @code{eps * norm (@var{x},2)}.
 ##
-## @item 4: The algorithm can't continue due to a division by zero.
+## @item 4: The algorithm could not continue because intermediate values
+## became too small or too large for reliable computation.
 ## @end itemize
 ##
 ## @item
@@ -271,11 +272,12 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   while ((flag != 2) && (iter < maxit) && (resvec(iter+1) >= norm_b * tol))
     v = Afun (p, "notransp", varargin{:});
     prod_qv = q' * v;
-    if (prod_qv == 0)
+    alpha = (s0' * prec_r0);
+    if (abs (prod_qv) <= eps * abs (alpha))
       flag = 4;
       break
     endif
-    alpha = (s0' * prec_r0) / prod_qv;
+    alpha ./= prod_qv;
     x += alpha * p;
     prod_rs = (s0' * prec_r0);  # Product between r0 and s0
     r0 -= alpha * v;
@@ -283,6 +285,12 @@ function [x_min, flag, relres, iter_min, resvec] = ...
     prec_r0 = M1fun (r0, "notransp", varargin{:});
     prec_s0 = s0;
     prec_r0 = M2fun (prec_r0, "notransp", varargin{:});
+    beta = s0' * prec_r0;
+    if (abs (prod_rs) <= abs (beta))
+      flag = 4;
+      break;
+    endif
+    beta ./= prod_rs;
     prec_s0 = M2fun (prec_s0, "transp", varargin{:});
     prec_s0 = M1fun (prec_s0, "transp", varargin{:});
     iter += 1;
@@ -295,11 +303,6 @@ function [x_min, flag, relres, iter_min, resvec] = ...
       flag = 3;
       break;
     endif
-    if (prod_rs == 0)
-      flag = 4;
-      break;
-    endif
-    beta = (s0' * prec_r0) / prod_rs;
     p = prec_r0 + beta*p;
     q = prec_s0 + conj (beta) * q;
   endwhile

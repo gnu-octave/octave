@@ -334,6 +334,10 @@ namespace octave
 
     void selected_command_signal (const QString& cmd);
 
+  protected:
+
+    void focusInEvent (QFocusEvent *ev);
+
   private:
 
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,

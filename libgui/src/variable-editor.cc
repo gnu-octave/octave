@@ -1029,10 +1029,19 @@ namespace octave
     m_main->setCentralWidget (central_mdiarea);
 
     setWidget (m_main);
-    setFocusProxy (m_main);
 
     connect (this, SIGNAL (command_signal (const QString&)),
              p, SLOT (execute_command_in_terminal (const QString&)));
+  }
+
+  void variable_editor::focusInEvent (QFocusEvent *ev)
+  {
+    octave_dock_widget::focusInEvent (ev);
+
+    // set focus to the current variable
+    QWidget *fw = m_main->focusWidget ();
+    if (fw != nullptr)
+      fw->setFocus ();
   }
 
   // Add an action to a menu or the widget itself.

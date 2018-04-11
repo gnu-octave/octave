@@ -153,12 +153,18 @@ install_loaded_variable (const std::string& name,
 
   if (global)
     {
-      scope.clear_variable (name);
-      scope.mark_global (name);
-      symtab.assign (name, val);
+      octave::symbol_record sym = scope.find_symbol (name);
+
+      if (! sym.is_global ())
+        {
+          octave::symbol_scope global_scope = symtab.global_scope ();
+          octave::symbol_record global_sym = global_scope.find_symbol (name);
+
+          sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
+        }
     }
-  else
-    scope.assign (name, val);
+
+  scope.assign (name, val);
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.

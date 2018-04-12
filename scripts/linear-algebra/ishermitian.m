@@ -20,13 +20,27 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} ishermitian (@var{A})
 ## @deftypefnx {} {} ishermitian (@var{A}, @var{tol})
-## Return true if @var{A} is Hermitian within the tolerance specified by
-## @var{tol}.
+## @deftypefnx {} {} ishermitian (@var{A}, @qcode{"skew"})
+## @deftypefnx {} {} ishermitian (@var{A}, @qcode{"skew"}, @var{tol})
+## Return true if @var{A} is a Hermitian or skew-Hermitian matrix within the
+## tolerance specified by @var{tol}.
 ##
 ## The default tolerance is zero (uses faster code).
 ##
-## Matrix @var{A} is considered symmetric if
+## The type of symmetry to check may be specified with the additional input
+## @qcode{"nonskew"} (default) for regular Hermitian or @qcode{"skew"} for
+## skew-Hermitian.
+##
+## Background: A matrix is Hermitian if the complex conjugate transpose of the
+## matrix is equal to the original matrix: @w{@acode{@var{A} == @var{A}'}}.  If
+## a tolerance is given then the calculation is
 ## @code{norm (@var{A} - @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
+##
+## A matrix is skew-hermitian if the complex conjugate transpose of the matrix
+## is equal to the negative of the original matrix:
+## @w{@acode{@var{A} == -@var{A}'}}.  If a
+## tolerance is given then the calculation is
+## @code{norm (@var{A} + @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
 
@@ -34,19 +48,52 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function retval = ishermitian (A, tol = 0)
+function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  retval = isnumeric (A) && issquare (A);
-  if (retval)
+  if (nargin == 2)
+    ## Decode whether second argument is skewopt or tol
+    if (isnumeric (skewopt))
+      tol = skewopt;
+      skewopt = "nonskew";
+    elseif (! ischar (skewopt))
+      error ("ishermitian: second argument must be a non-negative scalar TOL, or one of the strings: 'skew' / 'nonskew'");
+    endif 
+  endif
+
+  ## Validate inputs
+  retval = (isnumeric (A) || islogical (A)) && issquare (A);
+  if (! retval)
+    return;
+  endif
+
+  if (! (strcmp (skewopt, "skew") || strcmp (skewopt, "nonskew")))
+    error ("ishermitian: SKEWOPT must be 'skew' or 'nonskew'");
+  endif
+
+  if (! (isnumeric (tol) && isscalar (tol) && tol >= 0))
+    error ("ishermitian: TOL must be a scalar >= 0");
+  endif
+
+  ## Calculate Hermitian-ness
+  if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
-      retval = all ((A == A')(:));
+      ## check for exact symmetry
+      retval = ! any ((A != A')(:));
     else
-      norm_x = norm (A, inf);
-      retval = norm_x == 0 || norm (A - A', inf) / norm_x <= tol;
+      norm_x = norm (A, Inf);
+      retval = norm_x == 0 || norm (A - A', Inf) / norm_x <= tol;
+    endif
+  else
+    ## skew-Hermitian
+    if (tol == 0)
+      retval = ! any ((A != -A')(:));
+    else
+      norm_x = norm (A, Inf);
+      retval = norm_x == 0 || norm (A + A', Inf) / norm_x <= tol;
     endif
   endif
 
@@ -57,15 +104,28 @@ endfunction
 %!assert (! ishermitian ([1, 2]))
 %!assert (ishermitian ([]))
 %!assert (ishermitian ([1, 2; 2, 1]))
-%!assert (! ishermitian ("test"))
 %!assert (ishermitian ([1, 2.1; 2, 1.1], 0.2))
 %!assert (ishermitian ([1, -2i; 2i, 1]))
-%!assert (! ishermitian ("t"))
-%!assert (! ishermitian (["te"; "et"]))
+%!assert (ishermitian (speye (100)))
+%!assert (ishermitian (logical (eye (2))))
+%!assert (ishermitian ([0, 2i; 2i, 0], "skew"))
+%!assert (! ishermitian ([0, 2; -2, eps], "skew"))
+%!assert (ishermitian ([0, 2; -2, eps], "skew", eps))
 
+%!assert (! (ishermitian ("test")))
+%!assert (! (ishermitian ("t")))
+%!assert (! (ishermitian (["te"; "et"])))
+%!assert (! ishermitian ({1}))
 %!test
 %! s.a = 1;
 %! assert (! ishermitian (s));
 
-%!error ishermitian ([1, 2; 2, 1], 0, 0)
+## Test input validation
 %!error ishermitian ()
+%!error ishermitian (1,2,3,4)
+%!error <second argument must be> ishermitian (1, {"skew"})
+%!error <SKEWOPT must be 'skew' or 'nonskew'> ishermitian (1, "foobar")
+%!error <SKEWOPT must be 'skew' or 'nonskew'> ishermitian (1, "foobar")
+%!error <TOL must be a scalar .= 0> ishermitian (1, "skew", {1})
+%!error <TOL must be a scalar .= 0> ishermitian (1, "skew", [1 1])
+%!error <TOL must be a scalar .= 0> ishermitian (1, -1)

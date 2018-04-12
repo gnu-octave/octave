@@ -81,7 +81,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
-      retval = ! any (A != A.');
+      retval = ! any ((A != A.')(:));
     else
       norm_x = norm (A, Inf);
       retval = norm_x == 0 || norm (A - A.', Inf) / norm_x <= tol;
@@ -89,7 +89,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   else
     ## skew symmetry
     if (tol == 0)
-      retval = ! any (A != -A.');
+      retval = ! any ((A != -A.')(:));
     else
       norm_x = norm (A, Inf);
       retval = norm_x == 0 || norm (A + A.', Inf) / norm_x <= tol;

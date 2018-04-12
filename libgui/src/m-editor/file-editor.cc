@@ -1432,6 +1432,15 @@ namespace octave
     menu->addSeparator ();
     menu->addAction (m_selectall_action);
     menu->addSeparator ();
+    menu->addAction (m_find_files_action);
+    menu->addAction (m_find_action);
+    menu->addAction (m_find_next_action);
+    menu->addAction (m_find_previous_action);
+    menu->addSeparator ();
+    menu->addMenu (m_edit_cmd_menu);
+    menu->addMenu (m_edit_fmt_menu);
+    menu->addMenu (m_edit_nav_menu);
+    menu->addSeparator ();
     menu->addAction (m_run_selection_action);
   }
 

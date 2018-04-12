@@ -60,6 +60,10 @@ function h = pie (varargin)
     print_usage ();
   endif
 
+  if (! all (isfinite (varargin{1})))
+    error ("pie: all data in X must be finite"); 
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -100,3 +104,8 @@ endfunction
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
 %! title ("pie() with missing slice");
+
+## Test input validation
+%!error pie ()
+%!error <all data in X must be finite> pie ([1 2 Inf])
+%!error <all data in X must be finite> pie ([1 2 NaN])

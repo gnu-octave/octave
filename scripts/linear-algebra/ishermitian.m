@@ -32,13 +32,13 @@
 ## skew-Hermitian.
 ##
 ## Background: A matrix is Hermitian if the complex conjugate transpose of the
-## matrix is equal to the original matrix: @w{@code{@var{A} == @var{A}'}}.  If
+## matrix is equal to the original matrix: @w{@tcode{@var{A} == @var{A}'}}.  If
 ## a tolerance is given then the calculation is
 ## @code{norm (@var{A} - @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ##
 ## A matrix is skew-hermitian if the complex conjugate transpose of the matrix
 ## is equal to the negative of the original matrix:
-## @w{@code{@var{A} == -@var{A}'}}.  If a
+## @w{@tcode{@var{A} == -@var{A}'}}.  If a
 ## tolerance is given then the calculation is
 ## @code{norm (@var{A} + @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{issymmetric, isdefinite}

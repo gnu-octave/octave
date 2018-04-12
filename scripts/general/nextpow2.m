@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} nextpow2 (@var{x})
+## @deftypefn {} {@var{n} =} nextpow2 (@var{x})
 ## Compute the exponent for the smallest power of two larger than the input.
 ##
 ## For each element in the input array @var{x}, return the first integer
@@ -47,7 +47,9 @@ function n = nextpow2 (x)
   endif
 
   [f, n] = log2 (abs (x));
-  n(f == 0.5)--;
+  idx = (n == 0);   # Find any failures of log2 function (n == 0)
+  n(idx) = f(idx);  # and copy over value.
+  n(f == 0.5)--; 
 
 endfunction
 
@@ -59,6 +61,15 @@ endfunction
 %!assert (nextpow2 (-17), 5)
 %!assert (nextpow2 (-31), 5)
 %!assert (nextpow2 (1:17), [0 1 2 2 3 3 3 3 4 4 4 4 4 4 4 4 5])
+## Special cases
+%!assert (nextpow2 (0), 0)
+%!assert (nextpow2 (1), 0)
+%!assert (nextpow2 (Inf), Inf)
+%!assert (nextpow2 (-Inf), Inf)
+%!assert (nextpow2 (NaN), NaN)
+%!assert (nextpow2 ([1, Inf, 3, -Inf, 9, NaN]), [0, Inf, 2, Inf, 4, NaN])
 
+## Test input validation
 %!error nexpow2 ()
 %!error nexpow2 (1, 2)
+%!error <X must be numeric> nextpow2 ("t")

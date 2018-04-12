@@ -32,12 +32,12 @@
 ## skew-symmetry.
 ##
 ## Background: A matrix is symmetric if the transpose of the matrix is equal
-## to the original matrix: @w{@acode{@var{A} == @var{A}.'}}.  If a tolerance
+## to the original matrix: @w{@code{@var{A} == @var{A}.'}}.  If a tolerance
 ## is given then symmetry is determined by
 ## @code{norm (@var{A} - @var{A}.', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ##
 ## A matrix is skew-symmetric if the transpose of the matrix is equal to the
-## negative of the original matrix: @w{@acode{@var{A} == -@var{A}.'}}.  If a
+## negative of the original matrix: @w{@code{@var{A} == -@var{A}.'}}.  If a
 ## tolerance is given then skew-symmetry is determined by
 ## @code{norm (@var{A} + @var{A}.', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{ishermitian, isdefinite}
@@ -60,7 +60,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
       skewopt = "nonskew";
     elseif (! ischar (skewopt))
       error ("issymmetric: second argument must be a non-negative scalar TOL, or one of the strings: 'skew' / 'nonskew'");
-    endif 
+    endif
   endif
 
   ## Validate inputs

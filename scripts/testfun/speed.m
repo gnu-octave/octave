@@ -414,11 +414,10 @@ endfunction
 %! disp ("This time, the for loop is done away with entirely.");
 %! disp ("Notice how much bigger the speedup is than in example 1.");
 
-## FIXME: Tests are known to fail on operating systems with low resolution
-##        timers such as MinGW.  Therefore, tests are made xtests so that false
-##        failures are not reported.  However, it might be better to either
+## FIXME: Tests may fail on operating systems with low resolution timers such
+##        as MinGW.  If a failure is reported, it might be better to either
 ##        force the tests to do more work, or use %!testif to check the OS.
-%!xtest
+%!test
 %! [order, n, T_f1, T_f2] = speed ("airy (x)", "x = rand (n, 10)", [100, 1000]);
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);
@@ -430,7 +429,7 @@ endfunction
 %! assert (isnumeric (T_f2));
 %! assert (length (T_f2) > 10);
 
-%!xtest
+%!test
 %! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); endfor");
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);

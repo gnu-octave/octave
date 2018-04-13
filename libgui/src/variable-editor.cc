@@ -927,8 +927,7 @@ namespace octave
   {
     if (ev->type () == QEvent::HoverEnter)
       emit hovered_signal ();
-    else if (ev->type () == QEvent::MouseButtonPress ||
-             ev->type () == QEvent::MouseButtonPress)
+    else if (ev->type () == QEvent::MouseButtonPress)
       emit popup_shown_signal ();
 
     return QToolButton::eventFilter (obj, ev);

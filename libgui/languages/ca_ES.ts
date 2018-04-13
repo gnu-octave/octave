@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE TS>
-<TS language="ca" version="2.1">
+<TS version="2.1" language="ca">
 <context>
     <name>QObject</name>
     <message>
@@ -41,7 +41,6 @@
     <message>
         <location line="+1"/>
         <source>background</source>
-        
         <translation>segon plan</translation>
     </message>
     <message>
@@ -147,7 +146,6 @@
     <message>
         <location line="+7"/>
         <source>&amp;File</source>
-        
         <translation>&amp;Fitxer</translation>
     </message>
     <message>
@@ -275,7 +273,6 @@
     <message>
         <location line="+6"/>
         <source>String</source>
-        
         <translation>Cadena de text</translation>
     </message>
     <message>
@@ -311,7 +308,6 @@
     <message>
         <location line="+22"/>
         <source>Horz alignment</source>
-        
         <translation>Alineació horitzontal</translation>
     </message>
     <message>
@@ -333,7 +329,6 @@
     <message>
         <location line="+8"/>
         <source>Vert alignment</source>
-        
         <translation>Alineació vertical</translation>
     </message>
     <message>
@@ -394,13 +389,11 @@
     <message>
         <location line="+6"/>
         <source>Background</source>
-        
         <translation>Segon pla</translation>
     </message>
     <message>
         <location line="+444"/>
         <source>Edge</source>
-        
         <translation>Vora</translation>
     </message>
     <message>
@@ -637,7 +630,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+9"/>
         <source>Cu&amp;t</source>
-        <translation>Talla&amp;r</translation>
+        <translation>Ta&amp;lla</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -702,7 +695,6 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Transpose Line</source>
-        
         <translation>Intercanvia la línia</translation>
     </message>
     <message>
@@ -743,13 +735,11 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Indent Selection Rigidly</source>
-        
         <translation>&amp;Sagna estrictament la selecció</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        
         <translation>&amp;Neteja estrictament el sagnat de la selecció</translation>
     </message>
     <message>
@@ -905,7 +895,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation>Punto d'interrupció &amp;anterior</translation>
+        <translation>Punt d'interrupció &amp;anterior</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -963,7 +953,6 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        
         <translation>Columna:</translation>
     </message>
     <message>
@@ -1019,7 +1008,6 @@ Vols desar i afegir el punt d'interrupció o cancel·lar?</translation>
         <location line="+1"/>
         <source>Comment string to use:
 </source>
-        
         <translation>Cadena de text de comentari a utilitzar:</translation>
     </message>
     <message>
@@ -1097,8 +1085,7 @@ Do you want to choose another name?</source>
         <translation>"%1"
 no és un identificador vàlid.
 
-Si manteniu aquest nom de fitxer, no podreu
-cridar el vostre script amb el seu nom com a ordre d'Octave.
+Si manteniu aquest nom de fitxer, no podreu executar el codi pel seu nom a l'Octave.
 
 Vols seleccionar un altre nom?</translation>
     </message>
@@ -1179,7 +1166,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation>Mostrar els ocults</translation>
+        <translation>Mostra els ocults</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1189,7 +1176,6 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+26"/>
         <source>Enter the path or filename</source>
-        
         <translation>Introdueix el camí o el nom del fitxer</translation>
     </message>
     <message>
@@ -1236,7 +1222,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
         <location line="+4"/>
         <location line="+365"/>
         <source>Find Files...</source>
-        <translation>Cerca arxius...</translation>
+        <translation>Cerca fitxers...</translation>
     </message>
     <message>
         <location line="-361"/>
@@ -1455,7 +1441,6 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Find &amp;what:</source>
-        
         <translation>&amp;Cerca:</translation>
     </message>
     <message>
@@ -1466,7 +1451,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Match &amp;case</source>
-        <translation>Distingir entre &amp;majúscules/minúscules</translation>
+        <translation>Distingeix entre &amp;majúscules/minúscules</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1564,7 +1549,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+11"/>
         <source>Named:</source>
-        <translation>Anomenat:</translation>
+        <translation>Nom:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1574,7 +1559,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+6"/>
         <source>Start in:</source>
-        <translation>Comença en:</translation>
+        <translation>Comença a:</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1614,7 +1599,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Name case insensitive</source>
-        <translation>No distingir entre majúscules i minúscules</translation>
+        <translation>No distingeixes entre majúscules i minúscules</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1629,7 +1614,6 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Enter the file content search expression</source>
-        
         <translation>Introdueix l'expressió a cercar al contingut del fitxer</translation>
     </message>
     <message>
@@ -1640,7 +1624,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Text case insensitive</source>
-        <translation>No distingir entre majúscules i minúscules</translation>
+        <translation>No distingeixes entre majúscules i minúscules</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1736,7 +1720,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Create script</source>
-        <translation>Crea un script</translation>
+        <translation>Bolca a un fitxer</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1931,7 +1915,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+4"/>
         <source>Exit</source>
-        <translation>Eixir</translation>
+        <translation>Sortir</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1941,7 +1925,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+4"/>
         <source>New Script</source>
-        <translation>Nou script</translation>
+        <translation>Nou fitxer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2016,19 +2000,16 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Step</source>
-        
         <translation>Pas (següent instrucció)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        
         <translation>Pas (entra)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        
         <translation>Pas (surt)</translation>
     </message>
     <message>
@@ -2120,7 +2101,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+5"/>
         <source>Reset Default Window Layout</source>
-        <translation>Restaura el disseny de finestres per defecte</translation>
+        <translation>Restaura el disseny de les finestres per defecte</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2140,17 +2121,17 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Contribute</source>
-        <translation>Contribuir</translation>
+        <translation>Contribueix</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation>Donar a Octave</translation>
+        <translation>Donatius</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>On Disk</source>
-        <translation>En disc</translation>
+        <translation>Local</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2336,19 +2317,16 @@ no existeix. Vols crear-lo?</translation>
     <message>
         <location line="+252"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        
         <translation>El fitxer %1 no existeix als camins de càrrega. Per executar o depurar la funció que s'està editant s'ha de canviar al directori %2 o afegir aquest als camins de càrrega.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        
         <translation>Existeix un fitxer amb el mateix nom %1 al camí de càrrega. Per executar o depurar la funció que s'està editant desplaça't al directori %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        
         <translation>Canvia el directori o afegeix directori al camí de càrrega</translation>
     </message>
     <message>
@@ -2559,19 +2537,16 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="-159"/>
         <source>Step</source>
-        
         <translation>Pas (següent instrucció)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Step Into</source>
-        
         <translation>Pas (entra)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Step Out</source>
-        
         <translation>Pas (surt)</translation>
     </message>
     <message>
@@ -2658,7 +2633,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Reset Default Window Layout</source>
-        <translation>Restaura el disseny de finestres per defecte</translation>
+        <translation>Restaura el disseny de les finestres per defecte</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2828,7 +2803,6 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Transpose Line</source>
-        
         <translation>Intercanvia la línia</translation>
     </message>
     <message>
@@ -3038,35 +3012,35 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
         <location line="+3"/>
         <location line="+27"/>
         <source>File Menu</source>
-        <translation>Menú fitxer</translation>
+        <translation>Menú Fitxer</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+27"/>
         <source>Edit Menu</source>
-        <translation>Menú edita</translation>
+        <translation>Menú Edita</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+29"/>
         <source>Debug Menu</source>
-        <translation>Menú depuració</translation>
+        <translation>Menú Depura</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Window Menu</source>
-        <translation>Menú finestra</translation>
+        <translation>Menú Finestra</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+29"/>
         <source>Help Menu</source>
-        <translation>Menú ajuda</translation>
+        <translation>Menú Ajuda</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>News Menu</source>
-        <translation>Menú notícies</translation>
+        <translation>Menú Notícies</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3076,12 +3050,12 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+19"/>
         <source>View Menu</source>
-        <translation>Menú visualitza</translation>
+        <translation>Menú Visualitza</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run Menu</source>
-        <translation>Menú executa</translation>
+        <translation>Menú Executa</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -3270,7 +3244,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+21"/>
         <source>Up</source>
-        <translation>Cap amunt</translation>
+        <translation>Puja</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3518,12 +3492,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+10"/>
         <source>Letter icons</source>
-        <translation>Icones de lletra</translation>
+        <translation>Icones tipogràfiques</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Graphic icons</source>
-        <translation>Icones de gràfic</translation>
+        <translation>Icones gràfiques</translation>
     </message>
     <message>
         <location line="-29"/>
@@ -3548,12 +3522,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+170"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Aquestes configuracions s'apliquen després dels fitxers d'inici .octaverc.</translation>
+        <translation>Aquestes configuracions s'apliquen després del fitxer d'inici ".octaverc".</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Restore working directory of previous session</source>
-        <translation>Restaurar el directori de treball de la sessió anterior</translation>
+        <translation>Restaura el directori de treball de la sessió anterior</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -3568,12 +3542,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+49"/>
         <source>Show EOL characters</source>
-        <translation>Mostrar el caràcter de fi de línia</translation>
+        <translation>Mostra el caràcter de fi de línia</translation>
     </message>
     <message>
         <location line="+309"/>
         <source>Wrap long lines at current window border</source>
-        <translation>Ajusta les línies llargues a la vora de finestra actual</translation>
+        <translation>Ajusta les línies llargues a la vora de la finestra actual</translation>
     </message>
     <message>
         <location line="+475"/>
@@ -3588,7 +3562,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+7"/>
         <source>Tab indents line</source>
-        <translation>Sagna amb el tabulador</translation>
+        <translation>El tabulador sagna la línia</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -3598,7 +3572,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+23"/>
         <source>Tab width</source>
-        <translation>Amplada del tabulador</translation>
+        <translation>Amplada del tabulat</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3618,7 +3592,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+13"/>
         <source>Case sensitive</source>
-        <translation>Distingir entre majúscules i minúscules</translation>
+        <translation>Distingeix entre majúscules i minúscules</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -3628,7 +3602,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-10"/>
         <source>Match words in document</source>
-        <translation>Coincidència de paraules al documento</translation>
+        <translation>Coincidència de paraules al document</translation>
     </message>
     <message>
         <location line="-540"/>
@@ -3643,7 +3617,6 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+280"/>
         <source>Terminal Colors</source>
-        
         <translation>Colors del terminal</translation>
     </message>
     <message>
@@ -3670,12 +3643,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-45"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation>No mostres els espais del sagnat</translation>
+        <translation>No mostres els espais de sagnat</translation>
     </message>
     <message>
         <location line="+863"/>
         <source>Number of characters before list is shown: </source>
-        <translation>Nombre de caràcters a partir de la qual es mostra la llista: </translation>
+        <translation>Nombre de caràcters a partir del qual es mostra la llista: </translation>
     </message>
     <message>
         <location line="+124"/>
@@ -3758,7 +3731,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+174"/>
         <source>Background inactive</source>
-        <translation>Fons inactivo</translation>
+        <translation>Fons inactiu</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -3774,7 +3747,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
         <location line="+41"/>
         <location line="+1732"/>
         <source>Startup path</source>
-        <translation>Camí de l'inici</translation>
+        <translation>Camí d'inici</translation>
     </message>
     <message>
         <location line="-1719"/>
@@ -3785,8 +3758,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-1635"/>
         <source>Tab width min.</source>
-        
-        <translation>Extensió mínima del tabulador.</translation>
+        <translation>Mida mínima de la pestanya.</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -3802,7 +3774,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-463"/>
         <source>Enable Code Folding</source>
-        <translation>Activa el plegat del codi</translation>
+        <translation>Activa el plegament de codi</translation>
     </message>
     <message>
         <location line="+961"/>
@@ -3852,12 +3824,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+11"/>
         <source>Strings considered for uncommenting text</source>
-        <translation>Cadenes de text considerades per a text sense comentari</translation>
+        <translation>Cadenes de text a tenir en compte en descomentar</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>String used for commenting selected text</source>
-        <translation>Cadena de text utilitzada per comentar el text seleccionat</translation>
+        <translation>Cadena de text per comentar el text seleccionat</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3867,7 +3839,6 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+25"/>
         <source>Break long lines at line length</source>
-        
         <translation>Divideix les línies llargues a partir de la longitud de línia</translation>
     </message>
     <message>
@@ -3893,7 +3864,6 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+10"/>
         <source>Background</source>
-        
         <translation>Segon pla</translation>
     </message>
     <message>
@@ -3904,12 +3874,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+127"/>
         <source>Indentation uses tabs</source>
-        <translation>El sagnat utilitza el tabulador</translation>
+        <translation>El sagnat utilitza el tabulat</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Auto insert after "if" etc.</source>
-        <translation>Inserta automàticament després d'"if" etc.</translation>
+        <translation>Insereix automàticament després d'un "if" etc.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -3934,7 +3904,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+101"/>
         <source>With Octave builtins</source>
-        <translation>Amb les funciones internes de l'Octave</translation>
+        <translation>Amb funcions internes de l'Octave</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3959,7 +3929,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+13"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-        <translation>Restaurar les pestanyes de l'editor de la sessió anterior a l'inici o quan l'editor es mostra de nou després d'haver-lo tancat</translation>
+        <translation>Restaura les pestanyes de l'editor de la sessió anterior</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -3989,7 +3959,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+34"/>
         <source>Print debug location in terminal window in addition to the marker in the editor</source>
-        <translation>Imprimeix la ubicació de depuració a la Finestra del Terminal a més a més de a l'editor</translation>
+        <translation>Mostra la ubicació del depurador a la Finestra del Terminal, a més del marcador de l'editor</translation>
     </message>
     <message>
         <location line="+87"/>
@@ -4060,7 +4030,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+23"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation>Permet a l'Octave la connexió al seu lloc web per mostrar novetats en quant a notícies i informació</translation>
+        <translation>Permet a l'Octave la connexió al lloc web per mostrar més informació i notícies actualitzades</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -4120,7 +4090,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-290"/>
         <source>HttpProxy</source>
-        <translation>HttpProxy</translation>
+        <translation>Servidor intermediari HTTP</translation>
     </message>
     <message>
         <location line="-2179"/>
@@ -4175,7 +4145,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+83"/>
         <source>Socks5Proxy</source>
-        <translation>"Socks5Proxy"</translation>
+        <translation>Servidor intermediari SOCKS</translation>
     </message>
     <message>
         <location line="-16"/>
@@ -4222,7 +4192,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-260"/>
         <source>IBeam Cursor</source>
-        <translation>Cursor en forma d'l</translation>
+        <translation>Cursor en forma d'I</translation>
     </message>
     <message>
         <location line="+1"/>

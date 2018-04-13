@@ -24,6 +24,7 @@ octave_gui_ICONS = \
   %reldir%/icons/edit-undo.png \
   %reldir%/icons/folder.png \
   %reldir%/icons/folder-new.png \
+  %reldir%/icons/go-down.png \
   %reldir%/icons/go-first.png \
   %reldir%/icons/go-last.png \
   %reldir%/icons/go-up.png \

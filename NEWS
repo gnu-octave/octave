@@ -285,8 +285,8 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       isgraphics
       isstring
       mad
-      ode15i.m
-      ode15s.m
+      ode15i
+      ode15s
       openvar
       quad2d
       repelem

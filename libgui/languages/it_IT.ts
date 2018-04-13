@@ -239,17 +239,17 @@
     <message>
         <location line="+1"/>
         <source>Copy Link Address</source>
-        <translation>Copia l'indirizzo del collegamento</translation>
+        <translation>Copia l&apos;indirizzo del collegamento</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Send Email To...</source>
-        <translation>Manda un'email a...</translation>
+        <translation>Manda un&apos;email a...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Email Address</source>
-        <translation>Copia l'indirizzo email</translation>
+        <translation>Copia l&apos;indirizzo email</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -773,7 +773,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation>&amp;Deindenta rigidamente selezione</translation>
+        <translation>D&amp;eindenta rigidamente selezione</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -828,7 +828,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation>Attiva/disattiva &amp;segnalibro</translation>
+        <translation>Attiva/&amp;disattiva segnalibro</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -843,7 +843,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation>Preferenze di &amp;stile...</translation>
+        <translation>P&amp;referenze di stile...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -958,7 +958,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Help on Keyword</source>
-        <translation>&amp;Aiuto su parola chiave</translation>
+        <translation>&amp;Aiuto sulla parola chiave</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1478,7 +1478,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Re&amp;place with:</source>
-        <translation>Sos&amp;tituisci con:</translation>
+        <translation>Sostit&amp;uisci con:</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1498,7 +1498,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>&amp;Find Next</source>
-        <translation>&amp;Trova successivo</translation>
+        <translation>Trova su&amp;ccessivo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1508,7 +1508,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation>Sos&amp;tituisci</translation>
+        <translation>&amp;Sostituisci</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1782,7 +1782,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Command History</source>
-        <translation>Cronologia dei comandi</translation> <!---->
+        <translation>Cronologia dei comandi</translation>
     </message>
 </context>
 <context>
@@ -2018,7 +2018,7 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation>Pulisci lo spazio di lavoro</translation>
+        <translation>Svuota lo spazio di lavoro</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2564,7 +2564,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
         <location line="+1"/>
         <location line="+162"/>
         <source>Preferences</source>
-        <translation>Preferenze</translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="-159"/>
@@ -3028,7 +3028,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     <message>
         <location line="+4"/>
         <source>Help on Keyword</source>
-        <translation>Aiuto su parola chiave</translation>
+        <translation>Aiuto sulla parola chiave</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3541,13 +3541,13 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
         <location line="-29"/>
         <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Dock widget title bar</source>
-        <translation>Barra del titolo del lanciatore di widget</translation>
+        <translation>Barra del titolo degli widget</translation>
     </message>
     <message>
         <location line="-176"/>
         <location filename="../src/ui-settings-dialog.h" line="-8"/>
         <source>Confirm before exiting</source>
-        <translation>Conferma prima di uscire</translation>
+        <translation>Chiedi conferma prima di uscire</translation>
     </message>
     <message>
         <location line="+95"/>
@@ -3655,7 +3655,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
         <location line="+431"/>
         <location filename="../src/ui-settings-dialog.h" line="+25"/>
         <source>Wrap long lines at current window border</source>
-        <translation>Spezza righe lunghe al marigne della finsetra corrente</translation>
+        <translation>Spezza righe lunghe al margine della finestra corrente</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -4223,7 +4223,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
         <location line="-63"/>
         <location filename="../src/ui-settings-dialog.h" line="-5"/>
         <source>Plus font height</source>
-        <translation>Più altezza del carattere</translation>
+        <translation>Oltre all&apos;altezza del carattere</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -4259,7 +4259,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
         <location line="-2179"/>
         <location filename="../src/ui-settings-dialog.h" line="-139"/>
         <source>Icon set for dock widgets</source>
-        <translation>Icone per il lanciatore di widget</translation>
+        <translation>Set di icone per gli widget</translation>
     </message>
     <message>
         <location line="-220"/>

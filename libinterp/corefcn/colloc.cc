@@ -89,3 +89,12 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 
   return ovl (r, A, B, q);
 }
+
+/*
+
+%!assert (colloc (1), 0.5)
+%!assert (colloc (1, "left"), [0; 0.5])
+%!assert (colloc (1, "right"), [0.5; 1])
+%!assert (colloc (1, "left", "right"), [0; 0.5; 1])
+
+*/

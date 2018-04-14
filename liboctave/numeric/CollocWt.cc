@@ -153,7 +153,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
   octave_idx_type nt = n + n0 + n1;
 
-  assert (nt > 1);
+  assert (nt >= 1);
 
 // -- first evaluation of coefficients in recursion formulas.
 // -- recursion coefficients are stored in dif1 and dif2.
@@ -315,7 +315,7 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
   octave_idx_type nt = n + n0 + n1;
 
-  assert (nt > 1);
+  assert (nt >= 1);
 
   assert (id == 1 || id == 2 || id == 3);
 

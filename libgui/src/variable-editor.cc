@@ -1254,11 +1254,11 @@ namespace octave
   {
     QStringList output;
 
-    output << "Foreground";
-    output << "Background";
-    output << "Selected Foreground";
-    output << "Selected Background";
-    output << "Alternate Background";
+    output << tr("Foreground");
+    output << tr("Background");
+    output << tr("Selected Foreground");
+    output << tr("Selected Background");
+    output << tr("Alternate Background");
 
     return output;
   }

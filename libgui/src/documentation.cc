@@ -141,7 +141,7 @@ namespace octave
              m_find_line_edit, SLOT (selectAll (void)));
     connect (show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit, SLOT (setFocus (void)));
-    QShortcut *hide_shortcut = new QShortcut (QKeySequence (tr ("Escape")), p);
+    QShortcut *hide_shortcut = new QShortcut (Qt::Key_Escape, p);
     hide_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (hide_shortcut, SIGNAL (activated (void)),
              m_find_line_edit->parentWidget (), SLOT(hide (void)));

@@ -459,6 +459,10 @@ namespace octave
             news = stream->readAll ();
             if (! news.isEmpty ())
               {
+                // Convert '<', '>' which would be interpreted as HTML
+                news.replace ("<", "&lt;");
+                news.replace (">", "&gt;");
+                // Add HTML tags for pre-formatted text
                 news.prepend ("<pre>");
                 news.append ("</pre>");
               }

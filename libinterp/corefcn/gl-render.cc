@@ -1339,6 +1339,8 @@ namespace octave
 
     glEnd ();
 
+    set_linestyle ("-");  // Disable LineStipple
+
 #else
 
     octave_unused_parameter (props);
@@ -2130,8 +2132,6 @@ namespace octave
         if (props.get_tag () != "legend" || props.get_box () != "off")
           draw_axes_boxes (props);
       }
-
-    set_linestyle ("-");  // Disable LineStipple
 
     set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
@@ -3583,6 +3583,8 @@ namespace octave
         glVertex2d (x0, y1);
         glVertex2d (x0, y0);
         glEnd ();
+
+        set_linestyle ("-");
       }
 
     // Restore previous coordinate system

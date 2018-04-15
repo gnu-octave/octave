@@ -54,7 +54,7 @@
         <translation>カーソル</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>既定のサイズとの差</translation>
     </message>
@@ -1086,14 +1086,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+74"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Octave ドキュメント</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1107,7 +1107,29 @@ the Console Widget will be available.</source>
         <translation>ドキュメントビューアーに必要なデータをセットアップできません．コンソールウィジェットでのヘルプテキストだけが使用可能です．</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>コンテント</translation>
     </message>
@@ -1128,7 +1150,7 @@ the Console Widget will be available.</source>
         <translation>インデックス</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1632,7 +1654,7 @@ for write: %2.</source>
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -1641,7 +1663,7 @@ for write: %2.</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>修正されたファイルにブレークポイントを加えることはできません．
@@ -1729,7 +1751,7 @@ Quit debugging and save?</source>
         <translation>全てのファイル (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1821,7 +1843,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>列の色のオルタネーション</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation>パスまたはファイル名の入力</translation>
     </message>
@@ -1989,7 +2011,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2007,7 +2029,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation>新しいディレクトリ</translation>
     </message>
@@ -2475,12 +2497,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1742"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
     <message>
-        <location line="-1621"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2491,12 +2513,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1618"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation>ディレクトリのブラウズ</translation>
     </message>
     <message>
-        <location line="-1462"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
@@ -2533,7 +2555,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="+927"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -2895,7 +2917,7 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <translation>ウィジェットをドック</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation>ウィジェットをアンドック</translation>
     </message>
@@ -3701,22 +3723,22 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>ショートカットのファイルからのインポート...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Octave ショートカットファイル (*.osc);;全てのファイル (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>ショートカットのファイルへのエクスポート...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>%1 を Octave ショートカットファイルとして開くのに失敗しました</translation>
     </message>
@@ -3802,7 +3824,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
     </message>
@@ -3812,7 +3834,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>変数の編集</translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">背景</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>変数エディタのツールバー</translation>
     </message>
@@ -3897,7 +3944,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>変数 %1 を別名で保存</translation>
     </message>
@@ -3905,7 +3952,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+125"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation>切り取り</translation>
     </message>
@@ -4048,7 +4095,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>フィルタ</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>アクティブワークスペースの変数の表示&lt;br&gt;</translation>
     </message>
@@ -4815,7 +4862,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>パスワード: </translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Octave の設定</translation>
     </message>

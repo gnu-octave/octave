@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="ca">
 <context>
@@ -122,11 +122,677 @@
     </message>
 </context>
 <context>
+    <name>QsciLexerBash</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Parameter expansion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerBatch</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide command character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>External command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerCPP</name>
+    <message>
+        <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerDiff</name>
+    <message>
+        <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Position</source>
+        <translation type="unfinished">Posició</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Changed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerMatlab</name>
+    <message>
+        <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerPerl</name>
+    <message>
+        <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
+        <source>Default</source>
+        <translation type="unfinished">Per defecte</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Symbol table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Data section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (q)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD verbatim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Subroutine prototype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciScintilla</name>
+    <message>
+        <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">&amp;Refés</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished">Ta&amp;lla</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished">Esborra</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Select All</source>
+        <translation type="unfinished">Selecciona-ho tot</translation>
+    </message>
+</context>
+<context>
     <name>QtHandles::Figure</name>
     <message>
         <location filename="../graphics/Figure.cc" line="+299"/>
         <source>Figure ToolBar</source>
-        <translation>Barra d'eines de la figura</translation>
+        <translation>Barra d&apos;eines de la figura</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -177,12 +843,12 @@
         <location line="+7"/>
         <location line="+533"/>
         <source>About Octave</source>
-        <translation>Quant a l'Octave</translation>
+        <translation>Quant a l&apos;Octave</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)</source>
-        <translation>Fitxer de Figura d'Octave ((*.ofig));;Formats d'imatge vectorial (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Formats d'imatge de mapa de bits (*.gif *.jpg *.png *.tiff)</translation>
+        <translation>Fitxer de Figura d&apos;Octave ((*.ofig));;Formats d&apos;imatge vectorial (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Formats d&apos;imatge de mapa de bits (*.gif *.jpg *.png *.tiff)</translation>
     </message>
     <message>
         <location line="-576"/>
@@ -234,12 +900,12 @@
     <message>
         <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+628"/>
         <source>Open Link</source>
-        <translation>Obre l'enllaç</translation>
+        <translation>Obre l&apos;enllaç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Link Address</source>
-        <translation>Copia l'adreça de l'enllaç</translation>
+        <translation>Copia l&apos;adreça de l&apos;enllaç</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -249,7 +915,7 @@
     <message>
         <location line="+1"/>
         <source>Copy Email Address</source>
-        <translation>Copia l'adreça de correu electrònic</translation>
+        <translation>Copia l&apos;adreça de correu electrònic</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -423,18 +1089,18 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+75"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
-        <translation>Documentació de l'Octave</translation>
+        <translation>Documentació de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation>No s'ha pogut copiar el conjunt d'ajuda a un fitxer
+        <translation>No s&apos;ha pogut copiar el conjunt d&apos;ajuda a un fitxer
 temporal. Les funcions de cerca es poden veure afectades.
 %1</translation>
     </message>
@@ -443,12 +1109,34 @@ temporal. Les funcions de cerca es poden veure afectades.
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
-        <translation>No s'han pogut configurar les dades necessàries
+        <translation>No s&apos;han pogut configurar les dades necessàries
 per al visor de documentació. Els textos
-d'ajuda només estaran disponibles al Plafó de Terminal.</translation>
+d&apos;ajuda només estaran disponibles al Plafó de Terminal.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Contingut</translation>
     </message>
@@ -469,9 +1157,9 @@ d'ajuda només estaran disponibles al Plafó de Terminal.</translation>
         <translation>Índex</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
-        <translation>No es pot registrar el fitxer d'ajuda %1.</translation>
+        <translation>No es pot registrar el fitxer d&apos;ajuda %1.</translation>
     </message>
 </context>
 <context>
@@ -493,20 +1181,20 @@ d'ajuda només estaran disponibles al Plafó de Terminal.</translation>
         <location filename="../src/external-editor-interface.cc" line="+63"/>
         <location line="+45"/>
         <source>Octave Editor</source>
-        <translation>Editor de l'Octave</translation>
+        <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
         <location line="-44"/>
         <source>Could not start custom file editor
 %1</source>
-        <translation>No s'ha pogut obrir l'editor de text personalitzat
+        <translation>No s&apos;ha pogut obrir l&apos;editor de text personalitzat
 %1</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
-        <translation>Encara no existeix cap configuració per a l'editor personalitzat.
+        <translation>Encara no existeix cap configuració per a l&apos;editor personalitzat.
 Vols obrir la configuració?</translation>
     </message>
 </context>
@@ -519,7 +1207,7 @@ Vols obrir la configuració?</translation>
         <location line="+19"/>
         <location line="+25"/>
         <source>Octave Editor</source>
-        <translation>Editor de l'Octave</translation>
+        <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
         <location line="-487"/>
@@ -528,19 +1216,19 @@ Vols obrir la configuració?</translation>
 is already open in the editor</source>
         <translation>Fitxer no desat! Un fitxer amb el nom seleccionat
 %1
-ja es troba obert a l'editor</translation>
+ja es troba obert a l&apos;editor</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation>La pestanya associada de l'editor de text ha desaparegut.</translation>
+        <translation>La pestanya associada de l&apos;editor de text ha desaparegut.</translation>
     </message>
     <message>
         <location line="+416"/>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation>No s'ha pogut obrir el fitxer
+        <translation>No s&apos;ha pogut obrir el fitxer
 %1
 en mode lectura: %2.</translation>
     </message>
@@ -568,7 +1256,7 @@ no existeix. Vols crear-lo?</translation>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation>No s'ha pogut obrir el fitxer
+        <translation>No s&apos;ha pogut obrir el fitxer
 %1
 en mode escriptura: %2.</translation>
     </message>
@@ -580,7 +1268,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Recent Editor Files</source>
-        <translation>Fitxers &amp;recents de l'editor</translation>
+        <translation>Fitxers &amp;recents de l&apos;editor</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -670,7 +1358,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Delete to Start of Word</source>
-        <translation>Esborra fins l'inici de la paraula</translation>
+        <translation>Esborra fins l&apos;inici de la paraula</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -680,7 +1368,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Delete to Start of Line</source>
-        <translation>Esborra fins l'inici de la línia</translation>
+        <translation>Esborra fins l&apos;inici de la línia</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -785,22 +1473,22 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Next Bookmark</source>
-        <translation>Adreça d'interès &amp;següent</translation>
+        <translation>Adreça d&apos;interès &amp;següent</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation>Adreça d'interès &amp;anterior</translation>
+        <translation>Adreça d&apos;interès &amp;anterior</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation>&amp;Commuta l'adreça d'interès</translation>
+        <translation>&amp;Commuta l&apos;adreça d&apos;interès</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Remove All Bookmarks</source>
-        <translation>&amp;Elimina totes les adreces d'interès</translation>
+        <translation>&amp;Elimina totes les adreces d&apos;interès</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -810,7 +1498,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation>Preferències d'&amp;estils...</translation>
+        <translation>Preferències d&apos;&amp;estils...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -850,12 +1538,12 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+8"/>
         <source>Show &amp;Toolbar</source>
-        <translation>Mostra la &amp;barra d'eines</translation>
+        <translation>Mostra la &amp;barra d&apos;eines</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Show &amp;Statusbar</source>
-        <translation>Mostra la barra d'&amp;estat</translation>
+        <translation>Mostra la barra d&apos;&amp;estat</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -885,22 +1573,22 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation>&amp;Commuta el punt d'interrupció</translation>
+        <translation>&amp;Commuta el punt d&apos;interrupció</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Next Breakpoint</source>
-        <translation>Punt d'interrupció &amp;següent</translation>
+        <translation>Punt d&apos;interrupció &amp;següent</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation>Punt d'interrupció &amp;anterior</translation>
+        <translation>Punt d&apos;interrupció &amp;anterior</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation>&amp;Elimina tots els punts d'interrupció</translation>
+        <translation>&amp;Elimina tots els punts d&apos;interrupció</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -968,7 +1656,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+231"/>
         <source>Breakpoint condition</source>
-        <translation>Condició de punt d'interrupció</translation>
+        <translation>Condició de punt d&apos;interrupció</translation>
     </message>
     <message>
         <location line="+91"/>
@@ -980,14 +1668,14 @@ en mode escriptura: %2.</translation>
         <location line="+85"/>
         <location line="+36"/>
         <source>Octave Editor</source>
-        <translation>Editor de l'Octave</translation>
+        <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
         <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
-        <translation>No és possible afegir un punt d'interrupció a un fitxer modificat.
-Vols desar i afegir el punt d'interrupció o cancel·lar?</translation>
+        <translation>No és possible afegir un punt d&apos;interrupció a un fitxer modificat.
+Vols desar i afegir el punt d&apos;interrupció o cancel·lar?</translation>
     </message>
     <message>
         <location line="+837"/>
@@ -1013,8 +1701,8 @@ Vols desar i afegir el punt d'interrupció o cancel·lar?</translation>
     <message>
         <location line="+135"/>
         <location line="+60"/>
-        <source>&lt;unnamed></source>
-        <translation>&lt;sense nom></translation>
+        <source>&lt;unnamed&gt;</source>
+        <translation>&lt;sense nom&gt;</translation>
     </message>
     <message>
         <location line="-6"/>
@@ -1043,7 +1731,7 @@ is about to be closed but has been modified.  %2</source>
         <location line="+1"/>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
-        <translation>Aquest fitxer s'està executant.
+        <translation>Aquest fitxer s&apos;està executant.
 Vols interrompre la depuració i desar?</translation>
     </message>
     <message>
@@ -1066,7 +1754,7 @@ Vols interrompre la depuració i desar?</translation>
     <message>
         <location line="+28"/>
         <source>Octave Files (*.m)</source>
-        <translation>Fitxers d'Octave (*.m)</translation>
+        <translation>Fitxers d&apos;Octave (*.m)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1075,17 +1763,17 @@ Vols interrompre la depuració i desar?</translation>
     </message>
     <message>
         <location line="+81"/>
-        <source>"%1"
+        <source>&quot;%1&quot;
 is not a valid identifier.
 
 If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation>"%1"
+        <translation>&quot;%1&quot;
 no és un identificador vàlid.
 
-Si manteniu aquest nom de fitxer, no podreu executar el codi pel seu nom a l'Octave.
+Si manteniu aquest nom de fitxer, no podreu executar el codi pel seu nom a l&apos;Octave.
 
 Vols seleccionar un altre nom?</translation>
     </message>
@@ -1098,7 +1786,7 @@ Please select another one or cancel saving!</source>
         <translation>La codificació actual %1
 no es pot aplicar.
 
-Si us plau selecciona'n una altra o cancel·la el desament!</translation>
+Si us plau selecciona&apos;n una altra o cancel·la el desament!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1107,15 +1795,15 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation>El contingut de l'editor actual no es pot codificar
+        <translation>El contingut de l&apos;editor actual no es pot codificar
 amb la codificació seleccionada %1.
 Usar-lo tindrà com a resultat la pèrdua de dades!
 Vols triar una altra codificació?</translation>
     </message>
     <message>
         <location line="+85"/>
-        <source>It seems that '%1' has been modified by another application. Do you want to reload it?</source>
-        <translation>Sembla que el fitxer '%1' ha estat modificat per una altra aplicació. Vols recarregar-lo?</translation>
+        <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
+        <translation>Sembla que el fitxer &apos;%1&apos; ha estat modificat per una altra aplicació. Vols recarregar-lo?</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1124,7 +1812,7 @@ Vols triar una altra codificació?</translation>
 Warning: The contents in the editor is modified!</source>
         <translation>
 
-Avís: El contingut de l'editor ha estat modificat!</translation>
+Avís: El contingut de l&apos;editor ha estat modificat!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1186,22 +1874,22 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+4"/>
         <source>Show Octave directory</source>
-        <translation>Mostra el directori de l'Octave</translation>
+        <translation>Mostra el directori de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation>Ves al directori actual de l'Octave</translation>
+        <translation>Ves al directori actual de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set Octave directory</source>
-        <translation>Estableix el directori de l'Octave</translation>
+        <translation>Estableix el directori de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation>Estableix el directori actual del navegador com a directori de l'Octave</translation>
+        <translation>Estableix el directori actual del navegador com a directori de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1211,7 +1899,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation>Mostra el directori d'inici</translation>
+        <translation>Mostra el directori d&apos;inici</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1239,7 +1927,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="-320"/>
         <source>Activate to open in editor, right click for alternatives</source>
-        <translation>Activa per obrir a l'editor. Fes clic dret per veure les alternatives</translation>
+        <translation>Activa per obrir a l&apos;editor. Fes clic dret per veure les alternatives</translation>
     </message>
     <message>
         <location line="+273"/>
@@ -1249,12 +1937,12 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation>Obre a l'explorador de fitxers del sistema</translation>
+        <translation>Obre a l&apos;explorador de fitxers del sistema</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation>Obre a l'editor de text</translation>
+        <translation>Obre a l&apos;editor de text</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1315,7 +2003,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
         <location line="-13"/>
         <source>Are you sure you want to delete
 </source>
-        <translation>N'estàs segur que vols esborrar
+        <translation>N&apos;estàs segur que vols esborrar
 </translation>
     </message>
     <message>
@@ -1326,7 +2014,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+145"/>
         <source>Set directory of file browser</source>
-        <translation>Estableix el directori de l'explorador de fitxers</translation>
+        <translation>Estableix el directori de l&apos;explorador de fitxers</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1389,43 +2077,43 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>&lt;html>&lt;body>
-&lt;p>We hope you find Octave to be a useful tool.&lt;/p>
-&lt;p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
-You can find more information about each of these by visiting &lt;a href="https://octave.org/support.html">https://octave.org/support.html&lt;/a> (opens in external browser).&lt;/p>
-&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;body>
-&lt;p>Esperem que l'Octave et resulte una eina útil.&lt;/p>
-&lt;p>Si trobes qualsevol problema, existeixen maneres diverses d'obtenir ajuda, incloent suport comercial, llistes de correu, una wiki i altres canals de comunicació mantinguts per la comunitat.
-Pots trobar més informació visitant &lt;a href="https://octave.org/support.html">https://octave.org/support.html&lt;/a> (s'obre a un navegador extern).&lt;/p>
-&lt;/body>&lt;/html></translation>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
+&lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.
+You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Esperem que l&apos;Octave et resulte una eina útil.&lt;/p&gt;
+&lt;p&gt;Si trobes qualsevol problema, existeixen maneres diverses d&apos;obtenir ajuda, incloent suport comercial, llistes de correu, una wiki i altres canals de comunicació mantinguts per la comunitat.
+Pots trobar més informació visitant &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (s&apos;obre a un navegador extern).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>&lt;html>&lt;head>
-&lt;style>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style>
-&lt;head/>&lt;body>
-&lt;p>For more information about Octave:&lt;/p>
-&lt;ul>
-&lt;li>Visit &lt;a href="https://octave.org">https://octave.org&lt;/a> (opens in external browser)&lt;/li>
-&lt;li>Get the documentation online as &lt;a href="https://www.gnu.org/software/octave/doc/interpreter/index.html">html&lt;/a>- or &lt;a href="https://www.gnu.org/software/octave/octave.pdf">pdf&lt;/span>&lt;/a>-document (opens in external browser)&lt;/li>
-&lt;li>Open the documentation browser of the Octave GUI with the help menu&lt;/li>
-&lt;/ul>
-&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;head>
-&lt;style>
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;For more information about Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style>
-&lt;head/>&lt;body>
-&lt;p>Per més informació quant a l'Octave:&lt;/p>
-&lt;ul>
-&lt;li>Visita &lt;a href="https://octave.org">https://octave.org&lt;/a> (s'obre a un navegador extern)&lt;/li>
-&lt;li>Obté la documentació en línia en format &lt;a href="https://www.gnu.org/software/octave/doc/interpreter/index.html">html&lt;/a> o com a &lt;a href="https://www.gnu.org/software/octave/octave.pdf">document&lt;/span>&lt;/a> pdf (s'obre a un navegador extern)&lt;/li>
-&lt;li>Obre el navegador de documentació de l'Octave des del menú ajuda&lt;/li>
-&lt;/ul>
-&lt;/body>&lt;/html>
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Per més informació quant a l&apos;Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visita &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
+&lt;li&gt;Obté la documentació en línia en format &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o com a &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;document&lt;/span&gt;&lt;/a&gt; pdf (s&apos;obre a un navegador extern)&lt;/li&gt;
+&lt;li&gt;Obre el navegador de documentació de l&apos;Octave des del menú ajuda&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;
 
 
 </translation>
@@ -1456,7 +2144,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Search from &amp;start</source>
-        <translation>Cerca des de l'&amp;inici</translation>
+        <translation>Cerca des de l&apos;&amp;inici</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1516,7 +2204,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Search from start</source>
-        <translation>Cerca des de l'inici</translation>
+        <translation>Cerca des de l&apos;inici</translation>
     </message>
     <message>
         <location line="+209"/>
@@ -1536,7 +2224,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>No more matches found</source>
-        <translation>No s'han trobat coincidències</translation>
+        <translation>No s&apos;han trobat coincidències</translation>
     </message>
 </context>
 <context>
@@ -1614,7 +2302,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Enter the file content search expression</source>
-        <translation>Introdueix l'expressió a cercar al contingut del fitxer</translation>
+        <translation>Introdueix l&apos;expressió a cercar al contingut del fitxer</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1705,7 +2393,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/history-dock-widget.cc" line="+48"/>
         <source>Browse and search the command history.</source>
-        <translation>Explora i cerca a l'historial d'ordres.</translation>
+        <translation>Explora i cerca a l&apos;historial d&apos;ordres.</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -1740,7 +2428,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+8"/>
         <source>Enter text to filter the command history</source>
-        <translation>Introdueix text a filtrar a l'historial d'ordres</translation>
+        <translation>Introdueix text a filtrar a l&apos;historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1750,7 +2438,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Command History</source>
-        <translation>Historial d'ordres</translation>
+        <translation>Historial d&apos;ordres</translation>
     </message>
 </context>
 <context>
@@ -1758,7 +2446,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/welcome-wizard.cc" line="-178"/>
         <source>Welcome to Octave!</source>
-        <translation>Benvingut a l'Octave!</translation>
+        <translation>Benvingut a l&apos;Octave!</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1772,16 +2460,16 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+7"/>
-        <source>&lt;html>&lt;body>
-&lt;p>You seem to be using the Octave graphical interface for the first time on this computer.
-Click 'Next' to create a configuration file and launch Octave.&lt;/p>
-&lt;p>The configuration file is stored in&lt;br>%1.&lt;/p>
-&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;body>
-&lt;p>Sembla que estàs utilitzant la interfície gràfica de l'Octave per primer cop en aquest ordinador.
-Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&lt;/p>
-&lt;p>El fitxer de configuració s'ha guardat a&lt;br>%1.&lt;/p>
-&lt;/body>&lt;/html></translation>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
+Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
+&lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Sembla que estàs utilitzant la interfície gràfica de l&apos;Octave per primer cop en aquest ordinador.
+Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l&apos;Octave.&lt;/p&gt;
+&lt;p&gt;El fitxer de configuració s&apos;ha guardat a&lt;br&gt;%1.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1802,7 +2490,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location filename="../src/main-window.cc" line="+367"/>
         <source>Save Workspace As</source>
-        <translation>Desa l'espai de treball com a</translation>
+        <translation>Desa l&apos;espai de treball com a</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1811,29 +2499,29 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     </message>
     <message>
         <location line="+85"/>
-        <source>The release notes file '%1' is empty.</source>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>El fitxer de notes de versió %1 està buit.</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>The release notes file '%1' cannot be read.</source>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
         <translation>El fitxer de notes de versió %1 no es pot llegir.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Octave Release Notes</source>
-        <translation>Notes de la versió de l'Octave</translation>
+        <translation>Notes de la versió de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Octave Community News</source>
-        <translation>Notícies de la comunitat de l'Octave</translation>
+        <translation>Notícies de la comunitat de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+91"/>
         <location line="+1747"/>
         <source>About Octave</source>
-        <translation>Quant a l'Octave</translation>
+        <translation>Quant a l&apos;Octave</translation>
     </message>
     <message>
         <location line="-1626"/>
@@ -1843,7 +2531,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+1"/>
         <source>Are you sure you want to exit Octave?</source>
-        <translation>Estàs segur que vols sortir de l'Octave?</translation>
+        <translation>Estàs segur que vols sortir de l&apos;Octave?</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1854,7 +2542,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation>Fitxers de l'Octave (*.m);;Tots els fitxers (*)</translation>
+        <translation>Fitxers de l&apos;Octave (*.m);;Tots els fitxers (*)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1885,7 +2573,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+9"/>
         <source>Octave Editor</source>
-        <translation>Editor de l'Octave</translation>
+        <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+932"/>
@@ -1900,7 +2588,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+2"/>
         <source>Open an existing file in editor</source>
-        <translation>Obre un fitxer existent a l'editor</translation>
+        <translation>Obre un fitxer existent a l&apos;editor</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1910,7 +2598,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Save Workspace As...</source>
-        <translation>Desa l'espai de treball com a...</translation>
+        <translation>Desa l&apos;espai de treball com a...</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1980,12 +2668,12 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Clear Command History</source>
-        <translation>Neteja l'historial d'ordres</translation>
+        <translation>Neteja l&apos;historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation>Neteja l'espai de treball</translation>
+        <translation>Neteja l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2030,27 +2718,27 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translation>Mostra la finestra d'ordres</translation>
+        <translation>Mostra la finestra d&apos;ordres</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command History</source>
-        <translation>Mostra l'historial d'ordres</translation>
+        <translation>Mostra l&apos;historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show File Browser</source>
-        <translation>Mostra l'explorador de fitxers</translation>
+        <translation>Mostra l&apos;explorador de fitxers</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Workspace</source>
-        <translation>Mostra l'espai de treball</translation>
+        <translation>Mostra l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Editor</source>
-        <translation>Mostra l'editor</translation>
+        <translation>Mostra l&apos;editor</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2060,7 +2748,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Show Variable Editor</source>
-        <translation>Mostra l'editor de variables</translation>
+        <translation>Mostra l&apos;editor de variables</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2070,7 +2758,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+3"/>
         <source>Command History</source>
-        <translation>Historial d'ordres</translation>
+        <translation>Historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2111,12 +2799,12 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation>Informa d'un error</translation>
+        <translation>Informa d&apos;un error</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Packages</source>
-        <translation>Paquets de l'Octave</translation>
+        <translation>Paquets de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2156,7 +2844,7 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <message>
         <location line="+5"/>
         <source>Toolbar</source>
-        <translation>Barra d'eines</translation>
+        <translation>Barra d&apos;eines</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -2178,59 +2866,59 @@ Feu clic a 'Següent' per crear un fitxer de configuració i iniciar l'Octave.&l
     <name>octave::news_reader</name>
     <message>
         <location line="+305"/>
-        <source>&lt;html>
-&lt;body>
-&lt;p>
-Octave's community news source seems to be unavailable.
-&lt;/p>
-&lt;p>
+        <source>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Octave&apos;s community news source seems to be unavailable.
+&lt;/p&gt;
+&lt;p&gt;
 For the latest news, please check
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser).
-&lt;/p>
-&lt;p>
-&lt;small>&lt;em>&amp;mdash; The Octave Developers, </source>
-        <translation>&lt;html>
-&lt;body>
-&lt;p>
-La font de notícies de la comunitat de l'Octave sembla no estar disponible.
-&lt;/p>
-&lt;p>
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+La font de notícies de la comunitat de l&apos;Octave sembla no estar disponible.
+&lt;/p&gt;
+&lt;p&gt;
 Per accedir a les últimes novetats, visita
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>
-quan tingui connexió al web (l'enllaç s'obre a un navegador extern).
-&lt;/p>
-&lt;p>
-&lt;small>&lt;em>&amp;mdash; Els desenvolupadors de l'Octave,</translation>
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+quan tingui connexió al web (l&apos;enllaç s&apos;obre a un navegador extern).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave,</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>&lt;html>
-&lt;body>
-&lt;p>
+        <source>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
 Connecting to the web to display the latest Octave Community news has been disabled.
-&lt;/p>
-&lt;p>
+&lt;/p&gt;
+&lt;p&gt;
 For the latest news, please check
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 when you have a connection to the web (link opens in an external browser)
-or enable web connections for news in Octave's network settings dialog.
-&lt;/p>
-&lt;p>
-&lt;small>&lt;em>&amp;mdash; The Octave Developers, </source>
-        <translation>&lt;html>
-&lt;body>
-&lt;p>
-La connexió al web per mostrar les últimes novetats quant a l'Octave ha estat desactivada.
-&lt;/p>
-&lt;p>
+or enable web connections for news in Octave&apos;s network settings dialog.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+La connexió al web per mostrar les últimes novetats quant a l&apos;Octave ha estat desactivada.
+&lt;/p&gt;
+&lt;p&gt;
 Per veure les últimes novetats, visita
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>
-quan tingui connexió al web (l'enllaç s'obre a un navegador extern)
-o activa-la per veure les novetats al diàleg de configuració de la xarxa de l'Octave
-&lt;/p>
-&lt;p>
-&lt;small>&lt;em>&amp;mdash; Els desenvolupadors de l'Octave,
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+quan tingui connexió al web (l&apos;enllaç s&apos;obre a un navegador extern)
+o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&apos;Octave
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave,
 </translation>
     </message>
 </context>
@@ -2243,8 +2931,8 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l'
     </message>
     <message>
         <location line="+43"/>
-        <source>Use &lt;Alt> + &lt;Left Mouse Button> for moving the window</source>
-        <translation>Utilitza&lt;Alt> + &lt;Botó esquerre del ratolí> per moure la finestra</translation>
+        <source>Use &lt;Alt&gt; + &lt;Left Mouse Button&gt; for moving the window</source>
+        <translation>Utilitza&lt;Alt&gt; + &lt;Botó esquerre del ratolí&gt; per moure la finestra</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2281,8 +2969,8 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l'
     </message>
     <message>
         <location line="+461"/>
-        <source>Press '%1' to replace all occurrences of '%2' with '%3'.</source>
-        <translation>Fes clic a '%1' per reemplaçar tots els casos de '%2' amb '%3'.</translation>
+        <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
+        <translation>Fes clic a &apos;%1&apos; per reemplaçar tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
     </message>
 </context>
 <context>
@@ -2312,17 +3000,17 @@ no existeix. Vols crear-lo?</translation>
     <message>
         <location line="+3"/>
         <source>Octave Editor</source>
-        <translation>Editor de l'Octave</translation>
+        <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+252"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>El fitxer %1 no existeix als camins de càrrega. Per executar o depurar la funció que s'està editant s'ha de canviar al directori %2 o afegir aquest als camins de càrrega.</translation>
+        <translation>El fitxer %1 no existeix als camins de càrrega. Per executar o depurar la funció que s&apos;està editant s&apos;ha de canviar al directori %2 o afegir aquest als camins de càrrega.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation>Existeix un fitxer amb el mateix nom %1 al camí de càrrega. Per executar o depurar la funció que s'està editant desplaça't al directori %2.</translation>
+        <translation>Existeix un fitxer amb el mateix nom %1 al camí de càrrega. Per executar o depurar la funció que s&apos;està editant desplaça&apos;t al directori %2.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2361,16 +3049,16 @@ Make sure you have read and write permissions to
 Octave GUI must be closed now.</source>
         <translation>El fitxer de configuració
 %1
-no existeix i no s'ha pogut crear.
-Assegura't que tens els permisos de lectura i escriptura a
+no existeix i no s&apos;ha pogut crear.
+Assegura&apos;t que tens els permisos de lectura i escriptura a
 %2
 
-La interfície gràfica de l'Octave es tancarà ara.</translation>
+La interfície gràfica de l&apos;Octave es tancarà ara.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Octave Critical Error</source>
-        <translation>Error crític de l'Octave</translation>
+        <translation>Error crític de l&apos;Octave</translation>
     </message>
 </context>
 <context>
@@ -2397,35 +3085,35 @@ La interfície gràfica de l'Octave es tancarà ara.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>&lt;html>&lt;body>
-&lt;p>When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.
-The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p>
-&lt;p>You may also view the news by selecting the "Community News" item in the "Help" menu, or by visiting
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>.&lt;/p>
-&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;body>
-&lt;p>En iniciar l'Octave, opcionalment es revisarà el lloc web de l'Octave per cercar notícies i informació en quant a la comunitat de l'Octave.
-Aquesta revisió es farà una vegada al dia com a màxim i les notícies sols es mostraran si existeixen canvis recents des de l'última visita.&lt;/p>
-&lt;p>També es pot accedir a les notícies seleccionant "Notícies de la comunitat" al menú "Ajuda", o visitant
-&lt;a href="https://octave.org/community-news.html">https://octave.org/community-news.html&lt;/a>.&lt;/p>
-&lt;/body>&lt;/html></translation>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.
+The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
+&lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;En iniciar l&apos;Octave, opcionalment es revisarà el lloc web de l&apos;Octave per cercar notícies i informació en quant a la comunitat de l&apos;Octave.
+Aquesta revisió es farà una vegada al dia com a màxim i les notícies sols es mostraran si existeixen canvis recents des de l&apos;última visita.&lt;/p&gt;
+&lt;p&gt;També es pot accedir a les notícies seleccionant &quot;Notícies de la comunitat&quot; al menú &quot;Ajuda&quot;, o visitant
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
-        <source>&lt;html>&lt;head>
-&lt;style>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style>
-&lt;head/>&lt;body>
-&lt;p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p>
-&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;head>
-&lt;style>
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style>
-&lt;head/>&lt;body>
-&lt;p>Permet la connexió amb el lloc web de l'Octave a l'inici per mostrar novetats i informació en quant a la comunitat.&lt;/p>
-&lt;/body>&lt;/html></translation>
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Permet la connexió amb el lloc web de l&apos;Octave a l&apos;inici per mostrar novetats i informació en quant a la comunitat.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2438,15 +3126,15 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>The chosen shortcut
-  "%1"
+  &quot;%1&quot;
 is already used for the action
-  "%2".
+  &quot;%2&quot;.
 Do you want to use the shortcut anyhow removing it from the previous action?</source>
         <translation>La drecera de teclat seleccionada
-  "%1"
-ja s'utilitza per a l'acció
-  "%2".
-Vols sobreescriure-la suprimint l'acció anterior?</translation>
+  &quot;%1&quot;
+ja s&apos;utilitza per a l&apos;acció
+  &quot;%2&quot;.
+Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -2471,17 +3159,17 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+1"/>
         <source>Load Workspace</source>
-        <translation>Carrega l'espai de treball</translation>
+        <translation>Carrega l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save Workspace As</source>
-        <translation>Desa l'espai de treball com a</translation>
+        <translation>Desa l&apos;espai de treball com a</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exit Octave</source>
-        <translation>Sortir de l'Octave</translation>
+        <translation>Sortir de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2516,17 +3204,17 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Clear Command Window</source>
-        <translation>Neteja la finestra d'ordres</translation>
+        <translation>Neteja la finestra d&apos;ordres</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Clear Command History</source>
-        <translation>Neteja l'historial d'ordres</translation>
+        <translation>Neteja l&apos;historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Clear Workspace</source>
-        <translation>Neteja l'espai de treball</translation>
+        <translation>Neteja l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2567,22 +3255,22 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Show Command History</source>
-        <translation>Mostra l'historial d'ordres</translation>
+        <translation>Mostra l&apos;historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show File Browser</source>
-        <translation>Mostra l'explorador de fitxers</translation>
+        <translation>Mostra l&apos;explorador de fitxers</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Workspace</source>
-        <translation>Mostra l'espai de treball</translation>
+        <translation>Mostra l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Editor</source>
-        <translation>Mostra l'editor</translation>
+        <translation>Mostra l&apos;editor</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2592,7 +3280,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Show Variable Editor</source>
-        <translation>Mostra l'editor de variables</translation>
+        <translation>Mostra l&apos;editor de variables</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2602,7 +3290,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Command History</source>
-        <translation>Historial d'ordres</translation>
+        <translation>Historial d&apos;ordres</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2648,27 +3336,27 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Report Bug</source>
-        <translation>Informa d'un error</translation>
+        <translation>Informa d&apos;un error</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Packages</source>
-        <translation>Paquets de l'Octave</translation>
+        <translation>Paquets de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Contribute to Octave</source>
-        <translation>Contribueix a l'Octave</translation>
+        <translation>Contribueix a l&apos;Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Developer Resources</source>
-        <translation>Recursos de desenvolupador de l'Octave</translation>
+        <translation>Recursos de desenvolupador de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>About Octave</source>
-        <translation>Quant a l'Octave</translation>
+        <translation>Quant a l&apos;Octave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2698,7 +3386,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+1"/>
         <source>Switch to Left Tab</source>
-        <translation>Canvia a la pestanya de l'esquerra</translation>
+        <translation>Canvia a la pestanya de l&apos;esquerra</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2708,7 +3396,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Move Tab Left</source>
-        <translation>Mou la pestanya cap a l'esquerra</translation>
+        <translation>Mou la pestanya cap a l&apos;esquerra</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2758,12 +3446,12 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Find Previous</source>
-        <translation>Cerca l'anterior</translation>
+        <translation>Cerca l&apos;anterior</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Word</source>
-        <translation>Esborra fins l'inici de la paraula</translation>
+        <translation>Esborra fins l&apos;inici de la paraula</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2773,7 +3461,7 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Line</source>
-        <translation>Esborra fins l'inici de la línia</translation>
+        <translation>Esborra fins l&apos;inici de la línia</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2885,27 +3573,27 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Toggle Bookmark</source>
-        <translation>Commuta l'adreça d'interès</translation>
+        <translation>Commuta l&apos;adreça d&apos;interès</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Next Bookmark</source>
-        <translation>Adreça d'interès següent</translation>
+        <translation>Adreça d&apos;interès següent</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Previous Bookmark</source>
-        <translation>Adreça d'interès anterior</translation>
+        <translation>Adreça d&apos;interès anterior</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove All Bookmark</source>
-        <translation>Elimina totes les adreces d'interès</translation>
+        <translation>Elimina totes les adreces d&apos;interès</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Styles Preferences</source>
-        <translation>Preferències d'estils</translation>
+        <translation>Preferències d&apos;estils</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2935,12 +3623,12 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Show Toolbar</source>
-        <translation>Mostra la barra d'eines</translation>
+        <translation>Mostra la barra d&apos;eines</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show Statusbar</source>
-        <translation>Mostra la barra d'estat</translation>
+        <translation>Mostra la barra d&apos;estat</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2966,22 +3654,22 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     <message>
         <location line="+5"/>
         <source>Toggle Breakpoint</source>
-        <translation>Commuta el punt d'interrupció</translation>
+        <translation>Commuta el punt d&apos;interrupció</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Next Breakpoint</source>
-        <translation>Punt d'interrupció següent</translation>
+        <translation>Punt d&apos;interrupció següent</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Previous Breakpoint</source>
-        <translation>Punt d'interrupció anterior</translation>
+        <translation>Punt d&apos;interrupció anterior</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove All Breakpoints</source>
-        <translation>Eliminar tots els punts d'interrupció</translation>
+        <translation>Eliminar tots els punts d&apos;interrupció</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3059,24 +3747,24 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importa dreceres des d'un fitxer...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation>Fitxer de dreceres de l'Octave (*.osc);;Tots els fitxers (*)</translation>
+        <translation>Fitxer de dreceres de l&apos;Octave (*.osc);;Tots els fitxers (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Exporta dreceres a un fitxer...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
-        <translation>No s'ha pogut obrir %1 com a fitxer de dreceres de l'Octave</translation>
+        <translation>No s&apos;ha pogut obrir %1 com a fitxer de dreceres de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3118,11 +3806,11 @@ Vols sobreescriure-la suprimint l'acció anterior?</translation>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Ets a punt de sobreescriure totes les dreceres.
-Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
+Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Don't save</source>
+        <source>Don&apos;t save</source>
         <translation>No dessis</translation>
     </message>
 </context>
@@ -3160,7 +3848,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+791"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Editor de variables</translation>
     </message>
@@ -3170,9 +3858,34 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
         <translation>Edita variables.</translation>
     </message>
     <message>
-        <location line="+476"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Segon pla</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
-        <translation>Barra d'eines de l'editor de variables</translation>
+        <translation>Barra d&apos;eines de l&apos;editor de variables</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3255,7 +3968,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1176"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Desa la variable %1 com a</translation>
     </message>
@@ -3307,8 +4020,8 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <name>octave::webinfo</name>
     <message>
         <location filename="../src/qtinfo/webinfo.cc" line="+85"/>
-        <source>Type here and press 'Return' to search</source>
-        <translation>Escriu aquí i fes clic a la tecla 'Enter' per cercar</translation>
+        <source>Type here and press &apos;Return&apos; to search</source>
+        <translation>Escriu aquí i fes clic a la tecla &apos;Enter&apos; per cercar</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3332,8 +4045,8 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>The info file&lt;p>%1&lt;p>or compressed versions do not exist</source>
-        <translation>El fitxer d'informació &lt;p>%1&lt;p> o les versions comprimides no existeixen</translation>
+        <source>The info file&lt;p&gt;%1&lt;p&gt;or compressed versions do not exist</source>
+        <translation>El fitxer d&apos;informació &lt;p&gt;%1&lt;p&gt; o les versions comprimides no existeixen</translation>
     </message>
 </context>
 <context>
@@ -3393,12 +4106,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation>Visualitza les variables de l'espai de treball actiu.</translation>
+        <translation>Visualitza les variables de l&apos;espai de treball actiu.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Enter text to filter the workspace</source>
-        <translation>Introdueix un text per filtrar l'espai de treball</translation>
+        <translation>Introdueix un text per filtrar l&apos;espai de treball</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3407,8 +4120,8 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     </message>
     <message>
         <location line="+130"/>
-        <source>View the variables in the active workspace.&lt;br></source>
-        <translation>Visualitza les variables de l'espai de treball actiu.&lt;br></translation>
+        <source>View the variables in the active workspace.&lt;br&gt;</source>
+        <translation>Visualitza les variables de l&apos;espai de treball actiu.&lt;br&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3438,7 +4151,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+136"/>
         <source>Open in Variable Editor</source>
-        <translation>Obre a l'editor de variables</translation>
+        <translation>Obre a l&apos;editor de variables</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3487,7 +4200,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-186"/>
         <source>Octave logo only</source>
-        <translation>Sols el logotip de l'Octave</translation>
+        <translation>Sols el logotip de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3522,7 +4235,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+170"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Aquestes configuracions s'apliquen després del fitxer d'inici ".octaverc".</translation>
+        <translation>Aquestes configuracions s&apos;apliquen després del fitxer d&apos;inici &quot;.octaverc&quot;.</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -3612,7 +4325,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+868"/>
         <source>Editor Styles</source>
-        <translation>Estils de l'editor</translation>
+        <translation>Estils de l&apos;editor</translation>
     </message>
     <message>
         <location line="+280"/>
@@ -3658,7 +4371,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-728"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation>línia d'ordres (%f=fitxer, %l=línia):</translation>
+        <translation>línia d&apos;ordres (%f=fitxer, %l=línia):</translation>
     </message>
     <message>
         <location line="+907"/>
@@ -3689,7 +4402,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
-        <translation>Estableix el focus al Terminal quan s'executa una ordre des d'un altre plafó</translation>
+        <translation>Estableix el focus al Terminal quan s&apos;executa una ordre des d&apos;un altre plafó</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -3710,7 +4423,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
         <location line="+234"/>
         <location line="+280"/>
         <source>Show status bar</source>
-        <translation>Mostra la barra d'estat</translation>
+        <translation>Mostra la barra d&apos;estat</translation>
     </message>
     <message>
         <location line="-458"/>
@@ -3741,13 +4454,13 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+132"/>
         <source>Octave Startup</source>
-        <translation>Inici de l'Octave</translation>
+        <translation>Inici de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+41"/>
         <location line="+1732"/>
         <source>Startup path</source>
-        <translation>Camí d'inici</translation>
+        <translation>Camí d&apos;inici</translation>
     </message>
     <message>
         <location line="-1719"/>
@@ -3769,7 +4482,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
         <location line="+422"/>
         <location line="+140"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-        <translation>Funciona bé amb lletres d'espaiat fix. La línia es dibuixa en una posició basada en l'amplada del caràcter espai de la lletra per defecte. Pot no funcionar bé si l'estil utilitza fonts proporcionals o si es combinen lletres de mides diferents, o lletra normal amb negreta i/o cursiva.</translation>
+        <translation>Funciona bé amb lletres d&apos;espaiat fix. La línia es dibuixa en una posició basada en l&apos;amplada del caràcter espai de la lletra per defecte. Pot no funcionar bé si l&apos;estil utilitza fonts proporcionals o si es combinen lletres de mides diferents, o lletra normal amb negreta i/o cursiva.</translation>
     </message>
     <message>
         <location line="-463"/>
@@ -3804,12 +4517,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+100"/>
         <source>Show tool bar</source>
-        <translation>Mostra la barra d'eines</translation>
+        <translation>Mostra la barra d&apos;eines</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Number size as difference to editor font</source>
-        <translation>Mida relativa respecte a la lletra de l'editor </translation>
+        <translation>Mida relativa respecte a la lletra de l&apos;editor </translation>
     </message>
     <message>
         <location line="+124"/>
@@ -3878,8 +4591,8 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Auto insert after "if" etc.</source>
-        <translation>Insereix automàticament després d'un "if" etc.</translation>
+        <source>Auto insert after &quot;if&quot; etc.</source>
+        <translation>Insereix automàticament després d&apos;un &quot;if&quot; etc.</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -3888,13 +4601,13 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>"endif" etc.</source>
-        <translation>"endif" etc.</translation>
+        <source>&quot;endif&quot; etc.</source>
+        <translation>&quot;endif&quot; etc.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>"end"</source>
-        <translation>"end"</translation>
+        <source>&quot;end&quot;</source>
+        <translation>&quot;end&quot;</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -3904,17 +4617,17 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+101"/>
         <source>With Octave builtins</source>
-        <translation>Amb funcions internes de l'Octave</translation>
+        <translation>Amb funcions internes de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>With Octave functions</source>
-        <translation>Amb funcions de l'Octave</translation>
+        <translation>Amb funcions de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Show completion list automatically</source>
-        <translation>Mostra la llista d'ordres coincidents automàticament</translation>
+        <translation>Mostra la llista d&apos;ordres coincidents automàticament</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3929,7 +4642,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+13"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
-        <translation>Restaura les pestanyes de l'editor de la sessió anterior</translation>
+        <translation>Restaura les pestanyes de l&apos;editor de la sessió anterior</translation>
     </message>
     <message>
         <location line="+80"/>
@@ -3939,27 +4652,27 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+25"/>
         <source>Close all files when the editor widget is closed/hidden</source>
-        <translation>Tanca tots els fitxers quan el plafó de l'editor estigui tancat/ocult</translation>
+        <translation>Tanca tots els fitxers quan el plafó de l&apos;editor estigui tancat/ocult</translation>
     </message>
     <message>
         <location line="+55"/>
-        <source>&lt;html>&lt;head/>&lt;body>&lt;p>Select font, font size (as a difference from the default size), font style (&lt;b>b&lt;/b>old, &lt;b>i&lt;/b>talic, &lt;b>u&lt;/b>nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p>&lt;/body>&lt;/html></source>
-        <translation>&lt;html>&lt;head/>&lt;body>&lt;p>Selecciona el tipus de lletra, mida (relativa a la mida per defecte), estil (&lt;b>n&lt;/b>egreta, &lt;b>c&lt;/b>ursiva, &lt;b>s&lt;/b>ubratllat), color i color de fons (per al color de fons, el color magenta (255,0,255) és el marcador de posició per defecte).&lt;/p>&lt;/body>&lt;/html></translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecciona el tipus de lletra, mida (relativa a la mida per defecte), estil (&lt;b&gt;n&lt;/b&gt;egreta, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubratllat), color i color de fons (per al color de fons, el color magenta (255,0,255) és el marcador de posició per defecte).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+185"/>
         <source>(Changing buffer size clears history)</source>
-        <translation>(Canviar la mida de l'historial neteja el contingut)</translation>
+        <translation>(Canviar la mida de l&apos;historial neteja el contingut)</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>History buffer Size</source>
-        <translation>Mida de l'historial</translation>
+        <translation>Mida de l&apos;historial</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Print debug location in terminal window in addition to the marker in the editor</source>
-        <translation>Mostra la ubicació del depurador a la Finestra del Terminal, a més del marcador de l'editor</translation>
+        <translation>Mostra la ubicació del depurador a la Finestra del Terminal, a més del marcador de l&apos;editor</translation>
     </message>
     <message>
         <location line="+87"/>
@@ -3969,12 +4682,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+30"/>
         <source>Restore last directory of previous session</source>
-        <translation>Restaura l'últim directori de la sessió prèvia</translation>
+        <translation>Restaura l&apos;últim directori de la sessió prèvia</translation>
     </message>
     <message>
         <location line="+54"/>
-        <source>Extensions of files to be opened in the default text editor (separated by ";"):</source>
-        <translation>Extensions de fitxers per obrir a l'editor de text per defecte (separades per ";"):</translation>
+        <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
+        <translation>Extensions de fitxers per obrir a l&apos;editor de text per defecte (separades per &quot;;&quot;):</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -3989,7 +4702,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+7"/>
         <source>Hide tool tips</source>
-        <translation>Oculta els consells d'eines</translation>
+        <translation>Oculta els consells d&apos;eines</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -4030,7 +4743,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+23"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation>Permet a l'Octave la connexió al lloc web per mostrar més informació i notícies actualitzades</translation>
+        <translation>Permet a l&apos;Octave la connexió al lloc web per mostrar més informació i notícies actualitzades</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -4080,7 +4793,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+40"/>
         <source>Variable Editor Colors</source>
-        <translation>Colors de l'editor de variables</translation>
+        <translation>Colors de l&apos;editor de variables</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -4095,7 +4808,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-2179"/>
         <source>Icon set for dock widgets</source>
-        <translation>Conjunt d'icones per als plafons d'acoblament</translation>
+        <translation>Conjunt d&apos;icones per als plafons d&apos;acoblament</translation>
     </message>
     <message>
         <location line="-220"/>
@@ -4110,7 +4823,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+1987"/>
         <source>Synchronize Octave working directory with file browser</source>
-        <translation>Sincronitza el directori de treball de l'Octave amb l'explorador de fitxers</translation>
+        <translation>Sincronitza el directori de treball de l&apos;Octave amb l&apos;explorador de fitxers</translation>
     </message>
     <message>
         <location line="+184"/>
@@ -4120,7 +4833,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+31"/>
         <source>Select this option to prevent conflicts with readline shortcuts</source>
-        <translation>Selecciona aquesta opció per evitar conflictes amb les dreceres de la línia d'ordres</translation>
+        <translation>Selecciona aquesta opció per evitar conflictes amb les dreceres de la línia d&apos;ordres</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4165,7 +4878,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-27"/>
         <source>Username:</source>
-        <translation>Nom de l'usuari:</translation>
+        <translation>Nom de l&apos;usuari:</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -4175,7 +4888,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
-        <translation>Configuració de l'Octave</translation>
+        <translation>Configuració de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4192,7 +4905,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="-260"/>
         <source>IBeam Cursor</source>
-        <translation>Cursor en forma d'I</translation>
+        <translation>Cursor en forma d&apos;I</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4207,12 +4920,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l'acció?</translation>
     <message>
         <location line="+172"/>
         <source>Set Octave Startup Directory</source>
-        <translation>Estableix el directori d'inici de l'Octave</translation>
+        <translation>Estableix el directori d&apos;inici de l&apos;Octave</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set File Browser Startup Directory</source>
-        <translation>Estableix el directori d'inici de l'explorador de fitxers</translation>
+        <translation>Estableix el directori d&apos;inici de l&apos;explorador de fitxers</translation>
     </message>
 </context>
 </TS>

@@ -421,14 +421,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+75"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Documentation d&apos;Octave</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -447,7 +447,29 @@ pour le navigateur de documentation. Seule l&apos;aide
 dans la console (commande &quot;help&quot;) sera accessible.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Contenu</translation>
     </message>
@@ -468,7 +490,7 @@ dans la console (commande &quot;help&quot;) sera accessible.</translation>
         <translation>Index</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation>Impossible d&apos;ajouter le fichier d&apos;aide %1.</translation>
     </message>
@@ -3055,22 +3077,22 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importer des raccourcis depuis un fichier...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Fichier de Raccourcis Octave (*.osc);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Exporter les raccourcis vers un fichier...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>Impossible d&apos;ouvrir %1 en tant que fichier de raccourcis</translation>
     </message>
@@ -3156,7 +3178,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+791"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Éditeur de Variables</translation>
     </message>
@@ -3166,7 +3188,32 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
         <translation>Éditer les Variables.</translation>
     </message>
     <message>
-        <location line="+476"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Arrière plan</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barre d&apos;outils de l&apos;éditeur de variables</translation>
     </message>
@@ -3252,7 +3299,7 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1176"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Enregistrer la Variable %1 Sous</translation>
     </message>

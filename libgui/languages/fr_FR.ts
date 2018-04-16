@@ -449,24 +449,24 @@ dans la console (commande &quot;help&quot;) sera accessible.</translation>
     <message>
         <location line="+16"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher :</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Suivant</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Précédent</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3078,12 +3078,12 @@ voulez l&apos;affecter à la présente action et le retirer de la précédente ?
     <message>
         <location line="+68"/>
         <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des raccourcis depuis un ficher...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter des raccourcis vers un fichier...</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3190,27 +3190,27 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     <message>
         <location line="+259"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier plan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Arrière plan</translation>
+        <translation>Arrière plan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier plan sélectionné</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrière plan sélectionné</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrière plan alterné</translation>
     </message>
     <message>
         <location line="+255"/>

@@ -3,7 +3,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
 
  ** The functions issymmetric and ishermitian accept an option "nonskew"
     or "skew" to calculate the symmetric or skew-symmetric property
-    of a matrix.  Performance has also been increased. 
+    of a matrix.  Performance has also been increased.
 
  ** Deprecated functions.
 
@@ -13,34 +13,32 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
 
       Function             | Replacement
       ---------------------|------------------
-                           |                           
+                           |
 
  ** The following functions were deprecated in Octave 4.2 and have been
     removed from Octave 5.0.
 
-
+      Function             | Replacement
+      ---------------------|------------------
+      bitmax               | flintmax
+      mahalanobis          | mahal in Octave-Forge statistics pkg
+      md5sum               | hash
+      octave_config_info   | __octave_config_info__
+      onenormest           | normest1
+      sleep                | pause
+      usleep               | pause
+      wavread              | audioread
+      wavwrite             | audiowrite
 
  ** Deprecated graphics properties.
 
     The following properties or allowed corresponding values have been
-    deprecated in Octave 4.4 and will be removed from Octave 6 (or whatever
-    version is the second major release after 4.4):
+    deprecated in Octave 5.0 and will be removed from Octave 7 (or whatever
+    version is the second major release after 5.0):
 
       Object               | Property                | Value
       ---------------------|-------------------------|-------------------
-      figure               | doublebuffer            |
-                           | mincolormap             |
-                           | wvisual                 |
-                           | wvisualmode             |
-                           | xdisplay                |
-                           | xvisual                 |
-                           | xvisualmode             |
-      axes                 | drawmode                |
-      annotation           | edgecolor ("rectangle") |
-      text                 | fontweight              | "demi" and "light"
-      uicontrol            | fontweight              | "demi" and "light"
-      uipanel              | fontweight              | "demi" and "light"
-      uibuttongroup        | fontweight              | "demi" and "light"
+                           |                         |
 
  ** The following properties or allowed corresponding values were
     deprecated in Octave 4.2 and have been removed from Octave 5.0:

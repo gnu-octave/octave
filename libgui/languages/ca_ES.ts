@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ca">
+<TS version="2.1" language="ca_ES">
 <context>
     <name>QObject</name>
     <message>
@@ -41,7 +41,7 @@
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation>segon plan</translation>
+        <translation>fons</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -61,27 +61,24 @@
     <message>
         <location line="+6"/>
         <source>Background color, pink (255, 0, 255) means default</source>
-        <translation>Color de fons; rosa (255,0,255) representa predeterminat</translation>
+        <translation>Color de fons; rosa (255,0,255) per defecte</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>b</source>
         <comment>short form for bold</comment>
-        <translatorcomment>Abreviatura de negreta</translatorcomment>
         <translation>n</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>i</source>
         <comment>short form for italic</comment>
-        <translatorcomment>Abreviatura de cursiva</translatorcomment>
         <translation>c</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>u</source>
         <comment>short form for underlined</comment>
-        <translatorcomment>Abreviatura de subrallat</translatorcomment>
         <translation>s</translation>
     </message>
 </context>
@@ -110,7 +107,7 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+49"/>
         <source>Edit %1 at line %2</source>
-        <translation>Edita %1 en línia %2</translation>
+        <translation>Edita %1 a la línia %2</translation>
     </message>
 </context>
 <context>
@@ -118,673 +115,7 @@
     <message>
         <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1789"/>
         <source>copied selection to clipboard</source>
-        <translation>selecció copiada al porta-retalls</translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerBash</name>
-    <message>
-        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error</source>
-        <translation type="unfinished">Error</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Scalar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Backticks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerBatch</name>
-    <message>
-        <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Hide command character</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>External command</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Variable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerCPP</name>
-    <message>
-        <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>C comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>C++ comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerDiff</name>
-    <message>
-        <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Command</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Header</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Position</source>
-        <translation type="unfinished">Posició</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Removed line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Added line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Changed line</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerMatlab</name>
-    <message>
-        <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Command</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciLexerPerl</name>
-    <message>
-        <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
-        <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Error</source>
-        <translation type="unfinished">Error</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>POD</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Scalar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Array</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Hash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Symbol table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Regular expression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Substitution</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Backticks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Data section</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Format identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Format body</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Translation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QsciScintilla</name>
-    <message>
-        <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
-        <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Refés</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Cu&amp;t</source>
-        <translation type="unfinished">Ta&amp;lla</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Delete</source>
-        <translation type="unfinished">Esborra</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Select All</source>
-        <translation type="unfinished">Selecciona-ho tot</translation>
+        <translation>selecció desada al porta-retalls</translation>
     </message>
 </context>
 <context>
@@ -1000,12 +331,12 @@
     <message>
         <location line="+11"/>
         <source>top</source>
-        <translation>part superior</translation>
+        <translation>superior</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>bottom</source>
-        <translation>part inferior</translation>
+        <translation>inferior</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1035,7 +366,7 @@
     <message>
         <location line="+17"/>
         <source>units</source>
-        <translation>Unitats</translation>
+        <translation>unitats</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1055,7 +386,7 @@
     <message>
         <location line="+6"/>
         <source>Background</source>
-        <translation>Segon pla</translation>
+        <translation>Fons</translation>
     </message>
     <message>
         <location line="+444"/>
@@ -1116,24 +447,24 @@ d&apos;ajuda només estaran disponibles al Plafó de Terminal.</translation>
     <message>
         <location line="+16"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca cap endavant</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca cap enrere</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation>Surt</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1244,12 +575,12 @@ no existeix. Vols crear-lo?</translation>
     <message>
         <location line="+4"/>
         <source>Create</source>
-        <translation>Crear</translation>
+        <translation>Crea</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation>Cancel·lar</translation>
+        <translation>Cancel·la</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1323,17 +654,17 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Find and Replace...</source>
-        <translation>&amp;Cerca i reemplaça...</translation>
+        <translation>&amp;Cerca i substitueix...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Find &amp;Next...</source>
-        <translation>&amp;Cerca següent...</translation>
+        <translation>Cerca &amp;Següent...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Find &amp;Previous...</source>
-        <translation>Cerca &amp;anterior...</translation>
+        <translation>Cerca &amp;Anterior...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1398,12 +729,12 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Uppercase Selection</source>
-        <translation>Converteix la selecció a &amp;majúscules</translation>
+        <translation>Posa la selecció en &amp;majúscules</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Lowercase Selection</source>
-        <translation>Converteix la selecció a m&amp;inúscules</translation>
+        <translation>Posa la selecció en m&amp;inúscules</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1423,17 +754,17 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Indent Selection Rigidly</source>
-        <translation>&amp;Sagna estrictament la selecció</translation>
+        <translation>&amp;Sagna la selecció</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation>&amp;Neteja estrictament el sagnat de la selecció</translation>
+        <translation>&amp;Neteja el sagnat de la selecció</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Indent Code</source>
-        <translation>Aplica el sagnat al codi</translation>
+        <translation>Sagna el codi</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1463,7 +794,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Move to Matching Brace</source>
-        <translation>Mou-te al parèntesi corresponent</translation>
+        <translation>Desplaça&apos;t al parèntesi corresponent</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1473,17 +804,17 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>&amp;Next Bookmark</source>
-        <translation>Adreça d&apos;interès &amp;següent</translation>
+        <translation>Marcardor &amp;següent</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation>Adreça d&apos;interès &amp;anterior</translation>
+        <translation>Marcador &amp;anterior</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation>&amp;Commuta l&apos;adreça d&apos;interès</translation>
+        <translation>&amp;Commuta el marcador</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1533,7 +864,7 @@ en mode escriptura: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Show Long Line &amp;Marker</source>
-        <translation>Mostra el &amp;marcador de longitud de línia</translation>
+        <translation>Mostra el &amp;marcador de línia llarga</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1636,22 +967,22 @@ en mode escriptura: %2.</translation>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+140"/>
         <source>line:</source>
-        <translation>Línia:</translation>
+        <translation>línia:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation>Columna:</translation>
+        <translation>columna:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>encoding:</source>
-        <translation>Codificació:</translation>
+        <translation>codificació:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>eol:</source>
-        <translation>Fi de línia:</translation>
+        <translation>fi de línia:</translation>
     </message>
     <message>
         <location line="+231"/>
@@ -1725,7 +1056,7 @@ is about to be closed but has been modified.  %2</source>
     <message>
         <location line="+295"/>
         <source>Debug or Save</source>
-        <translation>Depura el programa o desa</translation>
+        <translation>Depura o Desa</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1859,7 +1190,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation>Alternar els colors de les files</translation>
+        <translation>Alterna els colors de les files</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1947,7 +1278,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation>Copia la selecció al porta-retalls</translation>
+        <translation>Desa la selecció al porta-retalls</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1957,7 +1288,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location line="+3"/>
         <source>Load Data</source>
-        <translation>Carrega les dades</translation>
+        <translation>Carrega dades</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2058,7 +1389,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+274"/>
         <source>Enjoy!</source>
-        <translation>Gaudeix!</translation>
+        <translation>Gaudeix-ne!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2110,13 +1441,10 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;p&gt;Per més informació quant a l&apos;Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visita &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
-&lt;li&gt;Obté la documentació en línia en format &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o com a &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;document&lt;/span&gt;&lt;/a&gt; pdf (s&apos;obre a un navegador extern)&lt;/li&gt;
+&lt;li&gt;Obté la documentació en línia en format &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o com a &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;document pdf&lt;/span&gt;&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
 &lt;li&gt;Obre el navegador de documentació de l&apos;Octave des del menú ajuda&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;
-
-
-</translation>
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2124,7 +1452,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+87"/>
         <source>Find and Replace</source>
-        <translation>Cerca i reemplaça</translation>
+        <translation>Cerca i substitueix</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2134,7 +1462,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Re&amp;place with:</source>
-        <translation>&amp;Reemplaça amb:</translation>
+        <translation>&amp;Substitueix:</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2149,27 +1477,27 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation>&amp;Marca mentre es cerca</translation>
+        <translation>&amp;Cerca recursiva</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Find Next</source>
-        <translation>&amp;Cerca següent</translation>
+        <translation>&amp;Cerca el següent</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find &amp;Previous</source>
-        <translation>Cerca &amp;anterior</translation>
+        <translation>Cerca l&apos;&amp;anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation>&amp;Reemplaça</translation>
+        <translation>&amp;Substitueix</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Replace &amp;All</source>
-        <translation>Reemplaça-ho &amp;tot</translation>
+        <translation>Substitueix-ho &amp;tot</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2209,12 +1537,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+209"/>
         <source>Replace Result</source>
-        <translation>Reemplaça el resultat</translation>
+        <translation>Substitueix el resultat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation>%1 instàncies reemplaçades</translation>
+        <translation>%1 instàncies substituïdes</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -2252,7 +1580,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Enter the start directory</source>
-        <translation>Introdueix el directori inicial de cerca</translation>
+        <translation>Introdueix el directori inicial</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2287,7 +1615,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Name case insensitive</source>
-        <translation>No distingeixes entre majúscules i minúscules</translation>
+        <translation>No distingeixis entre majúscules i minúscules</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2312,7 +1640,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Text case insensitive</source>
-        <translation>No distingeixes entre majúscules i minúscules</translation>
+        <translation>No distingeixis entre majúscules i minúscules</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2337,7 +1665,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Start search for matching files</source>
-        <translation>Comença la cerca per a fitxers coincidents</translation>
+        <translation>Comença la cerca pels fitxers coincidents</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2413,7 +1741,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+4"/>
         <source>Hide filter</source>
-        <translation>Amaga el filtre</translation>
+        <translation>Oculta el filtre</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2468,7 +1796,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Sembla que estàs utilitzant la interfície gràfica de l&apos;Octave per primer cop en aquest ordinador.
 Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l&apos;Octave.&lt;/p&gt;
-&lt;p&gt;El fitxer de configuració s&apos;ha guardat a&lt;br&gt;%1.&lt;/p&gt;
+&lt;p&gt;El fitxer de configuració s&apos;ha desat a&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -2531,7 +1859,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+1"/>
         <source>Are you sure you want to exit Octave?</source>
-        <translation>Estàs segur que vols sortir de l&apos;Octave?</translation>
+        <translation>N&apos;estàs segur que vols sortir de l&apos;Octave?</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -2563,7 +1891,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+43"/>
         <source>%1 is a built-in function</source>
-        <translation>%1 és una funció integrada</translation>
+        <translation>%1 és una funció interna</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -2663,7 +1991,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+5"/>
         <source>Clear Command Window</source>
-        <translation>Neteja la Finestra del Terminal</translation>
+        <translation>Neteja la finestra del terminal</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2688,17 +2016,17 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation>Pas (següent instrucció)</translation>
+        <translation>Pas</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        <translation>Pas (entra)</translation>
+        <translation>Pas entrant</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation>Pas (surt)</translation>
+        <translation>Pas sortint</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2708,7 +2036,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+9"/>
         <source>Quit Debug Mode</source>
-        <translation>Surt del mode depuració</translation>
+        <translation>Atura la depuració</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -2753,7 +2081,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     <message>
         <location line="+5"/>
         <source>Command Window</source>
-        <translation>Finestra de Terminal</translation>
+        <translation>Finestra del terminal</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2881,7 +2209,7 @@ when you have a connection to the web (link opens in an external browser).
         <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-La font de notícies de la comunitat de l&apos;Octave sembla no estar disponible.
+Octave&apos;s La font de notícies de la comunitat de l&apos;Octave sembla no estar disponible.
 &lt;/p&gt;
 &lt;p&gt;
 Per accedir a les últimes novetats, visita
@@ -2889,7 +2217,7 @@ Per accedir a les últimes novetats, visita
 quan tingui connexió al web (l&apos;enllaç s&apos;obre a un navegador extern).
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave,</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave, </translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2915,11 +2243,10 @@ La connexió al web per mostrar les últimes novetats quant a l&apos;Octave ha e
 Per veure les últimes novetats, visita
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 quan tingui connexió al web (l&apos;enllaç s&apos;obre a un navegador extern)
-o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&apos;Octave
+o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&apos;Octave.
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave,
-</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Els desenvolupadors de l&apos;Octave, </translation>
     </message>
 </context>
 <context>
@@ -2932,7 +2259,7 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
     <message>
         <location line="+43"/>
         <source>Use &lt;Alt&gt; + &lt;Left Mouse Button&gt; for moving the window</source>
-        <translation>Utilitza&lt;Alt&gt; + &lt;Botó esquerre del ratolí&gt; per moure la finestra</translation>
+        <translation>Utilitza &lt;Alt&gt; + &lt;Botó esquerre del ratolí&gt; per moure la finestra</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2950,12 +2277,12 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+277"/>
         <source>Help on</source>
-        <translation>Ajuda sobre</translation>
+        <translation>Ajuda quant a</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation>Documentació sobre</translation>
+        <translation>Documentació quant a</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2964,13 +2291,13 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
     </message>
     <message>
         <location line="+15"/>
-        <source>dbstop if ...</source>
-        <translation>dbstop si ...</translation>
+        <source>dbstop if...</source>
+        <translation>Atura la depuració si...</translation>
     </message>
     <message>
         <location line="+461"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
-        <translation>Fes clic a &apos;%1&apos; per reemplaçar tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
+        <translation>Fes clic a &apos;%1&apos; per substituir tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
     </message>
 </context>
 <context>
@@ -3053,7 +2380,7 @@ no existeix i no s&apos;ha pogut crear.
 Assegura&apos;t que tens els permisos de lectura i escriptura a
 %2
 
-La interfície gràfica de l&apos;Octave es tancarà ara.</translation>
+La interfície gràfica de l&apos;Octave es tancarà.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3094,7 +2421,7 @@ The check will happen at most once each day and news will only be displayed if t
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;En iniciar l&apos;Octave, opcionalment es revisarà el lloc web de l&apos;Octave per cercar notícies i informació en quant a la comunitat de l&apos;Octave.
 Aquesta revisió es farà una vegada al dia com a màxim i les notícies sols es mostraran si existeixen canvis recents des de l&apos;última visita.&lt;/p&gt;
-&lt;p&gt;També es pot accedir a les notícies seleccionant &quot;Notícies de la comunitat&quot; al menú &quot;Ajuda&quot;, o visitant
+&lt;p&gt;També pots accedir a les notícies seleccionant &quot;Notícies de la comunitat&quot; al menú &quot;Ajuda&quot;, o visitant
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -3121,7 +2448,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/shortcut-manager.cc" line="+131"/>
         <source>Double Shortcut</source>
-        <translation>Drecera de teclat alternativa</translation>
+        <translation>Drecera alternativa</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3130,7 +2457,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 is already used for the action
   &quot;%2&quot;.
 Do you want to use the shortcut anyhow removing it from the previous action?</source>
-        <translation>La drecera de teclat seleccionada
+        <translation>La drecera seleccionada
   &quot;%1&quot;
 ja s&apos;utilitza per a l&apos;acció
   &quot;%2&quot;.
@@ -3225,17 +2552,17 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="-159"/>
         <source>Step</source>
-        <translation>Pas (següent instrucció)</translation>
+        <translation>Pas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Step Into</source>
-        <translation>Pas (entra)</translation>
+        <translation>Pas entrant</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Step Out</source>
-        <translation>Pas (surt)</translation>
+        <translation>Pas sortint</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3245,12 +2572,12 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Quit Debug Mode</source>
-        <translation>Surt del mode depuració</translation>
+        <translation>Atura la depuració</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show Command Window</source>
-        <translation>Mostra la Finestra del Terminal</translation>
+        <translation>Mostra la finestra del terminal</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3285,7 +2612,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Command Window</source>
-        <translation>Finestra del Terminal</translation>
+        <translation>Finestra del terminal</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3326,7 +2653,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+3"/>
         <source>Show Ondisk Documentation</source>
-        <translation>Mostra la documentació emmagatzemada</translation>
+        <translation>Mostra la documentació local</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3416,7 +2743,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+1"/>
         <source>Save File As</source>
-        <translation>Desa la figura com a</translation>
+        <translation>Desa el fitxer com a</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3436,7 +2763,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+1"/>
         <source>Find and Replace</source>
-        <translation>Cerca i reemplaça</translation>
+        <translation>Cerca i substitueix</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3516,29 +2843,29 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Uppercase Selection</source>
-        <translation>Converteix la selecció a majúscules</translation>
+        <translation>Posa la selecció en majúscules</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Lowercase Selection</source>
-        <translation>Converteix la selecció a minúscules</translation>
+        <translation>Posa la selecció en minúscules</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+5"/>
         <source>Indent Selection Rigidly</source>
-        <translation>Sagna estrictament la selecció</translation>
+        <translation>Sagna la selecció</translation>
     </message>
     <message>
         <location line="-3"/>
         <location line="+5"/>
         <source>Unindent Selection Rigidly</source>
-        <translation>Neteja estrictament el sagnat de la selecció</translation>
+        <translation>Elimina el sagnat de la selecció</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Indent Code</source>
-        <translation>Aplica el sagnat al codi</translation>
+        <translation>Sagna el codi</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3563,7 +2890,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Move to Matching Brace</source>
-        <translation>Mou-te al parèntesi corresponent</translation>
+        <translation>Desplaça&apos;t al parèntesi corresponent</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3573,22 +2900,22 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Toggle Bookmark</source>
-        <translation>Commuta l&apos;adreça d&apos;interès</translation>
+        <translation>Commuta el marcador</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Next Bookmark</source>
-        <translation>Adreça d&apos;interès següent</translation>
+        <translation>Marcador següent</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Previous Bookmark</source>
-        <translation>Adreça d&apos;interès anterior</translation>
+        <translation>Marcador anterior</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Remove All Bookmark</source>
-        <translation>Elimina totes les adreces d&apos;interès</translation>
+        <translation>Elimina tots els marcadors</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3618,7 +2945,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Show Long Line Marker</source>
-        <translation>Mostra el marcador de longitud de línia</translation>
+        <translation>Mostra el marcador línia llarga</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3684,12 +3011,12 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+4"/>
         <source>Help on Keyword</source>
-        <translation>Ajuda en quant a les paraules clau</translation>
+        <translation>Ajuda d&apos;una paraula clau</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Document on Keyword</source>
-        <translation>Documentació de les paraules clau</translation>
+        <translation>Documentació d&apos;una paraula clau</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -3733,7 +3060,7 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+2"/>
         <source>Tab Handling in Dock Widgets</source>
-        <translation>Comportament de les pestanyes en plafons acoblats</translation>
+        <translation>Comportament de les pestanyes als plafons</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -3747,13 +3074,13 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
+        <source>Import shortcuts from file...</source>
+        <translation>Importa dreceres des d&apos;un fitxer...</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
+        <source>Export shortcuts into file...</source>
+        <translation>Exporta dreceres a un fitxer...</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3769,44 +3096,44 @@ Vols sobreescriure-la suprimint l&apos;acció anterior?</translation>
     <message>
         <location line="+26"/>
         <source>Enter new Shortcut</source>
-        <translation>Introdueix una nova drecera de teclat</translation>
+        <translation>Introdueix una nova drecera</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
-        <translation>Aplica la drecera de teclat desitjada o fes clic amb el botó dret per restaurar la drecera de teclat al seu valor per defecte.</translation>
+        <translation>Aplica la drecera desitjada o fes clic amb el botó dret per restaurar la drecera al seu valor per defecte.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter shortcut directly by performing it</source>
-        <translation>Introdueix una drecera de teclat directament en activar-la</translation>
+        <translation>Activa la drecera en introduir-la</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Actual shortcut</source>
-        <translation>Drecera de teclat actual</translation>
+        <translation>Drecera actual</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Default shortcut</source>
-        <translation>Drecera de teclat per defecte</translation>
+        <translation>Drecera per defecte</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set to default</source>
-        <translation>Estableix per defecte</translation>
+        <translation>Estableix com a per defecte</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Overwriting Shortcuts</source>
-        <translation>Sobreescriure les dreceres</translation>
+        <translation>Sobreescriu les dreceres</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Ets a punt de sobreescriure totes les dreceres.
-Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translation>
+Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3819,7 +3146,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+43"/>
         <source>Command Window</source>
-        <translation>Finestra del Terminal</translation>
+        <translation>Finestra del terminal</translation>
     </message>
 </context>
 <context>
@@ -3842,7 +3169,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+3"/>
         <source>Redock</source>
-        <translation>Torna a acoblar</translation>
+        <translation>Reacobla</translation>
     </message>
 </context>
 <context>
@@ -3860,27 +3187,27 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+259"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer pla</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Segon pla</translation>
+        <translation>Fons</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer pla seleccionat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fons seleccionat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterna el fons</translation>
     </message>
     <message>
         <location line="+255"/>
@@ -3915,7 +3242,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+1"/>
         <source>Copy data to clipboard</source>
-        <translation>Copia les dades al porta-retalls</translation>
+        <translation>Desa les dades al porta-retalls</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4008,7 +3335,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+4"/>
         <source>Variable from Selection</source>
-        <translation>Fes una variable de la selecció</translation>
+        <translation>Crea una variable des de la selecció</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -4087,7 +3414,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+108"/>
         <source>Right click to copy, rename, or display</source>
-        <translation>Clic dret per copiar, reanomenar o mostrar</translation>
+        <translation>Clic per copiar, reanomenar o mostrar</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -4156,12 +3483,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+3"/>
         <source>Copy name</source>
-        <translation>Copia nom</translation>
+        <translation>Copia el nom</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy value</source>
-        <translation>Copia valor</translation>
+        <translation>Copia el valor</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4208,12 +3535,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Icones tipogràfiques</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Graphic icons</source>
-        <translation>Icones gràfiques</translation>
-    </message>
-    <message>
-        <location line="-29"/>
+        <location line="-22"/>
         <source>Dock widget title bar</source>
         <translation>Acobla el plafó de la barra de títol</translation>
     </message>
@@ -4233,17 +3555,12 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Estil personalitzat</translation>
     </message>
     <message>
-        <location line="+170"/>
-        <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Aquestes configuracions s&apos;apliquen després del fitxer d&apos;inici &quot;.octaverc&quot;.</translation>
+        <location line="+32"/>
+        <source>3D</source>
+        <translation>3D</translation>
     </message>
     <message>
-        <location line="+55"/>
-        <source>Restore working directory of previous session</source>
-        <translation>Restaura el directori de treball de la sessió anterior</translation>
-    </message>
-    <message>
-        <location line="+33"/>
+        <location line="+226"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -4253,22 +3570,53 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Color</translation>
     </message>
     <message>
-        <location line="+49"/>
-        <source>Show EOL characters</source>
-        <translation>Mostra el caràcter de fi de línia</translation>
+        <location line="+215"/>
+        <location line="+140"/>
+        <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
+        <translation>Funciona bé amb lletres d&apos;espaiat fix. La línia es dibuixa en una posició basada en l&apos;amplada del caràcter espai de la lletra per defecte. Pot no funcionar bé si l&apos;estil utilitza fonts proporcionals o si es combinen lletres de mides diferents, o lletra normal amb negreta i/o cursiva.</translation>
     </message>
     <message>
-        <location line="+309"/>
+        <location line="-463"/>
+        <source>Enable Code Folding</source>
+        <translation>Activa el plegament de codi</translation>
+    </message>
+    <message>
+        <location line="+961"/>
+        <source>Windows (CRLF)</source>
+        <translation>Windows (CRLF)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Mac (CR)</source>
+        <translation>Mac (CR)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Unix (LF)</source>
+        <translation>Unix (LF)</translation>
+    </message>
+    <message>
+        <location line="-936"/>
+        <source>Show horizontal scroll bar</source>
+        <translation>Mostra la barra de desplaçament horitzontal</translation>
+    </message>
+    <message>
+        <location line="-19"/>
+        <source>Show tool bar</source>
+        <translation>Mostra la barra d&apos;eines</translation>
+    </message>
+    <message>
+        <location line="+450"/>
         <source>Wrap long lines at current window border</source>
-        <translation>Ajusta les línies llargues a la vora de la finestra actual</translation>
+        <translation>Ajusta les línies llargues segons la vora de la finestra actual</translation>
     </message>
     <message>
-        <location line="+475"/>
-        <source>Default EOL mode</source>
-        <translation>Identificador de fi de línia per defecte</translation>
+        <location line="+15"/>
+        <source>Indentation</source>
+        <translation>Sagnat</translation>
     </message>
     <message>
-        <location line="-420"/>
+        <location line="+40"/>
         <source>Indent width</source>
         <translation>Amplada del sagnat</translation>
     </message>
@@ -4285,7 +3633,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+23"/>
         <source>Tab width</source>
-        <translation>Amplada del tabulat</translation>
+        <translation>Amplada del tabulador</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4295,10 +3643,20 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+7"/>
         <source>Backspace unindents line</source>
-        <translation>La tecla de retrocés elimina el sagnat de línia</translation>
+        <translation>La tecla de retrocés elimina el sagnat</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+23"/>
+        <source>Indentation uses tabs</source>
+        <translation>El sagnat utilitza el tabulat</translation>
+    </message>
+    <message>
+        <location line="+70"/>
+        <source>Auto completion</source>
+        <translation>Autocompleció</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>Match keywords</source>
         <translation>Coincidència de paraules clau</translation>
     </message>
@@ -4310,7 +3668,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+23"/>
         <source>Replace word by suggested one</source>
-        <translation>Reemplaça la paraula pel suggeriment</translation>
+        <translation>Substitueix la paraula pel suggeriment</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -4318,17 +3676,57 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Coincidència de paraules al document</translation>
     </message>
     <message>
-        <location line="-540"/>
+        <location line="+48"/>
+        <source>With Octave builtins</source>
+        <translation>Amb funcions internes de l&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>With Octave functions</source>
+        <translation>Amb funcions de l&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+64"/>
+        <source>Show completion list automatically</source>
+        <translation>Mostra la llista d&apos;ordres coincidents automàticament</translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>Reload externally changed files without prompt</source>
+        <translation>Recarrega els fitxers modificats externament sense consultar</translation>
+    </message>
+    <message>
+        <location line="-712"/>
         <source>Use custom file editor</source>
         <translation>Utilitza un editor de fitxers personalitzat</translation>
     </message>
     <message>
-        <location line="+868"/>
+        <location line="+805"/>
+        <source>Text encoding used for loading and saving</source>
+        <translation>Codificació del text utilitzat per carregar i desar</translation>
+    </message>
+    <message>
+        <location line="+63"/>
         <source>Editor Styles</source>
         <translation>Estils de l&apos;editor</translation>
     </message>
     <message>
-        <location line="+280"/>
+        <location line="+202"/>
+        <source>(Changing buffer size clears history)</source>
+        <translation>(Canviar la mida de l&apos;historial neteja el contingut)</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>History buffer Size</source>
+        <translation>Mida de l&apos;historial</translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Print debug location in terminal window in addition to the marker in the editor</source>
+        <translation>Mostra la ubicació del depurador a la finestra del terminal, a més del marcador de l&apos;editor</translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Terminal Colors</source>
         <translation>Colors del terminal</translation>
     </message>
@@ -4349,22 +3747,81 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Ressalta la línia actual</translation>
     </message>
     <message>
-        <location line="-137"/>
+        <location line="-766"/>
+        <source>Interface</source>
+        <translation>Interfície</translation>
+    </message>
+    <message>
+        <location line="+83"/>
+        <source>Confirm before exiting</source>
+        <translation>Confirma abans de sortir</translation>
+    </message>
+    <message>
+        <location line="+205"/>
+        <source>Graphic icons</source>
+        <translation>Icones gràfiques</translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <location line="+280"/>
+        <source>Show status bar</source>
+        <translation>Mostra la barra d&apos;estat</translation>
+    </message>
+    <message>
+        <location line="-458"/>
+        <source>Text inactive</source>
+        <translation>Text inactiu</translation>
+    </message>
+    <message>
+        <location line="-32"/>
+        <location line="+45"/>
+        <source>Active</source>
+        <translation>Actiu</translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>Background inactive</source>
+        <translation>Fons inactiu</translation>
+    </message>
+    <message>
+        <location line="+151"/>
+        <source>Octave Startup</source>
+        <translation>Inici de l&apos;Octave</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <location line="+1732"/>
+        <source>Startup path</source>
+        <translation>Camí d&apos;inici</translation>>
+    </message>
+    <message>
+        <location line="-1719"/>
+        <location line="+1712"/>
+        <source>Browse</source>
+        <translation>Explora</translation>
+    </message>
+    <message>
+        <location line="-1479"/>
         <source>Show whitespace</source>
         <translation>Mostra els espais en blanc</translation>
     </message>
     <message>
         <location line="-45"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation>No mostres els espais de sagnat</translation>
+        <translation>No mostres l&apos;espai en blanc utilitzat per al sagnat</translation>
     </message>
     <message>
-        <location line="+863"/>
-        <source>Number of characters before list is shown: </source>
-        <translation>Nombre de caràcters a partir del qual es mostra la llista: </translation>
+        <location line="-111"/>
+        <source>Tab width min.</source>
+        <translation>Mida mínima de pestanya.</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+70"/>
+        <source>max.</source>
+        <translation>màx.</translation>
+    </message>
+    <message>
+        <location line="+1028"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crea fitxers inexistents sense consultar</translation>
     </message>
@@ -4410,117 +3867,42 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>Explorador de fitxers</translation>
     </message>
     <message>
-        <location line="-2031"/>
-        <source>Interface</source>
-        <translation>Interfície</translation>
-    </message>
-    <message>
-        <location line="+83"/>
-        <source>Confirm before exiting</source>
-        <translation>Confirma abans de sortir</translation>
-    </message>
-    <message>
-        <location line="+234"/>
-        <location line="+280"/>
-        <source>Show status bar</source>
-        <translation>Mostra la barra d&apos;estat</translation>
-    </message>
-    <message>
-        <location line="-458"/>
-        <source>Text inactive</source>
-        <translation>Text inactiu</translation>
-    </message>
-    <message>
-        <location line="-32"/>
-        <location line="+45"/>
-        <source>Active</source>
-        <translation>Actiu</translation>
-    </message>
-    <message>
-        <location line="-135"/>
+        <location line="-2014"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location line="+174"/>
-        <source>Background inactive</source>
-        <translation>Fons inactiu</translation>
+        <location line="+331"/>
+        <source>These preferences are applied after any .octaverc startup files.</source>
+        <translation>Aquestes configuracions s&apos;apliquen després del fitxer d&apos;inici &quot;.octaverc&quot;.</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <source>3D</source>
-        <translation>3D</translation>
+        <location line="+55"/>
+        <source>Restore working directory of previous session</source>
+        <translation>Restaura el directori de treball de la sessió anterior</translation>
     </message>
     <message>
-        <location line="+132"/>
-        <source>Octave Startup</source>
-        <translation>Inici de l&apos;Octave</translation>
+        <location line="+396"/>
+        <source>Show EOL characters</source>
+        <translation>Mostra el caràcter de fi de línia</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <location line="+1732"/>
-        <source>Startup path</source>
-        <translation>Camí d&apos;inici</translation>
+        <location line="+784"/>
+        <source>Default EOL mode</source>
+        <translation>Identificador de fi de línia per defecte</translation>
     </message>
     <message>
-        <location line="-1719"/>
-        <location line="+1712"/>
-        <source>Browse</source>
-        <translation>Explora</translation>
+        <location line="-136"/>
+        <source>Number of characters before list is shown: </source>
+        <translation>Nombre de caràcters a partir del qual es mostra la llista: </translation>
     </message>
     <message>
-        <location line="-1635"/>
-        <source>Tab width min.</source>
-        <translation>Mida mínima de la pestanya.</translation>
-    </message>
-    <message>
-        <location line="+70"/>
-        <source>max.</source>
-        <translation>màx.</translation>
-    </message>
-    <message>
-        <location line="+422"/>
-        <location line="+140"/>
-        <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
-        <translation>Funciona bé amb lletres d&apos;espaiat fix. La línia es dibuixa en una posició basada en l&apos;amplada del caràcter espai de la lletra per defecte. Pot no funcionar bé si l&apos;estil utilitza fonts proporcionals o si es combinen lletres de mides diferents, o lletra normal amb negreta i/o cursiva.</translation>
-    </message>
-    <message>
-        <location line="-463"/>
-        <source>Enable Code Folding</source>
-        <translation>Activa el plegament de codi</translation>
-    </message>
-    <message>
-        <location line="+961"/>
-        <source>Windows (CRLF)</source>
-        <translation>Windows (CRLF)</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Unix (LF)</source>
-        <translation>Unix (LF)</translation>
-    </message>
-    <message>
-        <location line="-936"/>
-        <source>Show horizontal scroll bar</source>
-        <translation>Mostra la barra de desplaçament horitzontal</translation>
-    </message>
-    <message>
-        <location line="-119"/>
+        <location line="-889"/>
         <source>Show complete path in title</source>
         <translation>Mostra el camí complet al títol</translation>
     </message>
     <message>
-        <location line="+100"/>
-        <source>Show tool bar</source>
-        <translation>Mostra la barra d&apos;eines</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+131"/>
         <source>Number size as difference to editor font</source>
         <translation>Mida relativa respecte a la lletra de l&apos;editor </translation>
     </message>
@@ -4577,20 +3959,10 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+10"/>
         <source>Background</source>
-        <translation>Segon pla</translation>
+        <translation>Fons</translation>
     </message>
     <message>
-        <location line="+53"/>
-        <source>Indentation</source>
-        <translation>Sagnat</translation>
-    </message>
-    <message>
-        <location line="+127"/>
-        <source>Indentation uses tabs</source>
-        <translation>El sagnat utilitza el tabulat</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+191"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
         <translation>Insereix automàticament després d&apos;un &quot;if&quot; etc.</translation>
     </message>
@@ -4610,72 +3982,27 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
         <translation>&quot;end&quot;</translation>
     </message>
     <message>
-        <location line="+29"/>
-        <source>Auto completion</source>
-        <translation>Autocompleció</translation>
-    </message>
-    <message>
-        <location line="+101"/>
-        <source>With Octave builtins</source>
-        <translation>Amb funcions internes de l&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>With Octave functions</source>
-        <translation>Amb funcions de l&apos;Octave</translation>
-    </message>
-    <message>
-        <location line="+64"/>
-        <source>Show completion list automatically</source>
-        <translation>Mostra la llista d&apos;ordres coincidents automàticament</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+235"/>
         <source>File handling</source>
         <translation>Comportament dels fitxers</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <source>Reload externally changed files without prompt</source>
-        <translation>Recarrega els fitxers modificats externament sense consultar</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+32"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
         <translation>Restaura les pestanyes de l&apos;editor de la sessió anterior</translation>
     </message>
     <message>
-        <location line="+80"/>
-        <source>Text encoding used for loading and saving</source>
-        <translation>Codificació del text utilitzat per carregar i desar</translation>
-    </message>
-    <message>
-        <location line="+25"/>
+        <location line="+105"/>
         <source>Close all files when the editor widget is closed/hidden</source>
         <translation>Tanca tots els fitxers quan el plafó de l&apos;editor estigui tancat/ocult</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecciona el tipus de lletra, mida (relativa a la mida per defecte), estil (&lt;b&gt;n&lt;/b&gt;egreta, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubratllat), color i color de fons (per al color de fons, el color magenta (255,0,255) és el marcador de posició per defecte).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecciona el tipus de lletra, mida (relativa a la mida per defecte), estil (&lt;b&gt;n&lt;/b&gt;egreta, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubrallat), color i color de fons (per al color de fons, el color magenta (255,0,255) és el marcador de posició per defecte).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+185"/>
-        <source>(Changing buffer size clears history)</source>
-        <translation>(Canviar la mida de l&apos;historial neteja el contingut)</translation>
-    </message>
-    <message>
-        <location line="+28"/>
-        <source>History buffer Size</source>
-        <translation>Mida de l&apos;historial</translation>
-    </message>
-    <message>
-        <location line="+34"/>
-        <source>Print debug location in terminal window in addition to the marker in the editor</source>
-        <translation>Mostra la ubicació del depurador a la Finestra del Terminal, a més del marcador de l&apos;editor</translation>
-    </message>
-    <message>
-        <location line="+87"/>
+        <location line="+334"/>
         <source>Behavior</source>
         <translation>Comportament</translation>
     </message>
@@ -4707,7 +4034,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+101"/>
         <source>Import shortcut set</source>
-        <translation>Importa el conjunto de dreceres</translation>
+        <translation>Importa el conjunt de dreceres</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4743,7 +4070,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+23"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation>Permet a l&apos;Octave la connexió al lloc web per mostrar més informació i notícies actualitzades</translation>
+        <translation>Permet que l&apos;Octave s'hi connecti al lloc web per mostrar més informació i notícies actualitzades</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -4788,7 +4115,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+5"/>
         <source>Uniform</source>
-        <translation>Uniform</translation>
+        <translation>Uniforme</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -4863,7 +4190,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="-16"/>
         <source>Hostname:</source>
-        <translation>Nom de la màquina:</translation>
+        <translation>Nom del servidor:</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -4878,7 +4205,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="-27"/>
         <source>Username:</source>
-        <translation>Nom de l&apos;usuari:</translation>
+        <translation>Nom d&apos;usuari:</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -4893,7 +4220,7 @@ Vols desar el conjunto de dreceres actual o cancel·lar l&apos;acció?</translat
     <message>
         <location line="+1"/>
         <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation>No es pot desar la configuració.  Falta el fitxer de configuració o directori desconegut.</translation>
+        <translation>No es pot desar la configuració. Falta el fitxer de configuració o directori desconegut.</translation>
     </message>
     <message>
         <location line="+15"/>

@@ -54,7 +54,7 @@
         <translation>Cursor</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>Differenz zur Standardgröße</translation>
     </message>
@@ -424,14 +424,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+74"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Octave Dokumentation</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -450,7 +450,29 @@ benötigten Dateien konnten nicht vorbereitet werden.
 Das Betrachten der Hilfe ist auf das Befehlsfenster beschränkt.</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation>Suchen nach:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation>Nächsten suchen</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation>Vorherigen suchen</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation>Escape</translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Inhalt</translation>
     </message>
@@ -471,7 +493,7 @@ Das Betrachten der Hilfe ist auf das Befehlsfenster beschränkt.</translation>
         <translation>Index</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation>Hilfe-Datei %1 konnte nicht registriert werden.</translation>
     </message>
@@ -978,7 +1000,7 @@ konnte nicht zum Schreiben geöffnet werden:
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -987,7 +1009,7 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>Haltepunkt kann nicht in einer geänderten Datei gesetzt werden.
@@ -1079,7 +1101,7 @@ Debuggen abbrechen und speichern?</translation>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1181,7 +1203,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <translation>Zeilen abwechselnd einfärben</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation>Pfad oder Dateinamen eingeben</translation>
     </message>
@@ -1349,7 +1371,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation>Neue Datei.txt</translation>
     </message>
@@ -1367,7 +1389,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation>Neues Verzeichnis</translation>
     </message>
@@ -1835,12 +1857,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1742"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-1621"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1851,12 +1873,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1618"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
-        <location line="-1462"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
@@ -1893,7 +1915,7 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+927"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -2256,7 +2278,7 @@ oder aktivieren Sie die Internetverbindung in den Einstellungen unter Netzwerk.
         <translation>Bedienelement andocken</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation>Bedienelement lösen</translation>
     </message>
@@ -3065,22 +3087,22 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
+        <source>Import shortcuts from file ...</source>
         <translation>Tastenkürzel aus Datei importieren...</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation>Tastenkürzel in Datei exportieren...</translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Octave Tastenkürzel-Dateien (*.osc);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Tastenkürzel in Datei exportieren...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>Konnte %1 nicht als Octave-Tastenkürzel-Datei öffnen</translation>
     </message>
@@ -3166,7 +3188,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Variableneditor</translation>
     </message>
@@ -3176,7 +3198,32 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <translation>Variablen bearbeiten.</translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation>Vordergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation>Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation>Ausgewählter Vordergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation>Ausgewählter Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation>Abwechselnder Hintergrund</translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Werkzeugleiste des Variableneditors</translation>
     </message>
@@ -3261,7 +3308,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Variable %1 speichern unter</translation>
     </message>
@@ -3269,7 +3316,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+125"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation>Ausschneiden</translation>
     </message>
@@ -3412,7 +3459,7 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
         <translation>Filter</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Anzeige der Variablen der aktiven Arbeitsumgebung.&lt;br&gt;</translation>
     </message>
@@ -4182,7 +4229,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Octave Einstellungen</translation>
     </message>

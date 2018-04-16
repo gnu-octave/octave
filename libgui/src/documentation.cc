@@ -133,26 +133,26 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    QShortcut *show_shortcut = new QShortcut (QKeySequence (QKeySequence::Find), browser_find);
-    show_shortcut->setContext(Qt::WindowShortcut);
+    QShortcut *show_shortcut = new QShortcut (QKeySequence (QKeySequence::Find), p);
+    show_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit->parentWidget (), SLOT (show (void)));
     connect (show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit, SLOT (selectAll (void)));
     connect (show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit, SLOT (setFocus (void)));
-    QShortcut *hide_shortcut = new QShortcut (QKeySequence (tr ("Escape")), m_find_line_edit);
-    hide_shortcut->setContext(Qt::WindowShortcut);
+    QShortcut *hide_shortcut = new QShortcut (Qt::Key_Escape, p);
+    hide_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (hide_shortcut, SIGNAL (activated (void)),
              m_find_line_edit->parentWidget (), SLOT(hide (void)));
     connect (hide_shortcut, SIGNAL (activated (void)),
              m_doc_browser, SLOT (setFocus (void)));
-    QShortcut *findnext_shortcut = new QShortcut (QKeySequence (QKeySequence::FindNext), browser_find);
-    findnext_shortcut->setContext(Qt::WindowShortcut);
+    QShortcut *findnext_shortcut = new QShortcut (QKeySequence (QKeySequence::FindNext), p);
+    findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (findnext_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_forward (void)));
-    QShortcut *findprev_shortcut = new QShortcut (QKeySequence (QKeySequence::FindPrevious), browser_find);
-    findprev_shortcut->setContext(Qt::WindowShortcut);
+    QShortcut *findprev_shortcut = new QShortcut (QKeySequence (QKeySequence::FindPrevious), p);
+    findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (findprev_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_backward (void)));
     find_footer->hide ();

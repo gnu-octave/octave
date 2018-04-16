@@ -133,7 +133,6 @@ namespace octave
     // If TRUE, start the GUI.
     // (--gui) and (--force-gui) for backwards compatibility
     bool m_gui = false;
-    bool m_force_gui = false;
 
     // TRUE means the user forced this shell to be interactive.
     // (--interactive, -i)

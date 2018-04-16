@@ -721,6 +721,10 @@ as the other array.
 %!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]))
 
 %!shared a, b, aa, bb
+%! ## FIXME: Set a known "good" random seed.  See bug #51779.
+%! old_nstate = randn ("state");
+%! restore_nstate = onCleanup (@() randn ("state", old_nstate));
+%! randn ("state", 42); # initialize generator to make behavior reproducible
 %! a = randn (3, 1, 3);
 %! aa = a(:, ones (1, 3), :, ones (1, 3));
 %! b = randn (1, 3, 3, 3);
@@ -753,6 +757,11 @@ as the other array.
 %! float_types = {@single, @double};
 %! int_types = {@int8, @int16, @int32, @int64, ...
 %!              @uint8, @uint16, @uint32, @uint64};
+%!
+%! ## FIXME: Set a known "good" random seed.  See bug #51779.
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 42);  # initialize generator to make behavior reproducible
 %!
 %! x = rand (3) * 10-5;
 %! y = rand (3,1) * 10-5;

@@ -443,10 +443,10 @@ endfunction
 
 %!assert (fminsearch (@sin, 3, optimset ("MaxIter", 30)), 3*pi/2, 1e-4)
 
-## The following test is for checking that fminsearch stops earlier with
-## these settings.  If the optimizer algorithm is changed it is allowed to
-## fail.  Just adapt the values to make it pass again.
-%!xtest
+## FIXME: The following test is for checking that fminsearch stops earlier
+##        with these settings.  If the optimizer algorithm is changed, it
+##        may fail.  Just adapt the values to make it pass again.
+%!test
 %! x = fminsearch (@sin, 3, optimset ("MaxIter", 3, "Display", "none"));
 %! assert (x, 4.8750, 1e-4);
 %! x = fminsearch (@sin, 3, optimset ("MaxFunEvals", 18, "Display", "none"));

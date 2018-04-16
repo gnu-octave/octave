@@ -87,7 +87,10 @@ function filelist = zip (zipfile, files, rootdir = ".")
 endfunction
 
 
-%!xtest
+## FIXME: This test may fail if the zip or unzip command is not installed.
+##        If this test fails, it might be better to change it into a testif
+##        with a runtime condition on the zip and unzip programs.
+%!test
 %! ## test zip together with unzip
 %! unwind_protect
 %!   filename = tempname ();

@@ -111,7 +111,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!xtest
+%!test
 %! set (0, "defaultfigurevisible", "off");
 %! hf = figure ("visible", "off");
 %! unwind_protect

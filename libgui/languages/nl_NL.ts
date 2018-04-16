@@ -2076,14 +2076,14 @@ Wil je die overschrijven?</translation>
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+75"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Octave documentatie</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -2101,7 +2101,29 @@ niet vinden. Alleen de helpteksten in de
 console widget zijn beschikbaar.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation>Zoek:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation>Zoek voorwaarts</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation>Zoek achterwaarts</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation>Escape</translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Inhoud</translation>
     </message>
@@ -2122,7 +2144,7 @@ console widget zijn beschikbaar.</translation>
         <translation>Index</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation>Kan help bestand %1 niet registreren.</translation>
     </message>
@@ -4711,22 +4733,22 @@ Wil je de sneltoets toch instellen door hem van de vorige ingestelde actie te wi
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importeer sneltoetsen uit bestand...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation>Importeer shotcuts uit bestand...</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation>Exporteer shortcuts naar bestand...</translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Octave Sneltoetsbestanden (*.osc);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Exporteer sneltoetsen naar bestand...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>Kon bestand %1 niet als octave sneltoetsbestand openen</translation>
     </message>
@@ -4812,7 +4834,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+791"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Variable Editor</translation>
     </message>
@@ -4822,7 +4844,32 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Variabelen bewerken</translation>
     </message>
     <message>
-        <location line="+476"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation>Voorgrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation>Achtergrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation>Gekozen Voorgrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation>Gekozen achtergrond</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation>Andere Achtergrond</translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Variable Editor Werkbalk</translation>
     </message>
@@ -4907,7 +4954,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1176"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Sla variable %1 op als</translation>
     </message>

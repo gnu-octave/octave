@@ -576,7 +576,7 @@ Do you want to delete it anyway?</source>
         <translation>kurtsorea</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>Lehenetsitako tamainarekiko aldea</translation>
     </message>
@@ -2067,19 +2067,50 @@ Do you want to overwrite it?</source>
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+78"/>
+        <location line="+10"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-326"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2097,6 +2128,11 @@ the Console Widget will be available.</source>
     <message>
         <location line="-22"/>
         <source>Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+203"/>
+        <source>Unable to register help file %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2371,7 +2407,7 @@ fitxategia ezin da idatzi: %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>convert line endings to &amp;windows (crlf)</source>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2564,11 +2600,6 @@ fitxategia ezin da idatzi: %2.</translation>
         <source>Editor</source>
         <translation type="unfinished">Editorea</translation>
     </message>
-    <message>
-        <location line="+207"/>
-        <source>&amp;%1 %2</source>
-        <translation type="unfinished">&amp;%1 %2</translation>
-    </message>
 </context>
 <context>
     <name>octave::file_editor_tab</name>
@@ -2601,7 +2632,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -2610,7 +2641,7 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
@@ -2697,7 +2728,7 @@ fitxategia ezin da irakurtzeko ireki: %2.</translation>
         <translation type="unfinished">Fitxategi guztiak (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -2715,7 +2746,7 @@ Beste izen bat aukeratu nahi duzu?</translation>
     </message>
     <message>
         <location line="+20"/>
-        <source>The current codec %1
+        <source>The current encoding %1
 can not be applied.
 
 Please select another one or cancel saving!</source>
@@ -2724,15 +2755,11 @@ Please select another one or cancel saving!</source>
     <message>
         <location line="+11"/>
         <source>The current editor contents can not be encoded
-with the selected codec %1.
+with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another codec?</source>
-        <translation type="unfinished">Editorearen uneko edukia ezin da kodifikatu
-aukeratutako %1 kodearekin .
-Erabiliz gero datuak galduko dira!
-
-Beste kode bat aukeratu nahi duzu?</translation>
+Do you want to choose another encoding?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+85"/>
@@ -2796,7 +2823,7 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
         <translation type="unfinished">Txandakatu lerroen koloreak</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation type="unfinished">Sartu fitxategiaren kokagunea edo izena</translation>
     </message>
@@ -2964,7 +2991,7 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation type="unfinished">.txt beste fitxategi bat sortu</translation>
     </message>
@@ -2982,7 +3009,7 @@ fitxategia ezebatu edo izenez aldatu da. Berreskuratu nahi duzu?%2</translation>
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation type="unfinished">Direktorio berria</translation>
     </message>
@@ -3453,12 +3480,12 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation type="unfinished">&quot;Octave&quot;-ri buruz</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation type="unfinished">Octave</translation>
     </message>
@@ -3469,12 +3496,12 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation type="unfinished">Direktorioak arakatu</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished">Octaveren fitxategiak (*.m);;Fitxategi guztiak (*)</translation>
     </message>
@@ -3511,7 +3538,7 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Fitxategia</translation>
     </message>
@@ -3875,7 +3902,7 @@ edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketa
         <translation type="unfinished">Akoplatu widgeta</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation type="unfinished">Desakoplatu widgeta</translation>
     </message>
@@ -4675,22 +4702,22 @@ Aurrez zehaztutako lasterbidea ezabatuko da. Jarraitu nahi duzu?</translation>
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation type="unfinished">Inportatu lasterbideen fitxategia...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation type="unfinished">Octavere lasterbide-fitxategiak (*.osc);;Fitxategi guztiak (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation type="unfinished">Esportatu lasterbideen fitxategia...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation type="unfinished">Ezin da ireki %1 Octaveren lasterbide-multzo fitxategi bezala</translation>
     </message>
@@ -4776,7 +4803,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4786,7 +4813,32 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Atzeko planoa</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4871,20 +4923,15 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>./%1.txt</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation type="unfinished">Ebaki</translation>
     </message>
@@ -5027,7 +5074,7 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation type="unfinished">Erakutsi aldagaiak lan-eremu aktiboan.&lt;br&gt;</translation>
     </message>
@@ -5166,7 +5213,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
         <translation>Erakutsi lerro-bukaerako karaktereak</translation>
     </message>
     <message>
-        <location line="+784"/>
+        <location line="+309"/>
+        <source>Wrap long lines at current window border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+475"/>
         <source>Default EOL mode</source>
         <translation>Lehenetsitako lerro-bukaera adierazlea</translation>
     </message>
@@ -5237,12 +5289,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>Letra-tipo mota</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>Erakutsi lerro-zenbakiak</translation>
     </message>
@@ -5298,12 +5350,12 @@ Momentuko lasterbideak gorde nahi dituzu edo ekintza ezeztatu nahi duzu?</transl
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>Letra-tipoaren tamaina</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Joan terminalera beste widget batetik agindu bat exekutatzen denean</translation>
     </message>
@@ -5487,12 +5539,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished">Atzeko planoa</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Wrap long lines at curent window border</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+53"/>
         <source>Indentation</source>
         <translation>Koska</translation>
     </message>
@@ -5668,17 +5715,12 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation type="unfinished">3D {20?}</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5688,22 +5730,17 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation type="unfinished">3D {2?}</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5713,7 +5750,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5723,7 +5760,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>HttpProxy</translation>
     </message>
@@ -5808,7 +5845,7 @@ letra lodiak, etzanak eta normalak.</translation>
         <translation>Pasahitza:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Octave Ezarpenak</translation>
     </message>

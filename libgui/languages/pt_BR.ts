@@ -54,7 +54,7 @@
         <translation>cursor</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+136"/>
+        <location filename="../src/settings-dialog.cc" line="+137"/>
         <source>Difference to the default size</source>
         <translation>Diferença com relação ao tamanho padrão</translation>
     </message>
@@ -420,12 +420,21 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+59"/>
+        <location filename="../src/documentation.cc" line="+78"/>
+        <location line="+10"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Documentação do Octave</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-326"/>
+        <source>Could not copy help collection to temporary
+file. Search capabilities may be affected.
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Console Widget will be available.</source>
@@ -434,7 +443,29 @@ visualizador da documentação. Apenas os textos de ajuda
 na Janela de Comandos estarão disponíveis.</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Conteúdo</translation>
     </message>
@@ -453,6 +484,11 @@ na Janela de Comandos estarão disponíveis.</translation>
         <location line="-22"/>
         <source>Index</source>
         <translation>Índice</translation>
+    </message>
+    <message>
+        <location line="+203"/>
+        <source>Unable to register help file %1.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -729,8 +765,8 @@ para escrita: %2.</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>convert line endings to &amp;windows (crlf)</source>
-        <translation>Converter Finais de Linha para &amp;Windows (CRLF)</translation>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -922,11 +958,6 @@ para escrita: %2.</translation>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
-    <message>
-        <location line="+207"/>
-        <source>&amp;%1 %2</source>
-        <translation>&amp;%1 %2</translation>
-    </message>
 </context>
 <context>
     <name>octave::file_editor_tab</name>
@@ -959,7 +990,7 @@ para escrita: %2.</translation>
         <location line="+91"/>
         <location line="+1164"/>
         <location line="+371"/>
-        <location line="+210"/>
+        <location line="+211"/>
         <location line="+20"/>
         <location line="+11"/>
         <location line="+85"/>
@@ -968,7 +999,7 @@ para escrita: %2.</translation>
         <translation>Editor do Octave</translation>
     </message>
     <message>
-        <location line="-1896"/>
+        <location line="-1897"/>
         <source>Cannot add breakpoint to modified file.
 Save and add breakpoint, or cancel?</source>
         <translation>Não é possível adicionar ponto de parada ao arquivo modificado.
@@ -1060,7 +1091,7 @@ Abandonar depuração e salvar?</translation>
         <translation>Todos os Arquivos (*)</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1078,27 +1109,20 @@ Você deseja escolher outro nome?</translation>
     </message>
     <message>
         <location line="+20"/>
-        <source>The current codec %1
+        <source>The current encoding %1
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation>O codificador atual %1
-não pode ser aplicado
-
-Favor selecionar outro ou cancelar a gravação!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+11"/>
         <source>The current editor contents can not be encoded
-with the selected codec %1.
+with the selected encoding %1.
 Using it will result in data loss!
 
-Do you want to chose another codec?</source>
-        <translation>O conteúdo atual do editor não pode ser codificado
-com o codificador selecionado %1.
-Usá-lo resultará em perda de dados!
-
-Deseja escolher outro codificador?</translation>
+Do you want to choose another encoding?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+85"/>
@@ -1162,7 +1186,7 @@ parece ter sido deletado ou renomeado. Gostaria de salvá-lo agora?%2</translati
         <translation>Cores de linhas alternantes</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>Enter the path or filename</source>
         <translation>Digite o caminho ou nome de arquivo</translation>
     </message>
@@ -1330,7 +1354,7 @@ parece ter sido deletado ou renomeado. Gostaria de salvá-lo agora?%2</translati
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New File.txt</source>
         <translation>Novo Arquivo.txt</translation>
     </message>
@@ -1348,7 +1372,7 @@ parece ter sido deletado ou renomeado. Gostaria de salvá-lo agora?%2</translati
 </translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>New Directory</source>
         <translation>Novo Diretório</translation>
     </message>
@@ -1816,12 +1840,12 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
     </message>
     <message>
         <location line="+91"/>
-        <location line="+1724"/>
+        <location line="+1747"/>
         <source>About Octave</source>
         <translation>Sobre o Octave</translation>
     </message>
     <message>
-        <location line="-1603"/>
+        <location line="-1626"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1832,12 +1856,12 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
     </message>
     <message>
         <location line="+64"/>
-        <location line="+1600"/>
+        <location line="+1623"/>
         <source>Browse directories</source>
         <translation>Navegar pelos diretórios</translation>
     </message>
     <message>
-        <location line="-1444"/>
+        <location line="-1467"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Arquivos do Octave (*.m);;Todos os Arquivos (*)</translation>
     </message>
@@ -1874,7 +1898,7 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
         <translation>Editor do Octave</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+932"/>
         <source>&amp;File</source>
         <translation>&amp;Arquivo</translation>
     </message>
@@ -2237,7 +2261,7 @@ ou habilite a conexão à Internet nas preferências de rede do Octave.
         <translation>Acoplar painel</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+46"/>
         <source>Undock widget</source>
         <translation>Desacoplar painel</translation>
     </message>
@@ -3044,22 +3068,22 @@ Você deseja usar a tecla de atalho mesmo assim, removendo-a da outra ação?</t
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importar teclas de atalho de arquivo...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Arquivos de Teclas de Atalho do Octave (*.osc);;Todos Arquivos (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Exportar teclas de atalho para arquivo...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>Falha ao abrir %1 como arquivo de teclas de atalho do Octave</translation>
     </message>
@@ -3145,7 +3169,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+790"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Editor de Variáveis</translation>
     </message>
@@ -3155,7 +3179,32 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Editar variáveis.</translation>
     </message>
     <message>
-        <location line="+470"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Fundo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barra de Ferramentas do Editor de Variáveis</translation>
     </message>
@@ -3240,20 +3289,15 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1169"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Salvar Variável %1 Como</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>./%1.txt</source>
-        <translation>./%1.txt</translation>
     </message>
 </context>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+123"/>
+        <location line="+126"/>
         <source>Cut</source>
         <translation>Recortar</translation>
     </message>
@@ -3396,7 +3440,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Filtrar</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Visualizar as variáveis no Ambiente de Trabalho ativo.&lt;br&gt;</translation>
     </message>
@@ -3530,7 +3574,12 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Exibir caracteres de final de linha</translation>
     </message>
     <message>
-        <location line="+784"/>
+        <location line="+309"/>
+        <source>Wrap long lines at current window border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+475"/>
         <source>Default EOL mode</source>
         <translation>Modo padrão para final de linha</translation>
     </message>
@@ -3601,12 +3650,12 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     </message>
     <message>
         <location line="-173"/>
-        <location line="+834"/>
+        <location line="+854"/>
         <source>Font</source>
         <translation>Fonte</translation>
     </message>
     <message>
-        <location line="-2026"/>
+        <location line="-2046"/>
         <source>Show line numbers</source>
         <translation>Exibir números de linha</translation>
     </message>
@@ -3662,12 +3711,12 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     </message>
     <message>
         <location line="+52"/>
-        <location line="+851"/>
+        <location line="+800"/>
         <source>Font size</source>
         <translation>Tamanho de fonte</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-677"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Focar no terminal quando executar comando a partir de outro painel</translation>
     </message>
@@ -3852,12 +3901,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Fundo</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Wrap long lines at curent window border</source>
-        <translation>Quebrar linhas longas na borda atual da janela</translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+53"/>
         <source>Indentation</source>
         <translation>Indentação</translation>
     </message>
@@ -4033,17 +4077,12 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Editor de Variáveis</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+53"/>
         <source>Default row height</source>
         <translation>Altura de linha padrão</translation>
     </message>
     <message>
         <location line="+17"/>
-        <source>20</source>
-        <translation>20</translation>
-    </message>
-    <message>
-        <location line="+7"/>
         <source>Default column width</source>
         <translation>Largura de coluna padrão</translation>
     </message>
@@ -4053,22 +4092,17 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Usar Fonte de Terminal</translation>
     </message>
     <message>
-        <location line="+27"/>
-        <source>2</source>
-        <translation>2</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+26"/>
         <source>Autofit</source>
         <translation>Auto ajustar</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-63"/>
         <source>Plus font height</source>
         <translation>Altura da fonte adicional</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+77"/>
         <source>By Column</source>
         <translation>Por Coluna</translation>
     </message>
@@ -4078,7 +4112,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Uniforme</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+40"/>
         <source>Variable Editor Colors</source>
         <translation>Cores do Editor de Variáveis</translation>
     </message>
@@ -4088,7 +4122,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Usar cores de linha alternadas</translation>
     </message>
     <message>
-        <location line="-287"/>
+        <location line="-290"/>
         <source>HttpProxy</source>
         <translation>Proxy HTTP</translation>
     </message>
@@ -4173,7 +4207,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
         <translation>Senha:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+125"/>
+        <location filename="../src/settings-dialog.cc" line="+127"/>
         <source>Octave Settings</source>
         <translation>Configurações do Octave</translation>
     </message>

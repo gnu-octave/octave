@@ -430,14 +430,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+75"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Documentación de Octave</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -453,7 +453,29 @@ para el visor de documentación. Solo los textos
 de ayuda estarán disponibles en el widget de la consola.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Contenido</translation>
     </message>
@@ -474,7 +496,7 @@ de ayuda estarán disponibles en el widget de la consola.</translation>
         <translation>Índice</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3077,22 +3099,22 @@ ya se utiliza para la acción
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importar accesos directos de archivo...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Archivo de acceso directo de Octave (*.osc);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Exportar accesos directos al archivo...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>No se ha podido abrir %1 como archivo de accesos directos de Octave</translation>
     </message>
@@ -3178,7 +3200,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+791"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Editor de variables</translation>
     </message>
@@ -3188,7 +3210,32 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Editar variables.</translation>
     </message>
     <message>
-        <location line="+476"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Segundo plano</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barra de herramientas de editor de variables</translation>
     </message>
@@ -3273,7 +3320,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1176"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Guardar variable %1 como</translation>
     </message>

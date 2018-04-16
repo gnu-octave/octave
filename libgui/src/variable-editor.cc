@@ -989,7 +989,8 @@ namespace octave
       m_sel_font (),
       m_table_colors (),
       m_current_focus_vname (""),
-      m_hovered_focus_vname ("")
+      m_hovered_focus_vname (""),
+      m_variable_focus_widget (nullptr)
   {
     setObjectName ("VariableEditor");
     set_title (tr ("Variable Editor"));
@@ -1037,10 +1038,20 @@ namespace octave
   {
     octave_dock_widget::focusInEvent (ev);
 
-    // set focus to the current variable
+    // set focus to the current variable or most recent if still valid
     QWidget *fw = m_main->focusWidget ();
     if (fw != nullptr)
       fw->setFocus ();
+    else if (m_main->isAncestorOf (m_variable_focus_widget))
+      m_variable_focus_widget->setFocus ();
+  }
+
+  void variable_editor::focusOutEvent (QFocusEvent *ev)
+  {
+    // focusWidget() appears lost in transition to/from main window
+    m_variable_focus_widget = m_main->focusWidget ();
+
+    octave_dock_widget::focusOutEvent (ev);
   }
 
   // Add an action to a menu or the widget itself.
@@ -1242,11 +1253,11 @@ namespace octave
   {
     QStringList output;
 
-    output << "Foreground";
-    output << "Background";
-    output << "Selected Foreground";
-    output << "Selected Background";
-    output << "Alternate Background";
+    output << tr("Foreground");
+    output << tr("Background");
+    output << tr("Selected Foreground");
+    output << tr("Selected Background");
+    output << tr("Alternate Background");
 
     return output;
   }

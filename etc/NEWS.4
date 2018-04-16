@@ -34,11 +34,12 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       glpk  Qhull
 
  ** The octave command no longer starts the GUI by default.  Most users
-    starting Octave from command line were expecting the command line
-    interface and Desktop launchers required the `--force-gui' option
-    anyway.  With this change, desktop launchers should change to use
-    the new option `--gui'.  The previous `--force-gui' will continue to
-    work and maps to `--gui' but will be removed in Octave 6.
+    starting Octave from a shell were expecting the command line
+    interface, and desktop launchers already required the `--force-gui'
+    option.  With this change, desktop launchers should be modified to
+    use the new option `--gui'.  The previous `--force-gui' option will
+    continue to work, and maps to `--gui', but it will be removed in
+    Octave 6.
 
  ** A known bug in Qt (https://bugreports.qt.io/browse/QTBUG-55357) is
     addressed by limiting GUI sub-panel relocation capabilities for Qt
@@ -297,8 +298,8 @@ Summary of important user-visible changes for version 4.4 (yyyy-mm-dd):
       isgraphics
       isstring
       mad
-      ode15i.m
-      ode15s.m
+      ode15i
+      ode15s
       openvar
       quad2d
       repelem

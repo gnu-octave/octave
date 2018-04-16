@@ -1,5 +1,5 @@
 ===========================================
-Icons taken from the Tango-Desktop-Project
+Icons based on the Tango-Desktop-Project
 ===========================================
 
 Tango-Desktop-Project:
@@ -13,7 +13,7 @@ License
 
 The Tango base icon theme is released to the Public Domain.
 
-Icons used for octave
+Icons used for Octave
 ===========================================
 
 applications-system.svg
@@ -32,6 +32,7 @@ edit-redo.svg
 edit-undo.svg
 folder.svg
 folder-new.svg
+go-down.svg
 go-first.svg
 go-last.svg
 go-up.svg
@@ -39,10 +40,8 @@ preferences-system.svg
 user-home.svg
 view-refresh.svg
 
-
-
 ===========================================
-Icons created by the Octave developpers
+Icons created by the Octave developers
 with elements from the Tango theme
 ===========================================
 

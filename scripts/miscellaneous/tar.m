@@ -86,7 +86,10 @@ function filelist = tar (tarfile, files, rootdir = ".")
 endfunction
 
 
-%!xtest
+## FIXME: This test may fail if the tar command is not installed.  If this
+##        test fails, it might be better to change it into a testif with a
+##        runtime condition on the tar program.
+%!test
 %! ## test tar together with untar
 %! orig_dir = pwd ();
 %! unwind_protect

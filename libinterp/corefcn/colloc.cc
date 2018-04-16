@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <string>
 
 #include "CollocWt.h"
@@ -67,10 +68,11 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
     {
       std::string s = args(i).xstring_value ("colloc: optional arguments must be strings");
 
-      if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r')) || s == "right")
+      std::transform (s.begin (), s.end (), s.begin (), ::tolower);
+
+      if (s == "r" || s == "right")
         right = 1;
-      else if ((s.length () == 1 && (s[0] == 'L' || s[0] == 'l'))
-               || s == "left")
+      else if (s == "l" || s == "left")
         left = 1;
       else
         error (R"(colloc: string argument must be "left" or "right")");
@@ -78,7 +80,7 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 
   ntot += left + right;
   if (ntot < 1)
-    error ("colloc: the total number of roots must be positive");
+    error (R"("colloc: the total number of roots (N + "left" + "right") must be >= 1)");
 
   CollocWt wts (ncol, left, right);
 
@@ -89,3 +91,22 @@ Reference: @nospell{J. Villadsen}, @nospell{M. L. Michelsen},
 
   return ovl (r, A, B, q);
 }
+
+/*
+
+%!assert (colloc (1), 0.5)
+%!assert (colloc (1, "left"), [0; 0.5])
+%!assert (colloc (1, "right"), [0.5; 1])
+%!assert (colloc (1, "left", "right"), [0; 0.5; 1])
+
+## Test input validation
+%!error colloc ()
+%!error colloc (1,2,3,4)
+%!error <N must be a scalar> colloc (ones (2,2))
+%!error <N cannot be NaN> colloc (NaN)
+%!error <N must be positive> colloc (-1)
+%!error <optional arguments must be strings> colloc (1, 1)
+%!error <string argument must be "left" or "right"> colloc (1, "foobar")
+%!error <total number of roots .* must be .= 1> colloc (0)
+
+*/

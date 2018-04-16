@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<TS version="2.1" language="it_IT">
 <context>
     <name>QObject</name>
     <message>
@@ -122,6 +122,672 @@
     </message>
 </context>
 <context>
+    <name>QsciLexerBash</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Errore</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Parameter expansion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerBatch</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide command character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>External command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerCPP</name>
+    <message>
+        <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive IDL UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive pre-processor block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive unclosed string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C# verbatim string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaScript regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc style C++ comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive secondary keywords and identifiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive JavaDoc keyword error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive global classes and typedefs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Inactive C++ raw string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerDiff</name>
+    <message>
+        <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Position</source>
+        <translation type="unfinished">Posizione</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Removed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Added line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Changed line</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerMatlab</name>
+    <message>
+        <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciLexerPerl</name>
+    <message>
+        <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Errore</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Symbol table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Data section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (q)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>POD verbatim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Subroutine prototype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Format body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Regular expression (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Substitution (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backtick here document (interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qq, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qx, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Quoted string (qr, interpolated variable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsciScintilla</name>
+    <message>
+        <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Redo</source>
+        <translation type="unfinished">&amp;Ripeti</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished">&amp;Taglia</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished">Elimina</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Select All</source>
+        <translation type="unfinished">Seleziona tutto</translation>
+    </message>
+</context>
+<context>
     <name>QtHandles::Figure</name>
     <message>
         <location filename="../graphics/Figure.cc" line="+299"/>
@@ -239,17 +905,17 @@
     <message>
         <location line="+1"/>
         <source>Copy Link Address</source>
-        <translation>Copia l'indirizzo del collegamento</translation>
+        <translation>Copia l&apos;indirizzo del collegamento</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Send Email To...</source>
-        <translation>Manda un'email a...</translation>
+        <translation>Manda un&apos;email a...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Email Address</source>
-        <translation>Copia l'indirizzo email</translation>
+        <translation>Copia l&apos;indirizzo email</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -262,185 +928,154 @@
     <name>annotation_dialog</name>
     <message>
         <location filename="../graphics/annotation-dialog.ui" line="+17"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+465"/>
         <source>Annotation</source>
         <translation>Annotazione</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Text</source>
         <translation>Testo</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>String</source>
         <translation>Stringa</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Font</source>
         <translation>Carattere</translation>
     </message>
     <message>
         <location line="+42"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>bold</source>
         <translation>grassetto</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>b</source>
         <translatorcomment>See the comment on &apos;b&apos; in QObject.</translatorcomment>
         <translation>g</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>italic</source>
         <translation>corsivo</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>i</source>
         <translatorcomment>See the comment on &apos;b&apos; in QObject.</translatorcomment>
         <translation>c</translation>
     </message>
     <message>
         <location line="+428"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>color</source>
         <translation>colore</translation>
     </message>
     <message>
         <location line="+22"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+3"/>
         <source>Horz alignment</source>
         <translation>Allineamento orizzontale</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+3"/>
         <source>left</source>
         <translation>sinistra</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+29"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
-        <location line="+7"/>
         <source>middle</source>
         <translation>centro</translation>
     </message>
     <message>
         <location line="-24"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="-6"/>
         <source>right</source>
         <translation>destra</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Vert alignment</source>
         <translation>Allineamento verticale</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+3"/>
         <source>top</source>
         <translation>in alto</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>bottom</source>
         <translation>in basso</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Position</source>
         <translation>Posizione</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
         <location line="+20"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
         <location line="+20"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Width</source>
         <translation>Larghezza</translation>
     </message>
     <message>
         <location line="+17"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Height</source>
         <translation>Altezza</translation>
     </message>
     <message>
         <location line="+17"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>units</source>
         <translation>unità</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+3"/>
         <source>normalized</source>
         <translation>normalizzato</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Fit to box</source>
         <translation>Adatta al riquadro</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Box</source>
         <translation>Riquadro</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+1"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
     <message>
         <location line="+444"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Edge</source>
         <translation>Bordo</translation>
     </message>
     <message>
         <location line="+133"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Line style</source>
         <translation>Stile linea</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+3"/>
         <source>none</source>
         <translation>nessuno</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location filename="../graphics/ui-annotation-dialog.h" line="+2"/>
         <source>Line width</source>
         <translation>Ampiezza linea</translation>
     </message>
@@ -456,14 +1091,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+75"/>
+        <location filename="../src/documentation.cc" line="+78"/>
         <location line="+10"/>
-        <location line="+211"/>
+        <location line="+317"/>
         <source>Octave Documentation</source>
         <translation>Documentazione di Octave</translation>
     </message>
     <message>
-        <location line="-220"/>
+        <location line="-326"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -481,7 +1116,29 @@ documentazione. Soltanto il testo di
 aiuto nel terminale sarà disponibile.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+16"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+1"/>
+        <source>Search forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1"/>
+        <source>Search backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Escape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Contents</source>
         <translation>Contenuti</translation>
     </message>
@@ -502,7 +1159,7 @@ aiuto nel terminale sarà disponibile.</translation>
         <translation>Indice</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+203"/>
         <source>Unable to register help file %1.</source>
         <translation>Impossibile registrare il file di aiuto %1.</translation>
     </message>
@@ -773,7 +1430,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation>&amp;Deindenta rigidamente selezione</translation>
+        <translation>D&amp;eindenta rigidamente selezione</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -828,7 +1485,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation>Attiva/disattiva &amp;segnalibro</translation>
+        <translation>Attiva/&amp;disattiva segnalibro</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -843,7 +1500,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation>Preferenze di &amp;stile...</translation>
+        <translation>P&amp;referenze di stile...</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -958,7 +1615,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Help on Keyword</source>
-        <translation>&amp;Aiuto su parola chiave</translation>
+        <translation>&amp;Aiuto sulla parola chiave</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1478,7 +2135,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Re&amp;place with:</source>
-        <translation>Sos&amp;tituisci con:</translation>
+        <translation>Sostit&amp;uisci con:</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1498,7 +2155,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>&amp;Find Next</source>
-        <translation>&amp;Trova successivo</translation>
+        <translation>Trova su&amp;ccessivo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1508,7 +2165,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation>Sos&amp;tituisci</translation>
+        <translation>&amp;Sostituisci</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1782,7 +2439,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+5"/>
         <source>Command History</source>
-        <translation>Cronologia dei comandi</translation> <!---->
+        <translation>Cronologia dei comandi</translation>
     </message>
 </context>
 <context>
@@ -2018,7 +2675,7 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation>Pulisci lo spazio di lavoro</translation>
+        <translation>Svuota lo spazio di lavoro</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2564,7 +3221,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
         <location line="+1"/>
         <location line="+162"/>
         <source>Preferences</source>
-        <translation>Preferenze</translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="-159"/>
@@ -3028,7 +3685,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     <message>
         <location line="+4"/>
         <source>Help on Keyword</source>
-        <translation>Aiuto su parola chiave</translation>
+        <translation>Aiuto sulla parola chiave</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3091,22 +3748,22 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     </message>
     <message>
         <location line="+68"/>
-        <source>Import shortcuts from file...</source>
-        <translation>Importa scorciatoie da file...</translation>
+        <source>Import shortcuts from file ...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+5"/>
+        <source>Export shortcuts into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>File di scorciatoie di Octave (*.osc);;Tutti i file (*)</translation>
     </message>
     <message>
-        <location line="-1"/>
-        <source>Export shortcuts into file...</source>
-        <translation>Esporta scorciatoie su file...</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Failed to open %1 as octave shortcut file</source>
         <translation>Impossibile aprire %1 come file di scorciatoie di Octave</translation>
     </message>
@@ -3192,7 +3849,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+791"/>
+        <location line="+792"/>
         <source>Variable Editor</source>
         <translation>Editor di variabili</translation>
     </message>
@@ -3202,7 +3859,32 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
         <translation>Modifica variabili.</translation>
     </message>
     <message>
-        <location line="+476"/>
+        <location line="+259"/>
+        <source>Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Background</source>
+        <translation type="unfinished">Sfondo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Foreground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alternate Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+255"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barra degli strumenti editor di variabili</translation>
     </message>
@@ -3287,7 +3969,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1176"/>
+        <location line="-1219"/>
         <source>Save Variable %1 As</source>
         <translation>Salva la variabile %1 come</translation>
     </message>
@@ -3507,847 +4189,700 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2058"/>
         <source>Settings</source>
         <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="+19"/>
         <location line="+478"/>
-        <location filename="../src/ui-settings-dialog.h" line="+26"/>
-        <location line="+1"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
         <location line="-186"/>
-        <location filename="../src/ui-settings-dialog.h" line="-12"/>
         <source>Octave logo only</source>
         <translation>Logo di Octave solamente</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Letter icons</source>
         <translation>Icone testuali</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Graphic icons</source>
         <translation>Icone grafiche</translation>
     </message>
     <message>
         <location line="-29"/>
-        <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Dock widget title bar</source>
-        <translation>Barra del titolo del lanciatore di widget</translation>
+        <translation>Barra del titolo degli widget</translation>
     </message>
     <message>
         <location line="-176"/>
-        <location filename="../src/ui-settings-dialog.h" line="-8"/>
         <source>Confirm before exiting</source>
-        <translation>Conferma prima di uscire</translation>
+        <translation>Chiedi conferma prima di uscire</translation>
     </message>
     <message>
         <location line="+95"/>
-        <location filename="../src/ui-settings-dialog.h" line="+5"/>
         <source>Custom style</source>
         <translation>Stile personalizzato</translation>
     </message>
     <message>
         <location line="+139"/>
         <location line="+280"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
-        <location line="+13"/>
         <source>Show status bar</source>
         <translation>Mostra barra di stato</translation>
     </message>
     <message>
         <location line="-458"/>
-        <location filename="../src/ui-settings-dialog.h" line="-23"/>
         <source>Text inactive</source>
         <translation>Testo inattivo</translation>
     </message>
     <message>
         <location line="-32"/>
         <location line="+45"/>
-        <location filename="../src/ui-settings-dialog.h" line="-1"/>
-        <location line="+2"/>
         <source>Active</source>
         <translation>Attiva</translation>
     </message>
     <message>
         <location line="-135"/>
-        <location filename="../src/ui-settings-dialog.h" line="-7"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
         <location line="+174"/>
-        <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>Background inactive</source>
         <translation>Sfondo inattivo</translation>
     </message>
     <message>
         <location line="+157"/>
-        <location filename="../src/ui-settings-dialog.h" line="+10"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
         <translation>Queste preferenze vengono applicate dopo tutti i file di avvio .octaverc.</translation>
     </message>
     <message>
         <location line="+55"/>
-        <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Restore working directory of previous session</source>
         <translation>Ripristina la cartella di lavoro della sessione precedente</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/ui-settings-dialog.h" line="+82"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
         <location line="+314"/>
-        <location filename="../src/ui-settings-dialog.h" line="-68"/>
         <source>Color</source>
         <translation>Colore</translation>
     </message>
     <message>
         <location line="+215"/>
         <location line="+140"/>
-        <location filename="../src/ui-settings-dialog.h" line="+12"/>
-        <location line="+9"/>
         <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
         <translation>Questa impostazione è adatta a caratteri monospaced. La linea è posta in una posizione basata sulla larghezza di uno spazio bianco del tipo di carattere predefinito. Può non funzionare bene se gli stili usano caratteri proporzionali o se diverse dimensioni di carattere, grassetto o corsivo sono utilizzati.</translation>
     </message>
     <message>
         <location line="-463"/>
-        <location filename="../src/ui-settings-dialog.h" line="-25"/>
         <source>Enable Code Folding</source>
         <translation>Attiva espansione del codice</translation>
     </message>
     <message>
         <location line="+961"/>
-        <location filename="../src/ui-settings-dialog.h" line="+66"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Mac (CR)</source>
         <translation>Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Unix (LF)</source>
         <translation>Unix (LF)</translation>
     </message>
     <message>
         <location line="-936"/>
-        <location filename="../src/ui-settings-dialog.h" line="-66"/>
         <source>Show horizontal scroll bar</source>
         <translation>Mostra barra di scorrimento orizzontale</translation>
     </message>
     <message>
         <location line="+431"/>
-        <location filename="../src/ui-settings-dialog.h" line="+25"/>
         <source>Wrap long lines at current window border</source>
-        <translation>Spezza righe lunghe al marigne della finsetra corrente</translation>
+        <translation>Spezza righe lunghe al margine della finestra corrente</translation>
     </message>
     <message>
         <location line="+55"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Indent width</source>
         <translation>Ampiezza indentazione</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Tab indents line</source>
         <translation>Tab indenta la riga</translation>
     </message>
     <message>
         <location line="+20"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Auto indentation</source>
         <translation>Indentazione automatica</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Tab width</source>
         <translation>Ampiezza tabulazione</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show indentation guides</source>
         <translation>Mostra guide per l&apos;indentazione</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Backspace unindents line</source>
         <translation>Backspace rimuove l&apos;indentazione</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Indentation uses tabs</source>
         <translation>Indenta con tabulazioni</translation>
     </message>
     <message>
         <location line="+70"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Auto completion</source>
         <translation>Completamento automatico</translation>
     </message>
     <message>
         <location line="+27"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Match keywords</source>
         <translation>Abbina parole chiave</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Case sensitive</source>
         <translation>Distinzione maiuscole/minuscole</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Replace word by suggested one</source>
         <translation>Sostituisci parola con quella suggerita</translation>
     </message>
     <message>
         <location line="-10"/>
-        <location filename="../src/ui-settings-dialog.h" line="-1"/>
         <source>Match words in document</source>
         <translation>Abbina parole nel documento</translation>
     </message>
     <message>
         <location line="-540"/>
-        <location filename="../src/ui-settings-dialog.h" line="-38"/>
         <source>Use custom file editor</source>
         <translation>Utilizza editor personalizzato</translation>
     </message>
     <message>
         <location line="+868"/>
-        <location filename="../src/ui-settings-dialog.h" line="+66"/>
         <source>Editor Styles</source>
         <translation>Stili dell&apos;editor</translation>
     </message>
     <message>
         <location line="+280"/>
-        <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>Terminal Colors</source>
         <translation>Colori del terminale</translation>
     </message>
     <message>
         <location line="-173"/>
         <location line="+854"/>
-        <location filename="../src/ui-settings-dialog.h" line="-6"/>
-        <location line="+57"/>
         <source>Font</source>
         <translation>Carattere</translation>
     </message>
     <message>
         <location line="-2046"/>
-        <location filename="../src/ui-settings-dialog.h" line="-136"/>
         <source>Show line numbers</source>
         <translation>Mostra numeri di riga</translation>
     </message>
     <message>
         <location line="+150"/>
-        <location filename="../src/ui-settings-dialog.h" line="+7"/>
         <source>Highlight current line</source>
         <translation>Evidenzia la riga corrente</translation>
     </message>
     <message>
         <location line="-137"/>
-        <location filename="../src/ui-settings-dialog.h" line="-6"/>
         <source>Show whitespace</source>
         <translation>Mostra spazi</translation>
     </message>
     <message>
         <location line="-45"/>
-        <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Do not show whitespace used for indentation</source>
         <translation>Non mostrare gli spazi utilizzati per l&apos;indentazione</translation>
     </message>
     <message>
         <location line="+215"/>
-        <location filename="../src/ui-settings-dialog.h" line="+10"/>
         <source>Show EOL characters</source>
         <translation>Mostra carattere di fine riga</translation>
     </message>
     <message>
         <location line="+784"/>
-        <location filename="../src/ui-settings-dialog.h" line="+57"/>
         <source>Default EOL mode</source>
         <translation>Modalità di default per i caratteri di fine riga</translation>
     </message>
     <message>
         <location line="-136"/>
-        <location filename="../src/ui-settings-dialog.h" line="-13"/>
         <source>Number of characters before list is shown: </source>
         <translation>Numero di caratteri prima che la lista sia mostrata: </translation>
     </message>
     <message>
         <location line="+124"/>
-        <location filename="../src/ui-settings-dialog.h" line="+12"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crea file inesistenti senza chiedere conferma</translation>
     </message>
     <message>
         <location line="-728"/>
-        <location filename="../src/ui-settings-dialog.h" line="-53"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>linea di comando (%f=file, %l=riga):</translation>
     </message>
     <message>
         <location line="+907"/>
-        <location filename="../src/ui-settings-dialog.h" line="+75"/>
         <source>Terminal</source>
         <translation>Terminale</translation>
     </message>
     <message>
         <location line="+44"/>
-        <location filename="../src/ui-settings-dialog.h" line="-8"/>
         <source>Cursor type:</source>
         <translation>Tipo di cursore:</translation>
     </message>
     <message>
         <location line="-1467"/>
-        <location filename="../src/ui-settings-dialog.h" line="-91"/>
         <source>Cursor blinking</source>
         <translation>Cursore lampeggiante</translation>
     </message>
     <message>
         <location line="+1456"/>
-        <location filename="../src/ui-settings-dialog.h" line="+90"/>
         <source>Use foreground color</source>
         <translation>Usa colore di primo piano</translation>
     </message>
     <message>
         <location line="+52"/>
         <location line="+800"/>
-        <location filename="../src/ui-settings-dialog.h" line="+3"/>
-        <location line="+53"/>
         <source>Font size</source>
         <translation>Dimensione carattere</translation>
     </message>
     <message>
         <location line="-677"/>
-        <location filename="../src/ui-settings-dialog.h" line="-50"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Rendi il terminale la finestra attiva quando un comando è eseguito da un altro widget</translation>
     </message>
     <message>
         <location line="+73"/>
-        <location filename="../src/ui-settings-dialog.h" line="+11"/>
         <source>File Browser</source>
         <translation>Gestore dei file</translation>
     </message>
     <message>
         <location line="-2031"/>
-        <location filename="../src/ui-settings-dialog.h" line="-126"/>
         <source>Interface</source>
         <translation>Interfaccia</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Small</source>
         <translation>Piccola</translation>
     </message>
     <message>
         <location line="+17"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Large</source>
         <translation>Grande</translation>
     </message>
     <message>
         <location line="+183"/>
-        <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
     <message>
         <location line="+132"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Octave Startup</source>
         <translation>Avvio di Octave</translation>
     </message>
     <message>
         <location line="+41"/>
         <location line="+1732"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
-        <location line="+101"/>
         <source>Startup path</source>
         <translation>Percorso di avvio</translation>
     </message>
     <message>
         <location line="-1719"/>
         <location line="+1712"/>
-        <location filename="../src/ui-settings-dialog.h" line="-100"/>
-        <location line="+99"/>
         <source>Browse</source>
         <translation>Naviga</translation>
     </message>
     <message>
         <location line="-1450"/>
-        <location filename="../src/ui-settings-dialog.h" line="-87"/>
         <source>Show tool bar</source>
         <translation>Mostra barra degli strumenti</translation>
     </message>
     <message>
         <location line="-185"/>
-        <location filename="../src/ui-settings-dialog.h" line="-8"/>
         <source>Tab width min.</source>
         <translation>Ampiezza tabulazione min.</translation>
     </message>
     <message>
         <location line="+70"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>max.</source>
         <translation>max.</translation>
     </message>
     <message>
         <location line="+15"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Show complete path in title</source>
         <translation>Mostra percorso file nel titolo</translation>
     </message>
     <message>
         <location line="+131"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Number size as difference to editor font</source>
         <translation>Numera dimensione come differenza rispetto al carattere dell&apos;editor</translation>
     </message>
     <message>
         <location line="+124"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Highlight all occurrences of a word selected by a double click</source>
         <translation>Evidenzia tutte le occorrenze di una parola selezionata con doppio click</translation>
     </message>
     <message>
         <location line="+65"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Comments (Octave)</source>
         <translation>Commenti (Octave)</translation>
     </message>
     <message>
         <location line="+11"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Strings considered for uncommenting text</source>
         <translation>Stringhe considerate per decommentare il testo</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>String used for commenting selected text</source>
         <translation>Stringa utilizzata per commentare il testo selezionato</translation>
     </message>
     <message>
         <location line="+31"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Long lines</source>
         <translation>Righe lunghe</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Break long lines at line length</source>
         <translation>Spezza righe lunghe alla lunghezza di riga</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Break lines only in comments</source>
         <translation>Spezza righe soltanto nei commenti</translation>
     </message>
     <message>
         <location line="+60"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Line length</source>
         <translation>Lunghezza riga</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Long line marker</source>
         <translation>Marcatore di riga lunga</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Line</source>
         <translation>Riga</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
     <message>
         <location line="+53"/>
-        <location filename="../src/ui-settings-dialog.h" line="+5"/>
         <source>Indentation</source>
         <translation>Indentazione</translation>
     </message>
     <message>
         <location line="+138"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
         <translation>Inserimento automatico dopo &quot;if&quot; etc.</translation>
     </message>
     <message>
         <location line="+20"/>
-        <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Nothing</source>
         <translation>Nulla</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>&quot;endif&quot; etc.</source>
         <translation>&quot;endif&quot; etc.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>&quot;end&quot;</source>
         <translation>&quot;end&quot;</translation>
     </message>
     <message>
         <location line="+130"/>
-        <location filename="../src/ui-settings-dialog.h" line="+7"/>
         <source>With Octave builtins</source>
         <translation>Con comandi built-in di Octave</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>With Octave functions</source>
         <translation>Con funzioni di Octave</translation>
     </message>
     <message>
         <location line="+64"/>
-        <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>Show completion list automatically</source>
         <translation>Mostra lista di completamento automaticamente</translation>
     </message>
     <message>
         <location line="+31"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>File handling</source>
         <translation>Gestione file</translation>
     </message>
     <message>
         <location line="+19"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Reload externally changed files without prompt</source>
         <translation>Ricarica file modificati esternamente senza chiedere</translation>
     </message>
     <message>
         <location line="+13"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Restore editor tabs from previous session on startup or when editor is shown again after closing</source>
         <translation>Ripristina schede della sessione precedente all&apos;avvio o quando l&apos;editor è riaperto dopo essere stato chiuso</translation>
     </message>
     <message>
         <location line="+80"/>
-        <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>Text encoding used for loading and saving</source>
         <translation>Codifica testuale usata per caricare e salvare</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Close all files when the editor widget is closed/hidden</source>
         <translation>Chiudi tutti i file quando l&apos;editor è chiuso/nascosto</translation>
     </message>
     <message>
         <location line="+55"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleziona carattere, dimensione carattere (come differenza dispetto alla dimensione predefinita), stile di carattere (&lt;b&gt;g&lt;/b&gt;rassetto, &lt;b&gt;c&lt;/b&gt;orsivo, &lt;b&gt;s&lt;/b&gt;ottolineato), colore del testo, e colore dello sfondo (per quest&apos;ultimo, il colore magenta (255,0,255) indica il colore di default per lo sfondo).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+185"/>
-        <location filename="../src/ui-settings-dialog.h" line="+6"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(Il cambio della dimensione della lista svuota lo storico comandi)</translation>
     </message>
     <message>
         <location line="+28"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>History buffer Size</source>
         <translation>Dimensione storico comandi</translation>
     </message>
     <message>
         <location line="+34"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Print debug location in terminal window in addition to the marker in the editor</source>
         <translation>Stampa la posizione di debug nella finestra del terminale oltre al marcatore nell&apos;editor</translation>
     </message>
     <message>
         <location line="+87"/>
-        <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Behavior</source>
         <translation>Comportamento</translation>
     </message>
     <message>
         <location line="+30"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Restore last directory of previous session</source>
         <translation>Ripristina l&apos;ultima cartella della sessione precedente</translation>
     </message>
     <message>
         <location line="+54"/>
-        <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
         <translation>Estensioni dei file da aprire nell&apos;editor di testo di default (separate da &quot;;&quot;):</translation>
     </message>
     <message>
         <location line="+39"/>
-        <location filename="../src/ui-settings-dialog.h" line="+5"/>
         <source>Workspace</source>
         <translation>Spazio di lavoro</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location filename="../src/ui-settings-dialog.h" line="-2"/>
         <source>Colors for variable attributes</source>
         <translation>Colori per gli attributi delle variabili</translation>
     </message>
     <message>
         <location line="+7"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Hide tool tips</source>
         <translation>Nascondi suggerimenti</translation>
     </message>
     <message>
         <location line="+101"/>
-        <location filename="../src/ui-settings-dialog.h" line="+7"/>
         <source>Import shortcut set</source>
         <translation>Importa scorciatoie</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Export current shortcut set</source>
         <translation>Esporta le attuali scorciatoie</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Reset shortcuts to their defaults</source>
         <translation>Reimposta le scorciatoie ai valori predefiniti</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+80"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
-        <location line="+4"/>
         <source>Default</source>
         <translation>Default</translation>
     </message>
     <message>
         <location line="-71"/>
-        <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Edit a shortcut by double-clicking in a cell</source>
         <translation>Modifica una scorciatoia facendo doppio click in una cella</translation>
     </message>
     <message>
         <location line="+76"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Actual</source>
         <translation>Attuale</translation>
     </message>
     <message>
         <location line="+17"/>
-        <location filename="../src/ui-settings-dialog.h" line="+16"/>
         <source>Network</source>
         <translation>Rete</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location filename="../src/ui-settings-dialog.h" line="-12"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
         <translation>Permetti all&apos;applicazione di connettersi al sito web di Octave per mostrare notizie ed informazioni aggiornate</translation>
     </message>
     <message>
         <location line="+46"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Use proxy server</source>
         <translation>Usa server proxy</translation>
     </message>
     <message>
         <location line="+90"/>
-        <location filename="../src/ui-settings-dialog.h" line="+19"/>
         <source>Variable Editor</source>
         <translation>Editor di variabili</translation>
     </message>
     <message>
         <location line="+53"/>
-        <location filename="../src/ui-settings-dialog.h" line="-12"/>
         <source>Default row height</source>
         <translation>Altezza di default riga</translation>
     </message>
     <message>
         <location line="+17"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Default column width</source>
         <translation>Larghezza di default colonna</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Use Terminal Font</source>
         <translation>Usa set di caratteri del terminale</translation>
     </message>
     <message>
         <location line="+26"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Autofit</source>
         <translation>Adatta automaticamente</translation>
     </message>
     <message>
         <location line="-63"/>
-        <location filename="../src/ui-settings-dialog.h" line="-5"/>
         <source>Plus font height</source>
-        <translation>Più altezza del carattere</translation>
+        <translation>Oltre all&apos;altezza del carattere</translation>
     </message>
     <message>
         <location line="+77"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>By Column</source>
         <translation>Per colonna</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Uniform</source>
         <translation>Uniforme</translation>
     </message>
     <message>
         <location line="+40"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Variable Editor Colors</source>
         <translation>Colori dell&apos;editor di variabli</translation>
     </message>
     <message>
         <location line="+12"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Use alternating row colors</source>
         <translation>Usa colori alternati per le righe</translation>
     </message>
     <message>
         <location line="-290"/>
-        <location filename="../src/ui-settings-dialog.h" line="-22"/>
         <source>HttpProxy</source>
         <translation>HttpProxy</translation>
     </message>
     <message>
         <location line="-2179"/>
-        <location filename="../src/ui-settings-dialog.h" line="-139"/>
         <source>Icon set for dock widgets</source>
-        <translation>Icone per il lanciatore di widget</translation>
+        <translation>Set di icone per gli widget</translation>
     </message>
     <message>
         <location line="-220"/>
-        <location filename="../src/ui-settings-dialog.h" line="-11"/>
         <source>Language (requires restart)</source>
         <translation>Lingua (cambiarla richiede riavvio)</translation>
     </message>
     <message>
         <location line="-17"/>
-        <location filename="../src/ui-settings-dialog.h" line="-2"/>
         <source>Icon size</source>
         <translation>Dimensione icona</translation>
     </message>
     <message>
         <location line="+1987"/>
-        <location filename="../src/ui-settings-dialog.h" line="+116"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Sincronizza la cartella di lavoro di Octave con il gestore dei file</translation>
     </message>
     <message>
         <location line="+184"/>
-        <location filename="../src/ui-settings-dialog.h" line="+31"/>
         <source>Shortcuts</source>
         <translation>Scorciatoie</translation>
     </message>
     <message>
         <location line="+31"/>
-        <location filename="../src/ui-settings-dialog.h" line="-20"/>
         <source>Select this option to prevent conflicts with readline shortcuts</source>
         <translation>Seleziona questa opzione per evitrare conflitti con le scorciatoie di readline</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Disable global shortcuts when terminal window has focus</source>
         <translation>Disabilita le scorciatoie globali quando il terminale è selezionato</translation>
     </message>
     <message>
         <location line="+53"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Export</source>
         <translation>Esporta</translation>
     </message>
     <message>
         <location line="-10"/>
-        <location filename="../src/ui-settings-dialog.h" line="-4"/>
         <source>Import</source>
         <translation>Importa</translation>
     </message>
     <message>
         <location line="+90"/>
-        <location filename="../src/ui-settings-dialog.h" line="+13"/>
         <source>Action</source>
         <translation>Azione</translation>
     </message>
     <message>
         <location line="+83"/>
-        <location filename="../src/ui-settings-dialog.h" line="+7"/>
         <source>Socks5Proxy</source>
         <translation>Socks5Proxy</translation>
     </message>
     <message>
         <location line="-16"/>
-        <location filename="../src/ui-settings-dialog.h" line="-4"/>
         <source>Hostname:</source>
         <translation>Nome host:</translation>
     </message>
     <message>
         <location line="+44"/>
-        <location filename="../src/ui-settings-dialog.h" line="+8"/>
         <source>Proxy type:</source>
         <translation>Tipo di proxy:</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../src/ui-settings-dialog.h" line="+1"/>
         <source>Port:</source>
         <translation>Porta:</translation>
     </message>
     <message>
         <location line="-27"/>
-        <location filename="../src/ui-settings-dialog.h" line="-3"/>
         <source>Username:</source>
         <translation>Nome utente:</translation>
     </message>
     <message>
         <location line="+37"/>
-        <location filename="../src/ui-settings-dialog.h" line="+4"/>
         <source>Password:</source>
         <translation>Password:</translation>
     </message>

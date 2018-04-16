@@ -5906,14 +5906,12 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
 {
   int nargin = args.length ();
 
-  if (nargin == 0)
+  if (nargin < 2)
     print_usage ();
 
   octave_value retval;
 
-  if (nargin == 1)
-    retval = args(0);
-  else if (nargin == 2)
+  if (nargin == 2)
     retval = do_binary_op (op, args(0), args(1));
   else
     {
@@ -5946,6 +5944,17 @@ At least one argument is required.
   return binary_assoc_op_defun_body (octave_value::op_add,
                                      octave_value::op_add_eq, args);
 }
+
+/*
+%!assert (plus (1,1), 2)
+%!assert (plus (1:3, 1), 2:4)
+%!assert (plus (1:3, 1, 3), 5:7)
+%!assert (plus (1,2,3,4,5,6,7,8,9), sum (1:9))
+
+## Test input validation for all functions which use binary_assoc_op_defun_body
+%!error plus ()
+%!error plus (1)
+*/
 
 DEFUN (minus, args, ,
        doc: /* -*- texinfo -*-

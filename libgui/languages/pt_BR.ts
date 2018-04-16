@@ -431,7 +431,9 @@
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível copiar a coleção de ajuda para um arquivo 
+temporário. A funcionalidade de busca pode estar afetada.
+%1</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -445,24 +447,24 @@ na Janela de Comandos estarão disponíveis.</translation>
     <message>
         <location line="+16"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar adiante</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar para trás</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -488,7 +490,7 @@ na Janela de Comandos estarão disponíveis.</translation>
     <message>
         <location line="+203"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível registrar o arquivo de ajuda %1.</translation>
     </message>
 </context>
 <context>
@@ -766,7 +768,7 @@ para escrita: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Converter Finais de Linha para &amp;Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1113,7 +1115,10 @@ Você deseja escolher outro nome?</translation>
 can not be applied.
 
 Please select another one or cancel saving!</source>
-        <translation type="unfinished"></translation>
+        <translation>A codificação atual %1
+não pode ser aplicada.
+
+Favor selecionar outra ou cancelar o salvar!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1122,7 +1127,11 @@ with the selected encoding %1.
 Using it will result in data loss!
 
 Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
+        <translation>O conteúdo atual do editor não podem ser codificados
+com a forma de codificação selecionada %1.
+Usá-la resultará na perda de dados!
+
+Deseja escolher outra codificação?</translation>
     </message>
     <message>
         <location line="+85"/>
@@ -3069,12 +3078,12 @@ Você deseja usar a tecla de atalho mesmo assim, removendo-a da outra ação?</t
     <message>
         <location line="+68"/>
         <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar atalhos de arquivo...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar atalhos para arquivo...</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3181,27 +3190,27 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     <message>
         <location line="+259"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primeiro plano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Fundo</translation>
+        <translation>Fundo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primeiro Plano Selecionado</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fundo Selecionado</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fundo Alternativo</translation>
     </message>
     <message>
         <location line="+255"/>
@@ -3576,7 +3585,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     <message>
         <location line="+309"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>Quebrar linhas longas na borda da janela atual</translation>
     </message>
     <message>
         <location line="+475"/>
@@ -3968,7 +3977,7 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     <message>
         <location line="+80"/>
         <source>Text encoding used for loading and saving</source>
-        <translation>Codificação de texto utilizada para abrir e salvar</translation>
+        <translation>Codificação de texto utilizada para carregar e salvar</translation>
     </message>
     <message>
         <location line="+25"/>

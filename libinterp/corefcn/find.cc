@@ -446,7 +446,8 @@ b = sparse (i, j, v, sz(1), sz(2));
 
           dim_vector dv = result.dims ();
 
-          retval(0) = (dv.isvector () ? result : result.reshape (dv.as_column ()));
+          retval(0) = (dv.all_zero () || dv.isvector ()
+                       ? result : result.reshape (dv.as_column ()));
         }
       else
         {
@@ -584,6 +585,11 @@ b = sparse (i, j, v, sz(1), sz(2));
 %! assert (i, ifull);
 %! assert (j, jfull);
 %! assert (all (v == 1));
+
+%!assert <*53655> (find (false), zeros (0, 0))
+%!assert <*53655> (find ([false, false]), zeros (1, 0))
+%!assert <*53655> (find ([false; false]), zeros (0, 1))
+%!assert <*53655> (find ([false, false; false, false]), zeros (0, 1))
 
 %!assert (find ([2 0 1 0 5 0], 1), 1)
 %!assert (find ([2 0 1 0 5 0], 2, "last"), [3, 5])

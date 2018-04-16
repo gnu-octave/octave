@@ -452,24 +452,24 @@ Das Betrachten der Hilfe ist auf das Befehlsfenster beschränkt.</translation>
     <message>
         <location line="+16"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen nach:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Nächsten suchen</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorherigen suchen</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation>Escape</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3088,12 +3088,12 @@ Soll das Tastenkürzel trotzdem verwendet und damit von der vorgenannten Aktion 
     <message>
         <location line="+68"/>
         <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkürzel aus Datei importieren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkürzel in Datei exportieren...</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3200,27 +3200,27 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
     <message>
         <location line="+259"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Hintergrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählter Vordergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählter Hintergrund</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Abwechselnder Hintergrund</translation>
     </message>
     <message>
         <location line="+255"/>

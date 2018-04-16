@@ -3792,7 +3792,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <location line="+41"/>
         <location line="+1732"/>
         <source>Startup path</source>
-        <translation>Camí d&apos;inici</translation>>
+        <translation>Camí d&apos;inici</translation>
     </message>
     <message>
         <location line="-1719"/>

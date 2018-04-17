@@ -3853,6 +3853,15 @@ figure::properties::remove_child (const graphics_handle& h)
     }
 }
 
+octave_value
+figure::properties::get_number (void) const
+{
+  if (integerhandle.is_on ())
+    return __myhandle__.value ();
+  else
+    return Matrix ();
+}
+
 graphics_toolkit
 figure::properties::get_toolkit (void) const
 {

@@ -130,7 +130,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = figure ();
     s.properties = rmfield (s.properties, ...
                               {"currentaxes", "currentcharacter", ...
-                               "currentobject", "currentpoint"});
+                               "currentobject", "currentpoint", "number"});
   elseif (strcmp (s.type, "axes"))
     ## legends and colorbars are "transformed" in to normal axes
     ## if hilev is not requested

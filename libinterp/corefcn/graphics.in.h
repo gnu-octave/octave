@@ -3124,8 +3124,7 @@ public:
       callback_property keyreleasefcn , Matrix ()
       radio_property menubar , "{figure}|none"
       string_property name , ""
-      // FIXME: Need RO property which returns current figure number.
-      // double_property number r ,
+      array_property number rG , Matrix ()
       radio_property nextplot , "{add}|new|replace|replacechildren"
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)

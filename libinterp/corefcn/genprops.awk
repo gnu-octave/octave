@@ -137,7 +137,7 @@
 ##
 ##   f:  The property does not have any factory default value.
 ##
-## The 'o' and 'O' qualifiers are only useful when the the property type
+## The 'o' and 'O' qualifiers are only useful when the property type
 ## is something other than octave_value.
 
 ## simple accessor

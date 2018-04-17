@@ -123,12 +123,16 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = 0;
     s.properties = rmfield (s.properties, ...
                               {"callbackobject", "commandwindowsize", ...
+                               "monitorpositions", "pointerwindow", ...
                                "screendepth", "screenpixelsperinch", ...
                                "screensize"});
   elseif (strcmp (s.type, "figure"))
     h = figure ();
+    s.properties = rmfield (s.properties, ...
+                              {"currentaxes", "currentcharacter", ...
+                               "currentobject", "currentpoint"});
   elseif (strcmp (s.type, "axes"))
-    ## legends and colorbars are "transformed" in normal axes
+    ## legends and colorbars are "transformed" in to normal axes
     ## if hilev is not requested
     if (! hilev)
       if (strcmp (s.properties.tag, "legend"))
@@ -141,13 +145,14 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
         par = gcf;
       endif
     endif
-
+    s.properties = rmfield (s.properties, {"tightinset"});
     [h, s] = createaxes (s, p, par);
   elseif (strcmp (s.type, "line"))
     h = createline (s, par);
   elseif (strcmp (s.type, "patch"))
     [h, s] = createpatch (s, par);
   elseif (strcmp (s.type, "text"))
+    s.properties = rmfield (s.properties, "extent");
     h = createtext (s, par);
   elseif (strcmp (s.type, "image"))
     h = createimage (s, par);
@@ -579,8 +584,8 @@ function setprops (s, h, p, hilev)
       set (h, s.properties);
     else
       ## Specials are objects that where automatically constructed with
-      ## current object.  Among them are "x(yz)labels", "title", high
-      ## level hggroup children
+      ## current object.  Among them are "x(yz)labels", "title", and
+      ## high level hggroup children
       fields = fieldnames (s.properties);
       vals = struct2cell (s.properties);
       idx = find (cellfun (@(x) valcomp(x, hdls) , vals));
@@ -597,8 +602,14 @@ function setprops (s, h, p, hilev)
         field = fields{nf};
         idx = find (hdls == vals{nf});
         spec = specs(idx);
+        ## FIXME: Wouldn't it be better to call struct2hdl recursively
+        ##        for this handle?  That way the function could determine
+        ##        based on type what special actions to take.
+        try
+          spec.properties = rmfield (spec.properties, "extent");
+        end_try_catch
         if (isprop (h, field))
-          h2 = get (h , field);
+          h2 = get (h, field);
           addmissingprops (h2, spec.properties);
           set (h2, spec.properties);
         endif

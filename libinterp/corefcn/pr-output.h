@@ -58,7 +58,7 @@ template <typename T> class intNDArray;
 
 template <typename T>
 float_display_format
-make_format (const std::complex<T>& c)
+make_format (const std::complex<T>&)
 {
   return float_display_format ();
 }

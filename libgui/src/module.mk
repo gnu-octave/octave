@@ -176,7 +176,6 @@ noinst_HEADERS += \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
   %reldir%/tab-bar.h \
-  %reldir%/thread-manager.h \
   %reldir%/terminal-dock-widget.h \
   %reldir%/color-picker.h \
   %reldir%/welcome-wizard.h \
@@ -211,7 +210,6 @@ noinst_HEADERS += \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcut-manager.cc \
   %reldir%/tab-bar.cc \
-  %reldir%/thread-manager.cc \
   %reldir%/terminal-dock-widget.cc \
   %reldir%/color-picker.cc \
   %reldir%/welcome-wizard.cc \

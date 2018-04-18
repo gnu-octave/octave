@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "terminal-dock-widget.h"
 #include "resource-manager.h"
 
+#include "sighandlers.h"
+#include "quit.h"
+
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p)
@@ -103,6 +106,9 @@ namespace octave
 
   void terminal_dock_widget::terminal_interrupt (void)
   {
-    emit interrupt_signal ();
+    // FIXME: Protect with mutex?
+
+    octave_signal_caught = 1;
+    octave_interrupt_state++;
   }
 }

@@ -56,7 +56,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
-#include "thread-manager.h"
 #include "workspace-model.h"
 #include "workspace-view.h"
 
@@ -76,8 +75,6 @@ namespace octave
 
     ~octave_interpreter (void) = default;
 
-    void interrupt (void);
-
   signals:
 
     void octave_ready_signal (void);
@@ -90,8 +87,6 @@ namespace octave
     void execute (void);
 
   private:
-
-    thread_manager m_thread_manager;
 
     application *m_app_context;
   };
@@ -268,8 +263,6 @@ namespace octave
     void clipboard_has_changed (void);
     void clear_clipboard ();
     //!@}
-
-    void interrupt_interpreter (void);
 
     //! Returns a list of dock widgets.
 

@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
+#include "signal-wrappers.h"
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
@@ -54,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-gui.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "thread-manager.h"
 #include "welcome-wizard.h"
 
 // Disable all Qt messages by default.
@@ -84,7 +84,7 @@ namespace octave
 
   int gui_application::execute (void)
   {
-    thread_manager::block_interrupt_signal ();
+    octave_block_interrupt_signal ();
 
     set_application_id ();
 

@@ -88,13 +88,11 @@ create_default_editor (QWidget *p)
 namespace octave
 {
   octave_interpreter::octave_interpreter (application *app_context)
-    : QObject (), m_thread_manager (), m_app_context (app_context)
+    : QObject (), m_app_context (app_context)
   { }
 
   void octave_interpreter::execute (void)
   {
-    m_thread_manager.register_current_thread ();
-
     // The application context owns the interpreter.
 
     interpreter& interp = m_app_context->create_interpreter ();
@@ -141,11 +139,6 @@ namespace octave
     m_app_context->delete_interpreter ();
 
     emit octave_finished_signal (exit_status);
-  }
-
-  void octave_interpreter::interrupt (void)
-  {
-    m_thread_manager.interrupt ();
   }
 
   main_window::main_window (QWidget *p, gui_application *app_context)
@@ -1653,11 +1646,6 @@ namespace octave
     m_clipboard->clear (QClipboard::Clipboard);
   }
 
-  void main_window::interrupt_interpreter (void)
-  {
-    m_interpreter->interrupt ();
-  }
-
   void main_window::disable_menu_shortcuts (bool disable)
   {
     QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
@@ -1773,9 +1761,6 @@ namespace octave
 
         connect (m_variable_editor_window, SIGNAL (updated (void)),
                  this, SLOT (handle_variable_editor_update (void)));
-
-        connect (m_command_window, SIGNAL (interrupt_signal (void)),
-                 this, SLOT (interrupt_interpreter (void)));
 
         construct_menu_bar ();
 

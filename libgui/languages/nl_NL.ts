@@ -544,7 +544,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>global</source>
-        <translation>gobaal</translation>
+        <translation>globaal</translation>
     </message>
     <message>
         <location line="+1"/>

@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-env.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
 
@@ -322,6 +323,14 @@ namespace octave
         }
 
       init ("", "", std::cin, os);
+
+      std::string cainfo = sys::env::getenv ("CURLOPT_CAINFO");
+      if (! cainfo.empty ())
+        SETOPT (CURLOPT_CAINFO, cainfo.c_str ());
+
+      std::string capath = sys::env::getenv ("CURLOPT_CAPATH");
+      if (! capath.empty ())
+        SETOPT (CURLOPT_CAPATH, capath.c_str ());
 
       SETOPT (CURLOPT_NOBODY, 0);
 

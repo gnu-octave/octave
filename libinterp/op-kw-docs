@@ -650,14 +650,14 @@ endif
 @end example
 @seealso{switch}
 @end deftypefn
-## FIXME: Can't have duplicate DOCSTRING entries.  The function methods
-##        already has a docstring which overrides this keyword definition.
-#methods
-#@c libinterp/parse-tree/oct-parse.in.yy
-#-*- texinfo -*-
-#@deftypefn {} {} methods
-#Begin a methods block in a classdef definition.
-#@end deftypefn
+@c ## FIXME: Can't have duplicate DOCSTRING entries.  The function methods
+@c ##        already has a docstring which overrides this keyword definition.
+@c #methods
+@c #@c libinterp/parse-tree/oct-parse.in.yy
+@c #-*- texinfo -*-
+@c #@deftypefn {} {} methods
+@c #Begin a methods block in a classdef definition.
+@c #@end deftypefn
 otherwise
 @c libinterp/parse-tree/oct-parse.in.yy
 -*- texinfo -*-

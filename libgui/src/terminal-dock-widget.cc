@@ -27,11 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDesktopWidget>
 
-#include "terminal-dock-widget.h"
-#include "resource-manager.h"
+#include "quit.h"
+#include "signal-wrappers.h"
 
 #include "sighandlers.h"
-#include "quit.h"
+
+#include "terminal-dock-widget.h"
+#include "resource-manager.h"
 
 namespace octave
 {
@@ -110,5 +112,13 @@ namespace octave
 
     octave_signal_caught = 1;
     octave_interrupt_state++;
+
+    // Send SIGINT to all other processes in our process group.
+    // This is needed to interrupt calls to system (), for example.
+
+    int sigint;
+    octave_get_sig_number ("SIGINT", &sigint);
+
+    octave_kill_wrapper (0, sigint);
   }
 }

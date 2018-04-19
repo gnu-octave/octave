@@ -157,6 +157,66 @@ octave_lazy_index::is_sorted_rows (sortmode mode) const
   return index.as_array ().is_sorted_rows (mode);
 }
 
+octave_value
+octave_lazy_index::as_double (void) const
+{
+  return array_value ();
+}
+
+octave_value
+octave_lazy_index::as_single (void) const
+{
+  return float_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_int8 (void) const
+{
+  return int8_array_value  ();
+}
+
+octave_value
+octave_lazy_index::as_int16 (void) const
+{
+  return int16_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_int32 (void) const
+{
+  return int32_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_int64 (void) const
+{
+  return int64_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_uint8 (void) const
+{
+  return uint8_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_uint16 (void) const
+{
+  return uint16_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_uint32 (void) const
+{
+  return uint32_array_value ();
+}
+
+octave_value
+octave_lazy_index::as_uint64 (void) const
+{
+  return uint64_array_value ();
+}
+
 static const std::string value_save_tag ("index_value");
 
 bool octave_lazy_index::save_ascii (std::ostream& os)
@@ -197,3 +257,20 @@ bool octave_lazy_index::load_binary (std::istream& is, bool swap,
 
   return true;
 }
+
+/*
+%!shared x, y
+%! x = find ([-1, 0, -2, 1, 3, -4] < 0);
+%! y = [1, 3, 6];
+%!assert (typeinfo (x), "lazy_index")
+%!assert (double (x), y)
+%!assert (single (x), single (y))
+%!assert (int8 (x), int8 (y))
+%!assert (int16 (x), int16 (y))
+%!assert (int32 (x), int32 (y))
+%!assert (int64 (x), int64 (y))
+%!assert (uint8 (x), uint8 (y))
+%!assert (uint16 (x), uint16 (y))
+%!assert (uint32 (x), uint32 (y))
+%!assert (uint64 (x), uint64 (y))
+*/

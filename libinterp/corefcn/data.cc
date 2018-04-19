@@ -2858,9 +2858,11 @@ Sum of elements along dimension @var{dim}.
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.
 
 The optional @qcode{"type"} input determines the class of the variable
-used for calculations.  If the argument @qcode{"native"} is given, then
-the operation is performed in the same type as the original argument, rather
-than the default double type.
+used for calculations.  By default, operations on floating point inputs (double
+or single) are performed in their native data type, while operations on
+integer, logical, and character data types are performed using doubles.  If the
+argument @qcode{"native"} is given, then the operation is performed in the same
+type as the original argument.
 
 For example:
 
@@ -2873,13 +2875,13 @@ sum ([true, true], "native")
 @end group
 @end example
 
-On the contrary, if @qcode{"double"} is given, the sum is performed in
-double precision even for single precision inputs.
+If @qcode{"double"} is given the sum is performed in double precision even for
+single precision inputs.
 
 For double precision inputs, the @qcode{"extra"} option will use a more
 accurate algorithm than straightforward summation.  For single precision
-inputs, @qcode{"extra"} is the same as @qcode{"double"}.  Otherwise,
-@qcode{"extra"} has no effect.
+inputs, @qcode{"extra"} is the same as @qcode{"double"}.  For all other data
+type @qcode{"extra"} has no effect.
 @seealso{cumsum, sumsq, prod}
 @end deftypefn */)
 {

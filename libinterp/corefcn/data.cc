@@ -5937,7 +5937,6 @@ cumulatively from left to right:
 (@dots{}((@var{x1} + @var{x2}) + @var{x3}) + @dots{})
 @end example
 
-At least one argument is required.
 @seealso{minus, uplus}
 @end deftypefn */)
 {
@@ -5980,7 +5979,6 @@ cumulatively from left to right:
 (@dots{}((@var{x1} * @var{x2}) * @var{x3}) * @dots{})
 @end example
 
-At least one argument is required.
 @seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}
 @end deftypefn */)
 {
@@ -6102,7 +6100,6 @@ cumulatively from left to right:
 (@dots{}((@var{x1} .* @var{x2}) .* @var{x3}) .* @dots{})
 @end example
 
-At least one argument is required.
 @seealso{mtimes, rdivide}
 @end deftypefn */)
 {
@@ -6167,7 +6164,6 @@ logical AND is applied cumulatively from left to right:
 (@dots{}((@var{x1} & @var{x2}) & @var{x3}) & @dots{})
 @end example
 
-At least one argument is required.
 @seealso{or, not, xor}
 @end deftypefn */)
 {
@@ -6189,7 +6185,6 @@ logical OR is applied cumulatively from left to right:
 (@dots{}((@var{x1} | @var{x2}) | @var{x3}) | @dots{})
 @end example
 
-At least one argument is required.
 @seealso{and, not, xor}
 @end deftypefn */)
 {

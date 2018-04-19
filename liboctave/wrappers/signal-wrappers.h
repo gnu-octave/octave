@@ -76,6 +76,14 @@ extern void octave_save_signal_mask (void);
 
 extern void octave_restore_signal_mask (void);
 
+extern void * octave_alloc_signal_mask (void);
+
+extern void octave_free_signal_mask (void *mask);
+
+extern void octave_get_signal_mask (void *mask);
+
+extern void octave_set_signal_mask (void *mask);
+
 extern void octave_block_async_signals (void);
 
 extern void octave_unblock_async_signals (void);

@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 #include "oct-syscalls.h"
+#include "signal-wrappers.h"
 #include "str-vec.h"
 #include "wait-for-input.h"
 
@@ -149,6 +150,28 @@ run_command_and_return_output (const std::string& cmd_str)
   return retval;
 }
 
+// Combine alloc+get in one action.
+
+static void *
+get_signal_mask (void)
+{
+  void *mask = octave_alloc_signal_mask ();
+
+  octave_get_signal_mask (mask);
+
+  return mask;
+}
+
+// Combine set+free in one action.
+
+static void
+restore_signal_mask (void *mask)
+{
+  octave_set_signal_mask (mask);
+
+  octave_free_signal_mask (mask);
+}
+
 enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
@@ -232,9 +255,6 @@ systems.
 
   octave_value_list retval;
 
-  // FIXME: Is this unwind_protect frame needed anymore (12/16/15)?
-  octave::unwind_protect frame;
-
   bool return_output = (nargin == 1 && nargout > 1);
 
   if (nargin > 1)
@@ -259,6 +279,12 @@ systems.
   if (type == et_sync)
     cmd_str = '"' + cmd_str + '"';
 #endif
+
+  octave::unwind_protect frame;
+
+  frame.add_fcn (restore_signal_mask, get_signal_mask ());
+
+  octave_unblock_async_signals ();
 
   if (type == et_async)
     retval(0) = octave_async_system_wrapper (cmd_str.c_str ());

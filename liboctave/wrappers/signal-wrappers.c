@@ -546,6 +546,30 @@ octave_restore_signal_mask (void)
   sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
 }
 
+void *
+octave_alloc_signal_mask (void)
+{
+  return malloc (sizeof (sigset_t));
+}
+
+void
+octave_free_signal_mask (void *mask)
+{
+  free (mask);
+}
+
+void
+octave_get_signal_mask (void *mask)
+{
+  sigprocmask (0, 0, mask);
+}
+
+void
+octave_set_signal_mask (void *mask)
+{
+  sigprocmask (SIG_SETMASK, (sigset_t *) mask, 0);
+}
+
 #if ! defined (__WIN32__)
 static const sigset_t *
 octave_async_signals (void)

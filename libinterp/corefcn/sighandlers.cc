@@ -243,7 +243,7 @@ namespace octave
                         << std::endl;
             else if ((have_sigint && sig == sigint)
                      || (have_sigbreak && sig == sigbreak))
-              /* handled separately; do nothing */;
+              ; // Handled separately; do nothing.
             else
               std::cerr << "warning: ignoring unexpected signal: "
                         << octave_strsignal_wrapper (sig)
@@ -287,7 +287,16 @@ namespace octave
 
     if ((have_sigint && sig == sigint)
         || (have_sigbreak && sig == sigbreak))
-      octave_interrupt_state++;
+      {
+        if (! octave_initialized)
+          exit (1);
+
+        if (can_interrupt)
+          {
+            octave_signal_caught = 1;
+            octave_interrupt_state++;
+          }
+      }
   }
 
   static void
@@ -310,32 +319,13 @@ namespace octave
     std::cerr << "warning: floating point exception" << std::endl;
   }
 
-  // Handle SIGINT.
-  //
-  // This also has to work for SIGBREAK (on systems that have it), so we
-  // use the value of sig, instead of just assuming that it is called
-  // for SIGINT only.
-
-  static void
-  sigint_handler (int)
-  {
-    if (! octave_initialized)
-      exit (1);
-
-    if (can_interrupt)
-      {
-        octave_signal_caught = 1;
-        octave_interrupt_state++;
-      }
-  }
-
   interrupt_handler
   catch_interrupts (void)
   {
     interrupt_handler retval;
 
-    retval.int_handler = set_signal_handler ("SIGINT", sigint_handler);
-    retval.brk_handler = set_signal_handler ("SIGBREAK", sigint_handler);
+    retval.int_handler = set_signal_handler ("SIGINT", generic_sig_handler);
+    retval.brk_handler = set_signal_handler ("SIGBREAK", generic_sig_handler);
 
     return retval;
   }

@@ -5092,13 +5092,16 @@ DEFMETHOD (mfilename, interp, args, ,
 @deftypefnx {} {} mfilename ("fullpathext")
 Return the name of the currently executing file.
 
-When called from outside an m-file return the empty string.
+The base name of the currently executing script or function is returned without
+any extension.  If called from outside an m-file, such as the command line,
+return the empty string.
 
 Given the argument @qcode{"fullpath"}, include the directory part of the
 filename, but not the extension.
 
 Given the argument @qcode{"fullpathext"}, include the directory part of
 the filename and the extension.
+@seealso{inputname, dbstack}
 @end deftypefn */)
 {
   octave_value retval;
@@ -5134,7 +5137,7 @@ the filename and the extension.
       size_t dpos = fname.rfind (octave::sys::file_ops::dir_sep_char ());
       size_t epos = fname.rfind ('.');
 
-      if (epos <= dpos)
+      if (epos <= dpos+1)
         epos = std::string::npos;
 
       fname = (epos != std::string::npos) ? fname.substr (0, epos) : fname;

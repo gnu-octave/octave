@@ -63,7 +63,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   $(LIBOCTGUI_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-%canon_reldir%_liboctgui_current = 2
+%canon_reldir%_liboctgui_current = 3
 %canon_reldir%_liboctgui_revision = 0
 %canon_reldir%_liboctgui_age = 0
 

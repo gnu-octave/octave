@@ -279,9 +279,9 @@ namespace octave
         if (! file.exists ())
           continue;
 
-        session_data item = { QString (), sessionFileNames.at (n), QString ()};
+        session_data item = { 0, sessionFileNames.at (n), QString ()};
         if (do_index)
-          item.index = session_index.at (n);
+          item.index = session_index.at (n).toInt ();
         if (do_encoding)
           item.encoding = session_encodings.at (n);
 

@@ -73,7 +73,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(LIBOCTAVE_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-%canon_reldir%_%canon_reldir%_current = 4
+%canon_reldir%_%canon_reldir%_current = 5
 %canon_reldir%_%canon_reldir%_revision = 0
 %canon_reldir%_%canon_reldir%_age = 0
 

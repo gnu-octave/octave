@@ -77,7 +77,7 @@ namespace octave
     // struct that allows to sort with respect to the tab index
     struct session_data
     {
-      QString index;
+      int index;
       QString file_name;
       QString encoding;
 

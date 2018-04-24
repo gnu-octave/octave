@@ -3393,7 +3393,7 @@ Return true if @var{x} is a Java object.
 %! assert (n.compareTo (1), 0);
 %! assert (n.compareTo (2), -1);
 
-%!testif HAVE_JAVA; usejava ("jvm")
+%!testif HAVE_JAVA; usejava ("jvm") <51804>
 %! n = javaObject ("java.lang.Short", 1.35);
 %! assert (n.compareTo (0), 1);
 %! assert (n.compareTo (1), 0);

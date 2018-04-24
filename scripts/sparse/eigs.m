@@ -1268,7 +1268,7 @@ endfunction
 %!   assert (max (abs ((A - d1(i)*eye (n))*v1(:,i))), 0, 1e-11);
 %! endfor
 
-%!test
+%!testif HAVE_ARPACK
 %! A = 2 * diag (ones (10, 1)) - diag (ones (9, 1), 1) - diag (ones (9, 1), -1);
 %! B = eye (10);
 %! reseig = eig (A, B);

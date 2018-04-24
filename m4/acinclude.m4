@@ -838,7 +838,11 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
           warn_$1=
           AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
             [Define to 1 if $2 is available.])], [$8])
+      else
+        m4_toupper([$1])_LIBS=
       fi
+    else
+      m4_toupper([$1])_LIBS=
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
     CPPFLAGS="$ac_octave_save_CPPFLAGS"
@@ -855,7 +859,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   AC_SUBST(m4_toupper([$1])_LIBS)
   if test -n "$warn_$1"; then
     OCTAVE_CONFIGURE_WARNING([warn_$1])
-    m4_toupper([$1])_LIBS=
   fi
 ])
 dnl

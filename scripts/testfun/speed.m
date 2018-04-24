@@ -142,9 +142,10 @@
 ##
 ## Type @kbd{example ("speed")} to see some real examples or
 ## @kbd{demo ("speed")} to run them.
+##
 ## @end deftypefn
 
-## Programming Note: All variables for speed() must use the internal prefix "__".
+## Programming Note: All variables for speed must use the internal prefix "__".
 ## Shared variables are eval'ed into the current workspace and therefore might
 ## collide with the names used in the speed.m function itself.
 
@@ -219,19 +220,19 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
       fflush (stdout);
     endif
 
-    eval (["__t = time();" __f1 "__v1=ans; __t = time()-__t;"]);
+    eval (["__tid = tic();" __f1 "__v1=ans; __t = toc(__tid);"]);
     if (__t < 0.25)
-      eval (["__t2 = time();" __f1 "__t2 = time()-__t2;"]);
-      eval (["__t3 = time();" __f1 "__t3 = time()-__t3;"]);
+      eval (["__tid = tic();" __f1 "__t2 = toc(__tid);"]);
+      eval (["__tid = tic();" __f1 "__t3 = toc(__tid);"]);
       __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
     if (! isempty (__f2))
-      eval (["__t = time();" __f2 "__v2=ans; __t = time()-__t;"]);
+      eval (["__tid = tic();" __f2 "__v2=ans; __t = toc(__tid);"]);
       if (__t < 0.25)
-        eval (["__t2 = time();" __f2 "__t2 = time()-__t2;"]);
-        eval (["__t3 = time();" __f2 "__t3 = time()-__t3;"]);
+        eval (["__tid = tic();" __f2 "__t2 = toc(__tid);"]);
+        eval (["__tid = tic();" __f2 "__t3 = toc(__tid);"]);
         __t = min ([__t, __t2, __t3]);
       endif
       __torig(k) = __t;
@@ -287,19 +288,21 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   elseif (do_display)
 
     subplot (1, 2, 1);
-    semilogx (__test_n, __torig./__tnew,
-             ["-*r;" strrep(__f1, ";", ".") " / " strrep(__f2, ";", ".") ";"],
-              __test_n, __tnew./__torig,
-             ["-*g;", strrep(__f2, ";", ".") " / " strrep(__f1, ";", ".") ";"]);
+    semilogx (__test_n, __tnew./__torig, "-*g", 
+              __test_n, __torig./__tnew, "-*r");
+    legend ({[strrep(__f1, ";", ".") " / " strrep(__f2, ";", ".")],
+             [strrep(__f2, ";", ".") " / " strrep(__f1, ";", ".")]},
+            "location", "northwest");
     title ("Speedup Ratio");
     xlabel ("test length");
     ylabel ("speedup ratio");
 
     subplot (1, 2, 2);
-    loglog (__test_n, __tnew*1000,
-            ["*-g;" strrep(__f1,";",".") ";"],
-            __test_n, __torig*1000,
-            ["*-r;" strrep(__f2,";",".") ";"]);
+    loglog (__test_n, __tnew*1000, "*-g",
+            __test_n, __torig*1000, "*-r");
+    legend ({strrep(__f1,";","."),
+             strrep(__f2,";",".")},
+            "location", "northwest");
     title ({"Execution Times", ["init: " __init]});
     xlabel ("test length");
     ylabel ("best execution time (ms)");
@@ -430,7 +433,8 @@ endfunction
 %! assert (length (T_f2) > 10);
 
 %!test
-%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); endfor");
+%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], ...
+%!                            "v = 0; for i = 1:length (x), v += x(i); endfor");
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});

@@ -215,7 +215,7 @@ function varargout = eigs (varargin)
       offset = 1;
     endif
 
-    if (rows (a) < 9)
+    if (rows (a) < 13)
       call_eig = true;
     endif
 
@@ -224,10 +224,12 @@ function varargout = eigs (varargin)
       if (isnumeric (tmp) && isscalar (tmp) && isreal (tmp)
           && round (tmp) == tmp)
         k = tmp;
-
-        if (rows (a) - k < 3)
-          call_eig = true;
-        endif
+        p = 2 * k;
+      elseif (isfield (tmp, "p"))
+          p = tmp.p;
+      endif
+      if (p >= rows (a))
+        call_eig = true;
       else
         call_eig = false;
       endif
@@ -238,6 +240,24 @@ function varargout = eigs (varargin)
           sigma = tolower (tmp);
         elseif (isnumeric (tmp) && isscalar (tmp))
           sigma = tmp;
+        elseif (isfield (tmp, "p"))
+          p = tmp.p;
+        endif
+        if (p >= rows (a))
+          call_eig = true;
+        else
+          call_eig = false;
+        endif
+      endif
+      if (nargin > 3 + offset)
+        tmp = varargin{4+offset};
+        if (isfield (tmp, "p"))
+          p = tmp.p;
+        else
+          p = 2 * k;
+        endif
+        if (p >= rows (a))
+          call_eig = true;
         else
           call_eig = false;
         endif
@@ -305,28 +325,28 @@ function out = select (args, k, sigma, real_valued, symmetric)
         endif
 
       case "lr"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (real (d), "descend");
         else
           error ('eigs: SIGMA = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
           error ('eigs: SIGMA = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
           error ('eigs: SIGMA = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
           error ('eigs: SIGMA = "si" requires complex or unsymmetric problem');
@@ -752,15 +772,15 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, "lm");
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, "lm");
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, "lm");
+%! [v1, d1] = eigs (R' \ A / R, 4, "lm");
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -768,15 +788,15 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, "lm");
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, "lm");
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, "lm");
+%! [v1, d1] = eigs (R' \ A / R, 4, "lm");
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -785,15 +805,15 @@ endfunction
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
 %! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, "lm");
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, "lm");
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, "lm");
+%! [v1, d1] = eigs (R' \ A / R, 4, "lm");
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -801,15 +821,15 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, 1);
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, 1);
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! [v1, d1] = eigs (R' \ A / R, 4, 1);
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -817,15 +837,15 @@ endfunction
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, 1);
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, 1);
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! [v1, d1] = eigs (R' \ A / R, 4, 1);
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -834,15 +854,15 @@ endfunction
 %! A = spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10) -...
 %! 1i * spdiags ([[1./(2:11)]',[-5:-2:-23]',[1:10]'],-1:1,10,10);
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
-%! [v, d] = eigs (A, B, 5, 1);
-%! for i = 1:5
+%! [v, d] = eigs (A, B, 4, 1);
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12);
 %! endfor
 %! ddiag = diag (d);
 %! [ddiag, idx] = sort (ddiag);
 %! v = v(:, idx);
 %! R = chol (B);
-%! [v1, d1] = eigs (R' \ A / R, 5, 1);
+%! [v1, d1] = eigs (R' \ A / R, 4, 1);
 %! d1diag = diag (d1);
 %! [d1diag, idx] = sort (d1diag);
 %! v1 = v1(:, idx);
@@ -852,8 +872,8 @@ endfunction
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! R = chol (B);
 %! opts.cholB = R;
-%! [v, d] = eigs (A, R, 5, "lm", opts);
-%! for i = 1:5
+%! [v, d] = eigs (A, R, 4, "lm", opts);
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
 %! endfor
 %!testif HAVE_ARPACK, HAVE_UMFPACK
@@ -862,8 +882,8 @@ endfunction
 %! [R, ~, permB] = chol (B, "vector");
 %! opts.cholB = R;
 %! opts.permB = permB;
-%! [v, d] = eigs (A, R, 5, "lm", opts);
-%! for i = 1:5
+%! [v, d] = eigs (A, R, 4, "lm", opts);
+%! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
 %! endfor
 
@@ -1250,10 +1270,10 @@ endfunction
 
 %!test
 %! A = 2 * diag (ones (10, 1)) - diag (ones (9, 1), 1) - diag (ones (9, 1), -1);
-%! B = diag (ones (10, 1));
+%! B = eye (10);
 %! reseig = eig (A, B);
 %! [~, idx] = sort (abs (reseig), "ascend");
-%! assert (eigs (A, B, 10, 0), reseig (idx));
+%! assert (eigs (A, B, 4, 0), reseig (idx(4:-1:1)), 8 * eps);
 %!testif HAVE_ARPACK
 %! A = eye (9);
 %! A(1, 1) = 0;
@@ -1266,47 +1286,47 @@ endfunction
 %! A(10,:) = [-1, zeros(1, 8), -1];
 %! opts.v0 = (1:10)';
 %! typ = "lr";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (real (diag (m))), ...
-%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (real (m)), ...
-%!         [-0.081751; 0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
+%!         [0.514038; 0.514038; 0.880290; 0.880290], 1e-4);
 %! typ = "li";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (abs (imag (diag (m)))), ...
-%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (abs (imag (m))), ...
-%!         [0.75447; 0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
+%!         [0.78972; 0.78972; 0.96518; 0.96518], 1e-4);
 %! typ = "sr";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (real (diag (m))), ...
-%!         [-1.12180; -1.12180; -0.69077; -0.08175; -0.08175], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [-1.12180; -1.12180; -0.69077; -0.69077], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (real (m)), ...
-%!         [-1.12180; -1.12180; -0.69077; -0.69077; -0.08175], 1e-4);
+%!         [-1.12180; -1.12180; -0.69077; -0.69077], 1e-4);
 %! typ = "si";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (abs (imag (diag (m)))), ...
-%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [0.25552; 0.25552; 0.30282; 0.30282], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (abs (imag (m))), ...
-%!         [0.25552; 0.25552; 0.30282; 0.30282; 0.75447], 1e-4);
+%!         [0.25552; 0.25552; 0.30282; 0.30282], 1e-4);
 %! typ = "lm";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (abs (diag (m))), ...
-%!         [0.96863; 0.96863;  1.02294; 1.15054; 1.15054], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [1.02294;  1.02294; 1.15054; 1.15054], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (abs (m)), ...
-%!         [0.96863; 1.02294; 1.02294; 1.15054; 1.15054], 1e-4);
+%!         [1.02294; 1.02294; 1.15054; 1.15054], 1e-4);
 %! typ = "sm";
-%! [v, m] = eigs (A, 5, typ, opts);
+%! [v, m] = eigs (A, 4, typ, opts);
 %! assert (sort (abs (diag (m))), ...
-%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
-%! m = eigs (A, 5, typ, opts);
+%!         [0.93092; 0.93092; 0.94228; 0.94228], 1e-4);
+%! m = eigs (A, 4, typ, opts);
 %! assert (sort (abs (m)), ...
-%!         [0.93092; 0.93092; 0.94228; 0.94228; 0.96863], 1e-4);
+%!         [0.93092; 0.93092; 0.94228; 0.94228], 1e-4);
 %!testif HAVE_ARPACK
 %! A = toeplitz (sparse ([2, 1, zeros(1,8)]));
 %! opts.v0 = (1:10)';
@@ -1329,14 +1349,14 @@ endfunction
 %! Z = X * X';
 %! r = rank (Z);
 %! assert (r, 8);
-%! [V, D] = eigs (Z, r, "lm");
+%! [V, D] = eigs (Z, r, "lm"); # call_eig is true
 %! ZZ = V * D * V';
 %! tmp = abs (Z - ZZ);
 %! assert (max (tmp(:)) < 5e-11);
 
-%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5])
-%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1])
-%!assert (eigs (diag (1:5), 3, "be"), [1;4;5])
+%!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]) # call_eig is true
+%!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]) # call_eig is true
+%!assert (eigs (diag (1:5), 3, "be"), [1;4;5]) # call_eig is true
 %!error
 %! A = rand (10);
 %! opts.v0 = ones (8, 1);
@@ -1443,3 +1463,24 @@ endfunction
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 6, "lm", opts);
 %! assert (d(6), NaN+1i*NaN);
+%!testif HAVE_ARPACK
+%! A = sparse (magic (10));
+%! B = sparse (magic (10)); # not HPD
+%! fail ("eigs (A, B, 4)", "eigs: The matrix B is not positive definite")
+%!testif HAVE_ARPACK
+%! i_A = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+%! j_A = [1, 2, 3, 4, 5, 6, 7,  8, 9, 10];
+%! v_A = [1, 2i, 3, 4i, 5, 6i, 7, 8, 9, 10i];
+%! A = sparse(i_A, j_A, v_A);
+%! i_B = [1,2, 3, 4, 5, 6, 7, 8, 9, 10];
+%! j_B = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+%! v_B = [3, 10i, 1, 8i, 7, 6i, 5, 4i, 9, 7i];
+%! B = sparse(i_B, j_B, v_B); # not SPD
+%! [Evectors Evalues] = eigs(A, B, 5, 'SM'); # call_eig is true
+%! ResidualVectors = A * Evectors - B * Evectors * Evalues;
+%! RelativeErrors = norm (ResidualVectors, "columns") ./ ...
+%! norm (A * Evectors, "columns");
+%! assert (RelativeErrors, zeros (1, 5))
+%!testif HAVE_ARPACK
+%! A = rand (8);
+%! eigs (A, 6, "lr"); # this failed on 4.2.x

@@ -210,7 +210,7 @@ make_cholb (SparseMatrix& b, SparseMatrix& bt, ColumnVector& permB)
   octave_idx_type info;
   octave::math::sparse_chol<SparseMatrix> fact (b, info, false);
 
-  if (fact.P () != 0)
+  if (info != 0)
     return false;
   else
     {
@@ -248,7 +248,7 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
   octave_idx_type info;
   octave::math::sparse_chol<SparseComplexMatrix> fact (b, info, false);
 
-  if (fact.P () != 0)
+  if (info != 0)
     return false;
   else
     {

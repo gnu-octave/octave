@@ -23,8 +23,8 @@
 ##
 ## Create a uicontrol object and return a handle to it.
 ##
-## uicontrols are used to create simple interactive controls such as push
-## buttons, checkboxes, edit and list controls.
+## A uicontrol object is used to create simple interactive controls such as
+## push buttons, checkboxes, edit and list controls.
 ##
 ## If @var{parent} is omitted then a uicontrol for the current figure is
 ## created.  If no figure is available, a new figure is created first.
@@ -35,11 +35,11 @@
 ## Any provided property value pairs will override the default values of the
 ## created uicontrol object.
 ##
-## Uicontrol properties are documented at @ref{Uicontrol Properties}.
+## Properties of uicontrol objects are documented at
+## @ref{Uicontrol Properties}.
 ##
-## Control of the type of uicontrol created is through the use of the
-## @var{style} property.  If no style property is provided, a push button will
-## be created.
+## The type of uicontrol created is specified by the @var{style} property.  If
+## no style property is provided, a push button will be created.
 ##
 ## Valid styles for uicontrol are:
 ##
@@ -83,16 +83,22 @@
 ##
 ## @example
 ## @group
-## % create figure and panel on it
+## ## Create figure and panel on it
 ## f = figure;
-## % create a button (default style)
-## b1 = uicontrol (f, "string", "A Button", "position",[10 10 150 40]);
-## % create an edit control
-## e1 = uicontrol (f, "style", "edit", "string", "editable text", "position",[10 60 300 40]);
-## % create a checkbox
-## c1 = uicontrol (f, "style", "checkbox", "string", "a checkbox", "position",[10 120 150 40]);
+## ## Create a button (default style)
+## b1 = uicontrol (f, "string", "A Button", "position", [10 10 150 40]);
+## ## Create an edit control
+## e1 = uicontrol (f, "style", "edit", "string", "editable text", ...
+##                    "position", [10 60 300 40]);
+## ## Create a checkbox
+## c1 = uicontrol (f, "style", "checkbox", "string", "a checkbox", ...
+##                    "position", [10 120 150 40]);
 ## @end group
 ## @end example
+##
+## When called with a single argument @var{h} which is a handle to an existing
+## uicontrol object, switch the focus to the specified uicontrol.  This
+## functionality is not currently implemented.
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
@@ -101,7 +107,8 @@
 function hui = uicontrol (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uicontrol"))
-    error ("uicontrol: focusing not implemented yet");
+    warning ("uicontrol: focusing not implemented yet");
+    return;
   endif
 
   [h, args] = __uiobject_split_args__ ("uicontrol", varargin,

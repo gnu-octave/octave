@@ -305,28 +305,28 @@ function out = select (args, k, sigma, real_valued, symmetric)
         endif
 
       case "lr"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (real (d), "descend");
         else
           error ('eigs: SIGMA = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
           error ('eigs: SIGMA = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
           error ('eigs: SIGMA = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
-        if (! (real_valued || symmetric))
+        if (! (real_valued && symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
           error ('eigs: SIGMA = "si" requires complex or unsymmetric problem');
@@ -1443,3 +1443,10 @@ endfunction
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 6, "lm", opts);
 %! assert (d(6), NaN+1i*NaN);
+%!testif HAVE_ARPACK
+%! A = sparse (magic (10));
+%! B = sparse (magic (10)); # not HPD
+%! fail ("eigs (A, B, 4)", "eigs: The matrix B is not positive definite")
+%!testif HAVE_ARPACK
+%! A = rand (8);
+%! eigs (A, 6, "lr"); # this failed in 4.2.x

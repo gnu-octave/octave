@@ -151,6 +151,10 @@
 ##   @itemx @nospell{corel}
 ##     @nospell{CorelDraw}
 ##
+##   @item cgm
+##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
+## (only available for the Gnuplot graphics toolkit).
+##
 ##   @item dxf
 ##     AutoCAD
 ##
@@ -165,7 +169,8 @@
 ## (default is @option{-textnormal})
 ##
 ##   @item gif
-##     GIF image (only available for the Gnuplot graphics toolkit)
+##     GIF image
+## (only available for the Gnuplot graphics toolkit).
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -175,8 +180,9 @@
 ##     JPEG image
 ##
 ##   @item latex
-##     @LaTeX{} picture environment (only available for the Gnuplot graphics
-## toolkit).
+##   @itemx eepic
+##     @LaTeX{} picture environment and extended picture environment
+## (only available for the Gnuplot graphics toolkit).
 ##
 ##   @item mf
 ##     Metafont

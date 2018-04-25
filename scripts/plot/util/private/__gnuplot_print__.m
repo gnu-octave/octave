@@ -45,12 +45,15 @@ function opts = __gnuplot_print__ (opts)
   ## The axes-label and tick-label spacing is determined by
   ## the font spec given in "set terminal ..."
   gp_opts = font_spec (opts);
-  bg = get (opts.figure, "color");
-  if (isnumeric (bg))
-    gp_opts = sprintf ('%s background rgb "#%02x%02x%02x"',
-                       gp_opts, round (255 * bg));
-  else
-    gp_opts = sprintf ("%s nobackground", gp_opts);
+  if (! any (strcmpi (opts.devopt, {"fig", "dxf", "hpgl", "mf", "pstricks", ...
+                                    "texdraw", "latex", "eepic"})))
+    bg = get (opts.figure, "color");
+    if (isnumeric (bg))
+      gp_opts = sprintf ('%s background rgb "#%02x%02x%02x"',
+                         gp_opts, round (255 * bg));
+    else
+      gp_opts = sprintf ("%s nobackground", gp_opts);
+    endif
   endif
 
   pipeline = "";
@@ -144,7 +147,8 @@ function opts = __gnuplot_print__ (opts)
                "print.m: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
-    case {"canvas", "dxf", "hpgl", "latex", "mf", "gif", "pstricks", "texdraw"}
+    case {"canvas", "cgm", "dxf", "hpgl", "latex", "mf", "gif", ...
+          "pstricks", "texdraw"}
       if (__gnuplot_has_terminal__ (opts.devopt))
         local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
       else
@@ -246,7 +250,7 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case {"eps", "eps2", "epsc", "epsc2"}
       ## Gnuplot renders fonts as half their specification, which
@@ -258,19 +262,15 @@ function f = font_spec (opts, varargin)
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", 2 * opts.fontsize);
+        f = sprintf ('font ",%d"', 2 * opts.fontsize);
       endif
     case "svg"
-      ## FIXME: Why does svg format use round on the fontsize while
-      ##        other terminals don't?
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
-        fontsize = round (opts.fontsize * 0.75);
-        f = sprintf ('fname "%s" fsize %d', opts.font, fontsize);
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize * 0.75);
       elseif (! isempty (opts.font))
-        f = sprintf ('fname "%s"', opts.font);
+        f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        fontsize = round (opts.fontsize * 0.75);
-        f = sprintf ("fsize %d", fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize * 0.75);
       endif
     case "pdf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
@@ -305,7 +305,7 @@ function f = font_spec (opts, varargin)
       endif
     case {"gif", "jpeg", "png"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
-        f = sprintf ('font "%s ,%d"', opts.font, opts.fontsize);
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))
         f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
@@ -313,31 +313,31 @@ function f = font_spec (opts, varargin)
       endif
     case "emf"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
-        f = sprintf ('"%s" %d', opts.font, opts.fontsize);
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))
-        f = sprintf ('"%s"', opts.font);
+        f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "canvas"
       if (! isempty (opts.fontsize))
-        f = sprintf ("fsize %d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case {"aifm", "corel"}
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
-        f = sprintf ("%s %d", opts.font, opts.fontsize);
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))
-        f = sprintf ("%s", opts.font);
+        f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("%d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
     case "fig"
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
-        f = sprintf ("font %s fontsize %d", opts.font, opts.fontsize);
+        f = sprintf ('font "%s,%d"', opts.font, opts.fontsize);
       elseif (! isempty (opts.font))
-        f = sprintf ("font %s", opts.font);
+        f = sprintf ('font "%s"', opts.font);
       elseif (! isempty (opts.fontsize))
-        f = sprintf ("fontsize %d", opts.fontsize);
+        f = sprintf ('font ",%d"', opts.fontsize);
       endif
   endswitch
 

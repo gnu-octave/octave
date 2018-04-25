@@ -20,13 +20,10 @@
 \input texinfo
 @setfilename liboctave.info
 
-@ifinfo
-@format
-START-INFO-DIR-ENTRY
-* liboctave: (liboctave). Octave C++ Classes
-END-INFO-DIR-ENTRY
-@end format
-@end ifinfo
+@dircategory Math
+@direntry
+* liboctave: (liboctave).       Octave C++ Classes
+@end direntry
 
 @c @smallbook
 @c @setchapternewpage odd

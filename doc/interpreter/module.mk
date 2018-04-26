@@ -197,24 +197,63 @@ $(srcdir)/%reldir%/octave.info: $(DOC_IMAGES_TXT) $(octave_TEXINFOS)
 %reldir%/octave.pdf: $(DOC_IMAGES_PDF) $(octave_TEXINFOS)
 $(OCTAVE_HTML_STAMP): $(DOC_IMAGES_PNG) $(octave_TEXINFOS)
 
+endif
+
+## Even if Octave was configured with --disable-docs, we will install
+## OCTAVE_QTHELP_FILES if they already exist.
+
+## Don't add these files to octdoc_DATA.  We want custom rules for
+## installing them.
+OCTAVE_QTHELP_FILES = \
+  %reldir%/octave_interpreter.qhc \
+  %reldir%/octave_interpreter.qch
+
+install-data-local: install-qthelp-files
+
+uninstall-local: uninstall-qthelp-files
+
+## Don't depend on $(OCTAVE_QTHELP_FILES) because we don't want to fail
+## if they can't be generated, but we want to install them if they exist
+## anyway (for example, they were included with a tarball distribution
+## file).
+install-qthelp-files: qthelp-installdir
+	@for f in $(OCTAVE_QTHELP_FILES); do \
+	  if [ -f $$f ]; then \
+	    echo " $(INSTALL_DATA) $$f '$(DESTDIR)$(octdocdir)'"; \
+	    $(INSTALL_DATA) $$f '$(DESTDIR)$(octdocdir)'; \
+	  elif [ -f $(srcdir)/$$f ]; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$f '$(DESTDIR)$(octdocdir)'"; \
+	    $(INSTALL_DATA) $(srcdir)/$$f '$(DESTDIR)$(octdocdir)'; \
+	  else \
+	    echo "warning: unable to install $$f"; \
+	  fi; \
+	done
+.PHONY: install-qthelp-files
+
+uninstall-qthelp-files:
+	for f in $(OCTAVE_QTHELP_FILES); do \
+	  base=`echo $$f | $(SED) 's,^%reldir%/,,'`; \
+	  rm -f $(DESTDIR)$(octdocdir)/$$base; \
+	done
+.PHONY: uninstall-qthelp-files
+
+qthelp-installdir:
+	$(MKDIR_P) '$(DESTDIR)/$(octdocdir)'
+.PHONY: qthelp-installdir
+
+if AMCOND_BUILD_DOCS
+
 if AMCOND_BUILD_QT_DOCS
 
-OCTAVE_QTHELP_FILES = %reldir%/octave_interpreter.qhc %reldir%/octave_interpreter.qch
+## The Qt help collection generator command produces two output files
+## with the same base name.  Use a pattern rule so that GNU Make will
+## only invoke the rule once to generate both files.
 
-octdoc_DATA += \
-  $(OCTAVE_QTHELP_FILES)
-
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
+%.qhc %.qch : $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
-
-## The Qt help collection generator command produces two output files
-## with the same base name: the compressed help (qch) file and the help
-## collection (qhc) file.  Declare the qhc file to depend on the
-## associated qch file, so that the files are built serially.
-%reldir%/octave_interpreter.qhc: %reldir%/octave_interpreter.qch
 
 endif
 
@@ -279,8 +318,12 @@ DOC_TARGETS += \
   %reldir%/octave.pdf \
   $(OCTAVE_HTML_STAMP) \
   $(HTMLDIR_IMAGES) \
-  $(HTMLDIR_CSS) \
+  $(HTMLDIR_CSS)
+
+if AMCOND_BUILD_QT_DOCS
+DOC_TARGETS += \
   $(OCTAVE_QTHELP_FILES)
+endif
 
 ## Distribute both OCTAVE_CSS and HTMLDIR_CSS so that the rules for
 ## building HTMLDIR_CSS work properly.

@@ -20,6 +20,21 @@
 
 : ${SED=@SED@}
 
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+
+bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
+libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
+
+includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
+
+srcdir="@srcdir@"
+top_srcdir="@top_srcdir@"
+abs_srcdir="@abs_srcdir@"
+abs_top_srcdir="@abs_top_srcdir@"
+
 NO_OCT_FILE_STRIP="@NO_OCT_FILE_STRIP@"
 AMD_CPPFLAGS="@AMD_CPPFLAGS@"
 AMD_LDFLAGS="@AMD_LDFLAGS@"
@@ -177,16 +192,6 @@ Z_CPPFLAGS="@Z_CPPFLAGS@"
 Z_LDFLAGS="@Z_LDFLAGS@"
 Z_LIBS="@Z_LIBS@"
 config_opts="@config_opts@"
-
-prefix="@prefix@"
-exec_prefix="@exec_prefix@"
-
-bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
-libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
-octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
-
-includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
-octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
 
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-config-vals.|" \

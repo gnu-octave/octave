@@ -1026,25 +1026,18 @@ returning the empty string if no key is available.
 @seealso{input, pause}
 @end deftypefn */)
 {
-  octave_value retval = "";
-
   // FIXME: add timeout and default value args?
 
-  if (octave::application::interactive ())
-    {
-      Fdrawnow ();
+  Fdrawnow ();
 
-      int c = octave_kbhit (args.length () == 0);
+  int c = octave_kbhit (args.length () == 0);
 
-      if (c == -1)
-        c = 0;
+  if (c == -1)
+    c = 0;
 
-      char s[2] = { static_cast<char> (c), '\0' };
+  char s[2] = { static_cast<char> (c), '\0' };
 
-      retval = s;
-    }
-
-  return retval;
+  return octave_value (s);
 }
 
 DEFUN (pause, args, ,

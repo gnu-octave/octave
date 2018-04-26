@@ -2936,7 +2936,7 @@ parser in a bison input file so I'm disabling bison.
   fi
 
   if test $tmp_have_bison = no; then
-    YACC='$(top_srcdir)/build-aux/missing bison'
+    YACC='${top_srcdir}/build-aux/missing bison'
     warn_bison="
 
 I didn't find bison, or the version of bison that I found does not
@@ -2974,7 +2974,7 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
       LEXLIB=
     ;;
     *)
-      LEX='$(top_srcdir)/build-aux/missing flex'
+      LEX='${top_srcdir}/build-aux/missing flex'
       warn_flex="
 
 I didn't find flex, but it's only a problem if you need to reconstruct
@@ -2999,7 +2999,7 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   esac
   AC_CHECK_PROGS(GHOSTSCRIPT, [$ac_octave_gs_names])
   if test -z "$GHOSTSCRIPT"; then
-    GHOSTSCRIPT='$(top_srcdir)/build-aux/missing gs'
+    GHOSTSCRIPT='${top_srcdir}/build-aux/missing gs'
     warn_ghostscript="
 
 I didn't find ghostscript, so reconstructing figures for the manual
@@ -3040,14 +3040,14 @@ dnl
 AC_DEFUN([OCTAVE_PROG_GPERF], [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -z "$GPERF"; then
-    GPERF='$(top_srcdir)/build-aux/missing gperf'
+    GPERF='${top_srcdir}/build-aux/missing gperf'
     warn_gperf="
 
 I didn't find gperf, but it's only a problem if you need to
 reconstruct oct-gperf.h
 "
     OCTAVE_CONFIGURE_WARNING([warn_gperf])
-    GPERF='$(top_srcdir)/build-aux/missing gperf'
+    GPERF='${top_srcdir}/build-aux/missing gperf'
   fi
   AC_SUBST(GPERF)
 ])
@@ -3057,7 +3057,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_ICOTOOL], [
   AC_CHECK_PROG(ICOTOOL, icotool, icotool, [])
   if test -z "$ICOTOOL"; then
-    ICOTOOL='$(top_srcdir)/build-aux/missing icotool'
+    ICOTOOL='${top_srcdir}/build-aux/missing icotool'
     warn_icotool="
 
 I didn't find icotool, but it's only a problem if you need to
@@ -3166,7 +3166,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_RSVG_CONVERT], [
   AC_CHECK_PROG(RSVG_CONVERT, rsvg-convert, rsvg-convert, [])
   if test -z "$RSVG_CONVERT"; then
-    RSVG_CONVERT='$(top_srcdir)/build-aux/missing rsvg-convert'
+    RSVG_CONVERT='${top_srcdir}/build-aux/missing rsvg-convert'
     warn_rsvg_convert="
 
 I didn't find rsvg-convert, but it's only a problem if you need to
@@ -3274,7 +3274,7 @@ dnl
 AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
-    TEXI2DVI='$(top_srcdir)/build-aux/missing texi2dvi'
+    TEXI2DVI='${top_srcdir}/build-aux/missing texi2dvi'
     warn_texi2dvi="
 
 I didn't find texi2dvi, but it's only a problem if you need to
@@ -3300,7 +3300,7 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
     ac_octave_texi2pdf_missing=no;
   fi
   if test $ac_octave_texi2pdf_missing = yes; then
-    TEXI2PDF='$(top_srcdir)/build-aux/missing texi2pdf'
+    TEXI2PDF='${top_srcdir}/build-aux/missing texi2pdf'
     warn_texi2pdf="
 
 I didn't find texi2pdf, but it's only a problem if you need to

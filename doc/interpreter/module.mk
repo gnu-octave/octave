@@ -245,17 +245,15 @@ if AMCOND_BUILD_DOCS
 
 if AMCOND_BUILD_QT_DOCS
 
-$(OCTAVE_QTHELP_FILES): $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
+## The Qt help collection generator command produces two output files
+## with the same base name.  Use a pattern rule so that GNU Make will
+## only invoke the rule once to generate both files.
+
+%.qhc %.qch : $(OCTAVE_HTML_STAMP) $(HTMLDIR_CSS) %reldir%/mk-qthelp.pl
 	$(AM_V_GEN)rm -f $(OCTAVE_QTHELP_FILES) && \
 	$(PERL) $(srcdir)/%reldir%/mk-qthelp.pl octave.html %reldir%/octave_interpreter && \
 	$(QCOLLECTIONGENERATOR) $(QCOLLECTIONGENERATORFLAGS) %reldir%/octave_interpreter.qhcp -o %reldir%/octave_interpreter.qhc >/dev/null && \
 	rm -f %reldir%/octave_interpreter.qhcp %reldir%/octave_interpreter.qhp
-
-## The Qt help collection generator command produces two output files
-## with the same base name: the compressed help (qch) file and the help
-## collection (qhc) file.  Declare the qhc file to depend on the
-## associated qch file, so that the files are built serially.
-%reldir%/octave_interpreter.qhc: %reldir%/octave_interpreter.qch
 
 endif
 

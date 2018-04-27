@@ -309,11 +309,13 @@ namespace octave
 
         case RT_VALUE:
           retval = m_expr_result_value;
+          m_expr_result_value = octave_value ();
           break;
 
         case RT_VALUE_LIST:
           retval = (m_expr_result_value_list.empty ()
                     ? octave_value () : m_expr_result_value_list(0));
+          m_expr_result_value_list = octave_value_list ();
           break;
         }
 
@@ -338,10 +340,12 @@ namespace octave
 
         case RT_VALUE:
           retval = ovl (m_expr_result_value);
+          m_expr_result_value = octave_value ();
           break;
 
         case RT_VALUE_LIST:
           retval = m_expr_result_value_list;
+          m_expr_result_value_list = octave_value_list ();
           break;
         }
 

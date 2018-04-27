@@ -1430,7 +1430,11 @@ endfunction
 %! opts.maxit = 10;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 10, "sm", opts);
-%! assert (d(10), NaN+1i*NaN);
+%! if (isreal (d))
+%!   assert (d(10), NaN);
+%! else
+%!   assert (d(10), NaN +1i*NaN);
+%! endif
 %!testif HAVE_ARPACK
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);

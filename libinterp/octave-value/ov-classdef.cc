@@ -1804,6 +1804,47 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 
 handle_cdef_object::~handle_cdef_object (void)
 {
+  octave::unwind_protect frame;
+
+  // Clear interrupts.
+  frame.protect_var (octave_interrupt_state);
+  octave_interrupt_state = 0;
+
+  // Disallow quit().
+  frame.protect_var (quit_allowed);
+  quit_allowed = false;
+
+  interpreter_try (frame);
+
+  try
+    {
+      // Call classdef "delete()" method on object
+      get_class ().delete_object (get_class ());
+    }
+  catch (const octave::interrupt_exception&)
+    {
+      octave::interpreter::recover_from_exception ();
+
+      warning ("interrupt occurred in handle class delete method");
+    }
+  catch (const octave::execution_exception&)
+    {
+      std::string msg = last_error_message ();
+      warning ("error caught while executing handle class delete method:\n%s\n",
+               msg.c_str ());
+
+    }
+  catch (const octave::exit_exception&)
+    {
+      // This shouldn't happen since we disabled quit above.
+      warning ("exit disabled while executing handle class delete method");
+    }
+  catch (...) // Yes, the black hole.  We're in a d-tor.
+    {
+      // This shouldn't happen, in theory.
+      warning ("internal error: unhandled exception in handle class delete method");
+    }
+
 #if DEBUG_TRACE
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (handle)" << std::endl;

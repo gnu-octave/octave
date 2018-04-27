@@ -1058,6 +1058,10 @@ public:
   octave_classdef_meta (const cdef_meta_object& obj)
     : object (obj) { }
 
+  octave_classdef_meta (const octave_classdef_meta&) = delete;
+
+  octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
+
   ~octave_classdef_meta (void)
   { object.meta_release (); }
 
@@ -1119,8 +1123,14 @@ private:
 class octave_classdef_superclass_ref : public octave_function
 {
 public:
+  octave_classdef_superclass_ref (void) = delete;
+
   octave_classdef_superclass_ref (const octave_value_list& a)
     : octave_function (), args (a) { }
+
+  octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
+
+  octave_classdef_superclass_ref& operator = (const octave_classdef_superclass_ref&) = delete;
 
   ~octave_classdef_superclass_ref (void) = default;
 
@@ -1909,8 +1919,16 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 class ctor_analyzer : public octave::tree_walker
 {
 public:
+  ctor_analyzer (void) = delete;
+
   ctor_analyzer (const std::string& ctor, const std::string& obj)
     : octave::tree_walker (), who (ctor), obj_name (obj) { }
+
+  ctor_analyzer (const ctor_analyzer&) = delete;
+
+  ctor_analyzer& operator = (const ctor_analyzer&) = delete;
+
+  ~ctor_analyzer (void) = default;
 
   void visit_statement_list (octave::tree_statement_list& t)
   {

@@ -82,7 +82,7 @@ function hlink = linkprop (h, prop)
   for i = 1 : numel (h)
     for j = 1 : numel (prop)
       addlistener (h(i), prop{j},
-                   {@cb_sync_prop, [h(1:i-1), h(i+1:end)], prop{j}});
+                   {@cb_sync_prop, [h(1:i-1); h(i+1:end)], prop{j}});
     endfor
   endfor
 

@@ -89,10 +89,11 @@ function h = patch (varargin)
     print_usage ();
   endif
 
-  ## FIXME: This is a hack to get 'layer' command to work for 2D patches
-  ##        Alternative is much more complicated surgery in graphics.cc.
-  ##        of get_children_limits() for 'z' axis and 'patch' object type.
-  if (! ishold ())
+  ## FIXME: ishold called this way is very slow. 
+  if (! ishold (hax))
+    ## FIXME: This is a hack to get 'layer' command to work for 2D patches
+    ##        Alternative is much more complicated surgery in graphics.cc.
+    ##        of get_children_limits() for 'z' axis and 'patch' object type.
     if (isempty (get (htmp, "zdata")))
       set (hax, "zlim", [-1 1]);
     endif

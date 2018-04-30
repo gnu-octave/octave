@@ -146,15 +146,15 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = strrep (get (h, "name"), '"', '\"');
-        if (strcmp (get (h, "numbertitle"), "on"))
+        if (! isempty (get (h, "number")) && strcmp (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
-        else
-          title_str = "";
-        endif
-        if (! isempty (fig.name) && ! isempty (title_str))
-          title_str = sprintf ("%s: %s", title_str, fig.name);
-        elseif (! isempty (fig.name) && isempty (title_str))
+          if (! isempty (fig.name))
+            title_str = sprintf ("%s: %s", title_str, fig.name);
+          endif
+        elseif (! isempty (fig.name))
           title_str = fig.name;
+        else
+          title_str = " ";
         endif
         if (! isempty (title_str))
           title_str = sprintf ('title "%s"', title_str);

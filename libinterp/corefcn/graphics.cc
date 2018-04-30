@@ -4678,7 +4678,8 @@ figure::properties::update_units (const caseless_str& old_units)
 std::string
 figure::properties::get_title (void) const
 {
-  if (is_numbertitle ())
+  std::string title;
+  if (! get_number ().isempty () && is_numbertitle ())
     {
       std::ostringstream os;
       std::string nm = get_name ();
@@ -4687,10 +4688,17 @@ figure::properties::get_title (void) const
       if (! nm.empty ())
         os << ": " << get_name ();
 
-      return os.str ();
+      title = os.str ();
     }
   else
-    return get_name ();
+    title = get_name ();
+
+  // Qt will use QCoreApplication name (set in main-window.cc)
+  // if the name is empty, so force blank.
+  if (title.empty ())
+    title = " ";
+
+  return title;
 }
 
 octave_value

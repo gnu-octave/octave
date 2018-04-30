@@ -39,7 +39,7 @@
 #* C++ style check.  Completion Date:
 <!----------------------------------------------------------------------------->
 # Run lint checker on code base
-#* cppcheck, -fsanitize=undefined, etc.
+#* Possibilities include compiling with -fsanitize=undefined and running 'make check', cppcheck, etc.
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Verify 'make check' is passing on all buildbot combinations of OS and compilers
@@ -58,36 +58,46 @@
 #* Verify deprecated functions removed from "see also" links
 #* Verify all formats (Info, HTML, pdf) build correctly
 #* Review NEWS for any features which should be announced
+#* Update major version number in "@subtitle Edition XXX" in octave.texi
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Localization and Internationalization
 #* Update language translation files (*.ts)
-#* Submit call for translations for GUI strings.
+#* Create issue report on Savannah as a centralized location for uploading files
+#* Submit call for translations for GUI strings
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Verify build process and create release candidates
-#* Update version information in configure.ac/Makefile.am
+#* Update configure.ac with new version information
+#** Update AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION, OCTAVE_RELEASE_DATE
 #* Verify 'make distcheck' passes
 #* Create release candidate
 #** 'make dist'
 #** hg tag repository with release candidate ID
 #** For Windows, create installer [[Windows Installer]]
 #** Upload release candidate
-#** add release candidate version to Savannah bug tracker
+#** Add release candidate version to Savannah bug tracker
 #** Announce release candidate to Octave-Maintainers, Octave-Help, on web page
 #** Repeat release candidate cycle until clean
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Final Release
-#* hg tag repository with release
+#* Update version information
+#** Update configure.ac (AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION, OCTAVE_RELEASE_DATE)
+#** Update libtool versioning (configure.ac:OCTAVE_API_VERSION, liboctave/module.mk:%canon_reldir%_%canon_reldir%_current, libinterp/module.mk:%canon_reldir%_liboctinterp_current, libgui/module.mk:%canon_reldir%_liboctgui_current)
+#** Update NEWS (final release date)
+#** Update org.octave.Octave.appdata.xml (version number and release date)
+#* hg tag repository with release version number
 #* merge default onto stable to become the current stable release
-#* add new release version to Savannah bug tracker
+#* Savannah bug tracker version info
+#** add new release version to bug tracker
+#** remove release candidate versions from bug tracker
 #* Announce final release on Octave mailing lists and web site
 #: Completion Date:
 <!----------------------------------------------------------------------------->
 # Post-Release
-#* Update configure.ac/Makefile.am versioning to next release cycle
-#* Remove all deprecated functions scheduled for deletion in default branch
+#* Update configure.ac (AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION) to next release cycle
+#* Remove all deprecated functions (either OCTAVE_DEPRECATED in C++ or scripts/deprecated for m-files) scheduled for deletion in default branch
 #* Move NEWS file to backup in etc/NEWS.X
 #* Create new NEWS file
 #: Completion Date:

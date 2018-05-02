@@ -131,7 +131,7 @@ namespace octave
       void
       clear_map (std::map<T, octave_value>& map, bool force = false)
       {
-        typename std::map<T, octave_value>::iterator p = map.begin ();
+        auto p = map.begin ();
 
         while (p != map.end ())
           {

@@ -951,7 +951,7 @@ namespace octave
 
     tree_argument_list *lhs = cmd.left_hand_side ();
 
-    tree_argument_list::iterator p = lhs->begin ();
+    auto p = lhs->begin ();
 
     tree_expression *elt = *p++;
 
@@ -1279,9 +1279,9 @@ namespace octave
 
     assert (! args.empty ());
 
-    std::list<tree_argument_list *>::iterator p_args = args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
+    auto p_args = args.begin ();
+    auto p_arg_nm = arg_nm.begin ();
+    auto p_dyn_field = dyn_field.begin ();
 
     int n = args.size ();
     int beg = 0;
@@ -1849,7 +1849,7 @@ namespace octave
         // postpone joining the final values.
         std::list<octave_value_list> retval_list;
 
-        tree_argument_list::iterator q = lhs->begin ();
+        auto q = lhs->begin ();
 
         for (octave_lvalue ult : lvalue_list)
           {
@@ -2344,7 +2344,7 @@ namespace octave
     // FIXME: commented out along with else clause below.
     // static octave_value_list empty_list;
 
-    tree_statement_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     if (p != lst.end ())
       {

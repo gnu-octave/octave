@@ -153,7 +153,7 @@ namespace octave
     {
       while (! empty ())
         {
-          iterator p = begin ();
+          auto p = begin ();
           delete *p;
           erase (p);
         }

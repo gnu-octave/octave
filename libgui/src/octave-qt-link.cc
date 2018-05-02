@@ -195,11 +195,8 @@ namespace octave
   {
     QStringList retval;
 
-    for (std::list<std::string>::const_iterator it = lst.begin ();
-         it != lst.end (); it++)
-      {
-        retval.append (QString::fromStdString (*it));
-      }
+    for (auto it = lst.begin (); it != lst.end (); it++)
+      retval.append (QString::fromStdString (*it));
 
     return retval;
   }
@@ -214,8 +211,7 @@ namespace octave
     // (optional).  Qt wants a list of filters in the format of
     // 'FilterName (space separated exts)'.
 
-    for (octave_link::filter_list::const_iterator it = lst.begin ();
-         it != lst.end (); it++)
+    for (auto it = lst.begin (); it != lst.end (); it++)
       {
         QString ext = QString::fromStdString (it->first);
         QString name = QString::fromStdString (it->second);
@@ -300,11 +296,8 @@ namespace octave
 
     uiwidget_creator.unlock ();
 
-    for (QStringList::const_iterator it = inputLine->begin ();
-         it != inputLine->end (); it++)
-      {
-        retval.push_back (it->toStdString ());
-      }
+    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
+      retval.push_back (it->toStdString ());
 
     return retval;
   }
@@ -335,13 +328,11 @@ namespace octave
     // Add all the file dialog results to a string list.
     const QStringList *inputLine = uiwidget_creator.get_string_list ();
 
-    for (QStringList::const_iterator it = inputLine->begin ();
-         it != inputLine->end (); it++)
+    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
       retval.push_back (it->toStdString ());
 
     retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
-    retval.push_back ((QString ("%1").arg (
-                                           uiwidget_creator.get_dialog_result ())).toStdString ());
+    retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
 
     uiwidget_creator.unlock ();
 

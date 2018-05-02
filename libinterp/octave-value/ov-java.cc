@@ -1431,7 +1431,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
         {
           jmethodID mID = jni_env->GetMethodID (cls, "getID", "()I");
           int ID = jni_env->CallIntMethod (jobj, mID);
-          std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+          auto it = octave_ref_map.find (ID);
 
           if (it != octave_ref_map.end ())
             retval = it->second;
@@ -1921,7 +1921,7 @@ JNIEXPORT void JNICALL
 Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
                                  jobjectArray args)
 {
-  std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+  auto it = octave_ref_map.find (ID);
 
   if (it != octave_ref_map.end ())
     {
@@ -2067,7 +2067,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(1) = octave_value (this);
           ovl(0) = (idx.front ())(0);
-          std::list<octave_value_list>::const_iterator it = idx.begin ();
+          auto it = idx.begin ();
           ovl.append (*++it);
           retval = FjavaMethod (ovl, 1);
           skip++;
@@ -2142,7 +2142,7 @@ octave_java::subsasgn (const std::string& type,
       else if (type.length () > 2 && type[1] == '(')
         {
           std::list<octave_value_list> new_idx;
-          std::list<octave_value_list>::const_iterator it = idx.begin ();
+          auto it = idx.begin ();
           new_idx.push_back (*it++);
           new_idx.push_back (*it++);
           octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);

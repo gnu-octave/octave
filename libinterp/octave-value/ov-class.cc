@@ -282,7 +282,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   std::string nm = idx(0).xstring_value ("invalid index for class");
 
-  octave_map::const_iterator p = my_map.seek (nm);
+  auto p = my_map.seek (nm);
 
   if (p == my_map.end ())
     error ("class has no member '%s'", nm.c_str ());
@@ -387,7 +387,7 @@ octave_class::subsref (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
+                auto p = idx.begin ();
                 octave_value_list key_idx = *++p;
 
                 Cell tmp = dotref (key_idx);
@@ -635,7 +635,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
+                auto p = idx.begin ();
                 octave_value_list t_idx = *p;
 
                 octave_value_list key_idx = *++p;
@@ -689,7 +689,7 @@ octave_class::subsasgn_common (const octave_value& obj,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            octave_map::iterator pkey = map.seek (key);
+            auto pkey = map.seek (key);
             if (pkey != map.end ())
               {
                 map.contents (pkey).make_unique ();
@@ -730,7 +730,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       {
         if (n > 1 && type[1] == '.')
           {
-            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            auto p = idx.begin ();
             octave_value_list key_idx = *++p;
 
             assert (key_idx.length () == 1);
@@ -846,7 +846,7 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.begin (); it != map.end (); it++)
     {
       std::string key = map.key (it);
 
@@ -896,7 +896,7 @@ octave_class::find_parent_class (const std::string& parent_class_name)
     {
       for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (par);
+          auto smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -925,7 +925,7 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
     {
       for (auto& par : parent_list)
         {
-          octave_map::iterator smap = map.seek (par);
+          auto smap = map.seek (par);
 
           Cell& tmp = map.contents (smap);
 
@@ -961,7 +961,7 @@ octave_class::is_instance_of (const std::string& cls_name) const
     {
       for (auto& par : parent_list)
         {
-          octave_map::const_iterator smap = map.seek (par);
+          auto smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -1043,8 +1043,7 @@ octave_class::reconstruct_exemplar (void)
 {
   bool retval = false;
 
-  octave_class::exemplar_const_iterator it
-    = octave_class::exemplar_map.find (c_name);
+  auto it = octave_class::exemplar_map.find (c_name);
 
   if (it != octave_class::exemplar_map.end ())
     retval = true;
@@ -1124,7 +1123,7 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.begin (); it != map.end (); it++)
     {
       std::string key = map.key (it);
       Cell        val = map.contents (it);
@@ -1142,8 +1141,7 @@ octave_class::reconstruct_parents (void)
 
   if (might_have_inheritance)
     {
-      octave_class::exemplar_const_iterator it
-        = octave_class::exemplar_map.find (c_name);
+      auto it = octave_class::exemplar_map.find (c_name);
 
       if (it == octave_class::exemplar_map.end ())
         retval = false;
@@ -1187,7 +1185,7 @@ octave_class::save_ascii (std::ostream& os)
 
   os << "# length: " << m.nfields () << "\n";
 
-  octave_map::iterator i = m.begin ();
+  auto i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1293,7 +1291,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   int32_t len = m.nfields ();
   os.write (reinterpret_cast<char *> (&len), 4);
 
-  octave_map::iterator i = m.begin ();
+  auto i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1709,8 +1707,8 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
     = obj.parent_class_name_list ();
   std::list<std::string> pnames = parents ();
 
-  std::list<std::string>::const_iterator p = obj_parents.begin ();
-  std::list<std::string>::const_iterator q = pnames.begin ();
+  auto p = obj_parents.begin ();
+  auto q = pnames.begin ();
 
   while (p != obj_parents.end ())
     {
@@ -1772,8 +1770,7 @@ is derived.
           retval = octave_value (new octave_class (m, id, parents));
         }
 
-      octave_class::exemplar_const_iterator it
-        = octave_class::exemplar_map.find (id);
+      auto it = octave_class::exemplar_map.find (id);
 
       if (it == octave_class::exemplar_map.end ())
         octave_class::exemplar_map[id] = octave_class::exemplar_info (retval);

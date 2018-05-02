@@ -122,7 +122,7 @@ public:
   {
     while (! empty ())
       {
-        iterator it = begin ();
+        auto it = begin ();
         delete (*it);
         erase (it);
       }

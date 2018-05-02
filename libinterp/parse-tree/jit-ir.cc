@@ -50,7 +50,7 @@ namespace octave
   // -------------------- jit_factory --------------------
   jit_factory::~jit_factory (void)
   {
-    for (value_list::iterator iter = m_all_values.begin ();
+    for (auto iter = m_all_values.begin ();
          iter != m_all_values.end (); ++iter)
       delete *iter;
   }
@@ -111,7 +111,7 @@ namespace octave
   jit_block_list::print_dom (std::ostream& os) const
   {
     os << "-------------------- dom info --------------------\n";
-    for (const_iterator iter = begin (); iter != end (); ++iter)
+    for (auto iter = begin (); iter != end (); ++iter)
       {
         assert (*iter);
         (*iter)->print_dom (os);
@@ -125,15 +125,14 @@ namespace octave
   jit_block_list::push_back (jit_block *b)
   {
     m_list.push_back (b);
-    iterator iter = m_list.end ();
+    auto iter = m_list.end ();
     b->stash_location (--iter);
   }
 
   std::ostream&
   operator<<(std::ostream& os, const jit_block_list& blocks)
   {
-    for (jit_block_list::const_iterator iter = blocks.begin ();
-         iter != blocks.end (); ++iter)
+    for (auto iter = blocks.begin (); iter != blocks.end (); ++iter)
       {
         assert (*iter);
         (*iter)->print (os, 0);
@@ -290,7 +289,7 @@ namespace octave
       old_term->remove ();
 
     bool was_empty = end () == begin ();
-    iterator merge_begin = end ();
+    auto merge_begin = end ();
     if (! was_empty)
       --merge_begin;
 
@@ -302,7 +301,7 @@ namespace octave
 
     // now merge_begin points to the start of the new instructions, we must
     // update their parent information
-    for (iterator iter = merge_begin; iter != end (); ++iter)
+    for (auto iter = merge_begin; iter != end (); ++iter)
       {
         jit_instruction *instr = *iter;
         instr->stash_parent (this, iter);
@@ -323,7 +322,7 @@ namespace octave
   jit_block::prepend_after_phi (jit_instruction *instr)
   {
     // FIXME: Make this O(1)
-    for (iterator iter = begin (); iter != end (); ++iter)
+    for (auto iter = begin (); iter != end (); ++iter)
       {
         jit_instruction *temp = *iter;
         if (! isa<jit_phi> (temp))
@@ -346,7 +345,7 @@ namespace octave
   jit_instruction *
   jit_block::insert_before (iterator loc, jit_instruction *instr)
   {
-    iterator iloc = m_instructions.insert (loc, instr);
+    auto iloc = m_instructions.insert (loc, instr);
     instr->stash_parent (this, iloc);
     return instr;
   }
@@ -355,7 +354,7 @@ namespace octave
   jit_block::insert_after (iterator loc, jit_instruction *instr)
   {
     ++loc;
-    iterator iloc = m_instructions.insert (loc, instr);
+    auto iloc = m_instructions.insert (loc, instr);
     instr->stash_parent (this, iloc);
     return instr;
   }
@@ -419,7 +418,7 @@ namespace octave
       os << "NULL";
     os << std::endl;
     os << "  df: ";
-    for (df_iterator iter = df_begin (); iter != df_end (); ++iter)
+    for (auto iter = df_begin (); iter != df_end (); ++iter)
       os << **iter << ' ';
     os << std::endl;
 
@@ -505,7 +504,7 @@ namespace octave
   void
   jit_block::pop_all (void)
   {
-    for (iterator iter = begin (); iter != end (); ++iter)
+    for (auto iter = begin (); iter != end (); ++iter)
       {
         jit_instruction *instr = *iter;
         instr->pop_variable ();
@@ -526,7 +525,7 @@ namespace octave
       }
     os << std::endl;
 
-    for (const_iterator iter = begin (); iter != end (); ++iter)
+    for (auto iter = begin (); iter != end (); ++iter)
       {
         jit_instruction *instr = *iter;
         instr->print (os, indent + 1) << std::endl;
@@ -792,8 +791,8 @@ namespace octave
     resize_arguments (m_contexts.size ());
 
     size_t i;
-    std::vector<context>::const_iterator iter;
-    for (iter = m_contexts.begin (), i = 0; iter != m_contexts.end (); ++iter, ++i)
+    for (auto iter = m_contexts.begin (), i = 0;
+         iter != m_contexts.end (); ++iter, ++i)
       stash_argument (i, iter->m_value);
   }
 

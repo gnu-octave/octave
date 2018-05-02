@@ -199,7 +199,7 @@ namespace octave
     octave_value
     find_method (const std::string& name, const std::string& dispatch_type)
     {
-      fcn_table_const_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -232,7 +232,7 @@ namespace octave
     octave_value
     find_built_in_function (const std::string& name)
     {
-      fcn_table_const_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       return (p != m_fcn_table.end ()
               ? p->second.find_built_in_function () : octave_value ());
@@ -241,7 +241,7 @@ namespace octave
     octave_value
     find_autoload (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       return (p != m_fcn_table.end ()
               ? p->second.find_autoload () : octave_value ());
@@ -261,7 +261,7 @@ namespace octave
 
     octave_value find_user_function (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       return (p != m_fcn_table.end ()
               ? p->second.find_user_function () : octave_value ());
@@ -269,7 +269,7 @@ namespace octave
 
     octave_value find_cmdline_function (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       return (p != m_fcn_table.end ()
               ? p->second.find_cmdline_function () : octave_value ());
@@ -278,7 +278,7 @@ namespace octave
     void install_cmdline_function (const std::string& name,
                                    const octave_value& fcn)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -303,7 +303,7 @@ namespace octave
                                  const octave_value& fcn,
                                  const std::string& file_name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -324,7 +324,7 @@ namespace octave
     void install_user_function (const std::string& name,
                                 const octave_value& fcn)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -347,7 +347,7 @@ namespace octave
     void install_built_in_function (const std::string& name,
                                     const octave_value& fcn)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -383,7 +383,7 @@ namespace octave
 
     void clear_functions (bool force = false)
     {
-      fcn_table_iterator p = m_fcn_table.begin ();
+      auto p = m_fcn_table.begin ();
 
       while (p != m_fcn_table.end ())
         (p++)->second.clear (force);
@@ -408,7 +408,7 @@ namespace octave
     {
       glob_match pattern (pat);
 
-      fcn_table_iterator p = m_fcn_table.begin ();
+      auto p = m_fcn_table.begin ();
 
       while (p != m_fcn_table.end ())
         {
@@ -431,7 +431,7 @@ namespace octave
 
     void clear_user_function (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -447,7 +447,7 @@ namespace octave
     // This clears oct and mex files, including autoloads.
     void clear_dld_function (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -460,7 +460,7 @@ namespace octave
 
     void clear_mex_functions (void)
     {
-      fcn_table_iterator p = m_fcn_table.begin ();
+      auto p = m_fcn_table.begin ();
 
       while (p != m_fcn_table.end ())
         (p++)->second.clear_mex_function ();
@@ -491,7 +491,7 @@ namespace octave
     void install_built_in_dispatch (const std::string& name,
                                     const std::string& klass)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -640,7 +640,7 @@ namespace octave
     {
       std::list<std::string> retval;
 
-      const_parent_map_iterator it = m_parent_map.find (dispatch_type);
+      auto it = m_parent_map.find (dispatch_type);
 
       if (it != m_parent_map.end ())
         retval = it->second;
@@ -669,7 +669,7 @@ namespace octave
 
     fcn_info * get_fcn_info (const std::string& name)
     {
-      fcn_table_iterator p = m_fcn_table.find (name);
+      auto p = m_fcn_table.find (name);
       return p != m_fcn_table.end () ? &p->second : nullptr;
     }
 

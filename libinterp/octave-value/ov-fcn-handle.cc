@@ -160,7 +160,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
         }
       else
         {
-          str_ov_map::iterator it = overloads.find (dispatch_type);
+          auto it = overloads.find (dispatch_type);
 
           if (it == overloads.end ())
             {
@@ -172,7 +172,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
               std::list<std::string> plist
                 = symtab.parent_classes (dispatch_type);
 
-              std::list<std::string>::const_iterator pit = plist.begin ();
+              auto pit = plist.begin ();
 
               while (pit != plist.end ())
                 {
@@ -240,8 +240,8 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
       for (int i = 0; i < btyp_num_types && retval; i++)
         retval = builtin_overloads[i].is_copy_of (h.builtin_overloads[i]);
 
-      str_ov_map::const_iterator iter = overloads.begin ();
-      str_ov_map::const_iterator hiter = h.overloads.begin ();
+      auto iter = overloads.begin ();
+      auto hiter = h.overloads.begin ();
       for (; iter != overloads.end () && retval; iter++, hiter++)
         retval = (iter->first == hiter->first)
                  && (iter->second.is_copy_of (hiter->second));
@@ -2011,7 +2011,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
               // Verify that each argument is either a named param, a constant,
               // or a defined identifier.
               int iarg = 0;
-              for (octave::tree_argument_list::iterator it = arg_list->begin ();
+              for (auto it = arg_list->begin ();
                    it != arg_list->end (); ++it, ++iarg)
                 {
                   octave::tree_expression *elt = *it;

@@ -321,7 +321,7 @@ namespace octave
   // focus of the editor
   void file_editor::enable_menu_shortcuts (bool enable)
   {
-    QHash<QMenu*, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
+    auto i = m_hash_menu_text.constBegin ();
 
     while (i != m_hash_menu_text.constEnd ())
       {
@@ -377,8 +377,7 @@ namespace octave
     QStringList fet_index;
 
     // save all open tabs before they are definitely closed
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-         p != m_editor_tab_map.end (); p++)
+    for (auto p = m_editor_tab_map.begin (); p != m_editor_tab_map.end (); p++)
       {
         QString file_name = p->first;   // get file name of tab
         if (! file_name.isEmpty ())      // do not append unnamed files
@@ -949,7 +948,7 @@ namespace octave
           m_tmp_closed_files << ""; // no new name, just removing this file
 
         // Get and store the related encoding
-        for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
+        for (auto p = m_editor_tab_map.begin ();
              p != m_editor_tab_map.end (); p++)
           {
             if (editor_tab == p->second.fet_ID)
@@ -2316,7 +2315,7 @@ namespace octave
     emit fetab_file_name_query (nullptr);
 
     // Loop over all open files and pick those within old_dir
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
+    for (auto p = m_editor_tab_map.begin ();
          p != m_editor_tab_map.end (); p++)
       {
         QString rel_path_to_file = old_dir.relativeFilePath (p->first);
@@ -2367,7 +2366,7 @@ namespace octave
     // Check all tabs for the given file name
     QWidget *retval = nullptr;
 
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
+    for (auto p = m_editor_tab_map.begin ();
          p != m_editor_tab_map.end (); p++)
       {
         QString tab_file = p->first;

@@ -34,7 +34,7 @@ namespace octave
   void
   tree_checker::visit_argument_list (tree_argument_list& lst)
   {
-    tree_argument_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -101,7 +101,7 @@ namespace octave
   void
   tree_checker::visit_decl_init_list (tree_decl_init_list& lst)
   {
-    tree_decl_init_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -243,7 +243,7 @@ namespace octave
   void
   tree_checker::visit_if_command_list (tree_if_command_list& lst)
   {
-    tree_if_command_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -264,7 +264,7 @@ namespace octave
 
     std::list<tree_argument_list *> lst = expr.arg_lists ();
 
-    std::list<tree_argument_list *>::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -278,7 +278,7 @@ namespace octave
   void
   tree_checker::visit_matrix (tree_matrix& lst)
   {
-    tree_matrix::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -292,7 +292,7 @@ namespace octave
   void
   tree_checker::visit_cell (tree_cell& lst)
   {
-    tree_matrix::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -346,7 +346,7 @@ namespace octave
   void
   tree_checker::visit_parameter_list (tree_parameter_list& lst)
   {
-    tree_parameter_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -382,7 +382,7 @@ namespace octave
   void
   tree_checker::visit_return_list (tree_return_list& lst)
   {
-    tree_return_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -453,7 +453,7 @@ namespace octave
   void
   tree_checker::visit_switch_case_list (tree_switch_case_list& lst)
   {
-    tree_switch_case_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {

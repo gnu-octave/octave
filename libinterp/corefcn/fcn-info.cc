@@ -196,7 +196,7 @@ namespace octave
                 const std::list<std::string>& plist =
                   symtab.parent_classes (dispatch_type);
 
-                std::list<std::string>::const_iterator it = plist.begin ();
+                auto it = plist.begin ();
 
                 while (it != plist.end ())
                   {
@@ -398,7 +398,7 @@ namespace octave
 
             if (! fcn_file.empty ())
               {
-                str_val_iterator r = local_functions.find (fcn_file);
+                auto r = local_functions.find (fcn_file);
 
                 if (r != local_functions.end ())
                   {
@@ -420,7 +420,7 @@ namespace octave
 
             if (! dir_name.empty ())
               {
-                str_val_iterator q = private_functions.find (dir_name);
+                auto q = private_functions.find (dir_name);
 
                 if (q == private_functions.end ())
                   {
@@ -464,7 +464,7 @@ namespace octave
 
     // Class constructors.  The class name and function name are the same.
 
-    str_val_iterator q = class_constructors.find (name);
+    auto q = class_constructors.find (name);
 
     if (q == class_constructors.end ())
       {
@@ -601,7 +601,7 @@ namespace octave
 
         if (! dir_name.empty ())
           {
-            str_val_iterator q = private_functions.find (dir_name);
+            auto q = private_functions.find (dir_name);
 
             if (q == private_functions.end ())
               {
@@ -638,7 +638,7 @@ namespace octave
 
         if (! fcn_file.empty ())
           {
-            str_val_iterator r = local_functions.find (fcn_file);
+            auto r = local_functions.find (fcn_file);
 
             if (r != local_functions.end ())
               {
@@ -671,7 +671,7 @@ namespace octave
   {
     octave_value retval;
 
-    str_val_iterator q = class_methods.find (dispatch_type);
+    auto q = class_methods.find (dispatch_type);
 
     if (q == class_methods.end ())
       {

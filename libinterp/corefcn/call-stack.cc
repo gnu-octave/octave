@@ -137,7 +137,7 @@ namespace octave
 
     size_t k = cs.size ();
 
-    for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+    for (auto p = cs.rbegin (); p != cs.rend (); p++)
       {
         octave_function *f = (*p).m_fcn;
 
@@ -165,7 +165,7 @@ namespace octave
   {
     octave_user_code *retval = nullptr;
 
-    const_iterator p = cs.end ();
+    auto p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -193,7 +193,7 @@ namespace octave
   {
     int retval = -1;
 
-    const_iterator p = cs.end ();
+    auto p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -219,7 +219,7 @@ namespace octave
   {
     int retval = -1;
 
-    const_iterator p = cs.end ();
+    auto p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -335,7 +335,7 @@ namespace octave
   {
     bool retval = true;
 
-    const_iterator p = cs.end ();
+    auto p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -550,7 +550,7 @@ namespace octave
 
     if (nframes > 0)
       {
-        for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+        for (auto p = cs.rbegin (); p != cs.rend (); p++)
           {
             const stack_frame& elt = *p;
 

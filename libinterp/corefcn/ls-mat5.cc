@@ -989,8 +989,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               {
                 octave_value tmp;
 
-                for (octave_map::iterator p0 = m2.begin () ;
-                     p0 != m2.end (); p0++)
+                for (auto p0 = m2.begin (); p0 != m2.end (); p0++)
                   {
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
@@ -2178,7 +2177,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
 
-      for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+      for (auto i = m.begin (); i != m.end (); i++)
         fieldcnt++;
 
       ret += 16 + fieldcnt * (max_namelen + 1);
@@ -2186,7 +2185,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       for (octave_idx_type j = 0; j < nel; j++)
         {
 
-          for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+          for (auto i = m.begin (); i != m.end (); i++)
             {
               const Cell elts = m.contents (i);
 

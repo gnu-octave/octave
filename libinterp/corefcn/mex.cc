@@ -2128,7 +2128,7 @@ public:
     // We can't use mex::free here because it modifies memlist.
     while (! memlist.empty ())
       {
-        std::set<void *>::iterator p = memlist.begin ();
+        auto p = memlist.begin ();
         xfree (*p);
         memlist.erase (p);
       }
@@ -2136,7 +2136,7 @@ public:
     // We can't use mex::free_value here because it modifies arraylist.
     while (! arraylist.empty ())
       {
-        std::set<mxArray *>::iterator p = arraylist.begin ();
+        auto p = arraylist.begin ();
         delete *p;
         arraylist.erase (p);
       }
@@ -2226,7 +2226,7 @@ public:
       {
         v = std::realloc (ptr, n);
 
-        std::set<void *>::iterator p = memlist.find (ptr);
+        auto p = memlist.find (ptr);
 
         if (v && p != memlist.end ())
           {
@@ -2255,7 +2255,7 @@ public:
       {
         unmark (ptr);
 
-        std::set<void *>::iterator p = global_memlist.find (ptr);
+        auto p = global_memlist.find (ptr);
 
         if (p != global_memlist.end ())
           {
@@ -2292,7 +2292,7 @@ public:
   // made persistent, or because it was already freed.
   void unmark (void *ptr)
   {
-    std::set<void *>::iterator p = memlist.find (ptr);
+    auto p = memlist.find (ptr);
 
     if (p != memlist.end ())
       memlist.erase (p);
@@ -2310,7 +2310,7 @@ public:
 
   void unmark_array (mxArray *ptr)
   {
-    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+    auto p = arraylist.find (ptr);
 
     if (p != arraylist.end ())
       arraylist.erase (p);
@@ -2330,7 +2330,7 @@ public:
   // Unmark a pointer as one we allocated.
   void unmark_foreign (void *ptr)
   {
-    std::set<void *>::iterator p = foreign_memlist.find (ptr);
+    auto p = foreign_memlist.find (ptr);
 
     if (p != foreign_memlist.end ())
       foreign_memlist.erase (p);
@@ -2353,7 +2353,7 @@ public:
   {
     bool inlist = false;
 
-    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+    auto p = arraylist.find (ptr);
 
     if (p != arraylist.end ())
       {
@@ -2412,7 +2412,7 @@ private:
   // Unmark a pointer as one we allocated.
   void global_unmark (void *ptr)
   {
-    std::set<void *>::iterator p = global_memlist.find (ptr);
+    auto p = global_memlist.find (ptr);
 
     if (p != global_memlist.end ())
       global_memlist.erase (p);
@@ -3658,7 +3658,7 @@ mexUnlock (void)
     {
       const char *fname = mexFunctionName ();
 
-      std::map<std::string,int>::iterator p = mex_lock_count.find (fname);
+      auto p = mex_lock_count.find (fname);
 
       if (p != mex_lock_count.end ())
         {

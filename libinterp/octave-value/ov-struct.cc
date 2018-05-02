@@ -79,7 +79,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 
   std::string nm = idx(0).string_value ();
 
-  octave_map::const_iterator p = map.seek (nm);
+  auto p = map.seek (nm);
 
   if (p != map.end ())
     retval = map.contents (p);
@@ -135,7 +135,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            auto p = idx.begin ();
             octave_value_list key_idx = *++p;
 
             const Cell tmp = dotref (key_idx);
@@ -198,7 +198,7 @@ octave_struct::subsref (const std::string& type,
       {
         if (type.length () > 1 && type[1] == '.')
           {
-            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            auto p = idx.begin ();
             octave_value_list key_idx = *++p;
 
             const Cell tmp = dotref (key_idx, auto_add);
@@ -291,7 +291,7 @@ octave_struct::subsasgn (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
+                auto p = idx.begin ();
                 octave_value_list t_idx = *p;
 
                 octave_value_list key_idx = *++p;
@@ -313,7 +313,7 @@ octave_struct::subsasgn (const std::string& type,
                 std::string next_type = type.substr (2);
 
                 Cell tmpc (1, 1);
-                octave_map::iterator pkey = map.seek (key);
+                auto pkey = map.seek (key);
                 if (pkey != map.end ())
                   {
                     map.contents (pkey).make_unique ();
@@ -365,7 +365,7 @@ octave_struct::subsasgn (const std::string& type,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            octave_map::iterator pkey = map.seek (key);
+            auto pkey = map.seek (key);
             if (pkey != map.end ())
               {
                 map.contents (pkey).make_unique ();
@@ -414,7 +414,7 @@ octave_struct::subsasgn (const std::string& type,
       {
         if (n > 1 && type[1] == '.')
           {
-            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            auto p = idx.begin ();
             octave_value_list key_idx = *++p;
             octave_value_list idxf = idx.front ();
 
@@ -550,7 +550,7 @@ octave_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (auto p = map.begin (); p != map.end (); p++)
     {
       std::string key = map.key (p);
 
@@ -1212,7 +1212,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
           std::string next_type = type.substr (1);
 
           octave_value tmp;
-          octave_map::iterator pkey = map.seek (key);
+          auto pkey = map.seek (key);
           if (pkey != map.end ())
             {
               map.contents (pkey).make_unique ();
@@ -1264,7 +1264,7 @@ octave_scalar_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (auto p = map.begin (); p != map.end (); p++)
     {
       std::string key = map.key (p);
 

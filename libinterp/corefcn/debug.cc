@@ -66,7 +66,7 @@ intmap_to_ov (const octave::bp_table::intmap& line)
 
   for (size_t i = 0; i < line.size (); i++)
     {
-      octave::bp_table::const_intmap_iterator p = line.find (i);
+      auto p = line.find (i);
 
       if (p != line.end ())
         {
@@ -504,7 +504,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
         {
           octave_map outer (dim_vector (3,1));
           outer.assign ("bkpt", Cell (retmap));
-          for (octave_map::const_iterator f = ew.begin (); f != ew.end (); f++)
+          for (auto f = ew.begin (); f != ew.end (); f++)
             outer.setfield (f->first, ew.contents (f));
 
           retval = octave_value (outer);

@@ -110,14 +110,14 @@ namespace octave
 
     while (! m_args.empty ())
       {
-        std::list<tree_argument_list *>::iterator p = m_args.begin ();
+        auto p = m_args.begin ();
         delete *p;
         m_args.erase (p);
       }
 
     while (! m_dyn_field.empty ())
       {
-        std::list<tree_expression *>::iterator p = m_dyn_field.begin ();
+        auto p = m_dyn_field.begin ();
         delete *p;
         m_dyn_field.erase (p);
       }
@@ -240,9 +240,9 @@ namespace octave
 
     int n = m_args.size ();
 
-    std::list<tree_argument_list *>::iterator p_args = m_args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = m_arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = m_dyn_field.begin ();
+    auto p_args = m_args.begin ();
+    auto p_arg_nm = m_arg_nm.begin ();
+    auto p_dyn_field = m_dyn_field.begin ();
 
     retval = m_expr->lvalue (tw);
 

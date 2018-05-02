@@ -586,8 +586,7 @@ namespace octave
           }
       }
 
-    for (std::vector<jit_type *>::const_iterator iter = m_args.begin ();
-         iter != m_args.end (); ++iter)
+    for (auto iter = m_args.begin (); iter != m_args.end (); ++iter)
       {
         jit_type *ty = *iter;
         assert (ty);
@@ -751,7 +750,7 @@ namespace octave
     // FIXME: We should be treating arguments like a list, not a vector.
     // Shouldn't matter much for now, as the number of arguments shouldn't
     // be much bigger than 4
-    llvm::Function::arg_iterator iter = m_llvm_function->arg_begin ();
+    auto iter = m_llvm_function->arg_begin ();
     if (sret ())
       ++iter;
 
@@ -804,8 +803,7 @@ namespace octave
   // -------------------- jit_operation --------------------
   jit_operation::~jit_operation (void)
   {
-    for (generated_map::iterator iter = m_generated.begin ();
-         iter != m_generated.end (); ++iter)
+    for (auto iter = m_generated.begin (); iter != m_generated.end (); ++iter)
       {
         delete iter->first;
         delete iter->second;
@@ -901,7 +899,7 @@ namespace octave
   jit_operation::do_generate (const signature_vec& types) const
   {
     static jit_function null_overload;
-    generated_map::const_iterator find = m_generated.find (&types);
+    auto find = m_generated.find (&types);
     if (find != m_generated.end ())
       {
         if (find->second)
@@ -1975,7 +1973,7 @@ namespace octave
     std::vector<jit_type *> args;
     args.resize (1);
 
-    for (std::map<std::string, jit_type *>::iterator iter = m_builtins.begin ();
+    for (auto iter = m_builtins.begin ();
          iter != m_builtins.end (); ++iter)
       {
         jit_type *btype = iter->second;
@@ -2035,7 +2033,7 @@ namespace octave
   jit_type*
   jit_typeinfo::do_get_intN (size_t nbits) const
   {
-    std::map<size_t, jit_type *>::const_iterator iter = m_ints.find (nbits);
+    auto iter = m_ints.find (nbits);
     if (iter != m_ints.end ())
       return iter->second;
 

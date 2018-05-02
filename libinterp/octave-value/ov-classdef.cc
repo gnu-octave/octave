@@ -1330,7 +1330,7 @@ cdef_object_scalar::subsref (const std::string& type,
 
             if (type.length () > 1 && type[1] == '(')
               {
-                std::list<octave_value_list>::const_iterator it = idx.begin ();
+                auto it = idx.begin ();
 
                 args = *++it;
 
@@ -1880,7 +1880,7 @@ cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& supercl
 cdef_method
 cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 {
-  method_iterator it = method_map.find (nm);
+  auto it = method_map.find (nm);
 
   if (it == method_map.end ())
     {
@@ -2154,7 +2154,7 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
 cdef_property
 cdef_class::cdef_class_rep::find_property (const std::string& nm)
 {
-  property_iterator it = property_map.find (nm);
+  auto it = property_map.find (nm);
 
   if (it != property_map.end ())
     {
@@ -2325,7 +2325,7 @@ cdef_class::cdef_class_rep::get_names (void)
 void
 cdef_class::cdef_class_rep::delete_object (cdef_object obj)
 {
-  method_iterator it = method_map.find ("delete");
+  auto it = method_map.find ("delete");
 
   if (it != method_map.end ())
     {
@@ -2901,8 +2901,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                   // detect which ones are invalid and do not correspond to a
                   // defined property.
 
-                  std::map<std::string, octave_value>::iterator git =
-                    get_methods.find (prop_name);
+                  auto git = get_methods.find (prop_name);
 
                   if (git != get_methods.end ())
                     {
@@ -2911,8 +2910,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                       get_methods.erase (git);
                     }
 
-                  std::map<std::string, octave_value>::iterator sit =
-                    set_methods.find (prop_name);
+                  auto sit = set_methods.find (prop_name);
 
                   if (sit != set_methods.end ())
                     {
@@ -3340,8 +3338,7 @@ map2Cell (const std::map<T1, T2>& m)
   Cell retval (1, m.size ());
   int i = 0;
 
-  for (typename std::map<T1, T2>::const_iterator it = m.begin ();
-       it != m.end (); ++it, ++i)
+  for (auto it = m.begin (); it != m.end (); ++it, ++i)
     {
       retval(i) = to_ov (it->second);
     }
@@ -3766,7 +3763,7 @@ cdef_class
 cdef_manager::find_class (const std::string& name, bool error_if_not_found,
                           bool load_if_not_found)
 {
-  std::map<std::string, cdef_class>::iterator it = m_all_classes.find (name);
+  auto it = m_all_classes.find (name);
 
   if (it == m_all_classes.end ())
     {
@@ -3844,8 +3841,7 @@ cdef_manager::find_package (const std::string& name, bool error_if_not_found,
 {
   cdef_package retval;
 
-  std::map<std::string, cdef_package>::const_iterator it
-    = m_all_packages.find (name);
+  auto it = m_all_packages.find (name);
 
   if (it != m_all_packages.end ())
     {

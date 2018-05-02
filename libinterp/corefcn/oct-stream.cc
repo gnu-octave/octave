@@ -3391,7 +3391,7 @@ namespace octave
                               Array<octave_idx_type> row, int& done_after)
   {
     const textscan_format_elt *elem = fmt_list.first ();
-    std::list<octave_value>::iterator out = retval.begin ();
+    auto out = retval.begin ();
     bool no_conversions = true;
     bool done = false;
     bool conversion_failed = false;       // Record for ReturnOnError
@@ -6312,8 +6312,7 @@ namespace octave
 
     octave_idx_type j = 0;
 
-    for (std::list<void *>::const_iterator it = input_buf_list.begin ();
-         it != input_buf_list.end (); it++)
+    for (auto it = input_buf_list.begin (); it != input_buf_list.end (); it++)
       {
         SRC_T *data = static_cast<SRC_T *> (*it);
 
@@ -7358,7 +7357,7 @@ namespace octave
       retval = lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        auto iter = list.find (fid);
 
         if (iter == list.end ())
           err_invalid_file_id (fid, who);
@@ -7384,7 +7383,7 @@ namespace octave
     if (fid < 3)
       err_invalid_file_id (fid, who);
 
-    ostrl_map::iterator iter = list.find (fid);
+    auto iter = list.find (fid);
 
     if (iter == list.end ())
       err_invalid_file_id (fid, who);
@@ -7431,7 +7430,7 @@ namespace octave
         list[2].flush ();
       }
 
-    for (ostrl_map::iterator iter = list.begin (); iter != list.end (); )
+    for (auto iter = list.begin (); iter != list.end (); )
       {
         int fid = iter->first;
         if (fid < 3)  // Don't delete stdin, stdout, stderr
@@ -7475,7 +7474,7 @@ namespace octave
       os = lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        auto iter = list.find (fid);
 
         if (iter == list.end ())
           return retval;

@@ -121,7 +121,7 @@ namespace octave
 
     symbol_record find_symbol (const std::string& name)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         return insert (name);
@@ -179,7 +179,7 @@ namespace octave
 
     void rename (const std::string& old_name, const std::string& new_name)
     {
-      table_iterator p = m_symbols.find (old_name);
+      auto p = m_symbols.find (old_name);
 
       if (p != m_symbols.end ())
         {
@@ -196,7 +196,7 @@ namespace octave
     void assign (const std::string& name, const octave_value& value,
                  bool force_add)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         {
@@ -216,7 +216,7 @@ namespace octave
 
     void force_assign (const std::string& name, const octave_value& value)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         {
@@ -230,7 +230,7 @@ namespace octave
 
     octave_value varval (const std::string& name) const
     {
-      table_const_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
               ? p->second.varval (m_context) : octave_value ());
@@ -240,7 +240,7 @@ namespace octave
     {
       bool retval = false;
 
-      table_const_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
         {
@@ -260,7 +260,7 @@ namespace octave
 
     void pop_context (void)
     {
-      table_iterator tbl_it = m_symbols.begin ();
+      auto tbl_it = m_symbols.begin ();
 
       while (tbl_it != m_symbols.end ())
         {
@@ -303,7 +303,7 @@ namespace octave
 
     void clear_variable (const std::string& name)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
         p->second.clear (m_context);
@@ -462,7 +462,7 @@ namespace octave
 
     bool is_local_variable (const std::string& name) const
     {
-      table_const_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
               && ! p->second.is_global ()
@@ -471,7 +471,7 @@ namespace octave
 
     bool is_global (const std::string& name) const
     {
-      table_const_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       return p != m_symbols.end () && p->second.is_global ();
     }

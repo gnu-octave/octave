@@ -1915,8 +1915,7 @@ property::create (const std::string& name, const graphics_handle& h,
 
       graphics_object go;
 
-      std::map<caseless_str, graphics_object>::const_iterator it =
-        dprop_obj_map.find (go_name);
+      auto it = dprop_obj_map.find (go_name);
 
       if (it == dprop_obj_map.end ())
         {
@@ -2205,7 +2204,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
 
           if (remove)
             {
-              pval_map_iterator p = pval_map.find (pname);
+              auto p = pval_map.find (pname);
 
               if (p != pval_map.end ())
                 pval_map.erase (p);
@@ -2296,13 +2295,13 @@ property_list::lookup (const caseless_str& name) const
           std::transform (pname.begin (), pname.end (), pname.begin (),
                           tolower);
 
-          plist_map_const_iterator p = find (pfx);
+          auto p = find (pfx);
 
           if (p != end ())
             {
               const pval_map_type& pval_map = p->second;
 
-              pval_map_const_iterator q = pval_map.find (pname);
+              auto q = pval_map.find (pname);
 
               if (q != pval_map.end ())
                 retval = q->second;
@@ -2318,7 +2317,7 @@ property_list::as_struct (const std::string& prefix_arg) const
 {
   octave_scalar_map m;
 
-  for (plist_map_const_iterator p = begin (); p != end (); p++)
+  for (auto p = begin (); p != end (); p++)
     {
       std::string prefix = prefix_arg + p->first;
 
@@ -2622,7 +2621,7 @@ gh_manager::do_get_handle (bool integer_figure_handle)
       // fractional part.  To avoid running out of integers, we recycle the
       // integer part but tack on a new random part each time.
 
-      free_list_iterator p = handle_free_list.begin ();
+      auto p = handle_free_list.begin ();
 
       if (p != handle_free_list.end ())
         {
@@ -2648,7 +2647,7 @@ gh_manager::do_free (const graphics_handle& h)
       if (h.value () == 0)
         error ("graphics_handle::free: can't delete root figure");
 
-      iterator p = handle_map.find (h);
+      auto p = handle_map.find (h);
 
       if (p == handle_map.end ())
         error ("graphics_handle::free: invalid object %g", h.value ());
@@ -2687,7 +2686,7 @@ void
 gh_manager::do_renumber_figure (const graphics_handle& old_gh,
                                 const graphics_handle& new_gh)
 {
-  iterator p = handle_map.find (old_gh);
+  auto p = handle_map.find (old_gh);
 
   if (p == handle_map.end ())
     error ("graphics_handle::free: invalid object %g", old_gh.value ());
@@ -3050,7 +3049,7 @@ base_properties::set_from_list (base_graphics_object& bgo,
 {
   std::string go_name = graphics_object_name ();
 
-  property_list::plist_map_const_iterator plist = defaults.find (go_name);
+  auto plist = defaults.find (go_name);
 
   if (plist != defaults.end ())
     {
@@ -3091,8 +3090,7 @@ base_properties::set_from_list (base_graphics_object& bgo,
 octave_value
 base_properties::get_dynamic (const caseless_str& pname) const
 {
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (pname);
+  auto it = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get: unknown property "%s")", pname.c_str ());
@@ -3105,8 +3103,7 @@ base_properties::get_dynamic (bool all) const
 {
   octave_scalar_map m;
 
-  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator
-       it = all_props.begin (); it != all_props.end (); ++it)
+  for (auto it = all_props.begin (); it != all_props.end (); ++it)
     if (all || ! it->second.is_hidden ())
       m.assign (it->second.get_name (), it->second.get ());
 
@@ -3134,8 +3131,7 @@ void
 base_properties::set_dynamic (const caseless_str& pname,
                               const octave_value& val)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::iterator it =
-    all_props.find (pname);
+  auto it = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(set: unknown property "%s")", pname.c_str ());
@@ -3150,8 +3146,7 @@ base_properties::set_dynamic (const caseless_str& pname,
 property
 base_properties::get_property_dynamic (const caseless_str& pname)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (pname);
+  auto it = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get_property: unknown property "%s")", pname.c_str ());

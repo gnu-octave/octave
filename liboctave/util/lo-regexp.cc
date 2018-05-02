@@ -518,7 +518,7 @@ namespace octave
         // Determine replacement length
         const size_t replen = repstr.size () - 2*num_tokens;
         int delta = 0;
-        regexp::match_data::const_iterator p = rx_lst.begin ();
+        auto p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();
@@ -595,7 +595,7 @@ namespace octave
         // Determine repstr length
         const size_t replen = repstr.size ();
         int delta = 0;
-        regexp::match_data::const_iterator p = rx_lst.begin ();
+        auto p = rx_lst.begin ();
         for (size_t i = 0; i < num_matches; i++)
           {
             octave_quit ();

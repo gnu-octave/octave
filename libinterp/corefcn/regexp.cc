@@ -408,7 +408,7 @@ octregexp (const octave_value_list& args, int nargout,
 
   if (options.once ())
     {
-      octave::regexp::match_data::const_iterator p = rx_lst.begin ();
+      auto p = rx_lst.begin ();
 
       retval(4) = (sz ? p->tokens () : Cell ());
       retval(3) = (sz ? p->match_string () : "");

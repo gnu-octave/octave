@@ -1013,7 +1013,7 @@ static void
 print_descriptor (std::ostream& os, std::list<whos_parameter> params)
 {
   // This method prints a line of information on a given symbol
-  std::list<whos_parameter>::iterator i = params.begin ();
+  auto i = params.begin ();
   std::ostringstream param_buf;
 
   octave::preserve_stream_state stream_state (os);
@@ -1154,7 +1154,7 @@ private:
     {
       std::string dims_str = get_dims_str (varval);
 
-      std::list<whos_parameter>::const_iterator i = params.begin ();
+      auto i = params.begin ();
 
       octave::preserve_stream_state stream_state (os);
 
@@ -1330,7 +1330,7 @@ public:
     Cell nesting_info (len, 1);
     Cell persistent_info (len, 1);
 
-    std::list<symbol_info>::const_iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     for (size_t j = 0; j < len; j++)
       {

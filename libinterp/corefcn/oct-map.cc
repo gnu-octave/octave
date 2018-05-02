@@ -65,14 +65,14 @@ octave_fields::isfield (const std::string& field) const
 octave_idx_type
 octave_fields::getfield (const std::string& field) const
 {
-  fields_rep::iterator p = rep->find (field);
+  auto p = rep->find (field);
   return (p != rep->end ()) ? p->second : -1;
 }
 
 octave_idx_type
 octave_fields::getfield (const std::string& field)
 {
-  fields_rep::iterator p = rep->find (field);
+  auto p = rep->find (field);
   if (p != rep->end ())
     return p->second;
   else
@@ -86,7 +86,7 @@ octave_fields::getfield (const std::string& field)
 octave_idx_type
 octave_fields::rmfield (const std::string& field)
 {
-  fields_rep::iterator p = rep->find (field);
+  auto p = rep->find (field);
   if (p == rep->end ())
     return -1;
   else
@@ -126,8 +126,8 @@ octave_fields::equal_up_to_order (const octave_fields& other,
 {
   bool retval = true;
 
-  iterator p = begin ();
-  iterator q = other.begin ();
+  auto p = begin ();
+  auto q = other.begin ();
   for (; p != end () && q != other.end (); p++, q++)
     {
       if (p->first == q->first)
@@ -1193,7 +1193,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
                     const Cell& rhs)
 {
   Cell tmp;
-  iterator p = seek (k);
+  auto p = seek (k);
   Cell& ref = (p != end () ? contents (p) : tmp);
 
   if (&ref == &tmp)
@@ -1322,9 +1322,9 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (nfields () == rb.nfields ())
     {
-      for (const_iterator pa = begin (); pa != end (); pa++)
+      for (auto pa = begin (); pa != end (); pa++)
         {
-          const_iterator pb = rb.seek (key (pa));
+          auto pb = rb.seek (key (pa));
 
           if (pb == rb.end ())
             error ("field name mismatch in structure concatenation");

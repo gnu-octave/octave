@@ -1410,7 +1410,7 @@ make_idx_args (const std::string& type,
   Cell type_field (1, len);
   Cell subs_field (1, len);
 
-  std::list<octave_value_list>::const_iterator p = idx.begin ();
+  auto p = idx.begin ();
 
   for (size_t i = 0; i < len; i++)
     {

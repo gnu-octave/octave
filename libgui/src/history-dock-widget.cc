@@ -166,9 +166,8 @@ namespace octave
     QString text;
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
-    QModelIndexList::iterator it;
     bool prev_valid_row = false;
-    for (it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         if ((*it).isValid ())
           {
@@ -185,8 +184,7 @@ namespace octave
   {
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
-    QModelIndexList::iterator it;
-    for (it = rows.begin () ; it != rows.end (); it++)
+    for (auto it = rows.begin () ; it != rows.end (); it++)
       {
         if ((*it).isValid ())
           emit command_double_clicked ((*it).data ().toString ());
@@ -200,7 +198,7 @@ namespace octave
     QModelIndexList rows = selectionModel->selectedRows ();
 
     bool prev_valid_row = false;
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         if ((*it).isValid ())
           {

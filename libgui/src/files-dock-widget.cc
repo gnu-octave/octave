@@ -550,7 +550,7 @@ namespace octave
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         QFileInfo file = m_file_system_model->fileInfo (*it);
         if (file.exists ())
@@ -564,7 +564,7 @@ namespace octave
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         QFileInfo file = m_file_system_model->fileInfo (*it);
         if (file.exists ())
@@ -577,7 +577,7 @@ namespace octave
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       open_item_in_app (*it);
   }
 
@@ -588,7 +588,7 @@ namespace octave
 
     QStringList selection;
 
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         QFileInfo info = m_file_system_model->fileInfo (*it);
 
@@ -669,7 +669,7 @@ namespace octave
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         QModelIndex index = *it;
 

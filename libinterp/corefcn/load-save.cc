@@ -993,7 +993,7 @@ save_fields (std::ostream& os, const octave_scalar_map& m,
 
   size_t saved = 0;
 
-  for (octave_scalar_map::const_iterator it = m.begin (); it != m.end (); it++)
+  for (auto it = m.begin (); it != m.end (); it++)
     {
       std::string empty_str;
 

@@ -49,8 +49,8 @@ public:
 
   bool operator < (const std::string& s) const
   {
-    const_iterator p1 = begin ();
-    const_iterator p2 = s.begin ();
+    auto p1 = begin ();
+    auto p2 = s.begin ();
 
     while (p1 != end () && p2 != s.end ())
       {
@@ -75,8 +75,8 @@ public:
   // Case-insensitive comparison.
   bool compare (const std::string& s, size_t limit = std::string::npos) const
   {
-    const_iterator p1 = begin ();
-    const_iterator p2 = s.begin ();
+    auto p1 = begin ();
+    auto p2 = s.begin ();
 
     size_t k = 0;
 

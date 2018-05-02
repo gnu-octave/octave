@@ -240,14 +240,14 @@ public:
 
   void run (const octave_value_list& initial_args = octave_value_list ())
   {
-    iterator p = fcn_map.begin ();
+    auto p = fcn_map.begin ();
 
     while (p != fcn_map.end ())
       {
         std::string hook_fcn_id = p->first;
         hook_function hook_fcn = p->second;
 
-        iterator q = p++;
+        auto q = p++;
 
         if (hook_fcn.is_valid ())
           hook_fcn.eval (initial_args);

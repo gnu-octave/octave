@@ -74,7 +74,7 @@ namespace octave
 
     tree_expression * remove_front (void)
     {
-      iterator p = begin ();
+      auto p = begin ();
       tree_expression *retval = *p;
       erase (p);
       return retval;

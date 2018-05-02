@@ -60,7 +60,7 @@ namespace octave
   {
     std::list<std::string> removed_fcns;
 
-    for (iterator p = m_lib_list.begin (); p != m_lib_list.end (); p++)
+    for (auto p = m_lib_list.begin (); p != m_lib_list.end (); p++)
       {
         if (*p == shl)
           {

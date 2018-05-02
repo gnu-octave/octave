@@ -53,7 +53,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -231,7 +231,7 @@ namespace octave
 
     std::list<octave_value_list> args;
 
-    iterator p = begin ();
+    auto p = begin ();
     for (int k = 0; k < len; k++)
       {
         if (stash_object)

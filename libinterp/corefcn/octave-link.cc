@@ -257,7 +257,7 @@ Undocumented internal function.
       nel -= 2;
       Cell items (dim_vector (1, nel));
 
-      std::list<std::string>::iterator it = items_lst.begin ();
+      auto it = items_lst.begin ();
 
       for (int idx = 0; idx < nel; idx++, it++)
         items.xelem (idx) = *it;

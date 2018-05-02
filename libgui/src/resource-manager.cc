@@ -55,11 +55,11 @@ namespace octave
   static QString
   default_qt_settings_file (void)
   {
-    std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
+    std::string dsf = sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
     if (dsf.empty ())
-      dsf = (octave::config::oct_etc_dir ()
-             + octave::sys::file_ops::dir_sep_str ()
+      dsf = (config::oct_etc_dir ()
+             + sys::file_ops::dir_sep_str ()
              + "default-qt-settings");
 
     return QString::fromStdString (dsf);
@@ -94,9 +94,9 @@ namespace octave
   QString resource_manager::get_gui_translation_dir (void)
   {
     // get environment variable for the locale dir (e.g. from run-octave)
-    std::string dldir = octave::sys::env::getenv ("OCTAVE_LOCALE_DIR");
+    std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
     if (dldir.empty ())
-      dldir = octave::config::oct_locale_dir (); // env-var empty, load the default location
+      dldir = config::oct_locale_dir (); // env-var empty, load the default location
     return QString::fromStdString (dldir);
   }
 

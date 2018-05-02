@@ -37,12 +37,12 @@ namespace octave
 {
   void octave_cmd_exec::execute (void)
   {
-    std::string pending_input = octave::command_editor::get_current_line ();
+    std::string pending_input = command_editor::get_current_line ();
 
-    octave::command_editor::set_initial_input (pending_input);
-    octave::command_editor::replace_line (m_cmd.toStdString ());
-    octave::command_editor::redisplay ();
-    octave::command_editor::accept_line ();
+    command_editor::set_initial_input (pending_input);
+    command_editor::replace_line (m_cmd.toStdString ());
+    command_editor::redisplay ();
+    command_editor::accept_line ();
   }
 
   void octave_cmd_eval::execute (void)
@@ -51,26 +51,26 @@ namespace octave
     function_name.chop (m_info.suffix ().length () + 1);
     std::string file_path = m_info.absoluteFilePath ().toStdString ();
 
-    std::string pending_input = octave::command_editor::get_current_line ();
+    std::string pending_input = command_editor::get_current_line ();
 
     if (valid_identifier (function_name.toStdString ()))
       {
         // valid identifier: call as function with possibility to debug
         std::string path = m_info.absolutePath ().toStdString ();
         if (octave_qt_link::file_in_path (file_path, path))
-          octave::command_editor::replace_line (function_name.toStdString ());
+          command_editor::replace_line (function_name.toStdString ());
       }
     else
       {
         // no valid identifier: use Fsource (), no debug possible
         Fsource (ovl (file_path));
-        octave::command_editor::replace_line ("");
+        command_editor::replace_line ("");
       }
 
-    octave::command_editor::set_initial_input (pending_input);
-    octave::command_editor::redisplay ();
+    command_editor::set_initial_input (pending_input);
+    command_editor::redisplay ();
 
-    octave::command_editor::accept_line ();
+    command_editor::accept_line ();
   }
 
   void octave_cmd_debug::execute (void)
@@ -93,7 +93,7 @@ namespace octave
         Fdbstep (ovl (m_cmd.toStdString ()));
       }
 
-    octave::command_editor::interrupt (true);
+    command_editor::interrupt (true);
   }
 
   // add a command to the queue

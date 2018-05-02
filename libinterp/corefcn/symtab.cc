@@ -97,7 +97,7 @@ namespace octave
     bool retval = false;
 
     octave_value ov_fcn
-      = octave::load_fcn_from_file (ff, dir_name, dispatch_type,
+      = load_fcn_from_file (ff, dir_name, dispatch_type,
                                     package_name);
 
     if (ov_fcn.is_defined ())
@@ -167,7 +167,8 @@ namespace octave
 
                             if (! dispatch_type.empty ())
                               {
-                                load_path& lp = __get_load_path__ ("out_of_date_check");
+                                load_path& lp
+                                  = __get_load_path__ ("out_of_date_check");
 
                                 file = lp.find_method (dispatch_type, nm,
                                                        dir_name, pack);
@@ -210,7 +211,8 @@ namespace octave
 
                             if (file.empty ())
                               {
-                                load_path& lp = __get_load_path__ ("out_of_date_check");
+                                load_path& lp
+                                  = __get_load_path__ ("out_of_date_check");
                                 file = lp.find_fcn (nm, dir_name, pack);
                               }
                           }
@@ -283,8 +285,8 @@ namespace octave
                     // breakpoints associated with it
                     if (clear_breakpoints)
                       {
-                        octave::bp_table& bptab
-                          = octave::__get_bp_table__ ("out_of_date_check");
+                        bp_table& bptab
+                          = __get_bp_table__ ("out_of_date_check");
 
                         bptab.remove_all_breakpoints_in_file (canonical_nm,
                                                               true);

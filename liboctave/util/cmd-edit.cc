@@ -788,7 +788,7 @@ namespace octave
 
     ::octave_rl_recover_from_interrupt ();
 
-    throw octave::interrupt_exception ();
+    throw interrupt_exception ();
   }
 
   int

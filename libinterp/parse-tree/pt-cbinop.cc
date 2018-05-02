@@ -36,12 +36,12 @@ namespace octave
   // the argument and corresponding operator.
 
   static octave_value::unary_op
-  strip_trans_herm (octave::tree_expression_ptr_t& exp)
+  strip_trans_herm (tree_expression_ptr_t& exp)
   {
     if (exp->is_unary_expression ())
       {
-        octave::tree_unary_expression *uexp =
-          dynamic_cast<octave::tree_unary_expression *> (exp);
+        tree_unary_expression *uexp =
+          dynamic_cast<tree_unary_expression *> (exp);
 
         octave_value::unary_op op = uexp->op_type ();
 
@@ -58,12 +58,12 @@ namespace octave
   }
 
   static octave_value::unary_op
-  strip_not (octave::tree_expression_ptr_t& exp)
+  strip_not (tree_expression_ptr_t& exp)
   {
     if (exp->is_unary_expression ())
       {
-        octave::tree_unary_expression *uexp =
-          dynamic_cast<octave::tree_unary_expression *> (exp);
+        tree_unary_expression *uexp =
+          dynamic_cast<tree_unary_expression *> (exp);
 
         octave_value::unary_op op = uexp->op_type ();
 
@@ -82,8 +82,7 @@ namespace octave
   // or mul_herm.
 
   static octave_value::compound_binary_op
-  simplify_mul_op (octave::tree_expression_ptr_t& a,
-                   octave::tree_expression_ptr_t& b)
+  simplify_mul_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b)
   {
     octave_value::compound_binary_op retop
       = octave_value::unknown_compound_binary_op;
@@ -110,8 +109,7 @@ namespace octave
   // Possibly convert left division to trans_ldiv or herm_ldiv.
 
   static octave_value::compound_binary_op
-  simplify_ldiv_op (octave::tree_expression_ptr_t& a,
-                    octave::tree_expression_ptr_t&)
+  simplify_ldiv_op (tree_expression_ptr_t& a, tree_expression_ptr_t&)
   {
     octave_value::compound_binary_op retop
       = octave_value::unknown_compound_binary_op;
@@ -129,8 +127,7 @@ namespace octave
   // Possibly contract and/or with negation.
 
   static octave_value::compound_binary_op
-  simplify_and_or_op (octave::tree_expression_ptr_t& a,
-                      octave::tree_expression_ptr_t& b,
+  simplify_and_or_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b,
                       octave_value::binary_op op)
   {
     octave_value::compound_binary_op retop

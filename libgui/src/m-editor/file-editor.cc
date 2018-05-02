@@ -1490,7 +1490,7 @@ namespace octave
 
   bool file_editor::is_editor_console_tabbed (void)
   {
-    octave::main_window *w = static_cast<octave::main_window *>(main_win ());
+    main_window *w = static_cast<main_window *>(main_win ());
     QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
     QDockWidget *console =
       static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));

@@ -551,7 +551,7 @@ namespace octave
   {
     bool retval = false;
 
-    h = octave::get_help_from_file (nm, symbol_found, file);
+    h = get_help_from_file (nm, symbol_found, file);
 
     if (h.length () > 0)
       retval = true;
@@ -690,8 +690,7 @@ namespace octave
 
   string_vector make_name_list (void)
   {
-    octave::help_system& help_sys
-      = octave::__get_help_system__ ("make_name_list");
+    help_system& help_sys = __get_help_system__ ("make_name_list");
 
     return help_sys.make_name_list ();
   }

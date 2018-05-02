@@ -56,7 +56,7 @@ namespace octave
     hbox_layout->setSpacing (0);
     vbox_layout->addLayout (hbox_layout);
 
-    _tab_bar = new octave::tab_bar (this);
+    _tab_bar = new tab_bar (this);
     _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
     _tab_bar->setExpanding (false);
     _tab_bar->setTabsClosable (true);

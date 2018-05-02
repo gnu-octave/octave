@@ -91,9 +91,9 @@ namespace octave
       {
         dval = tc.double_value ();
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
 
         conv_err = 1;
       }
@@ -102,7 +102,7 @@ namespace octave
       {
         if (! lo_ieee_isnan (dval))
           {
-            int ival = octave::math::nint (dval);
+            int ival = math::nint (dval);
 
             if (ival == dval)
               retval = ival;
@@ -124,7 +124,7 @@ namespace octave
     if (lo_ieee_isnan (d))
       ::error ("%s: NaN is invalid as size specification", who.c_str ());
 
-    if (octave::math::isinf (d))
+    if (math::isinf (d))
       retval = -1;
     else
       {
@@ -136,7 +136,7 @@ namespace octave
           ::error ("%s: dimension too large for Octave's index type",
                    who.c_str ());
 
-        retval = octave::math::nint_big (d);
+        retval = math::nint_big (d);
       }
 
     return retval;
@@ -169,7 +169,7 @@ namespace octave
       {
         dnr = size(0);
 
-        if (octave::math::isinf (dnr))
+        if (math::isinf (dnr))
           ::error ("%s: invalid size specification", who.c_str ());
 
         dnc = size(1);
@@ -4573,7 +4573,7 @@ namespace octave
                          octave_idx_type& conversion_count,
                          const std::string& who)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4901,8 +4901,8 @@ namespace octave
                       is.clear (is.rdstate () & (~std::ios::failbit));
 
                     // FIXME: is this the right thing to do?
-                    if (octave::application::interactive ()
-                        && ! octave::application::forced_interactive ()
+                    if (application::interactive ()
+                        && ! application::forced_interactive ()
                         && name () == "stdin")
                       {
                         is.clear ();
@@ -5197,8 +5197,8 @@ namespace octave
 
         // FIXME: is this the right thing to do?
 
-        if (octave::application::interactive ()
-            && ! octave::application::forced_interactive ()
+        if (application::interactive ()
+            && ! application::forced_interactive ()
             && name () == "stdin")
           {
             // Skip to end of line.
@@ -5291,7 +5291,7 @@ namespace octave
                             const std::string& who,
                             octave_idx_type& read_count)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -5303,7 +5303,7 @@ namespace octave
       invalid_operation (who, "reading");
     else
       {
-        octave::textscan scanner (who);
+        textscan scanner (who);
 
         retval = scanner.scan (*isp, fmt, ntimes, options, read_count);
       }
@@ -5436,7 +5436,7 @@ namespace octave
                       {
                         double dval = val(idx);
 
-                        if (octave::math::x_nint (dval) != dval || dval < 0 || dval > 255)
+                        if (math::x_nint (dval) != dval || dval < 0 || dval > 255)
                           break;
                       }
 
@@ -5463,7 +5463,7 @@ namespace octave
                   {
                     double dval = retval.double_value ();
 
-                    if (octave::math::x_nint (dval) == dval && dval >= 0 && dval < 256)
+                    if (math::x_nint (dval) == dval && dval >= 0 && dval < 256)
                       retval = static_cast<char> (dval);
                   }
               }
@@ -5512,8 +5512,8 @@ namespace octave
 
     double dval = val.double_value (true);
 
-    if (octave::math::x_nint (dval) == dval)
-      retval = octave::math::nint (dval);
+    if (math::x_nint (dval) == dval)
+      retval = math::nint (dval);
     else
       curr_state = conversion_error;
 
@@ -5552,7 +5552,7 @@ namespace octave
   }
 
   static size_t
-  do_printf_string (std::ostream& os, const octave::printf_format_elt *elt,
+  do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
                     const std::string& who)
   {
@@ -5607,7 +5607,7 @@ namespace octave
       {
         double dval = val.double_value (true);
 
-        if (dval == octave::math::round (dval) && dval <= limit)
+        if (dval == math::round (dval) && dval <= limit)
           return true;
       }
 
@@ -5634,7 +5634,7 @@ namespace octave
 
         uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-        if (dval == octave::math::round (dval) && dval >= 0 && dval <= limit)
+        if (dval == math::round (dval) && dval >= 0 && dval <= limit)
           return true;
       }
 
@@ -5642,7 +5642,7 @@ namespace octave
   }
 
   static std::string
-  switch_to_g_format (const octave::printf_format_elt *elt)
+  switch_to_g_format (const printf_format_elt *elt)
   {
     std::string tfmt = elt->text;
 
@@ -6302,7 +6302,7 @@ namespace octave
                     octave_idx_type elts_read,
                     octave_idx_type nr, octave_idx_type nc, bool swap,
                     bool do_float_fmt_conv, bool do_NA_conv,
-                    octave::mach_info::float_format from_flt_fmt)
+                    mach_info::float_format from_flt_fmt)
   {
     typedef typename DST_T::element_type dst_elt_type;
 
@@ -6329,7 +6329,7 @@ namespace octave
                     else if (do_float_fmt_conv)
                       do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                   1, from_flt_fmt,
-                                                  octave::mach_info::native_float_format ());
+                                                  mach_info::native_float_format ());
 
                     dst_elt_type tmp (data[i]);
 
@@ -6349,7 +6349,7 @@ namespace octave
                     else if (do_float_fmt_conv)
                       do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                   1, from_flt_fmt,
-                                                  octave::mach_info::native_float_format ());
+                                                  mach_info::native_float_format ());
 
                     conv_data[j] = data[i];
                   }
@@ -6393,7 +6393,7 @@ namespace octave
     (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
      octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
      bool swap, bool do_float_fmt_conv, bool do_NA_conv,
-     octave::mach_info::float_format from_flt_fmt);
+     mach_info::float_format from_flt_fmt);
 
 #define TABLE_ELT(T, U, V, W)                                           \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
@@ -6776,18 +6776,18 @@ namespace octave
   static bool
   convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
                 oct_data_conv::data_type output_type,
-                octave::mach_info::float_format flt_fmt)
+                mach_info::float_format flt_fmt)
   {
     bool retval = true;
 
     bool swap = false;
 
-    if (octave::mach_info::words_big_endian ())
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+    if (mach_info::words_big_endian ())
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_little_endian);
     else
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_big_endian);
 
-    bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
+    bool do_float_conversion = flt_fmt != mach_info::float_format ();
 
     typedef typename ultimate_element_type<T>::type ult_elt_type;
 

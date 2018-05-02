@@ -59,8 +59,8 @@ namespace octave
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
     if (collection.isEmpty ())
-      collection = QString::fromStdString (octave::config::oct_doc_dir ()
-                                           + octave::sys::file_ops::dir_sep_str ()
+      collection = QString::fromStdString (config::oct_doc_dir ()
+                                           + sys::file_ops::dir_sep_str ()
                                            + "octave_interpreter.qhc");
 
     // Setup the help engine with the original collection, use a writable copy
@@ -69,8 +69,8 @@ namespace octave
 
     QString tmpdir = QDir::tempPath();
     m_collection
-      = QString::fromStdString (octave::sys::tempnam (tmpdir.toStdString (),
-                                                      "oct-qhelp-"));
+      = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),
+                                              "oct-qhelp-"));
 
     if (m_help_engine->copyCollectionFile (m_collection))
       m_help_engine->setCollectionFile (m_collection);

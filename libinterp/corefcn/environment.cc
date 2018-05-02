@@ -105,7 +105,7 @@ namespace octave
   {
     std::string retval = "emacs";
 
-    std::string env_editor = octave::sys::env::getenv ("EDITOR");
+    std::string env_editor = sys::env::getenv ("EDITOR");
 
     if (! env_editor.empty ())
       retval = env_editor;
@@ -115,9 +115,9 @@ namespace octave
 
   std::string environment::init_exec_path (void)
   {
-    std::string exec_path = octave::sys::env::getenv ("OCTAVE_EXEC_PATH");
+    std::string exec_path = sys::env::getenv ("OCTAVE_EXEC_PATH");
 
-    std::string path_sep = octave::directory_path::path_sep_str ();
+    std::string path_sep = directory_path::path_sep_str ();
 
     if (exec_path.empty ())
       exec_path = (config::local_ver_arch_lib_dir () + path_sep
@@ -135,14 +135,14 @@ namespace octave
   {
     std::string image_path = ".";
 
-    std::string path_sep = octave::directory_path::path_sep_str ();
+    std::string path_sep = directory_path::path_sep_str ();
 
-    std::string env_path = octave::sys::env::getenv ("OCTAVE_IMAGE_PATH");
+    std::string env_path = sys::env::getenv ("OCTAVE_IMAGE_PATH");
 
     if (! env_path.empty ())
       image_path += path_sep + env_path;
 
-    std::string gen_path = octave::genpath (config::image_dir (), "");
+    std::string gen_path = genpath (config::image_dir (), "");
 
     if (! gen_path.empty ())
       image_path += path_sep + gen_path;

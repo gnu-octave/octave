@@ -216,7 +216,7 @@ namespace octave
   extern "C" void
   octave_jit_err_nan_to_logical_conversion (void)
   {
-    octave::err_nan_to_logical_conversion ();
+    err_nan_to_logical_conversion ();
   }
 
   extern "C" void
@@ -225,14 +225,14 @@ namespace octave
     // FIXME: 0-argument form of octave::err_invalid_index removed in
     //        cset dd6345fd8a97.  Report -1 as the bad index for all
     //        occurrences.
-    octave::err_invalid_index (static_cast<octave_idx_type> (-1));
+    err_invalid_index (static_cast<octave_idx_type> (-1));
   }
 
   extern "C" void
   octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
                            octave_idx_type ext)
   {
-    octave::err_index_out_of_range (nd, dim, iext, ext);
+    err_index_out_of_range (nd, dim, iext, ext);
   }
 
   extern "C" jit_matrix
@@ -397,7 +397,7 @@ namespace octave
   static inline int
   xisint (double x)
   {
-    return (octave::math::x_nint (x) == x
+    return (math::x_nint (x) == x
             && ((x >= 0 && x < std::numeric_limits<int>::max ())
                 || (x <= 0 && x > std::numeric_limits<int>::min ())));
   }

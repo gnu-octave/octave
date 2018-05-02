@@ -226,7 +226,7 @@ namespace octave
 
       if (! fonts_dir.empty ())
         {
-          file = fonts_dir + octave::sys::file_ops::dir_sep_str () + "FreeSans";
+          file = fonts_dir + sys::file_ops::dir_sep_str () + "FreeSans";
 
           if (weight == "bold")
             file += "Bold";
@@ -347,7 +347,7 @@ namespace octave
   static void
   ft_face_destroyed (void *object)
   {
-    octave::ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
+    ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
   }
 
   class

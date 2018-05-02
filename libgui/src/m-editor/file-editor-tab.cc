@@ -397,8 +397,8 @@ namespace octave
                 frame.protect_var (buffer_error_messages);
                 buffer_error_messages++;
 
-                octave::bp_table& bptab
-                  = octave::__get_bp_table__ ("handle_context_menu_break_condition");
+                bp_table& bptab
+                  = __get_bp_table__ ("handle_context_menu_break_condition");
 
                 bptab.condition_valid (new_condition.toStdString ());
                 valid = true;
@@ -713,8 +713,7 @@ namespace octave
                 add_octave_apis (Fiskeyword ());            // add new entries
 
                 interpreter& interp
-                  = __get_interpreter__ (
-                      "file_editor_tab::update_lexer_settings");
+                  = __get_interpreter__ ("file_editor_tab::update_lexer_settings");
 
                 if (octave_builtins)
                   add_octave_apis (F__builtins__ (interp));       // add new entries
@@ -995,8 +994,7 @@ namespace octave
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("octave_qt_link::file_in_path");
+        bp_table& bptab = __get_bp_table__ ("octave_qt_link::file_in_path");
 
         bptab.add_breakpoint (info.function_name, line_info, info.condition);
       }
@@ -1009,8 +1007,7 @@ namespace octave
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("remove_breakpoint_callback");
+        bp_table& bptab = __get_bp_table__ ("remove_breakpoint_callback");
 
         bptab.remove_breakpoint (info.function_name, line_info);
       }
@@ -1020,8 +1017,7 @@ namespace octave
   {
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("remove_all_breakpoints_callback");
+        bp_table& bptab = __get_bp_table__ ("remove_all_breakpoints_callback");
 
         bptab.remove_all_breakpoints_in_file (info.function_name, true);
       }

@@ -800,7 +800,7 @@ namespace octave
       visit (cmd);
     else
       {
-        // stolen from octave::tree_evaluator::visit_statement
+        // stolen from tree_evaluator::visit_statement
         bool do_bind_ans = false;
 
         if (expr->is_identifier ())
@@ -2323,8 +2323,7 @@ namespace octave
   bool
   tree_jit::enabled (void)
   {
-    octave::bp_table& bptab
-      = octave::__get_bp_table__ ("tree_jit::enabled");
+    bp_table& bptab = __get_bp_table__ ("tree_jit::enabled");
 
     // Ideally, we should only disable JIT if there is a breakpoint in the code
     // we are about to run. However, we can't figure this out in O(1) time, so

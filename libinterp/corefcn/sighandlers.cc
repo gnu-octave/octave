@@ -186,8 +186,7 @@ namespace octave
     static const bool have_sigusr2
       = octave_get_sig_number ("SIGUSR2", &sigusr2);
 
-    octave::child_list& kids
-      = octave::__get_child_list__ ("respond_to_pending_signals");
+    child_list& kids = __get_child_list__ ("respond_to_pending_signals");
 
     for (int sig = 0; sig < octave_num_signals (); sig++)
       {

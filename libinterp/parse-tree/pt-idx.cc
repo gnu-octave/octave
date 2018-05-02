@@ -145,8 +145,8 @@ namespace octave
   }
 
   static inline octave_value_list
-  make_value_list (octave::tree_evaluator *tw,
-                   octave::tree_argument_list *m_args,
+  make_value_list (tree_evaluator *tw,
+                   tree_argument_list *m_args,
                    const string_vector& m_arg_nm, const octave_value *object,
                    bool rvalue = true)
   {
@@ -199,18 +199,16 @@ namespace octave
   // be needed by pt-lvalue, which calls subsref?)
 
   static void
-  final_index_error (octave::index_exception& e,
-                     const octave::tree_expression *expr)
+  final_index_error (index_exception& e, const tree_expression *expr)
   {
     std::string extra_message;
 
-    octave::symbol_table& symtab
-      = octave::__get_symbol_table__ ("final_index_error");
+    symbol_table& symtab = __get_symbol_table__ ("final_index_error");
 
-    octave::symbol_record::context_id context = symtab.current_context ();
+    symbol_record::context_id context = symtab.current_context ();
 
     if (expr->is_identifier ()
-        && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
+        && dynamic_cast<const tree_identifier *> (expr)->is_variable (context))
       {
         std::string var = expr->name ();
 

@@ -70,7 +70,7 @@ namespace octave
     Vdebug_on_warning = false;
     bp_table::m_warnings_that_stop.clear ();
 
-    octave::Vdebug_on_interrupt = false;
+    Vdebug_on_interrupt = false;
   }
 
   // Process the "warn", "errs", "caught" and "intr" fields for a call of
@@ -101,6 +101,7 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'errs' field");
 
@@ -127,6 +128,7 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'caught' field");
 
@@ -153,12 +155,13 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'warn' field");
 
     // process interrupt
     if (mv.isfield ("intr"))
-      octave::Vdebug_on_interrupt = 1;
+      Vdebug_on_interrupt = 1;
   }
 
   // Insert a breakpoint in function fcn at line within file fname,
@@ -173,7 +176,7 @@ namespace octave
   {
     bool found = false;
 
-    octave::tree_statement_list *cmds = fcn->body ();
+    tree_statement_list *cmds = fcn->body ();
 
     std::string file = fcn->fcn_file_name ();
 
@@ -212,14 +215,14 @@ namespace octave
   {
     if (cond.length () > 0)
       {
-        octave::parser parser (cond + " ;"); // ; to reject partial expr like "y=="
+        parser parser (cond + " ;"); // ; to reject partial expr like "y=="
         parser.reset ();
         int parse_status = parser.run ();
         if (parse_status)
           error ("dbstop: Cannot parse condition '%s'", cond.c_str ());
         else
           {
-            octave::tree_statement *stmt = nullptr;
+            tree_statement *stmt = nullptr;
             if (! parser.m_stmt_list)
               error ("dbstop: "
                      "condition is not empty, but has nothing to evaluate");
@@ -229,7 +232,7 @@ namespace octave
                     && (stmt = parser.m_stmt_list->front ())
                     && stmt->is_expression ())
                   {
-                    octave::tree_expression *expr = stmt->expression ();
+                    tree_expression *expr = stmt->expression ();
                     if (expr->is_assignment_expression ())
                       error ("dbstop: condition cannot be an assignment.  "
                              "Did you mean '=='?");
@@ -239,6 +242,7 @@ namespace octave
               }
           }
       }
+
     return true;
   }
 
@@ -412,7 +416,7 @@ namespace octave
                   }
                 else if (condition == "interrupt")
                   {
-                    octave::Vdebug_on_interrupt = on_off;
+                    Vdebug_on_interrupt = on_off;
                   }
                 else if (condition == "naninf")
                   {
@@ -455,7 +459,7 @@ namespace octave
                         if (stop_flag == &Vdebug_on_error)
                           {
                             // Matlab stops on both.
-                            octave::Vdebug_on_interrupt = on_off;
+                            Vdebug_on_interrupt = on_off;
                           }
                       }
                   }
@@ -586,8 +590,7 @@ namespace octave
           }
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
     return retval;
   }
@@ -600,7 +603,7 @@ namespace octave
 
     std::string file = fcn->fcn_file_name ();
 
-    octave::tree_statement_list *cmds = fcn->body ();
+    tree_statement_list *cmds = fcn->body ();
 
     // FIXME: move the operation on cmds to the tree_statement_list class?
 
@@ -683,8 +686,7 @@ namespace octave
           }
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
     return retval;
   }
@@ -703,7 +705,7 @@ namespace octave
       {
         std::string file = dbg_fcn->fcn_file_name ();
 
-        octave::tree_statement_list *cmds = dbg_fcn->body ();
+        tree_statement_list *cmds = dbg_fcn->body ();
 
         if (cmds)
           {
@@ -718,8 +720,7 @@ namespace octave
       error ("remove_all_breakpoint_in_file: "
              "unable to find function %s\n", fname.c_str ());
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
     return retval;
   }
@@ -735,8 +736,7 @@ namespace octave
         remove_all_breakpoints_in_file (*it);
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)
@@ -772,7 +772,7 @@ namespace octave
 
             if (dbg_fcn)
               {
-                octave::tree_statement_list *cmds = dbg_fcn->body ();
+                tree_statement_list *cmds = dbg_fcn->body ();
 
                 // FIXME: move the operation on cmds to the
                 //        tree_statement_list class?
@@ -917,7 +917,7 @@ namespace octave
       }
 
     // print dbstop if interrupt information
-    if (octave::Vdebug_on_interrupt)
+    if (Vdebug_on_interrupt)
       {
         if (to_screen)
           octave_stdout << "stop if interrupt\n";
@@ -939,7 +939,7 @@ namespace octave
 
     if (fname.empty ())
       {
-        octave::call_stack& cs = octave::__get_call_stack__ ("get_user_code");
+        call_stack& cs = __get_call_stack__ ("get_user_code");
 
         dbg_fcn = cs.debug_user_code ();
       }
@@ -947,11 +947,11 @@ namespace octave
       {
         std::string name = fname;
 
-        if (octave::sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
+        if (sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
           {
             auto beg = name.begin () + 2;  // never have @/method
             auto end = name.end () - 1;    // never have trailing '/'
-            std::replace (beg, end, '/', octave::sys::file_ops::dir_sep_char ());
+            std::replace (beg, end, '/', sys::file_ops::dir_sep_char ());
           }
 
         size_t name_len = name.length ();
@@ -959,8 +959,7 @@ namespace octave
         if (name_len > 2 && name.substr (name_len-2) == ".m")
           name = name.substr (0, name_len-2);
 
-        octave::symbol_table& symtab =
-          octave::__get_symbol_table__ ("get_user_code");
+        symbol_table& symtab = __get_symbol_table__ ("get_user_code");
 
         octave_value fcn = symtab.find_function (name);
 

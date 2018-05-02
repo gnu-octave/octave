@@ -5428,9 +5428,9 @@ namespace octave
 
                     if (expr->is_identifier ())
                       {
-                        octave::symbol_scope scope = tw.get_current_scope ();
+                        symbol_scope scope = tw.get_current_scope ();
 
-                        octave::symbol_record::context_id context
+                        symbol_record::context_id context
                           = scope.current_context ();
 
                         tree_identifier *id

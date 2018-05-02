@@ -53,7 +53,7 @@ namespace octave
 
   private:
 
-    octave::documentation *m_docs;
+    documentation *m_docs;
   };
 }
 

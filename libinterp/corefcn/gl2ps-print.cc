@@ -265,12 +265,12 @@ namespace octave
     // Build an svg text element from a list of parsed strings.
     std::string strlist_to_svg (double x, double y, double z, Matrix box,
                                 double rotation,
-                                std::list<octave::text_renderer::string>& lst);
+                                std::list<text_renderer::string>& lst);
 
     // Build a list of postscript commands from a list of parsed strings.
     std::string strlist_to_ps (double x, double y, double z, Matrix box,
                                double rotation,
-                               std::list<octave::text_renderer::string>& lst);
+                               std::list<text_renderer::string>& lst);
 
     int alignment_to_mode (int ha, int va) const;
     FILE *fp;
@@ -781,7 +781,7 @@ namespace octave
   std::string
   gl2ps_renderer::strlist_to_svg (double x, double y, double z,
                                   Matrix box, double rotation,
-                                  std::list<octave::text_renderer::string>& lst)
+                                  std::list<text_renderer::string>& lst)
   {
     if (lst.empty ())
       return "";
@@ -877,7 +877,7 @@ namespace octave
   std::string
   gl2ps_renderer::strlist_to_ps (double x, double y, double z,
                                  Matrix box, double rotation,
-                                 std::list<octave::text_renderer::string>& lst)
+                                 std::list<text_renderer::string>& lst)
   {
     // Translate and rotate coordinates in order to use bottom-left alignment
     fix_strlist_position (x, y, z, box, rotation, lst);

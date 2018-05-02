@@ -39,7 +39,7 @@ namespace octave
     set_title (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));
 
-    m_docs = new octave::documentation (this);
+    m_docs = new documentation (this);
     setWidget (m_docs);
 
     connect (p, SIGNAL (show_doc_signal (const QString&)),

@@ -764,15 +764,15 @@ namespace octave
 
     // Maybe handle 'continue N' someday...
 
-    if (octave::tree_continue_command::continuing)
-      octave::tree_continue_command::continuing--;
+    if (tree_continue_command::continuing)
+      tree_continue_command::continuing--;
 
-    bool quit = (octave::tree_return_command::returning
-                 || octave::tree_break_command::breaking
-                 || octave::tree_continue_command::continuing);
+    bool quit = (tree_return_command::returning
+                 || tree_break_command::breaking
+                 || tree_continue_command::continuing);
 
-    if (octave::tree_break_command::breaking)
-      octave::tree_break_command::breaking--;
+    if (tree_break_command::breaking)
+      tree_break_command::breaking--;
 
     return quit;
   }
@@ -1156,28 +1156,27 @@ namespace octave
   // be needed by pt-lvalue, which calls subsref?)
 
   static void
-  final_index_error (octave::index_exception& e,
-                     const octave::tree_expression *expr)
+  final_index_error (index_exception& e,
+                     const tree_expression *expr)
   {
     std::string extra_message;
 
     // FIXME: make this a member function for direct access to symbol
     // table and scope?
 
-    octave::symbol_scope scope
-      = octave::__require_current_scope__ ("final_index_error");
+    symbol_scope scope
+      = __require_current_scope__ ("final_index_error");
 
-    octave::symbol_record::context_id context = scope.current_context ();
+    symbol_record::context_id context = scope.current_context ();
 
     if (expr->is_identifier ()
-        && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
+        && dynamic_cast<const tree_identifier *> (expr)->is_variable (context))
       {
         std::string var = expr->name ();
 
         e.set_var (var);
 
-        octave::symbol_table& symtab =
-          octave::__get_symbol_table__ ("final_index_error");
+        symbol_table& symtab = __get_symbol_table__ ("final_index_error");
 
         octave_value fcn = symtab.find_function (var);
 
@@ -1489,7 +1488,7 @@ namespace octave
                 beg = n;
                 idx.clear ();
               }
-            catch (octave::index_exception& e)
+            catch (index_exception& e)
               {
                 final_index_error (e, expr);
               }
@@ -1508,7 +1507,7 @@ namespace octave
                   {
                     retval = fcn->call (*this, nargout, idx);
                   }
-                catch (octave::index_exception& e)
+                catch (index_exception& e)
                   {
                     final_index_error (e, expr);
                   }
@@ -2326,7 +2325,7 @@ namespace octave
             error_with_id ("Octave:bad-alloc",
                            "out of memory or dimension too large for Octave's index type");
           }
-        catch (const octave::interrupt_exception&)
+        catch (const interrupt_exception&)
           {
             // If we are debugging, then continue with next statement.
             // Otherwise, jump out of here.

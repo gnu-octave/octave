@@ -823,8 +823,7 @@ namespace octave
 
   void files_dock_widget::popdownmenu_home (bool)
   {
-    QString dir
-      = QString::fromStdString (octave::sys::env::get_home_directory ());
+    QString dir = QString::fromStdString (sys::env::get_home_directory ());
 
     if (dir.isEmpty ())
       dir = QDir::homePath ();

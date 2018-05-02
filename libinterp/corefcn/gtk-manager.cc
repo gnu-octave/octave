@@ -52,7 +52,7 @@ namespace octave
 
         octave_value_list args;
         args(0) = dtk;
-        octave::feval ("graphics_toolkit", args);
+        feval ("graphics_toolkit", args);
 
         pl = loaded_toolkits.find (dtk);
 

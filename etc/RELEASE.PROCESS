@@ -86,6 +86,7 @@
 #** Update configure.ac (AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION, OCTAVE_RELEASE_DATE)
 #** Update libtool versioning (configure.ac:OCTAVE_API_VERSION, liboctave/module.mk:%canon_reldir%_%canon_reldir%_current, libinterp/module.mk:%canon_reldir%_liboctinterp_current, libgui/module.mk:%canon_reldir%_liboctgui_current)
 #** Update NEWS (final release date)
+#** Update CITATION (version, year, URL)
 #** Update org.octave.Octave.appdata.xml (version number and release date)
 #* hg tag repository with release version number
 #* merge default onto stable to become the current stable release

@@ -222,12 +222,13 @@ namespace octave
     {
 
       F77_INT min_mn = std::min (m, n);
+      F77_INT max_mn = std::max (m, n);
 
       F77_INT lrwork;
       if (jobz == 'N')
         lrwork = 7*min_mn;
       else
-        lrwork = 5*min_mn*min_mn + 5*min_mn;
+        lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
 
       std::vector<double> rwork (lrwork);
 
@@ -255,9 +256,9 @@ namespace octave
 
       F77_INT lrwork;
       if (jobz == 'N')
-        lrwork = 5*min_mn;
+        lrwork = 7*min_mn;
       else
-        lrwork = min_mn * std::max (5*min_mn+7, 2*max_mn+2*min_mn+1);
+        lrwork = min_mn * std::max (5*min_mn+5, 2*max_mn+2*min_mn+1);
       std::vector<float> rwork (lrwork);
 
       GESDD_COMPLEX_STEP (cgesdd, CGESDD, F77_CMPLX_ARG);

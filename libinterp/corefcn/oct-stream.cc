@@ -6312,7 +6312,9 @@ namespace octave
 
     octave_idx_type j = 0;
 
-    for (auto it = input_buf_list.begin (); it != input_buf_list.end (); it++)
+    // FIXME: use cbegin and auto decl here when available.
+    for (std::list<void *>::const_iterator it = input_buf_list.begin ();
+         it != input_buf_list.end (); it++)
       {
         SRC_T *data = static_cast<SRC_T *> (*it);
 
@@ -7357,7 +7359,7 @@ namespace octave
       retval = lookup_cache->second;
     else
       {
-        auto iter = list.find (fid);
+        ostrl_map::const_iterator iter = list.find (fid);
 
         if (iter == list.end ())
           err_invalid_file_id (fid, who);
@@ -7474,7 +7476,7 @@ namespace octave
       os = lookup_cache->second;
     else
       {
-        auto iter = list.find (fid);
+        ostrl_map::const_iterator iter = list.find (fid);
 
         if (iter == list.end ())
           return retval;

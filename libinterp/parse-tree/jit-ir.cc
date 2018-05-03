@@ -791,8 +791,8 @@ namespace octave
     resize_arguments (m_contexts.size ());
 
     size_t i;
-    for (auto iter = m_contexts.begin (), i = 0;
-         iter != m_contexts.end (); ++iter, ++i)
+    std::vector<context>::const_iterator iter;
+    for (iter = m_contexts.begin (), i = 0; iter != m_contexts.end (); ++iter, ++i)
       stash_argument (i, iter->m_value);
   }
 

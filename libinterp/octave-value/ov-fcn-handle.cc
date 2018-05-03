@@ -169,7 +169,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
               octave::symbol_table& symtab
                 = octave::__get_symbol_table__ ("octave_fcn_handle::call");
 
-              std::list<std::string> plist
+              const std::list<std::string> plist
                 = symtab.parent_classes (dispatch_type);
 
               auto pit = plist.begin ();
@@ -240,8 +240,9 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
       for (int i = 0; i < btyp_num_types && retval; i++)
         retval = builtin_overloads[i].is_copy_of (h.builtin_overloads[i]);
 
-      auto iter = overloads.begin ();
-      auto hiter = h.overloads.begin ();
+      // FIXME: use cbegin and auto decl here when available.
+      str_ov_map::const_iterator iter = overloads.begin ();
+      str_ov_map::const_iterator hiter = h.overloads.begin ();
       for (; iter != overloads.end () && retval; iter++, hiter++)
         retval = (iter->first == hiter->first)
                  && (iter->second.is_copy_of (hiter->second));

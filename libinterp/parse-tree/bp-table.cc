@@ -572,7 +572,7 @@ namespace octave
 
     for (int i = 0; i < len; i++)
       {
-        auto m = line.find (i);
+        const_intmap_iterator m = line.find (i);
 
         if (m != line.end ())
           {
@@ -617,7 +617,7 @@ namespace octave
 
             for (int i = 0; i < len; i++)
               {
-                auto p = line.find (i);
+                const_intmap_iterator p = line.find (i);
 
                 if (p != line.end ())
                   {
@@ -727,9 +727,12 @@ namespace octave
 
   void bp_table::remove_all_breakpoints (void)
   {
-    // Odd loop structure required because delete will invalidate m_bp_set iterators
-    for (auto it = m_bp_set.begin (), it_next = it;
-         it != m_bp_set.end (); it = it_next)
+    // Odd loop structure required because delete will invalidate
+    // m_bp_set iterators.
+    // FIXME: use cbegin and auto decl here when available.
+    for (const_bp_set_iterator it = m_bp_set.begin (), it_next = it;
+         it != m_bp_set.end ();
+         it = it_next)
       {
         ++it_next;
         remove_all_breakpoints_in_file (*it);

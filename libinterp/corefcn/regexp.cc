@@ -374,7 +374,7 @@ octregexp (const octave_value_list& args, int nargout,
   bool extra_options = false;
   parse_options (options, args, who, 2, extra_options);
 
-  octave::regexp::match_data rx_lst
+  const octave::regexp::match_data rx_lst
     = octave::regexp::match (pattern, buffer, options, who);
 
   string_vector named_pats = rx_lst.named_patterns ();

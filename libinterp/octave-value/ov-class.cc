@@ -282,7 +282,7 @@ octave_class::dotref (const octave_value_list& idx)
 
   std::string nm = idx(0).xstring_value ("invalid index for class");
 
-  auto p = my_map.seek (nm);
+  octave_map::const_iterator p = my_map.seek (nm);
 
   if (p == my_map.end ())
     error ("class has no member '%s'", nm.c_str ());
@@ -846,7 +846,8 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (auto it = map.begin (); it != map.end (); it++)
+  // FIXME: use cbegin and auto decl here when available.
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
       std::string key = map.key (it);
 
@@ -896,7 +897,7 @@ octave_class::find_parent_class (const std::string& parent_class_name)
     {
       for (auto& par : parent_list)
         {
-          auto smap = map.seek (par);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -961,7 +962,7 @@ octave_class::is_instance_of (const std::string& cls_name) const
     {
       for (auto& par : parent_list)
         {
-          auto smap = map.seek (par);
+          octave_map::const_iterator smap = map.seek (par);
 
           const Cell& tmp = map.contents (smap);
 
@@ -1043,7 +1044,8 @@ octave_class::reconstruct_exemplar (void)
 {
   bool retval = false;
 
-  auto it = octave_class::exemplar_map.find (c_name);
+  octave_class::exemplar_const_iterator it
+    = octave_class::exemplar_map.find (c_name);
 
   if (it != octave_class::exemplar_map.end ())
     retval = true;
@@ -1123,7 +1125,8 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (auto it = map.begin (); it != map.end (); it++)
+  // FIXME: use cbegin and auto decl here when available.
+  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
     {
       std::string key = map.key (it);
       Cell        val = map.contents (it);
@@ -1141,7 +1144,8 @@ octave_class::reconstruct_parents (void)
 
   if (might_have_inheritance)
     {
-      auto it = octave_class::exemplar_map.find (c_name);
+      octave_class::exemplar_const_iterator it
+        = octave_class::exemplar_map.find (c_name);
 
       if (it == octave_class::exemplar_map.end ())
         retval = false;
@@ -1703,9 +1707,9 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   if (nparents () != obj.nparents ())
     error ("mismatch in number of parent classes");
 
-  std::list<std::string> obj_parents
+  const std::list<std::string> obj_parents
     = obj.parent_class_name_list ();
-  std::list<std::string> pnames = parents ();
+  const std::list<std::string> pnames = parents ();
 
   auto p = obj_parents.begin ();
   auto q = pnames.begin ();
@@ -1770,7 +1774,8 @@ is derived.
           retval = octave_value (new octave_class (m, id, parents));
         }
 
-      auto it = octave_class::exemplar_map.find (id);
+      octave_class::exemplar_const_iterator it
+        = octave_class::exemplar_map.find (id);
 
       if (it == octave_class::exemplar_map.end ())
         octave_class::exemplar_map[id] = octave_class::exemplar_info (retval);

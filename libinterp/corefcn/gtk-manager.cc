@@ -40,11 +40,11 @@ namespace octave
     if (dtk.empty ())
       error ("no graphics toolkits are available!");
 
-    auto pl = loaded_toolkits.find (dtk);
+    const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
 
     if (pl == loaded_toolkits.end ())
       {
-        auto pa = available_toolkits.find (dtk);
+        const_available_toolkits_iterator pa = available_toolkits.find (dtk);
 
         if (pa == available_toolkits.end ())
           error ("default graphics toolkit '%s' is not available!",
@@ -89,7 +89,8 @@ namespace octave
           dtk.clear ();
         else
           {
-            auto pa = available_toolkits.begin ();
+            // FIXME: use cbegin and auto decl here when available.
+            const_available_toolkits_iterator pa = available_toolkits.begin ();
 
             dtk = *pa++;
 

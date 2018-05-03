@@ -3339,9 +3339,7 @@ map2Cell (const std::map<T1, T2>& m)
   int i = 0;
 
   for (auto it = m.begin (); it != m.end (); ++it, ++i)
-    {
-      retval(i) = to_ov (it->second);
-    }
+    retval(i) = to_ov (it->second);
 
   return retval;
 }
@@ -3841,7 +3839,8 @@ cdef_manager::find_package (const std::string& name, bool error_if_not_found,
 {
   cdef_package retval;
 
-  auto it = m_all_packages.find (name);
+  std::map<std::string, cdef_package>::const_iterator it
+    = m_all_packages.find (name);
 
   if (it != m_all_packages.end ())
     {

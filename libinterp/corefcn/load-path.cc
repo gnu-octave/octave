@@ -747,7 +747,7 @@ namespace octave
   {
     string_vector retval;
 
-    auto p = find_dir_info (dir);
+    const_dir_info_list_iterator p = find_dir_info (dir);
 
     if (p != dir_info_list.end ())
       retval = p->fcn_files;
@@ -852,7 +852,8 @@ namespace octave
   {
     std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
-    auto retval = dir_info_list.begin ();
+    // FIXME: use cbegin and auto decl here when available.
+    const_dir_info_list_iterator retval = dir_info_list.begin ();
 
     while (retval != dir_info_list.end ())
       {
@@ -1131,7 +1132,7 @@ namespace octave
               {
                 std::string abs_name = sys::env::make_absolute (dir_name);
 
-                auto p = abs_dir_cache.find (abs_name);
+                const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
 
                 if (p != abs_dir_cache.end ())
                   {
@@ -1190,7 +1191,7 @@ namespace octave
         std::string name_head = name.substr (0, pos);
         std::string name_tail = name.substr (pos + 1);
 
-        auto it = package_dir_map.find (name_head);
+        const_package_dir_map_iterator it = package_dir_map.find (name_head);
 
         if (it != package_dir_map.end ())
           return it->second.is_package (name_tail);
@@ -1471,7 +1472,7 @@ namespace octave
       {
         dir_name = "";
 
-        auto p = fcn_map.find (fcn);
+        const_fcn_map_iterator p = fcn_map.find (fcn);
 
         if (p != fcn_map.end ())
           {
@@ -1505,13 +1506,13 @@ namespace octave
 
     //  update ();
 
-    auto q = private_fcn_map.find (dir);
+    const_private_fcn_map_iterator q = private_fcn_map.find (dir);
 
     if (q != private_fcn_map.end ())
       {
         const dir_info::fcn_file_map_type& m = q->second;
 
-        auto p = m.find (fcn);
+        dir_info::const_fcn_file_map_iterator p = m.find (fcn);
 
         if (p != m.end ())
           {
@@ -1539,13 +1540,13 @@ namespace octave
 
     dir_name = "";
 
-    auto q = method_map.find (class_name);
+    const_method_map_iterator q = method_map.find (class_name);
 
     if (q != method_map.end ())
       {
         const fcn_map_type& m = q->second;
 
-        auto p = m.find (meth);
+        const_fcn_map_iterator p = m.find (meth);
 
         if (p != m.end ())
           {
@@ -1579,7 +1580,7 @@ namespace octave
 
     //  update ();
 
-    auto mtd_map_it = method_map.find (class_name);
+    const_method_map_iterator mtd_map_it = method_map.find (class_name);
 
     if (mtd_map_it != method_map.end ())
       {

@@ -137,7 +137,8 @@ namespace octave
 
     size_t k = cs.size ();
 
-    for (auto p = cs.rbegin (); p != cs.rend (); p++)
+    // FIXME: use crend and auto decl here when available.
+    for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
       {
         octave_function *f = (*p).m_fcn;
 
@@ -165,7 +166,8 @@ namespace octave
   {
     octave_user_code *retval = nullptr;
 
-    auto p = cs.end ();
+    // FIXME: use cend and auto decl here when available.
+    const_iterator p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -193,7 +195,8 @@ namespace octave
   {
     int retval = -1;
 
-    auto p = cs.end ();
+    // FIXME: use cend and auto decl here when available.
+    const_iterator p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -219,7 +222,8 @@ namespace octave
   {
     int retval = -1;
 
-    auto p = cs.end ();
+    // FIXME: use cend and auto decl here when available.
+    const_iterator p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -335,7 +339,8 @@ namespace octave
   {
     bool retval = true;
 
-    auto p = cs.end ();
+    // FIXME: use cend and auto decl here when available.
+    const_iterator p = cs.end ();
 
     while (p != cs.begin ())
       {
@@ -550,7 +555,8 @@ namespace octave
 
     if (nframes > 0)
       {
-        for (auto p = cs.rbegin (); p != cs.rend (); p++)
+        // FIXME: use crbegin and auto decl here when available.
+        for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
           {
             const stack_frame& elt = *p;
 

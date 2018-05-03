@@ -1755,7 +1755,10 @@ namespace octave
     entry_block ().create_dom_tree ();
 
     // insert phi nodes where needed, this is done on a per variable basis
-    for (auto  iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
+    // FIXME: use cbegin and auto decl here when available.
+    for (variable_map::const_iterator iter = m_vmap.begin ();
+         iter != m_vmap.end ();
+         ++iter)
       {
         jit_block::df_set visited, added_phi;
         std::list<jit_block *> ssa_worklist;
@@ -1990,7 +1993,10 @@ namespace octave
     jit_block *split = ablock.maybe_split (m_factory, m_blocks,
                                            final_block ());
     jit_terminator *term = split->terminator ();
-    for (auto iter = temp.begin (); iter != temp.end (); ++iter)
+    // FIXME: use cbegin and auto decl here when available.
+    for (std::set<jit_value *>::const_iterator iter = temp.begin ();
+         iter != temp.end ();
+         ++iter)
       {
         jit_value *value = *iter;
         jit_call *release
@@ -2822,7 +2828,7 @@ namespace octave
   octave_value
   jit_info::find (const vmap& extra_vars, const std::string& vname) const
   {
-    auto iter = extra_vars.find (vname);
+    vmap::const_iterator iter = extra_vars.find (vname);
 
     if (iter == extra_vars.end ())
       {

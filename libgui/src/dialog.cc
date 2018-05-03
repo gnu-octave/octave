@@ -230,8 +230,7 @@ namespace octave
 
     selector = view->selectionModel ();
     int i = 0;
-    for (auto it = initial.begin ();
-         it != initial.end (); it++)
+    for (auto it = initial.begin (); it != initial.end (); it++)
       {
         QModelIndex idx = m_model->index (initial.value (i++) - 1, 0,
                                           QModelIndex ());

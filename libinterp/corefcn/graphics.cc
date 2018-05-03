@@ -1915,7 +1915,8 @@ property::create (const std::string& name, const graphics_handle& h,
 
       graphics_object go;
 
-      auto it = dprop_obj_map.find (go_name);
+      std::map<caseless_str, graphics_object>::const_iterator it =
+        dprop_obj_map.find (go_name);
 
       if (it == dprop_obj_map.end ())
         {
@@ -2295,13 +2296,13 @@ property_list::lookup (const caseless_str& name) const
           std::transform (pname.begin (), pname.end (), pname.begin (),
                           tolower);
 
-          auto p = find (pfx);
+          plist_map_const_iterator p = find (pfx);
 
           if (p != end ())
             {
               const pval_map_type& pval_map = p->second;
 
-              auto q = pval_map.find (pname);
+              pval_map_const_iterator q = pval_map.find (pname);
 
               if (q != pval_map.end ())
                 retval = q->second;
@@ -3049,7 +3050,7 @@ base_properties::set_from_list (base_graphics_object& bgo,
 {
   std::string go_name = graphics_object_name ();
 
-  auto plist = defaults.find (go_name);
+  property_list::plist_map_const_iterator plist = defaults.find (go_name);
 
   if (plist != defaults.end ())
     {
@@ -3090,7 +3091,8 @@ base_properties::set_from_list (base_graphics_object& bgo,
 octave_value
 base_properties::get_dynamic (const caseless_str& pname) const
 {
-  auto it = all_props.find (pname);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
+    all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get: unknown property "%s")", pname.c_str ());
@@ -3103,7 +3105,8 @@ base_properties::get_dynamic (bool all) const
 {
   octave_scalar_map m;
 
-  for (auto it = all_props.begin (); it != all_props.end (); ++it)
+  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator
+       it = all_props.begin (); it != all_props.end (); ++it)
     if (all || ! it->second.is_hidden ())
       m.assign (it->second.get_name (), it->second.get ());
 
@@ -3146,7 +3149,8 @@ base_properties::set_dynamic (const caseless_str& pname,
 property
 base_properties::get_property_dynamic (const caseless_str& pname)
 {
-  auto it = all_props.find (pname);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
+    all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get_property: unknown property "%s")", pname.c_str ());

@@ -332,7 +332,8 @@ namespace octave
       retval.push_back (it->toStdString ());
 
     retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
-    retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
+    retval.push_back ((QString ("%1").arg (
+                                           uiwidget_creator.get_dialog_result ())).toStdString ());
 
     uiwidget_creator.unlock ();
 

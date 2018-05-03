@@ -230,7 +230,7 @@ namespace octave
 
     octave_value varval (const std::string& name) const
     {
-      auto p = m_symbols.find (name);
+      table_const_iterator p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
               ? p->second.varval (m_context) : octave_value ());
@@ -240,7 +240,7 @@ namespace octave
     {
       bool retval = false;
 
-      auto p = m_symbols.find (name);
+      table_const_iterator p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
         {
@@ -462,7 +462,7 @@ namespace octave
 
     bool is_local_variable (const std::string& name) const
     {
-      auto p = m_symbols.find (name);
+      table_const_iterator p = m_symbols.find (name);
 
       return (p != m_symbols.end ()
               && ! p->second.is_global ()
@@ -471,7 +471,7 @@ namespace octave
 
     bool is_global (const std::string& name) const
     {
-      auto p = m_symbols.find (name);
+      table_const_iterator p = m_symbols.find (name);
 
       return p != m_symbols.end () && p->second.is_global ();
     }

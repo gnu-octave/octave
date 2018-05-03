@@ -199,7 +199,7 @@ namespace octave
     octave_value
     find_method (const std::string& name, const std::string& dispatch_type)
     {
-      auto p = m_fcn_table.find (name);
+      fcn_table_const_iterator p = m_fcn_table.find (name);
 
       if (p != m_fcn_table.end ())
         {
@@ -232,7 +232,7 @@ namespace octave
     octave_value
     find_built_in_function (const std::string& name)
     {
-      auto p = m_fcn_table.find (name);
+      fcn_table_const_iterator p = m_fcn_table.find (name);
 
       return (p != m_fcn_table.end ()
               ? p->second.find_built_in_function () : octave_value ());
@@ -640,7 +640,7 @@ namespace octave
     {
       std::list<std::string> retval;
 
-      auto it = m_parent_map.find (dispatch_type);
+      const_parent_map_iterator it = m_parent_map.find (dispatch_type);
 
       if (it != m_parent_map.end ())
         retval = it->second;

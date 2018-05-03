@@ -586,7 +586,9 @@ namespace octave
           }
       }
 
-    for (auto iter = m_args.begin (); iter != m_args.end (); ++iter)
+    // FIXME: use cbegin and auto decl here when available.
+    for (std::vector<jit_type *>::const_iterator iter = m_args.begin ();
+         iter != m_args.end (); ++iter)
       {
         jit_type *ty = *iter;
         assert (ty);
@@ -899,7 +901,7 @@ namespace octave
   jit_operation::do_generate (const signature_vec& types) const
   {
     static jit_function null_overload;
-    auto find = m_generated.find (&types);
+    generated_map::const_iterator find = m_generated.find (&types);
     if (find != m_generated.end ())
       {
         if (find->second)
@@ -2033,7 +2035,7 @@ namespace octave
   jit_type*
   jit_typeinfo::do_get_intN (size_t nbits) const
   {
-    auto iter = m_ints.find (nbits);
+    std::map<size_t, jit_type *>::const_iterator iter = m_ints.find (nbits);
     if (iter != m_ints.end ())
       return iter->second;
 

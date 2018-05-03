@@ -258,7 +258,7 @@ namespace octave
 
       ~match_data (void) = default;
 
-      string_vector named_patterns (void) { return named_pats; }
+      string_vector named_patterns (void) const { return named_pats; }
 
     private:
 

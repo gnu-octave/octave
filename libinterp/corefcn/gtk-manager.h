@@ -63,7 +63,7 @@ namespace octave
 
     graphics_toolkit find_toolkit (const std::string& name) const
     {
-      auto p = loaded_toolkits.find (name);
+      const_loaded_toolkits_iterator p = loaded_toolkits.find (name);
 
       if (p != loaded_toolkits.end ())
         return p->second;

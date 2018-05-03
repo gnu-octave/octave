@@ -79,7 +79,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 
   std::string nm = idx(0).string_value ();
 
-  auto p = map.seek (nm);
+  octave_map::const_iterator p = map.seek (nm);
 
   if (p != map.end ())
     retval = map.contents (p);
@@ -550,7 +550,8 @@ octave_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  for (auto p = map.begin (); p != map.end (); p++)
+  // FIXME: use cbegin and auto decl here when available.
+  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
     {
       std::string key = map.key (p);
 
@@ -1264,7 +1265,8 @@ octave_scalar_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  for (auto p = map.begin (); p != map.end (); p++)
+  // FIXME: use cbegin and auto decl here when available.
+  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
     {
       std::string key = map.key (p);
 

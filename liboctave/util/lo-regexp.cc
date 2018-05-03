@@ -459,7 +459,7 @@ namespace octave
   {
     std::string retval;
 
-    regexp::match_data rx_lst = match (buffer);
+    const regexp::match_data rx_lst = match (buffer);
 
     size_t num_matches = rx_lst.size ();
 

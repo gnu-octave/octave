@@ -846,8 +846,7 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  // FIXME: use cbegin and auto decl here when available.
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.cbegin (); it != map.cend (); it++)
     {
       std::string key = map.key (it);
 
@@ -1125,8 +1124,7 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  // FIXME: use cbegin and auto decl here when available.
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.cbegin (); it != map.cend (); it++)
     {
       std::string key = map.key (it);
       Cell        val = map.contents (it);

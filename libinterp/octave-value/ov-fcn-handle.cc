@@ -240,10 +240,9 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
       for (int i = 0; i < btyp_num_types && retval; i++)
         retval = builtin_overloads[i].is_copy_of (h.builtin_overloads[i]);
 
-      // FIXME: use cbegin and auto decl here when available.
-      str_ov_map::const_iterator iter = overloads.begin ();
-      str_ov_map::const_iterator hiter = h.overloads.begin ();
-      for (; iter != overloads.end () && retval; iter++, hiter++)
+      auto iter = overloads.cbegin ();
+      auto hiter = h.overloads.cbegin ();
+      for (; iter != overloads.cend () && retval; iter++, hiter++)
         retval = (iter->first == hiter->first)
                  && (iter->second.is_copy_of (hiter->second));
     }

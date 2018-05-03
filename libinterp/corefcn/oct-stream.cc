@@ -6312,9 +6312,7 @@ namespace octave
 
     octave_idx_type j = 0;
 
-    // FIXME: use cbegin and auto decl here when available.
-    for (std::list<void *>::const_iterator it = input_buf_list.begin ();
-         it != input_buf_list.end (); it++)
+    for (auto it = input_buf_list.cbegin (); it != input_buf_list.cend (); it++)
       {
         SRC_T *data = static_cast<SRC_T *> (*it);
 

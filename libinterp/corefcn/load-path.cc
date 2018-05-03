@@ -852,10 +852,9 @@ namespace octave
   {
     std::string dir = sys::file_ops::tilde_expand (dir_arg);
 
-    // FIXME: use cbegin and auto decl here when available.
-    const_dir_info_list_iterator retval = dir_info_list.begin ();
+    auto retval = dir_info_list.cbegin ();
 
-    while (retval != dir_info_list.end ())
+    while (retval != dir_info_list.cend ())
       {
         if (retval->dir_name == dir)
           break;

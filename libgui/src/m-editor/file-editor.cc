@@ -377,9 +377,8 @@ namespace octave
     QStringList fet_index;
 
     // save all open tabs before they are definitely closed
-    // FIXME: use cbegin and auto decl here when available.
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-         p != m_editor_tab_map.end (); p++)
+    for (auto p = m_editor_tab_map.cbegin ();
+         p != m_editor_tab_map.cend (); p++)
       {
         QString file_name = p->first;   // get file name of tab
         if (! file_name.isEmpty ())      // do not append unnamed files
@@ -950,9 +949,8 @@ namespace octave
           m_tmp_closed_files << ""; // no new name, just removing this file
 
         // Get and store the related encoding
-        // FIXME: use cbegin and auto decl here when available.
-        for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-             p != m_editor_tab_map.end (); p++)
+        for (auto p = m_editor_tab_map.cbegin ();
+             p != m_editor_tab_map.cend (); p++)
           {
             if (editor_tab == p->second.fet_ID)
               {
@@ -2318,9 +2316,8 @@ namespace octave
     emit fetab_file_name_query (nullptr);
 
     // Loop over all open files and pick those within old_dir
-    // FIXME: use cbegin and auto decl here when available.
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-         p != m_editor_tab_map.end (); p++)
+    for (auto p = m_editor_tab_map.cbegin ();
+         p != m_editor_tab_map.cend (); p++)
       {
         QString rel_path_to_file = old_dir.relativeFilePath (p->first);
         if (rel_path_to_file.left (3) != QString ("../"))
@@ -2370,9 +2367,8 @@ namespace octave
     // Check all tabs for the given file name
     QWidget *retval = nullptr;
 
-    // FIXME: use cbegin and auto decl here when available.
-    for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-         p != m_editor_tab_map.end (); p++)
+    for (auto p = m_editor_tab_map.cbegin ();
+         p != m_editor_tab_map.cend (); p++)
       {
         QString tab_file = p->first;
         if (same_file (file.toStdString (), tab_file.toStdString ())

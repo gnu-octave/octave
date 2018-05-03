@@ -586,9 +586,7 @@ namespace octave
           }
       }
 
-    // FIXME: use cbegin and auto decl here when available.
-    for (std::vector<jit_type *>::const_iterator iter = m_args.begin ();
-         iter != m_args.end (); ++iter)
+    for (auto iter = m_args.cbegin (); iter != m_args.cend (); ++iter)
       {
         jit_type *ty = *iter;
         assert (ty);

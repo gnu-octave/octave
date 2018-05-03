@@ -1330,8 +1330,7 @@ public:
     Cell nesting_info (len, 1);
     Cell persistent_info (len, 1);
 
-    // FIXME: use cbegin and auto decl here when available.
-    std::list<symbol_info>::const_iterator p = lst.begin ();
+    auto p = lst.cbegin ();
 
     for (size_t j = 0; j < len; j++)
       {

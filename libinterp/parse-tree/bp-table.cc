@@ -729,9 +729,8 @@ namespace octave
   {
     // Odd loop structure required because delete will invalidate
     // m_bp_set iterators.
-    // FIXME: use cbegin and auto decl here when available.
-    for (const_bp_set_iterator it = m_bp_set.begin (), it_next = it;
-         it != m_bp_set.end ();
+    for (auto it = m_bp_set.cbegin (), it_next = it;
+         it != m_bp_set.cend ();
          it = it_next)
       {
         ++it_next;

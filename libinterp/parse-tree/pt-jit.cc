@@ -1755,10 +1755,7 @@ namespace octave
     entry_block ().create_dom_tree ();
 
     // insert phi nodes where needed, this is done on a per variable basis
-    // FIXME: use cbegin and auto decl here when available.
-    for (variable_map::const_iterator iter = m_vmap.begin ();
-         iter != m_vmap.end ();
-         ++iter)
+    for (auto iter = m_vmap.cbegin (); iter != m_vmap.cend (); ++iter)
       {
         jit_block::df_set visited, added_phi;
         std::list<jit_block *> ssa_worklist;
@@ -1993,10 +1990,7 @@ namespace octave
     jit_block *split = ablock.maybe_split (m_factory, m_blocks,
                                            final_block ());
     jit_terminator *term = split->terminator ();
-    // FIXME: use cbegin and auto decl here when available.
-    for (std::set<jit_value *>::const_iterator iter = temp.begin ();
-         iter != temp.end ();
-         ++iter)
+    for (auto iter = temp.cbegin (); iter != temp.cend (); ++iter)
       {
         jit_value *value = *iter;
         jit_call *release

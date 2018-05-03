@@ -1322,13 +1322,11 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
 {
   if (nfields () == rb.nfields ())
     {
-      // FIXME: use cbegin and auto decl here when available.
-      for (const_iterator pa = begin (); pa != end (); pa++)
+      for (auto pa = cbegin (); pa != cend (); pa++)
         {
-          // FIXME: use cbegin and auto decl here when available.
-          const_iterator pb = rb.seek (key (pa));
+          auto pb = rb.seek (key (pa));
 
-          if (pb == rb.end ())
+          if (pb == rb.cend ())
             error ("field name mismatch in structure concatenation");
 
           contents(pa).insert (rb.contents (pb), ra_idx);

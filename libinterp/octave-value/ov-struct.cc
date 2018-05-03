@@ -550,8 +550,7 @@ octave_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  // FIXME: use cbegin and auto decl here when available.
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (auto p = map.cbegin (); p != map.cend (); p++)
     {
       std::string key = map.key (p);
 
@@ -1265,8 +1264,7 @@ octave_scalar_struct::byte_size (void) const
 
   size_t retval = 0;
 
-  // FIXME: use cbegin and auto decl here when available.
-  for (octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+  for (auto p = map.cbegin (); p != map.cend (); p++)
     {
       std::string key = map.key (p);
 

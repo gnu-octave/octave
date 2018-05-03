@@ -317,27 +317,6 @@ safe_source_file (const std::string& file_name,
   return 0;
 }
 
-static void
-execute_pkg_add (const std::string& dir)
-{
-  std::string file_name = octave::sys::file_ops::concat (dir, "PKG_ADD");
-
-  octave::load_path& lp = octave::__get_load_path__ ("execute_pkg_add");
-
-  try
-    {
-      lp.execute_pkg_add (dir);
-    }
-  catch (const octave::interrupt_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-    }
-  catch (const octave::execution_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-    }
-}
-
 namespace octave
 {
   // Create an interpreter object and perform initialization up to the
@@ -604,7 +583,8 @@ namespace octave
         frame.add_method (m_load_path, &load_path::set_add_hook,
                           m_load_path.get_add_hook ());
 
-        m_load_path.set_add_hook (execute_pkg_add);
+        m_load_path.set_add_hook ([this] (const std::string& dir)
+                                  { this->execute_pkg_add (dir); });
 
         m_load_path.initialize (set_initial_path);
 
@@ -1306,5 +1286,21 @@ namespace octave
     disable_warning ("Octave:data-file-in-path");
     disable_warning ("Octave:function-name-clash");
     disable_warning ("Octave:possible-matlab-short-circuit-operator");
+  }
+
+  void interpreter::execute_pkg_add (const std::string& dir)
+  {
+    try
+      {
+        m_load_path.execute_pkg_add (dir);
+      }
+    catch (const octave::interrupt_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+      }
+    catch (const octave::execution_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+      }
   }
 }

@@ -295,6 +295,8 @@ namespace octave
     bool m_initialized;
 
     void maximum_braindamage (void);
+
+    void execute_pkg_add (const std::string& dir);
   };
 }
 

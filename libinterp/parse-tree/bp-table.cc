@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-int.h"
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
 #include "octave-link.h"
@@ -340,7 +341,8 @@ namespace octave
               {
                 // It was a line number.  Get function name from debugger.
                 if (Vdebugging)
-                  symbol_name = get_user_code ()->profiler_name ();
+                  symbol_name
+                    = m_interpreter.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
@@ -559,7 +561,7 @@ namespace octave
                                              const bp_table::intmap& line,
                                              const std::string& condition)
   {
-    octave_user_code *main_fcn = get_user_code (fname);
+    octave_user_code *main_fcn = m_interpreter.get_user_code (fname);
 
     if (! main_fcn)
       error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
@@ -657,7 +659,7 @@ namespace octave
       }
     else
       {
-        octave_user_code *dbg_fcn = get_user_code (fname);
+        octave_user_code *dbg_fcn = m_interpreter.get_user_code (fname);
 
         if (! dbg_fcn)
           error ("remove_breakpoint: unable to find function %s\n",
@@ -699,7 +701,7 @@ namespace octave
   {
     intmap retval;
 
-    octave_user_code *dbg_fcn = get_user_code (fname);
+    octave_user_code *dbg_fcn = m_interpreter.get_user_code (fname);
 
     if (dbg_fcn)
       {
@@ -769,7 +771,7 @@ namespace octave
         if (fname_list.empty ()
             || find_bkpt_list (fname_list, bp_fname) != "")
           {
-            octave_user_code *dbg_fcn = get_user_code (bp_fname);
+            octave_user_code *dbg_fcn = m_interpreter.get_user_code (bp_fname);
 
             if (dbg_fcn)
               {
@@ -929,45 +931,11 @@ namespace octave
     return retval;
   }
 
-  // Return a pointer to the user-defined function FNAME.  If FNAME is empty,
-  // search backward for the first user-defined function in the
-  // current call stack.
-
   octave_user_code *
   get_user_code (const std::string& fname)
   {
-    octave_user_code *dbg_fcn = nullptr;
+    interpreter& interp = __get_interpreter__ ("get_user_code");
 
-    if (fname.empty ())
-      {
-        call_stack& cs = __get_call_stack__ ("get_user_code");
-
-        dbg_fcn = cs.debug_user_code ();
-      }
-    else
-      {
-        std::string name = fname;
-
-        if (sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
-          {
-            auto beg = name.begin () + 2;  // never have @/method
-            auto end = name.end () - 1;    // never have trailing '/'
-            std::replace (beg, end, '/', sys::file_ops::dir_sep_char ());
-          }
-
-        size_t name_len = name.length ();
-
-        if (name_len > 2 && name.substr (name_len-2) == ".m")
-          name = name.substr (0, name_len-2);
-
-        symbol_table& symtab = __get_symbol_table__ ("get_user_code");
-
-        octave_value fcn = symtab.find_function (name);
-
-        if (fcn.is_defined () && fcn.is_user_code ())
-          dbg_fcn = fcn.user_code_value ();
-      }
-
-    return dbg_fcn;
+    return interp.get_user_code (fname);
   }
 }

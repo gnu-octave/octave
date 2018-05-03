@@ -390,7 +390,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 /*
       if (Vdebugging)
         {
-          octave_user_code *dbg_fcn = get_user_code ();
+          octave_user_code *dbg_fcn = interp.get_user_code ();
           if (dbg_fcn)
             {
               symbol_name = dbg_fcn->name ();
@@ -538,7 +538,7 @@ is stopped.
 @seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}
 @end deftypefn */)
 {
-  octave_user_code *dbg_fcn = octave::get_user_code ();
+  octave_user_code *dbg_fcn = interp.get_user_code ();
 
   if (! dbg_fcn)
     {
@@ -607,8 +607,8 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
   os.flush ();
 }
 
-DEFUN (dbtype, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbtype, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbtype
 @deftypefnx {} {} dbtype @var{lineno}
 @deftypefnx {} {} dbtype @var{startl:endl}
@@ -638,7 +638,7 @@ numbers.
   switch (args.length ())
     {
     case 0:  // dbtype
-      dbg_fcn = octave::get_user_code ();
+      dbg_fcn = interp.get_user_code ();
 
       if (! dbg_fcn)
         error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
@@ -656,7 +656,7 @@ numbers.
 
         if (ind != std::string::npos)  // (dbtype start:end)
           {
-            dbg_fcn = octave::get_user_code ();
+            dbg_fcn = interp.get_user_code ();
 
             if (dbg_fcn)
               {
@@ -686,7 +686,7 @@ numbers.
 
             if (line == 0)  // (dbtype func)
               {
-                dbg_fcn = octave::get_user_code (arg);
+                dbg_fcn = interp.get_user_code (arg);
 
                 if (! dbg_fcn)
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
@@ -699,7 +699,7 @@ numbers.
                 if (line <= 0)
                   error ("dbtype: start and end lines must be >= 1\n");
 
-                dbg_fcn = octave::get_user_code ();
+                dbg_fcn = interp.get_user_code ();
 
                 if (dbg_fcn)
                   do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
@@ -711,7 +711,7 @@ numbers.
 
     case 2:  // (dbtype func start:end) || (dbtype func start)
       {
-        dbg_fcn = octave::get_user_code (argv[1]);
+        dbg_fcn = interp.get_user_code (argv[1]);
 
         if (! dbg_fcn)
           error ("dbtype: function <%s> not found\n", argv[1].c_str ());
@@ -784,7 +784,7 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
         error ("dblist: N must be a non-negative integer");
     }
 
-  octave_user_code *dbg_fcn = octave::get_user_code ();
+  octave_user_code *dbg_fcn = interp.get_user_code ();
 
   if (! dbg_fcn)
     error ("dblist: must be inside a user function to use dblist\n");

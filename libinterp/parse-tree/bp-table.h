@@ -36,6 +36,8 @@ class octave_value_list;
 
 namespace octave
 {
+  class interpreter;
+
   struct bp_type
   {
     int line;
@@ -49,9 +51,9 @@ namespace octave
   {
   public:
 
-    bp_table (void)
-      : m_bp_set (), m_errors_that_stop (), m_caught_that_stop (),
-        m_warnings_that_stop ()
+    bp_table (interpreter& interp)
+      : m_interpreter (interp), m_bp_set (), m_errors_that_stop (),
+        m_caught_that_stop (), m_warnings_that_stop ()
     { }
 
     ~bp_table (void) = default;
@@ -128,6 +130,8 @@ namespace octave
     typedef std::set<std::string>::const_iterator const_bp_set_iterator;
     typedef std::set<std::string>::iterator bp_set_iterator;
 
+    interpreter& m_interpreter;
+
     // Set of function (.m file) names containing at least one breakpoint.
     std::set<std::string> m_bp_set;
 
@@ -149,6 +153,7 @@ namespace octave
                                              const std::string& fname);
   };
 
+  OCTAVE_DEPRECATED (5, "use 'octave::get_user_code' instead")
   extern octave_user_code * get_user_code (const std::string& fname = "");
 }
 

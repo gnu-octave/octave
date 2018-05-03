@@ -53,6 +53,8 @@ extern OCTINTERP_API bool octave_interpreter_ready;
 // TRUE means we've processed all the init code and we are good to go.
 extern OCTINTERP_API bool octave_initialized;
 
+class octave_user_code;
+
 namespace octave
 {
   class profiler;
@@ -208,6 +210,8 @@ namespace octave
     {
       return m_gtk_manager;
     }
+
+    octave_user_code * get_user_code (const std::string& fname = "");
 
     void mlock (void);
 

@@ -148,23 +148,6 @@ find_private_file (const std::string& fname)
   return retval;
 }
 
-static void
-execute_pkg_add_or_del (const std::string& dir,
-                        const std::string& script_file)
-{
-  if (! octave_interpreter_ready)
-    return;
-
-  octave::unwind_protect frame;
-
-  std::string file = octave::sys::file_ops::concat (dir, script_file);
-
-  octave::sys::file_stat fs (file);
-
-  if (fs.exists ())
-    octave::source_file (file, "base");
-}
-
 // True if a path is contained in a path list separated by path_sep_char
 
 static bool
@@ -204,6 +187,13 @@ namespace octave
 {
   std::string load_path::sys_path;
   load_path::abs_dir_cache_type load_path::abs_dir_cache;
+
+  load_path::load_path (void)
+    : package_map (), top_level_package (), dir_info_list (), init_dirs (),
+      m_command_line_path (),
+      add_hook ([this] (const std::string& dir) { this->execute_pkg_add (dir); }),
+      remove_hook ([this] (const std::string& dir) { this->execute_pkg_del (dir); })
+  { }
 
   void
   load_path::initialize (bool set_initial_path)
@@ -843,6 +833,22 @@ namespace octave
   load_path::execute_pkg_del (const std::string& dir)
   {
     execute_pkg_add_or_del (dir, "PKG_DEL");
+  }
+
+  void load_path::execute_pkg_add_or_del (const std::string& dir,
+                                          const std::string& script_file)
+  {
+    if (! octave_interpreter_ready)
+      return;
+
+    octave::unwind_protect frame;
+
+    std::string file = octave::sys::file_ops::concat (dir, script_file);
+
+    octave::sys::file_stat fs (file);
+
+    if (fs.exists ())
+      octave::source_file (file, "base");
   }
 
   // FIXME: maybe we should also maintain a map to speed up this method of access.

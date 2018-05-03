@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <functional>
 #include <iosfwd>
 #include <list>
 #include <map>
@@ -44,11 +45,7 @@ namespace octave
   {
   public:
 
-    load_path (void)
-      : package_map (), top_level_package (), dir_info_list (), init_dirs (),
-        m_command_line_path (), add_hook (load_path::execute_pkg_add),
-        remove_hook (load_path::execute_pkg_del)
-    { }
+    load_path (void);
 
     typedef void (*hook_fcn_ptr) (const std::string& dir);
 
@@ -169,14 +166,28 @@ namespace octave
 
     void display (std::ostream& os) const;
 
-    hook_fcn_ptr get_add_hook (void) { return add_hook; }
-    hook_fcn_ptr get_remove_hook (void) { return remove_hook; }
+    std::function<void (const std::string&)> get_add_hook (void)
+    {
+      return add_hook;
+    }
 
-    void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
-    void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
+    std::function<void (const std::string&)> get_remove_hook (void)
+    {
+      return remove_hook;
+    }
 
-    static void execute_pkg_add (const std::string& dir);
-    static void execute_pkg_del (const std::string& dir);
+    void set_add_hook (const std::function<void (const std::string&)>& f)
+    {
+      add_hook = f;
+    }
+
+    void set_remove_hook (const std::function<void (const std::string&)>& f)
+    {
+      remove_hook = f;
+    }
+
+    void execute_pkg_add (const std::string& dir);
+    void execute_pkg_del (const std::string& dir);
 
     void set_command_line_path (const std::string& p)
     {
@@ -510,9 +521,12 @@ namespace octave
 
     static abs_dir_cache_type abs_dir_cache;
 
-    hook_fcn_ptr add_hook;
+    std::function<void (const std::string&)> add_hook;
 
-    hook_fcn_ptr remove_hook;
+    std::function<void (const std::string&)> remove_hook;
+
+    void execute_pkg_add_or_del (const std::string& dir,
+                                 const std::string& script_file);
 
     const_dir_info_list_iterator find_dir_info (const std::string& dir) const;
     dir_info_list_iterator find_dir_info (const std::string& dir);

@@ -80,8 +80,8 @@ intmap_to_ov (const octave::bp_table::intmap& line)
   return retval;
 }
 
-DEFUN (dbstop, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbstop, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstop @var{func}
 @deftypefnx {} {} dbstop @var{func} @var{line}
 @deftypefnx {} {} dbstop @var{func} @var{line1} @var{line2} @dots{}
@@ -176,7 +176,7 @@ all breakpoints within the file are cleared.
   std::string condition = "";
   octave_value retval;
 
-  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbstop");
+  octave::bp_table& bptab = interp.get_bp_table ();
 
   if (args.length() >= 1 && ! args(0).isstruct ())
     {
@@ -252,8 +252,8 @@ all breakpoints within the file are cleared.
   return retval;
 }
 
-DEFUN (dbclear, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbclear, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbclear @var{func}
 @deftypefnx {} {} dbclear @var{func} @var{line}
 @deftypefnx {} {} dbclear @var{func} @var{line1} @var{line2} @dots{}
@@ -302,7 +302,7 @@ files.
 
   int nargin = args.length ();
 
-  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbclear");
+  octave::bp_table& bptab = interp.get_bp_table ();
 
   bptab.parse_dbfunction_params ("dbclear", args, symbol_name, lines, dummy);
 
@@ -374,7 +374,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
   octave::bp_table::fname_bp_map bp_list;
   std::string symbol_name;
 
-  octave::bp_table& bptab = octave::__get_bp_table__ ("Fdbstatus");
+  octave::bp_table& bptab = interp.get_bp_table ();
 
   if (nargin == 1)
     {

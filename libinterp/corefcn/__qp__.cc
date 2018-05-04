@@ -89,14 +89,12 @@ static int
 qp (const Matrix& H, const ColumnVector& q,
     const Matrix& Aeq, const ColumnVector& beq,
     const Matrix& Ain, const ColumnVector& bin,
-    int maxit,
+    int maxit, double rtol,
     ColumnVector& x, ColumnVector& lambda, int& iter)
 {
   int info = 0;
 
   iter = 0;
-
-  double rtol = sqrt (std::numeric_limits<double>::epsilon ());
 
   // Problem dimension.
   octave_idx_type n = x.numel ();
@@ -493,7 +491,7 @@ DEFUN (__qp__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (args.length () != 8)
+  if (args.length () != 9)
     print_usage ();
 
   const ColumnVector x0  (args(0).vector_value ());
@@ -504,7 +502,8 @@ Undocumented internal function.
   const Matrix Ain       (args(5).matrix_value ());
   const ColumnVector bin (args(6).vector_value ());
   const int maxit        (args(7).int_value ());
-
+  const double rtol      (args(8).double_value());
+    
   int iter = 0;
 
   // Copy the initial guess into the working variable
@@ -513,7 +512,7 @@ Undocumented internal function.
   // Reordering the Lagrange multipliers
   ColumnVector lambda;
 
-  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
+  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, rtol, x, lambda, iter);
 
   return ovl (x, lambda, info, iter);
 }

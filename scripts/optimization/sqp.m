@@ -417,7 +417,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     old_lambda = lambda;
     [p, obj_qp, INFO, lambda] = qp (x, B, c, F, g, [], [], d, C,
-                                    Inf (size (d)));
+                                    Inf (size (d)), struct ("TolX", tol));
 
     info = INFO.info;
 

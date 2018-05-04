@@ -169,6 +169,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
   maxit = optimget (options, "MaxIter", 200);
+  tol = optimget (options, "TolX", sqrt (eps));
 
   ## Validate the quadratic penalty.
   if (! issquare (H))
@@ -243,7 +244,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     endif
 
     if (! isempty (lb) && ! isempty (ub))
-      rtol = sqrt (eps);
+      rtol = tol;
       for i = 1:n
         if (abs (lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
           ## These are actually an equality constraint
@@ -291,7 +292,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       endif
 
       if (! isempty (A_lb) && ! isempty (A_ub))
-        rtol = sqrt (eps);
+        rtol = tol;
         for i = 1:dimA_in
           if (abs (A_lb(i) - A_ub(i))
               < rtol*(1 + max (abs (A_lb(i) + A_ub(i)))))
@@ -331,7 +332,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       || isa (A, "single") || isa (b, "single"))
     rtol = sqrt (eps ("single"));
   else
-    rtol = sqrt (eps);
+    rtol = tol;
   endif
 
   eq_infeasible = (n_eq > 0 && norm (A*x0-b) > rtol*(1+abs (b)));
@@ -407,10 +408,10 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       x0 = xbar;
     endif
   endif
-
+  
   if (info == 0)
     ## The initial (or computed) guess is feasible.  Call the solver.
-    [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit);
+    [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit, rtol);
   else
     iter = 0;
     x = x0;

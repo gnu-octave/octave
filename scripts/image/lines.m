@@ -30,6 +30,7 @@
 
 function map = lines (n)
 
+  hf = get (groot, "currentfigure");
   if (nargin > 1)
     print_usage ();
   elseif (nargin == 1)
@@ -38,17 +39,22 @@ function map = lines (n)
     endif
     n = double (n);
   else
-    hf = get (0, "currentfigure");
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
       n = 64;
     endif
   endif
+
   if (n == 1)
     map = [0, 0, 1];
   elseif (n > 1)
-    C = get (gca, "colororder");
+    hax = get (hf, "currentaxes");
+    if (! isempty (hax))
+      C = get (hax, "colororder");
+    else
+      C = get (groot, "defaultaxescolororder");
+    endif
     nr = rows (C);
     map = C(rem (0:(n-1), nr) + 1, :);
   else

@@ -64,14 +64,17 @@ static bool Voptimize_subsasgn_calls = true;
 
 octave_user_code::~octave_user_code (void)
 {
+  // FIXME: shouldn't this happen automatically when deleting cmd_list?
+  if (cmd_list)
+    cmd_list->remove_all_breakpoints (file_name);
+
+  delete cmd_list;
   delete m_file_info;
 }
 
 void
 octave_user_code::get_file_info (void)
 {
-  std::string file_name = fcn_file_name ();
-
   m_file_info = new octave::file_info (file_name);
 
   octave::sys::file_stat fs (file_name);
@@ -118,6 +121,20 @@ octave_user_code::subfunctions (void) const
   return std::map<std::string, octave_value> ();
 }
 
+octave_value
+octave_user_code::dump (void) const
+{
+  std::map<std::string, octave_value> m
+    = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
+       { "file_name", file_name },
+       { "time_parsed", t_parsed },
+       { "time_checked", t_checked },
+       { "call_depth", call_depth }};
+
+  return octave_value (m);
+}
+
+
 // User defined scripts.
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
@@ -125,20 +142,14 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
                                      "user-defined script");
 
 octave_user_script::octave_user_script (void)
-  : octave_user_code (), cmd_list (nullptr), file_name (),
-    t_parsed (static_cast<time_t> (0)),
-    t_checked (static_cast<time_t> (0)),
-    call_depth (-1)
+  : octave_user_code ()
 { }
 
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
    const octave::symbol_scope& scope, octave::tree_statement_list *cmds,
    const std::string& ds)
-  : octave_user_code (nm, scope, ds), cmd_list (cmds), file_name (fnm),
-    t_parsed (static_cast<time_t> (0)),
-    t_checked (static_cast<time_t> (0)),
-    call_depth (-1)
+  : octave_user_code (fnm, nm, scope, cmds, ds)
 {
   if (cmd_list)
     cmd_list->mark_as_script_body ();
@@ -147,19 +158,8 @@ octave_user_script::octave_user_script
 octave_user_script::octave_user_script
   (const std::string& fnm, const std::string& nm,
    const octave::symbol_scope& scope, const std::string& ds)
-  : octave_user_code (nm, scope, ds), cmd_list (nullptr), file_name (fnm),
-    t_parsed (static_cast<time_t> (0)),
-    t_checked (static_cast<time_t> (0)),
-    call_depth (-1)
+    : octave_user_code (fnm, nm, scope, nullptr, ds)
 { }
-
-octave_user_script::~octave_user_script (void)
-{
-  if (cmd_list)
-    cmd_list->remove_all_breakpoints (file_name);
-
-  delete cmd_list;
-}
 
 octave_value_list
 octave_user_script::call (octave::tree_evaluator& tw, int nargout,
@@ -242,13 +242,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
    octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
-  : octave_user_code ("", scope, ""),
-    param_list (pl), ret_list (rl), cmd_list (cl),
-    lead_comm (), trail_comm (), file_name (),
+  : octave_user_code ("", "", scope, cl, ""),
+    param_list (pl), ret_list (rl),
+    lead_comm (), trail_comm (),
     location_line (0), location_column (0),
-    parent_name (), t_parsed (static_cast<time_t> (0)),
-    t_checked (static_cast<time_t> (0)),
-    system_fcn_file (false), call_depth (-1),
+    parent_name (), system_fcn_file (false),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
@@ -266,13 +264,8 @@ octave_user_function::octave_user_function
 
 octave_user_function::~octave_user_function (void)
 {
-  // FIXME: shouldn't this happen automatically when deleting cmd_list?
-  if (cmd_list)
-    cmd_list->remove_all_breakpoints (file_name);
-
   delete param_list;
   delete ret_list;
-  delete cmd_list;
   delete lead_comm;
   delete trail_comm;
 
@@ -287,12 +280,6 @@ octave_user_function::define_ret_list (octave::tree_parameter_list *t)
   ret_list = t;
 
   return this;
-}
-
-void
-octave_user_function::stash_fcn_file_name (const std::string& nm)
-{
-  file_name = nm;
 }
 
 // If there is no explicit end statement at the end of the function,
@@ -742,24 +729,20 @@ octave_value
 octave_user_function::dump (void) const
 {
   std::map<std::string, octave_value> m
-    = {{ "file_name", file_name },
+    = {{ "user_code", octave_user_code::dump () },
        { "line", location_line },
        { "col", location_column },
        { "end_line", end_location_line },
        { "end_col", end_location_column },
-       { "time_parsed", t_parsed },
-       { "time_checked", t_checked },
        { "parent_name", parent_name },
        { "system_fcn_file", system_fcn_file },
-       { "call_depth", call_depth },
        { "num_named_args", num_named_args },
        { "subfunction", subfunction },
        { "inline_function", inline_function },
        { "anonymous_function", anonymous_function },
        { "nested_function", nested_function },
        { "ctor_type", ctor_type_str () },
-       { "class_method", class_method },
-       { "scope_info", m_scope ? m_scope.dump () : "0x0" }};
+       { "class_method", class_method }};
 
   return octave_value (m);
 }

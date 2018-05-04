@@ -60,19 +60,18 @@ octave_user_code : public octave_function
 {
 protected:
 
-  octave_user_code (const std::string& nm,
+  octave_user_code (const std::string& fnm = "", const std::string& nm = "",
                     const octave::symbol_scope& scope = octave::symbol_scope (),
+                    octave::tree_statement_list *cmds = nullptr,
                     const std::string& ds = "")
-    : octave_function (nm, ds), m_scope (scope), m_file_info (nullptr),
-      curr_unwind_protect_frame (nullptr)
+    : octave_function (nm, ds), m_scope (scope), file_name (fnm),
+      t_parsed (static_cast<time_t> (0)),
+      t_checked (static_cast<time_t> (0)),
+      call_depth (-1), m_file_info (nullptr),
+      curr_unwind_protect_frame (nullptr), cmd_list (cmds)
   { }
 
 public:
-
-  octave_user_code (void)
-    : octave_function (), m_scope (), m_file_info (nullptr),
-      curr_unwind_protect_frame (nullptr)
-  { }
 
   // No copying!
 
@@ -99,9 +98,27 @@ public:
 
   octave::symbol_scope scope (void) { return m_scope; }
 
+  void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
+
+  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
+
+  void stash_fcn_file_time (const octave::sys::time& t)
+  {
+    t_parsed = t;
+    mark_fcn_file_up_to_date (t);
+  }
+
+  std::string fcn_file_name (void) const { return file_name; }
+
+  octave::sys::time time_parsed (void) const { return t_parsed; }
+
+  octave::sys::time time_checked (void) const { return t_checked; }
+
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
-  virtual octave::tree_statement_list * body (void) = 0;
+  octave::tree_statement_list * body (void) { return cmd_list; }
+
+  octave_value dump (void) const;
 
 protected:
 
@@ -110,12 +127,28 @@ protected:
   // Our symbol table scope.
   octave::symbol_scope m_scope;
 
+  // The name of the file we parsed.
+  std::string file_name;
+
+  // The time the file was parsed.
+  octave::sys::time t_parsed;
+
+  // The time the file was last checked to see if it needs to be
+  // parsed again.
+  octave::sys::time t_checked;
+
+  // Used to keep track of recursion depth.
+  int call_depth;
+
   // Cached text of function or script code with line offsets
   // calculated.
   octave::file_info *m_file_info;
 
   // pointer to the current unwind_protect frame of this function.
   octave::unwind_protect *curr_unwind_protect_frame;
+
+  // The list of commands that make up the body of this function.
+  octave::tree_statement_list *cmd_list;
 };
 
 // Scripts.
@@ -142,7 +175,7 @@ public:
 
   octave_user_script& operator = (const octave_user_script& f) = delete;
 
-  ~octave_user_script (void);
+  ~octave_user_script (void) = default;
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -155,47 +188,13 @@ public:
 
   bool is_user_script (void) const { return true; }
 
-  void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
-
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
-
-  void stash_fcn_file_time (const octave::sys::time& t)
-  {
-    t_parsed = t;
-    mark_fcn_file_up_to_date (t);
-  }
-
-  std::string fcn_file_name (void) const { return file_name; }
-
-  octave::sys::time time_parsed (void) const { return t_parsed; }
-
-  octave::sys::time time_checked (void) const { return t_checked; }
-
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ());
 
-  octave::tree_statement_list * body (void) { return cmd_list; }
-
   void accept (octave::tree_walker& tw);
 
 private:
-
-  // The list of commands that make up the body of this function.
-  octave::tree_statement_list *cmd_list;
-
-  // The name of the file we parsed.
-  std::string file_name;
-
-  // The time the file was parsed.
-  octave::sys::time t_parsed;
-
-  // The time the file was last checked to see if it needs to be
-  // parsed again.
-  octave::sys::time t_checked;
-
-  // Used to keep track of recursion depth.
-  int call_depth;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -236,8 +235,6 @@ public:
 
   octave_user_function * define_ret_list (octave::tree_parameter_list *t);
 
-  void stash_fcn_file_name (const std::string& nm);
-
   void stash_fcn_location (int line, int col)
   {
     location_line = line;
@@ -266,23 +263,9 @@ public:
 
   void stash_trailing_comment (octave::comment_list *tc) { trail_comm = tc; }
 
-  void mark_fcn_file_up_to_date (const octave::sys::time& t) { t_checked = t; }
-
-  void stash_fcn_file_time (const octave::sys::time& t)
-  {
-    t_parsed = t;
-    mark_fcn_file_up_to_date (t);
-  }
-
-  std::string fcn_file_name (void) const { return file_name; }
-
   std::string profiler_name (void) const;
 
   std::string parent_fcn_name (void) const { return parent_name; }
-
-  octave::sys::time time_parsed (void) const { return t_parsed; }
-
-  octave::sys::time time_checked (void) const { return t_checked; }
 
   void mark_as_system_fcn_file (void);
 
@@ -380,8 +363,6 @@ public:
 
   octave::tree_parameter_list * return_list (void) { return ret_list; }
 
-  octave::tree_statement_list * body (void) { return cmd_list; }
-
   octave::comment_list * leading_comment (void) { return lead_comm; }
 
   octave::comment_list * trailing_comment (void) { return trail_comm; }
@@ -420,17 +401,11 @@ private:
   // this function.
   octave::tree_parameter_list *ret_list;
 
-  // The list of commands that make up the body of this function.
-  octave::tree_statement_list *cmd_list;
-
   // The comments preceding the FUNCTION token.
   octave::comment_list *lead_comm;
 
   // The comments preceding the ENDFUNCTION token.
   octave::comment_list *trail_comm;
-
-  // The name of the file we parsed.
-  std::string file_name;
 
   // Location where this function was defined.
   int location_line;
@@ -441,20 +416,10 @@ private:
   // The name of the parent function, if any.
   std::string parent_name;
 
-  // The time the file was parsed.
-  octave::sys::time t_parsed;
-
-  // The time the file was last checked to see if it needs to be
-  // parsed again.
-  octave::sys::time t_checked;
-
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
   bool system_fcn_file;
-
-  // Used to keep track of recursion depth.
-  int call_depth;
 
   // The number of arguments that have names.
   int num_named_args;

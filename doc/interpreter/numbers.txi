@@ -378,7 +378,7 @@ replaces the list with a single matrix constant.
 @cindex range expressions
 @cindex expression, range
 
-@opindex :
+@opindex :, range expressions
 
 A @dfn{range} is a convenient way to write a row vector with evenly
 spaced elements.  A range expression is defined by the value of the first

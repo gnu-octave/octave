@@ -50,80 +50,163 @@ combinations of these with various operators.
 @opindex :
 
 An @dfn{index expression} allows you to reference or extract selected
-elements of a matrix or vector.
+elements of a vector, a matrix (2-D), or a higher-dimensional array.
 
-Indices may be scalars, vectors, ranges, or the special operator
-@samp{:}, which may be used to select entire rows or columns.
+Indices may be scalars, vectors, ranges, or the special operator @samp{:},
+which selects entire rows, columns, or higher-dimensional slices.
 
-Vectors are indexed using a single index expression.  Matrices (2-D)
-and higher multi-dimensional arrays are indexed using either one index
-or @math{N} indices where @math{N} is the dimension of the array.
-When using a single index expression to index 2-D or higher data the
-elements of the array are taken in column-first order (like Fortran).
+An index expression consists of a set of parentheses enclosing @math{M}
+expressions separated by commas.  Each individual index value, or component,
+is used for the respective dimension of the object that it is applied to.  In
+other words, the first index component is used for the first dimension (rows)
+of the object, the second index component is used for the second dimension
+(columns) of the object, and so on.  The number of index components @math{M}
+defines the dimensionality of the index expression.  An index with two
+components would be referred to as a 2-D index because it has two dimensions.
 
-The output from indexing assumes the dimensions of the index
-expression.  For example:
-
-@example
-@group
-a(2)       # result is a scalar
-a(1:2)     # result is a row vector
-a([1; 2])  # result is a column vector
-@end group
-@end example
-
-As a special case, when a colon is used as a single index, the output
-is a column vector containing all the elements of the vector or
-matrix.  For example:
+In the simplest case, 1) all components are scalars, and 2) the dimensionality
+of the index expression @math{M} is equal to the dimensionality of the object
+it is applied to.  For example:
 
 @example
 @group
-a(:)       # result is a column vector
-a(:)'      # result is a row vector
+A = reshape (1:8, 2, 2, 2)  # Create 3-D array
+A =
+
+ans(:,:,1) =
+
+   1   3
+   2   4
+
+ans(:,:,2) =
+
+   5   7
+   6   8
+
+A(2, 1, 2)   # second row, first column of second slice
+             # in third dimension: ans = 6
 @end group
 @end example
 
-The above two code idioms are often used in place of @code{reshape}
-when a simple vector, rather than an arbitrarily sized array, is
-needed.
-
-Given the matrix
+The size of the returned object in a specific dimension is equal to the number
+of elements in the corresponding component of the index expression.  When all
+components are scalars, the result is a single output value.  However, if any
+component is a vector or range then the returned values are the Cartesian
+product of the indices in the respective dimensions.  For example:
 
 @example
-a = [1, 2; 3, 4]
+@group
+A([1, 2], 1, 2) @equiv{} [A(1,1,2); A(2,1,2)]
+@result{}
+ans =
+   5
+   6
+@end group
+@end example
+
+The total number of returned values is the product of the number of elements
+returned for each index component.  In the example above, the total is 2*1*1 =
+2 elements.
+
+Notice that the size of the returned object in a given dimension is equal to
+the number of elements in the index expression for that dimension.  In the code
+above, the first index component (@code{[1, 2]}) was specified as a row vector,
+but its shape is unimportant.  The important fact is that the component
+specified two values, and hence the result must have a size of two in the first
+dimension; and because the first dimension corresponds to rows, the overall
+result is a column vector.
+
+@example
+@group
+A(1, [2, 1, 1], 1)    # result is a row vector: ans = [3, 1, 1]
+A(ones (2, 2), 1, 1)  # result is a column vector: ans = [1; 1; 1; 1]
+@end group
+@end example
+
+The first line demonstrates again that the size of the output in a given
+dimension is equal to the number of elements in the respective indexing
+component.  In this case, the output has three elements in the second dimension
+(which corresponds to columns), so the result is a row vector.  The example
+also shows how repeating entries in the index expression can be used to
+replicate elements in the output.  The last example further proves that the
+shape of the indexing component is irrelevant, it is only the number of
+elements (2x2 = 4) which is important.
+
+The above rules apply whenever the dimensionality of the index expression
+is greater than one (@math{M > 1}).  However, for one-dimensional index
+expressions special rules apply and the shape of the output @strong{is}
+determined by the shape of the indexing component.  For example:
+
+@example
+@group
+A([1, 2])  # result is a row vector: ans = [1, 2]
+A([1; 2])  # result is a column vector: ans = [1; 2]
+@end group
+@end example
+
+Note that it is permissible to use a 1-D index with a multi-dimensional
+object (also called linear indexing).  In this case, the elements of the
+multi-dimensional array are taken in column-first order like Fortran.  That is,
+the columns of the array are imagined to be stacked on top of each other to
+form a column vector and then the single linear index is applied to this
+vector.
+
+@example
+@group
+A(5)    # linear indexing into three-dimensional array: ans = 5
+A(3:5)  # result has shape of index component: ans = [3, 4, 5]
+@end group
+@end example
+
+@opindex :, indexing expressions
+
+A colon (@samp{:}) may be used as an index component to select all of the
+elements in a specified dimension.  Given the matrix,
+
+@example
+A = [1, 2; 3, 4]
 @end example
 
 @noindent
-all of the following expressions are equivalent and select the first
-row of the matrix.
+all of the following expressions are equivalent and select the first row of the
+matrix.
 
 @example
 @group
-a(1, [1, 2])  # row 1, columns 1 and 2
-a(1, 1:2)     # row 1, columns in range 1-2
-a(1, :)       # row 1, all columns
+A(1, [1, 2])  # row 1, columns 1 and 2
+A(1, 1:2)     # row 1, columns in range 1-2
+A(1, :)       # row 1, all columns
+@end group
+@end example
+
+When a colon is used in the special case of 1-D indexing the result is always a
+column vector.  Creating column vectors with a colon index is a very frequently
+encountered code idiom and is faster and generally clearer than calling
+@code{reshape} for this case.
+
+@example
+@group
+A(:)    # result is column vector: ans = [1; 2; 3; 4]
+A(:)'   # result is row vector: ans = [1, 2, 3, 4]
 @end group
 @end example
 
 @cindex @code{end}, indexing
 @cindex @sortas{end:} @code{end:} and @code{:end}
 
-In index expressions the keyword @code{end} automatically refers to
-the last entry for a particular dimension.  This magic index can also
-be used in ranges and typically eliminates the needs to call
-@code{size} or @code{length} to gather array bounds before indexing.
-For example:
+In index expressions the keyword @code{end} automatically refers to the last
+entry for a particular dimension.  This magic index can also be used in ranges
+and typically eliminates the needs to call @code{size} or @code{length} to
+gather array bounds before indexing.  For example:
 
 @example
 @group
-a = [1, 2, 3, 4];
-
-a(1:end/2)        # first half of a => [1, 2]
-a(end + 1) = 5;   # append element
-a(end) = [];      # delete element
-a(1:2:end)        # odd elements of a => [1, 3]
-a(2:2:end)        # even elements of a => [2, 4]
-a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
+A(1:end/2)        # first half of A => [1, 2]
+A(end + 1) = 5;   # append element
+A(end) = [];      # delete element
+A(1:2:end)        # odd elements of A => [1, 3]
+A(2:2:end)        # even elements of A => [2, 4]
+A(end:-1:1)       # reversal of A => [4, 3, 2, 1]
 @end group
 @end example
 
@@ -134,24 +217,45 @@ a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
 @node Advanced Indexing
 @subsection Advanced Indexing
 
-An array with @samp{nd} dimensions can be indexed by a vector @var{idx} which
-has from 1 to @samp{nd} elements.  If any element of @var{idx} is not a
-scalar then the complete set of index tuples will be generated from the
-Cartesian product of the index elements.
+When it is necessary to extract subsets of entries out of an array whose
+indices cannot be written as a Cartesian product of components, linear
+indexing together with the function @code{sub2ind} can be used.  For example:
 
-For the ordinary and most common case, the number of indices
-(@code{nidx = numel (@var{idx})}) matches the number of dimensions @samp{nd}.
-In this case, each element of @var{idx} corresponds to its respective
-dimension, i.e., @code{@var{idx}(1)} refers to dimension 1,
-@code{@var{idx}(2)} refers to dimension 2, etc.  If @w{@code{nidx < nd}}, and
-every index is less than the size of the array in the @math{i^{th}} dimension
-(@code{@var{idx}(i) < size (@var{array}, i)}), then the index expression is
-padded with @w{@code{nd - nidx}} trailing singleton dimensions.  If
-@w{@code{nidx < nd}} but one of the indices @code{@var{idx}(i)} is outside the
-size of the current array, then the last @w{@code{nd - nidx + 1}} dimensions
-are folded into a single dimension with an extent equal to the product of
-extents of the original dimensions.  This is easiest to understand with an
-example.
+@example
+@group
+A = reshape (1:8, 2, 2, 2)  # Create 3-D array
+A =
+
+ans(:,:,1) =
+
+   1   3
+   2   4
+
+ans(:,:,2) =
+
+   5   7
+   6   8
+
+A(sub2ind (size (A), [1, 2, 1], [1, 1, 2], [1, 2, 1]))
+   @result{} ans = [A(1, 1, 1), A(2, 1, 2), A(1, 2, 1)]
+@end group
+@end example
+
+An array with @samp{nd} dimensions can be indexed by an index expression which
+has from 1 to @samp{nd} components.  For the ordinary and most common case, the
+number of components @samp{M} matches the number of dimensions @samp{nd}.  In
+this case the ordinary indexing rules apply and each component corresponds to
+the respective dimension of the array.
+
+However, if the number of indexing components exceeds the number of dimensions
+(@w{@code{M > nd}}) then the excess components must all be singletons
+(@code{1}).  Moreover, if @w{@code{M < nd}}, the behavior is equivalent to
+reshaping the input object so as to merge the trailing @w{@code{nd - M}}
+dimensions into the last index dimension @code{M}.  Thus, the result will have
+the dimensionality of the index expression, and not the original object.  This
+is the case whenever dimensionality of the index is greater than one
+(@w{@code{M > 1}}), so that the special rules for linear indexing are not
+applied.  This is easiest to understand with an example:
 
 @example
 A = reshape (1:8, 2, 2, 2)  # Create 3-D array
@@ -167,19 +271,28 @@ ans(:,:,2) =
    5   7
    6   8
 
-A(2,1,2);   # Case (nidx == nd): ans = 6
-A(2,1);     # Case (nidx < nd), idx within array:
-            # equivalent to A(2,1,1), ans = 2
-A(2,4);     # Case (nidx < nd), idx outside array:
-            # Dimension 2 & 3 folded into new dimension of size 2x2 = 4
-            # Select 2nd row, 4th element of [2, 4, 6, 8], ans = 8
+## 2-D indexing causes third dimension to be merged into second dimension.
+## Equivalent array for indexing, Atmp, is now 2x4.
+Atmp = reshape (A, 2, 4)
+Atmp =
+
+   1   3   5   7
+   2   4   6   8
+
+
+A(2,1)   # Reshape to 2x4 matrix, second entry of first column: ans = 2
+A(2,4)   # Reshape to 2x4 matrix, second entry of fourth column: ans = 8
+A(:,:)   # Reshape to 2x4 matrix, select all rows & columns, ans = Atmp
 @end example
 
-One advanced use of indexing is to create arrays filled with a single
-value.  This can be done by using an index of ones on a scalar value.
-The result is an object with the dimensions of the index expression
-and every element equal to the original scalar.  For example, the
-following statements
+@noindent
+Note here the elegant use of the double colon to replace the call to the
+@code{reshape} function.
+
+Another advanced use of linear indexing is to create arrays filled with a
+single value.  This can be done by using an index of ones on a scalar value.
+The result is an object with the dimensions of the index expression and every
+element equal to the original scalar.  For example, the following statements
 
 @example
 @group
@@ -189,10 +302,10 @@ a(ones (1, 4))
 @end example
 
 @noindent
-produce a vector whose four elements are all equal to 13.
+produce a row vector whose four elements are all equal to 13.
 
-Similarly, by indexing a scalar with two vectors of ones it is
-possible to create a matrix.  The following statements
+Similarly, by indexing a scalar with two vectors of ones it is possible to
+create a matrix.  The following statements
 
 @example
 @group
@@ -202,22 +315,19 @@ a(ones (1, 2), ones (1, 3))
 @end example
 
 @noindent
-create a 2x3 matrix with all elements equal to 13.
-
-The last example could also be written as
+create a 2x3 matrix with all elements equal to 13.  This could also have been
+written as
 
 @example
-@group
 13(ones (2, 3))
-@end group
 @end example
 
 It is more efficient to use indexing rather than the code construction
-@code{scalar * ones (N, M, @dots{})} because it avoids the unnecessary
-multiplication operation.  Moreover, multiplication may not be
-defined for the object to be replicated whereas indexing an array is
-always defined.  The following code shows how to create a 2x3 cell
-array from a base unit which is not itself a scalar.
+@code{scalar * ones (M, N, @dots{})} because it avoids the unnecessary
+multiplication operation.  Moreover, multiplication may not be defined for the
+object to be replicated whereas indexing an array is always defined.  The
+following code shows how to create a 2x3 cell array from a base unit which is
+not itself a scalar.
 
 @example
 @group
@@ -225,12 +335,12 @@ array from a base unit which is not itself a scalar.
 @end group
 @end example
 
-It should be, noted that @code{ones (1, n)} (a row vector of ones)
-results in a range (with zero increment).  A range is stored
-internally as a starting value, increment, end value, and total number
-of values; hence, it is more efficient for storage than a vector or
-matrix of ones whenever the number of elements is greater than 4.  In
-particular, when @samp{r} is a row vector, the expressions
+It should be noted that @code{ones (1, n)} (a row vector of ones) results in a
+range object (with zero increment).  A range is stored internally as a starting
+value, increment, end value, and total number of values; hence, it is more
+efficient for storage than a vector or matrix of ones whenever the number of
+elements is greater than 4.  In particular, when @samp{r} is a row vector, the
+expressions
 
 @example
   r(ones (1, n), :)
@@ -241,19 +351,18 @@ particular, when @samp{r} is a row vector, the expressions
 @end example
 
 @noindent
-will produce identical results, but the first one will be
-significantly faster, at least for @samp{r} and @samp{n} large enough.
-In the first case the index is held in compressed form as a range
-which allows Octave to choose a more efficient algorithm to handle the
-expression.
+will produce identical results, but the first one will be significantly faster,
+at least for @samp{r} and @samp{n} large enough.  In the first case the index
+is held in compressed form as a range which allows Octave to choose a more
+efficient algorithm to handle the expression.
 
-A general recommendation, for a user unaware of these subtleties, is
-to use the function @code{repmat} for replicating smaller arrays into
-bigger ones.
+A general recommendation for users unfamiliar with these techniques is to use
+the function @code{repmat} for replicating smaller arrays into bigger ones,
+which uses such tricks.
 
-A second use of indexing is to speed up code.  Indexing is a fast
-operation and judicious use of it can reduce the requirement for
-looping over individual array elements which is a slow operation.
+A second use of indexing is to speed up code.  Indexing is a fast operation and
+judicious use of it can reduce the requirement for looping over individual
+array elements, which is a slow operation.
 
 Consider the following example which creates a 10-element row vector
 @math{a} containing the values
@@ -273,9 +382,8 @@ endfor
 @end example
 
 @noindent
-It is quite inefficient to create a vector using a loop like this.  In
-this case, it would have been much more efficient to use the
-expression
+It is quite inefficient to create a vector using a loop like this.  In this
+case, it would have been much more efficient to use the expression
 
 @example
 a = sqrt (1:10);
@@ -284,11 +392,10 @@ a = sqrt (1:10);
 @noindent
 which avoids the loop entirely.
 
-In cases where a loop cannot be avoided, or a number of values must be
-combined to form a larger matrix, it is generally faster to set the
-size of the matrix first (pre-allocate storage), and then insert
-elements using indexing commands.  For example, given a matrix
-@code{a},
+In cases where a loop cannot be avoided, or a number of values must be combined
+to form a larger matrix, it is generally faster to set the size of the matrix
+first (pre-allocate storage), and then insert elements using indexing commands.
+For example, given a matrix @code{a},
 
 @example
 @group
@@ -313,8 +420,7 @@ endfor
 @end example
 
 @noindent
-because Octave does not have to repeatedly resize the intermediate
-result.
+because Octave does not have to repeatedly resize the intermediate result.
 
 @DOCSTRING(sub2ind)
 
@@ -382,8 +488,8 @@ computes the singular value decomposition of the matrix @code{a} and
 assigns the three result matrices to @code{u}, @code{s}, and @code{v}.
 
 The left side of a multiple assignment expression is itself a list of
-expressions, and is allowed to be a list of variable names or index
-expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
+expressions, that is, a list of variable names potentially qualified by
+index expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
 
 @menu
 * Call by Value::

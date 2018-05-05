@@ -11,6 +11,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/getopt-wrapper.h \
   %reldir%/glob-wrappers.h \
   %reldir%/hash-wrappers.h \
+  %reldir%/iconv-wrappers.h \
   %reldir%/localcharset-wrapper.h \
   %reldir%/math-wrappers.h \
   %reldir%/mkostemp-wrapper.h \
@@ -48,6 +49,7 @@ WRAPPERS_SRC = \
   %reldir%/getopt-wrapper.c \
   %reldir%/glob-wrappers.c \
   %reldir%/hash-wrappers.c \
+  %reldir%/iconv-wrappers.c \
   %reldir%/localcharset-wrapper.c \
   %reldir%/math-wrappers.c \
   %reldir%/mkostemp-wrapper.c \

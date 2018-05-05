@@ -37,8 +37,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "iconv-wrappers.h"
+#include "localcharset-wrapper.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "uniconv-wrappers.h"
 
 #include "bp-table.h"
 #include "builtin-defun-decls.h"
@@ -109,6 +112,13 @@ static std::string last_debugging_command = "\n";
 static bool Vgud_mode = false;
 
 static hook_function_list input_event_hook_functions;
+
+// Codepage which is used to read .m files
+#if defined (OCTAVE_USE_WINDOWS_API)
+static std::string Vmfile_encoding = "system";
+#else
+static std::string Vmfile_encoding = "utf-8";
+#endif
 
 // For octave_quit.
 void
@@ -777,7 +787,34 @@ namespace octave
 
     eof = false;
 
-    return octave_fgets (m_file, eof);
+    std::string src_str = octave_fgets (m_file, eof);
+    std::string encoding = Vmfile_encoding.compare ("system") == 0
+                           ? octave_locale_charset_wrapper ()
+                           : Vmfile_encoding;
+
+    if (encoding.compare ("utf-8") != 0)
+    {
+      // convert encoding to UTF-8 before returning string
+      const char *src = src_str.c_str ();
+      size_t srclen = src_str.length ();
+
+      size_t length;
+      uint8_t *utf8_str = nullptr;
+
+      utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
+                                               &length);
+
+      if (! utf8_str)
+        error ("file_reader::get_input: converting from codepage '%s' to UTF-8: %s",
+               encoding.c_str (), std::strerror (errno));
+
+      octave::unwind_protect frame;
+      frame.add_fcn (::free, static_cast<void *> (utf8_str));
+
+      src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
+    }
+
+    return src_str;
   }
 
   const std::string eval_string_reader::s_in_src ("eval_string");
@@ -1385,4 +1422,47 @@ Undocumented internal function.
     Vgud_mode = args(0).bool_value ();
 
   return retval;
+}
+
+DEFUN (__mfile_encoding__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{current_encoding} =} __mfile_encoding__ (@var{new_encoding})
+Set and query the codepage that is used for reading .m files.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
+  if (nargin > 0)
+    {
+      std::string str = args(0).xstring_value (
+        "__mfile_encoding__: NEW_ENCODING must be a string designating a valid codepage.");
+      if (str.empty ())
+#if defined (OCTAVE_USE_WINDOWS_API)
+        Vmfile_encoding = "system";
+#else
+        Vmfile_encoding = "utf-8";
+#endif
+      else
+        {
+          std::transform (str.begin (), str.end (), str.begin (), ::tolower);
+
+          std::string codepage = (str.compare ("system") == 0)
+                                 ? octave_locale_charset_wrapper () : str;
+
+          // check if valid codepage
+          void *codec = octave_iconv_open_wrapper (codepage.c_str (), "utf-8");
+
+          if (errno == EINVAL)
+            error ("__mfile_encoding__: Conversion from codepage '%s' not supported", 
+                   codepage.c_str ());
+
+          octave_iconv_close_wrapper (codec);
+
+          Vmfile_encoding = str;
+        }
+    }
+    return ovl (Vmfile_encoding);
 }

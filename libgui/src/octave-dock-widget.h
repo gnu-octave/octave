@@ -43,6 +43,8 @@ namespace octave
 
     label_dock_widget (QWidget *p = nullptr);
 
+    // set_title() uses the custom title bar while setWindowTitle() uses
+    // the default title bar (with style sheets)
     void set_title (const QString&);
 
   protected slots:
@@ -66,6 +68,9 @@ namespace octave
     QToolButton *m_close_button;
     QAction *m_dock_action;
     QAction *m_close_action;
+
+    QAbstractButton *m_default_float_button;
+    QAbstractButton *m_default_close_button;
   };
 
   class octave_dock_widget : public label_dock_widget
@@ -80,8 +85,6 @@ namespace octave
 
     virtual void connect_visibility_changed (void);
 
-    void make_window (void);
-    void make_widget (bool dock=true);
     void set_predecessor_widget (octave_dock_widget *prev_widget);
 
   signals:
@@ -91,11 +94,17 @@ namespace octave
 
     void active_changed (bool active);
 
+    void queue_make_window (void);
+
+    void queue_make_widget (void);
+
   protected:
 
     virtual void closeEvent (QCloseEvent *e);
 
     QWidget * focusWidget (void);
+
+    bool event (QEvent *event);
 
   public slots:
 
@@ -125,6 +134,16 @@ namespace octave
 
     void save_settings (void);
 
+    void moveEvent (QMoveEvent *event);
+
+    void resizeEvent (QResizeEvent *event);
+
+    void make_window (bool not_used = false);
+
+    void make_widget (bool not_used = false);
+
+    void default_dock (bool not_used = false);
+
   protected slots:
 
     //! Slot to steer changing visibility from outside.
@@ -141,19 +160,19 @@ namespace octave
 
   private slots:
 
-    void change_floating (bool);
     void change_visibility (bool);
+    void toplevel_change (bool);
 
   private:
 
     void set_style (bool active);
     void set_focus_predecessor (void);
+    void store_geometry (void);
 
     //! Stores the parent, since we are reparenting to 0.
 
     QMainWindow *m_parent;
 
-    bool m_floating;
     bool m_custom_style;
     int m_title_3d;
     QColor m_bg_color;
@@ -163,6 +182,10 @@ namespace octave
     QString m_icon_color;
     QString m_icon_color_active;
     octave_dock_widget *m_predecessor_widget;
+    QRect m_recent_float_geom;
+    Qt::DockWidgetArea m_recent_dock_area;
+    QByteArray m_recent_dock_geom;
+    bool m_waiting_for_mouse_button_release;
 
   };
 }

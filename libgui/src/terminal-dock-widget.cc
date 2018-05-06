@@ -45,7 +45,7 @@ namespace octave
 
     setObjectName ("TerminalDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    set_title (tr ("Command Window"));
+    setWindowTitle (tr ("Command Window"));
 
     setWidget (m_terminal);
     setFocusProxy (m_terminal);

@@ -52,7 +52,7 @@ namespace octave
   {
     setObjectName ("WorkspaceView");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    set_title (tr ("Workspace"));
+    setWindowTitle (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));
 
     m_filter = new QComboBox (this);

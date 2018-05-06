@@ -188,6 +188,11 @@ void QUnixTerminalImpl::setBackgroundColor (const QColor& color)
 
     m_terminalView->setColorTable(cols);
 
+    QString css = QString ("TerminalView {\n"
+                           "  background: %1;\n"
+                           "}\n").arg (color.name ());
+    setStyleSheet (css);
+
   }
 void QUnixTerminalImpl::setForegroundColor (const QColor& color)
 {

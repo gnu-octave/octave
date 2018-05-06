@@ -86,6 +86,11 @@ namespace octave
 
   variable_dock_widget::variable_dock_widget (QWidget *p)
     : label_dock_widget (p)
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+      , m_waiting_for_mouse_move (false)
+      , m_waiting_for_mouse_button_release (false)
+#endif
   {
     setFocusPolicy (Qt::StrongFocus);
     setAttribute (Qt::WA_DeleteOnClose);
@@ -109,28 +114,25 @@ namespace octave
     m_prev_floating = false;
     m_prev_geom = QRect (0, 0, 0, 0);
 
-    QHBoxLayout *h_layout = findChild<QHBoxLayout *> ();
-    if (h_layout != nullptr && titleBarWidget () != nullptr)
-      {
-        m_fullscreen_action = new QAction
-          (resource_manager::icon ("view-fullscreen", false), "", this);
-        m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
-        QToolButton *fullscreen_button = new QToolButton (titleBarWidget ());
-        fullscreen_button->setDefaultAction (m_fullscreen_action);
-        fullscreen_button->setFocusPolicy (Qt::NoFocus);
-        fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
-        QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
-        fullscreen_button->setStyleSheet (css_button);
+    QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
+    m_fullscreen_action = new QAction
+      (resource_manager::icon ("view-fullscreen", false), "", this);
+    m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
+    QToolButton *fullscreen_button = new QToolButton (m_title_widget);
+    fullscreen_button->setDefaultAction (m_fullscreen_action);
+    fullscreen_button->setFocusPolicy (Qt::NoFocus);
+    fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
+    QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
+    fullscreen_button->setStyleSheet (css_button);
 
-        connect (m_fullscreen_action, SIGNAL (triggered ()),
-                 this, SLOT (change_fullscreen ()));
+    connect (m_fullscreen_action, SIGNAL (triggered ()),
+             this, SLOT (change_fullscreen ()));
 
-        int index = -1;
-        QToolButton *first = titleBarWidget ()->findChild<QToolButton *> ();
-        if (first != nullptr)
-          index = h_layout->indexOf (first);
-        h_layout->insertWidget (index, fullscreen_button);
-      }
+    int index = -1;
+    QToolButton *first = m_title_widget->findChild<QToolButton *> ();
+    if (first != nullptr)
+      index = h_layout->indexOf (first);
+    h_layout->insertWidget (index, fullscreen_button);
 #endif
 
     // Custom title bars cause loss of decorations, add a frame
@@ -176,15 +178,26 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
-        activateWindow();
-        setFocus (Qt::OtherFocusReason);
+        activateWindow ();
+        setFocus ();
+
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+        m_waiting_for_mouse_move = true;
+#endif
       }
     else
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
         m_dock_action->setToolTip (tr ("Undock widget"));
 
-        setFocus (Qt::OtherFocusReason);
+        setFocus ();
+
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = false;
+#endif
       }
   }
 
@@ -195,8 +208,6 @@ namespace octave
     if (! m_full_screen)
       {
         m_prev_floating = isFloating ();
-        m_prev_geom = geometry ();
-
         m_fullscreen_action->setIcon (resource_manager::icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
@@ -205,6 +216,7 @@ namespace octave
             m_fullscreen_action->setToolTip (tr ("Redock"));
             setFloating (true);
           }
+        m_prev_geom = geometry ();
 
         // showFullscreen() and setWindowState() only work for QWindow objects.
         QScreen *pscreen = QGuiApplication::primaryScreen ();
@@ -244,23 +256,35 @@ namespace octave
   {
     octave_unused_parameter (now);
 
-    // The is a proxied test
+    // This is a proxied test
     if (hasFocus ())
       {
-        QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
-        if (label != nullptr)
+        if (old == this)
+          return;
+
+        if (titleBarWidget () != nullptr)
           {
-            label->setBackgroundRole (QPalette::Highlight);
-            label->setAutoFillBackground (true);
+            QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+            if (label != nullptr)
+              {
+                label->setBackgroundRole (QPalette::Highlight);
+                label->setStyleSheet ("background-color: palette(highlight); color: palette(highlightedText);");
+              }
           }
 
         emit variable_focused_signal (objectName ());
       }
     else if (old == focusWidget())
       {
-        QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
-        if (label != NULL)
-          label->setBackgroundRole (QPalette::NoRole);
+        if (titleBarWidget () != nullptr)
+          {
+            QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+            if (label != nullptr)
+              {
+                label->setBackgroundRole (QPalette::NoRole);
+                label->setStyleSheet (";");
+              }
+          }
       }
   }
 
@@ -270,6 +294,47 @@ namespace octave
       m_frame->resize (size ());
   }
 
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+
+  bool
+  variable_dock_widget::event (QEvent *event)
+  {
+    // low-level check of whether docked-widget became a window via
+    // via drag-and-drop
+    if (event->type () == QEvent::MouseButtonPress)
+      m_waiting_for_mouse_move = false;
+    if (event->type () == QEvent::MouseMove && m_waiting_for_mouse_move)
+      {
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = true;
+      }
+    if (event->type () == QEvent::MouseButtonRelease && m_waiting_for_mouse_button_release)
+      {
+        m_waiting_for_mouse_button_release = false;
+        bool retval = QDockWidget::event (event);
+        if (isFloating ())
+          emit queue_unfloat_float ();
+        return retval;
+      }
+
+    return QDockWidget::event (event);
+  }
+
+  void
+  variable_dock_widget::unfloat_float (void)
+  {
+    setFloating (false);
+    setFloating (true);
+  }
+
+#else
+
+  void
+  variable_dock_widget::unfloat_float (void)
+  {}
+
+#endif
 
   // Variable editor stack
 
@@ -990,10 +1055,11 @@ namespace octave
       m_table_colors (),
       m_current_focus_vname (""),
       m_hovered_focus_vname (""),
-      m_variable_focus_widget (nullptr)
+      m_focus_widget (nullptr),
+      m_focus_widget_vdw (nullptr)
   {
     setObjectName ("VariableEditor");
-    set_title (tr ("Variable Editor"));
+    setWindowTitle (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setAttribute (Qt::WA_AlwaysShowToolTips);
@@ -1039,19 +1105,33 @@ namespace octave
     octave_dock_widget::focusInEvent (ev);
 
     // set focus to the current variable or most recent if still valid
-    QWidget *fw = m_main->focusWidget ();
-    if (fw != nullptr)
-      fw->setFocus ();
-    else if (m_main->isAncestorOf (m_variable_focus_widget))
-      m_variable_focus_widget->setFocus ();
-  }
-
-  void variable_editor::focusOutEvent (QFocusEvent *ev)
-  {
-    // focusWidget() appears lost in transition to/from main window
-    m_variable_focus_widget = m_main->focusWidget ();
-
-    octave_dock_widget::focusOutEvent (ev);
+    if (m_focus_widget != nullptr)
+      {
+        // Activating a floating window causes problems.
+        if (! m_focus_widget_vdw->isFloating ())
+            activateWindow ();
+        m_focus_widget->setFocus ();
+      }
+    else
+      {
+        QWidget *fw = m_main->focusWidget ();
+        if (fw != nullptr)
+          {
+            activateWindow ();
+            fw->setFocus ();
+          }
+        else
+          {
+            QDockWidget *any_qdw = m_main->findChild<QDockWidget *> ();
+            if (any_qdw != nullptr)
+              {
+                activateWindow ();
+                any_qdw->setFocus ();
+              }
+            else
+              setFocus();
+          }
+      }
   }
 
   // Add an action to a menu or the widget itself.
@@ -1119,6 +1199,11 @@ namespace octave
              this, SLOT (variable_destroyed (QObject *)));
     connect (page, SIGNAL (variable_focused_signal (const QString&)),
              this, SLOT (variable_focused (const QString&)));
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+    connect (page, SIGNAL (queue_unfloat_float ()),
+             page, SLOT (unfloat_float ()), Qt::QueuedConnection);
+#endif
 
     variable_editor_stack *stack = new variable_editor_stack (page);
     stack->setObjectName (name);
@@ -1191,10 +1276,13 @@ namespace octave
     // to always supply a QLabl (initially empty) and then simply update its
     // contents.
     page->set_title (name);
-    QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
-    connect (model, SIGNAL (update_label_signal (const QString&)),
-             existing_ql, SLOT (setText (const QString&)));
-    existing_ql->setMargin (2);
+    if (page->titleBarWidget () != nullptr)
+      {
+        QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
+        connect (model, SIGNAL (update_label_signal (const QString&)),
+                 existing_ql, SLOT (setText (const QString&)));
+        existing_ql->setMargin (2);
+      }
 
     model->update_data (val);
 
@@ -1355,17 +1443,49 @@ namespace octave
   }
 
   void
-  variable_editor::variable_destroyed (QObject *)
+  variable_editor::variable_destroyed (QObject *obj)
   {
+    // Invalidate the focus-restoring widget pointer if currently active.
+    if (m_focus_widget_vdw == obj)
+      {
+        m_focus_widget = nullptr;
+        m_focus_widget_vdw = nullptr;
+      }
+
+    // If no variable pages remain, deactivate the tool bar.
     QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
     if (vdwlist.isEmpty ())
       m_tool_bar->setEnabled (false);
+
+    QFocusEvent ev (QEvent::FocusIn);
+    focusInEvent (&ev);
   }
 
   void
   variable_editor::variable_focused (const QString &name)
   {
     m_current_focus_vname = name;
+
+    // focusWidget() appears lost in transition to/from main window
+    // so keep a record of the widget.
+
+    QWidget *current = QApplication::focusWidget ();
+    m_focus_widget = nullptr;
+    m_focus_widget_vdw = nullptr;
+    if (current != nullptr)
+      {
+        QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
+        for (int i = 0; i < vdwlist.size (); i++)
+          {
+            variable_dock_widget *vdw = vdwlist.at (i);
+            if (vdw->isAncestorOf (current))
+              {
+                m_focus_widget = current;
+                m_focus_widget_vdw = vdw;
+                break;
+              }
+          }
+      }
   }
 
   void

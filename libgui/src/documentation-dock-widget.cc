@@ -36,7 +36,7 @@ namespace octave
   {
     setObjectName ("DocumentationDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    set_title (tr ("Documentation"));
+    setWindowTitle (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));
 
     m_docs = new documentation (this);

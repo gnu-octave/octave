@@ -93,6 +93,28 @@ namespace octave
     QRect m_prev_geom;
 
 #endif
+
+// See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#define QTBUG_44813_FIX_VERSION 0x999999
+  signals:
+
+    void queue_unfloat_float (void);
+
+  protected slots:
+
+    void unfloat_float (void);
+
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+  protected:
+
+    bool event (QEvent *event);
+
+  private:
+
+    bool m_waiting_for_mouse_move;
+
+    bool m_waiting_for_mouse_button_release;
+#endif
   };
 
   class variable_editor_stack : public QStackedWidget
@@ -338,8 +360,6 @@ namespace octave
 
     void focusInEvent (QFocusEvent *ev);
 
-    void focusOutEvent (QFocusEvent *ev);
-
   private:
 
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
@@ -380,7 +400,9 @@ namespace octave
 
     QString m_hovered_focus_vname;
 
-    QWidget *m_variable_focus_widget;
+    QWidget *m_focus_widget;
+
+    variable_dock_widget *m_focus_widget_vdw;
   };
 }
 

@@ -397,13 +397,19 @@ namespace octave
     settings->sync ();
 
     // Finally close all the tabs and return indication that we can exit
-    // the application or close the editor
+    // the application or close the editor.
+    // Closing and deleting the tabs makes the editor visible. In case it was
+    // hidden before, this state has to be restored afterwards
+    bool vis = isVisible ();
+
     for (int i = m_tab_widget->count () - 1; i >= 0; i--)
       {
         // backwards loop since m_tab_widget->count () changes during the loop
         delete m_tab_widget->widget (i);
         m_tab_widget->removeTab (i);
       }
+
+    setVisible (vis);
 
     return true;
   }

@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <utility>
 
 #include "singleton-cleanup.h"
+#include "unistr-wrappers.h"
 
 #include "defaults.h"
 #include "error.h"
@@ -872,67 +873,61 @@ namespace octave
         FT_UInt glyph_index, previous = 0;
 
         std::string str = e.string_value ();
-        size_t n = str.length ();
+        size_t n;
+        // convert str to UTF-32
+        uint32_t *u32_str;
+        u32_str = octave_u8_to_u32_wrapper (reinterpret_cast<const uint8_t *> (str.c_str ()), str.length (), nullptr, &n);
+        if (! u32_str)
+          error ("ft_text_renderer: converting from UTF-8 to UTF-32: %s",
+                 std::strerror (errno));
         size_t curr = 0;
         size_t idx = 0;
-        mbstate_t ps;
-        memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
-        wchar_t wc;
         std::string fname = font.get_face ()->family_name;
         text_renderer::string fs (str, font, xoffset, yoffset);
         std::vector<double> xdata;
 
         while (n > 0)
           {
-            size_t r = std::mbrtowc (&wc, str.data () + curr, n, &ps);
+            n -= 1;
 
-            if (r > 0
-                && r != static_cast<size_t> (-1)
-                && r != static_cast<size_t> (-2))
+            if (u32_str[curr] == 10)
               {
-                n -= r;
-                curr += r;
-
-                if (wc == L'\n')
+                // Finish previous string in strlist before processing
+                // the newline character
+                fs.set_y (line_yoffset + yoffset);
+                fs.set_color (color);
+                // FIXME: Do we have to convert back to UTF-8 and keep strlist
+                // in sync? Might fail with multi-byte characters as it is now.
+                std::string s = str.substr (idx, curr - idx);
+                if (! s.empty ())
                   {
-                    // Finish previous string in strlist before processing
-                    // the newline character
-                    fs.set_y (line_yoffset + yoffset);
-                    fs.set_color (color);
-                    std::string s = str.substr (idx, curr - idx - 1);
-                    if (! s.empty ())
-                      {
-                        fs.set_string (s);
-                        fs.set_xdata (xdata);
-                        fs.set_family (fname);
-                        strlist.push_back (fs);
-                      }
+                    fs.set_string (s);
+                    fs.set_xdata (xdata);
+                    fs.set_family (fname);
+                    strlist.push_back (fs);
                   }
-                else
-                  xdata.push_back (xoffset);
-
-                glyph_index = process_character (wc, previous);
-
-                if (wc == L'\n')
-                  {
-                    previous = 0;
-                    // Start a new string in strlist
-                    idx = curr;
-                    xdata.clear ();
-                    fs = text_renderer::string (str.substr (idx), font,
-                                                line_xoffset, yoffset);
-                  }
-                else
-                  previous = glyph_index;
               }
             else
+              xdata.push_back (xoffset);
+
+            glyph_index = process_character (u32_str[curr], previous);
+
+
+            if (u32_str[curr] == 10)
               {
-                if (r != 0)
-                  ::warning ("ft_text_renderer: failed to decode string `%s' with "
-                             "locale `%s'", str.c_str (),
-                             std::setlocale (LC_CTYPE, nullptr));
-                break;
+                previous = 0;
+                // Start a new string in strlist
+                idx = curr+1;
+                xdata.clear ();
+                // FIXME: Do we have to convert back to UTF-8 and keep strlist
+                // in sync? Might fail with multi-byte characters as it is now.
+                fs = text_renderer::string (str.substr (idx), font,
+                                            line_xoffset, yoffset);
               }
+            else
+              previous = glyph_index;
+
+            curr += 1;
           }
 
         if (! fs.get_string ().empty ())

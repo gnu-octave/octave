@@ -31,6 +31,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/uname-wrapper.h \
   %reldir%/uniconv-wrappers.h \
   %reldir%/unistd-wrappers.h \
+  %reldir%/unistr-wrappers.h \
   %reldir%/unsetenv-wrapper.h \
   %reldir%/vasprintf-wrapper.h \
   %reldir%/wait-for-input.h \
@@ -69,6 +70,7 @@ WRAPPERS_SRC = \
   %reldir%/uname-wrapper.c \
   %reldir%/uniconv-wrappers.c \
   %reldir%/unistd-wrappers.c \
+  %reldir%/unistr-wrappers.c \
   %reldir%/unsetenv-wrapper.c \
   %reldir%/vasprintf-wrapper.c \
   %reldir%/wait-for-input.c \

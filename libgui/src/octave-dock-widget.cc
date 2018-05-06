@@ -247,6 +247,8 @@ namespace octave
   void
   octave_dock_widget::make_window (bool)
   {
+    bool vis = isVisible ();
+
     // prevent follow-up calls by clearing state variable
     m_waiting_for_mouse_button_release = false;
 
@@ -284,16 +286,21 @@ namespace octave
                  this, SLOT (make_widget (bool)));
       }
 
-    raise ();
-    show ();
-    activateWindow ();
-    setFocus ();
+    if (vis)
+    {
+      raise ();
+      show ();
+      activateWindow ();
+      setFocus ();
+    }
   }
 
   // dock the widget
   void
   octave_dock_widget::make_widget (bool)
   {
+    bool vis = isVisible ();
+
     // Since floating widget has no parent, we have to read it
     QSettings *settings = resource_manager::get_settings ();
 
@@ -305,16 +312,10 @@ namespace octave
     // recover old window states, hide and re-show new added widget
     m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
     setFloating (false);
-    show ();
-    QApplication::setActiveWindow (this);
-    focus ();
 
     // adjust the (un)dock icon
     if (titleBarWidget ())
       {
-#if defined (Q_OS_UNIX)
-        m_title_widget->setToolTip ("");
-#endif
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
                                        + m_icon_color + ".png"));
         m_dock_action->setToolTip (tr ("Undock widget"));
@@ -328,6 +329,13 @@ namespace octave
         disconnect (m_default_float_button, 0, this, 0);
         connect (m_default_float_button, SIGNAL (clicked (bool)),
                  this, SLOT (make_window (bool)));
+      }
+
+    if (vis)
+      {
+        show ();
+        QApplication::setActiveWindow (this);
+        focus ();
       }
   }
 

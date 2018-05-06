@@ -38,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p)
-    : octave_dock_widget (p), m_terminal (QTerminal::create (p))
+    : octave_dock_widget ("TerminalDockWidget", p),
+      m_terminal (QTerminal::create (p))
   {
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
-    setObjectName ("TerminalDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setWindowTitle (tr ("Command Window"));
 

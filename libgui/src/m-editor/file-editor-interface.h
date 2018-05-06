@@ -37,9 +37,8 @@ namespace octave
   public:
 
     file_editor_interface (QWidget *p)
-      : octave_dock_widget (p)
+      : octave_dock_widget ("FileEditor", p)
     {
-      setObjectName ("FileEditor");
     }
 
     virtual ~file_editor_interface (void) = default;

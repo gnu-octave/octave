@@ -32,9 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   documentation_dock_widget::documentation_dock_widget (QWidget *p)
-    : octave_dock_widget (p)
+    : octave_dock_widget ("DocumentationDockWidget", p)
   {
-    setObjectName ("DocumentationDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setWindowTitle (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));

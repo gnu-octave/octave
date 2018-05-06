@@ -79,7 +79,7 @@ namespace octave
 
   public:
 
-    octave_dock_widget (QWidget *p = nullptr);
+    octave_dock_widget (const QString& obj_name, QWidget *p = nullptr);
 
     virtual ~octave_dock_widget (void) = default;
 
@@ -183,7 +183,6 @@ namespace octave
     QString m_icon_color_active;
     octave_dock_widget *m_predecessor_widget;
     QRect m_recent_float_geom;
-    Qt::DockWidgetArea m_recent_dock_area;
     QByteArray m_recent_dock_geom;
     bool m_waiting_for_mouse_button_release;
 

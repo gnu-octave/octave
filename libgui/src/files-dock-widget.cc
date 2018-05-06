@@ -66,9 +66,8 @@ namespace octave
   };
 
   files_dock_widget::files_dock_widget (QWidget *p)
-    : octave_dock_widget (p)
+    : octave_dock_widget ("FilesDockWidget", p)
   {
-    setObjectName ("FilesDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setWindowTitle (tr ("File Browser"));
     setToolTip (tr ("Browse your files"));

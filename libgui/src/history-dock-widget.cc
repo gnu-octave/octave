@@ -42,9 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   history_dock_widget::history_dock_widget (QWidget *p)
-    : octave_dock_widget (p)
+    : octave_dock_widget ("HistoryDockWidget", p)
   {
-    setObjectName ("HistoryDockWidget");
     setStatusTip (tr ("Browse and search the command history."));
 
     connect (this, SIGNAL (command_create_script (const QString&)),

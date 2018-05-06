@@ -1041,7 +1041,7 @@ namespace octave
   // Variable editor.
 
   variable_editor::variable_editor (QWidget *p)
-    : octave_dock_widget (p),
+    : octave_dock_widget ("VariableEditor", p),
       m_main (new QMainWindow ()),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
@@ -1058,7 +1058,6 @@ namespace octave
       m_focus_widget (nullptr),
       m_focus_widget_vdw (nullptr)
   {
-    setObjectName ("VariableEditor");
     setWindowTitle (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));

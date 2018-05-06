@@ -48,9 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   workspace_view::workspace_view (QWidget *p)
-    : octave_dock_widget (p), m_view (new QTableView (this))
+    : octave_dock_widget ("WorkspaceView", p), m_view (new QTableView (this))
   {
-    setObjectName ("WorkspaceView");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setWindowTitle (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));

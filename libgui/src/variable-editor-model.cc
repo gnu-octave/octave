@@ -222,17 +222,6 @@ namespace octave
       case Qt::EditRole:
         return edit_display (idx, role);
         return edit_display (idx, role);
-
-#if 0
-      case Qt::StatusTipRole:
-        return elem (idx).m_status_tip;
-
-      case Qt::ToolTipRole:
-        return elem (idx).m_tool_tip;
-
-      case Qt::BackgroundRole:
-        return elem (idx).m_background;
-#endif
       }
 
     // Invalid.

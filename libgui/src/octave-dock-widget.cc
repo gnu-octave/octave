@@ -169,14 +169,15 @@ namespace octave
                     ).arg (close_icon).arg (float_icon).arg (icon_size)
                      .arg (close_tooltip).arg (float_tooltip)
                      .arg (titlebar_foreground). arg (titlebar_background)
-                     .arg ((icon_size*2)/3). arg((icon_size*8)/3);
+                     .arg ((icon_size*2)/3). arg((icon_size*7)/3);
   }
 
-  octave_dock_widget::octave_dock_widget (QWidget *p)
-    : label_dock_widget (p), m_recent_float_geom (),
-      m_recent_dock_area (Qt::NoDockWidgetArea), m_recent_dock_geom (),
+  octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
+    : label_dock_widget (p), m_recent_float_geom (), m_recent_dock_geom (),
       m_waiting_for_mouse_button_release (false)
   {
+    setObjectName (obj_name);
+
     m_parent = static_cast<QMainWindow *> (p);     // store main window
     m_predecessor_widget = nullptr;
 
@@ -229,6 +230,8 @@ namespace octave
     setFocusPolicy (Qt::StrongFocus);
 
     setFeatures (QDockWidget::AllDockWidgetFeatures);
+
+    handle_settings (resource_manager::get_settings ());
   }
 
   // connect signal visibility changed to related slot (called from main-window)
@@ -298,7 +301,7 @@ namespace octave
     // Stay window, otherwise will bounce back to window by default because
     // there is no layout information for this widget in the saved settings.
     setParent (m_parent, Qt::Window);
-    m_parent->addDockWidget (m_recent_dock_area, this);
+    m_parent->addDockWidget (Qt::BottomDockWidgetArea, this);
     // recover old window states, hide and re-show new added widget
     m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
     setFloating (false);
@@ -429,19 +432,8 @@ namespace octave
                                            + "_floating_geometry",
                                            QRect (50,100,480,480)).toRect ();
 
-#if 0
-    m_recent_dock_area = settings->value ("DockWidgets/" + objectName ()
-                                          + "_dock_area", Qt::NoDockWidgetArea).toInt ();
-#else
-    m_recent_dock_area = Qt::NoDockWidgetArea;
-#endif
-
-#if 0
     m_recent_dock_geom = settings->value ("DockWidgets/" + objectName (),
-                                          QByteArray ()).toRect ();
-#else
-    m_recent_dock_geom = QByteArray ();
-#endif
+                                          QByteArray ()).toByteArray ();
 
     notice_settings (settings);  // call individual handler
 
@@ -475,6 +467,8 @@ namespace octave
     if (! settings)
       return;
 
+    store_geometry ();
+
     settings->beginGroup ("DockWidgets");
 
     // conditional needed?
@@ -482,10 +476,7 @@ namespace octave
       settings->setValue (name + "_floating_geometry", m_recent_float_geom);
 
     if (! m_recent_dock_geom.isEmpty ())
-      {
-        settings->setValue (name + "_dock_area", m_recent_dock_area);
-        settings->setValue (name, m_recent_dock_geom);
-      }
+      settings->setValue (name, m_recent_dock_geom);
     settings->setValue (name+"Visible", isVisible ()); // store visibility
     settings->setValue (name+"Floating", isFloating ()); // store floating
     settings->setValue (name+"_minimized", isMinimized ()); // store minimized
@@ -515,7 +506,6 @@ namespace octave
       }
     else
       {
-        m_recent_dock_area = m_parent->dockWidgetArea (this);
         m_recent_dock_geom = saveGeometry ();
       }
   }

@@ -27,55 +27,57 @@ define gen-propdoc-texi
   mv $@-t $@
 endef
 
-%reldir%/plot-axesproperties.texi: %reldir%/genpropdoc.m
+GRAPHICS_PROPS_SRC = libinterp/corefcn/graphics.in.h libinterp/corefcn/genprops.awk
+
+%reldir%/plot-axesproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,axes)
 
-%reldir%/plot-figureproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-figureproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,figure)
 
-%reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,image)
 
-%reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,light)
 
-%reldir%/plot-lineproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-lineproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,line)
 
-%reldir%/plot-patchproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-patchproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,patch)
 
-%reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,root)
 
-%reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,surface)
 
-%reldir%/plot-textproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-textproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,text)
 
-%reldir%/plot-uimenuproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uimenuproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uimenu)
 
-%reldir%/plot-uibuttongroupproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uibuttongroupproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uibuttongroup)
 
-%reldir%/plot-uicontextmenuproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uicontextmenuproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontextmenu)
 
-%reldir%/plot-uipanelproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uipanelproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipanel)
 
-%reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontrol)
 
-%reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoolbar)
 
-%reldir%/plot-uipushtoolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uipushtoolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipushtool)
 
-%reldir%/plot-uitoggletoolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uitoggletoolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoggletool)
 
 dist_man_MANS = \

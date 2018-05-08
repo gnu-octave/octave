@@ -341,8 +341,7 @@ namespace octave
               {
                 // It was a line number.  Get function name from debugger.
                 if (Vdebugging)
-                  symbol_name
-                    = m_interpreter.get_user_code ()->profiler_name ();
+                  symbol_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
@@ -561,7 +560,7 @@ namespace octave
                                              const bp_table::intmap& line,
                                              const std::string& condition)
   {
-    octave_user_code *main_fcn = m_interpreter.get_user_code (fname);
+    octave_user_code *main_fcn = m_evaluator.get_user_code (fname);
 
     if (! main_fcn)
       error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
@@ -659,7 +658,7 @@ namespace octave
       }
     else
       {
-        octave_user_code *dbg_fcn = m_interpreter.get_user_code (fname);
+        octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
 
         if (! dbg_fcn)
           error ("remove_breakpoint: unable to find function %s\n",
@@ -701,7 +700,7 @@ namespace octave
   {
     intmap retval;
 
-    octave_user_code *dbg_fcn = m_interpreter.get_user_code (fname);
+    octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
 
     if (dbg_fcn)
       {
@@ -771,7 +770,7 @@ namespace octave
         if (fname_list.empty ()
             || find_bkpt_list (fname_list, bp_fname) != "")
           {
-            octave_user_code *dbg_fcn = m_interpreter.get_user_code (bp_fname);
+            octave_user_code *dbg_fcn = m_evaluator.get_user_code (bp_fname);
 
             if (dbg_fcn)
               {
@@ -934,8 +933,8 @@ namespace octave
   octave_user_code *
   get_user_code (const std::string& fname)
   {
-    interpreter& interp = __get_interpreter__ ("get_user_code");
+    tree_evaluator& tw = __get_evaluator__ ("get_user_code");
 
-    return interp.get_user_code (fname);
+    return tw.get_user_code (fname);
   }
 }

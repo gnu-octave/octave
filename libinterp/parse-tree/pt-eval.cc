@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <typeinfo>
 
 #include "cmd-edit.h"
+#include "file-ops.h"
 #include "oct-env.h"
 
 #include "bp-table.h"
@@ -60,8 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  int tree_evaluator::dbstep_flag = 0;
-
   size_t tree_evaluator::current_frame = 0;
 
   bool tree_evaluator::debug_mode = false;
@@ -70,8 +69,6 @@ namespace octave
 
   tree_evaluator::stmt_list_type tree_evaluator::statement_context
     = tree_evaluator::other;
-
-  bool tree_evaluator::in_loop_command = false;
 
   // Normal evaluator.
 
@@ -342,7 +339,7 @@ namespace octave
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
-    if (in_loop_command)
+    if (m_in_loop_command)
       tree_break_command::breaking = 1;
     else
       error ("break must appear in a loop in the same file as loop command");
@@ -424,7 +421,7 @@ namespace octave
     if (debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
-    if (in_loop_command)
+    if (m_in_loop_command)
       tree_continue_command::continuing = 1;
   }
 
@@ -438,11 +435,17 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    bp_table& bptab = __get_bp_table__ ("tree_evaluator::reset_debug_state");
+    debug_mode = m_bp_table.have_breakpoints () || Vdebugging;
 
-    debug_mode = bptab.have_breakpoints () || Vdebugging;
+    m_dbstep_flag = 0;
+  }
 
-    dbstep_flag = 0;
+  void
+  tree_evaluator::reset_debug_state (bool mode)
+  {
+    debug_mode = mode;
+
+    m_dbstep_flag = 0;
   }
 
   Matrix
@@ -692,6 +695,44 @@ namespace octave
     return symtab.current_scope ();
   }
 
+  // Return a pointer to the user-defined function FNAME.  If FNAME is empty,
+  // search backward for the first user-defined function in the
+  // current call stack.
+
+  octave_user_code *
+  tree_evaluator::get_user_code (const std::string& fname)
+  {
+    octave_user_code *user_code = nullptr;
+
+    if (fname.empty ())
+      user_code = m_call_stack.debug_user_code ();
+    else
+      {
+        std::string name = fname;
+
+        if (sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
+          {
+            auto beg = name.begin () + 2;  // never have @/method
+            auto end = name.end () - 1;    // never have trailing '/'
+            std::replace (beg, end, '/', sys::file_ops::dir_sep_char ());
+          }
+
+        size_t name_len = name.length ();
+
+        if (name_len > 2 && name.substr (name_len-2) == ".m")
+          name = name.substr (0, name_len-2);
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function (name);
+
+        if (fcn.is_defined () && fcn.is_user_code ())
+          user_code = fcn.user_code_value ();
+      }
+
+    return user_code;
+  }
+
   void
   tree_evaluator::visit_decl_command (tree_decl_command& cmd)
   {
@@ -796,9 +837,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.protect_var (in_loop_command);
+    frame.protect_var (m_in_loop_command);
 
-    in_loop_command = true;
+    m_in_loop_command = true;
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -931,9 +972,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.protect_var (in_loop_command);
+    frame.protect_var (m_in_loop_command);
 
-    in_loop_command = true;
+    m_in_loop_command = true;
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -1149,49 +1190,6 @@ namespace octave
             break;
           }
       }
-  }
-
-  // Final step of processing an indexing error.  Add the name of the
-  // variable being indexed, if any, then issue an error.  (Will this also
-  // be needed by pt-lvalue, which calls subsref?)
-
-  static void
-  final_index_error (index_exception& e,
-                     const tree_expression *expr)
-  {
-    std::string extra_message;
-
-    // FIXME: make this a member function for direct access to symbol
-    // table and scope?
-
-    symbol_scope scope
-      = __require_current_scope__ ("final_index_error");
-
-    symbol_record::context_id context = scope.current_context ();
-
-    if (expr->is_identifier ()
-        && dynamic_cast<const tree_identifier *> (expr)->is_variable (context))
-      {
-        std::string var = expr->name ();
-
-        e.set_var (var);
-
-        symbol_table& symtab = __get_symbol_table__ ("final_index_error");
-
-        octave_value fcn = symtab.find_function (var);
-
-        if (fcn.is_function ())
-          {
-            octave_function *fp = fcn.function_value ();
-
-            if (fp && fp->name () == var)
-              extra_message = " (note: variable '" + var + "' shadows function)";
-          }
-      }
-
-    std::string msg = e.message () + extra_message;
-
-    error_with_id (e.err_id (), msg.c_str ());
   }
 
   // Unlike Matlab, which does not allow the result of a function call
@@ -2156,7 +2154,7 @@ namespace octave
         reset_debug_state ();
       }
     else if (statement_context == function || statement_context == script
-             || in_loop_command)
+             || m_in_loop_command)
       tree_return_command::returning = 1;
   }
 
@@ -2665,9 +2663,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.protect_var (in_loop_command);
+    frame.protect_var (m_in_loop_command);
 
-    in_loop_command = true;
+    m_in_loop_command = true;
 
     tree_expression *expr = cmd.condition ();
 
@@ -2715,9 +2713,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.protect_var (in_loop_command);
+    frame.protect_var (m_in_loop_command);
 
-    in_loop_command = true;
+    m_in_loop_command = true;
 
     tree_expression *expr = cmd.condition ();
     int until_line = cmd.line ();
@@ -2779,14 +2777,14 @@ namespace octave
   }
 
   void
-  tree_evaluator::do_breakpoint (tree_statement& stmt) const
+  tree_evaluator::do_breakpoint (tree_statement& stmt)
   {
     do_breakpoint (stmt.is_breakpoint (true), stmt.is_end_of_fcn_or_script ());
   }
 
   void
   tree_evaluator::do_breakpoint (bool is_breakpoint,
-                                 bool is_end_of_fcn_or_script) const
+                                 bool is_end_of_fcn_or_script)
   {
     bool break_on_this_statement = false;
 
@@ -2802,15 +2800,15 @@ namespace octave
       {
         break_on_this_statement = true;
 
-        dbstep_flag = 0;
+        m_dbstep_flag = 0;
 
         current_frame = m_call_stack.current_frame ();
       }
-    else if (dbstep_flag > 0)
+    else if (m_dbstep_flag > 0)
       {
         if (m_call_stack.current_frame () == current_frame)
           {
-            if (dbstep_flag == 1 || is_end_of_fcn_or_script)
+            if (m_dbstep_flag == 1 || is_end_of_fcn_or_script)
               {
                 // We get here if we are doing a "dbstep" or a "dbstep N" and the
                 // count has reached 1 so that we must stop and return to debug
@@ -2820,17 +2818,17 @@ namespace octave
 
                 break_on_this_statement = true;
 
-                dbstep_flag = 0;
+                m_dbstep_flag = 0;
               }
             else
               {
                 // Executing "dbstep N".  Decrease N by one and continue.
 
-                dbstep_flag--;
+                m_dbstep_flag--;
               }
 
           }
-        else if (dbstep_flag == 1
+        else if (m_dbstep_flag == 1
                  && m_call_stack.current_frame () < current_frame)
           {
             // We stepped out from the end of a function.
@@ -2839,20 +2837,20 @@ namespace octave
 
             break_on_this_statement = true;
 
-            dbstep_flag = 0;
+            m_dbstep_flag = 0;
           }
       }
-    else if (dbstep_flag == -1)
+    else if (m_dbstep_flag == -1)
       {
         // We get here if we are doing a "dbstep in".
 
         break_on_this_statement = true;
 
-        dbstep_flag = 0;
+        m_dbstep_flag = 0;
 
         current_frame = m_call_stack.current_frame ();
       }
-    else if (dbstep_flag == -2)
+    else if (m_dbstep_flag == -2)
       {
         // We get here if we are doing a "dbstep out".  Check for end of
         // function and whether the current frame is the same as the
@@ -2862,7 +2860,7 @@ namespace octave
 
         if (is_end_of_fcn_or_script
             && m_call_stack.current_frame () == current_frame)
-          dbstep_flag = -1;
+          m_dbstep_flag = -1;
       }
 
     if (break_on_this_statement)
@@ -3225,6 +3223,45 @@ namespace octave
         for (auto& elt : lines)
           octave_stdout << prefix << elt << std::endl;
       }
+  }
+
+  // Final step of processing an indexing error.  Add the name of the
+  // variable being indexed, if any, then issue an error.  (Will this also
+  // be needed by pt-lvalue, which calls subsref?)
+
+  void tree_evaluator::final_index_error (index_exception& e,
+                                          const tree_expression *expr)
+  {
+    std::string extra_message;
+
+    symbol_scope scope = get_current_scope ();
+
+    symbol_record::context_id ctxt = scope.current_context ();
+
+    if (expr->is_identifier ()
+        && dynamic_cast<const tree_identifier *> (expr)->is_variable (ctxt))
+      {
+        std::string var = expr->name ();
+
+        e.set_var (var);
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function (var);
+
+        if (fcn.is_function ())
+          {
+            octave_function *fp = fcn.function_value ();
+
+            if (fp && fp->name () == var)
+              extra_message
+                = " (note: variable '" + var + "' shadows function)";
+          }
+      }
+
+    std::string msg = e.message () + extra_message;
+
+    error_with_id (e.err_id (), msg.c_str ());
   }
 }
 

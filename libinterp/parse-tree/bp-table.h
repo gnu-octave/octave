@@ -36,7 +36,7 @@ class octave_value_list;
 
 namespace octave
 {
-  class interpreter;
+  class tree_evaluator;
 
   struct bp_type
   {
@@ -51,8 +51,8 @@ namespace octave
   {
   public:
 
-    bp_table (interpreter& interp)
-      : m_interpreter (interp), m_bp_set (), m_errors_that_stop (),
+    bp_table (tree_evaluator& tw)
+      : m_evaluator (tw), m_bp_set (), m_errors_that_stop (),
         m_caught_that_stop (), m_warnings_that_stop ()
     { }
 
@@ -130,7 +130,7 @@ namespace octave
     typedef std::set<std::string>::const_iterator const_bp_set_iterator;
     typedef std::set<std::string>::iterator bp_set_iterator;
 
-    interpreter& m_interpreter;
+    tree_evaluator& m_evaluator;
 
     // Set of function (.m file) names containing at least one breakpoint.
     std::set<std::string> m_bp_set;

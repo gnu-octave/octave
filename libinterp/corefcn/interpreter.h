@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
-#include "bp-table.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
@@ -52,8 +51,6 @@ extern OCTINTERP_API bool octave_interpreter_ready;
 
 // TRUE means we've processed all the init code and we are good to go.
 extern OCTINTERP_API bool octave_initialized;
-
-class octave_user_code;
 
 namespace octave
 {
@@ -181,11 +178,6 @@ namespace octave
     symbol_scope get_current_scope (void);
     symbol_scope require_current_scope (const std::string& who);
 
-    bp_table& get_bp_table (void)
-    {
-      return m_bp_table;
-    }
-
     call_stack& get_call_stack (void);
 
     profiler& get_profiler (void);
@@ -210,8 +202,6 @@ namespace octave
     {
       return m_gtk_manager;
     }
-
-    octave_user_code * get_user_code (const std::string& fname = "");
 
     void mlock (void);
 
@@ -268,8 +258,6 @@ namespace octave
     symbol_table m_symbol_table;
 
     tree_evaluator m_evaluator;
-
-    bp_table m_bp_table;
 
     stream_list m_stream_list;
 

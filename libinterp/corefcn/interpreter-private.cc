@@ -114,9 +114,9 @@ namespace octave
 
   bp_table& __get_bp_table__ (const std::string& who)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    tree_evaluator& tw = __get_evaluator__ (who);
 
-    return interp.get_bp_table ();
+    return tw.get_bp_table ();
   }
 
   call_stack& __get_call_stack__ (const std::string& who)

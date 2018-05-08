@@ -1139,7 +1139,7 @@ public:
   octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
-  call (octave::tree_evaluator&, int nargout, const octave_value_list& idx)
+  call (octave::tree_evaluator& tw, int nargout, const octave_value_list& idx)
   {
     octave_value_list retval;
 
@@ -1163,12 +1163,11 @@ public:
           error ("`%s' is not a direct superclass of `%s'",
                  cname.c_str (), ctx.get_name ().c_str ());
 
-        if (! is_constructed_object (mname))
+        if (! is_constructed_object (tw, mname))
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave::symbol_scope scope
-          = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
+        octave::symbol_scope scope = tw.get_current_scope ();
 
         octave_value sym = scope.varval (mname);
 
@@ -1211,10 +1210,10 @@ public:
   }
 
 private:
-  bool is_constructed_object (const std::string nm)
+  bool is_constructed_object (octave::tree_evaluator& tw,
+                              const std::string& nm)
   {
-    octave::call_stack& cs
-      = octave::__get_call_stack__ ("octave_classdef_superclass_ref::is_constructed_object");
+    octave::call_stack& cs = tw.get_call_stack ();
 
     octave_function *of = cs.current ();
 
@@ -3773,8 +3772,7 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
 
           if (pos == std::string::npos)
             {
-              octave::symbol_table& symtab
-                = octave::__get_symbol_table__ ("cdef_manager::find_class");
+              octave::symbol_table& symtab = m_interpreter.get_symbol_table ();
 
               ov_cls = symtab.find (name);
             }
@@ -3851,8 +3849,7 @@ cdef_manager::find_package (const std::string& name, bool error_if_not_found,
     }
   else
     {
-      octave::load_path& lp
-        = octave::__get_load_path__ ("cdef_manager::find_package");
+      octave::load_path& lp = m_interpreter.get_load_path ();
 
       if (load_if_not_found && lp.find_package (name))
         {

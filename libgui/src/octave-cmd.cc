@@ -28,14 +28,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-cmd.h"
 
-#include "octave-qt-link.h"
-#include "cmd-edit.h"
 #include "builtin-defun-decls.h"
+#include "cmd-edit.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
+#include "octave-qt-link.h"
 #include "utils.h"
 
 namespace octave
 {
-  void octave_cmd_exec::execute (void)
+  void octave_cmd_exec::execute (interpreter&)
   {
     std::string pending_input = command_editor::get_current_line ();
 
@@ -45,7 +47,7 @@ namespace octave
     command_editor::accept_line ();
   }
 
-  void octave_cmd_eval::execute (void)
+  void octave_cmd_eval::execute (interpreter&)
   {
     QString function_name = m_info.fileName ();
     function_name.chop (m_info.suffix ().length () + 1);
@@ -73,24 +75,24 @@ namespace octave
     command_editor::accept_line ();
   }
 
-  void octave_cmd_debug::execute (void)
+  void octave_cmd_debug::execute (interpreter& interp)
   {
     if (m_cmd == "step")
       {
         F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbstep ();
+        Fdbstep (interp);
       }
     else if (m_cmd == "cont")
       {
         F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbcont ();
+        Fdbcont (interp);
       }
     else if (m_cmd == "quit")
-      Fdbquit ();
+      Fdbquit (interp);
     else
       {
         F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbstep (ovl (m_cmd.toStdString ()));
+        Fdbstep (interp, ovl (m_cmd.toStdString ()));
       }
 
     command_editor::interrupt (true);
@@ -126,7 +128,13 @@ namespace octave
           repost = true;          // not empty, repost at end
         m_queue_mutex.unlock ();
 
-        cmd->execute ();
+        // FIXME: Could we store a reference to the interpreter in the
+        // octave_command_queue object?  If so, where is the proper
+        // place to initialize that?
+
+        interpreter& interp = __get_interpreter__ ("octave_command_queue::execute_command_callback");
+
+        cmd->execute (interp);
 
         delete cmd;
       }

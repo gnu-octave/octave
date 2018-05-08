@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class interpreter;
+
   class octave_cmd
   {
   public:
@@ -42,7 +44,7 @@ namespace octave
 
     virtual ~octave_cmd (void) = default;
 
-    virtual void execute (void) { }
+    virtual void execute (interpreter&) { }
   };
 
   class octave_cmd_exec : public octave_cmd
@@ -51,7 +53,7 @@ namespace octave
 
     octave_cmd_exec (const QString& cmd) : octave_cmd () { m_cmd = cmd; }
 
-    void execute (void);
+    void execute (interpreter& interp);
 
   protected:
 
@@ -64,7 +66,7 @@ namespace octave
 
     octave_cmd_eval (const QFileInfo& info) : octave_cmd () { m_info = info; }
 
-    void execute (void);
+    void execute (interpreter& interp);
 
   protected:
 
@@ -78,7 +80,7 @@ namespace octave
     octave_cmd_debug (const QString& cmd, bool suppress_location)
       : octave_cmd_exec (cmd), m_suppress_dbg_location (suppress_location) { }
 
-    void execute (void);
+    void execute (interpreter& interp);
 
   protected:
 

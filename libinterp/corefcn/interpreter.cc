@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
-#include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
@@ -332,7 +331,6 @@ namespace octave
       m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
-      m_bp_table (*this),
       m_stream_list (*this),
       m_child_list (),
       m_url_handle_manager (),
@@ -941,7 +939,7 @@ namespace octave
             parser.reset ();
 
             if (m_symbol_table.at_top_level ())
-              tree_evaluator::reset_debug_state ();
+              m_evaluator.reset_debug_state ();
 
             retval = parser.run ();
 
@@ -1180,46 +1178,6 @@ namespace octave
   profiler& interpreter::get_profiler (void)
   {
     return m_evaluator.get_profiler ();
-  }
-
-  // Return a pointer to the user-defined function FNAME.  If FNAME is empty,
-  // search backward for the first user-defined function in the
-  // current call stack.
-
-  octave_user_code *
-  interpreter::get_user_code (const std::string& fname)
-  {
-    octave_user_code *user_code = nullptr;
-
-    if (fname.empty ())
-      {
-        call_stack& cs = get_call_stack ();
-
-        user_code = cs.debug_user_code ();
-      }
-    else
-      {
-        std::string name = fname;
-
-        if (sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
-          {
-            auto beg = name.begin () + 2;  // never have @/method
-            auto end = name.end () - 1;    // never have trailing '/'
-            std::replace (beg, end, '/', sys::file_ops::dir_sep_char ());
-          }
-
-        size_t name_len = name.length ();
-
-        if (name_len > 2 && name.substr (name_len-2) == ".m")
-          name = name.substr (0, name_len-2);
-
-        octave_value fcn = m_symbol_table.find_function (name);
-
-        if (fcn.is_defined () && fcn.is_user_code ())
-          user_code = fcn.user_code_value ();
-      }
-
-    return user_code;
   }
 
   void interpreter::mlock (void)

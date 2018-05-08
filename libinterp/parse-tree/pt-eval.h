@@ -30,12 +30,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <string>
 
+#include "bp-table.h"
 #include "call-stack.h"
 #include "ov.h"
 #include "ovl.h"
 #include "profiler.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+
+class octave_user_code;
 
 namespace octave
 {
@@ -126,11 +129,11 @@ namespace octave
       : m_interpreter (interp), m_result_type (RT_UNDEFINED),
         m_expr_result_value (), m_expr_result_value_list (),
         m_lvalue_list_stack (), m_nargout_stack (),
-        m_call_stack (interp), m_profiler (),
+        m_bp_table (*this), m_call_stack (interp), m_profiler (),
         m_max_recursion_depth (256), m_silent_functions (false),
-        m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
-        m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
-        m_echo_files ()
+        m_string_fill_char (' '), m_PS4 ("+ "), m_dbstep_flag (0),
+        m_echo (ECHO_OFF), m_echo_state (false), m_echo_file_name (),
+        m_echo_file_pos (1), m_echo_files (), m_in_loop_command (false)
     { }
 
     // No copying!
@@ -238,13 +241,11 @@ namespace octave
 
     bool statement_printing_enabled (void);
 
-    static void reset_debug_state (void);
+    void reset_debug_state (void);
 
-    // If > 0, stop executing at the (N-1)th stopping point, counting
-    //         from the the current execution point in the current frame.
-    //
-    // If < 0, stop executing at the next possible stopping point.
-    static int dbstep_flag;
+    void reset_debug_state (bool mode);
+
+    void set_dbstep_flag (int step) { m_dbstep_flag = step; }
 
     // The number of the stack frame we are currently debugging.
     static size_t current_frame;
@@ -263,9 +264,6 @@ namespace octave
 
     // The context for the current evaluation.
     static stmt_list_type statement_context;
-
-    // TRUE means we are evaluating some kind of looping construct.
-    static bool in_loop_command;
 
     Matrix ignored_fcn_outputs (void) const;
 
@@ -368,11 +366,17 @@ namespace octave
     bool switch_case_label_matches (tree_switch_case *expr,
                                     const octave_value& val);
 
+    interpreter& get_interpreter (void) { return m_interpreter; }
+
+    bp_table& get_bp_table (void) { return m_bp_table; }
+
     call_stack& get_call_stack (void) { return m_call_stack; }
 
     profiler& get_profiler (void) { return m_profiler; }
 
     symbol_scope get_current_scope (void);
+
+    octave_user_code * get_user_code (const std::string& fname = "");
 
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 
@@ -445,10 +449,10 @@ namespace octave
 
     bool maybe_push_echo_state_cleanup (void);
 
-    void do_breakpoint (tree_statement& stmt) const;
+    void do_breakpoint (tree_statement& stmt);
 
     void do_breakpoint (bool is_breakpoint,
-                        bool is_end_of_fcn_or_script = false) const;
+                        bool is_end_of_fcn_or_script = false);
 
     virtual octave_value
     do_keyboard (const octave_value_list& args = octave_value_list ()) const;
@@ -481,6 +485,8 @@ namespace octave
 
     void echo_code (size_t line);
 
+    void final_index_error (index_exception& e, const tree_expression *expr);
+
     interpreter& m_interpreter;
 
     result_type m_result_type;
@@ -490,6 +496,8 @@ namespace octave
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 
     value_stack<int> m_nargout_stack;
+
+    bp_table m_bp_table;
 
     call_stack m_call_stack;
 
@@ -509,6 +517,12 @@ namespace octave
     // String printed before echoed commands (enabled by --echo-commands).
     std::string m_PS4;
 
+    // If > 0, stop executing at the (N-1)th stopping point, counting
+    //         from the the current execution point in the current frame.
+    //
+    // If < 0, stop executing at the next possible stopping point.
+    int m_dbstep_flag;
+
     // Echo commands as they are executed?
     //
     //   1  ==>  echo commands read from script files
@@ -527,6 +541,9 @@ namespace octave
     size_t m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
+
+    // TRUE means we are evaluating some kind of looping construct.
+    bool m_in_loop_command;
   };
 }
 

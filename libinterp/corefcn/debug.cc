@@ -176,7 +176,9 @@ all breakpoints within the file are cleared.
   std::string condition = "";
   octave_value retval;
 
-  octave::bp_table& bptab = interp.get_bp_table ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave::bp_table& bptab = tw.get_bp_table ();
 
   if (args.length() >= 1 && ! args(0).isstruct ())
     {
@@ -302,7 +304,9 @@ files.
 
   int nargin = args.length ();
 
-  octave::bp_table& bptab = interp.get_bp_table ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave::bp_table& bptab = tw.get_bp_table ();
 
   bptab.parse_dbfunction_params ("dbclear", args, symbol_name, lines, dummy);
 
@@ -374,7 +378,9 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
   octave::bp_table::fname_bp_map bp_list;
   std::string symbol_name;
 
-  octave::bp_table& bptab = interp.get_bp_table ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave::bp_table& bptab = tw.get_bp_table ();
 
   if (nargin == 1)
     {
@@ -390,7 +396,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 /*
       if (Vdebugging)
         {
-          octave_user_code *dbg_fcn = interp.get_user_code ();
+          octave_user_code *dbg_fcn = tw.get_user_code ();
           if (dbg_fcn)
             {
               symbol_name = dbg_fcn->name ();
@@ -538,7 +544,9 @@ is stopped.
 @seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}
 @end deftypefn */)
 {
-  octave_user_code *dbg_fcn = interp.get_user_code ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave_user_code *dbg_fcn = tw.get_user_code ();
 
   if (! dbg_fcn)
     {
@@ -635,10 +643,12 @@ numbers.
 
   string_vector argv = args.make_argv ("dbtype");
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
   switch (args.length ())
     {
     case 0:  // dbtype
-      dbg_fcn = interp.get_user_code ();
+      dbg_fcn = tw.get_user_code ();
 
       if (! dbg_fcn)
         error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
@@ -656,7 +666,7 @@ numbers.
 
         if (ind != std::string::npos)  // (dbtype start:end)
           {
-            dbg_fcn = interp.get_user_code ();
+            dbg_fcn = tw.get_user_code ();
 
             if (dbg_fcn)
               {
@@ -686,7 +696,7 @@ numbers.
 
             if (line == 0)  // (dbtype func)
               {
-                dbg_fcn = interp.get_user_code (arg);
+                dbg_fcn = tw.get_user_code (arg);
 
                 if (! dbg_fcn)
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
@@ -699,7 +709,7 @@ numbers.
                 if (line <= 0)
                   error ("dbtype: start and end lines must be >= 1\n");
 
-                dbg_fcn = interp.get_user_code ();
+                dbg_fcn = tw.get_user_code ();
 
                 if (dbg_fcn)
                   do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
@@ -711,7 +721,7 @@ numbers.
 
     case 2:  // (dbtype func start:end) || (dbtype func start)
       {
-        dbg_fcn = interp.get_user_code (argv[1]);
+        dbg_fcn = tw.get_user_code (argv[1]);
 
         if (! dbg_fcn)
           error ("dbtype: function <%s> not found\n", argv[1].c_str ());
@@ -784,7 +794,9 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
         error ("dblist: N must be a non-negative integer");
     }
 
-  octave_user_code *dbg_fcn = interp.get_user_code ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  octave_user_code *dbg_fcn = tw.get_user_code ();
 
   if (! dbg_fcn)
     error ("dblist: must be inside a user function to use dblist\n");
@@ -1050,8 +1062,8 @@ If @var{n} is omitted, move down one frame.
   return ovl ();
 }
 
-DEFUN (dbstep, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbstep, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbstep
 @deftypefnx {} {} dbstep @var{n}
 @deftypefnx {} {} dbstep in
@@ -1081,6 +1093,8 @@ function returns.
   if (nargin > 1)
     print_usage ();
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
   if (nargin == 1)
     {
       std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
@@ -1090,14 +1104,14 @@ function returns.
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          octave::tree_evaluator::dbstep_flag = -1;
+          tw.set_dbstep_flag (-1);
         }
       else if (arg == "out")
         {
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          octave::tree_evaluator::dbstep_flag = -2;
+          tw.set_dbstep_flag (-2);
         }
       else
         {
@@ -1109,7 +1123,7 @@ function returns.
           Vdebugging = false;
           Vtrack_line_num = true;
 
-          octave::tree_evaluator::dbstep_flag = n;
+          tw.set_dbstep_flag (n);
         }
     }
   else
@@ -1117,7 +1131,7 @@ function returns.
       Vdebugging = false;
       Vtrack_line_num = true;
 
-      octave::tree_evaluator::dbstep_flag = 1;
+      tw.set_dbstep_flag (1);
     }
 
   return ovl ();
@@ -1125,8 +1139,8 @@ function returns.
 
 DEFALIAS (dbnext, dbstep);
 
-DEFUN (dbcont, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbcont, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} dbcont
 Leave command-line debugging mode and continue code execution normally.
 @seealso{dbstep, dbquit}
@@ -1141,13 +1155,15 @@ Leave command-line debugging mode and continue code execution normally.
   Vdebugging = false;
   Vtrack_line_num = true;
 
-  octave::tree_evaluator::reset_debug_state ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  tw.reset_debug_state ();
 
   return ovl ();
 }
 
-DEFUN (dbquit, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dbquit, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} dbquit
 Quit debugging mode immediately without further code execution and return to
 the Octave prompt.
@@ -1164,8 +1180,9 @@ the Octave prompt.
 
   Vdebugging = false;
 
-  octave::tree_evaluator::reset_debug_state ();
-  octave::tree_evaluator::debug_mode = false;
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  tw.reset_debug_state (false);
 
   throw octave::interrupt_exception ();
 

@@ -235,7 +235,11 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
 #define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l) , l
-#define F77_CHAR_ARG_LEN_TYPE int
+#if defined (__GNUC__) && __GNUC__ >= 8
+#  define F77_CHAR_ARG_LEN_TYPE size_t
+#else
+#  define F77_CHAR_ARG_LEN_TYPE int
+#endif
 #define F77_CHAR_ARG_LEN_DECL , F77_CHAR_ARG_LEN_TYPE
 #define F77_CHAR_ARG_DECL char *
 #define F77_CONST_CHAR_ARG_DECL const char *

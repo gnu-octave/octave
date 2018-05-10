@@ -1435,6 +1435,7 @@ Set and query the codepage that is used for reading .m files.
   if (nargin > 1)
     print_usage ();
 
+  std::string old_mfile_encoding = Vmfile_encoding;
   if (nargin > 0)
     {
       std::string str = args(0).xstring_value (
@@ -1464,5 +1465,5 @@ Set and query the codepage that is used for reading .m files.
           Vmfile_encoding = str;
         }
     }
-    return ovl (Vmfile_encoding);
+    return ovl (old_mfile_encoding);
 }

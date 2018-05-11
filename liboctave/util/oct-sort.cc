@@ -111,6 +111,7 @@ The Python license is
 #include <cstring>
 #include <stack>
 
+#include "lo-error.h"
 #include "lo-mappers.h"
 #include "quit.h"
 #include "oct-sort.h"
@@ -493,10 +494,10 @@ octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n,
 }
 
 static inline octave_idx_type
-roundupsize (octave_idx_type n)
+roundupsize (size_t n)
 {
   unsigned int nbits = 3;
-  octave_idx_type n2 = static_cast<octave_idx_type> (n) >> 8;
+  size_t n2 = n >> 8;
 
   /* Round up:
    * If n <       256, to a multiple of        8.
@@ -526,7 +527,13 @@ roundupsize (octave_idx_type n)
       nbits += 3;
     }
 
-  return ((n >> nbits) + 1) << nbits;
+  size_t new_size = ((n >> nbits) + 1) << nbits;
+
+  if (new_size == 0 || new_size > std::numeric_limits<octave_idx_type>::max ())
+    (*current_liboctave_error_handler)
+      ("unable to allocate sufficient memory for sort");
+
+  return static_cast<octave_idx_type> (new_size);
 }
 
 /* Ensure enough temp memory for 'need' array slots is available.

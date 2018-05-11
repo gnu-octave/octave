@@ -18,7 +18,7 @@
 
 %!test
 %! global __bug46497_global__
-%! __bug46497_global__ = 'test_bug46497';
-%! a = class_bug46497 ();
+%! __bug46497_global__ = "test_bug46497";
+%! a = class_bug46497 (13);
 %! a = [];
-%! assert(__bug46497_global__,'deleted');
+%! assert(__bug46497_global__, struct ("myprop", 13, "status", "deleted"));

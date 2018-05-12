@@ -112,6 +112,9 @@ namespace octave
     _bp_conditions.clear ();
     m_bp_restore_count = 0;
 
+    // Initialize last modification date to now
+    m_last_modified = QDateTime::currentDateTimeUtc();
+
     // disable editor drag & drop so parent can handle
     _edit_area->setAcceptDrops (false);
 
@@ -434,8 +437,11 @@ namespace octave
     QStringList trackedFiles = _file_system_watcher.files ();
     if (! trackedFiles.isEmpty ())
       _file_system_watcher.removePath (_file_name);
-    if (! fileName.isEmpty ())
+    if (! fileName.isEmpty () && QFile::exists (fileName))
+    {
       _file_system_watcher.addPath (fileName);
+      m_last_modified =  QFileInfo (fileName).lastModified ().toUTC ();
+    }
 
     // update lexer and file name variable if file name changes
     if (_file_name != fileName)
@@ -2309,6 +2315,20 @@ namespace octave
 
   void file_editor_tab::file_has_changed (const QString&, bool do_close)
   {
+    bool file_exists = QFile::exists (_file_name);
+
+    if (file_exists)
+      {
+        // Test if file is really modified or if just the timezone has
+        // changed. In the latter, just return without doing anything
+        QDateTime modified = QFileInfo (_file_name).lastModified ().toUTC ();
+
+        if (modified <= m_last_modified)
+          return;
+
+        m_last_modified = modified;
+      }
+
     // Prevent popping up multiple message boxes when the file has
     // been changed multiple times by temporarily removing from the
     // file watcher.
@@ -2316,11 +2336,11 @@ namespace octave
     if (! trackedFiles.isEmpty ())
       _file_system_watcher.removePath (_file_name);
 
-    if (QFile::exists (_file_name) && ! do_close)
+    if (file_exists && ! do_close)
       {
+
         // The file is modified
         if (_always_reload_changed_files)
-
           load_file (_file_name);
 
         else

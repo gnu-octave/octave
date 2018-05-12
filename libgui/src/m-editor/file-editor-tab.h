@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QWidget>
 #include <QCloseEvent>
+#include <QDateTime>
 #include <QFileSystemWatcher>
 #include <QSettings>
 #include <QFileInfo>
@@ -284,6 +285,7 @@ namespace octave
     QString _ced;
     QString _encoding;
     QString _new_encoding;
+    QDateTime m_last_modified;
 
     bool _long_title;
     bool _copy_available;

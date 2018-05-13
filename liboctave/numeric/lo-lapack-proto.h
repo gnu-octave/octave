@@ -1608,6 +1608,35 @@ extern "C"
                              F77_CHAR_ARG_LEN_DECL
                              F77_CHAR_ARG_LEN_DECL);
 
+  // TGSEN
+
+  F77_RET_T
+  F77_FUNC (dtgsen, DTGSEN) (const F77_INT& IJOB,
+                             const F77_LOGICAL& WANTQ,
+                             const F77_LOGICAL& WANTZ,
+                             const F77_LOGICAL *SELECT,
+                             const F77_INT& N,
+                             F77_DBLE *A,
+                             const F77_INT& LDA,
+                             F77_DBLE *B,
+                             const F77_INT& LDB,
+                             F77_DBLE *ALPHAR,
+                             F77_DBLE *ALPHAI,
+                             F77_DBLE *BETA,
+                             F77_DBLE *Q,
+                             const F77_INT& LDQ,
+                             F77_DBLE *Z,
+                             const F77_INT& LDZ,
+                             F77_INT& M,
+                             F77_DBLE& PL,
+                             F77_DBLE& PR,
+                             F77_DBLE *DIF,
+                             F77_DBLE *WORK,
+                             const F77_INT& LWORK,
+                             F77_INT *IWORK,
+                             const F77_INT& LIWORK,
+                             F77_INT& INFO);
+
   // TRCON
 
   F77_RET_T

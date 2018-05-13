@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QComboBox>
 #include <QWidget>
 #include <QSettings>
+#include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
 #include <QtHelp/QHelpEngine>
@@ -101,6 +102,9 @@ namespace octave
     QComboBox *m_filter;
     QString m_collection;
 
+    QShortcut *m_show_shortcut;
+    QShortcut *m_findnext_shortcut;
+    QShortcut *m_findprev_shortcut;
   };
 
 }

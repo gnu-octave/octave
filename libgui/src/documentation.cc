@@ -41,20 +41,23 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QShortcut>
 #include <QTabWidget>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "documentation.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 
 namespace octave
 {
   // The documentation splitter, which is the main widget
   // of the doc dock widget
   documentation::documentation (QWidget *p)
-    : QSplitter (Qt::Horizontal, p)
+    : QSplitter (Qt::Horizontal, p),
+      m_show_shortcut (new QShortcut (p)),
+      m_findnext_shortcut (new QShortcut (p)),
+      m_findprev_shortcut (new QShortcut (p))
   {
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
@@ -133,28 +136,30 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    QShortcut *show_shortcut = new QShortcut (QKeySequence (QKeySequence::Find), p);
-    show_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (show_shortcut, SIGNAL (activated (void)),
+    notice_settings (resource_manager::get_settings ());
+
+    m_show_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit->parentWidget (), SLOT (show (void)));
-    connect (show_shortcut, SIGNAL (activated (void)),
+    connect (m_show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit, SLOT (selectAll (void)));
-    connect (show_shortcut, SIGNAL (activated (void)),
+    connect (m_show_shortcut, SIGNAL (activated (void)),
              m_find_line_edit, SLOT (setFocus (void)));
     QShortcut *hide_shortcut = new QShortcut (Qt::Key_Escape, p);
+
     hide_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (hide_shortcut, SIGNAL (activated (void)),
              m_find_line_edit->parentWidget (), SLOT(hide (void)));
     connect (hide_shortcut, SIGNAL (activated (void)),
              m_doc_browser, SLOT (setFocus (void)));
-    QShortcut *findnext_shortcut = new QShortcut (QKeySequence (QKeySequence::FindNext), p);
-    findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (findnext_shortcut, SIGNAL (activated (void)),
+
+    m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_findnext_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_forward (void)));
-    QShortcut *findprev_shortcut = new QShortcut (QKeySequence (QKeySequence::FindPrevious), p);
-    findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (findprev_shortcut, SIGNAL (activated (void)),
+    m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_findprev_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_backward (void)));
+
     find_footer->hide ();
     m_search_anchor_position = 0;
 
@@ -295,7 +300,12 @@ namespace octave
     qApp->restoreOverrideCursor();
   }
 
-  void documentation::notice_settings (const QSettings *) { }
+  void documentation::notice_settings (const QSettings *)
+  {
+    shortcut_manager::shortcut (m_show_shortcut, "editor_edit:find_replace");
+    shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
+    shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
+  }
 
   void documentation::copyClipboard (void) { }
 

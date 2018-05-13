@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QKeyEvent>
 #include <QLabel>
 #include <QSettings>
+#include <QShortcut>
 
 namespace octave
 {
@@ -95,6 +96,12 @@ namespace octave
         instance->do_set_shortcut (action, key);
     }
 
+    static void shortcut (QShortcut *sc, const QString& key)
+    {
+      if (instance_ok () && sc)
+        instance->do_shortcut (sc, key);
+    }
+
     static void fill_treewidget (QTreeWidget *tree_view)
     {
       if (instance_ok ())
@@ -127,6 +134,7 @@ namespace octave
     void do_init_data ();
     void do_write_shortcuts (QSettings *settings, bool closing);
     void do_set_shortcut (QAction *action, const QString& key);
+    void do_shortcut (QShortcut *sc, const QString& key);
     void do_fill_treewidget (QTreeWidget *tree_view);
     bool do_import_export (int action);
     void shortcut_dialog (int);

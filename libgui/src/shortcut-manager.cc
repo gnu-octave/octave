@@ -509,6 +509,19 @@ namespace octave
       qDebug () << "Key: " << key << " not found in m_action_hash";
   }
 
+  void shortcut_manager::do_shortcut (QShortcut *sc, const QString& key)
+  {
+    int index;
+
+    index = m_action_hash[key] - 1;
+
+    if (index > -1 && index < m_sc.count ())
+      sc->setKey (QKeySequence (m_settings->value ("shortcuts/" + key,
+                                m_sc.at (index).m_default_sc).toString ()));
+    else
+      qDebug () << "Key: " << key << " not found in m_action_hash";
+  }
+
   void shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   {
     m_dialog = nullptr;
@@ -537,6 +550,8 @@ namespace octave
     main_news->setText (0, tr ("News Menu"));
     QTreeWidgetItem *main_tabs = new QTreeWidgetItem (main);
     main_tabs->setText (0, tr ("Tab Handling in Dock Widgets"));
+    QTreeWidgetItem *main_find = new QTreeWidgetItem (main);
+    main_find->setText (0, tr ("Find & Replace in Dock Widgets"));
 
     m_level_hash["main_file"]   = main_file;
     m_level_hash["main_edit"]   = main_edit;
@@ -546,6 +561,7 @@ namespace octave
     m_level_hash["main_news"]   = main_news;
     m_level_hash["main_tabs"]   = main_tabs;
     m_level_hash["editor_tabs"]   = main_tabs;
+    m_level_hash["editor_find"]   = main_find;
 
     QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
     editor->setText (0, tr ("Editor"));
@@ -586,6 +602,12 @@ namespace octave
             // Closing tabs now in global tab handling section
             if (sc.m_settings_key.contains ("editor_file:close"))
               section = main_tabs;
+          }
+        if (section == editor_edit)
+          {
+            // Find & replace now in global file & replace handling section
+            if (sc.m_settings_key.contains ("editor_edit:find"))
+              section = main_find;
           }
 
         QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);

@@ -81,6 +81,7 @@ namespace octave
     m_result_type = RT_UNDEFINED;
     m_expr_result_value = octave_value ();
     m_expr_result_value_list = octave_value_list ();
+    m_deferred_delete_stack.clear ();
     m_lvalue_list_stack.clear ();
     m_nargout_stack.clear ();
   }
@@ -2270,6 +2271,13 @@ namespace octave
               cmd->accept (*this);
             else
               {
+                unwind_protect frame;
+
+                frame.add_method (m_deferred_delete_stack,
+                                  &deferred_delete_stack::pop_frame);
+
+                m_deferred_delete_stack.mark ();
+
                 if (m_echo_state)
                   {
                     size_t line = stmt.line ();

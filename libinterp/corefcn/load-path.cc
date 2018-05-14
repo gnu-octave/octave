@@ -1118,6 +1118,9 @@ namespace octave
   {
     sys::file_stat fs (dir_name);
 
+    sys::file_stat pfs (sys::file_ops::concat (dir_name, "private"));
+    bool has_private_dir = pfs && pfs.is_dir ();
+
     if (! fs)
       {
         std::string msg = fs.error ();
@@ -1142,8 +1145,11 @@ namespace octave
                     // slow things down tremendously for large directories.
                     const dir_info& di = p->second;
 
-                    if (fs.mtime () + fs.time_resolution ()
-                        > di.dir_time_last_checked)
+                    if ((fs.mtime () + fs.time_resolution ()
+                         > di.dir_time_last_checked)
+                        || (has_private_dir
+                            && (pfs.mtime () + pfs.time_resolution ()
+                                > dir_time_last_checked)))
                       initialize ();
                     else
                       {
@@ -1173,7 +1179,10 @@ namespace octave
               }
           }
         // Absolute path, check timestamp to see whether it requires re-caching
-        else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked)
+        else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
+                 || (has_private_dir
+                     && (pfs.mtime () + pfs.time_resolution ()
+                         > dir_time_last_checked)))
           initialize ();
       }
   }

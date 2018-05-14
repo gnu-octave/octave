@@ -334,9 +334,11 @@ namespace octave
     if (vis)
       {
         show ();
-        QApplication::setActiveWindow (this);
         focus ();
       }
+
+     QApplication::setActiveWindow (this);
+
   }
 
   // dock the widget

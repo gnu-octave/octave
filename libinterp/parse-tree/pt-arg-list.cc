@@ -247,12 +247,29 @@ namespace octave
 
         if (elt)
           {
+            bool is_assignment = elt->is_assignment_expression ();
+
             octave_value tmp = tw->evaluate (elt);
 
             if (tmp.is_cs_list ())
               args.push_back (tmp.list_value ());
             else if (tmp.is_defined ())
-              args.push_back (tmp);
+              {
+                args.push_back (tmp);
+
+                // Defer deletion of any temporary values until the end
+                // of the containing statement.  That way destructors
+                // for temporary classdef handle objects will be called
+                // when it is safe to do so.
+                //
+                // FIXME: We could further limit this action to classdef
+                // handle objects, but we don't currently have an
+                // octave_value predicate for that so should add it on
+                // the default branch, not stable.
+
+                if (! is_assignment)
+                  tw->defer_deletion (tmp);
+              }
           }
         else
           {

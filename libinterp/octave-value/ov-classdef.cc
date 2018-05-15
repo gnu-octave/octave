@@ -651,7 +651,7 @@ handle_delete (const octave_value_list& /* args */, int /* nargout */)
 {
   octave_value_list retval;
 
-  // FIXME: implement this
+  // FIXME: implement this.  Wait, what is this supposed to do?
 
   return retval;
 }
@@ -1239,6 +1239,72 @@ private:
 
 //----------------------------------------------------------------------------
 
+void
+cdef_object_rep::release (const cdef_object& obj)
+{
+  // We need to be careful to keep a reference to the object if we are
+  // calling the delete method.  The object is passed to the delete
+  // method as an argument and if the count is already zero when we
+  // do that, then we will increment the count while creating the
+  // argument list for the delete method and then it will be decremented
+  // back to zero and we'll find ourselves in an infinite loop.
+
+  if (refcount - 1 > static_count ())
+    {
+      --refcount;
+      return;
+    }
+
+  if (is_handle_object () && ! is_meta_object ())
+    {
+      octave::unwind_protect frame;
+
+      // Clear interrupts.
+      frame.protect_var (octave_interrupt_state);
+      octave_interrupt_state = 0;
+
+      // Disallow quit().
+      frame.protect_var (quit_allowed);
+      quit_allowed = false;
+
+      interpreter_try (frame);
+
+      try
+        {
+          // Call classdef "delete()" method on object
+          get_class ().delete_object (obj);
+        }
+      catch (const octave::interrupt_exception&)
+        {
+          octave::interpreter::recover_from_exception ();
+
+          warning ("interrupt occurred in handle class delete method");
+        }
+      catch (const octave::execution_exception&)
+        {
+          std::string msg = last_error_message ();
+          warning ("error caught while executing handle class delete method:\n%s\n",
+                   msg.c_str ());
+
+        }
+      catch (const octave::exit_exception&)
+        {
+          // This shouldn't happen since we disabled quit above.
+          warning ("exit disabled while executing handle class delete method");
+        }
+      catch (...) // Yes, the black hole.  We're in a d-tor.
+        {
+          // This shouldn't happen, in theory.
+          warning ("internal error: unhandled exception in handle class delete method");
+        }
+    }
+
+  // Now it is safe to set the count to zero.
+  refcount--;
+
+  destroy ();
+}
+
 octave_map
 cdef_object::map_value (void) const
 {
@@ -1813,47 +1879,6 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 
 handle_cdef_object::~handle_cdef_object (void)
 {
-  octave::unwind_protect frame;
-
-  // Clear interrupts.
-  frame.protect_var (octave_interrupt_state);
-  octave_interrupt_state = 0;
-
-  // Disallow quit().
-  frame.protect_var (quit_allowed);
-  quit_allowed = false;
-
-  interpreter_try (frame);
-
-  try
-    {
-      // Call classdef "delete()" method on object
-      get_class ().delete_object (get_class ());
-    }
-  catch (const octave::interrupt_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      warning ("interrupt occurred in handle class delete method");
-    }
-  catch (const octave::execution_exception&)
-    {
-      std::string msg = last_error_message ();
-      warning ("error caught while executing handle class delete method:\n%s\n",
-               msg.c_str ());
-
-    }
-  catch (const octave::exit_exception&)
-    {
-      // This shouldn't happen since we disabled quit above.
-      warning ("exit disabled while executing handle class delete method");
-    }
-  catch (...) // Yes, the black hole.  We're in a d-tor.
-    {
-      // This shouldn't happen, in theory.
-      warning ("internal error: unhandled exception in handle class delete method");
-    }
-
 #if DEBUG_TRACE
   std::cerr << "deleting " << get_class ().get_name ()
             << " object (handle)" << std::endl;
@@ -2322,20 +2347,12 @@ cdef_class::cdef_class_rep::get_names (void)
 }
 
 void
-cdef_class::cdef_class_rep::delete_object (cdef_object obj)
+cdef_class::cdef_class_rep::delete_object (const cdef_object& obj)
 {
-  auto it = method_map.find ("delete");
+  cdef_method dtor = find_method ("delete");
 
-  if (it != method_map.end ())
-    {
-      cdef_class cls = obj.get_class ();
-
-      obj.set_class (wrap ());
-
-      it->second.execute (obj, octave_value_list (), 0, false);
-
-      obj.set_class (cls);
-    }
+  if (dtor.ok ())
+    dtor.execute (obj, octave_value_list (), 0, true, "destructor");
 
   // FIXME: should we destroy corresponding properties here?
 
@@ -2347,7 +2364,8 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      cls.delete_object (obj);
+      if (cls.get_name () != "handle")
+        cls.delete_object (obj);
     }
 }
 

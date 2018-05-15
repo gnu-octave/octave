@@ -177,11 +177,7 @@ public:
 
   virtual void destroy (void) { delete this; }
 
-  void release (void)
-  {
-    if (--refcount == static_count ())
-      destroy ();
-  }
+  void release (const cdef_object& obj);
 
   virtual dim_vector dims (void) const { return dim_vector (); }
 
@@ -219,13 +215,15 @@ public:
     : rep (r) { }
 
   virtual ~cdef_object (void)
-  { rep->release (); }
+  {
+    rep->release (*this);
+  }
 
   cdef_object& operator = (const cdef_object& obj)
   {
     if (rep != obj.rep)
       {
-        rep->release ();
+        rep->release (*this);
 
         rep = obj.rep;
         rep->refcount++;
@@ -710,7 +708,7 @@ private:
 
     std::string get_directory (void) const { return directory; }
 
-    void delete_object (cdef_object obj);
+    void delete_object (const cdef_object& obj);
 
     octave_value_list
     meta_subsref (const std::string& type,
@@ -885,7 +883,7 @@ public:
   bool is_builtin (void) const
   { return get_directory ().empty (); }
 
-  void delete_object (cdef_object obj)
+  void delete_object (const cdef_object& obj)
   { get_rep ()->delete_object (obj); }
 
   //! Analyze the tree_classdef tree and transform it to a cdef_class

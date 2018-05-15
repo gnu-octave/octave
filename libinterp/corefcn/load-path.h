@@ -368,7 +368,7 @@ namespace octave
     typedef fcn_map_type::const_iterator const_fcn_map_iterator;
     typedef fcn_map_type::iterator fcn_map_iterator;
 
-    // <DIR_NAME, <FCN_NAME, TYPE>>
+    // <DIR_NAME, <FCN_NAME, TYPES>>
     typedef std::map<std::string, dir_info::fcn_file_map_type>
       private_fcn_map_type;
 

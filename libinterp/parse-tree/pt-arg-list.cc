@@ -263,7 +263,7 @@ namespace octave
                 // when it is safe to do so.
                 //
                 // FIXME: We could further limit this action to classdef
-                // handle objects, but we don't currently have a
+                // handle objects, but we don't currently have an
                 // octave_value predicate for that so should add it on
                 // the default branch, not stable.
 

@@ -1370,6 +1370,16 @@ namespace octave
     if (base_expr_val.is_undefined ())
       base_expr_val = evaluate (expr);
 
+    // Defer deletion of any temporary values until the end of the
+    // containing statement.  That way destructors for temporary
+    // classdef handle objects will be called when it is safe to do so.
+    //
+    // FIXME: We could further limit this action to classdef handle
+    // objects, but we don't currently have an octave_value predicate for
+    // that so should add it on the default branch, not stable.
+
+    defer_deletion (base_expr_val);
+
     // If we are indexing an object or looking at something like
     //
     //   classname.static_function (args, ...);

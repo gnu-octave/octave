@@ -134,7 +134,8 @@ namespace octave
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
-        m_echo_files (), m_in_loop_command (false)
+        m_echo_files (), m_in_loop_command (false),
+        m_indexed_object (nullptr), m_index_position (0), m_num_indices (0)
     { }
 
     // No copying!
@@ -359,6 +360,10 @@ namespace octave
     void undefine_parameter_list (tree_parameter_list *param_list);
 
     octave_value_list
+    convert_to_const_vector (tree_argument_list *arg_list,
+                             const octave_value *object = nullptr);
+
+    octave_value_list
     convert_return_list_to_const_vector
       (tree_parameter_list *ret_list, int nargout, const Cell& varargout);
 
@@ -422,6 +427,15 @@ namespace octave
       m_PS4 = s;
       return val;
     }
+
+    const octave_value * indexed_object (void) const
+    {
+      return m_indexed_object;
+    }
+
+    int index_position (void) const { return m_index_position; }
+
+    int num_indices (void) const { return m_num_indices; }
 
     octave_value echo (const octave_value_list& args, int nargout);
 
@@ -545,6 +559,11 @@ namespace octave
 
     // TRUE means we are evaluating some kind of looping construct.
     bool m_in_loop_command;
+
+    // Used by END function.
+    const octave_value *m_indexed_object;
+    int m_index_position;
+    int m_num_indices;
   };
 }
 

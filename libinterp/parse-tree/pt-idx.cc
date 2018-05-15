@@ -158,7 +158,7 @@ namespace octave
             && object->is_undefined ())
           err_invalid_inquiry_subscript ();
 
-        retval = m_args->convert_to_const_vector (tw, object);
+        retval = tw->convert_to_const_vector (m_args, object);
       }
 
     octave_idx_type n = retval.length ();

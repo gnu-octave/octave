@@ -1939,7 +1939,7 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
 
 octave_fcn_handle *
 octave_fcn_binder::maybe_binder (const octave_value& f,
-                                 octave::tree_evaluator *tw)
+                                 octave::tree_evaluator& tw)
 {
   octave_fcn_handle *retval = nullptr;
 
@@ -1998,7 +1998,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 
           if (arg_list && arg_list->length () > 0)
             {
-              octave::symbol_scope scope = tw->get_current_scope ();
+              octave::symbol_scope scope = tw.get_current_scope ();
 
               octave::symbol_record::context_id context
                 = scope.current_context ();
@@ -2017,7 +2017,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                   octave::tree_expression *elt = *it;
                   if (elt && elt->is_constant ())
                     {
-                      arg_template(iarg) = tw->evaluate (elt);
+                      arg_template(iarg) = tw.evaluate (elt);
                       arg_mask[iarg] = -1;
                     }
                   else if (elt && elt->is_identifier ())
@@ -2030,7 +2030,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                         }
                       else if (elt_id->is_defined (context))
                         {
-                          arg_template(iarg) = tw->evaluate (elt_id);
+                          arg_template(iarg) = tw.evaluate (elt_id);
                           arg_mask[iarg] = -1;
                         }
                       else
@@ -2052,7 +2052,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                 {
                   // If the head is a value, use it as root.
                   if (head_id->is_defined (context))
-                    root_val = tw->evaluate (head_id);
+                    root_val = tw.evaluate (head_id);
                   else
                     {
                       // It's a name.

@@ -120,7 +120,7 @@ namespace octave
 
   void
   tm_row_const::tm_row_const_rep::init (const tree_argument_list& row,
-                                        tree_evaluator *tw)
+                                        tree_evaluator& tw)
   {
     m_all_str = true;
     m_all_sq_str = true;
@@ -137,7 +137,7 @@ namespace octave
       {
         octave_quit ();
 
-        octave_value tmp = tw->evaluate (elt);
+        octave_value tmp = tw.evaluate (elt);
 
         if (tmp.is_undefined ())
           {
@@ -235,7 +235,7 @@ namespace octave
   }
 
   void
-  tm_const::init (const tree_matrix& tm, tree_evaluator *tw)
+  tm_const::init (const tree_matrix& tm, tree_evaluator& tw)
   {
     m_all_str = true;
     m_all_sq_str = true;

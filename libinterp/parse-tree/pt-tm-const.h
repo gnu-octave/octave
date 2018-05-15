@@ -68,7 +68,7 @@ namespace octave
           m_first_elem_is_struct (false), m_class_nm (), m_ok (false)
       { }
 
-      tm_row_const_rep (const tree_argument_list& row, tree_evaluator *tw)
+      tm_row_const_rep (const tree_argument_list& row, tree_evaluator& tw)
         : m_count (1), m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
           m_some_str (false), m_all_real (false), m_all_cmplx (false),
           m_all_mt (true), m_any_cell (false), m_any_sparse (false),
@@ -101,7 +101,7 @@ namespace octave
 
       void do_init_element (const octave_value&, bool&);
 
-      void init (const tree_argument_list&, tree_evaluator *tw);
+      void init (const tree_argument_list&, tree_evaluator& tw);
 
       void cellify (void);
 
@@ -121,7 +121,7 @@ namespace octave
     tm_row_const (void)
       : m_rep (nullptr) { }
 
-    tm_row_const (const tree_argument_list& row, tree_evaluator *tw)
+    tm_row_const (const tree_argument_list& row, tree_evaluator& tw)
       : m_rep (new tm_row_const_rep (row, tw)) { }
 
     tm_row_const (const tm_row_const& x)
@@ -197,7 +197,7 @@ namespace octave
   {
   public:
 
-    tm_const (const tree_matrix& tm, tree_evaluator *tw = nullptr)
+    tm_const (const tree_matrix& tm, tree_evaluator& tw)
       : m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
         m_all_dq_str (false),
         m_some_str (false), m_all_real (false), m_all_cmplx (false),
@@ -254,7 +254,7 @@ namespace octave
 
     tm_const& operator = (const tm_const&);
 
-    void init (const tree_matrix& tm, tree_evaluator *tw);
+    void init (const tree_matrix& tm, tree_evaluator& tw);
   };
 
   template <typename TYPE, typename T>

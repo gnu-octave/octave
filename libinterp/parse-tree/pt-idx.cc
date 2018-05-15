@@ -145,7 +145,7 @@ namespace octave
   }
 
   static inline octave_value_list
-  make_value_list (tree_evaluator *tw,
+  make_value_list (tree_evaluator& tw,
                    tree_argument_list *m_args,
                    const string_vector& m_arg_nm, const octave_value *object,
                    bool rvalue = true)
@@ -158,7 +158,7 @@ namespace octave
             && object->is_undefined ())
           err_invalid_inquiry_subscript ();
 
-        retval = tw->convert_to_const_vector (m_args, object);
+        retval = tw.convert_to_const_vector (m_args, object);
       }
 
     octave_idx_type n = retval.length ();
@@ -171,7 +171,7 @@ namespace octave
 
   std::string
   tree_index_expression::get_struct_index
-  (tree_evaluator *tw,
+  (tree_evaluator& tw,
    std::list<string_vector>::const_iterator p_arg_nm,
    std::list<tree_expression *>::const_iterator p_dyn_field) const
   {
@@ -183,7 +183,7 @@ namespace octave
 
         if (df)
           {
-            octave_value t = tw->evaluate (df);
+            octave_value t = tw.evaluate (df);
 
             fn = t.xstring_value ("dynamic structure field names must be strings");
           }
@@ -231,7 +231,7 @@ namespace octave
   }
 
   octave_lvalue
-  tree_index_expression::lvalue (tree_evaluator *tw)
+  tree_index_expression::lvalue (tree_evaluator& tw)
   {
     octave_lvalue retval;
 

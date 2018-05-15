@@ -148,7 +148,7 @@ namespace octave
 
     octave_value ov_fcn (af);
 
-    octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, this));
+    octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, *this));
 
     push_result (fh);
   }
@@ -556,7 +556,7 @@ namespace octave
       {
         i++;
 
-        octave_lvalue ref = elt->lvalue (this);
+        octave_lvalue ref = elt->lvalue (*this);
 
         if (i < args.length ())
           {
@@ -578,7 +578,7 @@ namespace octave
   {
     for (tree_decl_elt *elt : *param_list)
       {
-        octave_lvalue ref = elt->lvalue (this);
+        octave_lvalue ref = elt->lvalue (*this);
 
         ref.assign (octave_value::op_asn_eq, octave_value ());
       }
@@ -791,7 +791,7 @@ namespace octave
 
     if (id && expr)
       {
-        octave_lvalue ult = id->lvalue (this);
+        octave_lvalue ult = id->lvalue (*this);
 
         octave_value init_val = evaluate (expr);
 
@@ -927,7 +927,7 @@ namespace octave
         else
           error ("declaration list element not global or persistent");
 
-        octave_lvalue ult = id->lvalue (this);
+        octave_lvalue ult = id->lvalue (*this);
 
         if (ult.is_undefined ())
           {
@@ -1003,7 +1003,7 @@ namespace octave
 
     tree_expression *lhs = cmd.left_hand_side ();
 
-    octave_lvalue ult = lhs->lvalue (this);
+    octave_lvalue ult = lhs->lvalue (*this);
 
     tree_statement_list *loop_body = cmd.body ();
 
@@ -1144,11 +1144,11 @@ namespace octave
 
     tree_expression *elt = *p++;
 
-    octave_lvalue val_ref = elt->lvalue (this);
+    octave_lvalue val_ref = elt->lvalue (*this);
 
     elt = *p;
 
-    octave_lvalue key_ref = elt->lvalue (this);
+    octave_lvalue key_ref = elt->lvalue (*this);
 
     const octave_map tmp_val = rhs.map_value ();
 
@@ -1606,7 +1606,7 @@ namespace octave
 
           case '.':
             idx.push_back (octave_value
-                           (idx_expr.get_struct_index (this, p_arg_nm, p_dyn_field)));
+                           (idx_expr.get_struct_index (*this, p_arg_nm, p_dyn_field)));
             break;
 
           default:
@@ -1708,7 +1708,7 @@ namespace octave
     bool any_class_p = false;
     bool frc_str_conv = false;
 
-    tm_const tmp (expr, this);
+    tm_const tmp (expr, *this);
 
     if (tmp && ! tmp.empty ())
       {
@@ -2206,7 +2206,7 @@ namespace octave
 
         if (etype == octave_value::op_incr || etype == octave_value::op_decr)
           {
-            octave_lvalue ref = op->lvalue (this);
+            octave_lvalue ref = op->lvalue (*this);
 
             val = ref.value ();
 
@@ -2246,7 +2246,7 @@ namespace octave
 
         if (etype == octave_value::op_incr || etype == octave_value::op_decr)
           {
-            octave_lvalue op_ref = op->lvalue (this);
+            octave_lvalue op_ref = op->lvalue (*this);
 
             profiler::enter<tree_prefix_expression> block (m_profiler, expr);
 
@@ -2342,7 +2342,7 @@ namespace octave
           {
             unwind_protect frame;
 
-            octave_lvalue ult = lhs->lvalue (this);
+            octave_lvalue ult = lhs->lvalue (*this);
 
             std::list<octave_lvalue> lvalue_list;
             lvalue_list.push_back (ult);
@@ -2646,7 +2646,7 @@ namespace octave
 
             if (expr_id)
               {
-                octave_lvalue ult = expr_id->lvalue (this);
+                octave_lvalue ult = expr_id->lvalue (*this);
 
                 octave_scalar_map err;
 
@@ -3082,7 +3082,7 @@ namespace octave
     std::list<octave_lvalue> retval;
 
     for (tree_expression *elt : *lhs)
-      retval.push_back (elt->lvalue (this));
+      retval.push_back (elt->lvalue (*this));
 
     return retval;
   }

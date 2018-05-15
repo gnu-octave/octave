@@ -93,7 +93,7 @@ namespace octave
 
     bool rvalue_ok (void) const { return true; }
 
-    octave_lvalue lvalue (tree_evaluator *tw);
+    octave_lvalue lvalue (tree_evaluator& tw);
 
     tree_index_expression * dup (symbol_scope& scope) const;
 
@@ -104,7 +104,7 @@ namespace octave
 
     std::string
     get_struct_index
-    (tree_evaluator *tw, std::list<string_vector>::const_iterator p_arg_nm,
+    (tree_evaluator& tw, std::list<string_vector>::const_iterator p_arg_nm,
      std::list<tree_expression *>::const_iterator p_dyn_field) const;
 
   private:

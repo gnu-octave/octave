@@ -38,7 +38,7 @@ namespace octave
   // Expressions.
 
   octave_lvalue
-  tree_expression::lvalue (tree_evaluator *)
+  tree_expression::lvalue (tree_evaluator&)
   {
     error ("invalid lvalue function called in expression");
   }

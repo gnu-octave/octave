@@ -84,7 +84,7 @@ namespace octave
 
     virtual bool rvalue_ok (void) const { return false; }
 
-    virtual octave_lvalue lvalue (tree_evaluator *);
+    virtual octave_lvalue lvalue (tree_evaluator&);
 
     int paren_count (void) const { return num_parens; }
 

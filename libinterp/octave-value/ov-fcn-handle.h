@@ -198,7 +198,7 @@ public:
 
   // Factory method.
   static octave_fcn_handle * maybe_binder (const octave_value& f,
-                                           octave::tree_evaluator *tw);
+                                           octave::tree_evaluator& tw);
 
 protected:
 

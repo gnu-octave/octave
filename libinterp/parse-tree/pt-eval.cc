@@ -78,7 +78,6 @@ namespace octave
     m_result_type = RT_UNDEFINED;
     m_expr_result_value = octave_value ();
     m_expr_result_value_list = octave_value_list ();
-    m_deferred_delete_stack.clear ();
     m_lvalue_list_stack.clear ();
     m_nargout_stack.clear ();
   }
@@ -1367,16 +1366,6 @@ namespace octave
     if (base_expr_val.is_undefined ())
       base_expr_val = evaluate (expr);
 
-    // Defer deletion of any temporary values until the end of the
-    // containing statement.  That way destructors for temporary
-    // classdef handle objects will be called when it is safe to do so.
-    //
-    // FIXME: We could further limit this action to classdef handle
-    // objects, but we don't currently have an octave_value predicate for
-    // that so should add it on the default branch, not stable.
-
-    defer_deletion (base_expr_val);
-
     // If we are indexing an object or looking at something like
     //
     //   classname.static_function (args, ...);
@@ -2278,13 +2267,6 @@ namespace octave
               cmd->accept (*this);
             else
               {
-                unwind_protect frame;
-
-                frame.add_method (m_deferred_delete_stack,
-                                  &deferred_delete_stack::pop_frame);
-
-                m_deferred_delete_stack.mark ();
-
                 if (m_echo_state)
                   {
                     size_t line = stmt.line ();

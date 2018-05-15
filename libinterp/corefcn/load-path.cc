@@ -1099,7 +1099,15 @@ namespace octave
                       t = load_path::MEX_FILE;
 
                     if (t)
-                      retval[base] = t;
+                      {
+                        load_path::dir_info::fcn_file_map_iterator p
+                          = retval.find (base);
+
+                        if (p == retval.end ())
+                          retval[base] = t;
+                        else
+                          p->second |= t;
+                      }
                   }
               }
           }

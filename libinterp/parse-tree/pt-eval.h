@@ -67,54 +67,6 @@ namespace octave
       ECHO_ALL = 4
     };
 
-    class deferred_delete_stack
-    {
-    public:
-
-      deferred_delete_stack (void) = default;
-
-      deferred_delete_stack (const deferred_delete_stack&) = default;
-
-      deferred_delete_stack& operator = (const deferred_delete_stack&) = default;
-
-      ~deferred_delete_stack (void) = default;
-
-      // An undefined value on the stack marks the boundary of the
-      // current frame.
-
-      void mark (void) { push (octave_value ()); }
-
-      void push (const octave_value& val) { m_stack.push (val); }
-
-      void pop_frame (void)
-      {
-        while (! m_stack.empty ())
-          {
-            octave_value val = val_pop ();
-
-            if (val.is_undefined ())
-              break;
-          }
-      }
-
-      void clear (void)
-      {
-        while (! m_stack.empty ())
-          m_stack.pop ();
-      }
-
-    private:
-
-      std::stack<octave_value> m_stack;
-
-      octave_value val_pop (void)
-      {
-        octave_value retval = m_stack.top ();
-        m_stack.pop ();
-        return retval;
-      }
-    };
-
     template <typename T>
     class value_stack
     {
@@ -173,8 +125,8 @@ namespace octave
     tree_evaluator (interpreter& interp)
       : m_interpreter (interp), m_result_type (RT_UNDEFINED),
         m_expr_result_value (), m_expr_result_value_list (),
-        m_deferred_delete_stack (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_call_stack (interp), m_profiler (),
+        m_lvalue_list_stack (), m_nargout_stack (),
+        m_call_stack (interp), m_profiler (),
         m_max_recursion_depth (256), m_silent_functions (false),
         m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
@@ -314,11 +266,6 @@ namespace octave
 
     // TRUE means we are evaluating some kind of looping construct.
     static bool in_loop_command;
-
-    void defer_deletion (const octave_value& val)
-    {
-      m_deferred_delete_stack.push (val);
-    }
 
     Matrix ignored_fcn_outputs (void) const;
 
@@ -539,8 +486,6 @@ namespace octave
     result_type m_result_type;
     octave_value m_expr_result_value;
     octave_value_list m_expr_result_value_list;
-
-    deferred_delete_stack m_deferred_delete_stack;
 
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 

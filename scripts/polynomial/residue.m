@@ -261,8 +261,11 @@ function [r, p, k, e] = residue (b, a, varargin)
   endfor
 
   ## Solve for the residues.
-
-  r = A \ B;
+  ## FIXME: Use a pre-conditioner d to make A \ B work better (bug #53869).
+  ##        It would be better to construct A and B so they are not close to
+  ##        singular in the first place.
+  d = max (abs (A), [], 2);
+  r = (diag (d) \ A) \ (B ./ d);
 
 endfunction
 
@@ -373,7 +376,7 @@ endfunction
 %! assert (isempty (k));
 %! assert (e, [1; 2; 1; 2]);
 %! [br, ar] = residue (r, p, k);
-%! assert (br, [0,b], 1e-12);
+%! assert (br, b, 1e-12);
 %! assert (ar, a, 1e-12);
 
 %!test

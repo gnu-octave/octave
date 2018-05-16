@@ -57,7 +57,6 @@ namespace octave
   class profiler;
   class call_stack;
   class child_list;
-  class tree_evaluator;
 
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the

@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "signal-wrappers.h"
 
-#include "bp-table.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -51,8 +50,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "oct-map.h"
 #include "pager.h"
-#include "pt-bp.h"
-#include "pt-eval.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "utils.h"

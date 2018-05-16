@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
-#include "pt-tm-const.h"
 #include "ov.h"
 #include "variables.h"
 

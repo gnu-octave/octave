@@ -61,7 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "pt-pr-code.h"
 #include "quit.h"
 #include "sighandlers.h"
 #include "symtab.h"

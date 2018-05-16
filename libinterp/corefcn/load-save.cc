@@ -64,7 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"

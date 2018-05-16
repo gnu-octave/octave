@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
 #include "pr-output.h"
-#include "pt-mat.h"
 #include "utils.h"
 
 

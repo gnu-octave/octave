@@ -54,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "ov.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"

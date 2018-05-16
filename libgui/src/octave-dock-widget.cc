@@ -280,18 +280,19 @@ namespace octave
       }
     else
       {
-        set_style (isActiveWindow ());
         disconnect (m_default_float_button, 0, this, 0);
         connect (m_default_float_button, SIGNAL (clicked (bool)),
                  this, SLOT (make_widget (bool)));
       }
 
+    raise ();
+    activateWindow ();
+
     if (vis)
     {
-      raise ();
       show ();
-      activateWindow ();
-      setFocus ();
+      focus ();
+      set_style (true);
     }
   }
 
@@ -325,20 +326,20 @@ namespace octave
       }
     else
       {
-        set_style (isActiveWindow ());
         disconnect (m_default_float_button, 0, this, 0);
         connect (m_default_float_button, SIGNAL (clicked (bool)),
                  this, SLOT (make_window (bool)));
       }
 
+    raise ();
+    QApplication::setActiveWindow (this);
+
     if (vis)
       {
         show ();
         focus ();
+        set_style (true);
       }
-
-     QApplication::setActiveWindow (this);
-
   }
 
   // dock the widget

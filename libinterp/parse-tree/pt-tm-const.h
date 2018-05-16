@@ -25,11 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
+#include <memory>
 #include <string>
 
 #include "Array.h"
 #include "Sparse.h"
-#include "base-list.h"
 
 #include "data.h"
 #include "dim-vector.h"
@@ -43,395 +44,198 @@ namespace octave
   class tree_evaluator;
   class tree_matrix;
 
-  // General matrices.  This list type is much more work to handle than
-  // constant matrices, but it allows us to construct matrices from
-  // other matrices, variables, and functions.
+  // Evaluate tree_matrix objects and convert them to octave_value
+  // arrays (full and sparse numeric, char, cell, struct, class and
+  // anything else that works like an array).  Use a separate class
+  // (tm_const) and pass the evaluator object to it instead of doing
+  // all this work in tree_evaluator::visit_matrix because the job is
+  // fairly large and requires extra data (stored in the tm_info
+  // class) for each row and for the overall array.
 
-  // But first, some internal classes that make our job much easier.
+  // Evaluate all elements of the array, recording info about each
+  // row, then create summary info for the full array.  Compute the
+  // result type and dimension first before copying values.
 
-  class
-  tm_row_const
-  {
-  private:
+  // FIXME: Handle overloading of horzcat and vertcat for for built-in
+  // types.
 
-    class
-    tm_row_const_rep : public base_list<octave_value>
-    {
-    public:
+  // Summary info about the current row or matrix.
 
-      tm_row_const_rep (void)
-        : m_count (1), m_dv (0, 0), m_all_str (false),
-          m_all_sq_str (false), m_all_dq_str (false),
-          m_some_str (false), m_all_real (false), m_all_cmplx (false),
-          m_all_mt (true), m_any_cell (false), m_any_sparse (false),
-          m_any_class (false), m_all_1x1 (false),
-          m_first_elem_is_struct (false), m_class_nm (), m_ok (false)
-      { }
-
-      tm_row_const_rep (const tree_argument_list& row, tree_evaluator& tw)
-        : m_count (1), m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
-          m_some_str (false), m_all_real (false), m_all_cmplx (false),
-          m_all_mt (true), m_any_cell (false), m_any_sparse (false),
-          m_any_class (false), m_all_1x1 (! row.empty ()),
-          m_first_elem_is_struct (false), m_class_nm (), m_ok (false)
-      { init (row, tw); }
-
-      ~tm_row_const_rep (void) = default;
-
-      refcount<int> m_count;
-
-      dim_vector m_dv;
-
-      bool m_all_str;
-      bool m_all_sq_str;
-      bool m_all_dq_str;
-      bool m_some_str;
-      bool m_all_real;
-      bool m_all_cmplx;
-      bool m_all_mt;
-      bool m_any_cell;
-      bool m_any_sparse;
-      bool m_any_class;
-      bool m_all_1x1;
-      bool m_first_elem_is_struct;
-
-      std::string m_class_nm;
-
-      bool m_ok;
-
-      void do_init_element (const octave_value&, bool&);
-
-      void init (const tree_argument_list&, tree_evaluator& tw);
-
-      void cellify (void);
-
-    private:
-
-      tm_row_const_rep (const tm_row_const_rep&);
-
-      tm_row_const_rep& operator = (const tm_row_const_rep&);
-
-    };
-
-  public:
-
-    typedef tm_row_const_rep::iterator iterator;
-    typedef tm_row_const_rep::const_iterator const_iterator;
-
-    tm_row_const (void)
-      : m_rep (nullptr) { }
-
-    tm_row_const (const tree_argument_list& row, tree_evaluator& tw)
-      : m_rep (new tm_row_const_rep (row, tw)) { }
-
-    tm_row_const (const tm_row_const& x)
-      : m_rep (x.m_rep)
-    {
-      if (m_rep)
-        m_rep->m_count++;
-    }
-
-    tm_row_const& operator = (const tm_row_const& x)
-    {
-      if (this != &x && m_rep != x.m_rep)
-        {
-          if (m_rep && --m_rep->m_count == 0)
-            delete m_rep;
-
-          m_rep = x.m_rep;
-
-          if (m_rep)
-            m_rep->m_count++;
-        }
-
-      return *this;
-    }
-
-    ~tm_row_const (void)
-    {
-      if (m_rep && --m_rep->m_count == 0)
-        delete m_rep;
-    }
-
-    octave_idx_type rows (void) { return m_rep->m_dv(0); }
-    octave_idx_type cols (void) { return m_rep->m_dv(1); }
-
-    bool empty (void) const { return m_rep->empty (); }
-
-    size_t length (void) const { return m_rep->length (); }
-
-    dim_vector dims (void) { return m_rep->m_dv; }
-
-    bool all_strings_p (void) const { return m_rep->m_all_str; }
-    bool all_sq_strings_p (void) const { return m_rep->m_all_sq_str; }
-    bool all_dq_strings_p (void) const { return m_rep->m_all_dq_str; }
-    bool some_strings_p (void) const { return m_rep->m_some_str; }
-    bool all_real_p (void) const { return m_rep->m_all_real; }
-    bool all_complex_p (void) const { return m_rep->m_all_cmplx; }
-    bool all_empty_p (void) const { return m_rep->m_all_mt; }
-    bool any_cell_p (void) const { return m_rep->m_any_cell; }
-    bool any_sparse_p (void) const { return m_rep->m_any_sparse; }
-    bool any_class_p (void) const { return m_rep->m_any_class; }
-    bool all_1x1_p (void) const { return m_rep->m_all_1x1; }
-    bool first_elem_struct_p (void) const { return m_rep->m_first_elem_is_struct; }
-
-    std::string class_name (void) const { return m_rep->m_class_nm; }
-
-    void cellify (void) { m_rep->cellify (); }
-
-    operator bool () const { return (m_rep && m_rep->m_ok); }
-
-    iterator begin (void) { return m_rep->begin (); }
-    const_iterator begin (void) const { return m_rep->begin (); }
-
-    iterator end (void) { return m_rep->end (); }
-    const_iterator end (void) const { return m_rep->end (); }
-
-  private:
-
-    tm_row_const_rep *m_rep;
-  };
-
-  class
-  tm_const : public base_list<tm_row_const>
+  class tm_info
   {
   public:
 
-    tm_const (const tree_matrix& tm, tree_evaluator& tw)
-      : m_dv (0, 0), m_all_str (false), m_all_sq_str (false),
-        m_all_dq_str (false),
-        m_some_str (false), m_all_real (false), m_all_cmplx (false),
-        m_all_mt (true), m_any_cell (false), m_any_sparse (false),
-        m_any_class (false), m_class_nm (), m_ok (false)
-    { init (tm, tw); }
-
-    ~tm_const (void) = default;
-
-    octave_idx_type rows (void) const { return m_dv.elem (0); }
-    octave_idx_type cols (void) const { return m_dv.elem (1); }
+    tm_info (bool obj_is_empty)
+      : m_dv (0, 0), m_all_strings (true), m_all_sq_strings (true),
+        m_all_dq_strings (true), m_some_strings (false),
+        m_all_real (true), m_all_complex (true), m_all_empty (true),
+        m_any_cell (false), m_any_sparse (false),
+        m_any_class (false), m_all_1x1 (! obj_is_empty),
+        m_first_elem_is_struct (false), m_class_name ()
+    { }
 
     dim_vector dims (void) const { return m_dv; }
 
-    bool all_strings_p (void) const { return m_all_str; }
-    bool all_sq_strings_p (void) const { return m_all_sq_str; }
-    bool all_dq_strings_p (void) const { return m_all_dq_str; }
-    bool some_strings_p (void) const { return m_some_str; }
+    octave_idx_type rows (void) const { return m_dv(0); }
+    octave_idx_type cols (void) const { return m_dv(1); }
+
+    bool all_strings_p (void) const { return m_all_strings; }
+    bool all_sq_strings_p (void) const { return m_all_sq_strings; }
+    bool all_dq_strings_p (void) const { return m_all_dq_strings; }
+    bool some_strings_p (void) const { return m_some_strings; }
     bool all_real_p (void) const { return m_all_real; }
-    bool all_complex_p (void) const { return m_all_cmplx; }
-    bool all_empty_p (void) const { return m_all_mt; }
+    bool all_complex_p (void) const { return m_all_complex; }
+    bool all_empty_p (void) const { return m_all_empty; }
     bool any_cell_p (void) const { return m_any_cell; }
     bool any_sparse_p (void) const { return m_any_sparse; }
     bool any_class_p (void) const { return m_any_class; }
     bool all_1x1_p (void) const { return m_all_1x1; }
+    bool first_elem_struct_p (void) const { return m_first_elem_is_struct; }
 
-    std::string class_name (void) const { return m_class_nm; }
+    std::string class_name (void) const { return m_class_name; }
 
-    operator bool () const { return m_ok; }
+  protected:
+
+    // Size of this row or matrix after evaluation.
+    dim_vector m_dv;
+
+    // Are all elements character strings?
+    bool m_all_strings;
+
+    // Are all elements double-quoted character strings?
+    bool m_all_sq_strings;
+
+    // Are all elements single-quoted character strings?
+    bool m_all_dq_strings;
+
+    // Are any elements character strings?
+    bool m_some_strings;
+
+    // Are all elements real valued?
+    bool m_all_real;
+
+    // Are all elements complex valued?
+    bool m_all_complex;
+
+    // Are all elements empty?
+    bool m_all_empty;
+
+    // Are any elements cells?
+    bool m_any_cell;
+
+    // Are any elements sparse arrays?
+    bool m_any_sparse;
+
+    // Are any elements sparse class objects?
+    bool m_any_class;
+
+    // Do all elements have dimensions 1x1?
+    bool m_all_1x1;
+
+    // Is the first element a struct?
+    bool m_first_elem_is_struct;
+
+    // Class name of result.
+    std::string m_class_name;
+  };
+
+  class tm_row_const : public tm_info
+  {
+  public:
+
+    typedef std::list<octave_value>::iterator iterator;
+    typedef std::list<octave_value>::const_iterator const_iterator;
+
+    tm_row_const (void) = delete;
+
+    tm_row_const (const tree_argument_list& row, tree_evaluator& tw)
+      : tm_info (row.empty ()), m_values ()
+    {
+      init (row, tw);
+    }
+
+    tm_row_const (const tm_row_const&) = default;
+
+    tm_row_const& operator = (const tm_row_const&) = delete;
+
+    ~tm_row_const (void) = default;
+
+    iterator begin (void) { return m_values.begin (); }
+    const_iterator begin (void) const { return m_values.begin (); }
+
+    iterator end (void) { return m_values.end (); }
+    const_iterator end (void) const { return m_values.end (); }
+
+    bool empty (void) const { return m_values.empty (); }
+
+    size_t length (void) const { return m_values.size (); }
+
+    void cellify (void);
 
   private:
 
-    dim_vector m_dv;
+    std::list<octave_value> m_values;
 
-    bool m_all_str;
-    bool m_all_sq_str;
-    bool m_all_dq_str;
-    bool m_some_str;
-    bool m_all_real;
-    bool m_all_cmplx;
-    bool m_all_mt;
-    bool m_any_cell;
-    bool m_any_sparse;
-    bool m_any_class;
-    bool m_all_1x1;
+    void init_element (const octave_value&, bool&);
 
-    std::string m_class_nm;
-
-    bool m_ok;
-
-    tm_const (void);
-
-    tm_const (const tm_const&);
-
-    tm_const& operator = (const tm_const&);
-
-    void init (const tree_matrix& tm, tree_evaluator& tw);
+    void init (const tree_argument_list&, tree_evaluator& tw);
   };
 
-  template <typename TYPE, typename T>
-  void
-  single_type_concat (Array<T>& result, tm_const& tmp)
+  class tm_const : public tm_info
   {
-    octave_idx_type r = 0;
-    octave_idx_type c = 0;
+  public:
 
-    for (tm_row_const& row : tmp)
-      {
-        // Skip empty arrays to allow looser rules.
-        if (row.dims ().any_zero ())
-          continue;
+    typedef std::list<tm_row_const>::iterator iterator;
+    typedef std::list<tm_row_const>::const_iterator const_iterator;
 
-        for (auto& elt : row)
-          {
-            octave_quit ();
+    tm_const (void) = delete;
 
-            TYPE ra = octave_value_extract<TYPE> (elt);
+    tm_const (const tree_matrix& tm, tree_evaluator& tw)
+      : tm_info (tm.empty ()), m_evaluator (tw), m_tm_rows ()
+    {
+      init (tm);
+    }
 
-            // Skip empty arrays to allow looser rules.
+    // No copying!
 
-            if (! ra.isempty ())
-              {
-                result.insert (ra, r, c);
+    tm_const (const tm_const&) = delete;
 
-                c += ra.columns ();
-              }
-          }
+    tm_const& operator = (const tm_const&) = delete;
 
-        r += row.rows ();
-        c = 0;
-      }
-  }
+    ~tm_const (void) = default;
 
-  template <typename TYPE, typename T>
-  void
-  single_type_concat (Array<T>& result, const dim_vector& dv,
-                      tm_const& tmp)
-  {
-    if (dv.any_zero ())
-      {
-        result = Array<T> (dv);
-        return;
-      }
+    octave_value concat (char string_fill_char) const;
 
-    if (tmp.length () == 1)
-      {
-        // If possible, forward the operation to liboctave.
-        // Single row.
-        tm_row_const& row = tmp.front ();
-        if (! (equal_types<T, char>::value || equal_types<T, octave_value>::value)
-            && row.all_1x1_p ())
-          {
-            // Optimize all scalars case.
-            result.clear (dv);
-            assert (static_cast<size_t> (result.numel ()) == row.length ());
-            octave_idx_type i = 0;
-            for (const auto& elt : row)
-              result(i++) = octave_value_extract<T> (elt);
+  private:
 
-            return;
-          }
+    tree_evaluator& m_evaluator;
 
-        octave_idx_type ncols = row.length ();
-        octave_idx_type i = 0;
-        OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
+    // The list of lists of octave_value objects that contain the
+    // values of elements in each row of the tree_matrix object we are
+    // evaluating.
 
-        for (const auto& elt : row)
-          {
-            octave_quit ();
+    std::list<tm_row_const> m_tm_rows;
 
-            array_list[i++] = octave_value_extract<TYPE> (elt);
-          }
+    void init (const tree_matrix& tm);
 
-        result = Array<T>::cat (-2, ncols, array_list);
-      }
-    else
-      {
-        result = Array<T> (dv);
-        single_type_concat<TYPE> (result, tmp);
-      }
-  }
+    octave_value char_array_concat (char string_fill_char) const;
 
-  template <typename TYPE, typename T>
-  void
-  single_type_concat (Sparse<T>& result, const dim_vector& dv,
-                      tm_const& tmp)
-  {
-    if (dv.any_zero ())
-      {
-        result = Sparse<T> (dv);
-        return;
-      }
+    octave_value class_concat (void) const;
 
-    // Sparse matrices require preallocation for efficient indexing; besides,
-    // only horizontal concatenation can be efficiently handled by indexing.
-    // So we just cat all rows through liboctave, then cat the final column.
-    octave_idx_type nrows = tmp.length ();
-    octave_idx_type j = 0;
-    OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_row_list, nrows);
-    for (tm_row_const& row : tmp)
-      {
-        octave_idx_type ncols = row.length ();
-        octave_idx_type i = 0;
-        OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
+    octave_value generic_concat (void) const;
 
-        for (auto& elt : row)
-          {
-            octave_quit ();
+    template <typename TYPE>
+    void array_concat_internal (TYPE& result) const;
 
-            sparse_list[i] = octave_value_extract<TYPE> (elt);
-            i++;
-          }
+    template <typename TYPE>
+    TYPE array_concat (void) const;
 
-        Sparse<T> stmp = Sparse<T>::cat (-2, ncols, sparse_list);
-        sparse_row_list[j] = stmp;
-        j++;
-      }
+    template <typename TYPE>
+    TYPE sparse_array_concat (void) const;
 
-    result = Sparse<T>::cat (-1, nrows, sparse_row_list);
-  }
-
-  template <typename MAP>
-  void
-  single_type_concat (octave_map& result, const dim_vector& dv,
-                      tm_const& tmp)
-  {
-    if (dv.any_zero ())
-      {
-        result = octave_map (dv);
-        return;
-      }
-
-    octave_idx_type nrows = tmp.length ();
-    octave_idx_type j = 0;
-    OCTAVE_LOCAL_BUFFER (octave_map, map_row_list, nrows);
-    for (tm_row_const& row : tmp)
-      {
-        octave_idx_type ncols = row.length ();
-        octave_idx_type i = 0;
-        OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
-
-        for (auto& elt : row)
-          {
-            octave_quit ();
-
-            map_list[i] = octave_value_extract<MAP> (elt);
-            i++;
-          }
-
-        octave_map mtmp = octave_map::cat (-2, ncols, map_list);
-        map_row_list[j] = mtmp;
-        j++;
-      }
-
-    result = octave_map::cat (-1, nrows, map_row_list);
-  }
-
-  template <typename TYPE>
-  octave_value
-  do_single_type_concat (const dim_vector& dv, tm_const& tmp)
-  {
-    TYPE result;
-
-    single_type_concat<TYPE> (result, dv, tmp);
-
-    return result;
-  }
-
-  template <>
-  octave_value
-  do_single_type_concat<octave_map> (const dim_vector& dv,
-                                     tm_const& tmp);
-
-  extern octave_value do_class_concat (tm_const& tmc);
+    template <typename MAP>
+    octave_map map_concat (void) const;
+  };
 }
 
 #endif

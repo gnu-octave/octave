@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-ieee.h"
 #include "mx-base.h"
+#include "unicase-wrappers.h"
 
 #include "mxarray.h"
 #include "ov-base.h"
@@ -270,8 +271,37 @@ octave_char_matrix::map (unary_mapper_t umap) const
     STRING_MAPPER (xisspace, std::isspace, bool);
     STRING_MAPPER (xisupper, std::isupper, bool);
     STRING_MAPPER (xisxdigit, std::isxdigit, bool);
-    STRING_MAPPER (xtolower, std::tolower, char);
-    STRING_MAPPER (xtoupper, std::toupper, char);
+
+#define STRING_U8_FCN(UMAP,U8_FCN,STD_FCN)                                     \
+    case umap_ ## UMAP:                                                        \
+      {                                                                        \
+        charNDArray in_m = matrix;                                             \
+        Array<octave_idx_type> p (dim_vector (matrix.ndims (), 1));            \
+        if (matrix.ndims () > 1)                                               \
+        {                                                                      \
+          for (octave_idx_type i=0; i < matrix.ndims (); i++)                  \
+            p(i) = i;                                                          \
+          p(0) = 1;                                                            \
+          p(1) = 0;                                                            \
+          in_m = matrix.permute (p);                                           \
+        }                                                                      \
+        size_t output_length = in_m.numel ();                                  \
+        charNDArray ch_array = charNDArray (in_m.dims ());                     \
+        const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
+        uint8_t *buf = reinterpret_cast<uint8_t *> (ch_array.fortran_vec ());  \
+        U8_FCN (in, matrix.numel (), nullptr, buf, &output_length);            \
+        if (output_length != static_cast<size_t> (matrix.numel ()))            \
+          {                                                                    \
+            warning_with_id ("octave:multi_byte_char_length",                  \
+                             "UMAP: Possible multi-byte error.");              \
+            return octave_value (matrix.map<char, int (&) (int)> (STD_FCN));   \
+          }                                                                    \
+        return octave_value ((matrix.ndims () > 1) ? ch_array.permute (p, true)\
+                                                   : ch_array);                \
+      }
+
+    STRING_U8_FCN (xtolower, octave_u8_tolower_wrapper, std::tolower);
+    STRING_U8_FCN (xtoupper, octave_u8_toupper_wrapper, std::toupper);
 
     // For Matlab compatibility, these should work on ASCII values
     // without error or warning.

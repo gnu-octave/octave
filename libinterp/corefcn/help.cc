@@ -488,15 +488,15 @@ namespace octave
 
     octave_user_code *curr_fcn = cs.caller_user_code ();
 
-    if (! curr_fcn)
-      return retval;
-
     // All subfunctions are listed in the top-level function of this file.
-    while (curr_fcn->is_subfunction ())
+    while (curr_fcn && curr_fcn->is_subfunction ())
       {
         symbol_scope pscope = curr_fcn->parent_fcn_scope ();
         curr_fcn = pscope.function ();
       }
+
+    if (! curr_fcn)
+      return retval;
 
     // Get subfunctions.
     const std::list<std::string> names = curr_fcn->subfunction_names ();

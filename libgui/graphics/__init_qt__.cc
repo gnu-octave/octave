@@ -66,38 +66,6 @@ namespace QtHandles
 
             octave::interpreter::add_atexit_function ("__shutdown_qt__");
 
-            // Change some default settings to use Qt default colors
-            QPalette p;
-            graphics_object root = gh_manager::get_object (0);
-
-            /*
-            root.set ("defaultfigurecolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
-            */
-            root.set ("defaultuicontrolbackgroundcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
-            root.set ("defaultuicontrolforegroundcolor",
-                      octave_value (Utils::toRgb
-                                    (p.color (QPalette::WindowText))));
-            root.set ("defaultuipanelbackgroundcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
-            root.set ("defaultuipanelforegroundcolor",
-                      octave_value (Utils::toRgb
-                                    (p.color (QPalette::WindowText))));
-            root.set ("defaultuipanelhighlightcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Light))));
-            root.set ("defaultuipanelshadowcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Dark))));
-            root.set ("defaultuibuttongroupbackgroundcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Window))));
-            root.set ("defaultuibuttongroupforegroundcolor",
-                      octave_value (Utils::toRgb
-                                    (p.color (QPalette::WindowText))));
-            root.set ("defaultuibuttongrouphighlightcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Light))));
-            root.set ("defaultuibuttongroupshadowcolor",
-                      octave_value (Utils::toRgb (p.color (QPalette::Dark))));
-
             qtHandlesInitialized = true;
 
             return true;

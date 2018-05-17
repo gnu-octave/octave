@@ -108,8 +108,8 @@ DEFUN (time, args, ,
 @deftypefn {} {@var{seconds} =} time ()
 Return the current time as the number of seconds since the epoch.
 
-The epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
-1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the value
+The epoch is referenced to 00:00:00 UTC (Coordinated Universal Time) 1 Jan
+1970.  For example, on Monday February 17, 1997 at 07:15:06 UTC, the value
 returned by @code{time} was 856163706.
 @seealso{strftime, strptime, localtime, gmtime, mktime, now, date, clock, datenum, datestr, datevec, calendar, weekday}
 @end deftypefn */)
@@ -130,7 +130,7 @@ DEFUN (gmtime, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tm_struct} =} gmtime (@var{t})
 Given a value returned from @code{time}, or any non-negative integer,
-return a time structure corresponding to CUT (Coordinated Universal Time).
+return a time structure corresponding to UTC (Coordinated Universal Time).
 
 For example:
 

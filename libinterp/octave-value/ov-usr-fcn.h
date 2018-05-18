@@ -267,6 +267,11 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
+  octave::symbol_scope parent_fcn_scope (void) const
+  {
+    return m_scope.parent_scope ();
+  }
+
   void mark_as_system_fcn_file (void);
 
   bool is_system_fcn_file (void) const { return system_fcn_file; }

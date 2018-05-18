@@ -280,6 +280,11 @@ public:
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
+  octave::symbol_scope parent_fcn_scope (void) const
+  {
+    return m_scope.parent_scope ();
+  }
+
   octave::sys::time time_parsed (void) const { return t_parsed; }
 
   octave::sys::time time_checked (void) const { return t_checked; }

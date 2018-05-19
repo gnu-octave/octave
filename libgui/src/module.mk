@@ -235,6 +235,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   -I$(srcdir)/%reldir%/m-editor \
   -I$(srcdir)/%reldir%/qtinfo \
   -I$(srcdir)/libgui/graphics \
+  -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

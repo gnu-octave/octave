@@ -39,8 +39,7 @@ BUILT_SOURCES += \
   %reldir%/corefcn/oct-tex-parser.h \
   %reldir%/corefcn/oct-tex-symbols.cc \
   %reldir%/parse-tree/oct-gperf.h \
-  %reldir%/parse-tree/oct-parse.h \
-  %reldir%/version.h
+  %reldir%/parse-tree/oct-parse.h
 
 ULT_PARSER_SRC := \
   %reldir%/corefcn/oct-tex-lexer.in.ll \
@@ -77,8 +76,7 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/corefcn/mxarray.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
-  %reldir%/operators/ops.cc \
-  %reldir%/version.h
+  %reldir%/operators/ops.cc
 
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/DOCSTRINGS \
@@ -88,13 +86,8 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/mk-builtins.pl \
   %reldir%/mk-doc.pl \
   %reldir%/mk-pkg-add.sh \
-  %reldir%/mk-version-h.in.sh \
   %reldir%/op-kw-docs \
-  %reldir%/version.in.h \
   $(LIBINTERP_BUILT_DISTFILES)
-
-GEN_CONFIG_SHELL += \
-  %reldir%/mk-version-h.sh
 
 octinclude_HEADERS += \
   %reldir%/build-env.h \
@@ -114,12 +107,10 @@ nodist_octinclude_HEADERS += \
   %reldir%/builtin-defun-decls.h \
   %reldir%/corefcn/graphics-props.cc \
   %reldir%/corefcn/graphics.h \
-  %reldir%/corefcn/mxarray.h \
-  %reldir%/version.h
+  %reldir%/corefcn/mxarray.h
 
 DIST_SRC += \
   %reldir%/octave.cc \
-  %reldir%/version.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
   $(COREFCN_SRC)
@@ -143,7 +134,6 @@ endif
 
 %canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/octave.cc \
-  %reldir%/version.cc \
   $(LIBINTERP_OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
@@ -157,8 +147,7 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/corefcn/mxarray.h \
   %reldir%/corefcn/oct-errno.cc \
   %reldir%/liboctinterp-build-info.cc \
-  %reldir%/operators/ops.cc \
-  %reldir%/version.h
+  %reldir%/operators/ops.cc
 
 %canon_reldir%_liboctinterp_la_LIBADD = \
   %reldir%/octave-value/liboctave-value.la \
@@ -239,9 +228,6 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/%reldir%/mk-build-env-features.sh $< > $@-t && \
 	mv $@-t $@
-
-%reldir%/version.h: %reldir%/version.in.h %reldir%/mk-version-h.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-version-h.sh)
 
 %reldir%/liboctinterp-build-info.cc: %reldir%/liboctinterp-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)

@@ -46,6 +46,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_RELEASE_DATE %OCTAVE_RELEASE_DATE%
 
+#define OCTAVE_CANONICAL_HOST_TYPE %OCTAVE_CANONICAL_HOST_TYPE%
+
 #define OCTAVE_COPYRIGHT %OCTAVE_COPYRIGHT%
 
 #include <string>

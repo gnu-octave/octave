@@ -1,5 +1,10 @@
 %canon_reldir%_EXTRA_DIST = \
-  %reldir%/liboctave-build-info.in.cc
+  %reldir%/liboctave-build-info.in.cc \
+  %reldir%/mk-version-h.in.sh \
+  %reldir%/version.in.h
+
+GEN_CONFIG_SHELL += \
+  %reldir%/mk-version-h.sh
 
 %canon_reldir%_CLEANFILES =
 %canon_reldir%_DISTCLEANFILES =
@@ -31,10 +36,12 @@ BUILT_INCS = \
 
 BUILT_SOURCES += \
   $(BUILT_INCS) \
-  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES)
+  $(BUILT_LIBOCTAVE_OPERATORS_SOURCES) \
+  %reldir%/version.h
 
 LIBOCTAVE_BUILT_NODISTFILES = \
-  %reldir%/liboctave-build-info.cc
+  %reldir%/liboctave-build-info.cc \
+  %reldir%/version.h
 
 octinclude_HEADERS += \
   %reldir%/liboctave-build-info.h \
@@ -47,7 +54,12 @@ octinclude_HEADERS += \
   $(OTHER_INC) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
-nodist_octinclude_HEADERS += $(BUILT_INCS)
+nodist_octinclude_HEADERS += \
+  $(BUILT_INCS) \
+  %reldir%/version.h
+
+DIST_SRC += \
+  %reldir%/version.cc
 
 ## C++ files that are #included, not compiled
 OTHER_INC =
@@ -68,7 +80,9 @@ include %reldir%/util/module.mk
 include %reldir%/wrappers/module.mk
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
-  %reldir%/liboctave-build-info.cc
+  %reldir%/liboctave-build-info.cc \
+  %reldir%/version.cc \
+  %reldir%/version.h
 
 %canon_reldir%_%canon_reldir%_la_LIBADD += \
   libgnu/libgnu.la \
@@ -105,6 +119,9 @@ LIBOCTAVE_TST_FILES := $(addsuffix -tst,$(LIBOCTAVE_TST_FILES_SRC))
 liboctavetestsdir := $(octtestsdir)
 
 nobase_liboctavetests_DATA = $(LIBOCTAVE_TST_FILES)
+
+%reldir%/version.h: %reldir%/version.in.h %reldir%/mk-version-h.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,%reldir%/mk-version-h.sh)
 
 %reldir%/liboctave-build-info.cc: %reldir%/liboctave-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)

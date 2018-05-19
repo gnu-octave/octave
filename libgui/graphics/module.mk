@@ -135,6 +135,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(o
   @QT_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Isrc -I$(srcdir)/libgui/src \
+  -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \

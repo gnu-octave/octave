@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "defaults.h"
 #include "version.h"
 
 static std::string
@@ -89,7 +88,7 @@ octave_name_version_copyright_copying_and_warranty
          + octave_warranty_statement (extra_info)
          + sep
          + R"(Octave was configured for ")"
-         + octave::config::canonical_host_type ()
+         + OCTAVE_CANONICAL_HOST_TYPE
          + R"(".)";
 }
 

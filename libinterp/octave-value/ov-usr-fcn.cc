@@ -183,13 +183,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_user_script::call");
 
-      cs.push (this);
-
-      // Set pointer to the current unwind_protect frame to allow
-      // certain builtins register simple cleanup in a very optimized manner.
-      // This is *not* intended as a general-purpose on-cleanup mechanism,
-      frame.protect_var (curr_unwind_protect_frame);
-      curr_unwind_protect_frame = &frame;
+      cs.push (this, &frame);
 
       frame.add_method (cs, &octave::call_stack::pop);
 
@@ -522,13 +516,7 @@ octave_user_function::call (octave::tree_evaluator& tw, int nargout,
   octave::symbol_record::context_id context
     = anonymous_function ? 0 : call_depth;
 
-  cs.push (this, m_scope, context);
-
-  // Set pointer to the current unwind_protect frame to allow
-  // certain builtins register simple cleanup in a very optimized manner.
-  // This is *not* intended as a general-purpose on-cleanup mechanism,
-  frame.protect_var (curr_unwind_protect_frame);
-  curr_unwind_protect_frame = &frame;
+  cs.push (this, &frame, m_scope, context);
 
   frame.protect_var (Vtrack_line_num);
   Vtrack_line_num = true;    // update source line numbers, even if debugging

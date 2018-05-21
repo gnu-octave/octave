@@ -92,7 +92,7 @@ namespace octave
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    push (nullptr, symtab.top_scope (), 0);
+    push (nullptr, nullptr, symtab.top_scope (), 0);
   }
 
   int
@@ -212,6 +212,24 @@ namespace octave
       }
 
     return retval;
+  }
+
+  unwind_protect *
+  call_stack::curr_fcn_unwind_protect_frame (void) const
+  {
+    auto p = cs.cend ();
+
+    while (p != cs.cbegin ())
+      {
+        const stack_frame& elt = *(--p);
+
+        octave_function *f = elt.m_fcn;
+
+        if (f && f->is_user_code ())
+          return elt.m_unwind_protect_frame;
+      }
+
+    return nullptr;
   }
 
   int
@@ -354,15 +372,16 @@ namespace octave
   }
 
   void
-  call_stack::push (octave_function *fcn)
+  call_stack::push (octave_function *fcn, unwind_protect *up_frame)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    push (fcn, symtab.current_scope (), symtab.current_context ());
+    push (fcn, up_frame, symtab.current_scope (), symtab.current_context ());
   }
 
   void
-  call_stack::push (octave_function *fcn, const symbol_scope& scope,
+  call_stack::push (octave_function *fcn, unwind_protect *up_frame,
+                    const symbol_scope& scope,
                     symbol_record::context_id context)
   {
     size_t prev_frame = curr_frame;
@@ -372,7 +391,7 @@ namespace octave
     if (curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    cs.push_back (stack_frame (fcn, scope, context, prev_frame));
+    cs.push_back (stack_frame (fcn, up_frame, scope, context, prev_frame));
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 

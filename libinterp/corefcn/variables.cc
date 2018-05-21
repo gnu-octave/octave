@@ -707,13 +707,7 @@ curr_fcn_unwind_protect_frame (void)
   octave::call_stack& cs
     = octave::__get_call_stack__ ("curr_fcn_unwind_protect_frame");
 
-  octave_user_code *curr_usr_code = cs.caller_user_code ();
-
-  octave_user_function *curr_usr_fcn
-    = (curr_usr_code && curr_usr_code->is_user_function ()
-       ? dynamic_cast<octave_user_function *> (curr_usr_code) : nullptr);
-
-  return curr_usr_fcn ? curr_usr_fcn->unwind_protect_frame () : nullptr;
+  return cs.curr_fcn_unwind_protect_frame ();
 }
 
 template <typename T>

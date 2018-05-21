@@ -2973,22 +2973,15 @@ namespace octave
   {
     // This function is expected to be called from ECHO, which would be
     // the top of the call stack.  If the caller of ECHO is a
-    // user-defined fucntion or script, then set up unwind-protect
+    // user-defined function or script, then set up unwind-protect
     // elements to restore echo state.
 
-    octave_function *caller = m_call_stack.caller ();
+    unwind_protect *frame = m_call_stack.curr_fcn_unwind_protect_frame ();
 
-    if (caller && caller->is_user_code ())
+    if (frame)
       {
-        octave_user_code *fcn = dynamic_cast<octave_user_code *> (caller);
-
-        unwind_protect *frame = fcn->unwind_protect_frame ();
-
-        if (frame)
-          {
-            push_echo_state_cleanup (*frame);
-            return true;
-          }
+        push_echo_state_cleanup (*frame);
+        return true;
       }
 
     return false;

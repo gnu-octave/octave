@@ -68,7 +68,7 @@ protected:
       t_parsed (static_cast<time_t> (0)),
       t_checked (static_cast<time_t> (0)),
       call_depth (-1), m_file_info (nullptr),
-      curr_unwind_protect_frame (nullptr), cmd_list (cmds)
+      cmd_list (cmds)
   { }
 
 public:
@@ -82,12 +82,6 @@ public:
   ~octave_user_code (void);
 
   bool is_user_code (void) const { return true; }
-
-  octave::unwind_protect *
-  unwind_protect_frame (void)
-  {
-    return curr_unwind_protect_frame;
-  }
 
   std::string get_code_line (size_t line);
 
@@ -143,9 +137,6 @@ protected:
   // Cached text of function or script code with line offsets
   // calculated.
   octave::file_info *m_file_info;
-
-  // pointer to the current unwind_protect frame of this function.
-  octave::unwind_protect *curr_unwind_protect_frame;
 
   // The list of commands that make up the body of this function.
   octave::tree_statement_list *cmd_list;

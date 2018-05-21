@@ -40,6 +40,7 @@ class octave_value_list;
 namespace octave
 {
   class interpreter;
+  class unwind_protect;
 
   class
   OCTINTERP_API
@@ -54,15 +55,20 @@ namespace octave
       friend class call_stack;
 
       stack_frame (octave_function *fcn = nullptr,
+                   unwind_protect *up_frame = nullptr,
                    const symbol_scope& scope = symbol_scope (),
                    symbol_record::context_id context = 0, size_t prev = 0)
-        : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
+        : m_fcn (fcn), m_unwind_protect_frame (up_frame),
+          m_line (-1), m_column (-1), m_scope (scope),
           m_context (context), m_prev (prev)
       { }
 
       stack_frame (const stack_frame& elt)
-        : m_fcn (elt.m_fcn), m_line (elt.m_line), m_column (elt.m_column),
-          m_scope (elt.m_scope), m_context (elt.m_context), m_prev (elt.m_prev)
+        : m_fcn (elt.m_fcn),
+          m_unwind_protect_frame (elt.m_unwind_protect_frame),
+          m_line (elt.m_line), m_column (elt.m_column),
+          m_scope (elt.m_scope), m_context (elt.m_context),
+          m_prev (elt.m_prev)
       { }
 
       int line (void) const { return m_line; }
@@ -78,6 +84,7 @@ namespace octave
     private:
 
       octave_function *m_fcn;
+      unwind_protect *m_unwind_protect_frame;
       int m_line;
       int m_column;
       symbol_scope m_scope;
@@ -156,6 +163,8 @@ namespace octave
     // User code caller.
     octave_user_code * caller_user_code (size_t nskip = 0) const;
 
+    unwind_protect *curr_fcn_unwind_protect_frame (void) const;
+
     // Line in user code caller.
     int caller_user_code_line (void) const;
 
@@ -174,18 +183,15 @@ namespace octave
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 
-    void push (octave_function *fcn);
-    void push (octave_function *fcn, const symbol_scope& scope,
-               symbol_record::context_id context);
+    void push (octave_function *fcn = nullptr,
+               unwind_protect *up_frame = nullptr);
 
-    void push (void)
-    {
-      push (nullptr);
-    }
+    void push (octave_function *fcn, unwind_protect *up_frame,
+               const symbol_scope& scope, symbol_record::context_id context);
 
     void push (const symbol_scope& scope, symbol_record::context_id context)
     {
-      push (nullptr, scope, context);
+      push (nullptr, nullptr, scope, context);
     }
 
     void set_location (int l, int c)

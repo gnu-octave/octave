@@ -67,14 +67,12 @@ namespace octave
 
   bool tree_evaluator::quiet_breakpoint_flag = false;
 
-  tree_evaluator::stmt_list_type tree_evaluator::statement_context
-    = tree_evaluator::other;
-
   // Normal evaluator.
 
   void
   tree_evaluator::reset (void)
   {
+    m_statement_context = SC_OTHER;
     m_result_type = RT_UNDEFINED;
     m_expr_result_value = octave_value ();
     m_expr_result_value_list = octave_value_list ();
@@ -428,8 +426,8 @@ namespace octave
   bool
   tree_evaluator::statement_printing_enabled (void)
   {
-    return ! (m_silent_functions && (statement_context == function
-                                     || statement_context == script));
+    return ! (m_silent_functions && (m_statement_context == SC_FUNCTION
+                                     || m_statement_context == SC_SCRIPT));
   }
 
   void
@@ -1203,7 +1201,7 @@ namespace octave
 
     tree_statement_list *cmd_list = user_script.body ();
 
-    if (cmd_list)
+    if (! cmd_list)
       return retval;
 
     unwind_protect frame;
@@ -1228,8 +1226,8 @@ namespace octave
     frame.protect_var (Vtrack_line_num);
     Vtrack_line_num = true;
 
-    frame.protect_var (tree_evaluator::statement_context);
-    tree_evaluator::statement_context = tree_evaluator::script;
+    frame.protect_var (m_statement_context);
+    m_statement_context = SC_SCRIPT;
 
     profiler::enter<octave_user_script> block (m_profiler, user_script);
 
@@ -1398,8 +1396,8 @@ namespace octave
 
     // Evaluate the commands that make up the function.
 
-    frame.protect_var (tree_evaluator::statement_context);
-    tree_evaluator::statement_context = tree_evaluator::function;
+    frame.protect_var (m_statement_context);
+    m_statement_context = SC_FUNCTION;
 
     {
       profiler::enter<octave_user_function> block (m_profiler, user_function);
@@ -1580,7 +1578,8 @@ namespace octave
       {
         tree_expression *expr = tic->condition ();
 
-        if (statement_context == function || statement_context == script)
+        if (m_statement_context == SC_FUNCTION
+            || m_statement_context == SC_SCRIPT)
           m_call_stack.set_location (tic->line (), tic->column ());
 
         if (debug_mode && ! tic->is_else_clause ())
@@ -2368,7 +2367,8 @@ namespace octave
 
         reset_debug_state ();
       }
-    else if (statement_context == function || statement_context == script
+    else if (m_statement_context == SC_FUNCTION
+             || m_statement_context == SC_SCRIPT
              || m_in_loop_command)
       tree_return_command::returning = 1;
   }
@@ -2467,7 +2467,8 @@ namespace octave
 
     if (cmd || expr)
       {
-        if (statement_context == function || statement_context == script)
+        if (m_statement_context == SC_FUNCTION
+            || m_statement_context == SC_SCRIPT)
           {
             // Skip commands issued at a debug> prompt to avoid disturbing
             // the state of the program we are debugging.

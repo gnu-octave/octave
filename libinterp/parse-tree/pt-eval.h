@@ -126,10 +126,10 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_interpreter (interp), m_result_type (RT_UNDEFINED),
-        m_expr_result_value (), m_expr_result_value_list (),
-        m_lvalue_list_stack (), m_nargout_stack (),
-        m_bp_table (*this), m_call_stack (interp),
+      : m_interpreter (interp), m_statement_context (SC_OTHER),
+        m_result_type (RT_UNDEFINED), m_expr_result_value (),
+        m_expr_result_value_list (), m_lvalue_list_stack (),
+        m_nargout_stack (), m_bp_table (*this), m_call_stack (interp),
         m_profiler (), m_max_recursion_depth (256),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
@@ -267,13 +267,10 @@ namespace octave
     // Possible types of evaluation contexts.
     enum stmt_list_type
     {
-      function,  // function body
-      script,    // script file
-      other      // command-line input or eval string
+      SC_FUNCTION,  // function body
+      SC_SCRIPT,    // script file
+      SC_OTHER      // command-line input or eval string
     };
-
-    // The context for the current evaluation.
-    static stmt_list_type statement_context;
 
     Matrix ignored_fcn_outputs (void) const;
 
@@ -511,6 +508,9 @@ namespace octave
     void final_index_error (index_exception& e, const tree_expression *expr);
 
     interpreter& m_interpreter;
+
+    // The context for the current evaluation.
+    stmt_list_type m_statement_context;
 
     result_type m_result_type;
     octave_value m_expr_result_value;

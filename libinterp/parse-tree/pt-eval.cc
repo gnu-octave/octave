@@ -61,12 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  size_t tree_evaluator::current_frame = 0;
-
-  bool tree_evaluator::debug_mode = false;
-
-  bool tree_evaluator::quiet_breakpoint_flag = false;
-
   // Normal evaluator.
 
   void
@@ -334,7 +328,7 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     if (m_in_loop_command)
@@ -416,7 +410,7 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     if (m_in_loop_command)
@@ -433,7 +427,7 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    debug_mode = m_bp_table.have_breakpoints () || Vdebugging;
+    m_debug_mode = m_bp_table.have_breakpoints () || Vdebugging;
 
     m_dbstep_flag = 0;
   }
@@ -441,7 +435,7 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (bool mode)
   {
-    debug_mode = mode;
+    m_debug_mode = mode;
 
     m_dbstep_flag = 0;
   }
@@ -889,7 +883,7 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     tree_decl_init_list *init_list = cmd.initializer_list ();
@@ -975,7 +969,7 @@ namespace octave
         line++;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
@@ -1113,7 +1107,7 @@ namespace octave
         line++;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     unwind_protect frame;
@@ -1582,7 +1576,7 @@ namespace octave
             || m_statement_context == SC_SCRIPT)
           m_call_stack.set_location (tic->line (), tic->column ());
 
-        if (debug_mode && ! tic->is_else_clause ())
+        if (m_debug_mode && ! tic->is_else_clause ())
           do_breakpoint (tic->is_breakpoint (true));
 
         if (tic->is_else_clause () || is_logically_true (expr, "if"))
@@ -2196,7 +2190,7 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode && cmd.is_end_of_fcn_or_script ())
+    if (m_debug_mode && cmd.is_end_of_fcn_or_script ())
       do_breakpoint (cmd.is_breakpoint (true), true);
   }
 
@@ -2356,12 +2350,12 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     // Act like dbcont.
 
-    if (Vdebugging && m_call_stack.current_frame () == current_frame)
+    if (Vdebugging && m_call_stack.current_frame () == m_current_frame)
       {
         Vdebugging = false;
 
@@ -2490,7 +2484,7 @@ namespace octave
                     m_echo_file_pos = line + 1;
                   }
 
-                if (debug_mode)
+                if (m_debug_mode)
                   do_breakpoint (expr->is_breakpoint (true));
 
                 // FIXME: maybe all of this should be packaged in
@@ -2544,7 +2538,7 @@ namespace octave
             // If we are debugging, then continue with next statement.
             // Otherwise, jump out of here.
 
-            if (debug_mode)
+            if (m_debug_mode)
               interpreter::recover_from_exception ();
             else
               throw;
@@ -2625,7 +2619,7 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    if (debug_mode)
+    if (m_debug_mode)
       do_breakpoint (cmd.is_breakpoint (true));
 
     tree_expression *expr = cmd.switch_value ();
@@ -2893,7 +2887,7 @@ namespace octave
         if (m_echo_state)
           m_echo_file_pos = line;
 
-        if (debug_mode)
+        if (m_debug_mode)
           do_breakpoint (cmd.is_breakpoint (true));
 
         if (is_logically_true (expr, "while"))
@@ -2953,7 +2947,7 @@ namespace octave
         if (quit_loop_now ())
           break;
 
-        if (debug_mode)
+        if (m_debug_mode)
           do_breakpoint (cmd.is_breakpoint (true));
 
         m_call_stack.set_location (until_line, until_column);
@@ -3010,7 +3004,7 @@ namespace octave
 
         octave_debug_on_interrupt_state = false;
 
-        current_frame = m_call_stack.current_frame ();
+        m_current_frame = m_call_stack.current_frame ();
       }
     else if (is_breakpoint)
       {
@@ -3018,11 +3012,11 @@ namespace octave
 
         m_dbstep_flag = 0;
 
-        current_frame = m_call_stack.current_frame ();
+        m_current_frame = m_call_stack.current_frame ();
       }
     else if (m_dbstep_flag > 0)
       {
-        if (m_call_stack.current_frame () == current_frame)
+        if (m_call_stack.current_frame () == m_current_frame)
           {
             if (m_dbstep_flag == 1 || is_end_of_fcn_or_script)
               {
@@ -3045,11 +3039,11 @@ namespace octave
 
           }
         else if (m_dbstep_flag == 1
-                 && m_call_stack.current_frame () < current_frame)
+                 && m_call_stack.current_frame () < m_current_frame)
           {
             // We stepped out from the end of a function.
 
-            current_frame = m_call_stack.current_frame ();
+            m_current_frame = m_call_stack.current_frame ();
 
             break_on_this_statement = true;
 
@@ -3064,7 +3058,7 @@ namespace octave
 
         m_dbstep_flag = 0;
 
-        current_frame = m_call_stack.current_frame ();
+        m_current_frame = m_call_stack.current_frame ();
       }
     else if (m_dbstep_flag == -2)
       {
@@ -3075,7 +3069,7 @@ namespace octave
         // that frame.
 
         if (is_end_of_fcn_or_script
-            && m_call_stack.current_frame () == current_frame)
+            && m_call_stack.current_frame () == m_current_frame)
           m_dbstep_flag = -1;
       }
 

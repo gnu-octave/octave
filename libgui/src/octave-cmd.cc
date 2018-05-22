@@ -79,19 +79,19 @@ namespace octave
   {
     if (m_cmd == "step")
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
         Fdbstep (interp);
       }
     else if (m_cmd == "cont")
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
         Fdbcont (interp);
       }
     else if (m_cmd == "quit")
       Fdbquit (interp);
     else
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
         Fdbstep (interp, ovl (m_cmd.toStdString ()));
       }
 

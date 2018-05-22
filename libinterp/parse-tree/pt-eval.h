@@ -130,7 +130,8 @@ namespace octave
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
         m_expr_result_value_list (), m_lvalue_list_stack (),
         m_nargout_stack (), m_bp_table (*this), m_call_stack (interp),
-        m_profiler (), m_max_recursion_depth (256),
+        m_profiler (), m_current_frame (0), m_debug_mode (false),
+        m_quiet_breakpoint_flag (false), m_max_recursion_depth (256),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
@@ -256,13 +257,6 @@ namespace octave
     void reset_debug_state (bool mode);
 
     void set_dbstep_flag (int step) { m_dbstep_flag = step; }
-
-    // The number of the stack frame we are currently debugging.
-    static size_t current_frame;
-
-    static bool debug_mode;
-
-    static bool quiet_breakpoint_flag;
 
     // Possible types of evaluation contexts.
     enum stmt_list_type
@@ -413,6 +407,33 @@ namespace octave
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
 
+    size_t current_frame (void) const { return m_current_frame; }
+
+    size_t current_frame (size_t n)
+    {
+      size_t val = m_current_frame;
+      m_current_frame = n;
+      return val;
+    }
+
+    bool debug_mode (void) const { return m_debug_mode; }
+
+    bool debug_mode (bool flag)
+    {
+      bool val = m_debug_mode;
+      m_debug_mode = flag;
+      return val;
+    }
+
+    bool quiet_breakpoint_flag (void) const { return m_quiet_breakpoint_flag; }
+
+    bool quiet_breakpoint_flag (bool flag)
+    {
+      bool val = m_quiet_breakpoint_flag;
+      m_quiet_breakpoint_flag = flag;
+      return val;
+    }
+
     char string_fill_char (void) const { return m_string_fill_char; }
 
     char string_fill_char (char c)
@@ -525,6 +546,13 @@ namespace octave
     call_stack m_call_stack;
 
     profiler m_profiler;
+
+    // The number of the stack frame we are currently debugging.
+    size_t m_current_frame;
+
+    bool m_debug_mode;
+
+    bool m_quiet_breakpoint_flag;
 
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.

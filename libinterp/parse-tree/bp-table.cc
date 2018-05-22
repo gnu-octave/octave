@@ -591,7 +591,7 @@ namespace octave
           }
       }
 
-    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
@@ -687,7 +687,7 @@ namespace octave
           }
       }
 
-    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
@@ -721,7 +721,7 @@ namespace octave
       error ("remove_all_breakpoint_in_file: "
              "unable to find function %s\n", fname.c_str ());
 
-    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
@@ -738,7 +738,7 @@ namespace octave
         remove_all_breakpoints_in_file (*it);
       }
 
-    tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)

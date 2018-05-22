@@ -623,8 +623,9 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
 {
   octave::unwind_protect frame;
 
-  bool silent = octave::tree_evaluator::quiet_breakpoint_flag;
-  octave::tree_evaluator::quiet_breakpoint_flag = false;
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  bool silent = tw.quiet_breakpoint_flag (false);
 
   octave::call_stack& cs = interp.get_call_stack ();
 
@@ -718,8 +719,6 @@ get_debug_input (octave::interpreter& interp, const std::string& prompt)
     }
 
   octave::parser curr_parser;
-
-  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   while (Vdebugging)
     {
@@ -1073,10 +1072,11 @@ If @code{keyboard} is invoked without arguments, a default prompt of
   // Skip the frame assigned to the keyboard function.
   cs.goto_frame_relative (0);
 
-  octave::tree_evaluator::debug_mode = true;
-  octave::tree_evaluator::quiet_breakpoint_flag = false;
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave::tree_evaluator::current_frame = cs.current_frame ();
+  tw.debug_mode (true);
+  tw.quiet_breakpoint_flag (false);
+  tw.current_frame (cs.current_frame ());
 
   do_keyboard (interp, args);
 

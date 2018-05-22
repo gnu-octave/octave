@@ -1202,8 +1202,8 @@ Return true if in debugging mode, otherwise false.
   return ovl (Vdebugging);
 }
 
-DEFUN (__db_next_breakpoint_quiet__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__db_next_breakpoint_quiet__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __db_next_breakpoint_quiet__ ()
 @deftypefnx {} {} __db_next_breakpoint_quiet__ (@var{flag})
 Disable line info printing at the next breakpoint.
@@ -1221,7 +1221,9 @@ With a logical argument @var{flag}, set the state on or off.
   if (nargin == 1)
     state = args(0).bool_value ();
 
-  octave::tree_evaluator::quiet_breakpoint_flag = state;
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  tw.quiet_breakpoint_flag (state);
 
   return ovl ();
 }

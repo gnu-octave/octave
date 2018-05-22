@@ -368,9 +368,11 @@ maybe_enter_debugger (octave::execution_exception& e,
       frame.protect_var (Vdebug_on_error);
       Vdebug_on_error = false;
 
-      octave::tree_evaluator::debug_mode = true;
+      octave::tree_evaluator& tw
+        = octave::__get_evaluator__ ("maybe_enter_debugger");
 
-      octave::tree_evaluator::current_frame = cs.current_frame ();
+      tw.debug_mode (true);
+      tw.current_frame (cs.current_frame ());
 
       if (show_stack_trace)
         {
@@ -767,9 +769,11 @@ warning_1 (const char *id, const char *fmt, va_list args)
           frame.protect_var (Vdebug_on_warning);
           Vdebug_on_warning = false;
 
-          octave::tree_evaluator::debug_mode = true;
+          octave::tree_evaluator& tw
+            = octave::__get_evaluator__ ("maybe_enter_debugger");
 
-          octave::tree_evaluator::current_frame = cs.current_frame ();
+          tw.debug_mode (true);
+          tw.current_frame (cs.current_frame ());
 
           do_keyboard (octave_value_list ());
         }

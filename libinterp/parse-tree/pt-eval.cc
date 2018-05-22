@@ -3094,15 +3094,7 @@ namespace octave
   {
     bool break_on_this_statement = false;
 
-    if (octave_debug_on_interrupt_state)
-      {
-        break_on_this_statement = true;
-
-        octave_debug_on_interrupt_state = false;
-
-        m_current_frame = m_call_stack.current_frame ();
-      }
-    else if (is_breakpoint)
+    if (is_breakpoint)
       {
         break_on_this_statement = true;
 

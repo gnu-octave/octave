@@ -173,10 +173,6 @@ namespace octave
     // List of breakpoint conditions.
     octave_value_list m_bp_cond_list;
   };
-
-  // TRUE means SIGINT should put us in the debugger at the next
-  // available breakpoint.
-  extern bool octave_debug_on_interrupt_state;
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)

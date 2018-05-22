@@ -74,6 +74,124 @@ namespace octave
     m_nargout_stack.clear ();
   }
 
+  int tree_evaluator::repl (bool interactive)
+  {
+    int retval = 0;
+
+    lexer *lxr = (interactive ? new lexer () : new lexer (stdin));
+
+    parser parser (*lxr);
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    do
+      {
+        try
+          {
+            reset_error_handler ();
+
+            parser.reset ();
+
+            if (symtab.at_top_level ())
+              reset_debug_state ();
+
+            retval = parser.run ();
+
+            if (retval == 0)
+              {
+                if (parser.m_stmt_list)
+                  {
+                    parser.m_stmt_list->accept (*this);
+
+                    octave_quit ();
+
+                    if (! interactive)
+                      {
+                        bool quit = (m_returning || m_breaking);
+
+                        if (m_returning)
+                          m_returning = 0;
+
+                        if (m_breaking)
+                          m_breaking--;
+
+                        if (quit)
+                          break;
+                      }
+
+                    if (octave_completion_matches_called)
+                      octave_completion_matches_called = false;
+                    else
+                      command_editor::increment_current_command_number ();
+                  }
+                else if (parser.m_lexer.m_end_of_input)
+                  {
+                    retval = EOF;
+                    break;
+                  }
+              }
+          }
+        catch (const interrupt_exception&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (interactive)
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& e)
+          {
+            std::string stack_trace = e.info ();
+
+            if (! stack_trace.empty ())
+              std::cerr << stack_trace;
+
+            if (interactive)
+              m_interpreter.recover_from_exception ();
+            else
+              {
+                // We should exit with a nonzero status.
+                retval = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            m_interpreter.recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+
+#if defined (DBSTOP_NANINF)
+        if (Vdebug_on_naninf)
+          {
+            if (setjump (naninf_jump) != 0)
+              debug_or_throw_exception (true);  // true = stack trace
+          }
+#endif
+      }
+    while (retval == 0);
+
+    if (retval == EOF)
+      {
+        if (interactive)
+          octave_stdout << "\n";
+
+        retval = 0;
+      }
+
+    return retval;
+  }
+
   void
   tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& anon_fh)
   {

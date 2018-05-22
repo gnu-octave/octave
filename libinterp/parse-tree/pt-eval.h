@@ -150,6 +150,8 @@ namespace octave
 
     void reset (void);
 
+    int repl (bool interactive);
+
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
     void visit_argument_list (tree_argument_list&);
@@ -466,9 +468,30 @@ namespace octave
 
     int breaking (void) const { return m_breaking; }
 
+    int breaking (int n)
+    {
+      int val = m_breaking;
+      m_breaking = n;
+      return val;
+    }
+
     int continuing (void) const { return m_continuing; }
 
+    int continuing (int n)
+    {
+      int val = m_continuing;
+      m_continuing = n;
+      return val;
+    }
+
     int returning (void) const { return m_returning; }
+
+    int returning (int n)
+    {
+      int val = m_returning;
+      m_returning = n;
+      return val;
+    }
 
     octave_value echo (const octave_value_list& args, int nargout);
 

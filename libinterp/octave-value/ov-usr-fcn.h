@@ -67,7 +67,7 @@ protected:
     : octave_function (nm, ds), m_scope (scope), file_name (fnm),
       t_parsed (static_cast<time_t> (0)),
       t_checked (static_cast<time_t> (0)),
-      call_depth (-1), m_file_info (nullptr),
+      m_call_depth (-1), m_file_info (nullptr),
       cmd_list (cmds)
   { }
 
@@ -108,6 +108,13 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
+  // XXX FIXME
+  int call_depth (void) const { return m_call_depth; }
+
+  void set_call_depth (int val) { m_call_depth = val; }
+
+  void increment_call_depth (void) { ++m_call_depth; }
+
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   octave::tree_statement_list * body (void) { return cmd_list; }
@@ -132,7 +139,7 @@ protected:
   octave::sys::time t_checked;
 
   // Used to keep track of recursion depth.
-  int call_depth;
+  int m_call_depth;
 
   // Cached text of function or script code with line offsets
   // calculated.
@@ -185,6 +192,9 @@ public:
 
   void accept (octave::tree_walker& tw);
 
+  // XXX FIXME
+  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
+
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
@@ -213,7 +223,7 @@ public:
   octave::symbol_record::context_id active_context () const
   {
     return is_anonymous_function ()
-      ? 0 : static_cast<octave::symbol_record::context_id>(call_depth);
+      ? 0 : static_cast<octave::symbol_record::context_id>(m_call_depth);
   }
 
   octave_function * function_value (bool = false) { return this; }
@@ -379,6 +389,9 @@ public:
 
   octave_value dump (void) const;
 
+  // XXX FIXME
+  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
+
 private:
 
   enum class_ctor_type
@@ -447,6 +460,9 @@ private:
   void print_code_function_header (const std::string& prefix);
 
   void print_code_function_trailer (const std::string& prefix);
+
+  // XXX FIXME (public)
+public:
 
   void bind_automatic_vars (octave::tree_evaluator& tw,
                             const string_vector& arg_names,

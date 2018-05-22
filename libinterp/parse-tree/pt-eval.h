@@ -176,7 +176,15 @@ namespace octave
 
     void visit_octave_user_script (octave_user_script&);
 
+    octave_value_list
+    execute_user_script (octave_user_script& user_script, int nargout,
+                         const octave_value_list& args);
+
     void visit_octave_user_function (octave_user_function&);
+
+    octave_value_list
+    execute_user_function (octave_user_function& user_function, int nargout,
+                           const octave_value_list& args);
 
     void visit_octave_user_function_header (octave_user_function&);
 

@@ -952,14 +952,14 @@ namespace octave
 
                     if (! application::interactive ())
                       {
-                        bool quit = (tree_return_command::returning
-                                     || tree_break_command::breaking);
+                        bool quit = (m_evaluator.returning ()
+                                     || m_evaluator.breaking ());
 
-                        if (tree_return_command::returning)
-                          tree_return_command::returning = 0;
+                        if (m_evaluator.returning ())
+                          m_evaluator.returning (0);
 
-                        if (tree_break_command::breaking)
-                          tree_break_command::breaking--;
+                        if (m_evaluator.breaking ())
+                          m_evaluator.breaking (m_evaluator.breaking () - 1)
 
                         if (quit)
                           break;

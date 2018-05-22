@@ -332,7 +332,7 @@ namespace octave
       do_breakpoint (cmd.is_breakpoint (true));
 
     if (m_in_loop_command)
-      tree_break_command::breaking = 1;
+      m_breaking = 1;
     else
       error ("break must appear in a loop in the same file as loop command");
   }
@@ -414,7 +414,7 @@ namespace octave
       do_breakpoint (cmd.is_breakpoint (true));
 
     if (m_in_loop_command)
-      tree_continue_command::continuing = 1;
+      m_continuing = 1;
   }
 
   bool
@@ -937,27 +937,6 @@ namespace octave
       }
   }
 
-  // Decide if it's time to quit a for or while loop.
-  static inline bool
-  quit_loop_now (void)
-  {
-    octave_quit ();
-
-    // Maybe handle 'continue N' someday...
-
-    if (tree_continue_command::continuing)
-      tree_continue_command::continuing--;
-
-    bool quit = (tree_return_command::returning
-                 || tree_break_command::breaking
-                 || tree_continue_command::continuing);
-
-    if (tree_break_command::breaking)
-      tree_break_command::breaking--;
-
-    return quit;
-  }
-
   void
   tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   {
@@ -1234,11 +1213,11 @@ namespace octave
 
     cmd_list->accept (*this);
 
-    if (tree_return_command::returning)
-      tree_return_command::returning = 0;
+    if (m_returning)
+      m_returning = 0;
 
-    if (tree_break_command::breaking)
-      tree_break_command::breaking--;
+    if (m_breaking)
+      m_breaking--;
 
     return retval;
   }
@@ -1419,11 +1398,11 @@ namespace octave
         cmd_list->accept (*this);
     }
 
-    if (tree_return_command::returning)
-      tree_return_command::returning = 0;
+    if (m_returning)
+      m_returning = 0;
 
-    if (tree_break_command::breaking)
-      tree_break_command::breaking--;
+    if (m_breaking)
+      m_breaking--;
 
     // Copy return values out.
 
@@ -2364,7 +2343,7 @@ namespace octave
     else if (m_statement_context == SC_FUNCTION
              || m_statement_context == SC_SCRIPT
              || m_in_loop_command)
-      tree_return_command::returning = 1;
+      m_returning = 1;
   }
 
   void
@@ -2567,11 +2546,10 @@ namespace octave
 
             elt->accept (*this);
 
-            if (tree_break_command::breaking
-                || tree_continue_command::continuing)
+            if (m_breaking || m_continuing)
               break;
 
-            if (tree_return_command::returning)
+            if (m_returning)
               break;
 
             if (p == lst.end ())
@@ -2747,11 +2725,11 @@ namespace octave
     // We don't have to worry about continue statements because they can
     // only occur in loops.
 
-    frame.protect_var (tree_return_command::returning);
-    tree_return_command::returning = 0;
+    frame.protect_var (m_returning);
+    m_returning = 0;
 
-    frame.protect_var (tree_break_command::breaking);
-    tree_break_command::breaking = 0;
+    frame.protect_var (m_breaking);
+    m_breaking = 0;
 
     try
       {
@@ -2762,7 +2740,7 @@ namespace octave
       {
         interpreter::recover_from_exception ();
 
-        if (tree_break_command::breaking || tree_return_command::returning)
+        if (m_breaking || m_returning)
           frame.discard (2);
         else
           frame.run (2);
@@ -2799,7 +2777,7 @@ namespace octave
     // break in the cleanup block, the values should be reset to
     // whatever they were when the cleanup block was entered.
 
-    if (tree_break_command::breaking || tree_return_command::returning)
+    if (m_breaking || m_returning)
       frame.discard (2);
     else
       frame.run (2);
@@ -3465,6 +3443,24 @@ namespace octave
     std::string msg = e.message () + extra_message;
 
     error_with_id (e.err_id (), msg.c_str ());
+  }
+
+  // Decide if it's time to quit a for or while loop.
+  bool tree_evaluator::quit_loop_now (void)
+  {
+    octave_quit ();
+
+    // Maybe handle 'continue N' someday...
+
+    if (m_continuing)
+      m_continuing--;
+
+    bool quit = (m_returning || m_breaking || m_continuing);
+
+    if (m_breaking)
+      m_breaking--;
+
+    return quit;
   }
 }
 

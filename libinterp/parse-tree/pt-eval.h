@@ -136,6 +136,7 @@ namespace octave
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_loop_command (false),
+        m_breaking (0), m_continuing (0), m_returning (0),
         m_indexed_object (nullptr), m_index_position (0), m_num_indices (0)
     { }
 
@@ -463,6 +464,12 @@ namespace octave
 
     int num_indices (void) const { return m_num_indices; }
 
+    int breaking (void) const { return m_breaking; }
+
+    int continuing (void) const { return m_continuing; }
+
+    int returning (void) const { return m_returning; }
+
     octave_value echo (const octave_value_list& args, int nargout);
 
     int echo (void) const { return m_echo; }
@@ -527,6 +534,8 @@ namespace octave
     void echo_code (size_t line);
 
     void final_index_error (index_exception& e, const tree_expression *expr);
+
+    bool quit_loop_now (void);
 
     interpreter& m_interpreter;
 
@@ -595,6 +604,15 @@ namespace octave
 
     // TRUE means we are evaluating some kind of looping construct.
     bool m_in_loop_command;
+
+    // Nonzero means we're breaking out of a loop or function body.
+    int m_breaking;
+
+    // Nonzero means we're jumping to the end of a loop.
+    int m_continuing;
+
+    // Nonzero means we're returning from a function.
+    int m_returning;
 
     // Used by END function.
     const octave_value *m_indexed_object;

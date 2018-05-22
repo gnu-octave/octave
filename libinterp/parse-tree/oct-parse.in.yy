@@ -5445,9 +5445,7 @@ namespace octave
                 else
                   error ("eval: invalid use of statement list");
 
-                if (tree_return_command::returning
-                    || tree_break_command::breaking
-                    || tree_continue_command::continuing)
+                if (tw.returning () || tw.breaking () || tw.continuing ())
                   break;
               }
             else if (parser.m_lexer.m_end_of_input)

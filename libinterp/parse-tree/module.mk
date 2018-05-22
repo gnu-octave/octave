@@ -79,7 +79,6 @@ PARSE_TREE_SRC = \
   %reldir%/pt-id.cc \
   %reldir%/pt-idx.cc \
   %reldir%/pt-jit.cc \
-  %reldir%/pt-jump.cc \
   %reldir%/pt-loop.cc \
   %reldir%/pt-mat.cc \
   %reldir%/pt-misc.cc \

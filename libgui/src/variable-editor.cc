@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include "dw-main-window.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 #include "variable-editor.h"
@@ -1042,7 +1043,7 @@ namespace octave
 
   variable_editor::variable_editor (QWidget *p)
     : octave_dock_widget ("VariableEditor", p),
-      m_main (new QMainWindow ()),
+      m_main (new dw_main_window ()),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
       m_default_height (100),
@@ -1358,7 +1359,7 @@ namespace octave
   void
   variable_editor::notice_settings (const QSettings *settings)
   {
-    // FIXME: Why use object->tostring->toint?  Why not just 100?
+    m_main->notice_settings (settings); // update settings in parent main win
 
     m_default_width = settings->value ("variable_editor/column_width",
                                        100).toInt ();

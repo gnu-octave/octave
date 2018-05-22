@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
+#include "dw-main-window.h"
+
 
 class octave_value;
 
@@ -43,6 +45,7 @@ namespace octave
 {
   class variable_editor_model;
   class variable_editor_view;
+
 
   // The individual variable subwindow class
 
@@ -365,7 +368,7 @@ namespace octave
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                           const char *member);
 
-    QMainWindow *m_main;
+    dw_main_window *m_main;
 
     QToolBar *m_tool_bar;
 

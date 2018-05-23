@@ -160,165 +160,6 @@ extract_function (const octave_value& arg, const std::string& warn_for,
   return retval;
 }
 
-string_vector
-get_struct_elts (const std::string& text)
-{
-  int n = 1;
-
-  size_t pos = 0;
-
-  size_t len = text.length ();
-
-  while ((pos = text.find ('.', pos)) != std::string::npos)
-    {
-      if (++pos == len)
-        break;
-
-      n++;
-    }
-
-  string_vector retval (n);
-
-  pos = 0;
-
-  for (int i = 0; i < n; i++)
-    {
-      len = text.find ('.', pos);
-
-      if (len != std::string::npos)
-        len -= pos;
-
-      retval[i] = text.substr (pos, len);
-
-      if (len != std::string::npos)
-        pos += len + 1;
-    }
-
-  return retval;
-}
-
-static inline bool
-is_variable (octave::symbol_table& symtab, const std::string& name)
-{
-  bool retval = false;
-
-  if (! name.empty ())
-    {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      octave_value val = scope ? scope.varval (name) : octave_value ();
-
-      retval = val.is_defined ();
-    }
-
-  return retval;
-}
-
-string_vector
-generate_struct_completions (const std::string& text,
-                             std::string& prefix, std::string& hint)
-{
-  string_vector names;
-
-  size_t pos = text.rfind ('.');
-  bool array = false;
-
-  if (pos != std::string::npos)
-    {
-      if (pos == text.length ())
-        hint = "";
-      else
-        hint = text.substr (pos+1);
-
-      prefix = text.substr (0, pos);
-
-      if (prefix == "")
-        {
-          array = true;
-          prefix = find_indexed_expression (text);
-        }
-
-      std::string base_name = prefix;
-
-      pos = base_name.find_first_of ("{(. ");
-
-      if (pos != std::string::npos)
-        base_name = base_name.substr (0, pos);
-
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("generate_struct_completions");
-
-      if (is_variable (symtab, base_name))
-        {
-          int parse_status;
-
-          octave::unwind_protect frame;
-
-          frame.protect_var (discard_error_messages);
-          frame.protect_var (discard_warning_messages);
-
-          discard_error_messages = true;
-          discard_warning_messages = true;
-
-          try
-            {
-              octave_value tmp = octave::eval_string (prefix, true, parse_status);
-
-              frame.run ();
-
-              if (tmp.is_defined ()
-                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
-                names = tmp.map_keys ();
-            }
-          catch (const octave::execution_exception&)
-            {
-              octave::interpreter::recover_from_exception ();
-            }
-        }
-    }
-
-  // Undo look-back that found the array expression,
-  // but insert an extra "." to distinguish from the non-struct case.
-  if (array)
-    prefix = ".";
-
-  return names;
-}
-
-// FIXME: this will have to be much smarter to work "correctly".
-bool
-looks_like_struct (const std::string& text, char prev_char)
-{
-  bool retval = (! text.empty ()
-                 && (text != "." || prev_char == ')' || prev_char == '}')
-                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
-                 && text.find ("..") == std::string::npos
-                 && text.rfind ('.') != std::string::npos);
-
-#if 0
-  symbol_record *sr = curr_sym_tab->lookup (text);
-
-  if (sr && ! sr->is_function ())
-    {
-      int parse_status;
-
-      octave::unwind_protect frame;
-
-      frame.protect_var (discard_error_messages);
-
-      discard_error_messages = true;
-
-      octave_value tmp = eval_string (text, true, parse_status);
-
-      frame.run ();
-
-      retval = (tmp.is_defined () && tmp.isstruct ());
-    }
-#endif
-
-  return retval;
-}
-
 static octave_value
 do_isglobal (octave::symbol_table& symtab, const octave_value_list& args)
 {
@@ -2789,4 +2630,41 @@ set_top_level_value (const std::string& nm, const octave_value& val)
     octave::__get_symbol_table__ ("set_top_level_value");
 
   symtab.top_level_assign (nm, val);
+}
+
+string_vector
+get_struct_elts (const std::string& text)
+{
+  int n = 1;
+
+  size_t pos = 0;
+
+  size_t len = text.length ();
+
+  while ((pos = text.find ('.', pos)) != std::string::npos)
+    {
+      if (++pos == len)
+        break;
+
+      n++;
+    }
+
+  string_vector retval (n);
+
+  pos = 0;
+
+  for (int i = 0; i < n; i++)
+    {
+      len = text.find ('.', pos);
+
+      if (len != std::string::npos)
+        len -= pos;
+
+      retval[i] = text.substr (pos, len);
+
+      if (len != std::string::npos)
+        pos += len + 1;
+    }
+
+  return retval;
 }

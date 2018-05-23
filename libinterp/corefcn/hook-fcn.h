@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "ov.h"
 #include "ov-fcn-handle.h"
-#include "parse.h"
 #include "variables.h"
 
 class
@@ -46,9 +45,9 @@ public:
 
   virtual ~base_hook_function (void) = default;
 
-  virtual std::string id (void) { return ""; }
+  virtual std::string id (void) const { return ""; }
 
-  virtual bool is_valid (void) { return false; }
+  virtual bool is_valid (void) const { return false; }
 
   virtual void eval (const octave_value_list&) { }
 
@@ -98,9 +97,9 @@ public:
     return *this;
   }
 
-  std::string id (void) { return rep->id (); }
+  std::string id (void) const { return rep->id (); }
 
-  bool is_valid (void) { return rep->is_valid (); }
+  bool is_valid (void) const { return rep->is_valid (); }
 
   void eval (const octave_value_list& initial_args)
   {
@@ -121,19 +120,11 @@ public:
     : name (n), data (d)
   { }
 
-  void eval (const octave_value_list& initial_args)
-  {
-    octave_value_list args = initial_args;
+  void eval (const octave_value_list& initial_args);
 
-    if (data.is_defined ())
-      args.append (data);
+  std::string id (void) const { return name; }
 
-    octave::feval (name, args, 0);
-  }
-
-  std::string id (void) { return name; }
-
-  bool is_valid (void) { return is_valid_function (name); }
+  bool is_valid (void) const { return is_valid_function (name); }
 
 private:
 
@@ -162,19 +153,11 @@ public:
       }
   }
 
-  void eval (const octave_value_list& initial_args)
-  {
-    octave_value_list args = initial_args;
+  void eval (const octave_value_list& initial_args);
 
-    if (data.is_defined ())
-      args.append (data);
+  std::string id (void) const { return ident; }
 
-    octave::feval (fcn_handle, args, 0);
-  }
-
-  std::string id (void) { return ident; }
-
-  bool is_valid (void) { return valid; }
+  bool is_valid (void) const { return valid; }
 
 private:
 

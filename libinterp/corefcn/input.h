@@ -31,18 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "hook-fcn.h"
 #include "oct-refcount.h"
 #include "oct-time.h"
 #include "ovl.h"
 #include "pager.h"
-
-class octave_value;
-namespace octave
-{
-  class base_lexer;
-}
-
-extern OCTINTERP_API FILE * get_input_from_stdin (void);
 
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
@@ -57,25 +50,157 @@ extern OCTINTERP_API bool Vdebugging;
 // TRUE if we are not executing a command direct from debug> prompt.
 extern OCTINTERP_API bool Vtrack_line_num;
 
-extern std::string find_indexed_expression (const std::string& text);
-
-extern void initialize_command_input (void);
-
-extern bool octave_yes_or_no (const std::string& prompt);
-
-extern octave_value do_keyboard (const octave_value_list& args
-                                 = octave_value_list ());
-
-extern void remove_input_event_hook_functions (void);
-
-extern void set_default_prompts (void);
-
 extern octave::sys::time Vlast_prompt_time;
+
+class octave_value;
 
 namespace octave
 {
-  class
-  base_reader
+  class interpreter;
+  class base_lexer;
+
+  class input_system
+  {
+  public:
+
+    input_system (interpreter& interp);
+
+    void initialize (bool line_editing);
+
+    octave_value PS1 (const octave_value_list& args, int nargout);
+
+    std::string PS1 (void) const { return m_PS1; }
+
+    std::string PS1 (const std::string& s)
+    {
+      std::string val = m_PS1;
+      m_PS1 = s;
+      return val;
+    }
+
+    void set_PS1 (const std::string& s) { m_PS1 = s; }
+
+    octave_value PS2 (const octave_value_list& args, int nargout);
+
+    std::string PS2 (void) const { return m_PS2; }
+
+    std::string PS2 (const std::string& s)
+    {
+      std::string val = m_PS2;
+      m_PS2 = s;
+      return val;
+    }
+
+    void set_PS2 (const std::string& s) { m_PS2 = s; }
+
+    std::string last_debugging_command (void) const
+    {
+      return m_last_debugging_command;
+    }
+
+    std::string last_debugging_command (const std::string& s)
+    {
+      std::string val = m_last_debugging_command;
+      m_last_debugging_command = s;
+      return val;
+    }
+
+    octave_value
+    completion_append_char (const octave_value_list& args, int nargout);
+
+    char completion_append_char (void) const
+    {
+      return m_completion_append_char;
+    }
+
+    char completion_append_char (char c)
+    {
+      char val = m_completion_append_char;
+      m_completion_append_char = c;
+      return val;
+    }
+
+    void set_completion_append_char (char c) { m_completion_append_char = c; }
+
+    octave_value gud_mode (const octave_value_list& args, int nargout);
+
+    bool gud_mode (void) const { return m_gud_mode; }
+
+    bool gud_mode (bool flag)
+    {
+      bool val = m_gud_mode;
+      m_gud_mode = flag;
+      return val;
+    }
+
+    void set_gud_mode (bool flag) { m_gud_mode = flag; }
+
+    octave_value mfile_encoding (const octave_value_list& args, int nargout);
+
+    std::string mfile_encoding (void) const { return m_mfile_encoding; }
+
+    std::string mfile_encoding (const std::string& s)
+    {
+      std::string val = m_mfile_encoding;
+      m_mfile_encoding = s;
+      return val;
+    }
+
+    void set_mfile_encoding (const std::string& s) { m_mfile_encoding = s; }
+
+    bool yes_or_no (const std::string& prompt);
+
+    std::string interactive_input (const std::string& s, bool& eof);
+
+    octave_value_list
+    get_user_input (const octave_value_list& args, int nargout);
+
+    octave_value
+    keyboard (const octave_value_list& args = octave_value_list ());
+
+    bool have_input_event_hooks (void) const;
+
+    void add_input_event_hook (const hook_function& hook_fcn);
+
+    bool remove_input_event_hook (const std::string& hook_fcn_id);
+
+    void clear_input_event_hooks (void);
+
+    void run_input_event_hooks (void);
+
+  private:
+
+    interpreter& m_interpreter;
+
+    // Primary prompt string.
+    std::string m_PS1;
+
+    // Secondary prompt string.
+    std::string m_PS2;
+
+    // Character to append after successful command-line completion
+    // attempts.
+    char m_completion_append_char;
+
+    // TRUE if we are running in the Emacs GUD mode.
+    bool m_gud_mode;
+
+    // Codepage which is used to read .m files
+    std::string m_mfile_encoding;
+
+    // If we are in debugging mode, this is the last command entered,
+    // so that we can repeat the previous command if the user just
+    // types RET.
+    std::string m_last_debugging_command;
+
+    hook_function_list m_input_event_hook_functions;
+
+    std::string gnu_readline (const std::string& s, bool& eof) const;
+
+    void get_debug_input (const std::string& prompt);
+  };
+
+  class base_reader
   {
   public:
 
@@ -135,8 +260,7 @@ namespace octave
     static const std::string s_in_src;
   };
 
-  class
-  input_reader
+  class input_reader
   {
   public:
 
@@ -209,5 +333,25 @@ namespace octave
     base_reader *m_rep;
   };
 }
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (5, "use 'octave::input_system::set_default_prompts' instead")
+extern void set_default_prompts (void);
+
+OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
+extern bool octave_yes_or_no (const std::string& prompt);
+
+OCTAVE_DEPRECATED (5, "use 'octave::input_system::keyboard' instead")
+extern octave_value do_keyboard (const octave_value_list& args
+                                 = octave_value_list ());
+
+OCTAVE_DEPRECATED (5, "use 'octave::input_system::clear_input_event_hooks' instead")
+extern void remove_input_event_hook_functions (void);
+
+OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
+extern OCTINTERP_API FILE * get_input_from_stdin (void);
+
+#endif
 
 #endif

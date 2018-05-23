@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "environment.h"
 #include "gtk-manager.h"
 #include "help.h"
+#include "input.h"
 #include "load-path.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
@@ -154,6 +155,11 @@ namespace octave
       return m_help_system;
     }
 
+    input_system& get_input_system (void)
+    {
+      return m_input_system;
+    }
+
     dynamic_loader& get_dynamic_loader (void)
     {
       return m_dynamic_loader;
@@ -247,6 +253,8 @@ namespace octave
     environment m_environment;
 
     help_system m_help_system;
+
+    input_system m_input_system;
 
     dynamic_loader m_dynamic_loader;
 

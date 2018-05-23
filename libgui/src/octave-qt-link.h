@@ -134,9 +134,6 @@ namespace octave
     void do_update_breakpoint (bool insert, const std::string& file, int line,
                                const std::string& cond);
 
-    void do_set_default_prompts (std::string& ps1, std::string& ps2,
-                                 std::string& ps4);
-
     static bool file_in_path (const std::string& file, const std::string& dir);
 
     void do_show_preferences (void);

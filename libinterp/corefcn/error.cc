@@ -386,7 +386,10 @@ maybe_enter_debugger (octave::execution_exception& e,
             }
         }
 
-      do_keyboard (octave_value_list ());
+      octave::input_system& input_sys
+        = octave::__get_input_system__ ("maybe_enter_debugger");
+
+      input_sys.keyboard ();
     }
 }
 
@@ -770,12 +773,15 @@ warning_1 (const char *id, const char *fmt, va_list args)
           Vdebug_on_warning = false;
 
           octave::tree_evaluator& tw
-            = octave::__get_evaluator__ ("maybe_enter_debugger");
+            = octave::__get_evaluator__ ("warning_1");
 
           tw.debug_mode (true);
           tw.current_frame (cs.current_frame ());
 
-          do_keyboard (octave_value_list ());
+          octave::input_system& input_sys
+            = octave::__get_input_system__ ("warning_1");
+
+          input_sys.keyboard ();
         }
     }
 }

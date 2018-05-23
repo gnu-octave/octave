@@ -250,8 +250,8 @@ Internal function called by mkdir.m.
     }
 }
 
-DEFUNX ("rmdir", Frmdir, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("rmdir", Frmdir, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {} rmdir @var{dir}
 @deftypefnx {} {} rmdir (@var{dir}, "s")
 @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})
@@ -290,9 +290,11 @@ identifier.
           && ! octave::application::forced_interactive ()
           && Vconfirm_recursive_rmdir)
         {
+          octave::input_system& input_sys = interp.get_input_system ();
+
           std::string prompt = "remove entire contents of " + fulldir + "? ";
 
-          doit = octave_yes_or_no (prompt);
+          doit = input_sys.yes_or_no (prompt);
         }
 
       if (doit)

@@ -3162,8 +3162,11 @@ namespace octave
       }
 
     if (break_on_this_statement)
-      do_keyboard ();
+      {
+        input_system& input_sys = m_interpreter.get_input_system ();
 
+        input_sys.keyboard ();
+      }
   }
 
   // ARGS is currently unused, but since the do_keyboard function in
@@ -3173,7 +3176,9 @@ namespace octave
   octave_value
   tree_evaluator::do_keyboard (const octave_value_list& args) const
   {
-    return ::do_keyboard (args);
+    input_system& input_sys = m_interpreter.get_input_system ();
+
+    return input_sys.keyboard (args);
   }
 
   bool

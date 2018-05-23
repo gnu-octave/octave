@@ -87,7 +87,7 @@ create_default_editor (QWidget *p)
 
 namespace octave
 {
-  octave_interpreter::octave_interpreter (application *app_context)
+  octave_interpreter::octave_interpreter (gui_application *app_context)
     : QObject (), m_app_context (app_context)
   { }
 
@@ -104,6 +104,18 @@ namespace octave
         // Final initialization.
 
         interp.initialize ();
+
+        if (m_app_context->start_gui_p ())
+          {
+            input_system& input_sys = interp.get_input_system ();
+
+            input_sys.PS1 (">> ");
+            input_sys.PS2 ("");
+
+            tree_evaluator& tw = interp.get_evaluator ();
+
+            tw.PS4 ("");
+          }
 
         if (interp.initialized ())
           {

@@ -368,13 +368,6 @@ public:
       }
   }
 
-  static void set_default_prompts (std::string& ps1, std::string& ps2,
-                                   std::string& ps4)
-  {
-    if (enabled ())
-      instance->do_set_default_prompts (ps1, ps2, ps4);
-  }
-
   static bool enable (void)
   {
     return instance_ok () ? instance->do_enable () : false;
@@ -618,9 +611,6 @@ protected:
   virtual void do_update_breakpoint (bool insert,
                                      const std::string& file, int line,
                                      const std::string& cond) = 0;
-
-  virtual void do_set_default_prompts (std::string& ps1, std::string& ps2,
-                                       std::string& ps4) = 0;
 
   virtual void do_show_preferences (void) = 0;
 

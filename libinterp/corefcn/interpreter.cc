@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-io.h"
 #include "graphics.h"
 #include "help.h"
+#include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -325,6 +326,7 @@ namespace octave
     : m_app_context (app_context),
       m_environment (),
       m_help_system (*this),
+      m_input_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
       m_type_info (),
@@ -365,8 +367,6 @@ namespace octave
     octave_set_default_fpucw ();
 
     thread::init ();
-
-    set_default_prompts ();
 
     // Initialize default warning state before --traditional option
     // that may reset them.
@@ -484,11 +484,7 @@ namespace octave
           Ftexi_macros_file (*this, octave_value (texi_macros_file));
       }
 
-    // Force default line editor if we don't want readline editing.
-    if (line_editing)
-      initialize_command_input ();
-    else
-      command_editor::force_default_editor ();
+    m_input_system.initialize (line_editing);
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
@@ -968,7 +964,7 @@ namespace octave
     octave_link::process_events (true);
     octave_link::disconnect_link ();
 
-    OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
+    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
     while (! atexit_functions.empty ())
       {
@@ -1150,8 +1146,8 @@ namespace octave
 
   void interpreter::maximum_braindamage (void)
   {
-    FPS1 (octave_value (">> "));
-    FPS2 (octave_value (""));
+    m_input_system.PS1 (">> ");
+    m_input_system.PS2 ("");
 
     m_evaluator.PS4 ("");
 

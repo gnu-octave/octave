@@ -483,18 +483,6 @@ namespace octave
                                           line, QString::fromStdString (cond));
   }
 
-  void octave_qt_link::do_set_default_prompts (std::string& ps1,
-                                               std::string& ps2,
-                                               std::string& ps4)
-  {
-    if (m_app_context->start_gui_p ())
-      {
-        ps1 = ">> ";
-        ps2 = "";
-        ps4 = "";
-      }
-  }
-
   bool octave_qt_link::file_in_path (const std::string& file,
                                      const std::string& dir)
   {

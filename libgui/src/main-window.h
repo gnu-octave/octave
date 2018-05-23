@@ -71,7 +71,7 @@ namespace octave
 
   public:
 
-    octave_interpreter (application *app_context);
+    octave_interpreter (gui_application *app_context);
 
     ~octave_interpreter (void) = default;
 
@@ -88,7 +88,7 @@ namespace octave
 
   private:
 
-    application *m_app_context;
+    gui_application *m_app_context;
   };
 
   //! Represents the main window.

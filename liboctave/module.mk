@@ -1,6 +1,7 @@
 %canon_reldir%_EXTRA_DIST = \
   %reldir%/liboctave-build-info.in.cc \
   %reldir%/mk-version-h.in.sh \
+  %reldir%/version.cc \
   %reldir%/version.in.h
 
 GEN_CONFIG_SHELL += \
@@ -57,9 +58,6 @@ octinclude_HEADERS += \
 nodist_octinclude_HEADERS += \
   $(BUILT_INCS) \
   %reldir%/version.h
-
-DIST_SRC += \
-  %reldir%/version.cc
 
 ## C++ files that are #included, not compiled
 OTHER_INC =

@@ -167,6 +167,9 @@ is stored in the audio file.
             case SF_FORMAT_PCM_32:
               ret_audio = int32NDArray (audio * 2147483648);
               break;
+            case SF_FORMAT_FLOAT:
+              ret_audio = FloatNDArray (audio);
+              break;
             default:
               ret_audio = audio;
               break;
@@ -374,7 +377,12 @@ Comment.
           else if (bits == 16)
             info.format |= SF_FORMAT_PCM_16;
           else if (bits == 24)
-            info.format |= SF_FORMAT_PCM_32;
+            {
+              if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV)
+                info.format |= SF_FORMAT_PCM_32;
+              else
+                info.format |= SF_FORMAT_PCM_24;
+            }
           else if (bits == 32)
             {
               if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV
@@ -583,6 +591,12 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
       break;
     case SF_FORMAT_PCM_32:
       bits = 32;
+      break;
+    case SF_FORMAT_FLOAT:
+      bits = 32;
+      break;
+    case SF_FORMAT_DOUBLE:
+      bits = 64;
       break;
     default:
       bits = -1;

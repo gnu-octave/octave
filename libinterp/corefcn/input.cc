@@ -629,10 +629,9 @@ namespace octave
 
     std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
-    octave::flush_stdout ();
+    output_system& output_sys = __get_output_system__ ("do_sync");
 
-    octave::pager_stream::reset ();
-    octave::diary_stream::reset ();
+    output_sys.reset ();
 
     octave_diary << prompt;
 
@@ -939,10 +938,9 @@ namespace octave
 
     pipe_handler_error_count = 0;
 
-    flush_stdout ();
+    output_system& output_sys = __get_output_system__ ("do_sync");
 
-    pager_stream::reset ();
-    diary_stream::reset ();
+    output_sys.reset ();
 
     octave_diary << prompt;
 

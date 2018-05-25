@@ -42,6 +42,7 @@ namespace octave
   class input_system;
   class interpreter;
   class load_path;
+  class output_system;
   class tree_evaluator;
   class type_info;
 
@@ -54,6 +55,8 @@ namespace octave
   extern input_system& __get_input_system__ (const std::string& who);
 
   extern load_path& __get_load_path__ (const std::string& who);
+
+  extern output_system& __get_output_system__ (const std::string& who);
 
   extern type_info& __get_type_info__ (const std::string& who);
 

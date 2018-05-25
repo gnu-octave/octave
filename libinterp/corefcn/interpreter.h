@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ov-classdef.h"
 #include "ov-typeinfo.h"
+#include "pager.h"
 #include "pt-eval.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
@@ -160,6 +161,11 @@ namespace octave
       return m_input_system;
     }
 
+    output_system& get_output_system (void)
+    {
+      return m_output_system;
+    }
+
     dynamic_loader& get_dynamic_loader (void)
     {
       return m_dynamic_loader;
@@ -255,6 +261,8 @@ namespace octave
     help_system m_help_system;
 
     input_system m_input_system;
+
+    output_system m_output_system;
 
     dynamic_loader m_dynamic_loader;
 

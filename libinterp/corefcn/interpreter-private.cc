@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "load-path.h"
 #include "ov-classdef.h"
+#include "pager.h"
 #include "symtab.h"
 
 namespace octave
@@ -73,6 +74,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_input_system ();
+  }
+
+  output_system& __get_output_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_output_system ();
   }
 
   load_path& __get_load_path__ (const std::string& who)

@@ -7282,7 +7282,7 @@ namespace octave
     return retval;
   }
 
-  stream_list::stream_list (interpreter&)
+  stream_list::stream_list (interpreter& interp)
     : list (), lookup_cache (list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
@@ -7293,7 +7293,10 @@ namespace octave
 
     // FIXME: we should be accessing octave_stdout from the interpreter.
 
-    stream stdout_stream = octave_ostream::create (&octave_stdout, "stdout");
+    output_system& output_sys = interp.get_output_system ();
+
+    stream stdout_stream
+      = octave_ostream::create (&(output_sys.__stdout__ ()), "stdout");
 
     stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
 

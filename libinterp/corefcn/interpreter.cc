@@ -327,6 +327,7 @@ namespace octave
       m_environment (),
       m_help_system (*this),
       m_input_system (*this),
+      m_output_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
       m_type_info (),

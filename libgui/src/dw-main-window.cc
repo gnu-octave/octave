@@ -47,19 +47,34 @@ namespace octave
       = add_action (nullptr,
                     resource_manager::icon ("window-close",false),
                     tr ("&Close"),
-                    SLOT (request_close_file ()), this);
+                    SLOT (request_close ()), this);
 
     m_close_all_action
       = add_action (nullptr,
                     resource_manager::icon ("window-close",false),
                     tr ("Close &All"),
-                    SLOT (request_close_all_files ()), this);
+                    SLOT (request_close_all ()), this);
 
     m_close_others_action
       = add_action (nullptr,
                     resource_manager::icon ("window-close",false),
                     tr ("Close &Other"),
-                    SLOT (request_close_other_files ()), this);
+                    SLOT (request_close_other ()), this);
+
+    m_switch_left_action
+      = add_action (nullptr, QIcon (), tr ("Switch to &Left Widget"),
+                    SLOT (request_switch_left ()), this);
+
+    m_switch_right_action
+      = add_action (nullptr, QIcon (), tr ("Switch to &Right Widget"),
+                    SLOT (request_switch_right ()), this);
+
+    // The list of actions for floating widgets
+    m_actions_list << m_close_action;
+    m_actions_list << m_close_others_action;
+    m_actions_list << m_close_all_action;
+    m_actions_list << m_switch_left_action;
+    m_actions_list << m_switch_right_action;
 
     notice_settings (resource_manager::get_settings ());
   }
@@ -120,49 +135,118 @@ namespace octave
     shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
     shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
     shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
+
+    shortcut_manager::set_shortcut (m_switch_left_action, "editor_tabs:switch_left_tab");
+    shortcut_manager::set_shortcut (m_switch_right_action, "editor_tabs:switch_right_tab");
   }
 
 
   // Slots for handling actions
 
   // Close current widget
-  void dw_main_window::request_close_file ()
+  void dw_main_window::request_close ()
   {
-    QList<QDockWidget *> list = findChildren<QDockWidget *>();
-
-    for (int i = 0; i < list.length (); i++)
+    for (int i = 0; i < m_dw_list.length (); i++)
       {
-        if (list.at (i)->hasFocus ())
+        if (m_dw_list.at (i)->hasFocus ())
           {
-            list.at (i)->close ();
+            m_dw_list.at (i)->close ();
             if (i > 0)
-              list.at (i-1)->setFocus ();
+              m_dw_list.at (i-1)->setFocus ();
             break;
           }
       }
   }
 
   // Close other widgets
-  void dw_main_window::request_close_other_files ()
+  void dw_main_window::request_close_other ()
   {
-    QList<QDockWidget *> list = findChildren<QDockWidget *>();
-
-    for (int i = list.length () - 1; i >= 0; i--)
+    for (int i = m_dw_list.length () - 1; i >= 0; i--)
       {
-        if (! list.at (i)->hasFocus ())
-          list.at (i)->close ();
+        if (! m_dw_list.at (i)->hasFocus ())
+          m_dw_list.at (i)->close ();
       }
   }
 
   // Close all widgets
-  void dw_main_window::request_close_all_files ()
+  void dw_main_window::request_close_all ()
   {
-    QList<QDockWidget *> list = findChildren<QDockWidget *>();
+    for (int i = m_dw_list.length () - 1; i >= 0; i--)
+      m_dw_list.at (i)->close ();
+  }
 
-    for (int i = list.length () - 1; i >= 0; i--)
-      list.at (i)->close ();
+  // Switch to left widget
+  void dw_main_window::request_switch_left ()
+  {
+    request_switch (-1);
+  }
+
+  // Switch to right widget
+  void dw_main_window::request_switch_right ()
+  {
+    request_switch (1);
+  }
+
+  // Switch to left/right widget
+  void dw_main_window::request_switch (int direction)
+  {
+    int active = -1, next;
+
+    for (int i = m_dw_list.length () - 1; i >= 0; i--)
+      {
+        if (m_dw_list.at (i)->hasFocus ())
+          {
+            active = i;
+            break;
+          }
+      }
+
+    if (active == -1)
+      return;
+
+    if (direction == -1 && active == 0)
+      next = m_dw_list.length () - 1;
+    else if (direction == 1 && active == m_dw_list.length () - 1)
+      next = 0;
+    else
+      next = active + direction;
+
+    m_dw_list.at (next)->raise ();
+    m_dw_list.at (next)->activateWindow ();
+    m_dw_list.at (next)->setFocus ();
+  }
+
+
+  // Reimplemented Event
+  bool dw_main_window::event (QEvent *ev)
+  {
+    if (ev->type () == QEvent::ChildAdded ||
+        ev->type () == QEvent::ChildRemoved)
+      {
+        // Adding or Removing a child indicates that a dock widget was
+        // created or removed.
+        // In all cases, the list of dock widgets has to be updated.
+        m_dw_list = findChildren<QDockWidget *>();
+      }
+
+    if (ev->type () == QEvent::StyleChange)
+      {
+        // This might indicate un- or re-docking a widget: Make sure
+        // floating widget get a copy of our actions
+        for (int i = m_dw_list.length () - 1; i >= 0; i--)
+          {
+            // First remove possibly existing actions
+            for (int j = m_actions_list.length () - 1; j >0; j--)
+              m_dw_list.at (i)->removeAction (m_actions_list.at (j));
+
+            // Then add our actions for floating widgets
+            if (m_dw_list.at (i)->isFloating ())
+              m_dw_list.at (i)->addActions (m_actions_list);
+          }
+      }
+
+    return QMainWindow::event (ev);
   }
 
 }
-
 

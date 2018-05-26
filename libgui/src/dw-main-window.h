@@ -54,17 +54,22 @@ namespace octave
 
     virtual QMenu* createPopupMenu ();
 
+    virtual bool event (QEvent *ev);
+
   private slots:
 
-    void request_close_file ();
-    void request_close_all_files ();
-    void request_close_other_files ();
+    void request_close ();
+    void request_close_all ();
+    void request_close_other ();
 
-  signals:
-
-  protected:
+    void request_switch_left ();
+    void request_switch_right ();
 
   private:
+
+    void request_switch (int direction);
+
+    QList<QDockWidget *> m_dw_list;
 
     QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member, QWidget *receiver);
@@ -73,6 +78,10 @@ namespace octave
     QAction *m_close_all_action;
     QAction *m_close_others_action;
 
+    QAction *m_switch_left_action;
+    QAction *m_switch_right_action;
+
+    QList<QAction *> m_actions_list;
   };
 
 }

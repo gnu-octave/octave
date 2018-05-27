@@ -31,6 +31,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/uname-wrapper.h \
   %reldir%/unicase-wrappers.h \
   %reldir%/uniconv-wrappers.h \
+  %reldir%/unictype-wrappers.h \
   %reldir%/unistd-wrappers.h \
   %reldir%/unistr-wrappers.h \
   %reldir%/unsetenv-wrapper.h \
@@ -71,6 +72,7 @@ WRAPPERS_SRC = \
   %reldir%/uname-wrapper.c \
   %reldir%/unicase-wrappers.c \
   %reldir%/uniconv-wrappers.c \
+  %reldir%/unictype-wrappers.c \
   %reldir%/unistd-wrappers.c \
   %reldir%/unistr-wrappers.c \
   %reldir%/unsetenv-wrapper.c \

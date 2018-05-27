@@ -34,6 +34,12 @@ octave_u8_strmblen_wrapper (const uint8_t *src)
   return u8_strmblen (src);
 }
 
+int
+octave_u8_strmbtouc_wrapper (uint32_t *puc, const uint8_t *src)
+{
+  return u8_strmbtouc (puc, src);
+}
+
 uint32_t *
 octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
                           uint32_t *result_buf, size_t *lengthp)

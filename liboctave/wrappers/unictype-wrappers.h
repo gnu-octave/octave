@@ -20,22 +20,50 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_unistr_wrappers_h)
-#define octave_unistr_wrappers_h 1
+#if ! defined (octave_unictype_wrappers_h)
+#define octave_unictype_wrappers_h 1
+
+typedef uint32_t ucs4_t;
 
 #if defined __cplusplus
 extern "C" {
 #endif
 
-extern int
-octave_u8_strmblen_wrapper (const uint8_t *src);
+extern bool
+octave_uc_is_alnum_wrapper (ucs4_t uc);
 
-extern int
-octave_u8_strmbtouc_wrapper (uint32_t *puc, const uint8_t *src);
+extern bool
+octave_uc_is_alpha_wrapper (ucs4_t uc);
 
-extern uint32_t *
-octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
-                          uint32_t *result_buf, size_t *lengthp);
+extern bool
+octave_uc_is_blank_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_cntrl_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_digit_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_graph_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_lower_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_print_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_punct_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_space_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_upper_wrapper (ucs4_t uc);
+
+extern bool
+octave_uc_is_xdigit_wrapper (ucs4_t uc);
 
 #if defined __cplusplus
 }

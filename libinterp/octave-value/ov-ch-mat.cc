@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "mx-base.h"
 #include "unicase-wrappers.h"
+#include "unictype-wrappers.h"
+#include "unistr-wrappers.h"
 
 #include "mxarray.h"
 #include "ov-base.h"
@@ -259,18 +261,49 @@ octave_char_matrix::map (unary_mapper_t umap) const
     case umap_ ## UMAP:                                               \
       return octave_value (matrix.map<TYPE, int (&) (int)> (FCN))
 
-    STRING_MAPPER (xisalnum, std::isalnum, bool);
-    STRING_MAPPER (xisalpha, std::isalpha, bool);
     STRING_MAPPER (xisascii, xisascii, bool);
-    STRING_MAPPER (xiscntrl, std::iscntrl, bool);
-    STRING_MAPPER (xisdigit, std::isdigit, bool);
-    STRING_MAPPER (xisgraph, std::isgraph, bool);
-    STRING_MAPPER (xislower, std::islower, bool);
-    STRING_MAPPER (xisprint, std::isprint, bool);
-    STRING_MAPPER (xispunct, std::ispunct, bool);
-    STRING_MAPPER (xisspace, std::isspace, bool);
-    STRING_MAPPER (xisupper, std::isupper, bool);
-    STRING_MAPPER (xisxdigit, std::isxdigit, bool);
+
+#define STRING_U8_MAPPER(UMAP,FCN)                                             \
+    case umap_ ## UMAP:                                                        \
+      {                                                                        \
+        charNDArray in_m = matrix;                                             \
+        Array<octave_idx_type> p (dim_vector (matrix.ndims (), 1));            \
+        if (matrix.ndims () > 1)                                               \
+          {                                                                    \
+            for (octave_idx_type i=0; i < matrix.ndims (); i++)                \
+              p(i) = i;                                                        \
+            p(0) = 1;                                                          \
+            p(1) = 0;                                                          \
+            in_m = matrix.permute (p);                                         \
+          }                                                                    \
+        boolNDArray b_array = boolNDArray (in_m.dims ());                      \
+        const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
+        uint32_t uc;                                                           \
+        for (octave_idx_type i = 0; i < in_m.numel (); )                       \
+        {                                                                      \
+          int mblen = octave_u8_strmbtouc_wrapper (&uc, in + i);               \
+          if (mblen < 1)                                                       \
+            mblen = 1;                                                         \
+          bool is_upper = FCN (uc);                                            \
+          for (int j = 0; j < mblen; j++)                                      \
+            b_array(i+j) = is_upper;                                           \
+          i += mblen;                                                          \
+        }                                                                      \
+        return octave_value ((matrix.ndims () > 1) ? b_array.permute (p, true) \
+                                                   : b_array);                 \
+      }
+
+    STRING_U8_MAPPER (xisalnum, octave_uc_is_alnum_wrapper);
+    STRING_U8_MAPPER (xisalpha, octave_uc_is_alpha_wrapper);
+    STRING_U8_MAPPER (xiscntrl, octave_uc_is_cntrl_wrapper);
+    STRING_U8_MAPPER (xisdigit, octave_uc_is_digit_wrapper);
+    STRING_U8_MAPPER (xisgraph, octave_uc_is_graph_wrapper);
+    STRING_U8_MAPPER (xislower, octave_uc_is_lower_wrapper);
+    STRING_U8_MAPPER (xisprint, octave_uc_is_print_wrapper);
+    STRING_U8_MAPPER (xispunct, octave_uc_is_punct_wrapper);
+    STRING_U8_MAPPER (xisspace, octave_uc_is_space_wrapper);
+    STRING_U8_MAPPER (xisupper, octave_uc_is_upper_wrapper);
+    STRING_U8_MAPPER (xisxdigit, octave_uc_is_xdigit_wrapper);
 
 #define STRING_U8_FCN(UMAP,U8_FCN,STD_FCN)                                     \
     case umap_ ## UMAP:                                                        \
@@ -278,13 +311,13 @@ octave_char_matrix::map (unary_mapper_t umap) const
         charNDArray in_m = matrix;                                             \
         Array<octave_idx_type> p (dim_vector (matrix.ndims (), 1));            \
         if (matrix.ndims () > 1)                                               \
-        {                                                                      \
-          for (octave_idx_type i=0; i < matrix.ndims (); i++)                  \
-            p(i) = i;                                                          \
-          p(0) = 1;                                                            \
-          p(1) = 0;                                                            \
-          in_m = matrix.permute (p);                                           \
-        }                                                                      \
+          {                                                                    \
+            for (octave_idx_type i=0; i < matrix.ndims (); i++)                \
+              p(i) = i;                                                        \
+            p(0) = 1;                                                          \
+            p(1) = 0;                                                          \
+            in_m = matrix.permute (p);                                         \
+          }                                                                    \
         size_t output_length = in_m.numel ();                                  \
         charNDArray ch_array = charNDArray (in_m.dims ());                     \
         const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \

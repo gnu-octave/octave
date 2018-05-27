@@ -53,6 +53,9 @@ example, the expression
 produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric Data
 Types}, for more information about creating matrices.
 
+While strings can in principal store arbitrary content, most functions expect
+them to be UTF-8 encoded Unicode strings.
+
 @menu
 * Escape Sequences in String Constants::
 * Character Arrays::
@@ -467,6 +470,8 @@ general regular expressions, the following functions come with Octave.
 @DOCSTRING(regexptranslate)
 
 @DOCSTRING(untabify)
+
+@DOCSTRING(unicode_idx)
 
 @node String Conversions
 @section String Conversions

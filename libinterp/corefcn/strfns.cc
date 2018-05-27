@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "localcharset-wrapper.h"
 #include "uniconv-wrappers.h"
+#include "unistr-wrappers.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -827,6 +828,60 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 
   return ovl (retval);
 }
+
+DEFUN (unicode_idx, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{idx} =} unicode_idx (@var{str})
+Return an array with the indices for each UTF-8 encoded character in @var{str}.
+
+@example
+@group
+unicode_idx ("aäbc")
+     @result{} [1, 2, 2, 3, 4]
+@end group
+@end example
+
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ();
+
+  charNDArray str = args(0).xchar_array_value ("STR must be a string");
+  Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
+  charNDArray str_p;
+  if (str.ndims () > 1)
+  {
+    for (octave_idx_type i=0; i < str.ndims (); i++)
+      p(i) = i;
+    p(0) = 1;
+    p(1) = 0;
+    str_p = str.permute (p);
+  }
+
+  const uint8_t *src = reinterpret_cast<const uint8_t *> (str_p.data ());
+  octave_idx_type srclen = str.numel ();
+
+  NDArray idx (str_p.dims ());
+
+  octave_idx_type u8_char_num = 1;
+  for (octave_idx_type i = 0; i < srclen; u8_char_num++)
+  {
+    int mblen = octave_u8_strmblen_wrapper (src + i);
+    if (mblen < 1)
+      mblen = 1;
+    for (octave_idx_type j = 0; j < mblen; j++)
+      idx (i+j) = u8_char_num;
+    i += mblen;
+  }
+  
+  return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
+}
+
+/*
+%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
+*/
 
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-

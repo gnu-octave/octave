@@ -103,9 +103,13 @@ namespace octave
 
     void queue_unfloat_float (void);
 
+    void queue_float (void);
+
   protected slots:
 
     void unfloat_float (void);
+
+    void refloat (void);
 
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
   protected:

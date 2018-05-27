@@ -304,7 +304,10 @@ namespace octave
     // low-level check of whether docked-widget became a window via
     // via drag-and-drop
     if (event->type () == QEvent::MouseButtonPress)
-      m_waiting_for_mouse_move = false;
+      {
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = false;
+      }
     if (event->type () == QEvent::MouseMove && m_waiting_for_mouse_move)
       {
         m_waiting_for_mouse_move = false;
@@ -325,8 +328,23 @@ namespace octave
   void
   variable_dock_widget::unfloat_float (void)
   {
+    hide ();
     setFloating (false);
+    // Avoid a Ubunty Unity issue by queuing this rather than direct.
+    emit queue_float ();
+    m_waiting_for_mouse_move = false;
+    m_waiting_for_mouse_button_release = false;
+  }
+
+  void
+  variable_dock_widget::refloat (void)
+  {
     setFloating (true);
+    m_waiting_for_mouse_move = false;
+    m_waiting_for_mouse_button_release = false;
+    show ();
+    activateWindow ();
+    setFocus ();
   }
 
 #else
@@ -1203,6 +1221,8 @@ namespace octave
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
     connect (page, SIGNAL (queue_unfloat_float ()),
              page, SLOT (unfloat_float ()), Qt::QueuedConnection);
+    connect (page, SIGNAL (queue_float ()),
+             page, SLOT (refloat ()), Qt::QueuedConnection);
 #endif
 
     variable_editor_stack *stack = new variable_editor_stack (page);

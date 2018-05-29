@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
+
+#include <QButtonGroup>
 #include <QDir>
 #include <QFileInfo>
 #include <QFileDialog>

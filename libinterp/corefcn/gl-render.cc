@@ -3143,10 +3143,10 @@ namespace octave
                 if (clip_f(i))
                   continue;
 
-                bool check_coplanarity = false;
-                if (has_z && count_f(i) > 3)
+                bool is_non_planar = false;
+                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
                   {
-                    check_coplanarity = true;
+                    is_non_planar = true;
                     it2 = (*it1).end ();
                     it2--;
                   }
@@ -3154,7 +3154,7 @@ namespace octave
                 // loop over planar subsets of face
                 do
                   {
-                    if (check_coplanarity)
+                    if (is_non_planar)
                       {
                         i_end = *it2;
                         if (it2 == (*it1).begin ())
@@ -3224,7 +3224,7 @@ namespace octave
                     tess.end_polygon ();
                   } while (i_start > 0);
 
-                if (check_coplanarity)
+                if (is_non_planar)
                   it1++;
               }
 
@@ -3285,7 +3285,7 @@ namespace octave
             for (int i = 0; i < nf; i++)
               {
                 bool is_non_planar = false;
-                if ((has_z && count_f(i) > 3) && (*it1).front () != count_f(i))
+                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
                   is_non_planar = true;
                 if (clip_f(i) || is_non_planar)
                   {
@@ -3360,7 +3360,7 @@ namespace octave
                     tess.end_contour ();
                     tess.end_polygon ();
                   }
-                if (has_z && count_f(i) > 3)
+                if (is_non_planar)
                   it1++;
               }
 

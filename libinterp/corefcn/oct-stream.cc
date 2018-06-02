@@ -3758,8 +3758,9 @@ namespace octave
 
             std::string tmp (comment_len, '\0');
             char *look = is.read (&tmp[0], comment_len-1, pos); // already read first char
-            if (is && ! strncmp (comment_style(0).string_value ().substr (1)
-                                 .c_str (), look, comment_len-1))
+            if (is && comment_style.numel () > 0 &&
+                ! strncmp (comment_style(0).string_value ().substr (1).c_str (),
+                           look, comment_len-1))
               {
                 found_comment = true;
 

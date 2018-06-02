@@ -741,7 +741,7 @@ namespace octave
             switch (mode)
               {
               case MODE_RENDER:
-                if (code == '\n')
+                if ((code == '\n') || (code == '\t'))
                   {
                     glyph_index = FT_Get_Char_Index (face, ' ');
                     if (! glyph_index
@@ -749,9 +749,19 @@ namespace octave
                       {
                         glyph_index = 0;
                         warn_missing_glyph (' ');
+                        break;
                       }
-                    else
+
+                    if (code == '\n')
                       push_new_line ();
+                    else
+                      {
+                        // Advance to next multiple of 4 times the width of the
+                        // "space" character.
+                        int x_tab = 4 * (face->glyph->advance.x >> 6);
+                        xoffset = (1 + std::floor (1. * xoffset / x_tab)) *
+                                  x_tab;
+                      }
                   }
                 else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
                   {

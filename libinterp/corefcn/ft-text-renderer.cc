@@ -729,41 +729,38 @@ namespace octave
       {
         glyph_index = FT_Get_Char_Index (face, code);
 
-        if (code != '\n'
+        if (code != '\n' && code != '\t'
             && (! glyph_index
                 || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
           {
             glyph_index = 0;
             warn_missing_glyph (code);
           }
+        else if ((code == '\n') || (code == '\t'))
+          {
+            glyph_index = FT_Get_Char_Index (face, ' ');
+            if (! glyph_index
+                || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+              {
+                glyph_index = 0;
+                warn_missing_glyph (' ');
+              }
+            else if (code == '\n')
+              push_new_line ();
+            else
+              {
+                // Advance to next multiple of 4 times the width of the "space"
+                // character.
+                int x_tab = 4 * (face->glyph->advance.x >> 6);
+                xoffset = (1 + std::floor (1. * xoffset / x_tab)) * x_tab;
+              }
+          }
         else
           {
             switch (mode)
               {
               case MODE_RENDER:
-                if ((code == '\n') || (code == '\t'))
-                  {
-                    glyph_index = FT_Get_Char_Index (face, ' ');
-                    if (! glyph_index
-                        || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-                      {
-                        glyph_index = 0;
-                        warn_missing_glyph (' ');
-                        break;
-                      }
-
-                    if (code == '\n')
-                      push_new_line ();
-                    else
-                      {
-                        // Advance to next multiple of 4 times the width of the
-                        // "space" character.
-                        int x_tab = 4 * (face->glyph->advance.x >> 6);
-                        xoffset = (1 + std::floor (1. * xoffset / x_tab)) *
-                                  x_tab;
-                      }
-                  }
-                else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
                   {
                     glyph_index = 0;
                     warn_glyph_render (code);
@@ -786,9 +783,9 @@ namespace octave
                     y0 = line_yoffset + yoffset + face->glyph->bitmap_top;
 
                     // 'w' seems to have a negative -1
-                    // face->glyph->bitmap_left, this is so we don't
-                    // index out of bound, and assumes we've allocated
-                    // the right amount of horizontal space in the bbox.
+                    // face->glyph->bitmap_left, this is so we don't index out
+                    // of bound, and assumes we've allocated the right amount of
+                    // horizontal space in the bbox.
                     if (x0 < 0)
                       x0 = 0;
 
@@ -816,41 +813,26 @@ namespace octave
                 break;
 
               case MODE_BBOX:
-                if (code == '\n')
+                Matrix& bb = line_bbox.back ();
+
+                // If we have a previous glyph, use kerning information.  This
+                // usually means moving a bit backward before adding the next
+                // glyph.  That is, "delta.x" is usually < 0.
+                if (previous)
                   {
-                    glyph_index = FT_Get_Char_Index (face, ' ');
-                    if (! glyph_index
-                        || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-                      {
-                        glyph_index = 0;
-                        warn_missing_glyph (' ');
-                      }
-                    else
-                      push_new_line ();
+                    FT_Vector delta;
+
+                    FT_Get_Kerning (face, previous, glyph_index,
+                                    FT_KERNING_DEFAULT, &delta);
+
+                    xoffset += (delta.x >> 6);
                   }
-                else
-                  {
-                    Matrix& bb = line_bbox.back ();
 
-                    // If we have a previous glyph, use kerning information.
-                    // This usually means moving a bit backward before adding
-                    // the next glyph.  That is, "delta.x" is usually < 0.
-                    if (previous)
-                      {
-                        FT_Vector delta;
+                // Extend current X offset box by the width of the current
+                // glyph.  Then extend the line bounding box if necessary.
 
-                        FT_Get_Kerning (face, previous, glyph_index,
-                                        FT_KERNING_DEFAULT, &delta);
-
-                        xoffset += (delta.x >> 6);
-                      }
-
-                    // Extend current X offset box by the width of the current
-                    // glyph.  Then extend the line bounding box if necessary.
-
-                    xoffset += (face->glyph->advance.x >> 6);
-                    bb(2) = math::max (bb(2), xoffset);
-                  }
+                xoffset += (face->glyph->advance.x >> 6);
+                bb(2) = math::max (bb(2), xoffset);
                 break;
               }
           }

@@ -3395,6 +3395,34 @@ base_properties::delete_listener (const caseless_str& pname,
     p.delete_listener (val, mode);
 }
 
+void
+base_properties::get_children_of_type (const caseless_str& chtype,
+                                       bool get_invisible,
+                                       bool traverse,
+                                       std::list<graphics_object> &children_list) const
+{
+  Matrix ch = get_children ();
+  for (octave_idx_type i = 0; i < ch.numel (); i++)
+    {
+      graphics_handle hkid = gh_manager::lookup (ch(i));
+
+      if (hkid.ok ())
+        {
+          graphics_object go = gh_manager::get_object (hkid);
+          if ( get_invisible || go.get_properties ().is_visible () )
+            {
+              if (go.isa (chtype))
+                children_list.push_back (go);
+              else if (traverse && go.isa ("hggroup"))
+                go.get_properties ().get_children_of_type (chtype,
+                                                           get_invisible,
+                                                           traverse,
+                                                           children_list);
+            }
+        }
+    }
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -8639,6 +8667,37 @@ axes::properties::clear_zoom_stack (bool do_unzoom)
 }
 
 void
+axes::properties::trigger_normals_calc (void)
+{
+  // Find all patch (and surface) objects within axes
+  std::list<graphics_object> children_list;
+  std::list<graphics_object>::iterator children_list_iter;
+  get_children_of_type ("patch", false, true, children_list);
+  // FIXME: Un-comment when surface is ready:
+  // get_children_of_type ("surface", false, true, children_list);
+
+  // trigger normals calculation for these objects
+  for (children_list_iter = children_list.begin ();
+       children_list_iter != children_list.end (); children_list_iter++)
+    {
+      graphics_object kid = *children_list_iter;
+      if (kid.isa ("patch"))
+        {
+          patch::properties& patch_props =
+              dynamic_cast<patch::properties&> (kid.get_properties ());
+          patch_props.update_normals (false);
+        }
+      else
+        {
+          // FIXME: Un-comment when surface is ready:
+          // surface::properties& surface_props =
+          //     dynamic_cast<surface::properties&> (kid.get_properties ());
+          // surface_props.update_normals (false);
+        }
+    }
+}
+
+void
 axes::reset_default_properties (void)
 {
   // empty list of local defaults
@@ -8886,6 +8945,17 @@ image::properties::get_color_data (void) const
 }
 
 // ---------------------------------------------------------------------
+
+void
+light::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  // trigger normals calculation for the respective children of this axes object
+  axes::properties& parent_axes_prop =
+    dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
+  parent_axes_prop.trigger_normals_calc ();
+}
 
 void
 light::properties::update_visible (void)
@@ -9154,14 +9224,9 @@ patch::properties::update_data (void)
   set_ydata (yd);
   set_zdata (zd);
   set_cdata (cd);
-}
 
-// ---------------------------------------------------------------------
-
-octave_value
-surface::properties::get_color_data (void) const
-{
-  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
+  // Update normals
+  update_normals (true);
 }
 
 inline void
@@ -9172,6 +9237,257 @@ cross_product (double x1, double y1, double z1,
   x += (y1 * z2 - z1 * y2);
   y += (z1 * x2 - x1 * z2);
   z += (x1 * y2 - y1 * x2);
+}
+
+void
+patch::properties::calc_face_normals (Matrix& fn)
+{
+  Matrix v = get_vertices ().matrix_value ();
+  Matrix f = get_faces ().matrix_value ();
+
+  bool is_3d = (v.columns () == 3); // 2d or 3d patches
+  octave_idx_type num_f = f.rows (); // number of faces
+  octave_idx_type max_nc = f.columns (); // maximum number of polygon corners
+
+  // In which cases can we skip updating the normals?
+  if (max_nc < 3)
+    {
+      fn = Matrix ();
+      return;
+    }
+
+  // Calculate normals for all faces
+  std::list<std::list<octave_idx_type>>::const_iterator
+    cp_it = coplanar_last_idx.begin ();
+  octave_idx_type i1, i2, i3;
+  octave_idx_type j1, j2;
+  for (octave_idx_type i = 0; i < num_f; i++)
+    {
+      bool is_coplanar = true;
+      if (coplanar_last_idx.size () > 0)
+        {
+          if ((*cp_it).size () > 1)
+          {
+            is_coplanar = false;
+          }
+          cp_it++;
+        }
+
+      // get number of corners
+      octave_idx_type nc = 3;
+      if (max_nc > 3)
+        {
+          while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+            nc++;
+        }
+
+      RowVector fnc (3, 0.0);
+      double& nx = fnc(0);
+      double& ny = fnc(1);
+      double& nz = fnc(2);
+
+      if (is_coplanar)
+        {
+          // fast way for coplanar polygons
+          i1 = f(i,0) - 1; i2 = f(i,1) - 1; i3 = f(i,nc-1) - 1;
+
+          if (is_3d)
+            cross_product
+              (v(i3,0) - v(i1,0), v(i3,1) - v(i1,1), v(i3,2) - v(i1,2),
+               v(i2,0) - v(i1,0), v(i2,1) - v(i1,1), v(i2,2) - v(i1,2),
+               nx, ny, nz);
+          else
+            {
+              nz = (v(i2,0) - v(i1,0)) * (v(i3,1) - v(i1,1)) - 
+                   (v(i2,1) - v(i1,1)) * (v(i3,0) - v(i1,0));
+              // 2-d vertices always point towards +z
+              nz = (nz < 0) ? -nz : nz;
+            }
+        }
+      else
+        {
+          // more general for non-planar polygons
+
+          // calculate face normal with Newill method
+          // https://courses.cit.cornell.edu/cs417-land/SECTIONS/normals.html
+
+          j1 = nc - 1; j2 = 0;
+          i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+
+          nx = (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
+          ny = (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
+          nz = (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+
+          for (octave_idx_type j = 1; j < nc; j++)
+            {
+              j1 = j-1; j2 = j;
+              i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+
+              nx += (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
+              ny += (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
+              nz += (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+            }
+        }
+
+      // normalize normal vector
+      double n_len = sqrt (nx*nx+ny*ny+nz*nz);
+
+      // assign normal to current face
+      if ( n_len < std::numeric_limits<double>::epsilon () )
+        for (octave_idx_type j = 0; j < 3; j++)
+          fn(i,j) = 0.0;
+      else
+        for (octave_idx_type j = 0; j < 3; j++)
+          fn(i,j) = fnc(j) / n_len;
+    }
+}
+
+void
+patch::properties::update_face_normals (bool reset)
+{
+  if (updating_patch_data || ! facenormalsmode_is ("auto"))
+    return;
+
+  if ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+      get_do_lighting ())
+    {
+      Matrix f = get_faces ().matrix_value ();
+
+      octave_idx_type num_f = f.rows (); // number of faces
+      Matrix fn (num_f, 3, 0.0);
+
+      calc_face_normals (fn);
+      facenormals = fn;
+    }
+  else if (reset)
+    facenormals = Matrix ();
+}
+
+void
+patch::properties::update_vertex_normals (bool reset)
+{
+  if (updating_patch_data || ! vertexnormalsmode_is ("auto"))
+    return;
+
+  if ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
+      edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
+      get_do_lighting ())
+    {
+      Matrix v = get_vertices ().matrix_value ();
+      Matrix f = get_faces ().matrix_value ();
+
+      octave_idx_type num_v = v.rows (); // number of vertices
+      octave_idx_type num_f = f.rows (); // number of faces
+      octave_idx_type max_nc = f.columns (); // maximum number of polygon corners
+
+      // In which cases can we skip updating the normals?
+      if (max_nc < 3)
+        return;
+
+      // First step: Calculate the normals for all faces
+      Matrix fn = get_facenormals ().matrix_value ();
+      if ( fn.isempty () )
+        {
+          // calculate facenormals here
+          fn = Matrix (num_f, 3, 0.0);
+          calc_face_normals (fn);
+        }
+
+      // Second step: assign normals to the respective vertices
+      std::vector<RowVector> vec_vn [num_v]; // list of normals for vertices
+      for (octave_idx_type i = 0; i < num_f; i++)
+        {
+          // get number of corners
+          octave_idx_type nc = 3;
+          if (max_nc > 3)
+            {
+              while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+                nc++;
+            }
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            vec_vn[static_cast<octave_idx_type> (f(i,j) - 1)].push_back (fn.row (i));
+        }
+
+      // Third step: Calculate the normal for the vertices taking the average
+      // of the normals determined from all adjacent faces
+      Matrix vn (num_v, 3, 0.0);
+      for (octave_idx_type i = 0; i < num_v; i++)
+        {
+          std::vector<RowVector>::iterator it = vec_vn[i].begin ();
+
+          // The normal of unused vertices is NaN.
+          RowVector vn0 (3, octave_NaN);
+
+          if (it != vec_vn[i].end ())
+            {
+              // FIXME: Currently, the first vector also determines the
+              // direction of the normal.  How to determine the inner and outer
+              // faces of all parts of the patch and point the normals outwards?
+              // (Necessary for correct lighting with "backfacelighting" set to
+              // "lit" or "unlit".) Matlab does not seem to do it correctly
+              // either.  So bother here?
+
+              vn0 = *it;
+              
+              for (++it; it != vec_vn[i].end (); ++it)
+                {
+                  RowVector vn1 = *it;
+                  // Use sign of dot product to point vectors in a similar
+                  // direction before taking the average.
+                  double dir =
+                    (vn0(0)*vn1(0) + vn0(1)*vn1(1) + vn0(2)*vn1(2) < 0) ? -1
+                                                                        : 1;
+                  for (octave_idx_type j = 0; j < 3; j++)
+                    vn0(j) += dir * vn1(j);
+                }
+
+              // normalize normal vector
+              double n_len = sqrt (vn0(0)*vn0(0)+vn0(1)*vn0(1)+vn0(2)*vn0(2));
+
+              // save normal in matrix
+              for (octave_idx_type j = 0; j < 3; j++)
+                vn(i,j) = vn0(j)/n_len;
+            }
+        }
+
+      vertexnormals = vn;
+    }
+  else if (reset)
+    vertexnormals = Matrix ();
+}
+
+void
+patch::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  // calculate normals for default data
+  // This is done because the normals for the default data do not match
+  // get(0, "DefaultPatchVertexNormals") in Matlab.
+  xproperties.update_normals (true);
+}
+
+
+void
+patch::reset_default_properties (void)
+{
+  // empty list of local defaults
+  default_properties = property_list ();
+  xreset_default_properties (get_handle (), xproperties.factory_defaults ());
+
+  // calculate normals for default data
+  // This is done because the normals for the default data do not match
+  // get(0, "DefaultPatchVertexNormals") in Matlab.
+  xproperties.update_normals (true);
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
+surface::properties::get_color_data (void) const
+{
+  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
 }
 
 bool

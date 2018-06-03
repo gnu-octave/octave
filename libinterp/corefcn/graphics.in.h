@@ -2287,6 +2287,10 @@ public:
     return children.get_hidden ();
   }
 
+  void get_children_of_type (const caseless_str& type, bool get_invisible,
+                             bool traverse,
+                             std::list<graphics_object> &children_list) const;
+
   void set_modified (const octave_value& val) { set___modified__ (val); }
 
   void set___modified__ (const octave_value& val) { __modified__ = val; }
@@ -4183,6 +4187,8 @@ public:
       update_axes_layout ();
     }
 
+    void trigger_normals_calc (void);
+
   };
 
 private:
@@ -4813,6 +4819,9 @@ public:
       retval = base_properties::has_readonly_property (pname);
     return retval;
   }
+
+protected:
+  void initialize (const graphics_object& go);
 };
 
 // ---------------------------------------------------------------------
@@ -4861,13 +4870,13 @@ public:
       string_property displayname , ""
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property edgelighting , "{none}|flat|gouraud|phong"
+      radio_property edgelighting u , "{none}|flat|gouraud|phong"
       radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property facelighting , "none|{flat}|gouraud|phong"
+      radio_property facelighting u , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
-      radio_property facenormalsmode , "{auto}|manual"
+      radio_property facenormalsmode u , "{auto}|manual"
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
@@ -4883,7 +4892,7 @@ public:
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
       array_property vertexnormals m , Matrix ()
-      radio_property vertexnormalsmode , "{auto}|manual"
+      radio_property vertexnormalsmode u , "{auto}|manual"
       array_property vertices u , default_patch_vertices ()
       array_property xdata u , default_patch_xdata ()
       array_property ydata u , default_patch_ydata ()
@@ -4934,12 +4943,20 @@ public:
       specularstrength.add_constraint ("max", 1.0, true);
     }
 
+  public:
+    void update_normals (bool reset)
+    {
+      update_face_normals (reset);
+      update_vertex_normals (reset);
+    }
+
+
   private:
     std::string bad_data_msg;
 
     void update_faces (void) { update_data ();}
 
-    void update_vertices (void)  { update_data ();}
+    void update_vertices (void) { update_data ();}
 
     void update_facevertexcdata (void) { update_data ();}
 
@@ -4958,7 +4975,10 @@ public:
           set_faces (Matrix ());
         }
       else
-        update_fvc ();
+        {
+          update_fvc ();
+          update_normals (true);
+        }
 
       set_xlim (xdata.get_limits ());
     }
@@ -4973,7 +4993,10 @@ public:
           set_faces (Matrix ());
         }
       else
-        update_fvc ();
+        {
+          update_fvc ();
+          update_normals (true);
+        }
 
       set_ylim (ydata.get_limits ());
     }
@@ -4981,12 +5004,14 @@ public:
     void update_zdata (void)
     {
       update_fvc ();
+      update_normals (true);
       set_zlim (zdata.get_limits ());
     }
 
     void update_cdata (void)
     {
       update_fvc ();
+      update_normals (false);
 
       if (cdatamapping_is ("scaled"))
         set_clim (cdata.get_limits ());
@@ -4995,10 +5020,35 @@ public:
     }
 
     void update_data (void);
+
+    void calc_face_normals (Matrix& normals);
+    void update_face_normals (bool reset);
+    void update_vertex_normals (bool reset);
+
+    void update_edgelighting (void)
+    {
+      update_face_normals (false);
+    }
+
+    void update_facelighting (void)
+    {
+      update_normals (false);
+    }
+
+    void update_facenormalsmode (void)
+    {
+      update_face_normals (false);
+    }
+
+    void update_vertexnormalsmode (void)
+    {
+      update_vertex_normals (false);
+    }
   };
 
 private:
   properties xproperties;
+  property_list default_properties;
 
 public:
   patch (const graphics_handle& mh, const graphics_handle& p)
@@ -5020,6 +5070,12 @@ public:
       retval = base_properties::has_readonly_property (pname);
     return retval;
   }
+
+  void reset_default_properties (void);
+
+protected:
+  void initialize (const graphics_object& go);
+
 };
 
 // ---------------------------------------------------------------------

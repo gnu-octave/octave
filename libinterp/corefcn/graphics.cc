@@ -1728,13 +1728,8 @@ children_property::do_get_children (bool return_hidden) const
 void
 children_property::do_delete_children (bool clear)
 {
-  for (auto& hchild : children_list)
-    {
-      graphics_object go = gh_manager::get_object (hchild);
-
-      if (go.valid_object () && ! go.get_properties ().is_beingdeleted ())
-        gh_manager::free (hchild);
-    }
+  while (! children_list.empty ())
+    gh_manager::free (children_list.front ());
 
   if (clear)
     children_list.clear ();
@@ -2655,16 +2650,28 @@ gh_manager::do_free (const graphics_handle& h)
 
       base_properties& bp = p->second.get_properties ();
 
+      if (!p->second.valid_object () || bp.is_beingdeleted ())
+        return;
+
+      graphics_handle parent_h = p->second.get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
+
       bp.set_beingdeleted (true);
 
       bp.delete_children ();
 
+      // NOTE: Call the delete function while the object's state is still valid.
       octave_value val = bp.get_deletefcn ();
 
       bp.execute_deletefcn ();
 
       // Notify graphics toolkit.
       p->second.finalize ();
+
+      // NOTE: Call remove_child before erasing the go from the map.
+      // A callback function might have already deleted the parent
+      if (parent_go.valid_object () && h.ok ())
+        parent_go.remove_child (h);
 
       // Note: this will be valid only for first explicitly deleted
       // object.  All its children will then have an
@@ -2801,19 +2808,10 @@ delete_graphics_object (const graphics_handle& h)
       // Don't do recursive deleting, due to callbacks
       if (! go.get_properties ().is_beingdeleted ())
         {
-          graphics_handle parent_h = go.get_parent ();
-
-          graphics_object parent_go = gh_manager::get_object (parent_h);
-
-          // NOTE: free the handle before removing it from its parent's
-          //       children, such that the object's state is correct when the
-          //       deletefcn callback is executed
+          // NOTE: Freeing the handle also calls any deletefcn.  It also calls
+          //       the parent's delete_child function.
 
           gh_manager::free (h);
-
-          // A callback function might have already deleted the parent
-          if (parent_go.valid_object ())
-            parent_go.remove_child (h);
 
           Vdrawnow_requested = true;
         }
@@ -5043,8 +5041,6 @@ axes::properties::set_text_child (handle_property& hp,
 
   gh_manager::free (hp.handle_value ());
 
-  base_properties::remove_child (hp.handle_value ());
-
   hp = val;
 
   adopt (hp.handle_value ());
@@ -5342,8 +5338,6 @@ axes::properties::delete_text_child (handle_property& hp)
 
       if (go.valid_object ())
         gh_manager::free (h);
-
-      base_properties::remove_child (h);
     }
 
   // FIXME: is it necessary to check whether the axes object is
@@ -5365,6 +5359,11 @@ axes::properties::delete_text_child (handle_property& hp)
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
+  graphics_object go = gh_manager::get_object (h);
+
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    decrease_num_lights ();
+
   if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
     {
       delete_text_child (xlabel);
@@ -5385,8 +5384,21 @@ axes::properties::remove_child (const graphics_handle& h)
       delete_text_child (title);
       update_title_position ();
     }
-  else
-    base_properties::remove_child (h);
+
+  if (go.valid_object ())
+      base_properties::remove_child (h);
+
+}
+
+void
+axes::properties::adopt (const graphics_handle& h)
+{
+  graphics_object go (gh_manager::get_object (h));
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    increase_num_lights ();
+
+  base_properties::adopt (h);
+
 }
 
 inline Matrix
@@ -8875,6 +8887,30 @@ image::properties::get_color_data (void) const
 
 // ---------------------------------------------------------------------
 
+void
+light::properties::update_visible (void)
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_props = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+  if (is_visible ())
+    ax_props.increase_num_lights ();
+  else
+    ax_props.decrease_num_lights ();
+}
+
+// ---------------------------------------------------------------------
+
+bool
+patch::properties::get_do_lighting (void) const
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_props = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+
+  return (ax_props.get_num_lights () > 0);
+}
+
 octave_value
 patch::properties::get_color_data (void) const
 {
@@ -9138,6 +9174,16 @@ cross_product (double x1, double y1, double z1,
   z += (x1 * y2 - y1 * x2);
 }
 
+bool
+surface::properties::get_do_lighting (void) const
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_prop = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+
+  return (ax_prop.get_num_lights () > 0);
+}
+
 void
 surface::properties::update_vertex_normals (void)
 {
@@ -9230,6 +9276,36 @@ surface::properties::update_vertex_normals (void)
 }
 
 // ---------------------------------------------------------------------
+
+void
+hggroup::properties::remove_child (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    {
+      axes::properties& ax_props =
+        dynamic_cast<axes::properties&>
+        (go.get_ancestor ("axes").get_properties ());
+      ax_props.decrease_num_lights ();
+    }
+  base_properties::remove_child (h);
+  update_limits ();
+}
+
+void
+hggroup::properties::adopt (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    {
+      axes::properties& ax_props =
+        dynamic_cast<axes::properties&>
+        (go.get_ancestor ("axes").get_properties ());
+      ax_props.increase_num_lights ();
+    }
+  base_properties::adopt (h);
+  update_limits (h);
+}
 
 void
 hggroup::properties::update_limits (void) const

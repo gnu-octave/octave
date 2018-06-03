@@ -1942,17 +1942,12 @@ namespace octave
           {
             if (go.isa ("light") && ! selecting)
               {
-                if (num_lights < max_lights)
+                if (current_light-GL_LIGHT0 < max_lights)
                   {
-                    current_light = GL_LIGHT0 + num_lights;
                     set_clipping (p.is_clipping ());
                     draw (go);
-                    num_lights++;
+                    current_light++;
                   }
-                else
-                  warning_with_id ("Octave:max-lights-exceeded",
-                                   "light: Maximum number of lights (%d) in these axes is "
-                                   "exceeded.", max_lights);
               }
             else if (go.isa ("hggroup")
                      && ! (selecting && p.pickableparts_is ("none")))
@@ -2017,12 +2012,16 @@ namespace octave
     // Start with the last element of the array of child objects to
     // display them in the order they were added to the array.
 
-    num_lights = 0;
+    if (props.get_num_lights () > max_lights)
+      warning_with_id ("Octave:max-lights-exceeded",
+                       "light: Maximum number of lights (%d) in these axes is "
+                       "exceeded.", max_lights);
+
     current_light = GL_LIGHT0;
     draw_all_lights (props, obj_list);
 
     // disable other OpenGL lights
-    for (int i = num_lights; i < max_lights; i++)
+    for (unsigned int i = props.get_num_lights (); i < max_lights; i++)
       glDisable (GL_LIGHT0 + i);
 
     // save camera position and set ambient light color before drawing
@@ -2338,6 +2337,7 @@ namespace octave
                    (props.edgealpha_is ("flat") ? 1 : 2));
     int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
+    bool do_lighting = props.get_do_lighting ();
 
     Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
                                         : props.get_facecolor_rgb ());
@@ -2416,7 +2416,7 @@ namespace octave
                   }
               }
 
-            if ((fl_mode > 0) && (num_lights > 0))
+            if ((fl_mode > 0) && do_lighting)
               glEnable (GL_LIGHTING);
             glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
                           ? GL_SMOOTH : GL_FLAT);
@@ -2592,7 +2592,7 @@ namespace octave
             if (fc_mode == TEXTURE)
               glDisable (GL_TEXTURE_2D);
 
-            if ((fl_mode > 0) && (num_lights > 0))
+            if ((fl_mode > 0) && do_lighting)
               glDisable (GL_LIGHTING);
           }
         else
@@ -2624,7 +2624,7 @@ namespace octave
                   }
               }
 
-            if ((el_mode > 0) && (num_lights > 0))
+            if ((el_mode > 0) && do_lighting)
               glEnable (GL_LIGHTING);
             glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
                           ? GL_SMOOTH : GL_FLAT);
@@ -2832,7 +2832,7 @@ namespace octave
             set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
-            if ((el_mode > 0) && (num_lights > 0))
+            if ((el_mode > 0) && do_lighting)
               glDisable (GL_LIGHTING);
           }
         else
@@ -2972,6 +2972,7 @@ namespace octave
                    (props.edgealpha_is ("flat") ? 1 : 2));
     int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
+    bool do_lighting = props.get_do_lighting ();
 
     Matrix fcolor = props.get_facecolor_rgb ();
     Matrix ecolor = props.get_edgecolor_rgb ();
@@ -3125,7 +3126,7 @@ namespace octave
                   }
               }
 
-            if ((fl_mode > 0) && (num_lights > 0) && has_normals)
+            if ((fl_mode > 0) && do_lighting && has_normals)
               glEnable (GL_LIGHTING);
 
             // NOTE: Push filled part of patch backwards to avoid Z-fighting
@@ -3228,7 +3229,7 @@ namespace octave
                   it1++;
               }
 
-            if ((fl_mode > 0) && (num_lights > 0) && has_normals)
+            if ((fl_mode > 0) && do_lighting && has_normals)
               glDisable (GL_LIGHTING);
           }
         else
@@ -3264,7 +3265,7 @@ namespace octave
                   }
               }
 
-            if ((el_mode > 0) && (num_lights > 0) && has_normals)
+            if ((el_mode > 0) && do_lighting && has_normals)
               glEnable (GL_LIGHTING);
 
             double linewidth = props.get_linewidth ();
@@ -3367,7 +3368,7 @@ namespace octave
             set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
-            if ((el_mode > 0) && (num_lights > 0) && has_normals)
+            if ((el_mode > 0) && do_lighting && has_normals)
               glDisable (GL_LIGHTING);
           }
         else

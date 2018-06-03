@@ -216,9 +216,8 @@ namespace octave
     text_renderer txt_renderer;
 
     // light object present and visible
-    int num_lights;
     unsigned int current_light;
-    int max_lights;
+    unsigned int max_lights;
 
     // Indicate we are drawing for selection purpose
     bool selecting;

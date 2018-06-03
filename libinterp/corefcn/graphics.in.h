@@ -3400,6 +3400,8 @@ public:
 
     void remove_child (const graphics_handle& h);
 
+    void adopt (const graphics_handle& h);
+
     const scaler& get_x_scaler (void) const { return sx; }
     const scaler& get_y_scaler (void) const { return sy; }
     const scaler& get_z_scaler (void) const { return sz; }
@@ -3523,6 +3525,10 @@ public:
 
     void update_fontunits (const caseless_str& old_fontunits);
 
+    void increase_num_lights (void) { num_lights++; }
+    void decrease_num_lights (void) { num_lights--; }
+    unsigned int get_num_lights (void) const { return num_lights; }
+
   private:
 
     scaler sx = scaler ();
@@ -3579,6 +3585,8 @@ public:
     bool xyzSym = false;
     bool zSign = false;
     bool nearhoriz = false;
+
+    unsigned int num_lights = 0;
 
     // Text renderer, used for calculation of text (tick labels) size
     octave::text_renderer txt_renderer;
@@ -4772,6 +4780,7 @@ public:
       color_property color , color_values (1, 1, 1)
       array_property position , default_light_position ()
       radio_property style , "{infinite}|local"
+      bool_property visible U , "on"
     END_PROPERTIES
 
   protected:
@@ -4833,6 +4842,8 @@ public:
     { return (climinclude.is_on () && cdatamapping.is ("scaled")); }
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
+
+    bool get_do_lighting (void) const;
 
     std::list<std::list<octave_idx_type>> coplanar_last_idx;
 
@@ -5031,6 +5042,8 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
+    bool get_do_lighting (void) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -5193,18 +5206,9 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h)
-    {
-      base_properties::remove_child (h);
-      update_limits ();
-    }
+    void remove_child (const graphics_handle& h);
 
-    void adopt (const graphics_handle& h)
-    {
-
-      base_properties::adopt (h);
-      update_limits (h);
-    }
+    void adopt (const graphics_handle& h);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.

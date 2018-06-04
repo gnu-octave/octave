@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2018 Markus Muetzel
+## Copyright (C) 2016-2018 Markus Mützel
 ##
 ## This file is part of Octave.
 ##
@@ -26,13 +26,12 @@
 ## When a light object is present in an axes object, and the properties
 ## @qcode{"EdgeLighting"} or @qcode{"FaceLighting"} of a @code{patch} or
 ## @code{surface} object are set to a value other than @qcode{"none"}, these
-## objects are drawn with light and shadow effects.  Supported values for
-## Lighting properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
-## (faceted look of the objects), and @qcode{"gouraud"} (linear interpolation
-## of the lighting effects between the vertices).  For @code{patch} objects,
-## the normals must be set manually (property @qcode{"VertexNormals"}).
+## objects are drawn with lighting effects.  Supported values for Lighting
+## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"} (faceted
+## look of the objects), and @qcode{"gouraud"} (linear interpolation of the
+## lighting effects between the vertices).
 ##
-## Up to eight light objects are supported per axes.
+## Up to eight light objects are supported per axes. (Implementation dependent)
 ##
 ## Lighting is only supported for OpenGL graphic toolkits (i.e., @qcode{"fltk"}
 ## and @qcode{"qt"}).

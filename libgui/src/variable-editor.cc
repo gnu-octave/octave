@@ -353,6 +353,10 @@ namespace octave
   variable_dock_widget::unfloat_float (void)
   {}
 
+  void
+  variable_dock_widget::refloat (void)
+  {}
+
 #endif
 
   // Variable editor stack

@@ -5485,7 +5485,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontrol)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       callback_property callback , Matrix ()
       array_property cdata , Matrix ()
       bool_property clipping , "on"
@@ -5597,7 +5597,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uibuttongroup)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
       bool_property clipping , "on"
@@ -5694,7 +5694,7 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipanel)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
       radio_property fontangle , "{normal}|italic|oblique"

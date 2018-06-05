@@ -2658,6 +2658,9 @@ gh_manager::do_free (const graphics_handle& h)
 
       bp.set_beingdeleted (true);
 
+      // delete listeners before invalidating object
+      p->second.remove_all_listeners ();
+
       bp.delete_children ();
 
       // NOTE: Call the delete function while the object's state is still valid.

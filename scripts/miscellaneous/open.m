@@ -61,12 +61,14 @@ function output = open (file)
 
   if (nargin != 1)
     print_usage ();
-  elseif (! exist (file, "file"))
-    error ("open: unable to find file %s", file);
   endif
 
   if (! ischar (file))
     error ("open: FILE must be a string");
+  endif
+
+  if (! exist (file, "file"))
+    error ("open: unable to find file %s", file);
   endif
 
   [~, fname, ext] = fileparts (file);

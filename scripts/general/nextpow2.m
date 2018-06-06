@@ -49,7 +49,7 @@ function n = nextpow2 (x)
   [f, n] = log2 (abs (x));
   idx = (n == 0);   # Find any failures of log2 function (n == 0)
   n(idx) = f(idx);  # and copy over value.
-  n(f == 0.5)--; 
+  n(f == 0.5)--;
 
 endfunction
 

@@ -9301,7 +9301,7 @@ patch::properties::calc_face_normals (Matrix& fn)
                nx, ny, nz);
           else
             {
-              nz = (v(i2,0) - v(i1,0)) * (v(i3,1) - v(i1,1)) - 
+              nz = (v(i2,0) - v(i1,0)) * (v(i3,1) - v(i1,1)) -
                    (v(i2,1) - v(i1,1)) * (v(i3,0) - v(i1,0));
               // 2-d vertices always point towards +z
               nz = (nz < 0) ? -nz : nz;
@@ -9432,7 +9432,7 @@ patch::properties::update_vertex_normals (bool reset)
               // either.  So bother here?
 
               vn0 = *it;
-              
+
               for (++it; it != vec_vn[i].end (); ++it)
                 {
                   RowVector vn1 = *it;

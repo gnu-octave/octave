@@ -572,7 +572,7 @@ endfunction
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
 %! assert (flag, 0);
 %! assert (norm (b - A*x) / norm (b), 0, 1e-6);
-%! 
+%!
 %! assert (isnan (eigest), isnan ([NaN, NaN]));
 
 %!test

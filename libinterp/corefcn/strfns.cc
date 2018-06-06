@@ -875,7 +875,7 @@ unicode_idx ("aäbc")
       idx (i+j) = u8_char_num;
     i += mblen;
   }
-  
+
   return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
 }
 

@@ -288,8 +288,8 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   elseif (do_display)
 
     subplot (1, 2, 1);
-    semilogx (__test_n, __tnew./__torig, "-*g", 
-              __test_n, __torig./__tnew, "-*r");
+    semilogx (__test_n, __tnew ./ __torig, "-*g",
+              __test_n, __torig ./ __tnew, "-*r");
     legend ({[strrep(__f1, ";", ".") " / " strrep(__f2, ";", ".")],
              [strrep(__f2, ";", ".") " / " strrep(__f1, ";", ".")]},
             "location", "northwest");

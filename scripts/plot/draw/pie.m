@@ -61,7 +61,7 @@ function h = pie (varargin)
   endif
 
   if (! all (isfinite (varargin{1})))
-    error ("pie: all data in X must be finite"); 
+    error ("pie: all data in X must be finite");
   endif
 
   oldfig = [];

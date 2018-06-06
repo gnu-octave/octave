@@ -35,7 +35,7 @@
 ## @var{output} will be a structure containing loaded data.
 ## @xref{XREFload, , load function}.
 ##
-## @item .ofig 
+## @item .ofig
 ## Open the figure with hgload.  @xref{XREFhgload, , hgload function}.
 ##
 ## @item .exe
@@ -43,8 +43,8 @@
 ## is returned.
 ## @end table
 ##
-## Custom file extensions may also be handled if a function @code{openxxx}, 
-## where @code{xxx} is the extension, is found in the load path.  The function 
+## Custom file extensions may also be handled if a function @code{openxxx},
+## where @code{xxx} is the extension, is found in the load path.  The function
 ## must accept the file name as input.  For example, in order to load ".dat"
 ## data files in the base workspace, as is done by default for ".mat" files, one
 ## may define "opendat.m" with the following contents:
@@ -73,7 +73,7 @@ function output = open (file)
 
   if (! isempty (ext)
       && any (exist (["open" tolower(ext(2:end))]) == [2 3 5 103]))
-    try 
+    try
       feval (["open" tolower(ext(2:end))], file)
     catch
       error ("open: %s", lasterr);

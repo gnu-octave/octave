@@ -154,8 +154,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     ## For very small values, switch to absolute rather than relative search
     ifelse (abs (a) < .001, aa = sign (a) * 0.1, aa = a);
     ## Search in an ever-widening range around the initial point.
-    for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000] 
-      b = aa + aa*srch; 
+    for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
+      b = aa + aa*srch;
       fb = fun (b);
       nfev += 1;
       if (sign (fa) * sign (fb) <= 0)

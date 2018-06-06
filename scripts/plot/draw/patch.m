@@ -89,7 +89,7 @@ function h = patch (varargin)
     print_usage ();
   endif
 
-  ## FIXME: ishold called this way is very slow. 
+  ## FIXME: ishold called this way is very slow.
   if (! ishold (hax))
     ## FIXME: This is a hack to get 'layer' command to work for 2D patches
     ##        Alternative is much more complicated surgery in graphics.cc.

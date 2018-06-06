@@ -91,7 +91,7 @@ function [pf, n] = factor (q)
   endif
 
  ## Restore class of input
- pf = feval (cls, pf); 
+ pf = feval (cls, pf);
 
 endfunction
 

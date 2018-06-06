@@ -2860,7 +2860,7 @@ public:
   void delete_property_listener (const std::string& nm, const octave_value& v,
                                  listener_mode mode = POSTSET)
   { rep->delete_property_listener (nm, v, mode); }
-  
+
   void remove_all_listeners (void) { rep->remove_all_listeners (); }
 
   void initialize (void) { rep->initialize (*this); }

@@ -61,6 +61,8 @@ function output = open (file)
 
   if (nargin != 1)
     print_usage ();
+  elseif (! exist (file, "file"))
+    error ("open: unable to find file %s", file);
   endif
 
   if (! ischar (file))

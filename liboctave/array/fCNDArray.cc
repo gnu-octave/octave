@@ -26,7 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <complex>
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "Array-util.h"
 #include "f77-fcn.h"

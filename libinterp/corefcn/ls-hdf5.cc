@@ -31,8 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <string>
 #include <vector>
 

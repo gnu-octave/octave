@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cerrno>
 
-#include <iostream>
+#include <iomanip>
 
 // FIXME: we would prefer to avoid including these directly in Octave
 // sources, but eliminating them is complicated by the mingling of

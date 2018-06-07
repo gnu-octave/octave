@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 
-#include <iostream>
-
 #include "comment-list.h"
 #include "error.h"
 #include "ov-usr-fcn.h"

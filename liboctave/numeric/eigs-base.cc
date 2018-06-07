@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cmath>
-#include <iostream>
+
+#include <ostream>
 
 #include "Array.h"
 #include "CSparse.h"

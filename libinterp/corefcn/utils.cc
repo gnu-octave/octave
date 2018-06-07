@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <fstream>
-#include <iostream>
 #include <limits>
+#include <ostream>
 #include <string>
 
 #include "dir-ops.h"

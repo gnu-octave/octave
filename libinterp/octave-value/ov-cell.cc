@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <vector>
 #include <queue>

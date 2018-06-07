@@ -48,6 +48,25 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  base_url_transfer::base_url_transfer (void)
+    : host_or_url (), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&std::cout) { }
+
+  base_url_transfer::base_url_transfer (const std::string& host,
+                                        const std::string& /* user_arg */,
+                                        const std::string& /* passwd */,
+                                        std::ostream& os)
+    : host_or_url (host), valid (false), ftp (true),
+      ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
+      curr_ostream (&os) { }
+
+  base_url_transfer::base_url_transfer (const std::string& url,
+                                        std::ostream& os)
+    : host_or_url (url), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&os) { }
+
   void
   base_url_transfer::delete_file (const std::string& file)
   {

@@ -26,14 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include <fstream>
 #include <limits>
 #include <list>
 #include <map>
 #include <set>
 #include <string>
-#include <sstream>
-#include <iostream>
 
 #include "file-ops.h"
 

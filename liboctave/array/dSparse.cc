@@ -26,7 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "quit.h"
 #include "lo-ieee.h"

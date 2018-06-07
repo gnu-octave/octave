@@ -27,8 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 
 #include "Array-util.h"
 #include "CColVector.h"

@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #include <algorithm>
-#include <iostream>
 #include <string>
 
 #include "dir-ops.h"

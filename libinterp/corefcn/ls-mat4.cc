@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <string>
 
 #include "byte-swap.h"

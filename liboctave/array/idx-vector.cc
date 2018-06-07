@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdlib>
 
-#include <iostream>
+#include <ostream>
 
 #include "idx-vector.h"
 #include "Array.h"

@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <deque>
 #include <fstream>
-#include <iostream>
 
 #include "file-info.h"
 #include "file-stat.h"

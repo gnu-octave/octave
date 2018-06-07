@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cmath>
 
-#include <iostream>
-#include <fstream>
 #include <string>
 
 #include "defun.h"

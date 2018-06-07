@@ -29,8 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>

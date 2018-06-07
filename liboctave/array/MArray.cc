@@ -134,8 +134,6 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
                                                          vals.data ()));
 }
 
-#include <iostream>
-
 template <typename T>
 void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
                             int dim)

@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
+#include <istream>
 #include <map>
 #include <sstream>
 #include <string>

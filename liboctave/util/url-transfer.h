@@ -30,8 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <iosfwd>
+#include <istream>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "str-vec.h"
@@ -57,23 +58,14 @@ namespace octave
 
     friend class url_transfer;
 
-    base_url_transfer (void)
-      : host_or_url (), valid (false), ftp (false),
-        ascii_mode (false), ok (true), errmsg (),
-        curr_istream (&std::cin), curr_ostream (&std::cout) { }
+    base_url_transfer (void);
 
     base_url_transfer (const std::string& host,
                        const std::string& /* user_arg */,
                        const std::string& /* passwd */,
-                       std::ostream& os)
-      : host_or_url (host), valid (false), ftp (true),
-        ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
-        curr_ostream (&os) { }
+                       std::ostream& os);
 
-    base_url_transfer (const std::string& url, std::ostream& os)
-      : host_or_url (url), valid (false), ftp (false),
-        ascii_mode (false), ok (true), errmsg (),
-        curr_istream (&std::cin), curr_ostream (&os) { }
+    base_url_transfer (const std::string& url, std::ostream& os);
 
     // No copying!
 

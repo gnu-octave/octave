@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <vector>
 
 #include "data-conv.h"

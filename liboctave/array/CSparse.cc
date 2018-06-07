@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <complex>
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "quit.h"
 #include "lo-ieee.h"

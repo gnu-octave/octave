@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <iostream>
+#include <iosfwd>
 
 #include "oct-hdf5-types.h"
 #include "ov.h"

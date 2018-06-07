@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <iostream>
+#include <ostream>
 
 #include "dNDArray.h"
 #include "fNDArray.h"

@@ -26,8 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cerrno>
 #include <cstdlib>
-#include <new>
 
+#include <new>
 #include <sstream>
 #include <string>
 

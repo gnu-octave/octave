@@ -27,9 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 
 #include <iostream>
-
-#include <fstream>
-#include <typeinfo>
+#include <list>
+#include <string>
 
 #include "cmd-edit.h"
 #include "file-ops.h"

@@ -28,7 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <complex>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <string>
 
 #include "quit.h"

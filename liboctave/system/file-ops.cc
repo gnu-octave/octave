@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <algorithm>
 #endif
 
-#include <iostream>
 #include <vector>
 
 #include "areadlink-wrapper.h"

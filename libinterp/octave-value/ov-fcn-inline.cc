@@ -29,7 +29,7 @@ Open Source Initiative (www.opensource.org)
 #endif
 
 #include <istream>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 #include <vector>
 

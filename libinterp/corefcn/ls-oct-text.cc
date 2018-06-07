@@ -31,7 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <fstream>
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <string>
 

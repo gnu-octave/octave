@@ -32,7 +32,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 #include "cmd-edit.h"

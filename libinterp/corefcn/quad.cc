@@ -26,9 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <iomanip>
-#include <iostream>
-
 #include "Quad.h"
 #include "lo-mappers.h"
 

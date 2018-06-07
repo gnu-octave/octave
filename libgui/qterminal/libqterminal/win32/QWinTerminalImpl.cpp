@@ -52,7 +52,6 @@ see <https://www.gnu.org/licenses/>.
 #include <versionhelpers.h>
 #include <cstring>
 #include <csignal>
-#include <limits>
 
 #include "QWinTerminalImpl.h"
 #include "QTerminalColors.h"

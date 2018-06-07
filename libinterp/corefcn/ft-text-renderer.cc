@@ -48,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <clocale>
 #include <cwchar>
-#include <iostream>
 #include <map>
 #include <utility>
 

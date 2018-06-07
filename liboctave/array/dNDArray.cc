@@ -25,8 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 
 #include "Array-util.h"
 #include "dNDArray.h"

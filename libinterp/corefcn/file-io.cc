@@ -41,8 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstdio>
 
-#include <iostream>
-#include <limits>
+#include <iomanip>
 #include <stack>
 #include <string>
 #include <vector>

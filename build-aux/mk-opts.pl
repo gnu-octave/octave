@@ -512,7 +512,8 @@ sub emit_opt_handler_fcns
 // this file.
 
 #include <iomanip>
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "$header"
 

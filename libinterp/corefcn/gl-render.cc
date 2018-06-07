@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <sstream>
 
 #if defined (HAVE_WINDOWS_H)
 #  define WIN32_LEAN_AND_MEAN

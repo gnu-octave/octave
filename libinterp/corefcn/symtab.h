@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <deque>
-#include <limits>
 #include <list>
 #include <map>
 #include <set>

@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 #include <cmath>
 
-#include <iostream>
 #include <limits>
+#include <ostream>
 
 #include "Array.h"
 #include "CollocWt.h"

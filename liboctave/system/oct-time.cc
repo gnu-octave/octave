@@ -28,8 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <iomanip>
-#include <iostream>
 #include <limits>
+#include <ostream>
 
 #include "lo-error.h"
 #include "lo-utils.h"

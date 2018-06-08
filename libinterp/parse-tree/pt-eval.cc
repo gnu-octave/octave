@@ -77,7 +77,9 @@ namespace octave
   {
     int retval = 0;
 
-    lexer *lxr = (interactive ? new lexer () : new lexer (stdin));
+    lexer *lxr = (interactive
+                  ? new lexer (m_interpreter)
+                  : new lexer (stdin, m_interpreter));
 
     parser parser (*lxr);
 

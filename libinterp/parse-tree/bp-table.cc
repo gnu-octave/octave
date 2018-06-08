@@ -213,7 +213,8 @@ namespace octave
   {
     if (cond.length () > 0)
       {
-        parser parser (cond + " ;"); // ; to reject partial expr like "y=="
+        // ; to reject partial expr like "y=="
+        parser parser (cond + " ;", m_evaluator.get_interpreter ());
         parser.reset ();
         int parse_status = parser.run ();
         if (parse_status)

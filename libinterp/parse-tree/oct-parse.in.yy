@@ -4516,7 +4516,10 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
     {
       frame.add_fcn (safe_fclose, ffile);
 
-      octave::parser parser (ffile);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("parse_fcn_file");
+
+      octave::parser parser (ffile, interp);
 
       parser.m_curr_class_name = dispatch_type;
       parser.m_curr_package_name = package_name;
@@ -4549,9 +4552,6 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
                 panic_impossible ();
 
               bool is_at_folder = ! dispatch_type.empty ();
-
-              octave::interpreter& interp
-                = octave::__get_interpreter__ ("parse_fcn_file");
 
               try
                 {
@@ -5389,7 +5389,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    parser parser (eval_str);
+    parser parser (eval_str, __get_interpreter__ ("eval_string"));
 
     do
       {

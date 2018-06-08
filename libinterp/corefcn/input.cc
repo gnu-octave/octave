@@ -865,7 +865,7 @@ namespace octave
         app->forced_interactive (true);
       }
 
-    octave::parser curr_parser;
+    octave::parser curr_parser (m_interpreter);
 
     while (Vdebugging)
       {

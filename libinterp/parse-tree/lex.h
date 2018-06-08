@@ -580,7 +580,7 @@ namespace octave
       comment_list *m_comment_list;
     };
 
-    base_lexer (interpreter *interp = nullptr)
+    base_lexer (interpreter& interp)
       : lexical_feedback (), m_scanner (nullptr), m_input_buf (),
         m_comment_buf (), m_interpreter (interp)
     {
@@ -687,7 +687,7 @@ namespace octave
     comment_buffer m_comment_buf;
 
     // Interpreter that contains us, if any.
-    interpreter *m_interpreter;
+    interpreter& m_interpreter;
 
     virtual void increment_promptflag (void) = 0;
 
@@ -754,15 +754,15 @@ namespace octave
   {
   public:
 
-    lexer (interpreter *interp = nullptr)
+    lexer (interpreter& interp)
       : base_lexer (interp), m_reader (this)
     { }
 
-    lexer (FILE *file, interpreter *interp = nullptr)
+    lexer (FILE *file, interpreter& interp)
       : base_lexer (interp), m_reader (file, this)
     { }
 
-    lexer (const std::string& eval_string, interpreter *interp = nullptr)
+    lexer (const std::string& eval_string, interpreter& interp)
       : base_lexer (interp), m_reader (eval_string, this)
     { }
 
@@ -817,26 +817,25 @@ namespace octave
   {
   public:
 
-    push_lexer (interpreter *interp = nullptr)
+    push_lexer (interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input ("", false);
     }
 
-    push_lexer (const std::string& input, interpreter *interp = nullptr)
+    push_lexer (const std::string& input, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input (input, false);
     }
 
-    push_lexer (bool eof, interpreter *interp = nullptr)
+    push_lexer (bool eof, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input ("", eof);
     }
 
-    push_lexer (const std::string& input, bool eof,
-                interpreter *interp = nullptr)
+    push_lexer (const std::string& input, bool eof, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input (input, eof);

@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
+#include "settings.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
 
@@ -159,6 +160,11 @@ namespace octave
       return m_environment;
     }
 
+    settings& get_settings (void)
+    {
+      return m_settings;
+    }
+
     help_system& get_help_system (void)
     {
       return m_help_system;
@@ -267,6 +273,8 @@ namespace octave
     installation_data m_installation_data;
 
     environment m_environment;
+
+    settings m_settings;
 
     help_system m_help_system;
 

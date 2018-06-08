@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
+#include "settings.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -317,6 +318,7 @@ namespace octave
     : m_app_context (app_context),
       m_installation_data (),
       m_environment (*this),
+      m_settings (),
       m_help_system (*this),
       m_input_system (*this),
       m_output_system (*this),

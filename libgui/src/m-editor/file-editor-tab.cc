@@ -60,7 +60,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "editor-settings.h"
 #include "resource-manager.h"
+
 #include "file-editor-tab.h"
 #include "file-editor.h"
 #include "octave-txt-lexer.h"
@@ -79,7 +81,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "version.h"
-#include "octave-settings.h"
 
 namespace octave
 {

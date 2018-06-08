@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRadioButton>
 
 #include "color-picker.h"
-#include "octave-settings.h"
+#include "editor-settings.h"
 
 namespace Ui
 {

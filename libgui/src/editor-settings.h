@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_settings_h)
-#define octave_settings_h 1
+#if ! defined (octave_editor_settings_h)
+#define octave_editor_settings_h 1
 
 //#if defined (HAVE_CONFIG_H)
 //#  include "config.h"

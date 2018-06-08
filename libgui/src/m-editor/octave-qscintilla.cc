@@ -50,14 +50,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolTip>
 #include <QVBoxLayout>
 
-// FIXME: hardwired marker numbers?
-#include "marker.h"
+#include "editor-settings.h"
+#include "resource-manager.h"
+#include "shortcut-manager.h"
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
-#include "shortcut-manager.h"
-#include "resource-manager.h"
-#include "octave-settings.h"
+// FIXME: hardwired marker numbers?
+#include "marker.h"
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".

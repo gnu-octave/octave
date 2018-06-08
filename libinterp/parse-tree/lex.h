@@ -675,6 +675,12 @@ namespace octave
 
     void fatal_error (const char *msg);
 
+    bool debug_flag (void) const;
+
+    bool display_tokens (void) const;
+
+    void increment_token_count (void);
+
     void lexer_debug (const char *pattern);
 
     // Internal state of the flex-generated lexer.

@@ -323,13 +323,6 @@ object) relevant global values before and after the nested call.
      }                                                                  \
    while (0)
 
-static bool Vdisplay_tokens = false;
-
-static unsigned int Vtoken_count = 0;
-
-// Internal variable for lexer debugging state.
-static bool lexer_debug_flag = false;
-
 %}
 
 D       [0-9]
@@ -2036,44 +2029,6 @@ If @var{name} is omitted, return a list of keywords.
 
 */
 
-DEFUN (__display_tokens__, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __display_tokens__ ()
-Query or set the internal variable that determines whether Octave's
-lexer displays tokens as they are read.
-@seealso{__lexer_debug_flag__, __token_count__}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (display_tokens);
-}
-
-DEFUN (__token_count__, , ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __token_count__ ()
-Return the number of language tokens processed since Octave startup.
-@seealso{__lexer_debug_flag__, __display_tokens__}
-@end deftypefn */)
-{
-  return octave_value (Vtoken_count);
-}
-
-DEFUN (__lexer_debug_flag__, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __lexer_debug_flag__ ()
-@deftypefnx {} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})
-Query or set the internal flag that determines whether Octave's lexer prints
-debug information as it processes an expression.
-@seealso{__display_tokens__, __token_count__, __parse_debug_flag__}
-@end deftypefn */)
-{
-  octave_value retval;
-
-  retval = set_internal_variable (lexer_debug_flag, args, nargout,
-                                  "__lexer_debug_flag__");
-
-  return retval;
-}
-
 namespace octave
 {
   void
@@ -2438,7 +2393,7 @@ namespace octave
   {
     int c = yyinput (m_scanner);
 
-    if (lexer_debug_flag)
+    if (debug_flag ())
       {
         std::cerr << "I: ";
         display_character (c);
@@ -2451,7 +2406,7 @@ namespace octave
       {
         c = yyinput (m_scanner);
 
-        if (lexer_debug_flag)
+        if (debug_flag ())
           {
             std::cerr << "I: ";
             display_character (c);
@@ -2473,7 +2428,7 @@ namespace octave
   {
     if (c != EOF)
       {
-        if (lexer_debug_flag)
+        if (debug_flag ())
           {
             std::cerr << "U: ";
             display_character (c);
@@ -3407,10 +3362,33 @@ namespace octave
     error ("fatal lexer error: %s", msg);
   }
 
+  bool
+  base_lexer::debug_flag (void) const
+  {
+    settings& stgs = m_interpreter.get_settings ();
+    return stgs.lexer_debug_flag ();
+  }
+
+  bool
+  base_lexer::display_tokens (void) const
+  {
+    settings& stgs = m_interpreter.get_settings ();
+    return stgs.display_tokens ();
+  }
+
+  void
+  base_lexer::increment_token_count (void)
+  {
+    settings& stgs = m_interpreter.get_settings ();
+    stgs.increment_token_count ();
+
+    m_token_count++;
+  }
+
   void
   base_lexer::lexer_debug (const char *pattern)
   {
-    if (lexer_debug_flag)
+    if (debug_flag ())
       {
         std::cerr << std::endl;
 
@@ -3600,10 +3578,7 @@ namespace octave
   base_lexer::count_token_internal (int tok)
   {
     if (tok != '\n')
-      {
-        Vtoken_count++;
-        m_token_count++;
-      }
+      increment_token_count ();
 
     return show_token (tok);
   }
@@ -3611,10 +3586,11 @@ namespace octave
   int
   base_lexer::show_token (int tok)
   {
-    if (Vdisplay_tokens)
+
+    if (display_tokens ())
       display_token (tok);
 
-    if (lexer_debug_flag)
+    if (debug_flag ())
       {
         std::cerr << "R: ";
         display_token (tok);

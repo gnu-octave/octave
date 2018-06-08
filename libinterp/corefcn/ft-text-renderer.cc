@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "error.h"
 #include "file-ops.h"
+#include "interpreter-private.h"
 #include "oct-env.h"
 #include "pr-output.h"
 #include "text-renderer.h"
@@ -213,10 +214,15 @@ namespace octave
           fonts_dir = sys::env::getenv ("OCTAVE_FONTS_DIR");
 
           if (fonts_dir.empty ())
+            {
 #if defined (SYSTEM_FREEFONT_DIR)
-            fonts_dir = SYSTEM_FREEFONT_DIR;
+              fonts_dir = SYSTEM_FREEFONT_DIR;
 #else
-            fonts_dir = config::oct_fonts_dir ();
+              installation_data& inst_data
+                = __get_installation_data__ ("do_get_font");
+
+              fonts_dir = inst_data.oct_fonts_dir ();
+            }
 #endif
         }
 

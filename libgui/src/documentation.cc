@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "documentation.h"
+#include "interpreter-private.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 
@@ -62,9 +63,15 @@ namespace octave
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
     if (collection.isEmpty ())
-      collection = QString::fromStdString (config::oct_doc_dir ()
-                                           + sys::file_ops::dir_sep_str ()
-                                           + "octave_interpreter.qhc");
+      {
+        // Hmm.
+        installation_data& inst_data
+          = __get_installation_data__ ("documentation::documentation");
+
+        collection = QString::fromStdString (inst_data.oct_doc_dir ()
+                                             + sys::file_ops::dir_sep_str ()
+                                             + "octave_interpreter.qhc");
+      }
 
     // Setup the help engine with the original collection, use a writable copy
     // of the original collection and load the help data

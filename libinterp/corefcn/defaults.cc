@@ -37,62 +37,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "ov.h"
 #include "variables.h"
 #include "version.h"
 
 #include "default-defs.h"
-
-static bool initialized = false;
-
-static std::string Voctave_home;
-static std::string Voctave_exec_home;
-
-static std::string Vbin_dir;
-static std::string Vdata_dir;
-static std::string Vdataroot_dir;
-static std::string Vinclude_dir;
-static std::string Vlib_dir;
-static std::string Vlibexec_dir;
-
-static std::string Vlocal_ver_arch_lib_dir;
-static std::string Vlocal_api_arch_lib_dir;
-static std::string Vlocal_arch_lib_dir;
-static std::string Varch_lib_dir;
-
-static std::string Vlocal_ver_oct_file_dir;
-static std::string Vlocal_api_oct_file_dir;
-static std::string Vlocal_oct_file_dir;
-static std::string Voct_file_dir;
-
-static std::string Vlocal_ver_fcn_file_dir;
-static std::string Vlocal_api_fcn_file_dir;
-static std::string Vlocal_fcn_file_dir;
-static std::string Vfcn_file_dir;
-
-static std::string Voct_data_dir;
-static std::string Voct_doc_dir;
-static std::string Voct_etc_dir;
-static std::string Voct_fonts_dir;
-static std::string Voct_include_dir;
-static std::string Voct_lib_dir;
-static std::string Voct_locale_dir;
-static std::string Voct_tests_dir;
-
-static std::string Vinfo_dir;
-
-static std::string Vman_dir;
-static std::string Vman1_dir;
-static std::string Vman1_ext;
-
-static std::string Vimage_dir;
-
-static std::string Vlocal_startupfile_dir;
-static std::string Vstartupfile_dir;
-
-static std::string Vlocal_site_defaults_file;
-static std::string Vsite_defaults_file;
 
 // Variables that name directories or files are substituted into source
 // files with "${prefix}/" stripped from the beginning of the string.
@@ -101,224 +53,490 @@ static std::string Vsite_defaults_file;
 // directory names.  The only ones that should not be absolute here are
 // ones that have had "${prefix}/" or "${exec_prefix} stripped.
 
-static std::string
-prepend_home_dir (const std::string& hd, const std::string& s)
-{
-  std::string retval = s;
-
-  char dir_sep_char = octave::sys::file_ops::dir_sep_char ();
-
-  if (! octave::sys::env::absolute_pathname (retval))
-    retval = hd + dir_sep_char + s;
-
-  if (dir_sep_char != '/')
-    std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
-
-  return retval;
-}
-
-static void
-set_octave_home (void)
-{
-  std::string op = OCTAVE_PREFIX;
-  std::string oep = OCTAVE_EXEC_PREFIX;
-
-  std::string oh = octave::sys::env::getenv ("OCTAVE_HOME");
-  std::string oeh = octave::sys::env::getenv ("OCTAVE_EXEC_HOME");
-
-  // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
-  // default to ${prefix} from configure.
-
-  Voctave_home = (oh.empty () ? op : oh);
-
-  // If OCTAVE_EXEC_HOME is set in the environment, use that.
-  // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
-  // to the same value, use OCTAVE_HOME from the environment if it is set.
-  // Othewise, default to ${exec_prefix} from configure.
-
-  if (! oeh.empty ())
-    Voctave_exec_home = oeh;
-  else
-    {
-      if (op == oep && ! oh.empty ())
-        Voctave_exec_home = oh;
-      else
-        Voctave_exec_home = oep;
-    }
-}
-
-static void
-set_local_site_defaults_file (void)
-{
-  std::string lsf = octave::sys::env::getenv ("OCTAVE_SITE_INITFILE");
-
-  if (lsf.empty ())
-    Vlocal_site_defaults_file = Vlocal_startupfile_dir + "/octaverc";
-  else
-    Vlocal_site_defaults_file = lsf;
-}
-
-static void
-set_site_defaults_file (void)
-{
-  std::string sf = octave::sys::env::getenv ("OCTAVE_VERSION_INITFILE");
-
-  if (sf.empty ())
-    Vsite_defaults_file = Vstartupfile_dir + "/octaverc";
-  else
-    Vsite_defaults_file = sf;
-}
-
-static void
-init_defaults (void)
-{
-  if (initialized)
-    return;
-
-  // OCTAVE_HOME must be set first!
-
-  set_octave_home ();
-
-  Vbin_dir = octave::config::prepend_octave_exec_home (OCTAVE_BINDIR);
-  Vdata_dir = octave::config::prepend_octave_home (OCTAVE_DATADIR);
-  Vdataroot_dir = octave::config::prepend_octave_home (OCTAVE_DATAROOTDIR);
-  Vinclude_dir = octave::config::prepend_octave_home (OCTAVE_INCLUDEDIR);
-  Vlib_dir = octave::config::prepend_octave_exec_home (OCTAVE_LIBDIR);
-  Vlibexec_dir = octave::config::prepend_octave_exec_home (OCTAVE_LIBEXECDIR);
-
-  Vlocal_ver_arch_lib_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
-  Vlocal_api_arch_lib_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
-  Vlocal_arch_lib_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALARCHLIBDIR);
-  Varch_lib_dir = octave::config::prepend_octave_exec_home (OCTAVE_ARCHLIBDIR);
-
-  Vlocal_ver_oct_file_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
-  Vlocal_api_oct_file_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
-  Vlocal_oct_file_dir
-    = octave::config::prepend_octave_exec_home (OCTAVE_LOCALOCTFILEDIR);
-  Voct_file_dir = octave::config::prepend_octave_exec_home (OCTAVE_OCTFILEDIR);
-
-  Vlocal_ver_fcn_file_dir
-    = octave::config::prepend_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
-  Vlocal_api_fcn_file_dir
-    = octave::config::prepend_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
-  Vlocal_fcn_file_dir
-    = octave::config::prepend_octave_home (OCTAVE_LOCALFCNFILEDIR);
-  Vfcn_file_dir = octave::config::prepend_octave_home (OCTAVE_FCNFILEDIR);
-
-  Voct_data_dir = octave::config::prepend_octave_home (OCTAVE_OCTDATADIR);
-  Voct_doc_dir = octave::config::prepend_octave_home (OCTAVE_OCTDOCDIR);
-  Voct_etc_dir = octave::config::prepend_octave_home (OCTAVE_OCTETCDIR);
-  Voct_fonts_dir = octave::config::prepend_octave_home (OCTAVE_OCTFONTSDIR);
-  Voct_include_dir = octave::config::prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
-  Voct_lib_dir = octave::config::prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
-  Voct_locale_dir = octave::config::prepend_octave_home (OCTAVE_OCTLOCALEDIR);
-  Voct_tests_dir = octave::config::prepend_octave_home (OCTAVE_OCTTESTSDIR);
-
-  Vinfo_dir = octave::config::prepend_octave_home (OCTAVE_INFODIR);
-
-  Vman_dir = octave::config::prepend_octave_home (OCTAVE_MANDIR);
-  Vman1_dir = octave::config::prepend_octave_home (OCTAVE_MAN1DIR);
-  Vman1_ext = OCTAVE_MAN1EXT;
-
-  Vimage_dir = octave::config::prepend_octave_home (OCTAVE_IMAGEDIR);
-
-  Vlocal_startupfile_dir
-    = octave::config::prepend_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
-  Vstartupfile_dir
-    = octave::config::prepend_octave_home (OCTAVE_STARTUPFILEDIR);
-
-  set_local_site_defaults_file ();
-
-  set_site_defaults_file ();
-
-  initialized = true;
-}
-
-#define RETURN(VAR)                             \
-  if (! initialized)                            \
-    init_defaults ();                           \
-  return VAR;
-
 namespace octave
 {
+  static std::string
+  prepend_dir (const std::string& dir, const std::string& s)
+  {
+    std::string retval = s;
+
+    char dir_sep_char = octave::sys::file_ops::dir_sep_char ();
+
+    if (! octave::sys::env::absolute_pathname (retval))
+      retval = dir + dir_sep_char + s;
+
+    if (dir_sep_char != '/')
+      std::replace (retval.begin (), retval.end (), '/', dir_sep_char);
+
+    return retval;
+  }
+
+  installation_data::installation_data (void)
+  {
+    m_canonical_host_type = OCTAVE_CANONICAL_HOST_TYPE;
+    m_release = OCTAVE_RELEASE;
+    m_default_pager = OCTAVE_DEFAULT_PAGER;
+
+    // OCTAVE_HOME must be set before other variables that depend on it.
+
+    set_home ();
+
+    m_bin_dir = prepend_exec_home (OCTAVE_BINDIR);
+    m_data_dir = prepend_home (OCTAVE_DATADIR);
+    m_dataroot_dir = prepend_home (OCTAVE_DATAROOTDIR);
+    m_include_dir = prepend_home (OCTAVE_INCLUDEDIR);
+    m_lib_dir = prepend_exec_home (OCTAVE_LIBDIR);
+    m_libexec_dir = prepend_exec_home (OCTAVE_LIBEXECDIR);
+
+    m_local_ver_arch_lib_dir
+      = prepend_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
+    m_local_api_arch_lib_dir
+      = prepend_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
+    m_local_arch_lib_dir = prepend_exec_home (OCTAVE_LOCALARCHLIBDIR);
+    m_arch_lib_dir = prepend_exec_home (OCTAVE_ARCHLIBDIR);
+
+    m_local_ver_oct_file_dir
+      = prepend_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
+    m_local_api_oct_file_dir
+      = prepend_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
+    m_local_oct_file_dir = prepend_exec_home (OCTAVE_LOCALOCTFILEDIR);
+    m_oct_file_dir = prepend_exec_home (OCTAVE_OCTFILEDIR);
+
+    m_local_ver_fcn_file_dir = prepend_home (OCTAVE_LOCALVERFCNFILEDIR);
+    m_local_api_fcn_file_dir = prepend_home (OCTAVE_LOCALAPIFCNFILEDIR);
+    m_local_fcn_file_dir = prepend_home (OCTAVE_LOCALFCNFILEDIR);
+    m_fcn_file_dir = prepend_home (OCTAVE_FCNFILEDIR);
+
+    m_oct_data_dir = prepend_home (OCTAVE_OCTDATADIR);
+    m_oct_doc_dir = prepend_home (OCTAVE_OCTDOCDIR);
+    m_oct_etc_dir = prepend_home (OCTAVE_OCTETCDIR);
+    m_oct_fonts_dir = prepend_home (OCTAVE_OCTFONTSDIR);
+    m_oct_include_dir = prepend_home (OCTAVE_OCTINCLUDEDIR);
+    m_oct_lib_dir = prepend_exec_home (OCTAVE_OCTLIBDIR);
+    m_oct_locale_dir = prepend_home (OCTAVE_OCTLOCALEDIR);
+    m_oct_tests_dir = prepend_home (OCTAVE_OCTTESTSDIR);
+
+    m_info_dir = prepend_home (OCTAVE_INFODIR);
+
+    m_man_dir = prepend_home (OCTAVE_MANDIR);
+    m_man1_dir = prepend_home (OCTAVE_MAN1DIR);
+    m_man1_ext = OCTAVE_MAN1EXT;
+
+    m_image_dir = prepend_home (OCTAVE_IMAGEDIR);
+
+    m_local_startupfile_dir = prepend_home (OCTAVE_LOCALSTARTUPFILEDIR);
+    m_startupfile_dir = prepend_home (OCTAVE_STARTUPFILEDIR);
+
+    set_local_site_defaults_file ();
+
+    set_site_defaults_file ();
+  }
+
+  std::string installation_data::prepend_home (const std::string& s) const
+  {
+    return prepend_dir (m_home, s);
+  }
+
+  std::string installation_data::prepend_exec_home (const std::string& s) const
+  {
+    return prepend_dir (m_exec_home, s);
+  }
+
+  void installation_data::set_home (void)
+  {
+    std::string op = OCTAVE_PREFIX;
+    std::string oep = OCTAVE_EXEC_PREFIX;
+
+    std::string oh = sys::env::getenv ("OCTAVE_HOME");
+    std::string oeh = sys::env::getenv ("OCTAVE_EXEC_HOME");
+
+    // If OCTAVE_HOME is set in the enviornment, use that.  Otherwise,
+    // default to ${prefix} from configure.
+
+    m_home = (oh.empty () ? op : oh);
+
+    // If OCTAVE_EXEC_HOME is set in the environment, use that.
+    // Otherwise, if ${prefix} and ${exec_prefix} from configure are set
+    // to the same value, use OCTAVE_HOME from the environment if it is set.
+    // Othewise, default to ${exec_prefix} from configure.
+
+    if (! oeh.empty ())
+      m_exec_home = oeh;
+    else
+      {
+        if (op == oep && ! oh.empty ())
+          m_exec_home = oh;
+        else
+          m_exec_home = oep;
+      }
+  }
+
+  void installation_data::set_local_site_defaults_file (void)
+  {
+    std::string lsf = sys::env::getenv ("OCTAVE_SITE_INITFILE");
+
+    if (lsf.empty ())
+      m_local_site_defaults_file = m_local_startupfile_dir + "/octaverc";
+    else
+      m_local_site_defaults_file = lsf;
+  }
+
+  void installation_data::set_site_defaults_file (void)
+  {
+    std::string sf = sys::env::getenv ("OCTAVE_VERSION_INITFILE");
+
+    if (sf.empty ())
+      m_site_defaults_file = m_startupfile_dir + "/octaverc";
+    else
+      m_site_defaults_file = sf;
+  }
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
   namespace config
   {
-    std::string
-    prepend_octave_home (const std::string& s)
+    std::string prepend_octave_home (const std::string& s)
     {
-      return prepend_home_dir (Voctave_home, s);
+      installation_data& inst_data
+        = __get_installation_data__ ("prepend_octave_home");
+
+      return inst_data.prepend_home (s);
     }
 
-    std::string
-    prepend_octave_exec_home (const std::string& s)
+    std::string prepend_octave_exec_home (const std::string& s)
     {
-      return prepend_home_dir (Voctave_exec_home, s);
+      installation_data& inst_data
+        = __get_installation_data__ ("prepend_octave_exec_home");
+
+      return inst_data.prepend_exec_home (s);
     }
 
-    std::string canonical_host_type (void) { return OCTAVE_CANONICAL_HOST_TYPE; }
+    std::string canonical_host_type (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("canonical_host_type");
 
-    std::string release (void) { return OCTAVE_RELEASE; }
+      return inst_data.canonical_host_type ();
+    }
 
-    std::string default_pager (void) { return OCTAVE_DEFAULT_PAGER; }
+    std::string release (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("release");
 
-    std::string octave_home (void) { RETURN (Voctave_home); }
-    std::string octave_exec_home (void) { RETURN (Voctave_exec_home); }
+      return inst_data.release ();
+    }
 
-    std::string bin_dir (void) { RETURN (Vbin_dir); }
-    std::string data_dir (void) { RETURN (Vdata_dir); }
-    std::string dataroot_dir (void) { RETURN (Vdataroot_dir); }
-    std::string include_dir (void) { RETURN (Vinclude_dir); }
-    std::string lib_dir (void) { RETURN (Vlib_dir); }
-    std::string libexec_dir (void) { RETURN (Vlibexec_dir); }
-    std::string arch_lib_dir (void) { RETURN (Varch_lib_dir); }
-    std::string info_dir (void) { RETURN (Vinfo_dir); }
+    std::string default_pager (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("default_pager");
 
-    std::string local_ver_arch_lib_dir (void) { RETURN (Vlocal_ver_arch_lib_dir); }
-    std::string local_api_arch_lib_dir (void) { RETURN (Vlocal_api_arch_lib_dir); }
-    std::string local_arch_lib_dir (void) { RETURN (Vlocal_arch_lib_dir); }
+      return inst_data.default_pager ();
+    }
 
-    std::string local_ver_oct_file_dir (void) { RETURN (Vlocal_ver_oct_file_dir); }
-    std::string local_api_oct_file_dir (void) { RETURN (Vlocal_api_oct_file_dir); }
-    std::string local_oct_file_dir (void) { RETURN (Vlocal_oct_file_dir); }
-    std::string oct_file_dir (void) { RETURN (Voct_file_dir); }
+    std::string octave_home (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("octave_home");
 
-    std::string local_ver_fcn_file_dir (void) { RETURN (Vlocal_ver_fcn_file_dir); }
-    std::string local_api_fcn_file_dir (void) { RETURN (Vlocal_api_fcn_file_dir); }
-    std::string local_fcn_file_dir (void) { RETURN (Vlocal_fcn_file_dir); }
-    std::string fcn_file_dir (void) { RETURN (Vfcn_file_dir); }
+      return inst_data.home ();
+    }
 
-    std::string oct_data_dir (void) { RETURN (Voct_data_dir); }
-    std::string oct_doc_dir (void) { RETURN (Voct_doc_dir); }
-    std::string oct_etc_dir (void) { RETURN (Voct_etc_dir); }
-    std::string oct_fonts_dir (void) { RETURN (Voct_fonts_dir); }
-    std::string oct_include_dir (void) { RETURN (Voct_include_dir); }
-    std::string oct_lib_dir (void) { RETURN (Voct_lib_dir); }
-    std::string oct_locale_dir (void) { RETURN (Voct_locale_dir); }
-    std::string oct_tests_dir (void) { RETURN (Voct_tests_dir); }
+    std::string octave_exec_home (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("octave_exec_home");
 
-    std::string man_dir (void) { RETURN (Vman_dir); }
-    std::string man1_dir (void) { RETURN (Vman1_dir); }
-    std::string man1_ext (void) { RETURN (Vman1_ext); }
+      return inst_data.exec_home ();
+    }
 
-    std::string image_dir (void) { RETURN (Vimage_dir); }
+    std::string bin_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("bin_dir");
 
-    std::string local_startupfile_dir (void) { RETURN (Vlocal_startupfile_dir); }
-    std::string startupfile_dir (void) { RETURN (Vstartupfile_dir); }
+      return inst_data.bin_dir ();
+    }
 
-    std::string local_site_defaults_file (void) { RETURN (Vlocal_site_defaults_file); }
-    std::string site_defaults_file (void) { RETURN (Vsite_defaults_file); }
+    std::string data_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("data_dir");
+
+      return inst_data.data_dir ();
+    }
+
+    std::string dataroot_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("dataroot_dir");
+
+      return inst_data.dataroot_dir ();
+    }
+
+    std::string include_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("include_dir");
+
+      return inst_data.include_dir ();
+    }
+
+    std::string lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("lib_dir");
+
+      return inst_data.lib_dir ();
+    }
+
+    std::string libexec_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("libexec_dir");
+
+      return inst_data.libexec_dir ();
+    }
+
+    std::string arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("arch_lib_dir");
+
+      return inst_data.arch_lib_dir ();
+    }
+
+    std::string info_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("info_dir");
+
+      return inst_data.info_dir ();
+    }
+
+    std::string local_ver_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_arch_lib_dir");
+
+      return inst_data.local_ver_arch_lib_dir ();
+    }
+
+    std::string local_api_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_arch_lib_dir");
+
+      return inst_data.local_api_arch_lib_dir ();
+    }
+
+    std::string local_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_arch_lib_dir");
+
+      return inst_data.local_arch_lib_dir ();
+    }
+
+    std::string local_ver_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_oct_file_dir");
+
+      return inst_data.local_ver_oct_file_dir ();
+    }
+
+    std::string local_api_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_oct_file_dir");
+
+      return inst_data.local_api_oct_file_dir ();
+    }
+
+    std::string local_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_oct_file_dir");
+
+      return inst_data.local_oct_file_dir ();
+    }
+
+    std::string oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_file_dir");
+
+      return inst_data.oct_file_dir ();
+    }
+
+    std::string local_ver_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_fcn_file_dir");
+
+      return inst_data.local_ver_fcn_file_dir ();
+    }
+
+    std::string local_api_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_fcn_file_dir");
+
+      return inst_data.local_api_fcn_file_dir ();
+    }
+
+    std::string local_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_fcn_file_dir");
+
+      return inst_data.local_fcn_file_dir ();
+    }
+
+    std::string fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("fcn_file_dir");
+
+      return inst_data.fcn_file_dir ();
+    }
+
+    std::string oct_data_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_data_dir");
+
+      return inst_data.oct_data_dir ();
+    }
+
+    std::string oct_doc_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_doc_dir");
+
+      return inst_data.oct_doc_dir ();
+    }
+
+    std::string oct_etc_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_etc_dir");
+
+      return inst_data.oct_etc_dir ();
+    }
+
+    std::string oct_fonts_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_fonts_dir");
+
+      return inst_data.oct_fonts_dir ();
+    }
+
+    std::string oct_include_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_include_dir");
+
+      return inst_data.oct_include_dir ();
+    }
+
+    std::string oct_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_lib_dir");
+
+      return inst_data.oct_lib_dir ();
+    }
+
+    std::string oct_locale_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_locale_dir");
+
+      return inst_data.oct_locale_dir ();
+    }
+
+    std::string oct_tests_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_tests_dir");
+
+      return inst_data.oct_tests_dir ();
+    }
+
+    std::string man_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man_dir");
+
+      return inst_data.man_dir ();
+    }
+
+    std::string man1_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man1_dir");
+
+      return inst_data.man1_dir ();
+    }
+
+    std::string man1_ext (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man1_ext");
+
+      return inst_data.man1_ext ();
+    }
+
+    std::string image_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("image_dir");
+
+      return inst_data.image_dir ();
+    }
+
+    std::string local_startupfile_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_startupfile_dir");
+
+      return inst_data.local_startupfile_dir ();
+    }
+
+    std::string startupfile_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("startupfile_dir");
+
+      return inst_data.startupfile_dir ();
+    }
+
+    std::string local_site_defaults_file (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_site_defaults_file");
+
+      return inst_data.local_site_defaults_file ();
+    }
+
+    std::string site_defaults_file (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("site_defaults_file");
+
+      return inst_data.site_defaults_file ();
+    }
   }
+
+#endif
 }
 
-#undef RETURN
-
-DEFUN (OCTAVE_HOME, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (OCTAVE_HOME, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} OCTAVE_HOME ()
 Return the name of the top-level Octave installation directory.
 OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
@@ -328,7 +546,9 @@ OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::config::octave_home ());
+  octave::installation_data& inst_data = interp.get_installation_data ();
+
+  return ovl (inst_data.home ());
 }
 
 /*
@@ -336,8 +556,8 @@ OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
 %!error OCTAVE_HOME (1)
 */
 
-DEFUN (OCTAVE_EXEC_HOME, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (OCTAVE_EXEC_HOME, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} OCTAVE_HOME ()
 Return the name of the top-level Octave installation directory for
 architecture-dependent files.  If not specified separately, the value
@@ -349,7 +569,9 @@ configuration variable @var{exec_prefix}.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (octave::config::octave_exec_home ());
+  octave::installation_data& inst_data = interp.get_installation_data ();
+
+  return ovl (inst_data.exec_home ());
 }
 
 /*

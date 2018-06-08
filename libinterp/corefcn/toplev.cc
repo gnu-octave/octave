@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-io.h"
 #include "help.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "octave.h"
 #include "oct-map.h"
 #include "ovl.h"
@@ -334,8 +335,8 @@ find_config_info (const octave_scalar_map& m, const std::string& key)
   return octave_value ();
 }
 
-DEFUN (__octave_config_info__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_config_info__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __octave_config_info__ ()
 @deftypefnx {} {} __octave_config_info__ (@var{option})
 Return a structure containing configuration and installation information for
@@ -361,8 +362,10 @@ specified option.
 
   if (! initialized)
     {
+      octave::installation_data& inst_data = interp.get_installation_data ();
+
       std::map<std::string, octave_value> conf_info_map
-        = {{ "DEFAULT_PAGER", octave::config::default_pager () },
+        = {{ "DEFAULT_PAGER", inst_data.default_pager () },
 
 #if defined (OCTAVE_ENABLE_64)
            { "ENABLE_64", true },
@@ -407,46 +410,46 @@ specified option.
 #endif
 
            { "api_version", OCTAVE_API_VERSION },
-           { "archlibdir", octave::config::arch_lib_dir () },
-           { "bindir", octave::config::bin_dir () },
-           { "canonical_host_type", octave::config::canonical_host_type () },
-           { "datadir", octave::config::data_dir () },
-           { "datarootdir", octave::config::dataroot_dir () },
-           { "fcnfiledir", octave::config::fcn_file_dir () },
+           { "archlibdir", inst_data.arch_lib_dir () },
+           { "bindir", inst_data.bin_dir () },
+           { "canonical_host_type", inst_data.canonical_host_type () },
+           { "datadir", inst_data.data_dir () },
+           { "datarootdir", inst_data.dataroot_dir () },
+           { "fcnfiledir", inst_data.fcn_file_dir () },
            { "fftw_version", octave::fftw_version () },
            { "fftwf_version", octave::fftwf_version () },
-           { "imagedir", octave::config::image_dir () },
-           { "includedir", octave::config::include_dir () },
-           { "infodir", octave::config::info_dir () },
-           { "libdir", octave::config::lib_dir () },
-           { "libexecdir", octave::config::libexec_dir () },
+           { "imagedir", inst_data.image_dir () },
+           { "includedir", inst_data.include_dir () },
+           { "infodir", inst_data.info_dir () },
+           { "libdir", inst_data.lib_dir () },
+           { "libexecdir", inst_data.libexec_dir () },
            // Each library and executable has its own definition of the hg
            // id.  We check for consistency when Octave starts so we just
            // store and report one of them here.
            { "hg_id", liboctinterp_hg_id () },
-           { "localapiarchlibdir", octave::config::local_api_arch_lib_dir () },
-           { "localapifcnfiledir", octave::config::local_api_fcn_file_dir () },
-           { "localapioctfiledir", octave::config::local_api_oct_file_dir () },
-           { "localarchlibdir", octave::config::local_arch_lib_dir () },
-           { "localfcnfiledir", octave::config::local_fcn_file_dir () },
-           { "localoctfiledir", octave::config::local_oct_file_dir () },
-           { "localstartupfiledir", octave::config::local_startupfile_dir () },
-           { "localverarchlibdir", octave::config::local_ver_arch_lib_dir () },
-           { "localverfcnfiledir", octave::config::local_ver_fcn_file_dir () },
-           { "localveroctfiledir", octave::config::local_ver_oct_file_dir () },
-           { "man1dir", octave::config::man1_dir () },
-           { "man1ext", octave::config::man1_ext () },
-           { "mandir", octave::config::man_dir () },
-           { "octdatadir", octave::config::oct_data_dir () },
-           { "octdocdir", octave::config::oct_doc_dir () },
-           { "octetcdir", octave::config::oct_etc_dir () },
-           { "octfiledir", octave::config::oct_file_dir () },
-           { "octfontsdir", octave::config::oct_fonts_dir () },
-           { "octincludedir", octave::config::oct_include_dir () },
-           { "octlibdir", octave::config::oct_lib_dir () },
-           { "octtestsdir", octave::config::oct_tests_dir () },
+           { "localapiarchlibdir", inst_data.local_api_arch_lib_dir () },
+           { "localapifcnfiledir", inst_data.local_api_fcn_file_dir () },
+           { "localapioctfiledir", inst_data.local_api_oct_file_dir () },
+           { "localarchlibdir", inst_data.local_arch_lib_dir () },
+           { "localfcnfiledir", inst_data.local_fcn_file_dir () },
+           { "localoctfiledir", inst_data.local_oct_file_dir () },
+           { "localstartupfiledir", inst_data.local_startupfile_dir () },
+           { "localverarchlibdir", inst_data.local_ver_arch_lib_dir () },
+           { "localverfcnfiledir", inst_data.local_ver_fcn_file_dir () },
+           { "localveroctfiledir", inst_data.local_ver_oct_file_dir () },
+           { "man1dir", inst_data.man1_dir () },
+           { "man1ext", inst_data.man1_ext () },
+           { "mandir", inst_data.man_dir () },
+           { "octdatadir", inst_data.oct_data_dir () },
+           { "octdocdir", inst_data.oct_doc_dir () },
+           { "octetcdir", inst_data.oct_etc_dir () },
+           { "octfiledir", inst_data.oct_file_dir () },
+           { "octfontsdir", inst_data.oct_fonts_dir () },
+           { "octincludedir", inst_data.oct_include_dir () },
+           { "octlibdir", inst_data.oct_lib_dir () },
+           { "octtestsdir", inst_data.oct_tests_dir () },
            { "release_date", OCTAVE_RELEASE_DATE },
-           { "startupfiledir", octave::config::startupfile_dir () },
+           { "startupfiledir", inst_data.startupfile_dir () },
            { "version", OCTAVE_VERSION }};
 
       std::map<std::string, octave_value> build_env_map

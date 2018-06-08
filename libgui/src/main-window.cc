@@ -461,7 +461,10 @@ namespace octave
   {
     if (! m_release_notes_window)
       {
-        std::string news_file = config::oct_etc_dir () + "/NEWS";
+        installation_data& inst_data
+          = __get_installation_data__ ("main_window::display_release_notes");
+
+        std::string news_file = inst_data.oct_etc_dir () + "/NEWS";
 
         QString news;
 

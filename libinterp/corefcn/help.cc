@@ -427,30 +427,36 @@ namespace octave
       }
   }
 
-  std::string help_system::init_built_in_docstrings_file (void)
+  std::string help_system::init_built_in_docstrings_file (interpreter& interp)
   {
+    installation_data& inst_data = interp.get_installation_data ();
+
     std::string df = sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
     std::string dir_sep = sys::file_ops::dir_sep_str ();
 
     if (df.empty ())
-      df = config::oct_etc_dir () + dir_sep + "built-in-docstrings";
+      df = inst_data.oct_etc_dir () + dir_sep + "built-in-docstrings";
 
     return df;
   }
 
-  std::string help_system::init_doc_cache_file (void)
+  std::string help_system::init_doc_cache_file (interpreter& interp)
   {
-    std::string def_file = config::prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
+    installation_data& inst_data = interp.get_installation_data ();
+
+    std::string def_file = inst_data.prepend_home (OCTAVE_DOC_CACHE_FILE);
 
     std::string env_file = sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
     return (env_file.empty () ? def_file : env_file);
   }
 
-  std::string help_system::init_info_file (void)
+  std::string help_system::init_info_file (interpreter& interp)
   {
-    std::string std_info_file = config::prepend_octave_home (OCTAVE_INFOFILE);
+    installation_data& inst_data = interp.get_installation_data ();
+
+    std::string std_info_file = inst_data.prepend_home (OCTAVE_INFOFILE);
 
     std::string oct_info_file = sys::env::getenv ("OCTAVE_INFO_FILE");
 
@@ -467,10 +473,12 @@ namespace octave
     return info_prog;
   }
 
-  std::string help_system::init_texi_macros_file (void)
+  std::string help_system::init_texi_macros_file (interpreter& interp)
   {
+    installation_data& inst_data = interp.get_installation_data ();
+
     std::string def_file
-      = config::prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
+      = inst_data.prepend_home (OCTAVE_TEXI_MACROS_FILE);
 
     std::string env_file = sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 

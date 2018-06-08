@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "defaults.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
@@ -84,6 +85,8 @@ namespace octave
     // Clean up the interpreter object.
 
     ~interpreter (void);
+
+    void initialize_version_info (void);
 
     void intern_nargin (octave_idx_type nargs);
 
@@ -144,6 +147,11 @@ namespace octave
     bool initialized (void) const
     {
       return m_initialized;
+    }
+
+    installation_data& get_installation_data (void)
+    {
+      return  m_installation_data;
     }
 
     environment& get_environment (void)
@@ -255,6 +263,8 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
+
+    installation_data m_installation_data;
 
     environment m_environment;
 

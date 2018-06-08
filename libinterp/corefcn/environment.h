@@ -32,14 +32,16 @@ class octave_value_list;
 
 namespace octave
 {
+  class interpreter;
+
   class environment
   {
   public:
 
-    environment (void)
+    environment (interpreter& interp)
       : m_editor (init_editor ()),
-        m_exec_path (init_exec_path ()),
-        m_image_path (init_image_path ())
+        m_exec_path (init_exec_path (interp)),
+        m_image_path (init_image_path (interp))
     { }
 
     octave_value editor (const octave_value_list& args, int nargout);
@@ -76,9 +78,9 @@ namespace octave
 
     static std::string init_editor (void);
 
-    static std::string init_exec_path (void);
+    static std::string init_exec_path (interpreter& interp);
 
-    static std::string init_image_path (void);
+    static std::string init_image_path (interpreter& interp);
 
     std::string set (std::string& var, const std::string& new_val)
     {

@@ -88,6 +88,10 @@ DEFUN (__version_info__, args, ,
 Undocumented internal function.
 @end deftypefn */)
 {
+  // FIXME: this seems backwards.  Shouldn't the version info be stored
+  // in the interpreter object and simply returned from this function
+  // instead of being stored in a static here?
+
   static octave_map vinfo;
 
   int nargin = args.length ();
@@ -124,19 +128,6 @@ Undocumented internal function.
     }
 
   return retval;
-}
-
-static void
-initialize_version_info (void)
-{
-  octave_value_list args;
-
-  args(3) = OCTAVE_RELEASE_DATE;
-  args(2) = octave::config::release ();
-  args(1) = OCTAVE_VERSION;
-  args(0) = "GNU Octave";
-
-  F__version_info__ (args, 0);
 }
 
 OCTAVE_NORETURN static void
@@ -324,12 +315,13 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
-      m_environment (),
+      m_installation_data (),
+      m_environment (*this),
       m_help_system (*this),
       m_input_system (*this),
       m_output_system (*this),
       m_dynamic_loader (*this),
-      m_load_path (),
+      m_load_path (*this),
       m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
@@ -506,6 +498,18 @@ namespace octave
   interpreter::~interpreter (void)
   {
     cleanup ();
+  }
+
+  void interpreter::initialize_version_info (void)
+  {
+    octave_value_list args;
+
+    args(3) = OCTAVE_RELEASE_DATE;
+    args(2) = m_installation_data.release ();
+    args(1) = OCTAVE_VERSION;
+    args(0) = "GNU Octave";
+
+    F__version_info__ (args, 0);
   }
 
   void interpreter::intern_nargin (octave_idx_type nargs)
@@ -724,13 +728,14 @@ namespace octave
         // (if it exists), then from the file
         // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
-        int status = safe_source_file (config::local_site_defaults_file (),
-                                       context, verbose, require_file);
+        int status
+          = safe_source_file (m_installation_data.local_site_defaults_file (),
+                              context, verbose, require_file);
 
         if (status)
           exit_status = status;
 
-        status = safe_source_file (config::site_defaults_file (),
+        status = safe_source_file (m_installation_data.site_defaults_file (),
                                    context, verbose, require_file);
 
         if (status)

@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "oct-env.h"
 #include "oct-shlib.h"
@@ -332,8 +333,13 @@ initial_java_dir (void)
       java_dir = octave::sys::env::getenv ("OCTAVE_JAVA_DIR");
 
       if (java_dir.empty ())
-        java_dir = (octave::config::fcn_file_dir ()
-                    + octave::sys::file_ops::dir_sep_str () + "java");
+        {
+          octave::installation_data& inst_data
+            = octave::__get_installation_data__ ("initial_java_dir");
+
+          java_dir = (inst_data.fcn_file_dir ()
+                      + octave::sys::file_ops::dir_sep_str () + "java");
+        }
     }
 
   return java_dir;

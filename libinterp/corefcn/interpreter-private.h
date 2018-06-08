@@ -36,6 +36,7 @@ namespace octave
   class bp_table;
   class call_stack;
   class child_list;
+  class installation_data;
   class dynamic_loader;
   class gtk_manager;
   class help_system;
@@ -47,6 +48,8 @@ namespace octave
   class type_info;
 
   extern interpreter& __get_interpreter__ (const std::string& who);
+
+  extern installation_data& __get_installation_data__ (const std::string& who);
 
   extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
 

@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 #include "defaults.h"
+#include "interpreter-private.h"
 
 #include "QTerminal.h"
 #include "workspace-model.h"
@@ -58,9 +59,15 @@ namespace octave
     std::string dsf = sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
     if (dsf.empty ())
-      dsf = (config::oct_etc_dir ()
-             + sys::file_ops::dir_sep_str ()
-             + "default-qt-settings");
+      {
+        // Hmm.
+        installation_data& inst_data
+          = __get_installation_data__ ("default_qt_settings_file");
+
+        dsf = (inst_data.oct_etc_dir ()
+               + sys::file_ops::dir_sep_str ()
+               + "default-qt-settings");
+      }
 
     return QString::fromStdString (dsf);
   }
@@ -96,7 +103,15 @@ namespace octave
     // get environment variable for the locale dir (e.g. from run-octave)
     std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
     if (dldir.empty ())
-      dldir = config::oct_locale_dir (); // env-var empty, load the default location
+      {
+        // Hmm.
+        installation_data& inst_data
+          = __get_installation_data__ ("resource_manager::get_gui_translation_dir");
+
+        // env-var empty, load the default location
+        dldir = inst_data.oct_locale_dir ();
+      }
+
     return QString::fromStdString (dldir);
   }
 

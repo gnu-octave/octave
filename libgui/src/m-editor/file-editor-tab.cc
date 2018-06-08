@@ -70,7 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
-#include "defaults.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"

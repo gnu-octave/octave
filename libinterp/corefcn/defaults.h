@@ -27,419 +27,391 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "pathsearch.h"
+#include "installation-data.h"
 
 namespace octave
 {
-  class
-  installation_data
-  {
-  public:
-
-    installation_data (void);
-
-    installation_data (const installation_data&) = delete;
-
-    installation_data& operator = (const installation_data&) = delete;
-
-    ~installation_data (void) = default;
-
-    std::string canonical_host_type (void) const
-    {
-      return m_canonical_host_type;
-    }
-
-    std::string release (void) const
-    {
-      return m_release;
-    }
-
-    std::string default_pager (void) const
-    {
-      return m_default_pager;
-    }
-
-    std::string home (void) const
-    {
-      return m_home;
-    }
-
-    std::string exec_home (void) const
-    {
-      return m_exec_home;
-    }
-
-    std::string bin_dir (void) const
-    {
-      return m_bin_dir;
-    }
-
-    std::string data_dir (void) const
-    {
-      return m_data_dir;
-    }
-
-    std::string dataroot_dir (void) const
-    {
-      return m_dataroot_dir;
-    }
-
-    std::string include_dir (void) const
-    {
-      return m_include_dir;
-    }
-
-    std::string lib_dir (void) const
-    {
-      return m_lib_dir;
-    }
-
-    std::string libexec_dir (void) const
-    {
-      return m_libexec_dir;
-    }
-
-    std::string local_ver_arch_lib_dir (void) const
-    {
-      return m_local_ver_arch_lib_dir;
-    }
-
-    std::string local_api_arch_lib_dir (void) const
-    {
-      return m_local_api_arch_lib_dir;
-    }
-
-    std::string local_arch_lib_dir (void) const
-    {
-      return m_local_arch_lib_dir;
-    }
-
-    std::string arch_lib_dir (void) const
-    {
-      return m_arch_lib_dir;
-    }
-
-    std::string local_ver_oct_file_dir (void) const
-    {
-      return m_local_ver_oct_file_dir;
-    }
-
-    std::string local_api_oct_file_dir (void) const
-    {
-      return m_local_api_oct_file_dir;
-    }
-
-    std::string local_oct_file_dir (void) const
-    {
-      return m_local_oct_file_dir;
-    }
-
-    std::string oct_file_dir (void) const
-    {
-      return m_oct_file_dir;
-    }
-
-    std::string local_ver_fcn_file_dir (void) const
-    {
-      return m_local_ver_fcn_file_dir;
-    }
-
-    std::string local_api_fcn_file_dir (void) const
-    {
-      return m_local_api_fcn_file_dir;
-    }
-
-    std::string local_fcn_file_dir (void) const
-    {
-      return m_local_fcn_file_dir;
-    }
-
-    std::string fcn_file_dir (void) const
-    {
-      return m_fcn_file_dir;
-    }
-
-    std::string oct_data_dir (void) const
-    {
-      return m_oct_data_dir;
-    }
-
-    std::string oct_doc_dir (void) const
-    {
-      return m_oct_doc_dir;
-    }
-
-    std::string oct_etc_dir (void) const
-    {
-      return m_oct_etc_dir;
-    }
-
-    std::string oct_fonts_dir (void) const
-    {
-      return m_oct_fonts_dir;
-    }
-
-    std::string oct_include_dir (void) const
-    {
-      return m_oct_include_dir;
-    }
-
-    std::string oct_lib_dir (void) const
-    {
-      return m_oct_lib_dir;
-    }
-
-    std::string oct_locale_dir (void) const
-    {
-      return m_oct_locale_dir;
-    }
-
-    std::string oct_tests_dir (void) const
-    {
-      return m_oct_tests_dir;
-    }
-
-    std::string info_dir (void) const
-    {
-      return m_info_dir;
-    }
-
-    std::string man_dir (void) const
-    {
-      return m_man_dir;
-    }
-
-    std::string man1_dir (void) const
-    {
-      return m_man1_dir;
-    }
-
-    std::string man1_ext (void) const
-    {
-      return m_man1_ext;
-    }
-
-    std::string image_dir (void) const
-    {
-      return m_image_dir;
-    }
-
-    std::string local_startupfile_dir (void) const
-    {
-      return m_local_startupfile_dir;
-    }
-
-    std::string startupfile_dir (void) const
-    {
-      return m_startupfile_dir;
-    }
-
-    std::string local_site_defaults_file (void) const
-    {
-      return m_local_site_defaults_file;
-    }
-
-    std::string site_defaults_file (void) const
-    {
-      return m_site_defaults_file;
-    }
-
-    std::string prepend_home (const std::string& s) const;
-
-    std::string prepend_exec_home (const std::string& s) const;
-
-  private:
-
-    void set_home (void);
-
-    void set_local_site_defaults_file (void);
-
-    void set_site_defaults_file (void);
-
-    std::string m_canonical_host_type;
-    std::string m_release;
-    std::string m_default_pager;
-
-    std::string m_home;
-    std::string m_exec_home;
-
-    std::string m_bin_dir;
-    std::string m_data_dir;
-    std::string m_dataroot_dir;
-    std::string m_include_dir;
-    std::string m_lib_dir;
-    std::string m_libexec_dir;
-
-    std::string m_local_ver_arch_lib_dir;
-    std::string m_local_api_arch_lib_dir;
-    std::string m_local_arch_lib_dir;
-    std::string m_arch_lib_dir;
-
-    std::string m_local_ver_oct_file_dir;
-    std::string m_local_api_oct_file_dir;
-    std::string m_local_oct_file_dir;
-    std::string m_oct_file_dir;
-
-    std::string m_local_ver_fcn_file_dir;
-    std::string m_local_api_fcn_file_dir;
-    std::string m_local_fcn_file_dir;
-    std::string m_fcn_file_dir;
-
-    std::string m_oct_data_dir;
-    std::string m_oct_doc_dir;
-    std::string m_oct_etc_dir;
-    std::string m_oct_fonts_dir;
-    std::string m_oct_include_dir;
-    std::string m_oct_lib_dir;
-    std::string m_oct_locale_dir;
-    std::string m_oct_tests_dir;
-
-    std::string m_info_dir;
-
-    std::string m_man_dir;
-    std::string m_man1_dir;
-    std::string m_man1_ext;
-
-    std::string m_image_dir;
-
-    std::string m_local_startupfile_dir;
-    std::string m_startupfile_dir;
-
-    std::string m_local_site_defaults_file;
-    std::string m_site_defaults_file;
-  };
-
   namespace config
   {
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::prepend_octave_home' instead")
-    extern OCTINTERP_API std::string
-    prepend_octave_home (const std::string& s);
+    inline std::string prepend_octave_home (const std::string& s)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("prepend_octave_home");
+
+      return inst_data.prepend_home (s);
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::prepend_octave_exec_home' instead")
-    extern OCTINTERP_API std::string
-    prepend_octave_exec_home (const std::string& s);
+    inline std::string prepend_octave_exec_home (const std::string& s)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("prepend_octave_exec_home");
+
+      return inst_data.prepend_exec_home (s);
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::canonical_host_type' instead")
-    extern OCTINTERP_API std::string canonical_host_type (void);
+    inline std::string canonical_host_type (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("canonical_host_type");
+
+      return inst_data.canonical_host_type ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::release' instead")
-    extern OCTINTERP_API std::string release (void);
+    inline std::string release (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("release");
+
+      return inst_data.release ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::default_pager' instead")
-    extern OCTINTERP_API std::string default_pager (void);
+    inline std::string default_pager (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("default_pager");
+
+      return inst_data.default_pager ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::octave_home' instead")
-    extern OCTINTERP_API std::string octave_home (void);
+    inline std::string octave_home (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("octave_home");
+
+      return inst_data.home ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::octave_exec_home' instead")
-    extern OCTINTERP_API std::string octave_exec_home (void);
+    inline std::string octave_exec_home (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("octave_exec_home");
+
+      return inst_data.exec_home ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::bin_dir' instead")
-    extern OCTINTERP_API std::string bin_dir (void);
+    inline std::string bin_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("bin_dir");
+
+      return inst_data.bin_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::data_dir' instead")
-    extern OCTINTERP_API std::string data_dir (void);
+    inline std::string data_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("data_dir");
+
+      return inst_data.data_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::dataroot_dir' instead")
-    extern OCTINTERP_API std::string dataroot_dir (void);
+    inline std::string dataroot_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("dataroot_dir");
+
+      return inst_data.dataroot_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::include_dir' instead")
-    extern OCTINTERP_API std::string include_dir (void);
+    inline std::string include_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("include_dir");
+
+      return inst_data.include_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::lib_dir' instead")
-    extern OCTINTERP_API std::string lib_dir (void);
+    inline std::string lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("lib_dir");
+
+      return inst_data.lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::libexec_dir' instead")
-    extern OCTINTERP_API std::string libexec_dir (void);
+    inline std::string libexec_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("libexec_dir");
+
+      return inst_data.libexec_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_ver_arch_lib_dir' instead")
-    extern OCTINTERP_API std::string local_ver_arch_lib_dir (void);
+    inline std::string arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("arch_lib_dir");
+
+      return inst_data.arch_lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_api_arch_lib_dir' instead")
-    extern OCTINTERP_API std::string local_api_arch_lib_dir (void);
+    inline std::string info_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("info_dir");
+
+      return inst_data.info_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_arch_lib_dir' instead")
-    extern OCTINTERP_API std::string local_arch_lib_dir (void);
+    inline std::string local_ver_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_arch_lib_dir");
+
+      return inst_data.local_ver_arch_lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::arch_lib_dir' instead")
-    extern OCTINTERP_API std::string arch_lib_dir (void);
+    inline std::string local_api_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_arch_lib_dir");
+
+      return inst_data.local_api_arch_lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_ver_oct_file_dir' instead")
-    extern OCTINTERP_API std::string local_ver_oct_file_dir (void);
+    inline std::string local_arch_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_arch_lib_dir");
+
+      return inst_data.local_arch_lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_api_oct_file_dir' instead")
-    extern OCTINTERP_API std::string local_api_oct_file_dir (void);
+    inline std::string local_ver_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_oct_file_dir");
+
+      return inst_data.local_ver_oct_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_oct_file_dir' instead")
-    extern OCTINTERP_API std::string local_oct_file_dir (void);
+    inline std::string local_api_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_oct_file_dir");
+
+      return inst_data.local_api_oct_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_file_dir' instead")
-    extern OCTINTERP_API std::string oct_file_dir (void);
+    inline std::string local_oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_oct_file_dir");
+
+      return inst_data.local_oct_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_ver_fcn_file_dir' instead")
-    extern OCTINTERP_API std::string local_ver_fcn_file_dir (void);
+    inline std::string oct_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_file_dir");
+
+      return inst_data.oct_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_api_fcn_file_dir' instead")
-    extern OCTINTERP_API std::string local_api_fcn_file_dir (void);
+    inline std::string local_ver_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_ver_fcn_file_dir");
+
+      return inst_data.local_ver_fcn_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_fcn_file_dir' instead")
-    extern OCTINTERP_API std::string local_fcn_file_dir (void);
+    inline std::string local_api_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_api_fcn_file_dir");
+
+      return inst_data.local_api_fcn_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::fcn_file_dir' instead")
-    extern OCTINTERP_API std::string fcn_file_dir (void);
+    inline std::string local_fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_fcn_file_dir");
+
+      return inst_data.local_fcn_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_data_dir' instead")
-    extern OCTINTERP_API std::string oct_data_dir (void);
+    inline std::string fcn_file_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("fcn_file_dir");
+
+      return inst_data.fcn_file_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_doc_dir' instead")
-    extern OCTINTERP_API std::string oct_doc_dir (void);
+    inline std::string oct_data_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_data_dir");
+
+      return inst_data.oct_data_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_etc_dir' instead")
-    extern OCTINTERP_API std::string oct_etc_dir (void);
+    inline std::string oct_doc_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_doc_dir");
+
+      return inst_data.oct_doc_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_fonts_dir' instead")
-    extern OCTINTERP_API std::string oct_fonts_dir (void);
+    inline std::string oct_etc_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_etc_dir");
+
+      return inst_data.oct_etc_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_include_dir' instead")
-    extern OCTINTERP_API std::string oct_include_dir (void);
+    inline std::string oct_fonts_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_fonts_dir");
+
+      return inst_data.oct_fonts_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_lib_dir' instead")
-    extern OCTINTERP_API std::string oct_lib_dir (void);
+    inline std::string oct_include_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_include_dir");
+
+      return inst_data.oct_include_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_locale_dir' instead")
-    extern OCTINTERP_API std::string oct_locale_dir (void);
+    inline std::string oct_lib_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_lib_dir");
+
+      return inst_data.oct_lib_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::oct_tests_dir' instead")
-    extern OCTINTERP_API std::string oct_tests_dir (void);
+    inline std::string oct_locale_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_locale_dir");
+
+      return inst_data.oct_locale_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::info_dir' instead")
-    extern OCTINTERP_API std::string info_dir (void);
+    inline std::string oct_tests_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("oct_tests_dir");
+
+      return inst_data.oct_tests_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::man_dir' instead")
-    extern OCTINTERP_API std::string man_dir (void);
+    inline std::string man_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man_dir");
+
+      return inst_data.man_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::man1_dir' instead")
-    extern OCTINTERP_API std::string man1_dir (void);
+    inline std::string man1_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man1_dir");
+
+      return inst_data.man1_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::man1_ext' instead")
-    extern OCTINTERP_API std::string man1_ext (void);
+    inline std::string man1_ext (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("man1_ext");
+
+      return inst_data.man1_ext ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::image_dir' instead")
-    extern OCTINTERP_API std::string image_dir (void);
+    inline std::string image_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("image_dir");
+
+      return inst_data.image_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_startupfile_dir' instead")
-    extern OCTINTERP_API std::string local_startupfile_dir (void);
+    inline std::string local_startupfile_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_startupfile_dir");
+
+      return inst_data.local_startupfile_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::startupfile_dir' instead")
-    extern OCTINTERP_API std::string startupfile_dir (void);
+    inline std::string startupfile_dir (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("startupfile_dir");
+
+      return inst_data.startupfile_dir ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::local_site_defaults_file' instead")
-    extern OCTINTERP_API std::string local_site_defaults_file (void);
+    inline std::string local_site_defaults_file (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("local_site_defaults_file");
+
+      return inst_data.local_site_defaults_file ();
+    }
 
     OCTAVE_DEPRECATED (5, "use 'octave::installation_data::site_defaults_file' instead")
-    extern OCTINTERP_API std::string site_defaults_file (void);
+    inline std::string site_defaults_file (void)
+    {
+      installation_data& inst_data
+        = __get_installation_data__ ("site_defaults_file");
+
+      return inst_data.site_defaults_file ();
+    }
 
 #endif
   }

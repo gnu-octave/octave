@@ -55,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
-#include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "dynamic-ld.h"

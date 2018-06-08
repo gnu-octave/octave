@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-time.h"
 
-#include "defaults.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "interpreter-private.h"

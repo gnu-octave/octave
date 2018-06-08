@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-shlib.h"
 
-#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
-#include "ovl.h"
 #include "ov-dld-fcn.h"
 #include "ov.h"
+#include "ovl.h"
 
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,

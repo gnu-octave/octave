@@ -54,9 +54,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "singleton-cleanup.h"
 #include "unistr-wrappers.h"
 
-#include "defaults.h"
 #include "error.h"
 #include "file-ops.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
 #include "oct-env.h"
 #include "pr-output.h"

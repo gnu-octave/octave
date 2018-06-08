@@ -61,10 +61,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
-#include "defaults.h"
 #if defined (HAVE_QT_GRAPHICS)
 #  include "__init_qt__.h"
 #endif
+#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"

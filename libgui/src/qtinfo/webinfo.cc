@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-ops.h"
 #include "help.h"
-#include "defaults.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 

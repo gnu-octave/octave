@@ -27,10 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-shlib.h"
 
 #include "call-stack.h"
-#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "ov-mex-fcn.h"

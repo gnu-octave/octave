@@ -32,9 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "str-vec.h"
 
-#include "defaults.h"
 #include "defun.h"
 #include "environment.h"
+#include "installation-data.h"
 #include "interpreter.h"
 #include "variables.h"
 

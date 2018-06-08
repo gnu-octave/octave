@@ -31,12 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
-#include "defaults.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
+#include "installation-data.h"
 #include "load-path.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"

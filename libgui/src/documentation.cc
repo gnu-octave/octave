@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "defaults.h"
 #include "file-ops.h"
+#include "installation-data.h"
 #include "oct-env.h"
 
 #include <QApplication>

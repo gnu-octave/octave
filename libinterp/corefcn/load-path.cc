@@ -33,9 +33,9 @@
 #include "oct-env.h"
 #include "pathsearch.h"
 
-#include "defaults.h"
 #include "defun.h"
 #include "input.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"

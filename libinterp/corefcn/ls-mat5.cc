@@ -52,10 +52,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "call-stack.h"
-#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"

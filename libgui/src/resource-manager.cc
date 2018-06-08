@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "oct-env.h"
 
-#include "defaults.h"
+#include "installation-data.h"
 #include "interpreter-private.h"
 
 #include "QTerminal.h"

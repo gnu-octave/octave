@@ -2226,83 +2226,80 @@ namespace octave
     yypstate_delete (static_cast<yypstate *> (m_parser_state));
     m_parser_state = yypstate_new ();
   }
-}
 
-// Error mesages for mismatched end tokens.
+  // Error mesages for mismatched end tokens.
 
-static std::string
-end_token_as_string (octave::token::end_tok_type ettype)
-{
-  std::string retval = "<unknown>";
+  static std::string
+  end_token_as_string (token::end_tok_type ettype)
+  {
+    std::string retval = "<unknown>";
 
-  switch (ettype)
-    {
-    case octave::token::simple_end:
-      retval = "end";
-      break;
+    switch (ettype)
+      {
+      case token::simple_end:
+        retval = "end";
+        break;
 
-    case octave::token::classdef_end:
-      retval = "endclassdef";
-      break;
+      case token::classdef_end:
+        retval = "endclassdef";
+        break;
 
-    case octave::token::enumeration_end:
-      retval = "endenumeration";
-      break;
+      case token::enumeration_end:
+        retval = "endenumeration";
+        break;
 
-    case octave::token::events_end:
-      retval = "endevents";
-      break;
+      case token::events_end:
+        retval = "endevents";
+        break;
 
-    case octave::token::for_end:
-      retval = "endfor";
-      break;
+      case token::for_end:
+        retval = "endfor";
+        break;
 
-    case octave::token::function_end:
-      retval = "endfunction";
-      break;
+      case token::function_end:
+        retval = "endfunction";
+        break;
 
-    case octave::token::if_end:
-      retval = "endif";
-      break;
+      case token::if_end:
+        retval = "endif";
+        break;
 
-    case octave::token::methods_end:
-      retval = "endmethods";
-      break;
+      case token::methods_end:
+        retval = "endmethods";
+        break;
 
-    case octave::token::parfor_end:
-      retval = "endparfor";
-      break;
+      case token::parfor_end:
+        retval = "endparfor";
+        break;
 
-    case octave::token::properties_end:
-      retval = "endproperties";
-      break;
+      case token::properties_end:
+        retval = "endproperties";
+        break;
 
-    case octave::token::switch_end:
-      retval = "endswitch";
-      break;
+      case token::switch_end:
+        retval = "endswitch";
+        break;
 
-    case octave::token::try_catch_end:
-      retval = "end_try_catch";
-      break;
+      case token::try_catch_end:
+        retval = "end_try_catch";
+        break;
 
-    case octave::token::unwind_protect_end:
-      retval = "end_unwind_protect";
-      break;
+      case token::unwind_protect_end:
+        retval = "end_unwind_protect";
+        break;
 
-    case octave::token::while_end:
-      retval = "endwhile";
-      break;
+      case token::while_end:
+        retval = "endwhile";
+        break;
 
-    default:
-      panic_impossible ();
-      break;
-    }
+      default:
+        panic_impossible ();
+        break;
+      }
 
-  return retval;
-}
+    return retval;
+  }
 
-namespace octave
-{
   void
   base_parser::end_token_error (token *tok, token::end_tok_type expected)
   {
@@ -4474,131 +4471,127 @@ namespace octave
 
     return status;
   }
-}
 
-static void
-safe_fclose (FILE *f)
-{
-  if (f)
-    fclose (static_cast<FILE *> (f));
-}
+  static void
+  safe_fclose (FILE *f)
+  {
+    if (f)
+      fclose (static_cast<FILE *> (f));
+  }
 
-static octave_value
-parse_fcn_file (const std::string& full_file, const std::string& file,
-                const std::string& dir_name, const std::string& dispatch_type,
-                const std::string& package_name, bool require_file,
-                bool force_script, bool autoload, bool relative_lookup,
-                const std::string& warn_for)
-{
-  octave_value retval;
+  static octave_value
+  parse_fcn_file (const std::string& full_file, const std::string& file,
+                  const std::string& dir_name, const std::string& dispatch_type,
+                  const std::string& package_name, bool require_file,
+                  bool force_script, bool autoload, bool relative_lookup,
+                  const std::string& warn_for)
+  {
+    octave_value retval;
 
-  octave::unwind_protect frame;
+    unwind_protect frame;
 
-  octave_function *fcn_ptr = nullptr;
+    octave_function *fcn_ptr = nullptr;
 
-  // Open function file and parse.
+    // Open function file and parse.
 
-  FILE *in_stream = octave::command_editor::get_input_stream ();
+    FILE *in_stream = command_editor::get_input_stream ();
 
-  frame.add_fcn (octave::command_editor::set_input_stream, in_stream);
+    frame.add_fcn (command_editor::set_input_stream, in_stream);
 
-  frame.add_fcn (octave::command_history::ignore_entries,
-                 octave::command_history::ignoring_entries ());
+    frame.add_fcn (command_history::ignore_entries,
+                   command_history::ignoring_entries ());
 
-  octave::command_history::ignore_entries ();
+    command_history::ignore_entries ();
 
-  FILE *ffile = nullptr;
+    FILE *ffile = nullptr;
 
-  if (! full_file.empty ())
-    ffile = std::fopen (full_file.c_str (), "rb");
+    if (! full_file.empty ())
+      ffile = std::fopen (full_file.c_str (), "rb");
 
-  if (ffile)
-    {
-      frame.add_fcn (safe_fclose, ffile);
+    if (ffile)
+      {
+        frame.add_fcn (safe_fclose, ffile);
 
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("parse_fcn_file");
+        interpreter& interp = __get_interpreter__ ("parse_fcn_file");
 
-      octave::parser parser (ffile, interp);
+        parser parser (ffile, interp);
 
-      parser.m_curr_class_name = dispatch_type;
-      parser.m_curr_package_name = package_name;
-      parser.m_autoloading = autoload;
-      parser.m_fcn_file_from_relative_lookup = relative_lookup;
+        parser.m_curr_class_name = dispatch_type;
+        parser.m_curr_package_name = package_name;
+        parser.m_autoloading = autoload;
+        parser.m_fcn_file_from_relative_lookup = relative_lookup;
 
-      parser.m_lexer.m_force_script = force_script;
-      parser.m_lexer.prep_for_file ();
-      parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
+        parser.m_lexer.m_force_script = force_script;
+        parser.m_lexer.prep_for_file ();
+        parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
 
-      parser.m_lexer.m_fcn_file_name = file;
-      parser.m_lexer.m_fcn_file_full_name = full_file;
-      parser.m_lexer.m_dir_name = dir_name;
-      parser.m_lexer.m_package_name = package_name;
+        parser.m_lexer.m_fcn_file_name = file;
+        parser.m_lexer.m_fcn_file_full_name = full_file;
+        parser.m_lexer.m_dir_name = dir_name;
+        parser.m_lexer.m_package_name = package_name;
 
-      int status = parser.run ();
+        int status = parser.run ();
 
-      fcn_ptr = parser.m_primary_fcn_ptr;
+        fcn_ptr = parser.m_primary_fcn_ptr;
 
-      if (status == 0)
-        {
-          if (parser.m_lexer.m_reading_classdef_file
-              && parser.m_classdef_object)
-            {
-              // Convert parse tree for classdef object to
-              // meta.class info (and stash it in the symbol
-              // table?).  Return pointer to constructor?
+        if (status == 0)
+          {
+            if (parser.m_lexer.m_reading_classdef_file
+                && parser.m_classdef_object)
+              {
+                // Convert parse tree for classdef object to
+                // meta.class info (and stash it in the symbol
+                // table?).  Return pointer to constructor?
 
-              if (fcn_ptr)
-                panic_impossible ();
+                if (fcn_ptr)
+                  panic_impossible ();
 
-              bool is_at_folder = ! dispatch_type.empty ();
+                bool is_at_folder = ! dispatch_type.empty ();
 
-              try
-                {
-                  fcn_ptr = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
-                }
-              catch (const octave::execution_exception&)
-                {
-                  delete parser.m_classdef_object;
-                  throw;
-                }
+                try
+                  {
+                    fcn_ptr = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
+                  }
+                catch (const execution_exception&)
+                  {
+                    delete parser.m_classdef_object;
+                    throw;
+                  }
 
-              if (fcn_ptr)
+                if (fcn_ptr)
+                  retval = octave_value (fcn_ptr);
+
+                delete parser.m_classdef_object;
+
+                parser.m_classdef_object = nullptr;
+              }
+            else if (fcn_ptr)
+              {
                 retval = octave_value (fcn_ptr);
 
-              delete parser.m_classdef_object;
+                fcn_ptr->maybe_relocate_end ();
 
-              parser.m_classdef_object = nullptr;
-            }
-          else if (fcn_ptr)
-            {
-              retval = octave_value (fcn_ptr);
+                if (parser.m_parsing_subfunctions)
+                  {
+                    if (! parser.m_endfunction_found)
+                      parser.m_subfunction_names.reverse ();
 
-              fcn_ptr->maybe_relocate_end ();
+                    fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
+                  }
+              }
+          }
+        else
+          error ("parse error while reading file %s", full_file.c_str ());
+      }
+    else if (require_file)
+      error ("no such file, '%s'", full_file.c_str ());
+    else if (! warn_for.empty ())
+      error ("%s: unable to open file '%s'", warn_for.c_str (),
+             full_file.c_str ());
 
-              if (parser.m_parsing_subfunctions)
-                {
-                  if (! parser.m_endfunction_found)
-                    parser.m_subfunction_names.reverse ();
+    return retval;
+  }
 
-                  fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
-                }
-            }
-        }
-      else
-        error ("parse error while reading file %s", full_file.c_str ());
-    }
-  else if (require_file)
-    error ("no such file, '%s'", full_file.c_str ());
-  else if (! warn_for.empty ())
-    error ("%s: unable to open file '%s'", warn_for.c_str (),
-           full_file.c_str ());
-
-  return retval;
-}
-
-namespace octave
-{
   std::string
   get_help_from_file (const std::string& nm, bool& symbol_found,
                       std::string& full_file)
@@ -5251,16 +5244,13 @@ namespace octave
 
     return ovl ();
   }
-}
 
-static octave_value_list
-get_feval_args (const octave_value_list& args)
-{
-  return args.slice (1, args.length () - 1, true);
-}
+  static octave_value_list
+  get_feval_args (const octave_value_list& args)
+  {
+    return args.slice (1, args.length () - 1, true);
+  }
 
-namespace octave
-{
   //! Evaluate an Octave function (built-in or interpreted) and return
   //! the list of result values.
   //!
@@ -5975,8 +5965,8 @@ Undocumented internal function.
     octave_stdout << "parsing " << full_file << std::endl;
 
   octave_value ov_fcn
-    = parse_fcn_file (full_file, file, dir_name, "", "", true, false,
-                      false, false, "__parse_file__");
+    = octave::parse_fcn_file (full_file, file, dir_name, "", "", true, false,
+                              false, false, "__parse_file__");
 
   return retval;
 }

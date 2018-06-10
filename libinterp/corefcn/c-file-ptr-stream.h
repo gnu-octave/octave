@@ -26,9 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <cstdio>
-
-#include <iosfwd>
-#include <streambuf>
+#include <istream>
 
 class
 c_file_ptr_buf : public std::streambuf

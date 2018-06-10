@@ -213,8 +213,14 @@ namespace octave
     connect (this, SIGNAL (queue_make_widget ()),
              this, SLOT (make_widget ()), Qt::QueuedConnection);
 
+    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_U));
+    m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    addAction (m_dock_action);
     connect (m_dock_action, SIGNAL (triggered (bool)),
              this, SLOT (make_window (bool)));
+    m_close_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_C));
+    m_close_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    addAction (m_close_action);
     connect (m_close_action, SIGNAL (triggered (bool)),
              this, SLOT (change_visibility (bool)));
 
@@ -294,14 +300,15 @@ namespace octave
     setGeometry (geom);
 
     // adjust the (un)dock icon
+    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_D));
+    disconnect (m_dock_action, 0, this, 0);
+    connect (m_dock_action, SIGNAL (triggered (bool)),
+             this, SLOT (make_widget (bool)));
     if (titleBarWidget ())
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock"
                                        + m_icon_color + ".png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
-        disconnect (m_dock_action, 0, this, 0);
-        connect (m_dock_action, SIGNAL (triggered (bool)),
-                 this, SLOT (make_widget (bool)));
       }
     else
       {
@@ -343,14 +350,15 @@ namespace octave
     setFloating (false);
 
     // adjust the (un)dock icon
+    m_dock_action->setShortcut (QKeySequence (Qt::CTRL + Qt::ALT + Qt::Key_U));
+    m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_dock_action, SIGNAL (triggered (bool)),
+             this, SLOT (make_window (bool)));
     if (titleBarWidget ())
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock"
                                        + m_icon_color + ".png"));
         m_dock_action->setToolTip (tr ("Undock widget"));
-        disconnect (m_dock_action, 0, this, 0);
-        connect (m_dock_action, SIGNAL (triggered (bool)),
-                 this, SLOT (make_window (bool)));
       }
     else
       {

@@ -124,11 +124,9 @@ include %reldir%/dldfcn/module.mk
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
-  DLD_LIBOCTINTERP_LIBADD = %reldir%/liboctinterp.la
   LIBINTERP_DLDFCN_LIBADD =
 else
   OCT_FILES =
-  DLD_LIBOCTINTERP_LIBADD =
   LIBINTERP_DLDFCN_LIBADD = $(DLDFCN_LIBS)
 endif
 

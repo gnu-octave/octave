@@ -80,10 +80,9 @@ BEGIN {
             basename, cppflags[i]);
     printf ("%%canon_reldir%%_%s_la_CXXFLAGS = $(libinterp_liboctinterp_la_CXXFLAGS) %s\n",
             basename, cppflags[i]);
-    printf ("%%canon_reldir%%_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(OCT_LINK_OPTS) $(WARN_LDFLAGS)\n",
+    printf ("%%canon_reldir%%_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(WARN_LDFLAGS)\n",
             basename, ldflags[i]);
-    printf ("%%canon_reldir%%_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) liboctave/liboctave.la %s $(OCT_LINK_DEPS)\n",
-            basename, libraries[i]);
+    printf ("%%canon_reldir%%_%s_la_LIBADD = %s\n", basename, libraries[i]);
   }
 
   print "";

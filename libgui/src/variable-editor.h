@@ -194,8 +194,6 @@ namespace octave
 
     void pasteClipboard (void);
 
-    void pasteTableClipboard (void);
-
     void handle_horizontal_scroll_action (int action);
 
     void handle_vertical_scroll_action (int action);
@@ -329,8 +327,6 @@ namespace octave
 
     void pasteClipboard (void);
 
-    void pasteTableClipboard (void);
-
     void levelUp (void);
 
     // Send command to Octave interpreter.
@@ -352,8 +348,6 @@ namespace octave
     void copy_clipboard_signal (void);
 
     void paste_clipboard_signal (void);
-
-    void paste_table_clipboard_signal (void);
 
     void level_up_signal (void);
 

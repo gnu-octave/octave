@@ -583,12 +583,6 @@ namespace octave
                      tr ("Paste"),
                      this, SLOT (pasteClipboard ()));
 
-    // FIXME: Different icon for Paste Table?
-
-    menu->addAction (resource_manager::icon ("edit-paste"),
-                     tr ("Paste Table"),
-                     this, SLOT (pasteTableClipboard ()));
-
     menu->addSeparator ();
 
     menu->addAction (resource_manager::icon ("edit-delete"),
@@ -848,38 +842,6 @@ namespace octave
 
   void
   variable_editor_view::pasteClipboard (void)
-  {
-    if (! hasFocus ())
-      return;
-
-    QAbstractItemModel *mod = model ();
-    QItemSelectionModel *sel = selectionModel ();
-    QList<QModelIndex> indices = sel->selectedIndexes ();
-
-    QClipboard *clipboard = QApplication::clipboard ();
-    QString text = clipboard->text ();
-
-    if (indices.isEmpty ())
-      {
-        if (size () == QSize (1,1))
-          mod->setData (mod->index (0,0), text.toDouble ());
-        else if (size () == QSize (0,0))
-          {
-            mod->insertColumn (0);
-            mod->insertRow (0);
-            mod->setData (mod->index (0,0), text.toDouble ());
-          }
-      }
-    else
-      {
-        QStringList cells = text.split(QRegExp("\n|\r\n|\r"));
-        int clen = cells.size ();
-        for (int i = 0; i < indices.size (); i++)
-          mod->setData (indices[i], cells.at (i % clen).toDouble ());
-      }
-  }
-
-  void variable_editor_view::pasteTableClipboard (void)
   {
     if (! hasFocus ())
       return;
@@ -1262,8 +1224,6 @@ namespace octave
              edit_view, SLOT (copyClipboard ()));
     connect (this, SIGNAL (paste_clipboard_signal ()),
              edit_view, SLOT (pasteClipboard ()));
-    connect (this, SIGNAL (paste_table_clipboard_signal ()),
-             edit_view, SLOT (pasteTableClipboard ()));
     connect (this, SIGNAL (selected_command_signal (const QString&)),
              edit_view, SLOT (selected_command_requested (const QString&)));
     connect (edit_view->horizontalHeader (),
@@ -1564,14 +1524,6 @@ namespace octave
   }
 
   void
-  variable_editor::pasteTableClipboard (void)
-  {
-    emit paste_table_clipboard_signal ();
-
-    emit updated ();
-  }
-
-  void
   variable_editor::levelUp (void)
   {
     emit level_up_signal ();
@@ -1677,13 +1629,6 @@ namespace octave
     action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
                                   tr ("Paste"), this, SLOT (pasteClipboard ()));
     action->setStatusTip(tr("Paste clipboard into variable data"));
-
-    // FIXME: Different icon for Paste Table?
-
-    action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
-                                  tr ("Paste Table"),
-                                  this, SLOT (pasteTableClipboard ()));
-    action->setStatusTip(tr("Another paste clipboard into variable data"));
 
     m_tool_bar->addSeparator ();
 

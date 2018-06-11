@@ -2469,18 +2469,27 @@ maybe_unmark (void *ptr)
   return ptr;
 }
 
+static mxArray *
+make_empty_matrix (void)
+{
+  static const mwSize zero = 0;
+
+  return new mxArray (mxDOUBLE_CLASS, zero, zero, mxREAL);
+}
+
 void
 mxArray_struct::set_field_by_number (mwIndex index, int key_num, mxArray *val)
 {
   if (key_num >= 0 && key_num < nfields)
-    data[nfields * index + key_num] = maybe_unmark_array (val);
+    data[nfields * index + key_num]
+      = val ? maybe_unmark_array (val) : make_empty_matrix ();
 }
 
 void
 mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 {
   if (idx >= 0 && idx < get_number_of_elements ())
-    data[idx] = maybe_unmark_array (val);
+    data[idx] = val ? maybe_unmark_array (val) : make_empty_matrix ();
 }
 
 // ------------------------------------------------------------------

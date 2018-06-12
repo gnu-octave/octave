@@ -2073,9 +2073,13 @@ mxArray::set_name (const char *name_arg)
 }
 
 octave_value
-mxArray::as_octave_value (const mxArray *ptr)
+mxArray::as_octave_value (const mxArray *ptr, bool null_is_empty)
 {
-  return ptr ? ptr->as_octave_value () : octave_value ();
+  static const octave_value empty_matrix = Matrix ();
+
+  return (ptr
+          ? ptr->as_octave_value ()
+          : (null_is_empty ? empty_matrix : octave_value ()));
 }
 
 octave_value
@@ -3197,7 +3201,7 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
   retval.resize (nargout);
 
   for (int i = 0; i < nargout; i++)
-    retval(i) = mxArray::as_octave_value (argout[i]);
+    retval(i) = mxArray::as_octave_value (argout[i], false);
 
   return retval;
 }

@@ -69,27 +69,27 @@ function h = polar (varargin)
         error ("polar: FMT argument must be a string");
       endif
       htmp = __plr2__ (hax, varargin{:});
-      maxr = max (varargin{2}(:));
+      maxr = max (abs (varargin{2}(:)));
     elseif (nargs == 2)
       if (ischar (varargin{2}))
         htmp = __plr1__ (hax, varargin{:});
         if (iscomplex (varargin{1}))
-          maxr = max (imag (varargin{1})(:));
+          maxr = max (abs (imag (varargin{1})(:)));
         else
-          maxr = max (varargin{1}(:));
+          maxr = max (abs (varargin{1}(:)));
         endif
       else
         fmt = "";
         htmp = __plr2__ (hax, varargin{:}, fmt);
-        maxr = max (varargin{2}(:));
+        maxr = max (abs (varargin{2}(:)));
       endif
     elseif (nargs == 1)
       fmt = "";
       htmp = __plr1__ (hax, varargin{:}, fmt);
       if (iscomplex (varargin{1}))
-        maxr = max (imag (varargin{1})(:));
+        maxr = max (abs (imag (varargin{1})(:)));
       else
-        maxr = max (varargin{1}(:));
+        maxr = max (abs (varargin{1}(:)));
       endif
     else
       print_usage ();

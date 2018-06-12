@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// These are used by functions declared in installation-data.h and
-// defined in installation-data.cc
+// These are used by functions declared in defaults.h and defined in
+// defaults.cc.
 
 #if ! defined (OCTAVE_RELEASE)
 #  define OCTAVE_RELEASE %OCTAVE_RELEASE%

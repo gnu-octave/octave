@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-shlib.h"
 
+#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
-#include "installation-data.h"
 #include "interpreter-private.h"
+#include "ovl.h"
 #include "ov-dld-fcn.h"
 #include "ov.h"
-#include "ovl.h"
 
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
@@ -48,10 +48,7 @@ octave_dld_function::octave_dld_function
 
   std::string file_name = fcn_file_name ();
 
-  octave::installation_data& inst_data
-    = octave::__get_installation_data__ ("octave_dld_function::octave_dld_function");
-
-  std::string oct_file_dir = inst_data.oct_file_dir ();
+  std::string oct_file_dir = octave::config::oct_file_dir ();
 
   system_fcn_file
     = (! file_name.empty ()
@@ -67,10 +64,7 @@ octave_dld_function::octave_dld_function
 
   std::string file_name = fcn_file_name ();
 
-  octave::installation_data& inst_data
-    = octave::__get_installation_data__ ("octave_dld_function::octave_dld_function");
-
-  std::string oct_file_dir = inst_data.oct_file_dir ();
+  std::string oct_file_dir = octave::config::oct_file_dir ();
 
   system_fcn_file
     = (! file_name.empty ()

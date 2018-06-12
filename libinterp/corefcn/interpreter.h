@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
-#include "installation-data.h"
 #include "load-path.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
@@ -86,8 +85,6 @@ namespace octave
     // Clean up the interpreter object.
 
     ~interpreter (void);
-
-    void initialize_version_info (void);
 
     void intern_nargin (octave_idx_type nargs);
 
@@ -148,11 +145,6 @@ namespace octave
     bool initialized (void) const
     {
       return m_initialized;
-    }
-
-    installation_data& get_installation_data (void)
-    {
-      return  m_installation_data;
     }
 
     environment& get_environment (void)
@@ -269,8 +261,6 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
-
-    installation_data m_installation_data;
 
     environment m_environment;
 

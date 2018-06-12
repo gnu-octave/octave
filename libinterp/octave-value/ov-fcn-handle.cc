@@ -36,12 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "file-stat.h"
 #include "input.h"
-#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -255,17 +255,14 @@ bool
 octave_fcn_handle::set_fcn (const std::string& octaveroot,
                             const std::string& fpath)
 {
-  octave::installation_data& inst_data
-    = octave::__get_installation_data__ ("octave_fcn_handle::set_fcn");
-
   if (octaveroot.length () != 0
       && fpath.length () >= octaveroot.length ()
       && fpath.substr (0, octaveroot.length ()) == octaveroot
-      && inst_data.exec_home () != octaveroot)
+      && octave::config::octave_exec_home () != octaveroot)
     {
       // First check if just replacing matlabroot is enough
       std::string str
-        = (inst_data.exec_home ()
+        = (octave::config::octave_exec_home ()
            + fpath.substr (octaveroot.length ()));
       octave::sys::file_stat fs (str);
 
@@ -385,10 +382,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       octave_function *f = function_value ();
       std::string fnm = (f ? f->fcn_file_name () : "");
 
-      octave::installation_data& inst_data
-        = octave::__get_installation_data__ ("octave_fcn_handle::save_ascii");
-
-      os << "# octaveroot: " << inst_data.exec_home () << "\n";
+      os << "# octaveroot: " << octave::config::octave_exec_home () << "\n";
       if (! fnm.empty ())
         os << "# path: " << fnm << "\n";
       os << nm << "\n";
@@ -586,10 +580,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       octave_function *f = function_value ();
       std::string fnm = (f ? f->fcn_file_name () : "");
 
-      octave::installation_data& inst_data
-        = octave::__get_installation_data__ ("octave_fcn_handle::save_binary");
-
-      nmbuf << nm << "\n" << inst_data.exec_home () << "\n" << fnm;
+      nmbuf << nm << "\n" << octave::config::octave_exec_home () << "\n" << fnm;
 
       std::string buf_str = nmbuf.str ();
       int32_t tmp = buf_str.length ();
@@ -869,10 +860,7 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     }
   else
     {
-      octave::installation_data& inst_data
-        = octave::__get_installation_data__ ("octave_fcn_handle::save_binary");
-
-      std::string octaveroot = inst_data.exec_home ();
+      std::string octaveroot = octave::config::octave_exec_home ();
 
       octave_function *f = function_value ();
       std::string fpath = (f ? f->fcn_file_name () : "");

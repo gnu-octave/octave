@@ -61,10 +61,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
+#include "defaults.h"
 #if defined (HAVE_QT_GRAPHICS)
 #  include "__init_qt__.h"
 #endif
-#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -461,10 +461,7 @@ namespace octave
   {
     if (! m_release_notes_window)
       {
-        installation_data& inst_data
-          = __get_installation_data__ ("main_window::display_release_notes");
-
-        std::string news_file = inst_data.oct_etc_dir () + "/NEWS";
+        std::string news_file = config::oct_etc_dir () + "/NEWS";
 
         QString news;
 

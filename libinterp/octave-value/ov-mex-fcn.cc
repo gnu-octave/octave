@@ -27,10 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-shlib.h"
 
 #include "call-stack.h"
+#include "defaults.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "errwarn.h"
-#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "ov-mex-fcn.h"
@@ -53,10 +53,7 @@ octave_mex_function::octave_mex_function
 
   std::string file_name = fcn_file_name ();
 
-  octave::installation_data& inst_data
-    = octave::__get_installation_data__ ("octave_mex_function::octave_mex_function");
-
-  std::string oct_file_dir = inst_data.oct_file_dir ();
+  std::string oct_file_dir = octave::config::oct_file_dir ();
   m_is_system_fcn_file
     = (! file_name.empty ()
        && oct_file_dir == file_name.substr (0, oct_file_dir.length ()));

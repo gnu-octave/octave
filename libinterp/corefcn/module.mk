@@ -17,12 +17,13 @@ $(OPT_HANDLERS): $(srcdir)/build-aux/mk-opts.pl
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 COREFCN_INC = \
-  %reldir%/Cell.h \
   %reldir%/base-text-renderer.h \
+  %reldir%/Cell.h \
   %reldir%/c-file-ptr-stream.h \
   %reldir%/call-stack.h \
   %reldir%/cdisplay.h \
   %reldir%/data.h \
+  %reldir%/defaults.h \
   %reldir%/defun-dld.h \
   %reldir%/defun-int.h \
   %reldir%/defun.h \
@@ -44,7 +45,6 @@ COREFCN_INC = \
   %reldir%/help.h \
   %reldir%/hook-fcn.h \
   %reldir%/input.h \
-  %reldir%/installation-data.h \
   %reldir%/interpreter.h \
   %reldir%/load-path.h \
   %reldir%/load-save.h \
@@ -53,8 +53,8 @@ COREFCN_INC = \
   %reldir%/ls-mat-ascii.h \
   %reldir%/ls-mat4.h \
   %reldir%/ls-mat5.h \
-  %reldir%/ls-oct-binary.h \
   %reldir%/ls-oct-text.h \
+  %reldir%/ls-oct-binary.h \
   %reldir%/ls-utils.h \
   %reldir%/mex.h \
   %reldir%/mexproto.h \
@@ -134,6 +134,7 @@ COREFCN_SRC = \
   %reldir%/dassl.cc \
   %reldir%/data.cc \
   %reldir%/debug.cc \
+  %reldir%/defaults.cc \
   %reldir%/defun.cc \
   %reldir%/det.cc \
   %reldir%/dirfns.cc \
@@ -172,7 +173,6 @@ COREFCN_SRC = \
   %reldir%/hex2num.cc \
   %reldir%/hook-fcn.cc \
   %reldir%/input.cc \
-  %reldir%/installation-data.cc \
   %reldir%/inv.cc \
   %reldir%/interpreter-private.cc \
   %reldir%/interpreter.cc \

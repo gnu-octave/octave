@@ -32,9 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathsearch.h"
 #include "str-vec.h"
 
+#include "defaults.h"
 #include "defun.h"
 #include "environment.h"
-#include "installation-data.h"
 #include "interpreter.h"
 #include "variables.h"
 
@@ -113,30 +113,25 @@ namespace octave
     return retval;
   }
 
-  std::string environment::init_exec_path (interpreter& interp)
+  std::string environment::init_exec_path (void)
   {
     std::string exec_path = sys::env::getenv ("OCTAVE_EXEC_PATH");
 
     std::string path_sep = directory_path::path_sep_str ();
 
     if (exec_path.empty ())
-      {
-        installation_data& inst_data = interp.get_installation_data ();
-
-        exec_path = (inst_data.local_ver_arch_lib_dir () + path_sep
-                     + inst_data.local_api_arch_lib_dir () + path_sep
-                     + inst_data.local_arch_lib_dir () + path_sep
-                     + inst_data.arch_lib_dir () + path_sep
-                     + inst_data.bin_dir ());
-
-      }
+      exec_path = (config::local_ver_arch_lib_dir () + path_sep
+                   + config::local_api_arch_lib_dir () + path_sep
+                   + config::local_arch_lib_dir () + path_sep
+                   + config::arch_lib_dir () + path_sep
+                   + config::bin_dir ());
 
     append_to_shell_path (exec_path);
 
     return exec_path;
   }
 
-  std::string environment::init_image_path (interpreter& interp)
+  std::string environment::init_image_path (void)
   {
     std::string image_path = ".";
 
@@ -147,9 +142,7 @@ namespace octave
     if (! env_path.empty ())
       image_path += path_sep + env_path;
 
-    installation_data& inst_data = interp.get_installation_data ();
-
-    std::string gen_path = genpath (inst_data.image_dir (), "");
+    std::string gen_path = genpath (config::image_dir (), "");
 
     if (! gen_path.empty ())
       image_path += path_sep + gen_path;

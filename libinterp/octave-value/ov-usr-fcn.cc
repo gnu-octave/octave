@@ -30,23 +30,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "str-vec.h"
 
-#include "Cell.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
+#include "defaults.h"
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
-#include "installation-data.h"
-#include "interpreter-private.h"
-#include "interpreter.h"
-#include "ov-fcn-handle.h"
+#include "ovl.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
-#include "ovl.h"
 #include "pager.h"
-#include "parse.h"
-#include "profiler.h"
 #include "pt-eval.h"
 #include "pt-jit.h"
 #include "pt-jump.h"
@@ -55,9 +50,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "pt-walk.h"
 #include "symtab.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "parse.h"
+#include "profiler.h"
 #include "variables.h"
+#include "ov-fcn-handle.h"
 
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
@@ -334,10 +334,7 @@ octave_user_function::mark_as_system_fcn_file (void)
 
       std::string ff_name = fcn_file_in_path (file_name);
 
-      octave::installation_data& inst_data
-        = octave::__get_installation_data__ ("octave_user_function::mark_as_system_fcn_file");
-
-      std::string fcn_file_dir = inst_data.fcn_file_dir ();
+      std::string fcn_file_dir = octave::config::fcn_file_dir ();
       if (fcn_file_dir == ff_name.substr (0, fcn_file_dir.length ()))
         system_fcn_file = true;
     }

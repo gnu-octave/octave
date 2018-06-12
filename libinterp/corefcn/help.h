@@ -43,13 +43,13 @@ namespace octave
 
     help_system (interpreter& interp)
       : m_interpreter (interp),
-        m_built_in_docstrings_file (init_built_in_docstrings_file (interp)),
-        m_doc_cache_file (init_doc_cache_file (interp)),
-        m_info_file (init_info_file (interp)),
+        m_built_in_docstrings_file (init_built_in_docstrings_file ()),
+        m_doc_cache_file (init_doc_cache_file ()),
+        m_info_file (init_info_file ()),
         m_info_program (init_info_program ()),
         m_makeinfo_program ("makeinfo"),
         m_suppress_verbose_help_message (false),
-        m_texi_macros_file (init_texi_macros_file (interp))
+        m_texi_macros_file (init_texi_macros_file ())
     { }
 
     octave_value
@@ -166,15 +166,15 @@ namespace octave
     // (--texi-macros-file)
     std::string m_texi_macros_file;
 
-    static std::string init_built_in_docstrings_file (interpreter& interp);
+    static std::string init_built_in_docstrings_file (void);
 
-    static std::string init_doc_cache_file (interpreter& interp);
+    static std::string init_doc_cache_file (void);
 
-    static std::string init_info_file (interpreter& interp);
+    static std::string init_info_file (void);
 
     static std::string init_info_program (void);
 
-    static std::string init_texi_macros_file (interpreter& interp);
+    static std::string init_texi_macros_file (void);
 
     template <typename T>
     T set (T& var, const T& new_val)

@@ -52,10 +52,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
-#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -864,12 +864,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 std::string mroot =
                   m0.contents ("matlabroot").string_value ();
 
-                octave::installation_data& inst_data
-                  = octave::__get_installation_data__ ("read_mat5_binary_element");
-
                 if ((fpath.length () >= mroot.length ())
                     && fpath.substr (0, mroot.length ()) == mroot
-                    && inst_data.exec_home () != mroot)
+                    && octave::config::octave_exec_home () != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
                     // doesn't equal __octave_config_info__ ("exec_prefix")
@@ -880,7 +877,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     // First check if just replacing matlabroot is enough
                     std::string str
-                      = (inst_data.exec_home ()
+                      = (octave::config::octave_exec_home ()
                          + fpath.substr (mroot.length ()));
                     octave::sys::file_stat fs (str);
 

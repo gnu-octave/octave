@@ -33,13 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
-#include "installation-data.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "ovl.h"
 #include "pager.h"
@@ -111,16 +111,12 @@ namespace octave
     return false;
   }
 
-  static std::string default_pager (interpreter& interp)
+  static std::string default_pager (void)
   {
     std::string pager_binary = sys::env::getenv ("PAGER");
 
     if (pager_binary.empty ())
-      {
-        installation_data& inst_data = interp.get_installation_data ();
-
-        pager_binary = inst_data.default_pager ();
-      }
+      pager_binary = config::default_pager ();
 
     return pager_binary;
   }
@@ -269,7 +265,7 @@ namespace octave
   output_system::output_system (interpreter& interp)
     : m_interpreter (interp), m_pager_stream (), m_diary_stream (),
       m_external_pager (nullptr), m_external_diary_file (),
-      m_diary_file_name ("diary"), m_PAGER (default_pager (interp)),
+      m_diary_file_name ("diary"), m_PAGER (default_pager ()),
       m_PAGER_FLAGS (), m_page_output_immediately (false),
       m_page_screen_output (false), m_write_to_diary_file (false),
       m_really_flush_to_pager (false), m_flushing_output_to_pager (false)

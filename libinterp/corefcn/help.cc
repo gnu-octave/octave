@@ -44,13 +44,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
+#include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
 #include "help.h"
 #include "input.h"
-#include "installation-data.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -427,36 +427,30 @@ namespace octave
       }
   }
 
-  std::string help_system::init_built_in_docstrings_file (interpreter& interp)
+  std::string help_system::init_built_in_docstrings_file (void)
   {
-    installation_data& inst_data = interp.get_installation_data ();
-
     std::string df = sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
     std::string dir_sep = sys::file_ops::dir_sep_str ();
 
     if (df.empty ())
-      df = inst_data.oct_etc_dir () + dir_sep + "built-in-docstrings";
+      df = config::oct_etc_dir () + dir_sep + "built-in-docstrings";
 
     return df;
   }
 
-  std::string help_system::init_doc_cache_file (interpreter& interp)
+  std::string help_system::init_doc_cache_file (void)
   {
-    installation_data& inst_data = interp.get_installation_data ();
-
-    std::string def_file = inst_data.prepend_home (OCTAVE_DOC_CACHE_FILE);
+    std::string def_file = config::prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
 
     std::string env_file = sys::env::getenv ("OCTAVE_DOC_CACHE_FILE");
 
     return (env_file.empty () ? def_file : env_file);
   }
 
-  std::string help_system::init_info_file (interpreter& interp)
+  std::string help_system::init_info_file (void)
   {
-    installation_data& inst_data = interp.get_installation_data ();
-
-    std::string std_info_file = inst_data.prepend_home (OCTAVE_INFOFILE);
+    std::string std_info_file = config::prepend_octave_home (OCTAVE_INFOFILE);
 
     std::string oct_info_file = sys::env::getenv ("OCTAVE_INFO_FILE");
 
@@ -473,12 +467,10 @@ namespace octave
     return info_prog;
   }
 
-  std::string help_system::init_texi_macros_file (interpreter& interp)
+  std::string help_system::init_texi_macros_file (void)
   {
-    installation_data& inst_data = interp.get_installation_data ();
-
     std::string def_file
-      = inst_data.prepend_home (OCTAVE_TEXI_MACROS_FILE);
+      = config::prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
 
     std::string env_file = sys::env::getenv ("OCTAVE_TEXI_MACROS_FILE");
 

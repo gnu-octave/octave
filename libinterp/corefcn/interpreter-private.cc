@@ -55,13 +55,6 @@ namespace octave
     return *interp;
   }
 
-  installation_data& __get_installation_data__ (const std::string& who)
-  {
-    interpreter& interp = __get_interpreter__ (who);
-
-    return interp.get_installation_data ();
-  }
-
   dynamic_loader& __get_dynamic_loader__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);

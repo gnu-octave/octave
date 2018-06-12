@@ -39,15 +39,13 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class interpreter;
-
   class
   OCTINTERP_API
   load_path
   {
   public:
 
-    load_path (interpreter& interp);
+    load_path (void);
 
     typedef void (*hook_fcn_ptr) (const std::string& dir);
 
@@ -508,8 +506,6 @@ namespace octave
 
     typedef package_map_type::const_iterator const_package_map_iterator;
     typedef package_map_type::iterator package_map_iterator;
-
-    interpreter& m_interpreter;
 
     mutable package_map_type package_map;
 

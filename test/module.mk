@@ -75,12 +75,13 @@ include %reldir%/classes/module.mk
 include %reldir%/ctor-vs-method/module.mk
 include %reldir%/fcn-handle-derived-resolution/module.mk
 include %reldir%/local-functions/module.mk
+include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk
 include %reldir%/publish/module.mk
 include %reldir%/pkg/module.mk
 
 define run-octave-tests
-  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \
+  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f %reldir%/fntests.log ]; then \
@@ -93,7 +94,7 @@ define run-octave-tests
   fi
 endef
 
-check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
+check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
 
 if AMCOND_HAVE_LLVM
@@ -190,7 +191,9 @@ BUILT_SOURCES += $(GENERATED_TEST_FILES)
   %reldir%/mk-sparse-tst.sh \
   %reldir%/mk_bc_overloads_expected.m \
   %reldir%/show-failures.awk \
-  $(TEST_FILES)
+  $(TEST_FILES) \
+  $(noinst_TEST_FILES) \
+  $(MEX_TEST_SRC)
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 

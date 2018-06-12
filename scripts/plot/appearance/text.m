@@ -71,64 +71,10 @@ function h = text (varargin)
       error ("text: number of X, Y, and Z coordinates must match");
     endif
 
-    if (ischar (string))
-
-      do_keyword_repl = true;
-      nt = rows (string);
-      if (nx == 1 && (nt == 1 || nt == 0))
-        ## Single text object with one line or empty line
-        string = {string};
-        nt = 1;
-      elseif (nx == 1 && nt > 1)
-        ## Single text object with multiple lines
-        ## FIXME: "default" or "factory" as first row
-        ##        should be escaped to "\default" or "\factory"
-        ##        Other rows do not require escaping.
-        do_keyword_repl = false;
-        string = {string};
-      elseif (nx > 1 && nt == nx)
-        ## Multiple text objects with different strings
-        string = cellstr (string);
-      elseif (nx > 1 && nt == 1)
-        ## Multiple text objects with same string
-        string = repmat ({string}, [nx, 1]);
-        nt = nx;
-      else
-        error ("text: Invalid combination of points and text strings");
-      endif
-
-      ## Escape special keywords
-      if (do_keyword_repl)
-        string = regexprep (string, '^(default|factory)$', '\\$1');
-      endif
-
-    elseif (iscell (string))
-
-      nt = numel (string);
-      if (nx == 1)
-        ## Single text object with one or more lines
-        string = {cellstr(string)};
-        nt = 1;
-      elseif (nx > 1 && nt == nx)
-        ## Multiple text objects with different strings
-      elseif (nx > 1 && nt == 1)
-        ## Multiple text objects with same string
-        string = repmat ({cellstr(string)}, [nx, 1]);
-        nt = nx;
-      else
-        error ("text: Invalid combination of points and text strings");
-      endif
-
-    else
-
-      error ("text: STRING must be a character string or cell array of character strings");
-
-    endif
   else  # Only PROP/VALUE pairs
     x = y = z = 0;
     nx = ny = nz = 1;
     string = {""};
-    nt = 1;
   endif
 
   ## Any remaining inputs must occur as PROPERTY/VALUE pairs
@@ -136,21 +82,85 @@ function h = text (varargin)
     print_usage ();
   endif
 
-  ## Get axis argument which may be in a 'parent' PROP/VAL pair
+  ## Get axis argument which may be in a "parent" PROP/VAL pair
   [hax, varargin] = __plt_get_axis_arg__ ("text", varargin{:});
-  if (isempty (hax))
-    hax = gca ();
-  else
-    hax = hax(1);
+
+  ## String argument may be in PROP/VAL pair
+  idx = find (strcmpi (varargin, "string"), 1);
+  if (idx)
+    string = varargin{idx+1};
+    varargin(idx:idx+1) = [];
   endif
 
-  ## Position argument may also be in PROP/VAL pair
+  ## Position argument may be in PROP/VAL pair
   idx = find (strcmpi (varargin, "position"), 1);
   if (idx)
     pos = varargin{idx+1};
     varargin(idx:idx+1) = [];
   else
     pos = [x(:), y(:), z(:)];
+  endif
+
+  ## Validate string argument
+  if (ischar (string))
+
+    do_keyword_repl = true;
+    nt = rows (string);
+    if (nx == 1 && (nt == 1 || nt == 0))
+      ## Single text object with one line or empty line
+      string = {string};
+      nt = 1;
+    elseif (nx == 1 && nt > 1)
+      ## Single text object with multiple lines
+      ## FIXME: "default" or "factory" as first row
+      ##        should be escaped to "\default" or "\factory"
+      ##        Other rows do not require escaping.
+      do_keyword_repl = false;
+      string = {string};
+    elseif (nx > 1 && nt == nx)
+      ## Multiple text objects with different strings
+      string = cellstr (string);
+    elseif (nx > 1 && nt == 1)
+      ## Multiple text objects with same string
+      string = repmat ({string}, [nx, 1]);
+      nt = nx;
+    else
+      error ("text: Invalid combination of points and text strings");
+    endif
+
+    ## Escape special keywords
+    if (do_keyword_repl)
+      string = regexprep (string, '^(default|factory)$', '\\$1');
+    endif
+
+  elseif (iscell (string))
+
+    nt = numel (string);
+    if (nx == 1)
+      ## Single text object with one or more lines
+      string = {cellstr(string)};
+      nt = 1;
+    elseif (nx > 1 && nt == nx)
+      ## Multiple text objects with different strings
+    elseif (nx > 1 && nt == 1)
+      ## Multiple text objects with same string
+      string = repmat ({cellstr(string)}, [nx, 1]);
+      nt = nx;
+    else
+      error ("text: Invalid combination of points and text strings");
+    endif
+
+  else
+
+    error ("text: STRING must be a character string or cell array of character strings");
+
+  endif
+
+  ## Select the correct axes
+  if (isempty (hax))
+    hax = gca ();
+  else
+    hax = hax(1);
   endif
 
   ## Call __go_text__ to do the work
@@ -342,6 +352,16 @@ endfunction
 %!   assert (get (h(1), "string"), "cellstr1");
 %!   assert (get (h(2), "string"), "cellstr2");
 %!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*54067>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ht = text ("String", "Hello", "Position", [0.5, 0.5], "FontSize", 16);
+%!   assert (get (ht, "String"), "Hello");
+%!   assert (get (ht, "FontSize"), 16);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

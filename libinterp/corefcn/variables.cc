@@ -1497,7 +1497,7 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
 
           // Set up temporary scope.
 
-          octave::symbol_scope tmp_scope;
+          octave::symbol_scope tmp_scope ("$dummy_scope$");
 
           symtab.set_scope (tmp_scope);
 
@@ -1701,6 +1701,24 @@ matching the given patterns.
 
   return do_who (interp, argc, argv, nargout == 1);
 }
+
+/*
+%!test
+%! avar = magic (4);
+%! ftmp = [tempname() ".mat"];
+%! unwind_protect
+%!   save (ftmp, "avar");
+%!   vars = whos ("-file", ftmp);
+%!   assert (numel (vars), 1);
+%!   assert (isstruct (vars));
+%!   assert (vars.name, "avar");
+%!   assert (vars.size, [4, 4]);
+%!   assert (vars.class, "double");
+%!   assert (vars.bytes, 128);
+%! unwind_protect_cleanup
+%!   unlink (ftmp);
+%! end_unwind_protect
+*/
 
 DEFMETHOD (whos, interp, args, nargout,
            doc: /* -*- texinfo -*-

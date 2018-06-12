@@ -539,7 +539,8 @@ public:
     return retval;
   }
 
-  static octave_value as_octave_value (const mxArray *ptr);
+  static octave_value
+  as_octave_value (const mxArray *ptr, bool null_is_empty = true);
 
   octave_value as_octave_value (void) const;
 

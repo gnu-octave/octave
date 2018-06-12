@@ -374,7 +374,7 @@ classdef Map < handle
               sref = feval (s(1).subs, this, s(2).subs{1});
               s = s(3:end);
             otherwise
-              error ("containters.Map: unknown property '%s'", s(1).subs);
+              error ("containers.Map: unknown property '%s'", s(1).subs);
           endswitch
         case "()"
           if (isempty (s(1).subs))

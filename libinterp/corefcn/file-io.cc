@@ -721,10 +721,10 @@ DEFMETHOD (fseek, interp, args, ,
 Set the file pointer to the location @var{offset} within the file @var{fid}.
 
 The pointer is positioned @var{offset} characters from the @var{origin}, which
-may be one of the predefined variables @w{@code{SEEK_SET}} (beginning),
-@w{@code{SEEK_CUR}} (current position), or @w{@code{SEEK_END}} (end of file) or
-strings @nospell{@qcode{"bof"}}, @nospell{@qcode{"cof"}}, or
-@nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@code{SEEK_SET}} is
+may be one of the predefined variables @w{@qcode{SEEK_SET}} (beginning),
+@w{@qcode{SEEK_CUR}} (current position), or @w{@qcode{SEEK_END}} (end of file)
+or strings @nospell{@qcode{"bof"}}, @nospell{@qcode{"cof"}}, or
+@nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@qcode{SEEK_SET}} is
 assumed.  @var{offset} may be positive, negative, or zero but not all
 combinations of @var{origin} and @var{offset} can be realized.
 

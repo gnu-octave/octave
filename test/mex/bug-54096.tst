@@ -18,5 +18,5 @@
 
 %!test
 %! s = bug_54096 ();
-%! assert (s, struct ("field", []))
-%! assert (s.field, [])
+%! assert (s, struct ("field", []));
+%! assert (s.field, []);

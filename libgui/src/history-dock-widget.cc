@@ -270,7 +270,7 @@ namespace octave
     m_history_list_view->setAlternatingRowColors (true);
     m_history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
     m_history_list_view->setStatusTip (
-      tr ("Double-click a command to transfer it to the terminal."));
+      tr ("Double-click a command to transfer it to the Command Window."));
     m_history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
     m_history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
     connect (m_history_list_view,

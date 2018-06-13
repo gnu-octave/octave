@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Settings</string>
+   <string>Preferences</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -1810,7 +1810,7 @@
      </widget>
      <widget class="QWidget" name="tab_terminal">
       <attribute name="title">
-       <string>Terminal</string>
+       <string>Command</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_14">
        <item>
@@ -2018,14 +2018,14 @@
                <item row="0" column="0">
                 <widget class="QCheckBox" name="terminal_focus_command">
                  <property name="text">
-                  <string>Set focus to terminal when running a command from within another widget</string>
+                  <string>Set focus to Command Window when running a command from within another widget</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QCheckBox" name="terminal_print_dbg_location">
                  <property name="text">
-                  <string>Print debug location in terminal window in addition to the marker in the editor</string>
+                  <string>Print debug location in Command Window in addition to the marker in the editor</string>
                  </property>
                 </widget>
                </item>
@@ -2041,7 +2041,7 @@
              <item>
               <widget class="QGroupBox" name="terminal_colors_box">
                <property name="title">
-                <string>Terminal Colors</string>
+                <string>Command Window Colors</string>
                </property>
               </widget>
              </item>
@@ -2338,7 +2338,7 @@
                   <string>Select this option to prevent conflicts with readline shortcuts</string>
                  </property>
                  <property name="text">
-                  <string>Disable global shortcuts when terminal window has focus</string>
+                  <string>Disable global shortcuts when Command Window has focus</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -2742,7 +2742,7 @@
                <item row="0" column="5">
                 <widget class="QCheckBox" name="varedit_useTerminalFont">
                  <property name="text">
-                  <string>Use Terminal Font</string>
+                  <string>Use Command Window Font</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>

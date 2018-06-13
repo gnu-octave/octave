@@ -273,8 +273,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   if (! settings)
     {
       QMessageBox msgBox
-        (QMessageBox::Warning, tr ("Octave Settings"),
-         tr ("Unable to save settings.  Missing settings file or unknown directory."));
+        (QMessageBox::Warning, tr ("Octave Preferences"),
+         tr ("Unable to save preferences.  Missing preferences file or unknown directory."));
 
       msgBox.exec ();
 

@@ -1745,7 +1745,7 @@ function def = getdefault (h, objname, field)
   def = get (h, field);
 
   ## Don't print default values for graphics handles
-  if (isscalar (def) && def != 0 && ishghandle (def))
+  if (ishghandle (def) && isscalar (def) && def != 0)
     def = "";
   else
     if (ischar (def))

@@ -30,7 +30,7 @@
 ## When called with an optional third argument the order of colors in the new
 ## colormap is defined by @var{index}.
 ##
-## @strong{Caution:} @code{index} should not have repeated elements or the
+## @strong{Caution:} @var{index} should not have repeated elements or the
 ## function will fail.
 ##
 ## @end deftypefn

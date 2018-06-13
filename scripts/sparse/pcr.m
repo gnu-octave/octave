@@ -47,7 +47,7 @@
 ##
 ## @item
 ## @var{maxit} is the maximum allowable number of iterations; if @code{[]} is
-## supplied for @code{maxit}, or @code{pcr} has less arguments, a default
+## supplied for @var{maxit}, or @code{pcr} has less arguments, a default
 ## value equal to 20 is used.
 ##
 ## @item

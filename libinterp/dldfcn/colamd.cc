@@ -466,7 +466,7 @@ n-by-n, then rows and columns with more than
 @code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to
 ordering, and ordered last in the output permutation @var{p}.  No
 rows/columns are removed if @code{@var{knobs}(1) < 0}.  If
-@code{@var{knobs} (2)} is nonzero, @code{stats} and @var{knobs} are
+@code{@var{knobs}(2)} is nonzero, @var{stats} and @var{knobs} are
 printed.  The default is @code{@var{knobs} = [10 0]}.  Note that
 @var{knobs} differs from earlier versions of @code{symamd}.
 

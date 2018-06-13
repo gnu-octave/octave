@@ -89,7 +89,7 @@ value will be used.
 @code{sparse (@var{m}, @var{n})} will create an empty @var{m}x@var{n} sparse
 matrix and is equivalent to @code{sparse ([], [], [], @var{m}, @var{n})}
 
-The argument @code{nzmax} is ignored but accepted for compatibility with
+The argument @var{nzmax} is ignored but accepted for compatibility with
 @sc{matlab}.
 
 Example 1 (sum at repeated indices):

@@ -89,7 +89,7 @@
 ## @end group
 ## @end example
 ##
-## When the optional argument @code{normalization} is @qcode{"sch"}, compute
+## When the optional argument @var{normalization} is @qcode{"sch"}, compute
 ## the Schmidt semi-normalized associated Legendre function.  The Schmidt
 ## semi-normalized associated Legendre function is related to the unnormalized
 ## Legendre functions by the following:

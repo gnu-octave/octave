@@ -28,7 +28,7 @@
 ##
 ## @var{formats} is a structure with information about each supported file
 ## format, or from a specific format @var{ext}, the value displayed on the
-## field @code{ext}.  It contains the following fields:
+## field @var{ext}.  It contains the following fields:
 ##
 ## @table @asis
 ## @item ext

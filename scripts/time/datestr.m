@@ -20,7 +20,7 @@
 ## @deftypefn  {} {@var{str} =} datestr (@var{date})
 ## @deftypefnx {} {@var{str} =} datestr (@var{date}, @var{f})
 ## @deftypefnx {} {@var{str} =} datestr (@var{date}, @var{f}, @var{p})
-## Format the given date/time according to the format @code{f} and return
+## Format the given date/time according to the format @var{f} and return
 ## the result in @var{str}.
 ##
 ## @var{date} is a serial date number (see @code{datenum}) or a date vector

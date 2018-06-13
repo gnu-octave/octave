@@ -6406,9 +6406,9 @@ sort ([1, 2; 2, 3; 3, 1])
 @end example
 
 If the optional argument @var{dim} is given, then the matrix is sorted
-along the dimension defined by @var{dim}.  The optional argument @code{mode}
+along the dimension defined by @var{dim}.  The optional argument @var{mode}
 defines the order in which the values will be sorted.  Valid values of
-@code{mode} are @qcode{"ascend"} or @qcode{"descend"}.
+@var{mode} are @qcode{"ascend"} or @qcode{"descend"}.
 
 The @code{sort} function may also be used to produce a matrix
 containing the original row indices of the elements in the sorted

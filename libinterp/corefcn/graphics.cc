@@ -12621,14 +12621,14 @@ function @code{isequal} is used to compare property values.  If the graphics
 handle is invalid, the property does not exist or the property is already
 set to @var{value}, the function returns immediately.
 
-An optional timeout can be specified using the property @code{timeout}.
+An optional timeout can be specified using the property @qcode{"timeout"}.
 This timeout value is the number of seconds to wait for the condition to be
 true.  @var{timeout} must be at least 1.  If a smaller value is specified, a
 warning is issued and a value of 1 is used instead.  If the timeout value is
 not an integer, it is truncated towards 0.
 
-To define a condition on a property named @code{timeout}, use the string
-@code{\timeout} instead.
+To define a condition on a property named @qcode{"timeout"}, use the string
+@qcode{'\timeout'} instead.
 
 In all cases, typing CTRL-C stops program execution immediately.
 @seealso{waitforbuttonpress, isequal}

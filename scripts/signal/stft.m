@@ -50,7 +50,7 @@
 ## @code{@var{y} = stft (@var{x}, @dots{})} returns the absolute values of the
 ## Fourier coefficients according to the @var{num_coef} positive frequencies.
 ##
-## @code{[@var{y}, @var{c}] = stft (@code{x}, @dots{})} returns the entire
+## @code{[@var{y}, @var{c}] = stft (@var{x}, @dots{})} returns the entire
 ## STFT-matrix @var{y} and a 3-element vector @var{c} containing the window
 ## size, increment, and window type, which is needed by the @code{synthesis}
 ## function.

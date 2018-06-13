@@ -222,8 +222,8 @@ command that was written to the standard output stream.  For example,
 @end example
 
 @noindent
-will set the variable @code{output} to the string @samp{foo}, and the
-variable @code{status} to the integer @samp{2}.
+will set the variable @var{output} to the string @samp{foo}, and the
+variable @var{status} to the integer @samp{2}.
 
 For commands run asynchronously, @var{status} is the process id of the
 command shell that is started to run the command.

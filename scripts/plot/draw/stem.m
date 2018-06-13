@@ -36,7 +36,7 @@
 ##
 ## The default color is @qcode{"b"} (blue), the default line style is
 ## @qcode{"-"}, and the default marker is @qcode{"o"}.  The line style can
-## be altered by the @code{linespec} argument in the same manner as the
+## be altered by the @var{linespec} argument in the same manner as the
 ## @code{plot} command.  If the @qcode{"filled"} argument is present the
 ## markers at the top of the stems will be filled in.  For example,
 ##

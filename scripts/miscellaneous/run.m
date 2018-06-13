@@ -33,7 +33,7 @@
 ## Implementation Note: If @var{script} includes a path component, then
 ## @code{run} first changes the working directory to the directory where
 ## @var{script} is found.  Next, the script is executed.  Finally, @code{run}
-## returns to the original working directory unless @code{script} has
+## returns to the original working directory unless @var{script} has
 ## specifically changed directories.
 ## @seealso{path, addpath, source}
 ## @end deftypefn

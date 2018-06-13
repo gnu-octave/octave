@@ -74,7 +74,7 @@ function h = text (varargin)
   else  # Only PROP/VALUE pairs
     x = y = z = 0;
     nx = ny = nz = 1;
-    string = {""};
+    string = "";
   endif
 
   ## Any remaining inputs must occur as PROPERTY/VALUE pairs
@@ -362,6 +362,15 @@ endfunction
 %!   ht = text ("String", "Hello", "Position", [0.5, 0.5], "FontSize", 16);
 %!   assert (get (ht, "String"), "Hello");
 %!   assert (get (ht, "FontSize"), 16);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*54109>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ht = text ();
+%!   assert (get (ht, "string"), "");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

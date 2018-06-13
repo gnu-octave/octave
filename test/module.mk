@@ -214,6 +214,7 @@ test-clean:
 	rm -f $(%canon_reldir%_CLEANFILES)
 	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
 	rm -rf $(COVERAGE_DIR)
+	rm -rf $(MEX_TEST_FUNCTIONS)
 
 test-distclean: test-clean
 	rm -f $(%canon_reldir%_DISTCLEANFILES)

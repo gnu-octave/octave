@@ -49,6 +49,13 @@ function C = bitset (A, n, val)
 
   if (nargin == 2)
     val = true (sz);
+  elseif (isscalar (val) && ! isscalar (A))
+    ## Expand last argument to match size of input
+    if (val)
+      val = true (sz);
+    else
+      val = false (sz);
+    endif
   endif
 
   cl = class (A);
@@ -102,7 +109,12 @@ endfunction
 %! endfor
 
 %!assert <*36458> (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]),
-%!                uint8 ([0, 3; 2 5]))
+%!                 uint8 ([0, 3; 2 5]))
+
+%!assert (bitset (1:5, 1), [1, 3, 3, 5, 5])
+%!assert (bitset (1:5, 1, [1, 1, 1, 1, 1]), [1, 3, 3, 5, 5])
+%!assert <*54110> (bitset (1:5, 1, 1), [1, 3, 3, 5, 5])
+%!assert (bitset (1:5, 1, [1, 1, 1, 1, 0]), [1, 3, 3, 5, 4])
 
 %!error bitset (1)
 %!error bitset (1, 2, 3, 4)

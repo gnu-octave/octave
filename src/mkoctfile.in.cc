@@ -106,7 +106,7 @@ get_line (FILE *fp)
 }
 
 static std::string
-get_variable (const char *name, const std::string& defval = "")
+get_variable (const char *name, const std::string& defval)
 {
   const char *val = getenv (name);
 
@@ -161,6 +161,19 @@ initialize (void)
 
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
+
+  std::string DEFAULT_LFLAGS;
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  // We'll be linking with -loctinterp and -loctave, so we need to know
+  // where to find them.
+
+  DEFAULT_LFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
+#endif
+
+  if (vars["LIBDIR"] != "/usr/lib")
+    DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
   vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
 
@@ -251,7 +264,7 @@ initialize (void)
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
 
-  vars["LFLAGS"] = get_variable ("LFLAGS");
+  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
@@ -863,6 +876,11 @@ main (int argc, char **argv)
 
   if (link && ! objfiles.empty ())
     {
+      std::string octave_libs;
+#if defined (OCTAVE_USE_WINDOWS_API)
+      octave_libs = "-loctinterp -loctave";
+#endif
+
       if (link_stand_alone)
         {
           if (! vars["LD_CXX"].empty ())
@@ -872,7 +890,7 @@ main (int argc, char **argv)
                    + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                    + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                    + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-                   + ldflags + ' ' + vars["LFLAGS"] + ' '
+                   + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
                    + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
               int status = run_command (cmd, printonly);
@@ -894,7 +912,7 @@ main (int argc, char **argv)
             = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
                + vars["DL_LDFLAGS"] + ' ' + pass_on_options
                + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LFLAGS"] + ' '
+               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
                + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
           int status = run_command (cmd, printonly);

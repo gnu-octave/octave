@@ -3120,7 +3120,7 @@ case $host_os in
   ;;
 esac
 
-if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
+if test $link_all_deps = yes; then
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="$OCT_LINK_DEPS $MKOCTFILE_LIBOCTINTERP_LINK_DEPS"
 

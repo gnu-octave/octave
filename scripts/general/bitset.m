@@ -22,20 +22,41 @@
 ## @deftypefnx {} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
 ## Set or reset bit(s) @var{n} of the unsigned integers in @var{A}.
 ##
-## @var{val} = 0 resets and @var{val} = 1 sets the bits.
-## The least significant bit is @var{n} = 1.  All variables must be the same
-## size or scalars.
+## The least significant bit is @var{n} = 1.  @w{@var{val} = 0} resets bits and
+## @w{@var{val} = 1} sets bits.  If no @var{val} is specified it defaults to
+## 1 (set bit).  All inputs must be the same size or scalars.
+##
+## Example 1: Set multiple bits
 ##
 ## @example
 ## @group
-## dec2bin (bitset (10, 1))
-##   @result{} 1011
+## x = bitset (1, 3:5)
+## x =
+##
+##    5    9   17
+##
+## dec2bin (x)
+##   @result{}
+##      00101
+##      01001
+##      10001
+## @end group
+## @end example
+##
+## Example 2: Reset and set bits
+##
+## @example
+## @group
+## x = bitset ([15 14], 1, [0 1])
+## x =
+##
+##    14    15
 ## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, intmax, flintmax}
 ## @end deftypefn
 
-function C = bitset (A, n, val)
+function C = bitset (A, n, val = true)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -45,18 +66,12 @@ function C = bitset (A, n, val)
     error ("bitset: A must be >= 0");
   endif
 
-  sz = size (A);
-
-  if (nargin == 2)
-    val = true (sz);
-  elseif (isscalar (val) && ! isscalar (A))
-    ## Expand last argument to match size of input
-    if (val)
-      val = true (sz);
-    else
-      val = false (sz);
-    endif
+  [size_err, A, n, val] = common_size (A, n, val);
+  if (size_err)
+    error ("bitset: A, N, and VAL must be the same size or scalar");
   endif
+
+  sz = size (A);
 
   cl = class (A);
 
@@ -83,9 +98,6 @@ function C = bitset (A, n, val)
     onmask = mask;
     offmask = mask;
   else
-    if (! size_equal (A, n))
-      error ("bitset: N must be scalar or the same size as A");
-    endif
     onmask = mask(on);
     offmask = mask(off);
   endif
@@ -119,6 +131,8 @@ endfunction
 %!error bitset (1)
 %!error bitset (1, 2, 3, 4)
 %!error <A must be .= 0> bitset (-1, 2)
+%!error <must be the same size or scalar> bitset (1, [1 2], [1 2 3])
+%!error <must be the same size or scalar> bitset ([1 2], [1 2 3])
 %!error <invalid class char> bitset ("1", 2)
 %!error <N must be in the range \[1,53\]> bitset (0, 0)
 %!error <N must be in the range \[1,53\]> bitset (0, 55)
@@ -133,5 +147,3 @@ endfunction
 %!error <N must be in the range \[1,32\]> bitset (uint32 (0), 33)
 %!error <N must be in the range \[1,63\]> bitset (int64 (0), 65)
 %!error <N must be in the range \[1,64\]> bitset (uint64 (0), 65)
-%!error <N must be scalar or the same size as A> bitset (uint8 (1), [1 3])
-%!error <N must be scalar or the same size as A> bitset (uint8 (1:3), [1 3])

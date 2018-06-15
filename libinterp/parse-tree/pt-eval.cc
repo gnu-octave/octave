@@ -1027,11 +1027,51 @@ namespace octave
       {
         if (elt.is_global ())
           {
+            std::string name = id->name ();
+
             symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-            symbol_record global_sym = symtab.find_global_symbol (id->name ());
+            symbol_scope global_scope = symtab.global_scope ();
 
-            id->link_to_global (symtab.global_scope (), global_sym);
+            symbol_record global_sr = global_scope.find_symbol (name);
+
+            // FIXME: Hmmm.  Seems like this should happen automatically
+            // for symbols coming from the global scope...
+            global_sr.mark_global ();
+
+            symbol_scope scope = symtab.current_scope ();
+
+            if (! scope.is_global (name))
+              {
+                octave_value val = scope.varval (name);
+
+                bool local_val_is_defined = val.is_defined ();
+
+                if (local_val_is_defined)
+                  {
+                    warning_with_id ("Octave:global-from-local",
+                                     "global: '%s' is defined in the current scope",
+                                     name.c_str ());
+                    warning_with_id ("Octave:global-from-local",
+                                     "global: in a future version, global variables must be declared before use");
+
+                    // If the symbol is defined in the local but not the
+                    // global scope, then use the local value as the
+                    // initial value.  This value will also override any
+                    // initializer in the global statement.
+                    octave_value global_val = global_scope.varval (name);
+
+                    if (! global_val.is_defined ())
+                      {
+                        warning_with_id ("Octave:global-from-local",
+                                         "global: global value overrides local value");
+
+                        global_scope.assign (name, val);
+                      }
+                  }
+
+                id->link_to_global (global_scope, global_sr);
+              }
           }
         else if (elt.is_persistent ())
           id->mark_persistent ();

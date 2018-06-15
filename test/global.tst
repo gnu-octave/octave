@@ -80,3 +80,43 @@
 %! f;
 %! clear H;
 %! g;
+
+%!function r = f ()
+%!  x = 1;
+%!  global x;
+%!  r = x;
+%!endfunction
+%!test
+%! warning ("off", "Octave:global-from-local", "local");
+%! clear global x
+%! global x
+%! x = 0;
+%! assert (f (), 0);
+%! global x
+%! assert (x, 0);
+%!test
+%! warning ("off", "Octave:global-from-local", "local");
+%! clear global x
+%! assert (f (), 1);
+%! global x
+%! assert (x, 1);
+
+%!function r = f ()
+%!  x = 1;
+%!  global x = 3;
+%!  r = x;
+%!endfunction
+%!test
+%! warning ("off", "Octave:global-from-local", "local");
+%! clear global x
+%! global x
+%! x = 0;
+%! assert (f (), 0);
+%! global x
+%! assert (x, 0);
+%!test
+%! warning ("off", "Octave:global-from-local", "local");
+%! clear global x
+%! assert (f (), 1);
+%! global x
+%! assert (x, 1);

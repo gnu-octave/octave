@@ -71,8 +71,13 @@ function C = bitset (A, n, val = true)
     error ("bitset: A, N, and VAL must be the same size or scalar");
   endif
 
-  sz = size (A);
+  ## Special case of empty input
+  if (isempty (A))
+    C = [];
+    return;
+  endif
 
+  sz = size (A);
   cl = class (A);
 
   if (isfloat (A) && isreal (A))
@@ -119,6 +124,8 @@ endfunction
 %!     assert (bitset (fcn ([0, 10]), [3, 3]), fcn ([4, 14]));
 %!   endfor
 %! endfor
+
+%!assert (bitset ([], 1), [])
 
 %!assert <*36458> (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]),
 %!                 uint8 ([0, 3; 2 5]))

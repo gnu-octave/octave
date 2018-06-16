@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVector>
 #include <QHash>
 #include <QMessageBox>
+#include <QScrollBar>
 #include <QTextCodec>
 
 #if defined (HAVE_QSCINTILLA)
@@ -688,8 +689,10 @@ settings_dialog::show_tab (const QString& tab)
     {
       QHash <QString, QWidget*> tab_hash;
       tab_hash["editor"] = ui->tab_editor;
-      tab_hash["editor_styles"] = ui->tab_editor_styles;
+      tab_hash["editor_styles"] = ui->tab_editor;
       ui->tabWidget->setCurrentIndex (ui->tabWidget->indexOf (tab_hash.value (tab)));
+      if (tab == "editor_styles")
+        ui->tab_editor_scroll_area->ensureWidgetVisible (ui->group_box_editor_styles);
     }
 }
 

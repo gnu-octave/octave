@@ -304,10 +304,18 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       ## Get trust-region model (dogleg) minimizer.
       if (useqr)
+        if (norm (r, 1) < macheps * rows (r))
+          info = -2;
+          break;
+        endif
         qtf = q'*fvec;
         s = - __dogleg__ (r, qtf, dg, delta);
         w = qtf + r * s;
       else
+        if (norm (fjac, 1) < macheps * rows (fjac))
+          info = -2;
+          break;
+        endif
         s = - __dogleg__ (fjac, fvec, dg, delta);
         w = fvec + fjac * s;
       endif

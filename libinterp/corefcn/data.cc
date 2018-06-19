@@ -6756,14 +6756,14 @@ get_sort_mode_option (const octave_value& arg)
 
   std::string mode = arg.xstring_value ("issorted: MODE must be a string");
 
-  if (mode == "ascending")
+  if (mode == "ascend")
     smode = ASCENDING;
-  else if (mode == "descending")
+  else if (mode == "descend")
     smode = DESCENDING;
   else if (mode == "either")
     smode = UNSORTED;
   else
-    error (R"(issorted: MODE must be "ascending", "descending", or "either")");
+    error (R"(issorted: MODE must be "ascend", "descend", or "either")");
 
   return smode;
 }
@@ -6847,18 +6847,18 @@ This function does not support sparse matrices.
 %!assert (! issorted (uv))
 %!assert (issorted (sv'))
 %!assert (! issorted (uv'))
-%!assert (issorted (sm, "rows", "ascending"))
-%!assert (! issorted (um, "rows", "ascending"))
-%!assert (issorted (sv, "ascending"))
-%!assert (! issorted (uv, "ascending"))
-%!assert (issorted (sv', "ascending"))
-%!assert (! issorted (uv', "ascending"))
-%!assert (! issorted (sm, "rows", "descending"))
-%!assert (issorted (flipud (sm), "rows", "descending"))
-%!assert (! issorted (sv, "descending"))
-%!assert (issorted (fliplr (sv), "descending"))
-%!assert (! issorted (sv', "descending"))
-%!assert (issorted (fliplr (sv)', "descending"))
+%!assert (issorted (sm, "rows", "ascend"))
+%!assert (! issorted (um, "rows", "ascend"))
+%!assert (issorted (sv, "ascend"))
+%!assert (! issorted (uv, "ascend"))
+%!assert (issorted (sv', "ascend"))
+%!assert (! issorted (uv', "ascend"))
+%!assert (! issorted (sm, "rows", "descend"))
+%!assert (issorted (flipud (sm), "rows", "descend"))
+%!assert (! issorted (sv, "descend"))
+%!assert (issorted (fliplr (sv), "descend"))
+%!assert (! issorted (sv', "descend"))
+%!assert (issorted (fliplr (sv)', "descend"))
 %!assert (! issorted (um, "rows", "either"))
 %!assert (! issorted (uv, "either"))
 %!assert (issorted (sm, "rows", "either"))

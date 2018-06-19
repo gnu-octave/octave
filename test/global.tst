@@ -87,16 +87,16 @@
 %!  r = x;
 %!endfunction
 %!test
-%! warning ("off", "Octave:global-from-local", "local");
-%! clear global x
+%! warning ("off", "Octave:global-local-conflict", "local");
+%! clear global x      ## clears global and local value
 %! global x
 %! x = 0;
 %! assert (f (), 0);
 %! global x
 %! assert (x, 0);
 %!test
-%! warning ("off", "Octave:global-from-local", "local");
-%! clear global x
+%! warning ("off", "Octave:global-local-conflict", "local");
+%! clear global x      ## clears global and local value
 %! assert (f (), 1);
 %! global x
 %! assert (x, 1);
@@ -107,16 +107,29 @@
 %!  r = x;
 %!endfunction
 %!test
-%! warning ("off", "Octave:global-from-local", "local");
-%! clear global x
+%! warning ("off", "Octave:global-local-conflict", "local");
+%! clear global x      ## clears global and local value
 %! global x
 %! x = 0;
 %! assert (f (), 0);
 %! global x
 %! assert (x, 0);
 %!test
-%! warning ("off", "Octave:global-from-local", "local");
+%! warning ("off", "Octave:global-local-conflict", "local");
 %! clear global x
 %! assert (f (), 1);
 %! global x
 %! assert (x, 1);
+
+%!test
+%! warning ("off", "Octave:global-local-conflict", "local");
+%! clear global x      ## clears global and local value
+%! x = 42;             ## local value
+%! global x            ## link to undefined global, global gets local value
+%! assert (x, 42);
+%! clear x             ## clears local; global still defined
+%! x = 13;             ## new local value
+%! global x;           ## link to existing global, local gets global value
+%! assert (x, 42);
+%! clear global x      ## clears global and local value
+%! assert (exist ("x"), 0);

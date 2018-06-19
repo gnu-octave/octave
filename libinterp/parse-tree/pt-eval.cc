@@ -1049,10 +1049,10 @@ namespace octave
 
                 if (local_val_is_defined)
                   {
-                    warning_with_id ("Octave:global-from-local",
+                    warning_with_id ("Octave:global-local-conflict",
                                      "global: '%s' is defined in the current scope",
                                      name.c_str ());
-                    warning_with_id ("Octave:global-from-local",
+                    warning_with_id ("Octave:global-local-conflict",
                                      "global: in a future version, global variables must be declared before use");
 
                     // If the symbol is defined in the local but not the
@@ -1061,10 +1061,15 @@ namespace octave
                     // initializer in the global statement.
                     octave_value global_val = global_scope.varval (name);
 
-                    if (! global_val.is_defined ())
+                    if (global_val.is_defined ())
                       {
-                        warning_with_id ("Octave:global-from-local",
-                                         "global: global value overrides local value");
+                        warning_with_id ("Octave:global-local-conflict",
+                                         "global: global value overrides existing local value");
+                      }
+                    else
+                      {
+                        warning_with_id ("Octave:global-local-conflict",
+                                         "global: existing local value used to initialize global variable");
 
                         global_scope.assign (name, val);
                       }

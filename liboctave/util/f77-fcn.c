@@ -34,29 +34,17 @@ along with Octave; see the file COPYING.  If not, see
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX.
 
-   XSTOPX jumps back to the entry point for the Fortran function that
-   called us.  Then the calling function should do whatever cleanup
-   is necessary.
-
-   Note that the order of arguments for the Visual Fortran function
-   signature is the same as for gfortran and f2c only becuase there is
-   a single assumed size character string argument.  Visual Fortran
-   inserts the length after each character string argument, f2c appends
-   all length arguments at the end of the parameter list, and gfortran
-   appends length arguments for assumed size character strings to the
-   end of the list (ignoring others).  */
+   XSTOPX calls the liboctave error handler.  In the Octave interpreter
+   we set this to a function that throws an exception and transfers
+   control to the enclosing try/catch block.  That is typically at the
+   top-level REPL.  */
 
 F77_RET_T
-#if defined (F77_USES_CRAY_CALLING_CONVENTION)
-F77_FUNC (xstopx, XSTOPX) (octave_cray_ftn_ch_dsc desc)
-#else
-F77_FUNC (xstopx, XSTOPX) (const char *s, F77_CHAR_ARG_LEN_TYPE slen)
-#endif
+F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DEF (s_arg, len)
+                           F77_CHAR_ARG_LEN_DEF (len))
 {
-#if defined (F77_USES_CRAY_CALLING_CONVENTION)
-  const char *s = desc.const_ptr = ptr_arg;
-  unsigned long slen = desc.mask.len;
-#endif
+  const char *s = F77_CHAR_ARG_USE (s_arg);
+  size_t slen = F77_CHAR_ARG_LEN_USE (s_arg, len);
 
   /* Skip printing message if it is just a single blank character.  */
   if (! (s && slen > 0 && ! (slen == 1 && *s == ' ')))

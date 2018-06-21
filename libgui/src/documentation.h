@@ -93,15 +93,18 @@ namespace octave
     void record_anchor_position (void);
     void handle_cursor_position_change (void);
 
+  signals:
+    void show_single_result (const QUrl);
+    
   private:
 
     QHelpEngine *m_help_engine;
+    QString m_internal_search;
     documentation_browser *m_doc_browser;
     QLineEdit *m_find_line_edit;
     int m_search_anchor_position;
     QComboBox *m_filter;
     QString m_collection;
-
     QShortcut *m_show_shortcut;
     QShortcut *m_findnext_shortcut;
     QShortcut *m_findprev_shortcut;

@@ -170,6 +170,7 @@ namespace octave
 
     // Contents
     QHelpContentWidget *content = m_help_engine->contentWidget ();
+    content->setObjectName ("documentation_tab_contents");
     navi->addTab (content, tr ("Contents"));
 
     connect(m_help_engine->contentWidget (),
@@ -200,12 +201,13 @@ namespace octave
     filter_all->setLayout (h_box_index);
 
     QWidget *index_all = new QWidget (navi);
+    index_all->setObjectName ("documentation_tab_index");
     QVBoxLayout *v_box_index = new QVBoxLayout (index_all);
     v_box_index->addWidget (filter_all);
     v_box_index->addWidget (index);
     index_all->setLayout (v_box_index);
 
-    navi->addTab (index_all, tr ("Index"));
+    navi->addTab (index_all, tr ("Function Index"));
 
     connect(m_help_engine->indexWidget (),
             SIGNAL (linkActivated (const QUrl&, const QString&)),
@@ -227,6 +229,7 @@ namespace octave
     v_box_search->addWidget (search);
     v_box_search->addWidget (result);
     search_all->setLayout (v_box_search);
+    search_all->setObjectName ("documentation_tab_search");
     navi->addTab (search_all, tr ("Search"));
 
     connect (search, SIGNAL (search (void)),
@@ -297,7 +300,72 @@ namespace octave
 
   void documentation::global_search_finished (int)
   {
+    if (! m_internal_search.isEmpty ())
+      {
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
+        if (search_engine)
+          {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+            QVector<QHelpSearchResult> res
+              = search_engine->searchResults (0, search_engine->searchResultCount ());
+#else
+            QList< QPair<QString, QString> > res
+              = search_engine->hits (0, search_engine->hitCount ());
+#endif
+            
+            if (res.count ())
+              {
+                QUrl url;
+                
+                if (res.count () == 1)
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+                  url = res.front ().url ();
+#else
+                  url = res.front ().first;
+#endif
+                else
+                  {
+                    // Remove the quotes we added
+                    QString search_string = m_internal_search;
+                    
+                    for (auto r = res.begin (); r != res.end (); r++)
+                      {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+                        QString title = r->title ().toLower ();
+                        QUrl tmpurl = r->url ();
+#else
+                        QString title = r->second.toLower ();
+                        QUrl tmpurl = r->first;
+#endif
+                        if (title.contains (search_string.toLower ()))
+                          {
+                            if (title.indexOf (search_string.toLower ()) == 0)
+                              {
+                                url = tmpurl;
+                                break;
+                              }
+                            else if (url.isEmpty ())
+                              url = tmpurl;
+                          }
+                      }
+                          
+                  }
+
+                if (! url.isEmpty ())
+                  {
+                    connect (this, SIGNAL (show_single_result (const QUrl)),
+                             m_doc_browser,
+                             SLOT (handle_index_clicked (const QUrl)));
+                    
+                    emit show_single_result (url);
+                  }
+              }
+           }
+           m_internal_search = QString ();
+      }
+
     qApp->restoreOverrideCursor();
+    
   }
 
   void documentation::notice_settings (const QSettings *)
@@ -315,13 +383,53 @@ namespace octave
 
   void documentation::load_ref (const QString& ref_name)
   {
-    if (m_help_engine)
+    if (! m_help_engine)
+      return;
+
+    // First search in the function index
+    QMap<QString, QUrl> found_links
+      = m_help_engine->linksForIdentifier (ref_name);
+    
+    QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
+    
+    if (found_links.count() > 0)
       {
-        QMap<QString, QUrl> found_links
-          = m_help_engine->linksForIdentifier (ref_name);
-        if (found_links.count() > 0)
-          m_doc_browser->setSource (found_links.constBegin().value());
+        m_doc_browser->setSource (found_links.constBegin().value());
+        
+        // Switch to function index tab
+        m_help_engine->indexWidget()->filterIndices (ref_name);
+        QWidget *index_tab
+          = navi->findChild<QWidget*> ("documentation_tab_index");
+        navi->setCurrentWidget (index_tab);
       }
+    else
+      {
+        // Use full text search to provide the best match
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();      
+        QHelpSearchQueryWidget *search_query = search_engine->queryWidget ();
+
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+        QString query = ref_name;
+        query.prepend ("\"").append ("\"");
+#else
+        QList<QHelpSearchQuery> query;
+        query << QHelpSearchQuery (QHelpSearchQuery::DEFAULT,
+                                   QStringList (QString("\"") + ref_name + QString("\"")));
+#endif
+        m_internal_search = ref_name;
+        search_engine->search (query);
+
+        // Switch to search tab
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+        search_query->setSearchInput (query);
+#else
+        search_query->setQuery (query);
+#endif
+        QWidget *search_tab
+          = navi->findChild<QWidget*> ("documentation_tab_search");
+        navi->setCurrentWidget (search_tab);
+      }
+    
   }
 
   void documentation::filter_update (const QString& expression)

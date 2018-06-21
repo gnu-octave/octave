@@ -127,50 +127,6 @@ Undocumented internal function.
   return retval;
 }
 
-static void
-initialize_version_info (void)
-{
-  octave_value_list args;
-
-  args(3) = OCTAVE_RELEASE_DATE;
-  args(2) = octave::config::release ();
-  args(1) = OCTAVE_VERSION;
-  args(0) = "GNU Octave";
-
-  F__version_info__ (args, 0);
-}
-
-OCTAVE_NORETURN static void
-lo_error_handler (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  verror_with_cfn (fmt, args);
-  va_end (args);
-
-  octave_throw_execution_exception ();
-}
-
-OCTAVE_NORETURN static void
-lo_error_with_id_handler (const char *id, const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  verror_with_id_cfn (id, fmt, args);
-  va_end (args);
-
-  octave_throw_execution_exception ();
-}
-
-static void
-initialize_error_handlers ()
-{
-  set_liboctave_error_handler (lo_error_handler);
-  set_liboctave_error_with_id_handler (lo_error_with_id_handler);
-  set_liboctave_warning_handler (warning);
-  set_liboctave_warning_with_id_handler (warning_with_id);
-}
-
 DEFUN (quit, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} exit
@@ -281,44 +237,120 @@ from the list, so if a function was placed in the list multiple times with
   return retval;
 }
 
-// Execute commands from a file and catch potential exceptions in a consistent
-// way.  This function should be called anywhere we might parse and execute
-// commands from a file before we have entered the main loop in
-// toplev.cc.
-
-static int
-safe_source_file (const std::string& file_name,
-                  const std::string& context = "",
-                  bool verbose = false, bool require_file = true,
-                  const std::string& warn_for = "")
-{
-  try
-    {
-      octave::source_file (file_name, context, verbose, require_file, warn_for);
-    }
-  catch (const octave::interrupt_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      return 1;
-    }
-  catch (const octave::execution_exception& e)
-    {
-      std::string stack_trace = e.info ();
-
-      if (! stack_trace.empty ())
-        std::cerr << stack_trace;
-
-      octave::interpreter::recover_from_exception ();
-
-      return 1;
-    }
-
-  return 0;
-}
-
 namespace octave
 {
+  // Execute commands from a file and catch potential exceptions in a consistent
+  // way.  This function should be called anywhere we might parse and execute
+  // commands from a file before we have entered the main loop in
+  // toplev.cc.
+
+  static int safe_source_file (const std::string& file_name,
+                               const std::string& context = "",
+                               bool verbose = false,
+                               bool require_file = true,
+                               const std::string& warn_for = "")
+  {
+    try
+      {
+        source_file (file_name, context, verbose, require_file, warn_for);
+      }
+    catch (const interrupt_exception&)
+      {
+        interpreter::recover_from_exception ();
+
+        return 1;
+      }
+    catch (const execution_exception& e)
+      {
+        std::string stack_trace = e.info ();
+
+        if (! stack_trace.empty ())
+          std::cerr << stack_trace;
+
+        interpreter::recover_from_exception ();
+
+        return 1;
+      }
+
+    return 0;
+  }
+
+  static void initialize_version_info (void)
+  {
+    octave_value_list args;
+
+    args(3) = OCTAVE_RELEASE_DATE;
+    args(2) = config::release ();
+    args(1) = OCTAVE_VERSION;
+    args(0) = "GNU Octave";
+
+    F__version_info__ (args, 0);
+  }
+
+  static void xerbla_abort (void)
+  {
+    error ("Fortran procedure terminated by call to XERBLA");
+  }
+
+  static void initialize_xerbla_error_handler (void)
+  {
+    // The idea here is to force xerbla to be referenced so that we will
+    // link to our own version instead of the one provided by the BLAS
+    // library.  But numeric_limits<double>::NaN () should never be -1, so
+    // we should never actually call xerbla.  FIXME (again!): If this
+    // becomes a constant expression the test might be optimized away and
+    // then the reference to the function might also disappear.
+
+    if (numeric_limits<double>::NaN () == -1)
+      F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
+
+    typedef void (*xerbla_handler_ptr) (void);
+
+    typedef void (*octave_set_xerbla_handler_ptr) (xerbla_handler_ptr);
+
+    dynamic_library libs ("");
+
+    if (libs)
+      {
+        octave_set_xerbla_handler_ptr octave_set_xerbla_handler
+          = reinterpret_cast<octave_set_xerbla_handler_ptr>
+          (libs.search ("octave_set_xerbla_handler"));
+
+        if (octave_set_xerbla_handler)
+          octave_set_xerbla_handler (xerbla_abort);
+      }
+  }
+
+  OCTAVE_NORETURN static void
+  lo_error_handler (const char *fmt, ...)
+  {
+    va_list args;
+    va_start (args, fmt);
+    verror_with_cfn (fmt, args);
+    va_end (args);
+
+    octave_throw_execution_exception ();
+  }
+
+  OCTAVE_NORETURN static void
+  lo_error_with_id_handler (const char *id, const char *fmt, ...)
+  {
+    va_list args;
+    va_start (args, fmt);
+    verror_with_id_cfn (id, fmt, args);
+    va_end (args);
+
+    octave_throw_execution_exception ();
+  }
+
+  static void initialize_error_handlers (void)
+  {
+    set_liboctave_error_handler (lo_error_handler);
+    set_liboctave_error_with_id_handler (lo_error_with_id_handler);
+    set_liboctave_warning_handler (warning);
+    set_liboctave_warning_with_id_handler (warning_with_id);
+  }
+
   // Create an interpreter object and perform initialization up to the
   // point of setting reading command history and setting the load
   // path.
@@ -380,15 +412,7 @@ namespace octave
 
     octave_prepare_hdf5 ();
 
-    // The idea here is to force xerbla to be referenced so that we will link to
-    // our own version instead of the one provided by the BLAS library.  But
-    // numeric_limits<double>::NaN () should never be -1, so we
-    // should never actually call xerbla.  FIXME (again!):  If this
-    // becomes a constant expression the test might be optimized away and
-    // then the reference to the function might also disappear.
-
-    if (numeric_limits<double>::NaN () == -1)
-      F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
+    initialize_xerbla_error_handler ();
 
     initialize_error_handlers ();
 

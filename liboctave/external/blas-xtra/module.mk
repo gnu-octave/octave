@@ -17,10 +17,31 @@ EXTERNAL_SOURCES += \
   %reldir%/xscnrm2.f \
   %reldir%/xcdotc.f \
   %reldir%/xcdotu.f \
-  %reldir%/xerbla.f \
   %reldir%/cconv2.f \
   %reldir%/csconv2.f \
   %reldir%/dconv2.f \
   %reldir%/sconv2.f \
   %reldir%/zconv2.f \
   %reldir%/zdconv2.f
+
+XERBLA_SRC = \
+  %reldir%/xerbla.c
+
+%canon_reldir%_libxerbla_la_SOURCES = $(XERBLA_SRC)
+
+%canon_reldir%_libxerbla_la_CPPFLAGS = \
+  $(liboctave_liboctave_la_CPPFLAGS)
+
+if AMCOND_BUILD_EXTERNAL_LIBXERBLA
+  octlib_LTLIBRARIES += %reldir%/libxerbla.la
+
+  %canon_reldir%_libxerbla_la_LDFLAGS = \
+    -avoid-version \
+    $(NO_UNDEFINED_LDFLAG) \
+    -bindir $(bindir) \
+    $(WARN_LDFLAGS)
+else
+  noinst_LTLIBRARIES += %reldir%/libxerbla.la
+
+  liboctave_liboctave_la_LIBADD += %reldir%/libxerbla.la
+endif

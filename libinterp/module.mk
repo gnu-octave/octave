@@ -157,6 +157,11 @@ nodist_%canon_reldir%_liboctinterp_la_SOURCES = \
   liboctave/liboctave.la \
   $(LIBOCTINTERP_LINK_DEPS)
 
+if AMCOND_BUILD_EXTERNAL_LIBXERBLA
+  %canon_reldir%_liboctinterp_la_LIBADD += \
+    liboctave/external/blas-xtra/libxerbla.la
+endif
+
 # Increment these as needed and according to the rules in the libtool manual:
 %canon_reldir%_liboctinterp_current = 5
 %canon_reldir%_liboctinterp_revision = 0

@@ -1114,6 +1114,16 @@ OCTAVE_F77_FLAG([-ffloat-store], [
   AC_SUBST(F77_FLOAT_STORE_FLAG)
 ])
 
+BUILD_EXTERNAL_LIBXERBLA=
+case $host_os in
+  msdosmsvc | mingw*)
+    BUILD_EXTERNAL_LIBXERBLA=ues
+  ;;
+esac
+
+AM_CONDITIONAL([AMCOND_BUILD_EXTERNAL_LIBXERBLA],
+  [test -n "$BUILD_EXTERNAL_LIBXERBLA"])
+
 ### Dynamic linking is now enabled only if we are building shared
 ### libs and some API for dynamic linking has been detected.
 

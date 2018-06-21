@@ -81,7 +81,7 @@ include %reldir%/publish/module.mk
 include %reldir%/pkg/module.mk
 
 define run-octave-tests
-  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ); \
+  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ) && \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f %reldir%/fntests.log ]; then \

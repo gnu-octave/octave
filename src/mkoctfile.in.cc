@@ -164,7 +164,7 @@ initialize (void)
 
   std::string DEFAULT_LFLAGS;
 
-#if defined (OCTAVE_USE_WINDOWS_API)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
 
   // We'll be linking with -loctinterp and -loctave, so we need to know
   // where to find them.
@@ -877,7 +877,7 @@ main (int argc, char **argv)
   if (link && ! objfiles.empty ())
     {
       std::string octave_libs;
-#if defined (OCTAVE_USE_WINDOWS_API)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
       octave_libs = "-loctinterp -loctave";
 #endif
 

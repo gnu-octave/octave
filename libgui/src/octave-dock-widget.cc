@@ -260,7 +260,7 @@ namespace octave
     if (isFloating ())
       setFloating (false);
 // Remove after thorough testing 3/20/18    m_parent->removeDockWidget (this);
-    setParent (0, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint |
+    setParent (0, Qt::CustomizeWindowHint | Qt::WindowTitleHint |
                Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 
     // restore the last geometry when floating

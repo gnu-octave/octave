@@ -15,6 +15,7 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/localcharset-wrapper.h \
   %reldir%/math-wrappers.h \
   %reldir%/mkostemp-wrapper.h \
+  %reldir%/mkostemps-wrapper.h \
   %reldir%/nanosleep-wrapper.h \
   %reldir%/nproc-wrapper.h \
   %reldir%/octave-popen2.h \
@@ -56,6 +57,7 @@ WRAPPERS_SRC = \
   %reldir%/localcharset-wrapper.c \
   %reldir%/math-wrappers.c \
   %reldir%/mkostemp-wrapper.c \
+  %reldir%/mkostemps-wrapper.c \
   %reldir%/nanosleep-wrapper.c \
   %reldir%/nproc-wrapper.c \
   %reldir%/octave-popen2.c \

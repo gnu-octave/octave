@@ -352,7 +352,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         nfail += 1;
         delta *= decfac;
         decfac ^= 1.4142;
-        if (delta <= 1e1*macheps*xn)
+        if (fn <= tolf*n*xn)
+          info = 1;
+        elseif (delta <= 1e1*macheps*xn)
           ## Trust region became uselessly small.
           info = -3;
           break;
@@ -604,6 +606,12 @@ endfunction
 %! assert (x == 0);
 %! assert (fvec == -1);
 %! assert (info == -2);
+
+%!test <*53991>
+%! [x, fvec, info] = fsolve (@(x) 5*x, 0);
+%! assert (x == 0);
+%! assert (fvec == 0);
+%! assert (info == 1);
 
 ## Solve the double dogleg trust-region least-squares problem:
 ## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,

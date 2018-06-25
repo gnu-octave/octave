@@ -594,6 +594,17 @@ endfunction
 %! assert (norm (f) < tol);
 %! assert (norm (x - x_opt, Inf) < tol);
 
+%!test <*53991>
+%! A = @(lam) [0 1 0 0; 0 0 1 0; 0 0 0 1; 0 0 -lam^2 0];
+%! C = [1 0 0 0; 0 0 1 0];
+%! B = @(lam) [C*expm(A(lam)*0); C*expm(A(lam)*1)];
+%! detB = @(lam) det (B(lam));
+%! 
+%! [x, fvec, info] = fsolve (detB, 0);
+%! assert (x == 0);
+%! assert (fvec == -1);
+%! assert (info == -2);
+
 ## Solve the double dogleg trust-region least-squares problem:
 ## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
 ## x being a convex combination of the gauss-newton and scaled gradient.

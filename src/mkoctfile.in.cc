@@ -484,7 +484,7 @@ main (int argc, char **argv)
   std::string incflags, defs, ldflags, pass_on_options;
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
-  bool link = true;
+  bool compile_only = false;
   bool link_stand_alone = false;
   bool depend = false;
   bool printonly = false;
@@ -614,7 +614,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-c" || arg == "-compile" || arg == "--compile")
         {
-          link = false;
+          compile_only = true;
         }
       else if (arg == "-g")
         {
@@ -672,6 +672,14 @@ main (int argc, char **argv)
       && vars["ALL_CFLAGS"].find ("-g") != std::string::npos)
     {
       defs += " -DMEX_DEBUG";
+    }
+
+  if (compile_only
+      && (cfiles.size () + ccfiles.size () + f77files.size ()) > 1)
+    {
+      std::cerr << "mkoctfile: may not use -c and -o with multiple source files"
+                << std::endl;
+      return 1;
     }
 
   std::string output_option;
@@ -770,21 +778,26 @@ main (int argc, char **argv)
 
   for (const auto& f : f77files)
     {
-      std::string b = basename (f, true);
-
       if (! vars["F77"].empty ())
         {
+          std::string b = basename (f, true);
           std::string o;
-          if (! outputfile.empty ())
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              // There will be only one source file, so we are done
+              // after executing the command below and we don't need to
+              // keep track of the object file name.
+
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = b + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = b + ".o";
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["F77"] + " -c " + vars["FPICFLAG"] + ' '
@@ -793,7 +806,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (status)
+          if (compile_only || status)
             return status;
         }
       else
@@ -808,17 +821,24 @@ main (int argc, char **argv)
     {
       if (! vars["CC"].empty ())
         {
-          std::string b = basename (f, true), o;
-          if (! outputfile.empty ())
+          std::string b = basename (f, true);
+          std::string o;
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              // There will be only one source file, so we are done
+              // after executing the command below and we don't need to
+              // keep track of the object file name.
+
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = b + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = b + ".o";
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["CC"] + " -c " + vars["CPPFLAGS"] + ' '
@@ -828,7 +848,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (status)
+          if (compile_only || status)
             return status;
         }
       else
@@ -843,17 +863,24 @@ main (int argc, char **argv)
     {
       if (! vars["CXX"].empty ())
         {
-          std::string b = basename (f, true), o;
-          if (! outputfile.empty ())
+          std::string b = basename (f, true);
+          std::string o;
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              // There will be only one source file, so we are done
+              // after executing the command below and we don't need to
+              // keep track of the object file name.
+
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = b + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = b + ".o";
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["CXX"] + " -c " + vars["CPPFLAGS"] + ' '
@@ -863,7 +890,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (status)
+          if (compile_only || status)
             return status;
         }
       else
@@ -874,62 +901,65 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && ! objfiles.empty ())
+  if (objfiles.empty ())
     {
-      std::string octave_libs;
+      std::cerr << "mkoctfile: no objects to link" << std::endl;
+      return 1;
+    }
+
+  std::string octave_libs;
 #if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
-      octave_libs = "-loctinterp -loctave";
+  octave_libs = "-loctinterp -loctave";
 #endif
 
-      if (link_stand_alone)
+  if (link_stand_alone)
+    {
+      if (! vars["LD_CXX"].empty ())
         {
-          if (! vars["LD_CXX"].empty ())
-            {
-              std::string cmd
-                = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
-                   + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
-                   + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
-                   + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-                   + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
-                   + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
+          std::string cmd
+            = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
+               + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
+               + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
+               + output_option + ' ' + objfiles + ' ' + libfiles + ' '
+               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+               + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
-              int status = run_command (cmd, printonly);
+          int status = run_command (cmd, printonly);
 
-              if (status)
-                return status;
-            }
-          else
-            {
-              std::cerr
-                << "mkoctfile: no way to link stand-alone executable file"
-                << std::endl;
-              return 1;
-            }
+          if (status)
+            return status;
         }
       else
         {
-          std::string cmd
-            = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-               + vars["DL_LDFLAGS"] + ' ' + pass_on_options
-               + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
-               + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
-
-          int status = run_command (cmd, printonly);
-
-          if (status)
-            return status;
+          std::cerr
+            << "mkoctfile: no way to link stand-alone executable file"
+            << std::endl;
+          return 1;
         }
+    }
+  else
+    {
+      std::string cmd
+        = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
+           + vars["DL_LDFLAGS"] + ' ' + pass_on_options
+           + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
+           + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+           + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
-      if (strip)
-        {
-          std::string cmd = "strip " + octfile;
+      int status = run_command (cmd, printonly);
 
-          int status = run_command (cmd, printonly);
+      if (status)
+        return status;
+    }
 
-          if (status)
-            return status;
-        }
+  if (strip)
+    {
+      std::string cmd = "strip " + octfile;
+
+      int status = run_command (cmd, printonly);
+
+      if (status)
+        return status;
     }
 
   return 0;

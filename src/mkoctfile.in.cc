@@ -39,12 +39,14 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (CROSS)
 #  include <sys/types.h>
 #  include <sys/wait.h>
+#  include <stdlib.h>
 #  include <unistd.h>
 
 #  ifndef OCTAVE_UNUSED
 #    define OCTAVE_UNUSED
 #  endif
 #else
+#  include "mkostemps-wrapper.h"
 #  include "unistd-wrappers.h"
 #  include "wait-wrappers.h"
 #endif
@@ -66,6 +68,12 @@ static std::map<std::string, std::string> vars;
 #include "shared-fcns.h"
 
 #if defined (CROSS)
+
+static int
+octave_mkostemps_wrapper (char *tmpl, int suffixlen)
+{
+  return mkostemps (tmpl, suffixlen, O_BINARY);
+}
 
 static int
 octave_unlink_wrapper (const char *nm)
@@ -459,6 +467,78 @@ is_true (const std::string& s)
   return (s == "yes" || s == "true");
 }
 
+static std::string
+do_getenv (const std::string& name)
+{
+  char *value = ::getenv (name.c_str ());
+
+  return value ? value : "";
+}
+
+static std::string
+get_temp_directory (void)
+{
+  std::string tempd;
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  tempd = do_getenv ("TEMP");
+
+  if (tempd.empty ())
+    tempd = do_getenv ("TMP");
+
+#if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+#endif
+
+  // Some versions of MinGW and MSVC either don't define P_tmpdir, or
+  // define it to a single backslash.  In such cases just use C:\temp.
+  if (tempd.empty () || tempd == R"(\)")
+    tempd = R"(c:\temp)";
+
+#else
+
+  tempd = do_getenv ("TMP");
+
+#if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+#else
+  if (tempd.empty ())
+    tempd = "/tmp";
+#endif
+
+#endif
+
+  return tempd;
+}
+
+static std::string
+tmp_objfile_name (void)
+{
+  std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
+
+  char *ctmpl = new char [tmpl.length () + 1];
+
+  ctmpl = strcpy (ctmpl, tmpl.c_str ());
+
+  // mkostemps will open the file and return a file descriptor.  We
+  // won't worry about closing it because we will need the file until we
+  // are done and then the file will be closed when mkoctfile exits.
+
+  octave_mkostemps_wrapper (ctmpl, 2);
+
+  return std::string (ctmpl);
+}
+
+static void
+clean_up_tmp_files (const std::list<std::string>& tmp_files)
+{
+  for (const auto& file : tmp_files)
+    octave_unlink_wrapper (file.c_str ());
+}
+
 int
 main (int argc, char **argv)
 {
@@ -478,7 +558,7 @@ main (int argc, char **argv)
       return 0;
     }
 
-  std::list<std::string> cfiles, ccfiles, f77files;
+  std::list<std::string> cfiles, ccfiles, f77files, tmp_objfiles;
   std::string output_ext = ".oct";
   std::string objfiles, libfiles, octfile, outputfile;
   std::string incflags, defs, ldflags, pass_on_options;
@@ -784,7 +864,6 @@ main (int argc, char **argv)
     {
       if (! vars["F77"].empty ())
         {
-          std::string b = basename (f, true);
           std::string o;
           if (compile_only)
             {
@@ -795,11 +874,14 @@ main (int argc, char **argv)
               if (! outputfile.empty ())
                 o = outputfile;
               else
-                o = b + ".o";
+                o = basename (f, true) + ".o";
             }
           else
             {
-              o = b + ".o";
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
               objfiles += (' ' + o);
             }
 
@@ -825,7 +907,6 @@ main (int argc, char **argv)
     {
       if (! vars["CC"].empty ())
         {
-          std::string b = basename (f, true);
           std::string o;
           if (compile_only)
             {
@@ -836,11 +917,14 @@ main (int argc, char **argv)
               if (! outputfile.empty ())
                 o = outputfile;
               else
-                o = b + ".o";
+                o = basename (f, true) + ".o";
             }
           else
             {
-              o = b + ".o";
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
               objfiles += (' ' + o);
             }
 
@@ -867,7 +951,6 @@ main (int argc, char **argv)
     {
       if (! vars["CXX"].empty ())
         {
-          std::string b = basename (f, true);
           std::string o;
           if (compile_only)
             {
@@ -878,11 +961,14 @@ main (int argc, char **argv)
               if (! outputfile.empty ())
                 o = outputfile;
               else
-                o = b + ".o";
+                o = basename (f, true) + ".o";
             }
           else
             {
-              o = b + ".o";
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
               objfiles += (' ' + o);
             }
 
@@ -930,6 +1016,8 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
+          clean_up_tmp_files (tmp_objfiles);
+
           if (status)
             return status;
         }
@@ -951,6 +1039,8 @@ main (int argc, char **argv)
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
       int status = run_command (cmd, printonly);
+
+      clean_up_tmp_files (tmp_objfiles);
 
       if (status)
         return status;

@@ -527,6 +527,8 @@
 %!       x(i) = fread (id, [1, 1], type_list{i});
 %!     endfor
 %!
+%!     fclose (id);
+%!
 %!     if (x == 1:n)
 %!       __printf_assert__ ("ok\n");
 %!     endif
@@ -540,38 +542,56 @@
 %! classes = {"int8", "int16", "int32", "int64", ...
 %!            "uint8", "uint16", "uint32", "uint64", ...
 %!            "single", "double"};
-%! nm = tempname ();
-%! id = fopen (nm, "wb+");
 %! n = numel (classes);
-%! for i = 1:n
-%!   cls = classes{i};
-%!   s_in = ones (1, 1, cls);
-%!   m_in = ones (2, 2, cls);
-%!   m_shape = size (m_in);
-%!   frewind (id);
-%!   fwrite (id, s_in, cls);
-%!   fwrite (id, m_in, cls);
-%!   frewind (id);
-%!   s_out = fread (id, numel (s_in), sprintf ("%s=>%s", cls, cls));
-%!   m_out = fread (id, numel (m_in), sprintf ("%s=>%s", cls, cls));
-%!   m_out = reshape (m_out, m_shape);
-%!   assert (s_in, s_out);
-%!   assert (m_in, m_out);
-%! endfor
-%! fclose (id);
-%! unlink (nm);
+%! nm = tempname ();
+%! mode = "wb+";
+%! [id, err] = fopen (nm, mode);
+%! if (id < 0)
+%!   __printf_assert__ ("open failed: %s (%s): %s\n", nm, mode, err);
+%! else
+%!   unwind_protect
+%!     for i = 1:n
+%!       cls = classes{i};
+%!       s_in = ones (1, 1, cls);
+%!       m_in = ones (2, 2, cls);
+%!       m_shape = size (m_in);
+%!       frewind (id);
+%!       fwrite (id, s_in, cls);
+%!       fwrite (id, m_in, cls);
+%!       frewind (id);
+%!       s_out = fread (id, numel (s_in), sprintf ("%s=>%s", cls, cls));
+%!       m_out = fread (id, numel (m_in), sprintf ("%s=>%s", cls, cls));
+%!       m_out = reshape (m_out, m_shape);
+%!       assert (s_in, s_out);
+%!       assert (m_in, m_out);
+%!     endfor
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
+%!   unlink (nm);
+%! endif
 
 %!test
 %! x = char (128:255)';
 %! nm = tempname ();
-%! id = fopen (nm, "wb");
-%! fwrite (id, x);
-%! fclose (id);
-%! id = fopen (nm, "rb");
-%! y = fread (id, Inf, "uchar=>char");
-%! fclose (id);
-%! unlink (nm);
-%! assert (x, y);
+%! mode = "wb";
+%! [id, err] = fopen (nm, mode);
+%! if (id < 0)
+%!   __printf_assert__ ("open failed: %s (%s): %s\n", nm, mode, err);
+%! else
+%!   fwrite (id, x);
+%!   fclose (id);
+%!   mode = "rb";
+%!   [id, err] = fopen (nm, mode);
+%!   if (id < 0)
+%!     __printf_assert__ ("open failed: %s (%s): %s\n", nm, mode, err);
+%!   else
+%!     y = fread (id, Inf, "uchar=>char");
+%!     fclose (id);
+%!     assert (x, y);
+%!     unlink (nm);
+%!   endif
+%! endif
 
 %!test
 %! nm = tempname ();
@@ -579,36 +599,51 @@
 %! if (id > 0)
 %!   fprintf (id, "%d\n", 1:100);
 %!   fclose (id);
-%!   id = fopen (nm, "rb");
-%!   if (id > 0)
+%!   mode = "rb";
+%!   id = fopen (nm, mode);
+%!   if (id < 0)
+%!     __printf_assert__ ("open failed: %s (%s): %s\n", nm, mode, err);
+%!   else
 %!     for i = 1:101
 %!       fgets (id);
 %!     endfor
 %!     if (feof (id))
 %!       fclose (id);
-%!       id = fopen (nm, "rb");
-%!       pos_one = ftell (id);
-%!       s_one = fgets (id);
-%!       for i = 1:48
-%!         s = fgets (id);
-%!       endfor
-%!       pos_fifty = ftell (id);
-%!       s_fifty = fgets (id);
-%!       fseek (id, pos_one, SEEK_SET);
-%!       s_one_x = fgets (id);
-%!       fseek (id, pos_fifty, SEEK_SET);
-%!       s_fifty_x = fgets (id);
-%!       if (s_one == s_one_x && s_fifty == s_fifty_x)
-%!         frewind (id);
-%!         s_one_x = fgets (id);
-%!         if (s_one != s_one_x)
-%!           error ("bombed!!");
-%!         endif
+%!       mode = "rb";
+%!       [id, err] = fopen (nm, mode);
+%!       if (id < 0)
+%!         __printf_assert__ ("open failed: %s (%s): %s\n", nm, mode, err);
+%!       else
+%!         unwind_protect
+%!           pos_one = ftell (id);
+%!           s_one = fgets (id);
+%!           for i = 1:48
+%!             s = fgets (id);
+%!           endfor
+%!           pos_fifty = ftell (id);
+%!           s_fifty = fgets (id);
+%!           fseek (id, pos_one, SEEK_SET);
+%!           s_one_x = fgets (id);
+%!           fseek (id, pos_fifty, SEEK_SET);
+%!           s_fifty_x = fgets (id);
+%!           if (s_one == s_one_x && s_fifty == s_fifty_x)
+%!             frewind (id);
+%!             s_one_x = fgets (id);
+%!             if (s_one != s_one_x)
+%!               error ("bombed!!");
+%!             endif
+%!           endif
+%!         unwind_protect_cleanup
+%!           fclose (id);
+%!         end_unwind_protect
 %!       endif
+%!     else
+%!       fclose (id);
+%!       __printf_assert__ ("EOF not reached when expected to: %s (%s)\n", nm, mode);
 %!     endif
 %!   endif
+%!   unlink (nm);
 %! endif
-%! unlink (nm);
 
 %!assert (fputs (1, 1),-1)
 
@@ -668,101 +703,143 @@
 %!error frewind ("foo")
 
 %!test
-%! id = tmpfile ();
-%! ## FIXME: better test for endianness?
-%! big_endian = (bitunpack (uint16 (1))(1) == 0);
-%! fwrite (id, "abcdefg");
-%! frewind (id);
-%! [data, count] = fread (id);
-%! assert (data, [97; 98; 99; 100; 101; 102; 103]);
-%! assert (count, 7);
-%! frewind (id);
-%! [data, count] = fread (id, 'int16');
-%! expected = [25185; 25699; 26213];
-%! if (big_endian)
-%!   expected = double (swapbytes (int16 (expected)));
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     ## FIXME: better test for endianness?
+%!     big_endian = (bitunpack (uint16 (1))(1) == 0);
+%!     fwrite (id, "abcdefg");
+%!     frewind (id);
+%!     [data, count] = fread (id);
+%!     assert (data, [97; 98; 99; 100; 101; 102; 103]);
+%!     assert (count, 7);
+%!     frewind (id);
+%!     [data, count] = fread (id, 'int16');
+%!     expected = [25185; 25699; 26213];
+%!     if (big_endian)
+%!       expected = double (swapbytes (int16 (expected)));
+%!     endif
+%!     assert (data, expected);
+%!     assert (count, 3);
+%!     frewind (id);
+%!     [data, count] = fread (id, [10, 2], 'int16');
+%!     assert (data, expected);
+%!     assert (count, 3);
+%!     frewind (id);
+%!     [data, count] = fread (id, [2, 10], 'int16');
+%!     expected = [25185, 26213; 25699, 0];
+%!     if (big_endian)
+%!       expected = double (swapbytes (int16 (expected)));
+%!     endif
+%!     assert (data, expected);
+%!     assert (count, 3);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
 %! endif
-%! assert (data, expected);
-%! assert (count, 3);
-%! frewind (id);
-%! [data, count] = fread (id, [10, 2], 'int16');
-%! assert (data, expected);
-%! assert (count, 3);
-%! frewind (id);
-%! [data, count] = fread (id, [2, 10], 'int16');
-%! expected = [25185, 26213; 25699, 0];
-%! if (big_endian)
-%!   expected = double (swapbytes (int16 (expected)));
+
+%!test
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     fwrite (id, char (0:15));
+%!     frewind (id);
+%!     [data, count] = fread (id, inf, "2*uint8", 2);
+%!     assert (data, [0; 1; 4; 5; 8; 9; 12; 13]);
+%!     assert (count, 8);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
 %! endif
-%! assert (data, expected);
-%! assert (count, 3);
-%! fclose (id);
 
 %!test
-%! id = tmpfile ();
-%! fwrite (id, char (0:15));
-%! frewind (id);
-%! [data, count] = fread (id, inf, "2*uint8", 2);
-%! assert (data, [0; 1; 4; 5; 8; 9; 12; 13]);
-%! assert (count, 8);
-%! fclose (id);
-
-%!test
-%! id = tmpfile ();
-%! fwrite (id, char (0:15));
-%! frewind (id);
-%! [data, count] = fread (id, 3, "2*uint8", 3);
-%! assert (data, [0; 1; 5]);
-%! assert (count, 3);
-%! [data, count] = fread (id, 3, "2*uint8", 3);
-%! assert (data, [6; 7; 11]);
-%! assert (count, 3);
-%! [data, count] = fread (id, 3, "2*uint8", 3);
-%! assert (data, [12; 13]);
-%! assert (count, 2);
-%! [data, count] = fread (id, 3, "2*uint8", 3);
-%! assert (data, []);
-%! assert (count, 0);
-%! fclose (id);
-
-%!test
-%! id = tmpfile ();
-%! ## FIXME: better test for endianness?
-%! big_endian = (bitunpack (uint16 (1))(1) == 0);
-%! fwrite (id, char (0:15));
-%! frewind (id);
-%! [data, count] = fread (id, [1, Inf], "4*uint16", 3);
-%! expected = [256, 770, 1284, 1798, 3083, 3597];
-%! if (big_endian)
-%!   expected = double (swapbytes (uint16 (expected)));
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     fwrite (id, char (0:15));
+%!     frewind (id);
+%!     [data, count] = fread (id, 3, "2*uint8", 3);
+%!     assert (data, [0; 1; 5]);
+%!     assert (count, 3);
+%!     [data, count] = fread (id, 3, "2*uint8", 3);
+%!     assert (data, [6; 7; 11]);
+%!     assert (count, 3);
+%!     [data, count] = fread (id, 3, "2*uint8", 3);
+%!     assert (data, [12; 13]);
+%!     assert (count, 2);
+%!     [data, count] = fread (id, 3, "2*uint8", 3);
+%!     assert (data, []);
+%!     assert (count, 0);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
 %! endif
-%! assert (data, expected);
-%! assert (count, 6);
-%! fclose (id);
 
 %!test
-%! id = tmpfile ();
-%! ## FIXME: better test for endianness?
-%! big_endian = (bitunpack (uint16 (1))(1) == 0);
-%! fwrite (id, char (0:15));
-%! frewind (id);
-%! [data, count] = fread (id, [3, Inf], "4*uint16", 3);
-%! expected = [256, 1798; 770, 3083; 1284, 3597];
-%! if (big_endian)
-%!   expected = double (swapbytes (uint16 (expected)));
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     ## FIXME: better test for endianness?
+%!     big_endian = (bitunpack (uint16 (1))(1) == 0);
+%!     fwrite (id, char (0:15));
+%!     frewind (id);
+%!     [data, count] = fread (id, [1, Inf], "4*uint16", 3);
+%!     expected = [256, 770, 1284, 1798, 3083, 3597];
+%!     if (big_endian)
+%!       expected = double (swapbytes (uint16 (expected)));
+%!     endif
+%!     assert (data, expected);
+%!     assert (count, 6);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
 %! endif
-%! assert (data, expected);
-%! assert (count, 6);
-%! fclose (id);
 
 %!test
-%! id = tmpfile ();
-%! fwrite (id, "abcd");
-%! frewind (id);
-%! [data, count] = fread (id, [2, 3], "char");
-%! assert (data, [97, 99; 98, 100]);
-%! assert (count, 4);
-%! fclose (id);
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     ## FIXME: better test for endianness?
+%!     big_endian = (bitunpack (uint16 (1))(1) == 0);
+%!     fwrite (id, char (0:15));
+%!     frewind (id);
+%!     [data, count] = fread (id, [3, Inf], "4*uint16", 3);
+%!     expected = [256, 1798; 770, 3083; 1284, 3597];
+%!     if (big_endian)
+%!       expected = double (swapbytes (uint16 (expected)));
+%!     endif
+%!     assert (data, expected);
+%!     assert (count, 6);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
+%! endif
+
+%!test
+%! [id, msg] = tmpfile ();
+%! if (id < 0)
+%!   __printf_assert__ ("tmpfile failed: %s\n", msg);
+%! else
+%!   unwind_protect
+%!     fwrite (id, "abcd");
+%!     frewind (id);
+%!     [data, count] = fread (id, [2, 3], "char");
+%!     assert (data, [97, 99; 98, 100]);
+%!     assert (count, 4);
+%!   unwind_protect_cleanup
+%!     fclose (id);
+%!   end_unwind_protect
+%! endif
 
 %!assert (sprintf ("%1s", "foo"), "foo")
 %!assert (sprintf ("%.s", "foo"), char (zeros (1, 0)))

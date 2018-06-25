@@ -39,8 +39,10 @@ MKMEXFILECPPFLAGS = \
 
 MKMEXFILE = $(top_builddir)/src/mkoctfile --mex $(MKMEXFILECPPFLAGS)
 
-%.mex : %.c
+$(MEX_TEST_FUNCTIONS) : %.mex : %.c | %reldir%/$(octave_dirstamp)
 	$(AM_V_mkmexfile)$(MKMEXFILE) $(AM_VOPT_mkmexfile) $< -o $@ || rm -f $@
+
+DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 ## Until we decide how to handle installing the executable MEX files,
 ## don't install them or the associated test files.

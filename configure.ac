@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+9dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl Copyright (C) 1993-2018 John W. Eaton
 ###
@@ -3124,13 +3124,9 @@ OCTAVE_LINK_OPTS=""
 OCT_LINK_DEPS=""
 OCT_LINK_OPTS="$LDFLAGS"
 
-case $host_os in
-  mingw* | msdosmsvc)
-    OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
-  ;;
-esac
-
 if test $link_all_deps = yes; then
+  OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="$OCT_LINK_DEPS $MKOCTFILE_LIBOCTINTERP_LINK_DEPS"
 
@@ -3139,9 +3135,12 @@ if test $link_all_deps = yes; then
 
   OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS"
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
-
-  OCT_LINK_DEPS="$OCT_LINK_DEPS $LIBOCTINTERP_LINK_DEPS"
-  OCT_LINK_OPTS="$OCT_LINK_OPTS $LIBOCTINTERP_LINK_OPTS"
+else
+  case $host_os in
+    mingw* | msdosmsvc)
+      OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+    ;;
+  esac
 fi
 
 AC_SUBST(LIBOCTINTERP_LINK_DEPS)

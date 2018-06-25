@@ -693,10 +693,14 @@ main (int argc, char **argv)
     {
       if (! outputfile.empty ())
         {
+          // FIXME: should probably do a better job of finding the
+          // filename extension instead of just looking at the filename
+          // length.
+
           octfile = outputfile;
           size_t len = octfile.length ();
           size_t len_ext = output_ext.length ();
-          if (octfile.substr (len-len_ext) != output_ext)
+          if (len <= len_ext || octfile.substr (len-len_ext) != output_ext)
             octfile += output_ext;
         }
       else

@@ -578,6 +578,7 @@ main (int argc, char **argv)
   bool link_stand_alone = false;
   bool depend = false;
   bool printonly = false;
+  bool output_file_option = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -671,6 +672,8 @@ main (int argc, char **argv)
         }
       else if (arg == "-o" || arg == "-output" || arg == "--output")
         {
+          output_file_option = true;
+
           if (i < argc-1)
             {
               arg = argv[++i];
@@ -764,7 +767,7 @@ main (int argc, char **argv)
       defs += " -DMEX_DEBUG";
     }
 
-  if (compile_only
+  if (compile_only && output_file_option
       && (cfiles.size () + ccfiles.size () + f77files.size ()) > 1)
     {
       std::cerr << "mkoctfile: may not use -c and -o with multiple source files"

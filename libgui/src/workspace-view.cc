@@ -51,7 +51,7 @@ namespace octave
     : octave_dock_widget ("WorkspaceView", p), m_view (new QTableView (this))
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setWindowTitle (tr ("Workspace"));
+    set_title (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));
 
     m_filter = new QComboBox (this);

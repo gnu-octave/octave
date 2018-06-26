@@ -45,7 +45,7 @@ namespace octave
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setWindowTitle (tr ("Command Window"));
+    set_title (tr ("Command Window"));
 
     setWidget (m_terminal);
     setFocusProxy (m_terminal);

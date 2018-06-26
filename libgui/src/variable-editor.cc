@@ -1043,7 +1043,7 @@ namespace octave
       m_focus_widget (nullptr),
       m_focus_widget_vdw (nullptr)
   {
-    setWindowTitle (tr ("Variable Editor"));
+    set_title (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     setAttribute (Qt::WA_AlwaysShowToolTips);

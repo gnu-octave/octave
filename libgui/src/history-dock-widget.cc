@@ -293,7 +293,7 @@ namespace octave
     m_filter_checkbox = new QCheckBox ();
 
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setWindowTitle (tr ("Command History"));
+    set_title (tr ("Command History"));
     setWidget (new QWidget ());
 
     m_filter_widget = new QWidget (this);

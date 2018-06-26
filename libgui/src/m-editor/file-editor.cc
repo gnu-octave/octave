@@ -2046,7 +2046,7 @@ namespace octave
 
     resize (500, 400);
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setWindowTitle (tr ("Editor"));
+    set_title (tr ("Editor"));
 
     check_actions ();
   }

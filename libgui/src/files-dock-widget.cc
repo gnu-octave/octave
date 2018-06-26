@@ -69,7 +69,7 @@ namespace octave
     : octave_dock_widget ("FilesDockWidget", p)
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
-    setWindowTitle (tr ("File Browser"));
+    set_title (tr ("File Browser"));
     setToolTip (tr ("Browse your files"));
 
     m_sig_mapper = nullptr;

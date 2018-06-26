@@ -37,9 +37,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #if defined (CROSS)
+#  include <fcntl.h>
+#  include <stdlib.h>
 #  include <sys/types.h>
 #  include <sys/wait.h>
-#  include <stdlib.h>
 #  include <unistd.h>
 
 #  ifndef OCTAVE_UNUSED

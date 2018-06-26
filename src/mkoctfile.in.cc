@@ -36,13 +36,22 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
+// Programming note:  The CROSS macro here refers to building a
+// cross-compiler aware version of mkoctfile that can be used to cross
+// compile .oct file for Windows builds of Octave, not that mkoctfile
+// itself is being cross compiled.
+//
+// We don't use the wrapper and gnulib functions when we are building
+// with CROSS defined.  This configuration is only expected to work on
+// modern systems that should not need to have gnulib to fix POSIX
+// portability problems.  So we just assume a working POSIX system when
+// CROSS is defined.
+
 #if defined (CROSS)
-#  include <fcntl.h>
 #  include <stdlib.h>
 #  include <sys/types.h>
 #  include <sys/wait.h>
 #  include <unistd.h>
-
 #  ifndef OCTAVE_UNUSED
 #    define OCTAVE_UNUSED
 #  endif
@@ -73,7 +82,7 @@ static std::map<std::string, std::string> vars;
 static int
 octave_mkostemps_wrapper (char *tmpl, int suffixlen)
 {
-  return mkostemps (tmpl, suffixlen, O_BINARY);
+  return mkostemps (tmpl, suffixlen, 0);
 }
 
 static int
@@ -173,10 +182,10 @@ initialize (void)
 
   std::string DEFAULT_LFLAGS;
 
-#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
 
-  // We'll be linking with -loctinterp and -loctave, so we need to know
-  // where to find them.
+  // We'll be linking the files we compile with -loctinterp and
+  // -loctave, so we need to know where to find them.
 
   DEFAULT_LFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
 #endif

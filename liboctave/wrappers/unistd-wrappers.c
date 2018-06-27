@@ -31,8 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <stdio.h>
 
-#include <stdio.h>
-
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -40,6 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include <process.h>
 #endif
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <wchar.h>
+#endif
+
+#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 
 int
@@ -75,7 +79,14 @@ octave_access_wrapper (const char *nm, int mode)
 int
 octave_chdir_wrapper (const char *nm)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *wnm = u8_to_wchar (nm);
+  int status = _wchdir (wnm);
+  free ((void *) wnm);
+  return status;
+#else
   return chdir (nm);
+#endif
 }
 
 int
@@ -281,7 +292,28 @@ octave_ftruncate_wrapper (int fd, off_t sz)
 char *
 octave_getcwd_wrapper (char *nm, size_t len)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *tmp = _wgetcwd (NULL, 0);
+  char *retval = NULL;
+
+  if (! tmp)
+    return retval;
+
+  retval = u8_from_wchar (tmp);
+  if (! nm)
+    return retval;
+  else
+    {
+      if (strlen (retval) > len)
+        return NULL;
+      
+      memcpy (nm, retval, len);
+      free (retval);
+      return nm;
+    }
+#else
   return getcwd (nm, len);
+#endif
 }
 
 gid_t
@@ -381,7 +413,14 @@ octave_pipe_wrapper (int *fd)
 int
 octave_rmdir_wrapper (const char *nm)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *wnm = u8_to_wchar (nm);
+  int status = _wrmdir (wnm);
+  free ((void *) wnm);
+  return status;
+#else
   return rmdir (nm);
+#endif
 }
 
 pid_t

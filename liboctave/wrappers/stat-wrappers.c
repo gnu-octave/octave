@@ -35,11 +35,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/stat.h>
 
 #include "stat-wrappers.h"
+#include "uniconv-wrappers.h"
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <wchar.h>
+#endif
 
 int
 octave_mkdir_wrapper (const char *name, mode_t mode)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *wname = u8_to_wchar (name);
+  int status = _wmkdir (wname);
+  free ((void *) wname);
+  octave_unused_parameter (mode);
+  return status;
+#else
   return mkdir (name, mode);
+#endif
 }
 
 int
@@ -100,7 +114,13 @@ octave_stat_wrapper (const char *fname, mode_t *mode, ino_t *ino,
 {
   struct stat buf;
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *wfname = u8_to_wchar (fname);
+  int status = _wstati64 (wfname, &buf);
+  free ((void *) wfname);
+#else
   int status = stat (fname, &buf);
+#endif
 
   assign_stat_fields (&buf, mode, ino, dev, nlink, uid, gid, size,
                       atime, mtime, ctime, rdev, blksize, blocks);
@@ -117,7 +137,14 @@ octave_lstat_wrapper (const char *lname, mode_t *mode, ino_t *ino,
 {
   struct stat buf;
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  // Windows doesn't have an lstat. Use stat instead
+  wchar_t *wlname = u8_to_wchar (lname);
+  int status = _wstati64 (wlname, &buf);
+  free ((void *) wlname);
+#else
   int status = lstat (lname, &buf);
+#endif
 
   assign_stat_fields (&buf, mode, ino, dev, nlink, uid, gid, size,
                       atime, mtime, ctime, rdev, blksize, blocks);

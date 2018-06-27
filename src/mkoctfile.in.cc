@@ -880,10 +880,6 @@ main (int argc, char **argv)
           std::string o;
           if (compile_only)
             {
-              // There will be only one source file, so we are done
-              // after executing the command below and we don't need to
-              // keep track of the object file name.
-
               if (! outputfile.empty ())
                 o = outputfile;
               else
@@ -905,7 +901,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (compile_only || status)
+          if (status)
             return status;
         }
       else
@@ -923,10 +919,6 @@ main (int argc, char **argv)
           std::string o;
           if (compile_only)
             {
-              // There will be only one source file, so we are done
-              // after executing the command below and we don't need to
-              // keep track of the object file name.
-
               if (! outputfile.empty ())
                 o = outputfile;
               else
@@ -949,7 +941,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (compile_only || status)
+          if (status)
             return status;
         }
       else
@@ -967,10 +959,6 @@ main (int argc, char **argv)
           std::string o;
           if (compile_only)
             {
-              // There will be only one source file, so we are done
-              // after executing the command below and we don't need to
-              // keep track of the object file name.
-
               if (! outputfile.empty ())
                 o = outputfile;
               else
@@ -993,7 +981,7 @@ main (int argc, char **argv)
 
           int status = run_command (cmd, printonly);
 
-          if (compile_only || status)
+          if (status)
             return status;
         }
       else

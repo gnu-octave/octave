@@ -992,6 +992,11 @@ main (int argc, char **argv)
         }
     }
 
+  // If we are only compliling, we are done.
+
+  if (compile_only)
+    return 0;
+
   if (objfiles.empty ())
     {
       std::cerr << "mkoctfile: no objects to link" << std::endl;

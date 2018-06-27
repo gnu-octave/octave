@@ -29,6 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
+
 #include "uniconv.h"
 
 #include "uniconv-wrappers.h"
@@ -41,10 +45,54 @@ octave_u8_conv_from_encoding (const char *fromcode, const char *src,
                                 src, srclen, NULL, NULL, lengthp);
 }
 
-extern char *
+char *
 octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
                             size_t srclen, size_t *lengthp)
 {
   return u8_conv_to_encoding (tocode, iconveh_question_mark,
                               src, srclen, NULL, NULL, lengthp);
+}
+
+char *
+u8_from_wchar (const wchar_t *wc)
+{
+  // Convert wide char array to multibyte UTF-8 char array
+  // The memory at the returned pointer must be freed after use.
+
+  size_t srclen = wcslen (wc) * sizeof (wchar_t);
+  const char *src = (const char *) wc;
+
+  size_t length = 0;
+  uint8_t *mbchar = u8_conv_from_encoding ("wchar_t", iconveh_question_mark,
+                                           src, srclen, NULL, NULL, &length);
+
+  // result might not be 0 terminated
+  char *retval = malloc (length + 1);
+  memcpy (retval, mbchar, length);
+  free ((void *) mbchar);
+  retval[length] = 0; // 0 terminate string
+
+  return retval;
+}
+
+wchar_t *
+u8_to_wchar (const char *u8)
+{
+  // Convert multibyte UTF-8 char array to wide char array
+  // The memory at the returned pointer must be freed after use.
+
+  size_t srclen = strlen (u8);
+  const uint8_t *src = (const uint8_t *) u8;
+
+  size_t length = 0;
+
+  char *wchar = u8_conv_to_encoding ("wchar_t", iconveh_question_mark,
+                                     src, srclen, NULL, NULL, &length);
+  // result might not be 0 terminated
+  wchar_t *retval = malloc (length + 1 * sizeof (wchar_t));
+  memcpy (retval, wchar, length);
+  free ((void *) wchar);
+  retval[length / sizeof (wchar_t)] = 0; // 0 terminate string
+
+  return retval;
 }

@@ -182,6 +182,7 @@ Undocumented internal function.
   bool sym_tested = false;
   bool cholB = false;
   bool a_is_sparse = false;
+  bool b_is_sparse = false;
   ColumnVector permB;
   int arg_offset = 0;
   double tol = std::numeric_limits<double>::epsilon ();
@@ -265,6 +266,13 @@ Undocumented internal function.
       if (args(1+arg_offset).iscomplex ())
         {
           b_arg = 1+arg_offset;
+          if (args(b_arg).issparse ())
+            {
+              bscm = (args(b_arg).sparse_complex_matrix_value ());
+              b_is_sparse = true;
+            }
+          else
+            bcm = (args(b_arg).complex_matrix_value ());
           have_b = true;
           b_is_complex = true;
           arg_offset++;
@@ -272,6 +280,13 @@ Undocumented internal function.
       else
         {
           b_arg = 1+arg_offset;
+          if (args(b_arg).issparse ())
+            {
+              bsmm = (args(b_arg).sparse_matrix_value ());
+              b_is_sparse = true;
+            }
+          else
+            bmm = (args(b_arg).matrix_value ());
           have_b = true;
           arg_offset++;
         }
@@ -374,14 +389,14 @@ Undocumented internal function.
     {
       if (a_is_complex || b_is_complex)
         {
-          if (a_is_sparse)
+          if (b_is_sparse)
             bscm = args(b_arg).sparse_complex_matrix_value ();
           else
             bcm = args(b_arg).complex_matrix_value ();
         }
       else
         {
-          if (a_is_sparse)
+          if (b_is_sparse)
             bsmm = args(b_arg).sparse_matrix_value ();
           else
             bmm = args(b_arg).matrix_value ();
@@ -400,10 +415,18 @@ Undocumented internal function.
       ComplexColumnVector eig_val;
 
       if (have_a_fun)
-        nconv = EigsComplexNonSymmetricFunc
-                (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
-                 eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
-                 disp, maxit);
+        {
+          if (b_is_sparse)
+            nconv = EigsComplexNonSymmetricFunc
+              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+               eig_val, bscm, permB, cresid, octave_stdout, tol,
+               (nargout > 1), cholB, disp, maxit);
+          else
+            nconv = EigsComplexNonSymmetricFunc
+              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+               eig_val, bcm, permB, cresid, octave_stdout, tol,
+               (nargout > 1), cholB, disp, maxit);
+        }
       else if (have_sigma)
         {
           if (a_is_sparse)
@@ -443,10 +466,18 @@ Undocumented internal function.
       ComplexColumnVector eig_val;
 
       if (have_a_fun)
-        nconv = EigsComplexNonSymmetricFunc
-                (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec,
-                 eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
-                 disp, maxit);
+        {
+          if (b_is_sparse)
+            nconv = EigsComplexNonSymmetricFunc
+              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+               eig_val, bscm, permB, cresid, octave_stdout, tol,
+               (nargout > 1), cholB, disp, maxit);
+          else
+            nconv = EigsComplexNonSymmetricFunc
+              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+               eig_val, bcm, permB, cresid, octave_stdout, tol,
+               (nargout > 1), cholB, disp, maxit);
+        }
       else
         {
           if (a_is_sparse)
@@ -474,10 +505,18 @@ Undocumented internal function.
           ColumnVector eig_val;
 
           if (have_a_fun)
-            nconv = EigsRealSymmetricFunc
-                    (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
-                     eig_val, resid, octave_stdout, tol, (nargout > 1),
-                     cholB, disp, maxit);
+            {
+              if (b_is_sparse)
+                nconv = EigsRealSymmetricFunc
+                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        eig_val, bsmm, permB, resid, octave_stdout, tol,
+                        (nargout > 1), cholB, disp, maxit);
+              else
+                nconv = EigsRealSymmetricFunc
+                       (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                        eig_val, bmm, permB, resid, octave_stdout, tol,
+                        (nargout > 1), cholB, disp, maxit);
+            }
           else if (have_sigma)
             {
               if (a_is_sparse)
@@ -516,10 +555,18 @@ Undocumented internal function.
           ComplexColumnVector eig_val;
 
           if (have_a_fun)
-            nconv = EigsRealNonSymmetricFunc
-                    (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
-                     eig_val, resid, octave_stdout, tol, (nargout > 1),
-                     cholB, disp, maxit);
+            {
+              if (b_is_sparse)
+                nconv = EigsRealNonSymmetricFunc
+                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, bsmm, permB, resid, octave_stdout, tol,
+                         (nargout > 1), cholB, disp, maxit);
+              else
+                nconv = EigsRealNonSymmetricFunc
+                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, bmm, permB, resid, octave_stdout, tol,
+                         (nargout > 1), cholB, disp, maxit);
+            }
           else if (have_sigma)
             {
               if (a_is_sparse)

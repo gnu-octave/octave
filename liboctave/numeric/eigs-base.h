@@ -60,14 +60,16 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
                               std::ostream& os, double tol, bool rvec,
                               bool cholB, int disp, int maxit);
 
+template <typename M>
 extern OCTAVE_API octave_idx_type
 EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
                        const std::string& _typ, double sigma,
                        octave_idx_type k, octave_idx_type p,
                        octave_idx_type& info, Matrix& eig_vec,
-                       ColumnVector& eig_val, ColumnVector& resid,
+                       ColumnVector& eig_val, const M& _b,
+                       ColumnVector& permB, ColumnVector& resid,
                        std::ostream& os, double tol, bool rvec,
-                       bool /* cholB */, int disp, int maxit);
+                       bool cholB, int disp, int maxit);
 
 template <typename M>
 octave_idx_type
@@ -90,14 +92,16 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                                  std::ostream& os, double tol, bool rvec,
                                  bool cholB, int disp, int maxit);
 
+template <typename M>
 extern OCTAVE_API octave_idx_type
 EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                           const std::string& _typ, double sigmar,
                           octave_idx_type k, octave_idx_type p,
                           octave_idx_type& info, ComplexMatrix& eig_vec,
-                          ComplexColumnVector& eig_val, ColumnVector& resid,
+                          ComplexColumnVector& eig_val, const M& _b,
+                          ColumnVector& permB, ColumnVector& resid,
                           std::ostream& os, double tol, bool rvec,
-                          bool /* cholB */, int disp, int maxit);
+                          bool cholB, int disp, int maxit);
 
 template <typename M>
 octave_idx_type
@@ -122,14 +126,15 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
                                     std::ostream& os, double tol, bool rvec,
                                     bool cholB, int disp, int maxit);
 
+template <typename M>
 extern OCTAVE_API octave_idx_type
 EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              const std::string& _typ, Complex sigma,
                              octave_idx_type k, octave_idx_type p,
                              octave_idx_type& info, ComplexMatrix& eig_vec,
-                             ComplexColumnVector& eig_val,
-                             ComplexColumnVector& cresid, std::ostream& os,
-                             double tol, bool rvec, bool /* cholB */,
-                             int disp, int maxit);
+                             ComplexColumnVector& eig_val, const M& _b,
+                             ColumnVector& permB, ComplexColumnVector& cresid,
+                             std::ostream& os, double tol, bool rvec,
+                             bool cholB, int disp, int maxit);
 
 #endif

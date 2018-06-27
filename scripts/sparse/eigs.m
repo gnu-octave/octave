@@ -1480,11 +1480,77 @@ endfunction
 %! j_B = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 %! v_B = [3, 10i, 1, 8i, 7, 6i, 5, 4i, 9, 7i];
 %! B = sparse(i_B, j_B, v_B); # not SPD
-%! [Evectors Evalues] = eigs(A, B, 5, 'SM'); # call_eig is true
+%! [Evectors, Evalues] = eigs(A, B, 5, "SM"); # call_eig is true
 %! ResidualVectors = A * Evectors - B * Evectors * Evalues;
 %! RelativeErrors = norm (ResidualVectors, "columns") ./ ...
 %! norm (A * Evectors, "columns");
-%! assert (RelativeErrors, zeros (1, 5))
+%! assert (RelativeErrors, zeros (1, 5));
 %!testif HAVE_ARPACK
 %! A = rand (8);
 %! eigs (A, 6, "lr"); # this failed on 4.2.x
+%!testif HAVE_ARPACK
+%! A = rand (10);
+%! B = rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
+%! Afun = @(x) A * x;
+%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);
+%!testif HAVE_ARPACK
+%! A = rand (10);
+%! B = rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
+%! Afun = @(x) A \ x;
+%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);
+%!testif HAVE_ARPACK
+%! A = rand (10);
+%! A = A * A';
+%! B = rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
+%! Afun = @(x) A * x;
+%! opts.issym = true;
+%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);
+%!testif HAVE_ARPACK
+%! A = rand (10);
+%! A = A * A';
+%! B = rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
+%! Afun = @(x) A \ x;
+%! opts.issym = true;
+%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! assert (Evector, Evector_f, 100*eps);
+%! assert (Evalues, Evalues_f, 100*eps);
+%!testif HAVE_ARPACK
+%! A = rand (10) + 1i * rand (10);
+%! B = rand (10) + 1i * rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
+%! Afun = @(x) A * x;
+%! opts.isreal = false;
+%! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "LM", opts);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);
+%!testif HAVE_ARPACK
+%! A = rand (10) + 1i * rand (10);
+%! B = rand (10) + 1i * rand (10);
+%! B = B * B';
+%! opts.v0 = (1:10)';
+%! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
+%! Afun = @(x) A \ x;
+%! opts.isreal = false;
+%! [Evector_f, Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);

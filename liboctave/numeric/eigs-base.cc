@@ -1202,23 +1202,29 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   return ip(4);
 }
 
+template <typename M>
 octave_idx_type
 EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                        const std::string& _typ, double sigma,
                        octave_idx_type k_arg, octave_idx_type p_arg,
                        octave_idx_type& info, Matrix& eig_vec,
-                       ColumnVector& eig_val, ColumnVector& resid,
+                       ColumnVector& eig_val, const M& _b,
+                       ColumnVector& permB, ColumnVector& resid,
                        std::ostream& os, double tol, bool rvec,
-                       bool /* cholB */, int disp, int maxit)
+                       bool cholB, int disp, int maxit)
 {
   F77_INT n = octave::to_f77_int (n_arg);
   F77_INT k = octave::to_f77_int (k_arg);
   F77_INT p = octave::to_f77_int (p_arg);
+  M b(_b);
   std::string typ (_typ);
   bool have_sigma = (sigma ? true : false);
+  bool have_b = ! b.isempty ();
+  bool note3 = false;
   char bmat = 'I';
   F77_INT mode = 1;
   int err = 0;
+  M bt;
 
   if (resid.isempty ())
     {
@@ -1254,6 +1260,23 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than or equal to n");
 
+  if (have_b && cholB && ! permB.isempty ())
+    {
+      // Check the we really have a permutation vector
+      if (permB.numel () != n)
+        (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+      Array<bool> checked (dim_vector (n, 1), false);
+      for (F77_INT i = 0; i < n; i++)
+        {
+          octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
+
+          if (checked(bidx) || bidx < 0 || bidx >= n
+              || octave::math::x_nint (bidx) != bidx)
+            (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+        }
+    }
+
   if (! have_sigma)
     {
       if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
@@ -1265,19 +1288,53 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         (*current_liboctave_error_handler)
           ("eigs: invalid sigma value for real symmetric problem");
 
+      if (typ != "SM" && have_b)
+        note3 = true;
+
       if (typ == "SM")
         {
           typ = "LM";
           sigma = 0.;
           mode = 3;
+          if (have_b)
+            bmat = 'G';
         }
     }
   else if (! std::abs (sigma))
-    typ = "SM";
+    {
+      typ = "SM";
+      if (have_b)
+        bmat = 'G';
+    }
   else
     {
       typ = "LM";
       mode = 3;
+      if (have_b)
+        bmat = 'G';
+    }
+
+  if (mode == 1 && have_b)
+    {
+      // See Note 3 dsaupd
+      note3 = true;
+      if (cholB)
+        {
+          bt = b;
+          b = b.transpose ();
+          if (permB.isempty ())
+            {
+              permB = ColumnVector (n);
+              for (F77_INT i = 0; i < n; i++)
+                permB(i) = i;
+            }
+        }
+      else
+        {
+          if (! make_cholb (b, bt, permB))
+            (*current_liboctave_error_handler)
+              ("eigs: The matrix B is not positive definite");
+        }
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
@@ -1352,20 +1409,85 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
       if (ido == -1 || ido == 1 || ido == 2)
         {
-          double *ip2 = workd + iptr(0) - 1;
-          ColumnVector x(n);
+          if (have_b)
+            {
+              if (mode == 1) // regular mode with factorized B
+                {
+                  Matrix mtmp (n,1);
+                  for (F77_INT i = 0; i < n; i++)
+                    mtmp(i,0) = workd[i + iptr(0) - 1];
 
-          for (F77_INT i = 0; i < n; i++)
-            x(i) = *ip2++;
+                  mtmp = utsolve (bt, permB, mtmp);
+                  ColumnVector y = fun (mtmp, err);
 
-          ColumnVector y = fun (x, err);
+                  if (err)
+                    return false;
 
-          if (err)
-            return false;
+                  mtmp = ltsolve (b, permB, y);
 
-          ip2 = workd + iptr(1) - 1;
-          for (F77_INT i = 0; i < n; i++)
-            *ip2++ = y(i);
+                  for (F77_INT i = 0; i < n; i++)
+                    workd[i+iptr(1)-1] = mtmp(i,0);
+                }
+              else // shift-invert mode
+                {
+                  if (ido == -1)
+                    {
+                      OCTAVE_LOCAL_BUFFER (double, dtmp, n);
+
+                      vector_product (b, workd+iptr(0)-1, dtmp);
+
+                      ColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = dtmp[i];
+
+                      ColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      double *ip2 = workd + iptr(1) - 1;
+                      for (F77_INT i = 0; i < n; i++)
+                        ip2[i] = y(i);
+                    }
+                  else if (ido == 2)
+                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                  else
+                    {
+                      double *ip2 = workd+iptr(2)-1;
+                      ColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = *ip2++;
+
+                      ColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      ip2 = workd + iptr(1) - 1;
+                      for (F77_INT i = 0; i < n; i++)
+                        *ip2++ = y(i);
+                     }
+                }
+            }
+          else
+            {
+              double *ip2 = workd + iptr(0) - 1;
+              ColumnVector x(n);
+
+              for (F77_INT i = 0; i < n; i++)
+                x(i) = *ip2++;
+
+              ColumnVector y = fun (x, err);
+
+              if (err)
+                return false;
+
+              ip2 = workd + iptr(1) - 1;
+              for (F77_INT i = 0; i < n; i++)
+                *ip2++ = y(i);
+            }
         }
       else
         {
@@ -1408,7 +1530,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
       for (F77_INT i = ip(4); i < k; i++)
         d[i] = octave::numeric_limits<double>::NaN ();
       F77_INT k2 = ip(4) / 2;
-      if (typ != "SM" && typ != "BE")
+      if (mode == 3 || (mode == 1 && typ != "SM" && typ != "BE"))
         {
           for (F77_INT i = 0; i < k2; i++)
             {
@@ -1426,7 +1548,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
               for (F77_INT j = 0; j < n; j++)
                 z[off1 + j] = octave::numeric_limits<double>::NaN ();
             }
-          if (typ != "SM" && typ != "BE")
+          if (mode == 3 || (mode == 1 && typ != "SM" && typ != "BE"))
             {
               OCTAVE_LOCAL_BUFFER (double, dtmp, n);
 
@@ -1448,7 +1570,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                     z[off2 + j] = dtmp[j];
                 }
             }
-        }
+          if (note3)
+            eig_vec = utsolve (bt, permB, eig_vec);
+         }
     }
   else
     (*current_liboctave_error_handler) ("eigs: error %d in dseupd", info2);
@@ -2179,24 +2303,30 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   return ip(4);
 }
 
+template <typename M>
 octave_idx_type
 EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                           const std::string& _typ, double sigmar,
                           octave_idx_type k_arg, octave_idx_type p_arg,
                           octave_idx_type& info, ComplexMatrix& eig_vec,
-                          ComplexColumnVector& eig_val, ColumnVector& resid,
+                          ComplexColumnVector& eig_val, const M& _b,
+                          ColumnVector& permB, ColumnVector& resid,
                           std::ostream& os, double tol, bool rvec,
-                          bool /* cholB */, int disp, int maxit)
+                          bool cholB, int disp, int maxit)
 {
   F77_INT n = octave::to_f77_int (n_arg);
   F77_INT k = octave::to_f77_int (k_arg);
   F77_INT p = octave::to_f77_int (p_arg);
+  M b(_b);
   std::string typ (_typ);
   bool have_sigma = (sigmar ? true : false);
-  char bmat = 'I';
   double sigmai = 0.;
   F77_INT mode = 1;
+  bool have_b = ! b.isempty ();
+  bool note3 = false;
+  char bmat = 'I';
   int err = 0;
+  M bt;
 
   if (resid.isempty ())
     {
@@ -2232,6 +2362,23 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than or equal to n");
 
+  if (have_b && cholB && ! permB.isempty ())
+    {
+      // Check the we really have a permutation vector
+      if (permB.numel () != n)
+        (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+      Array<bool> checked (dim_vector (n, 1), false);
+      for (F77_INT i = 0; i < n; i++)
+        {
+          octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
+
+          if (checked(bidx) || bidx < 0 || bidx >= n
+              || octave::math::x_nint (bidx) != bidx)
+            (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+        }
+    }
+
   if (! have_sigma)
     {
       if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
@@ -2243,19 +2390,53 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         (*current_liboctave_error_handler)
           ("eigs: invalid sigma value for unsymmetric problem");
 
+      if (typ != "SM" && have_b)
+        note3 = true;
+
       if (typ == "SM")
         {
           typ = "LM";
           sigmar = 0.;
           mode = 3;
+          if (have_b)
+            bmat = 'G';
         }
-    }
+   }
   else if (! std::abs (sigmar))
-    typ = "SM";
+    {
+      typ = "SM";
+      if (have_b)
+        bmat = 'G';
+    }
   else
     {
       typ = "LM";
       mode = 3;
+      if (have_b)
+        bmat = 'G';
+    }
+
+  if (mode == 1 && have_b)
+    {
+      // See Note 3 dsaupd
+      note3 = true;
+      if (cholB)
+        {
+          bt = b;
+          b = b.transpose ();
+          if (permB.isempty ())
+            {
+              permB = ColumnVector (n);
+              for (F77_INT i = 0; i < n; i++)
+                permB(i) = i;
+            }
+        }
+      else
+        {
+          if (! make_cholb (b, bt, permB))
+            (*current_liboctave_error_handler)
+              ("eigs: The matrix B is not positive definite");
+        }
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
@@ -2334,20 +2515,85 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
 
       if (ido == -1 || ido == 1 || ido == 2)
         {
-          double *ip2 = workd + iptr(0) - 1;
-          ColumnVector x(n);
+          if (have_b)
+            {
+              if (mode == 1) // regular mode with factorized B
+                {
+                  Matrix mtmp (n,1);
+                  for (F77_INT i = 0; i < n; i++)
+                    mtmp(i,0) = workd[i + iptr(0) - 1];
 
-          for (F77_INT i = 0; i < n; i++)
-            x(i) = *ip2++;
+                  mtmp = utsolve (bt, permB, mtmp);
+                  ColumnVector y = fun (mtmp, err);
 
-          ColumnVector y = fun (x, err);
+                  if (err)
+                    return false;
 
-          if (err)
-            return false;
+                  mtmp = ltsolve (b, permB, y);
 
-          ip2 = workd + iptr(1) - 1;
-          for (F77_INT i = 0; i < n; i++)
-            *ip2++ = y(i);
+                  for (F77_INT i = 0; i < n; i++)
+                    workd[i+iptr(1)-1] = mtmp(i,0);
+                }
+              else // shift-invert mode
+                {
+                  if (ido == -1)
+                    {
+                      OCTAVE_LOCAL_BUFFER (double, dtmp, n);
+
+                      vector_product (b, workd+iptr(0)-1, dtmp);
+
+                      ColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = dtmp[i];
+
+                      ColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      double *ip2 = workd + iptr(1) - 1;
+                      for (F77_INT i = 0; i < n; i++)
+                        ip2[i] = y(i);
+                    }
+                  else if (ido == 2)
+                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                  else
+                    {
+                      double *ip2 = workd+iptr(2)-1;
+                      ColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = *ip2++;
+
+                      ColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      ip2 = workd + iptr(1) - 1;
+                      for (F77_INT i = 0; i < n; i++)
+                        *ip2++ = y(i);
+                     }
+                }
+            }
+          else
+            {
+              double *ip2 = workd + iptr(0) - 1;
+              ColumnVector x(n);
+
+              for (F77_INT i = 0; i < n; i++)
+                x(i) = *ip2++;
+
+              ColumnVector y = fun (x, err);
+
+              if (err)
+                return false;
+
+              ip2 = workd + iptr(1) - 1;
+              for (F77_INT i = 0; i < n; i++)
+                *ip2++ = y(i);
+            }
         }
       else
         {
@@ -2485,6 +2731,8 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
                   eig_vec(jj,ii) =
                     Complex (octave::numeric_limits<double>::NaN (), 0.);
             }
+          if (note3)
+              eig_vec = utsolve (bt, permB, eig_vec);
         }
       if (k0 < k)
         {
@@ -3119,24 +3367,29 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   return ip(4);
 }
 
+template <typename M>
 octave_idx_type
 EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
                              const std::string& _typ, Complex sigma,
                              octave_idx_type k_arg, octave_idx_type p_arg,
                              octave_idx_type& info, ComplexMatrix& eig_vec,
-                             ComplexColumnVector& eig_val,
-                             ComplexColumnVector& cresid, std::ostream& os,
-                             double tol, bool rvec, bool /* cholB */,
-                             int disp, int maxit)
+                             ComplexColumnVector& eig_val, const M& _b,
+                             ColumnVector& permB, ComplexColumnVector& cresid,
+                             std::ostream& os, double tol, bool rvec,
+                             bool cholB, int disp, int maxit)
 {
   F77_INT n = octave::to_f77_int (n_arg);
   F77_INT k = octave::to_f77_int (k_arg);
   F77_INT p = octave::to_f77_int (p_arg);
+  M b(_b);
   std::string typ (_typ);
   bool have_sigma = (std::abs (sigma) ? true : false);
-  char bmat = 'I';
   F77_INT mode = 1;
+  bool have_b = ! b.isempty ();
+  bool note3 = false;
+  char bmat = 'I';
   int err = 0;
+  M bt;
 
   if (cresid.isempty ())
     {
@@ -3176,6 +3429,23 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
     (*current_liboctave_error_handler)
       ("eigs: opts.p must be greater than k and less than or equal to n");
 
+  if (have_b && cholB && ! permB.isempty ())
+    {
+      // Check the we really have a permutation vector
+      if (permB.numel () != n)
+        (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+
+      Array<bool> checked (dim_vector (n, 1), false);
+      for (F77_INT i = 0; i < n; i++)
+        {
+          octave_idx_type bidx = static_cast<octave_idx_type> (permB(i));
+
+          if (checked(bidx) || bidx < 0 || bidx >= n
+              || octave::math::x_nint (bidx) != bidx)
+            (*current_liboctave_error_handler) ("eigs: permB vector invalid");
+        }
+    }
+
   if (! have_sigma)
     {
       if (typ != "LM" && typ != "SM" && typ != "LA" && typ != "SA"
@@ -3187,19 +3457,53 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         (*current_liboctave_error_handler)
           ("eigs: invalid sigma value for complex problem");
 
+      if (typ != "SM" && have_b)
+        note3 = true;
+
       if (typ == "SM")
         {
           typ = "LM";
           sigma = 0.;
           mode = 3;
+          if (have_b)
+            bmat ='G';
         }
     }
   else if (! std::abs (sigma))
-    typ = "SM";
+    {
+      typ = "SM";
+      if (have_b)
+        bmat = 'G';
+    }
   else
     {
       typ = "LM";
       mode = 3;
+      if (have_b)
+        bmat = 'G';
+    }
+
+  if (mode == 1 && have_b)
+    {
+      // See Note 3 dsaupd
+      note3 = true;
+      if (cholB)
+        {
+          bt = b;
+          b = b.hermitian ();
+          if (permB.isempty ())
+            {
+              permB = ColumnVector (n);
+              for (F77_INT i = 0; i < n; i++)
+                permB(i) = i;
+            }
+        }
+      else
+        {
+          if (! make_cholb (b, bt, permB))
+            (*current_liboctave_error_handler)
+              ("eigs: The matrix B is not positive definite");
+        }
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
@@ -3276,20 +3580,85 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
 
       if (ido == -1 || ido == 1 || ido == 2)
         {
-          Complex *ip2 = workd + iptr(0) - 1;
-          ComplexColumnVector x(n);
+          if (have_b)
+            {
+              if (mode == 1) // regular mode with factorized B
+                {
+                  ComplexMatrix mtmp (n,1);
+                  for (F77_INT i = 0; i < n; i++)
+                    mtmp(i,0) = workd[i + iptr(0) - 1];
 
-          for (F77_INT i = 0; i < n; i++)
-            x(i) = *ip2++;
+                  mtmp = utsolve (bt, permB, mtmp);
+                  ComplexColumnVector y = fun (mtmp, err);
 
-          ComplexColumnVector y = fun (x, err);
+                  if (err)
+                    return false;
 
-          if (err)
-            return false;
+                  mtmp = ltsolve (b, permB, y);
 
-          ip2 = workd + iptr(1) - 1;
-          for (F77_INT i = 0; i < n; i++)
-            *ip2++ = y(i);
+                  for (F77_INT i = 0; i < n; i++)
+                    workd[i+iptr(1)-1] = mtmp(i,0);
+                }
+              else // shift-invert mode
+                {
+                  if (ido == -1)
+                    {
+                      OCTAVE_LOCAL_BUFFER (Complex, ctmp, n);
+
+                      vector_product (b, workd+iptr(0)-1, ctmp);
+
+                      ComplexColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = ctmp[i];
+
+                      ComplexColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      Complex *ip2 = workd+iptr(1)-1;
+                      for (F77_INT i = 0; i < n; i++)
+                        ip2[i] = y(i);
+                    }
+                  else if (ido == 2)
+                    vector_product (b, workd+iptr(0)-1, workd+iptr(1)-1);
+                  else
+                    {
+                      Complex *ip2 = workd+iptr(2)-1;
+                      ComplexColumnVector x(n);
+
+                      for (F77_INT i = 0; i < n; i++)
+                        x(i) = *ip2++;
+
+                      ComplexColumnVector y = fun (x, err);
+
+                      if (err)
+                        return false;
+
+                      ip2 = workd + iptr(1) - 1;
+                      for (F77_INT i = 0; i < n; i++)
+                        *ip2++ = y(i);
+                    }
+                }
+            }
+          else
+            {
+              Complex *ip2 = workd + iptr(0) - 1;
+              ComplexColumnVector x(n);
+
+              for (F77_INT i = 0; i < n; i++)
+                x(i) = *ip2++;
+
+              ComplexColumnVector y = fun (x, err);
+
+              if (err)
+                return false;
+
+              ip2 = workd + iptr(1) - 1;
+              for (F77_INT i = 0; i < n; i++)
+                *ip2++ = y(i);
+            }
         }
       else
         {
@@ -3377,6 +3746,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
               for (F77_INT j = 0; j < n; j++)
                 z[off2 + j] = ctmp[j];
             }
+          if (note3)
+            eig_vec = utsolve (bt, permB, eig_vec);
         }
     }
   else
@@ -3409,6 +3780,15 @@ EigsRealSymmetricMatrixShift<Matrix>
 
 template
 octave_idx_type
+EigsRealSymmetricFunc<Matrix>
+(EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigma,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   Matrix& eig_vec, ColumnVector& eig_val, const Matrix& _b,
+   ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
+   bool rvec, bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
 EigsRealNonSymmetricMatrix<Matrix>
   (const Matrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -3424,6 +3804,15 @@ EigsRealNonSymmetricMatrixShift<Matrix>
    ComplexColumnVector& eig_val, const Matrix& _b, ColumnVector& permB,
    ColumnVector& resid, std::ostream& os, double tol, bool rvec,
    bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
+EigsRealNonSymmetricFunc<Matrix>
+(EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigmar,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   ComplexMatrix& eig_vec, ComplexColumnVector& eig_val, const Matrix& _b,
+   ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
+   bool rvec, bool cholB, int disp, int maxit);
 
 // SparseMatrix
 
@@ -3447,6 +3836,15 @@ EigsRealSymmetricMatrixShift<SparseMatrix>
 
 template
 octave_idx_type
+EigsRealSymmetricFunc<SparseMatrix>
+(EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigma,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   Matrix& eig_vec, ColumnVector& eig_val, const SparseMatrix& _b,
+   ColumnVector& permB, ColumnVector& resid, std::ostream& os, double tol,
+   bool rvec, bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
 EigsRealNonSymmetricMatrix<SparseMatrix>
   (const SparseMatrix& m, const std::string typ, octave_idx_type k,
    octave_idx_type p, octave_idx_type& info, ComplexMatrix& eig_vec,
@@ -3462,6 +3860,15 @@ EigsRealNonSymmetricMatrixShift<SparseMatrix>
    ComplexColumnVector& eig_val, const SparseMatrix& _b, ColumnVector& permB,
    ColumnVector& resid, std::ostream& os, double tol, bool rvec,
    bool cholB, int disp, int maxit);
+
+template
+octave_idx_type
+EigsRealNonSymmetricFunc<SparseMatrix>
+(EigsFunc fun, octave_idx_type n, const std::string& _typ, double sigmar,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
+   const SparseMatrix& _b, ColumnVector& permB, ColumnVector& resid,
+   std::ostream& os, double tol, bool rvec, bool cholB, int disp, int maxit);
 
 // ComplexMatrix
 
@@ -3483,6 +3890,15 @@ EigsComplexNonSymmetricMatrixShift<ComplexMatrix>
    ComplexColumnVector& cresid, std::ostream& os, double tol,
    bool rvec, bool cholB, int disp, int maxit);
 
+template
+octave_idx_type
+EigsComplexNonSymmetricFunc<ComplexMatrix>
+(EigsComplexFunc fun, octave_idx_type n, const std::string& _typ, Complex sigma,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
+   const ComplexMatrix& _b, ColumnVector& permB, ComplexColumnVector& cresid,
+   std::ostream& os, double tol, bool rvec, bool cholB, int disp, int maxit);
+
 // SparseComplexMatrix
 
 template
@@ -3503,4 +3919,13 @@ EigsComplexNonSymmetricMatrixShift<SparseComplexMatrix>
    ColumnVector& permB, ComplexColumnVector& cresid, std::ostream& os,
    double tol, bool rvec, bool cholB, int disp, int maxit);
 
+template
+octave_idx_type
+EigsComplexNonSymmetricFunc<SparseComplexMatrix>
+(EigsComplexFunc fun, octave_idx_type n, const std::string& _typ, Complex sigma,
+   octave_idx_type k, octave_idx_type p, octave_idx_type& info,
+   ComplexMatrix& eig_vec, ComplexColumnVector& eig_val,
+   const SparseComplexMatrix& _b, ColumnVector& permB,
+   ComplexColumnVector& cresid, std::ostream& os, double tol, bool rvec,
+   bool cholB, int disp, int maxit);
 #endif

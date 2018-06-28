@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
+#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 
 namespace octave
@@ -66,6 +67,40 @@ namespace octave
 #endif
 
       return octave_chdir_wrapper (path.c_str ());
+    }
+
+    std::wstring
+    u8_to_wstring (const std::string& utf8_string)
+    {
+      wchar_t *wchar = nullptr;
+
+      wchar = u8_to_wchar (utf8_string.c_str ());
+
+      std::wstring retval = L"";
+      if (wchar != nullptr)
+        {
+          retval = std::wstring (wchar);
+          free (static_cast<void *> (wchar));
+        }
+
+      return retval;
+    }
+
+    std::string
+    u8_from_wstring (const std::wstring& wchar_string)
+    {
+      char *mbchar = nullptr;
+
+      mbchar = u8_from_wchar (wchar_string.c_str ());
+
+      std::string retval = "";
+      if (mbchar != nullptr)
+        {
+          retval = std::string (mbchar);
+          free (static_cast<void *> (mbchar));
+        }
+
+      return retval;
     }
   }
 }

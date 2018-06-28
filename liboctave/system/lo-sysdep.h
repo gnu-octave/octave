@@ -40,6 +40,10 @@ namespace octave
     extern std::string getcwd (void);
 
     extern int chdir (const std::string&);
+
+    extern std::wstring u8_to_wstring (const std::string&);
+
+    extern std::string u8_from_wstring (const std::wstring&);
   }
 }
 

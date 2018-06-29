@@ -1116,7 +1116,7 @@ namespace octave
       {
         // Write gl2ps output directly to file.
 
-        fp = std::fopen (stream.c_str (), "w");
+        fp = octave::sys::fopen (stream.c_str (), "w");
 
         if (! fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());

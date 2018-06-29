@@ -98,7 +98,7 @@ namespace octave
     CFile (void) = delete;
 
     CFile (const std::string& path, const std::string& mode)
-      : m_fp (std::fopen (path.c_str (), mode.c_str ()))
+      : m_fp (octave::sys::fopen (path, mode))
     {
       if (! m_fp)
         throw std::runtime_error ("unable to open file");

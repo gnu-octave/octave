@@ -64,6 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
+#include "lo-sysdep.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "ov-classdef.h"
@@ -4506,7 +4507,7 @@ namespace octave
     FILE *ffile = nullptr;
 
     if (! full_file.empty ())
-      ffile = std::fopen (full_file.c_str (), "rb");
+      ffile = octave::sys::fopen (full_file, "rb");
 
     if (ffile)
       {

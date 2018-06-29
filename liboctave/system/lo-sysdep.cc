@@ -140,6 +140,17 @@ namespace octave
       return true;
     }
 
+    std::FILE *
+    fopen (const std::string& filename, const std::string& mode)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+      return _wfopen (u8_to_wstring (filename).c_str (),
+                      u8_to_wstring (mode).c_str ());
+#else
+      return std::fopen (filename.c_str (), mode.c_str ());
+#endif
+    }
+
     std::wstring
     u8_to_wstring (const std::string& utf8_string)
     {
@@ -173,5 +184,6 @@ namespace octave
 
       return retval;
     }
+
   }
 }

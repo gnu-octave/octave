@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "gen-tempname-wrapper.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "oct-passwd.h"
@@ -548,12 +549,10 @@ namespace octave
 
       int status = 0;
 
-      dir_entry dir (name);
+      string_vector dirlist;
 
-      if (dir)
+      if (get_dirlist (name, dirlist, msg))
         {
-          string_vector dirlist = dir.read ();
-
           for (octave_idx_type i = 0; i < dirlist.numel (); i++)
             {
               octave_quit ();
@@ -594,17 +593,10 @@ namespace octave
             }
 
           if (status >= 0)
-            {
-              dir.close ();
-              status = rmdir (name, msg);
-            }
+            status = rmdir (name, msg);
         }
       else
-        {
-          status = -1;
-
-          msg = dir.error ();
-        }
+        status = -1;
 
       return status;
     }

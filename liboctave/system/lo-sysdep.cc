@@ -26,11 +26,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include "dir-ops.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#  include <wchar.h>
+#endif
 
 namespace octave
 {
@@ -67,6 +73,71 @@ namespace octave
 #endif
 
       return octave_chdir_wrapper (path.c_str ());
+    }
+
+    bool
+    get_dirlist (const std::string& dirname, string_vector& dirlist, std::string& msg)
+    {
+      dirlist = "";
+      msg = "";
+#if defined (OCTAVE_USE_WINDOWS_API)
+      _WIN32_FIND_DATAW ffd;
+
+      std::string path_name (dirname);
+      if (path_name.empty ())
+        return true;
+
+      if (path_name.back () == '\\' || path_name.back () == '/')
+        path_name.push_back ('*');
+      else
+        path_name.append (R"(\*)");
+
+      // Find first file in directory.
+      HANDLE hFind = FindFirstFileW (u8_to_wstring (path_name).c_str (),
+                              &ffd);
+      if (INVALID_HANDLE_VALUE == hFind) 
+        {
+          DWORD errCode = GetLastError ();
+          char *errorText;
+          FormatMessageA (FORMAT_MESSAGE_FROM_SYSTEM |
+                         FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                         FORMAT_MESSAGE_IGNORE_INSERTS,
+                         NULL, errCode,
+                         MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                         errorText, 0, NULL);
+          if (errorText != NULL)
+            {
+              msg = std::string (errorText);
+              LocalFree (errorText);
+            }
+          return false;
+        }
+
+      std::list<std::string> dirlist_str;
+      do
+        dirlist_str.push_back (u8_from_wstring (ffd.cFileName));
+      while (FindNextFileW (hFind, &ffd) != 0);
+
+      FindClose(hFind);
+
+      dirlist = string_vector (dirlist_str);
+
+#else
+
+      dir_entry dir (dirname);
+
+      if (! dir)
+        {
+          msg = dir.error ();
+          return false;
+        }
+
+      dirlist = dir.read ();
+
+      dir.close ();
+#endif
+
+      return true;
     }
 
     std::wstring

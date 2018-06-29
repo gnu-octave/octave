@@ -187,16 +187,16 @@ error message.
 
   dirname = octave::sys::file_ops::tilde_expand (dirname);
 
-  octave::sys::dir_entry dir (dirname);
+  string_vector dirlist;
+  std::string msg;
 
-  if (dir)
+  if (octave::sys::get_dirlist (dirname, dirlist, msg))
     {
-      string_vector dirlist = dir.read ();
       retval(0) = Cell (dirlist.sort ());
       retval(1) = 0.0;
     }
   else
-    retval(2) = dir.error ();
+    retval(2) = msg;
 
   return retval;
 }

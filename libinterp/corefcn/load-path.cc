@@ -42,6 +42,7 @@
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
+#include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
 
@@ -1074,12 +1075,13 @@ namespace octave
   {
     load_path::dir_info::fcn_file_map_type retval;
 
-    sys::dir_entry dir (d);
+    string_vector flist;
+    std::string msg;
 
-    if (dir)
+    if (! octave::sys::get_dirlist (d, flist, msg))
+      warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
+    else
       {
-        string_vector flist = dir.read ();
-
         octave_idx_type len = flist.numel ();
 
         for (octave_idx_type i = 0; i < len; i++)
@@ -1117,11 +1119,6 @@ namespace octave
                   }
               }
           }
-      }
-    else
-      {
-        std::string msg = dir.error ();
-        warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
       }
 
     return retval;
@@ -2151,42 +2148,42 @@ namespace octave
   genpath (const std::string& dirname, const string_vector& skip)
   {
     std::string retval;
+  string_vector dirlist;
+  std::string msg;
 
-    sys::dir_entry dir (dirname);
+  if (! sys::get_dirlist (dirname, dirlist, msg))
+    return retval;
 
-    if (dir)
-      {
-        retval = dirname;
+  retval = dirname;
 
-        string_vector dirlist = dir.read ().sort (false);
+  dirlist = dirlist.sort (false);
 
-        octave_idx_type len = dirlist.numel ();
+  octave_idx_type len = dirlist.numel ();
 
-        for (octave_idx_type i = 0; i < len; i++)
-          {
-            std::string elt = dirlist[i];
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      std::string elt = dirlist[i];
 
-            bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
-                           || elt[0] == '+');
+      bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
+                     || elt[0] == '+');
+
+      if (! skip_p)
+        {
+          for (octave_idx_type j = 0; j < skip.numel (); j++)
+            {
+              skip_p = (elt == skip[j]);
+              if (skip_p)
+                break;
+            }
 
             if (! skip_p)
               {
-                for (octave_idx_type j = 0; j < skip.numel (); j++)
-                  {
-                    skip_p = (elt == skip[j]);
-                    if (skip_p)
-                      break;
-                  }
+                std::string nm = sys::file_ops::concat (dirname, elt);
 
-                if (! skip_p)
-                  {
-                    std::string nm = sys::file_ops::concat (dirname, elt);
+                sys::file_stat fs (nm);
 
-                    sys::file_stat fs (nm);
-
-                    if (fs && fs.is_dir ())
-                      retval += directory_path::path_sep_str () + genpath (nm, skip);
-                  }
+                if (fs && fs.is_dir ())
+                  retval += directory_path::path_sep_str () + genpath (nm, skip);
               }
           }
       }

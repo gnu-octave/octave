@@ -41,6 +41,9 @@ namespace octave
 
     extern int chdir (const std::string&);
 
+    extern bool get_dirlist (const std::string& dirname, string_vector& dirlist,
+                             std::string& msg);
+
     extern std::wstring u8_to_wstring (const std::string&);
 
     extern std::string u8_from_wstring (const std::wstring&);

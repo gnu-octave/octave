@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
@@ -169,62 +170,59 @@ namespace octave
 
         frame.add_fcn (reset_path, this);
 
-        sys::dir_entry dirlist (realdir);
+        string_vector files;
+        std::string msg;
 
-        if (dirlist)
-          {
-            string_vector files = dirlist.read ();
+        if (sys::get_dirlist (realdir, files, msg))
+          for (octave_idx_type i = 0; i < files.numel (); i++)
+            {
+              std::string file = files (i);
 
-            for (octave_idx_type i = 0; i < files.numel (); i++)
-              {
-                std::string file = files (i);
+              if (file == "." || file == "..")
+                continue;
 
-                if (file == "." || file == "..")
-                  continue;
+              std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
+              sys::file_stat fs (realfile);
 
-                std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
-                sys::file_stat fs (realfile);
+              if (! fs.exists ())
+                {
+                  ok = false;
+                  errmsg = "__ftp__mput: file '" + realfile
+                           + "' does not exist";
+                  break;
+                }
 
-                if (! fs.exists ())
-                  {
-                    ok = false;
-                    errmsg = "__ftp__mput: file '" + realfile
-                             + "' does not exist";
+              if (fs.is_dir ())
+                {
+                  file_list.append (mput_directory (realdir, file));
+
+                  if (! good ())
                     break;
-                  }
+                }
+              else
+                {
+                  // FIXME: Does ascii mode need to be flagged here?
+                  std::ifstream ifile (realfile.c_str (),
+                                       std::ios::in | std::ios::binary);
 
-                if (fs.is_dir ())
-                  {
-                    file_list.append (mput_directory (realdir, file));
-
-                    if (! good ())
+                  if (! ifile.is_open ())
+                    {
+                      ok = false;
+                      errmsg = "__ftp_mput__: unable to open file '"
+                               + realfile + "'";
                       break;
-                  }
-                else
-                  {
-                    // FIXME: Does ascii mode need to be flagged here?
-                    std::ifstream ifile (realfile.c_str (), std::ios::in |
-                                         std::ios::binary);
+                    }
 
-                    if (! ifile.is_open ())
-                      {
-                        ok = false;
-                        errmsg = "__ftp_mput__: unable to open file '"
-                                 + realfile + "'";
-                        break;
-                      }
+                  put (file, ifile);
 
-                    put (file, ifile);
+                  ifile.close ();
 
-                    ifile.close ();
+                  if (! good ())
+                    break;
 
-                    if (! good ())
-                      break;
-
-                    file_list.append (realfile);
-                  }
-              }
-          }
+                  file_list.append (realfile);
+                }
+            }
         else
           {
             ok = false;

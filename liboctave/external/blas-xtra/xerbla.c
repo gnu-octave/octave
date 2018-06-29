@@ -59,9 +59,9 @@ F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DEF (s_arg, len),
                            F77_CHAR_ARG_LEN_DEF (len))
 {
   const char *s = F77_CHAR_ARG_USE (s_arg);
-  size_t slen = F77_CHAR_ARG_LEN_USE (s_arg, len);
+  int slen = F77_CHAR_ARG_LEN_USE (s_arg, len);
 
-  fprintf (stderr, "%.*s: parameter number %ld is invalid\n", slen, s,
+  fprintf (stderr, "%.*s: parameter number %d is invalid\n", slen, s,
            (long) (*info));
 
    if (xerbla_handler)

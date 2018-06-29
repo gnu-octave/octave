@@ -117,6 +117,9 @@ namespace octave
     // clear scintilla edit shortcuts that are handled by the editor
     QsciCommandSet *cmd_set = standardCommands ();
 
+    // Disable buffered drawing on all systems
+    SendScintilla (SCI_SETBUFFEREDDRAW, false);
+
 #if defined (HAVE_QSCI_VERSION_2_6_0)
     // find () was added in QScintilla 2.6
     cmd_set->find (QsciCommand::SelectionCopy)->setKey (0);

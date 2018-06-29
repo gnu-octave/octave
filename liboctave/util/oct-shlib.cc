@@ -62,6 +62,10 @@ extern int dlclose (void *);
 #include "oct-shlib.h"
 #include "str-vec.h"
 
+#if defined (HAVE_LOADLIBRARY_API)
+#  include "lo-sysdep.h"
+#endif
+
 namespace octave
 {
   dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
@@ -371,7 +375,8 @@ namespace octave
   static void
   set_dll_directory (const std::string& dir = "")
   {
-    SetDllDirectory (dir.empty () ? nullptr : dir.c_str ());
+    SetDllDirectoryW (dir.empty () ? nullptr
+                                   : sys::u8_to_wstring (dir).c_str ());
   }
 
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
@@ -387,7 +392,7 @@ namespace octave
 
     set_dll_directory (dir);
 
-    handle = LoadLibrary (file.c_str ());
+    handle = LoadLibraryW (sys::u8_to_wstring (file).c_str ());
 
     set_dll_directory ();
 

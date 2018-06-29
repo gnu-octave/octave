@@ -296,6 +296,9 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
   ## Track file descriptor leaks
   __fid_list_orig = fopen ("all"); 
 
+  ## Track variable leaks
+  __variables_orig = evalin ("base", "whos");
+
   ## Assume all tests will pass.
   __all_success = true;
 
@@ -738,6 +741,14 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
   ## Verify test file did not leak file descriptors
   if (! isempty (setdiff (fopen ("all"), __fid_list_orig)))
     warning ("test: file %s leaked file descriptors\n", __file);
+  endif
+
+  ## Verify test file did not leak variables in to base workspace
+  __variables_post = evalin ("base", "whos");
+  if (! size_equal (__variables_post, __variables_orig))
+    __leaked_var = setdiff ({__variables_post.name},  {__variables_orig.name});
+    warning ("test: file %s leaked variables:%s\n",
+             __file, sprintf (" %s", __leaked_var{:}));
   endif
 
   if (nargout == 0)

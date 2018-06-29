@@ -293,6 +293,9 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
     disp ([__signal_file, __file]);
   endif
 
+  ## Track file descriptor leaks
+  __fid_list_orig = fopen ("all"); 
+
   ## Assume all tests will pass.
   __all_success = true;
 
@@ -731,6 +734,11 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
 
   ## Clear any functions created during test run
   eval (__clearfcn, "");
+
+  ## Verify test file did not leak file descriptors
+  if (! isempty (setdiff (fopen ("all"), __fid_list_orig)))
+    warning ("test: file %s leaked file descriptors\n", __file);
+  endif
 
   if (nargout == 0)
     if (__tests || __xfail || __xbug || __xskip || __xrtskip)

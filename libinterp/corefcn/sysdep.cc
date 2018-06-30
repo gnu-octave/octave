@@ -64,6 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-sysinfo.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
 #include "unsetenv-wrapper.h"
 
@@ -122,26 +123,26 @@ w32_set_octave_home (void)
 
   if (h != INVALID_HANDLE_VALUE)
     {
-      MODULEENTRY32 mod_info;
+      MODULEENTRY32W mod_info;
 
       ZeroMemory (&mod_info, sizeof (mod_info));
       mod_info.dwSize = sizeof (mod_info);
 
-      if (Module32First (h, &mod_info))
+      if (Module32FirstW (h, &mod_info))
         {
           do
             {
-              std::string mod_name (mod_info.szModule);
+              std::string mod_name (octave::sys::u8_from_wstring (mod_info.szModule));
 
               if (mod_name.find ("octinterp") != std::string::npos)
                 {
-                  bin_dir = mod_info.szExePath;
+                  bin_dir = octave::sys::u8_from_wstring (mod_info.szExePath);
                   if (! bin_dir.empty () && bin_dir.back () != '\\')
                     bin_dir.push_back ('\\');
                   break;
                 }
             }
-          while (Module32Next (h, &mod_info));
+          while (Module32NextW (h, &mod_info));
         }
 
       CloseHandle (h);
@@ -209,8 +210,9 @@ Undocumented internal function.
   octave_value retval;
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-  HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0,
-                                   SW_SHOWNORMAL);
+  HINSTANCE status = ShellExecuteW (0, 0,
+                                    octave::sys::u8_to_wstring (file).c_str (),
+                                    0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
   retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
@@ -258,11 +260,11 @@ same_file_internal (const std::string& file1, const std::string& file2)
 
   bool retval = false;
 
-  const char *f1 = file1.c_str ();
-  const char *f2 = file2.c_str ();
+  const wchar_t *f1 = octave::sys::u8_to_wstring (file1).c_str ();
+  const wchar_t *f2 = octave::sys::u8_to_wstring (file2).c_str ();
 
-  bool f1_is_dir = GetFileAttributes (f1) & FILE_ATTRIBUTE_DIRECTORY;
-  bool f2_is_dir = GetFileAttributes (f2) & FILE_ATTRIBUTE_DIRECTORY;
+  bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
+  bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;
 
   // Windows native code
   // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
@@ -270,14 +272,14 @@ same_file_internal (const std::string& file1, const std::string& file2)
   DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
 
   HANDLE hfile1
-    = CreateFile (f1, 0, share, 0, OPEN_EXISTING,
-                  f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+    = CreateFileW (f1, 0, share, 0, OPEN_EXISTING,
+                   f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
   if (hfile1 != INVALID_HANDLE_VALUE)
     {
       HANDLE hfile2
-        = CreateFile (f2, 0, share, 0, OPEN_EXISTING,
-                      f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+        = CreateFileW (f2, 0, share, 0, OPEN_EXISTING,
+                       f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
       if (hfile2 != INVALID_HANDLE_VALUE)
         {
@@ -506,15 +508,22 @@ FILE *
 octave_popen (const char *command, const char *mode)
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
-  if (mode && mode[0] && ! mode[1])
+  wchar_t *wcommand = u8_to_wchar (command);
+  wchar_t *wmode = u8_to_wchar (mode);
+
+  octave::unwind_protect frame;
+  frame.add_fcn (::free, static_cast<void *> (wcommand));
+  frame.add_fcn (::free, static_cast<void *> (wmode));
+
+  if (wmode && wmode[0] && ! wmode[1])
     {
       // Use binary mode on Windows if unspecified
-      char tmode[3] = {mode[0], 'b', '\0'};
+      wchar_t tmode[3] = {wmode[0], L'b', L'\0'};
 
-      return _popen (command, tmode);
+      return _wpopen (wcommand, tmode);
     }
   else
-    return _popen (command, mode);
+    return _wpopen (wcommand, wmode);
 #else
   return popen (command, mode);
 #endif
@@ -728,7 +737,9 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
   LONG result;
   HKEY h_subkey;
 
-  result = RegOpenKeyExA (h_rootkey, subkey.c_str (), 0, KEY_READ, &h_subkey);
+  result = RegOpenKeyExW (h_rootkey,
+                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                          KEY_READ, &h_subkey);
   if (result != ERROR_SUCCESS)
     return result;
 
@@ -737,22 +748,25 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
   frame.add_fcn (reg_close_key_wrapper, h_subkey);
 
   DWORD length = 0;
-  result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, nullptr, nullptr,
-                             &length);
+  result = RegQueryValueExW (h_subkey,
+                             octave::sys::u8_to_wstring (name).c_str (),
+                             nullptr, nullptr, nullptr, &length);
   if (result != ERROR_SUCCESS)
     return result;
 
   DWORD type = 0;
   OCTAVE_LOCAL_BUFFER (BYTE, data, length);
-  result = RegQueryValueExA (h_subkey, name.c_str (), nullptr, &type, data,
-                             &length);
+  result = RegQueryValueExW (h_subkey,
+                             octave::sys::u8_to_wstring (name).c_str (),
+                             nullptr, &type, data, &length);
   if (result != ERROR_SUCCESS)
     return result;
 
   if (type == REG_DWORD)
     value = octave_int32 (*data);
   else if (type == REG_SZ || type == REG_EXPAND_SZ)
-    value = string_vector (reinterpret_cast<char *> (data));
+    value = string_vector (octave::sys::u8_from_wstring (
+                                        reinterpret_cast<wchar_t *> (data)));
 
   return result;
 }
@@ -766,22 +780,24 @@ get_regkey_names (HKEY h_rootkey, const std::string subkey,
 
   fields.clear ();
 
-  retval = RegOpenKeyEx (h_rootkey, subkey.c_str (), 0, KEY_READ, &h_subkey);
+  retval = RegOpenKeyExW (h_rootkey,
+                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                          KEY_READ, &h_subkey);
   if (retval != ERROR_SUCCESS)
     return retval;
 
   DWORD idx = 0;
   const int MAX_VALUE_NAME_SIZE = 32766;
-  char value_name[MAX_VALUE_NAME_SIZE+1];
+  wchar_t value_name[MAX_VALUE_NAME_SIZE+1];
   DWORD value_name_size = MAX_VALUE_NAME_SIZE;
 
   while (true)
     {
-      retval = RegEnumValue (h_subkey, idx, value_name, &value_name_size,
-                             nullptr, nullptr, nullptr, nullptr);
+      retval = RegEnumValueW (h_subkey, idx, value_name, &value_name_size,
+                              nullptr, nullptr, nullptr, nullptr);
       if (retval != ERROR_SUCCESS)
         break;
-      fields.push_back (value_name);
+      fields.push_back (octave::sys::u8_from_wstring (value_name));
       value_name_size = MAX_VALUE_NAME_SIZE;
       idx++;
     }

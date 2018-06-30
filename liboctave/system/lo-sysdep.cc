@@ -154,14 +154,19 @@ namespace octave
     std::wstring
     u8_to_wstring (const std::string& utf8_string)
     {
-      wchar_t *wchar = nullptr;
+      size_t srclen = utf8_string.length ();
+      const uint8_t *src = reinterpret_cast<const uint8_t *>
+                           (utf8_string.c_str ());
 
-      wchar = u8_to_wchar (utf8_string.c_str ());
+      size_t length = 0;
+      wchar_t *wchar = reinterpret_cast<wchar_t *>
+                       (octave_u8_conv_to_encoding ("wchar_t", src, srclen,
+                                                    &length));
 
       std::wstring retval = L"";
       if (wchar != nullptr)
         {
-          retval = std::wstring (wchar);
+          retval = std::wstring (wchar, length / sizeof (wchar_t));
           free (static_cast<void *> (wchar));
         }
 
@@ -171,14 +176,18 @@ namespace octave
     std::string
     u8_from_wstring (const std::wstring& wchar_string)
     {
-      char *mbchar = nullptr;
+      size_t srclen = wchar_string.length () * sizeof (wchar_t);
+      const char *src = reinterpret_cast<const char *> (wchar_string.c_str ());
 
-      mbchar = u8_from_wchar (wchar_string.c_str ());
+      size_t length = 0;
+      char *mbchar = reinterpret_cast<char *>
+                     (octave_u8_conv_from_encoding ("wchar_t", src, srclen,
+                                                    &length));
 
       std::string retval = "";
       if (mbchar != nullptr)
         {
-          retval = std::string (mbchar);
+          retval = std::string (mbchar, length);
           free (static_cast<void *> (mbchar));
         }
 

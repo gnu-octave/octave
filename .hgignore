@@ -35,6 +35,7 @@ syntax: regexp
 ^build-aux/ylwrap$
 ^config\.in\.h$
 ^configure$
+^HG-ID$
 
 # e.g. doc/faq/OctaveFAQ.info
 #      doc/interpreter/octave.info-4
@@ -51,3 +52,7 @@ syntax: regexp
 
 # DOCSTRINGS files are built in the source tree
 ^(libinterp|scripts)/DOCSTRINGS$
+
+# Intermediate compilation results for libraries
+.*\.Plo
+.*\.Po

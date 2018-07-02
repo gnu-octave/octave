@@ -70,15 +70,18 @@ namespace octave
     // Wait for link thread to go to sleep state.
     lock ();
 
-    // Check for a matching button text while ignoring accelerators because
-    // the window manager may have added one in the passed button
-    QString text_clean = rm_amp (button->text ());
-    for (int i = 0; i < m_button_list.count (); i++)
+    if (button)   // button is NULL when dialog is closed
       {
-        if (rm_amp (m_button_list.at (i)) == text_clean)
+        // Check for a matching button text while ignoring accelerators because
+        // the window manager may have added one in the passed button
+        QString text_clean = rm_amp (button->text ());
+        for (int i = 0; i < m_button_list.count (); i++)
           {
-            m_dialog_button = m_button_list.at (i); // text w/o extra accelerator
-            break;
+            if (rm_amp (m_button_list.at (i)) == text_clean)
+              {
+                m_dialog_button = m_button_list.at (i); // text w/o extra accelerator
+                break;
+              }
           }
       }
 

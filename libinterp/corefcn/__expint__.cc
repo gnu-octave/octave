@@ -61,7 +61,7 @@ Continued fraction expansion for the exponential integral.
         x = args(0).float_complex_array_value ();
 
       // Initialize variables used in algorithm
-      static const FloatComplex tiny = pow (2, -50);
+      static const FloatComplex tiny = octave::math::exp2 (-50.0f);
       static const float eps = std::numeric_limits<float>::epsilon ();
       const FloatComplex cone (1.0, 0.0);
       const FloatComplex czero (0.0, 0.0);
@@ -95,7 +95,7 @@ Continued fraction expansion for the exponential integral.
               Dj = cone / Dj;
               Deltaj = Cj * Dj;
               y *= Deltaj;
-              alpha_j = floor ((j + 1) / 2);
+              alpha_j = (j + 1) / 2;
               if ((j % 2) == 0)
                 beta_j = xj;
               else
@@ -119,7 +119,7 @@ Continued fraction expansion for the exponential integral.
         x = args(0).complex_array_value ();
 
       // Initialize variables used in algorithm
-      static const Complex tiny = pow (2, -100);
+      static const Complex tiny = octave::math::exp2 (-100.0);
       static const double eps = std::numeric_limits<double>::epsilon ();
       const Complex cone (1.0, 0.0);
       const Complex czero (0.0, 0.0);
@@ -153,7 +153,7 @@ Continued fraction expansion for the exponential integral.
               Dj = cone / Dj;
               Deltaj = Cj * Dj;
               y *= Deltaj;
-              alpha_j = floor ((j + 1) / 2);
+              alpha_j = (j + 1) / 2;
               if ((j % 2) == 0)
                 beta_j = xj;
               else

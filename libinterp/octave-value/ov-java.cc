@@ -496,11 +496,99 @@ initial_class_path (void)
   return retval;
 }
 
+static std::string
+get_jvm_lib_path_in_subdir (std::string java_home_path)
+{
+  // This assumes that whatever architectures are installed are appropriate for
+  // this machine
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string subdirs[] = {"bin/client", "bin/server"};
+  std::string libjvm = "jvm.dll";
+#else
+  std::string subdirs[] = {"jre/lib/server", "jre/lib", "lib/client",
+    "lib/server", "jre/lib/amd64/client", "jre/lib/amd64/server",
+    "jre/lib/i386/client", "jre/lib/i386/server"};
+#  if defined (__APPLE__)
+  std::string libjvm = "libjvm.dylib";
+#  else
+  std::string libjvm = "libjvm.so";
+#  endif
+#endif
+
+  for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
+    {
+      std::string candidate = java_home_path + "/" + subdirs[i] + "/" + libjvm;
+      if (octave::sys::file_stat (candidate))
+        return candidate;
+    }
+  return "";
+}
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 // Declare function defined in sysdep.cc
 extern LONG
 get_regkey_value (HKEY h_rootkey, const std::string subkey,
                   const std::string name, octave_value& value);
+
+static std::string
+get_jvm_lib_path_from_registry ()
+{
+  // In Windows, find the location of the JRE from the registry
+  // and load the symbol from the dll.
+  std::string key, jversion, value;
+
+  // First search for JRE >= 9
+  key = R"(software\javasoft\jre)";
+
+  jversion = octave::sys::env::getenv ("JAVA_VERSION");
+  octave_value regval;
+  LONG retval;
+  if (jversion.empty ())
+    {
+      value = "CurrentVersion";
+      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+
+      if (retval != ERROR_SUCCESS)
+        {
+          // Search for JRE < 9
+          key = R"(software\javasoft\java runtime environment)";
+          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                     regval);
+        }
+
+      if (retval != ERROR_SUCCESS)
+        error ("unable to find Java Runtime Environment: %s::%s",
+               key.c_str (), value.c_str ());
+
+      jversion = regval.xstring_value (
+        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+        value.c_str (), key.c_str ());
+    }
+
+  key = key + '\\' + jversion;
+  value = "RuntimeLib";
+  retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+  if (retval != ERROR_SUCCESS)
+    {
+      // Search for JRE < 9
+      key = R"(software\javasoft\java runtime environment\)" + jversion;
+      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+    }
+
+  if (retval != ERROR_SUCCESS)
+    error ("unable to find Java Runtime Environment: %s::%s",
+           key.c_str (), value.c_str ());
+
+  std::string jvm_lib_path = regval.xstring_value (
+        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+        value.c_str (), key.c_str ());
+
+  if (jvm_lib_path.empty ())
+    error ("unable to find Java Runtime Environment: %s::%s",
+           key.c_str (), value.c_str ());
+
+  return jvm_lib_path;
+}
 #endif
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
@@ -551,68 +639,22 @@ initialize_jvm (void)
 
   if (! create_vm || ! get_vm)
     {
-#if defined (OCTAVE_USE_WINDOWS_API)
-      // In Windows, find the location of the JRE from the registry
-      // and load the symbol from the dll.
-      std::string key, jversion, value;
-
-      // First search for JRE >= 9
-      key = R"(software\javasoft\jre)";
-
-      jversion = octave::sys::env::getenv ("JAVA_VERSION");
-      octave_value regval;
-      LONG retval;
-      if (jversion.empty ())
-        {
-          value = "CurrentVersion";
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-
-          if (retval != ERROR_SUCCESS)
-            {
-              // Search for JRE < 9
-              key = R"(software\javasoft\java runtime environment)";
-              retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
-                                         regval);
-            }
-
-          if (retval != ERROR_SUCCESS)
-            error ("unable to find Java Runtime Environment: %s::%s",
-                   key.c_str (), value.c_str ());
-
-          jversion = regval.xstring_value (
-            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-            value.c_str (), key.c_str ());
-        }
-
-      key = key + '\\' + jversion;
-      value = "RuntimeLib";
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-      if (retval != ERROR_SUCCESS)
-        {
-          // Search for JRE < 9
-          key = R"(software\javasoft\java runtime environment\)" + jversion;
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-        }
-
-      if (retval != ERROR_SUCCESS)
-        error ("unable to find Java Runtime Environment: %s::%s",
-               key.c_str (), value.c_str ());
-
-      jvm_lib_path = regval.xstring_value (
-            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-            value.c_str (), key.c_str ());
+      // JAVA_HOME environment variable takes precedence
+      std::string java_home_env = octave::sys::env::getenv ("JAVA_HOME");
+      if (! java_home_env.empty ())
+        jvm_lib_path = get_jvm_lib_path_in_subdir (java_home_env);
 
       if (jvm_lib_path.empty ())
-        error ("unable to find Java Runtime Environment: %s::%s",
-               key.c_str (), value.c_str ());
+#if defined (OCTAVE_USE_WINDOWS_API)
+        jvm_lib_path = get_jvm_lib_path_from_registry ();
+#elif defined (__APPLE__)
+        // Fall back to JAVA_LDPATH determined by configure and set in config.h
+        jvm_lib_path = std::string (JAVA_LDPATH) + "/libjvm.dylib";
 #else
-      // JAVA_LDPATH determined by configure and set in config.h
-#  if defined (__APPLE__)
-      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
-#  else
-      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
-#  endif
+        // Fall back to JAVA_LDPATH determined by configure and set in config.h
+        jvm_lib_path = std::string (JAVA_LDPATH) + "/libjvm.so";
 #endif
+
       lib = octave::dynamic_library (jvm_lib_path);
 
       if (! lib)

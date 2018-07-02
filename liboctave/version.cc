@@ -46,7 +46,7 @@ std::string
 octave_www_statement (bool html)
 {
   return "Additional information about Octave is available at "
-         + format_url (html, "https://www.octave.org.");
+         + format_url (html, "https://www.octave.org") + ".";
 }
 
 std::string

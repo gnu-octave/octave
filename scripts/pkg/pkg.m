@@ -416,7 +416,7 @@ function [local_packages, global_packages] = pkg (varargin)
         else
           ## If files do not exist, maybe they are not local files.
           ## Try to download them.
-          external_files_mask = ! cellfun (@exist, files, {"file"});
+          external_files_mask = cellfun (@(x) isempty (glob (x)), files);
           if (any (external_files_mask))
             [success, msg] = mkdir (tmp_dir);
             if (success != 1)

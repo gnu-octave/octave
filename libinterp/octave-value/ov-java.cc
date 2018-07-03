@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
 #include "load-path.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
@@ -237,7 +238,7 @@ namespace octave
 
     void read_java_opts (const std::string& filename)
     {
-      std::ifstream js (filename.c_str ());
+      std::ifstream js (octave::sys::get_ASCII_filename (filename).c_str ());
 
       if (! js.bad () && ! js.fail ())
         {
@@ -358,7 +359,7 @@ read_classpath_txt (const std::string& filepath)
 {
   std::string classpath;
 
-  std::ifstream fs (filepath.c_str ());
+  std::ifstream fs (octave::sys::get_ASCII_filename (filepath).c_str ());
 
   if (! fs.bad () && ! fs.fail ())
     {

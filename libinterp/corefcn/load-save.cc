@@ -226,7 +226,8 @@ check_gzip_magic (const std::string& fname)
 {
   bool retval = false;
 
-  std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+  std::ifstream file (octave::sys::get_ASCII_filename (fname).c_str (),
+                      std::ios::in | std::ios::binary);
 
   unsigned char magic[2];
   if (file.read (reinterpret_cast<char *> (&magic[0]), 2)
@@ -326,7 +327,8 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
   if (! use_zlib)
     {
-      std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+      std::ifstream file (octave::sys::get_ASCII_filename (fname).c_str (),
+                          std::ios::in | std::ios::binary);
       if (file)
         {
           retval = get_file_format (file, orig_fname);
@@ -834,7 +836,8 @@ Force Octave to assume the file is in Octave's text format.
           else
 #endif
             {
-              std::ifstream file (fname.c_str (), mode);
+              std::ifstream file (
+                octave::sys::get_ASCII_filename (fname).c_str (), mode);
 
               if (! file)
                 error ("load: unable to open input file '%s'",

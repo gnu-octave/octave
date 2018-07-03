@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "lo-sysdep.h"
 #include "octave-preserve-stream-state.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
@@ -593,7 +594,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
     os << "dbtype: unknown function " << name << "\n";
   else
     {
-      std::ifstream fs (ff.c_str (), std::ios::in);
+      std::ifstream fs (octave::sys::get_ASCII_filename (ff).c_str (), std::ios::in);
 
       if (! fs)
         os << "dbtype: unable to open '" << ff << "' for reading!\n";

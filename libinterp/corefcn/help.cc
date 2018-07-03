@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "str-vec.h"
@@ -581,8 +582,9 @@ namespace octave
 
     if (! initialized)
       {
-        std::ifstream file (m_built_in_docstrings_file.c_str (),
-                            std::ios::in | std::ios::binary);
+        std::ifstream file (
+          octave::sys::get_ASCII_filename (m_built_in_docstrings_file).c_str (),
+          std::ios::in | std::ios::binary);
 
         if (! file)
           error ("failed to open docstrings file: %s",
@@ -664,8 +666,9 @@ namespace octave
         std::streampos beg = txt_limits.first;
         std::streamoff len = txt_limits.second;
 
-        std::ifstream file (m_built_in_docstrings_file.c_str (),
-                            std::ios::in | std::ios::binary);
+        std::ifstream file (
+          octave::sys::get_ASCII_filename (m_built_in_docstrings_file).c_str (),
+          std::ios::in | std::ios::binary);
 
         if (! file)
           error ("failed to open docstrings file: %s",

@@ -202,8 +202,9 @@ namespace octave
               else
                 {
                   // FIXME: Does ascii mode need to be flagged here?
-                  std::ifstream ifile (realfile.c_str (),
-                                       std::ios::in | std::ios::binary);
+                  std::ifstream ifile (
+                    octave::sys::get_ASCII_filename (realfile).c_str (),
+                    std::ios::in | std::ios::binary);
 
                   if (! ifile.is_open ())
                     {

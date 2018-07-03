@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-info.h"
 #include "file-stat.h"
 #include "lo-error.h"
+#include "lo-sysdep.h"
 
 namespace octave
 {
@@ -80,7 +81,8 @@ namespace octave
 
     size_t sz = fs.size ();
 
-    std::ifstream file (fname.c_str (), std::ios::in | std::ios::binary);
+    std::ifstream file (octave::sys::get_ASCII_filename (fname).c_str (),
+                        std::ios::in | std::ios::binary);
 
     if (file)
       {

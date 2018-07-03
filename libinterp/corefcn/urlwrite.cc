@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-handle.h"
 #include "glob-match.h"
@@ -637,7 +638,8 @@ Undocumented internal function
       else
         {
           // FIXME: Does ascii mode need to be flagged here?
-          std::ifstream ifile (file.c_str (), std::ios::in | std::ios::binary);
+          std::ifstream ifile (octave::sys::get_ASCII_filename (file).c_str (),
+                               std::ios::in | std::ios::binary);
 
           if (! ifile.is_open ())
             error ("__ftp_mput__: unable to open file");

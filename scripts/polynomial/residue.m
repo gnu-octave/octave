@@ -87,8 +87,8 @@
 ## polynomial specified by @var{r}, @var{p} and @var{k}, and the pole
 ## multiplicity @var{e}.
 ##
-## If the multiplicity, @var{e}, is not explicitly specified the
-## multiplicity is determined by the function @code{mpoles}.
+## If the multiplicity, @var{e}, is not explicitly specified the multiplicity
+## is determined by the function @code{mpoles}.
 ##
 ## For example:
 ##
@@ -151,7 +151,7 @@ function [r, p, k, e] = residue (b, a, varargin)
     print_usage ();
   endif
 
-  toler = .001;
+  tol = .001;
 
   if (nargin >= 3)
     if (nargin >= 4)
@@ -159,14 +159,13 @@ function [r, p, k, e] = residue (b, a, varargin)
     else
       e = [];
     endif
-    ## The inputs are the residue, pole, and direct part.  Solve for the
-    ## corresponding numerator and denominator polynomials
-    [r, p] = rresidue (b, a, varargin{1}, toler, e);
+    ## The inputs are the residue, pole, and direct part.
+    ## Solve for the corresponding numerator and denominator polynomials.
+    [r, p] = rresidue (b, a, varargin{1}, tol, e);
     return;
   endif
 
-  ## Make sure both polynomials are in reduced form.
-
+  ## Make sure both polynomials are in reduced form, and scaled.
   a = polyreduce (a);
   b = polyreduce (b);
 
@@ -177,7 +176,6 @@ function [r, p, k, e] = residue (b, a, varargin)
   lb = length (b);
 
   ## Handle special cases here.
-
   if (la == 0 || lb == 0)
     k = r = p = e = [];
     return;
@@ -188,19 +186,16 @@ function [r, p, k, e] = residue (b, a, varargin)
   endif
 
   ## Find the poles.
-
   p = roots (a);
   lp = length (p);
 
   ## Sort poles so that multiplicity loop will work.
-
-  [e, indx] = mpoles (p, toler, 1);
-  p = p(indx);
+  [e, idx] = mpoles (p, tol, 1);
+  p = p(idx);
 
   ## For each group of pole multiplicity, set the value of each
   ## pole to the average of the group.  This reduces the error in
   ## the resulting poles.
-
   p_group = cumsum (e == 1);
   for ng = 1:p_group(end)
     m = find (p_group == ng);
@@ -208,7 +203,6 @@ function [r, p, k, e] = residue (b, a, varargin)
   endfor
 
   ## Find the direct term if there is one.
-
   if (lb >= la)
     ## Also return the reduced numerator.
     [k, b] = deconv (b, a);
@@ -218,7 +212,6 @@ function [r, p, k, e] = residue (b, a, varargin)
   endif
 
   ## Determine if the poles are (effectively) zero.
-
   small = max (abs (p));
   if (isa (a, "single") || isa (b, "single"))
     small = max ([small, 1]) * eps ("single") * 1e4 * (1 + numel (p))^2;
@@ -228,36 +221,31 @@ function [r, p, k, e] = residue (b, a, varargin)
   p(abs (p) < small) = 0;
 
   ## Determine if the poles are (effectively) real, or imaginary.
+  idx = (abs (imag (p)) < small);
+  p(idx) = real (p(idx));
+  idx = (abs (real (p)) < small);
+  p(idx) = 1i * imag (p(idx));
 
-  index = (abs (imag (p)) < small);
-  p(index) = real (p(index));
-  index = (abs (real (p)) < small);
-  p(index) = 1i * imag (p(index));
-
-  ## The remainder determines the residues.  The case of one pole
-  ## is trivial.
-
+  ## The remainder determines the residues.  The case of one pole is trivial.
   if (lp == 1)
     r = polyval (b, p);
     return;
   endif
 
   ## Determine the order of the denominator and remaining numerator.
-  ## With the direct term removed the potential order of the numerator
+  ## With the direct term removed, the potential order of the numerator
   ## is one less than the order of the denominator.
-
   aorder = numel (a) - 1;
   border = aorder - 1;
 
   ## Construct a system of equations relating the individual
   ## contributions from each residue to the complete numerator.
-
   A = zeros (border+1, border+1);
   B = prepad (reshape (b, [numel(b), 1]), border+1, 0);
   for ip = 1:numel (p)
     ri = zeros (size (p));
     ri(ip) = 1;
-    A(:,ip) = prepad (rresidue (ri, p, [], toler), border+1, 0).';
+    A(:,ip) = prepad (rresidue (ri, p, [], tol), border+1, 0).';
   endfor
 
   ## Solve for the residues.
@@ -269,37 +257,20 @@ function [r, p, k, e] = residue (b, a, varargin)
 
 endfunction
 
-function [pnum, pden, e] = rresidue (r, p, k, toler, e)
+## Reconstitute the numerator and denominator polynomials
+## from the residues, poles, and direct term.
+function [pnum, pden, e] = rresidue (r, p, k = [], tol = [], e = [])
 
-  ## Reconstitute the numerator and denominator polynomials from the
-  ## residues, poles, and direct term.
-
-  if (nargin < 2 || nargin > 5)
-    print_usage ();
-  endif
-
-  if (nargin < 5)
-    e = [];
-  endif
-
-  if (nargin < 4)
-    toler = [];
-  endif
-
-  if (nargin < 3)
-    k = [];
-  endif
-
-  if (numel (e))
-    indx = 1:numel (p);
+  if (! isempty (e))
+    idx = 1:numel (p);
   else
-    [e, indx] = mpoles (p, toler, 0);
-    p = p(indx);
-    r = r(indx);
+    [e, idx] = mpoles (p, tol, 0);
+    p = p(idx);
+    r = r(idx);
   endif
 
-  indx = 1:numel (p);
-  for n = indx
+  idx = 1:numel (p);
+  for n = idx
     pn = [1, -p(n)];
     if (n == 1)
       pden = pn;
@@ -320,7 +291,7 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   K = numel (k) - 1;
   N = K + D;
   pnum = zeros (1, N+1);
-  for n = indx(abs (r) > 0)
+  for n = idx(abs (r) > 0)
     p1 = [1, -p(n)];
     pn = 1;
     for j = 1:n - 1

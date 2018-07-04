@@ -1400,7 +1400,7 @@ endfunction
 %! A = toeplitz ([0, 1, zeros(1, 8)], [0, -1, zeros(1, 8)]);
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! opts.v0 = (1:100)';
-%! opts.maxit = 5;
+%! opts.maxit = 4;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (A, 4, "lm", opts);
 %! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);
@@ -1440,7 +1440,7 @@ endfunction
 %! A = kron (A, eye (10)) + kron (eye (10), A);
 %! Afun = @(x) A * x;
 %! opts.v0 = (1:100)';
-%! opts.maxit = 5;
+%! opts.maxit = 4;
 %! warning ("off", "Octave:eigs:UnconvergedEigenvalues", "local");
 %! d = eigs (Afun, 100, 4, "lm", opts);
 %! assert (d(3:4), [NaN+1i*NaN; NaN+1i*NaN]);

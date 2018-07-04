@@ -315,7 +315,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
 #if defined (HAVE_HDF5)
   // check this before we open the file
-  if (H5Fis_hdf5 (fname.c_str ()) > 0)
+  if (H5Fis_hdf5 (octave::sys::get_ASCII_filename (fname).c_str ()) > 0)
     return LS_HDF5;
 #endif
 
@@ -1701,7 +1701,8 @@ file @file{data} in Octave's binary format.
             error ("save: appending to HDF5 files is not implemented");
 
           bool write_header_info
-            = ! (append && H5Fis_hdf5 (fname.c_str ()) > 0);
+            = ! (append && H5Fis_hdf5 (
+                 octave::sys::get_ASCII_filename (fname).c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 

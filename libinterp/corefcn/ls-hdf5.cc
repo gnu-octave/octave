@@ -89,13 +89,19 @@ hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
 {
 #if defined (HAVE_HDF5)
 
+  const char *s_name = 
+     octave::sys::get_ASCII_filename (std::string (name)).c_str ();
+
   if (mode & std::ios::in)
-    file_id = H5Fopen (name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
+    file_id = H5Fopen (s_name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
   else if (mode & std::ios::out)
     {
-      if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-        file_id = H5Fopen (name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
+      if (mode & std::ios::app && H5Fis_hdf5 (s_name) > 0)
+        file_id = H5Fopen (s_name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
       else
+        // FIXME: For Windows, create a file with an ASCII name in an
+        //        accessible folder, close the file move and rename using
+        //        wide character API and re-open.
         file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
                              octave_H5P_DEFAULT);
     }
@@ -136,13 +142,18 @@ hdf5_fstreambase::open (const char *name, int mode, int)
 
   clear ();
 
+  const char *s_name = octave::sys::get_ASCII_filename (std::string (name)).c_str ();
+
   if (mode & std::ios::in)
-    file_id = H5Fopen (name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
+    file_id = H5Fopen (s_name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
   else if (mode & std::ios::out)
     {
-      if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-        file_id = H5Fopen (name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
+      if (mode & std::ios::app && H5Fis_hdf5 (s_name) > 0)
+        file_id = H5Fopen (s_name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
       else
+        // FIXME: For Windows, create a file with an ASCII name in an
+        //        accessible folder, close the file move and rename using
+        //        wide character API and re-open.
         file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
                              octave_H5P_DEFAULT);
     }

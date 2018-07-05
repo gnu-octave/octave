@@ -64,7 +64,8 @@ err_failed_diagonalization (void)
 static void
 err_nonsquare_matrix (void)
 {
-  error ("for x^A, A must be a square matrix.  Use .^ for elementwise power.");
+  error ("for x^y, only square matrix arguments are permitted and one " \
+    "argument must be scalar.  Use .^ for elementwise power.");
 }
 
 template <typename T>

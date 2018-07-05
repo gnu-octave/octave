@@ -2795,6 +2795,319 @@ AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
   fi
 ])
 dnl
+dnl OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
+dnl
+dnl Set variables related to Fortran symbol names (append underscore,
+dnl use uppercase names, etc.) and calling convention (mostly used for
+dnl determining how character strings are passed).
+dnl
+AC_DEFUN([OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS], [
+  F77_TOLOWER=yes
+  F77_APPEND_UNDERSCORE=yes
+  F77_APPEND_EXTRA_UNDERSCORE=yes
+
+  case $ac_cv_f77_mangling in
+    "upper case") F77_TOLOWER=no ;;
+  esac
+  case $ac_cv_f77_mangling in
+    "no underscore") F77_APPEND_UNDERSCORE=no ;;
+  esac
+  case $ac_cv_f77_mangling in
+    "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=no ;;
+  esac
+
+  case $canonical_host_type in
+    i[[3456789]]86-*-*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        OCTAVE_F77_FLAG([-mieee-fp])
+      fi
+    ;;
+    alpha*-*-*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        OCTAVE_F77_FLAG([-mieee])
+      else
+        OCTAVE_F77_FLAG([-ieee])
+        OCTAVE_F77_FLAG([-fpe1])
+      fi
+    ;;
+    powerpc-apple-machten*)
+      FFLAGS=
+    ;;
+  esac
+
+  if test $ac_cv_f77_compiler_gnu = yes; then
+    FORTRAN_CALLING_CONVENTION=gfortran
+  else
+    FORTRAN_CALLING_CONVENTION=unknown
+  fi
+  AC_ARG_ENABLE([fortran-calling-convention],
+    [AS_HELP_STRING([--enable-fortran-calling-convention=OPTION],
+      [Select C++ to Fortran calling convention.  "gfortran" should be detected automatically.  Other options are "cray", "visual-fortran", or "f2c".])],
+    [FORTRAN_CALLING_CONVENTION="$enableval"], [])
+
+  case $FORTRAN_CALLING_CONVENTION in
+    gfortran)
+      AC_DEFINE(F77_USES_GFORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the gfortran calling convention.])
+    ;;
+    cray)
+      AC_DEFINE(F77_USES_CRAY_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Cray Fortran calling convention.])
+    ;;
+    visual-fortran)
+      AC_DEFINE(F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the Visual Fortran calling convention.])
+    ;;
+    f2c)
+      AC_DEFINE(F77_USES_F2C_CALLING_CONVENTION, 1, [Define to 1 if calling Fortran from C++ should use the f2c calling convention.])
+    ;;
+    *)
+      AC_MSG_ERROR([to build Octave, the C++ to Fortran calling convention must be known.])
+    ;;
+  esac
+
+  if test -n "$FFLAGS"; then
+    AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
+  fi
+
+  AC_SUBST(F77_TOLOWER)
+  AC_SUBST(F77_APPEND_UNDERSCORE)
+  AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
+])
+dnl
+dnl OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS
+dnl
+dnl Requires the following variables to already be set:
+dnl
+dnl   AR
+dnl   CFLAGS
+dnl   CXX
+dnl   CXXFLAGS
+dnl   EXEEXT
+dnl   GCC
+dnl   GREP
+dnl   GXX
+dnl   LDFLAGS
+dnl   ac_cv_f77_compiler_gnu
+dnl   ac_top_build_prefix
+dnl   canonical_host_type
+dnl   have_msvc
+dnl
+AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
+  ### Set system-dependent options for building shared libraries.
+  ### These are used by mkoctfile to create dynamically loadable
+  ### .oct and .mex files.  It would be great if we could somehow
+  ### use libtool to get this information.
+
+  CPICFLAG=-fPIC
+  CXXPICFLAG=-fPIC
+  FPICFLAG=-fPIC
+  SH_LD="${CXX}"
+  SH_LDFLAGS=-shared
+  DL_LD="${SH_LD}"
+  DL_LDFLAGS="${SH_LDFLAGS}"
+  MKOCTFILE_DL_LDFLAGS="${DL_LDFLAGS}"
+  NO_OCT_FILE_STRIP=false
+  TEMPLATE_AR="${AR}"
+  TEMPLATE_ARFLAGS="${ARFLAGS}"
+  EXTERNAL_DLL_DEFS=
+  OCTAVE_DLL_DEFS=
+  OCTINTERP_DLL_DEFS=
+  OCTGUI_DLL_DEFS=
+  OCTGRAPHICS_DLL_DEFS=
+  library_path_var=LD_LIBRARY_PATH
+  ldpreloadsep=" "
+  case $canonical_host_type in
+    *-*-386bsd* | *-*-netbsd*)
+      SH_LD=ld
+      SH_LDFLAGS=-Bshareable
+    ;;
+    *-*-openbsd*)
+      SH_LDFLAGS="-shared -fPIC"
+    ;;
+    *-*-freebsd*)
+      SH_LDFLAGS="-shared -Wl,-x"
+    ;;
+    alpha*-dec-osf*)
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
+    ;;
+    *-*-darwin*)
+      DL_LDFLAGS="-bundle -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
+      dnl Contains variables that are defined and undefined at this point, so use
+      dnl appropriate quoting to defer expansion of ${bindir} and ${version}.
+      MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+      SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
+      case $canonical_host_type in
+        powerpc-*)
+          CXXPICFLAG=
+          CPICFLAG=
+          FPICFLAG=
+        ;;
+      esac
+      NO_OCT_FILE_STRIP=true
+      library_path_var=DYLD_LIBRARY_PATH
+    ;;
+    *-*-cygwin*)
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+      SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+      ldpreloadsep=":"
+    ;;
+    *-*-mingw*)
+      if test $have_msvc = yes; then
+        DL_LDFLAGS="-shared"
+        CPICFLAG=
+        CXXPICFLAG=
+        FPICFLAG=
+        SH_LDFLAGS="-shared"
+        if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
+          DL_LDFLAGS="$DL_LDFLAGS -g"
+          SH_LDFLAGS="$SH_LDFLAGS -g"
+        fi
+        NO_OCT_FILE_STRIP=true
+        library_path_var=PATH
+        ## Extra compilation flags.
+        EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
+        OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+        OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+        OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+        OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+      else
+        CPICFLAG=
+        CXXPICFLAG=
+        FPICFLAG=
+        DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+        SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+        library_path_var=PATH
+      fi
+    ;;
+    *-*-msdosmsvc)
+      DL_LDFLAGS="-shared"
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      SH_LDFLAGS="-shared"
+      if test -n "`echo $CFLAGS | $GREP -e '-g'`" || test -n "`echo $CXXFLAGS | $GREP -e '-g'`"; then
+        DL_LDFLAGS="$DL_LDFLAGS -g"
+        SH_LDFLAGS="$SH_LDFLAGS -g"
+      fi
+      NO_OCT_FILE_STRIP=true
+      library_path_var=PATH
+      ## Extra compilation flags.
+      EXTERNAL_DLL_DEFS="-DEXTERNAL_DLL"
+      OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+      OCTGUI_DLL_DEFS="-DOCTGUI_DLL"
+      OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
+    ;;
+    *-*-linux* | *-*-gnu*)
+      MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
+    ;;
+    i[[3456]]86-*-sco3.2v5*)
+      SH_LDFLAGS=-G
+    ;;
+    rs6000-ibm-aix* | powerpc-ibm-aix*)
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+      library_path_var=LIBPATH
+    ;;
+    hppa*-hp-hpux*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        FPICFLAG=-fPIC
+      else
+        FPICFLAG=+Z
+      fi
+      SH_LDFLAGS="-shared -fPIC"
+      library_path_var=SHLIB_PATH
+    ;;
+    ia64*-hp-hpux*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        FPICFLAG=-fPIC
+      else
+        FPICFLAG=+Z
+      fi
+      SH_LDFLAGS="-shared -fPIC"
+    ;;
+    *-sgi-*)
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+    ;;
+    sparc-sun-sunos4*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        FPICFLAG=-fPIC
+      else
+        FPICFLAG=-PIC
+      fi
+      SH_LD=ld
+      SH_LDFLAGS="-assert nodefinitions"
+    ;;
+    sparc-sun-solaris2* | i386-pc-solaris2*)
+      if test $ac_cv_f77_compiler_gnu = yes; then
+        FPICFLAG=-fPIC
+      else
+        FPICFLAG=-KPIC
+      fi
+      if test "$GCC" = yes; then
+        CPICFLAG=-fPIC
+      else
+        CPICFLAG=-KPIC
+      fi
+      if test "$GXX" = yes; then
+        CXXPICFLAG=-fPIC
+        SH_LDFLAGS=-shared
+      else
+        CXXPICFLAG=-KPIC
+        SH_LDFLAGS=-G
+      fi
+      ## Template closures in archive libraries need a different mechanism.
+      if test "$GXX" != yes; then
+        TEMPLATE_AR="${CXX}"
+        TEMPLATE_ARFLAGS="-xar -o"
+      fi
+    ;;
+  esac
+
+  AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
+  AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
+  AC_MSG_NOTICE([defining CXXPICFLAG to be $CXXPICFLAG])
+  AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
+  AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
+  AC_MSG_NOTICE([defining DL_LD to be $DL_LD])
+  AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
+  AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
+  AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
+  AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
+  AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
+  AC_MSG_NOTICE([defining EXTERNAL_DLL_DEFS to be $EXTERNAL_DLL_DEFS])
+  AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
+  AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+  AC_MSG_NOTICE([defining OCTGUI_DLL_DEFS to be $OCTGUI_DLL_DEFS])
+  AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
+  AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
+  AC_SUBST(FPICFLAG)
+  AC_SUBST(CPICFLAG)
+  AC_SUBST(CXXPICFLAG)
+  AC_SUBST(SH_LD)
+  AC_SUBST(SH_LDFLAGS)
+  AC_SUBST(DL_LD)
+  AC_SUBST(DL_LDFLAGS)
+  AC_SUBST(MKOCTFILE_DL_LDFLAGS)
+  AC_SUBST(NO_OCT_FILE_STRIP)
+  AC_SUBST(TEMPLATE_AR)
+  AC_SUBST(TEMPLATE_ARFLAGS)
+  AC_SUBST(EXTERNAL_DLL_DEFS)
+  AC_SUBST(OCTAVE_DLL_DEFS)
+  AC_SUBST(OCTINTERP_DLL_DEFS)
+  AC_SUBST(OCTGUI_DLL_DEFS)
+  AC_SUBST(OCTGRAPHICS_DLL_DEFS)
+  AC_SUBST(library_path_var)
+  AC_SUBST(ldpreloadsep)
+  AM_SUBST_NOTMAKE(ldpreloadsep)
+])
+dnl
 dnl Check for ar.
 dnl
 AC_DEFUN([OCTAVE_PROG_AR], [

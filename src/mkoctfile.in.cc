@@ -151,6 +151,40 @@ initialize (void)
   vars["OCTAVE_HOME"] = Voctave_home;
   vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
 
+  vars["API_VERSION"] = %OCTAVE_API_VERSION%;
+  vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
+  vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
+  vars["EXEEXT"] = %OCTAVE_EXEEXT%;
+  vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
+  vars["VERSION"] = %OCTAVE_VERSION%;
+
+  vars["ARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_ARCHLIBDIR%);
+  vars["BINDIR"] = prepend_octave_exec_home (%OCTAVE_BINDIR%);
+  vars["DATADIR"] = prepend_octave_home (%OCTAVE_DATADIR%);
+  vars["DATAROOTDIR"] = prepend_octave_home (%OCTAVE_DATAROOTDIR%);
+  vars["FCNFILEDIR"] = prepend_octave_home (%OCTAVE_FCNFILEDIR%);
+  vars["IMAGEDIR"] = prepend_octave_home (%OCTAVE_IMAGEDIR%);
+  vars["INFODIR"] = prepend_octave_home (%OCTAVE_INFODIR%);
+  vars["INFOFILE"] = prepend_octave_home (%OCTAVE_INFOFILE%);
+  vars["LIBEXECDIR"] = prepend_octave_exec_home (%OCTAVE_LIBEXECDIR%);
+  vars["LOCALAPIARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIARCHLIBDIR%);
+  vars["LOCALAPIFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALAPIFCNFILEDIR%);
+  vars["LOCALAPIOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIOCTFILEDIR%);
+  vars["LOCALARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALARCHLIBDIR%);
+  vars["LOCALFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALFCNFILEDIR%);
+  vars["LOCALOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALOCTFILEDIR%);
+  vars["LOCALSTARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALSTARTUPFILEDIR%);
+  vars["LOCALVERARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVERARCHLIBDIR%);
+  vars["LOCALVERFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALVERFCNFILEDIR%);
+  vars["LOCALVEROCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVEROCTFILEDIR%);
+  vars["MAN1DIR"] = prepend_octave_home (%OCTAVE_MAN1DIR%);
+  vars["MANDIR"] = prepend_octave_home (%OCTAVE_MANDIR%);
+  vars["OCTDATADIR"] = prepend_octave_home (%OCTAVE_OCTDATADIR%);
+  vars["OCTDOCDIR"] = prepend_octave_home (%OCTAVE_OCTDOCDIR%);
+  vars["OCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_OCTFILEDIR%);
+  vars["OCTFONTSDIR"] = prepend_octave_home (%OCTAVE_OCTFONTSDIR%);
+  vars["STARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_STARTUPFILEDIR%);
+
   vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
 
   vars["OCTINCLUDEDIR"]
@@ -348,36 +382,81 @@ static std::string help_msg =
 "\n"
 "  -g                      Enable debugging options for compilers.\n"
 "\n"
-"  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
-"                          variables are:\n"
+"  -p VAR, --print VAR     Print configuration variable VAR.  There are\n"
+"                          three categories of variables:\n"
 "\n"
-"                            ALL_CFLAGS                  INCFLAGS\n"
-"                            ALL_CXXFLAGS                INCLUDEDIR\n"
-"                            ALL_FFLAGS                  LAPACK_LIBS\n"
-"                            ALL_LDFLAGS                 LD_CXX\n"
-"                            AR                          LDFLAGS\n"
-"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
-"                            CC                          LFLAGS\n"
-"                            CFLAGS                      LIBDIR\n"
-"                            CPICFLAG                    LIBOCTAVE\n"
-"                            CPPFLAGS                    LIBOCTINTERP\n"
-"                            CXX                         LIBS\n"
-"                            CXXFLAGS                    OCTAVE_EXEC_HOME\n"
-"                            CXXPICFLAG                  OCTAVE_HOME\n"
-"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS                OCTAVE_LINK_DEPS\n"
-"                            DL_LD                       OCTAVE_LINK_OPTS\n"
-"                            DL_LDFLAGS                  OCTINCLUDEDIR\n"
-"                            F77                         OCTLIBDIR\n"
-"                            F77_INTEGER8_FLAG           OCT_LINK_DEPS\n"
-"                            FFLAGS                      OCT_LINK_OPTS\n"
-"                            FFTW3F_LDFLAGS              RANLIB\n"
-"                            FFTW3F_LIBS                 RDYNAMIC_FLAG\n"
-"                            FFTW3_LDFLAGS               READLINE_LIBS\n"
-"                            FFTW3_LIBS                  SED\n"
-"                            FFTW_LIBS                   SPECIAL_MATH_LIB\n"
-"                            FLIBS                       XTRA_CFLAGS\n"
-"                            FPICFLAG                    XTRA_CXXFLAGS\n"
+"                          Octave configuration variables that users may\n"
+"                          override with environment variables.  These are\n"
+"                          used in commands that mkoctfile executes.\n"
+"\n"
+"                            ALL_CFLAGS                  LAPACK_LIBS\n"
+"                            ALL_CXXFLAGS                LD_CXX\n"
+"                            ALL_FFLAGS                  LDFLAGS\n"
+"                            ALL_LDFLAGS                 LD_STATIC_FLAG\n"
+"                            BLAS_LIBS                   LFLAGS\n"
+"                            CC                          LIBDIR\n"
+"                            CFLAGS                      LIBOCTAVE\n"
+"                            CPICFLAG                    LIBOCTINTERP\n"
+"                            CPPFLAGS                    OCTAVE_LINK_OPTS\n"
+"                            CXX                         OCTINCLUDEDIR\n"
+"                            CXXFLAGS                    OCTAVE_LIBS\n"
+"                            CXXPICFLAG                  OCTAVE_LINK_DEPS\n"
+"                            DL_LD                       OCTLIBDIR\n"
+"                            DL_LDFLAGS                  OCT_LINK_DEPS\n"
+"                            F77                         OCT_LINK_OPTS\n"
+"                            F77_INTEGER8_FLAG           RDYNAMIC_FLAG\n"
+"                            FFLAGS                      SPECIAL_MATH_LIB\n"
+"                            FPICFLAG                    XTRA_CFLAGS\n"
+"                            INCFLAGS                    XTRA_CXXFLAGS\n"
+"                            INCLUDEDIR\n"
+"\n"
+"                          Octave configuration variables as above, but\n"
+"                          currently unused by mkoctfile.\n"
+"\n"
+"                             AR\n"
+"                             DEPEND_EXTRA_SED_PATTERN\n"
+"                             DEPEND_FLAGS\n"
+"                             FFTW3F_LDFLAGS\n"
+"                             FFTW3F_LIBS\n"
+"                             FFTW3_LDFLAGS\n"
+"                             FFTW3_LIBS\n"
+"                             FFTW_LIBS\n"
+"                             FLIBS\n"
+"                             LIBS\n"
+"                             RANLIB\n"
+"                             READLINE_LIBS\n"
+"                             SED\n"
+"\n"
+"                          Octave configuration variables that are provided\n"
+"                          for informational purposes only.  Except for\n"
+"                          OCTAVE_HOME and OCTAVE_EXEC_HOME, users may not\n"
+"                          override these variables.\n"
+"\n"
+"                          If OCTAVE_HOME or OCTAVE_EXEC_HOME are set in\n"
+"                          the environment, then other variables are adjusted\n"
+"                          accordingly with OCTAVE_HOME or OCTAVE_EXEC_HOME\n"
+"                          substituted for the original value of the directory\n"
+"                          specified by the --prefix or --exec-prefix options\n"
+"                          that were used when Octave was configured.\n"
+"\n"
+"                            API_VERSION            LOCALFCNFILEDIR\n"
+"                            ARCHLIBDIR             LOCALOCTFILEDIR\n"
+"                            BINDIR                 LOCALSTARTUPFILEDIR\n"
+"                            CANONICAL_HOST_TYPE    LOCALVERARCHLIBDIR\n"
+"                            DATADIR                LOCALVERFCNFILEDIR\n"
+"                            DATAROOTDIR            LOCALVEROCTFILEDIR\n"
+"                            DEFAULT_PAGER          MAN1DIR\n"
+"                            EXEC_PREFIX            MAN1EXT\n"
+"                            EXEEXT                 MANDIR\n"
+"                            FCNFILEDIR             OCTAVE_EXEC_HOME\n"
+"                            IMAGEDIR               OCTAVE_HOME\n"
+"                            INFODIR                OCTDATADIR\n"
+"                            INFOFILE               OCTDOCDIR\n"
+"                            LIBEXECDIR             OCTFILEDIR\n"
+"                            LOCALAPIARCHLIBDIR     OCTFONTSDIR\n"
+"                            LOCALAPIFCNFILEDIR     STARTUPFILEDIR\n"
+"                            LOCALAPIOCTFILEDIR     VERSION\n"
+"                            LOCALARCHLIBDIR\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"

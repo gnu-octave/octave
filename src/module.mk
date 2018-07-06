@@ -184,8 +184,8 @@ OCTAVE_CROSS_TOOLS += %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT): %reldir%/$(host_triplet)-octave-config.cc
 	$(BUILD_CXX) -o %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-octave-config.cc
 
-%reldir%/$(host_triplet)-octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/$(host_triplet)-octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 src-mostlyclean-local:
 	-rm -f $(OCTAVE_CROSS_TOOLS)
@@ -196,14 +196,14 @@ src-mostlyclean-local:
 
 endif
 
-%reldir%/octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 %reldir%/mkoctfile.cc: %reldir%/mkoctfile.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-%reldir%/main.cc: %reldir%/main.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/main.cc: %reldir%/main.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 %reldir%/octave-build-info.cc: %reldir%/octave-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)

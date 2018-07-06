@@ -20,15 +20,55 @@
 
 : ${SED=@SED@}
 
+canonical_host_type="@canonical_host_type@"
+DEFAULT_PAGER="@DEFAULT_PAGER@"
+EXEEXT="@EXEEXT@"
+man1ext="@man1ext@"
+api_version="@OCTAVE_API_VERSION@"
+OCTAVE_RELEASE=""
+version="@PACKAGE_VERSION@"
+
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 
+archlibdir=`echo "@archlibdir@" | sed "s|^${exec_prefix}/||"`
 bindir=`echo "@bindir@" | sed "s|^${exec_prefix}/||"`
 libdir=`echo "@libdir@" | sed "s|^${exec_prefix}/||"`
+libexecdir=`echo "@libexecdir@" | sed "s|^${exec_prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localapioctfiledir=`echo "@localapioctfiledir@" | sed "s|^${exec_prefix}/||"`
+localarchlibdir=`echo "@localarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localoctfiledir=`echo "@localoctfiledir@" | sed "s|^${exec_prefix}/||"`
+localverarchlibdir=`echo "@localverarchlibdir@" | sed "s|^${exec_prefix}/||"`
+localveroctfiledir=`echo "@localveroctfiledir@" | sed "s|^${exec_prefix}/||"`
+octfiledir=`echo "@octfiledir@" | sed "s|^${exec_prefix}/||"`
 octlibdir=`echo "@octlibdir@" | sed "s|^${exec_prefix}/||"`
 
+datadir=`echo "@datadir@" | sed "s|^${prefix}/||"`
+datarootdir=`echo "@datarootdir@" | sed "s|^${prefix}/||"`
+doc_cache_file=`echo "@doc_cache_file@" | sed "s|^${prefix}/||"`
+exec_prefix=`echo "@exec_prefix@" | sed "s|^${prefix}/||"`
+fcnfiledir=`echo "@fcnfiledir@" | sed "s|^${prefix}/||"`
+imagedir=`echo "@imagedir@" | sed "s|^${prefix}/||"`
 includedir=`echo "@includedir@" | sed "s|^${prefix}/||"`
+infodir=`echo "@infodir@" | sed "s|^${prefix}/||"`
+infofile=`echo "@infofile@" | sed "s|^${prefix}/||"`
+localapifcnfiledir=`echo "@localapifcnfiledir@" | sed "s|^${prefix}/||"`
+localfcnfiledir=`echo "@localfcnfiledir@" | sed "s|^${prefix}/||"`
+localstartupfiledir=`echo "@localstartupfiledir@" | sed "s|^${prefix}/||"`
+localapiarchlibdir=`echo "@localapiarchlibdir@" | sed "s|^${prefix}/||"`
+localverfcnfiledir=`echo "@localverfcnfiledir@" | sed "s|^${prefix}/||"`
+man1dir=`echo "@man1dir@" | sed "s|^${prefix}/||"`
+mandir=`echo "@mandir@" | sed "s|^${prefix}/||"`
+octdatadir=`echo "@octdatadir@" | sed "s|^${prefix}/||"`
+octdocdir=`echo "@octdocdir@" | sed "s|^${prefix}/||"`
+octetcdir=`echo "@octetcdir@" | sed "s|^${prefix}/||"`
+octfontsdir=`echo "@octfontsdir@" | sed "s|^${prefix}/||"`
 octincludedir=`echo "@octincludedir@" | sed "s|^${prefix}/||"`
+octlocaledir=`echo "@octlocaledir@" | sed "s|^${prefix}/||"`
+octtestsdir=`echo "@octtestsdir@" | sed "s|^${prefix}/||"`
+startupfiledir=`echo "@startupfiledir@" | sed "s|^${prefix}/||"`
+texi_macros_file=`echo "@texi_macros_file@" | sed "s|^${prefix}/||"`
 
 srcdir="@srcdir@"
 top_srcdir="@top_srcdir@"
@@ -196,7 +236,11 @@ config_opts="@config_opts@"
 $SED \
   -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically by subst-config-vals.|" \
   -e "s|%NO_OCT_FILE_STRIP%|${NO_OCT_FILE_STRIP}|" \
+  -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
+  -e "s|%OCTAVE_ARCHLIBDIR%|\"${archlibdir}\"|" \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
+  -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
+  -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_CONF_AMD_CPPFLAGS%|\"${AMD_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_AMD_LDFLAGS%|\"${AMD_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_AMD_LIBS%|\"${AMD_LIBS}\"|" \
@@ -235,25 +279,23 @@ $SED \
   -e "s|%OCTAVE_CONF_CXXPICFLAG%|\"${CXXPICFLAG}\"|" \
   -e "s|%OCTAVE_CONF_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_CONF_DEFS%|\"${DEFS}\"|" \
-  -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%|\"${DEPEND_EXTRA_SED_PATTERN}\"|" \
+  -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
-  -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
-  -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_F77%|\"${F77}\"|" \
   -e "s|%OCTAVE_CONF_F77_FLOAT_STORE_FLAG%|\"${F77_FLOAT_STORE_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_F77_INTEGER_8_FLAG%|\"${F77_INTEGER_8_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_FFLAGS%|\"${FFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_FFTW3_CPPFLAGS%|\"${FFTW3_CPPFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_FFTW3_LDFLAGS%|\"${FFTW3_LDFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_FFTW3_LIBS%|\"${FFTW3_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_CPPFLAGS%|\"${FFTW3F_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_LDFLAGS%|\"${FFTW3F_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_LIBS%|\"${FFTW3F_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_FFTW3_CPPFLAGS%|\"${FFTW3_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_FFTW3_LDFLAGS%|\"${FFTW3_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_FFTW3_LIBS%|\"${FFTW3_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FLIBS%|\"${FLIBS}\"|" \
   -e "s|%OCTAVE_CONF_FLTK_CPPFLAGS%|\"${FLTK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FLTK_LDFLAGS%|\"${FLTK_LDFLAGS}\"|" \
@@ -261,22 +303,25 @@ $SED \
   -e "s|%OCTAVE_CONF_FONTCONFIG_CPPFLAGS%|\"${FONTCONFIG_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FONTCONFIG_LIBS%|\"${FONTCONFIG_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FPICFLAG%|\"${FPICFLAG}\"|" \
-  -e "s|%OCTAVE_CONF_FT2_CPPFLAGS%|\"${FT2_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_FT2_CPPFLAGS%|\"${FT2_CPPFLAGS}\"|" | \
+  $SED \
   -e "s|%OCTAVE_CONF_FT2_LIBS%|\"${FT2_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_CPPFLAGS%|\"${GLPK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LDFLAGS%|\"${GLPK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LIBS%|\"${GLPK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_GNUPLOT%|\"${GNUPLOT}\"|" \
-  -e "s|%OCTAVE_CONF_HDF5_CPPFLAGS%|\"${HDF5_CPPFLAGS}\"|" | \
-  $SED -e "s|%OCTAVE_CONF_HDF5_LDFLAGS%|\"${HDF5_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \
+  -e "s|%OCTAVE_CONF_HDF5_CPPFLAGS%|\"${HDF5_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_HDF5_LDFLAGS%|\"${HDF5_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_HDF5_LIBS%|\"${HDF5_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_CONF_KLU_CPPFLAGS%|\"${KLU_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_KLU_LDFLAGS%|\"${KLU_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_KLU_LIBS%|\"${KLU_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LAPACK_LIBS%|\"${LAPACK_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_LDFLAGS%|\"${LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_LD_STATIC_FLAG%|\"${LD_STATIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_LEX%|\"${LEX}\"|" \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
@@ -299,9 +344,9 @@ $SED \
   -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_F77%|\"${MKOCTFILE_F77}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_LD_CXX%|\"${MKOCTFILE_LD_CXX}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_OCTAVE_LINK_DEPS%|\"${MKOCTFILE_OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%|\"${MKOCTFILE_OCT_LINK_DEPS}\"|" \
+  -e "s|%OCTAVE_CONF_MKOCTFILE_RANLIB%|\"${MKOCTFILE_RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_DEPS%|\"${OCTAVE_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCTAVE_LINK_OPTS%|\"${OCTAVE_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
@@ -329,7 +374,8 @@ $SED \
   -e "s|%OCTAVE_CONF_QT_LIBS%|\"${QT_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_RANLIB%|\"${RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_RDYNAMIC_FLAG%|\"${RDYNAMIC_FLAG}\"|" \
-  -e "s|%OCTAVE_CONF_READLINE_LIBS%|\"${READLINE_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_READLINE_LIBS%|\"${READLINE_LIBS}\"|" | \
+  $SED \
   -e "s|%OCTAVE_CONF_SED%|\"${SED}\"|" \
   -e "s|%OCTAVE_CONF_SHARED_LIBS%|\"${SHARED_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_SH_LD%|\"${SH_LD}\"|" \
@@ -358,4 +404,45 @@ $SED \
   -e "s|%OCTAVE_CONF_Z_CPPFLAGS%|\"${Z_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_Z_LDFLAGS%|\"${Z_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_Z_LIBS%|\"${Z_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|"
+  -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" \
+  -e "s|%OCTAVE_DATADIR%|\"${datadir}\"|" \
+  -e "s|%OCTAVE_DATAROOTDIR%|\"${datarootdir}\"|" \
+  -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
+  -e "s|%OCTAVE_DOCDIR%|\"${docdir}\"|" \
+  -e "s|%OCTAVE_DOC_CACHE_FILE%|\"${doc_cache_file}\"|" \
+  -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
+  -e "s|%OCTAVE_EXEEXT%|\"${EXEEXT}\"|" \
+  -e "s|%OCTAVE_FCNFILEDIR%|\"${fcnfiledir}\"|" \
+  -e "s|%OCTAVE_IMAGEDIR%|\"${imagedir}\"|" \
+  -e "s|%OCTAVE_INCLUDEDIR%|\"${includedir}\"|" \
+  -e "s|%OCTAVE_INFODIR%|\"${infodir}\"|" \
+  -e "s|%OCTAVE_INFOFILE%|\"${infofile}\"|" \
+  -e "s|%OCTAVE_LIBDIR%|\"${libdir}\"|" \
+  -e "s|%OCTAVE_LIBEXECDIR%|\"${libexecdir}\"|" \
+  -e "s|%OCTAVE_LOCALAPIARCHLIBDIR%|\"${localapiarchlibdir}\"|" \
+  -e "s|%OCTAVE_LOCALAPIFCNFILEDIR%|\"${localapifcnfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALAPIOCTFILEDIR%|\"${localapioctfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALARCHLIBDIR%|\"${localarchlibdir}\"|" \
+  -e "s|%OCTAVE_LOCALFCNFILEDIR%|\"${localfcnfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALOCTFILEDIR%|\"${localoctfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALSTARTUPFILEDIR%|\"${localstartupfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALVERARCHLIBDIR%|\"${localverarchlibdir}\"|" \
+  -e "s|%OCTAVE_LOCALVERFCNFILEDIR%|\"${localverfcnfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALVEROCTFILEDIR%|\"${localveroctfiledir}\"|" \
+  -e "s|%OCTAVE_MAN1DIR%|\"${man1dir}\"|" \
+  -e "s|%OCTAVE_MAN1EXT%|\"${man1ext}\"|" \
+  -e "s|%OCTAVE_MANDIR%|\"${mandir}\"|" \
+  -e "s|%OCTAVE_OCTDATADIR%|\"${octdatadir}\"|" \
+  -e "s|%OCTAVE_OCTDOCDIR%|\"${octdocdir}\"|" \
+  -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
+  -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
+  -e "s|%OCTAVE_OCTFONTSDIR%|\"${octfontsdir}\"|" \
+  -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
+  -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \
+  -e "s|%OCTAVE_OCTTESTSDIR%|\"${octtestsdir}\"|" \
+  -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
+  -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
+  -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
+  -e "s|%OCTAVE_TEXI_MACROS_FILE%|\"${texi_macros_file}\"|" \
+  -e "s|%OCTAVE_VERSION%|\"${version}\"|"

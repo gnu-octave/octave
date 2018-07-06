@@ -43,7 +43,6 @@ syntax: regexp
 ^build-aux/move-if-change$
 (^|/)build-aux/subst-config-vals\.sh$
 (^|/)build-aux/subst-cross-config-vals\.sh$
-(^|/)build-aux/subst-default-vals\.sh$
 (^|/)build-aux/subst-script-vals\.sh$
 ^build-aux/texinfo\.tex$
 ^build-aux/ylwrap$

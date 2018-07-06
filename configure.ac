@@ -3306,7 +3306,6 @@ OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   libinterp/corefcn/mk-mxarray-h.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
-  build-aux/subst-default-vals.sh
   build-aux/subst-script-vals.sh])
 
 AC_OUTPUT

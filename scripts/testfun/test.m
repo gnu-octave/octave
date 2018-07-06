@@ -298,6 +298,8 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
 
   ## Track variable leaks
   __base_variables_orig = evalin ("base", "who");
+  ## Add automatic variable "ans" which may not have been created yet.
+  __base_variables_orig{end+1} = "ans";
 
   ## Track variable leaks
   __global_variables_orig = who ("global");

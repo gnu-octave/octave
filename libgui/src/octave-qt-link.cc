@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "load-path.h"
 #include "ov.h"
+#include "octave.h"
+#include "oct-map.h"
 #include "symscope.h"
 #include "utils.h"
 
@@ -456,6 +458,16 @@ namespace octave
   void octave_qt_link::do_enter_debugger_event (const std::string& file,
                                                 int line)
   {
+    interpreter& interp = __get_interpreter__ (
+                                  "octave_qt_link::do_enter_debugger_event");
+    octave_value_list fct = F__which__ (interp, ovl (file),0);
+    octave_map map = fct(0).map_value ();
+
+    QString type = QString::fromStdString (
+                    map.contents ("type").data ()[0].string_value ());
+    if (type == QString ("command-line function"))
+      return;
+
     do_insert_debugger_pointer (file, line);
 
     emit enter_debugger_signal ();

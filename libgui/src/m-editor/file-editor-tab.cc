@@ -519,7 +519,7 @@ namespace octave
               handle_request_remove_breakpoint (editor_linenr + 1);
             else
               {
-                if (unchanged_or_saved ())
+                if (unchanged_or_saved () && valid_file_name ())
                   handle_request_add_breakpoint (editor_linenr + 1, "");
               }
           }

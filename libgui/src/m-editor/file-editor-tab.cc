@@ -480,10 +480,10 @@ namespace octave
   bool file_editor_tab::unchanged_or_saved (void)
   {
     bool retval = true;
-    if (_edit_area->isModified ())
+    if (_edit_area->isModified () || ! valid_file_name ())
       {
         int ans = QMessageBox::question (nullptr, tr ("Octave Editor"),
-                                         tr ("Cannot add breakpoint to modified file.\n"
+                                         tr ("Cannot add breakpoint to modified or unnamed file.\n"
                                              "Save and add breakpoint, or cancel?"),
                                          QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
 
@@ -519,7 +519,7 @@ namespace octave
               handle_request_remove_breakpoint (editor_linenr + 1);
             else
               {
-                if (unchanged_or_saved () && valid_file_name ())
+                if (unchanged_or_saved ())
                   handle_request_add_breakpoint (editor_linenr + 1, "");
               }
           }

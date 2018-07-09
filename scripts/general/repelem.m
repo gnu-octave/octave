@@ -299,19 +299,18 @@ function idx = prepareIdx (v, n)
 
   else
     ## This works for a row or column vector.
-    ## idx2 output will be a row vector.
 
     ## Get ending position for each element item.
     idx_temp = cumsum (v);
 
-    ## Row vector with enough space for output
-    idx(1:idx_temp(end)) = 0;
-
     ## Set starting position of each element to 1.
-    idx(idx_temp(1:end-1) + 1) = 1;
+    idx(idx_temp + 1) = 1;
 
     ## Set starting position of each element to 1.
     idx(1) = 1;
+
+    ## Row vector with proper length for output
+    idx = idx(1:idx_temp(end));
 
     ## with prepared index
     idx = (find (v != 0))(cumsum (idx));
@@ -426,6 +425,9 @@ endfunction
 %! assert (repelem ({-1 0 1}', 2), {-1; -1; 0; 0; 1; 1;});
 %! assert (repelem ({1 0;0 -1}, 2, 3),
 %!         {1 1 1 0 0 0;1 1 1 0 0 0;0 0 0 -1 -1 -1;0 0 0 -1 -1 -1});
+
+%!test <*54275>
+%! assert (repelem (11:13, [1 3 0]), [11 12 12 12]);
 
 ## nargin <= 1 error tests
 %!error (repelem ());

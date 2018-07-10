@@ -17,7 +17,6 @@ include %reldir%/Faddeeva/module.mk
 include %reldir%/fftpack/module.mk
 include %reldir%/lapack-xtra/module.mk
 include %reldir%/odepack/module.mk
-include %reldir%/ordered-qz/module.mk
 include %reldir%/quadpack/module.mk
 include %reldir%/ranlib/module.mk
 include %reldir%/slatec-err/module.mk

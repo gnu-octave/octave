@@ -1701,25 +1701,23 @@ abs (T x)
 #define INSTANTIATE_ABS(T)                      \
   template T abs (T)
 
-INSTANTIATE_ABS(signed char);
-INSTANTIATE_ABS(short);
-INSTANTIATE_ABS(int);
-INSTANTIATE_ABS(long);
-INSTANTIATE_ABS(long long);
+INSTANTIATE_ABS(int8_t);
+INSTANTIATE_ABS(int16_t);
+INSTANTIATE_ABS(int32_t);
+INSTANTIATE_ABS(int64_t);
 
 #define SPECIALIZE_UABS(T)                      \
   template <>                                   \
-  inline unsigned T                             \
-  abs (unsigned T x)                            \
+  inline T                                      \
+  abs (T x)                                     \
   {                                             \
     return x;                                   \
   }
 
-SPECIALIZE_UABS(char)
-SPECIALIZE_UABS(short)
-SPECIALIZE_UABS(int)
-SPECIALIZE_UABS(long)
-SPECIALIZE_UABS(long long)
+SPECIALIZE_UABS(uint8_t)
+SPECIALIZE_UABS(uint16_t)
+SPECIALIZE_UABS(uint32_t)
+SPECIALIZE_UABS(uint64_t)
 
 #define MAKE_INT_MATRIX_FORMAT(TYPE)                                    \
   template <>                                                           \

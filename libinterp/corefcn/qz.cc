@@ -22,7 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Generalized eigenvalue balancing via LAPACK
 
-// Author: A. S. Hodel <scotte@eng.auburn.edu>
+// Originally written by A. S. Hodel <scotte@eng.auburn.edu>, but is
+// substantially different with the change to use LAPACK.
 
 #undef DEBUG
 #undef DEBUG_SORT
@@ -55,79 +56,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "pr-output.h"
 #endif
 
-typedef F77_INT (*sort_function) (const F77_INT& LSIZE,
-                                  const double& ALPHA, const double& BETA,
-                                  const double& S, const double& P);
+// FIXME: Matlab does not produce lambda as the first output argument.
+// Compatibility problem?
 
-extern "C"
-{
-  // Van Dooren's code (netlib.org: toms/590) for reordering GEP.
-  // Only processes Z, not Q.
-  F77_RET_T
-  F77_FUNC (dsubsp, DSUBSP) (const F77_INT& NMAX, const F77_INT& N,
-                             F77_DBLE *A, F77_DBLE *B, F77_DBLE *Z,
-                             sort_function, const F77_DBLE& EPS,
-                             F77_INT& NDIM, F77_INT& FAIL, F77_INT *IND);
-}
-
-// fcrhp, fin, fout, folhp:
-// Routines for ordering of generalized eigenvalues.
-// Return 1 if test is passed, 0 otherwise.
-//   fin:  |lambda| < 1
-//   fout: |lambda| >= 1
-//   fcrhp: real(lambda) >= 0
-//   folhp: real(lambda) < 0
-
-static F77_INT
-fcrhp (const F77_INT& lsize, const double& alpha, const double& beta,
-       const double& s, const double&)
-{
-  if (lsize == 1)
-    return (alpha * beta >= 0 ? 1 : -1);
-  else
-    return (s >= 0 ? 1 : -1);
-}
-
-static F77_INT
-fin (const F77_INT& lsize, const double& alpha, const double& beta,
-     const double&, const double& p)
-{
-  F77_INT retval;
-
-  if (lsize == 1)
-    retval = (std::abs (alpha) < std::abs (beta) ? 1 : -1);
-  else
-    retval = (std::abs (p) < 1 ? 1 : -1);
-
-#if defined (DEBUG)
-  std::cout << "qz: fin: retval=" << retval << std::endl;
-#endif
-
-  return retval;
-}
-
-static F77_INT
-folhp (const F77_INT& lsize, const double& alpha, const double& beta,
-       const double& s, const double&)
-{
-  if (lsize == 1)
-    return (alpha * beta < 0 ? 1 : -1);
-  else
-    return (s < 0 ? 1 : -1);
-}
-
-static F77_INT
-fout (const F77_INT& lsize, const double& alpha, const double& beta,
-      const double&, const double& p)
-{
-  if (lsize == 1)
-    return (std::abs (alpha) >= std::abs (beta) ? 1 : -1);
-  else
-    return (std::abs (p) >= 1 ? 1 : -1);
-}
-
-//FIXME: Matlab does not produce lambda as the first output argument.
-//       Compatibility problem?
 DEFUN (qz, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})
@@ -254,8 +185,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
 #endif
 
   // Determine ordering option.
-  // declared volatile to avoid compiler warnings about long jumps vforks.
-  volatile char ord_job = 'N';
+
+  char ord_job = 'N';
   double safmin = 0.0;
 
   if (nargin == 3)
@@ -353,9 +284,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
   // Both matrices loaded, now check whether to calculate complex or real val.
 
-  // declared volatile to avoid compiler warnings about long jumps vforks.
-  volatile bool complex_case
-    = (args(0).iscomplex () || args(1).iscomplex ());
+  bool complex_case = (args(0).iscomplex () || args(1).iscomplex ());
 
   if (nargin == 3 && complex_case)
     error ("qz: cannot re-order complex qz decomposition");
@@ -657,183 +586,61 @@ Note: @code{qz} performs permutation balancing, but not scaling
                 << ord_job << std::endl;
 #endif
 
-      // Declared static to avoid vfork/long jump compiler complaints.
-      static sort_function sort_test;
-      sort_test = nullptr;
+      Array<F77_LOGICAL> select (dim_vector (nn, 1));
 
-      switch (ord_job)
+      for (int j = 0; j < nn; j++)
         {
-        case 'S':
-          sort_test = &fin;
-          break;
+          switch (ord_job)
+            {
+            case 'S':
+              select(j) = alphar(j)*alphar(j) + alphai(j)*alphai(j) < betar(j)*betar(j);
+              break;
 
-        case 'B':
-          sort_test = &fout;
-          break;
+            case 'B':
+              select(j) = alphar(j)*alphar(j) + alphai(j)*alphai(j) >= betar(j)*betar(j);
+              break;
 
-        case '+':
-          sort_test = &fcrhp;
-          break;
+            case '+':
+              select(j) = alphar(j) * betar(j) >= 0;
+              break;
 
-        case '-':
-          sort_test = &folhp;
-          break;
+            case '-':
+              select(j) = alphar(j) * betar(j) < 0;
+              break;
 
-        default:
-          // Invalid order option
-          // (should never happen since options were checked at the top).
-          panic_impossible ();
-          break;
+            default:
+              // Invalid order option
+              // (should never happen since options were checked at the top).
+              panic_impossible ();
+              break;
+            }
         }
 
-      double inf_norm;
+      F77_LOGICAL wantq = 0, wantz = (comp_z == 'V');
+      F77_INT ijob = 0, mm, lrwork3 = 4*nn+16, liwork = nn;
+      F77_DBLE pl, pr;
+      RowVector rwork3(lrwork3);
+      Array<F77_INT> iwork (dim_vector (liwork, 1));
 
-      F77_XFCN (xdlange, XDLANGE,
-                (F77_CONST_CHAR_ARG2 ("I", 1),
-                 nn, nn, aa.data (), nn, work.fortran_vec (), inf_norm
-                 F77_CHAR_ARG_LEN (1)));
-
-      double eps = std::numeric_limits<double>::epsilon () * inf_norm * nn;
+      F77_XFCN (dtgsen, DTGSEN,
+                (ijob, wantq, wantz,
+                 select.fortran_vec (), nn,
+                 aa.fortran_vec (), nn,
+                 bb.fortran_vec (), nn,
+                 alphar.fortran_vec (),
+                 alphai.fortran_vec (),
+                 betar.fortran_vec (),
+                 nullptr, nn,
+                 ZZ.fortran_vec (), nn,
+                 mm,
+                 pl, pr,
+                 nullptr,
+                 rwork3.fortran_vec (), lrwork3,
+                 iwork.fortran_vec (), liwork,
+                 info));
 
 #if defined (DEBUG_SORT)
-      std::cout << "qz: calling dsubsp: aa=" << std::endl;
-      octave_print_internal (std::cout, aa, 0);
-      std::cout << std::endl << "bb="  << std::endl;
-      octave_print_internal (std::cout, bb, 0);
-      if (comp_z == 'V')
-        {
-          std::cout << std::endl << "ZZ="  << std::endl;
-          octave_print_internal (std::cout, ZZ, 0);
-        }
-      std::cout << std::endl;
-      std::cout << "alphar = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) alphar, 0);
-      std::cout << std::endl << "alphai = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) alphai, 0);
-      std::cout << std::endl << "beta = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) betar, 0);
-      std::cout << std::endl;
-#endif
-
-      Array<F77_INT> ind (dim_vector (nn, 1));
-
-      F77_INT ndim, fail;
-
-      F77_XFCN (dsubsp, DSUBSP,
-                (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
-                 ZZ.fortran_vec (), sort_test, eps, ndim, fail,
-                 ind.fortran_vec ()));
-
-#if defined (DEBUG)
-      std::cout << "qz: back from dsubsp: aa=" << std::endl;
-      octave_print_internal (std::cout, aa, 0);
-      std::cout << std::endl << "bb="  << std::endl;
-      octave_print_internal (std::cout, bb, 0);
-      if (comp_z == 'V')
-        {
-          std::cout << std::endl << "ZZ="  << std::endl;
-          octave_print_internal (std::cout, ZZ, 0);
-        }
-      std::cout << std::endl;
-#endif
-
-      // Manually update alphar, alphai, betar.
-      static F77_INT j;
-
-      j = 0;
-      while (j < nn)
-        {
-#if defined (DEBUG_EIG)
-          std::cout << "computing gen eig #" << j << std::endl;
-#endif
-
-          // Number of zeros in this block.
-          static F77_INT zcnt;
-
-          if (j == (nn-1))
-            zcnt = 1;
-          else if (aa(j+1,j) == 0)
-            zcnt = 1;
-          else zcnt = 2;
-
-          if (zcnt == 1)
-            {
-              // Real zero.
-#if defined (DEBUG_EIG)
-              std::cout << "  single gen eig:" << std::endl;
-              std::cout << "  alphar(" << j << ") = " << aa(j,j)
-                        << std::endl;
-              std::cout << "  betar(" << j << ") = " << bb(j,j)
-                        << std::endl;
-              std::cout << "  alphai(" << j << ") = 0" << std::endl;
-#endif
-
-              alphar(j) = aa(j,j);
-              alphai(j) = 0;
-              betar(j) = bb(j,j);
-            }
-          else
-            {
-              // Complex conjugate pair.
-#if defined (DEBUG_EIG)
-              std::cout << "qz: calling dlag2:" << std::endl;
-              std::cout << "safmin="
-                        << setiosflags (std::ios::scientific)
-                        << safmin << std::endl;
-
-              for (F77_INT idr = j; idr <= j+1; idr++)
-                {
-                  for (F77_INT idc = j; idc <= j+1; idc++)
-                    {
-                      std::cout << "aa(" << idr << ',' << idc << ")="
-                                << aa(idr,idc) << std::endl;
-                      std::cout << "bb(" << idr << ',' << idc << ")="
-                                << bb(idr,idc) << std::endl;
-                    }
-                }
-#endif
-
-              // FIXME: probably should be using
-              // fortran_vec instead of &aa(j,j) here.
-
-              double scale1, scale2, wr1, wr2, wi;
-              const double *aa_ptr = aa.data () + j * nn + j;
-              const double *bb_ptr = bb.data () + j * nn + j;
-              F77_XFCN (dlag2, DLAG2,
-                        (aa_ptr, nn, bb_ptr, nn, safmin,
-                         scale1, scale2, wr1, wr2, wi));
-
-#if defined (DEBUG_EIG)
-              std::cout << "dlag2 returns: scale1=" << scale1
-                        << "\tscale2=" << scale2 << std::endl
-                        << "\twr1=" << wr1 << "\twr2=" << wr2
-                        << "\twi=" << wi << std::endl;
-#endif
-
-              // Just to be safe, check if it's a real pair.
-              if (wi == 0)
-                {
-                  alphar(j) = wr1;
-                  alphai(j) = 0;
-                  betar(j) = scale1;
-                  alphar(j+1) = wr2;
-                  alphai(j+1) = 0;
-                  betar(j+1) = scale2;
-                }
-              else
-                {
-                  alphar(j) = alphar(j+1) = wr1;
-                  alphai(j) = -(alphai(j+1) = wi);
-                  betar(j)  = betar(j+1) = scale1;
-                }
-            }
-
-          // Advance past this block.
-          j += zcnt;
-        }
-
-#if defined (DEBUG_SORT)
-      std::cout << "qz: back from dsubsp: aa=" << std::endl;
+      std::cout << "qz: back from dtgsen: aa=" << std::endl;
       octave_print_internal (std::cout, aa, 0);
       std::cout << std::endl << "bb="  << std::endl;
       octave_print_internal (std::cout, bb, 0);
@@ -843,8 +650,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
           std::cout << std::endl << "ZZ="  << std::endl;
           octave_print_internal (std::cout, ZZ, 0);
         }
-      std::cout << std::endl << "qz: ndim=" << ndim << std::endl
-                << "fail=" << fail << std::endl;
+      std::cout << std::endl << "qz: info=" << info << std::endl;
       std::cout << "alphar = " << std::endl;
       octave_print_internal (std::cout, (Matrix) alphar, 0);
       std::cout << std::endl << "alphai = " << std::endl;
@@ -1122,4 +928,26 @@ Note: @code{qz} performs permutation balancing, but not scaling
 %! [AA, BB, Q, Z1] = qz (A, B);
 %! [AA, BB, Z2] = qz (A, B, "-");
 %! assert (Z1, Z2);
+
+%!test
+%! A = [ -1.03428  0.24929  0.43205 -0.12860;
+%!        1.16228  0.27870  2.12954  0.69250;
+%!       -0.51524 -0.34939 -0.77820  2.13721;
+%!       -1.32941  2.11870  0.72005  1.00835 ];
+%! B = [  1.407302 -0.632956 -0.360628  0.068534;
+%!        0.149898  0.298248  0.991777  0.023652;
+%!        0.169281 -0.405205 -1.775834  1.511730;
+%!        0.717770  1.291390 -1.766607 -0.531352 ];
+%! [AA, BB, Z, lambda] = qz (A, B, "+");
+%! assert (all (real (lambda(1:3)) >= 0))
+%! assert (real (lambda(4) < 0))
+%! [AA, BB, Z, lambda] = qz (A, B, "-");
+%! assert (real (lambda(1) < 0))
+%! assert (all (real (lambda(2:4)) >= 0))
+%! [AA, BB, Z, lambda] = qz (A, B, "B");
+%! assert (all (abs (lambda(1:3)) >= 1))
+%! assert (abs (lambda(4) < 1))
+%! [AA, BB, Z, lambda] = qz (A, B, "S");
+%! assert (abs (lambda(1) < 1))
+%! assert (all (abs (lambda(2:4)) >= 1))
 */

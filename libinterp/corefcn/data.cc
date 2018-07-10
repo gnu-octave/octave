@@ -2656,7 +2656,7 @@ Example 3: number of output arguments == number of dimensions
 @end group
 @end example
 
-Example 4: number of output arguments != number of dimensions
+Example 4: number of output arguments < number of dimensions
 
 @example
 @group

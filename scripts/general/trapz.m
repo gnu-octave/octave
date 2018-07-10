@@ -72,13 +72,9 @@ function z = trapz (x, y, dim)
     have_xy = true;
     have_dim = true;
   elseif (nargin == 2)
-    if (isvector (x) && isvector (y))
-      x = x(:);
-      y = y(:);
-    endif
-    if (! size_equal (x, y) && isscalar (y))
-      dim = y;
+    if (isscalar (y) && ! isscalar (x))
       have_dim = true;
+      dim = y;
     else
       have_xy = true;
     endif
@@ -103,46 +99,59 @@ function z = trapz (x, y, dim)
   endif
 
   n = sz(dim);
-  idx1 = idx2 = repmat ({':'}, [nd, 1]);
+  idx1 = idx2 = {':'}(ones (nd, 1));  # repmat ({':'}, [nd, 1]), but faster
   idx1{dim} = 2 : n;
   idx2{dim} = 1 : (n - 1);
 
   if (! have_xy)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
-  else
-    if (isvector (x) && ! isvector (y))
-      if (length (x) != sz(dim))
-        error ("trapz: length of X and length of Y along DIM must match");
-      endif
-      ## Reshape vector to point along dimension DIM
-      shape = ones (nd, 1);
-      shape(dim) = sz(dim);
-      x = reshape (x, shape);
-      z = 0.5 * sum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
-    else
-      if (! size_equal (x, y))
-        error ("trapz: X and Y must have same shape");
-      endif
-      z = 0.5 * sum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
+  elseif (isscalar (x))
+    z = x * 0.5 * sum (y(idx1{:}) + y(idx2{:}), dim);
+  elseif (isvector (x))
+    if (length (x) != n)
+      error ("trapz: length of X and length of Y along DIM must match");
     endif
+    ## Reshape spacing vector x to point along dimension DIM
+    shape = ones (nd, 1);
+    shape(dim) = n;
+    x = reshape (x, shape);
+    z = 0.5 * sum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
+  else
+    if (! size_equal (x, y))
+      error ("trapz: X and Y must have same shape");
+    endif
+    z = 0.5 * sum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
   endif
 
 endfunction
 
 
 %!assert (trapz (1:5), 12)
+%!assert (trapz (1, 1:5), 12)
+%!assert (trapz (0.5, 1:5), 6)
 %!assert (trapz ([1:5], [1:5]), 12)
 %!assert (trapz ([1:5], [1:5]'), 12)
 %!assert (trapz ([1:5]', [1:5]'), 12)
 %!assert (trapz ([1:5]', [1:5]), 12)
 %!assert (trapz (0:0.5:2,1:5), 6)
-%!assert (trapz ([1:5;1:5].',1), [12,12])
-%!assert (trapz ([1:5;1:5],2), [12;12])
+%!assert (trapz ([1:5;1:5].', 1), [12, 12])
+%!assert (trapz ([1:5;1:5], 2), [12; 12])
 %!assert (trapz (repmat (reshape (1:5,1,1,5),2,2), 3), [12 12; 12 12])
-%!assert (trapz ([0:0.5:2;0:0.5:2].',[1:5;1:5].',1), [6, 6])
-%!assert (trapz ([0:0.5:2;0:0.5:2],[1:5;1:5],2), [6; 6])
+%!assert (trapz ([0:0.5:2;1:5].', [1:5;1:5].', 1), [6, 12])
+%!assert (trapz ([0:0.5:2;1:5], [1:5;1:5], 2), [6; 12])
 %!assert (trapz (repmat (reshape ([0:0.5:2],1,1,5),2,2), ...
 %!               repmat (reshape (1:5,1,1,5),2,2), 3), [6 6; 6 6])
-%!assert (trapz (0:0.5:2,[(1:5)',(1:5)']), [6, 6])
-%!assert (trapz (0:0.5:2,[(1:5);(1:5)],2), [6; 6])
-%!assert (trapz (0:0.5:2,repmat (reshape (1:5,1,1,5),2,2),3), [6 6; 6 6])
+%!assert (trapz (0:0.5:2, [(1:5)', (1:5)']), [6, 6])
+%!assert (trapz (0:0.5:2, [(1:5); (1:5)], 2), [6; 6])
+%!assert (trapz (0:0.5:2, repmat (reshape (1:5,1,1,5),2,2),3), [6 6; 6 6])
+%!assert <*54277> (trapz (ones (1,3), 1), zeros (1,3))
+%!assert <*54277> (trapz (ones (3,1), 2), zeros (3,1))
+
+## Test input validation
+%!error trapz ()
+%!error trapz (1,2,3,4)
+%!error <DIM must be an integer> trapz (1, 2, [1 2])
+%!error <DIM must be an integer> trapz (1, 2, 1.5)
+%!error <DIM must be .* a valid dimension> trapz (1, 2, 0)
+%!error <length of X and length of Y.*must match> trapz ([1 2], [1 2 3])
+%!error <X and Y must have same shape> trapz (ones (2,3), ones (2,4))

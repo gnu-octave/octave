@@ -335,11 +335,11 @@ Comment.
     {
       info.format = SF_FORMAT_VORBIS;
 
-      // FIXME: there seems to be a bug writing ogg files in one shot
-      // that causes a segfault.  Breaking it up into a series of
-      // smaller chunks seems to avoid the problem and produce valid
-      // files.
-      chunk_size = 0x1FFFFE;
+      // FIXME: There seems to be a bug writing ogg files in one shot that
+      // causes a segfault: https://bugs.debian.org/760898.
+      // Breaking it up into a series of smaller chunks appears to avoid the
+      // problem and produces valid files.
+      chunk_size = 0x100000;
     }
   else
     info.format = SF_FORMAT_PCM_16;

@@ -132,7 +132,7 @@ endfunction
 
 %!shared b, x, r
 
-%!test
+%!testif HAVE_FFTW
 %! b = [1 1];
 %! x = [1, zeros(1,9)];
 %! assert (fftfilt (b,  x  ), [1 1 0 0 0 0 0 0 0 0]  );
@@ -142,14 +142,14 @@ endfunction
 %! assert (fftfilt (b,  [x.' x.']), [1 1 0 0 0 0 0 0 0 0].'*[1 1]);
 %! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1], [false(10, 1) true(10, 1)]);
 
-%!test
+%!testif HAVE_FFTW
 %! r = sqrt (1/2) * (1+i);
 %! b = b*r;
 %! assert (fftfilt (b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps  );
 %! assert (fftfilt (b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], 2*eps);
 %! assert (fftfilt (b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps  );
 
-%!test
+%!testif HAVE_FFTW
 %! b  = [1 1];
 %! x  = zeros (10,3); x(1,1)=-1; x(1,2)=1;
 %! y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
@@ -166,7 +166,7 @@ endfunction
 %! assert (true, isreal (y(:,1)));
 %! assert (false, any (real (y(:,2))));
 
-%!test
+%!testif HAVE_FFTW
 %! b  = rand (10, 1);
 %! x  = rand (10, 1);
 %! y0 = filter (b, 1, x);
@@ -176,7 +176,7 @@ endfunction
 %! y  = fftfilt (b*i, x*i);
 %! assert (y0, y, 16*eps);
 
-%!test
+%!testif HAVE_FFTW
 %! b  = rand (10, 1) + i*rand (10, 1);
 %! x  = rand (10, 1) + i*rand (10, 1);
 %! y0 = filter (b, 1, x);

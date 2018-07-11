@@ -39,7 +39,6 @@ NUMERIC_INC = \
   %reldir%/lo-amos-proto.h \
   %reldir%/lo-arpack-proto.h \
   %reldir%/lo-blas-proto.h \
-  %reldir%/lo-fftpack-proto.h \
   %reldir%/lo-lapack-proto.h \
   %reldir%/lo-mappers.h \
   %reldir%/lo-qrupdate-proto.h \

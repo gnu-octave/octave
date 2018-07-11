@@ -1105,234 +1105,40 @@ ComplexMatrix::ifourier2d (void) const
 
 #else
 
-#include "lo-fftpack-proto.h"
-
 ComplexMatrix
 ComplexMatrix::fourier (void) const
 {
-  ComplexMatrix retval;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-  octave_idx_type nsamples;
-
-  F77_INT npts;
-
-  if (nr == 1 || nc == 1)
-    {
-      npts = octave::to_f77_int (nr > nc ? nr : nc);
-      nsamples = 1;
-    }
-  else
-    {
-      npts = octave::to_f77_int (nr);
-      nsamples = nc;
-    }
-
-  octave_idx_type nn = 4*npts+15;
-
-  Array<Complex> wsave (dim_vector (nn, 1));
-  Complex *pwsave = wsave.fortran_vec ();
-
-  retval = *this;
-  Complex *tmp_data = retval.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (octave_idx_type j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-    }
-
-  return retval;
+  return ComplexMatrix ();
 }
 
 ComplexMatrix
 ComplexMatrix::ifourier (void) const
 {
-  ComplexMatrix retval;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-  octave_idx_type nsamples;
-
-  F77_INT npts;
-
-  if (nr == 1 || nc == 1)
-    {
-      npts = octave::to_f77_int (nr > nc ? nr : nc);
-      nsamples = 1;
-    }
-  else
-    {
-      npts = octave::to_f77_int (nr);
-      nsamples = nc;
-    }
-
-  octave_idx_type nn = 4*npts+15;
-
-  Array<Complex> wsave (dim_vector (nn, 1));
-  Complex *pwsave = wsave.fortran_vec ();
-
-  retval = *this;
-  Complex *tmp_data = retval.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (octave_idx_type j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-    }
-
-  for (octave_idx_type j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
-
-  return retval;
+  return ComplexMatrix ();
 }
 
 ComplexMatrix
 ComplexMatrix::fourier2d (void) const
 {
-  ComplexMatrix retval;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  F77_INT nr = octave::to_f77_int (rows ());
-  F77_INT nc = octave::to_f77_int (cols ());
-
-  F77_INT npts, nsamples;
-
-  if (nr == 1 || nc == 1)
-    {
-      npts = (nr > nc ? nr : nc);
-      nsamples = 1;
-    }
-  else
-    {
-      npts = nr;
-      nsamples = nc;
-    }
-
-  F77_INT nn = 4*npts+15;
-
-  Array<Complex> wsave (dim_vector (nn, 1));
-  Complex *pwsave = wsave.fortran_vec ();
-
-  retval = *this;
-  Complex *tmp_data = retval.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (F77_INT j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-    }
-
-  npts = nc;
-  nsamples = nr;
-  nn = 4*npts+15;
-
-  wsave.resize (dim_vector (nn, 1));
-  pwsave = wsave.fortran_vec ();
-
-  Array<Complex> tmp (dim_vector (npts, 1));
-  Complex *prow = tmp.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (F77_INT j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      for (F77_INT i = 0; i < npts; i++)
-        prow[i] = tmp_data[i*nr + j];
-
-      F77_FUNC (zfftf, ZFFTF) (npts, F77_DBLE_CMPLX_ARG (prow),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-
-      for (F77_INT i = 0; i < npts; i++)
-        tmp_data[i*nr + j] = prow[i];
-    }
-
-  return retval;
+  return ComplexMatrix ();
 }
 
 ComplexMatrix
 ComplexMatrix::ifourier2d (void) const
 {
-  ComplexMatrix retval;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  F77_INT nr = octave::to_f77_int (rows ());
-  F77_INT nc = octave::to_f77_int (cols ());
-
-  F77_INT npts, nsamples;
-
-  if (nr == 1 || nc == 1)
-    {
-      npts = (nr > nc ? nr : nc);
-      nsamples = 1;
-    }
-  else
-    {
-      npts = nr;
-      nsamples = nc;
-    }
-
-  F77_INT nn = 4*npts+15;
-
-  Array<Complex> wsave (dim_vector (nn, 1));
-  Complex *pwsave = wsave.fortran_vec ();
-
-  retval = *this;
-  Complex *tmp_data = retval.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (F77_INT j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (&tmp_data[npts*j]),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-    }
-
-  for (F77_INT j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
-
-  npts = nc;
-  nsamples = nr;
-  nn = 4*npts+15;
-
-  wsave.resize (dim_vector (nn, 1));
-  pwsave = wsave.fortran_vec ();
-
-  Array<Complex> tmp (dim_vector (npts, 1));
-  Complex *prow = tmp.fortran_vec ();
-
-  F77_FUNC (zffti, ZFFTI) (npts, F77_DBLE_CMPLX_ARG (pwsave));
-
-  for (F77_INT j = 0; j < nsamples; j++)
-    {
-      octave_quit ();
-
-      for (F77_INT i = 0; i < npts; i++)
-        prow[i] = tmp_data[i*nr + j];
-
-      F77_FUNC (zfftb, ZFFTB) (npts, F77_DBLE_CMPLX_ARG (prow),
-                               F77_DBLE_CMPLX_ARG (pwsave));
-
-      for (F77_INT i = 0; i < npts; i++)
-        tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
-    }
-
-  return retval;
+  return ComplexMatrix ();
 }
 
 #endif

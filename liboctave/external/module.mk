@@ -14,7 +14,6 @@ include %reldir%/daspk/module.mk
 include %reldir%/dasrt/module.mk
 include %reldir%/dassl/module.mk
 include %reldir%/Faddeeva/module.mk
-include %reldir%/fftpack/module.mk
 include %reldir%/lapack-xtra/module.mk
 include %reldir%/odepack/module.mk
 include %reldir%/quadpack/module.mk

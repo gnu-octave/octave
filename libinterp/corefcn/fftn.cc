@@ -34,12 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // This function should be merged with Fifft.
 
-#if defined (HAVE_FFTW)
-#  define FFTSRC "@sc{fftw}"
-#else
-#  define FFTSRC "@sc{fftpack}"
-#endif
-
 static octave_value
 do_fftn (const octave_value_list& args, const char *fcn, int type)
 {

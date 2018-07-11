@@ -187,293 +187,58 @@ FloatComplexNDArray::ifourierNd (void) const
 
 #else
 
-#include "lo-fftpack-proto.h"
-
 FloatComplexNDArray
 FloatComplexNDArray::fourier (int dim) const
 {
-  dim_vector dv = dims ();
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  if (dim > dv.ndims () || dim < 0)
-    return FloatComplexNDArray ();
-
-  FloatComplexNDArray retval (dv);
-  octave_idx_type npts = dv(dim);
-  octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (dim_vector (nn, 1));
-  FloatComplex *pwsave = wsave.fortran_vec ();
-
-  OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
-
-  octave_idx_type stride = 1;
-
-  for (int i = 0; i < dim; i++)
-    stride *= dv(i);
-
-  octave_idx_type howmany = numel () / npts;
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-  octave_idx_type dist = (stride == 1 ? npts : 1);
-
-  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-  for (octave_idx_type k = 0; k < nloop; k++)
-    {
-      for (octave_idx_type j = 0; j < howmany; j++)
-        {
-          octave_quit ();
-
-          for (octave_idx_type i = 0; i < npts; i++)
-            tmp[i] = elem ((i + k*npts)*stride + j*dist);
-
-          F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (tmp), F77_CMPLX_ARG (pwsave));
-
-          for (octave_idx_type i = 0; i < npts; i++)
-            retval((i + k*npts)*stride + j*dist) = tmp[i];
-        }
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::ifourier (int dim) const
 {
-  dim_vector dv = dims ();
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  if (dim > dv.ndims () || dim < 0)
-    return FloatComplexNDArray ();
-
-  FloatComplexNDArray retval (dv);
-  octave_idx_type npts = dv(dim);
-  octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (dim_vector (nn, 1));
-  FloatComplex *pwsave = wsave.fortran_vec ();
-
-  OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
-
-  octave_idx_type stride = 1;
-
-  for (int i = 0; i < dim; i++)
-    stride *= dv(i);
-
-  octave_idx_type howmany = numel () / npts;
-  howmany = (stride == 1 ? howmany : (howmany > stride ? stride : howmany));
-  octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-  octave_idx_type dist = (stride == 1 ? npts : 1);
-
-  F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-  for (octave_idx_type k = 0; k < nloop; k++)
-    {
-      for (octave_idx_type j = 0; j < howmany; j++)
-        {
-          octave_quit ();
-
-          for (octave_idx_type i = 0; i < npts; i++)
-            tmp[i] = elem ((i + k*npts)*stride + j*dist);
-
-          F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (tmp), F77_CMPLX_ARG (pwsave));
-
-          for (octave_idx_type i = 0; i < npts; i++)
-            retval((i + k*npts)*stride + j*dist) = tmp[i] /
-                                                   static_cast<float> (npts);
-        }
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::fourier2d (void) const
 {
-  dim_vector dv = dims ();
-  dim_vector dv2 (dv(0), dv(1));
-  int rank = 2;
-  FloatComplexNDArray retval (*this);
-  octave_idx_type stride = 1;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  for (int i = 0; i < rank; i++)
-    {
-      octave_idx_type npts = dv2(i);
-      octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (dim_vector (nn, 1));
-      FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (dim_vector (npts, 1));
-      FloatComplex *prow = row.fortran_vec ();
-
-      octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany
-                             : (howmany > stride ? stride : howmany));
-      octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-      octave_idx_type dist = (stride == 1 ? npts : 1);
-
-      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-      for (octave_idx_type k = 0; k < nloop; k++)
-        {
-          for (octave_idx_type j = 0; j < howmany; j++)
-            {
-              octave_quit ();
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval((l + k*npts)*stride + j*dist);
-
-              F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l];
-            }
-        }
-
-      stride *= dv2(i);
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::ifourier2d (void) const
 {
-  dim_vector dv = dims ();
-  dim_vector dv2 (dv(0), dv(1));
-  int rank = 2;
-  FloatComplexNDArray retval (*this);
-  octave_idx_type stride = 1;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  for (int i = 0; i < rank; i++)
-    {
-      octave_idx_type npts = dv2(i);
-      octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (dim_vector (nn, 1));
-      FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (dim_vector (npts, 1));
-      FloatComplex *prow = row.fortran_vec ();
-
-      octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany
-                             : (howmany > stride ? stride : howmany));
-      octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-      octave_idx_type dist = (stride == 1 ? npts : 1);
-
-      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-      for (octave_idx_type k = 0; k < nloop; k++)
-        {
-          for (octave_idx_type j = 0; j < howmany; j++)
-            {
-              octave_quit ();
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval((l + k*npts)*stride + j*dist);
-
-              F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) =
-                  prow[l] / static_cast<float> (npts);
-            }
-        }
-
-      stride *= dv2(i);
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::fourierNd (void) const
 {
-  dim_vector dv = dims ();
-  int rank = dv.ndims ();
-  FloatComplexNDArray retval (*this);
-  octave_idx_type stride = 1;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  for (int i = 0; i < rank; i++)
-    {
-      octave_idx_type npts = dv(i);
-      octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (dim_vector (nn, 1));
-      FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (dim_vector (npts, 1));
-      FloatComplex *prow = row.fortran_vec ();
-
-      octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany
-                             : (howmany > stride ? stride : howmany));
-      octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-      octave_idx_type dist = (stride == 1 ? npts : 1);
-
-      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-      for (octave_idx_type k = 0; k < nloop; k++)
-        {
-          for (octave_idx_type j = 0; j < howmany; j++)
-            {
-              octave_quit ();
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval((l + k*npts)*stride + j*dist);
-
-              F77_FUNC (cfftf, CFFTF) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l];
-            }
-        }
-
-      stride *= dv(i);
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 FloatComplexNDArray
 FloatComplexNDArray::ifourierNd (void) const
 {
-  dim_vector dv = dims ();
-  int rank = dv.ndims ();
-  FloatComplexNDArray retval (*this);
-  octave_idx_type stride = 1;
+  (*current_liboctave_error_handler)
+    ("support for FFTW was unavailable or disabled when liboctave was built");
 
-  for (int i = 0; i < rank; i++)
-    {
-      octave_idx_type npts = dv(i);
-      octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (dim_vector (nn, 1));
-      FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (dim_vector (npts, 1));
-      FloatComplex *prow = row.fortran_vec ();
-
-      octave_idx_type howmany = numel () / npts;
-      howmany = (stride == 1 ? howmany
-                             : (howmany > stride ? stride : howmany));
-      octave_idx_type nloop = (stride == 1 ? 1 : numel () / npts / stride);
-      octave_idx_type dist = (stride == 1 ? npts : 1);
-
-      F77_FUNC (cffti, CFFTI) (npts, F77_CMPLX_ARG (pwsave));
-
-      for (octave_idx_type k = 0; k < nloop; k++)
-        {
-          for (octave_idx_type j = 0; j < howmany; j++)
-            {
-              octave_quit ();
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval((l + k*npts)*stride + j*dist);
-
-              F77_FUNC (cfftb, CFFTB) (npts, F77_CMPLX_ARG (prow), F77_CMPLX_ARG (pwsave));
-
-              for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) =
-                  prow[l] / static_cast<float> (npts);
-            }
-        }
-
-      stride *= dv(i);
-    }
-
-  return retval;
+  return FloatComplexNDArray ();
 }
 
 #endif

@@ -256,13 +256,15 @@ function arg_st = __print_parse_opts__ (varargin)
     suffixes(strncmp (dev_list, "epslatex", 8)) = {"eps"};
   endif
 
+  unknown_device = true;
+  default_suffix = "";
   match = strcmpi (dev_list, arg_st.devopt);
-  if (! any (match))
-    error ("print: unknown device %s", arg_st.devopt);
+  if (any (match))
+    unknown_device = false;
+    default_suffix = suffixes{match};
   endif
-  default_suffix = suffixes{match};
 
-  if (dot == 0 && ! isempty (arg_st.name))
+  if (dot == 0 && ! isempty (arg_st.name) && ! isempty (default_suffix))
     arg_st.name = [arg_st.name "." default_suffix];
   endif
 
@@ -299,11 +301,13 @@ function arg_st = __print_parse_opts__ (varargin)
   aliases = gs_aliases ();
   if (any (strcmp (arg_st.devopt, fieldnames (aliases))))
     arg_st.devopt = aliases.(arg_st.devopt);
+    unknown_device = false;
   endif
 
   if ((any (strcmp (arg_st.devopt, gs_device_list))
        && ! arg_st.formatted_for_printing)
       || any (strcmp (arg_st.devopt, {"pswrite", "ps2write", "pdfwrite"})))
+    unknown_device = false;
     ## Use ghostscript for graphic formats
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
@@ -315,12 +319,16 @@ function arg_st = __print_parse_opts__ (varargin)
       arg_st.ghostscript.epscrop = true;
     endif
   elseif (all (! strcmp (arg_st.devopt, dev_list)))
-    ## Assume we are formating output for a printer
+    ## Assume we are formatting output for a printer
     arg_st.formatted_for_printing = true;
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = false;
     arg_st.ghostscript.epscrop = ! arg_st.loose;
+  endif
+
+  if (unknown_device)
+    error ("print: unknown device %s", arg_st.devopt);
   endif
 
   if (arg_st.send_to_printer)

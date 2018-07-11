@@ -2816,7 +2816,23 @@ fi
 
 GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LTLIBICONV $LTLIBINTL $LTLIBTHREAD"
 
-MKOCTFILE_GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $LIBICONV $LIBINTL $LIBTHREAD"
+### FIXME: This is a kluge to transform $libdir/libiconv.dll.a to -liconv.
+### It would probably be better to fix gnulib to not give us an absolute
+### file name...
+
+case $host_os in
+  mingw*)
+    ## Don't use $libdir here because that's defined to be
+    ## ${exec_prefix}/lib and at this point, ${exec_prefix} is "NONE"!
+    tmp_libiconv_dll="$LIBICONV_PREFIX/lib/libiconv.dll.a"
+    MKOCTFILE_LIBICONV=`echo $LIBICONV | sed "s|$tmp_libiconv_dll|-liconv|"`
+  ;;
+  *)
+    MKOCTFILE_LIBICONV="$LIBICONV"
+  ;;
+esac
+
+MKOCTFILE_GNULIB_LINK_DEPS="$FREXPF_LIBM $FREXP_LIBM $GETHOSTNAME_LIB $LIBSOCKET $LIB_CLOCK_GETTIME $LIB_CRYPTO $LIB_GETLOGIN $LIB_NANOSLEEP $LIB_SELECT $MKOCTFILE_LIBICONV $LIBINTL $LIBTHREAD"
 
 AC_SUBST(GNULIB_LINK_DEPS)
 

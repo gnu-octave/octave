@@ -131,7 +131,7 @@
 ##   @itemx pdfcairolatex
 ##   @itemx epscairolatexstandalone
 ##   @itemx pdfcairolatexstandalone
-##     Generate Cairo based output when using the Gnuplot graphics toolkit.
+##     Generate Cairo-based output when using the Gnuplot graphics toolkit.
 ## The @samp{epscairo} and @samp{pdfcairo} devices are synonymous with
 ## the @samp{epsc} device.  The @LaTeX{} variants generate a @LaTeX{} file,
 ## @file{@var{filename}.tex}, for the text portions of a plot, and an image
@@ -141,7 +141,7 @@
 ##
 ##   @item  ill
 ##   @itemx @nospell{aifm}
-##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
+##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
 ##
 ##   @item canvas
 ##     Javascript-based drawing on HTML5 canvas viewable in a web browser
@@ -188,16 +188,20 @@
 ##     Metafont
 ##
 ##   @item png
-##     Portable network graphics
+##     Portable Network Graphics
 ##
 ##   @item pbm
 ##     PBMplus
 ##
 ##   @item pdf
-##     Portable document format
+##     Portable Document Format
 ##
 ##   @item svg
-##     Scalable vector graphics
+##     Scalable Vector Graphics
+##
+##   @item  tif
+##   @itemx tiff
+##     TIFF image, compressed
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone

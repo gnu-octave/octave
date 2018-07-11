@@ -211,6 +211,8 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = "emf";
   elseif (strcmp (arg_st.devopt, "jpg"))
     arg_st.devopt = "jpeg";
+  elseif (strcmp (arg_st.devopt, "tif"))
+    arg_st.devopt = "tiff";
   endif
 
   persistent dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...

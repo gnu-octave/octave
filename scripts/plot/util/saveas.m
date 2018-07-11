@@ -39,10 +39,13 @@
 ##     JPEG Image
 ##
 ##   @item png
-##     PNG Image
+##     Portable Network Graphics image
 ##
 ##   @item emf
-##     Enhanced Meta File
+##     Enhanced MetaFile
+##
+##   @item tif
+##     TIFF Image, compressed
 ##
 ## @end table
 ##

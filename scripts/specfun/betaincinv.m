@@ -55,7 +55,7 @@
 ## The variable @var{y} must be in the interval [0,1], while @var{a} and
 ## @var{b} must be real and strictly positive.
 ##
-## By default, @var{tail} is @qcode{"lower")} and the inverse of the incomplete
+## By default, @var{tail} is @qcode{"lower"} and the inverse of the incomplete
 ## beta function integrated from 0 to @var{x} is computed.  If @var{tail} is
 ## @qcode{"upper"} then the complementary function integrated from @var{x} to 1
 ## is inverted.

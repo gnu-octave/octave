@@ -61,9 +61,9 @@
 ## compute the initial conditions.
 ##
 ## The function typically returns two outputs.  Variable @var{y0_new} is a
-## column vector and contains the consistent initial value of y.  The output
-## @var{yp0_new} is a column vector and contains the consistent initial value
-## of yp.
+## column vector and contains the consistent initial value of @var{y}.  The
+## output @var{yp0_new} is a column vector and contains the consistent initial
+## value of @var{yp}.
 ##
 ## The optional third output @var{resnorm} is the norm of the vector of
 ## residuals.  If @var{resnorm} is small, @code{decic} has successfully

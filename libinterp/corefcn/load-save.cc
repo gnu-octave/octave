@@ -1802,8 +1802,8 @@ Query or set the internal variable that specifies the maximum amount of memory
 that Octave will save when writing a crash dump file.
 
 The limit is measured in kilobytes and is applied to the top-level workspace.
-The name of the crash dump file is is specified by
-@var{octave_core_file_name}).
+The name of the crash dump file is specified by
+@var{octave_core_file_name}.
 
 If @var{octave_core_file_options} flags specify a binary format, then
 @var{octave_core_file_limit} will be approximately the maximum size of the

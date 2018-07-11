@@ -88,7 +88,7 @@
 ## @end example
 ##
 ## The result is a volume, which for this constant-value integrand, is just
-## @code{@var{Length} * @var{Width} x @var{Height}}.
+## @code{@var{Length} * @var{Width} * @var{Height}}.
 ##
 ## Example 2 : integrate a triangular region in x-y plane
 ##

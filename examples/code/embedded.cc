@@ -33,7 +33,7 @@ main (void)
       //       exit (status);
       //     }
       //
-      // You may skip this step if you don't need to do do anything
+      // You may skip this step if you don't need to do anything
       // between reading the startup files and telling the interpreter
       // that you are ready to execute commands.
 

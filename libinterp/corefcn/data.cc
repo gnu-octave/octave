@@ -2624,7 +2624,7 @@ With a single output argument, @code{size} returns a row vector.  When called
 with multiple output arguments, @code{size} returns the size of dimension N
 in the Nth argument.  The number of rows, dimension 1, is returned in the
 first argument, the number of columns, dimension 2, is returned in the
-second argument, etc.  If there are more dimensions in @var{a} then there are
+second argument, etc.  If there are more dimensions in @var{a} than there are
 output arguments, @code{size} returns the total number of elements in the
 remaining dimensions in the final output argument.
 

@@ -294,7 +294,7 @@ num2hex (single ([-1, 1, e, Inf]))
 @end group
 @end example
 
-With the optional second argument @qcode{"cell}, return a cell array of
+With the optional second argument @qcode{"cell"}, return a cell array of
 strings instead of a character array.
 @seealso{hex2num, hex2dec, dec2hex}
 @end deftypefn */)

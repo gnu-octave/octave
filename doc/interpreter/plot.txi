@@ -2251,7 +2251,7 @@ Data source variables.
 @cindex contour series
 
 Contour group objects are created by the @code{contour}, @code{contourf}, and
-@code{contour3} functions.  The are also one of the handles returned by the
+@code{contour3} functions.  They are also one of the handles returned by the
 @code{surfc} and @code{meshc} functions.  The properties of the contour group
 are
 

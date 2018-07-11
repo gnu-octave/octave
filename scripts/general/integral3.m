@@ -89,7 +89,7 @@
 ## @end example
 ##
 ## For this constant-value integrand, the result is a volume which is just
-## @code{@var{Length} * @var{Width} x @var{Height}}.
+## @code{@var{Length} * @var{Width} * @var{Height}}.
 ##
 ## Example 2 : integrate over a spherical volume
 ##

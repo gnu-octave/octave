@@ -142,7 +142,7 @@
 ## M1fun = @@(x, string) strcmp (string, "notransp") * (M1 \ x) + ...
 ##                      strcmp (string, "transp") * (M1' \ x);
 ## M2fun = @@(x, string) strcmp (string, "notransp") * (M2 \ x) + ...
-##                      strcmp (string, "transp") * (M2' \ x);;
+##                      strcmp (string, "transp") * (M2' \ x);
 ## @end group
 ## @end example
 ##

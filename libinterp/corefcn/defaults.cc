@@ -468,7 +468,7 @@ OCTAVE_HOME corresponds to the configuration variable @var{prefix}.
 
 DEFUN (OCTAVE_EXEC_HOME, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} OCTAVE_HOME ()
+@deftypefn {} {} OCTAVE_EXEC_HOME ()
 Return the name of the top-level Octave installation directory for
 architecture-dependent files.  If not specified separately, the value
 is the same as OCTAVE_HOME@.  OCTAVE_EXEC_HOME corresponds to the

@@ -37,10 +37,6 @@ noinst_LTLIBRARIES += %reldir%/libexternal.la
 
 %canon_reldir%_libexternal_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
 
-%canon_reldir%_libexternal_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libexternal_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/libexternal.la
 
 liboctave_EXTRA_DIST += \

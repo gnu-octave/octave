@@ -109,10 +109,6 @@ noinst_LTLIBRARIES += %reldir%/libutil.la
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-%canon_reldir%_libutil_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libutil_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 %canon_reldir%_libutil_la_FFLAGS = $(F77_INTEGER_8_FLAG)
 
 liboctave_liboctave_la_LIBADD += %reldir%/libutil.la

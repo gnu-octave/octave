@@ -90,6 +90,4 @@ noinst_LTLIBRARIES += %reldir%/libwrappers.la
 %canon_reldir%_libwrappers_la_CPPFLAGS = \
   -Ilibgnu -I$(srcdir)/libgnu
 
-%canon_reldir%_libwrappers_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/libwrappers.la

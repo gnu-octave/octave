@@ -23,10 +23,6 @@ GEN_CONFIG_SHELL += \
   -I$(srcdir)/%reldir%/util \
   -I$(srcdir)/%reldir%/wrappers
 
-%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 octlib_LTLIBRARIES += %reldir%/liboctave.la
 
 %canon_reldir%_pkgconfig_DATA = %reldir%/octave.pc

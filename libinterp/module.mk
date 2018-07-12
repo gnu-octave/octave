@@ -22,10 +22,6 @@
   $(HDF5_CPPFLAGS) \
   $(MAGICK_CPPFLAGS)
 
-%canon_reldir%_liboctinterp_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_liboctinterp_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 octlib_LTLIBRARIES += %reldir%/liboctinterp.la
 
 %canon_reldir%_pkgconfig_DATA = %reldir%/octinterp.pc

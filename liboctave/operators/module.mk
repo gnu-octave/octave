@@ -82,10 +82,6 @@ nodist_%canon_reldir%_liboperators_la_SOURCES = $(BUILT_LIBOCTAVE_OPERATORS_SOUR
 
 %canon_reldir%_liboperators_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
 
-%canon_reldir%_liboperators_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_liboperators_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/liboperators.la
 
 liboctave_EXTRA_DIST += \

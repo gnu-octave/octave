@@ -38,8 +38,4 @@ noinst_LTLIBRARIES += %reldir%/libsystem.la
 
 %canon_reldir%_libsystem_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
 
-%canon_reldir%_libsystem_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libsystem_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/libsystem.la

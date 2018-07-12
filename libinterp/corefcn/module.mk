@@ -316,9 +316,7 @@ noinst_LTLIBRARIES += \
   $(LLVM_CPPFLAGS) \
   $(Z_CPPFLAGS)
 
-%canon_reldir%_libcorefcn_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
+%canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \
   %reldir%/default-defs.in.h \

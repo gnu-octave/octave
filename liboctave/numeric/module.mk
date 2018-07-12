@@ -120,10 +120,6 @@ noinst_LTLIBRARIES += %reldir%/libnumeric.la
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-%canon_reldir%_libnumeric_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libnumeric_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/libnumeric.la
 
 liboctave_EXTRA_DIST += $(LIBOCTAVE_OPT_IN)

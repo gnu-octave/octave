@@ -116,13 +116,8 @@ noinst_LTLIBRARIES += \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
   $(LLVM_CPPFLAGS)
 
-%canon_reldir%_libparse_tree_la_CFLAGS = \
-  $(AM_CFLAGS) \
-  $(WARN_CFLAGS)
-
 %canon_reldir%_libparse_tree_la_CXXFLAGS = \
   $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS) \
   $(LLVM_CXXFLAGS)
 
 libinterp_EXTRA_DIST += \

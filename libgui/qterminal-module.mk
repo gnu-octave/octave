@@ -45,9 +45,9 @@ libgui_qterminal_libqterminal_la_CPPFLAGS = \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -I$(srcdir)/libgui/src
 
-libgui_qterminal_libqterminal_la_CFLAGS = $(AM_CFLAGS)
+libgui_qterminal_libqterminal_la_CFLAGS = ${CPICFLAG} ${XTRA_CFLAGS}
 
-libgui_qterminal_libqterminal_la_CXXFLAGS = $(AM_CXXFLAGS)
+libgui_qterminal_libqterminal_la_CXXFLAGS = ${CXXPICFLAG} ${XTRA_CXXFLAGS}
 
 if WIN32_TERMINAL
 

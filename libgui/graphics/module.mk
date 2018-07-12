@@ -146,10 +146,6 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(o
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 noinst_LTLIBRARIES += %reldir%/libgui-graphics.la
 
 libgui_EXTRA_DIST += \

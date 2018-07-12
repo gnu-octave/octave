@@ -50,10 +50,6 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   -Ilibgui \
   -I$(srcdir)/libgui
 
-%canon_reldir%_liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 %canon_reldir%_liboctgui_la_LIBADD = \
   %reldir%/qterminal/libqterminal.la \
   %reldir%/src/libgui-src.la \

@@ -28,6 +28,10 @@ AC_INIT([GNU Octave], [5.0.0], [https://octave.org/bugs.html], [octave],
 dnl Note that the version number is duplicated here and in AC_INIT because
 dnl AC_INIT requires it to be static, not computed from shell variables.
 
+## The description of the Octave version number in the etc/HACKING.md
+## explains how to update these numbers for release and development
+## versions.
+
 OCTAVE_MAJOR_VERSION=5
 OCTAVE_MINOR_VERSION=0
 OCTAVE_PATCH_VERSION=0

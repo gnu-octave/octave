@@ -300,6 +300,94 @@ An overview of the directory layout of Octave's source files:
   - `fntests.m`
        script to run function tests embedded in C++ and .m files.
 
+Release Numbering
+-----------------
+
+Since version 5, Octave uses the following rules for release numbering:
+
+  Version Dev Phase       When
+
+  5.0.0   (experimental)  active development of Octave 5 on default branch
+  5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch
+  6.0.0   (experimental)  active development of Octave 6 on default branch
+  5.1.0   (release)       first release of Octave 5 from stable branch
+  5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release
+  5.2.0   (release)       second release of Octave 5 from stable branch
+  5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release
+  ...
+
+To summarize, the first release of Octave 5 will be Octave 5.1.0 while
+development snapshots will be Octave 5.0.0 and snapshots from the
+release branch Octave 5.n.1.
+
+With this numbering scheme:
+
+  * Any version X.0.0 means "this is an experimental development
+    version".
+
+  * Any version X.Y.1 means, "this is a pre-release version meant
+    for bug fixing and testing".
+
+  * Any version X.Y.0 with Y != 0 means "this is a released version".
+
+Shared Library Versioning
+-------------------------
+
+Version numbers for the liboctave, liboctinterp, and liboctgui shared
+libraries are set in the module.mk files in the top-level directory for
+each library using the variables
+
+  %canon_reldir%_%canon_reldir%_current
+  %canon_reldir%_%canon_reldir%_revision
+  %canon_reldir%_%canon_reldir%_age
+
+The rules for updating these version numbers are:
+
+  * Start with version information of ‘0:0:0’ for each libtool library.
+
+  * Update the version information only immediately before a public
+    release of your software.  More frequent updates are unnecessary,
+    and only guarantee that the current interface number gets larger
+    faster.
+
+  * If the library source code has changed at all since the last update,
+    then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+
+  * If any interfaces have been added, removed, or changed since the
+    last update, increment current, and set revision to 0.
+
+  * If any interfaces have been added since the last public release,
+    then increment age.
+
+  * If any interfaces have been removed or changed since the last public
+    release, then set age to 0.
+
+Never try to set the interface numbers so that they correspond to the
+Octave version number.  This is an abuse that only fosters
+misunderstanding of the purpose of library versions.
+
+The following explanation may help to understand the above rules a bit
+better: consider that there are three possible kinds of reactions from
+users of your library to changes in a shared library:
+
+  * Programs using the previous version may use the new version as
+    drop-in replacement, and programs using the new version can also
+    work with the previous one.  In other words, no recompiling nor
+    relinking is needed.  In this case, bump revision only, don’t touch
+    current nor age.
+
+  * Programs using the previous version may use the new version as
+    drop-in replacement, but programs using the new version may use APIs
+    not present in the previous one.  In other words, a program linking
+    against the new version may fail with unresolved symbols if linking
+    against the old version at runtime: set revision to 0, bump current
+    and age.
+
+  * Programs may need to be changed, recompiled, and relinked in order
+    to use the new version.  Bump current, set revision and age to 0.
+
+These guidelines also appear in the automake manual.
+
 
 ################################################################################
 

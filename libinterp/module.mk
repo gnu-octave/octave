@@ -162,7 +162,9 @@ if AMCOND_BUILD_EXTERNAL_LIBXERBLA
     liboctave/external/blas-xtra/libxerbla.la
 endif
 
-# Increment these as needed and according to the rules in the libtool manual:
+## Increment the following version numbers as needed and according
+## to the rules in the etc/HACKING.md file:
+
 %canon_reldir%_liboctinterp_current = 5
 %canon_reldir%_liboctinterp_revision = 0
 %canon_reldir%_liboctinterp_age = 0

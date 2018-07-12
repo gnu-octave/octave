@@ -1432,8 +1432,7 @@ DEFMETHOD (warning, interp, args, nargout,
 @deftypefnx {} {} warning (@var{state}, @var{id}, "local")
 @deftypefnx {} {} warning (@var{warning_struct})
 @deftypefnx {} {@var{warning_struct} =} warning (@dots{})
-@deftypefnx {} {@var{mode_struct} =} warning (@var{state}, @var{mode})
-@deftypefnx {} {} warning (@var{mode_struct})
+@deftypefnx {} {} warning (@var{state}, @var{mode})
 
 Display a warning message or control the behavior of Octave's warning system.
 

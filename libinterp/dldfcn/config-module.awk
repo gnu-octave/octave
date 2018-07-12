@@ -76,10 +76,6 @@ BEGIN {
         printf ("%%canon_reldir%%_%s_la_CPPFLAGS = $(libinterp_liboctinterp_la_CPPFLAGS) %s\n",
                 basename, cppflags[i]);
       }
-    printf ("%%canon_reldir%%_%s_la_CFLAGS = $(libinterp_liboctinterp_la_CFLAGS) %s\n",
-            basename, cppflags[i]);
-    printf ("%%canon_reldir%%_%s_la_CXXFLAGS = $(libinterp_liboctinterp_la_CXXFLAGS) %s\n",
-            basename, cppflags[i]);
     printf ("%%canon_reldir%%_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(OCT_LINK_OPTS) $(WARN_LDFLAGS)\n",
             basename, ldflags[i]);
     printf ("%%canon_reldir%%_%s_la_LIBADD = $(DLD_LIBOCTINTERP_LIBADD) %s\n",

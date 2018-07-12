@@ -316,8 +316,6 @@ noinst_LTLIBRARIES += \
   $(LLVM_CPPFLAGS) \
   $(Z_CPPFLAGS)
 
-%canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
-
 libinterp_EXTRA_DIST += \
   %reldir%/default-defs.in.h \
   %reldir%/genprops.awk \

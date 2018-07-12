@@ -1406,7 +1406,6 @@ AC_ARG_ENABLE([jit],
     [(EXPERIMENTAL) enable JIT compiler])],
   [if test "$enableval" = yes; then ENABLE_JIT=yes; fi], [])
 
-LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
@@ -1424,7 +1423,6 @@ if test $ENABLE_JIT = yes; then
     warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
 
     save_CPPFLAGS="$CPPFLAGS"
-    save_CXXFLAGS="$CXXFLAGS"
     save_LDFLAGS="$LDFLAGS"
 
     dnl Use -isystem if available because we don't want to see warnings in LLVM
@@ -1435,7 +1433,6 @@ if test $ENABLE_JIT = yes; then
 
     dnl Use -isystem so we don't get warnings from llvm headers
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-    LLVM_CXXFLAGS=
     LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
 
     LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
@@ -1447,7 +1444,6 @@ if test $ENABLE_JIT = yes; then
     dnl Ideally we should get these from llvm-config, but llvm-config isn't
     dnl very helpful.
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-    CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
 
@@ -1480,7 +1476,6 @@ if test $ENABLE_JIT = yes; then
     OCTAVE_LLVM_LEGACY_PASSMANAGER_API
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
-    CXXFLAGS="$save_CXXFLAGS"
     LDFLAGS="$save_LDFLAGS"
   fi
 
@@ -1489,7 +1484,6 @@ if test $ENABLE_JIT = yes; then
   else
     ENABLE_JIT=no
     LLVM_CPPFLAGS=
-    LLVM_CXXFLAGS=
     LLVM_LDFLAGS=
     LLVM_LIBS=
     OCTAVE_CONFIGURE_WARNING([warn_llvm])
@@ -1505,7 +1499,6 @@ if test $ENABLE_JIT = yes; then
 fi
 
 AC_SUBST(LLVM_CPPFLAGS)
-AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
 AM_CONDITIONAL([AMCOND_HAVE_LLVM], [test -z "$warn_llvm"])

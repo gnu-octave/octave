@@ -39,7 +39,7 @@ noinst_HEADERS += \
 
 include %reldir%/src/module.mk
 include %reldir%/graphics/module.mk
-include %reldir%/qterminal-module.mk
+include %reldir%/qterminal/module.mk
 
 nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   %reldir%/liboctgui-build-info.cc

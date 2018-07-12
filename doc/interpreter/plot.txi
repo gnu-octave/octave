@@ -2646,6 +2646,7 @@ Data source variables.
 
 @menu
 * Customizing Toolkit Behavior::
+* Hardware vs. Software Rendering::
 @end menu
 
 @node Customizing Toolkit Behavior
@@ -2657,3 +2658,20 @@ following utility functions.  Note: Not all functions apply to every
 graphics toolkit.
 
 @DOCSTRING(gnuplot_binary)
+
+@node Hardware vs. Software Rendering
+@subsubsection Hardware vs. Software Rendering
+@cindex opengl rendering slow windows
+
+On Windows platforms, Octave uses software rendering for the OpenGL graphics
+toolkits (@qcode{"qt"} and @qcode{"fltk"}) by default.  This is done to avoid
+rendering and printing issues due to imperfect OpenGL driver implementations for
+diverse graphic cards from different vendors.  As a down-side, software
+rendering might be considerably slower than hardware accelerated rendering.  To
+permanently switch back to hardware accelerated rendering with your graphic card
+drivers, rename the following file while Octave is closed:
+
+@file{@var{octave-home}\bin\opengl32.dll}
+@*where @var{octave-home} is the directory in which Octave is installed (the
+default is @file{C:\Octave\Octave-@var{version}}).
+

@@ -1372,8 +1372,18 @@ of the object are drawn with light and shadow effects. Supported values are \
 the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
+      case "facenormals"
+        s.doc = "Face normals are used for lighting the edges or faces if the \
+@code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"flat\"}.  __modemsg__";
+
+      case "facenormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{facenormals} are automatically calculated if the @code{edgelighting} or \
+@code{facelighting} property are set to @qcode{\"flat\"} and at least one \
+@code{light} object is present and visible in the same axes.";
+
       case "faces"
-      case "xdata"
         s.valid = valid_vecmat;
 
       case "facevertexalphadata"
@@ -1401,7 +1411,6 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
         s.doc = "@xref{XREFlinemarkersize, , @w{line markersize property}}.";
         s.valid = "scalar";
 
-      case "normalmode"
       case "specularcolorreflectance"
         s.doc = "Reflectance for specular color.  Value between 0.0 (color \
 of underlying face) and 1.0 (color of light source).";
@@ -1418,6 +1427,16 @@ specular reflex) and 1.0 (full specular reflex).";
         s.valid = "scalar";
 
       case "vertexnormals"
+        s.doc = "Vertex normals are used for lighting the edges or faces if \
+the @code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"gouraud\"}.  __modemsg__";
+
+      case "vertexnormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{vertexnormals} are automatically calculated if the @code{edgelighting} \
+or @code{facelighting} property are set to @qcode{\"gouraud\"} and at least \
+one @code{light} object is present and visible in the same axes.";
+
       case "vertices"
         s.valid = valid_vecmat;
 

@@ -78,10 +78,6 @@ endif
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-%canon_reldir%_octave_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
-
 %canon_reldir%_octave_cli_SOURCES = %reldir%/main-cli.cc
 nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 
@@ -97,10 +93,6 @@ nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 %canon_reldir%_octave_cli_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
-
-%canon_reldir%_octave_cli_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
 
 if AMCOND_BUILD_QT_GUI
   %canon_reldir%_octave_gui_SOURCES = %reldir%/main-gui.cc
@@ -123,10 +115,6 @@ endif
   $(OCTAVE_GUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-%canon_reldir%_octave_gui_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
-
 %canon_reldir%_mkoctfile_SOURCES =
 
 nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
@@ -138,10 +126,6 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
 %canon_reldir%_mkoctfile_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
-
-%canon_reldir%_mkoctfile_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
 
 %canon_reldir%_octave_config_SOURCES =
 
@@ -155,10 +139,6 @@ nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
 %canon_reldir%_octave_config_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
-
-%canon_reldir%_octave_config_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 

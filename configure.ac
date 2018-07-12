@@ -1912,76 +1912,6 @@ DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
 
-### Check for OSMesa.
-## Library is needed for offscreen rendering with Qt < 5.1 or FLTK.
-use_osmesa=auto
-AC_ARG_WITH([osmesa],
-  [AS_HELP_STRING([--with-osmesa],
-    [use OSMesa library for offscreen rendering of invisible figures])],
-  [if test x"$withval" = xyes; then
-     use_osmesa=yes
-   else
-     use_osmesa=no
-   fi])
-
-dnl If no argument given, only use OSMesa when Qt is too old
-if test $use_osmesa = auto; then
-  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
-  ## Qt is found.
-  if test "$octave_cv_qt_opengl_os_ok" = yes; then
-    use_osmesa=no
-  else
-    use_osmesa=yes
-  fi
-fi
-
-if test $use_osmesa = yes; then
-  dnl Pre-declare warning message, and unset if library is found
-  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
-  ## Qt is found.
-  if test "$octave_cv_qt_opengl_os_ok" = no; then
-    warn_osmesa="OSMesa library not found and Qt < 5.1.  Offscreen rendering with OpenGL will be disabled."
-  else
-    warn_osmesa="OSMesa library not found.  Offscreen rendering with FLTK will be disabled."
-  fi
-
-  OSMESA_LIBS="-lOSMesa"
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  CPPFLAGS="$OSMESA_CPPFLAGS $CPPFLAGS"
-  LDFLAGS="$OSMESA_LDFLAGS $LDFLAGS"
-  LIBS="$OSMESA_LIBS $LIBS"
-  AC_LANG_PUSH(C++)
-  ac_octave_osmesa_check_for_lib=no
-  AC_CHECK_HEADERS([osmesa.h GL/osmesa.h],
-                   [ac_octave_osmesa_check_for_lib=yes; break])
-  if test $ac_octave_osmesa_check_for_lib = yes; then
-    AC_CACHE_CHECK([for OSMesaCreateContext in OSMesa],
-      octave_cv_lib_osmesa,
-      [AC_LINK_IFELSE([AC_LANG_CALL([], [OSMesaCreateContext])],
-        [octave_cv_lib_osmesa=yes], [octave_cv_lib_osmesa=no])
-    ])
-    if test $octave_cv_lib_osmesa = yes; then
-      warn_osmesa=
-      AC_DEFINE(HAVE_OSMESA, 1, [Define to 1 if OSMesa is available.])
-    fi
-  fi
-  AC_LANG_POP(C++)
-  CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
-  LIBS="$save_LIBS"
-
-  if test -n "$warn_osmesa"; then
-    OCTAVE_CONFIGURE_WARNING([warn_osmesa])
-    OSMESA_LIBS=
-  fi
-fi
-
-AC_SUBST(OSMESA_CPPFLAGS)
-AC_SUBST(OSMESA_LDFLAGS)
-AC_SUBST(OSMESA_LIBS)
-
 ### Check for FLTK library
 
 check_fltk=yes
@@ -2638,7 +2568,7 @@ AC_ARG_ENABLE([docs],
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
 if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || { test "$have_qt_opengl_offscreen" = no && test -n "$warn_osmesa"; }; then
+  if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."

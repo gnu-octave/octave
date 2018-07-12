@@ -101,12 +101,7 @@ function frame = getframe (h = [], rect = [])
               || __have_feature__ ("QT_OFFSCREEN"))))
     cdata = __get_frame__ (hf);
   else
-    ## Use OpenGL offscreen rendering with OSMesa for non-visible figures
-    try
-      cdata = __osmesa_print__ (hf);
-    catch
-      error ("getframe: couldn't render invisible figure. %s", lasterr ());
-    end_try_catch
+    error ("getframe: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
   endif
 
   i1 = max (floor (pos(1)), 1);

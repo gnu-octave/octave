@@ -157,8 +157,7 @@ function opts = __opengl_print__ (opts)
       ## Use toolkits "print_figure" method
       drawnow (gl2ps_device{n}, ['|' pipeline{n}]);
     else
-      ## Use OpenGL offscreen rendering with OSMesa
-      __osmesa_print__ (opts.figure, ['|' pipeline{n}], gl2ps_device{n});
+      error ("print: figure must be visible or qt toolkit must be used with __gl_window__ property 'on' or QT_OFFSCREEN feature available");
     endif
   endfor
 

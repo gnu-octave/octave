@@ -38,8 +38,10 @@ endif
 
 appdatadir = $(datadir)/metainfo
 
-appdata_DATA = \
+APPDATA_XML_FILE := \
   %reldir%/icons/org.octave.Octave.appdata.xml
+
+appdata_DATA = $(APPDATA_XML_FILE)
 
 desktopdir = $(datadir)/applications
 
@@ -102,6 +104,23 @@ $(BUILT_PNG_ICONS): %reldir%/icons/octave-logo.svg | %reldir%/icons/$(octave_dir
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(ICOTOOL) --create --raw  $(WINDOWS_PNG_ICONS) > $@-t && \
 	mv $@-t $@
+
+## Check that the release date and version number are in
+## $(APPDATA_XML_FILE), but only for actual releases, which means
+## we skip the test if the minor version number is 0 or the patch
+## version number is not 0.
+
+appdata-dist-hook:
+	@test x"$(DIST_IGNORE_APPDATA_VERSION)" != x || \
+	 test $(OCTAVE_MINOR_VERSION) -eq 0 || \
+	 test $(OCTAVE_PATCH_VERSION) -ne 0 || \
+	 grep "<release *date=\"$(OCTAVE_RELEASE_DATE)\" *version=\"$(OCTAVE_VERSION)\"/>" $(srcdir)/$(APPDATA_XML_FILE) > /dev/null || \
+	{ echo; \
+	  echo "Packaging distribution requires the version number in the $(APPDATA_XML_FILE)."; \
+	  echo "Please update first or pass DIST_IGNORE_APPDATA_VERSION=1."; \
+	  echo "Cannot package distribution!"; \
+	  echo; exit 1; }
+.PHONY: appdata-dist-hook
 
 install-data-local: install-icons
 

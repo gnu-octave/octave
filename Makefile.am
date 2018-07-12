@@ -223,6 +223,7 @@ DIST_HOOKS := \
   docs-dist-hook \
   fix-file-perms-dist-hook \
   hg-id-dist-hook \
+  appdata-dist-hook \
   icons-dist-hook \
   scripts-dist-hook
 

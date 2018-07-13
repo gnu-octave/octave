@@ -601,7 +601,7 @@ endfunction
 %! C = [1 0 0 0; 0 0 1 0];
 %! B = @(lam) [C*expm(A(lam)*0); C*expm(A(lam)*1)];
 %! detB = @(lam) det (B(lam));
-%! 
+%!
 %! [x, fvec, info] = fsolve (detB, 0);
 %! assert (x == 0);
 %! assert (fvec == -1);

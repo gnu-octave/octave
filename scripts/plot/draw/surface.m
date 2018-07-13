@@ -189,7 +189,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c,
                       other_args{:});
 
-  ## FIXME: ishold called this way is very slow. 
+  ## FIXME: ishold called this way is very slow.
   if (! ishold (ax))
     set (ax, "view", [0, 90]);
   endif

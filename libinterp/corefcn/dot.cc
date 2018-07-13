@@ -313,8 +313,8 @@ template <typename T>
 T
 do_blkmm (const octave_value& xov, const octave_value& yov)
 {
-  const T x = octave_value_extract<T> (xov); 
-  const T y = octave_value_extract<T> (yov); 
+  const T x = octave_value_extract<T> (xov);
+  const T y = octave_value_extract<T> (yov);
   F77_INT m, n, k, np;
   dim_vector dimz;
 

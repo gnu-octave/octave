@@ -91,10 +91,10 @@ public:
 
     octave_idx_type nel = this->length ();
 
-    const T zero = T ();
+    static constexpr T zero = T ();
 
     return std::count_if (d, d + nel,
-                          [zero] (T elem) { return elem != zero; });
+                          [] (T elem) { return elem != zero; });
   }
 
   MArray<T> diag (octave_idx_type k = 0) const

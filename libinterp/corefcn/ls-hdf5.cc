@@ -89,8 +89,11 @@ hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
 {
 #if defined (HAVE_HDF5)
 
-  const char *s_name = 
-     octave::sys::get_ASCII_filename (std::string (name)).c_str ();
+  std::string fname (name);
+
+  std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
+  const char *s_name = ascii_fname.c_str ();
 
   if (mode & std::ios::in)
     file_id = H5Fopen (s_name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
@@ -142,7 +145,11 @@ hdf5_fstreambase::open (const char *name, int mode, int)
 
   clear ();
 
-  const char *s_name = octave::sys::get_ASCII_filename (std::string (name)).c_str ();
+  std::string fname (name);
+
+  std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
+  const char *s_name = ascii_fname.c_str ();
 
   if (mode & std::ios::in)
     file_id = H5Fopen (s_name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);

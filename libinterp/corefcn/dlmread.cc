@@ -221,7 +221,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       tname = find_data_file_in_load_path ("dlmread", tname);
 
-      input_file.open (octave::sys::get_ASCII_filename (tname).c_str (), std::ios::in);
+      std::string ascii_fname = octave::sys::get_ASCII_filename (tname);
+
+      input_file.open (ascii_fname.c_str (), std::ios::in);
 
       if (! input_file)
         error ("dlmread: unable to open file '%s'", fname.c_str ());

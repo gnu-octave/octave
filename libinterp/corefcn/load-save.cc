@@ -226,7 +226,9 @@ check_gzip_magic (const std::string& fname)
 {
   bool retval = false;
 
-  std::ifstream file (octave::sys::get_ASCII_filename (fname).c_str (),
+  std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
+  std::ifstream file (ascii_fname.c_str (),
                       std::ios::in | std::ios::binary);
 
   unsigned char magic[2];
@@ -313,9 +315,11 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 {
   load_save_format retval = LS_UNKNOWN;
 
+  std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
 #if defined (HAVE_HDF5)
   // check this before we open the file
-  if (H5Fis_hdf5 (octave::sys::get_ASCII_filename (fname).c_str ()) > 0)
+  if (H5Fis_hdf5 (ascii_fname.c_str ()) > 0)
     return LS_HDF5;
 #endif
 
@@ -327,7 +331,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
   if (! use_zlib)
     {
-      std::ifstream file (octave::sys::get_ASCII_filename (fname).c_str (),
+      std::ifstream file (ascii_fname.c_str (),
                           std::ios::in | std::ios::binary);
       if (file)
         {
@@ -836,8 +840,9 @@ Force Octave to assume the file is in Octave's text format.
           else
 #endif
             {
-              std::ifstream file (
-                octave::sys::get_ASCII_filename (fname).c_str (), mode);
+              std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
+              std::ifstream file (ascii_fname.c_str (), mode);
 
               if (! file)
                 error ("load: unable to open input file '%s'",
@@ -1700,9 +1705,10 @@ file @file{data} in Octave's binary format.
           if (append)
             error ("save: appending to HDF5 files is not implemented");
 
+          std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+
           bool write_header_info
-            = ! (append && H5Fis_hdf5 (
-                 octave::sys::get_ASCII_filename (fname).c_str ()) > 0);
+            = ! (append && H5Fis_hdf5 (ascii_fname.c_str ()) > 0);
 
           hdf5_ofstream hdf5_file (fname.c_str (), mode);
 

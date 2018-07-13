@@ -582,9 +582,11 @@ namespace octave
 
     if (! initialized)
       {
-        std::ifstream file (
-          octave::sys::get_ASCII_filename (m_built_in_docstrings_file).c_str (),
-          std::ios::in | std::ios::binary);
+        std::string ascii_fname
+          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+
+        std::ifstream file (ascii_fname.c_str (),
+                            std::ios::in | std::ios::binary);
 
         if (! file)
           error ("failed to open docstrings file: %s",
@@ -666,9 +668,11 @@ namespace octave
         std::streampos beg = txt_limits.first;
         std::streamoff len = txt_limits.second;
 
-        std::ifstream file (
-          octave::sys::get_ASCII_filename (m_built_in_docstrings_file).c_str (),
-          std::ios::in | std::ios::binary);
+        std::string ascii_fname
+          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+
+        std::ifstream file (ascii_fname.c_str (),
+                            std::ios::in | std::ios::binary);
 
         if (! file)
           error ("failed to open docstrings file: %s",

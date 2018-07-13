@@ -594,7 +594,9 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
     os << "dbtype: unknown function " << name << "\n";
   else
     {
-      std::ifstream fs (octave::sys::get_ASCII_filename (ff).c_str (), std::ios::in);
+      std::string ascii_fname = octave::sys::get_ASCII_filename (ff);
+
+      std::ifstream fs (ascii_fname.c_str (), std::ios::in);
 
       if (! fs)
         os << "dbtype: unable to open '" << ff << "' for reading!\n";

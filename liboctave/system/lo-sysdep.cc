@@ -196,77 +196,137 @@ namespace octave
       return retval;
     }
 
+    // At quite a few places in the code we are passing file names as
+    // char arrays to external library functions.
+
+    // When these functions try to locate the corresponding file on the
+    // disc, they need to use the wide character API on Windows to
+    // correctly open files with non-ASCII characters.
+
+    // But they have no way of knowing which encoding we are using for
+    // the passed string.  So they have no way of reliably converting to
+    // a wchar_t array.  (I.e. there is no possible fix for these
+    // functions with current C or C++.)
+
+    // To solve the dilemma, the function "get_ASCII_filename" first
+    // checks whether there are any non-ASCII characters in the passed
+    // file name.  If there are not, it returns the original name.
+
+    // Otherwise, it tries to obtain the short file name (8.3 naming
+    // scheme) which only consists of ASCII characters and are safe to
+    // pass.  However, short file names can be disabled for performance
+    // reasons on the file system level with NTFS.  So there is no
+    // guarantee that these exist.
+
+    // If short file names are not stored, a hard link to the file is
+    // created.  For this the path to the file is split at the deepest
+    // possible level that doesn't contain non-ASCII characters.  At
+    // that level a hidden folder is created that holds the hard links.
+    // That means we need to have write access on that location.  A path
+    // to that hard link is returned.
+
+    // If the file system is FAT32, there are no hard links.  But FAT32
+    // always stores short file names.  So we are safe.
+
+    // ExFAT that is occasionally used on USB sticks and SD cards stores
+    // neither short file names nor does it support hard links.  So for
+    // exFAT with this function, there is (currently) no way to generate
+    // a file name that is stripped from non-ASCII characters but still
+    // is valid.
+
+    // For Unixy systems, this function does nothing.
+
     std::string
     get_ASCII_filename (const std::string& orig_file_name)
     {
 #if defined (OCTAVE_USE_WINDOWS_API)
-      // Return file name that only contains ASCII characters that can be used
-      // to access the file orig_file_name.  The original file must exist in the
-      // file system before calling this function.
-      // This is useful for passing file names to functions that are not aware
-      // of the character encoding we are using.
 
-      // 1. Check whether filename contains non-ASCII (UTF-8) characters
-      std::string::const_iterator first_non_ASCII =
-                std::find_if (orig_file_name.begin (), orig_file_name.end (),
-                [](char c){return (c < 0 || c >= 128);});
+      // Return file name that only contains ASCII characters that can
+      // be used to access the file orig_file_name.  The original file
+      // must exist in the file system before calling this function.
+      // This is useful for passing file names to functions that are not
+      // aware of the character encoding we are using.
+
+      // 1. Check whether filename contains non-ASCII (UTF-8) characters.
+
+      std::string::const_iterator first_non_ASCII
+        = std::find_if (orig_file_name.begin (), orig_file_name.end (),
+                        [](char c) { return (c < 0 || c >= 128); });
+
       if (first_non_ASCII == orig_file_name.end ())
         return orig_file_name;
 
-      // 2. Check if file system stores short filenames (always ASCII-only).
+      // 2. Check if file system stores short filenames (always
+      // ASCII-only).
+
       const wchar_t *w_orig_file_name = u8_to_wstring (orig_file_name).c_str ();
-      // get short filename (8.3) from UTF-16 filename
+
+      // Get short filename (8.3) from UTF-16 filename.
+
       long length = GetShortPathNameW (w_orig_file_name, NULL, 0);
 
-      // Dynamically allocate the correct size
-      // (terminating null char was included in length)
+      // Dynamically allocate the correct size (terminating null char
+      // was included in length).
+
       wchar_t *w_short_file_name = new wchar_t[length];
       length = GetShortPathNameW (w_orig_file_name, w_short_file_name, length);
 
-      std::string short_file_name = u8_from_wstring (std::wstring (w_short_file_name));
+      std::string short_file_name
+        = u8_from_wstring (std::wstring (w_short_file_name));
 
       if (short_file_name.compare (orig_file_name) != 0)
         return short_file_name;
 
-      // 3. Create hard link with only-ASCII characters
+      // 3. Create hard link with only-ASCII characters.
       // Get longest possible part of path that only contains ASCII chars.
-      size_t pos = (std::string (orig_file_name.begin (), first_non_ASCII)).
-                        find_last_of (octave::sys::file_ops::dir_sep_chars ());
+
+      std::string tmp_substr
+        = std::string (orig_file_name.begin (), first_non_ASCII);
+
+      size_t pos
+        = tmp_substr.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+
       std::string par_dir = orig_file_name.substr (0, pos+1);
 
-      // create .oct_ascii directory
+      // Create .oct_ascii directory.
       // FIXME: We need to have write permission in this location.
+
       std::string oct_ascii_dir = par_dir + ".oct_ascii";
       std::string test_dir = canonicalize_file_name (oct_ascii_dir);
+
       if (test_dir.empty ())
       {
         std::string msg;
         int status = octave::sys::mkdir (oct_ascii_dir, 0777, msg);
+
         if (status < 0)
           return orig_file_name;
-        // set hidden property
+
+        // Set hidden property.
         SetFileAttributesA (oct_ascii_dir.c_str (), FILE_ATTRIBUTE_HIDDEN);
       }
 
-      // create file from hash of full filename
-      std::string filename_hash = oct_ascii_dir + file_ops::dir_sep_str () +
-                                  octave::crypto::hash ("SHA1", orig_file_name);
-      std::string _filename_hash_ = canonicalize_file_name (filename_hash);
-      if (! _filename_hash_.empty ())
-        return _filename_hash_;
+      // Create file from hash of full filename.
+      std::string filename_hash
+        = (oct_ascii_dir + file_ops::dir_sep_str ()
+           + octave::crypto::hash ("SHA1", orig_file_name));
+
+      std::string abs_filename_hash = canonicalize_file_name (filename_hash);
+
+      if (! abs_filename_hash.empty ())
+        return abs_filename_hash;
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
+
       for (size_t i=0; i < filename_hash.length (); i++)
         w_filename_hash[i] = filename_hash.at (i);
+
       if (CreateHardLinkW (w_filename_hash, w_orig_file_name, NULL))
         return filename_hash;
 
-      return orig_file_name;
-
-#else
-      return orig_file_name;
 #endif
-    }
 
+      return orig_file_name;
+    }
   }
 }

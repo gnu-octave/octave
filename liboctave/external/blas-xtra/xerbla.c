@@ -44,6 +44,9 @@ typedef void (*xerbla_handler_fptr) (void);
 
 static xerbla_handler_fptr xerbla_handler = NULL;
 
+/* Prototype to stop -Wmissing-prototypes from triggering */
+void octave_set_xerbla_handler (xerbla_handler_fptr fcn);
+
 void
 octave_set_xerbla_handler (xerbla_handler_fptr fcn)
 {
@@ -52,6 +55,12 @@ octave_set_xerbla_handler (xerbla_handler_fptr fcn)
 
 /* Replacement for BLAS and LAPACK XERBLA subroutine that calls an
    optionally installed handler function.  */
+
+/* Prototype to stop -Wmissing-prototypes from triggering */
+F77_RET_T
+F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DEF (s_arg, len),
+                           const F77_INT *info
+                           F77_CHAR_ARG_LEN_DEF (len));
 
 F77_RET_T
 F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DEF (s_arg, len),

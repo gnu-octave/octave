@@ -241,10 +241,14 @@ endfunction
 ## Clear shared variables
 %!shared
 
-## FIXME: Integers greater than flintmax() - 1 should be masked to show just
-##        16 digits of precision.
-%!test <36133>
-%! assert (num2str (1e23), "100000000000000000000000");
+## FIXME: Integers greater than 1e15 should switch to exponential notation
+%!assert <36133> (num2str (1e15), "1000000000000000")
+%!assert <36133> (num2str (1e16), "1e+16")
+## Even exact integers in IEEE notation should use exponential notation
+%!assert <36133> (num2str(2^512), "1.34078079299426e+154");
+## Mixed integer/floating point arrays
+%!assert <36133> (num2str ([2.1, 1e23, pi]),
+%!                         "2.1  9.999999999999999e+22      3.141592653589793")
 
 ## Test for extra rows generated from newlines in format
 %!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)

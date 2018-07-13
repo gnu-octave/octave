@@ -104,7 +104,7 @@ function retval = num2str (x, arg)
           ndgt = 0;  # All Inf or all zero array
         endif
 
-        if (any (x(valid) != fix (x(valid))))
+        if (ndgt > 15 || any (x(valid) != fix (x(valid))))
           ## Floating point input
           ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
           ndgt = min (ndgt, 16);      # Cap significant digits at 16
@@ -115,8 +115,6 @@ function retval = num2str (x, arg)
           if (any (! valid))
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
-          ## FIXME: Integers must be masked to show only 16 significant digits
-          ##        See test case for bug #36133 below
           fmt = sprintf ("%%%d.0f", ndgt);
         endif
       else
@@ -241,14 +239,14 @@ endfunction
 ## Clear shared variables
 %!shared
 
-## FIXME: Integers greater than 1e15 should switch to exponential notation
-%!assert <36133> (num2str (1e15), "1000000000000000")
-%!assert <36133> (num2str (1e16), "1e+16")
+## Integers greater than 1e15 should switch to exponential notation
+%!assert <*36133> (num2str (1e15), "1000000000000000")
+%!assert <*36133> (num2str (1e16), "1e+16")
 ## Even exact integers in IEEE notation should use exponential notation
-%!assert <36133> (num2str(2^512), "1.34078079299426e+154");
+%!assert <*36133> (num2str(2^512), "1.34078079299426e+154")
 ## Mixed integer/floating point arrays
-%!assert <36133> (num2str ([2.1, 1e23, pi]),
-%!                         "2.1  9.999999999999999e+22      3.141592653589793")
+%!assert <*36133> (num2str ([2.1, 1e23, pi]),
+%!                 "2.1  9.999999999999999e+22      3.141592653589793")
 
 ## Test for extra rows generated from newlines in format
 %!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)

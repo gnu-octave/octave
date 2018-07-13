@@ -188,7 +188,6 @@ An overview of the directory layout of Octave's source files:
     - `fftpack`     subroutines for fast fourier transforms
     - `lapack-xtra` wrappers for lapack functions used in Octave
     - `odepack`     ordinary differential equation solver
-    - `ordered-qz`  code for ordering eigenvalues for QZ factorization
     - `quadpack`    subroutines for numerical integration
     - `ranlib`      random number generators
     - `slatec-err`  slatec error handling library
@@ -250,8 +249,6 @@ An overview of the directory layout of Octave's source files:
          resource file.
     - `m-editor`
          source files for the m-file editor.
-    - `qtinfo`
-         source files for the Qt texinfo browser.
 
 - `m4` m4 scripts used by configure during the build process.
 

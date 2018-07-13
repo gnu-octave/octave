@@ -463,9 +463,8 @@ namespace octave
     octave_value_list fct = F__which__ (interp, ovl (file),0);
     octave_map map = fct(0).map_value ();
 
-    QString type = QString::fromStdString (
-                    map.contents ("type").data ()[0].string_value ());
-    if (type == QString ("command-line function"))
+    std::string type = map.contents ("type").data ()[0].string_value ();
+    if (type == "command-line function")
       return;
 
     do_insert_debugger_pointer (file, line);

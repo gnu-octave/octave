@@ -1110,20 +1110,18 @@ namespace octave
     octave_value_list fct = F__which__ (interp, ovl (fname.toStdString ()),0);
     octave_map map = fct(0).map_value ();
 
-    QString type = QString::fromStdString (
-                                           map.contents ("type").data ()[0].string_value ());
-    QString name = QString::fromStdString (
-                                           map.contents ("name").data ()[0].string_value ());
+    std::string type = map.contents ("type").data ()[0].string_value ();
+    std::string name = map.contents ("name").data ()[0].string_value ();
 
     QString message = QString ();
     QString filename = QString ();
 
-    if (type == QString ("built-in function"))
+    if (type == "built-in function")
       {
         // built in function: can't edit
         message = tr ("%1 is a built-in function");
       }
-    else if (type.isEmpty ())
+    else if (type == "")
       {
         // function not known to octave -> try directory of edited file
         // get directory
@@ -1168,7 +1166,7 @@ namespace octave
         QMessageBox *msgBox
           = new QMessageBox (QMessageBox::Critical,
                              tr ("Octave Editor"),
-                             message.arg (name),
+                             message.arg (QString::fromStdString (name)),
                              QMessageBox::Ok, this);
 
         msgBox->setWindowModality (Qt::NonModal);

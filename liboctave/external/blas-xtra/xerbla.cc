@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <stdio.h>
+#include <iostream>
 
 #include "f77-fcn.h"
 #include "lo-blas-proto.h"
@@ -43,12 +43,9 @@ typedef void (*xerbla_handler_fptr) (void);
    constructed.  If we call error directly, that would mean that the
    BLAS and LAPACK libraries would have to depend on Octave...  */
 
-static xerbla_handler_fptr xerbla_handler = NULL;
+static xerbla_handler_fptr xerbla_handler = nullptr;
 
-/* Prototype to stop -Wmissing-prototypes from triggering */
-void octave_set_xerbla_handler (xerbla_handler_fptr fcn);
-
-void
+extern "C" void
 octave_set_xerbla_handler (xerbla_handler_fptr fcn)
 {
   xerbla_handler = fcn;
@@ -59,14 +56,14 @@ octave_set_xerbla_handler (xerbla_handler_fptr fcn)
 
 F77_RET_T
 F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DEF (s_arg, len),
-                           const F77_INT *info
+                           const F77_INT& info
                            F77_CHAR_ARG_LEN_DEF (len))
 {
   const char *s = F77_CHAR_ARG_USE (s_arg);
   int slen = F77_CHAR_ARG_LEN_USE (s_arg, len);
 
-  fprintf (stderr, "%.*s: parameter number %ld is invalid\n", slen, s,
-           (long) (*info));
+  std::cerr << std::string (s, slen) << ": parameter number " << info
+            << " is invalid" << std::endl;
 
    if (xerbla_handler)
      (*xerbla_handler) ();

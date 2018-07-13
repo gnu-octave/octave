@@ -41,7 +41,7 @@ OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 2018 John W. Eaton and others."
 
-OCTAVE_RELEASE_DATE="2018-04-30"
+OCTAVE_RELEASE_DATE="2018-07-13"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

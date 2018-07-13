@@ -306,7 +306,7 @@ octave_getcwd_wrapper (char *nm, size_t len)
     {
       if (strlen (retval) > len)
         return NULL;
-      
+
       memcpy (nm, retval, len);
       free (retval);
       return nm;

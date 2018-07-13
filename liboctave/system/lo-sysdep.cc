@@ -97,7 +97,7 @@ namespace octave
       // Find first file in directory.
       HANDLE hFind = FindFirstFileW (u8_to_wstring (path_name).c_str (),
                               &ffd);
-      if (INVALID_HANDLE_VALUE == hFind) 
+      if (INVALID_HANDLE_VALUE == hFind)
         {
           DWORD errCode = GetLastError ();
           char *errorText;
@@ -207,7 +207,7 @@ namespace octave
       // of the character encoding we are using.
 
       // 1. Check whether filename contains non-ASCII (UTF-8) characters
-      std::string::const_iterator first_non_ASCII = 
+      std::string::const_iterator first_non_ASCII =
                 std::find_if (orig_file_name.begin (), orig_file_name.end (),
                 [](char c){return (c < 0 || c >= 128);});
       if (first_non_ASCII == orig_file_name.end ())
@@ -218,11 +218,11 @@ namespace octave
       // get short filename (8.3) from UTF-16 filename
       long length = GetShortPathNameW (w_orig_file_name, NULL, 0);
 
-      // Dynamically allocate the correct size 
+      // Dynamically allocate the correct size
       // (terminating null char was included in length)
       wchar_t *w_short_file_name = new wchar_t[length];
       length = GetShortPathNameW (w_orig_file_name, w_short_file_name, length);
- 
+
       std::string short_file_name = u8_from_wstring (std::wstring (w_short_file_name));
 
       if (short_file_name.compare (orig_file_name) != 0)
@@ -233,7 +233,7 @@ namespace octave
       size_t pos = (std::string (orig_file_name.begin (), first_non_ASCII)).
                         find_last_of (octave::sys::file_ops::dir_sep_chars ());
       std::string par_dir = orig_file_name.substr (0, pos+1);
-      
+
       // create .oct_ascii directory
       // FIXME: We need to have write permission in this location.
       std::string oct_ascii_dir = par_dir + ".oct_ascii";

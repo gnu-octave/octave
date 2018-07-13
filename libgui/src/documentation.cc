@@ -312,11 +312,11 @@ namespace octave
             QList< QPair<QString, QString> > res
               = search_engine->hits (0, search_engine->hitCount ());
 #endif
-            
+
             if (res.count ())
               {
                 QUrl url;
-                
+
                 if (res.count () == 1)
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
                   url = res.front ().url ();
@@ -327,7 +327,7 @@ namespace octave
                   {
                     // Remove the quotes we added
                     QString search_string = m_internal_search;
-                    
+
                     for (auto r = res.begin (); r != res.end (); r++)
                       {
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
@@ -348,7 +348,6 @@ namespace octave
                               url = tmpurl;
                           }
                       }
-                          
                   }
 
                 if (! url.isEmpty ())
@@ -356,16 +355,16 @@ namespace octave
                     connect (this, SIGNAL (show_single_result (const QUrl)),
                              m_doc_browser,
                              SLOT (handle_index_clicked (const QUrl)));
-                    
+
                     emit show_single_result (url);
                   }
               }
            }
-           m_internal_search = QString ();
+
+        m_internal_search = QString ();
       }
 
     qApp->restoreOverrideCursor();
-    
   }
 
   void documentation::notice_settings (const QSettings *)
@@ -389,13 +388,13 @@ namespace octave
     // First search in the function index
     QMap<QString, QUrl> found_links
       = m_help_engine->linksForIdentifier (ref_name);
-    
+
     QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
-    
+
     if (found_links.count() > 0)
       {
         m_doc_browser->setSource (found_links.constBegin().value());
-        
+
         // Switch to function index tab
         m_help_engine->indexWidget()->filterIndices (ref_name);
         QWidget *index_tab
@@ -405,7 +404,7 @@ namespace octave
     else
       {
         // Use full text search to provide the best match
-        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();      
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
         QHelpSearchQueryWidget *search_query = search_engine->queryWidget ();
 
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
@@ -429,7 +428,6 @@ namespace octave
           = navi->findChild<QWidget*> ("documentation_tab_search");
         navi->setCurrentWidget (search_tab);
       }
-    
   }
 
   void documentation::filter_update (const QString& expression)
@@ -569,5 +567,4 @@ namespace octave
     else
       return QTextBrowser::loadResource(type, url);
   }
-
 }

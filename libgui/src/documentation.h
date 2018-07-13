@@ -54,7 +54,6 @@ namespace octave
   private:
 
     QHelpEngine *m_help_engine;
-
   };
 
 
@@ -94,8 +93,9 @@ namespace octave
     void handle_cursor_position_change (void);
 
   signals:
+
     void show_single_result (const QUrl);
-    
+
   private:
 
     QHelpEngine *m_help_engine;
@@ -109,7 +109,6 @@ namespace octave
     QShortcut *m_findnext_shortcut;
     QShortcut *m_findprev_shortcut;
   };
-
 }
 
 #endif

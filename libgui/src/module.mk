@@ -127,8 +127,6 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-variable-editor-model.cc \
   %reldir%/moc-find-files-dialog.cc \
   %reldir%/moc-find-files-model.cc \
-  %reldir%/qtinfo/moc-texinfo-parser.cc \
-  %reldir%/qtinfo/moc-webinfo.cc \
   %reldir%/moc-octave-dock-widget.cc
 
 octave_gui_MOC += \
@@ -172,8 +170,6 @@ noinst_HEADERS += \
   %reldir%/octave-gui.h \
   %reldir%/octave-cmd.h \
   %reldir%/octave-qt-link.h \
-  %reldir%/qtinfo/texinfo-parser.h \
-  %reldir%/qtinfo/webinfo.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
@@ -207,8 +203,6 @@ noinst_HEADERS += \
   %reldir%/octave-dock-widget.cc \
   %reldir%/octave-gui.cc \
   %reldir%/octave-qt-link.cc \
-  %reldir%/qtinfo/texinfo-parser.cc \
-  %reldir%/qtinfo/webinfo.cc \
   %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcut-manager.cc \
@@ -236,7 +230,6 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -I$(srcdir)/%reldir%/m-editor \
-  -I$(srcdir)/%reldir%/qtinfo \
   -I$(srcdir)/libgui/graphics \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \

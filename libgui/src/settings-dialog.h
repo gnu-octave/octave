@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRadioButton>
 
 #include "color-picker.h"
-#include "editor-settings.h"
+#include "gui-preferences.h"
 
 namespace Ui
 {
@@ -86,8 +86,8 @@ private:
   color_picker *m_widget_title_fg_color_active;
   color_picker *m_editor_current_line_color;
 
-  QRadioButton *m_rb_comment_strings[oct_comment_strings_count];
-  QRadioButton *m_rb_uncomment_strings[oct_comment_strings_count];
+  QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
+  QRadioButton *m_rb_uncomment_strings[ed_comment_strings_count];
 };
 
 #endif

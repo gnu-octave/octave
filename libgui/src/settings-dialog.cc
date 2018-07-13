@@ -451,17 +451,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   int selected_comment_string, selected_uncomment_string;
 
-  if (settings->contains (oct_comment_str))   // new version (radio buttons)
-    selected_comment_string = settings->value (oct_comment_str,
-                                               oct_comment_str_d).toInt ();
+  if (settings->contains (ed_comment_str.key))   // new version (radio buttons)
+    selected_comment_string = settings->value (ed_comment_str.key,
+                                               ed_comment_str.def).toInt ();
   else                                         // old version (combo box)
-    selected_comment_string = settings->value (oct_comment_str_old,
-                                               oct_comment_str_d).toInt ();
+    selected_comment_string = settings->value (ed_comment_str_old.key,
+                                               ed_comment_str.def).toInt ();
 
-  selected_uncomment_string = settings->value (oct_uncomment_str,
-                                               oct_uncomment_str_d).toInt ();
+  selected_uncomment_string = settings->value (ed_uncomment_str.key,
+                                               ed_uncomment_str.def).toInt ();
 
-  for (int i = 0; i < oct_comment_strings_count; i++)
+  for (int i = 0; i < ed_comment_strings_count; i++)
     {
       m_rb_comment_strings[i] = new QRadioButton ();
       m_rb_uncomment_strings[i] = new QRadioButton ();
@@ -471,11 +471,11 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
       connect (m_rb_comment_strings[i], SIGNAL (toggled (bool)),
                m_rb_uncomment_strings[i], SLOT (setDisabled (bool)));
 
-      m_rb_comment_strings[i]->setText (oct_comment_strings.at(i));
+      m_rb_comment_strings[i]->setText (ed_comment_strings.at(i));
       m_rb_comment_strings[i]->setChecked (i == selected_comment_string);
       ui->layout_comment_strings->addWidget (m_rb_comment_strings[i]);
 
-      m_rb_uncomment_strings[i]->setText (oct_comment_strings.at(i));
+      m_rb_uncomment_strings[i]->setText (ed_comment_strings.at(i));
       m_rb_uncomment_strings[i]->setAutoExclusive (false);
       m_rb_uncomment_strings[i]->setChecked ( 1 << i & selected_uncomment_string);
       ui->layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
@@ -853,20 +853,20 @@ settings_dialog::write_changed_settings (bool closing)
 
   // Comment strings
   int rb_uncomment = 0;
-  for (int i = 0; i < oct_comment_strings_count; i++)
+  for (int i = 0; i < ed_comment_strings_count; i++)
     {
       if (m_rb_comment_strings[i]->isChecked ())
         {
-          settings->setValue (oct_comment_str, i);
+          settings->setValue (ed_comment_str.key, i);
           if (i < 3)
-            settings->setValue (oct_comment_str_old, i);
+            settings->setValue (ed_comment_str_old.key, i);
           else
-            settings->setValue (oct_comment_str_old, oct_comment_str_d);
+            settings->setValue (ed_comment_str_old.key, ed_comment_str.def);
         }
       if (m_rb_uncomment_strings[i]->isChecked ())
         rb_uncomment = rb_uncomment + (1 << i);
     }
-  settings->setValue (oct_uncomment_str, rb_uncomment);
+  settings->setValue (ed_uncomment_str.key, rb_uncomment);
 
   settings->setValue ("editor/default_encoding", ui->editor_combo_encoding->currentText ());
   settings->setValue ("editor/auto_indent", ui->editor_auto_ind_checkbox->isChecked ());

@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include "editor-settings.h"
+#include "gui-preferences.h"
 #include "resource-manager.h"
 
 #include "file-editor-tab.h"
@@ -1445,13 +1445,13 @@ namespace octave
             used_comment_str = QInputDialog::getText (
                                  this, tr ("Comment selected text"),
                                  tr ("Comment string to use:\n"), QLineEdit::Normal,
-                                 settings->value (oct_last_comment_str, comment_str.at (0)).toString (),
+                                 settings->value (ed_last_comment_str, comment_str.at (0)).toString (),
                                  &ok);
 
             if ((! ok) || used_comment_str.isEmpty ())
               return;  // No input, do nothing
             else
-              settings->setValue (oct_last_comment_str, used_comment_str);  // Store last
+              settings->setValue (ed_last_comment_str, used_comment_str);  // Store last
           }
       }
     else

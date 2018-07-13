@@ -28,17 +28,29 @@ along with Octave; see the file COPYING.  If not, see
 //#endif
 
 #include <QStringList>
+#include <QVariant>
+
+// Structure for the definition of pairs: key and default value
+
+struct gui_pref
+{
+  gui_pref (const QString& key_, QVariant def_): key (key_), def (def_) {}
+  QString   key;  // the key name
+  QVariant  def;  // the default value
+};
+
+// Editor preferences
 
 // Octave comment strings
-const QString oct_comment_str_old ("editor/octave_comment_string");
-const int oct_comment_str_old_d = 0;
+const gui_pref ed_comment_str_old = gui_pref ("editor/octave_comment_string", QVariant (0));
+const gui_pref ed_comment_str ("editor/oct_comment_str", QVariant (0));
+const gui_pref ed_uncomment_str ("editor/oct_uncomment_str", QVariant (1 + 2 + 4 + 8));
 
-const QString oct_comment_str ("editor/oct_comment_str");
-const QString oct_uncomment_str ("editor/oct_uncomment_str");
-const QString oct_last_comment_str ("editor/oct_last_comment_str");
-const QStringList oct_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
-const int oct_comment_strings_count = 5;
-const int oct_comment_str_d = 0;
-const int oct_uncomment_str_d = 1 + 2 + 4 + 8;
+const QString ed_last_comment_str ("editor/oct_last_comment_str");
+const QStringList ed_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
+const int ed_comment_strings_count = 5;
+
+// File handling
+
 
 #endif

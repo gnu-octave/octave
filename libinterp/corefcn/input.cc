@@ -1115,7 +1115,13 @@ namespace octave
       = (mfile_encoding.compare ("system") == 0
          ? octave_locale_charset_wrapper () : mfile_encoding);
 
-    if (encoding.compare ("utf-8") != 0)
+    if (encoding.compare ("utf-8") == 0)
+    {
+      // Check for BOM and strip it
+      if (src_str.compare (0, 3, "\xef\xbb\xbf") == 0)
+        src_str.erase (0, 3);
+    }
+    else
     {
       // convert encoding to UTF-8 before returning string
       const char *src = src_str.c_str ();

@@ -67,10 +67,6 @@ namespace octave
 
     void edit_variable_signal (const QString&, const octave_value&);
 
-  protected:
-
-    void closeEvent (QCloseEvent *event);
-
   protected slots:
 
     void filter_update (const QString& expression);

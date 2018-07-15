@@ -1482,10 +1482,15 @@ namespace octave
             e->accept ();
           }
         else
-          e->ignore ();
+          {
+            e->ignore ();
+            return;
+          }
       }
     else
       e->accept ();
+
+    octave_dock_widget::closeEvent (e);
   }
 
   void file_editor::dragEnterEvent (QDragEnterEvent *e)

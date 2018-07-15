@@ -256,13 +256,6 @@ namespace octave
   }
 
   void
-  workspace_view::closeEvent (QCloseEvent *e)
-  {
-    emit active_changed (false);
-    QDockWidget::closeEvent (e);
-  }
-
-  void
   workspace_view::filter_update (const QString& expression)
   {
     m_filter_model.setFilterWildcard (expression);

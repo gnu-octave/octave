@@ -454,7 +454,14 @@ octave_symlink_wrapper (const char *nm1, const char *nm2)
 int
 octave_unlink_wrapper (const char *nm)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  wchar_t *wnm = u8_to_wchar (nm);
+  int status = _wunlink (wnm);
+  free ((void *) wnm);
+  return status;
+#else
   return unlink (nm);
+#endif
 }
 
 pid_t

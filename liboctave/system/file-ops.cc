@@ -501,13 +501,19 @@ namespace octave
       return rename (from, to, msg);
     }
 
-    int rename (const std::string& from, const std::string& to, std::string& msg)
+    int rename (const std::string& from, const std::string& to,
+                std::string& msg)
     {
       int status = -1;
 
       msg = "";
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+      status = _wrename (u8_to_wstring (from).c_str (),
+                         u8_to_wstring (to).c_str ());
+#else
       status = std::rename (from.c_str (), to.c_str ());
+#endif
 
       if (status < 0)
         msg = std::strerror (errno);

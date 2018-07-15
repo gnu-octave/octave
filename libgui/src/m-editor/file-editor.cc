@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscicommandset.h>
 
 #include "main-window.h"
+#include "gui-preferences.h"
 #include "oct-map.h"
 #include "octave-link.h"
 #include "utils.h"
@@ -1190,6 +1191,10 @@ namespace octave
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
 
+    QSettings *settings = resource_manager::get_settings ();
+    bool show_dbg_file
+      = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
+
     if (openFileName.isEmpty ())
       {
         // This happens if edit is calles without an argument
@@ -1217,7 +1222,7 @@ namespace octave
                   emit fetab_do_breakpoint_marker (insert, tab, line, cond);
               }
 
-            if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
+            if (show_dbg_file && ! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
               {
                 emit fetab_set_focus (tab);
                 focus ();
@@ -1225,6 +1230,12 @@ namespace octave
           }
         else
           {
+            if (! show_dbg_file && (breakpoint_marker  || debug_pointer))
+              return;   // Do not open a file for showing dbg markers
+
+            if (breakpoint_marker && ! insert)
+              return;   // Never open a file when removing breakpoints
+
             file_editor_tab *fileEditorTab = nullptr;
             // Reuse <unnamed> tab if it hasn't yet been modified.
             bool reusing = false;

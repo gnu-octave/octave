@@ -42,7 +42,7 @@ struct gui_pref
 // Editor preferences
 
 // Octave comment strings
-const gui_pref ed_comment_str_old = gui_pref ("editor/octave_comment_string", QVariant (0));
+const gui_pref ed_comment_str_old ("editor/octave_comment_string", QVariant (0));
 const gui_pref ed_comment_str ("editor/oct_comment_str", QVariant (0));
 const gui_pref ed_uncomment_str ("editor/oct_uncomment_str", QVariant (1 + 2 + 4 + 8));
 
@@ -51,6 +51,7 @@ const QStringList ed_comment_strings (QStringList () << "##" << "#" << "%"<< "%%
 const int ed_comment_strings_count = 5;
 
 // File handling
+const gui_pref ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
 
 
 #endif

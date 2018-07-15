@@ -789,9 +789,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-558</y>
+            <y>-585</y>
             <width>645</width>
-            <height>1131</height>
+            <height>1196</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1865,6 +1865,32 @@
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="groupBox_10">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="title">
+              <string>Debugging</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_19">
+                <item row="0" column="0">
+                 <widget class="QCheckBox" name="editor_show_dbg_file">
+                  <property name="text">
+                   <string>Always show debug breakpoints and pointers (opens related file if closed)</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_8">
              <property name="title">
               <string>File handling</string>
@@ -1916,7 +1942,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
+                  <item row="8" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <property name="topMargin">
                      <number>0</number>
@@ -1974,7 +2000,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="8" column="0">
+                  <item row="10" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="label_16">
@@ -2001,10 +2027,13 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0">
+                  <item row="7" column="0">
                    <widget class="QCheckBox" name="editor_hiding_closes_files">
                     <property name="text">
                      <string>Close all files when the editor widget is closed/hidden</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>

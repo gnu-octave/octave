@@ -15,6 +15,11 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     However, if the property "IntegerHandle" has been set to "off" then
     the property will return an empty matrix ([]).
 
+ ** Printing using the -dtiff output device will now create compressed
+    images using lzw compression.  This change was made for Matlab
+    compatibility.  To produce uncompressed images use the -dtiffn
+    device.
+
  ** The FFTW library is now required to perform FFT calculations.  The
     FFTPACK sources have been removed from Octave.
 

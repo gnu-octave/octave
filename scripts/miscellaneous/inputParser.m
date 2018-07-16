@@ -448,6 +448,9 @@ classdef inputParser < handle
 
         if (this.StructExpand && isstruct (name) && isscalar (name))
           expanded_options = [fieldnames(name) struct2cell(name)]'(:);
+          if (isempty (expanded_options))
+            continue;  # empty, continue to next argument
+          endif
           n_new_args = numel (expanded_options) -1;
           pnargin += n_new_args;
           varargin(vidx+n_new_args+1:pnargin) = varargin(vidx+1:end);

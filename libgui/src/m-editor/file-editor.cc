@@ -1306,7 +1306,6 @@ namespace octave
                         // File does not exist, should it be created?
                         bool create_file = true;
                         QMessageBox *msgBox;
-                        QSettings *settings = resource_manager::get_settings ();
 
                         if (! settings->value ("editor/create_new_file", false).toBool ())
                           {

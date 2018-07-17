@@ -108,8 +108,12 @@ function [nn, xx] = hist (varargin)
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
     ## Use range type to preserve accuracy
-    x = (0.5:n) * (1/n);
-    x = (max_val - min_val) * x + min_val;
+    if (min_val != max_val)
+      x = (0.5:n) * (1/n);
+      x = (max_val - min_val) * x + min_val;
+    else
+      x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
+    endif
     x = x.';  # Convert to matrix;
   else
     ## Parse bin specification argument
@@ -129,8 +133,12 @@ function [nn, xx] = hist (varargin)
         error ("hist: number of bins NBINS must be positive");
       endif
       ## Use range type to preserve accuracy
-      x = (0.5:n) * (1/n);
-      x = (max_val - min_val) * x + min_val;
+      if (min_val != max_val)
+        x = (0.5:n) * (1/n);
+        x = (max_val - min_val) * x + min_val;
+      else
+        x = (-floor ((n-1)/2):ceil ((n-1)/2)) + min_val;
+      endif
       x = x.';  # Convert to matrix;
     elseif (isvector (x))
       x = x(:);
@@ -233,6 +241,10 @@ endfunction
 %!   assert (sum (hist ([1:n], 30)), n);
 %! endfor
 %!assert (hist (1,1), 1)
+%!test <*54326> # All values identical
+%! [nn,xx] = hist (ones (1,5), 3);
+%! assert (nn, [0,5,0]);
+%! assert (xx, [0,1,2]);
 %!assert (size (hist (randn (750,240), 200)), [200, 240])
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, 1)), false)
 %!assert <*42394> (isempty (hist (rand (10,2), 0:5, [1 1])), false)

@@ -116,8 +116,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 %expect 9
 
-%API_PREFIX_DECL%
-
 // We are using the pure parser interface and the reentrant lexer
 // interface but the Octave parser and lexer are NOT properly
 // reentrant because both still use many global variables.  It should be

@@ -3182,8 +3182,6 @@ EOF
       ])
   fi
 
-  AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
-
   if test -z "$octave_cv_bison_api_prefix_decl_style" \
     || test "$octave_cv_bison_api_prefix_decl_style" != "api brace"; then
     tmp_have_bison=no

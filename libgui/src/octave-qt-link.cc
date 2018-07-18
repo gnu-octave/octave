@@ -573,6 +573,29 @@ namespace octave
     emit show_preferences_signal ();
   }
 
+  std::string octave_qt_link::do_gui_preference (const std::string& key,
+                                                 const std::string& value)
+  {
+    QMutex wait_for_gui;
+    QString pref_value;
+
+    // Emit the signal for changing or getting a preference
+    emit gui_preference_signal (QString::fromStdString (key),
+                                QString::fromStdString (value),
+                                &wait_for_gui, &pref_value);
+
+    // Unlock and lock the mutex (make sure it is locked without being blocked)
+    wait_for_gui.unlock ();
+    wait_for_gui.lock ();
+
+    // Try to lock it again, thus waiting for the unlock of the gui after
+    // reading/changing desired preference. A timeout of 3 s for not being
+    // blocked forever if something goes wrong
+    wait_for_gui.tryLock (3000);
+
+    return pref_value.toStdString ();
+  }
+
   void octave_qt_link::do_show_doc (const std::string& file)
   {
     emit show_doc_signal (QString::fromStdString (file));

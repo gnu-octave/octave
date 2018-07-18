@@ -409,6 +409,18 @@ public:
       return false;
   }
 
+  static std::string
+  gui_preference (const std::string& key,
+                  const std::string& value)
+  {
+    if (enabled ())
+      {
+        return instance->do_gui_preference (key, value);
+      }
+    else
+      return "";
+  }
+
   static bool
   show_doc (const std::string & file)
   {
@@ -613,6 +625,9 @@ protected:
                                      const std::string& cond) = 0;
 
   virtual void do_show_preferences (void) = 0;
+
+  virtual std::string do_gui_preference (const std::string& key,
+                                         const std::string& value) = 0;
 
   virtual void do_show_doc (const std::string& file) = 0;
 

@@ -382,6 +382,27 @@ Undocumented internal function.
   return ovl (octave_link::show_preferences ());
 }
 
+DEFUN (__octave_link_gui_preference__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_gui_preference__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string key;
+  std::string value = "";
+
+  if (args.length () >= 1)
+    key = args(0).string_value();
+  else
+    error ("__octave_link_gui_preference__: "
+           "first argument must be the preference key");
+
+  if (args.length () >= 2)
+    value = args(1).string_value();
+
+  return ovl (octave_link::gui_preference (key, value));
+}
+
 DEFMETHOD (openvar, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} openvar (@var{name})

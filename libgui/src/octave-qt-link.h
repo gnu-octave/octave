@@ -138,6 +138,8 @@ namespace octave
 
     void do_show_preferences (void);
 
+    std::string do_gui_preference (const std::string& key,
+                                   const std::string& value);
     void do_show_doc (const std::string& file);
     void do_register_doc (const std::string& file);
     void do_unregister_doc (const std::string& file);
@@ -192,6 +194,9 @@ namespace octave
     void delete_debugger_pointer_signal (const QString&, int);
 
     void show_preferences_signal (void);
+
+    void gui_preference_signal (const QString&, const QString&,
+                                QMutex*, QString*);
 
     void show_doc_signal (const QString& file);
 

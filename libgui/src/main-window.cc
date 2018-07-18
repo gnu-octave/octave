@@ -1983,6 +1983,13 @@ namespace octave
                  this, SLOT (process_settings_dialog_request (void)));
 
         connect (m_octave_qt_link,
+                 SIGNAL (gui_preference_signal (const QString&, const QString&,
+                                                QMutex*, QString*)),
+                 this,
+                 SLOT (gui_preference (const QString&, const QString&,
+                                       QMutex*, QString*)));
+
+        connect (m_octave_qt_link,
                  SIGNAL (edit_file_signal (const QString&)),
                  m_active_editor,
                  SLOT (handle_edit_file_request (const QString&)));
@@ -2484,6 +2491,22 @@ namespace octave
 
     connect (m_undo_action, SIGNAL (triggered (void)),
              this, SLOT (handle_undo_request (void)));
+  }
+
+  void main_window::gui_preference (const QString& key, const QString& value,
+                                    QMutex* wait_for_gui, QString* read_value)
+  {
+    QSettings *settings = resource_manager::get_settings ();
+
+    *read_value = settings->value (key).toString ();
+
+    if (! value.isEmpty ())
+      {
+        settings->setValue (key, QVariant (value));
+        emit settings_changed (settings);
+      }
+
+    wait_for_gui->unlock ();    // data is ready, resume worker threat
   }
 
   void main_window::save_workspace_callback (const std::string& file)

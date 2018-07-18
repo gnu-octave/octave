@@ -240,6 +240,8 @@ namespace octave
                                    const QString& dirname,
                                    const QString& multimode);
 
+    void gui_preference (const QString& key, const QString& value,
+                         QMutex* wait_for_gui, QString* read_value);
     void handle_show_doc (const QString& file);
     void handle_register_doc (const QString& file);
     void handle_unregister_doc (const QString& file);

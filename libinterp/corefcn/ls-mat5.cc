@@ -1190,38 +1190,49 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                octave_class *cls
-                  = new octave_class (m, classname,
-                                      std::list<std::string> ());
+                cdef_manager& cdm
+                  = octave::__get_cdef_manager__ ("read_mat5_binary_element");
 
-                if (cls->reconstruct_exemplar ())
+                if (cdm.find_class (classname, false, true).ok ())
                   {
-
-                    if (! cls->reconstruct_parents ())
-                      warning ("load: unable to reconstruct object inheritance");
-
-                    tc = cls;
-
-                    octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
-
-                    if (lp.find_method (classname, "loadobj") != "")
-                      {
-                        try
-                          {
-                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
-
-                            tc = tmp(0);
-                          }
-                        catch (const octave::execution_exception&)
-                          {
-                            goto data_read_error;
-                          }
-                      }
+                    tc = m;
+                    warning ("load: classdef element has been converted to a struct");
                   }
                 else
                   {
-                    tc = m;
-                    warning ("load: element has been converted to a structure");
+                    octave_class *cls
+                      = new octave_class (m, classname,
+                                          std::list<std::string> ());
+
+                    if (cls->reconstruct_exemplar ())
+                      {
+
+                        if (! cls->reconstruct_parents ())
+                          warning ("load: unable to reconstruct object inheritance");
+
+                        tc = cls;
+
+                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+
+                        if (lp.find_method (classname, "loadobj") != "")
+                          {
+                            try
+                              {
+                                octave_value_list tmp = octave::feval ("loadobj", tc, 1);
+
+                                tc = tmp(0);
+                              }
+                            catch (const octave::execution_exception&)
+                              {
+                                goto data_read_error;
+                              }
+                          }
+                      }
+                    else
+                      {
+                        tc = m;
+                        warning ("load: element has been converted to a structure");
+                      }
                   }
               }
           }

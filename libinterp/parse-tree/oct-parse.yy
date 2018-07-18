@@ -126,7 +126,9 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // object) relevant global values before and after the nested call.
 
 %define api.pure
-%define api.prefix { octave_ }
+// No spaces inside the braces for the prefix and push-pull definitions!
+%define api.prefix {octave_}
+%define api.push-pull {both}
 %parse-param { octave::base_parser& parser }
 %lex-param { void *lexer.scanner }
 

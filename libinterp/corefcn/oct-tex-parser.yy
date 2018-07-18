@@ -49,7 +49,8 @@ static void yyerror (text_parser_tex& parser, const char *s);
 %}
 
 %define api.pure
-%define api.prefix { octave_tex_ }
+// No spaces inside the braces for the prefix definition!
+%define api.prefix {octave_tex_}
 %parse-param { text_parser_tex& parser }
 %lex-param { void *scanner }
 

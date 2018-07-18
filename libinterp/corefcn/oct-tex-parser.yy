@@ -48,9 +48,8 @@ static void yyerror (text_parser_tex& parser, const char *s);
 
 %}
 
-%API_PREFIX_DECL%
-
 %define api.pure
+%define api.prefix { octave_tex_ }
 %parse-param { text_parser_tex& parser }
 %lex-param { void *scanner }
 

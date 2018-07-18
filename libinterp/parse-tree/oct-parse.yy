@@ -128,7 +128,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // object) relevant global values before and after the nested call.
 
 %define api.pure
-%PUSH_PULL_DECL%
+%define api.prefix { octave_ }
 %parse-param { octave::base_parser& parser }
 %lex-param { void *lexer.scanner }
 

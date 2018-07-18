@@ -299,9 +299,6 @@ COREFCN_SRC = \
 
 %reldir%/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
 
-%reldir%/oct-tex-parser.yy: %reldir%/oct-tex-parser.in.yy
-	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
-
 noinst_LTLIBRARIES += \
   %reldir%/libcorefcn.la
 
@@ -325,7 +322,6 @@ libinterp_EXTRA_DIST += \
   %reldir%/mxarray.in.h \
   %reldir%/oct-errno.in.cc \
   %reldir%/oct-tex-lexer.in.ll \
-  %reldir%/oct-tex-parser.in.yy \
   %reldir%/oct-tex-symbols.in
 
 GEN_CONFIG_SHELL += \

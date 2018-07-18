@@ -3184,68 +3184,16 @@ EOF
 
   AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
 
-  if test -z "$octave_cv_bison_api_prefix_decl_style"; then
+  if test -z "$octave_cv_bison_api_prefix_decl_style" \
+    || test "$octave_cv_bison_api_prefix_decl_style" != "api brace"; then
     tmp_have_bison=no
     warn_bison_api_prefix_decl_style="
 
 I wasn't able to find a suitable style for declaring the api prefix
-in a bison input file so I'm disabling bison.
+in a bison input file so I'm disabling bison.  We expect bison to
+understand the '%define api.prefix { PREFIX }' syntax.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison_api_prefix_decl_style])
-  fi
-
-  if test $tmp_have_bison = yes; then
-    AC_CACHE_CHECK([syntax of bison push/pull declaration],
-                   [octave_cv_bison_push_pull_decl_style], [
-      style="dash underscore"
-      quote="noquote quote"
-      for s in $style; do
-        for q in $quote; do
-          if test $s = "dash"; then
-            def="%define api.push-pull"
-          else
-            def="%define api.push_pull"
-          fi
-          if test $q = "quote"; then
-            def="$def \"both\""
-          else
-            def="$def both"
-          fi
-          cat << EOF > conftest.yy
-$def
-%start input
-%%
-input:;
-%%
-EOF
-          octave_bison_output=`$YACC conftest.yy 2>&1`
-          ac_status=$?
-          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
-            if test $q = noquote; then
-              q=
-            fi
-            octave_cv_bison_push_pull_decl_style="$s $q"
-            break
-          fi
-        done
-        if test -n "$octave_cv_bison_push_pull_decl_style"; then
-          break
-        fi
-      done
-      rm -f conftest.yy y.tab.h y.tab.c
-      ])
-  fi
-
-  AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
-
-  if test -z "$octave_cv_bison_push_pull_decl_style"; then
-    tmp_have_bison=no
-    warn_bison_push_pull_decl_style="
-
-I wasn't able to find a suitable style for declaring a push-pull
-parser in a bison input file so I'm disabling bison.
-"
-    OCTAVE_CONFIGURE_WARNING([warn_bison_push_pull_decl_style])
   fi
 
   if test $tmp_have_bison = no; then

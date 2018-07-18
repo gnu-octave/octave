@@ -169,7 +169,7 @@ namespace octave
     }
 
     ($fcn = $arg) =~ s,.*/,,;
-    $fcn =~ s/\.(cc|cpp|in\.cc|in\.yy|ll)$//;
+    $fcn =~ s/\.(cc|cpp|in\.cc|yy|ll)$//;
     $fcn =~ s/-/_/g;
     $fcn = "install_${fcn}_fcns";
 

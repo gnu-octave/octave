@@ -104,9 +104,6 @@ PARSE_TREE_SRC = \
 	mv $@-t $@ && \
 	rm -f $@-t1
 
-%reldir%/oct-parse.yy: %reldir%/oct-parse.in.yy
-	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
-
 noinst_LTLIBRARIES += \
   %reldir%/libparse-tree.la
 
@@ -117,5 +114,4 @@ noinst_LTLIBRARIES += \
   $(LLVM_CPPFLAGS)
 
 libinterp_EXTRA_DIST += \
-  %reldir%/oct-parse.in.yy \
   %reldir%/octave.gperf

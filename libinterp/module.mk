@@ -38,15 +38,12 @@ BUILT_SOURCES += \
   %reldir%/parse-tree/oct-parse.h
 
 ULT_PARSER_SRC := \
-  %reldir%/corefcn/oct-tex-lexer.in.ll \
-  %reldir%/corefcn/oct-tex-parser.in.yy \
-  %reldir%/parse-tree/oct-parse.in.yy
+  %reldir%/corefcn/oct-tex-lexer.in.ll
 
 GENERATED_PARSER_FILES := \
   %reldir%/corefcn/oct-tex-lexer.ll \
   %reldir%/corefcn/oct-tex-parser.h \
-  %reldir%/corefcn/oct-tex-parser.yy \
-  %reldir%/parse-tree/oct-parse.yy
+  %reldir%/parse-tree/oct-parse.h
 
 ## These generated files are included in the source distribution to
 ## avoid needing certain tools to build from a distribution tarball.
@@ -54,10 +51,8 @@ GENERATED_PARSER_FILES := \
 LIBINTERP_BUILT_DISTFILES = \
   $(GENERATED_PARSER_FILES) \
   $(OPT_HANDLERS) \
-  %reldir%/corefcn/oct-tex-parser.h \
   %reldir%/corefcn/oct-tex-symbols.cc \
-  %reldir%/parse-tree/oct-gperf.h \
-  %reldir%/parse-tree/oct-parse.h
+  %reldir%/parse-tree/oct-gperf.h
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.

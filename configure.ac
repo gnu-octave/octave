@@ -1,4 +1,4 @@
-9dnl Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl Copyright (C) 1993-2018 John W. Eaton
 ###

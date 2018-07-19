@@ -5648,7 +5648,7 @@ may be either @qcode{"base"} or @qcode{"caller"}.
 
   std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
-  if (valid_identifier (nm))
+  if (octave::valid_identifier (nm))
     {
       // Put the check here so that we don't slow down assignments
       // generally.  Any that go through Octave's parser should have

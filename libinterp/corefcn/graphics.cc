@@ -12815,7 +12815,7 @@ In all cases, typing CTRL-C stops program execution immediately.
             break;
         }
 
-      octave_sleep (0.1); // FIXME: really needed?
+      octave::sleep (0.1); // FIXME: really needed?
 
       octave_quit ();
 

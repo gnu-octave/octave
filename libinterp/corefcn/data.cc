@@ -2603,7 +2603,8 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.
     {
       // Don't use numel (const octave_value_list&) here as that corresponds to
       // an overloaded call, not to builtin!
-      retval = dims_to_numel (args(0).dims (), args.slice (1, nargin-1));
+      retval = octave::dims_to_numel (args(0).dims (),
+                                      args.slice (1, nargin-1));
     }
 
   return retval;
@@ -3871,7 +3872,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
       break;
 
     case 1:
-      get_dimensions (args(0), fcn, dims);
+      octave::get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -3887,7 +3888,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, fcn);
+  octave::check_dimensions (dims, fcn);
 
   // FIXME: perhaps this should be made extensible by
   // using the class name to lookup a function to call to create
@@ -3981,7 +3982,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       break;
 
     case 1:
-      get_dimensions (args(0), fcn, dims);
+      octave::get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -3997,7 +3998,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, fcn);
+  octave::check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4045,7 +4046,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case 1:
-      get_dimensions (args(0), fcn, dims);
+      octave::get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4061,7 +4062,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, fcn);
+  octave::check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4110,7 +4111,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
       break;
 
     case 1:
-      get_dimensions (args(0), fcn, dims);
+      octave::get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4126,7 +4127,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, fcn);
+  octave::check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4165,7 +4166,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
       break;
 
     case 1:
-      get_dimensions (args(0), fcn, dims);
+      octave::get_dimensions (args(0), fcn, dims);
       break;
 
     default:
@@ -4181,7 +4182,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, fcn);
+  octave::check_dimensions (dims, fcn);
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -5009,14 +5010,14 @@ definitions are for compatibility with @sc{matlab}.
   else if (nargin == 1)
     {
       octave_idx_type nr, nc;
-      get_dimensions (args(0), "eye", nr, nc);
+      octave::get_dimensions (args(0), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }
   else
     {
       octave_idx_type nr, nc;
-      get_dimensions (args(0), args(1), "eye", nr, nc);
+      octave::get_dimensions (args(0), args(1), "eye", nr, nc);
 
       retval = identity_matrix (nr, nc, dt);
     }

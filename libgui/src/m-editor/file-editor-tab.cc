@@ -1949,7 +1949,7 @@ namespace octave
                 // Wait until dbquit has actually occurred
                 while (names.numel () > i)
                   {
-                    octave_sleep (0.01);
+                    octave::sleep (0.01);
                     stk = cs.backtrace (nskip, curr_frame, false);
                     names = stk.contents ("name");
                   }

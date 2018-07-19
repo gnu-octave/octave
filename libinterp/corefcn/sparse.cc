@@ -151,7 +151,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
       octave_idx_type m = 0;
       octave_idx_type n = 0;
 
-      get_dimensions (args(0), args(1), "sparse", m, n);
+      octave::get_dimensions (args(0), args(1), "sparse", m, n);
 
       if (m >= 0 && n >= 0)
         retval = SparseMatrix (m, n);
@@ -184,7 +184,7 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
       if (nargin == 5)
         {
-          get_dimensions (args(3), args(4), "sparse", m, n);
+          octave::get_dimensions (args(3), args(4), "sparse", m, n);
 
           if (m < 0 || n < 0)
             error ("sparse: dimensions must be non-negative");

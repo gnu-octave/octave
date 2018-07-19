@@ -289,7 +289,7 @@ octave_char_matrix_str::edit_display (const float_display_format&,
           std::string retval = string_value ();
 
           if (! is_sq_string ())
-            retval = undo_string_escapes (retval);
+            retval = octave::undo_string_escapes (retval);
 
           return retval;
         }

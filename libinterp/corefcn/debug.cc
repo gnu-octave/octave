@@ -598,7 +598,7 @@ is stopped.
 static void
 do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {
-  std::string ff = fcn_file_in_path (name);
+  std::string ff = octave::fcn_file_in_path (name);
 
   if (ff.empty ())
     os << "dbtype: unknown function " << name << "\n";

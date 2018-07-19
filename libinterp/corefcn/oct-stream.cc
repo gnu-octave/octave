@@ -5533,15 +5533,15 @@ namespace octave
     switch (nsa)
       {
       case 2:
-        retval = octave_format (os, fmt, sa_1, sa_2, arg);
+        retval = octave::format (os, fmt, sa_1, sa_2, arg);
         break;
 
       case 1:
-        retval = octave_format (os, fmt, sa_1, arg);
+        retval = octave::format (os, fmt, sa_1, arg);
         break;
 
       case 0:
-        retval = octave_format (os, fmt, arg);
+        retval = octave::format (os, fmt, arg);
         break;
 
       default:

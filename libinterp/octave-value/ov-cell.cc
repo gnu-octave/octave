@@ -1251,7 +1251,7 @@ dimensions.
       break;
 
     case 1:
-      get_dimensions (args(0), "cell", dims);
+      octave::get_dimensions (args(0), "cell", dims);
       break;
 
     default:
@@ -1267,7 +1267,7 @@ dimensions.
 
   dims.chop_trailing_singletons ();
 
-  check_dimensions (dims, "cell");
+  octave::check_dimensions (dims, "cell");
 
   return ovl (Cell (dims));
 }

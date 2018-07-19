@@ -1110,7 +1110,7 @@ clc;
               octave_kbhit ();
             }
           else
-            octave_sleep (dval);
+            octave::sleep (dval);
         }
     }
   else

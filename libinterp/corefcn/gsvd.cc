@@ -180,29 +180,29 @@ and zggsvd routines.
         {
           if (argA.is_single_type () || argB.is_single_type ())
             {
-              retval(0) = float_identity_matrix (nc, nc);
-              retval(1) = float_identity_matrix (nc, nc);
+              retval(0) = octave::float_identity_matrix (nc, nc);
+              retval(1) = octave::float_identity_matrix (nc, nc);
               if (nargout > 2)
-                retval(2) = float_identity_matrix (nr, nr);
+                retval(2) = octave::float_identity_matrix (nr, nr);
               if (nargout > 3)
                 retval(3) = FloatMatrix (nr, nc);
               if (nargout > 4)
-                retval(4) = float_identity_matrix (nr, nr);
+                retval(4) = octave::float_identity_matrix (nr, nr);
               if (nargout > 5)
-                retval(5) = float_identity_matrix (nr, nr);
+                retval(5) = octave::float_identity_matrix (nr, nr);
             }
           else
             {
-              retval(0) = identity_matrix (nc, nc);
-              retval(1) = identity_matrix (nc, nc);
+              retval(0) = octave::identity_matrix (nc, nc);
+              retval(1) = octave::identity_matrix (nc, nc);
               if (nargout > 2)
-                retval(2) = identity_matrix (nr, nr);
+                retval(2) = octave::identity_matrix (nr, nr);
               if (nargout > 3)
                 retval(3) = Matrix (nr, nc);
               if (nargout > 4)
-                retval(4) = identity_matrix (nr, nr);
+                retval(4) = octave::identity_matrix (nr, nr);
               if (nargout > 5)
-                retval(5) = identity_matrix (nr, nr);
+                retval(5) = octave::identity_matrix (nr, nr);
             }
         }
     }

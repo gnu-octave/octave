@@ -746,7 +746,7 @@ set_$CLASS_NAME (const std::string& keyword, const octave_value& val)
     {
       $iftok = "else if" if ($i > 0);
 
-      print "  $iftok (keyword_almost_match (list[$i].kw_tok, list[$i].min_len,
+      print "  $iftok (octave::keyword_almost_match (list[$i].kw_tok, list[$i].min_len,
            keyword, list[$i].min_toks_to_match, MAX_TOKENS))
     {\n";
 
@@ -815,7 +815,7 @@ show_$CLASS_NAME (const std::string& keyword)
     {
       $iftok = "else if" if ($i > 0);
 
-      print "  $iftok (keyword_almost_match (list[$i].kw_tok, list[$i].min_len,
+      print "  $iftok (octave::keyword_almost_match (list[$i].kw_tok, list[$i].min_len,
            keyword, list[$i].min_toks_to_match, MAX_TOKENS))
     {\n";
 

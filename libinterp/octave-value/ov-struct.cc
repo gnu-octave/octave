@@ -108,7 +108,7 @@ err_invalid_index_type (const std::string& nm, char t)
 static void
 maybe_warn_invalid_field_name (const std::string& key, const char *who)
 {
-  if (! valid_identifier (key))
+  if (! octave::valid_identifier (key))
     {
       if (who)
         warning_with_id ("Octave:language-extension",

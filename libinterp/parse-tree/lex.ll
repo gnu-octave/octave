@@ -1754,7 +1754,7 @@ ANY_INCLUDING_NL (.|{NL})
         std::ostringstream buf;
 
         buf << "invalid character '"
-            << undo_string_escape (static_cast<char> (c))
+            << octave::undo_string_escape (static_cast<char> (c))
             << "' (ASCII " << c << ")";
 
         octave::token *tok

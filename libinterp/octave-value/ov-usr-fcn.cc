@@ -332,7 +332,7 @@ octave_user_function::mark_as_system_fcn_file (void)
       // function file is parsed, it probably doesn't matter that
       // much.
 
-      std::string ff_name = fcn_file_in_path (file_name);
+      std::string ff_name = octave::fcn_file_in_path (file_name);
 
       std::string fcn_file_dir = octave::config::fcn_file_dir ();
       if (fcn_file_dir == ff_name.substr (0, fcn_file_dir.length ()))

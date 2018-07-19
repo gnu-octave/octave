@@ -219,7 +219,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       std::string tname = octave::sys::file_ops::tilde_expand (fname);
 
-      tname = find_data_file_in_load_path ("dlmread", tname);
+      tname = octave::find_data_file_in_load_path ("dlmread", tname);
 
       std::string ascii_fname = octave::sys::get_ASCII_filename (tname);
 
@@ -249,7 +249,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (nargin > 1)
     {
       if (args(1).is_sq_string ())
-        sep = do_string_escapes (args(1).string_value ());
+        sep = octave::do_string_escapes (args(1).string_value ());
       else
         sep = args(1).string_value ();
     }

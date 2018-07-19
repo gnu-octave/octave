@@ -381,7 +381,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
   H5G_stat_t info;
   herr_t retval = 0;
-  bool ident_valid = valid_identifier (name);
+  bool ident_valid = octave::valid_identifier (name);
 
   std::string vname = name;
 
@@ -397,7 +397,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
       vname = make_valid_identifier (vname);
 
       // check again (in case vname was null, empty, or some such thing):
-      ident_valid = valid_identifier (vname);
+      ident_valid = octave::valid_identifier (vname);
     }
 
   H5Gget_objinfo (group_id, name, 1, &info);

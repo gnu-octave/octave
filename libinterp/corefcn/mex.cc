@@ -3437,7 +3437,7 @@ mexPrintf (const char *fmt, ...)
   int retval;
   va_list args;
   va_start (args, fmt);
-  retval = octave_vformat (octave_stdout, fmt, args);
+  retval = octave::vformat (octave_stdout, fmt, args);
   va_end (args);
   return retval;
 }

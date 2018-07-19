@@ -166,7 +166,7 @@ verror (bool save_last_error, std::ostream& os,
 
   std::ostringstream output_buf;
 
-  octave_vformat (output_buf, fmt, args);
+  octave::vformat (output_buf, fmt, args);
 
   std::string base_msg = output_buf.str ();
 
@@ -405,7 +405,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   std::ostringstream output_buf;
 
-  octave_vformat (output_buf, fmt, args);
+  octave::vformat (output_buf, fmt, args);
 
   // FIXME: we really want to capture the message before it has all the
   //        formatting goop attached to it.  We probably also want just the

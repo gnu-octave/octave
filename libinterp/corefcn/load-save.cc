@@ -509,7 +509,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
 static std::string
 find_file_to_load (const std::string& name, const std::string& orig_name)
 {
-  std::string fname = find_data_file_in_load_path ("load", name, true);
+  std::string fname = octave::find_data_file_in_load_path ("load", name, true);
 
   size_t dot_pos = fname.rfind ('.');
   size_t sep_pos = fname.find_last_of (octave::sys::file_ops::dir_sep_chars ());

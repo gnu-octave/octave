@@ -425,7 +425,7 @@ v = cellfun (@@det, a); # faster
 
       std::string name = args(0).string_value ();
 
-      if (! valid_identifier (name))
+      if (! octave::valid_identifier (name))
         {
           std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
@@ -1132,7 +1132,7 @@ arrayfun (@@str2num, [1234],
       // See if we can convert the string into a function.
       std::string name = args(0).string_value ();
 
-      if (! valid_identifier (name))
+      if (! octave::valid_identifier (name))
         {
           std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";

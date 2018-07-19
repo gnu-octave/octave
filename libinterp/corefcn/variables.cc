@@ -280,7 +280,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
             }
         }
 
-      file_name = file_in_path (name, "");
+      file_name = octave::file_in_path (name, "");
 
       if (file_name.empty ())
         file_name = name;

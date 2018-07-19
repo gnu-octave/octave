@@ -2664,7 +2664,7 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 
               if (pr_as_read_syntax)
                 {
-                  os << '"' << undo_string_escapes (row) << '"';
+                  os << '"' << octave::undo_string_escapes (row) << '"';
 
                   if (i < nstr - 1)
                     os << "; ";
@@ -3482,7 +3482,7 @@ of properly displaying the object's name.  This can be done by using the
   // disp is done.
 
   bool print_newlines = false;
-  if (valid_identifier (name))
+  if (octave::valid_identifier (name))
     print_newlines = value.print_name_tag (octave_stdout, name);
 
   // Use feval so that dispatch will also work for disp.

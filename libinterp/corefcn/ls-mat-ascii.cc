@@ -251,7 +251,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   if (octave::is_keyword (varname) || ! isalpha (varname[0]))
     varname.insert (0, "X");
 
-  if (! valid_identifier (varname))
+  if (! octave::valid_identifier (varname))
     error ("load: unable to convert filename '%s' to valid identifier",
            filename.c_str ());
 

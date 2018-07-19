@@ -128,7 +128,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %define api.pure
 // No spaces inside the braces for the prefix and push-pull definitions!
 %define api.prefix {octave_}
-%define api.push-pull {both}
+%define api.push-pull both
 %parse-param { octave::base_parser& parser }
 %lex-param { void *lexer.scanner }
 

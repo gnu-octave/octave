@@ -259,34 +259,50 @@ namespace octave
       // 2. Check if file system stores short filenames (always
       // ASCII-only).
 
-      const wchar_t *w_orig_file_name = u8_to_wstring (orig_file_name).c_str ();
+      std::wstring w_orig_file_name_str = u8_to_wstring (orig_file_name);
+      const wchar_t *w_orig_file_name = w_orig_file_name_str.c_str ();
+
+      // Get full path to file
+      wchar_t w_full_file_name[_MAX_PATH];
+      if (_wfullpath (w_full_file_name, w_orig_file_name, _MAX_PATH) == nullptr)
+        return orig_file_name;
+
+      std::wstring w_full_file_name_str = w_full_file_name;
 
       // Get short filename (8.3) from UTF-16 filename.
 
-      long length = GetShortPathNameW (w_orig_file_name, NULL, 0);
+      long length = GetShortPathNameW (w_full_file_name, nullptr, 0);
 
-      // Dynamically allocate the correct size (terminating null char
-      // was included in length).
+      if (length > 0)
+        {
+          // Dynamically allocate the correct size (terminating null char
+          // was included in length).
 
-      wchar_t *w_short_file_name = new wchar_t[length];
-      length = GetShortPathNameW (w_orig_file_name, w_short_file_name, length);
+          wchar_t *w_short_file_name = new wchar_t[length];
+          GetShortPathNameW (w_full_file_name, w_short_file_name, length);
 
-      std::string short_file_name
-        = u8_from_wstring (std::wstring (w_short_file_name));
+          std::wstring w_short_file_name_str
+            = std::wstring (w_short_file_name, length);
+          std::string short_file_name = u8_from_wstring (w_short_file_name_str);
 
-      if (short_file_name.compare (orig_file_name) != 0)
-        return short_file_name;
+          if (w_short_file_name_str.compare (0, length-1, w_full_file_name_str) != 0)
+            return short_file_name;
+        }
 
       // 3. Create hard link with only-ASCII characters.
       // Get longest possible part of path that only contains ASCII chars.
 
-      std::string tmp_substr
-        = std::string (orig_file_name.begin (), first_non_ASCII);
+      std::wstring::iterator w_first_non_ASCII
+        = std::find_if (w_full_file_name_str.begin (), w_full_file_name_str.end (),
+                        [](wchar_t c) { return (c < 0 || c >= 128); });
+      std::wstring tmp_substr
+        = std::wstring (w_full_file_name_str.begin (), w_first_non_ASCII);
 
       size_t pos
-        = tmp_substr.find_last_of (octave::sys::file_ops::dir_sep_chars ());
+        = tmp_substr.find_last_of (u8_to_wstring (file_ops::dir_sep_chars ()));
 
-      std::string par_dir = orig_file_name.substr (0, pos+1);
+      std::string par_dir
+        = u8_from_wstring (w_full_file_name_str.substr (0, pos+1));
 
       // Create .oct_ascii directory.
       // FIXME: We need to have write permission in this location.
@@ -314,14 +330,14 @@ namespace octave
       std::string abs_filename_hash = canonicalize_file_name (filename_hash);
 
       if (! abs_filename_hash.empty ())
-        return abs_filename_hash;
+        octave::sys::unlink (filename_hash);
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
 
       for (size_t i=0; i < filename_hash.length (); i++)
         w_filename_hash[i] = filename_hash.at (i);
 
-      if (CreateHardLinkW (w_filename_hash, w_orig_file_name, NULL))
+      if (CreateHardLinkW (w_filename_hash, w_orig_file_name, nullptr))
         return filename_hash;
 
 #endif

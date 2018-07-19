@@ -2613,10 +2613,10 @@ AC_DEFUN_ONCE([OCTAVE_DEFINE_MKOCTFILE_DYNAMIC_LINK_OPTIONS], [
       SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
     ;;
     *-*-darwin*)
-      DL_LDFLAGS="-bundle -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
+      DL_LDFLAGS="-bundle -undefined dynamic_lookup -bind_at_load -bundle_loader ${ac_top_build_prefix}libinterp/octave ${LDFLAGS}"
       dnl Contains variables that are defined and undefined at this point, so use
       dnl appropriate quoting to defer expansion of ${bindir} and ${version}.
-      MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
+      MKOCTFILE_DL_LDFLAGS='-bundle -undefined dynamic_lookup -bind_at_load -bundle_loader ${bindir}/octave-${version}'"${EXEEXT}"
       SH_LDFLAGS="-dynamiclib -single_module ${LDFLAGS}"
       case $canonical_host_type in
         powerpc-*)

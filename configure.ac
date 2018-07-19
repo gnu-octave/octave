@@ -641,15 +641,23 @@ fi
 
 ### More configure argument checking related to linking
 
+case $host_os in
+  msdosmsvc | mingw* | AIX | BeOS | OS/2 )
+    DEFAULT_NO_UNDEFINED_LDFLAG="-no-undefined"
+  ;;
+  *)
+    DEFAULT_NO_UNDEFINED_LDFLAG=""
+  ;;
+esac
 AC_ARG_ENABLE([no-undefined],
-  [AS_HELP_STRING([--disable-no-undefined],
-    [don't pass -no-undefined to libtool when linking Octave and its shared libraries])],
+  [AS_HELP_STRING([--enable-no-undefined],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries. This is done by default for msdosmsvc, mingw*, AIX, BeOS, or OS/2 hosts.])],
   [case $enableval in
      yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
      no)  NO_UNDEFINED_LDFLAG="" ;;
-     *) AC_MSG_ERROR([bad value $enableval for --disable-no-undefined]) ;;
+     *) AC_MSG_ERROR([bad value $enableval for --enable-no-undefined]) ;;
    esac],
-  [NO_UNDEFINED_LDFLAG="-no-undefined"])
+  [NO_UNDEFINED_LDFLAG="$DEFAULT_NO_UNDEFINED_LDFLAG"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
 
 AC_ARG_ENABLE([link-all-dependencies],
@@ -658,17 +666,10 @@ AC_ARG_ENABLE([link-all-dependencies],
   [case $enableval in
      yes) link_all_deps=yes ;;
      no)  link_all_deps=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-depenencies])
+     *) AC_MSG_ERROR([bad value $enableval for --enable-link-all-dependencies])
      ;;
    esac],
-  [case $host_os in
-    darwin*)
-      link_all_deps=yes
-    ;;
-    *)
-      link_all_deps=no
-    ;;
-  esac])
+  [link_all_deps=no])
 AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 
 ### Check for BLAS and LAPACK libraries:
@@ -2922,7 +2923,9 @@ OCT_GUI_LINK_DEPS=""
 OCT_LINK_OPTS="$LDFLAGS"
 OCT_GUI_LINK_OPTS="$LDFLAGS"
 
-if test $link_all_deps = yes; then
+if test $AMCOND_LINK_ALL_DEPS = yes; then
+  AC_DEFINE(OCTAVE_LINK_ALL_DEPS, 1, [Link with all dependencies.])
+
   OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
   OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
 

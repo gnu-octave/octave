@@ -28,11 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "txt-eng.h"
+#include "text-engine.h"
+
+// oct-tex-parser.h must be included after text-engine.h
 #include "oct-tex-parser.h"
 
 extern int octave_tex_lex (YYSTYPE *, void *);
-static void yyerror (text_parser_tex& parser, const char *s);
+ static void yyerror (octave::text_parser_tex& parser, const char *s);
 
 #define scanner parser.get_scanner ()
 #define yyalloc octave_tex_yyalloc
@@ -51,7 +53,7 @@ static void yyerror (text_parser_tex& parser, const char *s);
 %define api.pure
 // No spaces inside the braces for the prefix definition!
 %define api.prefix {octave_tex_}
-%parse-param { text_parser_tex& parser }
+%parse-param { octave::text_parser_tex& parser }
 %lex-param { void *scanner }
 
 %code requires {#include <string>}
@@ -59,16 +61,16 @@ static void yyerror (text_parser_tex& parser, const char *s);
 %union
 {
   // Leaf symbols produced by the scanner.
-  char                       ch;
-  double                     num;
-  int                        sym;
+  char ch;
+  double num;
+  int sym;
 
   // Used for string buffering.
-  std::string*               str;
+  std::string *str;
 
   // Objects produced by the parser.
-  text_element*              e_base;
-  text_element_list*         e_list;
+  octave::text_element *e_base;
+  octave::text_element_list *e_list;
 }
 
 %token BF IT SL RM
@@ -100,104 +102,105 @@ static void yyerror (text_parser_tex& parser, const char *s);
 
 %%
 
-simple_string                   : CH
-                                  { $$ = new std::string (1, $1); }
-                                | simple_string CH
-                                  { $1->append (1, $2); $$ = $1; }
-                                ;
+simple_string           : CH
+                          { $$ = new std::string (1, $1); }
+                        | simple_string CH
+                          { $1->append (1, $2); $$ = $1; }
+                        ;
 
-symbol_element                  : SYM
-                                  { $$ = new text_element_symbol ($1); }
-                                ;
+symbol_element          : SYM
+                          { $$ = new octave::text_element_symbol ($1); }
+                        ;
 
-font_modifier_element           : BF
-                                  { $$ = new text_element_fontstyle (text_element_fontstyle::bold); }
-                                | IT
-                                  { $$ = new text_element_fontstyle (text_element_fontstyle::italic); }
-                                | SL
-                                  { $$ = new text_element_fontstyle (text_element_fontstyle::oblique); }
-                                | RM
-                                  { $$ = new text_element_fontstyle (text_element_fontstyle::normal); }
-                                ;
+font_modifier_element   : BF
+                          { $$ = new octave::text_element_fontstyle (octave::text_element_fontstyle::bold); }
+                        | IT
+                          { $$ = new octave::text_element_fontstyle (octave::text_element_fontstyle::italic); }
+                        | SL
+                          { $$ = new octave::text_element_fontstyle (octave::text_element_fontstyle::oblique); }
+                        | RM
+                          { $$ = new octave::text_element_fontstyle (octave::text_element_fontstyle::normal); }
+                        ;
 
-fontsize_element                : FONTSIZE START NUM END
-                                  { $$ = new text_element_fontsize ($3); }
-                                ;
+fontsize_element        : FONTSIZE START NUM END
+                          { $$ = new octave::text_element_fontsize ($3); }
+                        ;
 
-fontname_element                : FONTNAME START simple_string END
-                                  {
-                                    $$ = new text_element_fontname (*$3);
-                                    delete $3;
-                                  }
-                                ;
+fontname_element        : FONTNAME START simple_string END
+                          {
+                            $$ = new octave::text_element_fontname (*$3);
+                            delete $3;
+                          }
+                        ;
 
-color_element                   : COLOR START simple_string END
-                                  {
-                                    $$ = new text_element_color (*$3);
-                                    delete $3;
-                                  }
-                                | COLOR_RGB START NUM NUM NUM END
-                                  {
-                                    $$ = new text_element_color ($3, $4, $5);
-                                  }
-                                ;
+color_element           : COLOR START simple_string END
+                          {
+                            $$ = new octave::text_element_color (*$3);
+                            delete $3;
+                          }
+                        | COLOR_RGB START NUM NUM NUM END
+                          {
+                            $$ = new octave::text_element_color ($3, $4, $5);
+                          }
+                        ;
 
-string_element                  : simple_string %prec STR
-                                  {
-                                    $$ = new text_element_string (*$1);
-                                    delete $1;
-                                  }
-                                | scoped_string_element_list
-                                  { $$ = $1; }
-                                | symbol_element
-                                | font_modifier_element
-                                | fontsize_element
-                                | fontname_element
-                                | color_element
-                                | superscript_element %prec SCRIPT
-                                | subscript_element %prec SCRIPT
-                                | combined_script_element
-                                ;
+string_element          : simple_string %prec STR
+                          {
+                            $$ = new octave::text_element_string (*$1);
+                            delete $1;
+                          }
+                        | scoped_string_element_list
+                          { $$ = $1; }
+                        | symbol_element
+                        | font_modifier_element
+                        | fontsize_element
+                        | fontname_element
+                        | color_element
+                        | superscript_element %prec SCRIPT
+                        | subscript_element %prec SCRIPT
+                        | combined_script_element
+                        ;
 
-superscript_element             : SUPER CH
-                                  { $$ = new text_element_superscript ($2); }
-                                | SUPER scoped_string_element_list
-                                  { $$ = new text_element_superscript ($2); }
-                                | SUPER symbol_element
-                                  { $$ = new text_element_superscript ($2); }
-                                ;
+superscript_element     : SUPER CH
+                          { $$ = new octave::text_element_superscript ($2); }
+                        | SUPER scoped_string_element_list
+                          { $$ = new octave::text_element_superscript ($2); }
+                        | SUPER symbol_element
+                          { $$ = new octave::text_element_superscript ($2); }
+                        ;
 
-subscript_element               : SUB CH
-                                  { $$ = new text_element_subscript ($2); }
-                                | SUB scoped_string_element_list
-                                  { $$ = new text_element_subscript ($2); }
-                                | SUB symbol_element
-                                  { $$ = new text_element_subscript ($2); }
-                                ;
+subscript_element       : SUB CH
+                          { $$ = new octave::text_element_subscript ($2); }
+                        | SUB scoped_string_element_list
+                          { $$ = new octave::text_element_subscript ($2); }
+                        | SUB symbol_element
+                          { $$ = new octave::text_element_subscript ($2); }
+                        ;
 
-combined_script_element         : subscript_element superscript_element
-                                  { $$ = new text_element_combined ($1, $2); }
-                                | superscript_element subscript_element
-                                  { $$ = new text_element_combined ($1, $2); }
-                                ;
+combined_script_element : subscript_element superscript_element
+                          { $$ = new octave::text_element_combined ($1, $2); }
+                        | superscript_element subscript_element
+                          { $$ = new octave::text_element_combined ($1, $2); }
+                        ;
 
-string_element_list             : string_element
-                                  { $$ = new text_element_list ($1); }
-                                | string_element_list string_element
-                                  { $1->push_back ($2); $$ = $1; }
-                                ;
+string_element_list     : string_element
+                          { $$ = new octave::text_element_list ($1); }
+                        | string_element_list string_element
+                          { $1->push_back ($2); $$ = $1; }
+                        ;
 
-scoped_string_element_list      : START string_element_list END
-                                  { $$ = $2; }
-                                | START END
-                                  { $$ = new text_element_list (); }
-                                ;
+scoped_string_element_list
+                        : START string_element_list END
+                          { $$ = $2; }
+                        | START END
+                          { $$ = new octave::text_element_list (); }
+                        ;
 
-string                          : // empty
-                                  { parser.set_parse_result (new text_element_string ("")); }
-                                | string_element_list
-                                  { parser.set_parse_result ($1); }
-                                ;
+string                  : // empty
+                          { parser.set_parse_result (new octave::text_element_string ("")); }
+                        | string_element_list
+                          { parser.set_parse_result ($1); }
+                        ;
 
 %%
 
@@ -206,24 +209,27 @@ string                          : // empty
 #  pragma GCC diagnostic pop
 #endif
 
-text_element*
-text_parser_tex::parse (const std::string& s)
+namespace octave
 {
-  octave_tex_debug = 0;
+  text_element*
+  text_parser_tex::parse (const std::string& s)
+  {
+    octave_tex_debug = 0;
 
-  if (init_lexer (s))
-    {
-      result = nullptr;
+    if (init_lexer (s))
+      {
+        result = nullptr;
 
-      if (octave_tex_parse (*this) == 0)
-        return result;
-    }
+        if (octave_tex_parse (*this) == 0)
+          return result;
+      }
 
-  return new text_element_string (s);
+    return new text_element_string (s);
+  }
 }
 
 static void
-yyerror (text_parser_tex&, const char *s)
+yyerror (octave::text_parser_tex&, const char *s)
 {
   fprintf (stderr, "TeX parse error: %s\n", s);
 }

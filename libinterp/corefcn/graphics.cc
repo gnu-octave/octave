@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
+#include "text-engine.h"
 #include "text-renderer.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -9921,14 +9922,14 @@ uicontrol::properties::get_extent (void) const
 void
 uicontrol::properties::update_text_extent (void)
 {
-  text_element *elt;
+  octave::text_element *elt;
   octave::text_renderer txt_renderer;
   Matrix box;
 
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
 
-  elt = text_parser::parse (get_string_string (), "none");
+  elt = octave::text_parser::parse (get_string_string (), "none");
 
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get_fontname (), get_fontweight (),

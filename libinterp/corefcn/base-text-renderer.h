@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "uint8NDArray.h"
 
+#include "text-engine.h"
 #include "text-renderer.h"
-#include "txt-eng.h"
 
 namespace octave
 {

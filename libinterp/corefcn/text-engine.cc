@@ -24,16 +24,19 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "txt-eng.h"
+#include "text-engine.h"
 #include "oct-tex-symbols.cc"
 
-uint32_t
-text_element_symbol::get_symbol_code (void) const
+namespace octave
 {
-  uint32_t code = invalid_code;
+  uint32_t
+  text_element_symbol::get_symbol_code (void) const
+  {
+    uint32_t code = invalid_code;
 
-  if (0 <= symbol && symbol < num_symbol_codes)
-    code = symbol_codes[symbol][0];
+    if (0 <= symbol && symbol < num_symbol_codes)
+      code = symbol_codes[symbol][0];
 
-  return code;
+    return code;
+  }
 }

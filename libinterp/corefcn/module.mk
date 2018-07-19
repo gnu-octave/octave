@@ -86,6 +86,7 @@ COREFCN_INC = \
   %reldir%/symscope.h \
   %reldir%/symtab.h \
   %reldir%/sysdep.h \
+  %reldir%/text-engine.h \
   %reldir%/text-renderer.h \
   %reldir%/toplev.h \
   %reldir%/txt-eng.h \
@@ -242,11 +243,11 @@ COREFCN_SRC = \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \
   %reldir%/time.cc \
+  %reldir%/text-engine.cc \
   %reldir%/text-renderer.cc \
   %reldir%/toplev.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
-  %reldir%/txt-eng.cc \
   %reldir%/typecast.cc \
   %reldir%/urlwrite.cc \
   %reldir%/url-handle-manager.cc \

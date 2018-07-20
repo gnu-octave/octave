@@ -325,6 +325,7 @@ DOC_TARGETS += \
 if AMCOND_BUILD_QT_DOCS
 DOC_TARGETS += \
   $(OCTAVE_QTHELP_FILES)
+
 endif
 
 ## Distribute both OCTAVE_CSS and HTMLDIR_CSS so that the rules for
@@ -424,6 +425,13 @@ doc_MAINTAINERCLEANFILES += \
 
 endif
 
+## These actions should happen even if we are not building docs
+
+include doc/interpreter/images.mk
+
+$(srcdir)/%reldir%/images.mk: $(srcdir)/%reldir%/config-images.sh $(srcdir)/%reldir%/images.awk $(srcdir)/%reldir%/images
+	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-images.sh $(top_srcdir)
+
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 ## The doc-cache file can be built without TeX but it does require
@@ -445,19 +453,19 @@ octetc_DATA += \
 
 %reldir%/undocumented_list:
 	rm -f $@-t $@
-	-cd $(srcdir)/doc/interpreter; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
+	-cd $(srcdir)/%reldir%; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
 	mv $@-t $@
 .PHONY: %reldir%/undocumented_list
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
 %.scheck: %.texi | %reldir%/$(octave_dirstamp)
-	cd $(srcdir)/doc/interpreter; ./doccheck/spellcheck $(<F) > $(@F)-t
+	cd $(srcdir)/%reldir%; ./doccheck/spellcheck $(<F) > $(@F)-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
 
 spellcheck: $(SPELLCHECK_FILES)
-	@cd $(srcdir)/doc/interpreter ; \
+	@cd $(srcdir)/%reldir% ; \
 	if ls *.scheck >/dev/null 2>&1 ; then \
 		echo "Spellcheck failed"; \
 		echo "Review the following files:"; \

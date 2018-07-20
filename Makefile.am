@@ -211,7 +211,6 @@ include libgui/module.mk
 include src/module.mk
 include scripts/module.mk
 include doc/module.mk
-include doc/interpreter/images.mk
 include etc/module.mk
 include examples/module.mk
 include m4/module.mk

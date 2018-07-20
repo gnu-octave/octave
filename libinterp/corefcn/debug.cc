@@ -523,18 +523,28 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 
 /*
 %!test
-%! dbclear all;   # Clear out breakpoints before test
-%! dbstop @ftp/dir;
-%! dbstop @audioplayer/set 70;
-%! dbstop quantile>__quantile__;
-%! dbstop ls;
-%! s = dbstatus;
-%! dbclear all;
-%! assert (s(1).name, "@audioplayer/set>setproperty");
-%! assert (s(2).name, "@ftp/dir");
-%! assert (s(3).name, "ls");
-%! assert (s(4).name, "quantile>__quantile__");
-%! assert (s(2).file(end-10:end), [filesep "@ftp" filesep "dir.m"]);
+%! if (isguirunning ())
+%!   orig_show_dbg = __octave_link_gui_preference__ ("editor/show_dbg_file",
+%!                                                   "0");
+%! endif
+%! unwind_protect 
+%!   dbclear all;   # Clear out breakpoints before test
+%!   dbstop @ftp/dir;
+%!   dbstop @audioplayer/set 70;
+%!   dbstop quantile>__quantile__;
+%!   dbstop ls;
+%!   s = dbstatus;
+%!   dbclear all;
+%!   assert (s(1).name, "@audioplayer/set>setproperty");
+%!   assert (s(2).name, "@ftp/dir");
+%!   assert (s(3).name, "ls");
+%!   assert (s(4).name, "quantile>__quantile__");
+%!   assert (s(2).file(end-10:end), [filesep "@ftp" filesep "dir.m"]);
+%! unwind_protect_cleanup
+%!   if (isguirunning ())
+%!     __octave_link_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!   endif
+%! end_unwind_protect
 */
 
 DEFMETHOD (dbwhere, interp, , ,

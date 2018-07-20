@@ -6,6 +6,18 @@ include %reldir%/vx-op-src.mk
 include %reldir%/mx-op-src.mk
 include %reldir%/smx-op-src.mk
 
+OP_MK_FILES := \
+  $(srcdir)/%reldir%/vx-op-inc.mk \
+  $(srcdir)/%reldir%/mx-op-inc.mk \
+  $(srcdir)/%reldir%/smx-op-inc.mk \
+  $(srcdir)/%reldir%/vx-op-src.mk \
+  $(srcdir)/%reldir%/mx-op-src.mk \
+  $(srcdir)/%reldir%/smx-op-src.mk
+
+$(OP_MK_FILES) : %.mk : $(srcdir)/%reldir%/config-ops.sh $(srcdir)/%reldir%/mk-ops.awk
+	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-ops.sh $(top_srcdir) `echo $(*F) | $(SED) 's/-op-.*//'` `echo $(*F) | $(SED) 's/.*-op-//'` 
+
+
 BUILT_LIBOCTAVE_OPERATORS_SOURCES = \
   $(MX_OP_SRC) \
   $(VX_OP_SRC) \

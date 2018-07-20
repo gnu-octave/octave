@@ -538,19 +538,8 @@ namespace octave
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
     // For unwind-protect.
-    void set_echo_state (bool val) { m_echo_state = val; }
-
-    // For unwind-protect.
-    void set_echo_file_name (const std::string& file_name)
-    {
-      m_echo_file_name = file_name;
-    }
-
-    // For unwind-protect.
-    void set_echo_file_pos (const size_t& file_pos)
-    {
-      m_echo_file_pos = file_pos;
-    }
+    void uwp_set_echo_state (bool state, const std::string& file_name,
+                             size_t pos);
 
     bool echo_this_file (const std::string& file, int type) const;
 

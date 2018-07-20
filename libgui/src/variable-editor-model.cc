@@ -1009,7 +1009,7 @@ namespace octave
 
     std::string expr = os.str ();
 
-    octave_link::post_event<variable_editor_model, std::string, std::string, QModelIndex>
+    octave_link::post_event
       (this, &variable_editor_model::set_data_oct, nm, expr, idx);
 
     return true;
@@ -1046,7 +1046,7 @@ namespace octave
   {
     // FIXME: cells?
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
        .arg (QString::fromStdString (name ()))
@@ -1068,7 +1068,7 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1(%2:%3, :) = []")
        .arg (QString::fromStdString (name ()))
@@ -1082,7 +1082,7 @@ namespace octave
   bool
   variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
   {
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
        .arg (QString::fromStdString (name ()))
@@ -1104,7 +1104,7 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1(:, %2:%3) = []")
        .arg (QString::fromStdString (name ()))

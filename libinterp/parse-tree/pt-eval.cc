@@ -3330,6 +3330,15 @@ namespace octave
   }
 
   void
+  tree_evaluator::uwp_set_echo_state (bool state, const std::string& file_name,
+                                      size_t pos)
+  {
+    m_echo_state = state;
+    m_echo_file_name = file_name;
+    m_echo_file_pos = pos;
+  }
+
+  void
   tree_evaluator::maybe_set_echo_state (void)
   {
     octave_function *caller = m_call_stack.caller ();
@@ -3351,14 +3360,8 @@ namespace octave
   void
   tree_evaluator::push_echo_state_cleanup (unwind_protect& frame)
   {
-    frame.add_method (*this, &tree_evaluator::set_echo_state,
-                      m_echo_state);
-
-    frame.add_method (*this, &tree_evaluator::set_echo_file_name,
-                      m_echo_file_name);
-
-    frame.add_method (*this, &tree_evaluator::set_echo_file_pos,
-                      m_echo_file_pos);
+    frame.add_method (this, &tree_evaluator::uwp_set_echo_state,
+                      m_echo_state, m_echo_file_name, m_echo_file_pos);
   }
 
   bool tree_evaluator::maybe_push_echo_state_cleanup (void)

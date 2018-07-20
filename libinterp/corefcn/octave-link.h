@@ -103,53 +103,12 @@ public:
     return retval;
   }
 
-  template <typename T>
-  static void post_event (T *obj, void (T::*method) (void))
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method);
-  }
-
-  template <typename T, typename A>
-  static void post_event (T *obj, void (T::*method) (A), A arg)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg);
-  }
-
-  template <typename T, typename A>
-  static void post_event (T *obj, void (T::*method) (const A&), const A& arg)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg);
-  }
-
-  template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (const A&, const B&),
-                          const A& arg_a, const B& arg_b)
-  {
-    if (enabled ())
-      instance->do_post_event<T, A, B> (obj, method, arg_a, arg_b);
-  }
-
-  template <class T, class A, class B, class C>
-  static void post_event (T *obj,
-                          void (T::*method) (const A&, const B&, const C&),
-                          const A& arg_a, const B& arg_b, const C& arg_c)
-  {
-    if (enabled ())
-      instance->do_post_event<T, A, B, C> (obj, method, arg_a, arg_b, arg_c);
-  }
-
-  template <class T, class A, class B, class C, class D>
+  template <typename T, typename... Params, typename... Args>
   static void
-  post_event (T *obj,
-              void (T::*method) (const A&, const B&, const C&, const D&),
-              const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
+  post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
     if (enabled ())
-      instance->do_post_event<T, A, B, C, D>
-        (obj, method, arg_a, arg_b, arg_c, arg_d);
+      instance->do_post_event (obj, method, std::forward<Args> (args)...);
   }
 
   static void
@@ -491,49 +450,10 @@ protected:
   void do_process_events (void);
   void do_discard_events (void);
 
-  template <typename T>
-  void do_post_event (T *obj, void (T::*method) (void))
+  template <typename T, typename... Params, typename... Args>
+  void do_post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
-    gui_event_queue.add_method (obj, method);
-  }
-
-  template <typename T, typename A>
-  void do_post_event (T *obj, void (T::*method) (A), A arg)
-  {
-    gui_event_queue.add_method (obj, method, arg);
-  }
-
-  template <typename T, typename A>
-  void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
-  {
-    gui_event_queue.add_method (obj, method, arg);
-  }
-
-  template <class T, class A, class B>
-  void do_post_event (T *obj, void (T::*method) (const A&, const B&),
-                      const A& arg_a, const B& arg_b)
-  {
-    gui_event_queue.add_method<T, A, B>
-      (obj, method, arg_a, arg_b);
-  }
-
-  template <class T, class A, class B, class C>
-  void do_post_event (T *obj,
-                      void (T::*method) (const A&, const B&, const C&),
-                      const A& arg_a, const B& arg_b, const C& arg_c)
-  {
-    gui_event_queue.add_method<T, A, B, C>
-      (obj, method, arg_a, arg_b, arg_c);
-  }
-
-  template <class T, class A, class B, class C, class D>
-  void
-  do_post_event (T *obj,
-                 void (T::*method) (const A&, const B&, const C&, const D&),
-                 const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
-  {
-    gui_event_queue.add_method<T, A, B, C, D>
-      (obj, method, arg_a, arg_b, arg_c, arg_d);
+    gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
   }
 
   void

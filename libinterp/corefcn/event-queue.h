@@ -51,11 +51,6 @@ namespace octave
 
     ~event_queue (void) { run (); }
 
-    void add (elem *new_elem)
-    {
-      fifo.push (new_elem);
-    }
-
     void run_first (void)
     {
       if (! empty ())
@@ -80,6 +75,11 @@ namespace octave
     size_t size (void) const { return fifo.size (); }
 
   protected:
+
+    void add_action (elem *new_elem)
+    {
+      fifo.push (new_elem);
+    }
 
     std::queue<elem *> fifo;
   };

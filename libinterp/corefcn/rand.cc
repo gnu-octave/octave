@@ -266,7 +266,13 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                 else
                   {
                     ColumnVector s =
-                      ColumnVector (args(idx+1).vector_value(false, true));
+                      ColumnVector (args(idx+1).vector_value (false, true));
+                   
+                    // Backwards compatibility with previous versions of
+                    // Octave which mapped Inf to 0.
+                    for (octave_idx_type i = 0; i < s.numel (); i++)
+                      if (octave::math::isinf (s.xelem (i)))
+                        s.xelem (i) = 0.0;
 
                     octave::rand::state (s, fcn);
                   }
@@ -528,7 +534,7 @@ classes.
 %!assert (__rand_sample__ (-1), __rand_sample__ (0))
 %!assert (__rand_sample__ (-Inf), __rand_sample__ (0))
 %!assert (__rand_sample__ (2^33), __rand_sample__ (intmax ("uint32")))
-%!assert (__rand_sample__ (Inf), __rand_sample__ (intmax ("uint32")))
+%!assert (__rand_sample__ (Inf), __rand_sample__ (0))
 %!assert (__rand_sample__ (NaN), __rand_sample__ (0))
 */
 

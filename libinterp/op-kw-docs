@@ -178,7 +178,7 @@ Multiplication operator.
 Power operator.
 
 This may return complex results for real inputs.  Use @code{realsqrt},
-@code{cbrt}, @code{nthroot}, or @code{realroot} to obtain real results when
+@code{cbrt}, @code{nthroot}, or @code{realpow} to obtain real results when
 possible.
 @seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}
 @end deftypefn
@@ -189,7 +189,7 @@ possible.
 Power operator.
 
 This may return complex results for real inputs.  Use @code{realsqrt},
-@code{cbrt}, @code{nthroot}, or @code{realroot} to obtain real results when
+@code{cbrt}, @code{nthroot}, or @code{realpow} to obtain real results when
 possible.
 @seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}
 @end deftypefn

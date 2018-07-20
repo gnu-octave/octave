@@ -54,7 +54,7 @@ namespace octave
   safe_pclose (FILE *f)
   {
     if (f)
-      octave_pclose (f);
+      octave::pclose (f);
   }
 
   static void
@@ -1105,7 +1105,7 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = octave_popen (cmd.c_str (), "w");
+        fp = octave::popen (cmd.c_str (), "w");
 
         if (! fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());

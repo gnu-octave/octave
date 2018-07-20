@@ -167,33 +167,35 @@ w32_init (void)
 
 #endif
 
-// Set app id if we have the SetCurrentProcessExplicitAppUserModelID
-// available (>= Win7).  FIXME: Could we check for existence of this
-// function in the configure script instead of dynamically loading
-// shell32.dll?
-
-void
-set_application_id (void)
+namespace octave
 {
+  // Set app id if we have the SetCurrentProcessExplicitAppUserModelID
+  // available (>= Win7).  FIXME: Could we check for existence of this
+  // function in the configure script instead of dynamically loading
+  // shell32.dll?
+
+  void set_application_id (void)
+  {
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
-  typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
+    typedef HRESULT (WINAPI *SETCURRENTAPPID)(PCWSTR AppID);
 
-  HMODULE hShell = LoadLibrary ("shell32.dll");
+    HMODULE hShell = LoadLibrary ("shell32.dll");
 
-  if (hShell)
-    {
-      SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-        reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
-                                           "SetCurrentProcessExplicitAppUserModelID"));
+    if (hShell)
+      {
+        SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
+          reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
+                                                             "SetCurrentProcessExplicitAppUserModelID"));
 
-      if (pfnSetCurrentProcessExplicitAppUserModelID)
-        pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave." VERSION);
+        if (pfnSetCurrentProcessExplicitAppUserModelID)
+          pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave." VERSION);
 
-      FreeLibrary (hShell);
-    }
+        FreeLibrary (hShell);
+      }
 
 #endif
+  }
 }
 
 DEFUN (__open_with_system_app__, args, ,
@@ -251,371 +253,366 @@ MSVC_init (void)
 }
 #endif
 
-// Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
-
-bool
-same_file_internal (const std::string& file1, const std::string& file2)
+namespace octave
 {
+  // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
+
+  bool same_file_internal (const std::string& file1, const std::string& file2)
+  {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  bool retval = false;
+    bool retval = false;
 
-  const wchar_t *f1 = octave::sys::u8_to_wstring (file1).c_str ();
-  const wchar_t *f2 = octave::sys::u8_to_wstring (file2).c_str ();
+    const wchar_t *f1 = octave::sys::u8_to_wstring (file1).c_str ();
+    const wchar_t *f2 = octave::sys::u8_to_wstring (file2).c_str ();
 
-  bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
-  bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;
+    bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
+    bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;
 
-  // Windows native code
-  // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
+    // Windows native code
+    // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
 
-  DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
+    DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
 
-  HANDLE hfile1
-    = CreateFileW (f1, 0, share, 0, OPEN_EXISTING,
-                   f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+    HANDLE hfile1
+      = CreateFileW (f1, 0, share, 0, OPEN_EXISTING,
+                     f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
-  if (hfile1 != INVALID_HANDLE_VALUE)
-    {
-      HANDLE hfile2
-        = CreateFileW (f2, 0, share, 0, OPEN_EXISTING,
-                       f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+    if (hfile1 != INVALID_HANDLE_VALUE)
+      {
+        HANDLE hfile2
+          = CreateFileW (f2, 0, share, 0, OPEN_EXISTING,
+                         f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
 
-      if (hfile2 != INVALID_HANDLE_VALUE)
-        {
-          BY_HANDLE_FILE_INFORMATION hfi1;
-          BY_HANDLE_FILE_INFORMATION hfi2;
+        if (hfile2 != INVALID_HANDLE_VALUE)
+          {
+            BY_HANDLE_FILE_INFORMATION hfi1;
+            BY_HANDLE_FILE_INFORMATION hfi2;
 
-          if (GetFileInformationByHandle (hfile1, &hfi1)
-              && GetFileInformationByHandle (hfile2, &hfi2))
-            {
-              retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
-                        && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-                        && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
-            }
+            if (GetFileInformationByHandle (hfile1, &hfi1)
+                && GetFileInformationByHandle (hfile2, &hfi2))
+              {
+                retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+                          && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+                          && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+              }
 
-          CloseHandle (hfile2);
-        }
+            CloseHandle (hfile2);
+          }
 
-      CloseHandle (hfile1);
-    }
+        CloseHandle (hfile1);
+      }
 
-  return retval;
+    return retval;
 
 #else
 
-  // POSIX Code
+    // POSIX Code
 
-  octave::sys::file_stat fs_file1 (file1);
-  octave::sys::file_stat fs_file2 (file2);
+    octave::sys::file_stat fs_file1 (file1);
+    octave::sys::file_stat fs_file2 (file2);
 
-  return (fs_file1 && fs_file2
-          && fs_file1.ino () == fs_file2.ino ()
-          && fs_file1.dev () == fs_file2.dev ());
+    return (fs_file1 && fs_file2
+            && fs_file1.ino () == fs_file2.ino ()
+            && fs_file1.dev () == fs_file2.dev ());
 
 #endif
-}
+  }
 
-void
-sysdep_init (void)
-{
-  // Use a function from libgomp to force loading of OpenMP library.
-  // Otherwise, a dynamically loaded library making use of OpenMP such
-  // as GraphicsMagick will segfault on exit (bug #41699).
+  void sysdep_init (void)
+  {
+    // Use a function from libgomp to force loading of OpenMP library.
+    // Otherwise, a dynamically loaded library making use of OpenMP such
+    // as GraphicsMagick will segfault on exit (bug #41699).
 #if defined (HAVE_OMP_GET_NUM_THREADS)
-  omp_get_num_threads ();
+    omp_get_num_threads ();
 #endif
 
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
-  BSD_init ();
+    BSD_init ();
 #elif defined (__MINGW32__)
-  MINGW_init ();
+    MINGW_init ();
 #elif defined (_MSC_VER)
-  MSVC_init ();
+    MSVC_init ();
 #endif
-}
+  }
 
-void
-sysdep_cleanup (void)
-{
+  void sysdep_cleanup (void)
+  {
 #if defined (OCTAVE_USE_WINDOWS_API)
-  // Let us fail immediately without displaying any dialog.
-  SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
+    // Let us fail immediately without displaying any dialog.
+    SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
 #endif
-}
+  }
 
-// Set terminal in raw mode.  From less-177.
-//
-// Change terminal to "raw mode", or restore to "normal" mode.
-// "Raw mode" means
-//      1. An outstanding read will complete on receipt of a single keystroke.
-//      2. Input is not echoed.
-//      3. On output, \n is mapped to \r\n.
-//      4. \t is NOT expanded into spaces.
-//      5. Signal-causing characters such as ctrl-C (interrupt),
-//         etc. are NOT disabled.
-// It doesn't matter whether an input \n is mapped to \r, or vice versa.
+  // Set terminal in raw mode.  From less-177.
+  //
+  // Change terminal to "raw mode", or restore to "normal" mode.
+  // "Raw mode" means
+  //      1. An outstanding read will complete on receipt of a single keystroke.
+  //      2. Input is not echoed.
+  //      3. On output, \n is mapped to \r\n.
+  //      4. \t is NOT expanded into spaces.
+  //      5. Signal-causing characters such as ctrl-C (interrupt),
+  //         etc. are NOT disabled.
+  // It doesn't matter whether an input \n is mapped to \r, or vice versa.
 
-void
-raw_mode (bool on, bool wait)
-{
-  static bool curr_on = false;
+  void raw_mode (bool on, bool wait)
+  {
+    static bool curr_on = false;
 
-  int tty_fd = STDIN_FILENO;
-  if (! octave_isatty_wrapper (tty_fd))
-    {
-      if (octave::application::interactive ()
-          && ! octave::application::forced_interactive ())
-        error ("stdin is not a tty!");
-    }
+    int tty_fd = STDIN_FILENO;
+    if (! octave_isatty_wrapper (tty_fd))
+      {
+        if (octave::application::interactive ()
+            && ! octave::application::forced_interactive ())
+          error ("stdin is not a tty!");
+      }
 
-  if (on == curr_on)
-    return;
+    if (on == curr_on)
+      return;
 
 #if defined (HAVE_TERMIOS_H)
-  {
-    struct termios s;
-    static struct termios save_term;
+    {
+      struct termios s;
+      static struct termios save_term;
 
-    if (on)
-      {
-        // Get terminal modes.
+      if (on)
+        {
+          // Get terminal modes.
 
-        tcgetattr (tty_fd, &s);
+          tcgetattr (tty_fd, &s);
 
-        // Save modes and set certain variables dependent on modes.
+          // Save modes and set certain variables dependent on modes.
 
-        save_term = s;
-//      ospeed = s.c_cflag & CBAUD;
-//      erase_char = s.c_cc[VERASE];
-//      kill_char = s.c_cc[VKILL];
+          save_term = s;
+          //      ospeed = s.c_cflag & CBAUD;
+          //      erase_char = s.c_cc[VERASE];
+          //      kill_char = s.c_cc[VKILL];
 
-        // Set the modes to the way we want them.
+          // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
-        s.c_oflag |=  (OPOST | ONLCR);
+          s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+          s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
-        s.c_oflag &= ~(OCRNL);
+          s.c_oflag &= ~(OCRNL);
 #endif
 #if defined (ONOCR)
-        s.c_oflag &= ~(ONOCR);
+          s.c_oflag &= ~(ONOCR);
 #endif
 #if defined (ONLRET)
-        s.c_oflag &= ~(ONLRET);
+          s.c_oflag &= ~(ONLRET);
 #endif
-        s.c_cc[VMIN] = (wait ? 1 : 0);
-        s.c_cc[VTIME] = 0;
-      }
-    else
-      {
-        // Restore saved modes.
+          s.c_cc[VMIN] = (wait ? 1 : 0);
+          s.c_cc[VTIME] = 0;
+        }
+      else
+        {
+          // Restore saved modes.
 
-        s = save_term;
-      }
+          s = save_term;
+        }
 
-    tcsetattr (tty_fd, wait ? TCSAFLUSH : TCSADRAIN, &s);
-  }
+      tcsetattr (tty_fd, wait ? TCSAFLUSH : TCSADRAIN, &s);
+    }
 #elif defined (HAVE_TERMIO_H)
-  {
-    struct termio s;
-    static struct termio save_term;
+    {
+      struct termio s;
+      static struct termio save_term;
 
-    if (on)
-      {
-        // Get terminal modes.
+      if (on)
+        {
+          // Get terminal modes.
 
-        ioctl (tty_fd, TCGETA, &s);
+          ioctl (tty_fd, TCGETA, &s);
 
-        // Save modes and set certain variables dependent on modes.
+          // Save modes and set certain variables dependent on modes.
 
-        save_term = s;
-//      ospeed = s.c_cflag & CBAUD;
-//      erase_char = s.c_cc[VERASE];
-//      kill_char = s.c_cc[VKILL];
+          save_term = s;
+          //      ospeed = s.c_cflag & CBAUD;
+          //      erase_char = s.c_cc[VERASE];
+          //      kill_char = s.c_cc[VKILL];
 
-        // Set the modes to the way we want them.
+          // Set the modes to the way we want them.
 
-        s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
-        s.c_oflag |=  (OPOST | ONLCR);
+          s.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL);
+          s.c_oflag |=  (OPOST | ONLCR);
 #if defined (OCRNL)
-        s.c_oflag &= ~(OCRNL);
+          s.c_oflag &= ~(OCRNL);
 #endif
 #if defined (ONOCR)
-        s.c_oflag &= ~(ONOCR);
+          s.c_oflag &= ~(ONOCR);
 #endif
 #if defined (ONLRET)
-        s.c_oflag &= ~(ONLRET);
+          s.c_oflag &= ~(ONLRET);
 #endif
-        s.c_cc[VMIN] = (wait ? 1 : 0);
-      }
-    else
-      {
-        // Restore saved modes.
+          s.c_cc[VMIN] = (wait ? 1 : 0);
+        }
+      else
+        {
+          // Restore saved modes.
 
-        s = save_term;
-      }
+          s = save_term;
+        }
 
-    ioctl (tty_fd, TCSETAW, &s);
-  }
+      ioctl (tty_fd, TCSETAW, &s);
+    }
 #elif defined (HAVE_SGTTY_H)
-  {
+    {
+      octave_unused_parameter (wait);
+
+      struct sgttyb s;
+      static struct sgttyb save_term;
+
+      if (on)
+        {
+          // Get terminal modes.
+
+          ioctl (tty_fd, TIOCGETP, &s);
+
+          // Save modes and set certain variables dependent on modes.
+
+          save_term = s;
+          //      ospeed = s.sg_ospeed;
+          //      erase_char = s.sg_erase;
+          //      kill_char = s.sg_kill;
+
+          // Set the modes to the way we want them.
+
+          s.sg_flags |= CBREAK;
+          s.sg_flags &= ~(ECHO);
+        }
+      else
+        {
+          // Restore saved modes.
+
+          s = save_term;
+        }
+
+      ioctl (tty_fd, TIOCSETN, &s);
+    }
+#else
+
     octave_unused_parameter (wait);
 
-    struct sgttyb s;
-    static struct sgttyb save_term;
+    warn_disabled_feature ("", "raw mode console I/O");
 
-    if (on)
+    // Make sure the current mode doesn't toggle.
+    on = curr_on;
+#endif
+
+    curr_on = on;
+  }
+
+  FILE * popen (const char *command, const char *mode)
+  {
+#if defined (__MINGW32__) || defined (_MSC_VER)
+    wchar_t *wcommand = u8_to_wchar (command);
+    wchar_t *wmode = u8_to_wchar (mode);
+
+    octave::unwind_protect frame;
+    frame.add_fcn (::free, static_cast<void *> (wcommand));
+    frame.add_fcn (::free, static_cast<void *> (wmode));
+
+    if (wmode && wmode[0] && ! wmode[1])
       {
-        // Get terminal modes.
+        // Use binary mode on Windows if unspecified
+        wchar_t tmode[3] = {wmode[0], L'b', L'\0'};
 
-        ioctl (tty_fd, TIOCGETP, &s);
-
-        // Save modes and set certain variables dependent on modes.
-
-        save_term = s;
-//      ospeed = s.sg_ospeed;
-//      erase_char = s.sg_erase;
-//      kill_char = s.sg_kill;
-
-        // Set the modes to the way we want them.
-
-        s.sg_flags |= CBREAK;
-        s.sg_flags &= ~(ECHO);
+        return _wpopen (wcommand, tmode);
       }
     else
-      {
-        // Restore saved modes.
-
-        s = save_term;
-      }
-
-    ioctl (tty_fd, TIOCSETN, &s);
+      return _wpopen (wcommand, wmode);
+#else
+    return ::popen (command, mode);
+#endif
   }
-#else
 
-  octave_unused_parameter (wait);
-
-  warn_disabled_feature ("", "raw mode console I/O");
-
-  // Make sure the current mode doesn't toggle.
-  on = curr_on;
-#endif
-
-  curr_on = on;
-}
-
-FILE *
-octave_popen (const char *command, const char *mode)
-{
+  int pclose (FILE *f)
+  {
 #if defined (__MINGW32__) || defined (_MSC_VER)
-  wchar_t *wcommand = u8_to_wchar (command);
-  wchar_t *wmode = u8_to_wchar (mode);
-
-  octave::unwind_protect frame;
-  frame.add_fcn (::free, static_cast<void *> (wcommand));
-  frame.add_fcn (::free, static_cast<void *> (wmode));
-
-  if (wmode && wmode[0] && ! wmode[1])
-    {
-      // Use binary mode on Windows if unspecified
-      wchar_t tmode[3] = {wmode[0], L'b', L'\0'};
-
-      return _wpopen (wcommand, tmode);
-    }
-  else
-    return _wpopen (wcommand, wmode);
+    return _pclose (f);
 #else
-  return popen (command, mode);
+    return ::pclose (f);
 #endif
-}
+  }
 
-int
-octave_pclose (FILE *f)
-{
-#if defined (__MINGW32__) || defined (_MSC_VER)
-  return _pclose (f);
-#else
-  return pclose (f);
-#endif
-}
+  // Read one character from the terminal.
 
-// Read one character from the terminal.
-
-int
-octave_kbhit (bool wait)
-{
+  int kbhit (bool wait)
+  {
 #if defined (HAVE__KBHIT) && defined (HAVE__GETCH)
-  // This essentially means we are on a Windows system.
-  int c;
+    // This essentially means we are on a Windows system.
+    int c;
 
-  if (wait)
-    c = _getch ();
-  else
-    c = (! _kbhit ()) ? 0 : _getch ();
+    if (wait)
+      c = _getch ();
+    else
+      c = (! _kbhit ()) ? 0 : _getch ();
 
 #else
-  raw_mode (true, wait);
+    raw_mode (true, wait);
 
-  // Get current handler.
-  octave::interrupt_handler saved_interrupt_handler
-    = octave::ignore_interrupts ();
+    // Get current handler.
+    octave::interrupt_handler saved_interrupt_handler
+      = octave::ignore_interrupts ();
 
-  // Restore it, disabling system call restarts (if possible) so the
-  // read can be interrupted.
+    // Restore it, disabling system call restarts (if possible) so the
+    // read can be interrupted.
 
-  octave::set_interrupt_handler (saved_interrupt_handler, false);
+    octave::set_interrupt_handler (saved_interrupt_handler, false);
 
-  int c = std::cin.get ();
+    int c = std::cin.get ();
 
-  if (std::cin.fail () || std::cin.eof ())
-    std::cin.clear ();
+    if (std::cin.fail () || std::cin.eof ())
+      std::cin.clear ();
 
-  // Restore it, enabling system call restarts (if possible).
-  octave::set_interrupt_handler (saved_interrupt_handler, true);
+    // Restore it, enabling system call restarts (if possible).
+    octave::set_interrupt_handler (saved_interrupt_handler, true);
 
-  raw_mode (false, true);
+    raw_mode (false, true);
 #endif
 
-  return c;
-}
+    return c;
+  }
 
-std::string
-get_P_tmpdir (void)
-{
+  std::string get_P_tmpdir (void)
+  {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-  std::string retval;
+    std::string retval;
 
 #if defined (P_tmpdir)
-  retval = P_tmpdir;
+    retval = P_tmpdir;
 #endif
 
-  // Apparently some versions of MinGW and MSVC either don't define
-  // P_tmpdir, or they define it to a single backslash, neither of which
-  // is particularly helpful.
+    // Apparently some versions of MinGW and MSVC either don't define
+    // P_tmpdir, or they define it to a single backslash, neither of which
+    // is particularly helpful.
 
-  if (retval.empty () || retval == R"(\)")
-    {
-      retval = octave::sys::env::getenv ("TEMP");
+    if (retval.empty () || retval == R"(\)")
+      {
+        retval = octave::sys::env::getenv ("TEMP");
 
-      if (retval.empty ())
-        retval = octave::sys::env::getenv ("TMP");
+        if (retval.empty ())
+          retval = octave::sys::env::getenv ("TMP");
 
-      if (retval.empty ())
-        retval = R"(c:\temp)";
-    }
+        if (retval.empty ())
+          retval = R"(c:\temp)";
+      }
 
-  return retval;
+    return retval;
 
 #elif defined (P_tmpdir)
 
-  return P_tmpdir;
+    return P_tmpdir;
 
 #else
 
-  return "/tmp";
+    return "/tmp";
 
 #endif
+  }
 }
 
 DEFUN (clc, , ,
@@ -730,7 +727,7 @@ reg_close_key_wrapper (HKEY key)
   RegCloseKey (key);
 }
 
-LONG
+static LONG
 get_regkey_value (HKEY h_rootkey, const std::string subkey,
                   const std::string name, octave_value& value)
 {
@@ -771,7 +768,7 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
   return result;
 }
 
-LONG
+static LONG
 get_regkey_names (HKEY h_rootkey, const std::string subkey,
                   std::list<std::string> &fields)
 {
@@ -1046,7 +1043,7 @@ returning the empty string if no key is available.
 
   Fdrawnow ();
 
-  int c = octave_kbhit (args.length () == 0);
+  int c = octave::kbhit (args.length () == 0);
 
   if (c == -1)
     c = 0;
@@ -1107,7 +1104,7 @@ clc;
           if (octave::math::isinf (dval))
             {
               octave::flush_stdout ();
-              octave_kbhit ();
+              octave::kbhit ();
             }
           else
             octave::sleep (dval);
@@ -1117,7 +1114,7 @@ clc;
     {
       Fdrawnow ();
       octave::flush_stdout ();
-      octave_kbhit ();
+      octave::kbhit ();
     }
 
   return ovl ();

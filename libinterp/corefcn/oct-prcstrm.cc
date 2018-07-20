@@ -39,8 +39,8 @@ octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_iprocstream::octave_iprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
                                         octave::mach_info::float_format ff)
-  : octave_stdiostream (n, octave_popen (n.c_str (), "r"),
-                        arg_md, ff, octave_pclose)
+  : octave_stdiostream (n, octave::popen (n.c_str (), "r"),
+                        arg_md, ff, octave::pclose)
 { }
 
 octave_iprocstream::~octave_iprocstream (void)
@@ -58,8 +58,8 @@ octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_oprocstream::octave_oprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
                                         octave::mach_info::float_format ff)
-  : octave_stdiostream (n, octave_popen (n.c_str (), "w"),
-                        arg_md, ff, octave_pclose)
+  : octave_stdiostream (n, octave::popen (n.c_str (), "w"),
+                        arg_md, ff, octave::pclose)
 { }
 
 octave_oprocstream::~octave_oprocstream (void)

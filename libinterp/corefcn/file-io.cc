@@ -3079,7 +3079,7 @@ environment variable.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (get_P_tmpdir ());
+  return ovl (octave::get_P_tmpdir ());
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be

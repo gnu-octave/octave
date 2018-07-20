@@ -6605,6 +6605,16 @@ namespace octave
       {
         std::istream& is = *isp;
 
+        // Initialize eof_pos variable just once per function call
+        off_t eof_pos = 0;
+        if (skip != 0 && is && ! is.eof ())
+          {
+            off_t orig_pos = tell ();
+            seek (0, SEEK_END);
+            eof_pos = tell ();
+            seek (orig_pos, SEEK_SET);
+          }
+
         std::list <void *> input_buf_list;
 
         while (is && ! is.eof ()
@@ -6634,19 +6644,9 @@ namespace octave
 
             if (is && skip != 0 && nel == block_size)
               {
-                // Seek to skip.
+                // Attempt to skip.
                 // If skip would move past EOF, position at EOF.
-
                 off_t orig_pos = tell ();
-
-                seek (0, SEEK_END);
-
-                off_t eof_pos = tell ();
-
-                // Is it possible for this to fail to return us to
-                // the original position?
-                seek (orig_pos, SEEK_SET);
-
                 off_t remaining = eof_pos - orig_pos;
 
                 if (remaining < skip)

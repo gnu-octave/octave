@@ -188,6 +188,7 @@ function retval = num2str (x, arg)
 endfunction
 
 
+## Basic tests
 %!assert (num2str (123), "123")
 %!assert (num2str (1.23), "1.23")
 %!assert (num2str (123.456, 4), "123.5")
@@ -195,6 +196,7 @@ endfunction
 %!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
 %!assert (num2str ([true false true]), "1  0  1")
 
+## Exceptional values
 %!assert (num2str (19440606), "19440606")
 %!assert (num2str (2^33), "8589934592")
 %!assert (num2str (-2^33), "-8589934592")
@@ -220,7 +222,7 @@ endfunction
 %! x = cat (3, m, -m);
 
 ## real case
-%!test
+%!test <*46770>
 %! y = num2str (x);
 %! assert (rows (y) == 3);
 %! assert (y, ["8  1  6 -8 -1 -6"
@@ -228,7 +230,7 @@ endfunction
 %!             "4  9  2 -4 -9 -2"]);
 
 ## complex case
-%!test
+%!test <*46770>
 %! x(1,1,2) = -8+2i;
 %! y = num2str (x);
 %! assert (rows (y) == 3);
@@ -248,11 +250,17 @@ endfunction
 %!assert <*36133> (num2str ([2.1, 1e23, pi]),
 %!                 "2.1  9.999999999999999e+22      3.141592653589793")
 
+## Large integers should not switch sign when printed due to overflow
+%!assert <*36121> (num2str (2.4e9, 15), "2400000000")
+
 ## Test for extra rows generated from newlines in format
 %!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
 
+## Test that string conversion of numeric objects results in characters
+## if the numbers are within range for ASCII.
 %!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
 
+## Test input validation
 %!error num2str ()
 %!error num2str (1, 2, 3)
 %!error <X must be a numeric> num2str ({1})

@@ -531,7 +531,7 @@ namespace octave
   int pclose (FILE *f)
   {
 #if defined (__MINGW32__) || defined (_MSC_VER)
-    return _pclose (f);
+    return ::_pclose (f);
 #else
     return ::pclose (f);
 #endif
@@ -727,7 +727,7 @@ reg_close_key_wrapper (HKEY key)
   RegCloseKey (key);
 }
 
-static LONG
+LONG
 get_regkey_value (HKEY h_rootkey, const std::string subkey,
                   const std::string name, octave_value& value)
 {

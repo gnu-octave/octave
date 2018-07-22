@@ -78,7 +78,7 @@ octave_procbuf::open (const char *command, int mode)
   if (is_open ())
     return 0;
 
-  f = (octave_popen (command, (mode & std::ios::in) ? "r" : "w"));
+  f = (octave::popen (command, (mode & std::ios::in) ? "r" : "w"));
 
   if (! f)
     return 0;
@@ -183,7 +183,7 @@ octave_procbuf::close (void)
 
   if (f)
     {
-      wstatus = octave_pclose (f);
+      wstatus = octave::pclose (f);
       f = 0;
     }
 

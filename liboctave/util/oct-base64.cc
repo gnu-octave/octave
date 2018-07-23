@@ -91,7 +91,11 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+// Always define these functions.  The macro is intended to allow the
+// declarations to be hidden, not so that Octave will not provide the
+// functions if they are requested.
+
+// #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out)
@@ -105,4 +109,4 @@ octave_base64_decode (const std::string& str)
   return octave::base64_decode (str);
 }
 
-#endif
+// #endif

@@ -1641,16 +1641,11 @@ Set and query the codepage that is used for reading .m files.
   return input_sys.mfile_encoding (args, nargout);
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+// Always define these functions.  The macro is intended to allow the
+// declarations to be hidden, not so that Octave will not provide the
+// functions if they are requested.
 
-void
-set_default_prompts (void)
-{
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("set_default_prompts");
-
-  input_sys.set_default_prompts ();
-}
+// #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 bool
 octave_yes_or_no (const std::string& prompt)
@@ -1658,7 +1653,7 @@ octave_yes_or_no (const std::string& prompt)
   octave::input_system& input_sys
     = octave::__get_input_system__ ("set_default_prompts");
 
-  input_sys.yes_or_no (prompt);
+  return input_sys.yes_or_no (prompt);
 }
 
 octave_value
@@ -1690,4 +1685,4 @@ get_input_from_stdin (void)
   return octave::command_editor::get_input_stream ();
 }
 
-#endif
+// #endif

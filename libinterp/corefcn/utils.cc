@@ -1495,7 +1495,11 @@ Return true if running in the student edition of @sc{matlab}.
 %!error isstudent (1)
 */
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+// Always define these functions.  The macro is intended to allow the
+// declarations to be hidden, not so that Octave will not provide the
+// functions if they are requested.
+
+// #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 #include "ov.h"
 #include "ovl.h"
@@ -1669,4 +1673,4 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
   return octave::do_simple_cellfun (fun, fun_name, args);
 }
 
-#endif
+// #endif

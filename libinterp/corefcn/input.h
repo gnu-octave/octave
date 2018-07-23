@@ -336,9 +336,6 @@ namespace octave
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::set_default_prompts' instead")
-extern void set_default_prompts (void);
-
 OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
 extern bool octave_yes_or_no (const std::string& prompt);
 

@@ -6609,10 +6609,10 @@ namespace octave
         off_t eof_pos = 0;
         if (skip != 0 && is && ! is.eof ())
           {
-            off_t orig_pos = tell ();
-            seek (0, SEEK_END);
-            eof_pos = tell ();
-            seek (orig_pos, SEEK_SET);
+            off_t orig_pos = is.tellg ();
+            is.seekg (0, is.end);
+            eof_pos = is.tellg ();
+            is.seekg (orig_pos, is.beg);
           }
 
         std::list <void *> input_buf_list;
@@ -6646,13 +6646,13 @@ namespace octave
               {
                 // Attempt to skip.
                 // If skip would move past EOF, position at EOF.
-                off_t orig_pos = tell ();
+                off_t orig_pos = is.tellg ();
                 off_t remaining = eof_pos - orig_pos;
 
                 if (remaining < skip)
-                  seek (0, SEEK_END);
+                  is.seekg (0, is.end);
                 else
-                  seek (skip, SEEK_CUR);
+                  is.seekg (skip, is.cur);
 
                 if (! is)
                   break;

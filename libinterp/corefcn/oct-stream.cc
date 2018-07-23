@@ -6511,19 +6511,19 @@ namespace octave
   {
     octave_value retval;
 
+    if (! stream_ok ())
+      return retval;
+
     octave_idx_type nr = -1;
     octave_idx_type nc = -1;
 
     bool one_elt_size_spec = false;
 
-    if (! stream_ok ())
-      return retval;
+    // FIXME: We may eventually want to make this extensible.
 
-    // FIXME: we may eventually want to make this extensible.
-
-    // FIXME: we need a better way to ensure that this
-    // numbering stays consistent with the order of the elements in the
-    // data_type enum in the oct_data_conv class.
+    // FIXME: We need a better way to ensure that this numbering stays
+    // consistent with the order of the elements in the data_type enum in the
+    // oct_data_conv class.
 
     // Expose this in a future version?
     size_t char_count = 0;
@@ -6595,8 +6595,7 @@ namespace octave
 
     assert (input_buf_size >= 0);
 
-    // Must also work and return correct type object
-    // for 0 elements to read.
+    // Must also work and return correct type object for 0 elements to read.
     std::istream *isp = input_stream ();
 
     if (! isp)
@@ -6607,15 +6606,16 @@ namespace octave
 
         // Initialize eof_pos variable just once per function call
         off_t eof_pos = 0;
+        off_t cur_pos = 0;
         if (skip != 0 && is && ! is.eof ())
           {
-            off_t orig_pos = is.tellg ();
+            cur_pos = is.tellg ();
             is.seekg (0, is.end);
             eof_pos = is.tellg ();
-            is.seekg (orig_pos, is.beg);
+            is.seekg (cur_pos, is.beg);
           }
 
-        std::list <void *> input_buf_list;
+        std::list<void *> input_buf_list;
 
         while (is && ! is.eof ()
                && (read_to_eof || tmp_count < elts_to_read))
@@ -6635,6 +6635,7 @@ namespace octave
             size_t gcount = is.gcount ();
 
             char_count += gcount;
+            cur_pos += gcount;
 
             octave_idx_type nel = gcount / input_elt_size;
 
@@ -6642,20 +6643,22 @@ namespace octave
 
             input_buf_list.push_back (input_buf);
 
-            if (is && skip != 0 && nel == block_size)
+            if (skip != 0 && nel == block_size && is)
               {
                 // Attempt to skip.
                 // If skip would move past EOF, position at EOF.
-                off_t orig_pos = is.tellg ();
-                off_t remaining = eof_pos - orig_pos;
+                off_t remaining = eof_pos - cur_pos;
 
                 if (remaining < skip)
-                  is.seekg (0, is.end);
+                  {
+                    is.seekg (0, is.end);
+                    cur_pos = eof_pos;
+                  }
                 else
-                  is.seekg (skip, is.cur);
-
-                if (! is)
-                  break;
+                  {
+                    is.seekg (skip, is.cur);
+                    cur_pos += skip;
+                  }
               }
           }
 

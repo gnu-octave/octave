@@ -177,6 +177,9 @@
 %!    endfor
 %!  endif
 %!
+%!  ## Cleanup after test
+%!  clear -global a1;
+%!
 %!  ret = 1;
 %!endfunction
 

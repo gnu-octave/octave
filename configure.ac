@@ -1830,9 +1830,10 @@ if test $check_freetype = yes; then
 fi
 
 if test -n "$warn_freetype"; then
+  FT2_CFLAGS=
+  FT2_LIBS=
   OCTAVE_CONFIGURE_WARNING([warn_freetype])
 else
-  FT2_CPPFLAGS="$FT2_CFLAGS"
   dnl Alias CPPFLAGS to CFLAGS.  This is closer to the true meaning
   dnl of `pkg-config --cflags` output.
   FT2_CPPFLAGS="$FT2_CFLAGS"

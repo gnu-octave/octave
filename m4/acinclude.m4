@@ -842,6 +842,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
         m4_toupper([$1])_LIBS=
       fi
     else
+      octave_cv_lib_$1=no
       m4_toupper([$1])_LIBS=
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])

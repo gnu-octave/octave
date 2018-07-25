@@ -658,10 +658,12 @@ This is just the opposite of the corresponding C library function.
 %!assert (strncmp ("abce", "aBc", 3), false)
 %!assert (strncmp (100, 100, 1), false)
 %!assert (strncmp ("abce", {"abcd", "bca", "abc"}, 3), logical ([1, 0, 1]))
-%!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 0]))
+%!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 1]))
 %!assert (strncmp ({"abcd", "bca", "abc"},"abce", 3), logical ([1, 0, 1]))
 %!assert (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3), logical ([1, 1, 0]))
 %!assert (strncmp ("abc", {"abcd", 10}, 2), logical ([1, 0]))
+
+%!assert <*54373> (strncmp ("abc", "abc", 100))
 
 %!error strncmp ()
 %!error strncmp ("abc", "def")
@@ -733,6 +735,8 @@ This is just the opposite of the corresponding C library function.
 
 /*
 %!assert (strncmpi ("abc123", "ABC456", 3), true)
+
+%!assert <*54373> (strncmpi ("abc", "abC", 100))
 */
 
 DEFUN (__native2unicode__, args, ,

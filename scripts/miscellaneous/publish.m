@@ -425,9 +425,23 @@ function doc = parse_m_source (doc)
   ##
   ## Checks line to have N "%" or "#" lines
   ## followed either by a space or end of string
-  is_publish_markup = @(cstr, N) ...
-    any (strncmp (char (cstr), {"%%%", "##"}, N)) ...
-    && ((length (char (cstr)) == N) || ((char (cstr))(N + 1) == " "));
+  function r = is_publish_markup (cstr, N)
+    str = char (cstr);
+
+    r = any (strncmp (str, {"%%%", "##"}, N));
+    if (r)
+      len = length (str);
+      if (len == N)
+        r = true;
+      elseif (len > N && str(N+1) == " ")
+        r = true;
+      else
+        r = false;
+      endif
+    endif
+
+    return;
+  endfunction
   ## Checks line of cellstring to be a paragraph line
   is_paragraph = @(cstr) is_publish_markup (cstr, 1);
   ## Checks line of cellstring to be a section headline

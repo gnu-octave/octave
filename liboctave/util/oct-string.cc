@@ -146,8 +146,13 @@ bool
 octave::string::strncmp (const T& str_a, const T& str_b,
                          const typename T::size_type n)
 {
-  return (numel (str_a) >= n && numel (str_b) >= n
-          && str_data_cmp<T> (str_a.data (), str_b.data (), n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = numel (str_b);
+  neff = std::min (std::max (len_a, len_b), n); 
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmp<T> (str_a.data (), str_b.data (), neff));
 }
 
 template<typename T>
@@ -155,8 +160,13 @@ bool
 octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
                          const typename T::size_type n)
 {
-  return (numel (str_a) >= n && strlen<T> (str_b) >= n
-          && str_data_cmp<T> (str_a.data (), str_b, n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = strlen<T> (str_b);
+  neff = std::min (std::max (len_a, len_b), n); 
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmp<T> (str_a.data (), str_b, neff));
 }
 
 
@@ -165,8 +175,13 @@ bool
 octave::string::strncmpi (const T& str_a, const T& str_b,
                           const typename T::size_type n)
 {
-  return (numel (str_a) >= n && numel (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b.data (), n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = numel (str_b);
+  neff = std::min (std::max (len_a, len_b), n); 
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmpi<T> (str_a.data (), str_b.data (), neff));
 }
 
 template<typename T>
@@ -174,8 +189,13 @@ bool
 octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
                           const typename T::size_type n)
 {
-  return (numel (str_a) >= n && strlen<T> (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b, n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = strlen<T> (str_b);
+  neff = std::min (std::max (len_a, len_b), n); 
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmpi<T> (str_a.data (), str_b, neff));
 }
 
 

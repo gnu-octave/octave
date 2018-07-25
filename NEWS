@@ -10,6 +10,14 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     with Matlab.  Change all uses of "ascending" and "descending" in
     existing code to the new options.
 
+ ** The strncmp and strncmpi functions now return true if the two input
+    strings match, even though the number of characters specified by N
+    exceeds the string length.  This behavior more closely matches
+    common sense and is Matlab compatible.  Example:
+
+      Octave 5.0 : strncmp ("abc", "abc", 100) => true
+      Previously : strncmp ("abc", "abc", 100) => false
+
  ** Figure graphic objects have a new property "Number" which is
     read-only and will return the handle (number) of the figure.
     However, if the property "IntegerHandle" has been set to "off" then

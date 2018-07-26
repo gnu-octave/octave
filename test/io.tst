@@ -571,7 +571,7 @@
 %!   unlink (nm);
 %! endif
 
-%!test
+%!test <54386>
 %! x = char (128:255)';
 %! nm = tempname ();
 %! mode = "wb";
@@ -588,7 +588,7 @@
 %!   else
 %!     y = fread (id, Inf, "uchar=>char");
 %!     fclose (id);
-%!     assert (x, y);
+%!     assert (y, x);
 %!     unlink (nm);
 %!   endif
 %! endif

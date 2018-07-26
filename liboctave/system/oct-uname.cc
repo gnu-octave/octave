@@ -42,7 +42,7 @@ namespace octave
       err = octave_uname_wrapper (&sysname, &nodename, &release,
                                   &version, &machine);
 
-      if (err)
+      if (err < 0)
         msg = std::strerror (errno);
       else
         {

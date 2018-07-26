@@ -73,11 +73,13 @@ endfunction
 
 
 ## "ЄЅІЇЈЉЊ"
-%!assert <54384> (double (native2unicode (164:170, 'ISO-8859-5')),
-%!        [208 132 208 133 208 134 208 135 208 136 208 137 208 138]);
+%!testif HAVE_ICONV
+%! assert (double (native2unicode (164:170, 'ISO-8859-5')),
+%!         [208 132 208 133 208 134 208 135 208 136 208 137 208 138]);
 ## ["ЄЅІ" 0 "ЇЈЉЊ"]
-%!assert <54384> (double (native2unicode ([164:166 0 167:170], 'ISO-8859-5')),
-%!        [208 132 208 133 208 134 0 208 135 208 136 208 137 208 138]);
+%!testif HAVE_ICONV
+%! assert (double (native2unicode ([164:166 0 167:170], 'ISO-8859-5')),
+%!         [208 132 208 133 208 134 0 208 135 208 136 208 137 208 138]);
 
 %!assert (native2unicode ("foobar"), "foobar");
 %!assert <54384> (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
@@ -88,4 +90,6 @@ endfunction
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ([1 2; 3 4])
 %!error <NATIVE_BYTES must be a numeric vector> native2unicode ({1 2 3 4})
 %!error <CODEPAGE must be a string> native2unicode (164:170, 123)
-%!error <converting from codepage 'foo' to UTF-8> native2unicode (234, 'foo')
+%!testif HAVE_ICONV
+%! fail ("native2unicode (234, 'foo')",
+%!       "converting from codepage 'foo' to UTF-8");

@@ -634,4 +634,17 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
+## NA was not properly read from a file
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,NA,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, NA, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
 */

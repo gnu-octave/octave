@@ -6046,14 +6046,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type>(X->nrow),
-                        static_cast<octave_idx_type>(X->ncol),
-                        static_cast<octave_idx_type>(X->nzmax));
+                       (static_cast<octave_idx_type> (X->nrow),
+                        static_cast<octave_idx_type> (X->ncol),
+                        static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
@@ -6580,14 +6580,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type>(X->nrow),
-                        static_cast<octave_idx_type>(X->ncol),
-                        static_cast<octave_idx_type>(X->nzmax));
+                       (static_cast<octave_idx_type> (X->nrow),
+                        static_cast<octave_idx_type> (X->ncol),
+                        static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];

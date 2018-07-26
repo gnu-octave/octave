@@ -80,7 +80,7 @@ Undocumented internal function.
           if (d < d0)
             {
               d0 = d;
-              *pidx = static_cast<double>(j + 1);
+              *pidx = static_cast<double> (j + 1);
             }
           octave_quit ();
         }

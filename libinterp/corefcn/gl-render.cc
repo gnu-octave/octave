@@ -4342,7 +4342,7 @@ namespace octave
           if (sz > 0 && sz < 3)
             sz = 3;
 
-          int div = static_cast <int> (M_PI * sz / 12);
+          int div = static_cast<int> (M_PI * sz / 12);
           if (! (div % 2))
             div += 1;               // ensure odd number for left/right symmetry
           div = std::max (div, 3);  // ensure at least a few vertices are drawn
@@ -4364,7 +4364,7 @@ namespace octave
         break;
       case 'o':
         {
-          int div = static_cast <int> (M_PI * sz / 4);
+          int div = static_cast<int> (M_PI * sz / 4);
           if (! (div % 2))
             div += 1;               // ensure odd number for left/right symmetry
           div = std::max (div, 5);  // ensure at least a few vertices are drawn

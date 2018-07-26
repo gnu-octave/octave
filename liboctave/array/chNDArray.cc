@@ -128,7 +128,7 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
         // FIXME: is there something better to do? Should we warn the user?
         ival = 0;
 
-      tmp.elem (i) = static_cast<char>(ival);
+      tmp.elem (i) = static_cast<char> (ival);
     }
 
   insert (tmp, ra_idx);

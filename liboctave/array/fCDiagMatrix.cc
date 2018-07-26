@@ -265,7 +265,7 @@ FloatComplexDiagMatrix::row (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return row (static_cast<octave_idx_type>(0));
+    return row (static_cast<octave_idx_type> (0));
   else if (c == 'l' || c == 'L')
     return row (rows () - 1);
   else
@@ -295,7 +295,7 @@ FloatComplexDiagMatrix::column (char *s) const
 
   char c = *s;
   if (c == 'f' || c == 'F')
-    return column (static_cast<octave_idx_type>(0));
+    return column (static_cast<octave_idx_type> (0));
   else if (c == 'l' || c == 'L')
     return column (cols () - 1);
   else

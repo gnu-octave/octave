@@ -1172,7 +1172,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
           H5Gget_num_objs (data_hid, &num_obj);
           H5Gclose (data_hid);
 
-          if (num_obj != static_cast<hsize_t>(len))
+          if (num_obj != static_cast<hsize_t> (len))
             error ("load: failed to load anonymous function handle");
 
           hdf5_callback_data dsub;

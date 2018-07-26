@@ -261,7 +261,7 @@ namespace octave
   static size_t
   throw_away (void *, size_t size, size_t nmemb, void *)
   {
-    return static_cast<size_t>(size * nmemb);
+    return static_cast<size_t> (size * nmemb);
   }
 
   // I'd love to rewrite this as a private method of the url_transfer

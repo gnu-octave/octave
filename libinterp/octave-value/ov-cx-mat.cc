@@ -245,7 +245,7 @@ octave_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nel = numel ();
 
       for (octave_idx_type i = 0; i < nel; i++)
-        retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
+        retval.elem (i) = static_cast<char> (std::real (matrix.elem (i)));
     }
 
   return retval;

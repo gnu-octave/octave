@@ -1163,7 +1163,7 @@ public:
         for (size_t i = 0; i < tmp_len; i++)
           cpr[m*i+j] = static_cast<mxChar> (ptr[i]);
 
-        for (size_t i = tmp_len; i < static_cast<size_t>(nc); i++)
+        for (size_t i = tmp_len; i < static_cast<size_t> (nc); i++)
           cpr[m*i+j] = static_cast<mxChar> (' ');
       }
   }

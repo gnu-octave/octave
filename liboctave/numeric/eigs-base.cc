@@ -91,7 +91,7 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval.elem (i,j) = m.elem (static_cast<octave_idx_type>(qv[i]), j);
+        retval.elem (i,j) = m.elem (static_cast<octave_idx_type> (qv[i]), j);
     }
   return L.solve (ltyp, retval, err, rcond, nullptr);
 }
@@ -116,7 +116,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
       for (octave_idx_type j = 0; j < b_nc; j++)
         {
           for (octave_idx_type i = 0; i < n; i++)
-            retval.elem (static_cast<octave_idx_type>(qv[i]), j) =
+            retval.elem (static_cast<octave_idx_type> (qv[i]), j) =
               tmp.elem (i,j);
         }
     }
@@ -284,7 +284,7 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
                 {
                   tmp.xcidx (i) = i;
                   tmp.xridx (i) =
-                    static_cast<octave_idx_type>(permB(i));
+                    static_cast<octave_idx_type> (permB(i));
                   tmp.xdata (i) = 1;
                 }
               tmp.xcidx (n) = n;
@@ -384,8 +384,8 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
                    j < b.cols (); j++)
                 for (octave_idx_type i = 0;
                      i < b.rows (); i++)
-                  *p++ -= tmp.xelem (static_cast<octave_idx_type>(pB[i]),
-                                     static_cast<octave_idx_type>(pB[j]));
+                  *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
+                                     static_cast<octave_idx_type> (pB[j]));
             }
           else
             AminusSigmaB -= tmp;
@@ -460,7 +460,7 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
                 {
                   tmp.xcidx (i) = i;
                   tmp.xridx (i) =
-                    static_cast<octave_idx_type>(permB(i));
+                    static_cast<octave_idx_type> (permB(i));
                   tmp.xdata (i) = 1;
                 }
               tmp.xcidx (n) = n;
@@ -561,8 +561,8 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
                    j < b.cols (); j++)
                 for (octave_idx_type i = 0;
                      i < b.rows (); i++)
-                  *p++ -= tmp.xelem (static_cast<octave_idx_type>(pB[i]),
-                                     static_cast<octave_idx_type>(pB[j]));
+                  *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
+                                     static_cast<octave_idx_type> (pB[j]));
             }
           else
             AminusSigmaB -= tmp;

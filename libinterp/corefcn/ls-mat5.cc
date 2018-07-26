@@ -962,7 +962,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               = m1.contents ("workspace").scalar_map_value ();
             uint32NDArray MCOS = m2.contents ("MCOS").uint32_array_value ();
             octave_idx_type off
-              = static_cast<octave_idx_type>(MCOS(4).double_value ());
+              = static_cast<octave_idx_type> (MCOS(4).double_value ());
             m2 = subsys_ov.scalar_map_value ();
             m2 = m2.contents ("MCOS").scalar_map_value ();
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);

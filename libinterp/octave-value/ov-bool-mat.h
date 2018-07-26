@@ -169,7 +169,7 @@ public:
     octave_idx_type nel = numel ();
 
     for (octave_idx_type i = 0; i < nel; i++)
-      retval(i) = static_cast<char>(matrix(i));
+      retval(i) = static_cast<char> (matrix(i));
 
     return retval;
   }

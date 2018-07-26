@@ -99,7 +99,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           msg.assign ("message", last_error_message ());
           msg.assign ("index",
                       static_cast<double> (count
-                                           + static_cast<octave_idx_type>(1)));
+                                           + static_cast<octave_idx_type> (1)));
 
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);

@@ -104,7 +104,7 @@ namespace QtHandles
 
           if (value.numel () > 0)
             {
-              if (value(0) != static_cast<int>(value(0)))
+              if (value(0) != static_cast<int> (value(0)))
                 warning ("popupmenu value should be integer");
               else
                 {

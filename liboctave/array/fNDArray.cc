@@ -491,7 +491,7 @@ FloatNDArray::concat (const charNDArray& rb,
         // FIXME: is there something better to do?  Should we warn the user?
         ival = 0;
 
-      retval.elem (i) = static_cast<char>(ival);
+      retval.elem (i) = static_cast<char> (ival);
     }
 
   if (rb.isempty ())

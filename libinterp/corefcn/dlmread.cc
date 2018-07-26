@@ -450,16 +450,29 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                   if (next_char == 'i' || next_char == 'j')
                     {
                       // Process pure imaginary numbers.
-                      if (! iscmplx)
+                      tmp_stream.get ();
+                      next_char = tmp_stream.peek ();
+                      if (next_char == std::istringstream::traits_type::eof ())
                         {
-                          iscmplx = true;
-                          cdata = ComplexMatrix (rdata);
-                        }
+                          if (! iscmplx)
+                            {
+                              iscmplx = true;
+                              cdata = ComplexMatrix (rdata);
+                            }
 
-                      cdata(i,j++) = Complex (0, x);
+                          cdata(i,j++) = Complex (0, x);
+                        }
+                      else
+                        {
+                          // Parsing failed, <number>i|j<extra text>
+                          j++;  // Leave data initialized to empty_value
+                        }
                     }
                   else if (std::isalpha (next_char) && ! std::isfinite (x))
-                    x = empty_value;
+                    {
+                      // Parsing failed, <Inf|NA|NaN><extra text>
+                      j++;  // Leave data initialized to empty_value
+                    }
                   else
                     {
                       double y = octave_read_double (tmp_stream);
@@ -477,10 +490,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     }
                 }
             }
-          else if (iscmplx)
-            cdata(i,j++) = empty_value;
           else
-            rdata(i,j++) = empty_value;
+            {
+              // octave_read_double() parsing failed
+              j++;  // Leave data initialized to empty_value
+            }
 
           pos1 = pos2 + 1;
         }
@@ -650,6 +664,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
+## "Name" was read as NA rather than parse error
 %!test <*54029>
 %! file = tempname ();
 %! unwind_protect
@@ -662,5 +677,30 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
+## Infinity incorrectly changed matrix to complex, rather than parse error
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,Infinity,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 0, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## Purely complex numbers with trailing garbage produced complex matrix
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,2jack,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 0, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
 
 */

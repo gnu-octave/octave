@@ -733,13 +733,14 @@ print_sigset (FILE *of, const char *prefix, const sigset_t *sigset)
       if (sigismember (sigset, sig))
         {
           cnt++;
-          fprintf (of, "%ld: %s%d (%s)\n", pthread_self (), prefix, sig,
-                   strsignal (sig));
+          fprintf (of, "%ld: %s%d (%s)\n", (long int) pthread_self (),
+                   prefix, sig, strsignal (sig));
         }
     }
 
   if (cnt == 0)
-    fprintf (of, "%ld: %s<empty signal set>\n", pthread_self (), prefix);
+    fprintf (of, "%ld: %s<empty signal set>\n", (long int) pthread_self (),
+             prefix);
 }
 
 static int

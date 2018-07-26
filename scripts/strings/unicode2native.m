@@ -59,8 +59,8 @@ function native_bytes = unicode2native (utf8_str, codepage = "")
 endfunction
 
 
-%!assert (unicode2native ("ЄЅІЇЈЉЊ", "ISO-8859-5"), uint8 (164:170));
-%!assert (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO-8859-5"), uint8 ([164:166 0 167:170]));
+%!assert <54384> (unicode2native ("ЄЅІЇЈЉЊ", "ISO-8859-5"), uint8 (164:170));
+%!assert <54384> (unicode2native (["ЄЅІ" 0 "ЇЈЉЊ"], "ISO-8859-5"), uint8 ([164:166 0 167:170]));
 
 %!error <Invalid call> unicode2native ()
 %!error <Invalid call> unicode2native ('a', 'ISO-8859-1', 'test')

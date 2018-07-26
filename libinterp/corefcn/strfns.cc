@@ -768,8 +768,14 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   utf8_str = octave_u8_conv_from_encoding (codepage, src, srclen, &length);
 
   if (! utf8_str)
-    error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
-           codepage, std::strerror (errno));
+    {
+      if (errno == ENOSYS)
+        error ("native2unicode: iconv() is not supported. Installing GNU "
+               "libiconv and then re-compiling Octave could fix this.");
+      else
+        error ("native2unicode: converting from codepage '%s' to UTF-8: %s",
+               codepage, std::strerror (errno));
+    }
 
   frame.add_fcn (::free, static_cast<void *> (utf8_str));
 
@@ -814,8 +820,14 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   native_bytes = octave_u8_conv_to_encoding (codepage, src, srclen, &length);
 
   if (! native_bytes)
-    error ("native2unicode: converting from UTF-8 to codepage '%s': %s",
-           codepage, std::strerror (errno));
+    {
+      if (errno == ENOSYS)
+        error ("unicode2native: iconv() is not supported. Installing GNU "
+               "libiconv and then re-compiling Octave could fix this.");
+      else
+        error ("unicode2native: converting from UTF-8 to codepage '%s': %s",
+                codepage, std::strerror (errno));
+    }
 
   frame.add_fcn (::free, static_cast<void *> (native_bytes));
 

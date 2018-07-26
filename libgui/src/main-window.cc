@@ -1984,10 +1984,9 @@ namespace octave
 
         connect (m_octave_qt_link,
                  SIGNAL (gui_preference_signal (const QString&, const QString&,
-                                                QMutex*, QString*)),
-                 this,
-                 SLOT (gui_preference (const QString&, const QString&,
-                                       QMutex*, QString*)));
+                                                QString*)),
+                 this, SLOT (gui_preference (const QString&, const QString&,
+                                             QString*)));
 
         connect (m_octave_qt_link,
                  SIGNAL (edit_file_signal (const QString&)),
@@ -2494,11 +2493,13 @@ namespace octave
   }
 
   void main_window::gui_preference (const QString& key, const QString& value,
-                                    QMutex* wait_for_gui, QString* read_value)
+                                    QString* read_value)
   {
     QSettings *settings = resource_manager::get_settings ();
-
     *read_value = settings->value (key).toString ();
+
+    // Wait for worker to suspend
+    m_octave_qt_link->lock ();
 
     if (! value.isEmpty ())
       {
@@ -2506,7 +2507,9 @@ namespace octave
         emit settings_changed (settings);
       }
 
-    wait_for_gui->unlock ();    // data is ready, resume worker threat
+    // We are done: Unlock and wake the worker thread
+    m_octave_qt_link->unlock ();
+    m_octave_qt_link->wake_all ();
   }
 
   void main_window::save_workspace_callback (const std::string& file)

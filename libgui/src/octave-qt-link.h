@@ -195,8 +195,7 @@ namespace octave
 
     void show_preferences_signal (void);
 
-    void gui_preference_signal (const QString&, const QString&,
-                                QMutex*, QString*);
+    void gui_preference_signal (const QString&, const QString&, QString*);
 
     void show_doc_signal (const QString& file);
 

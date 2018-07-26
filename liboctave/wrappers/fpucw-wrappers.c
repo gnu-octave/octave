@@ -54,12 +54,13 @@ octave_set_default_fpucw (void)
     SET_FPUCW (_FPU_DEFAULT);
 }
 
-// OLDCW is the name used by the fpucw.h macros.
+// OLDCW is the name used by the fpucw.h macros and gnulib doesn't give
+// us a choice.  We are also assuming that fpucw_t is unsigned int.
 
 unsigned int
 octave_begin_long_double_rounding (void)
 {
-  fpucw_t oldcw = 0;
+  DECL_LONG_DOUBLE_ROUNDING
 
   BEGIN_LONG_DOUBLE_ROUNDING ();
 
@@ -70,4 +71,7 @@ void
 octave_end_long_double_rounding (unsigned int oldcw)
 {
   END_LONG_DOUBLE_ROUNDING ();
+
+  // It might be unused.
+  octave_unused_parameter (oldcw);
 }

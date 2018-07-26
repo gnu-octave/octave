@@ -39,7 +39,6 @@ UTIL_INC = \
   %reldir%/sparse-sort.h \
   %reldir%/sparse-util.h \
   %reldir%/str-vec.h \
-  %reldir%/sun-utils.h \
   %reldir%/unwind-prot.h \
   %reldir%/url-transfer.h
 

@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "quit.h"
-#include "sun-utils.h"
 
 static integrand_fcn user_fcn;
 static float_integrand_fcn float_user_fcn;
@@ -41,8 +40,8 @@ static float_integrand_fcn float_user_fcn;
 // function, and the user wants us to quit.
 int quad_integration_error = 0;
 
-typedef F77_INT (*quad_fcn_ptr) (double*, int&, double*);
-typedef F77_INT (*quad_float_fcn_ptr) (float*, int&, float*);
+typedef F77_INT (*quad_fcn_ptr) (const double&, int&, double&);
+typedef F77_INT (*quad_float_fcn_ptr) (const float&, int&, float&);
 
 extern "C"
 {
@@ -80,25 +79,13 @@ extern "C"
 }
 
 static F77_INT
-user_function (double *x, int& ierr, double *result)
+user_function (const double& x, int& ierr, double& result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-#if defined (__sparc) && defined (__GNUC__)
-  double xx = access_double (x);
-#else
-  double xx = *x;
-#endif
-
   quad_integration_error = 0;
 
-  double xresult = (*user_fcn) (xx);
-
-#if defined (__sparc) && defined (__GNUC__)
-  assign_double (result, xresult);
-#else
-  *result = xresult;
-#endif
+  result = (*user_fcn) (x);
 
   if (quad_integration_error)
     ierr = -1;
@@ -109,13 +96,13 @@ user_function (double *x, int& ierr, double *result)
 }
 
 static F77_INT
-float_user_function (float *x, int& ierr, float *result)
+float_user_function (const float& x, int& ierr, float& result)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
   quad_integration_error = 0;
 
-  *result = (*float_user_fcn) (*x);
+  result = (*float_user_fcn) (x);
 
   if (quad_integration_error)
     ierr = -1;

@@ -501,7 +501,7 @@
 %!error <index \(0\): subscripts must be>     1(0)
 %!error <index \(-1\): subscripts must be>    1(-1)
 %!error <index \(_,0.5\): subscripts>                 {}(1,0.5)
-%!error <index \(nan,_\): subscripts>                 1(NaN,1)
+%!error <index \([Nn][aA][Nn],_\): subscripts>                 1(NaN,1)
 %!error <index \(_,_,<cell....\[x8\]...\): subscripts> [](1,1,{},1,1,1,1,1,1,1,1)
 %!error <index \(...\[x9\]...-1,_\): subscript>      1(1,1,1,1,1,1,1,1,1,-1,1)
 %!error <index \(2\): out of bound 1>                1(2)
@@ -547,8 +547,8 @@
 %! ##  Test permutation matrices
 %!shared abc
 %! abc = eye(3)([3 1 2],:);
-%!error <abc\(nan\): subscripts>         abc(NA)
-%!error <abc\(_,_,_,inf,_\): subscripts> abc(1,1,1,Inf,1)
+%!error <abc\([Nn][aA][Nn]\): subscripts>         abc(NA)
+%!error <abc\(_,_,_,[Ii][nN][Ff],_\): subscripts> abc(1,1,1,Inf,1)
 
 %! ##  Test sparse matrices
 %!shared abc

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cctype>
 #include <fstream>
 #include <limits>
@@ -457,6 +458,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
                       cdata(i,j++) = Complex (0, x);
                     }
+                  else if (std::isalpha (next_char) && ! std::isfinite (x))
+                    x = empty_value;
                   else
                     {
                       double y = octave_read_double (tmp_stream);
@@ -646,5 +649,18 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect
+
+%!test <*54029>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "NaNe,bNa,Name,c\n1,NaN,3,Inftest\n-Inf,6,NA,8");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [0, 0, 0, 0; 1, NaN, 3, 0; -Inf, 6, NA, 8]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
 
 */

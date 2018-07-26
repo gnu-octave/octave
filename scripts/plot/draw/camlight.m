@@ -24,6 +24,7 @@
 ## @deftypefnx {} {} camlight (@var{az}, @var{el})
 ## @deftypefnx {} {} camlight (@dots{}, @var{style})
 ## @deftypefnx {} {} camlight (@var{hl}, @dots{})
+## @deftypefnx {} {} camlight (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} camlight (@dots{})
 ## Add a light object to a figure using a simple interface.
 ##
@@ -44,6 +45,9 @@
 ##
 ## If the first argument @var{hl} is a handle to a light object, then act on
 ## this light object rather than creating a new object.
+##
+## If the first argument @var{hax} is an axes handle, then create a new light
+## object in this axes, rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a graphics handle to the light object.
 ## This can be used to move or further change properties of the light object.
@@ -100,14 +104,21 @@ function h = camlight (varargin)
   ## We don't worry about that.
   if (numel (varargin) > 0 && numel (varargin{1}) == 1
       && ishghandle (varargin{1}))
-    hl = varargin{1};
-    if (! isgraphics (hl, "light"))
-      error ("camlight: HL must be a handle to a light object");
+    typ = get (varargin{1}, "type");
+    if (strcmp (typ, "light"))
+      hl  = varargin{1};
+      hax = get (hl, "parent");
+    elseif (strcmp (typ, "axes"))
+      hax = varargin{1};
+      hl  = [];
+    else
+      error ("camlight: HL must be a handle to an axes or light object");
     endif
     varargin(1) = [];
     nargin = nargin - 1;
   else
-    hl = [];
+    hl  = [];
+    hax = [];
   endif
 
   style = "local";
@@ -168,9 +179,12 @@ function h = camlight (varargin)
     endswitch
   endif
 
-  cam_up = get (gca (), "cameraupvector");
-  cam_pos = get (gca (), "cameraposition");
-  cam_target = get (gca (), "cameratarget");
+  if (isempty (hax))
+    hax = gca ();
+  endif
+  cam_up = get (hax, "cameraupvector");
+  cam_pos = get (hax, "cameraposition");
+  cam_target = get (hax, "cameratarget");
 
   view_ax = cam_target - cam_pos;
   view_ax /= norm (view_ax);
@@ -186,7 +200,7 @@ function h = camlight (varargin)
   pos = [pos{:}];
 
   if (isempty (hl))
-    hl = light ("Position", pos, "style", style);
+    hl = light (hax, "Position", pos, "style", style);
   else
     set (hl, "Position", pos, "style", style);
   endif
@@ -296,9 +310,23 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+## Test an axes handle as first argument
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax1 = subplot (1, 2, 1);
+%!   hax2 = subplot (1, 2, 2);
+%!   hl1  = camlight ();
+%!   hl2  = camlight (hax1);
+%!   assert (get (hl1, "Parent"), hax2);
+%!   assert (get (hl2, "Parent"), hax1);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## Test input validation
 %!error camlight (1,2,3,4,5)
-%!error <HL must be a handle to a light object> camlight (0, "left")
+%!error <HL must be a handle to an axes or light object> camlight (0, "left")
 %!error <Invalid call> camlight ({1}, {2})
 %!error <Invalid call> camlight (rand (), 1, 2, 3)
 %!error <invalid light position 'foobar'> camlight ("foobar")

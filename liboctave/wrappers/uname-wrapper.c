@@ -42,21 +42,21 @@ octave_uname_wrapper (char **sysname, char **nodename,
 
   int err = uname (&unm);
 
-  if (err == 0)
-    {
-      *sysname = unm.sysname;
-      *nodename = unm.nodename;
-      *release = unm.release;
-      *version = unm.version;
-      *machine = unm.machine;
-    }
-  else
+  if (err < 0)
     {
       *sysname = 0;
       *nodename = 0;
       *release = 0;
       *version = 0;
       *machine = 0;
+    }
+  else
+    {
+      *sysname = unm.sysname;
+      *nodename = unm.nodename;
+      *release = unm.release;
+      *version = unm.version;
+      *machine = unm.machine;
     }
 
   return err;

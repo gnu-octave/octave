@@ -24,7 +24,7 @@
 ## Return the unique elements in @var{a} that are not in @var{b} sorted in
 ## ascending order.
 ##
-## If @var{a} is a row vector return a column vector; Otherwise, return a
+## If @var{a} is a row vector return a row vector; Otherwise, return a
 ## column vector.  The inputs may also be cell arrays of strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the rows in

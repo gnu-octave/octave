@@ -1199,7 +1199,6 @@ write_header (std::ostream& os, load_save_format format)
     case LS_MAT7_BINARY:
       {
         char const *versionmagic;
-        int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
         char headertext[128];
         octave::sys::gmtime now;
 
@@ -1219,7 +1218,7 @@ write_header (std::ostream& os, load_save_format format)
         // pair indicates whether the file was written by a big- or
         // little-endian machine.  However, the version number is
         // written in the *opposite* byte order from everything else!
-        if (number == 1)
+        if (octave::mach_info::words_big_endian ())
           versionmagic = "\x01\x00\x4d\x49"; // this machine is big endian
         else
           versionmagic = "\x00\x01\x49\x4d"; // this machine is little endian

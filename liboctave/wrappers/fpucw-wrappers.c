@@ -55,12 +55,16 @@ octave_set_default_fpucw (void)
 }
 
 // OLDCW is the name used by the fpucw.h macros and gnulib doesn't give
-// us a choice.  We are also assuming that fpucw_t is unsigned int.
+// us a choice.  We are also assuming that fpucw_t is unsigned, and no
+// wider than an int.
 
 unsigned int
 octave_begin_long_double_rounding (void)
 {
-  DECL_LONG_DOUBLE_ROUNDING
+  // Don't use DECL_LONG_DOUBLE_ROUNDING here because on some systems,
+  // it is defind to be empty.
+
+  fpucw_t oldcw = 0;
 
   BEGIN_LONG_DOUBLE_ROUNDING ();
 

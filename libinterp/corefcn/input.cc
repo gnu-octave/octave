@@ -552,7 +552,12 @@ namespace octave
 
             octave_iconv_close_wrapper (codec);
           }
+
       }
+
+    // Synchronize the related gui preference for editor encoding
+    octave::feval ("__octave_link_gui_preference__",
+                   ovl ("editor/default_encoding", m_mfile_encoding));
 
     return retval;
   }

@@ -321,6 +321,8 @@ namespace octave
 
     void construct_tool_bar (void);
 
+    QString gui_preference_adjust (const QString& key, const QString& value);
+
     void save_workspace_callback (const std::string& file);
 
     void load_workspace_callback (const std::string& file);

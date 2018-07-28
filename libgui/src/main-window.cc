@@ -2492,6 +2492,41 @@ namespace octave
              this, SLOT (handle_undo_request (void)));
   }
 
+  QString main_window::gui_preference_adjust (const QString& key,
+                                              const QString& value)
+  {
+    QString adjusted_value = value;
+
+    // Immediately return if no new value is given
+    if (adjusted_value.isEmpty ())
+      return adjusted_value;
+
+    // Not all encodings are available. Encodings are uppercase and do not
+    // use CPxxx but IBMxxx or WINDOWS-xxx.
+    if (key == "editor/default_encoding")
+      {
+        adjusted_value = adjusted_value.toUpper ();
+
+        QStringList codecs;
+        resource_manager::get_codecs (&codecs);
+
+        QRegExp re ("^CP(\\d+)$");
+        if (re.indexIn (adjusted_value) > -1)
+          {
+            if (codecs.contains ("IBM" + re.cap (1)))
+              adjusted_value = "IBM" + re.cap (1);
+            else if (codecs.contains ("WINDOWS-" + re.cap (1)))
+              adjusted_value = "WINDOWS-" + re.cap (1);
+            else
+              adjusted_value.clear ();
+          }
+        else if (! codecs.contains (adjusted_value))
+          adjusted_value.clear ();
+      }
+
+    return adjusted_value;
+  }
+
   void main_window::gui_preference (const QString& key, const QString& value,
                                     QString* read_value)
   {
@@ -2501,9 +2536,13 @@ namespace octave
     // Wait for worker to suspend
     m_octave_qt_link->lock ();
 
-    if (! value.isEmpty ())
+    // Some preferences need extra handling
+    QString adjusted_value = gui_preference_adjust (key, value);
+
+    if (! adjusted_value.isEmpty () && (*read_value != adjusted_value))
       {
-        settings->setValue (key, QVariant (value));
+        // Change settings only for new, non-empty values
+        settings->setValue (key, QVariant (adjusted_value));
         emit settings_changed (settings);
       }
 

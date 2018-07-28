@@ -340,19 +340,25 @@ namespace octave
       return QIcon::fromTheme (icon_name);
   }
 
-  // initialize a given combo box with available text encodings
-  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  // get a list of all available encodings
+  void resource_manager::do_get_codecs (QStringList *codecs)
   {
     // get the codec name for each mib
     QList<int> all_mibs = QTextCodec::availableMibs ();
-    QStringList all_codecs;
     foreach (int mib, all_mibs)
       {
         QTextCodec *c = QTextCodec::codecForMib (mib);
-        all_codecs << c->name ().toUpper ();
+        codecs->append (c->name ().toUpper ());
       }
-    all_codecs.removeDuplicates ();
-    qSort (all_codecs);
+    codecs->removeDuplicates ();
+    qSort (*codecs);
+  }
+
+  // initialize a given combo box with available text encodings
+  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  {
+    QStringList all_codecs;
+    do_get_codecs (&all_codecs);
 
     // the default encoding
 #if defined (Q_OS_WIN32)

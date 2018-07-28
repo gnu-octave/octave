@@ -93,6 +93,12 @@ namespace octave
               : false);
     }
 
+    static void get_codecs (QStringList *codecs)
+    {
+      if (instance_ok ())
+        instance->do_get_codecs (codecs);
+    }
+
     static void combo_encoding (QComboBox *combo, QString current = QString ())
     {
       if (instance_ok ())
@@ -156,6 +162,7 @@ namespace octave
 
     QIcon do_icon (const QString& icon, bool fallback);
 
+    void do_get_codecs (QStringList *codecs);
     void do_combo_encoding (QComboBox *combo, QString current);
 
     QString m_settings_directory;

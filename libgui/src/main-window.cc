@@ -211,6 +211,8 @@ namespace octave
           = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
 
         serial = settings->value ("news/last_news_item", 0).toInt ();
+        m_default_encoding = settings->value (ed_default_enc.key,
+                                              ed_default_enc.def).toString ();
       }
 
     QDateTime current = QDateTime::currentDateTime ();
@@ -758,6 +760,17 @@ namespace octave
     set_global_shortcuts (m_active_dock == m_command_window);
     disable_menu_shortcuts (m_active_dock == m_editor_window);
 
+    // Ckeck whether some octave internal preferences have to be updated
+    QString new_default_encoding
+      = settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
+    if (new_default_encoding != m_default_encoding)
+      {
+        m_default_encoding = new_default_encoding;
+        octave_cmd_builtin *cmd = new octave_cmd_builtin (
+                                    &F__mfile_encoding__,
+                                    ovl (m_default_encoding.toStdString ()));
+        m_cmd_queue.add_cmd (cmd);
+      }
 
     // Set cursor blinking depending on the settings
     // Cursor blinking: consider old terminal related setting if not yet set
@@ -2503,7 +2516,7 @@ namespace octave
 
     // Not all encodings are available. Encodings are uppercase and do not
     // use CPxxx but IBMxxx or WINDOWS-xxx.
-    if (key == "editor/default_encoding")
+    if (key == ed_default_enc.key)
       {
         adjusted_value = adjusted_value.toUpper ();
 

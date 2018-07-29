@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "variable-editor.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -360,20 +361,13 @@ namespace octave
     QStringList all_codecs;
     do_get_codecs (&all_codecs);
 
-    // the default encoding
-#if defined (Q_OS_WIN32)
-    QString def_enc = "SYSTEM";
-#else
-    QString def_enc = "UTF-8";
-#endif
-
     // get the value from the settings file if no current encoding is given
     QString enc = current;
     if (enc.isEmpty ())
       {
-        enc = m_settings->value ("editor/default_encoding",def_enc).toString ();
+        enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
         if (enc.isEmpty ())  // still empty?
-          enc = def_enc;     // take default
+          enc = ed_default_enc.def.toString ();     // take default
       }
 
     // fill the combo box
@@ -382,7 +376,7 @@ namespace octave
 
     // prepend the default item
     combo->insertSeparator (0);
-    combo->insertItem (0, def_enc);
+    combo->insertItem (0, ed_default_enc.def.toString ());
 
     // select the current/default item
     int idx = combo->findText (enc);

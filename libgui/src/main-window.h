@@ -365,6 +365,8 @@ namespace octave
 
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
+    QString m_default_encoding;
+
     //! Toolbar.
 
     QStatusBar *m_status_bar;

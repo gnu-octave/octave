@@ -52,6 +52,12 @@ const int ed_comment_strings_count = 5;
 
 // File handling
 const gui_pref ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
+#if defined (Q_OS_WIN32)
+const gui_pref ed_default_enc ("editor/default_encoding", QVariant ("SYSTEM"));
+#else
+const gui_pref ed_default_enc ("editor/default_encoding", QVariant ("UTF-8"));
+#endif
+
 
 
 #endif

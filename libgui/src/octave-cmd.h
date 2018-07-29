@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileInfo>
 
 #include "octave-qt-link.h"
+#include "ovl.h"
+
 
 namespace octave
 {
@@ -71,6 +73,40 @@ namespace octave
   protected:
 
     QFileInfo m_info;
+  };
+
+  class octave_cmd_builtin : public octave_cmd
+  {
+    public:
+
+    enum cmd_upd {
+      CMD_UPD_NO        = 0,
+    };
+
+    octave_cmd_builtin (octave_value_list (*Ff)
+                         (octave::interpreter&, const octave_value_list&, int),
+                        octave_value_list argin = ovl (), int nargin = 0,
+                        cmd_upd update = CMD_UPD_NO,
+                        octave_qt_link *oct_qt_link = nullptr)
+      : octave_cmd ()
+    {
+      m_callback_f = Ff;
+      m_argin  = argin;
+      m_nargin = nargin;
+      m_update = update;  // later: some built in functions require updates
+      m_octave_qt_link = oct_qt_link; // octave_qt_link might be required
+    };
+
+    void execute (interpreter& interp);
+
+  protected:
+
+    octave_value_list (*m_callback_f) (
+                        octave::interpreter&, const octave_value_list&, int);
+    octave_value_list m_argin;
+    int m_nargin;
+    cmd_upd m_update;
+    octave_qt_link *m_octave_qt_link;
   };
 
   class octave_cmd_debug : public octave_cmd_exec

@@ -75,6 +75,11 @@ namespace octave
     command_editor::accept_line ();
   }
 
+  void octave_cmd_builtin::execute (interpreter& interp)
+  {
+    m_callback_f (interp, m_argin, m_nargin);
+  }
+
   void octave_cmd_debug::execute (interpreter& interp)
   {
     if (m_cmd == "step")

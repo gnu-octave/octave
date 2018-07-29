@@ -886,8 +886,11 @@ namespace octave
     QFileInfo fileInfo (xdir);
 
     if (fileInfo.exists () && fileInfo.isDir ())
-      octave_link::post_event (this, &main_window::change_directory_callback,
-                               xdir.toStdString ());
+      {
+        octave_cmd_builtin *cmd
+                = new octave_cmd_builtin (&Fcd, ovl (xdir.toStdString ()));
+        m_cmd_queue.add_cmd (cmd);
+      }
   }
 
   void main_window::change_directory_up (void)
@@ -2689,13 +2692,6 @@ namespace octave
 
     Fbuiltin (interp, ovl ("figure"));
     Fdrawnow ();
-  }
-
-  void main_window::change_directory_callback (const std::string& directory)
-  {
-    // INTERPRETER THREAD
-
-    Fcd (ovl (directory));
   }
 
   void main_window::configure_shortcuts (void)

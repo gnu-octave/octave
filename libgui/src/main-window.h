@@ -349,8 +349,6 @@ namespace octave
 
     void new_figure_callback (void);
 
-    void change_directory_callback (const std::string& directory);
-
     void configure_shortcuts (void);
 
     QList<octave_dock_widget *> dock_widget_list (void);

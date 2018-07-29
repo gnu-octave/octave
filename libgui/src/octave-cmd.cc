@@ -77,7 +77,10 @@ namespace octave
 
   void octave_cmd_builtin::execute (interpreter& interp)
   {
-    m_callback_f (interp, m_argin, m_nargin);
+    if (m_callback_fi)
+      m_callback_fi (interp, m_argin, m_nargin);
+    else if (m_callback_f)
+      m_callback_f (m_argin, m_nargin);
   }
 
   void octave_cmd_debug::execute (interpreter& interp)

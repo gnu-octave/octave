@@ -59,15 +59,18 @@ namespace octave
   {
     Array<double> retval;
 
-    char *out;
+    double *out;
     size_t outlen;
 
-    bool ok = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
-                                                  &out, &outlen);
+    bool ok
+      = octave_base64_decode_alloc_wrapper (str.data (), str.length (),
+                                            reinterpret_cast<char **> (&out),
+                                            &outlen);
 
     if (! ok)
       (*current_liboctave_error_handler)
         ("base64_decode: input was not valid base64");
+
     if (! out)
       (*current_liboctave_error_handler)
         ("base64_decode: memory allocation error");
@@ -82,8 +85,7 @@ namespace octave
       {
         octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
         retval.resize (dim_vector (1, len));
-        double *dout = reinterpret_cast<double *> (out);
-        std::copy (dout, dout + len, retval.fortran_vec ());
+        std::copy (out, out + len, retval.fortran_vec ());
         ::free (out);
       }
 

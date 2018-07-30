@@ -263,8 +263,10 @@ namespace octave
 
     bool retval = false;
 
-    const wchar_t *f1 = octave::sys::u8_to_wstring (file1).c_str ();
-    const wchar_t *f2 = octave::sys::u8_to_wstring (file2).c_str ();
+    std::wstring file1w = octave::sys::u8_to_wstring (file1);
+    std::wstring file2w = octave::sys::u8_to_wstring (file2);
+    const wchar_t *f1 = file1w.c_str ();
+    const wchar_t *f2 = file2w.c_str ();
 
     bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
     bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;

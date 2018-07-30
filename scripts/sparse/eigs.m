@@ -1489,8 +1489,9 @@ endfunction
 %! A = rand (8);
 %! eigs (A, 6, "lr"); # this failed on 4.2.x
 %!testif HAVE_ARPACK
-%! A = rand (10);
-%! B = rand (10);
+%! M = magic (10);
+%! A = sin (M);
+%! B = cos (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
@@ -1499,19 +1500,22 @@ endfunction
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
-%! A = rand (10);
-%! B = rand (10);
+%! M = magic (10);
+%! A = sin (M);
+%! B = cos (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
-%! Afun = @(x) A \ x;
+%! [L, U, P] = lu (A);
+%! Afun = @(x) U \ (L \ (P * x));
 %! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
-%! A = rand (10);
+%! M = magic (10);
+%! A = sin (M);
 %! A = A * A';
-%! B = rand (10);
+%! B = cos (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
@@ -1521,20 +1525,23 @@ endfunction
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
-%! A = rand (10);
+%! M = magic (10);
+%! A = sin (M);
 %! A = A * A';
-%! B = rand (10);
+%! B = cos (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
-%! Afun = @(x) A \ x;
+%! [L, U, P] = lu (A);
+%! Afun = @(x) U \ (L \ (P * x));
 %! opts.issym = true;
 %! [Evector_f Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
-%! assert (Evector, Evector_f, 100*eps);
-%! assert (Evalues, Evalues_f, 100*eps);
+%! assert (Evector, Evector_f);
+%! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
-%! A = rand (10) + 1i * rand (10);
-%! B = rand (10) + 1i * rand (10);
+%! M = magic (10);
+%! A = sin (M) + 1i * cos (M);
+%! B = cos (M) + 1i * sin (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "LM", opts);
@@ -1544,12 +1551,14 @@ endfunction
 %! assert (Evector, Evector_f);
 %! assert (Evalues, Evalues_f);
 %!testif HAVE_ARPACK
-%! A = rand (10) + 1i * rand (10);
-%! B = rand (10) + 1i * rand (10);
+%! M = magic (10);
+%! A = sin (M) + 1i * cos (M);
+%! B = cos (M) + 1i * sin (M);
 %! B = B * B';
 %! opts.v0 = (1:10)';
 %! [Evector, Evalues] = eigs (A, B, 4, "SM", opts);
-%! Afun = @(x) A \ x;
+%! [L, U, P] = lu (A);
+%! Afun = @(x) U \ (L \ (P *x));
 %! opts.isreal = false;
 %! [Evector_f, Evalues_f] = eigs (Afun, 10, B, 4, "SM", opts);
 %! assert (Evector, Evector_f);

@@ -122,7 +122,7 @@ namespace octave
     octave_idx_type retval = -1;
 
     if (lo_ieee_isnan (d))
-      ::error ("%s: NaN is invalid as size specification", who.c_str ());
+      ::error ("%s: NaN invalid as size specification", who.c_str ());
 
     if (math::isinf (d))
       retval = -1;
@@ -170,17 +170,25 @@ namespace octave
         dnr = size(0);
 
         if (math::isinf (dnr))
-          ::error ("%s: invalid size specification", who.c_str ());
+          ::error ("%s: infinite value invalid as size specification",
+                   who.c_str ());
 
         dnc = size(1);
       }
     else
-      ::error ("%s: invalid size specification", who.c_str ());
+      ::error ("%s: invalid size specification (must be 2-D)", who.c_str ());
 
     nr = get_size (dnr, who);
 
     if (dnc >= 0.0)
-      nc = get_size (dnc, who);
+      {
+        nc = get_size (dnc, who);
+
+        // Check for overflow.
+        if (nr != 0 &&
+            abs (nc) > abs (std::numeric_limits<octave_idx_type>::max () / nr))
+         ::error ("%s: size too large for Octave's index type", who.c_str ());
+      }
   }
 
   static std::string
@@ -6568,9 +6576,6 @@ namespace octave
           nr = nc = 0;
       }
 
-    // FIXME: Ensure that this does not overflow.
-    //        Maybe try comparing nr * nc computed in double with
-    //        std::numeric_limits<octave_idx_type>::max ();
     octave_idx_type elts_to_read = nr * nc;
 
     bool read_to_eof = elts_to_read < 0;

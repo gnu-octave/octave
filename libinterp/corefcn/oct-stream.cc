@@ -185,9 +185,9 @@ namespace octave
         nc = get_size (dnc, who);
 
         // Check for overflow.
-        if (nr != 0 &&
-            abs (nc) > abs (std::numeric_limits<octave_idx_type>::max () / nr))
-         ::error ("%s: size too large for Octave's index type", who.c_str ());
+        if (nr > 0 && nc > 0
+            && nc > std::numeric_limits<octave_idx_type>::max () / nr)
+          ::error ("%s: size too large for Octave's index type", who.c_str ());
       }
   }
 

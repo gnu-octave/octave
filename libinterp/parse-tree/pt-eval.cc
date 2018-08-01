@@ -1050,10 +1050,10 @@ namespace octave
                 if (local_val_is_defined)
                   {
                     warning_with_id ("Octave:global-local-conflict",
-                                     "global: '%s' is defined in the current scope",
+                                     "global: '%s' is defined in the current scope.\n",
                                      name.c_str ());
                     warning_with_id ("Octave:global-local-conflict",
-                                     "global: in a future version, global variables must be declared before use");
+                                     "global: in a future version, global variables must be declared before use.\n");
 
                     // If the symbol is defined in the local but not the
                     // global scope, then use the local value as the

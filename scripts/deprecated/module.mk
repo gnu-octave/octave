@@ -4,11 +4,9 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/chop.m \
   %reldir%/comma.m \
   %reldir%/desktop.m \
-  %reldir%/isstr.m \
   %reldir%/java2mat.m \
   %reldir%/paren.m \
   %reldir%/semicolon.m \
-  %reldir%/setstr.m \
   %reldir%/tmpnam.m \
   %reldir%/toascii.m
 

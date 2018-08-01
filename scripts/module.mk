@@ -15,6 +15,7 @@ include %reldir%/help/module.mk
 include %reldir%/image/module.mk
 include %reldir%/io/module.mk
 include %reldir%/java/module.mk
+include %reldir%/legacy/module.mk
 include %reldir%/linear-algebra/module.mk
 include %reldir%/miscellaneous/module.mk
 include %reldir%/ode/module.mk

@@ -18,21 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} setstr (@var{s})
-## This function has been deprecated.  Use char instead.
+## This function is obsolete.  Use char instead.
 ## @end deftypefn
 
 ## Author: jwe
 
-## Deprecated in version 3.0
-## Matlab still has this function, so don't remove just yet.
+## At one time, Matlab docs stated that this function is obsolete and
+## would be removed in some future version.  Now users are told that it
+## should be avoided, but there is no mention of possible future
+## removal.
 
 function retval = setstr (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
-    warning ("Octave:deprecated-function",
-             "setstr is obsolete and will be removed from a future version of Octave; please use char instead");
+    warning ("Octave:legacy-function",
+             "setstr is obsolete; please use char instead");
   endif
 
   retval = char (varargin{:});

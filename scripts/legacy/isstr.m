@@ -18,21 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isstr (@var{a})
-## This function has been deprecated.  Use ischar instead.
+## This function is obsolete.  Use ischar instead.
 ## @end deftypefn
 
 ## Author: jwe
 
-## Deprecated in version 3.0
-## Matlab still has this function, so don't remove just yet.
+## At one time, Matlab docs stated that this function is obsolete and
+## would be removed in some future version.  Now users are told that it
+## should be avoided, but there is no mention of possible future
+## removal.
 
 function retval = isstr (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
-    warning ("Octave:deprecated-function",
-             "isstr is obsolete and will be removed from a future version of Octave, please use ischar instead");
+    warning ("Octave:legacy-function",
+             "isstr is obsolete; please use ischar instead");
   endif
 
   retval = ischar (varargin{:});

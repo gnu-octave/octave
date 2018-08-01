@@ -13,6 +13,7 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/onenormest.m \
   %reldir%/paren.m \
   %reldir%/semicolon.m \
+  %reldir%/setstr.m \
   %reldir%/sleep.m \
   %reldir%/tmpnam.m \
   %reldir%/toascii.m \

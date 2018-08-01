@@ -579,7 +579,7 @@ endfunction
 %!testif HAVE_SUNDIALS
 %! saved_opts = warning ();
 %! warning ("off", "all");
-%! opt = odeset ("Jacobian", "foo");
+%! opt = odeset ("Jacobian", "_5yVNhWVJWJn47RKnzxPsyb_");
 %! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
 %!       "invalid value assigned to field 'Jacobian'");
 %! warning (saved_opts);
@@ -622,7 +622,7 @@ endfunction
 %!       "ode15i: y0 must have 2 elements");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ("RelTol", "foo");
+%! opt = odeset ("RelTol", "_5yVNhWVJWJn47RKnzxPsyb_");
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
 %!       "ode15i: RelTol must be of class:");
 
@@ -637,7 +637,7 @@ endfunction
 %!       "ode15i: RelTol must be positive");
 
 %!testif HAVE_SUNDIALS
-%! opt = odeset ("AbsTol", "foo");
+%! opt = odeset ("AbsTol", "_5yVNhWVJWJn47RKnzxPsyb_");
 %! fail ("[t, y] = ode15i (@fun, [0, 2], 2, 2, opt)",
 %!       "ode15i: AbsTol must be of class:");
 

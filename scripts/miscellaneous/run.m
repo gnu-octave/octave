@@ -91,19 +91,20 @@ endfunction
 
 
 ## Test script file execution
+## Use a variable name that is unlikely to be the name of a function.
 %!test
-%! clear A  # the variable "A" should be set by the script
-%! assert (exist ("A"), 0);
+%! clear _5yVNhWVJWJn47RKnzxPsyb_
+%! assert (exist ("_5yVNhWVJWJn47RKnzxPsyb_"), 0);
 %! tmp_dir = tempname ();
 %! test_script = fullfile (tmp_dir, "test_script.m");
 %! unwind_protect
 %!   mkdir (tmp_dir);
 %!   fid = fopen (test_script, "w");
-%!   fprintf (fid, "A = 1337;\n");
+%!   fprintf (fid, "_5yVNhWVJWJn47RKnzxPsyb_ = 1337;\n");
 %!   fclose (fid);
 %!   run (test_script);
-%!   assert (exist ("A", "var"), 1);
-%!   assert (A, 1337);
+%!   assert (exist ("_5yVNhWVJWJn47RKnzxPsyb_", "var"), 1);
+%!   assert (_5yVNhWVJWJn47RKnzxPsyb_, 1337);
 %! unwind_protect_cleanup
 %!   unlink (test_script);
 %!   rmdir (tmp_dir);

@@ -8,6 +8,7 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/java2mat.m \
   %reldir%/paren.m \
   %reldir%/semicolon.m \
+  %reldir%/setstr.m \
   %reldir%/tmpnam.m \
   %reldir%/toascii.m
 

@@ -507,6 +507,8 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>{S}* {
     curr_lexer->lexer_debug ("<MATRIX_START>{S}*");
 
+    curr_lexer->m_current_input_column += yyleng;
+
     curr_lexer->mark_previous_token_trailing_space ();
   }
 
@@ -548,14 +550,7 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>\] {
     curr_lexer->lexer_debug ("<MATRIX_START>\\]");
 
-    curr_lexer->m_looking_at_object_index.pop_front ();
-
-    curr_lexer->m_looking_for_object_index = true;
-    curr_lexer->m_at_beginning_of_statement = false;
-
-    curr_lexer->handle_close_bracket (']');
-
-    return curr_lexer->count_token (']');
+    return curr_lexer->handle_close_bracket (']');
   }
 
 %{
@@ -565,14 +560,7 @@ ANY_INCLUDING_NL (.|{NL})
 <MATRIX_START>\} {
     curr_lexer->lexer_debug ("<MATRIX_START>\\}*");
 
-    curr_lexer->m_looking_at_object_index.pop_front ();
-
-    curr_lexer->m_looking_for_object_index = true;
-    curr_lexer->m_at_beginning_of_statement = false;
-
-    curr_lexer->handle_close_bracket ('}');
-
-    return curr_lexer->count_token ('}');
+    return curr_lexer->handle_close_bracket ('}');
   }
 
 \[ {
@@ -1142,6 +1130,8 @@ ANY_INCLUDING_NL (.|{NL})
           {
             yyless (0);
             unput (',');
+            // Adjust for comma that was not really in the input stream.
+            curr_lexer->m_current_input_column--;
           }
         else
           {
@@ -1177,6 +1167,8 @@ ANY_INCLUDING_NL (.|{NL})
           {
             yyless (0);
             unput (',');
+            // Adjust for comma that was not really in the input stream.
+            curr_lexer->m_current_input_column--;
           }
         else
           {
@@ -1323,6 +1315,8 @@ ANY_INCLUDING_NL (.|{NL})
           {
             yyless (0);
             unput (',');
+            // Adjust for comma that was not really in the input stream.
+            curr_lexer->m_current_input_column--;
           }
         else
           {
@@ -2923,7 +2917,12 @@ namespace octave
   int
   base_lexer::handle_close_bracket (int bracket_type)
   {
-    int retval = bracket_type;
+    m_looking_at_object_index.pop_front ();
+
+    m_looking_for_object_index = true;
+    m_at_beginning_of_statement = false;
+
+    m_current_input_column++;
 
     if (! m_nesting_level.none ())
       {
@@ -2939,7 +2938,7 @@ namespace octave
 
     pop_start_state ();
 
-    return retval;
+    return count_token (bracket_type);
   }
 
   bool

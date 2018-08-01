@@ -273,45 +273,48 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
   // P * (R \ M) * Q = L * U
   SparseMatrix AminusSigmaB (m);
 
-  if (have_b)
+  if (sigma != 0.0)
     {
-      if (cholB)
+      if (have_b)
         {
-          if (permB.numel ())
+          if (cholB)
             {
-              SparseMatrix tmp (n,n,n);
-              for (octave_idx_type i = 0; i < n; i++)
+              if (permB.numel ())
                 {
-                  tmp.xcidx (i) = i;
-                  tmp.xridx (i) =
-                    static_cast<octave_idx_type> (permB(i));
-                  tmp.xdata (i) = 1;
-                }
-              tmp.xcidx (n) = n;
+                  SparseMatrix tmp (n,n,n);
+                  for (octave_idx_type i = 0; i < n; i++)
+                    {
+                      tmp.xcidx (i) = i;
+                      tmp.xridx (i) =
+                        static_cast<octave_idx_type> (permB(i));
+                      tmp.xdata (i) = 1;
+                    }
+                  tmp.xcidx (n) = n;
 
-              AminusSigmaB -= sigma * tmp *
-                              b.transpose () * b * tmp.transpose ();
+                  AminusSigmaB -= sigma * tmp *
+                    b.transpose () * b * tmp.transpose ();
+                }
+              else
+                AminusSigmaB -= sigma * b.transpose () * b;
             }
           else
-            AminusSigmaB -= sigma * b.transpose () * b;
+            AminusSigmaB -= sigma * b;
         }
       else
-        AminusSigmaB -= sigma * b;
-    }
-  else
-    {
-      SparseMatrix sigmat (n, n, n);
-
-      // Create sigma * speye (n,n)
-      sigmat.xcidx (0) = 0;
-      for (octave_idx_type i = 0; i < n; i++)
         {
-          sigmat.xdata (i) = sigma;
-          sigmat.xridx (i) = i;
-          sigmat.xcidx (i+1) = i + 1;
-        }
+          SparseMatrix sigmat (n, n, n);
 
-      AminusSigmaB -= sigmat;
+          // Create sigma * speye (n,n)
+          sigmat.xcidx (0) = 0;
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              sigmat.xdata (i) = sigma;
+              sigmat.xridx (i) = i;
+              sigmat.xcidx (i+1) = i + 1;
+            }
+
+          AminusSigmaB -= sigmat;
+        }
     }
 
   octave::math::sparse_lu<SparseMatrix> fact (AminusSigmaB, Matrix (), true);
@@ -370,35 +373,38 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
   // P * M = L * U
   Matrix AminusSigmaB (m);
 
-  if (have_b)
+  if (sigma != 0.0)
     {
-      if (cholB)
+      if (have_b)
         {
-          Matrix tmp = sigma * b.transpose () * b;
-          const double *pB = permB.fortran_vec ();
-          double *p = AminusSigmaB.fortran_vec ();
-
-          if (permB.numel ())
+          if (cholB)
             {
-              for (octave_idx_type j = 0;
-                   j < b.cols (); j++)
-                for (octave_idx_type i = 0;
-                     i < b.rows (); i++)
-                  *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
-                                     static_cast<octave_idx_type> (pB[j]));
+              Matrix tmp = sigma * b.transpose () * b;
+              const double *pB = permB.fortran_vec ();
+              double *p = AminusSigmaB.fortran_vec ();
+
+              if (permB.numel ())
+                {
+                  for (octave_idx_type j = 0;
+                       j < b.cols (); j++)
+                    for (octave_idx_type i = 0;
+                         i < b.rows (); i++)
+                      *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
+                                         static_cast<octave_idx_type> (pB[j]));
+                }
+              else
+                AminusSigmaB -= tmp;
             }
           else
-            AminusSigmaB -= tmp;
+            AminusSigmaB -= sigma * b;
         }
       else
-        AminusSigmaB -= sigma * b;
-    }
-  else
-    {
-      double *p = AminusSigmaB.fortran_vec ();
+        {
+          double *p = AminusSigmaB.fortran_vec ();
 
-      for (octave_idx_type i = 0; i < n; i++)
-        p[i*(n+1)] -= sigma;
+          for (octave_idx_type i = 0; i < n; i++)
+            p[i*(n+1)] -= sigma;
+        }
     }
 
   octave::math::lu<Matrix> fact (AminusSigmaB);
@@ -449,45 +455,48 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
   // P * (R \ M) * Q = L * U
   SparseComplexMatrix AminusSigmaB (m);
 
-  if (have_b)
+  if (std::real (sigma) != 0.0 || std::imag (sigma) != 0.0)
     {
-      if (cholB)
+      if (have_b)
         {
-          if (permB.numel ())
+          if (cholB)
             {
-              SparseMatrix tmp (n,n,n);
-              for (octave_idx_type i = 0; i < n; i++)
+              if (permB.numel ())
                 {
-                  tmp.xcidx (i) = i;
-                  tmp.xridx (i) =
-                    static_cast<octave_idx_type> (permB(i));
-                  tmp.xdata (i) = 1;
-                }
-              tmp.xcidx (n) = n;
+                  SparseMatrix tmp (n,n,n);
+                  for (octave_idx_type i = 0; i < n; i++)
+                    {
+                      tmp.xcidx (i) = i;
+                      tmp.xridx (i) =
+                        static_cast<octave_idx_type> (permB(i));
+                      tmp.xdata (i) = 1;
+                    }
+                  tmp.xcidx (n) = n;
 
-              AminusSigmaB -= tmp * b.hermitian () * b *
-                              tmp.transpose () * sigma;
+                  AminusSigmaB -= tmp * b.hermitian () * b *
+                    tmp.transpose () * sigma;
+                }
+              else
+                AminusSigmaB -= sigma * b.hermitian () * b;
             }
           else
-            AminusSigmaB -= sigma * b.hermitian () * b;
+            AminusSigmaB -= sigma * b;
         }
       else
-        AminusSigmaB -= sigma * b;
-    }
-  else
-    {
-      SparseComplexMatrix sigmat (n, n, n);
-
-      // Create sigma * speye (n,n)
-      sigmat.xcidx (0) = 0;
-      for (octave_idx_type i = 0; i < n; i++)
         {
-          sigmat.xdata (i) = sigma;
-          sigmat.xridx (i) = i;
-          sigmat.xcidx (i+1) = i + 1;
-        }
+          SparseComplexMatrix sigmat (n, n, n);
 
-      AminusSigmaB -= sigmat;
+          // Create sigma * speye (n,n)
+          sigmat.xcidx (0) = 0;
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              sigmat.xdata (i) = sigma;
+              sigmat.xridx (i) = i;
+              sigmat.xcidx (i+1) = i + 1;
+            }
+
+          AminusSigmaB -= sigmat;
+        }
     }
 
   octave::math::sparse_lu<SparseComplexMatrix> fact (AminusSigmaB, Matrix(),
@@ -547,35 +556,38 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
   // P * M = L * U
   ComplexMatrix AminusSigmaB (m);
 
-  if (have_b)
+  if (std::real (sigma) != 0.0 || std::imag (sigma) != 0.0)
     {
-      if (cholB)
+      if (have_b)
         {
-          ComplexMatrix tmp = sigma * b.hermitian () * b;
-          const double *pB = permB.fortran_vec ();
-          Complex *p = AminusSigmaB.fortran_vec ();
-
-          if (permB.numel ())
+          if (cholB)
             {
-              for (octave_idx_type j = 0;
-                   j < b.cols (); j++)
-                for (octave_idx_type i = 0;
-                     i < b.rows (); i++)
-                  *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
-                                     static_cast<octave_idx_type> (pB[j]));
+              ComplexMatrix tmp = sigma * b.hermitian () * b;
+              const double *pB = permB.fortran_vec ();
+              Complex *p = AminusSigmaB.fortran_vec ();
+
+              if (permB.numel ())
+                {
+                  for (octave_idx_type j = 0;
+                       j < b.cols (); j++)
+                    for (octave_idx_type i = 0;
+                         i < b.rows (); i++)
+                      *p++ -= tmp.xelem (static_cast<octave_idx_type> (pB[i]),
+                                         static_cast<octave_idx_type> (pB[j]));
+                }
+              else
+                AminusSigmaB -= tmp;
             }
           else
-            AminusSigmaB -= tmp;
+            AminusSigmaB -= sigma * b;
         }
       else
-        AminusSigmaB -= sigma * b;
-    }
-  else
-    {
-      Complex *p = AminusSigmaB.fortran_vec ();
+        {
+          Complex *p = AminusSigmaB.fortran_vec ();
 
-      for (octave_idx_type i = 0; i < n; i++)
-        p[i*(n+1)] -= sigma;
+          for (octave_idx_type i = 0; i < n; i++)
+            p[i*(n+1)] -= sigma;
+        }
     }
 
   octave::math::lu<ComplexMatrix> fact (AminusSigmaB);

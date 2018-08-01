@@ -1428,7 +1428,10 @@ ANY_INCLUDING_NL (.|{NL})
                     curr_lexer->begin_string (SQ_STRING_START);
                   }
                 else
-                  return curr_lexer->count_token (HERMITIAN);
+                  {
+                    curr_lexer->m_current_input_column++;
+                    return curr_lexer->count_token (HERMITIAN);
+                  }
               }
           }
         else
@@ -1441,7 +1444,10 @@ ANY_INCLUDING_NL (.|{NL})
                 curr_lexer->begin_string (SQ_STRING_START);
               }
             else
-              return curr_lexer->count_token (HERMITIAN);
+              {
+                curr_lexer->m_current_input_column++;
+                return curr_lexer->count_token (HERMITIAN);
+              }
           }
       }
   }

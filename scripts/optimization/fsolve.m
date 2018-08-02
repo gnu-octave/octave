@@ -19,8 +19,9 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@var{fcn}, @dots{})
+## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0})
+## @deftypefnx {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
 ## @var{fcn} should accept a vector (array) defining the unknown variables,
@@ -29,64 +30,97 @@
 ## determine a vector @var{x} such that @code{@var{fcn} (@var{x})} gives
 ## (approximately) all zeros.
 ##
-## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
-## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
+## @var{x0} is an initial guess for the solution.  The shape of @var{x0} is
+## preserved in all calls to @var{fcn}, but otherwise is treated as a column
+## vector.
 ##
-## @var{options} is a structure specifying additional options.  Currently,
-## @code{fsolve} recognizes these options:
-## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
-## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
-## @qcode{"Jacobian"}, @qcode{"Updating"}, @qcode{"ComplexEqn"}
-## @qcode{"TypicalX"}, @qcode{"AutoScaling"} and @qcode{"FinDiffType"}.
-##
-## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn}, called
-## with 2 output arguments also returns the Jacobian matrix of right-hand sides
-## at the requested point.  @qcode{"TolX"} specifies the termination tolerance
-## in the unknown variables, while @qcode{"TolFun"} is a tolerance for
-## equations.  Default is @code{1e-7} for both @qcode{"TolX"} and
-## @qcode{"TolFun"}.
+## @var{options} is a structure specifying additional parameters which
+## control the algorithm.  Currently, @code{fsolve} recognizes these options:
+## @qcode{"AutoScaling"}, @qcode{"ComplexEqn"}, @qcode{"FinDiffType"},
+## @qcode{"FunValCheck"}, @qcode{"Jacobian"}, @qcode{"MaxFunEvals"},
+## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"},
+## @qcode{"TypicalX"}, and @qcode{"Updating"}.
 ##
 ## If @qcode{"AutoScaling"} is on, the variables will be automatically scaled
 ## according to the column norms of the (estimated) Jacobian.  As a result,
-## TolF becomes scaling-independent.  By default, this option is off because
-## it may sometimes deliver unexpected (though mathematically correct) results.
+## @code{TolFun} becomes scaling-independent.  By default, this option is off
+## because it may sometimes deliver unexpected (though mathematically
+## correct) results.
 ##
-## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
-## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
-## amount of Jacobian calculations.  If your user function always calculates
-## the Jacobian (regardless of number of output arguments) then this option
-## provides no advantage and should be set to false.
-##
-## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
+## If @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess
 ## a complex derivative (i.e., are holomorphic).  If this is not what you want,
 ## you should unpack the real and imaginary parts of the system to get a real
 ## system.
 ##
-## For description of the other options, see @code{optimset}.
+## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn}---when
+## called with 2 output arguments---also returns the Jacobian matrix of
+## right-hand sides at the requested point.
 ##
-## On return, @var{fval} contains the value of the function @var{fcn}
-## evaluated at @var{x}.
+## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
+## before optimization is halted.  The default value is
+## @code{100 * number_of_variables}, i.e., @code{100 * length (@var{x0})}.
+## The value must be a positive integer.
 ##
-## @var{info} may be one of the following values:
+## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
+## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
+## number of Jacobian calculations.  If your user function always calculates
+## the Jacobian (regardless of number of output arguments) then this option
+## provides no advantage and should be disabled.
+##
+## @qcode{"TolX"} specifies the termination tolerance in the unknown variables,
+## while @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-6}
+## for both @qcode{"TolX"} and @qcode{"TolFun"}.
+##
+## For a description of the other options, see @code{optimset}.  To initialize
+## an options structure with default values for @code{fsolve} use
+## @code{options = optimset ("fsolve")}.
+##
+## The first output @var{x} is the solution while the second output @var{fval}
+## contains the value of the function @var{fcn} evaluated at @var{x} (ideally
+## a vector of all zeros).
+##
+## The third output @var{info} reports whether the algorithm succeeded and may
+## take one of the following values:
 ##
 ## @table @asis
 ## @item 1
 ## Converged to a solution point.  Relative residual error is less than
-## specified by TolFun.
+## specified by @code{TolFun}.
 ##
 ## @item 2
-## Last relative step size was less that TolX.
+## Last relative step size was less than @code{TolX}.
 ##
 ## @item 3
-## Last relative decrease in residual was less than TolF.
+## Last relative decrease in residual was less than @code{TolFun}.
 ##
 ## @item 0
-## Iteration limit exceeded.
+## Iteration limit (either @code{MaxIter} or @code{MaxFunEvals}) exceeded.
+##
+## @item -1
+## Stopped by @code{OutputFcn}.
 ##
 ## @item -3
 ## The trust region radius became excessively small.
 ## @end table
+##
+## @var{output} is a structure containing runtime information about the
+## @code{fsolve} algorithm.  Fields in the structure are:
+##
+## @table @code
+## @item iterations
+##  Number of iterations through loop.
+##
+## @item succesful
+##  Number of successful iterations.
+##
+## @item @nospell{funcCount}
+##  Number of function evaluations.
+##
+## @end table
+##
+## The final output @var{fjac} contains the value of the Jacobian evaluated
+## at @var{x}.
 ##
 ## Note: If you only have a single nonlinear equation of one variable, using
 ## @code{fzero} is usually a much better idea.
@@ -97,12 +131,12 @@
 ## accepted successful step.  Often this will be one of the last two calls, but
 ## not always.  If the savings by reusing intermediate results from residual
 ## calculation in Jacobian calculation are significant, the best strategy is to
-## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
-## called with that vector, then the intermediate results should be saved for
-## future Jacobian evaluation, and should be kept until a Jacobian evaluation
-## is requested or until OutputFcn is called with a different vector, in which
-## case they should be dropped in favor of this most recent vector.  A short
-## example how this can be achieved follows:
+## employ @code{OutputFcn}: After a vector is evaluated for residuals, if
+## @code{OutputFcn} is called with that vector, then the intermediate results
+## should be saved for future Jacobian evaluation, and should be kept until a
+## Jacobian evaluation is requested or until @code{OutputFcn} is called with a
+## different vector, in which case they should be dropped in favor of this most
+## recent vector.  A short example how this can be achieved follows:
 ##
 ## @example
 ## function [fvec, fjac] = user_func (x, optimvalues, state)
@@ -137,12 +171,12 @@
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, ...
-    "Jacobian", "off", "TolX", 1e-7, "TolFun", 1e-7,
-    "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
-    "ComplexEqn", "off", "FinDiffType", "central",
-    "TypicalX", [], "AutoScaling", "off");
+  if (nargin == 1 && ischar (fcn) && strcmp (fcn, "defaults"))
+    x = optimset ("AutoScaling", "off", "ComplexEqn", "off", 
+                  "FunValCheck", "off", "FinDiffType", "forward",
+                  "Jacobian", "off",  "MaxFunEvals", [], "MaxIter", 400,
+                  "OutputFcn", [], "Updating", "off", "TolFun", 1e-6,
+                  "TolX", 1e-6, "TypicalX", []);
     return;
   endif
 
@@ -160,19 +194,17 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   n = numel (x0);
 
   has_jac = strcmpi (optimget (options, "Jacobian", "off"), "on");
-  cdif = strcmpi (optimget (options, "FinDiffType", "central"), "central");
+  cdif = strcmpi (optimget (options, "FinDiffType", "forward"), "central");
   maxiter = optimget (options, "MaxIter", 400);
-  maxfev = optimget (options, "MaxFunEvals", Inf);
+  maxfev = optimget (options, "MaxFunEvals", 100*n);
   outfcn = optimget (options, "OutputFcn");
-  updating = strcmpi (optimget (options, "Updating", "on"), "on");
+  updating = strcmpi (optimget (options, "Updating", "off"), "on");
   complexeqn = strcmpi (optimget (options, "ComplexEqn", "off"), "on");
 
   ## Get scaling matrix using the TypicalX option.  If set to "auto", the
   ## scaling matrix is estimated using the Jacobian.
-  typicalx = optimget (options, "TypicalX");
-  if (isempty (typicalx))
-    typicalx = ones (n, 1);
-  endif
+  typicalx = optimget (options, "TypicalX", ones (n, 1));
+
   autoscale = strcmpi (optimget (options, "AutoScaling", "off"), "on");
   if (! autoscale)
     dg = 1 ./ typicalx;
@@ -188,8 +220,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   ## These defaults are rather stringent.
   ## Normally user prefers accuracy to performance.
 
-  tolx = optimget (options, "TolX", 1e-7);
-  tolf = optimget (options, "TolFun", 1e-7);
+  tolx = optimget (options, "TolX", 1e-6);
+  tolf = optimget (options, "TolFun", 1e-6);
 
   factor = 1;
 
@@ -213,7 +245,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     optimvalues.funccount = nfev;
     optimvalues.fval = fn;
     optimvalues.searchdirection = zeros (n, 1);
-    state = 'init';
+    state = "init";
     stop = outfcn (x, optimvalues, state);
     if (stop)
       info = -1;
@@ -250,9 +282,9 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       nfev += (1 + cdif) * length (x);
     endif
 
-    ## For square and overdetermined systems, we update a QR
-    ## factorization of the Jacobian to avoid solving a full system in each
-    ## step.  In this case, we pass a triangular matrix to __dogleg__.
+    ## For square and overdetermined systems, we update a QR factorization of
+    ## the Jacobian to avoid solving a full system in each step.  In this case,
+    ## we pass a triangular matrix to __dogleg__.
     useqr = updating && m >= n && n > 10;
 
     if (useqr)
@@ -266,7 +298,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     if (autoscale)
       ## Get column norms, use them as scaling factors.
-      jcn = norm (fjac, 'columns').';
+      jcn = norm (fjac, "columns").';
       if (niter == 1)
         dg = jcn;
         dg(dg == 0) = 1;
@@ -388,7 +420,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         optimvalues.funccount = nfev;
         optimvalues.fval = fn;
         optimvalues.searchdirection = s;
-        state = 'iter';
+        state = "iter";
         stop = outfcn (x, optimvalues, state);
         if (stop)
           info = -1;
@@ -487,6 +519,48 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
 
 endfunction
 
+## Solve the double dogleg trust-region least-squares problem:
+## Minimize norm (r*x-b) subject to the constraint norm (d.*x) <= delta,
+## x being a convex combination of the gauss-newton and scaled gradient.
+
+## FIXME: error checks
+## FIXME: handle singularity, or leave it up to mldivide?
+
+function x = __dogleg__ (r, b, d, delta)
+
+  ## Get Gauss-Newton direction.
+  x = r \ b;
+  xn = norm (d .* x);
+  if (xn > delta)
+    ## GN is too big, get scaled gradient.
+    s = (r' * b) ./ d;
+    sn = norm (s);
+    if (sn > 0)
+      ## Normalize and rescale.
+      s = (s / sn) ./ d;
+      ## Get the line minimizer in s direction.
+      tn = norm (r*s);
+      snm = (sn / tn) / tn;
+      if (snm < delta)
+        ## Get the dogleg path minimizer.
+        bn = norm (b);
+        dxn = delta/xn; snmd = snm/delta;
+        t = (bn/sn) * (bn/xn) * snmd;
+        t -= dxn * snmd^2 - sqrt ((t-dxn)^2 + (1-dxn^2)*(1-snmd^2));
+        alpha = dxn*(1-snmd^2) / t;
+      else
+        alpha = 0;
+      endif
+    else
+      alpha = delta / xn;
+      snm = 0;
+    endif
+    ## Form the appropriate convex combination.
+    x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
+  endif
+
+endfunction
+
 
 %!function retval = __f (p)
 %!  x = p(1);
@@ -521,7 +595,7 @@ endfunction
 %!test
 %! x_opt = [ -0.767297326653401, 0.590671081117440, ...
 %!            1.47190018629642, -1.52719341133957 ];
-%! tol = 1.0e-5;
+%! tol = 1.0e-4;
 %! [x, fval, info] = fsolve (@__f, [-1, 1, 2, -1]);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
@@ -612,45 +686,3 @@ endfunction
 %! assert (x == 0);
 %! assert (fvec == 0);
 %! assert (info == 1);
-
-## Solve the double dogleg trust-region least-squares problem:
-## Minimize norm(r*x-b) subject to the constraint norm(d.*x) <= delta,
-## x being a convex combination of the gauss-newton and scaled gradient.
-
-## FIXME: error checks
-## FIXME: handle singularity, or leave it up to mldivide?
-
-function x = __dogleg__ (r, b, d, delta)
-
-  ## Get Gauss-Newton direction.
-  x = r \ b;
-  xn = norm (d .* x);
-  if (xn > delta)
-    ## GN is too big, get scaled gradient.
-    s = (r' * b) ./ d;
-    sn = norm (s);
-    if (sn > 0)
-      ## Normalize and rescale.
-      s = (s / sn) ./ d;
-      ## Get the line minimizer in s direction.
-      tn = norm (r*s);
-      snm = (sn / tn) / tn;
-      if (snm < delta)
-        ## Get the dogleg path minimizer.
-        bn = norm (b);
-        dxn = delta/xn; snmd = snm/delta;
-        t = (bn/sn) * (bn/xn) * snmd;
-        t -= dxn * snmd^2 - sqrt ((t-dxn)^2 + (1-dxn^2)*(1-snmd^2));
-        alpha = dxn*(1-snmd^2) / t;
-      else
-        alpha = 0;
-      endif
-    else
-      alpha = delta / xn;
-      snm = 0;
-    endif
-    ## Form the appropriate convex combination.
-    x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
-  endif
-
-endfunction

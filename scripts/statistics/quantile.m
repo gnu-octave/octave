@@ -187,20 +187,29 @@ function q = quantile (x, p = [], dim, method = 5)
   ## Permute dim to the 1st index.
   x = permute (x, perm);
 
-  ## Save the size of the permuted x N-d array.
+  ## Save the size of the permuted x N-D array.
   sx = size (x);
 
-  ## Reshape to a 2-d array.
-  x = reshape (x, [sx(1), prod(sx(2:end))]);
+  ## Reshape to a 2-D array.
+  x = reshape (x, sx(1), []);
 
   ## Calculate the quantiles.
   q = __quantile__ (x, p, method);
 
-  ## Return the shape to the original N-d array.
+  ## Return the shape to the original N-D array.
   q = reshape (q, [numel(p), sx(2:end)]);
 
   ## Permute the 1st index back to dim.
   q = ipermute (q, perm);
+
+  ## For Matlab compatibility, return vectors with the same orientation as p
+  if (isvector (q) && ! isscalar (q) && ! isscalar (p))
+    if (isrow (p))
+      q = reshape (q, 1, []);
+    else
+      q = reshape (q, [], 1);
+    endif
+  endif
 
 endfunction
 
@@ -251,7 +260,7 @@ endfunction
 %!      1.0000   1.4167   2.5000   3.5833   4.0000
 %!      1.0000   1.4375   2.5000   3.5625   4.0000];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -268,7 +277,7 @@ endfunction
 %!      1.0000   1.6667   3.0000   4.3333   5.0000
 %!      1.0000   1.6875   3.0000   4.3125   5.0000];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -285,7 +294,7 @@ endfunction
 %!      1.0000   1.4167   3.5000   7.3333   9.0000
 %!      1.0000   1.4375   3.5000   7.2500   9.0000];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -302,7 +311,7 @@ endfunction
 %!      1.0000    1.6667    5.0000    9.6667   11.0000
 %!      1.0000    1.6875    5.0000    9.6250   11.0000];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -319,7 +328,7 @@ endfunction
 %!      6.0000    9.8333   11.5000   15.0000   16.0000
 %!      6.0000    9.8750   11.5000   15.0000   16.0000];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -337,7 +346,7 @@ endfunction
 %!      -2.551474  -0.591566  -0.067751   0.146459   0.495271
 %!      -2.551474  -0.590801  -0.067751   0.140686   0.495271];
 %! for m = 1:9
-%!   q = quantile (x, p, 1, m).';
+%!   q = quantile (x, p, 1, m);
 %!   assert (q, a(m,:), 0.0001);
 %! endfor
 
@@ -366,6 +375,10 @@ endfunction
 %! assert (yobs, yexp);
 
 %!assert <*45455> (quantile ([1 3 2], 0.5, 1), [1 3 2])
+%!assert <*54421> (quantile ([1:10], 0.5, 1), 1:10)
+%!assert <*54421> (quantile ([1:10]', 0.5, 2), [1:10]')
+%!assert <*54421> (quantile ([1:10], [0.25, 0.75]), [3, 8])
+%!assert <*54421> (quantile ([1:10], [0.25, 0.75]'), [3; 8])
 
 ## Test input validation
 %!error quantile ()

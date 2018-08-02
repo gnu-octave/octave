@@ -17,16 +17,16 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} isstr (@var{a})
-## This function is obsolete.  Use ischar instead.
+## @deftypefn {} {} isstr (@var{x})
+## This function is obsolete.  Use @code{ischar} instead.
+## @seealso{ischar}
 ## @end deftypefn
 
 ## Author: jwe
 
-## At one time, Matlab docs stated that this function is obsolete and
-## would be removed in some future version.  Now users are told that it
-## should be avoided, but there is no mention of possible future
-## removal.
+## At one time, Matlab docs stated that this function is obsolete and would be
+## removed in some future version.  Now users are told that it should be
+## avoided, but there is no mention of possible future removal.
 
 function retval = isstr (varargin)
 

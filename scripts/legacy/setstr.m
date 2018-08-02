@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} setstr (@var{s})
-## This function is obsolete.  Use char instead.
+## @deftypefn {} {@var{s} =} setstr (@var{x})
+## This function is obsolete.  Use @code{char} instead.
+## @seealso{char}
 ## @end deftypefn
 
 ## Author: jwe

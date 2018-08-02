@@ -51,6 +51,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     page_screen_output (false);
     warning ("on", "quiet");
     warning ("off", "Octave:deprecated-function");
+    warning ("off", "Octave:legacy-function");
     nfail = dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     try
       fid = fopen (logfile, "wt");
@@ -116,10 +117,10 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         puts ("indicating which dependencies were not found.\n");
       endif
 
-      ## Weed out deprecated and private functions
-      weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<private\>', 'once'));
+      ## Weed out deprecated, legacy, and private functions
+      weed_idx = cellfun (@isempty, regexp (files_with_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_tests = files_with_tests(weed_idx);
-      weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<private\>', 'once'));
+      weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\<deprecated\>|\<legacy\>|\<private\>', 'once'));
       files_with_no_tests = files_with_no_tests(weed_idx);
 
       report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");

@@ -81,6 +81,7 @@ namespace octave
 
     enum cmd_upd {
       CMD_UPD_NO        = 0,
+      CMD_UPD_WORKSPACE = 1
     };
 
     // C'tor for Fxxx requiring the interpreter

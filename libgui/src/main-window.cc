@@ -377,8 +377,11 @@ namespace octave
                                       QFileDialog::DontUseNativeDialog);
 
     if (! file.isEmpty ())
-      octave_link::post_event (this, &main_window::save_workspace_callback,
-                               file.toStdString ());
+      {
+        octave_cmd_builtin *cmd
+                = new octave_cmd_builtin (&Fsave, ovl (file.toStdString ()));
+        m_cmd_queue.add_cmd (cmd);
+      }
   }
 
   void main_window::handle_load_workspace_request (const QString& file_arg)
@@ -391,8 +394,12 @@ namespace octave
                                            QFileDialog::DontUseNativeDialog);
 
     if (! file.isEmpty ())
-      octave_link::post_event (this, &main_window::load_workspace_callback,
-                               file.toStdString ());
+      {
+        octave_cmd_builtin *cmd
+            = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
+                                      0, octave_cmd_builtin::CMD_UPD_WORKSPACE);
+        m_cmd_queue.add_cmd (cmd);
+      }
   }
 
   void main_window::handle_open_any_request (const QString& file_arg)
@@ -404,7 +411,9 @@ namespace octave
 
   void main_window::handle_clear_workspace_request (void)
   {
-    octave_link::post_event (this, &main_window::clear_workspace_callback);
+    octave_cmd_builtin *cmd
+          = new octave_cmd_builtin (&Fclear, ovl ());
+    m_cmd_queue.add_cmd (cmd);
   }
 
   void main_window::handle_clear_command_window_request (void)
@@ -2567,26 +2576,6 @@ namespace octave
     m_octave_qt_link->wake_all ();
   }
 
-  void main_window::save_workspace_callback (const std::string& file)
-  {
-    // INTERPRETER THREAD
-
-    Fsave (ovl (file));
-  }
-
-  void main_window::load_workspace_callback (const std::string& file)
-  {
-    // INTERPRETER THREAD
-
-    Fload (ovl (file));
-
-    symbol_scope scope
-      = __get_current_scope__ ("main_window::load_workspace_callback");
-
-    if (scope)
-      octave_link::set_workspace (true, scope);
-  }
-
   void main_window::rename_variable_callback (const main_window::name_pair& names)
   {
     // INTERPRETER THREAD
@@ -2647,16 +2636,6 @@ namespace octave
 
     if (scope)
           octave_link::set_workspace (true, scope);
-  }
-
-  void main_window::clear_workspace_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    interpreter& interp
-      = __get_interpreter__ ("main_window::clear_workspace_callback");
-
-    Fclear (interp);
   }
 
   void main_window::clear_history_callback (void)

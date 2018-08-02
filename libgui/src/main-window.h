@@ -323,10 +323,6 @@ namespace octave
 
     QString gui_preference_adjust (const QString& key, const QString& value);
 
-    void save_workspace_callback (const std::string& file);
-
-    void load_workspace_callback (const std::string& file);
-
     void open_any_callback (const std::string& file);
 
     void rename_variable_callback (const name_pair& names);
@@ -338,8 +334,6 @@ namespace octave
     void resize_command_window_callback (void);
 
     void set_screen_size_callback (const int_pair&);
-
-    void clear_workspace_callback (void);
 
     void clear_history_callback (void);
 

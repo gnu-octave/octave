@@ -81,6 +81,22 @@ namespace octave
       m_callback_fi (interp, m_argin, m_nargin);
     else if (m_callback_f)
       m_callback_f (m_argin, m_nargin);
+
+    switch (m_update)
+      {
+        case CMD_UPD_WORKSPACE:
+          {
+            symbol_scope scope
+                = __get_current_scope__ ("octave_cmd_builtin::execute");
+            if (scope)
+              octave_link::set_workspace (true, scope);
+            break;
+          }
+
+        default:
+          break;
+      }
+
   }
 
   void octave_cmd_debug::execute (interpreter& interp)

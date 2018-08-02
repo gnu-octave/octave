@@ -239,6 +239,7 @@ private:
   QSize m_charSize;
   QSize m_bufferSize;
   QRect m_consoleRect;
+  bool m_auto_scroll;
   QPoint m_cursorPos;
   bool m_cursorBlinking;
   bool m_hasBlinkingCursor;
@@ -278,7 +279,7 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 //////////////////////////////////////////////////////////////////////////////
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
-  : q (parent), m_command (cmd), m_cursorBlinking (false),
+  : q (parent), m_command (cmd), m_auto_scroll (true), m_cursorBlinking (false),
     m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
     m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
     m_process (NULL), m_inWheelEvent (false)
@@ -1125,6 +1126,7 @@ void QConsolePrivate::grabConsoleBuffer (CHAR_INFO* buf)
   r.Right  = m_consoleRect.right ();
   r.Bottom = m_consoleRect.bottom ();
 
+  log ("ReadConsoleOutput (%d,%d) -> (%d,%d)\n", r.Left, r.Top, r.Right, r.Bottom);
   if (! ReadConsoleOutput (m_stdOut, (buf ? buf : m_buffer), bs, bc, &r))
     qCritical ("cannot read console output");
 }
@@ -1217,6 +1219,16 @@ void QConsolePrivate::setVerticalScrollValue (int value)
   if (SetConsoleWindowInfo (hStdOut, TRUE, &r))
     {
       m_consoleRect.moveTop (value);
+
+      CONSOLE_SCREEN_BUFFER_INFO sbi;
+      if (GetConsoleScreenBufferInfo (hStdOut, &sbi))
+        {
+          if (sbi.dwCursorPosition.Y > m_consoleRect.bottom ())
+            m_auto_scroll = false;
+          else
+            m_auto_scroll = true;
+        }
+
       updateConsoleView ();
     }
 }
@@ -1279,10 +1291,12 @@ void QConsolePrivate::monitorConsole (void)
 
       if (m_consoleRect.left () != sbi.srWindow.Left
           || m_consoleRect.right () != sbi.srWindow.Right
-          || m_consoleRect.top () != sbi.srWindow.Top
-          || m_consoleRect.bottom () != sbi.srWindow.Bottom)
+          || (m_auto_scroll &&
+              (m_consoleRect.top () != sbi.srWindow.Top
+               || m_consoleRect.bottom () != sbi.srWindow.Bottom)))
         {
           // Console window changed
+          log ("--> Console window changed\n");
           m_consoleRect = QRect (sbi.srWindow.Left, sbi.srWindow.Top,
                                  sbi.srWindow.Right - sbi.srWindow.Left + 1,
                                  sbi.srWindow.Bottom - sbi.srWindow.Top + 1);
@@ -1357,6 +1371,8 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 
   // clear any selection on inserting text
   clearSelection();
+  // enable auto-scrolling
+  m_auto_scroll = true;
 
   int len = s.length ();
   INPUT_RECORD events[TEXT_CHUNK_SIZE];

@@ -205,10 +205,10 @@ function __datetick__ (varargin)
     else
       [ymin, mmin, dmin] = datevec (xmin);
       [ymax, mmax, dmax] = datevec (xmax);
-      minyear = ymin + (mmin - 1) / 12 + (dmin - 1) / 12 / 30;
-      maxyear = ymax + (mmax - 1) / 12 + (dmax - 1) / 12 / 30;
-      minmonth = mmin + (dmin - 1) / 30;
-      maxmonth = (ymax  - ymin) * 12 + mmax + (dmax - 1) / 30;
+      minyear = ymin + (mmin - 1) / 12 + (dmin - 1) / 12 / 30.5;
+      maxyear = ymax + (mmax - 1) / 12 + (dmax - 1) / 12 / 30.5;
+      minmonth = mmin + (dmin - 1) / 30.5;
+      maxmonth = (ymax  - ymin) * 12 + mmax + (dmax - 1) / 30.5;
 
       if (maxmonth - minmonth < N)
         sep = __calc_tick_sep__ (xmin, xmax);

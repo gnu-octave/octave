@@ -71,7 +71,7 @@ is in the upper left corner, by doing:
 [@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])
 @end example
 
-@seealso{schur}
+@seealso{schur, ordeig}
 @end deftypefn */)
 {
   if (args.length () != 3)

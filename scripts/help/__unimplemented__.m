@@ -1065,7 +1065,6 @@ function rlist = missing_functions ()
   "openfig",
   "openFile",
   "opengl",
-  "ordeig",
   "ordqz",
   "outdegree",
   "outerjoin",

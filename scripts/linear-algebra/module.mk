@@ -26,6 +26,7 @@ FCN_FILE_DIRS += scripts/linear-algebra
   %reldir%/normest1.m \
   %reldir%/null.m \
   %reldir%/ols.m \
+  %reldir%/ordeig.m \
   %reldir%/orth.m \
   %reldir%/planerot.m \
   %reldir%/qzhess.m \

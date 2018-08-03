@@ -35,6 +35,10 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     when using OpenGL graphics, the Qt QOFFSCREENSURFACE feature must be
     available and you must use the qt graphics toolkit.
 
+ ** New functions added in 5.0:
+
+      ordeig
+
  ** Deprecated functions.
 
     The following functions have been deprecated in Octave 5.0 and will

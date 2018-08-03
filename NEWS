@@ -32,9 +32,19 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
         TolX         |     1e-6       |     1e-7
         Updating     |     "off"      |     "on"
 
- ** The fminsearch function has changed default TolFun accuracy to 1e-4
-    from 1e-7.  This change was made for Matlab compatibility, but may
-    result in different results from existing code.
+ ** The fminsearch function has changed default solver options for
+    Matlab compatibility.  The accuracy option TolFun is now 1e-4 rather
+    than 1e-7.  This *may* result in existing code producing different
+    results.
+
+ ** The fminbnd function has changed defaults for Matlab compatibility.
+    This *may* result in existing code producing different results.
+
+          Option     |  New Default   |  Old Default
+      ------------------------------------------------
+        MaxFunEvals  |      500       |     Inf
+        MaxIter      |      500       |     Inf
+        TolX         |     1e-4       |     1e-8
 
  ** Figure graphic objects have a new property "Number" which is
     read-only and will return the handle (number) of the figure.

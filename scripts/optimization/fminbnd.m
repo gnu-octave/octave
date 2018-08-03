@@ -19,37 +19,58 @@
 ## Author: Jaroslav Hajek <highegg@gmail.com>
 
 ## -*- texinfo -*-
-## @deftypefn {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
+## @deftypefn  {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b})
+## @deftypefnx {} {@var{x} =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@dots{})
 ## Find a minimum point of a univariate function.
 ##
-## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a
-## starting interval.  @var{options} is a structure specifying additional
-## options.  Currently, @code{fminbnd} recognizes these options:
-## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
-## @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.  For a description of these
-## options, see @ref{XREFoptimset,,optimset}.
+## @var{fun} must be a function handle or name.
 ##
-## On exit, the function returns @var{x}, the approximate minimum point and
-## @var{fval}, the function value thereof.
+## The starting interval is specified by @var{a} (left boundary) and @var{b}
+## (right boundary).  The endpoints must be finite.
 ##
-## @var{info} is an exit flag that can have these values:
+## @var{options} is a structure specifying additional parameters which
+## control the algorithm.  Currently, @code{fminbnd} recognizes these options:
+## @qcode{"Display"}, @qcode{"FunValCheck"}, @qcode{"MaxFunEvals"},
+## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolX"}.
+##
+## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
+## before optimization is halted.  The default value is 500.
+## The value must be a positive integer.
+##
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before optimization is halted.  The default value is 500.
+## The value must be a positive integer.
+##
+## @qcode{"TolX"} specifies the termination tolerance for the solution @var{x}.
+## The default is @code{1e-4}.
+##
+## For a description of the other options, see @ref{XREFoptimset,,optimset}.
+## To initialize an options structure with default values for @code{fminbnd}
+## use @code{options = optimset ("fminbnd")}.
+##
+## On exit, the function returns @var{x}, the approximate minimum point, and
+## @var{fval}, the function evaluated @var{x}.
+##
+## The third output @var{info} reports whether the algorithm succeeded and may
+## take one of the following values:
 ##
 ## @itemize
 ## @item 1
 ## The algorithm converged to a solution.
 ##
 ## @item 0
-## Maximum number of iterations or function evaluations has been exhausted.
+## Iteration limit (either @code{MaxIter} or @code{MaxFunEvals}) exceeded.
 ##
 ## @item -1
-## The algorithm has been terminated from user output function.
+## The algorithm was terminated by a user @code{OutputFcn}.
 ## @end itemize
 ##
-## Notes: The search for a minimum is restricted to be in the interval bound by
-## @var{a} and @var{b}.  If you only have an initial point to begin searching
-## from you will need to use an unconstrained minimization algorithm such as
-## @code{fminunc} or @code{fminsearch}.  @code{fminbnd} internally uses a
-## Golden Section search strategy.
+## Programming Notes: The search for a minimum is restricted to be in the
+## finite interval bound by @var{a} and @var{b}.  If you have only one initial
+## point to begin searching from then you will need to use an unconstrained
+## minimization algorithm such as @code{fminunc} or @code{fminsearch}.
+## @code{fminbnd} internally uses a Golden Section search strategy.
 ## @seealso{fzero, fminunc, fminsearch, optimset}
 ## @end deftypefn
 
@@ -63,9 +84,10 @@
 function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8,
-                  "OutputFcn", [], "FunValCheck", "off");
+  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
+    x = optimset ("Display", "notify", "FunValCheck", "off",
+                  "MaxFunEvals", 500, "MaxIter", 500,
+                  "OutputFcn", [], "TolX", 1e-4);
     return;
   endif
 
@@ -85,9 +107,9 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
   displ = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
-  tolx = optimget (options, "TolX", 1e-8);
-  maxiter = optimget (options, "MaxIter", Inf);
-  maxfev = optimget (options, "MaxFunEvals", Inf);
+  tolx = optimget (options, "TolX", 1e-4);
+  maxiter = optimget (options, "MaxIter", 500);
+  maxfev = optimget (options, "MaxFunEvals", 500);
 
   if (funvalchk)
     ## Replace fun with a guarded version.
@@ -160,9 +182,8 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
     if (dogs)
       ## Default to golden section step.
 
-      ## WARNING: This is also the "initial" procedure following
-      ## MATLAB nomenclature.  After the loop we'll fix the string
-      ## for the first step.
+      ## WARNING: This is also the "initial" procedure following MATLAB
+      ## nomenclature.  After the loop we'll fix the string for the first step.
       iter(niter+1).procedure = "golden";
 
       e = ifelse (x >= xm, a - x, b - x);
@@ -225,13 +246,13 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
   switch (displ)
     case "iter"
       print_formatted_table (iter);
-      print_exit_msg (info, struct("TolX", tolx, "fx", fval));
+      print_exit_msg (info, struct ("TolX", tolx, "fx", fval));
     case "notify"
       if (info == 0)
-        print_exit_msg (info, struct("fx",fval));
+        print_exit_msg (info, struct ("fx",fval));
       endif
     case "final"
-      print_exit_msg (info, struct("TolX", tolx, "fx", fval));
+      print_exit_msg (info, struct ("TolX", tolx, "fx", fval));
     case "off"
       "skip";
     otherwise
@@ -240,6 +261,7 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
 
   output.iterations = niter;
   output.funcCount = nfev;
+  output.algorithm = "golden section search, parabolic interpolation";
   output.bracket = [a, b];
   ## FIXME: bracketf possibly unavailable.
 

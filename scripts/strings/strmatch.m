@@ -60,7 +60,12 @@ function idx = strmatch (s, A, exact)
     print_usage ();
   endif
 
-  if (! ischar (s) || (! isempty (s) && ! isvector (s)))
+  if (iscellstr (s))
+    if (! isscalar (s))
+      error ("strmatch: a cell array S must contain only one string");
+    endif
+    s = char (s);
+  elseif (! ischar (s) || (! isempty (s) && ! isrow (s)))
     error ("strmatch: S must be a string");
   elseif (! (ischar (A) || iscellstr (A)))
     error ("strmatch: A must be a string or cell array of strings");
@@ -119,11 +124,14 @@ endfunction
 %! assert (strmatch (" ", "   "), 1);
 %! assert (strmatch ("  ", " "), []);
 %! assert (strmatch ("  ", "  "), 1);
+%!test <*54432>
+%! assert (strmatch ({"a"}, {"aaa", "bab", "bbb"}), 1);
 
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()
 %!error <Invalid call to strmatch> strmatch ("a")
 %!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)
+%!error <S must contain only one string> strmatch ({"a", "b"}, "aaa")
 %!error <S must be a string> strmatch (1, "aaa")
 %!error <S must be a string> strmatch (char ("a", "bb"), "aaa")
 %!error <A must be a string> strmatch ("a", 1)

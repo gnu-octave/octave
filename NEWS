@@ -18,6 +18,20 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       Octave 5.0 : strncmp ("abc", "abc", 100) => true
       Previously : strncmp ("abc", "abc", 100) => false
 
+ ** The fsolve function has been tweaked to use larger step sizes when
+    calculating the Jacobian of a function with finite differences.
+    This leads to faster convergence.  The default solver options have
+    also changed to be Matlab compatible.  This *may* result in existing
+    code producing different results.
+
+          Option     |  New Default   |  Old Default
+      ------------------------------------------------
+        FinDiffType  |   "forward"    |   "central"
+        MaxFunEvals  | 100*length(x0) |     Inf
+        TolFun       |     1e-6       |     1e-7
+        TolX         |     1e-6       |     1e-7
+        Updating     |     "off"      |     "on"
+
  ** Figure graphic objects have a new property "Number" which is
     read-only and will return the handle (number) of the figure.
     However, if the property "IntegerHandle" has been set to "off" then

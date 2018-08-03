@@ -122,8 +122,6 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(null)
 
-@DOCSTRING(ordeig)
-
 @DOCSTRING(orth)
 
 @DOCSTRING(mgorth)
@@ -184,6 +182,8 @@ detect a non-Hermitian matrix.
 @DOCSTRING(rsf2csf)
 
 @DOCSTRING(ordschur)
+
+@DOCSTRING(ordeig)
 
 @DOCSTRING(subspace)
 

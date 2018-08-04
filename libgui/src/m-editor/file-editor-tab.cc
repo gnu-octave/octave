@@ -2317,7 +2317,7 @@ namespace octave
   {
     bool file_exists = QFile::exists (_file_name);
 
-    if (file_exists)
+    if (file_exists && ! do_close)
       {
         // Test if file is really modified or if just the timezone has
         // changed. In the latter, just return without doing anything

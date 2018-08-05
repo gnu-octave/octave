@@ -280,7 +280,8 @@ namespace octave
         if (! file.exists ())
           continue;
 
-        session_data item = { 0, sessionFileNames.at (n), QString ()};
+        session_data item = { 0, 0, sessionFileNames.at (n),
+                              QString (), QString ()};
         if (do_index)
           item.index = session_index.at (n).toInt ();
         if (do_encoding)
@@ -925,8 +926,9 @@ namespace octave
   void file_editor::handle_file_remove (const QString& old_name,
                                         const QString& new_name)
   {
-    // Clear old lsit of files to reload
+    // Clear old list of file data and declare a structure for file data
     m_tmp_closed_files.clear ();
+    session_data f_data;
 
     // Check if old name is a file or directory
     QFileInfo old (old_name);
@@ -937,34 +939,40 @@ namespace octave
       }
     else
       {
-        // It is a single file. IT is open?
+        // It is a single file. Is it open?
         file_editor_tab *editor_tab
           = static_cast<file_editor_tab *> (find_tab_widget (old_name));
 
         if (editor_tab)
           {
-            // Yes, close it silently
-            m_no_focus = true;  // Remember for not focussing editor
-            editor_tab->file_has_changed (QString (), true);  // Close the tab
-            m_no_focus = false;  // Back to normal
-
-            m_tmp_closed_files << old_name;  // for reloading if error removing
-
-            if (! new_name.isEmpty ())
-              m_tmp_closed_files << new_name;  // store new name
-            else
-              m_tmp_closed_files << ""; // no new name, just removing this file
-
-            // Get and store the related encoding
+            // YES: Get and store the related encoding
             for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
                   p != m_editor_tab_map.end (); p++)
               {
                 if (editor_tab == p->second.fet_ID)
                   {
-                    m_tmp_closed_files << p->second.encoding;
+                    // Get index and line
+                    f_data.encoding = p->second.encoding;
+                    f_data.index = m_tab_widget->indexOf (editor_tab);
+                    int l, c;
+                    editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+                    f_data.line = l + 1;
                     break;
                   }
               }
+
+            // Close it silently
+            m_no_focus = true;  // Remember for not focussing editor
+            editor_tab->file_has_changed (QString (), true);  // Close the tab
+            m_no_focus = false;  // Back to normal
+
+            // For reloading old file if error while removing
+            f_data.file_name = old_name;
+            // For reloading new file (if new_fiel is not empty)
+            f_data.new_file_name = new_name;
+
+            // Add file data to list
+            m_tmp_closed_files << f_data;
           }
       }
   }
@@ -973,13 +981,36 @@ namespace octave
   void file_editor::handle_file_renamed (bool load_new)
   {
     m_no_focus = true;  // Remember for not focussing editor
-    for (int i = 0; i < m_tmp_closed_files.count (); i = i + 3)
+
+    // Loop over all file that have to be reloaded. Start at the end of the
+    // list, otherwise the stored indexes are not correct
+    for (int i = m_tmp_closed_files.count () - 1; i >= 0; i--)
       {
-        if (! m_tmp_closed_files.at (i + load_new).isEmpty ())
-          request_open_file (m_tmp_closed_files.at (i + load_new),
-                             m_tmp_closed_files.at (i+2));
+        // Load old or new file
+        if (load_new)
+          {
+            if (! m_tmp_closed_files.at (i).new_file_name.isEmpty ())
+              request_open_file (m_tmp_closed_files.at (i).new_file_name,
+                                 m_tmp_closed_files.at (i).encoding,
+                                 m_tmp_closed_files.at (i).line,
+                                 false, false, true, "",
+                                 m_tmp_closed_files.at (i).index);
+          }
+        else
+          {
+            request_open_file (m_tmp_closed_files.at (i).file_name,
+                                 m_tmp_closed_files.at (i).encoding,
+                                 m_tmp_closed_files.at (i).line,
+                                 false, false, true, "",
+                                 m_tmp_closed_files.at (i).index);
+          }
+
       }
+
     m_no_focus = false;  // Back to normal focus
+
+    // Clear the list of file data
+    m_tmp_closed_files.clear ();
   }
 
   void file_editor::notice_settings (const QSettings *settings)
@@ -1187,7 +1218,7 @@ namespace octave
                                        const QString& encoding,
                                        int line, bool debug_pointer,
                                        bool breakpoint_marker, bool insert,
-                                       const QString& cond)
+                                       const QString& cond, int index)
   {
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
@@ -1263,7 +1294,7 @@ namespace octave
                     // Supply empty title then have the file_editor_tab update
                     // with full or short name.
                     if (! reusing)
-                      add_file_editor_tab (fileEditorTab, "");
+                      add_file_editor_tab (fileEditorTab, "", index);
                     fileEditorTab->update_window_title (false);
                     // file already loaded, add file to mru list here
                     QFileInfo file_info = QFileInfo (openFileName);
@@ -2067,9 +2098,13 @@ namespace octave
     check_actions ();
   }
 
-  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
+  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
+                                         int index)
   {
-    m_tab_widget->addTab (f, fn);
+    if (index == -1)
+      m_tab_widget->addTab (f, fn);
+    else
+      m_tab_widget->insertTab (index, f, fn);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
@@ -2332,6 +2367,7 @@ namespace octave
                                        const QString& new_name)
   {
     QDir old_dir (old_name);
+    session_data f_data;
 
     // Have all file editor tabs signal what their filenames are.
     m_editor_tab_map.clear ();
@@ -2350,23 +2386,35 @@ namespace octave
             m_no_focus = true;  // Remember for not focussing editor
             file_editor_tab *editor_tab
               = static_cast<file_editor_tab *> (p->second.fet_ID);
-            editor_tab->file_has_changed (QString (), true);  // Close
+            if (editor_tab)
+              {
+                // Get index and line
+                int l, c;
+                editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+                f_data.line = l + 1;
+                f_data.index = m_tab_widget->indexOf (p->second.fet_ID);
+                // Close
+                editor_tab->file_has_changed (QString (), true);
+              }
             m_no_focus = false;  // Back to normal
 
             // Store file for possible later reload
-            m_tmp_closed_files << p->first;
+            f_data.file_name = p->first;
 
             // Add the new file path and the encoding for later reloading
             // if new_name is given
             if (! new_name.isEmpty ())
               {
                 QDir new_dir (new_name);
-                m_tmp_closed_files << new_dir.absoluteFilePath (rel_path_to_file);
+                f_data.new_file_name = new_dir.absoluteFilePath (rel_path_to_file);
               }
             else
-              m_tmp_closed_files << ""; // no new name, just removing this file
+              f_data.new_file_name = ""; // no new name, just removing this file
 
-            m_tmp_closed_files << p->second.encoding; // store the encoding
+            f_data.encoding = p->second.encoding; // store the encoding
+
+            // Store data in list for later reloading
+            m_tmp_closed_files << f_data;
           }
       }
   }

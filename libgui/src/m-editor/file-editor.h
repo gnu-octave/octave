@@ -78,7 +78,9 @@ namespace octave
     struct session_data
     {
       int index;
+      int line;
       QString file_name;
+      QString new_file_name;
       QString encoding;
 
       bool operator < (const session_data& other) const
@@ -284,7 +286,7 @@ namespace octave
                             const QString& encoding = QString (),
                             int line = -1, bool debug_pointer = false,
                             bool breakpoint_marker = false, bool insert = true,
-                            const QString& cond = "");
+                            const QString& cond = "", int index = -1);
     void request_preferences (bool);
     void request_styles_preferences (bool);
 
@@ -313,7 +315,8 @@ namespace octave
 
     bool is_editor_console_tabbed (void);
     void construct (void);
-    void add_file_editor_tab (file_editor_tab *f, const QString& fn);
+    void add_file_editor_tab (file_editor_tab *f, const QString& fn,
+                              int index = -1);
     void mru_menu_update (void);
     bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
@@ -449,11 +452,8 @@ namespace octave
     QStringList m_mru_files;
     QStringList m_mru_files_encodings;
 
-    // List of temporarily closed files for later reloading.
-    // Order: first closed old file
-    //        first new location of closed file
-    //        encoding to use for reload
-    QStringList m_tmp_closed_files;
+    // List of data on temporarily closed files for later reloading.
+    QList<session_data> m_tmp_closed_files;
   };
 }
 

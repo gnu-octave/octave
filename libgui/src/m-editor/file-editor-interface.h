@@ -83,7 +83,8 @@ namespace octave
                                     bool debug_pointer = false,
                                     bool breakpoint_marker = false,
                                     bool insert = true,
-                                    const QString& cond = "") = 0;
+                                    const QString& cond = "",
+                                    int index = -1) = 0;
   };
 }
 

@@ -152,7 +152,11 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     ## Try to find a value for b which brackets a zero-crossing
 
     ## For very small values, switch to absolute rather than relative search
-    ifelse (abs (a) < .001, aa = sign (a) * 0.1, aa = a);
+    if (abs (a) < .001)
+      aa = ifelse (a == 0, 0.1, sign (a) * 0.1);
+    else
+      aa = a;
+    endif
     ## Search in an ever-widening range around the initial point.
     for srch = [-.01 +.025 -.05 +.10 -.25 +.50 -1 +2.5 -5 +10 -50 +100 -500 +1000]
       b = aa + aa*srch;
@@ -373,3 +377,5 @@ endfunction
 %! opt0 = optimset ("tolx", 0);
 %!assert (fzero (@cos, [0, 3], opt0), pi/2, 10*eps)
 %!assert (fzero (@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+%!assert <*54445> (fzero (@ (x) x, 0), 0)
+%!assert <*54445> (fzero (@ (x) x + 1, 0), -1)

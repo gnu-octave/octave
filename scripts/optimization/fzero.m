@@ -42,14 +42,29 @@
 ##
 ## @var{options} is a structure specifying additional options.  Currently,
 ## @code{fzero} recognizes these options:
-## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
-## @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.
-## For a description of these options, see @ref{XREFoptimset,,optimset}.
+## @qcode{"FunValCheck"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
+## @qcode{"OutputFcn"}, and @qcode{"TolX"}.
 ##
-## On exit, the function returns @var{x}, the approximate zero point and
-## @var{fval}, the function value thereof.
+## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
+## before the search is halted.  The default value is @code{Inf}.
+## The value must be a positive integer.
 ##
-## @var{info} is an exit flag that can have these values:
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before the search is halted.  The default value is @code{Inf}.
+## The value must be a positive integer.
+##
+## @qcode{"TolX"} specifies the termination tolerance for the solution @var{x}.
+## The default value is @code{eps}.
+##
+## For a description of the other options, see @ref{XREFoptimset,,optimset}.
+## To initialize an options structure with default values for @code{fzero} use
+## @code{options = optimset ("fzero")}.
+##
+## On exit, the function returns @var{x}, the approximate zero point, and
+## @var{fval}, the function evaluated at @var{x}.
+##
+## The third output @var{info} reports whether the algorithm succeeded and
+## may take one of the following values:
 ##
 ## @itemize
 ## @item 1
@@ -59,7 +74,7 @@
 ##  Maximum number of iterations or function evaluations has been reached.
 ##
 ## @item -1
-## The algorithm has been terminated from user output function.
+## The algorithm has been terminated by a user @code{OutputFcn}.
 ##
 ## @item -5
 ## The algorithm may have converged to a singular point.
@@ -72,8 +87,11 @@
 ## @item iterations
 ##  Number of iterations through loop.
 ##
-## @item @nospell{nfev}
+## @item funcCount
 ##  Number of function evaluations.
+##
+## @item algorithm
+##  The string "bisection, interpolation".
 ##
 ## @item bracketx
 ##  A two-element vector with the final bracketing of the zero along the
@@ -104,9 +122,10 @@
 function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", eps,
-                  "OutputFcn", [], "FunValCheck", "off");
+  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
+    x = optimset ("Display", "notify", "FunValCheck", "off",
+                  "MaxFunEvals", Inf, "MaxIter", Inf,
+                  "OutputFcn", [], "TolX", eps);
     return;
   endif
 
@@ -118,23 +137,22 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     fun = str2func (fun, "global");
   endif
 
-  ## FIXME:
+  ## FIXME: Display is not yet implemented
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
+  maxfev = optimget (options, "MaxFunEvals", Inf);
+  maxiter = optimget (options, "MaxIter", Inf);
   outfcn = optimget (options, "OutputFcn");
   tolx = optimget (options, "TolX", eps);
-  maxiter = optimget (options, "MaxIter", Inf);
-  maxfev = optimget (options, "MaxFunEvals", Inf);
 
-  persistent mu = 0.5;
+  mu = 0.5;
 
   if (funvalchk)
     ## Replace fun with a guarded version.
     fun = @(x) guarded_eval (fun, x);
   endif
 
-  ## The default exit flag if exceeded number of iterations.
-  info = 0;
+  info = 0;  # The default exit flag if number of iterations exceeded.
   niter = 0;
   nfev = 0;
 
@@ -243,7 +261,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
           c = a + q31 + q32 + q33;
         endif
         if (l < 4 || sign (c - a) * sign (c - b) > 0)
-          ## Quadratic interpolation + newton.
+          ## Quadratic interpolation + Newton.
           a0 = fa;
           a1 = (fb - fa)/(b - a);
           a2 = ((fd - fb)/(d - b) - a1) / (d - a);
@@ -356,6 +374,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   output.iterations = niter;
   output.funcCount = nfev;
+  output.algorithm = "bisection, interpolation";
   output.bracketx = [a, b];
   output.brackety = [fa, fb];
 

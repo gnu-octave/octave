@@ -50,6 +50,17 @@ const QString ed_last_comment_str ("editor/oct_last_comment_str");
 const QStringList ed_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
 const int ed_comment_strings_count = 5;
 
+// Session data
+const gui_pref ed_session_names ("editor/savedSessionTabs",
+                                  QVariant (QStringList ()));
+const gui_pref ed_session_enc ("editor/saved_session_encodings",
+                                  QVariant (QStringList ()));
+const gui_pref ed_session_ind ("editor/saved_session_tab_index",
+                                  QVariant (QStringList ()));
+const gui_pref ed_session_lines ("editor/saved_session_lines",
+                                  QVariant (QStringList ()));
+
+
 // File handling
 const gui_pref ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
 #if defined (Q_OS_WIN32)

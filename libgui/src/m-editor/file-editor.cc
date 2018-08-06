@@ -257,22 +257,27 @@ namespace octave
 
     // get the data from the settings file
     QStringList sessionFileNames
-      = settings->value ("editor/savedSessionTabs",
-                         QStringList ()).toStringList ();
+      = settings->value (ed_session_names.key, ed_session_names.def)
+                         .toStringList ();
 
     QStringList session_encodings
-      = settings->value ("editor/saved_session_encodings",
-                         QStringList ()).toStringList ();
+      = settings->value (ed_session_enc.key, ed_session_enc.def)
+                        .toStringList ();
 
     QStringList session_index
-      = settings->value ("editor/saved_session_tab_index",
-                         QStringList ()).toStringList ();
+      = settings->value (ed_session_ind.key, ed_session_ind.def)
+                         .toStringList ();
+
+    QStringList session_lines
+      = settings->value (ed_session_lines.key, ed_session_lines.def)
+                         .toStringList ();
 
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
 
     bool do_encoding = (session_encodings.count () == sessionFileNames.count ());
     bool do_index = (session_index.count () == sessionFileNames.count ());
+    bool do_lines = (session_lines.count () == sessionFileNames.count ());
 
     for (int n = 0; n < sessionFileNames.count (); ++n)
       {
@@ -280,8 +285,10 @@ namespace octave
         if (! file.exists ())
           continue;
 
-        session_data item = { 0, 0, sessionFileNames.at (n),
+        session_data item = { 0, -1, sessionFileNames.at (n),
                               QString (), QString ()};
+        if (do_lines)
+          item.line = session_lines.at (n).toInt ();
         if (do_index)
           item.index = session_index.at (n).toInt ();
         if (do_encoding)
@@ -294,7 +301,8 @@ namespace octave
 
     // finally open the file with the desired encoding in the desired order
     for (int n = 0; n < s_data.count (); ++n)
-      request_open_file (s_data.at (n).file_name, s_data.at (n).encoding);
+      request_open_file (s_data.at (n).file_name, s_data.at (n).encoding,
+                         s_data.at (n).line);
   }
 
   void file_editor::focus (void)
@@ -377,6 +385,7 @@ namespace octave
     QStringList fetFileNames;
     QStringList fet_encodings;
     QStringList fet_index;
+    QStringList fet_lines;
 
     // save all open tabs before they are definitely closed
     for (auto p = m_editor_tab_map.cbegin ();
@@ -387,15 +396,23 @@ namespace octave
           {
             fetFileNames.append (file_name);
             fet_encodings.append (m_editor_tab_map[file_name].encoding);
+
             QString index;
+            file_editor_tab *editor_tab
+              = static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID);
             fet_index.append (index.setNum
-                              (m_tab_widget->indexOf (m_editor_tab_map[file_name].fet_ID)));
+                              (m_tab_widget->indexOf (editor_tab)));
+
+            int l, c;
+            editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+            fet_lines.append (index.setNum (l + 1));
           }
       }
 
-    settings->setValue ("editor/savedSessionTabs", fetFileNames);
-    settings->setValue ("editor/saved_session_encodings", fet_encodings);
-    settings->setValue ("editor/saved_session_tab_index", fet_index);
+    settings->setValue (ed_session_names.key, fetFileNames);
+    settings->setValue (ed_session_enc.key, fet_encodings);
+    settings->setValue (ed_session_ind.key, fet_index);
+    settings->setValue (ed_session_lines.key, fet_lines);
     settings->sync ();
 
     // Finally close all the tabs and return indication that we can exit

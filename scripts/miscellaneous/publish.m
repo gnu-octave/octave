@@ -1058,7 +1058,7 @@ function cstr = eval_code_helper (__code__)
 
   eval_context ("load");
   cstr = evalc (__code__);
-  # Split string by lines and preserve blank lines.
+  ## Split string by lines and preserve blank lines.
   cstr = strsplit (strrep (cstr, "\n\n", "\n \n"), "\n");
   eval_context ("save");
 endfunction
@@ -1067,35 +1067,39 @@ endfunction
 function cstr = eval_context (op)
   ## EVAL_CONTEXT temporary evaluation context.
   persistent ctext
-  
-  # Variable cstr in "eval_code_helper" is newly created anyways.
+
+  ## Variable cstr in "eval_code_helper" is newly created anyways.
   forbidden_var_names = {"__code__"};
 
   switch (op)
     case "save"
-      # Clear previous context
+      ## Clear previous context
       ctext = containers.Map;
-      # Get variable names
+      ## Get variable names
       var_names = evalin ("caller", "whos");
       var_names = {var_names.name};
-      # Store all variables to context
+      ## Store all variables to context
       for i = 1:length (var_names)
-        if (~any (strcmp (var_names{i}, forbidden_var_names)))
+        if (! any (strcmp (var_names{i}, forbidden_var_names)))
           ctext(var_names{i}) = evalin ("caller", var_names{i});
         end
       endfor
+
     case "load"
-      if (~isempty (ctext))
+      if (! isempty (ctext))
         keys = ctext.keys ();
         for i = 1:length (keys)
           assignin ("caller", keys{i}, ctext(keys{i}));
         endfor
       endif
+
     case "clear"
-      # Clear any context
+      ## Clear any context
       ctext = [];
+
     otherwise
-      # Do nothing
+      ## Do nothing
+
   endswitch
 endfunction
 

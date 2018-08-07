@@ -2344,8 +2344,6 @@ without the dash as well.
                   do_clear_symbols (symtab, argv, argc, idx, exclusive);
                 }
             }
-
-          octave_link::set_workspace ();
         }
     }
 

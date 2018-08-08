@@ -3374,8 +3374,18 @@ mexEvalStringWithTrap (const char *s)
 void
 mexErrMsgTxt (const char *s)
 {
-  if (s && strlen (s) > 0)
-    error ("%s: %s", mexFunctionName (), s);
+  size_t len;
+
+  if (s && (len = strlen (s)) > 0)
+    {
+      if (s[len - 1] == '\n')
+        {
+          std::string s_tmp (s, len - 1);
+          error ("%s: %s\n", mexFunctionName (), s_tmp.c_str ());
+        }
+      else
+        error ("%s: %s", mexFunctionName (), s);
+    }
   else
     {
       // For compatibility with Matlab, print an empty message.
@@ -3409,7 +3419,24 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
 void
 mexWarnMsgTxt (const char *s)
 {
-  warning ("%s", s);
+  size_t len;
+
+  if (s && (len = strlen (s)) > 0)
+    {
+      if (s[len - 1] == '\n')
+        {
+          std::string s_tmp (s, len - 1);
+          warning ("%s\n", s_tmp.c_str ());
+        }
+      else
+        warning ("%s", s);
+    }
+  else
+    {
+      // For compatibility with Matlab, print an empty message.
+      // Octave's warning routine requires a non-null input so use a SPACE.
+      warning (" ");
+    }
 }
 
 void

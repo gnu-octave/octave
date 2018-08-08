@@ -61,7 +61,7 @@ function idx = strmatch (s, A, exact)
   endif
 
   if (iscellstr (s))
-    if (! isscalar (s))
+    if (numel (s) > 1)
       error ("strmatch: a cell array S must contain only one string");
     endif
     s = char (s);
@@ -126,6 +126,7 @@ endfunction
 %! assert (strmatch ("  ", "  "), 1);
 %!test <*54432>
 %! assert (strmatch ({"a"}, {"aaa", "bab", "bbb"}), 1);
+%! assert (isempty (strmatch ({}, {"aaa", "bab"})));
 
 ## Test input validation
 %!error <Invalid call to strmatch> strmatch ()

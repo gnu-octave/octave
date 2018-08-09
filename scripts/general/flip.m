@@ -20,27 +20,32 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} flip (@var{x})
 ## @deftypefnx {} {} flip (@var{x}, @var{dim})
-## Flip array across dimension @var{dim}.
+## Return a copy of array @var{x} flipped across dimension @var{dim}.
 ##
-## Return a copy of @var{x} flipped about the dimension @var{dim}.
-## @var{dim} defaults to the first non-singleton dimension.
-## For example:
+## If @var{dim} is unspecified it defaults to the first non-singleton
+## dimension.
+##
+## Examples:
 ##
 ## @example
 ## @group
+## ## row vector
 ## flip ([1  2  3  4])
 ##       @result{}  4  3  2  1
 ##
+## ## column vector
 ## flip ([1; 2; 3; 4])
 ##       @result{}  4
 ##           3
 ##           2
 ##           1
 ##
+## ## 2-D matrix along dimension 1
 ## flip ([1 2; 3 4])
 ##       @result{}  3  4
 ##           1  2
 ##
+## ## 2-D matrix along dimension 2
 ## flip ([1 2; 3 4], 2)
 ##       @result{}  2  1
 ##           4  3

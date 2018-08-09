@@ -82,6 +82,11 @@ function retval = chop (x, ndigits, base = 10)
 endfunction
 
 
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:deprecated-function", "local");
+%! chop (0, 1);
+
 %!assert (chop (e, 3), 2.72)
 %!assert (chop (e, 4), 2.718)
 %!assert (chop (e, 4, 5), 2.72)

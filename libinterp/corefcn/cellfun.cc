@@ -688,26 +688,34 @@ nevermind:
 /*
 
 %!function r = __f11 (x)
-%!  global __cellfun_test_num_outputs__;
-%!  __cellfun_test_num_outputs__ = nargout;
 %!  r = x;
 %!endfunction
 
 %!function __f01 (x)
-%!  global __cellfun_test_num_outputs__;
-%!  __cellfun_test_num_outputs__ = nargout;
+%!  ## Empty function
 %!endfunction
 
 %!test
-%! global __cellfun_test_num_outputs__;
-%! cellfun (@__f11, {1});
+%! __cellfun_test_num_outputs__ = -1;
+%!
+%! function r = __subf11 (x)
+%!   __cellfun_test_num_outputs__ = nargout;
+%!   r = x;
+%! endfunction
+%!
+%! cellfun ("__subf11", {1});
 %! assert (__cellfun_test_num_outputs__, 0);
-%! x = cellfun (@__f11, {1});
+%!
+%! __cellfun_test_num_outputs__ = -1;
+%! x = cellfun ("__subf11", {1});
 %! assert (__cellfun_test_num_outputs__, 1);
 
 %!test
-%! global __cellfun_test_num_outputs__;
-%! cellfun (@__f01, {1});
+%! __cellfun_test_num_outputs__ = -1;
+%! function __subf01 (x)
+%!   __cellfun_test_num_outputs__ = nargout;
+%! endfunction
+%! cellfun ("__subf01", {1});
 %! assert (__cellfun_test_num_outputs__, 0);
 
 %!error x = cellfun (@__f01, {1, 2})
@@ -1389,26 +1397,36 @@ arrayfun (@@str2num, [1234],
 
 /*
 %!function r = __f11 (x)
-%!  global __arrayfun_test_num_outputs__;
-%!  __arrayfun_test_num_outputs__ = nargout;
 %!  r = x;
 %!endfunction
 
 %!function __f01 (x)
-%!  global __arrayfun_test_num_outputs__;
-%!  __arrayfun_test_num_outputs__ = nargout;
+%!  ## Empty function
 %!endfunction
 
 %!test
-%! global __arrayfun_test_num_outputs__;
-%! arrayfun (@__f11, {1});
+%! __arrayfun_test_num_outputs__ = -1;
+%!
+%! function r = __subf11 (x)
+%!   __arrayfun_test_num_outputs__ = nargout;
+%!   r = x;
+%! endfunction
+%!
+%! arrayfun ("__subf11", {1});
 %! assert (__arrayfun_test_num_outputs__, 0);
-%! x = arrayfun (@__f11, {1});
+%!
+%! __arrayfun_test_num_outputs__ = -1;
+%! x = arrayfun ("__subf11", {1});
 %! assert (__arrayfun_test_num_outputs__, 1);
 
 %!test
-%! global __arrayfun_test_num_outputs__;
-%! arrayfun (@__f01, {1});
+%! __arrayfun_test_num_outputs__ = -1;
+%!
+%! function __subf01 (x)
+%!   __arrayfun_test_num_outputs__ = nargout;
+%! endfunction
+%!
+%! arrayfun ("__subf01", {1});
 %! assert (__arrayfun_test_num_outputs__, 0);
 
 %!error x = arrayfun (@__f01, [1, 2])

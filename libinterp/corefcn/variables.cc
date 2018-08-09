@@ -201,6 +201,7 @@ isglobal ("x")
 %!test
 %! global x;
 %! assert (isglobal ("x"), true);
+%! clear -global x;  # cleanup after test
 
 %!error isglobal ()
 %!error isglobal ("a", "b")

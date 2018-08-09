@@ -22,6 +22,9 @@
 ## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n})
 ## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{prop1}, @var{value1}, @dots{})
 ## @deftypefnx {} {[@var{a}, @dots{}] =} textread (@var{filename}, @var{format}, @var{n}, @var{prop1}, @var{value1}, @dots{})
+##
+## This function is obsolete.  Use @code{textscan} instead.
+##
 ## Read data from a text file.
 ##
 ## The file @var{filename} is read and parsed according to @var{format}.  The
@@ -105,12 +108,17 @@
 ## @end group
 ## @end example
 ##
-## @seealso{strread, load, dlmread, fscanf, textscan}
+## @seealso{textscan, load, dlmread, fscanf, strread}
 ## @end deftypefn
 
 function varargout = textread (filename, format = "%f", varargin)
 
-  BUFLENGTH = 4096;       # Read buffer to speed up processing @var{n}
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "textread is obsolete; use textscan instead\n");
+  endif
 
   ## Check input
   if (nargin < 1)
@@ -131,6 +139,8 @@ function varargout = textread (filename, format = "%f", varargin)
     varargout = cell (1, nargout);
     return;
   endif
+
+  BUFLENGTH = 4096;       # Read buffer to speed up processing @var{n}
 
   ## Read file
   fid = fopen (filename, "r");
@@ -289,6 +299,15 @@ function varargout = textread (filename, format = "%f", varargin)
 
 endfunction
 
+
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! try
+%!   textread ("");
+%! catch
+%!   ## Nothing to do, just wanted to suppress error.
+%! end_try_catch
 
 %!test
 %! f = tempname ();

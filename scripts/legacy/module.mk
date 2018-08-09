@@ -7,7 +7,8 @@ FCN_FILE_DIRS += scripts/legacy
   %reldir%/isstr.m \
   %reldir%/setstr.m \
   %reldir%/strmatch.m \
-  %reldir%/strread.m
+  %reldir%/strread.m \
+  %reldir%/textread.m
 
 %canon_reldir%dir = $(fcnfiledir)/legacy
 

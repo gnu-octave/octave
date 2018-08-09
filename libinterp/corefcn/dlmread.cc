@@ -192,7 +192,7 @@ latter case, the file is read until end of file is reached.
 The @qcode{"emptyvalue"} option may be used to specify the value used to
 fill empty fields.  The default is zero.  Note that any non-numeric values,
 such as text, are also replaced by the @qcode{"emptyvalue"}.
-@seealso{csvread, textscan, textread, dlmwrite}
+@seealso{csvread, textscan, dlmwrite}
 @end deftypefn */)
 {
   int nargin = args.length ();

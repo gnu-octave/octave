@@ -83,6 +83,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       setstr               | char
       strmatch             | strncmp or strcmp
       strread              | textscan
+      textread             | textscan
 
  ** Deprecated functions.
 

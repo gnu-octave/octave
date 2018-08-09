@@ -7,8 +7,7 @@ FCN_FILE_DIRS += scripts/io
   %reldir%/dlmwrite.m \
   %reldir%/fileread.m \
   %reldir%/importdata.m \
-  %reldir%/is_valid_file_id.m \
-  %reldir%/textread.m
+  %reldir%/is_valid_file_id.m
 
 %canon_reldir%dir = $(fcnfiledir)/io
 

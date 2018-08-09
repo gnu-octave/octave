@@ -2643,7 +2643,7 @@ namespace octave
     int l = tok_val->line ();
     int c = tok_val->column ();
 
-    return maybe_compound_binary_expression (op1, op2, l, c, t);
+    return new tree_binary_expression (op1, op2, l, c, t);
   }
 
   // Build a boolean expression.

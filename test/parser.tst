@@ -337,3 +337,18 @@
 ## Check concatenation of empty char matrices (bug #52542)
 %!assert (double ([char(ones(0,3)); 'A']), 65)
 %!assert (double ([char(ones(0,3)); char(ones(2,0)); 'A']), 65)
+
+%!test <*54465>
+%! x = 0;
+%! if (! 0 || (x = 1))
+%! endif
+%! assert (x == 0);
+
+%!function x = matlab_short_circuit ()
+%!  x = 0;
+%!  if (! 0 | (x = 1))
+%!  endif
+%!endfunction
+%!test <*54465>
+%! fail ("x = matlab_short_circuit ()", "warning", "Matlab-style short-circuit operation performed for operator |");
+%! assert (x == 0);

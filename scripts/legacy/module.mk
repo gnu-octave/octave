@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += scripts/legacy
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/flipdim.m \
   %reldir%/isequalwithequalnans.m \
   %reldir%/isstr.m \
   %reldir%/setstr.m \

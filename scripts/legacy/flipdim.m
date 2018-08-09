@@ -20,20 +20,18 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} flipdim (@var{x})
 ## @deftypefnx {} {} flipdim (@var{x}, @var{dim})
-## Flip array across dimension @var{dim}.
-##
-## This function is an alias for @code{flip} and exists for backwards and
-## @sc{matlab} compatibility.  See @code{flip} for complete usage information.
-##
+## This function is obsolete.  Use @code{flip} instead.
 ## @seealso{flip, fliplr, flipud, rot90, rotdim}
 ## @end deftypefn
 
-## Author: David Bateman, Jaroslav Hajek
-
 function y = flipdim (varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "flipdim is obsolete; please use flip instead");
+  endif
+
   y = flip (varargin{:});
 endfunction
-
-
-## No tests needed for alias.  All tests for functionality are in flip.m
-%!assert (1)

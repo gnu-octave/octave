@@ -10,7 +10,6 @@ FCN_FILE_DIRS += scripts/strings
   %reldir%/dec2bin.m \
   %reldir%/dec2hex.m \
   %reldir%/erase.m \
-  %reldir%/findstr.m \
   %reldir%/hex2dec.m \
   %reldir%/index.m \
   %reldir%/isletter.m \

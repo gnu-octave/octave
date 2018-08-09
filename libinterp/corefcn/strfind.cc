@@ -186,7 +186,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
         @}
 @end group
 @end example
-@seealso{findstr, strmatch, regexp, regexpi, find}
+@seealso{regexp, regexpi, find}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -372,7 +372,7 @@ strrep ("This is a test string", "is", "&%$")
 @end group
 @end example
 
-@seealso{regexprep, strfind, findstr}
+@seealso{regexprep, strfind}
 @end deftypefn */)
 {
   int nargin = args.length ();

@@ -80,7 +80,7 @@ function html_compare_plot_demos (toolkits, varargin)
   fclose (fid);
 
   anchor = "<!-- ##ADD TABLE HERE## -->";
-  n = findstr (template, anchor);
+  n = strfind (template, anchor);
   header = strtrim (template(1:n-1));
   trailer = strtrim (template(n+numel(anchor):end));
 

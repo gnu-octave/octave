@@ -203,7 +203,7 @@ function varargout = textread (filename, format = "%f", varargin)
   ## FIXME: The below isn't ML-compatible: counts lines, not format string uses
   if (isfinite (nlines) && (nlines > 0))
     l_eol_char = length (eol_char);
-    eoi = findstr (str, eol_char);
+    eoi = strfind (str, eol_char);
     n_eoi = length (eoi);
     nblks = 0;
     ## Avoid slow repeated str concatenation, first seek requested end of data
@@ -216,7 +216,7 @@ function varargout = textread (filename, format = "%f", varargin)
         else
           str = nstr;
         endif
-        eoi = findstr (str, eol_char);
+        eoi = strfind (str, eol_char);
         n_eoi += numel (eoi);
         ++nblks;
       endif

@@ -19,6 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} findstr (@var{s}, @var{t})
 ## @deftypefnx {} {} findstr (@var{s}, @var{t}, @var{overlap})
+##
+## This function is obsolete.  Use @code{strfind} instead.
+##
 ## Return the vector of all positions in the longer of the two strings @var{s}
 ## and @var{t} where an occurrence of the shorter of the two starts.
 ##
@@ -34,18 +37,25 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:} @code{findstr} is scheduled for deprecation.  Use
-## @code{strfind} in all new code.
+## @strong{Caution:} @code{findstr} is obsolete.  Use @code{strfind} in all new
+## code.
 ## @seealso{strfind, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Note that this implementation swaps the strings if second one is longer
 ## than the first, so try to put the longer one first.
-##
+
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
 function v = findstr (s, t, overlap = true)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "findstr is obsolete; use strfind instead\n");
+  endif
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -132,6 +142,11 @@ function v = findstr (s, t, overlap = true)
 
 endfunction
 
+
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! findstr ("", "");
 
 %!assert (findstr ("abababa", "a"), [1, 3, 5, 7])
 %!assert (findstr ("abababa", "aba"), [1, 3, 5])

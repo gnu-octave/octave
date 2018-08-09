@@ -122,7 +122,7 @@ enclosed in quotes.  (This does not apply to conditions entered from the
 editor's context menu.)  For example:
 
 @example
-dbstop in strread at 209 if 'any (format == "%f")'
+dbstop in axis at 246 if 'any (opt == "x")'
 @end example
 
 The form specifying @var{event} does not cause a specific breakpoint at a

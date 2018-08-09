@@ -246,6 +246,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
 
   ## Call strread to make it do the real work
+  warning ("off", "Octave:legacy-function", "local");
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin{:});
 
   ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)

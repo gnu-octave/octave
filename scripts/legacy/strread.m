@@ -23,6 +23,9 @@
 ## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat})
 ## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{prop1}, @var{value1}, @dots{})
 ## @deftypefnx {} {[@var{a}, @dots{}] =} strread (@var{str}, @var{format}, @var{format_repeat}, @var{prop1}, @var{value1}, @dots{})
+##
+## This function is obsolete.  Use @code{textscan} instead.
+##
 ## Read data from a string.
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the
@@ -184,10 +187,17 @@
 ##
 ## @end table
 ##
-## @seealso{textscan, textread, load, dlmread, fscanf}
+## @seealso{textscan, sscanf}
 ## @end deftypefn
 
 function varargout = strread (str, format = "%f", varargin)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "strread is obsolete; use textscan instead\n");
+  endif
 
   ## Check input
   if (nargin < 1)
@@ -847,6 +857,11 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
 
 endfunction
 
+
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! strread ("");
 
 %!test
 %! [a, b] = strread ("1 2", "%f%f");

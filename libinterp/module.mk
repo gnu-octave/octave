@@ -172,7 +172,7 @@ if AMCOND_BUILD_EXTERNAL_LIBXERBLA
 endif
 
 # Increment these as needed and according to the rules in the libtool manual:
-%canon_reldir%_liboctinterp_current = 5
+%canon_reldir%_liboctinterp_current = 6
 %canon_reldir%_liboctinterp_revision = 0
 %canon_reldir%_liboctinterp_age = 0
 

@@ -21,6 +21,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} strmatch (@var{s}, @var{A})
 ## @deftypefnx {} {} strmatch (@var{s}, @var{A}, "exact")
+##
+## This function is obsolete.  Use an alternative such as @code{strncmp}
+## or @code{strcmp} instead.
+##
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ##
 ## The second argument @var{A} must be a string, character matrix, or a cell
@@ -45,16 +49,24 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
-## @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case), or
-## @code{regexp} in all new code.
-## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
+## @strong{Caution:} @code{strmatch} is obsolete.  Use @code{strncmp} (normal
+## case) or @code{strcmp} (@qcode{"exact"} case) in all new code.  Other
+## replacement possibilities, depending on application, include @code{regexp}
+## or @code{validatestring}.
+## @seealso{strncmp, strcmp, regexp, strfind, validatestring}
 ## @end deftypefn
 
 ## Author: Paul Kienzle, Alois Schloegl
 ## Adapted-by: jwe
 
 function idx = strmatch (s, A, exact)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "strmatch is obsolete; use strncmp or strcmp instead\n");
+  endif
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -106,6 +118,11 @@ function idx = strmatch (s, A, exact)
 
 endfunction
 
+
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! strmatch ("", "");
 
 %!assert (strmatch ("a", {"aaa", "bab", "bbb"}), 1)
 %!assert (strmatch ("apple", "apple juice"), 1)

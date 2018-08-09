@@ -26,7 +26,6 @@ FCN_FILE_DIRS += scripts/strings
   %reldir%/strchr.m \
   %reldir%/strjoin.m \
   %reldir%/strjust.m \
-  %reldir%/strmatch.m \
   %reldir%/strsplit.m \
   %reldir%/strtok.m \
   %reldir%/strtrim.m \

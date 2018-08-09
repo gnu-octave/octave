@@ -67,6 +67,20 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
 
       ordeig
 
+ ** Legacy functions.
+
+    The following functions have been declared legacy functions which
+    means they are obsolete and should not be used in any new code.
+    Unlike deprecated functions, however, their removal from Octave has
+    not yet been scheduled.
+
+      Function             | Replacement
+      ---------------------|------------------
+      isequalwithequalnans | isequaln
+      isstr                | ischar
+      setstr               | char
+      strmatch             | strncmp or strcmp
+
  ** Deprecated functions.
 
     The following functions have been deprecated in Octave 5.0 and will

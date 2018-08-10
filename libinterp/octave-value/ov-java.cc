@@ -66,6 +66,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_JAVA)
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  define LIBJVM_FILE_NAME "jvm.dll"
+#elif defined (__APPLE__)
+#  define LIBJVM_FILE_NAME "libjvm.dylib"
+#else
+#  define LIBJVM_FILE_NAME "libjvm.so"
+#endif
+
 #define TO_JOBJECT(obj) reinterpret_cast<jobject> (obj)
 #define TO_JCLASS(obj) reinterpret_cast<jclass> (obj)
 
@@ -503,21 +511,16 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
   // this machine
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::string subdirs[] = {"bin/client", "bin/server"};
-  std::string libjvm = "jvm.dll";
 #else
   std::string subdirs[] = {"jre/lib/server", "jre/lib", "lib/client",
     "lib/server", "jre/lib/amd64/client", "jre/lib/amd64/server",
     "jre/lib/i386/client", "jre/lib/i386/server"};
-#  if defined (__APPLE__)
-  std::string libjvm = "libjvm.dylib";
-#  else
-  std::string libjvm = "libjvm.so";
-#  endif
 #endif
 
   for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
     {
-      std::string candidate = java_home_path + "/" + subdirs[i] + "/" + libjvm;
+      std::string candidate = java_home_path + "/" + subdirs[i]
+                            + "/" LIBJVM_FILE_NAME;
       if (octave::sys::file_stat (candidate))
         return candidate;
     }
@@ -642,18 +645,23 @@ initialize_jvm (void)
       // JAVA_HOME environment variable takes precedence
       std::string java_home_env = octave::sys::env::getenv ("JAVA_HOME");
       if (! java_home_env.empty ())
-        jvm_lib_path = get_jvm_lib_path_in_subdir (java_home_env);
+        {
+          jvm_lib_path = get_jvm_lib_path_in_subdir (java_home_env);
 
-      if (jvm_lib_path.empty ())
+          // If JAVA_HOME does not look like a Java directory, use it anyway
+          // to fail with a useful error message indicating the directory
+          if (jvm_lib_path.empty ())
+            jvm_lib_path = java_home_env + "/" LIBJVM_FILE_NAME;
+        }
+      else
+        {
 #if defined (OCTAVE_USE_WINDOWS_API)
-        jvm_lib_path = get_jvm_lib_path_from_registry ();
-#elif defined (__APPLE__)
-        // Fall back to JAVA_LDPATH determined by configure and set in config.h
-        jvm_lib_path = std::string (JAVA_LDPATH) + "/libjvm.dylib";
+          jvm_lib_path = get_jvm_lib_path_from_registry ();
 #else
-        // Fall back to JAVA_LDPATH determined by configure and set in config.h
-        jvm_lib_path = std::string (JAVA_LDPATH) + "/libjvm.so";
+          // Fall back to JAVA_LDPATH, determined by the build system
+          jvm_lib_path = std::string (JAVA_LDPATH) + "/" LIBJVM_FILE_NAME;
 #endif
+        }
 
       lib = octave::dynamic_library (jvm_lib_path);
 

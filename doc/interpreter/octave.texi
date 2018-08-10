@@ -58,7 +58,7 @@
 @c texinfo-multiple-files-update.
 @include version-octave.texi
 
-@settitle GNU Octave
+@settitle GNU Octave (version @value{VERSION})
 
 @ifnottex
 

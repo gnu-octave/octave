@@ -198,8 +198,6 @@ c 8-byte integers.
 
       if (d .eq. 1.0) then
         stop 1
-      else
-        stop 1
       endif
 
        ]]),[ax_blas_integer_size=8],

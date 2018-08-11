@@ -100,7 +100,8 @@ namespace octave
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
 
-    QFileInfo file_info (QString::fromStdString (file));
+    std::string abs_fname = octave::sys::env::make_absolute (file);
+
     QStringList btn;
     QStringList role;
     role << "YesRole" << "RejectRole";
@@ -111,8 +112,7 @@ namespace octave
 
     uiwidget_creator.signal_dialog (
                                     tr ("File\n%1\ndoes not exist. Do you want to create it?").
-                                    arg (QDir::currentPath () + QDir::separator ()
-                                         + QString::fromStdString (file)),
+                                    arg (QString::fromStdString (abs_fname)),
                                     tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
 
     // Wait while the user is responding to message box.

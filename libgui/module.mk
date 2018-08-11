@@ -61,7 +61,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
 ## Increment the following version numbers as needed and according
 ## to the rules in the etc/HACKING.md file:
 
-%canon_reldir%_liboctgui_current = 3
+%canon_reldir%_liboctgui_current = 4
 %canon_reldir%_liboctgui_revision = 0
 %canon_reldir%_liboctgui_age = 0
 

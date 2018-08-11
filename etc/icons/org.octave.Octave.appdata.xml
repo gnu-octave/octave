@@ -80,6 +80,7 @@
   <project_group>GNU</project_group>
   <developer_name>John W. Eaton and others</developer_name>
   <releases>
+    <release date="2018-04-30" version="4.4.1"/>
     <release date="2018-04-30" version="4.4.0"/>
     <release date="2018-03-13" version="4.2.2"/>
   </releases>

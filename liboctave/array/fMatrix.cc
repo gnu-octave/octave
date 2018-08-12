@@ -436,7 +436,7 @@ float
 norm1 (const FloatMatrix& a)
 {
   float anorm = 0.0;
-  FloatColumnVector colsum = a.abs ().sum ().row (0);
+  FloatRowVector colsum = a.abs ().sum ().row (0);
 
   for (octave_idx_type i = 0; i < colsum.numel (); i++)
     {
@@ -579,8 +579,6 @@ FloatMatrix::finverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
   F77_XFCN (sgetri, SGETRI, (nc, tmp_data, nr, pipvt,
                              z.fortran_vec (), lwork, tmp_info));
 
-  info = tmp_info;
-
   lwork = static_cast<F77_INT> (z(0));
   lwork = (lwork < 4 * nc ? 4 * nc : lwork);
   z.resize (dim_vector (lwork, 1));
@@ -589,8 +587,8 @@ FloatMatrix::finverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
   info = 0;
   tmp_info = 0;
 
-  // Calculate the norm of the matrix, for later use.
-  float anorm = 0;
+  // Calculate the norm of the matrix for later use when determining rcon.
+  float anorm;
   if (calc_cond)
     anorm = norm1 (retval);
 
@@ -670,8 +668,8 @@ FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info, float& rcon,
       if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.
-          && ! (numel () == 1))
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0
+          && (numel () != 1))
         ret = FloatMatrix (rows (), columns (),
                            octave::numeric_limits<float>::Inf ());
     }
@@ -904,7 +902,8 @@ FloatMatrix::determinant (MatrixType& mattype,
       FloatMatrix atmp = *this;
       float *tmp_data = atmp.fortran_vec ();
 
-      float anorm = 0;
+      // Calculate the norm of the matrix for later use when determining rcon.
+      float anorm;
       if (calc_cond)
         anorm = norm1 (*this);
 
@@ -925,23 +924,26 @@ FloatMatrix::determinant (MatrixType& mattype,
         }
       else
         {
-          Array<float> z (dim_vector (3 * nc, 1));
-          float *pz = z.fortran_vec ();
-          Array<F77_INT> iz (dim_vector (nc, 1));
-          F77_INT *piz = iz.fortran_vec ();
+          if (calc_cond)
+            {
+              Array<float> z (dim_vector (3 * nc, 1));
+              float *pz = z.fortran_vec ();
+              Array<F77_INT> iz (dim_vector (nc, 1));
+              F77_INT *piz = iz.fortran_vec ();
 
-          F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, tmp_data, nr, anorm,
-                                     rcon, pz, piz, tmp_info
-                                     F77_CHAR_ARG_LEN (1)));
+              F77_XFCN (spocon, SPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                         nr, tmp_data, nr, anorm,
+                                         rcon, pz, piz, tmp_info
+                                         F77_CHAR_ARG_LEN (1)));
 
-          info = tmp_info;
+              info = tmp_info;
 
-          if (info != 0)
-            rcon = 0.0;
+              if (info != 0)
+                rcon = 0.0;
+            }
 
           for (F77_INT i = 0; i < nc; i++)
-            retval *= atmp (i,i);
+            retval *= atmp(i,i);
 
           retval = retval.square ();
         }
@@ -960,8 +962,8 @@ FloatMatrix::determinant (MatrixType& mattype,
       info = 0;
       F77_INT tmp_info = 0;
 
-      // Calculate the norm of the matrix, for later use.
-      float anorm = 0;
+      // Calculate the norm of the matrix for later use when determining rcon.
+      float anorm;
       if (calc_cond)
         anorm = norm1 (*this);
 
@@ -1148,7 +1150,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
               Array<F77_INT> ipvt (dim_vector (nr, 1));
               F77_INT *pipvt = ipvt.fortran_vec ();
 
-              if (anorm < 0.)
+              if (anorm < 0.0)
                 anorm = norm1 (atmp);
 
               Array<float> z (dim_vector (4 * nc, 1));
@@ -1209,7 +1211,7 @@ FloatMatrix::utsolve (MatrixType& mattype, const FloatMatrix& b,
 
       if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
-          rcon = 1.;
+          rcon = 1.0;
           info = 0;
 
           if (typ == MatrixType::Permuted_Upper)
@@ -1312,7 +1314,7 @@ FloatMatrix::ltsolve (MatrixType& mattype, const FloatMatrix& b,
 
       if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
-          rcon = 1.;
+          rcon = 1.0;
           info = 0;
 
           if (typ == MatrixType::Permuted_Lower)
@@ -1412,8 +1414,8 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
     {
       volatile int typ = mattype.type ();
 
-      // Calculate the norm of the matrix, for later use.
-      float anorm = -1.;
+      // Calculate the norm of the matrix for later use when determining rcon.
+      float anorm = -1.0;
 
       if (typ == MatrixType::Hermitian)
         {
@@ -1423,7 +1425,9 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
 
-          anorm = norm1 (atmp);
+          // The norm of the matrix for later use when determining rcon.
+          if (calc_cond)
+            anorm = norm1 (atmp);
 
           F77_INT tmp_info = 0;
 
@@ -1504,7 +1508,7 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
 
-          if (anorm < 0.0)
+          if (calc_cond && anorm < 0.0)
             anorm = norm1 (atmp);
 
           Array<float> z (dim_vector (4 * nc, 1));
@@ -1535,8 +1539,7 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
             {
               if (calc_cond)
                 {
-                  // Now calculate the condition number for
-                  // non-singular matrix.
+                  // Calculate the condition number for non-singular matrix.
                   char job = '1';
                   F77_XFCN (sgecon, SGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nc, tmp_data, nr, anorm,
@@ -1936,13 +1939,12 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
 {
   FloatMatrix retval;
 
-  F77_INT nrhs = octave::to_f77_int (b.cols ());
-
   F77_INT m = octave::to_f77_int (rows ());
   F77_INT n = octave::to_f77_int (cols ());
 
   F77_INT b_nr = octave::to_f77_int (b.rows ());
   F77_INT b_nc = octave::to_f77_int (b.cols ());
+  F77_INT nrhs = b_nc;  // alias for code readability
 
   if (m != b_nr)
     (*current_liboctave_error_handler)
@@ -1997,7 +1999,6 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       float dminmn = static_cast<float> (minmn);
       float dsmlsizp1 = static_cast<float> (smlsiz+1);
       float tmp = octave::math::log2 (dminmn / dsmlsizp1);
-      float anorm = 0.0;
 
       F77_INT nlvl = static_cast<F77_INT> (tmp) + 1;
       if (nlvl < 0)
@@ -2059,12 +2060,11 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
       lwork = static_cast<F77_INT> (work(0));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = norm1 (*this);
+      float anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm))
         {
           rcon = 0.0;
-          octave::warn_singular_matrix ();
           retval = FloatMatrix (n, b_nc, 0.0);
         }
       else if (octave::math::isnan (anorm))

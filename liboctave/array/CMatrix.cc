@@ -716,7 +716,7 @@ double
 norm1 (const ComplexMatrix& a)
 {
   double anorm = 0.0;
-  ColumnVector colsum = a.abs ().sum ().row (0);
+  RowVector colsum = a.abs ().sum ().row (0);
 
   for (octave_idx_type i = 0; i < colsum.numel (); i++)
     {
@@ -861,8 +861,6 @@ ComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
                              F77_DBLE_CMPLX_ARG (z.fortran_vec ()), lwork,
                              tmp_info));
 
-  info = tmp_info;
-
   lwork = static_cast<F77_INT> (std::real (z(0)));
   lwork = (lwork < 2 * nc ? 2 * nc : lwork);
   z.resize (dim_vector (lwork, 1));
@@ -880,8 +878,8 @@ ComplexMatrix::finverse (MatrixType& mattype, octave_idx_type& info,
     info = -1;
   else
     {
-      F77_XFCN (zgetrf, ZGETRF, (nc, nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
-                                 tmp_info));
+      F77_XFCN (zgetrf, ZGETRF, (nc, nc, F77_DBLE_CMPLX_ARG (tmp_data), nr,
+                                 pipvt, tmp_info));
 
       info = tmp_info;
     }
@@ -959,13 +957,13 @@ ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
       if (! mattype.ishermitian ())
         ret = finverse (mattype, info, rcon, force, calc_cond);
 
-      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.)
+      if ((calc_cond || mattype.ishermitian ()) && rcon == 0.0)
         {
           if (numel () == 1)
-            ret = ComplexMatrix (1, 1, 0.);
+            ret = ComplexMatrix (1, 1, 0.0);
           else
             ret = ComplexMatrix (rows (), columns (),
-                                 Complex (octave::numeric_limits<double>::Inf (), 0.));
+                                 Complex (octave::numeric_limits<double>::Inf (), 0.0));
         }
     }
 
@@ -1203,7 +1201,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      double anorm = 0;
+      double anorm;
       if (calc_cond)
         anorm = norm1 (*this);
 
@@ -1224,23 +1222,26 @@ ComplexMatrix::determinant (MatrixType& mattype,
         }
       else
         {
-          Array<Complex> z (dim_vector (2 * nc, 1));
-          Complex *pz = z.fortran_vec ();
-          Array<double> rz (dim_vector (nc, 1));
-          double *prz = rz.fortran_vec ();
+          if (calc_cond)
+            {
+              Array<Complex> z (dim_vector (2 * nc, 1));
+              Complex *pz = z.fortran_vec ();
+              Array<double> rz (dim_vector (nc, 1));
+              double *prz = rz.fortran_vec ();
 
-          F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-                                     nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
-                                     rcon, F77_DBLE_CMPLX_ARG (pz), prz, tmp_info
-                                     F77_CHAR_ARG_LEN (1)));
+              F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+                                         nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
+                                         rcon, F77_DBLE_CMPLX_ARG (pz), prz, tmp_info
+                                         F77_CHAR_ARG_LEN (1)));
 
-          info = tmp_info;
+              info = tmp_info;
 
-          if (info != 0)
-            rcon = 0.0;
+              if (info != 0)
+                rcon = 0.0;
+            }
 
           for (F77_INT i = 0; i < nc; i++)
-            retval *= atmp (i,i);
+            retval *= atmp(i,i);
 
           retval = retval.square ();
         }
@@ -1454,7 +1455,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
               Array<F77_INT> ipvt (dim_vector (nr, 1));
               F77_INT *pipvt = ipvt.fortran_vec ();
 
-              if (anorm < 0.)
+              if (anorm < 0.0)
                 anorm = norm1 (atmp);
 
               Array<Complex> z (dim_vector (2 * nc, 1));
@@ -1466,8 +1467,9 @@ ComplexMatrix::rcond (MatrixType& mattype) const
               if (octave::math::isnan (anorm))
                 info = -1;
               else
-                F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
-                                           info));
+                F77_XFCN (zgetrf, ZGETRF, (nr, nr,
+                                           F77_DBLE_CMPLX_ARG (tmp_data),
+                                           nr, pipvt, info));
 
               if (info != 0)
                 {
@@ -1521,7 +1523,7 @@ ComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
       if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
         (*current_liboctave_error_handler) ("incorrect matrix type");
 
-      rcon = 1.;
+      rcon = 1.0;
       info = 0;
 
       if (typ == MatrixType::Permuted_Upper)
@@ -1619,7 +1621,7 @@ ComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
       if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
         (*current_liboctave_error_handler) ("incorrect matrix type");
 
-      rcon = 1.;
+      rcon = 1.0;
       info = 0;
 
       if (typ == MatrixType::Permuted_Lower)
@@ -1714,8 +1716,8 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
     {
       volatile int typ = mattype.type ();
 
-      // Calculate the norm of the matrix, for later use.
-      double anorm = -1.;
+      // Calculate the norm of the matrix for later use when determining rcon.
+      double anorm = -1.0;
 
       if (typ == MatrixType::Hermitian)
         {
@@ -1725,7 +1727,9 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
 
-          anorm = norm1 (atmp);
+          // The norm of the matrix for later use when determining rcon.
+          if (calc_cond)
+            anorm = norm1 (atmp);
 
           F77_INT tmp_info = 0;
 
@@ -1812,7 +1816,7 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
           double *prz = rz.fortran_vec ();
 
           // Calculate the norm of the matrix, for later use.
-          if (anorm < 0.)
+          if (calc_cond && anorm < 0.0)
             anorm = norm1 (atmp);
 
           F77_INT tmp_info = 0;
@@ -1823,8 +1827,8 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
             info = -2;
           else
             {
-              F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data), nr, pipvt,
-                                         tmp_info));
+              F77_XFCN (zgetrf, ZGETRF, (nr, nr, F77_DBLE_CMPLX_ARG (tmp_data),
+                                         nr, pipvt, tmp_info));
 
               info = tmp_info;
             }
@@ -1846,8 +1850,7 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
             {
               if (calc_cond)
                 {
-                  // Now calculate the condition number for
-                  // non-singular matrix.
+                  // Calculate the condition number for non-singular matrix.
                   char job = '1';
                   F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nc, F77_DBLE_CMPLX_ARG (tmp_data), nr, anorm,
@@ -2252,13 +2255,12 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 {
   ComplexMatrix retval;
 
-  F77_INT nrhs = octave::to_f77_int (b.cols ());
-
   F77_INT m = octave::to_f77_int (rows ());
   F77_INT n = octave::to_f77_int (cols ());
 
   F77_INT b_nr = octave::to_f77_int (b.rows ());
   F77_INT b_nc = octave::to_f77_int (b.cols ());
+  F77_INT nrhs = b_nc;  // alias for code readability
 
   if (m != b_nr)
     (*current_liboctave_error_handler)
@@ -2315,7 +2317,6 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
       double tmp = octave::math::log2 (dminmn / dsmlsizp1);
-      double anorm = 0.0;
 
       F77_INT nlvl = static_cast<F77_INT> (tmp) + 1;
       if (nlvl < 0)
@@ -2380,12 +2381,11 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       lwork = static_cast<F77_INT> (std::real (work(0)));
       work.resize (dim_vector (lwork, 1));
 
-      anorm = norm1 (*this);
+      double anorm = norm1 (*this);
 
       if (octave::math::isinf (anorm))
         {
           rcon = 0.0;
-          octave::warn_singular_matrix ();
           retval = ComplexMatrix (n, b_nc, 0.0);
         }
       else if (octave::math::isnan (anorm))

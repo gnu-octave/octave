@@ -198,6 +198,8 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(isdir)
 
+@DOCSTRING(isfolder)
+
 @DOCSTRING(readdir)
 
 @DOCSTRING(glob)

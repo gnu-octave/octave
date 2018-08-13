@@ -34,6 +34,7 @@ FCN_FILE_DIRS += \
   %reldir%/inputname.m \
   %reldir%/isdeployed.m \
   %reldir%/isdir.m \
+  %reldir%/isfolder.m \
   %reldir%/ismac.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \

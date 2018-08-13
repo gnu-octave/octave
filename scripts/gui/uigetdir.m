@@ -40,7 +40,7 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif
 
-  if (! isdir (init_path))
+  if (! isfolder (init_path))
     init_path = fileparts (init_path);
   endif
 

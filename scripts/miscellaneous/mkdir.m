@@ -71,7 +71,7 @@ function [status, msg, msgid] = mkdir_recur (parent, dirname)
 
   status = 1;
 
-  if (! isdir (parent))
+  if (! isfolder (parent))
     [grandparent, name, ext] = fileparts (parent);
     [status, msg, msgid] = mkdir_recur (grandparent, [name, ext]);
   endif
@@ -90,7 +90,7 @@ endfunction
 %! unwind_protect
 %!   status = mkdir (dir);
 %!   assert (status);
-%!   assert (isdir (dir));
+%!   assert (isfolder (dir));
 %! unwind_protect_cleanup
 %!   confirm_recursive_rmdir (false, "local");
 %!   rmdir (dir1, "s");
@@ -104,7 +104,7 @@ endfunction
 %!   setenv ("HOME", tmp_dir);
 %!   status = mkdir ("~/subdir");
 %!   assert (status);
-%!   assert (isdir (fullfile (tmp_dir, "subdir")));
+%!   assert (isfolder (fullfile (tmp_dir, "subdir")));
 %! unwind_protect_cleanup
 %!   rmdir (fullfile (tmp_dir, "subdir"));
 %!   rmdir (tmp_dir);

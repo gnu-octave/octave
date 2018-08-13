@@ -840,7 +840,7 @@ DEFUN (is_absolute_filename, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} is_absolute_filename (@var{file})
 Return true if @var{file} is an absolute filename.
-@seealso{is_rooted_relative_filename, make_absolute_filename, isdir}
+@seealso{is_rooted_relative_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -861,7 +861,7 @@ DEFUN (is_rooted_relative_filename, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} is_rooted_relative_filename (@var{file})
 Return true if @var{file} is a rooted-relative filename.
-@seealso{is_absolute_filename, make_absolute_filename, isdir}
+@seealso{is_absolute_filename, make_absolute_filename, isfolder}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -885,7 +885,7 @@ Return the full name of @var{file} beginning from the root of the file
 system.
 
 No check is done for the existence of @var{file}.
-@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isdir}
+@seealso{canonicalize_file_name, is_absolute_filename, is_rooted_relative_filename, isfolder}
 @end deftypefn */)
 {
   if (args.length () != 1)

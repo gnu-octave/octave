@@ -33,7 +33,6 @@ FCN_FILE_DIRS += \
   %reldir%/inputParser.m \
   %reldir%/inputname.m \
   %reldir%/isdeployed.m \
-  %reldir%/isdir.m \
   %reldir%/isfolder.m \
   %reldir%/ismac.m \
   %reldir%/ispc.m \

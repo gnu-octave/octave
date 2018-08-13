@@ -37,7 +37,7 @@ function dirname = tempdir ()
     dirname = [dirname filesep];
   endif
 
-  if (! isdir (dirname))
+  if (! isfolder (dirname))
     warning ("tempdir: '%s' does not exist or is not a directory", dirname);
   endif
 

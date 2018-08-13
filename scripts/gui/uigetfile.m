@@ -126,7 +126,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
   if (len > 2)
     if (ischar (args{3}))
-      if (isdir (args{3}))
+      if (isfolder (args{3}))
         fdir = args{3};
         fname = fext = "";
       else

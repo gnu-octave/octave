@@ -275,7 +275,8 @@ function arg_st = __print_parse_opts__ (varargin)
                                           "ps", "ps2", "psc", "psc2", "pdf"})))
       have_ghostscript = ! isempty (__ghostscript_binary__ ());
       if (have_ghostscript)
-        file_exists = (numel (dir (arg_st.name)) == 1 && ! isdir (arg_st.name));
+        file_exists = (numel (dir (arg_st.name)) == 1
+                       && ! isfolder (arg_st.name));
         if (! file_exists)
           arg_st.append_to_file = false;
         endif

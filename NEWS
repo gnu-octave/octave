@@ -79,6 +79,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       ---------------------|------------------
       findstr              | strfind
       flipdim              | flip
+      isdir                | isfolder or dir_in_loadpath
       isequalwithequalnans | isequaln
       isstr                | ischar
       setstr               | char

@@ -115,7 +115,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = file{1};
   endif
 
-  if (isdir (file))
+  if (isfolder (file))
     if (isempty (filetype))
       error ("unpack: FILETYPE must be given for a directory");
     elseif (! any (strcmpi (filetype, "gunzip")))

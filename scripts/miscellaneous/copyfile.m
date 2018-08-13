@@ -78,7 +78,7 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   endif
 
   ## If f1 has more than 1 element then f2 must be a directory
-  isdir = (exist (f2, "dir") != 0);
+  isdir = isfolder (f2);
   if (numel (f1) > 1 && ! isdir)
     error ("copyfile: when copying multiple files, F2 must be a directory");
   endif

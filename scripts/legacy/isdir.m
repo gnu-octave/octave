@@ -18,11 +18,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} isdir (@var{f})
-## Return true if @var{f} is a directory.
-## @seealso{exist, stat, is_absolute_filename, is_rooted_relative_filename}
+##
+## This function is not recommended.  Use @code{isfolder} or
+## @code{file_in_loadpath} instead.
+##
+## Return true if @var{f} is a directory and false otherwise.
+##
+## Compatibility Note: The @sc{matlab} function of the same name will also
+## search for @var{f} in the load path directories.  To emulate this behavior
+## use
+## 
+## @example
+## @var{tf} = ! isempty (file_in_loadpath (@var{f}))
+## @end example
+##
+## @seealso{isfolder, file_in_loadpath, exist, stat, is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:legacy-function",
+             "isdir is obsolete; use isfolder or dir_in_loadpath instead\n");
+  endif
 
   if (nargin != 1)
     print_usage ();
@@ -34,8 +54,13 @@ function retval = isdir (f)
 endfunction
 
 
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:legacy-function", "local");
+%! isdir (pwd ());
+
 %!assert (isdir (pwd ()))
-%!assert (! isdir ("this is highly unlikely to be a directory name"))
+%!assert (! isdir (tempname ()))
 
 %!error isdir ()
 %!error isdir (1, 2)

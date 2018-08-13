@@ -805,6 +805,7 @@ length of the tickmarks relative to the longest visible axis.";
         s.doc = "Size of the @code{[left bottom right top]} margins \
 around the axes that enclose labels and title annotations.";
         s.valid = valid_4elvec;
+        s.printdefault = false;
 
       case "title"
         s.doc = "Graphics handle of the title text object.";
@@ -1065,6 +1066,7 @@ z data.";
         s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
 and location of the text string.";
         s.valid = valid_4elvec;
+        s.printdefault = false;
 
       case "fontangle"
         s.doc = doc_fontangle;
@@ -1592,6 +1594,9 @@ point source (@qcode{\"local\"}).";
       case "cdata"
       case "enable"
       case "extent"
+        s.valid = valid_4elvec;
+        s.printdefault = false;
+
       case "fontangle"
         s.doc = doc_fontangle;
 

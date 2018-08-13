@@ -841,6 +841,10 @@ OCTAVE_F77_FLAG([-ffloat-store], [
   AC_SUBST(F77_FLOAT_STORE_FLAG)
 ])
 
+if test $ac_cv_f77_compiler_gnu = yes; then
+  OCTAVE_F77_FLAG([-std=legacy])
+fi
+
 BUILD_EXTERNAL_LIBXERBLA=
 case $host_os in
   msdosmsvc | mingw*)

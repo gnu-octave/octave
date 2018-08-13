@@ -29,26 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
-  // BETAI
-
-  F77_RET_T
-  F77_FUNC (xbetai, XBETAI) (const F77_REAL&, const F77_REAL&,
-                             const F77_REAL&, F77_REAL&);
-
-  F77_RET_T
-  F77_FUNC (xdbetai, XDBETAI) (const F77_DBLE&, const F77_DBLE&,
-                               const F77_DBLE&, F77_DBLE&);
-
-  // GAMMAINC
-
-  F77_RET_T
-  F77_FUNC (xgammainc, XGAMMAINC) (const F77_DBLE&, const F77_DBLE&,
-                                   F77_DBLE&);
-
-  F77_RET_T
-  F77_FUNC (xsgammainc, XSGAMMAINC) (const F77_REAL&, const F77_REAL&,
-                                     F77_REAL&);
-
   // PCHIM
 
   F77_RET_T

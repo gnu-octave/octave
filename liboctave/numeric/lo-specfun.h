@@ -342,38 +342,6 @@ namespace octave
     extern OCTAVE_API double gamma (double x);
     extern OCTAVE_API float gamma (float x);
 
-    extern OCTAVE_API double gammainc (double x, double a, bool& err);
-    inline double gammainc (double x, double a)
-    {
-      bool err;
-      return gammainc (x, a, err);
-    }
-
-    extern OCTAVE_API Matrix gammainc (double x, const Matrix& a);
-    extern OCTAVE_API Matrix gammainc (const Matrix& x, double a);
-    extern OCTAVE_API Matrix gammainc (const Matrix& x, const Matrix& a);
-
-    extern OCTAVE_API NDArray gammainc (double x, const NDArray& a);
-    extern OCTAVE_API NDArray gammainc (const NDArray& x, double a);
-    extern OCTAVE_API NDArray gammainc (const NDArray& x, const NDArray& a);
-
-    extern OCTAVE_API float gammainc (float x, float a, bool& err);
-    inline float gammainc (float x, float a)
-    {
-      bool err;
-      return gammainc (x, a, err);
-    }
-
-    extern OCTAVE_API FloatMatrix gammainc (float x, const FloatMatrix& a);
-    extern OCTAVE_API FloatMatrix gammainc (const FloatMatrix& x, float a);
-    extern OCTAVE_API FloatMatrix gammainc (const FloatMatrix& x,
-                                            const FloatMatrix& a);
-
-    extern OCTAVE_API FloatNDArray gammainc (float x, const FloatNDArray& a);
-    extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x, float a);
-    extern OCTAVE_API FloatNDArray gammainc (const FloatNDArray& x,
-                                             const FloatNDArray& a);
-
     inline double lgamma (double x) { return std::lgamma (x); }
     inline float lgamma (float x) { return std::lgammaf (x); }
 

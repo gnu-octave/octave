@@ -1,4 +1,4 @@
-## Copyright (C) 2018 Guillaume Flandin
+## Copyright (C) 2018 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,57 +17,57 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} isfolder (@var{f})
-## @deftypefnx {} {@var{tf} =} isfolder (@var{f})
-## Return true if @var{f} is a directory and false otherwise.
+## @deftypefn {} {@var{tf} =} isfile (@var{f})
+## Return true if @var{f} is a regular file and false otherwise.
 ##
 ## If @var{f} is a cell array of strings, @var{tf} is a logical array of the
 ## same size.
-## @seealso{isfile, exist, stat, is_absolute_filename, is_rooted_relative_filename}
+## @seealso{isfolder, exist, stat, is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
-function retval = isfolder (f)
+function retval = isfile (f)
 
   if (nargin != 1)
     print_usage ();
   endif
 
   if (! (ischar (f) || iscellstr (f)))
-    error ("isfolder: F must be a string or cell array of strings");
+    error ("isfile: F must be a string or cell array of strings");
   endif
 
   f = cellstr (f);
   retval = false (size (f));
   for i = 1:numel (f)
     [info, err] = stat (f{i});
-    retval(i) = (! err && S_ISDIR (info.mode));
+    retval(i) = (! err && S_ISREG (info.mode));
   endfor
 
 endfunction
 
 
-%!assert (isfolder (pwd ()))
-%!assert (! isfolder (tempname ()))
-%!assert (! isfolder (which ("isfolder")))
-%!assert (isfolder ( {pwd(), tempname()}), [true, false])
-%!assert (isfolder ( {pwd(); tempname()}), [true; false])
+%!shared mfile
+%! mfile = which ("isfile");
+
+%!assert (isfile (mfile))
+%!assert (! isfile (tempdir ()))
+%!assert (isfile ({mfile, pwd()}), [true, false])
+%!assert (isfile ({mfile; pwd()}), [true; false])
 
 %!test
 %! unwind_protect
 %!   tmp = tempname ();
 %!   [d, n] = fileparts (tmp);
-%!   assert (! isfolder (tmp));
-%!   mkdir (tmp);
-%!   assert (isfolder (tmp));
-%!   assert (! isfolder (n));
+%!   assert (! isfile (tmp));
+%!   save ("-text", tmp, "tmp");  # cheap way to create a file
+%!   assert (isfile (tmp));
 %!   addpath (d);
-%!   assert (! isfolder (n));
+%!   assert (! isfile (n));
 %! unwind_protect_cleanup
-%!   try, rmdir (tmp); end_try_catch
+%!   try, unlink (tmp); end_try_catch
 %!   try, rmpath (d); end_try_catch
 %! end_unwind_protect 
 
 ## Test input validation
-%!error isfolder ()
-%!error isfolder ("a", "b")
-%!error <F must be a string> isfolder (1.0)
+%!error isfile ()
+%!error isfile ("a", "b")
+%!error <F must be a string> isfile (1.0)

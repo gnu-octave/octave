@@ -852,7 +852,7 @@ For example:
   @result{} err = 0
   @result{} msg =
 @end example
-@seealso{lstat, ls, dir, isfolder}
+@seealso{lstat, ls, dir, isfile, isfolder}
 @end deftypefn */)
 {
   if (args.length () != 1)

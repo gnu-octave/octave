@@ -2525,21 +2525,6 @@ namespace octave
 
     if (rhs)
       {
-        octave_value rhs_val = evaluate (rhs);
-
-        if (rhs_val.is_undefined ())
-          error ("value on right hand side of assignment is undefined");
-
-        if (rhs_val.is_cs_list ())
-          {
-            const octave_value_list lst = rhs_val.list_value ();
-
-            if (lst.empty ())
-              error ("invalid number of elements on RHS of assignment");
-
-            rhs_val = lst(0);
-          }
-
         tree_expression *lhs = expr.left_hand_side ();
 
         try
@@ -2558,6 +2543,21 @@ namespace octave
 
             if (ult.numel () != 1)
               err_invalid_structure_assignment ();
+
+            octave_value rhs_val = evaluate (rhs);
+
+            if (rhs_val.is_undefined ())
+              error ("value on right hand side of assignment is undefined");
+
+            if (rhs_val.is_cs_list ())
+              {
+                const octave_value_list lst = rhs_val.list_value ();
+
+                if (lst.empty ())
+                  error ("invalid number of elements on RHS of assignment");
+
+                rhs_val = lst(0);
+              }
 
             octave_value::assign_op etype = expr.op_type ();
 

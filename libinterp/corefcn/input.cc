@@ -300,8 +300,8 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 static bool
 is_completing_dirfns (void)
 {
-  static std::string dirfns_commands[] = {"cd", "ls"};
-  static const size_t dirfns_commands_length = 2;
+  static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
+  static const size_t dirfns_commands_length = 4;
 
   bool retval = false;
 

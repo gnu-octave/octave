@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "main-window.h"
 #include "gui-preferences.h"
+#include "oct-env.h"
 #include "oct-map.h"
 #include "octave-link.h"
 #include "utils.h"
@@ -947,49 +948,76 @@ namespace octave
     m_tmp_closed_files.clear ();
     session_data f_data;
 
-    // Check if old name is a file or directory
-    QFileInfo old (old_name);
-    if (old.isDir ())
-      {
-        // Call the function which handles directories and return
-        handle_dir_remove (old_name, new_name);
-      }
-    else
-      {
-        // It is a single file. Is it open?
-        file_editor_tab *editor_tab
-          = static_cast<file_editor_tab *> (find_tab_widget (old_name));
+    // Preprocessing old name(s)
+    QString old_name_clean = old_name.trimmed ();
+    int s = old_name_clean.size ();
 
-        if (editor_tab)
+    if (old_name_clean.at (0) == QChar ('\"') &&
+        old_name_clean.at (s - 1) == QChar ('\"'))
+      old_name_clean = old_name_clean.mid (1, s - 2);
+
+    QStringList old_names = old_name_clean.split ("\" \"");
+
+    // Check if new name is a file or directory
+    QFileInfo newf (new_name);
+    bool new_is_dir = newf.isDir ();
+
+    // Now loop over all old files/dirs (several files by movefile ())
+    for (int i = 0; i < old_names.count (); i++)
+      {
+        // Check if old name is a file or directory
+        QFileInfo old (old_names.at (i));
+
+        if (old.isDir ())
           {
-            // YES: Get and store the related encoding
-            for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-                  p != m_editor_tab_map.end (); p++)
+            // Call the function which handles directories and return
+            handle_dir_remove (old_names.at (i), new_name);
+          }
+        else
+          {
+            // It is a single file. Is it open?
+            file_editor_tab *editor_tab
+              = static_cast<file_editor_tab *> (find_tab_widget (old_names.at (i)));
+
+            if (editor_tab)
               {
-                if (editor_tab == p->second.fet_ID)
+                // YES: Get and store the related encoding
+                for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
+                      p != m_editor_tab_map.end (); p++)
                   {
-                    // Get index and line
-                    f_data.encoding = p->second.encoding;
-                    f_data.index = m_tab_widget->indexOf (editor_tab);
-                    int l, c;
-                    editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-                    f_data.line = l + 1;
-                    break;
+                    if (editor_tab == p->second.fet_ID)
+                      {
+                        // Get index and line
+                        f_data.encoding = p->second.encoding;
+                        f_data.index = m_tab_widget->indexOf (editor_tab);
+                        int l, c;
+                        editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+                        f_data.line = l + 1;
+                        break;
+                      }
                   }
+
+                // Close it silently
+                m_no_focus = true;  // Remember for not focussing editor
+                editor_tab->file_has_changed (QString (), true);  // Close the tab
+                m_no_focus = false;  // Back to normal
+
+                // For reloading old file if error while removing
+                f_data.file_name = old_names.at (i);
+                // For reloading new file (if new_file is not empty)
+                if (new_is_dir)
+                  {
+                    std::string ndir = new_name.toStdString ();
+                    std::string ofile = old.fileName ().toStdString ();
+                    f_data.new_file_name = QString::fromStdString (
+                      octave::sys::env::make_absolute (ofile, ndir));
+                  }
+                else
+                  f_data.new_file_name = new_name;
+
+                // Add file data to list
+                m_tmp_closed_files << f_data;
               }
-
-            // Close it silently
-            m_no_focus = true;  // Remember for not focussing editor
-            editor_tab->file_has_changed (QString (), true);  // Close the tab
-            m_no_focus = false;  // Back to normal
-
-            // For reloading old file if error while removing
-            f_data.file_name = old_name;
-            // For reloading new file (if new_fiel is not empty)
-            f_data.new_file_name = new_name;
-
-            // Add file data to list
-            m_tmp_closed_files << f_data;
           }
       }
   }
@@ -2423,7 +2451,21 @@ namespace octave
             if (! new_name.isEmpty ())
               {
                 QDir new_dir (new_name);
-                f_data.new_file_name = new_dir.absoluteFilePath (rel_path_to_file);
+                QString append_to_new_dir;
+                if (new_dir.exists ())
+                  {
+                    // The new directory already exists (movefile was used).
+                    // This means, we have to add the name (not the path)
+                    // of the old dir and the relative path to the file
+                    // to new dir.
+                    append_to_new_dir = old_dir.dirName () +
+                                        "/" + rel_path_to_file;
+                  }
+                else
+                  append_to_new_dir = rel_path_to_file;
+
+                f_data.new_file_name
+                        = new_dir.absoluteFilePath (append_to_new_dir);
               }
             else
               f_data.new_file_name = ""; // no new name, just removing this file

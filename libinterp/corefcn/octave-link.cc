@@ -403,6 +403,47 @@ Undocumented internal function.
   return ovl (octave_link::gui_preference (key, value));
 }
 
+DEFUN (__octave_link_file_remove__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_remove__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string old_name, new_name;
+
+  if (args.length () == 2)
+    {
+      old_name = args(0).string_value();
+      new_name = args(1).string_value();
+    }
+  else
+    error ("__octave_link_file_remove__: "
+           "old and new name expected as arguments");
+
+  octave_link::file_remove (old_name, new_name);
+
+  return ovl ();
+}
+
+DEFUN (__octave_link_file_renamed__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_renamed__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  bool load_new;
+
+  if (args.length () == 1)
+    load_new = args(0).bool_value();
+  else
+    error ("__octave_link_file_renamed__: "
+           "first argument must be boolean for reload new named file");
+
+  octave_link::file_renamed (load_new);
+
+  return ovl ();
+}
+
 DEFMETHOD (openvar, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} openvar (@var{name})

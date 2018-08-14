@@ -48,30 +48,37 @@ function h = figure (varargin)
 
   nargs = nargin;
 
-  if (mod (nargs, 2) == 0)
+  init_new_figure = true;
+  if (nargs == 0)
     f = NaN;
-    init_new_figure = true;
   else
     arg = varargin{1};
-    if (ischar (arg))
+    if (nargs == 1 && ischar (arg))
       arg = str2double (arg);
+      if (isnan (arg))
+        arg = varargin{1};
+      endif
     endif
-    if (isscalar (arg) && isfigure (arg))
-      f = arg;
-      init_new_figure = false;
-      varargin(1) = [];
-      nargs -= 1;
-    elseif (isscalar (arg) && isnumeric (arg) && arg > 0 && arg == fix (arg))
-      f = arg;
-      init_new_figure = true;
-      varargin(1) = [];
-      nargs -= 1;
+    if (isscalar (arg) && isnumeric (arg))
+      if (isfigure (arg))
+        f = arg;
+        init_new_figure = false;
+        varargin(1) = [];
+        nargs -= 1;
+      elseif (arg > 0 && arg == fix (arg))
+        f = arg;
+        varargin(1) = [];
+        nargs -= 1;
+      else
+        error ("figure: N must be figure handle or figure number");
+      endif
     else
-      error ("figure: N must be figure handle or figure number");
+      f = NaN;
     endif
   endif
 
-  if (rem (nargs, 2) == 1)
+  numpairs = nargs - sum (cellfun ("isclass", varargin, "struct"));
+  if (rem (numpairs, 2) == 1)
     error ("figure: PROPERTY/VALUE arguments must be in pairs");
   endif
 
@@ -125,7 +132,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!error <N must be figure handle or figure number> figure ({1})
-%!error <N must be figure handle or figure number> figure ([1 2])
 %!error <N must be figure handle or figure number> figure (-1)
 %!error <N must be figure handle or figure number> figure (1.5)
+%!error <PROPERTY/VALUE arguments must be in pairs> figure ("color")
+%!error <PROPERTY/VALUE arguments must be in pairs> figure ("color", struct ())

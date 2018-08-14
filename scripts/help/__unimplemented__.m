@@ -905,8 +905,6 @@ function rlist = missing_functions ()
   "isEdge",
   "isenum",
   "isevent",
-  "isfile",
-  "isfolder",
   "ishole",
   "isIllConditioned",
   "isinterface",

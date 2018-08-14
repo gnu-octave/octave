@@ -54,7 +54,13 @@ namespace QtHandles
                                         QPushButton *btn)
     : ButtonControl (go, btn)
   {
+    uicontrol::properties& up = properties<uicontrol> ();
+
     btn->setAutoFillBackground (true);
+    octave_value cdat = up.get_cdata ();
+    QImage img = Utils::makeImageFromCData (cdat,
+                                            cdat.rows (), cdat.columns ());
+    btn->setIcon (QIcon (QPixmap::fromImage (img)));
   }
 
   PushButtonControl::~PushButtonControl (void)
@@ -70,6 +76,16 @@ namespace QtHandles
       {
       case uicontrol::properties::ID_STRING:
         btn->setText (Utils::fromStdString (up.get_string_string ()));
+        break;
+
+      case uicontrol::properties::ID_CDATA:
+        {
+          octave_value cdat = up.get_cdata ();
+          QImage img = Utils::makeImageFromCData (cdat,
+                                                  cdat.rows (),
+                                                  cdat.columns ());
+          btn->setIcon (QIcon (QPixmap::fromImage (img)));
+        }
         break;
 
       default:

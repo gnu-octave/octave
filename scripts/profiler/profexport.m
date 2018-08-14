@@ -64,7 +64,7 @@ function profexport (dir, name = "", data)
     endif
   endif
 
-  if (! exist (dir, "dir"))
+  if (! isfolder (dir))
     ok = mkdir (dir);
     if (! ok)
       error ("profexport: failed to create output directory '%s'", dir);

@@ -474,7 +474,7 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = archprefix;
       elseif (numel (files) >= 1 && ischar (files{1}))
         prefix = tilde_expand (files{1});
-        if (! exist (prefix, "dir"))
+        if (! isfolder (prefix))
           [status, msg] = mkdir (prefix);
           if (status == 0)
             error ("pkg: cannot create prefix %s: %s", prefix, msg);
@@ -485,7 +485,7 @@ function [local_packages, global_packages] = pkg (varargin)
         user_prefix = true;
         if (numel (files) >= 2 && ischar (files{2}))
           archprefix = tilde_expand (files{2});
-          if (! exist (archprefix, "dir"))
+          if (! isfolder (archprefix))
             [status, msg] = mkdir (archprefix);
             if (status == 0)
               error ("pkg: cannot create archprefix %s: %s", archprefix, msg);

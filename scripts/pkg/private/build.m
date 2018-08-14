@@ -38,7 +38,7 @@ function build (builddir, tarballs, verbose)
     print_usage ();
   endif
 
-  if (! exist (builddir, "dir"))
+  if (! isfolder (builddir))
     warning ("creating build directory %s", builddir);
     [status, msg] = mkdir (builddir);
     if (status != 1)

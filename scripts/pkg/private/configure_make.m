@@ -25,7 +25,7 @@
 function configure_make (desc, packdir, verbose)
 
   ## Perform ./configure, make, make install in "src".
-  if (exist (fullfile (packdir, "src"), "dir"))
+  if (isfolder (fullfile (packdir, "src")))
     src = fullfile (packdir, "src");
     octave_bindir = __octave_config_info__ ("bindir");
     ver = version ();

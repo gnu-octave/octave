@@ -326,7 +326,7 @@ function print (varargin)
   opts = __print_parse_opts__ (varargin{:});
 
   folder = fileparts (opts.name);
-  if (! isempty (folder) && ! exist (folder, "dir"))
+  if (! isempty (folder) && ! isfolder (folder))
     error ("print: directory %s does not exist", folder);
   endif
 

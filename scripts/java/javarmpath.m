@@ -42,7 +42,7 @@ function javarmpath (varargin)
     endif
 
     old_path = canonicalize_file_name (tilde_expand (clspath));
-    if (exist (old_path, "dir"))
+    if (isfolder (old_path))
       if (old_path(end) != filesep ())
         old_path = [old_path, filesep()];
       endif

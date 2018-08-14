@@ -220,7 +220,7 @@ function retval = edit (varargin)
 
   ## Start the editor without a file if no file is given.
   if (nargin == 0)
-    if (exist (FUNCTION.HOME, "dir") == 7)
+    if (isfolder (FUNCTION.HOME))
       curr_dir = pwd ();
       unwind_protect
         cd (FUNCTION.HOME);

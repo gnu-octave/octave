@@ -48,7 +48,7 @@ function dir = prefdir ()
   dir = get_home_directory ();
 
   if (nargin > 0)
-    if (! exist (dir, "dir"))
+    if (! isfolder (dir))
       mkdir (dir);
     endif
   endif

@@ -145,7 +145,7 @@ endfunction
 %!
 %! unwind_protect_cleanup
 %!   unlink (fullfile (tmp_home, ".octave_prefs"));
-%!   if (exist (tmp_home, "dir"))
+%!   if (isfolder (tmp_home))
 %!     rmdir (tmp_home);
 %!   endif
 %!   if (isempty (HOME))

@@ -39,7 +39,7 @@
 ##
 ## Programming Note: The full list of properties is documented at
 ## @ref{Figure Properties,,Figure Properties}.
-## @seealso{axes, gcf, clf, close}
+## @seealso{axes, gcf, shg, clf, close}
 ## @end deftypefn
 
 ## Author: jwe, Bill Denney
@@ -109,7 +109,7 @@ function h = figure (varargin)
   if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
                                   && strcmpi (varargin(2:2:end), "off")))
     set (f, "visible", "on");
-    __show_figure__ (gcf ());
+    __show_figure__ (f);
   endif
 
   if (nargout > 0)

@@ -20,8 +20,12 @@
 ## @deftypefn {} {} shg
 ## Show the graph window.
 ##
-## Currently, this is the same as executing @code{drawnow}.
-## @seealso{drawnow, figure}
+## This function makes the current figure visible, and places it on top of
+## of all other plot windows.
+##
+## Programming Note: @code{shg} is equivalent to @code{figure (gcf)} assuming
+## that a current figure exists.
+## @seealso{figure, drawnow, gcf}
 ## @end deftypefn
 
 ## Author: jwe
@@ -32,6 +36,10 @@ function shg ()
     warning ("shg: ignoring extra arguments");
   endif
 
-  __show_figure__ (gcf ());
+  hf = get (0, "currentfigure");
+  if (! isempty (hf))
+    set (hf, "visible", "on");
+    __show_figure__ (hf));
+  endif
 
 endfunction

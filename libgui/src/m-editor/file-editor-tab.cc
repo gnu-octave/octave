@@ -112,9 +112,6 @@ namespace octave
     _bp_conditions.clear ();
     m_bp_restore_count = 0;
 
-    // disable editor drag & drop so parent can handle
-    _edit_area->setAcceptDrops (false);
-
     connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (handle_cursor_moved (int,int)));
 

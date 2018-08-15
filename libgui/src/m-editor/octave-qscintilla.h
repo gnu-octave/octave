@@ -106,6 +106,8 @@ namespace octave
 
     void keyPressEvent (QKeyEvent *e);
 
+    void dragEnterEvent (QDragEnterEvent *e);
+
   private:
 
     void auto_close (int auto_endif, int l,

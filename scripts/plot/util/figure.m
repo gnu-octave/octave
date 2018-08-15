@@ -109,6 +109,7 @@ function h = figure (varargin)
   if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
                                   && strcmpi (varargin(2:2:end), "off")))
     set (f, "visible", "on");
+    __show_figure__ (gcf ());
   endif
 
   if (nargout > 0)

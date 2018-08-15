@@ -120,6 +120,15 @@ namespace QtHandles
   }
 
   void
+  Object::slotShow (void)
+  {
+    gh_manager::auto_lock lock;
+
+    if (object ().valid_object ())
+      show ();
+  }
+
+  void
   Object::slotPrint (const QString& file_cmd, const QString& term)
   {
     gh_manager::auto_lock lock;
@@ -145,6 +154,10 @@ namespace QtHandles
 
   void
   Object::redraw (void)
+  { }
+
+  void
+  Object::show (void)
   { }
 
   void

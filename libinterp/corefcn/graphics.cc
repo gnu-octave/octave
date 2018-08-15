@@ -12073,6 +12073,32 @@ Return a cell array of the currently loaded graphics toolkits.
   return ovl (gtk_mgr.loaded_toolkits_list ());
 }
 
+DEFUN (__show_figure__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __show_figure__ (@var{n})
+Undocumented internal function.
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  double h = args(0).xdouble_value ("__show_figure__: invalid handle H");
+
+  graphics_handle gh = gh_manager::lookup (h);
+
+  if (! gh.ok ())
+    error ("__show_figure__: invalid graphics object (= %g)", h);
+
+  graphics_object go = gh_manager::get_object (gh);
+
+  figure::properties& fprops
+    = dynamic_cast<figure::properties&> (go.get_properties ());
+
+  fprops.get_toolkit ().show_figure (go);
+
+  return ovl ();
+}
+
 DEFUN (drawnow, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} drawnow ()

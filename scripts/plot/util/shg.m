@@ -32,6 +32,6 @@ function shg ()
     warning ("shg: ignoring extra arguments");
   endif
 
-  drawnow ();
+  __show_figure__ (gcf ());
 
 endfunction

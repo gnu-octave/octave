@@ -388,6 +388,15 @@ namespace QtHandles
   }
 
   void
+  Figure::show (void)
+  {
+    QWidget *win = qWidget<QWidget> ();
+
+    win->activateWindow ();
+    win->raise ();
+  }
+
+  void
   Figure::print (const QString& file_cmd, const QString& term)
   {
     Canvas *canvas = m_container->canvas (m_handle);

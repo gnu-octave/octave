@@ -94,6 +94,7 @@ namespace QtHandles
 
   protected:
     void redraw (void);
+    void show (void);
     void print (const QString& file_cmd, const QString& term);
     void update (int pId);
     void updateBoundingBox (bool internal = false, int flags = 0);

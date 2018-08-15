@@ -56,6 +56,8 @@ namespace QtHandles
                         m_object, SLOT (slotFinalize (void)));
             disconnect (this, SIGNAL (sendRedraw (void)),
                         m_object, SLOT (slotRedraw (void)));
+            disconnect (this, SIGNAL (sendShow (void)),
+                        m_object, SLOT (slotShow (void)));
             disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
                         m_object, SLOT (slotPrint (const QString&, const QString&)));
           }
@@ -70,6 +72,8 @@ namespace QtHandles
                      m_object, SLOT (slotFinalize (void)));
             connect (this, SIGNAL (sendRedraw (void)),
                      m_object, SLOT (slotRedraw (void)));
+            connect (this, SIGNAL (sendShow (void)),
+                     m_object, SLOT (slotShow (void)));
             connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
                      m_object, SLOT (slotPrint (const QString&, const QString&)),
                      Qt::BlockingQueuedConnection);
@@ -104,6 +108,12 @@ namespace QtHandles
   ObjectProxy::redraw (void)
   {
     emit sendRedraw ();
+  }
+
+  void
+  ObjectProxy::show (void)
+  {
+    emit sendShow ();
   }
 
   void

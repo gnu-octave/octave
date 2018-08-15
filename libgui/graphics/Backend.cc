@@ -180,6 +180,18 @@ namespace QtHandles
   }
 
   void
+  Backend::show_figure (const graphics_object& go) const
+  {
+    if (go.get_properties ().is_visible ())
+      {
+        ObjectProxy *proxy = toolkitObjectProxy (go);
+
+        if (proxy)
+          proxy->show ();
+      }
+  }
+
+  void
   Backend::print_figure (const graphics_object& go,
                          const std::string& term,
                          const std::string& file_cmd,

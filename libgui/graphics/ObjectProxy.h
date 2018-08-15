@@ -44,6 +44,7 @@ namespace QtHandles
     void update (int pId);
     void finalize (void);
     void redraw (void);
+    void show (void);
     void print (const QString& file_cmd, const QString& term);
     uint8NDArray get_pixels (void);
 
@@ -54,6 +55,7 @@ namespace QtHandles
     void sendUpdate (int pId);
     void sendFinalize (void);
     void sendRedraw (void);
+    void sendShow (void);
     void sendPrint (const QString& file_cmd, const QString& term);
 
   private:

@@ -9968,9 +9968,6 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (! get___object__ ().isempty ())
-    error ("set: cannot change the style of a uicontrol object after creation.");
-
   style = st;
 
   // if we know know what we are, can override value for listbox and popupmenu

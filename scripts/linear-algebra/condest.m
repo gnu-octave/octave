@@ -156,8 +156,8 @@ function [cest, v] = condest (varargin)
     if (! issquare (A))
       error ("condest: A must be square");
     endif
-    n = rows (A);
     have_A = true;
+    n = rows (A);
     if (nargin > 1)
       if (is_function_handle (varargin{2}))
         solve = varargin{2};
@@ -174,12 +174,15 @@ function [cest, v] = condest (varargin)
     else
       real_op = isreal (A);
     endif
-  else  # varargin{1} is a function handle
+  elseif (is_function_handle (varargin{1}))
     if (nargin == 1)
       error("condest: must provide SOLVEFCN when using AFCN");
     endif
     apply = varargin{1};
     have_apply_normest1 = true;
+    if (! is_function_handle (varargin{2}))
+      error("condest: SOLVEFCN must be a function handle");
+    endif
     solve = varargin{2};
     have_solve_normest1 = true;
     n = apply ("dim", [], varargin{4:end});
@@ -187,11 +190,16 @@ function [cest, v] = condest (varargin)
       t = varargin{3};
       have_t = true;
     endif
+  else
+    error ("condest: first argument must be a square matrix or function handle");
   endif
 
   if (! have_t)
     t = min (n, 5);
   endif
+
+  ## Disable warnings which may be emitted during calculation process.
+  warning ("off", "Octave:nearly-singular-matrix", "local");
 
   if (! have_solve_normest1)
      ## prepare solve in normest1 form
@@ -201,6 +209,13 @@ function [cest, v] = condest (varargin)
     else
       [L, U, P] = lu (A);
       solve = @(flag, x) solve_not_sparse (flag, x, n, real_op, L, U, P);
+    endif
+
+    ## Check for singular matrices before continuing
+    if (any (diag (U) == 0))
+      cest = Inf;
+      v = [];
+      return;
     endif
   endif
 
@@ -212,7 +227,9 @@ function [cest, v] = condest (varargin)
   [Ainv_norm, v, w] = normest1 (solve, t, [], varargin{4:end});
 
   cest = Anorm * Ainv_norm;
-  v = w / norm (w, 1);
+  if (isargout (2))
+    v = w / norm (w, 1);
+  endif
 
 endfunction
 
@@ -242,6 +259,7 @@ function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
   endswitch
 endfunction
 
+
 ## Note: These test bounds are very loose.  There is enough randomization to
 ## trigger odd cases with hilb().
 
@@ -270,9 +288,9 @@ endfunction
 %!    case "real"
 %!      value = isreal (A);
 %!    case "notransp"
-%!      value = x; for i = 1:m, value = A \ value;, endfor;
+%!      value = x; for i = 1:m, value = A \ value;, endfor
 %!    case "transp"
-%!      value = x; for i = 1:m, value = A' \ value;, endfor;
+%!      value = x; for i = 1:m, value = A' \ value;, endfor
 %!  endswitch
 %!endfunction
 
@@ -284,7 +302,6 @@ endfunction
 %! assert (cA, cA_test, -2^-8);
 
 %!test
-%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! N = 12;
 %! A = hilb (N);
 %! [~, v] = condest (A);
@@ -316,8 +333,18 @@ endfunction
 %! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
 %! assert (cA, cA_test, -2^-6);
 
+%!test <*46737>
+%! A = [ 0         0         0
+%!       0   3.33333 0.0833333
+%!       0 0.0833333   1.66667];
+%! [cest, v] = condest (A);
+%! assert (cest, Inf);
+%! assert (v, []);
+
 ## Test input validation
 %!error condest ()
 %!error condest (1,2,3,4,5,6,7)
 %!error <A must be square> condest ([1 2])
 %!error <must provide SOLVEFCN when using AFCN> condest (@sin)
+%!error <SOLVEFCN must be a function handle> condest (@sin, 1)
+%!error <argument must be a square matrix or function handle> condest ({1})

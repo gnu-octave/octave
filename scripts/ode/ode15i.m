@@ -115,7 +115,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       catch
         warning (lasterr);
       end_try_catch
-      if (! isa (options.Jacobian, "function_handle"))
+      if (! is_function_handle (options.Jacobian))
         error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
@@ -129,7 +129,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       catch
         warning (lasterr);
       end_try_catch
-      if (! isa (options.OutputFcn, "function_handle"))
+      if (! is_function_handle (options.OutputFcn))
         error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field 'OutputFcn'"]);
       endif
@@ -143,7 +143,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
       catch
         warning (lasterr);
       end_try_catch
-      if (! isa (options.Events, "function_handle")
+      if (! is_function_handle (options.Events)
           && ! ismatrix (options.Events))
         error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field 'Events'"]);
@@ -194,7 +194,7 @@ function varargout = ode15i (fun, trange, y0, yp0, varargin)
                [solver ": invalid value assigned to field 'Jacobian'"]);
       endif
 
-    elseif (isa (options.Jacobian, "function_handle"))
+    elseif (is_function_handle (options.Jacobian))
       options.havejacfun = true;
       if (nargin (options.Jacobian) == 3)
         [A, B] = options.Jacobian (trange(1), y0, yp0);

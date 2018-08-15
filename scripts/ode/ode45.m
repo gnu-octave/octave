@@ -142,7 +142,7 @@ function varargout = ode45 (fun, trange, init, varargin)
       warning (lasterr);
     end_try_catch
   endif
-  if (! isa (fun, "function_handle"))
+  if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
            "ode45: FUN must be a valid function handle");
   endif
@@ -199,7 +199,7 @@ function varargout = ode45 (fun, trange, init, varargin)
   if (! isempty (odeopts.Mass) && isnumeric (odeopts.Mass))
     havemasshandle = false;
     mass = odeopts.Mass;  # constant mass
-  elseif (isa (odeopts.Mass, "function_handle"))
+  elseif (is_function_handle (odeopts.Mass))
     havemasshandle = true;    # mass defined by a function handle
   else  # no mass matrix - creating a diag-matrix of ones for mass
     havemasshandle = false;   # mass = diag (ones (length (init), 1), 0);

@@ -83,7 +83,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     endif
   endif
 
-  if (! isa (fsee_also, "function_handle"))
+  if (! is_function_handle (fsee_also))
     error ("__makeinfo__: third input argument must be a function handle");
   endif
 

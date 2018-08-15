@@ -103,7 +103,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       xarg = argids{1};
       yarg = argids{2};
     endif
-  elseif (isa (fun, "function_handle"))
+  elseif (is_function_handle (fun))
     fstr = func2str (fun);
     idx = index (fstr, ')');
     if (idx != 0)
@@ -165,7 +165,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       endif
       funy = vectorize (funy);
       fstry = formula (funy);
-    elseif (isa (funy, "function_handle"))
+    elseif (is_function_handle (funy))
       parametric = true;
       fstry = func2str (funy);
       idx = index (fstry, ')');
@@ -209,7 +209,7 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
         endif
         funz = vectorize (funz);
         fstrz = formula (funz);
-      elseif (isa (funz, "function_handle"))
+      elseif (is_function_handle (funz))
         fstrz = func2str (funz);
         idx = index (fstrz, ')');
         if (idx != 0)

@@ -92,7 +92,7 @@ function [X, Y] = fplot (varargin)
   if (strcmp (typeinfo (fn), "inline function"))
     fn = vectorize (fn);
     nam = formula (fn);
-  elseif (isa (fn, "function_handle"))
+  elseif (is_function_handle (fn))
     nam = func2str (fn);
   elseif (all (isalnum (fn)))
     nam = fn;

@@ -95,7 +95,7 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   endif
 
   ## Validate inputs
-  if (! isa (fun, "function_handle"))
+  if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
            "decic: FUN must be a valid function handle");
   endif

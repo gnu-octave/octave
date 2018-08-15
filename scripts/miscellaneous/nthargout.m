@@ -72,12 +72,12 @@ function out = nthargout (n, varargin)
     print_usage ();
   endif
 
-  if (isa (varargin{1}, "function_handle") || ischar (varargin{1}))
+  if (is_function_handle (varargin{1}) || ischar (varargin{1}))
     ntot = max (n(:));
     func = varargin{1};
     args = varargin(2:end);
   elseif (isnumeric (varargin{1})
-          && (isa (varargin{2}, "function_handle") || ischar (varargin{2})))
+          && (is_function_handle (varargin{2}) || ischar (varargin{2})))
     ntot = varargin{1};
     func = varargin{2};
     args = varargin(3:end);

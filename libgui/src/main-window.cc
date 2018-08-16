@@ -613,6 +613,15 @@ namespace octave
         m_community_news_window->move ((win_x - m_community_news_window->width ())/2,
                                        (win_y - m_community_news_window->height ())/2);
       }
+    else
+      {
+        // Window already exists, just update the browser contents
+        QTextBrowser *browser
+          = m_community_news_window->findChild<QTextBrowser *>("OctaveNews",
+                                                  Qt::FindDirectChildrenOnly);
+        if (browser)
+          browser->setHtml (news);
+      }
 
     if (! m_community_news_window->isVisible ())
       m_community_news_window->show ();

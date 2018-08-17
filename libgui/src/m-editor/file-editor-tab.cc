@@ -115,9 +115,6 @@ namespace octave
     // Initialize last modification date to now
     m_last_modified = QDateTime::currentDateTimeUtc();
 
-    // disable editor drag & drop so parent can handle
-    _edit_area->setAcceptDrops (false);
-
     connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (handle_cursor_moved (int,int)));
 

@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscicommandset.h>
 
 #include <QKeySequence>
+#include <QMimeData>
 #include <QShortcut>
 #include <QToolTip>
 #include <QVBoxLayout>
@@ -961,6 +962,21 @@ namespace octave
       }
 
     insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
+  }
+
+  void octave_qscintilla::dragEnterEvent (QDragEnterEvent *e)
+  {
+    // if is not dragging a url, pass to qscintilla to handle,
+    // otherwise ignore it so that it will be handled by
+    // the parent
+    if (!e->mimeData ()->hasUrls ())
+      {
+        QsciScintilla::dragEnterEvent (e);
+      }
+    else
+      {
+        e->ignore();
+      }
   }
 }
 

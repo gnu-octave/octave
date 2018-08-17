@@ -39,9 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 bool
 Range::all_elements_are_ints (void) const
 {
-  // If the base and increment are ints, the final value in the range
-  // will also be an integer, even if the limit is not.  If there is one
-  // or fewer elements only the base needs to be an integer
+  // If the base and increment are ints, the final value in the range will also
+  // be an integer, even if the limit is not.  If there is one or fewer
+  // elements only the base needs to be an integer.
 
   return (! (octave::math::isnan (rng_base) || octave::math::isnan (rng_inc))
           && (octave::math::nint_big (rng_base) == rng_base || rng_numel < 1)
@@ -64,10 +64,13 @@ Range::nnz (void) const
       else if (rng_inc != 0.0)
         {
           if (rng_base == 0.0 || rng_limit == 0.0)
+            // Exactly one zero at beginning or end of range.
             retval = rng_numel - 1;
           else if ((rng_base / rng_inc) != std::floor (rng_base / rng_inc))
+            // Range crosses negative/positive without hitting zero.
             retval = rng_numel;
           else
+            // Range crosses negative/positive and hits zero.
             retval = rng_numel - 1;
         }
       else
@@ -95,9 +98,9 @@ Range::matrix_value (void) const
       double b = rng_base;
       double increment = rng_inc;
       for (octave_idx_type i = 1; i < rng_numel - 1; i++)
-        cache(i) = b + i * increment;
+        cache.xelem (i) = b + i * increment;
 
-      cache(rng_numel - 1) = rng_limit;
+      cache.xelem (rng_numel - 1) = rng_limit;
     }
 
   return cache;
@@ -106,8 +109,6 @@ Range::matrix_value (void) const
 double
 Range::checkelem (octave_idx_type i) const
 {
-  // Ranges are row vectors.
-
   if (i < 0 || i >= rng_numel)
     octave::err_index_out_of_range (2, 2, i+1, rng_numel);
 
@@ -122,6 +123,7 @@ Range::checkelem (octave_idx_type i) const
 double
 Range::checkelem (octave_idx_type i, octave_idx_type j) const
 {
+  // Ranges are *always* row vectors.
   if (i != 0)
     octave::err_index_out_of_range (1, 1, i+1, rng_numel);
 
@@ -284,7 +286,6 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
   for (octave_idx_type i = 0; i < nel; i++, tmp += stp)
     psidx[i] = tmp;
-
 }
 
 Matrix
@@ -381,17 +382,17 @@ operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
   double increment = a.inc ();
-  octave_idx_type num_elem = a.numel ();
+  octave_idx_type nel = a.numel ();
 
-  if (num_elem > 1)
+  if (nel > 1)
     {
-      // First element must be the base *exactly* (-0).
+      // First element must be the base *exactly* (e.g., -0).
       os << b << ' ';
-      for (octave_idx_type i = 1; i < num_elem-1; i++)
+      for (octave_idx_type i = 1; i < nel-1; i++)
         os << b + i * increment << ' ';
     }
 
-  // Print out exactly the last element, rather than a calculated last element.
+  // Print out the last element exactly, rather than a calculated last element.
   os << a.rng_limit << "\n";
 
   return os;
@@ -409,7 +410,7 @@ operator >> (std::istream& is, Range& a)
       if (is)
         is >> a.rng_inc;
 
-      // Clip the rng_limit to the true limit and rebuild numel, clear cache
+      // Clip the rng_limit to the true limit, rebuild numel, clear cache
       a.set_limit (tmp_rng_limit);
     }
 
@@ -425,6 +426,9 @@ operator - (const Range& r)
 Range operator + (double x, const Range& r)
 {
   Range result (x + r.base (), x + r.limit (), r.inc (), r.numel ());
+  // Check whether new range was constructed properly.  A non-finite
+  // value (Inf or NaN) requires that the output be of the same size
+  // as the original range with all values set to the non-finite value.
   if (result.rng_numel < 0)
     result.cache = x + r.matrix_value ();
 
@@ -542,10 +546,10 @@ static inline bool
 teq (double u, double v,
      double ct = 3.0 * std::numeric_limits<double>::epsilon ())
 {
-  double tu = fabs (u);
-  double tv = fabs (v);
+  double tu = std::abs (u);
+  double tv = std::abs (v);
 
-  return fabs (u - v) < ((tu > tv ? tu : tv) * ct);
+  return std::abs (u - v) < ((tu > tv ? tu : tv) * ct);
 }
 
 octave_idx_type
@@ -568,16 +572,14 @@ Range::numel_internal (void) const
       octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp)
                                          : 0);
 
-      // If the final element that we would compute for the range is
-      // equal to the limit of the range, or is an adjacent floating
-      // point number, accept it.  Otherwise, try a range with one
-      // fewer element.  If that fails, try again with one more
-      // element.
+      // If the final element that we would compute for the range is equal to
+      // the limit of the range, or is an adjacent floating point number,
+      // accept it.  Otherwise, try a range with one fewer element.  If that
+      // fails, try again with one more element.
       //
-      // I'm not sure this is very good, but it seems to work better than
-      // just using tfloor as above.  For example, without it, the
-      // expression 1.8:0.05:1.9 fails to produce the expected result of
-      // [1.8, 1.85, 1.9].
+      // I'm not sure this is very good, but it seems to work better than just
+      // using tfloor as above.  For example, without it, the expression
+      // 1.8:0.05:1.9 fails to produce the expected result of [1.8, 1.85, 1.9].
 
       if (! teq (rng_base + (n_elt - 1) * rng_inc, rng_limit))
         {
@@ -597,18 +599,18 @@ Range::numel_internal (void) const
 double
 Range::limit_internal (void) const
 {
-  double tmp_limit = rng_limit;
+  double new_limit = rng_limit;
 
   if (rng_inc > 0)
-    tmp_limit = max ();
+    new_limit = max ();
   else
-    tmp_limit = min ();
+    new_limit = min ();
 
-  // If result must be an integer then force the limit to be one.
+  // If result must be an integer then force the new_limit to be one.
   if (all_elements_are_ints ())
-    tmp_limit = std::round (tmp_limit);
+    new_limit = std::round (new_limit);
 
-  return (tmp_limit != rng_limit) ? tmp_limit : rng_limit;
+  return new_limit;
 }
 
 void

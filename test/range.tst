@@ -107,6 +107,32 @@
 %!assert (signbit (sort (r, "descend")), logical ([0 0 0 1]))
 %!assert (signbit (sort (rrev, "ascend")), logical ([1 0 0 0]))
 
+## Test mathematical operations (also, non-finite values and 0)
+%!shared r
+%! r = 1:5;
+
+%!assert (-r, -1:-1:-5)
+%!assert (1 + r, 2:6)
+%!assert (Inf + r, Inf (1,5))
+%!assert (NaN + r, NaN (1,5))
+%!assert (r + 1, 2:6)
+%!assert (r + Inf, Inf (1,5))
+%!assert (r + NaN, NaN (1,5))
+%!assert (1 - r, 0:-1:-4)
+%!assert (Inf - r, Inf (1,5))
+%!assert (NaN - r, NaN (1,5))
+%!assert (r - 1, 0:4)
+%!assert (r - Inf, -Inf (1,5))
+%!assert (r - NaN, NaN (1,5))
+%!assert (2 * r, 2:2:10)
+%!assert (0 * r, zeros (1,5))
+%!assert (Inf * r, Inf (1,5))
+%!assert (NaN * r, NaN (1,5))
+%!assert (r * 2, 2:2:10)
+%!assert (r * 0, zeros (1,5))
+%!assert (r * Inf, Inf (1,5))
+%!assert (r * NaN, NaN (1,5))
+
 ## Test sorting of ranges (bug #45739)
 %!shared r, rrev
 %! r = 1:2:10;

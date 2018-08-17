@@ -70,7 +70,6 @@ public:
         // Code below is only needed if the resulting range must be 100%
         // correctly constructed.  If the Range object created is only
         // a temporary one used by operators this may be unnecessary.
-
         rng_limit = limit_internal ();
       }
   }
@@ -79,10 +78,10 @@ public:
   double limit (void) const { return rng_limit; }
   double inc (void) const { return rng_inc; }
 
+  octave_idx_type numel (void) const { return rng_numel; }
+
   OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
   octave_idx_type nelem (void) const { return numel (); }
-
-  octave_idx_type numel (void) const { return rng_numel; }
 
   octave_idx_type rows (void) const { return 1; }
 
@@ -108,7 +107,6 @@ public:
   Matrix diag (octave_idx_type k = 0) const;
 
   Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
-
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
               sortmode mode = ASCENDING) const;
 
@@ -185,17 +183,11 @@ protected:
 };
 
 extern OCTAVE_API Range operator - (const Range& r);
-
 extern OCTAVE_API Range operator + (double x, const Range& r);
-
 extern OCTAVE_API Range operator + (const Range& r, double x);
-
 extern OCTAVE_API Range operator - (double x, const Range& r);
-
 extern OCTAVE_API Range operator - (const Range& r, double x);
-
 extern OCTAVE_API Range operator * (double x, const Range& r);
-
 extern OCTAVE_API Range operator * (const Range& r, double x);
 
 #endif

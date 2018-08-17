@@ -108,10 +108,25 @@
 %!assert (signbit (sort (rrev, "ascend")), logical ([1 0 0 0]))
 
 ## Test sorting of ranges (bug #45739)
-
 %!shared r, rrev
 %! r = 1:2:10;
 %! rrev = 10:-2:1;
 
-%!assert (sort (r, "descend"), [9 7 5 3 1])
-%!assert (sort (rrev, "ascend"), [2 4 6 8 10])
+%!assert <*45739> (sort (r, "descend"), [9 7 5 3 1])
+%!assert <*45739> (sort (rrev, "ascend"), [2 4 6 8 10])
+
+## Test final value within eps of an integer (bug #46859)
+%!test <*46859>
+%! rng = 1 : (1001/250)/(1/250);
+%! assert (rng(end), 1001);
+
+%!test <*46859>
+%! rng = 2000: -1 : (1001/250)/(1/250);
+%! assert (rng(end), 1001);
+
+## This is not Matlab compatible (stops at 1000 with 999 elements)
+## Octave prefers the more intuitive "pure math" approach where
+## (1001/250) / (1/250) => (1001/250)*(250/1) => 1001.
+%!test <*46859>
+%! rng = 1 : (1001/250)/(1/250);
+%! assert (numel (1000));

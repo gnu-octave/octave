@@ -604,6 +604,10 @@ Range::limit_internal (void) const
   else
     tmp_limit = min ();
 
+  // If result must be an integer then force the limit to be one.
+  if (all_elements_are_ints ())
+    tmp_limit = std::round (tmp_limit);
+
   return (tmp_limit != rng_limit) ? tmp_limit : rng_limit;
 }
 

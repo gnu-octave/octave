@@ -126,6 +126,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
+    _run_selection_action->setEnabled (has_selected_text);
 
     // Get the actions of any hotspots the filters may have found
     QList<QAction*> actions = get_hotspot_actions (at);
@@ -141,6 +142,17 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     for (int i = 0; i < actions.length (); i++)
       _contextMenu->removeAction (actions.at(i));
   }
+
+// slot for running the selected code
+void
+QTerminal::run_selection ()
+{
+  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
+                                                QString::SkipEmptyParts);
+  for (int i = 0; i < commands.size (); i++)
+    emit execute_command_in_terminal_signal (commands.at (i));
+
+}
 
 // slot for edit files in error messages
 void

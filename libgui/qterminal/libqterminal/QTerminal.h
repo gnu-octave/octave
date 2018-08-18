@@ -99,6 +99,8 @@ signals:
 
   void edit_mfile_request (const QString&, int);
 
+  void execute_command_in_terminal_signal (const QString&);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -116,6 +118,8 @@ public slots:
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
   void set_global_shortcuts (bool focus_out);
+
+  void run_selection (void);
 
   void edit_file (void);
 
@@ -143,6 +147,9 @@ protected:
     _selectall_action = _contextMenu->addAction (
                           tr ("Select All"), this, SLOT (selectAll ()));
 
+    _run_selection_action = _contextMenu->addAction (
+                     tr ("Run Selection"), this, SLOT (run_selection ()));
+
     _edit_action = _contextMenu->addAction (
                      tr (""), this, SLOT (edit_file ()));
 
@@ -159,6 +166,9 @@ protected:
 
     connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
              xparent, SLOT (edit_mfile (const QString&, int)));
+
+    connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+             xparent, SLOT (execute_command_in_terminal (const QString&)));
 
     connect (xparent, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
@@ -200,6 +210,7 @@ private:
   QAction * _paste_action;
   QAction * _selectall_action;
   QAction * _edit_action;
+  QAction * _run_selection_action;
 
   QAction *_interrupt_action;
   QAction *_nop_action;

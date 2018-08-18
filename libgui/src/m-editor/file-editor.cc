@@ -1516,9 +1516,6 @@ namespace octave
       menu->removeAction (a);
 
     // add editor's actions with icons and customized shortcuts
-    menu->addAction (m_undo_action);
-    menu->addAction (m_redo_action);
-    menu->addSeparator ();
     menu->addAction (m_cut_action);
     menu->addAction (m_copy_action);
     menu->addAction (m_paste_action);
@@ -2086,6 +2083,7 @@ namespace octave
     m_tool_bar->addSeparator ();
     // m_undo_action: later via main window
     m_tool_bar->addAction (m_redo_action);
+    m_tool_bar->addSeparator ();
     // m_copy_action: later via the main window
     m_tool_bar->addAction (m_cut_action);
     // m_paste_action: later via the main window

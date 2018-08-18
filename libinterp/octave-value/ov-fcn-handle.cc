@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pr-output.h"
 #include "pt-arg-list.h"
+#include "pt-anon-scopes.h"
 #include "pt-assign.h"
 #include "pt-cmd.h"
 #include "pt-eval.h"
@@ -344,35 +345,35 @@ octave_fcn_handle::save_ascii (std::ostream& os)
 {
   if (nm == anonymous)
     {
+      if (fcn.is_undefined ())
+        return false;
+
+      octave_user_function *f = fcn.user_function_value ();
+      octave::symbol_scope f_scope = f->scope ();
+
+      if (! f_scope)
+        error ("internal error, invalid scope");
+
+      octave::tree_anon_scopes tas (f);
+
       os << nm << "\n";
 
       print_raw (os, true);
       os << "\n";
 
-      if (fcn.is_undefined ())
-        return false;
-
-      std::list<octave::symbol_record> vars;
-
-      octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_record::context_id context = 0;
-      octave::symbol_scope f_scope = f->scope ();
-      if (f_scope)
-        {
-          vars = f_scope.all_variables ();
-          context = f_scope.current_context ();
-        }
-
-      size_t varlen = vars.size ();
+      size_t varlen = tas.symrec_map_size ();
 
       if (varlen > 0)
         {
+          octave::symbol_record::context_id context
+            = f_scope.current_context ();
+
           os << "# length: " << varlen << "\n";
 
-          for (const auto& symrec : vars)
+          for (const auto& name_symrec : tas)
             {
-              if (! save_text_data (os, symrec.varval (context),
-                                    symrec.name (), false, 0))
+              if (! save_text_data (os, name_symrec.second.varval (context),
+                                    name_symrec.first, false, 0))
                 return ! os.fail ();
             }
         }
@@ -533,18 +534,15 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       if (fcn.is_undefined ())
         return false;
 
-      std::list<octave::symbol_record> vars;
-
       octave_user_function *f = fcn.user_function_value ();
       octave::symbol_scope f_scope = f->scope ();
-      octave::symbol_record::context_id context = 0;
-      if (f_scope)
-        {
-          vars = f_scope.all_variables ();
-          context = f_scope.current_context ();
-        }
 
-      size_t varlen = vars.size ();
+      if (! f_scope)
+        error ("internal error, invalid scope");
+
+      octave::tree_anon_scopes tas (f);
+
+      size_t varlen = tas.symrec_map_size ();
 
       if (varlen > 0)
         nmbuf << nm << ' ' << varlen;
@@ -565,10 +563,13 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       if (varlen > 0)
         {
-          for (const auto& symrec : vars)
+          octave::symbol_record::context_id context
+            = f_scope.current_context ();
+
+          for (const auto& name_symrec : tas)
             {
-              if (! save_binary_data (os, symrec.varval (context),
-                                      symrec.name (), "", 0, save_as_floats))
+              if (! save_binary_data (os, name_symrec.second.varval (context),
+                                      name_symrec.first, "", 0, save_as_floats))
                 return ! os.fail ();
             }
         }
@@ -793,18 +794,15 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
       H5Dclose (data_hid);
 
-      std::list<octave::symbol_record> vars;
-
       octave_user_function *f = fcn.user_function_value ();
       octave::symbol_scope f_scope = f->scope ();
-      octave::symbol_record::context_id context = 0;
-      if (f_scope)
-        {
-          vars = f_scope.all_variables ();
-          context = f_scope.current_context ();
-        }
 
-      size_t varlen = vars.size ();
+      if (! f_scope)
+        error ("internal error, invalid scope");
+
+      octave::tree_anon_scopes tas (f);
+
+      size_t varlen = tas.symrec_map_size ();
 
       if (varlen > 0)
         {
@@ -849,10 +847,15 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
               return false;
             }
 
-          for (const auto& symrec : vars)
+          octave::symbol_record::context_id context
+            = f_scope.current_context ();
+
+          for (const auto& name_symrec : tas)
             {
-              if (! add_hdf5_data (data_hid, symrec.varval (context),
-                                   symrec.name (), "", false, save_as_floats))
+              if (! add_hdf5_data (data_hid,
+                                   name_symrec.second.varval (context),
+                                   name_symrec.first, "", false,
+                                   save_as_floats))
                 break;
             }
           H5Gclose (data_hid);

@@ -1805,7 +1805,7 @@ like @code{joPas} (@url{http://jopas.sourceforge.net}).
 @menu
 * Making Java Classes Available::
 * How to use Java from within Octave::
-* Passing parameters to the JVM::
+* Set up the JVM::
 * Java Interface Functions::
 @end menu
 
@@ -2089,18 +2089,33 @@ javaObject ("java.math.BigDecimal", "1") ...
 
 
 
-@node Passing parameters to the JVM
-@subsection Passing parameters to the JVM
+@node Set up the JVM
+@subsection Set up the JVM
 @cindex memory, limitations on JVM
+@cindex select JVM vesion
 
-In order to execute Java code Octave creates a Java Virtual Machine (JVM).
-Such a JVM allocates a fixed amount of initial memory and may expand this pool
-up to a fixed maximum memory limit.  The default values depend on the Java
-version (@pxref{XREFjavamem,,javamem}).  The memory pool is shared by all Java
-objects running in the JVM@.  This strict memory limit is intended mainly to
-avoid runaway applications inside web browsers or in enterprise servers which
-can consume all memory and crash the system.  When the maximum memory limit is
-hit, Java code will throw exceptions so that applications will fail or behave
+In order to execute Java code Octave creates a Java Virtual Machine (JVM).  By
+default the version of the JVM is used that was detected during configuration
+on Unix-like systems or that is pointed to from the registry keys at
+@file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\JRE} or
+@file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Runtime Environment} on
+Windows.  The default path to the JVM can be overwritten by setting the
+environment variable @w{@env{JAVA_HOME}} to the path where the JVM is
+installed.  On Windows that might be e.g. @file{C:\Program
+Files\Java\jre-10.0.2}.  Make sure that you select a directory that contains
+the JVM with a bit-ness that matches Octave's.
+
+The JVM is only loaded once per Octave session.  Thus, to change the used
+version of the JVM, you might have to re-start Octave.  To check which version
+of the JVM is currently being used, run @code{version -java}.
+
+The JVM allocates a fixed amount of initial memory and may expand this pool up
+to a fixed maximum memory limit.  The default values depend on the Java version
+(@pxref{XREFjavamem,,javamem}).  The memory pool is shared by all Java objects
+running in the JVM@.  This strict memory limit is intended mainly to avoid
+runaway applications inside web browsers or in enterprise servers which can
+consume all memory and crash the system.  When the maximum memory limit is hit,
+Java code will throw exceptions so that applications will fail or behave
 unexpectedly.
 
 You can specify options for the creation of the JVM inside a file named

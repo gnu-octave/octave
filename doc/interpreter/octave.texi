@@ -883,7 +883,7 @@ Java Interface
 
 * Making Java Classes Available::
 * How to use Java from within Octave::
-* Passing parameters to the JVM::
+* Set up the JVM::
 * Java Interface Functions::
 
 Test and Demo Functions

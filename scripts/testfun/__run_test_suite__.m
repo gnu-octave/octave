@@ -61,7 +61,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       test ("", "explain", fid);
       puts ("\nIntegrated test scripts:\n\n");
       for i = 1:length (fcndirs)
-        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_script (fid, fcndirs{i});
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i});
         dp += p;
         dn += n;
         dxf += xf;
@@ -150,15 +150,14 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     regress = drgrs;
   endif
 
-
   function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_dir (fid, d)
 
     lst = dir (d);
     dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     for i = 1:length (lst)
       nm = lst(i).name;
-      if (lst(i).isdir
-          && nm(1) != "." && ! strcmp (nm, "private") && nm(1) != "@")
+      if (lst(i).isdir && nm(1) != "." && ! strcmp (nm, "private")
+          && nm(1) != "@")
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, [d, filesep, nm]);
         dp += p;
         dn += n;
@@ -175,24 +174,35 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       cd (d);
       for i = 1:length (lst)
         nm = lst(i).name;
-        if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
+        ## Ignore hidden files
+        if (nm(1) == '.')
+          continue
+        endif
+        if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
+            || (length (nm) > 4
+                && (strcmpi (nm((end-3):end), "-tst")
+                    || strcmpi (nm((end-3):end), ".tst"))))
           p = n = xf = xb = sk = rtsk = 0;
           ffnm = fullfile (d, nm);
+          ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
           if (has_tests (ffnm))
-            print_test_file_name (nm);
-            [p, n, xf, xb, sk, rtsk, rgrs] = test (nm, "quiet", fid);
+            tmp = reduce_test_file_name (ffnm, topbuilddir, topsrcdir);
+            print_test_file_name (tmp);
+            [p, n, xf, xb, sk, rtsk, rgrs] = test (ffnm, "quiet", fid);
             print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
+            dp += p;
+            dn += n;
+            dxf += xf;
+            dxb += xb;
+            dsk += sk;
+            drtsk += rtsk;
+            drgrs += rgrs;
             files_with_tests(end+1) = ffnm;
           else
+            ## To reduce the list length, only mark .cc files that contain
+            ## DEFUN definitions.
             files_with_no_tests(end+1) = ffnm;
           endif
-          dp += p;
-          dn += n;
-          dxf += xf;
-          dxb += xb;
-          dsk += sk;
-          drtsk += rtsk;
-          drgrs += rgrs;
         endif
       endfor
     unwind_protect_cleanup
@@ -201,90 +211,39 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
 
   endfunction
 
-  function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_script (fid, d)
-
-    lst = dir (d);
-    dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
-    for i = 1:length (lst)
-      nm = lst(i).name;
-      if (lst(i).isdir && nm(1) != ".")
-        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_script (fid, [d, filesep, nm]);
-        dp += p;
-        dn += n;
-        dxf += xf;
-        dxb += xb;
-        dsk += sk;
-        drtsk += rtsk;
-        drgrs += rgrs;
-      endif
-    endfor
-
-    for i = 1:length (lst)
-      nm = lst(i).name;
-      ## Ignore hidden files
-      if (nm(1) == '.')
-        continue
-      endif
-      f = fullfile (d, nm);
-      if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
-          || (length (nm) > 4
-              && (   strcmpi (nm((end-3):end), "-tst")
-                  || strcmpi (nm((end-3):end), ".tst"))))
-        p = n = xf = xb = 0;
-        ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
-        if (has_tests (f))
-          tmp = reduce_test_file_name (f, topbuilddir, topsrcdir);
-          print_test_file_name (tmp);
-          [p, n, xf, xb, sk, rtsk, rgrs] = test (f, "quiet", fid);
-          print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
-          dp += p;
-          dn += n;
-          dxf += xf;
-          dxb += xb;
-          dsk += sk;
-          drtsk += rtsk;
-          drgrs += rgrs;
-          files_with_tests(end+1) = f;
-        else
-          ## To reduce the list length, only mark .cc files that contain
-          ## DEFUN definitions.
-          files_with_no_tests(end+1) = f;
-        endif
-      endif
-    endfor
-    ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
-
-  endfunction
-
 endfunction
 
 function print_test_file_name (nm)
-  filler = repmat (".", 1, 60-length (nm));
+  nmlen = numel (nm);
+  filler = repmat (".", 1, 63-nmlen);
+  if (nmlen > 63)
+    nm = ["..", nm(nmlen-60:end)];
+  endif
   printf ("  %s %s", nm, filler);
 endfunction
 
 function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
 
   if ((n + sk + rtsk + rgrs) > 0)
-    printf (" PASS   %4d/%-4d", p, n);
+    printf (" PASS %4d/%-4d", p, n);
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
-      printf ("\n%71s %3d", "FAIL ", nfail);
+      printf ("\n%72s %3d", "FAIL ", nfail);
     endif
     if (rgrs > 0)
-      printf ("\n%71s %3d", "REGRESSION", rgrs);
+      printf ("\n%72s %3d", "REGRESSION", rgrs);
     endif
     if (sk > 0)
-      printf ("\n%71s %3d", "(missing feature) SKIP ", sk);
+      printf ("\n%72s %3d", "(missing feature) SKIP ", sk);
     endif
     if (rtsk > 0)
-      printf ("\n%71s %3d", "(run-time condition) SKIP ", rtsk);
+      printf ("\n%72s %3d", "(run-time condition) SKIP ", rtsk);
     endif
     if (xb > 0)
-      printf ("\n%71s %3d", "(reported bug) XFAIL", xb);
+      printf ("\n%72s %3d", "(reported bug) XFAIL", xb);
     endif
     if (xf > 0)
-      printf ("\n%71s %3d", "(expected failure) XFAIL", xf);
+      printf ("\n%72s %3d", "(expected failure) XFAIL", xf);
     endif
   endif
   puts ("\n");
@@ -297,11 +256,12 @@ function retval = reduce_test_file_name (nm, builddir, srcdir)
   ## of the likely root directory prefixes.
 
   prefix = { builddir, fullfile(builddir, "scripts"), ...
-             srcdir, fullfile(srcdir, "scripts") };
+             srcdir, fullfile(srcdir, "scripts"), ...
+             srcdir, fullfile(srcdir, "test") };
 
   retval = nm;
 
-  for i = 1:length (prefix)
+  for i = 1:numel (prefix)
     tmp = strrep (nm, [prefix{i}, filesep], "");
     if (length (tmp) < length (retval))
       retval = tmp;

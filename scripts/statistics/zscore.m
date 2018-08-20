@@ -43,7 +43,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
-function [z, mu, sigma] = zscore (x, opt, dim)
+function [z, mu, sigma] = zscore (x, opt = 0, dim)
 
   if (nargin < 1 || nargin > 3 )
     print_usage ();
@@ -53,12 +53,10 @@ function [z, mu, sigma] = zscore (x, opt, dim)
     error ("zscore: X must be a numeric vector or matrix");
   endif
 
-  if (nargin < 2)
+  if (isempty (opt))
     opt = 0;
-  else
-    if (opt != 0 && opt != 1 || ! isscalar (opt))
-      error ("zscore: OPT must be empty, 0, or 1");
-    endif
+  elseif (! isscalar (opt) || (opt != 0 && opt != 1))
+    error ("zscore: normalization OPT must be empty, 0, or 1");
   endif
 
   nd = ndims (x);
@@ -97,12 +95,14 @@ endfunction
 %!assert (zscore (int8 ([1,2,3])), [-1,0,1])
 %!assert (zscore (ones (3,2,2,2)), zeros (3,2,2,2))
 %!assert (zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
+%!assert <*54531> (zscore ([1,2,3], [], 2), [-1,0,1])
 
 ## Test input validation
 %!error zscore ()
 %!error zscore (1, 2, 3)
-%!error zscore (['A'; 'B'])
-%!error zscore (1, ones (2,2))
-%!error zscore (1, 1.5)
-%!error zscore (1, 1, 0)
-%!error zscore (1, 3)
+%!error <X must be a numeric> zscore (['A'; 'B'])
+%!error <OPT must be empty, 0, or 1> zscore (1, ones (2,2))
+%!error <OPT must be empty, 0, or 1> zscore (1, 1.5)
+%!error <DIM must be an integer> zscore (1, [], ones (2,2))
+%!error <DIM must be an integer> zscore (1, [], 1.5)
+%!error <DIM must be .* a valid dimension> zscore (1, [], 0)

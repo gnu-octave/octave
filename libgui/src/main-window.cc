@@ -617,8 +617,12 @@ namespace octave
       {
         // Window already exists, just update the browser contents
         QTextBrowser *browser
-          = m_community_news_window->findChild<QTextBrowser *>("OctaveNews",
-                                                  Qt::FindDirectChildrenOnly);
+
+          = m_community_news_window->findChild<QTextBrowser *>("OctaveNews"
+#if defined (QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS)
+                                                               , Qt::FindDirectChildrenOnly
+#endif
+                                                              );
         if (browser)
           browser->setHtml (news);
       }

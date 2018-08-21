@@ -365,7 +365,8 @@ namespace octave
     public:
       Matrix coords;
       Matrix color;
-      Matrix normal;
+      Matrix vertex_normal;
+      Matrix face_normal;
       double alpha;
       float ambient;
       float diffuse;
@@ -377,16 +378,16 @@ namespace octave
       refcount<int> count;
 
       vertex_data_rep (void)
-        : coords (), color (), normal (), alpha (),
+        : coords (), color (), vertex_normal (), face_normal (), alpha (),
           ambient (), diffuse (), specular (), specular_exp (),
           specular_color_refl (), count (1) { }
 
-      vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
-                       double a, float as, float ds, float ss, float se,
-                       float scr)
-        : coords (c), color (col), normal (n), alpha (a),
-          ambient (as), diffuse (ds), specular (ss), specular_exp (se),
-          specular_color_refl (scr), count (1) { }
+      vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& vn,
+                       const Matrix& fn, double a, float as, float ds, float ss,
+                       float se, float scr)
+        : coords (c), color (col), vertex_normal (vn), face_normal (fn),
+          alpha (a), ambient (as), diffuse (ds), specular (ss),
+          specular_exp (se), specular_color_refl (scr), count (1) { }
     };
 
   private:
@@ -406,10 +407,10 @@ namespace octave
     vertex_data (const vertex_data& v) : rep (v.rep)
     { rep->count++; }
 
-    vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
-                 double a, float as, float ds, float ss, float se,
-                 float scr)
-      : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se, scr))
+    vertex_data (const Matrix& c, const Matrix& col, const Matrix& vn,
+                 const Matrix& fn, double a, float as, float ds, float ss,
+                 float se, float scr)
+      : rep (new vertex_data_rep (c, col, vn, fn, a, as, ds, ss, se, scr))
     { }
 
     vertex_data (vertex_data_rep *new_rep)
@@ -506,8 +507,10 @@ namespace octave
             }
         }
 
-      if (light_mode > 0 && (first || light_mode == GOURAUD))
-        glNormal3dv (v->normal.data ());
+      if (light_mode == FLAT && first)
+        glNormal3dv (v->face_normal.data ());
+      else if (light_mode == GOURAUD)
+        glNormal3dv (v->vertex_normal.data ());
 
       glVertex3dv (v->coords.data ());
 
@@ -531,7 +534,8 @@ namespace octave
 
       Matrix vv (1, 3, 0.0);
       Matrix cc;
-      Matrix nn (1, 3, 0.0);
+      Matrix vnn (1, 3, 0.0);
+      Matrix fnn (1, 3, 0.0);
       double aa = 0.0;
 
       vv(0) = xyz[0];
@@ -546,18 +550,26 @@ namespace octave
               cc(ic) += (w[iv] * v[iv]->color (ic));
         }
 
-      if (v[0]->normal.numel () > 0)
+      if (v[0]->vertex_normal.numel () > 0)
         {
           for (int in = 0; in < 3; in++)
             for (int iv = 0; iv < vmax; iv++)
-              nn(in) += (w[iv] * v[iv]->normal (in));
+              vnn(in) += (w[iv] * v[iv]->vertex_normal (in));
+        }
+
+      if (v[0]->face_normal.numel () > 0)
+        {
+          for (int in = 0; in < 3; in++)
+            for (int iv = 0; iv < vmax; iv++)
+              fnn(in) += (w[iv] * v[iv]->face_normal (in));
         }
 
       for (int iv = 0; iv < vmax; iv++)
         aa += (w[iv] * v[iv]->alpha);
 
-      vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
-                         v[0]->specular, v[0]->specular_exp, v[0]->specular_color_refl);
+      vertex_data new_v (vv, cc, vnn, fnn, aa, v[0]->ambient, v[0]->diffuse,
+                         v[0]->specular, v[0]->specular_exp,
+                         v[0]->specular_color_refl);
       tmp_vdata.push_back (new_v);
 
       *out_data = new_v.get_rep ();
@@ -2942,7 +2954,6 @@ namespace octave
     const Matrix f = props.get_faces ().matrix_value ();
     const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
     Matrix c;
-    const Matrix n = props.get_vertexnormals ().matrix_value ();
     Matrix a;
     double fa = 1.0;
 
@@ -2953,8 +2964,6 @@ namespace octave
     bool has_z = (v.columns () > 2);
     bool has_facecolor = false;
     bool has_facealpha = false;
-    // FIXME: remove when patch object has normal computation (patch #8951)
-    bool has_normals = (n.rows () == nv);
 
     int fc_mode = ((props.facecolor_is ("none")
                     || props.facecolor_is_rgb () || draw_all) ? 0 :
@@ -2982,6 +2991,11 @@ namespace octave
     float ss = props.get_specularstrength ();
     float se = props.get_specularexponent () * 5; // to fit Matlab
     float scr = props.get_specularcolorreflectance ();
+
+    const Matrix vn = props.get_vertexnormals ().matrix_value ();
+    bool has_vertex_normals = (vn.rows () == nv);
+    const Matrix fn = props.get_facenormals ().matrix_value ();
+    bool has_face_normals = (fn.rows () == nf);
 
     boolMatrix clip (1, nv, false);
 
@@ -3056,23 +3070,37 @@ namespace octave
 
           Matrix vv (1, 3, 0.0);
           Matrix cc;
-          Matrix nn (1, 3, 0.0);
+          Matrix vnn (1, 3, 0.0);
+          Matrix fnn (1, 3, 0.0);
           double aa = 1.0;
 
           vv(0) = v(idx,0); vv(1) = v(idx,1);
           if (has_z)
             vv(2) = v(idx,2);
-          if (has_normals)
+          if (((fl_mode == FLAT) || (el_mode == FLAT)) && has_face_normals)
             {
               double dir = 1.0;
               if (bfl_mode > 0)
-                dir = ((n(idx,0) * view_vector(0)
-                        + n(idx,1) * view_vector(1)
-                        + n(idx,2) * view_vector(2) < 0)
+                dir = ((fn(i,0) * view_vector(0)
+                        + fn(i,1) * view_vector(1)
+                        + fn(i,2) * view_vector(2) < 0)
                        ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-              nn(0) = dir * n(idx,0);
-              nn(1) = dir * n(idx,1);
-              nn(2) = dir * n(idx,2);
+              fnn(0) = dir * fn(i,0);
+              fnn(1) = dir * fn(i,1);
+              fnn(2) = dir * fn(i,2);
+            }
+          if (((fl_mode == GOURAUD) || (el_mode == GOURAUD)) &&
+              has_vertex_normals)
+            {
+              double dir = 1.0;
+              if (bfl_mode > 0)
+                dir = ((vn(idx,0) * view_vector(0)
+                        + vn(idx,1) * view_vector(1)
+                        + vn(idx,2) * view_vector(2) < 0)
+                       ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
+              vnn(0) = dir * vn(idx,0);
+              vnn(1) = dir * vn(idx,1);
+              vnn(2) = dir * vn(idx,2);
             }
           if (c.numel () > 0)
             {
@@ -3092,7 +3120,7 @@ namespace octave
                 aa = a(idx);
             }
 
-          vdata[i+j*fr] = vertex_data (vv, cc, nn, aa, as, ds, ss, se, scr);
+          vdata[i+j*fr] = vertex_data (vv, cc, vnn, fnn, aa, as, ds, ss, se, scr);
         }
 
     if (fl_mode > 0 || el_mode > 0)
@@ -3126,7 +3154,7 @@ namespace octave
                   }
               }
 
-            if ((fl_mode > 0) && do_lighting && has_normals)
+            if ((fl_mode > 0) && do_lighting)
               glEnable (GL_LIGHTING);
 
             // NOTE: Push filled part of patch backwards to avoid Z-fighting
@@ -3229,7 +3257,7 @@ namespace octave
                   it1++;
               }
 
-            if ((fl_mode > 0) && do_lighting && has_normals)
+            if ((fl_mode > 0) && do_lighting)
               glDisable (GL_LIGHTING);
           }
         else
@@ -3265,7 +3293,7 @@ namespace octave
                   }
               }
 
-            if ((el_mode > 0) && do_lighting && has_normals)
+            if ((el_mode > 0) && do_lighting)
               glEnable (GL_LIGHTING);
 
             double linewidth = props.get_linewidth ();
@@ -3368,7 +3396,7 @@ namespace octave
             set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
-            if ((el_mode > 0) && do_lighting && has_normals)
+            if ((el_mode > 0) && do_lighting)
               glDisable (GL_LIGHTING);
           }
         else

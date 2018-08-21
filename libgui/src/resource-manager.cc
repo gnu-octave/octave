@@ -233,6 +233,20 @@ namespace octave
         QString default_family = "courier";
 #endif
 
+        std::string env_default_family
+          = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
+
+        if (! env_default_family.empty ())
+          default_family = QString::fromStdString (env_default_family);
+
+        QString default_font_size = "10";
+
+        std::string env_default_font_size
+          = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
+
+        if (! env_default_font_size.empty ())
+          default_font_size = QString::fromStdString (env_default_font_size);
+
         // Get the default custom editor
 #if defined (Q_OS_WIN32)
         QString custom_editor = "notepad++ -n%l %f";
@@ -240,10 +254,16 @@ namespace octave
         QString custom_editor = "emacs +%l %f";
 #endif
 
+        std::string env_default_editor
+          = sys::env::getenv ("OCTAVE_DEFAULT_EDITOR");
+
+        if (! env_default_editor.empty ())
+          custom_editor = QString::fromStdString (env_default_editor);
+
         // Replace placeholders
         settings_text.replace ("__default_custom_editor__", custom_editor);
         settings_text.replace ("__default_font__", default_family);
-        settings_text.replace ("__default_font_size__", "10");
+        settings_text.replace ("__default_font_size__", default_font_size);
 
         QFile user_settings (m_settings_file);
 

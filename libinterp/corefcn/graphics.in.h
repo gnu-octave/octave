@@ -6023,14 +6023,26 @@ class
 base_graphics_event
 {
 public:
+  enum priority { INTERRUPT, QUEUE, CANCEL };
 
   friend class graphics_event;
 
-  base_graphics_event (void) = default;
+  base_graphics_event (void)
+    : m_busyaction (QUEUE)
+  { };
+
+  base_graphics_event (int busyaction)
+    : m_busyaction (busyaction)
+  { };
 
   virtual ~base_graphics_event (void) = default;
 
+  int get_busyaction (void) { return m_busyaction; };
+
   virtual void execute (void) = 0;
+
+ private:
+  int m_busyaction;
 };
 
 class
@@ -6050,6 +6062,14 @@ public:
 
   graphics_event& operator = (const graphics_event&) = default;
 
+  int get_busyaction (void)
+  {
+    if (ok ())
+      return rep->get_busyaction ();
+    else
+      error ("graphics_event::busyaction: invalid graphics_event");
+  }
+
   void execute (void)
   {
     if (ok ())
@@ -6061,12 +6081,14 @@ public:
   static graphics_event
   create_callback_event (const graphics_handle& h,
                          const std::string& name,
-                         const octave_value& data = Matrix ());
+                         const octave_value& data = Matrix (),
+                         int busyaction = base_graphics_event::QUEUE);
 
   static graphics_event
   create_callback_event (const graphics_handle& h,
                          const octave_value& cb,
-                         const octave_value& data = Matrix ());
+                         const octave_value& data = Matrix (),
+                         int busyaction = base_graphics_event::QUEUE);
 
   static graphics_event
   create_function_event (event_fcn fcn, void *data = nullptr);

@@ -4123,7 +4123,7 @@ figure::properties::set_position (const octave_value& v,
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
-          execute_resizefcn ();
+          gh_manager::post_callback (__myhandle__, "resizefcn");
           update_boundingbox ();
         }
     }
@@ -10691,13 +10691,15 @@ callback_event : public base_graphics_event
 {
 public:
   callback_event (const graphics_handle& h, const std::string& name,
-                  const octave_value& data = Matrix ())
-    : base_graphics_event (), handle (h), callback_name (name),
+                  const octave_value& data = Matrix (),
+                  int busyaction = base_graphics_event::QUEUE)
+    : base_graphics_event (busyaction), handle (h), callback_name (name),
       callback (), callback_data (data) { }
 
   callback_event (const graphics_handle& h, const octave_value& cb,
-                  const octave_value& data = Matrix ())
-    : base_graphics_event (), handle (h), callback_name (),
+                  const octave_value& data = Matrix (),
+                  int busyaction = base_graphics_event::QUEUE)
+    : base_graphics_event (busyaction), handle (h), callback_name (),
       callback (cb), callback_data (data) { }
 
   void execute (void)
@@ -10790,17 +10792,19 @@ private:
 graphics_event
 graphics_event::create_callback_event (const graphics_handle& h,
                                        const std::string& name,
-                                       const octave_value& data)
+                                       const octave_value& data,
+                                       int busyaction)
 {
-  return graphics_event (new callback_event (h, name, data));
+  return graphics_event (new callback_event (h, name, data, busyaction));
 }
 
 graphics_event
 graphics_event::create_callback_event (const graphics_handle& h,
                                        const octave_value& cb,
-                                       const octave_value& data)
+                                       const octave_value& data,
+                                       int busyaction)
 {
-  return graphics_event (new callback_event (h, cb, data));
+  return graphics_event (new callback_event (h, cb, data, busyaction));
 }
 
 graphics_event
@@ -10976,36 +10980,21 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
 
   if (go.valid_object ())
     {
-      if (callback_objects.empty ())
-        do_post_event (graphics_event::create_callback_event (h, name, data));
-      else
-        {
-          const graphics_object& current = callback_objects.front ();
+      caseless_str cname (name);
+      int busyaction = base_graphics_event::QUEUE;
 
-          if (current.get_properties ().is_interruptible ())
-            do_post_event (graphics_event::create_callback_event (h, name,
-                                                                  data));
-          else
-            {
-              std::string busy_action (go.get_properties ().get_busyaction ());
+      if (cname.compare ("deletefcn")
+          || cname.compare ("createfcn")
+          || (go.isa ("figure")
+              && (cname.compare ("closerequestfcn")
+                  || cname.compare ("resizefcn"))))
+        busyaction = base_graphics_event::INTERRUPT;
+      else if (go.get_properties ().get_busyaction () == "cancel")
+        busyaction = base_graphics_event::CANCEL;
 
-              if (busy_action == "queue")
-                do_post_event (graphics_event::create_callback_event (h, name,
-                                                                      data));
-              else
-                {
-                  caseless_str cname (name);
 
-                  if (cname.compare ("deletefcn")
-                      || cname.compare ("createfcn")
-                      || (go.isa ("figure")
-                          && (cname.compare ("closerequestfcn")
-                              || cname.compare ("resizefcn"))))
-                    do_post_event (
-                      graphics_event::create_callback_event (h, name, data));
-                }
-            }
-        }
+      do_post_event (graphics_event::create_callback_event (h, name, data,
+                                                            busyaction));
     }
 }
 
@@ -11059,6 +11048,26 @@ gh_manager::do_process_events (bool force)
 
                     event_queue.pop_front ();
                   }
+                else
+                  {
+                    std::list<graphics_event>::iterator p =
+                      event_queue.begin ();
+
+                    while (p != event_queue.end ())
+                      if (p->get_busyaction () == base_graphics_event::CANCEL)
+                        {
+                          p = event_queue.erase (p);
+                        }
+                      else if (p->get_busyaction ()
+                               == base_graphics_event::INTERRUPT)
+                        {
+                          e = (*p);
+                          event_queue.erase (p);
+                          break;
+                        }
+                      else
+                        p++;
+                  }
               }
           }
       }
@@ -11090,6 +11099,60 @@ gh_manager::do_process_events (bool force)
 
   return 0;
 }
+
+
+/*
+## Test interruptible/busyaction properties
+%!function cb (h)
+%! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
+%! drawnow ();
+%! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
+%!endfunction
+%!
+%!test
+%! hf = figure ("visible", "off", "resizefcn", @cb);
+%! unwind_protect
+%!   ## Default
+%!   hui1 = uicontrol ("parent", hf, "interruptible", "on", "callback", @cb);
+%!   hui2 = uicontrol ("parent", hf, "busyaction", "queue", "callback", @cb);
+%!   hui3 = uicontrol ("parent", hf, "busyaction", "queue", "callback", @cb);
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!
+%!   assert (getappdata (hf, "cb_exec"), []);
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hui2 hui3 hui3 hui2 hui1]);
+%!
+%!   ## Interruptible off
+%!   setappdata (hf, "cb_exec", []);
+%!   set (hui1, "interruptible", "off");
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hui1 hui2 hui3 hui3 hui2]);
+%!
+%!   ## "resizefcn" callback interrupts regardless of interruptible property
+%!   setappdata (hf, "cb_exec", []);
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hf, "resizefcn");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hf hf hui1]);
+%!
+%!   ## test "busyaction" "cancel"
+%!   setappdata (hf, "cb_exec", []);
+%!   set (hui2, "busyaction", "cancel");
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!   __go_post_callback__ (hf, "resizefcn");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hf hui3 hui3 hf hui1]);
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+*/
 
 void
 gh_manager::do_enable_event_processing (bool enable)
@@ -12170,6 +12233,40 @@ Undocumented internal function.
   return ovl ();
 }
 
+DEFUN (__go_post_callback__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __go_post_callback__ (@var{h}, @var{name})
+@deftypefnx {} {} __go_post_callback__ (@var{h}, @var{name}, @var{param})
+Undocumented internal function.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  const NDArray vals = args(0).xarray_value ("__go_post_callback__: invalid graphics object");
+
+  std::string name = args(1).xstring_value ("__go_post_callback__: invalid callback name");
+
+  for (octave_idx_type i = 0; i < vals.numel (); i++)
+    {
+      double val = vals(i);
+
+      graphics_handle h = gh_manager::lookup (val);
+
+      if (! h.ok ())
+        error ("__go_execute_callback__: invalid graphics object (= %g)", val);
+
+      if (nargin == 2)
+        gh_manager::post_callback (h, name);
+      else
+        gh_manager::post_callback (h, name, args(2));
+    }
+
+  return ovl ();
+}
+
 DEFUN (__image_pixel_size__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{sz} =} __image_pixel_size__ (@var{h})
@@ -12286,25 +12383,46 @@ undocumented.
 @seealso{refresh}
 @end deftypefn */)
 {
-  static int drawnow_executing = 0;
-
   if (args.length () > 3)
     print_usage ();
 
   octave::unwind_protect frame;
 
   frame.protect_var (Vdrawnow_requested, false);
-  frame.protect_var (drawnow_executing);
 
-  // Redraw, unless we are in the middle of an existing redraw or deletion.
-  if (++drawnow_executing <= 1 && ! delete_executing)
+  // Redraw unless we are in the middle of a deletion.
+  if (! delete_executing)
     {
       gh_manager::auto_lock guard;
 
-      if (args.length () == 0 || args.length () == 1)
+      if (args.length () <= 1)
         {
+          // First process events so that the redraw happens when all
+          // objects are in their definite state.
+          bool do_events = true;
+
+          if (args.length () == 1)
+            {
+              caseless_str val (args(0).xstring_value ("drawnow: first argument must be a string"));
+
+              if (val.compare ("expose"))
+                do_events = false;
+              else
+                error ("drawnow: invalid argument, 'expose' is only valid option");
+            }
+
+          if (do_events)
+            {
+              gh_manager::unlock ();
+
+              gh_manager::process_events ();
+
+              gh_manager::lock ();
+            }
+
           Matrix hlist = gh_manager::figure_handle_list (true);
 
+          // Redraw modified figures
           for (int i = 0; i < hlist.numel (); i++)
             {
               graphics_handle h = gh_manager::lookup (hlist(i));
@@ -12329,27 +12447,7 @@ undocumented.
                       fprops.set_modified (false);
                     }
                 }
-            }
 
-          bool do_events = true;
-
-          if (args.length () == 1)
-            {
-              caseless_str val (args(0).xstring_value ("drawnow: first argument must be a string"));
-
-              if (val.compare ("expose"))
-                do_events = false;
-              else
-                error ("drawnow: invalid argument, 'expose' is only valid option");
-            }
-
-          if (do_events)
-            {
-              gh_manager::unlock ();
-
-              gh_manager::process_events ();
-
-              gh_manager::lock ();
             }
         }
       else if (args.length () >= 2 && args.length () <= 3)

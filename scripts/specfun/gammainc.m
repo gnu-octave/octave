@@ -202,7 +202,7 @@ function y = gammainc (x, a, tail = "lower")
   flag_a_small = todo & (abs (a) > 0) & (abs (a) < 2) & (x < 0);
   a(flag_a_small) += 2;
 
-  flag_s = (((x + 0.25 < a) | (x < 0) | (a < 5)) & (x > -20)) | (abs (x) < 1);
+  flag_s = (((x + 0.25 < a) | (x < 0)) & (x > -20)) | (abs (x) < 1);
 
   ## Case 8: x, a relatively small.
   idx = todo & flag_s;
@@ -337,7 +337,7 @@ function y = gammainc_an (x, a, tail)
   endif
 endfunction
 
-## x + 0.25 < a | x < 0 | x not real | abs(x) < 1 | a < 5.
+## x + 0.25 < a | x < 0 | abs(x) < 1.
 ## Numerical Recipes in Fortran 77 (6.2.5)
 ## series
 function y = gammainc_s (x, a, tail)
@@ -494,7 +494,13 @@ endfunction
 %!assert (gammainc (200, 200, "scaledupper"), 17.3984438553791505135122900,
 %!       -2*eps)
 %!assert (gammainc (200, 200, "scaledlower"), 18.065406676779221643065, -7*eps)
-%!assert (gammainc (201, 200, "upper"), 0.46249244908276709524913736667, -7*eps)
+%!assert (gammainc (201, 200, "upper"), 0.46249244908276709524913736667,
+%!        -7*eps)
+%!assert <*54550> (gammainc (77, 2), 1)
+
+%!assert (gammainc (77, 2, "upper"), 0, -eps)
+%!assert (gammainc (1000, 3.1), 1)
+%!assert (gammainc (1000, 3.1, "upper"), 0)
 
 ## Test small argument
 %!assert (gammainc ([1e-05, 1e-07,1e-10,1e-14], 0.1), ...

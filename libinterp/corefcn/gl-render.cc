@@ -1115,9 +1115,9 @@ namespace octave
 
     Matrix x_zlim = props.get_transform_zlim ();
 
-    xZ1 = x_zlim(0)-(x_zlim(1)-x_zlim(0))/2;
-    xZ2 = x_zlim(1)+(x_zlim(1)-x_zlim(0))/2;
-
+    xZ1 = std::max (-1e6, x_zlim(0)-(x_zlim(1)-x_zlim(0))*100.0);
+    xZ2 = std::min (1e6, x_zlim(1)+(x_zlim(1)-x_zlim(0))*100.0);
+    
     Matrix x_mat1 = props.get_opengl_matrix_1 ();
     Matrix x_mat2 = props.get_opengl_matrix_2 ();
 

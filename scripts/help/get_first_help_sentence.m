@@ -25,7 +25,9 @@
 ## The first sentence is defined as the text after the function declaration
 ## until either the first period (".") or the first appearance of two
 ## consecutive newlines ("\n\n").  The text is truncated to a maximum length of
-## @var{max_len}, which defaults to 80.
+## @var{max_len}, which defaults to 80.  If the text must be truncated the last
+## three characters of the text are replaced with @qcode{"..."} to indicate
+## that more text was available.
 ##
 ## The optional output argument @var{status} returns the status reported by
 ## @code{makeinfo}.  If only one output argument is requested, and @var{status}
@@ -88,7 +90,18 @@ function [text, status] = first_sentence_plain_text (help_text, max_len)
   ## ... or a double end-of-line (we subtract 1 because we are not interested
   ## in capturing the first newline).
   line_end_idx = regexp (help_text, "\n\n", "once") - 1;
-  text = help_text (1:min ([period_idx; line_end_idx; max_len; length(help_text)]));
+  help_len = length (help_text);
+  min_idx = min ([period_idx, line_end_idx, help_len]);
+  if (min_idx < max_len)
+    text = help_text(1:min_idx);
+  else
+    if (max_len > 3)
+      text = help_text(1:(max_len-3));
+      text = [text, "..."];
+    else
+      text = help_text(1:max_len);
+    endif
+  endif
   status = 0;
 endfunction
 
@@ -157,6 +170,9 @@ endfunction
 
 %!assert (get_first_help_sentence ('get_first_help_sentence'), ...
 %!        "Return the first sentence of a function's help text.")
+
+%!assert (get_first_help_sentence ('get_first_help_sentence', 28), ...
+%!        "Return the first sentence...")
 
 ## Test input validation
 %!error get_first_help_sentence ()

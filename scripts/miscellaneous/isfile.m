@@ -65,7 +65,7 @@ endfunction
 %! unwind_protect_cleanup
 %!   try, unlink (tmp); end_try_catch
 %!   try, rmpath (d); end_try_catch
-%! end_unwind_protect 
+%! end_unwind_protect
 
 ## Test input validation
 %!error isfile ()

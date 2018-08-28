@@ -221,7 +221,7 @@ hdf5_fstreambase::open_create (const char *name, int mode)
     }
   if (file_id < 0)
     std::ios::setstate (std::ios::badbit);
-  
+
   return;
 
 #else

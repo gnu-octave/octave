@@ -67,6 +67,7 @@ x.c = "string";
 @end group
 @end example
 
+@c The following line should have a trailing space.
 @opindex . @ @ @ 
 @noindent
 create a structure with three elements.  The @samp{.} character separates

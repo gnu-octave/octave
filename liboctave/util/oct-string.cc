@@ -149,7 +149,7 @@ octave::string::strncmp (const T& str_a, const T& str_b,
   typename T::size_type neff;
   auto len_a = numel (str_a);
   auto len_b = numel (str_b);
-  neff = std::min (std::max (len_a, len_b), n); 
+  neff = std::min (std::max (len_a, len_b), n);
 
   return (len_a >= neff && len_b >= neff
           && str_data_cmp<T> (str_a.data (), str_b.data (), neff));
@@ -163,7 +163,7 @@ octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
   typename T::size_type neff;
   auto len_a = numel (str_a);
   auto len_b = strlen<T> (str_b);
-  neff = std::min (std::max (len_a, len_b), n); 
+  neff = std::min (std::max (len_a, len_b), n);
 
   return (len_a >= neff && len_b >= neff
           && str_data_cmp<T> (str_a.data (), str_b, neff));
@@ -178,7 +178,7 @@ octave::string::strncmpi (const T& str_a, const T& str_b,
   typename T::size_type neff;
   auto len_a = numel (str_a);
   auto len_b = numel (str_b);
-  neff = std::min (std::max (len_a, len_b), n); 
+  neff = std::min (std::max (len_a, len_b), n);
 
   return (len_a >= neff && len_b >= neff
           && str_data_cmpi<T> (str_a.data (), str_b.data (), neff));
@@ -192,7 +192,7 @@ octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
   typename T::size_type neff;
   auto len_a = numel (str_a);
   auto len_b = strlen<T> (str_b);
-  neff = std::min (std::max (len_a, len_b), n); 
+  neff = std::min (std::max (len_a, len_b), n);
 
   return (len_a >= neff && len_b >= neff
           && str_data_cmpi<T> (str_a.data (), str_b, neff));

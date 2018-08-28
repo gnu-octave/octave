@@ -760,7 +760,7 @@ namespace octave
               m_os << ", ";
           }
       }
- 
+
     if (lst.takes_varargs ())
       m_os << "varargin";
   }

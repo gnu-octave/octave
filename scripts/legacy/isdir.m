@@ -27,7 +27,7 @@
 ## Compatibility Note: The @sc{matlab} function of the same name will also
 ## search for @var{f} in the load path directories.  To emulate this behavior
 ## use
-## 
+##
 ## @example
 ## @var{tf} = ! isempty (file_in_loadpath (@var{f}))
 ## @end example

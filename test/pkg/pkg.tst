@@ -47,7 +47,7 @@
 %! endfor
 
 ## Avoids printing to stdout when installing
-%!function silent_pkg_install (varargin) 
+%!function silent_pkg_install (varargin)
 %!  evalc (["pkg install", sprintf(" %s", varargin{:})]);
 %!endfunction
 
@@ -103,7 +103,7 @@
 ## FIXME: Need test
 
 ## Action list
-%!test 
+%!test
 %! [user_packages, system_packages] = pkg ("list");
 
 # -forge

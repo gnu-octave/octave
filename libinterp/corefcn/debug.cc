@@ -527,7 +527,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!   orig_show_dbg = __octave_link_gui_preference__ ("editor/show_dbg_file",
 %!                                                   "0");
 %! endif
-%! unwind_protect 
+%! unwind_protect
 %!   dbclear all;   # Clear out breakpoints before test
 %!   dbstop @ftp/dir;
 %!   dbstop @audioplayer/set 70;

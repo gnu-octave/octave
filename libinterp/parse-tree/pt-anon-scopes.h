@@ -40,7 +40,7 @@ namespace octave
     tree_anon_scopes (void) : scopes (), merged_tables () { }
 
     tree_anon_scopes (octave_user_function *);
-  
+
     tree_anon_scopes& operator = (tree_anon_scopes&& tas)
     {
       scopes = std::move (tas.scopes);

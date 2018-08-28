@@ -34,7 +34,7 @@
 ## Options for the search are provided in the parameter @var{options} using the
 ## function @code{optimset}.  Currently, @code{fminsearch} accepts the options:
 ## @qcode{"Display"}, @qcode{"FunValCheck"},@qcode{"MaxFunEvals"},
-## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"}. 
+## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"}.
 ##
 ## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
 ## before optimization is halted.  The default value is
@@ -45,7 +45,7 @@
 ## before optimization is halted.  The default value is
 ## @code{200 * number_of_variables}, i.e., @code{200 * length (@var{x0})}.
 ## The value must be a positive integer.
-## 
+##
 ## For a description of the other options, see @code{optimset}.  To initialize
 ## an options structure with default values for @code{fminsearch} use
 ## @code{options = optimset ("fminsearch")}.
@@ -78,7 +78,7 @@
 ## about the algorithm.  Fields in the structure are @code{funcCount}
 ## containing the number of function calls to @var{fun}, @code{iterations}
 ## containing the number of iteration steps, @code{algorithm} with the name of
-## the search algorithm (always: 
+## the search algorithm (always:
 ## @nospell{@qcode{"Nelder-Mead simplex direct search"}}), and @code{message}
 ## with the exit message.
 ##

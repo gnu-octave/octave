@@ -156,8 +156,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     for i = 1:length (lst)
       nm = lst(i).name;
-      if (lst(i).isdir && nm(1) != "." && ! strcmp (nm, "private")
-          && nm(1) != "@")
+      if (lst(i).isdir && nm(1) != "." && ! strcmp (nm, "private"))
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, [d, filesep, nm]);
         dp += p;
         dn += n;
@@ -171,7 +170,10 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
 
     saved_dir = pwd ();
     unwind_protect
-      cd (d);
+      [dnm, fnm] = fileparts (d);
+      if (fnm(1) != "@")
+        cd (d);
+      endif
       for i = 1:length (lst)
         nm = lst(i).name;
         ## Ignore hidden files
@@ -182,7 +184,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
             || (length (nm) > 4
                 && (strcmpi (nm((end-3):end), "-tst")
                     || strcmpi (nm((end-3):end), ".tst"))))
-          p = n = xf = xb = sk = rtsk = 0;
+          p = n = xf = xb = sk = rtsk = rgrs = 0;
           ffnm = fullfile (d, nm);
           ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning
           if (has_tests (ffnm))

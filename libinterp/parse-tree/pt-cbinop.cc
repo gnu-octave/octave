@@ -57,6 +57,10 @@ namespace octave
       return octave_value::unknown_unary_op;
   }
 
+#if 0
+  // Restore this code if short-circuit behavior can be preserved when needed.
+  // See bug #54465.
+
   static octave_value::unary_op
   strip_not (octave::tree_expression_ptr_t& exp)
   {
@@ -77,6 +81,7 @@ namespace octave
     else
       return octave_value::unknown_unary_op;
   }
+#endif
 
   // Possibly convert multiplication to trans_mul, mul_trans, herm_mul,
   // or mul_herm.
@@ -128,6 +133,9 @@ namespace octave
 
   // Possibly contract and/or with negation.
 
+#if 0
+  // Restore this code if short-circuit behavior can be preserved when needed.
+  // See bug #54465.
   static octave_value::compound_binary_op
   simplify_and_or_op (octave::tree_expression_ptr_t& a,
                       octave::tree_expression_ptr_t& b,
@@ -160,6 +168,7 @@ namespace octave
 
     return retop;
   }
+#endif
 
   tree_binary_expression *
   maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
@@ -180,8 +189,8 @@ namespace octave
         break;
 
 #if 0
-        // Restore this case if short-circuit behavior can be preserved
-        // when needed.  See bug #54465.
+      // Restore this case if short-circuit behavior can be preserved
+      // when needed.  See bug #54465.
       case octave_value::op_el_and:
       case octave_value::op_el_or:
         ct = simplify_and_or_op (ca, cb, t);

@@ -176,10 +176,14 @@ namespace octave
         ct = simplify_ldiv_op (ca, cb);
         break;
 
+#if 0
+        // Restore this case if short-circuit behavior can be preserved
+        // when needed.  See bug #54465.
       case octave_value::op_el_and:
       case octave_value::op_el_or:
         ct = simplify_and_or_op (ca, cb, t);
         break;
+#endif
 
       default:
         ct = octave_value::unknown_compound_binary_op;

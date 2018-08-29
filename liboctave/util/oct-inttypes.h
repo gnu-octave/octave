@@ -534,11 +534,7 @@ public:
   static T
   __signbit (T x)
   {
-#if defined (OCTAVE_HAVE_FAST_INT_OPS)
-    return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
-#else
     return (x < 0) ? 1 : 0;
-#endif
   }
 
   static T
@@ -617,40 +613,42 @@ public:
   add (T x, T y)
   {
 #if defined (OCTAVE_HAVE_FAST_INT_OPS)
+
     // The typecasts do nothing, but they are here to prevent an optimizing
     // compiler from interfering.  Also, the signed operations on small types
     // actually return int.
     T u = static_cast<UT> (x) + static_cast<UT> (y);
     T ux = u ^ x;
     T uy = u ^ y;
-    if ((ux & uy) < 0)
-      {
-        u = octave_int_base<T>::max_val () + __signbit (~u);
-      }
-    return u;
+
+    return ((ux & uy) < 0
+            ? (u < 0
+               ? octave_int_base<T>::max_val ()
+               : octave_int_base<T>::min_val ())
+            : u);
+
 #else
+
     // We shall carefully avoid anything that may overflow.
     T u;
+
     if (y < 0)
       {
         if (x < octave_int_base<T>::min_val () - y)
-          {
-            u = octave_int_base<T>::min_val ();
-          }
+          u = octave_int_base<T>::min_val ();
         else
           u = x + y;
       }
     else
       {
         if (x > octave_int_base<T>::max_val () - y)
-          {
-            u = octave_int_base<T>::max_val ();
-          }
+          u = octave_int_base<T>::max_val ();
         else
           u = x + y;
       }
 
     return u;
+
 #endif
   }
 
@@ -667,7 +665,9 @@ public:
     T uy = u ^ ~y;
     if ((ux & uy) < 0)
       {
-        u = octave_int_base<T>::max_val () + __signbit (~u);
+        u = (__signbit (~u)
+             ? octave_int_base<T>::min_val ()
+             : octave_int_base<T>::max_val ());
       }
     return u;
 #else

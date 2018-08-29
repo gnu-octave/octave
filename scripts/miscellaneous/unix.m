@@ -32,7 +32,7 @@
 ## @seealso{dos, system, isunix, ismac, ispc}
 ## @end deftypefn
 
-## Author: octave-forge ???
+## Author: Octave Forge ???
 ## Adapted by: jwe
 
 function [status, text] = unix (command, echo_arg)

@@ -36,7 +36,7 @@
 ## @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, flintmax}
 ## @end deftypefn
 
-## Liberally based on the version by Kai Habel from octave-forge
+## Liberally based on the version by Kai Habel from Octave Forge
 
 function C = bitcmp (A, k)
 

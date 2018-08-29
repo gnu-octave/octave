@@ -31,7 +31,7 @@
 ## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, intmax, flintmax}
 ## @end deftypefn
 
-## Liberally based of the version by Kai Habel from octave-forge
+## Liberally based of the version by Kai Habel from Octave Forge
 
 function C = bitget (A, n)
 

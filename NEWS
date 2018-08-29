@@ -104,7 +104,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       Function             | Replacement
       ---------------------|------------------
       bitmax               | flintmax
-      mahalanobis          | mahal in Octave-Forge statistics pkg
+      mahalanobis          | mahal in Octave Forge statistics pkg
       md5sum               | hash
       octave_config_info   | __octave_config_info__
       onenormest           | normest1

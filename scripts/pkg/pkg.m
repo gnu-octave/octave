@@ -79,7 +79,7 @@
 ## the user doesn't normally have system privileges.
 ##
 ## @item -forge
-## Install a package directly from the Octave-Forge repository.  This
+## Install a package directly from the Octave Forge repository.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @emph{Security risk}: no verification of the package is performed
@@ -94,7 +94,7 @@
 ## @end table
 ##
 ## @item update
-## Check installed Octave-Forge packages against repository and update any
+## Check installed Octave Forge packages against repository and update any
 ## outdated items.  This requires an internet connection and the cURL library.
 ## Usage:
 ##
@@ -164,7 +164,7 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The @qcode{"-forge"} option lists packages available at the Octave-Forge
+## The @qcode{"-forge"} option lists packages available at the Octave Forge
 ## repository.  This requires an internet connection and the cURL library.
 ## For example:
 ##

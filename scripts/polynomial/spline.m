@@ -69,7 +69,7 @@
 ## @seealso{pchip, ppval, mkpp, unmkpp}
 ## @end deftypefn
 
-## This code is based on csape.m from octave-forge, but has been
+## This code is based on csape.m from Octave Forge, but has been
 ## modified to use the sparse solver code in octave that itself allows
 ## special casing of tri-diagonal matrices, modified for NDArrays and
 ## for the treatment of vectors y 2 elements longer than x as complete

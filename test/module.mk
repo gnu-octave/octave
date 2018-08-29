@@ -27,6 +27,7 @@ TEST_FILES += \
   %reldir%/global.tst \
   %reldir%/if.tst \
   %reldir%/index.tst \
+  %reldir%/integer.tst \
   %reldir%/io.tst \
   %reldir%/jit.tst \
   %reldir%/leftdiv.tst \

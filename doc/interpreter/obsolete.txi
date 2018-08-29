@@ -151,8 +151,8 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{str2mat} @tab @code{char} @tab 3.6.0
 @item @code{unmark_command} @tab None @tab 3.6.0
 @item @code{unmark_rawcommand} @tab None @tab 3.6.0
-@item @code{autocor} @tab Octave-Forge signal pkg, @code{xcor} @tab 3.8.0
-@item @code{autocov} @tab Octave-Forge signal pkg, @code{xcov} @tab 3.8.0
+@item @code{autocor} @tab Octave Forge signal pkg, @code{xcor} @tab 3.8.0
+@item @code{autocov} @tab Octave Forge signal pkg, @code{xcov} @tab 3.8.0
 @item @code{betai} @tab @code{betainc} @tab 3.8.0
 @item @code{cellidx} @tab @code{ismember} @tab 3.8.0
 @item @code{cquad} @tab @code{quadcc} @tab 3.8.0

@@ -50,7 +50,7 @@
 ## @seealso{pie, bar, hist, rose}
 ## @end deftypefn
 
-## Very roughly based on pie.m from octave-forge whose author was
+## Very roughly based on pie.m from Octave Forge whose author was
 ## Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
 
 function h = pie3 (varargin)

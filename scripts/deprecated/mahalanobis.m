@@ -20,7 +20,7 @@
 ## @deftypefn {} {} mahalanobis (@var{x}, @var{y})
 ##
 ## @code{mahalanobis} is deprecated and will be removed in Octave version 5.
-## See the @code{mahal} function in the statistics package from Octave-Forge
+## See the @code{mahal} function in the statistics package from Octave Forge
 ## for equivalent functionality.
 ##
 ## Return the Mahalanobis' D-square distance between the multivariate
@@ -40,7 +40,7 @@ function retval = mahalanobis (x, y)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "mahalanobis is obsolete and will be removed from a future version of Octave, please use mahal from the statistics package in Octave-Forge instead");
+             "mahalanobis is obsolete and will be removed from a future version of Octave, please use mahal from the statistics package in Octave Forge instead");
   endif
 
   if (nargin != 2)

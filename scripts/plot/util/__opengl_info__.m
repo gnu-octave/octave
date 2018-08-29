@@ -126,7 +126,14 @@ function [info, msg] = gl_info ()
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+## FIXME: This is really an internal function as indicated by the leading and
+## trailing underscores.  As such, it doesn't require tests.  In addition,
+## during the running of the test suite this function will throw up a figure
+## which is undesirable.  The tests have been commented out, but are still
+## available in case someone wants to hand-test the function by executing the
+## code.
+
+%!#testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
 %! old_toolkit = graphics_toolkit ();
 %! unwind_protect
 %!   graphics_toolkit ("fltk");
@@ -137,7 +144,7 @@ endfunction
 %! assert (! isempty (a));
 %! assert (isfield (a, "version"));
 
-%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%!#testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! old_toolkit = graphics_toolkit ();
 %! unwind_protect
 %!   graphics_toolkit ("qt");

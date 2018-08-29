@@ -33,7 +33,7 @@ function list = list_forge_packages ()
 
   if (nargout == 0)
     page_screen_output (false, "local");
-    puts ("OctaveForge provides these packages:\n");
+    puts ("Octave Forge provides these packages:\n");
     for i = 1:length (list)
       try
         ver = get_forge_pkg (list{i});

@@ -345,7 +345,7 @@ function [local_packages, global_packages] = pkg (varargin)
         page_output_immediately (true, "local");
       case "-forge"
         if (! __octave_config_info__ ("CURL_LIBS"))
-          error ("pkg: can't download from forge without the cURL library");
+          error ("pkg: can't download from Octave Forge without the cURL library");
         endif
         octave_forge = true;
       case "-local"
@@ -589,7 +589,7 @@ function [local_packages, global_packages] = pkg (varargin)
         try
           forge_pkg_version = get_forge_pkg (installed_pkg_name);
         catch
-          warning ("pkg: package %s not found on forge - skipping update\n",
+          warning ("pkg: package %s not found on Octave Forge - skipping update\n",
                    installed_pkg_name);
           forge_pkg_version = "0";
         end_try_catch

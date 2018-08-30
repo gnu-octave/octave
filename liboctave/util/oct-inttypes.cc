@@ -36,10 +36,10 @@ template <typename T>
 const octave_int<T> octave_int<T>::one (static_cast<T> (1));
 
 // define type names.
-#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME)     \
-  template <>                                           \
-  OCTAVE_API const char *                               \
-  octave_int<TYPE>::type_name () { return TYPENAME; }
+#define DECLARE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME)             \
+  template <>                                                   \
+  OCTAVE_API const char *                                       \
+  octave_int<TYPE>::type_name (void) { return TYPENAME; }
 
 DECLARE_OCTAVE_INT_TYPENAME (int8_t, "int8")
 DECLARE_OCTAVE_INT_TYPENAME (int16_t, "int16")
@@ -61,17 +61,11 @@ octave_int_base<T>::convert_real (const S& value)
   static const S thmax = compute_threshold (static_cast<S> (max_val ()),
                                             max_val ());
   if (octave::math::isnan (value))
-    {
-      return static_cast<T> (0);
-    }
+    return static_cast<T> (0);
   else if (value < thmin)
-    {
-      return min_val ();
-    }
+    return min_val ();
   else if (value > thmax)
-    {
-      return max_val ();
-    }
+    return max_val ();
   else
     {
       S rvalue = octave::math::round (value);
@@ -103,9 +97,9 @@ INSTANTIATE_CONVERT_REAL (long double);
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
-#if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
+#  if defined (OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED)
 
-#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T)           \
+#    define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T)       \
   template <typename xop>                                       \
   bool                                                          \
   octave_int_cmp_op::external_mop (double x, T y)               \
@@ -137,18 +131,19 @@ INSTANTIATE_CONVERT_REAL (long double);
 DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
 DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (uint64_t)
 
-#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T)               \
+#    define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T)           \
   template OCTAVE_API bool                                              \
   octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T);   \
+                                                                        \
   template OCTAVE_API bool                                              \
   octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (T, double)
 
-#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T)  \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T);   \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T);   \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T);   \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T);   \
-  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T);   \
+#    define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T)      \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T);           \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T);           \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T);           \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T);           \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T);           \
   INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ne, T)
 
 INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (int64_t);
@@ -186,7 +181,7 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
 // Similarly, the conversion from the 64-bit integer type to long double
 // must also occur in long double rounding mode.
 
-#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME)                      \
+#    define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME)                  \
   T                                                             \
   external_double_ ## T ## _ ## NAME (double x, T y)            \
   {                                                             \
@@ -211,7 +206,7 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
     return retval;                                              \
   }
 
-#define OCTAVE_LONG_DOUBLE_OPS(T)               \
+#    define OCTAVE_LONG_DOUBLE_OPS(T)           \
   OCTAVE_LONG_DOUBLE_OP (T, +, add);            \
   OCTAVE_LONG_DOUBLE_OP (T, -, sub);            \
   OCTAVE_LONG_DOUBLE_OP (T, *, mul);            \
@@ -220,7 +215,7 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
 OCTAVE_LONG_DOUBLE_OPS(octave_int64);
 OCTAVE_LONG_DOUBLE_OPS(octave_uint64);
 
-#endif
+#  endif
 
 #else
 
@@ -280,7 +275,7 @@ public:
   typedef xop op;
 };
 
-#define DEFINE_REVERTED_OPERATOR(OP1,OP2)       \
+#define DEFINE_REVERTED_OPERATOR(OP1, OP2)      \
   template <>                                   \
   class rev_op<octave_int_cmp_op::OP1>          \
   {                                             \
@@ -288,10 +283,10 @@ public:
     typedef octave_int_cmp_op::OP2 op;          \
   }
 
-DEFINE_REVERTED_OPERATOR(lt,gt);
-DEFINE_REVERTED_OPERATOR(gt,lt);
-DEFINE_REVERTED_OPERATOR(le,ge);
-DEFINE_REVERTED_OPERATOR(ge,le);
+DEFINE_REVERTED_OPERATOR (lt, gt);
+DEFINE_REVERTED_OPERATOR (gt, lt);
+DEFINE_REVERTED_OPERATOR (le, ge);
+DEFINE_REVERTED_OPERATOR (ge, le);
 
 template <typename xop>
 bool
@@ -436,25 +431,23 @@ overflow:
 
 }
 
-#define INT_DOUBLE_BINOP_DECL(OP,SUFFIX)                        \
-  template <>                                                   \
-  OCTAVE_API octave_ ## SUFFIX                                  \
-  operator OP (const octave_ ## SUFFIX & x, const double& y)
-
-#define DOUBLE_INT_BINOP_DECL(OP,SUFFIX)                        \
-  template <>                                                   \
-  OCTAVE_API octave_ ## SUFFIX                                  \
-  operator OP (const double& x, const octave_ ## SUFFIX & y)
-
-INT_DOUBLE_BINOP_DECL (+, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator + (const octave_uint64& x, const double& y)
 {
   return (y < 0) ? x - octave_uint64 (-y) : x + octave_uint64 (y);
 }
 
-DOUBLE_INT_BINOP_DECL (+, uint64)
-{ return y + x; }
+template <>
+OCTAVE_API octave_uint64
+operator + (const double& x, const octave_uint64& y)
+{
+  return y + x;
+}
 
-INT_DOUBLE_BINOP_DECL (+, int64)
+template <>
+OCTAVE_API octave_int64
+operator + (const octave_int64& x, const double& y)
 {
   if (fabs (y) < static_cast<double> (octave_int64::max ()))
     return x + octave_int64 (y);
@@ -473,17 +466,23 @@ INT_DOUBLE_BINOP_DECL (+, int64)
     }
 }
 
-DOUBLE_INT_BINOP_DECL (+, int64)
+template <>
+OCTAVE_API octave_int64
+operator + (const double& x, const octave_int64& y)
 {
   return y + x;
 }
 
-INT_DOUBLE_BINOP_DECL (-, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator - (const octave_uint64& x, const double& y)
 {
   return x + (-y);
 }
 
-DOUBLE_INT_BINOP_DECL (-, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator - (const double& x, const octave_uint64& y)
 {
   if (x <= static_cast<double> (octave_uint64::max ()))
     return octave_uint64 (x) - y;
@@ -503,21 +502,23 @@ DOUBLE_INT_BINOP_DECL (-, uint64)
     }
 }
 
-INT_DOUBLE_BINOP_DECL (-, int64)
+template <>
+OCTAVE_API octave_int64
+operator - (const octave_int64& x, const double& y)
 {
   return x + (-y);
 }
 
-DOUBLE_INT_BINOP_DECL (-, int64)
+template <>
+OCTAVE_API octave_int64
+operator - (const double& x, const octave_int64& y)
 {
   static const bool twosc = (std::numeric_limits<int64_t>::min ()
                              < -std::numeric_limits<int64_t>::max ());
   // In case of symmetric integers (not two's complement), this will probably
   // be eliminated at compile time.
   if (twosc && y.value () == std::numeric_limits<int64_t>::min ())
-    {
-      return octave_int64 (x + std::pow (2.0, 63));
-    }
+    return octave_int64 (x + std::pow (2.0, 63));
   else
     return x + (-y);
 }
@@ -573,20 +574,16 @@ dbleget (bool sign, uint32_t mtis, int exp)
   return sign ? -x : x;
 }
 
-INT_DOUBLE_BINOP_DECL (*, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator * (const octave_uint64& x, const double& y)
 {
   if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
-    {
-      return x * octave_uint64 (static_cast<uint64_t> (y));
-    }
+    return x * octave_uint64 (static_cast<uint64_t> (y));
   else if (y == 0.5)
-    {
-      return x / octave_uint64 (static_cast<uint64_t> (2));
-    }
+    return x / octave_uint64 (static_cast<uint64_t> (2));
   else if (y < 0 || octave::math::isnan (y) || octave::math::isinf (y))
-    {
-      return octave_uint64 (x.value () * y);
-    }
+    return octave_uint64 (x.value () * y);
   else
     {
       bool sign;
@@ -605,23 +602,23 @@ INT_DOUBLE_BINOP_DECL (*, uint64)
     }
 }
 
-DOUBLE_INT_BINOP_DECL (*, uint64)
-{ return y * x; }
+template <>
+OCTAVE_API octave_uint64
+operator * (const double& x, const octave_uint64& y)
+{
+  return y * x;
+}
 
-INT_DOUBLE_BINOP_DECL (*, int64)
+template <>
+OCTAVE_API octave_int64
+operator * (const octave_int64& x, const double& y)
 {
   if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
-    {
-      return x * octave_int64 (static_cast<int64_t> (y));
-    }
+    return x * octave_int64 (static_cast<int64_t> (y));
   else if (fabs (y) == 0.5)
-    {
-      return x / octave_int64 (static_cast<uint64_t> (4*y));
-    }
+    return x / octave_int64 (static_cast<uint64_t> (4*y));
   else if (octave::math::isnan (y) || octave::math::isinf (y))
-    {
-      return octave_int64 (x.value () * y);
-    }
+    return octave_int64 (x.value () * y);
   else
     {
       bool sign;
@@ -641,35 +638,43 @@ INT_DOUBLE_BINOP_DECL (*, int64)
     }
 }
 
-DOUBLE_INT_BINOP_DECL (*, int64)
-{ return y * x; }
+template <>
+OCTAVE_API octave_int64
+operator * (const double& x, const octave_int64& y)
+{
+  return y * x;
+}
 
-DOUBLE_INT_BINOP_DECL (/, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator / (const double& x, const octave_uint64& y)
 {
   return octave_uint64 (x / static_cast<double> (y));
 }
 
-DOUBLE_INT_BINOP_DECL (/, int64)
+template <>
+OCTAVE_API octave_int64
+operator / (const double& x, const octave_int64& y)
 {
   return octave_int64 (x / static_cast<double> (y));
 }
 
-INT_DOUBLE_BINOP_DECL (/, uint64)
+template <>
+OCTAVE_API octave_uint64
+operator / (const octave_uint64& x, const double& y)
 {
   if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
-    {
-      return x / octave_uint64 (y);
-    }
+    return x / octave_uint64 (y);
   else
     return x * (1.0/y);
 }
 
-INT_DOUBLE_BINOP_DECL (/, int64)
+template <>
+OCTAVE_API octave_int64
+operator / (const octave_int64& x, const double& y)
 {
   if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
-    {
-      return x / octave_int64 (y);
-    }
+    return x / octave_int64 (y);
   else
     return x * (1.0/y);
 }

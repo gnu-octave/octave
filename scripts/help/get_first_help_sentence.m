@@ -84,9 +84,9 @@ endfunction
 
 ## This function extracts the first sentence from a plain text help text
 function [text, status] = first_sentence_plain_text (help_text, max_len)
-  ## Extract first line by searching for a period followed by a space class
-  ## character (to support periods in numbers or words) ...
-  period_idx = regexp (help_text, '\.\s', "once");
+  ## Extract first line by searching for a period followed by whitespace
+  ## followed by a capital letter (Nearly the same rule as Texinfo).
+  period_idx = regexp (help_text, '\.\s+(?:[A-Z]|\n)', "once");
   ## ... or a double end-of-line (we subtract 1 because we are not interested
   ## in capturing the first newline).
   line_end_idx = regexp (help_text, "\n\n", "once") - 1;

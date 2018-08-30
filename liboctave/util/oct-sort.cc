@@ -1401,7 +1401,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
   if (! ms) ms = new MergeState;
 
   ms->reset ();
-  ms->getmem (1024);
+  ms->getmem (MERGESTATE_TEMP_SIZE);
 
   if (nel > 1)
     {
@@ -1458,7 +1458,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
   if (! ms) ms = new MergeState;
 
   ms->reset ();
-  ms->getmemi (1024);
+  ms->getmemi (MERGESTATE_TEMP_SIZE);
 
   if (nel > 1)
     {

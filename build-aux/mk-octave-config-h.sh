@@ -196,7 +196,6 @@ $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_64.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_ATOMIC_REFCOUNT.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_BOUNDS_CHECK.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_ENABLE_OPENMP.*$\)/#  \1/p' $config_h_file
-$SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_FAST_INT_OPS.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/p' $config_h_file

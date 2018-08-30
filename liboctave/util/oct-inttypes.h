@@ -497,32 +497,6 @@ octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t, uint64_t);
 
 #endif
 
-// Signed integer arithmetic.
-//
-// Rationale: If OCTAVE_HAVE_FAST_INT_OPS is defined, the following
-// conditions should hold:
-//
-//   1. Signed numbers are represented by twos complement (see
-//      <http://en.wikipedia.org/wiki/Two%27s_complement>)
-//
-//   2. static_cast to unsigned int counterpart works like
-//      interpreting the signed bit pattern as unsigned (and is thus
-//      zero-cost).
-//
-//   3. Signed addition and subtraction yield the same bit results as
-//      unsigned.  (We use casts to prevent optimization interference,
-//      so there is no need for things like -ftrapv).
-//
-//   4. Bit operations on signed integers work like on unsigned
-//      integers, except for the shifts.  Shifts are arithmetic.
-//
-// The above conditions are satisfied by most modern platforms.  If
-// OCTAVE_HAVE_FAST_INT_OPS is defined, bit tricks and wraparound
-// arithmetics are used to avoid conditional jumps as much as
-// possible, thus being friendly to modern pipeline processor
-// architectures.  Otherwise, we fall back to a bullet-proof code that
-// only uses assumptions guaranteed by the standard.
-
 template <typename T>
 class octave_int_arith_base<T, true> : octave_int_base<T>
 {
@@ -540,32 +514,16 @@ public:
   static T
   abs (T x)
   {
-#if defined (OCTAVE_HAVE_FAST_INT_OPS)
-    // This is close to how GCC does std::abs, but we can't just use std::abs,
-    // because its behavior for INT_MIN is undefined and the compiler could
-    // discard the following test.
-    T m = x >> std::numeric_limits<T>::digits;
-    T y = (x ^ m) - m;
-    if (y < 0)
-      {
-        y = octave_int_base<T>::max_val ();
-      }
-    return y;
-#else
-    // -INT_MAX is safe because C++ actually allows only three implementations
-    // of integers: sign & magnitude, ones complement and twos complement.
-    // The first test will, with modest optimizations, evaluate at compile
-    // time, and maybe eliminate the branch completely.
-    T y;
-    if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
-        && x == octave_int_base<T>::min_val ())
-      {
-        y = octave_int_base<T>::max_val ();
-      }
-    else
-      y = (x < 0) ? -x : x;
-    return y;
-#endif
+    // -INT_MAX is safe because C++ actually allows only three
+    // implementations of integers: sign & magnitude, ones complement
+    // and twos complement.  The first test will, with modest
+    // optimizations, evaluate at compile time, and maybe eliminate
+    // the branch completely.
+
+    return ((octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+             && x == octave_int_base<T>::min_val ())
+            ? octave_int_base<T>::max_val ()
+            : ((x < 0) ? -x : x));
   }
 
   static T
@@ -586,114 +544,42 @@ public:
   lshift (T x, int n) { return x << n; }
 
   // Minus has problems similar to abs.
+
   static T
   minus (T x)
   {
-#if defined (OCTAVE_HAVE_FAST_INT_OPS)
-    T y = -x;
-    if (y == octave_int_base<T>::min_val ())
-      {
-        --y;
-      }
-    return y;
-#else
-    T y;
-    if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
-        && x == octave_int_base<T>::min_val ())
-      {
-        y = octave_int_base<T>::max_val ();
-      }
-    else
-      y = -x;
-    return y;
-#endif
+    return ((octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+             && x == octave_int_base<T>::min_val ())
+            ? octave_int_base<T>::max_val ()
+            : -x);
   }
 
   static T
   add (T x, T y)
   {
-#if defined (OCTAVE_HAVE_FAST_INT_OPS)
+    // Avoid anything that may overflow.
 
-    // The typecasts do nothing, but they are here to prevent an optimizing
-    // compiler from interfering.  Also, the signed operations on small types
-    // actually return int.
-    T u = static_cast<UT> (x) + static_cast<UT> (y);
-    T ux = u ^ x;
-    T uy = u ^ y;
-
-    return ((ux & uy) < 0
-            ? (u < 0
+    return (y < 0
+            ? (x < octave_int_base<T>::min_val () - y
+               ? octave_int_base<T>::min_val ()
+               : x + y)
+            : (x > octave_int_base<T>::max_val () - y
                ? octave_int_base<T>::max_val ()
-               : octave_int_base<T>::min_val ())
-            : u);
-
-#else
-
-    // We shall carefully avoid anything that may overflow.
-    T u;
-
-    if (y < 0)
-      {
-        if (x < octave_int_base<T>::min_val () - y)
-          u = octave_int_base<T>::min_val ();
-        else
-          u = x + y;
-      }
-    else
-      {
-        if (x > octave_int_base<T>::max_val () - y)
-          u = octave_int_base<T>::max_val ();
-        else
-          u = x + y;
-      }
-
-    return u;
-
-#endif
+               : x + y));
   }
 
-  // This is very similar to addition.
   static T
   sub (T x, T y)
   {
-#if defined (OCTAVE_HAVE_FAST_INT_OPS)
-    // The typecasts do nothing, but they are here to prevent an optimizing
-    // compiler from interfering.  Also, the signed operations on small types
-    // actually return int.
-    T u = static_cast<UT> (x) - static_cast<UT> (y);
-    T ux = u ^ x;
-    T uy = u ^ ~y;
-    if ((ux & uy) < 0)
-      {
-        u = (__signbit (~u)
-             ? octave_int_base<T>::min_val ()
-             : octave_int_base<T>::max_val ());
-      }
-    return u;
-#else
-    // We shall carefully avoid anything that may overflow.
-    T u;
-    if (y < 0)
-      {
-        if (x > octave_int_base<T>::max_val () + y)
-          {
-            u = octave_int_base<T>::max_val ();
-          }
-        else
-          u = x - y;
-      }
-    else
-      {
-        if (x < octave_int_base<T>::min_val () + y)
-          {
-            u = octave_int_base<T>::min_val ();
-          }
-        else
-          u = x - y;
-      }
+    // Avoid anything that may overflow.
 
-    return u;
-#endif
+    return (y < 0
+            ? (x > octave_int_base<T>::max_val () + y
+               ? octave_int_base<T>::max_val ()
+               : x - y)
+            : (x < octave_int_base<T>::min_val () + y
+                ? octave_int_base<T>::min_val ()
+               : x - y));
   }
 
   // Multiplication is done using promotion to wider integer type.  If there is
@@ -793,9 +679,6 @@ octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
 
-  // NOTE: We could maybe do it with a single branch if
-  // OCTAVE_HAVE_FAST_INT_OPS, but it would require one more runtime
-  // conversion, so the question is whether it would really be faster.
   if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
     retval = octave_int_base<int64_t>::max_val ();
   else if (p < static_cast<long double> (octave_int_base<int64_t>::min_val ()))

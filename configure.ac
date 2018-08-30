@@ -1120,9 +1120,6 @@ OCTAVE_CXX_COMPLEX_SETTERS
 ## Are there functions to access real/imag parts of numbers via references?
 OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
 
-## Check if fast integer arithmetics based on bit tricks is available.
-OCTAVE_FAST_INT_OPS
-
 ## Does the C compiler handle alloca and const correctly?
 AC_FUNC_ALLOCA
 

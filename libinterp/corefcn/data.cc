@@ -6814,7 +6814,9 @@ This function does not support sparse matrices.
 
   octave_value arg = args(0);
 
-  if (by_rows)
+  if (arg.isempty ())
+    retval = true;
+  else if (by_rows)
     {
       if (arg.issparse ())
         error ("issorted: sparse matrices not yet supported");
@@ -6869,7 +6871,24 @@ This function does not support sparse matrices.
 %!assert (issorted (sv', "either"))
 %!assert (issorted (fliplr (sv)', "either"))
 
-%!error <needs a vector> issorted ([])
+%!assert (issorted ([]))
+%!assert (issorted ([], "rows"))
+%!assert (issorted ([], "ascend"))
+%!assert (issorted ([], "rows", "ascend"))
+%!assert (issorted ([], "descend"))
+%!assert (issorted ([], "rows", "descend"))
+%!assert (issorted ({}))
+%!assert (issorted ({}, "rows"))
+%!assert (issorted ({}, "ascend"))
+%!assert (issorted ({}, "rows", "ascend"))
+%!assert (issorted ({}, "descend"))
+%!assert (issorted ({}, "rows", "descend"))
+%!assert (issorted (""))
+%!assert (issorted ("", "rows"))
+%!assert (issorted ("", "ascend"))
+%!assert (issorted ("", "rows", "ascend"))
+%!assert (issorted ("", "descend"))
+%!assert (issorted ("", "rows", "descend"))
 
 ## Test input validation
 %!error issorted ()

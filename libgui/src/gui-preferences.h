@@ -70,5 +70,22 @@ const gui_pref ed_default_enc ("editor/default_encoding", QVariant ("UTF-8"));
 #endif
 
 
+// Files dock widget
+
+const gui_pref fb_column_state ("filesdockwidget/column_state", QVariant ());
+const gui_pref fb_show_ ("filesdockwidget/column_state", QVariant ());
+const gui_pref fb_mru_list ("filesdockwidget/mru_dir_list", QVariant (QStringList ()));
+const gui_pref fb_show_size ("filesdockwidget/showFileSize", QVariant (false));
+const gui_pref fb_show_type ("filesdockwidget/showFileType", QVariant (false));
+const gui_pref fb_show_date ("filesdockwidget/showLastModified", QVariant (false));
+const gui_pref fb_show_hidden ("filesdockwidget/showHiddenFiles", QVariant (false));
+const gui_pref fb_show_altcol ("filesdockwidget/useAlternatingRowColors", QVariant (true));
+const gui_pref fb_sort_column ("filesdockwidget/sort_files_by_column", QVariant (0));
+const gui_pref fb_sort_order ("filesdockwidget/sort_files_by_order", QVariant (Qt::AscendingOrder));
+const gui_pref fb_sync_octdir ("filesdockwidget/sync_octave_directory", QVariant (true));
+const gui_pref fb_restore_last_dir ("filesdockwidget/restore_last_dir", QVariant (false));
+const gui_pref fb_startup_dir ("filesdockwidget/startup_dir", QVariant (QString ()));
+const gui_pref fb_txt_file_ext ("filesdockwidget/txt_file_extensions",
+                                QVariant ("m;c;cc;cpp;h;txt"));
 
 #endif

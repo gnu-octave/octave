@@ -71,6 +71,7 @@ function varargout = ginput (n = -1)
   orig_windowbuttondownfcn = get (fig, "windowbuttondownfcn");
   orig_keypressfcn = get (fig, "keypressfcn");
   orig_closerequestfcn = get (fig, "closerequestfcn");
+  orig_mousemode = get (fig, "__mouse_mode__");
 
   unwind_protect
 
@@ -78,6 +79,7 @@ function varargout = ginput (n = -1)
     set (fig, "keypressfcn", @ginput_keypressfcn);
     set (fig, "closerequestfcn", {@ginput_closerequestfcn,
                                   orig_closerequestfcn});
+    set (fig, "__mouse_mode__", "none");
 
     do
       if (strcmp (toolkit, "fltk"))
@@ -103,6 +105,7 @@ function varargout = ginput (n = -1)
       set (fig, "windowbuttondownfcn", orig_windowbuttondownfcn);
       set (fig, "keypressfcn", orig_keypressfcn);
       set (fig, "closerequestfcn", orig_closerequestfcn);
+      set (fig, "__mouse_mode__", orig_mousemode);
     endif
   end_unwind_protect
 

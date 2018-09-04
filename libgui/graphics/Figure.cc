@@ -541,6 +541,10 @@ namespace QtHandles
           win->setWindowModality (Qt::NonModal);
 
         break;
+        
+      case figure::properties::ID___MOUSE_MODE__:
+        m_container->canvas (m_handle)->setCursor (mouseMode ());
+        break;
 
       default:
         break;

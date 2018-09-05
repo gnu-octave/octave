@@ -250,7 +250,7 @@ private:
     glMatrixMode (GL_PROJECTION);
     glPushMatrix ();
     glLoadIdentity ();
-    gluOrtho2D (0.0, w (), 0.0, h ());
+    glOrtho (0.0, w (), 0.0, h (), -1, 1);
 
     glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
     glDisable (GL_DEPTH_TEST);

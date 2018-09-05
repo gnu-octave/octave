@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
+#include "unistr-wrappers.h"
 #include "unwind-prot.h"
 
 #include "gl-render.h"
@@ -886,6 +887,8 @@ namespace octave
     std::ostringstream ss;
     ss << "gsave\n";
 
+    static bool warned = false;
+
     for (const auto& txtobj : lst)
       {
         // Color
@@ -910,7 +913,33 @@ namespace octave
             fontname = select_font (txtobj.get_name (),
                                     txtobj.get_weight () == "bold",
                                     txtobj.get_angle () == "italic");
-            str = txtobj.get_string ();
+
+            // Check that the string is composed of single byte characters
+            const std::string tmpstr = txtobj.get_string ();
+            const uint8_t *c =
+              reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
+            
+            for (size_t i = 0; i < tmpstr.size ();)
+              {
+                int mblen = octave_u8_strmblen_wrapper (c + i);
+                
+                if (mblen > 1)
+                  {
+                    str += " ";
+                    if (! warned)
+                      {
+                        warning_with_id ("Octave:print:unsupported-multibyte",
+                                         "print: only ASCII characters are "
+                                         "supported for EPS and derived "
+                                         "formats.");
+                        warned = true;
+                      }
+                  }
+                else
+                  str += tmpstr.at (i);
+                
+                i += mblen;
+              }
           }
 
         escape_character ("(", str);

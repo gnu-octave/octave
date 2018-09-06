@@ -82,6 +82,7 @@ noinst_HEADERS += \
   %reldir%/ToolBar.h \
   %reldir%/ToolBarButton.h \
   %reldir%/gl-select.h \
+  %reldir%/qopengl-functions.h \
   $(TEMPLATE_SRC)
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \

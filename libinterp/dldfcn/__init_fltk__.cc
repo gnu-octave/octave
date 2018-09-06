@@ -123,8 +123,8 @@ class OpenGL_fltk : public Fl_Gl_Window
 public:
 
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
-    : Fl_Gl_Window (xx, yy, ww, hh, nullptr), m_number (num), m_renderer (),
-      m_in_zoom (false), m_zoom_box ()
+    : Fl_Gl_Window (xx, yy, ww, hh, nullptr), m_number (num),
+      m_glfcns (), m_renderer (m_glfcns), m_in_zoom (false), m_zoom_box ()
   {
 #if defined (HAVE_OPENGL)
     // Ask for double buffering and a depth buffer.
@@ -150,7 +150,8 @@ public:
   {
     //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << 'x' << h () << std::endl;
 
-    octave::gl2ps_print (gh_manager::get_object (m_number), cmd, term);
+    octave::gl2ps_print (m_glfcns, gh_manager::get_object (m_number),
+                         cmd, term);
   }
 
   uint8NDArray get_pixels (void)
@@ -190,6 +191,7 @@ private:
 
   double m_number;
 
+  octave::opengl_functions m_glfcns;
   octave::opengl_renderer m_renderer;
 
   bool m_in_zoom;
@@ -203,9 +205,9 @@ private:
 
     if (! valid ())
       {
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity ();
-        glViewport (0, 0, w (), h ());
+        m_glfcns.glMatrixMode (GL_PROJECTION);
+        m_glfcns.glLoadIdentity ();
+        m_glfcns.glViewport (0, 0, w (), h ());
       }
 
     m_renderer.draw (gh_manager::get_object (m_number));
@@ -225,11 +227,11 @@ private:
   {
 #if defined (HAVE_OPENGL)
 
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(3));
-    glVertex2d (m_zoom_box(2), h () - m_zoom_box(3));
-    glVertex2d (m_zoom_box(2), h () - m_zoom_box(1));
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
+    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
+    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(3));
+    m_glfcns.glVertex2d (m_zoom_box(2), h () - m_zoom_box(3));
+    m_glfcns.glVertex2d (m_zoom_box(2), h () - m_zoom_box(1));
+    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
 
 #else
     // This shouldn't happen because construction of Opengl_fltk
@@ -243,34 +245,34 @@ private:
   {
 #if defined (HAVE_OPENGL)
 
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    glLoadIdentity ();
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
 
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    glOrtho (0.0, w (), 0.0, h (), -1, 1);
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glOrtho (0.0, w (), 0.0, h (), -1, 1);
 
-    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    glDisable (GL_DEPTH_TEST);
+    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    m_glfcns.glDisable (GL_DEPTH_TEST);
 
-    glBegin (GL_POLYGON);
-    glColor4f (0.45, 0.62, 0.81, 0.1);
+    m_glfcns.glBegin (GL_POLYGON);
+    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.1);
     zoom_box_vertex ();
-    glEnd ();
+    m_glfcns.glEnd ();
 
-    glLineWidth (1.5);
-    glBegin (GL_LINE_STRIP);
-    glColor4f (0.45, 0.62, 0.81, 0.9);
+    m_glfcns.glLineWidth (1.5);
+    m_glfcns.glBegin (GL_LINE_STRIP);
+    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.9);
     zoom_box_vertex ();
-    glEnd ();
+    m_glfcns.glEnd ();
 
-    glPopAttrib ();
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    m_glfcns.glPopAttrib ();
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix ();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix ();
 
 #else
     // This shouldn't happen because construction of Opengl_fltk

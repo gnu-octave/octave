@@ -1846,7 +1846,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
   ac_octave_save_CXXFLAGS="$CXXFLAGS"
   CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
   CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
+  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget QGLFunctions_1_1])
   AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
     [octave_cv_qt_opengl_ok],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[

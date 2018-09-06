@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "graphics.h"
+#include "oct-opengl.h"
 #include "text-renderer.h"
 
 namespace octave
@@ -36,7 +37,7 @@ namespace octave
   {
   public:
 
-    opengl_renderer (void);
+    opengl_renderer (opengl_functions& glfcns);
 
     // No copying!
 
@@ -45,6 +46,8 @@ namespace octave
     opengl_renderer& operator = (const opengl_renderer&) = delete;
 
     virtual ~opengl_renderer (void) = default;
+
+    opengl_functions& get_opengl_functions (void) const { return m_glfcns; }
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
 
@@ -152,6 +155,10 @@ namespace octave
 
   private:
 
+    void init_maxlights (void);
+
+    std::string get_string (GLenum id) const;
+
     bool is_nan_or_inf (double x, double y, double z) const
     {
       return (math::isnan (x) || math::isnan (y)
@@ -189,7 +196,12 @@ namespace octave
     void draw_all_lights (const base_properties& props,
                           std::list<graphics_object>& obj_list);
 
+  protected:
+
+    opengl_functions& m_glfcns;
+
   private:
+
     // The graphics toolkit associated with the figure being rendered.
     graphics_toolkit toolkit;
 
@@ -216,8 +228,8 @@ namespace octave
     text_renderer txt_renderer;
 
     // light object present and visible
-    unsigned int current_light;
-    unsigned int max_lights;
+    unsigned int m_current_light;
+    unsigned int m_max_lights;
 
     // Indicate we are drawing for selection purpose
     bool selecting;

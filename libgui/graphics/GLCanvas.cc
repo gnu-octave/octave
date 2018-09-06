@@ -49,7 +49,7 @@ namespace QtHandles
 
   GLCanvas::GLCanvas (QWidget *xparent, const graphics_handle& gh)
     : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (gh)
+      Canvas (gh), m_glfcns ()
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -59,6 +59,12 @@ namespace QtHandles
   { }
 
   void
+  GLCanvas::initializeGL (void)
+  {
+    m_glfcns.init ();
+  }
+
+  void
   GLCanvas::draw (const graphics_handle& gh)
   {
     gh_manager::auto_lock lock;
@@ -66,7 +72,7 @@ namespace QtHandles
 
     if (go)
       {
-        octave::opengl_renderer r;
+        octave::opengl_renderer r (m_glfcns);
 
         r.set_viewport (width (), height ());
         r.draw (go);
@@ -98,7 +104,7 @@ namespace QtHandles
 
             fbo.bind ();
 
-            octave::opengl_renderer r;
+            octave::opengl_renderer r (m_glfcns);
             r.set_viewport (pos(2), pos(3));
             r.draw (go);
             retval = r.get_pixels (pos(2), pos(3));
@@ -107,7 +113,7 @@ namespace QtHandles
           }
         else
           {
-            octave::opengl_renderer r;
+            octave::opengl_renderer r (m_glfcns);
             r.set_viewport (pos(2), pos(3));
             r.draw (go);
             retval = r.get_pixels (pos(2), pos(3));
@@ -135,7 +141,7 @@ namespace QtHandles
             if (! begin_rendering ())
               error ("print: no valid OpenGL offscreen context");
 
-            octave::gl2ps_print (figObj, file_cmd.toStdString (),
+            octave::gl2ps_print (m_glfcns, figObj, file_cmd.toStdString (),
                                  term.toStdString ());
           }
         catch (octave::execution_exception& e)
@@ -171,7 +177,7 @@ namespace QtHandles
 
     if (ax)
       {
-        octave::opengl_selector s;
+        octave::opengl_selector s (m_glfcns);
 
         s.set_viewport (width (), height ());
         return s.select (ax, pt.x (), height () - pt.y (),
@@ -181,49 +187,49 @@ namespace QtHandles
     return graphics_object ();
   }
 
-  inline void
-  glDrawZoomBox (const QPoint& p1, const QPoint& p2)
+  void
+  GLCanvas::drawZoomRect (const QPoint& p1, const QPoint& p2)
   {
-    glVertex2d (p1.x (), p1.y ());
-    glVertex2d (p2.x (), p1.y ());
-    glVertex2d (p2.x (), p2.y ());
-    glVertex2d (p1.x (), p2.y ());
-    glVertex2d (p1.x (), p1.y ());
+    m_glfcns.glVertex2d (p1.x (), p1.y ());
+    m_glfcns.glVertex2d (p2.x (), p1.y ());
+    m_glfcns.glVertex2d (p2.x (), p2.y ());
+    m_glfcns.glVertex2d (p1.x (), p2.y ());
+    m_glfcns.glVertex2d (p1.x (), p1.y ());
   }
 
   void
   GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   {
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    glLoadIdentity ();
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
 
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    glOrtho (0, width (), height (), 0, 1, -1);
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glOrtho (0, width (), height (), 0, 1, -1);
 
-    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    glDisable (GL_DEPTH_TEST);
+    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    m_glfcns.glDisable (GL_DEPTH_TEST);
 
-    glBegin (GL_POLYGON);
-    glColor4f (0.45, 0.62, 0.81, 0.1);
-    glDrawZoomBox (p1, p2);
-    glEnd ();
+    m_glfcns.glBegin (GL_POLYGON);
+    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.1);
+    drawZoomRect (p1, p2);
+    m_glfcns.glEnd ();
 
-    glLineWidth (1.5);
-    glBegin (GL_LINE_STRIP);
-    glColor4f (0.45, 0.62, 0.81, 0.9);
-    glDrawZoomBox (p1, p2);
-    glEnd ();
+    m_glfcns.glLineWidth (1.5);
+    m_glfcns.glBegin (GL_LINE_STRIP);
+    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.9);
+    drawZoomRect (p1, p2);
+    m_glfcns.glEnd ();
 
-    glPopAttrib ();
+    m_glfcns.glPopAttrib ();
 
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix ();
 
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix ();
   }
 
   void

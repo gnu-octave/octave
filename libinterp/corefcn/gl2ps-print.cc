@@ -71,9 +71,10 @@ namespace octave
   {
   public:
 
-    gl2ps_renderer (FILE *_fp, const std::string& _term)
-      : opengl_renderer () , fp (_fp), term (_term), fontsize (),
-        fontname (), buffer_overflow (false)
+    gl2ps_renderer (opengl_functions& glfcns, FILE *_fp,
+                    const std::string& _term)
+      : opengl_renderer (glfcns), fp (_fp), term (_term),
+        fontsize (), fontname (), buffer_overflow (false)
     { }
 
     ~gl2ps_renderer (void) = default;
@@ -128,7 +129,7 @@ namespace octave
     {
       // Initialize a sorting tree (viewport) in gl2ps for each axes
       GLint vp[4];
-      glGetIntegerv (GL_VIEWPORT, vp);
+      m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
       gl2psBeginViewport (vp);
 
 
@@ -274,6 +275,7 @@ namespace octave
                                std::list<text_renderer::string>& lst);
 
     int alignment_to_mode (int ha, int va) const;
+
     FILE *fp;
     caseless_str term;
     double fontsize;
@@ -409,7 +411,7 @@ namespace octave
             const figure::properties& fprop
               = dynamic_cast<const figure::properties&> (go.get_properties ());
             Matrix c = fprop.get_color_rgb ();
-            glClearColor (c(0), c(1), c(2), 1);
+            m_glfcns.glClearColor (c(0), c(1), c(2), 1);
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
             GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
@@ -561,7 +563,7 @@ namespace octave
                         + (txtobj.get_x () + box(0))*sin (rot);
 
         GLint vp[4];
-        glGetIntegerv (GL_VIEWPORT, vp);
+        m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
 
         txtobj.set_x (coord_pix(0));
         txtobj.set_y (vp[3] - coord_pix(1));
@@ -976,7 +978,7 @@ namespace octave
     std::list<text_renderer::string> lst;
 
     text_to_strlist (str, lst, bbox, ha, va, rotation);
-    glRasterPos3d (x, y, z);
+    m_glfcns.glRasterPos3d (x, y, z);
 
     // For svg/eps directly dump a preformated text element into gl2ps output
     if (term.find ("svg") != std::string::npos)
@@ -1114,8 +1116,8 @@ namespace octave
   // named by the rest of the string.  Otherwise, write to the named file.
 
   void
-  gl2ps_print (const graphics_object& fig, const std::string& stream,
-               const std::string& term)
+  gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
+               const std::string& stream, const std::string& term)
   {
 #if defined (HAVE_GL2PS_H) && defined (HAVE_OPENGL)
 
@@ -1153,7 +1155,7 @@ namespace octave
         frame.add_fcn (safe_fclose, fp);
       }
 
-    gl2ps_renderer rend (fp, term);
+    gl2ps_renderer rend (glfcns, fp, term);
 
     Matrix pos = fig.get ("position").matrix_value ();
     rend.set_viewport (pos(2), pos(3));
@@ -1163,11 +1165,14 @@ namespace octave
     rend.finish ();
 
 #else
+
+    octave_unused_parameter (glfcns);
     octave_unused_parameter (fig);
     octave_unused_parameter (stream);
     octave_unused_parameter (term);
 
     err_disabled_feature ("gl2ps_print", "gl2ps");
+
 #endif
   }
 }

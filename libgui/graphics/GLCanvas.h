@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Canvas.h"
 
+#include "qopengl-functions.h"
+
 namespace QtHandles
 {
   class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
@@ -51,6 +53,8 @@ namespace QtHandles
     GLCanvas (QWidget *parent, const graphics_handle& handle);
     ~GLCanvas (void);
 
+    void initializeGL (void);
+
     void draw (const graphics_handle& handle);
     uint8NDArray  do_getPixels (const graphics_handle& handle);
     void do_print (const QString& file_cmd, const QString& term,
@@ -58,6 +62,7 @@ namespace QtHandles
     void toggleAxes (const graphics_handle& handle);
     void toggleGrid (const graphics_handle& handle);
     void autoAxes (const graphics_handle& handle);
+    void drawZoomRect (const QPoint& p1, const QPoint& p2);
     void drawZoomBox (const QPoint& p1, const QPoint& p2);
     void resize (int /* x */, int /* y */,
                  int /* width */, int /* height */) { }
@@ -80,10 +85,12 @@ namespace QtHandles
     bool begin_rendering (void);
     void end_rendering (void);
 
-# if defined (HAVE_QT_OFFSCREEN)
+    octave::qopengl_functions m_glfcns;
+
+#  if defined (HAVE_QT_OFFSCREEN)
     QOpenGLContext m_os_context;
     QOffscreenSurface m_os_surface;
-# endif
+#  endif
   };
 
 }

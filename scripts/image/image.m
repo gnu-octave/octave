@@ -27,11 +27,12 @@
 ## The elements of @var{img} are indices into the current colormap.
 ##
 ## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
-## which specify the range for the axis labels.  If a range is specified as
-## @w{@code{[max, min]}} then the image will be reversed along that axis.  For
-## convenience, @var{x} and @var{y} may be specified as N-element vectors
-## matching the length of the data in @var{img}.  However, only the first and
-## last elements will be used to determine the axis limits.
+## which specify the coordinates of the centers of the corner pixels.
+## If a range is specified as @w{@code{[max, min]}} then the image will be
+## reversed along that axis.  For convenience, @var{x} and @var{y} may be
+## specified as N-element vectors matching the length of the data in @var{img}.
+## However, only the first and last elements will be used to determine the axis
+## limits.
 ##
 ## Multiple property/value pairs may be specified for the image object, but
 ## they must appear in pairs.

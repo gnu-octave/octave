@@ -264,7 +264,10 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 The axis function may be used to change the axis limits of an existing
 plot and various other axis properties, such as the aspect ratio and the
-appearance of tic marks.
+appearance of tic marks.  By default, high level plotting functions such as
+@code{plot} reset axes properties.  Any customization of properties, for
+example by calling @code{axis}, @code{xlim}, etc., should happen after the plot
+is done or, alternatively, after calling the @ref{XREFhold, ,hold function}.
 
 @DOCSTRING(axis)
 
@@ -661,10 +664,11 @@ it is not modified.
 @DOCSTRING(refresh)
 
 Normally, high-level plot functions like @code{plot} or @code{mesh} call
-@code{newplot} to initialize the state of the current axes so that the
-next plot is drawn in a blank window with default property settings.  To
-have two plots superimposed over one another, use the @code{hold}
-function.  For example,
+@code{newplot} to determine whether the state of the target axes should be
+initialized (the default) or if subsequent plots should be drawn on top of
+previous ones.  To have two plots drawn over one another, use the @code{hold}
+function or manually change the axes @ref{XREFaxesnextplot, ,nextplot}
+property.  For example,
 
 @example
 @group
@@ -1191,13 +1195,6 @@ graphics handle, such as a patch or line object, use @code{isgraphics}.  The
 more specific test functions return true only if the argument is both a
 graphics handle and of the correct type (figure, axes, specified object type).
 
-The @code{whos} function can be used to show the object type of each currently
-defined graphics handle.  (Note: this is not true today, but it is, I hope,
-considered an error in whos.  It may be better to have whos just show
-graphics_handle as the class, and provide a new function which, given a
-graphics handle, returns its object type.  This could generalize the ishandle()
-functions and, in fact, replace them.)
-
 The @code{get} and @code{set} commands are used to obtain and set the values of
 properties of graphics objects.  In addition, the @code{get} command may be
 used to obtain property names.
@@ -1209,52 +1206,36 @@ the graphics handle h may be displayed by:
 get (h, "type")
 @end example
 
-The properties and their current values are returned by @code{get (h)}
-where h is a handle of a graphics object.  If only the names of the
-allowed properties are wanted they may be displayed by:
-@code{get (h, "")}.
+The properties and their current values may be obtained in the form of a
+structure using @code{s = get (h)}, where @code{h} is the handle of a graphics
+object.  If only the names of the properties and the allowed values (for radio
+properties only) are wanted, one may use @code{set (h)}.
 
 Thus, for example:
 
-@smallexample
+@example
 h = figure ();
 get (h, "type")
-ans = figure
-get (h, "");
-error: get: ambiguous figure property name ; possible matches:
-
-__gl_extensions__      dockcontrols           renderer
-__gl_renderer__        doublebuffer           renderermode
-__gl_vendor__          filename               resize
-__gl_version__         graphicssmoothing      resizefcn
-__graphics_toolkit__   handlevisibility       selected
-__guidata__            hittest                selectionhighlight
-__modified__           integerhandle          selectiontype
-__mouse_mode__         interruptible          sizechangedfcn
-__myhandle__           inverthardcopy         tag
-__pan_mode__           keypressfcn            toolbar
-__plot_stream__        keyreleasefcn          type
-__rotate_mode__        menubar                uicontextmenu
-__zoom_mode__          mincolormap            units
-alphamap               name                   userdata
-beingdeleted           nextplot               visible
-busyaction             numbertitle            windowbuttondownfcn
-buttondownfcn          outerposition          windowbuttonmotionfcn
-children               paperorientation       windowbuttonupfcn
-clipping               paperposition          windowkeypressfcn
-closerequestfcn        paperpositionmode      windowkeyreleasefcn
-color                  papersize              windowscrollwheelfcn
-colormap               papertype              windowstyle
-createfcn              paperunits             wvisual
-currentaxes            parent                 wvisualmode
-currentcharacter       pointer                xdisplay
-currentobject          pointershapecdata      xvisual
-currentpoint           pointershapehotspot    xvisualmode
-deletefcn              position
-@end smallexample
-
-The properties of the root figure may be displayed by:
-@code{get (groot, "")}.
+@result{} ans = figure
+set (h)
+@result{}
+        alphamap:
+        beingdeleted:  [ @{off@} | on ]
+        busyaction:  [ cancel | @{queue@} ]
+        buttondownfcn:
+        clipping:  [ off | @{on@} ]
+        closerequestfcn:
+        color:
+        colormap:
+        createfcn:
+        currentaxes:
+        deletefcn:
+        dockcontrols:  [ @{off@} | on ]
+        filename:
+        graphicssmoothing:  [ off | @{on@} ]
+        handlevisibility:  [ callback | off | @{on@} ]
+        ...
+@end example
 
 The uses of @code{get} and @code{set} are further explained in
 @ref{XREFget,,get}, @ref{XREFset,,set}.
@@ -1738,6 +1719,25 @@ set (gca (), "defaultlinecolor", "remove");
 removes the user-defined default line color setting from the current axes
 object.  To quickly remove all user-defined defaults use the @code{reset}
 function.
+
+By default, high level plotting functions such as @code{plot} reset and
+redefine axes properties independently from the defaults.  An example of such
+property is the axes @code{box} property: it is set @code{on} by high level 2-D
+graphics functions regardless of the property @qcode{"defaultaxesbox"}.  Use
+the @code{hold} function to prevent this behavior:
+
+@example
+@group
+set (groot, "defaultaxesbox", "off");
+subplot (2, 1, 1);
+plot (1:10)
+title ("Box is on anyway")
+subplot (2, 1, 2);
+hold on
+plot (1:10)
+title ("Box is off")
+@end group
+@end example
 
 @DOCSTRING(reset)
 
@@ -2665,13 +2665,12 @@ graphics toolkit.
 
 On Windows platforms, Octave uses software rendering for the OpenGL graphics
 toolkits (@qcode{"qt"} and @qcode{"fltk"}) by default.  This is done to avoid
-rendering and printing issues due to imperfect OpenGL driver implementations for
-diverse graphic cards from different vendors.  As a down-side, software
-rendering might be considerably slower than hardware accelerated rendering.  To
-permanently switch back to hardware accelerated rendering with your graphic card
-drivers, rename the following file while Octave is closed:
+rendering and printing issues due to imperfect OpenGL driver implementations
+for diverse graphic cards from different vendors.  As a down-side, software
+rendering might be considerably slower than hardware accelerated rendering. 
+To permanently switch back to hardware accelerated rendering with your graphic
+card drivers, rename the following file while Octave is closed:
 
 @file{@var{octave-home}\bin\opengl32.dll}
 @*where @var{octave-home} is the directory in which Octave is installed (the
 default is @file{C:\Octave\Octave-@var{version}}).
-

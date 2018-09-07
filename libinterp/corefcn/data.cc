@@ -904,7 +904,14 @@ negative numbers or when the values are periodic.
 %!assert <*45587> (! signbit (mod (0, -0)))
 
 %!assert <*42627> (mod (0.94, 0.01), 0.0)
+
+%!assert <*54602> (mod (int8 (125), int8 (-25)), int8 (0))
+%!assert <*54602> (mod (int8 (-125), int8 (-25)), int8 (0))
+%!assert <*54602> (mod (int8 (-125), int8 (0)), int8 (-125))
+%!assert <*54602> (mod (int8 (0), int8 (-25)), int8 (0))
+
 */
+
 
 #define DATA_REDUCTION(FCN)                                             \
                                                                         \

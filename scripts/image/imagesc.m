@@ -30,10 +30,13 @@
 ## colormap.  If @code{@var{climits} = [@var{lo}, @var{hi}]} is given, then
 ## that range is set to the @qcode{"clim"} of the current axes.
 ##
-## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}, either as pairs giving the minimum and maximum
-## values for the respective axes, or as values for each row and column
-## of the matrix @var{img}.
+## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
+## which specify the coordinates of the centers of the corner pixels.
+## If a range is specified as @w{@code{[max, min]}} then the image will be
+## reversed along that axis.  For convenience, @var{x} and @var{y} may be
+## specified as N-element vectors matching the length of the data in @var{img}.
+## However, only the first and last elements will be used to determine the axis
+## limits.
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##

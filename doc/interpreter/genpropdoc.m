@@ -1148,7 +1148,7 @@ measured in degrees.";
 
       case "xdata"
         s.doc = "Two-element vector @code{[xmin xmax]} specifying the x \
-coordinates of the first and last columns of the image.\n\
+coordinates of the centers of the first and last columns of the image.\n\
 \n\
 Setting @code{xdata} to the empty matrix ([]) will restore the default value \
 of @code{[1 columns(image)]}.";
@@ -1156,7 +1156,7 @@ of @code{[1 columns(image)]}.";
 
       case "ydata"
         s.doc = "Two-element vector @code{[ymin ymax]} specifying the y \
-coordinates of the first and last rows of the image.\n\
+coordinates of the centers of the first and last rows of the image.\n\
 \n\
 Setting @code{ydata} to the empty matrix ([]) will restore the default value \
 of @code{[1 rows(image)]}.";

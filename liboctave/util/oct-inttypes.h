@@ -723,7 +723,7 @@ public:
     if (y != 0)
       {
         T r = x % y;
-        return ((r < 0) != (y < 0)) ? r + y : r;
+        return (r == 0) ? 0 : (((r < 0) != (y < 0)) ? r + y : r);
       }
     else
       return x;

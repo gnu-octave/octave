@@ -4368,30 +4368,23 @@ namespace octave
 #endif
   }
 
+#if defined (HAVE_OPENGL)
+
   std::string
   opengl_renderer::get_string (GLenum id) const
   {
-#if defined (HAVE_OPENGL)
-
     // This is kind of ugly, but glGetString returns a pointer to GLubyte
     // and there is no std::string constructor that matches.  Is there a
     // better way?
 
     std::ostringstream buf;
+
     buf << m_glfcns.glGetString (id);
+
     return std::string (buf.str ());
-
-#else
-
-    octave_unused_parameter (id);
-
-    // This shouldn't happen because construction of opengl_renderer
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
+  }
 
 #endif
-  }
 
   void
   opengl_renderer::set_normal (int bfl_mode, const NDArray& n, int j, int i)

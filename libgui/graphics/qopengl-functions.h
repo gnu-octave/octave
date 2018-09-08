@@ -75,7 +75,8 @@ namespace octave
       m_glfcns.glBindTexture (target, texture);
     }
 
-    void glBitmap (GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte *bitmap)
+    void glBitmap (GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig,
+                   GLfloat xmove, GLfloat ymove, const GLubyte *bitmap)
     {
       m_glfcns.glBitmap (width, height, xorig, yorig, xmove, ymove, bitmap);
     }
@@ -90,7 +91,8 @@ namespace octave
       m_glfcns.glCallList (list);
     }
 
-    void glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+    void glClearColor (GLclampf red, GLclampf green, GLclampf blue,
+                       GLclampf alpha)
     {
       m_glfcns.glClearColor (red, green, blue, alpha);
     }
@@ -155,7 +157,8 @@ namespace octave
       m_glfcns.glDisable (cap);
     }
 
-    void glDrawPixels (GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
+    void glDrawPixels (GLsizei width, GLsizei height, GLenum format,
+                       GLenum type, const GLvoid *pixels)
     {
       m_glfcns.glDrawPixels (width, height, format, type, pixels);
     }
@@ -295,7 +298,8 @@ namespace octave
       m_glfcns.glNormal3dv (v);
     }
 
-    void glOrtho (GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val)
+    void glOrtho (GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+                  GLdouble near_val, GLdouble far_val)
     {
       m_glfcns.glOrtho (left, right, bottom, top, near_val, far_val);
     }
@@ -355,7 +359,8 @@ namespace octave
       m_glfcns.glRasterPos3d (x, y, z);
     }
 
-    void glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels)
+    void glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height,
+                       GLenum format, GLenum type, GLvoid *pixels)
     {
       m_glfcns.glReadPixels (x, y, width, height, format, type, pixels);
     }
@@ -395,9 +400,12 @@ namespace octave
       m_glfcns.glTexCoord2d (s, t);
     }
 
-    void glTexImage2D (GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+    void glTexImage2D (GLenum target, GLint level, GLint internalFormat,
+                       GLsizei width, GLsizei height, GLint border,
+                       GLenum format, GLenum type, const GLvoid *pixels)
     {
-      m_glfcns.glTexImage2D (target, level, internalFormat, width, height, border, format, type, pixels);
+      m_glfcns.glTexImage2D (target, level, internalFormat, width, height,
+                             border, format, type, pixels);
     }
 
     void glTexParameteri (GLenum target, GLenum pname, GLint param)

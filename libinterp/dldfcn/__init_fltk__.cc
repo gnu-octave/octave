@@ -127,10 +127,14 @@ public:
       m_glfcns (), m_renderer (m_glfcns), m_in_zoom (false), m_zoom_box ()
   {
 #if defined (HAVE_OPENGL)
+
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+
 #else
+
     err_disabled_feature ("OpenGL_fltk", "OpenGL");
+
 #endif
   }
 
@@ -167,10 +171,17 @@ public:
     Fl_Gl_Window::resize (xx, yy, ww, hh);
 
 #else
+
+    octave_unused_parameter (xx);
+    octave_unused_parameter (yy);
+    octave_unused_parameter (ww);
+    octave_unused_parameter (hh);
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
+
 #endif
   }
 
@@ -216,10 +227,12 @@ private:
       overlay ();
 
 #else
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
+
 #endif
   }
 
@@ -259,10 +272,14 @@ private:
     return Fl_Gl_Window::handle (event);
 
 #else
+
+    octave_unused_parameter (event);
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
+
 #endif
   }
 };

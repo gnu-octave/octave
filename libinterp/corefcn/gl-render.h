@@ -166,7 +166,9 @@ namespace octave
 
     void init_maxlights (void);
 
+#if defined (HAVE_OPENGL)
     std::string get_string (GLenum id) const;
+#endif
 
     bool is_nan_or_inf (double x, double y, double z) const
     {

@@ -1,5 +1,7 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
+LIBOCTGUI_GRAPHICS_LIB := %reldir%/libgui-graphics.la
+
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-annotation-dialog.cc \
   %reldir%/moc-Backend.cc \
@@ -147,7 +149,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(o
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-noinst_LTLIBRARIES += %reldir%/libgui-graphics.la
+noinst_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
 
 libgui_EXTRA_DIST += \
   %reldir%/qthandles.qrc \

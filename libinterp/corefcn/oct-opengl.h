@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_OPENGL)
 
-#  include <functional>
-
 #  if defined (HAVE_GL_GL_H)
 #    include <GL/gl.h>
 #  elif defined (HAVE_OPENGL_GL_H) || defined (HAVE_FRAMEWORK_OPENGL)
@@ -47,6 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 #    include <OpenGL/glext.h>
 #  endif
 
+#endif
+
 namespace octave
 {
   class opengl_functions
@@ -60,6 +60,12 @@ namespace octave
     opengl_functions& operator = (const opengl_functions&) = default;
 
     virtual ~opengl_functions (void) = default;
+
+#if defined (HAVE_OPENGL)
+
+    // If OpenGL is not available, opengl_functions will be a dummy
+    // class that does nothing.  This makes the implementation of
+    // other things that rely on this class slightly simpler.
 
     virtual void glAlphaFunc (GLenum func, GLclampf ref)
     {
@@ -76,7 +82,9 @@ namespace octave
       ::glBindTexture (target, texture);
     }
 
-    virtual void glBitmap (GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte *bitmap)
+    virtual void glBitmap (GLsizei width, GLsizei height, GLfloat xorig,
+                           GLfloat yorig, GLfloat xmove, GLfloat ymove,
+                           const GLubyte *bitmap)
     {
       ::glBitmap (width, height, xorig, yorig, xmove, ymove, bitmap);
     }
@@ -91,7 +99,8 @@ namespace octave
       ::glCallList (list);
     }
 
-    virtual void glClearColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+    virtual void glClearColor (GLclampf red, GLclampf green, GLclampf blue,
+                               GLclampf alpha)
     {
       ::glClearColor (red, green, blue, alpha);
     }
@@ -121,12 +130,14 @@ namespace octave
       ::glColor3fv (v);
     }
 
-    virtual void glColor4d (GLdouble red, GLdouble green, GLdouble blue, GLdouble alpha)
+    virtual void glColor4d (GLdouble red, GLdouble green, GLdouble blue,
+                            GLdouble alpha)
     {
       ::glColor4d (red, green, blue, alpha);
     }
 
-    virtual void glColor4f (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
+    virtual void glColor4f (GLfloat red, GLfloat green, GLfloat blue,
+                            GLfloat alpha)
     {
       ::glColor4f (red, green, blue, alpha);
     }
@@ -156,7 +167,8 @@ namespace octave
       ::glDisable (cap);
     }
 
-    virtual void glDrawPixels (GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
+    virtual void glDrawPixels (GLsizei width, GLsizei height, GLenum format,
+                               GLenum type, const GLvoid *pixels)
     {
       ::glDrawPixels (width, height, format, type, pixels);
     }
@@ -296,7 +308,8 @@ namespace octave
       ::glNormal3dv (v);
     }
 
-    virtual void glOrtho (GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val)
+    virtual void glOrtho (GLdouble left, GLdouble right, GLdouble bottom,
+                          GLdouble top, GLdouble near_val, GLdouble far_val)
     {
       ::glOrtho (left, right, bottom, top, near_val, far_val);
     }
@@ -356,7 +369,8 @@ namespace octave
       ::glRasterPos3d (x, y, z);
     }
 
-    virtual void glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels)
+    virtual void glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height,
+                               GLenum format, GLenum type, GLvoid *pixels)
     {
       ::glReadPixels (x, y, width, height, format, type, pixels);
     }
@@ -396,9 +410,11 @@ namespace octave
       ::glTexCoord2d (s, t);
     }
 
-    virtual void glTexImage2D (GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+    virtual void glTexImage2D (GLenum target, GLint level, GLint internalFormat,
+                               GLsizei width, GLsizei height, GLint border,
+                               GLenum format, GLenum type, const GLvoid *pixels)
     {
-      ::glTexImage2D (target, level, internalFormat, width, height, border, format, type, pixels);
+      ::glTexImage2D (target, level, internalFormat, width, height, border,
     }
 
     virtual void glTexParameteri (GLenum target, GLenum pname, GLint param)
@@ -435,9 +451,10 @@ namespace octave
     {
       ::glViewport (x, y, width, height);
     }
+
+#endif
   };
 }
 
-#endif
 
 #endif

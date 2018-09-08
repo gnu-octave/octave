@@ -53,7 +53,7 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
 %canon_reldir%_liboctgui_la_LIBADD = \
   %reldir%/qterminal/libqterminal.la \
   %reldir%/src/libgui-src.la \
-  %reldir%/graphics/libgui-graphics.la \
+  $(LIBOCTGUI_GRAPHICS_LIB) \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)

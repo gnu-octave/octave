@@ -1049,6 +1049,97 @@ namespace octave
 #endif
   }
 
+  void
+  opengl_renderer::draw_zoom_rect (int x1, int y1, int x2, int y2)
+  {
+#if defined (HAVE_OPENGL)
+
+    m_glfcns.glVertex2d (x1, y1);
+    m_glfcns.glVertex2d (x2, y1);
+    m_glfcns.glVertex2d (x2, y2);
+    m_glfcns.glVertex2d (x1, y2);
+    m_glfcns.glVertex2d (x1, y1);
+
+#else
+
+    octave_unused_parameter (x1);
+    octave_unused_parameter (x2);
+    octave_unused_parameter (y1);
+    octave_unused_parameter (y2);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::draw_zoom_box (int width, int height,
+                                  int x1, int y1, int x2, int y2,
+                                  const Matrix& overlaycolor,
+                                  double overlayalpha,
+                                  const Matrix& bordercolor,
+                                  double borderalpha, double borderwidth)
+  {
+#if defined (HAVE_OPENGL)
+
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glOrtho (0, width, height, 0, 1, -1);
+
+    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    m_glfcns.glDisable (GL_DEPTH_TEST);
+
+    m_glfcns.glBegin (GL_POLYGON);
+    m_glfcns.glColor4f (overlaycolor(0), overlaycolor(1), overlaycolor(2),
+                        overlayalpha);
+    draw_zoom_rect (x1, y1, x2, y2);
+    m_glfcns.glEnd ();
+
+    m_glfcns.glLineWidth (borderwidth);
+    m_glfcns.glBegin (GL_LINE_STRIP);
+    m_glfcns.glColor4f (bordercolor(0), bordercolor(1), bordercolor(2),
+                        borderalpha);
+    draw_zoom_rect (x1, y1, x2, y2);
+    m_glfcns.glEnd ();
+
+    m_glfcns.glPopAttrib ();
+
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix ();
+
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix ();
+
+#else
+
+    octave_unused_parameter (width);
+    octave_unused_parameter (height);
+    octave_unused_parameter (x1);
+    octave_unused_parameter (x2);
+    octave_unused_parameter (y1);
+    octave_unused_parameter (y2);
+    octave_unused_parameter (overlaycolor);
+    octave_unused_parameter (overlayalpha);
+    octave_unused_parameter (bordercolor);
+    octave_unused_parameter (borderalpha);
+    octave_unused_parameter (borderwidth);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
   uint8NDArray
   opengl_renderer::get_pixels (int width, int height)
   {

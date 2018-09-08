@@ -223,63 +223,22 @@ private:
 #endif
   }
 
-  void zoom_box_vertex (void)
-  {
-#if defined (HAVE_OPENGL)
-
-    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
-    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(3));
-    m_glfcns.glVertex2d (m_zoom_box(2), h () - m_zoom_box(3));
-    m_glfcns.glVertex2d (m_zoom_box(2), h () - m_zoom_box(1));
-    m_glfcns.glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
-
-#else
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-#endif
-  }
-
   void overlay (void)
   {
-#if defined (HAVE_OPENGL)
+    Matrix overlaycolor (3, 1);
+    overlaycolor(0) = 0.45;
+    overlaycolor(1) = 0.62;
+    overlaycolor(2) = 0.81;
+    double overlayalpha = 0.1;
+    Matrix bordercolor = overlaycolor;
+    double borderalpha = 0.9;
+    double borderwidth = 1.5;
 
-    m_glfcns.glMatrixMode (GL_MODELVIEW);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
-
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
-    m_glfcns.glOrtho (0.0, w (), 0.0, h (), -1, 1);
-
-    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    m_glfcns.glDisable (GL_DEPTH_TEST);
-
-    m_glfcns.glBegin (GL_POLYGON);
-    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.1);
-    zoom_box_vertex ();
-    m_glfcns.glEnd ();
-
-    m_glfcns.glLineWidth (1.5);
-    m_glfcns.glBegin (GL_LINE_STRIP);
-    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.9);
-    zoom_box_vertex ();
-    m_glfcns.glEnd ();
-
-    m_glfcns.glPopAttrib ();
-    m_glfcns.glMatrixMode (GL_MODELVIEW);
-    m_glfcns.glPopMatrix ();
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPopMatrix ();
-
-#else
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-#endif
+    m_renderer.draw_zoom_box (w (), h (),
+                              m_zoom_box(0), m_zoom_box(1),
+                              m_zoom_box(2), m_zoom_box(3),
+                              overlaycolor, overlayalpha,
+                              bordercolor, borderalpha, borderwidth);
   }
 
   int handle (int event)

@@ -68,6 +68,13 @@ namespace octave
     virtual graphics_xform get_transform (void) const { return xform; }
     virtual uint8NDArray get_pixels (int width, int height);
 
+    virtual void draw_zoom_box (int width, int height,
+                                int x1, int y1, int x2, int y2,
+                                const Matrix& overlaycolor,
+                                double overlayalpha,
+                                const Matrix& bordercolor,
+                                double borderalpha, double borderwidth);
+
     virtual void finish (void);
 
   protected:
@@ -152,6 +159,8 @@ namespace octave
                                    double p1, double p2,
                                    int xyz, int ha, int va,
                                    int& wmax, int& hmax);
+
+    virtual void draw_zoom_rect (int x1, int y1, int x2, int y2);
 
   private:
 

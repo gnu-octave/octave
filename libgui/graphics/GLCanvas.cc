@@ -49,7 +49,7 @@ namespace QtHandles
 
   GLCanvas::GLCanvas (QWidget *xparent, const graphics_handle& gh)
     : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (gh), m_glfcns ()
+      Canvas (gh), m_glfcns (), m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -72,10 +72,8 @@ namespace QtHandles
 
     if (go)
       {
-        octave::opengl_renderer r (m_glfcns);
-
-        r.set_viewport (width (), height ());
-        r.draw (go);
+        m_renderer.set_viewport (width (), height ());
+        m_renderer.draw (go);
       }
   }
 
@@ -104,19 +102,17 @@ namespace QtHandles
 
             fbo.bind ();
 
-            octave::opengl_renderer r (m_glfcns);
-            r.set_viewport (pos(2), pos(3));
-            r.draw (go);
-            retval = r.get_pixels (pos(2), pos(3));
+            m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.draw (go);
+            retval = m_renderer.get_pixels (pos(2), pos(3));
 
             fbo.release ();
           }
         else
           {
-            octave::opengl_renderer r (m_glfcns);
-            r.set_viewport (pos(2), pos(3));
-            r.draw (go);
-            retval = r.get_pixels (pos(2), pos(3));
+            m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.draw (go);
+            retval = m_renderer.get_pixels (pos(2), pos(3));
           }
 
         end_rendering ();
@@ -188,48 +184,21 @@ namespace QtHandles
   }
 
   void
-  GLCanvas::drawZoomRect (const QPoint& p1, const QPoint& p2)
-  {
-    m_glfcns.glVertex2d (p1.x (), p1.y ());
-    m_glfcns.glVertex2d (p2.x (), p1.y ());
-    m_glfcns.glVertex2d (p2.x (), p2.y ());
-    m_glfcns.glVertex2d (p1.x (), p2.y ());
-    m_glfcns.glVertex2d (p1.x (), p1.y ());
-  }
-
-  void
   GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   {
-    m_glfcns.glMatrixMode (GL_MODELVIEW);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
+    Matrix overlaycolor (3, 1);
+    overlaycolor(0) = 0.45;
+    overlaycolor(1) = 0.62;
+    overlaycolor(2) = 0.81;
+    double overlayalpha = 0.1;
+    Matrix bordercolor = overlaycolor;
+    double borderalpha = 0.9;
+    double borderwidth = 1.5;
 
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPushMatrix ();
-    m_glfcns.glLoadIdentity ();
-    m_glfcns.glOrtho (0, width (), height (), 0, 1, -1);
-
-    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    m_glfcns.glDisable (GL_DEPTH_TEST);
-
-    m_glfcns.glBegin (GL_POLYGON);
-    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.1);
-    drawZoomRect (p1, p2);
-    m_glfcns.glEnd ();
-
-    m_glfcns.glLineWidth (1.5);
-    m_glfcns.glBegin (GL_LINE_STRIP);
-    m_glfcns.glColor4f (0.45, 0.62, 0.81, 0.9);
-    drawZoomRect (p1, p2);
-    m_glfcns.glEnd ();
-
-    m_glfcns.glPopAttrib ();
-
-    m_glfcns.glMatrixMode (GL_MODELVIEW);
-    m_glfcns.glPopMatrix ();
-
-    m_glfcns.glMatrixMode (GL_PROJECTION);
-    m_glfcns.glPopMatrix ();
+    m_renderer.draw_zoom_box (width (), height (),
+                              p1.x (), p1.y (), p2.x (), p2.y (),
+                              overlaycolor, overlayalpha,
+                              bordercolor, borderalpha, borderwidth);
   }
 
   void

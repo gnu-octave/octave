@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Canvas.h"
 
+#include "gl-render.h"
 #include "qopengl-functions.h"
 
 namespace QtHandles
@@ -62,7 +63,6 @@ namespace QtHandles
     void toggleAxes (const graphics_handle& handle);
     void toggleGrid (const graphics_handle& handle);
     void autoAxes (const graphics_handle& handle);
-    void drawZoomRect (const QPoint& p1, const QPoint& p2);
     void drawZoomBox (const QPoint& p1, const QPoint& p2);
     void resize (int /* x */, int /* y */,
                  int /* width */, int /* height */) { }
@@ -86,6 +86,7 @@ namespace QtHandles
     void end_rendering (void);
 
     octave::qopengl_functions m_glfcns;
+    octave::opengl_renderer m_renderer;
 
 #  if defined (HAVE_QT_OFFSCREEN)
     QOpenGLContext m_os_context;

@@ -373,8 +373,7 @@ namespace octave
   {
     QString file
       = QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".",
-                                      nullptr, nullptr,
-                                      QFileDialog::DontUseNativeDialog);
+                                      nullptr, nullptr);
 
     if (! file.isEmpty ())
       {
@@ -390,8 +389,7 @@ namespace octave
 
     if (file.isEmpty ())
       file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".",
-                                           nullptr, nullptr,
-                                           QFileDialog::DontUseNativeDialog);
+                                           nullptr, nullptr);
 
     if (! file.isEmpty ())
       {
@@ -901,8 +899,7 @@ namespace octave
   {
     QString dir
       = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), nullptr,
-                                           QFileDialog::ShowDirsOnly |
-                                           QFileDialog::DontUseNativeDialog);
+                                           QFileDialog::ShowDirsOnly);
 
     set_current_working_directory (dir);
 
@@ -1064,7 +1061,6 @@ namespace octave
     // Giving trouble under KDE (problem is related to Qt signal handling on unix,
     // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
     // it had/has no effect on Windows, though)
-    fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
 
     // define a new grid layout with the extra elements
     QGridLayout *extra = new QGridLayout (fileDialog);

@@ -125,7 +125,7 @@ endfunction
 %!  title ("Surface without lighting");
 
 %!demo
-%! ## Lighting modes
+%! ## Lighting modes on patches
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -134,20 +134,36 @@ endfunction
 %! fv = isosurface (x, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "none");
-%! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "flat");
-%! isonormals (x+.5, y, z, val, h_patch)
 %! fv = isosurface (x+1, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "Gouraud");
-%! isonormals (x+1, y, z, val, h_patch);
 %! axis tight
 %! axis equal
 %! view (2);
 %! light ("Position", [-1 1 1]);
-%! title ({"FaceLighting", "none - flat - gouraud"});
+%! title ({"FaceLighting on patches", "none - flat - gouraud"});
+
+%!demo
+%! ## Lighting modes on surfaces
+%! clf;
+%! Z = peaks ();
+%! [X, Y] = meshgrid (1:size (Z, 2), 1:size (Z, 1));
+%!
+%! h_axes1 = axes ();
+%! surf (X, Y, Z, "LineStyle", "none", "FaceLighting", "none");
+%! hold on;
+%! surf (X + round(1.2 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%!       "FaceLighting", "flat");
+%! surf (X + round(2.4 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%!       "FaceLighting", "gouraud");
+%! axis tight
+%! axis equal
+%! view (2);
+%! light ("Position", [-1 1 1]);
+%! title ({"FaceLighting on surfaces", "none - flat - gouraud"});
 
 %!demo
 %! ## multiple lights

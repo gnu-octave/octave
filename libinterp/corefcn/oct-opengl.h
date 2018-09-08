@@ -415,6 +415,7 @@ namespace octave
                                GLenum format, GLenum type, const GLvoid *pixels)
     {
       ::glTexImage2D (target, level, internalFormat, width, height, border,
+                      format, type, pixels);
     }
 
     virtual void glTexParameteri (GLenum target, GLenum pname, GLint param)

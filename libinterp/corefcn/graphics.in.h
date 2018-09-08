@@ -5118,13 +5118,13 @@ public:
       string_property displayname , ""
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property edgelighting , "{none}|flat|gouraud|phong"
+      radio_property edgelighting u , "{none}|flat|gouraud|phong"
       radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
-      radio_property facelighting , "none|{flat}|gouraud|phong"
+      radio_property facelighting u , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
-      radio_property facenormalsmode , "{auto}|manual"
+      radio_property facenormalsmode u , "{auto}|manual"
       // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
@@ -5190,6 +5190,14 @@ public:
       specularstrength.add_constraint ("max", 1.0, true);
     }
 
+  public:
+    void update_normals (bool reset)
+    {
+      update_face_normals (reset);
+      update_vertex_normals (reset);
+    }
+
+
   private:
     void update_alphadata (void)
     {
@@ -5209,26 +5217,38 @@ public:
 
     void update_xdata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_xlim (xdata.get_limits ());
     }
 
     void update_ydata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_ylim (ydata.get_limits ());
     }
 
     void update_zdata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_zlim (zdata.get_limits ());
     }
 
-    void update_vertex_normals (void);
+    void update_face_normals (bool reset);
+    void update_vertex_normals (bool reset);
+
+    void update_facenormalsmode (void)
+    { update_face_normals (false); }
 
     void update_vertexnormalsmode (void)
-    { update_vertex_normals (); }
+    { update_vertex_normals (false); }
+
+    void update_edgelighting (void)
+    { update_normals (false); }
+
+    void update_facelighting (void)
+    { update_normals (false); }
+
+
   };
 
 private:

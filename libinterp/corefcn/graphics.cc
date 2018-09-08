@@ -8677,8 +8677,7 @@ axes::properties::trigger_normals_calc (void)
   std::list<graphics_object> children_list;
   std::list<graphics_object>::iterator children_list_iter;
   get_children_of_type ("patch", false, true, children_list);
-  // FIXME: Un-comment when surface is ready:
-  // get_children_of_type ("surface", false, true, children_list);
+  get_children_of_type ("surface", false, true, children_list);
 
   // trigger normals calculation for these objects
   for (children_list_iter = children_list.begin ();
@@ -8693,10 +8692,9 @@ axes::properties::trigger_normals_calc (void)
         }
       else
         {
-          // FIXME: Un-comment when surface is ready:
-          // surface::properties& surface_props =
-          //     dynamic_cast<surface::properties&> (kid.get_properties ());
-          // surface_props.update_normals (false);
+          surface::properties& surface_props =
+              dynamic_cast<surface::properties&> (kid.get_properties ());
+          surface_props.update_normals (false);
         }
     }
 }
@@ -9312,8 +9310,8 @@ patch::properties::calc_face_normals (Matrix& fn)
         {
           // more general for non-planar polygons
 
-          // calculate face normal with Newill method
-          // https://courses.cit.cornell.edu/cs417-land/SECTIONS/normals.html
+          // calculate face normal with Newell's method
+          // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
 
           j1 = nc - 1; j2 = 0;
           i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
@@ -9505,9 +9503,91 @@ surface::properties::get_do_lighting (void) const
 }
 
 void
-surface::properties::update_vertex_normals (void)
+surface::properties::update_face_normals (bool reset)
 {
-  if (vertexnormalsmode_is ("auto"))
+  if (! facenormalsmode_is ("auto"))
+    return;
+
+  if ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+      get_do_lighting ())
+    {
+      Matrix x = get_xdata ().matrix_value ();
+      Matrix y = get_ydata ().matrix_value ();
+      Matrix z = get_zdata ().matrix_value ();
+
+      int p = z.columns ();
+      int q = z.rows ();
+
+      // FIXME: There might be a cleaner way to do this.  When data is changed
+      // the update_xdata, update_ydata, update_zdata routines are called in a
+      // serial fashion.  Until the final call to update_zdata the matrices
+      // will be of mismatched dimensions which can cause an out-of-bound
+      // indexing in the code below.  This one-liner prevents calculating
+      // normals until dimensions match.
+      if (x.columns () != p || y.rows () != q)
+        return;
+
+      NDArray n (dim_vector (q-1, p-1, 3), 0.0);
+
+      bool x_mat = (x.rows () == q);
+      bool y_mat = (y.columns () == p);
+      
+      double dx = x(1,1) - x(0,0);
+      double dy = y(1,1) - y(0,0);
+
+      int i1, i2, j1, j2;
+      i1 = i2 = 0;
+      j1 = j2 = 0;
+
+      for (int i = 0; i < p-1; i++)
+        {
+          if (y_mat)
+            {
+              i1 = i;
+              i2 = i + 1;
+            }
+
+          for (int j = 0; j < q-1; j++)
+            {
+              if (x_mat)
+                {
+                  j1 = j;
+                  j2 = j + 1;
+                }
+
+              double& nx = n(j, i, 0);
+              double& ny = n(j, i, 1);
+              double& nz = n(j, i, 2);
+
+              // calculate face normal with Newell's method
+              // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
+              
+              nx = dy * (z(j1,i1) + z(j2,i1) - z(j1,i2) - z(j2,i2));
+              ny = dx * (z(j1,i1) + z(j1,i2) - z(j2,i1) - z(j2,i2));
+              nz = 2 * dx * dy;
+
+              double d = std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
+
+              nx /= d;
+              ny /= d;
+              nz /= d;
+            }
+        }
+      facenormals = n;
+    }
+  else if (reset)
+    facenormals = Matrix ();
+}
+
+void
+surface::properties::update_vertex_normals (bool reset)
+{
+  if (! vertexnormalsmode_is ("auto"))
+    return;
+  
+  if ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
+      edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
+      get_do_lighting ())
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -9593,6 +9673,8 @@ surface::properties::update_vertex_normals (void)
         }
       vertexnormals = n;
     }
+  else if (reset)
+    vertexnormals = Matrix ();
 }
 
 // ---------------------------------------------------------------------

@@ -2391,7 +2391,8 @@ namespace octave
     int zc = z.columns ();
 
     NDArray c;
-    const NDArray n = props.get_vertexnormals ().array_value ();
+    const NDArray vn = props.get_vertexnormals ().array_value ();
+    const NDArray fn = props.get_facenormals ().array_value ();
 
     // FIXME: handle transparency
     Matrix a;
@@ -2565,7 +2566,8 @@ namespace octave
                           }
                       }
                     if (fl_mode > 0)
-                      set_normal (bfl_mode, n, j-1, i-1);
+                      set_normal (bfl_mode, (fl_mode == GOURAUD ? vn : fn),
+                                  j-1, i-1);
 
                     m_glfcns.glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
@@ -2596,7 +2598,7 @@ namespace octave
                       }
 
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j-1, i);
+                      set_normal (bfl_mode, vn, j-1, i);
 
                     m_glfcns.glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
@@ -2626,7 +2628,7 @@ namespace octave
                           }
                       }
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j, i);
+                      set_normal (bfl_mode, vn, j, i);
 
                     m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
@@ -2656,7 +2658,7 @@ namespace octave
                           }
                       }
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j, i-1);
+                      set_normal (bfl_mode, vn, j, i-1);
 
                     m_glfcns.glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
@@ -2772,7 +2774,8 @@ namespace octave
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, n, j-1, i);
+                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
+                                      j-1, i);
 
                         m_glfcns.glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
@@ -2799,7 +2802,7 @@ namespace octave
                               }
                           }
                         if (el_mode == GOURAUD)
-                          set_normal (bfl_mode, n, j, i);
+                          set_normal (bfl_mode, vn, j, i);
 
                         m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
@@ -2869,7 +2872,8 @@ namespace octave
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, n, j, i-1);
+                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
+                                      j, i-1);
 
                         m_glfcns.glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
@@ -2896,7 +2900,7 @@ namespace octave
                               }
                           }
                         if (el_mode == GOURAUD)
-                          set_normal (bfl_mode, n, j, i);
+                          set_normal (bfl_mode, vn, j, i);
 
                         m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 

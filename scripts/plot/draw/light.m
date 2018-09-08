@@ -29,7 +29,9 @@
 ## objects are drawn with lighting effects.  Supported values for Lighting
 ## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"} (faceted
 ## look of the objects), and @qcode{"gouraud"} (linear interpolation of the
-## lighting effects between the vertices).
+## lighting effects between the vertices).  If the lighting mode is set to
+## @qcode{"flat"}, the @qcode{"FaceNormals"} property is used for lighting.
+## For @qcode{"gouraud"}, the @qcode{"VertexNormals"} property is used.
 ##
 ## Up to eight light objects are supported per axes. (Implementation dependent)
 ##

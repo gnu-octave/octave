@@ -539,14 +539,14 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->sync_octave_directory, SIGNAL (toggled (bool)),
            this, SLOT (set_disabled_pref_file_browser_dir (bool)));
 
-  ui->sync_octave_directory->setChecked (settings->value ("filesdockwidget/sync_octave_directory", true).toBool ());
-  ui->cb_restore_file_browser_dir->setChecked (settings->value ("filesdockwidget/restore_last_dir", false).toBool ());
-  ui->le_file_browser_dir->setText (settings->value ("filesdockwidget/startup_dir").toString ());
+  ui->sync_octave_directory->setChecked (settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ());
+  ui->cb_restore_file_browser_dir->setChecked (settings->value (fb_restore_last_dir.key, fb_restore_last_dir.def).toBool ());
+  ui->le_file_browser_dir->setText (settings->value (fb_startup_dir.key).toString ());
 
   connect (ui->pb_file_browser_dir, SIGNAL (pressed (void)),
            this, SLOT (get_file_browser_dir (void)));
 
-  ui->le_file_browser_extensions->setText (settings->value ("filesdockwidget/txt_file_extensions", "m;c;cc;cpp;h;txt").toString ());
+  ui->le_file_browser_extensions->setText (settings->value (fb_txt_file_ext.key, fb_txt_file_ext.def).toString ());
 
   ui->checkbox_allow_web_connect->setChecked (settings->value ("news/allow_web_connection", false).toBool ());
   ui->useProxyServer->setChecked (settings->value ("useProxyServer", false).toBool ());
@@ -890,10 +890,10 @@ settings_dialog::write_changed_settings (bool closing)
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont ().family ());
 
   // file browser
-  settings->setValue ("filesdockwidget/sync_octave_directory", ui->sync_octave_directory->isChecked ());
-  settings->setValue ("filesdockwidget/restore_last_dir", ui->cb_restore_file_browser_dir->isChecked ());
-  settings->setValue ("filesdockwidget/startup_dir", ui->le_file_browser_dir->text ());
-  settings->setValue ("filesdockwidget/txt_file_extensions", ui->le_file_browser_extensions->text ());
+  settings->setValue (fb_sync_octdir.key, ui->sync_octave_directory->isChecked ());
+  settings->setValue (fb_restore_last_dir.key, ui->cb_restore_file_browser_dir->isChecked ());
+  settings->setValue (fb_startup_dir.key, ui->le_file_browser_dir->text ());
+  settings->setValue (fb_txt_file_ext.key, ui->le_file_browser_extensions->text ());
 
   settings->setValue ("news/allow_web_connection", ui->checkbox_allow_web_connect->isChecked ());
   settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());

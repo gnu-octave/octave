@@ -9527,13 +9527,18 @@ surface::properties::update_face_normals (bool reset)
       if (x.columns () != p || y.rows () != q)
         return;
 
-      NDArray n (dim_vector (q-1, p-1, 3), 0.0);
-
       bool x_mat = (x.rows () == q);
       bool y_mat = (y.columns () == p);
-      
-      double dx = x(1,1) - x(0,0);
-      double dy = y(1,1) - y(0,0);
+
+      double dx, dy;
+      dx = dy = 1;
+      if (x_mat)
+        dx = x(0,1) - x(0,0);
+      if (y_mat)
+        dy = y(1,0) - y(0,0);
+
+      double nz = 2 * dx * dy;
+      NDArray n (dim_vector (q-1, p-1, 3), nz);
 
       int i1, i2, j1, j2;
       i1 = i2 = 0;
@@ -9555,22 +9560,20 @@ surface::properties::update_face_normals (bool reset)
                   j2 = j + 1;
                 }
 
-              double& nx = n(j, i, 0);
-              double& ny = n(j, i, 1);
-              double& nz = n(j, i, 2);
+              double& nx = n(j,i,0);
+              double& ny = n(j,i,1);
 
               // calculate face normal with Newell's method
               // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
               
               nx = dy * (z(j1,i1) + z(j2,i1) - z(j1,i2) - z(j2,i2));
               ny = dx * (z(j1,i1) + z(j1,i2) - z(j2,i1) - z(j2,i2));
-              nz = 2 * dx * dy;
 
               double d = std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
 
               nx /= d;
               ny /= d;
-              nz /= d;
+              n(j,i,2) /= d;
             }
         }
       facenormals = n;

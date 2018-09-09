@@ -2392,7 +2392,15 @@ namespace octave
 
     NDArray c;
     const NDArray vn = props.get_vertexnormals ().array_value ();
+    dim_vector vn_dims = vn.dims ();
+    bool has_vertex_normals = ((vn_dims(0) == z.rows ()) &&
+                               (vn_dims(1) == z.columns ()) &&
+                               (vn_dims(2) == 3));
     const NDArray fn = props.get_facenormals ().array_value ();
+    dim_vector fn_dims = fn.dims ();
+    bool has_face_normals = ((fn_dims(0) == z.rows () - 1) &&
+                             (fn_dims(1) == z.columns () - 1) &&
+                             (fn_dims(2) == 3));
 
     // FIXME: handle transparency
     Matrix a;
@@ -2402,14 +2410,18 @@ namespace octave
                     (props.facecolor_is ("interp") ? 2 :
                      (props.facecolor_is ("texturemap") ? 3 : -1))));
     int fl_mode = (props.facelighting_is ("none") ? 0 :
-                   (props.facelighting_is ("flat") ? 1 : 2));
+                   (props.facelighting_is ("flat") ?
+                    (has_face_normals ? 1 : 0) :
+                    (has_vertex_normals ? 2 : 0)));
     int fa_mode = (props.facealpha_is_double () ? 0 :
                    (props.facealpha_is ("flat") ? 1 : 2));
     int ec_mode = (props.edgecolor_is_rgb () ? 0 :
                    (props.edgecolor_is ("flat") ? 1 :
                     (props.edgecolor_is ("interp") ? 2 : -1)));
     int el_mode = (props.edgelighting_is ("none") ? 0 :
-                   (props.edgelighting_is ("flat") ? 1 : 2));
+                   (props.edgelighting_is ("flat") ?
+                    (has_face_normals ? 1 : 0) :
+                    (has_vertex_normals ? 2 : 0)));
     int ea_mode = (props.edgealpha_is_double () ? 0 :
                    (props.edgealpha_is ("flat") ? 1 : 2));
     int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :

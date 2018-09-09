@@ -177,6 +177,9 @@ QTerminal::notice_settings (const QSettings *settings)
   term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
   setTerminalFont (term_font);
 
+  QFontMetrics metrics (term_font);
+  setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
+
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();
 

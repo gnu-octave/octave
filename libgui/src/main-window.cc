@@ -1061,6 +1061,7 @@ namespace octave
     // Giving trouble under KDE (problem is related to Qt signal handling on unix,
     // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
     // it had/has no effect on Windows, though)
+    fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
 
     // define a new grid layout with the extra elements
     QGridLayout *extra = new QGridLayout (fileDialog);

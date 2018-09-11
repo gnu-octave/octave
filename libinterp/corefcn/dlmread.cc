@@ -446,8 +446,9 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                 }
               else
                 {
-                  int next_char = std::tolower (tmp_stream.peek ());
-                  if (next_char == 'i' || next_char == 'j')
+                  int next_char = tmp_stream.peek ();
+                  if (next_char == 'i' || next_char == 'j'
+                      || next_char == 'I' || next_char == 'J')
                     {
                       // Process pure imaginary numbers.
                       tmp_stream.get ();

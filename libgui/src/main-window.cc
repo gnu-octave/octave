@@ -1556,28 +1556,31 @@ namespace octave
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
-    if (settings)
+    if (m_start_gui)
       {
-        if (settings->value ("restore_octave_dir").toBool ())
+        if (settings)
           {
-            // restore last dir from previous session
-            QStringList curr_dirs
-              = settings->value ("MainWindow/current_directory_list").toStringList ();
-            startup_dir
-              = QDir (curr_dirs.at (0));  // last dir in previous session
+            if (settings->value ("restore_octave_dir").toBool ())
+              {
+                // restore last dir from previous session
+                QStringList curr_dirs
+                  = settings->value ("MainWindow/current_directory_list").toStringList ();
+                startup_dir
+                  = QDir (curr_dirs.at (0));  // last dir in previous session
+              }
+            else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+              {
+                // do not restore but there is a startup dir configured
+                startup_dir
+                  = QDir (settings->value ("octave_startup_dir").toString ());
+              }
           }
-        else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
-          {
-            // do not restore but there is a startup dir configured
-            startup_dir
-              = QDir (settings->value ("octave_startup_dir").toString ());
-          }
-      }
 
-    if (! startup_dir.exists ())
-      {
-        // the configured startup dir does not exist, take actual one
-        startup_dir = QDir ();
+        if (! startup_dir.exists ())
+          {
+            // the configured startup dir does not exist, take actual one
+            startup_dir = QDir ();
+          }
       }
 
     set_current_working_directory (startup_dir.absolutePath ());

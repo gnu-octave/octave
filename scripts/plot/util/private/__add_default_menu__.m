@@ -26,40 +26,76 @@
 
 ## Author: Kai Habel
 
-function __add_default_menu__ (fig)
+function __add_default_menu__ (hf)
 
-  ## Only FLTK toolkit currently provides menubar
-  if (! strcmp (get (fig, "__graphics_toolkit__"), "fltk"))
-    return;
-  endif
-
-  obj = findall (fig, "-depth", 1, "tag", "__default_menu__", "label", "&File");
+  obj = findall (hf, "-depth", 1, "tag", "__default_menu__File", ...
+                 "label", "&File");
   if (isempty (obj))
-    __f = uimenu (fig, "label", "&File", "handlevisibility", "off",
-                       "tag", "__default_menu__");
-      uimenu (__f, "label", "&Save", "callback", @save_cb);
-      uimenu (__f, "label", "Save &As", "callback", @save_cb);
-      uimenu (__f, "label", "&Close", "callback", @close_cb);
-
-    __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
-                       "tag", "__default_menu__");
-      uimenu (__e, "label", "Toggle &grid on all axes", "tag", "toggle", "callback", @grid_cb);
-      uimenu (__e, "label", "Show grid on all axes", "tag", "on", "callback", @grid_cb);
-      uimenu (__e, "label", "Hide grid on all axes", "tag", "off", "callback", @grid_cb);
-      uimenu (__e, "label", "Auto&scale all axes", "callback", @autoscale_cb);
-      gm = uimenu (__e, "label", "GUI &Mode (on all axes)");
-        uimenu (gm, "label", "Pan x and y", "tag", "pan_on", "callback", @guimode_cb);
-        uimenu (gm, "label", "Pan x only", "tag", "pan_xon", "callback", @guimode_cb);
-        uimenu (gm, "label", "Pan y only", "tag", "pan_yon", "callback", @guimode_cb);
-        uimenu (gm, "label", "Disable pan and rotate", "tag", "no_pan_rotate", "callback", @guimode_cb);
-        uimenu (gm, "label", "Rotate on", "tag", "rotate3d", "callback", @guimode_cb);
-        uimenu (gm, "label", "Enable mousezoom", "tag", "zoom_on", "callback", @guimode_cb);
-        uimenu (gm, "label", "Disable mousezoom", "tag", "zoom_off", "callback", @guimode_cb);
-
+    ## File menu
+    hui = uimenu (hf, "label", "&File", "handlevisibility", "off", ...
+                  "tag", "__default_menu__File");
+    uimenu (hui, "label", "&Open", "callback", @open_cb, ...
+            "accelerator", "o");
+    uimenu (hui, "label", "&Save", "callback", @save_cb, ...
+            "accelerator", "s");
+    uimenu (hui, "label", "Save &As", "callback", @save_cb, ...
+            "accelerator", "S");
+    uimenu (hui, "label", "&Close", "callback", @close_cb, ...
+           "accelerator", "w", "separator", "on");
+    
+    ## Edit menu
+    hui = uimenu (hf, "label", "&Edit", "handlevisibility", "off", ...
+                  "tag", "__default_menu__Edit");
+    uimenu (hui, "label", "&New Figure", "callback", "figure ();", ...
+            "accelerator", "n");
+    uimenu (hui, "label", "&Duplicate Figure",
+            "callback", "copyobj (gcbf (), groot ());", ...
+            "accelerator", "d");
+    uimenu (hui, "label", "Clea&r Figure",
+            "callback", "clf (gcbf ());");
+    uimenu (hui, "label", "Reset Figure",
+            "callback", "reset (gcbf ());");
+    
+    ## Tools menu
+    hui = uimenu (hf, "label", "&Tools", "handlevisibility", "off", ...
+                  "tag", "__default_menu__Tools");
+    uimenu (hui, "label", "Toggle &grid on all axes", "tag", "toggle", ...
+            "callback", @grid_cb);
+    uimenu (hui, "label", "Show grid on all axes", "tag", "on", ...
+            "callback", @grid_cb);
+    uimenu (hui, "label", "Hide grid on all axes", "tag", "off", ...
+            "callback", @grid_cb);
+    uimenu (hui, "label", "Auto&scale all axes", "callback", @autoscale_cb);
+    
+    hui2 = uimenu (hui, "label", "GUI &Mode (on all axes)");
+    uimenu (hui2, "label", "Pan x and y", "tag", "pan_on", ...
+            "callback", @guimode_cb);
+    uimenu (hui2, "label", "Pan x only", "tag", "pan_xon", ...
+            "callback", @guimode_cb);
+    uimenu (hui2, "label", "Pan y only", "tag", "pan_yon", ...
+            "callback", @guimode_cb);
+    uimenu (hui2, "label", "Disable pan and rotate", "tag", ...
+            "no_pan_rotate", "callback", @guimode_cb);
+    uimenu (hui2, "label", "Rotate on", "tag", "rotate3d", ...
+            "callback", @guimode_cb);
+    uimenu (hui2, "label", "Enable mousezoom", "tag", "zoom_on", ...
+            "callback", @guimode_cb);
+    uimenu (hui2, "label", "Disable mousezoom", "tag", "zoom_off", ...
+            "callback", @guimode_cb);
   endif
 
 endfunction
 
+
+function open_cb (h, e)
+  [filename, filedir] = uigetfile ({"*.ofig", "Octave Figure File"}, ...
+                                   "Open Figure");
+  if (filename != 0)
+    fname = fullfile (filedir, filename);
+    tmphf = hgload (fname);
+    set (tmphf, "filename", fname);
+  endif
+endfunction
 
 function save_cb (h, e)
   [hcbo, hfig] = gcbo ();
@@ -77,7 +113,7 @@ function save_cb (h, e)
 endfunction
 
 
-function __save_as__ (caller)
+function __save_as__ (hf)
   [filename, filedir] = uiputfile ...
     ({"*.ofig", "Octave Figure File";
       "*.eps;*.epsc;*.pdf;*.svg;*.ps;*.tikz", "Vector Image Formats";
@@ -89,9 +125,9 @@ function __save_as__ (caller)
     set (gcbf, "filename", fname);
     flen = numel (fname);
     if (flen > 5 && strcmp (fname(flen-4:end), ".ofig"))
-      hgsave (caller, fname);
+      hgsave (hf, fname);
     else
-      saveas (caller, fname);
+      saveas (hf, fname);
     endif
   endif
 endfunction

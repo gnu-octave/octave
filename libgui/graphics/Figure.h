@@ -112,18 +112,11 @@ namespace QtHandles
     static void updateBoundingBoxHelper (void*);
 
     void close_figure_callback (void);
-    void copy_figure_callback (const std::string& format);
-    void save_figure_callback (const std::string& file);
 
     void enableMouseTracking (void);
 
   private slots:
     void setMouseMode (MouseMode mode);
-    void fileSaveFigure (bool prompt = false);
-    void fileSaveFigureAs (void);
-    void fileCloseFigure (void);
-    void editCopy (bool choose_format = false);
-    void helpAboutOctave (void);
     void updateMenuBar (int height = -1);
     void updateContainer (void);
     void toggleAxes (void);

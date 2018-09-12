@@ -82,25 +82,6 @@ namespace QtHandles
     return false;
   }
 
-  static bool
-  hasUiMenuChildren (const figure::properties& fp)
-  {
-    gh_manager::auto_lock lock;
-
-    Matrix kids = fp.get_all_children ();
-
-    for (int i = 0; i < kids.numel (); i++)
-      {
-        graphics_object go (gh_manager::get_object (kids(i)));
-
-        if (go && go.isa ("uimenu") &&
-            go.get ("visible").string_value () == "on")
-          return true;
-      }
-
-    return false;
-  }
-
   static QRect
   boundingBoxToRect (const Matrix& bb)
   {
@@ -154,9 +135,7 @@ namespace QtHandles
         m_statusBar->hide ();
       }
 
-    if (fp.menubar_is ("figure") || hasUiMenuChildren (fp))
-      toffset += m_menuBar->sizeHint ().height ();
-    else
+    if (! fp.menubar_is ("figure"))
       m_menuBar->hide ();
 
     m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
@@ -319,27 +298,6 @@ namespace QtHandles
 
     m_menuBar = new MenuBar (win);
     win->setMenuBar (m_menuBar);
-
-    QMenu *fileMenu = m_menuBar->addMenu (tr ("&File"));
-    fileMenu->menuAction ()->setObjectName ("builtinMenu");
-    fileMenu->addAction (tr ("&Save"), this, SLOT (fileSaveFigure (bool)));
-    fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
-    fileMenu->addSeparator ();
-    fileMenu->addAction (tr ("&Close Figure"), this,
-                         SLOT (fileCloseFigure (void)), Qt::CTRL | Qt::Key_W);
-
-    QMenu *editMenu = m_menuBar->addMenu (tr ("&Edit"));
-    editMenu->menuAction ()->setObjectName ("builtinMenu");
-    editMenu->addAction (tr ("Cop&y"), this, SLOT (editCopy (bool)),
-                         Qt::CTRL | Qt::Key_C);
-    editMenu->addSeparator ();
-    editMenu->addActions (m_mouseModeGroup->actions ());
-
-    QMenu *helpMenu = m_menuBar->addMenu (tr ("&Help"));
-    helpMenu->menuAction ()->setObjectName ("builtinMenu");
-    helpMenu->addAction (tr ("About Octave"), this,
-                         SLOT (helpAboutOctave (void)));
-
     m_menuBar->addReceiver (this);
   }
 
@@ -581,35 +539,36 @@ namespace QtHandles
   Figure::showMenuBar (bool visible, int h1)
   {
     // Get the height before and after toggling the visibility of builtin menus
-    if (h1 <= 0)
+    if (h1 < 0)
       h1 = m_menuBar->sizeHint ().height ();
 
+    // Keep the menubar visible if it contains custom menus
+    bool keep_visible = visible;
     foreach (QAction *a, m_menuBar->actions ())
       if (a->objectName () == "builtinMenu")
         a->setVisible (visible);
+      else if ((a->objectName () == "customMenu") && a->isVisible ())
+        keep_visible = true;
+    
+    visible = keep_visible;
 
     int h2 = m_menuBar->sizeHint ().height ();
-
-    // Keep the menubar visible if it contains custom menus
-    if (! visible)
-      visible = hasUiMenuChildren (properties<figure> ());
-
-    if ((m_menuBar->isVisible () && ! visible)
+    
+    if (h1 != h2 || (m_menuBar->isVisible () && ! visible)
         || (! m_menuBar->isVisible () && visible))
       {
-        int dy = qMax (h1, h2);
+        int dy = h2 - h1;
+
         QRect r = qWidget<QWidget> ()->geometry ();
 
-        if (! visible)
-          r.adjust (0, dy, 0, 0);
-        else
-          r.adjust (0, -dy, 0, 0);
+        r.adjust (0, -dy, 0, 0);
 
         m_blockUpdates = true;
         qWidget<QWidget> ()->setGeometry (r);
         m_menuBar->setVisible (visible);
         m_blockUpdates = false;
       }
+
     updateBoundingBox (false);
   }
 
@@ -756,18 +715,10 @@ namespace QtHandles
           {
             switch (xevent->type ())
               {
+              case QEvent::ActionAdded:
               case QEvent::ActionChanged:
-                m_previousHeight = m_menuBar->sizeHint ().height ();
-                break;
               case QEvent::ActionRemoved:
-                {
-                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
-
-                  if (! a->isSeparator ()
-                      && a->objectName () != "builtinMenu")
-                    updateMenuBar ();
-                }
-                break;
+                m_previousHeight = m_menuBar->sizeHint ().height ();
 
               default:
                 break;
@@ -832,24 +783,15 @@ namespace QtHandles
           {
             switch (xevent->type ())
               {
+              case QEvent::ActionAdded:
               case QEvent::ActionChanged:
+              case QEvent::ActionRemoved:
                 // The menubar may have been resized if no action is visible
                 {
                   QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
                   if (m_menuBar->sizeHint ().height () != m_previousHeight
-                      && a->objectName () != "builtinMenu"
                       && ! a->isSeparator ())
                     updateMenuBar (m_previousHeight);
-                }
-                break;
-              case QEvent::ActionAdded:
-                {
-                  QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
-
-                  if (! a->isSeparator ()
-                      && a->objectName () != "builtinMenu"
-                      && a->isVisible ())
-                    updateMenuBar ();
                 }
                 break;
 
@@ -878,16 +820,6 @@ namespace QtHandles
   }
 
   void
-  Figure::helpAboutOctave (void)
-  {
-    std::string message
-      = octave_name_version_copyright_copying_warranty_and_bugs (true);
-
-    QMessageBox::about (qWidget<QMainWindow> (), tr ("About Octave"),
-                        QString::fromStdString (message));
-  }
-
-  void
   Figure::setMouseMode (MouseMode mode)
   {
     if (m_blockUpdates)
@@ -903,109 +835,6 @@ namespace QtHandles
 
     if (canvas)
       canvas->setCursor (mode);
-  }
-
-  void
-  Figure::fileSaveFigure (bool prompt)
-  {
-    QString file = fileName ();
-
-    if (file.isEmpty ())
-      {
-        prompt = true;
-
-        file = "untitled.ofig";
-      }
-
-    if (prompt || file.isEmpty ())
-      {
-        QFileInfo finfo (file);
-
-        file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
-                                             tr ("Save Figure As"),
-                                             finfo.absoluteFilePath (),
-                                             tr ("Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)"),
-                                             nullptr,
-                                             QFileDialog::DontUseNativeDialog);
-      }
-
-    if (! file.isEmpty ())
-      {
-        QFileInfo finfo (file);
-
-        setFileName (finfo.absoluteFilePath ());
-
-        octave_link::post_event (this, &Figure::save_figure_callback,
-                                 file.toStdString ());
-      }
-  }
-
-  void
-  Figure::save_figure_callback (const std::string& file)
-  {
-    figure::properties& fp = properties<figure> ();
-    octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
-
-    size_t flen = file.length ();
-
-    if (flen > 5 && file.substr (flen-5) == ".ofig")
-      Ffeval (ovl ("hgsave", fnum, file));
-    else
-      Ffeval (ovl ("print", fnum, file));
-  }
-
-  void
-  Figure::copy_figure_callback (const std::string& format)
-  {
-    std::string msg;
-
-    std::string file = octave::sys::tempnam ("", "oct-", msg) + '.' + format;
-
-    if (file.empty ())
-      {
-        // Report error?
-        return;
-      }
-
-    save_figure_callback (file);
-
-    octave_link::copy_image_to_clipboard (file);
-  }
-
-  void
-  Figure::fileSaveFigureAs (void)
-  {
-    fileSaveFigure (true);
-  }
-
-  void
-  Figure::fileCloseFigure (void)
-  {
-    qWidget<QMainWindow> ()->close ();
-  }
-
-  void
-  Figure::editCopy (bool /* choose_format */)
-  {
-    QString format = "png";
-
-#if 0
-
-    // FIXME: allow choice of image formats.
-
-    if (choose_format)
-      {
-        QFileInfo finfo (file);
-
-        format = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
-                                               tr ("Save Figure As"),
-                                               finfo.absoluteFilePath (), 0, 0,
-                                               QFileDialog::DontUseNativeDialog);
-      }
-#endif
-
-    octave_link::post_event (this, &Figure::copy_figure_callback,
-                             format.toStdString ());
   }
 
   void

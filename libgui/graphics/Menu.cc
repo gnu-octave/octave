@@ -80,6 +80,12 @@ namespace QtHandles
 
     action->setText (Utils::fromStdString (up.get_label ()));
 
+    // Tag menus for further triage in Figure.cc
+    if (up.get_tag ().substr (0, 15) == "__default_menu_")
+      action->setObjectName ("builtinMenu");
+    else
+      action->setObjectName ("customMenu");
+
     if (up.is_checked ())
       {
         action->setCheckable (true);

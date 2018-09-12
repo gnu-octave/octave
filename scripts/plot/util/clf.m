@@ -70,10 +70,13 @@ function h = clf (varargin)
   endif
 
   if (do_reset)
-    ## Select all the children, including the one with hidden handles.
-    delete (allchild (hfig));
+    ## Delete all the children, including the ones with hidden handles,
+    ## except default menus.
+    kids = allchild (hfig);
+    ismenu = cellfun (@(s) strncmp (s, "__default_menu_", 15), ...
+                      get (kids, "tag")); 
+    delete (kids(! ismenu));
     reset (hfig);
-    __add_default_menu__ (hfig);
     __set_default_mouse_modes__ (hfig);
   else
     ## Select only the chilren with visible handles.

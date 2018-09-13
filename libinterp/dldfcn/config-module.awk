@@ -49,8 +49,6 @@ BEGIN {
   sep = " \\\n";
   print "DLDFCN_LIBS = $(DLDFCN_SRC:.cc=.la)";
   print "";
-  print "if AMCOND_ENABLE_DYNAMIC_LINKING";
-  print "";
   print "octlib_LTLIBRARIES += $(DLDFCN_LIBS)";
   print "";
   print "## Use stamp files to avoid problems with checking timestamps";
@@ -58,12 +56,6 @@ BEGIN {
   print "";
   print "%.oct : %.la"
   print "\t$(AM_V_GEN)$(INSTALL_PROGRAM) %reldir%/.libs/$(shell $(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $<) $@"
-  print ""
-  print "else";
-  print "";
-  print "noinst_LTLIBRARIES += $(DLDFCN_LIBS)";
-  print "";
-  print "endif";
 
   for (i = 1; i <= nfiles; i++) {
     basename = files[i];

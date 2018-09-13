@@ -648,21 +648,6 @@ if test $have_msvc = yes; then
 fi
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
 
-### Enable dynamic linking.
-### --enable-shared implies this, thus --enable-dl is only needed if you are
-### only building static libraries and want to try dynamic linking too
-### (works on some systems, for example, OS X and Windows).
-
-AC_ARG_ENABLE([dl],
-  [AS_HELP_STRING([--disable-dl],
-    [disable loading of dynamically linked modules])],
-  [case $enableval in
-     yes) ENABLE_DYNAMIC_LINKING=yes ;;
-     no) ENABLE_DYNAMIC_LINKING=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
-   esac],
-  [ENABLE_DYNAMIC_LINKING=no])
-
 if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
   AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
 fi
@@ -869,57 +854,38 @@ shl_load_api=no
 loadlibrary_api=no
 dyld_api=no
 
-if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
+case $lt_cv_dlopen in
+  dlopen)
+    dlopen_api=yes
+    DL_API_MSG="dlopen"
+    AC_DEFINE(HAVE_DLOPEN_API, 1,
+      [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
+    OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
+  ;;
+  shl_load)
+    shl_load_api=yes
+    DL_API_MSG="shl_load"
+    AC_DEFINE(HAVE_SHL_LOAD_API, 1,
+      [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
+  ;;
+  LoadLibrary)
+    loadlibrary_api=yes
+    DL_API_MSG="LoadLibrary"
+    AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
+      [Define to 1 if system has LoadLibrary for dynamic linking.])
+  ;;
+  dyld)
+    dyld_api=yes
+    DL_API_MSG="dyld"
+    AC_DEFINE(HAVE_DYLD_API, 1,
+      [Define to 1 if system has dyld for dynamic linking.])
+  ;;
+  *)
+    AC_MSG_ERROR([Octave requires some way to perform dynamic linking.])
+  ;;
+esac
 
-  case $lt_cv_dlopen in
-    dlopen)
-      dlopen_api=yes
-      DL_API_MSG="(dlopen)"
-      AC_DEFINE(HAVE_DLOPEN_API, 1,
-        [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
-      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
-    ;;
-    shl_load)
-      shl_load_api=yes
-      DL_API_MSG="(shl_load)"
-      AC_DEFINE(HAVE_SHL_LOAD_API, 1,
-        [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
-    ;;
-    LoadLibrary)
-      loadlibrary_api=yes
-      DL_API_MSG="(LoadLibrary)"
-      AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
-        [Define to 1 if system has LoadLibrary for dynamic linking.])
-    ;;
-    dyld)
-      dyld_api=yes
-      DL_API_MSG="(dyld)"
-      AC_DEFINE(HAVE_DYLD_API, 1,
-        [Define to 1 if system has dyld for dynamic linking.])
-    ;;
-  esac
-
-  DL_LIBS="$lt_cv_dlopen_libs"
-  AC_SUBST(DL_LIBS)
-
-  ## Disable dynamic linking if capability is not present.
-  if test $dlopen_api = yes \
-      || test $shl_load_api = yes \
-      || test $loadlibrary_api = yes \
-      || test $dyld_api = yes; then
-    ## some form of dynamic linking present
-    ENABLE_DYNAMIC_LINKING=yes
-  else
-    ENABLE_DYNAMIC_LINKING=no
-  fi
-fi
-
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define to 1 if using dynamic linking.])
-fi
-
-AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
-  [test $ENABLE_DYNAMIC_LINKING = yes])
+DL_LIBS="$lt_cv_dlopen_libs"
 
 if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp"
@@ -931,7 +897,6 @@ fi
 
 AC_SUBST(LD_CXX)
 AC_SUBST(RDYNAMIC_FLAG)
-AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
 
@@ -2776,13 +2741,7 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LD
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  LIBOCTINTERP_LINK_DEPS=""
-else
-  LIBOCTINTERP_LINK_DEPS="$DLDFCN_LIBS"
-fi
-
-LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
 LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS $LLVM_LDFLAGS"
 
@@ -2830,13 +2789,7 @@ OCTAVE_GUI_LINK_DEPS=""
 OCTAVE_GUI_LINK_OPTS=""
 
 if test $build_qt_gui = yes; then
-  if test $ENABLE_DYNAMIC_LINKING = yes; then
-    LIBOCTGUI_LINK_DEPS=""
-  else
-    LIBOCTGUI_LINK_DEPS="$DLDFCN_LIBS"
-  fi
-
-  LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $QT_LIBS $OPENGL_LIBS"
+  LIBOCTGUI_LINK_DEPS="$QT_LIBS $OPENGL_LIBS"
   LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
@@ -3111,7 +3064,7 @@ Octave is now configured for $canonical_host_type
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
-  Dynamic Linking:                      $ENABLE_DYNAMIC_LINKING $DL_API_MSG
+  Dynamic Linking API:                  $DL_API_MSG
   Include support for GNU readline:     $USE_READLINE
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
@@ -3124,15 +3077,6 @@ Octave is now configured for $canonical_host_type
 warn_msg_printed=false
 
 OCTAVE_CONFIGURE_WARNING_SUMMARY
-
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  if test $SHARED_LIBS = no; then
-    AC_MSG_WARN([])
-    AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
-    AC_MSG_WARN([Are you sure that is what you want to do?])
-    warn_msg_printed=true
-  fi
-fi
 
 if test $opengl_graphics = no; then
   AC_MSG_WARN([])

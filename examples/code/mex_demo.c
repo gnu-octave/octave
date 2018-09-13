@@ -1,13 +1,5 @@
 // mex_demo.c -- example of a dynamically linked function for Octave.
 
-// To use this file, your version of Octave must support dynamic
-// linking.  To find out if it does, type the command
-//
-//   __octave_config_info__ ("ENABLE_DYNAMIC_LINKING")
-//
-// at the Octave prompt.  Support for dynamic linking is included if
-// this expression is true.
-//
 // To compile this file, type the command
 //
 //   mkoctfile --mex mex_demo.c

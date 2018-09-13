@@ -18,7 +18,6 @@
 # along with Octave; see the file COPYING.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-$defun_dld_are_built_in = 0;
 $make_header = 0;
 $make_source = 0;
 
@@ -40,13 +39,6 @@ while ($have_options)
 
       $make_source = 1;
     }
-  elsif ($opt eq "--disable-dl")
-    {
-      ## If DLD functions are disabled, then DEFUN_DLD functions are
-      ## built-in instead of being dynamically loaded so they will also
-      ## need to be installed.
-      $defun_dld_are_built_in= 1;
-    }
   else
     {
       $srcdir = "$opt";
@@ -56,7 +48,7 @@ while ($have_options)
     }
 }
 
-die "usage: mk-builtins.pl --header|--source [--disable-dl] SRCDIR -- f1 f2 ..." if (! @ARGV);
+die "usage: mk-builtins.pl --header|--source SRCDIR -- f1 f2 ..." if (! @ARGV);
 
 die "mk-builtins.pl: one of --header or --source must be specified" if (! $make_header && ! $make_source);
 
@@ -102,19 +94,6 @@ namespace octave
       {
         $name = $2;
         $is_method = ($1 eq "METHOD");
-      }
-      elsif ($defun_dld_are_built_in)
-      {
-        if (/^[ \t]*DEF(METHOD|UN)_DLD[ \t]*\( *([^ ,]*).*$/)
-        {
-          $name = "F$2";
-          $is_method = ($1 eq "METHOD");
-        }
-        elsif (/^[ \t]*DEF(METHOD|UN)X_DLD[ \t]*\( *"[^"]*" *, *([^ ,]*).*$/)
-        {
-          $name = "$2";
-          $is_method = ($1 eq "METHOD");
-        }
       }
 
       if ($name)
@@ -218,21 +197,6 @@ namespace octave
         $type = "alias";
         $alias = "$1";
         $name = "$2";
-      }
-      elsif ($defun_dld_are_built_in)
-      {
-        if ($line =~ /^ *DEF(METHOD|UN)_DLD *\( *([^ ,]*) *,.*$/)
-        {
-          $type = "fun";
-          $fname = "F$2";
-          $name = "$2";
-        }
-        elsif ($line =~ /^ *DEF(METHOD|UN)X_DLD *\( *"([^"]*)" *, *([^ ,]*) *,.*$/)
-        {
-          $type = "fun";
-          $fname = "$3";
-          $name = "$2";
-        }
       }
 
       if ($type eq "fun")

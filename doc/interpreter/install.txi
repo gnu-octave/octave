@@ -419,14 +419,6 @@ dynamically linked functions.
 You may also want to build a shared version of @code{libstdc++}, if your
 system doesn't already have one.
 
-@item --enable-dl
-Use @code{dlopen} and friends to make Octave capable of dynamically
-linking externally compiled functions (this is the default if
-@option{--enable-shared} is specified).  This option only works on
-systems that actually have these functions.  If you plan on using this
-feature, you should probably also use @option{--enable-shared} to reduce
-the size of your @file{.oct} files.
-
 @item --with-blas=<lib>
 By default, configure looks for the best @sc{blas} matrix libraries on
 your system, including optimized implementations such as the free ATLAS

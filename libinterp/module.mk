@@ -113,15 +113,9 @@ include %reldir%/template-inst/module.mk
 include %reldir%/corefcn/module.mk
 include %reldir%/dldfcn/module.mk
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
-  DLD_LIBOCTINTERP_LIBADD = $(OCT_LINK_DEPS)
-  LIBINTERP_DLDFCN_LIBADD =
-else
-  OCT_FILES =
-  DLD_LIBOCTINTERP_LIBADD =
-  LIBINTERP_DLDFCN_LIBADD = $(DLDFCN_LIBS)
-endif
+OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
+DLD_LIBOCTINTERP_LIBADD = $(OCT_LINK_DEPS)
+LIBINTERP_DLDFCN_LIBADD =
 
 %canon_reldir%_liboctinterp_la_SOURCES = \
   %reldir%/octave.cc \
@@ -180,11 +174,7 @@ BUILT_IN_DEFUN_FILES = $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
 
 DLDFCN_DEFUN_FILES = $(DLDFCN_SRC)
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  DEFUN_FILES = $(BUILT_IN_DEFUN_FILES)
-else
-  DEFUN_FILES = $(BUILT_IN_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
-endif
+DEFUN_FILES = $(BUILT_IN_DEFUN_FILES)
 
 LIBINTERP_DEFUN_FILES = $(BUILT_IN_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
 
@@ -230,11 +220,7 @@ nobase_libinterptests_DATA = $(LIBINTERP_TST_FILES)
 %reldir%/liboctinterp-build-info.cc: %reldir%/liboctinterp-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  mkbuiltins_dld_opt =
-else
-  mkbuiltins_dld_opt = --disable-dl
-endif
+mkbuiltins_dld_opt =
 
 %reldir%/builtins.cc: $(LIBINTERP_DEFUN_FILES) %reldir%/mk-builtins.pl | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
@@ -246,14 +232,12 @@ endif
 	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = %reldir%/dldfcn/PKG_ADD
 
 %reldir%/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) %reldir%/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
 	$(SHELL) $(srcdir)/%reldir%/mk-pkg-add.sh "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
 	mv $@-t $@
-endif
 
 DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
@@ -273,7 +257,6 @@ install-data-hook: install-oct install-built-in-docstrings
 
 uninstall-local: uninstall-oct uninstall-built-in-docstrings
 
-if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
 	$(MKDIR_P) $(DESTDIR)$(octfiledir)
 	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
@@ -294,14 +277,14 @@ install-oct:
 	    rm -f $$f $$lnames $$dl; \
 	  fi \
 	done
+.PHONY: install-oct
 
 uninstall-oct:
 	for f in $(notdir $(OCT_FILES)); do \
 	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
 	done
 	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
-endif
-.PHONY: install-oct uninstall-oct
+.PHONY: uninstall-oct
 
 install-built-in-docstrings: %reldir%/DOCSTRINGS
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)

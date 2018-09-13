@@ -347,12 +347,6 @@ specified option.
 @seealso{computer}
 @end deftypefn */)
 {
-#if defined (ENABLE_DYNAMIC_LINKING)
-  bool octave_supports_dynamic_linking = true;
-#else
-  bool octave_supports_dynamic_linking = false;
-#endif
-
   static octave_scalar_map config;
   static octave_scalar_map build_env;
   static octave_scalar_map build_features;
@@ -380,12 +374,6 @@ specified option.
            { "ENABLE_DOCS", true },
 #else
            { "ENABLE_DOCS", false },
-#endif
-
-#if defined (ENABLE_DYNAMIC_LINKING)
-           { "ENABLE_DYNAMIC_LINKING", true },
-#else
-           { "ENABLE_DYNAMIC_LINKING", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
@@ -607,8 +595,6 @@ specified option.
       config.assign ("unix", octave_value (unix_system));
       config.assign ("mac", octave_value (mac_system));
       config.assign ("windows", octave_value (windows_system));
-
-      config.assign ("dld", octave_value (octave_supports_dynamic_linking));
 
       octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
       config.assign ("float_format",

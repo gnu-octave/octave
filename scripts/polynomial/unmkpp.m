@@ -33,9 +33,8 @@
 ## @end example
 ##
 ## The piecewise polynomial structure @code{pp2} obtained in this way, is
-## identical to the original @code{pp}.
-## The same can be obtained by directly accessing the fields of the structure
-## @code{pp}.
+## identical to the original @code{pp}.  The same can be obtained by directly
+## accessing the fields of the structure @code{pp}.
 ##
 ## The components are:
 ##
@@ -48,8 +47,9 @@
 ## @code{@var{p}(@var{i}, :)} contains the coefficients for the polynomial
 ## over interval @var{i} ordered from highest to lowest degree.
 ## If @code{@var{d} > 1}, then @var{p} is a matrix of size
-## @code{[@var{n}*prod(@var{d}) @var{m}]}, where the @code{@var{i} + (1:@var{d})} rows are the
-## coefficients of all the @var{d} polynomials in the interval @var{i}.
+## @code{[@var{n}*prod(@var{d}) @var{m}]}, where the
+## @code{@var{i} + (1:@var{d})} rows are the coefficients of all the @var{d}
+## polynomials in the interval @var{i}.
 ##
 ## @item @var{n}
 ## Number of polynomial pieces or intervals,

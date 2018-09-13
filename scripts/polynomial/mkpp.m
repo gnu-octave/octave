@@ -37,11 +37,10 @@
 ## vector-valued or array-valued polynomial.  In that case the polynomial
 ## order @var{m} is defined by the length of the last dimension of @var{coefs}.
 ## The size of first dimension(s) are given by the scalar or vector @var{d}.
-## If @var{d} is not given it is set to @code{1}.
-## In this case @code{@var{p}(@var{r}, @var{i}, :)} contains the coefficients
-## for the @var{r}-th polynomial defined on interval @var{i}.
-## In any case @var{coefs} is reshaped to a 2-D matrix of size
-## @code{[@var{ni}*prod(@var{d}) @var{m}]}.
+## If @var{d} is not given it is set to @code{1}.  In this case
+## @code{@var{p}(@var{r}, @var{i}, :)} contains the coefficients for the
+## @var{r}-th polynomial defined on interval @var{i}.  In any case @var{coefs}
+## is reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d}) @var{m}]}.
 ##
 ## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
@@ -90,7 +89,7 @@ endfunction
 %! b = t(1:4,:);
 %! pp = mkpp (x, [m(:),b(:)]);
 %! xi = linspace (0, pi, 50);
-%! plot (x, t, "x", xi, ppval (pp,xi));
+%! plot (x, t, "x", xi, ppval (pp,xi));bb4af245dff7
 %! legend ("control", "interp");
 
 %!demo # piecewise polynomial shape

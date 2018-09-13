@@ -29,16 +29,18 @@
 ## When @var{m} is the polynomial order @var{coefs} must be of size:
 ## @w{@var{ni}-by-(@var{m} + 1)}.
 ##
-## The i-th row of @var{coefs}, @code{@var{coefs} (@var{i},:)}, contains the
+## The i-th row of @var{coefs}, @code{@var{coefs}(@var{i},:)}, contains the
 ## coefficients for the polynomial over the @var{i}-th interval, ordered from
-## highest (@var{m}) to lowest (@var{0}).
+## highest (@var{m}) to lowest (@var{0}) degree.
 ##
 ## @var{coefs} may also be a multi-dimensional array, specifying a
 ## vector-valued or array-valued polynomial.  In that case the polynomial
 ## order @var{m} is defined by the length of the last dimension of @var{coefs}.
 ## The size of first dimension(s) are given by the scalar or vector @var{d}.
-## If @var{d} is not given it is set to @code{1}.  In any case @var{coefs} is
-## reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d}) @var{m}]}.
+## If @var{d} is not given it is set to @code{1}.  In this case
+## @code{@var{p}(@var{r}, @var{i}, :)} contains the coefficients for the
+## @var{r}-th polynomial defined on interval @var{i}.  In any case @var{coefs}
+## is reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d}) @var{m}]}.
 ##
 ## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
@@ -81,14 +83,32 @@ endfunction
 
 
 %!demo # linear interpolation
-%! x = linspace (0,pi,5)';
+%! x = linspace (0, pi, 5)';
 %! t = [sin(x), cos(x)];
 %! m = diff (t) ./ (x(2)-x(1));
 %! b = t(1:4,:);
 %! pp = mkpp (x, [m(:),b(:)]);
-%! xi = linspace (0,pi,50);
-%! plot (x,t,"x", xi,ppval (pp,xi));
+%! xi = linspace (0, pi, 50);
+%! plot (x, t, "x", xi, ppval (pp,xi));bb4af245dff7
 %! legend ("control", "interp");
+
+%!demo # piecewise polynomial shape
+%! breaks = [0 1 2 3];
+%! dim = 2;
+%! coefs = zeros (dim, length (breaks) - 1, 4);
+%! # 1st edge of the shape (x, x^2)
+%! coefs(1,1,:) = [0 0 1 0];
+%! coefs(2,1,:) = [0 1 0 0];
+%! # 2nd edge of the shape (-3x, 1)
+%! coefs(1,2,:) = [0 0 -3 1];
+%! coefs(2,2,:) = [0 0 0 1];
+%! # 3rd edge of the shape (2x - 2, -4(x -1/2)^3 + 1/2)
+%! coefs(1,3,:) = [0 0 2 -2];
+%! coefs(2,3,:) = [-4 6 -3 1];
+%! pp = mkpp (breaks, coefs, dim);
+%! t = linspace (0, 3, 100).';
+%! xy = ppval (pp, t).';
+%! patch (xy(:,1), xy(:,2), 'r');
 
 %!shared b,c,pp
 %! b = 1:3; c = 1:24; pp = mkpp (b,c);

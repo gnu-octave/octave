@@ -56,7 +56,7 @@ endfunction
 %! unwind_protect
 %!   h = findall (hf);
 %!   all_handles(1) = {"figure"};
-%!   all_handles(2:18,1) = {"uimenu"};
+%!   all_handles(2:24,1) = {"uimenu"};
 %!   assert (get (h, "type"), all_handles);
 %! unwind_protect_cleanup
 %!   close (hf);

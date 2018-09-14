@@ -1,3 +1,5 @@
+LIBINTERP_DEFUN_FILES =
+
 %canon_reldir%_EXTRA_DIST =
 
 %canon_reldir%_CLEANFILES =
@@ -76,7 +78,6 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/mk-build-env-features.sh \
   %reldir%/mk-builtins.pl \
   %reldir%/mk-doc.pl \
-  %reldir%/mk-pkg-add.sh \
   %reldir%/op-kw-docs \
   $(LIBINTERP_BUILT_DISTFILES)
 
@@ -113,7 +114,6 @@ include %reldir%/template-inst/module.mk
 include %reldir%/corefcn/module.mk
 include %reldir%/dldfcn/module.mk
 
-OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
 DLD_LIBOCTINTERP_LIBADD = $(OCT_LINK_DEPS)
 LIBINTERP_DLDFCN_LIBADD =
 
@@ -170,13 +170,10 @@ ULT_DIST_SRC := \
 LIBINTERP_FOUND_DEFUN_FILES := \
   $(shell $(SHELL) $(srcdir)/build-aux/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
-BUILT_IN_DEFUN_FILES = $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
+BUILT_IN_DEFUN_FILES := $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
 
-DLDFCN_DEFUN_FILES = $(DLDFCN_SRC)
-
-DEFUN_FILES = $(BUILT_IN_DEFUN_FILES)
-
-LIBINTERP_DEFUN_FILES = $(BUILT_IN_DEFUN_FILES) $(DLDFCN_DEFUN_FILES)
+LIBINTERP_DEFUN_FILES += \
+  $(BUILT_IN_DEFUN_FILES)
 
 ## FIXME: The following two variables are deprecated and should be removed
 ##        in Octave version 3.12.
@@ -232,13 +229,6 @@ mkbuiltins_dld_opt =
 	$(PERL) $(srcdir)/%reldir%/mk-builtins.pl --header $(mkbuiltins_dld_opt) "$(srcdir)" -- $(LIBINTERP_DEFUN_FILES) > $@-t && \
 	$(simple_move_if_change_rule)
 
-DLDFCN_PKG_ADD_FILE = %reldir%/dldfcn/PKG_ADD
-
-%reldir%/dldfcn/PKG_ADD: $(DLDFCN_DEFUN_FILES) %reldir%/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/%reldir%/mk-pkg-add.sh "$(srcdir)" $(DLDFCN_DEFUN_FILES) > $@-t && \
-	mv $@-t $@
-
 DOCSTRING_FILES += %reldir%/DOCSTRINGS
 
 %reldir%/DOCSTRINGS: $(LIBINTERP_DEFUN_FILES) %reldir%/op-kw-docs | %reldir%/$(octave_dirstamp)
@@ -247,8 +237,6 @@ DOCSTRING_FILES += %reldir%/DOCSTRINGS
 	$(call move_if_change_rule,%reldir%/DOCSTRINGS-t,$@)
 
 OCTAVE_INTERPRETER_TARGETS += \
-  $(OCT_FILES) \
-  $(DLDFCN_PKG_ADD_FILE) \
   $(LIBINTERP_TST_FILES)
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
@@ -256,35 +244,6 @@ DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 install-data-hook: install-oct install-built-in-docstrings
 
 uninstall-local: uninstall-oct uninstall-built-in-docstrings
-
-install-oct:
-	$(MKDIR_P) $(DESTDIR)$(octfiledir)
-	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
-	  $(INSTALL_DATA) $(DLDFCN_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
-	fi
-	cd $(DESTDIR)$(octlibdir) && \
-	for ltlib in $(DLDFCN_LIBS); do \
-	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
-	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$dl" ]; then \
-	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
-	  else \
-	    echo "error: dlname is empty in $$ltlib!"; \
-	    exit 1; \
-	  fi; \
-	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$lnames" ]; then \
-	    rm -f $$f $$lnames $$dl; \
-	  fi \
-	done
-.PHONY: install-oct
-
-uninstall-oct:
-	for f in $(notdir $(OCT_FILES)); do \
-	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
-	done
-	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
-.PHONY: uninstall-oct
 
 install-built-in-docstrings: %reldir%/DOCSTRINGS
 	$(MKDIR_P) $(DESTDIR)$(octetcdir)
@@ -300,10 +259,8 @@ pkgconfig_DATA += $(%canon_reldir%_pkgconfig_DATA)
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
 %canon_reldir%_CLEANFILES += \
-  $(DLDFCN_PKG_ADD_FILE) \
   $(LIBINTERP_BUILT_NODISTFILES) \
   $(LIBINTERP_TST_FILES) \
-  $(OCT_FILES) \
   %reldir%/corefcn/oct-tex-parser.output \
   %reldir%/parse-tree/oct-parse.output
 

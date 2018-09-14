@@ -79,6 +79,38 @@ BEGIN {
   print "";
   print "$(srcdir)/%reldir%/module.mk: $(srcdir)/%reldir%/config-module.sh $(srcdir)/%reldir%/config-module.awk $(srcdir)/%reldir%/module-files";
   print "\t$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-module.sh $(srcdir)";
+
   print "";
-  print "libinterp_MAINTAINERCLEANFILES += $(srcdir)/%reldir%/module.mk";
+  print "DLDFCN_OCT_FILES = $(DLDFCN_LIBS:.la=.oct)";
+  print "";
+  print "DLDFCN_DEFUN_FILES = $(DLDFCN_SRC)";
+  print "";
+  print "DLDFCN_PKG_ADD_FILE = %reldir%/PKG_ADD";
+  print "";
+  print "%reldir%/PKG_ADD: $(DLDFCN_DEFUN_FILES) $(srcdir)/build-aux/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)";
+  print "	$(AM_V_GEN)rm -f $@-t && \\"
+  print "	$(SHELL) $(srcdir)/build-aux/mk-pkg-add.sh \"$(srcdir)\" $(DLDFCN_DEFUN_FILES) > $@-t && \\";
+  print "	mv $@-t $@";
+  print "";
+  print "LIBINTERP_DEFUN_FILES += \\";
+  print "  $(DLDFCN_DEFUN_FILES)";
+  print "";
+  print "OCT_FILE_PKG_ADD_FILES += \\";
+  print "  $(DLDFCN_PKG_ADD_FILE)";
+  print "";
+  print "OCTAVE_INTERPRETER_TARGETS += \\";
+  print "  $(DLDFCN_OCT_FILES)";
+  print "";
+  print "OCT_FILE_LIBS += \\";
+  print " $(DLDFCN_LIBS)";
+  print "";
+  print "DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)";
+
+  print "";
+  print "libinterp_CLEANFILES += \\";
+  print "  $(DLDFCN_PKG_ADD_FILE) \\";
+  print "  $(DLDFCN_OCT_FILES)";
+  print "";
+  print "libinterp_MAINTAINERCLEANFILES += \\";
+  print "  $(srcdir)/%reldir%/module.mk";
 }

@@ -102,6 +102,10 @@ octetc_DATA =
 octfonts_DATA =
 octlocale_DATA =
 
+OCT_FILES =
+OCT_FILE_LIBS =
+OCT_FILE_PKG_ADD_FILES =
+
 DOC_TARGETS =
 
 BUILT_DISTFILES =
@@ -412,6 +416,39 @@ installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
 install-data-local: installdirs-local
+
+oct-file-pkg-add: $(OCT_FILE_PKG_ADD_FILES)
+	cat $(OCT_FILE_PKG_ADD_FILES) > $@-t \
+	  && mv $@-t $@
+
+install-oct: oct-file-pkg-add
+	$(MKDIR_P) $(DESTDIR)$(octfiledir)
+	if [ -n "`cat $(OCT_FILE_PKG_ADD_FILES)`" ]; then \
+	  $(INSTALL_DATA) oct-file-pkg-add $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	fi
+	cd $(DESTDIR)$(octlibdir) && \
+	for ltlib in $(OCT_FILE_LIBS); do \
+	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
+	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$dl" ]; then \
+	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
+	  else \
+	    echo "error: dlname is empty in $$ltlib!"; \
+	    exit 1; \
+	  fi; \
+	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$lnames" ]; then \
+	    rm -f $$f $$lnames $$dl; \
+	  fi \
+	done
+.PHONY: install-oct
+
+uninstall-oct:
+	for f in $(notdir $(OCT_FILES)); do \
+	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
+	done
+	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
+.PHONY: uninstall-oct
 
 clean-local: doc-clean
 

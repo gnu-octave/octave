@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_file_editor_tab_h)
 #define octave_file_editor_tab_h 1
 
+#include <QAbstractButton>
 #include <QWidget>
 #include <QCloseEvent>
 #include <QDateTime>
@@ -32,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qsciapis.h>
 #include <QStatusBar>
 #include <QLabel>
-#include <QComboBox>
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
@@ -194,6 +194,9 @@ namespace octave
 
   private slots:
 
+    // When user closes message box for decoding problems
+    void handle_decode_warning_answer (QAbstractButton *btn);
+
     // When user closes message box for reload question.
     void handle_file_reload_answer (int decision);
 
@@ -211,8 +214,6 @@ namespace octave
     void handle_save_file_as_answer_close (const QString& fileName);
     void handle_save_file_as_answer_cancel (void);
     void handle_save_as_filter_selected (const QString& filter);
-    void handle_combo_eol_current_index (int index);
-    void handle_combo_enc_current_index (QString text);
 
     // When apis preparation has finished and is ready to save
     void save_apis_info (void);

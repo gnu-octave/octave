@@ -449,8 +449,7 @@ namespace octave
                                       tr ("Save Variable %1 As").arg (name),
     // FIXME: Should determine extension from save_default_options
                                       QString ("./%1.txt").arg (name),
-                                      0, 0,
-                                      QFileDialog::DontUseNativeDialog);
+                                      0, 0);
 
     // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
     // FIXME: Call octave_value::save_* directly?

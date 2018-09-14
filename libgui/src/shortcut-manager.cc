@@ -651,12 +651,12 @@ namespace octave
           file = QFileDialog::getOpenFileName (this,
                                                tr ("Import shortcuts from file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr, QFileDialog::DontUseNativeDialog);
+                                               nullptr);
         else if (action == OSC_EXPORT)
           file = QFileDialog::getSaveFileName (this,
                                                tr ("Export shortcuts to file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr, QFileDialog::DontUseNativeDialog);
+                                               nullptr);
 
         if (file.isEmpty ())
           return false;

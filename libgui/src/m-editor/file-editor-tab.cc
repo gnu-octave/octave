@@ -1734,18 +1734,49 @@ namespace octave
     else
       file_to_load = fileName;
     QFile file (file_to_load);
-    if (! file.open (QFile::ReadOnly))
+    if (!file.open(QIODevice::ReadOnly))
       return file.errorString ();
 
-    // read the file
-    QTextStream in (&file);
-    // set the desired codec
-    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
-    in.setCodec (codec);
-
     QApplication::setOverrideCursor (Qt::WaitCursor);
-    _edit_area->setText (in.readAll ());
+
+    // read the file binary, decoding later
+    const QByteArray text_data = file.readAll ();
+
+    // decode
+    QTextCodec::ConverterState st;
+    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+    const QString text = codec->toUnicode(text_data.constData(),
+                                          text_data.size(), &st);
+
+    // Decoding with invalid characters?
+    if (st.invalidChars > 0)
+      {
+        // Message box for user decision
+        QString msg = tr ("There were problems reading the file\n"
+                          "%1\n"
+                          "with the selected encoding %2.\n\n"
+                          "Modifying and saving the file might "
+                          "cause data loss!")
+                          .arg (file_to_load).arg (_encoding);
+        QMessageBox *msg_box = new QMessageBox ();
+        msg_box->setIcon (QMessageBox::Warning);
+        msg_box->setText (msg);
+        msg_box->setWindowTitle (tr ("Octave Editor"));
+        msg_box->addButton (tr ("&Edit anyway"), QMessageBox::YesRole);
+        //msg_box->addButton (tr ("&Change encoding"), QMessageBox::AcceptRole);
+        msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
+
+        connect (msg_box, SIGNAL (buttonClicked (QAbstractButton *)),
+                 this, SLOT (handle_decode_warning_answer (QAbstractButton *)));
+
+        msg_box->setWindowModality (Qt::WindowModal);
+        msg_box->setAttribute (Qt::WA_DeleteOnClose);
+        msg_box->show ();
+      }
+
+    _edit_area->setText (text);
     _edit_area->setEolMode (detect_eol_mode ());
+
     QApplication::restoreOverrideCursor ();
 
     _copy_available = false;     // no selection yet available
@@ -1774,6 +1805,14 @@ namespace octave
     */
 
     return QString ();
+  }
+
+  void file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
+  {
+    QString txt = btn->text ();
+
+    if (txt == tr ("&Close"))
+      close ();
   }
 
   QsciScintilla::EolMode file_editor_tab::detect_eol_mode (void)
@@ -2091,53 +2130,6 @@ namespace octave
     else
       fileDialog = new QFileDialog (this);
 
-    // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-    // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-    // it had/has no effect on Windows, though)
-    fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-    // define a new grid layout with the extra elements
-    QGridLayout *extra = new QGridLayout (fileDialog);
-    QFrame *separator = new QFrame (fileDialog);
-    separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-    separator->setFrameStyle (QFrame::Sunken);
-
-    // combo box for choosing new line ending chars
-    QLabel *label_eol = new QLabel (tr ("Line Endings:"));
-    QComboBox *combo_eol = new QComboBox ();
-    combo_eol->addItem ("Windows (CRLF)");  // ensure the same order as in
-    combo_eol->addItem ("Mac (CR)");        // the settings dialog
-    combo_eol->addItem ("Unix (LF)");
-    _save_as_desired_eol = _edit_area->eolMode ();      // init with current eol
-    combo_eol->setCurrentIndex (_save_as_desired_eol);
-
-    // combo box for encoding
-    QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-    QComboBox *combo_enc = new QComboBox ();
-    resource_manager::combo_encoding (combo_enc, _encoding);
-
-    // track changes in the combo boxes
-    connect (combo_eol, SIGNAL (currentIndexChanged (int)),
-             this, SLOT (handle_combo_eol_current_index (int)));
-    connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-             this, SLOT (handle_combo_enc_current_index (QString)));
-
-    // build the extra grid layout
-    extra->addWidget (separator,0,0,1,6);
-    extra->addWidget (label_eol,1,0);
-    extra->addWidget (combo_eol,1,1);
-    extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Fixed,
-                                       QSizePolicy::Fixed), 1,2);
-    extra->addWidget (label_enc,1,3);
-    extra->addWidget (combo_enc,1,4);
-    extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                       QSizePolicy::Fixed), 1,5);
-
-    // and add the extra grid layout to the dialog's layout
-    QGridLayout *dialog_layout = dynamic_cast<QGridLayout *> (fileDialog->layout ());
-    dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                              1,dialog_layout->columnCount ());
-
     // add the possible filters and the default suffix
     QStringList filters;
     filters << tr ("Octave Files (*.m)")
@@ -2188,16 +2180,6 @@ namespace octave
       }
 
     show_dialog (fileDialog, ! valid_file_name ());
-  }
-
-  void file_editor_tab::handle_combo_eol_current_index (int index)
-  {
-    _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
-  }
-
-  void file_editor_tab::handle_combo_enc_current_index (QString text)
-  {
-    _new_encoding = text;
   }
 
   void file_editor_tab::handle_save_as_filter_selected (const QString& filter)

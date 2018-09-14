@@ -1058,43 +1058,6 @@ namespace octave
     QFileDialog *fileDialog = new QFileDialog (p);
     fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
 
-    // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-    // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-    // it had/has no effect on Windows, though)
-    fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-    // define a new grid layout with the extra elements
-    QGridLayout *extra = new QGridLayout (fileDialog);
-    QFrame *separator = new QFrame (fileDialog);
-    separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-    separator->setFrameStyle (QFrame::Sunken);
-
-    if (is_internal)
-      {
-        // combo box for encoding, only when using the internal editor
-        QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-        QComboBox *combo_enc = new QComboBox ();
-        resource_manager::combo_encoding (combo_enc);
-        m_file_encoding = QString ();  // default
-
-        // track changes in the combo boxes
-        connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-                 this, SLOT (set_file_encoding (QString)));
-
-        // build the extra grid layout
-        extra->addWidget (separator,0,0,1,3);
-        extra->addWidget (label_enc,1,0);
-        extra->addWidget (combo_enc,1,1);
-        extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                           QSizePolicy::Fixed), 1,2);
-
-        // and add the extra grid layout to the dialog's layout
-        QGridLayout *dialog_layout = dynamic_cast<QGridLayout *> (
-                                                                  fileDialog->layout ());
-        dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                                  1,dialog_layout->columnCount ());
-      }
-
     fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
     fileDialog->setViewMode (QFileDialog::Detail);
     fileDialog->setFileMode (QFileDialog::ExistingFiles);

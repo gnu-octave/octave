@@ -853,8 +853,7 @@ namespace octave
     QString dir = QFileDialog::getExistingDirectory (this,
                      tr ("Set directory of file browser"),
                      m_file_system_model->rootPath (),
-                     QFileDialog::ShowDirsOnly
-                     | QFileDialog::DontUseNativeDialog);
+                     QFileDialog::ShowDirsOnly);
     set_current_directory (dir);
   }
 

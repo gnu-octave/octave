@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class QMainWindow;
 class QToolBar;
+class QScreen;
 
 namespace QtHandles
 {
@@ -122,6 +123,8 @@ namespace QtHandles
     void toggleAxes (void);
     void toggleGrid (void);
     void autoAxes (void);
+    void figureWindowShown ();
+    void screenChanged (QScreen*);
 
   public slots:
     uint8NDArray slotGetPixels (void);

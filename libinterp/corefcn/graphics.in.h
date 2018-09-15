@@ -3183,6 +3183,7 @@ public:
       any_property __plot_stream__ h , Matrix ()
       any_property __rotate_mode__ h , Matrix ()
       any_property __zoom_mode__ h , Matrix ()
+      double_property __device_pixel_ratio__ hU , 1.0
 
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
@@ -3528,6 +3529,8 @@ public:
     void clear_zoom_stack (bool do_unzoom = true);
 
     void update_units (const caseless_str& old_units);
+
+    void update_font (std::string prop = "");
 
     void update_fontunits (const caseless_str& old_fontunits);
 
@@ -3957,7 +3960,6 @@ public:
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
     }
 
-    void update_font (std::string prop = "");
     void update_fontname (void)
     {
       update_font ("fontname");
@@ -4388,6 +4390,10 @@ public:
   public:
     double get___fontsize_points__ (double box_pix_height = 0) const;
 
+    void update_text_extent (void);
+
+    void update_font (void);
+
     void set_position (const octave_value& val)
     {
       octave_value new_val (val);
@@ -4497,15 +4503,12 @@ public:
         set_zliminclude ("off");
     }
 
-    void update_text_extent (void);
-
     void request_autopos (void);
     void update_positionmode (void) { request_autopos (); }
     void update_rotationmode (void) { request_autopos (); }
     void update_horizontalalignmentmode (void) { request_autopos (); }
     void update_verticalalignmentmode (void) { request_autopos (); }
 
-    void update_font (void);
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
     void update_color (void) { update_font (); update_text_extent (); }

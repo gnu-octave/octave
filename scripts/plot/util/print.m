@@ -386,6 +386,15 @@ function print (varargin)
       nfig += 1;
     endfor
 
+    ## Don't account for the actual pixel density
+    if (strcmp (tk, "qt"))
+      props(end+1).h = opts.figure;
+      props(end).name = "__device_pixel_ratio__";
+      props(end).value = {get(opts.figure, "__device_pixel_ratio__")};
+      set (opts.figure, "__device_pixel_ratio__", 1);
+      nfig += 1;
+    endif
+
     ## print() requires axes units = "normalized"
     hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
       "-not", "units", "normalized");

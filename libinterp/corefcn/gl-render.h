@@ -244,6 +244,9 @@ namespace octave
 
     // Indicate we are drawing for selection purpose
     bool selecting;
+
+    // Factor used for translating Octave pixels to actual device pixels
+    double m_devpixratio;
   private:
     class patch_tesselator;
   };

@@ -666,6 +666,36 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QScreen has the devicePixelRatio member function.
+dnl This member function was introduced in Qt 5.5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO], [
+  AC_CACHE_CHECK([for QScreen::devicePixelRatio in <QScreen>],
+    [octave_cv_func_qscreen_devicepixelratio],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QApplication>
+        #include <QScreen>
+        ]], [[
+        QScreen *screen = QApplication::primaryScreen ();
+        qreal ratio = screen->devicePixelRatio ();
+        ]])],
+      octave_cv_func_qscreen_devicepixelratio=yes,
+      octave_cv_func_qscreen_devicepixelratio=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qscreen_devicepixelratio = yes; then
+    AC_DEFINE(HAVE_QSCREEN_DEVICEPIXELRATIO, 1,
+      [Define to 1 if you have the `QScreen::devicePixelRatio' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QTabWidget has the setMovable member function.
 dnl This member function was introduced in Qt 4.5.
 dnl
@@ -2107,6 +2137,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
     OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS
     OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
+    OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
     OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS

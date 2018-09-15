@@ -870,6 +870,19 @@ screen_size_pixels (void)
                            sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
 }
 
+static double
+device_pixel_ratio (graphics_handle h)
+{
+  double retval = 1.0;
+  
+  graphics_object fig = gh_manager::get_object (h).get_ancestor ("figure");
+  
+  if (fig.valid_object ())
+    retval = fig.get ("__device_pixel_ratio__").double_value ();
+  
+  return retval;
+}
+
 static void
 convert_cdata_2 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  const double *cmapv, double x, octave_idx_type lda,
@@ -2075,6 +2088,45 @@ figure::properties::update_handlevisibility (void)
 
   base_properties::update_handlevisibility ();
 }
+
+static void
+update_text_pos (graphics_handle h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("text"))
+    {
+      text::properties& tp
+        = dynamic_cast<text::properties&> (go.get_properties ());
+      tp.update_font ();
+      tp.update_text_extent ();
+    }
+  else if (go.isa ("figure") || go.isa ("uipanel") || go.isa ("axes")
+           || go.isa ("hggroup"))
+    {
+      Matrix ch = go.get_properties ().get_all_children ();
+      for (octave_idx_type ii = 0; ii < ch.numel (); ii++)
+        update_text_pos (graphics_handle (ch(ii)));
+
+      if (go.isa ("axes"))
+        {
+          axes::properties& ap
+            = dynamic_cast<axes::properties&> (go.get_properties ());
+          ap.update_font ();
+          ap.update_xlabel_position ();
+          ap.update_ylabel_position ();
+          ap.update_zlabel_position ();
+          ap.update_title_position ();
+          ap.update_axes_layout ();
+        }
+    }
+}
+
+void
+figure::properties::update___device_pixel_ratio__ (void)
+{
+  update_text_pos (get___myhandle__ ());
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -6641,11 +6693,13 @@ axes::properties::update_font (std::string prop)
 
     }
 
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("__fontsize_points__").double_value ());
+                         get ("__fontsize_points__").double_value () * dpr);
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -7714,6 +7768,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 {
   Matrix ext (1, 2, 0.0);
   double wmax, hmax;
+  double dpr = device_pixel_ratio (get___myhandle__ ());
   wmax = hmax = 0.0;
   int n = std::min (ticklabels.numel (), ticks.numel ());
   for (int i = 0; i < n; i++)
@@ -7731,8 +7786,8 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
               ext = txt_renderer.get_extent (label, 0.0,
                                              get_ticklabelinterpreter ());
 
-              wmax = std::max (wmax, ext(0));
-              hmax = std::max (hmax, ext(1));
+              wmax = std::max (wmax, ext(0) / dpr);
+              hmax = std::max (hmax, ext(1) / dpr);
             }
           else
             {
@@ -8788,7 +8843,14 @@ text::properties::get_extent (void) const
   m(0) += p(0);
   m(1) += p(1);
 
-  return convert_text_position (m, *this, "pixels", get_units ());
+  Matrix bbox = convert_text_position (m, *this, "pixels", get_units ());
+
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
+  for (octave_idx_type ii = 0; ii < bbox.numel (); ii++)
+    bbox(ii) = bbox(ii) / dpr;
+  
+  return bbox;
 }
 
 void
@@ -8826,11 +8888,13 @@ text::properties::update_fontunits (const caseless_str& old_units)
 void
 text::properties::update_font (void)
 {
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("__fontsize_points__").double_value ());
+                         get ("__fontsize_points__").double_value () * dpr);
 
   txt_renderer.set_color (get_color_rgb ());
 }
@@ -8870,7 +8934,7 @@ text::properties::update_text_extent (void)
   // The bbox is relative to the text's position.  We'll leave it that
   // way, because get_position does not return valid results when the
   // text is first constructed.  Conversion to proper coordinates is
-  // performed in get_extent.
+  // performed in get_extent.  
   set_extent (bbox);
 
   if (__autopos_tag___is ("xlabel") || __autopos_tag___is ("ylabel")
@@ -8927,9 +8991,9 @@ text::properties::get___fontsize_points__ (double box_pix_height) const
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
+  graphics_object go (gh_manager::get_object (get___myhandle__ ()));
   if (fontunits_is ("normalized") && parent_height <= 0)
     {
-      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
       graphics_object ax (go.get_ancestor ("axes"));
 
       parent_height = ax.get_properties ().get_boundingbox (true).elem (3);

@@ -48,4 +48,10 @@ namespace QtHandles
     return nullptr;
   }
 
+  void FigureWindow::showEvent (QShowEvent* ev)
+  {
+    QMainWindow::showEvent (ev);
+    emit figureWindowShown();
+  }
+
 }

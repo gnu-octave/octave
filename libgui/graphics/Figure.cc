@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QtDebug>
 #include <QTimer>
 #include <QToolBar>
+#include <QWindow>
+#include <QScreen>
 
 #include "Canvas.h"
 #include "Container.h"
@@ -113,6 +115,11 @@ namespace QtHandles
     win->setCentralWidget (m_container);
 
     figure::properties& fp = properties<figure> ();
+
+    // Register for the signal that indicates when a window has moved
+    // to a different screen
+    connect (win, SIGNAL (figureWindowShown ()),
+             this, SLOT (figureWindowShown ()));
 
     // Status bar
     m_statusBar = win->statusBar ();
@@ -918,6 +925,34 @@ namespace QtHandles
 
     if (canvas)
       canvas->autoAxes (m_handle);
+  }
+
+  void
+  Figure::figureWindowShown ()
+  {
+#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
+    QWindow* window = qWidget<QMainWindow> ()->windowHandle ();
+    QScreen* screen = window->screen ();
+    
+    gh_manager::auto_lock lock;
+    
+    figure::properties& fp = properties<figure> ();
+    fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
+
+    connect (window, SIGNAL (screenChanged (QScreen*)),
+             this, SLOT (screenChanged (QScreen*)));
+#endif
+  }
+
+  void
+  Figure::screenChanged (QScreen* screen)
+  {
+#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
+    gh_manager::auto_lock lock;
+    
+    figure::properties& fp = properties<figure> ();
+    fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
+#endif
   }
 
   void

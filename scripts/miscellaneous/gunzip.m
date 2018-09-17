@@ -44,9 +44,9 @@ function filelist = gunzip (gzfile, dir = [])
   endif
 
   if (nargout > 0)
-    filelist = unpack (gzfile, dir, "gunzip");
+    filelist = unpack (gzfile, dir, "gz");
   else
-    unpack (gzfile, dir, "gunzip");
+    unpack (gzfile, dir, "gz");
   endif
 
 endfunction

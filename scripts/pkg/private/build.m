@@ -46,7 +46,7 @@ function build (builddir, tarballs, verbose)
     endif
   endif
 
-  for i = 1:numel(tarballs)
+  for i = 1:numel (tarballs)
     filelist = unpack (tarballs{i}, builddir);
 
     ## We want the path for the package root but we can't assume that

@@ -22,7 +22,7 @@
 ## All actions should be tested, and ideally all options are tested.
 ############################################################
 
-%!shared old_prefix, old_archprefix, old_local_list, old_global_list, prefix, restorecfg, restorecache, restoreglobalcache, rmtmpdir, mfile_pkg_name, mfile_pkg_zip
+%!shared old_prefix, old_archprefix, old_local_list, old_global_list, prefix, restorecfg, restorecache, restoreglobalcache, rmtmpdir, mfile_pkg_name, mfile_pkg_tgz
 %!
 %! ## Do all tests in a temporary directory
 %! [old_prefix, old_archprefix] = pkg ("prefix");
@@ -42,11 +42,13 @@
 %! pkg ("global_list", fullfile (prefix, "octave_packages"));
 %! rmtmpdir = @onCleanup (@() confirm_recursive_rmdir (0, "local") && rmdir (prefix, "s"));
 %!
-%! ## Create zip file packages of testing directories in prefix directory
+%! ## Create tar.gz file packages of testing directories in prefix directory
 %! mfile_pkg_name = {"mfile_basic_test", "mfile_minimal_test"};
-%! mfile_pkg_zip = fullfile (prefix, strcat (mfile_pkg_name, ".zip"));
+%! mfile_pkg_tar = fullfile (prefix, strcat (mfile_pkg_name, ".tar"));
+%! mfile_pkg_tgz = strcat (mfile_pkg_tar, ".gz");
 %! for i = 1:numel (mfile_pkg_name)
-%!   zip (mfile_pkg_zip{i}, mfile_pkg_name{i});
+%!   tar (mfile_pkg_tar{i}, mfile_pkg_name{i});
+%!   gzip (mfile_pkg_tar{i});
 %! endfor
 
 ## Avoids printing to stdout when installing
@@ -57,7 +59,7 @@
 ## Action install/uninstall
 %!test
 %! for i = 1:numel (mfile_pkg_name)
-%!   silent_pkg_install (mfile_pkg_zip{i});
+%!   silent_pkg_install (mfile_pkg_tgz{i});
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
@@ -66,7 +68,7 @@
 # -local
 %!test
 %! for i = 1:numel (mfile_pkg_name)
-%!   silent_pkg_install ("-local", mfile_pkg_zip{i});
+%!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 
@@ -88,7 +90,7 @@
 %!test
 %! for i = 1:numel (mfile_pkg_name)
 %!  name = mfile_pkg_name{i};
-%!  silent_pkg_install ("-local", mfile_pkg_zip{i});
+%!  silent_pkg_install ("-local", mfile_pkg_tgz{i});
 %!  unwind_protect
 %!    pkg ("load", name);
 %!    pkg ("unload", name);
@@ -115,7 +117,7 @@
 
 ## Action describe
 %!test
-%! silent_pkg_install ("-local", mfile_pkg_zip{1});
+%! silent_pkg_install ("-local", mfile_pkg_tgz{1});
 %! [desc, flag] = pkg ("describe", mfile_pkg_name{1});
 %! ## FIXME: this only tests that the describe command runs,
 %! ##        not that the output is in anyway correct.

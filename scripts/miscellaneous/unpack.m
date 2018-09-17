@@ -86,8 +86,8 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = cellstr (file);
   endif
   if (numel (file) == 1)
+    ## FIXME: The code below is not a perfect test for a URL
     if (isempty (strfind (file{1}, "://")))
-      ## FIXME: The above code is not a perfect test for a URL
       gfile = glob (file);
       if (isempty (gfile))
         error ('unpack: FILE "%s" not found', file{1});
@@ -115,15 +115,28 @@ function filelist = unpack (file, dir = ".", filetype = "")
     file = file{1};
   endif
 
+  if (nargin == 3 && (! ischar (filetype) || ! isrow (filetype)))
+    error ("unpack: FILETYPE must be a string");
+  endif
+
   if (isfolder (file))
     if (isempty (filetype))
       error ("unpack: FILETYPE must be given for a directory");
-    elseif (! any (strcmpi (filetype, "gunzip")))
-      error ('unpack: FILETYPE must be "gunzip" for a directory');
+    elseif (! strcmpi (filetype, "gz"))
+      error ('unpack: FILETYPE must be "gz" for a directory');
     endif
     ext = ".gz";
   else
     [pathstr, name, ext] = fileparts (file);
+
+    if (nargin == 3 && ! strcmpi (ext, filetype))
+      ## override extension with given filetype 
+      if (isempty (ext))
+        ext = filetype;
+      else
+        ext = regexprep (ext, '(\.?)\S*$', ['$1' filetype]);
+      endif
+    endif
 
     ## Check to see if it's .tar.gz, .tar.Z, etc.
     if (any (strcmpi ({".gz" ".Z" ".bz2" ".bz"}, ext)))
@@ -193,7 +206,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   ## Unzip doesn't actually care about the extension
-  if (strcmpi (filetype, "unzip"))
+  if (strcmpi (filetype, "zip"))
     nodotext = "zip";
   else
     nodotext = ext(ext != '.');
@@ -224,8 +237,8 @@ function filelist = unpack (file, dir = ".", filetype = "")
       command = commandq;
     endif
   else
-    warning ("unpack: unrecognized FILETYPE <%s>", ext);
-    files = file;
+    warning ("unpack: unrecognized FILETYPE <%s>", nodotext);
+    filelist = {};
     return;
   endif
 
@@ -366,13 +379,14 @@ endfunction
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
+%!error <FILETYPE must be a string> unpack ("/", [], 1)
 %!error <FILETYPE must be given for a directory>
 %! if (isunix || ismac)
 %!   unpack ("/");
 %! else
 %!   unpack ('C:\');
 %! endif
-%!error <FILETYPE must be "gunzip" for a directory>
+%!error <FILETYPE must be "gz" for a directory>
 %! if (isunix || ismac)
 %!   unpack ("/", [], "foobar");
 %! else

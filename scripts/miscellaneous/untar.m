@@ -42,9 +42,9 @@ function filelist = untar (tarfile, dir = [])
   endif
 
   if (nargout > 0)
-    filelist = unpack (tarfile, dir, "untar");
+    filelist = unpack (tarfile, dir, "tar");
   else
-    unpack (tarfile, dir, "untar");
+    unpack (tarfile, dir, "tar");
   endif
 
 endfunction

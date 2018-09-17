@@ -42,9 +42,9 @@ function filelist = unzip (zipfile, dir = [])
   endif
 
   if (nargout > 0)
-    filelist = unpack (zipfile, dir, "unzip");
+    filelist = unpack (zipfile, dir, "zip");
   else
-    unpack (zipfile, dir, "unzip");
+    unpack (zipfile, dir, "zip");
   endif
 
 endfunction

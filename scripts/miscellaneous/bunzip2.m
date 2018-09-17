@@ -41,9 +41,9 @@ function filelist = bunzip2 (bzfile, dir = [])
   endif
 
   if (nargout > 0)
-    filelist = unpack (bzfile, dir, "bunzip2");
+    filelist = unpack (bzfile, dir, "bz2");
   else
-    unpack (bzfile, dir, "bunzip2");
+    unpack (bzfile, dir, "bz2");
   endif
 
 endfunction

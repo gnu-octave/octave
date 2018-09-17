@@ -41,8 +41,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QtDebug>
 #include <QTimer>
 #include <QToolBar>
-#include <QWindow>
-#include <QScreen>
+#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
+#  include <QWindow>
+#  include <QScreen>
+#endif
 
 #include "Canvas.h"
 #include "Container.h"

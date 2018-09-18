@@ -104,7 +104,6 @@ namespace QtHandles
   private:
     void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
-    void showMenuBar (bool visible, int height = -1);
     void addCustomToolBar (QToolBar *bar, bool visible);
     void showCustomToolBar (QToolBar *bar, bool visible);
 
@@ -118,7 +117,7 @@ namespace QtHandles
 
   private slots:
     void setMouseMode (MouseMode mode);
-    void updateMenuBar (int height = -1);
+    void updateFigureHeight (int delta_h);
     void updateContainer (void);
     void toggleAxes (void);
     void toggleGrid (void);

@@ -144,9 +144,6 @@ namespace QtHandles
         m_statusBar->hide ();
       }
 
-    if (! fp.menubar_is ("figure"))
-      m_menuBar->hide ();
-
     m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
     m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
 
@@ -472,7 +469,6 @@ namespace QtHandles
         break;
 
       case figure::properties::ID_MENUBAR:
-        showMenuBar (fp.menubar_is ("figure"));
         if (fp.toolbar_is ("auto"))
           showFigureToolBar (fp.menubar_is ("figure"));
         break;
@@ -545,51 +541,23 @@ namespace QtHandles
   }
 
   void
-  Figure::showMenuBar (bool visible, int h1)
-  {
-    // Get the height before and after toggling the visibility of builtin menus
-    if (h1 < 0)
-      h1 = m_menuBar->sizeHint ().height ();
-
-    // Keep the menubar visible if it contains custom menus
-    bool keep_visible = visible;
-    foreach (QAction *a, m_menuBar->actions ())
-      if (a->objectName () == "builtinMenu")
-        a->setVisible (visible);
-      else if ((a->objectName () == "customMenu") && a->isVisible ())
-        keep_visible = true;
-    
-    visible = keep_visible;
-
-    int h2 = m_menuBar->sizeHint ().height ();
-    
-    if (h1 != h2 || (m_menuBar->isVisible () && ! visible)
-        || (! m_menuBar->isVisible () && visible))
-      {
-        int dy = h2 - h1;
-
-        QRect r = qWidget<QWidget> ()->geometry ();
-
-        r.adjust (0, -dy, 0, 0);
-
-        m_blockUpdates = true;
-        qWidget<QWidget> ()->setGeometry (r);
-        m_menuBar->setVisible (visible);
-        m_blockUpdates = false;
-      }
-
-    updateBoundingBox (false);
-  }
-
-  void
-  Figure::updateMenuBar (int height)
+  Figure::updateFigureHeight (int dh)
   {
     gh_manager::auto_lock lock;
     graphics_object go = object ();
 
-    if (go.valid_object ())
-      showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"),
-                   height);
+    if (go.valid_object () && dh != 0)
+      {
+        QRect r = qWidget<QWidget> ()->geometry ();
+
+        r.adjust (0, dh, 0, 0);
+
+        m_blockUpdates = true;
+        qWidget<QWidget> ()->setGeometry (r);
+        m_blockUpdates = false;
+        
+        updateBoundingBox (false);
+      }
   }
 
   void
@@ -798,9 +766,10 @@ namespace QtHandles
                 // The menubar may have been resized if no action is visible
                 {
                   QAction *a = dynamic_cast<QActionEvent *> (xevent)->action ();
-                  if (m_menuBar->sizeHint ().height () != m_previousHeight
+                  int currentHeight = m_menuBar->sizeHint ().height ();
+                  if (currentHeight != m_previousHeight
                       && ! a->isSeparator ())
-                    updateMenuBar (m_previousHeight);
+                    updateFigureHeight (m_previousHeight - currentHeight);
                 }
                 break;
 

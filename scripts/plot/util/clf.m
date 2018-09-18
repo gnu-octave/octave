@@ -77,6 +77,10 @@ function h = clf (varargin)
                       get (kids, "tag")); 
     delete (kids(! ismenu));
     reset (hfig);
+
+    ## Recover figure listeners which have been deleted
+    __add_default_menu__ (hfig, kids(ismenu));
+    
     __set_default_mouse_modes__ (hfig);
   else
     ## Select only the chilren with visible handles.

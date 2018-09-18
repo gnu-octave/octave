@@ -17,8 +17,10 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __add_default_menu__ (@var{fig})
-## Add default menu to figure.
+## @deftypefn {} {} __add_default_menu__ (@var{hfig})
+## @deftypefnx {} {} __add_default_menu__ (@var{hfig}, @var{hmenu})
+## Add default menu and listeners to figure.
+##  
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to
 ## @qcode{"off"}.
@@ -26,11 +28,10 @@
 
 ## Author: Kai Habel
 
-function __add_default_menu__ (hf)
+function __add_default_menu__ (hf, hmenu = [])
 
-  obj = findall (hf, "-depth", 1, "tag", "__default_menu__File", ...
-                 "label", "&File");
-  if (isempty (obj))
+  ## Create 
+  if (isempty (hmenu))
     ## File menu
     hui = uimenu (hf, "label", "&File", "handlevisibility", "off", ...
                   "tag", "__default_menu__File");
@@ -41,7 +42,8 @@ function __add_default_menu__ (hf)
     uimenu (hui, "label", "Save &As", "callback", @save_cb, ...
             "accelerator", "S");
     uimenu (hui, "label", "&Close", "callback", @close_cb, ...
-           "accelerator", "w", "separator", "on");
+            "accelerator", "w", "separator", "on");
+    hmenu(1) = hui; 
     
     ## Edit menu
     hui = uimenu (hf, "label", "&Edit", "handlevisibility", "off", ...
@@ -55,6 +57,7 @@ function __add_default_menu__ (hf)
             "callback", "clf (gcbf ());");
     uimenu (hui, "label", "Reset Figure",
             "callback", "reset (gcbf ());");
+    hmenu(2) = hui; 
     
     ## Tools menu
     hui = uimenu (hf, "label", "&Tools", "handlevisibility", "off", ...
@@ -82,10 +85,22 @@ function __add_default_menu__ (hf)
             "callback", @guimode_cb);
     uimenu (hui2, "label", "Disable mousezoom", "tag", "zoom_off", ...
             "callback", @guimode_cb);
+    hmenu(3) = hui; 
   endif
+
+  ## Figure listeners
+  toggle_visibility_cb (hf, [], hmenu);
+  addlistener (hf, "menubar", {@toggle_visibility_cb, hmenu});
 
 endfunction
 
+function toggle_visibility_cb (hf, ~, hmenu)
+  if (strcmp (get (hf, "menubar"), "none"))
+    set (hmenu, "visible", "off")
+  else
+    set (hmenu, "visible", "on")
+  endif
+endfunction
 
 function open_cb (h, e)
   [filename, filedir] = uigetfile ({"*.ofig", "Octave Figure File"}, ...

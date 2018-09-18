@@ -261,7 +261,7 @@ namespace octave
       setFloating (false);
 // Remove after thorough testing 3/20/18    m_parent->removeDockWidget (this);
     setParent (0, Qt::CustomizeWindowHint | Qt::WindowTitleHint |
-               Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+               Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::Window);
 
     // restore the last geometry when floating
     QRect geom = m_recent_float_geom.isNull () ? QRect (50,100,480,480)

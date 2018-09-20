@@ -65,6 +65,8 @@ namespace octave
     }
 
     virtual void set_viewport (int w, int h);
+    virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }
+    virtual Matrix get_viewport_scaled (void) const;
     virtual graphics_xform get_transform (void) const { return xform; }
     virtual uint8NDArray get_pixels (int width, int height);
 
@@ -247,6 +249,7 @@ namespace octave
 
     // Factor used for translating Octave pixels to actual device pixels
     double m_devpixratio;
+
   private:
     class patch_tesselator;
   };

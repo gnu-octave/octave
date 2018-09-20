@@ -35,10 +35,8 @@ namespace octave
   opengl_selector::apply_pick_matrix (void)
   {
     GLdouble p_matrix[16];
-    GLint viewport[4];
 
     m_glfcns.glGetDoublev (GL_PROJECTION_MATRIX, p_matrix);
-    m_glfcns.glGetIntegerv (GL_VIEWPORT, viewport);
     m_glfcns.glMatrixMode (GL_PROJECTION);
     m_glfcns.glLoadIdentity ();
 
@@ -47,12 +45,14 @@ namespace octave
     // the QOpenGLFunctions class so that the OpenGL implementation may
     // be selected dynamically.
 
+    Matrix viewport = get_viewport_scaled ();
+
     if (size > 0)
       {
-        m_glfcns.glTranslatef ((viewport[2] - 2 * (xp - viewport[0])) / size,
-                               (viewport[3] - 2 * (yp - viewport[1])) / size, 0);
+        m_glfcns.glTranslatef ((viewport(2) - 2 * (xp - viewport(0))) / size,
+                               (viewport(3) - 2 * (yp - viewport(1))) / size, 0);
 
-        m_glfcns.glScalef (viewport[2] / size, viewport[3] / size, 1.0);
+        m_glfcns.glScalef (viewport(2) / size, viewport(3) / size, 1.0);
       }
 
     m_glfcns.glMultMatrixd (p_matrix);

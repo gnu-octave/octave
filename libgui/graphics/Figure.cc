@@ -504,7 +504,7 @@ namespace QtHandles
           win->setWindowModality (Qt::NonModal);
 
         break;
-        
+
       case figure::properties::ID___MOUSE_MODE__:
         m_container->canvas (m_handle)->setCursor (mouseMode ());
         break;
@@ -555,7 +555,7 @@ namespace QtHandles
         m_blockUpdates = true;
         qWidget<QWidget> ()->setGeometry (r);
         m_blockUpdates = false;
-        
+
         updateBoundingBox (false);
       }
   }
@@ -904,14 +904,15 @@ namespace QtHandles
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
     QWindow* window = qWidget<QMainWindow> ()->windowHandle ();
     QScreen* screen = window->screen ();
-    
+
     gh_manager::auto_lock lock;
-    
+
     figure::properties& fp = properties<figure> ();
     fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
 
     connect (window, SIGNAL (screenChanged (QScreen*)),
              this, SLOT (screenChanged (QScreen*)));
+
 #endif
   }
 
@@ -920,9 +921,18 @@ namespace QtHandles
   {
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
     gh_manager::auto_lock lock;
-    
+
     figure::properties& fp = properties<figure> ();
-    fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
+    double old_dpr = fp.get___device_pixel_ratio__ ();
+    double new_dpr = screen->devicePixelRatio ();
+    if (old_dpr != new_dpr)
+      {
+        fp.set___device_pixel_ratio__ (new_dpr);
+
+        // For some obscure reason, changing the __device_pixel_ratio__ property
+        // from the GUI thread does not necessarily trigger a redraw. Force it.
+        redraw ();
+      }
 #endif
   }
 

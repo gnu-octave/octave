@@ -613,12 +613,11 @@ namespace octave
 #endif
 
   opengl_renderer::opengl_renderer (opengl_functions& glfcns)
-    : m_glfcns (glfcns), toolkit (), xform (), xmin (), xmax (),
-      ymin (), ymax (), zmin (), zmax (), xZ1 (), xZ2 (),
-      marker_id (), filled_marker_id (), camera_pos (), camera_dir (),
-      view_vector (), interpreter ("none"), txt_renderer (),
-      m_current_light (0), m_max_lights (0), selecting (false),
-      m_devpixratio (1.)
+    : m_glfcns (glfcns), toolkit (), xform (), xmin (), xmax (), ymin (),
+      ymax (), zmin (), zmax (), xZ1 (), xZ2 (), marker_id (),
+      filled_marker_id (), camera_pos (), camera_dir (), view_vector (),
+      interpreter ("none"), txt_renderer (), m_current_light (0),
+      m_max_lights (0), selecting (false), m_devpixratio (1.)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -703,11 +702,8 @@ namespace octave
   void
   opengl_renderer::draw_figure (const figure::properties& props)
   {
-    // Current physical-pixel to toolkit-pixel factor
-    m_devpixratio = props.get___device_pixel_ratio__ ();
-    
     // Initialize OpenGL context
-    
+
     init_gl_context (props.is_graphicssmoothing (), props.get_color_rgb ());
 
 #if defined (HAVE_OPENGL)
@@ -1212,14 +1208,6 @@ namespace octave
     Matrix x_mat1 = props.get_opengl_matrix_1 ();
     Matrix x_mat2 = props.get_opengl_matrix_2 ();
 
-#if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vw[4];
-#else
-    int vw[4];
-#endif
-
-    m_glfcns.glGetIntegerv (GL_VIEWPORT, vw);
-
     m_glfcns.glMatrixMode (GL_MODELVIEW);
     m_glfcns.glLoadIdentity ();
     m_glfcns.glScaled (1, 1, -1);
@@ -1227,11 +1215,8 @@ namespace octave
     m_glfcns.glMatrixMode (GL_PROJECTION);
     m_glfcns.glLoadIdentity ();
 
-     // Use abstract Octave-pixels for transformation, not physical-pixels
-     vw[2] = octave::math::round (static_cast<float> (vw[2]) / m_devpixratio);
-     vw[3] = octave::math::round (static_cast<float> (vw[3]) / m_devpixratio);
-
-    m_glfcns.glOrtho (0, vw[2], vw[3], 0, xZ1, xZ2);
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
     m_glfcns.glMultMatrixd (x_mat2.data ());
     m_glfcns.glMatrixMode (GL_MODELVIEW);
 
@@ -3678,28 +3663,17 @@ namespace octave
     if (bgcol.isempty () && ecol.isempty ())
       return;
 
-    Matrix pos = xform.scale (props.get_data_position ());
+    Matrix pos = props.get_data_position ();
     ColumnVector pixpos = get_transform ().transform (pos(0), pos(1),
-                                                      pos(2), false);
-    const Matrix bbox = props.get_extent_matrix ();
-
-#  if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vp[4];
-#  else
-    int vp[4];
-#  endif
-
-    m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
+                                                      pos(2), true);
 
     // Save current transform matrices and set orthogonal window coordinates
     m_glfcns.glMatrixMode (GL_PROJECTION);
     m_glfcns.glPushMatrix ();
     m_glfcns.glLoadIdentity ();
 
-    vp[2] = octave::math::round (static_cast<float> (vp[2]) / m_devpixratio);
-    vp[3] = octave::math::round (static_cast<float> (vp[3]) / m_devpixratio);
-
-    m_glfcns.glOrtho (0, vp[2], vp[3], 0, xZ1, xZ2);
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
     m_glfcns.glMatrixMode (GL_MODELVIEW);
     m_glfcns.glPushMatrix ();
     m_glfcns.glLoadIdentity ();
@@ -3716,10 +3690,11 @@ namespace octave
       m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
 
     double m = props.get_margin ();
-    double x0 = bbox (0) - m;
-    double x1 = x0 + bbox(2) + 2 * m;
-    double y0 = -(bbox (1) - m);
-    double y1 = y0 - (bbox(3) + 2 * m);
+    const Matrix bbox = props.get_extent_matrix ();
+    double x0 = bbox (0) / m_devpixratio - m;
+    double x1 = x0 + bbox(2) / m_devpixratio + 2 * m;
+    double y0 = -(bbox (1) / m_devpixratio - m);
+    double y1 = y0 - (bbox(3) / m_devpixratio + 2 * m);
 
     if (! bgcol.isempty ())
       {
@@ -3863,8 +3838,6 @@ namespace octave
       }
     else // clip to viewport
       {
-        GLfloat vp[4];
-        m_glfcns.glGetFloatv (GL_VIEWPORT, vp);
         // FIXME: actually add the code to do it!
       }
 
@@ -3997,6 +3970,35 @@ namespace octave
 #endif
   }
 
+  Matrix
+  opengl_renderer::get_viewport_scaled (void) const
+  {
+    Matrix retval (1, 4, 0.0);
+
+#if defined (HAVE_OPENGL)
+#if defined (HAVE_FRAMEWORK_OPENGL)
+    GLint vp[4];
+#else
+    int vp[4];
+#endif
+
+    m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
+
+    for (int i = 0; i < 4; i++)
+      retval(i) = static_cast<double> (vp[i]) / m_devpixratio;
+
+#else
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+
+    return retval;
+  }
+
   void
   opengl_renderer::draw_pixels (int width, int height, const float *data)
   {
@@ -4083,7 +4085,7 @@ namespace octave
 
   void
   opengl_renderer::set_font (const base_properties& props)
-  {    
+  {
     txt_renderer.set_font (props.get ("fontname").string_value (),
                            props.get ("fontweight").string_value (),
                            props.get ("fontangle").string_value (),
@@ -4264,23 +4266,12 @@ namespace octave
   opengl_renderer::init_marker (const std::string& m, double size, float width)
   {
 #if defined (HAVE_OPENGL)
-
-#  if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vw[4];
-#  else
-    int vw[4];
-#  endif
-
-    m_glfcns.glGetIntegerv (GL_VIEWPORT, vw);
-
     m_glfcns.glMatrixMode (GL_PROJECTION);
     m_glfcns.glPushMatrix ();
     m_glfcns.glLoadIdentity ();
 
-    vw[2] = octave::math::round (static_cast<float> (vw[2]) / m_devpixratio);
-    vw[3] = octave::math::round (static_cast<float> (vw[3]) / m_devpixratio);
-
-    m_glfcns.glOrtho (0, vw[2], vw[3], 0, xZ1, xZ2);
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
     m_glfcns.glMatrixMode (GL_MODELVIEW);
     m_glfcns.glPushMatrix ();
 

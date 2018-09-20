@@ -413,6 +413,9 @@ namespace octave
             Matrix c = fprop.get_color_rgb ();
             m_glfcns.glClearColor (c(0), c(1), c(2), 1);
 
+            // Allow figures to be printed at arbitrary resolution
+            set_device_pixel_ratio (fprop.get___device_pixel_ratio__ ());
+
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
             GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
                                         nullptr, gl2ps_term, gl2ps_sort,
@@ -920,11 +923,11 @@ namespace octave
             const std::string tmpstr = txtobj.get_string ();
             const uint8_t *c =
               reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
-            
+
             for (size_t i = 0; i < tmpstr.size ();)
               {
                 int mblen = octave_u8_strmblen_wrapper (c + i);
-                
+
                 if (mblen > 1)
                   {
                     str += " ";
@@ -939,7 +942,7 @@ namespace octave
                   }
                 else
                   str += tmpstr.at (i);
-                
+
                 i += mblen;
               }
           }

@@ -75,6 +75,7 @@ namespace QtHandles
         graphics_object fig = go.get_ancestor ("figure");
         double dpr = fig.get ("__device_pixel_ratio__").double_value ();
         m_renderer.set_viewport (dpr * width (), dpr * height ());
+        m_renderer.set_device_pixel_ratio (dpr);
         m_renderer.draw (go);
       }
   }
@@ -177,10 +178,7 @@ namespace QtHandles
       {
         octave::opengl_selector s (m_glfcns);
 
-        graphics_object fig = ax.get_ancestor ("figure");
-        double dpr = fig.get ("__device_pixel_ratio__").double_value ();
-
-        s.set_viewport (dpr * width (), dpr * height ());
+        s.set_viewport (width (), height ());
         return s.select (ax, pt.x (), height () - pt.y (),
                          octave::select_ignore_hittest);
       }

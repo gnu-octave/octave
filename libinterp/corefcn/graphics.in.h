@@ -5548,6 +5548,7 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
       position.add_constraint (dim_vector (1, 4));
       sliderstep.add_constraint (dim_vector (1, 2));

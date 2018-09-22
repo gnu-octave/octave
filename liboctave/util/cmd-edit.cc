@@ -262,16 +262,6 @@ namespace octave
     octave_rl_add_defun ("operate-and-get-next",
                          gnu_readline::operate_and_get_next,
                          octave_rl_ctrl ('O'));
-
-    // And the history search functions.
-
-    octave_rl_add_defun ("history-search-backward",
-                         gnu_readline::history_search_backward,
-                         octave_rl_meta ('P'));
-
-    octave_rl_add_defun ("history-search-forward",
-                         gnu_readline::history_search_forward,
-                         octave_rl_meta ('N'));
   }
 
   void

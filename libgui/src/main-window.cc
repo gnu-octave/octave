@@ -1117,24 +1117,35 @@ namespace octave
     interpreter& interp
       = __get_interpreter__ ("main_window::clear_workspace_callback");
 
-    // Is it a regular function within the search path? (Call __which__)
-    octave_value_list fct = F__which__ (interp, ovl (fname.toStdString ()),0);
-    octave_map map = fct(0).map_value ();
-
-    std::string type = map.contents ("type").data ()[0].string_value ();
-    std::string name = map.contents ("name").data ()[0].string_value ();
+    // Is it a regular function within the search path? (Call Fexist)
+    octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
+    int type = fct (0).int_value ();
 
     QString message = QString ();
     QString filename = QString ();
+    QString fcn_name = fname + ".m";
 
-    if (type == "built-in function")
+    switch (type)
       {
-        // built in function: can't edit
-        message = tr ("%1 is a built-in function");
+        case 3:
+        case 5:
+        case 103:
+          message = tr ("%1 is a built-in, compiled or inline\n"
+                        "function and can not be edited.");
+          break;
+
+        case 2:
+          octave_value_list file_path
+              = Ffile_in_loadpath (interp, ovl (fcn_name.toStdString ()), 0);
+          if (file_path.length () > 0)
+            filename = QString::fromStdString (file_path (0).string_value ());
+          break;
       }
-    else if (type == "")
+
+    if (filename.isEmpty () && message.isEmpty ())
       {
-        // function not known to octave -> try directory of edited file
+        // No error so far, but function still not known
+        // -> try directory of edited file
         // get directory
         QDir dir;
         if (ffile.isEmpty ())
@@ -1147,28 +1158,20 @@ namespace octave
         else
           dir = QDir (QFileInfo (ffile).canonicalPath ());
 
-        // function not known to octave -> try directory of edited file
-        QFileInfo file = QFileInfo (dir, fname + ".m");
-
+        QFileInfo file = QFileInfo (dir, fcn_name);
         if (file.exists ())
-          {
-            filename = file.canonicalFilePath (); // local file exists
-          }
+          filename = file.canonicalFilePath (); // local file exists
         else
           {
             // local file does not exist -> try private directory
             file = QFileInfo (ffile);
             file = QFileInfo (QDir (file.canonicalPath () + "/private"),
-                              fname + ".m");
-
+                              fcn_name);
             if (file.exists ())
-              {
-                filename = file.canonicalFilePath ();  // private function exists
-              }
+              filename = file.canonicalFilePath ();  // private function exists
             else
-              {
-                message = tr ("Can not find function %1");  // no file found
-              }
+              message = tr ("Can not find function %1");  // no file found
+
           }
       }
 
@@ -1177,7 +1180,7 @@ namespace octave
         QMessageBox *msgBox
           = new QMessageBox (QMessageBox::Critical,
                              tr ("Octave Editor"),
-                             message.arg (QString::fromStdString (name)),
+                             message.arg (fname),
                              QMessageBox::Ok, this);
 
         msgBox->setWindowModality (Qt::NonModal);
@@ -1185,10 +1188,6 @@ namespace octave
         msgBox->show ();
         return;
       }
-
-    if (filename.isEmpty ())
-      filename = QString::fromStdString (
-                                         map.contents ("file").data ()[0].string_value ());
 
     if (! filename.endsWith (".m"))
       filename.append (".m");

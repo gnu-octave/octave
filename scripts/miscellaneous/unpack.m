@@ -379,7 +379,12 @@ endfunction
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ("_%NOT_A_FILENAME%_")
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_"})
 %!error <FILE "_%NOT_A_FILENAME%_" not found> unpack ({"_%NOT_A_FILENAME%_", "2nd_filename"})
-%!error <FILETYPE must be a string> unpack ("/", [], 1)
+%!error <FILETYPE must be a string>
+%! if (isunix || ismac)
+%!   unpack ("/", [], 1)
+%! else
+%!   unpack ('C:\', [], 1)
+%! endif
 %!error <FILETYPE must be given for a directory>
 %! if (isunix || ismac)
 %!   unpack ("/");

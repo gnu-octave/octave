@@ -161,7 +161,7 @@ namespace octave
     void editor_check_conflict_save (const QString& saveFileName,
                                      bool remove_on_success);
     void run_file_signal (const QFileInfo& info);
-    void request_open_file (const QString&);
+    void request_open_file (const QString&, const QString& = QString ());
     void edit_mfile_request (const QString&, const QString&,
                              const QString&, int);
 
@@ -214,6 +214,9 @@ namespace octave
     void handle_save_file_as_answer_close (const QString& fileName);
     void handle_save_file_as_answer_cancel (void);
     void handle_save_as_filter_selected (const QString& filter);
+
+    // When user changes encoding after decoding errors where found
+    void handle_current_enc_changed (const QString& enc);
 
     // When apis preparation has finished and is ready to save
     void save_apis_info (void);

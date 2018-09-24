@@ -1751,6 +1751,9 @@ namespace octave
     // Decoding with invalid characters?
     if (st.invalidChars > 0)
       {
+        // Set read only
+        _edit_area->setReadOnly (true);
+
         // Message box for user decision
         QString msg = tr ("There were problems reading the file\n"
                           "%1\n"
@@ -1763,7 +1766,7 @@ namespace octave
         msg_box->setText (msg);
         msg_box->setWindowTitle (tr ("Octave Editor"));
         msg_box->addButton (tr ("&Edit anyway"), QMessageBox::YesRole);
-        //msg_box->addButton (tr ("&Change encoding"), QMessageBox::AcceptRole);
+        msg_box->addButton (tr ("Chan&ge encoding"), QMessageBox::AcceptRole);
         msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
 
         connect (msg_box, SIGNAL (buttonClicked (QAbstractButton *)),
@@ -1812,7 +1815,60 @@ namespace octave
     QString txt = btn->text ();
 
     if (txt == tr ("&Close"))
-      close ();
+      {
+        // Just close the file
+        close ();
+        return;
+      }
+
+    if (txt == tr ("Chan&ge encoding"))
+      {
+        // Dialog for reloading the file with another encoding
+        QDialog dlg;
+        dlg.setWindowTitle (tr ("Select new default encoding"));
+
+        QLabel *text
+          = new QLabel (tr ("Please select a new encoding\n"
+                            "for reloading the current file.\n\n"
+                            "This does not change the default encoding.\n"));
+
+        QComboBox *enc_combo = new QComboBox ();
+        resource_manager::combo_encoding (enc_combo);
+        _new_encoding = enc_combo->currentText ();
+        connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
+                 this , SLOT (handle_current_enc_changed (const QString&)));
+
+        QDialogButtonBox *buttons
+          = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                                  Qt::Horizontal);
+        connect (buttons, SIGNAL (accepted ()), &dlg, SLOT (accept ()));
+        connect (buttons, SIGNAL (rejected ()), &dlg, SLOT (reject ()));
+
+        QGridLayout *main_layout = new QGridLayout;
+        main_layout->setSizeConstraint (QLayout::SetFixedSize);
+        main_layout->addWidget (text, 0, 0);
+        main_layout->addWidget (enc_combo, 1, 0);
+        main_layout->addWidget (buttons, 2, 0);
+        dlg.setLayout (main_layout);
+
+        int answer = dlg.exec ();
+
+        if (answer == QDialog::Accepted)
+          {
+            // Reload the file with new encoding but using the same tab
+            QString reload_file_name = _file_name;  // store file name
+            _file_name = "";  // force reuse of this tab when opening a new file
+            emit request_open_file (reload_file_name, _new_encoding);
+          }
+      }
+
+    // Continue editing, set writable again
+    _edit_area->setReadOnly (false);
+  }
+
+  void file_editor_tab::handle_current_enc_changed (const QString& enc)
+  {
+    _new_encoding = enc;
   }
 
   QsciScintilla::EolMode file_editor_tab::detect_eol_mode (void)

@@ -2189,8 +2189,8 @@ namespace octave
     connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
              main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
-    connect (f, SIGNAL (request_open_file (const QString&)),
-             this, SLOT (request_open_file (const QString&)));
+    connect (f, SIGNAL (request_open_file (const QString&, const QString&)),
+             this, SLOT (request_open_file (const QString&, const QString&)));
 
     connect (f, SIGNAL (edit_mfile_request (const QString&, const QString&,
                                             const QString&, int)),

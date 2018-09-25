@@ -2240,9 +2240,10 @@ namespace octave
     int n = static_cast<int> (std::min (std::min (x.numel (), y.numel ()),
                                         (has_z ? z.numel ()
                                          : std::numeric_limits<int>::max ())));
-    octave_uint8 clip_mask = (props.is_clipping () ? 0x7F : 0x40), clip_ok (0x40);
+    uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+    uint8_t clip_ok = 0x40;
 
-    std::vector<octave_uint8> clip (n);
+    std::vector<uint8_t> clip (n);
 
     if (has_z)
       for (int i = 0; i < n; i++)
@@ -2962,6 +2963,9 @@ namespace octave
         init_marker (props.get_marker (), props.get_markersize (),
                      props.get_linewidth ());
 
+        uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+        uint8_t clip_ok = 0x40;
+
         for (int i = 0; i < zc; i++)
           {
             if (y_mat)
@@ -2969,11 +2973,12 @@ namespace octave
 
             for (int j = 0; j < zr; j++)
               {
-                if (clip(j,i))
-                  continue;
-
                 if (x_mat)
                   j1 = j;
+
+                if ((clip_code (x(j1,i), y(j,i1), z(j,i)) & clip_mask)
+                    != clip_ok)
+                  continue;
 
                 if ((do_edge && mecolor.isempty ())
                     || (do_face && mfcolor.isempty ()))
@@ -3519,12 +3524,16 @@ namespace octave
         init_marker (props.get_marker (), props.get_markersize (),
                      props.get_linewidth ());
 
+        uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+        uint8_t clip_ok = 0x40;
+
         for (int i = 0; i < nf; i++)
           for (int j = 0; j < count_f(i); j++)
             {
               int idx = int (f(i,j) - 1);
 
-              if (clip(idx))
+              if ((clip_code (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0))
+                   & clip_mask) != clip_ok)
                 continue;
 
               Matrix cc;
@@ -3615,8 +3624,7 @@ namespace octave
 
     // Handle clipping manually when drawing text background
     if (! props.is_clipping () ||
-        (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) ==
-         octave_uint8 (0x40)))
+        (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) == 0x40))
       {
         set_clipping (false);
         draw_text_background (props);

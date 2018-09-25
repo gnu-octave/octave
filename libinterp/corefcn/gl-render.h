@@ -180,7 +180,7 @@ namespace octave
               || math::isinf (z));
     }
 
-    octave_uint8 clip_code (double x, double y, double z) const
+    uint8_t clip_code (double x, double y, double z) const
     {
       return ((x < xmin ? 1 : 0)
               | (x > xmax ? 1 : 0) << 1

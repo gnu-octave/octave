@@ -832,10 +832,6 @@ namespace octave
       = settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ();
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
-
-    if (m_sync_octave_dir)
-      display_directory (m_octave_dir);  // sync browser to octave dir
-
   }
 
   void files_dock_widget::popdownmenu_home (bool)

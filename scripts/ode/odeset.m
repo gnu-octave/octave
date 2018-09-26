@@ -55,87 +55,86 @@
 ## by @code{odeset}, are the following:
 ##
 ## @table @asis
-## @item AbsTol
+## @item @code{AbsTol}: positive scalar | vector, def. @code{1e-6}
 ## Absolute error tolerance.
 ##
-## @item BDF
+## @item @code{BDF}: @{@qcode{"off"}@} | @qcode{"on"}
 ## Use BDF formulas in implicit multistep methods.
 ## @emph{Note}: This option is not yet implemented.
 ##
-## @item Events
+## @item @code{Events}: function_handle
 ## Event function.  An event function must have the form
 ## @code{[value, isterminal, direction] = my_events_f (t, y)}
 ##
-## @item InitialSlope
+## @item @code{InitialSlope}: vector
 ## Consistent initial slope vector for DAE solvers.
 ##
-## @item InitialStep
+## @item @code{InitialStep}: positive scalar
 ## Initial time step size.
 ##
-## @item Jacobian
+## @item @code{Jacobian}: matrix | function_handle
 ## Jacobian matrix, specified as a constant matrix or a function of
 ## time and state.
 ##
-## @item JConstant
+## @item @code{JConstant}: @{@qcode{"off"}@} | @qcode{"on"}
 ## Specify whether the Jacobian is a constant matrix or depends on the
 ## state.
 ##
-## @item JPattern
+## @item @code{JPattern}: sparse matrix
 ## If the Jacobian matrix is sparse and non-constant but maintains a
 ## constant sparsity pattern, specify the sparsity pattern.
 ##
-## @item Mass
+## @item @code{Mass}: matrix | function_handle
 ## Mass matrix, specified as a constant matrix or a function of
 ## time and state.
 ##
-## @item MassSingular
-## Specify whether the mass matrix is singular.  Accepted values include
-## @qcode{"yes"}, @qcode{"no"}, @qcode{"maybe"}.
+## @item @code{MassSingular}: @{@qcode{"maybe"}@} | @qcode{"yes"} | @qcode{"on"}
+## Specify whether the mass matrix is singular.
 ##
-## @item MaxOrder
+## @item @code{MaxOrder}: @{@qcode{5}@} | @qcode{4} | @qcode{3} | @qcode{2} | @qcode{1}
 ## Maximum order of formula.
 ##
-## @item MaxStep
+## @item @code{MaxStep}: positive scalar
 ## Maximum time step value.
 ##
-## @item MStateDependence
+## @item @code{MStateDependence}: @{@qcode{"weak"}@} | @qcode{"none"} | @qcode{"strong"}
 ## Specify whether the mass matrix depends on the state or only on time.
 ##
-## @item MvPattern
+## @item @code{MvPattern}: sparse matrix
 ## If the mass matrix is sparse and non-constant but maintains a
 ## constant sparsity pattern, specify the sparsity pattern.
 ## @emph{Note}: This option is not yet implemented.
 ##
-## @item NonNegative
+## @item @code{NonNegative}: scalar | vector
 ## Specify elements of the state vector that are expected to remain
 ## non-negative during the simulation.
 ##
-## @item NormControl
+## @item @code{NormControl}: @{@qcode{"off"}@} | @qcode{"on"}
 ## Control error relative to the 2-norm of the solution, rather than its
 ## absolute value.
 ##
-## @item OutputFcn
+## @item @code{OutputFcn}: function_handle
 ## Function to monitor the state during the simulation.  For the form of
 ## the function to use see @code{odeplot}.
 ##
-## @item OutputSel
+## @item @code{OutputSel}: scalar | vector
 ## Indices of elements of the state vector to be passed to the output
 ## monitoring function.
 ##
-## @item Refine
+## @item @code{Refine}: positive scalar
 ## Specify whether output should be returned only at the end of each
 ## time step or also at intermediate time instances.  The value should be
 ## a scalar indicating the number of equally spaced time points to use
 ## within each timestep at which to return output.
 ## @emph{Note}: This option is not yet implemented.
 ##
-## @item RelTol
+## @item @code{RelTol}: positive scalar
 ## Relative error tolerance.
 ##
-## @item Stats
+## @item @code{Stats}: @{@qcode{"off"}@} | @qcode{"on"}
 ## Print solver statistics after simulation.
 ##
-## @item Vectorized
+## @item @code{Vectorized}: @{@qcode{"off"}@} | @qcode{"on"}
 ## Specify whether @code{odefun} can be passed multiple values of the
 ## state at once.
 ##

@@ -1639,9 +1639,12 @@ audiorecorder::get_userdata (void)
 octave_value
 audiorecorder::getaudiodata (void)
 {
-  Matrix audio (2, left.size ());
+  // Must get size before entering loop as the value of left.size() may change
+  // during loop with simultaneous recording and playback (bug #50674).
+  unsigned int ls = left.size ();
+  Matrix audio (2, ls);
 
-  for (unsigned int i = 0; i < left.size (); i++)
+  for (unsigned int i = 0; i < ls; i++)
     {
       audio(0,i) = left[i];
       audio(1,i) = right[i];

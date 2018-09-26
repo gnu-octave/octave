@@ -25,10 +25,10 @@
 function retval = AbsRel_norm (x, x_old, AbsTol, RelTol, normcontrol, y = zeros (size (x)))
 
   if (normcontrol)
-    sc = max (AbsTol, RelTol * max (sqrt (sumsq (x)), sqrt (sumsq (x_old))));
+    sc = max (AbsTol(:), RelTol * max (sqrt (sumsq (x)), sqrt (sumsq (x_old))));
     retval = sqrt (sumsq ((x - y))) / sc;
   else
-    sc = max (AbsTol, RelTol .* max (abs (x), abs (x_old)));
+    sc = max (AbsTol(:), RelTol .* max (abs (x), abs (x_old)));
     retval = max (abs (x - y) ./ sc);
   endif
 

@@ -3805,7 +3805,18 @@ root_figure::properties::update_units (void)
 
   double dpi = get_screenpixelsperinch ();
 
-  if (xunits == "inches")
+  if (xunits == "pixels")
+    {
+      // Most common case (default).
+      // Don't need to convert anything, but short-circuit if/else tree.
+    }
+  else if (xunits == "normalized")
+    {
+      scrn_sz = Matrix (1, 4, 1.0);
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+    }
+  else if (xunits == "inches")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
@@ -3819,18 +3830,21 @@ root_figure::properties::update_units (void)
       scrn_sz(2) *= 2.54 / dpi;
       scrn_sz(3) *= 2.54 / dpi;
     }
-  else if (xunits == "normalized")
-    {
-      scrn_sz = Matrix (1, 4, 1.0);
-      scrn_sz(0) = 0;
-      scrn_sz(1) = 0;
-    }
   else if (xunits == "points")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
       scrn_sz(2) *= 72 / dpi;
       scrn_sz(3) *= 72 / dpi;
+    }
+  else if (xunits == "characters")
+    {
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+      // FIXME: this assumes the system font is Helvetica 10pt
+      //        (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
+      scrn_sz(2) *= 74.951 / 12.0 / dpi;
+      scrn_sz(3) *= 74.951 / 12.0 / dpi;
     }
 
   set_screensize (scrn_sz);
@@ -3865,6 +3879,8 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 %!   assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
 %!   set (0, "units", "pixels");
 %!   assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%!   set (0, "units", "characters");
+%!   assert (get (0, "screensize"), sz / dpi * (74.951 / 12.0), 0.5 / dpi * (74.951 / 12.0));
 %! unwind_protect_cleanup
 %!   set (0, "units", old_units);
 %! end_unwind_protect

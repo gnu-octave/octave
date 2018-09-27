@@ -307,6 +307,9 @@ CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 nodist_octinclude_HEADERS += \
   octave-config.h
 
+OCTAVE_INTERPRETER_TARGETS += \
+  $(OCT_FILE_PKG_ADD_FILES)
+
 ALL_LOCAL_TARGETS += \
   $(OCTAVE_INTERPRETER_TARGETS) \
   .gdbinit \

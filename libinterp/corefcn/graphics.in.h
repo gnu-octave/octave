@@ -2922,7 +2922,7 @@ public:
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       array_property screensize r , default_screensize ()
       bool_property showhiddenhandles , "off"
-      radio_property units U , "inches|centimeters|normalized|points|{pixels}"
+      radio_property units U , "{pixels}|inches|centimeters|points|normalized|characters"
       // Hide base properties which don't make sense for root object
       //radio_property beingdeleted h , "{off}|on"
     END_PROPERTIES

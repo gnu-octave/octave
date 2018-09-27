@@ -194,6 +194,9 @@ namespace octave
              this, SLOT (handle_active_dock_changed (octave_dock_widget*,
                                                      octave_dock_widget*)));
 
+    connect (this, SIGNAL (request_queue_cmd (octave_cmd*)),
+             p, SLOT (queue_cmd (octave_cmd*)));
+
     if (m_default_float_button != nullptr)
       {
         disconnect (m_default_float_button, 0, 0, 0);

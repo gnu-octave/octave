@@ -268,6 +268,15 @@ namespace octave
     void clear_clipboard ();
     //!@}
 
+    //! Queue a command into the worker thread's command queue
+
+    void queue_cmd (octave_cmd *cmd)
+    {
+      m_cmd_queue.add_cmd (cmd);
+    }
+
+
+
     //! Returns a list of dock widgets.
 
     QList<octave_dock_widget *> get_dock_widget_list (void)

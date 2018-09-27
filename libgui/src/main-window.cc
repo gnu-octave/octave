@@ -379,7 +379,7 @@ namespace octave
       {
         octave_cmd_builtin *cmd
                 = new octave_cmd_builtin (&Fsave, ovl (file.toStdString ()));
-        m_cmd_queue.add_cmd (cmd);
+        queue_cmd (cmd);
       }
   }
 
@@ -396,7 +396,7 @@ namespace octave
         octave_cmd_builtin *cmd
             = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
                                       0, octave_cmd_builtin::CMD_UPD_WORKSPACE);
-        m_cmd_queue.add_cmd (cmd);
+        queue_cmd (cmd);
       }
   }
 
@@ -411,7 +411,7 @@ namespace octave
   {
     octave_cmd_builtin *cmd
           = new octave_cmd_builtin (&Fclear, ovl ());
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   void main_window::handle_clear_command_window_request (void)
@@ -802,7 +802,7 @@ namespace octave
         octave_cmd_builtin *cmd = new octave_cmd_builtin (
                                     &F__mfile_encoding__,
                                     ovl (m_default_encoding.toStdString ()));
-        m_cmd_queue.add_cmd (cmd);
+        queue_cmd (cmd);
       }
 
     // Set cursor blinking depending on the settings
@@ -921,7 +921,7 @@ namespace octave
       {
         octave_cmd_builtin *cmd
                 = new octave_cmd_builtin (&Fcd, ovl (xdir.toStdString ()));
-        m_cmd_queue.add_cmd (cmd);
+        queue_cmd (cmd);
       }
   }
 
@@ -952,7 +952,7 @@ namespace octave
   {
     octave_cmd_exec *cmd = new octave_cmd_exec (command);
 
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
 
     if (focus_console_after_command ())
       focus_command_window ();
@@ -962,7 +962,7 @@ namespace octave
   {
     octave_cmd_eval *cmd = new octave_cmd_eval (info);
 
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
 
     if (focus_console_after_command ())
       focus_command_window ();
@@ -1007,33 +1007,33 @@ namespace octave
   {
     octave_cmd_debug *cmd
       = new octave_cmd_debug ("cont", m_suppress_dbg_location);
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   void main_window::debug_step_into (void)
   {
     octave_cmd_debug *cmd = new octave_cmd_debug ("in", m_suppress_dbg_location);
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   void main_window::debug_step_over (void)
   {
     octave_cmd_debug *cmd
       = new octave_cmd_debug ("step", m_suppress_dbg_location);
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   void main_window::debug_step_out (void)
   {
     octave_cmd_debug *cmd = new octave_cmd_debug ("out", m_suppress_dbg_location);
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   void main_window::debug_quit (void)
   {
     octave_cmd_debug *cmd
       = new octave_cmd_debug ("quit", m_suppress_dbg_location);
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   //
@@ -1742,7 +1742,7 @@ namespace octave
   {
     e->ignore ();
     octave_cmd_exec *cmd = new octave_cmd_exec ("exit");
-    m_cmd_queue.add_cmd (cmd);
+    queue_cmd (cmd);
   }
 
   // Main subroutine of the constructor

@@ -48,21 +48,6 @@ function hg = __scatter__ (varargin)
     s = 36;
   endif
 
-  ## Remove NaNs
-  idx = isnan (x) | isnan (y) | isnan (s);
-  if (nd == 3)
-    idx |= isnan (z);
-    z(idx) = [];
-  endif
-  x(idx) = [];
-  y(idx) = [];
-  if (nd == 2)
-    z = zeros (length (x), 0);
-  endif
-  if (numel (s) > 1)
-    s(idx) = [];
-  endif
-
   firstnonnumeric = find (! cellfun ("isnumeric", varargin(istart:nargin)), 1);
   if (isempty (firstnonnumeric))
     firstnonnumeric = Inf;
@@ -86,6 +71,24 @@ function hg = __scatter__ (varargin)
     endif
   else
     c = [];
+  endif
+
+  ## Remove NaNs
+  idx = isnan (x) | isnan (y) | isnan (s);
+  if (nd == 3)
+    idx |= isnan (z);
+    z(idx) = [];
+  endif
+  x(idx) = [];
+  y(idx) = [];
+  if (nd == 2)
+    z = zeros (length (x), 0);
+  endif
+  if (numel (s) > 1)
+    s(idx) = [];
+  endif
+  if (rows (c) > 1)
+    c(idx,:) = [];
   endif
 
   ## Validate inputs

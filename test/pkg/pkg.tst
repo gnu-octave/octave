@@ -23,7 +23,8 @@
 ############################################################
 
 %!shared old_prefix, old_archprefix, old_local_list, old_global_list, prefix, restorecfg, restorecache, restoreglobalcache, rmtmpdir, mfile_pkg_name, mfile_pkg_tgz
-%!
+
+%!testif HAVE_Z
 %! ## Do all tests in a temporary directory
 %! [old_prefix, old_archprefix] = pkg ("prefix");
 %! restorecfg = onCleanup (@() pkg ("prefix", old_prefix, old_archprefix));
@@ -57,7 +58,7 @@
 %!endfunction
 
 ## Action install/uninstall
-%!test
+%!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install (mfile_pkg_tgz{i});
 %!   pkg ("uninstall", mfile_pkg_name{i});
@@ -66,7 +67,7 @@
 %!error pkg ("install", "nonexistent.zip")
 
 # -local
-%!test
+%!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
 %!   pkg ("uninstall", mfile_pkg_name{i});
@@ -87,7 +88,7 @@
 ## FIXME: Need test
 
 ## Action load/unload (within install/uninstall)
-%!test
+%!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!  name = mfile_pkg_name{i};
 %!  silent_pkg_install ("-local", mfile_pkg_tgz{i});
@@ -116,7 +117,7 @@
 #%! oct_forge_pkgs = pkg ("list", "-forge");
 
 ## Action describe
-%!test
+%!testif HAVE_Z
 %! silent_pkg_install ("-local", mfile_pkg_tgz{1});
 %! [desc, flag] = pkg ("describe", mfile_pkg_name{1});
 %! ## FIXME: this only tests that the describe command runs,

@@ -832,6 +832,15 @@ namespace octave
       = settings->value (fb_sync_octdir.key, fb_sync_octdir.def).toBool ();
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
+
+    // If m_sync_octave_dir is enabled, then we want the file browser to
+    // update to match the current working directory of the
+    // interpreter.  We don't want to queue any signal to change the
+    // interpreter's current working directory.  In this case, we just
+    // want the GUI to match the state of the interpreter.
+
+    if (m_sync_octave_dir)
+      do_sync_browser_directory ();
   }
 
   void files_dock_widget::popdownmenu_home (bool)

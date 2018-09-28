@@ -1162,7 +1162,7 @@ audioplayer::pause (void)
   PaError err;
   err = Pa_StopStream (stream);
   if (err != paNoError)
-    error ("audiorecorder: failed to stop audio recording stream");
+    error ("audioplayer: failed to stop audio playback stream");
 }
 
 void
@@ -1174,7 +1174,7 @@ audioplayer::resume (void)
   PaError err;
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    error ("audiorecorder: failed to start audio recording stream");
+    error ("audioplayer: failed to start audio playback stream");
 }
 
 PaStream *
@@ -1215,7 +1215,7 @@ audioplayer::isplaying (void)
   PaError err;
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
-    error ("audiorecorder: checking stream activity status failed");
+    error ("audioplayer: checking stream activity status failed");
 
   return (err == 1);
 }
@@ -1838,7 +1838,7 @@ Undocumented internal function.
                           || args(0).is_inline_function ());
 
       if (is_function)
-        error ("audioplayer: callbacks not yet implemented");
+        error ("audiorecorder: callbacks not yet implemented");
     }
 
   if (nargin >= 3)

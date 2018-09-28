@@ -547,6 +547,7 @@ specified option.
            { "QT_CPPFLAGS", octave::build_env::QT_CPPFLAGS },
            { "QT_LDFLAGS", octave::build_env::QT_LDFLAGS },
            { "QT_LIBS", octave::build_env::QT_LIBS },
+           { "QT_OPENGL_LIBS", octave::build_env::QT_OPENGL_LIBS },
            { "RANLIB", octave::build_env::RANLIB },
            { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
            { "READLINE_LIBS", octave::build_env::READLINE_LIBS },

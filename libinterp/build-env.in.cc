@@ -265,6 +265,8 @@ namespace octave
 
     const char *QT_LIBS = %OCTAVE_CONF_QT_LIBS%;
 
+    const char *QT_OPENGL_LIBS = %OCTAVE_CONF_QT_OPENGL_LIBS%;
+
     const char *RANLIB = %OCTAVE_CONF_RANLIB%;
 
     const char *RDYNAMIC_FLAG = %OCTAVE_CONF_RDYNAMIC_FLAG%;

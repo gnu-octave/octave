@@ -62,9 +62,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
-#if defined (HAVE_QT_GRAPHICS)
-#  include "__init_qt__.h"
-#endif
+//#if defined (HAVE_QT_GRAPHICS)
+//#  include "__init_qt__.h"
+//#endif
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -128,12 +128,8 @@ namespace octave
             // Start executing commands in the command window.
 
 #if defined (HAVE_QT_GRAPHICS)
-            // The qt graphics toolkit must be initialized before startup
+            // The qt graphics toolkit must be registered before startup
             // files are executed.
-
-            symbol_table& symtab = interp.get_symbol_table ();
-
-            install___init_qt___functions (symtab);
 
             Fregister_graphics_toolkit (interp, ovl ("qt"));
 #endif

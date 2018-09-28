@@ -233,7 +233,6 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -I$(srcdir)/%reldir%/m-editor \
-  -I$(srcdir)/libgui/graphics \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \

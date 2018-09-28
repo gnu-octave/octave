@@ -150,6 +150,7 @@ namespace octave
     extern const char *QT_CPPFLAGS;
     extern const char *QT_LDFLAGS;
     extern const char *QT_LIBS;
+    extern const char *QT_OPENGL_LIBS;
     extern const char *RANLIB;
     extern const char *RDYNAMIC_FLAG;
     extern const char *READLINE_LIBS;

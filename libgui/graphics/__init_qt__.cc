@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPalette>
 #include <QRegExp>
 
-#include "defun.h"
+#include "defun-dld.h"
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "interpreter.h"
@@ -40,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Backend.h"
 #include "QtHandlesUtils.h"
 #include "__init_qt__.h"
+
+// PKG_ADD: if (__have_feature__ ("QT") && __have_feature__ ("OPENGL") && have_window_system ()) register_graphics_toolkit ("qt"); endif
 
 namespace QtHandles
 {
@@ -95,14 +97,14 @@ namespace QtHandles
   }
 }
 
-DEFMETHOD (__init_qt__, interp, , , "")
+DEFMETHOD_DLD (__init_qt__, interp, , , "")
 {
   QtHandles::__init__ (interp);
 
   return octave_value ();
 }
 
-DEFUN (__shutdown_qt__, , , "")
+DEFUN_DLD (__shutdown_qt__, , , "")
 {
   QtHandles::__shutdown__ ();
 
@@ -164,7 +166,7 @@ appendDirSep (const QString& d)
   return d;
 }
 
-DEFUN (__uigetfile_qt__, args, , "")
+DEFUN_DLD (__uigetfile_qt__, args, , "")
 {
   using namespace QtHandles::Utils;
 
@@ -246,7 +248,7 @@ DEFUN (__uigetfile_qt__, args, , "")
   return retval;
 }
 
-DEFUN (__uiputfile_qt__, args, , "")
+DEFUN_DLD (__uiputfile_qt__, args, , "")
 {
   using namespace QtHandles::Utils;
 
@@ -296,7 +298,7 @@ DEFUN (__uiputfile_qt__, args, , "")
   return retval;
 }
 
-DEFUN (__uigetdir_qt__, args, , "")
+DEFUN_DLD (__uigetdir_qt__, args, , "")
 {
   using namespace QtHandles::Utils;
 

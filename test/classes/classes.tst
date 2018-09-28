@@ -343,18 +343,22 @@
 %% Testing precedence %%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-%% default: leftmost object wins
+%% default: leftmost or superior class (bug #42735) object wins
 %!shared A, B
 %!test A = Snork (rand (2));
 %!test B = CPrecedenceTester1 ();  % no call to inferiorto/superiorto
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester1'))  % idem
+%!assert <*42735> (isequal (class (A + B), 'Snork'))
+%!assert <*42735> (isequal (B + A, 'CPrecedenceTester1'))  % idem
 
 %!shared A, B
 %!test A = Snork (rand (2));
 %!test B = CPrecedenceTester2 (1);  % CPrecedenceTester2 > Snork
 %!assert (isequal (tattack (A, B), 'CPrecedenceTester2'))
 %!assert (isequal (tattack (B, A), 'CPrecedenceTester2'))
+%!assert <*42735> (isequal (A + B, 'CPrecedenceTester2'))
+%!assert <*42735> (isequal (B + A, 'CPrecedenceTester2'))
 %% Trying to change to CPrecendenceTester < Snork
 %!error D = CPrecedenceTester2 (2)
 
@@ -363,6 +367,8 @@
 %!test B = CPrecedenceTester3 (2);  % CPrecedenceTester3 < Snork
 %!assert (isequal (tattack (A, B), 'Snork'))
 %!assert (isequal (tattack (B, A), 'Snork'))
+%!assert <*42735> (isequal (class (A + B), 'Snork'))
+%!assert <*42735> (isequal (class (B + A), 'Snork'))
 %% Trying to change to CPrecendenceTester3 > Snork
 %!error D = CPrecedenceTester3 (1)
 

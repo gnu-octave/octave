@@ -74,19 +74,31 @@ DEF_CLASS_UNOP (uminus)
 DEF_CLASS_UNOP (transpose)
 DEF_CLASS_UNOP (ctranspose)
 
-// FIXME: we need to handle precedence in the binop function.
+// The precedence of the oct_binop_*-functions is as follows:
+//
+// 1.   If exactly one of the arguments is a user defined class object, then
+//      the function of that operand's class is invoked.
+//
+// 2.   If both arguments are user defined class objects, then
+// 2.1  The superior class function is invoked.
+// 2.2  The leftmost class function is invoked if both classes are the same
+//      or their precedence is not defined by superiorto/inferiorto.
 
-#define DEF_CLASS_BINOP(name) \
+#define DEF_CLASS_BINOP(name)                                           \
   static octave_value                                                   \
   oct_binop_ ## name (const octave_value& a1, const octave_value& a2)   \
   {                                                                     \
     octave_value retval;                                                \
                                                                         \
-    std::string dispatch_type                                           \
-      = (a1.isobject () ? a1.class_name () : a2.class_name ());         \
-                                                                        \
     octave::symbol_table& symtab                                        \
-      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
+      = octave::__get_symbol_table__ ("oct_binop_" #name);              \
+                                                                        \
+    std::string dispatch_type = a1.class_name ();                       \
+                                                                        \
+    if (! a1.isobject ()                                                \
+        || (a1.isobject () && a2.isobject ()                            \
+            && symtab.is_superiorto (a2.class_name (), dispatch_type))) \
+      dispatch_type = a2.class_name ();                                 \
                                                                         \
     octave_value meth = symtab.find_method (#name, dispatch_type);      \
                                                                         \

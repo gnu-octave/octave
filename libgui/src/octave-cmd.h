@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QSemaphore>
 #include <QMutex>
+#include <QPointer>
 #include <QString>
 #include <QFileInfo>
 
@@ -38,11 +39,13 @@ namespace octave
 {
   class interpreter;
 
-  class octave_cmd
+  class octave_cmd : public QObject
   {
+    Q_OBJECT;
+
   public:
 
-    octave_cmd (void) = default;
+    octave_cmd (void) : QObject () {  };
 
     virtual ~octave_cmd (void) = default;
 
@@ -141,7 +144,7 @@ namespace octave
   public:
 
     octave_command_queue (void)
-      : QObject (), m_queue (QList<octave_cmd *> ()), m_processing (1),
+      : QObject (), m_queue (QList<QPointer<octave_cmd>> ()), m_processing (1),
         m_queue_mutex ()
     { }
 
@@ -159,7 +162,7 @@ namespace octave
 
   private:
 
-    QList<octave_cmd *> m_queue;
+    QList<QPointer<octave_cmd>> m_queue;
     QSemaphore m_processing;
     QMutex m_queue_mutex;
   };

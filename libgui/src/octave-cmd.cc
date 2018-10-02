@@ -126,8 +126,12 @@ namespace octave
 
   void octave_command_queue::add_cmd (octave_cmd *cmd)
   {
+    // Get a guarded pointer from the pointer to the command object
+    QPointer<octave_cmd> cmd_gp (cmd);
+
+    // And add it to the command queue
     m_queue_mutex.lock ();
-    m_queue.append (cmd);
+    m_queue.append (cmd_gp);
     m_queue_mutex.unlock ();
 
     if (m_processing.tryAcquire ())  // if callback not processing, post event
@@ -144,7 +148,7 @@ namespace octave
       {
         m_queue_mutex.lock ();     // critical path
 
-        octave_cmd *cmd = m_queue.takeFirst ();
+        QPointer<octave_cmd> cmd_gp = m_queue.takeFirst ();
 
         if (m_queue.isEmpty ())
           m_processing.release (); // cmd queue empty, processing will stop
@@ -152,15 +156,19 @@ namespace octave
           repost = true;          // not empty, repost at end
         m_queue_mutex.unlock ();
 
-        // FIXME: Could we store a reference to the interpreter in the
-        // octave_command_queue object?  If so, where is the proper
-        // place to initialize that?
+        if (! cmd_gp.isNull ())
+          {
+            // The pointer to the command object is still valid
 
-        interpreter& interp = __get_interpreter__ ("octave_command_queue::execute_command_callback");
+            // FIXME: Could we store a reference to the interpreter in the
+            // octave_command_queue object?  If so, where is the proper
+            // place to initialize that?
+            interpreter& interp = __get_interpreter__ ("octave_command_queue::execute_command_callback");
 
-        cmd->execute (interp);
+            cmd_gp->execute (interp);
+          }
 
-        delete cmd;
+        cmd_gp.clear ();    // remove the original cmd pointer
       }
 
     if (repost)  // queue not empty, so repost event for further processing

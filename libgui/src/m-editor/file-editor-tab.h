@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
+#include "octave-cmd.h"
 #include "builtin-defun-decls.h"
 
 #include "marker.h" /* Only needed for typedef of "QIntList", which may be
@@ -178,7 +179,7 @@ namespace octave
     void report_marker_linenr (QIntList& lines, QStringList& conditions);
     void remove_position_via_debugger_linenr (int debugger_linenr);
     void remove_all_positions (void);
-    void execute_command_in_terminal_signal (const QString&);
+    void request_queue_cmd (octave_cmd *);
 
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to

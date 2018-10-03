@@ -173,7 +173,6 @@ namespace octave
     void fetab_recover_from_exit (void);
 
     void request_settings_dialog (const QString&);
-    void execute_command_in_terminal_signal (const QString&);
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
 

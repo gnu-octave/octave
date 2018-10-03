@@ -2037,7 +2037,10 @@ namespace octave
 
             if (ans == QMessageBox::Save)
               {
-                emit execute_command_in_terminal_signal ("dbquit");
+                // add a dbquit command to the queue
+                octave_cmd_debug *cmd = new octave_cmd_debug ("quit", true);
+                emit request_queue_cmd (cmd);
+
                 // Wait until dbquit has actually occurred
                 while (names.numel () > i)
                   {

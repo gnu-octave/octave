@@ -2115,10 +2115,6 @@ namespace octave
     ctx_men->addAction (m_close_others_action);
 
     // signals
-    connect (this,
-             SIGNAL (execute_command_in_terminal_signal (const QString&)),
-             main_win (), SLOT (execute_command_in_terminal (const QString&)));
-
     connect (this, SIGNAL (request_settings_dialog (const QString&)),
              main_win (),
              SLOT (process_settings_dialog_request (const QString&)));
@@ -2201,6 +2197,9 @@ namespace octave
     connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
              this, SLOT (set_focus (QWidget*)));
 
+    connect (f, SIGNAL (request_queue_cmd (octave_cmd*)),
+             main_win (), SLOT (queue_cmd (octave_cmd*)));
+
     // Signals from the file_editor non-trivial operations
     connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
              f, SLOT (notice_settings (const QSettings *)));
@@ -2217,9 +2216,6 @@ namespace octave
 
     connect (this, SIGNAL (fetab_check_modified_file (void)),
              f, SLOT (check_modified_file (void)));
-
-    connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-             main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
     // Signals from the file_editor trivial operations
     connect (this, SIGNAL (fetab_recover_from_exit (void)),

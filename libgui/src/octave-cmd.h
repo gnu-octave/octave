@@ -91,20 +91,20 @@ namespace octave
     octave_cmd_builtin (
           octave_value_list (*Ff) (octave::interpreter&,
                                    const octave_value_list&, int),
-          octave_value_list argin = ovl (), int nargin = 0,
+          octave_value_list argin = ovl (), int nargout = 0,
           cmd_upd update = CMD_UPD_NO, octave_qt_link *oct_qt_link = nullptr)
       : octave_cmd (), m_callback_fi (Ff), m_callback_f (nullptr),
-        m_argin (argin), m_nargin (nargin), m_update (update),
+        m_argin (argin), m_nargout (nargout), m_update (update),
         m_octave_qt_link (oct_qt_link)
     { };
 
     // C'tor for Fxxx not requiring the interpreter
     octave_cmd_builtin (
           octave_value_list (*Ff) (const octave_value_list&, int),
-          octave_value_list argin = ovl (), int nargin = 0,
+          octave_value_list argin = ovl (), int nargout = 0,
           cmd_upd update = CMD_UPD_NO, octave_qt_link *oct_qt_link = nullptr)
       : octave_cmd (), m_callback_fi (nullptr), m_callback_f (Ff),
-        m_argin (argin), m_nargin (nargin), m_update (update),
+        m_argin (argin), m_nargout (nargout), m_update (update),
         m_octave_qt_link (oct_qt_link)
     { };
 
@@ -116,7 +116,7 @@ namespace octave
                                         const octave_value_list&, int);
     octave_value_list (*m_callback_f) (const octave_value_list&, int);
     octave_value_list m_argin;
-    int m_nargin;
+    int m_nargout;
     cmd_upd m_update;
     octave_qt_link *m_octave_qt_link;
   };

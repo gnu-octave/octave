@@ -2537,7 +2537,8 @@ DEFUN (ndims, args, ,
 Return the number of dimensions of @var{a}.
 
 For any array, the result will always be greater than or equal to 2.
-Trailing singleton dimensions are not counted.
+Trailing singleton dimensions are not counted, i.e. tailing dimensions @var{d}
+greater than 2, for which @code{size (@var{a}, @var{d}) = 1}.
 
 @example
 @group
@@ -2551,8 +2552,24 @@ ndims (ones (4, 1, 2, 1))
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).ndims ());
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
+
+  octave_idx_type ndims = sz.numel ();
+
+  // Don't count trailing ones.  Trailing zeros are *not* singleton dimension.
+  while ((ndims > 2) && (sz(ndims - 1) == 1))
+    ndims--;
+
+  return ovl (ndims);
 }
+
+/*
+%!assert (ndims (1:5), 2)
+%!assert (ndims (ones (4, 1, 2, 1)), 3)
+%!assert (ndims (ones (4, 1, 2, 0)), 4)
+*/
 
 DEFUN (numel, args, ,
        doc: /* -*- texinfo -*-
@@ -2804,14 +2821,18 @@ same as @code{nnz} except for some cases of user-created sparse objects.
 DEFUN (rows, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} rows (@var{a})
-Return the number of rows of @var{a}.
+Return the number of rows of @var{a}.  This is equivalent to
+@code{size (@var{a}, 1)}.
 @seealso{columns, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).rows ());
+  // This function *must* use size() to determine the desired values to
+  // allow user-defined class overloading.
+
+  return ovl ((octave_value (args(0)).size ())(0));
 }
 
 /*
@@ -2844,14 +2865,18 @@ Return the number of rows of @var{a}.
 DEFUN (columns, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} columns (@var{a})
-Return the number of columns of @var{a}.
+Return the number of columns of @var{a}.  This is equivalent to
+@code{size (@var{a}, 2)}.
 @seealso{rows, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).columns ());
+  // This function *must* use size() to determine the desired values to
+  // allow user-defined class overloading.
+
+  return ovl ((octave_value (args(0)).size ())(1));
 }
 
 DEFUN (sum, args, ,
@@ -3620,14 +3645,19 @@ Logical and character arrays are not considered to be numeric.
 DEFUN (isscalar, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isscalar (@var{x})
-Return true if @var{x} is a scalar.
+Return true if @var{x} is a scalar, i.e., @code{size (@var{x})} returns
+@code{[1 1]}.
 @seealso{isvector, ismatrix}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (args(0).numel () == 1);
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
+
+  return ovl (sz.numel () == 2 && sz(0) == 1 && sz(1) == 1);
 }
 
 /*
@@ -3662,9 +3692,11 @@ consequence a 1x1 array, or scalar, is also a vector.
   if (args.length () != 1)
     print_usage ();
 
-  dim_vector sz = args(0).dims ();
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
 
-  return ovl (sz.ndims () == 2 && (sz(0) == 1 || sz(1) == 1));
+  return ovl (sz.numel () == 2 && (sz(0) == 1 || sz(1) == 1));
 }
 
 /*
@@ -3690,16 +3722,19 @@ consequence a 1x1 array, or scalar, is also a vector.
 DEFUN (isrow, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isrow (@var{x})
-Return true if @var{x} is a row vector 1xN with non-negative N.
+Return true if @var{x} is a row vector, i.e., @code{size (@var{x})} returns
+@code{[1 N]} with non-negative N.
 @seealso{iscolumn, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  dim_vector sz = args(0).dims ();
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
 
-  return ovl (sz.ndims () == 2 && sz(0) == 1);
+  return ovl (sz.numel () == 2 && sz(0) == 1);
 }
 
 /*
@@ -3734,16 +3769,19 @@ Return true if @var{x} is a row vector 1xN with non-negative N.
 DEFUN (iscolumn, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} iscolumn (@var{x})
-Return true if @var{x} is a column vector Nx1 with non-negative N.
+Return true if @var{x} is a column vector, i.e., @code{size (@var{x})} returns
+@code{[N 1]} with non-negative N.
 @seealso{isrow, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  dim_vector sz = args(0).dims ();
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
 
-  return ovl (sz.ndims () == 2 && sz(1) == 1);
+  return ovl (sz.numel () == 2 && sz(1) == 1);
 }
 
 /*
@@ -3778,16 +3816,19 @@ Return true if @var{x} is a column vector Nx1 with non-negative N.
 DEFUN (ismatrix, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} ismatrix (@var{a})
-Return true if @var{a} is a 2-D array.
+Return true if @var{a} is a 2-D array, i.e., @code{size (@var{a})} returns
+@code{[M N]} with non-negative M and N.
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  dim_vector sz = args(0).dims ();
+  // This function *must* use size() to determine the desired values to be
+  // compatible with Matlab and to allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
 
-  return ovl (sz.ndims () == 2 && sz(0) >= 0 && sz(1) >= 0);
+  return ovl (sz.numel () == 2 && sz(0) >= 0 && sz(1) >= 0);
 }
 
 /*
@@ -3821,16 +3862,19 @@ Return true if @var{a} is a 2-D array.
 DEFUN (issquare, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} issquare (@var{x})
-Return true if @var{x} is a square matrix.
+Return true if @var{x} is a square matrix, i.e., @code{size (@var{x})} returns
+@code{[N N]} with non-negative N.
 @seealso{isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
   if (args.length () != 1)
     print_usage ();
 
-  dim_vector sz = args(0).dims ();
+  // This function *must* use size() to determine the desired values to
+  // allow user-defined class overloading.
+  Matrix sz = octave_value (args(0)).size ();
 
-  return ovl (sz.ndims () == 2 && sz(0) == sz(1));
+  return ovl (sz.numel () == 2 && sz(0) == sz(1));
 }
 
 /*

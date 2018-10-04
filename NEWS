@@ -1,6 +1,12 @@
 Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
 ----------------------------------------------------------------------
 
+ ** The determination of an object's dimensions, size, and shape by the
+    functions ndims, rows, columns, isscalar, isvector, isrow, iscolumn,
+    ismatrix, and issquare now fully depends on the function size.  Thus
+    any user-defined object can ensure correct treatment by the aforementioned
+    functions by properly overloading the "size" function.
+
  ** The functions issymmetric and ishermitian accept an option "nonskew"
     or "skew" to calculate the symmetric or skew-symmetric property
     of a matrix.  Performance has also been increased.

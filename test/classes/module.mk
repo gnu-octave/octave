@@ -97,14 +97,20 @@ class_Spork_TEST_FILES = \
 
 class_CPrecedenceTester1_TEST_FILES = \
   %reldir%/@CPrecedenceTester1/CPrecedenceTester1.m \
+  %reldir%/@CPrecedenceTester1/double.m \
+  %reldir%/@CPrecedenceTester1/plus.m \
   %reldir%/@CPrecedenceTester1/tattack.m
 
 class_CPrecedenceTester2_TEST_FILES = \
   %reldir%/@CPrecedenceTester2/CPrecedenceTester2.m \
+  %reldir%/@CPrecedenceTester2/double.m \
+  %reldir%/@CPrecedenceTester2/plus.m \
   %reldir%/@CPrecedenceTester2/tattack.m
 
 class_CPrecedenceTester3_TEST_FILES = \
   %reldir%/@CPrecedenceTester3/CPrecedenceTester3.m \
+  %reldir%/@CPrecedenceTester3/double.m \
+  %reldir%/@CPrecedenceTester3/plus.m \
   %reldir%/@CPrecedenceTester3/tattack.m
 
 class_SizeTester_TEST_FILES = \

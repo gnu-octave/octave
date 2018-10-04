@@ -46,6 +46,13 @@ namespace octave
 
     extern std::FILE * fopen (const std::string& name, const std::string& mode);
 
+    extern void putenv_wrapper (const std::string& name,
+                                const std::string& value);
+
+    extern std::string getenv_wrapper (const std::string&);
+
+    extern int unsetenv_wrapper (const std::string&);
+
     extern std::wstring u8_to_wstring (const std::string&);
 
     extern std::string u8_from_wstring (const std::wstring&);

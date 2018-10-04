@@ -39,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "putenv-wrapper.h"
 
 bool xis_int_or_inf_or_nan (double x)
 { return octave::math::isnan (x) || octave::math::x_nint (x) == x; }
@@ -83,30 +82,6 @@ strsave (const char *s)
   char *tmp = new char [len+1];
   tmp = strcpy (tmp, s);
   return tmp;
-}
-
-// This function was adapted from xputenv from Karl Berry's kpathsearch
-// library.
-
-// FIXME: make this do the right thing if we don't have a SMART_PUTENV.
-
-void
-octave_putenv (const std::string& name, const std::string& value)
-{
-  int new_len = name.length () + value.length () + 2;
-
-  // FIXME: This leaks memory, but so would a call to setenv.
-  // Short of extreme measures to track memory, altering the environment
-  // always leaks memory, but the saving grace is that the leaks are small.
-  char *new_item = static_cast<char *> (std::malloc (new_len));
-
-  sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
-
-  // As far as I can see there's no way to distinguish between the
-  // various errors; putenv doesn't have errno values.
-
-  if (octave_putenv_wrapper (new_item) < 0)
-    (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 
 std::string

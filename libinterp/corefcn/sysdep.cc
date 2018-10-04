@@ -66,7 +66,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
-#include "unsetenv-wrapper.h"
 
 #include "builtin-defun-decls.h"
 #include "Cell.h"
@@ -714,7 +713,7 @@ occurred.
 
   std::string tmp = args(0).string_value ();
 
-  return ovl (octave_unsetenv_wrapper (tmp.c_str ()));
+  return ovl (octave::sys::unsetenv_wrapper (tmp));
 }
 
 /*

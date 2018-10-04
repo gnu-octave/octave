@@ -76,9 +76,6 @@ extern OCTAVE_API bool xtoo_large_for_float (float x);
 
 extern OCTAVE_API char * strsave (const char *);
 
-extern OCTAVE_API void
-octave_putenv (const std::string&, const std::string&);
-
 extern OCTAVE_API std::string octave_fgets (std::FILE *);
 extern OCTAVE_API std::string octave_fgetl (std::FILE *);
 

@@ -30,8 +30,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
+#include "putenv-wrapper.h"
 #include "uniconv-wrappers.h"
 #include "unistd-wrappers.h"
+#include "unsetenv-wrapper.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
@@ -150,6 +152,62 @@ namespace octave
                       u8_to_wstring (mode).c_str ());
 #else
       return std::fopen (filename.c_str (), mode.c_str ());
+#endif
+    }
+
+    void
+    putenv_wrapper (const std::string& name, const std::string& value)
+    {
+      // This function was adapted from xputenv from Karl Berry's kpathsearch
+      // library.
+      // FIXME: make this do the right thing if we don't have a SMART_PUTENV.
+
+      int new_len = name.length () + value.length () + 2;
+
+      // FIXME: This leaks memory, but so would a call to setenv.
+      // Short of extreme measures to track memory, altering the environment
+      // always leaks memory, but the saving grace is that the leaks are small.
+
+      char *new_item = static_cast<char *> (std::malloc (new_len));
+
+      sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
+
+      // As far as I can see there's no way to distinguish between the
+      // various errors; putenv doesn't have errno values.
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t *wnew_item = u8_to_wchar (new_item);
+      std::free (static_cast<void *> (new_item));
+      if (_wputenv (wnew_item) < 0)
+        (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
+#else
+      if (octave_putenv_wrapper (new_item) < 0)
+        (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
+#endif
+    }
+
+    std::string
+    getenv_wrapper (const std::string& name)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t *env = _wgetenv (u8_to_wstring (name).c_str ());
+      return env ? u8_from_wstring (env) : "";
+#else
+      char *env = ::getenv (name.c_str ());
+      return env ? env : "";
+#endif
+    }
+
+    int
+    unsetenv_wrapper (const std::string& name)
+    {
+#if defined (OCTAVE_USE_WINDOWS_API)
+      putenv_wrapper (name, "");
+
+      std::wstring wname = u8_to_wstring (name);
+      return (SetEnvironmentVariableW (wname.c_str (), nullptr) ? 0 : -1);
+#else
+      return octave_unsetenv_wrapper (name.c_str ());
 #endif
     }
 

@@ -111,7 +111,7 @@ namespace QtHandles
   Figure::Figure (const graphics_object& go, FigureWindow *win)
     : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
       m_menuBar (nullptr), m_innerRect (), m_outerRect (),
-      m_mouseModeGroup (nullptr)
+      m_mouseModeGroup (nullptr), m_previousHeight (0), m_resizable (true)
   {
     m_container = new Container (win);
     win->setCentralWidget (m_container);
@@ -147,7 +147,7 @@ namespace QtHandles
     m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
     m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
 
-    win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
+    set_geometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
 
     // Enable mouse tracking unconditionally
     enableMouseTracking ();
@@ -165,6 +165,9 @@ namespace QtHandles
 
     // modal style
     update (figure::properties::ID_WINDOWSTYLE);
+
+    // Handle resizing constraints
+    update (figure::properties::ID_RESIZE);
 
     // Visibility
     update (figure::properties::ID_VISIBLE);
@@ -317,6 +320,26 @@ namespace QtHandles
         m_blockUpdates = false;
       }
   }
+  
+  void
+  Figure::set_geometry (QRect r)
+  {
+    QMainWindow *win = qWidget<QMainWindow> ();
+    
+    if (! m_resizable)
+      {
+        win->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
+        win->setFixedSize (QSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+      }
+
+    win->setGeometry (r);
+    
+    if (! m_resizable)
+      {
+        win->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+        win->setFixedSize(win->size ());
+      }
+  }
 
   Container*
   Figure::innerContainer (void)
@@ -435,7 +458,7 @@ namespace QtHandles
           if (! m_statusBar->isHidden ())
             boffset += m_statusBar->sizeHint ().height ();
 
-          win->setGeometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
+          set_geometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
         }
         break;
 
@@ -456,6 +479,21 @@ namespace QtHandles
           }
         else
           win->hide ();
+        break;
+
+      case figure::properties::ID_RESIZE:
+        if (fp.is_resize ())
+          {
+            win->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
+            win->setFixedSize (QSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+            m_resizable = true;
+          }
+        else
+          {
+            win->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+            win->setFixedSize(win->size ());
+            m_resizable = false;
+          }
         break;
 
       case figure::properties::ID_TOOLBAR:
@@ -531,7 +569,7 @@ namespace QtHandles
           r.adjust (0, -dy1, 0, dy2);
 
         m_blockUpdates = true;
-        qWidget<QWidget> ()->setGeometry (r);
+        set_geometry (r);
         m_figureToolBar->setVisible (visible);
         m_statusBar->setVisible (visible);
         m_blockUpdates = false;
@@ -553,7 +591,7 @@ namespace QtHandles
         r.adjust (0, dh, 0, 0);
 
         m_blockUpdates = true;
-        qWidget<QWidget> ()->setGeometry (r);
+        set_geometry (r);
         m_blockUpdates = false;
 
         updateBoundingBox (false);
@@ -831,7 +869,7 @@ namespace QtHandles
         r.adjust (0, -sz.height (), 0, 0);
 
         m_blockUpdates = true;
-        win->setGeometry (r);
+        set_geometry (r);
         win->addToolBarBreak ();
         win->addToolBar (bar);
         m_blockUpdates = false;
@@ -857,7 +895,7 @@ namespace QtHandles
           r.adjust (0, sz.height (), 0, 0);
 
         m_blockUpdates = true;
-        win->setGeometry (r);
+        set_geometry (r);
         bar->setVisible (visible);
         m_blockUpdates = false;
 

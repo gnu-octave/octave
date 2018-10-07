@@ -106,8 +106,8 @@ namespace QtHandles
     void showFigureToolBar (bool visible);
     void addCustomToolBar (QToolBar *bar, bool visible);
     void showCustomToolBar (QToolBar *bar, bool visible);
-
     void updateFigureToolBarAndMenuBar (void);
+    void set_geometry (QRect r);
 
     static void updateBoundingBoxHelper (void*);
 
@@ -141,6 +141,7 @@ namespace QtHandles
     QRect m_outerRect;
     MouseModeActionGroup *m_mouseModeGroup;
     int m_previousHeight;
+    bool m_resizable;
   };
 
 }

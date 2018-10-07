@@ -522,7 +522,10 @@ and width and height of the figure.  \
         s.doc = doc_unused;
 
       case "resize"
-        s.doc = doc_unused;
+        s.doc = "Control whether the figure can be resized by dragging the \
+window borders and corners using a mouse.  When __prop__ is @qcode{\"off\"} \
+mouse interactions are disabled but the figure can still be resized by \
+changing its @qcode{\"position\"} property.";
 
       case "resizefcn"
         s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";

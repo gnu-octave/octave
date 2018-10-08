@@ -72,7 +72,7 @@ function h = errordlg (varargin)
     opt = varargin{3};
   endif
   
-  retval = msgbox (msg, tit, "error", opt);
+  htmp = msgbox (msg, tit, "error", opt);
 
   if (nargout)
     h = htmp;

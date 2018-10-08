@@ -72,7 +72,7 @@ function h = warndlg (varargin)
     opt = varargin{3};
   endif
   
-  retval = msgbox (msg, tit, "warn", opt);
+  htmp = msgbox (msg, tit, "warn", opt);
 
   if (nargout)
     h = htmp;

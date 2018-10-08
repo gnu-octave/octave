@@ -10,6 +10,9 @@
         <file>icons/db-step-in.png</file>
         <file>icons/db-step-out.png</file>
         <file>icons/db-stop.png</file>
+        <file>icons/dialog-error.png</file>
+        <file>icons/dialog-information.png</file>
+        <file>icons/dialog-warning.png</file>
         <file>icons/document-new.png</file>
         <file>icons/document-open.png</file>
         <file>icons/document-print.png</file>

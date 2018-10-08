@@ -75,9 +75,6 @@ namespace octave
     bool do_edit_file (const std::string& file);
     bool do_prompt_new_edit_file (const std::string& file);
 
-    int do_message_dialog (const std::string& dlg, const std::string& msg,
-                           const std::string& title);
-
     std::string
     do_question_dialog (const std::string& msg, const std::string& title,
                         const std::string& btn1, const std::string& btn2,
@@ -117,6 +114,8 @@ namespace octave
     void do_file_renamed (bool load_new = true);
 
     void do_execute_command_in_terminal (const std::string& command);
+
+    uint8NDArray do_get_named_icon (const std::string& icon_name);
 
     void do_set_workspace (bool top_level, bool debug,
                            const symbol_scope& scope,

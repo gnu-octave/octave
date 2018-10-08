@@ -17,9 +17,10 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{h} =} helpdlg ()
-## @deftypefnx {} {@var{h} =} helpdlg (@var{msg})
-## @deftypefnx {} {@var{h} =} helpdlg (@var{msg}, @var{title})
+## @deftypefn  {} {} helpdlg ()
+## @deftypefnx {} {} helpdlg (@var{msg})
+## @deftypefnx {} {} helpdlg (@var{msg}, @var{title})
+## @deftypefnx {} {@var{h} =} helpdlg (@dots{})
 ## Display a help dialog box with help message @var{msg} and caption
 ## @var{title}.
 ##
@@ -29,7 +30,8 @@
 ## The help message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The return value @var{h} is always 1.
+## The return value @var{h} is a handle to the figure object used for
+## building the dialog.
 ##
 ## Examples:
 ##
@@ -42,28 +44,33 @@
 ## @end group
 ## @end example
 ##
-## @seealso{errordlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
+## @seealso{errordlg, warndlg, msgbox, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
-function retval = helpdlg (varargin)
+function h = helpdlg (varargin)
 
-  narginchk (0, 2);
+  msg = "This is the default help.";
+  tit = "Help Dialog";
+  opt = "non-modal";
 
-  msg = "This is the default help string.";
-  title = "Help Dialog";
-
-  if (nargin > 0)
+  nargs = numel (varargin);
+  
+  if (nargs > 2)
+    print_usage ();
+  elseif (nargs == 1)
     msg = varargin{1};
+  elseif (nargs == 2)
+    msg = varargin{1};
+    tit = varargin{2};
   endif
-  if (nargin > 1)
-    title = varargin{2};
-  endif
+  
+  htmp = msgbox (msg, tit, "help", opt);
 
-  retval = msgbox (msg, title, "help");
+  if (nargout)
+    h = htmp;
+  endif
 
 endfunction
 
-
-%!error helpdlg (1, 2, 3)
-%!error <MSG must be a character string> helpdlg (1)
-%!error <TITLE must be a character string> helpdlg ("msg", 1)
+## No BIST tests.  This function just dispatches to msgbox().
+%!assert (1)

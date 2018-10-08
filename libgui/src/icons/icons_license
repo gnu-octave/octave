@@ -17,6 +17,9 @@ Icons used for Octave
 ===========================================
 
 applications-system.svg
+dialog-error.svg
+dialog-information.svg
+dialog-warning.svg
 document-new.svg
 document-open.svg
 document-print.svg

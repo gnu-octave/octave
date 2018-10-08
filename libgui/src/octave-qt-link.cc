@@ -127,29 +127,30 @@ namespace octave
     return (answer == tr ("Create"));
   }
 
-  int octave_qt_link::do_message_dialog (const std::string& dlg,
-                                         const std::string& msg,
-                                         const std::string& title)
+  uint8NDArray octave_qt_link::do_get_named_icon (const std::string& icon_name)
   {
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                    QString::fromStdString (title),
-                                    QString::fromStdString (dlg),
-                                    QStringList (), QString (),
-                                    QStringList ());
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    int answer = uiwidget_creator.get_dialog_result ();
-
-    uiwidget_creator.unlock ();
-
-    return answer;
+    uint8NDArray retval;
+    QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
+    if (! icon.isNull ())
+      {
+        QImage img = icon.pixmap (QSize (32, 32)).toImage ();
+        
+        if (img.format () == QImage::Format_ARGB32_Premultiplied)
+          {
+            retval.resize (dim_vector (img.height (), img.width (), 4), 0);
+            uint8_t* bits = img.bits ();
+            for (int i = 0; i < img.height (); i++)
+              for (int j = 0; j < img.width (); j++)
+                {
+                  retval(i,j,2) = bits[0];
+                  retval(i,j,1) = bits[1];
+                  retval(i,j,0) = bits[2];
+                  retval(i,j,3) = bits[3];
+                  bits += 4;
+                }
+          }
+      }
+    return retval;
   }
 
   std::string octave_qt_link::do_question_dialog (const std::string& msg,

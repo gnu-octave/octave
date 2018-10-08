@@ -200,8 +200,8 @@ namespace QtHandles
           uicontrol::properties& up = Utils::properties<uicontrol> (go);
           graphics_object fig = go.get_ancestor ("figure");
 
-          if (m->button () != Qt::LeftButton
-              || ! up.enable_is ("on"))
+          if (fig && (m->button () != Qt::LeftButton
+                      || ! up.enable_is ("on")))
             {
               gh_manager::post_set (fig.get_handle (), "selectiontype",
                                     Utils::figureSelectionType (m), false);
@@ -236,9 +236,13 @@ namespace QtHandles
             graphics_object go = object ();
             graphics_object fig = go.get_ancestor ("figure");
 
-            gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                  Utils::figureCurrentPoint (fig, m), false);
-            gh_manager::post_callback (fig.get_handle (), "windowbuttonmotionfcn");
+            if (fig)
+              {
+                gh_manager::post_set (fig.get_handle (), "currentpoint",
+                                      Utils::figureCurrentPoint (fig, m), false);
+                gh_manager::post_callback (fig.get_handle (),
+                                           "windowbuttonmotionfcn");
+              }
           }
         break;
 

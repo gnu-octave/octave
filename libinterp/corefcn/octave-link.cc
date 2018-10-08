@@ -152,28 +152,6 @@ Undocumented internal function.
   return retval;
 }
 
-DEFUN (__octave_link_message_dialog__, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})
-Undocumented internal function.
-@end deftypefn */)
-{
-  octave_value retval;
-
-  if (args.length () == 3)
-    {
-      std::string dlg = args(0).xstring_value ("invalid arguments");
-      std::string msg = args(1).xstring_value ("invalid arguments");
-      std::string title = args(2).xstring_value ("invalid arguments");
-
-      octave::flush_stdout ();
-
-      retval = octave_link::message_dialog (dlg, msg, title);
-    }
-
-  return retval;
-}
-
 DEFUN (__octave_link_question_dialog__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
@@ -371,6 +349,25 @@ Undocumented internal function.
     items.xelem(i++) = str_el;
 
   return ovl (items);
+}
+
+
+DEFUN (__octave_link_named_icon__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_dialog_icons__ (@var{icon_name})
+Undocumented internal function.
+@end deftypefn */)
+{
+  uint8NDArray retval;
+  
+  if (args.length () > 0)
+    {
+      std::string icon_name = args(0).xstring_value ("invalid arguments");
+
+      retval = octave_link::get_named_icon (icon_name);
+    }
+
+  return ovl (retval);
 }
 
 DEFUN (__octave_link_show_preferences__, , ,

@@ -17,10 +17,11 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{h} =} errordlg ()
-## @deftypefnx {} {@var{h} =} errordlg (@var{msg})
-## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title})
-## @deftypefnx {} {@var{h} =} errordlg (@var{msg}, @var{title}, @var{createmode})
+## @deftypefn  {} {} errordlg ()
+## @deftypefnx {} {} errordlg (@var{msg})
+## @deftypefnx {} {} errordlg (@var{msg}, @var{title})
+## @deftypefnx {} {} errordlg (@var{msg}, @var{title}, @var{opt})
+## @deftypefnx {} {@var{h} =} errordlg (@dots{})
 ## Display an error dialog box with error message @var{msg} and caption
 ## @var{title}.
 ##
@@ -30,11 +31,11 @@
 ## The error message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The return value @var{h} is always 1.
+## The third optionnal argument @var{opt} controls the behavior of the dialog.
+## See @code{msgbox} for details.
 ##
-## Compatibility Note: The optional argument @var{createmode} is accepted for
-## @sc{matlab} compatibility, but is not implemented.  See @code{msgbox} for
-## details.
+## The return value @var{h} is a handle to the figure object used for
+## building the dialog.
 ##
 ## Examples:
 ##
@@ -47,32 +48,37 @@
 ## @end group
 ## @end example
 ##
-## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
+## @seealso{helpdlg, warndlg, msgbox, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
-function retval = errordlg (varargin)
+function h = errordlg (varargin)
 
-  narginchk (0, 3);
+  msg = "This is the default error.";
+  tit = "Error Dialog";
+  opt = "non-modal";
 
-  msg = "This is the default error string.";
-  title = "Error Dialog";
-
-  if (nargin > 0)
+  nargs = numel (varargin);
+  
+  if (nargs > 3)
+    print_usage ();
+  elseif (nargs == 1)
     msg = varargin{1};
+  elseif (nargs == 2)
+    msg = varargin{1};
+    tit = varargin{2};
+  elseif (nargs == 3)
+    msg = varargin{1};
+    tit = varargin{2};
+    opt = varargin{3};
   endif
-  if (nargin > 1)
-    title = varargin{2};
-  endif
+  
+  retval = msgbox (msg, tit, "error", opt);
 
-  if (nargin < 3)
-    retval = msgbox (msg, title, "error");
-  else
-    retval = msgbox (msg, title, "error", varargin{3});
+  if (nargout)
+    h = htmp;
   endif
 
 endfunction
 
-
-%!error errordlg (1, 2, 3, 4)
-%!error <MSG must be a character string> errordlg (1)
-%!error <TITLE must be a character string> errordlg ("msg", 1)
+## No BIST tests.  This function just dispatches to msgbox().
+%!assert (1)

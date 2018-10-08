@@ -17,10 +17,11 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{h} =} warndlg ()
-## @deftypefnx {} {@var{h} =} warndlg (@var{msg})
-## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title})
-## @deftypefnx {} {@var{h} =} warndlg (@var{msg}, @var{title}, @var{createmode})
+## @deftypefn  {} {} warndlg ()
+## @deftypefnx {} {} warndlg (@var{msg})
+## @deftypefnx {} {} warndlg (@var{msg}, @var{title})
+## @deftypefnx {} {} warndlg (@var{msg}, @var{title}, @var{opt})
+## @deftypefnx {} {@var{h} =} warndlg (@dots{})
 ## Display a warning dialog box with warning message @var{msg} and caption
 ## @var{title}.
 ##
@@ -30,11 +31,11 @@
 ## The warning message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The return value @var{h} is always 1.
+## The third optionnal argument @var{opt} controls the behavior of the dialog.
+## See @code{msgbox} for details.
 ##
-## Compatibility Note: The optional argument @var{createmode} is accepted for
-## @sc{matlab} compatibility, but is not implemented.  See @code{msgbox} for
-## details.
+## The return value @var{h} is a handle to the figure object used for
+## building the dialog.
 ##
 ## Examples:
 ##
@@ -47,32 +48,37 @@
 ## @end group
 ## @end example
 ##
-## @seealso{errordlg, helpdlg, inputdlg, listdlg, msgbox, questdlg}
+## @seealso{errordlg, helpdlg, msgbox, inputdlg, listdlg, questdlg}
 ## @end deftypefn
 
-function retval = warndlg (varargin)
+function h = warndlg (varargin)
 
-  narginchk (0, 3);
+  msg = "This is the default warning.";
+  tit = "Warning Dialog";
+  opt = "non-modal";
 
-  msg = "This is the default warning string.";
-  title = "Warning Dialog";
-
-  if (nargin > 0)
+  nargs = numel (varargin);
+  
+  if (nargs > 3)
+    print_usage ();
+  elseif (nargs == 1)
     msg = varargin{1};
+  elseif (nargs == 2)
+    msg = varargin{1};
+    tit = varargin{2};
+  elseif (nargs == 3)
+    msg = varargin{1};
+    tit = varargin{2};
+    opt = varargin{3};
   endif
-  if (nargin > 1)
-    title = varargin{2};
-  endif
+  
+  retval = msgbox (msg, tit, "warn", opt);
 
-  if (nargin < 3)
-    retval = msgbox (msg, title, "warn");
-  else
-    retval = msgbox (msg, title, "warn", varargin{3});
+  if (nargout)
+    h = htmp;
   endif
 
 endfunction
 
-
-%!error warndlg (1, 2, 3, 4)
-%!error <MSG must be a character string> warndlg (1)
-%!error <TITLE must be a character string> warndlg ("msg", 1)
+## No BIST tests.  This function just dispatches to msgbox().
+%!assert (1)

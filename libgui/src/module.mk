@@ -9,6 +9,9 @@ octave_gui_ICONS = \
   %reldir%/icons/db-step-out.png \
   %reldir%/icons/db-step.png \
   %reldir%/icons/db-stop.png \
+  %reldir%/icons/dialog-error.png \
+  %reldir%/icons/dialog-information.png \
+  %reldir%/icons/dialog-warning.png \
   %reldir%/icons/document-new.png \
   %reldir%/icons/document-open.png \
   %reldir%/icons/document-print.png \

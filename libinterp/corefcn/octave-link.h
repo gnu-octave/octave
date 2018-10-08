@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "octave.h"
 #include "event-queue.h"
+#include "uint8NDArray.h"
 
 class octave_value;
 class string_vector;
@@ -148,13 +149,6 @@ public:
     return enabled () ? instance->do_prompt_new_edit_file (file) : false;
   }
 
-  static int
-  message_dialog (const std::string& dlg, const std::string& msg,
-                  const std::string& title)
-  {
-    return enabled () ? instance->do_message_dialog (dlg, msg, title) : 0;
-  }
-
   static std::string
   question_dialog (const std::string& msg, const std::string& title,
                    const std::string& btn1, const std::string& btn2,
@@ -240,6 +234,13 @@ public:
   {
     if (enabled ())
       instance->do_execute_command_in_terminal (command);
+  }
+  
+  static uint8NDArray
+  get_named_icon (const std::string& icon_name)
+  {
+    return (enabled () ?
+            instance->do_get_named_icon (icon_name) : uint8NDArray ());
   }
 
   static void set_workspace (void);
@@ -491,11 +492,6 @@ protected:
 
   virtual bool do_edit_file (const std::string& file) = 0;
   virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
-
-  virtual int
-  do_message_dialog (const std::string& dlg, const std::string& msg,
-                     const std::string& title) = 0;
-
   virtual std::string
   do_question_dialog (const std::string& msg, const std::string& title,
                       const std::string& btn1, const std::string& btn2,
@@ -535,6 +531,9 @@ protected:
   virtual void do_file_renamed (bool) = 0;
 
   virtual void do_execute_command_in_terminal (const std::string& command) = 0;
+
+  virtual uint8NDArray
+  do_get_named_icon (const std::string& icon_name) = 0;
 
   virtual void
   do_set_workspace (bool top_level, bool debug,

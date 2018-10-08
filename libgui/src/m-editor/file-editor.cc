@@ -1433,7 +1433,9 @@ namespace octave
 
             if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
               {
-                // really show editor and the current editor tab
+                // update breakpoint pointers, really show editor
+                // and the current editor tab
+                fileEditorTab->update_breakpoints ();
                 focus ();
                 emit file_loaded_signal ();
               }

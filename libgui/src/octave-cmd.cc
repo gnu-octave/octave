@@ -77,10 +77,11 @@ namespace octave
 
   void octave_cmd_builtin::execute (interpreter& interp)
   {
+    octave_value_list argout;
     if (m_callback_fi)
-      m_callback_fi (interp, m_argin, m_nargout);
+      argout = m_callback_fi (interp, m_argin, m_nargout);
     else if (m_callback_f)
-      m_callback_f (m_argin, m_nargout);
+      argout = m_callback_f (m_argin, m_nargout);
 
     switch (m_update)
       {
@@ -97,6 +98,15 @@ namespace octave
           break;
       }
 
+    if (m_nargout)    // Return value expected: connect the related value
+      emit argout_signal (argout);
+  }
+
+  void octave_cmd_builtin::init_cmd_retval ()
+  {
+    if (m_nargout)
+      connect (this, SIGNAL (argout_signal (const octave_value_list&)),
+               m_argout_receiver, m_argout_handler, Qt::QueuedConnection);
   }
 
   void octave_cmd_debug::execute (interpreter& interp)

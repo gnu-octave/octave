@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// Author: Torsten <ttl@justmail.de>
+// Author: Torsten <mttl@mailbox.org>
 
 #if ! defined (octave_octave_cmd_h)
 #define octave_octave_cmd_h 1
@@ -80,45 +80,106 @@ namespace octave
 
   class octave_cmd_builtin : public octave_cmd
   {
-    public:
+    Q_OBJECT;
+
+  public:
 
     enum cmd_upd {
       CMD_UPD_NO        = 0,
       CMD_UPD_WORKSPACE = 1
     };
 
-    // C'tor for Fxxx requiring the interpreter
+    //! Command using built in functions requiring interpreter, no return values
+    /*! Command calling a built in function, which uses an interpreter and does
+     *  not have any return values
+     * @param Ff Pointer to the builtin function
+     * @param argin Input parameters for Ff as octave value list (default empty)
+     * @param update A memeber of cmd_upd for possibly required updates after
+     *               the executing Ff
+     */
     octave_cmd_builtin (
-          octave_value_list (*Ff) (octave::interpreter&,
-                                   const octave_value_list&, int),
-          octave_value_list argin = ovl (), int nargout = 0,
-          cmd_upd update = CMD_UPD_NO, octave_qt_link *oct_qt_link = nullptr)
+          octave_value_list (*Ff) (octave::interpreter&, const octave_value_list&, int),
+          octave_value_list argin = ovl (), cmd_upd update = CMD_UPD_NO)
       : octave_cmd (), m_callback_fi (Ff), m_callback_f (nullptr),
-        m_argin (argin), m_nargout (nargout), m_update (update),
-        m_octave_qt_link (oct_qt_link)
-    { };
+        m_argin (argin), m_nargout (0), m_argout_receiver (nullptr),
+        m_argout_handler (nullptr), m_update (update)
+    {  }
 
-    // C'tor for Fxxx not requiring the interpreter
+    //! Command using built in functions not requiring interpreter, no return values
     octave_cmd_builtin (
           octave_value_list (*Ff) (const octave_value_list&, int),
-          octave_value_list argin = ovl (), int nargout = 0,
-          cmd_upd update = CMD_UPD_NO, octave_qt_link *oct_qt_link = nullptr)
+          octave_value_list argin = ovl (), cmd_upd update = CMD_UPD_NO)
       : octave_cmd (), m_callback_fi (nullptr), m_callback_f (Ff),
-        m_argin (argin), m_nargout (nargout), m_update (update),
-        m_octave_qt_link (oct_qt_link)
-    { };
+        m_argin (argin), m_nargout (0), m_argout_receiver (nullptr),
+        m_argout_handler (nullptr), m_update (update)
+    {  }
+
+    //! Command using built in functions requiring interpreter, with return values
+    /*! Command calling a built in function, which uses an interpreter and
+     *  has return values
+     * @param Ff Pointer to the builtin function
+     * @param argin Input parameters for Ff as octave value list
+     * @param argout Number of output values
+     * @param argout_receiver Receiver of the the signal containing the return values
+     * @param argout_handler  Slot for the signal containing the return values
+     * @param update A member of cmd_upd for possibly required updates after
+     *               the executing Ff
+     * argout_receiver and argout_handler live in the GUI thread. Using a thread
+     * crossing signal/slot mechanism, the GUI thread is not blocked if the
+     * worker thread is busy and can not execute the desired command immediately.
+     */
+    octave_cmd_builtin (
+          octave_value_list (*Ff) (octave::interpreter&, const octave_value_list&, int),
+          octave_value_list argin, int nargout, QObject *argout_receiver,
+          const char *argout_handler = nullptr, cmd_upd update = CMD_UPD_NO)
+      : octave_cmd (), m_callback_fi (Ff), m_callback_f (nullptr),
+        m_argin (argin), m_nargout (nargout), m_argout_receiver (argout_receiver),
+        m_argout_handler (argout_handler), m_update (update)
+    {
+      init_cmd_retval ();
+    }
+
+    //! Command using built in functions not requiring interpreter, with return values
+    octave_cmd_builtin (
+          octave_value_list (*Ff) (const octave_value_list&, int),
+          octave_value_list argin, int nargout, QObject *argout_receiver,
+          const char *argout_handler = nullptr, cmd_upd update = CMD_UPD_NO)
+      : octave_cmd (), m_callback_fi (nullptr), m_callback_f (Ff),
+        m_argin (argin), m_nargout (nargout), m_argout_receiver (argout_receiver),
+        m_argout_handler (argout_handler), m_update (update)
+    {
+      init_cmd_retval ();
+    }
 
     void execute (interpreter& interp);
+
+  signals:
+
+    //! Signal for sending the return values to the GUI thread
+    void argout_signal (const octave_value_list&);
 
   protected:
 
     octave_value_list (*m_callback_fi) (octave::interpreter&,
                                         const octave_value_list&, int);
     octave_value_list (*m_callback_f) (const octave_value_list&, int);
+
     octave_value_list m_argin;
+
     int m_nargout;
+    QObject *m_argout_receiver;
+    const char *m_argout_handler;
+
     cmd_upd m_update;
-    octave_qt_link *m_octave_qt_link;
+
+  private:
+
+    //! Internal method connecting the signal for the return values
+    /*! Internal method for connecting the signal for later sending the return
+     * values to the caller. The connection has to be queued ensuring that
+     * the receiver's slot is actually executed in the GUI thread
+     */
+    void init_cmd_retval (void);
   };
 
   class octave_cmd_debug : public octave_cmd_exec

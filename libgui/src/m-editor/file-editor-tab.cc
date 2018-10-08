@@ -1933,30 +1933,34 @@ namespace octave
       }
   }
 
-  // FIXME: See patch #8016 for a general way to get Octave results from
-  // commands processed in the background, e.g., dbstatus.
-  void file_editor_tab::handle_octave_result (QObject *requester,
-                                              QString& command,
-                                              octave_value_list&)
+  void file_editor_tab::update_breakpoints ()
   {
-    // Check if this object initiated the command.
-    if (requester == this)
+    if (_file_name.isEmpty ())
+      return;
+
+    octave_value_list argout = ovl ();
+
+    // Create and queue the command object
+    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fdbstatus, ovl (), 1,
+        this, SLOT (update_breakpoints_handler (const octave_value_list&)));
+
+    emit request_queue_cmd (cmd);
+  }
+
+  void file_editor_tab::update_breakpoints_handler (const octave_value_list& argout)
+  {
+    octave_map dbg = argout(0).map_value ();
+    octave_idx_type n_dbg = dbg.numel ();
+
+    Cell file = dbg.contents ("file");
+    Cell line = dbg.contents ("line");
+    Cell cond = dbg.contents ("cond");
+
+    for (octave_idx_type i = 0; i < n_dbg; i++)
       {
-        if (command == "dbstatus")
-          {
-            // Should be installing breakpoints in this file
-            /*
-              octave:1> result = dbstatus
-              result =
-
-              0x1 struct array containing the fields:
-
-              name
-              file
-              line
-            */
-            // Check for results that match "file".
-          }
+        if (file (i).string_value () == _file_name.toStdString ())
+          do_breakpoint_marker (true, this, line (i).int_value (),
+                                QString::fromStdString (cond (i).string_value ()));
       }
   }
 

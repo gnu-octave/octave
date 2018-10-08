@@ -66,6 +66,8 @@ namespace octave
     static void reset_cancel (void) {_cancelled = false;}
     static bool was_cancelled (void) {return _cancelled;}
 
+    void update_breakpoints ();
+
   public slots:
 
     void update_window_title (bool modified);
@@ -148,8 +150,7 @@ namespace octave
     void handle_request_add_breakpoint (int line, const QString& cond);
     void handle_request_remove_breakpoint (int line);
 
-    void handle_octave_result (QObject *requester, QString& command,
-                               octave_value_list& result);
+    void update_breakpoints_handler (const octave_value_list& argout);
 
   signals:
 

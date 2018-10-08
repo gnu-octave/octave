@@ -190,6 +190,9 @@ namespace octave
       QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
 
+    // Register octave_value_list for connecting thread crossing signals
+    qRegisterMetaType<octave_value_list> ("octave_value_list");
+
     m_external_editor = new external_editor_interface (this);
     m_active_editor = m_editor_window;  // for connecting signals
     if (! m_editor_window)
@@ -395,7 +398,7 @@ namespace octave
       {
         octave_cmd_builtin *cmd
             = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
-                                      0, octave_cmd_builtin::CMD_UPD_WORKSPACE);
+                                      octave_cmd_builtin::CMD_UPD_WORKSPACE);
         queue_cmd (cmd);
       }
   }

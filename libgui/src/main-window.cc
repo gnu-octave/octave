@@ -1120,13 +1120,16 @@ namespace octave
     interpreter& interp
       = __get_interpreter__ ("main_window::clear_workspace_callback");
 
+    // Split possible subfuntions
+    QStringList fcn_list = fname.split ('>');
+    QString fcn_name = fcn_list.at (0) + ".m";
+
     // Is it a regular function within the search path? (Call Fexist)
     octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
     int type = fct (0).int_value ();
 
     QString message = QString ();
     QString filename = QString ();
-    QString fcn_name = fname + ".m";
 
     switch (type)
       {

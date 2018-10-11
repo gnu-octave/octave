@@ -77,7 +77,7 @@
 %! P1 = eye (1) (:, [1]);
 %! A1 = 1;
 %! P = eye (n) (:, randperm (n));
-%! A = rand (n-3, n, .5);
+%! A = rand (n-3, n);
 %! assert (typeinfo (A * P1), "matrix");
 %! assert (full (A * P1), full (A) * P1);
 %! assert (typeinfo (P1 * A), "matrix");

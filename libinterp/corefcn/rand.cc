@@ -286,10 +286,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                octave_idx_type elt =
-                  args(idx+i).xidx_type_value (
-                    "%s: dimension must be a scalar or array of integers",
-                    fcn);
+                octave_idx_type elt = args(idx+i).idx_type_value (true);
 
                 // Negative dimensions treated as zero for Matlab compatibility
                 dims(i) = (elt >= 0 ? elt : 0);
@@ -536,6 +533,14 @@ classes.
 %!assert (__rand_sample__ (2^33), __rand_sample__ (intmax ("uint32")))
 %!assert (__rand_sample__ (Inf), __rand_sample__ (0))
 %!assert (__rand_sample__ (NaN), __rand_sample__ (0))
+*/
+
+/*
+## Check that negative dimensions are treated as zero for Matlab compatibility
+%!assert (size (rand (1, -1, 2)), [1, 0, 2])
+
+## Test input validation
+%!error <conversion of 1.1 to.* failed> rand (1, 1.1)
 */
 
 static std::string current_distribution = octave::rand::distribution ();

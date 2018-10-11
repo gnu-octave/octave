@@ -3931,8 +3931,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
+          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
       }
       break;
     }
@@ -3941,9 +3940,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
   octave::check_dimensions (dims, fcn);
 
-  // FIXME: perhaps this should be made extensible by
-  // using the class name to lookup a function to call to create
-  // the new value.
+  // FIXME: Perhaps this should be made extensible by using the class name
+  //        to lookup a function to call to create the new value.
 
   // Note that automatic narrowing will handle conversion from
   // NDArray to scalar.
@@ -4041,8 +4039,7 @@ fill_matrix (const octave_value_list& args, double val, float fval,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
+          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
       }
       break;
     }
@@ -4105,8 +4102,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
+          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
       }
       break;
     }
@@ -4170,8 +4166,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
+          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
       }
       break;
     }
@@ -4225,8 +4220,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
         dims.resize (nargin);
 
         for (int i = 0; i < nargin; i++)
-          dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("%s: dimension arguments must be scalar integers", fcn));
+          dims(i) = (args(i).isempty () ? 0 : args(i).idx_type_value (true));
       }
       break;
     }
@@ -4292,6 +4286,8 @@ val = ones (m,n, "uint8")
 %!assert (ones (2, 3, "int8"), int8 ([1, 1, 1; 1, 1, 1]))
 %!assert (ones (3, 2, "int8"), int8 ([1, 1; 1, 1; 1, 1]))
 %!assert (size (ones (3, 4, 5, "int8")), [3, 4, 5])
+
+%!assert (size (ones (1, -2, 2)), [1, 0, 2])
 */
 
 /*
@@ -4309,6 +4305,11 @@ val = ones (m,n, "uint8")
 %!   fail ([func2str(func) " ([])"]);
 %!   fail ([func2str(func) " (zeros (0, 0, 1))"]);
 %! endfor
+
+## Test input validation
+%!error <invalid data type specified> zeros (1, 1, "foobar")
+%!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
+
 */
 
 DEFUN (zeros, args, ,
@@ -4927,9 +4928,8 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 {
   octave_value retval;
 
-  // FIXME: perhaps this should be made extensible by using
-  // the class name to lookup a function to call to create the new
-  // value.
+  // FIXME: Perhaps this should be made extensible by using the class name
+  //        to lookup a function to call to create the new value.
 
   switch (dt)
     {

@@ -4309,6 +4309,7 @@ val = ones (m,n, "uint8")
 ## Test input validation
 %!error <invalid data type specified> zeros (1, 1, "foobar")
 %!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
+%!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
 
 */
 

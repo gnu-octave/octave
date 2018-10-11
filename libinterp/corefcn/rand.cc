@@ -207,11 +207,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_matrix_type ())
           {
-            Array<int> iv;
+            Array<octave_idx_type> iv;
 
             try
               {
-                iv = tmp.int_vector_value (true);
+                iv = tmp.octave_idx_type_vector_value (true);
               }
             catch (octave::execution_exception& e)
               {
@@ -541,6 +541,7 @@ classes.
 
 ## Test input validation
 %!error <conversion of 1.1 to.* failed> rand (1, 1.1)
+%!error <dimensions must be .* array of integers> rand ([1, 1.1])
 */
 
 static std::string current_distribution = octave::rand::distribution ();

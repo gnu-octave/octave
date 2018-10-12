@@ -4288,6 +4288,11 @@ val = ones (m,n, "uint8")
 %!assert (size (ones (3, 4, 5, "int8")), [3, 4, 5])
 
 %!assert (size (ones (1, -2, 2)), [1, 0, 2])
+
+## Test input validation
+%!error <conversion of 1.1 .*failed> ones (1.1)
+%!error <conversion of 1.1 .*failed> ones (1, 1.1)
+%!error <conversion of 1.1 .*failed> ones ([1, 1.1])
 */
 
 /*
@@ -4305,12 +4310,6 @@ val = ones (m,n, "uint8")
 %!   fail ([func2str(func) " ([])"]);
 %!   fail ([func2str(func) " (zeros (0, 0, 1))"]);
 %! endfor
-
-## Test input validation
-%!error <invalid data type specified> zeros (1, 1, "foobar")
-%!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
-%!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
-
 */
 
 DEFUN (zeros, args, ,
@@ -4355,6 +4354,14 @@ val = zeros (m,n, "uint8")
 %!assert (zeros (2, 3, "int8"), int8 ([0, 0, 0; 0, 0, 0]))
 %!assert (zeros (3, 2, "int8"), int8 ([0, 0; 0, 0; 0, 0]))
 %!assert (size (zeros (3, 4, 5, "int8")), [3, 4, 5])
+
+## Test input validation
+%!error <invalid data type specified> zeros (1, 1, "foobar")
+%!error <conversion of 1.1 .*failed> zeros (1.1)
+%!error <conversion of 1.1 .*failed> zeros (1, 1.1)
+%!error <conversion of 1.1 .*failed> zeros ([1, 1.1])
+%!error <conversion of 1.1 .*failed> zeros (1, 1.1, 2)
+%!error <conversion of 1.1 .*failed> zeros ([1, 1.1, 2])
 */
 
 DEFUN (Inf, args, ,
@@ -5087,7 +5094,11 @@ definitions are for compatibility with @sc{matlab}.
 %!assert (eye (3, "int8"), int8 ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
 %!assert (eye (2, 3, "int8"), int8 ([1, 0, 0; 0, 1, 0]))
 
+## Test input validation
 %!error eye (1, 2, 3)
+%!error <conversion of 1.1 .*failed> eye (1.1)
+%!error <conversion of 1.1 .*failed> eye (1, 1.1)
+%!error <conversion of 1.1 .*failed> eye ([1, 1.1])
 */
 
 template <typename MT>

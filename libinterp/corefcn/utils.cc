@@ -1110,7 +1110,7 @@ namespace octave
   {
     if (a.is_scalar_type ())
       {
-        nr = nc = a.idx_type_value ();
+        nr = nc = a.idx_type_value (true);
       }
     else
       {
@@ -1120,9 +1120,9 @@ namespace octave
         if ((nr != 1 || nc != 2) && (nr != 2 || nc != 1))
           error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
 
-        Array<double> v = a.vector_value ();
-        nr = static_cast<octave_idx_type> (math::fix (v(0)));
-        nc = static_cast<octave_idx_type> (math::fix (v(1)));
+        Array<octave_idx_type> v = a.octave_idx_type_vector_value (true);
+        nr = v(0);
+        nc = v(1);
       }
 
     octave::check_dimensions (nr, nc, warn_for);
@@ -1132,10 +1132,8 @@ namespace octave
                        const char *warn_for, octave_idx_type& nr,
                        octave_idx_type& nc)
   {
-    nr = a.isempty ()
-      ? 0 : a.idx_type_value ("%s: row dimension must be a scalar", warn_for);
-    nc = b.isempty ()
-      ? 0 : b.idx_type_value ("%s: column dimension must be a scalar", warn_for);
+    nr = (a.isempty () ? 0 : a.idx_type_value (true));
+    nc = (b.isempty () ? 0 : b.idx_type_value (true));
 
     octave::check_dimensions (nr, nc, warn_for);
   }

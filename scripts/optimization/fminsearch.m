@@ -21,6 +21,7 @@
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{fun_arg1}, @var{fun_arg2}, @dots{})
+## @deftypefnx {} {@var{x} =} fminsearch (@var{problem})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}] =} fminsearch (@dots{})
 ##
 ## Find a value of @var{x} which minimizes the multi-variable function
@@ -53,6 +54,27 @@
 ## Additional inputs for the function @var{fun} can be passed as the fourth
 ## and higher arguments.  To pass function arguments while using the default
 ## @var{options} values, use @code{[]} for @var{options}.
+##
+## @code{fminsearch} may also be called with a single structure argument
+## with the following fields:
+##
+## @table @code
+## @item objective
+## The objective function.
+##
+## @item x0
+## The initial point.
+##
+## @item solver
+## Must be set to @qcode{"fminsearch"}.
+##
+## @item options
+## A structure returned from @code{optimset} or an empty matrix to
+## indicate that defaults should be used.
+## @end table
+##
+## @noindent
+## The field @code{options} is optional.  All others are required.
 ##
 ## On exit, the function returns @var{x}, the minimum point, and @var{fval},
 ## the function value at the minimum.
@@ -98,10 +120,14 @@
 
 ## FIXME: Add support for output function with "state" set to "interrupt".
 
-function [x, fval, exitflag, output] = fminsearch (fun, x0, options, varargin)
+function [x, fval, exitflag, output] = fminsearch (varargin)
+
+  if (nargin < 1)
+    print_usage ();
+  endif
 
   ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
+  if (nargin == 1 && ischar (varargin{1}) && strcmp (varargin{1}, "defaults"))
     x = optimset ("Display", "notify", "FunValCheck", "off",
                   "MaxFunEvals", [], "MaxIter", [],
                   "OutputFcn", [],
@@ -109,11 +135,35 @@ function [x, fval, exitflag, output] = fminsearch (fun, x0, options, varargin)
     return;
   endif
 
-  if (nargin < 2)
-    print_usage ();
+  if (nargin == 1)
+    problem = varargin{1};
+    varargin = {};
+    if (! isstruct (problem))
+      error ("fminsearch: PROBLEM must be a structure");
+    endif
+    fun = problem.objective;
+    x0 = problem.x0;
+    if (! strcmp (problem.solver, "fminsearch"))
+      error ('fminsearch: problem.solver must be set to "fminsearch"');
+    endif
+    if (isfield (problem, "options"))
+      options = problem.options;
+    else
+      options = [];
+    endif
+  elseif (nargin > 1)
+    fun = varargin{1};
+    x0 = varargin{2};
+    if (nargin > 2)
+      options = varargin{3};
+      varargin(1:3) = [];
+    else
+      options = [];
+      varargin = {};
+    endif
   endif
 
-  if (nargin < 3 || isempty (options))
+  if (isempty (options))
     options = struct ();
   endif
 
@@ -227,7 +277,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   V = [zeros(n,1) eye(n)];
   f = zeros (n+1,1);
   V(:,1) = x0;
-  f(1) = dirn * feval (fun, x, varargin{:});
+  f(1) = dirn * fun (x, varargin{:});
   fmax_old = f(1);
   nf = 1;
 
@@ -469,6 +519,17 @@ endfunction
 %! x = fminsearch (@sin, 3, optimset ("MaxIter", 3, "Display", "none"));
 %! assert (x, 4.8750, 1e-4);
 %! x = fminsearch (@sin, 3, optimset ("MaxFunEvals", 18, "Display", "none"));
+%! assert (x, 4.7109, 1e-4);
+
+%!test
+%! problem.objective = @sin;
+%! problem.x0 = 3;
+%! problem.solver = "fminsearch";
+%! problem.options = optimset ("MaxIter", 3, "Display", "none")
+%! x = fminsearch (problem);
+%! assert (x, 4.8750, 1e-4);
+%! problem.options = optimset ("MaxFunEvals", 18, "Display", "none")
+%! x = fminsearch (problem);
 %! assert (x, 4.7109, 1e-4);
 
 %!test

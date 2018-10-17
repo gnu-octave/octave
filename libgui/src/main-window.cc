@@ -88,7 +88,7 @@ create_default_editor (QWidget *p)
 
 namespace octave
 {
-  octave_interpreter::octave_interpreter (gui_application *app_context)
+  octave_interpreter::octave_interpreter (gui_application& app_context)
     : QObject (), m_app_context (app_context)
   { }
 
@@ -96,7 +96,7 @@ namespace octave
   {
     // The application context owns the interpreter.
 
-    interpreter& interp = m_app_context->create_interpreter ();
+    interpreter& interp = m_app_context.create_interpreter ();
 
     int exit_status = 0;
 
@@ -106,7 +106,7 @@ namespace octave
 
         interp.initialize ();
 
-        if (m_app_context->start_gui_p ())
+        if (m_app_context.start_gui_p ())
           {
             input_system& input_sys = interp.get_input_system ();
 
@@ -145,54 +145,43 @@ namespace octave
     // Whether or not initialization succeeds we need to clean up the
     // interpreter once we are done with it.
 
-    m_app_context->delete_interpreter ();
+    m_app_context.delete_interpreter ();
 
     emit octave_finished_signal (exit_status);
   }
 
-  main_window::main_window (QWidget *p, gui_application *app_context)
-    : QMainWindow (p), m_app_context (app_context),
-      m_interpreter (new octave_interpreter (app_context)),
-      m_main_thread (new QThread ()), m_workspace_model (nullptr),
+  main_window::main_window (octave_qt_link *oct_qt_lnk)
+    : QMainWindow (),
+      m_octave_qt_link (oct_qt_lnk), m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
       m_workspace_window (nullptr), m_variable_editor_window (nullptr),
+      m_external_editor (new external_editor_interface (this)),
+      m_active_editor (m_external_editor),
       m_settings_dlg (nullptr), m_find_files_dlg (nullptr),
       m_release_notes_window (nullptr), m_community_news_window (nullptr),
-      m_octave_qt_link (nullptr), m_clipboard (QApplication::clipboard ()),
+      m_clipboard (QApplication::clipboard ()),
       m_prevent_readline_conflicts (true), m_suppress_dbg_location (true),
-      m_start_gui (app_context && app_context->start_gui_p ()),
-      m_file_encoding (QString ())
+      m_closing (false), m_file_encoding (QString ())
   {
-    if (m_start_gui)
-      {
-        m_workspace_model = new workspace_model ();
-        m_status_bar = new QStatusBar ();
-        m_command_window = new terminal_dock_widget (this);
-        m_history_window = new history_dock_widget (this);
-        m_file_browser_window = new files_dock_widget (this);
-        m_doc_browser_window = new documentation_dock_widget (this);
-        m_editor_window = create_default_editor (this);
-        m_variable_editor_window = new variable_editor (this);
-        m_workspace_window = new workspace_view (this);
-      }
+    construct_central_widget ();
 
-    // Initialize global Qt application metadata
-    QCoreApplication::setApplicationName ("GNU Octave");
-    QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
+    m_workspace_model = new workspace_model ();
+    m_status_bar = new QStatusBar ();
+    m_command_window = new terminal_dock_widget (this);
+    m_history_window = new history_dock_widget (this);
+    m_file_browser_window = new files_dock_widget (this);
+    m_doc_browser_window = new documentation_dock_widget (this);
+    m_editor_window = create_default_editor (this);
+    m_variable_editor_window = new variable_editor (this);
+    m_workspace_window = new workspace_view (this);
+
+    m_active_editor = m_editor_window;
+
 #if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
-    if (m_start_gui)
-      QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
+    QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
-
-    // Register octave_value_list for connecting thread crossing signals
-    qRegisterMetaType<octave_value_list> ("octave_value_list");
-
-    m_external_editor = new external_editor_interface (this);
-    m_active_editor = m_editor_window;  // for connecting signals
-    if (! m_editor_window)
-      m_active_editor = m_external_editor;
 
     QSettings *settings = resource_manager::get_settings ();
 
@@ -217,28 +206,27 @@ namespace octave
     QDateTime current = QDateTime::currentDateTime ();
     QDateTime one_day_ago = current.addDays (-1);
 
-    if (m_start_gui && connect_to_web
+    if (connect_to_web
         && (! last_checked.isValid () || one_day_ago > last_checked))
       load_and_display_community_news (serial);
 
-    // We have to set up all our windows, before we finally launch octave.
+    construct_octave_qt_link ();
+
+    // We have to set up all our windows, before we finally launch
+    // octave.
+
     construct ();
 
-    connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
-             this, SLOT (handle_octave_ready (void)));
+    read_settings ();
 
-    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
-             this, SLOT (handle_octave_finished (int)));
+    init_terminal_size ();
 
-    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
-             m_main_thread, SLOT (quit (void)));
+    // Connect signals for changes in visibility not before window is
+    // shown.
 
-    connect (m_main_thread, SIGNAL (finished (void)),
-             m_main_thread, SLOT (deleteLater (void)));
+    connect_visibility_changed ();
 
-    m_interpreter->moveToThread (m_main_thread);
-
-    m_main_thread->start ();
+    focus_command_window ();
   }
 
   main_window::~main_window (void)
@@ -260,28 +248,11 @@ namespace octave
     delete m_status_bar;
     delete m_workspace_model;
     delete m_variable_editor_window;
-    delete m_interpreter;
 
-    if (m_find_files_dlg)
-      {
-        delete m_find_files_dlg;
-        m_find_files_dlg = nullptr;
-      }
-    if (m_release_notes_window)
-      {
-        delete m_release_notes_window;
-        m_release_notes_window = nullptr;
-      }
-    if (m_settings_dlg)
-      {
-        delete m_settings_dlg;
-        m_settings_dlg = nullptr;
-      }
-    if (m_community_news_window)
-      {
-        delete m_community_news_window;
-        m_community_news_window = nullptr;
-      }
+    delete m_find_files_dlg;
+    delete m_release_notes_window;
+    delete m_settings_dlg;
+    delete m_community_news_window;
   }
 
   bool main_window::command_window_has_focus (void) const
@@ -676,25 +647,6 @@ namespace octave
     m_settings_dlg->show ();
   }
 
-  void main_window::copy_image_to_clipboard (const QString& file,
-                                             bool remove_file)
-  {
-    QClipboard *clipboard = QApplication::clipboard ();
-
-    QImage img (file);
-
-    if (img.isNull ())
-      {
-        // Report error?
-        return;
-      }
-
-    clipboard->setImage (img);
-
-    if (remove_file)
-      QFile::remove (file);
-  }
-
   void main_window::show_about_octave (void)
   {
     std::string message
@@ -822,41 +774,30 @@ namespace octave
 
   }
 
-  void main_window::confirm_shutdown_octave (void)
+  bool main_window::confirm_shutdown_octave (void)
   {
     bool closenow = true;
 
-    if (m_start_gui)
+    QSettings *settings = resource_manager::get_settings ();
+
+    if (settings->value ("prompt_to_exit", false).toBool ())
       {
-        QSettings *settings = resource_manager::get_settings ();
+        int ans = QMessageBox::question (this, tr ("Octave"),
+                                         tr ("Are you sure you want to exit Octave?"),
+                                         (QMessageBox::Ok
+                                          | QMessageBox::Cancel),
+                                         QMessageBox::Ok);
 
-        if (settings->value ("prompt_to_exit", false).toBool ())
-          {
-            int ans = QMessageBox::question (this, tr ("Octave"),
-                                             tr ("Are you sure you want to exit Octave?"),
-                                             (QMessageBox::Ok
-                                              | QMessageBox::Cancel),
-                                             QMessageBox::Ok);
-
-            if (ans != QMessageBox::Ok)
-              closenow = false;
-          }
-
-#if defined (HAVE_QSCINTILLA)
-        if (closenow)
-          closenow = m_editor_window->check_closing ();
-#endif
+        if (ans != QMessageBox::Ok)
+          closenow = false;
       }
 
-    // Wait for link thread to go to sleep state.
-    m_octave_qt_link->lock ();
+#if defined (HAVE_QSCINTILLA)
+    if (closenow)
+      closenow = m_editor_window->check_closing ();
+#endif
 
-    m_octave_qt_link->shutdown_confirmation (closenow);
-
-    m_octave_qt_link->unlock ();
-
-    // Awake the worker thread so that it continues shutting down (or not).
-    m_octave_qt_link->wake_all ();
+    return closenow;
   }
 
   void main_window::prepare_to_exit (void)
@@ -1382,121 +1323,6 @@ namespace octave
       emit selectAll_signal ();
   }
 
-  // Connect the signals emitted when the Octave thread wants to create
-  // a dialog box of some sort.  Perhaps a better place for this would be
-  // as part of the QUIWidgetCreator class.  However, mainWindow currently
-  // is not a global variable and not accessible for connecting.
-
-  void main_window::connect_uiwidget_links (void)
-  {
-    connect (&uiwidget_creator,
-             SIGNAL (create_dialog (const QString&, const QString&,
-                                    const QString&, const QStringList&,
-                                    const QString&, const QStringList&)),
-             this,
-             SLOT (handle_create_dialog (const QString&, const QString&,
-                                         const QString&, const QStringList&,
-                                         const QString&, const QStringList&)));
-
-    // Register QIntList so that list of ints may be part of a signal.
-    qRegisterMetaType<QIntList> ("QIntList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_listview (const QStringList&, const QString&,
-                                      int, int, const QIntList&,
-                                      const QString&, const QStringList&,
-                                      const QString&, const QString&)),
-             this,
-             SLOT (handle_create_listview (const QStringList&, const QString&,
-                                           int, int, const QIntList&,
-                                           const QString&, const QStringList&,
-                                           const QString&, const QString&)));
-
-    // Register QFloatList so that list of floats may be part of a signal.
-    qRegisterMetaType<QFloatList> ("QFloatList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_inputlayout (const QStringList&, const QString&,
-                                         const QFloatList&, const QFloatList&,
-                                         const QStringList&)),
-             this,
-             SLOT (handle_create_inputlayout (const QStringList&, const QString&,
-                                              const QFloatList&,
-                                              const QFloatList&,
-                                              const QStringList&)));
-
-    connect (&uiwidget_creator,
-             SIGNAL (create_filedialog (const QStringList &,const QString&,
-                                        const QString&, const QString&,
-                                        const QString&)),
-             this,
-             SLOT (handle_create_filedialog (const QStringList &, const QString&,
-                                             const QString&, const QString&,
-                                             const QString&)));
-  }
-
-  // Create a message dialog with specified string, buttons and decorative
-  // text.
-
-  void main_window::handle_create_dialog (const QString& message,
-                                          const QString& title,
-                                          const QString& icon,
-                                          const QStringList& button,
-                                          const QString& defbutton,
-                                          const QStringList& role)
-  {
-    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
-                                                       button, defbutton, role);
-    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    message_dialog->show ();
-  }
-
-  // Create a list dialog with specified list, initially selected, mode,
-  // view size and decorative text.
-
-  void main_window::handle_create_listview (const QStringList& list,
-                                            const QString& mode,
-                                            int wd, int ht,
-                                            const QIntList& initial,
-                                            const QString& name,
-                                            const QStringList& prompt,
-                                            const QString& ok_string,
-                                            const QString& cancel_string)
-  {
-    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
-                                              initial, name, prompt,
-                                              ok_string, cancel_string);
-
-    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    list_dialog->show ();
-  }
-
-  // Create an input dialog with specified prompts and defaults, title and
-  // row/column size specifications.
-  void main_window::handle_create_inputlayout (const QStringList& prompt,
-                                               const QString& title,
-                                               const QFloatList& nr,
-                                               const QFloatList& nc,
-                                               const QStringList& defaults)
-  {
-    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
-                                                 defaults);
-
-    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    input_dialog->show ();
-  }
-
-  void main_window::handle_create_filedialog (const QStringList& filters,
-                                              const QString& title,
-                                              const QString& filename,
-                                              const QString& dirname,
-                                              const QString& multimode)
-  {
-    FileDialog *file_dialog = new FileDialog (filters, title, filename,
-                                              dirname, multimode);
-
-    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    file_dialog->show ();
-  }
-
   void main_window::handle_show_doc (const QString& file)
   {
     m_doc_browser_window->setVisible (true);
@@ -1520,31 +1346,28 @@ namespace octave
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
-    if (m_start_gui)
+    if (settings)
       {
-        if (settings)
+        if (settings->value ("restore_octave_dir").toBool ())
           {
-            if (settings->value ("restore_octave_dir").toBool ())
-              {
-                // restore last dir from previous session
-                QStringList curr_dirs
-                  = settings->value ("MainWindow/current_directory_list").toStringList ();
-                startup_dir
-                  = QDir (curr_dirs.at (0));  // last dir in previous session
-              }
-            else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
-              {
-                // do not restore but there is a startup dir configured
-                startup_dir
-                  = QDir (settings->value ("octave_startup_dir").toString ());
-              }
+            // restore last dir from previous session
+            QStringList curr_dirs
+              = settings->value ("MainWindow/current_directory_list").toStringList ();
+            startup_dir
+              = QDir (curr_dirs.at (0));  // last dir in previous session
           }
+        else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+          {
+            // do not restore but there is a startup dir configured
+            startup_dir
+              = QDir (settings->value ("octave_startup_dir").toString ());
+          }
+      }
 
-        if (! startup_dir.exists ())
-          {
-            // the configured startup dir does not exist, take actual one
-            startup_dir = QDir ();
-          }
+    if (! startup_dir.exists ())
+      {
+        // the configured startup dir does not exist, take actual one
+        startup_dir = QDir ();
       }
 
     set_current_working_directory (startup_dir.absolutePath ());
@@ -1560,13 +1383,7 @@ namespace octave
 #endif
       }
 
-    if (m_start_gui)
-      focus_command_window ();  // make sure that the command window has focus
-  }
-
-  void main_window::handle_octave_finished (int exit_status)
-  {
-    qApp->exit (exit_status);
+    focus_command_window ();  // make sure that the command window has focus
   }
 
   void main_window::find_files (const QString& start_dir)
@@ -1747,12 +1564,8 @@ namespace octave
     queue_cmd (cmd);
   }
 
-  // Main subroutine of the constructor
-
-  void main_window::construct (void)
+  void main_window::construct_central_widget (void)
   {
-    m_closing = false;   // flag for editor files when closed
-
     // Create and set the central widget.  QMainWindow takes ownership of
     // the widget (pointer) so there is no need to delete the object upon
     // destroying this main_window.
@@ -1763,294 +1576,274 @@ namespace octave
     dummyWidget->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
     dummyWidget->hide ();
     setCentralWidget (dummyWidget);
+  }
 
-    connect_uiwidget_links ();
+// Main subroutine of the constructor
 
-    construct_octave_qt_link ();
+  void main_window::construct (void)
+  {
+    setWindowIcon (QIcon (":/actions/icons/logo.png"));
 
-    if (m_start_gui)
-      {
-        setWindowIcon (QIcon (":/actions/icons/logo.png"));
+    m_workspace_window->setModel (m_workspace_model);
 
-        m_workspace_window->setModel (m_workspace_model);
+    connect (m_workspace_model, SIGNAL (model_changed (void)),
+             m_workspace_window, SLOT (handle_model_changed (void)));
 
-        connect (m_workspace_model, SIGNAL (model_changed (void)),
-                 m_workspace_window, SLOT (handle_model_changed (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (edit_variable_signal (const QString&,
+                                           const octave_value&)),
+             this,
+             SLOT (edit_variable (const QString&, const octave_value&)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (edit_variable_signal (const QString&,
-                                               const octave_value&)),
-                 this,
-                 SLOT (edit_variable (const QString&, const octave_value&)));
+    connect (m_octave_qt_link, SIGNAL (refresh_variable_editor_signal (void)),
+             this, SLOT (refresh_variable_editor (void)));
 
-        connect (m_octave_qt_link, SIGNAL (refresh_variable_editor_signal (void)),
-                 this, SLOT (refresh_variable_editor (void)));
+    connect (m_workspace_model,
+             SIGNAL (rename_variable (const QString&, const QString&)),
+             this,
+             SLOT (handle_rename_variable_request (const QString&,
+                                                   const QString&)));
 
-        connect (m_workspace_model,
-                 SIGNAL (rename_variable (const QString&, const QString&)),
-                 this,
-                 SLOT (handle_rename_variable_request (const QString&,
-                                                       const QString&)));
+    connect (m_variable_editor_window, SIGNAL (updated (void)),
+             this, SLOT (handle_variable_editor_update (void)));
 
-        connect (m_variable_editor_window, SIGNAL (updated (void)),
-                 this, SLOT (handle_variable_editor_update (void)));
+    construct_menu_bar ();
 
-        construct_menu_bar ();
+    construct_tool_bar ();
 
-        construct_tool_bar ();
+    // Order is important.  Deleting QSettings must be last.
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_command_window, SLOT (save_settings (void)));
 
-        // Order is important.  Deleting QSettings must be last.
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_command_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_history_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_history_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_file_browser_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_file_browser_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_doc_browser_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_doc_browser_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_workspace_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_workspace_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_editor_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_editor_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             m_variable_editor_window, SLOT (save_settings (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 m_variable_editor_window, SLOT (save_settings (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             this, SLOT (prepare_to_exit (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 this, SLOT (prepare_to_exit (void)));
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             shortcut_manager::instance, SLOT (cleanup_instance (void)));
 
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 shortcut_manager::instance, SLOT (cleanup_instance (void)));
+    // QSettings are saved upon deletion (i.e., cleanup_instance)
+    connect (qApp, SIGNAL (aboutToQuit (void)),
+             resource_manager::instance, SLOT (cleanup_instance (void)));
 
-        // QSettings are saved upon deletion (i.e., cleanup_instance)
-        connect (qApp, SIGNAL (aboutToQuit (void)),
-                 resource_manager::instance, SLOT (cleanup_instance (void)));
+    connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+             this, SLOT (focus_changed (QWidget*, QWidget*)));
 
-        connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
-                 this, SLOT (focus_changed (QWidget*, QWidget*)));
+    connect (this, SIGNAL (settings_changed (const QSettings *)),
+             this, SLOT (notice_settings (const QSettings *)));
 
-        connect (this, SIGNAL (settings_changed (const QSettings *)),
-                 this, SLOT (notice_settings (const QSettings *)));
+    connect (this, SIGNAL (editor_focus_changed (bool)),
+             this, SLOT (disable_menu_shortcuts (bool)));
 
-        connect (this, SIGNAL (editor_focus_changed (bool)),
-                 this, SLOT (disable_menu_shortcuts (bool)));
+    connect (this, SIGNAL (editor_focus_changed (bool)),
+             m_editor_window, SLOT (enable_menu_shortcuts (bool)));
 
-        connect (this, SIGNAL (editor_focus_changed (bool)),
-                 m_editor_window, SLOT (enable_menu_shortcuts (bool)));
+    connect (m_editor_window,
+             SIGNAL (request_open_file_external (const QString&, int)),
+             m_external_editor,
+             SLOT (call_custom_editor (const QString&, int)));
 
-        connect (m_editor_window,
-                 SIGNAL (request_open_file_external (const QString&, int)),
-                 m_external_editor,
-                 SLOT (call_custom_editor (const QString&, int)));
+    connect (m_external_editor,
+             SIGNAL (request_settings_dialog (const QString&)),
+             this, SLOT (process_settings_dialog_request (const QString&)));
 
-        connect (m_external_editor,
-                 SIGNAL (request_settings_dialog (const QString&)),
-                 this, SLOT (process_settings_dialog_request (const QString&)));
+    connect (m_file_browser_window, SIGNAL (load_file_signal (const QString&)),
+             this, SLOT (handle_load_workspace_request (const QString&)));
 
-        connect (m_file_browser_window, SIGNAL (load_file_signal (const QString&)),
-                 this, SLOT (handle_load_workspace_request (const QString&)));
+    connect (m_file_browser_window, SIGNAL (open_any_signal (const QString&)),
+             this, SLOT (handle_open_any_request (const QString&)));
 
-        connect (m_file_browser_window, SIGNAL (open_any_signal (const QString&)),
-                 this, SLOT (handle_open_any_request (const QString&)));
+    connect (m_file_browser_window, SIGNAL (find_files_signal (const QString&)),
+             this, SLOT (find_files (const QString&)));
 
-        connect (m_file_browser_window, SIGNAL (find_files_signal (const QString&)),
-                 this, SLOT (find_files (const QString&)));
+    setWindowTitle ("Octave");
 
-        setWindowTitle ("Octave");
-
-// See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
+    // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
 #if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
-        setDockOptions (QMainWindow::AnimatedDocks
-                        | QMainWindow::AllowNestedDocks
-                        | QMainWindow::AllowTabbedDocks);
+    setDockOptions (QMainWindow::AnimatedDocks
+                    | QMainWindow::AllowNestedDocks
+                    | QMainWindow::AllowTabbedDocks);
 #else
-        setDockNestingEnabled (true);
+    setDockNestingEnabled (true);
 #endif
 
-        addDockWidget (Qt::RightDockWidgetArea, m_command_window);
-        addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
-        tabifyDockWidget (m_command_window, m_doc_browser_window);
+    addDockWidget (Qt::RightDockWidgetArea, m_command_window);
+    addDockWidget (Qt::RightDockWidgetArea, m_doc_browser_window);
+    tabifyDockWidget (m_command_window, m_doc_browser_window);
 
 #if defined (HAVE_QSCINTILLA)
-        addDockWidget (Qt::RightDockWidgetArea, m_editor_window);
-        tabifyDockWidget (m_command_window, m_editor_window);
+    addDockWidget (Qt::RightDockWidgetArea, m_editor_window);
+    tabifyDockWidget (m_command_window, m_editor_window);
 #endif
-        addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
-        tabifyDockWidget (m_command_window, m_variable_editor_window);
+    addDockWidget (Qt::RightDockWidgetArea, m_variable_editor_window);
+    tabifyDockWidget (m_command_window, m_variable_editor_window);
 
-        addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
-        addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
-        addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
+    addDockWidget (Qt::LeftDockWidgetArea, m_file_browser_window);
+    addDockWidget (Qt::LeftDockWidgetArea, m_workspace_window);
+    addDockWidget (Qt::LeftDockWidgetArea, m_history_window);
 
-        int win_x = QApplication::desktop ()->width ();
-        int win_y = QApplication::desktop ()->height ();
+    int win_x = QApplication::desktop ()->width ();
+    int win_y = QApplication::desktop ()->height ();
 
-        if (win_x > 960)
-          win_x = 960;
+    if (win_x > 960)
+      win_x = 960;
 
-        if (win_y > 720)
-          win_y = 720;
+    if (win_y > 720)
+      win_y = 720;
 
-        setGeometry (0, 0, win_x, win_y);
+    setGeometry (0, 0, win_x, win_y);
 
-        setStatusBar (m_status_bar);
+    setStatusBar (m_status_bar);
 
 #if defined (HAVE_QSCINTILLA)
-        connect (this,
-                 SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-                 m_editor_window,
-                 SLOT (handle_insert_debugger_pointer_request (const QString&,
-                                                               int)));
+    connect (this,
+             SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+             m_editor_window,
+             SLOT (handle_insert_debugger_pointer_request (const QString&,
+                                                           int)));
 
-        connect (this,
-                 SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-                 m_editor_window,
-                 SLOT (handle_delete_debugger_pointer_request (const QString&,
-                                                               int)));
+    connect (this,
+             SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+             m_editor_window,
+             SLOT (handle_delete_debugger_pointer_request (const QString&,
+                                                           int)));
 
-        connect (this,
-                 SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-                                                          int, const QString&)),
-                 m_editor_window,
-                 SLOT (handle_update_breakpoint_marker_request (bool,
-                                                                const QString&,
-                                                                int,
-                                                                const QString&)));
+    connect (this,
+             SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
+                                                      int, const QString&)),
+             m_editor_window,
+             SLOT (handle_update_breakpoint_marker_request (bool,
+                                                            const QString&,
+                                                            int,
+                                                            const QString&)));
 
-        // Signals for removing/renaming files/dirs in the file browser
-        connect (m_file_browser_window,
-                 SIGNAL (file_remove_signal (const QString&, const QString&)),
-                 m_editor_window,
-                 SLOT (handle_file_remove (const QString&, const QString&)));
+    // Signals for removing/renaming files/dirs in the file browser
+    connect (m_file_browser_window,
+             SIGNAL (file_remove_signal (const QString&, const QString&)),
+             m_editor_window,
+             SLOT (handle_file_remove (const QString&, const QString&)));
 
-        connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
-                 m_editor_window, SLOT (handle_file_renamed (bool)));
+    connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
+             m_editor_window, SLOT (handle_file_renamed (bool)));
 
-        // Signals for removing/renaming files/dirs in the temrinal window
-        connect (m_octave_qt_link,
-                 SIGNAL (file_remove_signal (const QString&, const QString&)),
-                 this, SLOT (file_remove_proxy (const QString&, const QString&)));
-        connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
-                 m_editor_window, SLOT (handle_file_renamed (bool)));
+    // Signals for removing/renaming files/dirs in the temrinal window
+    connect (m_octave_qt_link,
+             SIGNAL (file_remove_signal (const QString&, const QString&)),
+             this, SLOT (file_remove_proxy (const QString&, const QString&)));
+    connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
+             m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
 
-        octave_link::post_event (this,
-                                 &main_window::resize_command_window_callback);
+    octave_link::post_event (this,
+                             &main_window::resize_command_window_callback);
 
-        configure_shortcuts ();
-      }
+    configure_shortcuts ();
   }
 
   void main_window::construct_octave_qt_link (void)
   {
-    m_octave_qt_link = new octave_qt_link (this, m_app_context);
+    connect (m_octave_qt_link,
+             SIGNAL (set_workspace_signal (bool, bool,
+                                           const symbol_scope&)),
+             m_workspace_model,
+             SLOT (set_workspace (bool, bool, const symbol_scope&)));
 
-    octave_link::connect_link (m_octave_qt_link);
+    connect (m_octave_qt_link, SIGNAL (clear_workspace_signal (void)),
+             m_workspace_model, SLOT (clear_workspace (void)));
 
-    connect (m_octave_qt_link, SIGNAL (confirm_shutdown_signal (void)),
-             this, SLOT (confirm_shutdown_octave (void)));
+    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+             this, SLOT (change_directory (QString)));
+
+    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+             m_file_browser_window, SLOT (update_octave_directory (QString)));
+
+    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+             m_editor_window, SLOT (update_octave_directory (QString)));
 
     connect (m_octave_qt_link,
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+             SIGNAL (execute_command_in_terminal_signal (QString)),
+             this, SLOT (execute_command_in_terminal (QString)));
 
-    if (m_start_gui)
-      {
-        connect (m_octave_qt_link,
-                 SIGNAL (set_workspace_signal (bool, bool,
-                                               const symbol_scope&)),
-                 m_workspace_model,
-                 SLOT (set_workspace (bool, bool, const symbol_scope&)));
+    connect (m_octave_qt_link,
+             SIGNAL (set_history_signal (const QStringList&)),
+             m_history_window, SLOT (set_history (const QStringList&)));
 
-        connect (m_octave_qt_link, SIGNAL (clear_workspace_signal (void)),
-                 m_workspace_model, SLOT (clear_workspace (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (append_history_signal (const QString&)),
+             m_history_window, SLOT (append_history (const QString&)));
 
-        connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-                 this, SLOT (change_directory (QString)));
+    connect (m_octave_qt_link,
+             SIGNAL (clear_history_signal (void)),
+             m_history_window, SLOT (clear_history (void)));
 
-        connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-                 m_file_browser_window, SLOT (update_octave_directory (QString)));
+    connect (m_octave_qt_link, SIGNAL (enter_debugger_signal (void)),
+             this, SLOT (handle_enter_debugger (void)));
 
-        connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
-                 m_editor_window, SLOT (update_octave_directory (QString)));
+    connect (m_octave_qt_link, SIGNAL (exit_debugger_signal (void)),
+             this, SLOT (handle_exit_debugger (void)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (execute_command_in_terminal_signal (QString)),
-                 this, SLOT (execute_command_in_terminal (QString)));
+    connect (m_octave_qt_link,
+             SIGNAL (show_preferences_signal (void)),
+             this, SLOT (process_settings_dialog_request (void)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (set_history_signal (const QStringList&)),
-                 m_history_window, SLOT (set_history (const QStringList&)));
+    connect (m_octave_qt_link,
+             SIGNAL (gui_preference_signal (const QString&, const QString&,
+                                            QString*)),
+             this, SLOT (gui_preference (const QString&, const QString&,
+                                         QString*)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (append_history_signal (const QString&)),
-                 m_history_window, SLOT (append_history (const QString&)));
+    connect (m_octave_qt_link,
+             SIGNAL (edit_file_signal (const QString&)),
+             m_active_editor,
+             SLOT (handle_edit_file_request (const QString&)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (clear_history_signal (void)),
-                 m_history_window, SLOT (clear_history (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
+             this,
+             SLOT (handle_insert_debugger_pointer_request (const QString&,
+                                                           int)));
 
-        connect (m_octave_qt_link, SIGNAL (enter_debugger_signal (void)),
-                 this, SLOT (handle_enter_debugger (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
+             this,
+             SLOT (handle_delete_debugger_pointer_request (const QString&,
+                                                           int)));
 
-        connect (m_octave_qt_link, SIGNAL (exit_debugger_signal (void)),
-                 this, SLOT (handle_exit_debugger (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
+                                                      int, const QString&)),
+             this,
+             SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
+                                                            int, const QString&)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (show_preferences_signal (void)),
-                 this, SLOT (process_settings_dialog_request (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (show_doc_signal (const QString &)),
+             this, SLOT (handle_show_doc (const QString &)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (gui_preference_signal (const QString&, const QString&,
-                                                QString*)),
-                 this, SLOT (gui_preference (const QString&, const QString&,
-                                             QString*)));
+    connect (m_octave_qt_link,
+             SIGNAL (register_doc_signal (const QString &)),
+             this, SLOT (handle_register_doc (const QString &)));
 
-        connect (m_octave_qt_link,
-                 SIGNAL (edit_file_signal (const QString&)),
-                 m_active_editor,
-                 SLOT (handle_edit_file_request (const QString&)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
-                 this,
-                 SLOT (handle_insert_debugger_pointer_request (const QString&,
-                                                               int)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
-                 this,
-                 SLOT (handle_delete_debugger_pointer_request (const QString&,
-                                                               int)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
-                                                          int, const QString&)),
-                 this,
-                 SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
-                                                                int, const QString&)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (show_doc_signal (const QString &)),
-                 this, SLOT (handle_show_doc (const QString &)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (register_doc_signal (const QString &)),
-                 this, SLOT (handle_register_doc (const QString &)));
-
-        connect (m_octave_qt_link,
-                 SIGNAL (unregister_doc_signal (const QString &)),
-                 this, SLOT (handle_unregister_doc (const QString &)));
-      }
-
-    // Defer initializing and executing the interpreter until after the main
-    // window and QApplication are running to prevent race conditions
-    QTimer::singleShot (0, m_interpreter, SLOT (execute (void)));
+    connect (m_octave_qt_link,
+             SIGNAL (unregister_doc_signal (const QString &)),
+             this, SLOT (handle_unregister_doc (const QString &)));
   }
 
   QAction* main_window::add_action (QMenu *menu, const QIcon& icon,
@@ -2873,5 +2666,220 @@ namespace octave
     emit display_news_signal (html_text);
 
     emit finished ();
+  }
+
+  main_thing::main_thing (gui_application& app_context)
+    : QObject (), m_octave_qt_link (new octave_qt_link (app_context)),
+      m_interpreter (new octave_interpreter (app_context)),
+      m_main_thread (new QThread ()),
+      m_main_window (nullptr)
+  {
+    // Initialize global Qt application metadata.
+
+    QCoreApplication::setApplicationName ("GNU Octave");
+    QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
+
+    // Register octave_value_list for connecting thread crossing signals.
+
+    qRegisterMetaType<octave_value_list> ("octave_value_list");
+
+    octave_link::connect_link (m_octave_qt_link);
+
+    connect (m_octave_qt_link, SIGNAL (confirm_shutdown_signal (void)),
+             this, SLOT (confirm_shutdown_octave (void)));
+
+    connect (m_octave_qt_link,
+             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+
+    connect_uiwidget_links ();
+
+    if (app_context.start_gui_p ())
+      {
+        m_main_window = new main_window (m_octave_qt_link);
+
+        connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
+                 m_main_window, SLOT (handle_octave_ready (void)));
+      }
+
+    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+             this, SLOT (handle_octave_finished (int)));
+
+    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+             m_main_thread, SLOT (quit (void)));
+
+    connect (m_main_thread, SIGNAL (finished (void)),
+             m_main_thread, SLOT (deleteLater (void)));
+
+    // Defer initializing and executing the interpreter until after the main
+    // window and QApplication are running to prevent race conditions
+    QTimer::singleShot (0, m_interpreter, SLOT (execute (void)));
+
+    m_interpreter->moveToThread (m_main_thread);
+
+    m_main_thread->start ();
+  }
+
+  main_thing::~main_thing (void)
+  {
+    delete m_main_window;
+    delete m_interpreter;
+  }
+
+  void main_thing::handle_octave_finished (int exit_status)
+  {
+    qApp->exit (exit_status);
+  }
+
+  void main_thing::confirm_shutdown_octave (void)
+  {
+    bool closenow = true;
+
+    if (m_main_window)
+      closenow = m_main_window->confirm_shutdown_octave ();
+
+    // Wait for link thread to go to sleep state.
+    m_octave_qt_link->lock ();
+
+    m_octave_qt_link->shutdown_confirmation (closenow);
+
+    m_octave_qt_link->unlock ();
+
+    // Awake the worker thread so that it continues shutting down (or not).
+    m_octave_qt_link->wake_all ();
+  }
+
+  void main_thing::copy_image_to_clipboard (const QString& file,
+                                            bool remove_file)
+  {
+    QClipboard *clipboard = QApplication::clipboard ();
+
+    QImage img (file);
+
+    if (img.isNull ())
+      {
+        // Report error?
+        return;
+      }
+
+    clipboard->setImage (img);
+
+    if (remove_file)
+      QFile::remove (file);
+  }
+
+  // Create a message dialog with specified string, buttons and decorative
+  // text.
+
+  void main_thing::handle_create_dialog (const QString& message,
+                                         const QString& title,
+                                         const QString& icon,
+                                         const QStringList& button,
+                                         const QString& defbutton,
+                                         const QStringList& role)
+  {
+    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
+                                                       button, defbutton, role);
+    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    message_dialog->show ();
+  }
+
+  // Create a list dialog with specified list, initially selected, mode,
+  // view size and decorative text.
+
+  void main_thing::handle_create_listview (const QStringList& list,
+                                           const QString& mode,
+                                           int wd, int ht,
+                                           const QIntList& initial,
+                                           const QString& name,
+                                           const QStringList& prompt,
+                                           const QString& ok_string,
+                                           const QString& cancel_string)
+  {
+    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
+                                              initial, name, prompt,
+                                              ok_string, cancel_string);
+
+    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    list_dialog->show ();
+  }
+
+  // Create an input dialog with specified prompts and defaults, title and
+  // row/column size specifications.
+  void main_thing::handle_create_inputlayout (const QStringList& prompt,
+                                              const QString& title,
+                                              const QFloatList& nr,
+                                              const QFloatList& nc,
+                                              const QStringList& defaults)
+  {
+    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
+                                                 defaults);
+
+    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    input_dialog->show ();
+  }
+
+  void main_thing::handle_create_filedialog (const QStringList& filters,
+                                             const QString& title,
+                                             const QString& filename,
+                                             const QString& dirname,
+                                             const QString& multimode)
+  {
+    FileDialog *file_dialog = new FileDialog (filters, title, filename,
+                                              dirname, multimode);
+
+    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    file_dialog->show ();
+  }
+
+  // Connect the signals emitted when the Octave thread wants to create
+  // a dialog box of some sort.  Perhaps a better place for this would be
+  // as part of the QUIWidgetCreator class.  However, mainWindow currently
+  // is not a global variable and not accessible for connecting.
+
+  void main_thing::connect_uiwidget_links (void)
+  {
+    connect (&uiwidget_creator,
+             SIGNAL (create_dialog (const QString&, const QString&,
+                                    const QString&, const QStringList&,
+                                    const QString&, const QStringList&)),
+             this,
+             SLOT (handle_create_dialog (const QString&, const QString&,
+                                         const QString&, const QStringList&,
+                                         const QString&, const QStringList&)));
+
+    // Register QIntList so that list of ints may be part of a signal.
+    qRegisterMetaType<QIntList> ("QIntList");
+    connect (&uiwidget_creator,
+             SIGNAL (create_listview (const QStringList&, const QString&,
+                                      int, int, const QIntList&,
+                                      const QString&, const QStringList&,
+                                      const QString&, const QString&)),
+             this,
+             SLOT (handle_create_listview (const QStringList&, const QString&,
+                                           int, int, const QIntList&,
+                                           const QString&, const QStringList&,
+                                           const QString&, const QString&)));
+
+    // Register QFloatList so that list of floats may be part of a signal.
+    qRegisterMetaType<QFloatList> ("QFloatList");
+    connect (&uiwidget_creator,
+             SIGNAL (create_inputlayout (const QStringList&, const QString&,
+                                         const QFloatList&, const QFloatList&,
+                                         const QStringList&)),
+             this,
+             SLOT (handle_create_inputlayout (const QStringList&, const QString&,
+                                              const QFloatList&,
+                                              const QFloatList&,
+                                              const QStringList&)));
+
+    connect (&uiwidget_creator,
+             SIGNAL (create_filedialog (const QStringList &,const QString&,
+                                        const QString&, const QString&,
+                                        const QString&)),
+             this,
+             SLOT (handle_create_filedialog (const QStringList &, const QString&,
+                                             const QString&, const QString&,
+                                             const QString&)));
   }
 }

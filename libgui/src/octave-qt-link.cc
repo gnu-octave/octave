@@ -55,7 +55,7 @@ Q_DECLARE_METATYPE (octave::symbol_scope)
 
 namespace octave
 {
-  octave_qt_link::octave_qt_link (QWidget *, gui_application *app_context)
+  octave_qt_link::octave_qt_link (gui_application& app_context)
     : octave_link (), m_app_context (app_context)
   {
     qRegisterMetaType<octave_value> ("octave_value");

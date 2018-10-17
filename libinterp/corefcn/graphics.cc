@@ -4998,6 +4998,11 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
   Matrix pos = init_pos;
   graphics_object go = gh_manager::get_object (get_parent ());
   Matrix parent_bb = go.get_properties ().get_boundingbox (true);
+
+  // FIXME: The layout should be clean at this stage and we should not have to
+  //        update ticks and labels positions here again. See bug #48718.
+  update_ticklength ();
+
   Matrix ext = get_extent (true, true);
   ext(1) = parent_bb(3) - ext(1) - ext(3);
   ext(0)++;

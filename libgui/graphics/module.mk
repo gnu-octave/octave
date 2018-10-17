@@ -136,7 +136,7 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
   $(FONTCONFIG_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5 \
+  @QT_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Isrc -I$(srcdir)/libgui/src \
   -Iliboctave \

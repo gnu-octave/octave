@@ -68,42 +68,12 @@ message_handler (QtMsgType, const char *)
 
 namespace octave
 {
-  class gui_application::impl
-  {
-  public:
-
-    impl (int argc, char **argv)
-      : m_argc (argc), m_argv (argv), m_gui_running (false)
-    { }
-
-    impl (const impl&) = delete;
-
-    impl& operator = (const impl&) = delete;
-
-    ~impl (void) = default;
-
-    int execute (gui_application& gui_app);
-
-    bool gui_running (void) const { return m_gui_running; }
-    void gui_running (bool arg) { m_gui_running = arg; }
-
-  private:
-
-    int m_argc;
-    char **m_argv;
-    bool m_gui_running;
-  };
-
   gui_application::gui_application (int argc, char **argv)
-    : application (argc, argv), m_impl (new impl (argc, argv))
+    : application (argc, argv), m_argc (argc), m_argv (argv),
+      m_gui_running (false)
   {
     // This should probably happen early.
     sysdep_init ();
-  }
-
-  gui_application::~gui_application (void)
-  {
-    delete m_impl;
   }
 
   bool gui_application::start_gui_p (void) const
@@ -112,21 +82,6 @@ namespace octave
   }
 
   int gui_application::execute (void)
-  {
-    return m_impl->execute (*this);
-  }
-
-  bool gui_application::gui_running (void) const
-  {
-    return m_impl->gui_running ();
-  }
-
-  void gui_application::gui_running (bool arg)
-  {
-    m_impl->gui_running (arg);
-  }
-
-  int gui_application::impl::execute (gui_application& gui_app)
   {
     octave_block_interrupt_signal ();
 
@@ -166,7 +121,7 @@ namespace octave
     qt_app.setStyle (QStyleFactory::create ("Windows"));
 #endif
 
-    bool start_gui = gui_app.start_gui_p ();
+    bool start_gui = start_gui_p ();
 
     // Show welcome wizard if this is the first run.
 
@@ -223,10 +178,23 @@ namespace octave
 
     // Create and show main window.
 
-    main_thing thing (gui_app);
+    main_window w (nullptr, this);
 
     if (start_gui)
-      gui_running (true);
+      {
+        w.read_settings ();
+
+        w.init_terminal_size ();
+
+        // Connect signals for changes in visibility not before w
+        // is shown.
+
+        w.connect_visibility_changed ();
+
+        w.focus_command_window ();
+
+        gui_running (true);
+      }
     else
       qt_app.setQuitOnLastWindowClosed (false);
 

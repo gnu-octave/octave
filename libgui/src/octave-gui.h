@@ -39,21 +39,19 @@ namespace octave
 
     gui_application& operator = (const gui_application&) = delete;
 
-    ~gui_application (void);
-
     // Should we start the GUI or fall back to the CLI?
     bool start_gui_p (void) const;
 
     int execute (void);
 
-    bool gui_running (void) const;
-    void gui_running (bool arg);
+    bool gui_running (void) const { return m_gui_running; }
+    void gui_running (bool arg) { m_gui_running = arg; }
 
   private:
 
-    class impl;
-
-    impl *m_impl;
+    int m_argc;
+    char **m_argv;
+    bool m_gui_running;
   };
 }
 

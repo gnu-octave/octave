@@ -525,10 +525,10 @@ endfunction
 %! problem.objective = @sin;
 %! problem.x0 = 3;
 %! problem.solver = "fminsearch";
-%! problem.options = optimset ("MaxIter", 3, "Display", "none")
+%! problem.options = optimset ("MaxIter", 3, "Display", "none");
 %! x = fminsearch (problem);
 %! assert (x, 4.8750, 1e-4);
-%! problem.options = optimset ("MaxFunEvals", 18, "Display", "none")
+%! problem.options = optimset ("MaxFunEvals", 18, "Display", "none");
 %! x = fminsearch (problem);
 %! assert (x, 4.7109, 1e-4);
 

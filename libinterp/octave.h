@@ -358,9 +358,6 @@ namespace octave
     // from eval without persist.
     bool m_is_octave_program = false;
 
-    // If TRUE, the GUI should be started.
-    bool m_gui_running = false;
-
     interpreter *m_interpreter = nullptr;
   };
 

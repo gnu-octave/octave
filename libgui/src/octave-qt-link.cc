@@ -409,6 +409,7 @@ namespace octave
   void octave_qt_link::do_file_remove (const std::string& old_name,
                                        const std::string& new_name)
   {
+    return;
     // Lock the mutex before signaling
     lock ();
 

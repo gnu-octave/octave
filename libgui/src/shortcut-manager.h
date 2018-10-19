@@ -201,8 +201,4 @@ namespace octave
   };
 }
 
-// FIXME: This is temporary and should be removed when all classes that
-// use the shortcut_manager class are also inside the octave namespace.
-using octave::shortcut_manager;
-
 #endif

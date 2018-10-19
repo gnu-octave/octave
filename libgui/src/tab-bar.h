@@ -69,8 +69,4 @@ namespace octave
   };
 }
 
-// FIXME: This is temporary and should be removed when all classes that
-// use the tab_bar class are also inside the octave namespace.
-using octave::tab_bar;
-
 #endif

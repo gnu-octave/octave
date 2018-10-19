@@ -134,13 +134,13 @@ protected:
 
     _contextMenu = new QMenu (this);
 
-    _copy_action = _contextMenu->addAction (
-                     resource_manager::icon ("edit-copy"),
-                     tr ("Copy"), this, SLOT (copyClipboard ()));
+    _copy_action = _contextMenu->addAction
+      (octave::resource_manager::icon ("edit-copy"),
+       tr ("Copy"), this, SLOT (copyClipboard ()));
 
-    _paste_action = _contextMenu->addAction (
-                      resource_manager::icon ("edit-paste"),
-                      tr ("Paste"), this, SLOT (pasteClipboard ()));
+    _paste_action = _contextMenu->addAction
+     (octave::resource_manager::icon ("edit-paste"),
+      tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 

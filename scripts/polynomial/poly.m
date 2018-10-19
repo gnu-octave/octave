@@ -73,12 +73,18 @@ function y = poly (x)
 
   y = zeros (1, n+1);
   y(1) = 1;
-  for j = 1:n;
-    y(2:(j+1)) = y(2:(j+1)) - v(j) .* y(1:j);
+  for j = 1:n
+    y(2:(j+1)) -= v(j) .* y(1:j);
   endfor
 
-  if (all (all (imag (x) == 0)))
+  ## Real, or complex conjugate inputs, should result in real output
+  if (isreal (x))
     y = real (y);
+  else
+    tmp = sort (v(imag (v) > 0)) == sort (conj (v(imag (v) < 0)));
+    if (! isempty (tmp) && all (tmp))
+      y = real (y);
+    endif
   endif
 
 endfunction
@@ -88,4 +94,12 @@ endfunction
 %!assert (poly ([1, 2, 3]), [1, -6, 11, -6])
 %!assert (poly ([1, 2; 3, 4]), [1, -5, -2], sqrt (eps))
 
+%!test <*53897>
+%! x = [1, sqrt(2)/2+sqrt(2)/2*i, 1i, -sqrt(2)/2+sqrt(2)/2*i, -1, ...
+%!      -sqrt(2)/2-sqrt(2)/2*i, -1i, sqrt(2)/2-sqrt(2)/2*i];
+%! y = poly (x);
+%! assert (isreal (y), true);
+
+%!error poly ()
+%!error poly (1,2)
 %!error poly ([1, 2, 3; 4, 5, 6])

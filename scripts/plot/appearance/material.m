@@ -73,8 +73,8 @@
 
 function retval = material (varargin)
 
-  if (! ((nargout == 0 && (nargin == 1 || nargin == 2)) ||
-         (nargout == 1 && (nargin == 0 || nargin == 1))) )
+  if (! ((nargout == 0 && (nargin == 1 || nargin == 2))
+         || (nargout == 1 && (nargin == 0 || nargin == 1))))
     print_usage ();
   endif
 

@@ -197,8 +197,8 @@ function varargout = ode15s (fun, trange, y0, varargin)
       endif
     elseif (ismatrix (options.Mass))
       options.havemasssparse = issparse (options.Mass);
-      if (any (size (options.Mass) != [n n]) ||
-          ! isnumeric (options.Mass) || ! isreal (options.Mass))
+      if (any (size (options.Mass) != [n n])
+          || ! isnumeric (options.Mass) || ! isreal (options.Mass))
         error ("Octave:invalid-input-arg",
                [solver ": invalid value assigned to field 'Mass'"]);
       endif

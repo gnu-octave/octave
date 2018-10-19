@@ -157,7 +157,7 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
   $(DLD_LIBOCTINTERP_LIBADD) \
   $(QT_OPENGL_LIBS)
 
-%canon_reldir%___init_qt___la_DEPENDENCIES = $(QT_OPENGL_LIBS)
+%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_LINK_DEPS)
 
 octlib_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
 

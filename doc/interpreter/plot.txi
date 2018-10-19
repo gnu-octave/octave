@@ -2667,7 +2667,7 @@ On Windows platforms, Octave uses software rendering for the OpenGL graphics
 toolkits (@qcode{"qt"} and @qcode{"fltk"}) by default.  This is done to avoid
 rendering and printing issues due to imperfect OpenGL driver implementations
 for diverse graphic cards from different vendors.  As a down-side, software
-rendering might be considerably slower than hardware accelerated rendering. 
+rendering might be considerably slower than hardware accelerated rendering.
 To permanently switch back to hardware accelerated rendering with your graphic
 card drivers, rename the following file while Octave is closed:
 

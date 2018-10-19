@@ -1,6 +1,6 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
-LIBOCTGUI_GRAPHICS_LIB := %reldir%/__init_qt__.la
+LIBOCTGUI_GRAPHICS_LIB = %reldir%/__init_qt__.la
 
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-annotation-dialog.cc \
@@ -29,8 +29,8 @@ $(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 DIRSTAMP_FILES += \
   %reldir%/$(octave_dirstamp)
 
-##__init_qt___MOC += \
-##  $(OCTAVE_GUI_GRAPHICS_MOC)
+__init_qt___MOC = \
+  $(OCTAVE_GUI_GRAPHICS_MOC)
 
 __init_qt___UI = \
   %reldir%/annotation-dialog.ui
@@ -122,8 +122,7 @@ noinst_HEADERS += \
   %reldir%/ToggleButtonControl.cc \
   %reldir%/ToggleTool.cc \
   %reldir%/ToolBar.cc \
-  %reldir%/gl-select.cc \
-  $(OCTAVE_GUI_GRAPHICS_MOC)
+  %reldir%/gl-select.cc
 
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc

@@ -15,7 +15,7 @@ OP_MK_FILES := \
   $(srcdir)/%reldir%/smx-op-src.mk
 
 $(OP_MK_FILES) : %.mk : $(srcdir)/%reldir%/config-ops.sh $(srcdir)/%reldir%/mk-ops.awk
-	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-ops.sh $(top_srcdir) `echo $(*F) | $(SED) 's/-op-.*//'` `echo $(*F) | $(SED) 's/.*-op-//'` 
+	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-ops.sh $(top_srcdir) `echo $(*F) | $(SED) 's/-op-.*//'` `echo $(*F) | $(SED) 's/.*-op-//'`
 
 
 BUILT_LIBOCTAVE_OPERATORS_SOURCES = \

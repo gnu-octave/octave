@@ -874,12 +874,12 @@ static double
 device_pixel_ratio (graphics_handle h)
 {
   double retval = 1.0;
-  
+
   graphics_object fig = gh_manager::get_object (h).get_ancestor ("figure");
-  
+
   if (fig.valid_object ())
     retval = fig.get ("__device_pixel_ratio__").double_value ();
-  
+
   return retval;
 }
 
@@ -8870,7 +8870,7 @@ text::properties::get_extent (void) const
 
   for (octave_idx_type ii = 0; ii < bbox.numel (); ii++)
     bbox(ii) = bbox(ii) / dpr;
-  
+
   return bbox;
 }
 
@@ -8955,7 +8955,7 @@ text::properties::update_text_extent (void)
   // The bbox is relative to the text's position.  We'll leave it that
   // way, because get_position does not return valid results when the
   // text is first constructed.  Conversion to proper coordinates is
-  // performed in get_extent.  
+  // performed in get_extent.
   set_extent (bbox);
 
   if (__autopos_tag___is ("xlabel") || __autopos_tag___is ("ylabel")
@@ -9650,7 +9650,7 @@ surface::properties::update_face_normals (bool reset)
 
               // calculate face normal with Newell's method
               // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
-              
+
               nx = dy * (z(j1,i1) + z(j2,i1) - z(j1,i2) - z(j2,i2));
               ny = dx * (z(j1,i1) + z(j1,i2) - z(j2,i1) - z(j2,i2));
 
@@ -9672,7 +9672,7 @@ surface::properties::update_vertex_normals (bool reset)
 {
   if (! vertexnormalsmode_is ("auto"))
     return;
-  
+
   if ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
       edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
       get_do_lighting ())

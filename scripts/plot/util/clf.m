@@ -74,13 +74,13 @@ function h = clf (varargin)
     ## except default menus.
     kids = allchild (hfig);
     ismenu = cellfun (@(s) strncmp (s, "__default_menu_", 15), ...
-                      get (kids, "tag")); 
+                      get (kids, "tag"));
     delete (kids(! ismenu));
     reset (hfig);
 
     ## Recover figure listeners which have been deleted
     __add_default_menu__ (hfig, kids(ismenu));
-    
+
     __set_default_mouse_modes__ (hfig);
   else
     ## Select only the chilren with visible handles.

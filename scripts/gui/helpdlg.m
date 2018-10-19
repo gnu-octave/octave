@@ -54,7 +54,7 @@ function h = helpdlg (varargin)
   opt = "non-modal";
 
   nargs = numel (varargin);
-  
+
   if (nargs > 2)
     print_usage ();
   elseif (nargs == 1)
@@ -63,7 +63,7 @@ function h = helpdlg (varargin)
     msg = varargin{1};
     tit = varargin{2};
   endif
-  
+
   htmp = msgbox (msg, tit, "help", opt);
 
   if (nargout)

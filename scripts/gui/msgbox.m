@@ -38,7 +38,7 @@
 ## colormap for an indexed image.
 ##
 ## Finally the optional argument @var{opt} controls the behavior of the dialog.
-## If @var{opt} is a string, it may be one of 
+## If @var{opt} is a string, it may be one of
 ##
 ## @table @asis
 ## @item "modal"
@@ -61,7 +61,7 @@
 ## Controls the @qcode{"interpreter"} property of the text object used
 ## for displaying the message. The value must be "none", "tex" or "latex".
 ## @end table
-## 
+##
 ## The return value @var{h} is a handle to the figure object used for
 ## building the dialog.
 ##
@@ -132,7 +132,7 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
       windowstyle = "normal";
     endif
   endif
-  
+
   ## Make a GUI element or print to console
   if (__octave_link_enabled__ ())
     retval = __msgbox__ (msg, tit, icon, windowstyle, interpreter);
@@ -172,15 +172,15 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
       graphics_toolkit (hf, "qt");
     endif
   endif
-  
+
   hp = uipanel (hf);
-  
+
   hax = axes ("parent", hp, "visible", "off", "units", "pixels", ...
               "ydir", "reverse");
-  
+
   ht = text ("parent", hax, "string", msg, "units", "pixels", ...
              "fontsize", 14, "interpreter", interpreter);
-  
+
   ## Hold default icons data in a persistent variable
   persistent cdata = struct ("help", [], "warn", [], "error", []);
 
@@ -209,7 +209,7 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
         tmp(:,:,3) += backgnd(3) * (255-alpha);
         icon.cdata = tmp;
         cdata.(icon_name) = tmp;
-        
+
       endif
     endif
   endif
@@ -224,14 +224,14 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
   extent(3) += txt_margin;
 
   im_sz = size (icon.cdata);
-  
+
   if (! isempty (icon.cdata))
     extent(3) += im_sz(2);
     extent(4) = max (extent(4), im_sz(1));
   endif
 
   ax_sz = max ([ax_sz; extent(3:4)+2*ax_margin]);
-  
+
   ## Align text left when there is an icon
   text_offset = txt_margin;
   if (! isempty (icon.cdata))
@@ -247,9 +247,9 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
   wd = ax_sz(1);
   hg = ax_sz(2) + button_margin;
   center = get (0, "screensize")(3:4) / 2;
-  
+
   set (hf, "position", [center(1)-wd/2 center(2)-hg/2 wd hg]);
-  
+
   set (hax, "position", [0 button_margin ax_sz], ...
        "xlim", [1 ax_sz(1)]-ax_margin, "ylim", [-ax_sz(2)/2 ax_sz(2)/2], ...
        "units", "normalized");
@@ -258,7 +258,7 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
 
   hui = uicontrol ("string", "OK", "callback", @() close (gcbf ()), ...
                    "position", [ax_sz(1)/2-40 ax_margin 80 28], "parent", hp);
-  
+
   set (hf, "windowstyle", windowstyle, "visible", "on");
 
 endfunction
@@ -295,7 +295,7 @@ endfunction
 %!         "Dialog Title", "custom", rand (32, 32, 3));
 
 %!demo
-%! cdata = get (0, "factoryimagecdata"); 
+%! cdata = get (0, "factoryimagecdata");
 %! msgbox ({"Custom dialog with the default Octave image.", ...
 %!          "The image is indexed into the 'copper' colormap"}, ...
 %!         "Dialog Title", "custom", cdata, copper (64));

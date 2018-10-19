@@ -20,7 +20,7 @@
 ## @deftypefn {} {} __add_default_menu__ (@var{hfig})
 ## @deftypefnx {} {} __add_default_menu__ (@var{hfig}, @var{hmenu})
 ## Add default menu and listeners to figure.
-##  
+##
 ##
 ## All uimenu handles have their @qcode{"HandleVisibility"} property set to
 ## @qcode{"off"}.
@@ -30,7 +30,7 @@
 
 function __add_default_menu__ (hf, hmenu = [])
 
-  ## Create 
+  ## Create
   if (isempty (hmenu))
     ## File menu
     hui = uimenu (hf, "label", "&File", "handlevisibility", "off", ...
@@ -43,8 +43,8 @@ function __add_default_menu__ (hf, hmenu = [])
             "accelerator", "S");
     uimenu (hui, "label", "&Close", "callback", @close_cb, ...
             "accelerator", "w", "separator", "on");
-    hmenu(1) = hui; 
-    
+    hmenu(1) = hui;
+
     ## Edit menu
     hui = uimenu (hf, "label", "&Edit", "handlevisibility", "off", ...
                   "tag", "__default_menu__Edit");
@@ -57,8 +57,8 @@ function __add_default_menu__ (hf, hmenu = [])
             "callback", "clf (gcbf ());");
     uimenu (hui, "label", "Reset Figure",
             "callback", "reset (gcbf ());");
-    hmenu(2) = hui; 
-    
+    hmenu(2) = hui;
+
     ## Tools menu
     hui = uimenu (hf, "label", "&Tools", "handlevisibility", "off", ...
                   "tag", "__default_menu__Tools");
@@ -69,7 +69,7 @@ function __add_default_menu__ (hf, hmenu = [])
     uimenu (hui, "label", "Hide grid on all axes", "tag", "off", ...
             "callback", @grid_cb);
     uimenu (hui, "label", "Auto&scale all axes", "callback", @autoscale_cb);
-    
+
     hui2 = uimenu (hui, "label", "GUI &Mode (on all axes)");
     uimenu (hui2, "label", "Pan x and y", "tag", "pan_on", ...
             "callback", @guimode_cb);
@@ -85,7 +85,7 @@ function __add_default_menu__ (hf, hmenu = [])
             "callback", @guimode_cb);
     uimenu (hui2, "label", "Disable mousezoom", "tag", "zoom_off", ...
             "callback", @guimode_cb);
-    hmenu(3) = hui; 
+    hmenu(3) = hui;
   endif
 
   ## Figure listeners

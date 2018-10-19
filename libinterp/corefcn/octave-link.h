@@ -235,7 +235,7 @@ public:
     if (enabled ())
       instance->do_execute_command_in_terminal (command);
   }
-  
+
   static uint8NDArray
   get_named_icon (const std::string& icon_name)
   {

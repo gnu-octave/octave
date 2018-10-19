@@ -359,7 +359,7 @@ Undocumented internal function.
 @end deftypefn */)
 {
   uint8NDArray retval;
-  
+
   if (args.length () > 0)
     {
       std::string icon_name = args(0).xstring_value ("invalid arguments");

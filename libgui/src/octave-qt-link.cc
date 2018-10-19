@@ -134,7 +134,7 @@ namespace octave
     if (! icon.isNull ())
       {
         QImage img = icon.pixmap (QSize (32, 32)).toImage ();
-        
+
         if (img.format () == QImage::Format_ARGB32_Premultiplied)
           {
             retval.resize (dim_vector (img.height (), img.width (), 4), 0);

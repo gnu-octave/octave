@@ -130,7 +130,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     [pathstr, name, ext] = fileparts (file);
 
     if (nargin == 3 && ! strcmpi (ext, filetype))
-      ## override extension with given filetype 
+      ## override extension with given filetype
       if (isempty (ext))
         ext = filetype;
       else

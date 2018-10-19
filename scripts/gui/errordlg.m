@@ -58,7 +58,7 @@ function h = errordlg (varargin)
   opt = "non-modal";
 
   nargs = numel (varargin);
-  
+
   if (nargs > 3)
     print_usage ();
   elseif (nargs == 1)
@@ -71,7 +71,7 @@ function h = errordlg (varargin)
     tit = varargin{2};
     opt = varargin{3};
   endif
-  
+
   htmp = msgbox (msg, tit, "error", opt);
 
   if (nargout)

@@ -112,10 +112,10 @@ namespace octave
       {
         int current_idx = currentIndex ();
         // detect the mouse click
-        if ((me->type () == QEvent::MouseButtonDblClick &&
-             me->button() == Qt::LeftButton) ||
-            (me->type () != QEvent::MouseButtonDblClick &&
-             me->button() == Qt::MidButton))
+        if ((me->type () == QEvent::MouseButtonDblClick
+             && me->button() == Qt::LeftButton)
+            || (me->type () != QEvent::MouseButtonDblClick
+                && me->button() == Qt::MidButton))
           {
             // Middle click or double click -> close the tab
             // Make the clicked tab the current one and close it
@@ -128,8 +128,8 @@ namespace octave
             else if (current_idx - clicked_idx < 0)
               setCurrentIndex (current_idx);
           }
-        else if (me->type () != QEvent::MouseButtonDblClick &&
-                 me->button() == Qt::RightButton)
+        else if (me->type () != QEvent::MouseButtonDblClick
+                 && me->button() == Qt::RightButton)
           {
             // Right click, show context menu
             setCurrentIndex (clicked_idx);

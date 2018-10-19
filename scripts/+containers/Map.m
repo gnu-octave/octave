@@ -138,8 +138,8 @@ classdef Map < handle
     function this = Map (varargin)
       if (nargin == 0)
         ## Empty object with "char" key type and "any" value type.
-      elseif (nargin == 2 ||
-              (nargin == 4 && strcmpi (varargin{3}, "UniformValues")))
+      elseif (nargin == 2 || (nargin == 4
+                              && strcmpi (varargin{3}, "UniformValues")))
         ## Get Map keys
         keys = varargin{1};
         if (isempty (keys))

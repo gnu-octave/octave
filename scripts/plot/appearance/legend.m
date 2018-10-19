@@ -1219,8 +1219,8 @@ endfunction
 function cb_restore_axes (~, ~, ca, pos, outpos, htdel, hplots)
 
   hf = ancestor (ca(1), "figure");
-  if (strcmp (get (hf, "beingdeleted"), "on") ||
-      strcmp (get (ca(1), "beingdeleted"), "on"))
+  if (strcmp (get (hf, "beingdeleted"), "on")
+      || strcmp (get (ca(1), "beingdeleted"), "on"))
     ## Skip restoring axes if entire figure or axes is being destroyed.
     return;
   endif

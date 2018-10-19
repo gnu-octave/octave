@@ -117,9 +117,9 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
   ## Code above uses axis size for the data aspect ratio, which isn't
   ## quite correct.  The only fine control is to set all axes units equal.
-  if (nd == 3 &&
-      strcmp (axis_obj.dataaspectratiomode, "manual") &&
-      axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(2))
+  if (nd == 3
+      && strcmp (axis_obj.dataaspectratiomode, "manual")
+      && axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(2))
     if (axis_obj.dataaspectratio(1) == axis_obj.dataaspectratio(3))
       zstr = "z";
     else
@@ -1338,8 +1338,10 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
 
           for np = 1:num_pass
             for i_stl = 1:length (style)
-              has_ccol = ((strncmp (style{i_stl}, "lines", 5) && flat_interp_edge) ||
-                          (strncmp (style{i_stl}, "points", 6) && flat_marker));
+              has_ccol = ((strncmp (style{i_stl}, "lines", 5)
+                           && flat_interp_edge)
+                          || (strncmp (style{i_stl}, "points", 6)
+                              && flat_marker));
               if (has_ccol)
                 ccol = ":($4)";
                 N_tup = 4;

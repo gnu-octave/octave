@@ -16,15 +16,15 @@ shift @ARGV;
 ## Loop over each file
 foreach $fname (@ARGV)
 {
-  rename ($fname, "$fname.$$") or die "Rename failed:$fname:$!"; 
-  open (my $FHI, "<", "$fname.$$") or die "Open failed:$fname.$$:$!";  
-  open (my $FHO, ">", "$fname") or die "Open failed:$fname:$!";  
+  rename ($fname, "$fname.$$") or die "Rename failed:$fname:$!";
+  open (my $FHI, "<", "$fname.$$") or die "Open failed:$fname.$$:$!";
+  open (my $FHO, ">", "$fname") or die "Open failed:$fname:$!";
 
   ## Loop over each line
   while (<$FHI>)
   {
     per_line_code ();
-    print $FHO $_;      
+    print $FHO $_;
   }
 
   close ($FHI);

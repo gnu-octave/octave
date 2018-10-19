@@ -3623,8 +3623,8 @@ namespace octave
     Matrix pos = xform.scale (props.get_data_position ());
 
     // Handle clipping manually when drawing text background
-    if (! props.is_clipping () ||
-        (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) == 0x40))
+    if (! props.is_clipping ()
+        || (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) == 0x40))
       {
         set_clipping (false);
         draw_text_background (props);

@@ -222,8 +222,8 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
   bool search_builtin = type == "builtin";
   bool search_class = type == "class";
 
-  if (! (search_any || search_var || search_dir || search_file ||
-         search_builtin || search_class))
+  if (! (search_any || search_var || search_dir || search_file
+         || search_builtin || search_class))
     error (R"(exist: unrecognized type argument "%s")", type.c_str ());
 
   octave::symbol_table& symtab = interp.get_symbol_table ();

@@ -515,15 +515,10 @@ namespace octave
 
     string_result = selectedFiles ();
 
-    if (testOption (QFileDialog::ShowDirsOnly)  == true &&
-        string_result.size () > 0)
-      {
-        path = string_result[0];
-      }
+    if (testOption (QFileDialog::ShowDirsOnly) && string_result.size () > 0)
+      path = string_result[0];
     else
-      {
-        path = directory ().absolutePath ();
-      }
+      path = directory ().absolutePath ();
 
     // Matlab expects just the filename, whereas the file dialog gave us
     // full path names, so fix it.

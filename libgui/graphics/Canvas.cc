@@ -523,8 +523,8 @@ namespace QtHandles
           {
             graphics_object figObj (obj.get_ancestor ("figure"));
 
-            if (figObj.valid_object () &&
-                ! figObj.get ("windowbuttonmotionfcn").isempty ())
+            if (figObj.valid_object ()
+                && ! figObj.get ("windowbuttonmotionfcn").isempty ())
               {
                 updateCurrentPoint (figObj, obj, event);
                 gh_manager::post_callback (figObj.get_handle (),

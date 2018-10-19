@@ -1098,8 +1098,8 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                                 {
                                   pfx = name.substr (0, 13);
 
-                                  if (pfx.compare ("uicontextmenu") ||
-                                      pfx.compare ("uibuttongroup"))
+                                  if (pfx.compare ("uicontextmenu")
+                                      || pfx.compare ("uibuttongroup"))
                                     offset = 13;
                                 }
                             }
@@ -6019,9 +6019,9 @@ axes::properties::update_axes_layout (void)
   if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
     {
       Matrix ylimits = get_ylim ().matrix_value ();
-      if (xaxislocation_is ("top") ||
-          (yscale_is ("log") && xaxislocation_is ("origin")
-           && (ylimits(1) < 0.)))
+      if (xaxislocation_is ("top")
+          || (yscale_is ("log") && xaxislocation_is ("origin")
+              && (ylimits(1) < 0.)))
         {
           std::swap (yPlane, yPlaneN);
           x2Dtop = true;
@@ -6029,9 +6029,9 @@ axes::properties::update_axes_layout (void)
       ypTick = yPlaneN;
       ypTickN = yPlane;
       Matrix xlimits = get_xlim ().matrix_value ();
-      if (yaxislocation_is ("right") ||
-          (xscale_is ("log") && yaxislocation_is ("origin")
-           && (xlimits(1) < 0.)))
+      if (yaxislocation_is ("right")
+          || (xscale_is ("log") && yaxislocation_is ("origin")
+              && (xlimits(1) < 0.)))
         {
           std::swap (xPlane, xPlaneN);
           y2Dright = true;
@@ -7336,8 +7336,8 @@ axes::properties::check_axis_limits (Matrix &limits, const Matrix kids,
   bool have_children_limits = false;
 
   // check whether we need to get children limits
-  if (! octave::math::isfinite (limits(0)) ||
-      ! octave::math::isfinite (limits(1)))
+  if (! octave::math::isfinite (limits(0))
+      || ! octave::math::isfinite (limits(1)))
     {
       get_children_limits (min_val, max_val, min_pos, max_neg, kids,
                            update_type);
@@ -10041,8 +10041,8 @@ uicontextmenu::~uicontextmenu (void)
     {
       graphics_object go = gh_manager::get_object (*it);
 
-      if (go.valid_object () &&
-          go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
+      if (go.valid_object ()
+          && go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
         go.set ("uicontextmenu", Matrix ());
     }
 }

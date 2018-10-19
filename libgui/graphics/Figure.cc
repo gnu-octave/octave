@@ -131,9 +131,9 @@ namespace QtHandles
     createFigureToolBarAndMenuBar ();
     int toffset = 0;
 
-    if (fp.toolbar_is ("figure") ||
-        (fp.toolbar_is ("auto") && fp.menubar_is ("figure") &&
-         ! hasUiControlChildren (fp)))
+    if (fp.toolbar_is ("figure")
+        || (fp.toolbar_is ("auto") && fp.menubar_is ("figure")
+            && ! hasUiControlChildren (fp)))
       {
         toffset += m_figureToolBar->sizeHint ().height ();
         boffset += m_statusBar->sizeHint ().height ();
@@ -502,8 +502,8 @@ namespace QtHandles
         else if (fp.toolbar_is ("figure"))
           showFigureToolBar (true);
         else // "auto"
-          showFigureToolBar (! hasUiControlChildren (fp) &&
-                             fp.menubar_is ("figure"));
+          showFigureToolBar (! hasUiControlChildren (fp)
+                             && fp.menubar_is ("figure"));
         break;
 
       case figure::properties::ID_MENUBAR:

@@ -2446,12 +2446,12 @@ For each directory that is added, and that was not already in the path,
           // In Windows, start check at second character (for UNC paths).
           it_start++;
 #endif
-          dir.erase (std::unique (it_start, dir.end (),
-                                  [](char l, char r)
-                                  {
-                                    return l == r &&
-                                           octave::sys::file_ops::is_dir_sep (l);
-                                  }),
+          dir.erase (std::unique
+                     (it_start, dir.end (),
+                      [] (char l, char r)
+                      {
+                        return l == r && octave::sys::file_ops::is_dir_sep (l);
+                      }),
                      dir.end ());
 
           auto pos = dir.find_last_of (octave::sys::file_ops::dir_sep_chars ());

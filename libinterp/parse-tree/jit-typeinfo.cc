@@ -2017,8 +2017,8 @@ namespace octave
                                       bool skip_paren)
   {
     // FIXME: Currently our types do *not* form a lattice
-    assert ((name == "any") || (name == "any_ptr") ||
-            (name == "scalar_ptr") || (parent != nullptr));
+    assert ((name == "any") || (name == "any_ptr")
+            || (name == "scalar_ptr") || (parent != nullptr));
 
     jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren,
                                   m_next_id++);

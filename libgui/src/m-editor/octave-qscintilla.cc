@@ -185,8 +185,8 @@ namespace octave
         // Primary key
         int key = cmd_list_mac.at (i)->key ();
 
-        if (static_cast<int> (key | Qt::META) == key &&
-            static_cast<int> (key | Qt::CTRL) != key)
+        if (static_cast<int> (key | Qt::META) == key
+            && static_cast<int> (key | Qt::CTRL) != key)
           key = (key ^ Qt::META) | Qt::CTRL;
         else if (static_cast<int> (key | Qt::CTRL) == key)
           key = (key ^ Qt::CTRL) | Qt::META;
@@ -196,8 +196,8 @@ namespace octave
         // Alternate key
         key = cmd_list_mac.at (i)->alternateKey ();
 
-        if (static_cast<int> (key | Qt::META) == key &&
-            static_cast<int> (key | Qt::CTRL) != key)
+        if (static_cast<int> (key | Qt::META) == key
+            && static_cast<int> (key | Qt::CTRL) != key)
           key = (key ^ Qt::META) | Qt::CTRL;
         else if (static_cast<int> (key | Qt::CTRL) == key)
           key = (key ^ Qt::CTRL) | Qt::META;

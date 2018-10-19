@@ -60,12 +60,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "workspace-view.h"
 
-class settings_dialog;
-
 class octave_value;
 
 namespace octave
 {
+  class settings_dialog;
+
   class octave_interpreter : public QObject
   {
     Q_OBJECT

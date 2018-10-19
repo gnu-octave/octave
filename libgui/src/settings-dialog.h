@@ -34,62 +34,65 @@ along with Octave; see the file COPYING.  If not, see
 
 class QsciLexer;
 
-// Ui::settings_dialog is a generated class.
-
-class settings_dialog : public QDialog, private Ui::settings_dialog
+namespace octave
 {
-  Q_OBJECT public:
+  // Ui::settings_dialog is a generated class.
 
-  explicit settings_dialog (QWidget *parent,
-                            const QString& desired_tab = QString ());
+  class settings_dialog : public QDialog, private Ui::settings_dialog
+  {
+    Q_OBJECT public:
 
-  ~settings_dialog (void) = default;
+    explicit settings_dialog (QWidget *parent,
+                              const QString& desired_tab = QString ());
 
-  void show_tab (const QString&);
+    ~settings_dialog (void) = default;
 
-signals:
+    void show_tab (const QString&);
 
-  void apply_new_settings (void);
+  signals:
 
-private slots:
+    void apply_new_settings (void);
 
-  void get_octave_dir (void);
-  void get_file_browser_dir (void);
-  void get_dir (QLineEdit*, const QString&);
-  void set_disabled_pref_file_browser_dir (bool disable);
+  private slots:
 
-  // slots for dialog's buttons
-  void button_clicked (QAbstractButton *button);
+    void get_octave_dir (void);
+    void get_file_browser_dir (void);
+    void get_dir (QLineEdit*, const QString&);
+    void set_disabled_pref_file_browser_dir (bool disable);
 
-  // slots for import/export-buttons of shortcut sets
-  void import_shortcut_set (void);
-  void export_shortcut_set (void);
-  void default_shortcut_set (void);
+    // slots for dialog's buttons
+    void button_clicked (QAbstractButton *button);
 
-private:
+    // slots for import/export-buttons of shortcut sets
+    void import_shortcut_set (void);
+    void export_shortcut_set (void);
+    void default_shortcut_set (void);
 
-  void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
-  void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
+  private:
 
-  void write_changed_settings (bool closing);
+    void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
+    void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
 
-  void read_workspace_colors (QSettings *settings);
-  void write_workspace_colors (QSettings *settings);
+    void write_changed_settings (bool closing);
 
-  void read_terminal_colors (QSettings *settings);
-  void write_terminal_colors (QSettings *settings);
+    void read_workspace_colors (QSettings *settings);
+    void write_workspace_colors (QSettings *settings);
 
-  void read_varedit_colors (QSettings *settings);
-  void write_varedit_colors (QSettings *settings);
+    void read_terminal_colors (QSettings *settings);
+    void write_terminal_colors (QSettings *settings);
 
-  color_picker *m_widget_title_bg_color;
-  color_picker *m_widget_title_bg_color_active;
-  color_picker *m_widget_title_fg_color;
-  color_picker *m_widget_title_fg_color_active;
-  color_picker *m_editor_current_line_color;
+    void read_varedit_colors (QSettings *settings);
+    void write_varedit_colors (QSettings *settings);
 
-  QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
-  QRadioButton *m_rb_uncomment_strings[ed_comment_strings_count];
-};
+    color_picker *m_widget_title_bg_color;
+    color_picker *m_widget_title_bg_color_active;
+    color_picker *m_widget_title_fg_color;
+    color_picker *m_widget_title_fg_color_active;
+    color_picker *m_editor_current_line_color;
+
+    QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
+    QRadioButton *m_rb_uncomment_strings[ed_comment_strings_count];
+  };
+}
 
 #endif

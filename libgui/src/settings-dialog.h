@@ -30,19 +30,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "color-picker.h"
 #include "gui-preferences.h"
+#include "ui-settings-dialog.h"
 
-namespace Ui
-{
-  class settings_dialog;
-}
+class QsciLexer;
 
-class settings_dialog:public QDialog
+// Ui::settings_dialog is a generated class.
+
+class settings_dialog : public QDialog, private Ui::settings_dialog
 {
   Q_OBJECT public:
 
   explicit settings_dialog (QWidget *parent,
                             const QString& desired_tab = QString ());
-  ~settings_dialog (void);
+
+  ~settings_dialog (void) = default;
 
   void show_tab (const QString&);
 
@@ -67,7 +68,8 @@ private slots:
 
 private:
 
-  Ui::settings_dialog *ui;
+  void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
+  void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
 
   void write_changed_settings (bool closing);
 

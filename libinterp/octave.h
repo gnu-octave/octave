@@ -48,6 +48,9 @@ namespace octave
 
     cmdline_options& operator = (const cmdline_options&) = default;
 
+    int sys_argc (void) const { return m_all_args.numel (); }
+    char **sys_argv (void) const { return m_all_args.c_str_vec (); }
+
     bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
 
@@ -254,6 +257,9 @@ namespace octave
     application& operator = (const application&) = delete;
 
     virtual ~application (void);
+
+    int sys_argc (void) const { return m_options.sys_argc (); }
+    char **sys_argv (void) const { return m_options.sys_argv (); }
 
     void set_program_names (const std::string& pname);
 

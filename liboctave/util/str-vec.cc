@@ -181,6 +181,9 @@ string_vector::std_list (void) const
 void
 string_vector::delete_c_str_vec (const char * const *v)
 {
+  if (! v)
+    return;
+
   const char * const *p = v;
 
   while (*p)

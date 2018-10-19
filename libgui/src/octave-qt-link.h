@@ -58,7 +58,7 @@ namespace octave
 
   public:
 
-    octave_qt_link (QWidget *p, gui_application *app_context);
+    octave_qt_link (void);
 
     // No copying!
 
@@ -160,8 +160,6 @@ namespace octave
 
     void do_insert_debugger_pointer (const std::string& file, int line);
     void do_delete_debugger_pointer (const std::string& file, int line);
-
-    gui_application *m_app_context;
 
     bool m_shutdown_confirm_result;
 

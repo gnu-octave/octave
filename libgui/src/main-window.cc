@@ -1948,7 +1948,7 @@ namespace octave
 
   void main_window::construct_octave_qt_link (void)
   {
-    m_octave_qt_link = new octave_qt_link (this, m_app_context);
+    m_octave_qt_link = new octave_qt_link ();
 
     octave_link::connect_link (m_octave_qt_link);
 

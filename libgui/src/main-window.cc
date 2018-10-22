@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAction>
 #include <QSettings>
 #include <QStyle>
+#include <QStyleFactory>
 #include <QToolBar>
 #include <QDesktopServices>
 #include <QDesktopWidget>

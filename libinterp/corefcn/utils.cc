@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "graphics.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
@@ -1270,55 +1271,89 @@ namespace octave
   // won't respond to SIGINT.  Maybe there is a better way than
   // breaking this up into multiple shorter intervals?
 
-  void sleep (double seconds)
+  void sleep (double seconds, bool do_graphics_events)
   {
     if (seconds <= 0)
       return;
 
-    // Split delay into whole seconds and the remainder as a decimal
-    // fraction.
-
-    double fraction = std::modf (seconds, &seconds);
-
-    // Further split the fractional seconds into whole tenths and the
-    // nearest number of nanoseconds remaining.
-
-    double tenths = 0;
-    fraction = std::modf (fraction * 10, &tenths) / 10;
-    fraction = std::round (fraction * 1000000000);
-
-    // Sleep for the hundredths portion.
-
-    struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
-
-    octave_nanosleep_wrapper (&hundredths_delay, nullptr);
-
-    // Sleep for the whole tenths portion, allowing interrupts every
-    // tenth.
-
-    struct timespec one_tenth = { 0, 100000000 };
-
-    for (int i = 0; i < static_cast<int> (tenths); i++)
+    // Allow free access to graphics resources while the interpreter thread
+    // is asleep
+    if (do_graphics_events)
+      gh_manager::unlock ();
+    
+    if (octave::math::isinf (seconds))
       {
-        octave_nanosleep_wrapper (&one_tenth, nullptr);
-
-        octave_quit ();
-      }
-
-    // Sleep for the whole seconds portion, allowing interrupts every
-    // tenth.
-
-    time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
-                  ? std::numeric_limits<time_t>::max ()
-                  : static_cast<time_t> (seconds));
-
-    for (time_t s = 0; s < sec; s++)
-      {
-        for (int i = 0; i < 10; i++)
+        // Wait for kbhit
+        int c = -1;
+        octave::flush_stdout ();
+        
+        struct timespec one_tenth = { 0, 100000000 };
+        
+        while (c < 0)
           {
             octave_nanosleep_wrapper (&one_tenth, nullptr);
 
             octave_quit ();
+
+            if (do_graphics_events)
+              gh_manager::process_events ();
+
+            c = octave::kbhit (false);
+          }
+      }
+    else
+      {
+        // Split delay into whole seconds and the remainder as a decimal
+        // fraction.
+
+        double fraction = std::modf (seconds, &seconds);
+
+        // Further split the fractional seconds into whole tenths and the
+        // nearest number of nanoseconds remaining.
+
+        double tenths = 0;
+        fraction = std::modf (fraction * 10, &tenths) / 10;
+        fraction = std::round (fraction * 1000000000);
+
+        // Sleep for the hundredths portion.
+
+        struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
+
+        octave_nanosleep_wrapper (&hundredths_delay, nullptr);
+
+        // Sleep for the whole tenths portion, allowing interrupts every
+        // tenth.
+
+        struct timespec one_tenth = { 0, 100000000 };
+
+        for (int i = 0; i < static_cast<int> (tenths); i++)
+          {
+            octave_nanosleep_wrapper (&one_tenth, nullptr);
+
+            octave_quit ();
+
+            if (do_graphics_events)
+              gh_manager::process_events ();
+          }
+
+        // Sleep for the whole seconds portion, allowing interrupts every
+        // tenth.
+
+        time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
+                      ? std::numeric_limits<time_t>::max ()
+                      : static_cast<time_t> (seconds));
+
+        for (time_t s = 0; s < sec; s++)
+          {
+            for (int i = 0; i < 10; i++)
+              {
+                octave_nanosleep_wrapper (&one_tenth, nullptr);
+
+                octave_quit ();
+
+                if (do_graphics_events)
+                  gh_manager::process_events ();
+              }
           }
       }
   }

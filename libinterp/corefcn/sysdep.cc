@@ -1084,6 +1084,9 @@ clc;
 @end group
 @end example
 
+While the program is supended, Octave still handles figures painting and 
+graphics callbacks execution.
+
 @seealso{kbhit}
 @end deftypefn */)
 {
@@ -1092,32 +1095,22 @@ clc;
   if (nargin > 1)
     print_usage ();
 
-  if (nargin == 1)
-    {
-      double dval = args(0).double_value ();
+  double dval;
+  
+  if (nargin == 0)
+    dval = octave_Inf;
+  else
+    dval = args(0).xdouble_value ("pause: N must be a scalar double value");
 
-      if (octave::math::isnan (dval))
-        warning ("pause: NaN is an invalid delay");
-      else
-        {
-          Fdrawnow ();
-
-          if (octave::math::isinf (dval))
-            {
-              octave::flush_stdout ();
-              octave::kbhit ();
-            }
-          else
-            octave::sleep (dval);
-        }
-    }
+  if (octave::math::isnan (dval))
+    warning ("pause: NaN is an invalid delay");
   else
     {
       Fdrawnow ();
-      octave::flush_stdout ();
-      octave::kbhit ();
+      
+      octave::sleep (dval, true);
     }
-
+      
   return ovl ();
 }
 

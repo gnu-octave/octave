@@ -116,7 +116,8 @@ namespace octave
 
   extern OCTINTERP_API std::string asprintf (const char *fmt, ...);
 
-  extern OCTINTERP_API void sleep (double seconds);
+  extern OCTINTERP_API void sleep (double seconds,
+                                   bool do_graphics_events = false);
 
   extern OCTINTERP_API
   octave_value_list

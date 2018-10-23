@@ -1169,14 +1169,14 @@ namespace octave
                   {
                     // Copy over info from cache, but leave dir_name and
                     // is_relative unmodified.
-                    this->abs_dir_name = di.abs_dir_name;
-                    this->dir_mtime = di.dir_mtime;
-                    this->dir_time_last_checked = di.dir_time_last_checked;
-                    this->all_files = di.all_files;
-                    this->fcn_files = di.fcn_files;
-                    this->private_file_map = di.private_file_map;
-                    this->method_file_map = di.method_file_map;
-                    this->package_dir_map = di.package_dir_map;
+                    abs_dir_name = di.abs_dir_name;
+                    dir_mtime = di.dir_mtime;
+                    dir_time_last_checked = di.dir_time_last_checked;
+                    all_files = di.all_files;
+                    fcn_files = di.fcn_files;
+                    private_file_map = di.private_file_map;
+                    method_file_map = di.method_file_map;
+                    package_dir_map = di.package_dir_map;
                   }
               }
             else

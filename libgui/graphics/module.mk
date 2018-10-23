@@ -152,11 +152,14 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
 %canon_reldir%___init_qt___la_LDFLAGS = \
   -avoid-version -module $(NO_UNDEFINED_LDFLAG) $(WARN_LDFLAGS)
 
-%canon_reldir%___init_qt___la_LIBADD = \
-  $(DLD_LIBOCTINTERP_LIBADD) \
-  $(QT_OPENGL_LIBS)
+DLD_LIBOCTGUI_LIBADD = $(OCT_GUI_LINK_DEPS)
 
-%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_LINK_DEPS)
+%canon_reldir%___init_qt___la_LIBADD = \
+  $(DLD_LIBOCTGUI_LIBADD) \
+  $(QT_OPENGL_LIBS) \
+  $(OPENGL_LIBS)
+
+%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
 
 octlib_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
 

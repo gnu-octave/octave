@@ -2749,10 +2749,14 @@ OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""
 
 OCT_LINK_DEPS=""
+OCT_GUI_LINK_DEPS=""
+
 OCT_LINK_OPTS="$LDFLAGS"
+OCT_GUI_LINK_OPTS="$LDFLAGS"
 
 if test $link_all_deps = yes; then
   OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+  OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
 
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="$OCT_LINK_DEPS $MKOCTFILE_LIBOCTINTERP_LINK_DEPS"
@@ -2766,6 +2770,7 @@ else
   case $host_os in
     mingw* | msdosmsvc)
       OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+      OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
     ;;
   esac
 fi
@@ -2778,6 +2783,9 @@ AC_SUBST(OCTAVE_LINK_OPTS)
 
 AC_SUBST(OCT_LINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
+
+AC_SUBST(OCT_GUI_LINK_DEPS)
+AC_SUBST(OCT_GUI_LINK_OPTS)
 
 AC_SUBST(MKOCTFILE_OCTAVE_LINK_DEPS)
 AC_SUBST(MKOCTFILE_OCT_LINK_DEPS)

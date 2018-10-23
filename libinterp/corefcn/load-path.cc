@@ -363,9 +363,12 @@ namespace octave
 
     for (auto& di : dir_info_list)
       {
-        di.update ();
+        bool ok = di.update ();
 
-        add (di, true, "", true);
+        if (! ok)
+          warning ("load-path: update failed for '%s', removing from path");
+        else
+          add (di, true, "", true);
       }
   }
 
@@ -1124,78 +1127,79 @@ namespace octave
     return retval;
   }
 
-  void
+  bool
   load_path::dir_info::update (void)
   {
     sys::file_stat fs (dir_name);
-
-    sys::file_stat pfs (sys::file_ops::concat (dir_name, "private"));
-    bool has_private_dir = pfs && pfs.is_dir ();
 
     if (! fs)
       {
         std::string msg = fs.error ();
         warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
+        return false;
       }
-    else
+
+    sys::file_stat pfs (sys::file_ops::concat (dir_name, "private"));
+    bool has_private_dir = pfs && pfs.is_dir ();
+
+    if (is_relative)
       {
-        if (is_relative)
+        try
           {
-            try
+            std::string abs_name = sys::env::make_absolute (dir_name);
+
+            const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
+
+            if (p != abs_dir_cache.end ())
               {
-                std::string abs_name = sys::env::make_absolute (dir_name);
+                // The directory is in the cache of all directories we have
+                // visited (indexed by absolute name).  If it is out of date,
+                // initialize it.  Otherwise, copy the info from the cache.
+                // By doing that, we avoid unnecessary calls to stat that can
+                // slow things down tremendously for large directories.
+                const dir_info& di = p->second;
 
-                const_abs_dir_cache_iterator p = abs_dir_cache.find (abs_name);
-
-                if (p != abs_dir_cache.end ())
-                  {
-                    // The directory is in the cache of all directories we have
-                    // visited (indexed by absolute name).  If it is out of date,
-                    // initialize it.  Otherwise, copy the info from the cache.
-                    // By doing that, we avoid unnecessary calls to stat that can
-                    // slow things down tremendously for large directories.
-                    const dir_info& di = p->second;
-
-                    if ((fs.mtime () + fs.time_resolution ()
-                         > di.dir_time_last_checked)
-                        || (has_private_dir
-                            && (pfs.mtime () + pfs.time_resolution ()
-                                > dir_time_last_checked)))
-                      initialize ();
-                    else
-                      {
-                        // Copy over info from cache, but leave dir_name and
-                        // is_relative unmodified.
-                        this->abs_dir_name = di.abs_dir_name;
-                        this->dir_mtime = di.dir_mtime;
-                        this->dir_time_last_checked = di.dir_time_last_checked;
-                        this->all_files = di.all_files;
-                        this->fcn_files = di.fcn_files;
-                        this->private_file_map = di.private_file_map;
-                        this->method_file_map = di.method_file_map;
-                        this->package_dir_map = di.package_dir_map;
-                      }
-                  }
+                if ((fs.mtime () + fs.time_resolution ()
+                     > di.dir_time_last_checked)
+                    || (has_private_dir
+                        && (pfs.mtime () + pfs.time_resolution ()
+                            > dir_time_last_checked)))
+                  initialize ();
                 else
                   {
-                    // We haven't seen this directory before.
-                    initialize ();
+                    // Copy over info from cache, but leave dir_name and
+                    // is_relative unmodified.
+                    this->abs_dir_name = di.abs_dir_name;
+                    this->dir_mtime = di.dir_mtime;
+                    this->dir_time_last_checked = di.dir_time_last_checked;
+                    this->all_files = di.all_files;
+                    this->fcn_files = di.fcn_files;
+                    this->private_file_map = di.private_file_map;
+                    this->method_file_map = di.method_file_map;
+                    this->package_dir_map = di.package_dir_map;
                   }
               }
-            catch (const execution_exception&)
+            else
               {
-                // Skip updating if we don't know where we are,
-                // but don't treat it as an error.
-                interpreter::recover_from_exception ();
+                // We haven't seen this directory before.
+                initialize ();
               }
           }
-        // Absolute path, check timestamp to see whether it requires re-caching
-        else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
-                 || (has_private_dir
-                     && (pfs.mtime () + pfs.time_resolution ()
-                         > dir_time_last_checked)))
-          initialize ();
+        catch (const execution_exception&)
+          {
+            // Skip updating if we don't know where we are,
+            // but don't treat it as an error.
+            interpreter::recover_from_exception ();
+          }
       }
+    // Absolute path, check timestamp to see whether it requires re-caching
+    else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
+             || (has_private_dir
+                 && (pfs.mtime () + pfs.time_resolution ()
+                     > dir_time_last_checked)))
+      initialize ();
+
+    return true;
   }
 
   bool

@@ -276,7 +276,7 @@ namespace octave
 
       dir_info& operator = (const dir_info&) = default;
 
-      void update (void);
+      bool update (void);
 
       std::string dir_name;
       std::string abs_dir_name;

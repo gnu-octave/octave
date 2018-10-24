@@ -374,7 +374,13 @@ namespace octave
     shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
   }
 
-  void documentation::copyClipboard (void) { }
+  void documentation::copyClipboard (void)
+  {
+    if (m_doc_browser->hasFocus ())
+      {
+        m_doc_browser->copy();
+      }
+  }
 
   void documentation::pasteClipboard (void) { }
 

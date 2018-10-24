@@ -178,7 +178,7 @@ namespace octave
             cmd_gp->execute (interp);
           }
 
-        cmd_gp.clear ();    // remove the original cmd pointer
+        delete cmd_gp;    // destroy the referred octave_cmd object
       }
 
     if (repost)  // queue not empty, so repost event for further processing

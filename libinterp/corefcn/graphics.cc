@@ -7185,6 +7185,205 @@ magform (double x, double& a, int& b)
     }
 }
 
+void
+axes::properties::update_outerposition (void)
+{
+  set_activepositionproperty ("outerposition");
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix outerbox = outerposition.get ().matrix_value ();
+
+  double outer_left = outerbox(0);
+  double outer_bottom = outerbox(1);
+  double outer_width = outerbox(2);
+  double outer_height = outerbox(3);
+
+  double outer_right = outer_width + outer_left;
+  double outer_top = outer_height + outer_bottom;
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  double inner_left = outer_left;
+  double inner_right = outer_right;
+
+  if ((left_margin + right_margin) < outer_width)
+    {
+      inner_left += left_margin;
+      inner_right -= right_margin;
+    }
+
+  double inner_bottom = outer_bottom;
+  double inner_top = outer_top;
+
+  if ((bottom_margin + top_margin) < outer_height)
+    {
+      inner_bottom += bottom_margin;
+      inner_top -= top_margin;
+    }
+
+  double inner_width = inner_right - inner_left;
+  double inner_height = inner_top - inner_bottom;
+
+  Matrix innerbox (1, 4);
+
+  innerbox(0) = inner_left;
+  innerbox(1) = inner_bottom;
+  innerbox(2) = inner_width;
+  innerbox(3) = inner_height;
+
+  position = innerbox;
+
+  set_units (old_units);
+  update_transform ();
+}
+
+void
+axes::properties::update_position (void)
+{
+  set_activepositionproperty ("position");
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix innerbox = position.get ().matrix_value ();
+
+  double inner_left = innerbox(0);
+  double inner_bottom = innerbox(1);
+  double inner_width = innerbox(2);
+  double inner_height = innerbox(3);
+
+  double inner_right = inner_width + inner_left;
+  double inner_top = inner_height + inner_bottom;
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  // FIXME: do we need to place limits on any of these?
+
+  double outer_left = inner_left - left_margin;
+  double outer_bottom = inner_bottom - bottom_margin;
+  double outer_right = inner_right + right_margin;
+  double outer_top = inner_top + top_margin;
+
+  double outer_width = outer_right - outer_left;
+  double outer_height = outer_top = outer_bottom;
+
+  Matrix outerbox (1, 4);
+
+  outerbox(0) = outer_left;
+  outerbox(1) = outer_bottom;
+  outerbox(2) = outer_width;
+  outerbox(3) = outer_height;
+
+  outerposition = outerbox;
+
+  set_units (old_units);
+  update_transform ();
+}
+
+void
+axes::properties::update_looseinset (void)
+{
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  if (activepositionproperty.is ("position"))
+    {
+      Matrix innerbox = position.get ().matrix_value ();
+
+      double inner_left = innerbox(0);
+      double inner_bottom = innerbox(1);
+      double inner_width = innerbox(2);
+      double inner_height = innerbox(3);
+
+      double inner_right = inner_width + inner_left;
+      double inner_top = inner_height + inner_bottom;
+
+      // FIXME: do we need to place limits on any of these?
+
+      double outer_left = inner_left - left_margin;
+      double outer_bottom = inner_bottom - bottom_margin;
+      double outer_right = inner_right + right_margin;
+      double outer_top = inner_top + top_margin;
+
+      double outer_width = outer_right - outer_left;
+      double outer_height = outer_top = outer_bottom;
+
+      Matrix outerbox (1, 4);
+
+      outerbox(0) = outer_left;
+      outerbox(1) = outer_bottom;
+      outerbox(2) = outer_width;
+      outerbox(3) = outer_height;
+
+      outerposition = outerbox;
+    }
+  else
+    {
+      Matrix outerbox = outerposition.get ().matrix_value ();
+
+      double outer_left = outerbox(0);
+      double outer_bottom = outerbox(1);
+      double outer_width = outerbox(2);
+      double outer_height = outerbox(3);
+
+      double outer_right = outer_width + outer_left;
+      double outer_top = outer_height + outer_bottom;
+
+      double inner_left = outer_left;
+      double inner_right = outer_right;
+
+      if ((left_margin + right_margin) < outer_width)
+        {
+          inner_left += left_margin;
+          inner_right -= right_margin;
+        }
+
+      double inner_bottom = outer_bottom;
+      double inner_top = outer_top;
+
+      if ((bottom_margin + top_margin) < outer_height)
+        {
+          inner_bottom += bottom_margin;
+          inner_top -= top_margin;
+        }
+
+      double inner_width = inner_right - inner_left;
+      double inner_height = inner_top - inner_bottom;
+
+      Matrix innerbox (1, 4);
+
+      innerbox(0) = inner_left;
+      innerbox(1) = inner_bottom;
+      innerbox(2) = inner_width;
+      innerbox(3) = inner_height;
+
+      position = innerbox;
+    }
+
+  set_units (old_units);
+  update_transform ();
+}
+
 // A translation from Tom Holoryd's python code at
 // http://kurage.nimh.nih.gov/tomh/tics.py
 // FIXME: add log ticks

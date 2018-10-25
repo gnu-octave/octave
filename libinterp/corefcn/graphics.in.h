@@ -3999,85 +3999,9 @@ public:
       sync_positions ();
     }
 
-    void update_outerposition (void)
-    {
-      set_activepositionproperty ("outerposition");
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      Matrix innerbox = position.get ().matrix_value ();
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      outerbox(2) = outerbox(2) + outerbox(0);
-      outerbox(3) = outerbox(3) + outerbox(1);
-      innerbox(0) = outerbox(0) + std::max (linset(0), tinset(0));
-      innerbox(1) = outerbox(1) + std::max (linset(1), tinset(1));
-      innerbox(2) = outerbox(2) - std::max (linset(2), tinset(2));
-      innerbox(3) = outerbox(3) - std::max (linset(3), tinset(3));
-      innerbox(2) = innerbox(2) - innerbox(0);
-      innerbox(3) = innerbox(3) - innerbox(1);
-      position = innerbox;
-      set_units (old_units);
-      update_transform ();
-    }
-
-    void update_position (void)
-    {
-      set_activepositionproperty ("position");
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      Matrix innerbox = position.get ().matrix_value ();
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      innerbox(2) = innerbox(2) + innerbox(0);
-      innerbox(3) = innerbox(3) + innerbox(1);
-      outerbox(0) = innerbox(0) - std::max (linset(0), tinset(0));
-      outerbox(1) = innerbox(1) - std::max (linset(1), tinset(1));
-      outerbox(2) = innerbox(2) + std::max (linset(2), tinset(2));
-      outerbox(3) = innerbox(3) + std::max (linset(3), tinset(3));
-      outerbox(2) = outerbox(2) - outerbox(0);
-      outerbox(3) = outerbox(3) - outerbox(1);
-      outerposition = outerbox;
-      set_units (old_units);
-      update_transform ();
-    }
-
-    void update_looseinset (void)
-    {
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix innerbox = position.get ().matrix_value ();
-      innerbox(2) = innerbox(2) + innerbox(0);
-      innerbox(3) = innerbox(3) + innerbox(1);
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      outerbox(2) = outerbox(2) + outerbox(0);
-      outerbox(3) = outerbox(3) + outerbox(1);
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      if (activepositionproperty.is ("position"))
-        {
-          outerbox(0) = innerbox(0) - std::max (linset(0), tinset(0));
-          outerbox(1) = innerbox(1) - std::max (linset(1), tinset(1));
-          outerbox(2) = innerbox(2) + std::max (linset(2), tinset(2));
-          outerbox(3) = innerbox(3) + std::max (linset(3), tinset(3));
-          outerbox(2) = outerbox(2) - outerbox(0);
-          outerbox(3) = outerbox(3) - outerbox(1);
-          outerposition = outerbox;
-        }
-      else
-        {
-          innerbox(0) = outerbox(0) + std::max (linset(0), tinset(0));
-          innerbox(1) = outerbox(1) + std::max (linset(1), tinset(1));
-          innerbox(2) = outerbox(2) - std::max (linset(2), tinset(2));
-          innerbox(3) = outerbox(3) - std::max (linset(3), tinset(3));
-          innerbox(2) = innerbox(2) - innerbox(0);
-          innerbox(3) = innerbox(3) - innerbox(1);
-          position = innerbox;
-        }
-      set_units (old_units);
-      update_transform ();
-    }
+    void update_outerposition (void);
+    void update_position (void);
+    void update_looseinset (void);
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks,

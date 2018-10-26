@@ -131,6 +131,8 @@ public:
 
   bool is_equal_to (const octave_fcn_handle&) const;
 
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

@@ -340,6 +340,14 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
   return true;
 }
 
+octave_value
+octave_fcn_handle::convert_to_str_internal (bool, bool, char type) const
+{
+  std::ostringstream buf;
+  print_raw (buf, true);
+  return octave_value (buf.str (), type);
+}
+
 bool
 octave_fcn_handle::save_ascii (std::ostream& os)
 {

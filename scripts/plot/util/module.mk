@@ -78,6 +78,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/rotate.m \
   %reldir%/rotate3d.m \
   %reldir%/saveas.m \
+  %reldir%/savefig.m \
   %reldir%/shg.m \
   %reldir%/struct2hdl.m \
   %reldir%/subplot.m \

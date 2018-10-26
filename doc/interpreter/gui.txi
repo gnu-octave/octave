@@ -134,6 +134,8 @@ programs that do.  The functions @code{uiwait}, @code{uiresume}, and
 
 @DOCSTRING(isguirunning)
 
+@DOCSTRING(movegui)
+
 @c Not sure where this should go...
 @DOCSTRING(openvar)
 

@@ -70,6 +70,7 @@ GEN_FCN_FILES += $(%canon_reldir%_GEN_FCN_FILES)
   %reldir%/meshgrid.m \
   %reldir%/ndgrid.m \
   %reldir%/newplot.m \
+  %reldir%/openfig.m \
   %reldir%/pan.m \
   %reldir%/print.m \
   %reldir%/printd.m \

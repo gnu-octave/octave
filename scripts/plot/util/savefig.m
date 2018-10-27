@@ -31,9 +31,10 @@
 ## @var{filename} does not have an extension, a default extension @file{".fig"}
 ## will be added.
 ##
-## A third input argument will be accepted but ignored, for Matlab compatibility.
+## A third input argument will be accepted but ignored, for Matlab
+## compatibility.
 ##
-## @seealso{hgsave, hdl2struct}
+## @seealso{hgsave, hdl2struct, openfig}
 ## @end deftypefn
 
 function savefig (varargin)

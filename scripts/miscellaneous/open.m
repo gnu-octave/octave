@@ -38,6 +38,9 @@
 ## @item .ofig
 ## Open the figure with hgload.  @xref{XREFhgload, , hgload function}.
 ##
+## @item .fig, .ofig
+## Load the figure
+##
 ## @item .exe
 ## Execute the program (on Windows systems only). No @var{output} value
 ## is returned.
@@ -88,8 +91,8 @@ function output = open (file)
     else
       evalin ("base", sprintf ("load ('%s');", file));
     endif
-  elseif (strcmpi (ext, ".ofig"))
-    output = hgload (file);
+  elseif (strcmpi (ext, {".fig", ".ofig"}))
+    output = openfig (file);
     drawnow ();
   elseif (any (strcmpi (ext, {".mdl", ".slx", ".prj"})))
     error ("open: opening file type '%s' is not supported", ext);

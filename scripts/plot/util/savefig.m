@@ -33,7 +33,7 @@
 ##
 ## A third input argument will be accepted but ignored, for Matlab compatibility.
 ##
-## @seealso{hgsave, hdl2struct, openfig}
+## @seealso{hgsave, hdl2struct}
 ## @end deftypefn
 
 function savefig (varargin)

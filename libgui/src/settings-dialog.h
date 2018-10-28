@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_settings_dialog_h)
 #define octave_settings_dialog_h 1
 
+#include <QCheckBox>
 #include <QDialog>
 #include <QSettings>
 #include <QLineEdit>
@@ -92,6 +93,9 @@ namespace octave
 
     QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
     QRadioButton *m_rb_uncomment_strings[ed_comment_strings_count];
+
+    QCheckBox *m_ws_enable_colors;
+    QCheckBox *m_ws_hide_tool_tips;
   };
 }
 

@@ -388,10 +388,7 @@ namespace octave
     proxyPassword->setText (settings->value ("proxyPassword").toString ());
 
     // Workspace
-    // colors
     read_workspace_colors (settings);
-    // hide tool tips
-    cb_hide_tool_tips->setChecked (settings->value ("workspaceview/hide_tool_tips", false).toBool ());
 
     // terminal colors
     read_terminal_colors (settings);
@@ -965,8 +962,6 @@ namespace octave
 
     // Workspace
     write_workspace_colors (settings);
-    // hide tool tips
-    settings->setValue ("workspaceview/hide_tool_tips", cb_hide_tool_tips->isChecked ());
 
     // Terminal
     write_terminal_colors (settings);
@@ -996,7 +991,7 @@ namespace octave
 
   void settings_dialog::read_workspace_colors (QSettings *settings)
   {
-
+    // Construct the grid with all color related settings
     QList<QColor> default_colors =
       resource_manager::storage_class_default_colors ();
     QStringList class_names = resource_manager::storage_class_names ();
@@ -1009,15 +1004,32 @@ namespace octave
 
     int column = 0;
     int row = 0;
+
+    m_ws_enable_colors = new QCheckBox (tr ("Enable attribute colors"));
+    style_grid->addWidget (m_ws_enable_colors, row++, column, 1, 4);
+
+    m_ws_hide_tool_tips = new QCheckBox (tr ("Hide tools tips"));
+    style_grid->addWidget (m_ws_hide_tool_tips, row++, column, 1, 4);
+    connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
+             m_ws_hide_tool_tips, SLOT(setEnabled (bool)));
+    m_ws_hide_tool_tips->setChecked (
+      settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
+
     for (int i = 0; i < nr_of_classes; i++)
       {
         description[i] = new QLabel ("    " + class_names.at (i));
         description[i]->setAlignment (Qt::AlignRight);
+        connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
+                 description[i], SLOT(setEnabled (bool)));
+
         QVariant default_var = default_colors.at (i);
         QColor setting_color = settings->value ("workspaceview/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
         color[i] = new color_picker (setting_color);
         color[i]->setObjectName ("color_" + class_chars.mid (i, 1));
         color[i]->setMinimumSize (30, 10);
+        connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
+                 color[i], SLOT(setEnabled (bool)));
+
         style_grid->addWidget (description[i], row, 3*column);
         style_grid->addWidget (color[i], row, 3*column+1);
         if (++column == 3)
@@ -1028,12 +1040,20 @@ namespace octave
           }
       }
 
+    // Load enable settings at the end for having signals already connected
+    bool colors_enabled =
+        settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();
+    m_ws_enable_colors->setChecked (colors_enabled);
+    m_ws_hide_tool_tips->setEnabled (colors_enabled);
+
     // place grid with elements into the tab
     workspace_colors_box->setLayout (style_grid);
   }
 
   void settings_dialog::write_workspace_colors (QSettings *settings)
   {
+    settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
+    settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
 
     QString class_chars = resource_manager::storage_class_chars ();
     color_picker *color;

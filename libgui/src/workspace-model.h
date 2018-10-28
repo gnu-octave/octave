@@ -111,6 +111,7 @@ namespace octave
     QStringList m_columnNames;
 
     QList<QColor>  m_storage_class_colors;
+    bool m_enable_colors;
 
   };
 }

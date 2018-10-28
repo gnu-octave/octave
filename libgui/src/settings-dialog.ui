@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -53,7 +53,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -510,7 +510,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -789,9 +789,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-585</y>
+            <y>0</y>
             <width>645</width>
-            <height>1196</height>
+            <height>1213</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2117,7 +2117,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2261,7 +2261,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2283,13 +2283,6 @@
                </property>
                <property name="title">
                 <string>Colors for variable attributes</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="cb_hide_tool_tips">
-               <property name="text">
-                <string>Hide tool tips</string>
                </property>
               </widget>
              </item>
@@ -2329,8 +2322,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>671</width>
-            <height>560</height>
+            <width>669</width>
+            <height>558</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2532,7 +2525,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2731,7 +2724,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>573</height>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

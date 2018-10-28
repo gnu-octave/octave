@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #include "resource-manager.h"
+#include "gui-preferences.h"
 #include "workspace-model.h"
 
 namespace octave
@@ -131,7 +132,7 @@ namespace octave
 
     if (idx.isValid ())
       {
-        if (role == Qt::BackgroundColorRole)
+        if (role == Qt::BackgroundColorRole && m_enable_colors)
           {
             QString class_chars = resource_manager::storage_class_chars ();
             int actual_class
@@ -253,6 +254,9 @@ namespace octave
     QList<QColor> default_colors =
       resource_manager::storage_class_default_colors ();
     QString class_chars = resource_manager::storage_class_chars ();
+
+    m_enable_colors =
+        settings->value (ws_enable_colors.key, ws_enable_colors.key).toBool ();
 
     for (int i = 0; i < class_chars.length (); i++)
       {

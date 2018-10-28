@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCompleter>
 #include <QSignalMapper>
 
+#include "gui-preferences.h"
 #include "workspace-view.h"
 #include "resource-manager.h"
 
@@ -192,7 +193,8 @@ namespace octave
 
     QString tool_tip;
 
-    if (! settings->value ("workspaceview/hide_tool_tips",false).toBool ())
+    if (settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ()
+        && ! settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ())
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));

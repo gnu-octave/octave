@@ -88,4 +88,9 @@ const gui_pref fb_startup_dir ("filesdockwidget/startup_dir", QVariant (QString 
 const gui_pref fb_txt_file_ext ("filesdockwidget/txt_file_extensions",
                                 QVariant ("m;c;cc;cpp;h;txt"));
 
+// Workspace view
+
+const gui_pref ws_enable_colors ("workspaceview/enable_colors", QVariant (false));
+const gui_pref ws_hide_tool_tips ("workspaceview/hide_tools_tips", QVariant (false));
+
 #endif

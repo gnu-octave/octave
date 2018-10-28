@@ -1150,7 +1150,7 @@ measured in degrees.";
         s.valid = valid_cellstring;
 
       case "xdata"
-        s.doc = "Two-element vector @code{[xmin xmax]} specifying the x \
+        s.doc = "Two-element vector @code{[xfirst xlast]} specifying the x \
 coordinates of the centers of the first and last columns of the image.\n\
 \n\
 Setting @code{xdata} to the empty matrix ([]) will restore the default value \
@@ -1158,7 +1158,7 @@ of @code{[1 columns(image)]}.";
         s.valid = valid_2elvec;
 
       case "ydata"
-        s.doc = "Two-element vector @code{[ymin ymax]} specifying the y \
+        s.doc = "Two-element vector @code{[yfirst ylast]} specifying the y \
 coordinates of the centers of the first and last rows of the image.\n\
 \n\
 Setting @code{ydata} to the empty matrix ([]) will restore the default value \

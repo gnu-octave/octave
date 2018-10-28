@@ -3776,10 +3776,23 @@ namespace octave
     if (x.isempty () || y.isempty ())
       return;
 
-    if (w > 1 && x(1) == x(0))
+    // Sort x/ydata and mark flipped dimensions
+    bool xflip = false;
+    if (x(0) > x(1))
+      {
+        std::swap (x(0), x(1));
+        xflip = true;
+      }
+    else if (w > 1 && x(1) == x(0))
       x(1) = x(1) + (w-1);
-
-    if (h > 1 && y(1) == y(0))
+    
+    bool yflip = false;
+    if (y(0) > y(1))
+      {
+        std::swap (y(0), y(1));
+        yflip = true;
+      }
+    else if (h > 1 && y(1) == y(0))
       y(1) = y(1) + (h-1);
 
     const ColumnVector p0 = xform.transform (x(0), y(0), 0);
@@ -3824,7 +3837,7 @@ namespace octave
     // OpenGL won't draw any of the image if its origin is outside the
     // viewport/clipping plane so we must do the clipping ourselves.
 
-    int j0, j1, i0, i1;
+    int j0, j1, jj, i0, i1, ii;
     j0 = 0, j1 = w;
     i0 = 0, i1 = h;
 
@@ -3872,9 +3885,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+                    
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+                      
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3891,9 +3914,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+                    
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+                      
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3910,9 +3943,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+                    
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+                      
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3929,9 +3972,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+                    
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+                      
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 

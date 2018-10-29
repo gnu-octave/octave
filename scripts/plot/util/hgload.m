@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} hgload (@var{filename})
+## @deftypefn  {} {@var{h} =} hgload (@var{filename})
 ## @deftypefnx {} {[@var{h}, @var{old_prop}] =} hgload (@var{filename}, @var{prop_struct})
 ## Load the graphics object in @var{filename} into the graphics handle @var{h}.
 ##
@@ -25,10 +25,10 @@
 ## and without the standard extension of @file{.ofig}.
 ##
 ## If provided, the elements of structure @var{prop_struct} will be used to
-## override the properties of top-level object stored in @var{filename} and the
-## old values will be stored in @var{old_prop}.  @var{old_prop} is a cell array
-## matching the size of @var{h}; each cell contains a structure of the existing
-## property names and values before being overriden.
+## override the properties of top-level objects stored in @var{filename} and
+## the old values will be stored in @var{old_prop}.  @var{old_prop} is a cell
+## array matching the size of @var{h}; each cell contains a structure of the
+## existing property names and values before being overridden.
 ##
 ## @seealso{openfig, hgsave, struct2hdl}
 ## @end deftypefn
@@ -44,7 +44,7 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
 
   ## Check second input argument
   if (! isstruct(prop_struct))
-    error ("hgload: 'prop_struct' must be a struct");
+    error ("hgload: PROP_STRUCT must be a struct");
   endif
 
   ## Check file existence

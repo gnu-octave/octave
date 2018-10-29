@@ -29,7 +29,7 @@
 ## Open file in the editor. No @var{output} value is returned.
 ##
 ## @item .mat
-## @item octave-workspace
+## @itemx octave-workspace
 ## Open the data file with @code{load}. If no return value @var{output}
 ## is requested, variables are loaded in the base workspace. Otherwise
 ## @var{output} will be a structure containing loaded data.
@@ -91,7 +91,7 @@ function output = open (file)
     else
       evalin ("base", sprintf ("load ('%s');", file));
     endif
-  elseif (strcmpi (ext, {".fig", ".ofig"}))
+  elseif (any (strcmpi (ext, {".fig", ".ofig"})))
     output = openfig (file);
     drawnow ();
   elseif (any (strcmpi (ext, {".mdl", ".slx", ".prj"})))

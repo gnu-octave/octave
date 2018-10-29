@@ -57,7 +57,10 @@ namespace octave
     : QSplitter (Qt::Horizontal, p),
       m_show_shortcut (new QShortcut (p)),
       m_findnext_shortcut (new QShortcut (p)),
-      m_findprev_shortcut (new QShortcut (p))
+      m_findprev_shortcut (new QShortcut (p)),
+      m_zoom_in_shortcut (new QShortcut (p)),
+      m_zoom_out_shortcut (new QShortcut (p)),
+      m_zoom_normal_shortcut (new QShortcut (p))
   {
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
@@ -162,6 +165,17 @@ namespace octave
 
     find_footer->hide ();
     m_search_anchor_position = 0;
+
+    // Zoom Shortcuts
+    m_zoom_in_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_zoom_in_shortcut, SIGNAL (activated (void)),
+             m_doc_browser, SLOT (zoom_in (void)));
+    m_zoom_out_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_zoom_out_shortcut, SIGNAL (activated (void)),
+             m_doc_browser, SLOT (zoom_out (void)));
+    m_zoom_normal_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_zoom_normal_shortcut, SIGNAL (activated (void)),
+             m_doc_browser, SLOT (zoom_normal (void)));
 
     // Layout contents, index and search
     QTabWidget *navi = new QTabWidget (this);
@@ -372,6 +386,9 @@ namespace octave
     shortcut_manager::shortcut (m_show_shortcut, "editor_edit:find_replace");
     shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
     shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
+    shortcut_manager::shortcut (m_zoom_in_shortcut, "editor_view:zoom_in");
+    shortcut_manager::shortcut (m_zoom_out_shortcut, "editor_view:zoom_out");
+    shortcut_manager::shortcut (m_zoom_normal_shortcut, "editor_view:zoom_normal");
   }
 
   void documentation::copyClipboard (void)
@@ -551,7 +568,7 @@ namespace octave
 
   // The documentation browser
   documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
-    : QTextBrowser (p), m_help_engine (he)
+    : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
   { }
 
   documentation_browser::~documentation_browser (void)
@@ -572,5 +589,29 @@ namespace octave
       return QVariant (m_help_engine->fileData(url));
     else
       return QTextBrowser::loadResource(type, url);
+  }
+
+  void documentation_browser::zoom_in (void)
+  {
+    if (m_zoom_level < max_zoom_level)
+      {
+        zoomIn ();
+        m_zoom_level++;
+      }
+  }
+
+  void documentation_browser::zoom_out (void)
+  {
+    if (m_zoom_level > min_zoom_level)
+      {
+        zoomOut ();
+        m_zoom_level--;
+      }
+  }
+
+  void documentation_browser::zoom_normal (void)
+  {
+    zoomIn (- m_zoom_level);
+    m_zoom_level = 0;
   }
 }

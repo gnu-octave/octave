@@ -552,6 +552,8 @@ namespace octave
     main_tabs->setText (0, tr ("Tab Handling in Dock Widgets"));
     QTreeWidgetItem *main_find = new QTreeWidgetItem (main);
     main_find->setText (0, tr ("Find & Replace in Dock Widgets"));
+    QTreeWidgetItem *main_zoom = new QTreeWidgetItem (main);
+    main_zoom->setText (0, tr ("Zooming in Editor and Documentation"));
 
     m_level_hash["main_file"]   = main_file;
     m_level_hash["main_edit"]   = main_edit;
@@ -562,6 +564,7 @@ namespace octave
     m_level_hash["main_tabs"]   = main_tabs;
     m_level_hash["editor_tabs"]   = main_tabs;
     m_level_hash["editor_find"]   = main_find;
+    m_level_hash["editor_zoom"]   = main_zoom;
 
     QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
     editor->setText (0, tr ("Editor"));
@@ -608,6 +611,12 @@ namespace octave
             // Find & replace now in global file & replace handling section
             if (sc.m_settings_key.contains ("editor_edit:find"))
               section = main_find;
+          }
+        if (section == editor_view)
+          {
+            // Zooming now in global zoom handling section
+            if (sc.m_settings_key.contains ("editor_view:zoom"))
+              section = main_zoom;
           }
 
         QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);

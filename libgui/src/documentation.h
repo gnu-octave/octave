@@ -33,7 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  // The documentation browser
+  //! Documentation browser derived from Textbrowser
+
   class documentation_browser : public QTextBrowser
   {
     Q_OBJECT
@@ -51,13 +52,33 @@ namespace octave
                                const QString& keyword = QString ());
     void notice_settings (const QSettings *settings);
 
+    //! Zooming in and out while taking care of the zoom level
+    //!@{
+    void zoom_in (void);
+    void zoom_out (void);
+    void zoom_normal (void);
+    //!@}
+
   private:
 
     QHelpEngine *m_help_engine;
+
+    //! Store the current zoom level
+    int m_zoom_level;
+
+    //! Minimal and maximal zoom level avoiding calling
+    //! zoom_in and zoom_out without actually zooming but
+    //! with changing the stored zoom level
+    enum
+    {
+      min_zoom_level = -5,
+      max_zoom_level = 10
+    };
   };
 
 
-  // The documentaiton main class (splitter)
+  //! The documentaiton main class derived from QSplitter
+
   class documentation : public QSplitter
   {
     Q_OBJECT
@@ -105,9 +126,13 @@ namespace octave
     int m_search_anchor_position;
     QComboBox *m_filter;
     QString m_collection;
+
     QShortcut *m_show_shortcut;
     QShortcut *m_findnext_shortcut;
     QShortcut *m_findprev_shortcut;
+    QShortcut *m_zoom_in_shortcut;
+    QShortcut *m_zoom_out_shortcut;
+    QShortcut *m_zoom_normal_shortcut;
   };
 }
 

@@ -76,7 +76,7 @@ function h = openfig (filename = "Untitled.fig", varargin)
   visibility = {};
   for i = 1:numel (varargin)
     if (! ischar (varargin{i}))
-      error ("openfig: input argument %d must be a string", i);
+      error ("openfig: input argument %d must be a string", i+1);
     endif
     switch (tolower (varargin{i}))
       case "reuse"
@@ -133,6 +133,16 @@ endfunction
 %!error openfig (1, 2, 3, 4)
 %!error <cannot find file> openfig ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
 %!error <cannot find file> openfig ("%%_A_REALLY_UNLIKELY_FILENAME_%%.fig")
+%!error <input argument 3 must be a string>
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   ftmp = [tempname() ".ofig"];
+%!   hgsave (h, ftmp);
+%!   openfig (ftmp, "new", [1, 2, 3]); 
+%! unwind_protect_cleanup
+%!   unlink (ftmp);
+%!   close (h);
+%! end_unwind_protect
 %!error <unknown option 'foobar'>
 %! unwind_protect
 %!   h = figure ("visible", "off");

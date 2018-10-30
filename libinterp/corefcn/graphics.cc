@@ -1473,8 +1473,12 @@ array_property::validate (const octave_value& v)
                       if (itdims(i) != vdims(i))
                         xok = false;
                     }
-                  else if (v.isempty ())
-                    break;
+                  else if (itdims(i) == 0)
+                    {
+                      if (! v.isempty ())
+                        xok = false;
+                      break;
+                    }
                 }
             }
         }

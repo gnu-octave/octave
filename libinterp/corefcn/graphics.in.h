@@ -4554,9 +4554,9 @@ public:
       cdata.add_constraint ("real");
       cdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint (dim_vector (-1, -1, 3));
-      alphadata.add_constraint (dim_vector (-1, -1));
       alphadata.add_constraint ("double");
       alphadata.add_constraint ("uint8");
+      alphadata.add_constraint (dim_vector (-1, -1));
     }
 
   private:
@@ -4853,7 +4853,9 @@ public:
       cdata.add_constraint (dim_vector (-1, -1, 3));
       facevertexcdata.add_constraint (dim_vector (-1, 1));
       facevertexcdata.add_constraint (dim_vector (-1, 3));
+      facevertexcdata.add_constraint (dim_vector (0, 0));
       facevertexalphadata.add_constraint (dim_vector (-1, 1));
+      facevertexalphadata.add_constraint (dim_vector (0, 0));
       facenormals.add_constraint (dim_vector (-1, 3));
       facenormals.add_constraint (dim_vector (0, 0));
       vertexnormals.add_constraint (dim_vector (-1, 3));
@@ -5840,7 +5842,9 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
     }
   };
 
@@ -5901,7 +5905,9 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
     }
   };
 

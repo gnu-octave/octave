@@ -5474,6 +5474,7 @@ public:
       cdata.add_constraint ("single");
       cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
       position.add_constraint (dim_vector (1, 4));
       sliderstep.add_constraint (dim_vector (1, 2));
       fontsize.add_constraint ("min", 0.0, false);

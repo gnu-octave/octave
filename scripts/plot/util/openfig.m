@@ -23,8 +23,8 @@
 ## @deftypefnx {} {} openfig (@dots{}, @var{copies})
 ## @deftypefnx {} {} openfig (@dots{}, @var{visibility})
 ## @deftypefnx {} {@var{h} =} openfig (@dots{})
-## Open a saved figure window from @var{filename} and return its graphics handle
-## @var{h}.
+## Open a saved figure window from @var{filename} and return its graphics
+## handle @var{h}.
 ##
 ## By default, @var{filename} is @qcode{"Untitled.fig"}.  If a full path is not
 ## specified, the file opened will be the first one encountered in the load
@@ -33,13 +33,17 @@
 ## @qcode{".fig"} or @qcode{".ofig"}, in that order.
 ##
 ## @var{copies} is an optional input indicating whether a new figure should
-## always be created (@qcode{"new"}) or if an already opened one can be reused
-## (@qcode{"reuse"}).  Default is @qcode{"new"}.
+## be created (@qcode{"new"}) or whether an existing figure may be reused
+## (@qcode{"reuse"}).  An existing figure may be reused if the
+## @qcode{"FileName"} property matches the specified input @var{filename}.
+## When a figure is reused it becomes the active figure and is shown on top
+## of other figures.  If the figure was offscreen, it is re-positioned to be
+## onscreen.  The default value for @var{copies} is @qcode{"new"}.
 ##
-## @var{visibility} is an optional input indicating whether to make the figure
-## visible (@qcode{"visible"}) or not (@qcode{"invisible"}).  Default is
-## @qcode{"visible"} unless this setting is stored in @var{filename}, in which
-## case the latter will be used instead.
+## @var{visibility} is an optional input indicating whether to show the figure
+## (@qcode{"visible"}) or not (@qcode{"invisible"}).  When @var{visibility} is
+## specified as an input to @code{openfig} it overrides the visibility setting
+## stored stored in @var{filename}.
 ##
 ## @seealso{open, hgload, savefig, struct2hdl}
 ## @end deftypefn
@@ -51,8 +55,8 @@ function h = openfig (filename = "Untitled.fig", varargin)
   endif
 
   ## Check input filename
-  [d,n,ext] = fileparts (filename);
   if (isempty (file_in_loadpath (filename)))
+    [d,n,ext] = fileparts (filename);
     if (isempty (ext))
       filename = fullfile (d, [n ".fig"]);
       if (isempty (file_in_loadpath (filename)))
@@ -67,12 +71,12 @@ function h = openfig (filename = "Untitled.fig", varargin)
   endif
   filename = file_in_loadpath (filename);
 
-  ## Get optional arguments
+  ## Process optional arguments
   copies = true;
   visibility = {};
   for i = 1:numel (varargin)
     if (! ischar (varargin{i}))
-      error ("openfig: input argument must be a char array");
+      error ("openfig: input argument %d must be a string", i);
     endif
     switch (tolower (varargin{i}))
       case "reuse"
@@ -80,9 +84,9 @@ function h = openfig (filename = "Untitled.fig", varargin)
       case "new"
         copies = true;
       case "visible"
-        visibility = {"Visible", "on"};
+        visibility = {"visible", "on"};
       case "invisible"
-        visibility = {"Visible", "off"};
+        visibility = {"visible", "off"};
       otherwise
         error ("openfig: unknown option '%s'", varargin{i});
     endswitch
@@ -90,7 +94,7 @@ function h = openfig (filename = "Untitled.fig", varargin)
 
   ## Reuse an existing figure?
   if (! copies)
-    h = findobj (allchild (0), "Type", "figure", "FileName", filename);
+    h = findobj (allchild (0), "type", "figure", "FileName", filename);
     if (! isempty (h))
       h = h(end);
       if (! isempty (visibility))
@@ -108,12 +112,10 @@ function h = openfig (filename = "Untitled.fig", varargin)
 
 endfunction
 
-%!error openfig (1, 2, 3, 4)
-%!error openfig ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
 
 %!test
 %! unwind_protect
-%!   h1 = figure ("Visible", "off");
+%!   h1 = figure ("visible", "off");
 %!   ftmp = [tempname() ".ofig"];
 %!   hgsave (h1, ftmp);
 %!   close (h1);
@@ -126,4 +128,18 @@ endfunction
 %!   try, close (h1); end_try_catch
 %!   try, close (h2); end_try_catch
 %!   try, close (h3); end_try_catch
+%! end_unwind_protect
+
+%!error openfig (1, 2, 3, 4)
+%!error <cannot find file> openfig ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
+%!error <cannot find file> openfig ("%%_A_REALLY_UNLIKELY_FILENAME_%%.fig")
+%!error <unknown option 'foobar'>
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   ftmp = [tempname() ".ofig"];
+%!   hgsave (h, ftmp);
+%!   openfig (ftmp, "foobar"); 
+%! unwind_protect_cleanup
+%!   unlink (ftmp);
+%!   close (h);
 %! end_unwind_protect

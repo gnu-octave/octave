@@ -7281,7 +7281,7 @@ axes::properties::update_position (void)
   double outer_top = inner_top + top_margin;
 
   double outer_width = outer_right - outer_left;
-  double outer_height = outer_top = outer_bottom;
+  double outer_height = outer_top - outer_bottom;
 
   Matrix outerbox (1, 4);
 

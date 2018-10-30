@@ -59,6 +59,10 @@ namespace octave
     void zoom_normal (void);
     //!@}
 
+  protected:
+
+     void wheelEvent (QWheelEvent *we);
+
   private:
 
     QHelpEngine *m_help_engine;

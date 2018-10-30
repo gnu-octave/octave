@@ -614,4 +614,20 @@ namespace octave
     zoomIn (- m_zoom_level);
     m_zoom_level = 0;
   }
+
+  void documentation_browser::wheelEvent (QWheelEvent *we)
+  {
+    if (we->modifiers () == Qt::ControlModifier)
+      {
+        if (we->delta () > 0)
+          zoom_in ();
+        else
+          zoom_out ();
+
+        we->accept ();
+      }
+    else
+      QTextEdit::wheelEvent (we);
+  }
+
 }

@@ -18,52 +18,63 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} movegui
-## @deftypefnx  {Command} {} movegui (@var{h})
-## @deftypefnx  {Command} {} movegui (@var{pos})
-## @deftypefnx  {Command} {} movegui (@var{h}, @var{pos})
-## @deftypefnx  {Command} {} movegui (@var{h}, @var{event})
-## @deftypefnx  {Command} {} movegui (@var{h}, @var{event}, @var{pos})
+## @deftypefn  {} {} movegui
+## @deftypefnx {} {} movegui (@var{h})
+## @deftypefnx {} {} movegui (@var{pos})
+## @deftypefnx {} {} movegui (@var{h}, @var{pos})
+## @deftypefnx {} {} movegui (@var{h}, @var{event})
+## @deftypefnx {} {} movegui (@var{h}, @var{event}, @var{pos})
 ## Move a figure specified by figure handle @var{h} to a position on the screen
 ## defined by @var{pos}.
 ##
 ## @var{h} is a figure handle, or a handle to a graphics object.  In the latter
-## case, its parent figure will be used.  If unspecified, @var{h} will be set to
-## the handle of the relevant figure if a callback is being executed, otherwise
-## it will be set to the handle of the current figure.
+## case, its parent figure will be used.  If unspecified, @var{h} will be
+## set to the handle of the relevant figure if a callback is being executed
+## (@code{gcbf}), otherwise it will be set to the handle of the current figure
+## (@code{gcf}).
 ##
-## @var{pos} is a numeric or char array.  If a numeric array, @var{pos} is a
-## two-value array specifying the horizontal and vertical offsets of the figure
-## with respect to the screen.  A positive value indicates the offset between the
-## left (resp. bottom) of the screen and the left (resp. bottom) of the figure.
-## A negative value indicates the offset between the right (resp. top) of the
-## screen and the right (resp. top) of the figure.
+## @var{pos} is either a two-value numeric vector or a string.  If @var{pos} is
+## numeric then it must be of the form @code{[h, v]} specifying the horizontal
+## and vertical offsets of the figure with respect to the screen.  A positive
+## value indicates the offset between the left (or bottom for the vertical
+## component) of the screen, and the left (or bottom) of the figure.  A
+## negative value indicates the offset between the right (or top) of the screen
+## and the right (or top) of the figure.
 ##
-## Possible values for @var{pos} as a char array are
+## Possible values for @var{pos} as a string are
 ##
 ## @table @code
 ## @item north
 ## Top center of the screen.
+##
 ## @item south
 ## Bottom center of the screen.
+##
 ## @item east
 ## Right center of the screen.
+##
 ## @item west
 ## Left center of the screen.
+##
 ## @item northeast
 ## Top right of the screen.
+##
 ## @item northwest
 ## Top left of the screen.
+##
 ## @item southeast
 ## Bottom right of the screen.
+##
 ## @item southwest
 ## Bottom left of the screen.
+##
 ## @item center
 ## Center of the screen.
-## @item onscreen
-## The figure will be minimally moved to be entirely visible on the screen, with
-## a 30 pixel extra padding from the sides of the screen.
-## This is the default value if none is provided.
+##
+## @item onscreen (default)
+## The figure will be minimally moved to be entirely visible on the screen,
+## with a 30 pixel extra padding from the sides of the screen.  This is the
+## default value if none is provided.
 ## @end table
 ##
 ## @var{event} contains event data that will be ignored.  This construct
@@ -102,27 +113,27 @@ function movegui (varargin)
     if (isempty (h))
       h = gcf ();
     endif
-  endif
-  if (ishghandle (h))
+  elseif (ishghandle (h))
     h = ancestor (h, "figure");
   else
-    error ("movegui: invalid figure handle");
+    error ("movegui: H must be a graphics handle");
   endif
 
-  ## Get current position
-  units = get (h, "Units");
-  set (h, "Units", "pixels");
-  fpos = get (h, "Position"); # OuterPosition seems unreliable
-  set (h, "Units", units);
+  ## Get current position in pixels
+  units_fig = get (h, "units");
+  set (h, "units", "pixels");
+  fpos = get (h, "position");  # OuterPosition seems unreliable
+  set (h, "units", units_fig);
 
-  ## Get screen size
-  units_groot = get (groot (), "Units");
+  ## Get screen size in pixels
+  units_groot = get (groot (), "units");
+  set (groot (), "units", "pixels");
   screen_size = get (groot (), "ScreenSize");
-  set (groot (), "Units", units_groot);
+  set (groot (), "units", units_groot);
 
   ## Set default figure and screen border sizes [left, top, right, bottom]
-  f = [0 90 0 30];
-  s = [0  0 0 30];
+  f = [0, 90, 0, 30];
+  s = [0,  0, 0, 30];
 
   ## Make sure figure is not larger than screen
   fpos(1) = max (fpos(1), 1);
@@ -143,23 +154,23 @@ function movegui (varargin)
   elseif (ischar (pos))
     switch (tolower (pos))
       case "north"
-        fpos(1:2) = [x(2) y(3)];
+        fpos(1:2) = [x(2), y(3)];
       case "south"
-        fpos(1:2) = [x(2) y(1)];
+        fpos(1:2) = [x(2), y(1)];
       case "east"
-        fpos(1:2) = [x(3) y(2)];
+        fpos(1:2) = [x(3), y(2)];
       case "west"
-        fpos(1:2) = [x(1) y(2)];
+        fpos(1:2) = [x(1), y(2)];
       case "northeast"
-        fpos(1:2) = [x(3) y(3)];
+        fpos(1:2) = [x(3), y(3)];
       case "northwest"
-        fpos(1:2) = [x(1) y(3)];
+        fpos(1:2) = [x(1), y(3)];
       case "southeast"
-        fpos(1:2) = [x(3) y(1)];
+        fpos(1:2) = [x(3), y(1)];
       case "southwest"
-        fpos(1:2) = [x(1) y(1)];
+        fpos(1:2) = [x(1), y(1)];
       case "center"
-        fpos(1:2) = [x(2) y(2)];
+        fpos(1:2) = [x(2), y(2)];
       case "onscreen"
         if (fpos(1) > x(3))
           fpos(1) = x(3) - 30;
@@ -181,16 +192,18 @@ function movegui (varargin)
   endif
 
   ## Move figure
-  units = get (h, "Units");
-  set (h, "Units", "pixels");
-  set (h, "Position", fpos);
-  set (h, "Units", units);
+  set (h, "units", "pixels");
+  set (h, "position", fpos);
+  set (h, "units", units_fig);
 
 endfunction
 
+
+## FIXME: This test does not verify the results, only that the function
+##        can be invoked by different methods.
 %!test
 %! unwind_protect
-%!   h = figure ("Visible", "off");
+%!   h = figure ("visible", "off");
 %!   pos = {[10 10], [10 -10], [-10 10], [-10 -10], [10 10]',...
 %!     "north", "east", "south", "west", ...
 %!     "northwest", "northeast", "southeast", "southwest", ...
@@ -202,6 +215,24 @@ endfunction
 %!   endfor
 %!   movegui ();
 %!   movegui (h);
+%! unwind_protect_cleanup
+%!   close (h);
+%! end_unwind_protect
+
+## Test input validation
+%!error movegui (1,2,3,4)
+%!error <H must be a graphics handle> movegui (-1, [1,1])
+%!error <invalid position>
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   movegui (h, "foobar");
+%! unwind_protect_cleanup
+%!   close (h);
+%! end_unwind_protect
+%!error <invalid position>
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   movegui (h, [1, 2, 3]);
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect

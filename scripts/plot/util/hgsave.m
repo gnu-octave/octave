@@ -63,10 +63,14 @@ function hgsave (h, filename, fmt = "-binary")
     filename = h;
     h = get (0, "currentfigure");
     if (isempty (h))
-      error ("hgsave: No current figure to save");
+      error ("hgsave: no current figure to save");
     endif
   elseif (! (ishghandle (h) && ischar (filename)))
     print_usage ();
+  endif
+
+  if (! isscalar (h))
+    error ("hgsave: H must be a single graphics handle");
   endif
 
   ## Check file extension
@@ -127,3 +131,11 @@ endfunction
 %!error hgsave ()
 %!error hgsave (1, 2, 3, 4)
 %!error hgsave ("abc", "def")
+%!error <H must be a single graphics handle>
+%! unwind_protect
+%!   hf = figure ("visible", "off");
+%!   hax = axes ();
+%!   hgsave ([hf, hax], "foobar");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

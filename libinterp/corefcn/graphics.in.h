@@ -3202,6 +3202,7 @@ public:
     {
       alphamap.add_constraint (dim_vector (-1, 1));
       colormap.add_constraint (dim_vector (-1, 3));
+      colormap.add_constraint (dim_vector (0, 0));
       outerposition.add_constraint (dim_vector (1, 4));
       outerposition.add_constraint (FINITE);
       paperposition.add_constraint (dim_vector (1, 4));

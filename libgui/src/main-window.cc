@@ -2482,7 +2482,10 @@ namespace octave
   {
     // INTERPRETER THREAD
 
-    Fhistory (ovl ("-c"));
+    history_system& history_sys
+      = __get_history_system__ ("main_window::clear_history_callback");
+
+    history_sys.do_history (ovl ("-c"));
   }
 
   void main_window::refresh_workspace_callback (void)

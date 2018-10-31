@@ -39,6 +39,7 @@ namespace octave
   class dynamic_loader;
   class gtk_manager;
   class help_system;
+  class history_system;
   class input_system;
   class interpreter;
   class load_path;
@@ -52,6 +53,8 @@ namespace octave
   extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
 
   extern help_system& __get_help_system__ (const std::string& who);
+
+  extern history_system& __get_history_system__ (const std::string& who);
 
   extern input_system& __get_input_system__ (const std::string& who);
 

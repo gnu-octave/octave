@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "load-path.h"
 #include "load-save.h"
+#include "oct-hist.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
 #include "ov-typeinfo.h"
@@ -173,6 +174,11 @@ namespace octave
       return m_output_system;
     }
 
+    history_system& get_history_system (void)
+    {
+      return m_history_system;
+    }
+
     dynamic_loader& get_dynamic_loader (void)
     {
       return m_dynamic_loader;
@@ -277,6 +283,8 @@ namespace octave
     input_system m_input_system;
 
     output_system m_output_system;
+
+    history_system m_history_system;
 
     dynamic_loader m_dynamic_loader;
 

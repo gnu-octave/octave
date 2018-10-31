@@ -141,8 +141,8 @@ error message.
     return ovl (-1, "");
 }
 
-DEFUNX ("exec", Fexec, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("exec", Fexec, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})
 Replace current process with a new process.
 
@@ -191,7 +191,9 @@ error message.
       exec_args[0] = exec_file;
     }
 
-  octave_history_write_timestamp ();
+  octave::history_system& history_sys = interp.get_history_system ();
+
+  history_sys.write_timestamp ();
 
   if (! octave::command_history::ignoring_entries ())
     octave::command_history::clean_up_and_save ();

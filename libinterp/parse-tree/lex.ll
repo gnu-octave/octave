@@ -3404,6 +3404,14 @@ namespace octave
       }
   }
 
+  bool
+  base_lexer::input_from_tmp_history_file (void)
+  {
+    history_system& history_sys = m_interpreter.get_history_system ();
+
+    return history_sys.input_from_tmp_file ();
+  }
+
   void
   base_lexer::push_start_state (int state)
   {

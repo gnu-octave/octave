@@ -29,12 +29,83 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-hist.h"
 
-extern void initialize_history (bool read_history_file = false);
+namespace octave
+{
+  class history_system
+  {
+  public:
 
-// Write timestamp to history file.
-extern void octave_history_write_timestamp (void);
+    history_system (interpreter& interp);
 
-// TRUE means input is coming from temporary history file.
-extern bool input_from_tmp_history_file;
+    history_system (const history_system&) = delete;
+
+    history_system& operator = (const history_system&) = delete;
+
+    ~history_system (void) = default;
+
+    void initialize (bool read_history_file = false);
+
+    void write_timestamp (void);
+
+    octave_value input_from_tmp_file (const octave_value_list& args,
+                                      int nargout);
+
+    bool input_from_tmp_file (void) const
+    {
+      return m_input_from_tmp_file;
+    }
+
+    bool input_from_tmp_file (bool flag)
+    {
+      return set (m_input_from_tmp_file, flag);
+    }
+
+    octave_value timestamp_format_string (const octave_value_list& args,
+                                          int nargout);
+
+    std::string timestamp_format_string (void) const
+    {
+      return m_timestamp_format_string;
+    }
+
+    std::string timestamp_format_string (const std::string& file)
+    {
+      return set (m_timestamp_format_string, file);
+    }
+
+    string_vector
+    do_history (const octave_value_list& args = octave_value_list (),
+                int nargout = 0);
+
+    void do_edit_history (const octave_value_list& args = octave_value_list ());
+
+    void do_run_history (const octave_value_list& args = octave_value_list ());
+
+  private:
+
+    interpreter& m_interpreter;
+
+    // TRUE means input is coming from temporary history file.
+    bool m_input_from_tmp_file;
+
+    // The format of the timestamp marker written to the history file when
+    // Octave exits.
+    std::string m_timestamp_format_string;
+
+    static std::string default_file (void);
+
+    static int default_size (void);
+
+    static std::string default_timestamp_format (void);
+
+    template <typename T>
+    T set (T& var, const T& new_val)
+    {
+      T old_val = var;
+      var = new_val;
+      return old_val;
+    }
+  };
+}
 
 #endif

@@ -362,6 +362,7 @@ namespace octave
       m_help_system (*this),
       m_input_system (*this),
       m_output_system (*this),
+      m_history_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
       m_load_save_system (*this),
@@ -563,7 +564,7 @@ namespace octave
               command_history::ignore_entries ();
           }
 
-        ::initialize_history (read_history_file);
+        m_history_system.initialize (read_history_file);
 
         if (! m_app_context)
           command_history::ignore_entries ();
@@ -1012,7 +1013,7 @@ namespace octave
 
     OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
-    OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
+    OCTAVE_SAFE_CALL (m_history_system.write_timestamp, ());
 
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
@@ -1178,6 +1179,8 @@ namespace octave
     m_load_save_system.crash_dumps_octave_core (false);
     m_load_save_system.save_default_options ("-mat-binary");
 
+    m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
+
     Fbeep_on_error (octave_value (true));
     Fconfirm_recursive_rmdir (octave_value (false));
 
@@ -1185,7 +1188,6 @@ namespace octave
     Fdisable_permutation_matrix (octave_value (true));
     Fdisable_range (octave_value (true));
     Ffixed_point_format (octave_value (true));
-    Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
     Fprint_empty_dimensions (octave_value (false));
     Fstruct_levels_to_print (octave_value (0));
 

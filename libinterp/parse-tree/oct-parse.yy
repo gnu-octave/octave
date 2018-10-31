@@ -3414,7 +3414,7 @@ namespace octave
           warning_with_id ("Octave:future-time-stamp",
                            "time stamp for '%s' is in the future", nm.c_str ());
       }
-    else if (! input_from_tmp_history_file
+    else if (! m_lexer.input_from_tmp_history_file ()
              && ! m_lexer.m_force_script
              && m_lexer.m_reading_script_file
              && m_lexer.m_fcn_file_name == id_name)

@@ -711,6 +711,8 @@ namespace octave
 
     virtual bool input_from_eval_string (void) const { return false; }
 
+    bool input_from_tmp_history_file (void);
+
     void push_start_state (int state);
 
     void pop_start_state (void);

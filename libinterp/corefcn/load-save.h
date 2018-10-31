@@ -29,76 +29,266 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mach-info.h"
-
-namespace octave
-{
-  class symbol_record;
-}
+#include "symrec.h"
 
 class string_vector;
 class octave_value;
 
-// FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
-// Similarly, save_as_floats may be an option for LS_BINARY, LS_HDF5 etc.
-enum load_save_format_type
+namespace octave
 {
-  LS_TEXT,
-  LS_BINARY,
-  LS_MAT_ASCII,
-  LS_MAT_BINARY,
-  LS_MAT5_BINARY,
-  LS_MAT7_BINARY,
-  LS_HDF5,
-  LS_UNKNOWN
-};
+  class interpreter;
+  class load_save_format;
 
-enum load_save_format_options
-{
-  // LS_MAT_ASCII options (not exclusive)
-  LS_MAT_ASCII_LONG = 1,
-  LS_MAT_ASCII_TABS = 2,
-  // LS_MAT_BINARY options
-  LS_MAT_BINARY_V5 = 1,
-  LS_MAT_BINARY_V7,
-  // zero means no option.
-  LS_NO_OPTION = 0
-};
+  class load_save_system
+  {
+  public:
 
-class load_save_format
-{
-public:
-  load_save_format (load_save_format_type t,
-                    load_save_format_options o = LS_NO_OPTION)
-    : type (t), opts (o) { }
-  operator int (void) const
-  { return type; }
-  int type, opts;
-};
+    // FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
+    // Similarly, save_as_floats may be an option for LS_BINARY,
+    // LS_HDF5 etc.
+
+    enum format_type
+      {
+        TEXT,
+        BINARY,
+        MAT_ASCII,
+        MAT_BINARY,
+        MAT5_BINARY,
+        MAT7_BINARY,
+        HDF5,
+        UNKNOWN
+      };
+
+    enum format_options
+      {
+        // MAT_ASCII options (not exclusive)
+        MAT_ASCII_LONG = 1,
+        MAT_ASCII_TABS = 2,
+        // MAT_BINARY options
+        MAT_BINARY_V5 = 1,
+        MAT_BINARY_V7,
+        // zero means no option.
+        NO_OPTION = 0
+      };
+
+    load_save_system (interpreter& interp);
+
+    ~load_save_system (void);
+
+    load_save_system (const load_save_system&) = delete;
+
+    load_save_system& operator = (const load_save_system&) = delete;
+
+    octave_value crash_dumps_octave_core (const octave_value_list& args,
+                                          int nargout);
+
+    bool crash_dumps_octave_core (void) const
+    {
+      return m_crash_dumps_octave_core;
+    }
+
+    bool crash_dumps_octave_core (bool flag)
+    {
+      return set (m_crash_dumps_octave_core, flag);
+    }
+
+    octave_value octave_core_file_limit (const octave_value_list& args,
+                                         int nargout);
+
+    double octave_core_file_limit (void) const
+    {
+      return m_octave_core_file_limit;
+    }
+
+    double octave_core_file_limit (double limit)
+    {
+      return set (m_octave_core_file_limit, limit);
+    }
+
+    octave_value octave_core_file_name (const octave_value_list& args,
+                                        int nargout);
+
+    std::string octave_core_file_name (void) const
+    {
+      return m_octave_core_file_name;
+    }
+
+    std::string octave_core_file_name (const std::string& file)
+    {
+      return set (m_octave_core_file_name, file);
+    }
+
+    octave_value save_default_options (const octave_value_list& args,
+                                       int nargout);
+
+    std::string save_default_options (void) const
+    {
+      return m_save_default_options;
+    }
+
+    std::string save_default_options (const std::string& options)
+    {
+      return set (m_save_default_options, options);
+    }
+
+    octave_value octave_core_file_options (const octave_value_list& args,
+                                           int nargout);
+
+    std::string octave_core_file_options (void) const
+    {
+      return m_octave_core_file_options;
+    }
+
+    std::string octave_core_file_options (const std::string& options)
+    {
+      return set (m_octave_core_file_options, options);
+    }
+
+    octave_value save_header_format_string (const octave_value_list& args,
+                                            int nargout);
+
+    std::string save_header_format_string (void) const
+    {
+      return m_save_header_format_string;
+    }
+
+    std::string save_header_format_string (const std::string& format)
+    {
+      return set (m_save_header_format_string, format);
+    }
+
+    static load_save_format get_file_format (const std::string& fname,
+                                             const std::string& orig_fname,
+                                             bool& use_zlib,
+                                             bool quiet = false);
+
+    // FIXME: this is probably not the best public interface for
+    // loading and saving variables, but it is what is currently
+    // needed for the Fload and Fsave functions.
+
+    octave_value load_vars (std::istream& stream,
+                            const std::string& orig_fname,
+                            const load_save_format& fmt,
+                            mach_info::float_format flt_fmt,
+                            bool list_only, bool swap, bool verbose,
+                            const string_vector& argv, int argv_idx,
+                            int argc, int nargout);
+
+    static string_vector
+    parse_save_options (const string_vector& argv, load_save_format& fmt,
+                        bool& append, bool& save_as_floats, bool& use_zlib);
+
+    static string_vector
+    parse_save_options (const std::string& arg, load_save_format& fmt,
+                        bool& append, bool& save_as_floats, bool& use_zlib);
+
+    void save_vars (const string_vector& argv, int argv_idx, int argc,
+                    std::ostream& os, const load_save_format& fmt,
+                    bool save_as_floats, bool write_header_info);
+
+    void dump_octave_core (void);
+
+    octave_value_list
+    load (const octave_value_list& args = octave_value_list (),
+          int nargout = 0);
+
+    octave_value_list
+    save (const octave_value_list& args = octave_value_list (),
+          int nargout = 0);
+
+  private:
+
+    interpreter& m_interpreter;
+
+    // Write octave-workspace file if Octave crashes or is killed by a
+    // signal.
+    bool m_crash_dumps_octave_core;
+
+    // The maximum amount of memory (in kilobytes) that we will
+    // attempt to write to the Octave core file.
+    double m_octave_core_file_limit;
+
+    // The name of the Octave core file.
+    std::string m_octave_core_file_name;
+
+    // The default output format.  May be one of "binary", "text",
+    // "mat-binary", or "hdf5".
+    std::string m_save_default_options;
+
+    // The output format for Octave core files.
+    std::string m_octave_core_file_options;
+
+    // The format string for the comment line at the top of
+    // text-format save files.  Passed to strftime.  Should begin with
+    // '#' and contain no newline characters.
+    std::string m_save_header_format_string;
+
+    void write_header (std::ostream& os, const load_save_format& fmt);
+
+    size_t save_vars (std::ostream& os, const std::string& pattern,
+                      const load_save_format& fmt, bool save_as_floats);
+
+    void do_save (std::ostream& os, const octave_value& tc,
+                  const std::string& name, const std::string& help,
+                  bool global, const load_save_format& fmt,
+                  bool save_as_floats);
+
+    void do_save (std::ostream& os, const symbol_record& sr,
+                  symbol_record::context_id context,
+                  const load_save_format& fmt, bool save_as_floats);
+
+    size_t save_fields (std::ostream& os, const octave_scalar_map& m,
+                        const std::string& pattern,
+                        const load_save_format& fmt, bool save_as_floats);
+
+    void dump_octave_core (std::ostream& os, const char *fname,
+                           const load_save_format& fmt, bool save_as_floats);
+
+    void install_loaded_variable (const std::string& name,
+                                  const octave_value& val,
+                                  bool global, const std::string& /*doc*/);
+
+    static std::string init_save_header_format (void);
+
+    static load_save_format get_file_format (std::istream& file,
+                                             const std::string& filename);
+
+    template <typename T>
+    T set (T& var, const T& new_val)
+    {
+      T old_val = var;
+      var = new_val;
+      return old_val;
+    }
+  };
+
+  class load_save_format
+  {
+  public:
+
+    load_save_format (load_save_system::format_type type,
+                      load_save_system::format_options options = load_save_system::NO_OPTION)
+      : m_type (type), m_options (options)
+    { }
+
+    void set_type (load_save_system::format_type type) { m_type = type; }
+
+    load_save_system::format_type type (void) const { return m_type; }
+
+    void set_option (load_save_system::format_options option)
+    {
+      m_options |= option;
+    }
+
+    int options (void) const { return m_options; }
+
+  private:
+
+    load_save_system::format_type m_type;
+    int m_options;
+  };
+}
 
 extern void dump_octave_core (void);
-
-extern int
-read_binary_file_header (std::istream& is, bool& swap,
-                         octave::mach_info::float_format& flt_fmt,
-                         bool quiet = false);
-
-extern octave_value
-do_load (std::istream& stream, const std::string& orig_fname,
-         load_save_format format, octave::mach_info::float_format flt_fmt,
-         bool list_only, bool swap, bool verbose,
-         const string_vector& argv, int argv_idx, int argc, int nargout);
-
-extern OCTINTERP_API bool is_octave_data_file (const std::string& file);
-
-extern void
-do_save (std::ostream& os, const octave::symbol_record& sr,
-         load_save_format fmt, bool save_as_floats);
-
-extern void
-write_header (std::ostream& os, load_save_format format);
-
-extern void octave_prepare_hdf5 (void);
-
-extern void octave_finalize_hdf5 (void);
 
 #endif

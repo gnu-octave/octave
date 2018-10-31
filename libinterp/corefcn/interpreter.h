@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "help.h"
 #include "input.h"
 #include "load-path.h"
+#include "load-save.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
 #include "ov-typeinfo.h"
@@ -182,6 +183,11 @@ namespace octave
       return m_load_path;
     }
 
+    load_save_system& get_load_save_system (void)
+    {
+      return m_load_save_system;
+    }
+
     symbol_table& get_symbol_table (void)
     {
       return m_symbol_table;
@@ -275,6 +281,8 @@ namespace octave
     dynamic_loader m_dynamic_loader;
 
     load_path m_load_path;
+
+    load_save_system m_load_save_system;
 
     type_info m_type_info;
 

@@ -364,6 +364,7 @@ namespace octave
       m_output_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
+      m_load_save_system (*this),
       m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
@@ -409,8 +410,6 @@ namespace octave
     initialize_default_warning_state ();
 
     octave_ieee_init ();
-
-    octave_prepare_hdf5 ();
 
     initialize_xerbla_error_handler ();
 
@@ -1031,8 +1030,6 @@ namespace octave
 
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
-    OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
-
     OCTAVE_SAFE_CALL (flush_stdout, ());
 
     // Don't call singleton_cleanup_list::cleanup until we have the
@@ -1178,16 +1175,18 @@ namespace octave
 
     m_evaluator.PS4 ("");
 
+    m_load_save_system.crash_dumps_octave_core (false);
+    m_load_save_system.save_default_options ("-mat-binary");
+
     Fbeep_on_error (octave_value (true));
     Fconfirm_recursive_rmdir (octave_value (false));
-    Fcrash_dumps_octave_core (octave_value (false));
+
     Fdisable_diagonal_matrix (octave_value (true));
     Fdisable_permutation_matrix (octave_value (true));
     Fdisable_range (octave_value (true));
     Ffixed_point_format (octave_value (true));
     Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
     Fprint_empty_dimensions (octave_value (false));
-    Fsave_default_options (octave_value ("-mat-binary"));
     Fstruct_levels_to_print (octave_value (0));
 
     disable_warning ("Octave:abbreviated-property-match");

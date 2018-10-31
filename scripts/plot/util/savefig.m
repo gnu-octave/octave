@@ -32,17 +32,22 @@
 ## @var{filename} does not have an extension then the default extension
 ## @file{".fig"} will be added.
 ##
-## A third input @qcode{"compact"} is accepted for Matlab compatibility, but
-## ignored.
+## If the optional third input @qcode{"compact"} is present then the data
+## will be compressed to save more space.
 ##
 ## @seealso{hgsave, hdl2struct, openfig}
 ## @end deftypefn
 
 function savefig (varargin)
 
+  if (nargin > 3)
+    print_usage ();
+  endif
+
   ## Default values for input arguments
   h = [];
   filename = "Untitled.fig";
+  fmt = "-binary";
 
   ## Check input arguments
   if (nargin == 1)
@@ -53,7 +58,7 @@ function savefig (varargin)
     else
       error ("savefig: first argument must be a figure handle or filename");
     endif
-  elseif (nargin == 2 || nargin == 3)
+  else
     if (! all (isfigure (varargin{1})))
       error ("savefig: H must be a valid figure handle");
     endif
@@ -62,9 +67,13 @@ function savefig (varargin)
       error ("savefig: FILENAME must be a string");
     endif
     filename = varargin{2};
-    # Input "compact" ignored (Matlab compatibility)
-  elseif (nargin > 3)
-    print_usage ();
+    if (nargin == 3)
+      if (strcmpi (varargin{3}, "compact"))
+        fmt = "-zip";
+      else
+        warning ("savefig: unrecognized option '%s'", varargin{3});
+      endif
+    endif
   endif
 
   ## Check figure handle input
@@ -79,7 +88,7 @@ function savefig (varargin)
   endif
 
   ## Save handles to file
-  hgsave (h, filename);
+  hgsave (h, filename, fmt);
 
 endfunction
 
@@ -104,6 +113,13 @@ endfunction
 %! unwind_protect
 %!   h = figure ("visible", "off");
 %!   savefig (h, -1);
+%! unwind_protect_cleanup
+%!   close (h);
+%! end_unwind_protect
+%!warning <unrecognized option 'foobar'>
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   savefig (h, "myfig.fig", "foobar");
 %! unwind_protect_cleanup
 %!   close (h);
 %! end_unwind_protect

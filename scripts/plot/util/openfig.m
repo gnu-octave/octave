@@ -94,21 +94,28 @@ function h = openfig (filename = "Untitled.fig", varargin)
 
   ## Reuse an existing figure?
   if (! copies)
-    h = findobj (allchild (0), "type", "figure", "FileName", filename);
-    if (! isempty (h))
-      h = h(end);
+    htmp = findobj (allchild (0), "type", "figure", "FileName", filename);
+    if (! isempty (htmp))
+      htmp = htmp(end);
       if (! isempty (visibility))
-        set (h, visibility{:});
+        set (htmp, visibility{:});
       endif
-      movegui (h, "onscreen");
+      movegui (htmp, "onscreen");
+      if (nargout > 0)
+        h = htmp;
+      endif
       return;
     endif
   endif
 
   ## Load graphics objects from file
   prop_struct = cell2struct (visibility(2:2:end), visibility(1:2:end), 2);
-  h = hgload (filename, prop_struct);
-  set (h, "FileName", filename);
+  htmp = hgload (filename, prop_struct);
+  set (htmp, "FileName", filename);
+
+  if (nargout > 0)
+    h = htmp;
+  endif
 
 endfunction
 

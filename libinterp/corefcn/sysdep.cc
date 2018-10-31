@@ -1054,17 +1054,21 @@ returning the empty string if no key is available.
   return octave_value (s);
 }
 
-DEFUN (pause, args, ,
+// State of the pause system
+static bool Vpause_enabled = true;
+
+DEFUN (pause, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} pause ()
 @deftypefnx {} {} pause (@var{n})
-Suspend the execution of the program for @var{n} seconds.
+@deftypefnx {} {@var{old_state} = } pause ("on")
+@deftypefnx {} {@var{old_state} = } pause ("off")
+@deftypefnx {} {@var{old_state} = } pause ("query")
+Suspend the execution of the program or change the state of the pause function.
 
 If invoked without an input arguments then the program is suspended until a
-character is typed.
-
-@var{n} is a positive real value and may be a fraction of a second,
-for example:
+character is typed. If argument @var{n} is a positive real value, it indicates 
+the number of seconds the program shall be suspended, for example:
 
 @example
 @group
@@ -1084,34 +1088,70 @@ clc;
 @end group
 @end example
 
+If invoked with a string argument "on", "off" or "query", the state of the pause
+function is changed or queried. When the state is "off", the pause function
+returns emediately. The optional return value contains the previous state of 
+the pause function.  In the following example pause is disabled locally:
+
+@example
+@group
+old_state = pause ("off");
+tic; pause (0.05); toc
+     @print{} Elapsed time is 3.00407e-05 seconds.
+pause (old_state);
+@end group
+@end example
+
 While the program is supended, Octave still handles figures painting and 
 graphics callbacks execution.
 
 @seealso{kbhit}
 @end deftypefn */)
 {
+  octave_value_list retval;
+  
   int nargin = args.length ();
-
+  
   if (nargin > 1)
     print_usage ();
 
-  double dval;
-  
-  if (nargin == 0)
-    dval = octave_Inf;
-  else
-    dval = args(0).xdouble_value ("pause: N must be a scalar double value");
-
-  if (octave::math::isnan (dval))
-    warning ("pause: NaN is an invalid delay");
-  else
+  if (nargin == 1 && args(0).is_string ())
     {
-      Fdrawnow ();
+      bool saved_state = Vpause_enabled;
+      std::string state = args(0).string_value ();
       
-      octave::sleep (dval, true);
+      if (state == "on")
+        Vpause_enabled = true;
+      else if (state == "off")
+        Vpause_enabled = false;
+      else if (state == "query")
+        ;// Do nothing
+      else
+        error ("pause: first argument must be \"on\", \"off\" or \"query\"");
+      
+      if (nargout > 0 || state == "query")
+        retval.append (saved_state ? "on" : "off");
     }
+  else if (Vpause_enabled)
+    {
+      double dval;
+  
+      if (nargin == 0)
+        dval = octave_Inf;
+      else
+        dval = args(0).xdouble_value ("pause: N must be a scalar real value");
+
+      if (octave::math::isnan (dval))
+        warning ("pause: NaN is an invalid delay");
+      else
+        {
+          Fdrawnow ();
       
-  return ovl ();
+          octave::sleep (dval, true);
+        }
+    }
+
+  return retval;
 }
 
 /*

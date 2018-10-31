@@ -23,8 +23,8 @@
 ## @deftypefnx {} {} openfig (@dots{}, @var{copies})
 ## @deftypefnx {} {} openfig (@dots{}, @var{visibility})
 ## @deftypefnx {} {@var{h} =} openfig (@dots{})
-## Open a saved figure window from @var{filename} and return its graphics
-## handle @var{h}.
+## Read saved figure window(s) from @var{filename} and return graphics
+## handle(s) @var{h}.
 ##
 ## By default, @var{filename} is @qcode{"Untitled.fig"}.  If a full path is not
 ## specified, the file opened will be the first one encountered in the load
@@ -43,7 +43,7 @@
 ## @var{visibility} is an optional input indicating whether to show the figure
 ## (@qcode{"visible"}) or not (@qcode{"invisible"}).  When @var{visibility} is
 ## specified as an input to @code{openfig} it overrides the visibility setting
-## stored stored in @var{filename}.
+## stored in @var{filename}.
 ##
 ## @seealso{open, hgload, savefig, struct2hdl}
 ## @end deftypefn

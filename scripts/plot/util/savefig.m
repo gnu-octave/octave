@@ -23,7 +23,8 @@
 ## @deftypefnx {} {} savefig (@var{filename})
 ## @deftypefnx {} {} savefig (@var{h}, @var{filename})
 ## @deftypefnx {} {} savefig (@var{h}, @var{filename}, @qcode{"compact"})
-## Save graphics handle @var{h} to file @var{filename}.
+## Save figure windows specified by graphics handle(s) @var{h} to file
+## @var{filename}.
 #
 ## If unspecified, @var{h} is the current figure returned by @code{gcf}.
 ##
@@ -45,7 +46,7 @@ function savefig (varargin)
 
   ## Check input arguments
   if (nargin == 1)
-    if (isfigure (varargin{1}))
+    if (all (isfigure (varargin{1})))
       h = varargin{1};
     elseif (ischar (varargin{1}))
       filename = varargin{1};
@@ -53,12 +54,12 @@ function savefig (varargin)
       error ("savefig: first argument must be a figure handle or filename");
     endif
   elseif (nargin == 2 || nargin == 3)
-    if (! isfigure (varargin{1}))
+    if (! all (isfigure (varargin{1})))
       error ("savefig: H must be a valid figure handle");
     endif
     h = varargin{1};
     if (! ischar (varargin{2}))
-      error ("savefig: second argument must be a string");
+      error ("savefig: FILENAME must be a string");
     endif
     filename = varargin{2};
     # Input "compact" ignored (Matlab compatibility)
@@ -77,7 +78,7 @@ function savefig (varargin)
     filename = [filename ".fig"];
   endif
 
-  ## Save file
+  ## Save handles to file
   hgsave (h, filename);
 
 endfunction
@@ -98,8 +99,8 @@ endfunction
 ## Test input validation
 %!error savefig (1,2,3,4)
 %!error <must be a figure handle or filename> savefig (struct ())
-%!error <H must be a valid figure handle> savefig (-1, "foobar")
-%!error <second argument must be a string>
+%!error <H must be a valid figure handle> savefig ([0, -1], "foobar")
+%!error <FILENAME must be a string>
 %! unwind_protect
 %!   h = figure ("visible", "off");
 %!   savefig (h, -1);

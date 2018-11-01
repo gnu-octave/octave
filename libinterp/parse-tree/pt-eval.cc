@@ -1424,7 +1424,7 @@ namespace octave
 
 #if defined (HAVE_LLVM)
     if (user_function.is_special_expr ()
-        && tree_jit::execute (*this, args, retval))
+        && tree_jit::execute (user_function, args, retval))
       return retval;
 #endif
 

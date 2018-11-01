@@ -22,6 +22,7 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include "QTerminal.h"
+#include "gui-preferences.h"
 
 #if defined (Q_OS_WIN32)
 # include "win32/QWinTerminalImpl.h"
@@ -172,8 +173,9 @@ QTerminal::notice_settings (const QSettings *settings)
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
+  QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
   term_font.setFamily
-    (settings->value ("terminal/fontName", "Courier New").toString ());
+    (settings->value (cs_font.key, default_font).toString ());
   term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
   setTerminalFont (term_font);
 

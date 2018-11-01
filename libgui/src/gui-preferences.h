@@ -39,16 +39,40 @@ struct gui_pref
   QVariant  def;  // the default value
 };
 
+
+// Global preferences
+
+// Get the default monospaced font
+#if defined (Q_WS_X11)
+const QString global_font_family = "Monospace";
+#elif defined (Q_WS_WIN) || defined (Q_WS_MAC)
+const QString global_font_family = "Courier";
+#else
+const QString global_font_family = "Courier";
+#endif
+const gui_pref global_mono_font ("monospace_font", global_font_family);
+
+
+// Console preferences
+
+const gui_pref cs_font ("terminal/fontName", QVariant ());
+
+
+// Variable Editor preferences
+
+const gui_pref ve_font ("variable_editor/font_size", QVariant ());
+
+
 // Editor preferences
 
 // Octave comment strings
 const gui_pref ed_comment_str_old ("editor/octave_comment_string", QVariant (0));
 const gui_pref ed_comment_str ("editor/oct_comment_str", QVariant (0));
 const gui_pref ed_uncomment_str ("editor/oct_uncomment_str", QVariant (1 + 2 + 4 + 8));
-
 const QString ed_last_comment_str ("editor/oct_last_comment_str");
 const QStringList ed_comment_strings (QStringList () << "##" << "#" << "%"<< "%%" << "%!");
 const int ed_comment_strings_count = 5;
+
 
 // Session data
 const gui_pref ed_session_names ("editor/savedSessionTabs",

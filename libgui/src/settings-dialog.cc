@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
+#include "gui-preferences.h"
 
 #include <QButtonGroup>
 #include <QDir>
@@ -333,7 +334,8 @@ namespace octave
     editor_show_dbg_file->setChecked (settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ());
 
     // terminal
-    terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName", "Courier New").toString ()));
+    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    terminal_fontName->setCurrentFont (QFont (settings->value (cs_font.key, default_font).toString ()));
     terminal_fontSize->setValue (settings->value ("terminal/fontSize", 10).toInt ());
     terminal_history_buffer->setValue (settings->value ("terminal/history_buffer", 1000).toInt ());
     terminal_cursorUseForegroundColor->setChecked (settings->value ("terminal/cursorUseForegroundColor", true).toBool ());
@@ -400,7 +402,7 @@ namespace octave
     varedit_rowHeight->setValue (settings->value ("variable_editor/row_height", 10).toInt ());
     varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 
-    varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value ("terminal/fontName", "Courier New")).toString ()));
+    varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value (cs_font.key, default_font)).toString ()));
     varedit_fontSize->setValue (settings->value ("variable_editor/font_size", QVariant (10)).toInt ());
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_font, SLOT (setDisabled (bool)));
@@ -695,7 +697,10 @@ namespace octave
     color_picker *color;
     color_picker *bg_color;
     int default_size = 10;
-    QFont default_font = QFont ("Courier New", 10, -1, 0);
+
+    QString default_font_name
+      = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+    QFont default_font = QFont (default_font_name, 10, -1, 0);
     QColor default_color = QColor ();
     QColor dummy_color = QColor (255, 0, 255);
 

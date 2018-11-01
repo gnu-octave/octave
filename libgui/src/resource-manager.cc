@@ -206,8 +206,28 @@ namespace octave
     return m_settings_file;
   }
 
+  QString resource_manager::do_get_default_font_family (void)
+  {
+    // Get the default monospaced font
+#if defined (HAVE_QFONT_MONOSPACE)
+    QFont fixed_font;
+    fixed_font.setStyleHint (QFont::Monospace);
+    QString default_family = fixed_font.defaultFamily ();
+#else
+    QString default_family = global_font_family;
+#endif
+
+    std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
+    if (! env_default_family.empty ())
+      default_family = QString::fromStdString (env_default_family);
+
+    return default_family;
+  }
+
   void resource_manager::do_reload_settings (void)
   {
+    QString default_family = do_get_default_font_family ();
+
     if (! QFile::exists (m_settings_file))
       {
         QDir ("/").mkpath (m_settings_directory);
@@ -220,24 +240,7 @@ namespace octave
         QString settings_text = in.readAll ();
         qt_settings.close ();
 
-        // Get the default monospaced font
-#if defined (HAVE_QFONT_MONOSPACE)
-        QFont fixed_font;
-        fixed_font.setStyleHint (QFont::Monospace);
-        QString default_family = fixed_font.defaultFamily ();
-#elif defined (Q_WS_X11) || defined (Q_WS_WIN)
-        QString default_family = "Courier New";
-#elif defined (Q_WS_MAC)
-        QString default_family = "Courier";
-#else
-        QString default_family = "courier";
-#endif
-
-        std::string env_default_family
-          = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
-
-        if (! env_default_family.empty ())
-          default_family = QString::fromStdString (env_default_family);
+        default_family = do_get_default_font_family ();
 
         QString default_font_size = "10";
 
@@ -278,6 +281,12 @@ namespace octave
       }
 
     do_set_settings (m_settings_file);
+
+    // Write the default monospace font into the settings for later use by
+    // console and editor as fallbacks of their font prefernces.
+    if (m_settings)
+      m_settings->setValue (global_mono_font.key, default_family);
+
   }
 
   void resource_manager::do_set_settings (const QString& file)

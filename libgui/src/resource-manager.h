@@ -150,6 +150,8 @@ namespace octave
 
     QString do_get_settings_file (void);
 
+    QString do_get_default_font_family (void);
+
     void do_reload_settings (void);
 
     void do_set_settings (const QString& file);

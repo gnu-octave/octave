@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "shortcut-manager.h"
 #include "variable-editor.h"
 #include "variable-editor-model.h"
+#include "gui-preferences.h"
 
 // Code reuse functions
 
@@ -1362,18 +1363,17 @@ namespace octave
 
     QString font_name;
     int font_size;
+    QString default_font = settings->value (global_mono_font.key,
+                                            global_mono_font.def).toString ();
 
     if (m_use_terminal_font)
       {
-        font_name = settings->value ("terminal/fontName", "Courier New").toString ();
+        font_name = settings->value (cs_font.key, default_font).toString ();
         font_size = settings->value ("terminal/fontSize", 10).toInt ();
       }
     else
       {
-        font_name = settings->value ("variable_editor/font_name",
-                                     settings->value ("terminal/fontName",
-                                                      "Courier New")).toString ();
-
+        font_name = settings->value (ve_font.key, default_font).toString ();
         font_size = settings->value ("variable_editor/font_size", 10).toInt ();
       }
 

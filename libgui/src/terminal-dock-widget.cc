@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "terminal-dock-widget.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -63,8 +64,9 @@ namespace octave
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
+    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
     font.setFamily
-      (settings->value ("terminal/fontName", "Courier New").toString ());
+      (settings->value (cs_font.key, default_font).toString ());
     font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
 
     QFontMetrics metrics(font);

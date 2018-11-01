@@ -33,37 +33,41 @@
 ##
 ## The optional argument @var{icon} selects a dialog icon.
 ## It can be one of @qcode{"none"} (default), @qcode{"error"}, @qcode{"help"},
-## @qcode{"warn"} or @qcode{"custom"}. The latter must be followed at
-## least by an image array  @var{cdata} and eventually its associated
-## colormap for an indexed image.
+## @qcode{"warn"}, or @qcode{"custom"}.  The latter must be followed by an
+## image array @var{cdata}, and for indexed images the associated colormap.
 ##
-## Finally the optional argument @var{opt} controls the behavior of the dialog.
+## The final optional argument @var{opt} controls the behavior of the dialog.
 ## If @var{opt} is a string, it may be one of
 ##
 ## @table @asis
-## @item "modal"
-## The dialog is displayed "modal" which means it prevents users from
+## @item @qcode{"modal"}
+## The dialog is displayed @qcode{"modal"} which means it prevents users from
 ## interacting with any other GUI element.
-## @item "non-modal"
+##
+## @item @qcode{"non-modal"} (default)
 ## The dialog is normal.
-## @item "replace"
-## If dialogs already exists with the same title, the latest is reused
-## and others are closed. The resulting dialog is set "non-modal".
+##
+## @item @qcode{"replace"}
+## If any dialogs already exist with the same title, the most recent is reused
+## and all others are closed.  The resulting dialog is set @qcode{"non-modal"}.
 ## @end table
 ##
-## If @var{opt} is a structure, it must contain fields "WindowStyle" and
-## "Interpreter":
+## If @var{opt} is a structure, it must contain fields @qcode{"WindowStyle"}
+## and @qcode{"Interpreter"}:
 ##
 ## @table @asis
-## @item "WindowStyle"
-## The value must be "modal", "non-modal" or "replace". See above.
-## @item "Interpreter"
-## Controls the @qcode{"interpreter"} property of the text object used
-## for displaying the message. The value must be "none", "tex" or "latex".
+## @item @qcode{"WindowStyle"}
+## The value must be @qcode{"modal"}, @qcode{"non-modal"}, or
+## @qcode{"replace"}.  See above.
+##
+## @item @qcode{"Interpreter"}
+## Controls the @qcode{"interpreter"} property of the text object used for
+## displaying the message.  The value must be @qcode{"none"}, @qcode{"tex"}
+## (default), or @qcode{"latex"}.
 ## @end table
 ##
-## The return value @var{h} is a handle to the figure object used for
-## building the dialog.
+## The return value @var{h} is a handle to the figure object used for building
+## the dialog.
 ##
 ## Examples:
 ##
@@ -74,7 +78,7 @@
 ## msgbox (@{"Some message", "with two lines."@});
 ## msgbox ("Some message for the user.", "Fancy caption");
 ##
-## % A message dialog box with error icon
+## ## A message dialog box with error icon
 ## msgbox ("Some message for the user.", "Fancy caption", "error");
 ## @end group
 ## @end example
@@ -89,9 +93,9 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
   if (nargin < 1)
     print_usage ();
   elseif (! ischar (msg) && ! iscellstr (msg))
-    error ("msgbox: MSG must be a string or a cell array of strings");
+    error ("msgbox: MSG must be a string or cell array of strings");
   elseif (! ischar (tit))
-    error ("msgbox: TITLE must be a string or a cell array of strings");
+    error ("msgbox: TITLE must be a string");
   elseif (isstruct (icon))
     varargin{end+1} = icon;
     nargs += 1;
@@ -101,18 +105,18 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
   elseif (strcmp (icon, "custom"))
     if (nargs < 1)
       error ("msgbox: missing data for 'custom' icon");
-    else
-      icon = struct ("cdata", varargin{1}, "colormap", []);
-      if (! (ismatrix (icon.cdata) || size (icon.cdata, 3) == 3))
-        error ("msgbox: unhandled data for 'custom' icon");
-      elseif (size (icon.cdata, 3) == 1 && nargs > 1)
-        icon.colormap = varargin{2};
-        varargin(2) = [];
-        nargs--;
-      endif
-      varargin(1) = [];
+    endif
+    icon = struct ("cdata", varargin{1}, "colormap", []);
+    ## FIXME: This doesn't seem to be a robust test for RGB data.
+    if (! (ismatrix (icon.cdata) || size (icon.cdata, 3) == 3))
+      error ("msgbox: unhandled data for 'custom' icon");
+    elseif (size (icon.cdata, 3) == 1 && nargs > 1)
+      icon.colormap = varargin{2};
+      varargin(2) = [];
       nargs--;
     endif
+    varargin(1) = [];
+    nargs--;
   endif
 
   ## Window behavior and text interpreter
@@ -147,8 +151,8 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
     if (isstruct (icon))
       icon = "custom";
     endif
-    disp (sprintf ("\n%s:\t%s\n\t%s\n", upper (icon), tit,
-      strrep (msg, "\n", "\n\t")));
+    disp (sprintf ("\n%s:\t%s\n\t%s\n",
+                   upper (icon), tit, strrep (msg, "\n", "\n\t")));
     retval = 1;
   endif
 
@@ -267,6 +271,7 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
 
 endfunction
 
+
 %!demo
 %! msgbox ("A bare dialog");
 
@@ -281,12 +286,12 @@ endfunction
 %! msgbox ("A critical message for the user", "Error", "error");
 
 %!demo
-%! msgbox ({"The default interpreter is'tex':", ...
-%!          "\\Delta_{1-2} = r_2 - r_1"}, "Documentation", "help");
+%! msgbox ({"The default interpreter is 'tex':", ...
+%!          '\Delta_{1-2} = r_2 - r_1'}, "Documentation", "help");
 
 %!demo
 %! msgbox ({"Help dialog with uninterpreted string:", ...
-%!          "\\Delta_{1-2} = r_2 - r_1"}, "Documentation", "help", ...
+%!          '\Delta_{1-2} = r_2 - r_1'}, "Documentation", "help", ...
 %!          struct ("Interpreter", "none", "WindowStyle", "non-modal"));
 
 %!demo
@@ -305,12 +310,8 @@ endfunction
 %!         "Dialog Title", "custom", cdata, copper (64));
 
 ## Test input validation
-%!error <msgbox: MSG must be a string or a cell array of strings> msgbox (1)
-%!error <msgbox: TITLE must be a string or a cell array of strings>
-%! msgbox ("msg", 1)
-%!error <msgbox: unhandled value for ICON data> msgbox ("msg", "title", 1)
-%!error <msgbox: missing data for 'custom' icon>
-%! msgbox ("msg", "title", "custom")
-%!error <msgbox: unhandled value 1 for OPT>
-%! msgbox ("msg", "title", "help", "1")
-
+%!error <MSG must be a string or cell array of strings> msgbox (1)
+%!error <TITLE must be a string> msgbox ("msg", 1)
+%!error <unhandled value for ICON data> msgbox ("msg", "title", 1)
+%!error <missing data for 'custom' icon> msgbox ("msg", "title", "custom")
+%!error <unhandled value 1 for OPT> msgbox ("msg", "title", "help", "1")

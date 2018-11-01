@@ -92,6 +92,10 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
     error ("msgbox: MSG must be a string or a cell array of strings");
   elseif (! ischar (tit))
     error ("msgbox: TITLE must be a string or a cell array of strings");
+  elseif (isstruct (icon))
+    varargin{end+1} = icon;
+    nargs += 1;
+    icon = "none";
   elseif (! any (strcmp (icon, {"help", "warn", "error", "none", "custom"})))
     error ("msgbox: unhandled value for ICON data");
   elseif (strcmp (icon, "custom"))

@@ -634,6 +634,9 @@ namespace QtHandles
         figure::properties& fp = Utils::properties<figure> (go);
 
         fp.set_boundingbox (d->m_bbox, d->m_internal, false);
+
+        if (d->m_internal)
+          emit d->m_figure->asyncUpdate ();
       }
 
     delete d;

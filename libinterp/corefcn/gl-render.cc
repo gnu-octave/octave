@@ -3786,7 +3786,7 @@ namespace octave
       }
     else if (w > 1 && x(1) == x(0))
       x(1) = x(1) + (w-1);
-    
+
     bool yflip = false;
     if (y(0) > y(1))
       {
@@ -3846,22 +3846,34 @@ namespace octave
     float im_xmax = x(1) + nor_dx/2;
     float im_ymin = y(0) - nor_dy/2;
     float im_ymax = y(1) + nor_dy/2;
-    if (props.is_clipping ()) // clip to axes
-      {
-        if (im_xmin < xmin)
-          j0 += (xmin - im_xmin)/nor_dx + 1;
-        if (im_xmax > xmax)
-          j1 -= (im_xmax - xmax)/nor_dx;
 
-        if (im_ymin < ymin)
-          i0 += (ymin - im_ymin)/nor_dy + 1;
-        if (im_ymax > ymax)
-          i1 -= (im_ymax - ymax)/nor_dy;
-      }
-    else // clip to viewport
-      {
-        // FIXME: actually add the code to do it!
-      }
+    // Clip to axes or viewport
+    bool do_clip = props.is_clipping ();
+    Matrix vp = get_viewport_scaled ();
+
+    ColumnVector vp_lim =
+      xform.untransform (std::numeric_limits <float>::epsilon (),
+                         std::numeric_limits <float>::epsilon ());
+    float clip_xmin =
+      (do_clip ? (vp_lim(0) > xmin ? vp_lim(0) : xmin) : vp_lim(0));
+    float clip_ymin =
+      (do_clip ? (vp_lim(1) > ymin ? vp_lim(1) : ymin) : vp_lim(1));
+
+    vp_lim = xform.untransform (vp(2), vp(3));
+    float clip_xmax =
+      (do_clip ? (vp_lim(0) < xmax ? vp_lim(0) : xmax) : vp_lim(0));
+    float clip_ymax =
+      (do_clip ? (vp_lim(1) < ymax ? vp_lim(1) : ymax) : vp_lim(1));
+
+    if (im_xmin < clip_xmin)
+      j0 += (clip_xmin - im_xmin)/nor_dx + 1;
+    if (im_xmax > clip_xmax)
+      j1 -= (im_xmax - clip_xmax)/nor_dx;
+
+    if (im_ymin < clip_ymin)
+      i0 += (clip_ymin - im_ymin)/nor_dy + 1;
+    if (im_ymax > clip_ymax)
+      i1 -= (im_ymax - clip_ymax)/nor_dy;
 
     if (i0 >= i1 || j0 >= j1)
       return;
@@ -3890,12 +3902,12 @@ namespace octave
                       ii = i;
                     else
                       ii = h - i - 1;
-                    
+
                     if (! xflip)
                       jj = j;
                     else
                       jj = w - j - 1;
-                      
+
                     a[idx]   = xcdata(ii,jj,0);
                     a[idx+1] = xcdata(ii,jj,1);
                     a[idx+2] = xcdata(ii,jj,2);
@@ -3919,12 +3931,12 @@ namespace octave
                       ii = i;
                     else
                       ii = h - i - 1;
-                    
+
                     if (! xflip)
                       jj = j;
                     else
                       jj = w - j - 1;
-                      
+
                     a[idx]   = xcdata(ii,jj,0);
                     a[idx+1] = xcdata(ii,jj,1);
                     a[idx+2] = xcdata(ii,jj,2);
@@ -3948,12 +3960,12 @@ namespace octave
                       ii = i;
                     else
                       ii = h - i - 1;
-                    
+
                     if (! xflip)
                       jj = j;
                     else
                       jj = w - j - 1;
-                      
+
                     a[idx]   = xcdata(ii,jj,0);
                     a[idx+1] = xcdata(ii,jj,1);
                     a[idx+2] = xcdata(ii,jj,2);
@@ -3977,12 +3989,12 @@ namespace octave
                       ii = i;
                     else
                       ii = h - i - 1;
-                    
+
                     if (! xflip)
                       jj = j;
                     else
                       jj = w - j - 1;
-                      
+
                     a[idx]   = xcdata(ii,jj,0);
                     a[idx+1] = xcdata(ii,jj,1);
                     a[idx+2] = xcdata(ii,jj,2);

@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-
 #include "dColVector.h"
 #include "dMatrix.h"
 #include "dSparse.h"
@@ -37,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"
+#include "pager.h"
 #include "parse.h"
 
 #if defined (HAVE_SUNDIALS)
@@ -892,12 +891,12 @@ namespace octave
     if (IDAGetNumResEvals (mem, &nrevals) != 0)
       error ("IDA failed to return the number of residual evaluations");
 
-    std::cout << nsteps << " successful steps\n";
-    std::cout << netfails << " failed attempts\n";
-    std::cout << nrevals << " function evaluations\n";
-    // std::cout << " partial derivatives\n";
-    // std::cout << " LU decompositions\n";
-    // std::cout << " solutions of linear systems\n";
+    octave_stdout << nsteps << " successful steps\n";
+    octave_stdout << netfails << " failed attempts\n";
+    octave_stdout << nrevals << " function evaluations\n";
+    // octave_stdout << " partial derivatives\n";
+    // octave_stdout << " LU decompositions\n";
+    // octave_stdout << " solutions of linear systems\n";
   }
 
   ColumnVector

@@ -36,11 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cmath>
 
-#if defined (DEBUG) || defined (DEBUG_SORT) || defined (DEBUG_EIG)
-#  include <iostream>
-#  if defined (DEBUG_EIG)
-#    include <iomanip>
-#  endif
+#if defined (DEBUG_EIG)
+#  include <iomanip>
 #endif
 
 #include "f77-fcn.h"
@@ -53,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "errwarn.h"
 #include "ovl.h"
 #if defined (DEBUG) || defined (DEBUG_SORT)
+#  include "pager.h"
 #  include "pr-output.h"
 #endif
 
@@ -170,8 +168,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
   int nargin = args.length ();
 
 #if defined (DEBUG)
-  std::cout << "qz: nargin = " << nargin
-            << ", nargout = " << nargout << std::endl;
+  octave_stdout << "qz: nargin = " << nargin
+                << ", nargout = " << nargout << std::endl;
 #endif
 
   if (nargin < 2 || nargin > 3 || nargout > 7)
@@ -181,7 +179,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     error ("qz: invalid number of output arguments for form 3 call");
 
 #if defined (DEBUG)
-  std::cout << "qz: determine ordering option" << std::endl;
+  octave_stdout << "qz: determine ordering option" << std::endl;
 #endif
 
   // Determine ordering option.
@@ -209,9 +207,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
                                    F77_CHAR_ARG_LEN (1));
 
 #if defined (DEBUG_EIG)
-      std::cout << "qz: initial value of safmin="
-                << setiosflags (std::ios::scientific)
-                << safmin << std::endl;
+      octave_stdout << "qz: initial value of safmin="
+                    << setiosflags (std::ios::scientific)
+                    << safmin << std::endl;
 #endif
 
       // Some machines (e.g., DEC alpha) get safmin = 0;
@@ -219,7 +217,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
       if (safmin == 0)
         {
 #if defined (DEBUG_EIG)
-          std::cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << std::endl;
+          octave_stdout << "qz: DANGER WILL ROBINSON: safmin is 0!"
+                        << std::endl;
 #endif
 
           F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("E", 1),
@@ -227,15 +226,15 @@ Note: @code{qz} performs permutation balancing, but not scaling
                                        F77_CHAR_ARG_LEN (1));
 
 #if defined (DEBUG_EIG)
-          std::cout << "qz: safmin set to "
-                    << setiosflags (std::ios::scientific)
-                    << safmin << std::endl;
+          octave_stdout << "qz: safmin set to "
+                        << setiosflags (std::ios::scientific)
+                        << safmin << std::endl;
 #endif
         }
     }
 
 #if defined (DEBUG)
-  std::cout << "qz: check matrix A" << std::endl;
+  octave_stdout << "qz: check matrix A" << std::endl;
 #endif
 
   // Matrix A: check dimensions.
@@ -243,7 +242,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
   F77_INT nc = octave::to_f77_int (args(0).columns ());
 
 #if defined (DEBUG)
-  std::cout << "Matrix A dimensions: (" << nn << ',' << nc << ')' << std::endl;
+  octave_stdout << "Matrix A dimensions: (" << nn << ',' << nc << ')'
+                << std::endl;
 #endif
 
   if (args(0).isempty ())
@@ -264,7 +264,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     aa = args(0).matrix_value ();
 
 #if defined (DEBUG)
-  std::cout << "qz: check matrix B" << std::endl;
+  octave_stdout << "qz: check matrix B" << std::endl;
 #endif
 
   // Extract argument 2 (bb, or cbb if complex).
@@ -322,8 +322,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     {
 #if defined (DEBUG)
       if (comp_q == 'V')
-        std::cout << "qz: performing balancing; CQ=" << std::endl
-                  << CQ << std::endl;
+        octave_stdout << "qz: performing balancing; CQ =\n" << CQ << std::endl;
 #endif
       if (args(0).isreal ())
         caa = ComplexMatrix (aa);
@@ -349,8 +348,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     {
 #if defined (DEBUG)
       if (comp_q == 'V')
-        std::cout << "qz: performing balancing; QQ=" << std::endl
-                  << QQ << std::endl;
+        octave_stdout << "qz: performing balancing; QQ =\n" << QQ << std::endl;
 #endif
 
       F77_XFCN (dggbal, DGGBAL,
@@ -379,7 +377,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
 #if defined (DEBUG)
       if (comp_q == 'V')
-        std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
+        octave_stdout << "qz: balancing done; QQ =\n" << QQ << std::endl;
 #endif
     }
 
@@ -396,7 +394,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
 #if defined (DEBUG)
       if (comp_z == 'V')
-        std::cout << "qz: balancing done; ZZ=" << std::endl << ZZ << std::endl;
+        octave_stdout << "qz: balancing done; ZZ=\n" << ZZ << std::endl;
 #endif
     }
 #endif
@@ -472,43 +470,43 @@ Note: @code{qz} performs permutation balancing, but not scaling
   else
     {
 #if defined (DEBUG)
-      std::cout << "qz: performing qr decomposition of bb" << std::endl;
+      octave_stdout << "qz: performing qr decomposition of bb" << std::endl;
 #endif
 
       // Compute the QR factorization of bb.
       octave::math::qr<Matrix> bqr (bb);
 
 #if defined (DEBUG)
-      std::cout << "qz: qr (bb) done; now performing qz decomposition"
-                << std::endl;
+      octave_stdout << "qz: qr (bb) done; now performing qz decomposition"
+                    << std::endl;
 #endif
 
       bb = bqr.R ();
 
 #if defined (DEBUG)
-      std::cout << "qz: extracted bb" << std::endl;
+      octave_stdout << "qz: extracted bb" << std::endl;
 #endif
 
       aa = (bqr.Q ()).transpose () * aa;
 
 #if defined (DEBUG)
-      std::cout << "qz: updated aa " << std::endl;
-      std::cout << "bqr.Q () = " << std::endl << bqr.Q () << std::endl;
+      octave_stdout << "qz: updated aa " << std::endl;
+      octave_stdout << "bqr.Q () =\n" << bqr.Q () << std::endl;
 
       if (comp_q == 'V')
-        std::cout << "QQ =" << QQ << std::endl;
+        octave_stdout << "QQ =" << QQ << std::endl;
 #endif
 
       if (comp_q == 'V')
         QQ = QQ * bqr.Q ();
 
 #if defined (DEBUG)
-      std::cout << "qz: precursors done..." << std::endl;
+      octave_stdout << "qz: precursors done..." << std::endl;
 #endif
 
 #if defined (DEBUG)
-      std::cout << "qz: comp_q = " << comp_q << ", comp_z = " << comp_z
-                << std::endl;
+      octave_stdout << "qz: comp_q = " << comp_q << ", comp_z = " << comp_z
+                    << std::endl;
 #endif
 
       // Reduce to generalized Hessenberg form.
@@ -549,8 +547,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
 #if defined (DEBUG)
           if (comp_q == 'V')
-            std::cout << "qz: balancing done; QQ=" << std::endl
-                      << QQ << std::endl;
+            octave_stdout << "qz: balancing done; QQ=\n" << QQ << std::endl;
 #endif
         }
 
@@ -567,8 +564,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
 
 #if defined (DEBUG)
           if (comp_z == 'V')
-            std::cout << "qz: balancing done; ZZ=" << std::endl
-                      << ZZ << std::endl;
+            octave_stdout << "qz: balancing done; ZZ=\n" << ZZ << std::endl;
 #endif
         }
 
@@ -582,8 +578,8 @@ Note: @code{qz} performs permutation balancing, but not scaling
         error ("qz: cannot re-order complex QZ decomposition");
 
 #if defined (DEBUG_SORT)
-      std::cout << "qz: ordering eigenvalues: ord_job = "
-                << ord_job << std::endl;
+      octave_stdout << "qz: ordering eigenvalues: ord_job = "
+                    << ord_job << std::endl;
 #endif
 
       Array<F77_LOGICAL> select (dim_vector (nn, 1));
@@ -640,24 +636,23 @@ Note: @code{qz} performs permutation balancing, but not scaling
                  info));
 
 #if defined (DEBUG_SORT)
-      std::cout << "qz: back from dtgsen: aa=" << std::endl;
-      octave_print_internal (std::cout, aa, 0);
-      std::cout << std::endl << "bb="  << std::endl;
-      octave_print_internal (std::cout, bb, 0);
-
+      octave_stdout << "qz: back from dtgsen: aa =\n";
+      octave_print_internal (octave_stdout, aa);
+      octave_stdout << "\nbb =\n";
+      octave_print_internal (octave_stdout, bb);
       if (comp_z == 'V')
         {
-          std::cout << std::endl << "ZZ="  << std::endl;
-          octave_print_internal (std::cout, ZZ, 0);
+          octave_stdout << "\nZZ =\n";
+          octave_print_internal (octave_stdout, ZZ);
         }
-      std::cout << std::endl << "qz: info=" << info << std::endl;
-      std::cout << "alphar = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) alphar, 0);
-      std::cout << std::endl << "alphai = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) alphai, 0);
-      std::cout << std::endl << "beta = " << std::endl;
-      octave_print_internal (std::cout, (Matrix) betar, 0);
-      std::cout << std::endl;
+      octave_stdout << "\nqz: info=" << info;
+      octave_stdout << "\nalphar =\n";
+      octave_print_internal (octave_stdout, Matrix (alphar));
+      octave_stdout << "\nalphai =\n";
+      octave_print_internal (octave_stdout, Matrix (alphai));
+      octave_stdout << "\nbeta =\n";
+      octave_print_internal (octave_stdout, Matrix (betar));
+      octave_stdout << std::endl;
 #endif
     }
 
@@ -678,7 +673,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       else
         {
 #if defined (DEBUG)
-          std::cout << "qz: computing generalized eigenvalues" << std::endl;
+          octave_stdout << "qz: computing generalized eigenvalues" << std::endl;
 #endif
 
           // Return finite generalized eigenvalues.
@@ -728,7 +723,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
       else
         {
 #if defined (DEBUG)
-          std::cout << "qz: computing generalized eigenvectors" << std::endl;
+          octave_stdout << "qz: computing generalized eigenvectors" << std::endl;
 #endif
 
           VL = QQ;
@@ -818,9 +813,9 @@ Note: @code{qz} performs permutation balancing, but not scaling
       if (nargin == 3)
         {
 #if defined (DEBUG)
-          std::cout << "qz: sort: retval(3) = gev = " << std::endl;
-          octave_print_internal (std::cout, ComplexMatrix (gev));
-          std::cout << std::endl;
+          octave_stdout << "qz: sort: retval(3) = gev =\n";
+          octave_print_internal (octave_stdout, ComplexMatrix (gev));
+          octave_stdout << std::endl;
 #endif
           retval(3) = gev;
         }
@@ -855,11 +850,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
         if (complex_case)
           {
 #if defined (DEBUG)
-            std::cout << "qz: retval(1) = cbb = " << std::endl;
-            octave_print_internal (std::cout, cbb, 0);
-            std::cout << std::endl << "qz: retval(0) = caa = " <<std::endl;
-            octave_print_internal (std::cout, caa, 0);
-            std::cout << std::endl;
+            octave_stdout << "qz: retval(1) = cbb =\n";
+            octave_print_internal (octave_stdout, cbb);
+            octave_stdout << "\nqz: retval(0) = caa =\n";
+            octave_print_internal (octave_stdout, caa);
+            octave_stdout << std::endl;
 #endif
             retval(1) = cbb;
             retval(0) = caa;
@@ -867,11 +862,11 @@ Note: @code{qz} performs permutation balancing, but not scaling
         else
           {
 #if defined (DEBUG)
-            std::cout << "qz: retval(1) = bb = " << std::endl;
-            octave_print_internal (std::cout, bb, 0);
-            std::cout << std::endl << "qz: retval(0) = aa = " <<std::endl;
-            octave_print_internal (std::cout, aa, 0);
-            std::cout << std::endl;
+            octave_stdout << "qz: retval(1) = bb =\n";
+            octave_print_internal (octave_stdout, bb);
+            octave_stdout << "\nqz: retval(0) = aa =\n";
+            octave_print_internal (octave_stdout, aa);
+            octave_stdout << std::endl;
 #endif
             retval(1) = bb;
             retval(0) = aa;
@@ -882,7 +877,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     case 1:
     case 0:
 #if defined (DEBUG)
-      std::cout << "qz: retval(0) = gev = " << gev << std::endl;
+      octave_stdout << "qz: retval(0) = gev = " << gev << std::endl;
 #endif
       retval(0) = gev;
       break;
@@ -893,7 +888,7 @@ Note: @code{qz} performs permutation balancing, but not scaling
     }
 
 #if defined (DEBUG)
-  std::cout << "qz: exiting (at long last)" << std::endl;
+  octave_stdout << "qz: exiting (at long last)" << std::endl;
 #endif
 
   return retval;

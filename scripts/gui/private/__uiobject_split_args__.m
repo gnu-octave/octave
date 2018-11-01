@@ -33,25 +33,26 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
     if (ishghandle (in_args{1}))
       parent = in_args{1};
       offset = 2;
-    elseif (! ischar (in_args{1}))
+    elseif (! ischar (in_args{1}) && ! isstruct (in_args{1}))
       error ("%s: invalid parent handle.", who);
     endif
 
     args = in_args(offset:end);
   endif
 
-  if (rem (length (args), 2))
+  numpairs = numel (args) - sum (cellfun ("isclass", args, "struct"));
+  if (rem (numpairs, 2) == 1)
     error ("%s: PROPERTY/VALUE arguments must occur in pairs", who);
   endif
 
   if (! isempty (args))
-    i = find (strcmpi (args(1:2:end), "parent"), 1, "first");
-    if (! isempty (i) && length (args) >= 2*i)
-      parent = args{2*i};
+    i = find (strcmpi (args, "parent"), 1, "first");
+    if (! isempty (i) && numel (args) > i)
+      parent = args{i+1};
       if (! ishghandle (parent))
         error ("%s: invalid parent handle.", who);
       endif
-      args([2*i-1, 2*i]) = [];
+      args(i:i+1) = [];
     endif
   endif
 

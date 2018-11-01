@@ -4127,7 +4127,12 @@ figure::properties::set_position (const octave_value& v,
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
-          gh_manager::post_callback (__myhandle__, "resizefcn");
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+          
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
           update_boundingbox ();
         }
     }
@@ -11190,7 +11195,8 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
           || cname.compare ("createfcn")
           || (go.isa ("figure")
               && (cname.compare ("closerequestfcn")
-                  || cname.compare ("resizefcn"))))
+                  || cname.compare ("resizefcn")
+                  || cname.compare ("sizechangedfcn"))))
         busyaction = base_graphics_event::INTERRUPT;
       else if (go.get_properties ().get_busyaction () == "cancel")
         busyaction = base_graphics_event::CANCEL;

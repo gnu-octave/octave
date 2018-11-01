@@ -152,8 +152,6 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << 'x' << h () << std::endl;
-
     octave::gl2ps_print (m_glfcns, gh_manager::get_object (m_number),
                          cmd, term);
   }
@@ -1467,8 +1465,6 @@ private:
 
     if (! m_fp.is_beingdeleted ())
       {
-        //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
-
         // FLTK resends keyboard events with flipped case if all
         // widgets rejects the event.
         // See Event Propagation http://www.fltk.org/doc-1.3/events.html
@@ -1825,7 +1821,7 @@ private:
               break;
             }
       }
-    //std::cout << "plot_window::handle wasn't interested in event " <<  fl_eventnames[event] << std::endl;
+
     return Fl_Window::handle (event);
   }
 };

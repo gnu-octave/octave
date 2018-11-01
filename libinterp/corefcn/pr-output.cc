@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <cmath>
 
 #include <iomanip>
-#include <iostream>
 #include <limits>
 #include <list>
 #include <sstream>

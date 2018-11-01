@@ -24,7 +24,6 @@
 #include "unix/History.h"
 
 // System
-#include <iostream>
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>

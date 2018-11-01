@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -261,8 +260,7 @@ namespace octave
               if (line.find ('-') == 0)
                 java_opts.push_back (line);
               else if (line.length () > 0 && Vdebug_java)
-                std::cerr << "invalid JVM option, skipping: " << line
-                                                              << std::endl;
+                warning ("invalid JVM option, skipping: %s", line.c_str ());
             }
         }
     }
@@ -297,7 +295,7 @@ namespace octave
           for (const auto& opt : java_opts)
             {
               if (Vdebug_java)
-                std::cout << opt << std::endl;
+                octave_stdout << opt << std::endl;
               vm_args.options[index++].optionString = strsave (opt.c_str ());
             }
 

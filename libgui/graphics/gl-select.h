@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_gl_select_h 1
 
 #include <map>
+#include <string>
 
 #include "gl-render.h"
 #include "oct-opengl.h"

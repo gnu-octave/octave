@@ -5056,8 +5056,8 @@ namespace octave
 
     if (verbose)
       {
-        std::cout << "executing commands from " << full_name << " ... ";
-        std::cout.flush ();
+        octave_stdout << "executing commands from " << full_name << " ... ";
+        octave_stdout.flush ();
       }
 
     octave_user_code *code = ov_code.user_code_value ();
@@ -5065,7 +5065,7 @@ namespace octave
     code->call (tw, 0, octave_value_list ());
 
     if (verbose)
-      std::cout << "done." << std::endl;
+      octave_stdout << "done." << std::endl;
   }
 }
 

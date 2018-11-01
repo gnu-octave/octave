@@ -1469,7 +1469,7 @@ namespace octave
               warning ("save: ignoring -append option for output to stdout");
 
             if (nargout == 0)
-              save_vars (argv, i, argc, std::cout, format,
+              save_vars (argv, i, argc, octave_stdout, format,
                          save_as_floats, true);
             else
               {

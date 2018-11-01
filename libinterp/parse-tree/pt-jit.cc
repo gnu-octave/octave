@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "errwarn.h"
 #include "ov.h"
+#include "pager.h"
 #include "pt-all.h"
 #include "pt-jit.h"
 #include "sighandlers.h"
@@ -2142,10 +2143,7 @@ namespace octave
     // FIXME: autconf this
 
     if (e == nullptr)
-      {
-        std::cerr << "Failed to create JIT engine" << std::endl;
-        std::cerr << err << std::endl;
-      }
+      error ("failed to create JIT engine: %s", err.c_str ());
 
     return jit::EngineOwner (e);
   }
@@ -2502,14 +2500,14 @@ namespace octave
           {
             jit_block_list& blocks = infer.get_blocks ();
             blocks.label ();
-            std::cout << "-------------------- Compiling function ";
-            std::cout << "--------------------\n";
+            octave_stdout << "-------------------- Compiling function ";
+            octave_stdout << "--------------------\n";
 
-            tree_print_code tpc (std::cout);
+            tree_print_code tpc (octave_stdout);
             tpc.visit_octave_user_function_header (fcn);
             tpc.visit_statement_list (*fcn.body ());
             tpc.visit_octave_user_function_trailer (fcn);
-            blocks.print (std::cout, "octave jit ir");
+            blocks.print (octave_stdout, "octave jit ir");
           }
 
         jit_factory& factory = conv.get_factory ();
@@ -2520,9 +2518,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- raw function ";
-            std::cout << "--------------------\n";
-            std::cout << *raw_fn.to_llvm () << std::endl;
+            octave_stdout << "-------------------- raw function ";
+            octave_stdout << "--------------------\n";
+            octave_stdout << *raw_fn.to_llvm () << std::endl;
             llvm::verifyFunction (*raw_fn.to_llvm ());
           }
 
@@ -2574,9 +2572,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- optimized and wrapped ";
-            std::cout << "--------------------\n";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << "-------------------- optimized and wrapped ";
+            octave_stdout << "--------------------\n";
+            octave_stdout << *llvm_function << std::endl;
             llvm::verifyFunction (*llvm_function);
           }
 
@@ -2602,7 +2600,7 @@ namespace octave
         if (Vdebug_jit)
           {
             if (e.known ())
-              std::cout << "jit fail: " << e.what () << std::endl;
+              octave_stdout << "jit fail: " << e.what () << std::endl;
           }
 
         Vjit_failcnt++;
@@ -2755,9 +2753,9 @@ namespace octave
           {
             jit_block_list& blocks = infer.get_blocks ();
             blocks.label ();
-            std::cout << "-------------------- Compiling tree --------------------\n";
-            std::cout << tee.str_print_code () << std::endl;
-            blocks.print (std::cout, "octave jit ir");
+            octave_stdout << "-------------------- Compiling tree --------------------\n";
+            octave_stdout << tee.str_print_code () << std::endl;
+            blocks.print (octave_stdout, "octave jit ir");
           }
 
         jit_factory& factory = conv.get_factory ();
@@ -2776,7 +2774,7 @@ namespace octave
         if (Vdebug_jit)
           {
             if (e.known ())
-              std::cout << "jit fail: " << e.what () << std::endl;
+              octave_stdout << "jit fail: " << e.what () << std::endl;
           }
 
         Vjit_failcnt++;
@@ -2787,8 +2785,8 @@ namespace octave
       {
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- llvm ir --------------------";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << "-------------------- llvm ir --------------------";
+            octave_stdout << *llvm_function << std::endl;
             llvm::verifyFunction (*llvm_function);
           }
 
@@ -2796,9 +2794,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- optimized llvm ir "
+            octave_stdout << "-------------------- optimized llvm ir "
                       << "--------------------\n";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << *llvm_function << std::endl;
           }
 
         finalizeObject ();

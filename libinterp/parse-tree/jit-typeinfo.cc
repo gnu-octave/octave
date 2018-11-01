@@ -438,7 +438,7 @@ namespace octave
   extern "C" void
   octave_jit_print_matrix (jit_matrix *m)
   {
-    std::cout << *m << std::endl;
+    octave_stdout << *m << std::endl;
   }
 
   OCTAVE_NORETURN static

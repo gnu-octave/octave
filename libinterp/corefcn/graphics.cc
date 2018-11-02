@@ -2972,10 +2972,6 @@ ishghandle (const graphics_handle& h)
   return h.ok ();
 }
 
-OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
-static bool is_hghandle (const graphics_handle& h)
-{ return ishghandle (h); }
-
 static bool
 ishghandle (double val)
 {
@@ -2983,10 +2979,6 @@ ishghandle (double val)
 
   return h.ok ();
 }
-
-OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
-static bool is_hghandle (double val)
-{ return ishghandle (val); }
 
 static octave_value
 ishghandle (const octave_value& val)
@@ -3010,10 +3002,6 @@ ishghandle (const octave_value& val)
   return retval;
 }
 
-OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
-static octave_value is_hghandle (const octave_value& val)
-{ return ishghandle (val); }
-
 static bool
 isfigure (double val)
 {
@@ -3021,10 +3009,6 @@ isfigure (double val)
 
   return go && go.isa ("figure");
 }
-
-OCTAVE_DEPRECATED (5.0, "use 'isfigure' instead")
-static bool is_figure (double val)
-{ return isfigure (val); }
 
 static void
 xcreatefcn (const graphics_handle& h)

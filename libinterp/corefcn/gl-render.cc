@@ -3851,19 +3851,26 @@ namespace octave
     bool do_clip = props.is_clipping ();
     Matrix vp = get_viewport_scaled ();
 
-    ColumnVector vp_lim =
+    ColumnVector vp_lim_min =
       xform.untransform (std::numeric_limits <float>::epsilon (),
                          std::numeric_limits <float>::epsilon ());
-    float clip_xmin =
-      (do_clip ? (vp_lim(0) > xmin ? vp_lim(0) : xmin) : vp_lim(0));
-    float clip_ymin =
-      (do_clip ? (vp_lim(1) > ymin ? vp_lim(1) : ymin) : vp_lim(1));
+    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
 
-    vp_lim = xform.untransform (vp(2), vp(3));
+    if (vp_lim_min(0) > vp_lim_max(0))
+      std::swap (vp_lim_min(0), vp_lim_max(0));
+        
+    if (vp_lim_min(1) > vp_lim_max(1))
+      std::swap (vp_lim_min(1), vp_lim_max(1));
+        
+    float clip_xmin =
+      (do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0));
+    float clip_ymin =
+      (do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1));
+
     float clip_xmax =
-      (do_clip ? (vp_lim(0) < xmax ? vp_lim(0) : xmax) : vp_lim(0));
+      (do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0));
     float clip_ymax =
-      (do_clip ? (vp_lim(1) < ymax ? vp_lim(1) : ymax) : vp_lim(1));
+      (do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1));
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;

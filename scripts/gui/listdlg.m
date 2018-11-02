@@ -28,30 +28,32 @@
 ## otherwise it is 0 and @var{sel} is empty.
 ##
 ## Input arguments are specified in form of @var{key}, @var{value} pairs.
-## The @qcode{"ListString"} argument pair must be specified.
+## The @qcode{"ListString"} argument pair @strong{must} be specified.
 ##
 ## Valid @var{key} and @var{value} pairs are:
 ##
 ## @table @asis
 ## @item @qcode{"ListString"}
-## a cell array of strings with the contents of the list.
+## a cell array of strings specifying the items to list in the dialog.
 ##
 ## @item @qcode{"SelectionMode"}
-## can be either @qcode{"Single"} or @qcode{"Multiple"} (default).
+## can be either @qcode{"Single"} (only one item may be selected at a time) or
+## @qcode{"Multiple"} (default).
 ##
 ## @item @qcode{"ListSize"}
-## a vector with two elements @var{width} and @var{height} defining the size
-## of the list field in pixels.  Default is [160 300].
+## a two-elment vector @code{[@var{width}, @var{height}]} specifying the size
+## of the list field in pixels.  The default is [160, 300].
 ##
 ## @item @qcode{"InitialValue"}
-## a vector containing 1-based indices of preselected elements.
-## Default is 1 (first item).
+## a vector containing 1-based indices of elements which will be pre-selected
+## when the list dialog is first displayed.
+## The default is 1 (first item).
 ##
 ## @item @qcode{"Name"}
 ## a string to be used as the dialog caption.  Default is "".
 ##
 ## @item @qcode{"PromptString"}
-## a cell array of strings to be displayed above the list field.
+## a cell array of strings to be displayed above the list of items.
 ## Default is @{@}.
 ##
 ## @item @qcode{"OKString"}
@@ -125,7 +127,7 @@ function [sel, ok] = listdlg (varargin)
   endfor
 
   if (isempty (listcell))
-    error ("listdlg: ListString must not be empty");
+    error ('listdlg: "ListString" property must not be empty');
   endif
 
   ## make sure listcell strings are a cell array
@@ -142,51 +144,52 @@ function [sel, ok] = listdlg (varargin)
 
   ## validate selection mode
   if (! strcmp (selmode, "multiple") && ! strcmp (selmode, "single"))
-    error ("listdlg: invalid SelectionMode");
+    error ('listdlg: "SelectionMode" must be "single" or "multiple"');
   endif
 
-  if (__octave_link_enabled__ ())
-    [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
-                                             initialvalue, name, prompt,
-                                             okstring, cancelstring);
-  else
+  if (! __octave_link_enabled__ ())
     error ("listdlg is not available in this version of Octave");
   endif
+
+  [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
+                                           initialvalue, name, prompt,
+                                           okstring, cancelstring);
 
 endfunction
 
 
 %!demo
-%! disp ("- test listdlg with selectionmode single. No caption, no prompt.");
-%! itemlist = {"An item \\alpha", "another", "yet another"};
+%! disp ('- test listdlg with "SelectionMode"="single".  No caption, no prompt.');
+%! itemlist = {"An item", "another", "yet another"};
 %! s = listdlg ("ListString", itemlist, "SelectionMode", "Single");
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
+%!   disp (["Selection #", num2str(i), ": ", itemlist{s(i)}]);
 %! endfor
 
 %!demo
-%! disp ("- test listdlg with selectionmode and preselection. Has caption and two lines prompt.");
-%! itemlist = {"An item \\alpha", "another", "yet another"};
+%! disp ('- test listdlg with "SelectionMode"="multiple" and pre-selection.  Has caption and two prompt lines.');
+%! itemlist = {"An item", "another", "yet another"};
 %! s = listdlg ("ListString", itemlist, ...
 %!              "SelectionMode", "Multiple", ...
 %!              "Name", "Selection Dialog", ...
-%!              "InitialValue", [1,2,3,4],
-%!              "PromptString", {"Select <b>an</b> item...", "...or <b>multiple</b> items"});
+%!              "InitialValue", [1,2,3],
+%!              "PromptString", {"Select <b>an</b> item...",
+%!                               "...or <b>multiple</b> items"});
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
+%!   disp (["Selection #", num2str(i), ": ", itemlist{s(i)}]);
 %! endfor
 
 %!demo
-%! disp ("- test listdlg with listsize.");
+%! disp ("- test listdlg with ListSize.");
 %! itemlist = {"Neutron", "Electron", "Quark", "Proton", "Neutrino"};
 %! s = listdlg ("ListString", itemlist,
 %!              "Name", "Bits and Pieces",
 %!              "ListSize", [200 75]);
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
+%!   disp (["Selection #", num2str(i), ": ", itemlist{s(i)}]);
 %! endfor
 
 ## Test input validation
@@ -194,6 +197,6 @@ endfunction
 %!error listdlg ("SelectionMode")
 %!error <must occur in pairs> listdlg ("SelectionMode", "multiple", "Name")
 %!error <invalid KEY .FooBar.> listdlg ("FooBar", 1)
-%!error <ListString must not be empty> listdlg ("ListString", {})
-%!error <invalid SelectionMode>
+%!error <"ListString" property must not be empty> listdlg ("ListString", {})
+%!error <"SelectionMode" must be "single" or "multiple">
 %! listdlg ("ListString", {"A"}, "SelectionMode", "foobar");

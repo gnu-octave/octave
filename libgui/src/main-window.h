@@ -494,6 +494,19 @@ namespace octave
     bool m_connect_to_web;
   };
 
+  class octave_qapplication : public QApplication
+  {
+  public:
+
+    octave_qapplication (int& argc, char **argv)
+    : QApplication (argc, argv)
+    { }
+
+    virtual bool notify (QObject *receiver, QEvent *e) override;
+
+    ~octave_qapplication (void) { };
+  };
+
   class octave_qt_app : public QObject
   {
     Q_OBJECT
@@ -553,7 +566,7 @@ namespace octave
     int m_argc;
     char **m_argv;
 
-    QApplication *m_qt_app;
+    octave_qapplication *m_qt_app;
 
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;

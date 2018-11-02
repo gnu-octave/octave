@@ -3015,12 +3015,16 @@ static octave_value is_hghandle (const octave_value& val)
 { return ishghandle (val); }
 
 static bool
-is_figure (double val)
+isfigure (double val)
 {
   graphics_object go = gh_manager::get_object (val);
 
   return go && go.isa ("figure");
 }
+
+OCTAVE_DEPRECATED (5.0, "use 'isfigure' instead")
+static bool is_figure (double val)
+{ return isfigure (val); }
 
 static void
 xcreatefcn (const graphics_handle& h)
@@ -12086,7 +12090,7 @@ Undocumented internal function.
 
   octave_value retval;
 
-  if (is_figure (val))
+  if (isfigure (val))
     {
       graphics_handle h = gh_manager::lookup (val);
 

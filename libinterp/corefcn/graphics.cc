@@ -2967,25 +2967,33 @@ adopt (const graphics_handle& parent_h, const graphics_handle& h)
 }
 
 static bool
-is_hghandle (const graphics_handle& h)
+ishghandle (const graphics_handle& h)
 {
   return h.ok ();
 }
 
+OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
+static bool is_hghandle (const graphics_handle& h)
+{ return ishghandle (h); }
+
 static bool
-is_hghandle (double val)
+ishghandle (double val)
 {
   graphics_handle h = gh_manager::lookup (val);
 
   return h.ok ();
 }
 
+OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
+static bool is_hghandle (double val)
+{ return ishghandle (val); }
+
 static octave_value
-is_hghandle (const octave_value& val)
+ishghandle (const octave_value& val)
 {
   octave_value retval = false;
 
-  if (val.is_real_scalar () && is_hghandle (val.double_value ()))
+  if (val.is_real_scalar () && ishghandle (val.double_value ()))
     retval = true;
   else if (val.isnumeric () && val.isreal ())
     {
@@ -2994,13 +3002,17 @@ is_hghandle (const octave_value& val)
       boolNDArray result (handles.dims ());
 
       for (octave_idx_type i = 0; i < handles.numel (); i++)
-        result.xelem (i) = is_hghandle (handles(i));
+        result.xelem (i) = ishghandle (handles(i));
 
       retval = result;
     }
 
   return retval;
 }
+
+OCTAVE_DEPRECATED (5.0, "use 'ishghandle' instead")
+static octave_value is_hghandle (const octave_value& val)
+{ return ishghandle (val); }
 
 static bool
 is_figure (double val)
@@ -3726,7 +3738,7 @@ root_figure::properties::set_callbackobject (const octave_value& v)
 
       callbackobject = val;
     }
-  else if (is_hghandle (val))
+  else if (ishghandle (val))
     {
       if (get_callbackobject ().ok ())
         cbo_stack.push_front (get_callbackobject ());
@@ -3742,7 +3754,7 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (octave::math::isnan (val.value ()) || is_hghandle (val))
+  if (octave::math::isnan (val.value ()) || ishghandle (val))
     {
       currentfigure = val;
 
@@ -3916,7 +3928,7 @@ figure::properties::set_currentaxes (const octave_value& val)
 {
   graphics_handle hax (val);
 
-  if (octave::math::isnan (hax.value ()) || is_hghandle (hax))
+  if (octave::math::isnan (hax.value ()) || ishghandle (hax))
     currentaxes = hax;
   else
     err_set_invalid ("currentaxes");
@@ -11430,7 +11442,7 @@ false where they are not.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (is_hghandle (args(0)));
+  return ovl (ishghandle (args(0)));
 }
 
 /*
@@ -13148,7 +13160,7 @@ In all cases, typing CTRL-C stops program execution immediately.
 
   double h = args(0).xdouble_value ("waitfor: invalid handle value");
 
-  if (! is_hghandle (h) || (h == 0 && args.length () == 1))
+  if (! ishghandle (h) || (h == 0 && args.length () == 1))
     return ovl ();
 
   caseless_str pname;

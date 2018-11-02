@@ -40,11 +40,6 @@ function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {
     args = in_args(offset:end);
   endif
 
-  numpairs = numel (args) - sum (cellfun ("isclass", args, "struct"));
-  if (rem (numpairs, 2) == 1)
-    error ("%s: PROPERTY/VALUE arguments must occur in pairs", who);
-  endif
-
   if (! isempty (args))
     i = find (strcmpi (args, "parent"), 1, "first");
     if (! isempty (i) && numel (args) > i)

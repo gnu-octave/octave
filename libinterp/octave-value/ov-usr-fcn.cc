@@ -523,53 +523,6 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 }
 
 void
-octave_user_function::bind_automatic_vars
-  (octave::tree_evaluator& tw, const string_vector& arg_names,
-   int nargin, int nargout, const octave_value_list& va_args)
-{
-  if (! arg_names.empty ())
-    {
-      // It is better to save this in the hidden variable .argn. and
-      // then use that in the inputname function instead of using argn,
-      // which might be redefined in a function.  Keep the old argn name
-      // for backward compatibility of functions that use it directly.
-
-      charMatrix chm (arg_names, tw.string_fill_char ());
-      m_scope.force_assign ("argn", chm);
-      m_scope.force_assign (".argn.", Cell (arg_names));
-
-      m_scope.mark_hidden (".argn.");
-
-      m_scope.mark_automatic ("argn");
-      m_scope.mark_automatic (".argn.");
-    }
-
-  m_scope.force_assign (".nargin.", nargin);
-  m_scope.force_assign (".nargout.", nargout);
-
-  m_scope.mark_hidden (".nargin.");
-  m_scope.mark_hidden (".nargout.");
-
-  m_scope.mark_automatic (".nargin.");
-  m_scope.mark_automatic (".nargout.");
-
-  m_scope.force_assign (".saved_warning_states.", octave_value ());
-
-  m_scope.mark_automatic (".saved_warning_states.");
-  m_scope.mark_automatic (".saved_warning_states.");
-
-  if (takes_varargs ())
-    m_scope.assign ("varargin", va_args.cell_value ());
-
-  Matrix ignored_fcn_outputs = tw.ignored_fcn_outputs ();
-
-  m_scope.force_assign (".ignored.", ignored_fcn_outputs);
-
-  m_scope.mark_hidden (".ignored.");
-  m_scope.mark_automatic (".ignored.");
-}
-
-void
 octave_user_function::restore_warning_states (void)
 {
   octave_value val = m_scope.varval (".saved_warning_states.");

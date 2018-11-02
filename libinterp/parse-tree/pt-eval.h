@@ -549,6 +549,11 @@ namespace octave
 
     bool quit_loop_now (void);
 
+    void bind_auto_fcn_vars (symbol_scope& scope,
+                             const string_vector& arg_names, int nargin,
+                             int nargout, bool takes_varargs,
+                             const octave_value_list& va_args);
+
     interpreter& m_interpreter;
 
     // The context for the current evaluation.

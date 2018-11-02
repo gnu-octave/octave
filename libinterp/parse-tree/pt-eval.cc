@@ -1466,7 +1466,9 @@ namespace octave
         frame.add_method (fcn_scope, &symbol_scope::pop_context);
       }
 
-    string_vector arg_names = xargs.name_tags ();
+    bind_auto_fcn_vars (fcn_scope, xargs.name_tags (), args.length (),
+                        nargout, user_function.takes_varargs (),
+                        user_function.all_va_args (args));
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
@@ -1523,10 +1525,6 @@ namespace octave
 
         frame.add_method (fcn_scope, &symbol_scope::refresh);
       }
-
-    user_function.bind_automatic_vars (*this, arg_names, args.length (),
-                                       nargout,
-                                       user_function.all_va_args (args));
 
     frame.add_method (&user_function,
                       &octave_user_function::restore_warning_states);
@@ -3625,6 +3623,48 @@ namespace octave
       m_breaking--;
 
     return quit;
+  }
+
+  void tree_evaluator::bind_auto_fcn_vars (symbol_scope& scope,
+                                           const string_vector& arg_names,
+                                           int nargin, int nargout,
+                                           bool takes_varargs,
+                                           const octave_value_list& va_args)
+  {
+    scope.force_assign (".argn.", Cell (arg_names));
+    scope.mark_hidden (".argn.");
+    scope.mark_automatic (".argn.");
+
+    scope.force_assign (".ignored.", ignored_fcn_outputs ());
+    scope.mark_hidden (".ignored.");
+    scope.mark_automatic (".ignored.");
+
+    scope.force_assign (".nargin.", nargin);
+    scope.mark_hidden (".nargin.");
+    scope.mark_automatic (".nargin.");
+
+    scope.force_assign (".nargout.", nargout);
+    scope.mark_hidden (".nargout.");
+    scope.mark_automatic (".nargout.");
+
+    scope.force_assign (".saved_warning_states.", octave_value ());
+    scope.mark_hidden (".saved_warning_states.");
+    scope.mark_automatic (".saved_warning_states.");
+
+    if (! arg_names.empty ())
+      {
+        // It is better to save this in the hidden variable .argn. and
+        // then use that in the inputname function instead of using argn,
+        // which might be redefined in a function.  Keep the old argn name
+        // for backward compatibility of functions that use it directly.
+
+        charMatrix chm (arg_names, string_fill_char ());
+        scope.force_assign ("argn", chm);
+        scope.mark_automatic ("argn");
+      }
+
+    if (takes_varargs)
+      scope.assign ("varargin", va_args.cell_value ());
   }
 }
 

@@ -464,11 +464,6 @@ private:
   // XXX FIXME (public)
 public:
 
-  void bind_automatic_vars (octave::tree_evaluator& tw,
-                            const string_vector& arg_names,
-                            int nargin, int nargout,
-                            const octave_value_list& va_args);
-
   void restore_warning_states (void);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

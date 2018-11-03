@@ -144,6 +144,7 @@ function h = surfl (varargin)
     hax = newplot (hax);
 
     htmp = surface (varargin{:});
+    __update_normals__ (htmp);
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);

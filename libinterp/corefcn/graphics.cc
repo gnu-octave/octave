@@ -9543,9 +9543,9 @@ patch::properties::calc_face_normals (Matrix& fn)
   Matrix v = get_vertices ().matrix_value ();
   Matrix f = get_faces ().matrix_value ();
 
-  bool is_3d = (v.columns () == 3); // 2d or 3d patches
-  octave_idx_type num_f = f.rows (); // number of faces
-  octave_idx_type max_nc = f.columns (); // maximum number of polygon corners
+  bool is_3d = (v.columns () == 3);   // 2D or 3D patches
+  octave_idx_type num_f = f.rows ();  // number of faces
+  octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
   // In which cases can we skip updating the normals?
   if (max_nc < 3)
@@ -9641,17 +9641,17 @@ patch::properties::calc_face_normals (Matrix& fn)
 }
 
 void
-patch::properties::update_face_normals (bool reset)
+patch::properties::update_face_normals (bool reset, bool force)
 {
   if (updating_patch_data || ! facenormalsmode_is ("auto"))
     return;
 
-  if ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
-      get_do_lighting ())
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+                get_do_lighting ()))
     {
       Matrix f = get_faces ().matrix_value ();
 
-      octave_idx_type num_f = f.rows (); // number of faces
+      octave_idx_type num_f = f.rows ();  // number of faces
       Matrix fn (num_f, 3, 0.0);
 
       calc_face_normals (fn);
@@ -9662,21 +9662,21 @@ patch::properties::update_face_normals (bool reset)
 }
 
 void
-patch::properties::update_vertex_normals (bool reset)
+patch::properties::update_vertex_normals (bool reset, bool force)
 {
   if (updating_patch_data || ! vertexnormalsmode_is ("auto"))
     return;
 
-  if ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
-      edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
-      get_do_lighting ())
+  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong")
+                 || edgelighting_is ("gouraud") || edgelighting_is ("phong"))
+                && get_do_lighting ()))
     {
       Matrix v = get_vertices ().matrix_value ();
       Matrix f = get_faces ().matrix_value ();
 
-      octave_idx_type num_v = v.rows (); // number of vertices
-      octave_idx_type num_f = f.rows (); // number of faces
-      octave_idx_type max_nc = f.columns (); // maximum number of polygon corners
+      octave_idx_type num_v = v.rows ();  // number of vertices
+      octave_idx_type num_f = f.rows ();  // number of faces
+      octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
       // In which cases can we skip updating the normals?
       if (max_nc < 3)
@@ -9692,7 +9692,7 @@ patch::properties::update_vertex_normals (bool reset)
         }
 
       // Second step: assign normals to the respective vertices
-      std::vector<RowVector> vec_vn [num_v]; // list of normals for vertices
+      std::vector<RowVector> vec_vn [num_v];  // list of normals for vertices
       for (octave_idx_type i = 0; i < num_f; i++)
         {
           // get number of corners
@@ -9799,13 +9799,13 @@ surface::properties::get_do_lighting (void) const
 }
 
 void
-surface::properties::update_face_normals (bool reset)
+surface::properties::update_face_normals (bool reset, bool force)
 {
   if (! facenormalsmode_is ("auto"))
     return;
 
-  if ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
-      get_do_lighting ())
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+                get_do_lighting ()))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -9879,14 +9879,14 @@ surface::properties::update_face_normals (bool reset)
 }
 
 void
-surface::properties::update_vertex_normals (bool reset)
+surface::properties::update_vertex_normals (bool reset, bool force)
 {
   if (! vertexnormalsmode_is ("auto"))
     return;
 
-  if ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
+  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
       edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
-      get_do_lighting ())
+      get_do_lighting ()))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -9975,6 +9975,71 @@ surface::properties::update_vertex_normals (bool reset)
   else if (reset)
     vertexnormals = Matrix ();
 }
+
+DEFUN (__update_normals__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __update_normals__ (@var{h})
+Update FaceNormals and VertexNormals of the patch or surface referred to by
+@var{h}.
+
+@end deftypefn */)
+{
+  gh_manager::auto_lock guard;
+
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_value val = args(0);
+
+  graphics_object go = gh_manager::get_object (val);
+
+  if (go.isa ("surface"))
+    {
+      surface::properties& props =
+        dynamic_cast <surface::properties&> (go.get_properties ());
+      props.update_normals (false, true);
+    }
+  else if (go.isa ("patch"))
+    {
+      patch::properties& props =
+        dynamic_cast <patch::properties&> (go.get_properties ());
+      props.update_normals (false, true);
+    }
+  else
+    error ("__update_normals__: "
+           "H must be a handle to a valid surface or patch object.");
+
+  return ovl ();
+}
+
+/*
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   Z = peaks ();
+%!   hs = surf (Z, "facelighting", "none");
+%!   assert (isempty (get (hs, "vertexnormals")));
+%!   assert (isempty (get (hs, "facenormals")));
+%!   __update_normals__ (hs);
+%!   assert (! isempty (get (hs, "vertexnormals")));
+%!   assert (! isempty (get (hs, "facenormals")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hp = patch ("facelighting", "none");
+%!   assert (isempty (get (hp, "vertexnormals")));
+%!   assert (isempty (get (hp, "facenormals")));
+%!   __update_normals__ (hp);
+%!   assert (! isempty (get (hp, "vertexnormals")));
+%!   assert (! isempty (get (hp, "facenormals")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
 
 // ---------------------------------------------------------------------
 
@@ -13322,7 +13387,7 @@ In all cases, typing CTRL-C stops program execution immediately.
             break;
         }
 
-      octave::sleep (0.1); // FIXME: really needed?
+      octave::sleep (0.1);  // FIXME: really needed?
 
       octave_quit ();
 

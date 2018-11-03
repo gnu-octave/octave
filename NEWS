@@ -61,8 +61,11 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
  ** Patch and surface graphic objects now use the "FaceNormals" property
     for flat lighting.
 
- ** "FaceNormals" and "EdgeNormals" for patch and surface graphic
-    objects are now calculated automatically if necessary.
+ ** "FaceNormals" and "VertexNormals" for patch and surface graphic
+    objects are now calculated automatically if necessary.  The
+    "FaceLighting" property must be set to "flat" (FaceNormals) or
+    "gouraud" (VertexNormals), AND a light object must be present in the
+    axes, before any normals will be calculated.
 
  ** Printing to raster formats now uses an opengl based method by default.
     The print options "-opengl" and "-painters" have been added (for "qt"

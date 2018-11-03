@@ -4876,10 +4876,10 @@ public:
     }
 
   public:
-    void update_normals (bool reset)
+    void update_normals (bool reset, bool force = false)
     {
-      update_face_normals (reset);
-      update_vertex_normals (reset);
+      update_face_normals (reset, force);
+      update_vertex_normals (reset, force);
     }
 
 
@@ -4954,8 +4954,8 @@ public:
     void update_data (void);
 
     void calc_face_normals (Matrix& normals);
-    void update_face_normals (bool reset);
-    void update_vertex_normals (bool reset);
+    void update_face_normals (bool reset, bool force = false);
+    void update_vertex_normals (bool reset, bool force = false);
 
     void update_edgelighting (void)
     {
@@ -5121,10 +5121,10 @@ public:
     }
 
   public:
-    void update_normals (bool reset)
+    void update_normals (bool reset, bool force = false)
     {
-      update_face_normals (reset);
-      update_vertex_normals (reset);
+      update_face_normals (reset, force);
+      update_vertex_normals (reset, force);
     }
 
 
@@ -5163,8 +5163,8 @@ public:
       set_zlim (zdata.get_limits ());
     }
 
-    void update_face_normals (bool reset);
-    void update_vertex_normals (bool reset);
+    void update_face_normals (bool reset, bool force = false);
+    void update_vertex_normals (bool reset, bool force = false);
 
     void update_facenormalsmode (void)
     { update_face_normals (false); }

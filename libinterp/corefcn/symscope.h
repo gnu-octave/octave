@@ -82,6 +82,10 @@ namespace octave
       m_symbols[sr.name ()] = sr;
     }
 
+    void install_auto_fcn_vars (void);
+
+    void install_auto_fcn_var (const std::string& name);
+
     bool is_nested (void) const { return m_is_nested; }
 
     void mark_nested (void) { m_is_nested = true; }
@@ -625,6 +629,12 @@ namespace octave
     {
       if (m_rep)
         m_rep->insert_symbol_record (sr);
+    }
+
+    void install_auto_fcn_vars (void)
+    {
+      if (m_rep)
+        m_rep->install_auto_fcn_vars ();
     }
 
     bool is_nested (void) const

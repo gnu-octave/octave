@@ -39,6 +39,22 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  void symbol_scope_rep::install_auto_fcn_vars (void)
+  {
+    install_auto_fcn_var (".argn.");
+    install_auto_fcn_var (".ignored.");
+    install_auto_fcn_var (".nargin.");
+    install_auto_fcn_var (".nargout.");
+    install_auto_fcn_var (".saved_warning_states.");
+  }
+
+  void symbol_scope_rep::install_auto_fcn_var (const std::string& name)
+  {
+    insert (name, true);
+    mark_hidden (name);
+    mark_automatic (name);
+  }
+
   octave_value
   symbol_scope_rep::find (const std::string& name,
                           const octave_value_list& args,

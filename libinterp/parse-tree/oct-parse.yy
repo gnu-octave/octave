@@ -3472,6 +3472,7 @@ namespace octave
 
         symbol_scope fcn_scope = fcn->scope ();
         fcn_scope.cache_name (tmp);
+        fcn_scope.install_auto_fcn_vars ();
 
         if (lc)
           fcn->stash_leading_comment (lc);

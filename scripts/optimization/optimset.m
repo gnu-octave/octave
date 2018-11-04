@@ -161,7 +161,9 @@ function retval = optimset (varargin)
           warning (fmt, key, opts{i});
         endif
       endif
-      old.(key) = val;
+      if (! isempty (val))
+        old.(key) = val;
+      endif
     endfor
     retval = old;
   elseif (rem (nargs, 2) && isstruct (varargin{1}))
@@ -183,6 +185,14 @@ endfunction
 %!assert (isfield (optimset (), "TolFun"))
 %!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
 %!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
+%!test
+%! old = optimset ();
+%! old.TolX = 1e-2;
+%! new = optimset ();
+%! new.TolFun = 1e-3;
+%! joint = optimset (old, new);
+%! assert (joint.TolX, 1e-2);
+%! assert (joint.TolFun, 1e-3);
 
 ## Test input validation
 %!error optimset ("1_Parameter")

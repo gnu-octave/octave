@@ -1254,7 +1254,7 @@ namespace octave
     double xPlaneN = props.get_xPlaneN ();
     double yPlaneN = props.get_yPlaneN ();
     double zPlaneN = props.get_zPlaneN ();
-    bool is2d = props.get_is2D ();
+    bool is2D = props.get_is2D ();
 
     // Axes planes
     set_color (axe_color);
@@ -1262,7 +1262,7 @@ namespace octave
 
     m_glfcns.glBegin (GL_QUADS);
 
-    if (! is2d)
+    if (! is2D)
       {
         // X plane
         m_glfcns.glVertex3d (xPlane, yPlaneN, zPlaneN);
@@ -1309,7 +1309,7 @@ namespace octave
 
     bool xySym = props.get_xySym ();
     bool layer2Dtop = props.get_layer2Dtop ();
-    bool is2d = props.get_is2D ();
+    bool is2D = props.get_is2D ();
     bool isXOrigin = props.xaxislocation_is ("origin")
                      && ! props.yscale_is ("log");
     bool isYOrigin = props.yaxislocation_is ("origin")
@@ -1344,7 +1344,7 @@ namespace octave
     // X box
     set_color (props.get_xcolor_rgb ());
 
-    if (! isXOrigin || props.is_box() || ! is2d)
+    if (! isXOrigin || props.is_box() || ! is2D)
       {
         m_glfcns.glVertex3d (xPlaneN, ypTick, zpTick);
         m_glfcns.glVertex3d (xPlane, ypTick, zpTick);
@@ -1354,7 +1354,7 @@ namespace octave
       {
         m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTick);
         m_glfcns.glVertex3d (xPlane, ypTickN, zpTick);
-        if (! is2d)
+        if (! is2D)
           {
             m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTickN);
             m_glfcns.glVertex3d (xPlane, ypTickN, zpTickN);
@@ -1368,7 +1368,7 @@ namespace octave
 
     // Y box
     set_color (props.get_ycolor_rgb ());
-    if (! isYOrigin || props.is_box() || ! is2d)
+    if (! isYOrigin || props.is_box() || ! is2D)
       {
         m_glfcns.glVertex3d (xpTick, yPlaneN, zpTick);
         m_glfcns.glVertex3d (xpTick, yPlane, zpTick);
@@ -1379,7 +1379,7 @@ namespace octave
         m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTick);
         m_glfcns.glVertex3d (xpTickN, yPlane, zpTick);
 
-        if (! is2d)
+        if (! is2D)
           {
             m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTickN);
             m_glfcns.glVertex3d (xpTickN, yPlane, zpTickN);
@@ -1392,7 +1392,7 @@ namespace octave
       }
 
     // Z box
-    if (! is2d)
+    if (! is2D)
       {
         set_color (props.get_zcolor_rgb ());
 

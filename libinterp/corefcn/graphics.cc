@@ -631,7 +631,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
   Matrix retval (1, pos.numel ());
   double res = 0;
   bool is_rectangle = (pos.numel () == 4);
-  bool is_2d = (pos.numel () == 2);
+  bool is_2D = (pos.numel () == 2);
 
   if (from_units.compare ("pixels"))
     retval = pos;
@@ -644,7 +644,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
           retval(2) = pos(2) * parent_dim(0);
           retval(3) = pos(3) * parent_dim(1);
         }
-      else if (! is_2d)
+      else if (! is_2D)
         retval(2) = 0;
     }
   else if (from_units.compare ("characters"))
@@ -667,7 +667,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = 0.5 * pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
     }
@@ -694,7 +694,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
     }
@@ -710,7 +710,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) /= parent_dim(0);
               retval(3) /= parent_dim(1);
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
       else if (to_units.compare ("characters"))
@@ -731,7 +731,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) = 2 * retval(2) / f;
                   retval(3) = retval(3) / f;
                 }
-              else if (! is_2d)
+              else if (! is_2D)
                 retval(2) = 0;
             }
         }
@@ -758,12 +758,12 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) /= f;
                   retval(3) /= f;
                 }
-              else if (! is_2d)
+              else if (! is_2D)
                 retval(2) = 0;
             }
         }
     }
-  else if (! is_rectangle && ! is_2d)
+  else if (! is_rectangle && ! is_2D)
     retval(2) = 0;
 
   return retval;
@@ -6062,12 +6062,12 @@ axes::properties::update_axes_layout (void)
 void
 axes::properties::update_ticklength (void)
 {
-  bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
+  bool mode2D = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
                   (ystate > AXE_DEPTH_DIR ? 1 : 0) +
                   (zstate > AXE_DEPTH_DIR ? 1 : 0)) == 2);
 
   if (tickdirmode_is ("auto"))
-    tickdir.set (mode2d ? "in" : "out", true);
+    tickdir.set (mode2D ? "in" : "out", true);
 
   double ticksign = (tickdir_is ("in") ? -1 : 1);
 
@@ -6076,13 +6076,13 @@ axes::properties::update_ticklength (void)
   ticklen(0) *= std::max (bbox(2), bbox(3));
   ticklen(1) *= std::max (bbox(2), bbox(3));
 
-  xticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
-  yticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
-  zticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
+  xticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
+  yticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
+  zticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
 
-  xtickoffset = (mode2d ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
-  ytickoffset = (mode2d ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
-  ztickoffset = (mode2d ? std::max (0., zticklen) : std::abs (zticklen)) + 5;
+  xtickoffset = (mode2D ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
+  ytickoffset = (mode2D ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
+  ztickoffset = (mode2D ? std::max (0., zticklen) : std::abs (zticklen)) + 5;
 
   update_xlabel_position ();
   update_ylabel_position ();
@@ -9415,7 +9415,7 @@ patch::properties::update_data (void)
         }
     }
 
-  // check coplanarity for 3d-faces with more than 3 corners
+  // check coplanarity for 3D-faces with more than 3 corners
   int fcmax = idx.rows ();
   if (fcmax > 3 && vert.columns () > 2)
     {
@@ -9543,7 +9543,7 @@ patch::properties::calc_face_normals (Matrix& fn)
   Matrix v = get_vertices ().matrix_value ();
   Matrix f = get_faces ().matrix_value ();
 
-  bool is_3d = (v.columns () == 3);   // 2D or 3D patches
+  bool is_3D = (v.columns () == 3);   // 2D or 3D patches
   octave_idx_type num_f = f.rows ();  // number of faces
   octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
 
@@ -9589,7 +9589,7 @@ patch::properties::calc_face_normals (Matrix& fn)
           // fast way for coplanar polygons
           i1 = f(i,0) - 1; i2 = f(i,1) - 1; i3 = f(i,nc-1) - 1;
 
-          if (is_3d)
+          if (is_3D)
             cross_product
               (v(i3,0) - v(i1,0), v(i3,1) - v(i1,1), v(i3,2) - v(i1,2),
                v(i2,0) - v(i1,0), v(i2,1) - v(i1,1), v(i2,2) - v(i1,2),

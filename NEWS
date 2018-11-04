@@ -62,21 +62,24 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     for flat lighting.
 
  ** "FaceNormals" and "VertexNormals" for patch and surface graphic
-    objects are now calculated automatically if necessary.  The
+    objects are now calculated only when necessary to improve graphics
+    performance.  In order for any normals to be calculated the
     "FaceLighting" property must be set to "flat" (FaceNormals) or
     "gouraud" (VertexNormals), AND a light object must be present in the
-    axes, before any normals will be calculated.
+    axes.
 
- ** Printing to raster formats now uses an opengl based method by default.
-    The print options "-opengl" and "-painters" have been added (for "qt"
-    toolkit only) and the corresponding figure properties "renderer" and 
-    "renderermode" are now also used when printing.
+ ** Printing to raster formats now uses an OpenGL-based method by
+    default.  The print options "-opengl" and "-painters" have been
+    added (for "qt" toolkit only), and the corresponding figure
+    properties "renderer" and "renderermode" are now also used when
+    printing.
 
- ** The print option "-RGBImage" has been added. It allows for retrieving
-    image pixels of a formated figure instead of printing to raster format.
+ ** The print option "-RGBImage" has been added.  It allows for
+    retrieving image pixels of a formatted figure instead of printing to
+    raster format.
 
  ** Printing using the -dtiff output device will now create compressed
-    images using lzw compression.  This change was made for Matlab
+    images using LZW compression.  This change was made for Matlab
     compatibility.  To produce uncompressed images use the -dtiffn
     device.
 
@@ -163,16 +166,6 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       patch                | normalmode              |
       surface              | normalmode              |
 
-  ** Certain C++ predicate test functions have been deprecated and
-     replaced with the same functionality under the equivalent name used
-     in the Octave programming language.  These changes make it easier
-     for new programmers familiar with Octave to understand code written
-     in C++.
-
-      Function             | Replacement
-      ---------------------|------------------
-      is_figure            | isfigure
-      is_hghandle          | ishghandle
 
 ---------------------------------------------------------
 

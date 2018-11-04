@@ -5464,6 +5464,7 @@ public:
       radio_property verticalalignment , "top|{middle}|bottom"
 
       // Octave-specific properties
+      bool_property __focus__ h , "on"
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 

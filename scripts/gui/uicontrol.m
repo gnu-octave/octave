@@ -97,8 +97,9 @@
 ## @end example
 ##
 ## When called with a single argument @var{h} which is a handle to an existing
-## uicontrol object, switch the focus to the specified uicontrol.  This
-## functionality is not currently implemented.
+## uicontrol object, switch the keyboard focus to the specified
+## uicontrol.  As a result, the uicontrol object will receive keyboard
+## events that can be processed using the "keypressfcn" callback.
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
@@ -107,7 +108,7 @@
 function hui = uicontrol (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uicontrol"))
-    warning ("uicontrol: focusing not implemented yet");
+    set (varargin{1}, "__focus__", "on");
     return;
   endif
 

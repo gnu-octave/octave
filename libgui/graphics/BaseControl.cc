@@ -92,6 +92,7 @@ namespace QtHandles
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
     init (w);
+    w->setFocus ();
   }
 
   void
@@ -171,6 +172,13 @@ namespace QtHandles
         m_keyPressHandlerDefined = ! up.get_keypressfcn ().isempty ();
         break;
 
+      case uicontrol::properties::ID___FOCUS__:
+        if (up.is___focus__ ())
+          w->setFocus ();
+        else
+          w->clearFocus ();
+        break;
+
       default:
         break;
       }
@@ -203,7 +211,7 @@ namespace QtHandles
             {
               gh_manager::post_set (fig.get_handle (), "currentobject",
                                     m_handle.value (), false);
-              
+
               if (m->button () != Qt::LeftButton || ! up.enable_is ("on"))
                 {
                   gh_manager::post_set (fig.get_handle (), "selectiontype",
@@ -264,6 +272,14 @@ namespace QtHandles
                                   keyData.getfield ("Character"), false);
             gh_manager::post_callback (m_handle, "keypressfcn", keyData);
           }
+        break;
+
+      case QEvent::FocusIn:
+        gh_manager::post_set (m_handle, "__focus__", "on", false);
+        break;
+
+      case QEvent::FocusOut:
+        gh_manager::post_set (m_handle, "__focus__", "off", false);
         break;
 
       default:

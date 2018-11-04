@@ -81,6 +81,7 @@ octave_gui_ICONS = \
   %reldir%/icons/widget-dock-light.png \
   %reldir%/icons/widget-undock-light.png \
   %reldir%/icons/zoom-in.png \
+  %reldir%/icons/zoom-original.png \
   %reldir%/icons/zoom-out.png
 
 octave_gui_MOC =

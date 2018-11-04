@@ -329,6 +329,17 @@ namespace octave
     init (tr ("Move Tab Right"), "editor_tabs:move_tab_right",
           QKeySequence (Qt::AltModifier + Qt::Key_PageDown));
 
+    // Zooming
+    init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
+    init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
+#if defined (Q_OS_MAC)
+    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
+          QKeySequence (ctrl + Qt::Key_Underscore));
+#else
+    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
+          QKeySequence (ctrl + Qt::Key_Period));
+#endif
+
     // actions of the editor
 
     // file
@@ -435,15 +446,6 @@ namespace octave
           QKeySequence ());
     init (tr ("Show Horizontal Scrollbar"), "editor_view:show_hscrollbar",
           QKeySequence ());
-    init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
-    init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
-#if defined (Q_OS_MAC)
-    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-          QKeySequence (ctrl + Qt::Key_Underscore));
-#else
-    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-          QKeySequence (ctrl + Qt::Key_Period));
-#endif
 
     // debug
     init (tr ("Toggle Breakpoint"), "editor_debug:toggle_breakpoint",
@@ -467,6 +469,12 @@ namespace octave
     init (tr ("Document on Keyword"), "editor_help:doc_keyword",
           QKeySequence (Qt::SHIFT + Qt::Key_F1));
 
+
+    // Documentation browser
+    init (tr ("Go to Homepage"), "doc_browser:go_home",
+              QKeySequence (Qt::AltModifier + Qt::Key_Home));
+    init (tr ("Go Back one Page"), "doc_browser:go_back", QKeySequence::Back);
+    init (tr ("Go Forward one Page"), "doc_browser:go_next", QKeySequence::Forward);
   }
 
   // write one or all actual shortcut set(s) into a settings file
@@ -588,6 +596,15 @@ namespace octave
     m_level_hash["editor_debug"] = editor_debug;
     m_level_hash["editor_run"] = editor_run;
     m_level_hash["editor_help"] = editor_help;
+
+    QTreeWidgetItem *doc = new QTreeWidgetItem (tree_view);
+    doc->setText (0, tr ("Documentation Viewer"));
+    doc->setExpanded (true);
+
+    QTreeWidgetItem *doc_browser = new QTreeWidgetItem (doc);
+    doc_browser->setText (0, tr ("Browser"));
+
+    m_level_hash["doc_browser"] = doc_browser;
 
     connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
              this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));

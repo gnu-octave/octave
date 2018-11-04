@@ -63,6 +63,7 @@
         <file>icons/widget-dock-light.png</file>
         <file>icons/widget-undock-light.png</file>
         <file>icons/zoom-in.png</file>
+        <file>icons/zoom-original.png</file>
         <file>icons/zoom-out.png</file>
     </qresource>
 </RCC>

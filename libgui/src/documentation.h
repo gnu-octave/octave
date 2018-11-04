@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
+#include <QToolBar>
 #include <QtHelp/QHelpEngine>
 
 namespace octave
@@ -56,7 +57,7 @@ namespace octave
     //!@{
     void zoom_in (void);
     void zoom_out (void);
-    void zoom_normal (void);
+    void zoom_original (void);
     //!@}
 
   protected:
@@ -106,6 +107,7 @@ namespace octave
 
   private slots:
 
+    void activate_find (void);
     void global_search (void);
     void global_search_started (void);
     void global_search_finished (int hits);
@@ -123,6 +125,11 @@ namespace octave
 
   private:
 
+    void construct_tool_bar (void);
+    QAction *add_action (const QIcon& icon, const QString& text,
+                         const char *member, QWidget *receiver = nullptr,
+                         QToolBar *tool_bar = nullptr);
+
     QHelpEngine *m_help_engine;
     QString m_internal_search;
     documentation_browser *m_doc_browser;
@@ -131,12 +138,20 @@ namespace octave
     QComboBox *m_filter;
     QString m_collection;
 
-    QShortcut *m_show_shortcut;
+    QWidget *m_doc_widget;
+    QToolBar *m_tool_bar;
+
+    QAction *m_action_go_home;
+    QAction *m_action_go_prev;
+    QAction *m_action_go_next;
+
+    QAction *m_action_find;
     QShortcut *m_findnext_shortcut;
     QShortcut *m_findprev_shortcut;
-    QShortcut *m_zoom_in_shortcut;
-    QShortcut *m_zoom_out_shortcut;
-    QShortcut *m_zoom_normal_shortcut;
+
+    QAction *m_action_zoom_in;
+    QAction *m_action_zoom_out;
+    QAction *m_action_zoom_original;
   };
 }
 

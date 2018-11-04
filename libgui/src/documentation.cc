@@ -55,12 +55,10 @@ namespace octave
   // of the doc dock widget
   documentation::documentation (QWidget *p)
     : QSplitter (Qt::Horizontal, p),
-      m_show_shortcut (new QShortcut (p)),
+      m_doc_widget (p),
+      m_tool_bar (new QToolBar (p)),
       m_findnext_shortcut (new QShortcut (p)),
-      m_findprev_shortcut (new QShortcut (p)),
-      m_zoom_in_shortcut (new QShortcut (p)),
-      m_zoom_out_shortcut (new QShortcut (p)),
-      m_zoom_normal_shortcut (new QShortcut (p))
+      m_findprev_shortcut (new QShortcut (p))
   {
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
@@ -107,6 +105,10 @@ namespace octave
     connect (m_doc_browser, SIGNAL (cursorPositionChanged (void)),
              this, SLOT(handle_cursor_position_change (void)));
 
+    // Tool bar
+    construct_tool_bar ();
+
+    // Find bar
     QWidget *find_footer = new QWidget (browser_find);
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
@@ -135,26 +137,12 @@ namespace octave
     find_footer->setLayout (h_box_find_footer);
 
     QVBoxLayout *v_box_browser_find = new QVBoxLayout (browser_find);
+    v_box_browser_find->addWidget (m_tool_bar);
     v_box_browser_find->addWidget (m_doc_browser);
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
     notice_settings (resource_manager::get_settings ());
-
-    m_show_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit->parentWidget (), SLOT (show (void)));
-    connect (m_show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit, SLOT (selectAll (void)));
-    connect (m_show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit, SLOT (setFocus (void)));
-    QShortcut *hide_shortcut = new QShortcut (Qt::Key_Escape, p);
-
-    hide_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (hide_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit->parentWidget (), SLOT(hide (void)));
-    connect (hide_shortcut, SIGNAL (activated (void)),
-             m_doc_browser, SLOT (setFocus (void)));
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findnext_shortcut, SIGNAL (activated (void)),
@@ -165,17 +153,6 @@ namespace octave
 
     find_footer->hide ();
     m_search_anchor_position = 0;
-
-    // Zoom Shortcuts
-    m_zoom_in_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_zoom_in_shortcut, SIGNAL (activated (void)),
-             m_doc_browser, SLOT (zoom_in (void)));
-    m_zoom_out_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_zoom_out_shortcut, SIGNAL (activated (void)),
-             m_doc_browser, SLOT (zoom_out (void)));
-    m_zoom_normal_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (m_zoom_normal_shortcut, SIGNAL (activated (void)),
-             m_doc_browser, SLOT (zoom_normal (void)));
 
     // Layout contents, index and search
     QTabWidget *navi = new QTabWidget (this);
@@ -294,6 +271,66 @@ namespace octave
       }
   }
 
+  QAction * documentation::add_action (const QIcon& icon, const QString& text,
+                                       const char *member, QWidget *receiver,
+                                       QToolBar *tool_bar)
+  {
+    QAction *a;
+    QWidget *r = this;
+    if (receiver != nullptr)
+      r = receiver;
+
+    a = new QAction (icon, text, this);
+    connect (a, SIGNAL (triggered ()), r, member);
+
+    if (tool_bar)
+      tool_bar->addAction (a);
+
+    m_doc_widget->addAction (a);  // important for shortcut context
+    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+
+    return a;
+  }
+
+  void documentation::construct_tool_bar (void)
+  {
+    // Home, Previous, Next
+    m_action_go_home = add_action (resource_manager::icon ("go-home"),
+                                   tr ("Go home"), SLOT (home (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_prev = add_action (resource_manager::icon ("go-previous"),
+                                   tr ("Go back"), SLOT (backward (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_next = add_action (resource_manager::icon ("go-next"),
+                                   tr ("Go forward"), SLOT (forward (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_prev->setEnabled (false);
+    m_action_go_next->setEnabled (false);
+    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
+             m_action_go_prev, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
+             m_action_go_next, SLOT (setEnabled (bool)));
+
+
+    // Find
+    m_tool_bar->addSeparator ();
+    m_action_find = add_action (resource_manager::icon ("edit-find"),
+                                   tr ("Find"), SLOT (activate_find (void)),
+                                   this, m_tool_bar);
+
+    // Zoom
+    m_tool_bar->addSeparator ();
+    m_action_zoom_in = add_action (resource_manager::icon ("zoom-in"),
+                                   tr ("Zoom in"), SLOT (zoom_in (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_zoom_out = add_action (resource_manager::icon ("zoom-out"),
+                                    tr ("Zoom in"), SLOT (zoom_out (void)),
+                                    m_doc_browser, m_tool_bar);
+    m_action_zoom_original = add_action (resource_manager::icon ("zoom-original"),
+                                   tr ("Zoom original"), SLOT (zoom_original (void)),
+                                   m_doc_browser, m_tool_bar);
+  }
+
   void documentation::global_search (void)
   {
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
@@ -381,14 +418,33 @@ namespace octave
     qApp->restoreOverrideCursor();
   }
 
-  void documentation::notice_settings (const QSettings *)
+  void documentation::notice_settings (const QSettings *settings)
   {
-    shortcut_manager::shortcut (m_show_shortcut, "editor_edit:find_replace");
+    // Icon size in the toolbar.
+
+    int icon_size_settings = settings->value ("toolbar_icon_size", 0).toInt ();
+    QStyle *st = style ();
+    int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
+
+    // FIXME: Magic numbers.  Use enum?
+
+    if (icon_size_settings == 1)
+      icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
+    else if (icon_size_settings == -1)
+      icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
+
+    m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+
+    // Shortcuts
+    shortcut_manager::set_shortcut (m_action_find, "editor_edit:find_replace");
     shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
     shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
-    shortcut_manager::shortcut (m_zoom_in_shortcut, "editor_view:zoom_in");
-    shortcut_manager::shortcut (m_zoom_out_shortcut, "editor_view:zoom_out");
-    shortcut_manager::shortcut (m_zoom_normal_shortcut, "editor_view:zoom_normal");
+    shortcut_manager::set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
+    shortcut_manager::set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
+    shortcut_manager::set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
+    shortcut_manager::set_shortcut (m_action_go_home, "doc_browser:go_home");
+    shortcut_manager::set_shortcut (m_action_go_prev, "doc_browser:go_back");
+    shortcut_manager::set_shortcut (m_action_go_next, "doc_browser:go_next");
   }
 
   void documentation::copyClipboard (void)
@@ -450,6 +506,21 @@ namespace octave
         QWidget *search_tab
           = navi->findChild<QWidget*> ("documentation_tab_search");
         navi->setCurrentWidget (search_tab);
+      }
+  }
+
+  void documentation::activate_find (void)
+  {
+    if (m_find_line_edit->parentWidget ()->isVisible ())
+      {
+        m_find_line_edit->parentWidget ()->hide ();
+        m_doc_browser->setFocus ();
+      }
+    else
+      {
+        m_find_line_edit->parentWidget ()->show ();
+        m_find_line_edit->selectAll ();
+        m_find_line_edit->setFocus ();
       }
   }
 
@@ -609,7 +680,7 @@ namespace octave
       }
   }
 
-  void documentation_browser::zoom_normal (void)
+  void documentation_browser::zoom_original (void)
   {
     zoomIn (- m_zoom_level);
     m_zoom_level = 0;

@@ -119,7 +119,9 @@ endfunction
 %!warning <unrecognized option 'foobar'>
 %! unwind_protect
 %!   h = figure ("visible", "off");
-%!   savefig (h, "myfig.fig", "foobar");
+%!   ftmp = [tempname() ".fig"];
+%!   savefig (h, ftmp, "foobar");
 %! unwind_protect_cleanup
 %!   close (h);
+%!   unlink (ftmp);
 %! end_unwind_protect

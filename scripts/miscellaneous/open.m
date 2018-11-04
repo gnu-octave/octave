@@ -79,7 +79,12 @@ function output = open (file)
   if (! isempty (ext)
       && any (exist (["open" tolower(ext(2:end))]) == [2 3 5 103]))
     try
-      feval (["open" tolower(ext(2:end))], file)
+      openfcn = ["open" tolower(ext(2:end))];
+      if (nargout > 0)
+        output = feval (openfcn, file);
+      else
+        feval (openfcn, file);
+      endif
     catch
       error ("open: %s", lasterr);
     end_try_catch
@@ -91,9 +96,12 @@ function output = open (file)
     else
       evalin ("base", sprintf ("load ('%s');", file));
     endif
-  elseif (any (strcmpi (ext, {".fig", ".ofig"})))
-    output = openfig (file);
-    drawnow ();
+  elseif (any (strcmpi (ext, ".ofig")))
+    if (nargout > 0)
+      output = openfig (file);
+    else
+      openfig (file);
+    endif
   elseif (any (strcmpi (ext, {".mdl", ".slx", ".prj"})))
     error ("open: opening file type '%s' is not supported", ext);
   elseif (strcmpi (ext, ".exe"))

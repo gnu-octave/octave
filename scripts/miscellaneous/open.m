@@ -96,7 +96,7 @@ function output = open (file)
     else
       evalin ("base", sprintf ("load ('%s');", file));
     endif
-  elseif (any (strcmpi (ext, ".ofig")))
+  elseif (strcmpi (ext, ".ofig"))
     if (nargout > 0)
       output = openfig (file);
     else

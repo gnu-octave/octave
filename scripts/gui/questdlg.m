@@ -137,13 +137,13 @@ endfunction
 
 %!demo
 %! disp ('- test questdlg with message and title only.');
-%! a = 'No';
+%! a = 'Yes';
 %! c = 0;
-%! while (strcmp (a, 'No') || ! c)
+%! while (strcmp (a, 'Yes') && ! c)
 %!   a = questdlg ('Close this Question Dialog?', 'Reductio Ad Absurdum');
 %!   if (strcmp (a, 'Yes'))
 %!     q = 'Are you sure?';
-%!     while (strcmp (a, 'Yes') && ! c)
+%!     while (strcmp (a, 'Yes'))
 %!       a = questdlg (q, 'Reductio Ad Absurdum');
 %!       word = ' really';
 %!       i = strfind (q, word);
@@ -157,8 +157,7 @@ endfunction
 %!     endwhile
 %!   endif
 %!   if (strcmp (a, 'Cancel'))
-%!     warndlg ('Answer "Yes" or "No".', 'Warning Dialog');
-%!     a = 'No';
+%!     uiwait (warndlg ('Answer "Yes" or "No".', 'Warning Dialog'));
 %!     c = 1;
 %!   endif
 %! endwhile

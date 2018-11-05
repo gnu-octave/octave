@@ -294,7 +294,7 @@ octave_class::dotref (const octave_value_list& idx)
 Matrix
 octave_class::size (void)
 {
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     return octave_base_value::size ();
 
   Matrix retval (1, 2, 1.0);
@@ -334,7 +334,7 @@ octave_class::size (void)
 octave_idx_type
 octave_class::numel (const octave_value_list& idx)
 {
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     return octave_base_value::numel (idx);
 
   octave_idx_type retval = -1;
@@ -374,7 +374,7 @@ octave_class::subsref (const std::string& type,
 {
   octave_value_list retval;
 
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     {
       // FIXME: this block of code is the same as the body of
       // octave_struct::subsref.  Maybe it could be shared instead of
@@ -535,7 +535,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 {
   octave_value retval;
 
-  if (! (in_class_method () || called_from_builtin ()))
+  if (! in_class_method ())
     {
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_class::subsasgn_common");

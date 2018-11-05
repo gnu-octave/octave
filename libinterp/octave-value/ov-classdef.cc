@@ -865,7 +865,7 @@ octave_classdef::subsref (const std::string& type,
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("subsref");
 
@@ -924,7 +924,7 @@ octave_classdef::subsasgn (const std::string& type,
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("subsasgn");
 
@@ -979,7 +979,7 @@ octave_classdef::numel (const octave_value_list& idx)
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("numel");
 

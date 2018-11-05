@@ -1461,22 +1461,6 @@ make_idx_args (const std::string& type,
   return m;
 }
 
-bool
-called_from_builtin (void)
-{
-  octave::call_stack& cs = octave::__get_call_stack__ ("called_from_builtin");
-
-  octave_function *fcn = cs.caller ();
-
-  // FIXME: we probably need a better check here, or some other
-  // mechanism to avoid overloaded functions when builtin is used.
-  // For example, what if someone overloads the builtin function?
-  // Also, are there other places where using builtin is not properly
-  // avoiding dispatch?
-
-  return (fcn && fcn->name () == "builtin");
-}
-
 void
 install_base_type_conversions (octave::type_info& ti)
 {

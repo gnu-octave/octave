@@ -278,9 +278,9 @@ function cb_callback (~, ~)
   close (gcbf ());
 endfunction
 
-## Callback when key typed (close window on <RETURN>)
+## Callback when key typed (close window on activation of button)
 function cb_keypress (~, ev)
-  if (strcmp (ev.Key, "return"))
+  if (any (strcmp (ev.Key, {"enter", "return", "escape", "space"})))
     close (gcbf ());
   endif
 endfunction

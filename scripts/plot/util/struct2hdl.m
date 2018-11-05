@@ -371,7 +371,7 @@ function [h, s] = createui (s, par)
   if (isfield (s.properties, "style") && strcmp (s.properties.style, "frame"))
     s.type = "uipanel";  # frame is deprecated: use uipanel instead
   endif
-  h = feval (s.type, "parent", par)
+  h = feval (s.type, "parent", par);
   addmissingprops (h, s.properties);
 endfunction
 

@@ -25,13 +25,13 @@
 ## Display an error dialog box with error message @var{msg} and caption
 ## @var{title}.
 ##
-## The default error message is @qcode{"This is the default error string."} and
-## the default caption is @qcode{"Error Dialog"}.
+## The default error message is @qcode{"This is the default error string.@:"}
+## and the default caption is @qcode{"Error Dialog"}.
 ##
 ## The error message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.
 ##
-## The third optionnal argument @var{opt} controls the behavior of the dialog.
+## The third optional argument @var{opt} controls the behavior of the dialog.
 ## See @code{msgbox} for details.
 ##
 ## The return value @var{h} is a handle to the figure object used for

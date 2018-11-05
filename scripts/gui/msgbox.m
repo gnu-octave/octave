@@ -40,12 +40,12 @@
 ## If @var{opt} is a string, it may be one of
 ##
 ## @table @asis
-## @item @qcode{"modal"}
-## The dialog is displayed @qcode{"modal"} which means it prevents users from
-## interacting with any other GUI element.
-##
 ## @item @qcode{"non-modal"} (default)
 ## The dialog is normal.
+##
+## @item @qcode{"modal"}
+## The dialog is displayed @qcode{"modal"} which means it prevents users from
+## interacting with any other GUI element until the dialog has been closed.
 ##
 ## @item @qcode{"replace"}
 ## If any dialogs already exist with the same title, the most recent is reused
@@ -57,13 +57,13 @@
 ##
 ## @table @asis
 ## @item @qcode{"WindowStyle"}
-## The value must be @qcode{"modal"}, @qcode{"non-modal"}, or
+## The value must be @qcode{"non-modal"}, @qcode{"modal"}, or
 ## @qcode{"replace"}.  See above.
 ##
 ## @item @qcode{"Interpreter"}
 ## Controls the @qcode{"interpreter"} property of the text object used for
-## displaying the message.  The value must be @qcode{"none"}, @qcode{"tex"}
-## (default), or @qcode{"latex"}.
+## displaying the message.  The value must be @qcode{"tex"} (default),
+## @qcode{"none"}, or @qcode{"latex"}.
 ## @end table
 ##
 ## The return value @var{h} is a handle to the figure object used for building

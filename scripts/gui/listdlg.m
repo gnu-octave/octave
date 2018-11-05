@@ -41,7 +41,7 @@
 ## @qcode{"Multiple"} (default).
 ##
 ## @item @qcode{"ListSize"}
-## a two-elment vector @code{[@var{width}, @var{height}]} specifying the size
+## a two-element vector @code{[@var{width}, @var{height}]} specifying the size
 ## of the list field in pixels.  The default is [160, 300].
 ##
 ## @item @qcode{"InitialValue"}

@@ -24,8 +24,8 @@
 ## Display a help dialog box with help message @var{msg} and caption
 ## @var{title}.
 ##
-## The default help message is @qcode{"This is the default help string."} and
-## the default caption is @qcode{"Help Dialog"}.
+## The default help message is @qcode{"This is the default help string.@:"}
+## and the default caption is @qcode{"Help Dialog"}.
 ##
 ## The help message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each line.

@@ -99,7 +99,7 @@
 ## When called with a single argument @var{h} which is a handle to an existing
 ## uicontrol object, switch the keyboard focus to the specified
 ## uicontrol.  As a result, the uicontrol object will receive keyboard
-## events that can be processed using the "keypressfcn" callback.
+## events that can be processed using the @qcode{"keypressfcn"} callback.
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 

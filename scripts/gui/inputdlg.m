@@ -40,15 +40,20 @@
 ## Specifies the size of the text fields and can take three forms:
 ##
 ## @enumerate
-## @item a scalar value which defines the number of rows used for each text field.
+## @item a scalar value which defines the number of rows used for each text
+## field.
 ##
-## @item a vector which defines the individual number of rows used for each text field.
+## @item a vector which defines the individual number of rows used for each
+## text field.
 ##
-## @item a matrix which defines the individual number of rows and columns used for each text field.  In the matrix each row describes a single text field.  The first column specifies the number of input rows to use and the second column specifies the text field width.
+## @item a matrix which defines the individual number of rows and columns used
+## for each text field.  In the matrix each row describes a single text field.
+## The first column specifies the number of input rows to use and the second
+## column specifies the text field width.
 ## @end enumerate
 ##
 ## @item defaults
-## A list of default values to place in each text fields.  It must be a cell
+## A list of default values to place in each text field.  It must be a cell
 ## array of strings with the same size as @var{prompt}.
 ##
 ## @item options
@@ -229,11 +234,11 @@ endfunction
 %! disp ('- test inputdlg with vector for a single item.');
 %! prompt = {'enter x value'};
 %! default = {1};
-%! answer = inputdlg (prompt,'Enter value', [1 10], default);
+%! answer = inputdlg (prompt, 'Enter value', [1 10], default);
 %! if (isempty (answer))
 %!   helpdlg ('Canceled by user', 'Information');
 %! else
-%!   helpdlg (sprintf ('answer = %d', str2num(answer{1})), 'answer');
+%!   helpdlg (sprintf ('answer = %d', str2num (answer{1})), 'answer');
 %! endif
 
 %!error inputdlg (1, 2, 3, 4, 5, 6)

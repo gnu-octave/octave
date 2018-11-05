@@ -77,11 +77,6 @@ function h = figure (varargin)
     endif
   endif
 
-  numpairs = nargs - sum (cellfun ("isclass", varargin, "struct"));
-  if (rem (numpairs, 2) == 1)
-    error ("figure: PROPERTY/VALUE arguments must be in pairs");
-  endif
-
   ## Check to see if we already have a figure on the screen.  If we do,
   ## then update it if it is different from the figure we are creating
   ## or switching to.
@@ -135,5 +130,3 @@ endfunction
 
 %!error <N must be figure handle or figure number> figure (-1)
 %!error <N must be figure handle or figure number> figure (1.5)
-%!error <PROPERTY/VALUE arguments must be in pairs> figure ("color")
-%!error <PROPERTY/VALUE arguments must be in pairs> figure ("color", struct ())

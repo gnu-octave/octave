@@ -96,14 +96,18 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     p = p(1:2, 1:(tst(end)-1));
   endif
 
+  ## Use lowercase for all properties
+  s.properties = cell2struct (struct2cell (s.properties), ...
+                              tolower (fieldnames (s.properties)));
+
   ## Place the "*mode" properties at the end to avoid having the updaters
   ## change the mode to "manual" when the value is "auto".
   names = fieldnames (s.properties);
   n = strncmp (cellfun (@fliplr, names, "uniformoutput", false), "edom", 4);
   n = (n | strcmp (names, "activepositionproperty"));
   names = [names(! n); names(n)];
-  if (strcmp (s.type, "axes"))
-    n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
+  n_pos = find (strcmp (names, "position") | strcmp (names, "outerposition"));
+  if (strcmp (s.type, "axes") && numel (n_pos) == 2)
     if (strcmp (s.properties.activepositionproperty, "position"))
       names{n_pos(1)} = "outerposition";
       names{n_pos(2)} = "position";
@@ -127,14 +131,11 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
                                "screendepth", "screenpixelsperinch", ...
                                "screensize"});
   elseif (strcmp (s.type, "figure"))
-    h = figure ();
-    s.properties = rmfield (s.properties, ...
-                              {"currentaxes", "currentcharacter", ...
-                               "currentobject", "currentpoint", "number"});
+    [h, s] = createfigure (s);
   elseif (strcmp (s.type, "axes"))
     ## legends and colorbars are "transformed" in to normal axes
-    ## if hilev is not requested
-    if (! hilev)
+    ## if hilev is not requested.
+    if (! hilev && isfield (s.properties, "tag"))
       if (strcmp (s.properties.tag, "legend"))
         s.properties.tag = "";
         s.properties.userdata = [];
@@ -145,14 +146,18 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
         par = gcf;
       endif
     endif
-    s.properties = rmfield (s.properties, {"tightinset"});
+    if (isfield (s.properties, "tightinset"))
+      s.properties = rmfield (s.properties, {"tightinset"});
+    endif
     [h, s] = createaxes (s, p, par);
   elseif (strcmp (s.type, "line"))
     h = createline (s, par);
   elseif (strcmp (s.type, "patch"))
     [h, s] = createpatch (s, par);
   elseif (strcmp (s.type, "text"))
-    s.properties = rmfield (s.properties, "extent");
+    if (isfield (s.properties, "extent"))
+      s.properties = rmfield (s.properties, "extent");
+    endif
     h = createtext (s, par);
   elseif (strcmp (s.type, "image"))
     h = createimage (s, par);
@@ -160,6 +165,13 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = createsurface (s, par);
   elseif (strcmp (s.type, "hggroup"))
     [h, s, p] = createhg (s, p, par, hilev);
+  elseif (any (strcmp (s.type, {"uimenu", "uicontextmenu",...
+                                "uicontrol", "uipanel", "uibuttongroup",...
+                                "uitoolbar", "uipushtool"})))
+    if (isfield (s.properties, "extent"))
+      s.properties = rmfield (s.properties, "extent");
+    endif
+    [h, s] = createui (s, par);
   else
     error ("struct2hdl: %s objects are not implemented yet", s.type);
   endif
@@ -184,9 +196,29 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
 endfunction
 
+function [h, sout] = createfigure (s)
+  ## Create figure initially invisible to speed up loading.
+  opts = {"visible", "off"};
+  if (isfield (s.properties, "integerhandle"))  # see also bug #53342.
+    opts = [opts {"integerhandle", s.properties.integerhandle}];
+    s.properties = rmfield (s.properties, "integerhandle");
+  endif
+  h = figure (opts{:});
+  rmprops = {"currentaxes", "currentcharacter", "currentobject", ...
+             "currentpoint", "number"};
+  rmprops (! isfield (s.properties, rmprops)) = [];
+  s.properties = rmfield (s.properties, rmprops);
+  if (! isfield (s.properties, "visible"))
+    s.properties.visible = "on";
+  endif
+  addmissingprops (h, s.properties);
+  sout = s;
+endfunction
+
 function [h, sout] = createaxes (s, p, par)
 
-  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
+  if (! isfield (s.properties, "tag")
+      || ! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     ## regular axes
     propval = {"position", s.properties.position};
     hid = {"__autopos_tag__", "looseinset"};
@@ -332,6 +364,14 @@ endfunction
 
 function h = createsurface (s, par)
   h = surface ("parent", par);
+  addmissingprops (h, s.properties);
+endfunction
+
+function [h, s] = createui (s, par)
+  if (isfield (s.properties, "style") && strcmp (s.properties.style, "frame"))
+    s.type = "uipanel";  # frame is deprecated: use uipanel instead
+  endif
+  h = feval (s.type, "parent", par)
   addmissingprops (h, s.properties);
 endfunction
 
@@ -571,8 +611,14 @@ endfunction
 
 function setprops (s, h, p, hilev)
 
-  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
-    specs = s.children(s.special);
+  isspecial = (isfield (s.properties, "tag")
+               && any (strcmpi (s.properties.tag, {"colorbar", "legend"})));
+  if (! isspecial)
+    try
+      specs = s.children(s.special);
+    catch
+      specs = [];
+    end_try_catch
     if (isempty (specs))
       hdls = [];
     else

@@ -264,11 +264,25 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
 
   set (ht, "units", "data", "position", [text_offset 0 0]);
 
-  hui = uicontrol ("string", "OK", "callback", @() close (gcbf ()), ...
+  hui = uicontrol ("string", "OK",
+                   "callback", @cb_callback,
+                   "keypressfcn", @cb_keypress,
                    "position", [ax_sz(1)/2-40 ax_margin 80 28], "parent", hp);
 
   set (hf, "windowstyle", windowstyle, "visible", "on");
 
+endfunction
+
+## Callback when button clicked (close window)
+function cb_callback (~, ~)
+  close (gcbf ());
+endfunction
+
+## Callback when key typed (close window on <RETURN>)
+function cb_keypress (~, ev)
+  if (strcmp (ev.Key, "return"))
+    close (gcbf ());
+  endif
 endfunction
 
 

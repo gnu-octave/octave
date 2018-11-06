@@ -92,7 +92,6 @@ namespace QtHandles
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
     init (w);
-    w->setFocus ();
   }
 
   void

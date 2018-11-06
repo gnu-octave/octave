@@ -269,6 +269,8 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
                    "keypressfcn", @cb_keypress,
                    "position", [ax_sz(1)/2-40 ax_margin 80 28], "parent", hp);
 
+  uicontrol (hui);  # Set keyboard focus on the uicontrol
+
   set (hf, "windowstyle", windowstyle, "visible", "on");
 
 endfunction

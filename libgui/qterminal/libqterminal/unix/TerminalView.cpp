@@ -1573,8 +1573,11 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
   // reposition cursor if mouseclick happens in the currently editable line
   QVector<LineProperty> lineprop = _screenWindow->getLineProperties ();
   int lineStart = _screenWindow->cursorPosition ().y ();
-  while (lineprop[lineStart-1] & LINE_WRAPPED)
-    lineStart--;
+  if (lineStart > 0)
+    {
+      while (lineprop[lineStart-1] & LINE_WRAPPED)
+        lineStart--;
+    }
 
   if (charLine >= lineStart)
     {

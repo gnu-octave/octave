@@ -634,6 +634,20 @@ function rgbout = print (varargin)
       endif
     endif
 
+    ## When exporting latex files use "latex" for the ticklabelinterpreter.
+    ## It will format tick labels in log axes correctly
+    if (strfind (opts.devopt, "latex"))
+      h = findall (opts.figure, "type", "axes");
+      for n = 1:numel (h)
+        if (ishghandle (h(n)))
+          props(end+1).h = h(n);
+          props(end).name = "ticklabelinterpreter";
+          props(end).value = {get(h(n), "ticklabelinterpreter")};
+          set (h(n), "ticklabelinterpreter", "latex");
+        endif
+      endfor
+    endif
+
     ## call the graphics toolkit print script
     switch (tk)
       case "gnuplot"

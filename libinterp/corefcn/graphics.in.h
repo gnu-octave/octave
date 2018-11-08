@@ -3671,7 +3671,7 @@ public:
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       // FIXME: Added recently to Matlab, should replace interpreter property.
-      radio_property ticklabelinterpreter , "{tex}|latex|none"
+      radio_property ticklabelinterpreter u , "{tex}|latex|none"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
@@ -3886,6 +3886,13 @@ public:
     void update_tickdir (void) { update_ticklength (); }
     void update_tickdirmode (void) { update_ticklength (); }
 
+    void update_ticklabelinterpreter (void)
+    {
+      update_xtick ();
+      update_ytick ();
+      update_ztick ();
+    }
+    
     void update_xtick (void)
     {
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),

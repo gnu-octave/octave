@@ -7968,7 +7968,11 @@ axes::properties::calc_ticklabels (const array_property& ticks,
           if (exponent < 10. && (exp_max > 9 || exp_min < -9))
             os << '0';
           os << exponent << '}';
-          c(i) = os.str ();
+
+          if (ticklabelinterpreter.is ("latex"))
+            c(i) = "$" + os.str () + "$";
+          else
+            c(i) = os.str ();
         }
     }
   else

@@ -25,7 +25,7 @@
 ## @deftypefnx {} {} savefig (@var{h}, @var{filename}, @qcode{"compact"})
 ## Save figure windows specified by graphics handle(s) @var{h} to file
 ## @var{filename}.
-#
+##
 ## If unspecified, @var{h} is the current figure returned by @code{gcf}.
 ##
 ## If unspecified, @var{filename} is set to @file{"Untitled.fig"}.  If

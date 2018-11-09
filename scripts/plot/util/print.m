@@ -21,30 +21,30 @@
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
 ## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
-## @deftypefnx {} {@var{rgb} = } print (@var{-RGBImage}, @dots{})
-## Format a figure for printing and send it to a printer, save it to a file or
+## @deftypefnx {} {@var{rgb} =} print (@var{-RGBImage}, @dots{})
+## Format a figure for printing and send it to a printer, save it to a file, or
 ## return an RGB image.
 ##
 ## @var{filename} defines the name of the output file.  If the filename has
 ## no suffix, one is inferred from the specified device and appended to the
-## filename.  In absence of a filename or "-RGBImage" option, the output is
-## sent to the printer.
-## The filename and options can be given in any order.
+## filename.  In the absence of a filename or @qcode{"-RGBImage"} option, the
+## output is sent to the printer.  The filename and options may be given in
+## any order.
 ##
-## Example: Print to a file using the pdf and jpeg formats.
+## Example: Print to a file using the PDF and JPEG formats.
 ##
 ## @example
 ## @group
 ## figure (1);
 ## clf ();
 ## surf (peaks);
-## print figure1.pdf   # The extension specifies the format
-## print -djpg figure1 # Will produce "figure1.jpg" file
+## print figure1.pdf    # The extension specifies the format
+## print -djpg figure1  # Will produce "figure1.jpg" file
 ## @end group
 ## @end example
 ##
 ## If the first argument @var{h} is a handle to a figure object, it specifies
-## the figure to print.  By default the current figure is printed.
+## the figure to print.  By default, the current figure is printed.
 ##
 ## For outputs to paged formats, PostScript and PDF, the paper size is
 ## specified by the figure's @code{papersize} property.  The location and
@@ -77,10 +77,10 @@
 ## @end example
 ##
 ## @item -P@var{printer}
-##   Set the @var{printer} name to which the plot is sent if no
-## @var{filename} is specified.
+##   Set the @var{printer} name to which the plot is sent if no @var{filename}
+## is specified.
 ##
-## Example: Print to printer named PS_printer using ps format.
+## Example: Print to printer named PS_printer using PostScript format.
 ##
 ## @example
 ## @group
@@ -91,8 +91,8 @@
 ## @end example
 ##
 ## @item -RGBImage
-##   Return an M-by-N-by-3 RGB image of the figure. The size of the image
-## depends on the formating options.
+##   Return an M-by-N-by-3 RGB image of the figure.  The size of the image
+## depends on the formatting options.
 ##
 ## Example: Get the pixels of a figure image.
 ##
@@ -141,17 +141,17 @@
 ##
 ## @item  -painters
 ## @itemx -opengl
-##   For raster formats, specifies which of the opengl (pixel based) or painters
-## (vector based) renderers is used.  This is equivalent to changing the
-#  figure's "renderer" property.  By default the renderer is "opengl" for
+##   For raster formats, specifies which of the opengl (pixel based) or
+## painters (vector based) renderers is used.  This is equivalent to changing
+## the figure's "renderer" property.  By default the renderer is "opengl" for
 ## raster formats and "painters" for vector formats.
 ##
 ## @item  -loose
 ## @itemx -tight
-##   Force a tight or loose bounding box for eps files.  The default is loose.
+##   Force a tight or loose bounding box for EPS files.  The default is loose.
 ##
 ## @item -@var{preview}
-##   Add a preview to eps files.  Supported formats are:
+##   Add a preview to EPS files.  Supported formats are:
 ##
 ##   @table @code
 ##   @item -interchange
@@ -161,10 +161,10 @@
 ##     Provide a metafile preview.
 ##
 ##   @item -pict
-##     Provide pict preview.
+##     Provide a pict preview.
 ##
 ##   @item -tiff
-##     Provide a tiff preview.
+##     Provide a TIFF preview.
 ##   @end table
 ##
 ## @item  -F@var{fontname}
@@ -183,7 +183,7 @@
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of (devices marked with a "*" are available only with Gnuplot
+## is one of (devices marked with a "*" are only available with the Gnuplot
 ## toolkit):
 ##
 ##   @table @code
@@ -192,8 +192,7 @@
 ##   @itemx psc
 ##   @itemx psc2
 ##     PostScript (level 1 and 2, mono and color).  The OpenGL-based toolkits
-## always generate PostScript level 3.0 and have a limited support for
-## text.
+## always generate PostScript level 3.0 and have a limited support for text.
 ##
 ##   @item  eps
 ##   @itemx eps2
@@ -201,10 +200,10 @@
 ##   @itemx epsc2
 ##     Encapsulated PostScript (level 1 and 2, mono and color).  The
 ## OpenGL-based toolkits always generate PostScript level 3.0 and have a
-## limited support for text.  Only the set of ASCII characters may be
-## used and the only supported fonts are the base postscript fonts:
-## Helvetica (the default), Times, Courier and their variants (bold or
-## italic).  Any other font will be replaced by Helvetica.
+## limited support for text.  Only the set of ASCII characters may be used and
+## the only supported fonts are the base PostScript fonts: Helvetica (the
+## default), Times, Courier and their variants (bold or italic).  Any other
+## font will be replaced by Helvetica.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -212,23 +211,23 @@
 ##   @itemx pslatexstandalone
 ##   @itemx epslatexstandalone
 ##   @itemx pdflatexstandalone
-##     Generate a @LaTeX{} file @file{@var{filename}.tex} for the text
-## portions of a plot and a file @file{@var{filename}.(ps|eps|pdf)} for the
-## remaining graphics.  The graphics file suffix .ps|eps|pdf is determined
-## by the specified device type.  The @LaTeX{} file produced by the
-## @samp{standalone} option can be processed directly by @LaTeX{}.  The file
-## generated without the @samp{standalone} option is intended to be included
-## from another @LaTeX{} document.  In either case, the @LaTeX{} file
-## contains an @code{\includegraphics} command so that the generated graphics
-## file is automatically included when the @LaTeX{} file is processed.  The
-## text that is written to the @LaTeX{} file contains the strings
-## @strong{exactly} as they were specified in the plot.  If any special
-## characters of the @TeX{} mode interpreter were used, the file must be
-## edited before @LaTeX{} processing.  Specifically, the special characters
-## must be enclosed with dollar signs (@code{$ @dots{} $}), and other
-## characters that are recognized by @LaTeX{} may also need editing (.e.g.,
-## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
-## formats, are not available with the Gnuplot toolkit.
+##     Generate a @LaTeX{} file @file{@var{filename}.tex} for the text portions
+## of a plot and a file @file{@var{filename}.(ps|eps|pdf)} for the remaining
+## graphics.  The graphics file suffix .ps|eps|pdf is determined by the
+## specified device type.  The @LaTeX{} file produced by the @samp{standalone}
+## option can be processed directly by @LaTeX{}.  The file generated without
+## the @samp{standalone} option is intended to be included from another
+## @LaTeX{} document.  In either case, the @LaTeX{} file contains an
+## @code{\includegraphics} command so that the generated graphics file is
+## automatically included when the @LaTeX{} file is processed.  The text that
+## is written to the @LaTeX{} file contains the strings @strong{exactly} as
+## they were specified in the plot.  If any special characters of the @TeX{}
+## mode interpreter were used, the file must be edited before @LaTeX{}
+## processing.  Specifically, the special characters must be enclosed with
+## dollar signs (@code{$ @dots{} $}), and other characters that are recognized
+## by @LaTeX{} may also need editing (e.g., braces).  The @samp{pdflatex}
+## device, and any of the @samp{standalone} formats, are not available with the
+## Gnuplot toolkit.
 ##
 ##   @item  epscairo*
 ##   @itemx pdfcairo*
@@ -236,12 +235,11 @@
 ##   @itemx pdfcairolatex*
 ##   @itemx epscairolatexstandalone*
 ##   @itemx pdfcairolatexstandalone*
-##     Generate Cairo based output.  The @samp{epscairo} and
-## @samp{pdfcairo} devices are synonymous with the @samp{epsc} device.
-## The @LaTeX{} variants generate a @LaTeX{} file,
-## @file{@var{filename}.tex}, for the text portions of a plot, and an
-## image file, @file{@var{filename}.(eps|pdf)}, for the graph portion of
-## the plot.  The @samp{standalone} variants behave as described for
+##     Generate Cairo based output.  The @samp{epscairo} and @samp{pdfcairo}
+## devices are synonymous with the @samp{epsc} device.  The @LaTeX{} variants
+## generate a @LaTeX{} file, @file{@var{filename}.tex}, for the text portions
+## of a plot, and an image file, @file{@var{filename}.(eps|pdf)}, for the graph
+## portion of the plot.  The @samp{standalone} variants behave as described for
 ## @samp{epslatexstandalone} above.
 ##
 ##   @item  ill
@@ -253,7 +251,7 @@
 ##
 ##   @item  cdr*
 ##   @itemx @nospell{corel*}
-##     CorelDraw.
+##     CorelDraw
 ##
 ##   @item cgm
 ##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
@@ -273,7 +271,7 @@
 ## (default is @option{-textnormal})
 ##
 ##   @item gif*
-##     GIF image.
+##     GIF image
 ##
 ##   @item hpgl
 ##     HP plotter language
@@ -282,7 +280,7 @@
 ##   @itemx jpeg
 ##     JPEG image
 ##
-##   @item latex*
+##   @item  latex*
 ##   @itemx eepic*
 ##     @LaTeX{} picture environment and extended picture environment.
 ##
@@ -295,14 +293,14 @@
 ##   @item pbm
 ##     PBMplus
 ##
-##   @item pdf
+##   @item  pdf
 ##   @itemx pdfcrop
-##     Portable Document Format. The @code{pdfcrop} device removes the default
+##     Portable Document Format.  The @code{pdfcrop} device removes the default
 ## surrounding page.
 ##
-## By default PDF output has limited support for text and doesn't
-## support transparency at all.  For complete text support and basic
-## transparency, use the @code{-svgconvert} option.
+## By default PDF output has limited support for text and doesn't support
+## transparency at all.  For complete text support and basic transparency, use
+## the @option{-svgconvert} option.
 ##
 ##   @item svg
 ##     Scalable Vector Graphics
@@ -310,7 +308,7 @@
 ##   @item  tif
 ##   @itemx tiff
 ##   @itemx tiffn
-##     TIFF image with lzm compression (tif, tiff) or uncompressed (tiffn).
+##     TIFF image with LZW compression (tif, tiff) or uncompressed (tiffn).
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone*
@@ -347,21 +345,20 @@
 ## @qcode{"paperposition"} property.
 ##
 ## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows the
-## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
+##   Specify the command for calling Ghostscript.  For Unix the default is
+## @qcode{"gs"} and for Windows it is @qcode{"gswin32c"}.
 ##
 ## @item -svgconvert
 ##   For OpenGL based toolkits, this option adds support for printing
 ## arbitrary characters and fonts in PDF outputs.  It also avoids some
-## antialiasing artifacts in patch and surface objects rendering.
-## Finally it adds support for printing transparent line, patch and surface 
-## objects.
+## anti-aliasing artifacts in patch and surface objects rendering.  Finally, it
+## adds support for printing transparent line, patch, and surface objects.
 ##
 ## This option only affects PDF outputs, unless it is combined with
-## @code{-painters} option, in which case raster outputs are also affected.
+## @option{-painters} option, in which case raster outputs are also affected.
 ##
-## Caution: @code{-svgconvert} may lead to innacurate rendering of
-## image objects.
+## Caution: @option{-svgconvert} may lead to innacurate rendering of image
+## objects.
 ##
 ## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}

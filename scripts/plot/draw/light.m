@@ -33,7 +33,8 @@
 ## @qcode{"flat"}, the @qcode{"FaceNormals"} property is used for lighting.
 ## For @qcode{"gouraud"}, the @qcode{"VertexNormals"} property is used.
 ##
-## Up to eight light objects are supported per axes. (Implementation dependent)
+## Up to eight light objects are supported per axes.  (Implementation
+## dependent)
 ##
 ## Lighting is only supported for OpenGL graphic toolkits (i.e., @qcode{"fltk"}
 ## and @qcode{"qt"}).

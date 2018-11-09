@@ -214,7 +214,7 @@
 ##
 ## @item Octave:legacy-function
 ## If the @code{Octave:legacy-function} warning is enabled, a
-## warning is issued when Octave encounters a function that Matlab has
+## warning is issued when Octave encounters a function that @sc{matlab} has
 ## suggested should be avoided.  The function may become obsolete at some
 ## point in the future and removed, in which case the warning will change to
 ## @code{Octave:deprecated-function}, and the function will continue to exist

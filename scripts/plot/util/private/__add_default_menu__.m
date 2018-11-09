@@ -17,7 +17,7 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __add_default_menu__ (@var{hfig})
+## @deftypefn  {} {} __add_default_menu__ (@var{hfig})
 ## @deftypefnx {} {} __add_default_menu__ (@var{hfig}, @var{hmenu})
 ## Add default menu and listeners to figure.
 ##

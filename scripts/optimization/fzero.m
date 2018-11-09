@@ -91,7 +91,7 @@
 ##  Number of function evaluations.
 ##
 ## @item algorithm
-##  The string "bisection, interpolation".
+##  The string @qcode{"bisection, interpolation"}.
 ##
 ## @item bracketx
 ##  A two-element vector with the final bracketing of the zero along the

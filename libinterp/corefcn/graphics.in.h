@@ -2378,7 +2378,7 @@ protected:
     string_property type frs , ty
     handle_property uicontextmenu u , graphics_handle ()
     any_property userdata , Matrix ()
-    bool_property visible , "on"
+    bool_property visible u , "on"
 
     // Octave-specific properties
     bool_property __modified__ hs , "on"
@@ -2386,6 +2386,8 @@ protected:
   END_PROPERTIES
 
   virtual void update_handlevisibility (void);
+
+  virtual void update_visible (void) { };
 
 protected:
   struct cmp_caseless_str
@@ -4716,7 +4718,6 @@ public:
       color_property color , color_values (1, 1, 1)
       array_property position , default_light_position ()
       radio_property style , "{infinite}|local"
-      bool_property visible U , "on"
     END_PROPERTIES
 
   protected:
@@ -4724,6 +4725,9 @@ public:
     {
       position.add_constraint (dim_vector (1, 3));
     }
+
+  private:
+    void update_visible (void);
   };
 
 private:
@@ -4959,7 +4963,7 @@ public:
 
     void update_edgelighting (void)
     {
-      update_face_normals (false);
+      update_normals (false);
     }
 
     void update_facelighting (void)
@@ -4975,6 +4979,12 @@ public:
     void update_vertexnormalsmode (void)
     {
       update_vertex_normals (false);
+    }
+
+    void update_visible (void)
+    {
+      if (is_visible ())
+        update_normals (false);
     }
   };
 
@@ -5178,6 +5188,11 @@ public:
     void update_facelighting (void)
     { update_normals (false); }
 
+    void update_visible (void)
+    {
+      if (is_visible ())
+        update_normals (false);
+    }
 
   };
 

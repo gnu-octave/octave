@@ -9826,19 +9826,20 @@ surface::properties::update_face_normals (bool reset, bool force)
       bool x_mat = (x.rows () == q);
       bool y_mat = (y.columns () == p);
 
-      double dx, dy;
-      dx = dy = 1;
-      if (x_mat)
-        dx = x(0,1) - x(0,0);
-      if (y_mat)
-        dy = y(1,0) - y(0,0);
-
-      double nz = 2 * dx * dy;
-      NDArray n (dim_vector (q-1, p-1, 3), nz);
+      NDArray n (dim_vector (q-1, p-1, 3), 1);
 
       int i1, i2, j1, j2;
       i1 = i2 = 0;
       j1 = j2 = 0;
+      double x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3;
+      double x1m0, x2m1, x3m2, x0m3, y1m0, y2m1, y3m2, y0m3;
+      double x1p0, x2p1, x3p2, x0p3, y1p0, y2p1, y3p2, y0p3;
+      x3m2 = y0m3 = -1;
+      x2m1 = x0m3 = y1m0 = y3m2 = 0;
+      x1m0 = y2m1 = 1;
+      x0p3 = y1p0 = 0;
+      x1p0 = x3p2 = y2p1 = y0p3 = 1;
+      x2p1 = y3p2 = 2;
 
       for (int i = 0; i < p-1; i++)
         {
@@ -9856,20 +9857,57 @@ surface::properties::update_face_normals (bool reset, bool force)
                   j2 = j + 1;
                 }
 
+              if (x_mat || y_mat)
+                {
+                  x0 = x(j1,i1);
+                  x1 = x(j1,i2);
+                  x2 = x(j2,i2);
+                  x3 = x(j2,i1);
+                  x1m0 = x1 - x0;
+                  x2m1 = x2 - x1;
+                  x3m2 = x3 - x2;
+                  x0m3 = x0 - x3;
+                  x1p0 = x1 + x0;
+                  x2p1 = x2 + x1;
+                  x3p2 = x3 + x2;
+                  x0p3 = x0 + x3;
+                  y0 = y(j1,i1);
+                  y1 = y(j1,i2);
+                  y2 = y(j2,i2);
+                  y3 = y(j2,i1);
+                  y1m0 = y1 - y0;
+                  y2m1 = y2 - y1;
+                  y3m2 = y3 - y2;
+                  y0m3 = y0 - y3;
+                  y1p0 = y1 + y0;
+                  y2p1 = y2 + y1;
+                  y3p2 = y3 + y2;
+                  y0p3 = y0 + y3;
+                }
+
               double& nx = n(j,i,0);
               double& ny = n(j,i,1);
+              double& nz = n(j,i,2);
+
+              z0 = z(j1,i1);
+              z1 = z(j1,i2);
+              z2 = z(j2,i2);
+              z3 = z(j2,i1);
 
               // calculate face normal with Newell's method
               // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
 
-              nx = dy * (z(j1,i1) + z(j2,i1) - z(j1,i2) - z(j2,i2));
-              ny = dx * (z(j1,i1) + z(j1,i2) - z(j2,i1) - z(j2,i2));
+              nx = y1m0 * (z1 + z0) + y2m1 * (z2 + z1)
+                   + y3m2 * (z3 + z2) + y0m3 * (z0 + z3);
+              ny = (z1 - z0) * x1p0 + (z2 - z1) * x2p1
+                   + (z3 - z2) * x3p2 + (z0 - z3) * x0p3;
+              nz = x1m0 * y1p0 + x2m1 * y2p1 + x3m2 * y3p2 + x0m3 * y0p3;
 
               double d = std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
 
               nx /= d;
               ny /= d;
-              n(j,i,2) /= d;
+              nz /= d;
             }
         }
       facenormals = n;

@@ -111,7 +111,7 @@ namespace octave
 
         auto t_parent = m_parent.lock ();
 
-        if (m_is_nested && t_parent && t_parent->look_nonlocal (name, ret))
+        if (is_nested () && t_parent && t_parent->look_nonlocal (name, ret))
           return m_symbols[name] = ret;
         else
           {
@@ -130,7 +130,10 @@ namespace octave
   {
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
+         { "nesting_depth", m_nesting_depth },
+         { "is_static", m_is_static },
          { "symbols", dump_symbols_map () },
+         { "subfunction_names", string_vector (m_subfunction_names) },
          { "subfunctions", dump_function_map (m_subfunctions) }};
 
     return octave_value (m);
@@ -186,6 +189,39 @@ namespace octave
   }
 
   void
+  symbol_scope_rep::set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent)
+  {
+    m_primary_parent = std::weak_ptr<symbol_scope_rep> (parent);
+  }
+
+  bool
+  symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const
+  {
+    if (is_nested ())
+      {
+        // Since is_nested is true, the following should always return a
+        // valid scope.
+
+        auto t_primary_parent = m_primary_parent.lock ();
+
+        if (t_primary_parent)
+          {
+            // SCOPE is the primary parent of this scope: this scope is a
+            // child of SCOPE.
+            if (t_primary_parent == scope)
+              return true;
+
+            // SCOPE and this scope share the same primary parent: they are
+            // siblings.
+            if (t_primary_parent == scope->primary_parent_scope_rep ())
+              return true;
+          }
+      }
+
+    return false;
+  }
+
+  void
   symbol_scope_rep::update_nest (void)
   {
     auto t_parent = m_parent.lock ();
@@ -198,7 +234,7 @@ namespace octave
             symbol_record& ours = nm_sr.second;
 
             if (! ours.is_formal ()
-                && m_is_nested && t_parent->look_nonlocal (nm_sr.first, ours))
+                && is_nested () && t_parent->look_nonlocal (nm_sr.first, ours))
               {
                 if (ours.is_global () || ours.is_persistent ())
                   error ("global and persistent may only be used in the topmost level in which a nested variable is used");
@@ -206,7 +242,7 @@ namespace octave
           }
 
         // The scopes of nested functions are static.
-        if (m_is_nested)
+        if (is_nested ())
           m_is_static = true;
       }
     else if (m_children.size ())
@@ -228,7 +264,7 @@ namespace octave
       {
         auto t_parent = m_parent.lock ();
 
-        if (m_is_nested && t_parent)
+        if (is_nested () && t_parent)
           return t_parent->look_nonlocal (name, result);
       }
     else if (! p->second.is_automatic ())

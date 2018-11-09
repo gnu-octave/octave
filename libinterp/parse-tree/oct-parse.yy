@@ -1290,13 +1290,13 @@ push_fcn_symtab : // empty
                     parser.m_function_scopes.push (lexer.m_symtab_context.curr_scope ());
 
                     if (! lexer.m_reading_script_file
-                        && parser.m_curr_fcn_depth == 1
+                        && parser.m_curr_fcn_depth == 0
                         && ! parser.m_parsing_subfunctions)
                       parser.m_primary_fcn_scope
                         = lexer.m_symtab_context.curr_scope ();
 
                     if (lexer.m_reading_script_file
-                        && parser.m_curr_fcn_depth > 1)
+                        && parser.m_curr_fcn_depth > 0)
                       {
                         parser.bison_error ("nested functions not implemented in this context");
                         YYABORT;
@@ -1527,7 +1527,7 @@ fcn_name        : identifier
                     // classdef methods.
 
                     if (parser.m_parsing_local_functions
-                        && parser.m_curr_fcn_depth == 1)
+                        && parser.m_curr_fcn_depth == 0)
                       id = lexer.m_fcn_file_name + ">" + id;
 
                     if (! parser.m_function_scopes.name_current_scope (id))
@@ -2177,7 +2177,7 @@ namespace octave
     : m_endfunction_found (false), m_autoloading (false),
       m_fcn_file_from_relative_lookup (false),
       m_parsing_subfunctions (false), m_parsing_local_functions (false),
-      m_max_fcn_depth (0), m_curr_fcn_depth (0), m_primary_fcn_scope (),
+      m_max_fcn_depth (-1), m_curr_fcn_depth (-1), m_primary_fcn_scope (),
       m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
       m_primary_fcn_ptr (nullptr), m_subfunction_names (),
       m_classdef_object (nullptr), m_stmt_list (nullptr), m_lexer (lxr),
@@ -2209,8 +2209,8 @@ namespace octave
     m_fcn_file_from_relative_lookup = false;
     m_parsing_subfunctions = false;
     m_parsing_local_functions = false;
-    m_max_fcn_depth = 0;
-    m_curr_fcn_depth = 0;
+    m_max_fcn_depth = -1;
+    m_curr_fcn_depth = -1;
     m_primary_fcn_scope = symbol_scope ();
     m_curr_class_name = "";
     m_curr_package_name = "";
@@ -3359,7 +3359,7 @@ namespace octave
     // file.  Matlab doesn't provide a diagnostic (it ignores the stated
     // name).
     if (! m_autoloading && m_lexer.m_reading_fcn_file
-        && m_curr_fcn_depth == 1 && ! m_parsing_subfunctions)
+        && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
       {
         // FIXME: should m_lexer.m_fcn_file_name already be
         // preprocessed when we get here?  It seems to only be a
@@ -3430,14 +3430,14 @@ namespace octave
     // because the doc_string of the outermost function is read first,
     // whereas this function is called for the innermost function first.
     // We could have a stack of help_text in lexer.
-    if (! m_lexer.m_help_text.empty () && m_curr_fcn_depth == 1)
+    if (! m_lexer.m_help_text.empty () && m_curr_fcn_depth == 0)
       {
         fcn->document (m_lexer.m_help_text);
 
         m_lexer.m_help_text = "";
       }
 
-    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 1
+    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
       m_primary_fcn_ptr = fcn;
 
@@ -3479,7 +3479,7 @@ namespace octave
 
         fcn->define_ret_list (ret_list);
 
-        if (m_curr_fcn_depth > 1 || m_parsing_subfunctions)
+        if (m_curr_fcn_depth > 0 || m_parsing_subfunctions)
           {
             fcn->stash_fcn_location (l, c);
             fcn->stash_parent_fcn_name (m_lexer.m_fcn_file_name);
@@ -3489,10 +3489,11 @@ namespace octave
             if (m_endfunction_found && m_function_scopes.size () > 1)
               {
                 fcn->mark_as_nested_function ();
-                fcn_scope.mark_nested ();
+                fcn_scope.set_nesting_depth (m_curr_fcn_depth);
 
                 symbol_scope pscope = m_function_scopes.parent_scope ();
                 fcn_scope.set_parent (pscope);
+                fcn_scope.set_primary_parent (m_primary_fcn_scope);
                 pscope.install_nestfunction (nm, ov_fcn, fcn_scope);
               }
             else
@@ -3504,10 +3505,10 @@ namespace octave
               }
           }
 
-        if (m_curr_fcn_depth == 1)
+        if (m_curr_fcn_depth == 0)
           fcn_scope.update_nest ();
 
-        if (! m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 1)
+        if (! m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0)
           {
             // We are either reading a script file or defining a function
             // at the command line, so this definition creates a
@@ -3538,7 +3539,7 @@ namespace octave
   {
     m_lexer.m_symtab_context.pop ();
 
-    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 1
+    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
       m_parsing_subfunctions = true;
 
@@ -4000,7 +4001,7 @@ namespace octave
         break;
 
       case PERSISTENT:
-        if (m_curr_fcn_depth > 0)
+        if (m_curr_fcn_depth >= 0)
           {
             retval = new tree_decl_command ("persistent", lst, l, c);
             retval->mark_persistent ();
@@ -4240,7 +4241,7 @@ namespace octave
   void
   base_parser::maybe_warn_missing_semi (tree_statement_list *t)
   {
-    if (m_curr_fcn_depth > 0)
+    if (m_curr_fcn_depth >= 0)
       {
         tree_statement *tmp = t->back ();
 

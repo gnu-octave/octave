@@ -65,8 +65,8 @@ namespace octave
 
     symbol_scope_rep (const std::string& name = "")
       : m_name (name), m_symbols (), m_subfunctions (), m_fcn (nullptr),
-        m_parent (), m_children (), m_is_nested (false),
-        m_is_static (false), m_context (0)
+        m_parent (), m_primary_parent (), m_children (),
+        m_nesting_depth (0), m_is_static (false), m_context (0)
     { }
 
     // No copying!
@@ -86,9 +86,11 @@ namespace octave
 
     void install_auto_fcn_var (const std::string& name);
 
-    bool is_nested (void) const { return m_is_nested; }
+    bool is_nested (void) const { return m_nesting_depth > 0; }
 
-    void mark_nested (void) { m_is_nested = true; }
+    size_t nesting_depth (void) const { return m_nesting_depth; }
+
+    void set_nesting_depth (size_t depth) { m_nesting_depth = depth; }
 
     bool is_static (void) const { return m_is_static; }
 
@@ -97,6 +99,11 @@ namespace octave
     std::shared_ptr<symbol_scope_rep> parent_scope_rep (void) const
     {
       return m_parent.lock ();
+    }
+
+    std::shared_ptr<symbol_scope_rep> primary_parent_scope_rep (void) const
+    {
+      return m_primary_parent.lock ();
     }
 
     std::shared_ptr<symbol_scope_rep> dup (void) const
@@ -108,6 +115,7 @@ namespace octave
         new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
 
       new_sid->m_parent = m_parent;
+      new_sid->m_primary_parent = m_primary_parent;
 
       return new_sid;
     }
@@ -310,7 +318,7 @@ namespace octave
 
       if (p != m_symbols.end ())
         p->second.clear (m_context);
-      else if (m_is_nested)
+      else if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -334,7 +342,7 @@ namespace octave
             }
         }
 
-      if (m_is_nested)
+      if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -358,7 +366,7 @@ namespace octave
             }
         }
 
-      if (m_is_nested)
+      if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -547,6 +555,10 @@ namespace octave
 
     void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
 
+    void set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent);
+
+    bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
+
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name, symbol_record& result);
@@ -585,13 +597,18 @@ namespace octave
 
     std::weak_ptr<symbol_scope_rep> m_parent;
 
+    //! Primary (top) parent of nested function (may be null).  Used
+    //! to determine whether two nested functions are related.
+
+    std::weak_ptr<symbol_scope_rep> m_primary_parent;
+
     //! Child nested functions.
 
     std::vector<symbol_scope> m_children;
 
     //! If true, then this scope belongs to a nested function.
 
-    bool m_is_nested;
+    size_t m_nesting_depth;
 
     //! If true then no variables can be added.
 
@@ -642,10 +659,15 @@ namespace octave
       return m_rep ? m_rep->is_nested () : false;
     }
 
-    void mark_nested (void)
+    void set_nesting_depth (size_t depth)
     {
       if (m_rep)
-        m_rep->mark_nested ();
+        m_rep->set_nesting_depth (depth);
+    }
+
+    size_t nesting_depth (void) const
+    {
+      return m_rep ? m_rep->nesting_depth () : 0;
     }
 
     bool is_static (void) const
@@ -662,6 +684,11 @@ namespace octave
     std::shared_ptr<symbol_scope_rep> parent_scope (void) const
     {
       return m_rep ? m_rep->parent_scope_rep () : nullptr;
+    }
+
+    std::shared_ptr<symbol_scope_rep> primary_parent_scope (void) const
+    {
+      return m_rep ? m_rep->primary_parent_scope_rep () : nullptr;
     }
 
     symbol_scope dup (void) const
@@ -951,6 +978,17 @@ namespace octave
     {
       if (m_rep)
         m_rep->set_parent (p.get_rep ());
+    }
+
+    void set_primary_parent (const symbol_scope& p)
+    {
+      if (m_rep)
+        m_rep->set_primary_parent (p.get_rep ());
+    }
+
+    bool is_relative (const symbol_scope& scope) const
+    {
+      return m_rep ? m_rep->is_relative (scope.get_rep ()) : false;
     }
 
     void update_nest (void)

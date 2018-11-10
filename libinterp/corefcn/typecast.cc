@@ -442,6 +442,13 @@ column vector.
 %!assert (bitpack (zeros (1, 64,  "logical"), "single complex"), single (0))
 %!assert (bitpack (zeros (1, 128, "logical"), "double complex"), double (0))
 
+%!test <54931>
+%! x = false (1, 32);
+%! x(1) = true;
+%! assert (bitpack (x, "uint32"), uint32 (1));
+%! x([1, 9]) = true;
+%! assert (bitpack (x, "uint32"), uint32 (257));
+
 %!error bitpack ()
 %!error bitpack (1)
 %!error bitpack (1, 2, 3)

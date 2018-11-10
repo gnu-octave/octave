@@ -2092,7 +2092,7 @@ javaObject ("java.math.BigDecimal", "1") ...
 @node Set up the JVM
 @subsection Set up the JVM
 @cindex memory, limitations on JVM
-@cindex select JVM vesion
+@cindex select JVM version
 
 In order to execute Java code Octave creates a Java Virtual Machine (JVM).  By
 default the version of the JVM is used that was detected during configuration
@@ -2103,7 +2103,7 @@ Windows.  The default path to the JVM can be overwritten by setting the
 environment variable @w{@env{JAVA_HOME}} to the path where the JVM is
 installed.  On Windows that might be, for example,
 @file{C:\Program Files\Java\jre-10.0.2}.  Make sure that you select a directory
-that contains the JVM with a bit-ness that matches Octave's.
+that contains the JVM with a @nospell{bit-ness} that matches Octave's.
 
 The JVM is only loaded once per Octave session.  Thus, to change the used
 version of the JVM, you might have to re-start Octave.  To check which version

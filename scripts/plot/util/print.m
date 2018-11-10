@@ -308,7 +308,8 @@
 ##   @item  tif
 ##   @itemx tiff
 ##   @itemx tiffn
-##     TIFF image with LZW compression (tif, tiff) or uncompressed (tiffn).
+##     TIFF image with LZW compression (@nospell{tif}, tiff) or uncompressed
+## (@nospell{tiffn}).
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone*

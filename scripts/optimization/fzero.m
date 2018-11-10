@@ -87,7 +87,7 @@
 ## @item iterations
 ##  Number of iterations through loop.
 ##
-## @item funcCount
+## @item @nospell{funcCount}
 ##  Number of function evaluations.
 ##
 ## @item algorithm

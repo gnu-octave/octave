@@ -49,9 +49,9 @@
 ## Custom file extensions may also be handled if a function @code{openxxx},
 ## where @code{xxx} is the extension, is found in the load path.  The function
 ## must accept the file name as input.  For example, in order to load
-## @qcode{".dat"} data files in the base workspace, as is done by default
-## for @qcode{".mat"} files, one may define @qcode{"opendat.m"} with the
-## following contents:
+## @nospell{@qcode{".dat"}} data files in the base workspace, as is done by
+## default for @qcode{".mat"} files, one may define
+## @nospell{@qcode{"opendat.m"}} with the following contents:
 ##
 ## @example
 ## @group

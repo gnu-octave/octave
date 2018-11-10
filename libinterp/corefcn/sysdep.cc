@@ -1061,13 +1061,13 @@ DEFUN (pause, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} pause ()
 @deftypefnx {} {} pause (@var{n})
-@deftypefnx {} {@var{old_state} = } pause ("on")
-@deftypefnx {} {@var{old_state} = } pause ("off")
-@deftypefnx {} {@var{old_state} = } pause ("query")
+@deftypefnx {} {@var{old_state} =} pause ("on")
+@deftypefnx {} {@var{old_state} =} pause ("off")
+@deftypefnx {} {@var{old_state} =} pause ("query")
 Suspend the execution of the program or change the state of the pause function.
 
 If invoked without an input arguments then the program is suspended until a
-character is typed. If argument @var{n} is a positive real value, it indicates 
+character is typed.  If argument @var{n} is a positive real value, it indicates
 the number of seconds the program shall be suspended, for example:
 
 @example
@@ -1088,10 +1088,11 @@ clc;
 @end group
 @end example
 
-If invoked with a string argument "on", "off" or "query", the state of the pause
-function is changed or queried. When the state is "off", the pause function
-returns emediately. The optional return value contains the previous state of 
-the pause function.  In the following example pause is disabled locally:
+If invoked with a string argument @qcode{"on"}, @qcode{"off"}, or
+@qcode{"query"}, the state of the pause function is changed or queried.  When
+the state is @qcode{"off"}, the pause function returns immediately.  The
+optional return value contains the previous state of the pause function.  In
+the following example pause is disabled locally:
 
 @example
 @group
@@ -1102,7 +1103,7 @@ pause (old_state);
 @end group
 @end example
 
-While the program is supended, Octave still handles figures painting and 
+While the program is suspended Octave still handles figures painting and
 graphics callbacks execution.
 
 @seealso{kbhit}

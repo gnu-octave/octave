@@ -12657,7 +12657,7 @@ Return a cell array of the currently loaded graphics toolkits.
 
 DEFUN (__show_figure__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __show_figure__ (@var{n})
+@deftypefn {} {} __show_figure__ (@var{n})
 Undocumented internal function.
 @end deftypefn */)
 {

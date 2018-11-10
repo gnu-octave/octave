@@ -2537,7 +2537,7 @@ DEFUN (ndims, args, ,
 Return the number of dimensions of @var{a}.
 
 For any array, the result will always be greater than or equal to 2.
-Trailing singleton dimensions are not counted, i.e. tailing dimensions @var{d}
+Trailing singleton dimensions are not counted, i.e., tailing dimensions @var{d}
 greater than 2, for which @code{size (@var{a}, @var{d}) = 1}.
 
 @example

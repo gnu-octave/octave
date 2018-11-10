@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "oct-env.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCompleter>
 #include <QDir>

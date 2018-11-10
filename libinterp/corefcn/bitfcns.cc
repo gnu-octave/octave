@@ -700,38 +700,39 @@ option.  On IEEE 754 compatible systems, @code{flintmax} is
 
 DEFUN (intmax, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} intmax (@var{type})
+@deftypefn  {} {} intmax ()
+@deftypefnx {} {} intmax ("@var{type}")
 Return the largest integer that can be represented in an integer type.
 
-The variable @var{type} can be
+The variable @var{type} is a string which can be
 
-@table @code
-@item int8
+@table @asis
+@item @qcode{"int8"}
 signed 8-bit integer.
 
-@item int16
+@item @qcode{"int16"}
 signed 16-bit integer.
 
-@item int32
+@item @qcode{"int32"}
 signed 32-bit integer.
 
-@item int64
+@item @qcode{"int64"}
 signed 64-bit integer.
 
-@item uint8
+@item @qcode{"uint8"}
 unsigned 8-bit integer.
 
-@item uint16
+@item @qcode{"uint16"}
 unsigned 16-bit integer.
 
-@item uint32
+@item @qcode{"uint32"}
 unsigned 32-bit integer.
 
-@item uint64
+@item @qcode{"uint64"}
 unsigned 64-bit integer.
 @end table
 
-The default for @var{type} is @code{int32}.
+The default for @var{type} is @qcode{"int32"}.
 @seealso{intmin, flintmax}
 @end deftypefn */)
 {
@@ -787,38 +788,39 @@ The default for @var{type} is @code{int32}.
 
 DEFUN (intmin, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} intmin (@var{type})
+@deftypefn  {} {} intmin ()
+@deftypefnx {} {} intmin ("@var{type}")
 Return the smallest integer that can be represented in an integer type.
 
-The variable @var{type} can be
+The variable @var{type} is a string which can be
 
-@table @code
-@item int8
+@table @asis
+@item @qcode{"int8"}
 signed 8-bit integer.
 
-@item int16
+@item @qcode{"int16"}
 signed 16-bit integer.
 
-@item int32
+@item @qcode{"int32"}
 signed 32-bit integer.
 
-@item int64
+@item @qcode{"int64"}
 signed 64-bit integer.
 
-@item uint8
+@item @qcode{"uint8"}
 unsigned 8-bit integer.
 
-@item uint16
+@item @qcode{"uint16"}
 unsigned 16-bit integer.
 
-@item uint32
+@item @qcode{"uint32"}
 unsigned 32-bit integer.
 
-@item uint64
+@item @qcode{"uint64"}
 unsigned 64-bit integer.
 @end table
 
-The default for @var{type} is @code{int32}.
+The default for @var{type} is @qcode{"int32"}.
 @seealso{intmax, flintmax}
 @end deftypefn */)
 {

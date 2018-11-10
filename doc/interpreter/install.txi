@@ -313,7 +313,7 @@ GUI.
 
 @item Qt
 GUI and utility libraries (@url{https://www.qt.io}).  Qt is required for
-building the GUI.  It is a large framework, but the only components
+building the GUI@.  It is a large framework, but the only components
 required are the GUI, core, and network modules.
 
 @item SuiteSparse

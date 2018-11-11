@@ -40,7 +40,7 @@ namespace octave
   class interpreter;
 
   // Is the given string a keyword?
-  extern bool is_keyword (const std::string& s);
+  extern bool iskeyword (const std::string& s);
 
   // For communication between the lexer and parser.
 

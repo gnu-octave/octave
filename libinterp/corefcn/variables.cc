@@ -212,7 +212,7 @@ static int
 symbol_exist (octave::interpreter& interp, const std::string& name,
               const std::string& type = "any")
 {
-  if (octave::is_keyword (name))
+  if (octave::iskeyword (name))
     return 0;
 
   bool search_any = type == "any";

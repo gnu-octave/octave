@@ -1952,7 +1952,7 @@ display_character (char c)
 namespace octave
 {
   bool
-  is_keyword (const std::string& s)
+  iskeyword (const std::string& s)
   {
     // Parsing function names like "set.property_name" inside
     // classdef-style class definitions is simplified by handling the
@@ -1989,7 +1989,7 @@ If @var{name} is omitted, return a list of keywords.
   if (nargin == 0)
     {
       // Neither set nor get are keywords.  See the note in the
-      // is_keyword function for additional details.
+      // iskeyword function for additional details.
 
       string_vector lst (TOTAL_KEYWORDS);
 
@@ -2010,7 +2010,7 @@ If @var{name} is omitted, return a list of keywords.
   else
     {
       std::string name = args(0).xstring_value ("iskeyword: NAME must be a string");
-      retval = octave::is_keyword (name);
+      retval = octave::iskeyword (name);
     }
 
   return retval;
@@ -2194,7 +2194,7 @@ namespace octave
   lexical_feedback::previous_token_is_keyword (void) const
   {
     const token *tok = m_tokens.front ();
-    return tok ? tok->is_keyword () : false;
+    return tok ? tok->iskeyword () : false;
   }
 
   bool

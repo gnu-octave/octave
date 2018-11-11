@@ -248,7 +248,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
         varname[i] = '_';
     }
 
-  if (octave::is_keyword (varname) || ! isalpha (varname[0]))
+  if (octave::iskeyword (varname) || ! isalpha (varname[0]))
     varname.insert (0, "X");
 
   if (! octave::valid_identifier (varname))

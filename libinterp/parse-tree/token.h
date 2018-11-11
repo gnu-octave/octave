@@ -97,9 +97,15 @@ namespace octave
     int line (void) const { return m_line_num; }
     int column (void) const { return m_column_num; }
 
-    bool is_keyword (void) const
+    bool iskeyword (void) const
     {
       return m_type_tag == keyword_token || m_type_tag == ettype_token;
+    }
+
+    OCTAVE_DEPRECATED (5, "use 'octave::iskeyword' instead")
+    bool is_keyword (void) const
+    {
+      return iskeyword ();
     }
 
     bool is_symbol (void) const

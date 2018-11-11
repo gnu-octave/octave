@@ -3215,7 +3215,7 @@ namespace octave
         tree_expression *tmp = lhs->remove_front ();
 
         if ((tmp->is_identifier () || tmp->is_index_expression ())
-            && is_keyword (tmp->name ()))
+            && iskeyword (tmp->name ()))
           {
             std::string kw = tmp->name ();
 
@@ -3238,7 +3238,7 @@ namespace octave
 
         for (const auto& kw : names)
           {
-            if (is_keyword (kw))
+            if (iskeyword (kw))
               {
                 delete lhs;
                 delete rhs;
@@ -5655,7 +5655,7 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       // generally.  Any that go through Octave's parser should have
       // already been checked.
 
-      if (octave::is_keyword (nm))
+      if (octave::iskeyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
       octave::symbol_scope scope = interp.get_current_scope ();

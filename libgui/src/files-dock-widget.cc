@@ -800,15 +800,12 @@ namespace octave
   {
     // Qsettings pointer is checked before emitting.
 
-    int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+    int size_idx = settings->value (global_icon_size.key,
+                                    global_icon_size.def).toInt ();
+    size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+
     QStyle *st = style ();
-    int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
-
-    if (icon_size_settings == 1)
-      icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
-    else if (icon_size_settings == -1)
-      icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
-
+    int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_navigation_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
     // filenames are always shown, other columns can be hidden by settings

@@ -763,15 +763,12 @@ namespace octave
     else
       m_release_notes_icon = ":/actions/icons/logo.png";
 
-    int icon_size_settings = settings->value ("toolbar_icon_size",0).toInt ();
+    int size_idx = settings->value (global_icon_size.key,
+                                    global_icon_size.def).toInt ();
+    size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+
     QStyle *st = style ();
-    int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
-
-    if (icon_size_settings == 1)
-      icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
-    else if (icon_size_settings == -1)
-      icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
-
+    int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
     if (settings->value ("show_status_bar",true).toBool ())

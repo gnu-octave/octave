@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QStringList>
 #include <QVariant>
+#include <QStyle>
 
 // Structure for the definition of pairs: key and default value
 
@@ -51,6 +52,16 @@ const QString global_font_family = "Courier";
 const QString global_font_family = "Courier";
 #endif
 const gui_pref global_mono_font ("monospace_font", global_font_family);
+
+// Icon size (in preferences: values -1, 0, 1)
+const QStyle::PixelMetric global_icon_sizes[3] =
+{
+  QStyle::PM_SmallIconSize,
+  QStyle::PM_LargeIconSize,
+  QStyle::PM_ToolBarIconSize
+};
+
+const gui_pref global_icon_size ("toolbar_icon_size", QVariant (0));
 
 
 // Console preferences

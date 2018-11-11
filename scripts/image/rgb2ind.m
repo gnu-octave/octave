@@ -78,7 +78,7 @@ function [x, map] = rgb2ind (R, G, B)
     case {"single", "double", "logical"}
       ## do nothing, return the same
     case {"uint8", "uint16"}
-      map = double (map) / double (intmax (class (R)));
+      map = double (map) / double (intmax (R));
     case "int16"
       map = (double (im) + 32768) / 65535;
     otherwise

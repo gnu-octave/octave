@@ -702,9 +702,13 @@ DEFUN (intmax, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} intmax ()
 @deftypefnx {} {} intmax ("@var{type}")
-Return the largest integer that can be represented in an integer type.
+@deftypefnx {} {} intmax (@var{var})
+Return the largest integer that can be represented by a specific integer type.
 
-The variable @var{type} is a string which can be
+The input is either a string @qcode{"@var{type}"} specifying an integer type,
+or it is an existing integer variable @var{var}.
+
+Possible values for @var{type} are
 
 @table @asis
 @item @qcode{"int8"}
@@ -733,6 +737,17 @@ unsigned 64-bit integer.
 @end table
 
 The default for @var{type} is @qcode{"int32"}.
+
+Example Code - query an existing variable
+
+@example
+@group
+x = int8 (1);
+intmax (x)
+  @result{} 127
+@end group
+@end example
+
 @seealso{intmin, flintmax}
 @end deftypefn */)
 {
@@ -743,7 +758,14 @@ The default for @var{type} is @qcode{"int32"}.
 
   std::string cname = "int32";
   if (nargin == 1)
-    cname = args(0).xstring_value ("intmax: argument must be a string");
+    {
+      if (args(0).is_string ())
+        cname = args(0).string_value ();
+      else if (args(0).isinteger ())
+        cname = args(0).class_name ();
+      else
+        error ("intmax: argument must be a string or integer variable");
+    }
 
   octave_value retval;
 
@@ -780,19 +802,27 @@ The default for @var{type} is @qcode{"int32"}.
 %!assert (intmax ("int64"),   int64 (2^63 - 1))
 %!assert (intmax ("uint64"), uint64 (2^64 - 1))
 
-%!error intmax (0)
+%!test
+%! x = int8 (1);
+%! assert (intmax (x), int8 (127));
+
 %!error intmax ("int32", 0)
-%!error intmax ("double")
-%!error intmax ("char")
+%!error <must be a string or integer variable> intmax (1.0)
+%!error <not defined for 'double' objects> intmax ("double")
+%!error <not defined for 'char' objects> intmax ("char")
 */
 
 DEFUN (intmin, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} intmin ()
 @deftypefnx {} {} intmin ("@var{type}")
-Return the smallest integer that can be represented in an integer type.
+@deftypefnx {} {} intmin (@var{var})
+Return the smallest integer that can be represented by a specific integer type.
 
-The variable @var{type} is a string which can be
+The input is either a string @qcode{"@var{type}"} specifying an integer type,
+or it is an existing integer variable @var{var}.
+
+Possible values for @var{type} are
 
 @table @asis
 @item @qcode{"int8"}
@@ -821,6 +851,17 @@ unsigned 64-bit integer.
 @end table
 
 The default for @var{type} is @qcode{"int32"}.
+
+Example Code - query an existing variable
+
+@example
+@group
+x = int8 (1);
+intmin (x)
+  @result{} -128
+@end group
+@end example
+
 @seealso{intmax, flintmax}
 @end deftypefn */)
 {
@@ -831,7 +872,14 @@ The default for @var{type} is @qcode{"int32"}.
 
   std::string cname = "int32";
   if (nargin == 1)
-    cname = args(0).xstring_value ("intmin: argument must be a string");
+    {
+      if (args(0).is_string ())
+        cname = args(0).string_value ();
+      else if (args(0).isinteger ())
+        cname = args(0).class_name ();
+      else
+        error ("intmin: argument must be a string or integer variable");
+    }
 
   octave_value retval;
 
@@ -868,10 +916,14 @@ The default for @var{type} is @qcode{"int32"}.
 %!assert (intmin ("int64"),   int64 (-2^63))
 %!assert (intmin ("uint64"), uint64 (-2^64))
 
-%!error intmin (0)
+%!test
+%! x = int8 (1);
+%! assert (intmin (x), int8 (-128));
+
 %!error intmin ("int32", 0)
-%!error intmin ("double")
-%!error intmin ("char")
+%!error <must be a string or integer variable> intmin (1.0)
+%!error <not defined for 'double' objects> intmin ("double")
+%!error <not defined for 'char' objects> intmin ("char")
 */
 
 DEFUN (sizemax, args, ,

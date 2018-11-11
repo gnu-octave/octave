@@ -186,9 +186,8 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
       if (ndims (img) == 3)
         if (isinteger (img))
-          cls = class (img);
-          mn = intmin (cls);
-          mx = intmax (cls);
+          mn = intmin (img);
+          mx = intmax (img);
           set (hax, "clim", double ([mn, mx]));
         endif
       endif

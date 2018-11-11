@@ -660,13 +660,27 @@ DEFUN (flintmax, args, ,
 @deftypefn  {} {} flintmax ()
 @deftypefnx {} {} flintmax ("double")
 @deftypefnx {} {} flintmax ("single")
+@deftypefnx {} {} flintmax (@var{var})
 Return the largest integer that can be represented consecutively in a
 floating point value.
 
-The default class is @qcode{"double"}, but @qcode{"single"} is a valid
-option.  On IEEE 754 compatible systems, @code{flintmax} is
-@w{@math{2^{53}}} for @qcode{"double"} and @w{@math{2^{24}}} for
-@qcode{"single"}.
+The input is either a string specifying a floating point type, or it is an
+existing floating point variable @var{var}.
+
+The default type is @qcode{"double"}, but @qcode{"single"} is a valid option.
+On IEEE 754 compatible systems, @code{flintmax} is @w{@math{2^{53}}} for
+@qcode{"double"} and @w{@math{2^{24}}} for @qcode{"single"}.
+
+Example Code - query an existing variable
+
+@example
+@group
+x = single (1);
+flintmax (x)
+  @result{} 16777216
+@end group
+@end example
+
 @seealso{intmax, realmax, realmin}
 @end deftypefn */)
 {
@@ -677,7 +691,14 @@ option.  On IEEE 754 compatible systems, @code{flintmax} is
 
   std::string cname = "double";
   if (nargin == 1)
-    cname = args(0).xstring_value ("flintmax: argument must be a string");
+    {
+      if (args(0).is_string ())
+        cname = args(0).string_value ();
+      else if (args(0).isfloat ())
+        cname = args(0).class_name ();
+      else
+        error ("intmin: argument must be a string or floating point variable");
+    }
 
   if (cname == "double")
     return ovl (static_cast<double> (max_mantissa_value<double> () + 1));
@@ -692,10 +713,14 @@ option.  On IEEE 754 compatible systems, @code{flintmax} is
 %!assert (flintmax ("double"), 2^53)
 %!assert (flintmax ("single"), single (2^24))
 
-%!error flintmax (0)
+%!test
+%! x = single (1);
+%! assert (flintmax (x), single (16777216));
+
 %!error flintmax ("double", 0)
-%!error flintmax ("int32")
-%!error flintmax ("char")
+%!error <must be a string or floating point variable> flintmax (int8 (1))
+%!error <not defined for class 'int8'> flintmax ("int8")
+%!error <not defined for class 'char'> flintmax ("char")
 */
 
 DEFUN (intmax, args, ,

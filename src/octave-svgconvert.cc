@@ -793,19 +793,23 @@ read from stdin\n\
   // Setup application and add default FreeSans font if needed
   QApplication a (argc, argv);
 
-  QFont font ("FreeSans");
-  int id = 0;
-  if (! font.exactMatch ())
+  // When printing to PDF we may need the default FreeSans font
+  if (! strcmp (argv[2], "pdf"))
     {
-      QString fontname (argv[4]);
-      if (! fontname.isEmpty ())
+      QFont font ("FreeSans");
+      if (! font.exactMatch ())
         {
-          id = QFontDatabase::addApplicationFont (fontname);
-          if (id < 0)
-            std::cerr << "Unable to add default font to database\n";
+          QString fontpath (argv[4]);
+          if (! fontpath.isEmpty ())
+            {
+              int id = QFontDatabase::addApplicationFont (fontpath);
+              if (id < 0)
+                std::cerr << "warning: print: " 
+                  "Unable to add default font to database\n";
+            }
+          else
+            std::cerr << "warning: print: FreeSans font not found\n";
         }
-      else
-        std::cerr << "FreeSans font not found\n";
     }
 
   // First render in a temporary file

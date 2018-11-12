@@ -473,7 +473,7 @@ function rgbout = print (varargin)
 
     ## With the -painters (gl2ps) renderer, line transparency is only
     ## handled for svg and pdf outputs using svgconvert.
-    ## Otherwise, switch grid lines color to light gray so that the image 
+    ## Otherwise, switch grid lines color to light gray so that the image
     ## output approximately matches on-screen experience.
     hax = findall (opts.figure, "type", "axes");
     if (! strcmp (tk, "gnuplot") && ! strcmp (opts.renderer, "opengl")
@@ -1013,10 +1013,15 @@ function cmd = svgconvert (opts, devopt)
              ["print.m: unale to find octave-svgconvert, ", ...
               "falling back to eps convertion"]);
   else
-    def_font = fullfile (__octave_config_info__ ("datadir"), "font", ...
-                         "FreeSans.otf");
+    fontdir = getenv ("OCTAVE_FONTS_DIR");
+
+    if (isempty (fontdir))
+      fontdir = __octave_config_info__ ("octfontsdir");
+    endif
+
     cmd = sprintf ("%s - %%s %3.2f %s %d %%s", opts.svgconvert_binary, ...
-                   get (0, "screenpixelsperinch"), def_font, 1);
+                   get (0, "screenpixelsperinch"), ...
+                   fullfile (fontdir, "FreeSans.otf"), 1);
 
     if (opts.debug)
       fprintf ("svgconvert command: '%s'\n", cmd);

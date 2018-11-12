@@ -255,7 +255,7 @@ namespace octave
 
         octave_diary << retval;
 
-        if (retval.back () != '\n')
+        if (! retval.empty () && retval.back () != '\n')
           octave_diary << "\n";
       }
     else

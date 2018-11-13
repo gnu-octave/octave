@@ -333,7 +333,14 @@ namespace octave
     std::shared_ptr<fcn_info_rep> m_rep;
   };
 
-  octave_value
+  extern OCTINTERP_API std::string
+  get_dispatch_type (const octave_value_list& args);
+
+  extern OCTINTERP_API std::string
+  get_dispatch_type (const octave_value_list& args,
+                     builtin_type_t& builtin_type);
+
+  extern octave_value
   dump_function_map (const std::map<std::string, octave_value>& fcn_map);
 }
 

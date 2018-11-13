@@ -140,13 +140,6 @@ namespace octave
 
             // Start executing commands in the command window.
 
-#if defined (HAVE_QT_GRAPHICS)
-            // The qt graphics toolkit must be registered before startup
-            // files are executed.
-
-            Fregister_graphics_toolkit (interp, ovl ("qt"));
-#endif
-
             exit_status = interp.execute ();
           }
       }

@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 #include "__init_qt__.h"
 
-// PKG_ADD: if (__have_feature__ ("QT") && __have_feature__ ("OPENGL") && have_window_system () && isguirunning ()) register_graphics_toolkit ("qt"); endif
+// PKG_ADD: if (__have_feature__ ("QT") && __have_feature__ ("OPENGL") && have_window_system () && __octave_link_enabled__ ()) register_graphics_toolkit ("qt"); endif
 
 namespace QtHandles
 {

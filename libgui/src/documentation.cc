@@ -81,20 +81,28 @@ namespace octave
     if (m_help_engine->copyCollectionFile (m_collection))
       m_help_engine->setCollectionFile (m_collection);
     else
+#ifdef ENABLE_DOCS
+      // FIXME: Perhaps a better way to do this would be to keep a count
+      // in the GUI preferences file.  After issuing this warning 3 times
+      // it would be disabled.  The count would need to be reset when a new
+      // version of Octave is installed.
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not copy help collection to temporary\n"
                                 "file. Search capabilities may be affected.\n"
                                 "%1").arg (m_help_engine->error ()));
+#endif
 
     connect(m_help_engine, SIGNAL(setupFinished()),
             m_help_engine->searchEngine(), SLOT(indexDocumentation()));
 
     if (! m_help_engine->setupData())
       {
+#ifdef ENABLE_DOCS
         QMessageBox::warning (this, tr ("Octave Documentation"),
                               tr ("Could not setup the data required for the\n"
                                   "documentation viewer. Only help texts in\n"
                                   "the Command Window will be available."));
+#endif
         if (m_help_engine)
           delete m_help_engine;
         m_help_engine = 0;

@@ -386,6 +386,37 @@ octave_user_function::subfunctions (void) const
   return m_scope.subfunctions ();
 }
 
+// Find definition of final subfunction in list of subfuns:
+//
+//  sub1>sub2>...>subN
+
+octave_value
+octave_user_function::find_subfunction (const std::string& subfuns_arg) const
+{
+  std::string subfuns = subfuns_arg;
+
+  std::string first_fun = subfuns;
+
+  size_t pos = subfuns.find ('>');
+
+  if (pos == std::string::npos)
+    subfuns = "";
+  else
+    {
+      first_fun = subfuns.substr (0, pos-1);
+      subfuns = subfuns.substr (pos+1);
+    }
+
+  octave_value ov_fcn = m_scope.find_subfunction (first_fun);
+
+  if (subfuns.empty ())
+    return ov_fcn;
+
+  octave_user_function *fcn = ov_fcn.user_function_value ();
+
+  return fcn->find_subfunction (subfuns);
+}
+
 bool
 octave_user_function::has_subfunctions (void) const
 {

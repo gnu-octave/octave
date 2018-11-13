@@ -981,12 +981,52 @@ namespace octave
         if (name_len > 2 && name.substr (name_len-2) == ".m")
           name = name.substr (0, name_len-2);
 
+        if (name.empty ())
+          return nullptr;
+
         symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-        octave_value fcn = symtab.find_function (name);
+        octave_value fcn;
+        size_t p2;
 
-        if (fcn.is_defined () && fcn.is_user_code ())
-          user_code = fcn.user_code_value ();
+        if (name[0] == '@')
+          {
+            size_t p1 = name.find (sys::file_ops::dir_sep_char (), 1);
+
+            if (p1 == std::string::npos)
+              return nullptr;
+
+            std::string dispatch_type = name.substr (1, p1-1);
+
+            p2 = name.find ('>', p1);
+
+            std::string method = name.substr (p1+1, p2-1);
+
+            fcn = symtab.find_method (method, dispatch_type);
+          }
+        else
+          {
+            p2 = name.find ('>');
+
+            std::string main_fcn = name.substr (0, p2);
+
+            fcn = symtab.find_function (main_fcn);
+          }
+
+        // List of function names sub1>sub2>...
+        std::string subfuns;
+
+        if (p2 != std::string::npos)
+          subfuns = name.substr (p2+1);
+
+        user_code = fcn.user_code_value ();
+
+        if (! user_code || subfuns.empty ())
+          return user_code;
+
+        fcn = user_code->find_subfunction (subfuns);
+
+        user_code = fcn.user_code_value ();
       }
 
     return user_code;

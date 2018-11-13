@@ -108,6 +108,11 @@ public:
 
   octave::sys::time time_checked (void) const { return t_checked; }
 
+  virtual octave_value find_subfunction (const std::string&) const
+  {
+    return octave_value ();
+  }
+
   // XXX FIXME
   int call_depth (void) const { return m_call_depth; }
 
@@ -292,6 +297,8 @@ public:
   void unlock_subfunctions (void);
 
   std::map<std::string, octave_value> subfunctions (void) const;
+
+  octave_value find_subfunction (const std::string& subfuns) const;
 
   bool has_subfunctions (void) const;
 

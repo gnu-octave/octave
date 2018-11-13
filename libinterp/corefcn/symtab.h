@@ -138,13 +138,6 @@ namespace octave
 
     bool at_top_level (void) { return m_current_scope == m_top_scope; }
 
-    // Find a value corresponding to the given name in the table.
-    octave_value
-    find (const std::string& name,
-          const octave_value_list& args = octave_value_list (),
-          bool skip_variables = false,
-          bool local_funcs = true);
-
     void assign (const std::string& name, const octave_value& value, bool force_add)
     {
       if (m_current_scope)
@@ -195,38 +188,10 @@ namespace octave
       return val.is_defined ();
     }
 
+    // FIXME: this function only finds legacy class methods, not
+    // classdef methods.
     octave_value
-    find_method (const std::string& name, const std::string& dispatch_type)
-    {
-      fcn_table_const_iterator p = m_fcn_table.find (name);
-
-      if (p != m_fcn_table.end ())
-        {
-          octave_value fcn = p->second.find_method (dispatch_type);
-
-          if (! fcn.is_defined ())
-            fcn = find_submethod (name, dispatch_type);
-
-          return fcn;
-        }
-      else
-        {
-          fcn_info finfo (name);
-
-          octave_value fcn = finfo.find_method (dispatch_type);
-
-          if (! fcn.is_defined ())
-            fcn = find_submethod (name, dispatch_type);
-
-          if (fcn.is_defined ())
-            m_fcn_table[name] = finfo;
-
-          return fcn;
-        }
-    }
-
-    octave_value
-    find_submethod (const std::string& name, const std::string& dispatch_type);
+    find_method (const std::string& name, const std::string& dispatch_type);
 
     octave_value
     find_built_in_function (const std::string& name)

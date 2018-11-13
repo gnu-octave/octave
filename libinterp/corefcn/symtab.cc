@@ -357,15 +357,6 @@ namespace octave
   }
 
   octave_value
-  symbol_table::find (const std::string& name, const octave_value_list& args,
-                      bool skip_variables, bool local_funcs)
-  {
-    return (m_current_scope
-            ? m_current_scope.find (name, args, skip_variables, local_funcs)
-            : octave_value ());
-  }
-
-  octave_value
   symbol_table::builtin_find (const std::string& name)
   {
     fcn_table_iterator p = m_fcn_table.find (name);
@@ -389,7 +380,8 @@ namespace octave
 
   octave_value
   symbol_table::fcn_table_find (const std::string& name,
-                                const octave_value_list& args, bool local_funcs)
+                                const octave_value_list& args,
+                                bool local_funcs)
   {
     fcn_table_iterator p = m_fcn_table.find (name);
 
@@ -412,93 +404,44 @@ namespace octave
 
   octave_value
   symbol_table::find_function (const std::string& name,
-                               const octave_value_list& args, bool local_funcs)
-  {
-    octave_value retval;
-
-    if (! name.empty () && name[0] == '@')
-      {
-        // Look for a class specific function.
-        std::string dispatch_type =
-          name.substr (1, name.find_first_of (sys::file_ops::dir_sep_str ()) - 1);
-
-        std::string method;
-        size_t pos = name.find_last_of (sys::file_ops::dir_sep_str ());
-        if (pos != std::string::npos)
-          method = name.substr (pos + 1);
-
-        retval = find_method (method, dispatch_type);
-      }
-    else
-      {
-        size_t pos = name.find_first_of ('>');
-
-        if (pos == std::string::npos)
-          retval = find (name, args, true, local_funcs);
-        else
-          {
-            std::string fcn_scope = name.substr (0, pos);
-            symbol_scope stored_scope = m_current_scope;
-            m_current_scope = m_top_scope;
-            octave_value parent = find_function (name.substr (0, pos),
-                                                 octave_value_list (), false);
-
-            if (parent.is_defined ())
-              {
-                octave_function *parent_fcn = parent.function_value ();
-
-                if (parent_fcn)
-                  {
-                    m_current_scope = parent_fcn->scope ();
-
-                    if (m_current_scope && m_current_scope != m_top_scope)
-                      retval = find_function (name.substr (pos + 1), args);
-                  }
-              }
-
-            m_current_scope = stored_scope;
-          }
-      }
-
-    return retval;
-  }
-
-  // look for @class/method>subfunction
-  octave_value
-  symbol_table::find_submethod (const std::string& name,
-                                const std::string& dispatch_type)
+                               const octave_value_list& args,
+                               bool local_funcs)
   {
     octave_value fcn;
 
-    std::string full_name = '@' + dispatch_type +
-      sys::file_ops::dir_sep_str () + name;
-    size_t pos = full_name.find_first_of ('>');
-
-    if (pos != std::string::npos)
+    if (m_current_scope)
       {
-        std::string fcn_scope = full_name.substr (0, pos);
-        symbol_scope stored_scope = m_current_scope;
-        m_current_scope = m_top_scope;
-        octave_value parent = find_function (full_name.substr (0, pos),
-                                             octave_value_list (), false);
-        if (parent.is_defined ())
-          {
-            octave_function *parent_fcn = parent.function_value ();
+        fcn = m_current_scope.find_subfunction (name);
 
-            if (parent_fcn)
-              {
-                m_current_scope = parent_fcn->scope ();
-
-                if (m_current_scope && m_current_scope != m_top_scope)
-                  fcn = find_function (full_name.substr (pos + 1),
-                                       octave_value_list ());
-              }
-          }
-
-        m_current_scope = stored_scope;
+        if (fcn.is_defined ())
+          return fcn;
       }
 
-    return fcn;
+    return fcn_table_find (name, args, local_funcs);
+  }
+
+  // FIXME: this function only finds legacy class methods, not
+  // classdef methods.
+
+  octave_value
+  symbol_table::find_method (const std::string& name,
+                             const std::string& dispatch_type)
+  {
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_method (dispatch_type);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_method (dispatch_type);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
   }
 
   template <template <typename, typename...> class C, typename V,

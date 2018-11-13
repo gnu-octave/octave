@@ -3378,10 +3378,10 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
 {
   std::string symbol_name = get_name () + '.' + nm;
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
+  octave::symbol_scope curr_scope
+    = octave::__get_current_scope__ ("cdef_package::cdef_package_rep::find");
 
-  return symtab.find (symbol_name, octave_value_list (), true, false);
+  return curr_scope.find (symbol_name, octave_value_list (), false);
 }
 
 octave_value_list
@@ -3790,9 +3790,11 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
 
           if (pos == std::string::npos)
             {
-              octave::symbol_table& symtab = m_interpreter.get_symbol_table ();
+              octave::symbol_scope curr_scope
+                = m_interpreter.get_current_scope ();
 
-              ov_cls = symtab.find (name);
+              ov_cls = curr_scope.find (name, octave_value_list (),
+                                        false, true);
             }
           else
             {

@@ -5006,8 +5006,8 @@ namespace octave
     std::string full_name = sys::canonicalize_file_name (file_name);
 
     // Check if this file is already loaded (or in the path)
-    symbol_table& symtab = __get_symbol_table__ ("source_file");
-    octave_value ov_code = symtab.find (symbol);
+    symbol_scope curr_scope = __get_current_scope__ ("source_file");
+    octave_value ov_code = curr_scope.find (symbol, ovl (), false, true);
 
     // For compatibility with Matlab, accept both scripts and
     // functions.

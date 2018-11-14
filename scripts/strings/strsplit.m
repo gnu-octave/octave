@@ -177,6 +177,8 @@ function [cstr, matches] = strsplit (str, del, varargin)
 
   if (! ischar (str) || (! ischar (del) && ! iscellstr (del)))
     error ("strsplit: S and DEL must be string values");
+  elseif (numel (str) != columns (str))
+    error ("strsplit: S must be a char row vector")
   elseif (! isscalar (args.collapsedelimiters))
     error ("strsplit: COLLAPSEDELIMITERS must be a scalar value");
   endif
@@ -309,3 +311,4 @@ endfunction
 %!error <S and DEL must be string values> strsplit (123, "b")
 %!error <COLLAPSEDELIMITERS must be a scalar value> strsplit ("abc", "def", "collapsedelimiters", ones (3,3))
 %!error <Invalid DELIMITERTYPE> strsplit ("abc", "b", "delimitertype", "foobar")
+%!error <S must be a char row vector> strsplit (reshape ("axbycz", [2 3]))

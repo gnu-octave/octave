@@ -184,7 +184,7 @@ have_gnuplot_binary (void)
       octave_value_list tmp
         = octave::feval ("gnuplot_binary", octave_value_list ());
 
-      if (tmp(0).is_string ())
+      if (tmp(0).is_string () && ! tmp(0).isempty ())
         {
           std::string gnuplot_binary = tmp(0).string_value ();
 

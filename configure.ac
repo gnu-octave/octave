@@ -3066,7 +3066,7 @@ Octave is now configured for $canonical_host_type
   Z libraries:                   $Z_LIBS
 
   Default pager:                 $DEFAULT_PAGER
-  gnuplot:                       $GNUPLOT
+  gnuplot:                       $GNUPLOT_BINARY
 
   Build Octave Qt GUI:                  $BUILD_QT_SUMMARY_MSG
   JIT compiler for loops:               $ENABLE_JIT

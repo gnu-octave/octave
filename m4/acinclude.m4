@@ -3235,11 +3235,14 @@ AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
   ac_octave_gp_default="gnuplot"
   if test "$cross_compiling" = yes; then
     GNUPLOT="$ac_octave_gp_default"
+    GNUPLOT_BINARY=$GNUPLOT
     AC_MSG_RESULT([assuming $GNUPLOT exists on $canonical_host_type host])
   else
     AC_CHECK_PROGS(GNUPLOT, [$ac_octave_gp_names])
+    GNUPLOT_BINARY=$GNUPLOT
     if test -z "$GNUPLOT"; then
-      GNUPLOT="$gp_default"
+      GNUPLOT="$ac_octave_gp_default"
+      GNUPLOT_BINARY=""
       warn_gnuplot="
 
 gnuplot not found.  It isn't necessary to have gnuplot installed, but

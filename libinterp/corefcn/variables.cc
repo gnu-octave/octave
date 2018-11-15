@@ -946,22 +946,15 @@ private:
   struct symbol_info
   {
     symbol_info (const octave::symbol_record& sr,
-                 octave::symbol_record::context_id context,
-                 const std::string& expr_str = "",
-                 const octave_value& expr_val = octave_value ())
-      : name (expr_str.empty () ? sr.name () : expr_str),
-        varval (),
+                 octave::symbol_record::context_id context)
+      : name (sr.name ()),
+        varval (sr.varval (context)),
         is_automatic (sr.is_automatic ()),
         is_complex (varval.iscomplex ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
         is_persistent (sr.is_persistent ())
-    {
-      varval = (expr_val.is_undefined ()
-                ? sr.varval (context) : expr_val);
-
-      is_complex = varval.iscomplex ();
-    }
+    { }
 
     void display_line (std::ostream& os,
                        const std::list<whos_parameter>& params) const
@@ -1115,14 +1108,6 @@ public:
                octave::symbol_record::context_id context)
   {
     lst.push_back (symbol_info (sr, context));
-  }
-
-  void append (const octave::symbol_record& sr,
-               octave::symbol_record::context_id context,
-               const std::string& expr_str,
-               const octave_value& expr_val)
-  {
-    lst.push_back (symbol_info (sr, context, expr_str, expr_val));
   }
 
   size_t size (void) const { return lst.size (); }
@@ -1528,75 +1513,23 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
     {
       std::string pat = pats[j];
 
-      if (have_regexp)
-        {
-          std::list<octave::symbol_record> tmp
-            = (global_only
-               ? symtab.regexp_global_variables (pat)
-               : symtab.regexp_variables (pat));
+      std::list<octave::symbol_record> tmp
+        = (have_regexp
+           ? (global_only
+              ? symtab.regexp_global_variables (pat)
+              : symtab.regexp_variables (pat))
+           : (global_only
+              ? symtab.glob_global_variables (pat)
+              : symtab.glob_variables (pat)));
 
-          for (const auto& symrec : tmp)
-            {
-              if (symrec.is_variable (context))
-                {
-                  if (verbose)
-                    symbol_stats.append (symrec, context);
-                  else
-                    symbol_names.push_back (symrec.name ());
-                }
-            }
-        }
-      else
+      for (const auto& symrec : tmp)
         {
-          size_t pos = pat.find_first_of (".({");
-
-          if (pos != std::string::npos && pos > 0)
+          if (symrec.is_variable (context))
             {
               if (verbose)
-                {
-                  // NOTE: we can only display information for
-                  // expressions based on global values if the variable is
-                  // global in the current scope because we currently have
-                  // no way of looking up the base value in the global
-                  // scope and then evaluating the arguments in the
-                  // current scope.
-
-                  std::string base_name = pat.substr (0, pos);
-
-                  if (scope && scope.is_variable (base_name))
-                    {
-                      octave::symbol_record sr
-                        = symtab.find_symbol (base_name);
-
-                      if (! global_only || sr.is_global ())
-                        {
-                          int parse_status;
-
-                          octave_value expr_val
-                            = octave::eval_string (pat, true, parse_status);
-
-                          symbol_stats.append (sr, context, pat, expr_val);
-                        }
-                    }
-                }
-            }
-          else
-            {
-              std::list<octave::symbol_record> tmp
-                = (global_only
-                   ? symtab.glob_global_variables (pat)
-                   : symtab.glob_variables (pat));
-
-              for (const auto& symrec : tmp)
-                {
-                  if (symrec.is_variable (context))
-                    {
-                      if (verbose)
-                        symbol_stats.append (symrec, context);
-                      else
-                        symbol_names.push_back (symrec.name ());
-                    }
-                }
+                symbol_stats.append (symrec, context);
+              else
+                symbol_names.push_back (symrec.name ());
             }
         }
     }

@@ -65,10 +65,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Defines layout for the whos/who -long command
-static std::string Vwhos_line_format
-  = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";
-
 // Attributes of variables and functions.
 
 // Is this octave_value a valid function?
@@ -1171,14 +1167,14 @@ public:
     return info;
   }
 
-  void display (std::ostream& os)
+  void display (std::ostream& os, const std::string& format)
   {
     if (! m_lst.empty ())
       {
         size_t bytes = 0;
         size_t elements = 0;
 
-        std::list<whos_parameter> params = parse_whos_line_format ();
+        std::list<whos_parameter> params = parse_whos_line_format (format);
 
         print_descriptor (os, params);
 
@@ -1201,13 +1197,13 @@ public:
       }
   }
 
-  // Parse the string whos_line_format, and return a parameter list,
+  // Parse FORMAT, and return a parameter list,
   // containing all information needed to print the given
   // attributes of the symbols.
-  std::list<whos_parameter> parse_whos_line_format (void)
+  std::list<whos_parameter> parse_whos_line_format (const std::string& format)
   {
     int idx;
-    size_t format_len = Vwhos_line_format.length ();
+    size_t format_len = format.length ();
     char garbage;
     std::list<whos_parameter> params;
 
@@ -1282,7 +1278,7 @@ public:
         whos_parameter param;
         param.command = '\0';
 
-        if (Vwhos_line_format[idx] == '%')
+        if (format[idx] == '%')
           {
             bool error_encountered = false;
             param.modifier = 'r';
@@ -1295,11 +1291,11 @@ public:
             size_t pos;
             std::string cmd;
 
-            // Parse one command from whos_line_format
-            cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
+            // Parse one command from format
+            cmd = format.substr (idx, format.length ());
             pos = cmd.find (';');
             if (pos == std::string::npos)
-              error ("parameter without ; in whos_line_format");
+              error ("parameter without ; in format");
 
             cmd = cmd.substr (0, pos+1);
 
@@ -1316,7 +1312,7 @@ public:
                               &a, &b, &balance) - 1;
 
             if (items < 2)
-              error ("whos_line_format: parameter structure without command in whos_line_format");
+              error ("whos_line_format: found parameter structure without command");
 
             // Exception case of bare class command 'c' without modifier 'l/r'
             if (param.modifier == 'c'
@@ -1386,7 +1382,7 @@ public:
               error ("whos_line_format: modifier 'c' not available for command '%c'",
                      param.command);
 
-            // What happens if whos_line_format contains negative numbers
+            // What happens if format contains negative numbers
             // at param_length positions?
             param.balance = (b < 0 ? 0 : param.balance);
             param.first_parameter_length = (b < 0
@@ -1408,7 +1404,7 @@ public:
             // Text string, to be printed as it is ...
             std::string text;
             size_t pos;
-            text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
+            text = format.substr (idx, format.length ());
             pos = text.find ('%');
             if (pos != std::string::npos)
               text = text.substr (0, pos);
@@ -1438,6 +1434,7 @@ do_who_two (octave::interpreter& interp, const string_vector& pats,
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave::symbol_scope scope = symtab.current_scope ();
@@ -1506,7 +1503,7 @@ do_who_two (octave::interpreter& interp, const string_vector& pats,
         octave_stdout << msg;
 
       if (verbose)
-        symbol_stats.display (octave_stdout);
+        symbol_stats.display (octave_stdout, tw.whos_line_format ());
       else
         {
           string_vector names (symbol_names);
@@ -2302,83 +2299,6 @@ without the dash as well.
     }
 
   return ovl ();
-}
-
-DEFUN (whos_line_format, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} whos_line_format ()
-@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
-@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
-Query or set the format string used by the command @code{whos}.
-
-A full format string is:
-@c Set example in small font to prevent overfull line
-
-@smallexample
-%[modifier]<command>[:width[:left-min[:balance]]];
-@end smallexample
-
-The following command sequences are available:
-
-@table @code
-@item %a
-Prints attributes of variables (g=global, p=persistent, f=formal parameter,
-a=automatic variable).
-
-@item %b
-Prints number of bytes occupied by variables.
-
-@item %c
-Prints class names of variables.
-
-@item %e
-Prints elements held by variables.
-
-@item %n
-Prints variable names.
-
-@item %s
-Prints dimensions of variables.
-
-@item %t
-Prints type names of variables.
-@end table
-
-Every command may also have an alignment modifier:
-
-@table @code
-@item l
-Left alignment.
-
-@item r
-Right alignment (default).
-
-@item c
-Column-aligned (only applicable to command %s).
-@end table
-
-The @code{width} parameter is a positive integer specifying the minimum
-number of columns used for printing.  No maximum is needed as the field will
-auto-expand as required.
-
-The parameters @code{left-min} and @code{balance} are only available when
-the column-aligned modifier is used with the command @samp{%s}.
-@code{balance} specifies the column number within the field width which
-will be aligned between entries.  Numbering starts from 0 which indicates
-the leftmost column.  @code{left-min} specifies the minimum field width to
-the left of the specified balance column.
-
-The default format is:
-
-@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{whos}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (whos_line_format);
 }
 
 static std::string Vmissing_function_hook = "__unimplemented__";

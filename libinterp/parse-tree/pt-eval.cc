@@ -3335,6 +3335,13 @@ namespace octave
   }
 
   octave_value
+  tree_evaluator::whos_line_format (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_whos_line_format, args, nargout,
+                                  "whos_line_format");
+  }
+
+  octave_value
   tree_evaluator::silent_functions (const octave_value_list& args, int nargout)
   {
     return set_internal_variable (m_silent_functions, args, nargout,
@@ -3742,6 +3749,85 @@ The original variable value is restored when exiting the function.
 
 %!error (max_recursion_depth (1, 2))
 */
+
+DEFMETHOD (whos_line_format, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{val} =} whos_line_format ()
+@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
+@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
+Query or set the format string used by the command @code{whos}.
+
+A full format string is:
+@c Set example in small font to prevent overfull line
+
+@smallexample
+%[modifier]<command>[:width[:left-min[:balance]]];
+@end smallexample
+
+The following command sequences are available:
+
+@table @code
+@item %a
+Prints attributes of variables (g=global, p=persistent, f=formal parameter,
+a=automatic variable).
+
+@item %b
+Prints number of bytes occupied by variables.
+
+@item %c
+Prints class names of variables.
+
+@item %e
+Prints elements held by variables.
+
+@item %n
+Prints variable names.
+
+@item %s
+Prints dimensions of variables.
+
+@item %t
+Prints type names of variables.
+@end table
+
+Every command may also have an alignment modifier:
+
+@table @code
+@item l
+Left alignment.
+
+@item r
+Right alignment (default).
+
+@item c
+Column-aligned (only applicable to command %s).
+@end table
+
+The @code{width} parameter is a positive integer specifying the minimum
+number of columns used for printing.  No maximum is needed as the field will
+auto-expand as required.
+
+The parameters @code{left-min} and @code{balance} are only available when
+the column-aligned modifier is used with the command @samp{%s}.
+@code{balance} specifies the column number within the field width which
+will be aligned between entries.  Numbering starts from 0 which indicates
+the leftmost column.  @code{left-min} specifies the minimum field width to
+the left of the specified balance column.
+
+The default format is:
+
+@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
+
+When called from inside a function with the @qcode{"local"} option, the
+variable is changed locally for the function and any subroutines it calls.
+The original variable value is restored when exiting the function.
+@seealso{whos}
+@end deftypefn */)
+{
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.whos_line_format (args, nargout);
+}
 
 DEFMETHOD (silent_functions, interp, args, nargout,
            doc: /* -*- texinfo -*-

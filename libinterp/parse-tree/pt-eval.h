@@ -132,6 +132,7 @@ namespace octave
         m_nargout_stack (), m_bp_table (*this), m_call_stack (interp),
         m_profiler (), m_current_frame (0), m_debug_mode (false),
         m_quiet_breakpoint_flag (false), m_max_recursion_depth (256),
+        m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
@@ -407,6 +408,17 @@ namespace octave
       return val;
     }
 
+    octave_value whos_line_format (const octave_value_list& args, int nargout);
+
+    std::string whos_line_format (void) const { return m_whos_line_format; }
+
+    std::string whos_line_format (const std::string& s)
+    {
+      std::string val = m_whos_line_format;
+      m_whos_line_format = s;
+      return val;
+    }
+
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
 
@@ -583,6 +595,9 @@ namespace octave
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.
     int m_max_recursion_depth;
+
+    // Defines layout for the whos/who -long command
+    std::string m_whos_line_format;
 
     // If TRUE, turn off printing of results in functions (as if a
     // semicolon has been appended to each statement).

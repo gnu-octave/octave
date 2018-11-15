@@ -1359,6 +1359,7 @@ namespace octave
                 else
                   {
                     delete fileEditorTab;
+                    fileEditorTab = nullptr;
 
                     if (QFile::exists (openFileName))
                       {
@@ -1432,7 +1433,8 @@ namespace octave
               {
                 // update breakpoint pointers, really show editor
                 // and the current editor tab
-                fileEditorTab->update_breakpoints ();
+                if (fileEditorTab)
+                  fileEditorTab->update_breakpoints ();
                 focus ();
                 emit file_loaded_signal ();
               }

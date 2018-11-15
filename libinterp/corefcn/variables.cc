@@ -1431,88 +1431,22 @@ private:
 };
 
 static octave_value
-do_who (octave::interpreter& interp, int argc, const string_vector& argv,
-        bool return_list, bool verbose = false, std::string msg = "")
+do_who_two (octave::interpreter& interp, const string_vector& pats,
+            bool global_only, bool have_regexp, bool return_list,
+            bool verbose = false, std::string msg = "")
 {
-  octave_value retval;
-
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  std::string my_name = argv[0];
-
-  bool global_only = false;
-  bool have_regexp = false;
-
-  int i;
-  for (i = 1; i < argc; i++)
-    {
-      if (argv[i] == "-file")
-        {
-          // FIXME: This is an inefficient manner to implement this as the
-          // variables are loaded in to a temporary context and then treated.
-          // It would be better to refecat symbol_info_list to not store the
-          // symbol records and then use it in load-save.cc (do_load) to
-          // implement this option there so that the variables are never
-          // stored at all.
-          if (i == argc - 1)
-            error ("%s: -file argument must be followed by a filename",
-                   my_name.c_str ());
-
-          std::string nm = argv[i + 1];
-
-          octave::unwind_protect frame;
-
-          // Set up temporary scope.
-
-          octave::symbol_scope tmp_scope ("$dummy_scope$");
-
-          symtab.set_scope (tmp_scope);
-
-          cs.push (tmp_scope, 0);
-          frame.add_method (cs, &octave::call_stack::pop);
-
-          octave::feval ("load", octave_value (nm), 0);
-
-          std::string newmsg = "Variables in the file " + nm + ":\n\n";
-
-          retval = do_who (interp, i, argv, return_list, verbose, newmsg);
-
-          return retval;
-        }
-      else if (argv[i] == "-regexp")
-        have_regexp = true;
-      else if (argv[i] == "global")
-        global_only = true;
-      else if (argv[i][0] == '-')
-        warning ("%s: unrecognized option '%s'", my_name.c_str (),
-                 argv[i].c_str ());
-      else
-        break;
-    }
-
-  int npats = argc - i;
-  string_vector pats;
-  if (npats > 0)
-    {
-      pats.resize (npats);
-      for (int j = 0; j < npats; j++)
-        pats[j] = argv[i+j];
-    }
-  else
-    {
-      pats.resize (++npats);
-      pats[0] = "*";
-    }
-
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave::symbol_scope scope = symtab.current_scope ();
 
   octave::symbol_record::context_id context = scope.current_context ();
 
-  for (int j = 0; j < npats; j++)
+  octave_idx_type npats = pats.numel ();
+
+  for (octave_idx_type j = 0; j < npats; j++)
     {
       std::string pat = pats[j];
 
@@ -1549,15 +1483,17 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
     {
       if (verbose)
         {
+          octave::call_stack& cs = interp.get_call_stack ();
+
           std::string caller_function_name;
           octave_function *caller = cs.caller ();
           if (caller)
             caller_function_name = caller->name ();
 
-          retval = symbol_stats.map_value (caller_function_name, 1);
+          return symbol_stats.map_value (caller_function_name, 1);
         }
       else
-        retval = Cell (string_vector (symbol_names));
+        return Cell (string_vector (symbol_names));
     }
   else if (! (symbol_stats.empty () && symbol_names.empty ()))
     {
@@ -1581,7 +1517,102 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
       octave_stdout << "\n";
     }
 
-  return retval;
+  return octave_value ();
+}
+
+static octave_value
+do_who (octave::interpreter& interp, int argc, const string_vector& argv,
+        bool return_list, bool verbose = false)
+{
+  octave_value retval;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  std::string my_name = argv[0];
+
+  std::string file_name;
+
+  bool from_file = false;
+  bool global_only = false;
+  bool have_regexp = false;
+
+  int i = 1;
+  while (i < argc)
+    {
+      if (argv[i] == "-file")
+        {
+          if (from_file)
+            error ("%s: -file option may only be specified once",
+                   my_name.c_str ());
+
+          from_file = true;
+
+          if (i == argc - 1)
+            error ("%s: -file argument must be followed by a filename",
+                   my_name.c_str ());
+
+          file_name = argv[++i];
+        }
+      else if (argv[i] == "-regexp")
+        {
+          have_regexp = true;
+        }
+      else if (argv[i] == "global")
+        global_only = true;
+      else if (argv[i][0] == '-')
+        warning ("%s: unrecognized option '%s'", my_name.c_str (),
+                 argv[i].c_str ());
+      else
+        break;
+
+      i++;
+    }
+
+  int npats = argc - i;
+  string_vector pats;
+  if (npats > 0)
+    {
+      pats.resize (npats);
+      for (int j = 0; j < npats; j++)
+        pats[j] = argv[i+j];
+    }
+  else
+    {
+      pats.resize (1);
+      pats[0] = "*";
+    }
+
+  if (from_file)
+    {
+      // FIXME: This is an inefficient manner to implement this as the
+      // variables are loaded in to a temporary context and then treated.
+      // It would be better to refactor symbol_info_list to not store the
+      // symbol records and then use it in load-save.cc (do_load) to
+      // implement this option there so that the variables are never
+      // stored at all.
+
+      octave::unwind_protect frame;
+
+      // Set up temporary scope.
+
+      octave::symbol_scope tmp_scope ("$dummy_scope$");
+
+      symtab.set_scope (tmp_scope);
+
+      cs.push (tmp_scope, 0);
+      frame.add_method (cs, &octave::call_stack::pop);
+
+      octave::feval ("load", octave_value (file_name), 0);
+
+      std::string newmsg = "Variables in the file " + file_name + ":\n\n";
+
+      return do_who_two (interp, pats, global_only, have_regexp,
+                         return_list, verbose, newmsg);
+    }
+  else
+    return do_who_two (interp, pats, global_only, have_regexp,
+                       return_list, verbose);
 }
 
 DEFMETHOD (who, interp, args, nargout,

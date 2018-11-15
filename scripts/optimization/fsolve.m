@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} fsolve (@var{fcn}, @var{x0})
 ## @deftypefnx {} {} fsolve (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
+## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
 ## @var{fcn} should accept a vector (array) defining the unknown variables,
@@ -41,11 +41,11 @@
 ## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"},
 ## @qcode{"TypicalX"}, and @qcode{"Updating"}.
 ##
-## If @qcode{"AutoScaling"} is on, the variables will be automatically scaled
-## according to the column norms of the (estimated) Jacobian.  As a result,
-## @code{TolFun} becomes scaling-independent.  By default, this option is off
-## because it may sometimes deliver unexpected (though mathematically
-## correct) results.
+## If @qcode{"AutoScaling"} is @qcode{"on"}, the variables will be
+## automatically scaled according to the column norms of the (estimated)
+## Jacobian.  As a result, @qcode{"TolFun"} becomes scaling-independent.  By
+## default, this option is @qcode{"off"} because it may sometimes deliver
+## unexpected (though mathematically correct) results.
 ##
 ## If @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess
@@ -111,7 +111,7 @@
 ## @item iterations
 ##  Number of iterations through loop.
 ##
-## @item succesful
+## @item successful
 ##  Number of successful iterations.
 ##
 ## @item @nospell{funcCount}
@@ -139,13 +139,13 @@
 ## recent vector.  A short example how this can be achieved follows:
 ##
 ## @example
-## function [fvec, fjac] = user_func (x, optimvalues, state)
+## function [fval, fjac] = user_func (x, optimvalues, state)
 ## persistent sav = [], sav0 = [];
 ## if (nargin == 1)
 ##   ## evaluation call
 ##   if (nargout == 1)
 ##     sav0.x = x; # mark saved vector
-##     ## calculate fvec, save results to sav0.
+##     ## calculate fval, save results to sav0.
 ##   elseif (nargout == 2)
 ##     ## calculate fjac using sav.
 ##   endif
@@ -168,7 +168,7 @@
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
 ## PKG_ADD: [~] = __all_opts__ ("fsolve");
 
-function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
+function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, "defaults"))
@@ -233,11 +233,11 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Initial evaluation.
   ## Handle arbitrary shapes of x and f and remember them.
-  fvec = fcn (reshape (x, xsiz));
-  fsiz = size (fvec);
-  fvec = fvec(:);
-  fn = norm (fvec);
-  m = length (fvec);
+  fval = fcn (reshape (x, xsiz));
+  fsiz = size (fval);
+  fval = fval(:);
+  fn = norm (fval);
+  m = length (fval);
   n = length (x);
 
   if (! isempty (outfcn))
@@ -253,7 +253,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
     endif
   endif
 
-  if (isa (x0, "single") || isa (fvec, "single"))
+  if (isa (x0, "single") || isa (fval, "single"))
     macheps = eps ("single");
   else
     macheps = eps ("double");
@@ -266,7 +266,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
     ## Calculate function value and Jacobian (possibly via FD).
     if (has_jac)
-      [fvec, fjac] = fcn (reshape (x, xsiz));
+      [fval, fjac] = fcn (reshape (x, xsiz));
       if (! all (size (fjac) == [m, n]))
         error ("fsolve: Jacobian size should be (%d,%d), not (%d,%d)",
                m, n, rows (fjac), columns (fjac));
@@ -275,10 +275,10 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       if (issparse (fjac))
         updating = false;
       endif
-      fvec = fvec(:);
+      fval = fval(:);
       nfev += 1;
     else
-      fjac = __fdjac__ (fcn, reshape (x, xsiz), fvec, typicalx, cdif);
+      fjac = __fdjac__ (fcn, reshape (x, xsiz), fval, typicalx, cdif);
       nfev += (1 + cdif) * length (x);
     endif
 
@@ -340,7 +340,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
           info = -2;
           break;
         endif
-        qtf = q'*fvec;
+        qtf = q'*fval;
         s = - __dogleg__ (r, qtf, dg, delta);
         w = qtf + r * s;
       else
@@ -348,8 +348,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
           info = -2;
           break;
         endif
-        s = - __dogleg__ (fjac, fvec, dg, delta);
-        w = fvec + fjac * s;
+        s = - __dogleg__ (fjac, fval, dg, delta);
+        w = fval + fjac * s;
       endif
 
       sn = norm (dg .* s);
@@ -357,8 +357,8 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         delta = min (delta, sn);
       endif
 
-      fvec1 = fcn (reshape (x + s, xsiz)) (:);
-      fn1 = norm (fvec1);
+      fval1 = fcn (reshape (x + s, xsiz)) (:);
+      fn1 = norm (fval1);
       nfev += 1;
 
       if (fn1 < fn)
@@ -407,7 +407,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
         ## Successful iteration.
         x += s;
         xn = norm (dg .* x);
-        fvec = fvec1;
+        fval = fval1;
         fn = fn1;
         nsuciter += 1;
       endif
@@ -463,13 +463,13 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
       ## Compute the scaled Broyden update.
       if (useqr)
-        u = (fvec1 - q*w) / sn;
+        u = (fval1 - q*w) / sn;
         v = dg .* ((dg .* s) / sn);
 
         ## Update the QR factorization.
         [q, r] = qrupdate (q, r, u, v);
       else
-        u = (fvec1 - w);
+        u = (fval1 - w);
         v = dg .* ((dg .* s) / sn);
 
         ## update the Jacobian
@@ -480,7 +480,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Restore original shapes.
   x = reshape (x, xsiz);
-  fvec = reshape (fvec, fsiz);
+  fval = reshape (fval, fsiz);
 
   output.iterations = niter;
   output.successful = nsuciter;
@@ -676,13 +676,13 @@ endfunction
 %! B = @(lam) [C*expm(A(lam)*0); C*expm(A(lam)*1)];
 %! detB = @(lam) det (B(lam));
 %!
-%! [x, fvec, info] = fsolve (detB, 0);
+%! [x, fval, info] = fsolve (detB, 0);
 %! assert (x == 0);
-%! assert (fvec == -1);
+%! assert (fval == -1);
 %! assert (info == -2);
 
 %!test <*53991>
-%! [x, fvec, info] = fsolve (@(x) 5*x, 0);
+%! [x, fval, info] = fsolve (@(x) 5*x, 0);
 %! assert (x == 0);
-%! assert (fvec == 0);
+%! assert (fval == 0);
 %! assert (info == 1);

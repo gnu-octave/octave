@@ -25,6 +25,10 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       Octave 5.0 : strncmp ("abc", "abc", 100) => true
       Previously : strncmp ("abc", "abc", 100) => false
 
+ ** The ranks function has been recoded for performance and is now 25X
+    faster.  In addition, it now supports a third argument that
+    specifies how to resolve the ranking of tie values.
+
  ** The fsolve function has been tweaked to use larger step sizes when
     calculating the Jacobian of a function with finite differences.
     This leads to faster convergence.  The default solver options have

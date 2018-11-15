@@ -61,16 +61,15 @@ endfunction
 
 
 %!test
-%! try
-%!   [orig_val, orig_args] = gnuplot_binary ();
+%! [orig_val, orig_args] = gnuplot_binary ();
+%! unwind_protect
 %!   [old_val, old_args] = gnuplot_binary ("__foobar__", "-opt1");
 %!   assert (orig_val, old_val);
 %!   assert (orig_args, old_args);
 %!   assert (gnuplot_binary (), "__foobar__");
 %!   [~, new_args] = gnuplot_binary ();
 %!   assert (new_args, {"-opt1"});
+%! unwind_protect_cleanup
 %!   gnuplot_binary (orig_val, orig_args{:});
-%!   assert (gnuplot_binary (), orig_val);
-%! catch
-%!   gnuplot_binary (orig_val, orig_args{:});
-%! end_try_catch
+%! end_unwind_protect
+%! assert (gnuplot_binary (), orig_val);

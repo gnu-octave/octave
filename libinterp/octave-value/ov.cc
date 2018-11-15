@@ -1558,6 +1558,26 @@ octave_value::assign (assign_op op, const octave_value& rhs)
   return *this;
 }
 
+// FIXME: This is a bit of a kluge.  We'd like to just use val.dims()
+// and if val is an object, expect that dims will call size if it is
+// overloaded by a user-defined method.  But there are currently some
+// unresolved const issues that prevent that solution from working.
+
+std::string
+octave_value::get_dims_str (void) const
+{
+  octave_value tmp = *this;
+
+  Matrix sz = tmp.size ();
+
+  dim_vector dv = dim_vector::alloc (sz.numel ());
+
+  for (octave_idx_type i = 0; i < dv.ndims (); i++)
+    dv(i) = sz(i);
+
+  return dv.str ();
+}
+
 octave_idx_type
 octave_value::length (void) const
 {

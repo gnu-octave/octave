@@ -466,8 +466,9 @@ public:
 
   // Size.
 
-  dim_vector dims (void) const
-  { return rep->dims (); }
+  dim_vector dims (void) const { return rep->dims (); }
+
+  std::string get_dims_str (void) const;
 
   octave_idx_type rows (void) const { return rep->rows (); }
 

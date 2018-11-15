@@ -939,27 +939,6 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   os << param_buf.str ();
 }
 
-// FIXME: This is a bit of a kluge.  We'd like to just use val.dims()
-// and if val is an object, expect that dims will call size if it is
-// overloaded by a user-defined method.  But there are currently some
-// unresolved const issues that prevent that solution from working.
-// This same kluge is done in symtab.cc (do_workspace_info), fix there too.
-
-std::string
-get_dims_str (const octave_value& val)
-{
-  octave_value tmp = val;
-
-  Matrix sz = tmp.size ();
-
-  dim_vector dv = dim_vector::alloc (sz.numel ());
-
-  for (octave_idx_type i = 0; i < dv.ndims (); i++)
-    dv(i) = sz(i);
-
-  return dv.str ();
-}
-
 class
 symbol_info_list
 {
@@ -987,7 +966,7 @@ private:
     void display_line (std::ostream& os,
                        const std::list<whos_parameter>& params) const
     {
-      std::string dims_str = get_dims_str (varval);
+      std::string dims_str = varval.get_dims_str ();
 
       auto i = params.begin ();
 
@@ -1390,7 +1369,7 @@ public:
                 for (const auto& syminfo : lst)
                   {
                     octave_value val = syminfo.varval;
-                    std::string dims_str = get_dims_str (val);
+                    std::string dims_str = val.get_dims_str ();
                     int first1 = dims_str.find ('x');
                     int total1 = dims_str.length ();
                     int rest1 = total1 - first1;

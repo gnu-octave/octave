@@ -844,19 +844,17 @@ whos_parameter
   std::string line;
 };
 
+// Print a line of information for a given symbol.
+
 static void
 print_descriptor (std::ostream& os, std::list<whos_parameter> params)
 {
-  // This method prints a line of information on a given symbol
-  auto i = params.begin ();
   std::ostringstream param_buf;
 
   octave::preserve_stream_state stream_state (os);
 
-  while (i != params.end ())
+  for (const auto& param : params)
     {
-      whos_parameter param = *i;
-
       if (param.command != '\0')
         {
           // Do the actual printing
@@ -895,13 +893,11 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
 
           if (param.command == 's' && param.modifier == 'c')
             {
-              int a, b;
-
               if (param.modifier == 'c')
                 {
-                  a = param.first_parameter_length - param.balance;
+                  int a = param.first_parameter_length - param.balance;
                   a = (a < 0 ? 0 : a);
-                  b = param.parameter_length - a - param.text.length ();
+                  int b = param.parameter_length - a - param.text.length ();
                   b = (b < 0 ? 0 : b);
                   os << std::setiosflags (std::ios::left) << std::setw (a)
                      << "" << std::resetiosflags (std::ios::left) << param.text
@@ -926,198 +922,204 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
              << std::resetiosflags (std::ios::right);
           param_buf << std::resetiosflags (std::ios::left)
                     << std::resetiosflags (std::ios::right);
-          i++;
         }
       else
         {
           os << param.text;
           param_buf << param.line;
-          i++;
         }
     }
 
   os << param_buf.str ();
 }
 
+class symbol_info
+{
+public:
+
+  symbol_info (const std::string& name, const octave_value& value,
+               bool is_automatic, bool is_complex, bool is_formal,
+               bool is_global, bool is_persistent)
+    : m_name (name), m_value (value), m_is_automatic (is_automatic),
+      m_is_complex (is_complex), m_is_formal (is_formal),
+      m_is_global (is_global), m_is_persistent (is_persistent)
+  { }
+
+  std::string name (void) const { return m_name; }
+
+  octave_value value (void) const { return m_value; }
+
+  bool is_automatic (void) const { return m_is_automatic; }
+
+  bool is_complex (void) const { return m_is_complex; }
+
+  bool is_formal (void) const { return m_is_formal; }
+
+  bool is_global (void) const { return m_is_global; }
+
+  bool is_persistent (void) const { return m_is_persistent; }
+
+  void display_line (std::ostream& os,
+                     const std::list<whos_parameter>& params) const
+  {
+    std::string dims_str = m_value.get_dims_str ();
+
+    auto i = params.begin ();
+
+    octave::preserve_stream_state stream_state (os);
+
+    while (i != params.end ())
+      {
+        whos_parameter param = *i;
+
+        if (param.command != '\0')
+          {
+            // Do the actual printing.
+
+            switch (param.modifier)
+              {
+              case 'l':
+                os << std::setiosflags (std::ios::left)
+                   << std::setw (param.parameter_length);
+                break;
+
+              case 'r':
+                os << std::setiosflags (std::ios::right)
+                   << std::setw (param.parameter_length);
+                break;
+
+              case 'c':
+                if (param.command == 's')
+                  {
+                    int front = param.first_parameter_length
+                      - dims_str.find ('x');
+                    int back = param.parameter_length
+                      - dims_str.length ()
+                      - front;
+                    front = (front > 0) ? front : 0;
+                    back = (back > 0) ? back : 0;
+
+                    os << std::setiosflags (std::ios::left)
+                       << std::setw (front)
+                       << ""
+                       << std::resetiosflags (std::ios::left)
+                       << dims_str
+                       << std::setiosflags (std::ios::left)
+                       << std::setw (back)
+                       << ""
+                       << std::resetiosflags (std::ios::left);
+                  }
+                else
+                  {
+                    os << std::setiosflags (std::ios::left)
+                       << std::setw (param.parameter_length);
+                  }
+                break;
+
+              default:
+                error ("whos_line_format: modifier '%c' unknown",
+                       param.modifier);
+
+                os << std::setiosflags (std::ios::right)
+                   << std::setw (param.parameter_length);
+              }
+
+            switch (param.command)
+              {
+              case 'a':
+                {
+                  char tmp[6];
+
+                  tmp[0] = (m_is_automatic ? 'a' : ' ');
+                  tmp[1] = (m_is_complex ? 'c' : ' ');
+                  tmp[2] = (m_is_formal ? 'f' : ' ');
+                  tmp[3] = (m_is_global ? 'g' : ' ');
+                  tmp[4] = (m_is_persistent ? 'p' : ' ');
+                  tmp[5] = 0;
+
+                  os << tmp;
+                }
+                break;
+
+              case 'b':
+                os << m_value.byte_size ();
+                break;
+
+              case 'c':
+                os << m_value.class_name ();
+                break;
+
+              case 'e':
+                os << m_value.numel ();
+                break;
+
+              case 'n':
+                os << m_name;
+                break;
+
+              case 's':
+                if (param.modifier != 'c')
+                  os << dims_str;
+                break;
+
+              case 't':
+                os << m_value.type_name ();
+                break;
+
+              default:
+                error ("whos_line_format: command '%c' unknown",
+                       param.command);
+              }
+
+            os << std::resetiosflags (std::ios::left)
+               << std::resetiosflags (std::ios::right);
+            i++;
+          }
+        else
+          {
+            os << param.text;
+            i++;
+          }
+      }
+  }
+
+private:
+
+  std::string m_name;
+  octave_value m_value;
+  bool m_is_automatic;
+  bool m_is_complex;
+  bool m_is_formal;
+  bool m_is_global;
+  bool m_is_persistent;
+};
+
 class
 symbol_info_list
 {
-private:
-  struct symbol_info
-  {
-    symbol_info (const octave::symbol_record& sr,
-                 octave::symbol_record::context_id context)
-      : name (sr.name ()),
-        varval (sr.varval (context)),
-        is_automatic (sr.is_automatic ()),
-        is_complex (varval.iscomplex ()),
-        is_formal (sr.is_formal ()),
-        is_global (sr.is_global ()),
-        is_persistent (sr.is_persistent ())
-    { }
-
-    void display_line (std::ostream& os,
-                       const std::list<whos_parameter>& params) const
-    {
-      std::string dims_str = varval.get_dims_str ();
-
-      auto i = params.begin ();
-
-      octave::preserve_stream_state stream_state (os);
-
-      while (i != params.end ())
-        {
-          whos_parameter param = *i;
-
-          if (param.command != '\0')
-            {
-              // Do the actual printing.
-
-              switch (param.modifier)
-                {
-                case 'l':
-                  os << std::setiosflags (std::ios::left)
-                     << std::setw (param.parameter_length);
-                  break;
-
-                case 'r':
-                  os << std::setiosflags (std::ios::right)
-                     << std::setw (param.parameter_length);
-                  break;
-
-                case 'c':
-                  if (param.command == 's')
-                    {
-                      int front = param.first_parameter_length
-                                  - dims_str.find ('x');
-                      int back = param.parameter_length
-                                 - dims_str.length ()
-                                 - front;
-                      front = (front > 0) ? front : 0;
-                      back = (back > 0) ? back : 0;
-
-                      os << std::setiosflags (std::ios::left)
-                         << std::setw (front)
-                         << ""
-                         << std::resetiosflags (std::ios::left)
-                         << dims_str
-                         << std::setiosflags (std::ios::left)
-                         << std::setw (back)
-                         << ""
-                         << std::resetiosflags (std::ios::left);
-                    }
-                  else
-                    {
-                      os << std::setiosflags (std::ios::left)
-                         << std::setw (param.parameter_length);
-                    }
-                  break;
-
-                default:
-                  error ("whos_line_format: modifier '%c' unknown",
-                         param.modifier);
-
-                  os << std::setiosflags (std::ios::right)
-                     << std::setw (param.parameter_length);
-                }
-
-              switch (param.command)
-                {
-                case 'a':
-                  {
-                    char tmp[6];
-
-                    tmp[0] = (is_automatic ? 'a' : ' ');
-                    tmp[1] = (is_complex ? 'c' : ' ');
-                    tmp[2] = (is_formal ? 'f' : ' ');
-                    tmp[3] = (is_global ? 'g' : ' ');
-                    tmp[4] = (is_persistent ? 'p' : ' ');
-                    tmp[5] = 0;
-
-                    os << tmp;
-                  }
-                  break;
-
-                case 'b':
-                  os << varval.byte_size ();
-                  break;
-
-                case 'c':
-                  os << varval.class_name ();
-                  break;
-
-                case 'e':
-                  os << varval.numel ();
-                  break;
-
-                case 'n':
-                  os << name;
-                  break;
-
-                case 's':
-                  if (param.modifier != 'c')
-                    os << dims_str;
-                  break;
-
-                case 't':
-                  os << varval.type_name ();
-                  break;
-
-                default:
-                  error ("whos_line_format: command '%c' unknown",
-                         param.command);
-                }
-
-              os << std::resetiosflags (std::ios::left)
-                 << std::resetiosflags (std::ios::right);
-              i++;
-            }
-          else
-            {
-              os << param.text;
-              i++;
-            }
-        }
-    }
-
-    std::string name;
-    octave_value varval;
-    bool is_automatic;
-    bool is_complex;
-    bool is_formal;
-    bool is_global;
-    bool is_persistent;
-  };
-
 public:
-  symbol_info_list (void) : lst () { }
 
-  symbol_info_list (const symbol_info_list& sil) : lst (sil.lst) { }
+  symbol_info_list (void) = default;
 
-  symbol_info_list& operator = (const symbol_info_list& sil)
-  {
-    if (this != &sil)
-      lst = sil.lst;
+  symbol_info_list (const symbol_info_list&) = default;
 
-    return *this;
-  }
+  symbol_info_list& operator = (const symbol_info_list&) = default;
 
   ~symbol_info_list (void) = default;
 
-  void append (const octave::symbol_record& sr,
-               octave::symbol_record::context_id context)
+  void append (const symbol_info& syminf)
   {
-    lst.push_back (symbol_info (sr, context));
+    m_lst.push_back (syminf);
   }
 
-  size_t size (void) const { return lst.size (); }
+  size_t size (void) const { return m_lst.size (); }
 
-  bool empty (void) const { return lst.empty (); }
+  bool empty (void) const { return m_lst.empty (); }
 
   octave_map
   map_value (const std::string& caller_function_name, int nesting_level) const
   {
-    size_t len = lst.size ();
+    size_t len = m_lst.size ();
 
     Cell name_info (len, 1);
     Cell size_info (len, 1);
@@ -1129,22 +1131,20 @@ public:
     Cell nesting_info (len, 1);
     Cell persistent_info (len, 1);
 
-    auto p = lst.cbegin ();
+    size_t j = 0;
 
-    for (size_t j = 0; j < len; j++)
+    for (const auto& syminfo : m_lst)
       {
-        const symbol_info& si = *p++;
-
         octave_scalar_map ni;
 
         ni.assign ("function", caller_function_name);
         ni.assign ("level", nesting_level);
 
-        name_info(j) = si.name;
-        global_info(j) = si.is_global;
-        persistent_info(j) = si.is_persistent;
+        name_info(j) = syminfo.name ();
+        global_info(j) = syminfo.is_global ();
+        persistent_info(j) = syminfo.is_persistent ();
 
-        octave_value val = si.varval;
+        octave_value val = syminfo.value ();
 
         size_info(j) = val.size ();
         bytes_info(j) = val.byte_size ();
@@ -1152,6 +1152,8 @@ public:
         sparse_info(j) = val.issparse ();
         complex_info(j) = val.iscomplex ();
         nesting_info(j) = ni;
+
+        j++;
       }
 
     octave_map info;
@@ -1171,7 +1173,7 @@ public:
 
   void display (std::ostream& os)
   {
-    if (! lst.empty ())
+    if (! m_lst.empty ())
       {
         size_t bytes = 0;
         size_t elements = 0;
@@ -1182,11 +1184,11 @@ public:
 
         octave_stdout << "\n";
 
-        for (const auto& syminfo : lst)
+        for (const auto& syminfo : m_lst)
           {
             syminfo.display_line (os, params);
 
-            octave_value val = syminfo.varval;
+            octave_value val = syminfo.value ();
 
             elements += val.numel ();
             bytes += val.byte_size ();
@@ -1242,17 +1244,17 @@ public:
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
 
-    for (const auto& syminfo : lst)
+    for (const auto& syminfo : m_lst)
       {
         std::stringstream ss1, ss2;
         std::string str;
 
-        str = syminfo.name;
+        str = syminfo.name ();
         param_length(pos_n) = ((str.length ()
                                 > static_cast<size_t> (param_length(pos_n)))
                                ? str.length () : param_length(pos_n));
 
-        octave_value val = syminfo.varval;
+        octave_value val = syminfo.value ();
 
         str = val.type_name ();
         param_length(pos_t) = ((str.length ()
@@ -1351,9 +1353,9 @@ public:
                 int first = param.first_parameter_length;
                 int total = param.parameter_length;
 
-                for (const auto& syminfo : lst)
+                for (const auto& syminfo : m_lst)
                   {
-                    octave_value val = syminfo.varval;
+                    octave_value val = syminfo.value ();
                     std::string dims_str = val.get_dims_str ();
                     int first1 = dims_str.find ('x');
                     int total1 = dims_str.length ();
@@ -1423,7 +1425,8 @@ public:
   }
 
 private:
-  std::list<symbol_info> lst;
+
+  std::list<symbol_info> m_lst;
 
 };
 
@@ -1522,14 +1525,22 @@ do_who (octave::interpreter& interp, int argc, const string_vector& argv,
               ? symtab.glob_global_variables (pat)
               : symtab.glob_variables (pat)));
 
-      for (const auto& symrec : tmp)
+      for (const auto& sr : tmp)
         {
-          if (symrec.is_variable (context))
+          octave_value value = sr.varval (context);
+
+          if (value.is_defined ())
             {
               if (verbose)
-                symbol_stats.append (symrec, context);
+                {
+                  symbol_info syminf (sr.name (), value, sr.is_automatic (),
+                                      value.iscomplex (), sr.is_formal (),
+                                      sr.is_global (), sr.is_persistent ());
+
+                  symbol_stats.append (syminf);
+                }
               else
-                symbol_names.push_back (symrec.name ());
+                symbol_names.push_back (sr.name ());
             }
         }
     }

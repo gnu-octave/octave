@@ -11428,7 +11428,7 @@ gh_manager::do_process_events (bool force)
 %! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
 %!endfunction
 %!
-%!test
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
 %! hf = figure ("visible", "off", "resizefcn", @cb);
 %! unwind_protect
 %!   ## Default
@@ -12702,16 +12702,26 @@ undocumented.
 @seealso{refresh}
 @end deftypefn */)
 {
+  // Disallow recursion when using gnuplot ASCII charts, i.e., with
+  // --no-window-system option.
+
+  static bool do_recursion = octave::display_info::display_available ();
+  static bool drawnow_executing = false;
+
   if (args.length () > 3)
     print_usage ();
 
   octave::unwind_protect frame;
 
   frame.protect_var (Vdrawnow_requested, false);
+  frame.protect_var (drawnow_executing);
 
   // Redraw unless we are in the middle of a deletion.
-  if (! delete_executing)
+
+  if (! delete_executing && (do_recursion || ! drawnow_executing))
     {
+      drawnow_executing = true;
+
       gh_manager::auto_lock guard;
 
       if (args.length () <= 1)

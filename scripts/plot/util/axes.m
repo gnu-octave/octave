@@ -19,13 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} axes ()
 ## @deftypefnx {} {} axes (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} axes (@var{hpar}, @var{property}, @var{value}, @dots{})
 ## @deftypefnx {} {} axes (@var{hax})
 ## @deftypefnx {} {@var{h} =} axes (@dots{})
 ## Create a Cartesian axes object and return a handle to it, or set the current
 ## axes to @var{hax}.
 ##
 ## Called without any arguments, or with @var{property}/@var{value} pairs,
-## construct a new axes.
+## construct a new axes.  The optional argument @var{hpar} is a graphics handle
+## specifying the parent for the new axes and may be a figure, uipanel, or
+## uitab.
 ##
 ## Called with a single axes handle argument @var{hax}, the function makes
 ## @var{hax} the current axes (as returned by @code{gca}).  It also makes
@@ -41,12 +44,42 @@
 ## @seealso{gca, set, get}
 ## @end deftypefn
 
-## Author: jwe
-
 function h = axes (varargin)
 
-  if (nargin == 0 || nargin > 1)
-    ## Parent handle
+  htmp = hpar = [];
+  if (nargin > 0)
+    if (ishghandle (varargin{1}(1)))
+      htmp = varargin{1};
+      if (! isscalar (htmp))
+        error ("axes: H must be a scalar handle");
+      endif
+      typ = get (htmp, "type");
+      if (strcmp (typ, "axes") && nargin == 1)
+        cf = ancestor (htmp, "figure");
+        if (__is_handle_visible__ (htmp))
+          set (0, "currentfigure", cf);
+          set (cf, "currentaxes", htmp);
+        endif
+        restack_axes (htmp, get (htmp, "parent"));
+
+        if (nargout > 0)
+          h = htmp;
+        endif
+        return;
+
+      elseif (any (strcmp (typ, {"figure", "uipanel", "uitab"})))
+        hpar = htmp;
+        htmp = [];
+        varargin(1) = [];
+
+      else
+        error ("axes: H must be a handle to an axes or container");
+      endif
+    endif
+  endif
+
+  if (isempty (hpar))
+    ## Find a parent if not given as first argument.
     idx = find (strcmpi (varargin(1:2:end), "parent"), 1, "first");
     if (! isempty (idx) && numel (varargin) >= 2*idx)
       hpar = varargin{2*idx};
@@ -54,49 +87,34 @@ function h = axes (varargin)
     else
       hpar = gcf ();
     endif
+  endif
 
-    ## If there is an annotation axes currently on top of the children stack,
-    ## then it must be placed back on top.
-    ## FIXME: It may be necessary to keep uiXXX objects above all axes objects
-    ##        including even the transparent scribe axes layer.
-    ch = allchild (hpar);
-    h_annotation = ch(strcmp (get (ch, "tag"), "scribeoverlay"));
+  ## If there is an annotation axes currently on top of the children stack,
+  ## then it must be placed back on top.
+  ## FIXME: It may be necessary to keep uiXXX objects above all axes objects
+  ##        including even the transparent scribe axes layer.
+  ch = allchild (hpar);
+  h_annotation = ch(strcmp (get (ch, "tag"), "scribeoverlay"));
 
-    ## Create an axes object.
-    htmp = __go_axes__ (hpar, varargin{:});
-    if (__is_handle_visible__ (htmp))
-      set (ancestor (hpar, "figure"), "currentaxes", htmp);
-    endif
+  ## Create an axes object.
+  htmp = __go_axes__ (hpar, varargin{:});
+  if (__is_handle_visible__ (htmp))
+    set (ancestor (hpar, "figure"), "currentaxes", htmp);
+  endif
 
-    ## Restack annotation object if necessary
-    if (! isempty (h_annotation))
-      ## FIXME: This will put annotation layer first, above even uicontrol
-      ## objects.  May need to keep annotation layer above all axes only.
-      shh = get (0, "ShowHiddenHandles");
-      unwind_protect
-        set (0, "ShowHiddenHandles", "on");
-        ch(ch == h_annotation) = htmp;
-        ch = [h_annotation; ch];
-        set (hpar, "children", ch);
-      unwind_protect_cleanup
-        set (0, "ShowHiddenHandles", shh);
-      end_unwind_protect
-    endif
-
-  else
-    ## ARG is axes handle.
-    htmp = varargin{1};
-    if (! isscalar (htmp) || ! isaxes (htmp))
-      error ("axes: H must be a scalar axes handle");
-    endif
-
-    cf = ancestor (htmp, "figure");
-    if (__is_handle_visible__ (htmp))
-      set (0, "currentfigure", cf);
-      set (cf, "currentaxes", htmp);
-    endif
-
-    restack_axes (htmp, get (htmp, "parent"));
+  ## Restack annotation object if necessary
+  if (! isempty (h_annotation))
+    ## FIXME: This will put annotation layer first, above even uicontrol
+    ## objects.  May need to keep annotation layer above all axes only.
+    shh = get (0, "ShowHiddenHandles");
+    unwind_protect
+      set (0, "ShowHiddenHandles", "on");
+      ch(ch == h_annotation) = htmp;
+      ch = [h_annotation; ch];
+      set (hpar, "children", ch);
+    unwind_protect_cleanup
+      set (0, "ShowHiddenHandles", shh);
+    end_unwind_protect
   endif
 
   if (nargout > 0)
@@ -292,3 +310,6 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!error <H must be a scalar handle> axes ([0, 0])
+%!error <H must be a handle to an axes or container> axes (0)

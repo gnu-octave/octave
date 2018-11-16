@@ -105,19 +105,14 @@ namespace octave
         m_current_scope.set_context (context);
     }
 
-    symbol_record find_symbol (const std::string& name, symbol_scope& sid)
-    {
-      return sid ? sid.find_symbol (name) : symbol_record ();
-    }
-
     symbol_record find_symbol (const std::string& name)
     {
-      return find_symbol (name, m_current_scope);
+      return m_current_scope.find_symbol (name);
     }
 
     symbol_record find_global_symbol (const std::string& name)
     {
-      symbol_record sym = find_symbol (name, m_global_scope);
+      symbol_record sym = m_global_scope.find_symbol (name);
 
       sym.mark_global ();
 

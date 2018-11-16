@@ -1147,7 +1147,7 @@ namespace octave
 
     symbol_table& symtab = __get_symbol_table__ ("jit_convert::find_variable");
 
-    symbol_record record = symtab.find_symbol (vname, m_scope);
+    symbol_record record = m_scope.find_symbol (vname);
     if (record.is_persistent () || record.is_global ())
       throw jit_fail_exception ("Persistent and global not yet supported");
 

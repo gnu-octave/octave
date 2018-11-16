@@ -40,6 +40,7 @@ class octave_value_list;
 namespace octave
 {
   class interpreter;
+  class symbol_info_list;
   class unwind_protect;
 
   class
@@ -80,6 +81,8 @@ namespace octave
       std::string fcn_name (bool print_subfn = true) const;
 
       bool operator == (const stack_frame& rhs) const;
+
+      symbol_info_list glob_symbol_info (const std::string& pat) const;
 
     private:
 
@@ -259,6 +262,8 @@ namespace octave
     void pop (void);
 
     void clear (void) { cs.clear (); }
+
+    symbol_info_list glob_symbol_info (const std::string& pat) const;
 
     octave_value max_stack_depth (const octave_value_list& args, int nargout);
 

@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
+#include "syminfo.h"
 #include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -913,18 +914,15 @@ namespace octave
                                       const load_save_format& fmt,
                                       bool save_as_floats)
   {
-    symbol_scope scope
-      = m_interpreter.require_current_scope ("load_save_system::save_vars");
+    call_stack& cs = m_interpreter.get_call_stack ();
 
-    symbol_record::context_id context = scope.current_context ();
-
-    std::list<symbol_record> vars = scope.glob (pattern);
+    symbol_info_list syminfo_list = cs.glob_symbol_info (pattern);
 
     size_t saved = 0;
 
-    for (const auto& var : vars)
+    for (const auto& syminfo : syminfo_list)
       {
-        do_save (os, var, context, fmt, save_as_floats);
+        do_save (os, syminfo, fmt, save_as_floats);
 
         saved++;
       }
@@ -982,18 +980,17 @@ namespace octave
   // Save the info from SR on stream OS in the format specified by FMT.
 
   void load_save_system::do_save (std::ostream& os,
-                                  const symbol_record& sr,
-                                  symbol_record::context_id context,
+                                  const symbol_info& syminfo,
                                   const load_save_format& fmt,
                                   bool save_as_floats)
   {
-    octave_value val = sr.varval (context);
+    octave_value val = syminfo.value ();
 
     if (val.is_defined ())
       {
-        std::string name = sr.name ();
+        std::string name = syminfo.name ();
         std::string help;
-        bool global = sr.is_global ();
+        bool global = syminfo.is_global ();
 
         do_save (os, val, name, help, global, fmt, save_as_floats);
       }

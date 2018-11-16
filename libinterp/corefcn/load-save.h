@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mach-info.h"
-#include "symrec.h"
 
 class string_vector;
 class octave_value;
@@ -38,6 +37,7 @@ namespace octave
 {
   class interpreter;
   class load_save_format;
+  class symbol_info;
 
   class load_save_system
   {
@@ -233,8 +233,7 @@ namespace octave
                   bool global, const load_save_format& fmt,
                   bool save_as_floats);
 
-    void do_save (std::ostream& os, const symbol_record& sr,
-                  symbol_record::context_id context,
+    void do_save (std::ostream& os, const symbol_info& syminfo,
                   const load_save_format& fmt, bool save_as_floats);
 
     size_t save_fields (std::ostream& os, const octave_scalar_map& m,

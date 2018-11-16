@@ -94,6 +94,30 @@ namespace octave
       return true;
   }
 
+  symbol_info_list
+  call_stack::stack_frame::glob_symbol_info (const std::string& pat) const
+  {
+    std::list<octave::symbol_record> tmp = m_scope.glob (pat, true);
+
+    octave::symbol_info_list symbol_stats;
+
+    for (const auto& sr : tmp)
+      {
+        octave_value value = sr.varval (m_context);
+
+        if (value.is_defined ())
+          {
+            symbol_info syminf (sr.name (), value, sr.is_automatic (),
+                                value.iscomplex (), sr.is_formal (),
+                                sr.is_global (), sr.is_persistent ());
+
+            symbol_stats.append (syminf);
+          }
+      }
+
+    return symbol_stats;
+  }
+
   call_stack::call_stack (interpreter& interp)
     : cs (), curr_frame (0), m_max_stack_depth (1024), m_interpreter (interp)
   {
@@ -656,6 +680,12 @@ namespace octave
 
         symtab.set_scope_and_context (new_elt.m_scope, new_elt.m_context);
       }
+  }
+
+  symbol_info_list
+  call_stack::glob_symbol_info (const std::string& pat) const
+  {
+    return cs[curr_frame].glob_symbol_info (pat);
   }
 
   octave_value

@@ -1032,37 +1032,30 @@ namespace octave
   {
     write_header (os, fmt);
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
+    call_stack& cs = m_interpreter.get_call_stack ();
 
-    symbol_scope top_scope = symtab.top_scope ();
-
-    symbol_record::context_id context = top_scope.current_context ();
-
-    std::list<symbol_record> vars = top_scope.all_variables ();
+    symbol_info_list syminfo_list = cs.top_scope_symbol_info ();
 
     double save_mem_size = 0;
 
-    for (const auto& var : vars)
+    for (const auto& syminfo : syminfo_list)
       {
-        octave_value val = var.varval (context);
+        octave_value val = syminfo.value ();
 
-        if (val.is_defined ())
+        std::string name = syminfo.name ();
+        std::string help;
+        bool global = syminfo.is_global ();
+
+        double val_size = val.byte_size () / 1024;
+
+        // FIXME: maybe we should try to throw out the largest first...
+
+        if (m_octave_core_file_limit < 0
+            || save_mem_size + val_size < m_octave_core_file_limit)
           {
-            std::string name = var.name ();
-            std::string help;
-            bool global = var.is_global ();
+            save_mem_size += val_size;
 
-            double val_size = val.byte_size () / 1024;
-
-            // FIXME: maybe we should try to throw out the largest first...
-
-            if (m_octave_core_file_limit < 0
-                || save_mem_size + val_size < m_octave_core_file_limit)
-              {
-                save_mem_size += val_size;
-
-                do_save (os, val, name, help, global, fmt, save_as_floats);
-              }
+            do_save (os, val, name, help, global, fmt, save_as_floats);
           }
       }
 

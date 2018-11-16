@@ -82,7 +82,14 @@ namespace octave
 
       bool operator == (const stack_frame& rhs) const;
 
+      symbol_info_list
+      make_symbol_info_list (const std::list<symbol_record>& srl) const;
+
       symbol_info_list glob_symbol_info (const std::string& pat) const;
+
+      symbol_info_list regexp_symbol_info (const std::string& pat) const;
+
+      symbol_info_list get_symbol_info (void) const;
 
     private:
 
@@ -264,6 +271,12 @@ namespace octave
     void clear (void) { cs.clear (); }
 
     symbol_info_list glob_symbol_info (const std::string& pat) const;
+
+    symbol_info_list regexp_symbol_info (const std::string& pat) const;
+
+    symbol_info_list get_symbol_info (void) const;
+
+    symbol_info_list top_scope_symbol_info (void) const;
 
     octave_value max_stack_depth (const octave_value_list& args, int nargout);
 

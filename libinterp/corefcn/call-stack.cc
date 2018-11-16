@@ -95,13 +95,12 @@ namespace octave
   }
 
   symbol_info_list
-  call_stack::stack_frame::glob_symbol_info (const std::string& pat) const
+  call_stack::stack_frame::make_symbol_info_list
+    (const std::list<symbol_record>& symrec_list) const
   {
-    std::list<octave::symbol_record> tmp = m_scope.glob (pat, true);
+    symbol_info_list symbol_stats;
 
-    octave::symbol_info_list symbol_stats;
-
-    for (const auto& sr : tmp)
+    for (const auto& sr : symrec_list)
       {
         octave_value value = sr.varval (m_context);
 
@@ -116,6 +115,23 @@ namespace octave
       }
 
     return symbol_stats;
+  }
+
+  symbol_info_list
+  call_stack::stack_frame::glob_symbol_info (const std::string& pat) const
+  {
+    return make_symbol_info_list (m_scope.glob (pat, true));
+  }
+
+  symbol_info_list
+  call_stack::stack_frame::regexp_symbol_info (const std::string& pat) const
+  {
+    return make_symbol_info_list (m_scope.regexp (pat, true));
+  }
+
+  symbol_info_list call_stack::stack_frame::get_symbol_info (void) const
+  {
+    return make_symbol_info_list (m_scope.all_variables ());
   }
 
   call_stack::call_stack (interpreter& interp)
@@ -686,6 +702,22 @@ namespace octave
   call_stack::glob_symbol_info (const std::string& pat) const
   {
     return cs[curr_frame].glob_symbol_info (pat);
+  }
+
+  symbol_info_list
+  call_stack::regexp_symbol_info (const std::string& pat) const
+  {
+    return cs[curr_frame].glob_symbol_info (pat);
+  }
+
+  symbol_info_list call_stack::get_symbol_info (void) const
+  {
+    return cs[curr_frame].get_symbol_info ();
+  }
+
+  symbol_info_list call_stack::top_scope_symbol_info (void) const
+  {
+    return cs[0].get_symbol_info ();
   }
 
   octave_value

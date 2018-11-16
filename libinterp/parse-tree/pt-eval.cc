@@ -3355,6 +3355,45 @@ namespace octave
                                   "string_fill_char");
   }
 
+  // Final step of processing an indexing error.  Add the name of the
+  // variable being indexed, if any, then issue an error.  (Will this also
+  // be needed by pt-lvalue, which calls subsref?)
+
+  void tree_evaluator::final_index_error (index_exception& e,
+                                          const tree_expression *expr)
+  {
+    std::string extra_message;
+
+    symbol_scope scope = get_current_scope ();
+
+    symbol_record::context_id ctxt = scope.current_context ();
+
+    if (expr->is_identifier ()
+        && dynamic_cast<const tree_identifier *> (expr)->is_variable (ctxt))
+      {
+        std::string var = expr->name ();
+
+        e.set_var (var);
+
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function (var);
+
+        if (fcn.is_function ())
+          {
+            octave_function *fp = fcn.function_value ();
+
+            if (fp && fp->name () == var)
+              extra_message
+                = " (note: variable '" + var + "' shadows function)";
+          }
+      }
+
+    std::string msg = e.message () + extra_message;
+
+    error_with_id (e.err_id (), msg.c_str ());
+  }
+
   void
   tree_evaluator::push_echo_state (unwind_protect& frame, int type,
                                    const std::string& file_name,
@@ -3613,45 +3652,6 @@ namespace octave
         for (auto& elt : lines)
           octave_stdout << prefix << elt << std::endl;
       }
-  }
-
-  // Final step of processing an indexing error.  Add the name of the
-  // variable being indexed, if any, then issue an error.  (Will this also
-  // be needed by pt-lvalue, which calls subsref?)
-
-  void tree_evaluator::final_index_error (index_exception& e,
-                                          const tree_expression *expr)
-  {
-    std::string extra_message;
-
-    symbol_scope scope = get_current_scope ();
-
-    symbol_record::context_id ctxt = scope.current_context ();
-
-    if (expr->is_identifier ()
-        && dynamic_cast<const tree_identifier *> (expr)->is_variable (ctxt))
-      {
-        std::string var = expr->name ();
-
-        e.set_var (var);
-
-        symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-        octave_value fcn = symtab.find_function (var);
-
-        if (fcn.is_function ())
-          {
-            octave_function *fp = fcn.function_value ();
-
-            if (fp && fp->name () == var)
-              extra_message
-                = " (note: variable '" + var + "' shadows function)";
-          }
-      }
-
-    std::string msg = e.message () + extra_message;
-
-    error_with_id (e.err_id (), msg.c_str ());
   }
 
   // Decide if it's time to quit a for or while loop.

@@ -519,6 +519,8 @@ namespace octave
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
+    void final_index_error (index_exception& e, const tree_expression *expr);
+
     void push_echo_state (unwind_protect& frame, int type,
                           const std::string& file_name, size_t pos = 1);
 
@@ -556,8 +558,6 @@ namespace octave
     bool echo_this_file (const std::string& file, int type) const;
 
     void echo_code (size_t line);
-
-    void final_index_error (index_exception& e, const tree_expression *expr);
 
     bool quit_loop_now (void);
 

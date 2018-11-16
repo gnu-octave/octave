@@ -194,42 +194,6 @@ namespace octave
     return fn;
   }
 
-  // Final step of processing an indexing error.  Add the name of the
-  // variable being indexed, if any, then issue an error.  (Will this also
-  // be needed by pt-lvalue, which calls subsref?)
-
-  static void
-  final_index_error (index_exception& e, const tree_expression *expr)
-  {
-    std::string extra_message;
-
-    symbol_table& symtab = __get_symbol_table__ ("final_index_error");
-
-    symbol_record::context_id context = symtab.current_context ();
-
-    if (expr->is_identifier ()
-        && dynamic_cast<const tree_identifier *> (expr)->is_variable (context))
-      {
-        std::string var = expr->name ();
-
-        e.set_var (var);
-
-        octave_value fcn = symtab.find_function (var);
-
-        if (fcn.is_function ())
-          {
-            octave_function *fp = fcn.function_value ();
-
-            if (fp && fp->name () == var)
-              extra_message = " (note: variable '" + var + "' shadows function)";
-          }
-      }
-
-    std::string msg = e.message () + extra_message;
-
-    error_with_id (e.err_id (), msg.c_str ());
-  }
-
   octave_lvalue
   tree_index_expression::lvalue (tree_evaluator& tw)
   {
@@ -264,7 +228,7 @@ namespace octave
               }
             catch (index_exception& e)  // problems with range, invalid type etc.
               {
-                final_index_error (e, m_expr);
+                tw.final_index_error (e, m_expr);
               }
 
             tmpidx.clear ();

@@ -9518,6 +9518,9 @@ patch::properties::update_data (void)
         }
     }
 
+  // Update normals
+  update_normals (true);
+
   octave::unwind_protect frame;
   frame.protect_var (updating_patch_data);
   updating_patch_data = true;
@@ -9526,9 +9529,6 @@ patch::properties::update_data (void)
   set_ydata (yd);
   set_zdata (zd);
   set_cdata (cd);
-
-  // Update normals
-  update_normals (true);
 }
 
 inline void

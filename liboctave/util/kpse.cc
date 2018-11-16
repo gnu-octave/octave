@@ -1120,6 +1120,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
     }
 
   indx = i;
+  c = (c == satisfy) ? c : 0;
   return c;
 }
 

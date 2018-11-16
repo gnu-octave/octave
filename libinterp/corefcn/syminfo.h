@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <iosfwd>
 
+#include "base-list.h"
+
 #include "ov.h"
 
 class octave_map;
@@ -84,7 +86,7 @@ namespace octave
     bool m_is_persistent;
   };
 
-  class symbol_info_list
+  class symbol_info_list : public base_list<symbol_info>
   {
   public:
 
@@ -95,15 +97,6 @@ namespace octave
     symbol_info_list& operator = (const symbol_info_list&) = default;
 
     ~symbol_info_list (void) = default;
-
-    void append (const symbol_info& syminf)
-    {
-      m_lst.push_back (syminf);
-    }
-
-    size_t size (void) const { return m_lst.size (); }
-
-    bool empty (void) const { return m_lst.empty (); }
 
     octave_map map_value (const std::string& caller_function_name,
                           int nesting_level) const;
@@ -119,10 +112,6 @@ namespace octave
     // attributes of the symbols.
     std::list<whos_parameter>
     parse_whos_line_format (const std::string& format);
-
-  private:
-
-    std::list<symbol_info> m_lst;
   };
 }
 

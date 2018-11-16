@@ -405,10 +405,12 @@ octave_fcn_handle::parse_anon_fcn_handle (const std::string& fcn_text)
 {
   bool success = true;
 
-  int parse_status;
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_fcn_handle::parse_anon_fcn_handle");
 
-  octave_value anon_fcn_handle =
-    octave::eval_string (fcn_text, true, parse_status);
+  int parse_status;
+  octave_value anon_fcn_handle
+    = interp.eval_string (fcn_text, true, parse_status);
 
   if (parse_status == 0)
     {
@@ -1848,8 +1850,8 @@ function handle @var{fcn_handle}.
   return retval;
 }
 
-DEFUN (str2func, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (str2func, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} str2func (@var{fcn_name})
 @deftypefnx {} {} str2func (@var{fcn_name}, "global")
 Return a function handle constructed from the string @var{fcn_name}.
@@ -1872,7 +1874,7 @@ functions are ignored in the lookup.
     {
       int parse_status;
       octave_value anon_fcn_handle
-        = octave::eval_string (nm, true, parse_status);
+        = interp.eval_string (nm, true, parse_status);
 
       if (parse_status == 0)
         retval = anon_fcn_handle;

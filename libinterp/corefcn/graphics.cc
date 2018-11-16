@@ -11494,7 +11494,10 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
           try
             {
-              octave::eval_string (s, false, status, 0);
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("gh_manager::do_execute_callback");
+
+              interp.eval_string (s, false, status, 0);
             }
           catch (octave::execution_exception&)
             {

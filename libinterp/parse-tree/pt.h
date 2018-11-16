@@ -33,6 +33,7 @@ class octave_function;
 
 namespace octave
 {
+  class tree_evaluator;
   class tree_walker;
 
   // Base class for the parse tree.
@@ -85,11 +86,16 @@ namespace octave
         }
     }
 
-    bool meets_bp_condition (void) const;
+    bool meets_bp_condition (tree_evaluator& tw) const;
 
-    bool is_breakpoint (bool check_active = false) const
+    bool is_breakpoint (void) const
     {
-      return m_bp_cond && (! check_active || meets_bp_condition ());
+      return m_bp_cond;
+    }
+
+    bool is_active_breakpoint (tree_evaluator& tw) const
+    {
+      return m_bp_cond && meets_bp_condition (tw);
     }
 
     // breakpoint condition, or "0" (i.e., "false") if no breakpoint.

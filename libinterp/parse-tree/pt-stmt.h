@@ -38,6 +38,7 @@ namespace octave
 {
   class comment_list;
   class tree_command;
+  class tree_evaluator;
   class tree_expression;
 
   // A statement is either a command to execute or an expression to
@@ -77,7 +78,10 @@ namespace octave
 
     void delete_breakpoint (void);
 
-    bool is_breakpoint (bool check_valid = false) const;
+    bool is_breakpoint (void) const;
+
+    bool is_active_breakpoint (tree_evaluator& tw) const;
+
     std::string bp_cond () const;
 
     int line (void) const;

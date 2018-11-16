@@ -1130,6 +1130,26 @@ namespace octave
     return retval;
   }
 
+  octave_value_list interpreter::eval_string (const std::string& eval_str,
+                                              bool silent, int& parse_status,
+                                              int nargout)
+  {
+    return m_evaluator.eval_string (eval_str, silent, parse_status, nargout);
+  }
+
+  octave_value interpreter::eval_string (const std::string& eval_str,
+                                         bool silent, int& parse_status)
+  {
+    return m_evaluator.eval_string (eval_str, silent, parse_status);
+  }
+
+  octave_value_list interpreter::eval_string (const octave_value& arg,
+                                              bool silent, int& parse_status,
+                                              int nargout)
+  {
+    return m_evaluator.eval_string (arg, silent, parse_status, nargout);
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;

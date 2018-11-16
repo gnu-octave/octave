@@ -82,8 +82,12 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
   buf << ") " << iftext;
 
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_fcn_inline::octave_fcn_inline");
+
   int parse_status;
-  octave_value anon_fcn_handle = octave::eval_string (buf.str (), true, parse_status);
+  octave_value anon_fcn_handle
+    = interp.eval_string (buf.str (), true, parse_status);
 
   if (parse_status == 0)
     {
@@ -97,8 +101,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
           if (uf)
             {
-              octave::call_stack& cs
-                = octave::__get_call_stack__ ("octave_fcn_inline");
+              octave::call_stack& cs = interp.get_call_stack ();
 
               octave_function *curr_fcn = cs.current ();
 

@@ -153,6 +153,15 @@ namespace octave
 
     int repl (bool interactive);
 
+    octave_value_list eval_string (const std::string& eval_str, bool silent,
+                                   int& parse_status, int nargout);
+
+    octave_value eval_string (const std::string& eval_str, bool silent,
+                              int& parse_status);
+
+    octave_value_list eval_string (const octave_value& arg, bool silent,
+                                   int& parse_status, int nargout);
+
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
     void visit_argument_list (tree_argument_list&);

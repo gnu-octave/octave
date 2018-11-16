@@ -3320,7 +3320,10 @@ mexEvalString (const char *s)
 
   try
     {
-      ret = octave::eval_string (s, false, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("mexEvalString");
+
+      ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
@@ -3347,7 +3350,10 @@ mexEvalStringWithTrap (const char *s)
 
   try
     {
-      ret = octave::eval_string (s, false, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("mexEvalString");
+
+      ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {

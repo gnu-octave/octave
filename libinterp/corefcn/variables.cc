@@ -137,7 +137,10 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
       int parse_status;
 
-      octave::eval_string (cmd, true, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("extract_function");
+
+      interp.eval_string (cmd, true, parse_status, 0);
 
       if (parse_status != 0)
         error ("%s: '%s' is not valid as a function",

@@ -510,6 +510,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length, is_small_data_element))
     return retval;                      // EOF
 
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("read_mat5_binary_element");
+
   if (type == miCOMPRESSED)
     {
 #if defined (HAVE_ZLIB)
@@ -903,7 +906,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names.push_back (fname + ".mex");
                         names.push_back (fname + ".m");
 
-                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                        octave::load_path& lp = interp.get_load_path ();
 
                         octave::directory_path p (lp.system_path ());
 
@@ -973,15 +976,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            octave::symbol_table& symtab
-              = octave::__get_symbol_table__ ("read_mat5_binary_element");
+            octave::symbol_table& symtab = interp.get_symbol_table ();
 
             octave::symbol_scope local_scope;
 
             symtab.set_scope (local_scope);
 
-            octave::call_stack& cs
-              = octave::__get_call_stack__ ("read_mat5_binary_element");
+            octave::call_stack& cs = interp.get_call_stack ();
             cs.push (local_scope, 0);
             frame.add_method (cs, &octave::call_stack::pop);
 
@@ -999,8 +1000,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
 
             int parse_status;
-            octave_value anon_fcn_handle =
-              octave::eval_string (fname.substr (4), true, parse_status);
+            octave_value anon_fcn_handle
+              = interp.eval_string (fname.substr (4), true, parse_status);
 
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
@@ -1190,8 +1191,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                cdef_manager& cdm
-                  = octave::__get_cdef_manager__ ("read_mat5_binary_element");
+                cdef_manager& cdm = interp.get_cdef_manager ();
 
                 if (cdm.find_class (classname, false, true).ok ())
                   {
@@ -1212,7 +1212,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         tc = cls;
 
-                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                        octave::load_path& lp = interp.get_load_path ();
 
                         if (lp.find_method (classname, "loadobj") != "")
                           {
@@ -2610,7 +2610,8 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+      octave::load_path& lp
+        = octave::__get_load_path__ ("save_mat5_binary_element");
 
       if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")

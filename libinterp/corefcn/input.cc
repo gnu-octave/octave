@@ -198,8 +198,10 @@ generate_struct_completions (const std::string& text,
       if (pos != std::string::npos)
         base_name = base_name.substr (0, pos);
 
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("generate_struct_completions");
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("generate_struct_completions");
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       if (is_variable (symtab, base_name))
         {
@@ -215,7 +217,8 @@ generate_struct_completions (const std::string& text,
 
           try
             {
-              octave_value tmp = octave::eval_string (prefix, true, parse_status);
+              octave_value tmp
+                = interp.eval_string (prefix, true, parse_status);
 
               frame.run ();
 
@@ -261,7 +264,10 @@ looks_like_struct (const std::string& text, char prev_char)
 
       discard_error_messages = true;
 
-      octave_value tmp = eval_string (text, true, parse_status);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("looks_like_struct");
+
+      octave_value tmp = interp.eval_string (text, true, parse_status);
 
       frame.run ();
 
@@ -669,7 +675,8 @@ namespace octave
       {
         int parse_status = 0;
 
-        retval = octave::eval_string (input_buf, true, parse_status, nargout);
+        retval
+          = m_interpreter.eval_string (input_buf, true, parse_status, nargout);
 
         if (! Vdebugging && retval.empty ())
           retval(0) = Matrix ();

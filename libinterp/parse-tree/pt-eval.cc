@@ -193,6 +193,99 @@ namespace octave
     return retval;
   }
 
+  octave_value_list
+  tree_evaluator::eval_string (const std::string& eval_str, bool silent,
+                               int& parse_status, int nargout)
+  {
+    octave_value_list retval;
+
+    parser parser (eval_str, m_interpreter);
+
+    do
+      {
+        parser.reset ();
+
+        parse_status = parser.run ();
+
+        if (parse_status == 0)
+          {
+            if (parser.m_stmt_list)
+              {
+                tree_statement *stmt = nullptr;
+
+                if (parser.m_stmt_list->length () == 1
+                    && (stmt = parser.m_stmt_list->front ())
+                    && stmt->is_expression ())
+                  {
+                    tree_expression *expr = stmt->expression ();
+
+                    if (silent)
+                      expr->set_print_flag (false);
+
+                    bool do_bind_ans = false;
+
+                    if (expr->is_identifier ())
+                      {
+                        symbol_scope scope = get_current_scope ();
+
+                        symbol_record::context_id context
+                          = scope.current_context ();
+
+                        tree_identifier *id
+                          = dynamic_cast<tree_identifier *> (expr);
+
+                        do_bind_ans = (! id->is_variable (context));
+                      }
+                    else
+                      do_bind_ans = (! expr->is_assignment_expression ());
+
+                    retval = evaluate_n (expr, nargout);
+
+                    if (do_bind_ans && ! retval.empty ())
+                      bind_ans (retval(0), expr->print_result ());
+
+                    if (nargout == 0)
+                      retval = octave_value_list ();
+                  }
+                else if (nargout == 0)
+                  parser.m_stmt_list->accept (*this);
+                else
+                  error ("eval: invalid use of statement list");
+
+                if (returning () || breaking () || continuing ())
+                  break;
+              }
+            else if (parser.m_lexer.m_end_of_input)
+              break;
+          }
+      }
+    while (parse_status == 0);
+
+    return retval;
+  }
+
+  octave_value tree_evaluator::eval_string (const std::string& eval_str,
+                                            bool silent, int& parse_status)
+  {
+    octave_value retval;
+
+    octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
+
+    if (! tmp.empty ())
+      retval = tmp(0);
+
+    return retval;
+  }
+
+  octave_value_list tree_evaluator::eval_string (const octave_value& arg,
+                                                 bool silent, int& parse_status,
+                                                 int nargout)
+  {
+    std::string s = arg.xstring_value ("eval: expecting string argument");
+
+    return eval_string (s, silent, parse_status, nargout);
+  }
+
   void
   tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& anon_fh)
   {
@@ -448,7 +541,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     if (m_in_loop_command)
       m_breaking = 1;
@@ -530,7 +623,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     if (m_in_loop_command)
       m_continuing = 1;
@@ -1043,7 +1136,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     tree_decl_init_list *init_list = cmd.initializer_list ();
 
@@ -1153,7 +1246,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
     // and cmd.maxproc_expr ();
@@ -1291,7 +1384,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     unwind_protect frame;
 
@@ -1758,7 +1851,7 @@ namespace octave
           m_call_stack.set_location (tic->line (), tic->column ());
 
         if (m_debug_mode && ! tic->is_else_clause ())
-          do_breakpoint (tic->is_breakpoint (true));
+          do_breakpoint (tic->is_active_breakpoint (*this));
 
         if (tic->is_else_clause () || is_logically_true (expr, "if"))
           {
@@ -2372,7 +2465,7 @@ namespace octave
       }
 
     if (m_debug_mode && cmd.is_end_of_fcn_or_script ())
-      do_breakpoint (cmd.is_breakpoint (true), true);
+      do_breakpoint (cmd.is_active_breakpoint (*this), true);
   }
 
   void
@@ -2532,7 +2625,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     // Act like dbcont.
 
@@ -2666,7 +2759,7 @@ namespace octave
                   }
 
                 if (m_debug_mode)
-                  do_breakpoint (expr->is_breakpoint (true));
+                  do_breakpoint (expr->is_active_breakpoint (*this));
 
                 // FIXME: maybe all of this should be packaged in
                 // one virtual function that returns a flag saying whether
@@ -2800,7 +2893,7 @@ namespace octave
       }
 
     if (m_debug_mode)
-      do_breakpoint (cmd.is_breakpoint (true));
+      do_breakpoint (cmd.is_active_breakpoint (*this));
 
     tree_expression *expr = cmd.switch_value ();
 
@@ -3068,7 +3161,7 @@ namespace octave
           m_echo_file_pos = line;
 
         if (m_debug_mode)
-          do_breakpoint (cmd.is_breakpoint (true));
+          do_breakpoint (cmd.is_active_breakpoint (*this));
 
         if (is_logically_true (expr, "while"))
           {
@@ -3128,7 +3221,7 @@ namespace octave
           break;
 
         if (m_debug_mode)
-          do_breakpoint (cmd.is_breakpoint (true));
+          do_breakpoint (cmd.is_active_breakpoint (*this));
 
         m_call_stack.set_location (until_line, until_column);
 
@@ -3169,7 +3262,8 @@ namespace octave
   void
   tree_evaluator::do_breakpoint (tree_statement& stmt)
   {
-    do_breakpoint (stmt.is_breakpoint (true), stmt.is_end_of_fcn_or_script ());
+    do_breakpoint (stmt.is_active_breakpoint (*this),
+                   stmt.is_end_of_fcn_or_script ());
   }
 
   void

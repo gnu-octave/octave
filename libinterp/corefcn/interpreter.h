@@ -238,6 +238,15 @@ namespace octave
 
     bool mislocked (const std::string& nm);
 
+    octave_value_list eval_string (const std::string& eval_str, bool silent,
+                                   int& parse_status, int nargout);
+
+    octave_value eval_string (const std::string& eval_str, bool silent,
+                              int& parse_status);
+
+    octave_value_list eval_string (const octave_value& arg, bool silent,
+                                   int& parse_status, int nargout);
+
     static void recover_from_exception (void);
 
     static void add_atexit_function (const std::string& fname);

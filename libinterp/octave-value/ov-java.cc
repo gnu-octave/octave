@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
+#include "interpreter.h"
+#include "interpreter-private.h"
 #include "load-path.h"
 #include "lo-sysdep.h"
 #include "oct-env.h"
@@ -2017,9 +2019,12 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
 JNIEXPORT void JNICALL
 Java_org_octave_Octave_doEvalString (JNIEnv *env, jclass, jstring cmd)
 {
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("Java_org_octave_Octave_doEvalString");
+
   std::string s = jstring_to_string (env, cmd);
   int pstatus;
-  octave::eval_string (s, false, pstatus, 0);
+  interp.eval_string (s, false, pstatus, 0);
 }
 
 JNIEXPORT jboolean JNICALL

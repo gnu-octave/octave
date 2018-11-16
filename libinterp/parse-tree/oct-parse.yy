@@ -5380,95 +5380,17 @@ namespace octave
   eval_string (const std::string& eval_str, bool silent,
                int& parse_status, int nargout)
   {
-    octave_value_list retval;
+    interpreter& interp = __get_interpreter__ ("eval_string");
 
-    parser parser (eval_str, __get_interpreter__ ("eval_string"));
-
-    do
-      {
-        parser.reset ();
-
-        parse_status = parser.run ();
-
-        if (parse_status == 0)
-          {
-            if (parser.m_stmt_list)
-              {
-                tree_statement *stmt = nullptr;
-
-                tree_evaluator& tw = __get_evaluator__ ("eval_string");
-
-                if (parser.m_stmt_list->length () == 1
-                    && (stmt = parser.m_stmt_list->front ())
-                    && stmt->is_expression ())
-                  {
-                    tree_expression *expr = stmt->expression ();
-
-                    if (silent)
-                      expr->set_print_flag (false);
-
-                    bool do_bind_ans = false;
-
-                    if (expr->is_identifier ())
-                      {
-                        symbol_scope scope = tw.get_current_scope ();
-
-                        symbol_record::context_id context
-                          = scope.current_context ();
-
-                        tree_identifier *id
-                          = dynamic_cast<tree_identifier *> (expr);
-
-                        do_bind_ans = (! id->is_variable (context));
-                      }
-                    else
-                      do_bind_ans = (! expr->is_assignment_expression ());
-
-                    retval = tw.evaluate_n (expr, nargout);
-
-                    if (do_bind_ans && ! retval.empty ())
-                      tw.bind_ans (retval(0), expr->print_result ());
-
-                    if (nargout == 0)
-                      retval = octave_value_list ();
-                  }
-                else if (nargout == 0)
-                  parser.m_stmt_list->accept (tw);
-                else
-                  error ("eval: invalid use of statement list");
-
-                if (tw.returning () || tw.breaking () || tw.continuing ())
-                  break;
-              }
-            else if (parser.m_lexer.m_end_of_input)
-              break;
-          }
-      }
-    while (parse_status == 0);
-
-    return retval;
+    return interp.eval_string (eval_str, silent, parse_status, nargout);
   }
 
   octave_value
   eval_string (const std::string& eval_str, bool silent, int& parse_status)
   {
-    octave_value retval;
+    interpreter& interp = __get_interpreter__ ("eval_string");
 
-    octave_value_list tmp = eval_string (eval_str, silent, parse_status, 1);
-
-    if (! tmp.empty ())
-      retval = tmp(0);
-
-    return retval;
-  }
-
-  static octave_value_list
-  eval_string (const octave_value& arg, bool silent, int& parse_status,
-               int nargout)
-  {
-    std::string s = arg.xstring_value ("eval: expecting std::string argument");
-
-    return eval_string (s, silent, parse_status, nargout);
+    return interp.eval_string (eval_str, silent, parse_status);
   }
 
   void
@@ -5482,8 +5404,8 @@ namespace octave
   }
 }
 
-DEFUN (eval, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (eval, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} eval (@var{try})
 @deftypefnx {} {} eval (@var{try}, @var{catch})
 Parse the string @var{try} and evaluate it as if it were an Octave
@@ -5545,7 +5467,7 @@ does.
 
   try
     {
-      tmp = octave::eval_string (args(0), nargout > 0, parse_status, nargout);
+      tmp = interp.eval_string (args(0), nargout > 0, parse_status, nargout);
     }
   catch (const octave::execution_exception&)
     {
@@ -5561,7 +5483,7 @@ does.
 
       buffer_error_messages--;
 
-      tmp = octave::eval_string (args(1), nargout > 0, parse_status, nargout);
+      tmp = interp.eval_string (args(1), nargout > 0, parse_status, nargout);
 
       if (nargout > 0)
         retval = tmp;
@@ -5721,8 +5643,7 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
   try
     {
-      tmp = octave::eval_string (args(1), nargout > 0,
-                                 parse_status, nargout);
+      tmp = interp.eval_string (args(1), nargout > 0, parse_status, nargout);
     }
   catch (const octave::execution_exception&)
     {
@@ -5738,8 +5659,7 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
       buffer_error_messages--;
 
-      tmp = octave::eval_string (args(2), nargout > 0,
-                                 parse_status, nargout);
+      tmp = interp.eval_string (args(2), nargout > 0, parse_status, nargout);
 
       retval = (nargout > 0) ? tmp : octave_value_list ();
     }
@@ -5782,8 +5702,8 @@ restore_octave_stderr (std::streambuf *buf)
   std::cerr.rdbuf (buf);
 }
 
-DEFUN (evalc, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (evalc, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} evalc (@var{try})
 @deftypefnx {} {@var{s} =} evalc (@var{try}, @var{catch})
 Parse and evaluate the string @var{try} as if it were an Octave program,
@@ -5840,7 +5760,7 @@ s = evalc ("t = 42"), t
   octave_value_list retval;
   int eval_nargout = std::max (0, nargout - 1);
 
-  retval = Feval (args, eval_nargout);
+  retval = Feval (interp, args, eval_nargout);
   eval_error_occurred = false;
 
   retval.prepend (buffer.str ());

@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "variable-editor-model.h"
 
+#include "interpreter.h"
+#include "interpreter-private.h"
 #include "ov.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"
@@ -1124,9 +1126,11 @@ namespace octave
 
     try
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::set_data_oct");
 
-        eval_string (expr, true, parse_status);
+        int parse_status = 0;
+        interp.eval_string (expr, true, parse_status);
 
         octave_value val = retrieve_variable (name);
 
@@ -1173,9 +1177,11 @@ namespace octave
 
     try
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::eval_oct");
 
-        eval_string (expr, true, parse_status);
+        int parse_status = 0;
+        interp.eval_string (expr, true, parse_status);
 
         init_from_oct (name);
       }
@@ -1207,9 +1213,11 @@ namespace octave
 
     if (symbol_exist (name, "var") > 0)
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::retrieve_variable");
 
-        return eval_string (x, true, parse_status);
+        int parse_status = 0;
+        return interp.eval_string (x, true, parse_status);
       }
 
     return octave_value ();

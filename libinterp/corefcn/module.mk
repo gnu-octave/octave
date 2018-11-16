@@ -82,6 +82,7 @@ COREFCN_INC = \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
+  %reldir%/syminfo.h \
   %reldir%/symrec.h \
   %reldir%/symscope.h \
   %reldir%/symtab.h \
@@ -237,6 +238,7 @@ COREFCN_SRC = \
   %reldir%/sub2ind.cc \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
+  %reldir%/syminfo.cc \
   %reldir%/symrec.cc \
   %reldir%/symscope.cc \
   %reldir%/symtab.cc \

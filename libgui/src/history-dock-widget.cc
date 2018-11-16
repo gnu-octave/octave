@@ -333,7 +333,7 @@ namespace octave
     connect (m_filter_checkbox, SIGNAL (toggled (bool)),
              this, SLOT (filter_activate (bool)));
     connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-             this, SLOT (updatem_filter_history (void)));
+             this, SLOT (update_filter_history (void)));
 
     connect (m_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
              this, SLOT (handle_double_click (QModelIndex)));

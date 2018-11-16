@@ -73,7 +73,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "parse.h"
 #include "symscope.h"
-#include "symtab.h"
 #include "utils.h"
 #include "version.h"
 

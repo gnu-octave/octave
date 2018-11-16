@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-exp.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
-#include "symtab.h"
 
 namespace octave
 {

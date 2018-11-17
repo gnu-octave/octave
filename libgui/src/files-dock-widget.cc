@@ -852,10 +852,16 @@ namespace octave
 
   void files_dock_widget::popdownmenu_search_dir (bool)
   {
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = QFileDialog::ShowDirsOnly;
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts |= QFileDialog::DontUseNativeDialog;
+
     QString dir = QFileDialog::getExistingDirectory (this,
                      tr ("Set directory of file browser"),
                      m_file_system_model->rootPath (),
-                     QFileDialog::ShowDirsOnly);
+                     QFileDialog::Option (opts));
     set_current_directory (dir);
   }
 

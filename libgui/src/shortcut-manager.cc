@@ -673,16 +673,22 @@ namespace octave
       {
         QString file;
 
+        // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+        int opts = 0;  // No options by default.
+        if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                        true).toBool ())
+          opts = QFileDialog::DontUseNativeDialog;
+
         if (action == OSC_IMPORT)
           file = QFileDialog::getOpenFileName (this,
                                                tr ("Import shortcuts from file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr);
+                                               nullptr, QFileDialog::Option (opts));
         else if (action == OSC_EXPORT)
           file = QFileDialog::getSaveFileName (this,
                                                tr ("Export shortcuts to file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr);
+                                               nullptr, QFileDialog::Option (opts));
 
         if (file.isEmpty ())
           return false;

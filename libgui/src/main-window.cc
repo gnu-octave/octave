@@ -383,9 +383,15 @@ namespace octave
 
   void main_window::handle_save_workspace_request (void)
   {
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = 0;  // No options by default.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString file
       = QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".",
-                                      nullptr, nullptr);
+                                      nullptr, nullptr, QFileDialog::Option (opts));
 
     if (! file.isEmpty ())
       {
@@ -397,11 +403,17 @@ namespace octave
 
   void main_window::handle_load_workspace_request (const QString& file_arg)
   {
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = 0;  // No options by default.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString file = file_arg;
 
     if (file.isEmpty ())
       file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".",
-                                           nullptr, nullptr);
+                                           nullptr, nullptr, QFileDialog::Option (opts));
 
     if (! file.isEmpty ())
       {
@@ -876,9 +888,15 @@ namespace octave
 
   void main_window::browse_for_directory (void)
   {
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = QFileDialog::ShowDirsOnly;
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString dir
       = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), nullptr,
-                                           QFileDialog::ShowDirsOnly);
+                                           QFileDialog::Option (opts));
 
     set_current_working_directory (dir);
 
@@ -1041,6 +1059,11 @@ namespace octave
     fileDialog->setViewMode (QFileDialog::Detail);
     fileDialog->setFileMode (QFileDialog::ExistingFiles);
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
+
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
              this, SLOT (request_open_files (const QStringList&)));

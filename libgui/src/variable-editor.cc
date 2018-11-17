@@ -444,13 +444,19 @@ namespace octave
     if (! hasFocus ())
       return;
 
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = 0;  // No options by default.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString name = objectName ();
     QString file
       = QFileDialog::getSaveFileName (this,
                                       tr ("Save Variable %1 As").arg (name),
     // FIXME: Should determine extension from save_default_options
                                       QString ("./%1.txt").arg (name),
-                                      0, 0);
+                                      0, 0, QFileDialog::Option (opts));
 
     // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
     // FIXME: Call octave_value::save_* directly?

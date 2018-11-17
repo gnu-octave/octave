@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -140,7 +140,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="0">
+                <item row="8" column="0">
                  <widget class="QCheckBox" name="cb_prompt_to_exit">
                   <property name="text">
                    <string>Confirm before exiting</string>
@@ -374,7 +374,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="0">
+                <item row="7" column="0">
                  <widget class="QCheckBox" name="cb_status_bar">
                   <property name="text">
                    <string>Show status bar</string>
@@ -384,10 +384,20 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="6" column="0">
                  <widget class="QCheckBox" name="cb_cursor_blinking">
                   <property name="text">
                    <string>Cursor blinking</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QCheckBox" name="cb_use_native_file_dialogs">
+                  <property name="text">
+                   <string>Use native file dialogs</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -509,8 +519,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -790,8 +800,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>645</width>
-            <height>1213</height>
+            <width>647</width>
+            <height>1360</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2116,8 +2126,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2260,8 +2270,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2322,8 +2332,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>669</width>
-            <height>558</height>
+            <width>780</width>
+            <height>550</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2524,8 +2534,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2723,8 +2733,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>571</height>
+            <width>664</width>
+            <height>570</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

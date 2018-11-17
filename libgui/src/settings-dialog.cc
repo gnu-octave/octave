@@ -190,8 +190,14 @@ namespace octave
     sb_3d_title->setValue (settings->value ("DockWidgets/widget_title_3d", 50).toInt ());
     cb_widget_custom_style->setChecked (settings->value ("DockWidgets/widget_title_custom_style", false).toBool ());
 
+    // Native file dialogs.
+    // FIXME: This preference can be deprecated / removed if all display
+    //       managers, especially KDE, run those dialogs without hangs or
+    //       delays from the start (bug #54607).
+    cb_use_native_file_dialogs->setChecked (settings->value ("use_native_file_dialogs", true).toBool ());
+
     // Cursor blinking: consider old terminal related setting if not yet set
-    // TODO: This pref. can be deprecated / removed if Qt adds support for
+    // FIXME: This pref. can be deprecated / removed if Qt adds support for
     //       getting the cursor blink preferences from all OS environments
     if (settings->contains ("cursor_blinking"))
       {
@@ -524,8 +530,14 @@ namespace octave
 
   void settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)
   {
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts |= QFileDialog::DontUseNativeDialog;
+
     QString dir = QFileDialog::getExistingDirectory
-      (this, title, line_edit->text (), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+      (this, title, line_edit->text (), QFileDialog::Option (opts));
 
     line_edit->setText (dir);
   }
@@ -809,6 +821,9 @@ namespace octave
     else if (icon_size_large->isChecked ())
       icon_size = 1;
     settings->setValue ("toolbar_icon_size", icon_size);
+
+    // native file dialogs
+    settings->setValue ("use_native_file_dialogs", cb_use_native_file_dialogs->isChecked ());
 
     // cursor blinking
     settings->setValue ("cursor_blinking", cb_cursor_blinking->isChecked ());

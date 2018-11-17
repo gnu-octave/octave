@@ -2228,6 +2228,11 @@ namespace octave
     fileDialog->setAcceptMode (QFileDialog::AcceptSave);
     fileDialog->setViewMode (QFileDialog::Detail);
 
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+
     connect (fileDialog, SIGNAL (filterSelected (const QString&)),
              this, SLOT (handle_save_as_filter_selected (const QString&)));
 

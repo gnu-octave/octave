@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "dialog.h"
+#include "resource-manager.h"
 
 #include <QString>
 #include <QStringList>
@@ -462,6 +463,11 @@ namespace octave
 
     setWindowTitle (title.isEmpty () ? " " : title);
     setDirectory (dirname);
+    
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      setOption(QFileDialog::DontUseNativeDialog);
 
     if (multimode == "on")         // uigetfile multiselect=on
       {

@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
+#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "interpreter-private.h"
@@ -72,6 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "octave.h"
 #include "parse.h"
+#include "syminfo.h"
 #include "symscope.h"
 #include "utils.h"
 #include "version.h"
@@ -417,8 +419,8 @@ namespace octave
     if (! file.isEmpty ())
       {
         octave_cmd_builtin *cmd
-            = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
-                                      octave_cmd_builtin::CMD_UPD_WORKSPACE);
+          = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
+                                    octave_cmd_builtin::CMD_UPD_WORKSPACE);
         queue_cmd (cmd);
       }
   }
@@ -432,8 +434,8 @@ namespace octave
 
   void main_window::handle_clear_workspace_request (void)
   {
-    octave_cmd_builtin *cmd
-          = new octave_cmd_builtin (&Fclear, ovl ());
+    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fclear, ovl ());
+
     queue_cmd (cmd);
   }
 
@@ -1821,10 +1823,9 @@ namespace octave
   void main_window::construct_octave_qt_link (void)
   {
     connect (m_octave_qt_link,
-             SIGNAL (set_workspace_signal (bool, bool,
-                                           const symbol_scope&)),
+             SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),
              m_workspace_model,
-             SLOT (set_workspace (bool, bool, const symbol_scope&)));
+             SLOT (set_workspace (bool, bool, const symbol_info_list&)));
 
     connect (m_octave_qt_link, SIGNAL (clear_workspace_signal (void)),
              m_workspace_model, SLOT (clear_workspace (void)));
@@ -2439,7 +2440,10 @@ namespace octave
       {
         scope.rename (names.first, names.second);
 
-        octave_link::set_workspace (true, scope);
+        call_stack& cs
+          = __get_call_stack__ ("main_window::rename_variable_callback");
+
+        octave_link::set_workspace (true, cs.get_symbol_info ());
       }
 
     // FIXME: if this action fails, do we need a way to display that info
@@ -2483,11 +2487,10 @@ namespace octave
     octave::feval ("open", ovl (file));
 
     // Update the workspace since open.m may have loaded new variables.
-    symbol_scope scope
-      = __get_current_scope__ ("main_window::open_any_callback");
+    call_stack& cs
+      = __get_call_stack__ ("main_window::open_any_callback");
 
-    if (scope)
-          octave_link::set_workspace (true, scope);
+    octave_link::set_workspace (true, cs.get_symbol_info ());
   }
 
   void main_window::clear_history_callback (void)
@@ -2504,11 +2507,10 @@ namespace octave
   {
     // INTERPRETER THREAD
 
-    symbol_scope scope
-      = __get_current_scope__ ("main_window::force_refresh_workspace");
+    call_stack& cs
+      = __get_call_stack__ ("main_window::force_refresh_workspace");
 
-    if (scope)
-      octave_link::set_workspace (true, scope, false);
+    octave_link::set_workspace (true, cs.get_symbol_info (), false);
   }
 
   bool main_window::focus_console_after_command (void)

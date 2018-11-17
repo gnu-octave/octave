@@ -44,7 +44,6 @@ class octave_value;
 
 namespace octave
 {
-
   //! Provides threadsafe access to octave.
   //! @author Jacob Dawid
   //!
@@ -118,7 +117,7 @@ namespace octave
     uint8NDArray do_get_named_icon (const std::string& icon_name);
 
     void do_set_workspace (bool top_level, bool debug,
-                           const symbol_scope& scope,
+                           const symbol_info_list& syminfo,
                            bool update_variable_editor);
 
     void do_clear_workspace (void);
@@ -180,7 +179,7 @@ namespace octave
     void execute_command_in_terminal_signal (const QString& command);
 
     void set_workspace_signal (bool top_level, bool debug,
-                               const symbol_scope& scope);
+                               const symbol_info_list& syminfo);
 
     void clear_workspace_signal (void);
 

@@ -25,10 +25,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include <QTreeWidget>
 #include <QSettings>
 
-#include "symscope.h"
+#include "syminfo.h"
 #include "utils.h"
 
 #include "resource-manager.h"
@@ -231,12 +233,12 @@ namespace octave
 
   void
   workspace_model::set_workspace (bool top_level, bool /* debug */,
-                                  const symbol_scope& scope)
+                                  const symbol_info_list& syminfo)
   {
     clear_data ();
 
     m_top_level = top_level;
-    m_scope = scope;
+    m_syminfo_list = syminfo;
 
     update_table ();
   }
@@ -272,7 +274,7 @@ namespace octave
   workspace_model::clear_data (void)
   {
     m_top_level = false;
-    m_scope = symbol_scope ();
+    m_syminfo_list = symbol_info_list ();
     m_scopes = QString ();
     m_symbols = QStringList ();
     m_class_names = QStringList ();
@@ -286,37 +288,27 @@ namespace octave
   {
     beginResetModel ();
 
-    std::list<symbol_record> sr_list = m_scope.all_variables ();
-
-    symbol_record::context_id context = m_scope.current_context ();
-
-    for (const auto& sr : sr_list)
+    for (const auto& syminfo : m_syminfo_list)
       {
-        std::string nm = sr.name ();
+        std::string nm = syminfo.name ();
 
-        octave_value val = sr.varval (context);
+        octave_value val = syminfo.value ();
 
-        // FIXME: fix size for objects, see kluge in variables.cc
-        //dim_vector dv = val.dims ();
-        octave_value tmp = val;
-        Matrix sz = tmp.size ();
+        // FIXME: fix size for objects, see kluge in ov.cc
+        Matrix sz = val.size ();
         dim_vector dv = dim_vector::alloc (sz.numel ());
         for (octave_idx_type i = 0; i < dv.ndims (); i++)
           dv(i) = sz(i);
 
         char storage = ' ';
-        if (sr.is_global ())
+        if (syminfo.is_global ())
           storage = 'g';
-        else if (sr.is_persistent ())
+        else if (syminfo.is_persistent ())
           storage = 'p';
-        else if (sr.is_automatic ())
+        else if (syminfo.is_automatic ())
           storage = 'a';
-        else if (sr.is_formal ())
+        else if (syminfo.is_formal ())
           storage = 'f';
-        else if (sr.is_hidden ())
-          storage = 'h';
-        else if (sr.is_inherited ())
-          storage = 'i';
 
         std::ostringstream buf;
         val.short_disp (buf);

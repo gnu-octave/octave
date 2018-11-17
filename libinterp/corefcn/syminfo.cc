@@ -163,6 +163,19 @@ namespace octave
       }
   }
 
+  // FIXME: should we be using std::map<symbol_info> instead of a list?
+
+  octave_value symbol_info_list::varval (const std::string& name) const
+  {
+    for (const auto& syminfo : m_lst)
+      {
+        if (name == syminfo.name ())
+          return syminfo.value ();
+      }
+
+    return octave_value ();
+  }
+
   octave_map
   symbol_info_list::map_value (const std::string& caller_function_name,
                                int nesting_level) const

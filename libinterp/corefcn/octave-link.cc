@@ -36,7 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "ovl.h"
 #include "pager.h"
-#include "symscope.h"
+#include "syminfo.h"
+#include "symtab.h"
 
 static int
 octave_readline_hook (void)
@@ -69,12 +70,14 @@ octave_link::set_workspace (void)
   if (enabled ())
     {
       octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_link::set_workspace");
+         = octave::__get_symbol_table__ ("octave_link::set_workspace");
 
-      octave::symbol_scope scope = symtab.current_scope ();
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_link::set_workspace");
 
       instance->do_set_workspace (symtab.at_top_level (),
-                                  instance->debugging, scope, true);
+                                  instance->debugging,
+                                  cs.get_symbol_info (), true);
     }
 }
 

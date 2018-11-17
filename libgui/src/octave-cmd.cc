@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "octave-qt-link.h"
+#include "syminfo.h"
 #include "utils.h"
 
 namespace octave
@@ -87,12 +88,12 @@ namespace octave
       {
         case CMD_UPD_WORKSPACE:
           {
-            symbol_scope scope
-                = __get_current_scope__ ("octave_cmd_builtin::execute");
-            if (scope)
-              octave_link::set_workspace (true, scope);
-            break;
+            call_stack& cs
+              = __get_call_stack__ ("octave_cmd_builtin::execute");
+
+            octave_link::set_workspace (true, cs.get_symbol_info ());
           }
+          break;
 
         default:
           break;

@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "octave.h"
 #include "oct-map.h"
-#include "symscope.h"
+#include "syminfo.h"
 #include "utils.h"
 
 #include "octave-gui.h"
@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 Q_DECLARE_METATYPE (octave_value)
-Q_DECLARE_METATYPE (octave::symbol_scope)
+Q_DECLARE_METATYPE (octave::symbol_info_list)
 
 namespace octave
 {
@@ -59,7 +59,7 @@ namespace octave
     : octave_link ()
   {
     qRegisterMetaType<octave_value> ("octave_value");
-    qRegisterMetaType<symbol_scope> ("symbol_scope");
+    qRegisterMetaType<symbol_info_list> ("symbol_info_list");
   }
 
   bool octave_qt_link::do_confirm_shutdown (void)
@@ -433,13 +433,13 @@ namespace octave
   }
 
   void octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                         const symbol_scope& scope,
+                                         const symbol_info_list& syminfo,
                                          bool update_variable_editor)
   {
     if (! top_level && ! debug)
       return;
 
-    emit set_workspace_signal (top_level, debug, scope);
+    emit set_workspace_signal (top_level, debug, syminfo);
 
     if (update_variable_editor)
       emit refresh_variable_editor_signal ();

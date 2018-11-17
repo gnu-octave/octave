@@ -40,7 +40,7 @@ class string_vector;
 
 namespace octave
 {
-  class symbol_scope;
+  class symbol_info_list;
 }
 
 //! Provides threadsafe access to octave.
@@ -246,11 +246,11 @@ public:
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const octave::symbol_scope& scope,
+                             const octave::symbol_info_list& syminfo,
                              bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, scope,
+      instance->do_set_workspace (top_level, instance->debugging, syminfo,
                                   update_variable_editor);
   }
 
@@ -537,7 +537,7 @@ protected:
 
   virtual void
   do_set_workspace (bool top_level, bool debug,
-                    const octave::symbol_scope& scope,
+                    const octave::symbol_info_list& syminfo,
                     bool update_variable_editor) = 0;
 
   virtual void do_clear_workspace (void) = 0;

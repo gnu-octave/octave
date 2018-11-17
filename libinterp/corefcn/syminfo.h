@@ -98,6 +98,8 @@ namespace octave
 
     ~symbol_info_list (void) = default;
 
+    octave_value varval (const std::string& name) const;
+
     octave_map map_value (const std::string& caller_function_name,
                           int nesting_level) const;
 

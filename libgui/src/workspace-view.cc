@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 #include "interpreter-private.h"
-#include "symscope.h"
+#include "syminfo.h"
 
 namespace octave
 {
@@ -463,11 +463,9 @@ namespace octave
       {
         QString var_name = get_var_name (index);
 
-        symbol_scope scope = m_model->scope ();
+        symbol_info_list syminfo = m_model->get_symbol_info ();
 
-        octave_value val;
-        if (scope)
-          val = scope.varval (var_name.toStdString ());
+        octave_value val = syminfo.varval (var_name.toStdString ());
 
         emit edit_variable_signal (var_name, val);
       }

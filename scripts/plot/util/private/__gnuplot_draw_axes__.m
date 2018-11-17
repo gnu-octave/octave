@@ -2275,28 +2275,15 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   colorspec = get_text_colorspec (color);
   fprintf (plot_stream, ['set format %s "%s";' "\n"], ax, fmt);
-  if (strcmp (ticmode, "manual"))
-    if (isempty (tics))
-      fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
-      return
-    endif
-    fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
-             ticklength, axispos, mirror);
-    fprintf (plot_stream, "%.15g", tics(1));
-    if (numel (tics) > 1)
-      fprintf (plot_stream, ",%.15g", tics(2:end));
-    endif
-    fprintf (plot_stream, ") %s;\n", fontspec);
+  if (strcmp (ticmode, "manual") && isempty (tics))
+    fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
+    return
   else
-    fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
-             tickdir, ticklength, axispos, mirror, colorspec, fontspec);
-  endif
-  if (strcmp (labelmode, "manual"))
     k = 1;
     ntics = numel (tics);
     labels(end+1:1) = {""};
     labels = repmat (labels(:), ceil (ntics/numel (labels)), 1);
-    fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
+    fprintf (plot_stream, "set %stics %s %s %s %s (", ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
     for i = 1:ntics

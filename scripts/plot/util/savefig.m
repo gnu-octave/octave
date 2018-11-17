@@ -99,6 +99,15 @@ endfunction
 %!   ftmp = [tempname() ".fig"];
 %!   savefig (h, ftmp);
 %!   savefig (ftmp);
+%! unwind_protect_cleanup
+%!   close (h);
+%!   unlink (ftmp);
+%! end_unwind_protect
+
+%!testif HAVE_ZLIB
+%! unwind_protect
+%!   h = figure ("visible", "off");
+%!   ftmp = [tempname() ".fig"];
 %!   savefig (h, ftmp, "compact");
 %! unwind_protect_cleanup
 %!   close (h);

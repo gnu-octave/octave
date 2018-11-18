@@ -232,7 +232,6 @@ COREFCN_SRC = \
   %reldir%/sparse.cc \
   %reldir%/spparms.cc \
   %reldir%/sqrtm.cc \
-  %reldir%/str2double.cc \
   %reldir%/strfind.cc \
   %reldir%/strfns.cc \
   %reldir%/sub2ind.cc \

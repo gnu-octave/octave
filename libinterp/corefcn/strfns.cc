@@ -739,6 +739,137 @@ This is just the opposite of the corresponding C library function.
 %!assert <*54373> (strncmpi ("abc", "abC", 100))
 */
 
+DEFUN (str2double, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} str2double (@var{s})
+Convert a string to a real or complex number.
+
+The string must be in one of the following formats where a and b are real
+numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:
+
+@itemize
+@item a + bi
+
+@item a + b*i
+
+@item a + i*b
+
+@item bi + a
+
+@item b*i + a
+
+@item i*b + a
+@end itemize
+
+If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}
+are also accepted.
+
+@var{s} may be a character string, character matrix, or cell array.  For
+character arrays the conversion is repeated for every row, and a double or
+complex array is returned.  Empty rows in @var{s} are deleted and not
+returned in the numeric array.  For cell arrays each character string
+element is processed and a double or complex array of the same dimensions as
+@var{s} is returned.
+
+For unconvertible scalar or character string input @code{str2double} returns
+a NaN@.  Similarly, for character array input @code{str2double} returns a
+NaN for any row of @var{s} that could not be converted.  For a cell array,
+@code{str2double} returns a NaN for any element of @var{s} for which
+conversion fails.  Note that numeric elements in a mixed string/numeric
+cell array are not strings and the conversion will fail for these elements
+and return NaN.
+
+@code{str2double} can replace @code{str2num}, and it avoids the security
+risk of using @code{eval} on unknown data.
+@seealso{str2num}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_value retval;
+
+  if (args(0).is_string ())
+    {
+      if (args(0).rows () == 0 || args(0).columns () == 0)
+        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+      else if (args(0).rows () == 1 && args(0).ndims () == 2)
+        retval = octave_str2double (args(0).string_value ());
+      else
+        {
+          const string_vector sv = args(0).string_vector_value ();
+
+          retval = sv.map<Complex> (octave_str2double);
+        }
+    }
+  else if (args(0).iscell ())
+    {
+      const Cell cell = args(0).cell_value ();
+
+      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
+
+      for (octave_idx_type i = 0; i < cell.numel (); i++)
+        {
+          if (cell(i).is_string ())
+            output(i) = octave_str2double (cell(i).string_value ());
+        }
+      retval = output;
+    }
+  else
+    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+
+  return retval;
+}
+
+/*
+%!assert (str2double ("1"), 1)
+%!assert (str2double ("-.1e-5"), -1e-6)
+%!testif ; ! ismac ()
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
+%!assert (str2double ("1,222.5"), 1222.5)
+%!assert (str2double ("i"), i)
+%!assert (str2double ("2j"), 2i)
+%!assert (str2double ("2 + j"), 2+j)
+%!assert (str2double ("i*2 + 3"), 3+2i)
+%!assert (str2double (".5*i + 3.5"), 3.5+0.5i)
+%!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
+%!assert (str2double (char ("2 + j","1.25e-3","-05")), [2+i; 1.25e-3; -5])
+%!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
+%!assert (str2double (1), NaN)
+%!assert (str2double ("1 2 3 4"), NaN)
+%!assert (str2double ("Hello World"), NaN)
+%!assert (str2double ("NaN"), NaN)
+%!assert (str2double ("NA"), NA)
+%!assert (str2double ("Inf"), Inf)
+%!assert (str2double ("iNF"), Inf)
+%!assert (str2double ("-Inf"), -Inf)
+%!assert (str2double ("Inf*i"), complex (0, Inf))
+%!assert (str2double ("iNF*i"), complex (0, Inf))
+%!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
+%!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
+%!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
+%!testif ; ! ismac ()
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!testif ; ! ismac ()
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!assert (str2double (zeros (3,1,2)), NaN)
+%!assert (str2double (''), NaN)
+%!assert (str2double ([]), NaN)
+%!assert (str2double (char(zeros(3,0))), NaN)
+*/
+
 DEFUN (__native2unicode__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{utf8_str} =} __native2unicode__ (@var{native_bytes}, @var{codepage})

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "oct-cmplx.h"
+
 namespace octave
 {
   //! Octave string utility functions.
@@ -122,5 +124,8 @@ namespace octave
                    const typename T::size_type n);
   }
 }
+
+extern OCTAVE_API Complex
+octave_str2double (const std::string& str_arg);
 
 #endif

@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
+#include "oct-string.h"
 #include "quit.h"
 
 #include "Cell.h"
@@ -233,115 +234,6 @@ operator << (std::ostream& os, const pr_formatted_float<T>& pff)
 
   return os;
 }
-
-template <typename T>
-static inline std::string
-rational_approx (T val, int len)
-{
-  std::string s;
-
-  if (len <= 0)
-    len = 10;
-
-  if (octave::math::isinf (val))
-    s = "1/0";
-  else if (octave::math::isnan (val))
-    s = "0/0";
-  else if (val < std::numeric_limits<int>::min ()
-           || val > std::numeric_limits<int>::max ()
-           || octave::math::x_nint (val) == val)
-    {
-      std::ostringstream buf;
-      buf.flags (std::ios::fixed);
-      buf << std::setprecision (0) << octave::math::round (val);
-      s = buf.str ();
-    }
-  else
-    {
-      T lastn = 1;
-      T lastd = 0;
-      T n = octave::math::round (val);
-      T d = 1;
-      T frac = val - n;
-      int m = 0;
-
-      std::ostringstream buf2;
-      buf2.flags (std::ios::fixed);
-      buf2 << std::setprecision (0) << static_cast<int> (n);
-      s = buf2.str ();
-
-      while (true)
-        {
-          T flip = 1 / frac;
-          T step = octave::math::round (flip);
-          T nextn = n;
-          T nextd = d;
-
-          // Have we converged to 1/intmax ?
-          if (std::abs (flip) > static_cast<T> (std::numeric_limits<int>::max ()))
-            {
-              lastn = n;
-              lastd = d;
-              break;
-            }
-
-          frac = flip - step;
-          n = step * n + lastn;
-          d = step * d + lastd;
-          lastn = nextn;
-          lastd = nextd;
-
-          std::ostringstream buf;
-          buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int> (n)
-              << '/' << static_cast<int> (d);
-          m++;
-
-          if (n < 0 && d < 0)
-            {
-              // Double negative, string can be two characters longer..
-              if (buf.str ().length () > static_cast<unsigned int> (len + 2))
-                break;
-            }
-          else if (buf.str ().length () > static_cast<unsigned int> (len))
-            break;
-
-          if (std::abs (n) > std::numeric_limits<int>::max ()
-              || std::abs (d) > std::numeric_limits<int>::max ())
-            break;
-
-          s = buf.str ();
-        }
-
-      if (lastd < 0)
-        {
-          // Move sign to the top
-          lastd = - lastd;
-          lastn = - lastn;
-          std::ostringstream buf;
-          buf.flags (std::ios::fixed);
-          buf << std::setprecision (0) << static_cast<int> (lastn)
-              << '/' << static_cast<int> (lastd);
-          s = buf.str ();
-        }
-    }
-
-  return s;
-}
-
-/*
-%!assert (rats (2.0005, 9), "4001/2000")
-%!assert (rats (-2.0005, 10), "-4001/2000")
-%!assert (strtrim (rats (2.0005, 30)), "4001/2000")
-%!assert (pi - str2num (rats (pi, 30)), 0, 4 * eps)
-%!assert (e - str2num (rats (e, 30)), 0, 4 * eps)
-%!assert (rats (123, 2), " *")
-
-%!test
-%! v = 1 / double (intmax);
-%! err = v - str2num (rats(v, 12));
-%! assert (err, 0, 4 * eps);
-*/
 
 template <typename T>
 std::ostream&
@@ -3284,6 +3176,20 @@ If the length of the smallest possible rational approximation exceeds
 
   return ovl (string_vector (lst));
 }
+
+/*
+%!assert (rats (2.0005, 9), "4001/2000")
+%!assert (rats (-2.0005, 10), "-4001/2000")
+%!assert (strtrim (rats (2.0005, 30)), "4001/2000")
+%!assert (pi - str2num (rats (pi, 30)), 0, 4 * eps)
+%!assert (e - str2num (rats (e, 30)), 0, 4 * eps)
+%!assert (rats (123, 2), " *")
+
+%!test
+%! v = 1 / double (intmax);
+%! err = v - str2num (rats(v, 12));
+%! assert (err, 0, 4 * eps);
+*/
 
 DEFUN (disp, args, nargout,
        classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64

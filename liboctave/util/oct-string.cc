@@ -28,10 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <cctype>
 #include <cstring>
-
+#include <iomanip>
 #include <string>
 
 #include "Array.h"
+#include "lo-ieee.h"
+#include "lo-mappers.h"
 
 template <typename T>
 static bool
@@ -481,3 +483,102 @@ octave_str2double (const std::string& str_arg)
 
   return val;
 }
+
+template <typename T>
+std::string
+rational_approx (T val, int len)
+{
+  std::string s;
+
+  if (len <= 0)
+    len = 10;
+
+  if (octave::math::isinf (val))
+    s = "1/0";
+  else if (octave::math::isnan (val))
+    s = "0/0";
+  else if (val < std::numeric_limits<int>::min ()
+           || val > std::numeric_limits<int>::max ()
+           || octave::math::x_nint (val) == val)
+    {
+      std::ostringstream buf;
+      buf.flags (std::ios::fixed);
+      buf << std::setprecision (0) << octave::math::round (val);
+      s = buf.str ();
+    }
+  else
+    {
+      T lastn = 1;
+      T lastd = 0;
+      T n = octave::math::round (val);
+      T d = 1;
+      T frac = val - n;
+      int m = 0;
+
+      std::ostringstream buf2;
+      buf2.flags (std::ios::fixed);
+      buf2 << std::setprecision (0) << static_cast<int> (n);
+      s = buf2.str ();
+
+      while (true)
+        {
+          T flip = 1 / frac;
+          T step = octave::math::round (flip);
+          T nextn = n;
+          T nextd = d;
+
+          // Have we converged to 1/intmax ?
+          if (std::abs (flip) > static_cast<T> (std::numeric_limits<int>::max ()))
+            {
+              lastn = n;
+              lastd = d;
+              break;
+            }
+
+          frac = flip - step;
+          n = step * n + lastn;
+          d = step * d + lastd;
+          lastn = nextn;
+          lastd = nextd;
+
+          std::ostringstream buf;
+          buf.flags (std::ios::fixed);
+          buf << std::setprecision (0) << static_cast<int> (n)
+              << '/' << static_cast<int> (d);
+          m++;
+
+          if (n < 0 && d < 0)
+            {
+              // Double negative, string can be two characters longer.
+              if (buf.str ().length () > static_cast<unsigned int> (len + 2))
+                break;
+            }
+          else if (buf.str ().length () > static_cast<unsigned int> (len))
+            break;
+
+          if (std::abs (n) > std::numeric_limits<int>::max ()
+              || std::abs (d) > std::numeric_limits<int>::max ())
+            break;
+
+          s = buf.str ();
+        }
+
+      if (lastd < 0)
+        {
+          // Move sign to the top
+          lastd = - lastd;
+          lastn = - lastn;
+          std::ostringstream buf;
+          buf.flags (std::ios::fixed);
+          buf << std::setprecision (0) << static_cast<int> (lastn)
+              << '/' << static_cast<int> (lastd);
+          s = buf.str ();
+        }
+    }
+
+  return s;
+}
+
+// instanciate the template for float and double
+template std::string rational_approx <float> (float val, int len);
+template std::string rational_approx <double> (double val, int len);

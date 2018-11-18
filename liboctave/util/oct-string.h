@@ -128,4 +128,8 @@ namespace octave
 extern OCTAVE_API Complex
 octave_str2double (const std::string& str_arg);
 
+template <typename T>
+extern OCTAVE_API std::string
+rational_approx (T val, int len);
+
 #endif

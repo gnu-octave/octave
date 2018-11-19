@@ -18,12 +18,20 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{H} =} convhull (@var{x}, @var{y})
-## @deftypefnx {} {@var{H} =} convhull (@var{x}, @var{y}, @var{options})
-## Compute the convex hull of the set of points defined by the
-## arrays @var{x} and @var{y}.  The hull @var{H} is an index vector into
-## the set of points and specifies which points form the enclosing hull.
+## @deftypefnx {} {@var{H} =} convhull (@var{x}, @var{y}, @var{z})
+## @deftypefnx {} {@var{H} =} convhull (@var{x})
+## @deftypefnx {} {@var{H} =} convhull (@dots{}, @var{options})
+## Compute the convex hull of a 2-D or 3-D set of points.
 ##
-## An optional third argument, which must be a string or cell array of strings,
+## The hull @var{H} is a linear index vector into the original set of points
+## that specifies which points form the enclosing hull.  For 2-D inputs only,
+## the output is ordered in a counter-clockwise manner around the hull.
+##
+## The input @var{x} may also be a matrix with two or three columns where the
+## first column contains x-data, the second y-data, and the optional third
+## column contains z-data.
+##
+## An optional final argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
@@ -37,52 +45,113 @@
 ## @seealso{convhulln, delaunay, voronoi}
 ## @end deftypefn
 
-## Author: Kai Habel <kai.habel@gmx.de>
+function H = convhull (varargin)
 
-function H = convhull (x, y, options)
-
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
-  ## convhulln expects column vectors
-  x = x(:);
-  y = y(:);
+  z = [];
+  options = [];
 
-  if (length (x) != length (y))
-    error ("convhull: X and Y must have the same size");
-  elseif (nargin == 3 && ! (ischar (options) || iscellstr (options)))
-    error ("convhull: OPTIONS must be a string or cell array of strings");
-  endif
+  switch (nargin)
 
-  if (nargin == 2)
-    i = convhulln ([x, y]);
-  else
-    i = convhulln ([x, y], options);
-  endif
+    case 1
+      if (! ismatrix (varargin{1})
+          || (columns (varargin{1}) != 2 && columns (varargin{1}) != 3))
+          error ("convhull: X must be a matrix with 2 or 3 columns");
+      else
+        x = varargin{1}(:,1);
+        y = varargin{1}(:,2);
+        if (columns (varargin{1}) == 3)
+          z = varargin{1}(:,3);
+        endif
+      endif
 
-  n = rows (i);
-  i = i'(:);
-  H = zeros (n + 1, 1);
+    case 2
+      if (isnumeric (varargin{2}))
+        x = varargin{1};
+        y = varargin{2};
+      elseif (! (ischar (varargin{2}) || iscellstr (varargin{2})))
+        error ("convhull: OPTIONS must be a string or cell array of strings");
+      else
+        options = varargin{2};
+        ncols = columns (varargin{1});
 
-  H(1) = i(1);
-  next_i = i(2);
-  i(2) = 0;
-  for k = 2:n
-    next_idx = find (i == next_i);
+        if (! ismatrix (varargin{1}) || (ncols != 2 && ncols != 3))
+          error ("convhull: X must be a matrix with 2 or 3 columns");
+        else
+          x = varargin{1}(:,1);
+          y = varargin{1}(:,2);
+          if (ncols == 3)
+            z = varargin{1}(:,3);
+          endif
+        endif
+      endif
 
-    if (rem (next_idx, 2) == 0)
-      H(k) = i(next_idx);
-      next_i = i(next_idx - 1);
-      i(next_idx - 1) = 0;
-    else
-      H(k) = i(next_idx);
-      next_i = i(next_idx + 1);
-      i(next_idx + 1) = 0;
+    case 3
+      if (isnumeric (varargin{3}))
+        x = varargin{1};
+        y = varargin{2};
+        z = varargin{3};
+      elseif (! (ischar (varargin{3}) || iscellstr (varargin{3})))
+        error ("convhull: OPTIONS must be a string or cell array of strings");
+      else
+        x = varargin{1};
+        y = varargin{2};
+        options = varargin{3};
+      endif
+
+    case 4
+      x = varargin{1};
+      y = varargin{2};
+      z = varargin{3};
+      options = varargin{4};
+
+      if (! (ischar (options) || iscellstr (options)))
+        error ("convhull: OPTIONS must be a string or cell array of strings");
+      endif
+
+  endswitch
+
+  if (isempty (z))
+    x = x(:);  y = y(:);
+    if (! size_equal (x, y))
+      error ("convhull: X and Y must be the same size");
     endif
-  endfor
+    Htmp = convhulln ([x, y], options);
+  else
+    x = x(:);  y = y(:);  z = z(:);
+    if (! size_equal (x, y, z))
+      error ("convhull: X, Y, and Z must be the same size");
+    endif
+    H = convhulln ([x, y, z], options);
+  endif
 
-  H(n + 1) = H(1);
+  if (isempty (z))
+    ## Order 2-D convex hull in a counter-clockwise manner.
+    n = rows (Htmp);
+    Htmp = Htmp.'(:);
+    H = zeros (n + 1, 1);
+
+    H(1) = Htmp(1);
+    next_pt = Htmp(2);
+    Htmp(2) = 0;
+    for k = 2:n
+      next_idx = find (Htmp == next_pt);
+      H(k) = Htmp(next_idx);
+
+      if (rem (next_idx, 2) == 0)
+        next_pt =  Htmp(next_idx - 1);
+         Htmp(next_idx - 1) = 0;
+      else
+        next_pt = Htmp(next_idx + 1);
+         Htmp(next_idx + 1) = 0;
+      endif
+    endfor
+
+    H(n + 1) = H(1);
+  endif
 
 endfunction
 
@@ -100,4 +169,13 @@ endfunction
 %! y = abs (sin (x));
 %! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1]);
 
-## FIXME: Need input validation tests
+## Input validation tests
+%!error convhull ()
+%!error convhull (1,2,3,4,5)
+%!error <X must be a matrix with 2 or 3 columns> convhull (ones (2,4))
+%!error <OPTIONS must be a string or cell array> convhull (ones (2,2), struct())
+%!error <X must be a matrix with 2 or 3 columns> convhull (ones (2,4), "")
+%!error <OPTIONS must be a string or cell array> convhull (ones (2,2), ones (2,2), struct())
+%!error <OPTIONS must be a string or cell array> convhull (ones (2,2), ones (2,2), ones (2,2), struct())
+%!error <X and Y must be the same size> convhull (1, [1 2])
+%!error <X, Y, and Z must be the same size> convhull (1, [1 2], [1 2])

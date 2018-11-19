@@ -474,25 +474,10 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = archprefix;
       elseif (numel (files) >= 1 && ischar (files{1}))
         prefix = tilde_expand (files{1});
-        if (! isfolder (prefix))
-          [status, msg] = mkdir (prefix);
-          if (status == 0)
-            error ("pkg: cannot create prefix %s: %s", prefix, msg);
-          endif
-          warning ("pkg: creating the directory %s\n", prefix);
-        endif
-        local_packages = prefix = canonicalize_file_name (prefix);
+        local_packages = prefix = make_absolute_filename (prefix);
         user_prefix = true;
         if (numel (files) >= 2 && ischar (files{2}))
-          archprefix = tilde_expand (files{2});
-          if (! isfolder (archprefix))
-            [status, msg] = mkdir (archprefix);
-            if (status == 0)
-              error ("pkg: cannot create archprefix %s: %s", archprefix, msg);
-            endif
-            warning ("pkg: creating the directory %s\n", archprefix);
-            global_packages = archprefix = canonicalize_file_name (archprefix);
-          endif
+          archprefix = make_absolute_filename (tilde_expand (files{2}));
         endif
       else
         error ("pkg: prefix action requires a directory input, or an output argument");

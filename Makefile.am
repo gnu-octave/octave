@@ -127,6 +127,7 @@ EXTRA_DIST += \
   INSTALL \
   NEWS \
   README \
+  octave.doap \
   run-octave.in \
   $(BUILT_DISTFILES)
 

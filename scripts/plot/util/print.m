@@ -20,18 +20,19 @@
 ## @deftypefn  {} {} print ()
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
-## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
-## @deftypefnx {} {@var{rgb} =} print (@var{-RGBImage}, @dots{})
-## Format a figure for printing and send it to a printer, save it to a file, or
-## return an RGB image.
+## @deftypefnx {} {} print (@var{hfig}, @dots{})
+## @deftypefnx {} {@var{rgb} =} print (@qcode{"-RGBImage"}, @dots{})
+## Format a figure for printing and either save it to a file, send it to a
+## printer, or return an RGB image.
 ##
 ## @var{filename} defines the name of the output file.  If the filename has
-## no suffix, one is inferred from the specified device and appended to the
-## filename.  In the absence of a filename or @qcode{"-RGBImage"} option, the
-## output is sent to the printer.  The filename and options may be given in
-## any order.
+## no suffix then one is inferred from the specified device and appended to the
+## filename.  When neither a filename nor the @qcode{"-RGBImage"} option is
+## present, the output is sent to the printer.  The various options and
+## filename arguments may be given in any order, except for the figure handle
+## argument @var{hfig} which must be first if it is present.
 ##
-## Example: Print to a file using the PDF and JPEG formats.
+## Example: Print to a file using PDF and JPEG formats.
 ##
 ## @example
 ## @group
@@ -43,24 +44,26 @@
 ## @end group
 ## @end example
 ##
-## If the first argument @var{h} is a handle to a figure object, it specifies
-## the figure to print.  By default, the current figure is printed.
+## If the first argument is a handle @var{hfig} to a figure object then it
+## specifies the figure to print.  By default, the current figure returned
+## by @code{gcf} is printed.
 ##
-## For outputs to paged formats, PostScript and PDF, the paper size is
-## specified by the figure's @code{papersize} property.  The location and
-## size of the image on the page are specified by the figure's
-## @code{paperposition} property.  The orientation of the page is specified
-## by the figure's @code{paperorientation} property.
+## For outputs to paged formats, for example, PostScript and PDF, the page size
+## is specified by the figure's @code{papersize} property together with the
+## @code{paperunits} property.  The location and size of the plot on the page
+## are specified by the figure's @code{paperposition} property.  The
+## orientation of the page is specified by the figure's @code{paperorientation}
+## property.
 ##
-## The width and height of images are specified by the figure's
-## @code{paperposition(3:4)} property values.
+## For non-page formats---for example, image formats like JPEG---the width and
+## height of the output are specified by the figure's @code{paperposition(3:4)}
+## property values.
 ##
 ## The @code{print} command supports many @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed.  The default
-## is the current figure.
+##   Specify the handle, @var{h}, of the figure to be printed.
 ##
 ## Example: Print figure 1.
 ##
@@ -92,7 +95,9 @@
 ##
 ## @item -RGBImage
 ##   Return an M-by-N-by-3 RGB image of the figure.  The size of the image
-## depends on the formatting options.
+## depends on the formatting options.  This is similar to taking a screen
+## capture of the plot, but formatting options may be changed such as the
+## resolution or monochrome/color.
 ##
 ## Example: Get the pixels of a figure image.
 ##
@@ -100,9 +105,31 @@
 ## @group
 ## clf ();
 ## surf (peaks);
-## rgb = print ("-RGBImage");
+## @var{rgb} = print ("-RGBImage");
 ## @end group
 ## @end example
+##
+## @item  -opengl
+## @itemx -painters
+##   Specifies whether the opengl (pixel-based) or painters (vector-based)
+## renderer is used.  This is equivalent to changing the figure's
+## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
+## is @qcode{"auto"} Octave will use the @qcode{"opengl"} renderer for raster
+## formats (e.g., JPEG) and @qcode{"painters"} for vector formats (e.g., PDF).
+##
+## @item -svgconvert
+##   For OpenGL-based graphic toolkits, this enables a different backend
+## toolchain with enhanced characteristics.  The toolchain adds support for
+## printing arbitrary characters and fonts in PDF outputs; it avoids some
+## anti-aliasing artifacts in the rendering of patch and surface objects
+## (particularly for 2-D scenes); and it supports transparency of line, patch,
+## and surface objects.
+##
+## This option only affects PDF outputs, unless it is combined with
+## @option{-painters} option, in which case raster outputs are also affected.
+##
+## Caution: @option{-svgconvert} may lead to inaccurate rendering of image
+## objects.
 ##
 ## @item  -portrait
 ## @itemx -landscape
@@ -112,15 +139,20 @@
 ## orientation specified.  This option is equivalent to changing the figure's
 ## @qcode{"paperorientation"} property.
 ##
-## @item -append
-##   Append PostScript or PDF output to a pre-existing file of the same type.
+## @item  -color
+## @itemx -mono
+##   Color or monochrome output.
+##
+## @item  -solid
+## @itemx -dashed
+##   Force all lines to be solid or dashed, respectively.
 ##
 ## @item -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.  For both metafiles and SVG
-## the default is the screen resolution; for other formats it is 150 dpi.  To
-## specify screen resolution, use @qcode{"-r0"}.
+##   Resolution of bitmaps in dots per inch (DPI).  For both metafiles and SVG
+## the default is the screen resolution; for other formats the default is 150
+## DPI@.  To specify screen resolution, use @qcode{"-r0"}.
 ##
-## Example: Get high resolution raster output.
+## Example: high resolution raster output.
 ##
 ## @example
 ## @group
@@ -132,19 +164,14 @@
 ## @end example
 ##
 ## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.
-## For PS, EPS, PDF, and other vector formats the plot size is in points.
-## This option is equivalent to changing the size of the plot box associated
-## with the @qcode{"paperposition"} property.  When using the command form of
-## the print function you must quote the @var{xsize},@var{ysize} option.  For
-## example, by writing @w{"-S640,480"}.
-##
-## @item  -painters
-## @itemx -opengl
-##   For raster formats, specifies which of the opengl (pixel based) or
-## painters (vector based) renderers is used.  This is equivalent to changing
-## the figure's "renderer" property.  By default the renderer is "opengl" for
-## raster formats and "painters" for vector formats.
+##   Plot size in pixels for raster formats including PNG, JPEG, PNG, and
+## (unusually (SVG))@.  For all vector formats, including PDF, PS, and EPS, the
+## plot size is specified in points.  This option is equivalent to changing the
+## width and height of the output by setting the figure property
+## @code{paperposition(3:4)}.  When using the command form of the print
+## function you must quote the @var{xsize},@var{ysize} option to prevent the
+## Octave interpreter from recognizing the embedded comma (',').  For example,
+## by writing @w{"-S640,480"}.
 ##
 ## @item  -loose
 ## @itemx -tight
@@ -167,43 +194,51 @@
 ##     Provide a TIFF preview.
 ##   @end table
 ##
+## @item -append
+##   Append PostScript or PDF output to an existing file of the same type.
+##
 ## @item  -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   Use @var{fontname} and/or @var{fontsize} for all text.
 ## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
 ##
-## @item  -color
-## @itemx -mono
-##   Color or monochrome output.
-##
-## @item  -solid
-## @itemx -dashed
-##   Force all lines to be solid or dashed, respectively.
-##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of (devices marked with a "*" are only available with the Gnuplot
-## toolkit):
+## is one of the following (devices marked with a "*" are only available with
+## the Gnuplot toolkit):
+##
+## Vector Formats
 ##
 ##   @table @code
+##   @item  pdf
+##   @itemx pdfcrop
+##     Portable Document Format.  The @code{pdfcrop} device removes the default
+## surrounding page.
+##
+## The OpenGL-based graphics toolkits have limited support for text.
+## Limitations include using only ASCII characters (e.g., no Greek letters)
+## and support for just three base PostScript fonts: Helvetica (the default),
+## Times, or Courier.  Any other font will be replaced by Helvetica.
+##
+## For an enhanced output with complete text support and basic transparency,
+## use the @option{-svgconvert} option.
+##
 ##   @item  ps
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     PostScript (level 1 and 2, mono and color).  The OpenGL-based toolkits
-## always generate PostScript level 3.0 and have a limited support for text.
+##     PostScript (level 1 and 2, mono and color).  The OpenGL-based graphics
+## toolkits always generate PostScript level 3.0 and have limited support for
+## text.
 ##
 ##   @item  eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated PostScript (level 1 and 2, mono and color).  The
-## OpenGL-based toolkits always generate PostScript level 3.0 and have a
-## limited support for text.  Only the set of ASCII characters may be used and
-## the only supported fonts are the base PostScript fonts: Helvetica (the
-## default), Times, Courier and their variants (bold or italic).  Any other
-## font will be replaced by Helvetica.
+## OpenGL-based toolkits always generate PostScript level 3.0 and have
+## limited support for text.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -224,10 +259,10 @@
 ## they were specified in the plot.  If any special characters of the @TeX{}
 ## mode interpreter were used, the file must be edited before @LaTeX{}
 ## processing.  Specifically, the special characters must be enclosed with
-## dollar signs (@code{$ @dots{} $}), and other characters that are recognized
-## by @LaTeX{} may also need editing (e.g., braces).  The @samp{pdflatex}
-## device, and any of the @samp{standalone} formats, are not available with the
-## Gnuplot toolkit.
+## dollar signs @w{(@code{$ @dots{} $})}, and other characters that are
+## recognized by @LaTeX{} may also need editing (e.g., braces).  The
+## @samp{pdflatex} device, and any of the @samp{standalone} formats, are not
+## available with the Gnuplot toolkit.
 ##
 ##   @item  epscairo*
 ##   @itemx pdfcairo*
@@ -235,27 +270,25 @@
 ##   @itemx pdfcairolatex*
 ##   @itemx epscairolatexstandalone*
 ##   @itemx pdfcairolatexstandalone*
-##     Generate Cairo based output.  The @samp{epscairo} and @samp{pdfcairo}
-## devices are synonymous with the @samp{epsc} device.  The @LaTeX{} variants
-## generate a @LaTeX{} file, @file{@var{filename}.tex}, for the text portions
-## of a plot, and an image file, @file{@var{filename}.(eps|pdf)}, for the graph
-## portion of the plot.  The @samp{standalone} variants behave as described for
-## @samp{epslatexstandalone} above.
+##     Generate output with Cairo renderer.  The devices @samp{epscairo} and
+## @samp{pdfcairo} are synonymous with the @samp{epsc} device.  The @LaTeX{}
+## variants generate a @LaTeX{} file, @file{@var{filename}.tex}, for the text
+## portions of a plot, and an image file, @file{@var{filename}.(eps|pdf)}, for
+## the graph portion of the plot.  The @samp{standalone} variants behave as
+## described for @samp{epslatexstandalone} above.
 ##
-##   @item  ill
-##   @itemx @nospell{aifm}
-##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
+##   @item svg
+##     Scalable Vector Graphics
 ##
 ##   @item canvas*
-##     Javascript-based drawing on HTML5 canvas viewable in a web browser.
+##     Javascript-based drawing on an HTML5 canvas viewable in a web browser.
 ##
 ##   @item  cdr*
 ##   @itemx @nospell{corel*}
 ##     CorelDraw
 ##
-##   @item cgm
+##   @item cgm*
 ##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
-## (only available for the Gnuplot graphics toolkit).
 ##
 ##   @item dxf
 ##     AutoCAD
@@ -270,46 +303,19 @@
 ## whether the special flag should be set for the text in the figure.
 ## (default is @option{-textnormal})
 ##
-##   @item gif*
-##     GIF image
-##
 ##   @item hpgl
 ##     HP plotter language
 ##
-##   @item  jpg
-##   @itemx jpeg
-##     JPEG image
+##   @item  ill
+##   @itemx @nospell{aifm}
+##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
 ##
 ##   @item  latex*
 ##   @itemx eepic*
 ##     @LaTeX{} picture environment and extended picture environment.
 ##
-##   @item mf
+##   @item mf*
 ##     Metafont
-##
-##   @item png
-##     Portable Network Graphics
-##
-##   @item pbm
-##     PBMplus
-##
-##   @item  pdf
-##   @itemx pdfcrop
-##     Portable Document Format.  The @code{pdfcrop} device removes the default
-## surrounding page.
-##
-## By default PDF output has limited support for text and doesn't support
-## transparency at all.  For complete text support and basic transparency, use
-## the @option{-svgconvert} option.
-##
-##   @item svg
-##     Scalable Vector Graphics
-##
-##   @item  tif
-##   @itemx tiff
-##   @itemx tiffn
-##     TIFF image with LZW compression (@nospell{tif}, tiff) or uncompressed
-## (@nospell{tiffn}).
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone*
@@ -317,14 +323,40 @@
 ## toolkits create a PGF file while Gnuplot creates a TikZ file.  The
 ## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
 ## TikZ file.
+##
+##
+##   @end table
+##
+## Raster Formats
+##
+##   @table @code
+##   @item png
+##     Portable Network Graphics
+##
+##   @item  jpg
+##   @itemx jpeg
+##     JPEG image
+##
+##   @item  tif
+##   @itemx tiff
+##   @itemx tiffn
+##     TIFF image with LZW compression (@nospell{tif}, tiff) or uncompressed
+## (@nospell{tiffn}).
+##
+##   @item gif
+##     GIF image
+##
+##   @item pbm
+##     PBMplus
+##
 ##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
-## or if there is no filename it is sent to the printer as PostScript.
+## or if there is no filename then it is sent to the printer as PostScript.
 ##
 ## @item -d@var{ghostscript_device}
 ##   Additional devices are supported by Ghostscript.
-## Some examples are;
+## Some examples are:
 ##
 ##   @table @code
 ##   @item ljet2p
@@ -337,8 +369,8 @@
 ##     Portable Pixel Map file format
 ##   @end table
 ##
-##   For a complete list, type @code{system ("gs -h")} to see what formats
-## and devices are available.
+##   For a complete list of available formats and devices type
+## @code{system ("gs -h")}.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined by
 ## the figure's @qcode{"papersize"} property.  When the output is sent to a
@@ -348,18 +380,6 @@
 ## @item -G@var{ghostscript_command}
 ##   Specify the command for calling Ghostscript.  For Unix the default is
 ## @qcode{"gs"} and for Windows it is @qcode{"gswin32c"}.
-##
-## @item -svgconvert
-##   For OpenGL based toolkits, this option adds support for printing
-## arbitrary characters and fonts in PDF outputs.  It also avoids some
-## anti-aliasing artifacts in patch and surface objects rendering.  Finally, it
-## adds support for printing transparent line, patch, and surface objects.
-##
-## This option only affects PDF outputs, unless it is combined with
-## @option{-painters} option, in which case raster outputs are also affected.
-##
-## Caution: @option{-svgconvert} may lead to innacurate rendering of image
-## objects.
 ##
 ## @item  -TextAlphaBits=@var{n}
 ## @itemx -GraphicsAlphaBits=@var{n}

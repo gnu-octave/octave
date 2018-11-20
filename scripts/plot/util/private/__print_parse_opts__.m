@@ -59,6 +59,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.preview = "";
   arg_st.printer = "";
   arg_st.renderer = "auto";
+  arg_st.resize_flag = "";
   arg_st.rgb_output = false;
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
@@ -113,6 +114,10 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.svgconvert = true;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
+      elseif (strcmp (arg, "-fillpage"))
+        arg_st.resize_flag = "fillpage";
+      elseif (strcmp (arg, "-bestfit"))
+        arg_st.resize_flag = "bestfit";
       elseif (any (strcmp (arg,
                            {"-interchange", "-metafile", "-pict", "-tiff"})))
         arg_st.preview = arg(2:end);
@@ -341,9 +346,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.rgb_output)
     if (! isempty (arg_st.printer) || ! isempty (arg_st.name))
-      warning ("octave:print:ignored_argument", ...
-               ["print: ignoring file name and printer argument when using", ...
-                "-RGBImage option"])
+      warning ("octave:print:ignored_argument",
+               "print: ignoring file name and printer argument when using -RGBImage option");
     endif
   elseif (! isempty (arg_st.printer) || isempty (arg_st.name))
     arg_st.send_to_printer = true;
@@ -387,6 +391,14 @@ function arg_st = __print_parse_opts__ (varargin)
     error ("print: unknown device %s", arg_st.devopt);
   endif
 
+  if (arg_st.resize_flag)
+    if (! (arg_st.send_to_printer || arg_st.formatted_for_printing
+           || strncmp (arg_st.devopt, "pdf", 3)
+           || strncmp (arg_st.devopt, "ps", 2)))
+      error ("print: the '%s' option is only valid for page formats and printers.", arg_st.resize_flag);
+    endif
+  endif
+
   if (arg_st.send_to_printer)
     if (isempty (arg_st.name))
       ## Pipe the ghostscript output
@@ -404,13 +416,36 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (isempty (arg_st.canvas_size))
     if (isfigure (arg_st.figure))
-      [arg_st.ghostscript.papersize, paperposition] = ...
+      [arg_st.ghostscript.papersize, papersize_points, paperposition] = ...
                            gs_papersize (arg_st.figure, arg_st.orientation);
     else
       ## allows BIST tests to be run
       arg_st.ghostscript.papersize = "letter";
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
+      papersize_points = [8.5, 11.0] * 72;
     endif
+
+    ## resize paper
+    if (arg_st.resize_flag)
+      if (strcmp (arg_st.resize_flag, "fillpage"))
+        ## leave a 0.25 inch margin on all sides of the page.
+        paperposition = [0.25 * 72, 0.25 * 72, ...
+                         papersize_points(1) - 0.5*72, ...
+                         papersize_points(2) - 0.5*72];
+      elseif (strcmp (arg_st.resize_flag, "bestfit"))
+        ## leaves a minimum page margin of 0.25 inches
+        if (paperposition(3) > paperposition(4))
+          fit_scale = papersize_points(1) / paperposition(3);
+        else
+          fit_scale = papersize_points(2) / paperposition(4);
+        endif
+        paperposition = [(papersize_points(1) - fit_scale*paperposition(3)) * 0.5, ...
+                        (papersize_points(2) - fit_scale*paperposition(4)) * 0.5, ...
+                        fit_scale * paperposition(3), ...
+                        fit_scale * paperposition(4)];
+      endif
+    endif
+
     arg_st.canvas_size = paperposition(3:4);
     if (strcmp (__graphics_toolkit__, "gnuplot")
         && ! arg_st.ghostscript.epscrop)
@@ -613,7 +648,7 @@ function bin = __find_binary__ (binary)
 
 endfunction
 
-function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
+function [papersize, papersize_points, paperposition] = gs_papersize (hfig, paperorientation)
   persistent papertypes papersizes;
 
   if (isempty (papertypes))
@@ -638,9 +673,9 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   paperposition = get (hfig, "paperposition");
   if (strcmp (papertype, "<custom>"))
     papersize = get (hfig, "papersize");
-    papersize = convert2points (papersize , paperunits);
+    papersize = convert2points (papersize, paperunits);
   else
-    papersize = papersizes (strcmp (papertypes, papertype), :);
+    papersize = papersizes(strcmp (papertypes, papertype), :);
   endif
 
   if (strcmp (paperunits, "normalized"))
@@ -650,11 +685,15 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   endif
 
   ## FIXME: This will be obsoleted by listeners for paper properties.
-  ##        Papersize is tall when portrait,and wide when landscape.
+  ##        papersize is tall when portrait, and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize([2,1]);
   endif
+
+  ## papersize is now [h,w] and measured in points.
+  ## Return it for possible resize outside of this function.
+  papersize_points = papersize;
 
   if (! strcmp (papertype, "<custom>")
       && (strcmp (paperorientation, "portrait")))
@@ -683,7 +722,7 @@ function value = convert2points (value, units)
     case "inches"
       value *= 72;
     case "centimeters"
-      value *= 72 / 2.54;
+      value *= (72 / 2.54);
     case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");

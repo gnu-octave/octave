@@ -72,15 +72,25 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     "gouraud" (VertexNormals), AND a light object must be present in the
     axes.
 
- ** Printing to raster formats now uses an OpenGL-based method by
-    default.  The print options "-opengl" and "-painters" have been
-    added (for "qt" toolkit only), and the corresponding figure
-    properties "renderer" and "renderermode" are now also used when
-    printing.
+ ** Printing to raster formats (bitmaps like PNG or JPEG) now uses an
+    OpenGL-based method by default.  The print options "-opengl"
+    (raster) and "-painters" (vector) have been added ("qt" toolkit
+    only).  The figure property "renderer" specifies which renderer to
+    use.  When the property "renderermode" is "auto" Octave will select
+    -opengl for a raster output format and -painters for a vector output
+    format.
 
- ** The print option "-RGBImage" has been added.  It allows for
-    retrieving image pixels of a formatted figure instead of printing to
-    raster format.
+ ** A new print option "-RGBImage" has been added which captures the
+    pixels of a figure as an image.  This is similar to screen capture
+    tools, except that print formatting options can be used to, for
+    example, change the resolution or display the image in black and
+    white.
+
+ ** Two new print options for page-based formats (PDF, PostScript) have
+    been added.  The "-fillpage" option will stretch the plot to occupy
+    the entire page with 0.25 inch margins all around.  The "-bestfit"
+    option will expand the plot to take up as much room as possible on
+    the page without distorting the original aspect ratio of the plot.
 
  ** Printing using the -dtiff output device will now create compressed
     images using LZW compression.  This change was made for Matlab

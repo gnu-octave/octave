@@ -139,6 +139,15 @@
 ## orientation specified.  This option is equivalent to changing the figure's
 ## @qcode{"paperorientation"} property.
 ##
+## @item  -fillpage
+## @itemx -bestfit
+##   When using a page-based format (PDF, PostScript, printer) ignore the
+## @qcode{"paperposition"} property and have the plot occupy the entire page.
+## The option @option{-fillpage} will stretch the plot to occupy the page with
+## 0.25 inch margins all around.  The option @option{-bestfit} will expand the
+## plot to take up as much room as possible on the page @strong{without}
+## distorting the original aspect ratio of the plot.
+##
 ## @item  -color
 ## @itemx -mono
 ##   Color or monochrome output.

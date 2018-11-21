@@ -156,6 +156,12 @@
 ## @itemx -dashed
 ##   Force all lines to be solid or dashed, respectively.
 ##
+## @item -noui
+##   Don't print uicontrol objects such as pushbuttons which may overlay the
+## plot.  This is the default behavior and it is not possible to include
+## uicontrol objects in the output without using an external screen capture
+## tool.
+##
 ## @item -r@var{NUM}
 ##   Resolution of bitmaps in dots per inch (DPI).  For both metafiles and SVG
 ## the default is the screen resolution; for other formats the default is 150

@@ -171,9 +171,8 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2double (arg(3:end));
       elseif (strcmp (arg, "-noui"))
-        warning ("octave:ignoredargument", ...
-                 ["print: '%s' accepted for Matlab compatibility, ", ...
-                  "but is ignored."], arg);
+        ## Accepted, but nothing needs to be done since Octave already
+        ## excludes uicontrol objects when printing.
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)

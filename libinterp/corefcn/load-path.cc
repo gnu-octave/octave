@@ -366,7 +366,8 @@ namespace octave
         bool ok = di.update ();
 
         if (! ok)
-          warning ("load-path: update failed for '%s', removing from path");
+          warning ("load-path: update failed for '%s', removing from path",
+                   di.dir_name.c_str ());
         else
           add (di, true, "", true);
       }

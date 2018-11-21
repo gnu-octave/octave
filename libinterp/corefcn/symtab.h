@@ -210,13 +210,11 @@ namespace octave
 
     octave_value
     fcn_table_find (const std::string& name,
-                    const octave_value_list& args = octave_value_list (),
-                    bool local_funcs = true);
+                    const octave_value_list& args = octave_value_list ());
 
     octave_value
     find_function (const std::string& name,
-                   const octave_value_list& args = octave_value_list (),
-                   bool local_funcs = true);
+                   const octave_value_list& args = octave_value_list ());
 
     octave_value find_user_function (const std::string& name)
     {

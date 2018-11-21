@@ -181,9 +181,7 @@ namespace octave
         }
     }
 
-    octave_value
-    find (const std::string& name, const octave_value_list& args,
-          bool skip_variables, bool local_funcs);
+    octave_value find (const std::string& name);
 
     symbol_record&
     insert (const std::string& name, bool force_add = false);
@@ -718,13 +716,9 @@ namespace octave
         m_rep->inherit (donor_scope.get_rep ());
     }
 
-    octave_value
-    find (const std::string& name, const octave_value_list& args,
-          bool skip_variables, bool local_funcs)
+    octave_value find (const std::string& name)
     {
-      return (m_rep
-              ? m_rep->find (name, args, skip_variables, local_funcs)
-              : octave_value ());
+      return m_rep ? m_rep->find (name) : octave_value ();
     }
 
     symbol_record&

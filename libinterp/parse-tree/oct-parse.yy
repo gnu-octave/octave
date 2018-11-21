@@ -5007,7 +5007,7 @@ namespace octave
 
     // Check if this file is already loaded (or in the path)
     symbol_scope curr_scope = __get_current_scope__ ("source_file");
-    octave_value ov_code = curr_scope.find (symbol, ovl (), false, true);
+    octave_value ov_code = curr_scope.find (symbol);
 
     // For compatibility with Matlab, accept both scripts and
     // functions.

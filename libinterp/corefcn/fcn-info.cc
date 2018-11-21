@@ -345,9 +345,9 @@ namespace octave
   // than methods, but that does not seem to be the case.
 
   octave_value
-  fcn_info::fcn_info_rep::find (const octave_value_list& args, bool local_funcs)
+  fcn_info::fcn_info_rep::find (const octave_value_list& args)
   {
-    octave_value retval = xfind (args, local_funcs);
+    octave_value retval = xfind (args);
 
     if (retval.is_undefined ())
       {
@@ -359,92 +359,88 @@ namespace octave
 
         lp.update ();
 
-        retval = xfind (args, local_funcs);
+        retval = xfind (args);
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
-                                 bool local_funcs)
+  fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
   {
-    if (local_funcs)
+    symbol_scope curr_scope
+      = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
+
+    octave_user_function *current_fcn
+      = curr_scope ? curr_scope.function () : nullptr;
+
+    // Local function.
+
+    if (current_fcn)
       {
-        symbol_scope curr_scope
-          = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
+        std::string fcn_file = current_fcn->fcn_file_name ();
 
-        octave_user_function *current_fcn
-          = curr_scope ? curr_scope.function () : nullptr;
+        // For anonymous functions we look at the parent scope so that if
+        // they were defined within class methods and use local functions
+        // (helper functions) we can still use those anonymous functions
 
-        // Local function.
-
-        if (current_fcn)
+        if (current_fcn->is_anonymous_function ())
           {
-            std::string fcn_file = current_fcn->fcn_file_name ();
-
-            // For anonymous functions we look at the parent scope so that if
-            // they were defined within class methods and use local functions
-            // (helper functions) we can still use those anonymous functions
-
-            if (current_fcn->is_anonymous_function ())
-              {
-                if (fcn_file.empty ()
-                    && curr_scope.parent_scope ()
-                    && curr_scope.parent_scope ()->function () != nullptr)
-                  fcn_file
-                    = curr_scope.parent_scope ()->function ()->fcn_file_name();
-              }
-
-            if (! fcn_file.empty ())
-              {
-                auto r = local_functions.find (fcn_file);
-
-                if (r != local_functions.end ())
-                  {
-                    // We shouldn't need an out-of-date check here since
-                    // local functions may ultimately be called only from
-                    // a primary function or method defined in the same
-                    // file.
-
-                    return r->second;
-                  }
-              }
+            if (fcn_file.empty ()
+                && curr_scope.parent_scope ()
+                && curr_scope.parent_scope ()->function () != nullptr)
+              fcn_file
+                = curr_scope.parent_scope ()->function ()->fcn_file_name();
           }
 
-        // Private function.
-
-        if (current_fcn)
+        if (! fcn_file.empty ())
           {
-            std::string dir_name = current_fcn->dir_name ();
+            auto r = local_functions.find (fcn_file);
 
-            if (! dir_name.empty ())
+            if (r != local_functions.end ())
               {
-                auto q = private_functions.find (dir_name);
+                // We shouldn't need an out-of-date check here since
+                // local functions may ultimately be called only from
+                // a primary function or method defined in the same
+                // file.
 
-                if (q == private_functions.end ())
+                return r->second;
+              }
+          }
+      }
+
+    // Private function.
+
+    if (current_fcn)
+      {
+        std::string dir_name = current_fcn->dir_name ();
+
+        if (! dir_name.empty ())
+          {
+            auto q = private_functions.find (dir_name);
+
+            if (q == private_functions.end ())
+              {
+                octave_value val = load_private_function (dir_name);
+
+                if (val.is_defined ())
+                  return val;
+              }
+            else
+              {
+                octave_value& fval = q->second;
+
+                if (fval.is_defined ())
+                  out_of_date_check (fval, "", false);
+
+                if (fval.is_defined ())
+                  return fval;
+                else
                   {
                     octave_value val = load_private_function (dir_name);
 
                     if (val.is_defined ())
                       return val;
-                  }
-                else
-                  {
-                    octave_value& fval = q->second;
-
-                    if (fval.is_defined ())
-                      out_of_date_check (fval, "", false);
-
-                    if (fval.is_defined ())
-                      return fval;
-                    else
-                      {
-                        octave_value val = load_private_function (dir_name);
-
-                        if (val.is_defined ())
-                          return val;
-                      }
                   }
               }
           }

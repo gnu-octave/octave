@@ -183,8 +183,7 @@ protected:
   friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
-extern octave_value make_fcn_handle (const std::string& nm,
-                                     bool local_funcs = true);
+extern octave_value make_fcn_handle (const std::string& nm);
 
 class
 OCTINTERP_API

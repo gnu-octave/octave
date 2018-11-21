@@ -1459,7 +1459,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 octave_value
-make_fcn_handle (const std::string& nm, bool local_funcs)
+make_fcn_handle (const std::string& nm)
 {
   octave_value retval;
 
@@ -1593,17 +1593,15 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
   octave::symbol_table& symtab = octave::__get_symbol_table__ ("make_fcn_handle");
 
-  octave_value f = symtab.find_function (tnm, octave_value_list (),
-                                         local_funcs);
+  octave_value f = symtab.find_function (tnm, octave_value_list ());
 
   octave_function *fptr = f.function_value (true);
 
   // Here we are just looking to see if FCN is a method or constructor
   // for any class.
-  if (local_funcs && fptr
-      && (fptr->is_subfunction () || fptr->is_private_function ()
-          || fptr->is_class_constructor ()
-          || fptr->is_classdef_constructor ()))
+  if (fptr && (fptr->is_subfunction () || fptr->is_private_function ()
+               || fptr->is_class_constructor ()
+               || fptr->is_classdef_constructor ()))
     {
       // Locally visible function.
       retval = octave_value (new octave_fcn_handle (f, tnm));
@@ -1885,7 +1883,7 @@ functions.  This option is no longer supported.
         warning_with_id ("Octave:str2func-global-argument",
                          "str2func: second argument ignored");
 
-      retval = make_fcn_handle (nm, true);
+      retval = make_fcn_handle (nm);
     }
 
   return retval;

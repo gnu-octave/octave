@@ -56,48 +56,40 @@ namespace octave
   }
 
   octave_value
-  symbol_scope_rep::find (const std::string& name,
-                          const octave_value_list& args,
-                          bool skip_variables, bool local_funcs)
+  symbol_scope_rep::find (const std::string& name)
   {
-    // Variable.
-
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_scope_rep::find");
 
-    if (! skip_variables)
+    // Variable.
+
+    table_iterator p = m_symbols.find (name);
+
+    if (p != m_symbols.end ())
       {
-        table_iterator p = m_symbols.find (name);
+        symbol_record sr = p->second;
 
-        if (p != m_symbols.end ())
+        if (sr.is_global ())
+          return symtab.global_varval (name);
+        else
           {
-            symbol_record sr = p->second;
+            octave_value val = sr.varval (m_context);
 
-            if (sr.is_global ())
-              return symtab.global_varval (name);
-            else
-              {
-                octave_value val = sr.varval (m_context);
-
-                if (val.is_defined ())
-                  return val;
-              }
+            if (val.is_defined ())
+              return val;
           }
       }
 
-    if (local_funcs)
-      {
-        // Subfunction.  I think it only makes sense to check for
-        // subfunctions if we are currently executing a function defined
-        // from a .m file.
+    // Subfunction.  I think it only makes sense to check for
+    // subfunctions if we are currently executing a function defined
+    // from a .m file.
 
-        octave_value fcn = find_subfunction (name);
+    octave_value fcn = find_subfunction (name);
 
-        if (fcn.is_defined ())
-          return fcn;
-      }
+    if (fcn.is_defined ())
+      return fcn;
 
-    return symtab.fcn_table_find (name, args, local_funcs);
+    return symtab.fcn_table_find (name, ovl ());
   }
 
   symbol_record&

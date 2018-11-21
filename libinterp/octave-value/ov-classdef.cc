@@ -3381,7 +3381,7 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
   octave::symbol_scope curr_scope
     = octave::__get_current_scope__ ("cdef_package::cdef_package_rep::find");
 
-  return curr_scope.find (symbol_name, octave_value_list (), false, true);
+  return curr_scope.find (symbol_name);
 }
 
 octave_value_list
@@ -3793,8 +3793,7 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
               octave::symbol_scope curr_scope
                 = m_interpreter.get_current_scope ();
 
-              ov_cls = curr_scope.find (name, octave_value_list (),
-                                        false, true);
+              ov_cls = curr_scope.find (name);
             }
           else
             {

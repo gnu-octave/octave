@@ -380,18 +380,17 @@ namespace octave
 
   octave_value
   symbol_table::fcn_table_find (const std::string& name,
-                                const octave_value_list& args,
-                                bool local_funcs)
+                                const octave_value_list& args)
   {
     fcn_table_iterator p = m_fcn_table.find (name);
 
     if (p != m_fcn_table.end ())
-      return p->second.find (args, local_funcs);
+      return p->second.find (args);
     else
       {
         fcn_info finfo (name);
 
-        octave_value fcn = finfo.find (args, local_funcs);
+        octave_value fcn = finfo.find (args);
 
         if (fcn.is_defined ())
           m_fcn_table[name] = finfo;
@@ -404,8 +403,7 @@ namespace octave
 
   octave_value
   symbol_table::find_function (const std::string& name,
-                               const octave_value_list& args,
-                               bool local_funcs)
+                               const octave_value_list& args)
   {
     octave_value fcn;
 
@@ -417,7 +415,7 @@ namespace octave
           return fcn;
       }
 
-    return fcn_table_find (name, args, local_funcs);
+    return fcn_table_find (name, args);
   }
 
   // FIXME: this function only finds legacy class methods, not

@@ -1326,7 +1326,7 @@ public:
   const std::string& current_value (void) const
   {
     if (current_type != radio_t)
-      error ("%s: property has no radio value");
+      error ("%s: property has no radio value", get_name ().c_str ());
 
     return current_val;
   }

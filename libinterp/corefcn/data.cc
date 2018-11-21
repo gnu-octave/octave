@@ -617,7 +617,7 @@ periodic, @code{mod} is a better choice.
         btyp1 = btyp0;
 
       if (btyp0 != btyp1)
-        error ("rem: cannot combine %s and %d",
+        error ("rem: cannot combine %s and %s",
                args(0).class_name ().c_str (),
                args(1).class_name ().c_str ());
 
@@ -796,7 +796,7 @@ negative numbers or when the values are periodic.
         btyp1 = btyp0;
 
       if (btyp0 != btyp1)
-        error ("mod: cannot combine %s and %d",
+        error ("mod: cannot combine %s and %s",
                args(0).class_name ().c_str (),
                args(1).class_name ().c_str ());
 

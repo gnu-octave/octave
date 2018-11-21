@@ -332,7 +332,7 @@ namespace octave
               error ("%s: Only one 'at' clause is allowed -- %s",
                      who, args(pos).string_value ().c_str ());
             else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n");
+              error ("%s: line number must come before 'if' clause\n", who);
             seen_at = true;
 
             if (! seen_in)
@@ -346,7 +346,7 @@ namespace octave
                 seen_in = true;
               }
             else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n");
+              error ("%s: line number must come before 'if' clause\n", who);
 
             // Read a list of line numbers (or arrays thereof)
             for ( ; pos < nargin; pos++)
@@ -369,7 +369,7 @@ namespace octave
                   }
                 else
                   error ("%s: Invalid argument type %s",
-                         args(pos).type_name ().c_str ());
+                         who, args(pos).type_name ().c_str ());
               }
             break;
 

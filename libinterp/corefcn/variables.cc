@@ -698,9 +698,9 @@ set_internal_variable (double& var, const octave_value_list& args,
       double dval = args(0).xscalar_value ("%s: argument must be a scalar value", nm);
 
       if (dval < minval)
-        error ("%s: argument must be greater than %g", minval);
+        error ("%s: argument must be greater than %g", nm, minval);
       if (dval > maxval)
-        error ("%s: argument must be less than or equal to %g", maxval);
+        error ("%s: argument must be less than or equal to %g", nm, maxval);
 
       var = dval;
     }

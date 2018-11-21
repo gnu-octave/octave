@@ -1853,11 +1853,11 @@ function handle @var{fcn_handle}.
 DEFMETHOD (str2func, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} str2func (@var{fcn_name})
-@deftypefnx {} {} str2func (@var{fcn_name}, "global")
 Return a function handle constructed from the string @var{fcn_name}.
 
-If the optional @qcode{"global"} argument is passed, locally visible
-functions are ignored in the lookup.
+Previous versions of Octave accepted an optional second argument,
+@qcode{"global"}, that caused str2func to ignore locally visible
+functions.  This option is no longer supported.
 @seealso{func2str, inline, functions}
 @end deftypefn */)
 {
@@ -1880,7 +1880,13 @@ functions are ignored in the lookup.
         retval = anon_fcn_handle;
     }
   else
-    retval = make_fcn_handle (nm, nargin != 2);
+    {
+      if (nargin == 2)
+        warning_with_id ("Octave:str2func-global-argument",
+                         "str2func: second argument ignored");
+
+      retval = make_fcn_handle (nm, true);
+    }
 
   return retval;
 }

@@ -134,7 +134,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (ischar (fun))
-    fun = str2func (fun, "global");
+    fun = str2func (fun);
   endif
 
   ## FIXME: Display is not yet implemented

@@ -101,7 +101,7 @@ function [x, fval, info, output] = fminbnd (fun, a, b, options = struct ())
   endif
 
   if (ischar (fun))
-    fun = str2func (fun, "global");
+    fun = str2func (fun);
   endif
 
   displ = optimget (options, "Display", "notify");

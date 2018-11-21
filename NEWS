@@ -107,6 +107,13 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
  ** It is now possible to use files and folders containing Unicode
     characters in Windows.
 
+ ** The str2func function no longer accepts a second "global" argument.
+    This argument was typically used to allow functions that accept
+    function names as arguments to avoid conflicts with subfunctions or
+    nested functions.  Instead, it's best to avoid this situation
+    entirely and require users to pass function handles rather than
+    function names.
+
  ** New functions added in 5.0:
 
       isfile

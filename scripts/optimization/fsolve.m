@@ -185,7 +185,7 @@ function [x, fval, info, output, fjac] = fsolve (fcn, x0, options = struct ())
   endif
 
   if (ischar (fcn))
-    fcn = str2func (fcn, "global");
+    fcn = str2func (fcn);
   elseif (iscell (fcn))
     fcn = @(x) make_fcn_jac (x, fcn{1}, fcn{2});
   endif

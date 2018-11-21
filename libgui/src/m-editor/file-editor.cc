@@ -2074,6 +2074,7 @@ namespace octave
     popdown_button->setToolTip (tr ("Recent Files"));
     popdown_button->setMenu (m_mru_file_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
+    popdown_button->setArrowType (Qt::DownArrow);
     popdown_button->setToolButtonStyle (Qt::ToolButtonTextOnly);
 
     // new and open actions are inserted later from main window

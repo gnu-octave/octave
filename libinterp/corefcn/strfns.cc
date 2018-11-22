@@ -796,12 +796,12 @@ risk of using @code{eval} on unknown data.
       if (args(0).rows () == 0 || args(0).columns () == 0)
         retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
       else if (args(0).rows () == 1 && args(0).ndims () == 2)
-        retval = octave_str2double (args(0).string_value ());
+        retval = octave::string::str2double (args(0).string_value ());
       else
         {
           const string_vector sv = args(0).string_vector_value ();
 
-          retval = sv.map<Complex> (octave_str2double);
+          retval = sv.map<Complex> (octave::string::str2double);
         }
     }
   else if (args(0).iscell ())
@@ -813,7 +813,7 @@ risk of using @code{eval} on unknown data.
       for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
           if (cell(i).is_string ())
-            output(i) = octave_str2double (cell(i).string_value ());
+            output(i) = octave::string::str2double (cell(i).string_value ());
         }
       retval = output;
     }

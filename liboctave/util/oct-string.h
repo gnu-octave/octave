@@ -122,11 +122,11 @@ namespace octave
     template <typename T>
     bool strncmpi (const T& str_a, const typename T::value_type *str_b,
                    const typename T::size_type n);
+
+    extern OCTAVE_API Complex
+    str2double (const std::string& str_arg);
   }
 }
-
-extern OCTAVE_API Complex
-octave_str2double (const std::string& str_arg);
 
 template <typename T>
 extern OCTAVE_API std::string

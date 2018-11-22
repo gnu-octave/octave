@@ -450,7 +450,7 @@ set_component (Complex& c, double num, bool imag)
 }
 
 Complex
-octave_str2double (const std::string& str_arg)
+octave::string::str2double (const std::string& str_arg)
 {
   Complex val (0.0, 0.0);
 

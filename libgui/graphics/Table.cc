@@ -378,7 +378,7 @@ namespace QtHandles
     else if (old_value.isnumeric () && ! old_value.isinteger ())
       {
         // Basically need to do str2double
-        Complex complex = octave_str2double (ov.string_value ());
+        Complex complex = octave::string::str2double (ov.string_value ());
         if (old_value.is_single_type ())
           retval = octave_value (FloatComplex (complex));
         else
@@ -394,7 +394,7 @@ namespace QtHandles
           retval = octave_value (false);
       }
     else
-      retval = octave_value (octave_str2double (ov.string_value ()));
+      retval = octave_value (octave::string::str2double (ov.string_value ()));
     return retval;
   }
 

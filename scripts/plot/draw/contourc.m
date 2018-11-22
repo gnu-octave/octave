@@ -26,7 +26,7 @@
 ## The matrix @var{z} contains height values above the rectangular grid
 ## determined by @var{x} and @var{y}.  If only a single input @var{z} is
 ## provided then @var{x} is taken to be @code{1:columns (@var{z})} and @var{y}
-## is taken to be @code{1:rows (@var{z})}.
+## is taken to be @code{1:rows (@var{z})}.  The minimum data size is 2x2.
 ##
 ## The optional input @var{vn} is either a scalar denoting the number of
 ## contour lines to compute or a vector containing the Z values where lines
@@ -67,8 +67,6 @@
 ## @seealso{contour, contourf, contour3, clabel}
 ## @end deftypefn
 
-## Author: Shai Ayal <shaiay@users.sourceforge.net>
-
 function [c, lev] = contourc (varargin)
 
   if (nargin < 1 || nargin > 4)
@@ -97,8 +95,13 @@ function [c, lev] = contourc (varargin)
     vn = varargin{4};
   endif
 
-  if (! ismatrix (z) || ! ismatrix (x) || ! ismatrix (y))
-    error ("contourc: X, Y, and Z must be matrices");
+  if (! (isnumeric (z) && isnumeric (x) && isnumeric (y))
+      || ! (ismatrix (z) && ismatrix (x) && ismatrix (y)))
+    error ("contourc: X, Y, and Z must be numeric matrices");
+  endif
+
+  if (rows (z) < 2 || columns (z) < 2)
+    error ("contourc: Z data must have at least 2 rows and 2 columns");
   endif
 
   if (isscalar (vn))
@@ -168,3 +171,15 @@ endfunction
 %! [c_obs, lev_obs] = contourc (x, y, z, 2:3);
 %! assert (c_obs, c_exp, eps);
 %! assert (lev_obs, lev_exp, eps);
+
+## Test input validation
+%!error contourc ()
+%!error contourc (1,2,3,4,5)
+%!error <X, Y, and Z must be numeric> contourc ({1})
+%!error <X, Y, and Z must be numeric> contourc ({1}, 2, 3)
+%!error <X, Y, and Z must be numeric> contourc (1, {2}, 3)
+%!error <X, Y, and Z must be .* matrices> contourc (ones (3,3,3))
+%!error <X, Y, and Z must be .* matrices> contourc (ones (3,3,3), 2, 3)
+%!error <X, Y, and Z must be .* matrices> contourc (1, ones (3,3,3), 3)
+%!error <Z data must have at least 2 rows> contourc ([1, 2])
+%!error <Z data must have at least .* 2 columns> contourc ([1; 2])

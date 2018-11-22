@@ -4355,6 +4355,7 @@ public:
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
       array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
@@ -5455,6 +5456,7 @@ public:
       bool_property clipping , "on"
       radio_property enable , "{on}|inactive|off"
       array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
@@ -5567,6 +5569,7 @@ public:
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
       bool_property clipping , "on"
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
@@ -5663,6 +5666,7 @@ public:
       color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
@@ -5760,6 +5764,7 @@ public:
       any_property data u , Matrix ()
       bool_property enable , "on"
       array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10

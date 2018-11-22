@@ -3188,7 +3188,7 @@ public:
 
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
-      // FIXME: DEPRECATED: Remove in version 5.
+      // FIXME: DEPRECATED: Remove in version 6.
       bool_property doublebuffer hd , "on"
       double_property mincolormap hd , 64
       string_property wvisual hmd , ""
@@ -4237,9 +4237,6 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      // FIXME: DEPRECATED: Remove erasemode property in version 5
-      // (rm all instances in file).
-      radio_property erasemode h , "{normal}|none|xor|background"
       // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linejoin , "{round}|miter|chamfer"
@@ -4357,7 +4354,6 @@ public:
       color_property color u , color_values (0, 0, 0)
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
-      radio_property erasemode h , "{normal}|none|xor|background"
       array_property extent rG , Matrix (1, 4, 0.0)
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
@@ -4530,7 +4526,6 @@ public:
       radio_property alphadatamapping al , "{none}|direct|scaled"
       array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
-      radio_property erasemode h , "{normal}|none|xor|background"
       row_vector_property xdata mu , Matrix ()
       row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
@@ -4810,7 +4805,6 @@ public:
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property edgelighting u , "{none}|flat|gouraud|phong"
-      radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting u , "none|{flat}|gouraud|phong"
@@ -5064,7 +5058,6 @@ public:
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property edgelighting u , "{none}|flat|gouraud|phong"
-      radio_property erasemode h , "{normal}|none|xor|background"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
       radio_property facelighting u , "none|{flat}|gouraud|phong"
@@ -5244,7 +5237,6 @@ public:
 
     BEGIN_PROPERTIES (hggroup)
       string_property displayname , ""
-      radio_property erasemode h , "{normal}|none|xor|background"
 
       // hidden properties for limit computation
       row_vector_property alim hr , Matrix ()

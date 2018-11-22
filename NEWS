@@ -185,8 +185,14 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       ---------------------|-------------------------|-------------------
       axes                 | xaxislocation           | "zero"
                            | yaxislocation           | "zero"
+      hggroup              | erasemode               |
+      image                | erasemode               |
+      line                 | erasemode               |
+      patch                | erasemode               |
       patch                | normalmode              |
+      surface              | erasemode               |
       surface              | normalmode              |
+      text                 | erasemode               |
 
  ** The C++ function is_keyword has been deprecated in favor of
     iskeyword.  The old function will be removed two versions after 5.0.

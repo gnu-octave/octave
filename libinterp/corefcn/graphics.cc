@@ -2733,7 +2733,7 @@ gh_manager::do_free (const graphics_handle& h)
 
       base_properties& bp = p->second.get_properties ();
 
-      if (!p->second.valid_object () || bp.is_beingdeleted ())
+      if (! p->second.valid_object () || bp.is_beingdeleted ())
         return;
 
       graphics_handle parent_h = p->second.get_parent ();
@@ -10885,21 +10885,20 @@ uitable::properties::get_boundingbox (bool,
   pos(0)--;
   pos(1)--;
   pos(1) = parent_size(1) - pos(1) - pos(3);
+
   return pos;
 }
 
 void
 uitable::properties::set_columnformat (const octave_value& val)
 {
-  /* Matlab only allows certain values for columnformat - here we will only
-     check the structure of the argument. Values will be checked in Table.cc */
+  /* Matlab only allows certain values for ColumnFormat. Here we only check the
+   * structure of the argument.  Values will be checked in Table.cc */
 
   if (val.iscellstr ())
     {
       if (columnformat.set (val, true))
-        {
-          mark_modified ();
-        }
+        mark_modified ();
     }
   else if (val.iscell ())
     {
@@ -10907,41 +10906,35 @@ uitable::properties::set_columnformat (const octave_value& val)
 
       for (int i = 0; i < cell_value.numel (); i++)
         {
-          octave_value v = cell_value (i);
+          octave_value v = cell_value(i);
           if (v.iscell ())
             {
-              /* We are in a pop-up menu selection
-               * Matlab only allows non-empty strings here */
+              /* We are in a pop-up menu selection.
+               * Matlab only allows non-empty strings here. */
               Cell popup = v.cell_value ();
               for (int j = 0; j < popup.numel (); j++)
                 {
-                  octave_value p = popup (j);
-                  if (!p.is_string () || p.string_value ().length () == 0)
-                    {
-                      error ("set: pop-up menu definitions must be non-empty strings.");
-                    }
+                  octave_value p = popup(j);
+                  if (! p.is_string () || p.isempty ())
+                    error ("set: pop-up menu definitions must be non-empty strings.");
                 }
             }
-          else if (!(v.is_string () || v.isempty ()))
+          else if (! (v.is_string () || v.isempty ()))
             {
               error ("set: columnformat definintions must be a cellstr of "
-                "either 'char', 'short [e|g|eng]?', 'long [e|g|eng]?', "
-                "'numeric', 'bank', '+', 'rat', 'logical', or a cellstr of non-empty "
-                "pop-up menu definitions.");
+                     "either 'char', 'short [e|g|eng]?', 'long [e|g|eng]?', "
+                     "'numeric', 'bank', '+', 'rat', 'logical', "
+                     "or a cellstr of non-empty pop-up menu definitions.");
             }
         }
 
       if (columnformat.set (val, true))
-        {
-          mark_modified ();
-        }
+        mark_modified ();
     }
   else if (val.isempty ())
     {
       if (columnformat.set (Cell (), true))
-        {
-          mark_modified ();
-        }
+        mark_modified ();
     }
   else
     {
@@ -10953,16 +10946,15 @@ void
 uitable::properties::set_columnwidth (const octave_value& val)
 {
   bool error_exists = false;
-  if (val.is_string ()  && val.string_value (false) == "auto")
-    {
-      error_exists = false;
-    }
+
+  if (val.is_string () && val.string_value (false) == "auto")
+    error_exists = false;
   else if (val.iscell ())
     {
       Cell cell_value = val.cell_value ();
       for (int i = 0; i < cell_value.numel (); i++)
         {
-          octave_value v = cell_value (i);
+          octave_value v = cell_value(i);
           if (v.is_string ())
             {
               if (v.string_value (false) != "auto")
@@ -10972,27 +10964,21 @@ uitable::properties::set_columnwidth (const octave_value& val)
             {
               error_exists = true;
             }
-          else if (!(v.is_scalar_type ()))
+          else if (! v.is_scalar_type ())
             {
               error_exists = true;
             }
         }
     }
   else
-    {
-      error_exists = true;
-    }
+    error_exists = true;
 
   if (error_exists)
-    {
-      error ("set: expecting either 'auto' or a cell of pixel values or auto.");
-    }
+    error ("set: expecting either 'auto' or a cell of pixel values or auto.");
   else
     {
       if (columnwidth.set (val, true))
-        {
-          mark_modified ();
-        }
+        mark_modified ();
     }
 }
 
@@ -11083,6 +11069,7 @@ uitable::properties::get_alternatebackgroundcolor_rgb (void)
   Matrix bg = backgroundcolor.get ().matrix_value ();
   if (bg.rows () > 1)
     i = 1;
+
   return bg.row (i);
 }
 
@@ -11105,6 +11092,7 @@ uitable::properties::get_extent (void) const
 
       return convert_position (m, "pixels", get_units (), parent_size);
     }
+
   return m;
 }
 

@@ -31,11 +31,11 @@
 ## @end deftypefn
 
 function genpropdoc (objname, fname)
-  objnames = {"root", "figure", "axes", "line", ...
-              "text", "image", "patch", "surface", "light", ...
-              "uimenu", "uibuttongroup", "uicontextmenu", "uipanel", ...
-              "uicontrol", "uitable", "uitoolbar", "uipushtool", ...
-              "uitoggletool"};
+  objnames = {"root", "figure", "axes", ...
+              "image", "light", "line", "patch", "surface", "text", ...
+              "uibuttongroup", "uicontextmenu", "uicontrol", "uipanel", ...
+              "uimenu", "uipushtool", "uitable", "uitoggletool" "uitoolbar"
+             };
 
   ## Base properties
   base = getstructure ("base");
@@ -90,7 +90,7 @@ function s = getdoc (objname, field, base)
   ##
   ## -"printdefault": a boolean (def. true) that specifies whether the
   ##   default value should be printed.  It is useful for properties
-  ##   like root "screendepth" that default to screen dependant values.
+  ##   like root "screendepth" that default to screen dependent values.
 
   packopt = @(c) strjoin (c, " | ");
   markdef = @(s) ["@{" s "@}"];
@@ -1660,38 +1660,51 @@ point source (@qcode{\"local\"}).";
 
   ## uitable Properties
   elseif (strcmp (objname, "uitable"))
-      switch (field)
-        ## Overridden shared properties
+    switch (field)
+      ## Overridden shared properties
 
-        ## Specific properties
-        case "backgroundcolor"
-        case "celleditcallback"
-        case "cellselectioncallback"
-        case "columneditable"
-        case "columnformat"
-        case "columnname"
-        case "columnwidth"
-        case "createfcn"
-        case "data"
-        case "deletefcn"
-        case "enable"
-        case "extent"
-        case "fontangle"
-        case "fontname"
-        case "fontsize"
-        case "fontunits"
-        case "fontweight"
-        case "foregroundcolor"
-        case "keypressfcn"
-        case "keyreleasefcn"
-        case "position"
-        case "rearrangeablecolumns"
-        case "rowname"
-        case "rowstriping"
-        case "tooltipstring"
-        case "units"
+      ## Specific properties
+      case "backgroundcolor"
+      case "celleditcallback"
+      case "cellselectioncallback"
+      case "columneditable"
+      case "columnformat"
+      case "columnname"
+      case "columnwidth"
+      case "data"
+      case "enable"
+      case "extent"
+        s.valid = valid_4elvec;
+        s.printdefault = false;
 
-      endswitch
+      case "fontangle"
+        s.doc = doc_fontangle;
+
+      case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
+      case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
+      case "fontunits"
+        s.doc = doc_fontunits;
+
+      case "fontweight"
+        s.doc = doc_fontweight;
+
+      case "foregroundcolor"
+      case "keypressfcn"
+      case "keyreleasefcn"
+      case "position"
+      case "rearrangeablecolumns"
+      case "rowname"
+      case "rowstriping"
+      case "tooltipstring"
+      case "units"
+
+    endswitch
 
   ## uitoolbar properties
   elseif (strcmp (objname, "uitoolbar"))
@@ -1854,9 +1867,9 @@ function def = getdefault (h, objname, field)
         endif
 
         ## Replace texinfo reserved characters
-        def = strrep (str, "{", "@{");
+        def = strrep (str, "@", "@@");  # must occur first
+        def = strrep (def, "{", "@{");
         def = strrep (def, "}", "@}");
-        def = strrep (def, "@", "@@");
 
         def = ["@code{" def "}"];
       else

@@ -2324,7 +2324,7 @@ public:
 
   static property_list::pval_map_type factory_defaults (void);
 
-  // FIXME: these functions should be generated automatically by the
+  // FIXME: These functions should be generated automatically by the
   //        genprops.awk script.
   //
   // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
@@ -2815,7 +2815,7 @@ public:
 
   operator bool (void) const { return rep->valid_object (); }
 
-  // FIXME: these functions should be generated automatically by the
+  // FIXME: These functions should be generated automatically by the
   //        genprops.awk script.
   //
   // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
@@ -3110,7 +3110,6 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (figure)
@@ -3610,7 +3609,6 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
@@ -4352,6 +4350,7 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (text)
       color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
@@ -4454,8 +4453,7 @@ public:
     {
       update_font ();
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in
-      // version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5517,8 +5515,7 @@ public:
     void update_fontweight (void)
     {
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in
-      // version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5615,7 +5612,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: DEPRECATED: Remove this warning in version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5704,7 +5701,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: DEPRECATED: Remove this warning in version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5756,17 +5753,20 @@ public:
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
 
+    // FIXME: keypressfcn, keyreleasefcn, rearrangeablecolumns properties
+    //        seem to have been removed from Matlab.
+
     BEGIN_PROPERTIES (uitable)
       any_property __object__ h , Matrix ()
       array_property backgroundcolor , default_table_backgroundcolor ()
       callback_property celleditcallback , Matrix ()
       callback_property cellselectioncallback , Matrix ()
       row_vector_property columneditable , Matrix ()
-      any_property columnformat S , Matrix ()
+      any_property columnformat S , Cell ()
       any_property columnname , "numbered"
       any_property columnwidth S , "auto"
       any_property data u , Matrix ()
-      radio_property enable , "{on}|inactive|off"
+      bool_property enable , "on"
       array_property extent rG , Matrix (1, 4, 0.0)
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
@@ -5795,8 +5795,8 @@ public:
     {
       position.add_constraint (dim_vector (1, 4));
       extent.add_constraint (dim_vector (1, 4));
-      backgroundcolor.add_constraint (dim_vector (-1, 3));
       backgroundcolor.add_constraint ("double");
+      backgroundcolor.add_constraint (dim_vector (-1, 3));
       columneditable.add_constraint ("logical");
     }
 
@@ -5807,8 +5807,17 @@ public:
     void update_fontname (void) { update_table_extent (); }
     void update_fontsize (void) { update_table_extent (); }
     void update_fontangle (void) { update_table_extent (); }
-    void update_fontweight (void) { update_table_extent (); }
 
+    void update_fontweight (void)
+    {
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+
+      update_table_extent ();
+    }
   };
 
 private:

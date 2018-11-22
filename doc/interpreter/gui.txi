@@ -28,7 +28,8 @@ for plot windows.  For example, rather than hardcoding a filename for output
 results a script can open a dialog box and allow the user to choose a file.
 Similarly, if a calculation is expected to take a long time a script can
 display a progress bar.  The various UI elements can be used to fully customize
-the plot window with menubars, context menus,
+the plot window with menubars, toolbars, context menus, pushbuttons, sliders,
+etc.
 
 Several utility functions make it possible to store private data for use with
 a GUI which will not pollute the user's variable space.
@@ -61,8 +62,8 @@ a filename.
 @cindex dialog, displaying a dialog for storing files
 @DOCSTRING(uiputfile)
 
-Additionally, there are dialog boxes for printing further help, warnings or
-errors and to get textual input from the user.
+Additionally, there are dialog boxes for displaying help messages, warnings, or
+errors, and for getting text input from the user.
 
 @cindex dialog, displaying an error dialog
 @DOCSTRING(errordlg)
@@ -103,23 +104,23 @@ The @nospell{ui*} series of functions work best with the @code{qt} graphics
 toolkit, although some functionality is available with the @code{fltk} toolkit.
 There is no support for the @code{gnuplot} toolkit.
 
-@DOCSTRING(uimenu)
+@DOCSTRING(uipanel)
 
 @DOCSTRING(uibuttongroup)
 
-@DOCSTRING(uicontextmenu)
-
 @DOCSTRING(uicontrol)
 
-@DOCSTRING(uipanel)
-
 @DOCSTRING(uitable)
+
+@DOCSTRING(uimenu)
+
+@DOCSTRING(uicontextmenu)
+
+@DOCSTRING(uitoolbar)
 
 @DOCSTRING(uipushtool)
 
 @DOCSTRING(uitoggletool)
-
-@DOCSTRING(uitoolbar)
 
 @node GUI Utility Functions
 @section GUI Utility Functions

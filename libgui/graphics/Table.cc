@@ -4,19 +4,19 @@ Copyright (C) 2016 Andrew Thornton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+<https://www.gnu.org/licenses/>.
 
 */
 
@@ -56,10 +56,9 @@ namespace QtHandles
 
   static const int AUTO_WIDTH = 75;
 
-#define AUTO_HEIGHT \
-  tp.get_fontsize () * 2 - 1
+#define AUTO_HEIGHT tp.get_fontsize () * 2 - 1
 
-  static QSize realQSizeForTable(QTableWidget *t)
+  static QSize realQSizeForTable (QTableWidget *t)
   {
     int w = t->verticalHeader ()->width () + 4;
     for (int i = 0; i < t->columnCount (); i++)
@@ -67,7 +66,7 @@ namespace QtHandles
     int h = t->horizontalHeader ()->height () + 4;
     for (int i = 0; i < t->rowCount (); i++)
       h += t->rowHeight (i);
-    return QSize(w, h);
+    return QSize (w, h);
   }
 
 #define FORMATNUMBER(type)                                                    \
@@ -78,32 +77,32 @@ namespace QtHandles
     if (format == 'n')                                                        \
       {                                                                       \
         if (d == floor (d))                                                   \
-          return QString::number(d, 'g', precision);                          \
+          return QString::number (d, 'g', precision);                         \
         else if (d <= pow (10, precision - 1) && d > pow (10, 1 - precision)) \
-          return QString::number(d, 'f', precision);                          \
+          return QString::number (d, 'f', precision);                         \
         else                                                                  \
-          return QString::number(d, 'e', precision);                          \
+          return QString::number (d, 'e', precision);                         \
       }                                                                       \
     else if (format == 'F')                                                   \
       {                                                                       \
         int exponent = floor (log10 (d) / 3) * 3;                             \
-        d *=  pow (10, -exponent);                                            \
-        return QString::number(d, 'f', precision) + "e" +                     \
+        d *= pow (10, -exponent);                                             \
+        return QString::number (d, 'f', precision) + "e" +                    \
           (exponent < 0 ? "-" : "+") +                                        \
-          QString("%1").arg(abs (exponent), 3, 10, QChar('0'));               \
+          QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));            \
       }                                                                       \
     else if (format == 'E')                                                   \
       {                                                                       \
         int exponent = floor (log10 (d) / 3) * 3;                             \
         d *=  pow (10, -exponent);                                            \
-        return QString::number(d,                                             \
-                               'f',                                           \
-                               precision - floor (log10 (d)) - 1) +           \
+        return QString::number (d,                                            \
+                                'f',                                          \
+                                precision - floor (log10 (d)) - 1) +          \
                "e" + (exponent < 0 ? "-" : "+") +                             \
-               QString("%1").arg(abs (exponent), 3, 10, QChar('0'));          \
+               QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));       \
       }                                                                       \
     else                                                                      \
-      return QString::number(d, format, precision);                           \
+      return QString::number (d, format, precision);                          \
   }
 
   FORMATNUMBER(double)
@@ -113,78 +112,78 @@ namespace QtHandles
 
   static QString formatComplex (Complex c, char format = 'f', int precision = 4)
   {
-    return formatNumber(c.real(), format, precision) +
-      " + " + formatNumber(c.imag (), format, precision) + "i";
+    return formatNumber (c.real (), format, precision) + " + "
+           + formatNumber (c.imag (), format, precision) + "i";
   }
 
 #define FORMAT_VALUE_EXCEPT_RAT(f,l)                      \
   if (format == "numeric" || format == "short")           \
-    text = formatNumber(value, 'n', f);                   \
+    text = formatNumber (value, 'n', f);                  \
   else if (format == "short f" || format == "shortf")     \
-    text = formatNumber(value, 'f', f);                   \
+    text = formatNumber (value, 'f', f);                  \
   else if (format == "short e" || format == "shorte")     \
-    text = formatNumber(value, 'e', f);                   \
+    text = formatNumber (value, 'e', f);                  \
   else if (format == "short eng" || format == "shorteng") \
-    text = formatNumber(value, 'F', f);                   \
+    text = formatNumber (value, 'F', f);                  \
   else if (format == "short g" || format == "shortg")     \
-    text = formatNumber(value, 'g', f + 1);               \
+    text = formatNumber (value, 'g', f + 1);              \
   else if (format == "long")                              \
-    text = formatNumber(value, 'n', l);                   \
+    text = formatNumber (value, 'n', l);                  \
   else if (format == "long f" || format == "longf")       \
-    text = formatNumber(value, 'f', l);                   \
+    text = formatNumber (value, 'f', l);                  \
   else if (format == "long e" || format == "longe")       \
-    text = formatNumber(value, 'e', l);                   \
+    text = formatNumber (value, 'e', l);                  \
   else if (format == "long eng" || format == "longeng")   \
-    text = formatNumber(value, 'E', l);                   \
+    text = formatNumber (value, 'E', l);                  \
   else if (format == "long g" || format == "longg")       \
-    text = formatNumber(value, 'g', l + 1);               \
+    text = formatNumber (value, 'g', l + 1);              \
   else if (format == "bank")                              \
-    text = QString::number(value, 'f', 2);                \
+    text = QString::number (value, 'f', 2);               \
   else if (format == "+")                                 \
     if (value > 0)                                        \
-      text = Utils::fromStdString("+");                   \
+      text = Utils::fromStdString ("+");                  \
     else if (value < 0)                                   \
-      text = Utils::fromStdString("-");                   \
+      text = Utils::fromStdString ("-");                  \
     else                                                  \
-      text = Utils::fromStdString("");
+      text = Utils::fromStdString ("");
 
-#define FORMAT_VALUE(f,l)                                            \
-  FORMAT_VALUE_EXCEPT_RAT(f,l)                                       \
-  else if (format == "rat")                                          \
-    text = Utils::fromStdString(rational_approx(double (value), 0)); \
-  else                                                               \
-    {                                                                \
-      text = formatNumber (value, 'n', f);                           \
-      flag = Qt::AlignLeft ;                                         \
+#define FORMAT_VALUE(f,l)                                               \
+  FORMAT_VALUE_EXCEPT_RAT(f,l)                                          \
+  else if (format == "rat")                                             \
+    text = Utils::fromStdString (rational_approx (double (value), 0));  \
+  else                                                                  \
+    {                                                                   \
+      text = formatNumber (value, 'n', f);                              \
+      flag = Qt::AlignLeft ;                                            \
     }
 
-#define FORMAT_UINT_VALUE()                   \
-  text = QString::number(value);              \
-  if (format == "char"  || format == "popup") \
-    flag = Qt::AlignLeft;                     \
-  else if (format == "+")                     \
-    {                                         \
-      if (value > 0)                          \
-        text = Utils::fromStdString("+");     \
-      else                                    \
-        text = Utils::fromStdString("");      \
+#define FORMAT_UINT_VALUE()                    \
+  text = QString::number (value);              \
+  if (format == "char"  || format == "popup")  \
+    flag = Qt::AlignLeft;                      \
+  else if (format == "+")                      \
+    {                                          \
+      if (value > 0)                           \
+        text = Utils::fromStdString ("+");     \
+      else                                     \
+        text = Utils::fromStdString ("");      \
     }
 
-#define FORMAT_INT_VALUE()                    \
-  text = QString::number(value);              \
-  if (format == "char" || format == "popup")  \
-    flag = Qt::AlignLeft ;                    \
-  else if (format == "+")                     \
-    {                                         \
-      if (value > 0)                          \
-        text = Utils::fromStdString("+");     \
-      else if (value < 0)                     \
-        text = Utils::fromStdString("-");     \
-      else                                    \
-        text = Utils::fromStdString("");      \
+#define FORMAT_INT_VALUE()                     \
+  text = QString::number (value);              \
+  if (format == "char" || format == "popup")   \
+    flag = Qt::AlignLeft ;                     \
+  else if (format == "+")                      \
+    {                                          \
+      if (value > 0)                           \
+        text = Utils::fromStdString ("+");     \
+      else if (value < 0)                      \
+        text = Utils::fromStdString ("-");     \
+      else                                     \
+        text = Utils::fromStdString ("");      \
     }
 
-  static std::pair <Qt::AlignmentFlag, QString> qStringValueFor (
+  static std::pair<Qt::AlignmentFlag, QString> qStringValueFor (
     octave_value val, std::string format = "")
   {
     Qt::AlignmentFlag flag = Qt::AlignRight;
@@ -196,45 +195,45 @@ namespace QtHandles
       }
     else if (val.iscomplex ())
       {
-        // Matlab has mulitple complex types we only have double.
+        // Matlab has multiple complex types, we only have double.
         Complex c = val.complex_value ();
         if (format == "short")
-          text = formatComplex(c, 'f', 4);
+          text = formatComplex (c, 'f', 4);
         else if (format == "short e" || format == "shorte")
-          text = formatComplex(c, 'e', 4);
+          text = formatComplex (c, 'e', 4);
         else if (format == "short eng" || format == "shorteng")
-          text = formatComplex(c, 'E', 4);
+          text = formatComplex (c, 'E', 4);
         else if (format == "short g" || format == "shortg")
-          text = formatComplex(c, 'g', 5);
+          text = formatComplex (c, 'g', 5);
         else if (format == "long")
-          text = formatComplex(c, 'f', 15);
+          text = formatComplex (c, 'f', 15);
         else if (format == "long e" || format == "longe")
-          text = formatComplex(c, 'e', 15);
+          text = formatComplex (c, 'e', 15);
         else if (format == "long eng" || format == "longeng")
-          text = formatComplex(c, 'E', 15);
+          text = formatComplex (c, 'E', 15);
         else if (format == "long g" || format == "longg")
-          text = formatComplex(c, 'g', 16);
+          text = formatComplex (c, 'g', 16);
         else if (format == "bank")
-          text = QString::number(c.real (), 'f', 2);
+          text = QString::number (c.real (), 'f', 2);
         else if (format == "+")
           {
             if (c.real () > 0)
-              text = Utils::fromStdString("+");
+              text = Utils::fromStdString ("+");
             else if (c.real () < 0)
-              text = Utils::fromStdString("-");
+              text = Utils::fromStdString ("-");
             else
-              text = Utils::fromStdString("");
+              text = Utils::fromStdString ("");
           }
         else if (format == "rat")
-          text = Utils::fromStdString(rational_approx(c.real (), 0)) + " + " +
-            Utils::fromStdString(rational_approx(c.imag (), 0)) + "i";
+          text = Utils::fromStdString (rational_approx (c.real (), 0)) + " + "
+                 + Utils::fromStdString (rational_approx (c.imag (), 0)) + "i";
         else if (format == "numeric")
           text = QString::number (c.real (), 'g', 5) + " + "
-            + QString::number (c.imag (), 'g', 5) + "i";
+                 + QString::number (c.imag (), 'g', 5) + "i";
         else
           {
             text = QString::number (c.real (), 'g', 5) + " + "
-              + QString::number (c.imag (), 'g', 5) + "i";
+                   + QString::number (c.imag (), 'g', 5) + "i";
             flag = Qt::AlignLeft ;
           }
       }
@@ -293,28 +292,29 @@ namespace QtHandles
         bool b = val.bool_value ();
         if (format == "char" || format == "popup" || format == "")
           {
-            text = Utils::fromStdString(b ? "true" : "false");
+            text = Utils::fromStdString (b ? "true" : "false");
             flag = Qt::AlignLeft ;
           }
         else if (format == "+")
           {
-            text = Utils::fromStdString(b ? "+" : "");
+            text = Utils::fromStdString (b ? "+" : "");
             flag = Qt::AlignLeft ;
           }
         else
-          text = Utils::fromStdString(b ? "1" : "0");
+          text = Utils::fromStdString (b ? "1" : "0");
       }
     else
       {
         std::stringstream warn_string;
         warn_string << "Unknown conversion for datatype " << val.class_name ()
-          << " to " << format << " for value " << val.string_value (true);
-        warning (warn_string.str().c_str());
+                    << " to " << format
+                    << " for value " << val.string_value (true);
+        warning (warn_string.str ().c_str ());
 
-        text = Utils::fromStdString(val.string_value (true));
+        text = Utils::fromStdString (val.string_value (true));
       }
 
-    return std::make_pair(flag, text);
+    return std::make_pair (flag, text);
   }
 
 #undef FORMAT_VALUE
@@ -322,24 +322,26 @@ namespace QtHandles
 #undef FORMAT_UINT_VALUE
 #undef FORMAT_INT_VALUE
 
-  static QTableWidgetItem * itemFor(octave_value val, std::string format = "",
-                                    bool enabled = false)
+  static QTableWidgetItem * itemFor (octave_value val, std::string format = "",
+                                     bool enabled = false)
   {
-    QTableWidgetItem* retval  = new QTableWidgetItem ();
-    std::pair <Qt::AlignmentFlag, QString> flag_and_text = qStringValueFor(val, format);
+    QTableWidgetItem *retval = new QTableWidgetItem ();
+    std::pair<Qt::AlignmentFlag, QString> flag_and_text =
+      qStringValueFor (val, format);
     retval->setTextAlignment (flag_and_text.first);
     retval->setText (flag_and_text.second);
 
     if (enabled)
-      retval->setFlags (retval->flags ()  | Qt::ItemIsEditable);
+      retval->setFlags (retval->flags () | Qt::ItemIsEditable);
     else
-      retval->setFlags (retval->flags ()  & ~Qt::ItemIsEditable);
+      retval->setFlags (retval->flags () & ~Qt::ItemIsEditable);
 
     return retval;
   }
 
   static octave_value
-  attempt_type_conversion (const octave_value& ov, const octave_value& old_value)
+  attempt_type_conversion (const octave_value& ov,
+                           const octave_value& old_value)
   {
     octave_value retval;
 
@@ -351,7 +353,7 @@ namespace QtHandles
     {                                                  \
       ctype val;                                       \
       int n;                                           \
-      const char* c_str = ov.string_value ().c_str (); \
+      const char *c_str = ov.string_value ().c_str (); \
       int error = sscanf (c_str, format, &val, &n);    \
       if (error != 1 || c_str[n])                      \
         {                                              \
@@ -373,7 +375,7 @@ namespace QtHandles
 
   #undef SCANF_AND_CONVERT
 
-    else if (old_value.isnumeric () && !old_value.isinteger ())
+    else if (old_value.isnumeric () && ! old_value.isinteger ())
       {
         // Basically need to do str2double
         Complex complex = octave_str2double (ov.string_value ());
@@ -399,9 +401,9 @@ namespace QtHandles
   QWidget *
   Table::checkBoxForLogical (octave_value val, bool enabled = false)
   {
-    QWidget *retval = new QWidget(m_tableWidget);
-    QCheckBox *checkBox = new QCheckBox();
-    QHBoxLayout *layout = new QHBoxLayout(retval);
+    QWidget *retval = new QWidget (m_tableWidget);
+    QCheckBox *checkBox = new QCheckBox ();
+    QHBoxLayout *layout = new QHBoxLayout (retval);
     layout->addWidget (checkBox);
     layout->setAlignment (Qt::AlignCenter);
     layout->setContentsMargins (0, 0, 0, 0);
@@ -422,31 +424,33 @@ namespace QtHandles
   Table*
   Table::create (const graphics_object& go)
   {
-    Object* parent = Object::parentObject (go);
+    Object *parent = Object::parentObject (go);
 
     if (parent)
       {
-        Container* container = parent->innerContainer ();
+        Container *container = parent->innerContainer ();
 
         if (container)
           return new Table (go, new QTableWidget (container));
       }
 
-      return 0;
+    return 0;
   }
 
-  Table::Table (const graphics_object& go, QTableWidget* tableWidget)
-    : Object (go, tableWidget), m_tableWidget(tableWidget), m_curData(),
-      m_blockUpdates(false)
+  Table::Table (const graphics_object& go, QTableWidget *tableWidget)
+    : Object (go, tableWidget), m_tableWidget (tableWidget), m_curData (),
+      m_blockUpdates (false)
   {
     uitable::properties& tp = properties<uitable> ();
 
-    m_curData = octave_value(tp.get_data ());
+    m_curData = octave_value (tp.get_data ());
     Matrix bb = tp.get_boundingbox (false);
     m_tableWidget->setObjectName ("UITable");
     m_tableWidget->setAutoFillBackground (true);
-    m_tableWidget->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                    octave::math::round (bb(2)), octave::math::round (bb(3)));
+    m_tableWidget->setGeometry (octave::math::round (bb(0)),
+                                octave::math::round (bb(1)),
+                                octave::math::round (bb(2)),
+                                octave::math::round (bb(3)));
     m_tableWidget->setFont (Utils::computeFont<uitable> (tp)) ;
     m_tableWidget->setSelectionBehavior (QAbstractItemView::SelectItems);
     updatePalette ();
@@ -455,8 +459,8 @@ namespace QtHandles
     updateData ();
     updateRowname ();
     updateColumnname ();
-    updateColumnwidth();
-    updateEnable(); // Also does rearrangeableColumns
+    updateColumnwidth ();
+    updateEnable ();  // Also does rearrangeableColumns
     m_tableWidget->setToolTip (Utils::fromStdString (tp.get_tooltipstring ()));
     m_tableWidget->setVisible (tp.is_visible ());
     updateExtent ();
@@ -471,67 +475,66 @@ namespace QtHandles
              SLOT (itemSelectionChanged (void)));
   }
 
-  Table::~Table (void)
-  {
-  }
+  Table::~Table (void) { }
 
   void
   Table::itemSelectionChanged ()
   {
-    if (!(properties<uitable> ().get_cellselectioncallback ().isempty ()))
+    if (! (properties<uitable> ().get_cellselectioncallback ().isempty ()))
       {
-        QModelIndexList modelIndexList = m_tableWidget->selectionModel()->selectedIndexes ();
-        int length = modelIndexList.size();
+        QModelIndexList modelIndexList =
+          m_tableWidget->selectionModel ()->selectedIndexes ();
+        int length = modelIndexList.size ();
         Matrix indices = Matrix (length, 2);
         for (int i = 0; i < length; i++)
           {
-            indices (i, 0) = modelIndexList.value (i).row () + 1;
-            indices (i, 1) = modelIndexList.value (i).column () + 1;
+            indices(i, 0) = modelIndexList.value (i).row () + 1;
+            indices(i, 1) = modelIndexList.value (i).column () + 1;
           }
         octave_scalar_map eventData;
         eventData.setfield ("Indices", indices);
         octave_value cellSelectionCallbackEventObject =
           octave_value (new octave_struct (eventData));
-        gh_manager::post_callback(m_handle,
-                                  "cellselectioncallback",
-                                  cellSelectionCallbackEventObject);
+        gh_manager::post_callback (m_handle,
+                                   "cellselectioncallback",
+                                   cellSelectionCallbackEventObject);
       }
   }
 
   void
   Table::cellClicked (int row, int col)
   {
-    QCheckBox* checkBox = NULL;
-    QWidget* widget = qobject_cast<QWidget*> (
-      m_tableWidget->cellWidget (row, col));
-    if (widget && !widget->children ().isEmpty ())
+    QCheckBox *checkBox = nullptr;
+    QWidget *widget = qobject_cast<QWidget *> (
+                        m_tableWidget->cellWidget (row, col));
+    if (widget && ! widget->children ().isEmpty ())
       {
-        QHBoxLayout* layout = qobject_cast<QHBoxLayout*> (
-          widget->children ().first ());
+        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
+                                widget->children ().first ());
         if (layout && layout->count () > 0)
           {
-            checkBox = qobject_cast<QCheckBox*> (
-              layout->itemAt (0)-> widget ());
+            checkBox = qobject_cast<QCheckBox *> (
+                         layout->itemAt (0)-> widget ());
           }
       }
-    if (checkBox && checkBox->property ("Enabled").toBool())
-      checkBoxClicked(row, col, checkBox);
+    if (checkBox && checkBox->property ("Enabled").toBool ())
+      checkBoxClicked (row, col, checkBox);
   }
 
   void
   Table::sendCellEditCallback (int row,
-    int col,
-    octave_value old_value,
-    octave_value new_value,
-    octave_value edit_data,
-    octave_value error)
+                               int col,
+                               octave_value old_value,
+                               octave_value new_value,
+                               octave_value edit_data,
+                               octave_value error)
   {
 
     if (!(properties<uitable> ().get_celleditcallback ().isempty ()))
       {
         Matrix indices = Matrix (1, 2);
-        indices (0, 0) = row + 1;
-        indices (0, 1) = col + 1;
+        indices(0, 0) = row + 1;
+        indices(0, 1) = col + 1;
 
         octave_scalar_map eventData;
         eventData.setfield ("Indices", indices);
@@ -556,158 +559,161 @@ namespace QtHandles
   {
     if (m_blockUpdates)
       return;
+
     m_blockUpdates = true;
     gh_manager::auto_lock lock;
-    octave_value data = octave_value(m_curData);
+    octave_value data = octave_value (m_curData);
     bool ok = false;
 
-    QComboBox* comboBox = qobject_cast<QComboBox*> (sender());
+    QComboBox *comboBox = qobject_cast<QComboBox *> (sender ());
     int row = comboBox->property ("row").toInt ();
     int col = comboBox->property ("col").toInt ();
 
-    octave_value edit_data = octave_value(Utils::toStdString(value));
+    octave_value edit_data = octave_value (Utils::toStdString (value));
 
     if (row < data.rows () && col < data.columns ())
       {
         if (data.iscell ())
           {
             Cell cell = data.cell_value ();
-            octave_value old_data = cell (row, col);
-            if (cell (row, col).is_string ())
+            octave_value old_data = cell(row, col);
+            if (cell(row, col).is_string ())
               {
-                cell (row, col) = edit_data;
+                cell(row, col) = edit_data;
                 if (edit_data.string_value () != old_data.string_value ())
                   {
-                    m_curData = octave_value(cell);
+                    m_curData = octave_value (cell);
                     gh_manager::post_set (m_handle,
                                           "data",
                                           octave_value (cell),
                                           false);
                   }
 
-                octave_value error = octave_value("");
-                sendCellEditCallback(row,
-                  col,
-                  old_data,
-                  edit_data,
-                  edit_data,
-                  error);
+                octave_value error = octave_value ("");
+                sendCellEditCallback (row, col,
+                                      old_data,
+                                      edit_data,
+                                      edit_data,
+                                      error);
                 ok = true;
               }
             else
               {
-                cell (row, col) = attempt_type_conversion(edit_data, old_data);
+                cell(row, col) = attempt_type_conversion (edit_data, old_data);
 
                 // Inform the QTableWidget of our change
-                updateData(row, col, cell (row, col), columnformat (col), columneditable (col));
+                updateData (row, col, cell(row, col),
+                            columnformat (col), columneditable (col));
 
-                m_curData = octave_value(cell);
+                m_curData = octave_value (cell);
                 gh_manager::post_set (m_handle, "data", octave_value (cell), false);
 
-                octave_value error = octave_value("");
-                sendCellEditCallback(row,
-                  col,
-                  old_data,
-                  cell (row, col),
-                  edit_data,
-                  error);
+                octave_value error = octave_value ("");
+                sendCellEditCallback (row,
+                                      col,
+                                      old_data,
+                                      cell(row, col),
+                                      edit_data,
+                                      error);
                 ok = true;
               }
           }
         else
           {
             octave_value old_data = data.is_matrix_type ()
-              ? data.fast_elem_extract(row + col * data.rows())
-              : octave_value ();
-            data.fast_elem_insert (row + col * data.rows(),
-                                   attempt_type_conversion(edit_data, old_data));
+                                    ? data.fast_elem_extract (row + col * data.rows ())
+                                    : octave_value ();
+            data.fast_elem_insert (row + col * data.rows (),
+                                   attempt_type_conversion (edit_data, old_data));
 
             // Inform the QTableWidget of our change
-            updateData(row,
-                       col,
-                       data.fast_elem_extract (row + col * data.rows ()),
-                       columnformat (col),
-                       columneditable (col));
+            updateData (row,
+                        col,
+                        data.fast_elem_extract (row + col * data.rows ()),
+                        columnformat (col),
+                        columneditable (col));
 
-            m_curData = octave_value(data);
+            m_curData = octave_value (data);
             gh_manager::post_set (m_handle, "data", data, false);
 
-            octave_value error = octave_value("");
-            sendCellEditCallback(row,
-              col,
-              old_data,
-              data.fast_elem_extract(row + col * data.rows()),
-              edit_data,
-              error);
+            octave_value error = octave_value ("");
+            sendCellEditCallback (row,
+                                  col,
+                                  old_data,
+                                  data.fast_elem_extract (row + col * data.rows ()),
+                                  edit_data,
+                                  error);
             ok = true;
           }
       }
     else
       {
         // Reset the QTableWidgetItem
-        updateData(row, col, octave_value (""), columnformat (col), columneditable (col));
+        updateData (row, col, octave_value (""), columnformat (col),
+                    columneditable (col));
 
-        octave_value error = octave_value("Table data is not editable at this location.");
-        sendCellEditCallback(row,
-          col,
-          octave_value(),
-          octave_value(),
-          edit_data,
-          error);
+        octave_value error =
+          octave_value ("Table data is not editable at this location.");
+        sendCellEditCallback (row,
+                              col,
+                              octave_value (),
+                              octave_value (),
+                              edit_data,
+                              error);
       }
 
-    if (!ok)
+    if (! ok)
       {
         comboBox->setCurrentIndex (-1);
         comboBox->setEditable (true);
         comboBox->setEditText (comboBox->property ("original_value").toString ());
         comboBox->lineEdit ()->setReadOnly (true);
       }
-      m_blockUpdates = false;
+    m_blockUpdates = false;
   }
 
   void
-  Table::checkBoxClicked (int row, int col, QCheckBox* checkBox)
+  Table::checkBoxClicked (int row, int col, QCheckBox *checkBox)
   {
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
     gh_manager::auto_lock lock;
 
-    bool new_value = !checkBox->isChecked ();
+    bool new_value = ! checkBox->isChecked ();
 
-    octave_value data = octave_value(m_curData);
+    octave_value data = octave_value (m_curData);
     if (data.islogical ())
       {
         // EASY WE JUST CONVERT
         boolMatrix matrix = data.bool_matrix_value ();
         if (row < matrix.rows () && col < matrix.columns ())
           {
-            bool old_value = matrix (row, col);
-            matrix (row, col) = new_value;
-            checkBox->setChecked(new_value);
+            bool old_value = matrix(row, col);
+            matrix(row, col) = new_value;
+            checkBox->setChecked (new_value);
             if (new_value != old_value)
               {
-                m_curData = octave_value(matrix);
-                gh_manager::post_set (m_handle, "data", octave_value(matrix), false);
+                m_curData = octave_value (matrix);
+                gh_manager::post_set (m_handle, "data",
+                                      octave_value (matrix), false);
               }
 
-            sendCellEditCallback(row,
-              col,
-              octave_value(old_value),
-              octave_value(new_value),
-              octave_value(new_value),
-              octave_value(""));
+            sendCellEditCallback (row, col,
+                                  octave_value (old_value),
+                                  octave_value (new_value),
+                                  octave_value (new_value),
+                                  octave_value (""));
 
           }
         else
           {
-            sendCellEditCallback(row,
-              col,
-              octave_value(),
-              octave_value(),
-              octave_value(new_value),
-              octave_value("Table data is not editable at this location."));
+            sendCellEditCallback (row,
+                                  col,
+                                  octave_value (),
+                                  octave_value (),
+                                  octave_value (new_value),
+                                  octave_value ("Table data is not editable at this location."));
           }
       }
     else if (data.iscell ())
@@ -715,81 +721,81 @@ namespace QtHandles
         Cell cell = data.cell_value ();
         if (row < cell.rows () && col < cell.columns ())
           {
-              if (cell (row, col).islogical ())
-                {
-                  bool old_value = cell (row, col).bool_value ();
-                  cell (row, col) = octave_value(new_value);
-                  checkBox->setChecked(new_value);
-                  if (new_value != old_value)
-                    {
-                      m_curData = octave_value(cell);
-                      gh_manager::post_set (m_handle, "data", octave_value (cell), false);
-                    }
+            if (cell(row, col).islogical ())
+              {
+                bool old_value = cell(row, col).bool_value ();
+                cell(row, col) = octave_value (new_value);
+                checkBox->setChecked (new_value);
+                if (new_value != old_value)
+                  {
+                    m_curData = octave_value (cell);
+                    gh_manager::post_set (m_handle, "data", octave_value (cell), false);
+                  }
 
-                  sendCellEditCallback(row,
-                    col,
-                    octave_value(old_value),
-                    octave_value(new_value),
-                    octave_value(new_value),
-                    octave_value(""));
-                }
-              else
-                {
-                  sendCellEditCallback(row,
-                    col,
-                    cell (row, col),
-                    octave_value(),
-                    octave_value(new_value),
-                    octave_value("Cannot convert logical edit to other type."));
-                }
+                sendCellEditCallback (row,
+                                      col,
+                                      octave_value (old_value),
+                                      octave_value (new_value),
+                                      octave_value (new_value),
+                                      octave_value (""));
+              }
+            else
+              {
+                sendCellEditCallback (row,
+                                      col,
+                                      cell(row, col),
+                                      octave_value (),
+                                      octave_value (new_value),
+                                      octave_value ("Cannot convert logical edit to other type."));
+              }
           }
         else
           {
-            sendCellEditCallback(row,
-              col,
-              cell (row, col),
-              octave_value(),
-              octave_value(new_value),
-              octave_value("Table data is not editable at this location."));
+            sendCellEditCallback (row,
+                                  col,
+                                  cell(row, col),
+                                  octave_value (),
+                                  octave_value (new_value),
+                                  octave_value ("Table data is not editable at this location."));
           }
       }
     else if (data.is_matrix_type ())
       {
         if (row < data.rows () && col < data.columns ())
           {
-            sendCellEditCallback(row,
-              col,
-              data.fast_elem_extract (row + col * data.rows()),
-              octave_value(),
-              octave_value(new_value),
-              octave_value("Cannot convert logical edit to other type."));
+            sendCellEditCallback (row,
+                                  col,
+                                  data.fast_elem_extract (row + col * data.rows ()),
+                                  octave_value (),
+                                  octave_value (new_value),
+                                  octave_value ("Cannot convert logical edit to other type."));
           }
         else
           {
-            sendCellEditCallback(row,
-              col,
-              data.fast_elem_extract (row + col * data.rows()),
-              octave_value(),
-              octave_value(new_value),
-              octave_value("Table data is not editable at this location."));
+            sendCellEditCallback (row,
+                                  col,
+                                  data.fast_elem_extract (row + col * data.rows ()),
+                                  octave_value (),
+                                  octave_value (new_value),
+                                  octave_value ("Table data is not editable at this location."));
           }
       }
-      m_blockUpdates = false;
+    m_blockUpdates = false;
   }
 
 
   void
-  Table::itemChanged (QTableWidgetItem* item)
+  Table::itemChanged (QTableWidgetItem *item)
   {
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
     gh_manager::auto_lock lock;
-    octave_value data = octave_value(m_curData);
+    octave_value data = octave_value (m_curData);
 
     int row = item->row ();
     int col = item->column ();
-    octave_value edit_data = octave_value (Utils::toStdString(item->text ()));
+    octave_value edit_data = octave_value (Utils::toStdString (item->text ()));
     octave_value new_value;
     octave_value old_value;
     octave_value new_data;
@@ -810,17 +816,17 @@ namespace QtHandles
           new_value = edit_data;
         else
           {
-            new_value = attempt_type_conversion(edit_data, old_value);
-            std::pair <Qt::AlignmentFlag, QString> flag_and_text =
-              qStringValueFor(new_value, columnformat (col));
+            new_value = attempt_type_conversion (edit_data, old_value);
+            std::pair<Qt::AlignmentFlag, QString> flag_and_text =
+              qStringValueFor (new_value, columnformat (col));
             item->setTextAlignment (flag_and_text.first);
             item->setText (flag_and_text.second);
           }
 
         if (data.iscell ())
           {
-            Cell cell = data.cell_value();
-            cell (row, col) = new_value;
+            Cell cell = data.cell_value ();
+            cell(row, col) = new_value;
             new_data = octave_value (cell);
           }
         else
@@ -828,30 +834,31 @@ namespace QtHandles
             data.fast_elem_insert (row + col * data.rows (), new_value);
             new_data = data;
           }
-          m_curData = octave_value(new_data);
-          gh_manager::post_set (m_handle, "data", new_data, false);
+        m_curData = octave_value (new_data);
+        gh_manager::post_set (m_handle, "data", new_data, false);
 
-          sendCellEditCallback(row,
-            col,
-            octave_value(old_value),
-            octave_value(new_value),
-            octave_value(new_value),
-            octave_value(""));
+        sendCellEditCallback (row,
+                              col,
+                              octave_value (old_value),
+                              octave_value (new_value),
+                              octave_value (new_value),
+                              octave_value (""));
       }
     else
       {
         item->setText ("");
 
-        octave_value error = octave_value("Table data is not editable at this location.");
-        sendCellEditCallback(row,
-          col,
-          octave_value(),
-          octave_value(),
-          edit_data,
-          error);
+        octave_value error =
+          octave_value ("Table data is not editable at this location.");
+        sendCellEditCallback (row,
+                              col,
+                              octave_value (),
+                              octave_value (),
+                              edit_data,
+                              error);
       }
 
-      m_blockUpdates = false;
+    m_blockUpdates = false;
   }
 
   void
@@ -879,17 +886,17 @@ namespace QtHandles
       case uitable::properties::ID_COLUMNFORMAT:
       case uitable::properties::ID_DATA:
         m_blockUpdates = true;
-        m_curData = octave_value(tp.get_data ());
+        m_curData = octave_value (tp.get_data ());
         updateData ();
         updateRowname ();
         updateColumnname ();
         updateColumnwidth ();
-        updateEnable();
+        updateEnable ();
         m_blockUpdates = false;
         break;
 
       case uitable::properties::ID_ENABLE:
-        updateEnable();
+        updateEnable ();
         break;
 
       case uitable::properties::ID_KEYPRESSFCN:
@@ -900,27 +907,29 @@ namespace QtHandles
         m_keyReleaseHandlerDefined = ! tp.get_keyreleasefcn ().isempty ();
         break;
 
-        case uitable::properties::ID_FONTNAME:
-        case uitable::properties::ID_FONTSIZE:
-        case uitable::properties::ID_FONTWEIGHT:
-        case uitable::properties::ID_FONTANGLE:
-          if (m_tableWidget)
-            {
-              m_tableWidget->setFont (Utils::computeFont<uitable> (tp));
-              for (int row = 0; row < m_tableWidget->rowCount (); row++)
-                {
-                  m_tableWidget->setRowHeight (row, AUTO_HEIGHT);
-                }
-            }
-          break;
+      case uitable::properties::ID_FONTNAME:
+      case uitable::properties::ID_FONTSIZE:
+      case uitable::properties::ID_FONTWEIGHT:
+      case uitable::properties::ID_FONTANGLE:
+        if (m_tableWidget)
+          {
+            m_tableWidget->setFont (Utils::computeFont<uitable> (tp));
+            for (int row = 0; row < m_tableWidget->rowCount (); row++)
+              {
+                m_tableWidget->setRowHeight (row, AUTO_HEIGHT);
+              }
+          }
+        break;
 
       case uitable::properties::ID_POSITION:
-          {
-            Matrix bb = tp.get_boundingbox (false);
-            m_tableWidget->setGeometry (octave::math::round (bb(0)), octave::math::round (bb(1)),
-                                        octave::math::round (bb(2)), octave::math::round (bb(3)));
-            updateExtent();
-          }
+        {
+          Matrix bb = tp.get_boundingbox (false);
+          m_tableWidget->setGeometry (octave::math::round (bb(0)),
+                                      octave::math::round (bb(1)),
+                                      octave::math::round (bb(2)),
+                                      octave::math::round (bb(3)));
+          updateExtent ();
+        }
         break;
 
       case uitable::properties::ID_REARRANGEABLECOLUMNS:
@@ -932,7 +941,7 @@ namespace QtHandles
         break;
 
       case uitable::properties::ID_ROWSTRIPING:
-        updatePalette();
+        updatePalette ();
         break;
 
       case uitable::properties::ID_TOOLTIPSTRING:
@@ -962,12 +971,12 @@ namespace QtHandles
     bool visible = true;
 
     if (columnname.is_string () && columnname.string_value (false) == "numbered")
-        for (int i = 0; i < m_tableWidget->columnCount (); i++)
-          l << QString::number(i + 1);
+      for (int i = 0; i < m_tableWidget->columnCount (); i++)
+        l << QString::number (i + 1);
     else if (columnname.is_string ())
       {
         if (m_tableWidget->columnCount () > 0)
-          l << Utils::fromStdString(columnname.string_value ());
+          l << Utils::fromStdString (columnname.string_value ());
         for (int i = 1; i < m_tableWidget->columnCount (); i++)
           l << "";
       }
@@ -980,32 +989,33 @@ namespace QtHandles
       }
     else if (columnname.iscell ())
       {
-        octave_idx_type n = columnname.numel();
-        Cell cell_value = columnname.cell_value();
+        octave_idx_type n = columnname.numel ();
+        Cell cell_value = columnname.cell_value ();
 
         for (octave_idx_type i = 0; i < n; i++)
           {
             octave_value v = cell_value (i);
             if (v.is_string ())
-              l << Utils::fromStdString(v.string_value (true));
+              l << Utils::fromStdString (v.string_value (true));
             else if (v.is_matrix_type ())
               {
                 Matrix data = v.matrix_value ();
 
                 /* Now Matlab does something very strange here:
-                 * If data is a row or column matrix, then each datapoint is added
-                 * Otherwise nothing is set.
+                 * If data is a row or column matrix,
+                 * then each datapoint is added.
+                 * Otherwise, nothing is set.
                  */
                 if (data.rows () > 1 && data.cols () > 1)
                   l << "";
                 else
                   for (octave_idx_type j = 0; j < data.numel (); j++)
-                    l << QString::number(data (j));
+                    l << QString::number (data(j));
               }
             else if (v.isnumeric ())
-              l << QString::number(v.double_value ());
+              l << QString::number (v.double_value ());
             else
-              l << QString::number(v.double_value ());
+              l << QString::number (v.double_value ());
           }
       }
     else if (columnname.is_matrix_type ())
@@ -1014,7 +1024,7 @@ namespace QtHandles
         Matrix matrix_value = columnname.matrix_value ();
 
         for (octave_idx_type i = 0; i < n; i++)
-          l << QString::number(matrix_value (i));
+          l << QString::number (matrix_value(i));
       }
     else
       {
@@ -1023,13 +1033,13 @@ namespace QtHandles
         visible = false;
       }
 
-    l.replaceInStrings("|", "\n");
+    l.replaceInStrings ("|", "\n");
 
     // Now add the columns as required
-    if (m_tableWidget->columnCount () < l.length())
+    if (m_tableWidget->columnCount () < l.length ())
       {
         int oldColumnCount = m_tableWidget->columnCount ();
-        m_tableWidget->setColumnCount (l.length());
+        m_tableWidget->setColumnCount (l.length ());
         for (int col = oldColumnCount; col < l.length (); col++)
           {
             std::string format = columnformat (col);
@@ -1040,8 +1050,8 @@ namespace QtHandles
           }
       }
 
-      m_tableWidget->setHorizontalHeaderLabels (l);
-      m_tableWidget->horizontalHeader ()->setVisible (visible);
+    m_tableWidget->setHorizontalHeaderLabels (l);
+    m_tableWidget->horizontalHeader ()->setVisible (visible);
   }
 
   void
@@ -1051,14 +1061,15 @@ namespace QtHandles
 
     octave_value columnwidth = tp.get_columnwidth ();
     if (columnwidth.isempty () ||
-      (columnwidth.is_string () && columnwidth.string_value (false) == "auto"))
+        (columnwidth.is_string () && columnwidth.string_value (false) == "auto"))
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
-    else if (columnwidth.is_string () && columnwidth.string_value (false) == "preferred")
+    else if (columnwidth.is_string ()
+             && columnwidth.string_value (false) == "preferred")
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         {
           int column_size =
-            (qobject_cast<QAbstractItemView*> (m_tableWidget))->sizeHintForColumn (i);
+            (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
           int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
           if (column_size > header_size)
@@ -1077,7 +1088,7 @@ namespace QtHandles
             else if (v.is_string () && v.string_value (false) == "preferred")
               {
                 int column_size =
-                  (qobject_cast<QAbstractItemView*> (m_tableWidget))->sizeHintForColumn (i);
+                  (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
                 int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
                 if (column_size > header_size)
@@ -1086,14 +1097,14 @@ namespace QtHandles
               }
             else
               {
-                int w = int (v.double_value());
+                int w = int (v.double_value ());
                 m_tableWidget->setColumnWidth (i, w);
               }
           }
-        for (;i < m_tableWidget->columnCount (); i++)
+        for (; i < m_tableWidget->columnCount (); i++)
           {
             int column_size =
-              (qobject_cast<QAbstractItemView*> (m_tableWidget))->sizeHintForColumn (i);
+              (qobject_cast<QAbstractItemView *> (m_tableWidget))->sizeHintForColumn (i);
             int header_size = m_tableWidget->horizontalHeader ()->sectionSizeHint (i);
 
             if (column_size > header_size)
@@ -1107,11 +1118,11 @@ namespace QtHandles
         int i = 0;
         for (; i < m_tableWidget->columnCount () && i < matrix_value.numel (); i++)
           {
-            octave_value v = matrix_value (i);
-            int w = int (v.double_value());
+            octave_value v = matrix_value(i);
+            int w = int (v.double_value ());
             m_tableWidget->setColumnWidth (i, w);
           }
-        for (;i < m_tableWidget->columnCount (); i++)
+        for (; i < m_tableWidget->columnCount (); i++)
           m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
       }
   }
@@ -1123,9 +1134,9 @@ namespace QtHandles
     boolNDArray columneditable = tp.get_columneditable ().bool_array_value ();
     bool editable = false;
 
-    if (!columneditable.isempty () && col < columneditable.numel ())
+    if (! columneditable.isempty () && col < columneditable.numel ())
       editable = columneditable.xelem (col);
-    else if (!columneditable.isempty () && columneditable.numel () == 1)
+    else if (! columneditable.isempty () && columneditable.numel () == 1)
       editable = columneditable.xelem (0);
 
     return editable;
@@ -1141,13 +1152,13 @@ namespace QtHandles
     if (ov_columnformat.iscell ())
       {
         Cell columnformat = ov_columnformat.cell_value ();
-        if (!columnformat.isempty () && col < columnformat.numel ())
+        if (! columnformat.isempty () && col < columnformat.numel ())
           {
             octave_value format_value = columnformat.xelem (col);
 
-            if (!format_value.isempty () && format_value.is_string())
+            if (! format_value.isempty () && format_value.is_string ())
               format = format_value.string_value ();
-            else if (!format_value.isempty () && format_value.iscell ())
+            else if (! format_value.isempty () && format_value.iscell ())
               format = "popup";
           }
       }
@@ -1167,13 +1178,13 @@ namespace QtHandles
     bool is_editable = columneditable (col);
 
     for (octave_idx_type row = 0; row < data.rows (); row++)
-      updateData(row,
-        col,
-        data.iscell ()
-          ? data.cell_value () (row, col)
-          : data.fast_elem_extract (row + col * data.rows ()),
-        format,
-        is_editable);
+      updateData (row,
+                  col,
+                  data.iscell ()
+                  ? data.cell_value () (row, col)
+                  : data.fast_elem_extract (row + col * data.rows ()),
+                  format,
+                  is_editable);
   }
 
   void inline
@@ -1181,12 +1192,12 @@ namespace QtHandles
   {
     octave_value data = properties<uitable> ().get_data ();
     updateData (row,
-      col,
-      data.iscell ()
-        ? data.cell_value () (row, col)
-        : data.fast_elem_extract (row + col * data.rows ()),
-      columnformat (col),
-      columneditable (col));
+                col,
+                data.iscell ()
+                ? data.cell_value () (row, col)
+                : data.fast_elem_extract (row + col * data.rows ()),
+                columnformat (col),
+                columneditable (col));
   }
 
   void inline
@@ -1198,28 +1209,28 @@ namespace QtHandles
         if (m_tableWidget->item (row, col))
           delete m_tableWidget->item (row, col);
 
-        m_tableWidget->setCellWidget (row, col, checkBoxForLogical(value, enabled));
-        m_tableWidget->cellWidget (row, col)->setProperty ("row", QVariant(row));
-        m_tableWidget->cellWidget (row, col)->setProperty ("col", QVariant(col));
+        m_tableWidget->setCellWidget (row, col, checkBoxForLogical (value, enabled));
+        m_tableWidget->cellWidget (row, col)->setProperty ("row", QVariant (row));
+        m_tableWidget->cellWidget (row, col)->setProperty ("col", QVariant (col));
       }
     else if (format == "popup" && enabled)
       {
         if (m_tableWidget->item (row, col))
           delete m_tableWidget->item (row, col);
 
-        QString string_value = qStringValueFor(value, format).second;
+        QString string_value = qStringValueFor (value, format).second;
         uitable::properties& tp = properties<uitable> ();
         octave_value format_value = tp.get_columnformat ().cell_value ().xelem (col);
 
-        QComboBox* comboBox = new QComboBox ();
-        comboBox->setProperty("row", QVariant (row));
-        comboBox->setProperty("col", QVariant (col));
+        QComboBox *comboBox = new QComboBox ();
+        comboBox->setProperty ("row", QVariant (row));
+        comboBox->setProperty ("col", QVariant (col));
 
         int index = -1;
         for (int k = 0; k < format_value.numel (); k++)
           {
-            QString popup_item = Utils::fromStdString(
-              format_value.fast_elem_extract (k).string_value ());
+            QString popup_item = Utils::fromStdString (
+                                   format_value.fast_elem_extract (k).string_value ());
 
             comboBox->addItem (popup_item);
 
@@ -1238,15 +1249,15 @@ namespace QtHandles
         comboBox->setProperty ("original_value", QVariant (string_value));
 
         comboBox->installEventFilter (this);
-        m_tableWidget->setCellWidget(row, col, comboBox);
-        connect(comboBox, SIGNAL(currentIndexChanged(const QString&)),
-                this, SLOT(comboBoxCurrentIndexChanged(const QString&)));
+        m_tableWidget->setCellWidget (row, col, comboBox);
+        connect (comboBox, SIGNAL(currentIndexChanged (const QString&)),
+                 this, SLOT(comboBoxCurrentIndexChanged (const QString&)));
       }
     else
       {
         if (m_tableWidget->cellWidget (row, col))
           delete m_tableWidget->cellWidget (row, col);
-        m_tableWidget->setItem (row, col, itemFor(value, format, enabled));
+        m_tableWidget->setItem (row, col, itemFor (value, format, enabled));
       }
   }
 
@@ -1255,7 +1266,7 @@ namespace QtHandles
   {
     uitable::properties& tp = properties<uitable> ();
 
-    octave_value data = tp.get_data();
+    octave_value data = tp.get_data ();
 
     if (data.iscell () || data.is_matrix_type ())
       {
@@ -1274,15 +1285,15 @@ namespace QtHandles
   Table::updateEnable (void)
   {
     uitable::properties& tp = properties<uitable> ();
-    m_tableWidget->setEnabled (!tp.enable_is ("off"));
+    bool enabled = tp.is_enable ();
+    m_tableWidget->setEnabled (! enabled);
 
-    bool enabled = tp.enable_is ("on");
     bool rearrangeableColumns = tp.is_rearrangeablecolumns ();
 
     // Set selection mode
     m_tableWidget->setSelectionMode (enabled
-      ? QAbstractItemView::ExtendedSelection
-      : QAbstractItemView::NoSelection);
+                                     ? QAbstractItemView::ExtendedSelection
+                                     : QAbstractItemView::NoSelection);
 
     // Set rearrangeablecolumns
     #if defined (HAVE_QT4)
@@ -1299,7 +1310,7 @@ namespace QtHandles
         bool editable = columneditable (col);
 
         for (int row = 0; row < m_tableWidget->rowCount (); row++)
-          if (QTableWidgetItem* item = m_tableWidget->item (row, col))
+          if (QTableWidgetItem *item = m_tableWidget->item (row, col))
             {
               Qt::ItemFlags flags = item->flags ();
               if (enabled && editable)
@@ -1307,17 +1318,17 @@ namespace QtHandles
               else
                 item->setFlags (flags & ~Qt::ItemIsEditable);
             }
-          else if (QWidget* widget = m_tableWidget->cellWidget (row, col))
+          else if (QWidget *widget = m_tableWidget->cellWidget (row, col))
             {
-              QCheckBox* checkBox = NULL;
-              if (widget && !widget->children ().isEmpty ())
+              QCheckBox *checkBox = nullptr;
+              if (widget && ! widget->children ().isEmpty ())
                 {
-                  QHBoxLayout* layout = qobject_cast<QHBoxLayout*> (
-                    widget->children ().first ());
+                  QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
+                                          widget->children ().first ());
                   if (layout && layout->count () > 0)
                     {
-                      checkBox = qobject_cast<QCheckBox*> (
-                        layout->itemAt (0)-> widget ());
+                      checkBox = qobject_cast<QCheckBox *> (
+                                   layout->itemAt (0)-> widget ());
                     }
                 }
               if (checkBox)
@@ -1326,8 +1337,8 @@ namespace QtHandles
                 }
               else
                 {
-                  widget->setAttribute(Qt::WA_TransparentForMouseEvents, !(editable & enabled));
-                  widget->setFocusPolicy(Qt::NoFocus);
+                  widget->setAttribute (Qt::WA_TransparentForMouseEvents, !(editable & enabled));
+                  widget->setFocusPolicy (Qt::NoFocus);
                 }
             }
       }
@@ -1355,9 +1366,9 @@ namespace QtHandles
     p.setColor (QPalette::Text,
                 Utils::fromRgb (tp.get_foregroundcolor_rgb ()));
     p.setColor (QPalette::Base,
-              Utils::fromRgb (tp.get_backgroundcolor_rgb ()));
+                Utils::fromRgb (tp.get_backgroundcolor_rgb ()));
     p.setColor (QPalette::AlternateBase,
-              Utils::fromRgb (tp.get_alternatebackgroundcolor_rgb ()));
+                Utils::fromRgb (tp.get_alternatebackgroundcolor_rgb ()));
     m_tableWidget->setPalette (p);
     m_tableWidget->setAlternatingRowColors (tp.is_rowstriping ());
     // FIXME: Handle multiple alternating background colors
@@ -1377,11 +1388,11 @@ namespace QtHandles
 
     if (rowname.is_string () && rowname.string_value (false) == "numbered")
       for (int i = 0; i < m_tableWidget->rowCount (); i++)
-        l << QString::number(i + 1);
+        l << QString::number (i + 1);
     else if (rowname.is_string ())
       {
         if (m_tableWidget->rowCount () > 0)
-          l << Utils::fromStdString(rowname.string_value ());
+          l << Utils::fromStdString (rowname.string_value ());
         for (int i = 1; i < m_tableWidget->rowCount (); i++)
           l << "";
       }
@@ -1393,41 +1404,42 @@ namespace QtHandles
       }
     else if (rowname.iscell ())
       {
-        octave_idx_type n = rowname.numel();
-        Cell cell_value = rowname.cell_value();
+        octave_idx_type n = rowname.numel ();
+        Cell cell_value = rowname.cell_value ();
 
         for (octave_idx_type i = 0; i < n; i++)
           {
             octave_value v = cell_value (i);
             if (v.is_string ())
-              l << Utils::fromStdString(v.string_value (true));
+              l << Utils::fromStdString (v.string_value (true));
             else if (v.is_matrix_type ())
               {
                 Matrix data = v.matrix_value ();
 
                 /* Now Matlab does something very strange here:
-                 * If data is a row or column matrix, then each datapoint is added
-                 * Otherwise nothing is set.
+                 * If data is a row or column matrix,
+                 * then each datapoint is added.
+                 * Otherwise, nothing is set.
                  */
                 if (data.rows () > 1 && data.cols () > 1)
                   l << "";
                 else
                   for (octave_idx_type j = 0; j < data.numel (); j++)
-                    l << QString::number(data (j));
+                    l << QString::number (data(j));
               }
             else if (v.isnumeric ())
-              l << QString::number(v.double_value (true));
+              l << QString::number (v.double_value (true));
             else
-              l << QString::number(v.double_value (true));
+              l << QString::number (v.double_value (true));
           }
       }
     else if (rowname.is_matrix_type ())
       {
-        octave_idx_type n = rowname.numel();
-        Matrix matrix_value = rowname.matrix_value();
+        octave_idx_type n = rowname.numel ();
+        Matrix matrix_value = rowname.matrix_value ();
 
         for (octave_idx_type i = 0; i < n; i++)
-          l << QString::number(matrix_value (i));
+          l << QString::number (matrix_value(i));
       }
     else
       {
@@ -1437,10 +1449,10 @@ namespace QtHandles
       }
 
     // Add dummy rows as required
-    if (m_tableWidget->rowCount () < l.length())
+    if (m_tableWidget->rowCount () < l.length ())
       {
         int oldRowCount = m_tableWidget->rowCount ();
-        m_tableWidget->setRowCount (l.length());
+        m_tableWidget->setRowCount (l.length ());
 
         for (int col = 0; col < m_tableWidget->columnCount (); col++)
           {
@@ -1466,7 +1478,7 @@ namespace QtHandles
     uitable::properties& tp = properties<uitable> ();
 
     bool rearrangeableColumns = tp.is_rearrangeablecolumns ();
-    bool enabled = tp.enable_is ("on");
+    bool enabled = tp.is_enable ();
 
   #if defined (HAVE_QT4)
     m_tableWidget->horizontalHeader ()->setMovable (enabled && rearrangeableColumns);
@@ -1478,10 +1490,10 @@ namespace QtHandles
   }
 
   bool
-  Table::eventFilter (QObject* watched, QEvent* xevent)
+  Table::eventFilter (QObject *watched, QEvent *xevent)
   {
     //uitable::properties& tp = properties<uitable> ();
-    if (qobject_cast<QTableWidget*> (watched))
+    if (qobject_cast<QTableWidget *> (watched))
       {
         switch (xevent->type ())
           {
@@ -1502,13 +1514,13 @@ namespace QtHandles
           case QEvent::MouseButtonPress:
             {
               gh_manager::auto_lock lock;
-              QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+              QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
               const uitable::properties& tp =
                 Utils::properties<uitable> (go);
               graphics_object fig = go.get_ancestor ("figure");
 
-              if (m->button () != Qt::LeftButton || !tp.enable_is ("on"))
+              if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
                   gh_manager::post_set (fig.get_handle (), "selectiontype",
                                         Utils::figureSelectionType (m), false);
@@ -1525,14 +1537,14 @@ namespace QtHandles
               else
                 {
                   gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                       octave_value ("normal"), false);
+                                        octave_value ("normal"), false);
                 }
             }
             break;
 
           case QEvent::KeyPress:
             {
-              QKeyEvent* k = dynamic_cast<QKeyEvent*> (xevent);
+              QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
               if (m_keyPressHandlerDefined)
                 {
                   gh_manager::auto_lock lock;
@@ -1546,28 +1558,29 @@ namespace QtHandles
                 }
               int row = m_tableWidget->currentRow ();
               int col = m_tableWidget->currentColumn ();
-              switch (k->key())
+              switch (k->key ())
                 {
                 case Qt::Key_Space:
                   {
-                    QCheckBox* checkBox = NULL;
-                    QWidget* widget = qobject_cast<QWidget*> (
-                      m_tableWidget->cellWidget (row, col));
-                    if (widget && !widget->children ().isEmpty ())
+                    QCheckBox *checkBox = nullptr;
+                    QWidget *widget = qobject_cast<QWidget *> (
+                                        m_tableWidget->cellWidget (row, col));
+                    if (widget && ! widget->children ().isEmpty ())
                       {
-                        QHBoxLayout* layout = qobject_cast<QHBoxLayout*> (
-                          widget->children ().first ());
+                        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
+                                                widget->children ().first ());
                         if (layout && layout->count () > 0)
                           {
-                            checkBox = qobject_cast<QCheckBox*> (
-                              layout->itemAt (0)-> widget ());
+                            checkBox = qobject_cast<QCheckBox *> (
+                                         layout->itemAt (0)-> widget ());
                           }
                       }
-                    if (checkBox && checkBox->property ("Enabled").toBool())
-                      checkBoxClicked(row, col, checkBox);
-  
-                    QComboBox* comboBox = qobject_cast<QComboBox*> (
-                      m_tableWidget->cellWidget (row, col));
+                    if (checkBox && checkBox->property ("Enabled").toBool ())
+                      checkBoxClicked (row, col, checkBox);
+
+                    QComboBox *comboBox = qobject_cast<QComboBox *> (
+                                            m_tableWidget->cellWidget (row,
+                                                                       col));
                     if (comboBox)
                       comboBox->showPopup ();
                   }
@@ -1576,19 +1589,19 @@ namespace QtHandles
                 case Qt::Key_Return:
                 case Qt::Key_Enter:
                   {
-                    if (k->modifiers() == Qt::NoModifier)
+                    if (k->modifiers () == Qt::NoModifier)
                       {
-                        if (row + 1 < m_tableWidget->rowCount())
+                        if (row + 1 < m_tableWidget->rowCount ())
                           m_tableWidget->setCurrentCell (row + 1, col);
                         else
                           {
-                            if (col + 1 < m_tableWidget->columnCount())
+                            if (col + 1 < m_tableWidget->columnCount ())
                               m_tableWidget->setCurrentCell (0, col + 1);
                             else
                               m_tableWidget->setCurrentCell (0, 0);
                           }
                       }
-                    else if (k->modifiers() == Qt::ShiftModifier)
+                    else if (k->modifiers () == Qt::ShiftModifier)
                       {
                         if (row - 1 >= 0)
                           m_tableWidget->setCurrentCell (row - 1, col);
@@ -1596,12 +1609,12 @@ namespace QtHandles
                           {
                             if (col - 1 >= 0)
                               m_tableWidget->setCurrentCell
-                                  (m_tableWidget->rowCount() - 1,
-                                   col - 1);
+                              (m_tableWidget->rowCount () - 1,
+                               col - 1);
                             else
                               m_tableWidget->setCurrentCell
-                                  (m_tableWidget->rowCount() - 1,
-                                   m_tableWidget->columnCount() - 1);
+                              (m_tableWidget->rowCount () - 1,
+                               m_tableWidget->columnCount () - 1);
                           }
                       }
                   }
@@ -1618,14 +1631,15 @@ namespace QtHandles
               if (m_keyReleaseHandlerDefined)
                 {
                   gh_manager::auto_lock lock;
-                  QKeyEvent* k = dynamic_cast<QKeyEvent*> (xevent);
+                  QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
 
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
 
                   gh_manager::post_set (fig.get_handle (), "currentcharacter",
                                         keyData.getfield ("Character"), false);
-                  gh_manager::post_callback (m_handle, "keyreleasefcn", keyData);
+                  gh_manager::post_callback (m_handle, "keyreleasefcn",
+                                             keyData);
                 }
             }
             break;
@@ -1634,20 +1648,19 @@ namespace QtHandles
             break;
           }
       }
-    else if (qobject_cast<QComboBox*> (watched))
+    else if (qobject_cast<QComboBox *> (watched))
       {
         switch (xevent->type ())
           {
           case QEvent::MouseButtonPress:
             {
               gh_manager::auto_lock lock;
-              QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
+              QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
-              const uitable::properties& tp =
-                Utils::properties<uitable> (go);
+              const uitable::properties& tp = Utils::properties<uitable> (go);
               graphics_object fig = go.get_ancestor ("figure");
 
-              if (m->button () != Qt::LeftButton || !tp.enable_is ("on"))
+              if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
                   gh_manager::post_set (fig.get_handle (), "selectiontype",
                                         Utils::figureSelectionType (m), false);
@@ -1664,15 +1677,15 @@ namespace QtHandles
               else
                 {
                   gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                       Utils::figureSelectionType (m), false);
+                                        Utils::figureSelectionType (m), false);
 
-                  QComboBox* comboBox_0 = qobject_cast<QComboBox*> (watched);
+                  QComboBox *comboBox_0 = qobject_cast<QComboBox *> (watched);
                   for (int row = 0; row < m_tableWidget->rowCount (); row++)
                     {
                       for (int col = 0; col < m_tableWidget->columnCount (); col++)
                         {
-                          QComboBox* comboBox_1 = qobject_cast<QComboBox*> (
-                            m_tableWidget->cellWidget (row, col));
+                          QComboBox *comboBox_1 = qobject_cast<QComboBox *> (
+                                                    m_tableWidget->cellWidget (row, col));
                           if (comboBox_0 == comboBox_1)
                             m_tableWidget->setCurrentCell (row, col);
                         }

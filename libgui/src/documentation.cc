@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QTabWidget>
-#include <QToolButton>
 #include <QVBoxLayout>
 
 #include "documentation.h"
@@ -59,6 +58,10 @@ namespace octave
     : QSplitter (Qt::Horizontal, p),
       m_doc_widget (p),
       m_tool_bar (new QToolBar (p)),
+      m_prev_pages_menu (new QMenu (p)),
+      m_next_pages_menu (new QMenu (p)),
+      m_prev_pages_count (0),
+      m_next_pages_count (0),
       m_findnext_shortcut (new QShortcut (p)),
       m_findprev_shortcut (new QShortcut (p))
   {
@@ -311,16 +314,57 @@ namespace octave
     m_action_go_prev = add_action (resource_manager::icon ("go-previous"),
                                    tr ("Go back"), SLOT (backward (void)),
                                    m_doc_browser, m_tool_bar);
+    m_action_go_prev->setEnabled (false);
+
+    // popdown menu with prev pages files
+    QToolButton *popdown_button_prev_pages = new QToolButton ();
+    popdown_button_prev_pages->setToolTip (tr ("Previous Pages"));
+    popdown_button_prev_pages->setMenu (m_prev_pages_menu);
+    popdown_button_prev_pages->setPopupMode (QToolButton::InstantPopup);
+    popdown_button_prev_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
+    popdown_button_prev_pages->setCheckable (false);
+    popdown_button_prev_pages->setArrowType(Qt::DownArrow);
+    m_tool_bar->addWidget (popdown_button_prev_pages);
     m_action_go_next = add_action (resource_manager::icon ("go-next"),
                                    tr ("Go forward"), SLOT (forward (void)),
                                    m_doc_browser, m_tool_bar);
-    m_action_go_prev->setEnabled (false);
     m_action_go_next->setEnabled (false);
+
+    // popdown menu with prev pages files
+    QToolButton *popdown_button_next_pages = new QToolButton ();
+    popdown_button_next_pages->setToolTip (tr ("Next Pages"));
+    popdown_button_next_pages->setMenu (m_next_pages_menu);
+    popdown_button_next_pages->setPopupMode (QToolButton::InstantPopup);
+    popdown_button_next_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
+    popdown_button_next_pages->setArrowType(Qt::DownArrow);
+    m_tool_bar->addWidget (popdown_button_next_pages);
+
     connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
              m_action_go_prev, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
+             popdown_button_prev_pages, SLOT (setEnabled (bool)));
     connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
              m_action_go_next, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
+             popdown_button_next_pages, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (historyChanged (void)),
+             this, SLOT (update_history_menus (void)));
 
+    // Init prev/next menus
+    for (int i = 0; i < max_history_entries; ++i)
+      {
+        m_prev_pages_actions[i] = new QAction (this);
+        m_prev_pages_actions[i]->setVisible (false);
+        m_next_pages_actions[i] = new QAction (this);
+        m_next_pages_actions[i]->setVisible (false);
+        m_prev_pages_menu->addAction (m_prev_pages_actions[i]);
+        m_next_pages_menu->addAction (m_next_pages_actions[i]);
+      }
+
+    connect (m_prev_pages_menu, SIGNAL (triggered (QAction *)),
+             this, SLOT (open_hist_url (QAction *)));
+    connect (m_next_pages_menu, SIGNAL (triggered (QAction *)),
+             this, SLOT (open_hist_url (QAction *)));
 
     // Find
     m_tool_bar->addSeparator ();
@@ -638,6 +682,57 @@ namespace octave
         m_help_engine->unregisterDocumentation (ns);
         m_help_engine->setupData ();
       }
+  }
+
+  void documentation::update_history_menus (void)
+  {
+    if (m_prev_pages_count != m_doc_browser->backwardHistoryCount ())
+      {
+        update_history (m_doc_browser->backwardHistoryCount (),
+                        m_prev_pages_actions);
+        m_prev_pages_count = m_doc_browser->backwardHistoryCount ();
+      }
+
+    if (m_next_pages_count != m_doc_browser->forwardHistoryCount ())
+      {
+        update_history (m_doc_browser->forwardHistoryCount (),
+                        m_next_pages_actions);
+        m_next_pages_count = m_doc_browser->forwardHistoryCount ();
+      }
+  }
+
+  void documentation::update_history (int new_count, QAction **actions)
+  {
+    // Which menu has to be updated?
+    int prev_next = -1;
+    if (actions == m_next_pages_actions)
+      prev_next = 1;
+
+    // Get maximal count limited by array size
+    int count = qMin (new_count, int (max_history_entries));
+
+    // Fill used menu entries
+    for (int i = 0; i < count; i++)
+      {
+        QString title = m_doc_browser->historyTitle (prev_next*(i+1));
+        title.remove (QRegExp (" \\(GNU Octave \\(version [^\\)]*\\)\\)$"));
+        actions[i]->setText (title);
+        actions[i]->setData (m_doc_browser->historyUrl (prev_next*(i+1)));
+        actions[i]->setEnabled (true);
+        actions[i]->setVisible (true);
+      }
+
+    // Hide unused menu entries
+    for (int j = count; j < max_history_entries; j++)
+      {
+        actions[j]->setEnabled (false);
+        actions[j]->setVisible (false);
+      }
+  }
+
+  void documentation::open_hist_url (QAction *a)
+  {
+    m_doc_browser->setSource (a->data ().toUrl ());
   }
 
 

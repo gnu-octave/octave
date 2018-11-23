@@ -24,12 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_documentation_h 1
 
 #include <QComboBox>
-#include <QWidget>
+#include <QMenu>
 #include <QSettings>
 #include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
 #include <QToolBar>
+#include <QToolButton>
+#include <QWidget>
 #include <QtHelp/QHelpEngine>
 
 namespace octave
@@ -119,6 +121,9 @@ namespace octave
     void record_anchor_position (void);
     void handle_cursor_position_change (void);
 
+    void update_history_menus (void);
+    void open_hist_url (QAction *a);
+
   signals:
 
     void show_single_result (const QUrl);
@@ -129,6 +134,8 @@ namespace octave
     QAction *add_action (const QIcon& icon, const QString& text,
                          const char *member, QWidget *receiver = nullptr,
                          QToolBar *tool_bar = nullptr);
+    void update_history (int new_count, QAction **actions);
+
 
     QHelpEngine *m_help_engine;
     QString m_internal_search;
@@ -144,6 +151,14 @@ namespace octave
     QAction *m_action_go_home;
     QAction *m_action_go_prev;
     QAction *m_action_go_next;
+    QMenu *m_prev_pages_menu;
+    QMenu *m_next_pages_menu;
+    int m_prev_pages_count;
+    int m_next_pages_count;
+
+    enum { max_history_entries = 10 };
+    QAction *m_prev_pages_actions[max_history_entries];
+    QAction *m_next_pages_actions[max_history_entries];
 
     QAction *m_action_find;
     QShortcut *m_findnext_shortcut;

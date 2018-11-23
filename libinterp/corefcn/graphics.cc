@@ -6111,9 +6111,14 @@ axes::properties::update_ticklength (void)
   yticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
   zticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
 
-  xtickoffset = (mode2D ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
-  ytickoffset = (mode2D ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
-  ztickoffset = (mode2D ? std::max (0., zticklen) : std::abs (zticklen)) + 5;
+  double offset = get___fontsize_points__ () / 2;
+  
+  xtickoffset = (mode2D ? std::max (0., xticklen) : std::abs (xticklen)) +
+                (xstate == AXE_HORZ_DIR ? offset*1.5 : offset);
+  ytickoffset = (mode2D ? std::max (0., yticklen) : std::abs (yticklen)) +
+                (ystate == AXE_HORZ_DIR ? offset*1.5 : offset);
+  ztickoffset = (mode2D ? std::max (0., zticklen) : std::abs (zticklen)) +
+                (zstate == AXE_HORZ_DIR ? offset*1.5 : offset);
 
   update_xlabel_position ();
   update_ylabel_position ();
@@ -6219,8 +6224,9 @@ axes::properties::update_xlabel_position (void)
                                    get_xticklabel ().string_vector_value (),
                                    get_xlim ().matrix_value ());
 
-      double wmax = ext(0);
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p =
         graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
@@ -6317,20 +6323,12 @@ axes::properties::update_ylabel_position (void)
 
       Matrix ext (1, 2, 0.0);
 
-      // The underlying get_extents() from FreeType produces mismatched values.
-      // x-extent accurately measures the width of the glyphs.
-      // y-extent instead measures from baseline-to-baseline.
-      // Pad x-extent (+4) so that it approximately matches y-extent.
-      // This keeps ylabels about the same distance from y-axis as
-      // xlabels are from x-axis.
-      // ALWAYS use an even number for padding or horizontal alignment
-      // will be off.
       ext = get_ticklabel_extents (get_ytick ().matrix_value (),
                                    get_yticklabel ().string_vector_value (),
                                    get_ylim ().matrix_value ());
-
-      double wmax = ext(0)+4;
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p =
         graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
@@ -6432,8 +6430,9 @@ axes::properties::update_zlabel_position (void)
                                    get_zticklabel ().string_vector_value (),
                                    get_zlim ().matrix_value ());
 
-      double wmax = ext(0);
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p;
 

@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 #if defined (HAVE_FONTCONFIG)
 #  include <fontconfig/fontconfig.h>
@@ -375,7 +376,8 @@ namespace octave
     ft_text_renderer (void)
       : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
         xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-        color (dim_vector (1, 3), 0)
+        color (dim_vector (1, 3), 0), m_ymin (0), m_ymax (0), m_deltax (0),
+        m_max_fontsize (0)
     { }
 
     // No copying!
@@ -532,6 +534,16 @@ namespace octave
 
     // The X offset of the baseline for the current line.
     int line_xoffset;
+     
+    // Min and max y coordinates of all glyphs in a line.
+    FT_Pos m_ymin;
+    FT_Pos m_ymax;
+
+    // Difference between the advance and the actual extent of the latest glyph
+    FT_Pos m_deltax;
+
+    // Used for computing the distance between lines.
+    double m_max_fontsize;
 
   };
 
@@ -557,19 +569,12 @@ namespace octave
 
           if (face)
             {
-              int asc = face->size->metrics.ascender >> 6;
-              int desc = face->size->metrics.descender >> 6;
-              int h = face->size->metrics.height >> 6;
-
               Matrix bb (1, 5, 0.0);
-
-              bb(1) = desc;
-              bb(3) = asc - desc;
-              bb(4) = h;
 
               line_bbox.push_back (bb);
 
               xoffset = yoffset = 0;
+              m_ymin = m_ymax = m_deltax = 0;
             }
         }
         break;
@@ -584,8 +589,10 @@ namespace octave
           Matrix new_bbox = line_bbox.front ();
 
           xoffset = line_xoffset = compute_line_xoffset (new_bbox);
-          line_yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
+          line_yoffset -= (-old_bbox(1) + 0.4 * m_max_fontsize
+                           + (new_bbox(3) + new_bbox(1)));
           yoffset = 0;
+          m_ymin = m_ymax = m_deltax = 0;
         }
         break;
       }
@@ -634,8 +641,9 @@ namespace octave
               bbox = lbox.extract (0, 0, 0, 3);
             else
               {
-                bbox(1) -= lbox(3);
-                bbox(3) += lbox(3);
+                double delta = 0.4 * m_max_fontsize + lbox(3);
+                bbox(1) -= delta;
+                bbox(3) += delta;
                 bbox(2) = math::max (bbox(2), lbox(2));
               }
           }
@@ -653,29 +661,11 @@ namespace octave
 
     if (mode == MODE_BBOX)
       {
-        int asc = font.get_face ()->size->metrics.ascender >> 6;
-        int desc = font.get_face ()->size->metrics.descender >> 6;
-
         Matrix& bb = line_bbox.back ();
-
-        if ((yoffset + desc) < bb(1))
-          {
-            // The new font goes below the bottom of the current bbox.
-
-            int delta = bb(1) - (yoffset + desc);
-
-            bb(1) -= delta;
-            bb(3) += delta;
-          }
-
-        if ((yoffset + asc) > (bb(1) + bb(3)))
-          {
-            // The new font goes above the top of the current bbox.
-
-            int delta = (yoffset + asc) - (bb(1) + bb(3));
-
-            bb(3) += delta;
-          }
+        bb(1) = m_ymin;
+        bb(3) = m_ymax - m_ymin;
+        if (m_deltax > 0)
+          bb(2) += m_deltax;
       }
   }
 
@@ -688,6 +678,7 @@ namespace octave
       {
       case MODE_BBOX:
         xoffset = line_yoffset = yoffset = 0;
+        m_max_fontsize = 0.0;
         bbox = Matrix (1, 4, 0.0);
         line_bbox.clear ();
         push_new_line ();
@@ -707,7 +698,7 @@ namespace octave
                           octave_idx_type (bbox(3)));
             pixels = uint8NDArray (d, static_cast<uint8_t> (0));
             xoffset = compute_line_xoffset (line_bbox.front ());
-            line_yoffset = -bbox(1)-1;
+            line_yoffset = -bbox(1);
             yoffset = 0;
           }
         break;
@@ -779,7 +770,7 @@ namespace octave
                       }
 
                     x0 = xoffset + face->glyph->bitmap_left;
-                    y0 = line_yoffset + yoffset + face->glyph->bitmap_top;
+                    y0 = line_yoffset + yoffset + (face->glyph->bitmap_top - 1);
 
                     // 'w' seems to have a negative -1
                     // face->glyph->bitmap_left, this is so we don't index out
@@ -788,6 +779,9 @@ namespace octave
                     if (x0 < 0)
                       x0 = 0;
 
+                    if (y0 < (static_cast<int> (bitmap.rows) - 1))
+                      y0 = bitmap.rows - 1;
+
                     for (int r = 0; static_cast<unsigned int> (r) < bitmap.rows; r++)
                       for (int c = 0; static_cast<unsigned int> (c) < bitmap.width; c++)
                         {
@@ -795,8 +789,8 @@ namespace octave
                           if (x0+c < 0 || x0+c >= pixels.dim2 ()
                               || y0-r < 0 || y0-r >= pixels.dim3 ())
                             {
-                              //::warning ("ft_text_renderer: pixel out of bound (char=%d, (x,y)=(%d,%d), (w,h)=(%d,%d)",
-                              //           str[i], x0+c, y0-r, pixels.dim2 (), pixels.dim3 ());
+                              // ::warning ("ft_text_renderer: x %d,  y %d",
+                              //            x0+c, y0-r);
                             }
                           else if (pixels(3, x0+c, y0-r).value () == 0)
                             {
@@ -832,6 +826,23 @@ namespace octave
 
                 xoffset += (face->glyph->advance.x >> 6);
                 bb(2) = math::max (bb(2), xoffset);
+
+                // Store the actual bbox vertical coordinates of this character
+                FT_Glyph glyph;
+                if (FT_Get_Glyph (face->glyph, &glyph))
+                  warn_glyph_render (code);
+                else
+                  {
+                    FT_BBox  glyph_bbox;
+                    FT_Glyph_Get_CBox (glyph, FT_GLYPH_BBOX_UNSCALED,
+                                       &glyph_bbox);
+                    m_deltax = (glyph_bbox.xMax - face->glyph->advance.x) >> 6;
+                    m_ymin = math::min ((glyph_bbox.yMin >> 6) + yoffset,
+                                        m_ymin);
+                    m_ymax = math::max ((glyph_bbox.yMax >> 6) + yoffset,
+                                        m_ymax);
+                    update_line_bbox ();
+                  }
                 break;
               }
           }
@@ -861,38 +872,41 @@ namespace octave
   {
     if (font.is_valid ())
       {
+        m_max_fontsize = std::max (m_max_fontsize, font.get_size ());
         FT_UInt glyph_index, previous = 0;
 
         std::string str = e.string_value ();
-        size_t n;
-        // convert str to UTF-32
-        uint32_t *u32_str;
-        u32_str = octave_u8_to_u32_wrapper (reinterpret_cast<const uint8_t *> (str.c_str ()), str.length (), nullptr, &n);
-        if (! u32_str)
-          error ("ft_text_renderer: converting from UTF-8 to UTF-32: %s",
-                 std::strerror (errno));
-        size_t curr = 0;
-        size_t idx = 0;
+        const uint8_t *c = reinterpret_cast<const uint8_t *> (str.c_str ());
+        uint32_t u32_c;
+        
+        size_t n = str.size ();
+        size_t icurr = 0;
+        size_t ibegin = 0;
+
+        // Initialize a new string
         std::string fname = font.get_face ()->family_name;
         text_renderer::string fs (str, font, xoffset, yoffset);
         std::vector<double> xdata;
 
         while (n > 0)
           {
-            n -= 1;
-
-            if (u32_str[curr] == 10)
+            // Retrieve the length and the u32 representation of the current
+            // character
+            int mblen = octave_u8_strmbtouc_wrapper (&u32_c, c + icurr);
+            n -= mblen;
+            
+            if (u32_c == 10)
               {
                 // Finish previous string in strlist before processing
                 // the newline character
                 fs.set_y (line_yoffset + yoffset);
                 fs.set_color (color);
-                // FIXME: Do we have to convert back to UTF-8 and keep strlist
-                // in sync? Might fail with multi-byte characters as it is now.
-                std::string s = str.substr (idx, curr - idx);
+                
+                std::string s = str.substr (ibegin, icurr - ibegin);
                 if (! s.empty ())
                   {
                     fs.set_string (s);
+                    fs.set_y (line_yoffset + yoffset);
                     fs.set_xdata (xdata);
                     fs.set_family (fname);
                     strlist.push_back (fs);
@@ -901,24 +915,22 @@ namespace octave
             else
               xdata.push_back (xoffset);
 
-            glyph_index = process_character (u32_str[curr], previous);
+            glyph_index = process_character (u32_c, previous);
 
 
-            if (u32_str[curr] == 10)
+            if (u32_c == 10)
               {
                 previous = 0;
                 // Start a new string in strlist
-                idx = curr+1;
+                ibegin = icurr+1;
                 xdata.clear ();
-                // FIXME: Do we have to convert back to UTF-8 and keep strlist
-                // in sync? Might fail with multi-byte characters as it is now.
-                fs = text_renderer::string (str.substr (idx), font,
+                fs = text_renderer::string (str.substr (ibegin), font,
                                             line_xoffset, yoffset);
               }
             else
               previous = glyph_index;
 
-            curr += 1;
+            icurr += mblen;
           }
 
         if (! fs.get_string ().empty ())

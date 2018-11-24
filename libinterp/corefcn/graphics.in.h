@@ -3149,8 +3149,8 @@ public:
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
-      // FIXME: resizefcn has been deprecated by Matlab, and
-      //        replaced with sizechangedfcn
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
       //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
       radio_property selectiontype , "{normal}|extend|alt|open"
@@ -5578,6 +5578,9 @@ public:
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position , default_panel_position ()
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
+      //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
       handle_property selectedobject S , graphics_handle ()
       callback_property selectionchangedfcn , Matrix ()
@@ -5675,8 +5678,12 @@ public:
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position , default_panel_position ()
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
+      //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
       color_property shadowcolor , color_values (0.7, 0.7, 0.7)
+      callback_property sizechangedfcn , Matrix ()
       string_property title , ""
       radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"

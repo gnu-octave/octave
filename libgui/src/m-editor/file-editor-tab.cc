@@ -1737,6 +1737,14 @@ namespace octave
     if (!file.open(QIODevice::ReadOnly))
       return file.errorString ();
 
+    int col = 0, line = 0;
+    if (fileName == _file_name)
+      {
+        // We have to reload the current file, thus get current cursor position
+        line = _line;
+        col = _col;
+      }
+
     QApplication::setOverrideCursor (Qt::WaitCursor);
 
     // read the file binary, decoding later
@@ -1788,6 +1796,8 @@ namespace octave
     _edit_area->setModified (false); // loaded file is not modified yet
 
     update_eol_indicator ();
+
+    _edit_area->setCursorPosition (line, col);
 
     // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
     // breakpoints on the margin.  In order to do this, somehow the

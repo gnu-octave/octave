@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -424,61 +424,45 @@
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_9">
-                <item row="0" column="5">
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="1" column="5">
-                 <spacer name="horizontalSpacer_5">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_17">
                   <property name="text">
-                   <string>Startup path</string>
+                   <string>Initial working directory of Octave interpreter</string>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QPushButton" name="pb_octave_dir">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
-                  <property name="text">
-                   <string>Browse</string>
+                  <property name="wordWrap">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QCheckBox" name="cb_restore_octave_dir">
-                  <property name="text">
-                   <string>Restore working directory of previous session</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="le_octave_dir"/>
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="1" column="0">
+                   <widget class="QLineEdit" name="le_octave_dir"/>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="cb_restore_octave_dir">
+                    <property name="text">
+                     <string>Restore last working directory of previous session</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="pb_octave_dir">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>
@@ -519,8 +503,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -800,8 +784,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>647</width>
-            <height>1360</height>
+            <width>645</width>
+            <height>1213</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -2126,8 +2110,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2148,23 +2132,53 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="lo_file_browser_startup">
-                  <item row="1" column="3">
-                   <spacer name="horizontalSpacer_30">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
                   <item row="0" column="1">
-                   <widget class="QCheckBox" name="cb_restore_file_browser_dir">
+                   <layout class="QGridLayout" name="gridLayout_22">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cb_restore_file_browser_dir">
+                      <property name="text">
+                       <string>Restore last directory of previous session</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLineEdit" name="le_file_browser_dir">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QPushButton" name="pb_file_browser_dir">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Browse</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="lbl_file_browser_dir">
                     <property name="text">
-                     <string>Restore last directory of previous session</string>
+                     <string>Initial file browser directory (only if not synchronized with initial working directoy of Octave)</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -2175,48 +2189,24 @@
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
-                      <width>40</width>
+                      <width>20</width>
                       <height>20</height>
                      </size>
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="pb_file_browser_dir">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Browse</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lbl_file_browser_dir">
-                    <property name="text">
-                     <string>Startup path</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="le_file_browser_dir">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </item>
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
-                  <item>
+                  <item alignment="Qt::AlignTop">
                    <widget class="QLabel" name="lbl_file_browser_extensions">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
                      <string>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</string>
                     </property>
@@ -2244,7 +2234,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>360</height>
+               <height>100</height>
               </size>
              </property>
             </spacer>
@@ -2270,8 +2260,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2332,8 +2322,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>550</height>
+            <width>669</width>
+            <height>558</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2534,8 +2524,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2733,8 +2723,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>664</width>
-            <height>570</height>
+            <width>658</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

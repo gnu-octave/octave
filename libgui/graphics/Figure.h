@@ -47,8 +47,7 @@ namespace QtHandles
     ZoomInMode  = 2,
     ZoomOutMode = 3,
     PanMode     = 4,
-    TextMode    = 5,
-    SelectMode  = 6
+    TextMode    = 5
   };
 
   class Container;

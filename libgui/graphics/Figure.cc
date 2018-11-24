@@ -205,9 +205,6 @@ namespace QtHandles
       case TextMode:
         return "text";
 
-      case SelectMode:
-        return "select";
-
       default:
         break;
       }
@@ -230,8 +227,6 @@ namespace QtHandles
       return PanMode;
     else if (mode == "text")
       return TextMode;
-    else if (mode == "select")
-      return SelectMode;
     else
       return NoMode;
   }

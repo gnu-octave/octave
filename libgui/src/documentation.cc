@@ -378,7 +378,7 @@ namespace octave
                                    tr ("Zoom in"), SLOT (zoom_in (void)),
                                    m_doc_browser, m_tool_bar);
     m_action_zoom_out = add_action (resource_manager::icon ("zoom-out"),
-                                    tr ("Zoom in"), SLOT (zoom_out (void)),
+                                    tr ("Zoom out"), SLOT (zoom_out (void)),
                                     m_doc_browser, m_tool_bar);
     m_action_zoom_original = add_action (resource_manager::icon ("zoom-original"),
                                    tr ("Zoom original"), SLOT (zoom_original (void)),
@@ -705,8 +705,12 @@ namespace octave
   {
     // Which menu has to be updated?
     int prev_next = -1;
+    QAction *a = m_action_go_prev;
     if (actions == m_next_pages_actions)
-      prev_next = 1;
+      {
+        prev_next = 1;
+        a = m_action_go_next;
+      }
 
     // Get maximal count limited by array size
     int count = qMin (new_count, int (max_history_entries));
@@ -716,6 +720,10 @@ namespace octave
       {
         QString title = m_doc_browser->historyTitle (prev_next*(i+1));
         title.remove (QRegExp (" \\(GNU Octave \\(version [^\\)]*\\)\\)$"));
+
+        if (i == 0)
+          a->setText (title); // set tool tip for prev/next buttons
+
         actions[i]->setText (title);
         actions[i]->setData (m_doc_browser->historyUrl (prev_next*(i+1)));
         actions[i]->setEnabled (true);

@@ -57,10 +57,9 @@ const gui_pref global_mono_font ("monospace_font", global_font_family);
 const QStyle::PixelMetric global_icon_sizes[3] =
 {
   QStyle::PM_SmallIconSize,
-  QStyle::PM_LargeIconSize,
-  QStyle::PM_ToolBarIconSize
+  QStyle::PM_ToolBarIconSize,
+  QStyle::PM_LargeIconSize
 };
-
 const gui_pref global_icon_size ("toolbar_icon_size", QVariant (0));
 
 

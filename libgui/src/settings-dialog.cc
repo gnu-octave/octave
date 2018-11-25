@@ -129,10 +129,10 @@ namespace octave
     icon_size_group->addButton (icon_size_small);
     icon_size_group->addButton (icon_size_normal);
     icon_size_group->addButton (icon_size_large);
-    int icon_size = settings->value ("toolbar_icon_size", 0).toInt ();
+    int icon_size = settings->value (global_icon_size.key, global_icon_size.def).toInt ();
     icon_size_normal->setChecked (true);  // the default
-    icon_size_small->setChecked (icon_size == -1);
-    icon_size_large->setChecked (icon_size == 1);
+    icon_size_small->setChecked (icon_size < 0);
+    icon_size_large->setChecked (icon_size > 0);
 
     // which icon has to be selected
     QButtonGroup *icon_group = new QButtonGroup (this);
@@ -815,12 +815,8 @@ namespace octave
     settings->setValue ("DockWidgets/title_fg_color_active", m_widget_title_fg_color_active->color ());
 
     // icon size
-    int icon_size = 0;
-    if (icon_size_small->isChecked ())
-      icon_size = -1;
-    else if (icon_size_large->isChecked ())
-      icon_size = 1;
-    settings->setValue ("toolbar_icon_size", icon_size);
+    int icon_size = icon_size_large->isChecked () - icon_size_small->isChecked ();
+    settings->setValue (global_icon_size.key, icon_size);
 
     // native file dialogs
     settings->setValue ("use_native_file_dialogs", cb_use_native_file_dialogs->isChecked ());

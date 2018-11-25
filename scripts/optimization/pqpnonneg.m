@@ -84,7 +84,7 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
 
   ## Special case: called to find default optimization options
   if (nargin == 1 && ischar (c) && strcmp (c, "defaults"))
-    x = optimset ("MaxIter", 1e5);
+    x = struct ("MaxIter", 1e5);
     return;
   endif
 

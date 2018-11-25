@@ -18,14 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{names} =} __all_opts__ (@dots{})
-## Undocumented internal function.
-## @end deftypefn
-
+## Internal function.
+##
 ## Query all options from all known optimization functions and return a
 ## list of possible values.
+## @end deftypefn
 
 function names = __all_opts__ (varargin)
 
+  ## This variable is filled by the auto-generated PKG_ADD script at
+  ## Octave startup.
   persistent saved_names = {};
 
   ## do not clear this function
@@ -39,7 +41,7 @@ function names = __all_opts__ (varargin)
   elseif (nargin == 0)
     names = saved_names;
   else
-    ## query all options from all known functions.  These will call optimset,
+    ## Query all options from all known functions.  These will call optimset,
     ## which will in turn call us, but we won't answer.
     recursive = true;
     names = saved_names;

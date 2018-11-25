@@ -120,7 +120,7 @@
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (nargin == 1 && ischar (x0) && strcmp (x0, "defaults"))
-    x = optimset ("MaxIter", 200);
+    x = struct ("MaxIter", 200);
     return;
   endif
 

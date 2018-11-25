@@ -123,9 +123,9 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
-    x = optimset ("Display", "notify", "FunValCheck", "off",
-                  "MaxFunEvals", Inf, "MaxIter", Inf,
-                  "OutputFcn", [], "TolX", eps);
+    x = struct ("Display", "notify", "FunValCheck", "off",
+                "MaxFunEvals", Inf, "MaxIter", Inf,
+                "OutputFcn", [], "TolX", eps);
     return;
   endif
 

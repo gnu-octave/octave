@@ -113,10 +113,10 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   ## Get default options if requested.
   if (nargin == 1 && strcmp (fcn, "defaults"))
-    x = optimset ("AutoScaling", "off", "FunValCheck", "off",
-                  "FinDiffType", "forward", "GradObj", "off",
-                  "MaxFunEvals", [], "MaxIter", 400, "OutputFcn", [],
-                  "TolFun", 1e-6, "TolX", 1e-6, "TypicalX", []);
+    x = struct ("AutoScaling", "off", "FunValCheck", "off",
+                "FinDiffType", "forward", "GradObj", "off",
+                "MaxFunEvals", [], "MaxIter", 400, "OutputFcn", [],
+                "TolFun", 1e-6, "TolX", 1e-6, "TypicalX", []);
     return;
   endif
 

@@ -128,10 +128,10 @@ function [x, fval, exitflag, output] = fminsearch (varargin)
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (varargin{1}) && strcmp (varargin{1}, "defaults"))
-    x = optimset ("Display", "notify", "FunValCheck", "off",
-                  "MaxFunEvals", [], "MaxIter", [],
-                  "OutputFcn", [],
-                  "TolFun", 1e-4, "TolX", 1e-4);
+    x = struct ("Display", "notify", "FunValCheck", "off",
+                "MaxFunEvals", [], "MaxIter", [],
+                "OutputFcn", [],
+                "TolFun", 1e-4, "TolX", 1e-4);
     return;
   endif
 

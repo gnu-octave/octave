@@ -747,7 +747,11 @@ namespace octave
   // The documentation browser
   documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
     : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
-  { }
+  {
+    setOpenLinks (false);
+    connect (this, SIGNAL (anchorClicked (QUrl)),
+             this, SLOT (handle_index_clicked (QUrl)));
+  }
 
   documentation_browser::~documentation_browser (void)
   { }
@@ -755,7 +759,10 @@ namespace octave
   void documentation_browser::handle_index_clicked (const QUrl& url,
                                                     const QString&)
   {
-    setSource (url);
+    if (url.scheme () == "qthelp")
+      setSource (url);
+    else
+      QDesktopServices::openUrl (url);
   }
 
   void documentation_browser::notice_settings (const QSettings *)

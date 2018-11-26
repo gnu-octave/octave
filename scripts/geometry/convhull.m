@@ -21,6 +21,7 @@
 ## @deftypefnx {} {@var{H} =} convhull (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {} {@var{H} =} convhull (@var{x})
 ## @deftypefnx {} {@var{H} =} convhull (@dots{}, @var{options})
+## @deftypefnx {} {[@var{H}, @var{V}] =} convhull (@dots{})
 ## Compute the convex hull of a 2-D or 3-D set of points.
 ##
 ## The hull @var{H} is a linear index vector into the original set of points
@@ -42,10 +43,13 @@
 ## To append user options to the defaults it is necessary to repeat the
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
+## If the second output @var{V} is requested the volume of the enclosing
+## convex hull is calculated.
+##
 ## @seealso{convhulln, delaunay, voronoi}
 ## @end deftypefn
 
-function H = convhull (varargin)
+function [H, V] = convhull (varargin)
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
@@ -119,13 +123,21 @@ function H = convhull (varargin)
     if (! size_equal (x, y))
       error ("convhull: X and Y must be the same size");
     endif
-    Htmp = convhulln ([x, y], options);
+    if (nargout > 1)
+      [Htmp, V] = convhulln ([x, y], options);
+    else
+      Htmp = convhulln ([x, y], options);
+    endif
   else
     x = x(:);  y = y(:);  z = z(:);
     if (! size_equal (x, y, z))
       error ("convhull: X, Y, and Z must be the same size");
     endif
-    H = convhulln ([x, y, z], options);
+    if (nargout > 1)
+      [H, V] = convhulln ([x, y, z], options);
+    else
+      H = convhulln ([x, y, z], options);
+    endif
   endif
 
   if (isempty (z))
@@ -168,6 +180,10 @@ endfunction
 %! x = -3:0.5:3;
 %! y = abs (sin (x));
 %! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1]);
+
+%!testif HAVE_QHULL
+%! [~, V] = convhull ([0,2,2,0], [0,0,1,1]);
+%! assert (V == 2);
 
 ## Input validation tests
 %!error convhull ()

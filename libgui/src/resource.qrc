@@ -30,7 +30,10 @@
         <file>icons/folder-new.png</file>
         <file>icons/go-down.png</file>
         <file>icons/go-first.png</file>
+        <file>icons/go-home.png</file>
         <file>icons/go-last.png</file>
+        <file>icons/go-next.png</file>
+        <file>icons/go-previous.png</file>
         <file>icons/go-up.png</file>
         <file>icons/graphic_logo_FilesDockWidget.png</file>
         <file>icons/graphic_logo_FileEditor.png</file>

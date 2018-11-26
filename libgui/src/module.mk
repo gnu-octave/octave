@@ -29,7 +29,10 @@ octave_gui_ICONS = \
   %reldir%/icons/folder-new.png \
   %reldir%/icons/go-down.png \
   %reldir%/icons/go-first.png \
+  %reldir%/icons/go-home.png \
   %reldir%/icons/go-last.png \
+  %reldir%/icons/go-next.png \
+  %reldir%/icons/go-previous.png \
   %reldir%/icons/go-up.png \
   %reldir%/icons/graphic_logo_DocumentationDockWidget.png \
   %reldir%/icons/graphic_logo_FileEditor.png \

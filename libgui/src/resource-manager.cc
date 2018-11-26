@@ -363,6 +363,12 @@ namespace octave
 
   QIcon resource_manager::do_icon (const QString& icon_name, bool fallback)
   {
+    // If system icon theme is not desired, take own icon files
+    if (! m_settings->value (global_icon_theme.key, global_icon_theme.def).toBool ())
+      return QIcon (":/actions/icons/" + icon_name + ".png");
+
+    // Use system icon theme with own files as fallback except the fallback is
+    // explicitly disabled (fallback=false)
     if (fallback)
       return QIcon::fromTheme (icon_name,
                                QIcon (":/actions/icons/" + icon_name + ".png"));

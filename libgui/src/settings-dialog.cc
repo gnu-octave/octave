@@ -124,7 +124,7 @@ namespace octave
     else
       comboBox_language->setCurrentIndex (0);  // System is default
 
-    // icon size
+    // icon size and theme
     QButtonGroup *icon_size_group = new QButtonGroup (this);
     icon_size_group->addButton (icon_size_small);
     icon_size_group->addButton (icon_size_normal);
@@ -133,6 +133,7 @@ namespace octave
     icon_size_normal->setChecked (true);  // the default
     icon_size_small->setChecked (icon_size < 0);
     icon_size_large->setChecked (icon_size > 0);
+    cb_system_icon_theme->setChecked (settings->value (global_icon_theme.key, global_icon_theme.def).toBool ());
 
     // which icon has to be selected
     QButtonGroup *icon_group = new QButtonGroup (this);
@@ -814,9 +815,10 @@ namespace octave
     settings->setValue ("DockWidgets/title_fg_color", m_widget_title_fg_color->color ());
     settings->setValue ("DockWidgets/title_fg_color_active", m_widget_title_fg_color_active->color ());
 
-    // icon size
+    // icon size and theme
     int icon_size = icon_size_large->isChecked () - icon_size_small->isChecked ();
     settings->setValue (global_icon_size.key, icon_size);
+    settings->setValue (global_icon_theme.key, cb_system_icon_theme->isChecked ());
 
     // native file dialogs
     settings->setValue ("use_native_file_dialogs", cb_use_native_file_dialogs->isChecked ());

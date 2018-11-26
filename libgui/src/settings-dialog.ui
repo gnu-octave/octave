@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -65,53 +65,19 @@
              <layout class="QVBoxLayout" name="verticalLayout_21">
               <item>
                <layout class="QGridLayout" name="gridLayout">
-                <item row="2" column="1">
-                 <layout class="QHBoxLayout" name="horizontalLayout_6">
-                  <item>
-                   <widget class="QRadioButton" name="icon_size_small">
-                    <property name="text">
-                     <string>Small</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="icon_size_normal">
-                    <property name="text">
-                     <string>Normal</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="icon_size_large">
-                    <property name="text">
-                     <string>Large</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_4">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
                 <item row="1" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
                    <widget class="QComboBox" name="comboBox_language">
                     <property name="insertPolicy">
                      <enum>QComboBox::InsertAtBottom</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>(requires restart)</string>
                     </property>
                    </widget>
                   </item>
@@ -130,17 +96,7 @@
                   </item>
                  </layout>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Icon size</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="0">
+                <item row="10" column="0">
                  <widget class="QCheckBox" name="cb_prompt_to_exit">
                   <property name="text">
                    <string>Confirm before exiting</string>
@@ -150,11 +106,11 @@
                 <item row="1" column="0">
                  <widget class="QLabel" name="label_2">
                   <property name="text">
-                   <string>Language (requires restart)</string>
+                   <string>Language</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="6" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_13">
@@ -316,7 +272,7 @@
                   </item>
                  </layout>
                 </item>
-                <item row="4" column="0">
+                <item row="6" column="0">
                  <widget class="QLabel" name="label_15">
                   <property name="text">
                    <string>Dock widget title bar</string>
@@ -326,7 +282,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
                   <item>
                    <widget class="QRadioButton" name="general_icon_octave">
@@ -367,14 +323,14 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="0">
+                <item row="4" column="0">
                  <widget class="QLabel" name="label_9">
                   <property name="text">
                    <string>Icon set for dock widgets</string>
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="0">
+                <item row="9" column="0">
                  <widget class="QCheckBox" name="cb_status_bar">
                   <property name="text">
                    <string>Show status bar</string>
@@ -384,7 +340,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="0">
+                <item row="8" column="0">
                  <widget class="QCheckBox" name="cb_cursor_blinking">
                   <property name="text">
                    <string>Cursor blinking</string>
@@ -394,7 +350,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="7" column="0">
                  <widget class="QCheckBox" name="cb_use_native_file_dialogs">
                   <property name="text">
                    <string>Use native file dialogs</string>
@@ -403,6 +359,68 @@
                    <bool>true</bool>
                   </property>
                  </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>Toolbar Icons</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <layout class="QVBoxLayout" name="verticalLayout_5">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QRadioButton" name="icon_size_small">
+                      <property name="text">
+                       <string>Small</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="icon_size_normal">
+                      <property name="text">
+                       <string>Normal</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="icon_size_large">
+                      <property name="text">
+                       <string>Large</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_4">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cb_system_icon_theme">
+                    <property name="text">
+                     <string>Use system icon theme if available (requires restart)</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </item>

@@ -67,6 +67,16 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
         MaxIter      |      500       |     Inf
         TolX         |     1e-4       |     1e-8
 
+ ** The fminunc function has changed defaults for Matlab compatibility.
+    This *may* result in existing code producing different results.
+
+          Option     |  New Default   |  Old Default
+      ------------------------------------------------
+        FinDiffType  |   "forward"    |   "central"
+        MaxFunEvals  | 100*length(x0) |     Inf
+        TolX         |     1e-6       |     1e-7
+        TolFun       |     1e-6       |     1e-7
+
  ** Figure graphic objects have a new property "Number" which is
     read-only and will return the handle (number) of the figure.
     However, if the property "IntegerHandle" has been set to "off" then

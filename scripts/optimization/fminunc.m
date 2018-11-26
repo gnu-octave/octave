@@ -33,19 +33,34 @@
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved in
 ## all calls to @var{fcn}, but otherwise is treated as a column vector.
 ##
-## @var{options} is a structure specifying additional options.  Currently,
-## @code{fminunc} recognizes these options:
-## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
-## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
-## @qcode{"GradObj"}, @qcode{"FinDiffType"}, @qcode{"TypicalX"},
-## @qcode{"AutoScaling"}.
+## @var{options} is a structure specifying additional parameters which
+## control the algorithm.  Currently, @code{fminunc} recognizes these options:
+## @qcode{"AutoScaling"}, @qcode{"FinDiffType"}, @qcode{"FunValCheck"},
+## @qcode{"GradObj"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
+## @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"}, @qcode{"TypicalX"}.
 ##
-## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}, when
-## called with two output arguments, also returns the Jacobian matrix of
-## partial first derivatives at the requested point.  @code{TolX} specifies
-## the termination tolerance for the unknown variables @var{x}, while
-## @code{TolFun} is a tolerance for the objective function value @var{fval}.
-##  The default is @code{1e-7} for both options.
+## If @qcode{"AutoScaling"} is @qcode{"on"}, the variables will be
+## automatically scaled according to the column norms of the (estimated)
+## Jacobian.  As a result, @qcode{"TolFun"} becomes scaling-independent.  By
+## default, this option is @qcode{"off"} because it may sometimes deliver
+## unexpected (though mathematically correct) results.
+##
+## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}--when
+## called with two output arguments---also returns the Jacobian matrix of
+## partial first derivatives at the requested point.
+##
+## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
+## before optimization is halted.  The default value is
+## @code{100 * number_of_variables}, i.e., @code{100 * length (@var{x0})}.
+## The value must be a positive integer.
+##
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before optimization is halted.  The default value is 400.
+## The value must be a positive integer.
+##
+## @qcode{"TolX"} specifies the termination tolerance for the unknown variables
+## @var{x}, while @qcode{"TolFun"} is a tolerance for the objective function
+## value @var{fval}.  The default is @code{1e-6} for both options.
 ##
 ## For a description of the other options, see @code{optimset}.
 ##
@@ -98,11 +113,10 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   ## Get default options if requested.
   if (nargin == 1 && strcmp (fcn, "defaults"))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf,
-                  "GradObj", "off", "TolX", 1e-7, "TolFun", 1e-7,
-                  "OutputFcn", [], "FunValCheck", "off",
-                  "FinDiffType", "central",
-                  "TypicalX", [], "AutoScaling", "off");
+    x = optimset ("AutoScaling", "off", "FunValCheck", "off",
+                  "FinDiffType", "forward", "GradObj", "off",
+                  "MaxFunEvals", [], "MaxIter", 400, "OutputFcn", [],
+                  "TolFun", 1e-6, "TolX", 1e-6, "TypicalX", []);
     return;
   endif
 
@@ -118,9 +132,9 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
   n = numel (x0);
 
   has_grad = strcmpi (optimget (options, "GradObj", "off"), "on");
-  cdif = strcmpi (optimget (options, "FinDiffType", "central"), "central");
+  cdif = strcmpi (optimget (options, "FinDiffType", "forward"), "central");
   maxiter = optimget (options, "MaxIter", 400);
-  maxfev = optimget (options, "MaxFunEvals", Inf);
+  maxfev = optimget (options, "MaxFunEvals", 100*n);
   outfcn = optimget (options, "OutputFcn");
 
   ## Get scaling matrix using the TypicalX option.  If set to "auto", the
@@ -425,7 +439,7 @@ endfunction
 %! assert (fval, 0, tol);
 
 ## Test FunValCheck works correctly
-%!assert (fminunc (@(x) x^2, 1, optimset ("FunValCheck", "on")), 0, eps)
+%!assert (fminunc (@(x) x^2, 1, optimset ("FunValCheck", "on")), 0, 1e-6)
 %!error <non-real value> fminunc (@(x) x + i, 1, optimset ("FunValCheck", "on"))
 %!error <NaN value> fminunc (@(x) x + NaN, 1, optimset ("FunValCheck", "on"))
 %!error <Inf value> fminunc (@(x) x + Inf, 1, optimset ("FunValCheck", "on"))

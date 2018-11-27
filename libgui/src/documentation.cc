@@ -719,7 +719,7 @@ namespace octave
     for (int i = 0; i < count; i++)
       {
         QString title = m_doc_browser->historyTitle (prev_next*(i+1));
-        title.remove (QRegExp (" \\(GNU Octave \\(version [^\\)]*\\)\\)$"));
+        title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
 
         if (i == 0)
           a->setText (title); // set tool tip for prev/next buttons

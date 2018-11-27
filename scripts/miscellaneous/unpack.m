@@ -71,7 +71,7 @@
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function filelist = unpack (file, dir = ".", filetype = "")
+function filelist = unpack (file, dir = [], filetype = "")
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -101,7 +101,11 @@ function filelist = unpack (file, dir = ".", filetype = "")
   if (numel (file) > 1)
     files = {};
     for i = 1:numel (file)
-      tmpfiles = unpack (file{i}, dir);
+      if (! isempty (dir))
+        tmpfiles = unpack (file{i}, dir);
+      else
+        tmpfiles = unpack (file{i}, fileparts (file{i}));
+      endif
       files = {files{:} tmpfiles{:}};
     endfor
 

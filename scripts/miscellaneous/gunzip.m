@@ -17,8 +17,9 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{filelist} =} gunzip (@var{gzfile})
-## @deftypefnx {} {@var{filelist} =} gunzip (@var{gzfile}, @var{dir})
+## @deftypefn  {} {} gunzip (@var{gzfile})
+## @deftypefnx {} {} gunzip (@var{gzfile}, @var{dir})
+## @deftypefnx {} {@var{filelist} =} gunzip (@dots{})
 ## Unpack the gzip archive @var{gzfile}.
 ##
 ## If @var{gzfile} is a directory, all gzfiles in the directory will be
@@ -39,7 +40,7 @@ function filelist = gunzip (gzfile, dir = [])
     print_usage ();
   endif
 
-  if (isempty (dir))
+  if (isempty (dir) && ischar (gzfile))
     dir = fileparts (gzfile);
   endif
 

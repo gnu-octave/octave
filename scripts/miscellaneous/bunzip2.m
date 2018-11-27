@@ -17,8 +17,9 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{filelist} =} bunzip2 (@var{bzfile})
-## @deftypefnx {} {@var{filelist} =} bunzip2 (@var{bzfile}, @var{dir})
+## @deftypefn  {} {} bunzip2 (@var{bzfile})
+## @deftypefnx {} {} bunzip2 (@var{bzfile}, @var{dir})
+## @deftypefnx {} {@var{filelist} =} bunzip2 (@dots{})
 ## Unpack the bzip2 archive @var{bzfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather
@@ -36,7 +37,7 @@ function filelist = bunzip2 (bzfile, dir = [])
     print_usage ();
   endif
 
-  if (isempty (dir))
+  if (isempty (dir) && ischar (bzfile))
     dir = fileparts (bzfile);
   endif
 

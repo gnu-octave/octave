@@ -17,8 +17,9 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{filelist} =} unzip (@var{zipfile})
-## @deftypefnx {} {@var{filelist} =} unzip (@var{zipfile}, @var{dir})
+## @deftypefn  {} {} unzip (@var{zipfile})
+## @deftypefnx {} {} unzip (@var{zipfile}, @var{dir})
+## @deftypefnx {} {@var{filelist} =} unzip (@dots{})
 ## Unpack the ZIP archive @var{zipfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather

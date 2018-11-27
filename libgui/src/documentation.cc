@@ -721,6 +721,35 @@ namespace octave
         QString title = m_doc_browser->historyTitle (prev_next*(i+1));
         title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
 
+        // Sinve the title only contains the section name and not the
+        // specific anchor, extract the latter from the url and append
+        // it to the title
+        QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString (QUrl::FullyEncoded);
+        if (url.contains ('#'))
+          {
+            // Get the anchor from the url
+            QString anchor = url.split ('#').last ();
+
+            // Remove internal string parts
+            anchor.remove (QRegExp ("^index-"));
+            anchor.remove (QRegExp ("^SEC_"));
+            anchor.remove (QRegExp ("^XREF"));
+            anchor.remove ("Concept-Index_cp_letter-");
+            anchor.replace ("-"," ");
+
+            // replace encoded special chars by there unencoded versions
+            QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
+            int pos = 0;
+            while ((pos = rx.indexIn(anchor, pos)) != -1)
+              {
+                anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr,16)));
+                pos += rx.matchedLength();
+              }
+
+            if (title != anchor)
+              title = title + ": " + anchor;
+          }
+
         if (i == 0)
           a->setText (title); // set tool tip for prev/next buttons
 

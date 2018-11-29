@@ -39,6 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 #  endif
 #  define HAVE_OCTAVE_DEPRECATED_ATTR 1
 
+#  define OCTAVE_FORMAT_ATTRIBUTE(type, index, first) __attribute__ ((__format__(type, index, first)))
+#  define HAVE_OCTAVE_FORMAT_ATTRIBUTE_ATTR 1
+
 #  define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #  define HAVE_OCTAVE_NORETURN_ATTR 1
 
@@ -46,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #  define HAVE_OCTAVE_UNUSED_ATTR 1
 #else
 #  define OCTAVE_DEPRECATED(ver, msg)
+#  define OCTAVE_FORMAT_ATTRIBUTE(type, index, first)
 #  define OCTAVE_NORETURN
 #  define OCTAVE_UNUSED
 #endif

@@ -106,6 +106,7 @@ since all of Octave's header files already include it.
 #    else
 #      define OCTAVE_DEPRECATED(ver, msg) __attribute__ ((__deprecated__))
 #    endif
+#    define OCTAVE_FORMAT_ATTRIBUTE(type, index, first) __attribute__ ((__format__(type, index, first)))
 #    define OCTAVE_NORETURN __attribute__ ((__noreturn__))
 #    define OCTAVE_UNUSED __attribute__ ((__unused__))
 
@@ -114,6 +115,7 @@ since all of Octave's header files already include it.
 #    define HAVE_OCTAVE_UNUSED_ATTR 1
 #  else
 #    define OCTAVE_DEPRECATED(ver, msg)
+#    define OCTAVE_FORMAT_ATTRIBUTE(type, index, first)
 #    define OCTAVE_NORETURN
 #    define OCTAVE_UNUSED
 

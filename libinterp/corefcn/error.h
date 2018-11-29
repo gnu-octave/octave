@@ -116,7 +116,8 @@ void parse_error_with_id (const char *id, const char *fmt, ...);
 OCTAVE_NORETURN OCTINTERP_API extern
 void panic (const char *fmt, ...);
 
-// Helper function for print_usage defined in defun.cc.
+//! Helper function for print_usage defined in defun.cc.
+
 extern OCTINTERP_API void defun_usage_message (const std::string& msg);
 
 extern OCTINTERP_API octave_value_list
@@ -128,46 +129,59 @@ set_warning_state (const octave_value_list& args);
 extern OCTINTERP_API void disable_warning (const std::string& id);
 extern OCTINTERP_API void initialize_default_warning_state (void);
 
-// TRUE means that Octave will try to enter the debugger when an error
-// is encountered.  This will also inhibit printing of the normal
-// traceback message (you will only see the top-level error message).
+//! TRUE means that Octave will try to enter the debugger when an error
+//! is encountered.  This will also inhibit printing of the normal
+//! traceback message (you will only see the top-level error message).
+
 extern OCTINTERP_API bool Vdebug_on_error;
 
-// TRUE means that Octave will try to enter the debugger when an error
-// is encountered within the 'try' section of a 'try' / 'catch' block.
+//! TRUE means that Octave will try to enter the debugger when an error
+//! is encountered within the 'try' section of a 'try' / 'catch' block.
+
 extern OCTINTERP_API bool Vdebug_on_caught;
 
-// TRUE means that Octave will try to enter the debugger when a warning
-// is encountered.
+//! TRUE means that Octave will try to enter the debugger when a warning
+//! is encountered.
+
 extern OCTINTERP_API bool Vdebug_on_warning;
 
-// Current error state.
+//! Current error state.
+
 extern OCTINTERP_API int error_state;
 
-// Current warning state.
+//! Current warning state.
+
 extern OCTINTERP_API int warning_state;
 
-// Tell the error handler whether to print messages, or just store
-// them for later.  Used for handling errors in eval() and
-// the 'unwind_protect' statement.
+//! Tell the error handler whether to print messages, or just store
+//! them for later.  Used for handling errors in eval() and
+//! the 'unwind_protect' statement.
+
 extern OCTINTERP_API int buffer_error_messages;
 
-// The number of layers of try / catch blocks we're in.  Used to print
-// "caught error" instead of "error" when "dbstop if caught error" is on.
+//! The number of layers of try / catch blocks we're in.  Used to print
+//! "caught error" instead of "error" when "dbstop if caught error" is on.
+
 extern OCTINTERP_API int in_try_catch;
 
-// TRUE means error messages are turned off.
+//! TRUE means error messages are turned off.
+
 extern OCTINTERP_API bool discard_error_messages;
 
-// TRUE means warning messages are turned off.
+//! TRUE means warning messages are turned off.
+
 extern OCTINTERP_API bool discard_warning_messages;
 
-// Helper functions to pass last error and warning messages and ids
+//! Helper functions to pass last error and warning messages and ids.
+//! @{
+
 extern OCTINTERP_API std::string last_error_message (void);
 extern OCTINTERP_API std::string last_error_id (void);
 extern OCTINTERP_API octave_map last_error_stack (void);
 extern OCTINTERP_API std::string last_warning_message (void);
 extern OCTINTERP_API std::string last_warning_id (void);
+
+//! @}
 
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 

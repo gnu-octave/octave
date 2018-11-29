@@ -377,7 +377,7 @@ cleanup:
   CHOLMOD_NAME(finish) (cm);
 
   if (! err_msg.empty ())
-    error (err_msg.c_str ());
+    error ("%s", err_msg.c_str ());
 
   return retval;
 

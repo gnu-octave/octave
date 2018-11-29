@@ -2720,7 +2720,7 @@ namespace octave
           {
             e.set_var (lhs->name ());
             std::string msg = e.message ();
-            error_with_id (e.err_id (), msg.c_str ());
+            error_with_id (e.err_id (), "%s", msg.c_str ());
           }
       }
 
@@ -3485,7 +3485,7 @@ namespace octave
 
     std::string msg = e.message () + extra_message;
 
-    error_with_id (e.err_id (), msg.c_str ());
+    error_with_id (e.err_id (), "%s", msg.c_str ());
   }
 
   void

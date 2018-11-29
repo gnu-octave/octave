@@ -1938,7 +1938,7 @@ initialize_java (void)
         }
       catch (std::string msg)
         {
-          error (msg.c_str ());
+          error ("%s", msg.c_str ());
         }
 
       octave_set_default_fpucw ();

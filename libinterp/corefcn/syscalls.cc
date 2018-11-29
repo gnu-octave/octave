@@ -290,7 +290,7 @@ exit status, it will linger until Octave exits.
   pid = octave::sys::popen2 (exec_file, arg_list, sync_mode, filedesc, msg);
 
   if (pid < 0)
-    error (msg.c_str ());
+    error ("%s", msg.c_str ());
 
   FILE *ifile = fdopen (filedesc[1], "r");
   FILE *ofile = fdopen (filedesc[0], "w");

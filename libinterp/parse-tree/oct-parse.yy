@@ -5685,7 +5685,7 @@ maybe_print_last_error_message (bool *doit)
     // Print error message again, which was lost because of the stderr buffer
     // Note: this keeps error_state and last_error_stack intact
     message_with_id ("error", last_error_id ().c_str (),
-                     last_error_message ().c_str ());
+                     "%s", last_error_message ().c_str ());
 }
 
 static void

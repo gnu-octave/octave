@@ -309,7 +309,7 @@ namespace QtHandles
         warn_string << "Unknown conversion for datatype " << val.class_name ()
                     << " to " << format
                     << " for value " << val.string_value (true);
-        warning (warn_string.str ().c_str ());
+        warning ("%s", warn_string.str ().c_str ());
 
         text = Utils::fromStdString (val.string_value (true));
       }
@@ -551,7 +551,7 @@ namespace QtHandles
                                    cellEditCallbackEventObject);
       }
     else if (error.string_value ().length () > 0)
-      warning (error.string_value ().c_str ());
+      warning ("%s", error.string_value ().c_str ());
   }
 
   void

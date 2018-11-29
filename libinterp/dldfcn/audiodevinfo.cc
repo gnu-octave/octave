@@ -135,8 +135,8 @@ recording using those parameters.
 
       if (! device_info)
         {
-          warning ("Octave:invalid-audio-device",
-                   "invalid audio device ID = %d", i);
+          warning_with_id ("Octave:invalid-audio-device",
+                           "invalid audio device ID = %d", i);
           continue;
         }
 
@@ -161,8 +161,8 @@ recording using those parameters.
 
       if (! device_info)
         {
-          warning ("Octave:invalid-audio-device",
-                   "invalid audio device ID = %d", i);
+          warning_with_id ("Octave:invalid-audio-device",
+                           "invalid audio device ID = %d", i);
           continue;
         }
 
@@ -311,8 +311,8 @@ recording using those parameters.
 
           if (! device_info)
             {
-              warning ("Octave:invalid-audio-device",
-                       "invalid audio device ID = %d", i);
+              warning_with_id ("Octave:invalid-audio-device",
+                               "invalid audio device ID = %d", i);
               continue;
             }
 
@@ -834,8 +834,8 @@ audioplayer::~audioplayer (void)
 {
   if (isplaying ())
     {
-      warning ("Octave:audio-interrupt",
-               "interrupting playing audioplayer");
+      warning_with_id ("Octave:audio-interrupt",
+                       "interrupting playing audioplayer");
       stop ();
     }
 }
@@ -874,8 +874,8 @@ audioplayer::init_fn (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
@@ -918,8 +918,8 @@ audioplayer::init (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
@@ -1470,8 +1470,8 @@ audiorecorder::~audiorecorder (void)
 {
   if (isrecording ())
     {
-      warning ("Octave:audio-interrupt",
-               "interrupting recording audiorecorder");
+      warning_with_id ("Octave:audio-interrupt",
+                       "interrupting recording audiorecorder");
       stop ();
     }
 }
@@ -1510,8 +1510,8 @@ audiorecorder::init (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   input_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighInputLatency : -1);

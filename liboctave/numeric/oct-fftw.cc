@@ -136,6 +136,8 @@ namespace octave
         instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
+    octave_unused_parameter (nt);
+
     (*current_liboctave_warning_handler)
       ("unable to change number of threads without FFTW thread support");
 #endif
@@ -494,6 +496,8 @@ namespace octave
         instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
+    octave_unused_parameter (nt);
+
     (*current_liboctave_warning_handler)
       ("unable to change number of threads without FFTW thread support");
 #endif

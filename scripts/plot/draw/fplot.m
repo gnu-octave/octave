@@ -128,23 +128,27 @@ function [X, Y] = fplot (varargin)
   if (n != 5)
     ## n was specified
     x0 = linspace (limits(1), limits(2), n/2 + 1)';
-    y0 = feval (fn, x0);
-    x = linspace (limits(1), limits(2), n)';
-    y = feval (fn, x);
   else
     x0 = linspace (limits(1), limits(2), 5)';
-    y0 = feval (fn, x0);
     n = 8;
-    x = linspace (limits(1), limits(2), n)';
-    y = feval (fn, x);
   endif
 
-  if (isscalar (y0))
-    warning ("fplot: FN is not a vectorized function which reduces performance");
+  try
+    y0 = feval (fn, x0);
+    if (isscalar (y0))
+      warning ("fplot: FN is not a vectorized function which reduces performance");
+      fn = @(x) arrayfun (fn, x);  # Create a new fn that accepts vectors
+      y0 = feval (fn, x0);
+    endif
+  catch
+    ## feval failed, maybe it is because the function is not vectorized?
     fn = @(x) arrayfun (fn, x);  # Create a new fn that accepts vectors
     y0 = feval (fn, x0);
-    y = feval (fn, x);
-  endif
+    warning ("fplot: FN is not a vectorized function which reduces performance");
+  end_try_catch
+
+  x = linspace (limits(1), limits(2), n)';
+  y = feval (fn, x);
 
   if (rows (x0) == rows (y0))
     fcn_transpose = false;

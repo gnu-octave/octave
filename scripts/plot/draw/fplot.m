@@ -17,10 +17,13 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} fplot (@var{fn}, @var{limits})
+## @deftypefn  {} {} fplot (@var{fn})
+## @deftypefnx {} {} fplot (@var{fn}, @var{limits})
 ## @deftypefnx {} {} fplot (@dots{}, @var{tol})
 ## @deftypefnx {} {} fplot (@dots{}, @var{n})
 ## @deftypefnx {} {} fplot (@dots{}, @var{fmt})
+## @deftypefnx {} {} fplot (@dots{}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {} {} fplot (@var{hax}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{y}] =} fplot (@dots{})
 ## Plot a function @var{fn} within the range defined by @var{limits}.
 ##
@@ -28,7 +31,8 @@
 ## name of the function to evaluate.
 ##
 ## The limits of the plot are of the form @w{@code{[@var{xlo}, @var{xhi}]}} or
-## @w{@code{[@var{xlo}, @var{xhi}, @var{ylo}, @var{yhi}]}}.
+## @w{@code{[@var{xlo}, @var{xhi}, @var{ylo}, @var{yhi}]}}.  If no limits
+## are specified the default is @code{[-5, 5]}.
 ##
 ## The next three arguments are all optional and any number of them may be
 ## given in any order.
@@ -44,11 +48,15 @@
 ## The @var{fmt} argument specifies the linestyle to be used by the plot
 ## command.
 ##
+## Multiple property-value pairs may also be specified, but they must appear
+## in pairs.  These arguments are applied to the line objects drawn by
+## @code{plot}.
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
 ##
-## With no output arguments the results are immediately plotted.  With two
-## output arguments the 2-D plot data is returned.  The data can subsequently
+## With no output arguments, the results are immediately plotted.  With two
+## output arguments, the 2-D plot data is returned.  The data can subsequently
 ## be plotted manually with @code{plot (@var{x}, @var{y})}.
 ##
 ## Example:
@@ -75,20 +83,15 @@
 ## @seealso{ezplot, plot, vectorize}
 ## @end deftypefn
 
-## Author: Paul Kienzle <pkienzle@users.sf.net>
-
 function [X, Y] = fplot (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("fplot", varargin{:});
 
-  if (nargin < 2 || nargin > 5)
+  if (nargin < 1 || nargin > 5)
     print_usage ();
   endif
 
   fn = varargin{1};
-  limits = varargin{2};
-  varargin = varargin(3:end);
-
   if (strcmp (typeinfo (fn), "inline function"))
     fn = vectorize (fn);
     nam = formula (fn);
@@ -103,17 +106,33 @@ function [X, Y] = fplot (varargin)
     error ("fplot: FN must be a function handle, inline function, or string");
   endif
 
-  if (iscomplex (limits) || (numel (limits) != 2 && numel (limits) != 4))
-    error ("fplot: LIMITS must be a real vector with 2 or 4 elements");
+  if (nargin > 1 && isnumeric (varargin{2}))
+    limits = varargin{2};
+    if (iscomplex (limits) || (numel (limits) != 2 && numel (limits) != 4))
+      error ("fplot: LIMITS must be a real vector with 2 or 4 elements");
+    endif
+    i = 3;
+  else
+    limits = [-5, 5];
+    i = 2;
   endif
 
   n = 5;
   tol = 2e-3;
-  fmt = "";
-  for i = 1:numel (varargin)
+  fmt = {};
+  while (i <= numel (varargin))
     arg = varargin{i};
     if (ischar (arg))
-      fmt = arg;
+      [~, valid_fmt] = __pltopt__ ("fplot", arg, false); 
+      if (valid_fmt)
+        fmt(end+1) = arg;
+      else
+        if (i == numel (varargin))
+          error ("fplot: bad input in position %d", i);
+        endif
+        fmt(end+(1:2)) = varargin([i, i+1]); 
+        i++;  # Skip PROPERTY.
+      endif
     elseif (isnumeric (arg) && isscalar (arg) && arg > 0)
       if (arg == fix (arg))
         n = arg;
@@ -121,9 +140,10 @@ function [X, Y] = fplot (varargin)
         tol = arg;
       endif
     else
-      error ("fplot: bad input in position %d", i+2);
+      error ("fplot: bad input in position %d", i);
     endif
-  endfor
+    i++;
+  endwhile
 
   if (n != 5)
     ## n was specified
@@ -197,8 +217,10 @@ function [X, Y] = fplot (varargin)
     if (isempty (hax))
       hax = gca ();
     endif
-    plot (hax, x, y, fmt);
+    plot (hax, x, y, fmt{:});
     axis (hax, limits);
+    ## FIXME: If hold is on, then this erases the existing legend rather than
+    ##        adding to it.
     if (isvector (y))
       legend (hax, nam);
     else
@@ -252,16 +274,17 @@ endfunction
 %! assert (y, repmat ([0], size (x)));
 
 ## Test input validation
-%!error fplot (1)
+%!error fplot ()
 %!error fplot (1,2,3,4,5,6)
 %!error <FN must be a function handle> fplot (1, [0 1])
 %!error <LIMITS must be a real vector> fplot (@cos, [i, 2*i])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1])
 %!error <LIMITS must be a real vector with 2 or 4> fplot (@cos, [1 2 3])
-%!error <bad input in position 3> fplot (@cos,[-1,1], {1})
-%!error <invalid function FN>
-%! fn = @(x) [x;x];
-%! fplot (fn, [-1,1]);
+%!error <bad input in position 2> fplot (@cos, "linewidth")
+%!error <bad input in position 3> fplot (@cos, [-1,1], {1})
 %!warning <FN is not a vectorized function>
 %! fn = @(x) 0;
 %! [x,y] = fplot (fn, [-1,1]);
+%!error <invalid function FN>
+%! fn = @(x) [x;x];
+%! fplot (fn, [-1,1]);

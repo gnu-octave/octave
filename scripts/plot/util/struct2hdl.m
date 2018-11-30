@@ -167,7 +167,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     [h, s, p] = createhg (s, p, par, hilev);
   elseif (any (strcmp (s.type, {"uimenu", "uicontextmenu",...
                                 "uicontrol", "uipanel", "uibuttongroup",...
-                                "uitoolbar", "uipushtool"})))
+                                "uitoolbar", "uipushtool", "uitable"})))
     if (isfield (s.properties, "extent"))
       s.properties = rmfield (s.properties, "extent");
     endif

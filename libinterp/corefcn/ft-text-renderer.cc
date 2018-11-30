@@ -70,14 +70,14 @@ namespace octave
   warn_missing_glyph (FT_ULong c)
   {
     warning_with_id ("Octave:missing-glyph",
-                     "text_renderer: skipping missing glyph for character '%x'", c);
+                     "text_renderer: skipping missing glyph for character '%lx'", c);
   }
 
   static void
   warn_glyph_render (FT_ULong c)
   {
     warning_with_id ("Octave:glyph-render",
-                     "text_renderer: unable to render glyph for character '%x'", c);
+                     "text_renderer: unable to render glyph for character '%lx'", c);
   }
 
 #if defined (_MSC_VER)

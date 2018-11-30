@@ -603,10 +603,13 @@ Undocumented internal function.
 
   if (nconv <= 0)
     warning_with_id ("Octave:eigs:UnconvergedEigenvalues",
-                     "eigs: None of the %d requested eigenvalues converged", k);
+                     "eigs: None of the %" OCTAVE_IDX_TYPE_FORMAT
+                     " requested eigenvalues converged", k);
   else if (nconv < k)
     warning_with_id ("Octave:eigs:UnconvergedEigenvalues",
-                     "eigs: Only %d of the %d requested eigenvalues converged",
+                     "eigs: Only %" OCTAVE_IDX_TYPE_FORMAT
+                     " of the %" OCTAVE_IDX_TYPE_FORMAT
+                     " requested eigenvalues converged",
                      nconv, k);
 
   if (! fcn_name.empty ())

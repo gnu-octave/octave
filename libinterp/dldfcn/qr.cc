@@ -328,7 +328,9 @@ orthogonal basis of @code{span (A)}.
                             q.R (economy));
               if (arg.rows () < arg.columns ())
                 warning ("qr: non minimum norm solution for under-determined "
-                         "problem %dx%d", arg.rows (), arg.columns ());
+                         "problem %" OCTAVE_IDX_TYPE_FORMAT
+                         "x%" OCTAVE_IDX_TYPE_FORMAT,
+                         arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));
@@ -344,7 +346,9 @@ orthogonal basis of @code{span (A)}.
               retval = ovl (q.C (args(1).matrix_value ()), q.R (economy));
               if (arg.rows () < arg.columns ())
                 warning ("qr: non minimum norm solution for under-determined "
-                         "problem %dx%d", arg.rows (), arg.columns ());
+                         "problem %" OCTAVE_IDX_TYPE_FORMAT
+                         "x%" OCTAVE_IDX_TYPE_FORMAT,
+                         arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));

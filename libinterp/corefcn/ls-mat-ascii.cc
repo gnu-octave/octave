@@ -258,7 +258,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   octave_idx_type nr = 0;
   octave_idx_type nc = 0;
 
-  int total_count = 0;
+  octave_idx_type total_count = 0;
 
   get_lines_and_columns (is, nr, nc, filename);
 
@@ -328,8 +328,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   octave_idx_type expected = nr * nc;
 
   if (expected != total_count)
-    error ("load: expected %d elements, found %d",
-           expected, total_count);
+    error ("load: expected %" OCTAVE_IDX_TYPE_FORMAT " elements, found "
+           "%" OCTAVE_IDX_TYPE_FORMAT, expected, total_count);
 
   tc = tmp;
 

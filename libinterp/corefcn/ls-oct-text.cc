@@ -375,7 +375,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
     {
       octave_idx_type extras = nc % 3;
       if (extras)
-        warning ("ignoring last %d columns", extras);
+        warning ("ignoring last %" OCTAVE_IDX_TYPE_FORMAT " columns", extras);
 
       Matrix tmp = tc.matrix_value ();
       nr = tmp.rows ();

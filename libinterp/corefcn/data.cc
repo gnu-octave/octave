@@ -2731,7 +2731,8 @@ Example 4: number of output arguments < number of dimensions
       const dim_vector dv = args(0).dims ();
 
       if (nd < 1)
-        error ("size: requested dimension DIM (= %d) out of range", nd);
+        error ("size: requested dimension DIM (= %" OCTAVE_IDX_TYPE_FORMAT ") "
+               "out of range", nd);
 
       if (nd <= dv.ndims ())
         retval(0) = dv(nd-1);
@@ -5476,7 +5477,8 @@ the unspecified dimension.
               octave_idx_type size_empty_dim = a_nel / nel;
 
               if (a_nel != size_empty_dim * nel)
-                error ("reshape: SIZE is not divisible by the product of known dimensions (= %d)",
+                error ("reshape: SIZE is not divisible by the product of "
+                       "known dimensions (= %" OCTAVE_IDX_TYPE_FORMAT ")",
                        nel);
 
               new_dims(empty_dim-1) = size_empty_dim;

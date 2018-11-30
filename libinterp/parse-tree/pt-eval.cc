@@ -2395,8 +2395,8 @@ namespace octave
                         octave_value tmp = rhs_val(k);
 
                         if (tmp.is_undefined ())
-                          error ("element number %d undefined in return list",
-                                 k+1);
+                          error ("element number %" OCTAVE_IDX_TYPE_FORMAT
+                                 " undefined in return list", k+1);
 
                         ult.assign (octave_value::op_asn_eq, tmp);
 
@@ -2423,7 +2423,8 @@ namespace octave
                     // don't need is missing from the list.
 
                     if (! ult.is_black_hole ())
-                      error ("element number %d undefined in return list", k+1);
+                      error ("element number %" OCTAVE_IDX_TYPE_FORMAT
+                             " undefined in return list", k+1);
 
                     k++;
                     continue;

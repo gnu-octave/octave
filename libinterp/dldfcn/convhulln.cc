@@ -253,7 +253,9 @@ convex hull is calculated.
             }
         }
       if (j < dim)
-        warning ("convhulln: facet %d only has %d vertices", i, j);
+        warning ("convhulln: facet %" OCTAVE_IDX_TYPE_FORMAT
+                 " only has %" OCTAVE_IDX_TYPE_FORMAT
+                 " vertices", i, j);
 
       i++;
     }

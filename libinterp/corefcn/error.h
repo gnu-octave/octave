@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <cstdarg>
+#include <cinttypes>
 #include <string>
 
 #include "unwind-prot.h"
@@ -50,38 +51,38 @@ make_execution_exception (const char *who);
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
 extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 1, 2)
+OCTAVE_FORMAT_PRINTF (1, 2)
 extern OCTINTERP_API void warning (const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror (const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 1, 2)
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN OCTINTERP_API extern
 void error (const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror (octave::execution_exception&, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTINTERP_API extern
 void error (octave::execution_exception&, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror_with_cfn (const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 1, 2)
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN OCTINTERP_API extern
 void error_with_cfn (const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void vparse_error (const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 1, 2)
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN OCTINTERP_API extern
 void parse_error (const char *fmt, ...);
 
@@ -89,46 +90,46 @@ extern OCTINTERP_API void
 vmessage_with_id (const char *id, const char *name,
                   const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 3, 4)
+OCTAVE_FORMAT_PRINTF (3, 4)
 extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void vusage_with_id (const char *id, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTINTERP_API extern
 void usage_with_id (const char *id, const char *fmt, ...);
 
 extern OCTINTERP_API void
 vwarning_with_id (const char *id, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 extern OCTINTERP_API void
 warning_with_id (const char *id, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror_with_id (const char *id, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTINTERP_API extern
 void error_with_id (const char *id, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void verror_with_id_cfn (const char *id, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTINTERP_API extern
 void error_with_id_cfn (const char *id, const char *fmt, ...);
 
 OCTAVE_NORETURN OCTINTERP_API extern
 void vparse_error_with_id (const char *id, const char *fmt, va_list args);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 2, 3)
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTINTERP_API extern
 void parse_error_with_id (const char *id, const char *fmt, ...);
 
-OCTAVE_FORMAT_ATTRIBUTE (__printf__, 1, 2)
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN OCTINTERP_API extern
 void panic (const char *fmt, ...);
 

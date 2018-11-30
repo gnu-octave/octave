@@ -2455,7 +2455,8 @@ graphics_object::set (const Array<std::string>& pnames,
                       const Cell& values, octave_idx_type row)
 {
   if (pnames.numel () != values.columns ())
-    error ("set: number of names must match number of value columns (%d != %d)",
+    error ("set: number of names must match number of value columns "
+           "(%" OCTAVE_IDX_TYPE_FORMAT " != %" OCTAVE_IDX_TYPE_FORMAT ")",
            pnames.numel (), values.columns ());
 
   octave_idx_type k = pnames.columns ();
@@ -12116,7 +12117,9 @@ being @qcode{"portrait"}.
           else if (hcv.numel () == args(2).cell_value ().rows ())
             go.set (args(1).cellstr_value (), args(2).cell_value (), n);
           else
-            error ("set: number of graphics handles must match number of value rows (%d != %d)",
+            error ("set: number of graphics handles must match number of "
+                   "value rows (%" OCTAVE_IDX_TYPE_FORMAT " != "
+                   "%" OCTAVE_IDX_TYPE_FORMAT ")",
                    hcv.numel (), args(2).cell_value ().rows ());
         }
       else if (nargin == 2 && args(1).isstruct ())

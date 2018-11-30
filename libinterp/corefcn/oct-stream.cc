@@ -2657,8 +2657,8 @@ namespace octave
       }
 
     if ((err & 4) && ! return_on_error)
-      error ("%s: Read error in field %d of row %d", who.c_str (),
-             done_after + 1, row + 1);
+      error ("%s: Read error in field %d of row %" OCTAVE_IDX_TYPE_FORMAT,
+             who.c_str (), done_after + 1, row + 1);
 
     // If file does not end in EOL, do not pad columns with NaN.
     bool uneven_columns = false;

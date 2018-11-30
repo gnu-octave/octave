@@ -98,8 +98,9 @@ void
 err_nonconformant (octave_idx_type r1, octave_idx_type c1,
                    octave_idx_type r2, octave_idx_type c2)
 {
-  error ("nonconformant matrices (op1 is %dx%d, op2 is %dx%d)",
-         r1, c1, r2, c2);
+  error ("nonconformant matrices (op1 is %" OCTAVE_IDX_TYPE_FORMAT
+         "x%" OCTAVE_IDX_TYPE_FORMAT ", op2 is %" OCTAVE_IDX_TYPE_FORMAT
+         "x%" OCTAVE_IDX_TYPE_FORMAT ")", r1, c1, r2, c2);
 }
 
 void

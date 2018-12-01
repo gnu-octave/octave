@@ -25,7 +25,8 @@
 ## in @var{x}.  The values of @var{n} can be either positive or negative, which
 ## determines the direction in which the values of @var{x} are shifted.  If an
 ## element of @var{n} is zero, then the corresponding dimension of @var{x} will
-## not be shifted.
+## not be shifted.  If @var{n} is a scalar and no @var{dim} is specified then
+## the shift is applied to the first non-singular dimension.
 ##
 ## If a scalar @var{dim} is given then operate along the specified dimension.
 ## In this case @var{n} must be a scalar as well.
@@ -33,21 +34,25 @@
 ## Examples:
 ##
 ## @example
-## @group
-## x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
-## circshift (x, 1)
-## @result{}  7, 8, 9
-##     1, 2, 3
-##     4, 5, 6
-## circshift (x, -2)
-## @result{}  7, 8, 9
-##     1, 2, 3
-##     4, 5, 6
-## circshift (x, [0,1])
-## @result{}  3, 1, 2
-##     6, 4, 5
-##     9, 7, 8
-## @end group
+## x = [1, 2, 3;
+##      4, 5, 6;
+##      7, 8, 9];
+## circshift (x, 1)      # positive shift on rows (1st non-singular dim)
+##  @result{}  7, 8, 9
+##      1, 2, 3
+##      4, 5, 6
+## circshift (x, -2)     # negative shift on rows (1st non-singular dim)
+##  @result{}  7, 8, 9
+##      1, 2, 3
+##      4, 5, 6
+## circshift (x, [0,1])  # no shift of rows, shift columns by 1 (2nd dimension)
+##  @result{}  3, 1, 2
+##      6, 4, 5
+##      9, 7, 8
+## circshift (x, 1, 2)   # shift columns (2nd dimension)
+##  @result{}  3, 1, 2
+##      6, 4, 5
+##      9, 7, 8
 ## @end example
 ## @seealso{permute, ipermute, shiftdim}
 ## @end deftypefn
@@ -63,15 +68,21 @@ function y = circshift (x, n, dim)
     return;
   endif
 
-  if (nargin == 3)
-    if (! isscalar (n))
+  nd = ndims (x);
+  sz = size (x);
+
+  if (nargin == 2)
+    if (isscalar (n))
+      ## Find the first non-singleton dimension.
+      (dim = find (sz > 1, 1)) || (dim = 1);
+      n = [zeros(1, dim-1), n];
+    endif
+  elseif (nargin == 3)
+    if ( ! isscalar (n))
       error ("circshift: N must be a scalar when DIM is also specified");
     endif
     n = [zeros(1, dim-1), n];
   endif
-
-  nd = ndims (x);
-  sz = size (x);
 
   if (! isvector (n) || length (n) > nd)
     error ("circshift: N must be a vector, no longer than the number of dimensions in X");
@@ -110,6 +121,9 @@ endfunction
 
 %!assert (circshift (x, -2, 1), [7, 8, 9; 1, 2, 3; 4, 5, 6])
 %!assert (circshift (x, 1, 2), [3, 1, 2; 6, 4, 5; 9, 7, 8])
+
+%!test <*53178> assert (circshift (1:4, 1), [4 1 2 3])
+%!test <*53178> assert (circshift (1:4, 1, 1), 1:4)
 
 ## Test input validation
 %!error circshift ()

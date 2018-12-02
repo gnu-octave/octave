@@ -2180,7 +2180,7 @@ public:
     if (! ptr)
       {
         // FIXME: could use "octave_new_handler();" instead
-        error ("%s: failed to allocate %d bytes of memory",
+        error ("%s: failed to allocate %zd bytes of memory",
                function_name (), n);
       }
 

@@ -933,7 +933,7 @@ On non-Windows platforms this function fails with an error.
 
       LONG retval = get_regkey_names (h_rootkey, subkey_name, fields);
       if (retval != ERROR_SUCCESS)
-        error ("winqueryreg: error %d reading names from registry", retval);
+        error ("winqueryreg: error %ld reading names from registry", retval);
 
       Cell fieldnames (dim_vector (1, fields.size ()));
       size_t i;
@@ -953,7 +953,7 @@ On non-Windows platforms this function fails with an error.
                value_name.c_str (), rootkey_name.c_str (),
                subkey_name.c_str ());
       if (retval != ERROR_SUCCESS)
-        error ("winqueryreg: error %d reading the specified key", retval);
+        error ("winqueryreg: error %ld reading the specified key", retval);
 
       return ovl (key_val);
     }

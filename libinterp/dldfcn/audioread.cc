@@ -457,8 +457,8 @@ Comment.
       sf_count_t items_written = sf_write_float (file, data+offset, chunk_size);
 
       if (items_written != chunk_size)
-        error ("audiowrite: write failed, wrote %ld of %ld items\n",
-               items_written, chunk_size);
+        error ("audiowrite: write failed, wrote %" PRId64 " of %" PRId64
+               " items\n", items_written, chunk_size);
 
       total_items_written += items_written;
       offset += chunk_size;

@@ -102,14 +102,14 @@ namespace octave
       if (INVALID_HANDLE_VALUE == hFind)
         {
           DWORD errCode = GetLastError ();
-          char *errorText;
+          char *errorText = nullptr;
           FormatMessageA (FORMAT_MESSAGE_FROM_SYSTEM |
                          FORMAT_MESSAGE_ALLOCATE_BUFFER |
                          FORMAT_MESSAGE_IGNORE_INSERTS,
-                         NULL, errCode,
+                         nullptr, errCode,
                          MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
-                         errorText, 0, NULL);
-          if (errorText != NULL)
+                         reinterpret_cast <char *> (&errorText), 0, nullptr);
+          if (errorText != nullptr)
             {
               msg = std::string (errorText);
               LocalFree (errorText);

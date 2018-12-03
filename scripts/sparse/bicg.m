@@ -533,7 +533,7 @@ endfunction
 %! b = sum (A, 2);
 %! M = magic (5);
 %! [x, flag, relres] = bicg (A, b, [], 2, M);
-%! assert (norm (b - A * x) / norm (b), 0, relres);
+%! assert (norm (b - A * x) / norm (b), 0, relres + eps);
 
 ## Preconditioned technique
 %!testif HAVE_UMFPACK

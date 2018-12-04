@@ -1764,13 +1764,23 @@ DEFUN (num2cell, args, ,
 @deftypefnx {} {@var{C} =} num2cell (@var{A}, @var{dim})
 Convert the numeric matrix @var{A} to a cell array.
 
-If @var{dim} is defined, the value @var{C} is of dimension 1 in this
-dimension and the elements of @var{A} are placed into @var{C} in slices.
+When no @var{dim} is specified, each element of @var{A} becomes a 1x1 element
+in the output @var{C}.
+
+If @var{dim} is defined then individual elements of @var{C} contain all of the
+elements from @var{A} along the specified dimension.  @var{dim} may also be a
+vector of dimensions with the same rule applied.
+
 For example:
 
 @example
-@group
-num2cell ([1,2;3,4])
+x = [1,2;3,4]
+@result{}
+    1    2
+    3    4
+
+## each element of A becomes a 1x1 element of C
+num2cell (x)
    @result{}
       @{
         [1,1] =  1
@@ -1778,7 +1788,8 @@ num2cell ([1,2;3,4])
         [1,2] =  2
         [2,2] =  4
       @}
-num2cell ([1,2;3,4],1)
+## all rows (dim 1) of A appear in each element of C
+num2cell (x, 1)
    @result{}
       @{
         [1,1] =
@@ -1788,7 +1799,23 @@ num2cell ([1,2;3,4],1)
            2
            4
       @}
-@end group
+## all columns (dim 2) of A appear in each element of C
+num2cell (x, 2)
+   @result{}
+      @{
+        [1,1] =
+           1   2
+        [2,1] =
+           3   4
+      @}
+## all rows and cols appear in each element of C (hence, only 1 output)
+num2cell (x, [1, 2])
+   @result{}
+      @{
+        [1,1] =
+           1   2
+           3   4
+      @}
 @end example
 
 @seealso{mat2cell}
@@ -2082,46 +2109,87 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 
 DEFUN (mat2cell, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})
-@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})
-@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{r})
+@deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{dim1}, @var{dim2}, @dots{}, @var{dimi}, @dots{}, @var{dimn})
+@deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{rowdim})
 Convert the matrix @var{A} to a cell array.
 
-If @var{A} is 2-D, then it is required that
-@code{sum (@var{m}) == size (@var{A}, 1)} and
-@code{sum (@var{n}) == size (@var{A}, 2)}.  Similarly, if @var{A} is
-multi-dimensional and the number of dimensional arguments is equal to the
-dimensions of @var{A}, then it is required that
-@code{sum (@var{di}) == size (@var{A}, i)}.
+Each dimension argument (@var{dim1}, @var{dim2}, etc.@:) is a vector of
+integers which specifies how to divide that dimension's elements amongst the
+new elements in the output @var{C}.  The number of elements in the @var{i}-th
+dimension is @code{size (@var{A}, @var{i})}.  Because all elements in @var{A}
+must be partitioned, there is a requirement that @code{sum (@var{di}) == size
+(@var{A}, i)}.  The size of the output cell @var{C} is numel (@var{dim1}) x
+numel (@var{dim2}) x @dots{} x numel (@var{dimn}).
 
-Given a single dimensional argument @var{r}, the other dimensional
-arguments are assumed to equal @code{size (@var{A},@var{i})}.
+Given a single dimensional argument, @var{rowdim}, the output is divided into
+rows as specified.  All other dimensions are not divided and thus all
+columns (dim 2), pages (dim 3), etc.@: appear in each output element.
 
-An example of the use of mat2cell is
+Examples
 
 @example
-mat2cell (reshape (1:16,4,4), [3,1], [3,1])
+x = reshape (1:12, [3, 4])'
+@result{}
+    1    2    3
+    4    5    6
+    7    8    9
+   10   11   12
+
+@group
+## The 4 rows (dim1) are divided in to two cell elements with 2 rows each.
+## The 3 cols (dim2) are divided in to three cell elements with 1 col each.
+mat2cell (x, [2,2], [1,1,1])
 @result{}
 @{
-   [1,1] =
+  [1,1] =
 
-      1   5   9
-      2   6  10
-      3   7  11
+     1
+     4
 
-   [2,1] =
+  [2,1] =
 
-      4   8  12
+      7
+     10
 
-   [1,2] =
+  [1,2] =
 
-     13
-     14
-     15
+     2
+     5
 
-   [2,2] = 16
+  [2,2] =
+      8
+     11
+
+  [1,3] =
+
+     3
+     6
+
+  [2,3] =
+      9
+     12
 @}
+@end group
+
+@group
+## The 4 rows (dim1) are divided in to two cell elements with a 3/1 split.
+## All columns appear in each output element.
+mat2cell (x, [3,1])
+@result{}
+@{
+  [1,1] =
+
+     1   2   3
+     4   5   6
+     7   8   9
+
+  [2,1] =
+
+     10   11   12
+@}
+@end group
 @end example
+
 @seealso{num2cell, cell2mat}
 @end deftypefn */)
 {

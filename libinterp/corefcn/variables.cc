@@ -835,8 +835,9 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 DEFMETHOD (mlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
-Lock the current function into memory so that it can't be cleared.
-@seealso{munlock, mislocked, persistent}
+Lock the current function into memory so that it can't be removed with
+@code{clear}.
+@seealso{munlock, mislocked, persistent, clear}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -858,10 +859,11 @@ DEFMETHOD (munlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} munlock ()
 @deftypefnx {} {} munlock (@var{fcn})
-Unlock the named function @var{fcn}.
+Unlock the named function @var{fcn} so that it may be removed from memory with
+@code{clear}.
 
 If no function is named then unlock the current function.
-@seealso{mlock, mislocked, persistent}
+@seealso{mlock, mislocked, persistent, clear}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -894,10 +896,10 @@ DEFMETHOD (mislocked, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} mislocked ()
 @deftypefnx {} {} mislocked (@var{fcn})
-Return true if the named function @var{fcn} is locked.
+Return true if the named function @var{fcn} is locked in memory.
 
 If no function is named then return true if the current function is locked.
-@seealso{mlock, munlock, persistent}
+@seealso{mlock, munlock, persistent, clear}
 @end deftypefn */)
 {
   int nargin = args.length ();

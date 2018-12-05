@@ -1180,14 +1180,6 @@ do_matlab_compatible_clear (octave::symbol_table& symtab,
     }
 }
 
-#define CLEAR_OPTION_ERROR(cond)                \
-  do                                            \
-    {                                           \
-      if (cond)                                 \
-        print_usage ();                         \
-    }                                           \
-  while (0)
-
 DEFMETHOD (clear, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} clear
@@ -1218,8 +1210,8 @@ clear foo b*r
 @end example
 
 @noindent
-clears the name @code{foo} and all names that begin with the letter @code{b}
-and end with the letter @code{r}.
+clears the name @code{foo} and all names that begin with the letter @samp{b}
+and end with the letter @samp{r}.
 
 If @code{clear} is called without any arguments, all user-defined variables
 are cleared from the current workspace (i.e., local variables).  Any global
@@ -1238,7 +1230,9 @@ symbol table.
 Clear variables that do @strong{not} match the following pattern.
 
 @item functions, -functions, -f
-Clear function names from the function symbol table.
+Clear function names from the function symbol table.  Persistent variables
+will be re-initialized to their default value unless the function has been
+locked in memory with @code{mlock}.
 
 @item global, -global, -g
 Clear global variable names.
@@ -1255,7 +1249,9 @@ will be cleared.
 @end table
 
 With the exception of @option{-exclusive} and @option{-regexp}, all long
-options can be used without the dash as well.
+options can be used without the dash as well.  Note that, aside from
+@option{-exclusive}, only one other option may appear.  All options must
+appear before any patterns.
 
 Programming Note: The command @code{clear @var{name}} only clears the variable
 @var{name} when both a variable and a (shadowed) function named @var{name}
@@ -1265,7 +1261,7 @@ Executing the command @code{clear foo} once will clear the variable
 definition and restore the definition of @code{foo} as a function.
 Executing @code{clear foo} a second time will clear the function definition.
 
-@seealso{who, whos, exist}
+@seealso{who, whos, exist, mlock}
 @end deftypefn */)
 {
   octave::symbol_table& symtab = interp.get_symbol_table ();
@@ -1299,47 +1295,52 @@ Executing @code{clear foo} a second time will clear the function definition.
         {
           if (argv[idx] == "-all" || argv[idx] == "-a")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_all = true;
             }
           else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
             {
-              have_dash_option = true;
               exclusive = true;
             }
           else if (argv[idx] == "-functions" || argv[idx] == "-f")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_functions = true;
             }
           else if (argv[idx] == "-global" || argv[idx] == "-g")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_globals = true;
             }
           else if (argv[idx] == "-variables" || argv[idx] == "-v")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_variables = true;
             }
           else if (argv[idx] == "-classes" || argv[idx] == "-c")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_objects = true;
             }
           else if (argv[idx] == "-regexp" || argv[idx] == "-r")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               have_regexp = true;
@@ -1350,7 +1351,7 @@ Executing @code{clear foo} a second time will clear the function definition.
 
       if (idx <= argc)
         {
-          if (! have_dash_option)
+          if (! have_dash_option && ! exclusive)
             do_matlab_compatible_clear (symtab, argv, argc, idx);
           else
             {
@@ -1398,13 +1399,22 @@ Executing @code{clear foo} a second time will clear the function definition.
 }
 
 /*
+## This test must be wrapped in its own function or the 'clear' command will
+## break the %!test environment.
+%!function __test_clear_no_args__ ()
+%!  global x
+%!  x = 3;
+%!  clear
+%!  assert (! exist ("x", "var"));  # x is not in the current workspace anymore
+%!  global x                        # but still lives in the global workspace
+%!  assert (exist ("x", "var"));
+%!endfunction
+
 %!test
-%! global x
-%! x = 3;
-%! clear
-%! assert (! exist ("x", "var"));  # x is not in the current workspace anymore
-%! global x                        # but still lives in the global workspace
-%! assert (exist ("x", "var"));
+%! __test_clear_no_args__ ();
+
+## Test that multiple options cannot be given
+%!error clear -f -g
 */
 
 static std::string Vmissing_function_hook = "__unimplemented__";

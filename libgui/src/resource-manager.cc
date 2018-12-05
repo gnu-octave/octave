@@ -403,22 +403,27 @@ namespace octave
         enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
         if (enc.isEmpty ())  // still empty?
           enc = ed_default_enc.def.toString ();     // take default
+
+        if (! QTextCodec::codecForName (enc.toLatin1 ())) // does it exist?
+          enc = "";   // no, so clear it
       }
 
     // fill the combo box
     foreach (QString c, all_codecs)
       combo->addItem (c);
 
-    // prepend the default item
-    combo->insertSeparator (0);
-    combo->insertItem (0, ed_default_enc.def.toString ());
+    // prepend the current/default item and select it
+    if (! enc.isEmpty ())
+      {
+        combo->insertSeparator (0);
+        combo->insertItem (0, ed_default_enc.def.toString ());
 
-    // select the current/default item
-    int idx = combo->findText (enc);
-    if (idx >= 0)
-      combo->setCurrentIndex (idx);
-    else
-      combo->setCurrentIndex (0);
+        int idx = combo->findText (enc);
+        if (idx >= 0)
+          combo->setCurrentIndex (idx);
+        else
+          combo->setCurrentIndex (0);
+      }
 
     combo->setMaxVisibleItems (12);
   }

@@ -1753,6 +1753,9 @@ namespace octave
     // decode
     QTextCodec::ConverterState st;
     QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+    if (codec == nullptr)
+      codec = QTextCodec::codecForLocale ();
+
     const QString text = codec->toUnicode(text_data.constData(),
                                           text_data.size(), &st);
 

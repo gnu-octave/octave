@@ -367,9 +367,11 @@ large_matrix = zeros (4000, 4000);
 @noindent
 Since having this variable in memory might slow down other computations,
 it can be necessary to remove it manually from memory.  The @code{clear}
-function allows this.
+or @code{clearvars} functions do this.
 
 @DOCSTRING(clear)
+
+@DOCSTRING(clearvars)
 
 @DOCSTRING(pack)
 

@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/bunzip2.m \
   %reldir%/cast.m \
   %reldir%/citation.m \
+  %reldir%/clearvars.m \
   %reldir%/compare_versions.m \
   %reldir%/computer.m \
   %reldir%/copyfile.m \

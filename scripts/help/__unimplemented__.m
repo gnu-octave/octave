@@ -632,7 +632,6 @@ function rlist = missing_functions ()
   "clearAllMemoizedCaches",
   "clearCache",
   "clearpoints",
-  "clearvars",
   "clipboard",
   "clone",
   "cmopts",

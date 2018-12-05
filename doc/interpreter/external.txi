@@ -2099,7 +2099,7 @@ default the version of the JVM is used that was detected during configuration
 on Unix-like systems or that is pointed to from the registry keys at
 @file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\JRE} or
 @file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Runtime Environment} on
-Windows.  The default path to the JVM can be overwritten by setting the
+Windows.  The default path to the JVM can be overridden by setting the
 environment variable @w{@env{JAVA_HOME}} to the path where the JVM is
 installed.  On Windows that might be, for example,
 @file{C:\Program Files\Java\jre-10.0.2}.  Make sure that you select a directory

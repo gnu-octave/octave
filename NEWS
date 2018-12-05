@@ -123,6 +123,12 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     compatibility.  To produce uncompressed images use the -dtiffn
     device.
 
+ ** Printing to EPS files now uses a tight bounding box ("-tight"
+    argument to print) by default.  This makes more sense for EPS
+    files which are normally embedded within other documents, and is
+    Matlab compatible.  If necessary use the "-loose" option to
+    reproduce figures as they appeared in previous versions of Octave. 
+
  ** It is now possible to use files and folders containing Unicode
     characters in Windows.
 

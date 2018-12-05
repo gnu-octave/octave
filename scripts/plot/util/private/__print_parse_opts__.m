@@ -51,7 +51,6 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.antialiasing = false;
   arg_st.ghostscript.antialiasing_textalphabits = 4;
   arg_st.ghostscript.antialiasing_graphicsalphabits = 1;
-  arg_st.loose = false;
   arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
   arg_st.name = "";
   arg_st.orientation = "";
@@ -65,7 +64,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.special_flag = "textnormal";
   arg_st.svgconvert = false;
   arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
-  arg_st.tight_flag = false;
+  arg_st.tight = true;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
 
   if (isunix ())
@@ -105,11 +104,9 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (strncmp (arg, "-landscape", length (arg)))
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-loose"))
-        arg_st.loose = true;
-        arg_st.tight_flag = false;
+        arg_st.tight = false;
       elseif (strcmp (arg, "-tight"))
-        arg_st.loose = false;
-        arg_st.tight_flag = true;
+        arg_st.tight = true;
       elseif (strcmp (arg, "-svgconvert"))
         arg_st.svgconvert = true;
       elseif (strcmp (arg, "-textspecial"))
@@ -372,7 +369,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = true;
     if (arg_st.formatted_for_printing)
-      arg_st.ghostscript.epscrop = ! arg_st.loose;
+      arg_st.ghostscript.epscrop = arg_st.tight;
     else
       ## pstoedit throws errors if the EPS file isn't cropped
       arg_st.ghostscript.epscrop = true;
@@ -383,7 +380,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = false;
-    arg_st.ghostscript.epscrop = ! arg_st.loose;
+    arg_st.ghostscript.epscrop = arg_st.tight;
   endif
 
   if (unknown_device)
@@ -507,7 +504,7 @@ endfunction
 
 #%!test
 %! opts = __print_parse_opts__ ("-deps", "-tight");
-%! assert (opts.tight_flag, true);
+%! assert (opts.tight, true);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
 %! assert (opts.ghostscript.device, "");

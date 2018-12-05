@@ -63,7 +63,7 @@ function opts = __gnuplot_print__ (opts)
       if (any (strcmp (opts.devopt, {"eps", "epsc"})))
         gp_opts = [gp_opts " level1"];
       endif
-      if (opts.tight_flag || ! isempty (opts.preview))
+      if (opts.tight || ! isempty (opts.preview))
         tmp_file = [tempname() ".eps"];
         eps_drawnow (opts, tmp_file, gp_opts);
         if (dos_shell)

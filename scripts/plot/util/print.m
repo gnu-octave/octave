@@ -188,9 +188,9 @@
 ## Octave interpreter from recognizing the embedded comma (',').  For example,
 ## by writing @w{"-S640,480"}.
 ##
-## @item  -loose
-## @itemx -tight
-##   Force a tight or loose bounding box for EPS files.  The default is loose.
+## @item  -tight
+## @itemx -loose
+##   Force a tight or loose bounding box for EPS files.  The default is tight.
 ##
 ## @item -@var{preview}
 ##   Add a preview to EPS files.  Supported formats are:
@@ -796,17 +796,17 @@ function cmd = epstool (opts, filein, fileout)
     fileout = ["'" strtrim(fileout) "'"];
   endif
 
-  if (! isempty (opts.preview) && opts.tight_flag)
+  if (! isempty (opts.preview) && opts.tight)
     warning ("octave:print:previewandtight",
              "print.m: eps preview may not be combined with -tight");
   endif
-  if (! isempty (opts.preview) || opts.tight_flag)
+  if (! isempty (opts.preview) || opts.tight)
 
     if (isempty (opts.epstool_binary))
       error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
     endif
 
-    if (opts.tight_flag)
+    if (opts.tight)
       cmd = "--copy --bbox";
     elseif (! isempty (opts.preview))
       switch (opts.preview)

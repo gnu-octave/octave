@@ -36,7 +36,7 @@ namespace octave
   {
   public:
 
-    directory_path (const std::string& s = "", const std::string& d = "");
+    directory_path (const std::string& s = "");
 
     directory_path (const directory_path&) = default;
 
@@ -84,10 +84,6 @@ namespace octave
 
     // The colon separated list that we were given.
     std::string m_orig_path;
-
-    // The default path.  If specified, replaces leading, trailing, or
-    // doubled colons in p_orig.
-    std::string m_default_path;
 
     // TRUE means we've unpacked the path p.
     bool m_initialized;

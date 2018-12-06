@@ -752,42 +752,6 @@ kpse_expand (const std::string& s)
 /* Forward declarations of functions from the original expand.c  */
 static std::list<std::string> brace_expand (const std::string&);
 
-/* If $KPSE_DOT is defined in the environment, prepend it to any relative
-   path components. */
-
-static std::string
-kpse_expand_kpse_dot (const std::string& path)
-{
-  std::string ret;
-  std::string kpse_dot = octave::sys::env::getenv ("KPSE_DOT");
-
-  if (kpse_dot.empty ())
-    return path;
-
-  for (kpse_path_iterator pi (path); pi != std::string::npos; pi++)
-    {
-      std::string elt = *pi;
-
-      /* Single "." get special treatment, as does "./" or its equivalent.  */
-
-      size_t elt_len = elt.length ();
-
-      if (kpse_absolute_p (elt, false))
-        ret += elt + ENV_SEP_STRING;
-      else if (elt_len == 1 && elt[0] == '.')
-        ret += kpse_dot + ENV_SEP_STRING;
-      else if (elt_len > 1 && elt[0] == '.' && IS_DIR_SEP (elt[1]))
-        ret += kpse_dot + elt.substr (1) + ENV_SEP_STRING;
-      else
-        ret += kpse_dot + DIR_SEP_STRING + elt + ENV_SEP_STRING;
-    }
-
-  if (! ret.empty ())
-    ret.pop_back ();
-
-  return ret;
-}
-
 /* Do brace expansion on ELT; then do variable and ~ expansion on each
    element of the result; then do brace expansion again, in case a
    variable definition contained braces (e.g., $TEXMF).  Return a
@@ -851,7 +815,7 @@ kpse_brace_expand (const std::string& path)
   if (! ret.empty ())
     ret.pop_back ();
 
-  return kpse_expand_kpse_dot (ret);
+  return ret;
 }
 
 /* Expand all special constructs in a path, and include only the actually
@@ -1122,64 +1086,6 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   indx = i;
   c = (c == satisfy) ? c : 0;
   return c;
-}
-
-/* Expand extra colons.  */
-
-/* Check for leading colon first, then trailing, then doubled, since
-   that is fastest.  Usually it will be leading or trailing.  */
-
-/* Replace a leading or trailing or doubled : in PATH with DFLT.  If
-   no extra colons, return PATH.  Only one extra colon is replaced.
-   DFLT may not be NULL.  */
-
-std::string
-kpse_expand_default (const std::string& path, const std::string& fallback)
-{
-  std::string expansion;
-
-  size_t path_len = path.length ();
-
-  if (path_len == 0)
-    expansion = fallback;
-
-  /* Solitary or leading :?  */
-  else if (IS_ENV_SEP (path[0]))
-    {
-      expansion = (path_len == 1 ? fallback : fallback + path);
-    }
-
-  /* Sorry about the assignment in the middle of the expression, but
-     conventions were made to be flouted and all that.  I don't see the
-     point of calling strlen twice or complicating the logic just to
-     avoid the assignment (especially now that I've pointed it out at
-     such great length).  */
-  else if (IS_ENV_SEP (path[path_len-1]))
-    expansion = path + fallback;
-
-  /* OK, not leading or trailing.  Check for doubled.  */
-  else
-    {
-      /* What we'll return if we find none.  */
-      expansion = path;
-
-      for (size_t i = 0; i < path_len; i++)
-        {
-          if (i + 1 < path_len
-              && IS_ENV_SEP (path[i]) && IS_ENV_SEP (path[i+1]))
-            {
-              /* We have a doubled colon.  */
-
-              /* Copy stuff up to and including the first colon.  */
-              /* Copy in FALLBACK, and then the rest of PATH.  */
-              expansion = path.substr (0, i+1) + fallback + path.substr (i+1);
-
-              break;
-            }
-        }
-    }
-
-  return expansion;
 }
 
 /* Return true if FN is a directory or a symlink to a directory,

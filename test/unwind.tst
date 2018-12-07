@@ -55,3 +55,4 @@
 %!test
 %! global g = -1;
 %! fail ("y = f (3);", "mismatch");
+%! clear -global g;  # cleanup after test

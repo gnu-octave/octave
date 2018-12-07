@@ -193,6 +193,7 @@
 %! endfor
 %!
 %! assert (save_status && load_status);
+%! clear -global a1;  # cleanup after test
 
 %!testif HAVE_HDF5
 %!

@@ -23,18 +23,22 @@
 %! assert (X, 1);
 %! clear X
 %! assert (exist ("X"), 0);
+%! clear -global X;  # cleanup after test
 
 %!test <*53027>
 %! [a, b] = ntest53027a ();
 %! assert ([a, b], [0, 0])
+%! clear -global x;  # cleanup after test
 
 %!test <*53027>
 %! [a, b] = ntest53027b ();
 %! assert ([a, b], [0, 0])
+%! clear -global x;  # cleanup after test
 
 %!test <*53027>
 %! [a, b] = ntest53027c ();
 %! assert ([a, b], [0, 0])
+%! clear -global x;  # cleanup after test
 
 ## Previous bugs have caused segfaults when executing script twice.
 %!test <*53027>
@@ -48,3 +52,4 @@
 %! assert (isglobal ("a") && isglobal ("c"))
 %! assert (! exist ("b"))
 %! assert (isempty (xx) && ! isglobal ("xx"))
+%! clear -global a b c;

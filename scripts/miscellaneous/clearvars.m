@@ -218,3 +218,6 @@ endfunction
 ## Test input validation
 %!error <'-global' must be the first option> clearvars ("ans", "-global")
 %!error <'-except' may only be specified once> clearvars ("-except", "-except")
+
+%!test
+%!  clear -global x y z;  # cleanup after test

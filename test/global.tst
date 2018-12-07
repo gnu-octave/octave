@@ -19,6 +19,7 @@
 %!test
 %! global G = 1;
 %! assert (G,1);
+%! clear -global G;  # cleanup after test
 
 %!function f ()
 %!  global G;
@@ -27,6 +28,7 @@
 %!test
 %! global G = 1;
 %! f;
+%! clear -global G;  # cleanup after test
 
 %!function f ()
 %!  fail ("G");
@@ -34,6 +36,7 @@
 %!test
 %! global G = 1;
 %! f ();
+%! clear -global G;  # cleanup after test
 
 %!function f ()
 %!  global H = 1;
@@ -41,6 +44,7 @@
 %!test
 %! f;
 %! fail ("H");
+%! clear -global H;  # cleanup after test
 
 %!function f ()
 %!  global H = 1;
@@ -50,6 +54,7 @@
 %!  fail ("H");
 %!test
 %! g ();
+%! clear -global H;  # cleanup after test
 
 %!function f ()
 %!  global H = 1;
@@ -61,6 +66,7 @@
 %!test
 %! f ();
 %! g ();
+%! clear -global H;  # cleanup after test
 
 %!test
 %!function f ()
@@ -68,6 +74,7 @@
 %!endfunction
 %!test
 %! fail ("H");
+%! clear -global H;  # cleanup after test
 
 %!function f ()
 %!  global H = 1;
@@ -80,6 +87,7 @@
 %! f;
 %! clear H;
 %! g;
+%! clear -global H;  # cleanup after test
 
 %!function r = f ()
 %!  x = 1;
@@ -100,6 +108,7 @@
 %! assert (f (), 1);
 %! global x
 %! assert (x, 1);
+%! clear -global x;  # cleanup after test
 
 %!function r = f ()
 %!  x = 1;
@@ -120,6 +129,7 @@
 %! assert (f (), 1);
 %! global x
 %! assert (x, 1);
+%! clear -global x;  # cleanup after test
 
 %!test
 %! warning ("off", "Octave:global-local-conflict", "local");
@@ -133,3 +143,4 @@
 %! assert (x, 42);
 %! clear global x      ## clears global and local value
 %! assert (exist ("x"), 0);
+%! clear -global x;  # cleanup after test

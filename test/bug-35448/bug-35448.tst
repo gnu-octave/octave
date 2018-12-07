@@ -21,9 +21,11 @@
 %! gfun = @fB;
 %! y = fA (e);
 %! assert (y, e);
+%! clear -global gfun;  # cleanup after test
 
 %!test
 %! global gfun
 %! gfun = @fC;
 %! y = fA (e);
 %! assert (y, e);
+%! clear -global gfun;  # cleanup after test

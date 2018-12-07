@@ -155,12 +155,11 @@ function plotstr = stemleaf (x, caption, stem_sz)
   if (nargin == 2)
     stem_step = 10;
   else
-    if (isscalar (stem_sz) && stem_sz >= 0 && isreal (stem_sz))
-      stem_sz = fix (stem_sz);
-      stem_step = 10^(stem_sz+1);
-    else
+    if (! (isscalar (stem_sz) && stem_sz >= 0 && isreal (stem_sz)))
       error ("stemleaf: STEM_SZ must be a real integer >= 0");
     endif
+    stem_sz = fix (stem_sz);
+    stem_step = 10^(stem_sz+1);
   endif
 
   ## Note that IEEE 754 states that -+ 0 should compare equal.  This has
@@ -246,7 +245,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   ## Vectorized version provided by Rik Wehbring (rik@octave.org)
   ## Determine leaves for each stem:
   new_line = 1;
-  for kx = 2: numel (stems)
+  for kx = 2 : numel (stems)
 
     stem_sign = signbit (stems(kx));
     if (stems(kx) <= 0)

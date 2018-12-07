@@ -27,7 +27,7 @@
 
 function old_val = ls_command (new_val)
 
-  global __ls_command__;
+  persistent __ls_command__;
 
   if (isempty (__ls_command__))
     ## MinGW uses different ls_command

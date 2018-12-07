@@ -87,10 +87,6 @@ along with Octave; see the file COPYING.  If not, see
 
 unsigned int kpse_debug = 0;
 
-static std::string kpse_var_expand (const std::string& src);
-
-static std::string kpse_expand (const std::string& s);
-
 void
 kpse_path_iterator::set_end (void)
 {
@@ -383,6 +379,95 @@ path_search (const std::string& path, const std::string& name, bool all)
   return ret_list;
 }
 
+/* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's
+   home directory, and return a new malloced string.  If no ~, or no
+   <pwd.h>, just return NAME.  */
+
+static std::string
+kpse_tilde_expand (const std::string& name)
+{
+  std::string expansion;
+
+  /* If no leading tilde, do nothing.  */
+  if (name.empty () || name[0] != '~')
+    {
+      expansion = name;
+
+      /* If a bare tilde, return the home directory or '.'.  (Very
+         unlikely that the directory name will do anyone any good, but
+         ...  */
+    }
+  else if (name.length () == 1)
+    {
+      expansion = octave::sys::env::get_home_directory ();
+
+      if (expansion.empty ())
+        expansion = ".";
+
+      /* If '~/', remove any trailing / or replace leading // in $HOME.
+         Should really check for doubled intermediate slashes, too.  */
+    }
+  else if (IS_DIR_SEP (name[1]))
+    {
+      unsigned c = 1;
+      std::string home = octave::sys::env::get_home_directory ();
+
+      if (home.empty ())
+        home = ".";
+
+      size_t home_len = home.length ();
+
+      /* handle leading // */
+      if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
+        home = home.substr (1);
+
+      /* omit / after ~ */
+      if (IS_DIR_SEP (home[home_len - 1]))
+        c++;
+
+      expansion = home + name.substr (c);
+
+      /* If '~user' or '~user/', look up user in the passwd database (but
+         OS/2 doesn't have this concept.  */
+    }
+  else
+#if defined (HAVE_PWD_H)
+    {
+      unsigned c = 2;
+
+      /* find user name */
+      while (name.length () > c && ! IS_DIR_SEP (name[c]))
+        c++;
+
+      std::string user = name.substr (1, c-1);
+
+      /* We only need the cast here for (deficient) systems
+         which do not declare 'getpwnam' in <pwd.h>.  */
+      octave::sys::password p = octave::sys::password::getpwnam (user);
+
+      /* If no such user, just use '.'.  */
+      std::string home = (p ? p.dir () : ".");
+
+      if (home.empty ())
+        home = ".";
+
+      /* handle leading // */
+      if (home.length () > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
+        home = home.substr (1);
+
+      /* If HOME ends in /, omit the / after ~user. */
+      if (name.length () > c && IS_DIR_SEP (home.back ()))
+        c++;
+
+      expansion = (name.length () > c ? home : home + name.substr (c));
+    }
+#else /* not HAVE_PWD_H */
+  expansion = name;
+#endif /* not HAVE_PWD_H */
+
+  return expansion;
+}
+
 /* Search PATH for ORIGINAL_NAME.  If ALL is false, or ORIGINAL_NAME is
    absolute_p, check ORIGINAL_NAME itself.  Otherwise, look at each
    element of PATH for the first readable ORIGINAL_NAME.
@@ -398,8 +483,8 @@ search (const std::string& path, const std::string& original_name,
   std::list<std::string> ret_list;
   bool absolute_p;
 
-  /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
-  std::string name = kpse_expand (original_name);
+  /* Make a leading ~ count as an absolute filename.  */
+  std::string name = kpse_tilde_expand (original_name);
 
   /* If the first name is absolute or explicitly relative, no need to
      consider PATH at all.  */
@@ -440,7 +525,7 @@ search (const std::string& path, const std::string& original_name,
 
 /* Search PATH for the first NAME.  */
 
-/* Call 'kpse_expand' on NAME.  If the result is an absolute or
+/* Perform tilde expansion on NAME.  If the result is an absolute or
    explicitly relative filename, check whether it is a readable
    (regular) file.
 
@@ -647,199 +732,20 @@ kpse_all_path_find_first_of (const std::string& path,
   return find_first_of (path, names, true);
 }
 
-/* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's
-   home directory, and return a new malloced string.  If no ~, or no
-   <pwd.h>, just return NAME.  */
-
-static std::string
-kpse_tilde_expand (const std::string& name)
-{
-  std::string expansion;
-
-  /* If no leading tilde, do nothing.  */
-  if (name.empty () || name[0] != '~')
-    {
-      expansion = name;
-
-      /* If a bare tilde, return the home directory or '.'.  (Very
-         unlikely that the directory name will do anyone any good, but
-         ...  */
-    }
-  else if (name.length () == 1)
-    {
-      expansion = octave::sys::env::get_home_directory ();
-
-      if (expansion.empty ())
-        expansion = ".";
-
-      /* If '~/', remove any trailing / or replace leading // in $HOME.
-         Should really check for doubled intermediate slashes, too.  */
-    }
-  else if (IS_DIR_SEP (name[1]))
-    {
-      unsigned c = 1;
-      std::string home = octave::sys::env::get_home_directory ();
-
-      if (home.empty ())
-        home = ".";
-
-      size_t home_len = home.length ();
-
-      /* handle leading // */
-      if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
-        home = home.substr (1);
-
-      /* omit / after ~ */
-      if (IS_DIR_SEP (home[home_len - 1]))
-        c++;
-
-      expansion = home + name.substr (c);
-
-      /* If '~user' or '~user/', look up user in the passwd database (but
-         OS/2 doesn't have this concept.  */
-    }
-  else
-#if defined (HAVE_PWD_H)
-    {
-      unsigned c = 2;
-
-      /* find user name */
-      while (name.length () > c && ! IS_DIR_SEP (name[c]))
-        c++;
-
-      std::string user = name.substr (1, c-1);
-
-      /* We only need the cast here for (deficient) systems
-         which do not declare 'getpwnam' in <pwd.h>.  */
-      octave::sys::password p = octave::sys::password::getpwnam (user);
-
-      /* If no such user, just use '.'.  */
-      std::string home = (p ? p.dir () : ".");
-
-      if (home.empty ())
-        home = ".";
-
-      /* handle leading // */
-      if (home.length () > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
-        home = home.substr (1);
-
-      /* If HOME ends in /, omit the / after ~user. */
-      if (name.length () > c && IS_DIR_SEP (home.back ()))
-        c++;
-
-      expansion = (name.length () > c ? home : home + name.substr (c));
-    }
-#else /* not HAVE_PWD_H */
-  expansion = name;
-#endif /* not HAVE_PWD_H */
-
-  return expansion;
-}
-
-/* Do variable expansion first so ~${USER} works.  (Besides, it's what the
-   shells do.)  */
-
-/* Call kpse_var_expand and kpse_tilde_expand (in that order).  Result
-   is always in fresh memory, even if no expansions were done.  */
-
-static std::string
-kpse_expand (const std::string& s)
-{
-  std::string var_expansion = kpse_var_expand (s);
-  return kpse_tilde_expand (var_expansion);
-}
-
-/* Forward declarations of functions from the original expand.c  */
-static std::list<std::string> brace_expand (const std::string&);
-
-/* Do brace expansion on ELT; then do variable and ~ expansion on each
-   element of the result; then do brace expansion again, in case a
-   variable definition contained braces (e.g., $TEXMF).  Return a
-   string comprising all of the results separated by ENV_SEP_STRING.  */
-
-static std::string
-kpse_brace_expand_element (const std::string& elt)
-{
-  std::string ret;
-
-  std::list<std::string> expansions = brace_expand (elt);
-
-  for (const auto& expanded_elt : expansions)
-    {
-      /* Do $ and ~ expansion on each element.  */
-      std::string x = kpse_expand (expanded_elt);
-
-      if (x != elt)
-        {
-          /* If we did any expansions, do brace expansion again.  Since
-             recursive variable definitions are not allowed, this recursion
-             must terminate.  (In practice, it's unlikely there will ever be
-             more than one level of recursion.)  */
-          x = kpse_brace_expand_element (x);
-        }
-
-      ret += x + ENV_SEP_STRING;
-    }
-
-  ret.pop_back ();
-
-  return ret;
-}
-
-/* Do brace expansion and call 'kpse_expand' on each element of the
-   result; return the final expansion (always in fresh memory, even if
-   no expansions were done).  */
-
-static std::string
-kpse_brace_expand (const std::string& path)
-{
-  /* Must do variable expansion first because if we have
-       foo = .:~
-       TEXINPUTS = $foo
-     we want to end up with TEXINPUTS = .:/home/karl.
-     Since kpse_path_element is not reentrant, we must get all
-     the path elements before we start the loop.  */
-  std::string tmp = kpse_var_expand (path);
-
-  std::string ret;
-
-  for (kpse_path_iterator pi (tmp); pi != std::string::npos; pi++)
-    {
-      std::string elt = *pi;
-
-      /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
-      std::string expansion = kpse_brace_expand_element (elt);
-      ret += expansion + ENV_SEP_STRING;
-    }
-
-  if (! ret.empty ())
-    ret.pop_back ();
-
-  return ret;
-}
-
-/* Expand all special constructs in a path, and include only the actually
-   existing directories in the result. */
-
-/* Do brace expansion and call 'kpse_expand' on each argument of the
-   result.  The final expansion (always in fresh memory) is a path of
-   all the existing directories that match the pattern. */
+/* Perform tilde expansion on each element of the path, and include
+   canonical directory names for only the the actually existing
+   directories in the result. */
 
 std::string
 kpse_path_expand (const std::string& path)
 {
   std::string ret;
-  unsigned len;
-
-  len = 0;
-
-  /* Expand variables and braces first.  */
-  std::string tmp = kpse_brace_expand (path);
+  unsigned len = 0;
 
   /* Now expand each of the path elements, printing the results */
-  for (kpse_path_iterator pi (tmp); pi != std::string::npos; pi++)
+  for (kpse_path_iterator pi (path); pi != std::string::npos; pi++)
     {
-      std::string elt = *pi;
+      std::string elt = kpse_tilde_expand (*pi);
 
       std::string dir;
 
@@ -1126,152 +1032,4 @@ kpse_element_dir (const std::string& elt)
     }
 
   return ret;
-}
-
-/* Variable expansion.  */
-
-/* We have to keep track of variables being expanded, otherwise
-   constructs like TEXINPUTS = $TEXINPUTS result in an infinite loop.
-   (Or indirectly recursive variables, etc.)  Our simple solution is to
-   add to a list each time an expansion is started, and check the list
-   before expanding.  */
-
-static std::map <std::string, bool> expansions;
-
-static void
-expanding (const std::string& var, bool xp)
-{
-  expansions[var] = xp;
-}
-
-/* Return whether VAR is currently being expanding.  */
-
-static bool
-expanding_p (const std::string& var)
-{
-  return (expansions.find (var) != expansions.end ()) ? expansions[var] : false;
-}
-
-/* Append the result of value of 'var' to EXPANSION, where 'var' begins
-   at START and ends at END.  If 'var' is not set, do not complain.
-   This is a subroutine for the more complicated expansion function.  */
-
-static void
-expand (std::string& expansion, const std::string& var)
-{
-  if (expanding_p (var))
-    {
-      (*current_liboctave_warning_with_id_handler)
-        ("Octave:pathsearch-syntax",
-         "pathsearch: variable '%s' references itself (eventually)",
-         var.c_str ());
-    }
-  else
-    {
-      /* Check for an environment variable.  */
-      std::string value = octave::sys::env::getenv (var);
-
-      if (! value.empty ())
-        {
-          expanding (var, true);
-          std::string tmp = kpse_var_expand (value);
-          expanding (var, false);
-          expansion += tmp;
-        }
-    }
-}
-
-/* Can't think of when it would be useful to change these (and the
-   diagnostic messages assume them), but ... */
-
-/* starts all variable references */
-#if ! defined (IS_VAR_START)
-#  define IS_VAR_START(c) ((c) == '$')
-#endif
-
-/* variable name constituent */
-#if ! defined (IS_VAR_CHAR)
-#  define IS_VAR_CHAR(c) (isalnum (c) || (c) == '_')
-#endif
-
-/* start delimited variable name (after $) */
-#if ! defined (IS_VAR_BEGIN_DELIMITER)
-#  define IS_VAR_BEGIN_DELIMITER(c) ((c) == '{')
-#endif
-
-#if ! defined (IS_VAR_END_DELIMITER)
-#  define IS_VAR_END_DELIMITER(c) ((c) == '}')
-#endif
-
-/* Maybe we should support some or all of the various shell ${...}
-   constructs, especially ${var-value}.  */
-
-static std::string
-kpse_var_expand (const std::string& src)
-{
-  std::string expansion;
-
-  size_t src_len = src.length ();
-
-  /* Copy everything but variable constructs.  */
-  for (size_t i = 0; i < src_len; i++)
-    {
-      if (IS_VAR_START (src[i]))
-        {
-          i++;
-
-          /* Three cases: '$VAR', '${VAR}', '$<anything-else>'.  */
-          if (IS_VAR_CHAR (src[i]))
-            {
-              /* $V: collect name constituents, then expand.  */
-              size_t var_end = i;
-
-              do
-                {
-                  var_end++;
-                }
-              while (IS_VAR_CHAR (src[var_end]));
-
-              var_end--; /* had to go one past */
-              expand (expansion, src.substr (i, var_end - i + 1));
-              i = var_end;
-
-            }
-          else if (IS_VAR_BEGIN_DELIMITER (src[i]))
-            {
-              /* ${: scan ahead for matching delimiter, then expand.  */
-              size_t var_end = ++i;
-
-              while (var_end < src_len && ! IS_VAR_END_DELIMITER (src[var_end]))
-                var_end++;
-
-              if (var_end == src_len)
-                {
-                  (*current_liboctave_warning_with_id_handler)
-                    ("Octave:pathsearch-syntax",
-                     "%s: No matching } for ${", src.c_str ());
-                  i = var_end - 1; /* will incr to eos at top of loop */
-                }
-              else
-                {
-                  expand (expansion, src.substr (i, var_end - i));
-                  i = var_end; /* will incr past } at top of loop*/
-                }
-            }
-          else
-            {
-              /* $<something-else>: error.  */
-              (*current_liboctave_warning_with_id_handler)
-                ("Octave:pathsearch-syntax",
-                 "%s: Unrecognized variable construct '$%c'",
-                 src.c_str (), src[i]);
-
-              /* Just ignore those chars and keep going.  */
-            }
-        }
-      else
-        expansion += src[i];
-    }
-
-  return expansion;
 }

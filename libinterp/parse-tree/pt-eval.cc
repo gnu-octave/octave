@@ -1112,7 +1112,8 @@ namespace octave
         if (p2 != std::string::npos)
           subfuns = name.substr (p2+1);
 
-        user_code = fcn.user_code_value ();
+        if (fcn.is_defined () && fcn.is_user_code ())
+          user_code = fcn.user_code_value ();
 
         if (! user_code || subfuns.empty ())
           return user_code;

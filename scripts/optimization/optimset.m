@@ -118,6 +118,8 @@ function retval = optimset (varargin)
   nargs = nargin;
 
   opts = __all_opts__ ();
+  ## Skip validation if we're in the internal query.
+  validation = ! isempty (opts);
 
   if (nargs == 0)
     if (nargout == 0)
@@ -142,45 +144,54 @@ function retval = optimset (varargin)
     ## Should we be checking to ensure that the field names are expected?
     old = varargin{1};
     new = varargin{2};
-    fnames = fieldnames (old);
-    ## skip validation if we're in the internal query
-    validation = ! isempty (opts);
-    for [val, key] = new
-      if (validation)
-        ## Case insensitive lookup in all options.
-        i = strncmpi (opts, key, length (key));
-        nmatch = sum (i);
-        ## Validate option.
-        if (nmatch == 1)
-          key = opts{find (i)};
-        elseif (nmatch == 0)
-          warning ("optimset: unrecognized option: %s", key);
-        else
-          fmt = sprintf ("optimset: ambiguous option: %%s (%s%%s)",
-                         repmat ("%s, ", 1, nmatch-1));
-          warning (fmt, key, opts{i});
-        endif
-      endif
-      if (! isempty (val))
-        old.(key) = val;
-      endif
-    endfor
-    retval = old;
+    useempty = false; # Matlab drops empty new fields, too.
+    retval = setoptionfields (opts, old, new, validation, useempty);
   elseif (rem (nargs, 2) && isstruct (varargin{1}))
     ## Set values in old from name/value pairs.
+    old = varargin{1};
     pairs = reshape (varargin(2:end), 2, []);
-    retval = optimset (varargin{1}, cell2struct (pairs(2, :), pairs(1, :), 2));
+    new = cell2struct (pairs(2, :), pairs(1, :), 2);
+    useempty = true; # Matlab preserves empty arguments, too.
+    retval = setoptionfields (opts, old, new, validation, useempty);
   elseif (rem (nargs, 2) == 0)
     ## Create struct.
     ## Default values are replaced by those specified by name/value pairs.
+    old = struct ();
     pairs = reshape (varargin, 2, []);
-    retval = optimset (struct (), cell2struct (pairs(2, :), pairs(1, :), 2));
+    new = cell2struct (pairs(2, :), pairs(1, :), 2);
+    useempty = true; # Matlab preserves empty arguments, too.
+    retval = setoptionfields (opts, old, new, validation, useempty);
   else
     print_usage ();
   endif
 
 endfunction
 
+function retval = setoptionfields (opts, old, new, validation, useempty)
+
+  for [val, key] = new
+    if (validation)
+      ## Case insensitive lookup in all options.
+      i = strncmpi (opts, key, length (key));
+      nmatch = sum (i);
+      ## Validate option.
+      if (nmatch == 1)
+        key = opts{find (i)};
+      elseif (nmatch == 0)
+        warning ("optimset: unrecognized option: %s", key);
+      else
+        fmt = sprintf ("optimset: ambiguous option: %%s (%s%%s)",
+                       repmat ("%s, ", 1, nmatch-1));
+        warning (fmt, key, opts{i});
+      endif
+    endif
+    if (useempty || ! isempty (val))
+      old.(key) = val;
+    endif
+  endfor
+  retval = old;
+
+endfunction
 
 %!assert (isfield (optimset (), "TolFun"))
 %!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
@@ -193,6 +204,11 @@ endfunction
 %! joint = optimset (old, new);
 %! assert (joint.TolX, 1e-2);
 %! assert (joint.TolFun, 1e-3);
+
+## Test preserving empty values given as arguments
+%!test
+%! opts = optimset ("TypicalX", []);
+%! assert (isempty (opts.TypicalX));
 
 ## Test input validation
 %!error optimset ("1_Parameter")

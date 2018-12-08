@@ -10632,6 +10632,37 @@ uibuttongroup::properties::get_boundingbox (bool internal,
 }
 
 void
+uibuttongroup::properties::set_position (const octave_value& v)
+{
+  Matrix old_bb, new_bb;
+  bool modified = false;
+
+  old_bb = get_boundingbox (true);
+  modified = position.set (v, false);
+  new_bb = get_boundingbox (true);
+
+  if (old_bb != new_bb)
+    {
+      if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
+        {
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
+          update_boundingbox ();
+        }
+    }
+
+  if (modified)
+    {
+      position.run_listeners (POSTSET);
+      mark_modified ();
+    }
+}
+
+void
 uibuttongroup::properties::set_units (const octave_value& val)
 {
   caseless_str old_units = get_units ();
@@ -10801,6 +10832,38 @@ uipanel::properties::get_boundingbox (bool internal,
 
   return pos;
 }
+
+void
+uipanel::properties::set_position (const octave_value& v)
+{
+  Matrix old_bb, new_bb;
+  bool modified = false;
+
+  old_bb = get_boundingbox (true);
+  modified = position.set (v, false);
+  new_bb = get_boundingbox (true);
+
+  if (old_bb != new_bb)
+    {
+      if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
+        {
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
+          update_boundingbox ();
+        }
+    }
+
+  if (modified)
+    {
+      position.run_listeners (POSTSET);
+      mark_modified ();
+    }
+}
+
 
 void
 uipanel::properties::set_units (const octave_value& val)
@@ -11570,8 +11633,11 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
       if (cname.compare ("deletefcn")
           || cname.compare ("createfcn")
           || (go.isa ("figure")
-              && (cname.compare ("closerequestfcn")
-                  || cname.compare ("resizefcn")
+              && cname.compare ("closerequestfcn"))
+          || ((go.isa ("figure")
+               || go.isa ("uipanel")
+               || go.isa ("uibuttongroup"))
+              && (cname.compare ("resizefcn")
                   || cname.compare ("sizechangedfcn"))))
         busyaction = base_graphics_event::INTERRUPT;
       else if (go.get_properties ().get_busyaction () == "cancel")

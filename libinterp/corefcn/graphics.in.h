@@ -5577,7 +5577,7 @@ public:
       radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
-      array_property position , default_panel_position ()
+      array_property position S , default_panel_position ()
       // FIXME: "resizefcn" is no longer recommended by Matlab,
       //        and has been replaced with "sizechangedfcn"
       //        Eventually this will need to be hidden, and then removed.
@@ -5677,7 +5677,7 @@ public:
       radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
-      array_property position , default_panel_position ()
+      array_property position S , default_panel_position ()
       // FIXME: "resizefcn" is no longer recommended by Matlab,
       //        and has been replaced with "sizechangedfcn"
       //        Eventually this will need to be hidden, and then removed.

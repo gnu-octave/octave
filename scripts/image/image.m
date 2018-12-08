@@ -105,6 +105,10 @@ function h = image (varargin)
     chararg = 4;
   endif
 
+  if (iscomplex (img))
+    error ("image: IMG data can not be complex");
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -258,3 +262,5 @@ endfunction
 %! end_unwind_protect
 
 ## FIXME: Need %!tests for linear
+
+%!error <IMG data can not be complex> image ([1, i])

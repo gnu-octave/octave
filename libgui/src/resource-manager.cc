@@ -398,32 +398,41 @@ namespace octave
 
     // get the value from the settings file if no current encoding is given
     QString enc = current;
+
+    bool default_exists = false;
+    if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ()))
+      default_exists = true;
+
     if (enc.isEmpty ())
       {
         enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
-        if (enc.isEmpty ())  // still empty?
-          enc = ed_default_enc.def.toString ();     // take default
 
-        if (! QTextCodec::codecForName (enc.toLatin1 ())) // does it exist?
-          enc = "";   // no, so clear it
+        if (enc.isEmpty ())  // still empty?
+          {
+            if (default_exists)
+              enc = ed_default_enc.def.toString ();
+            else
+              enc = QTextCodec::codecForLocale ()->name ();
+          }
       }
 
     // fill the combo box
     foreach (QString c, all_codecs)
       combo->addItem (c);
 
-    // prepend the current/default item and select it
-    if (! enc.isEmpty ())
-      {
-        combo->insertSeparator (0);
-        combo->insertItem (0, ed_default_enc.def.toString ());
+    // prepend the default item
+    combo->insertSeparator (0);
+    if (default_exists)
+      combo->insertItem (0, ed_default_enc.def.toString ());
+    else
+      combo->insertItem (0, QTextCodec::codecForLocale ()->name ());
 
-        int idx = combo->findText (enc);
-        if (idx >= 0)
-          combo->setCurrentIndex (idx);
-        else
-          combo->setCurrentIndex (0);
-      }
+    // select the default or the current one
+    int idx = combo->findText (enc);
+    if (idx >= 0)
+      combo->setCurrentIndex (idx);
+    else
+      combo->setCurrentIndex (0);
 
     combo->setMaxVisibleItems (12);
   }

@@ -724,7 +724,7 @@ namespace octave
         // Sinve the title only contains the section name and not the
         // specific anchor, extract the latter from the url and append
         // it to the title
-        QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString (QUrl::FullyEncoded);
+        QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString ();
         if (url.contains ('#'))
           {
             // Get the anchor from the url

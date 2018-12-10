@@ -571,7 +571,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
       ## Padding between legend entries horizontally and vertically
       xpad = 2;
-      ypad = 2;
+      ypad = 4;
 
       linelength = 15;
 
@@ -673,7 +673,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           maxwidth = max (maxwidth, extents(3));
           maxheight = max (maxheight, extents(4));
         endfor
-        ## Restore units which were force to points
+        ## Restore units which were forced to points
         set (texthandle, "units", get (0, "DefaultTextUnits"));
 
         num1 = nentries;

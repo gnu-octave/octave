@@ -251,30 +251,6 @@ looks_like_struct (const std::string& text, char prev_char)
                  && text.find ("..") == std::string::npos
                  && text.rfind ('.') != std::string::npos);
 
-#if 0
-  symbol_record *sr = curr_sym_tab->lookup (text);
-
-  if (sr && ! sr->is_function ())
-    {
-      int parse_status;
-
-      octave::unwind_protect frame;
-
-      frame.protect_var (discard_error_messages);
-
-      discard_error_messages = true;
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("looks_like_struct");
-
-      octave_value tmp = interp.eval_string (text, true, parse_status);
-
-      frame.run ();
-
-      retval = (tmp.is_defined () && tmp.isstruct ());
-    }
-#endif
-
   return retval;
 }
 

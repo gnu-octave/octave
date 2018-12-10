@@ -1563,8 +1563,18 @@ point source (@qcode{\"local\"}).";
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
+
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
+        s.valid = valid_fcn;
+
       case "shadowcolor"
+
+      case "sizechangedfcn"
+        s.doc = "Callback triggered when the uipanel size is changed.\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
+
       case "title"
       case "titleposition"
       case "units"
@@ -1600,10 +1610,20 @@ point source (@qcode{\"local\"}).";
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
+
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
+        s.valid = valid_fcn;
+
       case "selectedobject"
       case "selectionchangedfcn"
       case "shadowcolor"
+
+      case "sizechangedfcn"
+        s.doc = "Callback triggered when the uibuttongroup size is changed.\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
+
       case "title"
       case "titleposition"
       case "units"

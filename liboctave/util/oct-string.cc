@@ -494,7 +494,12 @@ rational_approx (T val, int len)
     len = 10;
 
   if (octave::math::isinf (val))
-    s = "1/0";
+    {
+      if (val > 0)
+        s = "1/0";
+      else
+        s = "-1/0";
+    }
   else if (octave::math::isnan (val))
     s = "0/0";
   else if (val < std::numeric_limits<int>::min ()

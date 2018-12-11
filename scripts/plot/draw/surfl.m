@@ -109,7 +109,8 @@ function h = surfl (varargin)
   ##      diffuse reflection strength,
   ##      specular reflection strength,
   ##      specular shine]
-  if (isnumeric (varargin{end}) && length (varargin{end}) == 4)
+  if (isnumeric (varargin{end}) && isvector (varargin{end})
+      && (numel (varargin{end}) == 4))
     r = varargin{end};
     varargin(end) = [];
   else
@@ -119,7 +120,7 @@ function h = surfl (varargin)
 
   ## Check for light vector (lv) argument.
   have_lv = false;
-  if (isnumeric (varargin{end}))
+  if (isnumeric (varargin{end}) && isvector (varargin{end}))
     len = numel (varargin{end});
     lastarg = varargin{end};
     if (len == 3)

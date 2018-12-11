@@ -3251,6 +3251,25 @@ Return true if @var{x} is a complex-valued numeric object.
   return ovl (args(0).iscomplex ());
 }
 
+
+/*
+%!assert (iscomplex (4), false)
+%!assert (iscomplex (i), true)
+%!assert (iscomplex (4+3i), true)
+%!assert (iscomplex ([1, 2, 3]), false)
+%!assert (iscomplex ([1, 2i, 3]), true)
+
+%!assert (iscomplex (0j), false)
+%!assert (iscomplex (complex (0,0)), true)
+%!assert (iscomplex ("4"), false)
+%!assert (iscomplex ({i}), false)
+
+## Test input validation
+%!error iscomplex ()
+%!error iscomplex (1, 2)
+*/
+
+
 DEFUN (isfloat, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isfloat (@var{x})

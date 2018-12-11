@@ -67,6 +67,12 @@ function [n, d] = rat (x, tol)
     error ("rat: X must be a single or double array");
   endif
 
+  ## FIXME: This test should be removed when complex support is added.
+  ##        See bug #55198.
+  if (iscomplex (x))
+    error ("rat: X must be a real, not complex, array");
+  endif
+
   y = x(:);
 
   ## Replace Inf with 0 while calculating ratios.
@@ -214,6 +220,7 @@ endfunction
 %!error rat ()
 %!error rat (1, 2, 3)
 %!error <X must be a single or double array> rat (int8 (3))
+%!error <X must be a real, not complex, array> rat (1+1i)
 %!error <TOL must be a numeric scalar> rat (1, "a")
 %!error <TOL must be a numeric scalar> rat (1, [1 2])
 %!error <TOL must be a numeric scalar . 0> rat (1, -1)

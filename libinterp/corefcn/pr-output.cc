@@ -3925,6 +3925,7 @@ digit.  For example:
 
 @example
 @group
+fixed_point_format (true)
 logspace (1, 7, 5)'
 ans =
 

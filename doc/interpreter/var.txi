@@ -67,7 +67,9 @@ before they have been given a value.  Doing so results in an error.
 
 @DOCSTRING(isvarname)
 
-@DOCSTRING(genvarname)
+@DOCSTRING(matlab.lang.makeValidName)
+
+@DOCSTRING(matlab.lang.makeUniqueStrings)
 
 @DOCSTRING(namelengthmax)
 

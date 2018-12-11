@@ -19,6 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{varname} =} genvarname (@var{str})
 ## @deftypefnx {} {@var{varname} =} genvarname (@var{str}, @var{exclusions})
+##
+## This function is obsolete.  Use @code{matlab.lang.makeValidName} or
+## @code{matlab.lang.makeUniqueStrings} instead.
+##
 ## Create valid unique variable name(s) from @var{str}.
 ##
 ## If @var{str} is a cellstr, then a unique variable is created for each cell
@@ -90,11 +94,9 @@
 ## appended if necessary.  Note, however, that this does @strong{not} include
 ## function names such as @qcode{"sin"}.  Such names should be included in
 ## @var{exclusions} if necessary.
-## @seealso{isvarname, iskeyword, exist, who, tempname, eval}
+## @seealso{matlab.lang.makeValidName, matlab.lang.makeUniqueStrings,
+## namelengthmax, isvarname, iskeyword, exist, who, tempname, eval}
 ## @end deftypefn
-
-## Authors: Rob Platt <robert.platt@postgrad.manchester.ac.uk>
-##          Bill Denney <bill@denney.ws>
 
 function varname = genvarname (str, exclusions = {})
 

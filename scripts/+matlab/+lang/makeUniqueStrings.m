@@ -2,9 +2,9 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -14,207 +14,218 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{y} =} matlab.lang.makeUniqueStrings (@var{x})
-## @deftypefnx {} {@var{y} =} matlab.lang.makeUniqueStrings (@var{x}, @var{ex})
-## @deftypefnx {} {@var{y} =} matlab.lang.makeUniqueStrings (@var{x}, @var{ex}, @var{maxlength})
-## @deftypefnx {} {[@var{y}, @var{ismodified}] =} matlab.lang.makeUniqueStrings (@dots{})
+## @deftypefn  {} {@var{uniqstr} =} matlab.lang.makeUniqueStrings (@var{str})
+## @deftypefnx {} {@var{uniqstr} =} matlab.lang.makeUniqueStrings (@var{str}, @var{ex})
+## @deftypefnx {} {@var{uniqstr} =} matlab.lang.makeUniqueStrings (@var{str}, @var{ex}, @var{maxlength})
+## @deftypefnx {} {[@var{uniqstr}, @var{ismodified}] =} matlab.lang.makeUniqueStrings (@dots{})
 ##
 ## Construct a list of unique strings from a list of strings.
 ##
-## @var{x} has to be a string or a cell array of strings.  @var{y} will be of
-## the same type, and all of its elements will be unique.
+## The input @var{str} must be a string or a cell array of strings.
+## The output @var{uniqstr} will be of the same type.
 ##
-## If @var{ex} is a string or a cell array of strings, @var{y} will contain
-## elements that are unique between themselves and with respect to @var{ex}.
+## The algorithm makes two strings unique by appending an underscore
+## (@qcode{"_"} and a numeric count to the second string.
 ##
-## If @var{ex} is an index array or a logical array for @var{x} then it selects
-## the subset of @var{x} that is made unique.  Unselected elements are not
-## modified.
+## If @var{ex} is a string or a cell array of strings, @var{uniqstr} will
+## contain elements that are unique between themselves and with respect to
+## @var{ex}.
 ##
-## @var{maxlength} is the maximal acceptable length of the strings in @var{y}.
+## If @var{ex} is an index array or a logical array for @var{str} then it
+## selects the subset of @var{str} that are made unique.  Unselected elements
+## are not modified.
 ##
-## @var{ismodified} is a logical array indicating whether each element in
-## @var{x} was modified to make it unique.
+## The optional input @var{maxlength} specifies the maximum length of any
+## string in @var{uniqstr}.  If an input string cannot be made unique without
+## exceeding @var{maxlength} an error is emitted.
+## 
+## The optional output @var{ismodified} is a logical array indicating whether
+## each element in @var{str} was modified to make it unique.
 ##
 ## @seealso{unique, matlab.lang.makeValidName}
 ## @end deftypefn
 
-function [y, ismodified] = makeUniqueStrings (x, ex = {}, maxlength = namelengthmax ())
+function [uniqstr, ismodified] = makeUniqueStrings (str, ex = {}, maxlength = Inf)
 
   if (nargin == 0 || nargout > 3)
     print_usage ();
   endif
 
   ##  Validate first input
-  if ((! ischar (x)) && (! iscellstr (x)))
-    error ("makeUniqueStrings: input must be a string.");
+  if (! ischar (str) && ! iscellstr (str))
+    error ("makeUniqueStrings: STR must be a string or cellstr");
   endif
-  converttochar = ischar (x);
-  y = cellstr (x);
-  sz = size (y);
-  y = y(:)';
+
+  convert2char = ischar (str);
+  uniqstr = cellstr (str);
+  sz = size (uniqstr);
+  uniqstr = uniqstr(:)';
 
   ## Initialize array of strings to exclude
   excludedstrings = {};
 
-  ## Validate first optional input
+  ## Validate optional exclusion list input
   if (nargin > 1)
     if (ischar (ex) || iscellstr (ex))
       excludedstrings = cellstr (ex);
     elseif (islogical (ex))
-      if (numel (ex) != numel (y))
-        error ("makeUniqueStrings: input and logical array must have same length.");
+      if (numel (ex) != numel (uniqstr))
+        error ("makeUniqueStrings: STR and EX logical array must have the same length");
       endif
-      excludedstrings = y(! ex);
-      y = y(ex);
+      excludedstrings = uniqstr(! ex);
+      uniqstr = uniqstr(ex);
     elseif (isnumeric (ex))
-      if (any (ex <= 0 | ex > numel (y) | round (ex) != ex)) # isindex
-        error ("makeUniqueStrings: invalid array of indices.");
+      if (! isindex (ex, numel (uniqstr)))
+        error ("makeUniqueStrings: invalid array of indices EX");
       endif
-      excludedstrings = y(setdiff (1:numel (y), ex));
-      y = y(ex);
+      excludedstrings = uniqstr(setdiff (1:numel (uniqstr), ex));
+      uniqstr = uniqstr(ex);
     else
-      error ("makeUniqueStrings: invalid input.");
+      error ("makeUniqueStrings: invalid input");
     endif
     excludedstrings = excludedstrings(:)';
   endif
 
-  ## Validate second optional input
+  ## Validate optional maxlength input
   if (nargin > 2)
-    if (! isnumeric (maxlength)
-      || ! isscalar (maxlength)
-      || ! isreal (maxlength)
-      || maxlength < 0
-      || round (maxlength) != maxlength)
-      error ("makeUniqueStrings: 'maxlength' must be a positive integer.");
+    if (! isindex (maxlength))
+      error ("makeUniqueStrings: MAXLENGTH must be a positive integer");
     endif
   endif
+  chk_length = ! isinf (maxlength);
 
-  ## Initialize second output
-  ismodified = false (size (y));
-
-  ## Truncate output strings
-  istruncated = false (size (y));
-  if (maxlength < namelengthmax ())
-    istruncated = cellfun (@(x) length (x) > maxlength, y);
-    for i=find (istruncated)
-      y{i} = y{i}(1:maxlength);
-    endfor
+  ismodified = false (size (uniqstr));
+  if (chk_length)
+    ## Truncate output strings
+    ismodified = (cellfun (@length, uniqstr) > maxlength);
+    uniqstr(ismodified) = cellindexmat (uniqstr(ismodified), 1:maxlength);
   endif
 
   ## Make unique strings
-  [~, I, J] = unique (y, "first");
-  for i=1: numel (I)
-    R = ! ismember (y{I(i)}, excludedstrings);
+  ## FIXME: lots of call to ismember are slow.
+  [~, I, J] = unique (uniqstr, "first");
+  for i = 1:numel (I)
+    R = ! ismember (uniqstr{I(i)}, excludedstrings);
     K = find (J == J(I(i)));
     n = 1 + ceil (log10 (numel (K)));
-    if (length (y{K(1)}) + n > maxlength)
-      if (n >= maxlength)
-        error ("makeUniqueStrings: cannot create unique elements within 'maxlength'.");
-      endif
-      sub = y{K(1)}(1:maxlength-n);
+
+    if (! chk_length)
+      sub = uniqstr{K(1)};
     else
-      sub = y{K(1)};
+      if (length (uniqstr{K(1)}) + n > maxlength)
+        if (n >= maxlength)
+          error ("makeUniqueStrings: cannot create unique elements within MAXLENGTH");
+        endif
+        sub = uniqstr{K(1)}(1:maxlength-n);
+      else
+        sub = uniqstr{K(1)};
+      endif
     endif
+
     for k = (1 + R):numel (K)
-      while true
+      while (true)
         N = k - R;
         proposal = [sub sprintf("_%d", N)];
-        if (! ismember (proposal, [excludedstrings y(I(i+1:end))]))
-          y{K(k)} = proposal;
+        if (! ismember (proposal, [excludedstrings, uniqstr(I(i+1:end))]))
+          uniqstr{K(k)} = proposal;
           break;
         else
-          R--; # i.e. increments N
+          R--;  # i.e. increments N
         endif
       endwhile
-      ismodified(K(k)) = true;
+      ismodified(K(k)) |= true;
     endfor
   endfor
 
   ## Return outputs with correct type and size
-  ismodified = ismodified | istruncated;
-
-  if (converttochar)
-    y = char (y);
-    if (isempty (y))
-      y = char ();
+  if (convert2char)
+    uniqstr = char (uniqstr);
+    if (isempty (uniqstr))
+      uniqstr = char ();
     endif
   else
     if (isnumeric (ex) || islogical (ex))
-      z = y;
-      y = cell (1, prod (sz));
-      y(ex) = z;
+      tmp = uniqstr;
+      uniqstr = cell (1, prod (sz));
+      uniqstr(ex) = tmp;
       if (isnumeric (ex))
-        y(setdiff (1:prod (sz), ex)) = excludedstrings;
+        uniqstr(setdiff (1:prod (sz), ex)) = excludedstrings;
       else
-        y(! ex) = excludedstrings;
+        uniqstr(! ex) = excludedstrings;
       endif
-      z = ismodified;
+      tmp = ismodified;
       ismodified = false (sz);
-      ismodified(ex) = z;
+      ismodified(ex) = tmp;
     endif
-    y = reshape (y, sz);
+    uniqstr = reshape (uniqstr, sz);
   endif
 
 endfunction
 
+
 ## Test first input
 %!test
-%! assert (matlab.lang.makeUniqueStrings ("a"), "a")
-%! assert (matlab.lang.makeUniqueStrings ({"a","b","c"}), {"a","b","c"})
+%! assert (matlab.lang.makeUniqueStrings ("a"), "a");
+%! assert (matlab.lang.makeUniqueStrings ({"a","b","c"}), {"a","b","c"});
 %! assert (matlab.lang.makeUniqueStrings (''), '');
 %! assert (matlab.lang.makeUniqueStrings ({}), {});
 
 ## Test exclusion list
 %!test
-%! x = {"jwe", "Marco", "Rik", "jwe", "Kai", "jwe", "Torsten"};
-%! y = matlab.lang.makeUniqueStrings (x);
-%! assert (y, {"jwe", "Marco", "Rik", "jwe_1", "Kai", "jwe_2", "Torsten"})
-%! y = matlab.lang.makeUniqueStrings (x, "Rik");
-%! assert (y, {"jwe", "Marco", "Rik_1", "jwe_1", "Kai", "jwe_2", "Torsten"})
-%! [y, m] = matlab.lang.makeUniqueStrings (x, {"Kai", "Rik"});
-%! assert (y, {"jwe", "Marco", "Rik_1", "jwe_1", "Kai_1", "jwe_2", "Torsten"})
+%! str = {"jwe", "Marco", "Rik", "jwe", "Kai", "jwe", "Torsten"};
+%! uniqstr = matlab.lang.makeUniqueStrings (str);
+%! assert (uniqstr,
+%!         {"jwe", "Marco", "Rik", "jwe_1", "Kai", "jwe_2", "Torsten"});
+%! uniqstr = matlab.lang.makeUniqueStrings (str, "Rik");
+%! assert (uniqstr,
+%!         {"jwe", "Marco", "Rik_1", "jwe_1", "Kai", "jwe_2", "Torsten"});
+%! [uniqstr, m] = matlab.lang.makeUniqueStrings (str, {"Kai", "Rik"});
+%! assert (uniqstr,
+%!         {"jwe", "Marco", "Rik_1", "jwe_1", "Kai_1", "jwe_2", "Torsten"});
 %! assert (m, logical ([0 0 1 1 1 1 0]));
 
 ## Test index array
 %!test
-%! x = {"a", "a", "a", "b", "a", "b"};
-%! y = matlab.lang.makeUniqueStrings (x, 1:4);
-%! assert (y, {"a_1", "a_2", "a_3", "b_1", "a", "b"});
-%! x(end+1) = "a";
-%! [y, m] = matlab.lang.makeUniqueStrings (x, 1:4);
-%! assert (y, {"a_1", "a_2", "a_3", "b_1", "a", "b", "a"});
+%! str = {"a", "a", "a", "b", "a", "b"};
+%! uniqstr = matlab.lang.makeUniqueStrings (str, 1:4);
+%! assert (uniqstr, {"a_1", "a_2", "a_3", "b_1", "a", "b"});
+%! str(end+1) = "a";
+%! [uniqstr, m] = matlab.lang.makeUniqueStrings (str, 1:4);
+%! assert (uniqstr, {"a_1", "a_2", "a_3", "b_1", "a", "b", "a"});
 %! assert (m ,logical ([1 1 1 1 0 0 0]));
 
 ## Test logical array
 %!test
-%! x = {"a", "a", "a", "b", "a", "b"};
-%! [y, m] = matlab.lang.makeUniqueStrings (x, logical ([1 1 1 1 0 0]));
-%! assert (y, {"a_1", "a_2", "a_3", "b_1", "a", "b"});
+%! str = {"a", "a", "a", "b", "a", "b"};
+%! [uniqstr, m] = matlab.lang.makeUniqueStrings (str, logical ([1 1 1 1 0 0]));
+%! assert (uniqstr, {"a_1", "a_2", "a_3", "b_1", "a", "b"});
 %! assert (m, logical ([1 1 1 1 0 0]));
 
 ## Test maxlength
 %!test
-%! x = {"maxlength", "maxlength", "maxlength", "maxlength"};
-%! [y, m] = matlab.lang.makeUniqueStrings (x, 1:3, 5);
-%! assert (y, {"maxle", "max_1", "max_2", "maxlength"});
+%! str = {"maxlength", "maxlength", "maxlength", "maxlength"};
+%! [uniqstr, m] = matlab.lang.makeUniqueStrings (str, 1:3, 5);
+%! assert (uniqstr, {"maxle", "max_1", "max_2", "maxlength"});
 %! assert (m, logical ([1 1 1 0]));
-%!error matlab.lang.makeUniqueStrings (repmat ({"a"}, 1, 10), {}, 2)
+%!error <cannot create unique elements within MAXLENGTH>
+%! matlab.lang.makeUniqueStrings (repmat ({"a"}, 1, 10), {}, 2);
 
 %!test
-%! assert (matlab.lang.makeUniqueStrings ("a", {"a"}), "a_1")
-%! assert (matlab.lang.makeUniqueStrings ("a", {"a","a_1"}), "a_2")
-%! y = matlab.lang.makeUniqueStrings ({"a","a","a","a_6","a"}, {"a","a_3"});
-%! assert (y, {"a_1","a_2","a_4","a_6","a_5"})
+%! assert (matlab.lang.makeUniqueStrings ("a", {"a"}), "a_1");
+%! assert (matlab.lang.makeUniqueStrings ("a", {"a","a_1"}), "a_2");
+%! uniqstr = matlab.lang.makeUniqueStrings ({"a","a","a","a_6","a"},
+%!                                          {"a","a_3"});
+%! assert (uniqstr, {"a_1","a_2","a_4","a_6","a_5"});
 
-%!test
-%!error matlab.lang.makeUniqueStrings ();
-%!error matlab.lang.makeUniqueStrings (1);
-%!error matlab.lang.makeUniqueStrings ("a", struct ());
-%!error matlab.lang.makeUniqueStrings ("a", 2);
-%!error matlab.lang.makeUniqueStrings ("a", [true false]);
-%!error matlab.lang.makeUniqueStrings ("a", {}, pi);
+## Test input validation
+%!error matlab.lang.makeUniqueStrings ()
 %!error [a, b, c] = matlab.lang.makeUniqueStrings ("a");
+%!error <STR must be a string or cellstr> matlab.lang.makeUniqueStrings (1)
+%!error <STR and EX logical array must have the same length>
+%! matlab.lang.makeUniqueStrings ("a", [true false]);
+%!error <invalid array of indices EX> matlab.lang.makeUniqueStrings ("a", 2)
+%!error <MAXLENGTH must be a positive integer>
+%! matlab.lang.makeUniqueStrings ("a", {}, pi);

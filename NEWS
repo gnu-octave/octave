@@ -161,13 +161,13 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       clearvars
       isfile
       isfolder
+      matlab.lang.makeUniqueStrings
+      matlab.lang.makeValidName
       movegui
       openfig
       ordeig
       savefig
       uitable
-      matlab.lang.makeValidName
-      matlab.lang.makeUniqueStrings
 
  ** Legacy functions.
 

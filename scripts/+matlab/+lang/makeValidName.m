@@ -2,9 +2,9 @@
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or modify it
+## Octave is free software: you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## Octave is distributed in the hope that it will be useful, but
@@ -14,194 +14,195 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{y} =} matlab.lang.makeValidName (@var{x})
-## @deftypefnx {} {@var{y} =} matlab.lang.makeValidName (@var{x}, @qcode{"ReplacementStyle"}, @var{rs})
-## @deftypefnx {} {@var{y} =} matlab.lang.makeValidName (@var{x}, @qcode{"Prefix"}, @var{p})
-## @deftypefnx {} {[@var{y}, @var{ismodified}] =} matlab.lang.makeValidName (@dots{})
+## @deftypefn  {} {@var{varname} =} matlab.lang.makeValidName (@var{str})
+## @deftypefnx {} {@var{varname} =} matlab.lang.makeValidName (@dots{}, @qcode{"ReplacementStyle"}, @var{rs})
+## @deftypefnx {} {@var{varname} =} matlab.lang.makeValidName (@dots{}, @qcode{"Prefix"}, @var{pfx})
+## @deftypefnx {} {[@var{varname}, @var{ismodified}] =} matlab.lang.makeValidName (@dots{})
 ##
-## Create valid variable name(s) @var{y} from @var{x}.
+## Create valid variable name @var{varname} from @var{str}.
 ##
-## @var{x} has to be a string or a cell array of strings.  @var{y} will be of
-## the same type.
+## The input @var{str} must be a string or a cell array of strings.
+## The output @var{varname} will be of the same type.
 ##
-## A valid name is a string of alphanumerics and underscores, starting with a
-## letter.
+## A valid variable name is a sequence of letters, digits, and underscores that
+## does not begin with a digit.
 ##
-## The @qcode{"ReplacementStyle"} option specifies how non valid characters have
-## to be handled.  Acceptable values are @qcode{"underscore"}, @qcode{"hex"} and
-## @qcode{"delete"}.  Default value, @qcode{"underscore"}, replaces all non
-## valid characters with a @qcode{"_"}.  @qcode{"hex"} replaces all non valid
-## characters with their hexadecimal representation, while @qcode{"delete"} will
-## simply remove any character that is not alphanumeric or underscore.
-## Whitespace characters are always removed prior to the application of the
-## @qcode{"ReplacementStyle"}.  Lowercase letters following a whitespace will be
-## changed to uppercase.
+## The @qcode{"ReplacementStyle"} option specifies how invalid characters
+## are handled.  Acceptable values are
 ##
-## The @qcode{"Prefix"} option specifies the string @var{p} to add as a prefix
-## to the input if it does not start with a letter.  @var{p} has to be a valid
-## variable name itself. Its default is @qcode{"x"}.
+## @table @asis
+## @item @qcode{"underscore"} (default)
+## Replace all invalid characters with an underscore (@qcode{"_"}).
 ##
-## @var{ismodified} is a logical array indicating whether each element in
-## @var{x} is a valid name or not (and therefore is modified in @var{y}).
+## @item @qcode{"delete"}
+## Remove any invalid character.
+##
+## @item @qcode{"hex"}
+## Replace all invalid characters with their hexadecimal representation.
+## @end table
+##
+## Whitespace characters are always removed @strong{prior} to the application
+## of the @qcode{"ReplacementStyle"}.  Lowercase letters following a whitespace
+## will be changed to uppercase.
+##
+## The @qcode{"Prefix"} option specifies the string @var{pfx} to add as a
+## prefix to the input if it begins with a digit.  @var{pfx} must be a valid
+## variable name itself.  The default prefix is @qcode{"x"}.
+##
+## The optional output @var{ismodified} is a logical array indicating whether
+## the respective element in @var{str} was a valid name or not.
 ##
 ## @seealso{iskeyword, isvarname, matlab.lang.makeUniqueStrings}
 ## @end deftypefn
 
-function [y, ismodified] = makeValidName (x, varargin)
+function [varname, ismodified] = makeValidName (str, varargin)
 
   if (nargin == 0 || nargout > 2)
     print_usage ();
   endif
 
-  if ((! ischar (x)) && (! iscellstr (x)))
-    error ("makeValidName: input must be a string.");
+  if (! ischar (str) && ! iscellstr (str))
+    error ("makeValidName: STR must be a string or cellstr");
   endif
 
-  converttochar = ischar (x);
-  y = cellstr (x);
+  if (mod (nargin - 1, 2) != 0)
+    error ("makeValidName: property/value options must occur in pairs");
+  endif
 
-  ismodified = false (size (y));
-
+  varname = cellstr (str);
+  ismodified = false (size (varname));
+  convert2char = ischar (str);
   opts = struct ("replacementstyle", "underscore", "prefix", "x");
 
-  for i = 1:2:numel(varargin)
+  for i = 1:2:numel (varargin)
     if (! ischar (varargin{i}))
-      error ("makeValidName: input argument must be a string.");
+      error ("makeValidName: option argument must be a string");
     endif
     parameter = tolower (varargin{i});
-    if (numel (varargin) < i+1)
-      error ("makeValidName: input value missing.");
-    endif
     value = varargin{i+1};
     switch (parameter)
       case "replacementstyle"
         if (! ischar (value))
-          error ('makeValidName: "ReplacementStyle" value must be a string.');
+          error ('makeValidName: "ReplacementStyle" value must be a string');
         endif
         value = tolower (value);
-        if (! ismember (value, {"underscore", "hex", "delete"}))
-          error ('makeValidName: invalid "ReplacementStyle" value.');
+        if (! any (strcmp (value, {"underscore", "delete", "hex"})))
+          error ('makeValidName: invalid "ReplacementStyle" value "%s"', value);
         endif
         opts.replacementstyle = value;
+
       case "prefix"
-        if (! isvalidname (value))
-          error ('makeValidName: invalid "Prefix" value.');
+        if (! isvarname (value))
+          error ('makeValidName: invalid "Prefix" value "%s"', value);
         endif
         opts.prefix = value;
+
       otherwise
-        error ("makeValidName: unknown input argument.");
+        error ('makeValidName: unknown property "%s"', parameter);
     endswitch
   endfor
 
-  for i = 1:numel (y)
-    if (! isvalidname (y{i}))
+  for i = 1:numel (varname)
+    if (! isvarname (varname{i}))
       ismodified(i) = true;
+
       ## Remove leading and trailing whitespace
-      y{i} = strtrim (y{i});
-      if (isempty (y{i}))
-        y{i} = opts.prefix;
+      varname{i} = strtrim (varname{i});
+      if (isempty (varname{i}))
+        varname{i} = opts.prefix;
       endif
 
-      ## Check if input is a reserved keyword
-      if (iskeyword (y{i}))
-        y{i} = [opts.prefix, toupper(y{i}(1)), y{i}(2:end)];
+      ## Add prefix if input is a reserved keyword
+      if (iskeyword (varname{i}))
+        varname{i} = [opts.prefix, toupper(varname{i}(1)), varname{i}(2:end)];
       endif
 
-      ## Change lowercase letter followed by whitespace to uppercase
-      idx = regexp (y{i},'[\s][a-z]');
-      y{i}(idx+1) = toupper (y{i}(idx+1));
+      ## Change whitespace followed by lowercase letter to uppercase
+      idx = regexp (varname{i}, '\s[a-z]');
+      varname{i}(idx+1) = toupper (varname{i}(idx+1));
 
       ## Remove any whitespace character
-      y{i}(isspace (y{i})) = "";
+      varname{i}(isspace (varname{i})) = "";
 
-      ## Add prefix if first character is not a letter
-      if (! isempty (regexp (y{i}(1),"[^a-zA-Z]")))
-        y{i} = [opts.prefix y{i}];
+      ## Add prefix if first character is not a letter or underscore
+      char1 = varname{i}(1);
+      if (! isalpha (char1) && char1 != "_")
+        varname{i} = [opts.prefix varname{i}];
       endif
 
       ## Replace non alphanumerics or underscores
-      idx = regexp (y{i},"[^0-9A-Za-z_]");
+      idx = regexp (varname{i}, '[^0-9a-zA-Z_]');
       switch (opts.replacementstyle)
         case "underscore"
-          y{i}(idx) = "_";
+          varname{i}(idx) = "_";
+
+        case "delete"
+          varname{i}(idx) = "";
+
         case "hex"
           for j = numel (idx):-1:1
-            y{i} = strrep (y{i}, y{i}(idx(j)), sprintf ("0x%02X",y{i}(idx(j))));
+            varname{i} = strrep (varname{i}, varname{i}(idx(j)),
+                                 sprintf ("0x%02X",varname{i}(idx(j))));
           endfor
-        case "delete"
-          y{i}(idx) = "";
       endswitch
     endif
   endfor
 
-  if (converttochar)
-    y = char (y);
+  if (convert2char)
+    varname = char (varname);
   endif
 
 endfunction
 
-
-function tf = isvalidname (x)
-  # use isvarname instead
-  tf = true;
-  if (! ischar (x)
-    || isempty (x)
-    || numel (x) > namelengthmax ()
-    || ! isempty (regexp (x,"[^0-9A-Za-z_]"))
-    || ! isempty (regexp (x(1),"[^a-zA-Z]"))
-    || iskeyword (x))
-    tf = false;
-  endif
-endfunction
 
 ## Test char vector input
 %!test
-%! y = matlab.lang.makeValidName ("octave");
-%! assert (y, "octave");
+%! varname = matlab.lang.makeValidName ("octave");
+%! assert (varname, "octave");
 
 ## Test cellstr input
 %!test
-%! y = matlab.lang.makeValidName ({"gnu", "octave"});
-%! assert (y, {"gnu", "octave"});
+%! varname = matlab.lang.makeValidName ({"gnu", "octave"});
+%! assert (varname, {"gnu", "octave"});
 
 ## Test default flags
 %!test
-%! x = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
-%! y = matlab.lang.makeValidName (x);
-%! assert (y, {"Octave", "x3dPlot", "GNU_Octave", "laplace__"});
+%! str = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
+%! varname = matlab.lang.makeValidName (str);
+%! assert (varname, {"Octave", "x3dPlot", "GNU_Octave", "laplace__"});
 
 ## Test ReplacementStyle flag
 %!test
-%! x = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
-%! y = matlab.lang.makeValidName (x, "ReplacementStyle", "underscore");
-%! assert (y, {"Octave", "x3dPlot", "GNU_Octave", "laplace__"});
-%! y = matlab.lang.makeValidName (x, "ReplacementStyle", "hex");
-%! assert (y, {"Octave", "x3dPlot", "GNU0x2FOctave", "laplace_0x2A"});
-%! y = matlab.lang.makeValidName (x, "ReplacementStyle", "delete");
-%! assert (y, {"Octave", "x3dPlot", "GNUOctave", "laplace_"});
+%! str = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
+%! varname = matlab.lang.makeValidName (str, "ReplacementStyle", "underscore");
+%! assert (varname, {"Octave", "x3dPlot", "GNU_Octave", "laplace__"});
+%! varname = matlab.lang.makeValidName (str, "ReplacementStyle", "hex");
+%! assert (varname, {"Octave", "x3dPlot", "GNU0x2FOctave", "laplace_0x2A"});
+%! varname = matlab.lang.makeValidName (str, "ReplacementStyle", "delete");
+%! assert (varname, {"Octave", "x3dPlot", "GNUOctave", "laplace_"});
 
 ## Test Prefix flag
 %!test
 %! assert (matlab.lang.makeValidName ({"", " "}), {"x", "x"});
-%! x = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
-%! y = matlab.lang.makeValidName (x, "prefix", "oct_");
-%! assert (y, {"Octave", "oct_3dPlot", "GNU_Octave", "laplace__"});
+%! str = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
+%! varname = matlab.lang.makeValidName (str, "prefix", "oct_");
+%! assert (varname, {"Octave", "oct_3dPlot", "GNU_Octave", "laplace__"});
 
 ## Test second output
 %!test
-%! x = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
-%! [y, modified] = matlab.lang.makeValidName (x);
+%! str = {"Octave", "3d plot", "GNU/Octave", "laplace_*"};
+%! [varname, modified] = matlab.lang.makeValidName (str);
 %! assert (modified, [false, true, true, true]);
 
-## Test lowercase letter following a whitespace
+## Test whitespace followed by a lowercase letter
 %!test
-%! y = matlab.lang.makeValidName ("gnu octave");
-%! assert (y, "gnuOctave");
-%! y = matlab.lang.makeValidName (" octave  ");
-%! assert (y, "octave");
+%! varname = matlab.lang.makeValidName ("gnu octave");
+%! assert (varname, "gnuOctave");
+%! varname = matlab.lang.makeValidName (" octave  ");
+%! assert (varname, "octave");
 
 ## Check for keywords
 %!test
@@ -210,9 +211,16 @@ endfunction
 %!error matlab.lang.makeValidName ("for", "Prefix", "for")
 
 ## Test input validation
-%!test
-%!error matlab.lang.makeValidName ();
-%!error matlab.lang.makeValidName (42);
-%!error matlab.lang.makeValidName ("octave", "unknown");
-%!error matlab.lang.makeValidName ("octave", "prefix");
-%!error matlab.lang.makeValidName ("octave", "prefix", "$");
+%!error matlab.lang.makeValidName ()
+%!error <STR must be a string or cellstr> matlab.lang.makeValidName (42)
+%!error <options must occur in pairs> matlab.lang.makeValidName ("a", "opt1")
+%!error <option argument must be a string>
+%! matlab.lang.makeValidName ("a", 1, 2)
+%!error <"ReplacementStyle" value must be a string>
+%! matlab.lang.makeValidName ("a", "ReplacementStyle", 1);
+%!error <invalid "ReplacementStyle" value "foobar">
+%! matlab.lang.makeValidName ("a", "ReplacementStyle", "foobar");
+%!error <invalid "Prefix" value "1_">
+%! matlab.lang.makeValidName ("a", "Prefix", "1_");
+%!error <unknown property "foobar">
+%! matlab.lang.makeValidName ("a", "foobar", 1);

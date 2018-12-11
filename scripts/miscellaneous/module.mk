@@ -26,7 +26,6 @@ FCN_FILE_DIRS += \
   %reldir%/fileattrib.m \
   %reldir%/fileparts.m \
   %reldir%/fullfile.m \
-  %reldir%/genvarname.m \
   %reldir%/getfield.m \
   %reldir%/grabcode.m \
   %reldir%/gunzip.m \

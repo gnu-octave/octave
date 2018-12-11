@@ -42,6 +42,10 @@
 ## @var{r}-th polynomial defined on interval @var{i}.  In any case @var{coefs}
 ## is reshaped to a 2-D matrix of size @code{[@var{ni}*prod(@var{d}) @var{m}]}.
 ##
+## Programming Note: @code{ppval} evaluates polynomials at
+## @code{@var{xi} - @var{breaks}(i)}, i.e., it subtracts the lower endpoint of
+## the current interval from @var{xi}.  This must be taken into account when
+## creating piecewise polynomials objects with @code{mkpp}.
 ## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
 

@@ -74,11 +74,11 @@ namespace octave
 
   bool valid_identifier (const char *s)
   {
-    if (! s || ! (isalpha (*s) || *s == '_' || *s == '$'))
+    if (! s || ! (isalpha (*s) || *s == '_'))
       return false;
 
     while (*++s != '\0')
-      if (! (isalnum (*s) || *s == '_' || *s == '$'))
+      if (! (isalnum (*s) || *s == '_'))
         return false;
 
     return true;

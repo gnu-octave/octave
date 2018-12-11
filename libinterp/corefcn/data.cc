@@ -3251,7 +3251,6 @@ Return true if @var{x} is a complex-valued numeric object.
   return ovl (args(0).iscomplex ());
 }
 
-
 /*
 %!assert (iscomplex (4), false)
 %!assert (iscomplex (i), true)
@@ -3268,7 +3267,6 @@ Return true if @var{x} is a complex-valued numeric object.
 %!error iscomplex ()
 %!error iscomplex (1, 2)
 */
-
 
 DEFUN (isfloat, args, ,
        doc: /* -*- texinfo -*-

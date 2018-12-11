@@ -94,6 +94,9 @@ DEFUN (isvarname, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isvarname (@var{name})
 Return true if @var{name} is a valid variable name.
+
+A valid variable name is composed of letters, digits, and underscores ("_"),
+and the first character must not be a digit.
 @seealso{iskeyword, exist, who}
 @end deftypefn */)
 {

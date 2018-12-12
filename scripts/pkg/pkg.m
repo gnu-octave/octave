@@ -560,12 +560,21 @@ function [local_packages, global_packages] = pkg (varargin)
     case "update"
       installed_pkgs_lst = installed_packages (local_list, global_list);
 
+      ## Explicit list of packages to update, rather than all packages
       if (numel (files) > 0)
-        ## This was option was broken during two releases and no one
-        ## notice so we are guessing no one actually uses it.  If the
-        ## user knows the names of the packages to be installed, it
-        ## might as well call install (which is what update is doing)
-        error ("pkg: to update individual packages, use 'pkg install -forge'");
+        update_lst = {};
+        installed_names = cellfun (@(idx) idx.name, installed_pkgs_lst,
+                                   "UniformOutput", false);
+        for i = 1:numel (files)
+          idx = find (strcmp (files{i}, installed_names), 1);
+          if (isempty (idx))
+            warning ("pkg: package %s is not installed - skipping update",
+                     files{i});
+          else
+            update_lst = [ update_lst, installed_pkgs_lst(idx) ];
+          endif
+        endfor
+        installed_pkgs_lst = update_lst;
       endif
 
       for i = 1:numel (installed_pkgs_lst)

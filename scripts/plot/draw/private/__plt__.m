@@ -17,13 +17,13 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __plt__ (@var{caller}, @var{h}, @var{varargin})
+## @deftypefn {} {} __plt__ (@var{caller}, @var{hparent}, @var{varargin})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __plt__ (caller, h, varargin)
+function retval = __plt__ (caller, hp, varargin)
 
   persistent warned_callers = {};
   nargs = nargin - 2;
@@ -39,7 +39,7 @@ function retval = __plt__ (caller, h, varargin)
 
     ## Find any legend associated with this axes
     try
-      hlegend = get (h, "__legend_handle__");
+      hlegend = get (hp, "__legend_handle__");
     catch
       hlegend = [];
     end_try_catch
@@ -104,17 +104,17 @@ function retval = __plt__ (caller, h, varargin)
             endwhile
           endif
           if (y_set)
-            tmp = __plt2__ (h, x, y, options, properties);
+            htmp = __plt2__ (hp, x, y, options, properties);
             [hlgnd, tlgnd, setlgnd] = ...
-              __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
+              __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
-            retval = [retval; tmp];
+            retval = [retval; htmp];
           else
-            tmp = __plt1__ (h, x, options, properties);
+            htmp = __plt1__ (hp, x, options, properties);
             [hlgnd, tlgnd, setlgnd] = ...
-               __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
+               __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
             properties = {};
-            retval = [retval; tmp];
+            retval = [retval; htmp];
           endif
           x_set = false;
           y_set = false;
@@ -124,10 +124,10 @@ function retval = __plt__ (caller, h, varargin)
       elseif (x_set)
         if (y_set)
           options = __pltopt__ (caller, {""});
-          tmp = __plt2__ (h, x, y, options, properties);
+          htmp = __plt2__ (hp, x, y, options, properties);
           [hlgnd, tlgnd, setlgnd] = ...
-            __plt_key__ (tmp, options, hlgnd, tlgnd, setlgnd);
-          retval = [retval; tmp];
+            __plt_key__ (htmp, options, hlgnd, tlgnd, setlgnd);
+          retval = [retval; htmp];
           x = next_arg;
           y_set = false;
           properties = {};
@@ -151,9 +151,9 @@ function retval = __plt__ (caller, h, varargin)
 
 endfunction
 
-function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options,
+function [hlgnd, tlgnd, setlgnd] = __plt_key__ (hp, options,
                                                 hlgnd, tlgnd, setlgnd)
-  n = numel (h);
+  n = numel (hp);
   if (numel (options) == 1)
     options = repmat (options(:), n, 1);
   endif
@@ -161,7 +161,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options,
   for i = 1 : n
     key = options(i).key;
     if (! isempty (key))
-      hlgnd = [hlgnd(:); h(i)];
+      hlgnd = [hlgnd(:); hp(i)];
       tlgnd = {tlgnd{:}, key};
       setlgnd = true;
     endif
@@ -169,7 +169,7 @@ function [hlgnd, tlgnd, setlgnd] = __plt_key__ (h, options,
 
 endfunction
 
-function retval = __plt1__ (h, x1, options, properties = {})
+function retval = __plt1__ (hp, x1, options, properties = {})
 
   if (nargin < 3 || isempty (options))
     options = __default_plot_options__ ();
@@ -198,11 +198,11 @@ function retval = __plt1__ (h, x1, options, properties = {})
     x1 = (1:nr)';
   endif
 
-  retval = __plt2__ (h, x1, x2, options, properties);
+  retval = __plt2__ (hp, x1, x2, options, properties);
 
 endfunction
 
-function retval = __plt2__ (h, x1, x2, options, properties = {})
+function retval = __plt2__ (hp, x1, x2, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -229,27 +229,27 @@ function retval = __plt2__ (h, x1, x2, options, properties = {})
     retval = zeros (0, 1);
   elseif (isscalar (x1))
     if (isscalar (x2))
-      retval = __plt2ss__ (h, x1, x2, options, properties);
+      retval = __plt2ss__ (hp, x1, x2, options, properties);
     elseif (isvector (x2))
-      retval = __plt2sv__ (h, x1, x2, options, properties);
+      retval = __plt2sv__ (hp, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isscalar (x2))
-      retval = __plt2vs__ (h, x1, x2, options, properties);
+      retval = __plt2vs__ (hp, x1, x2, options, properties);
     elseif (isvector (x2))
-      retval = __plt2vv__ (h, x1, x2, options, properties);
+      retval = __plt2vv__ (hp, x1, x2, options, properties);
     elseif (ismatrix (x2))
-      retval = __plt2vm__ (h, x1, x2, options, properties);
+      retval = __plt2vm__ (hp, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      retval = __plt2mv__ (h, x1, x2, options, properties);
+      retval = __plt2mv__ (hp, x1, x2, options, properties);
     elseif (ismatrix (x2))
-      retval = __plt2mm__ (h, x1, x2, options, properties);
+      retval = __plt2mm__ (hp, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
@@ -259,7 +259,7 @@ function retval = __plt2__ (h, x1, x2, options, properties = {})
 
 endfunction
 
-function retval = __plt2mm__ (h, x, y, options, properties = {})
+function retval = __plt2mm__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -287,14 +287,14 @@ function retval = __plt2mm__ (h, x, y, options, properties = {})
       color = __next_line_color__ ();
     endif
 
-    retval(i) = line (x(:,i), y(:,i), "color", color,
-                      "linestyle", linestyle,
-                      "marker", marker, properties{:});
+    retval(i) = __go_line__ (hp, "xdata", x(:,i), "ydata", y(:,i),
+                             "color", color, "linestyle", linestyle,
+                             "marker", marker, properties{:});
   endfor
 
 endfunction
 
-function retval = __plt2mv__ (h, x, y, options, properties = {})
+function retval = __plt2mv__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -328,14 +328,14 @@ function retval = __plt2mv__ (h, x, y, options, properties = {})
       color = __next_line_color__ ();
     endif
 
-    retval(i) = line (x(:,i), y, "color", color,
-                      "linestyle", linestyle,
-                      "marker", marker, properties{:});
+    retval(i) = __go_line__ (hp, "xdata", x(:,i), "ydata", y,
+                             "color", color, "linestyle", linestyle,
+                             "marker", marker, properties{:});
   endfor
 
 endfunction
 
-function retval = __plt2ss__ (h, x, y, options, properties = {})
+function retval = __plt2ss__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -357,13 +357,12 @@ function retval = __plt2ss__ (h, x, y, options, properties = {})
     color = __next_line_color__ ();
   endif
 
-  retval = line (x, y, "color", color,
-                 "linestyle", linestyle,
-                 "marker", marker, properties{:});
-
+  retval = __go_line__ (hp, "xdata", x, "ydata", y,
+                        "color", color, "linestyle", linestyle,
+                        "marker", marker, properties{:});
 endfunction
 
-function retval = __plt2sv__ (h, x, y, options, properties = {})
+function retval = __plt2sv__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -387,14 +386,14 @@ function retval = __plt2sv__ (h, x, y, options, properties = {})
       color = __next_line_color__ ();
     endif
 
-    retval(i) = line (x, y(i), "color", color,
-                      "linestyle", linestyle,
-                      "marker", marker, properties{:});
+    retval(i) = __go_line__ (hp, "xdata", x, "ydata", y(i),
+                             "color", color, "linestyle", linestyle,
+                             "marker", marker, properties{:});
   endfor
 
 endfunction
 
-function retval = __plt2vm__ (h, x, y, options, properties = {})
+function retval = __plt2vm__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -428,14 +427,14 @@ function retval = __plt2vm__ (h, x, y, options, properties = {})
       color = __next_line_color__ ();
     endif
 
-    retval(i) = line (x, y(:,i), "color", color,
-                      "linestyle", linestyle,
-                      "marker", marker, properties{:});
+    retval(i) = __go_line__ (hp, "xdata", x, "ydata", y(:,i),
+                             "color", color, "linestyle", linestyle,
+                             "marker", marker, properties{:});
   endfor
 
 endfunction
 
-function retval = __plt2vs__ (h, x, y, options, properties = {})
+function retval = __plt2vs__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -459,14 +458,14 @@ function retval = __plt2vs__ (h, x, y, options, properties = {})
       color = __next_line_color__ ();
     endif
 
-    retval(i) = line (x(i), y, "color", color,
-                      "linestyle", linestyle,
-                      "marker", marker, properties{:});
+    retval(i) = __go_line__ (hp, "xdata", x(i), "ydata", y,
+                             "color", color, "linestyle", linestyle,
+                             "marker", marker, properties{:});
   endfor
 
 endfunction
 
-function retval = __plt2vv__ (h, x, y, options, properties = {})
+function retval = __plt2vv__ (hp, x, y, options, properties = {})
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
@@ -493,8 +492,8 @@ function retval = __plt2vv__ (h, x, y, options, properties = {})
     color = __next_line_color__ ();
   endif
 
-  retval = line (x, y, "color", color,
-                 "linestyle", linestyle,
-                 "marker", marker, properties{:});
+  retval = __go_line__ (hp, "xdata", x, "ydata", y,
+                        "color", color, "linestyle", linestyle,
+                        "marker", marker, properties{:});
 
 endfunction

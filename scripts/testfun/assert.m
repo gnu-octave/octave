@@ -88,7 +88,7 @@ function assert (cond, varargin)
           || isempty (cond) || ! all (cond(:)))
         if (nargin == 1)
           ## Perhaps, say which elements failed?
-          argin = ["(" strjoin(cellstr (argn), ",") ")"];
+          argin = ["(" inputname(1) ")"];
           error ("assert %s failed", argin);
         else
           error (varargin{:});
@@ -401,7 +401,11 @@ function assert (cond, varargin)
 
       ## Print any errors
       if (! isempty (err.index))
-        argin = ["(" strjoin(cellstr (argn), ",") ")"];
+        arg_names = cell (nargin, 1);
+        for i = 1:nargin
+          arg_names{i} = inputname (i);
+        endfor
+        argin = ["(" strjoin(arg_names, ",") ")"];
         if (! isempty (errmsg))
           errmsg = [errmsg "\n"];
         endif

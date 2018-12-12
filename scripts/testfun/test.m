@@ -815,7 +815,7 @@ endfunction
 ## Create structure with fieldnames the name of the input variables.
 function s = var2struct (varargin)
   for i = 1:nargin
-    s.(deblank (argn(i,:))) = varargin{i};
+    s.(inputname (i)) = varargin{i};
   endfor
 endfunction
 

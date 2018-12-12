@@ -264,14 +264,18 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
   ## Validate inequality constraints.
-  if (nargs > 7)
+  if (nargs > 7 && isempty (A_in) && ! (isempty(A_lb) || isempty(A_ub)))
+    warning("qp: empty inequality constraint matrix but non-empty bound vectors");
+  endif
+
+  if (nargs > 7 && ! isempty (A_in))
     [dimA_in, n1] = size (A_in);
     if (n1 != n)
-      error ("qp: inequality constraint matrix has incorrect column dimension");
+      error ("qp: inequality constraint matrix has incorrect column dimension, expected %i", n1);
     else
       if (! isempty (A_lb))
         if (numel (A_lb) != dimA_in)
-          error ("qp: inequality constraint matrix and lower bound vector are inconsistent");
+          error ("qp: inequality constraint matrix and lower bound vector are inconsistent, %i != %i", dimA_in, numel (A_lb));
         elseif (isempty (A_ub))
           Ain = [Ain; A_in];
           bin = [bin; A_lb];
@@ -279,7 +283,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       endif
       if (! isempty (A_ub))
         if (numel (A_ub) != dimA_in)
-          error ("qp: inequality constraint matrix and upper bound vector are inconsistent");
+          error ("qp: inequality constraint matrix and upper bound vector are inconsistent, %i != %i", dimA_in, numel (A_ub));
         elseif (isempty (A_lb))
           Ain = [Ain; -A_in];
           bin = [bin; -A_ub];

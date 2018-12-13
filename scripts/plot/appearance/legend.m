@@ -570,7 +570,10 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       end_unwind_protect
 
       ## Padding between legend entries horizontally and vertically
-      xpad = 2;
+      ## measured in points.
+      ## FIXME: 3*xpad must be integer or strange off-by-1 pixel issues
+      ##        with lines in OpenGL.
+      xpad = 2 + 1/3;
       ypad = 4;
 
       linelength = 15;
@@ -704,6 +707,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
         num2 = ceil (nentries / num1);
 
+        ## Layout is [xpad, linelength, xpad, maxwidth, xpad]
         xstep = 3 * xpad + (maxwidth + linelength);
         if (strcmp (textpos, "right"))
           xoffset = xpad;
@@ -877,6 +881,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               style = get (hplt, "linestyle");
               lwidth = min (get (hplt, "linewidth"), 5);
               if (! strcmp (style, "none"))
+                #keyboard;
                 l1 = __go_line__ (hlegend, ...
                        "xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3), ...
                        "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), ...

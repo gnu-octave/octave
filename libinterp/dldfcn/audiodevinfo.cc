@@ -1346,13 +1346,14 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
-      int32_t sample_l32 = 0, sample_r32 = 0;
+      int32_t sample_l32, sample_r32;
 
       uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
       uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
+          sample_l32 = sample_r32 = 0;
           for (int j = 0; j < 3; j++)
             {
               sample_l[j] = input24[i*channels*3 + j];
@@ -1423,13 +1424,14 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
-      int32_t sample_l32 = 0, sample_r32 = 0;
+      int32_t sample_l32, sample_r32;
 
       uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
       uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
+          sample_l32 = sample_r32 = 0;
           for (int j = 0; j < 3; j++)
             {
               sample_l[j] = input24[i*channels*3 + j];

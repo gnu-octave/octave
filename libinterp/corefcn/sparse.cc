@@ -54,6 +54,27 @@ Return true if @var{x} is a sparse matrix.
   return ovl (args(0).issparse ());
 }
 
+/*
+%!assert (issparse (sparse (1)), true)
+%!assert (issparse (1), false)
+%!assert (issparse (sparse (false)), true)
+%!assert (issparse (true), false)
+%!assert (issparse (sparse (single ([1 2]))), true)
+%!assert (issparse (single ([1, 2])), false)
+%!assert (issparse (sparse ([1+i, 2]')), true)
+%!assert (issparse ([1+i, 2]'), false)
+
+%!assert (issparse ([]), false)
+%!assert (issparse (sparse([])), true)
+%!assert (issparse ("test"), false)
+%!assert (issparse (struct ("one", {1})), false)
+%!assert (issparse (cell (1)), false)
+
+## Test input validation
+%!error issparse ()
+%!error issparse (1,2)
+*/
+
 DEFUN (sparse, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{s} =} sparse (@var{a})
@@ -153,10 +174,10 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
       octave::get_dimensions (args(0), args(1), "sparse", m, n);
 
-      if (m >= 0 && n >= 0)
-        retval = SparseMatrix (m, n);
-      else
+      if (m < 0 || n < 0)
         error ("sparse: dimensions must be non-negative");
+
+      retval = SparseMatrix (m, n);
     }
   else if (nargin >= 3)
     {
@@ -220,6 +241,11 @@ Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
   return retval;
 }
 
+/*
+## Tests for sparse constructor are in test/sparse.tst
+%!assert (1);
+*/
+
 DEFUN (spalloc, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})
@@ -270,8 +296,28 @@ the function @code{nzmax}.
   if (nargin == 3)
     nz = args(2).idx_type_value ();
 
-  if (m >= 0 && n >= 0 && nz >= 0)
-    return ovl (SparseMatrix (dim_vector (m, n), nz));
-  else
-    error ("spalloc: M,N,NZ must be non-negative");
+  if (m < 0 || n < 0 || nz < 0)
+    error ("spalloc: M, N, and NZ must be non-negative");
+
+  return ovl (SparseMatrix (dim_vector (m, n), nz));
 }
+
+/*
+%!assert (issparse (spalloc (1,1)))
+%!assert (spalloc (1,1), sparse (1,1))
+%!test
+%! s = spalloc (1,1,5);
+%! assert (s, sparse (1,1));
+%! assert (nzmax (s), 5);
+%!assert (spalloc (1,2), sparse (1,2))
+%!assert (spalloc (1,2,2), sparse (1,2))
+%!assert (spalloc (2,1), sparse (2,1))
+%!assert (spalloc (2,1,2), sparse (2,1))
+
+%!error spalloc ()
+%!error spalloc (1)
+%!error spalloc (1,2,3,4)
+%!error <M, N, and NZ must be non-negative> spalloc (-1, 1, 1)
+%!error <M, N, and NZ must be non-negative> spalloc (1, -1, 1)
+%!error <M, N, and NZ must be non-negative> spalloc (1, 1, -1)
+*/

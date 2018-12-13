@@ -40,7 +40,7 @@
 
 function name = inputname (n, ids_only = true)
 
-  if (nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -83,11 +83,17 @@ endfunction
 %!assert (inputname (-1), "")
 %!assert (inputname (1), "")
 
-%!function r = __foo__ (x, y)
+%!function r = __foo1__ (x, y)
 %!  r = inputname (2);
 %!endfunction
-%!assert (__foo__ (pi, e), "e")
-%!assert (feval (@__foo__, pi, e), "e")
+%!assert (__foo1__ (pi, e), "e")
+%!assert (feval (@__foo1__, pi, e), "e")
+
+%!function r = __foo2__ (x, y)
+%!  r = inputname (2, false);
+%!endfunction
+%!assert (__foo2__ (pi+1, 2+2), "2 + 2")
+%!assert (feval (@__foo2__, pi, pi/2), "pi / 2")
 
 %!error inputname ()
-%!error inputname (1,2)
+%!error inputname (1,2,3)

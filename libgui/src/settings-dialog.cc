@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QStyleFactory>
 #include <QTextCodec>
 
 #if defined (HAVE_QSCINTILLA)
@@ -123,6 +124,20 @@ namespace octave
       comboBox_language->setCurrentIndex (selected);
     else
       comboBox_language->setCurrentIndex (0);  // System is default
+
+    // Global style
+    QStringList styles = QStyleFactory::keys();
+    combo_styles->addItems (styles);
+    combo_styles->insertItem (0, global_style.def.toString ());
+    combo_styles->insertSeparator (1);
+    QString current_style = settings->value (global_style.key, global_style.def).toString ();
+    if (current_style == global_style.def.toString ())
+      current_style = global_style.def.toString ();
+    selected = combo_styles->findText (current_style);
+    if (selected >= 0)
+      combo_styles->setCurrentIndex (selected);
+    else
+      combo_styles->setCurrentIndex (0);
 
     // icon size and theme
     QButtonGroup *icon_size_group = new QButtonGroup (this);
@@ -806,6 +821,12 @@ namespace octave
     if (language == tr ("System setting"))
       language = "SYSTEM";
     settings->setValue ("language", language);
+
+    // style
+    QString selected_style = combo_styles->currentText ();
+    if (selected_style == global_style.def.toString ())
+      selected_style = global_style.def.toString ();
+    settings->setValue (global_style.key, selected_style);
 
     // dock widget title bar
     settings->setValue ("DockWidgets/widget_title_custom_style", cb_widget_custom_style->isChecked ());

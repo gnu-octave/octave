@@ -332,6 +332,8 @@ namespace octave
 
     QList<octave_dock_widget *> dock_widget_list (void);
 
+    QApplication *m_qt_app;
+
     octave_qt_link *m_octave_qt_link;
 
     workspace_model *m_workspace_model;
@@ -339,6 +341,8 @@ namespace octave
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
     QString m_default_encoding;
+
+    QString m_default_style;
 
     //! Toolbar.
 
@@ -505,6 +509,8 @@ namespace octave
     void create_main_window (void);
 
     int exec (void);
+
+    QApplication *qt_app (void) { return m_qt_app; };
 
   public slots:
 

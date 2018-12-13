@@ -63,6 +63,9 @@ const QStyle::PixelMetric global_icon_sizes[3] =
 const gui_pref global_icon_size ("toolbar_icon_size", QVariant (0));
 const gui_pref global_icon_theme ("use_system_icon_theme", QVariant (true));
 
+// Style
+const gui_pref global_style ("style", QVariant ("default"));
+
 // Console preferences
 
 const gui_pref cs_font ("terminal/fontName", QVariant ());

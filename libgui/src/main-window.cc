@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QKeySequence>
 #include <QApplication>
+#include <QStyleFactory>
 #include <QInputDialog>
 #include <QLabel>
 #include <QMenuBar>
@@ -160,7 +161,8 @@ namespace octave
   main_window::main_window (octave_qt_app& oct_qt_app,
                             octave_qt_link *oct_qt_lnk)
     : QMainWindow (),
-      m_octave_qt_link (oct_qt_lnk), m_workspace_model (nullptr),
+      m_qt_app (oct_qt_app.qt_app ()), m_octave_qt_link (oct_qt_lnk),
+      m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
@@ -225,6 +227,8 @@ namespace octave
 #if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
+
+    m_default_style = m_qt_app->style ()->objectName ();
 
     QSettings *settings = resource_manager::get_settings ();
 
@@ -714,6 +718,18 @@ namespace octave
   void main_window::notice_settings (const QSettings *settings)
   {
     // QSettings pointer is checked before emitting.
+
+    // Get desired style from preferences or take the default one if
+    // the desired one is not found
+    QString preferred_style
+          = settings->value (global_style.key, global_style.def).toString ();
+
+    if (preferred_style == global_style.def.toString ())
+      preferred_style = m_default_style;
+
+    QStyle *new_style = QStyleFactory::create (preferred_style);
+    if (new_style)
+      m_qt_app->setStyle (new_style);
 
     // the widget's icons (when floating)
     QString icon_set
@@ -2781,11 +2797,6 @@ namespace octave
     // that we can use Qt widgets for plot windows.
 
     m_qt_app = new QApplication (m_argc, m_argv);
-
-    // set windows style for windows
-#if defined (Q_OS_WIN32)
-    m_qt_app->setStyle (QStyleFactory::create ("Windows"));
-#endif
 
     // Force left-to-right alignment (see bug #46204)
     m_qt_app->setLayoutDirection (Qt::LeftToRight);

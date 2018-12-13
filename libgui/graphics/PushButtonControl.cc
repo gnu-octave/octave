@@ -74,10 +74,6 @@ namespace QtHandles
 
     switch (pId)
       {
-      case uicontrol::properties::ID_STRING:
-        btn->setText (Utils::fromStdString (up.get_string_string ()));
-        break;
-
       case uicontrol::properties::ID_CDATA:
         {
           octave_value cdat = up.get_cdata ();
@@ -89,7 +85,7 @@ namespace QtHandles
         break;
 
       default:
-        BaseControl::update (pId);
+        ButtonControl::update (pId);
         break;
       }
   }

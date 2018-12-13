@@ -91,7 +91,7 @@ namespace QtHandles
         break;
 
       default:
-        BaseControl::update (pId);
+        ButtonControl::update (pId);
         break;
       }
   }

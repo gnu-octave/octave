@@ -589,7 +589,7 @@ namespace octave
           Matrix new_bbox = line_bbox.front ();
 
           xoffset = line_xoffset = compute_line_xoffset (new_bbox);
-          line_yoffset -= (-old_bbox(1) + 0.4 * m_max_fontsize
+          line_yoffset -= (-old_bbox(1) + math::round (0.4 * m_max_fontsize)
                            + (new_bbox(3) + new_bbox(1)));
           yoffset = 0;
           m_ymin = m_ymax = m_deltax = 0;
@@ -641,7 +641,7 @@ namespace octave
               bbox = lbox.extract (0, 0, 0, 3);
             else
               {
-                double delta = 0.4 * m_max_fontsize + lbox(3);
+                double delta = math::round (0.4 * m_max_fontsize) + lbox(3);
                 bbox(1) -= delta;
                 bbox(3) += delta;
                 bbox(2) = math::max (bbox(2), lbox(2));
@@ -778,9 +778,6 @@ namespace octave
                     // horizontal space in the bbox.
                     if (x0 < 0)
                       x0 = 0;
-
-                    if (y0 < (static_cast<int> (bitmap.rows) - 1))
-                      y0 = bitmap.rows - 1;
 
                     for (int r = 0; static_cast<unsigned int> (r) < bitmap.rows; r++)
                       for (int c = 0; static_cast<unsigned int> (c) < bitmap.width; c++)

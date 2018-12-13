@@ -84,6 +84,7 @@ TXI_LINE: while (<STDIN>)
     }
 
     $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
+    $func =~ s/\./_/g;   # Texinfo doesn't like '.' in node names
     $docstring =~ s/^$tex_delim$/\@anchor{XREF$func}/m;
     print $docstring,"\n";
 
@@ -133,7 +134,9 @@ sub extract_docstring
       foreach $func (split (/,/, $func_list))
       {
         $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
-        $repl .= "\@ref{XREF$func,,$func}, ";
+        $node = $func;
+        $node =~ s/\./_/g;  # Texinfo doesn't like '.' in node names
+        $repl .= "\@ref{XREF$node,,$func}, ";
       }
       substr($repl,-2) = "";   # Remove last ', '
       $_ = "\@seealso{$repl}$rest_of_line";

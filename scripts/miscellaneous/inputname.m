@@ -21,6 +21,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {} inputname (@var{n})
+## @deftypefnx {} {} inputname (@var{n}, @var{ids_only})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##
 ## If the argument is not a simple variable name, return an empty string.  As
@@ -29,12 +30,17 @@
 ##
 ## @code{inputname} is only useful within a function.  When used at the command
 ## line it always returns an empty string.
+##
+## By default, return an empty string if the @var{n}-th argument is not
+## a valid variable name.  If the optional argument @var{ids_only} is
+## false, return the text of the argument even if it is not a valid
+## variable name.
 ## @seealso{nargin, nthargout}
 ## @end deftypefn
 
-function name = inputname (n)
+function name = inputname (n, ids_only = true)
 
-  if (nargin != 1)
+  if (nargin > 2)
     print_usage ();
   endif
 
@@ -47,7 +53,7 @@ function name = inputname (n)
 
   ## For compatibility with Matlab,
   ## return empty string if argument name is not a valid identifier.
-  if (! isvarname (name))
+  if (ids_only && ! isvarname (name))
     name = "";
   endif
 

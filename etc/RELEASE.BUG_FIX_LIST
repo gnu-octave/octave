@@ -1,0 +1,24 @@
+The following bugs must be fixed prior to the next release.  See also the [[5.0.0 Release Checklist]].
+
+<p>Sign up for a bug by filling in the Owner field so people won't duplicate each other's work.</p>
+
+<p>Use <pre><strike> ... </strike></pre> to cross an item off the list when it has been done.</p>
+
+<p>Add <pre>WON'T FIX</pre> and the strike through tag for any bugs that will not be fixed in this round.</p>
+
+<div class="tocinline">__TOC__</div>
+
+----
+
+== Bugs marked as Crash ==
+
+== Bugs marked Configuration and Build System ==
+
+== Bugs with severity >= 4 ==
+
+== Bugs marked as regressions ==
+
+== Other Bugs ==
+
+== Potentially excluded bugs ==
+These bugs have been provisionally decided not to be blockers for 5.0.0.  That doesn't mean they can't be fixed, if someone wants to fix them.

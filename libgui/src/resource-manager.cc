@@ -412,7 +412,7 @@ namespace octave
             if (default_exists)
               enc = ed_default_enc.def.toString ();
             else
-              enc = QTextCodec::codecForLocale ()->name ();
+              enc = QTextCodec::codecForLocale ()->name ().toUpper ();
           }
       }
 
@@ -425,10 +425,10 @@ namespace octave
     if (default_exists)
       combo->insertItem (0, ed_default_enc.def.toString ());
     else
-      combo->insertItem (0, QTextCodec::codecForLocale ()->name ());
+      combo->insertItem (0, QTextCodec::codecForLocale ()->name ().toUpper ());
 
     // select the default or the current one
-    int idx = combo->findText (enc);
+    int idx = combo->findText (enc, Qt::MatchExactly);
     if (idx >= 0)
       combo->setCurrentIndex (idx);
     else

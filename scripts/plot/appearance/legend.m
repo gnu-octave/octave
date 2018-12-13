@@ -877,22 +877,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               style = get (hplt, "linestyle");
               lwidth = min (get (hplt, "linewidth"), 5);
               if (! strcmp (style, "none"))
-                l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
-                           "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", style, "linewidth", lwidth,
-                           "marker", "none");
+                l1 = __go_line__ (hlegend, ...
+                       "xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3), ...
+                       "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
+                       "color", color, "linestyle", style, ...
+                       "linewidth", lwidth, "marker", "none");
                 setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
               marker = get (hplt, "marker");
               if (! strcmp (marker, "none"))
-                l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                           "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", "none", "linewidth", lwidth,
-                           "marker", marker,
-                           "markeredgecolor", get (hplt, "markeredgecolor"),
-                           "markerfacecolor", get (hplt, "markerfacecolor"),
-                           "markersize", min (get (hplt, "markersize"),10));
+                l1 = __go_line__ (hlegend, ...
+                       "xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3), ...
+                       "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
+                       "color", color, "linestyle", "none", ...
+                       "linewidth", lwidth, "marker", marker, ...
+                       "markeredgecolor", get (hplt, "markeredgecolor"), ...
+                       "markerfacecolor", get (hplt, "markerfacecolor"), ...
+                       "markersize", min (get (hplt, "markersize"),10));
                 setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
@@ -1310,21 +1312,21 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     endif
 
     if (! strcmp (linestyle, "none"))
-      hl = line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
-                 "linestyle", get (h, "linestyle"),
-                 "linewidth", min (get (h, "linewidth"), 5),
-                 "marker", "none",
-                 "parent", hlegend);
+      hl = __go_line__ (hlegend, "xdata", xpos1, "ydata", ypos1,
+                        "color", get (h, "color"),
+                        "linestyle", get (h, "linestyle"),
+                        "linewidth", min (get (h, "linewidth"), 5),
+                        "marker", "none");
       setappdata (hl, "handle", h);
     endif
     if (! strcmp (marker, "none"))
-      hl = line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
-                 "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
-                 "markerfacecolor", get (h, "markerfacecolor"),
-                 "markersize", min (get (h, "markersize"), 10),
-                 "linestyle", "none",
-                 "linewidth", min (get (h, "linewidth"), 5),
-                 "parent", hlegend);
+      hl = __go_line__ (hlegend, "xdata", xpos2, "ydata", ypos2, ...
+                        "color", get (h, "color"), ...
+                        "marker", marker, "markeredgecolor", get (h, "markeredgecolor"), ...
+                        "markerfacecolor", get (h, "markerfacecolor"), ...
+                        "markersize", min (get (h, "markersize"), 10), ...
+                        "linestyle", "none", ...
+                        "linewidth", min (get (h, "linewidth"), 5));
       setappdata (hl, "handle", h);
     endif
   endif

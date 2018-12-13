@@ -99,7 +99,9 @@ function h = __stem__ (have_z, varargin)
 
         x_axis_range = get (hax, "xlim");
         if (isempty (h_baseline))
-          h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
+          h_baseline = __go_line__ (hax, "xdata", x_axis_range,
+                                         "ydata", [0, 0],
+                                         "color", [0, 0, 0]);
           set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
           addproperty ("basevalue", h_baseline, "data", 0);
         else

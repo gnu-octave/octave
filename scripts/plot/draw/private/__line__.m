@@ -144,7 +144,6 @@ function h = __line__ (hp, varargin)
         ## Marker for a single point is always '.' (bug #38825).
         marker = '.';
       endif
-      keyboard;
       color = __next_line_color__ ();
 
       handles(i) = __go_line__ (hp, data_args{:},

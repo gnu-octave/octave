@@ -108,6 +108,13 @@ function [tf, s_idx] = ismember (a, s, varargin)
     a = {a};
   endif
 
+  ## Another Matlab-compatible behavior.  See bug #53924.
+  if (isnumeric (a) && ischar (s))
+    s = double (s);
+  elseif (ischar (a) && isnumeric (s))
+    a = double (a);
+  endif
+
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
 
   by_rows = nargin == 3;
@@ -165,12 +172,15 @@ endfunction
 %!assert (ismember ("abc", {"abc", "def"}), true)
 %!assert (isempty (ismember ([], [1, 2])), true)
 %!assert (isempty (ismember ({}, {'a', 'b'})), true)
+%!assert (isempty (ismember ([], 'a')), true)
 %!assert (ismember ("", {"abc", "def"}), false)
+%!assert (ismember (1, 'abc'), false)
+%!assert (ismember ("abc", 1), [false false false])
+%!assert (ismember ("abc", 99), [false false true])
 %!fail ("ismember ([], {1, 2})")
 %!fail ("ismember ({[]}, {1, 2})")
 %!fail ("ismember ({}, {1, 2})")
 %!fail ("ismember ({1}, {'1', '2'})")
-%!fail ("ismember (1, 'abc')")
 %!fail ("ismember ({'1'}, {'1' '2'},'rows')")
 %!fail ("ismember ([1 2 3], [5 4 3 1], 'rows')")
 %!assert (ismember ({"foo", "bar"}, {"foobar"}), [false false])

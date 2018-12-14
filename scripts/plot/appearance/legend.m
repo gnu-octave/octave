@@ -237,12 +237,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endwhile
 
   ## Validate the orientation
-  switch (orientation)
-    case {"vertical", "horizontal", "default"}
-      ## These are all accepted orientations.
-    otherwise
-      error ("legend: unrecognized legend orientation");
-  endswitch
+  if (! any (strcmp (orientation, {"vertical", "horizontal", "default"})))
+    error ("legend: unrecognized legend orientation");
+  endif
 
   ## Validate the location type
   outside = false;
@@ -257,11 +254,23 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   switch (location)
     case {"north", "south", "east", "west", "northeast", "northwest", ...
           "southeast", "southwest", "default"}
+      ## These are all valid locations, do nothing.
+
     case "best"
-      warning ("legend: 'best' not yet implemented for location specifier\n");
-      location = "northeast";
+      if (outside)
+        if (strcmp (orientation, "horizontal"))
+          location = "south";
+        else
+          location = "northeast";
+        endif
+      else
+        warning ("legend: 'best' not yet implemented for location specifier, using 'northeast' instead\n");
+        location = "northeast";
+      endif
+
     case "none"
       ## FIXME: Should there be any more error checking on this?
+
     otherwise
       error ("legend: unrecognized legend location");
   endswitch

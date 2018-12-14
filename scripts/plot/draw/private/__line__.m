@@ -115,7 +115,7 @@ function h = __line__ (hp, varargin)
       endif
 
       ## Convert logical or complex inputs
-      if (islogical (tmpdata))
+    if (islogical (tmpdata))
         tmpdata = uint8 (tmpdata);
       elseif (iscomplex (tmpdata))
         tmpdata = real (tmpdata);
@@ -140,6 +140,11 @@ function h = __line__ (hp, varargin)
       ##        or linestyle.  The plot will be made correctly, but the next
       ##        call to line may not use the correct value.
       [linestyle, marker] = __next_line_style__ ();
+      if (nr == 1)
+        ## Marker for a single point is always '.' (bug #38825).
+        marker = '.';
+      endif
+      keyboard;
       color = __next_line_color__ ();
 
       handles(i) = __go_line__ (hp, data_args{:},

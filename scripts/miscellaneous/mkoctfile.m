@@ -74,36 +74,82 @@
 ##
 ## @item  -p VAR
 ## @itemx --print VAR
-## Print the configuration variable VAR@.  Recognized variables are:
+## Print configuration variable VAR@.  There are three categories of
+## variables:
+##
+## Octave configuration variables that users may override with environment
+## variables.  These are used in commands that @code{mkoctfile} executes.
 ##
 ## @example
-##    ALL_CFLAGS                  INCFLAGS
-##    ALL_CXXFLAGS                INCLUDEDIR
-##    ALL_FFLAGS                  LAPACK_LIBS
-##    ALL_LDFLAGS                 LD_CXX
-##    AR                          LDFLAGS
-##    BLAS_LIBS                   LD_STATIC_FLAG
-##    CC                          LFLAGS
-##    CFLAGS                      LIBDIR
-##    CPICFLAG                    LIBOCTAVE
-##    CPPFLAGS                    LIBOCTINTERP
-##    CXX                         LIBS
-##    CXXFLAGS                    OCTAVE_HOME
-##    CXXPICFLAG                  OCTAVE_LIBS
-##    DEPEND_EXTRA_SED_PATTERN    OCTAVE_LINK_DEPS
-##    DEPEND_FLAGS                OCTAVE_LINK_OPTS
-##    DL_LD                       OCTAVE_PREFIX
-##    DL_LDFLAGS                  OCTINCLUDEDIR
-##    F77                         OCTLIBDIR
-##    F77_INTEGER8_FLAG           OCT_LINK_DEPS
-##    FFLAGS                      OCT_LINK_OPTS
-##    FFTW3F_LDFLAGS              RANLIB
-##    FFTW3F_LIBS                 RDYNAMIC_FLAG
-##    FFTW3_LDFLAGS               READLINE_LIBS
-##    FFTW3_LIBS                  SPECIAL_MATH_LIB
-##    FFTW_LIBS                   XTRA_CFLAGS
-##    FLIBS                       XTRA_CXXFLAGS
-##    FPICFLAG
+##    ALL_CFLAGS                  LAPACK_LIBS
+##    ALL_CXXFLAGS                LDFLAGS
+##    ALL_FFLAGS                  LD_CXX
+##    ALL_LDFLAGS                 LD_STATIC_FLAG
+##    BLAS_LIBS                   LFLAGS
+##    CC                          LIBDIR
+##    CFLAGS                      LIBOCTAVE
+##    CPICFLAG                    LIBOCTINTERP
+##    CPPFLAGS                    OCTAVE_LINK_OPTS
+##    CXX                         OCTINCLUDEDIR
+##    CXXFLAGS                    OCTAVE_LIBS
+##    CXXPICFLAG                  OCTAVE_LINK_DEPS
+##    DL_LD                       OCTLIBDIR
+##    DL_LDFLAGS                  OCT_LINK_DEPS
+##    F77                         OCT_LINK_OPTS
+##    F77_INTEGER8_FLAG           RDYNAMIC_FLAG
+##    FFLAGS                      SPECIAL_MATH_LIB
+##    FPICFLAG                    XTRA_CFLAGS
+##    INCFLAGS                    XTRA_CXXFLAGS
+##    INCLUDEDIR
+## @end example
+##
+## Octave configuration variables as above, but currently unused by
+## @code{mkoctfile}.
+##
+## @example
+##    AR
+##    DEPEND_EXTRA_SED_PATTERN
+##    DEPEND_FLAGS
+##    FFTW3F_LDFLAGS
+##    FFTW3F_LIBS
+##    FFTW3_LDFLAGS
+##    FFTW3_LIBS
+##    FFTW_LIBS
+##    FLIBS
+##    LIBS
+##    RANLIB
+##    READLINE_LIBS
+## @end example
+##
+## Octave configuration variables that are provided for informational
+## purposes only.  Except for @samp{OCTAVE_HOME} and @samp{OCTAVE_EXEC_HOME},
+## users may not override these variables.
+##
+## If @env{OCTAVE_HOME} or @env{OCTAVE_EXEC_HOME} are set in the environment,
+## then other variables are adjusted accordingly with @env{OCTAVE_HOME} or
+## @env{OCTAVE_EXEC_HOME} substituted for the original value of the directory
+## specified by the @samp{--prefix} or @samp{--exec-prefix} options that were
+## used when Octave was configured.
+##
+## @example
+##    API_VERSION                 LOCALFCNFILEDIR
+##    ARCHLIBDIR                  LOCALOCTFILEDIR
+##    BINDIR                      LOCALSTARTUPFILEDIR
+##    CANONICAL_HOST_TYPE         LOCALVERARCHLIBDIR
+##    DATADIR                     LOCALVERFCNFILEDIR
+##    DATAROOTDIR                 LOCALVEROCTFILEDIR
+##    DEFAULT_PAGER               MAN1DIR
+##    EXEC_PREFIX                 MAN1EXT
+##    EXEEXT                      MANDIR
+##    FCNFILEDIR                  OCTAVE_EXEC_HOME
+##    IMAGEDIR                    OCTAVE_HOME
+##    INFODIR                     OCTDATADIR
+##    INFOFILE                    OCTDOCDIR
+##    LIBEXECDIR                  OCTFILEDIR
+##    LOCALAPIARCHLIBDIR          OCTFONTSDIR
+##    LOCALAPIFCNFILEDIR          STARTUPFILEDIR
+##    LOCALAPIOCTFILEDIR          VERSION
+##    LOCALARCHLIBDIR
 ## @end example
 ##
 ## @item --link-stand-alone
@@ -122,14 +168,18 @@
 ## Echo commands as they are executed.
 ##
 ## @item file
-## The file to compile or link.  Recognized file types are
+## The file to compile or link.  Recognized file types are:
 ##
 ## @example
 ## @group
 ##    .c    C source
 ##    .cc   C++ source
-##    .C    C++ source
+##    .cp   C++ source
 ##    .cpp  C++ source
+##    .CPP  C++ source
+##    .cxx  C++ source
+##    .c++  C++ source
+##    .C    C++ source
 ##    .f    Fortran source (fixed form)
 ##    .F    Fortran source (fixed form)
 ##    .f90  Fortran source (free form)

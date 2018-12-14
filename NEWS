@@ -12,6 +12,13 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     or "skew" to calculate the symmetric or skew-symmetric property
     of a matrix.  Performance has also been increased.
 
+ ** The function isdefinite now returns true or false rather than
+    -1, 0, 1.  To test for a positive semi-definite matrix (old output
+    of 0) check whether the following two conditions hold:
+
+      isdefinite (A) => 0
+      isdefinite (A + 5*TOL, TOL) => 1
+
  ** The issorted function now uses a direction option of "ascend" or
     "descend" to make it compatible with both the sort function and
     with Matlab.  Change all uses of "ascending" and "descending" in

@@ -154,7 +154,6 @@ namespace octave
     extern const char *RANLIB;
     extern const char *RDYNAMIC_FLAG;
     extern const char *READLINE_LIBS;
-    extern const char *SED;
     extern const char *SHARED_LIBS;
     extern const char *SH_LD;
     extern const char *SH_LDFLAGS;

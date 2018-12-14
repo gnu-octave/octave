@@ -551,7 +551,6 @@ specified option.
            { "RANLIB", octave::build_env::RANLIB },
            { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
            { "READLINE_LIBS", octave::build_env::READLINE_LIBS },
-           { "SED", octave::build_env::SED },
            { "SHARED_LIBS", octave::build_env::SHARED_LIBS },
            { "SH_LD", octave::build_env::SH_LD },
            { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },

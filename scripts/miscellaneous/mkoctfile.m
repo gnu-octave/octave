@@ -100,10 +100,10 @@
 ##    FFTW3F_LDFLAGS              RANLIB
 ##    FFTW3F_LIBS                 RDYNAMIC_FLAG
 ##    FFTW3_LDFLAGS               READLINE_LIBS
-##    FFTW3_LIBS                  SED
-##    FFTW_LIBS                   SPECIAL_MATH_LIB
-##    FLIBS                       XTRA_CFLAGS
-##    FPICFLAG                    XTRA_CXXFLAGS
+##    FFTW3_LIBS                  SPECIAL_MATH_LIB
+##    FFTW_LIBS                   XTRA_CFLAGS
+##    FLIBS                       XTRA_CXXFLAGS
+##    FPICFLAG
 ## @end example
 ##
 ## @item --link-stand-alone

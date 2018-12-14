@@ -185,8 +185,6 @@ initialize (void)
   vars["OCTFONTSDIR"] = prepend_octave_home (%OCTAVE_OCTFONTSDIR%);
   vars["STARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_STARTUPFILEDIR%);
 
-  vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
-
   vars["OCTINCLUDEDIR"]
     = get_variable ("OCTINCLUDEDIR",
                     prepend_octave_home (%OCTAVE_CONF_OCTINCLUDEDIR%));
@@ -425,7 +423,6 @@ static std::string help_msg =
 "                             LIBS\n"
 "                             RANLIB\n"
 "                             READLINE_LIBS\n"
-"                             SED\n"
 "\n"
 "                          Octave configuration variables that are provided\n"
 "                          for informational purposes only.  Except for\n"

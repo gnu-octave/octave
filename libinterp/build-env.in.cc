@@ -273,8 +273,6 @@ namespace octave
 
     const char *READLINE_LIBS = %OCTAVE_CONF_READLINE_LIBS%;
 
-    const char *SED = %OCTAVE_CONF_SED%;
-
     const char *SHARED_LIBS = %OCTAVE_CONF_SHARED_LIBS%;
 
     const char *SH_LD = %OCTAVE_CONF_SH_LD%;

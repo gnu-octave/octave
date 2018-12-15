@@ -68,26 +68,27 @@ x.c = "string";
 @end example
 
 @c The following line should have a trailing space.
-@opindex . @ @ @ 
+@opindex . @ @ @
 @noindent
 create a structure with three elements.  The @samp{.} character separates
-the structure name from the field name and indicates to Octave that this
-variable is a structure.  To print the value of the
-structure you can type its name, just as for any other variable:
+the structure name (in the example above @code{x}) from the field name and
+indicates to Octave that this variable is a structure.  To print the value
+of the structure you can type its name, just as for any other variable:
 
 @example
 @group
 x
      @result{} x =
-        @{
-          a = 1
-          b =
 
-            1  2
-            3  4
+         scalar structure containing the fields:
 
-          c = string
-        @}
+           a =  1
+           b =
+
+              1   2
+              3   4
+
+           c = string
 @end group
 @end example
 
@@ -100,43 +101,51 @@ Structures may be copied just like any other variable:
 @group
 y = x
      @result{} y =
-        @{
-          a = 1
-          b =
 
-            1  2
-            3  4
+         scalar structure containing the fields:
 
-          c = string
-        @}
+           a =  1
+           b =
+
+              1   2
+              3   4
+
+           c = string
 @end group
 @end example
 
 Since structures are themselves values, structure elements may reference
-other structures.  The following statements change the value of the
-element @code{b} of the structure @code{x} to be a data structure
-containing the single element @code{d}, which has a value of 3.
+other structures, as well.  The following statement adds the field @code{d}
+to the structure @code{x}.  The value of field @code{d} is itself a data
+structure containing the single field @code{a}, which has a value of 3.
 
 @example
 @group
-x.b.d = 3;
-x.b
+x.d.a = 3;
+x.d
      @result{} ans =
-        @{
-          d = 3
-        @}
+
+         scalar structure containing the fields:
+
+           a =  3
 
 x
      @result{} x =
-        @{
-          a = 1
-          b =
-          @{
-            d = 3
-          @}
 
-          c = string
-        @}
+         scalar structure containing the fields:
+
+           a =  1
+           b =
+
+              1   2
+              3   4
+
+           c = string
+           d =
+
+             scalar structure containing the fields:
+
+               a =  3
 @end group
 @end example
 
@@ -148,17 +157,18 @@ other structures, only a few levels are displayed.  For example:
 a.b.c.d.e = 1;
 a
      @result{} a =
-        @{
-          b =
-          @{
-            c =
-            @{
-              1x1 struct array containing the fields:
 
-              d: 1x1 struct
-            @}
-          @}
-        @}
+         scalar structure containing the fields:
+
+           b =
+
+             scalar structure containing the fields:
+
+               c =
+
+                 scalar structure containing the fields:
+
+                   d: 1x1 scalar struct
 @end group
 @end example
 
@@ -175,7 +185,7 @@ contents of structure arrays.
 
 Functions can return structures.  For example, the following function
 separates the real and complex parts of a matrix and stores them in two
-elements of the same structure variable.
+elements of the same structure variable @code{y}.
 
 @example
 @group
@@ -186,26 +196,26 @@ endfunction
 @end group
 @end example
 
-When called with a complex-valued argument, @code{f} returns the data
-structure containing the real and imaginary parts of the original
+When called with a complex-valued argument, the function @code{f} returns
+the data structure containing the real and imaginary parts of the original
 function argument.
 
 @example
 @group
 f (rand (2) + rand (2) * I)
      @result{} ans =
-        @{
-          im =
 
-            0.26475  0.14828
-            0.18436  0.83669
+         scalar structure containing the fields:
 
-          re =
+           re =
 
-            0.040239  0.242160
-            0.238081  0.402523
+              0.040239  0.242160
+              0.238081  0.402523
 
-        @}
+           im =
+
+              0.26475  0.14828
+              0.18436  0.83669
 @end group
 @end example
 
@@ -215,25 +225,26 @@ indexed like any other variable.  For example:
 @example
 [ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4]);
 x
+
      @result{} x =
-        @{
-          u =
 
-            -0.40455  -0.91451
-            -0.91451   0.40455
+         scalar structure containing the fields:
 
-          s =
+           u =
 
-             0.00000   0.00000   0.00000
-             0.00000   5.46499   0.00000
-             0.00000   0.00000   0.36597
+             -0.40455  -0.91451
+             -0.91451   0.40455
 
-          v =
+           s =
 
-            -0.57605   0.81742
-            -0.81742  -0.57605
+              0.00000   0.00000   0.00000
+              0.00000   5.46499   0.00000
+              0.00000   0.00000   0.36597
 
-        @}
+           v =
+
+             -0.57605   0.81742
+             -0.81742  -0.57605
 @end example
 
 It is also possible to cycle through all the elements of a structure in

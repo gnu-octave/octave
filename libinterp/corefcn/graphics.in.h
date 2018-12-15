@@ -5602,6 +5602,10 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    void remove_child (const graphics_handle& h, bool from_root = false);
+
+    void adopt (const graphics_handle& h);
+
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 

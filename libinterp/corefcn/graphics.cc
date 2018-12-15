@@ -10885,6 +10885,29 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uicontrol::properties::set_style");
+
+  graphics_object go_parent = gh_mgr.get_object (get_parent ());
+  if (go_parent.valid_object () && go_parent.isa ("uibuttongroup"))
+    {
+      bool was_button = style_is ("radiobutton") || style_is ("togglebutton");
+      style = st;
+      bool now_button = style_is ("radiobutton") || style_is ("togglebutton");
+      uibuttongroup::properties& props =
+        dynamic_cast<uibuttongroup::properties&> (go_parent.get_properties ());
+      // update selectedobject
+      if (! was_button && now_button && ! props.get_selectedobject ().ok ())
+        {
+          props.set_selectedobject (get___myhandle__ ().value ());
+          value.set (octave_value (1));
+        }
+      else if (was_button && ! now_button
+               && (props.get_selectedobject ().value ()
+                   == get___myhandle__ ().value ()))
+        props.set_selectedobject (Matrix ());
+    }
+
   // Don't notify the style change until the "value" property is fixed
   bool modified = style.set (st, true, false);
 
@@ -10899,9 +10922,6 @@ uicontrol::properties::set_style (const octave_value& st)
         }
 
       // Notify toolkit
-
-      gh_manager& gh_mgr
-        = octave::__get_gh_manager__ ("uicontrol::properties::set_style");
 
       graphics_object go = gh_mgr.get_object (get___myhandle__ ());
 
@@ -11188,6 +11208,39 @@ uibuttongroup::properties::set_selectedobject (const octave_value& v)
         }
     }
   err_set_invalid ("selectedobject");
+}
+
+void
+uibuttongroup::properties::remove_child (const graphics_handle& h,
+                                         bool from_root)
+{
+  graphics_handle current_selected = get_selectedobject ();
+  if (h.value () == current_selected.value ())
+    set_selectedobject (Matrix ());
+
+  base_properties::remove_child (h, from_root);
+}
+
+void
+uibuttongroup::properties::adopt (const graphics_handle& h)
+{
+  base_properties::adopt (h);
+
+  graphics_handle current_selected = get_selectedobject ();
+  bool has_selected = current_selected.ok ();
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uibuttongroup::properties::adopt");
+
+  graphics_object go = gh_mgr.get_object (h);
+
+  if (! has_selected && go.valid_object () && go.isa ("uicontrol"))
+    {
+      const uicontrol::properties& props =
+        dynamic_cast<const uicontrol::properties&> (go.get_properties ());
+      if (props.style_is ("radiobutton") || props.style_is ("togglebutton"))
+        set_selectedobject (h.value ());
+    }
 }
 
 // ---------------------------------------------------------------------

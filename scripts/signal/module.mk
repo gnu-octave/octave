@@ -3,6 +3,7 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
+  %reldir%/private/parse_moveargs.m  \
   %reldir%/private/rectangle_lw.m  \
   %reldir%/private/rectangle_sw.m  \
   %reldir%/private/triangle_lw.m  \
@@ -30,6 +31,9 @@ FCN_FILE_DIRS += \
   %reldir%/hanning.m \
   %reldir%/hurst.m \
   %reldir%/ifftshift.m \
+  %reldir%/movfun.m \
+  %reldir%/movmin.m \
+  %reldir%/movslice.m \
   %reldir%/periodogram.m \
   %reldir%/sinc.m \
   %reldir%/sinetone.m \

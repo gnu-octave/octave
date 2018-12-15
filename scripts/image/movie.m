@@ -1,5 +1,5 @@
 ## Copyright (C) 2017 Pantxo Diribarne
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software: you can redistribute it and/or modify it
@@ -56,55 +56,60 @@
 
 function movie (varargin)
 
-  if (nargin == 0)
+  if (nargin == 0 || nargin > 4)
     print_usage ();
   endif
 
   ## Extract possible handle argument
   hax = [];
-  if (isaxes (varargin{1}))
-    hax = varargin{1};
-    varargin(1) = [];
-  elseif (isfigure (varargin{1}))
-    hax = get (varargin{1}, "currentaxes");
-    if (isempty (hax))
-      hax = axes ("parent", varargin{1});
+  if (ishghandle (varargin{1}))
+    typ = get (varargin{1}, "type");
+    if (strcmp (typ, "axes"))
+      hax = varargin{1};
+    elseif (strcmp (typ, "figure"))
+      figure (varargin{1});
+      hax = gca ();
+    else
+      error ("movie: H must be a handle to an axes or figure");
     endif
     varargin(1) = [];
+    nargin = nargin - 1;
+    if (nargin == 0)
+      print_usage ();
+    endif
   endif
 
   ## Extract other arguments
   n = 1;
   fps = 12;
   idx = [];
-  nargs = numel (varargin);
-  if (nargs == 0)
-    print_usage ();
-  elseif (nargs >= 1)
-    mov = varargin{1};
-    if (! isfield (mov, "cdata") || ! isfield (mov, "colormap"))
-      error ("movie: MOV must be a frame struct array");
+
+  mov = varargin{1};
+  if (! isfield (mov, "cdata") || ! isfield (mov, "colormap"))
+    error ("movie: MOV must be a frame struct array");
+  elseif (numel (mov) < 2)
+    error ("movie: MOV must contain at least two frames");
+  endif
+
+  if (nargin > 1)
+    n = varargin{2};
+    if (! isindex (abs (n(1))))
+      error ("movie: N must be a non-zero integer");
     endif
 
-    if (nargs >= 2)
-      n = varargin{2};
-      if (! isindex (abs (n(1))))
-        error ("movie: N must be a non-zero integer");
-      elseif (! isscalar (n))
-        idx = n(2:end)(:)';
-        n = n(1);
-        if (! isindex (idx, numel (mov)))
-          error (["movie: All elements N(2:end) must be valid indices ", ...
-                  "into the MOV struct array"]);
-
-        endif
+    if (! isscalar (n))
+      idx = n(2:end)(:)';
+      n = n(1);
+      if (! isindex (idx, numel (mov)))
+        error (["movie: All elements N(2:end) must be valid indices ", ...
+                "into the MOV struct array"]);
       endif
-        
-      if (nargs >= 3)
-        fps = varargin{3};
-        if (! (isnumeric (fps) && isscalar (fps) && fps > 0))
-          error ("movie: FPS must be a numeric scalar > 0");
-        endif
+    endif
+
+    if (nargin > 2)
+      fps = varargin{3};
+      if (! (isnumeric (fps) && isscalar (fps) && fps > 0))
+        error ("movie: FPS must be a numeric scalar > 0");
       endif
     endif
   endif
@@ -130,19 +135,40 @@ function movie (varargin)
     endif
   endif
 
-  tau = 1/fps;
+  ## Initialize graphics objects
+  if (isempty (mov(1).cdata))
+    error ("movie: empty image data at frame 1");
+  endif
+
+  him = findobj (hax, "-depth", 1, "tag", "__movie_frame__");
+  if (isempty (him))
+    him = image ("parent", hax, "cdata", mov(1).cdata,
+                 "tag", "__movie_frame__");
+  else
+    set (him, "cdata", mov(1).cdata);
+  endif
+
   set (hax, "ydir", "reverse", "visible", "off");
-  tic ();
-  him = image ("parent", hax, "cdata", mov(1).cdata);
+
+  ## Initialize the timer
+  t = tau = 1/fps;
+  timerid = tic ();
+
   for ii = idx
-    pause (tau - toc ());
-    tic ();
+    cdata = mov(ii).cdata;
+    if (isempty (cdata))
+      error ("movie: empty image data at frame %d", ii);
+    endif
+    set (him, "cdata", cdata);
+
     if (! isempty (mov(ii).colormap))
       set (hax, "colormap", mov(ii).colormap)
     endif
-    set (him, "cdata", mov(ii).cdata);
+
+    pause (t - toc (timerid));
+    t += tau;
   endfor
-  
+
 endfunction
 
 
@@ -159,7 +185,7 @@ endfunction
 %!   mov(ii).cdata = im;
 %! endfor
 %! clf ();
-%! title "Play movie forward 2 times"
+%! title ("Play movie forward 2 times");
 %! movie (mov, 2);
 
 %!demo
@@ -175,7 +201,7 @@ endfunction
 %!   mov(ii).cdata = im;
 %! endfor
 %! clf ();
-%! title "Play movie forward and backward 5 times at 25 fps"
+%! title ("Play movie forward and backward 5 times at 25 fps");
 %! movie (mov, -5, 25);
 
 %!demo
@@ -191,7 +217,7 @@ endfunction
 %!   mov(ii).cdata = im;
 %! endfor
 %! clf ();
-%! title "Play downsampled movie 5 times" 
+%! title ("Play downsampled movie 5 times");
 %! movie (mov, [5 1:3:nframes]);
 
 %!demo
@@ -206,12 +232,38 @@ endfunction
 %!   mov(ii) = getframe ();
 %! endfor
 %! clf ();
-%! movie (mov, 5, 25);
+%! movie (mov, 3, 25);
 
 ## Test input validation
 %!error movie ()
 %!error <MOV must be a frame struct array> movie ({2})
+%!error <MOV must contain at least two frames>
+%! movie (struct ("cdata", [], "colormap", []));
 %!error <N must be a non-zero integer>
-%! movie (struct ("cdata", [], "colormap", []), 2.3);
+%! movie (struct ("cdata", {[], []}, "colormap", []), 2.3);
 %!error <N must be a non-zero integer>
-%! movie (struct ("cdata", [], "colormap", []), [2.3 -6]);
+%! movie (struct ("cdata", {[], []}, "colormap", []), [2.3 -6]);
+%!error <All elements N\(2:end\) must be valid indices into the MOV struct>
+%! movie (struct ("cdata", {[], []}, "colormap", []), [1 -1])
+%!error <All elements N\(2:end\) must be valid indices into the MOV struct>
+%! movie (struct ("cdata", {[], []}, "colormap", []), [1 5])
+%!error <FPS must be a numeric scalar . 0>
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, "a")
+%!error <FPS must be a numeric scalar . 0>
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, [1 1])
+%!error <FPS must be a numeric scalar . 0>
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, -1/12)
+%!error <empty image data at frame 1>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   movie (hf, struct ("cdata", {[], []}, "colormap", []));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+%!error <empty image data at frame 2>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   movie (struct ("cdata", {ones(2), []}, "colormap", []))
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

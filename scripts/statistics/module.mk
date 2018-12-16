@@ -24,6 +24,7 @@ FCN_FILE_DIRS += scripts/statistics
   %reldir%/median.m \
   %reldir%/mode.m \
   %reldir%/moment.m \
+  %reldir%/movmin.m \
   %reldir%/prctile.m \
   %reldir%/quantile.m \
   %reldir%/range.m \

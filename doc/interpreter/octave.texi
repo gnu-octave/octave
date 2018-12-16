@@ -716,6 +716,7 @@ Optimization
 Statistics
 
 * Descriptive Statistics::
+* Statistics on Sliding Windows of Data::
 * Basic Statistical Functions::
 * Correlation and Regression Analysis::
 * Distributions::

@@ -1,120 +1,140 @@
 ## Copyright (C) 2018 Juan Pablo Carbajal
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## This file is part of Octave.
+##
+## Octave is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program. If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; see the file COPYING.  If not, see
+## <https://www.gnu.org/licenses/>.
 
 ## Author: Juan Pablo Carbajal <ajuanpi+dev@gmail.com>
 ## Created: 2018-08-09
 
 ## -*- texinfo -*-
-## @defun {@var{y} =} movfun (@var{fun}, @var{x}, @var{wlen})
-## @defunx {@var{y} =} movfun (@dots{}, @var{property}, @var{value})
-## Apply function @var{fun} to a moving window on @var{x}
+## @deftypefn  {} {@var{y} =} movfun (@var{fun}, @var{x}, @var{wlen})
+## @deftypefnx {} {@var{y} =} movfun (@var{fun}, @var{x}, @var{[@var{nb}, @var{na}}])
+## @deftypefnx {} {@var{y} =} movfun (@dots{}, @var{property}, @var{value})
+## Apply function @var{fun} to a moving window of length @var{wlen} on data
+## @var{x}.
 ##
-## If @var{wlen} is a scalar, the function @var{fun} is applied to a moving 
-## window of length @var{wlen}. In this case @var{wlen} must be an odd number.
-## If @var{wlen} is an array with 2 elements, the function is applied to a 
-## moving window @code{-wlen(1):wlen(2)} which always includes the middle point.
+## If @var{wlen} is a scalar, the function @var{fun} is applied to a moving
+## window of length @var{wlen}.  In this case @var{wlen} must be an odd number.
+## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
+## the function is applied to a moving window @code{-@var{nb}:@var{na}}.  This
+## window includes @var{nb} number of elements @strong{before} the current
+## element and @var{na} number of elements @strong{after} the current element.
+## The current element is always included.
 ##
-## The function works along the first non-singleton dimension unless the property
-## @asis{'dim'} is set.
+## During calculations the data input @var{x} is reshaped into a 2-dimensional
+## @var{wlen}-by-@var{N} matrix and @var{fun} is called on this new matrix.
+## Therefore, @var{fun} must accept an array input argument and apply the
+## computation on the columns of that array.
 ##
-## The input @var{x} is reshaped into a @var{wlen}-by-n matrix and @var{fun}
-## is called o this matrix. Therefore @var{fun} must take a single array input 
-## argument and apply the computation column-wise.
+## When applied to a column vector of length @var{n}, the function @var{fun}
+## must return a @strong{row} vector of length @var{n}.
+## When applied to an array (possibly multi-dimensional) with @var{n} columns,
+## @var{fun} may return a result in either of two formats: @w{Format 1)}
+## an array of size 1-by-@var{n}-by-@var{dim3}-by-@dots{}-by-@var{dimN}.  This
+## is the typical output format from Octave core functions.  Type
+## @code{demo ("movfun", 5)} for an example of this use case.
+## @w{Format 2)} a row vector of length
+## @code{@var{n} * @var{numel_higher_dims}} where @var{numel_higher_dims} is
+## @w{@code{prod (size (@var{x})(3:end))}}.  The output of @var{fun} for the
+## i-th input column must be found in the output at indices
+## @code{i:@var{n}:(@var{n}*@var{numel_higher_dims})}.
+## This format is useful when concatenating functions into arrays, or when
+## using @code{nthargout}.  Type @code{demo ("movfun", 6)} for an example of
+## this case.
 ##
-## The output of @var{fun} can a 1-dimensional array of length @var{ndim}.
-## In this case, the output of @var{fun} when applied to a column vector must 
-## be a @strong{row} array of length @var{ndim}.
-## When applied to a 2-dimensional array with @var{n} columns, there are two 
-## formats that work:
-## @var{fun} can return an @var{n}-by-@var{ndim} array.
-## See @code{demo ('movfun', 5)} for an example of this case.
-## Alternatively, @var{fun} can return a row array of length
-## @code{@var{ndim} * @var{n}}, where the output of @var{fun} applied to the 
-## i-th column should be in the values @code{i:@var{n}:(@var{ndim}*@var{n})}.
-## This is useful when concatenating functions into arrays, or when using
-## @command{nthargout}.
-## ## See @code{demo ('movfun', 6)} for an example of this case.
-##
-## If the input @var{x} is a @var{N}-by-@var{M} array, and @var{fun} returns
-## @var{K} values per input column, then the output @var{y} is a 
-## @var{N}-by-@var{M}-by-@var{K} array. All singleton dimensions are squeezed.
-## Thus, if @var{M} is 1, then @var{y} is @var{N}-by-@var{K}. If in addition 
-## @var{K} is also 1, @var{y} has the same size as the input @var{x}.
-##
-## The results on the first and last @var{wlen} elements (the boundaries) is
-## controlled by the boundary conditions property @asis{'Endpoints'}. Possible
-## values are:
+## The calculation can be controlled by specifying @var{property}/@var{value}
+## pairs.  Valid properties are
 ##
 ## @table @asis
 ##
-## @item 'open'
-## (Default) The function is applied to shorter windows at the extrema of the array,
-## e.g. for a window of length 3, @code{@var{x}(1) = @var{fun} (@var{x}(1:2))}, and
-## @code{@var{x}(end) = @var{fun} (@var{x}(end-1:end))}
+## @item @qcode{"dim"}
+## Operate along the dimension specified, rather than the default of the first
+## non-singleton dimension.
 ##
-## @item 'periodic'
-## The window is wraped around so that
-## @code{@var{x}(1) = @var{fun} ([@var{x}(end-@var{k}:end) @var{x}(1:@var{k})])}, where
-## @var{k} is the radius of the window (for symmetric windows, 
-## @code{@var{k} = (@var{wlen} - 1) / 2)}
+## @item @qcode{"Endpoints"}
 ##
-## @item 'zero'
-## The array is pre- and post-padded with zeros to exactly contain the window.
+## This property controls how results are calculated at the boundaries
+## (@w{endpoints}) of the window.  Possible values are:
 ##
-## @item 'same'
-## The resulting array @var{y} has the same values as @var{x} at the boundaries.
+## @table @asis
+## @item @qcode{"shrink"}  (default)
+## The window is truncated at the beginning and end of the array to include
+## only valid elements.  For example, with a window of length 3,
+## @code{@var{y}(1) = @var{fun} (@var{x}(1:2))}, and
+## @code{@var{y}(end) = @var{fun} (@var{x}(end-1:end))}.
 ##
-## @item 'discard'
-## The resulting array @var{y} is NaN at the boundaries.
+## @item @qcode{"periodic"}
+## The window is wrapped around so that
+## @code{@var{y}(1) = @var{fun} ([@var{x}(end-@var{k}:end),
+## @var{x}(1:@var{k})])}, where @var{k} is the radius of the window.  For
+## example, with a window of length 3, 
+## @code{@var{y}(1) = @var{fun} ([@var{x}(end-1:end), @var{x}(1)])},
+##
+## @item @qcode{"zero"}
+## The array is pre-padded and post-padded with zeros to exactly contain the
+## window.  For example, with a window of length 3,
+## @code{@var{y}(1) = @var{fun} ([0, @var{x}(1:2)])}, and
+## @code{@var{y}(end) = @var{fun} ([@var{x}(end-1:end), 0])}.
+##
+## @item @qcode{"same"}
+## The resulting array @var{y} has the same values as @var{x} at the
+## boundaries.
+##
+## @item @qcode{"fill"}
+## The resulting array @var{y} has @code{NaN} at the boundaries.
 ##
 ## @end table
 ##
 ## Note that for some of these values, the window size at the boundaries is not
-## the same as in the middle part, and @var{fun} needs to work on these cases.
+## the same as in the middle part, and @var{fun} must work with these cases.
 ##
-## Other optional properties are:
+## @item @qcode{"nancond"}
+## Controls whether @code{NaN} or @code{NA} values should be excluded (value:
+## @qcode{"omitnan"}), or included (value: @qcode{"includenan"}) in the
+## arguments passed to @var{fun}.  The default is @qcode{"omitnan"}.
 ##
-## @table @asis
-##
-## @item 'nancond'
-## Indicating whether @code{nan} or @code{NA} values should be omitted (value: 
-## @asis{'omitnan'}), or included (value: @asis{'includenan'}) in the arguments 
-## passed to @var{func}. The default is @asis{'omitnan'}.
-##
-## @item 'outdim'
-## A row array that allow for the selection of output dimensions. This is useful
-## only when @var{fun} returns an array dimension of @var{ndim}. The default is 
-## to return all output dimensions.
+## @item @qcode{"outdim"}
+## A row vector that selects which dimensions of the calculation will appear
+## in the output @var{y}.  This is only useful when @var{fun} returns an
+## N-dimensinoal array in @w{Format 1}.  The default is to return all output
+## dimensions.
 ##
 ## @end table
 ##
-## @strong{Programming tip}: the property 'outdim' is implemented to save memory
-## in case the output is highly dimensional or a wrapper to the base function 
-## that selects the desired outputs is too costly. The easiest way to select 
-## output dimension if memory is not an issue is to filter the result of 
-## @command{movfun}. If code complexity is not an issue one can create a 
-## wrapper, e.g. using anonymous functions. For example, if @code{basefunc} is 
-## the function returning a @var{K}-dimensional row output and we wish dimension
-## @var{D}, we could pass the following wrapper to @command{movfun}:
+## Programming Note: The property @qcode{"outdim"} can be used to save memory
+## when the output of @var{fun} has many dimensions, or when a wrapper to the
+## base function that selects the desired outputs is too costly.  When memory
+## is not an issue, the easiest way to select output dimensions is to first
+## calculate the complete result with @code{movfun} and then filter that result
+## with indexing.  If code complexity is not an issue then a wrapper can be
+## created using anonymous functions.  For example, if @code{basefun}
+## is a function returning a @var{K}-dimensional row output, and only
+## dimension @var{D} is desired, then the following wrapper could be used.
+##
 ## @example
-## @code{@var{fun} = @@(x)basefunc (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)))}
+## @group
+## @var{fun} = @@(x) basefun (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)));
+## @var{y} = movfun (@@fun, @dots{});
+## @end group
 ## @end example
 ##
-## @seealso{movslice, prepad, postpad, permute, reshape, reshapemod}
-## @end defun
+## @seealso{movslice, prepad, postpad, permute, reshape}
+## @end deftypefn
 
+## FIXME: variable names in function prototype should match documentation.
 function Y = movfun (func, X, wlen, varargin)
   persistent dispatch;
 
@@ -288,6 +308,7 @@ endfunction
 function y = discard_bc (func, x, idxp, win, wlen, odim)
   y = nan (length (idxp), odim);
 endfunction
+
 
 %!demo
 %! t  = 2 * pi * linspace (0,1,100).';
@@ -510,4 +531,3 @@ endfunction
 %!error(movfun(@(x)[min(x) max(x)], (1:10).', 3, 'Outdim', 3)) % outdim > dim
 %!assert(size(movfun(@(x)[min(x) max(x)], (1:10).', 3)), [10 2])
 %!assert(size(movfun(@(x)[min(x) max(x)], cumsum(ones(10,5),2), 3)), [10 5 2])
-

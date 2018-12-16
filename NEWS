@@ -8,6 +8,15 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     aforementioned functions by properly overloading the "size"
     function.
 
+ ** A new core function movfun will apply a function to a sliding
+    window of arbitrary size on a full dataset and accumulate the
+    results.  Many common cases have been implemented using the naming
+    scheme movXXX where "XXX" is the function that will be applied.
+    For example, the moving average over a dataset is movmean.
+    New moving window functions:
+    
+    movfun   movmin   movslice
+
  ** The functions issymmetric and ishermitian accept an option "nonskew"
     or "skew" to calculate the symmetric or skew-symmetric property
     of a matrix.  Performance has also been increased.
@@ -175,7 +184,10 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       matlab.lang.makeUniqueStrings
       matlab.lang.makeValidName
       movegui
+      movfun
       movie
+      movmin
+      movslice
       openfig
       ordeig
       savefig

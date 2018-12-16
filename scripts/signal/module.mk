@@ -3,13 +3,13 @@ FCN_FILE_DIRS += \
   %reldir%/private
 
 %canon_reldir%_PRIVATE_FCN_FILES = \
-  %reldir%/private/parse_moveargs.m  \
   %reldir%/private/rectangle_lw.m  \
   %reldir%/private/rectangle_sw.m  \
   %reldir%/private/triangle_lw.m  \
   %reldir%/private/triangle_sw.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/__parse_movargs__.m \
   %reldir%/arch_fit.m \
   %reldir%/arch_rnd.m \
   %reldir%/arch_test.m \
@@ -32,7 +32,6 @@ FCN_FILE_DIRS += \
   %reldir%/hurst.m \
   %reldir%/ifftshift.m \
   %reldir%/movfun.m \
-  %reldir%/movmin.m \
   %reldir%/movslice.m \
   %reldir%/periodogram.m \
   %reldir%/sinc.m \

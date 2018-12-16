@@ -33,7 +33,7 @@
 ## @end deftypefn
 
 function y = movmin (x, wlen, varargin)
-  y = movfun (@min, x, wlen, __parse_movargs__ (varargin{:}){:});
+  y = movfun (@min, x, wlen, __parse_movargs__ ("movmin", varargin{:}){:});
 endfunction
 
 

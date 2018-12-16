@@ -21,31 +21,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{slcidx} =} movslice (@var{N}, @var{wlen})
-## @deftypefnx {} {[@var{slcidx}, @var{c}, @var{pre}, @var{pos}, @var{w}] =} movslice (@dots{})
+## @deftypefnx {} {[@var{slcidx}, @var{C}, @var{Cpre}, @var{Cpost}, @var{win}] =} movslice (@dots{})
 ## Generate indices to slice a vector of length @var{N} in to windows
 ## of length @var{wlen}.
 ##
 ## FIXME: Document inputs N, wlen
 ##
-## FIXME: Document outputs slcidx, c, pre, pos, w
+## FIXME: Document outputs slcidx, C, Cpre, Cpost, win.
 ## @seealso{movfun}
 ## @end deftypefn
 
-## FIXME: variable names in function prototype should match documentation.
-function [slcidx, C, Cpre, Cpos, win] = movslice (N, wlen)
+function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
 
   ## FIXME: Input validation for N, wlen
+
   ## FIXME: Eventually add asymmetric window
   if (isscalar (wlen))
     hwlen = (wlen - 1) / 2;
     wlen = [hwlen hwlen];
   endif
 
-  Cpre = 1:wlen(1);               # centers that can't fit the pre-window
-  Cnf  = N - wlen(2) + 1;         # first center that can't fit the post-window
-  Cpos = Cnf:N;                   # centers that can't fit post-window
-  C    = (wlen(1) + 1):(Cnf - 1);
-  win  = (-wlen(1):wlen(2)).';
+  Cpre  = 1:wlen(1);              # centers that can't fit the pre-window
+  Cnf   = N - wlen(2) + 1;        # first center that can't fit the post-window
+  Cpost = Cnf:N;                  # centers that can't fit post-window
+  C     = (wlen(1) + 1):(Cnf - 1);
+  win   = (-wlen(1):wlen(2)).';
   slcidx = C + win;
 
 endfunction

@@ -120,13 +120,13 @@
 ## is not an issue, the easiest way to select output dimensions is to first
 ## calculate the complete result with @code{movfun} and then filter that result
 ## with indexing.  If code complexity is not an issue then a wrapper can be
-## created using anonymous functions.  For example, if @code{basefun}
+## created using anonymous functions.  For example, if @code{basefcn}
 ## is a function returning a @var{K}-dimensional row output, and only
 ## dimension @var{D} is desired, then the following wrapper could be used.
 ##
 ## @example
 ## @group
-## @var{fcn} = @@(x) basefun (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)));
+## @var{fcn} = @@(x) basefcn (x)(:,size(x,2) * (@var{D}-1) + (1:size(x,2)));
 ## @var{y} = movfun (@@fcn, @dots{});
 ## @end group
 ## @end example
@@ -135,6 +135,10 @@
 ## @end deftypefn
 
 function y = movfun (fcn, x, wlen, varargin)
+
+  if (nargin < 3)
+    print_usage ();
+  endif
 
   valid_bc = {"shrink", "periodic", "same", "zero", "fill"};
 
@@ -151,13 +155,13 @@ function y = movfun (fcn, x, wlen, varargin)
   parser = inputParser ();
   parser.FunctionName = "movfun";
   parser.addParamValue ("Endpoints", "shrink", ...
-    @(x)any (ismember (tolower (x), valid_bc)));
+    @(x) any (strcmpi (x, valid_bc)));
   parser.addParamValue ("dim", [], ...
-    @(x) isempty(x) || (isscalar (x) && x > 0 && x <= ndims(x)));
+    @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
   parser.addParamValue ("nancond", "omitnan", ...
-    @(x) any (ismember (x, {"omitnan", "includenan"})));
+    @(x) any (strcmpi (x, {"omitnan", "includenan"})));
   parser.addParamValue ("outdim", [], ...
-    @(x) isempty(x) || (isvector (x) && all (x > 0)));
+    @(d) isempty (d) || (isvector (d) && isindex (d)));
 
   parser.parse (varargin{:});
   bc      = parser.Results.Endpoints;   # boundary condition
@@ -167,32 +171,40 @@ function y = movfun (fcn, x, wlen, varargin)
   clear parser
   ## End parse input arguments
 
-  ## If dim was not provided search for the first non-singleton dimension
-  szx  = size (x);
+  ## If dim was not provided find the first non-singleton dimension.
+  szx = size (x);
   if (isempty (dim))
-    dim  = find (szx > 1, 1, "first");
+    (dim = find (szx > 1, 1)) || (dim = 1);
   endif
 
   ## Window length validation
+  if (! (isnumeric (wlen) && all (wlen >= 0) && fix (wlen) == wlen))
+    error ("Octave:invalid-input-arg",
+           "movfun: WLEN must be a scalar or 2-element array of integers >= 0");
+  endif
   if (isscalar (wlen))
     ## Check for proper window length
     ## FIXME: Matlab accepts even windows
     if (mod (wlen, 2) == 0)
       error ("Octave:invalid-input-arg", "movfun: WLEN must be an odd length");
+    elseif (wlen == 1)
+      error ("Octave:invalid-input-arg", "movfun: WLEN must be > 1");
     endif
-    if (wlen == 1)
-      error ("Octave:invalid-input-arg", "movfun: WLEN must be larger than 1");
-    endif
+  elseif (numel (wlen) == 2)
+    ## FIXME: Any further tests needed to validate form: wlen = [nb, na] ???
+  else
+    error ("Octave:invalid-input-arg",
+           "movfun: WLEN must be a scalar or 2-element array of integers >= 0");
   endif
-  ## FIXME: Need to validate form: wlen = [nb, na]
 
-  ## Check that array is longer that wlen at dim.  At least one full window
-  ## must fit. Function max is used to include the case when wlen is an array.
+  ## Check that array is longer than WLEN at dimension DIM.  At least one full
+  ## window must fit.  Function max is used to include the case when WLEN is an
+  ## array. 
   ## FIXME: Consider using bc to decide what to do here.
   if (max (wlen) > szx(dim))
       error ("Octave:invalid-input-arg", ...
-             "movfun: window length (%d) must be shorter than length along DIM (%d=%d)", ...
-        wlen, dim, szx(dim));
+             "movfun: window length WLEN (%d) must be shorter than length along DIM%d (%d)", ...
+             max (wlen), dim, szx(dim));
   endif
 
   ## Move the desired dim to the 1st dimension
@@ -209,6 +221,7 @@ function y = movfun (fcn, x, wlen, varargin)
   ## Obtain slicer
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
 
+  ## FIXME: validation doesn't seem to work correctly
   ## Validate that outdim makes sense
   tmp     = fcn (zeros (length (win), 1));  # output for window
   noutdim = length (tmp);                   # number of output dimensions
@@ -231,12 +244,11 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## Apply processing to each column
   ## FIXME: Is it faster with cellfun?  Don't think so, but needs testing.
-  ## It could be parallel
   y = zeros (N, ncols, soutdim);
-  for i = 1:ncols
+  parfor i = 1:ncols
     y(:,i,:) = movfun_oncol (fcn_, x(:,i), wlen, bcfunc,
                              slc, C, Cpre, Cpos, win, soutdim);
-  endfor
+  endparfor
 
   ## Restore shape
   y = reshape (y, [szx(dperm), soutdim]);
@@ -246,6 +258,7 @@ function y = movfun (fcn, x, wlen, varargin)
 endfunction
 
 function y = movfun_oncol (fcn, x, wlen, bcfunc, I, C, Cpre, Cpos, win, odim)
+
   N = length (x);
   y = NA (N, odim);
 
@@ -554,8 +567,21 @@ endfunction
 %!error (movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3))
 
 ## Test input validation
-%!error (movfun (@min, [0;0], 1))  # wlen == 1
-%!error (movfun (@min, [0;0], 2))  # odd wlen
-%!error (movfun (@min, [0;0], 3))  # wlen larger than data
-%!error (movfun (@min, [0;0;0], [1 4]))  # wlen larger than data
-%!error (movfun (@min, [0;0;0], [4 1]))  # wlen larger than data
+%!error movfun ()
+%!error movfun (@min)
+%!error movfun (@min, 1)
+%!error <WLEN must be .* array of integers> movfun (@min, 1, {1})
+%!error <WLEN must be .* array of integers .= 0> movfun (@min, 1, -1)
+%!error <WLEN must be .* array of integers> movfun (@min, 1, 1.5)
+%!error <WLEN must be an odd length> movfun (@min, 1, 4)
+%!error <WLEN must be . 1> movfun (@min, 1, 1)
+%!error <WLEN must be a scalar or 2-element array> movfun (@min, 1, [1, 2, 3])
+%!error <WLEN \(3\) must be shorter than length along DIM1 \(1\)>
+%! movfun (@min, 1, 3);
+%!error <WLEN \(4\) must be shorter than length along DIM1 \(1\)>
+%! movfun (@min, 1, [4, 1]);
+%!error <WLEN \(5\) must be shorter than length along DIM1 \(1\)>
+%! movfun (@min, 1, [1, 5]);
+## FIXME: This test is commented out until OUTDIM validation is clarified.
+%!#error <OUTDIM \(5\) is larger than largest available dimension \(3\)>
+%! movfun (@min, ones (6,3,4), 3, "outdim", 5);

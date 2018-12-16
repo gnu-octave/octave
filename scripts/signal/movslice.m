@@ -33,12 +33,39 @@
 
 function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
 
-  ## FIXME: Input validation for N, wlen
+  if (nargin != 2)
+    print_usage ();
+  endif
 
-  ## FIXME: Eventually add asymmetric window
+  ## Validate N
+  if (! (isscalar (N) && isindex (N)))
+    error ("movslice: N must be a positive integer");
+  endif
+
+  ## Validate window length
+  if (! (isnumeric (wlen) && all (wlen >= 0) && fix (wlen) == wlen))
+    error ("Octave:invalid-input-arg",
+           "movslice: WLEN must be a scalar or 2-element array of integers >= 0");
+  endif
+  if (isscalar (wlen))
+    ## Check for proper window length
+    ## FIXME: Matlab accepts even windows
+    if (mod (wlen, 2) == 0)
+      error ("Octave:invalid-input-arg", "movslice: WLEN must be an odd length");
+    elseif (wlen == 1)
+      error ("Octave:invalid-input-arg", "movslice: WLEN must be > 1");
+    endif
+  elseif (numel (wlen) == 2)
+    ## FIXME: Any further tests needed to validate form: wlen = [nb, na] ???
+  else
+    error ("Octave:invalid-input-arg",
+           "movfun: WLEN must be a scalar or 2-element array of integers >= 0");
+  endif
+
+  ## FIXME: Eventually add support for asymmetric window
   if (isscalar (wlen))
     hwlen = (wlen - 1) / 2;
-    wlen = [hwlen hwlen];
+    wlen = [hwlen, hwlen];
   endif
 
   Cpre  = 1:wlen(1);              # centers that can't fit the pre-window
@@ -51,4 +78,15 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
 endfunction
 
 
-## FIXME: Need BIST tests
+## FIXME: Need BIST functional tests
+
+## Test input validation
+%!error movslice ()
+%!error movslice (1)
+%!error movslice (1,2,3)
+%!error <WLEN must be .* array of integers> movslice (1, {1})
+%!error <WLEN must be .* array of integers .= 0> movslice (1, -1)
+%!error <WLEN must be .* array of integers> movslice (1, 1.5)
+%!error <WLEN must be an odd length> movslice (1, 4)
+%!error <WLEN must be . 1> movslice (1, 1)
+%!error <WLEN must be a scalar or 2-element array> movslice (1, [1, 2, 3])

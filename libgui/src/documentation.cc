@@ -58,6 +58,7 @@ namespace octave
     : QSplitter (Qt::Horizontal, p),
       m_doc_widget (p),
       m_tool_bar (new QToolBar (p)),
+      m_query_string (QString ()),
       m_prev_pages_menu (new QMenu (p)),
       m_next_pages_menu (new QMenu (p)),
       m_prev_pages_count (0),
@@ -246,8 +247,8 @@ namespace octave
 
     connect (search_engine->resultWidget (),
              SIGNAL (requestShowLink (const QUrl&)),
-             m_doc_browser,
-             SLOT(handle_index_clicked (const QUrl&)));
+             this,
+             SLOT(handle_search_result_clicked (const QUrl&)));
 
     // Fill the splitter
     insertWidget (0, navi);
@@ -390,10 +391,16 @@ namespace octave
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
     QString queries
       = m_help_engine->searchEngine ()->queryWidget ()->searchInput ();
+    m_query_string = queries.split (" ").first ();
 #else
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
+    if (queries.count ())
+      m_query_string = queries.first ().wordList ().first ();
+    else
+      m_query_string = "";
 #endif
+
 
     m_help_engine->searchEngine ()->search (queries);
   }
@@ -470,6 +477,49 @@ namespace octave
       }
 
     qApp->restoreOverrideCursor();
+  }
+
+  void documentation::handle_search_result_clicked (const QUrl& url)
+  {
+    // Open url with matching text
+    m_doc_browser->handle_index_clicked (url);
+
+    // Select all occurrences of matching text
+    select_all_occurrences (m_query_string);
+
+    // Open search widget with matching text as search string
+    m_find_line_edit->setText (m_query_string);
+    m_find_line_edit->parentWidget ()->show ();
+
+    find_forward ();
+  }
+
+  void documentation::select_all_occurrences (const QString& text)
+  {
+    // Get highlight background and text color
+    QPalette pal = QApplication::palette ();
+    QTextCharFormat format;
+    QColor col = pal.color (QPalette::Highlight);
+    col.setAlphaF (0.25);
+    format.setBackground (QBrush (col));
+    format.setForeground (QBrush (pal.color (QPalette::Text)));
+
+    // Create list for extra selected items
+    QList<QTextEdit::ExtraSelection> selected;
+    m_doc_browser->moveCursor (QTextCursor::Start);
+
+    // Find all occurrences and add them to the selection
+    while ( m_doc_browser->find (text) )
+      {
+        QTextEdit::ExtraSelection selected_item;
+        selected_item.cursor = m_doc_browser->textCursor ();
+        selected_item.format = format;
+        selected.append (selected_item);
+      }
+
+      // Apply selection and move back to the beginning
+      m_doc_browser->setExtraSelections (selected);
+      m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
   void documentation::notice_settings (const QSettings *settings)

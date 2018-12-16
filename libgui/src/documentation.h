@@ -120,6 +120,7 @@ namespace octave
     void find_forward_from_anchor (const QString& text);
     void record_anchor_position (void);
     void handle_cursor_position_change (void);
+    void handle_search_result_clicked (const QUrl& url);
 
     void update_history_menus (void);
     void open_hist_url (QAction *a);
@@ -136,6 +137,8 @@ namespace octave
                          QToolBar *tool_bar = nullptr);
     void update_history (int new_count, QAction **actions);
 
+    //! Select all occurrences of a string in the doc browser
+    void select_all_occurrences (const QString& text);
 
     QHelpEngine *m_help_engine;
     QString m_internal_search;
@@ -147,6 +150,7 @@ namespace octave
 
     QWidget *m_doc_widget;
     QToolBar *m_tool_bar;
+    QString m_query_string;
 
     QAction *m_action_go_home;
     QAction *m_action_go_prev;

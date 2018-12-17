@@ -31,7 +31,7 @@
 ## symmetric and includes @code{(@var{wlen} - 1) / 2} elements on either side
 ## of the central element.  For example, when calculating the output at
 ## index 5 with a window length of 3, @code{movfun} uses data elements
-## @code{[4, 5, 6].  If @var{wlen} is an even number, the window is asymmetric
+## @code{[4, 5, 6]}.  If @var{wlen} is an even number, the window is asymmetric
 ## and has @code{@var{wlen}/2} elements to the left of the central element
 ## and @code{@var{wlen}/2 - 1} elements to the right of the central element.
 ## For example, when calculating the output at index 5 with a window length of
@@ -94,18 +94,26 @@
 ## example, with a window of length 3,
 ## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-1:end), @var{x}(1)])},
 ##
-## @item @qcode{"zero"}
-## The array is pre-padded and post-padded with zeros to exactly contain the
-## window.  For example, with a window of length 3,
-## @code{@var{y}(1) = @var{fcn} ([0, @var{x}(1:2)])}, and
-## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), 0])}.
+## @item @qcode{"fill"}
+## Any window elements outside the data array are replaced by @code{NaN}.  For
+## example, with a window of length 3,
+## @code{@var{y}(1) = @var{fcn} ([NaN, @var{x}(1:2)])}, and
+## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), NaN])}.
+## This option usually results in @var{y} having @code{NaN} values at the
+## boundaries, although it is influenced by how @var{fcn} handles @code{NaN},
+## and also by the property @qcode{"nancond"}.
+##
+## @item @var{user_value}
+## Any window elements outside the data array are replaced by the specified
+## value @var{user_value} which must be a numeric scalar.  For example, with a
+## window of length 3,
+## @code{@var{y}(1) = @var{fcn} ([@var{user_value}, @var{x}(1:2)])}, and
+## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), @var{user_value}])}.
+## A common choice for @var{user_value} is 0.
 ##
 ## @item @qcode{"same"}
 ## The resulting array @var{y} has the same values as @var{x} at the
 ## boundaries.
-##
-## @item @qcode{"fill"}
-## The resulting array @var{y} has @code{NaN} at the boundaries.
 ##
 ## @end table
 ##
@@ -151,7 +159,7 @@ function y = movfun (fcn, x, wlen, varargin)
     print_usage ();
   endif
 
-  valid_bc = {"shrink", "periodic", "same", "zero", "fill"};
+  valid_bc = {"shrink", "periodic", "same", "fill"};
 
   persistent dispatch;
   if (isempty (dispatch))
@@ -166,7 +174,7 @@ function y = movfun (fcn, x, wlen, varargin)
   parser = inputParser ();
   parser.FunctionName = "movfun";
   parser.addParamValue ("Endpoints", "shrink", ...
-    @(x) any (strcmpi (x, valid_bc)));
+    @(x) any (strcmpi (x, valid_bc)) || (isscalar (x) && isnumeric (x)));
   parser.addParamValue ("dim", [], ...
     @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
   parser.addParamValue ("nancond", "omitnan", ...
@@ -207,7 +215,7 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## Check that array is longer than WLEN at dimension DIM.  At least one full
   ## window must fit.  Function max is used to include the case when WLEN is an
-  ## array. 
+  ## array.
   ## FIXME: Consider using bc to decide what to do here.
   if (max (wlen) > szx(dim))
       error ("Octave:invalid-input-arg", ...
@@ -224,7 +232,12 @@ function y = movfun (fcn, x, wlen, varargin)
   x     = reshape (x, N, ncols);         # reshape input
 
   ## Obtain function for boundary conditions
-  bcfunc = dispatch.(tolower (bc));
+  if (isnumeric (bc))
+    bcfunc = @replaceval_bc;
+    bcfunc (true, bc);  # initialize replaceval function with value
+  else
+    bcfunc = dispatch.(tolower (bc));
+  endif
 
   ## Obtain slicer
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
@@ -322,24 +335,39 @@ function y = same_bc (fcn, x, idxp, win)
   y            = fcn (x(idx));
 endfunction
 
-## Apply "zero" boundary conditions
-## Window is padded at beginning and end with zeros
-function y = zero_bc (fcn, x, idxp, win, wlen)
+## Apply replacement value boundary conditions
+## Window is padded at beginning and end with user-specified value.
+function y = replaceval_bc (fcn, x, idxp, win, wlen)
+
+  persistent substitute;
+
+  ## In-band method to initialize substitute value
+  if (islogical (fcn))
+    substitute = x;
+    return;
+  endif
+
+  ## Pad beginning and end of window with specified value.
   if (isscalar (wlen))
     wlen = [wlen, wlen];
   endif
   N = length (x);
   if (min (idxp) == 1)
-    x = prepad (x, N + wlen(1));
+    x = prepad (x, N + wlen(1), substitute);
     idx = idxp + win + wlen(1);
   elseif (max (idxp) == N)
-    x   = postpad (x, N + wlen(2));
+    x   = postpad (x, N + wlen(2), substitute);
     idx = idxp + win;
   endif
+
   y = fcn (x(idx));
+
 endfunction
 
 ## Apply "fill" boundary conditions
+## FIXME: This is incorrect.  This directly changes the output when it
+## must only change the values that @fcn considers.  Some functions do not
+## return NaN when there are NaN inputs such as "min (NaN, 5)".
 ## Window is padded at beginning and end with NaN
 function y = fill_bc (fcn, x, idxp, win, wlen, odim)
   y = NaN (length (idxp), odim);
@@ -354,7 +382,7 @@ endfunction
 %! x_s = movfun (@mean, xn, 5, "Endpoints", "shrink");
 %! x_p = movfun (@mean, xn, 5, "Endpoints", "periodic");
 %! x_m = movfun (@mean, xn, 5, "Endpoints", "same");
-%! x_z = movfun (@mean, xn, 5, "Endpoints", "zero");
+%! x_z = movfun (@mean, xn, 5, "Endpoints", 0);
 %! x_f = movfun (@mean, xn, 5, "Endpoints", "fill");
 %!
 %! h = plot (t, xn, "o;noisy signal;",
@@ -499,7 +527,7 @@ endfunction
 %!test
 %! x = (1:10).' + [-3, 0, 4];
 %! ctrfun = @(x) x(2,:);
-%! valid_bc = {"same", "periodic", "zero"};
+%! valid_bc = {"same", "periodic", 0};
 %! for bc = valid_bc
 %!   assert (movfun (ctrfun, x, 3, "Endpoints", bc{1}), x);
 %! endfor
@@ -512,7 +540,7 @@ endfunction
 %! ## dim == 2, same as transpose
 %! x = randi (10, 3);
 %! ctrfun = @(x) x(2,:);
-%! valid_bc = {"same", "periodic", "zero"};
+%! valid_bc = {"same", "periodic", 0};
 %! for bc = valid_bc
 %!   assert (movfun (ctrfun, x.', 3, "Endpoints", bc{1}, "dim", 2), x.');
 %! endfor
@@ -530,7 +558,7 @@ endfunction
 %! ## bad zero_bc
 %! x = ones (10, 1);
 %! y = x; y(1:2) = y([end end-1]) = [0.6;0.8];
-%! assert (movfun (@mean, x, 5, "Endpoints", "zero"), y);
+%! assert (movfun (@mean, x, 5, "Endpoints", 0), y);
 
 ## Asymmetric windows
 %!shared x,wlen,wlen0b,wlen0f,ctrfun,xd,UNO,UNOd0b,UNOd0f
@@ -548,7 +576,7 @@ endfunction
 %!assert (movfun (ctrfun, x, wlen, "Endpoints", "same"), x)
 %!assert (movfun (ctrfun, x, wlen, "Endpoints", "fill"), xd)
 %!assert (movfun (ctrfun, x, wlen, "Endpoints", "periodic"), x)
-%!assert (movfun (ctrfun, x, wlen, "Endpoints", "zero"), x)
+%!assert (movfun (ctrfun, x, wlen, "Endpoints", 0), x)
 ## for shorter x, indexing fails
 %!error movfun (ctrfun, x, wlen, "Endpoints", "shrink")
 
@@ -565,8 +593,8 @@ endfunction
 %!assert (movfun (@min, UNO, wlen0b, "Endpoints", "periodic"), UNO)
 %!assert (movfun (@min, UNO, wlen0f, "Endpoints", "periodic"), UNO)
 
-%!assert (movfun (@max, UNO, wlen0b, "Endpoints", "zero"), UNO)
-%!assert (movfun (@max, UNO, wlen0f, "Endpoints", "zero"), UNO)
+%!assert (movfun (@max, UNO, wlen0b, "Endpoints", 0), UNO)
+%!assert (movfun (@max, UNO, wlen0f, "Endpoints", 0), UNO)
 
 ## Multidimensional output
 %!assert(size(movfun (@(x)[min(x) max(x)], (1:10).', 3)), [10 2])

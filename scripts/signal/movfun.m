@@ -27,12 +27,23 @@
 ## @var{x}.
 ##
 ## If @var{wlen} is a scalar, the function @var{fcn} is applied to a moving
-## window of length @var{wlen}.  In this case @var{wlen} must be an odd number.
+## window of length @var{wlen}.  When @var{wlen} is an odd number the window is
+## symmetric and includes @code{(@var{wlen} - 1) / 2} elements on either side
+## of the central element.  For example, when calculating the output at
+## index 5 with a window length of 3, @code{movfun} uses data elements
+## @code{[4, 5, 6].  If @var{wlen} is an even number, the window is asymmetric
+## and has @code{@var{wlen}/2} elements to the left of the central element
+## and @code{@var{wlen}/2 - 1} elements to the right of the central element.
+## For example, when calculating the output at index 5 with a window length of
+## 4, @code{movfun} uses data elements @code{[3, 4, 5, 6]}.
+##
 ## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
 ## the function is applied to a moving window @code{-@var{nb}:@var{na}}.  This
 ## window includes @var{nb} number of elements @strong{before} the current
 ## element and @var{na} number of elements @strong{after} the current element.
-## The current element is always included.
+## The current element is always included.  For example, given
+## @code{@var{wlen} = [3, 0]}, the data used to calculate index 5 is
+## @code{[2, 3, 4, 5]}.
 ##
 ## During calculations the data input @var{x} is reshaped into a 2-dimensional
 ## @var{wlen}-by-@var{N} matrix and @var{fcn} is called on this new matrix.
@@ -184,10 +195,7 @@ function y = movfun (fcn, x, wlen, varargin)
   endif
   if (isscalar (wlen))
     ## Check for proper window length
-    ## FIXME: Matlab accepts even windows
-    if (mod (wlen, 2) == 0)
-      error ("Octave:invalid-input-arg", "movfun: WLEN must be an odd length");
-    elseif (wlen == 1)
+    if (wlen == 1)
       error ("Octave:invalid-input-arg", "movfun: WLEN must be > 1");
     endif
   elseif (numel (wlen) == 2)
@@ -221,7 +229,7 @@ function y = movfun (fcn, x, wlen, varargin)
   ## Obtain slicer
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
 
-  ## FIXME: validation doesn't seem to work correctly
+  ## FIXME: Validation doesn't seem to work correctly (noted 12/16/2018).
   ## Validate that outdim makes sense
   tmp     = fcn (zeros (length (win), 1));  # output for window
   noutdim = length (tmp);                   # number of output dimensions
@@ -257,19 +265,19 @@ function y = movfun (fcn, x, wlen, varargin)
 
 endfunction
 
-function y = movfun_oncol (fcn, x, wlen, bcfunc, I, C, Cpre, Cpos, win, odim)
+function y = movfun_oncol (fcn, x, wlen, bcfunc, slcidx, C, Cpre, Cpos, win, odim)
 
   N = length (x);
   y = NA (N, odim);
 
   ## Process center part
-  y(C,:) = fcn (x(I));
+  y(C,:) = fcn (x(slcidx));
 
   ## Process boundaries
-  if (! isempty (Cpre))  # don't process zero length bkw-window
+  if (! isempty (Cpre))
     y(Cpre,:) = bcfunc (fcn, x, Cpre, win, wlen, odim);
   endif
-  if (! isempty (Cpos))  # don't process zero length fwd-window
+  if (! isempty (Cpos))
     y(Cpos,:) = bcfunc (fcn, x, Cpos, win, wlen, odim);
   endif
 
@@ -573,7 +581,6 @@ endfunction
 %!error <WLEN must be .* array of integers> movfun (@min, 1, {1})
 %!error <WLEN must be .* array of integers .= 0> movfun (@min, 1, -1)
 %!error <WLEN must be .* array of integers> movfun (@min, 1, 1.5)
-%!error <WLEN must be an odd length> movfun (@min, 1, 4)
 %!error <WLEN must be . 1> movfun (@min, 1, 1)
 %!error <WLEN must be a scalar or 2-element array> movfun (@min, 1, [1, 2, 3])
 %!error <WLEN \(3\) must be shorter than length along DIM1 \(1\)>

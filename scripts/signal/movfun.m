@@ -82,17 +82,18 @@
 ##
 ## @table @asis
 ## @item @qcode{"shrink"}  (default)
-## The window is truncated at the beginning and end of the array to include
-## only valid elements.  For example, with a window of length 3,
-## @code{@var{y}(1) = @var{fcn} (@var{x}(1:2))}, and
+## The window is truncated at the beginning and end of the array to exclude
+## elements for which there is no source data.  For example, with a window of
+## length 3, @code{@var{y}(1) = @var{fcn} (@var{x}(1:2))}, and
 ## @code{@var{y}(end) = @var{fcn} (@var{x}(end-1:end))}.
 ##
-## @item @qcode{"periodic"}
-## The window is wrapped around so that
-## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-@var{k}:end),
-## @var{x}(1:@var{k})])}, where @var{k} is the radius of the window.  For
-## example, with a window of length 3,
-## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-1:end), @var{x}(1)])},
+## @item @qcode{"discard"}
+## Any @var{y} values that use a window extending beyond the original
+## data array are deleted.  For example, with a 10-element data vector and a
+## window of length 3, the output will contain only 8 elements.  The first
+## element would require calculating the function over indices @code{[0, 1, 2]}
+## and is therefore discarded.  The last element would require calculating the
+## function over indices @code{[9, 10, 11]} and is therefore discarded.
 ##
 ## @item @qcode{"fill"}
 ## Any window elements outside the data array are replaced by @code{NaN}.  For
@@ -111,14 +112,22 @@
 ## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), @var{user_value}])}.
 ## A common choice for @var{user_value} is 0.
 ##
+## @item @qcode{"periodic"}
+## The window is wrapped around so that
+## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-@var{k}:end),
+## @var{x}(1:@var{k})])}, where @var{k} is the radius of the window.  For
+## example, with a window of length 3,
+## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-1:end), @var{x}(1)])},
+##
 ## @item @qcode{"same"}
 ## The resulting array @var{y} has the same values as @var{x} at the
 ## boundaries.
 ##
 ## @end table
 ##
-## Note that for some of these values, the window size at the boundaries is not
-## the same as in the middle part, and @var{fcn} must work with these cases.
+## Note that for some of these choices, the window size at the boundaries is
+## not the same as for the central part, and @var{fcn} must work in these
+## cases.
 ##
 ## @item @qcode{"nancond"}
 ## Controls whether @code{NaN} or @code{NA} values should be excluded (value:
@@ -159,7 +168,7 @@ function y = movfun (fcn, x, wlen, varargin)
     print_usage ();
   endif
 
-  valid_bc = {"shrink", "periodic", "same", "fill"};
+  valid_bc = {"shrink", "discard", "fill", "periodic", "same"};
 
   ## Parse input arguments
   parser = inputParser ();
@@ -222,23 +231,36 @@ function y = movfun (fcn, x, wlen, varargin)
   N     = szx(dperm(1));                 # length of dim
   x     = reshape (x, N, ncols);         # reshape input
 
+  ## Obtain slicer
+  [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
+
   ## Obtain function for boundary conditions
   if (isnumeric (bc))
     bcfunc = @replaceval_bc;
     bcfunc (true, bc);  # initialize replaceval function with value
-  elseif (strcmpi (bc, "fill"))
-    bcfunc = @replaceval_bc;
-    bcfunc (true, NaN);
   else
     switch (tolower (bc))
-      case "shrink"    bcfunc = @shrink_bc;
-      case "periodic"  bcfunc = @periodic_bc;
-      case "same"      bcfunc = @same_bc;
+      case "shrink"
+        bcfunc = @shrink_bc;
+
+      case "discard"
+        bcfunc = [];
+        C -= length (Cpre);
+        Cpre = Cpos = [];
+        N = length (C);
+        szx(dperm(1)) = N;
+
+      case "fill"
+        bcfunc = @replaceval_bc;
+        bcfunc (true, NaN);
+
+      case "periodic"
+        bcfunc = @periodic_bc;
+
+      case "same"
+        bcfunc = @same_bc;
     endswitch
   endif
-
-  ## Obtain slicer
-  [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
 
   ## FIXME: Validation doesn't seem to work correctly (noted 12/16/2018).
   ## Validate that outdim makes sense
@@ -278,7 +300,7 @@ endfunction
 
 function y = movfun_oncol (fcn, x, wlen, bcfunc, slcidx, C, Cpre, Cpos, win, odim)
 
-  N = length (x);
+  N = length (Cpre) + length (C) + length (Cpos);
   y = NA (N, odim);
 
   ## Process center part

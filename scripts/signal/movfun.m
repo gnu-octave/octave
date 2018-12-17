@@ -129,9 +129,10 @@
 ## cases.
 ##
 ## @item @qcode{"nancond"}
-## Controls whether @code{NaN} or @code{NA} values should be excluded (value:
-## @qcode{"omitnan"}), or included (value: @qcode{"includenan"}) in the
-## arguments passed to @var{fcn}.  The default is @qcode{"omitnan"}.
+## Controls whether @code{NaN} or @code{NA} values should be included (value:
+## @qcode{"includenan"}), or excluded (value: @qcode{"omitnan"}), from the data
+## passed to @var{fcn}.  The default is @qcode{"includenan"}.  Caution:
+## The @qcode{"omitnan"} option is not yet implemented.
 ##
 ## @item @qcode{"outdim"}
 ## A row vector that selects which dimensions of the calculation will appear
@@ -176,8 +177,8 @@ function y = movfun (fcn, x, wlen, varargin)
     @(x) any (strcmpi (x, valid_bc)) || (isscalar (x) && isnumeric (x)));
   parser.addParamValue ("dim", [], ...
     @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
-  parser.addParamValue ("nancond", "omitnan", ...
-    @(x) any (strcmpi (x, {"omitnan", "includenan"})));
+  parser.addParamValue ("nancond", "includenan", ...
+    @(x) any (strcmpi (x, {"includenan", "omitnan"})));
   parser.addParamValue ("outdim", [], ...
     @(d) isempty (d) || (isvector (d) && isindex (d)));
 
@@ -188,12 +189,6 @@ function y = movfun (fcn, x, wlen, varargin)
   outdim  = parser.Results.outdim;      # selected output dimension of fcn
   clear parser
   ## End parse input arguments
-
-  ## If dim was not provided find the first non-singleton dimension.
-  szx = size (x);
-  if (isempty (dim))
-    (dim = find (szx > 1, 1)) || (dim = 1);
-  endif
 
   ## Window length validation
   if (! (isnumeric (wlen) && all (wlen >= 0) && fix (wlen) == wlen))
@@ -212,6 +207,12 @@ function y = movfun (fcn, x, wlen, varargin)
            "movfun: WLEN must be a scalar or 2-element array of integers >= 0");
   endif
 
+  ## If dim was not provided find the first non-singleton dimension.
+  szx = size (x);
+  if (isempty (dim))
+    (dim = find (szx > 1, 1)) || (dim = 1);
+  endif
+
   ## Check that array is longer than WLEN at dimension DIM.  At least one full
   ## window must fit.  Function max is used to include the case when WLEN is an
   ## array.
@@ -220,6 +221,11 @@ function y = movfun (fcn, x, wlen, varargin)
       error ("Octave:invalid-input-arg", ...
              "movfun: window length WLEN (%d) must be shorter than length along DIM%d (%d)", ...
              max (wlen), dim, szx(dim));
+  endif
+
+  omitnan = strcmpi (nancond, "omitnan");
+  if (omitnan)
+    warning ('movfun: "omitnan" is not yet implemented, using "includenan"');
   endif
 
   ## Move the desired dim to the 1st dimension
@@ -620,6 +626,8 @@ endfunction
 %! movfun (@min, 1, [4, 1]);
 %!error <WLEN \(5\) must be shorter than length along DIM1 \(1\)>
 %! movfun (@min, 1, [1, 5]);
+%!warning <"omitnan" is not yet implemented>
+%! movfun (@min, 1:3, 3, "nancond", "omitnan");
 ## FIXME: This test is commented out until OUTDIM validation is clarified.
 %!#error <OUTDIM \(5\) is larger than largest available dimension \(3\)>
 %! movfun (@min, ones (6,3,4), 3, "outdim", 5);

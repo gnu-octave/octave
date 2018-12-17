@@ -53,10 +53,15 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
       error ("Octave:invalid-input-arg", "movslice: WLEN must be > 1");
     endif
   elseif (numel (wlen) == 2)
-    ## FIXME: Any further tests needed to validate form: wlen = [nb, na] ???
+    ## wlen = [nb, na].  No further validation here.
   else
     error ("Octave:invalid-input-arg",
-           "movfun: WLEN must be a scalar or 2-element array of integers >= 0");
+           "movslice: WLEN must be a scalar or 2-element array of integers >= 0");
+  endif
+  if (max (wlen) > N)
+    error ("Octave:invalid-input-arg", ...
+           "movslice: window length WLEN (%d) must be shorter than length along DIM (%d)", ...
+           max (wlen), N);
   endif
 
   if (isscalar (wlen))
@@ -74,7 +79,7 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
 
   Cpre  = 1:wlen(1);              # centers that can't fit the pre-window
   Cnf   = N - wlen(2) + 1;        # first center that can't fit the post-window
-  Cpost = Cnf:N;                  # centers that can't fit centered  post-window
+  Cpost = Cnf:N;                  # centers that can't fit centered post-window
   C     = (wlen(1) + 1):(Cnf - 1);
   win   = (-wlen(1):wlen(2)).';
   slcidx = C + win;
@@ -88,8 +93,16 @@ endfunction
 %!error movslice ()
 %!error movslice (1)
 %!error movslice (1,2,3)
+%!error <N must be a positive integer> movslice ([1 2], 1)
+%!error <N must be a positive integer> movslice (0, 1)
 %!error <WLEN must be .* array of integers> movslice (1, {1})
 %!error <WLEN must be .* array of integers .= 0> movslice (1, -1)
 %!error <WLEN must be .* array of integers> movslice (1, 1.5)
 %!error <WLEN must be . 1> movslice (1, 1)
 %!error <WLEN must be a scalar or 2-element array> movslice (1, [1, 2, 3])
+%!error <WLEN \(3\) must be shorter than length along DIM \(1\)>
+%! movslice (1, 3);
+%!error <WLEN \(4\) must be shorter than length along DIM \(1\)>
+%! movslice (1, [4, 1]);
+%!error <WLEN \(5\) must be shorter than length along DIM \(1\)>
+%! movslice (1, [1, 5]);

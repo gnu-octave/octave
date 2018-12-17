@@ -29,8 +29,8 @@
 ## If @var{wlen} is a scalar, the function @var{fcn} is applied to a moving
 ## window of length @var{wlen}.  When @var{wlen} is an odd number the window is
 ## symmetric and includes @code{(@var{wlen} - 1) / 2} elements on either side
-## of the central element.  For example, when calculating the output at
-## index 5 with a window length of 3, @code{movfun} uses data elements
+## of the central element.  For example, when calculating the output at index 5
+## with a window length of 3, @code{movfun} uses data elements
 ## @code{[4, 5, 6]}.  If @var{wlen} is an even number, the window is asymmetric
 ## and has @code{@var{wlen}/2} elements to the left of the central element
 ## and @code{@var{wlen}/2 - 1} elements to the right of the central element.
@@ -48,10 +48,8 @@
 ## During calculations the data input @var{x} is reshaped into a 2-dimensional
 ## @var{wlen}-by-@var{N} matrix and @var{fcn} is called on this new matrix.
 ## Therefore, @var{fcn} must accept an array input argument and apply the
-## computation on the columns of that array.
+## computation along dimension 1, i.e., down the columns of the array.
 ##
-## When applied to a column vector of length @var{n}, the function @var{fcn}
-## must return a @strong{row} vector of length @var{n}.
 ## When applied to an array (possibly multi-dimensional) with @var{n} columns,
 ## @var{fcn} may return a result in either of two formats: @w{Format 1)}
 ## an array of size 1-by-@var{n}-by-@var{dim3}-by-@dots{}-by-@var{dimN}.  This
@@ -112,16 +110,17 @@
 ## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), @var{user_value}])}.
 ## A common choice for @var{user_value} is 0.
 ##
-## @item @qcode{"periodic"}
-## The window is wrapped around so that
-## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-@var{k}:end),
-## @var{x}(1:@var{k})])}, where @var{k} is the radius of the window.  For
-## example, with a window of length 3,
-## @code{@var{y}(1) = @var{fcn} ([@var{x}(end-1:end), @var{x}(1)])},
-##
 ## @item @qcode{"same"}
-## The resulting array @var{y} has the same values as @var{x} at the
-## boundaries.
+## Any window elements outside the data array are replaced by the value of
+## @var{x} at the boundary.  For example, with a window of length 3,
+## @code{@var{y}(1) = @var{fcn} ([@var{x}(1), @var{x}(1:2)])}, and
+## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), @var{x}(end)])}.
+##
+## @item @qcode{"periodic"}
+## The window is wrapped so that any missing data elements are taken from
+## the other side of the data.  For example, with a window of length 3,
+## @code{@var{y}(1) = @var{fcn} ([@var{x}(end), @var{x}(1:2)])}, and
+## @code{@var{y}(end) = @var{fcn} ([@var{x}(end-1:end), @var{x}(1)])}.
 ##
 ## @end table
 ##

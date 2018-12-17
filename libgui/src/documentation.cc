@@ -491,7 +491,12 @@ namespace octave
     m_find_line_edit->setText (m_query_string);
     m_find_line_edit->parentWidget ()->show ();
 
-    find_forward ();
+    // Go to to first occurrence of search text. Going to the end and then
+    // search backwards until the last occurrence ensures the search text
+    // is visible in the first line of the visible part of the text.
+    m_doc_browser->moveCursor (QTextCursor::End);
+    while (m_doc_browser->find (m_find_line_edit->text (),
+                                QTextDocument::FindBackward));
   }
 
   void documentation::select_all_occurrences (const QString& text)

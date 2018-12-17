@@ -396,7 +396,7 @@ namespace octave
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
     if (queries.count ())
-      m_query_string = queries.first ().wordList ().first ();
+      m_query_string = queries.first ().wordList.first ();
     else
       m_query_string = "";
 #endif

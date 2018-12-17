@@ -201,6 +201,11 @@ function y = movfun (fcn, x, wlen, varargin)
   ## Calculate slicing indices.  This call also validates WLEN input.
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
 
+  ## Use [nb, na] format which makes replaceval_bc() simpler.
+  if (isscalar (wlen))
+    wlen = [wlen, wlen];
+  endif
+
   omitnan = strcmpi (nancond, "omitnan");
   if (omitnan)
     warning ('movfun: "omitnan" is not yet implemented, using "includenan"');
@@ -323,16 +328,17 @@ function y = replaceval_bc (fcn, x, idxp, win, wlen)
     return;
   endif
 
-  ## Pad beginning and end of window with specified value.
-  if (isscalar (wlen))
-    wlen = [wlen, wlen];
-  endif
-  N = length (x);
   if (min (idxp) == 1)
-    x = prepad (x, N + wlen(1), substitute);
+    ## pre-pad window
+    sz = size (x);
+    sz(1) = wlen(1);
+    x = [substitute(ones (sz)); x];
     idx = idxp + win + wlen(1);
-  elseif (max (idxp) == N)
-    x   = postpad (x, N + wlen(2), substitute);
+  else
+    ## post-pad window
+    sz = size (x);
+    sz(1) = wlen(2);
+    x = [x; substitute(ones (sz))];
     idx = idxp + win;
   endif
 

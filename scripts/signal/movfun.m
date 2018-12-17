@@ -161,15 +161,6 @@ function y = movfun (fcn, x, wlen, varargin)
 
   valid_bc = {"shrink", "periodic", "same", "fill"};
 
-  persistent dispatch;
-  if (isempty (dispatch))
-    dispatch = struct ();
-    for k = valid_bc
-      cmd = sprintf ("dispatch.%s = @%s_bc;", k{1}, k{1});
-      eval (cmd);
-    endfor
-  endif
-
   ## Parse input arguments
   parser = inputParser ();
   parser.FunctionName = "movfun";
@@ -235,8 +226,15 @@ function y = movfun (fcn, x, wlen, varargin)
   if (isnumeric (bc))
     bcfunc = @replaceval_bc;
     bcfunc (true, bc);  # initialize replaceval function with value
+  elseif (strcmpi (bc, "fill"))
+    bcfunc = @replaceval_bc;
+    bcfunc (true, NaN);
   else
-    bcfunc = dispatch.(tolower (bc));
+    switch (tolower (bc))
+      case "shrink"    bcfunc = @shrink_bc;
+      case "periodic"  bcfunc = @periodic_bc;
+      case "same"      bcfunc = @same_bc;
+    endswitch
   endif
 
   ## Obtain slicer
@@ -362,15 +360,6 @@ function y = replaceval_bc (fcn, x, idxp, win, wlen)
 
   y = fcn (x(idx));
 
-endfunction
-
-## Apply "fill" boundary conditions
-## FIXME: This is incorrect.  This directly changes the output when it
-## must only change the values that @fcn considers.  Some functions do not
-## return NaN when there are NaN inputs such as "min (NaN, 5)".
-## Window is padded at beginning and end with NaN
-function y = fill_bc (fcn, x, idxp, win, wlen, odim)
-  y = NaN (length (idxp), odim);
 endfunction
 
 
@@ -527,12 +516,10 @@ endfunction
 %!test
 %! x = (1:10).' + [-3, 0, 4];
 %! ctrfun = @(x) x(2,:);
-%! valid_bc = {"same", "periodic", 0};
+%! valid_bc = {"periodic", 0, "fill", "same"};
 %! for bc = valid_bc
 %!   assert (movfun (ctrfun, x, 3, "Endpoints", bc{1}), x);
 %! endfor
-%! x_ = x; x_([1 end],:) = NaN;
-%! assert (movfun (ctrfun, x, 3, "Endpoints", "fill"), x_);
 %! x_ = x; x_([1 end],:) = x([2 end],:);
 %! assert (movfun (ctrfun, x, 3, "Endpoints", "shrink"), x_);
 
@@ -540,12 +527,10 @@ endfunction
 %! ## dim == 2, same as transpose
 %! x = randi (10, 3);
 %! ctrfun = @(x) x(2,:);
-%! valid_bc = {"same", "periodic", 0};
+%! valid_bc = {"periodic", 0, "fill", "same"};
 %! for bc = valid_bc
 %!   assert (movfun (ctrfun, x.', 3, "Endpoints", bc{1}, "dim", 2), x.');
 %! endfor
-%! x_ = x; x_([1 end],:) = NaN;
-%! assert (movfun (ctrfun, x.', 3, "Endpoints", "fill", "dim", 2), x_.');
 %! x_ = x; x_([1 end],:) = x([2 end],:);
 %! assert (movfun (ctrfun, x.', 3, "Endpoints", "shrink", "dim", 2), x_.');
 
@@ -561,44 +546,41 @@ endfunction
 %! assert (movfun (@mean, x, 5, "Endpoints", 0), y);
 
 ## Asymmetric windows
-%!shared x,wlen,wlen0b,wlen0f,ctrfun,xd,UNO,UNOd0b,UNOd0f
+%!shared x, wlen, wlen02, wlen20, ctrfun, UNO
 %! x = (1:10).' + [-3, 0, 4];
-%! wlen = [2 1];
-%! wlen0b = [0 2];
-%! wlen0f = [2 0];
+%! wlen = [2, 1];
+%! wlen02 = [0, 2];
+%! wlen20 = [2, 0];
 %! ctrfun = @(x) x(wlen(1)+1,:);
-%! xd = x; xd([1:2 end],:) = NaN;
 %! UNO = ones (7,1);
-%! UNOd0b = UNOd0f = UNO;
-%! UNOd0b(end-1:end,:) = NaN;
-%! UNOd0f(1:2,:) = NaN;
 
-%!assert (movfun (ctrfun, x, wlen, "Endpoints", "same"), x)
-%!assert (movfun (ctrfun, x, wlen, "Endpoints", "fill"), xd)
 %!assert (movfun (ctrfun, x, wlen, "Endpoints", "periodic"), x)
 %!assert (movfun (ctrfun, x, wlen, "Endpoints", 0), x)
+%!assert (movfun (ctrfun, x, wlen, "Endpoints", "fill"), x)
+%!assert (movfun (ctrfun, x, wlen, "Endpoints", "same"), x)
 ## for shorter x, indexing fails
 %!error movfun (ctrfun, x, wlen, "Endpoints", "shrink")
 
-%!assert (movfun (@min, UNO, wlen0b, "Endpoints", "same"), UNO)
-%!assert (movfun (@min, UNO, wlen0f, "Endpoints", "same"), UNO)
-
 %!assert (movfun (@min, UNO, wlen, "Endpoints", "shrink"), UNO)
-%!assert (movfun (@min, UNO, wlen0b, "Endpoints", "shrink"), UNO)
-%!assert (movfun (@min, UNO, wlen0f, "Endpoints", "shrink"), UNO)
+%!assert (movfun (@min, UNO, wlen02, "Endpoints", "shrink"), UNO)
+%!assert (movfun (@min, UNO, wlen20, "Endpoints", "shrink"), UNO)
 
-%!assert (movfun (@min, UNO, wlen0b, "Endpoints", "fill"), UNOd0b)
-%!assert (movfun (@min, UNO, wlen0f, "Endpoints", "fill"), UNOd0f)
+%!assert (movfun (@min, UNO, wlen02, "Endpoints", "periodic"), UNO)
+%!assert (movfun (@min, UNO, wlen20, "Endpoints", "periodic"), UNO)
 
-%!assert (movfun (@min, UNO, wlen0b, "Endpoints", "periodic"), UNO)
-%!assert (movfun (@min, UNO, wlen0f, "Endpoints", "periodic"), UNO)
+%!assert (movfun (@max, UNO, wlen02, "Endpoints", 0), UNO)
+%!assert (movfun (@max, UNO, wlen20, "Endpoints", 0), UNO)
 
-%!assert (movfun (@max, UNO, wlen0b, "Endpoints", 0), UNO)
-%!assert (movfun (@max, UNO, wlen0f, "Endpoints", 0), UNO)
+%!assert (movfun (@min, UNO, wlen02, "Endpoints", "fill"), UNO)
+%!assert (movfun (@min, UNO, wlen20, "Endpoints", "fill"), UNO)
+
+%!assert (movfun (@min, UNO, wlen02, "Endpoints", "same"), UNO)
+%!assert (movfun (@min, UNO, wlen20, "Endpoints", "same"), UNO)
 
 ## Multidimensional output
-%!assert(size(movfun (@(x)[min(x) max(x)], (1:10).', 3)), [10 2])
-%!assert(size(movfun (@(x)[min(x) max(x)], cumsum(ones(10,5),2), 3)), [10 5 2])
+%!assert (size( movfun (@(x) [min(x), max(x)], (1:10).', 3)), [10 2])
+%!assert (size( movfun (@(x) [min(x), max(x)], cumsum (ones (10,5),2), 3)),
+%!        [10 5 2])
 ## outdim > dim
 %!error (movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3))
 

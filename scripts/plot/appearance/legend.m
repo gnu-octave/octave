@@ -1826,7 +1826,6 @@ endfunction
 %! unwind_protect
 %!   plot (1:10);
 %!   fail ("legend ('location','best')", "warning", "'best' not yet implemented");
-%!   fail ("legend ('location','bestoutside')", "warning", "'best' not yet implemented");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

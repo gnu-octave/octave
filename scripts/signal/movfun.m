@@ -28,22 +28,23 @@
 ##
 ## If @var{wlen} is a scalar, the function @var{fcn} is applied to a moving
 ## window of length @var{wlen}.  When @var{wlen} is an odd number the window is
-## symmetric and includes @code{(@var{wlen} - 1) / 2} elements on either side
-## of the central element.  For example, when calculating the output at index 5
-## with a window length of 3, @code{movfun} uses data elements
-## @code{[4, 5, 6]}.  If @var{wlen} is an even number, the window is asymmetric
-## and has @code{@var{wlen}/2} elements to the left of the central element
-## and @code{@var{wlen}/2 - 1} elements to the right of the central element.
+## symmetric and includes @w{@code{(@var{wlen} - 1) / 2}} elements on either
+## side of the central element.  For example, when calculating the output at
+## index 5 with a window length of 3, @code{movfun} uses data elements
+## @w{@code{[4, 5, 6]}}.  If @var{wlen} is an even number, the window is
+## asymmetric and has @w{@code{@var{wlen}/2}} elements to the left of the
+## central element
+## and @w{@code{@var{wlen}/2 - 1}} elements to the right of the central element.
 ## For example, when calculating the output at index 5 with a window length of
-## 4, @code{movfun} uses data elements @code{[3, 4, 5, 6]}.
+## 4, @code{movfun} uses data elements @w{@code{[3, 4, 5, 6]}}.
 ##
 ## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
 ## the function is applied to a moving window @code{-@var{nb}:@var{na}}.  This
 ## window includes @var{nb} number of elements @strong{before} the current
 ## element and @var{na} number of elements @strong{after} the current element.
 ## The current element is always included.  For example, given
-## @code{@var{wlen} = [3, 0]}, the data used to calculate index 5 is
-## @code{[2, 3, 4, 5]}.
+## @w{@code{@var{wlen} = [3, 0]}}, the data used to calculate index 5 is
+## @w{@code{[2, 3, 4, 5]}}.
 ##
 ## During calculations the data input @var{x} is reshaped into a 2-dimensional
 ## @var{wlen}-by-@var{N} matrix and @var{fcn} is called on this new matrix.
@@ -59,7 +60,7 @@
 ## @code{@var{n} * @var{numel_higher_dims}} where @var{numel_higher_dims} is
 ## @w{@code{prod (size (@var{x})(3:end))}}.  The output of @var{fcn} for the
 ## i-th input column must be found in the output at indices
-## @code{i:@var{n}:(@var{n}*@var{numel_higher_dims})}.
+## @w{@code{i:@var{n}:(@var{n}*@var{numel_higher_dims})}}.
 ## This format is useful when concatenating functions into arrays, or when
 ## using @code{nthargout}.  Type @code{demo ("movfun", 6)} for an example of
 ## this case.
@@ -89,9 +90,10 @@
 ## Any @var{y} values that use a window extending beyond the original
 ## data array are deleted.  For example, with a 10-element data vector and a
 ## window of length 3, the output will contain only 8 elements.  The first
-## element would require calculating the function over indices @code{[0, 1, 2]}
-## and is therefore discarded.  The last element would require calculating the
-## function over indices @code{[9, 10, 11]} and is therefore discarded.
+## element would require calculating the function over indices
+## @w{@code{[0, 1, 2]}} and is therefore discarded.  The last element would
+## require calculating the function over indices @w{@code{[9, 10, 11]}} and is
+## therefore discarded.
 ##
 ## @item @qcode{"fill"}
 ## Any window elements outside the data array are replaced by @code{NaN}.  For
@@ -137,7 +139,7 @@
 ## @item @qcode{"outdim"}
 ## A row vector that selects which dimensions of the calculation will appear
 ## in the output @var{y}.  This is only useful when @var{fcn} returns an
-## N-dimensinoal array in @w{Format 1}.  The default is to return all output
+## N-dimensional array in @w{Format 1}.  The default is to return all output
 ## dimensions.
 ##
 ## @end table
@@ -310,6 +312,9 @@ function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
 
   n   = length (idxp);
   y   = zeros (n, odim);
+  ## FIXME: This nested for loop accounts for 70% of running time.
+  ##        Given that "shrink" is the default Endpoint value this
+  ##        code needs to be reworked
   for i = 1:n
     k      = idx(tf(:,i),i);
     y(i,:) = fcn (x(k));

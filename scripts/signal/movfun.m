@@ -22,7 +22,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{wlen})
 ## @deftypefnx {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{[@var{nb}, @var{na}}])
-## @deftypefnx {} {@var{y} =} movfun (@dots{}, @var{property}, @var{value})
+## @deftypefnx {} {@var{y} =} movfun (@dots{}, "@var{property}", @var{value})
+##
 ## Apply function @var{fcn} to a moving window of length @var{wlen} on data
 ## @var{x}.
 ##
@@ -33,15 +34,15 @@
 ## index 5 with a window length of 3, @code{movfun} uses data elements
 ## @w{@code{[4, 5, 6]}}.  If @var{wlen} is an even number, the window is
 ## asymmetric and has @w{@code{@var{wlen}/2}} elements to the left of the
-## central element
-## and @w{@code{@var{wlen}/2 - 1}} elements to the right of the central element.
-## For example, when calculating the output at index 5 with a window length of
-## 4, @code{movfun} uses data elements @w{@code{[3, 4, 5, 6]}}.
+## central element and @w{@code{@var{wlen}/2 - 1}} elements to the right of the
+## central element.  For example, when calculating the output at index 5 with a
+## window length of 4, @code{movfun} uses data elements
+## @w{@code{[3, 4, 5, 6]}}.
 ##
 ## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
 ## the function is applied to a moving window @code{-@var{nb}:@var{na}}.  This
-## window includes @var{nb} number of elements @strong{before} the current
-## element and @var{na} number of elements @strong{after} the current element.
+## window includes @var{nb} number of elements @emph{before} the current
+## element and @var{na} number of elements @emph{after} the current element.
 ## The current element is always included.  For example, given
 ## @w{@code{@var{wlen} = [3, 0]}}, the data used to calculate index 5 is
 ## @w{@code{[2, 3, 4, 5]}}.
@@ -131,7 +132,7 @@
 ## cases.
 ##
 ## @item @qcode{"nancond"}
-## Controls whether @code{NaN} or @code{NA} values should be included (value:
+## Controls whether @code{NaN} and @code{NA} values should be included (value:
 ## @qcode{"includenan"}), or excluded (value: @qcode{"omitnan"}), from the data
 ## passed to @var{fcn}.  The default is @qcode{"includenan"}.  Caution:
 ## The @qcode{"omitnan"} option is not yet implemented.
@@ -198,7 +199,7 @@ function y = movfun (fcn, x, wlen, varargin)
     (dim = find (szx > 1, 1)) || (dim = 1);
   endif
 
-  N = szx(dim);  
+  N = szx(dim);
 
   ## Calculate slicing indices.  This call also validates WLEN input.
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
@@ -314,7 +315,7 @@ function y = shrink_bc (fcn, x, idxp, win, wlen, odim)
   y   = zeros (n, odim);
   ## FIXME: This nested for loop accounts for 70% of running time.
   ##        Given that "shrink" is the default Endpoint value this
-  ##        code needs to be reworked
+  ##        code needs to be reworked.
   for i = 1:n
     k      = idx(tf(:,i),i);
     y(i,:) = fcn (x(k));

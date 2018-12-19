@@ -79,13 +79,6 @@ function ri = randi (bounds, varargin)
     endif
   endif
 
-  if (nargin > 1 && ischar (varargin{end}))
-    rclass = varargin{end};
-    varargin(end) = [];
-  else
-    rclass = "double";
-  endif
-
   ## Limit set by use of class double in rand(): Any consecutive integer in the
   ## range [-flintmax(), flintmax()] can be represented by a double.
   if ((abs (imax) >= flintmax ()) || (abs (imin) >= flintmax ()))
@@ -95,7 +88,35 @@ function ri = randi (bounds, varargin)
     error ("randi: integer range must be smaller than flintmax()-1");
   endif
 
-  ri = imin + floor ((imax - imin + 1) * rand (varargin{:}));
+  if (nargin > 1 && ischar (varargin{end}))
+    rclass = varargin{end};
+    varargin(end) = [];
+    nargin = nargin - 1;
+  else
+    rclass = "double";
+  endif
+
+  ## Expand dimension argument to at least 2-D for reshape
+  if (nargin == 1)
+    varargin = {1, 1};
+  elseif (nargin == 2 && isscalar (varargin{1}))
+    varargin(2) = varargin(1);
+  endif
+    
+  ## Rejection Algorithm to guarantee unbiased results.  See bug #54619.
+  rng = (imax - imin) + 1;              # requested range
+  N = prod ([varargin{:}]);             # number of requested elements
+  K = floor ((flintmax () + 1) / rng);  # number of primary integers ...
+                                        # mapped to single output
+  p = (K*rng) / (flintmax () + 1);      # expected proportion of used primaries
+  
+  do  
+    M = ceil (N/p + 10*sqrt (N/p - N)); # number of requested primary integers
+    r_prim = floor (rand (M,1) * (flintmax () + 1));
+    r_prim = r_prim(r_prim < K*rng);
+  until (numel (r_prim) >= N)           # should practically always be true
+  
+  ri = imin + floor (reshape (r_prim(1:N), varargin{:}) / K);
 
   if (! strcmp (rclass, "double"))
     if (strfind (rclass, "int"))

@@ -8,6 +8,13 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     aforementioned functions by properly overloading the "size"
     function.
 
+ ** The function randi has been recoded to produce an unbiased (all
+    results are equally likely) sample of integers.  This may produce
+    different results in existing code.  If it is necessary to reproduce
+    the exact random integer sequence as in previous versions use
+    
+      ri = imin + floor ((imax - imin + 1) * rand ());
+
  ** A new core function movfun will apply a function to a sliding
     window of arbitrary size on a dataset and accumulate the results.
     Many common cases have been implemented using the naming

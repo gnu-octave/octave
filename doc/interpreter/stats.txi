@@ -120,7 +120,23 @@ average over a window of data (@code{movmean}), are already provided.
 
 @DOCSTRING(movslice)
 
+@DOCSTRING(movmad)
+
+@DOCSTRING(movmax)
+
+@DOCSTRING(movmean)
+
+@DOCSTRING(movmedian)
+
 @DOCSTRING(movmin)
+
+@DOCSTRING(movprod)
+
+@DOCSTRING(movstd)
+
+@DOCSTRING(movsum)
+
+@DOCSTRING(movvar)
 
 @node Basic Statistical Functions
 @section Basic Statistical Functions

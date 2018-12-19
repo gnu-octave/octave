@@ -17,24 +17,24 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{y} =} movmin (@var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movmin (@var{x}, [@var{na}, @var{nb}])
-## @deftypefnx {} {@var{y} =} movmin (@dots{}, @var{dim})
-## @deftypefnx {} {@var{y} =} movmin (@dots{}, "@var{nancond}")
-## @deftypefnx {} {@var{y} =} movmin (@dots{}, @var{property}, @var{value})
-## Calculate the moving minimum over a sliding window of length @var{wlen} on
+## @deftypefn  {} {@var{y} =} movprod (@var{x}, @var{wlen})
+## @deftypefnx {} {@var{y} =} movprod (@var{x}, [@var{na}, @var{nb}])
+## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{dim})
+## @deftypefnx {} {@var{y} =} movprod (@dots{}, "@var{nancond}")
+## @deftypefnx {} {@var{y} =} movprod (@dots{}, @var{property}, @var{value})
+## Calculate the moving product over a sliding window of length @var{wlen} on
 ## data @var{x}.
 ##
-## If @var{wlen} is a scalar, the function @code{min} is applied to a
+## If @var{wlen} is a scalar, the function @code{movprod} is applied to a
 ## moving window of length @var{wlen}.  When @var{wlen} is an odd number the
 ## window is symmetric and includes @w{@code{(@var{wlen} - 1) / 2}} elements on
 ## either side of the central element.  For example, when calculating the
-## output at index 5 with a window length of 3, @code{movmin} uses data
+## output at index 5 with a window length of 3, @code{movprod} uses data
 ## elements @w{@code{[4, 5, 6]}}.  If @var{wlen} is an even number, the window
 ## is asymmetric and has @w{@code{@var{wlen}/2}} elements to the left of the
 ## central element and @w{@code{@var{wlen}/2 - 1}} elements to the right of the
 ## central element.  For example, when calculating the output at index 5 with a
-## window length of 4, @code{movmin} uses data elements
+## window length of 4, @code{movprod} uses data elements
 ## @w{@code{[3, 4, 5, 6]}}.
 ##
 ## If @var{wlen} is an array with two elements @w{@code{[@var{nb}, @var{na}]}},
@@ -49,7 +49,7 @@
 ##
 ## The optional string argument @qcode{"@var{nancond}"} controls whether
 ## @code{NaN} and @code{NA} values should be included (@qcode{"includenan"}),
-## or excluded (@qcode{"omitnan"}), from the data passed to @code{min}.  The
+## or excluded (@qcode{"omitnan"}), from the data passed to @code{movprod}.  The
 ## default is @qcode{"includenan"}.  Caution: the @qcode{"omitnan"} option is
 ## not yet implemented.
 ##
@@ -67,8 +67,8 @@
 ## @item @qcode{"shrink"}  (default)
 ## The window is truncated at the beginning and end of the array to exclude
 ## elements for which there is no source data.  For example, with a window of
-## length 3, @code{@var{y}(1) = min (@var{x}(1:2))}, and
-## @code{@var{y}(end) = min (@var{x}(end-1:end))}.
+## length 3, @code{@var{y}(1) = movprod (@var{x}(1:2))}, and
+## @code{@var{y}(end) = movprod (@var{x}(end-1:end))}.
 ##
 ## @item @qcode{"discard"}
 ## Any @var{y} values that use a window extending beyond the original
@@ -82,31 +82,31 @@
 ## @item @qcode{"fill"}
 ## Any window elements outside the data array are replaced by @code{NaN}.  For
 ## example, with a window of length 3,
-## @code{@var{y}(1) = min ([NaN, @var{x}(1:2)])}, and
-## @code{@var{y}(end) = min ([@var{x}(end-1:end), NaN])}.
+## @code{@var{y}(1) = movprod ([NaN, @var{x}(1:2)])}, and
+## @code{@var{y}(end) = movprod ([@var{x}(end-1:end), NaN])}.
 ## This option usually results in @var{y} having @code{NaN} values at the
-## boundaries, although it is influenced by how @code{min} handles @code{NaN},
+## boundaries, although it is influenced by how @code{movprod} handles @code{NaN},
 ## and also by the property @qcode{"nancond"}.
 ##
 ## @item @var{user_value}
 ## Any window elements outside the data array are replaced by the specified
 ## value @var{user_value} which must be a numeric scalar.  For example, with a
 ## window of length 3,
-## @code{@var{y}(1) = min ([@var{user_value}, @var{x}(1:2)])}, and
-## @code{@var{y}(end) = min ([@var{x}(end-1:end), @var{user_value}])}.
+## @code{@var{y}(1) = movprod ([@var{user_value}, @var{x}(1:2)])}, and
+## @code{@var{y}(end) = movprod ([@var{x}(end-1:end), @var{user_value}])}.
 ## A common choice for @var{user_value} is 0.
 ##
 ## @item @qcode{"same"}
 ## Any window elements outside the data array are replaced by the value of
 ## @var{x} at the boundary.  For example, with a window of length 3,
-## @code{@var{y}(1) = min ([@var{x}(1), @var{x}(1:2)])}, and
-## @code{@var{y}(end) = min ([@var{x}(end-1:end), @var{x}(end)])}.
+## @code{@var{y}(1) = movprod ([@var{x}(1), @var{x}(1:2)])}, and
+## @code{@var{y}(end) = movprod ([@var{x}(end-1:end), @var{x}(end)])}.
 ##
 ## @item @qcode{"periodic"}
 ## The window is wrapped so that any missing data elements are taken from
 ## the other side of the data.  For example, with a window of length 3,
-## @code{@var{y}(1) = min ([@var{x}(end), @var{x}(1:2)])}, and
-## @code{@var{y}(end) = min ([@var{x}(end-1:end), @var{x}(1)])}.
+## @code{@var{y}(1) = movprod ([@var{x}(end), @var{x}(1:2)])}, and
+## @code{@var{y}(end) = movprod ([@var{x}(end-1:end), @var{x}(1)])}.
 ##
 ## @end table
 ##
@@ -118,16 +118,16 @@
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
 ## For additional options and documentation, @xref{XREFmovfun,,movfun}.
 ##
-## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movprod, movstd, movsum, movvar}
+## @seealso{movfun, movslice, movmad, movmax, movmean, movmedian, movmin, movstd, movsum, movvar}
 ## @end deftypefn
 
-function y = movmin (x, wlen, varargin)
+function y = movprod (x, wlen, varargin)
 
   if (nargin < 2)
     print_usage ();
   endif
 
-  y = movmin (@min, x, wlen, __parse_movargs__ ("movmin", varargin{:}){:});
+  y = movprod (@movprod, x, wlen, __parse_movargs__ ("movprod", varargin{:}){:});
 
 endfunction
 
@@ -135,5 +135,5 @@ endfunction
 ## FIXME: Need functional BIST tests
 
 ## Test input validation
-%!error movmin ()
-%!error movmin (1)
+%!error movprod ()
+%!error movprod (1)

@@ -127,12 +127,14 @@ function y = movmean (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movmean (@mean, x, wlen, __parse_movargs__ ("movmean", varargin{:}){:});
+  y = movfun (@mean, x, wlen, __parse_movargs__ ("movmean", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([1.5; (2:9).'; 9.5], movmean ((1:10).', 3))
 
 ## Test input validation
 %!error movmean ()

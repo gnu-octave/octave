@@ -127,12 +127,14 @@ function y = movmin (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movmin (@min, x, wlen, __parse_movargs__ ("movmin", varargin{:}){:});
+  y = movfun (@min, x, wlen, __parse_movargs__ ("movmin", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([1; (1:9).'], movmin ((1:10).', 3))
 
 ## Test input validation
 %!error movmin ()

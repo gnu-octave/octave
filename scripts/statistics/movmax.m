@@ -127,12 +127,14 @@ function y = movmax (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movmax (@max, x, wlen, __parse_movargs__ ("movmax", varargin{:}){:});
+  y = movfun (@max, x, wlen, __parse_movargs__ ("movmax", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([(2:10).'; 10], movmax ((1:10).', 3))
 
 ## Test input validation
 %!error movmax ()

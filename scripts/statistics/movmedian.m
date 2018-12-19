@@ -127,12 +127,14 @@ function y = movmedian (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movmedian (@movmedian, x, wlen, __parse_movargs__ ("movmedian", varargin{:}){:});
+  y = movfun (@median, x, wlen, __parse_movargs__ ("movmedian", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([1.5; (2:9).'; 9.5], movmedian ((1:10).', 3))
 
 ## Test input validation
 %!error movmedian ()

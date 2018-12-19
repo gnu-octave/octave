@@ -127,12 +127,14 @@ function y = movsum (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movsum (@movsum, x, wlen, __parse_movargs__ ("movsum", varargin{:}){:});
+  y = movfun (@sum, x, wlen, __parse_movargs__ ("movsum", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([(3:3:27).'; 19], movsum ((1:10).', 3))
 
 ## Test input validation
 %!error movsum ()

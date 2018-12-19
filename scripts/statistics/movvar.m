@@ -127,12 +127,14 @@ function y = movvar (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movvar (@var, x, wlen, __parse_movargs__ ("movvar", varargin{:}){:});
+  y = movfun (@var, x, wlen, __parse_movargs__ ("movvar", varargin{:}){:});
 
 endfunction
 
 
 ## FIXME: Need functional BIST tests
+# test for bug #55241
+%!assert ([0.5; ones(8,1); 0.5], movvar ((1:10).', 3))
 
 ## Test input validation
 %!error movvar ()

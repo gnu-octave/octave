@@ -332,7 +332,7 @@ function retval = edit (varargin)
 
     ## If editing a new file, prompt for creation if GUI is running
     if (isguirunning ())
-      if (! __octave_link_edit_file__ (file, "prompt"));
+      if (! __octave_link_edit_file__ (file, "prompt"))
         return;
       endif
     endif

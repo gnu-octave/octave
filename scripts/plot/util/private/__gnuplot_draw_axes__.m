@@ -1850,7 +1850,7 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
   tick ('y', obj.ycolor, obj.tickdir, mirrorstr);
   tick ('z', obj.zcolor, obj.tickdir, mirrorstr);
 
-  function tick (axischar, color, tickdir, mirrorstr);
+  function tick (axischar, color, tickdir, mirrorstr)
     if (isnumeric (color))
       if (length (color) == 3)
         colorspec = sprintf ('rgb "#%02x%02x%02x"', round (255*color));

@@ -140,7 +140,7 @@ function y = cosint (x)
   flag_sum = true (nnz (todo), 1);
   it = 0;
   maxit = 300;
-  while (any (flag_sum) && (++it < maxit));
+  while (any (flag_sum) && (++it < maxit))
     ssum .*= - xx .^ 2 * (2 * it) / ((2 * it + 2) ^ 2 * (2 * it + 1));
     yy(flag_sum) += ssum (flag_sum);
     flag_sum = (abs (ssum) >= tol);

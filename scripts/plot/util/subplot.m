@@ -436,7 +436,7 @@ function subplot_align (h, d, rmupdate = false)
       if (iscell (opos))
         opos = cell2mat (opos);
       endif
-      for ii = 1:numel (hsubplots);
+      for ii = 1:numel (hsubplots)
         set (hsubplots(ii), "outerposition", opos(ii,:), ...
              "activepositionproperty", "position");
       endfor

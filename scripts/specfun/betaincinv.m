@@ -161,7 +161,7 @@ function x = betaincinv (y, a, b, tail = "lower")
   i_upp = (! i_low);
 
   idx = todo & i_low;
-  if (any (idx));
+  if (any (idx))
     n = nnz (idx);
     ## Function and derivative of the lower version.
     F = @(x, a, b, y) y - betainc (x, a, b);
@@ -178,7 +178,7 @@ function x = betaincinv (y, a, b, tail = "lower")
   endif
 
   idx = todo & i_upp;
-  if (any (idx));
+  if (any (idx))
     n = nnz (idx);
     ## Function and derivative of the upper version.
     F = @(x, a, b, y) y - betainc (x, a, b, "upper");

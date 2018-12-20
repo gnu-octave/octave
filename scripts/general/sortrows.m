@@ -114,7 +114,7 @@ function i = sort_rows_idx_generic (default_mode, reverse_mode, m, c)
   indices = flipud (indices);
   mode = flipud (mode');
   i = [1:rows(m)]';
-  for j = 1:length (indices);
+  for j = 1:length (indices)
     M = m(i, indices(j));
     if (iscell (M) && ! iscellstr (M))
       M = cell2mat (M);

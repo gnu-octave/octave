@@ -91,7 +91,7 @@ function y = circshift (x, n, dim)
   endif
 
   idx = repmat ({':'}, 1, nd);
-  for i = 1:length (n);
+  for i = 1:length (n)
     b = n(i);
     d = sz(i);
     if (b > 0)

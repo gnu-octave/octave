@@ -447,7 +447,7 @@ function update_data (h, ~)
     x = x(1:sz(1),1:sz(2));
     y = y(1:sz(1),1:sz(2));
     z = z(1:sz(1),1:sz(2));
-  elseif (numel (x) != numel (y));
+  elseif (numel (x) != numel (y))
     sz = min ([size(x); size(y)]);
     x = x(1:sz(1),1:sz(2));
     y = y(1:sz(1),1:sz(2));

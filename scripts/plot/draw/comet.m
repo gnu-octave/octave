@@ -73,7 +73,7 @@ function comet (varargin)
                x(1), y(1), "color", "b", "marker", "o");
     axis (limits);  # set manual limits to speed up plotting
 
-    for n = 2:(num+dn);
+    for n = 2:(num+dn)
       m = n - dn;
       m = max ([m, 1]);
       k = min ([n, num]);

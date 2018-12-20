@@ -137,7 +137,7 @@ function retval = __area__ (ax, x, y, bv, varargin)
   y0 = bv * ones (1, rows (y));
   y0 = zeros (1, rows (y));
   retval = [];
-  for i = 1: columns (y);
+  for i = 1: columns (y)
 
     lc = __next_line_color__ ();
 

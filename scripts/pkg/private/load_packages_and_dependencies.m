@@ -28,7 +28,7 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   idx = load_package_dirs (idx, [], handle_deps, installed_pkgs_lst);
   dirs = {};
   execpath = EXEC_PATH ();
-  for i = idx;
+  for i = idx
     ndir = installed_pkgs_lst{i}.dir;
     dirs{end+1} = ndir;
     if (isfolder (fullfile (dirs{end}, "bin")))

@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include <algorithm>
 #endif
 
-#include <iostream>
 #include <vector>
 
 #include "areadlink-wrapper.h"
@@ -42,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "gen-tempname-wrapper.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "oct-passwd.h"
@@ -501,13 +501,19 @@ namespace octave
       return rename (from, to, msg);
     }
 
-    int rename (const std::string& from, const std::string& to, std::string& msg)
+    int rename (const std::string& from, const std::string& to,
+                std::string& msg)
     {
       int status = -1;
 
       msg = "";
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+      status = _wrename (u8_to_wstring (from).c_str (),
+                         u8_to_wstring (to).c_str ());
+#else
       status = std::rename (from.c_str (), to.c_str ());
+#endif
 
       if (status < 0)
         msg = std::strerror (errno);
@@ -549,12 +555,10 @@ namespace octave
 
       int status = 0;
 
-      dir_entry dir (name);
+      string_vector dirlist;
 
-      if (dir)
+      if (get_dirlist (name, dirlist, msg))
         {
-          string_vector dirlist = dir.read ();
-
           for (octave_idx_type i = 0; i < dirlist.numel (); i++)
             {
               octave_quit ();
@@ -595,17 +599,10 @@ namespace octave
             }
 
           if (status >= 0)
-            {
-              dir.close ();
-              status = rmdir (name, msg);
-            }
+            status = rmdir (name, msg);
         }
       else
-        {
-          status = -1;
-
-          msg = dir.error ();
-        }
+        status = -1;
 
       return status;
     }

@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
 #include <string>
 
 #include "error.h"
@@ -38,7 +37,7 @@ namespace octave
   // Expressions.
 
   octave_lvalue
-  tree_expression::lvalue (tree_evaluator *)
+  tree_expression::lvalue (tree_evaluator&)
   {
     error ("invalid lvalue function called in expression");
   }

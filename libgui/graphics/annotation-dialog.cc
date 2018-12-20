@@ -50,7 +50,7 @@ annotation_dialog::init ()
 {
   ui->setupUi (this);
 
-  QSettings *settings = resource_manager::get_settings ();
+  QSettings *settings = octave::resource_manager::get_settings ();
 
   // restore last geometry
   if (settings)
@@ -94,7 +94,7 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QDialogButtonBox::ButtonRole button_role
     = ui->button_box->buttonRole (button);
 
-  QSettings *settings = resource_manager::get_settings ();
+  QSettings *settings = octave::resource_manager::get_settings ();
 
   // save position
   if (settings)

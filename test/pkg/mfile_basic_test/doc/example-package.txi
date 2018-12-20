@@ -1,0 +1,89 @@
+\input texinfo
+@c %**start of header
+@setfilename example-package.info
+@settitle example-package_doc
+@c %**end of header
+
+@c Nowadays the predined function index has entries for each @deftypefn
+@c in additiont to each @findex.
+@defcodeindex mfn
+
+@copying
+Manual for the example-package for Octave.
+
+Copyright @copyright{} 2017-2018 @email{Olaf Till <i7tiol@@t-online.de>}
+
+You can redistribute this documentation and/or modify it under the terms
+of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any
+later version.
+
+This documentation is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this documentation; if not, see <http://www.gnu.org/licenses/>.
+@end copying
+
+@include macros.texi
+
+@titlepage
+@title Manual for the example-package for Octave
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c No table of contents. The table would occupy most of the top node in
+@c html and IMHO misleads the user to use the table instead of the menu
+@c structure of the nodes, which would let some information unused.
+@c
+@c @contents
+
+@c ------------------------------------------------------------------
+
+@node Top
+@top Manual for the example-package for Octave
+
+This documentation applies to version @PACKAGEVERSION of the
+example-package.
+
+This is a template simple m-file based package for users.
+
+Normally, a package manual should be structured and should contain more
+than just the helptexts of the functions.
+
+@menu
+Functions
+* example_mfile::                     Placeholder for an mfile.
+Indices
+* Function index::                    Index of functions.
+* Concept index::                     Concept index.
+@end menu
+
+@c ------------------------------------------------------------------
+
+@node example_mfile
+@chapter Placeholder for an mfile
+@mfnindex example_mfile
+
+@c include function helptext here
+@DOCSTRING(example_mfile)
+
+@c ------------------------------------------------------------------
+
+@node Function index
+@unnumbered Index of functions in example-package
+
+@printindex mfn
+
+@c ------------------------------------------------------------------
+
+@node Concept index
+@unnumbered Concept index
+
+@printindex cp
+
+@bye

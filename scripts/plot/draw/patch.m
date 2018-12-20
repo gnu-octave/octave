@@ -252,6 +252,25 @@ endfunction
 %! p = patch (x, y, [1 32]);
 %! title ("Autoscaling of colors: Red UL and Blue LR triangles");
 
+%!demo
+%! clf;
+%! vertices = [0 0 0; 0.5 -0.5 0; 1 0 0; 1 1 0; 0 1 1; 1 0 1; 0 -1 0;]+3;
+%! faces = [1 2 3 4 5 6 7];
+%! ha = axes ();
+%! hp = patch ('Vertices', vertices, 'Faces', faces, 'FaceColor', 'g');
+%! xlabel('x'), ylabel('y'), zlabel('z')
+%! view(3)
+%! set (ha, "XTick", [], "YTick", [], "ZTick", [])
+%! text (vertices(1,1), vertices(1,2), vertices(1,3), "1")
+%! text (vertices(2,1), vertices(2,2), vertices(2,3), "2")
+%! text (vertices(3,1), vertices(3,2), vertices(3,3), "3")
+%! text (vertices(4,1), vertices(4,2), vertices(4,3), "4")
+%! text (vertices(5,1), vertices(5,2), vertices(5,3), "5")
+%! text (vertices(6,1), vertices(6,2), vertices(6,3), "6")
+%! text (vertices(7,1), vertices(7,2), vertices(7,3), "7")
+%! title ("Non-coplanar patch")
+
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -263,12 +282,22 @@ endfunction
 %!   assert (isempty (get (h, "cdata")));
 %!   assert (get (h, "faces"), [1, 2, 3], eps);
 %!   assert (get (h, "vertices"), [0 1; 1 1; 0 0], eps);
+%!   assert (get (h, "facenormalsmode"), "auto");
+%!   assert (get (h, "facenormals"), get (0, "defaultpatchfacenormals"));
+%!   assert (get (h, "vertexnormalsmode"), "auto");
+%!   assert (get (h, "vertexnormals"), get (0, "defaultpatchvertexnormals"));
 %!   assert (get (h, "type"), "patch");
 %!   assert (get (h, "facecolor"), [0 0 0]);
 %!   assert (get (h, "linestyle"), get (0, "defaultpatchlinestyle"));
 %!   assert (get (h, "linewidth"), get (0, "defaultpatchlinewidth"), eps);
 %!   assert (get (h, "marker"), get (0, "defaultpatchmarker"));
 %!   assert (get (h, "markersize"), get (0, "defaultpatchmarkersize"));
+%!   hl = light;
+%!   assert (get (h, "facelighting"), "flat");
+%!   assert (get (h, "facenormals"), [0 0 1], eps);
+%!   assert (get (h, "vertexnormals"), []);
+%!   set (h, "facelighting", "gouraud")
+%!   assert (get (h, "vertexnormals"), [0 0 1; 0 0 1; 0 0 1], eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

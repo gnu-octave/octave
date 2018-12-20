@@ -328,7 +328,9 @@ orthogonal basis of @code{span (A)}.
                             q.R (economy));
               if (arg.rows () < arg.columns ())
                 warning ("qr: non minimum norm solution for under-determined "
-                         "problem %dx%d", arg.rows (), arg.columns ());
+                         "problem %" OCTAVE_IDX_TYPE_FORMAT
+                         "x%" OCTAVE_IDX_TYPE_FORMAT,
+                         arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));
@@ -344,7 +346,9 @@ orthogonal basis of @code{span (A)}.
               retval = ovl (q.C (args(1).matrix_value ()), q.R (economy));
               if (arg.rows () < arg.columns ())
                 warning ("qr: non minimum norm solution for under-determined "
-                         "problem %dx%d", arg.rows (), arg.columns ());
+                         "problem %" OCTAVE_IDX_TYPE_FORMAT
+                         "x%" OCTAVE_IDX_TYPE_FORMAT,
+                         arg.rows (), arg.columns ());
             }
           else if (nargout > 1)
             retval = ovl (q.Q (), q.R (economy));
@@ -1093,7 +1097,8 @@ economized (R is square).
 DEFUN_DLD (qrinsert, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})
-Update a QR factorization given a row or column to insert in the original factored matrix.
+Update a QR factorization given a row or column to insert in the original
+factored matrix.
 
 
 Given a QR@tie{}factorization of a real or complex matrix
@@ -1292,7 +1297,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 DEFUN_DLD (qrdelete, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})
-Update a QR factorization given a row or column to delete from the original factored matrix.
+Update a QR factorization given a row or column to delete from the original
+factored matrix.
 
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
@@ -1539,7 +1545,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 DEFUN_DLD (qrshift, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})
-Update a QR factorization given a range of columns to shift in the original factored matrix.
+Update a QR factorization given a range of columns to shift in the original
+factored matrix.
 
 Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and

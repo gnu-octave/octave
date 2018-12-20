@@ -213,9 +213,10 @@ function h = plot3 (varargin)
             color = __next_line_color__ ();
           endif
 
-          htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
-                              "color", color, "linestyle", linestyle,
-                              "marker", marker, properties{:});
+          htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
+                                     "zdata", z(:, i),
+                                     "color", color, "linestyle", linestyle,
+                                     "marker", marker, properties{:});
           key = options.key;
           if (! isempty (key))
             hlgnd = [hlgnd, htmp(idx)];
@@ -268,9 +269,10 @@ function h = plot3 (varargin)
             color = __next_line_color__ ();
           endif
 
-          htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
-                              "color", color, "linestyle", linestyle,
-                              "marker", marker, properties{:});
+          htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
+                                     "zdata", z(:, i),
+                                     "color", color, "linestyle", linestyle,
+                                     "marker", marker, properties{:});
           key = options.key;
           if (! isempty (key))
             hlgnd = [hlgnd, htmp(idx)];
@@ -343,9 +345,10 @@ function h = plot3 (varargin)
           color = __next_line_color__ ();
         endif
 
-        htmp(++idx) = line (x(:, i), y(:, i), z(:, i),
-                            "color", color, "linestyle", linestyle,
-                            "marker", marker, properties{:});
+        htmp(++idx) = __go_line__ (hax, "xdata", x(:, i), "ydata", y(:, i),
+                                   "zdata", z(:, i),
+                                   "color", color, "linestyle", linestyle,
+                                   "marker", marker, properties{:});
         key = options.key;
         if (! isempty (key))
           hlgnd = [hlgnd, htmp(idx)];

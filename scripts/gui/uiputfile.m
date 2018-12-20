@@ -90,7 +90,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
   if (nargin > 2)
     if (ischar (varargin{3}))
-      if (isdir (varargin{3}))
+      if (isfolder (varargin{3}))
         fdir = varargin{3};
         fname = fext = "";
       else

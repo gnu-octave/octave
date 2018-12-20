@@ -24,9 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-#include <sstream>
-
 #include "lo-utils.h"
 
 #include "defun.h"

@@ -28,12 +28,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cmath>
 #include <cctype>
 #include <fstream>
 #include <limits>
 
 #include "file-ops.h"
 #include "lo-ieee.h"
+#include "lo-sysdep.h"
 
 #include "defun.h"
 #include "interpreter.h"
@@ -190,7 +192,7 @@ latter case, the file is read until end of file is reached.
 The @qcode{"emptyvalue"} option may be used to specify the value used to
 fill empty fields.  The default is zero.  Note that any non-numeric values,
 such as text, are also replaced by the @qcode{"emptyvalue"}.
-@seealso{csvread, textscan, textread, dlmwrite}
+@seealso{csvread, textscan, dlmwrite}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -218,9 +220,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 
       std::string tname = octave::sys::file_ops::tilde_expand (fname);
 
-      tname = find_data_file_in_load_path ("dlmread", tname);
+      tname = octave::find_data_file_in_load_path ("dlmread", tname);
 
-      input_file.open (tname.c_str (), std::ios::in);
+      std::string ascii_fname = octave::sys::get_ASCII_filename (tname);
+
+      input_file.open (ascii_fname.c_str (), std::ios::in);
 
       if (! input_file)
         error ("dlmread: unable to open file '%s'", fname.c_str ());
@@ -246,7 +250,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
   if (nargin > 1)
     {
       if (args(1).is_sq_string ())
-        sep = do_string_escapes (args(1).string_value ());
+        sep = octave::do_string_escapes (args(1).string_value ());
       else
         sep = args(1).string_value ();
     }
@@ -442,17 +446,33 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                 }
               else
                 {
-                  int next_char = std::tolower (tmp_stream.peek ());
-                  if (next_char == 'i' || next_char == 'j')
+                  int next_char = tmp_stream.peek ();
+                  if (next_char == 'i' || next_char == 'j'
+                      || next_char == 'I' || next_char == 'J')
                     {
                       // Process pure imaginary numbers.
-                      if (! iscmplx)
+                      tmp_stream.get ();
+                      next_char = tmp_stream.peek ();
+                      if (next_char == std::istringstream::traits_type::eof ())
                         {
-                          iscmplx = true;
-                          cdata = ComplexMatrix (rdata);
-                        }
+                          if (! iscmplx)
+                            {
+                              iscmplx = true;
+                              cdata = ComplexMatrix (rdata);
+                            }
 
-                      cdata(i,j++) = Complex (0, x);
+                          cdata(i,j++) = Complex (0, x);
+                        }
+                      else
+                        {
+                          // Parsing failed, <number>i|j<extra text>
+                          j++;  // Leave data initialized to empty_value
+                        }
+                    }
+                  else if (std::isalpha (next_char) && ! std::isfinite (x))
+                    {
+                      // Parsing failed, <Inf|NA|NaN><extra text>
+                      j++;  // Leave data initialized to empty_value
                     }
                   else
                     {
@@ -471,10 +491,11 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     }
                 }
             }
-          else if (iscmplx)
-            cdata(i,j++) = empty_value;
           else
-            rdata(i,j++) = empty_value;
+            {
+              // octave_read_double() parsing failed
+              j++;  // Leave data initialized to empty_value
+            }
 
           pos1 = pos2 + 1;
         }
@@ -627,6 +648,58 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!                            4, 5, 6, 0; -4i, 5i, -6i, 7i]);
 %!   assert (dlmread (file, "", [0 0 0 3]), [1, 2, 3]);
 %!   assert (dlmread (file, "", [1 0 1 3]), [1i, 2i, 3i, 4i]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## NA was not properly read from a file
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,NA,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, NA, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## "Name" was read as NA rather than parse error
+%!test <*54029>
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "NaNe,bNa,Name,c\n1,NaN,3,Inftest\n-Inf,6,NA,8");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [0, 0, 0, 0; 1, NaN, 3, 0; -Inf, 6, NA, 8]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## Infinity incorrectly changed matrix to complex, rather than parse error
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,Infinity,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 0, 3]);
+%! unwind_protect_cleanup
+%!   unlink (file);
+%! end_unwind_protect
+
+## Purely complex numbers with trailing garbage produced complex matrix
+%!test
+%! file = tempname ();
+%! unwind_protect
+%!   fid = fopen (file, "wt");
+%!   fwrite (fid, "1,2jack,3");
+%!   fclose (fid);
+%!
+%!   assert (dlmread (file), [1, 0, 3]);
 %! unwind_protect_cleanup
 %!   unlink (file);
 %! end_unwind_protect

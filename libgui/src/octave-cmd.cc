@@ -28,80 +28,121 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-cmd.h"
 
-#include "octave-qt-link.h"
-#include "cmd-edit.h"
 #include "builtin-defun-decls.h"
+#include "cmd-edit.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
+#include "octave-qt-link.h"
+#include "syminfo.h"
 #include "utils.h"
 
 namespace octave
 {
-  void octave_cmd_exec::execute (void)
+  void octave_cmd_exec::execute (interpreter&)
   {
-    std::string pending_input = octave::command_editor::get_current_line ();
+    std::string pending_input = command_editor::get_current_line ();
 
-    octave::command_editor::set_initial_input (pending_input);
-    octave::command_editor::replace_line (m_cmd.toStdString ());
-    octave::command_editor::redisplay ();
-    octave::command_editor::accept_line ();
+    command_editor::set_initial_input (pending_input);
+    command_editor::replace_line (m_cmd.toStdString ());
+    command_editor::redisplay ();
+    command_editor::accept_line ();
   }
 
-  void octave_cmd_eval::execute (void)
+  void octave_cmd_eval::execute (interpreter&)
   {
     QString function_name = m_info.fileName ();
     function_name.chop (m_info.suffix ().length () + 1);
     std::string file_path = m_info.absoluteFilePath ().toStdString ();
 
-    std::string pending_input = octave::command_editor::get_current_line ();
+    std::string pending_input = command_editor::get_current_line ();
 
     if (valid_identifier (function_name.toStdString ()))
       {
         // valid identifier: call as function with possibility to debug
         std::string path = m_info.absolutePath ().toStdString ();
         if (octave_qt_link::file_in_path (file_path, path))
-          octave::command_editor::replace_line (function_name.toStdString ());
+          command_editor::replace_line (function_name.toStdString ());
       }
     else
       {
         // no valid identifier: use Fsource (), no debug possible
         Fsource (ovl (file_path));
-        octave::command_editor::replace_line ("");
+        command_editor::replace_line ("");
       }
 
-    octave::command_editor::set_initial_input (pending_input);
-    octave::command_editor::redisplay ();
+    command_editor::set_initial_input (pending_input);
+    command_editor::redisplay ();
 
-    octave::command_editor::accept_line ();
+    command_editor::accept_line ();
   }
 
-  void octave_cmd_debug::execute (void)
+  void octave_cmd_builtin::execute (interpreter& interp)
+  {
+    octave_value_list argout;
+    if (m_callback_fi)
+      argout = m_callback_fi (interp, m_argin, m_nargout);
+    else if (m_callback_f)
+      argout = m_callback_f (m_argin, m_nargout);
+
+    switch (m_update)
+      {
+        case CMD_UPD_WORKSPACE:
+          {
+            call_stack& cs
+              = __get_call_stack__ ("octave_cmd_builtin::execute");
+
+            octave_link::set_workspace (true, cs.get_symbol_info ());
+          }
+          break;
+
+        default:
+          break;
+      }
+
+    if (m_nargout)    // Return value expected: connect the related value
+      emit argout_signal (argout);
+  }
+
+  void octave_cmd_builtin::init_cmd_retval ()
+  {
+    if (m_nargout)
+      connect (this, SIGNAL (argout_signal (const octave_value_list&)),
+               m_argout_receiver, m_argout_handler, Qt::QueuedConnection);
+  }
+
+  void octave_cmd_debug::execute (interpreter& interp)
   {
     if (m_cmd == "step")
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbstep ();
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+        Fdbstep (interp);
       }
     else if (m_cmd == "cont")
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbcont ();
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+        Fdbcont (interp);
       }
     else if (m_cmd == "quit")
-      Fdbquit ();
+      Fdbquit (interp);
     else
       {
-        F__db_next_breakpoint_quiet__ (ovl (m_suppress_dbg_location));
-        Fdbstep (ovl (m_cmd.toStdString ()));
+        F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+        Fdbstep (interp, ovl (m_cmd.toStdString ()));
       }
 
-    octave::command_editor::interrupt (true);
+    command_editor::interrupt (true);
   }
 
   // add a command to the queue
 
   void octave_command_queue::add_cmd (octave_cmd *cmd)
   {
+    // Get a guarded pointer from the pointer to the command object
+    QPointer<octave_cmd> cmd_gp (cmd);
+
+    // And add it to the command queue
     m_queue_mutex.lock ();
-    m_queue.append (cmd);
+    m_queue.append (cmd_gp);
     m_queue_mutex.unlock ();
 
     if (m_processing.tryAcquire ())  // if callback not processing, post event
@@ -118,7 +159,7 @@ namespace octave
       {
         m_queue_mutex.lock ();     // critical path
 
-        octave_cmd *cmd = m_queue.takeFirst ();
+        QPointer<octave_cmd> cmd_gp = m_queue.takeFirst ();
 
         if (m_queue.isEmpty ())
           m_processing.release (); // cmd queue empty, processing will stop
@@ -126,9 +167,19 @@ namespace octave
           repost = true;          // not empty, repost at end
         m_queue_mutex.unlock ();
 
-        cmd->execute ();
+        if (! cmd_gp.isNull ())
+          {
+            // The pointer to the command object is still valid
 
-        delete cmd;
+            // FIXME: Could we store a reference to the interpreter in the
+            // octave_command_queue object?  If so, where is the proper
+            // place to initialize that?
+            interpreter& interp = __get_interpreter__ ("octave_command_queue::execute_command_callback");
+
+            cmd_gp->execute (interp);
+          }
+
+        delete cmd_gp;    // destroy the referred octave_cmd object
       }
 
     if (repost)  // queue not empty, so repost event for further processing

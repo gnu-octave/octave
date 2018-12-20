@@ -59,9 +59,9 @@ function z = cumtrapz (x, y, dim)
     have_xy = true;
     have_dim = true;
   elseif (nargin == 2)
-    if (! size_equal (x, y) && isscalar (y))
-      dim = y;
+    if (isscalar (y) && ! isscalar (x))
       have_dim = true;
+      dim = y;
     else
       have_xy = true;
     endif
@@ -86,28 +86,28 @@ function z = cumtrapz (x, y, dim)
   endif
 
   n = sz(dim);
-  idx1 = idx2 = repmat ({':'}, [nd, 1]);
+  idx1 = idx2 = {':'}(ones (nd, 1));  # repmat ({':'}, [nd, 1]), but faster
   idx1{dim} = 2 : n;
   idx2{dim} = 1 : (n - 1);
 
   if (! have_xy)
     z = 0.5 * cumsum (x(idx1{:}) + x(idx2{:}), dim);
-  else
-    if (isvector (x) && ! isvector (y))
-      if (length (x) != sz(dim))
-        error ("cumtrapz: length of X and length of Y along DIM must match");
-      endif
+  elseif (isscalar (x))
+    z = x * 0.5 * cumsum (y(idx1{:}) + y(idx2{:}), dim);
+  elseif (isvector (x))
+    if (length (x) != n)
+      error ("cumtrapz: length of X and length of Y along DIM must match");
+    endif
       ## Reshape vector to point along dimension DIM
       shape = ones (nd, 1);
-      shape(dim) = sz(dim);
+      shape(dim) = n;
       x = reshape (x, shape);
       z = 0.5 * cumsum (diff (x) .* (y(idx1{:}) + y(idx2{:})), dim);
-    else
-      if (! size_equal (x, y))
-        error ("cumtrapz: X and Y must have same shape");
-      endif
-      z = 0.5 * cumsum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
+  else
+    if (! size_equal (x, y))
+      error ("cumtrapz: X and Y must have same shape");
     endif
+    z = 0.5 * cumsum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
   endif
 
   sz(dim) = 1;
@@ -116,17 +116,34 @@ function z = cumtrapz (x, y, dim)
 endfunction
 
 
-%!shared x1,x2,y
+%!shared x1, x2, y
+%! x1 = [1:5];
+%! x2 = [2:2:10];
+%! y = [1:5];
+%!
+%!assert (cumtrapz (y), [0, 1.5, 4, 7.5, 12])
+%!assert (cumtrapz (y'), [0, 1.5, 4, 7.5, 12]')
+%!assert (cumtrapz (1, y), [0, 1.5, 4, 7.5, 12])
+%!assert (cumtrapz (2, y), [0, 3, 8, 15, 24])
+%!assert (cumtrapz (x1, y),[0, 1.5, 4, 7.5, 12])
+%!assert (cumtrapz (x2, y),[0, 3, 8, 15, 24])
+%!assert (cumtrapz (2, y, 2), [0, 3, 8, 15, 24])
+%!assert (cumtrapz (x2, y, 2), [0, 3, 8, 15, 24])
+%!assert (cumtrapz (y, 1), [0, 0, 0, 0, 0])
+%!assert (cumtrapz (2, y, 1), [0, 0, 0, 0, 0])
+%!assert (cumtrapz (y', 2), [0, 0, 0, 0, 0]')
+
+%!shared x1, x2, y
 %! x1 = [0,0,0;2,2,2];
 %! x2 = [0,2,4;0,2,4];
 %! y = [1,2,3;4,5,6];
 %!
 %!assert (cumtrapz (y), [0,0,0;2.5,3.5,4.5])
-%!assert (cumtrapz (x1,y), [0,0,0;5,7,9])
-%!assert (cumtrapz (y,1), [0,0,0;2.5,3.5,4.5])
-%!assert (cumtrapz (x1,y,1), [0,0,0;5,7,9])
-%!assert (cumtrapz (y,2), [0,1.5,4;0,4.5,10])
-%!assert (cumtrapz (x2,y,2), [0,3,8;0,9,20])
+%!assert (cumtrapz (x1, y), [0,0,0;5,7,9])
+%!assert (cumtrapz (y, 1), [0,0,0;2.5,3.5,4.5])
+%!assert (cumtrapz (x1, y, 1), [0,0,0;5,7,9])
+%!assert (cumtrapz (y, 2), [0,1.5,4;0,4.5,10])
+%!assert (cumtrapz (x2, y, 2), [0,3,8;0,9,20])
 
 ## Test ND-array implementation
 %!shared x1,x2,y
@@ -137,3 +154,13 @@ endfunction
 %!assert (cumtrapz (y,3), reshape ([0,1.5,4;0,4.5,10],[1 2 3]))
 %!assert (cumtrapz (x1,y,3), reshape ([0,1.5,4;0,4.5,10],[1 2 3]))
 %!assert (cumtrapz (x2,y,3), reshape ([0,3,8;0,9,20],[1 2 3]))
+
+## Test input validation
+%!error cumtrapz ()
+%!error cumtrapz (1,2,3,4)
+%!error <DIM must be an integer> cumtrapz (1, 2, [1 2])
+%!error <DIM must be an integer> cumtrapz (1, 2, 1.5)
+%!error <DIM must be .* a valid dimension> cumtrapz (1, 2, 0)
+%!error <length of X and length of Y.*must match> cumtrapz ([1 2], [1 2 3])
+%!error <X and Y must have same shape> cumtrapz (ones (2,3), ones (2,4))
+

@@ -7,14 +7,14 @@ Copyright (C) 2013 Rüdiger Sonderfeld
 This file is part of Octave.
 
 Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "variable-editor-model.h"
 
+#include "interpreter.h"
+#include "interpreter-private.h"
 #include "ov.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"
@@ -222,17 +224,6 @@ namespace octave
       case Qt::EditRole:
         return edit_display (idx, role);
         return edit_display (idx, role);
-
-#if 0
-      case Qt::StatusTipRole:
-        return elem (idx).m_status_tip;
-
-      case Qt::ToolTipRole:
-        return elem (idx).m_tool_tip;
-
-      case Qt::BackgroundRole:
-        return elem (idx).m_background;
-#endif
       }
 
     // Invalid.
@@ -1020,7 +1011,7 @@ namespace octave
 
     std::string expr = os.str ();
 
-    octave_link::post_event<variable_editor_model, std::string, std::string, QModelIndex>
+    octave_link::post_event
       (this, &variable_editor_model::set_data_oct, nm, expr, idx);
 
     return true;
@@ -1057,7 +1048,7 @@ namespace octave
   {
     // FIXME: cells?
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
        .arg (QString::fromStdString (name ()))
@@ -1079,7 +1070,7 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1(%2:%3, :) = []")
        .arg (QString::fromStdString (name ()))
@@ -1093,7 +1084,7 @@ namespace octave
   bool
   variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
   {
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
        .arg (QString::fromStdString (name ()))
@@ -1115,7 +1106,7 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event <variable_editor_model, std::string, std::string>
+    octave_link::post_event
       (this, &variable_editor_model::eval_oct, name (),
        QString ("%1(:, %2:%3) = []")
        .arg (QString::fromStdString (name ()))
@@ -1135,9 +1126,11 @@ namespace octave
 
     try
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::set_data_oct");
 
-        eval_string (expr, true, parse_status);
+        int parse_status = 0;
+        interp.eval_string (expr, true, parse_status);
 
         octave_value val = retrieve_variable (name);
 
@@ -1184,9 +1177,11 @@ namespace octave
 
     try
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::eval_oct");
 
-        eval_string (expr, true, parse_status);
+        int parse_status = 0;
+        interp.eval_string (expr, true, parse_status);
 
         init_from_oct (name);
       }
@@ -1218,9 +1213,11 @@ namespace octave
 
     if (symbol_exist (name, "var") > 0)
       {
-        int parse_status = 0;
+        interpreter& interp
+          = __get_interpreter__ ("variable_editor_model::retrieve_variable");
 
-        return eval_string (x, true, parse_status);
+        int parse_status = 0;
+        return interp.eval_string (x, true, parse_status);
       }
 
     return octave_value ();

@@ -65,12 +65,12 @@ namespace octave
   }
 
   octave_lvalue
-  tree_identifier::lvalue (tree_evaluator *tw)
+  tree_identifier::lvalue (tree_evaluator& tw)
   {
     if (m_sym.is_added_static ())
       static_workspace_error ();
 
-    symbol_scope scope = tw->get_current_scope ();
+    symbol_scope scope = tw.get_current_scope ();
 
     return octave_lvalue (m_sym, scope.current_context ());
   }

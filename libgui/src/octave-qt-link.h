@@ -44,7 +44,6 @@ class octave_value;
 
 namespace octave
 {
-
   //! Provides threadsafe access to octave.
   //! @author Jacob Dawid
   //!
@@ -58,7 +57,7 @@ namespace octave
 
   public:
 
-    octave_qt_link (QWidget *p, gui_application *app_context);
+    octave_qt_link (void);
 
     // No copying!
 
@@ -74,9 +73,6 @@ namespace octave
 
     bool do_edit_file (const std::string& file);
     bool do_prompt_new_edit_file (const std::string& file);
-
-    int do_message_dialog (const std::string& dlg, const std::string& msg,
-                           const std::string& title);
 
     std::string
     do_question_dialog (const std::string& msg, const std::string& title,
@@ -112,10 +108,16 @@ namespace octave
 
     void do_change_directory (const std::string& dir);
 
+    void do_file_remove (const std::string& old_name,
+                         const std::string& new_name);
+    void do_file_renamed (bool load_new = true);
+
     void do_execute_command_in_terminal (const std::string& command);
 
+    uint8NDArray do_get_named_icon (const std::string& icon_name);
+
     void do_set_workspace (bool top_level, bool debug,
-                           const symbol_scope& scope,
+                           const symbol_info_list& syminfo,
                            bool update_variable_editor);
 
     void do_clear_workspace (void);
@@ -134,13 +136,12 @@ namespace octave
     void do_update_breakpoint (bool insert, const std::string& file, int line,
                                const std::string& cond);
 
-    void do_set_default_prompts (std::string& ps1, std::string& ps2,
-                                 std::string& ps4);
-
     static bool file_in_path (const std::string& file, const std::string& dir);
 
     void do_show_preferences (void);
 
+    std::string do_gui_preference (const std::string& key,
+                                   const std::string& value);
     void do_show_doc (const std::string& file);
     void do_register_doc (const std::string& file);
     void do_unregister_doc (const std::string& file);
@@ -159,8 +160,6 @@ namespace octave
     void do_insert_debugger_pointer (const std::string& file, int line);
     void do_delete_debugger_pointer (const std::string& file, int line);
 
-    gui_application *m_app_context;
-
     bool m_shutdown_confirm_result;
 
     QMutex m_mutex;
@@ -174,10 +173,13 @@ namespace octave
 
     void change_directory_signal (const QString& dir);
 
+    void file_remove_signal (const QString& old_name, const QString& new_name);
+    void file_renamed_signal (bool load_new);
+
     void execute_command_in_terminal_signal (const QString& command);
 
     void set_workspace_signal (bool top_level, bool debug,
-                               const symbol_scope& scope);
+                               const symbol_info_list& syminfo);
 
     void clear_workspace_signal (void);
 
@@ -195,6 +197,8 @@ namespace octave
     void delete_debugger_pointer_signal (const QString&, int);
 
     void show_preferences_signal (void);
+
+    void gui_preference_signal (const QString&, const QString&, QString*);
 
     void show_doc_signal (const QString& file);
 

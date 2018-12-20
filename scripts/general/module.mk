@@ -28,7 +28,6 @@ FCN_FILE_DIRS += \
   %reldir%/del2.m \
   %reldir%/divergence.m \
   %reldir%/flip.m \
-  %reldir%/flipdim.m \
   %reldir%/fliplr.m \
   %reldir%/flipud.m \
   %reldir%/gradient.m \

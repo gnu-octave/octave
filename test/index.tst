@@ -76,7 +76,7 @@
 %!error a(0)
 %!assert (a(2), 3)
 
-%% Additional tests
+## Additional tests
 
 %!shared a, b
 %! a = [1,2;3,4];
@@ -496,8 +496,7 @@
 %! x([], false, :) = [];
 %! assert (x, y);
 
-
-  ##  Test indexing of unnamed constants
+##  Test indexing of unnamed constants
 %!error <index \(0\): subscripts must be>     1(0)
 %!error <index \(-1\): subscripts must be>    1(-1)
 %!error <index \(_,0.5\): subscripts>                 {}(1,0.5)
@@ -532,11 +531,11 @@
 %!error <a null assignment can only have one non-colon index>   abc(3,5) = []
 %!error <=: nonconformant arguments \(op1 is 1x1, op2 is 1x5\)> abc(3,5) = 1:5
 
-%! ##  Test diagonal matrices, and access of function results
+##  Test diagonal matrices, and access of function results
 %!error <index \(_,_,5\): but object has size 3x3> eye(3)(2,3,5)
 %!error <index \(-2,_\): subscripts>               eye(4)(-2,3)
 
-%! ##  Test cells
+##  Test cells
 %!shared abc
 %! abc = {1, 2; 3, 4};
 %!error <abc\(_,0.3,_\): subscripts>  abc(2,0.3,5)
@@ -544,13 +543,13 @@
 %!error <abc\(-2,_,_,_\): subscripts> abc{-2,1,1,1}
 %!error <abc\(0,_,_,_\): subscripts>  abc(0,1,1,1) = 1
 
-%! ##  Test permutation matrices
+##  Test permutation matrices
 %!shared abc
 %! abc = eye(3)([3 1 2],:);
 %!error <abc\([Nn][aA][Nn]\): subscripts>         abc(NA)
 %!error <abc\(_,_,_,[Ii][nN][Ff],_\): subscripts> abc(1,1,1,Inf,1)
 
-%! ##  Test sparse matrices
+##  Test sparse matrices
 %!shared abc
 %! abc = sparse(3,3);
 %!error <abc\(-1\): subscripts>                abc(-1)
@@ -560,29 +559,27 @@
 %!error <sparse indexing needs 1 or 2 indices> abc(0,0,0,0)
 %!error <abc\(4,_\): but abc has size 3x3>     abc(4,1)
 
-%! ##  Test ranges
+##  Test ranges
 %!shared abc
 %! abc = 1:10;
 %!error <abc\(-1\): subscripts>             abc(-1)
 %!error <abc\(-1,_\): subscripts>           abc(-1,1)
 %!error <abc\(4,_\): but abc has size 1x10> abc(4,1)
 
-%! ##  Test complex
+##  Test complex
 %!shared abc, z
 %! abc = [1 2];
 %!error <abc\(0\+1i\): subscripts must be real>     abc(i)
 %! abc = [1 2; 3 4];
 %!error <abc\(1\+0i\): subscripts must be real>     abc(complex(1))
 %!error <abc\(1\+0.5i,_\): subscripts must be real> abc(1+0.5*i,3)
-%!error <abc\(_,0-2i\): subscripts must be real>   abc(2,0-2*i)
+%!error <abc\(_,0-2i\): subscripts must be real>    abc(2,0-2*i)
 
-## bug #35841
-%!test
+%!test <*35841>
 %! a(1,1,1).b(1) = 2;
 %! a(1,1,1).b(1) = 3;
 
-## bug #39789
-%!test
+%!test <*39789>
 %! c = cell(1,1,1);
 %! c{1,1,1} = zeros(5, 2);
 %! c{1,1,1}(:, 1) = 1;

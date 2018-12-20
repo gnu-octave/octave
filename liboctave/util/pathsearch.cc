@@ -36,9 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  directory_path::directory_path (const std::string& s, const std::string& d)
-    : m_orig_path (s), m_default_path (d), m_initialized (false),
-      m_expanded_path (), m_path_elements ()
+  directory_path::directory_path (const std::string& s)
+    : m_orig_path (s), m_initialized (false), m_expanded_path (),
+      m_path_elements ()
   {
     if (! m_orig_path.empty ())
       init ();
@@ -108,10 +108,7 @@ namespace octave
         octave_kpse_initialized = true;
       }
 
-    m_expanded_path
-      = kpse_path_expand (m_default_path.empty ()
-                          ? m_orig_path
-                          : kpse_expand_default (m_orig_path, m_default_path));
+    m_expanded_path = kpse_path_expand (m_orig_path);
 
     for (kpse_path_iterator pi (m_expanded_path); pi != std::string::npos; pi++)
       m_path_elements.push_back (*pi);

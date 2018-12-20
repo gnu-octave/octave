@@ -38,7 +38,7 @@ function runtests (directory)
     do_class_dirs = true;
   elseif (nargin == 1)
     dirs = {canonicalize_file_name(directory)};
-    if (isempty (dirs{1}) || ! isdir (dirs{1}))
+    if (isempty (dirs{1}) || ! isfolder (dirs{1}))
       ## Search for directory name in path
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
@@ -83,7 +83,7 @@ function run_all_tests (directory, do_class_dirs)
       endif
     elseif (f(1) == "@")
       f = fullfile (directory, f);
-      if (isdir (f))
+      if (isfolder (f))
         dirs(end+1) = f;
       endif
     endif

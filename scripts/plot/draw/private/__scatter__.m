@@ -36,6 +36,25 @@ function hg = __scatter__ (varargin)
     istart = 7;
   endif
 
+  ## Force mixtures of int and float data to be float (Bug #4116).
+  if (xor (isfloat (x), isfloat (y)))
+    if (isfloat (x))
+      y = cast (y, class (x));
+    else
+      x = cast (x, class (y));
+    endif
+  endif
+  if (nd != 2)
+    if (xor (isfloat (x), isfloat (z)))
+      if (isfloat (x))
+        z = cast (z, class (x));
+      else
+        x = cast (x, class (z));
+        y = cast (y, class (z));
+      endif
+    endif
+  endif
+
   if (istart <= nargin)
     s = varargin{istart}(:);
     if (isempty (s) || ischar (s))

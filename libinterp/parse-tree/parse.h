@@ -486,16 +486,16 @@ namespace octave
   {
   public:
 
-    parser (void)
-      : base_parser (*(new lexer ()))
+    parser (interpreter& interp)
+      : base_parser (*(new lexer (interp)))
     { }
 
-    parser (FILE *file)
-      : base_parser (*(new lexer (file)))
+    parser (FILE *file, interpreter& interp)
+      : base_parser (*(new lexer (file, interp)))
     { }
 
-    parser (const std::string& eval_string)
-      : base_parser (*(new lexer (eval_string)))
+    parser (const std::string& eval_string, interpreter& interp)
+      : base_parser (*(new lexer (eval_string, interp)))
     { }
 
     parser (lexer& lxr)
@@ -517,8 +517,8 @@ namespace octave
   {
   public:
 
-    push_parser (void)
-      : base_parser (*(new push_lexer ()))
+    push_parser (interpreter& interp)
+      : base_parser (*(new push_lexer (interp)))
     { }
 
     // No copying!
@@ -580,9 +580,11 @@ namespace octave
   extern OCTINTERP_API octave_value_list
   feval (const octave_value_list& args, int nargout = 0);
 
+  OCTAVE_DEPRECATED (5, "use 'octave::interpreter::eval_string' instead")
   extern OCTINTERP_API octave_value_list
   eval_string (const std::string&, bool silent, int& parse_status, int nargout);
 
+  OCTAVE_DEPRECATED (5, "use 'octave::interpreter::eval_string' instead")
   extern OCTINTERP_API octave_value
   eval_string (const std::string&, bool silent, int& parse_status);
 

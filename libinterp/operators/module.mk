@@ -142,3 +142,4 @@ libinterp_EXTRA_DIST += \
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SHELL) $(srcdir)/%reldir%/mk-ops.sh $(LIBINTERP_OPERATORS_SRC) > $@-t && \
 	mv $@-t $@
+

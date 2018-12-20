@@ -110,17 +110,17 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       ## Do the actual deletion.
       if (desc.loaded)
         rmpath (desc.dir);
-        if (exist (getarchdir (desc)))
+        if (isfolder (getarchdir (desc)))
           rmpath (getarchdir (desc));
         endif
       endif
-      if (exist (desc.dir, "dir"))
+      if (isfolder (desc.dir))
         [status, msg] = rmdir (desc.dir, "s");
-        if (status != 1 && exist (desc.dir, "dir"))
+        if (status != 1 && isfolder (desc.dir))
           error ("couldn't delete directory %s: %s", desc.dir, msg);
         endif
         [status, msg] = rmdir (getarchdir (desc), "s");
-        if (status != 1 && exist (getarchdir (desc), "dir"))
+        if (status != 1 && isfolder (getarchdir (desc)))
           error ("couldn't delete directory %s: %s", getarchdir (desc), msg);
         endif
         if (dirempty (desc.archprefix))

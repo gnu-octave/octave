@@ -509,7 +509,7 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
       OCTAVE_LOCAL_BUFFER (octave::suitesparse_integer, cmember, cslen);
       for (octave_idx_type i = 0; i < cslen; i++)
         // convert cmember from 1-based to 0-based
-        cmember[i] = static_cast<octave_idx_type>(in_cmember(i) - 1);
+        cmember[i] = static_cast<octave_idx_type> (in_cmember(i) - 1);
 
       if (cslen != n_col)
         error ("csymamd: CMEMBER must be of length equal to #cols of A");

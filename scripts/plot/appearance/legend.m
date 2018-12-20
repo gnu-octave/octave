@@ -237,12 +237,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endwhile
 
   ## Validate the orientation
-  switch (orientation)
-    case {"vertical", "horizontal", "default"}
-      ## These are all accepted orientations.
-    otherwise
-      error ("legend: unrecognized legend orientation");
-  endswitch
+  if (! any (strcmp (orientation, {"vertical", "horizontal", "default"})))
+    error ("legend: unrecognized legend orientation");
+  endif
 
   ## Validate the location type
   outside = false;
@@ -257,11 +254,23 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   switch (location)
     case {"north", "south", "east", "west", "northeast", "northwest", ...
           "southeast", "southwest", "default"}
+      ## These are all valid locations, do nothing.
+
     case "best"
-      warning ("legend: 'best' not yet implemented for location specifier\n");
-      location = "northeast";
+      if (outside)
+        if (strcmp (orientation, "horizontal"))
+          location = "south";
+        else
+          location = "northeast";
+        endif
+      else
+        warning ("legend: 'best' not yet implemented for location specifier, using 'northeast' instead\n");
+        location = "northeast";
+      endif
+
     case "none"
       ## FIXME: Should there be any more error checking on this?
+
     otherwise
       error ("legend: unrecognized legend location");
   endswitch
@@ -570,8 +579,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       end_unwind_protect
 
       ## Padding between legend entries horizontally and vertically
-      xpad = 2;
-      ypad = 2;
+      ## measured in points.
+      ## FIXME: 3*xpad must be integer or strange off-by-1 pixel issues
+      ##        with lines in OpenGL.
+      xpad = 2 + 1/3;
+      ypad = 4;
+
+      bpad = 8;  # padding of legend box from surrounding axes
 
       linelength = 15;
 
@@ -673,7 +687,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           maxwidth = max (maxwidth, extents(3));
           maxheight = max (maxheight, extents(4));
         endfor
-        ## Restore units which were force to points
+        ## Restore units which were forced to points
         set (texthandle, "units", get (0, "DefaultTextUnits"));
 
         num1 = nentries;
@@ -704,6 +718,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
         num2 = ceil (nentries / num1);
 
+        ## Layout is [xpad, linelength, xpad, maxwidth, xpad]
         xstep = 3 * xpad + (maxwidth + linelength);
         if (strcmp (textpos, "right"))
           xoffset = xpad;
@@ -752,95 +767,98 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           case "north"
             if (outside)
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_outpos(2) + ca_outpos(4) - lpos(4) - ypad, lpos(3), ...
-                      lpos(4)];
+                      ca_outpos(2) + ca_outpos(4) - lpos(4) - bpad/2, ...
+                      lpos(3), lpos(4)];
 
               new_pos = [ca_pos(1), ca_pos(2), ca_pos(3), ca_pos(4) - lpos(4)];
             else
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
+                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
+                      lpos(3), lpos(4)];
             endif
           case "south"
             if (outside)
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_outpos(2) + ypad, lpos(3), lpos(4)];
-              new_pos = [ca_pos(1), lpos(2) + lpos(4) + 2 * ypad ...
-                      + tightinset(2), ca_pos(3), ...
-                         ca_pos(4) - lpos(4)];
+                      ca_outpos(2) + bpad/2, lpos(3), lpos(4)];
+              new_pos = [ca_pos(1), ...
+                         lpos(2) + lpos(4) + bpad/2 + tightinset(2), ...
+                         ca_pos(3), ca_pos(4) - lpos(4)];
             else
               lpos = [ca_pos(1) + (ca_pos(3) - lpos(3)) / 2, ...
-                      ca_pos(2) + ypad, lpos(3), lpos(4)];
+                      ca_pos(2) + bpad, lpos(3), lpos(4)];
             endif
           case "east"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
-                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
+                      ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, ...
+                      lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - 2 * xpad - ca_pos(1) - tightinset(3), ...
+                         lpos(1) - bpad - tightinset(3) - ca_pos(1), ...
                          ca_pos(4)];
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              new_pos(3) += gnuplot_offset;
             else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
+              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
             endif
           case "west"
             if (outside)
-              lpos = [ca_outpos(1) + ypad, ...
+              lpos = [ca_outpos(1) + bpad/2, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, ...
                       lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
-                         ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
-              new_pos(1) = new_pos(1) - gnuplot_offset;
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
+                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
+              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
             else
-              lpos = [ca_pos(1) +  ypad, ...
+              lpos = [ca_pos(1) + bpad, ...
                       ca_pos(2) + (ca_pos(4) - lpos(4)) / 2, lpos(3), lpos(4)];
             endif
           case "northeast"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4), lpos(3), lpos(4)];
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
+                      ca_pos(2) + ca_pos(4) - lpos(4), ...
+                      lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - 2 * xpad - tightinset(3) - ca_pos(1), ...
+                         lpos(1) - bpad - tightinset(3) - ca_pos(1), ...
                          ca_pos(4)];
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              new_pos(3) += gnuplot_offset;
             else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
+              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
+                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
+                      lpos(3), lpos(4)];
             endif
           case "northwest"
             if (outside)
-              lpos = [ca_outpos(1) + ypad , ca_pos(2) + ca_pos(4) - lpos(4), ...
+              lpos = [ca_outpos(1) + bpad/2, ...
+                      ca_pos(2) + ca_pos(4) - lpos(4), ...
                       lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
-              ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
-              new_pos(1) = new_pos(1) - gnuplot_offset;
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
+                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
+              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
             else
-              lpos = [ca_pos(1) + ypad, ...
-                      ca_pos(2) + ca_pos(4) - lpos(4) - ypad, lpos(3), lpos(4)];
+              lpos = [ca_pos(1) + bpad, ...
+                      ca_pos(2) + ca_pos(4) - lpos(4) - bpad, ...
+                      lpos(3), lpos(4)];
             endif
           case "southeast"
             if (outside)
-              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - ypad, ...
+              lpos = [ca_outpos(1) + ca_outpos(3) - lpos(3) - bpad/2, ...
                       ca_pos(2), lpos(3), lpos(4)];
               new_pos = [ca_pos(1), ca_pos(2), ...
-                         lpos(1) - 2 * xpad - ca_pos(1) - tightinset(3), ...
+                         lpos(1) - bpad - ca_pos(1) - tightinset(3), ...
                          ca_pos(4)];
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              new_pos(3) += gnuplot_offset;
             else
-              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - ypad, ...
-                      ca_pos(2) + ypad, lpos(3), lpos(4)];
+              lpos = [ca_pos(1) + ca_pos(3) - lpos(3) - bpad, ...
+                      ca_pos(2) + bpad, lpos(3), lpos(4)];
             endif
           case "southwest"
             if (outside)
-              lpos = [ca_outpos(1) + ypad, ca_pos(2), lpos(3), lpos(4)];
-              new_pos = [lpos(1) + lpos(3) + 2 * xpad + tightinset(1), ...
-              ca_pos(2), ca_pos(3) - lpos(3) - 2 * xpad, ca_pos(4)];
-              new_pos(1) = new_pos(1) - gnuplot_offset;
-              new_pos(3) = new_pos(3) + gnuplot_offset;
+              lpos = [ca_outpos(1) + bpad/2, ca_pos(2), lpos(3), lpos(4)];
+              new_pos = [lpos(1) + lpos(3) + bpad/2 + tightinset(1), ...
+                         ca_pos(2), ca_pos(3) - lpos(3) - bpad/2, ca_pos(4)];
+              new_pos([1, 3]) += [-gnuplot_offset, gnuplot_offset];
             else
-              lpos = [ca_pos(1) + ypad, ca_pos(2) + ypad, lpos(3), lpos(4)];
+              lpos = [ca_pos(1) + bpad, ca_pos(2) + bpad, lpos(3), lpos(4)];
             endif
         endswitch
 
@@ -877,22 +895,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               style = get (hplt, "linestyle");
               lwidth = min (get (hplt, "linewidth"), 5);
               if (! strcmp (style, "none"))
-                l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
-                           "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", style, "linewidth", lwidth,
-                           "marker", "none");
+                l1 = __go_line__ (hlegend, ...
+                       "xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3), ...
+                       "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
+                       "color", color, "linestyle", style, ...
+                       "linewidth", lwidth, "marker", "none");
                 setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
               marker = get (hplt, "marker");
               if (! strcmp (marker, "none"))
-                l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
-                           "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", "none", "linewidth", lwidth,
-                           "marker", marker,
-                           "markeredgecolor", get (hplt, "markeredgecolor"),
-                           "markerfacecolor", get (hplt, "markerfacecolor"),
-                           "markersize", min (get (hplt, "markersize"),10));
+                l1 = __go_line__ (hlegend, ...
+                       "xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3), ...
+                       "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4), ...
+                       "color", color, "linestyle", "none", ...
+                       "linewidth", lwidth, "marker", marker, ...
+                       "markeredgecolor", get (hplt, "markeredgecolor"), ...
+                       "markerfacecolor", get (hplt, "markerfacecolor"), ...
+                       "markersize", min (get (hplt, "markersize"),10));
                 setappdata (l1, "handle", hplt);
                 hobjects(end+1) = l1;
               endif
@@ -1310,21 +1330,21 @@ function cb_line_listener (h, ~, hlegend, linelength, update_name)
     endif
 
     if (! strcmp (linestyle, "none"))
-      hl = line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
-                 "linestyle", get (h, "linestyle"),
-                 "linewidth", min (get (h, "linewidth"), 5),
-                 "marker", "none",
-                 "parent", hlegend);
+      hl = __go_line__ (hlegend, "xdata", xpos1, "ydata", ypos1,
+                        "color", get (h, "color"),
+                        "linestyle", get (h, "linestyle"),
+                        "linewidth", min (get (h, "linewidth"), 5),
+                        "marker", "none");
       setappdata (hl, "handle", h);
     endif
     if (! strcmp (marker, "none"))
-      hl = line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
-                 "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
-                 "markerfacecolor", get (h, "markerfacecolor"),
-                 "markersize", min (get (h, "markersize"), 10),
-                 "linestyle", "none",
-                 "linewidth", min (get (h, "linewidth"), 5),
-                 "parent", hlegend);
+      hl = __go_line__ (hlegend, "xdata", xpos2, "ydata", ypos2, ...
+                        "color", get (h, "color"), ...
+                        "marker", marker, "markeredgecolor", get (h, "markeredgecolor"), ...
+                        "markerfacecolor", get (h, "markerfacecolor"), ...
+                        "markersize", min (get (h, "markersize"), 10), ...
+                        "linestyle", "none", ...
+                        "linewidth", min (get (h, "linewidth"), 5));
       setappdata (hl, "handle", h);
     endif
   endif
@@ -1806,7 +1826,6 @@ endfunction
 %! unwind_protect
 %!   plot (1:10);
 %!   fail ("legend ('location','best')", "warning", "'best' not yet implemented");
-%!   fail ("legend ('location','bestoutside')", "warning", "'best' not yet implemented");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

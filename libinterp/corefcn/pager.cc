@@ -32,13 +32,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
-#include "singleton-cleanup.h"
 
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "octave.h"
 #include "ovl.h"
@@ -49,226 +49,93 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Our actual connection to the external pager.
-static oprocstream *external_pager = nullptr;
-
-// TRUE means we write to the diary file.
-static bool write_to_diary_file = false;
-
-// The name of the current diary file.
-static std::string diary_file ("diary");
-
-// The diary file.
-static std::ofstream external_diary_file;
-
-static std::string
-default_pager (void)
-{
-  std::string pager_binary = octave::sys::env::getenv ("PAGER");
-
-  if (pager_binary.empty ())
-    pager_binary = octave::config::default_pager ();
-
-  return pager_binary;
-}
-
-// The shell command to run as the pager.
-static std::string VPAGER = default_pager ();
-
-// The options to pass to the pager.
-static std::string VPAGER_FLAGS;
-
-// TRUE means that if output is going to the pager, it is sent as soon
-// as it is available.  Otherwise, it is buffered and only sent to the
-// pager when it is time to print another prompt.
-static bool Vpage_output_immediately = false;
-
-// TRUE means all output intended for the screen should be passed
-// through the pager.
-static bool Vpage_screen_output = false;
-
-static bool really_flush_to_pager = false;
-
-static bool flushing_output_to_pager = false;
-
-static void
-clear_external_pager (void)
-{
-  if (external_pager)
-    {
-      octave::child_list& kids
-        = octave::__get_child_list__ ("clear_external_pager");
-
-      kids.remove (external_pager->pid ());
-
-      delete external_pager;
-      external_pager = nullptr;
-    }
-}
-
-static bool
-pager_event_handler (pid_t pid, int status)
-{
-  bool retval = false;
-
-  if (pid > 0)
-    {
-      if (octave::sys::wifexited (status) || octave::sys::wifsignaled (status))
-        {
-          // Avoid warning() since that will put us back in the pager,
-          // which would be bad news.
-
-          std::cerr << "warning: connection to external pager lost (pid = "
-                    << pid << ')' << std::endl;
-          std::cerr << "warning: flushing pending output (please wait)"
-                    << std::endl;
-
-          // Request removal of this PID from the list of child
-          // processes.
-
-          retval = true;
-        }
-    }
-
-  return retval;
-}
-
-static std::string
-pager_command (void)
-{
-  std::string cmd = VPAGER;
-
-  if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
-    cmd += ' ' + VPAGER_FLAGS;
-
-  return cmd;
-}
-
-static void
-do_sync (const char *msg, int len, bool bypass_pager)
-{
-  if (msg && len > 0)
-    {
-      if (bypass_pager)
-        {
-          std::cout.write (msg, len);
-          std::cout.flush ();
-        }
-      else
-        {
-          if (! external_pager)
-            {
-              std::string pgr = pager_command ();
-
-              if (! pgr.empty ())
-                {
-                  external_pager = new oprocstream (pgr.c_str ());
-
-                  if (external_pager)
-                    {
-                      octave::child_list& kids
-                        = octave::__get_child_list__ ("do_sync");
-
-                      kids.insert (external_pager->pid (),
-                                   pager_event_handler);
-                    }
-                }
-            }
-
-          if (external_pager)
-            {
-              if (external_pager->good ())
-                {
-                  external_pager->write (msg, len);
-
-                  external_pager->flush ();
-
-#if defined (EPIPE)
-                  if (errno == EPIPE)
-                    external_pager->setstate (std::ios::failbit);
-#endif
-                }
-              else
-                {
-                  // FIXME: omething is not right with the
-                  // pager.  If it died then we should receive a
-                  // signal for that.  If there is some other problem,
-                  // then what?
-                }
-            }
-          else
-            {
-              std::cout.write (msg, len);
-              std::cout.flush ();
-            }
-        }
-    }
-}
-
-// Assume our terminal wraps long lines.
-
-static bool
-more_than_a_screenful (const char *s, int len)
-{
-  if (s)
-    {
-      int available_rows = octave::command_editor::terminal_rows () - 2;
-
-      int cols = octave::command_editor::terminal_cols ();
-
-      int count = 0;
-
-      int chars_this_line = 0;
-
-      for (int i = 0; i < len; i++)
-        {
-          if (*s++ == '\n')
-            {
-              count += chars_this_line / cols + 1;
-              chars_this_line = 0;
-            }
-          else
-            chars_this_line++;
-        }
-
-      if (count > available_rows)
-        return true;
-    }
-
-  return false;
-}
-
 namespace octave
 {
+  static bool
+  pager_event_handler (pid_t pid, int status)
+  {
+    bool retval = false;
+
+    if (pid > 0)
+      {
+        if (octave::sys::wifexited (status) || octave::sys::wifsignaled (status))
+          {
+            // Avoid warning() since that will put us back in the pager,
+            // which would be bad news.
+
+            std::cerr << "warning: connection to external pager lost (pid = "
+                      << pid << ')' << std::endl;
+            std::cerr << "warning: flushing pending output (please wait)"
+                      << std::endl;
+
+            // Request removal of this PID from the list of child
+            // processes.
+
+            retval = true;
+          }
+      }
+
+    return retval;
+  }
+
+  // Assume our terminal wraps long lines.
+
+  static bool
+  more_than_a_screenful (const char *s, int len)
+  {
+    if (s)
+      {
+        int available_rows = octave::command_editor::terminal_rows () - 2;
+
+        int cols = octave::command_editor::terminal_cols ();
+
+        int count = 0;
+
+        int chars_this_line = 0;
+
+        for (int i = 0; i < len; i++)
+          {
+            if (*s++ == '\n')
+              {
+                count += chars_this_line / cols + 1;
+                chars_this_line = 0;
+              }
+            else
+              chars_this_line++;
+          }
+
+        if (count > available_rows)
+          return true;
+      }
+
+    return false;
+  }
+
+  static std::string default_pager (void)
+  {
+    std::string pager_binary = sys::env::getenv ("PAGER");
+
+    if (pager_binary.empty ())
+      pager_binary = config::default_pager ();
+
+    return pager_binary;
+  }
+
   int
   pager_buf::sync (void)
   {
-    if (! application::interactive ()
-        || application::forced_interactive ()
-        || really_flush_to_pager
-        || (Vpage_screen_output && Vpage_output_immediately)
-        || ! Vpage_screen_output)
+    octave::output_system& output_sys
+      = octave::__get_output_system__ ("pager_buf::sync");
+
+    char *buf = eback ();
+
+    int len = pptr () - buf;
+
+    if (output_sys.sync (buf, len))
       {
-        char *buf = eback ();
+        flush_current_contents_to_diary ();
 
-        int len = pptr () - buf;
-
-        bool bypass_pager = (! application::interactive ()
-                             || application::forced_interactive ()
-                             || ! Vpage_screen_output
-                             || (really_flush_to_pager
-                                 && Vpage_screen_output
-                                 && ! Vpage_output_immediately
-                                 && ! more_than_a_screenful (buf, len)));
-
-        if (len > 0)
-          {
-            do_sync (buf, len, bypass_pager);
-
-            flush_current_contents_to_diary ();
-
-            seekoff (0, std::ios::beg);
-          }
+        seekoff (0, std::ios::beg);
       }
 
     return 0;
@@ -295,7 +162,11 @@ namespace octave
   int
   diary_buf::sync (void)
   {
-    if (write_to_diary_file && external_diary_file)
+    output_system& output_sys = __get_output_system__ ("__stdout__");
+
+    std::ofstream& external_diary_file = output_sys.external_diary_file ();
+
+    if (output_sys.write_to_diary_file () && external_diary_file)
       {
         char *buf = eback ();
 
@@ -310,8 +181,6 @@ namespace octave
     return 0;
   }
 
-  pager_stream *pager_stream::instance = nullptr;
-
   pager_stream::pager_stream (void) : std::ostream (nullptr), pb (nullptr)
   {
     pb = new pager_buf ();
@@ -325,24 +194,21 @@ namespace octave
     delete pb;
   }
 
-  std::ostream&
-  pager_stream::stream (void)
+  std::ostream& pager_stream::stream (void)
   {
-    return instance_ok () ? *instance : std::cout;
+    return *this;
   }
 
-  void
-  pager_stream::flush_current_contents_to_diary (void)
+  void pager_stream::flush_current_contents_to_diary (void)
   {
-    if (instance_ok ())
-      instance->do_flush_current_contents_to_diary ();
+    if (pb)
+      pb->flush_current_contents_to_diary ();
   }
 
-  void
-  pager_stream::set_diary_skip (void)
+  void pager_stream::set_diary_skip (void)
   {
-    if (instance_ok ())
-      instance->do_set_diary_skip ();
+    if (pb)
+      pb->set_diary_skip ();
   }
 
   // Reinitialize the pager buffer to avoid hanging on to large internal
@@ -350,56 +216,13 @@ namespace octave
   // called when the pager is not in use.  For example, just before
   // getting command-line input.
 
-  void
-  pager_stream::reset (void)
-  {
-    if (instance_ok ())
-      instance->do_reset ();
-  }
-
-  void
-  pager_stream::do_flush_current_contents_to_diary (void)
-  {
-    if (pb)
-      pb->flush_current_contents_to_diary ();
-  }
-
-  void
-  pager_stream::do_set_diary_skip (void)
-  {
-    if (pb)
-      pb->set_diary_skip ();
-  }
-
-  void
-  pager_stream::do_reset (void)
+  void pager_stream::reset (void)
   {
     delete pb;
     pb = new pager_buf ();
     rdbuf (pb);
     setf (unitbuf);
   }
-
-  bool
-  pager_stream::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new pager_stream ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      error ("unable to create pager_stream object!");
-
-    return retval;
-  }
-
-  diary_stream *diary_stream::instance = nullptr;
 
   diary_stream::diary_stream (void) : std::ostream (nullptr), db (nullptr)
   {
@@ -414,10 +237,9 @@ namespace octave
     delete db;
   }
 
-  std::ostream&
-  diary_stream::stream (void)
+  std::ostream& diary_stream::stream (void)
   {
-    return instance_ok () ? *instance : std::cout;
+    return *this;
   }
 
   // Reinitialize the diary buffer to avoid hanging on to large internal
@@ -425,15 +247,7 @@ namespace octave
   // called when the pager is not in use.  For example, just before
   // getting command-line input.
 
-  void
-  diary_stream::reset (void)
-  {
-    if (instance_ok ())
-      instance->do_reset ();
-  }
-
-  void
-  diary_stream::do_reset (void)
+  void diary_stream::reset (void)
   {
     delete db;
     db = new diary_buf ();
@@ -441,82 +255,243 @@ namespace octave
     setf (unitbuf);
   }
 
-  bool
-  diary_stream::instance_ok (void)
+  void flush_stdout (void)
   {
-    bool retval = true;
+    output_system& output_sys = __get_output_system__ ("flush_stdout");
 
-    if (! instance)
-      {
-        instance = new diary_stream ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    if (! instance)
-      error ("unable to create diary_stream object!");
-
-    return retval;
+    output_sys.flush_stdout ();
   }
 
-  void
-  flush_stdout (void)
+  output_system::output_system (interpreter& interp)
+    : m_interpreter (interp), m_pager_stream (), m_diary_stream (),
+      m_external_pager (nullptr), m_external_diary_file (),
+      m_diary_file_name ("diary"), m_PAGER (default_pager ()),
+      m_PAGER_FLAGS (), m_page_output_immediately (false),
+      m_page_screen_output (false), m_write_to_diary_file (false),
+      m_really_flush_to_pager (false), m_flushing_output_to_pager (false)
+  { }
+
+  octave_value output_system::PAGER (const octave_value_list& args,
+                                     int nargout)
   {
-    if (! flushing_output_to_pager)
+    return set_internal_variable (m_PAGER, args, nargout, "PAGER", false);
+  }
+
+  octave_value output_system::PAGER_FLAGS (const octave_value_list& args,
+                                           int nargout)
+  {
+    return set_internal_variable (m_PAGER_FLAGS, args, nargout,
+                                  "PAGER_FLAGS", false);
+  }
+
+  octave_value
+  output_system::page_output_immediately (const octave_value_list& args,
+                                          int nargout)
+  {
+    return set_internal_variable (m_page_output_immediately, args, nargout,
+                                  "page_output_immediately");
+  }
+
+  octave_value
+  output_system::page_screen_output (const octave_value_list& args,
+                                     int nargout)
+  {
+    return set_internal_variable (m_page_screen_output, args, nargout,
+                                  "page_screen_output");
+  }
+
+  std::string output_system::pager_command (void) const
+  {
+    std::string cmd = m_PAGER;
+
+    if (! (cmd.empty () || m_PAGER_FLAGS.empty ()))
+      cmd += ' ' + m_PAGER_FLAGS;
+
+    return cmd;
+  }
+
+  void output_system::reset (void)
+  {
+    flush_stdout ();
+
+    m_pager_stream.reset ();
+    m_diary_stream.reset ();
+  }
+
+  void output_system::flush_stdout (void)
+  {
+    if (! m_flushing_output_to_pager)
       {
         unwind_protect frame;
 
-        frame.protect_var (really_flush_to_pager);
-        frame.protect_var (flushing_output_to_pager);
+        frame.protect_var (m_really_flush_to_pager);
+        frame.protect_var (m_flushing_output_to_pager);
 
-        really_flush_to_pager = true;
-        flushing_output_to_pager = true;
+        m_really_flush_to_pager = true;
+        m_flushing_output_to_pager = true;
 
-        octave_stdout.flush ();
+        std::ostream& pager_ostream = m_pager_stream.stream ();
+
+        pager_ostream.flush ();
 
         clear_external_pager ();
       }
   }
-}
 
-static void
-close_diary_file (void)
-{
-  // Try to flush the current buffer to the diary now, so that things
-  // like
-  //
-  // function foo ()
-  //   diary on;
-  //   ...
-  //   diary off;
-  // endfunction
-  //
-  // will do the right thing.
+  void output_system::close_diary (void)
+  {
+    // Try to flush the current buffer to the diary now, so that things
+    // like
+    //
+    // function foo ()
+    //   diary on;
+    //   ...
+    //   diary off;
+    // endfunction
+    //
+    // will do the right thing.
 
-  octave::pager_stream::flush_current_contents_to_diary ();
+    m_pager_stream.flush_current_contents_to_diary ();
 
-  if (external_diary_file.is_open ())
-    {
-      octave_diary.flush ();
-      external_diary_file.close ();
-    }
-}
+    if (m_external_diary_file.is_open ())
+      {
+        octave_diary.flush ();
+        m_external_diary_file.close ();
+      }
+  }
 
-static void
-open_diary_file (void)
-{
-  close_diary_file ();
+  void output_system::open_diary (void)
+  {
+    close_diary ();
 
-  // If there is pending output in the pager buf, it should not go
-  // into the diary file.
+    // If there is pending output in the pager buf, it should not go
+    // into the diary file.
 
-  octave::pager_stream::set_diary_skip ();
+    m_pager_stream.set_diary_skip ();
 
-  external_diary_file.open (diary_file.c_str (), std::ios::app);
+    m_external_diary_file.open (m_diary_file_name.c_str (), std::ios::app);
 
-  if (! external_diary_file)
-    error ("diary: can't open diary file '%s'", diary_file.c_str ());
+    if (! m_external_diary_file)
+      error ("diary: can't open diary file '%s'", m_diary_file_name.c_str ());
+  }
+
+  bool output_system::sync (const char *buf, int len)
+  {
+    if (! application::interactive ()
+        || application::forced_interactive ()
+        || m_really_flush_to_pager
+        || (m_page_screen_output && m_page_output_immediately)
+        || ! m_page_screen_output)
+      {
+        bool bypass_pager = (! application::interactive ()
+                             || application::forced_interactive ()
+                             || ! m_page_screen_output
+                             || (m_really_flush_to_pager
+                                 && m_page_screen_output
+                                 && ! m_page_output_immediately
+                                 && ! more_than_a_screenful (buf, len)));
+
+        if (len > 0)
+          {
+            do_sync (buf, len, bypass_pager);
+
+            return true;
+          }
+      }
+
+    return false;
+  }
+
+  void output_system::clear_external_pager (void)
+  {
+    if (m_external_pager)
+      {
+        child_list& kids = m_interpreter.get_child_list ();
+
+        kids.remove (m_external_pager->pid ());
+
+        delete m_external_pager;
+        m_external_pager = nullptr;
+      }
+  }
+
+  void output_system::start_external_pager (void)
+  {
+    if (m_external_pager)
+      return;
+
+    std::string pgr = pager_command ();
+
+    if (! pgr.empty ())
+      {
+        m_external_pager = new oprocstream (pgr.c_str ());
+
+        if (m_external_pager)
+          {
+            octave::child_list& kids = m_interpreter.get_child_list ();
+
+            kids.insert (m_external_pager->pid (),
+                         pager_event_handler);
+          }
+      }
+  }
+
+  void output_system::do_sync (const char *msg, int len, bool bypass_pager)
+  {
+    if (msg && len > 0)
+      {
+        if (bypass_pager)
+          {
+            std::cout.write (msg, len);
+            std::cout.flush ();
+          }
+        else
+          {
+            start_external_pager ();
+
+            if (m_external_pager)
+              {
+                if (m_external_pager->good ())
+                  {
+                    m_external_pager->write (msg, len);
+
+                    m_external_pager->flush ();
+
+#if defined (EPIPE)
+                    if (errno == EPIPE)
+                      m_external_pager->setstate (std::ios::failbit);
+#endif
+                  }
+                else
+                  {
+                    // FIXME: something is not right with the
+                    // pager.  If it died then we should receive a
+                    // signal for that.  If there is some other problem,
+                    // then what?
+                  }
+              }
+            else
+              {
+                std::cout.write (msg, len);
+                std::cout.flush ();
+              }
+          }
+      }
+  }
+
+  std::ostream& __stdout__ (void)
+  {
+    output_system& output_sys = __get_output_system__ ("__stdout__");
+
+    return output_sys.__stdout__ ();
+  }
+
+  std::ostream& __diary__ (void)
+  {
+    output_system& output_sys = __get_output_system__ ("__diary__");
+
+    return output_sys.__diary__ ();
+  }
 }
 
 DEFUN (diary, args, nargout,
@@ -558,22 +533,22 @@ stored.
   if (nargin > 1)
     print_usage ();
 
-  if (diary_file.empty ())
-    diary_file = "diary";
+  octave::output_system& output_sys = octave::__get_output_system__ ("Fdiary");
 
   if (nargout > 0)
     {
       // Querying diary variables
       if (nargout == 1)
-        return ovl (write_to_diary_file);
+        return ovl (output_sys.write_to_diary_file ());
       else
-        return ovl (write_to_diary_file, diary_file);
+        return ovl (output_sys.write_to_diary_file (),
+                    output_sys.diary_file_name ());
     }
 
   if (nargin == 0)
     {
-      write_to_diary_file = ! write_to_diary_file;
-      open_diary_file ();
+      output_sys.write_to_diary_file (! output_sys.write_to_diary_file ());
+      output_sys.open_diary ();
     }
   else
     {
@@ -581,27 +556,27 @@ stored.
 
       if (arg == "on")
         {
-          write_to_diary_file = true;
-          open_diary_file ();
+          output_sys.write_to_diary_file (true);
+          output_sys.open_diary ();
         }
       else if (arg == "off")
         {
-          close_diary_file ();
-          write_to_diary_file = false;
+          output_sys.close_diary ();
+          output_sys.write_to_diary_file (false);
         }
       else
         {
-          diary_file = arg;
-          write_to_diary_file = true;
-          open_diary_file ();
+          output_sys.diary_file_name (arg);
+          output_sys.write_to_diary_file (true);
+          output_sys.open_diary ();
         }
     }
 
   return ovl ();
 }
 
-DEFUN (more, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (more, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} more
 @deftypefnx {} {} more on
 @deftypefnx {} {} more off
@@ -618,19 +593,21 @@ The current state can be determined via @code{page_screen_output}.
   if (nargin > 1)
     print_usage ();
 
+  octave::output_system& output_sys = interp.get_output_system ();
+
   if (nargin > 0)
     {
       std::string arg = args(0).xstring_value (R"(more: argument must be string "on" or "off")");
 
       if (arg == "on")
-        Vpage_screen_output = true;
+        output_sys.page_screen_output (true);
       else if (arg == "off")
-        Vpage_screen_output = false;
+        output_sys.page_screen_output (false);
       else
         error (R"(more: argument must be "on" or "off")");
     }
   else
-    Vpage_screen_output = ! Vpage_screen_output;
+    output_sys.page_screen_output (! output_sys.page_screen_output ());
 
   return ovl ();
 }
@@ -651,8 +628,8 @@ window in characters (rows and columns).
   return ovl (size);
 }
 
-DEFUN (page_output_immediately, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (page_output_immediately, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} page_output_immediately ()
 @deftypefnx {} {@var{old_val} =} page_output_immediately (@var{new_val})
 @deftypefnx {} {} page_output_immediately (@var{new_val}, "local")
@@ -668,11 +645,13 @@ The original variable value is restored when exiting the function.
 @seealso{page_screen_output, more, PAGER, PAGER_FLAGS}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (page_output_immediately);
+  octave::output_system& output_sys = interp.get_output_system ();
+
+  return output_sys.page_output_immediately (args, nargout);
 }
 
-DEFUN (page_screen_output, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (page_screen_output, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} page_screen_output ()
 @deftypefnx {} {@var{old_val} =} page_screen_output (@var{new_val})
 @deftypefnx {} {} page_screen_output (@var{new_val}, "local")
@@ -690,11 +669,13 @@ The original variable value is restored when exiting the function.
 @seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (page_screen_output);
+  octave::output_system& output_sys = interp.get_output_system ();
+
+  return output_sys.page_screen_output (args, nargout);
 }
 
-DEFUN (PAGER, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (PAGER, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PAGER ()
 @deftypefnx {} {@var{old_val} =} PAGER (@var{new_val})
 @deftypefnx {} {} PAGER (@var{new_val}, "local")
@@ -711,11 +692,13 @@ The original variable value is restored when exiting the function.
 @seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}
 @end deftypefn */)
 {
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER);
+  octave::output_system& output_sys = interp.get_output_system ();
+
+  return output_sys.PAGER (args, nargout);
 }
 
-DEFUN (PAGER_FLAGS, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (PAGER_FLAGS, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PAGER_FLAGS ()
 @deftypefnx {} {@var{old_val} =} PAGER_FLAGS (@var{new_val})
 @deftypefnx {} {} PAGER_FLAGS (@var{new_val}, "local")
@@ -728,5 +711,7 @@ The original variable value is restored when exiting the function.
 @seealso{PAGER, more, page_screen_output, page_output_immediately}
 @end deftypefn */)
 {
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER_FLAGS);
+  octave::output_system& output_sys = interp.get_output_system ();
+
+  return output_sys.PAGER_FLAGS (args, nargout);
 }

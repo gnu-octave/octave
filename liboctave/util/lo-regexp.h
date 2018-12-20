@@ -258,7 +258,7 @@ namespace octave
 
       ~match_data (void) = default;
 
-      string_vector named_patterns (void) { return named_pats; }
+      string_vector named_patterns (void) const { return named_pats; }
 
     private:
 
@@ -286,53 +286,5 @@ namespace octave
     void compile_internal (void);
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::regexp' instead")
-typedef octave::regexp regexp;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::match' instead")
-inline regexp::match_data
-regexp_match (const std::string& pat,
-              const std::string& buffer,
-              const regexp::opts& opt = regexp::opts (),
-              const std::string& who = "regexp")
-{
-  return octave::regexp::match (pat, buffer, opt, who);
-}
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
-inline bool
-is_regexp_match (const std::string& pat,
-                 const std::string& buffer,
-                 const regexp::opts& opt = regexp::opts (),
-                 const std::string& who = "regexp")
-{
-  return octave::regexp::is_match (pat, buffer, opt, who);
-}
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::is_match' instead")
-inline Array<bool>
-is_regexp_match (const std::string& pat,
-                 const string_vector& buffer,
-                 const regexp::opts& opt = regexp::opts (),
-                 const std::string& who = "regexp")
-{
-  return octave::regexp::is_match (pat, buffer, opt, who);
-}
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::regexp::replace' instead")
-inline std::string
-regexp_replace (const std::string& pat,
-                const std::string& buffer,
-                const std::string& replacement,
-                const regexp::opts& opt = regexp::opts (),
-                const std::string& who = "regexp")
-{
-  return octave::regexp::replace (pat, buffer, replacement, opt, who);
-}
-
-#endif
 
 #endif

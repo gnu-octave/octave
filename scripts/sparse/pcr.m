@@ -363,10 +363,11 @@ endfunction
 %! ## Note that we use here indefinite preconditioners!
 %!
 %! N = 100;
-%! A = zeros (N,N);
-%! for i=1:N-1 # form 1-D Laplacian matrix
-%!   A(i:i+1,i:i+1) = [2 -1; -1 2];
-%! endfor
+%! ## Form 1-D Laplacian matrix
+%! A = 2 * eye (N,N);
+%! A(2:(N+1):end) = -1;
+%! A((N+1):(N+1):end) = -1;
+%!
 %! A = [A, zeros(size(A)); zeros(size(A)), -A];
 %! b = rand (2*N,1);
 %! X = A \ b;  # X is the true solution
@@ -416,10 +417,10 @@ endfunction
 %! ## should perform max allowable default number of iterations
 %!
 %! N = 100;
-%! A = zeros (N,N);
-%! for i=1:N-1 # form 1-D Laplacian matrix
-%!   A(i:i+1,i:i+1) = [2 -1; -1 2];
-%! endfor
+%! ## Form 1-D Laplacian matrix
+%! A = 2 * eye (N,N);
+%! A(2:(N+1):end) = -1;
+%! A((N+1):(N+1):end) = -1;
 %! b = ones (N,1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter, resvec] = pcr (A,b,1e-12);
@@ -432,10 +433,10 @@ endfunction
 %! ## converges in one iteration
 %!
 %! N = 100;
-%! A = zeros (N,N);
-%! for i=1:N-1 # form 1-D Laplacian matrix
-%!   A(i:i+1,i:i+1) = [2 -1; -1 2];
-%! endfor
+%! ## Form 1-D Laplacian matrix
+%! A = 2 * eye (N,N);
+%! A(2:(N+1):end) = -1;
+%! A((N+1):(N+1):end) = -1;
 %! b = ones (N,1);
 %! X = A \ b;  # X is the true solution
 %! [x, flag, relres, iter] = pcr (A,b,[],[],A,b);

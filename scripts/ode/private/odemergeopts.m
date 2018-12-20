@@ -19,7 +19,7 @@
 function options = odemergeopts (caller, useroptions, options, classes,
                                  attributes);
 
-  for [value, key] = options;
+  for [value, key] = options
 
     if (isfield (useroptions, key) && ! isempty (useroptions.(key)))
 

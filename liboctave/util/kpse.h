@@ -82,9 +82,6 @@ extern std::list<std::string>
 kpse_all_path_search (const std::string& path, const std::string& name);
 
 extern std::string
-kpse_expand_default (const std::string& path, const std::string& fallback);
-
-extern std::string
 kpse_path_expand (const std::string& path);
 
 extern std::string

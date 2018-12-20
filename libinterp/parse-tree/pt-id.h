@@ -117,7 +117,7 @@ namespace octave
 
     bool lvalue_ok (void) const { return true; }
 
-    octave_lvalue lvalue (tree_evaluator *);
+    octave_lvalue lvalue (tree_evaluator&);
 
     void eval_undefined_error (void);
 
@@ -160,7 +160,7 @@ namespace octave
       return new tree_black_hole;
     }
 
-    octave_lvalue lvalue (tree_evaluator *)
+    octave_lvalue lvalue (tree_evaluator&)
     {
       octave_lvalue retval;
       retval.mark_black_hole ();

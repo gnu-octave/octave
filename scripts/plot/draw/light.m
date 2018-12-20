@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2018 Markus Muetzel
+## Copyright (C) 2016-2018 Markus Mützel
 ##
 ## This file is part of Octave.
 ##
@@ -26,13 +26,15 @@
 ## When a light object is present in an axes object, and the properties
 ## @qcode{"EdgeLighting"} or @qcode{"FaceLighting"} of a @code{patch} or
 ## @code{surface} object are set to a value other than @qcode{"none"}, these
-## objects are drawn with light and shadow effects.  Supported values for
-## Lighting properties are @qcode{"none"} (no lighting effects), @qcode{"flat"}
-## (faceted look of the objects), and @qcode{"gouraud"} (linear interpolation
-## of the lighting effects between the vertices).  For @code{patch} objects,
-## the normals must be set manually (property @qcode{"VertexNormals"}).
+## objects are drawn with lighting effects.  Supported values for Lighting
+## properties are @qcode{"none"} (no lighting effects), @qcode{"flat"} (faceted
+## look of the objects), and @qcode{"gouraud"} (linear interpolation of the
+## lighting effects between the vertices).  If the lighting mode is set to
+## @qcode{"flat"}, the @qcode{"FaceNormals"} property is used for lighting.
+## For @qcode{"gouraud"}, the @qcode{"VertexNormals"} property is used.
 ##
-## Up to eight light objects are supported per axes.
+## Up to eight light objects are supported per axes.  (Implementation
+## dependent)
 ##
 ## Lighting is only supported for OpenGL graphic toolkits (i.e., @qcode{"fltk"}
 ## and @qcode{"qt"}).
@@ -126,7 +128,7 @@ endfunction
 %!  title ("Surface without lighting");
 
 %!demo
-%! ## Lighting modes
+%! ## Lighting modes on patches
 %! clf;
 %! [x,y,z] = meshgrid (-.2:0.05:.2, -.2:0.05:.2, -.2:0.05:.2);
 %! val = (x.^2 + y.^2 + z.^2);
@@ -135,20 +137,36 @@ endfunction
 %! fv = isosurface (x, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "none");
-%! isonormals (x, y, z, val, h_patch);
 %! fv = isosurface (x+.5, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "flat");
-%! isonormals (x+.5, y, z, val, h_patch)
 %! fv = isosurface (x+1, y, z, val, .039);
 %! h_patch = patch (fv, "FaceColor", "r", "EdgeColor", "none", ...
 %!                      "FaceLighting", "Gouraud");
-%! isonormals (x+1, y, z, val, h_patch);
 %! axis tight
 %! axis equal
 %! view (2);
 %! light ("Position", [-1 1 1]);
-%! title ({"FaceLighting", "none - flat - gouraud"});
+%! title ({"FaceLighting on patches", "none - flat - gouraud"});
+
+%!demo
+%! ## Lighting modes on surfaces
+%! clf;
+%! Z = peaks ();
+%! [X, Y] = meshgrid (1:size (Z, 2), 1:size (Z, 1));
+%!
+%! h_axes1 = axes ();
+%! surf (X, Y, Z, "LineStyle", "none", "FaceLighting", "none");
+%! hold on;
+%! surf (X + round(1.2 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%!       "FaceLighting", "flat");
+%! surf (X + round(2.4 * size (Z, 2)), Y, Z, "LineStyle", "none", ...
+%!       "FaceLighting", "gouraud");
+%! axis tight
+%! axis equal
+%! view (2);
+%! light ("Position", [-1 1 1]);
+%! title ({"FaceLighting on surfaces", "none - flat - gouraud"});
 
 %!demo
 %! ## multiple lights

@@ -14,6 +14,7 @@ TEST_FILES += \
   %reldir%/bug-49904.tst \
   %reldir%/bug-53579.tst \
   %reldir%/bug-53599.tst \
+  %reldir%/bug-54490.tst \
   %reldir%/colormaps.tst \
   %reldir%/command.tst \
   %reldir%/complex.tst \
@@ -57,6 +58,7 @@ include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
 include %reldir%/bug-44940/module.mk
+include %reldir%/bug-45972/module.mk
 include %reldir%/bug-46660/module.mk
 include %reldir%/bug-49379/module.mk
 include %reldir%/bug-50014/module.mk
@@ -76,11 +78,13 @@ include %reldir%/classes/module.mk
 include %reldir%/ctor-vs-method/module.mk
 include %reldir%/fcn-handle-derived-resolution/module.mk
 include %reldir%/local-functions/module.mk
+include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk
 include %reldir%/publish/module.mk
+include %reldir%/pkg/module.mk
 
 define run-octave-tests
-  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ) && \
+  ( cd %reldir% && $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --norc --silent --no-history -p $(abs_top_builddir)/%reldir%/mex $(abs_top_srcdir)/%reldir%/fntests.m $(abs_top_srcdir)/%reldir% ) && \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f %reldir%/fntests.log ]; then \
@@ -93,7 +97,7 @@ define run-octave-tests
   fi
 endef
 
-check-local: $(GENERATED_TEST_FILES) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
+check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
 
 if AMCOND_HAVE_LLVM
@@ -190,7 +194,9 @@ BUILT_SOURCES += $(GENERATED_TEST_FILES)
   %reldir%/mk-sparse-tst.sh \
   %reldir%/mk_bc_overloads_expected.m \
   %reldir%/show-failures.awk \
-  $(TEST_FILES)
+  $(TEST_FILES) \
+  $(noinst_TEST_FILES) \
+  $(MEX_TEST_SRC)
 
 EXTRA_DIST += $(%canon_reldir%_EXTRA_DIST)
 
@@ -211,6 +217,7 @@ test-clean:
 	rm -f $(%canon_reldir%_CLEANFILES)
 	rm -rf $(GENERATED_BC_OVERLOADS_DIRS)
 	rm -rf $(COVERAGE_DIR)
+	rm -rf $(MEX_TEST_FUNCTIONS)
 
 test-distclean: test-clean
 	rm -f $(%canon_reldir%_DISTCLEANFILES)

@@ -23,18 +23,20 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_file_editor_tab_h)
 #define octave_file_editor_tab_h 1
 
+#include <QAbstractButton>
 #include <QWidget>
 #include <QCloseEvent>
+#include <QDateTime>
 #include <QFileSystemWatcher>
 #include <QSettings>
 #include <QFileInfo>
 #include <Qsci/qsciapis.h>
 #include <QStatusBar>
 #include <QLabel>
-#include <QComboBox>
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
+#include "octave-cmd.h"
 #include "builtin-defun-decls.h"
 
 #include "marker.h" /* Only needed for typedef of "QIntList", which may be
@@ -63,6 +65,8 @@ namespace octave
 
     static void reset_cancel (void) {_cancelled = false;}
     static bool was_cancelled (void) {return _cancelled;}
+
+    void update_breakpoints ();
 
   public slots:
 
@@ -146,8 +150,7 @@ namespace octave
     void handle_request_add_breakpoint (int line, const QString& cond);
     void handle_request_remove_breakpoint (int line);
 
-    void handle_octave_result (QObject *requester, QString& command,
-                               octave_value_list& result);
+    void update_breakpoints_handler (const octave_value_list& argout);
 
   signals:
 
@@ -160,7 +163,7 @@ namespace octave
     void editor_check_conflict_save (const QString& saveFileName,
                                      bool remove_on_success);
     void run_file_signal (const QFileInfo& info);
-    void request_open_file (const QString&);
+    void request_open_file (const QString&, const QString& = QString ());
     void edit_mfile_request (const QString&, const QString&,
                              const QString&, int);
 
@@ -177,7 +180,7 @@ namespace octave
     void report_marker_linenr (QIntList& lines, QStringList& conditions);
     void remove_position_via_debugger_linenr (int debugger_linenr);
     void remove_all_positions (void);
-    void execute_command_in_terminal_signal (const QString&);
+    void request_queue_cmd (octave_cmd *);
 
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to
@@ -192,6 +195,9 @@ namespace octave
     void set_file_name (const QString& fileName);
 
   private slots:
+
+    // When user closes message box for decoding problems
+    void handle_decode_warning_answer (QAbstractButton *btn);
 
     // When user closes message box for reload question.
     void handle_file_reload_answer (int decision);
@@ -210,8 +216,9 @@ namespace octave
     void handle_save_file_as_answer_close (const QString& fileName);
     void handle_save_file_as_answer_cancel (void);
     void handle_save_as_filter_selected (const QString& filter);
-    void handle_combo_eol_current_index (int index);
-    void handle_combo_enc_current_index (QString text);
+
+    // When user changes encoding after decoding errors where found
+    void handle_current_enc_changed (const QString& enc);
 
     // When apis preparation has finished and is ready to save
     void save_apis_info (void);
@@ -284,6 +291,7 @@ namespace octave
     QString _ced;
     QString _encoding;
     QString _new_encoding;
+    QDateTime m_last_modified;
 
     bool _long_title;
     bool _copy_available;

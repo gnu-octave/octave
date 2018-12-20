@@ -93,6 +93,12 @@ namespace octave
               : false);
     }
 
+    static void get_codecs (QStringList *codecs)
+    {
+      if (instance_ok ())
+        instance->do_get_codecs (codecs);
+    }
+
     static void combo_encoding (QComboBox *combo, QString current = QString ())
     {
       if (instance_ok ())
@@ -144,6 +150,8 @@ namespace octave
 
     QString do_get_settings_file (void);
 
+    QString do_get_default_font_family (void);
+
     void do_reload_settings (void);
 
     void do_set_settings (const QString& file);
@@ -156,6 +164,7 @@ namespace octave
 
     QIcon do_icon (const QString& icon, bool fallback);
 
+    void do_get_codecs (QStringList *codecs);
     void do_combo_encoding (QComboBox *combo, QString current);
 
     QString m_settings_directory;
@@ -167,9 +176,5 @@ namespace octave
     QSettings *m_default_settings;
   };
 }
-
-// FIXME: This is temporary and should be removed when all classes that
-// use the resource_manager class are also inside the octave namespace.
-using octave::resource_manager;
 
 #endif

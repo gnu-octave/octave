@@ -97,7 +97,7 @@ namespace octave
     {
       while (! loaded_toolkits.empty ())
         {
-          loaded_toolkits_iterator p = loaded_toolkits.begin ();
+          auto p = loaded_toolkits.begin ();
 
           std::string name = p->first;
 

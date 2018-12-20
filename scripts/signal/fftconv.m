@@ -66,7 +66,7 @@ endfunction
 
 
 ## FIXME: Borrow tests from conv.m.  May need tolerance on the assert stmt.
-%!test
+%!testif HAVE_FFTW
 %! x = ones (3,1);
 %! y = ones (1,3);
 %! b = 2;

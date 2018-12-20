@@ -37,7 +37,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -51,7 +51,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -65,7 +65,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -85,7 +85,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -101,7 +101,7 @@ namespace octave
   {
     while (! empty ())
       {
-        iterator p = begin ();
+        auto p = begin ();
         delete *p;
         erase (p);
       }
@@ -115,28 +115,28 @@ namespace octave
   {
     while (! m_properties_lst.empty ())
       {
-        properties_list_iterator p = m_properties_lst.begin ();
+        auto p = m_properties_lst.begin ();
         delete *p;
         m_properties_lst.erase (p);
       }
 
     while (! m_methods_lst.empty ())
       {
-        methods_list_iterator p = m_methods_lst.begin ();
+        auto p = m_methods_lst.begin ();
         delete *p;
         m_methods_lst.erase (p);
       }
 
     while (! m_events_lst.empty ())
       {
-        events_list_iterator p = m_events_lst.begin ();
+        auto p = m_events_lst.begin ();
         delete *p;
         m_events_lst.erase (p);
       }
 
     while (! m_enum_lst.empty ())
       {
-        enum_list_iterator p = m_enum_lst.begin ();
+        auto p = m_enum_lst.begin ();
         delete *p;
         m_enum_lst.erase (p);
       }

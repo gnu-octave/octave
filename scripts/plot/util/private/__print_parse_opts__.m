@@ -45,22 +45,26 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.epscrop = true;
   arg_st.ghostscript.level = 2;
   arg_st.ghostscript.output = "";
-  arg_st.ghostscript.papersize = "";
+  arg_st.ghostscript.papersize = "letter";
   arg_st.ghostscript.pageoffset = [];
   arg_st.ghostscript.resolution = 150;
   arg_st.ghostscript.antialiasing = false;
   arg_st.ghostscript.antialiasing_textalphabits = 4;
   arg_st.ghostscript.antialiasing_graphicsalphabits = 1;
-  arg_st.loose = false;
   arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
   arg_st.name = "";
   arg_st.orientation = "";
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
   arg_st.preview = "";
   arg_st.printer = "";
+  arg_st.renderer = "auto";
+  arg_st.resize_flag = "";
+  arg_st.rgb_output = false;
   arg_st.send_to_printer = false;
   arg_st.special_flag = "textnormal";
-  arg_st.tight_flag = false;
+  arg_st.svgconvert = false;
+  arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
+  arg_st.tight = true;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
 
   if (isunix ())
@@ -90,18 +94,27 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.force_solid = 1;
       elseif (strcmp (arg, "-dashed"))
         arg_st.force_solid = -1;
+      elseif (any (strcmp (arg, {"-opengl", "-painters"})))
+        arg_st.renderer = arg(2:end);
+      elseif (strcmp (arg, "-RGBImage"))
+        arg_st.rgb_output = true;
+        arg_st.renderer = "opengl";
       elseif (strncmp (arg, "-portrait", length (arg)))
         arg_st.orientation = "portrait";
       elseif (strncmp (arg, "-landscape", length (arg)))
         arg_st.orientation = "landscape";
       elseif (strcmp (arg, "-loose"))
-        arg_st.loose = true;
-        arg_st.tight_flag = false;
+        arg_st.tight = false;
       elseif (strcmp (arg, "-tight"))
-        arg_st.loose = false;
-        arg_st.tight_flag = true;
+        arg_st.tight = true;
+      elseif (strcmp (arg, "-svgconvert"))
+        arg_st.svgconvert = true;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
+      elseif (strcmp (arg, "-fillpage"))
+        arg_st.resize_flag = "fillpage";
+      elseif (strcmp (arg, "-bestfit"))
+        arg_st.resize_flag = "bestfit";
       elseif (any (strcmp (arg,
                            {"-interchange", "-metafile", "-pict", "-tiff"})))
         arg_st.preview = arg(2:end);
@@ -154,10 +167,9 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.ghostscript.resolution = str2double (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-f")
         arg_st.figure = str2double (arg(3:end));
-      elseif (any (strcmp (arg, {"-painters", "-opengl"})))
-        warning ("print: '%s' accepted for Matlab compatibility, but is ignored", arg);
       elseif (strcmp (arg, "-noui"))
-        warning ("print: option '-noui' not yet implemented");
+        ## Accepted, but nothing needs to be done since Octave already
+        ## excludes uicontrol objects when printing.
       elseif (length (arg) >= 1 && arg(1) == "-")
         error ("print: unknown option '%s'", arg);
       elseif (length (arg) > 0)
@@ -170,11 +182,13 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endfor
 
+  ## Resolution
   if (arg_st.ghostscript.resolution == 0)
     ## Do as Matlab does.
     arg_st.ghostscript.resolution = get (0, "screenpixelsperinch");
   endif
 
+  ## Orientation
   if (isempty (arg_st.orientation))
     if (isfigure (arg_st.figure))
       arg_st.orientation = get (arg_st.figure, "paperorientation");
@@ -184,15 +198,48 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
+  ## The device is infered from extension if not provided
   dot = rindex (arg_st.name, ".");
   if (isempty (arg_st.devopt))
-    if (dot == 0)
+    if (arg_st.rgb_output)
+      arg_st.devopt = "png";
+    elseif (dot == 0)
       arg_st.devopt = "psc";
     else
       arg_st.devopt = tolower (arg_st.name(dot+1:end));
     endif
   endif
 
+  ## By default, postprocess svg files using svgconvert.
+  if (strcmp (arg_st.devopt, "svg"))
+    arg_st.svgconvert = true;
+  endif
+
+  ## By default, use the "opengl" renderer for all raster outputs
+  ## supported by "imwrite".
+  fmts = imformats ();
+  persistent gl_devlist = [fmts(! cellfun (@isempty, {fmts.write})).ext, ...
+                           "tiffn"];
+  opengl_ok = any (strcmp (gl_devlist, arg_st.devopt));
+
+  if (strcmp (arg_st.renderer, "auto")
+      && strcmp (get (arg_st.figure, "renderermode"), "manual"))
+    arg_st.renderer = get (arg_st.figure, "renderer");
+  endif
+
+  if (strcmp (arg_st.renderer, "auto"))
+    if (opengl_ok && strcmp (graphics_toolkit (arg_st.figure), "qt"))
+      arg_st.renderer = "opengl";
+    else
+      arg_st.renderer = "painters";
+    endif
+  elseif (strcmp (arg_st.renderer, "opengl") && ! opengl_ok)
+    arg_st.renderer = "painters";
+    warning (["print: unsupported output format \"%s\" for renderer ", ...
+              "\"opengl\"."], arg_st.devopt);
+  endif
+
+  
   if (arg_st.use_color == 0)
     if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
       arg_st.use_color = -1;
@@ -211,37 +258,41 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = "emf";
   elseif (strcmp (arg_st.devopt, "jpg"))
     arg_st.devopt = "jpeg";
+  elseif (strcmp (arg_st.devopt, "tif"))
+    arg_st.devopt = "tiff";
+  elseif (strcmp (arg_st.devopt, "pdfcrop"))
+    arg_st.devopt = "pdfwrite";
   endif
 
-  persistent dev_list = {"aifm", "corel", "fig", "png", "jpeg", ...
+  persistent dev_list = [{"aifm", "corel", "dumb", "fig", "png", "jpeg", ...
               "gif", "pbm", "pbmraw", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps2", "psc", ...
               "psc2", "eps", "eps2", "epsc", "epsc2", ...
               "emf", "pdf", "pslatex", "epslatex", "epslatexstandalone", ...
               "pslatexstandalone", "pdflatexstandalone", ...
-              "pstex", "tiff", "tiffn" "tikz", "pcxmono", ...
+              "pstex", "tiff", "tiffn", "tikz", "tikzstandalone", "pcxmono", ...
               "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
               "ppm", "ppmraw", "pdflatex", "texdraw", ...
               "epscairo", "pdfcairo", "pngcairo", "cairolatex", ...
               "pdfcairolatex", "pdfcairolatexstandalone", ...
               "epscairolatex", "epscairolatexstandalone", "pstricks", ...
               "epswrite", "eps2write", "pswrite", "ps2write", "pdfwrite", ...
-              "canvas", "cgm", "latex", "eepic"};
+              "canvas", "cgm", "latex", "eepic"}, gl_devlist];
 
-  persistent suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
+  persistent suffixes = [{"ai", "cdr", "txt", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
               "svg", "hpgl", "ps", "ps", "ps", ...
               "ps", "eps", "eps", "eps", "eps", ...
               "emf", "pdf", "tex", "tex", "tex", ...
               "tex", "tex", ...
-              "ps", "tiff", "tiff", "tikz", "pcx", ...
+              "ps", "tiff", "tiff", "tikz", "tikz", "pcx", ...
               "pcx", "pcx", "pcx", "pgm", "pgm", ...
               "ppm", "ppm", "tex", "tex", ...
               "eps", "pdf", "png", "tex", ...
               "tex", "tex", ...
               "tex", "tex", "tex", ...
               "eps", "eps", "ps", "ps", "pdf", ...
-              "js", "cgm", "tex", "tex"};
+              "js", "cgm", "tex", "tex"}, gl_devlist];
 
   if (isfigure (arg_st.figure))
     __graphics_toolkit__ = get (arg_st.figure, "__graphics_toolkit__");
@@ -273,7 +324,8 @@ function arg_st = __print_parse_opts__ (varargin)
                                           "ps", "ps2", "psc", "psc2", "pdf"})))
       have_ghostscript = ! isempty (__ghostscript_binary__ ());
       if (have_ghostscript)
-        file_exists = (numel (dir (arg_st.name)) == 1 && ! isdir (arg_st.name));
+        file_exists = (numel (dir (arg_st.name)) == 1
+                       && ! isfolder (arg_st.name));
         if (! file_exists)
           arg_st.append_to_file = false;
         endif
@@ -288,7 +340,12 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
-  if (! isempty (arg_st.printer) || isempty (arg_st.name))
+  if (arg_st.rgb_output)
+    if (! isempty (arg_st.printer) || ! isempty (arg_st.name))
+      warning ("octave:print:ignored_argument",
+               "print: ignoring file name and printer argument when using -RGBImage option");
+    endif
+  elseif (! isempty (arg_st.printer) || isempty (arg_st.name))
     arg_st.send_to_printer = true;
   endif
 
@@ -297,7 +354,8 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   aliases = gs_aliases ();
-  if (any (strcmp (arg_st.devopt, fieldnames (aliases))))
+  if (any (strcmp (arg_st.devopt, fieldnames (aliases)))
+      && ! strcmp (arg_st.renderer, "opengl"))
     arg_st.devopt = aliases.(arg_st.devopt);
     unknown_device = false;
   endif
@@ -311,7 +369,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = true;
     if (arg_st.formatted_for_printing)
-      arg_st.ghostscript.epscrop = ! arg_st.loose;
+      arg_st.ghostscript.epscrop = arg_st.tight;
     else
       ## pstoedit throws errors if the EPS file isn't cropped
       arg_st.ghostscript.epscrop = true;
@@ -322,11 +380,19 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
     arg_st.ghostscript.antialiasing = false;
-    arg_st.ghostscript.epscrop = ! arg_st.loose;
+    arg_st.ghostscript.epscrop = arg_st.tight;
   endif
 
   if (unknown_device)
     error ("print: unknown device %s", arg_st.devopt);
+  endif
+
+  if (arg_st.resize_flag)
+    if (! (arg_st.send_to_printer || arg_st.formatted_for_printing
+           || strncmp (arg_st.devopt, "pdf", 3)
+           || strncmp (arg_st.devopt, "ps", 2)))
+      error ("print: the '%s' option is only valid for page formats and printers.", arg_st.resize_flag);
+    endif
   endif
 
   if (arg_st.send_to_printer)
@@ -340,19 +406,42 @@ function arg_st = __print_parse_opts__ (varargin)
       ## Only supported ghostscript devices
       error ("print: format must be a valid Ghostscript format for spooling to a printer");
     endif
-  elseif (isempty (arg_st.name))
+  elseif (isempty (arg_st.name) && ! arg_st.rgb_output)
     error ("print: an output filename must be specified");
   endif
 
   if (isempty (arg_st.canvas_size))
     if (isfigure (arg_st.figure))
-      [arg_st.ghostscript.papersize, paperposition] = ...
+      [arg_st.ghostscript.papersize, papersize_points, paperposition] = ...
                            gs_papersize (arg_st.figure, arg_st.orientation);
     else
       ## allows BIST tests to be run
       arg_st.ghostscript.papersize = "letter";
       paperposition = [0.25, 2.50, 8.00, 6.00] * 72;
+      papersize_points = [8.5, 11.0] * 72;
     endif
+
+    ## resize paper
+    if (arg_st.resize_flag)
+      if (strcmp (arg_st.resize_flag, "fillpage"))
+        ## leave a 0.25 inch margin on all sides of the page.
+        paperposition = [0.25 * 72, 0.25 * 72, ...
+                         papersize_points(1) - 0.5*72, ...
+                         papersize_points(2) - 0.5*72];
+      elseif (strcmp (arg_st.resize_flag, "bestfit"))
+        ## leaves a minimum page margin of 0.25 inches
+        if (paperposition(3) > paperposition(4))
+          fit_scale = papersize_points(1) / paperposition(3);
+        else
+          fit_scale = papersize_points(2) / paperposition(4);
+        endif
+        paperposition = [(papersize_points(1) - fit_scale*paperposition(3)) * 0.5, ...
+                        (papersize_points(2) - fit_scale*paperposition(4)) * 0.5, ...
+                        fit_scale * paperposition(3), ...
+                        fit_scale * paperposition(4)];
+      endif
+    endif
+
     arg_st.canvas_size = paperposition(3:4);
     if (strcmp (__graphics_toolkit__, "gnuplot")
         && ! arg_st.ghostscript.epscrop)
@@ -381,7 +470,9 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("print:missing_gs", "print.m: Ghostscript binary is not available.  Only eps output is possible");
+      warning ("octave:print:missing_gs", ...
+               ["print.m: Ghostscript binary is not available.  ", ...
+                "Only eps output is possible"]);
     endif
     warn_on_missing_ghostscript = false;
   endif
@@ -413,7 +504,7 @@ endfunction
 
 #%!test
 %! opts = __print_parse_opts__ ("-deps", "-tight");
-%! assert (opts.tight_flag, true);
+%! assert (opts.tight, true);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
 %! assert (opts.ghostscript.device, "");
@@ -464,7 +555,6 @@ function cmd = __quote_path__ (cmd)
 
 endfunction
 
-
 function gs = __ghostscript_binary__ ()
 
   persistent ghostscript_binary = "";
@@ -476,7 +566,7 @@ function gs = __ghostscript_binary__ ()
         || (! isempty (GSC) && file_in_path (getenv ("PATH"), GSC)))
       gs_binaries = {GSC};
     elseif (! isempty (GSC) && warn_on_bad_gsc)
-      warning ("print:badgscenv",
+      warning ("octave:print:badgscenv",
                "print.m: GSC environment variable not set properly");
       warn_on_bad_gsc = false;
       gs_binaries = {};
@@ -499,6 +589,32 @@ function gs = __ghostscript_binary__ ()
   endif
 
   gs = ghostscript_binary;
+
+endfunction
+
+function bin = __svgconv_binary__ ()
+
+  persistent binary = "";
+
+  if (isempty (binary))
+    bindir = getenv ("OCTAVE_ARCHLIBDIR");
+    if (isempty (bindir))
+      bindir = __octave_config_info__ ("archlibdir");
+    endif
+    
+    binary = fullfile (bindir, "octave-svgconvert");
+
+    if (! exist (binary, "file"))
+      if (! isunix () && exist ([binary, ".exe"], "file"))
+        ## Unix - Includes Mac OSX and Cygwin.
+        binary = [binary, ".exe"];
+      else
+        binary = "";
+      endif
+    endif
+  endif
+
+  bin = binary;
 
 endfunction
 
@@ -528,7 +644,7 @@ function bin = __find_binary__ (binary)
 
 endfunction
 
-function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
+function [papersize, papersize_points, paperposition] = gs_papersize (hfig, paperorientation)
   persistent papertypes papersizes;
 
   if (isempty (papertypes))
@@ -553,9 +669,9 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   paperposition = get (hfig, "paperposition");
   if (strcmp (papertype, "<custom>"))
     papersize = get (hfig, "papersize");
-    papersize = convert2points (papersize , paperunits);
+    papersize = convert2points (papersize, paperunits);
   else
-    papersize = papersizes (strcmp (papertypes, papertype), :);
+    papersize = papersizes(strcmp (papertypes, papertype), :);
   endif
 
   if (strcmp (paperunits, "normalized"))
@@ -565,11 +681,15 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   endif
 
   ## FIXME: This will be obsoleted by listeners for paper properties.
-  ##        Papersize is tall when portrait,and wide when landscape.
+  ##        papersize is tall when portrait, and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize([2,1]);
   endif
+
+  ## papersize is now [h,w] and measured in points.
+  ## Return it for possible resize outside of this function.
+  papersize_points = papersize;
 
   if (! strcmp (papertype, "<custom>")
       && (strcmp (paperorientation, "portrait")))
@@ -598,7 +718,7 @@ function value = convert2points (value, units)
     case "inches"
       value *= 72;
     case "centimeters"
-      value *= 72 / 2.54;
+      value *= (72 / 2.54);
     case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");
@@ -614,10 +734,13 @@ function device_list = gs_device_list ()
                  "pcxcmyk"; "pcxgray"; "pcxmono"; "pdfwrite"; "pgm"; ...
                  "pgmraw"; "pgnm"; "pgnmraw"; "png16"; "png16m"; ...
                  "png256"; "png48"; "pngalpha"; "pnggray"; "pngmono"; ...
-                 "pnm"; "pnmraw"; "ppm"; "ppmraw"; "pswrite"; ...
-                 "ps2write"; "tiff12nc"; "tiff24nc"; "tiff32nc"; ...
-                 "tiffcrle"; "tiffg3"; "tiffg32d"; "tiffg4"; ...
-                 "tiffgray"; "tifflzw"; "tiffpack"; "tiffsep"};
+                 "pnm"; "pnmraw"; "ppm"; "ppmraw"; "pswrite"; "ps2write"; ...
+                 "tiff12nc"; "tiff24nc"; "tiff32nc"; "tiff48nc"; ...
+                 "tiff64nc"; "tiffcrle"; "tiffg3"; "tiffg32d"; "tiffg4"; ...
+                 "tiffgray"; "tifflzw"; "tiffpack"; "tiffscaled"; ...
+                 "tiffscaled24"; "tiffscaled32"; "tiffscaled4"; ...
+                 "tiffscaled8"; "tiffsep"; "tiffsep1" };
+
 endfunction
 
 function aliases = gs_aliases ()
@@ -633,6 +756,6 @@ function aliases = gs_aliases ()
   aliases.ps2   = "ps2write";
   aliases.psc   = "ps2write";
   aliases.psc2  = "ps2write";
-  aliases.tiff  = "tiff24nc";
+  aliases.tiff  = "tiffscaled24";
   aliases.tiffn = "tiff24nc";
 endfunction

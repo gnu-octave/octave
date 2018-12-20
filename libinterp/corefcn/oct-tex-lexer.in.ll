@@ -62,7 +62,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "unistd-wrappers.h"
 
-#include "txt-eng.h"
+#include "text-engine.h"
+
+// oct-tex-parser.h must be included after text-engine.h
 #include "oct-tex-parser.h"
 
 // FIXME: with bison 3.x, OCTAVE_TEX_STYPE appears in the generated
@@ -200,7 +202,7 @@ octave_tex_alloc (yy_size_t size, yyscan_t)
 void *
 octave_tex_realloc (void *ptr, yy_size_t size, yyscan_t)
 {
-  return realloc (ptr, size);
+return realloc (ptr, size);
 }
 
 void
@@ -209,40 +211,41 @@ octave_tex_free (void *ptr, yyscan_t)
   free (ptr);
 }
 
-bool
-text_parser_tex::init_lexer (const std::string& s)
+namespace octave
 {
-  if (! scanner)
-    octave_tex_lex_init (&scanner);
+  bool text_parser_tex::init_lexer (const std::string& s)
+  {
+    if (! scanner)
+      octave_tex_lex_init (&scanner);
 
-  if (scanner)
-    {
-      if (buffer_state)
-        {
-          octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
-                                     scanner);
-          buffer_state = nullptr;
-        }
+    if (scanner)
+      {
+        if (buffer_state)
+          {
+            octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
+                                       scanner);
+            buffer_state = nullptr;
+          }
 
-      buffer_state = octave_tex__scan_bytes (s.data (), s.length (), scanner);
-    }
+        buffer_state = octave_tex__scan_bytes (s.data (), s.length (), scanner);
+      }
 
-  return (scanner && buffer_state);
-}
+    return (scanner && buffer_state);
+  }
 
-void
-text_parser_tex::destroy_lexer (void)
-{
-  if (buffer_state)
-    {
-      octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
-                                 scanner);
-      buffer_state = nullptr;
-    }
+  void text_parser_tex::destroy_lexer (void)
+  {
+    if (buffer_state)
+      {
+        octave_tex__delete_buffer (reinterpret_cast<YY_BUFFER_STATE> (buffer_state),
+                                   scanner);
+        buffer_state = nullptr;
+      }
 
-  if (scanner)
-    {
-      octave_tex_lex_destroy (scanner);
-      scanner = nullptr;
-    }
+    if (scanner)
+      {
+        octave_tex_lex_destroy (scanner);
+        scanner = nullptr;
+      }
+  }
 }

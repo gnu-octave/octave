@@ -66,23 +66,37 @@ function T = delaunayn (pts, varargin)
   endif
 
   ## Try to remove the zero volume simplices.  The volume of the i-th simplex is
-  ## given by abs(det(pts(T(i,1:end-1),:)-pts(T(i,2:end),:)))/prod(1:n)
+  ## given by abs(det(pts(T(i,1:end-1),:)-pts(T(i,2:end),:)))/factorial(ndim+1)
   ## (reference http://en.wikipedia.org/wiki/Simplex).  Any simplex with a
   ## relative volume less than some arbitrary criteria is rejected.  The
   ## criteria we use is the volume of the simplex corresponding to an
   ## orthogonal simplex is equal edge length all equal to the edge length of
   ## the original simplex.  If the relative volume is 1e3*eps then the simplex
   ## is rejected.  Note division of the two volumes means that the factor
-  ## prod(1:n) is dropped.
-  idx = [];
-  [nt, n] = size (T);
-  ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
-  for i = 1:nt
-    X = pts(T(i,1:end-1),:) - pts(T(i,2:end),:);
-    if (abs (det (X)) / sqrt (sumsq (X, 2)) < tol)
-      idx(end+1) = i;
-    endif
-  endfor
+  ## factorial(ndim+1) is dropped.
+  [nt, nd] = size (T);
+  if (nd == 3)
+    ## 2-D case
+    np = rows (pts);
+    ptsz = [pts, zeros(np, 1)];
+    p1 = ptsz(T(:,1), :);
+    p2 = ptsz(T(:,2), :);
+    p3 = ptsz(T(:,3), :);
+    p12 = p1 - p2;
+    p23 = p2 - p3;
+    det = cross (p12, p23, 2);
+    idx = abs (det(:,3) ./ sqrt (sumsq (p12, 2))) < tol & ...
+          abs (det(:,3) ./ sqrt (sumsq (p23, 2))) < tol;
+  else
+    ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
+    idx = [];
+    for i = 1:nt
+      X = pts(T(i,1:end-1),:) - pts(T(i,2:end),:);
+      if (abs (det (X)) / sqrt (sumsq (X, 2)) < tol)
+        idx(end+1) = i;
+      endif
+    endfor
+  endif
   T(idx,:) = [];
 
 endfunction

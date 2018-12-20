@@ -99,7 +99,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           msg.assign ("message", last_error_message ());
           msg.assign ("index",
                       static_cast<double> (count
-                                           + static_cast<octave_idx_type>(1)));
+                                           + static_cast<octave_idx_type> (1)));
 
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
@@ -425,7 +425,7 @@ v = cellfun (@@det, a); # faster
 
       std::string name = args(0).string_value ();
 
-      if (! valid_identifier (name))
+      if (! octave::valid_identifier (name))
         {
           std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
@@ -688,26 +688,34 @@ nevermind:
 /*
 
 %!function r = __f11 (x)
-%!  global __cellfun_test_num_outputs__;
-%!  __cellfun_test_num_outputs__ = nargout;
 %!  r = x;
 %!endfunction
 
 %!function __f01 (x)
-%!  global __cellfun_test_num_outputs__;
-%!  __cellfun_test_num_outputs__ = nargout;
+%!  ## Empty function
 %!endfunction
 
 %!test
-%! global __cellfun_test_num_outputs__;
-%! cellfun (@__f11, {1});
+%! __cellfun_test_num_outputs__ = -1;
+%!
+%! function r = __subf11 (x)
+%!   __cellfun_test_num_outputs__ = nargout;
+%!   r = x;
+%! endfunction
+%!
+%! cellfun ("__subf11", {1});
 %! assert (__cellfun_test_num_outputs__, 0);
-%! x = cellfun (@__f11, {1});
+%!
+%! __cellfun_test_num_outputs__ = -1;
+%! x = cellfun ("__subf11", {1});
 %! assert (__cellfun_test_num_outputs__, 1);
 
 %!test
-%! global __cellfun_test_num_outputs__;
-%! cellfun (@__f01, {1});
+%! __cellfun_test_num_outputs__ = -1;
+%! function __subf01 (x)
+%!   __cellfun_test_num_outputs__ = nargout;
+%! endfunction
+%! cellfun ("__subf01", {1});
 %! assert (__cellfun_test_num_outputs__, 0);
 
 %!error x = cellfun (@__f01, {1, 2})
@@ -1132,7 +1140,7 @@ arrayfun (@@str2num, [1234],
       // See if we can convert the string into a function.
       std::string name = args(0).string_value ();
 
-      if (! valid_identifier (name))
+      if (! octave::valid_identifier (name))
         {
           std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
@@ -1389,26 +1397,36 @@ arrayfun (@@str2num, [1234],
 
 /*
 %!function r = __f11 (x)
-%!  global __arrayfun_test_num_outputs__;
-%!  __arrayfun_test_num_outputs__ = nargout;
 %!  r = x;
 %!endfunction
 
 %!function __f01 (x)
-%!  global __arrayfun_test_num_outputs__;
-%!  __arrayfun_test_num_outputs__ = nargout;
+%!  ## Empty function
 %!endfunction
 
 %!test
-%! global __arrayfun_test_num_outputs__;
-%! arrayfun (@__f11, {1});
+%! __arrayfun_test_num_outputs__ = -1;
+%!
+%! function r = __subf11 (x)
+%!   __arrayfun_test_num_outputs__ = nargout;
+%!   r = x;
+%! endfunction
+%!
+%! arrayfun ("__subf11", {1});
 %! assert (__arrayfun_test_num_outputs__, 0);
-%! x = arrayfun (@__f11, {1});
+%!
+%! __arrayfun_test_num_outputs__ = -1;
+%! x = arrayfun ("__subf11", {1});
 %! assert (__arrayfun_test_num_outputs__, 1);
 
 %!test
-%! global __arrayfun_test_num_outputs__;
-%! arrayfun (@__f01, {1});
+%! __arrayfun_test_num_outputs__ = -1;
+%!
+%! function __subf01 (x)
+%!   __arrayfun_test_num_outputs__ = nargout;
+%! endfunction
+%!
+%! arrayfun ("__subf01", {1});
 %! assert (__arrayfun_test_num_outputs__, 0);
 
 %!error x = arrayfun (@__f01, [1, 2])
@@ -1887,7 +1905,8 @@ mat2cell_mismatch (const dim_vector& dv,
       octave_idx_type r = (i < dv.ndims () ? dv(i) : 1);
 
       if (s != r)
-        error ("mat2cell: mismatch on dimension %d (%d != %d)", i+1, r, s);
+        error ("mat2cell: mismatch on dimension %d (%" OCTAVE_IDX_TYPE_FORMAT
+               " != %" OCTAVE_IDX_TYPE_FORMAT ")", i+1, r, s);
     }
 
   return false;

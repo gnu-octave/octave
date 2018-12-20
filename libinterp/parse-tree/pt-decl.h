@@ -84,7 +84,7 @@ namespace octave
 
     bool lvalue_ok (void) { return m_id ? m_id->lvalue_ok () : false; }
 
-    octave_lvalue lvalue (tree_evaluator *tw)
+    octave_lvalue lvalue (tree_evaluator& tw)
     {
       return m_id ? m_id->lvalue (tw) : octave_lvalue ();
     }
@@ -137,7 +137,7 @@ namespace octave
     {
       while (! empty ())
         {
-          iterator p = begin ();
+          auto p = begin ();
           delete *p;
           erase (p);
         }

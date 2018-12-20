@@ -123,14 +123,18 @@ class OpenGL_fltk : public Fl_Gl_Window
 public:
 
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
-    : Fl_Gl_Window (xx, yy, ww, hh, nullptr), m_number (num), m_renderer (),
-      m_in_zoom (false), m_zoom_box ()
+    : Fl_Gl_Window (xx, yy, ww, hh, nullptr), m_number (num),
+      m_glfcns (), m_renderer (m_glfcns), m_in_zoom (false), m_zoom_box ()
   {
 #if defined (HAVE_OPENGL)
+
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
+
 #else
+
     err_disabled_feature ("OpenGL_fltk", "OpenGL");
+
 #endif
   }
 
@@ -148,9 +152,8 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << 'x' << h () << std::endl;
-
-    octave::gl2ps_print (gh_manager::get_object (m_number), cmd, term);
+    octave::gl2ps_print (m_glfcns, gh_manager::get_object (m_number),
+                         cmd, term);
   }
 
   uint8NDArray get_pixels (void)
@@ -166,10 +169,17 @@ public:
     Fl_Gl_Window::resize (xx, yy, ww, hh);
 
 #else
+
+    octave_unused_parameter (xx);
+    octave_unused_parameter (yy);
+    octave_unused_parameter (ww);
+    octave_unused_parameter (hh);
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
+
 #endif
   }
 
@@ -190,6 +200,7 @@ private:
 
   double m_number;
 
+  octave::opengl_functions m_glfcns;
   octave::opengl_renderer m_renderer;
 
   bool m_in_zoom;
@@ -203,9 +214,9 @@ private:
 
     if (! valid ())
       {
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity ();
-        glViewport (0, 0, w (), h ());
+        m_glfcns.glMatrixMode (GL_PROJECTION);
+        m_glfcns.glLoadIdentity ();
+        m_glfcns.glViewport (0, 0, w (), h ());
       }
 
     m_renderer.draw (gh_manager::get_object (m_number));
@@ -214,70 +225,31 @@ private:
       overlay ();
 
 #else
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
-#endif
-  }
 
-  void zoom_box_vertex (void)
-  {
-#if defined (HAVE_OPENGL)
-
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(3));
-    glVertex2d (m_zoom_box(2), h () - m_zoom_box(3));
-    glVertex2d (m_zoom_box(2), h () - m_zoom_box(1));
-    glVertex2d (m_zoom_box(0), h () - m_zoom_box(1));
-
-#else
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
 #endif
   }
 
   void overlay (void)
   {
-#if defined (HAVE_OPENGL)
+    Matrix overlaycolor (3, 1);
+    overlaycolor(0) = 0.45;
+    overlaycolor(1) = 0.62;
+    overlaycolor(2) = 0.81;
+    double overlayalpha = 0.1;
+    Matrix bordercolor = overlaycolor;
+    double borderalpha = 0.9;
+    double borderwidth = 1.5;
 
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    glLoadIdentity ();
-
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    gluOrtho2D (0.0, w (), 0.0, h ());
-
-    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    glDisable (GL_DEPTH_TEST);
-
-    glBegin (GL_POLYGON);
-    glColor4f (0.45, 0.62, 0.81, 0.1);
-    zoom_box_vertex ();
-    glEnd ();
-
-    glLineWidth (1.5);
-    glBegin (GL_LINE_STRIP);
-    glColor4f (0.45, 0.62, 0.81, 0.9);
-    zoom_box_vertex ();
-    glEnd ();
-
-    glPopAttrib ();
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
-
-#else
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-#endif
+    m_renderer.draw_zoom_box (w (), h (),
+                              m_zoom_box(0), m_zoom_box(1),
+                              m_zoom_box(2), m_zoom_box(3),
+                              overlaycolor, overlayalpha,
+                              bordercolor, borderalpha, borderwidth);
   }
 
   int handle (int event)
@@ -298,10 +270,14 @@ private:
     return Fl_Gl_Window::handle (event);
 
 #else
+
+    octave_unused_parameter (event);
+
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
     panic_impossible ();
+
 #endif
   }
 };
@@ -1489,8 +1465,6 @@ private:
 
     if (! m_fp.is_beingdeleted ())
       {
-        //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
-
         // FLTK resends keyboard events with flipped case if all
         // widgets rejects the event.
         // See Event Propagation http://www.fltk.org/doc-1.3/events.html
@@ -1847,7 +1821,7 @@ private:
               break;
             }
       }
-    //std::cout << "plot_window::handle wasn't interested in event " <<  fl_eventnames[event] << std::endl;
+
     return Fl_Window::handle (event);
   }
 };
@@ -2441,7 +2415,7 @@ public:
 
         octave_value_list args = input_event_hook_fcn_id;
         args.append (false);
-        Fremove_input_event_hook (args, 0);
+        Fremove_input_event_hook (m_interpreter, args, 0);
         input_event_hook_fcn_id = octave_value_list ();
 
         figure_manager::close_all ();
@@ -2504,7 +2478,7 @@ Undocumented internal function.
 
       octave_value fcn (new octave_builtin (F__fltk_check__));
       octave_value fcn_handle (new octave_fcn_handle (fcn, "@__fltk_check__"));
-      octave_value_list id = Fadd_input_event_hook (fcn_handle, 1);
+      octave_value_list id = Fadd_input_event_hook (interp, fcn_handle, 1);
 
       fltk->set_input_event_hook_id (id);
     }

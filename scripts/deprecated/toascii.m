@@ -60,6 +60,11 @@ function retval = toascii (str)
 endfunction
 
 
+## First test is necessary to provoke 1-time legacy warning
+%!test
+%! warning ("off", "Octave:deprecated-function", "local");
+%! toascii ("");
+
 %!assert (toascii (char (0:127)), 0:127)
 %!assert (toascii (" ":"@"), 32:64)
 %!assert (toascii ("A":"Z"), 65:90)

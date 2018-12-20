@@ -25,7 +25,7 @@ EXTERNAL_SOURCES += \
   %reldir%/zdconv2.f
 
 XERBLA_SRC = \
-  %reldir%/xerbla.c
+  %reldir%/xerbla.cc
 
 %canon_reldir%_libxerbla_la_SOURCES = $(XERBLA_SRC)
 

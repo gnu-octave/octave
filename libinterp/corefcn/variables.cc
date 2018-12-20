@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "call-stack.h"
-#include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -61,14 +60,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
+#include "syminfo.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-
-// Defines layout for the whos/who -long command
-static std::string Vwhos_line_format
-  = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";
 
 // Attributes of variables and functions.
 
@@ -141,7 +137,10 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
       int parse_status;
 
-      octave::eval_string (cmd, true, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("extract_function");
+
+      interp.eval_string (cmd, true, parse_status, 0);
 
       if (parse_status != 0)
         error ("%s: '%s' is not valid as a function",
@@ -156,165 +155,6 @@ extract_function (const octave_value& arg, const std::string& warn_for,
       warning ("%s: passing function body as a string is obsolete; please use anonymous functions",
                warn_for.c_str ());
     }
-
-  return retval;
-}
-
-string_vector
-get_struct_elts (const std::string& text)
-{
-  int n = 1;
-
-  size_t pos = 0;
-
-  size_t len = text.length ();
-
-  while ((pos = text.find ('.', pos)) != std::string::npos)
-    {
-      if (++pos == len)
-        break;
-
-      n++;
-    }
-
-  string_vector retval (n);
-
-  pos = 0;
-
-  for (int i = 0; i < n; i++)
-    {
-      len = text.find ('.', pos);
-
-      if (len != std::string::npos)
-        len -= pos;
-
-      retval[i] = text.substr (pos, len);
-
-      if (len != std::string::npos)
-        pos += len + 1;
-    }
-
-  return retval;
-}
-
-static inline bool
-is_variable (octave::symbol_table& symtab, const std::string& name)
-{
-  bool retval = false;
-
-  if (! name.empty ())
-    {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      octave_value val = scope ? scope.varval (name) : octave_value ();
-
-      retval = val.is_defined ();
-    }
-
-  return retval;
-}
-
-string_vector
-generate_struct_completions (const std::string& text,
-                             std::string& prefix, std::string& hint)
-{
-  string_vector names;
-
-  size_t pos = text.rfind ('.');
-  bool array = false;
-
-  if (pos != std::string::npos)
-    {
-      if (pos == text.length ())
-        hint = "";
-      else
-        hint = text.substr (pos+1);
-
-      prefix = text.substr (0, pos);
-
-      if (prefix == "")
-        {
-          array = true;
-          prefix = find_indexed_expression (text);
-        }
-
-      std::string base_name = prefix;
-
-      pos = base_name.find_first_of ("{(. ");
-
-      if (pos != std::string::npos)
-        base_name = base_name.substr (0, pos);
-
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("generate_struct_completions");
-
-      if (is_variable (symtab, base_name))
-        {
-          int parse_status;
-
-          octave::unwind_protect frame;
-
-          frame.protect_var (discard_error_messages);
-          frame.protect_var (discard_warning_messages);
-
-          discard_error_messages = true;
-          discard_warning_messages = true;
-
-          try
-            {
-              octave_value tmp = octave::eval_string (prefix, true, parse_status);
-
-              frame.run ();
-
-              if (tmp.is_defined ()
-                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
-                names = tmp.map_keys ();
-            }
-          catch (const octave::execution_exception&)
-            {
-              octave::interpreter::recover_from_exception ();
-            }
-        }
-    }
-
-  // Undo look-back that found the array expression,
-  // but insert an extra "." to distinguish from the non-struct case.
-  if (array)
-    prefix = ".";
-
-  return names;
-}
-
-// FIXME: this will have to be much smarter to work "correctly".
-bool
-looks_like_struct (const std::string& text, char prev_char)
-{
-  bool retval = (! text.empty ()
-                 && (text != "." || prev_char == ')' || prev_char == '}')
-                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
-                 && text.find ("..") == std::string::npos
-                 && text.rfind ('.') != std::string::npos);
-
-#if 0
-  symbol_record *sr = curr_sym_tab->lookup (text);
-
-  if (sr && ! sr->is_function ())
-    {
-      int parse_status;
-
-      octave::unwind_protect frame;
-
-      frame.protect_var (discard_error_messages);
-
-      discard_error_messages = true;
-
-      octave_value tmp = eval_string (text, true, parse_status);
-
-      frame.run ();
-
-      retval = (tmp.is_defined () && tmp.isstruct ());
-    }
-#endif
 
   return retval;
 }
@@ -361,6 +201,7 @@ isglobal ("x")
 %!test
 %! global x;
 %! assert (isglobal ("x"), true);
+%! clear -global x;  # cleanup after test
 
 %!error isglobal ()
 %!error isglobal ("a", "b")
@@ -371,7 +212,7 @@ static int
 symbol_exist (octave::interpreter& interp, const std::string& name,
               const std::string& type = "any")
 {
-  if (octave::is_keyword (name))
+  if (octave::iskeyword (name))
     return 0;
 
   bool search_any = type == "any";
@@ -440,7 +281,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
             }
         }
 
-      file_name = file_in_path (name, "");
+      file_name = octave::file_in_path (name, "");
 
       if (file_name.empty ())
         file_name = name;
@@ -707,13 +548,7 @@ curr_fcn_unwind_protect_frame (void)
   octave::call_stack& cs
     = octave::__get_call_stack__ ("curr_fcn_unwind_protect_frame");
 
-  octave_user_code *curr_usr_code = cs.caller_user_code ();
-
-  octave_user_function *curr_usr_fcn
-    = (curr_usr_code && curr_usr_code->is_user_function ()
-       ? dynamic_cast<octave_user_function *> (curr_usr_code) : nullptr);
-
-  return curr_usr_fcn ? curr_usr_fcn->unwind_protect_frame () : nullptr;
+  return cs.curr_fcn_unwind_protect_frame ();
 }
 
 template <typename T>
@@ -866,9 +701,9 @@ set_internal_variable (double& var, const octave_value_list& args,
       double dval = args(0).xscalar_value ("%s: argument must be a scalar value", nm);
 
       if (dval < minval)
-        error ("%s: argument must be greater than %g", minval);
+        error ("%s: argument must be greater than %g", nm, minval);
       if (dval > maxval)
-        error ("%s: argument must be less than or equal to %g", maxval);
+        error ("%s: argument must be less than or equal to %g", nm, maxval);
 
       var = dval;
     }
@@ -997,971 +832,12 @@ set_internal_variable (std::string& var, const octave_value_list& args,
   return retval;
 }
 
-struct
-whos_parameter
-{
-  char command;
-  char modifier;
-  int parameter_length;
-  int first_parameter_length;
-  int balance;
-  std::string text;
-  std::string line;
-};
-
-static void
-print_descriptor (std::ostream& os, std::list<whos_parameter> params)
-{
-  // This method prints a line of information on a given symbol
-  std::list<whos_parameter>::iterator i = params.begin ();
-  std::ostringstream param_buf;
-
-  octave::preserve_stream_state stream_state (os);
-
-  while (i != params.end ())
-    {
-      whos_parameter param = *i;
-
-      if (param.command != '\0')
-        {
-          // Do the actual printing
-          switch (param.modifier)
-            {
-            case 'l':
-              os << std::setiosflags (std::ios::left)
-                 << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left)
-                        << std::setw (param.parameter_length);
-              break;
-
-            case 'r':
-              os << std::setiosflags (std::ios::right)
-                 << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::right)
-                        << std::setw (param.parameter_length);
-              break;
-
-            case 'c':
-              if (param.command != 's')
-                {
-                  os << std::setiosflags (std::ios::left)
-                     << std::setw (param.parameter_length);
-                  param_buf << std::setiosflags (std::ios::left)
-                            << std::setw (param.parameter_length);
-                }
-              break;
-
-            default:
-              os << std::setiosflags (std::ios::left)
-                 << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left)
-                        << std::setw (param.parameter_length);
-            }
-
-          if (param.command == 's' && param.modifier == 'c')
-            {
-              int a, b;
-
-              if (param.modifier == 'c')
-                {
-                  a = param.first_parameter_length - param.balance;
-                  a = (a < 0 ? 0 : a);
-                  b = param.parameter_length - a - param.text.length ();
-                  b = (b < 0 ? 0 : b);
-                  os << std::setiosflags (std::ios::left) << std::setw (a)
-                     << "" << std::resetiosflags (std::ios::left) << param.text
-                     << std::setiosflags (std::ios::left)
-                     << std::setw (b) << ""
-                     << std::resetiosflags (std::ios::left);
-                  param_buf << std::setiosflags (std::ios::left)
-                            << std::setw (a)
-                            << "" << std::resetiosflags (std::ios::left)
-                            << param.line
-                            << std::setiosflags (std::ios::left)
-                            << std::setw (b) << ""
-                            << std::resetiosflags (std::ios::left);
-                }
-            }
-          else
-            {
-              os << param.text;
-              param_buf << param.line;
-            }
-          os << std::resetiosflags (std::ios::left)
-             << std::resetiosflags (std::ios::right);
-          param_buf << std::resetiosflags (std::ios::left)
-                    << std::resetiosflags (std::ios::right);
-          i++;
-        }
-      else
-        {
-          os << param.text;
-          param_buf << param.line;
-          i++;
-        }
-    }
-
-  os << param_buf.str ();
-}
-
-// FIXME: This is a bit of a kluge.  We'd like to just use val.dims()
-// and if val is an object, expect that dims will call size if it is
-// overloaded by a user-defined method.  But there are currently some
-// unresolved const issues that prevent that solution from working.
-// This same kluge is done in symtab.cc (do_workspace_info), fix there too.
-
-std::string
-get_dims_str (const octave_value& val)
-{
-  octave_value tmp = val;
-
-  Matrix sz = tmp.size ();
-
-  dim_vector dv = dim_vector::alloc (sz.numel ());
-
-  for (octave_idx_type i = 0; i < dv.ndims (); i++)
-    dv(i) = sz(i);
-
-  return dv.str ();
-}
-
-class
-symbol_info_list
-{
-private:
-  struct symbol_info
-  {
-    symbol_info (const octave::symbol_record& sr,
-                 octave::symbol_record::context_id context,
-                 const std::string& expr_str = "",
-                 const octave_value& expr_val = octave_value ())
-      : name (expr_str.empty () ? sr.name () : expr_str),
-        varval (),
-        is_automatic (sr.is_automatic ()),
-        is_complex (varval.iscomplex ()),
-        is_formal (sr.is_formal ()),
-        is_global (sr.is_global ()),
-        is_persistent (sr.is_persistent ())
-    {
-      varval = (expr_val.is_undefined ()
-                ? sr.varval (context) : expr_val);
-
-      is_complex = varval.iscomplex ();
-    }
-
-    void display_line (std::ostream& os,
-                       const std::list<whos_parameter>& params) const
-    {
-      std::string dims_str = get_dims_str (varval);
-
-      std::list<whos_parameter>::const_iterator i = params.begin ();
-
-      octave::preserve_stream_state stream_state (os);
-
-      while (i != params.end ())
-        {
-          whos_parameter param = *i;
-
-          if (param.command != '\0')
-            {
-              // Do the actual printing.
-
-              switch (param.modifier)
-                {
-                case 'l':
-                  os << std::setiosflags (std::ios::left)
-                     << std::setw (param.parameter_length);
-                  break;
-
-                case 'r':
-                  os << std::setiosflags (std::ios::right)
-                     << std::setw (param.parameter_length);
-                  break;
-
-                case 'c':
-                  if (param.command == 's')
-                    {
-                      int front = param.first_parameter_length
-                                  - dims_str.find ('x');
-                      int back = param.parameter_length
-                                 - dims_str.length ()
-                                 - front;
-                      front = (front > 0) ? front : 0;
-                      back = (back > 0) ? back : 0;
-
-                      os << std::setiosflags (std::ios::left)
-                         << std::setw (front)
-                         << ""
-                         << std::resetiosflags (std::ios::left)
-                         << dims_str
-                         << std::setiosflags (std::ios::left)
-                         << std::setw (back)
-                         << ""
-                         << std::resetiosflags (std::ios::left);
-                    }
-                  else
-                    {
-                      os << std::setiosflags (std::ios::left)
-                         << std::setw (param.parameter_length);
-                    }
-                  break;
-
-                default:
-                  error ("whos_line_format: modifier '%c' unknown",
-                         param.modifier);
-
-                  os << std::setiosflags (std::ios::right)
-                     << std::setw (param.parameter_length);
-                }
-
-              switch (param.command)
-                {
-                case 'a':
-                  {
-                    char tmp[6];
-
-                    tmp[0] = (is_automatic ? 'a' : ' ');
-                    tmp[1] = (is_complex ? 'c' : ' ');
-                    tmp[2] = (is_formal ? 'f' : ' ');
-                    tmp[3] = (is_global ? 'g' : ' ');
-                    tmp[4] = (is_persistent ? 'p' : ' ');
-                    tmp[5] = 0;
-
-                    os << tmp;
-                  }
-                  break;
-
-                case 'b':
-                  os << varval.byte_size ();
-                  break;
-
-                case 'c':
-                  os << varval.class_name ();
-                  break;
-
-                case 'e':
-                  os << varval.numel ();
-                  break;
-
-                case 'n':
-                  os << name;
-                  break;
-
-                case 's':
-                  if (param.modifier != 'c')
-                    os << dims_str;
-                  break;
-
-                case 't':
-                  os << varval.type_name ();
-                  break;
-
-                default:
-                  error ("whos_line_format: command '%c' unknown",
-                         param.command);
-                }
-
-              os << std::resetiosflags (std::ios::left)
-                 << std::resetiosflags (std::ios::right);
-              i++;
-            }
-          else
-            {
-              os << param.text;
-              i++;
-            }
-        }
-    }
-
-    std::string name;
-    octave_value varval;
-    bool is_automatic;
-    bool is_complex;
-    bool is_formal;
-    bool is_global;
-    bool is_persistent;
-  };
-
-public:
-  symbol_info_list (void) : lst () { }
-
-  symbol_info_list (const symbol_info_list& sil) : lst (sil.lst) { }
-
-  symbol_info_list& operator = (const symbol_info_list& sil)
-  {
-    if (this != &sil)
-      lst = sil.lst;
-
-    return *this;
-  }
-
-  ~symbol_info_list (void) = default;
-
-  void append (const octave::symbol_record& sr,
-               octave::symbol_record::context_id context)
-  {
-    lst.push_back (symbol_info (sr, context));
-  }
-
-  void append (const octave::symbol_record& sr,
-               octave::symbol_record::context_id context,
-               const std::string& expr_str,
-               const octave_value& expr_val)
-  {
-    lst.push_back (symbol_info (sr, context, expr_str, expr_val));
-  }
-
-  size_t size (void) const { return lst.size (); }
-
-  bool empty (void) const { return lst.empty (); }
-
-  octave_map
-  map_value (const std::string& caller_function_name, int nesting_level) const
-  {
-    size_t len = lst.size ();
-
-    Cell name_info (len, 1);
-    Cell size_info (len, 1);
-    Cell bytes_info (len, 1);
-    Cell class_info (len, 1);
-    Cell global_info (len, 1);
-    Cell sparse_info (len, 1);
-    Cell complex_info (len, 1);
-    Cell nesting_info (len, 1);
-    Cell persistent_info (len, 1);
-
-    std::list<symbol_info>::const_iterator p = lst.begin ();
-
-    for (size_t j = 0; j < len; j++)
-      {
-        const symbol_info& si = *p++;
-
-        octave_scalar_map ni;
-
-        ni.assign ("function", caller_function_name);
-        ni.assign ("level", nesting_level);
-
-        name_info(j) = si.name;
-        global_info(j) = si.is_global;
-        persistent_info(j) = si.is_persistent;
-
-        octave_value val = si.varval;
-
-        size_info(j) = val.size ();
-        bytes_info(j) = val.byte_size ();
-        class_info(j) = val.class_name ();
-        sparse_info(j) = val.issparse ();
-        complex_info(j) = val.iscomplex ();
-        nesting_info(j) = ni;
-      }
-
-    octave_map info;
-
-    info.assign ("name", name_info);
-    info.assign ("size", size_info);
-    info.assign ("bytes", bytes_info);
-    info.assign ("class", class_info);
-    info.assign ("global", global_info);
-    info.assign ("sparse", sparse_info);
-    info.assign ("complex", complex_info);
-    info.assign ("nesting", nesting_info);
-    info.assign ("persistent", persistent_info);
-
-    return info;
-  }
-
-  void display (std::ostream& os)
-  {
-    if (! lst.empty ())
-      {
-        size_t bytes = 0;
-        size_t elements = 0;
-
-        std::list<whos_parameter> params = parse_whos_line_format ();
-
-        print_descriptor (os, params);
-
-        octave_stdout << "\n";
-
-        for (const auto& syminfo : lst)
-          {
-            syminfo.display_line (os, params);
-
-            octave_value val = syminfo.varval;
-
-            elements += val.numel ();
-            bytes += val.byte_size ();
-          }
-
-        os << "\nTotal is " << elements
-           << (elements == 1 ? " element" : " elements")
-           << " using " << bytes << (bytes == 1 ? " byte" : " bytes")
-           << "\n";
-      }
-  }
-
-  // Parse the string whos_line_format, and return a parameter list,
-  // containing all information needed to print the given
-  // attributes of the symbols.
-  std::list<whos_parameter> parse_whos_line_format (void)
-  {
-    int idx;
-    size_t format_len = Vwhos_line_format.length ();
-    char garbage;
-    std::list<whos_parameter> params;
-
-    size_t bytes1;
-    int elements1;
-
-    std::string param_string = "abcenst";
-    Array<int> param_length (dim_vector (param_string.length (), 1));
-    Array<std::string> param_names (dim_vector (param_string.length (), 1));
-    size_t pos_a, pos_b, pos_c, pos_e, pos_n, pos_s, pos_t;
-
-    pos_a = param_string.find ('a'); // Attributes
-    pos_b = param_string.find ('b'); // Bytes
-    pos_c = param_string.find ('c'); // Class
-    pos_e = param_string.find ('e'); // Elements
-    pos_n = param_string.find ('n'); // Name
-    pos_s = param_string.find ('s'); // Size
-    pos_t = param_string.find ('t'); // Type
-
-    param_names(pos_a) = "Attr";
-    param_names(pos_b) = "Bytes";
-    param_names(pos_c) = "Class";
-    param_names(pos_e) = "Elements";
-    param_names(pos_n) = "Name";
-    param_names(pos_s) = "Size";
-    param_names(pos_t) = "Type";
-
-    for (size_t i = 0; i < param_string.length (); i++)
-      param_length(i) = param_names(i).length ();
-
-    // The attribute column needs size 5.
-    param_length(pos_a) = 5;
-
-    // Calculating necessary spacing for name column,
-    // bytes column, elements column and class column
-
-    for (const auto& syminfo : lst)
-      {
-        std::stringstream ss1, ss2;
-        std::string str;
-
-        str = syminfo.name;
-        param_length(pos_n) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_n)))
-                               ? str.length () : param_length(pos_n));
-
-        octave_value val = syminfo.varval;
-
-        str = val.type_name ();
-        param_length(pos_t) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_t)))
-                               ? str.length () : param_length(pos_t));
-
-        elements1 = val.numel ();
-        ss1 << elements1;
-        str = ss1.str ();
-        param_length(pos_e) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_e)))
-                               ? str.length () : param_length(pos_e));
-
-        bytes1 = val.byte_size ();
-        ss2 << bytes1;
-        str = ss2.str ();
-        param_length(pos_b) = ((str.length ()
-                                > static_cast<size_t> (param_length(pos_b)))
-                               ? str.length () : param_length (pos_b));
-      }
-
-    idx = 0;
-    while (static_cast<size_t> (idx) < format_len)
-      {
-        whos_parameter param;
-        param.command = '\0';
-
-        if (Vwhos_line_format[idx] == '%')
-          {
-            bool error_encountered = false;
-            param.modifier = 'r';
-            param.parameter_length = 0;
-
-            int a = 0;
-            int b = -1;
-            int balance = 1;
-            unsigned int items;
-            size_t pos;
-            std::string cmd;
-
-            // Parse one command from whos_line_format
-            cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-            pos = cmd.find (';');
-            if (pos == std::string::npos)
-              error ("parameter without ; in whos_line_format");
-
-            cmd = cmd.substr (0, pos+1);
-
-            idx += cmd.length ();
-
-            // FIXME: use iostream functions instead of sscanf!
-
-            if (cmd.find_first_of ("crl") != 1)
-              items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d;",
-                              &garbage, &param.command, &a, &b, &balance);
-            else
-              items = sscanf (cmd.c_str (), "%c%c%c:%d:%d:%d;",
-                              &garbage, &param.modifier, &param.command,
-                              &a, &b, &balance) - 1;
-
-            if (items < 2)
-              error ("whos_line_format: parameter structure without command in whos_line_format");
-
-            // Exception case of bare class command 'c' without modifier 'l/r'
-            if (param.modifier == 'c'
-                && param_string.find (param.command) == std::string::npos)
-              {
-                param.modifier = 'r';
-                param.command = 'c';
-              }
-
-            // Insert data into parameter
-            param.first_parameter_length = 0;
-            pos = param_string.find (param.command);
-            if (pos == std::string::npos)
-              error ("whos_line_format: '%c' is not a command", param.command);
-
-            param.parameter_length = param_length(pos);
-            param.text = param_names(pos);
-            param.line.assign (param_names(pos).length (), '=');
-
-            param.parameter_length = (a > param.parameter_length
-                                      ? a : param.parameter_length);
-            if (param.command == 's' && param.modifier == 'c' && b > 0)
-              param.first_parameter_length = b;
-
-            if (param.command == 's')
-              {
-                // Have to calculate space needed for printing
-                // matrix dimensions Space needed for Size column is
-                // hard to determine in prior, because it depends on
-                // dimensions to be shown.  That is why it is
-                // recalculated for each Size-command int first,
-                // rest = 0, total;
-                int rest = 0;
-                int first = param.first_parameter_length;
-                int total = param.parameter_length;
-
-                for (const auto& syminfo : lst)
-                  {
-                    octave_value val = syminfo.varval;
-                    std::string dims_str = get_dims_str (val);
-                    int first1 = dims_str.find ('x');
-                    int total1 = dims_str.length ();
-                    int rest1 = total1 - first1;
-                    rest = (rest1 > rest ? rest1 : rest);
-                    first = (first1 > first ? first1 : first);
-                    total = (total1 > total ? total1 : total);
-                  }
-
-                if (param.modifier == 'c')
-                  {
-                    if (first < balance)
-                      first += balance - first;
-                    if (rest + balance < param.parameter_length)
-                      rest += param.parameter_length - rest - balance;
-
-                    param.parameter_length = first + rest;
-                    param.first_parameter_length = first;
-                    param.balance = balance;
-                  }
-                else
-                  {
-                    param.parameter_length = total;
-                    param.first_parameter_length = 0;
-                  }
-              }
-            else if (param.modifier == 'c')
-              error ("whos_line_format: modifier 'c' not available for command '%c'",
-                     param.command);
-
-            // What happens if whos_line_format contains negative numbers
-            // at param_length positions?
-            param.balance = (b < 0 ? 0 : param.balance);
-            param.first_parameter_length = (b < 0
-                                            ? 0
-                                            : param.first_parameter_length);
-            param.parameter_length = (a < 0
-                                      ? 0
-                                      : (param.parameter_length
-                                         < param_length(pos_s)
-                                         ? param_length(pos_s)
-                                         : param.parameter_length));
-
-            // Parameter will not be pushed into parameter list if ...
-            if (! error_encountered)
-              params.push_back (param);
-          }
-        else
-          {
-            // Text string, to be printed as it is ...
-            std::string text;
-            size_t pos;
-            text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-            pos = text.find ('%');
-            if (pos != std::string::npos)
-              text = text.substr (0, pos);
-
-            // Push parameter into list ...
-            idx += text.length ();
-            param.text=text;
-            param.line.assign (text.length (), ' ');
-            params.push_back (param);
-          }
-      }
-
-    return params;
-  }
-
-private:
-  std::list<symbol_info> lst;
-
-};
-
-static octave_value
-do_who (octave::interpreter& interp, int argc, const string_vector& argv,
-        bool return_list, bool verbose = false, std::string msg = "")
-{
-  octave_value retval;
-
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  std::string my_name = argv[0];
-
-  bool global_only = false;
-  bool have_regexp = false;
-
-  int i;
-  for (i = 1; i < argc; i++)
-    {
-      if (argv[i] == "-file")
-        {
-          // FIXME: This is an inefficient manner to implement this as the
-          // variables are loaded in to a temporary context and then treated.
-          // It would be better to refecat symbol_info_list to not store the
-          // symbol records and then use it in load-save.cc (do_load) to
-          // implement this option there so that the variables are never
-          // stored at all.
-          if (i == argc - 1)
-            error ("%s: -file argument must be followed by a filename",
-                   my_name.c_str ());
-
-          std::string nm = argv[i + 1];
-
-          octave::unwind_protect frame;
-
-          // Set up temporary scope.
-
-          octave::symbol_scope tmp_scope ("$dummy_scope$");
-
-          symtab.set_scope (tmp_scope);
-
-          cs.push (tmp_scope, 0);
-          frame.add_method (cs, &octave::call_stack::pop);
-
-          octave::feval ("load", octave_value (nm), 0);
-
-          std::string newmsg = "Variables in the file " + nm + ":\n\n";
-
-          retval = do_who (interp, i, argv, return_list, verbose, newmsg);
-
-          return retval;
-        }
-      else if (argv[i] == "-regexp")
-        have_regexp = true;
-      else if (argv[i] == "global")
-        global_only = true;
-      else if (argv[i][0] == '-')
-        warning ("%s: unrecognized option '%s'", my_name.c_str (),
-                 argv[i].c_str ());
-      else
-        break;
-    }
-
-  int npats = argc - i;
-  string_vector pats;
-  if (npats > 0)
-    {
-      pats.resize (npats);
-      for (int j = 0; j < npats; j++)
-        pats[j] = argv[i+j];
-    }
-  else
-    {
-      pats.resize (++npats);
-      pats[0] = "*";
-    }
-
-  symbol_info_list symbol_stats;
-  std::list<std::string> symbol_names;
-
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  octave::symbol_record::context_id context = scope.current_context ();
-
-  for (int j = 0; j < npats; j++)
-    {
-      std::string pat = pats[j];
-
-      if (have_regexp)
-        {
-          std::list<octave::symbol_record> tmp
-            = (global_only
-               ? symtab.regexp_global_variables (pat)
-               : symtab.regexp_variables (pat));
-
-          for (const auto& symrec : tmp)
-            {
-              if (symrec.is_variable (context))
-                {
-                  if (verbose)
-                    symbol_stats.append (symrec, context);
-                  else
-                    symbol_names.push_back (symrec.name ());
-                }
-            }
-        }
-      else
-        {
-          size_t pos = pat.find_first_of (".({");
-
-          if (pos != std::string::npos && pos > 0)
-            {
-              if (verbose)
-                {
-                  // NOTE: we can only display information for
-                  // expressions based on global values if the variable is
-                  // global in the current scope because we currently have
-                  // no way of looking up the base value in the global
-                  // scope and then evaluating the arguments in the
-                  // current scope.
-
-                  std::string base_name = pat.substr (0, pos);
-
-                  if (scope && scope.is_variable (base_name))
-                    {
-                      octave::symbol_record sr
-                        = symtab.find_symbol (base_name);
-
-                      if (! global_only || sr.is_global ())
-                        {
-                          int parse_status;
-
-                          octave_value expr_val
-                            = octave::eval_string (pat, true, parse_status);
-
-                          symbol_stats.append (sr, context, pat, expr_val);
-                        }
-                    }
-                }
-            }
-          else
-            {
-              std::list<octave::symbol_record> tmp
-                = (global_only
-                   ? symtab.glob_global_variables (pat)
-                   : symtab.glob_variables (pat));
-
-              for (const auto& symrec : tmp)
-                {
-                  if (symrec.is_variable (context))
-                    {
-                      if (verbose)
-                        symbol_stats.append (symrec, context);
-                      else
-                        symbol_names.push_back (symrec.name ());
-                    }
-                }
-            }
-        }
-    }
-
-  if (return_list)
-    {
-      if (verbose)
-        {
-          std::string caller_function_name;
-          octave_function *caller = cs.caller ();
-          if (caller)
-            caller_function_name = caller->name ();
-
-          retval = symbol_stats.map_value (caller_function_name, 1);
-        }
-      else
-        retval = Cell (string_vector (symbol_names));
-    }
-  else if (! (symbol_stats.empty () && symbol_names.empty ()))
-    {
-      if (msg.empty ())
-        if (global_only)
-          octave_stdout << "Global variables:\n\n";
-        else
-          octave_stdout << "Variables in the current scope:\n\n";
-      else
-        octave_stdout << msg;
-
-      if (verbose)
-        symbol_stats.display (octave_stdout);
-      else
-        {
-          string_vector names (symbol_names);
-
-          names.list_in_columns (octave_stdout);
-        }
-
-      octave_stdout << "\n";
-    }
-
-  return retval;
-}
-
-DEFMETHOD (who, interp, args, nargout,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} who
-@deftypefnx {} {} who pattern @dots{}
-@deftypefnx {} {} who option pattern @dots{}
-@deftypefnx {} {C =} who ("pattern", @dots{})
-List currently defined variables matching the given patterns.
-
-Valid pattern syntax is the same as described for the @code{clear} command.
-If no patterns are supplied, all variables are listed.
-
-By default, only variables visible in the local scope are displayed.
-
-The following are valid options, but may not be combined.
-
-@table @code
-@item global
-List variables in the global scope rather than the current scope.
-
-@item -regexp
-The patterns are considered to be regular expressions when matching the
-variables to display.  The same pattern syntax accepted by the @code{regexp}
-function is used.
-
-@item -file
-The next argument is treated as a filename.  All variables found within the
-specified file are listed.  No patterns are accepted when reading variables
-from a file.
-@end table
-
-If called as a function, return a cell array of defined variable names
-matching the given patterns.
-@seealso{whos, isglobal, isvarname, exist, regexp}
-@end deftypefn */)
-{
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("who");
-
-  return do_who (interp, argc, argv, nargout == 1);
-}
-
-/*
-%!test
-%! avar = magic (4);
-%! ftmp = [tempname() ".mat"];
-%! unwind_protect
-%!   save (ftmp, "avar");
-%!   vars = whos ("-file", ftmp);
-%!   assert (numel (vars), 1);
-%!   assert (isstruct (vars));
-%!   assert (vars.name, "avar");
-%!   assert (vars.size, [4, 4]);
-%!   assert (vars.class, "double");
-%!   assert (vars.bytes, 128);
-%! unwind_protect_cleanup
-%!   unlink (ftmp);
-%! end_unwind_protect
-*/
-
-DEFMETHOD (whos, interp, args, nargout,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} whos
-@deftypefnx {} {} whos pattern @dots{}
-@deftypefnx {} {} whos option pattern @dots{}
-@deftypefnx {} {S =} whos ("pattern", @dots{})
-Provide detailed information on currently defined variables matching the
-given patterns.
-
-Options and pattern syntax are the same as for the @code{who} command.
-
-Extended information about each variable is summarized in a table with the
-following default entries.
-
-@table @asis
-@item Attr
-Attributes of the listed variable.  Possible attributes are:
-
-@table @asis
-@item blank
-Variable in local scope
-
-@item @code{a}
-Automatic variable.  An automatic variable is one created by the
-interpreter, for example @code{argn}.
-
-@item @code{c}
-Variable of complex type.
-
-@item @code{f}
-Formal parameter (function argument).
-
-@item @code{g}
-Variable with global scope.
-
-@item @code{p}
-Persistent variable.
-@end table
-
-@item Name
-The name of the variable.
-
-@item Size
-The logical size of the variable.  A scalar is 1x1, a vector is
-@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.
-
-@item Bytes
-The amount of memory currently used to store the variable.
-
-@item Class
-The class of the variable.  Examples include double, single, char, uint16,
-cell, and struct.
-@end table
-
-The table can be customized to display more or less information through
-the function @code{whos_line_format}.
-
-If @code{whos} is called as a function, return a struct array of defined
-variable names matching the given patterns.  Fields in the structure
-describing each variable are: name, size, bytes, class, global, sparse,
-complex, nesting, persistent.
-@seealso{who, whos_line_format}
-@end deftypefn */)
-{
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("whos");
-
-  return do_who (interp, argc, argv, nargout == 1, true);
-}
-
 DEFMETHOD (mlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} mlock ()
-Lock the current function into memory so that it can't be cleared.
-@seealso{munlock, mislocked, persistent}
+Lock the current function into memory so that it can't be removed with
+@code{clear}.
+@seealso{munlock, mislocked, persistent, clear}
 @end deftypefn */)
 {
   if (args.length () != 0)
@@ -1983,10 +859,11 @@ DEFMETHOD (munlock, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} munlock ()
 @deftypefnx {} {} munlock (@var{fcn})
-Unlock the named function @var{fcn}.
+Unlock the named function @var{fcn} so that it may be removed from memory with
+@code{clear}.
 
 If no function is named then unlock the current function.
-@seealso{mlock, mislocked, persistent}
+@seealso{mlock, mislocked, persistent, clear}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -2019,10 +896,10 @@ DEFMETHOD (mislocked, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} mislocked ()
 @deftypefnx {} {} mislocked (@var{fcn})
-Return true if the named function @var{fcn} is locked.
+Return true if the named function @var{fcn} is locked in memory.
 
 If no function is named then return true if the current function is locked.
-@seealso{mlock, munlock, persistent}
+@seealso{mlock, munlock, persistent, clear}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -2303,20 +1180,14 @@ do_matlab_compatible_clear (octave::symbol_table& symtab,
     }
 }
 
-#define CLEAR_OPTION_ERROR(cond)                \
-  do                                            \
-    {                                           \
-      if (cond)                                 \
-        print_usage ();                         \
-    }                                           \
-  while (0)
-
 DEFMETHOD (clear, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} clear [options] pattern @dots{}
-Delete the names matching the given patterns from the symbol table.
+@deftypefn  {} {} clear
+@deftypefnx {} {} clear @var{pattern} @dots{}
+@deftypefnx {} {} clear @var{options} @var{pattern} @dots{}
+Delete the names matching the given @var{pattern}s from the symbol table.
 
-The pattern may contain the following special characters:
+The @var{pattern} may contain the following special characters:
 
 @table @code
 @item ?
@@ -2326,10 +1197,10 @@ Match any single character.
 Match zero or more characters.
 
 @item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
-match all lowercase and uppercase alphabetic characters.
+Match the list of characters specified by @var{list}.  If the first character
+is @code{!} or @code{^}, match all characters except those specified by
+@var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lowercase
+and uppercase alphabetic characters.
 @end table
 
 For example, the command
@@ -2339,50 +1210,58 @@ clear foo b*r
 @end example
 
 @noindent
-clears the name @code{foo} and all names that begin with the letter
-@code{b} and end with the letter @code{r}.
+clears the name @code{foo} and all names that begin with the letter @samp{b}
+and end with the letter @samp{r}.
 
-If @code{clear} is called without any arguments, all user-defined
-variables (local and global) are cleared from the symbol table.
-
-If @code{clear} is called with at least one argument, only the visible
-names matching the arguments are cleared.  For example, suppose you have
-defined a function @code{foo}, and then hidden it by performing the
-assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
-will clear the variable definition and restore the definition of
-@code{foo} as a function.  Executing @kbd{clear foo} a second time will
-clear the function definition.
+If @code{clear} is called without any arguments, all user-defined variables
+are cleared from the current workspace (i.e., local variables).  Any global
+variables present will no longer be visible in the current workspace, but they
+will continue to exist in the global workspace.  Functions are unaffected by
+this form of @code{clear}.
 
 The following options are available in both long and short form
 
 @table @code
-@item -all, -a
-Clear all local and global user-defined variables and all functions from the
+@item all, -all, -a
+Clear all local and global user-defined variables, and all functions from the
 symbol table.
 
 @item -exclusive, -x
-Clear the variables that don't match the following pattern.
+Clear variables that do @strong{not} match the following pattern.
 
-@item -functions, -f
-Clear the function names and the built-in symbols names.
+@item functions, -functions, -f
+Clear function names from the function symbol table.  Persistent variables
+will be re-initialized to their default value unless the function has been
+locked in memory with @code{mlock}.
 
-@item -global, -g
-Clear global symbol names.
+@item global, -global, -g
+Clear global variable names.
 
-@item -variables, -v
+@item variables, -variables, -v
 Clear local variable names.
 
-@item -classes, -c
-Clears the class structure table and clears all objects.
+@item classes, -classes, -c
+Clear the class structure table and all objects.
 
 @item -regexp, -r
-The arguments are treated as regular expressions as any variables that
-match will be cleared.
+The @var{pattern} arguments are treated as regular expressions and any matches
+will be cleared.
 @end table
 
-With the exception of @code{exclusive}, all long options can be used
-without the dash as well.
-@seealso{who, whos, exist}
+With the exception of @option{-exclusive} and @option{-regexp}, all long
+options can be used without the dash as well.  Note that, aside from
+@option{-exclusive}, only one other option may appear.  All options must
+appear before any patterns.
+
+Programming Note: The command @code{clear @var{name}} only clears the variable
+@var{name} when both a variable and a (shadowed) function named @var{name}
+are currently defined.  For example, suppose you have defined a function
+@code{foo}, and then hidden it by performing the assignment @code{foo = 2}.
+Executing the command @code{clear foo} once will clear the variable
+definition and restore the definition of @code{foo} as a function.
+Executing @code{clear foo} a second time will clear the function definition.
+
+@seealso{who, whos, exist, mlock}
 @end deftypefn */)
 {
   octave::symbol_table& symtab = interp.get_symbol_table ();
@@ -2393,7 +1272,6 @@ without the dash as well.
 
   if (argc == 1)
     {
-      do_clear_globals (symtab, argv, argc, true);
       do_clear_variables (symtab, argv, argc, true);
 
       octave_link::clear_workspace ();
@@ -2417,47 +1295,52 @@ without the dash as well.
         {
           if (argv[idx] == "-all" || argv[idx] == "-a")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_all = true;
             }
           else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
             {
-              have_dash_option = true;
               exclusive = true;
             }
           else if (argv[idx] == "-functions" || argv[idx] == "-f")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_functions = true;
             }
           else if (argv[idx] == "-global" || argv[idx] == "-g")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_globals = true;
             }
           else if (argv[idx] == "-variables" || argv[idx] == "-v")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_variables = true;
             }
           else if (argv[idx] == "-classes" || argv[idx] == "-c")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               clear_objects = true;
             }
           else if (argv[idx] == "-regexp" || argv[idx] == "-r")
             {
-              CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+              if (have_dash_option)
+                print_usage ();
 
               have_dash_option = true;
               have_regexp = true;
@@ -2468,7 +1351,7 @@ without the dash as well.
 
       if (idx <= argc)
         {
-          if (! have_dash_option)
+          if (! have_dash_option && ! exclusive)
             do_matlab_compatible_clear (symtab, argv, argc, idx);
           else
             {
@@ -2509,90 +1392,30 @@ without the dash as well.
                   do_clear_symbols (symtab, argv, argc, idx, exclusive);
                 }
             }
-
-          octave_link::set_workspace ();
         }
     }
 
   return ovl ();
 }
 
-DEFUN (whos_line_format, args, nargout,
-       doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} whos_line_format ()
-@deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
-@deftypefnx {} {} whos_line_format (@var{new_val}, "local")
-Query or set the format string used by the command @code{whos}.
+/*
+## This test must be wrapped in its own function or the 'clear' command will
+## break the %!test environment.
+%!function __test_clear_no_args__ ()
+%!  global x
+%!  x = 3;
+%!  clear
+%!  assert (! exist ("x", "var"));  # x is not in the current workspace anymore
+%!  global x                        # but still lives in the global workspace
+%!  assert (exist ("x", "var"));
+%!endfunction
 
-A full format string is:
-@c Set example in small font to prevent overfull line
+%!test
+%! __test_clear_no_args__ ();
 
-@smallexample
-%[modifier]<command>[:width[:left-min[:balance]]];
-@end smallexample
-
-The following command sequences are available:
-
-@table @code
-@item %a
-Prints attributes of variables (g=global, p=persistent, f=formal parameter,
-a=automatic variable).
-
-@item %b
-Prints number of bytes occupied by variables.
-
-@item %c
-Prints class names of variables.
-
-@item %e
-Prints elements held by variables.
-
-@item %n
-Prints variable names.
-
-@item %s
-Prints dimensions of variables.
-
-@item %t
-Prints type names of variables.
-@end table
-
-Every command may also have an alignment modifier:
-
-@table @code
-@item l
-Left alignment.
-
-@item r
-Right alignment (default).
-
-@item c
-Column-aligned (only applicable to command %s).
-@end table
-
-The @code{width} parameter is a positive integer specifying the minimum
-number of columns used for printing.  No maximum is needed as the field will
-auto-expand as required.
-
-The parameters @code{left-min} and @code{balance} are only available when
-the column-aligned modifier is used with the command @samp{%s}.
-@code{balance} specifies the column number within the field width which
-will be aligned between entries.  Numbering starts from 0 which indicates
-the leftmost column.  @code{left-min} specifies the minimum field width to
-the left of the specified balance column.
-
-The default format is:
-
-@qcode{"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;@xbackslashchar{}n"}
-
-When called from inside a function with the @qcode{"local"} option, the
-variable is changed locally for the function and any subroutines it calls.
-The original variable value is restored when exiting the function.
-@seealso{whos}
-@end deftypefn */)
-{
-  return SET_INTERNAL_VARIABLE (whos_line_format);
-}
+## Test that multiple options cannot be given
+%!error clear -f -g
+*/
 
 static std::string Vmissing_function_hook = "__unimplemented__";
 
@@ -2813,4 +1636,41 @@ set_top_level_value (const std::string& nm, const octave_value& val)
     octave::__get_symbol_table__ ("set_top_level_value");
 
   symtab.top_level_assign (nm, val);
+}
+
+string_vector
+get_struct_elts (const std::string& text)
+{
+  int n = 1;
+
+  size_t pos = 0;
+
+  size_t len = text.length ();
+
+  while ((pos = text.find ('.', pos)) != std::string::npos)
+    {
+      if (++pos == len)
+        break;
+
+      n++;
+    }
+
+  string_vector retval (n);
+
+  pos = 0;
+
+  for (int i = 0; i < n; i++)
+    {
+      len = text.find ('.', pos);
+
+      if (len != std::string::npos)
+        len -= pos;
+
+      retval[i] = text.substr (pos, len);
+
+      if (len != std::string::npos)
+        pos += len + 1;
+    }
+
+  return retval;
 }

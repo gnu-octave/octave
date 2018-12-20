@@ -24,7 +24,7 @@
 
 function emp = dirempty (nm, ign)
 
-  if (exist (nm, "dir"))
+  if (isfolder (nm))
     if (nargin < 2)
       ign = {".", ".."};
     else

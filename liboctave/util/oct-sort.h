@@ -87,20 +87,6 @@ The Python license is
 
 #include "lo-traits.h"
 
-// The maximum number of entries in a MergeState's pending-runs stack.
-// This is enough to sort arrays of size up to about
-//     32 * phi ** MAX_MERGE_PENDING
-// where phi ~= 1.618.  85 is ridiculously large enough, good for an array
-// with 2**64 elements.
-#define MAX_MERGE_PENDING 85
-
-// When we get into galloping mode, we stay there until both runs win less
-// often than MIN_GALLOP consecutive times.  See listsort.txt for more info.
-#define MIN_GALLOP 7
-
-// Avoid malloc for small temp arrays.
-#define MERGESTATE_TEMP_SIZE 1024
-
 // Enum for type of sort function
 enum sortmode { UNSORTED = 0, ASCENDING, DESCENDING };
 
@@ -178,6 +164,20 @@ public:
                                   typename ref_param<T>::type);
 
 private:
+
+  // The maximum number of entries in a MergeState's pending-runs stack.
+  // This is enough to sort arrays of size up to about
+  //     32 * phi ** MAX_MERGE_PENDING
+  // where phi ~= 1.618.  85 is ridiculously large enough, good for an array
+  // with 2**64 elements.
+  static const int MAX_MERGE_PENDING = 85;
+
+  // When we get into galloping mode, we stay there until both runs win less
+  // often than MIN_GALLOP consecutive times.  See listsort.txt for more info.
+  static const int MIN_GALLOP = 7;
+
+  // Avoid malloc for small temp arrays.
+  static const int MERGESTATE_TEMP_SIZE = 1024;
 
   // One MergeState exists on the stack per invocation of mergesort.
   // It's just a convenient way to pass state around among the helper

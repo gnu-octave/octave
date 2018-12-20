@@ -34,16 +34,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "terminal-dock-widget.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p)
-    : octave_dock_widget (p), m_terminal (QTerminal::create (p))
+    : octave_dock_widget ("TerminalDockWidget", p),
+      m_terminal (QTerminal::create (p))
   {
     m_terminal->setObjectName ("OctaveTerminal");
     m_terminal->setFocusPolicy (Qt::StrongFocus);
 
-    setObjectName ("TerminalDockWidget");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Command Window"));
 
@@ -63,8 +64,9 @@ namespace octave
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
+    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
     font.setFamily
-      (settings->value ("terminal/fontName", "Courier New").toString ());
+      (settings->value (cs_font.key, default_font).toString ());
     font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
 
     QFontMetrics metrics(font);

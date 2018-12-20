@@ -42,9 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   history_dock_widget::history_dock_widget (QWidget *p)
-    : octave_dock_widget (p)
+    : octave_dock_widget ("HistoryDockWidget", p)
   {
-    setObjectName ("HistoryDockWidget");
     setStatusTip (tr ("Browse and search the command history."));
 
     connect (this, SIGNAL (command_create_script (const QString&)),
@@ -166,9 +165,8 @@ namespace octave
     QString text;
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
-    QModelIndexList::iterator it;
     bool prev_valid_row = false;
-    for (it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         if ((*it).isValid ())
           {
@@ -185,8 +183,7 @@ namespace octave
   {
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
-    QModelIndexList::iterator it;
-    for (it = rows.begin () ; it != rows.end (); it++)
+    for (auto it = rows.begin () ; it != rows.end (); it++)
       {
         if ((*it).isValid ())
           emit command_double_clicked ((*it).data ().toString ());
@@ -200,7 +197,7 @@ namespace octave
     QModelIndexList rows = selectionModel->selectedRows ();
 
     bool prev_valid_row = false;
-    for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+    for (auto it = rows.begin (); it != rows.end (); it++)
       {
         if ((*it).isValid ())
           {
@@ -273,7 +270,7 @@ namespace octave
     m_history_list_view->setAlternatingRowColors (true);
     m_history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
     m_history_list_view->setStatusTip (
-      tr ("Double-click a command to transfer it to the terminal."));
+      tr ("Double-click a command to transfer it to the Command Window."));
     m_history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
     m_history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
     connect (m_history_list_view,
@@ -336,7 +333,7 @@ namespace octave
     connect (m_filter_checkbox, SIGNAL (toggled (bool)),
              this, SLOT (filter_activate (bool)));
     connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-             this, SLOT (updatem_filter_history (void)));
+             this, SLOT (update_filter_history (void)));
 
     connect (m_history_list_view, SIGNAL (doubleClicked (QModelIndex)),
              this, SLOT (handle_double_click (QModelIndex)));

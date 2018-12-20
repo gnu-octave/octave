@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <string>
 
 #include "byte-swap.h"
@@ -51,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "ovl.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"

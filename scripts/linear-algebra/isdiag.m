@@ -30,7 +30,7 @@ function retval = isdiag (A)
     print_usage ();
   endif
 
-  if (strcmp (typeinfo (A), "diagonal matrix"))
+  if (strfind (typeinfo (A), "diagonal matrix"))
     retval = true;
   elseif ((isnumeric (A) || islogical (A)) && ndims (A) == 2)
     [i, j] = find (A);
@@ -49,8 +49,9 @@ endfunction
 %!assert (isdiag ([1, 1]), false)
 %!assert (isdiag ([1; 1]), false)
 %!assert (isdiag (eye (10)))
+%!assert (isdiag (single (eye (10))))
 %!assert (isdiag (logical (eye (10))))
-%!assert (isdiag (speye (1e6)))
+%!assert (isdiag (speye (1e2)))
 %!assert (isdiag (diag (1:10)))
 
 ## Test input validation

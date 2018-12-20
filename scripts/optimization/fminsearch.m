@@ -21,9 +21,11 @@
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{fun_arg1}, @var{fun_arg2}, @dots{})
+## @deftypefnx {} {@var{x} =} fminsearch (@var{problem})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}] =} fminsearch (@dots{})
 ##
-## Find a value of @var{x} which minimizes the function @var{fun}.
+## Find a value of @var{x} which minimizes the multi-variable function
+## @var{fun}.
 ##
 ## The search begins at the point @var{x0} and iterates using the
 ## @nospell{Nelder & Mead} Simplex algorithm (a derivative-free method).  This
@@ -32,25 +34,59 @@
 ##
 ## Options for the search are provided in the parameter @var{options} using the
 ## function @code{optimset}.  Currently, @code{fminsearch} accepts the options:
-## @qcode{"TolX"}, @qcode{"TolFun"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
-## @qcode{"Display"}, @qcode{"FunValCheck"}, and @qcode{"OutputFcn"}.
-## For a description of these options, see @code{optimset}.
+## @qcode{"Display"}, @qcode{"FunValCheck"},@qcode{"MaxFunEvals"},
+## @qcode{"MaxIter"}, @qcode{"OutputFcn"}, @qcode{"TolFun"}, @qcode{"TolX"}.
+##
+## @qcode{"MaxFunEvals"} proscribes the maximum number of function evaluations
+## before optimization is halted.  The default value is
+## @code{200 * number_of_variables}, i.e., @code{200 * length (@var{x0})}.
+## The value must be a positive integer.
+##
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before optimization is halted.  The default value is
+## @code{200 * number_of_variables}, i.e., @code{200 * length (@var{x0})}.
+## The value must be a positive integer.
+##
+## For a description of the other options, see @code{optimset}.  To initialize
+## an options structure with default values for @code{fminsearch} use
+## @code{options = optimset ("fminsearch")}.
 ##
 ## Additional inputs for the function @var{fun} can be passed as the fourth
 ## and higher arguments.  To pass function arguments while using the default
 ## @var{options} values, use @code{[]} for @var{options}.
 ##
+## @code{fminsearch} may also be called with a single structure argument
+## with the following fields:
+##
+## @table @code
+## @item objective
+## The objective function.
+##
+## @item x0
+## The initial point.
+##
+## @item solver
+## Must be set to @qcode{"fminsearch"}.
+##
+## @item options
+## A structure returned from @code{optimset} or an empty matrix to
+## indicate that defaults should be used.
+## @end table
+##
+## @noindent
+## The field @code{options} is optional.  All others are required.
+##
 ## On exit, the function returns @var{x}, the minimum point, and @var{fval},
 ## the function value at the minimum.
 ##
-## The third return value @var{exitflag} is
+## The third output @var{exitflag} reports whether the algorithm succeeded and
+## may take one of the following values:
 ##
 ## @table @asis
 ## @item 1
 ## if the algorithm converged
-## (size of the simplex is smaller than @code{@var{options}.TolX} @strong{AND}
-## the step in the function value between iterations is smaller than
-## @code{@var{options}.TolFun}).
+## (size of the simplex is smaller than @code{TolX} @strong{AND} the step in
+## function value between iterations is smaller than @code{TolFun}).
 ##
 ## @item 0
 ## if the maximum number of iterations or the maximum number of function
@@ -60,10 +96,11 @@
 ## if the iteration is stopped by the @qcode{"OutputFcn"}.
 ## @end table
 ##
-## The fourth return value is a structure @var{output} with the fields,
-## @code{funcCount} containing the number of function calls to @var{fun},
-## @code{iterations} containing the number of iteration steps,
-## @code{algorithm} with the name of the search algorithm (always:
+## The fourth output is a structure @var{output} containing runtime
+## about the algorithm.  Fields in the structure are @code{funcCount}
+## containing the number of function calls to @var{fun}, @code{iterations}
+## containing the number of iteration steps, @code{algorithm} with the name of
+## the search algorithm (always:
 ## @nospell{@qcode{"Nelder-Mead simplex direct search"}}), and @code{message}
 ## with the exit message.
 ##
@@ -72,6 +109,9 @@
 ## @example
 ## fminsearch (@@(x) (x(1)-5).^2+(x(2)-8).^4, [0;0])
 ## @end example
+##
+## Note: If you need to find the minimum of a single variable function it is
+## probably better to use @code{fminbnd}.
 ## @seealso{fminbnd, fminunc, optimset}
 ## @end deftypefn
 
@@ -80,22 +120,50 @@
 
 ## FIXME: Add support for output function with "state" set to "interrupt".
 
-function [x, fval, exitflag, output] = fminsearch (fun, x0, options, varargin)
+function [x, fval, exitflag, output] = fminsearch (varargin)
 
-  ## Get default options if requested.
-  if (nargin == 1 && ischar (fun) && strcmp (fun, "defaults"))
-    x = optimset ("Display", "notify", "FunValCheck", "off",
-                  "MaxFunEvals", 400, "MaxIter", 400,
-                  "OutputFcn", [],
-                  "TolFun", 1e-7, "TolX", 1e-4);
-    return;
-  endif
-
-  if (nargin < 2)
+  if (nargin < 1)
     print_usage ();
   endif
 
-  if (nargin < 3 || isempty (options))
+  ## Get default options if requested.
+  if (nargin == 1 && ischar (varargin{1}) && strcmp (varargin{1}, "defaults"))
+    x = struct ("Display", "notify", "FunValCheck", "off",
+                "MaxFunEvals", [], "MaxIter", [],
+                "OutputFcn", [],
+                "TolFun", 1e-4, "TolX", 1e-4);
+    return;
+  endif
+
+  if (nargin == 1)
+    problem = varargin{1};
+    varargin = {};
+    if (! isstruct (problem))
+      error ("fminsearch: PROBLEM must be a structure");
+    endif
+    fun = problem.objective;
+    x0 = problem.x0;
+    if (! strcmp (problem.solver, "fminsearch"))
+      error ('fminsearch: problem.solver must be set to "fminsearch"');
+    endif
+    if (isfield (problem, "options"))
+      options = problem.options;
+    else
+      options = [];
+    endif
+  elseif (nargin > 1)
+    fun = varargin{1};
+    x0 = varargin{2};
+    if (nargin > 2)
+      options = varargin{3};
+      varargin(1:3) = [];
+    else
+      options = [];
+      varargin = {};
+    endif
+  endif
+
+  if (isempty (options))
     options = struct ();
   endif
 
@@ -154,13 +222,13 @@ function [stopit, savit, dirn, trace, tol, maxiter, tol_f, outfcn] = ...
   stopit(1) = tol = optimget (options, "TolX", 1e-4);
 
   ## Tolerance for cgce test based on step in function value.
-  tol_f = optimget (options, "TolFun", 1e-7);
+  tol_f = optimget (options, "TolFun", 1e-4);
 
   ## Max number of function evaluations.
-  stopit(2) = optimget (options, "MaxFunEvals", length (x) * 200);
+  stopit(2) = optimget (options, "MaxFunEvals", 200 * length (x));
 
   ## Max number of iterations
-  maxiter = optimget (options, "MaxIter", length (x) * 200);
+  maxiter = optimget (options, "MaxIter", 200 * length (x));
 
   ## Default target for function values.
   stopit(3) = Inf;  # FIXME: expose this parameter to the outside
@@ -209,7 +277,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   V = [zeros(n,1) eye(n)];
   f = zeros (n+1,1);
   V(:,1) = x0;
-  f(1) = dirn * feval (fun, x, varargin{:});
+  f(1) = dirn * fun (x, varargin{:});
   fmax_old = f(1);
   nf = 1;
 
@@ -269,7 +337,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     k += 1;
 
     if (k > maxiter)
-      msg = "Exceeded maximum iterations...quitting\n";
+      msg = "Exceeded maximum iterations\n";
       break;
     endif
 
@@ -293,14 +361,15 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     ## Stopping Test 1 - f reached target value?
     if (fmax >= stopit(3))
       msg = "Exceeded target...quitting\n";
-      ## FIXME: Add docu when stopit(3) gets exposed to the outside
+      ## FIXME: Add documentation when stopit(3) gets exposed to the outside
       exitflag = -1;
       break;
     endif
 
     ## Stopping Test 2 - too many f-evals?
     if (nf >= stopit(2))
-      msg = "Max no. of function evaluations exceeded...quitting\n";
+      msg = "Exceeded maximum number of function evaluations\n";
+      exitflag = 0;
       break;
     endif
 
@@ -309,8 +378,8 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     size_simplex = norm (V(:,2:n+1)-v1(:,ones (1,n)),1) / max (1, norm (v1,1));
     step_f = max (abs (f(1) - f(2:n+1)));
     if (size_simplex <= tol && step_f <= tol_f )
-      msg = sprintf (["Simplex size %9.4e <= %9.4e and ", ...
-                      "step in function value %9.4e <= %9.4e...quitting\n"], ...
+      msg = sprintf (["Algorithm converged.  Simplex size %9.4e <= %9.4e ", ...
+                      "and step in function value %9.4e <= %9.4e\n"], ...
                       size_simplex, tol, step_f, tol_f);
       exitflag = 1;
       break;
@@ -453,6 +522,17 @@ endfunction
 %! assert (x, 4.7109, 1e-4);
 
 %!test
+%! problem.objective = @sin;
+%! problem.x0 = 3;
+%! problem.solver = "fminsearch";
+%! problem.options = optimset ("MaxIter", 3, "Display", "none");
+%! x = fminsearch (problem);
+%! assert (x, 4.8750, 1e-4);
+%! problem.options = optimset ("MaxFunEvals", 18, "Display", "none");
+%! x = fminsearch (problem);
+%! assert (x, 4.7109, 1e-4);
+
+%!test
 %! c = 1.5;
 %! assert (fminsearch (@(x) x(1).^2 + c*x(2).^2, [1;1]), [0;0], 1e-4);
 
@@ -490,4 +570,3 @@ endfunction
 ## Test input validation
 %!error fminsearch ()
 %!error fminsearch (1)
-

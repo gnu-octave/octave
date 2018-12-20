@@ -76,6 +76,10 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     gs_opts = sprintf ("%s -dLanguageLevel=%d", gs_opts, opts.level);
   endif
 
+  if (strfind (opts.device, "tiffscaled"))
+    gs_opts = [gs_opts " -sCompression=lzw"];
+  endif
+
   if (opts.antialiasing && isempty (strfind (opts.device, "write")))
     ## Apply anti-aliasing to all bitmap formats/devices
     gs_opts = sprintf ("%s -dTextAlphaBits=%d -dGraphicsAlphaBits=%d",

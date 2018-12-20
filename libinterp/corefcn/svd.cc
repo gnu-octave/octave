@@ -168,7 +168,7 @@ and may be less accurate for some matrices.  See the documentation for
 {
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2 || nargout == 2 || nargout > 3)
+  if (nargin < 1 || nargin > 2 || nargout > 3)
     print_usage ();
 
   octave_value arg = args(0);
@@ -198,6 +198,9 @@ and may be less accurate for some matrices.  See the documentation for
 
           if (nargout == 0 || nargout == 1)
             retval(0) = sigma.extract_diag ();
+          else if (nargout == 2)
+            retval = ovl (result.left_singular_matrix (),
+                          sigma);
           else
             retval = ovl (result.left_singular_matrix (),
                           sigma,
@@ -219,6 +222,9 @@ and may be less accurate for some matrices.  See the documentation for
 
           if (nargout == 0 || nargout == 1)
             retval(0) = sigma.extract_diag ();
+          else if (nargout == 2)
+            retval = ovl (result.left_singular_matrix (),
+                          sigma);
           else
             retval = ovl (result.left_singular_matrix (),
                           sigma,
@@ -243,6 +249,9 @@ and may be less accurate for some matrices.  See the documentation for
 
           if (nargout == 0 || nargout == 1)
             retval(0) = sigma.extract_diag ();
+          else if (nargout == 2)
+            retval = ovl (result.left_singular_matrix (),
+                          sigma);
           else
             retval = ovl (result.left_singular_matrix (),
                           sigma,
@@ -264,6 +273,9 @@ and may be less accurate for some matrices.  See the documentation for
 
           if (nargout == 0 || nargout == 1)
             retval(0) = sigma.extract_diag ();
+          else if (nargout == 2)
+            retval = ovl (result.left_singular_matrix (),
+                          sigma);
           else
             retval = ovl (result.left_singular_matrix (),
                           sigma,
@@ -280,9 +292,9 @@ and may be less accurate for some matrices.  See the documentation for
 %!assert (svd ([1, 2; 2, 1]), [3; 1], sqrt (eps))
 
 %!test
-a = [1, 2; 3, 4] + [5, 6; 7, 8]*i;
-[u,s,v] = svd (a);
-assert (a, u * s * v', 128 * eps);
+%! a = [1, 2; 3, 4] + [5, 6; 7, 8]*i;
+%! [u,s,v] = svd (a);
+%! assert (a, u * s * v', 128 * eps);
 
 %!test
 %! [u, s, v] = svd ([1, 2; 2, 1]);
@@ -362,7 +374,6 @@ assert (a, u * s * v', 128 * eps);
 
 %!error svd ()
 %!error svd ([1, 2; 4, 5], 2, 3)
-%!error [u, v] = svd ([1, 2; 3, 4])
 */
 
 DEFUN (svd_driver, args, nargout,

@@ -49,7 +49,7 @@ namespace QtHandles
 
   GLCanvas::GLCanvas (QWidget *xparent, const graphics_handle& gh)
     : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (gh)
+      Canvas (gh), m_glfcns (), m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -59,6 +59,12 @@ namespace QtHandles
   { }
 
   void
+  GLCanvas::initializeGL (void)
+  {
+    m_glfcns.init ();
+  }
+
+  void
   GLCanvas::draw (const graphics_handle& gh)
   {
     gh_manager::auto_lock lock;
@@ -66,10 +72,11 @@ namespace QtHandles
 
     if (go)
       {
-        octave::opengl_renderer r;
-
-        r.set_viewport (width (), height ());
-        r.draw (go);
+        graphics_object fig = go.get_ancestor ("figure");
+        double dpr = fig.get ("__device_pixel_ratio__").double_value ();
+        m_renderer.set_viewport (dpr * width (), dpr * height ());
+        m_renderer.set_device_pixel_ratio (dpr);
+        m_renderer.draw (go);
       }
   }
 
@@ -82,6 +89,9 @@ namespace QtHandles
     if (go && go.isa ("figure"))
       {
         Matrix pos = go.get ("position").matrix_value ();
+        double dpr = go.get ("__device_pixel_ratio__").double_value ();
+        pos(2) *= dpr;
+        pos(3) *= dpr;
 
         // Make sure we have a valid current context
         if (! begin_rendering ())
@@ -94,23 +104,24 @@ namespace QtHandles
             || go.get ("__printing__").string_value () == "on")
           {
             OCTAVE_QT_OPENGL_FBO
-            fbo (pos(2), pos(3),OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+            fbo (pos(2), pos(3),
+                 OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
 
             fbo.bind ();
 
-            octave::opengl_renderer r;
-            r.set_viewport (pos(2), pos(3));
-            r.draw (go);
-            retval = r.get_pixels (pos(2), pos(3));
+            m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.set_device_pixel_ratio (dpr);
+            m_renderer.draw (go);
+            retval = m_renderer.get_pixels (pos(2), pos(3));
 
             fbo.release ();
           }
         else
           {
-            octave::opengl_renderer r;
-            r.set_viewport (pos(2), pos(3));
-            r.draw (go);
-            retval = r.get_pixels (pos(2), pos(3));
+            m_renderer.set_viewport (pos(2), pos(3));
+            m_renderer.set_device_pixel_ratio (dpr);
+            m_renderer.draw (go);
+            retval = m_renderer.get_pixels (pos(2), pos(3));
           }
 
         end_rendering ();
@@ -135,7 +146,7 @@ namespace QtHandles
             if (! begin_rendering ())
               error ("print: no valid OpenGL offscreen context");
 
-            octave::gl2ps_print (figObj, file_cmd.toStdString (),
+            octave::gl2ps_print (m_glfcns, figObj, file_cmd.toStdString (),
                                  term.toStdString ());
           }
         catch (octave::execution_exception& e)
@@ -171,7 +182,7 @@ namespace QtHandles
 
     if (ax)
       {
-        octave::opengl_selector s;
+        octave::opengl_selector s (m_glfcns);
 
         s.set_viewport (width (), height ());
         return s.select (ax, pt.x (), height () - pt.y (),
@@ -181,49 +192,22 @@ namespace QtHandles
     return graphics_object ();
   }
 
-  inline void
-  glDrawZoomBox (const QPoint& p1, const QPoint& p2)
-  {
-    glVertex2d (p1.x (), p1.y ());
-    glVertex2d (p2.x (), p1.y ());
-    glVertex2d (p2.x (), p2.y ());
-    glVertex2d (p1.x (), p2.y ());
-    glVertex2d (p1.x (), p1.y ());
-  }
-
   void
   GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   {
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    glLoadIdentity ();
+    Matrix overlaycolor (3, 1);
+    overlaycolor(0) = 0.45;
+    overlaycolor(1) = 0.62;
+    overlaycolor(2) = 0.81;
+    double overlayalpha = 0.1;
+    Matrix bordercolor = overlaycolor;
+    double borderalpha = 0.9;
+    double borderwidth = 1.5;
 
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    glOrtho (0, width (), height (), 0, 1, -1);
-
-    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
-    glDisable (GL_DEPTH_TEST);
-
-    glBegin (GL_POLYGON);
-    glColor4f (0.45, 0.62, 0.81, 0.1);
-    glDrawZoomBox (p1, p2);
-    glEnd ();
-
-    glLineWidth (1.5);
-    glBegin (GL_LINE_STRIP);
-    glColor4f (0.45, 0.62, 0.81, 0.9);
-    glDrawZoomBox (p1, p2);
-    glEnd ();
-
-    glPopAttrib ();
-
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
-
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    m_renderer.draw_zoom_box (width (), height (),
+                              p1.x (), p1.y (), p2.x (), p2.y (),
+                              overlaycolor, overlayalpha,
+                              bordercolor, borderalpha, borderwidth);
   }
 
   void

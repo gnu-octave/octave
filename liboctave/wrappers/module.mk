@@ -11,9 +11,11 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/getopt-wrapper.h \
   %reldir%/glob-wrappers.h \
   %reldir%/hash-wrappers.h \
+  %reldir%/iconv-wrappers.h \
   %reldir%/localcharset-wrapper.h \
   %reldir%/math-wrappers.h \
   %reldir%/mkostemp-wrapper.h \
+  %reldir%/mkostemps-wrapper.h \
   %reldir%/nanosleep-wrapper.h \
   %reldir%/nproc-wrapper.h \
   %reldir%/octave-popen2.h \
@@ -28,8 +30,11 @@ NOINSTALL_WRAPPERS_INC = \
   %reldir%/time-wrappers.h \
   %reldir%/tmpfile-wrapper.h \
   %reldir%/uname-wrapper.h \
+  %reldir%/unicase-wrappers.h \
   %reldir%/uniconv-wrappers.h \
+  %reldir%/unictype-wrappers.h \
   %reldir%/unistd-wrappers.h \
+  %reldir%/unistr-wrappers.h \
   %reldir%/unsetenv-wrapper.h \
   %reldir%/vasprintf-wrapper.h \
   %reldir%/wait-for-input.h \
@@ -48,9 +53,11 @@ WRAPPERS_SRC = \
   %reldir%/getopt-wrapper.c \
   %reldir%/glob-wrappers.c \
   %reldir%/hash-wrappers.c \
+  %reldir%/iconv-wrappers.c \
   %reldir%/localcharset-wrapper.c \
   %reldir%/math-wrappers.c \
   %reldir%/mkostemp-wrapper.c \
+  %reldir%/mkostemps-wrapper.c \
   %reldir%/nanosleep-wrapper.c \
   %reldir%/nproc-wrapper.c \
   %reldir%/octave-popen2.c \
@@ -65,8 +72,11 @@ WRAPPERS_SRC = \
   %reldir%/time-wrappers.c \
   %reldir%/tmpfile-wrapper.c \
   %reldir%/uname-wrapper.c \
+  %reldir%/unicase-wrappers.c \
   %reldir%/uniconv-wrappers.c \
+  %reldir%/unictype-wrappers.c \
   %reldir%/unistd-wrappers.c \
+  %reldir%/unistr-wrappers.c \
   %reldir%/unsetenv-wrapper.c \
   %reldir%/vasprintf-wrapper.c \
   %reldir%/wait-for-input.c \
@@ -79,7 +89,5 @@ noinst_LTLIBRARIES += %reldir%/libwrappers.la
 
 %canon_reldir%_libwrappers_la_CPPFLAGS = \
   -Ilibgnu -I$(srcdir)/libgnu
-
-%canon_reldir%_libwrappers_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
 
 liboctave_liboctave_la_LIBADD += %reldir%/libwrappers.la

@@ -50,7 +50,7 @@ function jumps = ppjumps (pp)
     llim = shiftdim (reshape (P(1:(n-1) * prod (d), 1), [d, n-1]), nd - 1);
   endif
 
-  for i = 2 : k;
+  for i = 2 : k
     llim .*= dx;
     llim += shiftdim (reshape (P(1:(n-1) * prod (d), i), [d, n-1]), nd - 1);
   endfor

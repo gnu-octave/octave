@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -97,7 +98,7 @@ namespace octave
     CFile (void) = delete;
 
     CFile (const std::string& path, const std::string& mode)
-      : m_fp (std::fopen (path.c_str (), mode.c_str ()))
+      : m_fp (octave::sys::fopen (path, mode))
     {
       if (! m_fp)
         throw std::runtime_error ("unable to open file");
@@ -483,13 +484,14 @@ namespace octave
       // is_dir and is_reg will return false if failed to stat.
       if (fs.is_dir ())
         {
-          sys::dir_entry dir (path);
-          if (dir)
+          string_vector dirlist;
+          std::string msg;
+
+          // Collect the whole list of filenames first, before recursion
+          // to avoid issues with infinite loop if the action generates
+          // files in the same directory (highly likely).
+          if (sys::get_dirlist (path, dirlist, msg))
             {
-              // Collect the whole list of filenames first, before recursion
-              // to avoid issues with infinite loop if the action generates
-              // files in the same directory (highly likely).
-              string_vector dirlist = dir.read ();
               for (octave_idx_type i = 0; i < dirlist.numel (); i++)
                 if (dirlist(i) != "." && dirlist(i) != "..")
                   walk (sys::file_ops::concat (path, dirlist(i)));

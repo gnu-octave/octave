@@ -103,6 +103,9 @@ public:
   const_iterator begin (void) const { return rep->begin (); }
   const_iterator end (void) const { return rep->end (); }
 
+  const_iterator cbegin (void) const { return rep->cbegin (); }
+  const_iterator cend (void) const { return rep->cend (); }
+
   std::string key (const_iterator p) const { return p->first; }
   octave_idx_type index (const_iterator p) const { return p->second; }
 
@@ -183,6 +186,9 @@ public:
 
   const_iterator begin (void) const { return xkeys.begin (); }
   const_iterator end (void) const { return xkeys.end (); }
+
+  const_iterator cbegin (void) const { return xkeys.cbegin (); }
+  const_iterator cend (void) const { return xkeys.cend (); }
 
   const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 
@@ -306,6 +312,9 @@ public:
 
   const_iterator begin (void) const { return xkeys.begin (); }
   const_iterator end (void) const { return xkeys.end (); }
+
+  const_iterator cbegin (void) const { return xkeys.cbegin (); }
+  const_iterator cend (void) const { return xkeys.cend (); }
 
   const_iterator seek (const std::string& k) const { return xkeys.seek (k); }
 

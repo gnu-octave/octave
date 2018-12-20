@@ -104,7 +104,7 @@ function retval = num2str (x, arg)
           ndgt = 0;  # All Inf or all zero array
         endif
 
-        if (any (x(valid) != fix (x(valid))))
+        if (ndgt > 15 || any (x(valid) != fix (x(valid))))
           ## Floating point input
           ndgt = max (ndgt + 5, 5);   # Keep at least 5 significant digits
           ndgt = min (ndgt, 16);      # Cap significant digits at 16
@@ -115,8 +115,6 @@ function retval = num2str (x, arg)
           if (any (! valid))
             ndgt = max (ndgt, 5);     # Allow space for Inf/NaN
           endif
-          ## FIXME: Integers must be masked to show only 16 significant digits
-          ##        See test case for bug #36133 below
           fmt = sprintf ("%%%d.0f", ndgt);
         endif
       else
@@ -190,6 +188,7 @@ function retval = num2str (x, arg)
 endfunction
 
 
+## Basic tests
 %!assert (num2str (123), "123")
 %!assert (num2str (1.23), "1.23")
 %!assert (num2str (123.456, 4), "123.5")
@@ -197,6 +196,7 @@ endfunction
 %!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
 %!assert (num2str ([true false true]), "1  0  1")
 
+## Exceptional values
 %!assert (num2str (19440606), "19440606")
 %!assert (num2str (2^33), "8589934592")
 %!assert (num2str (-2^33), "-8589934592")
@@ -222,7 +222,7 @@ endfunction
 %! x = cat (3, m, -m);
 
 ## real case
-%!test
+%!test <*46770>
 %! y = num2str (x);
 %! assert (rows (y) == 3);
 %! assert (y, ["8  1  6 -8 -1 -6"
@@ -230,7 +230,7 @@ endfunction
 %!             "4  9  2 -4 -9 -2"]);
 
 ## complex case
-%!test
+%!test <*46770>
 %! x(1,1,2) = -8+2i;
 %! y = num2str (x);
 %! assert (rows (y) == 3);
@@ -241,16 +241,26 @@ endfunction
 ## Clear shared variables
 %!shared
 
-## FIXME: Integers greater than flintmax() - 1 should be masked to show just
-##        16 digits of precision.
-%!test <36133>
-%! assert (num2str (1e23), "100000000000000000000000");
+## Integers greater than 1e15 should switch to exponential notation
+%!assert <*36133> (num2str (1e15), "1000000000000000")
+%!assert <*36133> (num2str (1e16), "1e+16")
+## Even exact integers in IEEE notation should use exponential notation
+%!assert <*36133> (num2str(2^512), "1.34078079299426e+154")
+## Mixed integer/floating point arrays
+%!assert <*36133> (num2str ([2.1, 1e23, pi]),
+%!                 "2.1  9.999999999999999e+22      3.141592653589793")
+
+## Large integers should not switch sign when printed due to overflow
+%!assert <*36121> (num2str (2.4e9, 15), "2400000000")
 
 ## Test for extra rows generated from newlines in format
 %!assert <*44864> (rows (num2str (magic (3), "%3d %3d %3d\n")), 3)
 
+## Test that string conversion of numeric objects results in characters
+## if the numbers are within range for ASCII.
 %!assert <*45174> (num2str ([65 66 67], "%s"), "ABC")
 
+## Test input validation
 %!error num2str ()
 %!error num2str (1, 2, 3)
 %!error <X must be a numeric> num2str ({1})

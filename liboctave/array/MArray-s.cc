@@ -31,13 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTAVE_API MArray<short>;
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-// Explicit instantiation, as this seems to be required by weird compilers
-// like MSVC.  This should be harmless on other compilers.
-template short xmin<short> (short, short);
-template short xmax<short> (short, short);
-#endif
-
 INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 
 #include "MDiagArray2.h"

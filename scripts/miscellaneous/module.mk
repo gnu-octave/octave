@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/bunzip2.m \
   %reldir%/cast.m \
   %reldir%/citation.m \
+  %reldir%/clearvars.m \
   %reldir%/compare_versions.m \
   %reldir%/computer.m \
   %reldir%/copyfile.m \
@@ -25,7 +26,6 @@ FCN_FILE_DIRS += \
   %reldir%/fileattrib.m \
   %reldir%/fileparts.m \
   %reldir%/fullfile.m \
-  %reldir%/genvarname.m \
   %reldir%/getfield.m \
   %reldir%/grabcode.m \
   %reldir%/gunzip.m \
@@ -33,7 +33,8 @@ FCN_FILE_DIRS += \
   %reldir%/inputParser.m \
   %reldir%/inputname.m \
   %reldir%/isdeployed.m \
-  %reldir%/isdir.m \
+  %reldir%/isfile.m \
+  %reldir%/isfolder.m \
   %reldir%/ismac.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \

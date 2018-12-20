@@ -60,7 +60,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "gui-preferences.h"
 #include "resource-manager.h"
+
 #include "file-editor-tab.h"
 #include "file-editor.h"
 #include "octave-txt-lexer.h"
@@ -70,7 +72,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
-#include "defaults.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -80,7 +81,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "version.h"
-#include "octave-settings.h"
 
 namespace octave
 {
@@ -111,6 +111,9 @@ namespace octave
     _bp_lines.clear ();      // start with empty lists of breakpoints
     _bp_conditions.clear ();
     m_bp_restore_count = 0;
+
+    // Initialize last modification date to now
+    m_last_modified = QDateTime::currentDateTimeUtc();
 
     connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (handle_cursor_moved (int,int)));
@@ -394,8 +397,8 @@ namespace octave
                 frame.protect_var (buffer_error_messages);
                 buffer_error_messages++;
 
-                octave::bp_table& bptab
-                  = octave::__get_bp_table__ ("handle_context_menu_break_condition");
+                bp_table& bptab
+                  = __get_bp_table__ ("handle_context_menu_break_condition");
 
                 bptab.condition_valid (new_condition.toStdString ());
                 valid = true;
@@ -431,8 +434,11 @@ namespace octave
     QStringList trackedFiles = _file_system_watcher.files ();
     if (! trackedFiles.isEmpty ())
       _file_system_watcher.removePath (_file_name);
-    if (! fileName.isEmpty ())
+    if (! fileName.isEmpty () && QFile::exists (fileName))
+    {
       _file_system_watcher.addPath (fileName);
+      m_last_modified =  QFileInfo (fileName).lastModified ().toUTC ();
+    }
 
     // update lexer and file name variable if file name changes
     if (_file_name != fileName)
@@ -471,10 +477,10 @@ namespace octave
   bool file_editor_tab::unchanged_or_saved (void)
   {
     bool retval = true;
-    if (_edit_area->isModified ())
+    if (_edit_area->isModified () || ! valid_file_name ())
       {
         int ans = QMessageBox::question (nullptr, tr ("Octave Editor"),
-                                         tr ("Cannot add breakpoint to modified file.\n"
+                                         tr ("Cannot add breakpoint to modified or unnamed file.\n"
                                              "Save and add breakpoint, or cancel?"),
                                          QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
 
@@ -710,8 +716,7 @@ namespace octave
                 add_octave_apis (Fiskeyword ());            // add new entries
 
                 interpreter& interp
-                  = __get_interpreter__ (
-                      "file_editor_tab::update_lexer_settings");
+                  = __get_interpreter__ ("file_editor_tab::update_lexer_settings");
 
                 if (octave_builtins)
                   add_octave_apis (F__builtins__ (interp));       // add new entries
@@ -992,8 +997,7 @@ namespace octave
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("octave_qt_link::file_in_path");
+        bp_table& bptab = __get_bp_table__ ("octave_qt_link::file_in_path");
 
         bptab.add_breakpoint (info.function_name, line_info, info.condition);
       }
@@ -1006,8 +1010,7 @@ namespace octave
 
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("remove_breakpoint_callback");
+        bp_table& bptab = __get_bp_table__ ("remove_breakpoint_callback");
 
         bptab.remove_breakpoint (info.function_name, line_info);
       }
@@ -1017,8 +1020,7 @@ namespace octave
   {
     if (octave_qt_link::file_in_path (info.file, info.dir))
       {
-        octave::bp_table& bptab
-          = octave::__get_bp_table__ ("remove_all_breakpoints_callback");
+        bp_table& bptab = __get_bp_table__ ("remove_all_breakpoints_callback");
 
         bptab.remove_all_breakpoints_in_file (info.function_name, true);
       }
@@ -1440,13 +1442,13 @@ namespace octave
             used_comment_str = QInputDialog::getText (
                                  this, tr ("Comment selected text"),
                                  tr ("Comment string to use:\n"), QLineEdit::Normal,
-                                 settings->value (oct_last_comment_str, comment_str.at (0)).toString (),
+                                 settings->value (ed_last_comment_str, comment_str.at (0)).toString (),
                                  &ok);
 
             if ((! ok) || used_comment_str.isEmpty ())
               return;  // No input, do nothing
             else
-              settings->setValue (oct_last_comment_str, used_comment_str);  // Store last
+              settings->setValue (ed_last_comment_str, used_comment_str);  // Store last
           }
       }
     else
@@ -1732,18 +1734,63 @@ namespace octave
     else
       file_to_load = fileName;
     QFile file (file_to_load);
-    if (! file.open (QFile::ReadOnly))
+    if (!file.open(QIODevice::ReadOnly))
       return file.errorString ();
 
-    // read the file
-    QTextStream in (&file);
-    // set the desired codec
-    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
-    in.setCodec (codec);
+    int col = 0, line = 0;
+    if (fileName == _file_name)
+      {
+        // We have to reload the current file, thus get current cursor position
+        line = _line;
+        col = _col;
+      }
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
-    _edit_area->setText (in.readAll ());
+
+    // read the file binary, decoding later
+    const QByteArray text_data = file.readAll ();
+
+    // decode
+    QTextCodec::ConverterState st;
+    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+    if (codec == nullptr)
+      codec = QTextCodec::codecForLocale ();
+
+    const QString text = codec->toUnicode(text_data.constData(),
+                                          text_data.size(), &st);
+
+    // Decoding with invalid characters?
+    if (st.invalidChars > 0)
+      {
+        // Set read only
+        _edit_area->setReadOnly (true);
+
+        // Message box for user decision
+        QString msg = tr ("There were problems reading the file\n"
+                          "%1\n"
+                          "with the selected encoding %2.\n\n"
+                          "Modifying and saving the file might "
+                          "cause data loss!")
+                          .arg (file_to_load).arg (_encoding);
+        QMessageBox *msg_box = new QMessageBox ();
+        msg_box->setIcon (QMessageBox::Warning);
+        msg_box->setText (msg);
+        msg_box->setWindowTitle (tr ("Octave Editor"));
+        msg_box->addButton (tr ("&Edit anyway"), QMessageBox::YesRole);
+        msg_box->addButton (tr ("Chan&ge encoding"), QMessageBox::AcceptRole);
+        msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
+
+        connect (msg_box, SIGNAL (buttonClicked (QAbstractButton *)),
+                 this, SLOT (handle_decode_warning_answer (QAbstractButton *)));
+
+        msg_box->setWindowModality (Qt::WindowModal);
+        msg_box->setAttribute (Qt::WA_DeleteOnClose);
+        msg_box->show ();
+      }
+
+    _edit_area->setText (text);
     _edit_area->setEolMode (detect_eol_mode ());
+
     QApplication::restoreOverrideCursor ();
 
     _copy_available = false;     // no selection yet available
@@ -1752,6 +1799,8 @@ namespace octave
     _edit_area->setModified (false); // loaded file is not modified yet
 
     update_eol_indicator ();
+
+    _edit_area->setCursorPosition (line, col);
 
     // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
     // breakpoints on the margin.  In order to do this, somehow the
@@ -1772,6 +1821,67 @@ namespace octave
     */
 
     return QString ();
+  }
+
+  void file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
+  {
+    QString txt = btn->text ();
+
+    if (txt == tr ("&Close"))
+      {
+        // Just close the file
+        close ();
+        return;
+      }
+
+    if (txt == tr ("Chan&ge encoding"))
+      {
+        // Dialog for reloading the file with another encoding
+        QDialog dlg;
+        dlg.setWindowTitle (tr ("Select new default encoding"));
+
+        QLabel *text
+          = new QLabel (tr ("Please select a new encoding\n"
+                            "for reloading the current file.\n\n"
+                            "This does not change the default encoding.\n"));
+
+        QComboBox *enc_combo = new QComboBox ();
+        resource_manager::combo_encoding (enc_combo);
+        _new_encoding = enc_combo->currentText ();
+        connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
+                 this , SLOT (handle_current_enc_changed (const QString&)));
+
+        QDialogButtonBox *buttons
+          = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                                  Qt::Horizontal);
+        connect (buttons, SIGNAL (accepted ()), &dlg, SLOT (accept ()));
+        connect (buttons, SIGNAL (rejected ()), &dlg, SLOT (reject ()));
+
+        QGridLayout *main_layout = new QGridLayout;
+        main_layout->setSizeConstraint (QLayout::SetFixedSize);
+        main_layout->addWidget (text, 0, 0);
+        main_layout->addWidget (enc_combo, 1, 0);
+        main_layout->addWidget (buttons, 2, 0);
+        dlg.setLayout (main_layout);
+
+        int answer = dlg.exec ();
+
+        if (answer == QDialog::Accepted)
+          {
+            // Reload the file with new encoding but using the same tab
+            QString reload_file_name = _file_name;  // store file name
+            _file_name = "";  // force reuse of this tab when opening a new file
+            emit request_open_file (reload_file_name, _new_encoding);
+          }
+      }
+
+    // Continue editing, set writable again
+    _edit_area->setReadOnly (false);
+  }
+
+  void file_editor_tab::handle_current_enc_changed (const QString& enc)
+  {
+    _new_encoding = enc;
   }
 
   QsciScintilla::EolMode file_editor_tab::detect_eol_mode (void)
@@ -1836,30 +1946,34 @@ namespace octave
       }
   }
 
-  // FIXME: See patch #8016 for a general way to get Octave results from
-  // commands processed in the background, e.g., dbstatus.
-  void file_editor_tab::handle_octave_result (QObject *requester,
-                                              QString& command,
-                                              octave_value_list&)
+  void file_editor_tab::update_breakpoints ()
   {
-    // Check if this object initiated the command.
-    if (requester == this)
+    if (_file_name.isEmpty ())
+      return;
+
+    octave_value_list argout = ovl ();
+
+    // Create and queue the command object
+    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fdbstatus, ovl (), 1,
+        this, SLOT (update_breakpoints_handler (const octave_value_list&)));
+
+    emit request_queue_cmd (cmd);
+  }
+
+  void file_editor_tab::update_breakpoints_handler (const octave_value_list& argout)
+  {
+    octave_map dbg = argout(0).map_value ();
+    octave_idx_type n_dbg = dbg.numel ();
+
+    Cell file = dbg.contents ("file");
+    Cell line = dbg.contents ("line");
+    Cell cond = dbg.contents ("cond");
+
+    for (octave_idx_type i = 0; i < n_dbg; i++)
       {
-        if (command == "dbstatus")
-          {
-            // Should be installing breakpoints in this file
-            /*
-              octave:1> result = dbstatus
-              result =
-
-              0x1 struct array containing the fields:
-
-              name
-              file
-              line
-            */
-            // Check for results that match "file".
-          }
+        if (file (i).string_value () == _file_name.toStdString ())
+          do_breakpoint_marker (true, this, line (i).int_value (),
+                                QString::fromStdString (cond (i).string_value ()));
       }
   }
 
@@ -1902,7 +2016,13 @@ namespace octave
     octave_value sym;
     try
       {
-        sym = symtab.find (base_name);
+        // FIXME: maybe we should be looking up functions directly
+        // instead of using a function that can also find variables?
+
+        symbol_scope curr_scope
+          = __get_current_scope__ ("file_editor_tab::exit_debug_and_clear");
+
+        sym = curr_scope.find (base_name);
       }
     catch (const execution_exception& e)
       {
@@ -1940,11 +2060,14 @@ namespace octave
 
             if (ans == QMessageBox::Save)
               {
-                emit execute_command_in_terminal_signal ("dbquit");
+                // add a dbquit command to the queue
+                octave_cmd_debug *cmd = new octave_cmd_debug ("quit", true);
+                emit request_queue_cmd (cmd);
+
                 // Wait until dbquit has actually occurred
                 while (names.numel () > i)
                   {
-                    octave_sleep (0.01);
+                    octave::sleep (0.01);
                     stk = cs.backtrace (nskip, curr_frame, false);
                     names = stk.contents ("name");
                   }
@@ -2089,53 +2212,6 @@ namespace octave
     else
       fileDialog = new QFileDialog (this);
 
-    // Giving trouble under KDE (problem is related to Qt signal handling on unix,
-    // see https://bugs.kde.org/show_bug.cgi?id=260719 ,
-    // it had/has no effect on Windows, though)
-    fileDialog->setOption (QFileDialog::DontUseNativeDialog, true);
-
-    // define a new grid layout with the extra elements
-    QGridLayout *extra = new QGridLayout (fileDialog);
-    QFrame *separator = new QFrame (fileDialog);
-    separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
-    separator->setFrameStyle (QFrame::Sunken);
-
-    // combo box for choosing new line ending chars
-    QLabel *label_eol = new QLabel (tr ("Line Endings:"));
-    QComboBox *combo_eol = new QComboBox ();
-    combo_eol->addItem ("Windows (CRLF)");  // ensure the same order as in
-    combo_eol->addItem ("Mac (CR)");        // the settings dialog
-    combo_eol->addItem ("Unix (LF)");
-    _save_as_desired_eol = _edit_area->eolMode ();      // init with current eol
-    combo_eol->setCurrentIndex (_save_as_desired_eol);
-
-    // combo box for encoding
-    QLabel *label_enc = new QLabel (tr ("File Encoding:"));
-    QComboBox *combo_enc = new QComboBox ();
-    resource_manager::combo_encoding (combo_enc, _encoding);
-
-    // track changes in the combo boxes
-    connect (combo_eol, SIGNAL (currentIndexChanged (int)),
-             this, SLOT (handle_combo_eol_current_index (int)));
-    connect (combo_enc, SIGNAL (currentIndexChanged (QString)),
-             this, SLOT (handle_combo_enc_current_index (QString)));
-
-    // build the extra grid layout
-    extra->addWidget (separator,0,0,1,6);
-    extra->addWidget (label_eol,1,0);
-    extra->addWidget (combo_eol,1,1);
-    extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Fixed,
-                                       QSizePolicy::Fixed), 1,2);
-    extra->addWidget (label_enc,1,3);
-    extra->addWidget (combo_enc,1,4);
-    extra->addItem   (new QSpacerItem (1,20,QSizePolicy::Expanding,
-                                       QSizePolicy::Fixed), 1,5);
-
-    // and add the extra grid layout to the dialog's layout
-    QGridLayout *dialog_layout = dynamic_cast<QGridLayout *> (fileDialog->layout ());
-    dialog_layout->addLayout (extra,dialog_layout->rowCount (),0,
-                              1,dialog_layout->columnCount ());
-
     // add the possible filters and the default suffix
     QStringList filters;
     filters << tr ("Octave Files (*.m)")
@@ -2168,6 +2244,11 @@ namespace octave
     fileDialog->setAcceptMode (QFileDialog::AcceptSave);
     fileDialog->setViewMode (QFileDialog::Detail);
 
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+
     connect (fileDialog, SIGNAL (filterSelected (const QString&)),
              this, SLOT (handle_save_as_filter_selected (const QString&)));
 
@@ -2186,16 +2267,6 @@ namespace octave
       }
 
     show_dialog (fileDialog, ! valid_file_name ());
-  }
-
-  void file_editor_tab::handle_combo_eol_current_index (int index)
-  {
-    _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
-  }
-
-  void file_editor_tab::handle_combo_enc_current_index (QString text)
-  {
-    _new_encoding = text;
   }
 
   void file_editor_tab::handle_save_as_filter_selected (const QString& filter)
@@ -2310,6 +2381,20 @@ namespace octave
 
   void file_editor_tab::file_has_changed (const QString&, bool do_close)
   {
+    bool file_exists = QFile::exists (_file_name);
+
+    if (file_exists && ! do_close)
+      {
+        // Test if file is really modified or if just the timezone has
+        // changed. In the latter, just return without doing anything
+        QDateTime modified = QFileInfo (_file_name).lastModified ().toUTC ();
+
+        if (modified <= m_last_modified)
+          return;
+
+        m_last_modified = modified;
+      }
+
     // Prevent popping up multiple message boxes when the file has
     // been changed multiple times by temporarily removing from the
     // file watcher.
@@ -2317,11 +2402,11 @@ namespace octave
     if (! trackedFiles.isEmpty ())
       _file_system_watcher.removePath (_file_name);
 
-    if (QFile::exists (_file_name) && ! do_close)
+    if (file_exists && ! do_close)
       {
+
         // The file is modified
         if (_always_reload_changed_files)
-
           load_file (_file_name);
 
         else

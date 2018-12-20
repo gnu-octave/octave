@@ -137,7 +137,7 @@
 ##
 ##   f:  The property does not have any factory default value.
 ##
-## The 'o' and 'O' qualifiers are only useful when the the property type
+## The 'o' and 'O' qualifiers are only useful when the property type
 ## is something other than octave_value.
 
 ## simple accessor
@@ -232,10 +232,10 @@ function emit_get_double_radio (i)
 
 function emit_get_callback (i)
 {
-  printf ("  void execute_%s (const octave_value& data = octave_value ()) const", name[i]);
+  printf ("  void execute_%s (const octave_value& new_data = octave_value ()) const", name[i]);
 
   if (emit_get[i] == "definition")
-    printf (" { %s.execute (data); }\n", name[i]);
+    printf (" { %s.execute (new_data); }\n", name[i]);
   else
     printf (";\n");
 

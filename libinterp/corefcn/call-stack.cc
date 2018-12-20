@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "lo-regexp.h"
+#include "str-vec.h"
+
 #include "call-stack.h"
 #include "defun.h"
 #include "interpreter.h"
@@ -33,6 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
+#include "parse.h"
+#include "syminfo.h"
+#include "symrec.h"
+#include "symscope.h"
 #include "variables.h"
 
 // Use static fields for the best efficiency.
@@ -87,12 +94,52 @@ namespace octave
       return true;
   }
 
+  symbol_info_list
+  call_stack::stack_frame::make_symbol_info_list
+    (const std::list<symbol_record>& symrec_list) const
+  {
+    symbol_info_list symbol_stats;
+
+    for (const auto& sr : symrec_list)
+      {
+        octave_value value = sr.varval (m_context);
+
+        if (value.is_defined ())
+          {
+            symbol_info syminf (sr.name (), value, sr.is_automatic (),
+                                value.iscomplex (), sr.is_formal (),
+                                sr.is_global (), sr.is_persistent ());
+
+            symbol_stats.append (syminf);
+          }
+      }
+
+    return symbol_stats;
+  }
+
+  symbol_info_list
+  call_stack::stack_frame::glob_symbol_info (const std::string& pat) const
+  {
+    return make_symbol_info_list (m_scope.glob (pat, true));
+  }
+
+  symbol_info_list
+  call_stack::stack_frame::regexp_symbol_info (const std::string& pat) const
+  {
+    return make_symbol_info_list (m_scope.regexp (pat, true));
+  }
+
+  symbol_info_list call_stack::stack_frame::get_symbol_info (void) const
+  {
+    return make_symbol_info_list (m_scope.all_variables ());
+  }
+
   call_stack::call_stack (interpreter& interp)
     : cs (), curr_frame (0), m_max_stack_depth (1024), m_interpreter (interp)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    push (nullptr, symtab.top_scope (), 0);
+    push (nullptr, nullptr, symtab.top_scope (), 0);
   }
 
   int
@@ -137,7 +184,7 @@ namespace octave
 
     size_t k = cs.size ();
 
-    for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+    for (auto p = cs.crbegin (); p != cs.crend (); p++)
       {
         octave_function *f = (*p).m_fcn;
 
@@ -165,9 +212,9 @@ namespace octave
   {
     octave_user_code *retval = nullptr;
 
-    const_iterator p = cs.end ();
+    auto p = cs.cend ();
 
-    while (p != cs.begin ())
+    while (p != cs.cbegin ())
       {
         const stack_frame& elt = *(--p);
 
@@ -193,9 +240,9 @@ namespace octave
   {
     int retval = -1;
 
-    const_iterator p = cs.end ();
+    auto p = cs.cend ();
 
-    while (p != cs.begin ())
+    while (p != cs.cbegin ())
       {
         const stack_frame& elt = *(--p);
 
@@ -214,14 +261,32 @@ namespace octave
     return retval;
   }
 
+  unwind_protect *
+  call_stack::curr_fcn_unwind_protect_frame (void) const
+  {
+    auto p = cs.cend ();
+
+    while (p != cs.cbegin ())
+      {
+        const stack_frame& elt = *(--p);
+
+        octave_function *f = elt.m_fcn;
+
+        if (f && f->is_user_code ())
+          return elt.m_unwind_protect_frame;
+      }
+
+    return nullptr;
+  }
+
   int
   call_stack::caller_user_code_column (void) const
   {
     int retval = -1;
 
-    const_iterator p = cs.end ();
+    auto p = cs.cend ();
 
-    while (p != cs.begin ())
+    while (p != cs.cbegin ())
       {
         const stack_frame& elt = *(--p);
 
@@ -335,9 +400,9 @@ namespace octave
   {
     bool retval = true;
 
-    const_iterator p = cs.end ();
+    auto p = cs.cend ();
 
-    while (p != cs.begin ())
+    while (p != cs.cbegin ())
       {
         const stack_frame& elt = *(--p);
 
@@ -354,15 +419,16 @@ namespace octave
   }
 
   void
-  call_stack::push (octave_function *fcn)
+  call_stack::push (octave_function *fcn, unwind_protect *up_frame)
   {
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    push (fcn, symtab.current_scope (), symtab.current_context ());
+    push (fcn, up_frame, symtab.current_scope (), symtab.current_context ());
   }
 
   void
-  call_stack::push (octave_function *fcn, const symbol_scope& scope,
+  call_stack::push (octave_function *fcn, unwind_protect *up_frame,
+                    const symbol_scope& scope,
                     symbol_record::context_id context)
   {
     size_t prev_frame = curr_frame;
@@ -372,7 +438,7 @@ namespace octave
     if (curr_frame > static_cast<size_t> (m_max_stack_depth))
       error ("max_stack_depth exceeded");
 
-    cs.push_back (stack_frame (fcn, scope, context, prev_frame));
+    cs.push_back (stack_frame (fcn, up_frame, scope, context, prev_frame));
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
@@ -550,7 +616,7 @@ namespace octave
 
     if (nframes > 0)
       {
-        for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+        for (auto p = cs.crbegin (); p != cs.crend (); p++)
           {
             const stack_frame& elt = *p;
 
@@ -632,6 +698,28 @@ namespace octave
       }
   }
 
+  symbol_info_list
+  call_stack::glob_symbol_info (const std::string& pat) const
+  {
+    return cs[curr_frame].glob_symbol_info (pat);
+  }
+
+  symbol_info_list
+  call_stack::regexp_symbol_info (const std::string& pat) const
+  {
+    return cs[curr_frame].glob_symbol_info (pat);
+  }
+
+  symbol_info_list call_stack::get_symbol_info (void) const
+  {
+    return cs[curr_frame].get_symbol_info ();
+  }
+
+  symbol_info_list call_stack::top_scope_symbol_info (void) const
+  {
+    return cs[0].get_symbol_info ();
+  }
+
   octave_value
   call_stack::max_stack_depth (const octave_value_list& args, int nargout)
   {
@@ -675,3 +763,320 @@ The original variable value is restored when exiting the function.
 %!error (max_stack_depth (1, 2))
 */
 
+static octave_value
+do_who_two (octave::interpreter& interp, const string_vector& pats,
+            bool global_only, bool have_regexp, bool return_list,
+            bool verbose = false, std::string msg = "")
+{
+  octave::symbol_info_list symbol_stats;
+  std::list<std::string> symbol_names;
+
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
+  octave::symbol_scope scope = symtab.current_scope ();
+
+  octave::symbol_record::context_id context = scope.current_context ();
+
+  octave_idx_type npats = pats.numel ();
+
+  for (octave_idx_type j = 0; j < npats; j++)
+    {
+      std::string pat = pats[j];
+
+      std::list<octave::symbol_record> tmp
+        = (have_regexp
+           ? (global_only
+              ? symtab.regexp_global_variables (pat)
+              : symtab.regexp_variables (pat))
+           : (global_only
+              ? symtab.glob_global_variables (pat)
+              : symtab.glob_variables (pat)));
+
+      for (const auto& sr : tmp)
+        {
+          octave_value value = sr.varval (context);
+
+          if (value.is_defined ())
+            {
+              if (verbose)
+                {
+                  octave::symbol_info
+                    syminf (sr.name (), value, sr.is_automatic (),
+                            value.iscomplex (), sr.is_formal (),
+                            sr.is_global (), sr.is_persistent ());
+
+                  symbol_stats.append (syminf);
+                }
+              else
+                symbol_names.push_back (sr.name ());
+            }
+        }
+    }
+
+  if (return_list)
+    {
+      if (verbose)
+        {
+          octave::call_stack& cs = interp.get_call_stack ();
+
+          std::string caller_function_name;
+          octave_function *caller = cs.caller ();
+          if (caller)
+            caller_function_name = caller->name ();
+
+          return symbol_stats.map_value (caller_function_name, 1);
+        }
+      else
+        return Cell (string_vector (symbol_names));
+    }
+  else if (! (symbol_stats.empty () && symbol_names.empty ()))
+    {
+      if (msg.empty ())
+        if (global_only)
+          octave_stdout << "Global variables:\n\n";
+        else
+          octave_stdout << "Variables in the current scope:\n\n";
+      else
+        octave_stdout << msg;
+
+      if (verbose)
+        symbol_stats.display (octave_stdout, tw.whos_line_format ());
+      else
+        {
+          string_vector names (symbol_names);
+
+          names.list_in_columns (octave_stdout);
+        }
+
+      octave_stdout << "\n";
+    }
+
+  return octave_value ();
+}
+
+static octave_value
+do_who (octave::interpreter& interp, int argc, const string_vector& argv,
+        bool return_list, bool verbose = false)
+{
+  octave_value retval;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  std::string my_name = argv[0];
+
+  std::string file_name;
+
+  bool from_file = false;
+  bool global_only = false;
+  bool have_regexp = false;
+
+  int i = 1;
+  while (i < argc)
+    {
+      if (argv[i] == "-file")
+        {
+          if (from_file)
+            error ("%s: -file option may only be specified once",
+                   my_name.c_str ());
+
+          from_file = true;
+
+          if (i == argc - 1)
+            error ("%s: -file argument must be followed by a filename",
+                   my_name.c_str ());
+
+          file_name = argv[++i];
+        }
+      else if (argv[i] == "-regexp")
+        {
+          have_regexp = true;
+        }
+      else if (argv[i] == "global")
+        global_only = true;
+      else if (argv[i][0] == '-')
+        warning ("%s: unrecognized option '%s'", my_name.c_str (),
+                 argv[i].c_str ());
+      else
+        break;
+
+      i++;
+    }
+
+  int npats = argc - i;
+  string_vector pats;
+  if (npats > 0)
+    {
+      pats.resize (npats);
+      for (int j = 0; j < npats; j++)
+        pats[j] = argv[i+j];
+    }
+  else
+    {
+      pats.resize (1);
+      pats[0] = "*";
+    }
+
+  if (from_file)
+    {
+      // FIXME: This is an inefficient manner to implement this as the
+      // variables are loaded in to a temporary context and then treated.
+      // It would be better to refactor symbol_info_list to not store the
+      // symbol records and then use it in load-save.cc (do_load) to
+      // implement this option there so that the variables are never
+      // stored at all.
+
+      octave::unwind_protect frame;
+
+      // Set up temporary scope.
+
+      octave::symbol_scope tmp_scope ("$dummy_scope$");
+
+      symtab.set_scope (tmp_scope);
+
+      cs.push (tmp_scope, 0);
+      frame.add_method (cs, &octave::call_stack::pop);
+
+      octave::feval ("load", octave_value (file_name), 0);
+
+      std::string newmsg = "Variables in the file " + file_name + ":\n\n";
+
+      return do_who_two (interp, pats, global_only, have_regexp,
+                         return_list, verbose, newmsg);
+    }
+  else
+    return do_who_two (interp, pats, global_only, have_regexp,
+                       return_list, verbose);
+}
+
+DEFMETHOD (who, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} who
+@deftypefnx {} {} who pattern @dots{}
+@deftypefnx {} {} who option pattern @dots{}
+@deftypefnx {} {C =} who ("pattern", @dots{})
+List currently defined variables matching the given patterns.
+
+Valid pattern syntax is the same as described for the @code{clear} command.
+If no patterns are supplied, all variables are listed.
+
+By default, only variables visible in the local scope are displayed.
+
+The following are valid options, but may not be combined.
+
+@table @code
+@item global
+List variables in the global scope rather than the current scope.
+
+@item -regexp
+The patterns are considered to be regular expressions when matching the
+variables to display.  The same pattern syntax accepted by the @code{regexp}
+function is used.
+
+@item -file
+The next argument is treated as a filename.  All variables found within the
+specified file are listed.  No patterns are accepted when reading variables
+from a file.
+@end table
+
+If called as a function, return a cell array of defined variable names
+matching the given patterns.
+@seealso{whos, isglobal, isvarname, exist, regexp}
+@end deftypefn */)
+{
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("who");
+
+  return do_who (interp, argc, argv, nargout == 1);
+}
+
+/*
+%!test
+%! avar = magic (4);
+%! ftmp = [tempname() ".mat"];
+%! unwind_protect
+%!   save (ftmp, "avar");
+%!   vars = whos ("-file", ftmp);
+%!   assert (numel (vars), 1);
+%!   assert (isstruct (vars));
+%!   assert (vars.name, "avar");
+%!   assert (vars.size, [4, 4]);
+%!   assert (vars.class, "double");
+%!   assert (vars.bytes, 128);
+%! unwind_protect_cleanup
+%!   unlink (ftmp);
+%! end_unwind_protect
+*/
+
+DEFMETHOD (whos, interp, args, nargout,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} whos
+@deftypefnx {} {} whos pattern @dots{}
+@deftypefnx {} {} whos option pattern @dots{}
+@deftypefnx {} {S =} whos ("pattern", @dots{})
+Provide detailed information on currently defined variables matching the
+given patterns.
+
+Options and pattern syntax are the same as for the @code{who} command.
+
+Extended information about each variable is summarized in a table with the
+following default entries.
+
+@table @asis
+@item Attr
+Attributes of the listed variable.  Possible attributes are:
+
+@table @asis
+@item blank
+Variable in local scope
+
+@item @code{a}
+Automatic variable.  An automatic variable is one created by the
+interpreter, for example @code{argn}.
+
+@item @code{c}
+Variable of complex type.
+
+@item @code{f}
+Formal parameter (function argument).
+
+@item @code{g}
+Variable with global scope.
+
+@item @code{p}
+Persistent variable.
+@end table
+
+@item Name
+The name of the variable.
+
+@item Size
+The logical size of the variable.  A scalar is 1x1, a vector is
+@nospell{1xN} or @nospell{Nx1}, a 2-D matrix is @nospell{MxN}.
+
+@item Bytes
+The amount of memory currently used to store the variable.
+
+@item Class
+The class of the variable.  Examples include double, single, char, uint16,
+cell, and struct.
+@end table
+
+The table can be customized to display more or less information through
+the function @code{whos_line_format}.
+
+If @code{whos} is called as a function, return a struct array of defined
+variable names matching the given patterns.  Fields in the structure
+describing each variable are: name, size, bytes, class, global, sparse,
+complex, nesting, persistent.
+@seealso{who, whos_line_format}
+@end deftypefn */)
+{
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("whos");
+
+  return do_who (interp, argc, argv, nargout == 1, true);
+}

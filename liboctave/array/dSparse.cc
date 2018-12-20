@@ -26,7 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "quit.h"
 #include "lo-ieee.h"
@@ -6058,14 +6059,14 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-              retval = SparseMatrix (static_cast<octave_idx_type>(X->nrow),
-                                     static_cast<octave_idx_type>(X->ncol),
-                                     static_cast<octave_idx_type>(X->nzmax));
+              retval = SparseMatrix (static_cast<octave_idx_type> (X->nrow),
+                                     static_cast<octave_idx_type> (X->ncol),
+                                     static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<double *>(X->x)[j];
@@ -6577,14 +6578,14 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type>(X->nrow),
-                        static_cast<octave_idx_type>(X->ncol),
-                        static_cast<octave_idx_type>(X->nzmax));
+                       (static_cast<octave_idx_type> (X->nrow),
+                        static_cast<octave_idx_type> (X->ncol),
+                        static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
@@ -7544,25 +7545,25 @@ operator * (const SparseMatrix& m, const SparseMatrix& a)
 Matrix
 operator * (const Matrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL (Matrix, double, 0.);
+  FULL_SPARSE_MUL (Matrix, double);
 }
 
 Matrix
 mul_trans (const Matrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (Matrix, double, 0., );
+  FULL_SPARSE_MUL_TRANS (Matrix, double, );
 }
 
 Matrix
 operator * (const SparseMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_MUL (Matrix, double, 0.);
+  SPARSE_FULL_MUL (Matrix, double);
 }
 
 Matrix
 trans_mul (const SparseMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (Matrix, double, 0., );
+  SPARSE_FULL_TRANS_MUL (Matrix, double, );
 }
 
 // diag * sparse and sparse * diag
@@ -7923,11 +7924,11 @@ max (const SparseMatrix& a, const SparseMatrix& b)
   return r;
 }
 
-SPARSE_SMS_CMP_OPS (SparseMatrix, 0.0, , double, 0.0, )
-SPARSE_SMS_BOOL_OPS (SparseMatrix, double, 0.0)
+SPARSE_SMS_CMP_OPS (SparseMatrix, double)
+SPARSE_SMS_BOOL_OPS (SparseMatrix, double)
 
-SPARSE_SSM_CMP_OPS (double, 0.0, , SparseMatrix, 0.0, )
-SPARSE_SSM_BOOL_OPS (double, SparseMatrix, 0.0)
+SPARSE_SSM_CMP_OPS (double, SparseMatrix)
+SPARSE_SSM_BOOL_OPS (double, SparseMatrix)
 
-SPARSE_SMSM_CMP_OPS (SparseMatrix, 0.0, , SparseMatrix, 0.0, )
-SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix, 0.0)
+SPARSE_SMSM_CMP_OPS (SparseMatrix, SparseMatrix)
+SPARSE_SMSM_BOOL_OPS (SparseMatrix, SparseMatrix)

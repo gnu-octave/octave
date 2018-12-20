@@ -85,14 +85,14 @@ namespace octave
   };
 
   class
-  comment_list : public octave::base_list<comment_elt>
+  comment_list : public base_list<comment_elt>
   {
   public:
 
     comment_list (void) { }
 
     void append (const comment_elt& elt)
-    { octave::base_list<comment_elt>::append (elt); }
+    { base_list<comment_elt>::append (elt); }
 
     void append (const std::string& s,
                  comment_elt::comment_type t = comment_elt::unknown)

@@ -166,7 +166,7 @@ verror (bool save_last_error, std::ostream& os,
 
   std::ostringstream output_buf;
 
-  octave_vformat (output_buf, fmt, args);
+  octave::vformat (output_buf, fmt, args);
 
   std::string base_msg = output_buf.str ();
 
@@ -368,9 +368,11 @@ maybe_enter_debugger (octave::execution_exception& e,
       frame.protect_var (Vdebug_on_error);
       Vdebug_on_error = false;
 
-      octave::tree_evaluator::debug_mode = true;
+      octave::tree_evaluator& tw
+        = octave::__get_evaluator__ ("maybe_enter_debugger");
 
-      octave::tree_evaluator::current_frame = cs.current_frame ();
+      tw.debug_mode (true);
+      tw.current_frame (cs.current_frame ());
 
       if (show_stack_trace)
         {
@@ -384,7 +386,10 @@ maybe_enter_debugger (octave::execution_exception& e,
             }
         }
 
-      do_keyboard (octave_value_list ());
+      octave::input_system& input_sys
+        = octave::__get_input_system__ ("maybe_enter_debugger");
+
+      input_sys.keyboard ();
     }
 }
 
@@ -400,7 +405,7 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   std::ostringstream output_buf;
 
-  octave_vformat (output_buf, fmt, args);
+  octave::vformat (output_buf, fmt, args);
 
   // FIXME: we really want to capture the message before it has all the
   //        formatting goop attached to it.  We probably also want just the
@@ -475,21 +480,6 @@ usage_1 (const char *id, const char *fmt, va_list args)
   octave::execution_exception e = make_execution_exception ("usage");
 
   usage_1 (e, id, fmt, args);
-}
-
-void
-vusage (const char *fmt, va_list args)
-{
-  usage_1 ("", fmt, args);
-}
-
-void
-usage (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  usage_1 ("", fmt, args);
-  va_end (args);
 }
 
 void
@@ -782,11 +772,16 @@ warning_1 (const char *id, const char *fmt, va_list args)
           frame.protect_var (Vdebug_on_warning);
           Vdebug_on_warning = false;
 
-          octave::tree_evaluator::debug_mode = true;
+          octave::tree_evaluator& tw
+            = octave::__get_evaluator__ ("warning_1");
 
-          octave::tree_evaluator::current_frame = cs.current_frame ();
+          tw.debug_mode (true);
+          tw.current_frame (cs.current_frame ());
 
-          do_keyboard (octave_value_list ());
+          octave::input_system& input_sys
+            = octave::__get_input_system__ ("warning_1");
+
+          input_sys.keyboard ();
         }
     }
 }

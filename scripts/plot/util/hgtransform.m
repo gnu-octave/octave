@@ -81,9 +81,9 @@ function xform_data (hgt, hlist)
 
   for hk = hlist.'
 
-    ## FIXME: Add support for light, rectangle, and text objects
+    ## FIXME: Add support for light and rectangle objects
     type = get (hk, "type");
-    if (! any (strcmp (type, {"line", "patch", "surface", "image"})))
+    if (! any (strcmp (type, {"line", "patch", "surface", "image", "text"})))
       continue;  # Unsupported type.  Silently skip.
     endif
 
@@ -93,40 +93,47 @@ function xform_data (hgt, hlist)
       continue;
     endif
 
-    ## FIXME: Rotations for "image" objects are not handled correctly.
-
-    xd = double (orig_data(idx).xdata);
-    xsz = size (xd);
-
-    yd = double (orig_data(idx).ydata);
-    ysz = size (yd);
-
-    if (strcmp (type, "image"))
-      zd = [];
+    if (strcmp (type, "text"))
+      pos = orig_data(idx).position;
+      xd = pos(1);
+      yd = pos(2);
+      zd = pos(3);
     else
-      zd = double (orig_data(idx).zdata);
-      zsz = size (zd);
-    endif
-    z_empty = isempty (zd);
+      ## FIXME: Rotations for "image" objects are not handled correctly.
+      xd = double (orig_data(idx).xdata);
+      xsz = size (xd);
 
-    if (isempty (zd))
-      ## Common case of 2-D data.
-      zd = zeros (1, numel (xd));
-    elseif (isvector (xd) && isvector (yd))
-      ## Handle surface data which may be a vector/matrix combination
-      if (isvector (zd))
-        ## Do nothing.  All data will be forced to row vectors below
-      elseif (length (xd) == rows (zd) && length (yd) == columns (zd))
-        [xd, yd] = meshgrid (xd, yd);
-        xsz = size (xd);
-        ysz = size (yd);
+      yd = double (orig_data(idx).ydata);
+      ysz = size (yd);
+
+      if (strcmp (type, "image"))
+        zd = [];
+      else
+        zd = double (orig_data(idx).zdata);
+        zsz = size (zd);
       endif
-    endif
+      z_empty = isempty (zd);
 
-    ## Force row vectors for later concatenation
-    xd = xd(:).';
-    yd = yd(:).';
-    zd = zd(:).';
+      if (z_empty)
+        ## Common case of 2-D data.
+        zd = zeros (numel (xd), 1);
+      elseif (isvector (xd) && isvector (yd))
+        ## Handle surface data which may be a vector/matrix combination
+        if (isvector (zd))
+          ## Do nothing.  All data will be forced to row vectors below
+        elseif (length (xd) == rows (zd) && length (yd) == columns (zd))
+          [xd, yd] = meshgrid (xd, yd);
+          xsz = size (xd);
+          ysz = size (yd);
+        endif
+      endif
+
+      ## Force row vectors for later concatenation
+      xd = xd(:).';
+      yd = yd(:).';
+      zd = zd(:).';
+
+    endif
 
     ## FIXME: To minimize memory, better to construct data matrix in-place?
     data = [xd; yd; zd; ones(1, columns(xd))];
@@ -135,11 +142,16 @@ function xform_data (hgt, hlist)
     ## Need to trim or rotations which produce values near 0 will be strange.
     data(abs (data) < tol) = 0;
 
-    set (hk, "xdata", reshape (data(1,:), xsz));
-    set (hk, "ydata", reshape (data(2,:), ysz));
-    if (! z_empty)
-      set (hk, "zdata", reshape (data(3,:), zsz));
+    if (strcmp (type, "text"))
+      set (hk, "position", [data(1), data(2), data(3)]);
+    else
+      set (hk, "xdata", reshape (data(1,:), xsz));
+      set (hk, "ydata", reshape (data(2,:), ysz));
+      if (! z_empty)
+        set (hk, "zdata", reshape (data(3,:), zsz));
+      endif
     endif
+
   endfor
 
 endfunction
@@ -164,9 +176,12 @@ function children_cb (hgt, ~)
             set (hk, "ydata", orig_data(idx).ydata);
             set (hk, "zdata", orig_data(idx).zdata);
 
-          case {"image"}
+          case "image"
             set (hk, "xdata", orig_data(idx).xdata);
             set (hk, "ydata", orig_data(idx).ydata);
+
+          case "text"
+            set (hk, "position", orig_data(idx).position);
 
           otherwise
             ## Unsupported type.  No data was saved.
@@ -193,14 +208,17 @@ function children_cb (hgt, ~)
         orig_data(end).ydata = get (hk, "ydata");
         orig_data(end).zdata = get (hk, "zdata");
 
-      case {"image"}
+      case "image"
         orig_data(end).xdata = get (hk, "xdata");
         orig_data(end).ydata = get (hk, "ydata");
 
-      case {"light",  "text"}
+      case "text"
+        orig_data(end).position = get (hk, "position");
+
+      case "light"
         warning ("hgtransform: %s objects are not yet supported", type);
 
-      case {"hggroup"}
+      case "hggroup"
         try
           get (hk, "curvature");
           is_rectangle = true;

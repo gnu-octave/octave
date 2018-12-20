@@ -186,7 +186,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
         @}
 @end group
 @end example
-@seealso{findstr, strmatch, regexp, regexpi, find}
+@seealso{regexp, regexpi, find}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -255,7 +255,7 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
         error ("strfind: first argument must be a string or cell array of strings");
     }
   else if (argpat.iscell ())
-    retval = do_simple_cellfun (Fstrfind, "strfind", args);
+    retval = octave::do_simple_cellfun (Fstrfind, "strfind", args);
   else
     error ("strfind: PATTERN must be a string or cell array of strings");
 
@@ -372,7 +372,7 @@ strrep ("This is a test string", "is", "&%$")
 @end group
 @end example
 
-@seealso{regexprep, strfind, findstr}
+@seealso{regexprep, strfind}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -433,7 +433,7 @@ strrep ("This is a test string", "is", "&%$")
         error ("strrep: S must be a string or cell array of strings");
     }
   else if (argpat.iscell () || argrep.iscell ())
-    retval = do_simple_cellfun (Fstrrep, "strrep", args);
+    retval = octave::do_simple_cellfun (Fstrrep, "strrep", args);
   else
     error ("strrep: PTN and REP arguments must be strings or cell arrays of strings");
 

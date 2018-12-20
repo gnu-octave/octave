@@ -1,4 +1,5 @@
 ## Copyright (C) 1995-2018 Kurt Hornik
+## Copyright (C) 2012 Dave Goel
 ##
 ## This file is part of Octave.
 ##
@@ -17,24 +18,36 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} ranks (@var{x}, @var{dim})
-## Return the ranks of @var{x} along the first non-singleton dimension
-## adjusted for ties.
+## @deftypefn  {} {} ranks (@var{x})
+## @deftypefnx {} {} ranks (@var{x}, @var{dim})
+## @deftypefnx {} {} ranks (@var{x}, @var{dim}, @var{rtype})
+## Return the ranks (in the sense of order statistics) of @var{x} along the
+## first non-singleton dimension adjusted for ties.
 ##
-## If the optional argument @var{dim} is given, operate along this dimension.
+## If the optional @var{dim} argument is given, operate along this dimension.
+##
+## The optional parameter @var{rtype} determines how ties are handled.  All
+## examples below assume an input of @code{[ 1, 2, 2, 4 ]}.
+##
+## @table @asis
+## @item 0 or @qcode{"fractional"} (default) for fractional ranking (1, 2.5,
+## 2.5, 4);
+##
+## @item 1 or @qcode{"competition"} for competition ranking (1, 2, 2, 4);
+##
+## @item 2 or @qcode{"modified"} for modified competition ranking (1, 3, 3, 4);
+##
+## @item 3 or @qcode{"ordinal"} for ordinal ranking (1, 2, 3, 4);
+##
+## @item 4 or @qcode{"dense"} for dense ranking (1, 2, 2, 3).
+## @end table
+##
 ## @seealso{spearman, kendall}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Compute ranks
+function y = ranks (x, dim, rtype = 0)
 
-## This code was rather ugly, since it didn't use sort due to the
-## fact of how to deal with ties.  Now it does use sort and its
-## even uglier!  At least it handles NDArrays.
-
-function y = ranks (x, dim)
-
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -44,46 +57,90 @@ function y = ranks (x, dim)
 
   nd = ndims (x);
   sz = size (x);
-  if (nargin != 2)
+
+  if (nargin < 2 || isempty (dim))
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (! (isscalar (dim) && dim == fix (dim) && dim > 0))
       error ("ranks: DIM must be an integer and a valid dimension");
     endif
   endif
 
   if (sz(dim) == 1)
-    y = ones (sz);
+    y = ones (sz);  # dimension DIM is singleton, so all are ranked first.
   else
-    ## The algorithm works only on dim = 1, so permute if necesary.
+    ## The algorithm works only on dim = 1, so permute if necessary.
+    ## FIXME: Most all functions now accept a dim argument.
+    ##        Would it be faster not to permute and use the dim argument
+    ##        to sort, find, cumsum, etc.?
     if (dim != 1)
       perm = [1 : nd];
       perm(1) = dim;
       perm(dim) = 1;
       x = permute (x, perm);
+      sz = size (x);
     endif
-    sz = size (x);
-    infvec = -Inf ([1, sz(2 : end)]);
-    [xs, xi] = sort (x);
-    eq_el = find (diff ([xs; infvec]) == 0);
-    if (isempty (eq_el))
-      [eq_el, y] = sort (xi);
-    else
-      runs = setdiff (eq_el, eq_el+1);
-      len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
-      [eq_el, y] = sort (xi);
-      for i = 1 : length (runs)
-        y (xi (runs (i) + [0:(len(i)-1)]) + floor (runs (i) ./ sz(1))
-           * sz(1)) = eq_el(runs(i)) + (len(i) - 1) / 2;
-      endfor
-    endif
+
+    [sx, ids] = sort (x);  # sx is sorted x.
+    lin = repmat ((1:rows (x))', [1, sz(2:end)]);  # linearly increasing array.
+
+    switch (rtype)
+      case {0, "fractional"};
+        lin = (_competition (lin, sx, sz) + _modified (lin, sx, sz)) / 2;
+      case {1, "competition"};
+        lin = _competition (lin, sx, sz);
+      case {2, "modified"};
+        lin = _modified (lin, sx, sz);
+      case {3, "ordinal"};
+        ## no processing needed here.
+      case {4, "dense"};
+        lin = _dense (lin, sx, sz);
+      otherwise
+        if (! ischar (rtype))
+          rtype = num2str (rtype);
+        end
+        error ("ranks: unknown RTYPE '%s'", rtype);
+    endswitch
+
+    y = NaN (size (lin));
+
+    ## Offsets to map indices into each column to indices into the linear array.
+    ## FIXME: Would sub2ind be faster here?
+    idf = zeros (sz);
+    idf(1, :) = 0 : sz(1) : (numel (ids)-1);
+    idf(:, :) = repmat (idf(1, :), [sz(1), ones(1,length(sz)-1)]);
+    y(ids + idf) = lin;
+
     if (dim != 1)
       y = permute (y, perm);
     endif
   endif
 
+endfunction
+
+function linnew = _dense (lin, sx, sz)
+  infvec = -Inf ([1, sz(2:end)]);
+  fnewp = logical (diff ([infvec; sx]));
+  linnew = cumsum (fnewp, 1);
+endfunction
+
+function linnew = _competition (lin, sx, sz)
+  ## Stop increasing lin when sx does not increase.  Otherwise, same as before.
+  infvec = -Inf ([1, sz(2:end)]);
+  fnewp = find (diff ([infvec; sx]));
+  linnew = zeros (size (lin));
+  linnew(fnewp) = lin(fnewp);
+  linnew = cummax (linnew, 1);
+endfunction
+
+function linnew = _modified (lin, sx, sz)
+  ## Traverse lin backwards.  Stop decreasing it when sx doesn't decrease.
+  infvec = Inf ([1, sz(2:end)]);
+  fnewp = find (diff ([sx; infvec]));
+  linnew = Inf (size (lin));
+  linnew(fnewp) = lin(fnewp);
+  linnew = flip (cummin (flip (linnew, 1)), 1);
 endfunction
 
 
@@ -94,11 +151,17 @@ endfunction
 %!assert (ranks (1e6*ones (1, 5)), 3*ones (1, 5))
 %!assert (ranks (rand (1, 5), 1), ones (1, 5))
 
+%!assert (ranks ([1, 2, 2, 4], [], "fractional"), [1, 2.5, 2.5, 4])
+%!assert (ranks ([1, 2, 2, 4], [], "competition"), [1, 2, 2, 4])
+%!assert (ranks ([1, 2, 2, 4], [], "modified"), [1, 3, 3, 4])
+%!assert (ranks ([1, 2, 2, 4], [], "ordinal"), [1, 2, 3, 4])
+%!assert (ranks ([1, 2, 2, 4], [], "dense"), [1, 2, 2, 3])
+
 ## Test input validation
 %!error ranks ()
-%!error ranks (1, 2, 3)
-%!error ranks ({1, 2})
-%!error ranks (['A'; 'B'])
-%!error ranks (1, 1.5)
-%!error ranks (1, 0)
-%!error ranks (1, 3)
+%!error ranks (1, 2, 3, 4)
+%!error <X must be a numeric vector or matrix> ranks ({1, 2})
+%!error <X must be a numeric vector or matrix> ranks (['A'; 'B'])
+%!error <DIM must be an integer> ranks (1, 1.5)
+%!error <DIM must be .* a valid dimension> ranks (1, 0)
+%!error <unknown RTYPE 'foobar'> ranks (ones (2), 1, "foobar")

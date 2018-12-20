@@ -196,7 +196,11 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(fileattrib)
 
+@DOCSTRING(isfile)
+
 @DOCSTRING(isdir)
+
+@DOCSTRING(isfolder)
 
 @DOCSTRING(readdir)
 

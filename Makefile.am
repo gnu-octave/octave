@@ -43,7 +43,7 @@ AM_FFLAGS = ${FPICFLAG} @FFLAGS@
 
 # C compiler flags.
 
-AM_CFLAGS = ${CPICFLAG} ${XTRA_CFLAGS}
+AM_CFLAGS = ${CPICFLAG} ${XTRA_CFLAGS} ${WARN_CFLAGS}
 
 # ifeq (${INCLUDE_DEPS},no)
 #   omit_deps = true;
@@ -51,7 +51,7 @@ AM_CFLAGS = ${CPICFLAG} ${XTRA_CFLAGS}
 
 # C++ compiler flags.
 
-AM_CXXFLAGS = ${CXXPICFLAG} ${XTRA_CXXFLAGS}
+AM_CXXFLAGS = ${CXXPICFLAG} ${XTRA_CXXFLAGS} ${WARN_CXXFLAGS}
 
 FFTW_XCPPFLAGS = @FFTW_XCPPFLAGS@
 FFTW_XLDFLAGS = @FFTW_XLDFLAGS@
@@ -102,6 +102,10 @@ octetc_DATA =
 octfonts_DATA =
 octlocale_DATA =
 
+OCT_FILES =
+OCT_FILE_LIBS =
+OCT_FILE_PKG_ADD_FILES =
+
 DOC_TARGETS =
 
 BUILT_DISTFILES =
@@ -123,6 +127,7 @@ EXTRA_DIST += \
   INSTALL \
   NEWS \
   README \
+  octave.doap \
   run-octave.in \
   $(BUILT_DISTFILES)
 
@@ -148,6 +153,7 @@ MAINTAINERCLEANFILES =
 info_TEXINFOS =
 BUILT_SOURCES =
 TEST_FILES =
+noinst_TEST_FILES =
 
 DOC_IMAGES_SRC =
 BUILT_DOC_IMAGES =
@@ -183,6 +189,8 @@ noinst_LTLIBRARIES =
 octinclude_HEADERS =
 nodist_octinclude_HEADERS =
 
+pkgconfig_DATA =
+
 DIST_SRC =
 
 ALL_LOCAL_TARGETS =
@@ -208,7 +216,6 @@ include libgui/module.mk
 include src/module.mk
 include scripts/module.mk
 include doc/module.mk
-include doc/interpreter/images.mk
 include etc/module.mk
 include examples/module.mk
 include m4/module.mk
@@ -220,6 +227,7 @@ DIST_HOOKS := \
   docs-dist-hook \
   fix-file-perms-dist-hook \
   hg-id-dist-hook \
+  appdata-dist-hook \
   icons-dist-hook \
   scripts-dist-hook
 
@@ -300,6 +308,9 @@ CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 nodist_octinclude_HEADERS += \
   octave-config.h
 
+OCTAVE_INTERPRETER_TARGETS += \
+  $(OCT_FILE_PKG_ADD_FILES)
+
 ALL_LOCAL_TARGETS += \
   $(OCTAVE_INTERPRETER_TARGETS) \
   .gdbinit \
@@ -359,7 +370,7 @@ define changelog-from-hg-log
   rm -f $@-t && \
   if [ -d $(srcdir)/.hg ]; then \
     ( cd $(srcdir); \
-      hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
+      hg log --no-graph --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
       echo ""; \
       echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19"; \
     ) > $@-t && \
@@ -410,6 +421,39 @@ installdirs-local:
 
 install-data-local: installdirs-local
 
+oct-file-pkg-add: $(OCT_FILE_PKG_ADD_FILES)
+	cat $(OCT_FILE_PKG_ADD_FILES) > $@-t \
+	  && mv $@-t $@
+
+install-oct: oct-file-pkg-add
+	$(MKDIR_P) $(DESTDIR)$(octfiledir)
+	if [ -n "`cat $(OCT_FILE_PKG_ADD_FILES)`" ]; then \
+	  $(INSTALL_DATA) oct-file-pkg-add $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	fi
+	cd $(DESTDIR)$(octlibdir) && \
+	for ltlib in $(OCT_FILE_LIBS); do \
+	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
+	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$dl" ]; then \
+	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
+	  else \
+	    echo "error: dlname is empty in $$ltlib!"; \
+	    exit 1; \
+	  fi; \
+	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$lnames" ]; then \
+	    rm -f $$f $$lnames $$dl; \
+	  fi \
+	done
+.PHONY: install-oct
+
+uninstall-oct:
+	for f in $(notdir $(OCT_FILES)); do \
+	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
+	done
+	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
+.PHONY: uninstall-oct
+
 clean-local: doc-clean
 
 distclean-local:
@@ -455,38 +499,6 @@ endef
 define simple-filter-rule
   rm -f $@-t $@ && \
   ${SHELL} $(1) < $< > $@-t && \
-  mv $@-t $@
-endef
-
-define subst-bison-api-decls
-  case "${BISON_API_PREFIX_DECL_STYLE}" in \
-    *api*) \
-      case "${BISON_API_PREFIX_DECL_STYLE}" in \
-       *brace*) \
-         api_prefix_decl='%define api.prefix {$(1)}'; ;; \
-       *) \
-         api_prefix_decl='%define api.prefix "$(1)"'; ;; \
-       esac; \
-      ;; \
-    *name*) \
-      case "${BISON_API_PREFIX_DECL_STYLE}" in \
-        *brace*) \
-          api_prefix_decl='%name-prefix {$(1)}'; ;; \
-        *) \
-          api_prefix_decl='%name-prefix="$(1)"'; ;; \
-      esac; \
-    ;; \
-  esac; \
-  case "${BISON_PUSH_PULL_DECL_STYLE}" in \
-    *quote*) quote='"' ;; \
-    *) quote="" ;; \
-  esac; \
-  case "${BISON_PUSH_PULL_DECL_STYLE}" in \
-    *dash*) push_pull_decl="%define api.push-pull $${quote}both$${quote}"; ;; \
-    *underscore*) push_pull_decl="%define api.push_pull $${quote}both$${quote}"; ;; \
-  esac; \
-  ${SED} -e "s/%PUSH_PULL_DECL%/$$push_pull_decl/" \
-         -e "s/%API_PREFIX_DECL%/$$api_prefix_decl/" $< > $@-t && \
   mv $@-t $@
 endef
 

@@ -30,10 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  // TRUE means SIGINT should put us in the debugger at the next
-  // available breakpoint.
-  bool octave_debug_on_interrupt_state = false;
-
   void
   tree_breakpoint::visit_while_command (tree_while_command& cmd)
   {

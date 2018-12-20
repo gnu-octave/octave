@@ -26,16 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <cstddef>
+#include <functional>
 
 // This class allows registering actions in a list for later
 // execution, either explicitly or when the container goes out of
 // scope.
 
 // FIXME: is there a better name for this class?
-
-// FIXME: we should probably be using std::function, std::bind, and
-// related c++11 features to implement this functionality.
 
 namespace octave
 {
@@ -71,238 +68,16 @@ namespace octave
     {
     public:
 
-      fcn_elem (void (*fptr) (void))
-        : e_fptr (fptr) { }
-
-      void run (void) { e_fptr (); }
-
-    private:
-
-      void (*e_fptr) (void);
-    };
-
-    // An element that stores a variable of type T along with a void (*) (T)
-    // function pointer, and calls the function with the parameter.
-
-    template <typename T>
-    class fcn_arg_elem : public elem
-    {
-    public:
-
-      fcn_arg_elem (void (*fcn) (T), T arg)
-        : e_fcn (fcn), e_arg (arg) { }
-
-      // No copying!
-
-      fcn_arg_elem (const fcn_arg_elem&) = delete;
-
-      fcn_arg_elem& operator = (const fcn_arg_elem&) = delete;
-
-      void run (void) { e_fcn (e_arg); }
-
-    private:
-
-      void (*e_fcn) (T);
-
-      T e_arg;
-    };
-
-    // An element that stores a variable of type T along with a
-    // void (*) (const T&) function pointer, and calls the function with
-    // the parameter.
-
-    template <typename T>
-    class fcn_crefarg_elem : public elem
-    {
-    public:
-
-      fcn_crefarg_elem (void (*fcn) (const T&), const T& arg)
-        : e_fcn (fcn), e_arg (arg) { }
-
-      void run (void) { e_fcn (e_arg); }
-
-    private:
-
-      void (*e_fcn) (const T&);
-
-      T e_arg;
-    };
-
-    // An element for calling a member function.
-
-    template <typename T>
-    class method_elem : public elem
-    {
-    public:
-
-      method_elem (T *obj, void (T::*method) (void))
-        : e_obj (obj), e_method (method) { }
-
-      method_elem (T& obj, void (T::*method) (void))
-        : e_obj (&obj), e_method (method) { }
-
-      // No copying!
-
-      method_elem (const method_elem&) = delete;
-
-      method_elem operator = (const method_elem&) = delete;
-
-      void run (void) { (e_obj->*e_method) (); }
-
-    private:
-
-      T *e_obj;
-
-      void (T::*e_method) (void);
-    };
-
-    // An element for calling a member function with a single argument
-
-    template <typename T, typename A>
-    class method_arg_elem : public elem
-    {
-    public:
-
-      method_arg_elem (T *obj, void (T::*method) (A), A arg)
-        : e_obj (obj), e_method (method), e_arg (arg) { }
-
-      method_arg_elem (T& obj, void (T::*method) (A), A arg)
-        : e_obj (&obj), e_method (method), e_arg (arg) { }
-
-      // No copying!
-
-      method_arg_elem (const method_arg_elem&) = delete;
-
-      method_arg_elem operator = (const method_arg_elem&) = delete;
-
-      void run (void) { (e_obj->*e_method) (e_arg); }
-
-    private:
-
-      T *e_obj;
-
-      void (T::*e_method) (A);
-
-      A e_arg;
-    };
-
-    // An element for calling a member function with a single argument
-
-    template <typename T, typename A>
-    class method_crefarg_elem : public elem
-    {
-    public:
-
-      method_crefarg_elem (T *obj, void (T::*method) (const A&), const A& arg)
-        : e_obj (obj), e_method (method), e_arg (arg) { }
-
-      method_crefarg_elem (T& obj, void (T::*method) (const A&), const A& arg)
-        : e_obj (&obj), e_method (method), e_arg (arg) { }
-
-      // No copying!
-
-      method_crefarg_elem (const method_crefarg_elem&) = delete;
-
-      method_crefarg_elem operator = (const method_crefarg_elem&) = delete;
-
-      void run (void) { (e_obj->*e_method) (e_arg); }
-
-    private:
-
-      T *e_obj;
-
-      void (T::*e_method) (const A&);
-
-      A e_arg;
-    };
-
-    /// An element for calling a member function with two arguments
-    template <class T, class A, class B>
-    class method_arg2_elem : public elem
-    {
-    public:
-      method_arg2_elem (T *obj, void (T::*method) (const A&, const B&),
-                        const A& arg_a, const B& arg_b)
-        : e_obj (obj), e_method (method),
-          e_arg_a (arg_a), e_arg_b (arg_b) { }
-
-      void run (void) { (e_obj->*e_method) (e_arg_a, e_arg_b); }
-
-    private:
-
-      T *e_obj;
-      void (T::*e_method) (const A&, const B&);
-      A e_arg_a;
-      B e_arg_b;
-
-      // No copying!
-
-      method_arg2_elem (const method_arg2_elem&);
-
-      method_arg2_elem operator = (const method_arg2_elem&);
-    };
-
-    /// An element for calling a member function with three arguments
-    template <class T, class A, class B, class C>
-    class method_arg3_elem : public elem
-    {
-    public:
-      method_arg3_elem (T *obj,
-                        void (T::*method) (const A&, const B&, const C&),
-                        const A& arg_a, const B& arg_b, const C& arg_c)
-        : e_obj (obj), e_method (method),
-          e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c)
+      template <typename F, typename... Args>
+      fcn_elem (F&& fcn, Args&&... args)
+        : m_fcn (std::bind (fcn, args...))
       { }
 
-      void run (void) { (e_obj->*e_method) (e_arg_a, e_arg_b, e_arg_c); }
+      void run (void) { m_fcn (); }
 
     private:
 
-      T *e_obj;
-      void (T::*e_method) (const A&, const B&, const C&);
-      A e_arg_a;
-      B e_arg_b;
-      C e_arg_c;
-
-      // No copying!
-
-      method_arg3_elem (const method_arg3_elem&);
-
-      method_arg3_elem operator = (const method_arg3_elem&);
-    };
-
-    /// An element for calling a member function with three arguments
-    template <class T, class A, class B, class C, class D>
-    class method_arg4_elem : public elem
-    {
-    public:
-      method_arg4_elem (T *obj,
-                        void (T::*method) (const A&, const B&, const C&, const D&),
-                        const A& arg_a, const B& arg_b, const C& arg_c,
-                        const D& arg_d)
-        : e_obj (obj), e_method (method),
-          e_arg_a (arg_a), e_arg_b (arg_b), e_arg_c (arg_c), e_arg_d (arg_d)
-      { }
-
-      void run (void)
-      {
-        (e_obj->*e_method) (e_arg_a, e_arg_b, e_arg_c, e_arg_d);
-      }
-
-    private:
-
-      T *e_obj;
-      void (T::*e_method) (const A&, const B&, const C&, const D&);
-      A e_arg_a;
-      B e_arg_b;
-      C e_arg_c;
-      D e_arg_d;
-
-      // No copying!
-
-      method_arg4_elem (const method_arg4_elem&);
-
-      method_arg4_elem operator = (const method_arg4_elem&);
+      std::function<void (void)> m_fcn;
     };
 
     // An element that stores arbitrary variable, and restores it.
@@ -361,94 +136,33 @@ namespace octave
 
     virtual ~action_container (void) = default;
 
-    virtual void add (elem *new_elem) = 0;
-
-    // Call to void func (void).
-    void add_fcn (void (*fcn) (void))
+    template <typename F, typename... Args>
+    void add (F&& fcn, Args&&... args)
     {
-      add (new fcn_elem (fcn));
+      add_action (new fcn_elem (std::forward<F> (fcn),
+                                std::forward<Args> (args)...));
     }
 
-    // Call to void func (T).
-    template <typename T>
-    void add_fcn (void (*action) (T), T val)
+    // Use separate template types for function pointer parameter
+    // declarations and captured arguments so that differences in
+    // const are handled properly.
+
+    template <typename... Params, typename... Args>
+    void add_fcn (void (*fcn) (Params...), Args&&... args)
     {
-      add (new fcn_arg_elem<T> (action, val));
+      add_action (new fcn_elem (fcn, std::forward<Args> (args)...));
     }
 
-    // Call to void func (const T&).
-    template <typename T>
-    void add_fcn (void (*action) (const T&), const T& val)
+    template <typename T, typename... Params, typename... Args>
+    void add_method (T *obj, void (T::*method) (Params...), Args&&... args)
     {
-      add (new fcn_crefarg_elem<T> (action, val));
+      add_action (new fcn_elem (method, obj, std::forward<Args> (args)...));
     }
 
-    // Call to T::method (void).
-    template <typename T>
-    void add_method (T *obj, void (T::*method) (void))
+    template <typename T, typename... Params, typename... Args>
+    void add_method (T& obj, void (T::*method) (Params...), Args&&... args)
     {
-      add (new method_elem<T> (obj, method));
-    }
-
-    template <typename T>
-    void add_method (T& obj, void (T::*method) (void))
-    {
-      add (new method_elem<T> (obj, method));
-    }
-
-    // Call to T::method (A).
-    template <typename T, typename A>
-    void add_method (T *obj, void (T::*method) (A), A arg)
-    {
-      add (new method_arg_elem<T, A> (obj, method, arg));
-    }
-
-    template <typename T, typename A>
-    void add_method (T& obj, void (T::*method) (A), A arg)
-    {
-      add (new method_arg_elem<T, A> (obj, method, arg));
-    }
-
-    // Call to T::method (const A&).
-    template <typename T, typename A>
-    void add_method (T *obj, void (T::*method) (const A&), const A& arg)
-    {
-      add (new method_crefarg_elem<T, A> (obj, method, arg));
-    }
-
-    template <typename T, typename A>
-    void add_method (T& obj, void (T::*method) (const A&), const A& arg)
-    {
-      add (new method_crefarg_elem<T, A> (obj, method, arg));
-    }
-
-    // Call to T::method (A, B).
-    template <class T, class A, class B>
-    void add_method (T *obj, void (T::*method) (const A&, const B&),
-                     const A& arg_a, const B& arg_b)
-    {
-      add (new method_arg2_elem<T, A, B> (obj, method, arg_a, arg_b));
-    }
-
-    // Call to T::method (A, B, C).
-    template <class T, class A, class B, class C>
-    void add_method (T *obj,
-                     void (T::*method) (const A&, const B&, const C&),
-                     const A& arg_a, const B& arg_b, const C& arg_c)
-    {
-      add (new method_arg3_elem<T, A, B, C> (obj, method, arg_a,
-                                             arg_b, arg_c));
-    }
-
-    // Call to T::method (A, B, C, D).
-    template <class T, class A, class B, class C, class D>
-    void add_method (T *obj,
-                     void (T::*method) (const A&, const B&, const C&, const D&),
-                     const A& arg_a, const B& arg_b,
-                     const C& arg_c, const D& arg_d)
-    {
-      add (new method_arg4_elem<T, A, B, C, D> (obj, method, arg_a,
-                                                arg_b, arg_c, arg_d));
+      add_action (new fcn_elem (method, &obj, std::forward<Args> (args)...));
     }
 
     // Call to delete (T*).
@@ -456,21 +170,21 @@ namespace octave
     template <typename T>
     void add_delete (T *obj)
     {
-      add (new delete_ptr_elem<T> (obj));
+      add_action (new delete_ptr_elem<T> (obj));
     }
 
     // Protect any variable.
     template <typename T>
     void protect_var (T& var)
     {
-      add (new restore_var_elem<T> (var, var));
+      add_action (new restore_var_elem<T> (var, var));
     }
 
     // Protect any variable, value given.
     template <typename T>
     void protect_var (T& var, const T& val)
     {
-      add (new restore_var_elem<T> (var, val));
+      add_action (new restore_var_elem<T> (var, val));
     }
 
     operator bool (void) const { return ! empty (); }
@@ -504,6 +218,10 @@ namespace octave
     virtual size_t size (void) const = 0;
 
     bool empty (void) const { return size () == 0; }
+
+  protected:
+
+    virtual void add_action (elem *new_elem) = 0;
   };
 }
 

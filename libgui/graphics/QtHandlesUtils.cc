@@ -50,13 +50,13 @@ namespace QtHandles
     QString
     fromStdString (const std::string& s)
     {
-      return QString::fromLocal8Bit (s.c_str ());
+      return QString::fromUtf8 (s.c_str ());
     }
 
     std::string
     toStdString (const QString& s)
     {
-      return std::string (s.toLocal8Bit ().data ());
+      return std::string (s.toUtf8 ().data ());
     }
 
     QStringList
@@ -140,6 +140,10 @@ namespace QtHandles
     template QFont computeFont<uibuttongroup> (const uibuttongroup::properties&
         props,
         int height);
+
+    template QFont computeFont<uitable> (const uitable::properties& props,
+                                         int height);
+
     QColor
     fromRgb (const Matrix& rgb)
     {

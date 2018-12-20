@@ -150,7 +150,13 @@ To inquire whether a particular method exists for a user class, the
 @DOCSTRING(ismethod)
 
 @noindent
-For example:
+For a polynomial class it makes sense to have a method to compute its roots.
+
+@example
+@EXAMPLEFILE(@polynomial/roots.m)
+@end example
+
+We can check for the existence of the @code{roots}-method by calling:
 
 @example
 @group

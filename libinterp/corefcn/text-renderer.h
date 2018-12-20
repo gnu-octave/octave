@@ -34,11 +34,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "uint8NDArray.h"
 
-#include "txt-eng.h"
-
 namespace octave
 {
   class base_text_renderer;
+  class text_element;
 
   class
   OCTINTERP_API

@@ -31,16 +31,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
-#include "bp-table.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
 #include "help.h"
+#include "input.h"
 #include "load-path.h"
+#include "load-save.h"
+#include "oct-hist.h"
 #include "oct-stream.h"
 #include "ov-classdef.h"
 #include "ov-typeinfo.h"
+#include "pager.h"
 #include "pt-eval.h"
+#include "settings.h"
 #include "symtab.h"
 #include "url-handle-manager.h"
 
@@ -58,7 +62,6 @@ namespace octave
   class profiler;
   class call_stack;
   class child_list;
-  class tree_evaluator;
 
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
@@ -151,9 +154,29 @@ namespace octave
       return m_environment;
     }
 
+    settings& get_settings (void)
+    {
+      return m_settings;
+    }
+
     help_system& get_help_system (void)
     {
       return m_help_system;
+    }
+
+    input_system& get_input_system (void)
+    {
+      return m_input_system;
+    }
+
+    output_system& get_output_system (void)
+    {
+      return m_output_system;
+    }
+
+    history_system& get_history_system (void)
+    {
+      return m_history_system;
     }
 
     dynamic_loader& get_dynamic_loader (void)
@@ -164,6 +187,11 @@ namespace octave
     load_path& get_load_path (void)
     {
       return m_load_path;
+    }
+
+    load_save_system& get_load_save_system (void)
+    {
+      return m_load_save_system;
     }
 
     symbol_table& get_symbol_table (void)
@@ -178,11 +206,6 @@ namespace octave
 
     symbol_scope get_current_scope (void);
     symbol_scope require_current_scope (const std::string& who);
-
-    bp_table& get_bp_table (void)
-    {
-      return m_bp_table;
-    }
 
     call_stack& get_call_stack (void);
 
@@ -214,6 +237,15 @@ namespace octave
     void munlock (const std::string& nm);
 
     bool mislocked (const std::string& nm);
+
+    octave_value_list eval_string (const std::string& eval_str, bool silent,
+                                   int& parse_status, int nargout);
+
+    octave_value eval_string (const std::string& eval_str, bool silent,
+                              int& parse_status);
+
+    octave_value_list eval_string (const octave_value& arg, bool silent,
+                                   int& parse_status, int nargout);
 
     static void recover_from_exception (void);
 
@@ -253,19 +285,27 @@ namespace octave
 
     environment m_environment;
 
+    settings m_settings;
+
     help_system m_help_system;
+
+    input_system m_input_system;
+
+    output_system m_output_system;
+
+    history_system m_history_system;
 
     dynamic_loader m_dynamic_loader;
 
     load_path m_load_path;
+
+    load_save_system m_load_save_system;
 
     type_info m_type_info;
 
     symbol_table m_symbol_table;
 
     tree_evaluator m_evaluator;
-
-    bp_table m_bp_table;
 
     stream_list m_stream_list;
 
@@ -295,6 +335,8 @@ namespace octave
     bool m_initialized;
 
     void maximum_braindamage (void);
+
+    void execute_pkg_add (const std::string& dir);
   };
 }
 

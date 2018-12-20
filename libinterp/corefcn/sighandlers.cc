@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "signal-wrappers.h"
 
-#include "bp-table.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -51,8 +50,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "oct-map.h"
 #include "pager.h"
-#include "pt-bp.h"
-#include "pt-eval.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "utils.h"
@@ -186,8 +183,7 @@ namespace octave
     static const bool have_sigusr2
       = octave_get_sig_number ("SIGUSR2", &sigusr2);
 
-    octave::child_list& kids
-      = octave::__get_child_list__ ("respond_to_pending_signals");
+    child_list& kids = __get_child_list__ ("respond_to_pending_signals");
 
     for (int sig = 0; sig < octave_num_signals (); sig++)
       {

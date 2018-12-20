@@ -41,8 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstdio>
 
-#include <iostream>
-#include <limits>
+#include <iomanip>
 #include <stack>
 #include <string>
 #include <vector>
@@ -425,7 +424,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   octave::sys::file_stat fs (fname);
 
   if (! (md & std::ios::out))
-    fname = find_data_file_in_load_path ("fopen", fname);
+    fname = octave::find_data_file_in_load_path ("fopen", fname);
 
   if (! fs.is_dir ())
     {
@@ -1199,7 +1198,7 @@ textscan_internal (octave::interpreter& interp, const std::string& who,
       fmt = args(1).string_value ();
 
       if (args(1).is_sq_string ())
-        fmt = do_string_escapes (fmt);
+        fmt = octave::do_string_escapes (fmt);
 
       nskip++;
     }
@@ -3080,7 +3079,7 @@ environment variable.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (get_P_tmpdir ());
+  return ovl (octave::get_P_tmpdir ());
 }
 
 // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be

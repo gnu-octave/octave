@@ -187,16 +187,16 @@ error message.
 
   dirname = octave::sys::file_ops::tilde_expand (dirname);
 
-  octave::sys::dir_entry dir (dirname);
+  string_vector dirlist;
+  std::string msg;
 
-  if (dir)
+  if (octave::sys::get_dirlist (dirname, dirlist, msg))
     {
-      string_vector dirlist = dir.read ();
       retval(0) = Cell (dirlist.sort ());
       retval(1) = 0.0;
     }
   else
-    retval(2) = dir.error ();
+    retval(2) = msg;
 
   return retval;
 }
@@ -250,8 +250,8 @@ Internal function called by mkdir.m.
     }
 }
 
-DEFUNX ("rmdir", Frmdir, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("rmdir", Frmdir, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {} rmdir @var{dir}
 @deftypefnx {} {} rmdir (@var{dir}, "s")
 @deftypefnx {} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})
@@ -290,16 +290,26 @@ identifier.
           && ! octave::application::forced_interactive ()
           && Vconfirm_recursive_rmdir)
         {
+          octave::input_system& input_sys = interp.get_input_system ();
+
           std::string prompt = "remove entire contents of " + fulldir + "? ";
 
-          doit = octave_yes_or_no (prompt);
+          doit = input_sys.yes_or_no (prompt);
         }
 
       if (doit)
-        status = octave::sys::recursive_rmdir (fulldir, msg);
+        {
+          octave_link::file_remove (fulldir, "");
+          status = octave::sys::recursive_rmdir (fulldir, msg);
+        }
     }
   else
-    status = octave::sys::rmdir (fulldir, msg);
+    {
+      octave_link::file_remove (fulldir, "");
+      status = octave::sys::rmdir (fulldir, msg);
+    }
+
+  octave_link::file_renamed (status >= 0);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -422,12 +432,20 @@ error message.
 
   std::string msg;
 
+  octave_link::file_remove (from, to);
+
   int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
-    return ovl (-1.0, msg);
+    {
+      octave_link::file_renamed (false);
+      return ovl (-1.0, msg);
+    }
   else
-    return ovl (status, "");
+    {
+      octave_link::file_renamed (true);
+      return ovl (status, "");
+    }
 }
 
 DEFUN (glob, args, ,

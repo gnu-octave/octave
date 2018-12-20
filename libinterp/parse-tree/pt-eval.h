@@ -30,12 +30,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <string>
 
+#include "bp-table.h"
 #include "call-stack.h"
 #include "ov.h"
 #include "ovl.h"
 #include "profiler.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+
+class octave_user_code;
 
 namespace octave
 {
@@ -123,14 +126,19 @@ namespace octave
     typedef void (*decl_elt_init_fcn) (tree_decl_elt&);
 
     tree_evaluator (interpreter& interp)
-      : m_interpreter (interp), m_result_type (RT_UNDEFINED),
-        m_expr_result_value (), m_expr_result_value_list (),
-        m_lvalue_list_stack (), m_nargout_stack (),
-        m_call_stack (interp), m_profiler (),
-        m_max_recursion_depth (256), m_silent_functions (false),
-        m_string_fill_char (' '), m_PS4 ("+ "), m_echo (ECHO_OFF),
+      : m_interpreter (interp), m_statement_context (SC_OTHER),
+        m_result_type (RT_UNDEFINED), m_expr_result_value (),
+        m_expr_result_value_list (), m_lvalue_list_stack (),
+        m_nargout_stack (), m_bp_table (*this), m_call_stack (interp),
+        m_profiler (), m_current_frame (0), m_debug_mode (false),
+        m_quiet_breakpoint_flag (false), m_max_recursion_depth (256),
+        m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
+        m_silent_functions (false), m_string_fill_char (' '),
+        m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
-        m_echo_files ()
+        m_echo_files (), m_in_loop_command (false),
+        m_breaking (0), m_continuing (0), m_returning (0),
+        m_indexed_object (nullptr), m_index_position (0), m_num_indices (0)
     { }
 
     // No copying!
@@ -142,6 +150,17 @@ namespace octave
     ~tree_evaluator (void) = default;
 
     void reset (void);
+
+    int repl (bool interactive);
+
+    octave_value_list eval_string (const std::string& eval_str, bool silent,
+                                   int& parse_status, int nargout);
+
+    octave_value eval_string (const std::string& eval_str, bool silent,
+                              int& parse_status);
+
+    octave_value_list eval_string (const octave_value& arg, bool silent,
+                                   int& parse_status, int nargout);
 
     void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -171,7 +190,15 @@ namespace octave
 
     void visit_octave_user_script (octave_user_script&);
 
+    octave_value_list
+    execute_user_script (octave_user_script& user_script, int nargout,
+                         const octave_value_list& args);
+
     void visit_octave_user_function (octave_user_function&);
+
+    octave_value_list
+    execute_user_function (octave_user_function& user_function, int nargout,
+                           const octave_value_list& args);
 
     void visit_octave_user_function_header (octave_user_function&);
 
@@ -238,34 +265,19 @@ namespace octave
 
     bool statement_printing_enabled (void);
 
-    static void reset_debug_state (void);
+    void reset_debug_state (void);
 
-    // If > 0, stop executing at the (N-1)th stopping point, counting
-    //         from the the current execution point in the current frame.
-    //
-    // If < 0, stop executing at the next possible stopping point.
-    static int dbstep_flag;
+    void reset_debug_state (bool mode);
 
-    // The number of the stack frame we are currently debugging.
-    static size_t current_frame;
-
-    static bool debug_mode;
-
-    static bool quiet_breakpoint_flag;
+    void set_dbstep_flag (int step) { m_dbstep_flag = step; }
 
     // Possible types of evaluation contexts.
     enum stmt_list_type
     {
-      function,  // function body
-      script,    // script file
-      other      // command-line input or eval string
+      SC_FUNCTION,  // function body
+      SC_SCRIPT,    // script file
+      SC_OTHER      // command-line input or eval string
     };
-
-    // The context for the current evaluation.
-    static stmt_list_type statement_context;
-
-    // TRUE means we are evaluating some kind of looping construct.
-    static bool in_loop_command;
 
     Matrix ignored_fcn_outputs (void) const;
 
@@ -360,6 +372,10 @@ namespace octave
     void undefine_parameter_list (tree_parameter_list *param_list);
 
     octave_value_list
+    convert_to_const_vector (tree_argument_list *arg_list,
+                             const octave_value *object = nullptr);
+
+    octave_value_list
     convert_return_list_to_const_vector
       (tree_parameter_list *ret_list, int nargout, const Cell& varargout);
 
@@ -368,11 +384,17 @@ namespace octave
     bool switch_case_label_matches (tree_switch_case *expr,
                                     const octave_value& val);
 
+    interpreter& get_interpreter (void) { return m_interpreter; }
+
+    bp_table& get_bp_table (void) { return m_bp_table; }
+
     call_stack& get_call_stack (void) { return m_call_stack; }
 
     profiler& get_profiler (void) { return m_profiler; }
 
     symbol_scope get_current_scope (void);
+
+    octave_user_code * get_user_code (const std::string& fname = "");
 
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 
@@ -395,8 +417,46 @@ namespace octave
       return val;
     }
 
+    octave_value whos_line_format (const octave_value_list& args, int nargout);
+
+    std::string whos_line_format (void) const { return m_whos_line_format; }
+
+    std::string whos_line_format (const std::string& s)
+    {
+      std::string val = m_whos_line_format;
+      m_whos_line_format = s;
+      return val;
+    }
+
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
+
+    size_t current_frame (void) const { return m_current_frame; }
+
+    size_t current_frame (size_t n)
+    {
+      size_t val = m_current_frame;
+      m_current_frame = n;
+      return val;
+    }
+
+    bool debug_mode (void) const { return m_debug_mode; }
+
+    bool debug_mode (bool flag)
+    {
+      bool val = m_debug_mode;
+      m_debug_mode = flag;
+      return val;
+    }
+
+    bool quiet_breakpoint_flag (void) const { return m_quiet_breakpoint_flag; }
+
+    bool quiet_breakpoint_flag (bool flag)
+    {
+      bool val = m_quiet_breakpoint_flag;
+      m_quiet_breakpoint_flag = flag;
+      return val;
+    }
 
     char string_fill_char (void) const { return m_string_fill_char; }
 
@@ -418,6 +478,42 @@ namespace octave
       return val;
     }
 
+    const octave_value * indexed_object (void) const
+    {
+      return m_indexed_object;
+    }
+
+    int index_position (void) const { return m_index_position; }
+
+    int num_indices (void) const { return m_num_indices; }
+
+    int breaking (void) const { return m_breaking; }
+
+    int breaking (int n)
+    {
+      int val = m_breaking;
+      m_breaking = n;
+      return val;
+    }
+
+    int continuing (void) const { return m_continuing; }
+
+    int continuing (int n)
+    {
+      int val = m_continuing;
+      m_continuing = n;
+      return val;
+    }
+
+    int returning (void) const { return m_returning; }
+
+    int returning (int n)
+    {
+      int val = m_returning;
+      m_returning = n;
+      return val;
+    }
+
     octave_value echo (const octave_value_list& args, int nargout);
 
     int echo (void) const { return m_echo; }
@@ -432,6 +528,8 @@ namespace octave
     octave_value
     string_fill_char (const octave_value_list& args, int nargout);
 
+    void final_index_error (index_exception& e, const tree_expression *expr);
+
     void push_echo_state (unwind_protect& frame, int type,
                           const std::string& file_name, size_t pos = 1);
 
@@ -445,10 +543,10 @@ namespace octave
 
     bool maybe_push_echo_state_cleanup (void);
 
-    void do_breakpoint (tree_statement& stmt) const;
+    void do_breakpoint (tree_statement& stmt);
 
     void do_breakpoint (bool is_breakpoint,
-                        bool is_end_of_fcn_or_script = false) const;
+                        bool is_end_of_fcn_or_script = false);
 
     virtual octave_value
     do_keyboard (const octave_value_list& args = octave_value_list ()) const;
@@ -463,25 +561,24 @@ namespace octave
     std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
     // For unwind-protect.
-    void set_echo_state (bool val) { m_echo_state = val; }
-
-    // For unwind-protect.
-    void set_echo_file_name (const std::string& file_name)
-    {
-      m_echo_file_name = file_name;
-    }
-
-    // For unwind-protect.
-    void set_echo_file_pos (const size_t& file_pos)
-    {
-      m_echo_file_pos = file_pos;
-    }
+    void uwp_set_echo_state (bool state, const std::string& file_name,
+                             size_t pos);
 
     bool echo_this_file (const std::string& file, int type) const;
 
     void echo_code (size_t line);
 
+    bool quit_loop_now (void);
+
+    void bind_auto_fcn_vars (symbol_scope& scope,
+                             const string_vector& arg_names, int nargin,
+                             int nargout, bool takes_varargs,
+                             const octave_value_list& va_args);
+
     interpreter& m_interpreter;
+
+    // The context for the current evaluation.
+    stmt_list_type m_statement_context;
 
     result_type m_result_type;
     octave_value m_expr_result_value;
@@ -491,13 +588,25 @@ namespace octave
 
     value_stack<int> m_nargout_stack;
 
+    bp_table m_bp_table;
+
     call_stack m_call_stack;
 
     profiler m_profiler;
 
+    // The number of the stack frame we are currently debugging.
+    size_t m_current_frame;
+
+    bool m_debug_mode;
+
+    bool m_quiet_breakpoint_flag;
+
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.
     int m_max_recursion_depth;
+
+    // Defines layout for the whos/who -long command
+    std::string m_whos_line_format;
 
     // If TRUE, turn off printing of results in functions (as if a
     // semicolon has been appended to each statement).
@@ -508,6 +617,12 @@ namespace octave
 
     // String printed before echoed commands (enabled by --echo-commands).
     std::string m_PS4;
+
+    // If > 0, stop executing at the (N-1)th stopping point, counting
+    //         from the the current execution point in the current frame.
+    //
+    // If < 0, stop executing at the next possible stopping point.
+    int m_dbstep_flag;
 
     // Echo commands as they are executed?
     //
@@ -527,6 +642,23 @@ namespace octave
     size_t m_echo_file_pos;
 
     std::map<std::string, bool> m_echo_files;
+
+    // TRUE means we are evaluating some kind of looping construct.
+    bool m_in_loop_command;
+
+    // Nonzero means we're breaking out of a loop or function body.
+    int m_breaking;
+
+    // Nonzero means we're jumping to the end of a loop.
+    int m_continuing;
+
+    // Nonzero means we're returning from a function.
+    int m_returning;
+
+    // Used by END function.
+    const octave_value *m_indexed_object;
+    int m_index_position;
+    int m_num_indices;
   };
 }
 

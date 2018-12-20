@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
+#include <istream>
 #include <map>
 #include <sstream>
 #include <string>
@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
 #include "str-vec.h"
@@ -61,7 +62,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "pt-pr-code.h"
 #include "quit.h"
 #include "sighandlers.h"
 #include "symtab.h"
@@ -554,7 +554,7 @@ namespace octave
   {
     bool retval = false;
 
-    h = octave::get_help_from_file (nm, symbol_found, file);
+    h = get_help_from_file (nm, symbol_found, file);
 
     if (h.length () > 0)
       retval = true;
@@ -582,7 +582,10 @@ namespace octave
 
     if (! initialized)
       {
-        std::ifstream file (m_built_in_docstrings_file.c_str (),
+        std::string ascii_fname
+          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+
+        std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);
 
         if (! file)
@@ -665,7 +668,10 @@ namespace octave
         std::streampos beg = txt_limits.first;
         std::streamoff len = txt_limits.second;
 
-        std::ifstream file (m_built_in_docstrings_file.c_str (),
+        std::string ascii_fname
+          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+
+        std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);
 
         if (! file)
@@ -693,8 +699,7 @@ namespace octave
 
   string_vector make_name_list (void)
   {
-    octave::help_system& help_sys
-      = octave::__get_help_system__ ("make_name_list");
+    help_system& help_sys = __get_help_system__ ("make_name_list");
 
     return help_sys.make_name_list ();
   }

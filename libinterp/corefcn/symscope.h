@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <deque>
-#include <limits>
 #include <list>
 #include <map>
 #include <memory>
@@ -66,8 +65,8 @@ namespace octave
 
     symbol_scope_rep (const std::string& name = "")
       : m_name (name), m_symbols (), m_subfunctions (), m_fcn (nullptr),
-        m_parent (), m_children (), m_is_nested (false),
-        m_is_static (false), m_context (0)
+        m_parent (), m_primary_parent (), m_children (),
+        m_nesting_depth (0), m_is_static (false), m_context (0)
     { }
 
     // No copying!
@@ -83,9 +82,15 @@ namespace octave
       m_symbols[sr.name ()] = sr;
     }
 
-    bool is_nested (void) const { return m_is_nested; }
+    void install_auto_fcn_vars (void);
 
-    void mark_nested (void) { m_is_nested = true; }
+    void install_auto_fcn_var (const std::string& name);
+
+    bool is_nested (void) const { return m_nesting_depth > 0; }
+
+    size_t nesting_depth (void) const { return m_nesting_depth; }
+
+    void set_nesting_depth (size_t depth) { m_nesting_depth = depth; }
 
     bool is_static (void) const { return m_is_static; }
 
@@ -94,6 +99,11 @@ namespace octave
     std::shared_ptr<symbol_scope_rep> parent_scope_rep (void) const
     {
       return m_parent.lock ();
+    }
+
+    std::shared_ptr<symbol_scope_rep> primary_parent_scope_rep (void) const
+    {
+      return m_primary_parent.lock ();
     }
 
     std::shared_ptr<symbol_scope_rep> dup (void) const
@@ -105,6 +115,7 @@ namespace octave
         new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
 
       new_sid->m_parent = m_parent;
+      new_sid->m_primary_parent = m_primary_parent;
 
       return new_sid;
     }
@@ -121,7 +132,7 @@ namespace octave
 
     symbol_record find_symbol (const std::string& name)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         return insert (name);
@@ -170,16 +181,14 @@ namespace octave
         }
     }
 
-    octave_value
-    find (const std::string& name, const octave_value_list& args,
-          bool skip_variables, bool local_funcs);
+    octave_value find (const std::string& name);
 
     symbol_record&
     insert (const std::string& name, bool force_add = false);
 
     void rename (const std::string& old_name, const std::string& new_name)
     {
-      table_iterator p = m_symbols.find (old_name);
+      auto p = m_symbols.find (old_name);
 
       if (p != m_symbols.end ())
         {
@@ -196,7 +205,7 @@ namespace octave
     void assign (const std::string& name, const octave_value& value,
                  bool force_add)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         {
@@ -216,7 +225,7 @@ namespace octave
 
     void force_assign (const std::string& name, const octave_value& value)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p == m_symbols.end ())
         {
@@ -260,7 +269,7 @@ namespace octave
 
     void pop_context (void)
     {
-      table_iterator tbl_it = m_symbols.begin ();
+      auto tbl_it = m_symbols.begin ();
 
       while (tbl_it != m_symbols.end ())
         {
@@ -303,11 +312,11 @@ namespace octave
 
     void clear_variable (const std::string& name)
     {
-      table_iterator p = m_symbols.find (name);
+      auto p = m_symbols.find (name);
 
       if (p != m_symbols.end ())
         p->second.clear (m_context);
-      else if (m_is_nested)
+      else if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -331,7 +340,7 @@ namespace octave
             }
         }
 
-      if (m_is_nested)
+      if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -355,7 +364,7 @@ namespace octave
             }
         }
 
-      if (m_is_nested)
+      if (is_nested ())
         {
           std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
 
@@ -544,6 +553,10 @@ namespace octave
 
     void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
 
+    void set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent);
+
+    bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
+
     void update_nest (void);
 
     bool look_nonlocal (const std::string& name, symbol_record& result);
@@ -582,13 +595,18 @@ namespace octave
 
     std::weak_ptr<symbol_scope_rep> m_parent;
 
+    //! Primary (top) parent of nested function (may be null).  Used
+    //! to determine whether two nested functions are related.
+
+    std::weak_ptr<symbol_scope_rep> m_primary_parent;
+
     //! Child nested functions.
 
     std::vector<symbol_scope> m_children;
 
     //! If true, then this scope belongs to a nested function.
 
-    bool m_is_nested;
+    size_t m_nesting_depth;
 
     //! If true then no variables can be added.
 
@@ -628,15 +646,26 @@ namespace octave
         m_rep->insert_symbol_record (sr);
     }
 
+    void install_auto_fcn_vars (void)
+    {
+      if (m_rep)
+        m_rep->install_auto_fcn_vars ();
+    }
+
     bool is_nested (void) const
     {
       return m_rep ? m_rep->is_nested () : false;
     }
 
-    void mark_nested (void)
+    void set_nesting_depth (size_t depth)
     {
       if (m_rep)
-        m_rep->mark_nested ();
+        m_rep->set_nesting_depth (depth);
+    }
+
+    size_t nesting_depth (void) const
+    {
+      return m_rep ? m_rep->nesting_depth () : 0;
     }
 
     bool is_static (void) const
@@ -653,6 +682,11 @@ namespace octave
     std::shared_ptr<symbol_scope_rep> parent_scope (void) const
     {
       return m_rep ? m_rep->parent_scope_rep () : nullptr;
+    }
+
+    std::shared_ptr<symbol_scope_rep> primary_parent_scope (void) const
+    {
+      return m_rep ? m_rep->primary_parent_scope_rep () : nullptr;
     }
 
     symbol_scope dup (void) const
@@ -682,13 +716,9 @@ namespace octave
         m_rep->inherit (donor_scope.get_rep ());
     }
 
-    octave_value
-    find (const std::string& name, const octave_value_list& args,
-          bool skip_variables, bool local_funcs)
+    octave_value find (const std::string& name)
     {
-      return (m_rep
-              ? m_rep->find (name, args, skip_variables, local_funcs)
-              : octave_value ());
+      return m_rep ? m_rep->find (name) : octave_value ();
     }
 
     symbol_record&
@@ -942,6 +972,17 @@ namespace octave
     {
       if (m_rep)
         m_rep->set_parent (p.get_rep ());
+    }
+
+    void set_primary_parent (const symbol_scope& p)
+    {
+      if (m_rep)
+        m_rep->set_primary_parent (p.get_rep ());
+    }
+
+    bool is_relative (const symbol_scope& scope) const
+    {
+      return m_rep ? m_rep->is_relative (scope.get_rep ()) : false;
     }
 
     void update_nest (void)

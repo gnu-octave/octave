@@ -220,7 +220,7 @@
 %!function f (x = @sin)
 %!  finfo = functions (x);
 %!  fname = finfo.function;
-%!  assert (isa (x, "function_handle") && strcmp (fname, "sin"));
+%!  assert (is_function_handle (x) && strcmp (fname, "sin"));
 %!endfunction
 %!test
 %! f()
@@ -229,7 +229,7 @@
 %!function f (x = @(x) x.^2)
 %!  finfo = functions (x);
 %!  ftype = finfo.type;
-%!  assert (isa (x, "function_handle") && strcmp (ftype, "anonymous"));
+%!  assert (is_function_handle (x) && strcmp (ftype, "anonymous"));
 %!endfunction
 %!test
 %! f()

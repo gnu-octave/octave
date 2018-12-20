@@ -55,6 +55,9 @@ public:
   virtual void redraw_figure (const graphics_object&) const
   { gripe_if_tkit_invalid ("redraw_figure"); }
 
+  virtual void show_figure (const graphics_object&) const
+  { gripe_if_tkit_invalid ("show_figure"); }
+
   virtual void print_figure (const graphics_object&, const std::string&,
                              const std::string&,
                              const std::string& = "") const
@@ -174,6 +177,9 @@ public:
 
   void redraw_figure (const graphics_object& go) const
   { rep->redraw_figure (go); }
+
+  void show_figure (const graphics_object& go) const
+  { rep->show_figure (go); }
 
   void print_figure (const graphics_object& go, const std::string& term,
                      const std::string& file,

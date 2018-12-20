@@ -29,3 +29,4 @@
 %! assert (in_name, "x");
 %! bug50035 ()
 %! assert (in_name, "ans");
+%! clear -global in_name;  # cleanup after test

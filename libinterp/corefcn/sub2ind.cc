@@ -131,7 +131,7 @@ ind = sub2ind ([3, 3], s1, s2)
           e.set_pos_if_unset (nargin-1, j+1);
           e.set_var ();
           std::string msg = e.message ();
-          error_with_id (e.err_id (), msg.c_str ());
+          error_with_id (e.err_id (), "%s", msg.c_str ());
         }
     }
 

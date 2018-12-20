@@ -23,7 +23,7 @@
 ##
 ## Create a uibuttongroup object and return a handle to it.
 ##
-## uibuttongroups are used to create group uicontrols.
+## A uibuttongroup is used to group uicontrol objects.
 ##
 ## If @var{parent} is omitted then a uibuttongroup for the current figure is
 ## created.  If no figure is available, a new figure is created first.
@@ -34,29 +34,34 @@
 ## Any provided property value pairs will override the default values of the
 ## created uibuttongroup object.
 ##
-## Uibuttongroup properties are documented at @ref{Uibuttongroup Properties}.
+## Properties of uibuttongroup objects are documented at
+## @ref{Uibuttongroup Properties}.
 ##
 ## Examples:
 ##
 ## @example
 ## @group
-## % create figure and panel on it
+## ## Create figure and panel on it
 ## f = figure;
-## % create a button group
+## ## Create a button group
 ## gp = uibuttongroup (f, "Position", [ 0 0.5 1 1])
-## % create a buttons in the group
+## ## Create a buttons in the group
 ## b1 = uicontrol (gp, "style", "radiobutton", ...
 ##                 "string", "Choice 1", ...
 ##                 "Position", [ 10 150 100 50 ]);
 ## b2 = uicontrol (gp, "style", "radiobutton", ...
 ##                 "string", "Choice 2", ...
 ##                 "Position", [ 10 50 100 30 ]);
-## % create a button not in the group
+## ## Create a button not in the group
 ## b3 = uicontrol (f, "style", "radiobutton", ...
 ##                 "string", "Not in the group", ...
 ##                 "Position", [ 10 50 100 50 ]);
 ## @end group
 ## @end example
+##
+## When called with a single argument @var{h} which is a handle to an existing
+## uibuttongroup object, switch the focus to the specified uibuttongroup.  This
+## functionality is not currently implemented.
 ## @seealso{figure, uipanel}
 ## @end deftypefn
 
@@ -65,7 +70,8 @@
 function hui = uibuttongroup (varargin)
 
   if (nargin == 1 && isgraphics (varargin{1}, "uibuttongroup"))
-    error ("uibuttongroup: focusing not implemented yet");
+    warning ("uibuttongroup: focusing not implemented yet");
+    return;
   endif
 
   [h, args] = __uiobject_split_args__ ("uibuttongroup", varargin,
@@ -73,6 +79,7 @@ function hui = uibuttongroup (varargin)
   hui = __go_uibuttongroup__ (h, args{:});
 
 endfunction
+
 
 %!demo
 %! f = figure;

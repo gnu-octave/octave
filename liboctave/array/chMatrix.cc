@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstring>
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 #include "lo-error.h"

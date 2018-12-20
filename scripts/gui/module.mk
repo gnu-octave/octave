@@ -22,6 +22,7 @@ FCN_FILE_DIRS += \
   %reldir%/inputdlg.m \
   %reldir%/isappdata.m \
   %reldir%/listdlg.m \
+  %reldir%/movegui.m \
   %reldir%/msgbox.m \
   %reldir%/questdlg.m \
   %reldir%/rmappdata.m \
@@ -36,6 +37,7 @@ FCN_FILE_DIRS += \
   %reldir%/uipushtool.m \
   %reldir%/uiputfile.m \
   %reldir%/uiresume.m \
+  %reldir%/uitable.m \
   %reldir%/uitoggletool.m \
   %reldir%/uitoolbar.m \
   %reldir%/uiwait.m \

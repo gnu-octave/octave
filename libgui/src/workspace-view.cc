@@ -39,18 +39,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCompleter>
 #include <QSignalMapper>
 
+#include "gui-preferences.h"
 #include "workspace-view.h"
 #include "resource-manager.h"
 
 #include "interpreter-private.h"
-#include "symscope.h"
+#include "syminfo.h"
 
 namespace octave
 {
   workspace_view::workspace_view (QWidget *p)
-    : octave_dock_widget (p), m_view (new QTableView (this))
+    : octave_dock_widget ("WorkspaceView", p), m_view (new QTableView (this))
   {
-    setObjectName ("WorkspaceView");
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));
@@ -193,7 +193,8 @@ namespace octave
 
     QString tool_tip;
 
-    if (! settings->value ("workspaceview/hide_tool_tips",false).toBool ())
+    if (settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ()
+        && ! settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ())
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));
@@ -254,13 +255,6 @@ namespace octave
 
     if (m_sig_mapper)
       delete m_sig_mapper;
-  }
-
-  void
-  workspace_view::closeEvent (QCloseEvent *e)
-  {
-    emit active_changed (false);
-    QDockWidget::closeEvent (e);
   }
 
   void
@@ -469,11 +463,9 @@ namespace octave
       {
         QString var_name = get_var_name (index);
 
-        symbol_scope scope = m_model->scope ();
+        symbol_info_list syminfo = m_model->get_symbol_info ();
 
-        octave_value val;
-        if (scope)
-          val = scope.varval (var_name.toStdString ());
+        octave_value val = syminfo.varval (var_name.toStdString ());
 
         emit edit_variable_signal (var_name, val);
       }

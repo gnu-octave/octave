@@ -754,7 +754,7 @@ namespace octave
 
     const jit_operation& do_binary_op (int op) const
     {
-      assert (static_cast<size_t>(op) < m_binary_ops.size ());
+      assert (static_cast<size_t> (op) < m_binary_ops.size ());
       return m_binary_ops[op];
     }
 

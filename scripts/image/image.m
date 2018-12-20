@@ -105,6 +105,10 @@ function h = image (varargin)
     chararg = 4;
   endif
 
+  if (iscomplex (img))
+    error ("image: IMG data can not be complex");
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -186,9 +190,8 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
       if (ndims (img) == 3)
         if (isinteger (img))
-          cls = class (img);
-          mn = intmin (cls);
-          mx = intmax (cls);
+          mn = intmin (img);
+          mx = intmax (img);
           set (hax, "clim", double ([mn, mx]));
         endif
       endif
@@ -259,3 +262,5 @@ endfunction
 %! end_unwind_protect
 
 ## FIXME: Need %!tests for linear
+
+%!error <IMG data can not be complex> image ([1, i])

@@ -888,8 +888,4 @@ make_idx_args (const std::string& type,
                const std::list<octave_value_list>& idx,
                const std::string& who);
 
-// Tells whether some regular octave_value_base methods are being called from
-// within the "builtin" function.
-extern OCTINTERP_API bool called_from_builtin (void);
-
 #endif

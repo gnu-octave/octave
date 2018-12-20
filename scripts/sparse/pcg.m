@@ -551,10 +551,10 @@ endfunction
 %!test
 %! ## solve tridiagonal system, do not converge in default 20 iterations
 %! N = 100;
-%! A = zeros (N, N);
-%! for i = 1 : N - 1  # form 1-D Laplacian matrix
-%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
-%! endfor
+%! ## Form 1-D Laplacian matrix
+%! A = 2 * eye (N,N);
+%! A(2:(N+1):end) = -1;
+%! A((N+1):(N+1):end) = -1;
 %! b = ones (N, 1);
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, 1e-12);
 %! assert (flag);
@@ -564,10 +564,10 @@ endfunction
 %! ## solve tridiagonal system with "perfect" preconditioner which converges
 %! ## in one iteration, so the eigest does not work and issues a warning.
 %! N = 100;
-%! A = zeros (N, N);
-%! for i = 1 : N - 1  # form 1-D Laplacian matrix
-%!   A(i:i+1, i:i+1) = [2 -1; -1 2];
-%! endfor
+%! ## Form 1-D Laplacian matrix
+%! A = 2 * eye (N,N);
+%! A(2:(N+1):end) = -1;
+%! A((N+1):(N+1):end) = -1;
 %! b = ones (N, 1);
 %! [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
 %! assert (flag, 0);

@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iomanip>
+
 #include "oct-stream.h"
 #include "c-file-ptr-stream.h"
 

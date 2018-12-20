@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <complex>
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "quit.h"
 #include "lo-ieee.h"
@@ -6045,14 +6046,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type>(X->nrow),
-                        static_cast<octave_idx_type>(X->ncol),
-                        static_cast<octave_idx_type>(X->nzmax));
+                       (static_cast<octave_idx_type> (X->nrow),
+                        static_cast<octave_idx_type> (X->ncol),
+                        static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
@@ -6579,14 +6580,14 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type>(X->nrow),
-                        static_cast<octave_idx_type>(X->ncol),
-                        static_cast<octave_idx_type>(X->nzmax));
+                       (static_cast<octave_idx_type> (X->nrow),
+                        static_cast<octave_idx_type> (X->ncol),
+                        static_cast<octave_idx_type> (X->nzmax));
               for (octave_idx_type j = 0;
-                   j <= static_cast<octave_idx_type>(X->ncol); j++)
+                   j <= static_cast<octave_idx_type> (X->ncol); j++)
                 retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
               for (octave_idx_type j = 0;
-                   j < static_cast<octave_idx_type>(X->nzmax); j++)
+                   j < static_cast<octave_idx_type> (X->nzmax); j++)
                 {
                   retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
                   retval.xdata (j) = static_cast<Complex *>(X->x)[j];
@@ -7525,61 +7526,61 @@ operator * (const SparseComplexMatrix& m, const SparseComplexMatrix& a)
 ComplexMatrix
 operator * (const ComplexMatrix& m, const SparseMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, double, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, double);
 }
 
 ComplexMatrix
 operator * (const Matrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 operator * (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  FULL_SPARSE_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 mul_trans (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), );
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, );
 }
 
 ComplexMatrix
 mul_herm (const ComplexMatrix& m, const SparseComplexMatrix& a)
 {
-  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), conj);
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, conj);
 }
 
 ComplexMatrix
 operator * (const SparseComplexMatrix& m, const Matrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, double, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, double);
 }
 
 ComplexMatrix
 operator * (const SparseMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 operator * (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+  SPARSE_FULL_MUL (ComplexMatrix, Complex);
 }
 
 ComplexMatrix
 trans_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), );
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, );
 }
 
 ComplexMatrix
 herm_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
-  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), conj);
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, conj);
 }
 
 // diag * sparse and sparse * diag
@@ -7932,14 +7933,11 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
   return r;
 }
 
-SPARSE_SMS_CMP_OPS (SparseComplexMatrix, 0.0, real, Complex,
-                    0.0, real)
-SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex, 0.0)
+SPARSE_SMS_CMP_OPS (SparseComplexMatrix, Complex)
+SPARSE_SMS_BOOL_OPS (SparseComplexMatrix, Complex)
 
-SPARSE_SSM_CMP_OPS (Complex, 0.0, real, SparseComplexMatrix,
-                    0.0, real)
-SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix, 0.0)
+SPARSE_SSM_CMP_OPS (Complex, SparseComplexMatrix)
+SPARSE_SSM_BOOL_OPS (Complex, SparseComplexMatrix)
 
-SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, 0.0, real, SparseComplexMatrix,
-                     0.0, real)
-SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix, 0.0)
+SPARSE_SMSM_CMP_OPS (SparseComplexMatrix, SparseComplexMatrix)
+SPARSE_SMSM_BOOL_OPS (SparseComplexMatrix, SparseComplexMatrix)

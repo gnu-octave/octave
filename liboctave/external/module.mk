@@ -14,7 +14,6 @@ include %reldir%/daspk/module.mk
 include %reldir%/dasrt/module.mk
 include %reldir%/dassl/module.mk
 include %reldir%/Faddeeva/module.mk
-include %reldir%/fftpack/module.mk
 include %reldir%/lapack-xtra/module.mk
 include %reldir%/odepack/module.mk
 include %reldir%/quadpack/module.mk
@@ -37,10 +36,6 @@ noinst_LTLIBRARIES += %reldir%/libexternal.la
 %canon_reldir%_libexternal_la_SOURCES = $(EXTERNAL_SOURCES)
 
 %canon_reldir%_libexternal_la_CPPFLAGS = $(liboctave_liboctave_la_CPPFLAGS)
-
-%canon_reldir%_libexternal_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libexternal_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += %reldir%/libexternal.la
 

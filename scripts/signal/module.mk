@@ -9,6 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/triangle_sw.m
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/__parse_movargs__.m \
   %reldir%/arch_fit.m \
   %reldir%/arch_rnd.m \
   %reldir%/arch_test.m \
@@ -30,6 +31,8 @@ FCN_FILE_DIRS += \
   %reldir%/hanning.m \
   %reldir%/hurst.m \
   %reldir%/ifftshift.m \
+  %reldir%/movfun.m \
+  %reldir%/movslice.m \
   %reldir%/periodogram.m \
   %reldir%/sinc.m \
   %reldir%/sinetone.m \

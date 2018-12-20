@@ -21,3 +21,4 @@
 %! global gval
 %! gval = 42;
 %! assert (sggval (), 42);
+%! clear -global gval;  # cleanup after test

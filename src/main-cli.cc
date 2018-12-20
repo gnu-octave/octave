@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "signal-wrappers.h"
 
-#include "defaults.h"
 #include "octave.h"
 #include "octave-build-info.h"
 #include "sysdep.h"

@@ -37,10 +37,17 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    FigureWindow (QWidget *parent = nullptr);
+    explicit FigureWindow (QWidget *parent = nullptr);
     ~FigureWindow (void);
 
     QMenu * createPopupMenu (void);
+
+  protected:
+    void showEvent(QShowEvent *ev);
+
+  signals:
+    void figureWindowShown();
+
   };
 
 }

@@ -102,6 +102,9 @@
 ## pkg update
 ## @end example
 ##
+## @noindent
+## To update a single package use @code{pkg install -forge}
+##
 ## @item uninstall
 ## Uninstall named packages.  For example,
 ##
@@ -309,10 +312,10 @@ function [local_packages, global_packages] = pkg (varargin)
 
   confirm_recursive_rmdir (false, "local");
 
-  available_actions = {"list", "install", "uninstall", "load", ...
-                       "unload", "prefix", "local_list", ...
-                       "global_list", "rebuild", "build", ...
-                       "describe", "update"};
+  # valid actions in alphabetical order
+  available_actions = {"build", "describe", "global_list",  "install", ...
+                       "list", "load", "local_list", "prefix", "rebuild", ...
+                       "uninstall", "unload", "update"};
 
   ## Parse input arguments
   if (isempty (varargin) || ! iscellstr (varargin))
@@ -471,25 +474,10 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = archprefix;
       elseif (numel (files) >= 1 && ischar (files{1}))
         prefix = tilde_expand (files{1});
-        if (! exist (prefix, "dir"))
-          [status, msg] = mkdir (prefix);
-          if (status == 0)
-            error ("pkg: cannot create prefix %s: %s", prefix, msg);
-          endif
-          warning ("pkg: creating the directory %s\n", prefix);
-        endif
-        local_packages = prefix = canonicalize_file_name (prefix);
+        local_packages = prefix = make_absolute_filename (prefix);
         user_prefix = true;
         if (numel (files) >= 2 && ischar (files{2}))
-          archprefix = tilde_expand (files{2});
-          if (! exist (archprefix, "dir"))
-            [status, msg] = mkdir (archprefix);
-            if (status == 0)
-              error ("pkg: cannot create archprefix %s: %s", archprefix, msg);
-            endif
-            warning ("pkg: creating the directory %s\n", archprefix);
-            global_packages = archprefix = canonicalize_file_name (archprefix);
-          endif
+          archprefix = make_absolute_filename (tilde_expand (files{2}));
         endif
       else
         error ("pkg: prefix action requires a directory input, or an output argument");
@@ -571,19 +559,24 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "update"
       installed_pkgs_lst = installed_packages (local_list, global_list);
+
+      ## Explicit list of packages to update, rather than all packages
       if (numel (files) > 0)
-         update_lst = {};
-         installed_names = {installed_pkgs_lst.name}';
-         for i = 1:numel (files)
-           idx = find (strcmp (files{i}, installed_names), 1);
-           if (isempty (idx))
-             warning ("pkg: package %s is not installed - skipping update", files{i});
-           else
-             update_lst = { update_lst, installed_pkgs_lst{idx} };
-           endif
-         endfor
-         installed_pkgs_lst = update_lst;
+        update_lst = {};
+        installed_names = cellfun (@(idx) idx.name, installed_pkgs_lst,
+                                   "UniformOutput", false);
+        for i = 1:numel (files)
+          idx = find (strcmp (files{i}, installed_names), 1);
+          if (isempty (idx))
+            warning ("pkg: package %s is not installed - skipping update",
+                     files{i});
+          else
+            update_lst = [ update_lst, installed_pkgs_lst(idx) ];
+          endif
+        endfor
+        installed_pkgs_lst = update_lst;
       endif
+
       for i = 1:numel (installed_pkgs_lst)
         installed_pkg_name = installed_pkgs_lst{i}.name;
         installed_pkg_version = installed_pkgs_lst{i}.version;

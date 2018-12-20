@@ -59,7 +59,7 @@ function run (script)
   endif
 
   if (! isempty (d))
-    if (! exist (d, "dir"))
+    if (! isfolder (d))
       error ("run: the path %s doesn't exist", d);
     endif
 

@@ -55,12 +55,6 @@
 
 function retval = ls (varargin)
 
-  global __ls_command__;
-
-  if (isempty (__ls_command__) || ! ischar (__ls_command__))
-    ls_command ();  # Initialize global value for __ls_command__.
-  endif
-
   if (! iscellstr (varargin))
     error ("ls: all arguments must be character strings");
   endif
@@ -90,7 +84,7 @@ function retval = ls (varargin)
     args = ["-1 ", args];
   endif
 
-  cmd = [__ls_command__ " " args];
+  cmd = [ls_command() " " args];
 
   if (page_screen_output () || nargout > 0)
     [status, output] = system (cmd);

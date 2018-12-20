@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-bp.h"
 #include "pt-cmd.h"
+#include "pt-eval.h"
 #include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-jump.h"
@@ -89,10 +90,17 @@ namespace octave
   }
 
   bool
-  tree_statement::is_breakpoint (bool check_active) const
+  tree_statement::is_breakpoint (void) const
   {
-    return m_command ? m_command->is_breakpoint (check_active)
-      : (m_expression ? m_expression->is_breakpoint (check_active) : false);
+    return m_command ? m_command->is_breakpoint ()
+      : (m_expression ? m_expression->is_breakpoint () : false);
+  }
+
+  bool
+  tree_statement::is_active_breakpoint (tree_evaluator& tw) const
+  {
+    return m_command ? m_command->is_active_breakpoint (tw)
+      : (m_expression ? m_expression->is_active_breakpoint (tw) : false);
   }
 
   std::string

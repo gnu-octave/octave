@@ -10,7 +10,6 @@ UTIL_INC = \
   %reldir%/functor.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
-  %reldir%/lo-array-gripes.h \
   %reldir%/lo-cutils.h \
   %reldir%/lo-hash.h \
   %reldir%/lo-ieee.h \
@@ -70,7 +69,6 @@ UTIL_SRC = \
   %reldir%/glob-match.cc \
   %reldir%/kpse.cc \
   %reldir%/lo-array-errwarn.cc \
-  %reldir%/lo-array-gripes.cc \
   %reldir%/lo-hash.cc \
   %reldir%/lo-ieee.cc \
   %reldir%/lo-regexp.cc \
@@ -109,10 +107,6 @@ noinst_LTLIBRARIES += %reldir%/libutil.la
   $(CURL_CPPFLAGS) \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
-
-%canon_reldir%_libutil_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libutil_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 %canon_reldir%_libutil_la_FFLAGS = $(F77_INTEGER_8_FLAG)
 

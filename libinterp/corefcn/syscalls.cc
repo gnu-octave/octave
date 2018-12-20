@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
-
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -52,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
+#include "octave-link.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
@@ -141,8 +141,8 @@ error message.
     return ovl (-1, "");
 }
 
-DEFUNX ("exec", Fexec, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("exec", Fexec, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})
 Replace current process with a new process.
 
@@ -191,7 +191,9 @@ error message.
       exec_args[0] = exec_file;
     }
 
-  octave_history_write_timestamp ();
+  octave::history_system& history_sys = interp.get_history_system ();
+
+  history_sys.write_timestamp ();
 
   if (! octave::command_history::ignoring_entries ())
     octave::command_history::clean_up_and_save ();
@@ -288,7 +290,7 @@ exit status, it will linger until Octave exits.
   pid = octave::sys::popen2 (exec_file, arg_list, sync_mode, filedesc, msg);
 
   if (pid < 0)
-    error (msg.c_str ());
+    error ("%s", msg.c_str ());
 
   FILE *ifile = fdopen (filedesc[1], "r");
   FILE *ofile = fdopen (filedesc[0], "w");
@@ -852,7 +854,7 @@ For example:
   @result{} err = 0
   @result{} msg =
 @end example
-@seealso{lstat, ls, dir}
+@seealso{lstat, ls, dir, isfile, isfolder}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1088,7 +1090,11 @@ error message.
 
   std::string msg;
 
+  octave_link::file_remove (name, "");
+
   int status = octave::sys::unlink (name, msg);
+
+  octave_link::file_renamed (status == 0);
 
   return ovl (status, msg);
 }

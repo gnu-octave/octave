@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-
 #include "gl-select.h"
 
 namespace octave
@@ -35,15 +33,28 @@ namespace octave
   opengl_selector::apply_pick_matrix (void)
   {
     GLdouble p_matrix[16];
-    GLint viewport[4];
 
-    glGetDoublev (GL_PROJECTION_MATRIX, p_matrix);
-    glGetIntegerv (GL_VIEWPORT, viewport);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPickMatrix (xp, yp, size, size, viewport);
-    glMultMatrixd (p_matrix);
-    glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glGetDoublev (GL_PROJECTION_MATRIX, p_matrix);
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glLoadIdentity ();
+
+    // The following block is equivalent to gluPickMatrix, but we avoid
+    // using glu functions so that we can call OpenGL functions through
+    // the QOpenGLFunctions class so that the OpenGL implementation may
+    // be selected dynamically.
+
+    Matrix viewport = get_viewport_scaled ();
+
+    if (size > 0)
+      {
+        m_glfcns.glTranslatef ((viewport(2) - 2 * (xp - viewport(0))) / size,
+                               (viewport(3) - 2 * (yp - viewport(1))) / size, 0);
+
+        m_glfcns.glScalef (viewport(2) / size, viewport(3) / size, 1.0);
+      }
+
+    m_glfcns.glMultMatrixd (p_matrix);
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
   }
 
   void
@@ -65,23 +76,23 @@ namespace octave
   graphics_object
   opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
   {
-    glEnable (GL_DEPTH_TEST);
-    glDepthFunc (GL_LEQUAL);
+    m_glfcns.glEnable (GL_DEPTH_TEST);
+    m_glfcns.glDepthFunc (GL_LEQUAL);
 
     xp = x;
     yp = y;
 
     GLuint select_buffer[BUFFER_SIZE];
 
-    glSelectBuffer (BUFFER_SIZE, select_buffer);
-    glRenderMode (GL_SELECT);
-    glInitNames ();
+    m_glfcns.glSelectBuffer (BUFFER_SIZE, select_buffer);
+    m_glfcns.glRenderMode (GL_SELECT);
+    m_glfcns.glInitNames ();
 
     object_map.clear ();
 
     draw (ax);
 
-    int hits = glRenderMode (GL_RENDER);
+    int hits = m_glfcns.glRenderMode (GL_RENDER);
     graphics_object obj;
 
     if (hits > 0)
@@ -139,11 +150,11 @@ namespace octave
     GLuint name = object_map.size ();
 
     object_map[name] = go;
-    glPushName (name);
+    m_glfcns.glPushName (name);
     set_selecting (true);
     opengl_renderer::draw (go, toplevel);
     set_selecting (false);
-    glPopName ();
+    m_glfcns.glPopName ();
   }
 
   void
@@ -167,12 +178,12 @@ namespace octave
     p3 = get_transform ().untransform (xp2(0), xp2(1), xp1(2), false);
     p4 = get_transform ().untransform (xp1(0), xp2(1), xp1(2), false);
 
-    glBegin (GL_QUADS);
-    glVertex3dv (p1.data ());
-    glVertex3dv (p2.data ());
-    glVertex3dv (p3.data ());
-    glVertex3dv (p4.data ());
-    glEnd ();
+    m_glfcns.glBegin (GL_QUADS);
+    m_glfcns.glVertex3dv (p1.data ());
+    m_glfcns.glVertex3dv (p2.data ());
+    m_glfcns.glVertex3dv (p3.data ());
+    m_glfcns.glVertex3dv (p4.data ());
+    m_glfcns.glEnd ();
   }
 
   void
@@ -227,12 +238,12 @@ namespace octave
     p4(0) = xd(0) - x_pix_size/2;
     p4(1) = yd(1) + y_pix_size/2;
 
-    glBegin (GL_QUADS);
-    glVertex3dv (p1.data ());
-    glVertex3dv (p2.data ());
-    glVertex3dv (p3.data ());
-    glVertex3dv (p4.data ());
-    glEnd ();
+    m_glfcns.glBegin (GL_QUADS);
+    m_glfcns.glVertex3dv (p1.data ());
+    m_glfcns.glVertex3dv (p2.data ());
+    m_glfcns.glVertex3dv (p3.data ());
+    m_glfcns.glVertex3dv (p4.data ());
+    m_glfcns.glEnd ();
   }
 
 }

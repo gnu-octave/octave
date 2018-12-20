@@ -47,6 +47,7 @@ See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, @ref{XREFisinf,,isinf},
 
 @menu
 * Descriptive Statistics::
+* Statistics on Sliding Windows of Data::
 * Basic Statistical Functions::
 * Correlation and Regression Analysis::
 * Distributions::
@@ -106,6 +107,36 @@ A summary view of a data set can be generated quickly with the
 @code{statistics} function.
 
 @DOCSTRING(statistics)
+
+@node Statistics on Sliding Windows of Data
+@section Statistics on Sliding Windows of Data
+
+It is often useful to calculate descriptive statistics over a subsection (i.e., window) of a full dataset.  Octave provides the function @code{movfun} which
+will call an arbitrary function handle with windows of data and accumulate
+the results.  Many of the most commonly desired functions, such as the moving
+average over a window of data (@code{movmean}), are already provided.
+
+@DOCSTRING(movfun)
+
+@DOCSTRING(movslice)
+
+@DOCSTRING(movmad)
+
+@DOCSTRING(movmax)
+
+@DOCSTRING(movmean)
+
+@DOCSTRING(movmedian)
+
+@DOCSTRING(movmin)
+
+@DOCSTRING(movprod)
+
+@DOCSTRING(movstd)
+
+@DOCSTRING(movsum)
+
+@DOCSTRING(movvar)
 
 @node Basic Statistical Functions
 @section Basic Statistical Functions

@@ -177,6 +177,9 @@
 %!    endfor
 %!  endif
 %!
+%!  ## Cleanup after test
+%!  clear -global a1;
+%!
 %!  ret = 1;
 %!endfunction
 
@@ -190,6 +193,7 @@
 %! endfor
 %!
 %! assert (save_status && load_status);
+%! clear -global a1;  # cleanup after test
 
 %!testif HAVE_HDF5
 %!

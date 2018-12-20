@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <deque>
-#include <limits>
 #include <list>
 #include <set>
 #include <stack>
@@ -41,7 +40,7 @@ namespace octave
   class interpreter;
 
   // Is the given string a keyword?
-  extern bool is_keyword (const std::string& s);
+  extern bool iskeyword (const std::string& s);
 
   // For communication between the lexer and parser.
 
@@ -581,7 +580,7 @@ namespace octave
       comment_list *m_comment_list;
     };
 
-    base_lexer (interpreter *interp = nullptr)
+    base_lexer (interpreter& interp)
       : lexical_feedback (), m_scanner (nullptr), m_input_buf (),
         m_comment_buf (), m_interpreter (interp)
     {
@@ -676,6 +675,12 @@ namespace octave
 
     void fatal_error (const char *msg);
 
+    bool debug_flag (void) const;
+
+    bool display_tokens (void) const;
+
+    void increment_token_count (void);
+
     void lexer_debug (const char *pattern);
 
     // Internal state of the flex-generated lexer.
@@ -688,7 +693,7 @@ namespace octave
     comment_buffer m_comment_buf;
 
     // Interpreter that contains us, if any.
-    interpreter *m_interpreter;
+    interpreter& m_interpreter;
 
     virtual void increment_promptflag (void) = 0;
 
@@ -705,6 +710,8 @@ namespace octave
     virtual bool input_from_file (void) const { return false; }
 
     virtual bool input_from_eval_string (void) const { return false; }
+
+    bool input_from_tmp_history_file (void);
 
     void push_start_state (int state);
 
@@ -755,15 +762,15 @@ namespace octave
   {
   public:
 
-    lexer (interpreter *interp = nullptr)
+    lexer (interpreter& interp)
       : base_lexer (interp), m_reader (this)
     { }
 
-    lexer (FILE *file, interpreter *interp = nullptr)
+    lexer (FILE *file, interpreter& interp)
       : base_lexer (interp), m_reader (file, this)
     { }
 
-    lexer (const std::string& eval_string, interpreter *interp = nullptr)
+    lexer (const std::string& eval_string, interpreter& interp)
       : base_lexer (interp), m_reader (eval_string, this)
     { }
 
@@ -818,26 +825,25 @@ namespace octave
   {
   public:
 
-    push_lexer (interpreter *interp = nullptr)
+    push_lexer (interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input ("", false);
     }
 
-    push_lexer (const std::string& input, interpreter *interp = nullptr)
+    push_lexer (const std::string& input, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input (input, false);
     }
 
-    push_lexer (bool eof, interpreter *interp = nullptr)
+    push_lexer (bool eof, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input ("", eof);
     }
 
-    push_lexer (const std::string& input, bool eof,
-                interpreter *interp = nullptr)
+    push_lexer (const std::string& input, bool eof, interpreter& interp)
       : base_lexer (interp), m_pflag (1)
     {
       append_input (input, eof);

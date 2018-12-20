@@ -160,7 +160,7 @@ function t = isequaln (x, varargin)
           idx += 1;
         endwhile
 
-      elseif (isa (x, "function_handle"))
+      elseif (is_function_handle (x))
         ## function type.  Use '==' operator which is overloaded.
         t = (x == y);
 
@@ -275,7 +275,7 @@ function t = isequaln (x, varargin)
           idx += 1;
         endwhile
 
-      elseif (isa (x, "function_handle"))
+      elseif (is_function_handle (x))
         ## function type.  Use '==' operator which is overloaded.
         t = all (cellfun ("eq", {x}, varargin));
 

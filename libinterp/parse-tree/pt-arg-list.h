@@ -67,14 +67,28 @@ namespace octave
 
     ~tree_argument_list (void);
 
+    // FIXME: This does not recursively check elements of the list
+    // that are also index expressions.
     bool has_magic_end (void) const;
 
+    bool includes_magic_end (void) const
+    {
+      return m_list_includes_magic_end;
+    }
+
     bool has_magic_tilde (void) const
-    { return m_list_includes_magic_tilde; }
+    {
+      return m_list_includes_magic_tilde;
+    }
+
+    bool includes_magic_tilde (void) const
+    {
+      return m_list_includes_magic_tilde;
+    }
 
     tree_expression * remove_front (void)
     {
-      iterator p = begin ();
+      auto p = begin ();
       tree_expression *retval = *p;
       erase (p);
       return retval;
@@ -89,10 +103,6 @@ namespace octave
     bool all_elements_are_constant (void) const;
 
     bool is_valid_lvalue_list (void) const;
-
-    octave_value_list
-    convert_to_const_vector (tree_evaluator *tw,
-                             const octave_value *object = nullptr);
 
     string_vector get_arg_names (void) const;
 

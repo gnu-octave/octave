@@ -36,247 +36,262 @@ along with Octave; see the file COPYING.  If not, see
 
 //class dim_vector;
 
-class
-OCTAVE_API
-octave_rand
+namespace octave
 {
-protected:
-
-  octave_rand (void);
-
-public:
-
-  ~octave_rand (void) = default;
-
-  static bool instance_ok (void);
-
-  // Return the current seed.
-  static double seed (void)
+  class OCTAVE_API rand
   {
-    return instance_ok () ? instance->do_seed ()
-                          : octave::numeric_limits<double>::NaN ();
-  }
+  protected:
 
-  // Set the seed.
-  static void seed (double s)
-  {
-    if (instance_ok ())
-      instance->do_seed (s);
-  }
+    rand (void);
 
-  // Reset the seed.
-  static void reset (void)
-  {
-    if (instance_ok ())
-      instance->do_reset ();
-  }
+  public:
 
-  // Return the current state.
-  static uint32NDArray state (const std::string& d = "")
-  {
-    return instance_ok () ? instance->do_state (d) : uint32NDArray ();
-  }
+    ~rand (void) = default;
 
-  // Set the current state/
-  static void state (const uint32NDArray& s,
-                     const std::string& d = "")
-  {
-    if (instance_ok ())
-      instance->do_state (s, d);
-  }
+    static bool instance_ok (void);
 
-  // Reset the current state/
-  static void reset (const std::string& d)
-  {
-    if (instance_ok ())
-      instance->do_reset (d);
-  }
+    // Return the current seed.
+    static double seed (void)
+    {
+      return instance_ok () ? instance->do_seed ()
+        : octave::numeric_limits<double>::NaN ();
+    }
 
-  // Return the current distribution.
-  static std::string distribution (void)
-  {
-    return instance_ok () ? instance->do_distribution () : "";
-  }
+    // Set the seed.
+    static void seed (double s)
+    {
+      if (instance_ok ())
+        instance->do_seed (s);
+    }
 
-  // Set the current distribution.  May be either "uniform" (the
-  // default), "normal", "exponential", "poisson", or "gamma".
-  static void distribution (const std::string& d)
-  {
-    if (instance_ok ())
-      instance->do_distribution (d);
-  }
+    // Reset the seed.
+    static void reset (void)
+    {
+      if (instance_ok ())
+        instance->do_reset ();
+    }
 
-  static void uniform_distribution (void)
-  {
-    if (instance_ok ())
-      instance->do_uniform_distribution ();
-  }
+    // Return the current state.
+    static uint32NDArray state (const std::string& d = "")
+    {
+      return instance_ok () ? instance->do_state (d) : uint32NDArray ();
+    }
 
-  static void normal_distribution (void)
-  {
-    if (instance_ok ())
-      instance->do_normal_distribution ();
-  }
+    // Set the current state/
+    static void state (const uint32NDArray& s,
+                       const std::string& d = "")
+    {
+      if (instance_ok ())
+        instance->do_state (s, d);
+    }
 
-  static void exponential_distribution (void)
-  {
-    if (instance_ok ())
-      instance->do_exponential_distribution ();
-  }
+    // Reset the current state/
+    static void reset (const std::string& d)
+    {
+      if (instance_ok ())
+        instance->do_reset (d);
+    }
 
-  static void poisson_distribution (void)
-  {
-    if (instance_ok ())
-      instance->do_poisson_distribution ();
-  }
+    // Return the current distribution.
+    static std::string distribution (void)
+    {
+      return instance_ok () ? instance->do_distribution () : "";
+    }
 
-  static void gamma_distribution (void)
-  {
-    if (instance_ok ())
-      instance->do_gamma_distribution ();
-  }
+    // Set the current distribution.  May be either "uniform" (the
+    // default), "normal", "exponential", "poisson", or "gamma".
+    static void distribution (const std::string& d)
+    {
+      if (instance_ok ())
+        instance->do_distribution (d);
+    }
 
-  // Return the next number from the sequence.
-  static double scalar (double a = 1.0)
-  {
-    return instance_ok () ? instance->do_scalar (a)
-                          : octave::numeric_limits<double>::NaN ();
-  }
+    static void uniform_distribution (void)
+    {
+      if (instance_ok ())
+        instance->do_uniform_distribution ();
+    }
 
-  // Return the next number from the sequence.
-  static float float_scalar (float a = 1.0)
-  {
-    return instance_ok () ? instance->do_float_scalar (a)
-                          : octave::numeric_limits<float>::NaN ();
-  }
+    static void normal_distribution (void)
+    {
+      if (instance_ok ())
+        instance->do_normal_distribution ();
+    }
 
-  // Return an array of numbers from the sequence.
-  static Array<double> vector (octave_idx_type n, double a = 1.0)
-  {
-    return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
-  }
+    static void exponential_distribution (void)
+    {
+      if (instance_ok ())
+        instance->do_exponential_distribution ();
+    }
 
-  // Return an array of numbers from the sequence.
-  static Array<float> float_vector (octave_idx_type n, float a = 1.0)
-  {
-    return instance_ok () ? instance->do_float_vector (n, a) : Array<float> ();
-  }
+    static void poisson_distribution (void)
+    {
+      if (instance_ok ())
+        instance->do_poisson_distribution ();
+    }
 
-  // Return an N-dimensional array of numbers from the sequence,
-  // filled in column major order.
-  static NDArray nd_array (const dim_vector& dims, double a = 1.0)
-  {
-    return instance_ok () ? instance->do_nd_array (dims, a) : NDArray ();
-  }
+    static void gamma_distribution (void)
+    {
+      if (instance_ok ())
+        instance->do_gamma_distribution ();
+    }
 
-  // Return an N-dimensional array of numbers from the sequence,
-  // filled in column major order.
-  static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
-  {
-    return instance_ok () ? instance->do_float_nd_array (dims, a)
-                          : FloatNDArray ();
-  }
+    // Return the next number from the sequence.
+    static double scalar (double a = 1.0)
+    {
+      return instance_ok () ? instance->do_scalar (a)
+        : octave::numeric_limits<double>::NaN ();
+    }
 
-private:
+    // Return the next number from the sequence.
+    static float float_scalar (float a = 1.0)
+    {
+      return instance_ok () ? instance->do_scalar (a)
+        : octave::numeric_limits<float>::NaN ();
+    }
 
-  static octave_rand *instance;
+    // Return an array of numbers from the sequence.
+    static Array<double> vector (octave_idx_type n, double a = 1.0)
+    {
+      return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
+    }
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    // Return an array of numbers from the sequence.
+    static Array<float> float_vector (octave_idx_type n, float a = 1.0)
+    {
+      return instance_ok () ? instance->do_vector (n, a) : Array<float> ();
+    }
 
-  enum
-  {
-    unknown_dist,
-    uniform_dist,
-    normal_dist,
-    expon_dist,
-    poisson_dist,
-    gamma_dist
+    // Return an N-dimensional array of numbers from the sequence,
+    // filled in column major order.
+    static NDArray nd_array (const dim_vector& dims, double a = 1.0)
+    {
+      return instance_ok () ? instance->do_nd_array (dims, a) : NDArray ();
+    }
+
+    // Return an N-dimensional array of numbers from the sequence,
+    // filled in column major order.
+    static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
+    {
+      return instance_ok () ? instance->do_float_nd_array (dims, a)
+        : FloatNDArray ();
+    }
+
+  private:
+
+    static rand *instance;
+
+    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+
+    enum
+    {
+      unknown_dist,
+      uniform_dist,
+      normal_dist,
+      expon_dist,
+      poisson_dist,
+      gamma_dist
+    };
+
+    // Current distribution of random numbers.
+    int current_distribution;
+
+    // If TRUE, use old RANLIB generators.  Otherwise, use Mersenne
+    // Twister generator.
+    bool use_old_generators;
+
+    // Saved MT states.
+    std::map<int, uint32NDArray> rand_states;
+
+    // Return the current seed.
+    double do_seed (void);
+
+    // Set the seed.
+    void do_seed (double s);
+
+    // Reset the seed.
+    void do_reset ();
+
+    // Return the current state.
+    uint32NDArray do_state (const std::string& d);
+
+    // Set the current state/
+    void do_state (const uint32NDArray& s, const std::string& d);
+
+    // Reset the current state/
+    void do_reset (const std::string& d);
+
+    // Return the current distribution.
+    std::string do_distribution (void);
+
+    // Set the current distribution.  May be either "uniform" (the
+    // default), "normal", "exponential", "poisson", or "gamma".
+    void do_distribution (const std::string& d);
+
+    void do_uniform_distribution (void);
+
+    void do_normal_distribution (void);
+
+    void do_exponential_distribution (void);
+
+    void do_poisson_distribution (void);
+
+    void do_gamma_distribution (void);
+
+    // The following templates only make sense for double and float
+    // types.
+
+    template <typename T> T uniform (void);
+
+    template <typename T> T normal (void);
+
+    template <typename T> T exponential (void);
+
+    template <typename T> T poisson (T a);
+
+    template <typename T> T gamma (T a);
+
+    // Return the next number from the sequence.
+    template <typename T> T do_scalar (T a = 1);
+
+    // Return an array of numbers from the sequence.
+    template <typename T> Array<T> do_vector (octave_idx_type n, T a = 1);
+
+    // Return an N-dimensional array of numbers from the sequence,
+    // filled in column major order.
+    NDArray do_nd_array (const dim_vector& dims, double a = 1.);
+
+    // Return an N-dimensional array of numbers from the sequence,
+    // filled in column major order.
+    FloatNDArray do_float_nd_array (const dim_vector& dims, float a = 1.);
+
+    // Some helper functions.
+
+    void initialize_ranlib_generators (void);
+
+    void initialize_mersenne_twister (void);
+
+    uint32NDArray get_internal_state (void);
+
+    void save_state (void);
+
+    int get_dist_id (const std::string& d);
+
+    void set_internal_state (const uint32NDArray& s);
+
+    void switch_to_generator (int dist);
+
+    void fill (octave_idx_type len, double *v, double a);
+
+    void fill (octave_idx_type len, float *v, float a);
   };
+}
 
-  // Current distribution of random numbers.
-  int current_distribution;
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
-  // If TRUE, use old RANLIB generators.  Otherwise, use Mersenne
-  // Twister generator.
-  bool use_old_generators;
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand' instead")
+typedef octave::rand octave_rand;
 
-  // Saved MT states.
-  std::map<int, uint32NDArray> rand_states;
-
-  // Return the current seed.
-  double do_seed (void);
-
-  // Set the seed.
-  void do_seed (double s);
-
-  // Reset the seed.
-  void do_reset ();
-
-  // Return the current state.
-  uint32NDArray do_state (const std::string& d);
-
-  // Set the current state/
-  void do_state (const uint32NDArray& s, const std::string& d);
-
-  // Reset the current state/
-  void do_reset (const std::string& d);
-
-  // Return the current distribution.
-  std::string do_distribution (void);
-
-  // Set the current distribution.  May be either "uniform" (the
-  // default), "normal", "exponential", "poisson", or "gamma".
-  void do_distribution (const std::string& d);
-
-  void do_uniform_distribution (void);
-
-  void do_normal_distribution (void);
-
-  void do_exponential_distribution (void);
-
-  void do_poisson_distribution (void);
-
-  void do_gamma_distribution (void);
-
-  // Return the next number from the sequence.
-  double do_scalar (double a = 1.);
-
-  // Return the next number from the sequence.
-  float do_float_scalar (float a = 1.);
-
-  // Return an array of numbers from the sequence.
-  Array<double> do_vector (octave_idx_type n, double a = 1.);
-
-  // Return an array of numbers from the sequence.
-  Array<float> do_float_vector (octave_idx_type n, float a = 1.);
-
-  // Return an N-dimensional array of numbers from the sequence,
-  // filled in column major order.
-  NDArray do_nd_array (const dim_vector& dims, double a = 1.);
-
-  // Return an N-dimensional array of numbers from the sequence,
-  // filled in column major order.
-  FloatNDArray do_float_nd_array (const dim_vector& dims, float a = 1.);
-
-  // Some helper functions.
-
-  void initialize_ranlib_generators (void);
-
-  void initialize_mersenne_twister (void);
-
-  uint32NDArray get_internal_state (void);
-
-  void save_state (void);
-
-  int get_dist_id (const std::string& d);
-
-  void set_internal_state (const uint32NDArray& s);
-
-  void switch_to_generator (int dist);
-
-  void fill (octave_idx_type len, double *v, double a);
-
-  void fill (octave_idx_type len, float *v, float a);
-};
+#endif
 
 #endif

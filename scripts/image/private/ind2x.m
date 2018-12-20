@@ -28,7 +28,7 @@ function [x, map] = ind2x (caller, x, map)
   if (all (ndims (x) != [2 4]) || size (x, 3) != 1
       || iscomplex (x) || issparse (x)
       || ! (isfloat (x) && all (x(:) == fix (x(:)))
-            || (isinteger (x) && intmin (class (x)) == 0)))
+            || (isinteger (x) && intmin (x) == 0)))
     error ("%s: X must be an indexed image", caller);
   endif
 
@@ -53,7 +53,7 @@ function [x, map] = ind2x (caller, x, map)
   ## to make the switch, in which case we convert the data to single.
   maxidx = max (x(:));
   if (isinteger (x))
-    if (maxidx == intmax (class (x)))
+    if (maxidx == intmax (x))
       x = single (x);
     endif
     x      += 1;

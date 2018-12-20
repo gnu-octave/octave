@@ -56,6 +56,8 @@ namespace QtHandles
                         m_object, SLOT (slotFinalize (void)));
             disconnect (this, SIGNAL (sendRedraw (void)),
                         m_object, SLOT (slotRedraw (void)));
+            disconnect (this, SIGNAL (sendShow (void)),
+                        m_object, SLOT (slotShow (void)));
             disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
                         m_object, SLOT (slotPrint (const QString&, const QString&)));
           }
@@ -70,6 +72,8 @@ namespace QtHandles
                      m_object, SLOT (slotFinalize (void)));
             connect (this, SIGNAL (sendRedraw (void)),
                      m_object, SLOT (slotRedraw (void)));
+            connect (this, SIGNAL (sendShow (void)),
+                     m_object, SLOT (slotShow (void)));
             connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
                      m_object, SLOT (slotPrint (const QString&, const QString&)),
                      Qt::BlockingQueuedConnection);
@@ -107,6 +111,12 @@ namespace QtHandles
   }
 
   void
+  ObjectProxy::show (void)
+  {
+    emit sendShow ();
+  }
+
+  void
   ObjectProxy::print (const QString& file_cmd, const QString& term)
   {
     emit sendPrint (file_cmd, term);
@@ -135,11 +145,11 @@ namespace QtHandles
     if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                      Q_RETURN_ARG (uint8NDArray, retval)))
       {
-        octave_sleep (0.1);
+        octave::sleep (0.1);
         if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                          Q_RETURN_ARG (uint8NDArray, retval)))
           {
-            octave_sleep (0.2);
+            octave::sleep (0.2);
             if (! QMetaObject::invokeMethod (m_object, "slotGetPixels", t,
                                              Q_RETURN_ARG (uint8NDArray, retval)))
               error ("getframe: unable to retrieve figure pixels");

@@ -35,7 +35,7 @@ function y = spfun (f, S)
   [i, j, v] = find (S);
   [m, n] = size (S);
 
-  if (isa (f, "function_handle") || isa (f, "inline function"))
+  if (is_function_handle (f))
     y = sparse (i, j, f(v), m, n);
   else
     y = sparse (i, j, feval (f, v), m, n);

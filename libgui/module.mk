@@ -39,7 +39,7 @@ noinst_HEADERS += \
 
 include %reldir%/src/module.mk
 include %reldir%/graphics/module.mk
-include %reldir%/qterminal-module.mk
+include %reldir%/qterminal/module.mk
 
 nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   %reldir%/liboctgui-build-info.cc
@@ -50,19 +50,16 @@ nodist_%canon_reldir%_liboctgui_la_SOURCES = \
   -Ilibgui \
   -I$(srcdir)/libgui
 
-%canon_reldir%_liboctgui_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_liboctgui_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 %canon_reldir%_liboctgui_la_LIBADD = \
   %reldir%/qterminal/libqterminal.la \
   %reldir%/src/libgui-src.la \
-  %reldir%/graphics/libgui-graphics.la \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
-  $(LIBOCTGUI_LINK_DEPS)
+  $(QT_LIBS)
 
-# Increment these as needed and according to the rules in the libtool manual:
+## Increment the following version numbers as needed and according
+## to the rules in the etc/HACKING.md file:
+
 %canon_reldir%_liboctgui_current = 4
 %canon_reldir%_liboctgui_revision = 0
 %canon_reldir%_liboctgui_age = 0

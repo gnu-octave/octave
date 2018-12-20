@@ -49,6 +49,11 @@ if AMCOND_BUILD_QT_GUI
   OCTAVE_INTERPRETER_TARGETS += %reldir%/octave-gui$(EXEEXT)
 endif
 
+if AMCOND_BUILD_QT_GUI
+  archlib_PROGRAMS += %reldir%/octave-svgconvert
+  OCTAVE_INTERPRETER_TARGETS += %reldir%/octave-svgconvert$(EXEEXT)
+endif
+
 OCTAVE_CORE_LIBS = \
   libinterp/liboctinterp.la \
   liboctave/liboctave.la \
@@ -78,10 +83,6 @@ endif
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-%canon_reldir%_octave_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
-
 %canon_reldir%_octave_cli_SOURCES = %reldir%/main-cli.cc
 nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 
@@ -97,10 +98,6 @@ nodist_%canon_reldir%_octave_cli_SOURCES = %reldir%/octave-build-info.cc
 %canon_reldir%_octave_cli_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
-
-%canon_reldir%_octave_cli_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
 
 if AMCOND_BUILD_QT_GUI
   %canon_reldir%_octave_gui_SOURCES = %reldir%/main-gui.cc
@@ -123,9 +120,13 @@ endif
   $(OCTAVE_GUI_LINK_OPTS) \
   $(WARN_LDFLAGS)
 
-%canon_reldir%_octave_gui_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
+%canon_reldir%_octave_svgconvert_SOURCES = %reldir%/octave-svgconvert.cc
+
+%canon_reldir%_octave_svgconvert_CPPFLAGS = $(QT_CPPFLAGS)
+
+%canon_reldir%_octave_svgconvert_LDADD = $(QT_LIBS)
+
+%canon_reldir%_octave_svgconvert_LDFLAGS = $(QT_LDFLAGS)
 
 %canon_reldir%_mkoctfile_SOURCES =
 
@@ -139,10 +140,6 @@ nodist_%canon_reldir%_mkoctfile_SOURCES = %reldir%/mkoctfile.cc
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
 
-%canon_reldir%_mkoctfile_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
-
 %canon_reldir%_octave_config_SOURCES =
 
 nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
@@ -155,10 +152,6 @@ nodist_%canon_reldir%_octave_config_SOURCES = %reldir%/octave-config.cc
 %canon_reldir%_octave_config_CPPFLAGS = \
   $(SRC_DIR_CPPFLAGS) \
   $(OCTAVE_CPPFLAGS)
-
-%canon_reldir%_octave_config_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS)
 
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
@@ -184,8 +177,8 @@ OCTAVE_CROSS_TOOLS += %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT)
 %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT): %reldir%/$(host_triplet)-octave-config.cc
 	$(BUILD_CXX) -o %reldir%/$(host_triplet)-octave-config$(BUILD_EXEEXT) -DCROSS=1 $(DEFAULT_INCLUDES) $(BUILD_CXXFLAGS) $(BUILD_LDFLAGS) -I$(srcdir)/src %reldir%/$(host_triplet)-octave-config.cc
 
-%reldir%/$(host_triplet)-octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/$(host_triplet)-octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 src-mostlyclean-local:
 	-rm -f $(OCTAVE_CROSS_TOOLS)
@@ -196,14 +189,14 @@ src-mostlyclean-local:
 
 endif
 
-%reldir%/octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/octave-config.cc: %reldir%/octave-config.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 %reldir%/mkoctfile.cc: %reldir%/mkoctfile.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
-%reldir%/main.cc: %reldir%/main.in.cc build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/main.cc: %reldir%/main.in.cc build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 %reldir%/octave-build-info.cc: %reldir%/octave-build-info.in.cc HG-ID | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)$(build-info-commands)

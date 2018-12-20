@@ -24,12 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
 #include <sstream>
 #include <string>
 
 #include "ov-fcn.h"
 #include "pt.h"
+#include "pt-eval.h"
 #include "pt-pr-code.h"
 #include "unwind-prot.h"
 
@@ -52,11 +52,10 @@ namespace octave
     return retval;
   }
 
-  // function from libinterp/parse-tree/oct-parse.cc, not listed in oct-parse.h
-  octave_value_list eval_string (const std::string&, bool, int&, int);
   // Is the current breakpoint condition met?
+
   bool
-  tree::meets_bp_condition () const
+  tree::meets_bp_condition (tree_evaluator& tw) const
   {
     bool retval;
     if (m_bp_cond == nullptr)
@@ -80,7 +79,7 @@ namespace octave
         try
           {
             octave_value_list val
-              = eval_string (*m_bp_cond, 1, parse_status, 1);
+              = tw.eval_string (*m_bp_cond, 1, parse_status, 1);
 
             if (parse_status == 0)
               {

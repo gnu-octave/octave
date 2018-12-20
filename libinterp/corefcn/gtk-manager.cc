@@ -52,7 +52,7 @@ namespace octave
 
         octave_value_list args;
         args(0) = dtk;
-        octave::feval ("graphics_toolkit", args);
+        feval ("graphics_toolkit", args);
 
         pl = loaded_toolkits.find (dtk);
 
@@ -89,18 +89,18 @@ namespace octave
           dtk.clear ();
         else
           {
-            const_available_toolkits_iterator pa = available_toolkits.begin ();
+            auto pa = available_toolkits.cbegin ();
 
             dtk = *pa++;
 
-            while (pa != available_toolkits.end ())
+            while (pa != available_toolkits.cend ())
               {
                 std::string tk_name = *pa++;
 
                 if (tk_name == "qt"
                     || (tk_name == "fltk"
                         && (available_toolkits.find ("qt")
-                            == available_toolkits.end ())))
+                            == available_toolkits.cend ())))
                   dtk = tk_name;
               }
           }

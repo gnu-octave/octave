@@ -48,8 +48,8 @@ function p = primes (n)
     print_usage ();
   endif
 
-  if (! isscalar (n))
-    error ("primes: N must be a scalar");
+  if (! (isnumeric (n) && isscalar (n)))
+    error ("primes: N must be a numeric scalar");
   endif
 
   if (n > 100e3)
@@ -107,4 +107,5 @@ endfunction
 
 %!error primes ()
 %!error primes (1, 2)
-%!error <N must be a scalar> primes (ones (2,2))
+%!error <N must be a numeric scalar> primes ("1")
+%!error <N must be a numeric scalar> primes (ones (2,2))

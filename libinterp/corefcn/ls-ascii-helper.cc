@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ls-ascii-helper.h"
 
-#include <iostream>
+#include <istream>
 #include <sstream>
 
 // Helper functions when reading from ascii files.

@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include "oct-cmplx.h"
+
 class Matrix;
 class ComplexMatrix;
 class SparseComplexMatrix;

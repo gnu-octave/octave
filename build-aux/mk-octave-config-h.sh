@@ -122,6 +122,28 @@ since all of Octave's header files already include it.
 /* #    undef HAVE_OCTAVE_UNUSED_ATTR */
 #  endif
 
+#  if defined (__MINGW32__)
+    /* MinGW requires special handling due to different format specifiers
+     * on different platforms.  The macro __MINGW_PRINTF_FORMAT maps to
+     * either gnu_printf or ms_printf depending on where we are compiling
+     * to avoid warnings on format specifiers that are legal.
+     * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1331349  */
+#    define OCTAVE_FORMAT_PRINTF(stringIndex, firstToCheck) \
+       __attribute__ ((format (__MINGW_PRINTF_FORMAT, stringIndex, firstToCheck)))
+
+#    define HAVE_OCTAVE_FORMAT_PRINTF_ATTR 1
+#  elif defined (__GNUC__)
+     /* The following attributes are used with gcc and clang compilers.  */
+#    define OCTAVE_FORMAT_PRINTF(index, first) \
+       __attribute__ ((__format__(printf, index, first)))
+
+#    define HAVE_OCTAVE_FORMAT_PRINTF_ATTR 1
+#  else
+#    define OCTAVE_FORMAT_PRINTF(index, first)
+
+/* #    undef HAVE_OCTAVE_FORMAT_PRINTF_ATTR */
+#  endif
+
 #  if ! defined (OCTAVE_FALLTHROUGH)
 #    if defined (__cplusplus) && __cplusplus > 201402L
 #      define OCTAVE_FALLTHROUGH [[fallthrough]]
@@ -202,7 +224,15 @@ $SED -n 's/#\(\(undef\|define\) OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES.*$\)/#  \1/
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_F77_INT_TYPE.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) OCTAVE_SIZEOF_IDX_TYPE.*$\)/#  \1/p' $config_h_file
 
-echo ""
+cat << EOF
+
+#  if defined (OCTAVE_ENABLE_64)
+#    define OCTAVE_IDX_TYPE_FORMAT PRId64
+#  else
+#    define OCTAVE_IDX_TYPE_FORMAT PRId32
+#  endif
+
+EOF
 
 $SED -n 's/#\(\(undef\|define\) gid_t.*$\)/#  \1/p' $config_h_file
 $SED -n 's/#\(\(undef\|define\) uid_t.*$\)/#  \1/p' $config_h_file

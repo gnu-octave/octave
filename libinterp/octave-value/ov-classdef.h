@@ -340,6 +340,8 @@ public:
     register_object ();
   }
 
+  cdef_object_base& operator = (const cdef_object_base&) = delete;
+
   ~cdef_object_base (void) { unregister_object (); }
 
   cdef_class get_class (void) const;
@@ -366,9 +368,6 @@ private:
 
   // The class of the object
   cdef_object klass;
-
-  // No assignment!
-  cdef_object_base& operator = (const cdef_object_base&);
 };
 
 class
@@ -379,6 +378,10 @@ public:
 
   cdef_object_array (const Array<cdef_object>& a)
     : cdef_object_base (), array (a) { }
+
+  cdef_object_array& operator = (const cdef_object_array&) = delete;
+
+  ~cdef_object_array (void) = default;
 
   cdef_object_rep * clone (void) const
   { return new cdef_object_array (*this); }
@@ -426,9 +429,6 @@ private:
   // Private copying!
   cdef_object_array (const cdef_object_array& obj)
     : cdef_object_base (obj), array (obj.array) { }
-
-  // No assignment!
-  cdef_object_array& operator = (const cdef_object_array&);
 };
 
 class
@@ -436,6 +436,8 @@ cdef_object_scalar : public cdef_object_base
 {
 public:
   cdef_object_scalar (void) : cdef_object_base () { }
+
+  cdef_object_scalar& operator = (const cdef_object_scalar&) = delete;
 
   ~cdef_object_scalar (void) = default;
 
@@ -504,10 +506,6 @@ protected:
   // Restricted object copying!
   cdef_object_scalar (const cdef_object_scalar& obj)
     : cdef_object_base (obj), map (obj.map), ctor_list (obj.ctor_list) { }
-
-private:
-  // No assignment!
-  cdef_object_scalar& operator = (const cdef_object_scalar&);
 };
 
 class
@@ -516,6 +514,8 @@ handle_cdef_object : public cdef_object_scalar
 public:
   handle_cdef_object (void)
     : cdef_object_scalar () { }
+
+  handle_cdef_object& operator = (const handle_cdef_object&) = delete;
 
   ~handle_cdef_object (void);
 
@@ -537,10 +537,6 @@ protected:
   // Restricted copying!
   handle_cdef_object (const handle_cdef_object& obj)
     : cdef_object_scalar (obj) { }
-
-private:
-  // No assignment
-  handle_cdef_object& operator = (const handle_cdef_object&);
 };
 
 class
@@ -549,6 +545,8 @@ value_cdef_object : public cdef_object_scalar
 public:
   value_cdef_object (void)
     : cdef_object_scalar () { }
+
+  value_cdef_object& operator = (const value_cdef_object&) = delete;
 
   ~value_cdef_object (void);
 
@@ -565,9 +563,6 @@ private:
   // Private copying!
   value_cdef_object (const value_cdef_object& obj)
     : cdef_object_scalar (obj) { }
-
-  // No assignment!
-  value_cdef_object& operator = (const value_cdef_object&);
 };
 
 class
@@ -576,6 +571,8 @@ cdef_meta_object_rep : public handle_cdef_object
 public:
   cdef_meta_object_rep (void)
     : handle_cdef_object () { }
+
+  cdef_meta_object_rep& operator = (const cdef_meta_object_rep&) = delete;
 
   ~cdef_meta_object_rep (void) = default;
 
@@ -609,10 +606,6 @@ protected:
   // Restricted copying!
   cdef_meta_object_rep (const cdef_meta_object_rep& obj)
     : handle_cdef_object (obj) { }
-
-private:
-  // No assignment!
-  cdef_meta_object_rep& operator = (const cdef_meta_object_rep&);
 };
 
 class
@@ -631,6 +624,8 @@ public:
 
   cdef_meta_object (const cdef_object& obj)
     : cdef_object (obj) { }
+
+  cdef_meta_object& operator = (const cdef_object&) = delete;
 
   ~cdef_meta_object (void) = default;
 
@@ -675,6 +670,10 @@ private:
     { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
+
+    cdef_class_rep& operator = (const cdef_class_rep&) = delete;
+
+    ~cdef_class_rep (void) = default;
 
     cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
 
@@ -845,6 +844,8 @@ public:
     return *this;
   }
 
+  ~cdef_class (void) = default;
+
   cdef_method find_method (const std::string& nm, bool local = false);
 
   void install_method (const cdef_method& meth)
@@ -990,6 +991,10 @@ private:
     cdef_property_rep (void)
       : cdef_meta_object_rep () { }
 
+    cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
+
+    ~cdef_property_rep (void) = default;
+
     cdef_object_rep * copy (void) const { return new cdef_property_rep (*this); }
 
     bool is_property (void) const { return true; }
@@ -1054,6 +1059,8 @@ public:
     return *this;
   }
 
+  ~cdef_property (void) = default;
+
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
                           const std::string& who = "")
   { return get_rep ()->get_value (obj, do_check_access, who); }
@@ -1099,6 +1106,10 @@ private:
     cdef_method_rep (void)
       : cdef_meta_object_rep (), function (), dispatch_type ()
     { }
+
+    cdef_method_rep& operator = (const cdef_method_rep& m) = delete;
+
+    ~cdef_method_rep (void) = default;
 
     cdef_object_rep * copy (void) const { return new cdef_method_rep(*this); }
 
@@ -1185,6 +1196,8 @@ public:
 
     return *this;
   }
+
+  ~cdef_method (void) = default;
 
   // normal invocation
   octave_value_list execute (const octave_value_list& args, int nargout,
@@ -1314,6 +1327,8 @@ private:
     cdef_package_rep (void)
       : cdef_meta_object_rep (), member_count (0) { }
 
+    cdef_package_rep& operator = (const cdef_package_rep&) = delete;
+
     ~cdef_package_rep (void) = default;
 
     cdef_object_rep * copy (void) const { return new cdef_package_rep (*this); }
@@ -1420,6 +1435,8 @@ public:
     return *this;
   }
 
+  ~cdef_package (void) = default;
+
   void install_class (const cdef_class& cls, const std::string& nm)
   { get_rep ()->install_class (cls, nm); }
 
@@ -1462,8 +1479,11 @@ public:
   octave_classdef (const cdef_object& obj)
     : octave_base_value (), object (obj) { }
 
-  octave_classdef (const octave_classdef& obj)
-    : octave_base_value (obj), object (obj.object) { }
+  octave_classdef (const octave_classdef&) = delete;
+
+  octave_classdef& operator = (const octave_classdef&) = delete;
+
+  ~octave_classdef (void) = default;
 
   octave_base_value * clone (void) const
   { return new octave_classdef (object.clone ()); }

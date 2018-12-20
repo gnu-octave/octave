@@ -31,7 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <fstream>
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -58,7 +59,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -252,7 +252,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
     }
 
   if (! (name == ".nargin." || name == ".nargout."
-         || name == CELL_ELT_TAG || valid_identifier (name)))
+         || name == CELL_ELT_TAG || octave::valid_identifier (name)))
     error ("load: invalid identifier '%s' found in file '%s'",
            name.c_str (), filename.c_str ());
 
@@ -375,7 +375,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
     {
       octave_idx_type extras = nc % 3;
       if (extras)
-        warning ("ignoring last %d columns", extras);
+        warning ("ignoring last %" OCTAVE_IDX_TYPE_FORMAT " columns", extras);
 
       Matrix tmp = tc.matrix_value ();
       nr = tmp.rows ();

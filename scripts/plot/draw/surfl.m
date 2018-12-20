@@ -38,13 +38,14 @@
 ##
 ## The default lighting mode @qcode{"cdata"}, changes the cdata property of the
 ## surface object to give the impression of a lighted surface.
-## @strong{Warning:} The alternative mode @qcode{"light"} mode which creates a
-## light object to illuminate the surface is not implemented (yet).
 ##
-## The light source location can be specified using @var{lsrc}.  It can be
-## given as a 2-element vector [azimuth, elevation] in degrees, or as a
-## 3-element vector [lx, ly, lz].  The default value is rotated 45 degrees
-## counterclockwise to the current view.
+## The alternate mode @qcode{"light"} creates a light object to illuminate the
+## surface.
+##
+## The light source location may be specified using @var{lsrc} which can be
+## a 2-element vector [azimuth, elevation] in degrees, or a 3-element vector
+## [lx, ly, lz].  The default value is rotated 45 degrees counterclockwise to
+## the current view.
 ##
 ## The material properties of the surface can specified using a 4-element
 ## vector @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
@@ -93,8 +94,6 @@ function h = surfl (varargin)
   if (ischar (varargin{end}))
     switch (tolower (varargin{end}))
       case "light"
-        warning ("surfl: light method not supported (yet), using cdata method instead");
-        ## This can be implemented when light objects are supported.
         use_cdata = false;
       case "cdata"
         use_cdata = true;
@@ -110,7 +109,8 @@ function h = surfl (varargin)
   ##      diffuse reflection strength,
   ##      specular reflection strength,
   ##      specular shine]
-  if (isnumeric (varargin{end}) && length (varargin{end}) == 4)
+  if (isnumeric (varargin{end}) && isvector (varargin{end})
+      && (numel (varargin{end}) == 4))
     r = varargin{end};
     varargin(end) = [];
   else
@@ -120,7 +120,7 @@ function h = surfl (varargin)
 
   ## Check for light vector (lv) argument.
   have_lv = false;
-  if (isnumeric (varargin{end}))
+  if (isnumeric (varargin{end}) && isvector (varargin{end}))
     len = numel (varargin{end});
     lastarg = varargin{end};
     if (len == 3)
@@ -146,7 +146,7 @@ function h = surfl (varargin)
     htmp = surface (varargin{:});
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
+                "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
 
     ## Get view vector (vv).
@@ -162,23 +162,32 @@ function h = surfl (varargin)
       lv = (R * vv.').';
     endif
 
-    vn = get (htmp, "vertexnormals");
-    dar = get (hax, "dataaspectratio");
-    vn(:,:,1) *= dar(1);
-    vn(:,:,2) *= dar(2);
-    vn(:,:,3) *= dar(3);
+    if (use_cdata)
+      set (hax, "clim", [0 1]);
 
-    ## Normalize vn.
-    vn ./= repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
-    [nr, nc] = size (get (htmp, "zdata"));
+      __update_normals__ (htmp);
+      vn = get (htmp, "vertexnormals");
+      dar = get (hax, "dataaspectratio");
+      vn(:,:,1) *= dar(1);
+      vn(:,:,2) *= dar(2);
+      vn(:,:,3) *= dar(3);
 
-    ## Ambient, diffuse, and specular term.
-    cdata = (  r(1) * ones (nr, nc)
-             + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
-             + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
-    cdata ./= sum (r(1:3));
+      ## Normalize vn.
+      vn ./= repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
+      [nr, nc] = size (get (htmp, "zdata"));
 
-    set (htmp, "cdata", cdata);
+      ## Ambient, diffuse, and specular term.
+      cdata = (  r(1) * ones (nr, nc)
+               + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
+               + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
+      cdata ./= sum (r(1:3));
+
+      set (htmp, "cdata", cdata);
+    else
+      light (hax, "position", lv);
+      set (htmp, "ambientstrength", r(1), "diffusestrength", r(2), ...
+                 "specularstrength", r(3), "specularexponent", r(4));
+    endif
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -208,3 +217,11 @@ endfunction
 %! surfl (X,Y,Z, [62.50,30], [0.2 0.6 0.4 25]);
 %! shading interp;
 %! title ("surfl() with lighting vector and material properties");
+
+%!demo
+%! clf;
+%! [X, Y] = meshgrid (-3:1/8:3);
+%! Z = peaks (X, Y);
+%! surfl (X, Y, Z, "light");
+%! shading interp;
+%! title ("surfl() with light object");

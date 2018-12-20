@@ -24,7 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 // C++ source files that should have included config.h before including
 // this file.
 
-#include <iostream>
+#include <istream>
+#include <ostream>
+#include <sstream>
 
 #include "mach-info.h"
 #include "lo-ieee.h"

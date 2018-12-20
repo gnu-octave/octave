@@ -39,7 +39,6 @@ NUMERIC_INC = \
   %reldir%/lo-amos-proto.h \
   %reldir%/lo-arpack-proto.h \
   %reldir%/lo-blas-proto.h \
-  %reldir%/lo-fftpack-proto.h \
   %reldir%/lo-lapack-proto.h \
   %reldir%/lo-mappers.h \
   %reldir%/lo-qrupdate-proto.h \
@@ -120,10 +119,6 @@ noinst_LTLIBRARIES += %reldir%/libnumeric.la
   -I$(srcdir)/liboctave/external/Faddeeva \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
-
-%canon_reldir%_libnumeric_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libnumeric_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
 
 liboctave_liboctave_la_LIBADD += %reldir%/libnumeric.la
 

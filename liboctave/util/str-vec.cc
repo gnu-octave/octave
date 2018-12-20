@@ -32,7 +32,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 #include "cmd-edit.h"
@@ -181,6 +181,9 @@ string_vector::std_list (void) const
 void
 string_vector::delete_c_str_vec (const char * const *v)
 {
+  if (! v)
+    return;
+
   const char * const *p = v;
 
   while (*p)

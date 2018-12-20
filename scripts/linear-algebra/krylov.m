@@ -221,7 +221,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg)
   ## Back out complete U matrix.
   ## back out U matrix.
   j1 = columns (U);
-  for i = j1:-1:1;
+  for i = j1:-1:1
     idx = pivot_vec(i:na);
     hv = U(idx,i);
     av = alpha(i);

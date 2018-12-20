@@ -35,8 +35,8 @@
 ## If a range is specified as @w{@code{[max, min]}} then the image will be
 ## reversed along that axis.  For convenience, @var{x} and @var{y} may be
 ## specified as N-element vectors matching the length of the data in @var{img}.
-## However, only the first and last elements will be used to determine the axis
-## limits.
+## However, only the first and last elements will be used to determine
+## the image limits.
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##

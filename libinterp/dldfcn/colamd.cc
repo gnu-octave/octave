@@ -62,13 +62,12 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
       Parent[k] = n ;                // parent of k is not yet known
       Flag[k] = k ;                  // mark node k as visited
-      octave_idx_type kk = (P ? P[k]  // kth original, or permuted, column
-                              : (k));
+      octave_idx_type kk = (P ? P[k] : k); // kth original, or permuted, column
       octave_idx_type p2 = cidx[kk+1];
       for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {
           // A (i,k) is nonzero (original or permuted A)
-          octave_idx_type i = (Pinv) ? (Pinv[ridx[p]]) : (ridx[p]);
+          octave_idx_type i = (P ? Pinv[ridx[p]] : ridx[p]);
           if (i < k)
             {
               // follow path from i to root of etree, stop at flagged node
@@ -675,7 +674,7 @@ permutations on the tree.
   octave_idx_type *ridx = nullptr;
   octave_idx_type *cidx = nullptr;
 
-  if (args(0).issparse ())
+  if (! args(0).issparse ())
     error ("etree: S must be a sparse matrix");
 
   if (args(0).iscomplex ())
@@ -756,3 +755,14 @@ permutations on the tree.
 
   return retval;
 }
+
+/*
+%!assert (etree (speye (2)), [0, 0]);
+%!assert (etree (gallery ("poisson", 16)), [2:256, 0]);
+
+%!error etree ()
+%!error etree (1, 2, 3)
+%!error <S must be a sparse matrix> etree ([1, 2; 3, 4])
+%!error <TYP must be a string> etree (speye (2), 3)
+%!error <is not square> etree (sprand (2, 4, .25))
+*/

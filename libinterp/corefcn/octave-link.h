@@ -31,15 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "oct-mutex.h"
-
+#include "octave.h"
 #include "event-queue.h"
+#include "uint8NDArray.h"
 
 class octave_value;
 class string_vector;
 
 namespace octave
 {
-  class symbol_scope;
+  class symbol_info_list;
 }
 
 //! Provides threadsafe access to octave.
@@ -103,53 +104,12 @@ public:
     return retval;
   }
 
-  template <typename T>
-  static void post_event (T *obj, void (T::*method) (void))
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method);
-  }
-
-  template <typename T, typename A>
-  static void post_event (T *obj, void (T::*method) (A), A arg)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg);
-  }
-
-  template <typename T, typename A>
-  static void post_event (T *obj, void (T::*method) (const A&), const A& arg)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg);
-  }
-
-  template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (const A&, const B&),
-                          const A& arg_a, const B& arg_b)
-  {
-    if (enabled ())
-      instance->do_post_event<T, A, B> (obj, method, arg_a, arg_b);
-  }
-
-  template <class T, class A, class B, class C>
-  static void post_event (T *obj,
-                          void (T::*method) (const A&, const B&, const C&),
-                          const A& arg_a, const B& arg_b, const C& arg_c)
-  {
-    if (enabled ())
-      instance->do_post_event<T, A, B, C> (obj, method, arg_a, arg_b, arg_c);
-  }
-
-  template <class T, class A, class B, class C, class D>
+  template <typename T, typename... Params, typename... Args>
   static void
-  post_event (T *obj,
-              void (T::*method) (const A&, const B&, const C&, const D&),
-              const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
+  post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
     if (enabled ())
-      instance->do_post_event<T, A, B, C, D>
-        (obj, method, arg_a, arg_b, arg_c, arg_d);
+      instance->do_post_event (obj, method, std::forward<Args> (args)...);
   }
 
   static void
@@ -187,13 +147,6 @@ public:
   prompt_new_edit_file (const std::string& file)
   {
     return enabled () ? instance->do_prompt_new_edit_file (file) : false;
-  }
-
-  static int
-  message_dialog (const std::string& dlg, const std::string& msg,
-                  const std::string& title)
-  {
-    return enabled () ? instance->do_message_dialog (dlg, msg, title) : 0;
   }
 
   static std::string
@@ -262,6 +215,20 @@ public:
       instance->do_change_directory (dir);
   }
 
+  // Methods for removing/renaming files which might be open in editor
+  static void file_remove (const std::string& old_name,
+                           const std::string& new_name)
+  {
+    if (octave::application::is_gui_running () && enabled ())
+      instance->do_file_remove (old_name, new_name);
+  }
+
+  static void file_renamed (bool load_new)
+  {
+    if (octave::application::is_gui_running () && enabled ())
+      instance->do_file_renamed (load_new);
+  }
+
   // Preserves pending input.
   static void execute_command_in_terminal (const std::string& command)
   {
@@ -269,14 +236,21 @@ public:
       instance->do_execute_command_in_terminal (command);
   }
 
+  static uint8NDArray
+  get_named_icon (const std::string& icon_name)
+  {
+    return (enabled () ?
+            instance->do_get_named_icon (icon_name) : uint8NDArray ());
+  }
+
   static void set_workspace (void);
 
   static void set_workspace (bool top_level,
-                             const octave::symbol_scope& scope,
+                             const octave::symbol_info_list& syminfo,
                              bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, scope,
+      instance->do_set_workspace (top_level, instance->debugging, syminfo,
                                   update_variable_editor);
   }
 
@@ -368,13 +342,6 @@ public:
       }
   }
 
-  static void set_default_prompts (std::string& ps1, std::string& ps2,
-                                   std::string& ps4)
-  {
-    if (enabled ())
-      instance->do_set_default_prompts (ps1, ps2, ps4);
-  }
-
   static bool enable (void)
   {
     return instance_ok () ? instance->do_enable () : false;
@@ -414,6 +381,18 @@ public:
       }
     else
       return false;
+  }
+
+  static std::string
+  gui_preference (const std::string& key,
+                  const std::string& value)
+  {
+    if (enabled ())
+      {
+        return instance->do_gui_preference (key, value);
+      }
+    else
+      return "";
   }
 
   static bool
@@ -486,49 +465,10 @@ protected:
   void do_process_events (void);
   void do_discard_events (void);
 
-  template <typename T>
-  void do_post_event (T *obj, void (T::*method) (void))
+  template <typename T, typename... Params, typename... Args>
+  void do_post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
-    gui_event_queue.add_method (obj, method);
-  }
-
-  template <typename T, typename A>
-  void do_post_event (T *obj, void (T::*method) (A), A arg)
-  {
-    gui_event_queue.add_method (obj, method, arg);
-  }
-
-  template <typename T, typename A>
-  void do_post_event (T *obj, void (T::*method) (const A&), const A& arg)
-  {
-    gui_event_queue.add_method (obj, method, arg);
-  }
-
-  template <class T, class A, class B>
-  void do_post_event (T *obj, void (T::*method) (const A&, const B&),
-                      const A& arg_a, const B& arg_b)
-  {
-    gui_event_queue.add_method<T, A, B>
-      (obj, method, arg_a, arg_b);
-  }
-
-  template <class T, class A, class B, class C>
-  void do_post_event (T *obj,
-                      void (T::*method) (const A&, const B&, const C&),
-                      const A& arg_a, const B& arg_b, const C& arg_c)
-  {
-    gui_event_queue.add_method<T, A, B, C>
-      (obj, method, arg_a, arg_b, arg_c);
-  }
-
-  template <class T, class A, class B, class C, class D>
-  void
-  do_post_event (T *obj,
-                 void (T::*method) (const A&, const B&, const C&, const D&),
-                 const A& arg_a, const B& arg_b, const C& arg_c, const D& arg_d)
-  {
-    gui_event_queue.add_method<T, A, B, C, D>
-      (obj, method, arg_a, arg_b, arg_c, arg_d);
+    gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
   }
 
   void
@@ -552,11 +492,6 @@ protected:
 
   virtual bool do_edit_file (const std::string& file) = 0;
   virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
-
-  virtual int
-  do_message_dialog (const std::string& dlg, const std::string& msg,
-                     const std::string& title) = 0;
-
   virtual std::string
   do_question_dialog (const std::string& msg, const std::string& title,
                       const std::string& btn1, const std::string& btn2,
@@ -591,11 +526,18 @@ protected:
 
   virtual void do_change_directory (const std::string& dir) = 0;
 
+  virtual void do_file_remove (const std::string& old_name,
+                               const std::string& new_name) = 0;
+  virtual void do_file_renamed (bool) = 0;
+
   virtual void do_execute_command_in_terminal (const std::string& command) = 0;
+
+  virtual uint8NDArray
+  do_get_named_icon (const std::string& icon_name) = 0;
 
   virtual void
   do_set_workspace (bool top_level, bool debug,
-                    const octave::symbol_scope& scope,
+                    const octave::symbol_info_list& syminfo,
                     bool update_variable_editor) = 0;
 
   virtual void do_clear_workspace (void) = 0;
@@ -619,10 +561,10 @@ protected:
                                      const std::string& file, int line,
                                      const std::string& cond) = 0;
 
-  virtual void do_set_default_prompts (std::string& ps1, std::string& ps2,
-                                       std::string& ps4) = 0;
-
   virtual void do_show_preferences (void) = 0;
+
+  virtual std::string do_gui_preference (const std::string& key,
+                                         const std::string& value) = 0;
 
   virtual void do_show_doc (const std::string& file) = 0;
 

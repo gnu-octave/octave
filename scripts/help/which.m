@@ -54,7 +54,7 @@ function varargout = which (varargin)
         endif
       else
         if (isempty (m(i).type))
-          if (isdir (m(i).file))
+          if (isfolder (m(i).file))
             printf ("'%s' is the directory %s\n",
                     m(i).name, m(i).file);
           else

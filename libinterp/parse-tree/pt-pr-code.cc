@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 
-#include <iostream>
-
 #include "comment-list.h"
 #include "error.h"
 #include "ov-usr-fcn.h"
@@ -60,7 +58,7 @@ namespace octave
   void
   tree_print_code::visit_argument_list (tree_argument_list& lst)
   {
-    tree_argument_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -163,7 +161,7 @@ namespace octave
   void
   tree_print_code::visit_decl_init_list (tree_decl_init_list& lst)
   {
-    tree_decl_init_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -393,14 +391,6 @@ namespace octave
 
         param_list->accept (*this);
 
-        if (takes_varargs)
-          {
-            if (len > 0)
-              m_os << ", ";
-
-            m_os << "varargin";
-          }
-
         if (len > 0 || takes_varargs)
           {
             m_nesting.pop ();
@@ -495,7 +485,7 @@ namespace octave
   void
   tree_print_code::visit_if_command_list (tree_if_command_list& lst)
   {
-    tree_if_command_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     bool first_elt = true;
 
@@ -542,8 +532,8 @@ namespace octave
 
     int n = type_tags.length ();
 
-    std::list<tree_argument_list *>::iterator p_arg_lists = arg_lists.begin ();
-    std::list<string_vector>::iterator p_arg_names = arg_names.begin ();
+    auto p_arg_lists = arg_lists.begin ();
+    auto p_arg_names = arg_names.begin ();
 
     for (int i = 0; i < n; i++)
       {
@@ -616,7 +606,7 @@ namespace octave
     m_os << '[';
     m_nesting.push ('[');
 
-    tree_matrix::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -647,7 +637,7 @@ namespace octave
     m_os << '{';
     m_nesting.push ('{');
 
-    tree_cell::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -756,7 +746,7 @@ namespace octave
   void
   tree_print_code::visit_parameter_list (tree_parameter_list& lst)
   {
-    tree_parameter_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -766,10 +756,13 @@ namespace octave
           {
             elt->accept (*this);
 
-            if (p != lst.end ())
+            if (p != lst.end () || lst.takes_varargs ())
               m_os << ", ";
           }
       }
+
+    if (lst.takes_varargs ())
+      m_os << "varargin";
   }
 
   void
@@ -817,7 +810,7 @@ namespace octave
   void
   tree_print_code::visit_return_list (tree_return_list& lst)
   {
-    tree_return_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -933,7 +926,7 @@ namespace octave
   void
   tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
   {
-    tree_switch_case_list::iterator p = lst.begin ();
+    auto p = lst.begin ();
 
     while (p != lst.end ())
       {
@@ -1282,7 +1275,7 @@ namespace octave
   {
     if (comment_list)
       {
-        comment_list::iterator p = comment_list->begin ();
+        auto p = comment_list->begin ();
 
         while (p != comment_list->end ())
           {

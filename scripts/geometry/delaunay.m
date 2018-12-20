@@ -44,7 +44,7 @@
 ## first column contains x-data, the second y-data, and the optional third
 ## column contains z-data.
 ##
-## The optional last argument, which must be a string or cell array of strings,
+## An optional final argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
@@ -68,8 +68,6 @@
 ## @end example
 ## @seealso{delaunayn, convhull, voronoi, triplot, trimesh, tetramesh, trisurf}
 ## @end deftypefn
-
-## Author: Kai Habel <kai.habel@gmx.de>
 
 function tri = delaunay (varargin)
 
@@ -141,15 +139,17 @@ function tri = delaunay (varargin)
   endswitch
 
   if (isempty (z))
+    x = x(:);  y = y(:);
     if (! size_equal (x, y))
       error ("delaunay: X and Y must be the same size");
     endif
-    tri = delaunayn ([x(:), y(:)], options);
+    tri = delaunayn ([x, y], options);
   else
+    x = x(:);  y = y(:);  z = z(:);
     if (! size_equal (x, y, z))
       error ("delaunay: X, Y, and Z must be the same size");
     endif
-    tri = delaunayn ([x(:), y(:), z(:)], options);
+    tri = delaunayn ([x, y, z], options);
   endif
 
 endfunction
@@ -176,7 +176,8 @@ endfunction
 %!testif HAVE_QHULL
 %! x = [-1, 0, 1, 0];
 %! y = [0, 1, 0, -1];
-%! assert (sortrows (sort (delaunay ([x(:) y(:)]), 2)), [1,2,4;2,3,4]);
+%! mat = [x(:), y(:)];
+%! assert (sortrows (sort (delaunay (mat), 2)), [1,2,4;2,3,4]);
 
 %!testif HAVE_QHULL
 %! x = [-1, 0, 1, 0, 0];

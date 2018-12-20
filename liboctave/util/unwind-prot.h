@@ -55,11 +55,6 @@ namespace octave
 
     ~unwind_protect (void) { run (); }
 
-    virtual void add (elem *new_elem)
-    {
-      lifo.push (new_elem);
-    }
-
     operator bool (void) const { return ! empty (); }
 
     void run_first (void)
@@ -86,6 +81,11 @@ namespace octave
     size_t size (void) const { return lifo.size (); }
 
   protected:
+
+    virtual void add_action (elem *new_elem)
+    {
+      lifo.push (new_elem);
+    }
 
     std::stack<elem *> lifo;
   };
@@ -128,15 +128,5 @@ namespace octave
     }
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::unwind_protect' instead")
-typedef octave::unwind_protect unwind_protect;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::unwind_protect_safe' instead")
-typedef octave::unwind_protect_safe unwind_protect_safe;
-
-#endif
 
 #endif

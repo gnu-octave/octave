@@ -50,8 +50,12 @@ namespace QtHandles
                                    tr ("Pan"), this));
     m_actions.append (new QAction (QIcon::fromTheme ("insert-text"),
                                    tr ("Insert Text"), this));
+    /*
+    // FIXME: Re-instate this button when the plotedit function
+    //        has been implemented.
     m_actions.append (new QAction (QIcon (":/images/select.png"),
                                    tr ("Select"), this));
+    */
 
     foreach (QAction *a, m_actions)
       {
@@ -83,10 +87,7 @@ namespace QtHandles
             m_current = m_actions[i];
             for (int j = 0; j < m_actions.size (); j++)
               {
-                // SelectMode cancels all the others but the button
-                // doesn't remain highlighed.
-
-                if (j != i || i+1 == SelectMode)
+                if (j != i)
                   m_actions[j]->setChecked (false);
               }
 
@@ -100,12 +101,6 @@ namespace QtHandles
   {
     for (int i = 0; i < m_actions.size (); i++)
       m_actions[i]->setChecked (i+1 == mode);
-
-    // SelectMode cancels all the others but the button doesn't remain
-    // highlighed.
-
-    if (mode == SelectMode)
-      m_actions[SelectMode-1]->setChecked (false);
   }
 
 };

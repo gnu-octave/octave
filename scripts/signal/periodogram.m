@@ -151,7 +151,7 @@ function [pxx, f] = periodogram (x, varargin)
 
   if (! isempty (window))
     n = sumsq (window);
-  endif;
+  endif
   Pxx = (abs (fft (x, nfft))) .^ 2 / n;
 
   if (use_w_freq)

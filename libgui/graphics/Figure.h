@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class QMainWindow;
 class QToolBar;
+class QScreen;
 
 namespace QtHandles
 {
@@ -46,8 +47,7 @@ namespace QtHandles
     ZoomInMode  = 2,
     ZoomOutMode = 3,
     PanMode     = 4,
-    TextMode    = 5,
-    SelectMode  = 6
+    TextMode    = 5
   };
 
   class Container;
@@ -94,6 +94,7 @@ namespace QtHandles
 
   protected:
     void redraw (void);
+    void show (void);
     void print (const QString& file_cmd, const QString& term);
     void update (int pId);
     void updateBoundingBox (bool internal = false, int flags = 0);
@@ -102,32 +103,26 @@ namespace QtHandles
   private:
     void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
-    void showMenuBar (bool visible, int height = -1);
     void addCustomToolBar (QToolBar *bar, bool visible);
     void showCustomToolBar (QToolBar *bar, bool visible);
-
     void updateFigureToolBarAndMenuBar (void);
+    void set_geometry (QRect r);
 
     static void updateBoundingBoxHelper (void*);
 
     void close_figure_callback (void);
-    void copy_figure_callback (const std::string& format);
-    void save_figure_callback (const std::string& file);
 
     void enableMouseTracking (void);
 
   private slots:
     void setMouseMode (MouseMode mode);
-    void fileSaveFigure (bool prompt = false);
-    void fileSaveFigureAs (void);
-    void fileCloseFigure (void);
-    void editCopy (bool choose_format = false);
-    void helpAboutOctave (void);
-    void updateMenuBar (int height = -1);
+    void updateFigureHeight (int delta_h);
     void updateContainer (void);
     void toggleAxes (void);
     void toggleGrid (void);
     void autoAxes (void);
+    void figureWindowShown ();
+    void screenChanged (QScreen*);
 
   public slots:
     uint8NDArray slotGetPixels (void);
@@ -145,6 +140,7 @@ namespace QtHandles
     QRect m_outerRect;
     MouseModeActionGroup *m_mouseModeGroup;
     int m_previousHeight;
+    bool m_resizable;
   };
 
 }

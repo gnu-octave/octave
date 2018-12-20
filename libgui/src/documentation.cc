@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "oct-env.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCompleter>
 #include <QDir>
@@ -41,26 +42,35 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QShortcut>
 #include <QTabWidget>
-#include <QToolButton>
 #include <QVBoxLayout>
 
 #include "documentation.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
   // The documentation splitter, which is the main widget
   // of the doc dock widget
   documentation::documentation (QWidget *p)
-    : QSplitter (Qt::Horizontal, p)
+    : QSplitter (Qt::Horizontal, p),
+      m_doc_widget (p),
+      m_tool_bar (new QToolBar (p)),
+      m_query_string (QString ()),
+      m_prev_pages_menu (new QMenu (p)),
+      m_next_pages_menu (new QMenu (p)),
+      m_prev_pages_count (0),
+      m_next_pages_count (0),
+      m_findnext_shortcut (new QShortcut (p)),
+      m_findprev_shortcut (new QShortcut (p))
   {
     // Get original collection
     QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
     if (collection.isEmpty ())
-      collection = QString::fromStdString (octave::config::oct_doc_dir ()
-                                           + octave::sys::file_ops::dir_sep_str ()
+      collection = QString::fromStdString (config::oct_doc_dir ()
+                                           + sys::file_ops::dir_sep_str ()
                                            + "octave_interpreter.qhc");
 
     // Setup the help engine with the original collection, use a writable copy
@@ -69,26 +79,34 @@ namespace octave
 
     QString tmpdir = QDir::tempPath();
     m_collection
-      = QString::fromStdString (octave::sys::tempnam (tmpdir.toStdString (),
-                                                      "oct-qhelp-"));
+      = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),
+                                              "oct-qhelp-"));
 
     if (m_help_engine->copyCollectionFile (m_collection))
       m_help_engine->setCollectionFile (m_collection);
     else
+#ifdef ENABLE_DOCS
+      // FIXME: Perhaps a better way to do this would be to keep a count
+      // in the GUI preferences file.  After issuing this warning 3 times
+      // it would be disabled.  The count would need to be reset when a new
+      // version of Octave is installed.
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not copy help collection to temporary\n"
                                 "file. Search capabilities may be affected.\n"
                                 "%1").arg (m_help_engine->error ()));
+#endif
 
     connect(m_help_engine, SIGNAL(setupFinished()),
             m_help_engine->searchEngine(), SLOT(indexDocumentation()));
 
     if (! m_help_engine->setupData())
       {
+#ifdef ENABLE_DOCS
         QMessageBox::warning (this, tr ("Octave Documentation"),
                               tr ("Could not setup the data required for the\n"
                                   "documentation viewer. Only help texts in\n"
-                                  "the Console Widget will be available."));
+                                  "the Command Window will be available."));
+#endif
         if (m_help_engine)
           delete m_help_engine;
         m_help_engine = 0;
@@ -101,6 +119,10 @@ namespace octave
     connect (m_doc_browser, SIGNAL (cursorPositionChanged (void)),
              this, SLOT(handle_cursor_position_change (void)));
 
+    // Tool bar
+    construct_tool_bar ();
+
+    // Find bar
     QWidget *find_footer = new QWidget (browser_find);
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
@@ -129,32 +151,20 @@ namespace octave
     find_footer->setLayout (h_box_find_footer);
 
     QVBoxLayout *v_box_browser_find = new QVBoxLayout (browser_find);
+    v_box_browser_find->addWidget (m_tool_bar);
     v_box_browser_find->addWidget (m_doc_browser);
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    QShortcut *show_shortcut = new QShortcut (QKeySequence (QKeySequence::Find), p);
-    show_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit->parentWidget (), SLOT (show (void)));
-    connect (show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit, SLOT (selectAll (void)));
-    connect (show_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit, SLOT (setFocus (void)));
-    QShortcut *hide_shortcut = new QShortcut (Qt::Key_Escape, p);
-    hide_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (hide_shortcut, SIGNAL (activated (void)),
-             m_find_line_edit->parentWidget (), SLOT(hide (void)));
-    connect (hide_shortcut, SIGNAL (activated (void)),
-             m_doc_browser, SLOT (setFocus (void)));
-    QShortcut *findnext_shortcut = new QShortcut (QKeySequence (QKeySequence::FindNext), p);
-    findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (findnext_shortcut, SIGNAL (activated (void)),
+    notice_settings (resource_manager::get_settings ());
+
+    m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_findnext_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_forward (void)));
-    QShortcut *findprev_shortcut = new QShortcut (QKeySequence (QKeySequence::FindPrevious), p);
-    findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-    connect (findprev_shortcut, SIGNAL (activated (void)),
+    m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+    connect (m_findprev_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_backward (void)));
+
     find_footer->hide ();
     m_search_anchor_position = 0;
 
@@ -165,6 +175,7 @@ namespace octave
 
     // Contents
     QHelpContentWidget *content = m_help_engine->contentWidget ();
+    content->setObjectName ("documentation_tab_contents");
     navi->addTab (content, tr ("Contents"));
 
     connect(m_help_engine->contentWidget (),
@@ -195,12 +206,13 @@ namespace octave
     filter_all->setLayout (h_box_index);
 
     QWidget *index_all = new QWidget (navi);
+    index_all->setObjectName ("documentation_tab_index");
     QVBoxLayout *v_box_index = new QVBoxLayout (index_all);
     v_box_index->addWidget (filter_all);
     v_box_index->addWidget (index);
     index_all->setLayout (v_box_index);
 
-    navi->addTab (index_all, tr ("Index"));
+    navi->addTab (index_all, tr ("Function Index"));
 
     connect(m_help_engine->indexWidget (),
             SIGNAL (linkActivated (const QUrl&, const QString&)),
@@ -222,6 +234,7 @@ namespace octave
     v_box_search->addWidget (search);
     v_box_search->addWidget (result);
     search_all->setLayout (v_box_search);
+    search_all->setObjectName ("documentation_tab_search");
     navi->addTab (search_all, tr ("Search"));
 
     connect (search, SIGNAL (search (void)),
@@ -234,8 +247,8 @@ namespace octave
 
     connect (search_engine->resultWidget (),
              SIGNAL (requestShowLink (const QUrl&)),
-             m_doc_browser,
-             SLOT(handle_index_clicked (const QUrl&)));
+             this,
+             SLOT(handle_search_result_clicked (const QUrl&)));
 
     // Fill the splitter
     insertWidget (0, navi);
@@ -272,15 +285,122 @@ namespace octave
       }
   }
 
+  QAction * documentation::add_action (const QIcon& icon, const QString& text,
+                                       const char *member, QWidget *receiver,
+                                       QToolBar *tool_bar)
+  {
+    QAction *a;
+    QWidget *r = this;
+    if (receiver != nullptr)
+      r = receiver;
+
+    a = new QAction (icon, text, this);
+    connect (a, SIGNAL (triggered ()), r, member);
+
+    if (tool_bar)
+      tool_bar->addAction (a);
+
+    m_doc_widget->addAction (a);  // important for shortcut context
+    a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+
+    return a;
+  }
+
+  void documentation::construct_tool_bar (void)
+  {
+    // Home, Previous, Next
+    m_action_go_home = add_action (resource_manager::icon ("go-home"),
+                                   tr ("Go home"), SLOT (home (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_prev = add_action (resource_manager::icon ("go-previous"),
+                                   tr ("Go back"), SLOT (backward (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_prev->setEnabled (false);
+
+    // popdown menu with prev pages files
+    QToolButton *popdown_button_prev_pages = new QToolButton ();
+    popdown_button_prev_pages->setToolTip (tr ("Previous Pages"));
+    popdown_button_prev_pages->setMenu (m_prev_pages_menu);
+    popdown_button_prev_pages->setPopupMode (QToolButton::InstantPopup);
+    popdown_button_prev_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
+    popdown_button_prev_pages->setCheckable (false);
+    popdown_button_prev_pages->setArrowType(Qt::DownArrow);
+    m_tool_bar->addWidget (popdown_button_prev_pages);
+    m_action_go_next = add_action (resource_manager::icon ("go-next"),
+                                   tr ("Go forward"), SLOT (forward (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_go_next->setEnabled (false);
+
+    // popdown menu with prev pages files
+    QToolButton *popdown_button_next_pages = new QToolButton ();
+    popdown_button_next_pages->setToolTip (tr ("Next Pages"));
+    popdown_button_next_pages->setMenu (m_next_pages_menu);
+    popdown_button_next_pages->setPopupMode (QToolButton::InstantPopup);
+    popdown_button_next_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
+    popdown_button_next_pages->setArrowType(Qt::DownArrow);
+    m_tool_bar->addWidget (popdown_button_next_pages);
+
+    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
+             m_action_go_prev, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (backwardAvailable (bool)),
+             popdown_button_prev_pages, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
+             m_action_go_next, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (forwardAvailable (bool)),
+             popdown_button_next_pages, SLOT (setEnabled (bool)));
+    connect (m_doc_browser, SIGNAL (historyChanged (void)),
+             this, SLOT (update_history_menus (void)));
+
+    // Init prev/next menus
+    for (int i = 0; i < max_history_entries; ++i)
+      {
+        m_prev_pages_actions[i] = new QAction (this);
+        m_prev_pages_actions[i]->setVisible (false);
+        m_next_pages_actions[i] = new QAction (this);
+        m_next_pages_actions[i]->setVisible (false);
+        m_prev_pages_menu->addAction (m_prev_pages_actions[i]);
+        m_next_pages_menu->addAction (m_next_pages_actions[i]);
+      }
+
+    connect (m_prev_pages_menu, SIGNAL (triggered (QAction *)),
+             this, SLOT (open_hist_url (QAction *)));
+    connect (m_next_pages_menu, SIGNAL (triggered (QAction *)),
+             this, SLOT (open_hist_url (QAction *)));
+
+    // Find
+    m_tool_bar->addSeparator ();
+    m_action_find = add_action (resource_manager::icon ("edit-find"),
+                                   tr ("Find"), SLOT (activate_find (void)),
+                                   this, m_tool_bar);
+
+    // Zoom
+    m_tool_bar->addSeparator ();
+    m_action_zoom_in = add_action (resource_manager::icon ("zoom-in"),
+                                   tr ("Zoom in"), SLOT (zoom_in (void)),
+                                   m_doc_browser, m_tool_bar);
+    m_action_zoom_out = add_action (resource_manager::icon ("zoom-out"),
+                                    tr ("Zoom out"), SLOT (zoom_out (void)),
+                                    m_doc_browser, m_tool_bar);
+    m_action_zoom_original = add_action (resource_manager::icon ("zoom-original"),
+                                   tr ("Zoom original"), SLOT (zoom_original (void)),
+                                   m_doc_browser, m_tool_bar);
+  }
+
   void documentation::global_search (void)
   {
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
     QString queries
       = m_help_engine->searchEngine ()->queryWidget ()->searchInput ();
+    m_query_string = queries.split (" ").first ();
 #else
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
+    if (queries.count ())
+      m_query_string = queries.first ().wordList.first ();
+    else
+      m_query_string = "";
 #endif
+
 
     m_help_engine->searchEngine ()->search (queries);
   }
@@ -292,12 +412,151 @@ namespace octave
 
   void documentation::global_search_finished (int)
   {
+    if (! m_internal_search.isEmpty ())
+      {
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
+        if (search_engine)
+          {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+            QVector<QHelpSearchResult> res
+              = search_engine->searchResults (0, search_engine->searchResultCount ());
+#else
+            QList< QPair<QString, QString> > res
+              = search_engine->hits (0, search_engine->hitCount ());
+#endif
+
+            if (res.count ())
+              {
+                QUrl url;
+
+                if (res.count () == 1)
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+                  url = res.front ().url ();
+#else
+                  url = res.front ().first;
+#endif
+                else
+                  {
+                    // Remove the quotes we added
+                    QString search_string = m_internal_search;
+
+                    for (auto r = res.begin (); r != res.end (); r++)
+                      {
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+                        QString title = r->title ().toLower ();
+                        QUrl tmpurl = r->url ();
+#else
+                        QString title = r->second.toLower ();
+                        QUrl tmpurl = r->first;
+#endif
+                        if (title.contains (search_string.toLower ()))
+                          {
+                            if (title.indexOf (search_string.toLower ()) == 0)
+                              {
+                                url = tmpurl;
+                                break;
+                              }
+                            else if (url.isEmpty ())
+                              url = tmpurl;
+                          }
+                      }
+                  }
+
+                if (! url.isEmpty ())
+                  {
+                    connect (this, SIGNAL (show_single_result (const QUrl)),
+                             m_doc_browser,
+                             SLOT (handle_index_clicked (const QUrl)));
+
+                    emit show_single_result (url);
+                  }
+              }
+           }
+
+        m_internal_search = QString ();
+      }
+
     qApp->restoreOverrideCursor();
   }
 
-  void documentation::notice_settings (const QSettings *) { }
+  void documentation::handle_search_result_clicked (const QUrl& url)
+  {
+    // Open url with matching text
+    m_doc_browser->handle_index_clicked (url);
 
-  void documentation::copyClipboard (void) { }
+    // Select all occurrences of matching text
+    select_all_occurrences (m_query_string);
+
+    // Open search widget with matching text as search string
+    m_find_line_edit->setText (m_query_string);
+    m_find_line_edit->parentWidget ()->show ();
+
+    // Go to to first occurrence of search text. Going to the end and then
+    // search backwards until the last occurrence ensures the search text
+    // is visible in the first line of the visible part of the text.
+    m_doc_browser->moveCursor (QTextCursor::End);
+    while (m_doc_browser->find (m_find_line_edit->text (),
+                                QTextDocument::FindBackward));
+  }
+
+  void documentation::select_all_occurrences (const QString& text)
+  {
+    // Get highlight background and text color
+    QPalette pal = QApplication::palette ();
+    QTextCharFormat format;
+    QColor col = pal.color (QPalette::Highlight);
+    col.setAlphaF (0.25);
+    format.setBackground (QBrush (col));
+    format.setForeground (QBrush (pal.color (QPalette::Text)));
+
+    // Create list for extra selected items
+    QList<QTextEdit::ExtraSelection> selected;
+    m_doc_browser->moveCursor (QTextCursor::Start);
+
+    // Find all occurrences and add them to the selection
+    while ( m_doc_browser->find (text) )
+      {
+        QTextEdit::ExtraSelection selected_item;
+        selected_item.cursor = m_doc_browser->textCursor ();
+        selected_item.format = format;
+        selected.append (selected_item);
+      }
+
+      // Apply selection and move back to the beginning
+      m_doc_browser->setExtraSelections (selected);
+      m_doc_browser->moveCursor (QTextCursor::Start);
+  }
+
+  void documentation::notice_settings (const QSettings *settings)
+  {
+    // Icon size in the toolbar.
+    int size_idx = settings->value (global_icon_size.key,
+                                    global_icon_size.def).toInt ();
+    size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+
+    QStyle *st = style ();
+    int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
+    m_tool_bar->setIconSize (QSize (icon_size, icon_size));
+
+    // Shortcuts
+    shortcut_manager::set_shortcut (m_action_find, "editor_edit:find_replace");
+    shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
+    shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
+    shortcut_manager::set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
+    shortcut_manager::set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
+    shortcut_manager::set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
+    shortcut_manager::set_shortcut (m_action_go_home, "doc_browser:go_home");
+    shortcut_manager::set_shortcut (m_action_go_prev, "doc_browser:go_back");
+    shortcut_manager::set_shortcut (m_action_go_next, "doc_browser:go_next");
+  }
+
+  void documentation::copyClipboard (void)
+  {
+    if (m_doc_browser->hasFocus ())
+      {
+        m_doc_browser->copy();
+      }
+  }
 
   void documentation::pasteClipboard (void) { }
 
@@ -305,12 +564,66 @@ namespace octave
 
   void documentation::load_ref (const QString& ref_name)
   {
-    if (m_help_engine)
+    if (! m_help_engine)
+      return;
+
+    // First search in the function index
+    QMap<QString, QUrl> found_links
+      = m_help_engine->linksForIdentifier (ref_name);
+
+    QTabWidget *navi = static_cast<QTabWidget*> (widget (0));
+
+    if (found_links.count() > 0)
       {
-        QMap<QString, QUrl> found_links
-          = m_help_engine->linksForIdentifier (ref_name);
-        if (found_links.count() > 0)
-          m_doc_browser->setSource (found_links.constBegin().value());
+        m_doc_browser->setSource (found_links.constBegin().value());
+
+        // Switch to function index tab
+        m_help_engine->indexWidget()->filterIndices (ref_name);
+        QWidget *index_tab
+          = navi->findChild<QWidget*> ("documentation_tab_index");
+        navi->setCurrentWidget (index_tab);
+      }
+    else
+      {
+        // Use full text search to provide the best match
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
+        QHelpSearchQueryWidget *search_query = search_engine->queryWidget ();
+
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+        QString query = ref_name;
+        query.prepend ("\"").append ("\"");
+#else
+        QList<QHelpSearchQuery> query;
+        query << QHelpSearchQuery (QHelpSearchQuery::DEFAULT,
+                                   QStringList (QString("\"") + ref_name + QString("\"")));
+#endif
+        m_internal_search = ref_name;
+        search_engine->search (query);
+
+        // Switch to search tab
+#if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
+        search_query->setSearchInput (query);
+#else
+        search_query->setQuery (query);
+#endif
+        QWidget *search_tab
+          = navi->findChild<QWidget*> ("documentation_tab_search");
+        navi->setCurrentWidget (search_tab);
+      }
+  }
+
+  void documentation::activate_find (void)
+  {
+    if (m_find_line_edit->parentWidget ()->isVisible ())
+      {
+        m_find_line_edit->parentWidget ()->hide ();
+        m_doc_browser->setFocus ();
+      }
+    else
+      {
+        m_find_line_edit->parentWidget ()->show ();
+        m_find_line_edit->selectAll ();
+        m_find_line_edit->setFocus ();
       }
   }
 
@@ -426,11 +739,103 @@ namespace octave
       }
   }
 
+  void documentation::update_history_menus (void)
+  {
+    if (m_prev_pages_count != m_doc_browser->backwardHistoryCount ())
+      {
+        update_history (m_doc_browser->backwardHistoryCount (),
+                        m_prev_pages_actions);
+        m_prev_pages_count = m_doc_browser->backwardHistoryCount ();
+      }
+
+    if (m_next_pages_count != m_doc_browser->forwardHistoryCount ())
+      {
+        update_history (m_doc_browser->forwardHistoryCount (),
+                        m_next_pages_actions);
+        m_next_pages_count = m_doc_browser->forwardHistoryCount ();
+      }
+  }
+
+  void documentation::update_history (int new_count, QAction **actions)
+  {
+    // Which menu has to be updated?
+    int prev_next = -1;
+    QAction *a = m_action_go_prev;
+    if (actions == m_next_pages_actions)
+      {
+        prev_next = 1;
+        a = m_action_go_next;
+      }
+
+    // Get maximal count limited by array size
+    int count = qMin (new_count, int (max_history_entries));
+
+    // Fill used menu entries
+    for (int i = 0; i < count; i++)
+      {
+        QString title = m_doc_browser->historyTitle (prev_next*(i+1));
+        title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
+
+        // Sinve the title only contains the section name and not the
+        // specific anchor, extract the latter from the url and append
+        // it to the title
+        QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString ();
+        if (url.contains ('#'))
+          {
+            // Get the anchor from the url
+            QString anchor = url.split ('#').last ();
+
+            // Remove internal string parts
+            anchor.remove (QRegExp ("^index-"));
+            anchor.remove (QRegExp ("^SEC_"));
+            anchor.remove (QRegExp ("^XREF"));
+            anchor.remove ("Concept-Index_cp_letter-");
+            anchor.replace ("-"," ");
+
+            // replace encoded special chars by there unencoded versions
+            QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
+            int pos = 0;
+            while ((pos = rx.indexIn(anchor, pos)) != -1)
+              {
+                anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr,16)));
+                pos += rx.matchedLength();
+              }
+
+            if (title != anchor)
+              title = title + ": " + anchor;
+          }
+
+        if (i == 0)
+          a->setText (title); // set tool tip for prev/next buttons
+
+        actions[i]->setText (title);
+        actions[i]->setData (m_doc_browser->historyUrl (prev_next*(i+1)));
+        actions[i]->setEnabled (true);
+        actions[i]->setVisible (true);
+      }
+
+    // Hide unused menu entries
+    for (int j = count; j < max_history_entries; j++)
+      {
+        actions[j]->setEnabled (false);
+        actions[j]->setVisible (false);
+      }
+  }
+
+  void documentation::open_hist_url (QAction *a)
+  {
+    m_doc_browser->setSource (a->data ().toUrl ());
+  }
+
 
   // The documentation browser
   documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
-    : QTextBrowser (p), m_help_engine (he)
-  { }
+    : QTextBrowser (p), m_help_engine (he), m_zoom_level (0)
+  {
+    setOpenLinks (false);
+    connect (this, SIGNAL (anchorClicked (QUrl)),
+             this, SLOT (handle_index_clicked (QUrl)));
+  }
 
   documentation_browser::~documentation_browser (void)
   { }
@@ -438,7 +843,10 @@ namespace octave
   void documentation_browser::handle_index_clicked (const QUrl& url,
                                                     const QString&)
   {
-    setSource (url);
+    if (url.scheme () == "qthelp")
+      setSource (url);
+    else
+      QDesktopServices::openUrl (url);
   }
 
   void documentation_browser::notice_settings (const QSettings *)
@@ -450,6 +858,45 @@ namespace octave
       return QVariant (m_help_engine->fileData(url));
     else
       return QTextBrowser::loadResource(type, url);
+  }
+
+  void documentation_browser::zoom_in (void)
+  {
+    if (m_zoom_level < max_zoom_level)
+      {
+        zoomIn ();
+        m_zoom_level++;
+      }
+  }
+
+  void documentation_browser::zoom_out (void)
+  {
+    if (m_zoom_level > min_zoom_level)
+      {
+        zoomOut ();
+        m_zoom_level--;
+      }
+  }
+
+  void documentation_browser::zoom_original (void)
+  {
+    zoomIn (- m_zoom_level);
+    m_zoom_level = 0;
+  }
+
+  void documentation_browser::wheelEvent (QWheelEvent *we)
+  {
+    if (we->modifiers () == Qt::ControlModifier)
+      {
+        if (we->delta () > 0)
+          zoom_in ();
+        else
+          zoom_out ();
+
+        we->accept ();
+      }
+    else
+      QTextEdit::wheelEvent (we);
   }
 
 }

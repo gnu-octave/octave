@@ -189,7 +189,7 @@ have_gnuplot_binary (void)
           std::string gnuplot_binary = tmp(0).string_value ();
 
           string_vector args (gnuplot_binary);
-          std::string gnuplot_path = search_path_for_file (path, args);
+          std::string gnuplot_path = octave::search_path_for_file (path, args);
 
           octave::sys::file_stat fs (gnuplot_path);
 
@@ -197,7 +197,7 @@ have_gnuplot_binary (void)
             {
               args[0] += exeext;
 
-              gnuplot_path = search_path_for_file (path, args);
+              gnuplot_path = octave::search_path_for_file (path, args);
 
               fs = octave::sys::file_stat (gnuplot_path);
             }

@@ -364,6 +364,22 @@ check_access (const cdef_class& cls, const octave_value& acc,
             panic_impossible ();
         }
     }
+  else if (acc.isobject ())
+    {
+      cdef_class ctx = get_class_context ();
+
+      // At this point, a class context is always required.
+      if (ctx.ok ())
+        {
+          if (ctx == cls)
+            return true;
+
+          cdef_class acc_cls (to_cdef (acc));
+
+          if (is_superclass (acc_cls, ctx))
+            return true;
+        }
+    }
   else if (acc.iscell ())
     {
       Cell acc_c = acc.cell_value ();
@@ -849,7 +865,7 @@ octave_classdef::subsref (const std::string& type,
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("subsref");
 
@@ -908,7 +924,7 @@ octave_classdef::subsasgn (const std::string& type,
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("subsasgn");
 
@@ -963,7 +979,7 @@ octave_classdef::numel (const octave_value_list& idx)
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls) && ! called_from_builtin ())
+  if (! in_class_method (cls))
     {
       cdef_method meth = cls.find_method ("numel");
 
@@ -1042,6 +1058,10 @@ public:
   octave_classdef_meta (const cdef_meta_object& obj)
     : object (obj) { }
 
+  octave_classdef_meta (const octave_classdef_meta&) = delete;
+
+  octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
+
   ~octave_classdef_meta (void)
   { object.meta_release (); }
 
@@ -1103,8 +1123,14 @@ private:
 class octave_classdef_superclass_ref : public octave_function
 {
 public:
+  octave_classdef_superclass_ref (void) = delete;
+
   octave_classdef_superclass_ref (const octave_value_list& a)
     : octave_function (), args (a) { }
+
+  octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
+
+  octave_classdef_superclass_ref& operator = (const octave_classdef_superclass_ref&) = delete;
 
   ~octave_classdef_superclass_ref (void) = default;
 
@@ -1113,7 +1139,7 @@ public:
   octave_function * function_value (bool = false) { return this; }
 
   octave_value_list
-  call (octave::tree_evaluator&, int nargout, const octave_value_list& idx)
+  call (octave::tree_evaluator& tw, int nargout, const octave_value_list& idx)
   {
     octave_value_list retval;
 
@@ -1137,12 +1163,11 @@ public:
           error ("`%s' is not a direct superclass of `%s'",
                  cname.c_str (), ctx.get_name ().c_str ());
 
-        if (! is_constructed_object (mname))
+        if (! is_constructed_object (tw, mname))
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave::symbol_scope scope
-          = octave::__require_current_scope__ ("octave_classdef_superclass_ref::call");
+        octave::symbol_scope scope = tw.get_current_scope ();
 
         octave_value sym = scope.varval (mname);
 
@@ -1185,10 +1210,10 @@ public:
   }
 
 private:
-  bool is_constructed_object (const std::string nm)
+  bool is_constructed_object (octave::tree_evaluator& tw,
+                              const std::string& nm)
   {
-    octave::call_stack& cs
-      = octave::__get_call_stack__ ("octave_classdef_superclass_ref::is_constructed_object");
+    octave::call_stack& cs = tw.get_call_stack ();
 
     octave_function *of = cs.current ();
 
@@ -1370,7 +1395,7 @@ cdef_object_scalar::subsref (const std::string& type,
 
             if (type.length () > 1 && type[1] == '(')
               {
-                std::list<octave_value_list>::const_iterator it = idx.begin ();
+                auto it = idx.begin ();
 
                 args = *++it;
 
@@ -1879,7 +1904,7 @@ cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& supercl
 cdef_method
 cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 {
-  method_iterator it = method_map.find (nm);
+  auto it = method_map.find (nm);
 
   if (it == method_map.end ())
     {
@@ -1918,8 +1943,16 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 class ctor_analyzer : public octave::tree_walker
 {
 public:
+  ctor_analyzer (void) = delete;
+
   ctor_analyzer (const std::string& ctor, const std::string& obj)
     : octave::tree_walker (), who (ctor), obj_name (obj) { }
+
+  ctor_analyzer (const ctor_analyzer&) = delete;
+
+  ctor_analyzer& operator = (const ctor_analyzer&) = delete;
+
+  ~ctor_analyzer (void) = default;
 
   void visit_statement_list (octave::tree_statement_list& t)
   {
@@ -2145,7 +2178,7 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
 cdef_property
 cdef_class::cdef_class_rep::find_property (const std::string& nm)
 {
-  property_iterator it = property_map.find (nm);
+  auto it = property_map.find (nm);
 
   if (it != property_map.end ())
     {
@@ -2885,8 +2918,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                   // detect which ones are invalid and do not correspond to a
                   // defined property.
 
-                  std::map<std::string, octave_value>::iterator git =
-                    get_methods.find (prop_name);
+                  auto git = get_methods.find (prop_name);
 
                   if (git != get_methods.end ())
                     {
@@ -2895,8 +2927,7 @@ cdef_class::make_meta_class (octave::interpreter& interp,
                       get_methods.erase (git);
                     }
 
-                  std::map<std::string, octave_value>::iterator sit =
-                    set_methods.find (prop_name);
+                  auto sit = set_methods.find (prop_name);
 
                   if (sit != set_methods.end ())
                     {
@@ -3324,11 +3355,8 @@ map2Cell (const std::map<T1, T2>& m)
   Cell retval (1, m.size ());
   int i = 0;
 
-  for (typename std::map<T1, T2>::const_iterator it = m.begin ();
-       it != m.end (); ++it, ++i)
-    {
-      retval(i) = to_ov (it->second);
-    }
+  for (auto it = m.begin (); it != m.end (); ++it, ++i)
+    retval(i) = to_ov (it->second);
 
   return retval;
 }
@@ -3350,10 +3378,10 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
 {
   std::string symbol_name = get_name () + '.' + nm;
 
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("cdef_package::cdef_package_rep::find");
+  octave::symbol_scope curr_scope
+    = octave::__get_current_scope__ ("cdef_package::cdef_package_rep::find");
 
-  return symtab.find (symbol_name, octave_value_list (), true, false);
+  return curr_scope.find (symbol_name);
 }
 
 octave_value_list
@@ -3750,7 +3778,7 @@ cdef_class
 cdef_manager::find_class (const std::string& name, bool error_if_not_found,
                           bool load_if_not_found)
 {
-  std::map<std::string, cdef_class>::iterator it = m_all_classes.find (name);
+  auto it = m_all_classes.find (name);
 
   if (it == m_all_classes.end ())
     {
@@ -3762,10 +3790,10 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
 
           if (pos == std::string::npos)
             {
-              octave::symbol_table& symtab
-                = octave::__get_symbol_table__ ("cdef_manager::find_class");
+              octave::symbol_scope curr_scope
+                = m_interpreter.get_current_scope ();
 
-              ov_cls = symtab.find (name);
+              ov_cls = curr_scope.find (name);
             }
           else
             {
@@ -3840,8 +3868,7 @@ cdef_manager::find_package (const std::string& name, bool error_if_not_found,
     }
   else
     {
-      octave::load_path& lp
-        = octave::__get_load_path__ ("cdef_manager::find_package");
+      octave::load_path& lp = m_interpreter.get_load_path ();
 
       if (load_if_not_found && lp.find_package (name))
         {

@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include "Array-util.h"
 #include "byte-swap.h"
@@ -293,7 +294,7 @@ octave_class::dotref (const octave_value_list& idx)
 Matrix
 octave_class::size (void)
 {
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     return octave_base_value::size ();
 
   Matrix retval (1, 2, 1.0);
@@ -333,7 +334,7 @@ octave_class::size (void)
 octave_idx_type
 octave_class::numel (const octave_value_list& idx)
 {
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     return octave_base_value::numel (idx);
 
   octave_idx_type retval = -1;
@@ -373,7 +374,7 @@ octave_class::subsref (const std::string& type,
 {
   octave_value_list retval;
 
-  if (in_class_method () || called_from_builtin ())
+  if (in_class_method ())
     {
       // FIXME: this block of code is the same as the body of
       // octave_struct::subsref.  Maybe it could be shared instead of
@@ -387,7 +388,7 @@ octave_class::subsref (const std::string& type,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
+                auto p = idx.begin ();
                 octave_value_list key_idx = *++p;
 
                 Cell tmp = dotref (key_idx);
@@ -534,7 +535,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 {
   octave_value retval;
 
-  if (! (in_class_method () || called_from_builtin ()))
+  if (! in_class_method ())
     {
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_class::subsasgn_common");
@@ -635,7 +636,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           {
             if (type.length () > 1 && type[1] == '.')
               {
-                std::list<octave_value_list>::const_iterator p = idx.begin ();
+                auto p = idx.begin ();
                 octave_value_list t_idx = *p;
 
                 octave_value_list key_idx = *++p;
@@ -689,7 +690,7 @@ octave_class::subsasgn_common (const octave_value& obj,
             std::string next_type = type.substr (1);
 
             Cell tmpc (1, 1);
-            octave_map::iterator pkey = map.seek (key);
+            auto pkey = map.seek (key);
             if (pkey != map.end ())
               {
                 map.contents (pkey).make_unique ();
@@ -730,7 +731,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       {
         if (n > 1 && type[1] == '.')
           {
-            std::list<octave_value_list>::const_iterator p = idx.begin ();
+            auto p = idx.begin ();
             octave_value_list key_idx = *++p;
 
             assert (key_idx.length () == 1);
@@ -846,7 +847,7 @@ octave_class::byte_size (void) const
 
   size_t retval = 0;
 
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.cbegin (); it != map.cend (); it++)
     {
       std::string key = map.key (it);
 
@@ -925,7 +926,7 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
     {
       for (auto& par : parent_list)
         {
-          octave_map::iterator smap = map.seek (par);
+          auto smap = map.seek (par);
 
           Cell& tmp = map.contents (smap);
 
@@ -1124,7 +1125,7 @@ octave_class::reconstruct_parents (void)
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
-  for (octave_map::const_iterator it = map.begin (); it != map.end (); it++)
+  for (auto it = map.cbegin (); it != map.cend (); it++)
     {
       std::string key = map.key (it);
       Cell        val = map.contents (it);
@@ -1187,7 +1188,7 @@ octave_class::save_ascii (std::ostream& os)
 
   os << "# length: " << m.nfields () << "\n";
 
-  octave_map::iterator i = m.begin ();
+  auto i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1293,7 +1294,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   int32_t len = m.nfields ();
   os.write (reinterpret_cast<char *> (&len), 4);
 
-  octave_map::iterator i = m.begin ();
+  auto i = m.begin ();
   while (i != m.end ())
     {
       octave_value val = map.contents (i);
@@ -1705,12 +1706,12 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
   if (nparents () != obj.nparents ())
     error ("mismatch in number of parent classes");
 
-  std::list<std::string> obj_parents
+  const std::list<std::string> obj_parents
     = obj.parent_class_name_list ();
-  std::list<std::string> pnames = parents ();
+  const std::list<std::string> pnames = parents ();
 
-  std::list<std::string>::const_iterator p = obj_parents.begin ();
-  std::list<std::string>::const_iterator q = pnames.begin ();
+  auto p = obj_parents.begin ();
+  auto q = pnames.begin ();
 
   while (p != obj_parents.end ())
     {

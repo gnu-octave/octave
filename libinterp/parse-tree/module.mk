@@ -9,6 +9,7 @@ PARSE_TREE_INC = \
   %reldir%/parse.h \
   %reldir%/profiler.h \
   %reldir%/pt-all.h \
+  %reldir%/pt-anon-scopes.h \
   %reldir%/pt-arg-list.h \
   %reldir%/pt-array-list.h \
   %reldir%/pt-assign.h \
@@ -59,6 +60,7 @@ PARSE_TREE_SRC = \
   %reldir%/oct-parse.h \
   %reldir%/oct-parse.yy \
   %reldir%/profiler.cc \
+  %reldir%/pt-anon-scopes.cc \
   %reldir%/pt-arg-list.cc \
   %reldir%/pt-array-list.cc \
   %reldir%/pt-assign.cc \
@@ -79,7 +81,6 @@ PARSE_TREE_SRC = \
   %reldir%/pt-id.cc \
   %reldir%/pt-idx.cc \
   %reldir%/pt-jit.cc \
-  %reldir%/pt-jump.cc \
   %reldir%/pt-loop.cc \
   %reldir%/pt-mat.cc \
   %reldir%/pt-misc.cc \
@@ -105,9 +106,6 @@ PARSE_TREE_SRC = \
 	mv $@-t $@ && \
 	rm -f $@-t1
 
-%reldir%/oct-parse.yy: %reldir%/oct-parse.in.yy
-	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
-
 noinst_LTLIBRARIES += \
   %reldir%/libparse-tree.la
 
@@ -117,15 +115,5 @@ noinst_LTLIBRARIES += \
   $(libinterp_liboctinterp_la_CPPFLAGS) \
   $(LLVM_CPPFLAGS)
 
-%canon_reldir%_libparse_tree_la_CFLAGS = \
-  $(AM_CFLAGS) \
-  $(WARN_CFLAGS)
-
-%canon_reldir%_libparse_tree_la_CXXFLAGS = \
-  $(AM_CXXFLAGS) \
-  $(WARN_CXXFLAGS) \
-  $(LLVM_CXXFLAGS)
-
 libinterp_EXTRA_DIST += \
-  %reldir%/oct-parse.in.yy \
   %reldir%/octave.gperf

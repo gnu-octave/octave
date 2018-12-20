@@ -41,7 +41,7 @@
 function hnew = copyobj (horig, hparent = 0)
 
   partypes = {"root", "figure", "axes", "hggroup"};
-  othertypes = {"line", "patch", "surface", "image", "text"};
+  othertypes = {"line", "patch", "surface", "image", "text", "uicontrol"};
   alltypes = [partypes othertypes];
 
   if (! ishghandle (horig) || nargin > 2)

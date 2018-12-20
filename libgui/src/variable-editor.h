@@ -7,14 +7,14 @@ Copyright (C) 2013 Rüdiger Sonderfeld
 This file is part of Octave.
 
 Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
+#include "dw-main-window.h"
+
 
 class octave_value;
 
@@ -43,6 +45,7 @@ namespace octave
 {
   class variable_editor_model;
   class variable_editor_view;
+
 
   // The individual variable subwindow class
 
@@ -92,6 +95,32 @@ namespace octave
 
     QRect m_prev_geom;
 
+#endif
+
+// See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#define QTBUG_44813_FIX_VERSION 0x999999
+  signals:
+
+    void queue_unfloat_float (void);
+
+    void queue_float (void);
+
+  protected slots:
+
+    void unfloat_float (void);
+
+    void refloat (void);
+
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+  protected:
+
+    bool event (QEvent *event);
+
+  private:
+
+    bool m_waiting_for_mouse_move;
+
+    bool m_waiting_for_mouse_button_release;
 #endif
   };
 
@@ -164,8 +193,6 @@ namespace octave
     void copyClipboard (void);
 
     void pasteClipboard (void);
-
-    void pasteTableClipboard (void);
 
     void handle_horizontal_scroll_action (int action);
 
@@ -300,8 +327,6 @@ namespace octave
 
     void pasteClipboard (void);
 
-    void pasteTableClipboard (void);
-
     void levelUp (void);
 
     // Send command to Octave interpreter.
@@ -324,8 +349,6 @@ namespace octave
 
     void paste_clipboard_signal (void);
 
-    void paste_table_clipboard_signal (void);
-
     void level_up_signal (void);
 
     void save_signal (void);
@@ -338,14 +361,12 @@ namespace octave
 
     void focusInEvent (QFocusEvent *ev);
 
-    void focusOutEvent (QFocusEvent *ev);
-
   private:
 
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                           const char *member);
 
-    QMainWindow *m_main;
+    dw_main_window *m_main;
 
     QToolBar *m_tool_bar;
 
@@ -380,7 +401,9 @@ namespace octave
 
     QString m_hovered_focus_vname;
 
-    QWidget *m_variable_focus_widget;
+    QWidget *m_focus_widget;
+
+    variable_dock_widget *m_focus_widget_vdw;
   };
 }
 

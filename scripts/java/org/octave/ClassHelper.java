@@ -40,7 +40,7 @@ public class ClassHelper
    * Add the given path to the classpath.
    * @param name String - path to addd to the classpath
    * @return boolean - true if the given path exists and was added to the classpath.
-   * @throws Exception
+   * @throws Exception if an error occurs
    */
   public static boolean addClassPath (String name)
     throws Exception
@@ -61,7 +61,7 @@ public class ClassHelper
    *
    * @param name String - path to remove from classpath.
    * @return boolean - true if the given path existed in the classpath before it was removed.
-   * @throws Exception
+   * @throws Exception if an error occurs
    */
   public static boolean removeClassPath (String name)
     throws Exception
@@ -98,7 +98,7 @@ public class ClassHelper
 
   public static String getClassPath ()
   {
-    StringBuffer buf = new StringBuffer ();
+    StringBuilder buf = new StringBuilder();
     String pathSep = System.getProperty ("path.separator");
     java.net.URL[] urls = loader.getURLs ();
 
@@ -142,7 +142,7 @@ public class ClassHelper
   // return list of methods for given class
   public static String getMethods (Class klass)
   {
-    StringBuffer sb = new StringBuffer ();
+    StringBuilder sb = new StringBuilder();
 
     Method theMethod[] = klass.getMethods ();
     for (int i = 0; i < theMethod.length; i++)
@@ -190,7 +190,7 @@ public class ClassHelper
   // return list of fields for given class
   public static String getFields (Class klass)
   {
-    StringBuffer sb = new StringBuffer ();
+    StringBuilder sb = new StringBuilder();
 
     Field theField[] = klass.getFields ();
     for (int i = 0; i < theField.length; i++)
@@ -224,7 +224,7 @@ public class ClassHelper
   }
 
 
-  public static Method findMethod (Class cls, String name, Class[] argTypes)
+  public static Method findMethod (Class<?> cls, String name, Class<?>[] argTypes)
   {
     try
       {
@@ -249,7 +249,7 @@ public class ClassHelper
   }
 
 
-  public static Constructor findConstructor (Class cls, Class[] argTypes)
+  public static Constructor findConstructor (Class<?> cls, Class<?>[] argTypes)
   {
     try
       {
@@ -285,8 +285,8 @@ public class ClassHelper
     catch (IllegalAccessException ex)
       {
         String mName = m.getName ();
-        Class[] pTypes = m.getParameterTypes ();
-        Class currClass = target.getClass ();
+        Class<?>[] pTypes = m.getParameterTypes ();
+        Class<?> currClass = target.getClass ();
 
         while (currClass != null)
           {
@@ -303,7 +303,7 @@ public class ClassHelper
             catch (IllegalAccessException ex2)
               {}
 
-            Class[] ifaceList = currClass.getInterfaces ();
+            Class<?>[] ifaceList = currClass.getInterfaces ();
             for (int i = 0; i < ifaceList.length; i++)
               {
                 try
@@ -492,7 +492,7 @@ public class ClassHelper
   }
 
 
-  private static boolean isCallableFrom (Class expCls, Class argCls)
+  private static boolean isCallableFrom (Class<?> expCls, Class<?> argCls)
   {
     //System.out.println("isCallableFrom: "+expCls.getCanonicalName() + " <=? " + argCls.getCanonicalName());
     if (argCls == null)
@@ -598,7 +598,7 @@ public class ClassHelper
   }
 
 
-  private static Object castArgument (Object obj, Class type, Class expType)
+  private static Object castArgument (Object obj, Class<?> type, Class<?> expType)
   {
     // System.out.println("expType:"+expType.getCanonicalName() + " <= type:" + type.getCanonicalName());
     if (type == null || expType.isAssignableFrom (type))

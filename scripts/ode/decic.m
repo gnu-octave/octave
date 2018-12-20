@@ -95,7 +95,7 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   endif
 
   ## Validate inputs
-  if (! isa (fun, "function_handle"))
+  if (! is_function_handle (fun))
     error ("Octave:invalid-input-arg",
            "decic: FUN must be a valid function handle");
   endif
@@ -162,7 +162,7 @@ function [y0_new, yp0_new, resnorm] = decic (fun, t0,
   endif
 
   x0 = [y0(! fixed_y0); yp0(! fixed_yp0)];
-  opt = optimset ("tolfun", TolFun, "tolx", TolX, "display", "iter-detailed");
+  opt = optimset ("tolfun", TolFun, "tolx", TolX, "FinDiffType", "central");
   x = ...
     fminunc (@(x) objective (x, t0, y0, fixed_y0, yp0, fixed_yp0, nl, nu, fun),
              x0, opt);

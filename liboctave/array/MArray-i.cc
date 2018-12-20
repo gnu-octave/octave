@@ -36,15 +36,6 @@ template class OCTAVE_API MArray<int>;
 template class OCTAVE_API MArray<int64_t>;
 #endif
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-// Explicit instantiation, as this seems to be required by weird compilers
-// like MSVC.  This should be harmless on other compilers.
-template int xmin<int> (int, int);
-template int xmax<int> (int, int);
-template long xmin<long> (long, long);
-template long xmax<long> (long, long);
-#endif
-
 INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
 #if defined (OCTAVE_ENABLE_64)
 INSTANTIATE_MARRAY_FRIENDS (int64_t, OCTAVE_API)

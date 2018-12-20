@@ -24,15 +24,20 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_documentation_h 1
 
 #include <QComboBox>
-#include <QWidget>
+#include <QMenu>
 #include <QSettings>
+#include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
+#include <QToolBar>
+#include <QToolButton>
+#include <QWidget>
 #include <QtHelp/QHelpEngine>
 
 namespace octave
 {
-  // The documentation browser
+  //! Documentation browser derived from Textbrowser
+
   class documentation_browser : public QTextBrowser
   {
     Q_OBJECT
@@ -50,14 +55,37 @@ namespace octave
                                const QString& keyword = QString ());
     void notice_settings (const QSettings *settings);
 
+    //! Zooming in and out while taking care of the zoom level
+    //!@{
+    void zoom_in (void);
+    void zoom_out (void);
+    void zoom_original (void);
+    //!@}
+
+  protected:
+
+     void wheelEvent (QWheelEvent *we);
+
   private:
 
     QHelpEngine *m_help_engine;
 
+    //! Store the current zoom level
+    int m_zoom_level;
+
+    //! Minimal and maximal zoom level avoiding calling
+    //! zoom_in and zoom_out without actually zooming but
+    //! with changing the stored zoom level
+    enum
+    {
+      min_zoom_level = -5,
+      max_zoom_level = 10
+    };
   };
 
 
-  // The documentaiton main class (splitter)
+  //! The documentaiton main class derived from QSplitter
+
   class documentation : public QSplitter
   {
     Q_OBJECT
@@ -81,6 +109,7 @@ namespace octave
 
   private slots:
 
+    void activate_find (void);
     void global_search (void);
     void global_search_started (void);
     void global_search_finished (int hits);
@@ -91,18 +120,58 @@ namespace octave
     void find_forward_from_anchor (const QString& text);
     void record_anchor_position (void);
     void handle_cursor_position_change (void);
+    void handle_search_result_clicked (const QUrl& url);
+
+    void update_history_menus (void);
+    void open_hist_url (QAction *a);
+
+  signals:
+
+    void show_single_result (const QUrl);
 
   private:
 
+    void construct_tool_bar (void);
+    QAction *add_action (const QIcon& icon, const QString& text,
+                         const char *member, QWidget *receiver = nullptr,
+                         QToolBar *tool_bar = nullptr);
+    void update_history (int new_count, QAction **actions);
+
+    //! Select all occurrences of a string in the doc browser
+    void select_all_occurrences (const QString& text);
+
     QHelpEngine *m_help_engine;
+    QString m_internal_search;
     documentation_browser *m_doc_browser;
     QLineEdit *m_find_line_edit;
     int m_search_anchor_position;
     QComboBox *m_filter;
     QString m_collection;
 
-  };
+    QWidget *m_doc_widget;
+    QToolBar *m_tool_bar;
+    QString m_query_string;
 
+    QAction *m_action_go_home;
+    QAction *m_action_go_prev;
+    QAction *m_action_go_next;
+    QMenu *m_prev_pages_menu;
+    QMenu *m_next_pages_menu;
+    int m_prev_pages_count;
+    int m_next_pages_count;
+
+    enum { max_history_entries = 10 };
+    QAction *m_prev_pages_actions[max_history_entries];
+    QAction *m_next_pages_actions[max_history_entries];
+
+    QAction *m_action_find;
+    QShortcut *m_findnext_shortcut;
+    QShortcut *m_findprev_shortcut;
+
+    QAction *m_action_zoom_in;
+    QAction *m_action_zoom_out;
+    QAction *m_action_zoom_original;
+  };
 }
 
 #endif

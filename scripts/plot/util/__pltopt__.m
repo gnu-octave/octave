@@ -63,7 +63,7 @@
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.
 ##
-## @item "+"
+## @item  "+"
 ## @itemx "o"
 ## @itemx "*"
 ## @itemx "."

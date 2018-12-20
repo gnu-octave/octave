@@ -122,7 +122,7 @@ subspace corresponding to the @var{k} leading eigenvalues of @var{S}.
 The Schur@tie{}decomposition is used to compute eigenvalues of a square
 matrix, and has applications in the solution of algebraic @nospell{Riccati}
 equations in control (see @code{are} and @code{dare}).
-@seealso{rsf2csf, ordschur, lu, chol, hess, qr, qz, svd}
+@seealso{rsf2csf, ordschur, ordeig, lu, chol, hess, qr, qz, svd}
 @end deftypefn */)
 {
   int nargin = args.length ();

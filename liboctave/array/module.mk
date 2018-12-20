@@ -132,8 +132,4 @@ noinst_LTLIBRARIES += %reldir%/libarray.la
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
-%canon_reldir%_libarray_la_CFLAGS = $(liboctave_liboctave_la_CFLAGS)
-
-%canon_reldir%_libarray_la_CXXFLAGS = $(liboctave_liboctave_la_CXXFLAGS)
-
 liboctave_liboctave_la_LIBADD += %reldir%/libarray.la

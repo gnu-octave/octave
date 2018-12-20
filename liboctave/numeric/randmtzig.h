@@ -68,30 +68,170 @@ along with Octave; see the file COPYING.  If not, see
 
 #define MT_N 624
 
-// Mersenne Twister.
-extern OCTAVE_API void oct_init_by_int (const uint32_t s);
-extern OCTAVE_API void oct_init_by_array (const uint32_t *init_key,
-                                          const int key_length);
-extern OCTAVE_API void oct_init_by_entropy (void);
-extern OCTAVE_API void oct_set_state (const uint32_t *save);
-extern OCTAVE_API void oct_get_state (uint32_t *save);
+namespace octave
+{
+  // Mersenne Twister.
 
-// Array generators.
-extern OCTAVE_API double oct_randu (void);
-extern OCTAVE_API double oct_randn (void);
-extern OCTAVE_API double oct_rande (void);
+  extern void init_mersenne_twister (void);
+  extern void init_mersenne_twister (const uint32_t seed);
+  extern void init_mersenne_twister (const uint32_t *init_key,
+                                     const int key_length);
 
-extern OCTAVE_API float oct_float_randu (void);
-extern OCTAVE_API float oct_float_randn (void);
-extern OCTAVE_API float oct_float_rande (void);
+  extern void set_mersenne_twister_state (const uint32_t *save);
+  extern void get_mersenne_twister_state (uint32_t *save);
 
-// Array generators.
-extern OCTAVE_API void oct_fill_randu (octave_idx_type n, double *p);
-extern OCTAVE_API void oct_fill_randn (octave_idx_type n, double *p);
-extern OCTAVE_API void oct_fill_rande (octave_idx_type n, double *p);
+  template <typename T> T rand_uniform (void);
+  template <typename T> T rand_normal (void);
+  template <typename T> T rand_exponential (void);
 
-extern OCTAVE_API void oct_fill_float_randu (octave_idx_type n, float *p);
-extern OCTAVE_API void oct_fill_float_randn (octave_idx_type n, float *p);
-extern OCTAVE_API void oct_fill_float_rande (octave_idx_type n, float *p);
+  template <typename T> void rand_uniform (octave_idx_type n, T *p);
+  template <typename T> void rand_normal (octave_idx_type n, T *p);
+  template <typename T> void rand_exponential (octave_idx_type n, T *p);
+
+  template <> double rand_uniform<double> (void);
+  template <> double rand_normal<double> (void);
+  template <> double rand_exponential<double> (void);
+
+  template <> float rand_uniform<float> (void);
+  template <> float rand_normal<float> (void);
+  template <> float rand_exponential<float> (void);
+
+  template <> void
+  rand_uniform<double> (octave_idx_type n, double *p);
+
+  template <> void
+  rand_normal<double> (octave_idx_type n, double *p);
+
+  template <> void
+  rand_exponential<double> (octave_idx_type n, double *p);
+
+  template <> void
+  rand_uniform<float> (octave_idx_type n, float *p);
+
+  template <> void
+  rand_normal<float> (octave_idx_type n, float *p);
+
+  template <> void
+  rand_exponential<float> (octave_idx_type n, float *p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
+inline void
+oct_init_by_entropy (void)
+{
+  octave::init_mersenne_twister ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
+inline void
+oct_init_by_int (const uint32_t seed)
+{
+  octave::init_mersenne_twister (seed);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::init_mersenne_twister' instead")
+inline void
+oct_init_by_array (const uint32_t *init_key, const int key_length)
+{
+  octave::init_mersenne_twister (init_key, key_length);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::set_mersenne_twister_state' instead")
+inline void
+oct_set_state (const uint32_t *save)
+{
+  octave::set_mersenne_twister_state (save);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::get_mersenne_twister_state' instead")
+inline void
+oct_get_state (uint32_t *save)
+{
+  octave::get_mersenne_twister_state (save);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform<double>' instead")
+inline double
+oct_randu (void)
+{
+  return octave::rand_uniform<double> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal<double>' instead")
+inline double
+oct_randn (void)
+{
+  return octave::rand_normal<double> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential<double>' instead")
+inline double
+oct_rande (void)
+{
+  return octave::rand_exponential<double> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform' instead")
+inline void
+oct_fill_randu (octave_idx_type n, double *p)
+{
+  octave::rand_uniform (n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal' instead")
+inline void
+oct_fill_randn (octave_idx_type n, double *p)
+{
+  octave::rand_normal (n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential' instead")
+inline void
+oct_fill_rande (octave_idx_type n, double *p)
+{
+  octave::rand_exponential (n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform<float>' instead")
+inline float
+oct_float_randu (void)
+{
+  return octave::rand_uniform<float> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal<float>' instead")
+inline float
+oct_float_randn (void)
+{
+  return octave::rand_normal<float> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential<float>' instead")
+inline float
+oct_float_rande (void)
+{
+  return octave::rand_exponential<float> ();
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_uniform' instead")
+inline void
+oct_fill_float_randu (octave_idx_type n, float *p)
+{
+  octave::rand_uniform (n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_normal' instead")
+inline void
+oct_fill_float_randn (octave_idx_type n, float *p)
+{
+  octave::rand_normal (n, p);
+}
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::rand_exponential' instead")
+inline void
+oct_fill_float_rande (octave_idx_type n, float *p)
+{
+  octave::rand_exponential (n, p);
+}
 
 #endif

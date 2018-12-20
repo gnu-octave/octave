@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
-#include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
@@ -49,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-io.h"
 #include "graphics.h"
 #include "help.h"
+#include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -64,8 +64,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
-#include "pt-mat.h"
 #include "pt-stmt.h"
+#include "settings.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
@@ -275,26 +275,6 @@ namespace octave
     return 0;
   }
 
-  static void execute_pkg_add (const std::string& dir)
-  {
-    std::string file_name = sys::file_ops::concat (dir, "PKG_ADD");
-
-    load_path& lp = __get_load_path__ ("execute_pkg_add");
-
-    try
-      {
-        lp.execute_pkg_add (dir);
-      }
-    catch (const interrupt_exception&)
-      {
-        interpreter::recover_from_exception ();
-      }
-    catch (const execution_exception&)
-      {
-        interpreter::recover_from_exception ();
-      }
-  }
-
   static void initialize_version_info (void)
   {
     octave_value_list args;
@@ -378,13 +358,17 @@ namespace octave
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
       m_environment (),
+      m_settings (),
       m_help_system (*this),
+      m_input_system (*this),
+      m_output_system (*this),
+      m_history_system (*this),
       m_dynamic_loader (*this),
       m_load_path (),
+      m_load_save_system (*this),
       m_type_info (),
       m_symbol_table (),
       m_evaluator (*this),
-      m_bp_table (),
       m_stream_list (*this),
       m_child_list (),
       m_url_handle_manager (),
@@ -421,16 +405,12 @@ namespace octave
 
     thread::init ();
 
-    set_default_prompts ();
-
     // Initialize default warning state before --traditional option
     // that may reset them.
 
     initialize_default_warning_state ();
 
     octave_ieee_init ();
-
-    octave_prepare_hdf5 ();
 
     initialize_xerbla_error_handler ();
 
@@ -531,11 +511,7 @@ namespace octave
           Ftexi_macros_file (*this, octave_value (texi_macros_file));
       }
 
-    // Force default line editor if we don't want readline editing.
-    if (line_editing)
-      initialize_command_input ();
-    else
-      command_editor::force_default_editor ();
+    m_input_system.initialize (line_editing);
 
     // These can come after command line args since none of them set any
     // defaults that might be changed by command line options.
@@ -588,7 +564,7 @@ namespace octave
               command_history::ignore_entries ();
           }
 
-        ::initialize_history (read_history_file);
+        m_history_system.initialize (read_history_file);
 
         if (! m_app_context)
           command_history::ignore_entries ();
@@ -627,7 +603,8 @@ namespace octave
         frame.add_method (m_load_path, &load_path::set_add_hook,
                           m_load_path.get_add_hook ());
 
-        m_load_path.set_add_hook (execute_pkg_add);
+        m_load_path.set_add_hook ([this] (const std::string& dir)
+                                  { this->execute_pkg_add (dir); });
 
         m_load_path.initialize (set_initial_path);
 
@@ -969,119 +946,7 @@ namespace octave
 
     // The big loop.
 
-    lexer *lxr = (application::interactive () ? new lexer ()
-                                              : new lexer (stdin));
-
-    parser parser (*lxr);
-
-    int retval = 0;
-    do
-      {
-        try
-          {
-            reset_error_handler ();
-
-            parser.reset ();
-
-            if (m_symbol_table.at_top_level ())
-              tree_evaluator::reset_debug_state ();
-
-            retval = parser.run ();
-
-            if (retval == 0)
-              {
-                if (parser.m_stmt_list)
-                  {
-                    parser.m_stmt_list->accept (m_evaluator);
-
-                    octave_quit ();
-
-                    if (! application::interactive ())
-                      {
-                        bool quit = (tree_return_command::returning
-                                     || tree_break_command::breaking);
-
-                        if (tree_return_command::returning)
-                          tree_return_command::returning = 0;
-
-                        if (tree_break_command::breaking)
-                          tree_break_command::breaking--;
-
-                        if (quit)
-                          break;
-                      }
-
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
-                    else
-                      command_editor::increment_current_command_number ();
-                  }
-                else if (parser.m_lexer.m_end_of_input)
-                  {
-                    retval = EOF;
-                    break;
-                  }
-              }
-          }
-        catch (const interrupt_exception&)
-          {
-            recover_from_exception ();
-
-            // Required newline when the user does Ctrl+C at the prompt.
-            if (application::interactive ())
-              octave_stdout << "\n";
-          }
-        catch (const index_exception& e)
-          {
-            recover_from_exception ();
-
-            std::cerr << "error: unhandled index exception: "
-                      << e.message () << " -- trying to return to prompt"
-                      << std::endl;
-          }
-        catch (const execution_exception& e)
-          {
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
-
-            if (application::interactive ())
-              recover_from_exception ();
-            else
-              {
-                // We should exit with a nonzero status.
-                retval = 1;
-                break;
-              }
-          }
-        catch (const std::bad_alloc&)
-          {
-            recover_from_exception ();
-
-            std::cerr << "error: out of memory -- trying to return to prompt"
-                      << std::endl;
-          }
-
-#if defined (DBSTOP_NANINF)
-        if (Vdebug_on_naninf)
-          {
-            if (setjump (naninf_jump) != 0)
-              debug_or_throw_exception (true);  // true = stack trace
-          }
-#endif
-      }
-    while (retval == 0);
-
-    if (retval == EOF)
-      {
-        if (application::interactive ())
-          octave_stdout << "\n";
-
-        retval = 0;
-      }
-
-    return retval;
+    return m_evaluator.repl (application::interactive ());
   }
 
   // Call a function with exceptions handled to avoid problems with
@@ -1126,7 +991,7 @@ namespace octave
     octave_link::process_events (true);
     octave_link::disconnect_link ();
 
-    OCTAVE_SAFE_CALL (remove_input_event_hook_functions, ());
+    OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 
     while (! atexit_functions.empty ())
       {
@@ -1148,7 +1013,7 @@ namespace octave
 
     OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
-    OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
+    OCTAVE_SAFE_CALL (m_history_system.write_timestamp, ());
 
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
@@ -1165,8 +1030,6 @@ namespace octave
     m_symbol_table.cleanup ();
 
     OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-    OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
     OCTAVE_SAFE_CALL (flush_stdout, ());
 
@@ -1267,6 +1130,26 @@ namespace octave
     return retval;
   }
 
+  octave_value_list interpreter::eval_string (const std::string& eval_str,
+                                              bool silent, int& parse_status,
+                                              int nargout)
+  {
+    return m_evaluator.eval_string (eval_str, silent, parse_status, nargout);
+  }
+
+  octave_value interpreter::eval_string (const std::string& eval_str,
+                                         bool silent, int& parse_status)
+  {
+    return m_evaluator.eval_string (eval_str, silent, parse_status);
+  }
+
+  octave_value_list interpreter::eval_string (const octave_value& arg,
+                                              bool silent, int& parse_status,
+                                              int nargout)
+  {
+    return m_evaluator.eval_string (arg, silent, parse_status, nargout);
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;
@@ -1308,26 +1191,45 @@ namespace octave
 
   void interpreter::maximum_braindamage (void)
   {
-    FPS1 (octave_value (">> "));
-    FPS2 (octave_value (""));
+    m_input_system.PS1 (">> ");
+    m_input_system.PS2 ("");
 
     m_evaluator.PS4 ("");
 
+    m_load_save_system.crash_dumps_octave_core (false);
+    m_load_save_system.save_default_options ("-mat-binary");
+
+    m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
+
     Fbeep_on_error (octave_value (true));
     Fconfirm_recursive_rmdir (octave_value (false));
-    Fcrash_dumps_octave_core (octave_value (false));
+
     Fdisable_diagonal_matrix (octave_value (true));
     Fdisable_permutation_matrix (octave_value (true));
     Fdisable_range (octave_value (true));
     Ffixed_point_format (octave_value (true));
-    Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
     Fprint_empty_dimensions (octave_value (false));
-    Fsave_default_options (octave_value ("-mat-binary"));
     Fstruct_levels_to_print (octave_value (0));
 
     disable_warning ("Octave:abbreviated-property-match");
     disable_warning ("Octave:data-file-in-path");
     disable_warning ("Octave:function-name-clash");
     disable_warning ("Octave:possible-matlab-short-circuit-operator");
+  }
+
+  void interpreter::execute_pkg_add (const std::string& dir)
+  {
+    try
+      {
+        m_load_path.execute_pkg_add (dir);
+      }
+    catch (const octave::interrupt_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+      }
+    catch (const octave::execution_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+      }
   }
 }

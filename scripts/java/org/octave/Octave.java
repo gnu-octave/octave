@@ -28,8 +28,8 @@ public class Octave
 {
   private static Object notifyObject = null;
   private static Object[] args = null;
-  private static LinkedList invokeList = new LinkedList ();
-  private static LinkedList waitList = new LinkedList ();
+  private static LinkedList<Object> invokeList = new LinkedList<Object> ();
+  private static LinkedList<Object> waitList = new LinkedList<Object> ();
 
   public native static boolean call (String name, Object[] argin, Object[] argout);
   public native static void doInvoke (int ID, Object[] args);

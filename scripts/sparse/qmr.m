@@ -95,7 +95,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       fun = str2func (A);
       Ax  = @(x) feval (fun, x, "notransp");
       Atx = @(x) feval (fun, x, "transp");
-    elseif (isa (A, "function_handle"))
+    elseif (is_function_handle (A))
       Ax  = @(x) feval (A, x, "notransp");
       Atx = @(x) feval (A, x, "transp");
     elseif (isnumeric (A) && issquare (A))
@@ -122,7 +122,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       fun = str2func (M1);
       M1m1x  = @(x) feval (fun, x, "notransp");
       M1tm1x = @(x) feval (fun, x, "transp");
-    elseif (isa (M1, "function_handle"))
+    elseif (is_function_handle (M1))
       M1m1x  = @(x) feval (M1, x, "notransp");
       M1tm1x = @(x) feval (M1, x, "transp");
     elseif (isnumeric (M1) && ismatrix (M1))
@@ -139,7 +139,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       fun = str2func (M2);
       M2m1x  = @(x) feval (fun, x, "notransp");
       M2tm1x = @(x) feval (fun, x, "transp");
-    elseif (isa (M2, "function_handle"))
+    elseif (is_function_handle (M2))
       M2m1x  = @(x) feval (M2, x, "notransp");
       M2tm1x = @(x) feval (M2, x, "transp");
     elseif (isnumeric (M2) && ismatrix (M2))

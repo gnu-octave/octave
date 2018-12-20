@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-time.h"
 
-#include "defaults.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "interpreter-private.h"
@@ -60,7 +59,7 @@ namespace octave
   {
     std::list<std::string> removed_fcns;
 
-    for (iterator p = m_lib_list.begin (); p != m_lib_list.end (); p++)
+    for (auto p = m_lib_list.begin (); p != m_lib_list.end (); p++)
       {
         if (*p == shl)
           {

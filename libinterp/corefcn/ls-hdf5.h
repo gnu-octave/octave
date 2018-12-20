@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#include <iostream>
+#include <iosfwd>
 
 #include "oct-hdf5-types.h"
 #include "ov.h"
@@ -55,6 +55,8 @@ public:
   void close (void);
 
   void open (const char *name, int mode, int);
+
+  void open_create (const char *name, int mode);
 };
 
 // input and output streams, subclassing istream and ostream

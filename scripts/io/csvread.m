@@ -32,7 +32,7 @@
 ##
 ## Any optional arguments are passed directly to @code{dlmread}
 ## (@pxref{XREFdlmread,,dlmread}).
-## @seealso{dlmread, textread, textscan, csvwrite, dlmwrite}
+## @seealso{dlmread, textscan, csvwrite, dlmwrite}
 ## @end deftypefn
 
 function x = csvread (filename, varargin)

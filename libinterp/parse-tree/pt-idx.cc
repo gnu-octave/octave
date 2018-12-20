@@ -110,14 +110,14 @@ namespace octave
 
     while (! m_args.empty ())
       {
-        std::list<tree_argument_list *>::iterator p = m_args.begin ();
+        auto p = m_args.begin ();
         delete *p;
         m_args.erase (p);
       }
 
     while (! m_dyn_field.empty ())
       {
-        std::list<tree_expression *>::iterator p = m_dyn_field.begin ();
+        auto p = m_dyn_field.begin ();
         delete *p;
         m_dyn_field.erase (p);
       }
@@ -145,8 +145,8 @@ namespace octave
   }
 
   static inline octave_value_list
-  make_value_list (octave::tree_evaluator *tw,
-                   octave::tree_argument_list *m_args,
+  make_value_list (tree_evaluator& tw,
+                   tree_argument_list *m_args,
                    const string_vector& m_arg_nm, const octave_value *object,
                    bool rvalue = true)
   {
@@ -158,7 +158,7 @@ namespace octave
             && object->is_undefined ())
           err_invalid_inquiry_subscript ();
 
-        retval = m_args->convert_to_const_vector (tw, object);
+        retval = tw.convert_to_const_vector (m_args, object);
       }
 
     octave_idx_type n = retval.length ();
@@ -171,7 +171,7 @@ namespace octave
 
   std::string
   tree_index_expression::get_struct_index
-  (tree_evaluator *tw,
+  (tree_evaluator& tw,
    std::list<string_vector>::const_iterator p_arg_nm,
    std::list<tree_expression *>::const_iterator p_dyn_field) const
   {
@@ -183,7 +183,7 @@ namespace octave
 
         if (df)
           {
-            octave_value t = tw->evaluate (df);
+            octave_value t = tw.evaluate (df);
 
             fn = t.xstring_value ("dynamic structure field names must be strings");
           }
@@ -194,46 +194,8 @@ namespace octave
     return fn;
   }
 
-  // Final step of processing an indexing error.  Add the name of the
-  // variable being indexed, if any, then issue an error.  (Will this also
-  // be needed by pt-lvalue, which calls subsref?)
-
-  static void
-  final_index_error (octave::index_exception& e,
-                     const octave::tree_expression *expr)
-  {
-    std::string extra_message;
-
-    octave::symbol_table& symtab
-      = octave::__get_symbol_table__ ("final_index_error");
-
-    octave::symbol_record::context_id context = symtab.current_context ();
-
-    if (expr->is_identifier ()
-        && dynamic_cast<const octave::tree_identifier *> (expr)->is_variable (context))
-      {
-        std::string var = expr->name ();
-
-        e.set_var (var);
-
-        octave_value fcn = symtab.find_function (var);
-
-        if (fcn.is_function ())
-          {
-            octave_function *fp = fcn.function_value ();
-
-            if (fp && fp->name () == var)
-              extra_message = " (note: variable '" + var + "' shadows function)";
-          }
-      }
-
-    std::string msg = e.message () + extra_message;
-
-    error_with_id (e.err_id (), msg.c_str ());
-  }
-
   octave_lvalue
-  tree_index_expression::lvalue (tree_evaluator *tw)
+  tree_index_expression::lvalue (tree_evaluator& tw)
   {
     octave_lvalue retval;
 
@@ -242,9 +204,9 @@ namespace octave
 
     int n = m_args.size ();
 
-    std::list<tree_argument_list *>::iterator p_args = m_args.begin ();
-    std::list<string_vector>::iterator p_arg_nm = m_arg_nm.begin ();
-    std::list<tree_expression *>::iterator p_dyn_field = m_dyn_field.begin ();
+    auto p_args = m_args.begin ();
+    auto p_arg_nm = m_arg_nm.begin ();
+    auto p_dyn_field = m_dyn_field.begin ();
 
     retval = m_expr->lvalue (tw);
 
@@ -266,7 +228,7 @@ namespace octave
               }
             catch (index_exception& e)  // problems with range, invalid type etc.
               {
-                final_index_error (e, m_expr);
+                tw.final_index_error (e, m_expr);
               }
 
             tmpidx.clear ();

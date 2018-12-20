@@ -146,18 +146,6 @@ function [cest, v] = condest (varargin)
     print_usage ();
   endif
 
-  if ((nargin == 3 && is_function_handle (varargin{3}))
-      || (nargin == 4 && is_function_handle (varargin{3})
-          && isnumeric (varargin{4})))
-    ## onenormest syntax, deprecated in 4.2
-    [cest, v] = condest_legacy (varargin{:});
-    return;
-  elseif ((nargin >= 5) && is_function_handle (varargin{4}))
-    ## onenormest syntax, deprecated in 4.2
-    [cest, v] = condest_legacy (varargin{:});
-    return;
-  endif
-
   have_A = false;
   have_t = false;
   have_apply_normest1 = false;
@@ -168,8 +156,8 @@ function [cest, v] = condest (varargin)
     if (! issquare (A))
       error ("condest: A must be square");
     endif
-    n = rows (A);
     have_A = true;
+    n = rows (A);
     if (nargin > 1)
       if (is_function_handle (varargin{2}))
         solve = varargin{2};
@@ -186,12 +174,15 @@ function [cest, v] = condest (varargin)
     else
       real_op = isreal (A);
     endif
-  else  # varargin{1} is a function handle
+  elseif (is_function_handle (varargin{1}))
     if (nargin == 1)
       error("condest: must provide SOLVEFCN when using AFCN");
     endif
     apply = varargin{1};
     have_apply_normest1 = true;
+    if (! is_function_handle (varargin{2}))
+      error("condest: SOLVEFCN must be a function handle");
+    endif
     solve = varargin{2};
     have_solve_normest1 = true;
     n = apply ("dim", [], varargin{4:end});
@@ -199,11 +190,16 @@ function [cest, v] = condest (varargin)
       t = varargin{3};
       have_t = true;
     endif
+  else
+    error ("condest: first argument must be a square matrix or function handle");
   endif
 
   if (! have_t)
     t = min (n, 5);
   endif
+
+  ## Disable warnings which may be emitted during calculation process.
+  warning ("off", "Octave:nearly-singular-matrix", "local");
 
   if (! have_solve_normest1)
      ## prepare solve in normest1 form
@@ -213,6 +209,13 @@ function [cest, v] = condest (varargin)
     else
       [L, U, P] = lu (A);
       solve = @(flag, x) solve_not_sparse (flag, x, n, real_op, L, U, P);
+    endif
+
+    ## Check for singular matrices before continuing
+    if (any (diag (U) == 0))
+      cest = Inf;
+      v = [];
+      return;
     endif
   endif
 
@@ -224,7 +227,9 @@ function [cest, v] = condest (varargin)
   [Ainv_norm, v, w] = normest1 (solve, t, [], varargin{4:end});
 
   cest = Anorm * Ainv_norm;
-  v = w / norm (w, 1);
+  if (isargout (2))
+    v = w / norm (w, 1);
+  endif
 
 endfunction
 
@@ -252,96 +257,6 @@ function value = solve_not_sparse (flag, x, n, real_op, L, U, P)
     case "transp"
       value = U \ (L \ (P * x));
   endswitch
-endfunction
-
-## FIXME: remove after 4.4
-function [cest, v] = condest_legacy (varargin)
-
-  persistent warned = false;
-  if (! warned)
-    warned = true;
-    warning ("Octave:deprecated-function",
-             "condest: this syntax is deprecated, call condest (A, SOLVEFUN, T, P1, P2, ...) instead.");
-  endif
-
-  default_t = 5;
-
-  have_A = false;
-  have_t = false;
-  have_solve = false;
-  if (isnumeric (varargin{1}))
-    A = varargin{1};
-    if (! issquare (A))
-      error ("condest: matrix must be square");
-    endif
-    n = rows (A);
-    have_A = true;
-
-    if (nargin > 1)
-      if (! is_function_handle (varargin{2}))
-        t = varargin{2};
-        have_t = true;
-      elseif (nargin > 2)
-        solve = varargin{2};
-        solve_t = varargin{3};
-        have_solve = true;
-        if (nargin > 3)
-          t = varargin{4};
-          have_t = true;
-        endif
-      else
-        error ("condest: must supply both SOLVE and SOLVE_T");
-      endif
-    endif
-  elseif (nargin > 4)
-    apply = varargin{1};
-    apply_t = varargin{2};
-    solve = varargin{3};
-    solve_t = varargin{4};
-    have_solve = true;
-    n = varargin{5};
-    if (! isscalar (n))
-      error ("condest: dimension argument of implicit form must be scalar");
-    endif
-    if (nargin > 5)
-      t = varargin{6};
-      have_t = true;
-    endif
-  else
-    error ("condest: implicit form of condest requires at least 5 arguments");
-  endif
-
-  if (! have_t)
-    t = min (n, default_t);
-  endif
-
-  if (! have_solve)
-    if (issparse (A))
-      [L, U, P, Pc] = lu (A);
-      solve = @(x) Pc' * (U \ (L \ (P * x)));
-      solve_t = @(x) P' * (L' \ (U' \ (Pc * x)));
-    else
-      [L, U, P] = lu (A);
-      solve = @(x) U \ (L \ (P*x));
-      solve_t = @(x) P' * (L' \ (U' \ x));
-    endif
-  endif
-
-  ## We already warned about this usage being deprecated.
-  ## Don't warn again about onenormest.
-  warning ("off", "Octave:deprecated-function", "local");
-
-  if (have_A)
-    Anorm = norm (A, 1);
-  else
-    Anorm = onenormest (apply, apply_t, n, t);
-  endif
-
-  [Ainv_norm, v, w] = onenormest (solve, solve_t, n, t);
-
-  cest = Anorm * Ainv_norm;
-  v = w / norm (w, 1);
-
 endfunction
 
 
@@ -373,9 +288,9 @@ endfunction
 %!    case "real"
 %!      value = isreal (A);
 %!    case "notransp"
-%!      value = x; for i = 1:m, value = A \ value;, endfor;
+%!      value = x; for i = 1:m, value = A \ value;, endfor
 %!    case "transp"
-%!      value = x; for i = 1:m, value = A' \ value;, endfor;
+%!      value = x; for i = 1:m, value = A' \ value;, endfor
 %!  endswitch
 %!endfunction
 
@@ -386,37 +301,7 @@ endfunction
 %! cA_test = norm (inv (A), 1) * norm (A, 1);
 %! assert (cA, cA_test, -2^-8);
 
-%!test # to be removed after 4.4
-%! warning ("off", "Octave:deprecated-function", "local");
-%! N = 6;
-%! A = hilb (N);
-%! solve = @(x) A\x; solve_t = @(x) A'\x;
-%! cA = condest (A, solve, solve_t);
-%! cA_test = norm (inv (A), 1) * norm (A, 1);
-%! assert (cA, cA_test, -2^-8);
-
-%!test # to be removed after 4.4
-%! warning ("off", "Octave:deprecated-function", "local");
-%! N = 6;
-%! A = hilb (N);
-%! apply = @(x) A*x; apply_t = @(x) A'*x;
-%! solve = @(x) A\x; solve_t = @(x) A'\x;
-%! cA = condest (apply, apply_t, solve, solve_t, N);
-%! cA_test = norm (inv (A), 1) * norm (A, 1);
-%! assert (cA, cA_test, -2^-6);
-
-%!test # to be removed after 4.4
-%! warning ("off", "Octave:deprecated-function", "local");
-%! N = 6;
-%! A = hilb (N);
-%! apply = @(x) A*x; apply_t = @(x) A'*x;
-%! solve = @(x) A\x; solve_t = @(x) A'\x;
-%! cA = condest (apply, apply_t, solve, solve_t, N, 2);
-%! cA_test = norm (inv (A), 1) * norm (A, 1);
-%! assert (cA, cA_test, -2^-6);
-
 %!test
-%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! N = 12;
 %! A = hilb (N);
 %! [~, v] = condest (A);
@@ -448,8 +333,18 @@ endfunction
 %! cA_test = norm (inv (A^2), 1) * norm (A^2, 1);
 %! assert (cA, cA_test, -2^-6);
 
+%!test <*46737>
+%! A = [ 0         0         0
+%!       0   3.33333 0.0833333
+%!       0 0.0833333   1.66667];
+%! [cest, v] = condest (A);
+%! assert (cest, Inf);
+%! assert (v, []);
+
 ## Test input validation
 %!error condest ()
 %!error condest (1,2,3,4,5,6,7)
 %!error <A must be square> condest ([1 2])
 %!error <must provide SOLVEFCN when using AFCN> condest (@sin)
+%!error <SOLVEFCN must be a function handle> condest (@sin, 1)
+%!error <argument must be a square matrix or function handle> condest ({1})

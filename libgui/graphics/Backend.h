@@ -48,6 +48,8 @@ namespace QtHandles
 
     void redraw_figure (const graphics_object& h) const;
 
+    void show_figure (const graphics_object& h) const;
+
     void update (const graphics_object& obj, int pId);
 
     bool initialize (const graphics_object& obj);

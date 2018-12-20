@@ -41,7 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "load-path.h"
 #include "ov.h"
-#include "symscope.h"
+#include "octave.h"
+#include "oct-map.h"
+#include "syminfo.h"
 #include "utils.h"
 
 #include "octave-gui.h"
@@ -49,15 +51,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 Q_DECLARE_METATYPE (octave_value)
-Q_DECLARE_METATYPE (octave::symbol_scope)
+Q_DECLARE_METATYPE (octave::symbol_info_list)
 
 namespace octave
 {
-  octave_qt_link::octave_qt_link (QWidget *, gui_application *app_context)
-    : octave_link (), m_app_context (app_context)
+  octave_qt_link::octave_qt_link (void)
+    : octave_link ()
   {
     qRegisterMetaType<octave_value> ("octave_value");
-    qRegisterMetaType<symbol_scope> ("symbol_scope");
+    qRegisterMetaType<symbol_info_list> ("symbol_info_list");
   }
 
   bool octave_qt_link::do_confirm_shutdown (void)
@@ -98,7 +100,8 @@ namespace octave
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
 
-    QFileInfo file_info (QString::fromStdString (file));
+    std::string abs_fname = octave::sys::env::make_absolute (file);
+
     QStringList btn;
     QStringList role;
     role << "YesRole" << "RejectRole";
@@ -109,8 +112,7 @@ namespace octave
 
     uiwidget_creator.signal_dialog (
                                     tr ("File\n%1\ndoes not exist. Do you want to create it?").
-                                    arg (QDir::currentPath () + QDir::separator ()
-                                         + QString::fromStdString (file)),
+                                    arg (QString::fromStdString (abs_fname)),
                                     tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
 
     // Wait while the user is responding to message box.
@@ -125,29 +127,30 @@ namespace octave
     return (answer == tr ("Create"));
   }
 
-  int octave_qt_link::do_message_dialog (const std::string& dlg,
-                                         const std::string& msg,
-                                         const std::string& title)
+  uint8NDArray octave_qt_link::do_get_named_icon (const std::string& icon_name)
   {
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
+    uint8NDArray retval;
+    QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
+    if (! icon.isNull ())
+      {
+        QImage img = icon.pixmap (QSize (32, 32)).toImage ();
 
-    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                    QString::fromStdString (title),
-                                    QString::fromStdString (dlg),
-                                    QStringList (), QString (),
-                                    QStringList ());
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    int answer = uiwidget_creator.get_dialog_result ();
-
-    uiwidget_creator.unlock ();
-
-    return answer;
+        if (img.format () == QImage::Format_ARGB32_Premultiplied)
+          {
+            retval.resize (dim_vector (img.height (), img.width (), 4), 0);
+            uint8_t* bits = img.bits ();
+            for (int i = 0; i < img.height (); i++)
+              for (int j = 0; j < img.width (); j++)
+                {
+                  retval(i,j,2) = bits[0];
+                  retval(i,j,1) = bits[1];
+                  retval(i,j,0) = bits[2];
+                  retval(i,j,3) = bits[3];
+                  bits += 4;
+                }
+          }
+      }
+    return retval;
   }
 
   std::string octave_qt_link::do_question_dialog (const std::string& msg,
@@ -195,11 +198,8 @@ namespace octave
   {
     QStringList retval;
 
-    for (std::list<std::string>::const_iterator it = lst.begin ();
-         it != lst.end (); it++)
-      {
-        retval.append (QString::fromStdString (*it));
-      }
+    for (auto it = lst.begin (); it != lst.end (); it++)
+      retval.append (QString::fromStdString (*it));
 
     return retval;
   }
@@ -214,8 +214,7 @@ namespace octave
     // (optional).  Qt wants a list of filters in the format of
     // 'FilterName (space separated exts)'.
 
-    for (octave_link::filter_list::const_iterator it = lst.begin ();
-         it != lst.end (); it++)
+    for (auto it = lst.begin (); it != lst.end (); it++)
       {
         QString ext = QString::fromStdString (it->first);
         QString name = QString::fromStdString (it->second);
@@ -300,11 +299,8 @@ namespace octave
 
     uiwidget_creator.unlock ();
 
-    for (QStringList::const_iterator it = inputLine->begin ();
-         it != inputLine->end (); it++)
-      {
-        retval.push_back (it->toStdString ());
-      }
+    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
+      retval.push_back (it->toStdString ());
 
     return retval;
   }
@@ -335,8 +331,7 @@ namespace octave
     // Add all the file dialog results to a string list.
     const QStringList *inputLine = uiwidget_creator.get_string_list ();
 
-    for (QStringList::const_iterator it = inputLine->begin ();
-         it != inputLine->end (); it++)
+    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
       retval.push_back (it->toStdString ());
 
     retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
@@ -411,6 +406,26 @@ namespace octave
     emit change_directory_signal (QString::fromStdString (dir));
   }
 
+  void octave_qt_link::do_file_remove (const std::string& old_name,
+                                       const std::string& new_name)
+  {
+    // Lock the mutex before signaling
+    lock ();
+
+    // Emit the signal for the editor for closing the file if it is open
+    emit file_remove_signal (QString::fromStdString (old_name),
+                             QString::fromStdString (new_name));
+
+    // Wait for the GUI and unlock when resumed
+    wait ();
+    unlock ();
+  }
+
+  void octave_qt_link::do_file_renamed (bool load_new)
+  {
+    emit file_renamed_signal (load_new);
+  }
+
   void octave_qt_link::do_execute_command_in_terminal
     (const std::string& command)
   {
@@ -418,13 +433,13 @@ namespace octave
   }
 
   void octave_qt_link::do_set_workspace (bool top_level, bool debug,
-                                         const symbol_scope& scope,
+                                         const symbol_info_list& syminfo,
                                          bool update_variable_editor)
   {
     if (! top_level && ! debug)
       return;
 
-    emit set_workspace_signal (top_level, debug, scope);
+    emit set_workspace_signal (top_level, debug, syminfo);
 
     if (update_variable_editor)
       emit refresh_variable_editor_signal ();
@@ -464,6 +479,15 @@ namespace octave
   void octave_qt_link::do_enter_debugger_event (const std::string& file,
                                                 int line)
   {
+    interpreter& interp = __get_interpreter__ (
+                                  "octave_qt_link::do_enter_debugger_event");
+    octave_value_list fct = F__which__ (interp, ovl (file),0);
+    octave_map map = fct(0).map_value ();
+
+    std::string type = map.contents ("type").data ()[0].string_value ();
+    if (type == "command-line function")
+      return;
+
     do_insert_debugger_pointer (file, line);
 
     emit enter_debugger_signal ();
@@ -489,18 +513,6 @@ namespace octave
   {
     emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
                                           line, QString::fromStdString (cond));
-  }
-
-  void octave_qt_link::do_set_default_prompts (std::string& ps1,
-                                               std::string& ps2,
-                                               std::string& ps4)
-  {
-    if (m_app_context->start_gui_p ())
-      {
-        ps1 = ">> ";
-        ps2 = "";
-        ps4 = "";
-      }
   }
 
   bool octave_qt_link::file_in_path (const std::string& file,
@@ -580,6 +592,25 @@ namespace octave
   void octave_qt_link::do_show_preferences (void)
   {
     emit show_preferences_signal ();
+  }
+
+  std::string octave_qt_link::do_gui_preference (const std::string& key,
+                                                 const std::string& value)
+  {
+    QString pref_value;
+
+    // Lock the mutex before signaling
+    lock ();
+
+    // Emit the signal for changing or getting a preference
+    emit gui_preference_signal (QString::fromStdString (key),
+                                QString::fromStdString (value), &pref_value);
+
+    // Wait for the GUI and unlock when resumed
+    wait ();
+    unlock ();
+
+    return pref_value.toStdString ();
   }
 
   void octave_qt_link::do_show_doc (const std::string& file)

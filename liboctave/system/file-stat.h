@@ -322,17 +322,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::base_file_stat' instead")
-typedef octave::sys::base_file_stat base_file_stat;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::file_stat' instead")
-typedef octave::sys::file_stat file_stat;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::file_fstat' instead")
-typedef octave::sys::file_fstat file_fstat;
-
-#endif
-
 #endif

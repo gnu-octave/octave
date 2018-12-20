@@ -77,7 +77,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SMS_BIN_OP_2 (R2, operator *, *, M, S) \
   SPARSE_SMS_BIN_OP_2 (R2, operator /, /, M, S)
 
-#define SPARSE_SMS_CMP_OP(F, OP, M, MZ, MC, S, SZ, SC)                  \
+#define SPARSE_SMS_CMP_OP(F, OP, M, S)                                  \
   SparseBoolMatrix                                                      \
   F (const M& m, const S& s)                                            \
   {                                                                     \
@@ -85,12 +85,14 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
-    if (MC (MZ) OP SC (s))                                              \
+    M::element_type m_zero = M::element_type ();                        \
+                                                                        \
+    if (m_zero OP s)                                                    \
       {                                                                 \
         r = SparseBoolMatrix (nr, nc, true);                            \
         for (octave_idx_type j = 0; j < nc; j++)                        \
           for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)   \
-            if (! (MC (m.data (i)) OP SC (s)))                          \
+            if (! (m.data (i) OP s))                                    \
               r.data (m.ridx (i) + j * nr) = false;                     \
         r.maybe_compress (true);                                        \
       }                                                                 \
@@ -102,7 +104,7 @@ along with Octave; see the file COPYING.  If not, see
         for (octave_idx_type j = 0; j < nc; j++)                        \
           {                                                             \
             for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-              if (MC (m.data (i)) OP SC (s))                            \
+              if (m.data (i) OP s)                                      \
                 {                                                       \
                   r.ridx (nel) = m.ridx (i);                            \
                   r.data (nel++) = true;                                \
@@ -114,37 +116,33 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMS_CMP_OPS(M, MZ, CM, S, SZ, CS)                \
-  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ,   , S, SZ,   )
+#define SPARSE_SMS_CMP_OPS(M, S)                \
+  SPARSE_SMS_CMP_OP (mx_el_lt, <,  M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_le, <=, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ge, >=, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_gt, >,  M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, S)
 
-#define SPARSE_SMS_EQNE_OPS(M, MZ, CM, S, SZ, CS)               \
-  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ,   , S, SZ,   )        \
-  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ,   , S, SZ,   )
+#define SPARSE_SMS_EQNE_OPS(M, S)               \
+  SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, S)        \
+  SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, S)
 
-#define SPARSE_SMS_BOOL_OP(F, OP, M, S, LHS_ZERO, RHS_ZERO)             \
+#define SPARSE_SMS_BOOL_OR_OP(M, S)                                     \
   SparseBoolMatrix                                                      \
-  F (const M& m, const S& s)                                            \
+  mx_el_or (const M& m, const S& s)                                     \
   {                                                                     \
     octave_idx_type nr = m.rows ();                                     \
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
+    M::element_type lhs_zero = M::element_type ();                      \
+    S rhs_zero = S ();                                                  \
+                                                                        \
     if (nr > 0 && nc > 0)                                               \
       {                                                                 \
-        if (LHS_ZERO OP (s != RHS_ZERO))                                \
-          {                                                             \
-            r = SparseBoolMatrix (nr, nc, true);                        \
-            for (octave_idx_type j = 0; j < nc; j++)                    \
-              for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-                if (! ((m.data (i) != LHS_ZERO) OP (s != RHS_ZERO)))    \
-                  r.data (m.ridx (i) + j * nr) = false;                 \
-            r.maybe_compress (true);                                    \
-          }                                                             \
+        if (s != rhs_zero)                                              \
+          r = SparseBoolMatrix (nr, nc, true);                          \
         else                                                            \
           {                                                             \
             r = SparseBoolMatrix (nr, nc, m.nnz ());                    \
@@ -153,7 +151,7 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0; j < nc; j++)                    \
               {                                                         \
                 for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-                  if ((m.data (i) != LHS_ZERO) OP (s != RHS_ZERO))      \
+                  if (m.data (i) != lhs_zero)                           \
                     {                                                   \
                       r.ridx (nel) = m.ridx (i);                        \
                       r.data (nel++) = true;                            \
@@ -166,12 +164,45 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMS_BOOL_OPS2(M, S, LHS_ZERO, RHS_ZERO)          \
-  SPARSE_SMS_BOOL_OP (mx_el_and, &&, M, S, LHS_ZERO, RHS_ZERO)  \
-  SPARSE_SMS_BOOL_OP (mx_el_or,  ||, M, S, LHS_ZERO, RHS_ZERO)
+#define SPARSE_SMS_BOOL_AND_OP(M, S)                                    \
+  SparseBoolMatrix                                                      \
+  mx_el_and (const M& m, const S& s)                                    \
+  {                                                                     \
+    octave_idx_type nr = m.rows ();                                     \
+    octave_idx_type nc = m.cols ();                                     \
+    SparseBoolMatrix r;                                                 \
+                                                                        \
+    M::element_type lhs_zero = M::element_type ();                      \
+    S rhs_zero = S ();                                                  \
+                                                                        \
+    if (nr > 0 && nc > 0)                                               \
+      {                                                                 \
+        if (s != rhs_zero)                                              \
+          {                                                             \
+            r = SparseBoolMatrix (nr, nc, m.nnz ());                    \
+            r.cidx (0) = static_cast<octave_idx_type> (0);              \
+            octave_idx_type nel = 0;                                    \
+            for (octave_idx_type j = 0; j < nc; j++)                    \
+              {                                                         \
+                for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                  if (m.data (i) != lhs_zero)                           \
+                    {                                                   \
+                      r.ridx (nel) = m.ridx (i);                        \
+                      r.data (nel++) = true;                            \
+                    }                                                   \
+                r.cidx (j + 1) = nel;                                   \
+              }                                                         \
+            r.maybe_compress (false);                                   \
+          }                                                             \
+        else                                                            \
+          r = SparseBoolMatrix (nr, nc);                                \
+      }                                                                 \
+    return r;                                                           \
+  }
 
-#define SPARSE_SMS_BOOL_OPS(M, S, ZERO)         \
-  SPARSE_SMS_BOOL_OPS2(M, S, ZERO, ZERO)
+#define SPARSE_SMS_BOOL_OPS(M, S)               \
+  SPARSE_SMS_BOOL_AND_OP (M, S)                 \
+  SPARSE_SMS_BOOL_OR_OP (M, S)
 
 // scalar by sparse matrix operations.
 
@@ -219,7 +250,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SSM_BIN_OP_2 (R2, operator *, *, S, M) \
   SPARSE_SSM_BIN_OP_2 (R2, operator /, /, S, M)
 
-#define SPARSE_SSM_CMP_OP(F, OP, S, SZ, SC, M, MZ, MC)                  \
+#define SPARSE_SSM_CMP_OP(F, OP, S, M)                                  \
   SparseBoolMatrix                                                      \
   F (const S& s, const M& m)                                            \
   {                                                                     \
@@ -227,12 +258,14 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
-    if (SC (s) OP SC (MZ))                                              \
+    M::element_type m_zero = M::element_type ();                        \
+                                                                        \
+    if (s OP m_zero)                                                    \
       {                                                                 \
         r = SparseBoolMatrix (nr, nc, true);                            \
         for (octave_idx_type j = 0; j < nc; j++)                        \
           for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)   \
-            if (! (SC (s) OP MC (m.data (i))))                          \
+            if (! (s OP m.data (i)))                                    \
               r.data (m.ridx (i) + j * nr) = false;                     \
         r.maybe_compress (true);                                        \
       }                                                                 \
@@ -244,7 +277,7 @@ along with Octave; see the file COPYING.  If not, see
         for (octave_idx_type j = 0; j < nc; j++)                        \
           {                                                             \
             for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-              if (SC (s) OP MC (m.data (i)))                            \
+              if (s OP m.data (i))                                      \
                 {                                                       \
                   r.ridx (nel) = m.ridx (i);                            \
                   r.data (nel++) = true;                                \
@@ -256,37 +289,33 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SSM_CMP_OPS(S, SZ, SC, M, MZ, MC)                \
-  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ,   , M, MZ,   )
+#define SPARSE_SSM_CMP_OPS(S, M)                \
+  SPARSE_SSM_CMP_OP (mx_el_lt, <,  S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_le, <=, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ge, >=, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_gt, >,  S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, M)
 
-#define SPARSE_SSM_EQNE_OPS(S, SZ, SC, M, MZ, MC)               \
-  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ,   , M, MZ,   )        \
-  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ,   , M, MZ,   )
+#define SPARSE_SSM_EQNE_OPS(S, M)               \
+  SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, M)        \
+  SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, M)
 
-#define SPARSE_SSM_BOOL_OP(F, OP, S, M, LHS_ZERO, RHS_ZERO)             \
+#define SPARSE_SSM_BOOL_OR_OP(S, M)                                     \
   SparseBoolMatrix                                                      \
-  F (const S& s, const M& m)                                            \
+  mx_el_or (const S& s, const M& m)                                     \
   {                                                                     \
     octave_idx_type nr = m.rows ();                                     \
     octave_idx_type nc = m.cols ();                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
+    S lhs_zero = S ();                                                  \
+    M::element_type rhs_zero = M::element_type ();                      \
+                                                                        \
     if (nr > 0 && nc > 0)                                               \
       {                                                                 \
-        if ((s != LHS_ZERO) OP RHS_ZERO)                                \
-          {                                                             \
-            r = SparseBoolMatrix (nr, nc, true);                        \
-            for (octave_idx_type j = 0; j < nc; j++)                    \
-              for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-                if (! ((s != LHS_ZERO) OP (m.data (i) != RHS_ZERO)))    \
-                  r.data (m.ridx (i) + j * nr) = false;                 \
-            r.maybe_compress (true);                                    \
-          }                                                             \
+        if (s != lhs_zero)                                              \
+          r = SparseBoolMatrix (nr, nc, true);                          \
         else                                                            \
           {                                                             \
             r = SparseBoolMatrix (nr, nc, m.nnz ());                    \
@@ -295,7 +324,7 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0; j < nc; j++)                    \
               {                                                         \
                 for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
-                  if ((s != LHS_ZERO) OP (m.data (i) != RHS_ZERO))      \
+                  if (m.data (i) != rhs_zero)                           \
                     {                                                   \
                       r.ridx (nel) = m.ridx (i);                        \
                       r.data (nel++) = true;                            \
@@ -308,12 +337,45 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SSM_BOOL_OPS2(S, M, LHS_ZERO, RHS_ZERO)          \
-  SPARSE_SSM_BOOL_OP (mx_el_and, &&, S, M, LHS_ZERO, RHS_ZERO)  \
-  SPARSE_SSM_BOOL_OP (mx_el_or,  ||, S, M, LHS_ZERO, RHS_ZERO)
+#define SPARSE_SSM_BOOL_AND_OP(S, M)                                    \
+  SparseBoolMatrix                                                      \
+  mx_el_and (const S& s, const M& m)                                    \
+  {                                                                     \
+    octave_idx_type nr = m.rows ();                                     \
+    octave_idx_type nc = m.cols ();                                     \
+    SparseBoolMatrix r;                                                 \
+                                                                        \
+    S lhs_zero = S ();                                                  \
+    M::element_type rhs_zero = M::element_type ();                      \
+                                                                        \
+    if (nr > 0 && nc > 0)                                               \
+      {                                                                 \
+        if (s != lhs_zero)                                              \
+          {                                                             \
+            r = SparseBoolMatrix (nr, nc, m.nnz ());                    \
+            r.cidx (0) = static_cast<octave_idx_type> (0);              \
+            octave_idx_type nel = 0;                                    \
+            for (octave_idx_type j = 0; j < nc; j++)                    \
+              {                                                         \
+                for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                  if (m.data (i) != rhs_zero)                           \
+                    {                                                   \
+                      r.ridx (nel) = m.ridx (i);                        \
+                      r.data (nel++) = true;                            \
+                    }                                                   \
+                r.cidx (j + 1) = nel;                                   \
+              }                                                         \
+            r.maybe_compress (false);                                   \
+          }                                                             \
+        else                                                            \
+          r = SparseBoolMatrix (nr, nc);                                \
+      }                                                                 \
+    return r;                                                           \
+  }
 
-#define SPARSE_SSM_BOOL_OPS(S, M, ZERO)         \
-  SPARSE_SSM_BOOL_OPS2(S, M, ZERO, ZERO)
+#define SPARSE_SSM_BOOL_OPS(S, M)               \
+  SPARSE_SSM_BOOL_AND_OP (S, M)                 \
+  SPARSE_SSM_BOOL_OR_OP (S, M)
 
 // sparse matrix by sparse matrix operations.
 
@@ -660,7 +722,7 @@ along with Octave; see the file COPYING.  If not, see
 // FIXME: this macro duplicates the bodies of the template functions
 // defined in the SPARSE_SSM_CMP_OP and SPARSE_SMS_CMP_OP macros.
 
-#define SPARSE_SMSM_CMP_OP(F, OP, M1, Z1, C1, M2, Z2, C2)               \
+#define SPARSE_SMSM_CMP_OP(F, OP, M1, M2)                               \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -672,14 +734,17 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nr = m2.rows ();                                 \
     octave_idx_type m2_nc = m2.cols ();                                 \
                                                                         \
+    M1::element_type Z1 = M1::element_type ();                          \
+    M2::element_type Z2 = M2::element_type ();                          \
+                                                                        \
     if (m1_nr == 1 && m1_nc == 1)                                       \
       {                                                                 \
-        if (C1 (m1.elem (0,0)) OP C2 (Z2))                              \
+        if (m1.elem (0,0) OP Z2)                                        \
           {                                                             \
             r = SparseBoolMatrix (m2_nr, m2_nc, true);                  \
             for (octave_idx_type j = 0; j < m2_nc; j++)                 \
               for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
-                if (! (C1 (m1.elem (0,0)) OP C2 (m2.data (i))))         \
+                if (! (m1.elem (0,0) OP m2.data (i)))                   \
                   r.data (m2.ridx (i) + j * m2_nr) = false;             \
             r.maybe_compress (true);                                    \
           }                                                             \
@@ -691,7 +756,7 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0; j < m2_nc; j++)                 \
               {                                                         \
                 for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
-                  if (C1 (m1.elem (0,0)) OP C2 (m2.data (i)))           \
+                  if (m1.elem (0,0) OP m2.data (i))                     \
                     {                                                   \
                       r.ridx (nel) = m2.ridx (i);                       \
                       r.data (nel++) = true;                            \
@@ -703,12 +768,12 @@ along with Octave; see the file COPYING.  If not, see
       }                                                                 \
     else if (m2_nr == 1 && m2_nc == 1)                                  \
       {                                                                 \
-        if (C1 (Z1) OP C2 (m2.elem (0,0)))                              \
+        if (Z1 OP m2.elem (0,0))                                        \
           {                                                             \
             r = SparseBoolMatrix (m1_nr, m1_nc, true);                  \
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
-                if (! (C1 (m1.data (i)) OP C2 (m2.elem (0,0))))         \
+                if (! (m1.data (i) OP m2.elem (0,0)))                   \
                   r.data (m1.ridx (i) + j * m1_nr) = false;             \
             r.maybe_compress (true);                                    \
           }                                                             \
@@ -720,7 +785,7 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               {                                                         \
                 for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
-                  if (C1 (m1.data (i)) OP C2 (m2.elem (0,0)))           \
+                  if (m1.data (i) OP m2.elem (0,0))                     \
                     {                                                   \
                       r.ridx (nel) = m1.ridx (i);                       \
                       r.data (nel++) = true;                            \
@@ -734,7 +799,7 @@ along with Octave; see the file COPYING.  If not, see
       {                                                                 \
         if (m1_nr != 0 || m1_nc != 0)                                   \
           {                                                             \
-            if (C1 (Z1) OP C2 (Z2))                                     \
+            if (Z1 OP Z2)                                               \
               {                                                         \
                 r = SparseBoolMatrix (m1_nr, m1_nc, true);              \
                 for (octave_idx_type j = 0; j < m1_nc; j++)             \
@@ -747,19 +812,19 @@ along with Octave; see the file COPYING.  If not, see
                       {                                                 \
                         if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                           {                                             \
-                            if (! (C1 (Z1) OP C2 (m2.data (i2))))       \
+                            if (! (Z1 OP m2.data (i2)))                 \
                               r.data (m2.ridx (i2) + j * m1_nr) = false; \
                             i2++;                                       \
                           }                                             \
                         else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2)) \
                           {                                             \
-                            if (! (C1 (m1.data (i1)) OP C2 (Z2)))       \
+                            if (! (m1.data (i1) OP Z2))                 \
                               r.data (m1.ridx (i1) + j * m1_nr) = false; \
                             i1++;                                       \
                           }                                             \
                         else                                            \
                           {                                             \
-                            if (! (C1 (m1.data (i1)) OP C2 (m2.data (i2)))) \
+                            if (! (m1.data (i1) OP m2.data (i2)))       \
                               r.data (m1.ridx (i1) + j * m1_nr) = false; \
                             i1++;                                       \
                             i2++;                                       \
@@ -783,7 +848,7 @@ along with Octave; see the file COPYING.  If not, see
                       {                                                 \
                         if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                           {                                             \
-                            if (C1 (Z1) OP C2 (m2.data (i2)))           \
+                            if (Z1 OP m2.data (i2))                     \
                               {                                         \
                                 r.ridx (nel) = m2.ridx (i2);            \
                                 r.data (nel++) = true;                  \
@@ -792,7 +857,7 @@ along with Octave; see the file COPYING.  If not, see
                           }                                             \
                         else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2)) \
                           {                                             \
-                            if (C1 (m1.data (i1)) OP C2 (Z2))           \
+                            if (m1.data (i1) OP Z2)                     \
                               {                                         \
                                 r.ridx (nel) = m1.ridx (i1);            \
                                 r.data (nel++) = true;                  \
@@ -801,7 +866,7 @@ along with Octave; see the file COPYING.  If not, see
                           }                                             \
                         else                                            \
                           {                                             \
-                            if (C1 (m1.data (i1)) OP C2 (m2.data (i2))) \
+                            if (m1.data (i1) OP m2.data (i2))           \
                               {                                         \
                                 r.ridx (nel) = m1.ridx (i1);            \
                                 r.data (nel++) = true;                  \
@@ -824,24 +889,23 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMSM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)             \
-  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, Z1,   , M2, Z2,   )
+#define SPARSE_SMSM_CMP_OPS(M1, M2)             \
+  SPARSE_SMSM_CMP_OP (mx_el_lt, <,  M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_le, <=, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ge, >=, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_gt, >,  M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_SMSM_EQNE_OPS(M1, Z1, C1, M2, Z2, C2)            \
-  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, Z1,   , M2, Z2,   )     \
-  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, Z1,   , M2, Z2,   )
+#define SPARSE_SMSM_EQNE_OPS(M1, M2)            \
+  SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1, M2)     \
+  SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-// FIXME: this macro duplicates the bodies of the template functions
-// defined in the SPARSE_SSM_BOOL_OP and SPARSE_SMS_BOOL_OP macros.
-
-#define SPARSE_SMSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO)          \
+#define SPARSE_SMSM_BOOL_AND_OP(M1, M2)                                 \
+  extern SparseBoolMatrix mx_el_and (const M1&, const M2::element_type&); \
+  extern SparseBoolMatrix mx_el_and (const M1::element_type&, const M2&); \
   SparseBoolMatrix                                                      \
-  F (const M1& m1, const M2& m2)                                        \
+  mx_el_and (const M1& m1, const M2& m2)                                \
   {                                                                     \
     SparseBoolMatrix r;                                                 \
                                                                         \
@@ -851,70 +915,77 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nr = m2.rows ();                                 \
     octave_idx_type m2_nc = m2.cols ();                                 \
                                                                         \
+    M1::element_type lhs_zero = M1::element_type ();                    \
+    M2::element_type rhs_zero = M2::element_type ();                    \
+                                                                        \
     if (m1_nr == 1 && m1_nc == 1)                                       \
-      {                                                                 \
-        if (m2_nr > 0 && m2_nc > 0)                                     \
-          {                                                             \
-            if ((m1.elem (0,0) != LHS_ZERO) OP RHS_ZERO)                \
-              {                                                         \
-                r = SparseBoolMatrix (m2_nr, m2_nc, true);              \
-                for (octave_idx_type j = 0; j < m2_nc; j++)             \
-                  for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
-                    if (! ((m1.elem (0,0) != LHS_ZERO) OP (m2.data (i) != RHS_ZERO))) \
-                      r.data (m2.ridx (i) + j * m2_nr) = false;         \
-                r.maybe_compress (true);                                \
-              }                                                         \
-            else                                                        \
-              {                                                         \
-                r = SparseBoolMatrix (m2_nr, m2_nc, m2.nnz ());         \
-                r.cidx (0) = static_cast<octave_idx_type> (0);          \
-                octave_idx_type nel = 0;                                \
-                for (octave_idx_type j = 0; j < m2_nc; j++)             \
-                  {                                                     \
-                    for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
-                      if ((m1.elem (0,0) != LHS_ZERO) OP (m2.data (i) != RHS_ZERO)) \
-                        {                                               \
-                          r.ridx (nel) = m2.ridx (i);                   \
-                          r.data (nel++) = true;                        \
-                        }                                               \
-                    r.cidx (j + 1) = nel;                               \
-                  }                                                     \
-                r.maybe_compress (false);                               \
-              }                                                         \
-          }                                                             \
-      }                                                                 \
+      return mx_el_and (m1.elem (0,0), m2);                             \
     else if (m2_nr == 1 && m2_nc == 1)                                  \
+      return mx_el_and (m1, m2.elem (0,0));                             \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
       {                                                                 \
-        if (m1_nr > 0 && m1_nc > 0)                                     \
+        if (m1_nr != 0 || m1_nc != 0)                                   \
           {                                                             \
-            if (LHS_ZERO OP (m2.elem (0,0) != RHS_ZERO))                \
+            r = SparseBoolMatrix (m1_nr, m1_nc, m1.nnz () + m2.nnz ()); \
+            r.cidx (0) = static_cast<octave_idx_type> (0);              \
+            octave_idx_type nel = 0;                                    \
+            for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               {                                                         \
-                r = SparseBoolMatrix (m1_nr, m1_nc, true);              \
-                for (octave_idx_type j = 0; j < m1_nc; j++)             \
-                  for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
-                    if (! ((m1.data (i) != LHS_ZERO) OP (m2.elem (0,0) != RHS_ZERO))) \
-                      r.data (m1.ridx (i) + j * m1_nr) = false;         \
-                r.maybe_compress (true);                                \
-              }                                                         \
-            else                                                        \
-              {                                                         \
-                r = SparseBoolMatrix (m1_nr, m1_nc, m1.nnz ());         \
-                r.cidx (0) = static_cast<octave_idx_type> (0);          \
-                octave_idx_type nel = 0;                                \
-                for (octave_idx_type j = 0; j < m1_nc; j++)             \
+                octave_idx_type i1 = m1.cidx (j);                       \
+                octave_idx_type e1 = m1.cidx (j+1);                     \
+                octave_idx_type i2 = m2.cidx (j);                       \
+                octave_idx_type e2 = m2.cidx (j+1);                     \
+                while (i1 < e1 || i2 < e2)                              \
                   {                                                     \
-                    for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
-                      if ((m1.data (i) != LHS_ZERO) OP (m2.elem (0,0) != RHS_ZERO)) \
-                        {                                               \
-                          r.ridx (nel) = m1.ridx (i);                   \
-                          r.data (nel++) = true;                        \
-                        }                                               \
-                    r.cidx (j + 1) = nel;                               \
+                    if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
+                      i2++;                                             \
+                    else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2))   \
+                      i1++;                                             \
+                    else                                                \
+                      {                                                 \
+                        if (m1.data (i1) != lhs_zero && m2.data (i2) != rhs_zero) \
+                          {                                             \
+                            r.ridx (nel) = m1.ridx (i1);                \
+                            r.data (nel++) = true;                      \
+                          }                                             \
+                        i1++;                                           \
+                        i2++;                                           \
+                      }                                                 \
                   }                                                     \
-                r.maybe_compress (false);                               \
+                r.cidx (j + 1) = nel;                                   \
               }                                                         \
+            r.maybe_compress (false);                                   \
           }                                                             \
       }                                                                 \
+    else                                                                \
+      {                                                                 \
+        if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
+          octave::err_nonconformant ("mx_el_and_", m1_nr, m1_nc, m2_nr, m2_nc); \
+      }                                                                 \
+    return r;                                                           \
+  }
+
+#define SPARSE_SMSM_BOOL_OR_OP(M1, M2)                                  \
+  extern SparseBoolMatrix mx_el_or (const M1&, const M2::element_type&); \
+  extern SparseBoolMatrix mx_el_or (const M1::element_type&, const M2&); \
+  SparseBoolMatrix                                                      \
+  mx_el_or (const M1& m1, const M2& m2)                                 \
+  {                                                                     \
+    SparseBoolMatrix r;                                                 \
+                                                                        \
+    octave_idx_type m1_nr = m1.rows ();                                 \
+    octave_idx_type m1_nc = m1.cols ();                                 \
+                                                                        \
+    octave_idx_type m2_nr = m2.rows ();                                 \
+    octave_idx_type m2_nc = m2.cols ();                                 \
+                                                                        \
+    M1::element_type lhs_zero = M1::element_type ();                    \
+    M2::element_type rhs_zero = M2::element_type ();                    \
+                                                                        \
+    if (m1_nr == 1 && m1_nc == 1)                                       \
+      return mx_el_or (m1.elem (0,0), m2);                              \
+    else if (m2_nr == 1 && m2_nc == 1)                                  \
+      return mx_el_or (m1, m2.elem (0,0));                              \
     else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
       {                                                                 \
         if (m1_nr != 0 || m1_nc != 0)                                   \
@@ -932,7 +1003,7 @@ along with Octave; see the file COPYING.  If not, see
                   {                                                     \
                     if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                       {                                                 \
-                        if (LHS_ZERO OP m2.data (i2) != RHS_ZERO)       \
+                        if (m2.data (i2) != rhs_zero)                   \
                           {                                             \
                             r.ridx (nel) = m2.ridx (i2);                \
                             r.data (nel++) = true;                      \
@@ -941,7 +1012,7 @@ along with Octave; see the file COPYING.  If not, see
                       }                                                 \
                     else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2))   \
                       {                                                 \
-                        if (m1.data (i1) != LHS_ZERO OP RHS_ZERO)       \
+                        if (m1.data (i1) != lhs_zero)                   \
                           {                                             \
                             r.ridx (nel) = m1.ridx (i1);                \
                             r.data (nel++) = true;                      \
@@ -950,7 +1021,7 @@ along with Octave; see the file COPYING.  If not, see
                       }                                                 \
                     else                                                \
                       {                                                 \
-                        if (m1.data (i1) != LHS_ZERO OP m2.data (i2) != RHS_ZERO) \
+                        if (m1.data (i1) != lhs_zero || m2.data (i2) != rhs_zero) \
                           {                                             \
                             r.ridx (nel) = m1.ridx (i1);                \
                             r.data (nel++) = true;                      \
@@ -967,17 +1038,14 @@ along with Octave; see the file COPYING.  If not, see
     else                                                                \
       {                                                                 \
         if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0))   \
-          octave::err_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc);           \
+          octave::err_nonconformant ("mx_el_or", m1_nr, m1_nc, m2_nr, m2_nc); \
       }                                                                 \
     return r;                                                           \
   }
 
-#define SPARSE_SMSM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO)               \
-  SPARSE_SMSM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO)       \
-  SPARSE_SMSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
-
-#define SPARSE_SMSM_BOOL_OPS(M1, M2, ZERO)      \
-  SPARSE_SMSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
+#define SPARSE_SMSM_BOOL_OPS(M1, M2)            \
+  SPARSE_SMSM_BOOL_AND_OP (M1, M2)              \
+  SPARSE_SMSM_BOOL_OR_OP (M1, M2)
 
 // matrix by sparse matrix operations.
 
@@ -1053,14 +1121,13 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-// FIXME: Pass a specific ZERO value
 #define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2)              \
   SPARSE_MSM_BIN_OP_1 (R1, operator +,  +, M1, M2)      \
   SPARSE_MSM_BIN_OP_1 (R1, operator -,  -, M1, M2)      \
   SPARSE_MSM_BIN_OP_2 (R2, product,     *, M1, M2)      \
   SPARSE_MSM_BIN_OP_1 (R2, quotient,    /, M1, M2)
 
-#define SPARSE_MSM_CMP_OP(F, OP, M1, C1, M2, C2)                        \
+#define SPARSE_MSM_CMP_OP(F, OP, M1, M2)                                \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -1082,7 +1149,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0;                                    \
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               for (octave_idx_type i = 0; i < m1_nr; i++)               \
-                if (C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)))         \
+                if (m1.elem (i, j) OP m2.elem (i, j))                   \
                   nel++;                                                \
                                                                         \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel);                   \
@@ -1093,7 +1160,7 @@ along with Octave; see the file COPYING.  If not, see
               {                                                         \
                 for (octave_idx_type i = 0; i < m1_nr; i++)             \
                   {                                                     \
-                    bool el = C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)); \
+                    bool el = m1.elem (i, j) OP m2.elem (i, j);         \
                     if (el)                                             \
                       {                                                 \
                         r.data (ii) = el;                               \
@@ -1112,19 +1179,19 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_MSM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)      \
-  SPARSE_MSM_CMP_OP (mx_el_lt, <,  M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_le, <=, M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_ge, >=, M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_gt, >,  M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
+#define SPARSE_MSM_CMP_OPS(M1, M2)              \
+  SPARSE_MSM_CMP_OP (mx_el_lt, <,  M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_le, <=, M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_ge, >=, M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_gt, >,  M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_MSM_EQNE_OPS(M1, Z1, C1, M2, Z2, C2)     \
-  SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1,   , M2,   )      \
-  SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
+#define SPARSE_MSM_EQNE_OPS(M1, M2)             \
+  SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1, M2)      \
+  SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_MSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO)           \
+#define SPARSE_MSM_BOOL_OP(F, OP, M1, M2)                               \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -1136,6 +1203,9 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nr = m2.rows ();                                 \
     octave_idx_type m2_nc = m2.cols ();                                 \
                                                                         \
+    M1::element_type lhs_zero = M1::element_type ();                    \
+    M2::element_type rhs_zero = M2::element_type ();                    \
+                                                                        \
     if (m2_nr == 1 && m2_nc == 1)                                       \
       r = SparseBoolMatrix (F (m1, m2.elem (0,0)));                     \
     else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
@@ -1146,8 +1216,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0;                                    \
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               for (octave_idx_type i = 0; i < m1_nr; i++)               \
-                if ((m1.elem (i, j) != LHS_ZERO)                        \
-                    OP (m2.elem (i, j) != RHS_ZERO))                    \
+                if ((m1.elem (i, j) != lhs_zero)                        \
+                    OP (m2.elem (i, j) != rhs_zero))                    \
                   nel++;                                                \
                                                                         \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel);                   \
@@ -1158,8 +1228,8 @@ along with Octave; see the file COPYING.  If not, see
               {                                                         \
                 for (octave_idx_type i = 0; i < m1_nr; i++)             \
                   {                                                     \
-                    bool el = (m1.elem (i, j) != LHS_ZERO)              \
-                      OP (m2.elem (i, j) != RHS_ZERO);                  \
+                    bool el = (m1.elem (i, j) != lhs_zero)              \
+                      OP (m2.elem (i, j) != rhs_zero);                  \
                     if (el)                                             \
                       {                                                 \
                         r.data (ii) = el;                               \
@@ -1178,12 +1248,9 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_MSM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO)                \
-  SPARSE_MSM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO)        \
-  SPARSE_MSM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
-
-#define SPARSE_MSM_BOOL_OPS(M1, M2, ZERO)       \
-  SPARSE_MSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
+#define SPARSE_MSM_BOOL_OPS(M1, M2)             \
+  SPARSE_MSM_BOOL_OP (mx_el_and, &&, M1, M2)    \
+  SPARSE_MSM_BOOL_OP (mx_el_or,  ||, M1, M2)
 
 // sparse matrix by matrix operations.
 
@@ -1273,7 +1340,7 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_SMM_BIN_OP_2 (R2, product,     *, M1, M2)      \
   SPARSE_SMM_BIN_OP_2 (R2, quotient,    /, M1, M2)
 
-#define SPARSE_SMM_CMP_OP(F, OP, M1, C1, M2, C2)                        \
+#define SPARSE_SMM_CMP_OP(F, OP, M1, M2)                                \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -1295,7 +1362,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0;                                    \
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               for (octave_idx_type i = 0; i < m1_nr; i++)               \
-                if (C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)))         \
+                if (m1.elem (i, j) OP m2.elem (i, j))                   \
                   nel++;                                                \
                                                                         \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel);                   \
@@ -1306,7 +1373,7 @@ along with Octave; see the file COPYING.  If not, see
               {                                                         \
                 for (octave_idx_type i = 0; i < m1_nr; i++)             \
                   {                                                     \
-                    bool el = C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)); \
+                    bool el = m1.elem (i, j) OP m2.elem (i, j);         \
                     if (el)                                             \
                       {                                                 \
                         r.data (ii) = el;                               \
@@ -1325,19 +1392,19 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMM_CMP_OPS(M1, Z1, C1, M2, Z2, C2)      \
-  SPARSE_SMM_CMP_OP (mx_el_lt, <,  M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_le, <=, M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_ge, >=, M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_gt, >,  M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
+#define SPARSE_SMM_CMP_OPS(M1, M2)              \
+  SPARSE_SMM_CMP_OP (mx_el_lt, <,  M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_le, <=, M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_ge, >=, M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_gt, >,  M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_SMM_EQNE_OPS(M1, Z1, C1, M2, Z2, C2)     \
-  SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1,   , M2,   )      \
-  SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
+#define SPARSE_SMM_EQNE_OPS(M1, M2)             \
+  SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1, M2)      \
+  SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1, M2)
 
-#define SPARSE_SMM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO)           \
+#define SPARSE_SMM_BOOL_OP(F, OP, M1, M2)                               \
   SparseBoolMatrix                                                      \
   F (const M1& m1, const M2& m2)                                        \
   {                                                                     \
@@ -1349,6 +1416,9 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nr = m2.rows ();                                 \
     octave_idx_type m2_nc = m2.cols ();                                 \
                                                                         \
+    M1::element_type lhs_zero = M1::element_type ();                    \
+    M2::element_type rhs_zero = M2::element_type ();                    \
+                                                                        \
     if (m1_nr == 1 && m1_nc == 1)                                       \
       r = SparseBoolMatrix (F (m1.elem (0,0), m2));                     \
     else if (m1_nr == m2_nr && m1_nc == m2_nc)                          \
@@ -1359,8 +1429,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0;                                    \
             for (octave_idx_type j = 0; j < m1_nc; j++)                 \
               for (octave_idx_type i = 0; i < m1_nr; i++)               \
-                if ((m1.elem (i, j) != LHS_ZERO)                        \
-                    OP (m2.elem (i, j) != RHS_ZERO))                    \
+                if ((m1.elem (i, j) != lhs_zero)                        \
+                    OP (m2.elem (i, j) != rhs_zero))                    \
                   nel++;                                                \
                                                                         \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel);                   \
@@ -1371,8 +1441,8 @@ along with Octave; see the file COPYING.  If not, see
               {                                                         \
                 for (octave_idx_type i = 0; i < m1_nr; i++)             \
                   {                                                     \
-                    bool el = (m1.elem (i, j) != LHS_ZERO)              \
-                      OP (m2.elem (i, j) != RHS_ZERO);                  \
+                    bool el = (m1.elem (i, j) != lhs_zero)              \
+                      OP (m2.elem (i, j) != rhs_zero);                  \
                     if (el)                                             \
                       {                                                 \
                         r.data (ii) = el;                               \
@@ -1391,12 +1461,9 @@ along with Octave; see the file COPYING.  If not, see
     return r;                                                           \
   }
 
-#define SPARSE_SMM_BOOL_OPS2(M1, M2, LHS_ZERO, RHS_ZERO)                \
-  SPARSE_SMM_BOOL_OP (mx_el_and, &&, M1, M2, LHS_ZERO, RHS_ZERO)        \
-  SPARSE_SMM_BOOL_OP (mx_el_or,  ||, M1, M2, LHS_ZERO, RHS_ZERO)
-
-#define SPARSE_SMM_BOOL_OPS(M1, M2, ZERO)       \
-  SPARSE_SMM_BOOL_OPS2(M1, M2, ZERO, ZERO)
+#define SPARSE_SMM_BOOL_OPS(M1, M2)             \
+  SPARSE_SMM_BOOL_OP (mx_el_and, &&, M1, M2)    \
+  SPARSE_SMM_BOOL_OP (mx_el_or,  ||, M1, M2)
 
 // Avoid some code duplication.  Maybe we should use templates.
 
@@ -1858,7 +1925,7 @@ along with Octave; see the file COPYING.  If not, see
         }                                                               \
     }
 
-#define SPARSE_FULL_MUL(RET_TYPE, EL_TYPE, ZERO)                        \
+#define SPARSE_FULL_MUL(RET_TYPE, EL_TYPE)                              \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1874,7 +1941,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nc, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nc, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \
@@ -1890,7 +1959,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define SPARSE_FULL_TRANS_MUL(RET_TYPE, EL_TYPE, ZERO, CONJ_OP)         \
+#define SPARSE_FULL_TRANS_MUL(RET_TYPE, EL_TYPE, CONJ_OP)               \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1914,7 +1983,7 @@ along with Octave; see the file COPYING.  If not, see
             {                                                           \
               octave_quit ();                                           \
                                                                         \
-              EL_TYPE acc = ZERO;                                       \
+              EL_TYPE acc = EL_TYPE ();                                 \
               for (octave_idx_type k = m.cidx (j) ; k < m.cidx (j+1); k++) \
                 acc += a.elem (m.ridx (k),i) * CONJ_OP (m.data (k));    \
               retval.xelem (j,i) = acc;                                 \
@@ -1923,7 +1992,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define FULL_SPARSE_MUL(RET_TYPE, EL_TYPE, ZERO)                        \
+#define FULL_SPARSE_MUL(RET_TYPE, EL_TYPE)                              \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1939,7 +2008,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nr, a_nc);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nc, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nc, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \
@@ -1956,7 +2027,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval;                                                    \
     }
 
-#define FULL_SPARSE_MUL_TRANS(RET_TYPE, EL_TYPE, ZERO, CONJ_OP)         \
+#define FULL_SPARSE_MUL_TRANS(RET_TYPE, EL_TYPE, CONJ_OP)               \
   octave_idx_type nr = m.rows ();                                       \
   octave_idx_type nc = m.cols ();                                       \
                                                                         \
@@ -1972,7 +2043,9 @@ along with Octave; see the file COPYING.  If not, see
     octave::err_nonconformant ("operator *", nr, nc, a_nc, a_nr);               \
   else                                                                  \
     {                                                                   \
-      RET_TYPE retval (nr, a_nr, ZERO);                                 \
+      RET_TYPE::element_type zero = RET_TYPE::element_type ();          \
+                                                                        \
+      RET_TYPE retval (nr, a_nr, zero);                                 \
                                                                         \
       for (octave_idx_type i = 0; i < a_nc ; i++)                       \
         {                                                               \

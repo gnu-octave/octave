@@ -32,10 +32,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "gtk-manager.h"
 #include "help.h"
+#include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
+#include "load-save.h"
+#include "oct-hist.h"
 #include "ov-classdef.h"
+#include "pager.h"
 #include "symtab.h"
 
 namespace octave
@@ -67,11 +71,39 @@ namespace octave
     return interp.get_help_system ();
   }
 
+  history_system& __get_history_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_history_system ();
+  }
+
+  input_system& __get_input_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_input_system ();
+  }
+
+  output_system& __get_output_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_output_system ();
+  }
+
   load_path& __get_load_path__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_load_path ();
+  }
+
+  load_save_system& __get_load_save_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_load_save_system ();
   }
 
   type_info& __get_type_info__ (const std::string& who)
@@ -114,9 +146,9 @@ namespace octave
 
   bp_table& __get_bp_table__ (const std::string& who)
   {
-    interpreter& interp = __get_interpreter__ (who);
+    tree_evaluator& tw = __get_evaluator__ (who);
 
-    return interp.get_bp_table ();
+    return tw.get_bp_table ();
   }
 
   call_stack& __get_call_stack__ (const std::string& who)

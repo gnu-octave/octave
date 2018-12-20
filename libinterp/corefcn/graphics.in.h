@@ -1326,7 +1326,7 @@ public:
   const std::string& current_value (void) const
   {
     if (current_type != radio_t)
-      error ("%s: property has no radio value");
+      error ("%s: property has no radio value", get_name ().c_str ());
 
     return current_val;
   }
@@ -2287,6 +2287,10 @@ public:
     return children.get_hidden ();
   }
 
+  void get_children_of_type (const caseless_str& type, bool get_invisible,
+                             bool traverse,
+                             std::list<graphics_object> &children_list) const;
+
   void set_modified (const octave_value& val) { set___modified__ (val); }
 
   void set___modified__ (const octave_value& val) { __modified__ = val; }
@@ -2320,7 +2324,7 @@ public:
 
   static property_list::pval_map_type factory_defaults (void);
 
-  // FIXME: these functions should be generated automatically by the
+  // FIXME: These functions should be generated automatically by the
   //        genprops.awk script.
   //
   // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
@@ -2374,7 +2378,7 @@ protected:
     string_property type frs , ty
     handle_property uicontextmenu u , graphics_handle ()
     any_property userdata , Matrix ()
-    bool_property visible , "on"
+    bool_property visible u , "on"
 
     // Octave-specific properties
     bool_property __modified__ hs , "on"
@@ -2382,6 +2386,8 @@ protected:
   END_PROPERTIES
 
   virtual void update_handlevisibility (void);
+
+  virtual void update_visible (void) { };
 
 protected:
   struct cmp_caseless_str
@@ -2809,7 +2815,7 @@ public:
 
   operator bool (void) const { return rep->valid_object (); }
 
-  // FIXME: these functions should be generated automatically by the
+  // FIXME: These functions should be generated automatically by the
   //        genprops.awk script.
   //
   // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
@@ -2856,6 +2862,8 @@ public:
   void delete_property_listener (const std::string& nm, const octave_value& v,
                                  listener_mode mode = POSTSET)
   { rep->delete_property_listener (nm, v, mode); }
+
+  void remove_all_listeners (void) { rep->remove_all_listeners (); }
 
   void initialize (void) { rep->initialize (*this); }
 
@@ -2916,7 +2924,7 @@ public:
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       array_property screensize r , default_screensize ()
       bool_property showhiddenhandles , "off"
-      radio_property units U , "inches|centimeters|normalized|points|{pixels}"
+      radio_property units U , "{pixels}|inches|centimeters|points|normalized|characters"
       // Hide base properties which don't make sense for root object
       //radio_property beingdeleted h , "{off}|on"
     END_PROPERTIES
@@ -3102,7 +3110,6 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (figure)
@@ -3124,8 +3131,7 @@ public:
       callback_property keyreleasefcn , Matrix ()
       radio_property menubar , "{figure}|none"
       string_property name , ""
-      // FIXME: Need RO property which returns current figure number.
-      // double_property number r ,
+      array_property number rG , Matrix ()
       radio_property nextplot , "{add}|new|replace|replacechildren"
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
@@ -3143,8 +3149,8 @@ public:
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
-      // FIXME: resizefcn has been deprecated by Matlab, and
-      //        replaced with sizechangedfcn
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
       //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
       radio_property selectiontype , "{normal}|extend|alt|open"
@@ -3178,10 +3184,11 @@ public:
       any_property __plot_stream__ h , Matrix ()
       any_property __rotate_mode__ h , Matrix ()
       any_property __zoom_mode__ h , Matrix ()
+      double_property __device_pixel_ratio__ hU , 1.0
 
       // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
       //                      xdisplay, xvisual, xvisualmode
-      // FIXME: DEPRECATED: Remove in version 5.
+      // FIXME: DEPRECATED: Remove in version 6.
       bool_property doublebuffer hd , "on"
       double_property mincolormap hd , 64
       string_property wvisual hmd , ""
@@ -3196,6 +3203,7 @@ public:
     {
       alphamap.add_constraint (dim_vector (-1, 1));
       colormap.add_constraint (dim_vector (-1, 3));
+      colormap.add_constraint (dim_vector (0, 0));
       outerposition.add_constraint (dim_vector (1, 4));
       outerposition.add_constraint (FINITE);
       paperposition.add_constraint (dim_vector (1, 4));
@@ -3401,6 +3409,8 @@ public:
 
     void remove_child (const graphics_handle& h);
 
+    void adopt (const graphics_handle& h);
+
     const scaler& get_x_scaler (void) const { return sx; }
     const scaler& get_y_scaler (void) const { return sy; }
     const scaler& get_z_scaler (void) const { return sz; }
@@ -3522,7 +3532,13 @@ public:
 
     void update_units (const caseless_str& old_units);
 
+    void update_font (std::string prop = "");
+
     void update_fontunits (const caseless_str& old_fontunits);
+
+    void increase_num_lights (void) { num_lights++; }
+    void decrease_num_lights (void) { num_lights--; }
+    unsigned int get_num_lights (void) const { return num_lights; }
 
   private:
 
@@ -3581,6 +3597,8 @@ public:
     bool zSign = false;
     bool nearhoriz = false;
 
+    unsigned int num_lights = 0;
+
     // Text renderer, used for calculation of text (tick labels) size
     octave::text_renderer txt_renderer;
 
@@ -3591,7 +3609,6 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
-
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (axes)
@@ -3652,7 +3669,7 @@ public:
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       // FIXME: Added recently to Matlab, should replace interpreter property.
-      radio_property ticklabelinterpreter , "{tex}|latex|none"
+      radio_property ticklabelinterpreter u , "{tex}|latex|none"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
@@ -3661,8 +3678,7 @@ public:
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
-      // FIXME: DEPRECATED: Remove "zero" in version 5.
-      radio_property xaxislocation u , "{bottom}|top|origin|zero"
+      radio_property xaxislocation u , "{bottom}|top|origin"
       color_property xcolor mu , color_values (0.15, 0.15, 0.15)
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
@@ -3679,8 +3695,7 @@ public:
       radio_property xticklabelmode u , "{auto}|manual"
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
-      // FIXME: DEPRECATED: Remove "zero" in version 5.
-      radio_property yaxislocation u , "{left}|right|origin|zero"
+      radio_property yaxislocation u , "{left}|right|origin"
       color_property ycolor mu , color_values (0.15, 0.15, 0.15)
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
@@ -3822,11 +3837,6 @@ public:
     }
     void update_yaxislocation (void)
     {
-      // FIXME: DEPRECATED: Remove warning with "zero" in version 5.
-      if (yaxislocation_is ("zero"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'yaxislocation' to 'zero' is deprecated, "
-                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       if (xticklabelmode.is ("auto"))
@@ -3847,11 +3857,6 @@ public:
     }
     void update_xaxislocation (void)
     {
-      // FIXME: DEPRECATED: Remove warning with "zero" in version 5.
-      if (xaxislocation_is ("zero"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'xaxislocation' to 'zero' is deprecated, "
-                         "set to 'origin' instead.");
       sync_positions ();
       update_axes_layout ();
       if (xticklabelmode.is ("auto"))
@@ -3879,6 +3884,13 @@ public:
     void update_tickdir (void) { update_ticklength (); }
     void update_tickdirmode (void) { update_ticklength (); }
 
+    void update_ticklabelinterpreter (void)
+    {
+      update_xtick ();
+      update_ytick ();
+      update_ztick ();
+    }
+    
     void update_xtick (void)
     {
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
@@ -3956,7 +3968,6 @@ public:
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"), false, 2, zlim);
     }
 
-    void update_font (std::string prop = "");
     void update_fontname (void)
     {
       update_font ("fontname");
@@ -3996,85 +4007,9 @@ public:
       sync_positions ();
     }
 
-    void update_outerposition (void)
-    {
-      set_activepositionproperty ("outerposition");
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      Matrix innerbox = position.get ().matrix_value ();
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      outerbox(2) = outerbox(2) + outerbox(0);
-      outerbox(3) = outerbox(3) + outerbox(1);
-      innerbox(0) = outerbox(0) + std::max (linset(0), tinset(0));
-      innerbox(1) = outerbox(1) + std::max (linset(1), tinset(1));
-      innerbox(2) = outerbox(2) - std::max (linset(2), tinset(2));
-      innerbox(3) = outerbox(3) - std::max (linset(3), tinset(3));
-      innerbox(2) = innerbox(2) - innerbox(0);
-      innerbox(3) = innerbox(3) - innerbox(1);
-      position = innerbox;
-      set_units (old_units);
-      update_transform ();
-    }
-
-    void update_position (void)
-    {
-      set_activepositionproperty ("position");
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      Matrix innerbox = position.get ().matrix_value ();
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      innerbox(2) = innerbox(2) + innerbox(0);
-      innerbox(3) = innerbox(3) + innerbox(1);
-      outerbox(0) = innerbox(0) - std::max (linset(0), tinset(0));
-      outerbox(1) = innerbox(1) - std::max (linset(1), tinset(1));
-      outerbox(2) = innerbox(2) + std::max (linset(2), tinset(2));
-      outerbox(3) = innerbox(3) + std::max (linset(3), tinset(3));
-      outerbox(2) = outerbox(2) - outerbox(0);
-      outerbox(3) = outerbox(3) - outerbox(1);
-      outerposition = outerbox;
-      set_units (old_units);
-      update_transform ();
-    }
-
-    void update_looseinset (void)
-    {
-      caseless_str old_units = get_units ();
-      set_units ("normalized");
-      Matrix innerbox = position.get ().matrix_value ();
-      innerbox(2) = innerbox(2) + innerbox(0);
-      innerbox(3) = innerbox(3) + innerbox(1);
-      Matrix outerbox = outerposition.get ().matrix_value ();
-      outerbox(2) = outerbox(2) + outerbox(0);
-      outerbox(3) = outerbox(3) + outerbox(1);
-      Matrix linset = looseinset.get ().matrix_value ();
-      Matrix tinset = tightinset.get ().matrix_value ();
-      if (activepositionproperty.is ("position"))
-        {
-          outerbox(0) = innerbox(0) - std::max (linset(0), tinset(0));
-          outerbox(1) = innerbox(1) - std::max (linset(1), tinset(1));
-          outerbox(2) = innerbox(2) + std::max (linset(2), tinset(2));
-          outerbox(3) = innerbox(3) + std::max (linset(3), tinset(3));
-          outerbox(2) = outerbox(2) - outerbox(0);
-          outerbox(3) = outerbox(3) - outerbox(1);
-          outerposition = outerbox;
-        }
-      else
-        {
-          innerbox(0) = outerbox(0) + std::max (linset(0), tinset(0));
-          innerbox(1) = outerbox(1) + std::max (linset(1), tinset(1));
-          innerbox(2) = outerbox(2) - std::max (linset(2), tinset(2));
-          innerbox(3) = outerbox(3) - std::max (linset(3), tinset(3));
-          innerbox(2) = innerbox(2) - innerbox(0);
-          innerbox(3) = innerbox(3) - innerbox(1);
-          position = innerbox;
-        }
-      set_units (old_units);
-      update_transform ();
-    }
+    void update_outerposition (void);
+    void update_position (void);
+    void update_looseinset (void);
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks,
@@ -4188,6 +4123,8 @@ public:
       update_axes_layout ();
     }
 
+    void trigger_normals_calc (void);
+
   };
 
 private:
@@ -4300,9 +4237,6 @@ public:
     BEGIN_PROPERTIES (line)
       color_property color , color_property (color_values (0, 0, 0), radio_values ("none"))
       string_property displayname , ""
-      // FIXME: DEPRECATED: Remove erasemode property in version 5
-      // (rm all instances in file).
-      radio_property erasemode h , "{normal}|none|xor|background"
       // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linejoin , "{round}|miter|chamfer"
@@ -4385,6 +4319,10 @@ public:
   public:
     double get___fontsize_points__ (double box_pix_height = 0) const;
 
+    void update_text_extent (void);
+
+    void update_font (void);
+
     void set_position (const octave_value& val)
     {
       octave_value new_val (val);
@@ -4409,14 +4347,15 @@ public:
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (text)
       color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
       color_property color u , color_values (0, 0, 0)
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
-      radio_property erasemode h , "{normal}|none|xor|background"
       array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
@@ -4426,7 +4365,7 @@ public:
       radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      double_property margin , 2
+      double_property margin , 3
       array_property position smu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
       text_label_property string u , ""
@@ -4494,15 +4433,12 @@ public:
         set_zliminclude ("off");
     }
 
-    void update_text_extent (void);
-
     void request_autopos (void);
     void update_positionmode (void) { request_autopos (); }
     void update_rotationmode (void) { request_autopos (); }
     void update_horizontalalignmentmode (void) { request_autopos (); }
     void update_verticalalignmentmode (void) { request_autopos (); }
 
-    void update_font (void);
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
     void update_color (void) { update_font (); update_text_extent (); }
@@ -4514,8 +4450,7 @@ public:
     {
       update_font ();
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in
-      // version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -4592,7 +4527,6 @@ public:
       radio_property alphadatamapping al , "{none}|direct|scaled"
       array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
-      radio_property erasemode h , "{normal}|none|xor|background"
       row_vector_property xdata mu , Matrix ()
       row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
@@ -4624,9 +4558,9 @@ public:
       cdata.add_constraint ("real");
       cdata.add_constraint (dim_vector (-1, -1));
       cdata.add_constraint (dim_vector (-1, -1, 3));
-      alphadata.add_constraint (dim_vector (-1, -1));
       alphadata.add_constraint ("double");
       alphadata.add_constraint ("uint8");
+      alphadata.add_constraint (dim_vector (-1, -1));
     }
 
   private:
@@ -4792,6 +4726,9 @@ public:
     {
       position.add_constraint (dim_vector (1, 3));
     }
+
+  private:
+    void update_visible (void);
   };
 
 private:
@@ -4817,6 +4754,9 @@ public:
       retval = base_properties::has_readonly_property (pname);
     return retval;
   }
+
+protected:
+  void initialize (const graphics_object& go);
 };
 
 // ---------------------------------------------------------------------
@@ -4847,6 +4787,10 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
+    bool get_do_lighting (void) const;
+
+    std::list<std::list<octave_idx_type>> coplanar_last_idx;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -4861,13 +4805,12 @@ public:
       string_property displayname , ""
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property edgelighting , "{none}|flat|gouraud|phong"
-      radio_property erasemode h , "{normal}|none|xor|background"
+      radio_property edgelighting u , "{none}|flat|gouraud|phong"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property facelighting , "none|{flat}|gouraud|phong"
+      radio_property facelighting u , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
-      radio_property facenormalsmode , "{auto}|manual"
+      radio_property facenormalsmode u , "{auto}|manual"
       array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata u , Matrix ()
@@ -4879,12 +4822,11 @@ public:
       color_property markeredgecolor , color_property (radio_values ("none|{auto}|flat"), color_values (0, 0, 0))
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
-      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
       array_property vertexnormals m , Matrix ()
-      radio_property vertexnormalsmode , "{auto}|manual"
+      radio_property vertexnormalsmode u , "{auto}|manual"
       array_property vertices u , default_patch_vertices ()
       array_property xdata u , default_patch_xdata ()
       array_property ydata u , default_patch_ydata ()
@@ -4916,7 +4858,9 @@ public:
       cdata.add_constraint (dim_vector (-1, -1, 3));
       facevertexcdata.add_constraint (dim_vector (-1, 1));
       facevertexcdata.add_constraint (dim_vector (-1, 3));
+      facevertexcdata.add_constraint (dim_vector (0, 0));
       facevertexalphadata.add_constraint (dim_vector (-1, 1));
+      facevertexalphadata.add_constraint (dim_vector (0, 0));
       facenormals.add_constraint (dim_vector (-1, 3));
       facenormals.add_constraint (dim_vector (0, 0));
       vertexnormals.add_constraint (dim_vector (-1, 3));
@@ -4935,12 +4879,20 @@ public:
       specularstrength.add_constraint ("max", 1.0, true);
     }
 
+  public:
+    void update_normals (bool reset, bool force = false)
+    {
+      update_face_normals (reset, force);
+      update_vertex_normals (reset, force);
+    }
+
+
   private:
     std::string bad_data_msg;
 
     void update_faces (void) { update_data ();}
 
-    void update_vertices (void)  { update_data ();}
+    void update_vertices (void) { update_data ();}
 
     void update_facevertexcdata (void) { update_data ();}
 
@@ -4959,7 +4911,10 @@ public:
           set_faces (Matrix ());
         }
       else
-        update_fvc ();
+        {
+          update_fvc ();
+          update_normals (true);
+        }
 
       set_xlim (xdata.get_limits ());
     }
@@ -4974,7 +4929,10 @@ public:
           set_faces (Matrix ());
         }
       else
-        update_fvc ();
+        {
+          update_fvc ();
+          update_normals (true);
+        }
 
       set_ylim (ydata.get_limits ());
     }
@@ -4982,12 +4940,14 @@ public:
     void update_zdata (void)
     {
       update_fvc ();
+      update_normals (true);
       set_zlim (zdata.get_limits ());
     }
 
     void update_cdata (void)
     {
       update_fvc ();
+      update_normals (false);
 
       if (cdatamapping_is ("scaled"))
         set_clim (cdata.get_limits ());
@@ -4997,25 +4957,40 @@ public:
 
     void update_data (void);
 
-    void set_normalmode (const octave_value& val)
+    void calc_face_normals (Matrix& normals);
+    void update_face_normals (bool reset, bool force = false);
+    void update_vertex_normals (bool reset, bool force = false);
+
+    void update_edgelighting (void)
     {
-      warning_with_id ("Octave:deprecated-property",
-        "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      set_vertexnormalsmode (val);
+      update_normals (false);
     }
 
-    std::string get_normalmode (void) const
+    void update_facelighting (void)
     {
-      warning_with_id ("Octave:deprecated-property",
-        "patch: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      return vertexnormalsmode.current_value ();
+      update_normals (false);
+    }
+
+    void update_facenormalsmode (void)
+    {
+      update_face_normals (false);
+    }
+
+    void update_vertexnormalsmode (void)
+    {
+      update_vertex_normals (false);
+    }
+
+    void update_visible (void)
+    {
+      if (is_visible ())
+        update_normals (false);
     }
   };
 
 private:
   properties xproperties;
+  property_list default_properties;
 
 public:
   patch (const graphics_handle& mh, const graphics_handle& p)
@@ -5037,6 +5012,12 @@ public:
       retval = base_properties::has_readonly_property (pname);
     return retval;
   }
+
+  void reset_default_properties (void);
+
+protected:
+  void initialize (const graphics_object& go);
+
 };
 
 // ---------------------------------------------------------------------
@@ -5059,6 +5040,8 @@ public:
     std::string get_climinclude (void) const
     { return climinclude.current_value (); }
 
+    bool get_do_lighting (void) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -5075,13 +5058,12 @@ public:
       string_property displayname , ""
       double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
-      radio_property edgelighting , "{none}|flat|gouraud|phong"
-      radio_property erasemode h , "{normal}|none|xor|background"
+      radio_property edgelighting u , "{none}|flat|gouraud|phong"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp|texturemap"))
       color_property facecolor , color_property (radio_values ("none|{flat}|interp|texturemap"), color_values (0, 0, 0))
-      radio_property facelighting , "none|{flat}|gouraud|phong"
+      radio_property facelighting u , "none|{flat}|gouraud|phong"
       array_property facenormals m , Matrix ()
-      radio_property facenormalsmode , "{auto}|manual"
+      radio_property facenormalsmode u , "{auto}|manual"
       // FIXME: DEPRECATED: Remove interpreter property in version 6.
       radio_property interpreter hd , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
@@ -5091,7 +5073,6 @@ public:
       color_property markerfacecolor , color_property (radio_values ("{none}|auto|flat"), color_values (0, 0, 0))
       double_property markersize , 6
       radio_property meshstyle , "{both}|row|column"
-      radio_property normalmode hsg , "{auto}|manual"
       double_property specularcolorreflectance , 1
       double_property specularexponent , 10
       double_property specularstrength , 0.9
@@ -5148,6 +5129,14 @@ public:
       specularstrength.add_constraint ("max", 1.0, true);
     }
 
+  public:
+    void update_normals (bool reset, bool force = false)
+    {
+      update_face_normals (reset, force);
+      update_vertex_normals (reset, force);
+    }
+
+
   private:
     void update_alphadata (void)
     {
@@ -5167,42 +5156,43 @@ public:
 
     void update_xdata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_xlim (xdata.get_limits ());
     }
 
     void update_ydata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_ylim (ydata.get_limits ());
     }
 
     void update_zdata (void)
     {
-      update_vertex_normals ();
+      update_normals (true);
       set_zlim (zdata.get_limits ());
     }
 
-    void update_vertex_normals (void);
+    void update_face_normals (bool reset, bool force = false);
+    void update_vertex_normals (bool reset, bool force = false);
+
+    void update_facenormalsmode (void)
+    { update_face_normals (false); }
 
     void update_vertexnormalsmode (void)
-    { update_vertex_normals (); }
+    { update_vertex_normals (false); }
 
-    void set_normalmode (const octave_value& val)
+    void update_edgelighting (void)
+    { update_normals (false); }
+
+    void update_facelighting (void)
+    { update_normals (false); }
+
+    void update_visible (void)
     {
-      warning_with_id ("Octave:deprecated-property",
-        "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      set_vertexnormalsmode (val);
+      if (is_visible ())
+        update_normals (false);
     }
 
-    std::string get_normalmode (void) const
-    {
-      warning_with_id ("Octave:deprecated-property",
-        "surface: Property 'normalmode' is deprecated and will be removed "
-        "from a future version of Octave.  Use 'vertexnormalsmode' instead.");
-      return vertexnormalsmode.current_value ();
-    }
   };
 
 private:
@@ -5238,18 +5228,9 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h)
-    {
-      base_properties::remove_child (h);
-      update_limits ();
-    }
+    void remove_child (const graphics_handle& h);
 
-    void adopt (const graphics_handle& h)
-    {
-
-      base_properties::adopt (h);
-      update_limits (h);
-    }
+    void adopt (const graphics_handle& h);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5257,7 +5238,6 @@ public:
 
     BEGIN_PROPERTIES (hggroup)
       string_property displayname , ""
-      radio_property erasemode h , "{normal}|none|xor|background"
 
       // hidden properties for limit computation
       row_vector_property alim hr , Matrix ()
@@ -5470,12 +5450,13 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uicontrol)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       callback_property callback , Matrix ()
       array_property cdata , Matrix ()
       bool_property clipping , "on"
       radio_property enable , "{on}|inactive|off"
       array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
@@ -5497,6 +5478,7 @@ public:
       radio_property verticalalignment , "top|{middle}|bottom"
 
       // Octave-specific properties
+      bool_property __focus__ h , "off"
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
@@ -5508,7 +5490,9 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
       position.add_constraint (dim_vector (1, 4));
       sliderstep.add_constraint (dim_vector (1, 2));
       fontsize.add_constraint ("min", 0.0, false);
@@ -5525,8 +5509,7 @@ public:
     void update_fontweight (void)
     {
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in
-      // version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5582,10 +5565,11 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uibuttongroup)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
       bool_property clipping , "on"
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
@@ -5593,11 +5577,14 @@ public:
       radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
-      array_property position , default_panel_position ()
+      array_property position S , default_panel_position ()
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
+      //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
       handle_property selectedobject S , graphics_handle ()
       callback_property selectionchangedfcn , Matrix ()
-      color_property shadowcolor , color_values (0, 0, 0)
+      color_property shadowcolor , color_values (0.7, 0.7, 0.7)
       callback_property sizechangedfcn , Matrix ()
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
       string_property title , ""
@@ -5623,7 +5610,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: DEPRECATED: Remove this warning in version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5679,9 +5666,10 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (uipanel)
-      color_property backgroundcolor , color_values (1, 1, 1)
+      color_property backgroundcolor , color_values (0.94, 0.94, 0.94)
       radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
       double_property borderwidth , 1
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
       radio_property fontangle , "{normal}|italic|oblique"
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
@@ -5689,9 +5677,13 @@ public:
       radio_property fontweight u , "light|{normal}|demi|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
-      array_property position , default_panel_position ()
+      array_property position S , default_panel_position ()
+      // FIXME: "resizefcn" is no longer recommended by Matlab,
+      //        and has been replaced with "sizechangedfcn"
+      //        Eventually this will need to be hidden, and then removed.
       callback_property resizefcn , Matrix ()
-      color_property shadowcolor , color_values (0, 0, 0)
+      color_property shadowcolor , color_values (0.7, 0.7, 0.7)
+      callback_property sizechangedfcn , Matrix ()
       string_property title , ""
       radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
       radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
@@ -5712,7 +5704,7 @@ public:
 
     void update_fontweight (void)
     {
-      // FIXME: DEPRECATED: Remove this warning in version 6.
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
       if (fontweight.is ("demi") || fontweight.is ("light"))
         warning_with_id ("Octave:deprecated-property",
                          "Setting 'fontweight' to '%s' is deprecated, \
@@ -5729,6 +5721,118 @@ public:
   { }
 
   ~uipanel (void) = default;
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+};
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API uitable : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
+    double get___fontsize_points__ (double box_pix_height = 0) const;
+
+    double get_fontsize_pixels (double box_pix_height = 0) const;
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+    // Programming note: Keep property list sorted if new ones are added.
+
+    // FIXME: keypressfcn, keyreleasefcn, rearrangeablecolumns properties
+    //        seem to have been removed from Matlab.
+
+    BEGIN_PROPERTIES (uitable)
+      any_property __object__ h , Matrix ()
+      array_property backgroundcolor , default_table_backgroundcolor ()
+      callback_property celleditcallback , Matrix ()
+      callback_property cellselectioncallback , Matrix ()
+      row_vector_property columneditable , Matrix ()
+      any_property columnformat S , Cell ()
+      any_property columnname , "numbered"
+      any_property columnwidth S , "auto"
+      any_property data u , Matrix ()
+      bool_property enable , "on"
+      array_property extent rG , Matrix (1, 4, 0.0)
+      // FIXME: DEPRECATED: Remove "oblique" in version 7.
+      radio_property fontangle u , "{normal}|italic|oblique"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
+      radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight u , "light|{normal}|demi|bold"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      callback_property keypressfcn , Matrix ()
+      callback_property keyreleasefcn , Matrix ()
+      array_property position , default_table_position ()
+      bool_property rearrangeablecolumns , "off"
+      any_property rowname , "numbered"
+      bool_property rowstriping , "on"
+      string_property tooltipstring , ""
+      radio_property units S , "normalized|inches|centimeters|points|{pixels}|characters"
+    END_PROPERTIES
+
+    Matrix get_extent_matrix (void) const;
+
+    Matrix get_backgroundcolor_rgb (void);
+
+    Matrix get_alternatebackgroundcolor_rgb (void);
+
+  protected:
+    void init (void)
+    {
+      position.add_constraint (dim_vector (1, 4));
+      extent.add_constraint (dim_vector (1, 4));
+      backgroundcolor.add_constraint ("double");
+      backgroundcolor.add_constraint (dim_vector (-1, 3));
+      columneditable.add_constraint ("logical");
+    }
+
+    void update_units (const caseless_str& old_units);
+    void update_fontunits (const caseless_str& old_units);
+    void update_table_extent (void) { };
+    void update_data (void) { update_table_extent (); }
+    void update_fontname (void) { update_table_extent (); }
+    void update_fontsize (void) { update_table_extent (); }
+    void update_fontangle (void) { update_table_extent (); }
+
+    void update_fontweight (void)
+    {
+      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
+      if (fontweight.is ("demi") || fontweight.is ("light"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontweight' to '%s' is deprecated, \
+use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+
+      update_table_extent ();
+    }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uitable (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  { }
+
+  ~uitable (void) { }
 
   base_properties& get_properties (void) { return xproperties; }
 
@@ -5874,7 +5978,9 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
     }
   };
 
@@ -5935,7 +6041,9 @@ public:
     {
       cdata.add_constraint ("double");
       cdata.add_constraint ("single");
+      cdata.add_constraint ("uint8");
       cdata.add_constraint (dim_vector (-1, -1, 3));
+      cdata.add_constraint (dim_vector (0, 0));
     }
   };
 
@@ -5982,14 +6090,26 @@ class
 base_graphics_event
 {
 public:
+  enum priority { INTERRUPT, QUEUE, CANCEL };
 
   friend class graphics_event;
 
-  base_graphics_event (void) = default;
+  base_graphics_event (void)
+    : m_busyaction (QUEUE)
+  { };
+
+  base_graphics_event (int busyaction)
+    : m_busyaction (busyaction)
+  { };
 
   virtual ~base_graphics_event (void) = default;
 
+  int get_busyaction (void) { return m_busyaction; };
+
   virtual void execute (void) = 0;
+
+ private:
+  int m_busyaction;
 };
 
 class
@@ -6009,6 +6129,14 @@ public:
 
   graphics_event& operator = (const graphics_event&) = default;
 
+  int get_busyaction (void)
+  {
+    if (ok ())
+      return rep->get_busyaction ();
+    else
+      error ("graphics_event::busyaction: invalid graphics_event");
+  }
+
   void execute (void)
   {
     if (ok ())
@@ -6020,12 +6148,14 @@ public:
   static graphics_event
   create_callback_event (const graphics_handle& h,
                          const std::string& name,
-                         const octave_value& data = Matrix ());
+                         const octave_value& data = Matrix (),
+                         int busyaction = base_graphics_event::QUEUE);
 
   static graphics_event
   create_callback_event (const graphics_handle& h,
                          const octave_value& cb,
-                         const octave_value& data = Matrix ());
+                         const octave_value& data = Matrix (),
+                         int busyaction = base_graphics_event::QUEUE);
 
   static graphics_event
   create_function_event (event_fcn fcn, void *data = nullptr);

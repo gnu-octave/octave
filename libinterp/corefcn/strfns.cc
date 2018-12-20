@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "localcharset-wrapper.h"
 #include "uniconv-wrappers.h"
+#include "unistr-wrappers.h"
 
 #include "Cell.h"
 #include "defun.h"
@@ -657,10 +658,12 @@ This is just the opposite of the corresponding C library function.
 %!assert (strncmp ("abce", "aBc", 3), false)
 %!assert (strncmp (100, 100, 1), false)
 %!assert (strncmp ("abce", {"abcd", "bca", "abc"}, 3), logical ([1, 0, 1]))
-%!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 0]))
+%!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 1]))
 %!assert (strncmp ({"abcd", "bca", "abc"},"abce", 3), logical ([1, 0, 1]))
 %!assert (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3), logical ([1, 1, 0]))
 %!assert (strncmp ("abc", {"abcd", 10}, 2), logical ([1, 0]))
+
+%!assert <*54373> (strncmp ("abc", "abc", 100))
 
 %!error strncmp ()
 %!error strncmp ("abc", "def")
@@ -732,6 +735,139 @@ This is just the opposite of the corresponding C library function.
 
 /*
 %!assert (strncmpi ("abc123", "ABC456", 3), true)
+
+%!assert <*54373> (strncmpi ("abc", "abC", 100))
+*/
+
+DEFUN (str2double, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} str2double (@var{s})
+Convert a string to a real or complex number.
+
+The string must be in one of the following formats where a and b are real
+numbers and the complex unit is @qcode{'i'} or @qcode{'j'}:
+
+@itemize
+@item a + bi
+
+@item a + b*i
+
+@item a + i*b
+
+@item bi + a
+
+@item b*i + a
+
+@item i*b + a
+@end itemize
+
+If present, a and/or b are of the form @nospell{[+-]d[,.]d[[eE][+-]d]} where
+the brackets indicate optional arguments and @qcode{'d'} indicates zero or
+more digits.  The special input values @code{Inf}, @code{NaN}, and @code{NA}
+are also accepted.
+
+@var{s} may be a character string, character matrix, or cell array.  For
+character arrays the conversion is repeated for every row, and a double or
+complex array is returned.  Empty rows in @var{s} are deleted and not
+returned in the numeric array.  For cell arrays each character string
+element is processed and a double or complex array of the same dimensions as
+@var{s} is returned.
+
+For unconvertible scalar or character string input @code{str2double} returns
+a NaN@.  Similarly, for character array input @code{str2double} returns a
+NaN for any row of @var{s} that could not be converted.  For a cell array,
+@code{str2double} returns a NaN for any element of @var{s} for which
+conversion fails.  Note that numeric elements in a mixed string/numeric
+cell array are not strings and the conversion will fail for these elements
+and return NaN.
+
+@code{str2double} can replace @code{str2num}, and it avoids the security
+risk of using @code{eval} on unknown data.
+@seealso{str2num}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_value retval;
+
+  if (args(0).is_string ())
+    {
+      if (args(0).rows () == 0 || args(0).columns () == 0)
+        retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+      else if (args(0).rows () == 1 && args(0).ndims () == 2)
+        retval = octave::string::str2double (args(0).string_value ());
+      else
+        {
+          const string_vector sv = args(0).string_vector_value ();
+
+          retval = sv.map<Complex> (octave::string::str2double);
+        }
+    }
+  else if (args(0).iscell ())
+    {
+      const Cell cell = args(0).cell_value ();
+
+      ComplexNDArray output (cell.dims (), octave::numeric_limits<double>::NaN ());
+
+      for (octave_idx_type i = 0; i < cell.numel (); i++)
+        {
+          if (cell(i).is_string ())
+            output(i) = octave::string::str2double (cell(i).string_value ());
+        }
+      retval = output;
+    }
+  else
+    retval = Matrix (1, 1, octave::numeric_limits<double>::NaN ());
+
+  return retval;
+}
+
+/*
+%!assert (str2double ("1"), 1)
+%!assert (str2double ("-.1e-5"), -1e-6)
+%!testif ; ! ismac ()
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
+%!xtest <47413>
+%! ## Same test code as above, but intended only for test statistics on Mac.
+%! if (! ismac ()), return; endif
+%! assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
+%!assert (str2double ("1,222.5"), 1222.5)
+%!assert (str2double ("i"), i)
+%!assert (str2double ("2j"), 2i)
+%!assert (str2double ("2 + j"), 2+j)
+%!assert (str2double ("i*2 + 3"), 3+2i)
+%!assert (str2double (".5*i + 3.5"), 3.5+0.5i)
+%!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
+%!assert (str2double (char ("2 + j","1.25e-3","-05")), [2+i; 1.25e-3; -5])
+%!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
+%!assert (str2double (1), NaN)
+%!assert (str2double ("1 2 3 4"), NaN)
+%!assert (str2double ("Hello World"), NaN)
+%!assert (str2double ("NaN"), NaN)
+%!assert (str2double ("NA"), NA)
+%!assert (str2double ("Inf"), Inf)
+%!assert (str2double ("iNF"), Inf)
+%!assert (str2double ("-Inf"), -Inf)
+%!assert (str2double ("Inf*i"), complex (0, Inf))
+%!assert (str2double ("iNF*i"), complex (0, Inf))
+%!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
+%!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
+%!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
+%!testif ; ! ismac ()
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i]);
+%!testif ; ! ismac ()
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!xtest <47413>
+%! if (! ismac ()), return; endif
+%! assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!assert (str2double (zeros (3,1,2)), NaN)
+%!assert (str2double (''), NaN)
+%!assert (str2double ([]), NaN)
+%!assert (str2double (char(zeros(3,0))), NaN)
 */
 
 DEFUN (__native2unicode__, args, ,
@@ -839,6 +975,60 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
 
   return ovl (retval);
 }
+
+DEFUN (unicode_idx, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{idx} =} unicode_idx (@var{str})
+Return an array with the indices for each UTF-8 encoded character in @var{str}.
+
+@example
+@group
+unicode_idx ("aäbc")
+     @result{} [1, 2, 2, 3, 4]
+@end group
+@end example
+
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ();
+
+  charNDArray str = args(0).xchar_array_value ("STR must be a string");
+  Array<octave_idx_type> p (dim_vector (str.ndims (), 1));
+  charNDArray str_p;
+  if (str.ndims () > 1)
+  {
+    for (octave_idx_type i=0; i < str.ndims (); i++)
+      p(i) = i;
+    p(0) = 1;
+    p(1) = 0;
+    str_p = str.permute (p);
+  }
+
+  const uint8_t *src = reinterpret_cast<const uint8_t *> (str_p.data ());
+  octave_idx_type srclen = str.numel ();
+
+  NDArray idx (str_p.dims ());
+
+  octave_idx_type u8_char_num = 1;
+  for (octave_idx_type i = 0; i < srclen; u8_char_num++)
+  {
+    int mblen = octave_u8_strmblen_wrapper (src + i);
+    if (mblen < 1)
+      mblen = 1;
+    for (octave_idx_type j = 0; j < mblen; j++)
+      idx (i+j) = u8_char_num;
+    i += mblen;
+  }
+
+  return ovl(str.ndims () > 1 ? idx.permute (p, true) : idx);
+}
+
+/*
+%!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
+*/
 
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-

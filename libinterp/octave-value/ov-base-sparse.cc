@@ -27,7 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 // this file.
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
+#include <sstream>
 
 #include "ovl.h"
 #include "ov-base.h"

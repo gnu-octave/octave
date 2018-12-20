@@ -29,14 +29,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <string>
 #include <sstream>
-#include <iostream>
+#include <string>
 
 #include "bp-table.h"
 #include "defun.h"
 #include "errwarn.h"
 #include "ov.h"
+#include "pager.h"
 #include "pt-all.h"
 #include "pt-jit.h"
 #include "sighandlers.h"
@@ -156,8 +156,7 @@ namespace octave
     m_block->append (m_factory.create<jit_branch> (m_final_block));
     m_blocks.push_back (m_final_block);
 
-    for (variable_map::iterator iter = m_vmap.begin (); iter != m_vmap.end ();
-         ++iter)
+    for (auto iter = m_vmap.begin (); iter != m_vmap.end (); ++iter)
       {
         jit_variable *var = iter->second;
         const std::string& name = var->name ();
@@ -184,7 +183,7 @@ namespace octave
 
     if (plist)
       {
-        tree_parameter_list::iterator piter = plist->begin ();
+        auto piter = plist->begin ();
         for (size_t i = 0; i < args.size (); ++i, ++piter)
           {
             if (piter == plist->end ())
@@ -250,7 +249,7 @@ namespace octave
 
     // FIXME: We should use live range analysis to delete variables where
     // needed.  For now we just delete everything at the end of the function.
-    for (variable_map::iterator iter = m_vmap.begin ();
+    for (auto iter = m_vmap.begin ();
          iter != m_vmap.end ();
          ++iter)
       {
@@ -575,7 +574,7 @@ namespace octave
     entry_blocks[0] = m_block;
 
     // Need to construct blocks first, because they have jumps to each other.
-    tree_if_command_list::iterator iter = lst.begin ();
+    auto iter = lst.begin ();
     ++iter;
     for (size_t i = 1; iter != lst.end (); ++iter, ++i)
       {
@@ -800,7 +799,7 @@ namespace octave
       visit (cmd);
     else
       {
-        // stolen from octave::tree_evaluator::visit_statement
+        // stolen from tree_evaluator::visit_statement
         bool do_bind_ans = false;
 
         if (expr->is_identifier ())
@@ -832,8 +831,7 @@ namespace octave
   void
   jit_convert::visit_statement_list (tree_statement_list& lst)
   {
-    for (tree_statement_list::iterator iter = lst.begin (); iter != lst.end();
-         ++iter)
+    for (auto iter = lst.begin (); iter != lst.end(); ++iter)
       {
         tree_statement *elt = *iter;
         // jwe: Can this ever be null?
@@ -899,7 +897,7 @@ namespace octave
 
     size_t num_incoming = 0; // number of incoming blocks to our tail
 
-    tree_switch_case_list::iterator iter = lst->begin ();
+    auto iter = lst->begin ();
     for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
       {
         tree_switch_case *twc = *iter;
@@ -1149,7 +1147,7 @@ namespace octave
 
     symbol_table& symtab = __get_symbol_table__ ("jit_convert::find_variable");
 
-    symbol_record record = symtab.find_symbol (vname, m_scope);
+    symbol_record record = m_scope.find_symbol (vname);
     if (record.is_persistent () || record.is_global ())
       throw jit_fail_exception ("Persistent and global not yet supported");
 
@@ -1234,7 +1232,7 @@ namespace octave
       object = visit (tree_object);
 
     size_t narg = arg_list->size ();
-    tree_argument_list::iterator iter = arg_list->begin ();
+    auto iter = arg_list->begin ();
     bool have_extra = extra_arg;
     std::vector<jit_value *> call_args (narg + 1 + have_extra);
     call_args[0] = object;
@@ -1315,8 +1313,7 @@ namespace octave
   void
   jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
   {
-    for (block_list::const_iterator iter = lst.begin (); iter != lst.end ();
-         ++iter)
+    for (auto iter = lst.begin (); iter != lst.end (); ++iter)
       {
         jit_block *b = *iter;
         b->append (m_factory.create<jit_branch> (dest));
@@ -1335,9 +1332,8 @@ namespace octave
     // for now just init arguments from entry, later we will have to do
     // something more interesting
     jit_block *m_entry_block = blocks.front ();
-    for (jit_block::iterator iter = m_entry_block->begin ();
-         iter != m_entry_block->end ();
-         ++iter)
+    for (auto iter = m_entry_block->begin ();
+         iter != m_entry_block->end (); ++iter)
       if (jit_extract_argument *extract
           = dynamic_cast<jit_extract_argument *> (*iter))
         m_argument_vec.push_back (std::make_pair (extract->name (), true));
@@ -1406,8 +1402,8 @@ namespace octave
         tree_parameter_list *plist = fcn.parameter_list ();
         if (plist)
           {
-            tree_parameter_list::iterator piter = plist->begin ();
-            tree_parameter_list::iterator pend = plist->end ();
+            auto piter = plist->begin ();
+            auto pend = plist->end ();
             for (size_t i = 0; i < args.size () && piter != pend; ++i, ++piter)
               {
                 tree_decl_elt *elt = *piter;
@@ -1445,8 +1441,7 @@ namespace octave
     builder.CreateBr (first->to_llvm ());
 
     // constants aren't in the IR, we visit those first
-    for (std::list<jit_value *>::const_iterator iter = constants.begin ();
-         iter != constants.end (); ++iter)
+    for (auto iter = constants.begin (); iter != constants.end (); ++iter)
       if (! isa<jit_instruction> (*iter))
         visit (*iter);
 
@@ -1458,7 +1453,7 @@ namespace octave
     for (biter = blocks.begin (); biter != blocks.end (); ++biter)
       {
         jit_block& m_block = **biter;
-        for (jit_block::iterator piter = m_block.begin ();
+        for (auto piter = m_block.begin ();
              piter != m_block.end () && isa<jit_phi> (*piter); ++piter)
           {
             jit_instruction *phi = *piter;
@@ -1536,7 +1531,7 @@ namespace octave
   {
     llvm::BasicBlock *m_block = b.to_llvm ();
     builder.SetInsertPoint (m_block);
-    for (jit_block::iterator iter = b.begin (); iter != b.end (); ++iter)
+    for (auto iter = b.begin (); iter != b.end (); ++iter)
       visit (*iter);
   }
 
@@ -1695,8 +1690,7 @@ namespace octave
 
     // initialize the worklist to instructions derived from constants
     const std::list<jit_value *>& constants = m_factory.constants ();
-    for (std::list<jit_value *>::const_iterator iter = constants.begin ();
-         iter != constants.end (); ++iter)
+    for (auto iter = constants.begin (); iter != constants.end (); ++iter)
       append_users (*iter);
 
     // the entry block terminator may be a regular branch statement
@@ -1741,7 +1735,7 @@ namespace octave
         if (term->alive (i))
           {
             jit_block *succ = term->successor (i);
-            for (jit_block::iterator iter = succ->begin ();
+            for (auto iter = succ->begin ();
                  iter != succ->end () && isa<jit_phi> (*iter); ++iter)
               push_worklist (*iter);
 
@@ -1761,9 +1755,7 @@ namespace octave
     entry_block ().create_dom_tree ();
 
     // insert phi nodes where needed, this is done on a per variable basis
-    for (variable_map::const_iterator iter = m_vmap.begin ();
-         iter != m_vmap.end ();
-         ++iter)
+    for (auto iter = m_vmap.cbegin (); iter != m_vmap.cend (); ++iter)
       {
         jit_block::df_set visited, added_phi;
         std::list<jit_block *> ssa_worklist;
@@ -1776,8 +1768,7 @@ namespace octave
             jit_block *b = ssa_worklist.front ();
             ssa_worklist.pop_front ();
 
-            for (jit_block::df_iterator diter = b->df_begin ();
-                 diter != b->df_end (); ++diter)
+            for (auto diter = b->df_begin (); diter != b->df_end (); ++diter)
               {
                 jit_block *dblock = *diter;
                 if (! added_phi.count (dblock))
@@ -1807,9 +1798,7 @@ namespace octave
       return;
 
     // replace variables with their current SSA value
-    for (jit_block::iterator iter = ablock.begin ();
-         iter != ablock.end ();
-         ++iter)
+    for (auto iter = ablock.begin (); iter != ablock.end (); ++iter)
       {
         jit_instruction *instr = *iter;
         instr->construct_ssa ();
@@ -1821,7 +1810,7 @@ namespace octave
       {
         jit_block *finish = ablock.successor (i);
 
-        for (jit_block::iterator iter = finish->begin ();
+        for (auto  iter = finish->begin ();
              iter != finish->end () && isa<jit_phi> (*iter);)
           {
             jit_phi *phi = static_cast<jit_phi *> (*iter);
@@ -1851,9 +1840,7 @@ namespace octave
   jit_infer::place_releases (void)
   {
     std::set<jit_value *> temporaries;
-    for (jit_block_list::iterator iter = m_blocks.begin ();
-         iter != m_blocks.end ();
-         ++iter)
+    for (auto iter = m_blocks.begin (); iter != m_blocks.end (); ++iter)
       {
         jit_block& ablock = **iter;
         if (ablock.id () != jit_block::NO_ID)
@@ -1883,7 +1870,7 @@ namespace octave
         jit_block *b = *biter;
         if (b->alive ())
           {
-            for (jit_block::iterator iter = b->begin ();
+            for (auto iter = b->begin ();
                  iter != b->end () && isa<jit_phi> (*iter);)
               {
                 jit_phi *phi = static_cast<jit_phi *> (*iter);
@@ -1927,7 +1914,7 @@ namespace octave
   void
   jit_infer::release_dead_phi (jit_block& ablock)
   {
-    jit_block::iterator iter = ablock.begin ();
+    auto iter = ablock.begin ();
     while (iter != ablock.end () && isa<jit_phi> (*iter))
       {
         jit_phi *phi = static_cast<jit_phi *> (*iter);
@@ -1963,9 +1950,7 @@ namespace octave
   void
   jit_infer::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
   {
-    for (jit_block::iterator iter = ablock.begin ();
-         iter != ablock.end ();
-         ++iter)
+    for (auto iter = ablock.begin (); iter != ablock.end (); ++iter)
       {
         jit_instruction *instr = *iter;
 
@@ -2005,9 +1990,7 @@ namespace octave
     jit_block *split = ablock.maybe_split (m_factory, m_blocks,
                                            final_block ());
     jit_terminator *term = split->terminator ();
-    for (std::set<jit_value *>::const_iterator iter = temp.begin ();
-         iter != temp.end ();
-         ++iter)
+    for (auto iter = temp.cbegin (); iter != temp.cend (); ++iter)
       {
         jit_value *value = *iter;
         jit_call *release
@@ -2020,12 +2003,10 @@ namespace octave
   void
   jit_infer::simplify_phi (void)
   {
-    for (jit_block_list::iterator biter = m_blocks.begin ();
-         biter != m_blocks.end ();
-         ++biter)
+    for (auto biter = m_blocks.begin (); biter != m_blocks.end (); ++biter)
       {
         jit_block &ablock = **biter;
-        for (jit_block::iterator iter = ablock.begin ();
+        for (auto iter = ablock.begin ();
              iter != ablock.end () && isa<jit_phi> (*iter); ++iter)
           simplify_phi (*static_cast<jit_phi *> (*iter));
       }
@@ -2162,10 +2143,7 @@ namespace octave
     // FIXME: autconf this
 
     if (e == nullptr)
-      {
-        std::cerr << "Failed to create JIT engine" << std::endl;
-        std::cerr << err << std::endl;
-      }
+      error ("failed to create JIT engine: %s", err.c_str ());
 
     return jit::EngineOwner (e);
   }
@@ -2323,8 +2301,7 @@ namespace octave
   bool
   tree_jit::enabled (void)
   {
-    octave::bp_table& bptab
-      = octave::__get_bp_table__ ("tree_jit::enabled");
+    bp_table& bptab = __get_bp_table__ ("tree_jit::enabled");
 
     // Ideally, we should only disable JIT if there is a breakpoint in the code
     // we are about to run. However, we can't figure this out in O(1) time, so
@@ -2523,14 +2500,14 @@ namespace octave
           {
             jit_block_list& blocks = infer.get_blocks ();
             blocks.label ();
-            std::cout << "-------------------- Compiling function ";
-            std::cout << "--------------------\n";
+            octave_stdout << "-------------------- Compiling function ";
+            octave_stdout << "--------------------\n";
 
-            tree_print_code tpc (std::cout);
+            tree_print_code tpc (octave_stdout);
             tpc.visit_octave_user_function_header (fcn);
             tpc.visit_statement_list (*fcn.body ());
             tpc.visit_octave_user_function_trailer (fcn);
-            blocks.print (std::cout, "octave jit ir");
+            blocks.print (octave_stdout, "octave jit ir");
           }
 
         jit_factory& factory = conv.get_factory ();
@@ -2541,9 +2518,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- raw function ";
-            std::cout << "--------------------\n";
-            std::cout << *raw_fn.to_llvm () << std::endl;
+            octave_stdout << "-------------------- raw function ";
+            octave_stdout << "--------------------\n";
+            octave_stdout << *raw_fn.to_llvm () << std::endl;
             llvm::verifyFunction (*raw_fn.to_llvm ());
           }
 
@@ -2595,9 +2572,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- optimized and wrapped ";
-            std::cout << "--------------------\n";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << "-------------------- optimized and wrapped ";
+            octave_stdout << "--------------------\n";
+            octave_stdout << *llvm_function << std::endl;
             llvm::verifyFunction (*llvm_function);
           }
 
@@ -2623,7 +2600,7 @@ namespace octave
         if (Vdebug_jit)
           {
             if (e.known ())
-              std::cout << "jit fail: " << e.what () << std::endl;
+              octave_stdout << "jit fail: " << e.what () << std::endl;
           }
 
         Vjit_failcnt++;
@@ -2776,9 +2753,9 @@ namespace octave
           {
             jit_block_list& blocks = infer.get_blocks ();
             blocks.label ();
-            std::cout << "-------------------- Compiling tree --------------------\n";
-            std::cout << tee.str_print_code () << std::endl;
-            blocks.print (std::cout, "octave jit ir");
+            octave_stdout << "-------------------- Compiling tree --------------------\n";
+            octave_stdout << tee.str_print_code () << std::endl;
+            blocks.print (octave_stdout, "octave jit ir");
           }
 
         jit_factory& factory = conv.get_factory ();
@@ -2797,7 +2774,7 @@ namespace octave
         if (Vdebug_jit)
           {
             if (e.known ())
-              std::cout << "jit fail: " << e.what () << std::endl;
+              octave_stdout << "jit fail: " << e.what () << std::endl;
           }
 
         Vjit_failcnt++;
@@ -2808,8 +2785,8 @@ namespace octave
       {
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- llvm ir --------------------";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << "-------------------- llvm ir --------------------";
+            octave_stdout << *llvm_function << std::endl;
             llvm::verifyFunction (*llvm_function);
           }
 
@@ -2817,9 +2794,9 @@ namespace octave
 
         if (Vdebug_jit)
           {
-            std::cout << "-------------------- optimized llvm ir "
+            octave_stdout << "-------------------- optimized llvm ir "
                       << "--------------------\n";
-            std::cout << *llvm_function << std::endl;
+            octave_stdout << *llvm_function << std::endl;
           }
 
         finalizeObject ();

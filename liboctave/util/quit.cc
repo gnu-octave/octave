@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstring>
 
-#include <iostream>
 #include <new>
 
 #include "quit.h"
@@ -94,7 +93,7 @@ octave_throw_exit_exception (int exit_status, int safe_to_return)
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-  throw octave_exit_exception (exit_status, safe_to_return);
+  throw octave::exit_exception (exit_status, safe_to_return);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic pop

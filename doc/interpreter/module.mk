@@ -15,6 +15,7 @@ GRAPH_PROP_TEXI_SRC = \
   %reldir%/plot-uicontextmenuproperties.texi \
   %reldir%/plot-uipanelproperties.texi \
   %reldir%/plot-uicontrolproperties.texi \
+  %reldir%/plot-uitableproperties.texi \
   %reldir%/plot-uitoolbarproperties.texi \
   %reldir%/plot-uipushtoolproperties.texi \
   %reldir%/plot-uitoggletoolproperties.texi
@@ -27,55 +28,60 @@ define gen-propdoc-texi
   mv $@-t $@
 endef
 
-%reldir%/plot-axesproperties.texi: %reldir%/genpropdoc.m
+GRAPHICS_PROPS_SRC = libinterp/corefcn/graphics.in.h libinterp/corefcn/genprops.awk
+
+%reldir%/plot-axesproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,axes)
 
-%reldir%/plot-figureproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-figureproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,figure)
 
-%reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-imageproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,image)
 
-%reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-lightproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,light)
 
-%reldir%/plot-lineproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-lineproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,line)
 
-%reldir%/plot-patchproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-patchproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,patch)
 
-%reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-rootproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,root)
 
-%reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-surfaceproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,surface)
 
-%reldir%/plot-textproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-textproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,text)
 
-%reldir%/plot-uimenuproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uimenuproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uimenu)
 
-%reldir%/plot-uibuttongroupproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uibuttongroupproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uibuttongroup)
 
-%reldir%/plot-uicontextmenuproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uicontextmenuproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontextmenu)
 
-%reldir%/plot-uipanelproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uipanelproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipanel)
 
-%reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uicontrolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uicontrol)
 
-%reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uitableproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
+	$(AM_V_GEN)$(call gen-propdoc-texi,uitable)
+
+%reldir%/plot-uitoolbarproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoolbar)
 
-%reldir%/plot-uipushtoolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uipushtoolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uipushtool)
 
-%reldir%/plot-uitoggletoolproperties.texi: %reldir%/genpropdoc.m
+%reldir%/plot-uitoggletoolproperties.texi: %reldir%/genpropdoc.m $(GRAPHICS_PROPS_SRC)
 	$(AM_V_GEN)$(call gen-propdoc-texi,uitoggletool)
 
 dist_man_MANS = \
@@ -323,6 +329,7 @@ DOC_TARGETS += \
 if AMCOND_BUILD_QT_DOCS
 DOC_TARGETS += \
   $(OCTAVE_QTHELP_FILES)
+
 endif
 
 ## Distribute both OCTAVE_CSS and HTMLDIR_CSS so that the rules for
@@ -422,6 +429,13 @@ doc_MAINTAINERCLEANFILES += \
 
 endif
 
+## These actions should happen even if we are not building docs
+
+include doc/interpreter/images.mk
+
+$(srcdir)/%reldir%/images.mk: $(srcdir)/%reldir%/config-images.sh $(srcdir)/%reldir%/images.awk $(srcdir)/%reldir%/images
+	$(AM_V_GEN)$(SHELL) $(srcdir)/%reldir%/config-images.sh $(top_srcdir)
+
 DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)
 
 ## The doc-cache file can be built without TeX but it does require
@@ -443,19 +457,19 @@ octetc_DATA += \
 
 %reldir%/undocumented_list:
 	rm -f $@-t $@
-	-cd $(srcdir)/doc/interpreter; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
+	-cd $(srcdir)/%reldir%; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
 	mv $@-t $@
 .PHONY: %reldir%/undocumented_list
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 
 %.scheck: %.texi | %reldir%/$(octave_dirstamp)
-	cd $(srcdir)/doc/interpreter; ./doccheck/spellcheck $(<F) > $(@F)-t
+	cd $(srcdir)/%reldir%; ./doccheck/spellcheck $(<F) > $(@F)-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
 
 spellcheck: $(SPELLCHECK_FILES)
-	@cd $(srcdir)/doc/interpreter ; \
+	@cd $(srcdir)/%reldir% ; \
 	if ls *.scheck >/dev/null 2>&1 ; then \
 		echo "Spellcheck failed"; \
 		echo "Review the following files:"; \

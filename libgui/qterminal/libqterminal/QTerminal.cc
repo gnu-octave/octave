@@ -22,6 +22,7 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include "QTerminal.h"
+#include "gui-preferences.h"
 
 #if defined (Q_OS_WIN32)
 # include "win32/QWinTerminalImpl.h"
@@ -126,6 +127,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
+    _run_selection_action->setEnabled (has_selected_text);
 
     // Get the actions of any hotspots the filters may have found
     QList<QAction*> actions = get_hotspot_actions (at);
@@ -141,6 +143,17 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     for (int i = 0; i < actions.length (); i++)
       _contextMenu->removeAction (actions.at(i));
   }
+
+// slot for running the selected code
+void
+QTerminal::run_selection ()
+{
+  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
+                                                QString::SkipEmptyParts);
+  for (int i = 0; i < commands.size (); i++)
+    emit execute_command_in_terminal_signal (commands.at (i));
+
+}
 
 // slot for edit files in error messages
 void
@@ -160,10 +173,14 @@ QTerminal::notice_settings (const QSettings *settings)
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
+  QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
   term_font.setFamily
-    (settings->value ("terminal/fontName", "Courier New").toString ());
+    (settings->value (cs_font.key, default_font).toString ());
   term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
   setTerminalFont (term_font);
+
+  QFontMetrics metrics (term_font);
+  setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();

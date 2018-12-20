@@ -10,18 +10,17 @@ EXTRA_DIST += \
   %reldir%/mk-hg-id.sh \
   %reldir%/mk-octave-config-h.sh \
   %reldir%/mk-opts.pl \
+  %reldir%/mk-pkg-add.sh \
   %reldir%/move-if-change \
   %reldir%/stl_algo.h-fixed \
   %reldir%/subst-config-vals.in.sh \
   %reldir%/subst-cross-config-vals.in.sh \
-  %reldir%/subst-default-vals.in.sh \
   %reldir%/subst-script-vals.in.sh \
   %reldir%/update-bug-status.sh
 
 GEN_CONFIG_SHELL += \
   %reldir%/subst-config-vals.sh \
   %reldir%/subst-cross-config-vals.sh \
-  %reldir%/subst-default-vals.sh \
   %reldir%/subst-script-vals.sh
 
 $(GEN_CONFIG_SHELL) : %.sh : %.in.sh config.status

@@ -9,6 +9,9 @@ octave_gui_ICONS = \
   %reldir%/icons/db-step-out.png \
   %reldir%/icons/db-step.png \
   %reldir%/icons/db-stop.png \
+  %reldir%/icons/dialog-error.png \
+  %reldir%/icons/dialog-information.png \
+  %reldir%/icons/dialog-warning.png \
   %reldir%/icons/document-new.png \
   %reldir%/icons/document-open.png \
   %reldir%/icons/document-print.png \
@@ -26,7 +29,10 @@ octave_gui_ICONS = \
   %reldir%/icons/folder-new.png \
   %reldir%/icons/go-down.png \
   %reldir%/icons/go-first.png \
+  %reldir%/icons/go-home.png \
   %reldir%/icons/go-last.png \
+  %reldir%/icons/go-next.png \
+  %reldir%/icons/go-previous.png \
   %reldir%/icons/go-up.png \
   %reldir%/icons/graphic_logo_DocumentationDockWidget.png \
   %reldir%/icons/graphic_logo_FileEditor.png \
@@ -78,6 +84,7 @@ octave_gui_ICONS = \
   %reldir%/icons/widget-dock-light.png \
   %reldir%/icons/widget-undock-light.png \
   %reldir%/icons/zoom-in.png \
+  %reldir%/icons/zoom-original.png \
   %reldir%/icons/zoom-out.png
 
 octave_gui_MOC =
@@ -108,6 +115,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
   %reldir%/moc-documentation.cc \
+  %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-main-window.cc \
@@ -153,6 +161,8 @@ noinst_HEADERS += \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
   %reldir%/documentation.h \
+  %reldir%/dw-main-window.h \
+  %reldir%/gui-preferences.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
   %reldir%/history-dock-widget.h \
@@ -167,7 +177,6 @@ noinst_HEADERS += \
   %reldir%/octave-gui.h \
   %reldir%/octave-cmd.h \
   %reldir%/octave-qt-link.h \
-  %reldir%/octave-settings.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
@@ -186,6 +195,7 @@ noinst_HEADERS += \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
   %reldir%/documentation.cc \
+  %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/history-dock-widget.cc \
@@ -227,7 +237,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -I$(srcdir)/%reldir%/m-editor \
-  -I$(srcdir)/libgui/graphics \
+  -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
@@ -238,10 +248,6 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value \
   -I$(srcdir)/liboctave/wrappers
-
-%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
 
 noinst_LTLIBRARIES += %reldir%/libgui-src.la
 

@@ -36,7 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "ovl.h"
 #include "pager.h"
-#include "symscope.h"
+#include "syminfo.h"
+#include "symtab.h"
 
 static int
 octave_readline_hook (void)
@@ -69,12 +70,14 @@ octave_link::set_workspace (void)
   if (enabled ())
     {
       octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_link::set_workspace");
+         = octave::__get_symbol_table__ ("octave_link::set_workspace");
 
-      octave::symbol_scope scope = symtab.current_scope ();
+      octave::call_stack& cs
+        = octave::__get_call_stack__ ("octave_link::set_workspace");
 
       instance->do_set_workspace (symtab.at_top_level (),
-                                  instance->debugging, scope, true);
+                                  instance->debugging,
+                                  cs.get_symbol_info (), true);
     }
 }
 
@@ -147,28 +150,6 @@ Undocumented internal function.
       octave::flush_stdout ();
 
       retval = octave_link::prompt_new_edit_file (file);
-    }
-
-  return retval;
-}
-
-DEFUN (__octave_link_message_dialog__, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})
-Undocumented internal function.
-@end deftypefn */)
-{
-  octave_value retval;
-
-  if (args.length () == 3)
-    {
-      std::string dlg = args(0).xstring_value ("invalid arguments");
-      std::string msg = args(1).xstring_value ("invalid arguments");
-      std::string title = args(2).xstring_value ("invalid arguments");
-
-      octave::flush_stdout ();
-
-      retval = octave_link::message_dialog (dlg, msg, title);
     }
 
   return retval;
@@ -257,7 +238,7 @@ Undocumented internal function.
       nel -= 2;
       Cell items (dim_vector (1, nel));
 
-      std::list<std::string>::iterator it = items_lst.begin ();
+      auto it = items_lst.begin ();
 
       for (int idx = 0; idx < nel; idx++, it++)
         items.xelem (idx) = *it;
@@ -373,6 +354,25 @@ Undocumented internal function.
   return ovl (items);
 }
 
+
+DEFUN (__octave_link_named_icon__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_dialog_icons__ (@var{icon_name})
+Undocumented internal function.
+@end deftypefn */)
+{
+  uint8NDArray retval;
+
+  if (args.length () > 0)
+    {
+      std::string icon_name = args(0).xstring_value ("invalid arguments");
+
+      retval = octave_link::get_named_icon (icon_name);
+    }
+
+  return ovl (retval);
+}
+
 DEFUN (__octave_link_show_preferences__, , ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_show_preferences__ ()
@@ -380,6 +380,68 @@ Undocumented internal function.
 @end deftypefn */)
 {
   return ovl (octave_link::show_preferences ());
+}
+
+DEFUN (__octave_link_gui_preference__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_gui_preference__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string key;
+  std::string value = "";
+
+  if (args.length () >= 1)
+    key = args(0).string_value();
+  else
+    error ("__octave_link_gui_preference__: "
+           "first argument must be the preference key");
+
+  if (args.length () >= 2)
+    value = args(1).string_value();
+
+  return ovl (octave_link::gui_preference (key, value));
+}
+
+DEFUN (__octave_link_file_remove__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_remove__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string old_name, new_name;
+
+  if (args.length () == 2)
+    {
+      old_name = args(0).string_value();
+      new_name = args(1).string_value();
+    }
+  else
+    error ("__octave_link_file_remove__: "
+           "old and new name expected as arguments");
+
+  octave_link::file_remove (old_name, new_name);
+
+  return ovl ();
+}
+
+DEFUN (__octave_link_file_renamed__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __octave_link_file_renamed__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  bool load_new;
+
+  if (args.length () == 1)
+    load_new = args(0).bool_value();
+  else
+    error ("__octave_link_file_renamed__: "
+           "first argument must be boolean for reload new named file");
+
+  octave_link::file_renamed (load_new);
+
+  return ovl ();
 }
 
 DEFMETHOD (openvar, interp, args, ,

@@ -666,6 +666,36 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS], [
   fi
 ])
 dnl
+dnl Check whether the Qt class QScreen has the devicePixelRatio member function.
+dnl This member function was introduced in Qt 5.5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO], [
+  AC_CACHE_CHECK([for QScreen::devicePixelRatio in <QScreen>],
+    [octave_cv_func_qscreen_devicepixelratio],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QApplication>
+        #include <QScreen>
+        ]], [[
+        QScreen *screen = QApplication::primaryScreen ();
+        qreal ratio = screen->devicePixelRatio ();
+        ]])],
+      octave_cv_func_qscreen_devicepixelratio=yes,
+      octave_cv_func_qscreen_devicepixelratio=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qscreen_devicepixelratio = yes; then
+    AC_DEFINE(HAVE_QSCREEN_DEVICEPIXELRATIO, 1,
+      [Define to 1 if you have the `QScreen::devicePixelRatio' member function.])
+  fi
+])
+dnl
 dnl Check whether the Qt class QTabWidget has the setMovable member function.
 dnl This member function was introduced in Qt 4.5.
 dnl
@@ -1846,7 +1876,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
   ac_octave_save_CXXFLAGS="$CXXFLAGS"
   CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
   CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget])
+  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget QGLFunctions_1_1])
   AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
     [octave_cv_qt_opengl_ok],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -1944,10 +1974,12 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   ## Check for Qt libraries
   case "$qt_version" in
     4)
-      QT_MODULES="QtCore QtGui QtNetwork QtOpenGL QtHelp"
+      QT_OPENGL_MODULE="QtOpenGL"
+      QT_MODULES="QtCore QtGui QtNetwork QtHelp QtXml"
     ;;
     5)
-      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Help"
+      QT_OPENGL_MODULE="Qt5OpenGL"
+      QT_MODULES="Qt5Core Qt5Gui Qt5Network Qt5PrintSupport Qt5Help Qt5Xml"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
@@ -1977,6 +2009,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_OPENGL_LIBS="$($PKG_CONFIG --libs-only-l $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
 
     case $host_os in
       *darwin*)
@@ -1984,6 +2017,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         if test -z "$QT_LIBS"; then
           QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
           QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          QT_OPENGL_LIBS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
           AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
@@ -2107,6 +2141,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QLINEEDIT_SETPLACEHOLDERTEXT
     OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS
     OCTAVE_CHECK_FUNC_QOBJECT_FINDCHILDREN_ACCEPTS_FINDCHILDOPTIONS
+    OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
     OCTAVE_CHECK_FUNC_QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT
     OCTAVE_CHECK_MEMBER_QFONT_FORCE_INTEGER_METRICS
@@ -2138,6 +2173,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   AC_SUBST(QT_CPPFLAGS)
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_LIBS)
+  AC_SUBST(QT_OPENGL_LIBS)
 ])
 dnl
 dnl Check if the default Fortran INTEGER is 64 bits wide.
@@ -3104,70 +3140,16 @@ EOF
       ])
   fi
 
-  AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
-
-  if test -z "$octave_cv_bison_api_prefix_decl_style"; then
+  if test -z "$octave_cv_bison_api_prefix_decl_style" \
+    || test "$octave_cv_bison_api_prefix_decl_style" != "api brace"; then
     tmp_have_bison=no
     warn_bison_api_prefix_decl_style="
 
 I wasn't able to find a suitable style for declaring the api prefix
-in a bison input file so I'm disabling bison.
+in a bison input file so I'm disabling bison.  We expect bison to
+understand the '%define api.prefix { PREFIX }' syntax.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison_api_prefix_decl_style])
-  fi
-
-  if test $tmp_have_bison = yes; then
-    AC_CACHE_CHECK([syntax of bison push/pull declaration],
-                   [octave_cv_bison_push_pull_decl_style], [
-      style="dash underscore"
-      quote="noquote quote"
-      for s in $style; do
-        for q in $quote; do
-          if test $s = "dash"; then
-            def="%define api.push-pull"
-          else
-            def="%define api.push_pull"
-          fi
-          if test $q = "quote"; then
-            def="$def \"both\""
-          else
-            def="$def both"
-          fi
-          cat << EOF > conftest.yy
-$def
-%start input
-%%
-input:;
-%%
-EOF
-          octave_bison_output=`$YACC conftest.yy 2>&1`
-          ac_status=$?
-          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
-            if test $q = noquote; then
-              q=
-            fi
-            octave_cv_bison_push_pull_decl_style="$s $q"
-            break
-          fi
-        done
-        if test -n "$octave_cv_bison_push_pull_decl_style"; then
-          break
-        fi
-      done
-      rm -f conftest.yy y.tab.h y.tab.c
-      ])
-  fi
-
-  AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
-
-  if test -z "$octave_cv_bison_push_pull_decl_style"; then
-    tmp_have_bison=no
-    warn_bison_push_pull_decl_style="
-
-I wasn't able to find a suitable style for declaring a push-pull
-parser in a bison input file so I'm disabling bison.
-"
-    OCTAVE_CONFIGURE_WARNING([warn_bison_push_pull_decl_style])
   fi
 
   if test $tmp_have_bison = no; then

@@ -247,8 +247,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   else
     xaxisloc = "x";
     xaxisloc_using = "x1";
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-    if (any (strcmp (axis_obj.xaxislocation, {"origin", "zero"})))
+    if (strcmp (axis_obj.xaxislocation, "origin"))
       fputs (plot_stream, "set xzeroaxis;\n");
     endif
   endif
@@ -258,8 +257,7 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
   else
     yaxisloc = "y";
     yaxisloc_using = "y1";
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-    if (any (strcmp (axis_obj.yaxislocation, {"origin", "zero"})))
+    if (strcmp (axis_obj.yaxislocation, "origin"))
       fputs (plot_stream, "set yzeroaxis;\n");
     endif
   endif
@@ -1500,13 +1498,13 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
         if (isempty (axis_obj.xtick))
         elseif (strcmp (axis_obj.xaxislocation, "top"))
           fprintf (plot_stream, "set x2tics %s nomirror\n", axis_obj.tickdir);
-        else # xaxislocation == "bottom", "origin" or "zero"
+        else # xaxislocation == "bottom" or "origin"
           fprintf (plot_stream, "set xtics %s nomirror\n", axis_obj.tickdir);
         endif
         if (isempty (axis_obj.ytick))
         elseif (strcmp (axis_obj.yaxislocation, "right"))
           fprintf (plot_stream, "set y2tics %s nomirror\n", axis_obj.tickdir);
-        else # yaxislocation == "left", "origin" or "zero"
+        else # yaxislocation == "left" or "origin"
           fprintf (plot_stream, "set ytics %s nomirror\n",  axis_obj.tickdir);
         endif
       endif
@@ -1811,12 +1809,10 @@ function idx = do_border_2d (obj, plot_stream, idx)
     arrow (4, obj.ycolor, obj.linewidth, [1,0,0], [1,1,0]);
   endif
 
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-  if (any (strcmp (obj.xaxislocation, {"origin", "zero"})))
+  if (strcmp (obj.xaxislocation, "origin"))
     idx = zeroaxis (idx, obj.xcolor, "x");
   endif
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-  if (any (strcmp (obj.yaxislocation, {"origin", "zero"})))
+  if (strcmp (obj.yaxislocation, "origin"))
     idx = zeroaxis (idx, obj.ycolor, "y");
   endif
 
@@ -1854,7 +1850,7 @@ function idx = do_border_tick_3d (obj, plot_stream, idx)
   tick ('y', obj.ycolor, obj.tickdir, mirrorstr);
   tick ('z', obj.zcolor, obj.tickdir, mirrorstr);
 
-  function tick (axischar, color, tickdir, mirrorstr);
+  function tick (axischar, color, tickdir, mirrorstr)
     if (isnumeric (color))
       if (length (color) == 3)
         colorspec = sprintf ('rgb "#%02x%02x%02x"', round (255*color));
@@ -2182,8 +2178,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.xcolor, "x", plot_stream, true, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.xscale, obj.xsgn, gnuplot_term);
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-  elseif (any (strcmp (obj.xaxislocation, {"origin", "zero"})))
+  elseif (strcmp (obj.xaxislocation, "origin"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x", plot_stream, true,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
@@ -2211,8 +2206,7 @@ function do_tics (obj, plot_stream, ymirror, gnuplot_term)
                obj.ycolor, "y", plot_stream, ymirror, "border",
                "", "", fontname, fontspec, obj.ticklabelinterpreter,
                obj.yscale, obj.ysgn, gnuplot_term);
-### FIXME: DEPRECATED: Remove "zero" in version 5.
-  elseif (any (strcmp (obj.yaxislocation, {"origin", "zero"})))
+  elseif (strcmp (obj.yaxislocation, "origin"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
@@ -2281,28 +2275,15 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
   endif
   colorspec = get_text_colorspec (color);
   fprintf (plot_stream, ['set format %s "%s";' "\n"], ax, fmt);
-  if (strcmp (ticmode, "manual"))
-    if (isempty (tics))
-      fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
-      return
-    endif
-    fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
-             ticklength, axispos, mirror);
-    fprintf (plot_stream, "%.15g", tics(1));
-    if (numel (tics) > 1)
-      fprintf (plot_stream, ",%.15g", tics(2:end));
-    endif
-    fprintf (plot_stream, ") %s;\n", fontspec);
+  if (strcmp (ticmode, "manual") && isempty (tics))
+    fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
+    return
   else
-    fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
-             tickdir, ticklength, axispos, mirror, colorspec, fontspec);
-  endif
-  if (strcmp (labelmode, "manual"))
     k = 1;
     ntics = numel (tics);
     labels(end+1:1) = {""};
     labels = repmat (labels(:), ceil (ntics/numel (labels)), 1);
-    fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
+    fprintf (plot_stream, "set %stics %s %s %s %s (", ax,
              tickdir, ticklength, axispos, mirror);
     labels = strrep (labels, "%", "%%");
     for i = 1:ntics

@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <algorithm>
 #include <limits>
 
 #include "mx-base.h"
@@ -227,6 +228,8 @@ typecast (@var{x}, "uint8")
            array.class_name ().c_str ());
 
   std::string numclass = args(1).string_value ();
+  std::transform (numclass.begin (), numclass.end (), numclass.begin (),
+                  tolower);
 
   if (numclass.size () == 0)
     ;
@@ -438,6 +441,13 @@ column vector.
 %!assert (bitpack (zeros (1, 64,  "logical"), "double"), double (0))
 %!assert (bitpack (zeros (1, 64,  "logical"), "single complex"), single (0))
 %!assert (bitpack (zeros (1, 128, "logical"), "double complex"), double (0))
+
+%!test <54931>
+%! x = false (1, 32);
+%! x(1) = true;
+%! assert (bitpack (x, "uint32"), uint32 (1));
+%! x([1, 9]) = true;
+%! assert (bitpack (x, "uint32"), uint32 (257));
 
 %!error bitpack ()
 %!error bitpack (1)

@@ -68,7 +68,7 @@ function y = iqr (x, dim)
     y = zeros (sz);
   endif
   stride = prod (sz(1:dim-1));
-  for i = 1 : nel / n;
+  for i = 1 : nel / n
     offset = i;
     offset2 = 0;
     while (offset > stride)

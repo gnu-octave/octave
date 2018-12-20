@@ -48,7 +48,7 @@ namespace octave
     // part.  To avoid running out of integers, we recycle the integer
     // part but tack on a new random part each time.
 
-    free_list_iterator p = handle_free_list.begin ();
+    auto p = handle_free_list.begin ();
 
     if (p != handle_free_list.end ())
       {
@@ -69,7 +69,7 @@ namespace octave
   {
     if (h.ok ())
       {
-        iterator p = handle_map.find (h);
+        auto p = handle_map.find (h);
 
         if (p == handle_map.end ())
           error ("url_handle_manager::free: invalid object %g", h.value ());

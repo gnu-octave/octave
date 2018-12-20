@@ -34,11 +34,21 @@ srcdir="$1"
 hg_id=HG-ID
 move_if_change="$srcdir/build-aux/move-if-change"
 
+## A user's ~/.hgrc may redefine or add default options to any hg subcommand,
+## potentially altering its behavior and possibly its standard output.  Always
+## run hg subcommands with configuration variables set to ensure that the
+## user's preferences do not influence the expected behavior.
+hg_safe ()
+{
+  cmd=$1; shift
+  hg --config alias.${cmd}=${cmd} --config defaults.${cmd}= ${cmd} "$@"
+}
+
 if [ $# -eq 2 ] && [ x"$2" = x--disable ]; then
   echo "hg-id-disabled" > ${hg_id}-t
   ${move_if_change} ${hg_id}-t ${hg_id}
 elif [ -d $srcdir/.hg ]; then
-  ( cd $srcdir && hg identify --id || echo "unknown" ) > ${hg_id}-t
+  ( cd $srcdir && hg_safe identify --id || echo "unknown" ) > ${hg_id}-t
   ${move_if_change} ${hg_id}-t ${hg_id}
 elif [ ! -f $srcdir/${hg_id} ]; then
   echo "WARNING: $srcdir/${hg_id} is missing!" 1>&2

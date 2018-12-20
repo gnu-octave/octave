@@ -34,9 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include <map>
-#include <iostream>
 #include <fstream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -52,7 +51,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
+#include "interpreter.h"
+#include "interpreter-private.h"
 #include "load-path.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
@@ -64,6 +66,14 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #if defined (HAVE_JAVA)
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  define LIBJVM_FILE_NAME "jvm.dll"
+#elif defined (__APPLE__)
+#  define LIBJVM_FILE_NAME "libjvm.dylib"
+#else
+#  define LIBJVM_FILE_NAME "libjvm.so"
+#endif
 
 #define TO_JOBJECT(obj) reinterpret_cast<jobject> (obj)
 #define TO_JCLASS(obj) reinterpret_cast<jclass> (obj)
@@ -237,7 +247,9 @@ namespace octave
 
     void read_java_opts (const std::string& filename)
     {
-      std::ifstream js (filename.c_str ());
+      std::string ascii_fname = octave::sys::get_ASCII_filename (filename);
+
+      std::ifstream js (ascii_fname.c_str ());
 
       if (! js.bad () && ! js.fail ())
         {
@@ -250,8 +262,7 @@ namespace octave
               if (line.find ('-') == 0)
                 java_opts.push_back (line);
               else if (line.length () > 0 && Vdebug_java)
-                std::cerr << "invalid JVM option, skipping: " << line
-                                                              << std::endl;
+                warning ("invalid JVM option, skipping: %s", line.c_str ());
             }
         }
     }
@@ -286,7 +297,7 @@ namespace octave
           for (const auto& opt : java_opts)
             {
               if (Vdebug_java)
-                std::cout << opt << std::endl;
+                octave_stdout << opt << std::endl;
               vm_args.options[index++].optionString = strsave (opt.c_str ());
             }
 
@@ -358,7 +369,9 @@ read_classpath_txt (const std::string& filepath)
 {
   std::string classpath;
 
-  std::ifstream fs (filepath.c_str ());
+  std::string ascii_fname = octave::sys::get_ASCII_filename (filepath);
+
+  std::ifstream fs (ascii_fname.c_str ());
 
   if (! fs.bad () && ! fs.fail ())
     {
@@ -491,11 +504,94 @@ initial_class_path (void)
   return retval;
 }
 
+static std::string
+get_jvm_lib_path_in_subdir (std::string java_home_path)
+{
+  // This assumes that whatever architectures are installed are appropriate for
+  // this machine
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string subdirs[] = {"bin/client", "bin/server"};
+#else
+  std::string subdirs[] = {"jre/lib/server", "jre/lib", "lib/client",
+    "lib/server", "jre/lib/amd64/client", "jre/lib/amd64/server",
+    "jre/lib/i386/client", "jre/lib/i386/server"};
+#endif
+
+  for (size_t i = 0; i < sizeof (subdirs) / sizeof (subdirs[0]); i++)
+    {
+      std::string candidate = java_home_path + "/" + subdirs[i]
+                            + "/" LIBJVM_FILE_NAME;
+      if (octave::sys::file_stat (candidate))
+        return candidate;
+    }
+  return "";
+}
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 // Declare function defined in sysdep.cc
 extern LONG
 get_regkey_value (HKEY h_rootkey, const std::string subkey,
                   const std::string name, octave_value& value);
+
+static std::string
+get_jvm_lib_path_from_registry ()
+{
+  // In Windows, find the location of the JRE from the registry
+  // and load the symbol from the dll.
+  std::string key, jversion, value;
+
+  // First search for JRE >= 9
+  key = R"(software\javasoft\jre)";
+
+  jversion = octave::sys::env::getenv ("JAVA_VERSION");
+  octave_value regval;
+  LONG retval;
+  if (jversion.empty ())
+    {
+      value = "CurrentVersion";
+      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+
+      if (retval != ERROR_SUCCESS)
+        {
+          // Search for JRE < 9
+          key = R"(software\javasoft\java runtime environment)";
+          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
+                                     regval);
+        }
+
+      if (retval != ERROR_SUCCESS)
+        error ("unable to find Java Runtime Environment: %s::%s",
+               key.c_str (), value.c_str ());
+
+      jversion = regval.xstring_value (
+        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+        value.c_str (), key.c_str ());
+    }
+
+  key = key + '\\' + jversion;
+  value = "RuntimeLib";
+  retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+  if (retval != ERROR_SUCCESS)
+    {
+      // Search for JRE < 9
+      key = R"(software\javasoft\java runtime environment\)" + jversion;
+      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+    }
+
+  if (retval != ERROR_SUCCESS)
+    error ("unable to find Java Runtime Environment: %s::%s",
+           key.c_str (), value.c_str ());
+
+  std::string jvm_lib_path = regval.xstring_value (
+        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+        value.c_str (), key.c_str ());
+
+  if (jvm_lib_path.empty ())
+    error ("unable to find Java Runtime Environment: %s::%s",
+           key.c_str (), value.c_str ());
+
+  return jvm_lib_path;
+}
 #endif
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
@@ -546,68 +642,27 @@ initialize_jvm (void)
 
   if (! create_vm || ! get_vm)
     {
+      // JAVA_HOME environment variable takes precedence
+      std::string java_home_env = octave::sys::env::getenv ("JAVA_HOME");
+      if (! java_home_env.empty ())
+        {
+          jvm_lib_path = get_jvm_lib_path_in_subdir (java_home_env);
+
+          // If JAVA_HOME does not look like a Java directory, use it anyway
+          // to fail with a useful error message indicating the directory
+          if (jvm_lib_path.empty ())
+            jvm_lib_path = java_home_env + "/" LIBJVM_FILE_NAME;
+        }
+      else
+        {
 #if defined (OCTAVE_USE_WINDOWS_API)
-      // In Windows, find the location of the JRE from the registry
-      // and load the symbol from the dll.
-      std::string key, jversion, value;
-
-      // First search for JRE >= 9
-      key = R"(software\javasoft\jre)";
-
-      jversion = octave::sys::env::getenv ("JAVA_VERSION");
-      octave_value regval;
-      LONG retval;
-      if (jversion.empty ())
-        {
-          value = "CurrentVersion";
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-
-          if (retval != ERROR_SUCCESS)
-            {
-              // Search for JRE < 9
-              key = R"(software\javasoft\java runtime environment)";
-              retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
-                                         regval);
-            }
-
-          if (retval != ERROR_SUCCESS)
-            error ("unable to find Java Runtime Environment: %s::%s",
-                   key.c_str (), value.c_str ());
-
-          jversion = regval.xstring_value (
-            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-            value.c_str (), key.c_str ());
-        }
-
-      key = key + '\\' + jversion;
-      value = "RuntimeLib";
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-      if (retval != ERROR_SUCCESS)
-        {
-          // Search for JRE < 9
-          key = R"(software\javasoft\java runtime environment\)" + jversion;
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
-        }
-
-      if (retval != ERROR_SUCCESS)
-        error ("unable to find Java Runtime Environment: %s::%s",
-               key.c_str (), value.c_str ());
-
-      jvm_lib_path = regval.xstring_value (
-            "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-            value.c_str (), key.c_str ());
-
-      if (jvm_lib_path.empty ())
-        error ("unable to find Java Runtime Environment: %s::%s",
-               key.c_str (), value.c_str ());
+          jvm_lib_path = get_jvm_lib_path_from_registry ();
 #else
-      // JAVA_LDPATH determined by configure and set in config.h
-#  if defined (__APPLE__)
-      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.dylib");
-#  else
-      jvm_lib_path = JAVA_LDPATH + std::string ("/libjvm.so");
-#  endif
+          // Fall back to JAVA_LDPATH, determined by the build system
+          jvm_lib_path = std::string (JAVA_LDPATH) + "/" LIBJVM_FILE_NAME;
 #endif
+        }
+
       lib = octave::dynamic_library (jvm_lib_path);
 
       if (! lib)
@@ -1431,7 +1486,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
         {
           jmethodID mID = jni_env->GetMethodID (cls, "getID", "()I");
           int ID = jni_env->CallIntMethod (jobj, mID);
-          std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+          auto it = octave_ref_map.find (ID);
 
           if (it != octave_ref_map.end ())
             retval = it->second;
@@ -1883,7 +1938,7 @@ initialize_java (void)
         }
       catch (std::string msg)
         {
-          error (msg.c_str ());
+          error ("%s", msg.c_str ());
         }
 
       octave_set_default_fpucw ();
@@ -1921,7 +1976,7 @@ JNIEXPORT void JNICALL
 Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
                                  jobjectArray args)
 {
-  std::map<int,octave_value>::iterator it = octave_ref_map.find (ID);
+  auto it = octave_ref_map.find (ID);
 
   if (it != octave_ref_map.end ())
     {
@@ -1964,9 +2019,12 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
 JNIEXPORT void JNICALL
 Java_org_octave_Octave_doEvalString (JNIEnv *env, jclass, jstring cmd)
 {
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("Java_org_octave_Octave_doEvalString");
+
   std::string s = jstring_to_string (env, cmd);
   int pstatus;
-  octave::eval_string (s, false, pstatus, 0);
+  interp.eval_string (s, false, pstatus, 0);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -2067,7 +2125,7 @@ octave_java::subsref (const std::string& type,
           count++;
           ovl(1) = octave_value (this);
           ovl(0) = (idx.front ())(0);
-          std::list<octave_value_list>::const_iterator it = idx.begin ();
+          auto it = idx.begin ();
           ovl.append (*++it);
           retval = FjavaMethod (ovl, 1);
           skip++;
@@ -2142,7 +2200,7 @@ octave_java::subsasgn (const std::string& type,
       else if (type.length () > 2 && type[1] == '(')
         {
           std::list<octave_value_list> new_idx;
-          std::list<octave_value_list>::const_iterator it = idx.begin ();
+          auto it = idx.begin ();
           new_idx.push_back (*it++);
           new_idx.push_back (*it++);
           octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);

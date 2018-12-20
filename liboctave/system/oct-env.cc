@@ -241,7 +241,7 @@ namespace octave
     void
     env::putenv (const std::string& name, const std::string& value)
     {
-      octave_putenv (name, value);
+      putenv_wrapper (name, value);
     }
 
     bool
@@ -531,9 +531,7 @@ namespace octave
     std::string
     env::do_getenv (const std::string& name) const
     {
-      char *value = ::getenv (name.c_str ());
-
-      return value ? value : "";
+      return getenv_wrapper (name);
     }
 
     // Do the work of changing to the directory NEWDIR.

@@ -36,15 +36,27 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
+// Programming note:  The CROSS macro here refers to building a
+// cross-compiler aware version of mkoctfile that can be used to cross
+// compile .oct file for Windows builds of Octave, not that mkoctfile
+// itself is being cross compiled.
+//
+// We don't use the wrapper and gnulib functions when we are building
+// with CROSS defined.  This configuration is only expected to work on
+// modern systems that should not need to have gnulib to fix POSIX
+// portability problems.  So we just assume a working POSIX system when
+// CROSS is defined.
+
 #if defined (CROSS)
+#  include <stdlib.h>
 #  include <sys/types.h>
 #  include <sys/wait.h>
 #  include <unistd.h>
-
 #  ifndef OCTAVE_UNUSED
 #    define OCTAVE_UNUSED
 #  endif
 #else
+#  include "mkostemps-wrapper.h"
 #  include "unistd-wrappers.h"
 #  include "wait-wrappers.h"
 #endif
@@ -66,6 +78,12 @@ static std::map<std::string, std::string> vars;
 #include "shared-fcns.h"
 
 #if defined (CROSS)
+
+static int
+octave_mkostemps_wrapper (char *tmpl, int suffixlen)
+{
+  return mkostemps (tmpl, suffixlen, 0);
+}
 
 static int
 octave_unlink_wrapper (const char *nm)
@@ -133,7 +151,39 @@ initialize (void)
   vars["OCTAVE_HOME"] = Voctave_home;
   vars["OCTAVE_EXEC_HOME"] = Voctave_exec_home;
 
-  vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
+  vars["API_VERSION"] = %OCTAVE_API_VERSION%;
+  vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
+  vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
+  vars["EXEEXT"] = %OCTAVE_EXEEXT%;
+  vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
+  vars["VERSION"] = %OCTAVE_VERSION%;
+
+  vars["ARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_ARCHLIBDIR%);
+  vars["BINDIR"] = prepend_octave_exec_home (%OCTAVE_BINDIR%);
+  vars["DATADIR"] = prepend_octave_home (%OCTAVE_DATADIR%);
+  vars["DATAROOTDIR"] = prepend_octave_home (%OCTAVE_DATAROOTDIR%);
+  vars["FCNFILEDIR"] = prepend_octave_home (%OCTAVE_FCNFILEDIR%);
+  vars["IMAGEDIR"] = prepend_octave_home (%OCTAVE_IMAGEDIR%);
+  vars["INFODIR"] = prepend_octave_home (%OCTAVE_INFODIR%);
+  vars["INFOFILE"] = prepend_octave_home (%OCTAVE_INFOFILE%);
+  vars["LIBEXECDIR"] = prepend_octave_exec_home (%OCTAVE_LIBEXECDIR%);
+  vars["LOCALAPIARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIARCHLIBDIR%);
+  vars["LOCALAPIFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALAPIFCNFILEDIR%);
+  vars["LOCALAPIOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALAPIOCTFILEDIR%);
+  vars["LOCALARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALARCHLIBDIR%);
+  vars["LOCALFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALFCNFILEDIR%);
+  vars["LOCALOCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALOCTFILEDIR%);
+  vars["LOCALSTARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALSTARTUPFILEDIR%);
+  vars["LOCALVERARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVERARCHLIBDIR%);
+  vars["LOCALVERFCNFILEDIR"] = prepend_octave_home (%OCTAVE_LOCALVERFCNFILEDIR%);
+  vars["LOCALVEROCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_LOCALVEROCTFILEDIR%);
+  vars["MAN1DIR"] = prepend_octave_home (%OCTAVE_MAN1DIR%);
+  vars["MANDIR"] = prepend_octave_home (%OCTAVE_MANDIR%);
+  vars["OCTDATADIR"] = prepend_octave_home (%OCTAVE_OCTDATADIR%);
+  vars["OCTDOCDIR"] = prepend_octave_home (%OCTAVE_OCTDOCDIR%);
+  vars["OCTFILEDIR"] = prepend_octave_exec_home (%OCTAVE_OCTFILEDIR%);
+  vars["OCTFONTSDIR"] = prepend_octave_home (%OCTAVE_OCTFONTSDIR%);
+  vars["STARTUPFILEDIR"] = prepend_octave_home (%OCTAVE_STARTUPFILEDIR%);
 
   vars["OCTINCLUDEDIR"]
     = get_variable ("OCTINCLUDEDIR",
@@ -162,7 +212,15 @@ initialize (void)
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  std::string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
+  std::string DEFAULT_LFLAGS;
+
+#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
+
+  // We'll be linking the files we compile with -loctinterp and
+  // -loctave, so we need to know where to find them.
+
+  DEFAULT_LFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
+#endif
 
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
@@ -322,36 +380,80 @@ static std::string help_msg =
 "\n"
 "  -g                      Enable debugging options for compilers.\n"
 "\n"
-"  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
-"                          variables are:\n"
+"  -p VAR, --print VAR     Print configuration variable VAR.  There are\n"
+"                          three categories of variables:\n"
 "\n"
-"                            ALL_CFLAGS                  INCFLAGS\n"
-"                            ALL_CXXFLAGS                INCLUDEDIR\n"
-"                            ALL_FFLAGS                  LAPACK_LIBS\n"
-"                            ALL_LDFLAGS                 LD_CXX\n"
-"                            AR                          LDFLAGS\n"
-"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
-"                            CC                          LFLAGS\n"
-"                            CFLAGS                      LIBDIR\n"
-"                            CPICFLAG                    LIBOCTAVE\n"
-"                            CPPFLAGS                    LIBOCTINTERP\n"
-"                            CXX                         LIBS\n"
-"                            CXXFLAGS                    OCTAVE_EXEC_HOME\n"
-"                            CXXPICFLAG                  OCTAVE_HOME\n"
-"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS                OCTAVE_LINK_DEPS\n"
-"                            DL_LD                       OCTAVE_LINK_OPTS\n"
-"                            DL_LDFLAGS                  OCTINCLUDEDIR\n"
-"                            F77                         OCTLIBDIR\n"
-"                            F77_INTEGER8_FLAG           OCT_LINK_DEPS\n"
-"                            FFLAGS                      OCT_LINK_OPTS\n"
-"                            FFTW3F_LDFLAGS              RANLIB\n"
-"                            FFTW3F_LIBS                 RDYNAMIC_FLAG\n"
-"                            FFTW3_LDFLAGS               READLINE_LIBS\n"
-"                            FFTW3_LIBS                  SED\n"
-"                            FFTW_LIBS                   SPECIAL_MATH_LIB\n"
-"                            FLIBS                       XTRA_CFLAGS\n"
-"                            FPICFLAG                    XTRA_CXXFLAGS\n"
+"                          Octave configuration variables that users may\n"
+"                          override with environment variables.  These are\n"
+"                          used in commands that mkoctfile executes.\n"
+"\n"
+"                            ALL_CFLAGS                  LAPACK_LIBS\n"
+"                            ALL_CXXFLAGS                LDFLAGS\n"
+"                            ALL_FFLAGS                  LD_CXX\n"
+"                            ALL_LDFLAGS                 LD_STATIC_FLAG\n"
+"                            BLAS_LIBS                   LFLAGS\n"
+"                            CC                          LIBDIR\n"
+"                            CFLAGS                      LIBOCTAVE\n"
+"                            CPICFLAG                    LIBOCTINTERP\n"
+"                            CPPFLAGS                    OCTAVE_LINK_OPTS\n"
+"                            CXX                         OCTINCLUDEDIR\n"
+"                            CXXFLAGS                    OCTAVE_LIBS\n"
+"                            CXXPICFLAG                  OCTAVE_LINK_DEPS\n"
+"                            DL_LD                       OCTLIBDIR\n"
+"                            DL_LDFLAGS                  OCT_LINK_DEPS\n"
+"                            F77                         OCT_LINK_OPTS\n"
+"                            F77_INTEGER8_FLAG           RDYNAMIC_FLAG\n"
+"                            FFLAGS                      SPECIAL_MATH_LIB\n"
+"                            FPICFLAG                    XTRA_CFLAGS\n"
+"                            INCFLAGS                    XTRA_CXXFLAGS\n"
+"                            INCLUDEDIR\n"
+"\n"
+"                          Octave configuration variables as above, but\n"
+"                          currently unused by mkoctfile.\n"
+"\n"
+"                            AR\n"
+"                            DEPEND_EXTRA_SED_PATTERN\n"
+"                            DEPEND_FLAGS\n"
+"                            FFTW3F_LDFLAGS\n"
+"                            FFTW3F_LIBS\n"
+"                            FFTW3_LDFLAGS\n"
+"                            FFTW3_LIBS\n"
+"                            FFTW_LIBS\n"
+"                            FLIBS\n"
+"                            LIBS\n"
+"                            RANLIB\n"
+"                            READLINE_LIBS\n"
+"\n"
+"                          Octave configuration variables that are provided\n"
+"                          for informational purposes only.  Except for\n"
+"                          OCTAVE_HOME and OCTAVE_EXEC_HOME, users may not\n"
+"                          override these variables.\n"
+"\n"
+"                          If OCTAVE_HOME or OCTAVE_EXEC_HOME are set in\n"
+"                          the environment, then other variables are adjusted\n"
+"                          accordingly with OCTAVE_HOME or OCTAVE_EXEC_HOME\n"
+"                          substituted for the original value of the directory\n"
+"                          specified by the --prefix or --exec-prefix options\n"
+"                          that were used when Octave was configured.\n"
+"\n"
+"                            API_VERSION                 LOCALFCNFILEDIR\n"
+"                            ARCHLIBDIR                  LOCALOCTFILEDIR\n"
+"                            BINDIR                      LOCALSTARTUPFILEDIR\n"
+"                            CANONICAL_HOST_TYPE         LOCALVERARCHLIBDIR\n"
+"                            DATADIR                     LOCALVERFCNFILEDIR\n"
+"                            DATAROOTDIR                 LOCALVEROCTFILEDIR\n"
+"                            DEFAULT_PAGER               MAN1DIR\n"
+"                            EXEC_PREFIX                 MAN1EXT\n"
+"                            EXEEXT                      MANDIR\n"
+"                            FCNFILEDIR                  OCTAVE_EXEC_HOME\n"
+"                            IMAGEDIR                    OCTAVE_HOME\n"
+"                            INFODIR                     OCTDATADIR\n"
+"                            INFOFILE                    OCTDOCDIR\n"
+"                            LIBEXECDIR                  OCTFILEDIR\n"
+"                            LOCALAPIARCHLIBDIR          OCTFONTSDIR\n"
+"                            LOCALAPIFCNFILEDIR          STARTUPFILEDIR\n"
+"                            LOCALAPIOCTFILEDIR          VERSION\n"
+"                            LOCALARCHLIBDIR\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"
@@ -451,6 +553,78 @@ is_true (const std::string& s)
   return (s == "yes" || s == "true");
 }
 
+static std::string
+do_getenv (const std::string& name)
+{
+  char *value = ::getenv (name.c_str ());
+
+  return value ? value : "";
+}
+
+static std::string
+get_temp_directory (void)
+{
+  std::string tempd;
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  tempd = do_getenv ("TEMP");
+
+  if (tempd.empty ())
+    tempd = do_getenv ("TMP");
+
+#if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+#endif
+
+  // Some versions of MinGW and MSVC either don't define P_tmpdir, or
+  // define it to a single backslash.  In such cases just use C:\temp.
+  if (tempd.empty () || tempd == R"(\)")
+    tempd = R"(c:\temp)";
+
+#else
+
+  tempd = do_getenv ("TMP");
+
+#if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+#else
+  if (tempd.empty ())
+    tempd = "/tmp";
+#endif
+
+#endif
+
+  return tempd;
+}
+
+static std::string
+tmp_objfile_name (void)
+{
+  std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
+
+  char *ctmpl = new char [tmpl.length () + 1];
+
+  ctmpl = strcpy (ctmpl, tmpl.c_str ());
+
+  // mkostemps will open the file and return a file descriptor.  We
+  // won't worry about closing it because we will need the file until we
+  // are done and then the file will be closed when mkoctfile exits.
+
+  octave_mkostemps_wrapper (ctmpl, 2);
+
+  return std::string (ctmpl);
+}
+
+static void
+clean_up_tmp_files (const std::list<std::string>& tmp_files)
+{
+  for (const auto& file : tmp_files)
+    octave_unlink_wrapper (file.c_str ());
+}
+
 int
 main (int argc, char **argv)
 {
@@ -470,16 +644,17 @@ main (int argc, char **argv)
       return 0;
     }
 
-  std::list<std::string> cfiles, ccfiles, f77files;
+  std::list<std::string> cfiles, ccfiles, f77files, tmp_objfiles;
   std::string output_ext = ".oct";
   std::string objfiles, libfiles, octfile, outputfile;
   std::string incflags, defs, ldflags, pass_on_options;
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
-  bool link = true;
+  bool compile_only = false;
   bool link_stand_alone = false;
   bool depend = false;
   bool printonly = false;
+  bool output_file_option = false;
 
   for (int i = 1; i < argc; i++)
     {
@@ -573,6 +748,8 @@ main (int argc, char **argv)
         }
       else if (arg == "-o" || arg == "-output" || arg == "--output")
         {
+          output_file_option = true;
+
           if (i < argc-1)
             {
               arg = argv[++i];
@@ -606,7 +783,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-c" || arg == "-compile" || arg == "--compile")
         {
-          link = false;
+          compile_only = true;
         }
       else if (arg == "-g")
         {
@@ -666,6 +843,14 @@ main (int argc, char **argv)
       defs += " -DMEX_DEBUG";
     }
 
+  if (compile_only && output_file_option
+      && (cfiles.size () + ccfiles.size () + f77files.size ()) > 1)
+    {
+      std::cerr << "mkoctfile: may not use -c and -o with multiple source files"
+                << std::endl;
+      return 1;
+    }
+
   std::string output_option;
 
   if (link_stand_alone)
@@ -677,10 +862,14 @@ main (int argc, char **argv)
     {
       if (! outputfile.empty ())
         {
+          // FIXME: should probably do a better job of finding the
+          // filename extension instead of just looking at the filename
+          // length.
+
           octfile = outputfile;
           size_t len = octfile.length ();
           size_t len_ext = output_ext.length ();
-          if (octfile.substr (len-len_ext) != output_ext)
+          if (len <= len_ext || octfile.substr (len-len_ext) != output_ext)
             octfile += output_ext;
         }
       else
@@ -762,21 +951,24 @@ main (int argc, char **argv)
 
   for (const auto& f : f77files)
     {
-      std::string b = basename (f, true);
-
       if (! vars["F77"].empty ())
         {
           std::string o;
-          if (! outputfile.empty ())
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = basename (f, true) + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["F77"] + " -c " + vars["FPICFLAG"] + ' '
@@ -800,17 +992,22 @@ main (int argc, char **argv)
     {
       if (! vars["CC"].empty ())
         {
-          std::string b = basename (f, true), o;
-          if (! outputfile.empty ())
+          std::string o;
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = basename (f, true) + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["CC"] + " -c " + vars["CPPFLAGS"] + ' '
@@ -835,17 +1032,22 @@ main (int argc, char **argv)
     {
       if (! vars["CXX"].empty ())
         {
-          std::string b = basename (f, true), o;
-          if (! outputfile.empty ())
+          std::string o;
+          if (compile_only)
             {
-              if (link)
-                o = b + ".o";
-              else
+              if (! outputfile.empty ())
                 o = outputfile;
+              else
+                o = basename (f, true) + ".o";
             }
           else
-            o = b + ".o";
-          objfiles += (' ' + o);
+            {
+              o = tmp_objfile_name ();
+
+              tmp_objfiles.push_back (o);
+
+              objfiles += (' ' + o);
+            }
 
           std::string cmd
             = (vars["CXX"] + " -c " + vars["CPPFLAGS"] + ' '
@@ -866,57 +1068,74 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && ! objfiles.empty ())
+  // If we are only compliling, we are done.
+
+  if (compile_only)
+    return 0;
+
+  if (objfiles.empty ())
     {
-      if (link_stand_alone)
+      std::cerr << "mkoctfile: no objects to link" << std::endl;
+      return 1;
+    }
+
+  std::string octave_libs;
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+  octave_libs = "-loctinterp -loctave";
+#endif
+
+  if (link_stand_alone)
+    {
+      if (! vars["LD_CXX"].empty ())
         {
-          if (! vars["LD_CXX"].empty ())
-            {
-              std::string cmd
-                = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
-                   + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
-                   + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
-                   + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-                   + ldflags + ' ' + vars["LFLAGS"] + " -loctinterp -loctave "
-                   + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
+          std::string cmd
+            = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
+               + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
+               + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
+               + output_option + ' ' + objfiles + ' ' + libfiles + ' '
+               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+               + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
-              int status = run_command (cmd, printonly);
+          int status = run_command (cmd, printonly);
 
-              if (status)
-                return status;
-            }
-          else
-            {
-              std::cerr
-                << "mkoctfile: no way to link stand-alone executable file"
-                << std::endl;
-              return 1;
-            }
+          clean_up_tmp_files (tmp_objfiles);
+
+          if (status)
+            return status;
         }
       else
         {
-          std::string cmd
-            = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-               + vars["DL_LDFLAGS"] + ' ' + pass_on_options
-               + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LFLAGS"] + " -loctinterp -loctave "
-               + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
-
-          int status = run_command (cmd, printonly);
-
-          if (status)
-            return status;
+          std::cerr
+            << "mkoctfile: no way to link stand-alone executable file"
+            << std::endl;
+          return 1;
         }
+    }
+  else
+    {
+      std::string cmd
+        = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
+           + vars["DL_LDFLAGS"] + ' ' + pass_on_options
+           + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
+           + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+           + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
-      if (strip)
-        {
-          std::string cmd = "strip " + octfile;
+      int status = run_command (cmd, printonly);
 
-          int status = run_command (cmd, printonly);
+      clean_up_tmp_files (tmp_objfiles);
 
-          if (status)
-            return status;
-        }
+      if (status)
+        return status;
+    }
+
+  if (strip)
+    {
+      std::string cmd = "strip " + octfile;
+
+      int status = run_command (cmd, printonly);
+
+      if (status)
+        return status;
     }
 
   return 0;

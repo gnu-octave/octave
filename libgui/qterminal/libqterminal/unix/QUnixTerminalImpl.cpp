@@ -28,7 +28,6 @@ QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p)
     : QTerminal(p),
       _parent (p)
 {
-    setMinimumSize(300, 200);
     initialize();
 }
 
@@ -187,6 +186,11 @@ void QUnixTerminalImpl::setBackgroundColor (const QColor& color)
     cols[DEFAULT_BACK_COLOR].color = color;
 
     m_terminalView->setColorTable(cols);
+
+    QString css = QString ("TerminalView {\n"
+                           "  background: %1;\n"
+                           "}\n").arg (color.name ());
+    setStyleSheet (css);
 
   }
 void QUnixTerminalImpl::setForegroundColor (const QColor& color)

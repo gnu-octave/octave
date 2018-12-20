@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "pager.h"
 #include "parse.h"
+#include "text-engine.h"
 #include "text-renderer.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -565,6 +566,32 @@ default_light_position (void)
   return m;
 }
 
+static Matrix
+default_table_position (void)
+{
+  Matrix retval (1, 4);
+
+  retval(0) = 20;
+  retval(1) = 20;
+  retval(2) = 300;
+  retval(3) = 300;
+
+  return retval;
+}
+
+static Matrix
+default_table_backgroundcolor (void)
+{
+  Matrix retval (2, 3);
+  retval(0, 0) = 1;
+  retval(0, 1) = 1;
+  retval(0, 2) = 1;
+  retval(1, 0) = 0.94;
+  retval(1, 1) = 0.94;
+  retval(1, 2) = 0.94;
+  return retval;
+}
+
 static double
 convert_font_size (double font_size, const caseless_str& from_units,
                    const caseless_str& to_units, double parent_height = 0)
@@ -630,7 +657,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
   Matrix retval (1, pos.numel ());
   double res = 0;
   bool is_rectangle = (pos.numel () == 4);
-  bool is_2d = (pos.numel () == 2);
+  bool is_2D = (pos.numel () == 2);
 
   if (from_units.compare ("pixels"))
     retval = pos;
@@ -643,7 +670,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
           retval(2) = pos(2) * parent_dim(0);
           retval(3) = pos(3) * parent_dim(1);
         }
-      else if (! is_2d)
+      else if (! is_2D)
         retval(2) = 0;
     }
   else if (from_units.compare ("characters"))
@@ -666,7 +693,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = 0.5 * pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
     }
@@ -693,7 +720,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
     }
@@ -709,7 +736,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) /= parent_dim(0);
               retval(3) /= parent_dim(1);
             }
-          else if (! is_2d)
+          else if (! is_2D)
             retval(2) = 0;
         }
       else if (to_units.compare ("characters"))
@@ -730,7 +757,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) = 2 * retval(2) / f;
                   retval(3) = retval(3) / f;
                 }
-              else if (! is_2d)
+              else if (! is_2D)
                 retval(2) = 0;
             }
         }
@@ -757,12 +784,12 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) /= f;
                   retval(3) /= f;
                 }
-              else if (! is_2d)
+              else if (! is_2D)
                 retval(2) = 0;
             }
         }
     }
-  else if (! is_rectangle && ! is_2d)
+  else if (! is_rectangle && ! is_2D)
     retval(2) = 0;
 
   return retval;
@@ -867,6 +894,19 @@ screen_size_pixels (void)
   Matrix sz = obj.get ("screensize").matrix_value ();
   return convert_position (sz, obj.get ("units").string_value (), "pixels",
                            sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
+}
+
+static double
+device_pixel_ratio (graphics_handle h)
+{
+  double retval = 1.0;
+
+  graphics_object fig = gh_manager::get_object (h).get_ancestor ("figure");
+
+  if (fig.valid_object ())
+    retval = fig.get ("__device_pixel_ratio__").double_value ();
+
+  return retval;
 }
 
 static void
@@ -1059,7 +1099,7 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len >= 9)
                     {
@@ -1141,6 +1181,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new uibuttongroup (h, p);
   else if (type.compare ("uicontextmenu"))
     go = new uicontextmenu (h, p);
+  else if (type.compare ("uitable"))
+    go = new uitable (h, p);
   else if (type.compare ("uitoolbar"))
     go = new uitoolbar (h, p);
   else if (type.compare ("uipushtool"))
@@ -1459,8 +1501,12 @@ array_property::validate (const octave_value& v)
                       if (itdims(i) != vdims(i))
                         xok = false;
                     }
-                  else if (v.isempty ())
-                    break;
+                  else if (itdims(i) == 0)
+                    {
+                      if (! v.isempty ())
+                        xok = false;
+                      break;
+                    }
                 }
             }
         }
@@ -1728,13 +1774,8 @@ children_property::do_get_children (bool return_hidden) const
 void
 children_property::do_delete_children (bool clear)
 {
-  for (auto& hchild : children_list)
-    {
-      graphics_object go = gh_manager::get_object (hchild);
-
-      if (go.valid_object () && ! go.get_properties ().is_beingdeleted ())
-        gh_manager::free (hchild);
-    }
+  while (! children_list.empty ())
+    gh_manager::free (children_list.front ());
 
   if (clear)
     children_list.clear ();
@@ -2079,6 +2120,41 @@ figure::properties::update_handlevisibility (void)
 
   base_properties::update_handlevisibility ();
 }
+
+static void
+update_text_pos (graphics_handle h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("text"))
+    {
+      text::properties& tp
+        = dynamic_cast<text::properties&> (go.get_properties ());
+      tp.update_font ();
+      tp.update_text_extent ();
+    }
+  else if (go.isa ("figure") || go.isa ("uipanel") || go.isa ("axes")
+           || go.isa ("hggroup"))
+    {
+      Matrix ch = go.get_properties ().get_all_children ();
+      for (octave_idx_type ii = 0; ii < ch.numel (); ii++)
+        update_text_pos (graphics_handle (ch(ii)));
+
+      if (go.isa ("axes"))
+        {
+          axes::properties& ap
+            = dynamic_cast<axes::properties&> (go.get_properties ());
+          ap.update_font ();
+          ap.sync_positions ();
+        }
+    }
+}
+
+void
+figure::properties::update___device_pixel_ratio__ (void)
+{
+  update_text_pos (get___myhandle__ ());
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -2112,7 +2188,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -2185,6 +2261,8 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = uipanel::properties::has_core_property (pname);
           else if (pfx == "uicontextmenu")
             has_property = uicontextmenu::properties::has_core_property (pname);
+          else if (pfx == "uitable")
+            has_property = uitable::properties::has_core_property (pname);
           else if (pfx == "uitoolbar")
             has_property = uitoolbar::properties::has_core_property (pname);
           else if (pfx == "uipushtool")
@@ -2205,7 +2283,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
 
           if (remove)
             {
-              pval_map_iterator p = pval_map.find (pname);
+              auto p = pval_map.find (pname);
 
               if (p != pval_map.end ())
                 pval_map.erase (p);
@@ -2252,7 +2330,7 @@ property_list::lookup (const caseless_str& name) const
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-                      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel") || pfx.compare ("uitable"))
                     offset = 7;
                   else if (len > 9)
                     {
@@ -2318,7 +2396,7 @@ property_list::as_struct (const std::string& prefix_arg) const
 {
   octave_scalar_map m;
 
-  for (plist_map_const_iterator p = begin (); p != end (); p++)
+  for (auto p = begin (); p != end (); p++)
     {
       std::string prefix = prefix_arg + p->first;
 
@@ -2377,7 +2455,8 @@ graphics_object::set (const Array<std::string>& pnames,
                       const Cell& values, octave_idx_type row)
 {
   if (pnames.numel () != values.columns ())
-    error ("set: number of names must match number of value columns (%d != %d)",
+    error ("set: number of names must match number of value columns "
+           "(%" OCTAVE_IDX_TYPE_FORMAT " != %" OCTAVE_IDX_TYPE_FORMAT ")",
            pnames.numel (), values.columns ());
 
   octave_idx_type k = pnames.columns ();
@@ -2622,7 +2701,7 @@ gh_manager::do_get_handle (bool integer_figure_handle)
       // fractional part.  To avoid running out of integers, we recycle the
       // integer part but tack on a new random part each time.
 
-      free_list_iterator p = handle_free_list.begin ();
+      auto p = handle_free_list.begin ();
 
       if (p != handle_free_list.end ())
         {
@@ -2648,23 +2727,38 @@ gh_manager::do_free (const graphics_handle& h)
       if (h.value () == 0)
         error ("graphics_handle::free: can't delete root figure");
 
-      iterator p = handle_map.find (h);
+      auto p = handle_map.find (h);
 
       if (p == handle_map.end ())
         error ("graphics_handle::free: invalid object %g", h.value ());
 
       base_properties& bp = p->second.get_properties ();
 
+      if (! p->second.valid_object () || bp.is_beingdeleted ())
+        return;
+
+      graphics_handle parent_h = p->second.get_parent ();
+      graphics_object parent_go = gh_manager::get_object (parent_h);
+
       bp.set_beingdeleted (true);
+
+      // delete listeners before invalidating object
+      p->second.remove_all_listeners ();
 
       bp.delete_children ();
 
+      // NOTE: Call the delete function while the object's state is still valid.
       octave_value val = bp.get_deletefcn ();
 
       bp.execute_deletefcn ();
 
       // Notify graphics toolkit.
       p->second.finalize ();
+
+      // NOTE: Call remove_child before erasing the go from the map.
+      // A callback function might have already deleted the parent
+      if (parent_go.valid_object () && h.ok ())
+        parent_go.remove_child (h);
 
       // Note: this will be valid only for first explicitly deleted
       // object.  All its children will then have an
@@ -2687,7 +2781,7 @@ void
 gh_manager::do_renumber_figure (const graphics_handle& old_gh,
                                 const graphics_handle& new_gh)
 {
-  iterator p = handle_map.find (old_gh);
+  auto p = handle_map.find (old_gh);
 
   if (p == handle_map.end ())
     error ("graphics_handle::free: invalid object %g", old_gh.value ());
@@ -2801,19 +2895,10 @@ delete_graphics_object (const graphics_handle& h)
       // Don't do recursive deleting, due to callbacks
       if (! go.get_properties ().is_beingdeleted ())
         {
-          graphics_handle parent_h = go.get_parent ();
-
-          graphics_object parent_go = gh_manager::get_object (parent_h);
-
-          // NOTE: free the handle before removing it from its parent's
-          //       children, such that the object's state is correct when the
-          //       deletefcn callback is executed
+          // NOTE: Freeing the handle also calls any deletefcn.  It also calls
+          //       the parent's delete_child function.
 
           gh_manager::free (h);
-
-          // A callback function might have already deleted the parent
-          if (parent_go.valid_object ())
-            parent_go.remove_child (h);
 
           Vdrawnow_requested = true;
         }
@@ -2913,13 +2998,13 @@ adopt (const graphics_handle& parent_h, const graphics_handle& h)
 }
 
 static bool
-is_hghandle (const graphics_handle& h)
+ishghandle (const graphics_handle& h)
 {
   return h.ok ();
 }
 
 static bool
-is_hghandle (double val)
+ishghandle (double val)
 {
   graphics_handle h = gh_manager::lookup (val);
 
@@ -2927,11 +3012,11 @@ is_hghandle (double val)
 }
 
 static octave_value
-is_hghandle (const octave_value& val)
+ishghandle (const octave_value& val)
 {
   octave_value retval = false;
 
-  if (val.is_real_scalar () && is_hghandle (val.double_value ()))
+  if (val.is_real_scalar () && ishghandle (val.double_value ()))
     retval = true;
   else if (val.isnumeric () && val.isreal ())
     {
@@ -2940,7 +3025,7 @@ is_hghandle (const octave_value& val)
       boolNDArray result (handles.dims ());
 
       for (octave_idx_type i = 0; i < handles.numel (); i++)
-        result.xelem (i) = is_hghandle (handles(i));
+        result.xelem (i) = ishghandle (handles(i));
 
       retval = result;
     }
@@ -2949,7 +3034,7 @@ is_hghandle (const octave_value& val)
 }
 
 static bool
-is_figure (double val)
+isfigure (double val)
 {
   graphics_object go = gh_manager::get_object (val);
 
@@ -3134,8 +3219,7 @@ void
 base_properties::set_dynamic (const caseless_str& pname,
                               const octave_value& val)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::iterator it =
-    all_props.find (pname);
+  auto it = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(set: unknown property "%s")", pname.c_str ());
@@ -3398,6 +3482,34 @@ base_properties::delete_listener (const caseless_str& pname,
     p.delete_listener (val, mode);
 }
 
+void
+base_properties::get_children_of_type (const caseless_str& chtype,
+                                       bool get_invisible,
+                                       bool traverse,
+                                       std::list<graphics_object> &children_list) const
+{
+  Matrix ch = get_children ();
+  for (octave_idx_type i = 0; i < ch.numel (); i++)
+    {
+      graphics_handle hkid = gh_manager::lookup (ch(i));
+
+      if (hkid.ok ())
+        {
+          graphics_object go = gh_manager::get_object (hkid);
+          if ( get_invisible || go.get_properties ().is_visible () )
+            {
+              if (go.isa (chtype))
+                children_list.push_back (go);
+              else if (traverse && go.isa ("hggroup"))
+                go.get_properties ().get_children_of_type (chtype,
+                                                           get_invisible,
+                                                           traverse,
+                                                           children_list);
+            }
+        }
+    }
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -3645,7 +3757,7 @@ root_figure::properties::set_callbackobject (const octave_value& v)
 
       callbackobject = val;
     }
-  else if (is_hghandle (val))
+  else if (ishghandle (val))
     {
       if (get_callbackobject ().ok ())
         cbo_stack.push_front (get_callbackobject ());
@@ -3661,7 +3773,7 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 {
   graphics_handle val (v);
 
-  if (octave::math::isnan (val.value ()) || is_hghandle (val))
+  if (octave::math::isnan (val.value ()) || ishghandle (val))
     {
       currentfigure = val;
 
@@ -3724,7 +3836,18 @@ root_figure::properties::update_units (void)
 
   double dpi = get_screenpixelsperinch ();
 
-  if (xunits == "inches")
+  if (xunits == "pixels")
+    {
+      // Most common case (default).
+      // Don't need to convert anything, but short-circuit if/else tree.
+    }
+  else if (xunits == "normalized")
+    {
+      scrn_sz = Matrix (1, 4, 1.0);
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+    }
+  else if (xunits == "inches")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
@@ -3738,18 +3861,21 @@ root_figure::properties::update_units (void)
       scrn_sz(2) *= 2.54 / dpi;
       scrn_sz(3) *= 2.54 / dpi;
     }
-  else if (xunits == "normalized")
-    {
-      scrn_sz = Matrix (1, 4, 1.0);
-      scrn_sz(0) = 0;
-      scrn_sz(1) = 0;
-    }
   else if (xunits == "points")
     {
       scrn_sz(0) = 0;
       scrn_sz(1) = 0;
       scrn_sz(2) *= 72 / dpi;
       scrn_sz(3) *= 72 / dpi;
+    }
+  else if (xunits == "characters")
+    {
+      scrn_sz(0) = 0;
+      scrn_sz(1) = 0;
+      // FIXME: this assumes the system font is Helvetica 10pt
+      //        (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
+      scrn_sz(2) *= 74.951 / 12.0 / dpi;
+      scrn_sz(3) *= 74.951 / 12.0 / dpi;
     }
 
   set_screensize (scrn_sz);
@@ -3784,6 +3910,8 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 %!   assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
 %!   set (0, "units", "pixels");
 %!   assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
+%!   set (0, "units", "characters");
+%!   assert (get (0, "screensize"), sz / dpi * (74.951 / 12.0), 0.5 / dpi * (74.951 / 12.0));
 %! unwind_protect_cleanup
 %!   set (0, "units", old_units);
 %! end_unwind_protect
@@ -3819,7 +3947,7 @@ figure::properties::set_currentaxes (const octave_value& val)
 {
   graphics_handle hax (val);
 
-  if (octave::math::isnan (hax.value ()) || is_hghandle (hax))
+  if (octave::math::isnan (hax.value ()) || ishghandle (hax))
     currentaxes = hax;
   else
     err_set_invalid ("currentaxes");
@@ -3851,6 +3979,15 @@ figure::properties::remove_child (const graphics_handle& h)
 
       currentaxes = new_currentaxes;
     }
+}
+
+octave_value
+figure::properties::get_number (void) const
+{
+  if (integerhandle.is_on ())
+    return __myhandle__.value ();
+  else
+    return Matrix ();
 }
 
 graphics_toolkit
@@ -4017,7 +4154,12 @@ figure::properties::set_position (const octave_value& v,
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
-          execute_resizefcn ();
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
           update_boundingbox ();
         }
     }
@@ -4670,7 +4812,8 @@ figure::properties::update_units (const caseless_str& old_units)
 std::string
 figure::properties::get_title (void) const
 {
-  if (is_numbertitle ())
+  std::string title;
+  if (! get_number ().isempty () && is_numbertitle ())
     {
       std::ostringstream os;
       std::string nm = get_name ();
@@ -4679,10 +4822,17 @@ figure::properties::get_title (void) const
       if (! nm.empty ())
         os << ": " << get_name ();
 
-      return os.str ();
+      title = os.str ();
     }
   else
-    return get_name ();
+    title = get_name ();
+
+  // Qt will use QCoreApplication name (set in main-window.cc)
+  // if the name is empty, so force blank.
+  if (title.empty ())
+    title = " ";
+
+  return title;
 }
 
 octave_value
@@ -4884,6 +5034,11 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
   Matrix pos = init_pos;
   graphics_object go = gh_manager::get_object (get_parent ());
   Matrix parent_bb = go.get_properties ().get_boundingbox (true);
+
+  // FIXME: The layout should be clean at this stage and we should not have to
+  //        update ticks and labels positions here again. See bug #48718.
+  update_ticklength ();
+
   Matrix ext = get_extent (true, true);
   ext(1) = parent_bb(3) - ext(1) - ext(3);
   ext(0)++;
@@ -5026,8 +5181,6 @@ axes::properties::set_text_child (handle_property& hp,
   xset (val, "handlevisibility", "off");
 
   gh_manager::free (hp.handle_value ());
-
-  base_properties::remove_child (hp.handle_value ());
 
   hp = val;
 
@@ -5326,8 +5479,6 @@ axes::properties::delete_text_child (handle_property& hp)
 
       if (go.valid_object ())
         gh_manager::free (h);
-
-      base_properties::remove_child (h);
     }
 
   // FIXME: is it necessary to check whether the axes object is
@@ -5349,6 +5500,11 @@ axes::properties::delete_text_child (handle_property& hp)
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
+  graphics_object go = gh_manager::get_object (h);
+
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    decrease_num_lights ();
+
   if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
     {
       delete_text_child (xlabel);
@@ -5369,8 +5525,21 @@ axes::properties::remove_child (const graphics_handle& h)
       delete_text_child (title);
       update_title_position ();
     }
-  else
-    base_properties::remove_child (h);
+
+  if (go.valid_object ())
+      base_properties::remove_child (h);
+
+}
+
+void
+axes::properties::adopt (const graphics_handle& h)
+{
+  graphics_object go (gh_manager::get_object (h));
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    increase_num_lights ();
+
+  base_properties::adopt (h);
+
 }
 
 inline Matrix
@@ -5924,12 +6093,12 @@ axes::properties::update_axes_layout (void)
 void
 axes::properties::update_ticklength (void)
 {
-  bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
+  bool mode2D = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
                   (ystate > AXE_DEPTH_DIR ? 1 : 0) +
                   (zstate > AXE_DEPTH_DIR ? 1 : 0)) == 2);
 
   if (tickdirmode_is ("auto"))
-    tickdir.set (mode2d ? "in" : "out", true);
+    tickdir.set (mode2D ? "in" : "out", true);
 
   double ticksign = (tickdir_is ("in") ? -1 : 1);
 
@@ -5938,13 +6107,18 @@ axes::properties::update_ticklength (void)
   ticklen(0) *= std::max (bbox(2), bbox(3));
   ticklen(1) *= std::max (bbox(2), bbox(3));
 
-  xticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
-  yticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
-  zticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
+  xticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
+  yticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
+  zticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
 
-  xtickoffset = (mode2d ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
-  ytickoffset = (mode2d ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
-  ztickoffset = (mode2d ? std::max (0., zticklen) : std::abs (zticklen)) + 5;
+  double offset = get___fontsize_points__ () / 2;
+  
+  xtickoffset = (mode2D ? std::max (0., xticklen) : std::abs (xticklen)) +
+                (xstate == AXE_HORZ_DIR ? offset*1.5 : offset);
+  ytickoffset = (mode2D ? std::max (0., yticklen) : std::abs (yticklen)) +
+                (ystate == AXE_HORZ_DIR ? offset*1.5 : offset);
+  ztickoffset = (mode2D ? std::max (0., zticklen) : std::abs (zticklen)) +
+                (zstate == AXE_HORZ_DIR ? offset*1.5 : offset);
 
   update_xlabel_position ();
   update_ylabel_position ();
@@ -6050,8 +6224,9 @@ axes::properties::update_xlabel_position (void)
                                    get_xticklabel ().string_vector_value (),
                                    get_xlim ().matrix_value ());
 
-      double wmax = ext(0);
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p =
         graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
@@ -6148,20 +6323,12 @@ axes::properties::update_ylabel_position (void)
 
       Matrix ext (1, 2, 0.0);
 
-      // The underlying get_extents() from FreeType produces mismatched values.
-      // x-extent accurately measures the width of the glyphs.
-      // y-extent instead measures from baseline-to-baseline.
-      // Pad x-extent (+4) so that it approximately matches y-extent.
-      // This keeps ylabels about the same distance from y-axis as
-      // xlabels are from x-axis.
-      // ALWAYS use an even number for padding or horizontal alignment
-      // will be off.
       ext = get_ticklabel_extents (get_ytick ().matrix_value (),
                                    get_yticklabel ().string_vector_value (),
                                    get_ylim ().matrix_value ());
-
-      double wmax = ext(0)+4;
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p =
         graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
@@ -6263,8 +6430,9 @@ axes::properties::update_zlabel_position (void)
                                    get_zticklabel ().string_vector_value (),
                                    get_zlim ().matrix_value ());
 
-      double wmax = ext(0);
-      double hmax = ext(1);
+      double margin = 5;
+      double wmax = ext(0) + margin;
+      double hmax = ext(1) + margin;
       double angle = 0.0;
       ColumnVector p;
 
@@ -6581,11 +6749,13 @@ axes::properties::update_font (std::string prop)
 
     }
 
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("__fontsize_points__").double_value ());
+                         get ("__fontsize_points__").double_value () * dpr);
 }
 
 // The INTERNAL flag defines whether position or outerposition is used.
@@ -6669,6 +6839,13 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           else
             {
               Matrix text_ext = text_props.get_extent_matrix ();
+
+              // The text extent is returned in device pixels. Unscale and
+              // work with logical pixels
+              double dpr = device_pixel_ratio (get___myhandle__ ());
+              if (dpr != 1.0)
+                for (int j = 0; j < 4; j++)
+                  text_ext(j) /= dpr;
 
               bool ignore_horizontal = false;
               bool ignore_vertical = false;
@@ -7048,6 +7225,205 @@ magform (double x, double& a, int& b)
       b = static_cast<int> (std::floor (std::log10 (std::abs (x))));
       a = x / std::pow (10.0, b);
     }
+}
+
+void
+axes::properties::update_outerposition (void)
+{
+  set_activepositionproperty ("outerposition");
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix outerbox = outerposition.get ().matrix_value ();
+
+  double outer_left = outerbox(0);
+  double outer_bottom = outerbox(1);
+  double outer_width = outerbox(2);
+  double outer_height = outerbox(3);
+
+  double outer_right = outer_width + outer_left;
+  double outer_top = outer_height + outer_bottom;
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  double inner_left = outer_left;
+  double inner_right = outer_right;
+
+  if ((left_margin + right_margin) < outer_width)
+    {
+      inner_left += left_margin;
+      inner_right -= right_margin;
+    }
+
+  double inner_bottom = outer_bottom;
+  double inner_top = outer_top;
+
+  if ((bottom_margin + top_margin) < outer_height)
+    {
+      inner_bottom += bottom_margin;
+      inner_top -= top_margin;
+    }
+
+  double inner_width = inner_right - inner_left;
+  double inner_height = inner_top - inner_bottom;
+
+  Matrix innerbox (1, 4);
+
+  innerbox(0) = inner_left;
+  innerbox(1) = inner_bottom;
+  innerbox(2) = inner_width;
+  innerbox(3) = inner_height;
+
+  position = innerbox;
+
+  set_units (old_units);
+  update_transform ();
+}
+
+void
+axes::properties::update_position (void)
+{
+  set_activepositionproperty ("position");
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix innerbox = position.get ().matrix_value ();
+
+  double inner_left = innerbox(0);
+  double inner_bottom = innerbox(1);
+  double inner_width = innerbox(2);
+  double inner_height = innerbox(3);
+
+  double inner_right = inner_width + inner_left;
+  double inner_top = inner_height + inner_bottom;
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  // FIXME: do we need to place limits on any of these?
+
+  double outer_left = inner_left - left_margin;
+  double outer_bottom = inner_bottom - bottom_margin;
+  double outer_right = inner_right + right_margin;
+  double outer_top = inner_top + top_margin;
+
+  double outer_width = outer_right - outer_left;
+  double outer_height = outer_top - outer_bottom;
+
+  Matrix outerbox (1, 4);
+
+  outerbox(0) = outer_left;
+  outerbox(1) = outer_bottom;
+  outerbox(2) = outer_width;
+  outerbox(3) = outer_height;
+
+  outerposition = outerbox;
+
+  set_units (old_units);
+  update_transform ();
+}
+
+void
+axes::properties::update_looseinset (void)
+{
+  caseless_str old_units = get_units ();
+  set_units ("normalized");
+
+  Matrix linset = looseinset.get ().matrix_value ();
+  Matrix tinset = tightinset.get ().matrix_value ();
+
+  double left_margin = std::max (linset(0), tinset(0));
+  double bottom_margin = std::max (linset(1), tinset(1));
+  double right_margin = std::max (linset(2), tinset(2));
+  double top_margin = std::max (linset(3), tinset(3));
+
+  if (activepositionproperty.is ("position"))
+    {
+      Matrix innerbox = position.get ().matrix_value ();
+
+      double inner_left = innerbox(0);
+      double inner_bottom = innerbox(1);
+      double inner_width = innerbox(2);
+      double inner_height = innerbox(3);
+
+      double inner_right = inner_width + inner_left;
+      double inner_top = inner_height + inner_bottom;
+
+      // FIXME: do we need to place limits on any of these?
+
+      double outer_left = inner_left - left_margin;
+      double outer_bottom = inner_bottom - bottom_margin;
+      double outer_right = inner_right + right_margin;
+      double outer_top = inner_top + top_margin;
+
+      double outer_width = outer_right - outer_left;
+      double outer_height = outer_top = outer_bottom;
+
+      Matrix outerbox (1, 4);
+
+      outerbox(0) = outer_left;
+      outerbox(1) = outer_bottom;
+      outerbox(2) = outer_width;
+      outerbox(3) = outer_height;
+
+      outerposition = outerbox;
+    }
+  else
+    {
+      Matrix outerbox = outerposition.get ().matrix_value ();
+
+      double outer_left = outerbox(0);
+      double outer_bottom = outerbox(1);
+      double outer_width = outerbox(2);
+      double outer_height = outerbox(3);
+
+      double outer_right = outer_width + outer_left;
+      double outer_top = outer_height + outer_bottom;
+
+      double inner_left = outer_left;
+      double inner_right = outer_right;
+
+      if ((left_margin + right_margin) < outer_width)
+        {
+          inner_left += left_margin;
+          inner_right -= right_margin;
+        }
+
+      double inner_bottom = outer_bottom;
+      double inner_top = outer_top;
+
+      if ((bottom_margin + top_margin) < outer_height)
+        {
+          inner_bottom += bottom_margin;
+          inner_top -= top_margin;
+        }
+
+      double inner_width = inner_right - inner_left;
+      double inner_height = inner_top - inner_bottom;
+
+      Matrix innerbox (1, 4);
+
+      innerbox(0) = inner_left;
+      innerbox(1) = inner_bottom;
+      innerbox(2) = inner_width;
+      innerbox(3) = inner_height;
+
+      position = innerbox;
+    }
+
+  set_units (old_units);
+  update_transform ();
 }
 
 // A translation from Tom Holoryd's python code at
@@ -7622,7 +7998,11 @@ axes::properties::calc_ticklabels (const array_property& ticks,
           if (exponent < 10. && (exp_max > 9 || exp_min < -9))
             os << '0';
           os << exponent << '}';
-          c(i) = os.str ();
+
+          if (ticklabelinterpreter.is ("latex"))
+            c(i) = "$" + os.str () + "$";
+          else
+            c(i) = os.str ();
         }
     }
   else
@@ -7654,6 +8034,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 {
   Matrix ext (1, 2, 0.0);
   double wmax, hmax;
+  double dpr = device_pixel_ratio (get___myhandle__ ());
   wmax = hmax = 0.0;
   int n = std::min (ticklabels.numel (), ticks.numel ());
   for (int i = 0; i < n; i++)
@@ -7671,8 +8052,8 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
               ext = txt_renderer.get_extent (label, 0.0,
                                              get_ticklabelinterpreter ());
 
-              wmax = std::max (wmax, ext(0));
-              hmax = std::max (hmax, ext(1));
+              wmax = std::max (wmax, ext(0) / dpr);
+              hmax = std::max (hmax, ext(1) / dpr);
             }
           else
             {
@@ -8611,6 +8992,35 @@ axes::properties::clear_zoom_stack (bool do_unzoom)
 }
 
 void
+axes::properties::trigger_normals_calc (void)
+{
+  // Find all patch (and surface) objects within axes
+  std::list<graphics_object> children_list;
+  std::list<graphics_object>::iterator children_list_iter;
+  get_children_of_type ("patch", false, true, children_list);
+  get_children_of_type ("surface", false, true, children_list);
+
+  // trigger normals calculation for these objects
+  for (children_list_iter = children_list.begin ();
+       children_list_iter != children_list.end (); children_list_iter++)
+    {
+      graphics_object kid = *children_list_iter;
+      if (kid.isa ("patch"))
+        {
+          patch::properties& patch_props =
+              dynamic_cast<patch::properties&> (kid.get_properties ());
+          patch_props.update_normals (false);
+        }
+      else
+        {
+          surface::properties& surface_props =
+              dynamic_cast<surface::properties&> (kid.get_properties ());
+          surface_props.update_normals (false);
+        }
+    }
+}
+
+void
 axes::reset_default_properties (void)
 {
   // empty list of local defaults
@@ -8699,7 +9109,14 @@ text::properties::get_extent (void) const
   m(0) += p(0);
   m(1) += p(1);
 
-  return convert_text_position (m, *this, "pixels", get_units ());
+  Matrix bbox = convert_text_position (m, *this, "pixels", get_units ());
+
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
+  for (octave_idx_type ii = 0; ii < bbox.numel (); ii++)
+    bbox(ii) = bbox(ii) / dpr;
+
+  return bbox;
 }
 
 void
@@ -8737,11 +9154,13 @@ text::properties::update_fontunits (const caseless_str& old_units)
 void
 text::properties::update_font (void)
 {
+  double dpr = device_pixel_ratio (get___myhandle__ ());
+
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
-                         get ("__fontsize_points__").double_value ());
+                         get ("__fontsize_points__").double_value () * dpr);
 
   txt_renderer.set_color (get_color_rgb ());
 }
@@ -8838,9 +9257,9 @@ text::properties::get___fontsize_points__ (double box_pix_height) const
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
+  graphics_object go (gh_manager::get_object (get___myhandle__ ()));
   if (fontunits_is ("normalized") && parent_height <= 0)
     {
-      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
       graphics_object ax (go.get_ancestor ("axes"));
 
       parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
@@ -8858,6 +9277,41 @@ image::properties::get_color_data (void) const
 }
 
 // ---------------------------------------------------------------------
+
+void
+light::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  // trigger normals calculation for the respective children of this axes object
+  axes::properties& parent_axes_prop =
+    dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
+  parent_axes_prop.trigger_normals_calc ();
+}
+
+void
+light::properties::update_visible (void)
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_props = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+  if (is_visible ())
+    ax_props.increase_num_lights ();
+  else
+    ax_props.decrease_num_lights ();
+}
+
+// ---------------------------------------------------------------------
+
+bool
+patch::properties::get_do_lighting (void) const
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_props = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+
+  return (ax_props.get_num_lights () > 0);
+}
 
 octave_value
 patch::properties::get_color_data (void) const
@@ -8995,6 +9449,53 @@ patch::properties::update_data (void)
         }
     }
 
+  // check coplanarity for 3D-faces with more than 3 corners
+  int fcmax = idx.rows ();
+  if (fcmax > 3 && vert.columns () > 2)
+    {
+      for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
+        {
+          if (! octave::math::isnan (idx(3,jj)))
+            {
+              // find first element that is NaN to get number of corners
+              octave_idx_type nc = 3;
+              while (! octave::math::isnan (idx(nc,jj)) && nc < fcmax)
+                nc++;
+
+              std::list<octave_idx_type> coplanar_ends;
+
+              octave_idx_type i_start = 1;
+              octave_idx_type i_end = 2;
+              while (i_end < nc - 1)
+                {
+                  // look for coplanar subsets
+                  for (i_end = nc-1; i_end > i_start+1; i_end--)
+                    {
+                      Matrix fc = Matrix (i_end - i_start + 1, 3, 0.0);
+                      for (octave_idx_type j = 0; j <= i_end-i_start; j++)
+                        for (octave_idx_type i = 0; i < 3; i++)
+                          fc(j,i) = vert(idx(j + i_start,jj)-1,i)
+                                    - vert(idx(0,jj)-1,i);
+
+                      // calculate rank of matrix
+                      octave::math::svd<Matrix> result
+                        (fc,
+                         octave::math::svd<Matrix>::Type::sigma_only,
+                         octave::math::svd<Matrix>::Driver::GESVD);
+                      DiagMatrix sigma = result.singular_values ();
+                      double tol = nc * sigma(0,0)
+                                   * std::numeric_limits<double>::epsilon ();
+                      if (sigma(2,2) < tol)
+                        break;
+                    }
+                  coplanar_ends.push_back (i_end);
+                  i_start = i_end;
+                }
+              coplanar_last_idx.push_back (coplanar_ends);
+            }
+        }
+    }
+
   // Build cdata
   dim_vector dv = dim_vector::alloc (3);
   NDArray cd;
@@ -9047,6 +9548,9 @@ patch::properties::update_data (void)
         }
     }
 
+  // Update normals
+  update_normals (true);
+
   octave::unwind_protect frame;
   frame.protect_var (updating_patch_data);
   updating_patch_data = true;
@@ -9055,14 +9559,6 @@ patch::properties::update_data (void)
   set_ydata (yd);
   set_zdata (zd);
   set_cdata (cd);
-}
-
-// ---------------------------------------------------------------------
-
-octave_value
-surface::properties::get_color_data (void) const
-{
-  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
 }
 
 inline void
@@ -9076,9 +9572,393 @@ cross_product (double x1, double y1, double z1,
 }
 
 void
-surface::properties::update_vertex_normals (void)
+patch::properties::calc_face_normals (Matrix& fn)
 {
-  if (vertexnormalsmode_is ("auto"))
+  Matrix v = get_vertices ().matrix_value ();
+  Matrix f = get_faces ().matrix_value ();
+
+  bool is_3D = (v.columns () == 3);   // 2D or 3D patches
+  octave_idx_type num_f = f.rows ();  // number of faces
+  octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
+
+  // In which cases can we skip updating the normals?
+  if (max_nc < 3)
+    {
+      fn = Matrix ();
+      return;
+    }
+
+  // Calculate normals for all faces
+  std::list<std::list<octave_idx_type>>::const_iterator
+    cp_it = coplanar_last_idx.begin ();
+  octave_idx_type i1, i2, i3;
+  octave_idx_type j1, j2;
+  for (octave_idx_type i = 0; i < num_f; i++)
+    {
+      bool is_coplanar = true;
+      if (coplanar_last_idx.size () > 0)
+        {
+          if ((*cp_it).size () > 1)
+          {
+            is_coplanar = false;
+          }
+          cp_it++;
+        }
+
+      // get number of corners
+      octave_idx_type nc = 3;
+      if (max_nc > 3)
+        {
+          while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+            nc++;
+        }
+
+      RowVector fnc (3, 0.0);
+      double& nx = fnc(0);
+      double& ny = fnc(1);
+      double& nz = fnc(2);
+
+      if (is_coplanar)
+        {
+          // fast way for coplanar polygons
+          i1 = f(i,0) - 1; i2 = f(i,1) - 1; i3 = f(i,nc-1) - 1;
+
+          if (is_3D)
+            cross_product
+              (v(i3,0) - v(i1,0), v(i3,1) - v(i1,1), v(i3,2) - v(i1,2),
+               v(i2,0) - v(i1,0), v(i2,1) - v(i1,1), v(i2,2) - v(i1,2),
+               nx, ny, nz);
+          else
+            {
+              nz = (v(i2,0) - v(i1,0)) * (v(i3,1) - v(i1,1)) -
+                   (v(i2,1) - v(i1,1)) * (v(i3,0) - v(i1,0));
+              // 2-d vertices always point towards +z
+              nz = (nz < 0) ? -nz : nz;
+            }
+        }
+      else
+        {
+          // more general for non-planar polygons
+
+          // calculate face normal with Newell's method
+          // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
+
+          j1 = nc - 1; j2 = 0;
+          i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+
+          nx = (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
+          ny = (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
+          nz = (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+
+          for (octave_idx_type j = 1; j < nc; j++)
+            {
+              j1 = j-1; j2 = j;
+              i1 = f(i,j1) - 1; i2 = f(i,j2) - 1;
+
+              nx += (v(i2,1) - v(i1,1)) * (v(i1,2) + v(i2,2));
+              ny += (v(i2,2) - v(i1,2)) * (v(i1,0) + v(i2,0));
+              nz += (v(i2,0) - v(i1,0)) * (v(i1,1) + v(i2,1));
+            }
+        }
+
+      // normalize normal vector
+      double n_len = sqrt (nx*nx+ny*ny+nz*nz);
+
+      // assign normal to current face
+      if ( n_len < std::numeric_limits<double>::epsilon () )
+        for (octave_idx_type j = 0; j < 3; j++)
+          fn(i,j) = 0.0;
+      else
+        for (octave_idx_type j = 0; j < 3; j++)
+          fn(i,j) = fnc(j) / n_len;
+    }
+}
+
+void
+patch::properties::update_face_normals (bool reset, bool force)
+{
+  if (updating_patch_data || ! facenormalsmode_is ("auto"))
+    return;
+
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+                get_do_lighting ()))
+    {
+      Matrix f = get_faces ().matrix_value ();
+
+      octave_idx_type num_f = f.rows ();  // number of faces
+      Matrix fn (num_f, 3, 0.0);
+
+      calc_face_normals (fn);
+      facenormals = fn;
+    }
+  else if (reset)
+    facenormals = Matrix ();
+}
+
+void
+patch::properties::update_vertex_normals (bool reset, bool force)
+{
+  if (updating_patch_data || ! vertexnormalsmode_is ("auto"))
+    return;
+
+  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong")
+                 || edgelighting_is ("gouraud") || edgelighting_is ("phong"))
+                && get_do_lighting ()))
+    {
+      Matrix v = get_vertices ().matrix_value ();
+      Matrix f = get_faces ().matrix_value ();
+
+      octave_idx_type num_v = v.rows ();  // number of vertices
+      octave_idx_type num_f = f.rows ();  // number of faces
+      octave_idx_type max_nc = f.columns ();  // max. number of polygon corners
+
+      // In which cases can we skip updating the normals?
+      if (max_nc < 3)
+        return;
+
+      // First step: Calculate the normals for all faces
+      Matrix fn = get_facenormals ().matrix_value ();
+      if ( fn.isempty () )
+        {
+          // calculate facenormals here
+          fn = Matrix (num_f, 3, 0.0);
+          calc_face_normals (fn);
+        }
+
+      // Second step: assign normals to the respective vertices
+      std::vector<RowVector> vec_vn [num_v];  // list of normals for vertices
+      for (octave_idx_type i = 0; i < num_f; i++)
+        {
+          // get number of corners
+          octave_idx_type nc = 3;
+          if (max_nc > 3)
+            {
+              while (! octave::math::isnan (f(i,nc)) && nc < max_nc)
+                nc++;
+            }
+
+          for (octave_idx_type j = 0; j < nc; j++)
+            vec_vn[static_cast<octave_idx_type> (f(i,j) - 1)].push_back (fn.row (i));
+        }
+
+      // Third step: Calculate the normal for the vertices taking the average
+      // of the normals determined from all adjacent faces
+      Matrix vn (num_v, 3, 0.0);
+      for (octave_idx_type i = 0; i < num_v; i++)
+        {
+          std::vector<RowVector>::iterator it = vec_vn[i].begin ();
+
+          // The normal of unused vertices is NaN.
+          RowVector vn0 (3, octave_NaN);
+
+          if (it != vec_vn[i].end ())
+            {
+              // FIXME: Currently, the first vector also determines the
+              // direction of the normal.  How to determine the inner and outer
+              // faces of all parts of the patch and point the normals outwards?
+              // (Necessary for correct lighting with "backfacelighting" set to
+              // "lit" or "unlit".) Matlab does not seem to do it correctly
+              // either.  So bother here?
+
+              vn0 = *it;
+
+              for (++it; it != vec_vn[i].end (); ++it)
+                {
+                  RowVector vn1 = *it;
+                  // Use sign of dot product to point vectors in a similar
+                  // direction before taking the average.
+                  double dir =
+                    (vn0(0)*vn1(0) + vn0(1)*vn1(1) + vn0(2)*vn1(2) < 0) ? -1
+                                                                        : 1;
+                  for (octave_idx_type j = 0; j < 3; j++)
+                    vn0(j) += dir * vn1(j);
+                }
+
+              // normalize normal vector
+              double n_len = sqrt (vn0(0)*vn0(0)+vn0(1)*vn0(1)+vn0(2)*vn0(2));
+
+              // save normal in matrix
+              for (octave_idx_type j = 0; j < 3; j++)
+                vn(i,j) = vn0(j)/n_len;
+            }
+        }
+
+      vertexnormals = vn;
+    }
+  else if (reset)
+    vertexnormals = Matrix ();
+}
+
+void
+patch::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  // calculate normals for default data
+  // This is done because the normals for the default data do not match
+  // get(0, "DefaultPatchVertexNormals") in Matlab.
+  xproperties.update_normals (true);
+}
+
+
+void
+patch::reset_default_properties (void)
+{
+  // empty list of local defaults
+  default_properties = property_list ();
+  xreset_default_properties (get_handle (), xproperties.factory_defaults ());
+
+  // calculate normals for default data
+  // This is done because the normals for the default data do not match
+  // get(0, "DefaultPatchVertexNormals") in Matlab.
+  xproperties.update_normals (true);
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
+surface::properties::get_color_data (void) const
+{
+  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
+}
+
+bool
+surface::properties::get_do_lighting (void) const
+{
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  axes::properties& ax_prop = dynamic_cast<axes::properties&>
+    (go.get_ancestor ("axes").get_properties ());
+
+  return (ax_prop.get_num_lights () > 0);
+}
+
+void
+surface::properties::update_face_normals (bool reset, bool force)
+{
+  if (! facenormalsmode_is ("auto"))
+    return;
+
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
+                get_do_lighting ()))
+    {
+      Matrix x = get_xdata ().matrix_value ();
+      Matrix y = get_ydata ().matrix_value ();
+      Matrix z = get_zdata ().matrix_value ();
+
+      int p = z.columns ();
+      int q = z.rows ();
+
+      // FIXME: There might be a cleaner way to do this.  When data is changed
+      // the update_xdata, update_ydata, update_zdata routines are called in a
+      // serial fashion.  Until the final call to update_zdata the matrices
+      // will be of mismatched dimensions which can cause an out-of-bound
+      // indexing in the code below.  This one-liner prevents calculating
+      // normals until dimensions match.
+      if (x.columns () != p || y.rows () != q)
+        return;
+
+      bool x_mat = (x.rows () == q);
+      bool y_mat = (y.columns () == p);
+
+      NDArray n (dim_vector (q-1, p-1, 3), 1);
+
+      int i1, i2, j1, j2;
+      i1 = i2 = 0;
+      j1 = j2 = 0;
+      double x0, x1, x2, x3, y0, y1, y2, y3, z0, z1, z2, z3;
+      double x1m0, x2m1, x3m2, x0m3, y1m0, y2m1, y3m2, y0m3;
+      double x1p0, x2p1, x3p2, x0p3, y1p0, y2p1, y3p2, y0p3;
+      x3m2 = y0m3 = -1;
+      x2m1 = x0m3 = y1m0 = y3m2 = 0;
+      x1m0 = y2m1 = 1;
+      x0p3 = y1p0 = 0;
+      x1p0 = x3p2 = y2p1 = y0p3 = 1;
+      x2p1 = y3p2 = 2;
+
+      for (int i = 0; i < p-1; i++)
+        {
+          if (y_mat)
+            {
+              i1 = i;
+              i2 = i + 1;
+            }
+
+          for (int j = 0; j < q-1; j++)
+            {
+              if (x_mat)
+                {
+                  j1 = j;
+                  j2 = j + 1;
+                }
+
+              if (x_mat || y_mat)
+                {
+                  x0 = x(j1,i1);
+                  x1 = x(j1,i2);
+                  x2 = x(j2,i2);
+                  x3 = x(j2,i1);
+                  x1m0 = x1 - x0;
+                  x2m1 = x2 - x1;
+                  x3m2 = x3 - x2;
+                  x0m3 = x0 - x3;
+                  x1p0 = x1 + x0;
+                  x2p1 = x2 + x1;
+                  x3p2 = x3 + x2;
+                  x0p3 = x0 + x3;
+                  y0 = y(j1,i1);
+                  y1 = y(j1,i2);
+                  y2 = y(j2,i2);
+                  y3 = y(j2,i1);
+                  y1m0 = y1 - y0;
+                  y2m1 = y2 - y1;
+                  y3m2 = y3 - y2;
+                  y0m3 = y0 - y3;
+                  y1p0 = y1 + y0;
+                  y2p1 = y2 + y1;
+                  y3p2 = y3 + y2;
+                  y0p3 = y0 + y3;
+                }
+
+              double& nx = n(j,i,0);
+              double& ny = n(j,i,1);
+              double& nz = n(j,i,2);
+
+              z0 = z(j1,i1);
+              z1 = z(j1,i2);
+              z2 = z(j2,i2);
+              z3 = z(j2,i1);
+
+              // calculate face normal with Newell's method
+              // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal#Newell.27s_Method
+
+              nx = y1m0 * (z1 + z0) + y2m1 * (z2 + z1)
+                   + y3m2 * (z3 + z2) + y0m3 * (z0 + z3);
+              ny = (z1 - z0) * x1p0 + (z2 - z1) * x2p1
+                   + (z3 - z2) * x3p2 + (z0 - z3) * x0p3;
+              nz = x1m0 * y1p0 + x2m1 * y2p1 + x3m2 * y3p2 + x0m3 * y0p3;
+
+              double d = std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
+
+              nx /= d;
+              ny /= d;
+              nz /= d;
+            }
+        }
+      facenormals = n;
+    }
+  else if (reset)
+    facenormals = Matrix ();
+}
+
+void
+surface::properties::update_vertex_normals (bool reset, bool force)
+{
+  if (! vertexnormalsmode_is ("auto"))
+    return;
+
+  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
+      edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
+      get_do_lighting ()))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -9164,9 +10044,106 @@ surface::properties::update_vertex_normals (void)
         }
       vertexnormals = n;
     }
+  else if (reset)
+    vertexnormals = Matrix ();
 }
 
+DEFUN (__update_normals__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __update_normals__ (@var{h})
+Update FaceNormals and VertexNormals of the patch or surface referred to by
+@var{h}.
+
+@end deftypefn */)
+{
+  gh_manager::auto_lock guard;
+
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_value val = args(0);
+
+  graphics_object go = gh_manager::get_object (val);
+
+  if (go.isa ("surface"))
+    {
+      surface::properties& props =
+        dynamic_cast <surface::properties&> (go.get_properties ());
+      props.update_normals (false, true);
+    }
+  else if (go.isa ("patch"))
+    {
+      patch::properties& props =
+        dynamic_cast <patch::properties&> (go.get_properties ());
+      props.update_normals (false, true);
+    }
+  else
+    error ("__update_normals__: "
+           "H must be a handle to a valid surface or patch object.");
+
+  return ovl ();
+}
+
+/*
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   Z = peaks ();
+%!   hs = surf (Z, "facelighting", "none");
+%!   assert (isempty (get (hs, "vertexnormals")));
+%!   assert (isempty (get (hs, "facenormals")));
+%!   __update_normals__ (hs);
+%!   assert (! isempty (get (hs, "vertexnormals")));
+%!   assert (! isempty (get (hs, "facenormals")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hp = patch ("facelighting", "none");
+%!   assert (isempty (get (hp, "vertexnormals")));
+%!   assert (isempty (get (hp, "facenormals")));
+%!   __update_normals__ (hp);
+%!   assert (! isempty (get (hp, "vertexnormals")));
+%!   assert (! isempty (get (hp, "facenormals")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
+
 // ---------------------------------------------------------------------
+
+void
+hggroup::properties::remove_child (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    {
+      axes::properties& ax_props =
+        dynamic_cast<axes::properties&>
+        (go.get_ancestor ("axes").get_properties ());
+      ax_props.decrease_num_lights ();
+    }
+  base_properties::remove_child (h);
+  update_limits ();
+}
+
+void
+hggroup::properties::adopt (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  if (go.isa ("light") && go.get_properties ().is_visible ())
+    {
+      axes::properties& ax_props =
+        dynamic_cast<axes::properties&>
+        (go.get_ancestor ("axes").get_properties ());
+      ax_props.increase_num_lights ();
+    }
+  base_properties::adopt (h);
+  update_limits (h);
+}
 
 void
 hggroup::properties::update_limits (void) const
@@ -9463,14 +10440,14 @@ uicontrol::properties::get_extent (void) const
 void
 uicontrol::properties::update_text_extent (void)
 {
-  text_element *elt;
+  octave::text_element *elt;
   octave::text_renderer txt_renderer;
   Matrix box;
 
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
 
-  elt = text_parser::parse (get_string_string (), "none");
+  elt = octave::text_parser::parse (get_string_string (), "none");
 
   gh_manager::auto_lock guard;
   txt_renderer.set_font (get_fontname (), get_fontweight (),
@@ -9509,9 +10486,6 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (! get___object__ ().isempty ())
-    error ("set: cannot change the style of a uicontrol object after creation.");
-
   style = st;
 
   // if we know know what we are, can override value for listbox and popupmenu
@@ -9655,6 +10629,37 @@ uibuttongroup::properties::get_boundingbox (bool internal,
     }
 
   return pos;
+}
+
+void
+uibuttongroup::properties::set_position (const octave_value& v)
+{
+  Matrix old_bb, new_bb;
+  bool modified = false;
+
+  old_bb = get_boundingbox (true);
+  modified = position.set (v, false);
+  new_bb = get_boundingbox (true);
+
+  if (old_bb != new_bb)
+    {
+      if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
+        {
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
+          update_boundingbox ();
+        }
+    }
+
+  if (modified)
+    {
+      position.run_listeners (POSTSET);
+      mark_modified ();
+    }
 }
 
 void
@@ -9829,6 +10834,38 @@ uipanel::properties::get_boundingbox (bool internal,
 }
 
 void
+uipanel::properties::set_position (const octave_value& v)
+{
+  Matrix old_bb, new_bb;
+  bool modified = false;
+
+  old_bb = get_boundingbox (true);
+  modified = position.set (v, false);
+  new_bb = get_boundingbox (true);
+
+  if (old_bb != new_bb)
+    {
+      if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
+        {
+          if (! get_resizefcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "resizefcn");
+
+          if (! get_sizechangedfcn ().isempty ())
+            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+
+          update_boundingbox ();
+        }
+    }
+
+  if (modified)
+    {
+      position.run_listeners (POSTSET);
+      mark_modified ();
+    }
+}
+
+
+void
 uipanel::properties::set_units (const octave_value& val)
 {
   caseless_str old_units = get_units ();
@@ -9887,6 +10924,239 @@ uipanel::properties::get___fontsize_points__ (double box_pix_height) const
     parent_height = get_boundingbox (false).elem (3);
 
   return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
+}
+
+// ---------------------------------------------------------------------
+
+Matrix
+uitable::properties::get_boundingbox (bool,
+                                      const Matrix& parent_pix_size) const
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix parent_size (parent_pix_size);
+
+  if (parent_size.isempty ())
+    {
+      graphics_object go = gh_manager::get_object (get_parent ());
+
+      parent_size =
+        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
+
+  pos(0)--;
+  pos(1)--;
+  pos(1) = parent_size(1) - pos(1) - pos(3);
+
+  return pos;
+}
+
+void
+uitable::properties::set_columnformat (const octave_value& val)
+{
+  /* Matlab only allows certain values for ColumnFormat. Here we only check the
+   * structure of the argument.  Values will be checked in Table.cc */
+
+  if (val.iscellstr ())
+    {
+      if (columnformat.set (val, true))
+        mark_modified ();
+    }
+  else if (val.iscell ())
+    {
+      Cell cell_value = val.cell_value ();
+
+      for (int i = 0; i < cell_value.numel (); i++)
+        {
+          octave_value v = cell_value(i);
+          if (v.iscell ())
+            {
+              /* We are in a pop-up menu selection.
+               * Matlab only allows non-empty strings here. */
+              Cell popup = v.cell_value ();
+              for (int j = 0; j < popup.numel (); j++)
+                {
+                  octave_value p = popup(j);
+                  if (! p.is_string () || p.isempty ())
+                    error ("set: pop-up menu definitions must be non-empty strings.");
+                }
+            }
+          else if (! (v.is_string () || v.isempty ()))
+            {
+              error ("set: columnformat definintions must be a cellstr of "
+                     "either 'char', 'short [e|g|eng]?', 'long [e|g|eng]?', "
+                     "'numeric', 'bank', '+', 'rat', 'logical', "
+                     "or a cellstr of non-empty pop-up menu definitions.");
+            }
+        }
+
+      if (columnformat.set (val, true))
+        mark_modified ();
+    }
+  else if (val.isempty ())
+    {
+      if (columnformat.set (Cell (), true))
+        mark_modified ();
+    }
+  else
+    {
+      error ("set: expecting cell of strings.");
+    }
+}
+
+void
+uitable::properties::set_columnwidth (const octave_value& val)
+{
+  bool error_exists = false;
+
+  if (val.is_string () && val.string_value (false) == "auto")
+    error_exists = false;
+  else if (val.iscell ())
+    {
+      Cell cell_value = val.cell_value ();
+      for (int i = 0; i < cell_value.numel (); i++)
+        {
+          octave_value v = cell_value(i);
+          if (v.is_string ())
+            {
+              if (v.string_value (false) != "auto")
+                error_exists = true;
+            }
+          else if (v.iscell ())
+            {
+              error_exists = true;
+            }
+          else if (! v.is_scalar_type ())
+            {
+              error_exists = true;
+            }
+        }
+    }
+  else
+    error_exists = true;
+
+  if (error_exists)
+    error ("set: expecting either 'auto' or a cell of pixel values or auto.");
+  else
+    {
+      if (columnwidth.set (val, true))
+        mark_modified ();
+    }
+}
+
+void
+uitable::properties::set_units (const octave_value& val)
+{
+  caseless_str old_units = get_units ();
+
+  if (units.set (val, true))
+    {
+      update_units (old_units);
+      mark_modified ();
+    }
+}
+
+void
+uitable::properties::update_units (const caseless_str& old_units)
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+  Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+  pos = convert_position (pos, old_units, get_units (), parent_size);
+  set_position (pos);
+}
+
+void
+uitable::properties::set_fontunits (const octave_value& val)
+{
+  caseless_str old_fontunits = get_fontunits ();
+
+  if (fontunits.set (val, true))
+    {
+      update_fontunits (old_fontunits);
+      mark_modified ();
+    }
+}
+
+void
+uitable::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = get_boundingbox (false).elem (3);
+  double fontsz = get_fontsize ();
+
+  fontsz = convert_font_size (fontsz, old_units, new_units, parent_height);
+
+  set_fontsize (octave_value (fontsz));
+}
+
+double
+uitable::properties::get___fontsize_points__ (double box_pix_height) const
+{
+  double fontsz = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem (3);
+
+  return convert_font_size (fontsz, get_fontunits (), "points", parent_height);
+}
+
+double
+uitable::properties::get_fontsize_pixels (double box_pix_height) const
+{
+  double fontsz = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem (3);
+
+  return convert_font_size (fontsz, get_fontunits (), "pixels", parent_height);
+}
+
+Matrix
+uitable::properties::get_backgroundcolor_rgb (void)
+{
+  Matrix bg = backgroundcolor.get ().matrix_value ();
+  return bg.row (0);
+}
+
+Matrix
+uitable::properties::get_alternatebackgroundcolor_rgb (void)
+{
+  int i = 0;
+  Matrix bg = backgroundcolor.get ().matrix_value ();
+  if (bg.rows () > 1)
+    i = 1;
+
+  return bg.row (i);
+}
+
+Matrix
+uitable::properties::get_extent_matrix (void) const
+{
+  return extent.get ().matrix_value ();
+}
+
+octave_value
+uitable::properties::get_extent (void) const
+{
+  // FIXME: Is it really acceptable to just let the toolkit update the extent?
+  Matrix m = extent.get ().matrix_value ();
+  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  if (parent_go)
+    {
+      Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
+      Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+      return convert_position (m, "pixels", get_units (), parent_size);
+    }
+
+  return m;
 }
 
 // ---------------------------------------------------------------------
@@ -10065,13 +11335,15 @@ callback_event : public base_graphics_event
 {
 public:
   callback_event (const graphics_handle& h, const std::string& name,
-                  const octave_value& data = Matrix ())
-    : base_graphics_event (), handle (h), callback_name (name),
+                  const octave_value& data = Matrix (),
+                  int busyaction = base_graphics_event::QUEUE)
+    : base_graphics_event (busyaction), handle (h), callback_name (name),
       callback (), callback_data (data) { }
 
   callback_event (const graphics_handle& h, const octave_value& cb,
-                  const octave_value& data = Matrix ())
-    : base_graphics_event (), handle (h), callback_name (),
+                  const octave_value& data = Matrix (),
+                  int busyaction = base_graphics_event::QUEUE)
+    : base_graphics_event (busyaction), handle (h), callback_name (),
       callback (cb), callback_data (data) { }
 
   void execute (void)
@@ -10164,17 +11436,19 @@ private:
 graphics_event
 graphics_event::create_callback_event (const graphics_handle& h,
                                        const std::string& name,
-                                       const octave_value& data)
+                                       const octave_value& data,
+                                       int busyaction)
 {
-  return graphics_event (new callback_event (h, name, data));
+  return graphics_event (new callback_event (h, name, data, busyaction));
 }
 
 graphics_event
 graphics_event::create_callback_event (const graphics_handle& h,
                                        const octave_value& cb,
-                                       const octave_value& data)
+                                       const octave_value& data,
+                                       int busyaction)
 {
-  return graphics_event (new callback_event (h, cb, data));
+  return graphics_event (new callback_event (h, cb, data, busyaction));
 }
 
 graphics_event
@@ -10271,7 +11545,10 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
           try
             {
-              octave::eval_string (s, false, status, 0);
+              octave::interpreter& interp
+                = octave::__get_interpreter__ ("gh_manager::do_execute_callback");
+
+              interp.eval_string (s, false, status, 0);
             }
           catch (octave::execution_exception&)
             {
@@ -10350,36 +11627,25 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
 
   if (go.valid_object ())
     {
-      if (callback_objects.empty ())
-        do_post_event (graphics_event::create_callback_event (h, name, data));
-      else
-        {
-          const graphics_object& current = callback_objects.front ();
+      caseless_str cname (name);
+      int busyaction = base_graphics_event::QUEUE;
 
-          if (current.get_properties ().is_interruptible ())
-            do_post_event (graphics_event::create_callback_event (h, name,
-                                                                  data));
-          else
-            {
-              std::string busy_action (go.get_properties ().get_busyaction ());
+      if (cname.compare ("deletefcn")
+          || cname.compare ("createfcn")
+          || (go.isa ("figure")
+              && cname.compare ("closerequestfcn"))
+          || ((go.isa ("figure")
+               || go.isa ("uipanel")
+               || go.isa ("uibuttongroup"))
+              && (cname.compare ("resizefcn")
+                  || cname.compare ("sizechangedfcn"))))
+        busyaction = base_graphics_event::INTERRUPT;
+      else if (go.get_properties ().get_busyaction () == "cancel")
+        busyaction = base_graphics_event::CANCEL;
 
-              if (busy_action == "queue")
-                do_post_event (graphics_event::create_callback_event (h, name,
-                                                                      data));
-              else
-                {
-                  caseless_str cname (name);
 
-                  if (cname.compare ("deletefcn")
-                      || cname.compare ("createfcn")
-                      || (go.isa ("figure")
-                          && (cname.compare ("closerequestfcn")
-                              || cname.compare ("resizefcn"))))
-                    do_post_event (
-                      graphics_event::create_callback_event (h, name, data));
-                }
-            }
-        }
+      do_post_event (graphics_event::create_callback_event (h, name, data,
+                                                            busyaction));
     }
 }
 
@@ -10433,6 +11699,26 @@ gh_manager::do_process_events (bool force)
 
                     event_queue.pop_front ();
                   }
+                else
+                  {
+                    std::list<graphics_event>::iterator p =
+                      event_queue.begin ();
+
+                    while (p != event_queue.end ())
+                      if (p->get_busyaction () == base_graphics_event::CANCEL)
+                        {
+                          p = event_queue.erase (p);
+                        }
+                      else if (p->get_busyaction ()
+                               == base_graphics_event::INTERRUPT)
+                        {
+                          e = (*p);
+                          event_queue.erase (p);
+                          break;
+                        }
+                      else
+                        p++;
+                  }
               }
           }
       }
@@ -10464,6 +11750,60 @@ gh_manager::do_process_events (bool force)
 
   return 0;
 }
+
+
+/*
+## Test interruptible/busyaction properties
+%!function cb (h)
+%! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
+%! drawnow ();
+%! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
+%!endfunction
+%!
+%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system
+%! hf = figure ("visible", "off", "resizefcn", @cb);
+%! unwind_protect
+%!   ## Default
+%!   hui1 = uicontrol ("parent", hf, "interruptible", "on", "callback", @cb);
+%!   hui2 = uicontrol ("parent", hf, "busyaction", "queue", "callback", @cb);
+%!   hui3 = uicontrol ("parent", hf, "busyaction", "queue", "callback", @cb);
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!
+%!   assert (getappdata (hf, "cb_exec"), []);
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hui2 hui3 hui3 hui2 hui1]);
+%!
+%!   ## Interruptible off
+%!   setappdata (hf, "cb_exec", []);
+%!   set (hui1, "interruptible", "off");
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hui1 hui2 hui3 hui3 hui2]);
+%!
+%!   ## "resizefcn" callback interrupts regardless of interruptible property
+%!   setappdata (hf, "cb_exec", []);
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hf, "resizefcn");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hf hf hui1]);
+%!
+%!   ## test "busyaction" "cancel"
+%!   setappdata (hf, "cb_exec", []);
+%!   set (hui2, "busyaction", "cancel");
+%!   __go_post_callback__ (hui1, "callback");
+%!   __go_post_callback__ (hui2, "callback");
+%!   __go_post_callback__ (hui3, "callback");
+%!   __go_post_callback__ (hf, "resizefcn");
+%!   drawnow ();
+%!   assert (getappdata (hf, "cb_exec"), [hui1 hf hui3 hui3 hf hui1]);
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+*/
 
 void
 gh_manager::do_enable_event_processing (bool enable)
@@ -10529,7 +11869,7 @@ false where they are not.
   if (args.length () != 1)
     print_usage ();
 
-  return ovl (is_hghandle (args(0)));
+  return ovl (ishghandle (args(0)));
 }
 
 /*
@@ -10842,7 +12182,9 @@ being @qcode{"portrait"}.
           else if (hcv.numel () == args(2).cell_value ().rows ())
             go.set (args(1).cellstr_value (), args(2).cell_value (), n);
           else
-            error ("set: number of graphics handles must match number of value rows (%d != %d)",
+            error ("set: number of graphics handles must match number of "
+                   "value rows (%" OCTAVE_IDX_TYPE_FORMAT " != "
+                   "%" OCTAVE_IDX_TYPE_FORMAT ")",
                    hcv.numel (), args(2).cell_value ().rows ());
         }
       else if (nargin == 2 && args(1).isstruct ())
@@ -11173,7 +12515,7 @@ Undocumented internal function.
 
   octave_value retval;
 
-  if (is_figure (val))
+  if (isfigure (val))
     {
       graphics_handle h = gh_manager::lookup (val);
 
@@ -11421,6 +12763,15 @@ Undocumented internal function.
   GO_BODY (uicontextmenu);
 }
 
+DEFUN (__go_uitable__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __go_uitable__ (@var{parent})
+Undocumented internal function.
+@end deftypefn */)
+{
+  GO_BODY (uitable);
+}
+
 DEFUN (__go_uitoolbar__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uitoolbar__ (@var{parent})
@@ -11544,6 +12895,40 @@ Undocumented internal function.
   return ovl ();
 }
 
+DEFUN (__go_post_callback__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {} __go_post_callback__ (@var{h}, @var{name})
+@deftypefnx {} {} __go_post_callback__ (@var{h}, @var{name}, @var{param})
+Undocumented internal function.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+
+  const NDArray vals = args(0).xarray_value ("__go_post_callback__: invalid graphics object");
+
+  std::string name = args(1).xstring_value ("__go_post_callback__: invalid callback name");
+
+  for (octave_idx_type i = 0; i < vals.numel (); i++)
+    {
+      double val = vals(i);
+
+      graphics_handle h = gh_manager::lookup (val);
+
+      if (! h.ok ())
+        error ("__go_execute_callback__: invalid graphics object (= %g)", val);
+
+      if (nargin == 2)
+        gh_manager::post_callback (h, name);
+      else
+        gh_manager::post_callback (h, name, args(2));
+    }
+
+  return ovl ();
+}
+
 DEFUN (__image_pixel_size__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{sz} =} __image_pixel_size__ (@var{h})
@@ -11617,6 +13002,32 @@ Return a cell array of the currently loaded graphics toolkits.
   return ovl (gtk_mgr.loaded_toolkits_list ());
 }
 
+DEFUN (__show_figure__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __show_figure__ (@var{n})
+Undocumented internal function.
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  double h = args(0).xdouble_value ("__show_figure__: invalid handle H");
+
+  graphics_handle gh = gh_manager::lookup (h);
+
+  if (! gh.ok ())
+    error ("__show_figure__: invalid graphics object (= %g)", h);
+
+  graphics_object go = gh_manager::get_object (gh);
+
+  figure::properties& fprops
+    = dynamic_cast<figure::properties&> (go.get_properties ());
+
+  fprops.get_toolkit ().show_figure (go);
+
+  return ovl ();
+}
+
 DEFUN (drawnow, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} drawnow ()
@@ -11634,7 +13045,11 @@ undocumented.
 @seealso{refresh}
 @end deftypefn */)
 {
-  static int drawnow_executing = 0;
+  // Disallow recursion when using gnuplot ASCII charts, i.e., with
+  // --no-window-system option.
+
+  static bool do_recursion = octave::display_info::display_available ();
+  static bool drawnow_executing = false;
 
   if (args.length () > 3)
     print_usage ();
@@ -11644,15 +13059,42 @@ undocumented.
   frame.protect_var (Vdrawnow_requested, false);
   frame.protect_var (drawnow_executing);
 
-  // Redraw, unless we are in the middle of an existing redraw or deletion.
-  if (++drawnow_executing <= 1 && ! delete_executing)
+  // Redraw unless we are in the middle of a deletion.
+
+  if (! delete_executing && (do_recursion || ! drawnow_executing))
     {
+      drawnow_executing = true;
+
       gh_manager::auto_lock guard;
 
-      if (args.length () == 0 || args.length () == 1)
+      if (args.length () <= 1)
         {
+          // First process events so that the redraw happens when all
+          // objects are in their definite state.
+          bool do_events = true;
+
+          if (args.length () == 1)
+            {
+              caseless_str val (args(0).xstring_value ("drawnow: first argument must be a string"));
+
+              if (val.compare ("expose"))
+                do_events = false;
+              else
+                error ("drawnow: invalid argument, 'expose' is only valid option");
+            }
+
+          if (do_events)
+            {
+              gh_manager::unlock ();
+
+              gh_manager::process_events ();
+
+              gh_manager::lock ();
+            }
+
           Matrix hlist = gh_manager::figure_handle_list (true);
 
+          // Redraw modified figures
           for (int i = 0; i < hlist.numel (); i++)
             {
               graphics_handle h = gh_manager::lookup (hlist(i));
@@ -11677,27 +13119,7 @@ undocumented.
                       fprops.set_modified (false);
                     }
                 }
-            }
 
-          bool do_events = true;
-
-          if (args.length () == 1)
-            {
-              caseless_str val (args(0).xstring_value ("drawnow: first argument must be a string"));
-
-              if (val.compare ("expose"))
-                do_events = false;
-              else
-                error ("drawnow: invalid argument, 'expose' is only valid option");
-            }
-
-          if (do_events)
-            {
-              gh_manager::unlock ();
-
-              gh_manager::process_events ();
-
-              gh_manager::lock ();
             }
         }
       else if (args.length () >= 2 && args.length () <= 3)
@@ -12149,7 +13571,8 @@ is reentrant and can be called from a callback, while another @code{waitfor}
 call is pending at the top-level.
 
 In the first form, program execution is suspended until the graphics object
-@var{h} is destroyed.  If the graphics handle is invalid, the function
+@var{h} is destroyed.  If the graphics handle is invalid or if @var{h} is
+the root figure handle and no property @var{prop} was provided, the function
 returns immediately.
 
 In the second form, execution is suspended until the graphics object is
@@ -12184,6 +13607,9 @@ In all cases, typing CTRL-C stops program execution immediately.
     return ovl ();
 
   double h = args(0).xdouble_value ("waitfor: invalid handle value");
+
+  if (! ishghandle (h) || (h == 0 && args.length () == 1))
+    return ovl ();
 
   caseless_str pname;
 
@@ -12356,7 +13782,7 @@ In all cases, typing CTRL-C stops program execution immediately.
             break;
         }
 
-      octave_sleep (0.1); // FIXME: really needed?
+      octave::sleep (0.1);  // FIXME: really needed?
 
       octave_quit ();
 

@@ -23,23 +23,18 @@
 ##
 ## The prime factorization is defined as @code{prod (@var{pf}) == @var{q}}
 ## where every element of @var{pf} is a prime number.  If @code{@var{q} == 1},
-## return 1.
+## return 1.  The output @var{pf} is of the same numeric class as the input.
 ##
 ## With two output arguments, return the unique prime factors @var{pf} and
 ## their multiplicities.  That is,
 ## @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ##
-## Implementation Note: The input @var{q} must be less than
-## @code{flintmax} (9.0072e+15) in order to factor correctly.
+## Implementation Note: The input @var{q} must be less than @code{flintmax}
+## (9.0072e+15) in order to factor correctly.
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn
 
 ## Author: Paul Kienzle
-
-## 2002-01-28 Paul Kienzle
-## * remove recursion; only check existing primes for multiplicity > 1
-## * return multiplicity as suggested by Dirk Laurie
-## * add error handling
 
 function [pf, n] = factor (q)
 
@@ -47,8 +42,8 @@ function [pf, n] = factor (q)
     print_usage ();
   endif
 
-  if (! isreal (q) || ! isscalar (q) || q != fix (q))
-    error ("factor: Q must be a real integer");
+  if (! isscalar (q) || ! isreal (q) || q < 0 || q != fix (q))
+    error ("factor: Q must be a real non-negative integer");
   endif
 
   ## Special case of no primes less than sqrt(q).
@@ -58,7 +53,8 @@ function [pf, n] = factor (q)
     return;
   endif
 
-  q = double (q);  # For the time being, calcs rely on double precision var.
+  cls = class (q); # store class
+  q = double (q);  # internal algorithm relies on numbers being doubles.
   qorig = q;
   pf = [];
   ## There is at most one prime greater than sqrt(q), and if it exists,
@@ -79,7 +75,7 @@ function [pf, n] = factor (q)
   endwhile
   pf = sort (pf);
 
-  ## Verify algorithm was succesful
+  ## Verify algorithm was successful
   q = prod (pf);
   if (q != qorig)
     error ("factor: Q too large to factor");
@@ -87,12 +83,15 @@ function [pf, n] = factor (q)
     warning ("factor: Q too large.  Answer is unreliable");
   endif
 
-  ## Determine muliplicity.
+  ## Determine multiplicity.
   if (nargout > 1)
     idx = find ([0, pf] != [pf, 0]);
     pf = pf(idx(1:length (idx)-1));
     n = diff (idx);
   endif
+
+ ## Restore class of input
+ pf = feval (cls, pf);
 
 endfunction
 
@@ -108,9 +107,17 @@ endfunction
 %!   assert (all ([0,pf] != [pf,0]));
 %! endfor
 
+%!assert (factor (uint8 (8)), uint8 ([2 2 2]))
+%!assert (factor (single (8)), single ([2 2 2]))
+%!test
+%! [pf, n] = factor (int16 (8));
+%! assert (pf, int16 (2));
+%! assert (n, double (3));
+
 ## Test input validation
 %!error factor ()
 %!error factor (1,2)
-%!error <Q must be a real integer> factor (6i)
-%!error <Q must be a real integer> factor ([1,2])
-%!error <Q must be a real integer> factor (1.5)
+%!error <Q must be a real non-negative integer> factor (6i)
+%!error <Q must be a real non-negative integer> factor ([1,2])
+%!error <Q must be a real non-negative integer> factor (1.5)
+%!error <Q must be a real non-negative integer> factor (-20)

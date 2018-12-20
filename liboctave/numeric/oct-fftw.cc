@@ -136,6 +136,8 @@ namespace octave
         instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
+    octave_unused_parameter (nt);
+
     (*current_liboctave_warning_handler)
       ("unable to change number of threads without FFTW thread support");
 #endif
@@ -242,7 +244,7 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<Complex *>
-              (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) +
+              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p =
@@ -361,7 +363,7 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
             itmp = reinterpret_cast<double *>
-              (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) +
+              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p =
@@ -494,6 +496,8 @@ namespace octave
         instance->rplan = instance->plan[0] = instance->plan[1] = nullptr;
       }
 #else
+    octave_unused_parameter (nt);
+
     (*current_liboctave_warning_handler)
       ("unable to change number of threads without FFTW thread support");
 #endif
@@ -598,7 +602,7 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (FloatComplex, itmp, nn * howmany + 32);
             itmp = reinterpret_cast<FloatComplex *>
-              (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) +
+              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p =
@@ -717,7 +721,7 @@ namespace octave
             // Create matrix with the same size and 16-byte alignment as input
             OCTAVE_LOCAL_BUFFER (float, itmp, nn + 32);
             itmp = reinterpret_cast<float *>
-              (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) +
+              (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
             *cur_plan_p =

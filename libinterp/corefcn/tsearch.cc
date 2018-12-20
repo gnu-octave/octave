@@ -50,7 +50,7 @@ inline double min (double a, double b, double c)
     return (a > c ? c : a);
 }
 
-#define REF(x,k,i) x(static_cast<octave_idx_type>(elem((k), (i))) - 1)
+#define REF(x,k,i) x(static_cast<octave_idx_type> (elem((k), (i))) - 1)
 
 // for large data set the algorithm is very slow
 // one should presort (how?) either the elements of the points of evaluation

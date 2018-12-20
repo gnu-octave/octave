@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
@@ -48,6 +49,25 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  base_url_transfer::base_url_transfer (void)
+    : host_or_url (), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&std::cout) { }
+
+  base_url_transfer::base_url_transfer (const std::string& host,
+                                        const std::string& /* user_arg */,
+                                        const std::string& /* passwd */,
+                                        std::ostream& os)
+    : host_or_url (host), valid (false), ftp (true),
+      ascii_mode (false), ok (true), errmsg (), curr_istream (&std::cin),
+      curr_ostream (&os) { }
+
+  base_url_transfer::base_url_transfer (const std::string& url,
+                                        std::ostream& os)
+    : host_or_url (url), valid (false), ftp (false),
+      ascii_mode (false), ok (true), errmsg (),
+      curr_istream (&std::cin), curr_ostream (&os) { }
+
   void
   base_url_transfer::delete_file (const std::string& file)
   {
@@ -150,62 +170,62 @@ namespace octave
 
         frame.add_fcn (reset_path, this);
 
-        sys::dir_entry dirlist (realdir);
+        string_vector files;
+        std::string msg;
 
-        if (dirlist)
-          {
-            string_vector files = dirlist.read ();
+        if (sys::get_dirlist (realdir, files, msg))
+          for (octave_idx_type i = 0; i < files.numel (); i++)
+            {
+              std::string file = files (i);
 
-            for (octave_idx_type i = 0; i < files.numel (); i++)
-              {
-                std::string file = files (i);
+              if (file == "." || file == "..")
+                continue;
 
-                if (file == "." || file == "..")
-                  continue;
+              std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
+              sys::file_stat fs (realfile);
 
-                std::string realfile = realdir + sys::file_ops::dir_sep_str () + file;
-                sys::file_stat fs (realfile);
+              if (! fs.exists ())
+                {
+                  ok = false;
+                  errmsg = "__ftp__mput: file '" + realfile
+                           + "' does not exist";
+                  break;
+                }
 
-                if (! fs.exists ())
-                  {
-                    ok = false;
-                    errmsg = "__ftp__mput: file '" + realfile
-                             + "' does not exist";
+              if (fs.is_dir ())
+                {
+                  file_list.append (mput_directory (realdir, file));
+
+                  if (! good ())
                     break;
-                  }
+                }
+              else
+                {
+                  // FIXME: Does ascii mode need to be flagged here?
+                  std::string ascii_fname
+                    = octave::sys::get_ASCII_filename (realfile);
 
-                if (fs.is_dir ())
-                  {
-                    file_list.append (mput_directory (realdir, file));
+                  std::ifstream ifile (ascii_fname.c_str (),
+                                       std::ios::in | std::ios::binary);
 
-                    if (! good ())
+                  if (! ifile.is_open ())
+                    {
+                      ok = false;
+                      errmsg = "__ftp_mput__: unable to open file '"
+                               + realfile + "'";
                       break;
-                  }
-                else
-                  {
-                    // FIXME: Does ascii mode need to be flagged here?
-                    std::ifstream ifile (realfile.c_str (), std::ios::in |
-                                         std::ios::binary);
+                    }
 
-                    if (! ifile.is_open ())
-                      {
-                        ok = false;
-                        errmsg = "__ftp_mput__: unable to open file '"
-                                 + realfile + "'";
-                        break;
-                      }
+                  put (file, ifile);
 
-                    put (file, ifile);
+                  ifile.close ();
 
-                    ifile.close ();
+                  if (! good ())
+                    break;
 
-                    if (! good ())
-                      break;
-
-                    file_list.append (realfile);
-                  }
-              }
-          }
+                  file_list.append (realfile);
+                }
+            }
         else
           {
             ok = false;
@@ -241,7 +261,7 @@ namespace octave
   static size_t
   throw_away (void *, size_t size, size_t nmemb, void *)
   {
-    return static_cast<size_t>(size * nmemb);
+    return static_cast<size_t> (size * nmemb);
   }
 
   // I'd love to rewrite this as a private method of the url_transfer

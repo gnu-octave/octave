@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{r} =} corrcoef (@var{x})
 ## @deftypefnx {} {@var{r} =} corrcoef (@var{x}, @var{y})
+## @deftypefnx {} {@var{r} =} corrcoef (@dots{}, @var{param}, @var{value}, @dots{})
 ## @deftypefnx {} {[@var{r}, @var{p}] =} corrcoef (@dots{})
 ## @deftypefnx {} {[@var{r}, @var{p}, @var{lci}, @var{hci}] =} corrcoef (@dots{})
-## @deftypefnx {} {[@dots{}] =} corrcoef (@dots{}, @var{param}, @var{value}, @dots{})
 ## Compute a matrix of correlation coefficients.
 ##
 ## @var{x} is an array where each column contains a variable and each row is
@@ -30,24 +30,13 @@
 ## If a second input @var{y} (of the same size as @var{x}) is given then
 ## calculate the correlation coefficients between @var{x} and @var{y}.
 ##
-## @var{r} is a matrix of Pearson's product moment correlation coefficients for
-## each pair of variables.
-##
-## @var{p} is a matrix of pair-wise p-values testing for the null hypothesis of
-## a correlation coefficient of zero.
-##
-## @var{lci} and @var{hci} are matrices containing, respectively, the lower and
-## higher bounds of the 95% confidence interval of each correlation
-## coefficient.
-##
-## @var{param}, @var{value} are pairs of optional parameters and values.
-## Valid options are:
+## @var{param}, @var{value} are optional pairs of parameters and values which
+## modify the calculation.  Valid options are:
 ##
 ## @table @asis
 ## @item @qcode{"alpha"}
-## Confidence level used for the definition of the bounds of the confidence
-## interval, @var{lci} and @var{hci}.  Default is 0.05, i.e., 95% confidence
-## interval.
+## Confidence level used for the bounds of the confidence interval, @var{lci}
+## and @var{hci}.  Default is 0.05, i.e., 95% confidence interval.
 ##
 ## @item @qcode{"rows"}
 ## Determine processing of NaN values.  Acceptable values are @qcode{"all"},
@@ -55,9 +44,17 @@
 ## With @qcode{"complete"}, only the rows without NaN values are considered.
 ## With @qcode{"pairwise"}, the selection of NaN-free rows is made for each
 ## pair of variables.
-##
 ## @end table
 ##
+## Output @var{r} is a matrix of Pearson's product moment correlation
+## coefficients for each pair of variables.
+##
+## Output @var{p} is a matrix of pair-wise p-values testing for the null
+## hypothesis of a correlation coefficient of zero.
+##
+## Outputs @var{lci} and @var{hci} are matrices containing, respectively, the
+## lower and higher bounds of the 95% confidence interval of each correlation
+## coefficient.
 ## @seealso{corr, cov}
 ## @end deftypefn
 
@@ -75,9 +72,15 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
 
   if (nargin > 1)
 
-    ## Check for numeric y argument
+    ## Check for matrix argument y
     if (isnumeric (varargin{1}))
-      x = [x(:), varargin{1}(:)];
+      y = varargin{1};
+      nx = numel (x);
+      ny = numel (y);
+      if (nx > 0 && ny > 0 && nx != ny)
+        error ("corrcoef: X and Y must be the same size");
+      endif
+      x = [x(:), y(:)];
       varargin(1) = [];
     endif
 
@@ -88,7 +91,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
         error ("corrcoef: parameter %d must be a string", i);
       endif
       parameter = varargin{i};
-      if (numel (varargin) < i+1)
+      if (i+1 > numel (varargin))
         error ('corrcoef: parameter "%s" missing value', parameter);
       endif
       value = varargin{i+1};
@@ -99,7 +102,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
               && value >= 0 && value <= 1)
             alpha = value;
           else
-            error ('corrcoef: "alpha" must be a number between 0 and 1');
+            error ('corrcoef: "alpha" must be a scalar between 0 and 1');
           endif
 
         case "rows"
@@ -111,7 +114,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
             case {"all", "complete", "pairwise"}
               rows = value;
             otherwise
-              error ('corrcoef: "rows" must be "all", "complete", or "pairwise".');
+              error ('corrcoef: "rows" must be "all", "complete", or "pairwise"');
           endswitch
 
         otherwise
@@ -228,27 +231,16 @@ endfunction
 %! assert (size (r) == [5, 5]);
 
 %!test
-%! x = [1 2 3];
+%! x = [1, 2, 3];
 %! r = corrcoef (x);
 %! assert (size (r) == [1, 1]);
 
-%!test
-%! x = [];
-%! r = corrcoef (x);
-%! assert (isnan (r));
+%!assert (isnan (corrcoef ([])))
+%!assert (isnan (corrcoef (NaN)))
+%!assert (isnan (corrcoef (1)))
 
 %!test
-%! x = [NaN];
-%! r = corrcoef (x);
-%! assert (isnan (r));
-
-%!test
-%! x = [1];
-%! r = corrcoef (x);
-%! assert (isnan (r));
-
-%!test
-%! x = [NaN NaN];
+%! x = [NaN, NaN];
 %! r = corrcoef (x);
 %! assert (size(r) == [1, 1] && isnan (r));
 
@@ -256,6 +248,7 @@ endfunction
 %! x = rand (5);
 %! [r, p] = corrcoef (x);
 %! assert (size (r) == [5, 5] && size (p) == [5 5]);
+%! assert (diag (r), ones (5,1), eps);
 
 %!test
 %! x = rand (5,1);
@@ -263,6 +256,8 @@ endfunction
 %! R1 = corrcoef (x, y);
 %! R2 = corrcoef ([x, y]);
 %! assert (R1, R2);
+%! R3 = corrcoef (x.', y.');
+%! assert (R1, R3);
 
 %!test
 %! x = [1;2;3];
@@ -282,13 +277,12 @@ endfunction
 %! r = corrcoef (x, y);
 %! assert (r, [1, NaN; NaN, 1]);
 
-%!test
 %!error corrcoef ()
 %!error <parameter 1 must be a string> corrcoef (1, 2, 3)
 %!error <parameter "alpha" missing value> corrcoef (1, 2, "alpha")
-%!error <"alpha" must be a number> corrcoef (1,2, "alpha", "1")
-%!error <"alpha" must be a number> corrcoef (1,2, "alpha", ones (2,2))
-%!error <"alpha" must be a number between 0 and 1> corrcoef (1,2, "alpha", -1)
-%!error <"alpha" must be a number between 0 and 1> corrcoef (1,2, "alpha", 2)
+%!error <"alpha" must be a scalar> corrcoef (1,2, "alpha", "1")
+%!error <"alpha" must be a scalar> corrcoef (1,2, "alpha", ones (2,2))
+%!error <"alpha" must be a scalar between 0 and 1> corrcoef (1,2, "alpha", -1)
+%!error <"alpha" must be a scalar between 0 and 1> corrcoef (1,2, "alpha", 2)
 %!error <"rows" must be "all"...> corrcoef (1,2, "rows", "foobar")
 %!error <Unknown option "foobar"> corrcoef (1,2, "foobar", 1)

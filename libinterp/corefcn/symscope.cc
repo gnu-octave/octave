@@ -39,49 +39,57 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  octave_value
-  symbol_scope_rep::find (const std::string& name,
-                          const octave_value_list& args,
-                          bool skip_variables, bool local_funcs)
+  void symbol_scope_rep::install_auto_fcn_vars (void)
   {
-    // Variable.
+    install_auto_fcn_var (".argn.");
+    install_auto_fcn_var (".ignored.");
+    install_auto_fcn_var (".nargin.");
+    install_auto_fcn_var (".nargout.");
+    install_auto_fcn_var (".saved_warning_states.");
+  }
 
+  void symbol_scope_rep::install_auto_fcn_var (const std::string& name)
+  {
+    insert (name, true);
+    mark_hidden (name);
+    mark_automatic (name);
+  }
+
+  octave_value
+  symbol_scope_rep::find (const std::string& name)
+  {
     symbol_table& symtab
       = __get_symbol_table__ ("symbol_scope_rep::find");
 
-    if (! skip_variables)
+    // Variable.
+
+    table_iterator p = m_symbols.find (name);
+
+    if (p != m_symbols.end ())
       {
-        table_iterator p = m_symbols.find (name);
+        symbol_record sr = p->second;
 
-        if (p != m_symbols.end ())
+        if (sr.is_global ())
+          return symtab.global_varval (name);
+        else
           {
-            symbol_record sr = p->second;
+            octave_value val = sr.varval (m_context);
 
-            if (sr.is_global ())
-              return symtab.global_varval (name);
-            else
-              {
-                octave_value val = sr.varval (m_context);
-
-                if (val.is_defined ())
-                  return val;
-              }
+            if (val.is_defined ())
+              return val;
           }
       }
 
-    if (local_funcs)
-      {
-        // Subfunction.  I think it only makes sense to check for
-        // subfunctions if we are currently executing a function defined
-        // from a .m file.
+    // Subfunction.  I think it only makes sense to check for
+    // subfunctions if we are currently executing a function defined
+    // from a .m file.
 
-        octave_value fcn = find_subfunction (name);
+    octave_value fcn = find_subfunction (name);
 
-        if (fcn.is_defined ())
-          return fcn;
-      }
+    if (fcn.is_defined ())
+      return fcn;
 
-    return symtab.fcn_table_find (name, args, local_funcs);
+    return symtab.fcn_table_find (name, ovl ());
   }
 
   symbol_record&
@@ -95,7 +103,7 @@ namespace octave
 
         auto t_parent = m_parent.lock ();
 
-        if (m_is_nested && t_parent && t_parent->look_nonlocal (name, ret))
+        if (is_nested () && t_parent && t_parent->look_nonlocal (name, ret))
           return m_symbols[name] = ret;
         else
           {
@@ -114,7 +122,10 @@ namespace octave
   {
     std::map<std::string, octave_value> m
       = {{ "name", m_name },
+         { "nesting_depth", m_nesting_depth },
+         { "is_static", m_is_static },
          { "symbols", dump_symbols_map () },
+         { "subfunction_names", string_vector (m_subfunction_names) },
          { "subfunctions", dump_function_map (m_subfunctions) }};
 
     return octave_value (m);
@@ -170,6 +181,39 @@ namespace octave
   }
 
   void
+  symbol_scope_rep::set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent)
+  {
+    m_primary_parent = std::weak_ptr<symbol_scope_rep> (parent);
+  }
+
+  bool
+  symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const
+  {
+    if (is_nested ())
+      {
+        // Since is_nested is true, the following should always return a
+        // valid scope.
+
+        auto t_primary_parent = m_primary_parent.lock ();
+
+        if (t_primary_parent)
+          {
+            // SCOPE is the primary parent of this scope: this scope is a
+            // child of SCOPE.
+            if (t_primary_parent == scope)
+              return true;
+
+            // SCOPE and this scope share the same primary parent: they are
+            // siblings.
+            if (t_primary_parent == scope->primary_parent_scope_rep ())
+              return true;
+          }
+      }
+
+    return false;
+  }
+
+  void
   symbol_scope_rep::update_nest (void)
   {
     auto t_parent = m_parent.lock ();
@@ -182,7 +226,7 @@ namespace octave
             symbol_record& ours = nm_sr.second;
 
             if (! ours.is_formal ()
-                && m_is_nested && t_parent->look_nonlocal (nm_sr.first, ours))
+                && is_nested () && t_parent->look_nonlocal (nm_sr.first, ours))
               {
                 if (ours.is_global () || ours.is_persistent ())
                   error ("global and persistent may only be used in the topmost level in which a nested variable is used");
@@ -190,7 +234,7 @@ namespace octave
           }
 
         // The scopes of nested functions are static.
-        if (m_is_nested)
+        if (is_nested ())
           m_is_static = true;
       }
     else if (m_children.size ())
@@ -212,7 +256,7 @@ namespace octave
       {
         auto t_parent = m_parent.lock ();
 
-        if (m_is_nested && t_parent)
+        if (is_nested () && t_parent)
           return t_parent->look_nonlocal (name, result);
       }
     else if (! p->second.is_automatic ())

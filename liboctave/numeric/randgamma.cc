@@ -87,110 +87,47 @@ Dirichlet(a1,...,ak) for ai > 0
 #include "randgamma.h"
 #include "randmtzig.h"
 
-#define INFINITE lo_ieee_isinf
-#define RUNI oct_randu()
-#define RNOR oct_randn()
-#define REXP oct_rande()
-
-void
-oct_fill_randg (double a, octave_idx_type n, double *r)
+namespace octave
 {
-  octave_idx_type i;
-  /* If a < 1, start by generating gamma (1+a) */
-  const double d = (a < 1. ? 1.+a : a) - 1./3.;
-  const double c = 1./std::sqrt (9.*d);
+  template <typename T> void rand_gamma (T a, octave_idx_type n, T *r)
+  {
+    octave_idx_type i;
+    /* If a < 1, start by generating gamma (1+a) */
+    const T d = (a < 1. ? 1.+a : a) - 1./3.;
+    const T c = 1./std::sqrt (9.*d);
 
-  /* Handle invalid cases */
-  if (a <= 0 || INFINITE(a))
-    {
-      for (i=0; i < n; i++)
-        r[i] = octave::numeric_limits<double>::NaN ();
-      return;
-    }
+    /* Handle invalid cases */
+    if (a <= 0 || lo_ieee_isinf (a))
+      {
+        for (i=0; i < n; i++)
+          r[i] = numeric_limits<T>::NaN ();
+        return;
+      }
 
-  for (i=0; i < n; i++)
-    {
-      double x, xsq, v, u;
-    restart:
-      x = RNOR;
-      v = (1+c*x);
-      v *= v*v;
-      if (v <= 0)
-        goto restart; /* rare, so don't bother moving up */
-      u = RUNI;
-      xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
-        goto restart;
-      r[i] = d*v;
-    }
-  if (a < 1)
-    {
-      /* Use gamma(a) = gamma(1+a)*U^(1/a) */
-      /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
-      for (i = 0; i < n; i++)
-        r[i] *= exp (-REXP/a);
-    }
-}
+    for (i=0; i < n; i++)
+      {
+        T x, xsq, v, u;
+      restart:
+        x = rand_normal<T> ();
+        v = (1+c*x);
+        v *= v*v;
+        if (v <= 0)
+          goto restart; /* rare, so don't bother moving up */
+        u = rand_uniform<T> ();
+        xsq = x*x;
+        if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
+          goto restart;
+        r[i] = d*v;
+      }
+    if (a < 1)
+      {
+        /* Use gamma(a) = gamma(1+a)*U^(1/a) */
+        /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
+        for (i = 0; i < n; i++)
+          r[i] *= exp (-rand_exponential<T> () / a);
+      }
+  }
 
-double
-oct_randg (double a)
-{
-  double ret;
-  oct_fill_randg (a,1,&ret);
-  return ret;
-}
-
-#undef RUNI
-#undef RNOR
-#undef REXP
-#define RUNI oct_float_randu()
-#define RNOR oct_float_randn()
-#define REXP oct_float_rande()
-
-void
-oct_fill_float_randg (float a, octave_idx_type n, float *r)
-{
-  octave_idx_type i;
-  /* If a < 1, start by generating gamma(1+a) */
-  const float d = (a < 1. ? 1.+a : a) - 1./3.;
-  const float c = 1./std::sqrt (9.*d);
-
-  /* Handle invalid cases */
-  if (a <= 0 || INFINITE(a))
-    {
-      for (i=0; i < n; i++)
-        r[i] = octave::numeric_limits<float>::NaN ();
-      return;
-    }
-
-  for (i=0; i < n; i++)
-    {
-      float x, xsq, v, u;
-    frestart:
-      x = RNOR;
-      v = (1+c*x);
-      v *= v*v;
-      if (v <= 0)
-        goto frestart; /* rare, so don't bother moving up */
-      u = RUNI;
-      xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && std::log (u) >= 0.5*xsq + d*(1-v+std::log (v)))
-        goto frestart;
-      r[i] = d*v;
-    }
-  if (a < 1)
-    {
-      /* Use gamma(a) = gamma(1+a)*U^(1/a) */
-      /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
-      for (i = 0; i < n; i++)
-        r[i] *= exp (-REXP/a);
-    }
-}
-
-float
-oct_float_randg (float a)
-{
-  float ret;
-  oct_fill_float_randg (a,1,&ret);
-  return ret;
+  template void rand_gamma (double, octave_idx_type, double *);
+  template void rand_gamma (float, octave_idx_type, float *);
 }

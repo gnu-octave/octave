@@ -1,5 +1,7 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
+LIBOCTGUI_GRAPHICS_LIB = %reldir%/__init_qt__.la
+
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-annotation-dialog.cc \
   %reldir%/moc-Backend.cc \
@@ -19,6 +21,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-PushTool.cc \
   %reldir%/moc-SliderControl.cc \
   %reldir%/moc-TextEdit.cc \
+  %reldir%/moc-Table.cc \
   %reldir%/moc-ToggleTool.cc \
   %reldir%/moc-ToolBar.cc
 
@@ -27,21 +30,21 @@ $(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 DIRSTAMP_FILES += \
   %reldir%/$(octave_dirstamp)
 
-octave_gui_MOC += \
+__init_qt___MOC = \
   $(OCTAVE_GUI_GRAPHICS_MOC)
 
-octave_gui_graphics_UI = \
+__init_qt___UI = \
   %reldir%/annotation-dialog.ui
 
-octave_gui_graphics_UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(octave_gui_graphics_UI))
+__init_qt___UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(__init_qt___UI))
 
-$(octave_gui_graphics_UI_H): | %reldir%/$(octave_dirstamp)
+$(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
 
-BUILT_SOURCES += $(octave_gui_graphics_UI_H)
+BUILT_SOURCES += $(__init_qt___UI_H)
 
-octave_gui_graphics_RC = %reldir%/qrc-qthandles.cc
+__init_qt___RC = %reldir%/qrc-qthandles.cc
 
-$(octave_gui_graphics_RC): | %reldir%/$(octave_dirstamp)
+$(__init_qt___RC): | %reldir%/$(octave_dirstamp)
 
 noinst_HEADERS += \
   %reldir%/__init_qt__.h \
@@ -75,6 +78,7 @@ noinst_HEADERS += \
   %reldir%/QtHandlesUtils.h \
   %reldir%/RadioButtonControl.h \
   %reldir%/SliderControl.h \
+  %reldir%/Table.h \
   %reldir%/TextControl.h \
   %reldir%/TextEdit.h \
   %reldir%/ToggleButtonControl.h \
@@ -82,9 +86,10 @@ noinst_HEADERS += \
   %reldir%/ToolBar.h \
   %reldir%/ToolBarButton.h \
   %reldir%/gl-select.h \
+  %reldir%/qopengl-functions.h \
   $(TEMPLATE_SRC)
 
-%canon_reldir%_%canon_reldir%_la_SOURCES = \
+%canon_reldir%___init_qt___la_SOURCES = \
   %reldir%/__init_qt__.cc \
   %reldir%/annotation-dialog.cc \
   %reldir%/Backend.cc \
@@ -114,6 +119,7 @@ noinst_HEADERS += \
   %reldir%/QtHandlesUtils.cc \
   %reldir%/RadioButtonControl.cc \
   %reldir%/SliderControl.cc \
+  %reldir%/Table.cc \
   %reldir%/TextControl.cc \
   %reldir%/TextEdit.cc \
   %reldir%/ToggleButtonControl.cc \
@@ -124,9 +130,9 @@ noinst_HEADERS += \
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc
 
-nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(octave_gui_graphics_RC)
+nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___RC)
 
-%canon_reldir%_%canon_reldir%_la_CPPFLAGS = \
+%canon_reldir%___init_qt___la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
@@ -135,6 +141,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(o
   @QT_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Isrc -I$(srcdir)/libgui/src \
+  -Iliboctave \
   -I$(srcdir)/liboctave/array \
   -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
   -Iliboctave/operators -I$(srcdir)/liboctave/operators \
@@ -145,11 +152,43 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = $(octave_gui_graphics_MOC) $(o
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-%canon_reldir%_%canon_reldir%_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
+%canon_reldir%___init_qt___la_LDFLAGS = \
+  -avoid-version -module $(NO_UNDEFINED_LDFLAG) $(WARN_LDFLAGS)
 
-%canon_reldir%_%canon_reldir%_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
+DLD_LIBOCTGUI_LIBADD = $(OCT_GUI_LINK_DEPS)
 
-noinst_LTLIBRARIES += %reldir%/libgui-graphics.la
+%canon_reldir%___init_qt___la_LIBADD = \
+  $(DLD_LIBOCTGUI_LIBADD) \
+  $(QT_OPENGL_LIBS) \
+  $(OPENGL_LIBS)
+
+%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
+
+octlib_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
+
+GRAPHICS_DEFUN_FILES = %reldir%/__init_qt__.cc
+
+GRAPHICS_OCT_FILES = $(LIBOCTGUI_GRAPHICS_LIB:.la=.oct)
+
+OCTAVE_INTERPRETER_TARGETS += $(GRAPHICS_OCT_FILES)
+
+OCT_FILE_LIBS += $(LIBOCTGUI_GRAPHICS_LIB)
+
+## Use stamp files to avoid problems with checking timestamps
+## of symbolic links
+
+%reldir%/__init_qt__.oct : $(LIBOCTGUI_GRAPHICS_LIB)
+	$(AM_V_GEN)$(INSTALL_PROGRAM) %reldir%/.libs/$(shell $(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $<) $@
+
+GRAPHICS_PKG_ADD_FILE = %reldir%/PKG_ADD
+
+%reldir%/PKG_ADD: $(GRAPHICS_DEFUN_FILES) $(srcdir)/build-aux/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)rm -f $@-t && \
+	$(SHELL) $(srcdir)/build-aux/mk-pkg-add.sh "$(srcdir)" $(GRAPHICS_DEFUN_FILES) > $@-t && \
+	mv $@-t $@
+
+OCT_FILE_PKG_ADD_FILES += \
+  $(GRAPHICS_PKG_ADD_FILE)
 
 libgui_EXTRA_DIST += \
   %reldir%/qthandles.qrc \
@@ -159,11 +198,13 @@ libgui_EXTRA_DIST += \
   %reldir%/images/select.png \
   %reldir%/images/zoom-in.png \
   %reldir%/images/zoom-out.png \
-  $(octave_gui_graphics_UI)
+  $(__init_qt___UI)
 
 libgui_CLEANFILES += \
-  $(octave_gui_graphics_MOC) \
-  $(octave_gui_graphics_RC) \
-  $(octave_gui_graphics_UI_H)
+  $(GRAPHICS_OCT_FILES) \
+  $(GRAPHICS_PKG_ADD_FILE) \
+  $(__init_qt___MOC) \
+  $(__init_qt___RC) \
+  $(__init_qt___UI_H)
 
 endif

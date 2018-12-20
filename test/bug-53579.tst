@@ -19,3 +19,4 @@
 %! assert (igaa);
 %! assert (igbb);
 %! assert (xx, 5);
+%! clear -global aa bb;  # cleanup after test

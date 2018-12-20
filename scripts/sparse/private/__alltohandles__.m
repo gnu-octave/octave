@@ -53,7 +53,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   M2_is_numeric = false;
 
   ## Check A and set its type
-  if (isa (A, "function_handle"))
+  if (is_function_handle (A))
      Afun = A;
   elseif (ischar (A))
     Afun = str2func (A);
@@ -70,7 +70,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   if (isempty (M1)) # M1 empty, set to identity function
       M1fun = @(x) x;
   else # M1 not empty
-    if (isa (M1, "function_handle"))
+    if (is_function_handle (M1))
       M1fun = M1;
     elseif (ischar (M1))
       M1fun = str2func (M1);
@@ -84,7 +84,7 @@ function [Afun, M1fun, M2fun] = __alltohandles__ (A, b, M1, M2, solver_name)
   if (isempty (M2)) # M2 empty, then I set is to the identity function
     M2fun = @(x) x;
   else # M2 not empty
-    if (isa (M2, "function_handle"))
+    if (is_function_handle (M2))
       M2fun = M2;
     elseif (ischar (M2))
       M2fun = str2func (M2);

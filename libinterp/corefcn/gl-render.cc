@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <sstream>
 
 #if defined (HAVE_WINDOWS_H)
 #  define WIN32_LEAN_AND_MEAN
@@ -96,28 +96,31 @@ namespace octave
     class texture_rep
     {
     public:
-      texture_rep (void)
-        : id (), w (), h (), tw (), th (), tx (), ty (),
+      texture_rep (opengl_functions& glfcns)
+        : m_glfcns (glfcns), id (), w (), h (), tw (), th (), tx (), ty (),
           valid (false), count (1)
       { }
 
-      texture_rep (GLuint id_arg, int w_arg, int h_arg, int tw_arg, int th_arg)
-        : id (id_arg), w (w_arg), h (h_arg), tw (tw_arg), th (th_arg),
-          tx (double(w)/tw), ty (double(h)/th), valid (true),
-          count (1) { }
+      texture_rep (opengl_functions& glfcns, GLuint id_arg,
+                   int w_arg, int h_arg, int tw_arg, int th_arg)
+        : m_glfcns (glfcns), id (id_arg), w (w_arg), h (h_arg),
+          tw (tw_arg), th (th_arg), tx (double(w)/tw), ty (double(h)/th),
+          valid (true), count (1)
+      { }
 
       ~texture_rep (void)
       {
         if (valid)
-          glDeleteTextures (1, &id);
+          m_glfcns.glDeleteTextures (1, &id);
       }
 
       void bind (int mode) const
-      { if (valid) glBindTexture (mode, id); }
+      { if (valid) m_glfcns.glBindTexture (mode, id); }
 
       void tex_coord (double q, double r) const
-      { if (valid) glTexCoord2d (q*tx, r*ty); }
+      { if (valid) m_glfcns.glTexCoord2d (q*tx, r*ty); }
 
+      opengl_functions& m_glfcns;
       GLuint id;
       int w, h;
       int tw, th;
@@ -132,7 +135,8 @@ namespace octave
     opengl_texture (texture_rep *_rep) : rep (_rep) { }
 
   public:
-    opengl_texture (void) : rep (new texture_rep ()) { }
+    opengl_texture (opengl_functions& glfcns)
+      : rep (new texture_rep (glfcns)) { }
 
     opengl_texture (const opengl_texture& tx)
       : rep (tx.rep)
@@ -157,7 +161,8 @@ namespace octave
       return *this;
     }
 
-    static opengl_texture create (const octave_value& data);
+    static opengl_texture create (opengl_functions& glfcns,
+                                  const octave_value& data);
 
     void bind (int mode = GL_TEXTURE_2D) const
     { rep->bind (mode); }
@@ -170,9 +175,9 @@ namespace octave
   };
 
   opengl_texture
-  opengl_texture::create (const octave_value& data)
+  opengl_texture::create (opengl_functions& glfcns, const octave_value& data)
   {
-    opengl_texture retval;
+    opengl_texture retval (glfcns);
 
     dim_vector dv (data.dims ());
 
@@ -189,8 +194,8 @@ namespace octave
         tw = next_power_of_2 (w);
         th = next_power_of_2 (h);
 
-        glGenTextures (1, &id);
-        glBindTexture (GL_TEXTURE_2D, id);
+        glfcns.glGenTextures (1, &id);
+        glfcns.glBindTexture (GL_TEXTURE_2D, id);
 
         if (data.is_double_type ())
           {
@@ -208,7 +213,7 @@ namespace octave
                   }
               }
 
-            glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB, GL_FLOAT, a);
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB, GL_FLOAT, a);
           }
         else if (data.is_uint8_type ())
           {
@@ -226,8 +231,8 @@ namespace octave
                   }
               }
 
-            glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
-                          GL_RGB, GL_UNSIGNED_BYTE, a);
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+                                 GL_RGB, GL_UNSIGNED_BYTE, a);
           }
         else
           {
@@ -237,13 +242,13 @@ namespace octave
 
         if (ok)
           {
-            glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glfcns.glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-            if (glGetError () != GL_NO_ERROR)
+            if (glfcns.glGetError () != GL_NO_ERROR)
               warning ("opengl_texture::create: OpenGL error while generating texture data");
             else
-              retval = opengl_texture (new texture_rep (id, w, h, tw, th));
+              retval = opengl_texture (new texture_rep (glfcns, id, w, h, tw, th));
           }
       }
     else
@@ -365,7 +370,8 @@ namespace octave
     public:
       Matrix coords;
       Matrix color;
-      Matrix normal;
+      Matrix vertex_normal;
+      Matrix face_normal;
       double alpha;
       float ambient;
       float diffuse;
@@ -377,16 +383,16 @@ namespace octave
       refcount<int> count;
 
       vertex_data_rep (void)
-        : coords (), color (), normal (), alpha (),
+        : coords (), color (), vertex_normal (), face_normal (), alpha (),
           ambient (), diffuse (), specular (), specular_exp (),
           specular_color_refl (), count (1) { }
 
-      vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
-                       double a, float as, float ds, float ss, float se,
-                       float scr)
-        : coords (c), color (col), normal (n), alpha (a),
-          ambient (as), diffuse (ds), specular (ss), specular_exp (se),
-          specular_color_refl (scr), count (1) { }
+      vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& vn,
+                       const Matrix& fn, double a, float as, float ds, float ss,
+                       float se, float scr)
+        : coords (c), color (col), vertex_normal (vn), face_normal (fn),
+          alpha (a), ambient (as), diffuse (ds), specular (ss),
+          specular_exp (se), specular_color_refl (scr), count (1) { }
     };
 
   private:
@@ -406,10 +412,10 @@ namespace octave
     vertex_data (const vertex_data& v) : rep (v.rep)
     { rep->count++; }
 
-    vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
-                 double a, float as, float ds, float ss, float se,
-                 float scr)
-      : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se, scr))
+    vertex_data (const Matrix& c, const Matrix& col, const Matrix& vn,
+                 const Matrix& fn, double a, float as, float ds, float ss,
+                 float se, float scr)
+      : rep (new vertex_data_rep (c, col, vn, fn, a, as, ds, ss, se, scr))
     { }
 
     vertex_data (vertex_data_rep *new_rep)
@@ -448,29 +454,35 @@ namespace octave
   protected:
     void begin (GLenum type)
     {
+      opengl_functions& glfcns = renderer->get_opengl_functions ();
+
       //printf ("patch_tesselator::begin (%d)\n", type);
       first = true;
 
       if (color_mode == INTERP || light_mode == GOURAUD)
-        glShadeModel (GL_SMOOTH);
+        glfcns.glShadeModel (GL_SMOOTH);
       else
-        glShadeModel (GL_FLAT);
+        glfcns.glShadeModel (GL_FLAT);
 
       if (is_filled ())
         renderer->set_polygon_offset (true, index);
 
-      glBegin (type);
+      glfcns.glBegin (type);
     }
 
     void end (void)
     {
+      opengl_functions& glfcns = renderer->get_opengl_functions ();
+
       //printf ("patch_tesselator::end\n");
-      glEnd ();
+      glfcns.glEnd ();
       renderer->set_polygon_offset (false);
     }
 
     void vertex (void *data)
     {
+      opengl_functions& glfcns = renderer->get_opengl_functions ();
+
       vertex_data::vertex_data_rep *v
         = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
       //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
@@ -484,32 +496,34 @@ namespace octave
 
           if (col.numel () == 3)
             {
-              glColor4d (col(0), col(1), col(2), v->alpha);
+              glfcns.glColor4d (col(0), col(1), col(2), v->alpha);
               if (light_mode > 0)
                 {
                   float buf[4] = { 0, 0, 0, 1 };
 
                   for (int k = 0; k < 3; k++)
                     buf[k] = (v->ambient * col(k));
-                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+                  glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
 
                   for (int k = 0; k < 3; k++)
                     buf[k] = (v->diffuse * col(k));
-                  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
+                  glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
 
                   for (int k = 0; k < 3; k++)
                     buf[k] = v->specular * (v->specular_color_refl +
                                             (1 - v->specular_color_refl) * col(k));
-                  glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
+                  glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
 
                 }
             }
         }
 
-      if (light_mode > 0 && (first || light_mode == GOURAUD))
-        glNormal3dv (v->normal.data ());
+      if (light_mode == FLAT && first)
+        glfcns.glNormal3dv (v->face_normal.data ());
+      else if (light_mode == GOURAUD)
+        glfcns.glNormal3dv (v->vertex_normal.data ());
 
-      glVertex3dv (v->coords.data ());
+      glfcns.glVertex3dv (v->coords.data ());
 
       first = false;
     }
@@ -531,7 +545,8 @@ namespace octave
 
       Matrix vv (1, 3, 0.0);
       Matrix cc;
-      Matrix nn (1, 3, 0.0);
+      Matrix vnn (1, 3, 0.0);
+      Matrix fnn (1, 3, 0.0);
       double aa = 0.0;
 
       vv(0) = xyz[0];
@@ -546,18 +561,26 @@ namespace octave
               cc(ic) += (w[iv] * v[iv]->color (ic));
         }
 
-      if (v[0]->normal.numel () > 0)
+      if (v[0]->vertex_normal.numel () > 0)
         {
           for (int in = 0; in < 3; in++)
             for (int iv = 0; iv < vmax; iv++)
-              nn(in) += (w[iv] * v[iv]->normal (in));
+              vnn(in) += (w[iv] * v[iv]->vertex_normal (in));
+        }
+
+      if (v[0]->face_normal.numel () > 0)
+        {
+          for (int in = 0; in < 3; in++)
+            for (int iv = 0; iv < vmax; iv++)
+              fnn(in) += (w[iv] * v[iv]->face_normal (in));
         }
 
       for (int iv = 0; iv < vmax; iv++)
         aa += (w[iv] * v[iv]->alpha);
 
-      vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
-                         v[0]->specular, v[0]->specular_exp, v[0]->specular_color_refl);
+      vertex_data new_v (vv, cc, vnn, fnn, aa, v[0]->ambient, v[0]->diffuse,
+                         v[0]->specular, v[0]->specular_exp,
+                         v[0]->specular_color_refl);
       tmp_vdata.push_back (new_v);
 
       *out_data = new_v.get_rep ();
@@ -589,11 +612,12 @@ namespace octave
 
 #endif
 
-  opengl_renderer::opengl_renderer (void)
-    : toolkit (), xform (), xmin (), xmax (), ymin (), ymax (),
-      zmin (), zmax (), xZ1 (), xZ2 (), marker_id (), filled_marker_id (),
-      camera_pos (), camera_dir (), interpreter ("none"), txt_renderer (),
-      selecting (false)
+  opengl_renderer::opengl_renderer (opengl_functions& glfcns)
+    : m_glfcns (glfcns), toolkit (), xform (), xmin (), xmax (), ymin (),
+      ymax (), zmin (), zmax (), xZ1 (), xZ2 (), marker_id (),
+      filled_marker_id (), camera_pos (), camera_dir (), view_vector (),
+      interpreter ("none"), txt_renderer (), m_current_light (0),
+      m_max_lights (0), selecting (false), m_devpixratio (1.)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -647,7 +671,8 @@ namespace octave
       draw_image (dynamic_cast<const image::properties&> (props));
     else if (go.isa ("uimenu") || go.isa ("uicontrol")
              || go.isa ("uicontextmenu") || go.isa ("uitoolbar")
-             || go.isa ("uipushtool") || go.isa ("uitoggletool"))
+             || go.isa ("uipushtool") || go.isa ("uitoggletool")
+             || go.isa ("uitable"))
       ; // SKIP
     else if (go.isa ("uipanel"))
       {
@@ -667,29 +692,13 @@ namespace octave
 
 #if defined (HAVE_OPENGL)
 
-    GLenum gl_error = glGetError ();
+    GLenum gl_error = m_glfcns.glGetError ();
     if (gl_error)
       warning ("opengl_renderer: Error '%s' (%d) occurred drawing '%s' object",
                gluErrorString (gl_error), gl_error, props.graphics_object_name ().c_str ());
 
 #endif
   }
-
-#if defined (HAVE_OPENGL)
-
-  static std::string
-  gl_get_string (GLenum id)
-  {
-    // This is kind of ugly, but glGetString returns a pointer to GLubyte
-    // and there is no std::string constructor that matches.  Is there a
-    // better way?
-
-    std::ostringstream buf;
-    buf << glGetString (id);
-    return std::string (buf.str ());
-  }
-
-#endif
 
   void
   opengl_renderer::draw_figure (const figure::properties& props)
@@ -700,10 +709,10 @@ namespace octave
 
 #if defined (HAVE_OPENGL)
 
-    props.set___gl_extensions__ (gl_get_string (GL_EXTENSIONS));
-    props.set___gl_renderer__ (gl_get_string (GL_RENDERER));
-    props.set___gl_vendor__ (gl_get_string (GL_VENDOR));
-    props.set___gl_version__ (gl_get_string (GL_VERSION));
+    props.set___gl_extensions__ (get_string (GL_EXTENSIONS));
+    props.set___gl_renderer__ (get_string (GL_RENDERER));
+    props.set___gl_vendor__ (get_string (GL_VENDOR));
+    props.set___gl_version__ (get_string (GL_VERSION));
 
 #endif
 
@@ -755,22 +764,22 @@ namespace octave
 
     // Initialize OpenGL context
 
-    glEnable (GL_DEPTH_TEST);
-    glDepthFunc (GL_LEQUAL);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glAlphaFunc (GL_GREATER, 0.0f);
-    glEnable (GL_NORMALIZE);
+    m_glfcns.glEnable (GL_DEPTH_TEST);
+    m_glfcns.glDepthFunc (GL_LEQUAL);
+    m_glfcns.glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    m_glfcns.glAlphaFunc (GL_GREATER, 0.0f);
+    m_glfcns.glEnable (GL_NORMALIZE);
 
     if (enhanced)
       {
-        glEnable (GL_BLEND);
-        glEnable (GL_MULTISAMPLE);
+        m_glfcns.glEnable (GL_BLEND);
+        m_glfcns.glEnable (GL_MULTISAMPLE);
         bool has_multisample = false;
-        if (! glGetError ())
+        if (! m_glfcns.glGetError ())
           {
             GLint iMultiSample, iNumSamples;
-            glGetIntegerv (GL_SAMPLE_BUFFERS, &iMultiSample);
-            glGetIntegerv (GL_SAMPLES, &iNumSamples);
+            m_glfcns.glGetIntegerv (GL_SAMPLE_BUFFERS, &iMultiSample);
+            m_glfcns.glGetIntegerv (GL_SAMPLES, &iNumSamples);
             if (iMultiSample == GL_TRUE && iNumSamples > 0)
               has_multisample = true;
           }
@@ -778,30 +787,30 @@ namespace octave
         if (! has_multisample)
           {
             // MultiSample not implemented.  Use old-style anti-aliasing
-            glDisable (GL_MULTISAMPLE);
+            m_glfcns.glDisable (GL_MULTISAMPLE);
             // Disabling GL_MULTISAMPLE will raise a gl error if it is not
             // implemented.  Thus, call glGetError to reset the error state.
-            glGetError ();
+            m_glfcns.glGetError ();
 
-            glEnable (GL_LINE_SMOOTH);
-            glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
+            m_glfcns.glEnable (GL_LINE_SMOOTH);
+            m_glfcns.glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
           }
       }
     else
       {
-        glDisable (GL_BLEND);
-        glDisable (GL_LINE_SMOOTH);
+        m_glfcns.glDisable (GL_BLEND);
+        m_glfcns.glDisable (GL_LINE_SMOOTH);
       }
 
     // Clear background
 
     if (c.numel () >= 3)
       {
-        glClearColor (c(0), c(1), c(2), 1);
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        m_glfcns.glClearColor (c(0), c(1), c(2), 1);
+        m_glfcns.glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       }
 
-    GLenum gl_error = glGetError ();
+    GLenum gl_error = m_glfcns.glGetError ();
     if (gl_error)
       warning ("opengl_renderer: Error '%s' (%d) occurred in init_gl_context",
                gluErrorString (gl_error), gl_error);
@@ -829,9 +838,9 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glColor4d (gridcolor(0), gridcolor(1), gridcolor(2), gridalpha);
+    m_glfcns.glColor4d (gridcolor(0), gridcolor(1), gridcolor(2), gridalpha);
     set_linestyle (gridstyle, true, linewidth);
-    glBegin (GL_LINES);
+    m_glfcns.glBegin (GL_LINES);
     for (int i = 0; i < ticks.numel (); i++)
       {
         double val = ticks(i);
@@ -839,37 +848,37 @@ namespace octave
           {
             if (xyz == X_AXIS)
               {
-                glVertex3d (val, p1N, p2);
-                glVertex3d (val, p1, p2);
+                m_glfcns.glVertex3d (val, p1N, p2);
+                m_glfcns.glVertex3d (val, p1, p2);
                 if (is_3D)
                   {
-                    glVertex3d (val, p1, p2N);
-                    glVertex3d (val, p1, p2);
+                    m_glfcns.glVertex3d (val, p1, p2N);
+                    m_glfcns.glVertex3d (val, p1, p2);
                   }
               }
             else if (xyz == Y_AXIS)
               {
-                glVertex3d (p1N, val, p2);
-                glVertex3d (p1, val, p2);
+                m_glfcns.glVertex3d (p1N, val, p2);
+                m_glfcns.glVertex3d (p1, val, p2);
                 if (is_3D)
                   {
-                    glVertex3d (p1, val, p2N);
-                    glVertex3d (p1, val, p2);
+                    m_glfcns.glVertex3d (p1, val, p2N);
+                    m_glfcns.glVertex3d (p1, val, p2);
                   }
               }
             else if (xyz == Z_AXIS)
               {
-                glVertex3d (p1N, p2, val);
-                glVertex3d (p1, p2, val);
-                glVertex3d (p1, p2N, val);
-                glVertex3d (p1, p2, val);
+                m_glfcns.glVertex3d (p1N, p2, val);
+                m_glfcns.glVertex3d (p1, p2, val);
+                m_glfcns.glVertex3d (p1, p2N, val);
+                m_glfcns.glVertex3d (p1, p2, val);
               }
           }
       }
-    glEnd ();
+    m_glfcns.glEnd ();
     set_linestyle ("-");  // Disable LineStipple
     double black[3] = {0, 0, 0};
-    glColor3dv (black);
+    m_glfcns.glColor3dv (black);
 
 #else
 
@@ -905,7 +914,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glBegin (GL_LINES);
+    m_glfcns.glBegin (GL_LINES);
 
     for (int i = 0; i < ticks.numel (); i++)
       {
@@ -915,38 +924,38 @@ namespace octave
           {
             if (xyz == X_AXIS)
               {
-                glVertex3d (val, p1, p2);
-                glVertex3d (val, p1+dy, p2+dz);
+                m_glfcns.glVertex3d (val, p1, p2);
+                m_glfcns.glVertex3d (val, p1+dy, p2+dz);
                 if (mirror)
                   {
-                    glVertex3d (val, p1N, p2N);
-                    glVertex3d (val, p1N-dy, p2N-dz);
+                    m_glfcns.glVertex3d (val, p1N, p2N);
+                    m_glfcns.glVertex3d (val, p1N-dy, p2N-dz);
                   }
               }
             else if (xyz == Y_AXIS)
               {
-                glVertex3d (p1, val, p2);
-                glVertex3d (p1+dx, val, p2+dz);
+                m_glfcns.glVertex3d (p1, val, p2);
+                m_glfcns.glVertex3d (p1+dx, val, p2+dz);
                 if (mirror)
                   {
-                    glVertex3d (p1N, val, p2N);
-                    glVertex3d (p1N-dx, val, p2N-dz);
+                    m_glfcns.glVertex3d (p1N, val, p2N);
+                    m_glfcns.glVertex3d (p1N-dx, val, p2N-dz);
                   }
               }
             else if (xyz == Z_AXIS)
               {
-                glVertex3d (p1, p2, val);
-                glVertex3d (p1+dx, p2+dy, val);
+                m_glfcns.glVertex3d (p1, p2, val);
+                m_glfcns.glVertex3d (p1+dx, p2+dy, val);
                 if (mirror)
                   {
-                    glVertex3d (p1N, p2N, val);
-                    glVertex3d (p1N-dx, p2N-dy, val);
+                    m_glfcns.glVertex3d (p1N, p2N, val);
+                    m_glfcns.glVertex3d (p1N-dx, p2N-dy, val);
                   }
               }
           }
       }
 
-    glEnd ();
+    m_glfcns.glEnd ();
 
 #else
 
@@ -1041,15 +1050,107 @@ namespace octave
 #endif
   }
 
+  void
+  opengl_renderer::draw_zoom_rect (int x1, int y1, int x2, int y2)
+  {
+#if defined (HAVE_OPENGL)
+
+    m_glfcns.glVertex2d (x1, y1);
+    m_glfcns.glVertex2d (x2, y1);
+    m_glfcns.glVertex2d (x2, y2);
+    m_glfcns.glVertex2d (x1, y2);
+    m_glfcns.glVertex2d (x1, y1);
+
+#else
+
+    octave_unused_parameter (x1);
+    octave_unused_parameter (x2);
+    octave_unused_parameter (y1);
+    octave_unused_parameter (y2);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+  void
+  opengl_renderer::draw_zoom_box (int width, int height,
+                                  int x1, int y1, int x2, int y2,
+                                  const Matrix& overlaycolor,
+                                  double overlayalpha,
+                                  const Matrix& bordercolor,
+                                  double borderalpha, double borderwidth)
+  {
+#if defined (HAVE_OPENGL)
+
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glOrtho (0, width, height, 0, 1, -1);
+
+    m_glfcns.glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    m_glfcns.glDisable (GL_DEPTH_TEST);
+
+    m_glfcns.glBegin (GL_POLYGON);
+    m_glfcns.glColor4f (overlaycolor(0), overlaycolor(1), overlaycolor(2),
+                        overlayalpha);
+    draw_zoom_rect (x1, y1, x2, y2);
+    m_glfcns.glEnd ();
+
+    m_glfcns.glLineWidth (borderwidth);
+    m_glfcns.glBegin (GL_LINE_STRIP);
+    m_glfcns.glColor4f (bordercolor(0), bordercolor(1), bordercolor(2),
+                        borderalpha);
+    draw_zoom_rect (x1, y1, x2, y2);
+    m_glfcns.glEnd ();
+
+    m_glfcns.glPopAttrib ();
+
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix ();
+
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix ();
+
+#else
+
+    octave_unused_parameter (width);
+    octave_unused_parameter (height);
+    octave_unused_parameter (x1);
+    octave_unused_parameter (x2);
+    octave_unused_parameter (y1);
+    octave_unused_parameter (y2);
+    octave_unused_parameter (overlaycolor);
+    octave_unused_parameter (overlayalpha);
+    octave_unused_parameter (bordercolor);
+    octave_unused_parameter (borderalpha);
+    octave_unused_parameter (borderwidth);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
   uint8NDArray
   opengl_renderer::get_pixels (int width, int height)
   {
 #if defined (HAVE_OPENGL)
 
-    glPixelStorei (GL_PACK_ALIGNMENT, 1);
+    m_glfcns.glPixelStorei (GL_PACK_ALIGNMENT, 1);
     uint8NDArray pix(dim_vector (3, width, height), 0);
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
-                 pix.fortran_vec ());
+
+    m_glfcns.glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
+                          pix.fortran_vec ());
 
     // Permute and flip data
     Array<octave_idx_type> perm (dim_vector (3, 1));
@@ -1082,7 +1183,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glFinish ();
+    m_glfcns.glFinish ();
 
 #else
 
@@ -1103,31 +1204,25 @@ namespace octave
 
     Matrix x_zlim = props.get_transform_zlim ();
 
-    xZ1 = x_zlim(0)-(x_zlim(1)-x_zlim(0))/2;
-    xZ2 = x_zlim(1)+(x_zlim(1)-x_zlim(0))/2;
+    xZ1 = std::max (-1e6, x_zlim(0)-(x_zlim(1)-x_zlim(0))*100.0);
+    xZ2 = std::min (1e6, x_zlim(1)+(x_zlim(1)-x_zlim(0))*100.0);
 
     Matrix x_mat1 = props.get_opengl_matrix_1 ();
     Matrix x_mat2 = props.get_opengl_matrix_2 ();
 
-#if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vw[4];
-#else
-    int vw[4];
-#endif
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glScaled (1, 1, -1);
+    m_glfcns.glMultMatrixd (x_mat1.data ());
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glLoadIdentity ();
 
-    glGetIntegerv (GL_VIEWPORT, vw);
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
+    m_glfcns.glMultMatrixd (x_mat2.data ());
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
 
-    glMatrixMode (GL_MODELVIEW);
-    glLoadIdentity ();
-    glScaled (1, 1, -1);
-    glMultMatrixd (x_mat1.data ());
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    glOrtho (0, vw[2], vw[3], 0, xZ1, xZ2);
-    glMultMatrixd (x_mat2.data ());
-    glMatrixMode (GL_MODELVIEW);
-
-    glClear (GL_DEPTH_BUFFER_BIT);
+    m_glfcns.glClear (GL_DEPTH_BUFFER_BIT);
 
     // store axes transformation data
 
@@ -1160,36 +1255,36 @@ namespace octave
     double xPlaneN = props.get_xPlaneN ();
     double yPlaneN = props.get_yPlaneN ();
     double zPlaneN = props.get_zPlaneN ();
-    bool is2d = props.get_is2D ();
+    bool is2D = props.get_is2D ();
 
     // Axes planes
     set_color (axe_color);
     set_polygon_offset (true, 9.0);
 
-    glBegin (GL_QUADS);
+    m_glfcns.glBegin (GL_QUADS);
 
-    if (! is2d)
+    if (! is2D)
       {
         // X plane
-        glVertex3d (xPlane, yPlaneN, zPlaneN);
-        glVertex3d (xPlane, yPlane, zPlaneN);
-        glVertex3d (xPlane, yPlane, zPlane);
-        glVertex3d (xPlane, yPlaneN, zPlane);
+        m_glfcns.glVertex3d (xPlane, yPlaneN, zPlaneN);
+        m_glfcns.glVertex3d (xPlane, yPlane, zPlaneN);
+        m_glfcns.glVertex3d (xPlane, yPlane, zPlane);
+        m_glfcns.glVertex3d (xPlane, yPlaneN, zPlane);
 
         // Y plane
-        glVertex3d (xPlaneN, yPlane, zPlaneN);
-        glVertex3d (xPlane, yPlane, zPlaneN);
-        glVertex3d (xPlane, yPlane, zPlane);
-        glVertex3d (xPlaneN, yPlane, zPlane);
+        m_glfcns.glVertex3d (xPlaneN, yPlane, zPlaneN);
+        m_glfcns.glVertex3d (xPlane, yPlane, zPlaneN);
+        m_glfcns.glVertex3d (xPlane, yPlane, zPlane);
+        m_glfcns.glVertex3d (xPlaneN, yPlane, zPlane);
       }
 
     // Z plane
-    glVertex3d (xPlaneN, yPlaneN, zPlane);
-    glVertex3d (xPlane, yPlaneN, zPlane);
-    glVertex3d (xPlane, yPlane, zPlane);
-    glVertex3d (xPlaneN, yPlane, zPlane);
+    m_glfcns.glVertex3d (xPlaneN, yPlaneN, zPlane);
+    m_glfcns.glVertex3d (xPlane, yPlaneN, zPlane);
+    m_glfcns.glVertex3d (xPlane, yPlane, zPlane);
+    m_glfcns.glVertex3d (xPlaneN, yPlane, zPlane);
 
-    glEnd ();
+    m_glfcns.glEnd ();
 
     set_polygon_offset (false);
 
@@ -1215,7 +1310,7 @@ namespace octave
 
     bool xySym = props.get_xySym ();
     bool layer2Dtop = props.get_layer2Dtop ();
-    bool is2d = props.get_is2D ();
+    bool is2D = props.get_is2D ();
     bool isXOrigin = props.xaxislocation_is ("origin")
                      && ! props.yscale_is ("log");
     bool isYOrigin = props.yaxislocation_is ("origin")
@@ -1242,7 +1337,7 @@ namespace octave
     set_linecap ("square");
     set_linestyle ("-", true, linewidth);
 
-    glBegin (GL_LINES);
+    m_glfcns.glBegin (GL_LINES);
 
     if (layer2Dtop)
       std::swap (zpTick, zpTickN);
@@ -1250,94 +1345,94 @@ namespace octave
     // X box
     set_color (props.get_xcolor_rgb ());
 
-    if (! isXOrigin || props.is_box() || ! is2d)
+    if (! isXOrigin || props.is_box() || ! is2D)
       {
-        glVertex3d (xPlaneN, ypTick, zpTick);
-        glVertex3d (xPlane, ypTick, zpTick);
+        m_glfcns.glVertex3d (xPlaneN, ypTick, zpTick);
+        m_glfcns.glVertex3d (xPlane, ypTick, zpTick);
       }
 
     if (props.is_box ())
       {
-        glVertex3d (xPlaneN, ypTickN, zpTick);
-        glVertex3d (xPlane, ypTickN, zpTick);
-        if (! is2d)
+        m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTick);
+        m_glfcns.glVertex3d (xPlane, ypTickN, zpTick);
+        if (! is2D)
           {
-            glVertex3d (xPlaneN, ypTickN, zpTickN);
-            glVertex3d (xPlane, ypTickN, zpTickN);
+            m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTickN);
+            m_glfcns.glVertex3d (xPlane, ypTickN, zpTickN);
             if (boxFull)
               {
-                glVertex3d (xPlaneN, ypTick, zpTickN);
-                glVertex3d (xPlane, ypTick, zpTickN);
+                m_glfcns.glVertex3d (xPlaneN, ypTick, zpTickN);
+                m_glfcns.glVertex3d (xPlane, ypTick, zpTickN);
               }
           }
       }
 
     // Y box
     set_color (props.get_ycolor_rgb ());
-    if (! isYOrigin || props.is_box() || ! is2d)
+    if (! isYOrigin || props.is_box() || ! is2D)
       {
-        glVertex3d (xpTick, yPlaneN, zpTick);
-        glVertex3d (xpTick, yPlane, zpTick);
+        m_glfcns.glVertex3d (xpTick, yPlaneN, zpTick);
+        m_glfcns.glVertex3d (xpTick, yPlane, zpTick);
       }
 
     if (props.is_box () && ! plotyy)
       {
-        glVertex3d (xpTickN, yPlaneN, zpTick);
-        glVertex3d (xpTickN, yPlane, zpTick);
+        m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTick);
+        m_glfcns.glVertex3d (xpTickN, yPlane, zpTick);
 
-        if (! is2d)
+        if (! is2D)
           {
-            glVertex3d (xpTickN, yPlaneN, zpTickN);
-            glVertex3d (xpTickN, yPlane, zpTickN);
+            m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTickN);
+            m_glfcns.glVertex3d (xpTickN, yPlane, zpTickN);
             if (boxFull)
               {
-                glVertex3d (xpTick, yPlaneN, zpTickN);
-                glVertex3d (xpTick, yPlane, zpTickN);
+                m_glfcns.glVertex3d (xpTick, yPlaneN, zpTickN);
+                m_glfcns.glVertex3d (xpTick, yPlane, zpTickN);
               }
           }
       }
 
     // Z box
-    if (! is2d)
+    if (! is2D)
       {
         set_color (props.get_zcolor_rgb ());
 
         if (xySym)
           {
-            glVertex3d (xPlaneN, yPlane, zPlaneN);
-            glVertex3d (xPlaneN, yPlane, zPlane);
+            m_glfcns.glVertex3d (xPlaneN, yPlane, zPlaneN);
+            m_glfcns.glVertex3d (xPlaneN, yPlane, zPlane);
           }
         else
           {
-            glVertex3d (xPlane, yPlaneN, zPlaneN);
-            glVertex3d (xPlane, yPlaneN, zPlane);
+            m_glfcns.glVertex3d (xPlane, yPlaneN, zPlaneN);
+            m_glfcns.glVertex3d (xPlane, yPlaneN, zPlane);
           }
 
         if (props.is_box ())
           {
-            glVertex3d (xPlane, yPlane, zPlaneN);
-            glVertex3d (xPlane, yPlane, zPlane);
+            m_glfcns.glVertex3d (xPlane, yPlane, zPlaneN);
+            m_glfcns.glVertex3d (xPlane, yPlane, zPlane);
 
             if (xySym)
               {
-                glVertex3d (xPlane, yPlaneN, zPlaneN);
-                glVertex3d (xPlane, yPlaneN, zPlane);
+                m_glfcns.glVertex3d (xPlane, yPlaneN, zPlaneN);
+                m_glfcns.glVertex3d (xPlane, yPlaneN, zPlane);
               }
             else
               {
-                glVertex3d (xPlaneN, yPlane, zPlaneN);
-                glVertex3d (xPlaneN, yPlane, zPlane);
+                m_glfcns.glVertex3d (xPlaneN, yPlane, zPlaneN);
+                m_glfcns.glVertex3d (xPlaneN, yPlane, zPlane);
               }
 
             if (boxFull)
               {
-                glVertex3d (xPlaneN, yPlaneN, zPlaneN);
-                glVertex3d (xPlaneN, yPlaneN, zPlane);
+                m_glfcns.glVertex3d (xPlaneN, yPlaneN, zPlaneN);
+                m_glfcns.glVertex3d (xPlaneN, yPlaneN, zPlane);
               }
           }
       }
 
-    glEnd ();
+    m_glfcns.glEnd ();
 
     set_linestyle ("-");  // Disable LineStipple
 
@@ -1451,11 +1546,11 @@ namespace octave
         if (is_origin)
           {
             y_axis_pos = math::max (math::min (0., y_max), y_min);
-            glBegin (GL_LINES);
+            m_glfcns.glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
-            glVertex3d (x_min, y_axis_pos, zpTick);
-            glVertex3d (x_max, y_axis_pos, zpTick);
-            glEnd ();
+            m_glfcns.glVertex3d (x_min, y_axis_pos, zpTick);
+            m_glfcns.glVertex3d (x_max, y_axis_pos, zpTick);
+            m_glfcns.glEnd ();
           }
 
         // minor tick marks
@@ -1634,11 +1729,11 @@ namespace octave
         if (is_origin)
           {
             x_axis_pos = math::max (math::min (0., x_max), x_min);
-            glBegin (GL_LINES);
+            m_glfcns.glBegin (GL_LINES);
             set_color (props.get_ycolor_rgb ());
-            glVertex3d (x_axis_pos, y_min, zpTick);
-            glVertex3d (x_axis_pos, y_max, zpTick);
-            glEnd ();
+            m_glfcns.glVertex3d (x_axis_pos, y_min, zpTick);
+            m_glfcns.glVertex3d (x_axis_pos, y_max, zpTick);
+            m_glfcns.glEnd ();
           }
 
         // minor tick marks
@@ -1896,10 +1991,10 @@ namespace octave
     // Disable line smoothing for axes
     GLboolean antialias;
 
-    glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+    m_glfcns.glGetBooleanv (GL_LINE_SMOOTH, &antialias);
 
     if (antialias == GL_TRUE)
-      glDisable (GL_LINE_SMOOTH);
+      m_glfcns.glDisable (GL_LINE_SMOOTH);
 
     set_linecap ("butt");
     set_linewidth (props.get_linewidth ());
@@ -1911,7 +2006,7 @@ namespace octave
     draw_axes_z_grid (props);
 
     if (antialias == GL_TRUE)
-      glEnable (GL_LINE_SMOOTH);
+      m_glfcns.glEnable (GL_LINE_SMOOTH);
 #else
 
     octave_unused_parameter (props);
@@ -1942,17 +2037,12 @@ namespace octave
           {
             if (go.isa ("light") && ! selecting)
               {
-                if (num_lights < max_lights)
+                if (m_current_light-GL_LIGHT0 < m_max_lights)
                   {
-                    current_light = GL_LIGHT0 + num_lights;
                     set_clipping (p.is_clipping ());
                     draw (go);
-                    num_lights++;
+                    m_current_light++;
                   }
-                else
-                  warning_with_id ("Octave:max-lights-exceeded",
-                                   "light: Maximum number of lights (%d) in these axes is "
-                                   "exceeded.", max_lights);
               }
             else if (go.isa ("hggroup")
                      && ! (selecting && p.pickableparts_is ("none")))
@@ -1974,29 +2064,6 @@ namespace octave
 #endif
   }
 
-#if defined (HAVE_OPENGL)
-
-  static int
-  get_maxlights (void)
-  {
-    static int max_lights = 0;
-
-    // Check actual maximum number of lights possible
-    if (max_lights == 0)
-      {
-        for (max_lights = 0; max_lights < GL_MAX_LIGHTS; max_lights++)
-          {
-            glDisable (GL_LIGHT0 + max_lights);
-            if (glGetError ())
-              break;
-          }
-      }
-
-    return max_lights;
-  }
-
-#endif
-
   void
   opengl_renderer::draw_axes_children (const axes::properties& props)
   {
@@ -2012,18 +2079,22 @@ namespace octave
     // but this seems to lead to calls of OpenGL functions before the context
     // is actually initialized.  See bug #48669.
     // Check actual maximum number of lights possible
-    max_lights = get_maxlights ();
+    init_maxlights ();
 
     // Start with the last element of the array of child objects to
     // display them in the order they were added to the array.
 
-    num_lights = 0;
-    current_light = GL_LIGHT0;
+    if (props.get_num_lights () > m_max_lights)
+      warning_with_id ("Octave:max-lights-exceeded",
+                       "light: Maximum number of lights (%d) in these axes is "
+                       "exceeded.", m_max_lights);
+
+    m_current_light = GL_LIGHT0;
     draw_all_lights (props, obj_list);
 
     // disable other OpenGL lights
-    for (int i = num_lights; i < max_lights; i++)
-      glDisable (GL_LIGHT0 + i);
+    for (unsigned int i = props.get_num_lights (); i < m_max_lights; i++)
+      m_glfcns.glDisable (GL_LIGHT0 + i);
 
     // save camera position and set ambient light color before drawing
     // other objects
@@ -2033,7 +2104,7 @@ namespace octave
     ColumnVector ambient_color = props.get_ambientlightcolor_rgb ();
     for (int i = 0; i < 3; i++)
       cb[i] = ambient_color(i);
-    glLightfv (GL_LIGHT0, GL_AMBIENT, cb);
+    m_glfcns.glLightfv (GL_LIGHT0, GL_AMBIENT, cb);
 
     // 2nd pass: draw other objects (with units set to "data")
 
@@ -2057,7 +2128,7 @@ namespace octave
 
     // 3rd pass: draw remaining objects
 
-    glDisable (GL_DEPTH_TEST);
+    m_glfcns.glDisable (GL_DEPTH_TEST);
 
     for (it = obj_list.begin (); it != obj_list.end (); it++)
       {
@@ -2120,9 +2191,9 @@ namespace octave
     // depth sorting
     bool is2D = props.get_is2D (true);
     if (is2D)
-      glDisable (GL_DEPTH_TEST);
+      m_glfcns.glDisable (GL_DEPTH_TEST);
     else
-      glEnable (GL_DEPTH_TEST);
+      m_glfcns.glEnable (GL_DEPTH_TEST);
 
     draw_axes_planes (props);
 
@@ -2171,9 +2242,10 @@ namespace octave
     int n = static_cast<int> (std::min (std::min (x.numel (), y.numel ()),
                                         (has_z ? z.numel ()
                                          : std::numeric_limits<int>::max ())));
-    octave_uint8 clip_mask = (props.is_clipping () ? 0x7F : 0x40), clip_ok (0x40);
+    uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+    uint8_t clip_ok = 0x40;
 
-    std::vector<octave_uint8> clip (n);
+    std::vector<uint8_t> clip (n);
 
     if (has_z)
       for (int i = 0; i < n; i++)
@@ -2205,20 +2277,20 @@ namespace octave
                     if (! flag)
                       {
                         flag = true;
-                        glBegin (GL_LINE_STRIP);
-                        glVertex3d (x(i-1), y(i-1), z(i-1));
+                        m_glfcns.glBegin (GL_LINE_STRIP);
+                        m_glfcns.glVertex3d (x(i-1), y(i-1), z(i-1));
                       }
-                    glVertex3d (x(i), y(i), z(i));
+                    m_glfcns.glVertex3d (x(i), y(i), z(i));
                   }
                 else if (flag)
                   {
                     flag = false;
-                    glEnd ();
+                    m_glfcns.glEnd ();
                   }
               }
 
             if (flag)
-              glEnd ();
+              m_glfcns.glEnd ();
           }
         else
           {
@@ -2231,20 +2303,20 @@ namespace octave
                     if (! flag)
                       {
                         flag = true;
-                        glBegin (GL_LINE_STRIP);
-                        glVertex2d (x(i-1), y(i-1));
+                        m_glfcns.glBegin (GL_LINE_STRIP);
+                        m_glfcns.glVertex2d (x(i-1), y(i-1));
                       }
-                    glVertex2d (x(i), y(i));
+                    m_glfcns.glVertex2d (x(i), y(i));
                   }
                 else if (flag)
                   {
                     flag = false;
-                    glEnd ();
+                    m_glfcns.glEnd ();
                   }
               }
 
             if (flag)
-              glEnd ();
+              m_glfcns.glEnd ();
           }
 
         set_linewidth (0.5f);
@@ -2316,7 +2388,16 @@ namespace octave
     int zc = z.columns ();
 
     NDArray c;
-    const NDArray n = props.get_vertexnormals ().array_value ();
+    const NDArray vn = props.get_vertexnormals ().array_value ();
+    dim_vector vn_dims = vn.dims ();
+    bool has_vertex_normals = ((vn_dims(0) == z.rows ()) &&
+                               (vn_dims(1) == z.columns ()) &&
+                               (vn_dims(2) == 3));
+    const NDArray fn = props.get_facenormals ().array_value ();
+    dim_vector fn_dims = fn.dims ();
+    bool has_face_normals = ((fn_dims(0) == z.rows () - 1) &&
+                             (fn_dims(1) == z.columns () - 1) &&
+                             (fn_dims(2) == 3));
 
     // FIXME: handle transparency
     Matrix a;
@@ -2326,18 +2407,23 @@ namespace octave
                     (props.facecolor_is ("interp") ? 2 :
                      (props.facecolor_is ("texturemap") ? 3 : -1))));
     int fl_mode = (props.facelighting_is ("none") ? 0 :
-                   (props.facelighting_is ("flat") ? 1 : 2));
+                   (props.facelighting_is ("flat") ?
+                    (has_face_normals ? 1 : 0) :
+                    (has_vertex_normals ? 2 : 0)));
     int fa_mode = (props.facealpha_is_double () ? 0 :
                    (props.facealpha_is ("flat") ? 1 : 2));
     int ec_mode = (props.edgecolor_is_rgb () ? 0 :
                    (props.edgecolor_is ("flat") ? 1 :
                     (props.edgecolor_is ("interp") ? 2 : -1)));
     int el_mode = (props.edgelighting_is ("none") ? 0 :
-                   (props.edgelighting_is ("flat") ? 1 : 2));
+                   (props.edgelighting_is ("flat") ?
+                    (has_face_normals ? 1 : 0) :
+                    (has_vertex_normals ? 2 : 0)));
     int ea_mode = (props.edgealpha_is_double () ? 0 :
                    (props.edgealpha_is ("flat") ? 1 : 2));
     int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
+    bool do_lighting = props.get_do_lighting ();
 
     Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
                                         : props.get_facecolor_rgb ());
@@ -2351,7 +2437,7 @@ namespace octave
     float scr = props.get_specularcolorreflectance ();
     float cb[4] = { 0.0, 0.0, 0.0, 1.0 };
 
-    opengl_texture tex;
+    opengl_texture tex (m_glfcns);
 
     int i1, i2, j1, j2;
     bool x_mat = (x.rows () == z.rows ());
@@ -2385,12 +2471,12 @@ namespace octave
       }
 
     if (fl_mode > 0 || el_mode > 0)
-      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
+      m_glfcns.glMaterialf (LIGHT_MODE, GL_SHININESS, se);
 
     // FIXME: good candidate for caching,
     //        transferring pixel data to OpenGL is time consuming.
     if (fc_mode == TEXTURE)
-      tex = opengl_texture::create (props.get_color_data ());
+      tex = opengl_texture::create (m_glfcns, props.get_color_data ());
 
     if (draw_all || ! props.facecolor_is ("none"))
       {
@@ -2399,30 +2485,30 @@ namespace octave
             fa = props.get_facealpha_double ();
             if (fc_mode == UNIFORM || fc_mode == TEXTURE)
               {
-                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
+                m_glfcns.glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)
                       cb[i] = as * fcolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ds * fcolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ss * (scr + (1-scr) * fcolor(i));
-                    glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                   }
               }
 
-            if ((fl_mode > 0) && (num_lights > 0))
-              glEnable (GL_LIGHTING);
-            glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
+            if ((fl_mode > 0) && do_lighting)
+              m_glfcns.glEnable (GL_LIGHTING);
+            m_glfcns.glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD)
                           ? GL_SMOOTH : GL_FLAT);
             set_polygon_offset (true, 1.0);
             if (fc_mode == TEXTURE)
-              glEnable (GL_TEXTURE_2D);
+              m_glfcns.glEnable (GL_TEXTURE_2D);
 
             for (int i = 1; i < zc; i++)
               {
@@ -2459,7 +2545,7 @@ namespace octave
                         j2 = j;
                       }
 
-                    glBegin (GL_QUADS);
+                    m_glfcns.glBegin (GL_QUADS);
 
                     // Vertex 1
                     if (fc_mode == TEXTURE)
@@ -2471,27 +2557,28 @@ namespace octave
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i-1, k);
                         cb[3] = fa;
-                        glColor4fv (cb);
+                        m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] *= as;
-                            glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ds * c(j-1, i-1, k);
-                            glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ss * (scr + (1-scr) * c(j-1, i-1, k));
-                            glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                           }
                       }
                     if (fl_mode > 0)
-                      set_normal (bfl_mode, n, j-1, i-1);
+                      set_normal (bfl_mode, (fl_mode == GOURAUD ? vn : fn),
+                                  j-1, i-1);
 
-                    glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
+                    m_glfcns.glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
                     // Vertex 2
                     if (fc_mode == TEXTURE)
@@ -2501,28 +2588,28 @@ namespace octave
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i, k);
                         cb[3] = fa;
-                        glColor4fv (cb);
+                        m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] *= as;
-                            glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ds * c(j-1, i, k);
-                            glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ss * (scr + (1-scr) * c(j-1, i, k));
-                            glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                           }
                       }
 
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j-1, i);
+                      set_normal (bfl_mode, vn, j-1, i);
 
-                    glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+                    m_glfcns.glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
                     // Vertex 3
                     if (fc_mode == TEXTURE)
@@ -2532,27 +2619,27 @@ namespace octave
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i, k);
                         cb[3] = fa;
-                        glColor4fv (cb);
+                        m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] *= as;
-                            glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ds * c(j, i, k);
-                            glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ss * (scr + (1-scr) * c(j, i, k));
-                            glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                           }
                       }
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j, i);
+                      set_normal (bfl_mode, vn, j, i);
 
-                    glVertex3d (x(j2,i), y(j,i2), z(j,i));
+                    m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
                     // Vertex 4
                     if (fc_mode == TEXTURE)
@@ -2562,38 +2649,38 @@ namespace octave
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i-1, k);
                         cb[3] = fa;
-                        glColor4fv (cb);
+                        m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] *= as;
-                            glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ds * c(j, i-1, k);
-                            glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                             for (int k = 0; k < 3; k++)
                               cb[k] = ss * (scr + (1-scr) * c(j, i-1, k));
-                            glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                            m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                           }
                       }
                     if (fl_mode == GOURAUD)
-                      set_normal (bfl_mode, n, j, i-1);
+                      set_normal (bfl_mode, vn, j, i-1);
 
-                    glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+                    m_glfcns.glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
-                    glEnd ();
+                    m_glfcns.glEnd ();
                   }
               }
 
             set_polygon_offset (false);
             if (fc_mode == TEXTURE)
-              glDisable (GL_TEXTURE_2D);
+              m_glfcns.glDisable (GL_TEXTURE_2D);
 
-            if ((fl_mode > 0) && (num_lights > 0))
-              glDisable (GL_LIGHTING);
+            if ((fl_mode > 0) && do_lighting)
+              m_glfcns.glDisable (GL_LIGHTING);
           }
         else
           {
@@ -2607,26 +2694,26 @@ namespace octave
           {
             if (ec_mode == UNIFORM)
               {
-                glColor3dv (ecolor.data ());
+                m_glfcns.glColor3dv (ecolor.data ());
                 if (fl_mode > 0)
                   {
                     for (int i = 0; i < 3; i++)
                       cb[i] = as * ecolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ds * ecolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ss * (scr + (1-scr) * ecolor(i));
-                    glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                   }
               }
 
-            if ((el_mode > 0) && (num_lights > 0))
-              glEnable (GL_LIGHTING);
-            glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+            if ((el_mode > 0) && do_lighting)
+              m_glfcns.glEnable (GL_LIGHTING);
+            m_glfcns.glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
                           ? GL_SMOOTH : GL_FLAT);
 
             set_linestyle (props.get_linestyle (), false,
@@ -2671,63 +2758,64 @@ namespace octave
                             j2 = j;
                           }
 
-                        glBegin (GL_LINES);
+                        m_glfcns.glBegin (GL_LINES);
 
                         // Vertex 1
                         if (ec_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] = c(j-1, i, k);
-                            glColor3fv (cb);
+                            m_glfcns.glColor3fv (cb);
 
                             if (el_mode > 0)
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j-1, i, k);
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j-1, i, k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, n, j-1, i);
+                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
+                                      j-1, i);
 
-                        glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+                        m_glfcns.glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
                         // Vertex 2
                         if (ec_mode == INTERP)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] = c(j, i, k);
-                            glColor3fv (cb);
+                            m_glfcns.glColor3fv (cb);
 
                             if (el_mode > 0)
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i, k);
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i, k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                               }
                           }
                         if (el_mode == GOURAUD)
-                          set_normal (bfl_mode, n, j, i);
+                          set_normal (bfl_mode, vn, j, i);
 
-                        glVertex3d (x(j2,i), y(j,i2), z(j,i));
+                        m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
-                        glEnd ();
+                        m_glfcns.glEnd ();
                       }
                   }
               }
@@ -2768,63 +2856,64 @@ namespace octave
                             i2 = i;
                           }
 
-                        glBegin (GL_LINES);
+                        m_glfcns.glBegin (GL_LINES);
 
                         // Vertex 1
                         if (ec_mode > 0)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] = c(j, i-1, k);
-                            glColor3fv (cb);
+                            m_glfcns.glColor3fv (cb);
 
                             if (el_mode > 0)
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i-1, k);
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i-1, k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, n, j, i-1);
+                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
+                                      j, i-1);
 
-                        glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+                        m_glfcns.glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
                         // Vertex 2
                         if (ec_mode == INTERP)
                           {
                             for (int k = 0; k < 3; k++)
                               cb[k] = c(j, i, k);
-                            glColor3fv (cb);
+                            m_glfcns.glColor3fv (cb);
 
                             if (el_mode > 0)
                               {
                                 for (int k = 0; k < 3; k++)
                                   cb[k] *= as;
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ds * c(j, i, k);
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                                 for (int k = 0; k < 3; k++)
                                   cb[k] = ss * (scr + (1-scr) * c(j, i, k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                               }
                           }
                         if (el_mode == GOURAUD)
-                          set_normal (bfl_mode, n, j, i);
+                          set_normal (bfl_mode, vn, j, i);
 
-                        glVertex3d (x(j2,i), y(j,i2), z(j,i));
+                        m_glfcns.glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
-                        glEnd ();
+                        m_glfcns.glEnd ();
                       }
                   }
               }
@@ -2832,8 +2921,8 @@ namespace octave
             set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
-            if ((el_mode > 0) && (num_lights > 0))
-              glDisable (GL_LIGHTING);
+            if ((el_mode > 0) && do_lighting)
+              m_glfcns.glDisable (GL_LIGHTING);
           }
         else
           {
@@ -2876,6 +2965,9 @@ namespace octave
         init_marker (props.get_marker (), props.get_markersize (),
                      props.get_linewidth ());
 
+        uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+        uint8_t clip_ok = 0x40;
+
         for (int i = 0; i < zc; i++)
           {
             if (y_mat)
@@ -2883,11 +2975,12 @@ namespace octave
 
             for (int j = 0; j < zr; j++)
               {
-                if (clip(j,i))
-                  continue;
-
                 if (x_mat)
                   j1 = j;
+
+                if ((clip_code (x(j1,i), y(j,i1), z(j,i)) & clip_mask)
+                    != clip_ok)
+                  continue;
 
                 if ((do_edge && mecolor.isempty ())
                     || (do_face && mfcolor.isempty ()))
@@ -2942,7 +3035,6 @@ namespace octave
     const Matrix f = props.get_faces ().matrix_value ();
     const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
     Matrix c;
-    const Matrix n = props.get_vertexnormals ().matrix_value ();
     Matrix a;
     double fa = 1.0;
 
@@ -2953,8 +3045,6 @@ namespace octave
     bool has_z = (v.columns () > 2);
     bool has_facecolor = false;
     bool has_facealpha = false;
-    // FIXME: remove when patch object has normal computation (patch #8951)
-    bool has_normals = (n.rows () == nv);
 
     int fc_mode = ((props.facecolor_is ("none")
                     || props.facecolor_is_rgb () || draw_all) ? 0 :
@@ -2972,6 +3062,7 @@ namespace octave
                    (props.edgealpha_is ("flat") ? 1 : 2));
     int bfl_mode = (props.backfacelighting_is ("lit") ? 0 :
                     (props.backfacelighting_is ("reverselit") ? 1 : 2));
+    bool do_lighting = props.get_do_lighting ();
 
     Matrix fcolor = props.get_facecolor_rgb ();
     Matrix ecolor = props.get_edgecolor_rgb ();
@@ -2981,6 +3072,11 @@ namespace octave
     float ss = props.get_specularstrength ();
     float se = props.get_specularexponent () * 5; // to fit Matlab
     float scr = props.get_specularcolorreflectance ();
+
+    const Matrix vn = props.get_vertexnormals ().matrix_value ();
+    bool has_vertex_normals = (vn.rows () == nv);
+    const Matrix fn = props.get_facenormals ().matrix_value ();
+    bool has_face_normals = (fn.rows () == nf);
 
     boolMatrix clip (1, nv, false);
 
@@ -3055,23 +3151,37 @@ namespace octave
 
           Matrix vv (1, 3, 0.0);
           Matrix cc;
-          Matrix nn (1, 3, 0.0);
+          Matrix vnn (1, 3, 0.0);
+          Matrix fnn (1, 3, 0.0);
           double aa = 1.0;
 
           vv(0) = v(idx,0); vv(1) = v(idx,1);
           if (has_z)
             vv(2) = v(idx,2);
-          if (has_normals)
+          if (((fl_mode == FLAT) || (el_mode == FLAT)) && has_face_normals)
             {
               double dir = 1.0;
               if (bfl_mode > 0)
-                dir = ((n(idx,0) * view_vector(0)
-                        + n(idx,1) * view_vector(1)
-                        + n(idx,2) * view_vector(2) < 0)
+                dir = ((fn(i,0) * view_vector(0)
+                        + fn(i,1) * view_vector(1)
+                        + fn(i,2) * view_vector(2) < 0)
                        ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
-              nn(0) = dir * n(idx,0);
-              nn(1) = dir * n(idx,1);
-              nn(2) = dir * n(idx,2);
+              fnn(0) = dir * fn(i,0);
+              fnn(1) = dir * fn(i,1);
+              fnn(2) = dir * fn(i,2);
+            }
+          if (((fl_mode == GOURAUD) || (el_mode == GOURAUD)) &&
+              has_vertex_normals)
+            {
+              double dir = 1.0;
+              if (bfl_mode > 0)
+                dir = ((vn(idx,0) * view_vector(0)
+                        + vn(idx,1) * view_vector(1)
+                        + vn(idx,2) * view_vector(2) < 0)
+                       ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
+              vnn(0) = dir * vn(idx,0);
+              vnn(1) = dir * vn(idx,1);
+              vnn(2) = dir * vn(idx,2);
             }
           if (c.numel () > 0)
             {
@@ -3091,11 +3201,13 @@ namespace octave
                 aa = a(idx);
             }
 
-          vdata[i+j*fr] = vertex_data (vv, cc, nn, aa, as, ds, ss, se, scr);
+          vdata[i+j*fr] = vertex_data (vv, cc, vnn, fnn, aa, as, ds, ss, se, scr);
         }
 
     if (fl_mode > 0 || el_mode > 0)
-      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
+      m_glfcns.glMaterialf (LIGHT_MODE, GL_SHININESS, se);
+
+    std::list<std::list<octave_idx_type>>::const_iterator it1;
 
     if (draw_all || ! props.facecolor_is ("none"))
       {
@@ -3104,91 +3216,130 @@ namespace octave
           {
             if (fc_mode == UNIFORM)
               {
-                glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
+                m_glfcns.glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
                 if (fl_mode > 0)
                   {
                     float cb[4] = { 0, 0, 0, 1 };
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = as * fcolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ds * fcolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ss * (scr + (1-scr) * fcolor(i));
-                    glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                   }
               }
 
-            if ((fl_mode > 0) && (num_lights > 0) && has_normals)
-              glEnable (GL_LIGHTING);
+            if ((fl_mode > 0) && do_lighting)
+              m_glfcns.glEnable (GL_LIGHTING);
 
-            // NOTE: Push filled part of patch backwards to avoid Z-fighting with
-            // tesselator outline.  A value of 1.0 seems to work fine.  Value
-            // can't be too large or the patch will be pushed below the axes
-            // planes at +2.5.
+            // NOTE: Push filled part of patch backwards to avoid Z-fighting
+            // with tesselator outline.  A value of 1.0 seems to work fine.
+            // Value can't be too large or the patch will be pushed below the
+            // axes planes at +2.5.
             patch_tesselator tess (this, fc_mode, fl_mode, 1.0);
+
+            it1 = props.coplanar_last_idx.begin ();
+            std::list<octave_idx_type>::const_iterator it2;
+            octave_idx_type i_start, i_end;
 
             for (int i = 0; i < nf; i++)
               {
                 if (clip_f(i))
                   continue;
 
-                tess.begin_polygon (true);
-                tess.begin_contour ();
-
-                // Add vertices in reverse order for Matlab compatibility
-                for (int j = count_f(i)-1; j > 0; j--)
+                bool is_non_planar = false;
+                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
                   {
-                    vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
-
-                    tess.add_vertex (vv->coords.fortran_vec (), vv);
+                    is_non_planar = true;
+                    it2 = (*it1).end ();
+                    it2--;
                   }
 
-                if (count_f(i) > 0)
+                // loop over planar subsets of face
+                do
                   {
-                    vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
-
-                    if (fc_mode == FLAT)
+                    if (is_non_planar)
                       {
-                        // For "flat" shading, use color of 1st vertex.
-                        Matrix col = vv->color;
-
-                        if (col.numel () == 3)
+                        i_end = *it2;
+                        if (it2 == (*it1).begin ())
+                          i_start = 0;
+                        else
                           {
-                            glColor4d (col(0), col(1), col(2), fa);
-                            if (fl_mode > 0)
-                              {
-                                float cb[4] = { 0, 0, 0, 1 };
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = (vv->ambient * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = (vv->diffuse * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
-
-                                for (int k = 0; k < 3; k++)
-                                  cb[k] = vv->specular * (vv->specular_color_refl
-                                                          + (1-vv->specular_color_refl) * col(k));
-                                glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
-                              }
+                            it2--;
+                            i_start = *it2 - 1;
                           }
                       }
+                    else
+                      {
+                        i_end = count_f(i) - 1;
+                        i_start = 0;
+                      }
 
-                    tess.add_vertex (vv->coords.fortran_vec (), vv);
-                  }
+                    tess.begin_polygon (true);
+                    tess.begin_contour ();
 
-                tess.end_contour ();
-                tess.end_polygon ();
+                    // Add vertices in reverse order for Matlab compatibility
+                    for (int j = i_end; j > i_start; j--)
+                      {
+                        vertex_data::vertex_data_rep *vv =
+                          vdata[i+j*fr].get_rep ();
+
+                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                      }
+
+                    if (count_f(i) > 0)
+                      {
+                        vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
+
+                        if (fc_mode == FLAT)
+                          {
+                            // For "flat" shading, use color of 1st vertex.
+                            Matrix col = vv->color;
+
+                            if (col.numel () == 3)
+                              {
+                                m_glfcns.glColor4d (col(0), col(1), col(2), fa);
+                                if (fl_mode > 0)
+                                  {
+                                    float cb[4] = { 0, 0, 0, 1 };
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = (vv->ambient * col(k));
+                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = (vv->diffuse * col(k));
+                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+
+                                    for (int k = 0; k < 3; k++)
+                                      cb[k] = vv->specular *
+                                              (vv->specular_color_refl
+                                               + (1-vv->specular_color_refl) *
+                                              col(k));
+                                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                                  }
+                              }
+                          }
+
+                        tess.add_vertex (vv->coords.fortran_vec (), vv);
+                      }
+
+                    tess.end_contour ();
+                    tess.end_polygon ();
+                  } while (i_start > 0);
+
+                if (is_non_planar)
+                  it1++;
               }
 
-            if ((fl_mode > 0) && (num_lights > 0) && has_normals)
-              glDisable (GL_LIGHTING);
+            if ((fl_mode > 0) && do_lighting)
+              m_glfcns.glDisable (GL_LIGHTING);
           }
         else
           {
@@ -3204,27 +3355,27 @@ namespace octave
           {
             if (ec_mode == UNIFORM)
               {
-                glColor3dv (ecolor.data ());
+                m_glfcns.glColor3dv (ecolor.data ());
                 if (el_mode > 0)
                   {
                     float cb[4] = { 0, 0, 0, 1 };
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = (as * ecolor(i));
-                    glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ds * ecolor(i);
-                    glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
 
                     for (int i = 0; i < 3; i++)
                       cb[i] = ss * (scr + (1-scr) * ecolor(i));
-                    glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
+                    m_glfcns.glMaterialfv (LIGHT_MODE, GL_SPECULAR, cb);
                   }
               }
 
-            if ((el_mode > 0) && (num_lights > 0) && has_normals)
-              glEnable (GL_LIGHTING);
+            if ((el_mode > 0) && do_lighting)
+              m_glfcns.glEnable (GL_LIGHTING);
 
             double linewidth = props.get_linewidth ();
             set_linestyle (props.get_linestyle (), false, linewidth);
@@ -3239,14 +3390,20 @@ namespace octave
             // not supported by glPolygonOffset which is used to do Z offsets.
             patch_tesselator tess (this, ec_mode, el_mode);
 
+            it1 = props.coplanar_last_idx.begin ();
+
             for (int i = 0; i < nf; i++)
               {
-                if (clip_f(i))
+                bool is_non_planar = false;
+                if (props.coplanar_last_idx.size () > 0 && (*it1).size () > 1)
+                  is_non_planar = true;
+                if (clip_f(i) || is_non_planar)
                   {
-                    // This is an unclosed contour.  Draw it as a line.
+                    // This is an unclosed contour or a non-planar face.
+                    // Draw it as a line.
                     bool flag = false;
 
-                    glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+                    m_glfcns.glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
                                   ? GL_SMOOTH : GL_FLAT);
 
                     // Add vertices in reverse order for Matlab compatibility
@@ -3260,21 +3417,21 @@ namespace octave
                             if (! flag)
                               {
                                 flag = true;
-                                glBegin (GL_LINE_STRIP);
+                                m_glfcns.glBegin (GL_LINE_STRIP);
                               }
                             if (ec_mode != UNIFORM)
                               {
                                 Matrix col = vv->color;
 
                                 if (col.numel () == 3)
-                                  glColor3dv (col.data ());
+                                  m_glfcns.glColor3dv (col.data ());
                               }
-                            glVertex3d (m(0), m(1), m(2));
+                            m_glfcns.glVertex3d (m(0), m(1), m(2));
                           }
                         else if (flag)
                           {
                             flag = false;
-                            glEnd ();
+                            m_glfcns.glEnd ();
                           }
                       }
                     // Do loop body with vertex N to "close" GL_LINE_STRIP
@@ -3290,13 +3447,13 @@ namespace octave
                             Matrix col = vv->color;
 
                             if (col.numel () == 3)
-                              glColor3dv (col.data ());
+                              m_glfcns.glColor3dv (col.data ());
                           }
-                        glVertex3d (m(0), m(1), m(2));
+                        m_glfcns.glVertex3d (m(0), m(1), m(2));
                       }
 
                     if (flag)
-                      glEnd ();
+                      m_glfcns.glEnd ();
                   }
                 else  // Normal edge contour drawn with tesselator
                   {
@@ -3313,13 +3470,15 @@ namespace octave
                     tess.end_contour ();
                     tess.end_polygon ();
                   }
+                if (is_non_planar)
+                  it1++;
               }
 
             set_linestyle ("-");  // Disable LineStipple
             set_linewidth (0.5f);
 
-            if ((el_mode > 0) && (num_lights > 0) && has_normals)
-              glDisable (GL_LIGHTING);
+            if ((el_mode > 0) && do_lighting)
+              m_glfcns.glDisable (GL_LIGHTING);
           }
         else
           {
@@ -3367,12 +3526,16 @@ namespace octave
         init_marker (props.get_marker (), props.get_markersize (),
                      props.get_linewidth ());
 
+        uint8_t clip_mask = (props.is_clipping () ? 0x7F : 0x40);
+        uint8_t clip_ok = 0x40;
+
         for (int i = 0; i < nf; i++)
           for (int j = 0; j < count_f(i); j++)
             {
               int idx = int (f(i,j) - 1);
 
-              if (clip(idx))
+              if ((clip_code (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0))
+                   & clip_mask) != clip_ok)
                 continue;
 
               Matrix cc;
@@ -3414,7 +3577,7 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     // enable light source
-    glEnable (current_light);
+    m_glfcns.glEnable (m_current_light);
 
     // light position
     float pos[4] = { 0, 0, 0, 0 }; // X,Y,Z,infinite/local
@@ -3423,15 +3586,15 @@ namespace octave
       pos[i] = lpos(i);
     if (props.style_is ("local"))
       pos[3] = 1;
-    glLightfv (current_light, GL_POSITION, pos);
+    m_glfcns.glLightfv (m_current_light, GL_POSITION, pos);
 
     // light color
     float col[4] = { 1, 1, 1, 1 }; // R,G,B,ALPHA (the latter has no meaning)
     Matrix lcolor = props.get_color ().matrix_value ();
     for (int i = 0; i < 3; i++)
       col[i] = lcolor(i);
-    glLightfv (current_light, GL_DIFFUSE,  col);
-    glLightfv (current_light, GL_SPECULAR, col);
+    m_glfcns.glLightfv (m_current_light, GL_DIFFUSE,  col);
+    m_glfcns.glLightfv (m_current_light, GL_SPECULAR, col);
 
 #else
 
@@ -3463,8 +3626,7 @@ namespace octave
 
     // Handle clipping manually when drawing text background
     if (! props.is_clipping ()
-        || (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0)
-            == octave_uint8 (0x40)))
+        || (clip_code (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0) == 0x40))
       {
         set_clipping (false);
         draw_text_background (props);
@@ -3475,17 +3637,17 @@ namespace octave
 
     const Matrix bbox = props.get_extent_matrix ();
 
-    bool blend = glIsEnabled (GL_BLEND);
+    bool blend = m_glfcns.glIsEnabled (GL_BLEND);
 
-    glEnable (GL_BLEND);
-    glEnable (GL_ALPHA_TEST);
-    glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
-    glBitmap (0, 0, 0, 0, bbox(0), bbox(1), nullptr);
-    glDrawPixels (bbox(2), bbox(3),
-                  GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
-    glDisable (GL_ALPHA_TEST);
+    m_glfcns.glEnable (GL_BLEND);
+    m_glfcns.glEnable (GL_ALPHA_TEST);
+    m_glfcns.glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
+    m_glfcns.glBitmap (0, 0, 0, 0, bbox(0), bbox(1), nullptr);
+    m_glfcns.glDrawPixels (bbox(2), bbox(3), GL_RGBA, GL_UNSIGNED_BYTE,
+                           props.get_pixels ().data ());
+    m_glfcns.glDisable (GL_ALPHA_TEST);
     if (! blend)
-      glDisable (GL_BLEND);
+      m_glfcns.glDisable (GL_BLEND);
 
 #else
 
@@ -3511,30 +3673,23 @@ namespace octave
     if (bgcol.isempty () && ecol.isempty ())
       return;
 
-    Matrix pos = xform.scale (props.get_data_position ());
+    Matrix pos = props.get_data_position ();
     ColumnVector pixpos = get_transform ().transform (pos(0), pos(1),
-                                                      pos(2), false);
-    const Matrix bbox = props.get_extent_matrix ();
-
-#  if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vp[4];
-#  else
-    int vp[4];
-#  endif
-
-    glGetIntegerv (GL_VIEWPORT, vp);
+                                                      pos(2), true);
 
     // Save current transform matrices and set orthogonal window coordinates
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    glOrtho (0, vp[2], vp[3], 0, xZ1, xZ2);
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
-    glLoadIdentity ();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
+
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
 
     // Translate coordinates so that the text anchor is (0,0)
-    glTranslated (pixpos(0), pixpos(1), -pixpos(2));
+    m_glfcns.glTranslated (pixpos(0), pixpos(1), -pixpos(2));
 
     // FIXME: Only multiples of 90° are handled by the text renderer.
     //        Handle others here.
@@ -3542,28 +3697,33 @@ namespace octave
 
     if (do_rotate && rotation != 0.0 && rotation != 90.0
         && rotation != 180.0 && rotation != 270.0)
-      glRotated (-rotation, 0.0, 0.0, 1.0);
+      m_glfcns.glRotated (-rotation, 0.0, 0.0, 1.0);
 
     double m = props.get_margin ();
-    double x0 = bbox (0) - m;
-    double x1 = x0 + bbox(2) + 2 * m;
-    double y0 = -(bbox (1) - m);
-    double y1 = y0 - (bbox(3) + 2 * m);
+    // FIXME: Margin property should be measured in points, not pixels.
+    //        On most screens the conversion factor is 4/3.
+    //        For HiDPI this will not work.
+    m *= 4.0/3.0;
+    const Matrix bbox = props.get_extent_matrix ();
+    double x0 = bbox (0) / m_devpixratio - m;
+    double x1 = x0 + bbox(2) / m_devpixratio + 2 * m;
+    double y0 = -(bbox (1) / m_devpixratio - m);
+    double y1 = y0 - (bbox(3) / m_devpixratio + 2 * m);
 
     if (! bgcol.isempty ())
       {
-        glColor3f (bgcol(0), bgcol(1), bgcol(2));
+        m_glfcns.glColor3f (bgcol(0), bgcol(1), bgcol(2));
 
-        bool depth_test = glIsEnabled (GL_DEPTH_TEST);
+        bool depth_test = m_glfcns.glIsEnabled (GL_DEPTH_TEST);
         if (depth_test)
           set_polygon_offset (true, 4.0);
 
-        glBegin (GL_QUADS);
-        glVertex2d (x0, y0);
-        glVertex2d (x1, y0);
-        glVertex2d (x1, y1);
-        glVertex2d (x0, y1);
-        glEnd ();
+        m_glfcns.glBegin (GL_QUADS);
+        m_glfcns.glVertex2d (x0, y0);
+        m_glfcns.glVertex2d (x1, y0);
+        m_glfcns.glVertex2d (x1, y1);
+        m_glfcns.glVertex2d (x0, y1);
+        m_glfcns.glEnd ();
 
         if (depth_test)
           set_polygon_offset (false);
@@ -3571,26 +3731,26 @@ namespace octave
 
     if (! ecol.isempty ())
       {
-        glColor3f (ecol(0), ecol(1), ecol(2));
+        m_glfcns.glColor3f (ecol(0), ecol(1), ecol(2));
 
         set_linestyle (props.get_linestyle (), false, props.get_linewidth ());
         set_linewidth (props.get_linewidth ());
 
-        glBegin (GL_LINE_STRIP);
-        glVertex2d (x0, y0);
-        glVertex2d (x1, y0);
-        glVertex2d (x1, y1);
-        glVertex2d (x0, y1);
-        glVertex2d (x0, y0);
-        glEnd ();
+        m_glfcns.glBegin (GL_LINE_STRIP);
+        m_glfcns.glVertex2d (x0, y0);
+        m_glfcns.glVertex2d (x1, y0);
+        m_glfcns.glVertex2d (x1, y1);
+        m_glfcns.glVertex2d (x0, y1);
+        m_glfcns.glVertex2d (x0, y0);
+        m_glfcns.glEnd ();
 
         set_linestyle ("-");
       }
 
     // Restore previous coordinate system
-    glPopMatrix();
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix();
+    m_glfcns.glPopMatrix();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix();
 
 #else
 
@@ -3622,10 +3782,23 @@ namespace octave
     if (x.isempty () || y.isempty ())
       return;
 
-    if (w > 1 && x(1) == x(0))
+    // Sort x/ydata and mark flipped dimensions
+    bool xflip = false;
+    if (x(0) > x(1))
+      {
+        std::swap (x(0), x(1));
+        xflip = true;
+      }
+    else if (w > 1 && x(1) == x(0))
       x(1) = x(1) + (w-1);
 
-    if (h > 1 && y(1) == y(0))
+    bool yflip = false;
+    if (y(0) > y(1))
+      {
+        std::swap (y(0), y(1));
+        yflip = true;
+      }
+    else if (h > 1 && y(1) == y(0))
       y(1) = y(1) + (h-1);
 
     const ColumnVector p0 = xform.transform (x(0), y(0), 0);
@@ -3670,7 +3843,7 @@ namespace octave
     // OpenGL won't draw any of the image if its origin is outside the
     // viewport/clipping plane so we must do the clipping ourselves.
 
-    int j0, j1, i0, i1;
+    int j0, j1, jj, i0, i1, ii;
     j0 = 0, j1 = w;
     i0 = 0, i1 = h;
 
@@ -3678,33 +3851,51 @@ namespace octave
     float im_xmax = x(1) + nor_dx/2;
     float im_ymin = y(0) - nor_dy/2;
     float im_ymax = y(1) + nor_dy/2;
-    if (props.is_clipping ()) // clip to axes
-      {
-        if (im_xmin < xmin)
-          j0 += (xmin - im_xmin)/nor_dx + 1;
-        if (im_xmax > xmax)
-          j1 -= (im_xmax - xmax)/nor_dx;
 
-        if (im_ymin < ymin)
-          i0 += (ymin - im_ymin)/nor_dy + 1;
-        if (im_ymax > ymax)
-          i1 -= (im_ymax - ymax)/nor_dy;
-      }
-    else // clip to viewport
-      {
-        GLfloat vp[4];
-        glGetFloatv (GL_VIEWPORT, vp);
-        // FIXME: actually add the code to do it!
-      }
+    // Clip to axes or viewport
+    bool do_clip = props.is_clipping ();
+    Matrix vp = get_viewport_scaled ();
+
+    ColumnVector vp_lim_min =
+      xform.untransform (std::numeric_limits <float>::epsilon (),
+                         std::numeric_limits <float>::epsilon ());
+    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
+
+    if (vp_lim_min(0) > vp_lim_max(0))
+      std::swap (vp_lim_min(0), vp_lim_max(0));
+        
+    if (vp_lim_min(1) > vp_lim_max(1))
+      std::swap (vp_lim_min(1), vp_lim_max(1));
+        
+    float clip_xmin =
+      (do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0));
+    float clip_ymin =
+      (do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1));
+
+    float clip_xmax =
+      (do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0));
+    float clip_ymax =
+      (do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1));
+
+    if (im_xmin < clip_xmin)
+      j0 += (clip_xmin - im_xmin)/nor_dx + 1;
+    if (im_xmax > clip_xmax)
+      j1 -= (im_xmax - clip_xmax)/nor_dx;
+
+    if (im_ymin < clip_ymin)
+      i0 += (clip_ymin - im_ymin)/nor_dy + 1;
+    if (im_ymax > clip_ymax)
+      i1 -= (im_ymax - clip_ymax)/nor_dy;
 
     if (i0 >= i1 || j0 >= j1)
       return;
 
-    glPixelZoom (pix_dx, -pix_dy);
-    glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
+    m_glfcns.glPixelZoom (m_devpixratio * pix_dx,
+                          - m_devpixratio * pix_dy);
+    m_glfcns.glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
 
     // by default this is 4
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+    m_glfcns.glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
     // Expect RGB data
     if (dv.ndims () == 3 && dv(2) == 3)
@@ -3719,9 +3910,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3738,9 +3939,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3757,9 +3968,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3776,9 +3997,19 @@ namespace octave
               {
                 for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
                   {
-                    a[idx]   = xcdata(i,j,0);
-                    a[idx+1] = xcdata(i,j,1);
-                    a[idx+2] = xcdata(i,j,2);
+                    if (! yflip)
+                      ii = i;
+                    else
+                      ii = h - i - 1;
+
+                    if (! xflip)
+                      jj = j;
+                    else
+                      jj = w - j - 1;
+
+                    a[idx]   = xcdata(ii,jj,0);
+                    a[idx+1] = xcdata(ii,jj,1);
+                    a[idx+2] = xcdata(ii,jj,2);
                   }
               }
 
@@ -3791,7 +4022,7 @@ namespace octave
     else
       warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");
 
-    glPixelZoom (1, 1);
+    m_glfcns.glPixelZoom (1, 1);
 
 #else
 
@@ -3810,7 +4041,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glViewport (0, 0, w, h);
+    m_glfcns.glViewport (0, 0, w, h);
 
 #else
 
@@ -3825,12 +4056,41 @@ namespace octave
 #endif
   }
 
+  Matrix
+  opengl_renderer::get_viewport_scaled (void) const
+  {
+    Matrix retval (1, 4, 0.0);
+
+#if defined (HAVE_OPENGL)
+#if defined (HAVE_FRAMEWORK_OPENGL)
+    GLint vp[4];
+#else
+    int vp[4];
+#endif
+
+    m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
+
+    for (int i = 0; i < 4; i++)
+      retval(i) = static_cast<double> (vp[i]) / m_devpixratio;
+
+#else
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+
+    return retval;
+  }
+
   void
   opengl_renderer::draw_pixels (int width, int height, const float *data)
   {
 #if defined (HAVE_OPENGL)
 
-    glDrawPixels (width, height, GL_RGB, GL_FLOAT, data);
+    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_FLOAT, data);
 
 #else
 
@@ -3851,7 +4111,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 #else
 
@@ -3872,7 +4132,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_SHORT, data);
+    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_SHORT, data);
 
 #else
 
@@ -3893,7 +4153,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glColor3dv (c.data ());
+    m_glfcns.glColor3dv (c.data ());
 
     txt_renderer.set_color (c);
 
@@ -3915,7 +4175,8 @@ namespace octave
     txt_renderer.set_font (props.get ("fontname").string_value (),
                            props.get ("fontweight").string_value (),
                            props.get ("fontangle").string_value (),
-                           props.get ("__fontsize_points__").double_value ());
+                           props.get ("__fontsize_points__").double_value ()
+                           * m_devpixratio);
   }
 
   void
@@ -3925,14 +4186,14 @@ namespace octave
 
     if (on)
       {
-        glEnable (GL_POLYGON_OFFSET_FILL);
-        glEnable (GL_POLYGON_OFFSET_LINE);
-        glPolygonOffset (offset, offset);
+        m_glfcns.glEnable (GL_POLYGON_OFFSET_FILL);
+        m_glfcns.glEnable (GL_POLYGON_OFFSET_LINE);
+        m_glfcns.glPolygonOffset (offset, offset);
       }
     else
       {
-        glDisable (GL_POLYGON_OFFSET_FILL);
-        glDisable (GL_POLYGON_OFFSET_LINE);
+        m_glfcns.glDisable (GL_POLYGON_OFFSET_FILL);
+        m_glfcns.glDisable (GL_POLYGON_OFFSET_LINE);
       }
 
 #else
@@ -3953,7 +4214,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glLineWidth (w);
+    m_glfcns.glLineWidth (w * m_devpixratio);
 
 #else
 
@@ -3977,22 +4238,22 @@ namespace octave
 
     if (s == "-")
       {
-        glLineStipple (1, static_cast<unsigned short> (0xFFFF));
+        m_glfcns.glLineStipple (1, static_cast<unsigned short> (0xFFFF));
         solid = true;
       }
     else if (s == ":")
-      glLineStipple (linewidth, static_cast<unsigned short> (0x5555));
+      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x5555));
     else if (s == "--")
-      glLineStipple (linewidth, static_cast<unsigned short> (0x0F0F));
+      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x0F0F));
     else if (s == "-.")
-      glLineStipple (linewidth, static_cast<unsigned short> (0x6F6F));
+      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x6F6F));
     else
-      glLineStipple (1, static_cast<unsigned short> (0x0000));
+      m_glfcns.glLineStipple (1, static_cast<unsigned short> (0x0000));
 
     if (solid && ! use_stipple)
-      glDisable (GL_LINE_STIPPLE);
+      m_glfcns.glDisable (GL_LINE_STIPPLE);
     else
-      glEnable (GL_LINE_STIPPLE);
+      m_glfcns.glEnable (GL_LINE_STIPPLE);
 
 #else
 
@@ -4025,17 +4286,17 @@ namespace octave
     ColumnVector p (4, 0.0);
 
     p(0) = -1; p(3) = x2;
-    glClipPlane (GL_CLIP_PLANE0, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE0, p.data ());
     p(0) = 1; p(3) = -x1;
-    glClipPlane (GL_CLIP_PLANE1, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE1, p.data ());
     p(0) = 0; p(1) = -1; p(3) = y2;
-    glClipPlane (GL_CLIP_PLANE2, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE2, p.data ());
     p(1) = 1; p(3) = -y1;
-    glClipPlane (GL_CLIP_PLANE3, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE3, p.data ());
     p(1) = 0; p(2) = -1; p(3) = z2;
-    glClipPlane (GL_CLIP_PLANE4, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE4, p.data ());
     p(2) = 1; p(3) = -z1;
-    glClipPlane (GL_CLIP_PLANE5, p.data ());
+    m_glfcns.glClipPlane (GL_CLIP_PLANE5, p.data ());
 
     xmin = x1; xmax = x2;
     ymin = y1; ymax = y2;
@@ -4063,16 +4324,16 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    bool has_clipping = (glIsEnabled (GL_CLIP_PLANE0) == GL_TRUE);
+    bool has_clipping = (m_glfcns.glIsEnabled (GL_CLIP_PLANE0) == GL_TRUE);
 
     if (enable != has_clipping)
       {
         if (enable)
           for (int i = 0; i < 6; i++)
-            glEnable (GL_CLIP_PLANE0+i);
+            m_glfcns.glEnable (GL_CLIP_PLANE0+i);
         else
           for (int i = 0; i < 6; i++)
-            glDisable (GL_CLIP_PLANE0+i);
+            m_glfcns.glDisable (GL_CLIP_PLANE0+i);
       }
 
 #else
@@ -4091,21 +4352,14 @@ namespace octave
   opengl_renderer::init_marker (const std::string& m, double size, float width)
   {
 #if defined (HAVE_OPENGL)
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPushMatrix ();
+    m_glfcns.glLoadIdentity ();
 
-#  if defined (HAVE_FRAMEWORK_OPENGL)
-    GLint vw[4];
-#  else
-    int vw[4];
-#  endif
-
-    glGetIntegerv (GL_VIEWPORT, vw);
-
-    glMatrixMode (GL_PROJECTION);
-    glPushMatrix ();
-    glLoadIdentity ();
-    glOrtho (0, vw[2], vw[3], 0, xZ1, xZ2);
-    glMatrixMode (GL_MODELVIEW);
-    glPushMatrix ();
+    Matrix vp = get_viewport_scaled ();
+    m_glfcns.glOrtho (0, vp(2), vp(3), 0, xZ1, xZ2);
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPushMatrix ();
 
     set_clipping (false);
     set_linewidth (width);
@@ -4132,13 +4386,13 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    glDeleteLists (marker_id, 1);
-    glDeleteLists (filled_marker_id, 1);
+    m_glfcns.glDeleteLists (marker_id, 1);
+    m_glfcns.glDeleteLists (filled_marker_id, 1);
 
-    glMatrixMode (GL_MODELVIEW);
-    glPopMatrix ();
-    glMatrixMode (GL_PROJECTION);
-    glPopMatrix ();
+    m_glfcns.glMatrixMode (GL_MODELVIEW);
+    m_glfcns.glPopMatrix ();
+    m_glfcns.glMatrixMode (GL_PROJECTION);
+    m_glfcns.glPopMatrix ();
     set_linewidth (0.5f);
 
 #else
@@ -4159,29 +4413,29 @@ namespace octave
 
     ColumnVector tmp = xform.transform (x, y, z, false);
 
-    glLoadIdentity ();
-    glTranslated (tmp(0), tmp(1), -tmp(2));
+    m_glfcns.glLoadIdentity ();
+    m_glfcns.glTranslated (tmp(0), tmp(1), -tmp(2));
 
     if (filled_marker_id > 0 && fc.numel () > 0)
       {
-        glColor3dv (fc.data ());
+        m_glfcns.glColor3dv (fc.data ());
         set_polygon_offset (true, -1.0);
-        glCallList (filled_marker_id);
+        m_glfcns.glCallList (filled_marker_id);
         if (lc.numel () > 0)
           {
-            glColor3dv (lc.data ());
-            glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
-            glEdgeFlag (GL_TRUE);
+            m_glfcns.glColor3dv (lc.data ());
+            m_glfcns.glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+            m_glfcns.glEdgeFlag (GL_TRUE);
             set_polygon_offset (true, -2.0);
-            glCallList (filled_marker_id);
-            glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+            m_glfcns.glCallList (filled_marker_id);
+            m_glfcns.glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
           }
         set_polygon_offset (false);
       }
     else if (marker_id > 0 && lc.numel () > 0)
       {
-        glColor3dv (lc.data ());
-        glCallList (marker_id);
+        m_glfcns.glColor3dv (lc.data ());
+        m_glfcns.glCallList (marker_id);
       }
 
 #else
@@ -4201,6 +4455,50 @@ namespace octave
   }
 
   void
+  opengl_renderer::init_maxlights (void)
+  {
+#if defined (HAVE_OPENGL)
+
+    // Check actual maximum number of lights possible
+    if (m_max_lights == 0)
+      {
+        for (m_max_lights = 0; m_max_lights < GL_MAX_LIGHTS; m_max_lights++)
+          {
+            m_glfcns.glDisable (GL_LIGHT0 + m_max_lights);
+            if (m_glfcns.glGetError ())
+              break;
+          }
+      }
+
+#else
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+
+#endif
+  }
+
+#if defined (HAVE_OPENGL)
+
+  std::string
+  opengl_renderer::get_string (GLenum id) const
+  {
+    // This is kind of ugly, but glGetString returns a pointer to GLubyte
+    // and there is no std::string constructor that matches.  Is there a
+    // better way?
+
+    std::ostringstream buf;
+
+    buf << m_glfcns.glGetString (id);
+
+    return std::string (buf.str ());
+  }
+
+#endif
+
+  void
   opengl_renderer::set_normal (int bfl_mode, const NDArray& n, int j, int i)
   {
 #if defined (HAVE_OPENGL)
@@ -4217,7 +4515,7 @@ namespace octave
       dir = ((x * view_vector(0) + y * view_vector(1) + z * view_vector(2) < 0)
              ? ((bfl_mode > 1) ? 0.0 : -1.0) : 1.0);
 
-    glNormal3d (dir*x/d, dir*y/d, dir*z/d);
+    m_glfcns.glNormal3d (dir*x/d, dir*y/d, dir*z/d);
 
 #else
 
@@ -4245,44 +4543,44 @@ namespace octave
     if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
       return 0;
 
-    unsigned int ID = glGenLists (1);
+    unsigned int ID = m_glfcns.glGenLists (1);
     double sz = size * toolkit.get_screen_resolution () / 72.0;
 
     // constants for the * marker
     const double sqrt2d4 = 0.35355339059327;
     double tt = sz*sqrt2d4;
 
-    glNewList (ID, GL_COMPILE);
+    m_glfcns.glNewList (ID, GL_COMPILE);
 
     switch (marker[0])
       {
       case '+':
-        glBegin (GL_LINES);
-        glVertex2d (-sz/2, 0);
-        glVertex2d (sz/2, 0);
-        glVertex2d (0, -sz/2);
-        glVertex2d (0, sz/2);
-        glEnd ();
+        m_glfcns.glBegin (GL_LINES);
+        m_glfcns.glVertex2d (-sz/2, 0);
+        m_glfcns.glVertex2d (sz/2, 0);
+        m_glfcns.glVertex2d (0, -sz/2);
+        m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glEnd ();
         break;
       case 'x':
-        glBegin (GL_LINES);
-        glVertex2d (-sz/2, -sz/2);
-        glVertex2d (sz/2, sz/2);
-        glVertex2d (-sz/2, sz/2);
-        glVertex2d (sz/2, -sz/2);
-        glEnd ();
+        m_glfcns.glBegin (GL_LINES);
+        m_glfcns.glVertex2d (-sz/2, -sz/2);
+        m_glfcns.glVertex2d (sz/2, sz/2);
+        m_glfcns.glVertex2d (-sz/2, sz/2);
+        m_glfcns.glVertex2d (sz/2, -sz/2);
+        m_glfcns.glEnd ();
         break;
       case '*':
-        glBegin (GL_LINES);
-        glVertex2d (-sz/2, 0);
-        glVertex2d (sz/2, 0);
-        glVertex2d (0, -sz/2);
-        glVertex2d (0, sz/2);
-        glVertex2d (-tt, -tt);
-        glVertex2d (+tt, +tt);
-        glVertex2d (-tt, +tt);
-        glVertex2d (+tt, -tt);
-        glEnd ();
+        m_glfcns.glBegin (GL_LINES);
+        m_glfcns.glVertex2d (-sz/2, 0);
+        m_glfcns.glVertex2d (sz/2, 0);
+        m_glfcns.glVertex2d (0, -sz/2);
+        m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glVertex2d (-tt, -tt);
+        m_glfcns.glVertex2d (+tt, +tt);
+        m_glfcns.glVertex2d (-tt, +tt);
+        m_glfcns.glVertex2d (+tt, -tt);
+        m_glfcns.glEnd ();
         break;
       case '.':
         {
@@ -4292,89 +4590,89 @@ namespace octave
           if (sz > 0 && sz < 3)
             sz = 3;
 
-          int div = static_cast <int> (M_PI * sz / 12);
+          int div = static_cast<int> (M_PI * sz / 12);
           if (! (div % 2))
             div += 1;               // ensure odd number for left/right symmetry
           div = std::max (div, 3);  // ensure at least a few vertices are drawn
           double ang_step = M_PI / div;
 
-          glBegin (GL_POLYGON);
+          m_glfcns.glBegin (GL_POLYGON);
           for (double ang = 0; ang < 2*M_PI; ang += ang_step)
-            glVertex2d (sz/6*cos (ang), sz/6*sin (ang));
-          glEnd ();
+            m_glfcns.glVertex2d (sz/6*cos (ang), sz/6*sin (ang));
+          m_glfcns.glEnd ();
         }
         break;
       case 's':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (-sz/2, -sz/2);
-        glVertex2d (-sz/2, sz/2);
-        glVertex2d (sz/2, sz/2);
-        glVertex2d (sz/2, -sz/2);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (-sz/2, -sz/2);
+        m_glfcns.glVertex2d (-sz/2, sz/2);
+        m_glfcns.glVertex2d (sz/2, sz/2);
+        m_glfcns.glVertex2d (sz/2, -sz/2);
+        m_glfcns.glEnd ();
         break;
       case 'o':
         {
-          int div = static_cast <int> (M_PI * sz / 4);
+          int div = static_cast<int> (M_PI * sz / 4);
           if (! (div % 2))
             div += 1;               // ensure odd number for left/right symmetry
           div = std::max (div, 5);  // ensure at least a few vertices are drawn
           double ang_step = M_PI / div;
 
-          glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+          m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
           for (double ang = 0; ang < 2*M_PI; ang += ang_step)
-            glVertex2d (sz/2*cos (ang), sz/2*sin (ang));
-          glEnd ();
+            m_glfcns.glVertex2d (sz/2*cos (ang), sz/2*sin (ang));
+          m_glfcns.glEnd ();
         }
         break;
       case 'd':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (0, -sz/2);
-        glVertex2d (sz/2, 0);
-        glVertex2d (0, sz/2);
-        glVertex2d (-sz/2, 0);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (0, -sz/2);
+        m_glfcns.glVertex2d (sz/2, 0);
+        m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glVertex2d (-sz/2, 0);
+        m_glfcns.glEnd ();
         break;
       case 'v':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (0, sz/2);
-        glVertex2d (sz/2, -sz/2);
-        glVertex2d (-sz/2, -sz/2);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (0, sz/2);
+        m_glfcns.glVertex2d (sz/2, -sz/2);
+        m_glfcns.glVertex2d (-sz/2, -sz/2);
+        m_glfcns.glEnd ();
         break;
       case '^':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (0, -sz/2);
-        glVertex2d (-sz/2, sz/2);
-        glVertex2d (sz/2, sz/2);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (0, -sz/2);
+        m_glfcns.glVertex2d (-sz/2, sz/2);
+        m_glfcns.glVertex2d (sz/2, sz/2);
+        m_glfcns.glEnd ();
         break;
       case '>':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (sz/2, 0);
-        glVertex2d (-sz/2, sz/2);
-        glVertex2d (-sz/2, -sz/2);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (sz/2, 0);
+        m_glfcns.glVertex2d (-sz/2, sz/2);
+        m_glfcns.glVertex2d (-sz/2, -sz/2);
+        m_glfcns.glEnd ();
         break;
       case '<':
-        glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
-        glVertex2d (-sz/2, 0);
-        glVertex2d (sz/2, -sz/2);
-        glVertex2d (sz/2, sz/2);
-        glEnd ();
+        m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+        m_glfcns.glVertex2d (-sz/2, 0);
+        m_glfcns.glVertex2d (sz/2, -sz/2);
+        m_glfcns.glVertex2d (sz/2, sz/2);
+        m_glfcns.glEnd ();
         break;
       case 'p':
         {
           double ang, r, dr;
           dr = 1.0 - sin (M_PI/10)/sin (3*M_PI/10)*1.02;
 
-          glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+          m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
           for (int i = 0; i < 2*5; i++)
             {
               ang = (-0.5 + double (i+1) / 5) * M_PI;
               r = 1.0 - (dr * fmod (double (i+1), 2.0));
-              glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
+              m_glfcns.glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
             }
-          glEnd ();
+          m_glfcns.glEnd ();
         }
         break;
       case 'h':
@@ -4382,14 +4680,14 @@ namespace octave
           double ang, r, dr;
           dr = 1.0 - 0.5/sin (M_PI/3)*1.02;
 
-          glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
+          m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
           for (int i = 0; i < 2*6; i++)
             {
               ang = (0.5 + double (i+1) / 6.0) * M_PI;
               r = 1.0 - (dr * fmod (double (i+1), 2.0));
-              glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
+              m_glfcns.glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
             }
-          glEnd ();
+          m_glfcns.glEnd ();
         }
         break;
       default:
@@ -4397,7 +4695,7 @@ namespace octave
         break;
       }
 
-    glEndList ();
+    m_glfcns.glEndList ();
 
     return ID;
 
@@ -4452,18 +4750,18 @@ namespace octave
         uint8NDArray pixels;
         text_to_pixels (txt, pixels, bbox, halign, valign, rotation);
 
-        bool blend = glIsEnabled (GL_BLEND);
+        bool blend = m_glfcns.glIsEnabled (GL_BLEND);
 
-        glEnable (GL_BLEND);
-        glEnable (GL_ALPHA_TEST);
-        glRasterPos3d (x, y, z);
-        glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
-        glDrawPixels (bbox(2), bbox(3),
+        m_glfcns.glEnable (GL_BLEND);
+        m_glfcns.glEnable (GL_ALPHA_TEST);
+        m_glfcns.glRasterPos3d (x, y, z);
+        m_glfcns.glBitmap(0, 0, 0, 0, bbox(0), bbox(1), nullptr);
+        m_glfcns.glDrawPixels (bbox(2), bbox(3),
                       GL_RGBA, GL_UNSIGNED_BYTE, pixels.data ());
-        glDisable (GL_ALPHA_TEST);
+        m_glfcns.glDisable (GL_ALPHA_TEST);
 
         if (! blend)
-          glDisable (GL_BLEND);
+          m_glfcns.glDisable (GL_BLEND);
       }
 
     return bbox;

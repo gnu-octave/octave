@@ -10,6 +10,9 @@
         <file>icons/db-step-in.png</file>
         <file>icons/db-step-out.png</file>
         <file>icons/db-stop.png</file>
+        <file>icons/dialog-error.png</file>
+        <file>icons/dialog-information.png</file>
+        <file>icons/dialog-warning.png</file>
         <file>icons/document-new.png</file>
         <file>icons/document-open.png</file>
         <file>icons/document-print.png</file>
@@ -27,7 +30,10 @@
         <file>icons/folder-new.png</file>
         <file>icons/go-down.png</file>
         <file>icons/go-first.png</file>
+        <file>icons/go-home.png</file>
         <file>icons/go-last.png</file>
+        <file>icons/go-next.png</file>
+        <file>icons/go-previous.png</file>
         <file>icons/go-up.png</file>
         <file>icons/graphic_logo_FilesDockWidget.png</file>
         <file>icons/graphic_logo_FileEditor.png</file>
@@ -60,6 +66,7 @@
         <file>icons/widget-dock-light.png</file>
         <file>icons/widget-undock-light.png</file>
         <file>icons/zoom-in.png</file>
+        <file>icons/zoom-original.png</file>
         <file>icons/zoom-out.png</file>
     </qresource>
 </RCC>

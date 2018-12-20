@@ -135,8 +135,8 @@ recording using those parameters.
 
       if (! device_info)
         {
-          warning ("Octave:invalid-audio-device",
-                   "invalid audio device ID = %d", i);
+          warning_with_id ("Octave:invalid-audio-device",
+                           "invalid audio device ID = %d", i);
           continue;
         }
 
@@ -161,8 +161,8 @@ recording using those parameters.
 
       if (! device_info)
         {
-          warning ("Octave:invalid-audio-device",
-                   "invalid audio device ID = %d", i);
+          warning_with_id ("Octave:invalid-audio-device",
+                           "invalid audio device ID = %d", i);
           continue;
         }
 
@@ -311,8 +311,8 @@ recording using those parameters.
 
           if (! device_info)
             {
-              warning ("Octave:invalid-audio-device",
-                       "invalid audio device ID = %d", i);
+              warning_with_id ("Octave:invalid-audio-device",
+                               "invalid audio device ID = %d", i);
               continue;
             }
 
@@ -834,8 +834,8 @@ audioplayer::~audioplayer (void)
 {
   if (isplaying ())
     {
-      warning ("Octave:audio-interrupt",
-               "interrupting playing audioplayer");
+      warning_with_id ("Octave:audio-interrupt",
+                       "interrupting playing audioplayer");
       stop ();
     }
 }
@@ -874,8 +874,8 @@ audioplayer::init_fn (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
@@ -918,8 +918,8 @@ audioplayer::init (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   output_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighOutputLatency : -1);
@@ -1162,7 +1162,7 @@ audioplayer::pause (void)
   PaError err;
   err = Pa_StopStream (stream);
   if (err != paNoError)
-    error ("audiorecorder: failed to stop audio recording stream");
+    error ("audioplayer: failed to stop audio playback stream");
 }
 
 void
@@ -1174,7 +1174,7 @@ audioplayer::resume (void)
   PaError err;
   err = Pa_StartStream (stream);
   if (err != paNoError)
-    error ("audiorecorder: failed to start audio recording stream");
+    error ("audioplayer: failed to start audio playback stream");
 }
 
 PaStream *
@@ -1215,7 +1215,7 @@ audioplayer::isplaying (void)
   PaError err;
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
-    error ("audiorecorder: checking stream activity status failed");
+    error ("audioplayer: checking stream activity status failed");
 
   return (err == 1);
 }
@@ -1346,13 +1346,14 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
-      int32_t sample_l32 = 0, sample_r32 = 0;
+      int32_t sample_l32, sample_r32;
 
       uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
       uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
+          sample_l32 = sample_r32 = 0;
           for (int j = 0; j < 3; j++)
             {
               sample_l[j] = input24[i*channels*3 + j];
@@ -1423,13 +1424,14 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
-      int32_t sample_l32 = 0, sample_r32 = 0;
+      int32_t sample_l32, sample_r32;
 
       uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
       uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
+          sample_l32 = sample_r32 = 0;
           for (int j = 0; j < 3; j++)
             {
               sample_l[j] = input24[i*channels*3 + j];
@@ -1470,8 +1472,8 @@ audiorecorder::~audiorecorder (void)
 {
   if (isrecording ())
     {
-      warning ("Octave:audio-interrupt",
-               "interrupting recording audiorecorder");
+      warning_with_id ("Octave:audio-interrupt",
+                       "interrupting recording audiorecorder");
       stop ();
     }
 }
@@ -1510,8 +1512,8 @@ audiorecorder::init (void)
   const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
 
   if (! device_info)
-    warning ("Octave:invalid-default-audio-device",
-             "invalid default audio device ID = %d", device);
+    warning_with_id ("Octave:invalid-default-audio-device",
+                     "invalid default audio device ID = %d", device);
 
   input_parameters.suggestedLatency
     = (device_info ? device_info->defaultHighInputLatency : -1);
@@ -1637,9 +1639,12 @@ audiorecorder::get_userdata (void)
 octave_value
 audiorecorder::getaudiodata (void)
 {
-  Matrix audio (2, left.size ());
+  // Must get size before entering loop as the value of left.size() may change
+  // during loop with simultaneous recording and playback (bug #50674).
+  unsigned int ls = left.size ();
+  Matrix audio (2, ls);
 
-  for (unsigned int i = 0; i < left.size (); i++)
+  for (unsigned int i = 0; i < ls; i++)
     {
       audio(0,i) = left[i];
       audio(1,i) = right[i];
@@ -1838,7 +1843,7 @@ Undocumented internal function.
                           || args(0).is_inline_function ());
 
       if (is_function)
-        error ("audioplayer: callbacks not yet implemented");
+        error ("audiorecorder: callbacks not yet implemented");
     }
 
   if (nargin >= 3)

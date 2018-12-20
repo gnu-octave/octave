@@ -20,51 +20,116 @@
 ## @deftypefn  {} {} print ()
 ## @deftypefnx {} {} print (@var{options})
 ## @deftypefnx {} {} print (@var{filename}, @var{options})
-## @deftypefnx {} {} print (@var{h}, @var{filename}, @var{options})
-## Print a plot, or save it to a file.
-##
-## Both output formatted for printing (PDF and PostScript), and many bitmapped
-## and vector image formats are supported.
+## @deftypefnx {} {} print (@var{hfig}, @dots{})
+## @deftypefnx {} {@var{rgb} =} print (@qcode{"-RGBImage"}, @dots{})
+## Format a figure for printing and either save it to a file, send it to a
+## printer, or return an RGB image.
 ##
 ## @var{filename} defines the name of the output file.  If the filename has
-## no suffix, one is inferred from the specified device and appended to the
-## filename.  If no filename is specified, the output is sent to the
-## printer.
+## no suffix then one is inferred from the specified device and appended to the
+## filename.  When neither a filename nor the @qcode{"-RGBImage"} option is
+## present, the output is sent to the printer.  The various options and
+## filename arguments may be given in any order, except for the figure handle
+## argument @var{hfig} which must be first if it is present.
 ##
-## @var{h} specifies the handle of the figure to print.  If no handle is
-## specified the current figure is used.
+## Example: Print to a file using PDF and JPEG formats.
 ##
-## For output to a printer, PostScript file, or PDF file, the paper size is
-## specified by the figure's @code{papersize} property.  The location and
-## size of the image on the page are specified by the figure's
-## @code{paperposition} property.  The orientation of the page is specified
-## by the figure's @code{paperorientation} property.
+## @example
+## @group
+## figure (1);
+## clf ();
+## surf (peaks);
+## print figure1.pdf    # The extension specifies the format
+## print -djpg figure1  # Will produce "figure1.jpg" file
+## @end group
+## @end example
 ##
-## The width and height of images are specified by the figure's
-## @code{paperposition(3:4)} property values.
+## If the first argument is a handle @var{hfig} to a figure object then it
+## specifies the figure to print.  By default, the current figure returned
+## by @code{gcf} is printed.
+##
+## For outputs to paged formats, for example, PostScript and PDF, the page size
+## is specified by the figure's @code{papersize} property together with the
+## @code{paperunits} property.  The location and size of the plot on the page
+## are specified by the figure's @code{paperposition} property.  The
+## orientation of the page is specified by the figure's @code{paperorientation}
+## property.
+##
+## For non-page formats---for example, image formats like JPEG---the width and
+## height of the output are specified by the figure's @code{paperposition(3:4)}
+## property values.
 ##
 ## The @code{print} command supports many @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}
-##   Specify the handle, @var{h}, of the figure to be printed.  The default
-## is the current figure.
+##   Specify the handle, @var{h}, of the figure to be printed.
+##
+## Example: Print figure 1.
+##
+## @example
+## @group
+## figure (1);
+## clf ();
+## surf (peaks);
+## figure (2);
+## print -f1 figure1.pdf
+## ## Equivalent functional form:
+## print (1, "figure1.pdf")
+## @end group
+## @end example
 ##
 ## @item -P@var{printer}
-##   Set the @var{printer} name to which the plot is sent if no
-## @var{filename} is specified.
+##   Set the @var{printer} name to which the plot is sent if no @var{filename}
+## is specified.
 ##
-## @item -G@var{ghostscript_command}
-##   Specify the command for calling Ghostscript.  For Unix and Windows the
-## defaults are @qcode{"gs"} and @qcode{"gswin32c"}, respectively.
+## Example: Print to printer named PS_printer using PostScript format.
 ##
-## @item  -color
-## @itemx -mono
-##   Color or monochrome output.
+## @example
+## @group
+## clf ();
+## surf (peaks);
+## print -dpswrite -PPS_printer
+## @end group
+## @end example
 ##
-## @item  -solid
-## @itemx -dashed
-##   Force all lines to be solid or dashed, respectively.
+## @item -RGBImage
+##   Return an M-by-N-by-3 RGB image of the figure.  The size of the image
+## depends on the formatting options.  This is similar to taking a screen
+## capture of the plot, but formatting options may be changed such as the
+## resolution or monochrome/color.
+##
+## Example: Get the pixels of a figure image.
+##
+## @example
+## @group
+## clf ();
+## surf (peaks);
+## @var{rgb} = print ("-RGBImage");
+## @end group
+## @end example
+##
+## @item  -opengl
+## @itemx -painters
+##   Specifies whether the opengl (pixel-based) or painters (vector-based)
+## renderer is used.  This is equivalent to changing the figure's
+## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
+## is @qcode{"auto"} Octave will use the @qcode{"opengl"} renderer for raster
+## formats (e.g., JPEG) and @qcode{"painters"} for vector formats (e.g., PDF).
+##
+## @item -svgconvert
+##   For OpenGL-based graphic toolkits, this enables a different backend
+## toolchain with enhanced characteristics.  The toolchain adds support for
+## printing arbitrary characters and fonts in PDF outputs; it avoids some
+## anti-aliasing artifacts in the rendering of patch and surface objects
+## (particularly for 2-D scenes); and it supports transparency of line, patch,
+## and surface objects.
+##
+## This option only affects PDF outputs, unless it is combined with
+## @option{-painters} option, in which case raster outputs are also affected.
+##
+## Caution: @option{-svgconvert} may lead to inaccurate rendering of image
+## objects.
 ##
 ## @item  -portrait
 ## @itemx -landscape
@@ -74,32 +139,121 @@
 ## orientation specified.  This option is equivalent to changing the figure's
 ## @qcode{"paperorientation"} property.
 ##
-## @item  -TextAlphaBits=@var{n}
-## @itemx -GraphicsAlphaBits=@var{n}
-##   Octave is able to produce output for various printers, bitmaps, and
-## vector formats by using Ghostscript.  For bitmap and printer output
-## anti-aliasing is applied using Ghostscript's TextAlphaBits and
-## GraphicsAlphaBits options.  The default number of bits are 4 and 1
-## respectively.  Allowed values for @var{N} are 1, 2, or 4.
+## @item  -fillpage
+## @itemx -bestfit
+##   When using a page-based format (PDF, PostScript, printer) ignore the
+## @qcode{"paperposition"} property and have the plot occupy the entire page.
+## The option @option{-fillpage} will stretch the plot to occupy the page with
+## 0.25 inch margins all around.  The option @option{-bestfit} will expand the
+## plot to take up as much room as possible on the page @strong{without}
+## distorting the original aspect ratio of the plot.
+##
+## @item  -color
+## @itemx -mono
+##   Color or monochrome output.
+##
+## @item  -solid
+## @itemx -dashed
+##   Force all lines to be solid or dashed, respectively.
+##
+## @item -noui
+##   Don't print uicontrol objects such as pushbuttons which may overlay the
+## plot.  This is the default behavior and it is not possible to include
+## uicontrol objects in the output without using an external screen capture
+## tool.
+##
+## @item -r@var{NUM}
+##   Resolution of bitmaps in dots per inch (DPI).  For both metafiles and SVG
+## the default is the screen resolution; for other formats the default is 150
+## DPI@.  To specify screen resolution, use @qcode{"-r0"}.
+##
+## Example: high resolution raster output.
+##
+## @example
+## @group
+## clf ();
+## surf (peaks (), "facelighting", "gouraud");
+## light ();
+## print ("-r600", "lit_peaks.png");
+## @end group
+## @end example
+##
+## @item -S@var{xsize},@var{ysize}
+##   Plot size in pixels for raster formats including PNG, JPEG, PNG, and
+## (unusually (SVG))@.  For all vector formats, including PDF, PS, and EPS, the
+## plot size is specified in points.  This option is equivalent to changing the
+## width and height of the output by setting the figure property
+## @code{paperposition(3:4)}.  When using the command form of the print
+## function you must quote the @var{xsize},@var{ysize} option to prevent the
+## Octave interpreter from recognizing the embedded comma (',').  For example,
+## by writing @w{"-S640,480"}.
+##
+## @item  -tight
+## @itemx -loose
+##   Force a tight or loose bounding box for EPS files.  The default is tight.
+##
+## @item -@var{preview}
+##   Add a preview to EPS files.  Supported formats are:
+##
+##   @table @code
+##   @item -interchange
+##     Provide an interchange preview.
+##
+##   @item -metafile
+##     Provide a metafile preview.
+##
+##   @item -pict
+##     Provide a pict preview.
+##
+##   @item -tiff
+##     Provide a TIFF preview.
+##   @end table
+##
+## @item -append
+##   Append PostScript or PDF output to an existing file of the same type.
+##
+## @item  -F@var{fontname}
+## @itemx -F@var{fontname}:@var{size}
+## @itemx -F:@var{size}
+##   Use @var{fontname} and/or @var{fontsize} for all text.
+## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
-## is one of:
+## is one of the following (devices marked with a "*" are only available with
+## the Gnuplot toolkit):
+##
+## Vector Formats
 ##
 ##   @table @code
+##   @item  pdf
+##   @itemx pdfcrop
+##     Portable Document Format.  The @code{pdfcrop} device removes the default
+## surrounding page.
+##
+## The OpenGL-based graphics toolkits have limited support for text.
+## Limitations include using only ASCII characters (e.g., no Greek letters)
+## and support for just three base PostScript fonts: Helvetica (the default),
+## Times, or Courier.  Any other font will be replaced by Helvetica.
+##
+## For an enhanced output with complete text support and basic transparency,
+## use the @option{-svgconvert} option.
+##
 ##   @item  ps
 ##   @itemx ps2
 ##   @itemx psc
 ##   @itemx psc2
-##     PostScript (level 1 and 2, mono and color).  The OpenGL-based toolkits
-## always generate PostScript level 3.0.
+##     PostScript (level 1 and 2, mono and color).  The OpenGL-based graphics
+## toolkits always generate PostScript level 3.0 and have limited support for
+## text.
 ##
 ##   @item  eps
 ##   @itemx eps2
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated PostScript (level 1 and 2, mono and color).  The
-## OpenGL-based toolkits always generate PostScript level 3.0.
+## OpenGL-based toolkits always generate PostScript level 3.0 and have
+## limited support for text.
 ##
 ##   @item  pslatex
 ##   @itemx epslatex
@@ -107,53 +261,49 @@
 ##   @itemx pslatexstandalone
 ##   @itemx epslatexstandalone
 ##   @itemx pdflatexstandalone
-##     Generate a @LaTeX{} file @file{@var{filename}.tex} for the text
-## portions of a plot and a file @file{@var{filename}.(ps|eps|pdf)} for the
-## remaining graphics.  The graphics file suffix .ps|eps|pdf is determined
-## by the specified device type.  The @LaTeX{} file produced by the
-## @samp{standalone} option can be processed directly by @LaTeX{}.  The file
-## generated without the @samp{standalone} option is intended to be included
-## from another @LaTeX{} document.  In either case, the @LaTeX{} file
-## contains an @code{\includegraphics} command so that the generated graphics
-## file is automatically included when the @LaTeX{} file is processed.  The
-## text that is written to the @LaTeX{} file contains the strings
-## @strong{exactly} as they were specified in the plot.  If any special
-## characters of the @TeX{} mode interpreter were used, the file must be
-## edited before @LaTeX{} processing.  Specifically, the special characters
-## must be enclosed with dollar signs (@code{$ @dots{} $}), and other
-## characters that are recognized by @LaTeX{} may also need editing (.e.g.,
-## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
-## formats, are not available with the Gnuplot toolkit.
+##     Generate a @LaTeX{} file @file{@var{filename}.tex} for the text portions
+## of a plot and a file @file{@var{filename}.(ps|eps|pdf)} for the remaining
+## graphics.  The graphics file suffix .ps|eps|pdf is determined by the
+## specified device type.  The @LaTeX{} file produced by the @samp{standalone}
+## option can be processed directly by @LaTeX{}.  The file generated without
+## the @samp{standalone} option is intended to be included from another
+## @LaTeX{} document.  In either case, the @LaTeX{} file contains an
+## @code{\includegraphics} command so that the generated graphics file is
+## automatically included when the @LaTeX{} file is processed.  The text that
+## is written to the @LaTeX{} file contains the strings @strong{exactly} as
+## they were specified in the plot.  If any special characters of the @TeX{}
+## mode interpreter were used, the file must be edited before @LaTeX{}
+## processing.  Specifically, the special characters must be enclosed with
+## dollar signs @w{(@code{$ @dots{} $})}, and other characters that are
+## recognized by @LaTeX{} may also need editing (e.g., braces).  The
+## @samp{pdflatex} device, and any of the @samp{standalone} formats, are not
+## available with the Gnuplot toolkit.
 ##
-##   @item  epscairo
-##   @itemx pdfcairo
-##   @itemx epscairolatex
-##   @itemx pdfcairolatex
-##   @itemx epscairolatexstandalone
-##   @itemx pdfcairolatexstandalone
-##     Generate Cairo based output when using the Gnuplot graphics toolkit.
-## The @samp{epscairo} and @samp{pdfcairo} devices are synonymous with
-## the @samp{epsc} device.  The @LaTeX{} variants generate a @LaTeX{} file,
-## @file{@var{filename}.tex}, for the text portions of a plot, and an image
-## file, @file{@var{filename}.(eps|pdf)}, for the graph portion of the plot.
-## The @samp{standalone} variants behave as described for
-## @samp{epslatexstandalone} above.
+##   @item  epscairo*
+##   @itemx pdfcairo*
+##   @itemx epscairolatex*
+##   @itemx pdfcairolatex*
+##   @itemx epscairolatexstandalone*
+##   @itemx pdfcairolatexstandalone*
+##     Generate output with Cairo renderer.  The devices @samp{epscairo} and
+## @samp{pdfcairo} are synonymous with the @samp{epsc} device.  The @LaTeX{}
+## variants generate a @LaTeX{} file, @file{@var{filename}.tex}, for the text
+## portions of a plot, and an image file, @file{@var{filename}.(eps|pdf)}, for
+## the graph portion of the plot.  The @samp{standalone} variants behave as
+## described for @samp{epslatexstandalone} above.
 ##
-##   @item  ill
-##   @itemx @nospell{aifm}
-##     Adobe Illustrator (Obsolete for Gnuplot versions > 4.2)
+##   @item svg
+##     Scalable Vector Graphics
 ##
-##   @item canvas
-##     Javascript-based drawing on HTML5 canvas viewable in a web browser
-## (only available for the Gnuplot graphics toolkit).
+##   @item canvas*
+##     Javascript-based drawing on an HTML5 canvas viewable in a web browser.
 ##
-##   @item  cdr
-##   @itemx @nospell{corel}
-##     @nospell{CorelDraw}
+##   @item  cdr*
+##   @itemx @nospell{corel*}
+##     CorelDraw
 ##
-##   @item cgm
+##   @item cgm*
 ##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
-## (only available for the Gnuplot graphics toolkit).
 ##
 ##   @item dxf
 ##     AutoCAD
@@ -168,57 +318,64 @@
 ## whether the special flag should be set for the text in the figure.
 ## (default is @option{-textnormal})
 ##
-##   @item gif
-##     GIF image
-## (only available for the Gnuplot graphics toolkit).
-##
 ##   @item hpgl
 ##     HP plotter language
+##
+##   @item  ill
+##   @itemx @nospell{aifm}
+##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
+##
+##   @item  latex*
+##   @itemx eepic*
+##     @LaTeX{} picture environment and extended picture environment.
+##
+##   @item mf*
+##     Metafont
+##
+##   @item  tikz
+##   @itemx tikzstandalone*
+##     Generate a @LaTeX{} file using PGF/TikZ format.  The OpenGL-based
+## toolkits create a PGF file while Gnuplot creates a TikZ file.  The
+## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
+## TikZ file.
+##
+##   @end table
+##
+## Raster Formats
+##
+##   @table @code
+##   @item png
+##     Portable Network Graphics
 ##
 ##   @item  jpg
 ##   @itemx jpeg
 ##     JPEG image
 ##
-##   @item latex
-##   @itemx eepic
-##     @LaTeX{} picture environment and extended picture environment
-## (only available for the Gnuplot graphics toolkit).
+##   @item  tif
+##   @itemx tiff
+##   @itemx tiffn
+##     TIFF image with LZW compression (@nospell{tif}, tiff) or uncompressed
+## (@nospell{tiffn}).
 ##
-##   @item mf
-##     Metafont
-##
-##   @item png
-##     Portable network graphics
+##   @item gif
+##     GIF image
 ##
 ##   @item pbm
 ##     PBMplus
 ##
-##   @item pdf
-##     Portable document format
+##   @item dumb*
+##     ASCII art
 ##
-##   @item svg
-##     Scalable vector graphics
-##
-##   @item  tikz
-##   @itemx tikzstandalone
-##     Generate a @LaTeX{} file using PGF/TikZ format.  The OpenGL-based
-## toolkits create a PGF file while Gnuplot creates a TikZ file.  The
-## @samp{tikzstandalone} device produces a @LaTeX{} document which includes the
-## TikZ file (@samp{tikzstandalone} and is only available for the Gnuplot
-## graphics toolkit).
 ##   @end table
 ##
 ##   If the device is omitted, it is inferred from the file extension,
-## or if there is no filename it is sent to the printer as PostScript.
+## or if there is no filename then it is sent to the printer as PostScript.
 ##
 ## @item -d@var{ghostscript_device}
 ##   Additional devices are supported by Ghostscript.
-## Some examples are;
+## Some examples are:
 ##
 ##   @table @code
-##   @item pdfwrite
-##     Produces pdf output from eps
-##
 ##   @item ljet2p
 ##     HP LaserJet @nospell{IIP}
 ##
@@ -229,112 +386,50 @@
 ##     Portable Pixel Map file format
 ##   @end table
 ##
-##   For a complete list, type @code{system ("gs -h")} to see what formats
-## and devices are available.
+##   For a complete list of available formats and devices type
+## @code{system ("gs -h")}.
 ##
 ##   When Ghostscript output is sent to a printer the size is determined by
 ## the figure's @qcode{"papersize"} property.  When the output is sent to a
 ## file the size is determined by the plot box defined by the figure's
 ## @qcode{"paperposition"} property.
 ##
-## @item -append
-##   Append PostScript or PDF output to a pre-existing file of the same type.
+## @item -G@var{ghostscript_command}
+##   Specify the command for calling Ghostscript.  For Unix the default is
+## @qcode{"gs"} and for Windows it is @qcode{"gswin32c"}.
 ##
-## @item -r@var{NUM}
-##   Resolution of bitmaps in pixels per inch.  For both metafiles and SVG
-## the default is the screen resolution; for other formats it is 150 dpi.  To
-## specify screen resolution, use @qcode{"-r0"}.
-##
-## @item  -loose
-## @itemx -tight
-##   Force a tight or loose bounding box for eps files.  The default is loose.
-##
-## @item -@var{preview}
-##   Add a preview to eps files.  Supported formats are:
-##
-##   @table @code
-##   @item -interchange
-##     Provide an interchange preview.
-##
-##   @item -metafile
-##     Provide a metafile preview.
-##
-##   @item -pict
-##     Provide pict preview.
-##
-##   @item -tiff
-##     Provide a tiff preview.
-##   @end table
-##
-## @item -S@var{xsize},@var{ysize}
-##   Plot size in pixels for EMF, GIF, JPEG, PBM, PNG, and SVG@.
-## For PS, EPS, PDF, and other vector formats the plot size is in points.
-## This option is equivalent to changing the size of the plot box associated
-## with the @qcode{"paperposition"} property.  When using the command form of
-## the print function you must quote the @var{xsize},@var{ysize} option.  For
-## example, by writing @w{"-S640,480"}.
-##
-## @item  -F@var{fontname}
-## @itemx -F@var{fontname}:@var{size}
-## @itemx -F:@var{size}
-##   Use @var{fontname} and/or @var{fontsize} for all text.
-## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
+## @item  -TextAlphaBits=@var{n}
+## @itemx -GraphicsAlphaBits=@var{n}
+##   Octave is able to produce output for various printers, bitmaps, and
+## vector formats by using Ghostscript.  For bitmap and printer output
+## anti-aliasing is applied using Ghostscript's TextAlphaBits and
+## GraphicsAlphaBits options.  The default number of bits are 4 and 1
+## respectively.  Allowed values for @var{N} are 1, 2, or 4.
 ## @end table
 ##
-## The filename and options can be given in any order.
-##
-## Example: Print to a file using the pdf device.
-##
-## @example
-## @group
-## figure (1);
-## clf ();
-## surf (peaks);
-## print figure1.pdf
-## @end group
-## @end example
-##
-## Example: Print to a file using jpg device.
-##
-## @example
-## @group
-## clf ();
-## surf (peaks);
-## print -djpg figure2.jpg
-## @end group
-## @end example
-##
-## Example: Print to printer named PS_printer using ps format.
-##
-## @example
-## @group
-## clf ();
-## surf (peaks);
-## print -dpswrite -PPS_printer
-## @end group
-## @end example
-##
-## @seealso{saveas, hgsave, orient, figure}
+## @seealso{saveas, hgsave, getframe, orient, figure}
 ## @end deftypefn
 
-function print (varargin)
+function rgbout = print (varargin)
 
   opts = __print_parse_opts__ (varargin{:});
 
-  folder = fileparts (opts.name);
-  if (! isempty (folder) && ! exist (folder, "dir"))
-    error ("print: directory %s does not exist", folder);
-  endif
-
   ## Check the requested file is writable
-  do_unlink = (exist (opts.name, "file") != 2);
-  fid = fopen (opts.name, "a");
-  if (fid == -1)
-    error ("print: cannot open file %s for writing", opts.name);
-  endif
-  fclose (fid);
-  if (do_unlink)
-    unlink (opts.name);
+  if (! opts.rgb_output)
+    folder = fileparts (opts.name);
+    if (! isempty (folder) && ! isfolder (folder))
+      error ("print: directory %s does not exist", folder);
+    endif
+
+    do_unlink = (exist (opts.name, "file") != 2);
+    fid = fopen (opts.name, "a");
+    if (fid == -1)
+      error ("print: cannot open file %s for writing", opts.name);
+    endif
+    fclose (fid);
+    if (do_unlink)
+      unlink (opts.name);
+    endif
   endif
 
   opts.pstoedit_cmd = @pstoedit;
@@ -342,6 +437,7 @@ function print (varargin)
   opts.latex_standalone = @latex_standalone;
   opts.lpr_cmd = @lpr;
   opts.epstool_cmd = @epstool;
+  opts.svgconvert_cmd = @svgconvert;
 
   if (isempty (opts.figure) || ! isfigure (opts.figure))
     error ("print: no figure to print");
@@ -382,6 +478,25 @@ function print (varargin)
       nfig += 1;
     endfor
 
+    if (strcmp (opts.renderer, "opengl"))
+      ## Scale the figure to reach the required resolution
+      scale = opts.ghostscript.resolution / 72;
+      if (scale != 1)
+        props(end+1).h = opts.figure;
+        props(end).name = "__device_pixel_ratio__";
+        props(end).value{1} = get (opts.figure, "__device_pixel_ratio__");
+        set (opts.figure, "__device_pixel_ratio__", scale);
+        nfig += 1;
+      endif
+    elseif (strcmp (tk, "qt"))
+      ## Don't account for the actual pixel density
+      props(end+1).h = opts.figure;
+      props(end).name = "__device_pixel_ratio__";
+      props(end).value = {get(opts.figure, "__device_pixel_ratio__")};
+      set (opts.figure, "__device_pixel_ratio__", 1);
+      nfig += 1;
+    endif
+
     ## print() requires axes units = "normalized"
     hax = findall (opts.figure, "-depth", 1, "type", "axes", ...
       "-not", "units", "normalized");
@@ -393,11 +508,14 @@ function print (varargin)
       nfig += 1;
     endfor
 
-    ## FIXME: line transparency is only handled for svg output when
-    ## using gl2ps. For other formats, switch grid lines to light gray
-    ## so that the image output approximately matches on-screen experience.
+    ## With the -painters (gl2ps) renderer, line transparency is only
+    ## handled for svg and pdf outputs using svgconvert.
+    ## Otherwise, switch grid lines color to light gray so that the image
+    ## output approximately matches on-screen experience.
     hax = findall (opts.figure, "type", "axes");
-    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.devopt, "svg"))
+    if (! strcmp (tk, "gnuplot") && ! strcmp (opts.renderer, "opengl")
+        && ! (opts.svgconvert && strcmp (opts.devopt, "pdfwrite"))
+        && ! strcmp (opts.devopt, "svg"))
       for n = 1:numel (hax)
         if (strcmp (get (hax(n), "gridcolormode"), "auto"))
           props(end+1).h = hax(n);
@@ -553,12 +671,43 @@ function print (varargin)
       endif
     endif
 
+    ## When exporting latex files use "latex" for the ticklabelinterpreter.
+    ## It will format tick labels in log axes correctly
+    if (strfind (opts.devopt, "latex"))
+      h = findall (opts.figure, "type", "axes");
+      for n = 1:numel (h)
+        if (ishghandle (h(n)))
+          props(end+1).h = h(n);
+          props(end).name = "ticklabelinterpreter";
+          props(end).value = {get(h(n), "ticklabelinterpreter")};
+          set (h(n), "ticklabelinterpreter", "latex");
+        endif
+      endfor
+    endif
+
     ## call the graphics toolkit print script
     switch (tk)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise
-        opts = __opengl_print__ (opts);
+        if (strcmp (opts.renderer, "opengl"))
+          if (opts.rgb_output)
+            rgbout = __get_frame__ (opts.figure);
+          else
+            compression = "none";
+
+            if (strcmp (opts.devopt, "tiff"))
+              compression = "lzw";
+            elseif (strcmp (opts.devopt, "tiffn"))
+              opts.devopt = "tiff";
+            endif
+
+            imwrite (__get_frame__ (opts.figure), opts.name, ...
+                     opts.devopt, "Compression", compression);
+          endif
+        else
+          opts = __opengl_print__ (opts);
+        endif
     endswitch
 
   unwind_protect_cleanup
@@ -581,7 +730,8 @@ function print (varargin)
     for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
-        warning ("print.m: %s, '%s'", output, opts.unlink{n});
+        warning ("octave:print:unlinkerror", ...
+                 "print.m: %s, '%s'", output, opts.unlink{n});
       endif
     endfor
   end_unwind_protect
@@ -648,17 +798,17 @@ function cmd = epstool (opts, filein, fileout)
     fileout = ["'" strtrim(fileout) "'"];
   endif
 
-  if (! isempty (opts.preview) && opts.tight_flag)
-    warning ("print:previewandtight",
+  if (! isempty (opts.preview) && opts.tight)
+    warning ("octave:print:previewandtight",
              "print.m: eps preview may not be combined with -tight");
   endif
-  if (! isempty (opts.preview) || opts.tight_flag)
+  if (! isempty (opts.preview) || opts.tight)
 
     if (isempty (opts.epstool_binary))
       error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
     endif
 
-    if (opts.tight_flag)
+    if (opts.tight)
       cmd = "--copy --bbox";
     elseif (! isempty (opts.preview))
       switch (opts.preview)
@@ -883,6 +1033,36 @@ function cmd = pstoedit (opts, devopt)
 
   if (opts.debug)
     fprintf ("pstoedit command: '%s'\n", cmd);
+  endif
+
+endfunction
+
+function cmd = svgconvert (opts, devopt)
+
+  cmd = "";
+
+  if (nargin < 2)
+    devopt = opts.devopt;
+  endif
+
+  if (isempty (opts.svgconvert_binary))
+    warning ("octave:print:nosvgconvert", ...
+             ["print.m: unale to find octave-svgconvert, ", ...
+              "falling back to eps convertion"]);
+  else
+    fontdir = getenv ("OCTAVE_FONTS_DIR");
+
+    if (isempty (fontdir))
+      fontdir = __octave_config_info__ ("octfontsdir");
+    endif
+
+    cmd = sprintf ("%s - %%s %3.2f %s %d %%s", opts.svgconvert_binary, ...
+                   get (0, "screenpixelsperinch"), ...
+                   fullfile (fontdir, "FreeSans.otf"), 1);
+
+    if (opts.debug)
+      fprintf ("svgconvert command: '%s'\n", cmd);
+    endif
   endif
 
 endfunction

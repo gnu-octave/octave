@@ -26,8 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cerrno>
 #include <cstdlib>
-#include <new>
 
+#include <new>
 #include <sstream>
 #include <string>
 
@@ -83,8 +83,8 @@ under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
-GNU Octave is distributed in the hope that it will be useful,\n\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+GNU Octave is distributed in the hope that it will be useful, but\n\
+WITHOUT ANY WARRANTY; without even the implied warranty of\n\
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
@@ -347,12 +347,6 @@ specified option.
 @seealso{computer}
 @end deftypefn */)
 {
-#if defined (ENABLE_DYNAMIC_LINKING)
-  bool octave_supports_dynamic_linking = true;
-#else
-  bool octave_supports_dynamic_linking = false;
-#endif
-
   static octave_scalar_map config;
   static octave_scalar_map build_env;
   static octave_scalar_map build_features;
@@ -380,12 +374,6 @@ specified option.
            { "ENABLE_DOCS", true },
 #else
            { "ENABLE_DOCS", false },
-#endif
-
-#if defined (ENABLE_DYNAMIC_LINKING)
-           { "ENABLE_DYNAMIC_LINKING", true },
-#else
-           { "ENABLE_DYNAMIC_LINKING", false },
 #endif
 
 #if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
@@ -559,10 +547,10 @@ specified option.
            { "QT_CPPFLAGS", octave::build_env::QT_CPPFLAGS },
            { "QT_LDFLAGS", octave::build_env::QT_LDFLAGS },
            { "QT_LIBS", octave::build_env::QT_LIBS },
+           { "QT_OPENGL_LIBS", octave::build_env::QT_OPENGL_LIBS },
            { "RANLIB", octave::build_env::RANLIB },
            { "RDYNAMIC_FLAG", octave::build_env::RDYNAMIC_FLAG },
            { "READLINE_LIBS", octave::build_env::READLINE_LIBS },
-           { "SED", octave::build_env::SED },
            { "SHARED_LIBS", octave::build_env::SHARED_LIBS },
            { "SH_LD", octave::build_env::SH_LD },
            { "SH_LDFLAGS", octave::build_env::SH_LDFLAGS },
@@ -607,8 +595,6 @@ specified option.
       config.assign ("unix", octave_value (unix_system));
       config.assign ("mac", octave_value (mac_system));
       config.assign ("windows", octave_value (windows_system));
-
-      config.assign ("dld", octave_value (octave_supports_dynamic_linking));
 
       octave::mach_info::float_format ff = octave::mach_info::native_float_format ();
       config.assign ("float_format",

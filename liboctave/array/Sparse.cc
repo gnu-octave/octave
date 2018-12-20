@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 
 #include <algorithm>
-#include <iostream>
-#include <limits>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <vector>
 

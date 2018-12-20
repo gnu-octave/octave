@@ -192,7 +192,7 @@ public:
   MatrixType transpose (void) const;
 
 private:
-  void type (int new_typ) { typ = static_cast<matrix_type>(new_typ); }
+  void type (int new_typ) { typ = static_cast<matrix_type> (new_typ); }
 
   matrix_type typ;
   double sp_bandden;

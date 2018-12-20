@@ -150,11 +150,4 @@ namespace octave
   }
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::env' instead")
-typedef octave::sys::env octave_env;
-
-#endif
-
 #endif

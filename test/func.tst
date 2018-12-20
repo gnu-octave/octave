@@ -163,9 +163,9 @@
 %!test
 %! __fntestfunc__ ("flipud", m3);
 %!test
-%! __fntestfunc__ ("flipdim", m1, 2);
+%! __fntestfunc__ ("flip", m1, 2);
 %!test
-%! __fntestfunc__ ("flipdim", m3, 2);
+%! __fntestfunc__ ("flip", m3, 2);
 %!test
 %! __fntestfunc__ ("transpose", m1);
 %!test

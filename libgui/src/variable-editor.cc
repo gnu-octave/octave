@@ -7,14 +7,14 @@ Copyright (C) 2013 Rüdiger Sonderfeld
 This file is part of Octave.
 
 Octave is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, see
@@ -47,10 +47,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include "dw-main-window.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 #include "variable-editor.h"
 #include "variable-editor-model.h"
+#include "gui-preferences.h"
 
 // Code reuse functions
 
@@ -86,6 +88,11 @@ namespace octave
 
   variable_dock_widget::variable_dock_widget (QWidget *p)
     : label_dock_widget (p)
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+      , m_waiting_for_mouse_move (false)
+      , m_waiting_for_mouse_button_release (false)
+#endif
   {
     setFocusPolicy (Qt::StrongFocus);
     setAttribute (Qt::WA_DeleteOnClose);
@@ -109,28 +116,25 @@ namespace octave
     m_prev_floating = false;
     m_prev_geom = QRect (0, 0, 0, 0);
 
-    QHBoxLayout *h_layout = findChild<QHBoxLayout *> ();
-    if (h_layout != nullptr && titleBarWidget () != nullptr)
-      {
-        m_fullscreen_action = new QAction
-          (resource_manager::icon ("view-fullscreen", false), "", this);
-        m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
-        QToolButton *fullscreen_button = new QToolButton (titleBarWidget ());
-        fullscreen_button->setDefaultAction (m_fullscreen_action);
-        fullscreen_button->setFocusPolicy (Qt::NoFocus);
-        fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
-        QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
-        fullscreen_button->setStyleSheet (css_button);
+    QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
+    m_fullscreen_action = new QAction
+      (resource_manager::icon ("view-fullscreen", false), "", this);
+    m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
+    QToolButton *fullscreen_button = new QToolButton (m_title_widget);
+    fullscreen_button->setDefaultAction (m_fullscreen_action);
+    fullscreen_button->setFocusPolicy (Qt::NoFocus);
+    fullscreen_button->setIconSize (QSize (m_icon_size,m_icon_size));
+    QString css_button = QString ("QToolButton {background: transparent; border: 0px;}");
+    fullscreen_button->setStyleSheet (css_button);
 
-        connect (m_fullscreen_action, SIGNAL (triggered ()),
-                 this, SLOT (change_fullscreen ()));
+    connect (m_fullscreen_action, SIGNAL (triggered ()),
+             this, SLOT (change_fullscreen ()));
 
-        int index = -1;
-        QToolButton *first = titleBarWidget ()->findChild<QToolButton *> ();
-        if (first != nullptr)
-          index = h_layout->indexOf (first);
-        h_layout->insertWidget (index, fullscreen_button);
-      }
+    int index = -1;
+    QToolButton *first = m_title_widget->findChild<QToolButton *> ();
+    if (first != nullptr)
+      index = h_layout->indexOf (first);
+    h_layout->insertWidget (index, fullscreen_button);
 #endif
 
     // Custom title bars cause loss of decorations, add a frame
@@ -176,15 +180,26 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
-        activateWindow();
-        setFocus (Qt::OtherFocusReason);
+        activateWindow ();
+        setFocus ();
+
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+        m_waiting_for_mouse_move = true;
+#endif
       }
     else
       {
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
         m_dock_action->setToolTip (tr ("Undock widget"));
 
-        setFocus (Qt::OtherFocusReason);
+        setFocus ();
+
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = false;
+#endif
       }
   }
 
@@ -195,8 +210,6 @@ namespace octave
     if (! m_full_screen)
       {
         m_prev_floating = isFloating ();
-        m_prev_geom = geometry ();
-
         m_fullscreen_action->setIcon (resource_manager::icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
@@ -205,6 +218,7 @@ namespace octave
             m_fullscreen_action->setToolTip (tr ("Redock"));
             setFloating (true);
           }
+        m_prev_geom = geometry ();
 
         // showFullscreen() and setWindowState() only work for QWindow objects.
         QScreen *pscreen = QGuiApplication::primaryScreen ();
@@ -244,23 +258,35 @@ namespace octave
   {
     octave_unused_parameter (now);
 
-    // The is a proxied test
+    // This is a proxied test
     if (hasFocus ())
       {
-        QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
-        if (label != nullptr)
+        if (old == this)
+          return;
+
+        if (titleBarWidget () != nullptr)
           {
-            label->setBackgroundRole (QPalette::Highlight);
-            label->setAutoFillBackground (true);
+            QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+            if (label != nullptr)
+              {
+                label->setBackgroundRole (QPalette::Highlight);
+                label->setStyleSheet ("background-color: palette(highlight); color: palette(highlightedText);");
+              }
           }
 
         emit variable_focused_signal (objectName ());
       }
     else if (old == focusWidget())
       {
-        QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
-        if (label != NULL)
-          label->setBackgroundRole (QPalette::NoRole);
+        if (titleBarWidget () != nullptr)
+          {
+            QLabel *label = titleBarWidget ()->findChild<QLabel *> ();
+            if (label != nullptr)
+              {
+                label->setBackgroundRole (QPalette::NoRole);
+                label->setStyleSheet (";");
+              }
+          }
       }
   }
 
@@ -270,6 +296,69 @@ namespace octave
       m_frame->resize (size ());
   }
 
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+
+  bool
+  variable_dock_widget::event (QEvent *event)
+  {
+    // low-level check of whether docked-widget became a window via
+    // via drag-and-drop
+    if (event->type () == QEvent::MouseButtonPress)
+      {
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = false;
+      }
+    if (event->type () == QEvent::MouseMove && m_waiting_for_mouse_move)
+      {
+        m_waiting_for_mouse_move = false;
+        m_waiting_for_mouse_button_release = true;
+      }
+    if (event->type () == QEvent::MouseButtonRelease && m_waiting_for_mouse_button_release)
+      {
+        m_waiting_for_mouse_button_release = false;
+        bool retval = QDockWidget::event (event);
+        if (isFloating ())
+          emit queue_unfloat_float ();
+        return retval;
+      }
+
+    return QDockWidget::event (event);
+  }
+
+  void
+  variable_dock_widget::unfloat_float (void)
+  {
+    hide ();
+    setFloating (false);
+    // Avoid a Ubunty Unity issue by queuing this rather than direct.
+    emit queue_float ();
+    m_waiting_for_mouse_move = false;
+    m_waiting_for_mouse_button_release = false;
+  }
+
+  void
+  variable_dock_widget::refloat (void)
+  {
+    setFloating (true);
+    m_waiting_for_mouse_move = false;
+    m_waiting_for_mouse_button_release = false;
+    show ();
+    activateWindow ();
+    setFocus ();
+  }
+
+#else
+
+  void
+  variable_dock_widget::unfloat_float (void)
+  {}
+
+  void
+  variable_dock_widget::refloat (void)
+  {}
+
+#endif
 
   // Variable editor stack
 
@@ -355,14 +444,19 @@ namespace octave
     if (! hasFocus ())
       return;
 
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = 0;  // No options by default.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString name = objectName ();
     QString file
       = QFileDialog::getSaveFileName (this,
                                       tr ("Save Variable %1 As").arg (name),
     // FIXME: Should determine extension from save_default_options
                                       QString ("./%1.txt").arg (name),
-                                      0, 0,
-                                      QFileDialog::DontUseNativeDialog);
+                                      0, 0, QFileDialog::Option (opts));
 
     // FIXME: Type? binary, float-binary, ascii, text, hdf5, matlab format?
     // FIXME: Call octave_value::save_* directly?
@@ -494,12 +588,6 @@ namespace octave
     menu->addAction (resource_manager::icon ("edit-paste"),
                      tr ("Paste"),
                      this, SLOT (pasteClipboard ()));
-
-    // FIXME: Different icon for Paste Table?
-
-    menu->addAction (resource_manager::icon ("edit-paste"),
-                     tr ("Paste Table"),
-                     this, SLOT (pasteTableClipboard ()));
 
     menu->addSeparator ();
 
@@ -771,38 +859,6 @@ namespace octave
     QClipboard *clipboard = QApplication::clipboard ();
     QString text = clipboard->text ();
 
-    if (indices.isEmpty ())
-      {
-        if (size () == QSize (1,1))
-          mod->setData (mod->index (0,0), text.toDouble ());
-        else if (size () == QSize (0,0))
-          {
-            mod->insertColumn (0);
-            mod->insertRow (0);
-            mod->setData (mod->index (0,0), text.toDouble ());
-          }
-      }
-    else
-      {
-        QStringList cells = text.split(QRegExp("\n|\r\n|\r"));
-        int clen = cells.size ();
-        for (int i = 0; i < indices.size (); i++)
-          mod->setData (indices[i], cells.at (i % clen).toDouble ());
-      }
-  }
-
-  void variable_editor_view::pasteTableClipboard (void)
-  {
-    if (! hasFocus ())
-      return;
-
-    QAbstractItemModel *mod = model ();
-    QItemSelectionModel *sel = selectionModel ();
-    QList<QModelIndex> indices = sel->selectedIndexes ();
-
-    QClipboard *clipboard = QApplication::clipboard ();
-    QString text = clipboard->text ();
-
     QPoint start, end;
 
     QPoint tabsize = QPoint (mod->rowCount (), mod->columnCount ());
@@ -927,8 +983,7 @@ namespace octave
   {
     if (ev->type () == QEvent::HoverEnter)
       emit hovered_signal ();
-    else if (ev->type () == QEvent::MouseButtonPress
-             || ev->type () == QEvent::MouseButtonPress)
+    else if (ev->type () == QEvent::MouseButtonPress)
       emit popup_shown_signal ();
 
     return QToolButton::eventFilter (obj, ev);
@@ -977,8 +1032,8 @@ namespace octave
   // Variable editor.
 
   variable_editor::variable_editor (QWidget *p)
-    : octave_dock_widget (p),
-      m_main (new QMainWindow ()),
+    : octave_dock_widget ("VariableEditor", p),
+      m_main (new dw_main_window ()),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
       m_default_height (100),
@@ -991,9 +1046,9 @@ namespace octave
       m_table_colors (),
       m_current_focus_vname (""),
       m_hovered_focus_vname (""),
-      m_variable_focus_widget (nullptr)
+      m_focus_widget (nullptr),
+      m_focus_widget_vdw (nullptr)
   {
-    setObjectName ("VariableEditor");
     set_title (tr ("Variable Editor"));
     setStatusTip (tr ("Edit variables."));
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
@@ -1040,19 +1095,33 @@ namespace octave
     octave_dock_widget::focusInEvent (ev);
 
     // set focus to the current variable or most recent if still valid
-    QWidget *fw = m_main->focusWidget ();
-    if (fw != nullptr)
-      fw->setFocus ();
-    else if (m_main->isAncestorOf (m_variable_focus_widget))
-      m_variable_focus_widget->setFocus ();
-  }
-
-  void variable_editor::focusOutEvent (QFocusEvent *ev)
-  {
-    // focusWidget() appears lost in transition to/from main window
-    m_variable_focus_widget = m_main->focusWidget ();
-
-    octave_dock_widget::focusOutEvent (ev);
+    if (m_focus_widget != nullptr)
+      {
+        // Activating a floating window causes problems.
+        if (! m_focus_widget_vdw->isFloating ())
+            activateWindow ();
+        m_focus_widget->setFocus ();
+      }
+    else
+      {
+        QWidget *fw = m_main->focusWidget ();
+        if (fw != nullptr)
+          {
+            activateWindow ();
+            fw->setFocus ();
+          }
+        else
+          {
+            QDockWidget *any_qdw = m_main->findChild<QDockWidget *> ();
+            if (any_qdw != nullptr)
+              {
+                activateWindow ();
+                any_qdw->setFocus ();
+              }
+            else
+              setFocus();
+          }
+      }
   }
 
   // Add an action to a menu or the widget itself.
@@ -1120,6 +1189,13 @@ namespace octave
              this, SLOT (variable_destroyed (QObject *)));
     connect (page, SIGNAL (variable_focused_signal (const QString&)),
              this, SLOT (variable_focused (const QString&)));
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+#if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
+    connect (page, SIGNAL (queue_unfloat_float ()),
+             page, SLOT (unfloat_float ()), Qt::QueuedConnection);
+    connect (page, SIGNAL (queue_float ()),
+             page, SLOT (refloat ()), Qt::QueuedConnection);
+#endif
 
     variable_editor_stack *stack = new variable_editor_stack (page);
     stack->setObjectName (name);
@@ -1154,8 +1230,6 @@ namespace octave
              edit_view, SLOT (copyClipboard ()));
     connect (this, SIGNAL (paste_clipboard_signal ()),
              edit_view, SLOT (pasteClipboard ()));
-    connect (this, SIGNAL (paste_table_clipboard_signal ()),
-             edit_view, SLOT (pasteTableClipboard ()));
     connect (this, SIGNAL (selected_command_signal (const QString&)),
              edit_view, SLOT (selected_command_requested (const QString&)));
     connect (edit_view->horizontalHeader (),
@@ -1192,10 +1266,13 @@ namespace octave
     // to always supply a QLabl (initially empty) and then simply update its
     // contents.
     page->set_title (name);
-    QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
-    connect (model, SIGNAL (update_label_signal (const QString&)),
-             existing_ql, SLOT (setText (const QString&)));
-    existing_ql->setMargin (2);
+    if (page->titleBarWidget () != nullptr)
+      {
+        QLabel *existing_ql = page->titleBarWidget ()->findChild<QLabel *> ();
+        connect (model, SIGNAL (update_label_signal (const QString&)),
+                 existing_ql, SLOT (setText (const QString&)));
+        existing_ql->setMargin (2);
+      }
 
     model->update_data (val);
 
@@ -1272,7 +1349,7 @@ namespace octave
   void
   variable_editor::notice_settings (const QSettings *settings)
   {
-    // FIXME: Why use object->tostring->toint?  Why not just 100?
+    m_main->notice_settings (settings); // update settings in parent main win
 
     m_default_width = settings->value ("variable_editor/column_width",
                                        100).toInt ();
@@ -1292,18 +1369,17 @@ namespace octave
 
     QString font_name;
     int font_size;
+    QString default_font = settings->value (global_mono_font.key,
+                                            global_mono_font.def).toString ();
 
     if (m_use_terminal_font)
       {
-        font_name = settings->value ("terminal/fontName", "Courier New").toString ();
+        font_name = settings->value (cs_font.key, default_font).toString ();
         font_size = settings->value ("terminal/fontSize", 10).toInt ();
       }
     else
       {
-        font_name = settings->value ("variable_editor/font_name",
-                                     settings->value ("terminal/fontName",
-                                                      "Courier New")).toString ();
-
+        font_name = settings->value (ve_font.key, default_font).toString ();
         font_size = settings->value ("variable_editor/font_size", 10).toInt ();
       }
 
@@ -1333,17 +1409,12 @@ namespace octave
 
     // Icon size in the toolbar.
 
-    int icon_size_settings = settings->value ("toolbar_icon_size", 0).toInt ();
+    int size_idx = settings->value (global_icon_size.key,
+                                    global_icon_size.def).toInt ();
+    size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+
     QStyle *st = style ();
-    int icon_size = st->pixelMetric (QStyle::PM_ToolBarIconSize);
-
-    // FIXME: Magic numbers.  Use enum?
-
-    if (icon_size_settings == 1)
-      icon_size = st->pixelMetric (QStyle::PM_LargeIconSize);
-    else if (icon_size_settings == -1)
-      icon_size = st->pixelMetric (QStyle::PM_SmallIconSize);
-
+    int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
   }
 
@@ -1356,17 +1427,49 @@ namespace octave
   }
 
   void
-  variable_editor::variable_destroyed (QObject *)
+  variable_editor::variable_destroyed (QObject *obj)
   {
+    // Invalidate the focus-restoring widget pointer if currently active.
+    if (m_focus_widget_vdw == obj)
+      {
+        m_focus_widget = nullptr;
+        m_focus_widget_vdw = nullptr;
+      }
+
+    // If no variable pages remain, deactivate the tool bar.
     QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
     if (vdwlist.isEmpty ())
       m_tool_bar->setEnabled (false);
+
+    QFocusEvent ev (QEvent::FocusIn);
+    focusInEvent (&ev);
   }
 
   void
   variable_editor::variable_focused (const QString &name)
   {
     m_current_focus_vname = name;
+
+    // focusWidget() appears lost in transition to/from main window
+    // so keep a record of the widget.
+
+    QWidget *current = QApplication::focusWidget ();
+    m_focus_widget = nullptr;
+    m_focus_widget_vdw = nullptr;
+    if (current != nullptr)
+      {
+        QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
+        for (int i = 0; i < vdwlist.size (); i++)
+          {
+            variable_dock_widget *vdw = vdwlist.at (i);
+            if (vdw->isAncestorOf (current))
+              {
+                m_focus_widget = current;
+                m_focus_widget_vdw = vdw;
+                break;
+              }
+          }
+      }
   }
 
   void
@@ -1416,14 +1519,6 @@ namespace octave
   variable_editor::pasteClipboard (void)
   {
     emit paste_clipboard_signal ();
-
-    emit updated ();
-  }
-
-  void
-  variable_editor::pasteTableClipboard (void)
-  {
-    emit paste_table_clipboard_signal ();
 
     emit updated ();
   }
@@ -1534,13 +1629,6 @@ namespace octave
     action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
                                   tr ("Paste"), this, SLOT (pasteClipboard ()));
     action->setStatusTip(tr("Paste clipboard into variable data"));
-
-    // FIXME: Different icon for Paste Table?
-
-    action = add_tool_bar_button (resource_manager::icon ("edit-paste"),
-                                  tr ("Paste Table"),
-                                  this, SLOT (pasteTableClipboard ()));
-    action->setStatusTip(tr("Another paste clipboard into variable data"));
 
     m_tool_bar->addSeparator ();
 

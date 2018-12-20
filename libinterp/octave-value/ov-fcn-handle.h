@@ -131,6 +131,8 @@ public:
 
   bool is_equal_to (const octave_fcn_handle&) const;
 
+  octave_value convert_to_str_internal (bool pad, bool force, char type) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
@@ -181,8 +183,7 @@ protected:
   friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
-extern octave_value make_fcn_handle (const std::string& nm,
-                                     bool local_funcs = true);
+extern octave_value make_fcn_handle (const std::string& nm);
 
 class
 OCTINTERP_API
@@ -198,7 +199,7 @@ public:
 
   // Factory method.
   static octave_fcn_handle * maybe_binder (const octave_value& f,
-                                           octave::tree_evaluator *tw);
+                                           octave::tree_evaluator& tw);
 
 protected:
 

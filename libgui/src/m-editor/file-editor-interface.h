@@ -37,9 +37,8 @@ namespace octave
   public:
 
     file_editor_interface (QWidget *p)
-      : octave_dock_widget (p)
+      : octave_dock_widget ("FileEditor", p)
     {
-      setObjectName ("FileEditor");
     }
 
     virtual ~file_editor_interface (void) = default;
@@ -74,6 +73,8 @@ namespace octave
 
   public slots:
 
+    virtual void handle_file_remove (const QString& o, const QString& n) = 0;
+
     virtual void request_new_file (const QString& command = QString ()) = 0;
 
     virtual void request_open_file (const QString& openFileName,
@@ -82,7 +83,8 @@ namespace octave
                                     bool debug_pointer = false,
                                     bool breakpoint_marker = false,
                                     bool insert = true,
-                                    const QString& cond = "") = 0;
+                                    const QString& cond = "",
+                                    int index = -1) = 0;
   };
 }
 

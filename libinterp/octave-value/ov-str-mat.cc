@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <vector>
 
 #include "data-conv.h"
@@ -51,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
 #include "pr-output.h"
-#include "pt-mat.h"
 #include "utils.h"
 
 
@@ -289,7 +289,7 @@ octave_char_matrix_str::edit_display (const float_display_format&,
           std::string retval = string_value ();
 
           if (! is_sq_string ())
-            retval = undo_string_escapes (retval);
+            retval = octave::undo_string_escapes (retval);
 
           return retval;
         }

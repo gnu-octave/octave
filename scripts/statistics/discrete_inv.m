@@ -43,7 +43,7 @@ function inv = discrete_inv (x, v, p)
     error ("discrete_inv: P must be a nonzero, non-negative vector");
   endif
 
-  if (isa (x, "single") || isa (v, "single") || isa (p, "single"));
+  if (isa (x, "single") || isa (v, "single") || isa (p, "single"))
     inv = NaN (size (x), "single");
   else
     inv = NaN (size (x));
@@ -51,7 +51,7 @@ function inv = discrete_inv (x, v, p)
 
   ## FIXME: This isn't elegant.  But cumsum and lookup together produce
   ## different results when called with a single or a double.
-  if (isa (p, "single"));
+  if (isa (p, "single"))
     p = double (p);
   endif
 

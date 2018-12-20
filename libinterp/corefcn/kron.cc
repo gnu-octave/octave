@@ -64,13 +64,17 @@ kron (const MArray<R>& a, const MArray<T>& b)
   T *cv = c.fortran_vec ();
 
   for (octave_idx_type ja = 0; ja < nca; ja++)
-    for (octave_idx_type jb = 0; jb < ncb; jb++)
-      for (octave_idx_type ia = 0; ia < nra; ia++)
+    {
+      octave_quit ();
+      for (octave_idx_type jb = 0; jb < ncb; jb++)
         {
-          octave_quit ();
-          mx_inline_mul (nrb, cv, a(ia, ja), b.data () + nrb*jb);
-          cv += nrb;
+          for (octave_idx_type ia = 0; ia < nra; ia++)
+            {
+              mx_inline_mul (nrb, cv, a(ia, ja), b.data () + nrb*jb);
+              cv += nrb;
+            }
         }
+    }
 
   return c;
 }
@@ -90,12 +94,14 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
   MArray<T> c (dim_vector (nra*nrb, nca*ncb), T ());
 
   for (octave_idx_type ja = 0; ja < dla; ja++)
-    for (octave_idx_type jb = 0; jb < ncb; jb++)
-      {
-        octave_quit ();
-        mx_inline_mul (nrb, &c.xelem (ja*nrb, ja*ncb + jb), a.dgelem (ja),
-                       b.data () + nrb*jb);
-      }
+    {
+      octave_quit ();
+      for (octave_idx_type jb = 0; jb < ncb; jb++)
+        {
+          mx_inline_mul (nrb, &c.xelem (ja*nrb, ja*ncb + jb), a.dgelem (ja),
+                         b.data () + nrb*jb);
+        }
+    }
 
   return c;
 }
@@ -111,22 +117,24 @@ kron (const MSparse<T>& A, const MSparse<T>& B)
   C.cidx (0) = 0;
 
   for (octave_idx_type Aj = 0; Aj < A.columns (); Aj++)
-    for (octave_idx_type Bj = 0; Bj < B.columns (); Bj++)
-      {
-        octave_quit ();
-        for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
-          {
-            octave_idx_type Ci = A.ridx (Ai) * B.rows ();
-            const T v = A.data (Ai);
+    {
+      octave_quit ();
+      for (octave_idx_type Bj = 0; Bj < B.columns (); Bj++)
+        {
+          for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
+            {
+              octave_idx_type Ci = A.ridx (Ai) * B.rows ();
+              const T v = A.data (Ai);
 
-            for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)
-              {
-                C.data (idx) = v * B.data (Bi);
-                C.ridx (idx++) = Ci + B.ridx (Bi);
-              }
-          }
-        C.cidx (Aj * B.columns () + Bj + 1) = idx;
-      }
+              for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)
+                {
+                  C.data (idx) = v * B.data (Bi);
+                  C.ridx (idx++) = Ci + B.ridx (Bi);
+                }
+            }
+          C.cidx (Aj * B.columns () + Bj + 1) = idx;
+        }
+    }
 
   return C;
 }

@@ -59,9 +59,9 @@ function setappdata (h, varargin)
     values = varargin{2};
     n_names = numel (names);
     n_value = numel (values);
-    if (n_value == 1 && n_names > 1);
+    if (n_value == 1 && n_names > 1)
       values = repmat (values, [1, n_names]);
-    elseif (n_names != n_value);
+    elseif (n_names != n_value)
       error ("setappdata: number of NAME and VALUE arguments must match");
     endif
     varargin = cell (1, 2*numel (names));

@@ -61,36 +61,17 @@ function y = conv (a, b, shape = "full")
     error ('conv: SHAPE argument must be "full", "same", or "valid"');
   endif
 
-  la = la_orig = length (a);
-  lb = lb_orig = length (b);
+  y = conv2 (a(:), b(:), shape);
 
-  ly = la + lb - 1;
-
-  if (ly == 0)
-    y = zeros (1, 0);
-    return;
-  endif
-
-  ## Use shortest vector as the coefficent vector to filter.
-  if (la > lb)
-    [a, b] = deal (b, a);  # Swap vectors
-    lb = la;
-  endif
-  x = b;
-
-  ## Pad longer vector to convolution length.
-  if (ly > lb)
-    x(end+1:end+ly-lb) = 0;
-  endif
-
-  y = filter (a, 1, x);
-
-  if (strcmpi (shape, "same"))
-    idx = ceil ((ly - la) / 2);
-    y = y(idx+1:idx+la);
-  elseif (strcmpi (shape, "valid"))
-    len = la_orig - lb_orig;
-    y = y(lb_orig:lb_orig+len);
+  if (strcmpi (shape, "full"))
+    ## Adapt the shape to the longest input argument, if necessary.
+    if ((length (a) > length (b) && isrow (a)) ...
+        || (length (a) <= length (b) && isrow (b)))
+      y = y.';
+    endif
+  elseif (isrow (a))
+    ## Adapt the shape to the first input argument, if necessary.
+    y = y.';
   endif
 
 endfunction

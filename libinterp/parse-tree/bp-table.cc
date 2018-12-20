@@ -26,14 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
-#include <fstream>
 #include <limits>
 #include <list>
 #include <map>
 #include <set>
 #include <string>
-#include <sstream>
-#include <iostream>
 
 #include "file-ops.h"
 
@@ -41,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-int.h"
 #include "call-stack.h"
 #include "error.h"
+#include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
 #include "octave-link.h"
@@ -53,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-exp.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
-#include "symtab.h"
 
 namespace octave
 {
@@ -70,7 +67,7 @@ namespace octave
     Vdebug_on_warning = false;
     bp_table::m_warnings_that_stop.clear ();
 
-    octave::Vdebug_on_interrupt = false;
+    Vdebug_on_interrupt = false;
   }
 
   // Process the "warn", "errs", "caught" and "intr" fields for a call of
@@ -101,6 +98,7 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'errs' field");
 
@@ -127,6 +125,7 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'caught' field");
 
@@ -153,12 +152,13 @@ namespace octave
               }
           }
       }
+
     if (fail)
       error ("dbstop: invalid 'warn' field");
 
     // process interrupt
     if (mv.isfield ("intr"))
-      octave::Vdebug_on_interrupt = 1;
+      Vdebug_on_interrupt = 1;
   }
 
   // Insert a breakpoint in function fcn at line within file fname,
@@ -173,7 +173,7 @@ namespace octave
   {
     bool found = false;
 
-    octave::tree_statement_list *cmds = fcn->body ();
+    tree_statement_list *cmds = fcn->body ();
 
     std::string file = fcn->fcn_file_name ();
 
@@ -212,14 +212,15 @@ namespace octave
   {
     if (cond.length () > 0)
       {
-        octave::parser parser (cond + " ;"); // ; to reject partial expr like "y=="
+        // ; to reject partial expr like "y=="
+        parser parser (cond + " ;", m_evaluator.get_interpreter ());
         parser.reset ();
         int parse_status = parser.run ();
         if (parse_status)
           error ("dbstop: Cannot parse condition '%s'", cond.c_str ());
         else
           {
-            octave::tree_statement *stmt = nullptr;
+            tree_statement *stmt = nullptr;
             if (! parser.m_stmt_list)
               error ("dbstop: "
                      "condition is not empty, but has nothing to evaluate");
@@ -229,7 +230,7 @@ namespace octave
                     && (stmt = parser.m_stmt_list->front ())
                     && stmt->is_expression ())
                   {
-                    octave::tree_expression *expr = stmt->expression ();
+                    tree_expression *expr = stmt->expression ();
                     if (expr->is_assignment_expression ())
                       error ("dbstop: condition cannot be an assignment.  "
                              "Did you mean '=='?");
@@ -239,6 +240,7 @@ namespace octave
               }
           }
       }
+
     return true;
   }
 
@@ -329,21 +331,21 @@ namespace octave
               error ("%s: Only one 'at' clause is allowed -- %s",
                      who, args(pos).string_value ().c_str ());
             else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n");
+              error ("%s: line number must come before 'if' clause\n", who);
             seen_at = true;
 
             if (! seen_in)
               {
                 // It was a line number.  Get function name from debugger.
                 if (Vdebugging)
-                  symbol_name = get_user_code ()->profiler_name ();
+                  symbol_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
                 seen_in = true;
               }
             else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n");
+              error ("%s: line number must come before 'if' clause\n", who);
 
             // Read a list of line numbers (or arrays thereof)
             for ( ; pos < nargin; pos++)
@@ -366,7 +368,7 @@ namespace octave
                   }
                 else
                   error ("%s: Invalid argument type %s",
-                         args(pos).type_name ().c_str ());
+                         who, args(pos).type_name ().c_str ());
               }
             break;
 
@@ -412,7 +414,7 @@ namespace octave
                   }
                 else if (condition == "interrupt")
                   {
-                    octave::Vdebug_on_interrupt = on_off;
+                    Vdebug_on_interrupt = on_off;
                   }
                 else if (condition == "naninf")
                   {
@@ -455,7 +457,7 @@ namespace octave
                         if (stop_flag == &Vdebug_on_error)
                           {
                             // Matlab stops on both.
-                            octave::Vdebug_on_interrupt = on_off;
+                            Vdebug_on_interrupt = on_off;
                           }
                       }
                   }
@@ -555,7 +557,7 @@ namespace octave
                                              const bp_table::intmap& line,
                                              const std::string& condition)
   {
-    octave_user_code *main_fcn = get_user_code (fname);
+    octave_user_code *main_fcn = m_evaluator.get_user_code (fname);
 
     if (! main_fcn)
       error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());
@@ -586,8 +588,7 @@ namespace octave
           }
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
@@ -600,7 +601,7 @@ namespace octave
 
     std::string file = fcn->fcn_file_name ();
 
-    octave::tree_statement_list *cmds = fcn->body ();
+    tree_statement_list *cmds = fcn->body ();
 
     // FIXME: move the operation on cmds to the tree_statement_list class?
 
@@ -629,7 +630,7 @@ namespace octave
 
             results = cmds->list_breakpoints ();
 
-            bp_set_iterator it = m_bp_set.find (fname);
+            auto it = m_bp_set.find (fname);
             if (results.empty () && it != m_bp_set.end ())
               m_bp_set.erase (it);
           }
@@ -654,7 +655,7 @@ namespace octave
       }
     else
       {
-        octave_user_code *dbg_fcn = get_user_code (fname);
+        octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
 
         if (! dbg_fcn)
           error ("remove_breakpoint: unable to find function %s\n",
@@ -683,8 +684,7 @@ namespace octave
           }
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
@@ -697,19 +697,19 @@ namespace octave
   {
     intmap retval;
 
-    octave_user_code *dbg_fcn = get_user_code (fname);
+    octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
 
     if (dbg_fcn)
       {
         std::string file = dbg_fcn->fcn_file_name ();
 
-        octave::tree_statement_list *cmds = dbg_fcn->body ();
+        tree_statement_list *cmds = dbg_fcn->body ();
 
         if (cmds)
           {
             retval = cmds->remove_all_breakpoints (file);
 
-            bp_set_iterator it = m_bp_set.find (fname);
+            auto it = m_bp_set.find (fname);
             if (it != m_bp_set.end ())
               m_bp_set.erase (it);
           }
@@ -718,25 +718,24 @@ namespace octave
       error ("remove_all_breakpoint_in_file: "
              "unable to find function %s\n", fname.c_str ());
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
 
     return retval;
   }
 
   void bp_table::remove_all_breakpoints (void)
   {
-    // Odd loop structure required because delete will invalidate m_bp_set iterators
-    for (const_bp_set_iterator it = m_bp_set.begin (), it_next = it;
-         it != m_bp_set.end ();
+    // Odd loop structure required because delete will invalidate
+    // m_bp_set iterators.
+    for (auto it = m_bp_set.cbegin (), it_next = it;
+         it != m_bp_set.cend ();
          it = it_next)
       {
         ++it_next;
         remove_all_breakpoints_in_file (*it);
       }
 
-    octave::tree_evaluator::debug_mode = bp_table::have_breakpoints ()
-                                         || Vdebugging;
+    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)
@@ -768,11 +767,11 @@ namespace octave
         if (fname_list.empty ()
             || find_bkpt_list (fname_list, bp_fname) != "")
           {
-            octave_user_code *dbg_fcn = get_user_code (bp_fname);
+            octave_user_code *dbg_fcn = m_evaluator.get_user_code (bp_fname);
 
             if (dbg_fcn)
               {
-                octave::tree_statement_list *cmds = dbg_fcn->body ();
+                tree_statement_list *cmds = dbg_fcn->body ();
 
                 // FIXME: move the operation on cmds to the
                 //        tree_statement_list class?
@@ -917,7 +916,7 @@ namespace octave
       }
 
     // print dbstop if interrupt information
-    if (octave::Vdebug_on_interrupt)
+    if (Vdebug_on_interrupt)
       {
         if (to_screen)
           octave_stdout << "stop if interrupt\n";
@@ -928,46 +927,11 @@ namespace octave
     return retval;
   }
 
-  // Return a pointer to the user-defined function FNAME.  If FNAME is empty,
-  // search backward for the first user-defined function in the
-  // current call stack.
-
   octave_user_code *
   get_user_code (const std::string& fname)
   {
-    octave_user_code *dbg_fcn = nullptr;
+    tree_evaluator& tw = __get_evaluator__ ("get_user_code");
 
-    if (fname.empty ())
-      {
-        octave::call_stack& cs = octave::__get_call_stack__ ("get_user_code");
-
-        dbg_fcn = cs.debug_user_code ();
-      }
-    else
-      {
-        std::string name = fname;
-
-        if (octave::sys::file_ops::dir_sep_char () != '/' && name[0] == '@')
-          {
-            auto beg = name.begin () + 2;  // never have @/method
-            auto end = name.end () - 1;    // never have trailing '/'
-            std::replace (beg, end, '/', octave::sys::file_ops::dir_sep_char ());
-          }
-
-        size_t name_len = name.length ();
-
-        if (name_len > 2 && name.substr (name_len-2) == ".m")
-          name = name.substr (0, name_len-2);
-
-        octave::symbol_table& symtab =
-          octave::__get_symbol_table__ ("get_user_code");
-
-        octave_value fcn = symtab.find_function (name);
-
-        if (fcn.is_defined () && fcn.is_user_code ())
-          dbg_fcn = fcn.user_code_value ();
-      }
-
-    return dbg_fcn;
+    return tw.get_user_code (fname);
   }
 }

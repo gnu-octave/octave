@@ -91,9 +91,9 @@ namespace octave
       {
         dval = tc.double_value ();
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
 
         conv_err = 1;
       }
@@ -102,7 +102,7 @@ namespace octave
       {
         if (! lo_ieee_isnan (dval))
           {
-            int ival = octave::math::nint (dval);
+            int ival = math::nint (dval);
 
             if (ival == dval)
               retval = ival;
@@ -122,9 +122,9 @@ namespace octave
     octave_idx_type retval = -1;
 
     if (lo_ieee_isnan (d))
-      ::error ("%s: NaN is invalid as size specification", who.c_str ());
+      ::error ("%s: NaN invalid as size specification", who.c_str ());
 
-    if (octave::math::isinf (d))
+    if (math::isinf (d))
       retval = -1;
     else
       {
@@ -136,7 +136,7 @@ namespace octave
           ::error ("%s: dimension too large for Octave's index type",
                    who.c_str ());
 
-        retval = octave::math::nint_big (d);
+        retval = math::nint_big (d);
       }
 
     return retval;
@@ -169,18 +169,26 @@ namespace octave
       {
         dnr = size(0);
 
-        if (octave::math::isinf (dnr))
-          ::error ("%s: invalid size specification", who.c_str ());
+        if (math::isinf (dnr))
+          ::error ("%s: infinite value invalid as size specification",
+                   who.c_str ());
 
         dnc = size(1);
       }
     else
-      ::error ("%s: invalid size specification", who.c_str ());
+      ::error ("%s: invalid size specification (must be 2-D)", who.c_str ());
 
     nr = get_size (dnr, who);
 
     if (dnc >= 0.0)
-      nc = get_size (dnc, who);
+      {
+        nc = get_size (dnc, who);
+
+        // Check for overflow.
+        if (nr > 0 && nc > 0
+            && nc > std::numeric_limits<octave_idx_type>::max () / nr)
+          ::error ("%s: size too large for Octave's index type", who.c_str ());
+      }
   }
 
   static std::string
@@ -2649,8 +2657,8 @@ namespace octave
       }
 
     if ((err & 4) && ! return_on_error)
-      error ("%s: Read error in field %d of row %d", who.c_str (),
-             done_after + 1, row + 1);
+      error ("%s: Read error in field %d of row %" OCTAVE_IDX_TYPE_FORMAT,
+             who.c_str (), done_after + 1, row + 1);
 
     // If file does not end in EOL, do not pad columns with NaN.
     bool uneven_columns = false;
@@ -3391,7 +3399,7 @@ namespace octave
                               Array<octave_idx_type> row, int& done_after)
   {
     const textscan_format_elt *elem = fmt_list.first ();
-    std::list<octave_value>::iterator out = retval.begin ();
+    auto out = retval.begin ();
     bool no_conversions = true;
     bool done = false;
     bool conversion_failed = false;       // Record for ReturnOnError
@@ -4574,7 +4582,7 @@ namespace octave
                          octave_idx_type& conversion_count,
                          const std::string& who)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4902,8 +4910,8 @@ namespace octave
                       is.clear (is.rdstate () & (~std::ios::failbit));
 
                     // FIXME: is this the right thing to do?
-                    if (octave::application::interactive ()
-                        && ! octave::application::forced_interactive ()
+                    if (application::interactive ()
+                        && ! application::forced_interactive ()
                         && name () == "stdin")
                       {
                         is.clear ();
@@ -5198,8 +5206,8 @@ namespace octave
 
         // FIXME: is this the right thing to do?
 
-        if (octave::application::interactive ()
-            && ! octave::application::forced_interactive ()
+        if (application::interactive ()
+            && ! application::forced_interactive ()
             && name () == "stdin")
           {
             // Skip to end of line.
@@ -5292,7 +5300,7 @@ namespace octave
                             const std::string& who,
                             octave_idx_type& read_count)
   {
-    if (octave::application::interactive () && file_number () == 0)
+    if (application::interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -5304,7 +5312,7 @@ namespace octave
       invalid_operation (who, "reading");
     else
       {
-        octave::textscan scanner (who);
+        textscan scanner (who);
 
         retval = scanner.scan (*isp, fmt, ntimes, options, read_count);
       }
@@ -5437,7 +5445,7 @@ namespace octave
                       {
                         double dval = val(idx);
 
-                        if (octave::math::x_nint (dval) != dval || dval < 0 || dval > 255)
+                        if (math::x_nint (dval) != dval || dval < 0 || dval > 255)
                           break;
                       }
 
@@ -5464,7 +5472,7 @@ namespace octave
                   {
                     double dval = retval.double_value ();
 
-                    if (octave::math::x_nint (dval) == dval && dval >= 0 && dval < 256)
+                    if (math::x_nint (dval) == dval && dval >= 0 && dval < 256)
                       retval = static_cast<char> (dval);
                   }
               }
@@ -5513,8 +5521,8 @@ namespace octave
 
     double dval = val.double_value (true);
 
-    if (octave::math::x_nint (dval) == dval)
-      retval = octave::math::nint (dval);
+    if (math::x_nint (dval) == dval)
+      retval = math::nint (dval);
     else
       curr_state = conversion_error;
 
@@ -5533,15 +5541,15 @@ namespace octave
     switch (nsa)
       {
       case 2:
-        retval = octave_format (os, fmt, sa_1, sa_2, arg);
+        retval = octave::format (os, fmt, sa_1, sa_2, arg);
         break;
 
       case 1:
-        retval = octave_format (os, fmt, sa_1, arg);
+        retval = octave::format (os, fmt, sa_1, arg);
         break;
 
       case 0:
-        retval = octave_format (os, fmt, arg);
+        retval = octave::format (os, fmt, arg);
         break;
 
       default:
@@ -5553,7 +5561,7 @@ namespace octave
   }
 
   static size_t
-  do_printf_string (std::ostream& os, const octave::printf_format_elt *elt,
+  do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
                     const std::string& who)
   {
@@ -5608,7 +5616,7 @@ namespace octave
       {
         double dval = val.double_value (true);
 
-        if (dval == octave::math::round (dval) && dval <= limit)
+        if (dval == math::round (dval) && dval <= limit)
           return true;
       }
 
@@ -5635,7 +5643,7 @@ namespace octave
 
         uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-        if (dval == octave::math::round (dval) && dval >= 0 && dval <= limit)
+        if (dval == math::round (dval) && dval >= 0 && dval <= limit)
           return true;
       }
 
@@ -5643,7 +5651,7 @@ namespace octave
   }
 
   static std::string
-  switch_to_g_format (const octave::printf_format_elt *elt)
+  switch_to_g_format (const printf_format_elt *elt)
   {
     std::string tfmt = elt->text;
 
@@ -6303,7 +6311,7 @@ namespace octave
                     octave_idx_type elts_read,
                     octave_idx_type nr, octave_idx_type nc, bool swap,
                     bool do_float_fmt_conv, bool do_NA_conv,
-                    octave::mach_info::float_format from_flt_fmt)
+                    mach_info::float_format from_flt_fmt)
   {
     typedef typename DST_T::element_type dst_elt_type;
 
@@ -6313,8 +6321,7 @@ namespace octave
 
     octave_idx_type j = 0;
 
-    for (std::list<void *>::const_iterator it = input_buf_list.begin ();
-         it != input_buf_list.end (); it++)
+    for (auto it = input_buf_list.cbegin (); it != input_buf_list.cend (); it++)
       {
         SRC_T *data = static_cast<SRC_T *> (*it);
 
@@ -6330,7 +6337,7 @@ namespace octave
                     else if (do_float_fmt_conv)
                       do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                   1, from_flt_fmt,
-                                                  octave::mach_info::native_float_format ());
+                                                  mach_info::native_float_format ());
 
                     dst_elt_type tmp (data[i]);
 
@@ -6350,7 +6357,7 @@ namespace octave
                     else if (do_float_fmt_conv)
                       do_float_format_conversion (&data[i], sizeof (SRC_T),
                                                   1, from_flt_fmt,
-                                                  octave::mach_info::native_float_format ());
+                                                  mach_info::native_float_format ());
 
                     conv_data[j] = data[i];
                   }
@@ -6394,7 +6401,7 @@ namespace octave
     (std::list<void *>& input_buf_list, octave_idx_type input_buf_elts,
      octave_idx_type elts_read, octave_idx_type nr, octave_idx_type nc,
      bool swap, bool do_float_fmt_conv, bool do_NA_conv,
-     octave::mach_info::float_format from_flt_fmt);
+     mach_info::float_format from_flt_fmt);
 
 #define TABLE_ELT(T, U, V, W)                                           \
   conv_fptr_table[oct_data_conv::T][oct_data_conv::U] = convert_and_copy<V, W>
@@ -6512,19 +6519,19 @@ namespace octave
   {
     octave_value retval;
 
+    if (! stream_ok ())
+      return retval;
+
     octave_idx_type nr = -1;
     octave_idx_type nc = -1;
 
     bool one_elt_size_spec = false;
 
-    if (! stream_ok ())
-      return retval;
+    // FIXME: We may eventually want to make this extensible.
 
-    // FIXME: we may eventually want to make this extensible.
-
-    // FIXME: we need a better way to ensure that this
-    // numbering stays consistent with the order of the elements in the
-    // data_type enum in the oct_data_conv class.
+    // FIXME: We need a better way to ensure that this numbering stays
+    // consistent with the order of the elements in the data_type enum in the
+    // oct_data_conv class.
 
     // Expose this in a future version?
     size_t char_count = 0;
@@ -6569,9 +6576,6 @@ namespace octave
           nr = nc = 0;
       }
 
-    // FIXME: Ensure that this does not overflow.
-    //        Maybe try comparing nr * nc computed in double with
-    //        std::numeric_limits<octave_idx_type>::max ();
     octave_idx_type elts_to_read = nr * nc;
 
     bool read_to_eof = elts_to_read < 0;
@@ -6596,8 +6600,7 @@ namespace octave
 
     assert (input_buf_size >= 0);
 
-    // Must also work and return correct type object
-    // for 0 elements to read.
+    // Must also work and return correct type object for 0 elements to read.
     std::istream *isp = input_stream ();
 
     if (! isp)
@@ -6606,7 +6609,18 @@ namespace octave
       {
         std::istream& is = *isp;
 
-        std::list <void *> input_buf_list;
+        // Initialize eof_pos variable just once per function call
+        off_t eof_pos = 0;
+        off_t cur_pos = 0;
+        if (skip != 0 && is && ! is.eof ())
+          {
+            cur_pos = is.tellg ();
+            is.seekg (0, is.end);
+            eof_pos = is.tellg ();
+            is.seekg (cur_pos, is.beg);
+          }
+
+        std::list<void *> input_buf_list;
 
         while (is && ! is.eof ()
                && (read_to_eof || tmp_count < elts_to_read))
@@ -6626,6 +6640,7 @@ namespace octave
             size_t gcount = is.gcount ();
 
             char_count += gcount;
+            cur_pos += gcount;
 
             octave_idx_type nel = gcount / input_elt_size;
 
@@ -6633,30 +6648,22 @@ namespace octave
 
             input_buf_list.push_back (input_buf);
 
-            if (is && skip != 0 && nel == block_size)
+            if (skip != 0 && nel == block_size && is)
               {
-                // Seek to skip.
+                // Attempt to skip.
                 // If skip would move past EOF, position at EOF.
-
-                off_t orig_pos = tell ();
-
-                seek (0, SEEK_END);
-
-                off_t eof_pos = tell ();
-
-                // Is it possible for this to fail to return us to
-                // the original position?
-                seek (orig_pos, SEEK_SET);
-
-                off_t remaining = eof_pos - orig_pos;
+                off_t remaining = eof_pos - cur_pos;
 
                 if (remaining < skip)
-                  seek (0, SEEK_END);
+                  {
+                    is.seekg (0, is.end);
+                    cur_pos = eof_pos;
+                  }
                 else
-                  seek (skip, SEEK_CUR);
-
-                if (! is)
-                  break;
+                  {
+                    is.seekg (skip, is.cur);
+                    cur_pos += skip;
+                  }
               }
           }
 
@@ -6777,18 +6784,18 @@ namespace octave
   static bool
   convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
                 oct_data_conv::data_type output_type,
-                octave::mach_info::float_format flt_fmt)
+                mach_info::float_format flt_fmt)
   {
     bool retval = true;
 
     bool swap = false;
 
-    if (octave::mach_info::words_big_endian ())
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian);
+    if (mach_info::words_big_endian ())
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_little_endian);
     else
-      swap = (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
+      swap = (flt_fmt == mach_info::flt_fmt_ieee_big_endian);
 
-    bool do_float_conversion = flt_fmt != octave::mach_info::float_format ();
+    bool do_float_conversion = flt_fmt != mach_info::float_format ();
 
     typedef typename ultimate_element_type<T>::type ult_elt_type;
 
@@ -7283,7 +7290,7 @@ namespace octave
     return retval;
   }
 
-  stream_list::stream_list (interpreter&)
+  stream_list::stream_list (interpreter& interp)
     : list (), lookup_cache (list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
@@ -7294,7 +7301,10 @@ namespace octave
 
     // FIXME: we should be accessing octave_stdout from the interpreter.
 
-    stream stdout_stream = octave_ostream::create (&octave_stdout, "stdout");
+    output_system& output_sys = interp.get_output_system ();
+
+    stream stdout_stream
+      = octave_ostream::create (&(output_sys.__stdout__ ()), "stdout");
 
     stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
 
@@ -7385,7 +7395,7 @@ namespace octave
     if (fid < 3)
       err_invalid_file_id (fid, who);
 
-    ostrl_map::iterator iter = list.find (fid);
+    auto iter = list.find (fid);
 
     if (iter == list.end ())
       err_invalid_file_id (fid, who);
@@ -7432,7 +7442,7 @@ namespace octave
         list[2].flush ();
       }
 
-    for (ostrl_map::iterator iter = list.begin (); iter != list.end (); )
+    for (auto iter = list.begin (); iter != list.end (); )
       {
         int fid = iter->first;
         if (fid < 3)  // Don't delete stdin, stdout, stderr

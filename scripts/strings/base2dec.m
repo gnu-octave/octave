@@ -74,7 +74,7 @@ function out = base2dec (s, base)
     endif
   elseif (! isscalar (base))
     error ("base2dec: cannot convert from several bases at once");
-  elseif (base < 2 || base > length (symbols))
+  elseif (! (base >= 2 && base <= length (symbols)))
     error ("base2dec: BASE must be between 2 and 36, or a string of symbols");
   else
     s = toupper (s);
@@ -127,7 +127,9 @@ endfunction
 %!error base2dec ()
 %!error base2dec ("11120")
 %!error base2dec ("11120", 3, 4)
-%!error base2dec ("11120", "1231")
-%!error base2dec ("11120", "12 3")
-%!error base2dec ("11120", ones (2))
-%!error base2dec ("11120", 37)
+%!error <symbols .* must be unique> base2dec ("11120", "1231")
+%!error <whitespace characters are not valid> base2dec ("11120", "12 3")
+%!error <cannot convert from several bases> base2dec ("11120", ones (2))
+%!error <BASE must be between 2 and 36> base2dec ("11120", 1)
+%!error <BASE must be between 2 and 36> base2dec ("11120", 37)
+%!error <BASE must be between 2 and 36> base2dec ("11120", NaN)

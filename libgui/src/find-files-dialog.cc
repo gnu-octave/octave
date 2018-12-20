@@ -313,9 +313,16 @@ namespace octave
 
   void find_files_dialog::browse_folders (void)
   {
+    int opts = 0;  // No options by default.
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                    true).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
     QString dir =
       QFileDialog::getExistingDirectory (this, tr ("Set search directory"),
-                                         m_start_dir_edit->text ());
+                                         m_start_dir_edit->text (),
+                                         QFileDialog::Option (opts));
 
     if (! dir.isEmpty ())
       m_start_dir_edit->setText (dir);

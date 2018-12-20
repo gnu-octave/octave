@@ -32,9 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
-// FIXME: gripes.h was deprecated in version 4.2 and will be removed
-// in version 5.
-#include "gripes.h"
 #include "help.h"
 #include "ovl.h"
 #include "pager.h"

@@ -25,12 +25,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-string.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstring>
-
+#include <iomanip>
 #include <string>
 
 #include "Array.h"
+#include "lo-ieee.h"
+#include "lo-mappers.h"
 
 template <typename T>
 static bool
@@ -146,8 +149,13 @@ bool
 octave::string::strncmp (const T& str_a, const T& str_b,
                          const typename T::size_type n)
 {
-  return (numel (str_a) >= n && numel (str_b) >= n
-          && str_data_cmp<T> (str_a.data (), str_b.data (), n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = numel (str_b);
+  neff = std::min (std::max (len_a, len_b), n);
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmp<T> (str_a.data (), str_b.data (), neff));
 }
 
 template<typename T>
@@ -155,8 +163,13 @@ bool
 octave::string::strncmp (const T& str_a, const typename T::value_type *str_b,
                          const typename T::size_type n)
 {
-  return (numel (str_a) >= n && strlen<T> (str_b) >= n
-          && str_data_cmp<T> (str_a.data (), str_b, n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = strlen<T> (str_b);
+  neff = std::min (std::max (len_a, len_b), n);
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmp<T> (str_a.data (), str_b, neff));
 }
 
 
@@ -165,8 +178,13 @@ bool
 octave::string::strncmpi (const T& str_a, const T& str_b,
                           const typename T::size_type n)
 {
-  return (numel (str_a) >= n && numel (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b.data (), n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = numel (str_b);
+  neff = std::min (std::max (len_a, len_b), n);
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmpi<T> (str_a.data (), str_b.data (), neff));
 }
 
 template<typename T>
@@ -174,8 +192,13 @@ bool
 octave::string::strncmpi (const T& str_a, const typename T::value_type *str_b,
                           const typename T::size_type n)
 {
-  return (numel (str_a) >= n && strlen<T> (str_b) >= n
-          && str_data_cmpi<T> (str_a.data (), str_b, n));
+  typename T::size_type neff;
+  auto len_a = numel (str_a);
+  auto len_b = strlen<T> (str_b);
+  neff = std::min (std::max (len_a, len_b), n);
+
+  return (len_a >= neff && len_b >= neff
+          && str_data_cmpi<T> (str_a.data (), str_b, neff));
 }
 
 
@@ -204,3 +227,363 @@ INSTANTIATE_OCTAVE_STRING(std::string)
 INSTANTIATE_OCTAVE_STRING(Array<char>)
 
 #undef INSTANTIATE_OCTAVE_STRING
+
+static inline bool
+is_imag_unit (int c)
+{ return c == 'i' || c == 'j'; }
+
+static double
+single_num (std::istringstream& is)
+{
+  double num = 0.0;
+
+  char c = is.peek ();
+
+  // Skip spaces.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
+  if (std::toupper (c) == 'I')
+    {
+      // It's infinity.
+      is.get ();
+      char c1 = is.get ();
+      char c2 = is.get ();
+      if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
+        {
+          num = octave::numeric_limits<double>::Inf ();
+          is.peek (); // May set EOF bit.
+        }
+      else
+        is.setstate (std::ios::failbit); // indicate that read has failed.
+    }
+  else if (c == 'N')
+    {
+      // It's NA or NaN
+      is.get ();
+      char c1 = is.get ();
+      if (c1 == 'A')
+        {
+          num = octave_NA;
+          is.peek (); // May set EOF bit.
+        }
+      else
+        {
+          char c2 = is.get ();
+          if (c1 == 'a' && c2 == 'N')
+            {
+              num = octave::numeric_limits<double>::NaN ();
+              is.peek (); // May set EOF bit.
+            }
+          else
+            is.setstate (std::ios::failbit); // indicate that read has failed.
+        }
+    }
+  else
+    is >> num;
+
+  return num;
+}
+
+static std::istringstream&
+extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
+{
+  have_sign = imag = false;
+
+  char c = is.peek ();
+
+  // Skip leading spaces.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
+  bool negative = false;
+
+  // Accept leading sign.
+  if (c == '+' || c == '-')
+    {
+      have_sign = true;
+      negative = c == '-';
+      is.get ();
+      c = is.peek ();
+    }
+
+  // Skip spaces after sign.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
+  // Imaginary number (i*num or just i), or maybe 'inf'.
+  if (c == 'i')
+    {
+      // possible infinity.
+      is.get ();
+      c = is.peek ();
+
+      if (is.eof ())
+        {
+          // just 'i' and string is finished.  Return immediately.
+          imag = true;
+          num = (negative ? -1.0 : 1.0);
+          return is;
+        }
+      else
+        {
+          if (std::tolower (c) != 'n')
+            imag = true;
+          is.unget ();
+        }
+    }
+  else if (c == 'j')
+    imag = true;
+
+  // It's i*num or just i
+  if (imag)
+    {
+      is.get ();
+      c = is.peek ();
+      // Skip spaces after imaginary unit.
+      while (isspace (c))
+        {
+          is.get ();
+          c = is.peek ();
+        }
+
+      if (c == '*')
+        {
+          // Multiplier follows, we extract it as a number.
+          is.get ();
+          num = single_num (is);
+          if (is.good ())
+            c = is.peek ();
+        }
+      else
+        num = 1.0;
+    }
+  else
+    {
+      // It's num, num*i, or numi.
+      num = single_num (is);
+      if (is.good ())
+        {
+          c = is.peek ();
+
+          // Skip spaces after number.
+          while (isspace (c))
+            {
+              is.get ();
+              c = is.peek ();
+            }
+
+          if (c == '*')
+            {
+              is.get ();
+              c = is.peek ();
+
+              // Skip spaces after operator.
+              while (isspace (c))
+                {
+                  is.get ();
+                  c = is.peek ();
+                }
+
+              if (is_imag_unit (c))
+                {
+                  imag = true;
+                  is.get ();
+                  c = is.peek ();
+                }
+              else
+                is.setstate (std::ios::failbit); // indicate read has failed.
+            }
+          else if (is_imag_unit (c))
+            {
+              imag = true;
+              is.get ();
+              c = is.peek ();
+            }
+        }
+    }
+
+  if (is.good ())
+    {
+      // Skip trailing spaces.
+      while (isspace (c))
+        {
+          is.get ();
+          c = is.peek ();
+        }
+    }
+
+  if (negative)
+    num = -num;
+
+  return is;
+}
+
+static inline void
+set_component (Complex& c, double num, bool imag)
+{
+#if defined (HAVE_CXX_COMPLEX_SETTERS)
+  if (imag)
+    c.imag (num);
+  else
+    c.real (num);
+#elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
+  if (imag)
+    c.imag () = num;
+  else
+    c.real () = num;
+#else
+  if (imag)
+    c = Complex (c.real (), num);
+  else
+    c = Complex (num, c.imag ());
+#endif
+}
+
+Complex
+octave::string::str2double (const std::string& str_arg)
+{
+  Complex val (0.0, 0.0);
+
+  std::string str = str_arg;
+
+  // FIXME: removing all commas doesn't allow actual parsing.
+  //        Example: "1,23.45" is wrong, but passes Octave.
+  str.erase (std::remove (str.begin (), str.end(), ','), str.end ());
+  std::istringstream is (str);
+
+  double num;
+  bool i1, i2, s1, s2;
+
+  if (is.eof ())
+    val = octave::numeric_limits<double>::NaN ();
+  else if (! extract_num (is, num, i1, s1))
+    val = octave::numeric_limits<double>::NaN ();
+  else
+    {
+      set_component (val, num, i1);
+
+      if (! is.eof ())
+        {
+          if (! extract_num (is, num, i2, s2) || i1 == i2 || ! s2)
+            val = octave::numeric_limits<double>::NaN ();
+          else
+            set_component (val, num, i2);
+        }
+    }
+
+  return val;
+}
+
+template <typename T>
+std::string
+rational_approx (T val, int len)
+{
+  std::string s;
+
+  if (len <= 0)
+    len = 10;
+
+  if (octave::math::isinf (val))
+    {
+      if (val > 0)
+        s = "1/0";
+      else
+        s = "-1/0";
+    }
+  else if (octave::math::isnan (val))
+    s = "0/0";
+  else if (val < std::numeric_limits<int>::min ()
+           || val > std::numeric_limits<int>::max ()
+           || octave::math::x_nint (val) == val)
+    {
+      std::ostringstream buf;
+      buf.flags (std::ios::fixed);
+      buf << std::setprecision (0) << octave::math::round (val);
+      s = buf.str ();
+    }
+  else
+    {
+      T lastn = 1;
+      T lastd = 0;
+      T n = octave::math::round (val);
+      T d = 1;
+      T frac = val - n;
+      int m = 0;
+
+      std::ostringstream buf2;
+      buf2.flags (std::ios::fixed);
+      buf2 << std::setprecision (0) << static_cast<int> (n);
+      s = buf2.str ();
+
+      while (true)
+        {
+          T flip = 1 / frac;
+          T step = octave::math::round (flip);
+          T nextn = n;
+          T nextd = d;
+
+          // Have we converged to 1/intmax ?
+          if (std::abs (flip) > static_cast<T> (std::numeric_limits<int>::max ()))
+            {
+              lastn = n;
+              lastd = d;
+              break;
+            }
+
+          frac = flip - step;
+          n = step * n + lastn;
+          d = step * d + lastd;
+          lastn = nextn;
+          lastd = nextd;
+
+          std::ostringstream buf;
+          buf.flags (std::ios::fixed);
+          buf << std::setprecision (0) << static_cast<int> (n)
+              << '/' << static_cast<int> (d);
+          m++;
+
+          if (n < 0 && d < 0)
+            {
+              // Double negative, string can be two characters longer.
+              if (buf.str ().length () > static_cast<unsigned int> (len + 2))
+                break;
+            }
+          else if (buf.str ().length () > static_cast<unsigned int> (len))
+            break;
+
+          if (std::abs (n) > std::numeric_limits<int>::max ()
+              || std::abs (d) > std::numeric_limits<int>::max ())
+            break;
+
+          s = buf.str ();
+        }
+
+      if (lastd < 0)
+        {
+          // Move sign to the top
+          lastd = - lastd;
+          lastn = - lastn;
+          std::ostringstream buf;
+          buf.flags (std::ios::fixed);
+          buf << std::setprecision (0) << static_cast<int> (lastn)
+              << '/' << static_cast<int> (lastd);
+          s = buf.str ();
+        }
+    }
+
+  return s;
+}
+
+// instanciate the template for float and double
+template std::string rational_approx <float> (float val, int len);
+template std::string rational_approx <double> (double val, int len);

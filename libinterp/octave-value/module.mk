@@ -146,8 +146,4 @@ noinst_LTLIBRARIES += %reldir%/liboctave-value.la
   $(HDF5_CPPFLAGS) \
   $(JAVA_CPPFLAGS)
 
-%canon_reldir%_liboctave_value_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_liboctave_value_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS)
-
 %canon_reldir%_liboctave_value_la_LIBADD = $(JAVA_LIBS)

@@ -31,10 +31,11 @@
 ## @end deftypefn
 
 function genpropdoc (objname, fname)
-  objnames = {"root", "figure", "axes", "line", ...
-              "text", "image", "patch", "surface", "light", ...
-              "uimenu", "uibuttongroup", "uicontextmenu", "uipanel", ...
-              "uicontrol", "uitoolbar", "uipushtool", "uitoggletool"};
+  objnames = {"root", "figure", "axes", ...
+              "image", "light", "line", "patch", "surface", "text", ...
+              "uibuttongroup", "uicontextmenu", "uicontrol", "uipanel", ...
+              "uimenu", "uipushtool", "uitable", "uitoggletool" "uitoolbar"
+             };
 
   ## Base properties
   base = getstructure ("base");
@@ -89,7 +90,7 @@ function s = getdoc (objname, field, base)
   ##
   ## -"printdefault": a boolean (def. true) that specifies whether the
   ##   default value should be printed.  It is useful for properties
-  ##   like root "screendepth" that default to screen dependant values.
+  ##   like root "screendepth" that default to screen dependent values.
 
   packopt = @(c) strjoin (c, " | ");
   markdef = @(s) ["@{" s "@}"];
@@ -516,13 +517,19 @@ and width and height of the figure.  \
         s.valid = valid_4elvec;
 
       case "renderer"
-        s.doc = doc_unused;
+        s.doc = "Renderering engine used for printing when @code{renderermode} \
+is \"manual\".  __modemsg__.";
 
       case "renderermode"
-        s.doc = doc_unused;
+        s.doc = "Control whether the renderering engine used for printing is \
+chosen automatically or specified by the @code{renderer} property.  \
+@xref{XREFprint, , @w{print function}}.";
 
       case "resize"
-        s.doc = doc_unused;
+        s.doc = "Control whether the figure can be resized by dragging the \
+window borders and corners using a mouse.  When __prop__ is @qcode{\"off\"} \
+mouse interactions are disabled but the figure can still be resized by \
+changing its @qcode{\"position\"} property.";
 
       case "resizefcn"
         s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
@@ -1147,7 +1154,7 @@ measured in degrees.";
         s.valid = valid_cellstring;
 
       case "xdata"
-        s.doc = "Two-element vector @code{[xmin xmax]} specifying the x \
+        s.doc = "Two-element vector @code{[xfirst xlast]} specifying the x \
 coordinates of the centers of the first and last columns of the image.\n\
 \n\
 Setting @code{xdata} to the empty matrix ([]) will restore the default value \
@@ -1155,7 +1162,7 @@ of @code{[1 columns(image)]}.";
         s.valid = valid_2elvec;
 
       case "ydata"
-        s.doc = "Two-element vector @code{[ymin ymax]} specifying the y \
+        s.doc = "Two-element vector @code{[yfirst ylast]} specifying the y \
 coordinates of the centers of the first and last rows of the image.\n\
 \n\
 Setting @code{ydata} to the empty matrix ([]) will restore the default value \
@@ -1236,6 +1243,17 @@ of the object are drawn with light and shadow effects.  Supported values are \
 the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
+      case "facenormals"
+        s.doc = "Face normals are used for lighting the edges or faces if the \
+@code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"flat\"}.  __modemsg__";
+
+      case "facenormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{facenormals} are automatically calculated if the @code{edgelighting} or \
+@code{facelighting} property are set to @qcode{\"flat\"} and at least one \
+@code{light} object is present and visible in the same axes.";
+
       case "interpreter"
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
@@ -1260,7 +1278,6 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
         s.valid = "scalar";
 
       case "meshstyle"
-      case "normalmode"
       case "specularcolorreflectance"
         s.doc = "Reflectance for specular color. Value between 0.0 (color \
 of underlying face) and 1.0 (color of light source).";
@@ -1277,6 +1294,16 @@ specular reflex) and 1.0 (full specular reflex).";
         s.valid = "scalar";
 
       case "vertexnormals"
+        s.doc = "Vertex normals are used for lighting the edges or faces if \
+the @code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"gouraud\"}.  __modemsg__";
+
+      case "vertexnormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{vertexnormals} are automatically calculated if the @code{edgelighting} \
+or @code{facelighting} property are set to @qcode{\"gouraud\"} and at least \
+one @code{light} object is present and visible in the same axes.";
+
       case "xdata"
         s.valid = "matrix";
 
@@ -1374,8 +1401,18 @@ of the object are drawn with light and shadow effects. Supported values are \
 the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
+      case "facenormals"
+        s.doc = "Face normals are used for lighting the edges or faces if the \
+@code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"flat\"}.  __modemsg__";
+
+      case "facenormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{facenormals} are automatically calculated if the @code{edgelighting} or \
+@code{facelighting} property are set to @qcode{\"flat\"} and at least one \
+@code{light} object is present and visible in the same axes.";
+
       case "faces"
-      case "xdata"
         s.valid = valid_vecmat;
 
       case "facevertexalphadata"
@@ -1403,7 +1440,6 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
         s.doc = "@xref{XREFlinemarkersize, , @w{line markersize property}}.";
         s.valid = "scalar";
 
-      case "normalmode"
       case "specularcolorreflectance"
         s.doc = "Reflectance for specular color.  Value between 0.0 (color \
 of underlying face) and 1.0 (color of light source).";
@@ -1420,6 +1456,16 @@ specular reflex) and 1.0 (full specular reflex).";
         s.valid = "scalar";
 
       case "vertexnormals"
+        s.doc = "Vertex normals are used for lighting the edges or faces if \
+the @code{edgelighting} or @code{facelighting} properties are set to \
+@qcode{\"gouraud\"}.  __modemsg__";
+
+      case "vertexnormalsmode"
+        s.doc = "If this property is set to @qcode{\"auto\"}, \
+@code{vertexnormals} are automatically calculated if the @code{edgelighting} \
+or @code{facelighting} property are set to @qcode{\"gouraud\"} and at least \
+one @code{light} object is present and visible in the same axes.";
+
       case "vertices"
         s.valid = valid_vecmat;
 
@@ -1517,8 +1563,18 @@ point source (@qcode{\"local\"}).";
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
+
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
+        s.valid = valid_fcn;
+
       case "shadowcolor"
+
+      case "sizechangedfcn"
+        s.doc = "Callback triggered when the uipanel size is changed.\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
+
       case "title"
       case "titleposition"
       case "units"
@@ -1554,10 +1610,20 @@ point source (@qcode{\"local\"}).";
       case "foregroundcolor"
       case "highlightcolor"
       case "position"
+
       case "resizefcn"
+        s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
+        s.valid = valid_fcn;
+
       case "selectedobject"
       case "selectionchangedfcn"
       case "shadowcolor"
+
+      case "sizechangedfcn"
+        s.doc = "Callback triggered when the uibuttongroup size is changed.\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
+
       case "title"
       case "titleposition"
       case "units"
@@ -1609,6 +1675,54 @@ point source (@qcode{\"local\"}).";
       case "units"
       case "value"
       case "verticalalignment"
+
+    endswitch
+
+  ## uitable Properties
+  elseif (strcmp (objname, "uitable"))
+    switch (field)
+      ## Overridden shared properties
+
+      ## Specific properties
+      case "backgroundcolor"
+      case "celleditcallback"
+      case "cellselectioncallback"
+      case "columneditable"
+      case "columnformat"
+      case "columnname"
+      case "columnwidth"
+      case "data"
+      case "enable"
+      case "extent"
+        s.valid = valid_4elvec;
+        s.printdefault = false;
+
+      case "fontangle"
+        s.doc = doc_fontangle;
+
+      case "fontname"
+        s.doc = doc_fontname;
+        s.valid = valid_string;
+
+      case "fontsize"
+        s.doc = doc_fontsize;
+        s.valid = "scalar";
+
+      case "fontunits"
+        s.doc = doc_fontunits;
+
+      case "fontweight"
+        s.doc = doc_fontweight;
+
+      case "foregroundcolor"
+      case "keypressfcn"
+      case "keyreleasefcn"
+      case "position"
+      case "rearrangeablecolumns"
+      case "rowname"
+      case "rowstriping"
+      case "tooltipstring"
+      case "units"
 
     endswitch
 
@@ -1750,7 +1864,7 @@ function def = getdefault (h, objname, field)
   def = get (h, field);
 
   ## Don't print default values for graphics handles
-  if (isscalar (def) && def != 0 && ishghandle (def))
+  if (ishghandle (def) && isscalar (def) && def != 0)
     def = "";
   else
     if (ischar (def))
@@ -1773,9 +1887,9 @@ function def = getdefault (h, objname, field)
         endif
 
         ## Replace texinfo reserved characters
-        def = strrep (str, "{", "@{");
+        def = strrep (str, "@", "@@");  # must occur first
+        def = strrep (def, "{", "@{");
         def = strrep (def, "}", "@}");
-        def = strrep (def, "@", "@@");
 
         def = ["@code{" def "}"];
       else

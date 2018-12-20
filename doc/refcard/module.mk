@@ -44,9 +44,6 @@ DOC_TARGETS += \
 %reldir%/refcard-letter.ps: %reldir%/refcard-letter.dvi
 	-$(AM_V_DVIPS)$(DVIPS) $(AM_V_texinfo) -T 11in,8.5in -o $@ $<
 
-$(srcdir)/doc/interpreter/images.mk: $(srcdir)/doc/interpreter/config-images.sh $(srcdir)/doc/interpreter/images.awk $(srcdir)/doc/interpreter/images
-	$(AM_V_GEN)$(SHELL) $(srcdir)/doc/interpreter/config-images.sh $(top_srcdir)
-
 $(refcard_DVI) : %.dvi : %.tex | %reldir%/$(octave_dirstamp)
 	-$(AM_V_TEX)cd $(@D) && \
 	TEXINPUTS="$(abs_top_srcdir)/doc/refcard:$(TEXINPUTS):" \

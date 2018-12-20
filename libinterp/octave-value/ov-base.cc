@@ -25,8 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -192,7 +193,7 @@ octave_base_value::size (void)
 octave_idx_type
 octave_base_value::numel (const octave_value_list& idx)
 {
-  return dims_to_numel (dims (), idx);
+  return octave::dims_to_numel (dims (), idx);
 }
 
 octave_value
@@ -1410,7 +1411,7 @@ make_idx_args (const std::string& type,
   Cell type_field (1, len);
   Cell subs_field (1, len);
 
-  std::list<octave_value_list>::const_iterator p = idx.begin ();
+  auto p = idx.begin ();
 
   for (size_t i = 0; i < len; i++)
     {
@@ -1458,22 +1459,6 @@ make_idx_args (const std::string& type,
   m.assign ("subs", subs_field);
 
   return m;
-}
-
-bool
-called_from_builtin (void)
-{
-  octave::call_stack& cs = octave::__get_call_stack__ ("called_from_builtin");
-
-  octave_function *fcn = cs.caller ();
-
-  // FIXME: we probably need a better check here, or some other
-  // mechanism to avoid overloaded functions when builtin is used.
-  // For example, what if someone overloads the builtin function?
-  // Also, are there other places where using builtin is not properly
-  // avoiding dispatch?
-
-  return (fcn && fcn->name () == "builtin");
 }
 
 void

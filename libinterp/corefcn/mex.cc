@@ -1163,7 +1163,7 @@ public:
         for (size_t i = 0; i < tmp_len; i++)
           cpr[m*i+j] = static_cast<mxChar> (ptr[i]);
 
-        for (size_t i = tmp_len; i < static_cast<size_t>(nc); i++)
+        for (size_t i = tmp_len; i < static_cast<size_t> (nc); i++)
           cpr[m*i+j] = static_cast<mxChar> (' ');
       }
   }
@@ -1890,7 +1890,7 @@ public:
 
     string_vector keys (fields, nfields);
 
-    octave_map m;
+    octave_map m (dv);
 
     mwSize ntot = nfields * get_number_of_elements ();
 
@@ -2132,7 +2132,7 @@ public:
     // We can't use mex::free here because it modifies memlist.
     while (! memlist.empty ())
       {
-        std::set<void *>::iterator p = memlist.begin ();
+        auto p = memlist.begin ();
         xfree (*p);
         memlist.erase (p);
       }
@@ -2140,7 +2140,7 @@ public:
     // We can't use mex::free_value here because it modifies arraylist.
     while (! arraylist.empty ())
       {
-        std::set<mxArray *>::iterator p = arraylist.begin ();
+        auto p = arraylist.begin ();
         delete *p;
         arraylist.erase (p);
       }
@@ -2180,7 +2180,7 @@ public:
     if (! ptr)
       {
         // FIXME: could use "octave_new_handler();" instead
-        error ("%s: failed to allocate %d bytes of memory",
+        error ("%s: failed to allocate %zd bytes of memory",
                function_name (), n);
       }
 
@@ -2230,7 +2230,7 @@ public:
       {
         v = std::realloc (ptr, n);
 
-        std::set<void *>::iterator p = memlist.find (ptr);
+        auto p = memlist.find (ptr);
 
         if (v && p != memlist.end ())
           {
@@ -2259,7 +2259,7 @@ public:
       {
         unmark (ptr);
 
-        std::set<void *>::iterator p = global_memlist.find (ptr);
+        auto p = global_memlist.find (ptr);
 
         if (p != global_memlist.end ())
           {
@@ -2296,7 +2296,7 @@ public:
   // made persistent, or because it was already freed.
   void unmark (void *ptr)
   {
-    std::set<void *>::iterator p = memlist.find (ptr);
+    auto p = memlist.find (ptr);
 
     if (p != memlist.end ())
       memlist.erase (p);
@@ -2314,7 +2314,7 @@ public:
 
   void unmark_array (mxArray *ptr)
   {
-    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+    auto p = arraylist.find (ptr);
 
     if (p != arraylist.end ())
       arraylist.erase (p);
@@ -2334,7 +2334,7 @@ public:
   // Unmark a pointer as one we allocated.
   void unmark_foreign (void *ptr)
   {
-    std::set<void *>::iterator p = foreign_memlist.find (ptr);
+    auto p = foreign_memlist.find (ptr);
 
     if (p != foreign_memlist.end ())
       foreign_memlist.erase (p);
@@ -2357,7 +2357,7 @@ public:
   {
     bool inlist = false;
 
-    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+    auto p = arraylist.find (ptr);
 
     if (p != arraylist.end ())
       {
@@ -2416,7 +2416,7 @@ private:
   // Unmark a pointer as one we allocated.
   void global_unmark (void *ptr)
   {
-    std::set<void *>::iterator p = global_memlist.find (ptr);
+    auto p = global_memlist.find (ptr);
 
     if (p != global_memlist.end ())
       global_memlist.erase (p);
@@ -3320,7 +3320,10 @@ mexEvalString (const char *s)
 
   try
     {
-      ret = octave::eval_string (s, false, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("mexEvalString");
+
+      ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
@@ -3347,7 +3350,10 @@ mexEvalStringWithTrap (const char *s)
 
   try
     {
-      ret = octave::eval_string (s, false, parse_status, 0);
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("mexEvalString");
+
+      ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
@@ -3374,8 +3380,18 @@ mexEvalStringWithTrap (const char *s)
 void
 mexErrMsgTxt (const char *s)
 {
-  if (s && strlen (s) > 0)
-    error ("%s: %s", mexFunctionName (), s);
+  size_t len;
+
+  if (s && (len = strlen (s)) > 0)
+    {
+      if (s[len - 1] == '\n')
+        {
+          std::string s_tmp (s, len - 1);
+          error ("%s: %s\n", mexFunctionName (), s_tmp.c_str ());
+        }
+      else
+        error ("%s: %s", mexFunctionName (), s);
+    }
   else
     {
       // For compatibility with Matlab, print an empty message.
@@ -3409,7 +3425,24 @@ mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
 void
 mexWarnMsgTxt (const char *s)
 {
-  warning ("%s", s);
+  size_t len;
+
+  if (s && (len = strlen (s)) > 0)
+    {
+      if (s[len - 1] == '\n')
+        {
+          std::string s_tmp (s, len - 1);
+          warning ("%s\n", s_tmp.c_str ());
+        }
+      else
+        warning ("%s", s);
+    }
+  else
+    {
+      // For compatibility with Matlab, print an empty message.
+      // Octave's warning routine requires a non-null input so use a SPACE.
+      warning (" ");
+    }
 }
 
 void
@@ -3437,7 +3470,7 @@ mexPrintf (const char *fmt, ...)
   int retval;
   va_list args;
   va_start (args, fmt);
-  retval = octave_vformat (octave_stdout, fmt, args);
+  retval = octave::vformat (octave_stdout, fmt, args);
   va_end (args);
   return retval;
 }
@@ -3662,7 +3695,7 @@ mexUnlock (void)
     {
       const char *fname = mexFunctionName ();
 
-      std::map<std::string,int>::iterator p = mex_lock_count.find (fname);
+      auto p = mex_lock_count.find (fname);
 
       if (p != mex_lock_count.end ())
         {

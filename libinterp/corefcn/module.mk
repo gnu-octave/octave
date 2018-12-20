@@ -41,7 +41,6 @@ COREFCN_INC = \
   %reldir%/gl2ps-print.h \
   %reldir%/graphics-handle.h \
   %reldir%/graphics-toolkit.h \
-  %reldir%/gripes.h \
   %reldir%/gtk-manager.h \
   %reldir%/help.h \
   %reldir%/hook-fcn.h \
@@ -79,13 +78,16 @@ COREFCN_INC = \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
+  %reldir%/settings.h \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
+  %reldir%/syminfo.h \
   %reldir%/symrec.h \
   %reldir%/symscope.h \
   %reldir%/symtab.h \
   %reldir%/sysdep.h \
+  %reldir%/text-engine.h \
   %reldir%/text-renderer.h \
   %reldir%/toplev.h \
   %reldir%/txt-eng.h \
@@ -165,7 +167,6 @@ COREFCN_SRC = \
   %reldir%/gl2ps-print.cc \
   %reldir%/graphics-toolkit.cc \
   %reldir%/graphics.cc \
-  %reldir%/gripes.cc \
   %reldir%/gsvd.cc \
   %reldir%/gtk-manager.cc \
   %reldir%/hash.cc \
@@ -224,29 +225,30 @@ COREFCN_SRC = \
   %reldir%/rcond.cc \
   %reldir%/regexp.cc \
   %reldir%/schur.cc \
+  %reldir%/settings.cc \
   %reldir%/sighandlers.cc \
   %reldir%/sparse-xdiv.cc \
   %reldir%/sparse-xpow.cc \
   %reldir%/sparse.cc \
   %reldir%/spparms.cc \
   %reldir%/sqrtm.cc \
-  %reldir%/str2double.cc \
   %reldir%/strfind.cc \
   %reldir%/strfns.cc \
   %reldir%/sub2ind.cc \
   %reldir%/svd.cc \
   %reldir%/sylvester.cc \
+  %reldir%/syminfo.cc \
   %reldir%/symrec.cc \
   %reldir%/symscope.cc \
   %reldir%/symtab.cc \
   %reldir%/syscalls.cc \
   %reldir%/sysdep.cc \
   %reldir%/time.cc \
+  %reldir%/text-engine.cc \
   %reldir%/text-renderer.cc \
   %reldir%/toplev.cc \
   %reldir%/tril.cc \
   %reldir%/tsearch.cc \
-  %reldir%/txt-eng.cc \
   %reldir%/typecast.cc \
   %reldir%/urlwrite.cc \
   %reldir%/url-handle-manager.cc \
@@ -260,8 +262,8 @@ COREFCN_SRC = \
 
 ## Special rules for sources which must be built before rest of compilation.
 
-%reldir%/default-defs.h: %reldir%/default-defs.in.h build-aux/subst-default-vals.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-default-vals.sh)
+%reldir%/default-defs.h: %reldir%/default-defs.in.h build-aux/subst-config-vals.sh | %reldir%/$(octave_dirstamp)
+	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-config-vals.sh)
 
 %reldir%/graphics.h: %reldir%/graphics.in.h %reldir%/genprops.awk | %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t && \
@@ -299,9 +301,6 @@ COREFCN_SRC = \
 
 %reldir%/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
 
-%reldir%/oct-tex-parser.yy: %reldir%/oct-tex-parser.in.yy
-	$(AM_V_GEN)$(call subst-bison-api-decls,octave_tex_)
-
 noinst_LTLIBRARIES += \
   %reldir%/libcorefcn.la
 
@@ -316,10 +315,6 @@ noinst_LTLIBRARIES += \
   $(LLVM_CPPFLAGS) \
   $(Z_CPPFLAGS)
 
-%canon_reldir%_libcorefcn_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
-
-%canon_reldir%_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(WARN_CXXFLAGS) $(LLVM_CXXFLAGS)
-
 libinterp_EXTRA_DIST += \
   %reldir%/default-defs.in.h \
   %reldir%/genprops.awk \
@@ -329,7 +324,6 @@ libinterp_EXTRA_DIST += \
   %reldir%/mxarray.in.h \
   %reldir%/oct-errno.in.cc \
   %reldir%/oct-tex-lexer.in.ll \
-  %reldir%/oct-tex-parser.in.yy \
   %reldir%/oct-tex-symbols.in
 
 GEN_CONFIG_SHELL += \

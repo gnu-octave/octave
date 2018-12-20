@@ -23,9 +23,6 @@
 // Own
 #include "unix/Filter.h"
 
-// System
-#include <iostream>
-
 // Qt
 #include <QDesktopServices>
 #include <QAction>

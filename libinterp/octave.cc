@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <iostream>
 #include <string>
 
 #include "file-ops.h"
@@ -35,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "Cell.h"
-#include "defaults.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"

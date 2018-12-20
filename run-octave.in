@@ -35,6 +35,7 @@ d1="$top_srcdir/scripts"
 d2="$builddir/scripts"
 d3="$builddir/libinterp"
 d4="$top_srcdir/examples/data"
+d5="$builddir/libgui/graphics"
 
 d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' -o -name '+*' -o -name '.deps' -o -name '.libs' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
@@ -48,7 +49,7 @@ d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 
 octave_executable="$builddir/src/octave"
 
-LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
+LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path:$d5"
 IMAGEPATH=".:$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
 BUILT_IN_DOCSTRINGS_FILE="$builddir/libinterp/DOCSTRINGS"

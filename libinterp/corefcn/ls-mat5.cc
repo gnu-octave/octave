@@ -29,8 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -69,7 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "pager.h"
 #include "parse.h"
-#include "pt-exp.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -510,6 +510,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   if (read_mat5_tag (is, swap, type, element_length, is_small_data_element))
     return retval;                      // EOF
 
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("read_mat5_binary_element");
+
   if (type == miCOMPRESSED)
     {
 #if defined (HAVE_ZLIB)
@@ -903,7 +906,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         names.push_back (fname + ".mex");
                         names.push_back (fname + ".m");
 
-                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                        octave::load_path& lp = interp.get_load_path ();
 
                         octave::directory_path p (lp.system_path ());
 
@@ -962,7 +965,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               = m1.contents ("workspace").scalar_map_value ();
             uint32NDArray MCOS = m2.contents ("MCOS").uint32_array_value ();
             octave_idx_type off
-              = static_cast<octave_idx_type>(MCOS(4).double_value ());
+              = static_cast<octave_idx_type> (MCOS(4).double_value ());
             m2 = subsys_ov.scalar_map_value ();
             m2 = m2.contents ("MCOS").scalar_map_value ();
             tc2 = m2.contents ("MCOS").cell_value ()(1 + off).cell_value ()(1);
@@ -973,15 +976,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            octave::symbol_table& symtab
-              = octave::__get_symbol_table__ ("read_mat5_binary_element");
+            octave::symbol_table& symtab = interp.get_symbol_table ();
 
             octave::symbol_scope local_scope;
 
             symtab.set_scope (local_scope);
 
-            octave::call_stack& cs
-              = octave::__get_call_stack__ ("read_mat5_binary_element");
+            octave::call_stack& cs = interp.get_call_stack ();
             cs.push (local_scope, 0);
             frame.add_method (cs, &octave::call_stack::pop);
 
@@ -989,8 +990,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               {
                 octave_value tmp;
 
-                for (octave_map::iterator p0 = m2.begin () ;
-                     p0 != m2.end (); p0++)
+                for (auto p0 = m2.begin (); p0 != m2.end (); p0++)
                   {
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
@@ -1000,8 +1000,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
 
             int parse_status;
-            octave_value anon_fcn_handle =
-              octave::eval_string (fname.substr (4), true, parse_status);
+            octave_value anon_fcn_handle
+              = interp.eval_string (fname.substr (4), true, parse_status);
 
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
@@ -1191,8 +1191,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                cdef_manager& cdm
-                  = octave::__get_cdef_manager__ ("read_mat5_binary_element");
+                cdef_manager& cdm = interp.get_cdef_manager ();
 
                 if (cdm.find_class (classname, false, true).ok ())
                   {
@@ -1213,7 +1212,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         tc = cls;
 
-                        octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+                        octave::load_path& lp = interp.get_load_path ();
 
                         if (lp.find_method (classname, "loadobj") != "")
                           {
@@ -2189,7 +2188,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
           ret += 8 + PAD (classlen > max_namelen ? max_namelen : classlen);
         }
 
-      for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+      for (auto i = m.begin (); i != m.end (); i++)
         fieldcnt++;
 
       ret += 16 + fieldcnt * (max_namelen + 1);
@@ -2197,7 +2196,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       for (octave_idx_type j = 0; j < nel; j++)
         {
 
-          for (octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+          for (auto i = m.begin (); i != m.end (); i++)
             {
               const Cell elts = m.contents (i);
 
@@ -2611,7 +2610,8 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      octave::load_path& lp = octave::__get_load_path__ ("read_mat5_binary_element");
+      octave::load_path& lp
+        = octave::__get_load_path__ ("save_mat5_binary_element");
 
       if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")

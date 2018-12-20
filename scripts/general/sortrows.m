@@ -65,7 +65,7 @@ function [s, i] = sortrows (A, c)
   default_mode = "ascend";
   reverse_mode = "descend";
 
-  if (issparse (A))
+  if (issparse (A) || iscell (A))
     ## FIXME: Eliminate this case once __sort_rows_idx__ is fixed to
     ##        handle sparse matrices.
     if (nargin == 1)
@@ -97,7 +97,7 @@ function i = sort_rows_idx_generic (default_mode, reverse_mode, m, c)
     indices = [1:columns(m)]';
     mode(1:columns(m)) = {default_mode};
   else
-    for j = 1:length (c);
+    for j = 1:length (c)
       if (c(j) < 0)
         mode{j} = reverse_mode;
       else
@@ -114,8 +114,12 @@ function i = sort_rows_idx_generic (default_mode, reverse_mode, m, c)
   indices = flipud (indices);
   mode = flipud (mode');
   i = [1:rows(m)]';
-  for j = 1:length (indices);
-    [~, idx] = sort (m(i, indices(j)), mode{j});
+  for j = 1:length (indices)
+    M = m(i, indices(j));
+    if (iscell (M) && ! iscellstr (M))
+      M = cell2mat (M);
+    endif
+    [~, idx] = sort (M, mode{j});
     i = i(idx);
   endfor
 
@@ -143,6 +147,13 @@ endfunction
 %! assert (issparse (sx));
 %! assert (x, full (sx));
 %! assert (idx, sidx);
+
+%!test <*42523>
+%! C = {1, 2, "filename1";
+%!      3, 4, "filename2";
+%!      5, 6, "filename3"};
+%! C2 = sortrows (C, -1);
+%! assert (C2, flipud (C));
 
 ## Test input validation
 %!error sortrows ()

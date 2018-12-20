@@ -58,16 +58,6 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                   const std::string& fname, const std::string& header,
                   const std::string& trailer);
 
-extern OCTINTERP_API string_vector
-get_struct_elts (const std::string& text);
-
-extern OCTINTERP_API string_vector
-generate_struct_completions (const std::string& text, std::string& prefix,
-                             std::string& hint);
-
-extern OCTINTERP_API bool
-looks_like_struct (const std::string& text, char prev_char);
-
 extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");
 
@@ -164,5 +154,9 @@ get_top_level_value (const std::string& nm, bool silent = false);
 OCTAVE_DEPRECATED (4.4, "use 'symbol_table::top_level_assign' instead")
 extern OCTINTERP_API void
 set_top_level_value (const std::string& nm, const octave_value& val);
+
+OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
+extern OCTINTERP_API string_vector
+get_struct_elts (const std::string& text);
 
 #endif

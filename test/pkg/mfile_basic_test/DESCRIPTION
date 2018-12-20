@@ -1,0 +1,12 @@
+Name: mfile_basic_test
+Version: 0.1.0
+Date: 2017-12-07
+Author: hopefully various authors
+Maintainer: hopefully some of those authors.
+Title: Basic Example Package
+Description: Basic package structure with only m-files.
+Depends: octave (>= 4.2.1)
+License: GPLv3+
+# BuildRequires:
+# SystemRequirements:
+# Url: external homepage

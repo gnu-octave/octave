@@ -119,7 +119,7 @@ function whitebg (varargin)
       fields = fieldnames (props);
       ## Find all fields with the word color in them and invert.
       idx = find (! cellfun ("isempty", regexp (fields, 'color$')));
-      for field = fields(idx)';
+      for field = fields(idx)'
         c = props.(field{1});
         if (! ischar (c) && columns (c) == 3)
           set (h, field{1}, 1 - c);
@@ -150,7 +150,7 @@ function whitebg (varargin)
         fields = fieldnames (props);
         ## Find all fields with the word color in them and adjust HSV.
         idx = find (! cellfun ("isempty", regexp (fields, 'color$')));
-        for field = fields(idx)';
+        for field = fields(idx)'
           c = props.(field{1});
           if (! ischar (c) && columns (c) == 3)
             set (h, field{1}, calc_contrast_color (bg, c));

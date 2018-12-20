@@ -17,21 +17,34 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{h} =} hgload (@var{filename})
-## Load the graphics object in @var{filename} into the graphics handle @var{h}.
+## @deftypefn  {} {@var{h} =} hgload (@var{filename})
+## @deftypefnx {} {[@var{h}, @var{old_prop}] =} hgload (@var{filename}, @var{prop_struct})
+## Load the graphics objects in @var{filename} into a vector of graphics
+## handles @var{h}.
 ##
 ## If @var{filename} has no extension, Octave will try to find the file with
-## and without the standard extension of @file{.ofig}.
-## @seealso{hgsave, struct2hdl}
+## and without the default extension @file{.ofig}.
+##
+## If provided, the elements of structure @var{prop_struct} will be used to
+## override the properties of top-level objects stored in @var{filename}, and
+## the saved values from @var{filename} will be stored in @var{old_prop}.
+## @var{old_prop} is a cell array matching the size of @var{h}; each cell
+## contains a structure of the existing property names and values before being
+## overridden.
+##
+## @seealso{openfig, hgsave, struct2hdl}
 ## @end deftypefn
 
-## Author: Massimiliano Fasi
+function [h, old_prop] = hgload (filename, prop_struct = struct ())
 
-function h = hgload (filename)
-
-  ## Check input arguments
-  if (nargin != 1)
+  ## Check number of input arguments
+  if (nargin == 0 || nargin > 2)
     print_usage ();
+  endif
+
+  ## Check type of second input argument
+  if (! isstruct (prop_struct))
+    error ("hgload: PROP_STRUCT must be a struct");
   endif
 
   ## Check file existence
@@ -48,21 +61,74 @@ function h = hgload (filename)
     endif
   endif
 
-  ## Load the handle
-  try
-    stmp = load (filename, "s_oct40");
-  catch
+  ## Load the handle structure
+  hgs = {"s_oct40", "hgS_050200", "hgS_070000"};
+  hg = load (filename);
+  i = isfield (hg, hgs);
+  if (nnz (i) == 1)
+    hg = hg.(hgs{i});
+  else
     error ("hgload: could not load hgsave-formatted object in file %s", filename);
-  end_try_catch
+  endif
 
-  h = struct2hdl (stmp.s_oct40);
+  ## Override properties of top-level objects
+  calc_old_prop = false;
+  if (isargout (2))
+    calc_old_prop = true;
+    old_prop = repmat ({[]}, 1, numel (hg));
+  endif
+  fn_new = fieldnames (prop_struct);
+  if (! isempty (fn_new))
+    for i = 1:numel (hg)
+      fn_old = fieldnames (hg(i).properties);
+      for j = 1:numel (fn_new)
+        idx = ismember (tolower (fn_old), tolower (fn_new{j}));
+        if (any (idx))
+          if (calc_old_prop)
+            old_prop{i}.(fn_new{j}) = hg(i).properties.(fn_old{idx});
+          endif
+          hg(i).properties.(fn_old{idx}) = prop_struct.(fn_new{j});
+        endif
+      endfor
+    endfor
+  endif
+
+  ## Build the graphics handle object
+  h = zeros (1, numel (hg));
+  for i = 1:numel (hg)
+    h(i) = struct2hdl (hg(i));
+  endfor
 
 endfunction
 
 
 ## Functional test for hgload/hgsave pair is in hgsave.m
 
+## Test overriding saved properties with second input
+%!test
+%! unwind_protect
+%!   h1 = figure ("visible", "off");
+%!   col = get (h1, "color");
+%!   ftmp = [tempname() ".ofig"];
+%!   hgsave (h1, ftmp);
+%!   close (h1);
+%!   [h2, old] = hgload (ftmp);
+%!   assert (old, {[]});
+%!   [h3, old] = hgload (ftmp, struct ("color", [1 0 0]));
+%!   assert (get (h3, "color"), [1 0 0]);
+%!   assert (iscell (old) && numel (old) == 1);
+%!   assert (isstruct (old{1}) && isfield (old{1}, "color"));
+%!   assert (old{1}.color, col);
+%! unwind_protect_cleanup
+%!   unlink (ftmp);
+%!   try, close (h1); end_try_catch
+%!   try, close (h2); end_try_catch
+%!   try, close (h3); end_try_catch
+%! end_unwind_protect
+
 ## Test input validation
 %!error hgload ()
-%!error hgload (1, 2)
+%!error hgload (1, 2, 3)
+%!error <PROP_STRUCT must be a struct> hgload (1, {})
 %!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%")
+%!error <unable to locate file> hgload ("%%_A_REALLY_UNLIKELY_FILENAME_%%.fig")

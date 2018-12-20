@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 #include <string>
 
@@ -54,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "ov.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
@@ -248,17 +248,17 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
         varname[i] = '_';
     }
 
-  if (octave::is_keyword (varname) || ! isalpha (varname[0]))
+  if (octave::iskeyword (varname) || ! isalpha (varname[0]))
     varname.insert (0, "X");
 
-  if (! valid_identifier (varname))
+  if (! octave::valid_identifier (varname))
     error ("load: unable to convert filename '%s' to valid identifier",
            filename.c_str ());
 
   octave_idx_type nr = 0;
   octave_idx_type nc = 0;
 
-  int total_count = 0;
+  octave_idx_type total_count = 0;
 
   get_lines_and_columns (is, nr, nc, filename);
 
@@ -328,8 +328,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   octave_idx_type expected = nr * nc;
 
   if (expected != total_count)
-    error ("load: expected %d elements, found %d",
-           expected, total_count);
+    error ("load: expected %" OCTAVE_IDX_TYPE_FORMAT " elements, found "
+           "%" OCTAVE_IDX_TYPE_FORMAT, expected, total_count);
 
   tc = tmp;
 

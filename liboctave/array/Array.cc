@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 // C++ source files that should have included config.h before including
 // this file.
 
-#include <iostream>
+#include <ostream>
 
 #include "Array-util.h"
 #include "Array.h"

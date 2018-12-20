@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "tmpfile-wrapper.h"
 #include "unistd-wrappers.h"
+#include "unistr-wrappers.h"
 #include "unwind-prot.h"
 
 #include "gl-render.h"
@@ -54,7 +55,7 @@ namespace octave
   safe_pclose (FILE *f)
   {
     if (f)
-      octave_pclose (f);
+      octave::pclose (f);
   }
 
   static void
@@ -70,9 +71,10 @@ namespace octave
   {
   public:
 
-    gl2ps_renderer (FILE *_fp, const std::string& _term)
-      : opengl_renderer () , fp (_fp), term (_term), fontsize (),
-        fontname (), buffer_overflow (false)
+    gl2ps_renderer (opengl_functions& glfcns, FILE *_fp,
+                    const std::string& _term)
+      : opengl_renderer (glfcns), fp (_fp), term (_term),
+        fontsize (), fontname (), buffer_overflow (false)
     { }
 
     ~gl2ps_renderer (void) = default;
@@ -127,7 +129,7 @@ namespace octave
     {
       // Initialize a sorting tree (viewport) in gl2ps for each axes
       GLint vp[4];
-      glGetIntegerv (GL_VIEWPORT, vp);
+      m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
       gl2psBeginViewport (vp);
 
 
@@ -265,14 +267,15 @@ namespace octave
     // Build an svg text element from a list of parsed strings.
     std::string strlist_to_svg (double x, double y, double z, Matrix box,
                                 double rotation,
-                                std::list<octave::text_renderer::string>& lst);
+                                std::list<text_renderer::string>& lst);
 
     // Build a list of postscript commands from a list of parsed strings.
     std::string strlist_to_ps (double x, double y, double z, Matrix box,
                                double rotation,
-                               std::list<octave::text_renderer::string>& lst);
+                               std::list<text_renderer::string>& lst);
 
     int alignment_to_mode (int ha, int va) const;
+
     FILE *fp;
     caseless_str term;
     double fontsize;
@@ -408,7 +411,10 @@ namespace octave
             const figure::properties& fprop
               = dynamic_cast<const figure::properties&> (go.get_properties ());
             Matrix c = fprop.get_color_rgb ();
-            glClearColor (c(0), c(1), c(2), 1);
+            m_glfcns.glClearColor (c(0), c(1), c(2), 1);
+
+            // Allow figures to be printed at arbitrary resolution
+            set_device_pixel_ratio (fprop.get___device_pixel_ratio__ ());
 
             // GL2PS_SILENT was removed to allow gl2ps to print errors on stderr
             GLint ret = gl2psBeginPage ("gl2ps_renderer figure", "Octave",
@@ -560,7 +566,7 @@ namespace octave
                         + (txtobj.get_x () + box(0))*sin (rot);
 
         GLint vp[4];
-        glGetIntegerv (GL_VIEWPORT, vp);
+        m_glfcns.glGetIntegerv (GL_VIEWPORT, vp);
 
         txtobj.set_x (coord_pix(0));
         txtobj.set_y (vp[3] - coord_pix(1));
@@ -781,7 +787,7 @@ namespace octave
   std::string
   gl2ps_renderer::strlist_to_svg (double x, double y, double z,
                                   Matrix box, double rotation,
-                                  std::list<octave::text_renderer::string>& lst)
+                                  std::list<text_renderer::string>& lst)
   {
     if (lst.empty ())
       return "";
@@ -877,7 +883,7 @@ namespace octave
   std::string
   gl2ps_renderer::strlist_to_ps (double x, double y, double z,
                                  Matrix box, double rotation,
-                                 std::list<octave::text_renderer::string>& lst)
+                                 std::list<text_renderer::string>& lst)
   {
     // Translate and rotate coordinates in order to use bottom-left alignment
     fix_strlist_position (x, y, z, box, rotation, lst);
@@ -885,6 +891,8 @@ namespace octave
 
     std::ostringstream ss;
     ss << "gsave\n";
+
+    static bool warned = false;
 
     for (const auto& txtobj : lst)
       {
@@ -910,7 +918,33 @@ namespace octave
             fontname = select_font (txtobj.get_name (),
                                     txtobj.get_weight () == "bold",
                                     txtobj.get_angle () == "italic");
-            str = txtobj.get_string ();
+
+            // Check that the string is composed of single byte characters
+            const std::string tmpstr = txtobj.get_string ();
+            const uint8_t *c =
+              reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
+
+            for (size_t i = 0; i < tmpstr.size ();)
+              {
+                int mblen = octave_u8_strmblen_wrapper (c + i);
+
+                if (mblen > 1)
+                  {
+                    str += " ";
+                    if (! warned)
+                      {
+                        warning_with_id ("Octave:print:unsupported-multibyte",
+                                         "print: only ASCII characters are "
+                                         "supported for EPS and derived "
+                                         "formats.");
+                        warned = true;
+                      }
+                  }
+                else
+                  str += tmpstr.at (i);
+
+                i += mblen;
+              }
           }
 
         escape_character ("(", str);
@@ -947,7 +981,7 @@ namespace octave
     std::list<text_renderer::string> lst;
 
     text_to_strlist (str, lst, bbox, ha, va, rotation);
-    glRasterPos3d (x, y, z);
+    m_glfcns.glRasterPos3d (x, y, z);
 
     // For svg/eps directly dump a preformated text element into gl2ps output
     if (term.find ("svg") != std::string::npos)
@@ -1085,8 +1119,8 @@ namespace octave
   // named by the rest of the string.  Otherwise, write to the named file.
 
   void
-  gl2ps_print (const graphics_object& fig, const std::string& stream,
-               const std::string& term)
+  gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
+               const std::string& stream, const std::string& term)
   {
 #if defined (HAVE_GL2PS_H) && defined (HAVE_OPENGL)
 
@@ -1105,7 +1139,7 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = octave_popen (cmd.c_str (), "w");
+        fp = octave::popen (cmd.c_str (), "w");
 
         if (! fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
@@ -1116,7 +1150,7 @@ namespace octave
       {
         // Write gl2ps output directly to file.
 
-        fp = std::fopen (stream.c_str (), "w");
+        fp = octave::sys::fopen (stream.c_str (), "w");
 
         if (! fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
@@ -1124,7 +1158,7 @@ namespace octave
         frame.add_fcn (safe_fclose, fp);
       }
 
-    gl2ps_renderer rend (fp, term);
+    gl2ps_renderer rend (glfcns, fp, term);
 
     Matrix pos = fig.get ("position").matrix_value ();
     rend.set_viewport (pos(2), pos(3));
@@ -1134,11 +1168,14 @@ namespace octave
     rend.finish ();
 
 #else
+
+    octave_unused_parameter (glfcns);
     octave_unused_parameter (fig);
     octave_unused_parameter (stream);
     octave_unused_parameter (term);
 
     err_disabled_feature ("gl2ps_print", "gl2ps");
+
 #endif
   }
 }

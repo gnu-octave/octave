@@ -40,17 +40,25 @@ namespace octave
     extern std::string getcwd (void);
 
     extern int chdir (const std::string&);
+
+    extern bool get_dirlist (const std::string& dirname, string_vector& dirlist,
+                             std::string& msg);
+
+    extern std::FILE * fopen (const std::string& name, const std::string& mode);
+
+    extern void putenv_wrapper (const std::string& name,
+                                const std::string& value);
+
+    extern std::string getenv_wrapper (const std::string&);
+
+    extern int unsetenv_wrapper (const std::string&);
+
+    extern std::wstring u8_to_wstring (const std::string&);
+
+    extern std::string u8_from_wstring (const std::wstring&);
+
+    extern std::string get_ASCII_filename (const std::string& long_file_name);
   }
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::getcwd' instead")
-const auto octave_getcwd = octave::sys::getcwd;
-
-OCTAVE_DEPRECATED (4.2, "use 'octave::sys::chdir' instead")
-const auto octave_chdir = octave::sys::chdir;
-
-#endif
 
 #endif

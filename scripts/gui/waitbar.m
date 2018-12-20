@@ -210,6 +210,9 @@ endfunction
 %! h = waitbar (0, '0.00%');
 %! for i = 0:0.01:1
 %!   waitbar (i, h, sprintf ('%.2f%%', 100*i));
+%!   if (strcmp (graphics_toolkit (), "qt"))
+%!     pause (0.01);
+%!   endif
 %! endfor
 %! close (h);
 
@@ -217,20 +220,32 @@ endfunction
 %! h = waitbar (0, 'please wait...');
 %! for i = 0:0.01:0.6
 %!   waitbar (i);
+%!   if (strcmp (graphics_toolkit (), "qt"))
+%!     pause (0.01);
+%!   endif
 %! endfor
 %! i = 0.3;
 %! waitbar (i, h, 'don''t you hate taking a step backward?');
 %! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
+%!   if (strcmp (graphics_toolkit (), "qt"))
+%!     pause (0.01);
+%!   endif
 %! endfor
 %! waitbar (i, h, 'or stalling?');
 %! pause (1);
-%! for i = i:0.003:0.8
+%! for i = i:0.003:0.85
 %!   waitbar (i, h, 'just a little longer now');
+%!   if (strcmp (graphics_toolkit (), "qt"))
+%!     pause (0.01);
+%!   endif
 %! endfor
 %! for i = i:0.001:1
 %!   waitbar (i, h, 'please don''t be impatient');
+%!   if (strcmp (graphics_toolkit (), "qt"))
+%!     pause (0.01);
+%!   endif
 %! endfor
 %! close (h);
 
@@ -253,15 +268,20 @@ endfunction
 
 %!demo
 %! clf ();
-%! niter = 9;
+%! niter = 7;
 %! l = 1;
 %! xx = [0 l];
 %! yy = [0 0];
 %! hli = plot (xx, yy);
+%! pos1 = get (gcf, "position");
 %!
-%! disp ("Push the cancel to stop the process.");
-%! hf = waitbar(0,"0","Name","Building Koch curve ...",...
-%!              "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
+%! disp ("Push the <cancel> button to stop the process.");
+%! hf = waitbar (0,"0","Name","Building Koch curve ...",...
+%!               "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
+%! 
+%! pos2 = get (hf, "position");
+%! set (hf, "position", [pos1(1)+(pos1(3)-pos2(3))/2, pos1(2)+pos1(4), pos2(3:4)]);
+%! 
 %! for ii = 1:niter
 %!   ## Check cancel request
 %!   if (! ishghandle (hf))
@@ -282,14 +302,14 @@ endfunction
 %!                                              0 0 l*(3)^.5/2 0;
 %!                                              1 1 1          1];
 %!   tmp = arrayfun (xy, theta, xx(1:end-1), yy(1:end-1),
-%!                  "uniformoutput", false);
+%!                   "uniformoutput", false);
 %!
 %!   tmp = cell2mat (tmp);
 %!   xx = [tmp(1,:) xx(end)];
 %!   yy = [tmp(2,:) yy(end)];
 %!   set (hli, "xdata", xx, "ydata", yy);
 %!   drawnow ();
-%!   pause (0.5);
+%!   pause (0.75);
 %! endfor
 %!
 %! if (ishghandle (hf))

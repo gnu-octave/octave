@@ -54,7 +54,7 @@ function unload_packages (files, handle_deps, local_list, global_list)
   archdirs = {};
   for i = 1:length (dirs)
     tmpdir = getarchdir (desc{i});
-    if (exist (tmpdir, "dir"))
+    if (isfolder (tmpdir))
       archdirs{end+1} = dirs{i};
       archdirs{end+1} = tmpdir;
     else

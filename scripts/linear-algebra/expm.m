@@ -82,7 +82,10 @@ function r = expm (A)
     error ("expm: A must be a square matrix");
   endif
 
-  if (isscalar (A))
+  if (isempty (A))
+    r = A;
+    return;
+  elseif (isscalar (A))
     r = exp (A);
     return;
   elseif (strfind (typeinfo (A), "diagonal matrix"))
@@ -91,36 +94,31 @@ function r = expm (A)
   endif
 
   n = rows (A);
+  id = eye (n);
   ## Trace reduction.
   A(A == -Inf) = -realmax;
-  trshift = trace (A) / length (A);
+  trshift = trace (A) / n;
   if (trshift > 0)
-    A -= trshift*eye (n);
+    A -= trshift * id;
   endif
   ## Balancing.
   [d, p, aa] = balance (A);
-  ## FIXME: can we both permute and scale at once? Or should we rather do
-  ## this:
-  ##
-  ##   [d, xx, aa] = balance (A, "noperm");
-  ##   [xx, p, aa] = balance (aa, "noscal");
-  [f, e] = log2 (norm (aa, "inf"));
+  [~, e] = log2 (norm (aa, "inf"));
   s = max (0, e);
   s = min (s, 1023);
   aa *= 2^(-s);
 
   ## Pade approximation for exp(A).
-  c = [5.0000000000000000e-1,...
-       1.1666666666666667e-1,...
-       1.6666666666666667e-2,...
-       1.6025641025641026e-3,...
-       1.0683760683760684e-4,...
-       4.8562548562548563e-6,...
-       1.3875013875013875e-7,...
+  c = [5.0000000000000000e-1, ...
+       1.1666666666666667e-1, ...
+       1.6666666666666667e-2, ...
+       1.6025641025641026e-3, ...
+       1.0683760683760684e-4, ...
+       4.8562548562548563e-6, ...
+       1.3875013875013875e-7, ...
        1.9270852604185938e-9];
 
   a2 = aa^2;
-  id = eye (n);
   x = (((c(8) * a2 + c(6) * id) * a2 + c(4) * id) * a2 + c(2) * id) * a2 + id;
   y = (((c(7) * a2 + c(5) * id) * a2 + c(3) * id) * a2 + c(1) * id) * aa;
 
@@ -136,7 +134,7 @@ function r = expm (A)
   r = d * r / d;
   r(p, p) = r;
   ## Inverse trace reduction.
-  if (trshift >0)
+  if (trshift > 0)
     r *= exp (trshift);
   endif
 
@@ -146,11 +144,13 @@ endfunction
 %!assert (norm (expm ([1 -1;0 1]) - [e -e; 0 e]) < 1e-5)
 %!assert (expm ([1 -1 -1;0 1 -1; 0 0 1]), [e -e -e/2; 0 e -e; 0 0 e], 1e-5)
 
-%!assert (expm (10), expm (10))
+%!assert (expm ([]), [])
+%!assert (expm (10), exp (10))
 %!assert (full (expm (eye (3))), expm (full (eye (3))))
 %!assert (full (expm (10*eye (3))), expm (full (10*eye (3))), 8*eps)
 
 ## Test input validation
 %!error expm ()
 %!error expm (1, 2)
+%!error <expm: A must be a square matrix> expm ({1})
 %!error <expm: A must be a square matrix> expm ([1 0;0 1; 2 2])

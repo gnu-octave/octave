@@ -31,8 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 
 #include <iomanip>
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -59,7 +60,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-cell.h"
 #include "pager.h"
-#include "pt-exp.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -88,19 +88,7 @@ hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
   : file_id (-1), current_item (-1)
 {
 #if defined (HAVE_HDF5)
-
-  if (mode & std::ios::in)
-    file_id = H5Fopen (name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
-  else if (mode & std::ios::out)
-    {
-      if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-        file_id = H5Fopen (name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
-      else
-        file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
-                             octave_H5P_DEFAULT);
-    }
-  if (file_id < 0)
-    std::ios::setstate (std::ios::badbit);
+  open_create (name, mode);
 
   current_item = 0;
 
@@ -136,20 +124,105 @@ hdf5_fstreambase::open (const char *name, int mode, int)
 
   clear ();
 
+  open_create (name, mode);
+
+  current_item = 0;
+
+#else
+  // This shouldn't happen because construction of hdf5_fstreambase
+  // objects is supposed to be impossible if HDF5 is not available.
+
+  panic_impossible ();
+#endif
+}
+
+void
+hdf5_fstreambase::open_create (const char *name, int mode)
+{
+#if defined (HAVE_HDF5)
+  // Open the HDF5 file NAME. If it does not exist, create the file.
+
+  std::string fname_str (name);
+  std::string ascii_fname_str = octave::sys::get_ASCII_filename (fname_str);
+  const char *ascii_fname = ascii_fname_str.c_str ();
+
   if (mode & std::ios::in)
-    file_id = H5Fopen (name, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
+    file_id = H5Fopen (ascii_fname, H5F_ACC_RDONLY, octave_H5P_DEFAULT);
   else if (mode & std::ios::out)
     {
-      if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-        file_id = H5Fopen (name, H5F_ACC_RDWR, octave_H5P_DEFAULT);
+      if (mode & std::ios::app && H5Fis_hdf5 (ascii_fname) > 0)
+        file_id = H5Fopen (ascii_fname, H5F_ACC_RDWR, octave_H5P_DEFAULT);
       else
+#  if defined (OCTAVE_USE_WINDOWS_API)
+        {
+          // Check whether file already exists
+          std::string abs_ascii_fname
+            = octave::sys::canonicalize_file_name (ascii_fname_str);
+          if (! abs_ascii_fname.empty ())
+            {
+              // Use the existing file
+              file_id = H5Fcreate (ascii_fname, H5F_ACC_TRUNC,
+                                   octave_H5P_DEFAULT, octave_H5P_DEFAULT);
+              if (file_id < 0)
+                std::ios::setstate (std::ios::badbit);
+
+              return;
+            }
+
+          // Check whether filename contains non-ASCII (UTF-8) characters.
+          std::string::const_iterator first_non_ASCII
+            = std::find_if (fname_str.begin (), fname_str.end (),
+                            [](char c) { return (c < 0 || c >= 128); });
+          if (first_non_ASCII == fname_str.end ())
+            {
+              // No non-ASCII characters
+              file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
+                                   octave_H5P_DEFAULT);
+              if (file_id < 0)
+                std::ios::setstate (std::ios::badbit);
+
+              return;
+            }
+
+          // Create file in temp folder
+          std::string tmp_name = octave::sys::tempnam ("", "oct-");
+          octave_hdf5_id hdf5_fid = H5Fcreate (tmp_name.c_str (), H5F_ACC_TRUNC,
+                                               octave_H5P_DEFAULT,
+                                               octave_H5P_DEFAULT);
+          if (hdf5_fid < 0)
+            {
+              file_id = -1;
+              std::ios::setstate (std::ios::badbit);
+              return;
+            }
+
+          // Close file
+          H5Fclose (hdf5_fid);
+
+          // Move temporary file to final destination
+          std::string msg;
+          int res = octave::sys::rename (tmp_name, name, msg);
+          if (res < 0)
+            {
+              std::ios::setstate (std::ios::badbit);
+              file_id = -1;
+              return;
+            }
+
+          // Open file at final location
+          ascii_fname_str = octave::sys::get_ASCII_filename (fname_str);
+          ascii_fname = ascii_fname_str.c_str ();
+          file_id = H5Fopen (ascii_fname, H5F_ACC_RDWR, octave_H5P_DEFAULT);
+        }
+#  else
         file_id = H5Fcreate (name, H5F_ACC_TRUNC, octave_H5P_DEFAULT,
                              octave_H5P_DEFAULT);
+#  endif
     }
   if (file_id < 0)
     std::ios::setstate (std::ios::badbit);
 
-  current_item = 0;
+  return;
 
 #else
   // This shouldn't happen because construction of hdf5_fstreambase
@@ -363,7 +436,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
   H5G_stat_t info;
   herr_t retval = 0;
-  bool ident_valid = valid_identifier (name);
+  bool ident_valid = octave::valid_identifier (name);
 
   std::string vname = name;
 
@@ -379,7 +452,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
       vname = make_valid_identifier (vname);
 
       // check again (in case vname was null, empty, or some such thing):
-      ident_valid = valid_identifier (vname);
+      ident_valid = octave::valid_identifier (vname);
     }
 
   H5Gget_objinfo (group_id, name, 1, &info);

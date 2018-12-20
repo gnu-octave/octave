@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "PushTool.h"
 #include "RadioButtonControl.h"
 #include "SliderControl.h"
+#include "Table.h"
 #include "TextControl.h"
 #include "ToggleButtonControl.h"
 #include "ToggleTool.h"
@@ -128,6 +129,8 @@ namespace QtHandles
                   obj = Menu::create (go);
                 else if (go.isa ("uicontextmenu"))
                   obj = ContextMenu::create (go);
+                else if (go.isa ("uitable"))
+                  obj = Table::create (go);
                 else if (go.isa ("uitoolbar"))
                   obj = ToolBar::create (go);
                 else if (go.isa ("uipushtool"))

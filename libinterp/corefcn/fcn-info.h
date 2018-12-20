@@ -81,7 +81,7 @@ namespace octave
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args, bool local_funcs);
+      octave_value find (const octave_value_list& args);
 
       octave_value builtin_find (void);
 
@@ -98,10 +98,9 @@ namespace octave
         return function_on_path.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args,
-                                  bool local_funcs)
+      octave_value find_function (const octave_value_list& args)
       {
-        return find (args, local_funcs);
+        return find (args);
       }
 
       void install_cmdline_function (const octave_value& f)
@@ -131,7 +130,7 @@ namespace octave
       void
       clear_map (std::map<T, octave_value>& map, bool force = false)
       {
-        typename std::map<T, octave_value>::iterator p = map.begin ();
+        auto p = map.begin ();
 
         while (p != map.end ())
           {
@@ -222,7 +221,7 @@ namespace octave
 
     private:
 
-      octave_value xfind (const octave_value_list& args, bool local_funcs);
+      octave_value xfind (const octave_value_list& args);
 
       octave_value x_builtin_find (void);
     };
@@ -238,10 +237,9 @@ namespace octave
 
     ~fcn_info (void) = default;
 
-    octave_value find (const octave_value_list& args = octave_value_list (),
-                       bool local_funcs = true)
+    octave_value find (const octave_value_list& args = octave_value_list ())
     {
-      return m_rep->find (args, local_funcs);
+      return m_rep->find (args);
     }
 
     octave_value builtin_find (void)
@@ -280,10 +278,9 @@ namespace octave
     }
 
     octave_value find_function (const octave_value_list& args
-                                = octave_value_list (),
-                                bool local_funcs = true)
+                                = octave_value_list ())
     {
-      return m_rep->find_function (args, local_funcs);
+      return m_rep->find_function (args);
     }
 
     void install_cmdline_function (const octave_value& f)
@@ -333,7 +330,14 @@ namespace octave
     std::shared_ptr<fcn_info_rep> m_rep;
   };
 
-  octave_value
+  extern OCTINTERP_API std::string
+  get_dispatch_type (const octave_value_list& args);
+
+  extern OCTINTERP_API std::string
+  get_dispatch_type (const octave_value_list& args,
+                     builtin_type_t& builtin_type);
+
+  extern octave_value
   dump_function_map (const std::map<std::string, octave_value>& fcn_map);
 }
 

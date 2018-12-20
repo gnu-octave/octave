@@ -27,8 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cstdlib>
 
-#include <iostream>
+#include <istream>
 #include <limits>
+#include <ostream>
 #include <vector>
 
 #include "byte-swap.h"

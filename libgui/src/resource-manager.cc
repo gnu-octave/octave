@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-model.h"
 #include "variable-editor.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -55,11 +56,11 @@ namespace octave
   static QString
   default_qt_settings_file (void)
   {
-    std::string dsf = octave::sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
+    std::string dsf = sys::env::getenv ("OCTAVE_DEFAULT_QT_SETTINGS");
 
     if (dsf.empty ())
-      dsf = (octave::config::oct_etc_dir ()
-             + octave::sys::file_ops::dir_sep_str ()
+      dsf = (config::oct_etc_dir ()
+             + sys::file_ops::dir_sep_str ()
              + "default-qt-settings");
 
     return QString::fromStdString (dsf);
@@ -94,9 +95,9 @@ namespace octave
   QString resource_manager::get_gui_translation_dir (void)
   {
     // get environment variable for the locale dir (e.g. from run-octave)
-    std::string dldir = octave::sys::env::getenv ("OCTAVE_LOCALE_DIR");
+    std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
     if (dldir.empty ())
-      dldir = octave::config::oct_locale_dir (); // env-var empty, load the default location
+      dldir = config::oct_locale_dir (); // env-var empty, load the default location
     return QString::fromStdString (dldir);
   }
 
@@ -205,8 +206,28 @@ namespace octave
     return m_settings_file;
   }
 
+  QString resource_manager::do_get_default_font_family (void)
+  {
+    // Get the default monospaced font
+#if defined (HAVE_QFONT_MONOSPACE)
+    QFont fixed_font;
+    fixed_font.setStyleHint (QFont::Monospace);
+    QString default_family = fixed_font.defaultFamily ();
+#else
+    QString default_family = global_font_family;
+#endif
+
+    std::string env_default_family = sys::env::getenv ("OCTAVE_DEFAULT_FONT");
+    if (! env_default_family.empty ())
+      default_family = QString::fromStdString (env_default_family);
+
+    return default_family;
+  }
+
   void resource_manager::do_reload_settings (void)
   {
+    QString default_family = do_get_default_font_family ();
+
     if (! QFile::exists (m_settings_file))
       {
         QDir ("/").mkpath (m_settings_directory);
@@ -219,18 +240,15 @@ namespace octave
         QString settings_text = in.readAll ();
         qt_settings.close ();
 
-        // Get the default monospaced font
-#if defined (HAVE_QFONT_MONOSPACE)
-        QFont fixed_font;
-        fixed_font.setStyleHint (QFont::Monospace);
-        QString default_family = fixed_font.defaultFamily ();
-#elif defined (Q_WS_X11) || defined (Q_WS_WIN)
-        QString default_family = "Courier New";
-#elif defined (Q_WS_MAC)
-        QString default_family = "Courier";
-#else
-        QString default_family = "courier";
-#endif
+        default_family = do_get_default_font_family ();
+
+        QString default_font_size = "10";
+
+        std::string env_default_font_size
+          = sys::env::getenv ("OCTAVE_DEFAULT_FONT_SIZE");
+
+        if (! env_default_font_size.empty ())
+          default_font_size = QString::fromStdString (env_default_font_size);
 
         // Get the default custom editor
 #if defined (Q_OS_WIN32)
@@ -239,10 +257,16 @@ namespace octave
         QString custom_editor = "emacs +%l %f";
 #endif
 
+        std::string env_default_editor
+          = sys::env::getenv ("OCTAVE_DEFAULT_EDITOR");
+
+        if (! env_default_editor.empty ())
+          custom_editor = QString::fromStdString (env_default_editor);
+
         // Replace placeholders
         settings_text.replace ("__default_custom_editor__", custom_editor);
         settings_text.replace ("__default_font__", default_family);
-        settings_text.replace ("__default_font_size__", "10");
+        settings_text.replace ("__default_font_size__", default_font_size);
 
         QFile user_settings (m_settings_file);
 
@@ -257,6 +281,12 @@ namespace octave
       }
 
     do_set_settings (m_settings_file);
+
+    // Write the default monospace font into the settings for later use by
+    // console and editor as fallbacks of their font prefernces.
+    if (m_settings)
+      m_settings->setValue (global_mono_font.key, default_family);
+
   }
 
   void resource_manager::do_set_settings (const QString& file)
@@ -333,6 +363,12 @@ namespace octave
 
   QIcon resource_manager::do_icon (const QString& icon_name, bool fallback)
   {
+    // If system icon theme is not desired, take own icon files
+    if (! m_settings->value (global_icon_theme.key, global_icon_theme.def).toBool ())
+      return QIcon (":/actions/icons/" + icon_name + ".png");
+
+    // Use system icon theme with own files as fallback except the fallback is
+    // explicitly disabled (fallback=false)
     if (fallback)
       return QIcon::fromTheme (icon_name,
                                QIcon (":/actions/icons/" + icon_name + ".png"));
@@ -340,34 +376,44 @@ namespace octave
       return QIcon::fromTheme (icon_name);
   }
 
-  // initialize a given combo box with available text encodings
-  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  // get a list of all available encodings
+  void resource_manager::do_get_codecs (QStringList *codecs)
   {
     // get the codec name for each mib
     QList<int> all_mibs = QTextCodec::availableMibs ();
-    QStringList all_codecs;
     foreach (int mib, all_mibs)
       {
         QTextCodec *c = QTextCodec::codecForMib (mib);
-        all_codecs << c->name ().toUpper ();
+        codecs->append (c->name ().toUpper ());
       }
-    all_codecs.removeDuplicates ();
-    qSort (all_codecs);
+    codecs->removeDuplicates ();
+    qSort (*codecs);
+  }
 
-    // the default encoding
-#if defined (Q_OS_WIN32)
-    QString def_enc = "SYSTEM";
-#else
-    QString def_enc = "UTF-8";
-#endif
+  // initialize a given combo box with available text encodings
+  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  {
+    QStringList all_codecs;
+    do_get_codecs (&all_codecs);
 
     // get the value from the settings file if no current encoding is given
     QString enc = current;
+
+    bool default_exists = false;
+    if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ()))
+      default_exists = true;
+
     if (enc.isEmpty ())
       {
-        enc = m_settings->value ("editor/default_encoding",def_enc).toString ();
+        enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
+
         if (enc.isEmpty ())  // still empty?
-          enc = def_enc;     // take default
+          {
+            if (default_exists)
+              enc = ed_default_enc.def.toString ();
+            else
+              enc = QTextCodec::codecForLocale ()->name ().toUpper ();
+          }
       }
 
     // fill the combo box
@@ -376,10 +422,13 @@ namespace octave
 
     // prepend the default item
     combo->insertSeparator (0);
-    combo->insertItem (0, def_enc);
+    if (default_exists)
+      combo->insertItem (0, ed_default_enc.def.toString ());
+    else
+      combo->insertItem (0, QTextCodec::codecForLocale ()->name ().toUpper ());
 
-    // select the current/default item
-    int idx = combo->findText (enc);
+    // select the default or the current one
+    int idx = combo->findText (enc, Qt::MatchExactly);
     if (idx >= 0)
       combo->setCurrentIndex (idx);
     else

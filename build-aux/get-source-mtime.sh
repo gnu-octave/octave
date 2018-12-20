@@ -36,11 +36,21 @@ fi
 
 srcdir="$1"
 
+## A user's ~/.hgrc may redefine or add default options to any hg subcommand,
+## potentially altering its behavior and possibly its standard output.  Always
+## run hg subcommands with configuration variables set to ensure that the
+## user's preferences do not influence the expected behavior.
+hg_safe ()
+{
+  cmd=$1; shift
+  hg --config alias.${cmd}=${cmd} --config defaults.${cmd}= ${cmd} "$@"
+}
+
 if [ x"$SOURCE_DATE_EPOCH" != x ]; then
   # Allow the source modification time to be overridden by SOURCE_DATE_EPOCH
   t=$SOURCE_DATE_EPOCH
 elif [ -d $srcdir/.hg ]; then
-  t=$( cd $srcdir && hg log --rev . --template '{date|hgdate}' )
+  t=$( cd $srcdir && hg_safe log --rev . --template '{date|hgdate}' )
   t=$( echo $t | $SED -n 's/^\([0-9]\+\) .*/\1/p' )
 elif [ -f $srcdir/HG-ID ]; then
   t=$( $PERL -e '@s = stat($ARGV[0]); print($s[9]) if @s;' $srcdir/HG-ID )

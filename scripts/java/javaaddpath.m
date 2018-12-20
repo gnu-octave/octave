@@ -41,7 +41,7 @@ function javaaddpath (varargin)
     endif
 
     new_path = canonicalize_file_name (tilde_expand (clspath));
-    if (exist (new_path, "dir"))
+    if (isfolder (new_path))
       if (new_path(end) != filesep ())
         new_path = [new_path, filesep()];
       endif

@@ -20,7 +20,7 @@ dnl Copyright (C) 1993-2018 John W. Eaton
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [4.4.1], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [5.0.0], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -28,9 +28,13 @@ AC_INIT([GNU Octave], [4.4.1], [https://octave.org/bugs.html], [octave],
 dnl Note that the version number is duplicated here and in AC_INIT because
 dnl AC_INIT requires it to be static, not computed from shell variables.
 
-OCTAVE_MAJOR_VERSION=4
-OCTAVE_MINOR_VERSION=4
-OCTAVE_PATCH_VERSION=1
+## The description of the Octave version number in the etc/HACKING.md
+## explains how to update these numbers for release and development
+## versions.
+
+OCTAVE_MAJOR_VERSION=5
+OCTAVE_MINOR_VERSION=0
+OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -52,7 +56,7 @@ dnl
 dnl FIXME: Since we also set libtool versions for liboctave and libinterp,
 dnl perhaps we should be computing the "api version" from those versions numbers
 dnl in some way instead of setting it independently here.
-OCTAVE_API_VERSION="api-v52"
+OCTAVE_API_VERSION="api-v52+"
 
 AC_SUBST(OCTAVE_MAJOR_VERSION)
 AC_SUBST(OCTAVE_MINOR_VERSION)
@@ -188,6 +192,10 @@ OCTAVE_SET_DEFAULT([infofile], '${infodir}/octave.info')
 ## Programs used in configuring Octave.
 dnl Find pkg-config executable (sets $PKG_CONFIG)
 PKG_PROG_PKG_CONFIG
+## And where we will install our own .pc files.
+PKG_INSTALLDIR
+AC_SUBST([liboctave_pkgconfigdir], [$pkgconfigdir])
+AC_SUBST([libinterp_pkgconfigdir], [$pkgconfigdir])
 
 ## Programs used in Makefiles.
 AC_PROG_AWK
@@ -640,21 +648,6 @@ if test $have_msvc = yes; then
 fi
 AC_SUBST(XTRA_EXTERNAL_SH_LDFLAGS)
 
-### Enable dynamic linking.
-### --enable-shared implies this, thus --enable-dl is only needed if you are
-### only building static libraries and want to try dynamic linking too
-### (works on some systems, for example, OS X and Windows).
-
-AC_ARG_ENABLE([dl],
-  [AS_HELP_STRING([--disable-dl],
-    [disable loading of dynamically linked modules])],
-  [case $enableval in
-     yes) ENABLE_DYNAMIC_LINKING=yes ;;
-     no) ENABLE_DYNAMIC_LINKING=no ;;
-     *) AC_MSG_ERROR([bad value $enableval for --enable-dl]) ;;
-   esac],
-  [ENABLE_DYNAMIC_LINKING=no])
-
 if test $STATIC_LIBS = no && test $SHARED_LIBS = no; then
   AC_MSG_ERROR([You can't disable building both static AND shared libraries!])
 fi
@@ -833,6 +826,10 @@ OCTAVE_F77_FLAG([-ffloat-store], [
   AC_SUBST(F77_FLOAT_STORE_FLAG)
 ])
 
+if test $ac_cv_f77_compiler_gnu = yes; then
+  OCTAVE_F77_FLAG([-std=legacy])
+fi
+
 BUILD_EXTERNAL_LIBXERBLA=
 case $host_os in
   msdosmsvc | mingw*)
@@ -857,57 +854,38 @@ shl_load_api=no
 loadlibrary_api=no
 dyld_api=no
 
-if test $SHARED_LIBS = yes || test $ENABLE_DYNAMIC_LINKING = yes; then
+case $lt_cv_dlopen in
+  dlopen)
+    dlopen_api=yes
+    DL_API_MSG="dlopen"
+    AC_DEFINE(HAVE_DLOPEN_API, 1,
+      [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
+    OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
+  ;;
+  shl_load)
+    shl_load_api=yes
+    DL_API_MSG="shl_load"
+    AC_DEFINE(HAVE_SHL_LOAD_API, 1,
+      [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
+  ;;
+  LoadLibrary)
+    loadlibrary_api=yes
+    DL_API_MSG="LoadLibrary"
+    AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
+      [Define to 1 if system has LoadLibrary for dynamic linking.])
+  ;;
+  dyld)
+    dyld_api=yes
+    DL_API_MSG="dyld"
+    AC_DEFINE(HAVE_DYLD_API, 1,
+      [Define to 1 if system has dyld for dynamic linking.])
+  ;;
+  *)
+    AC_MSG_ERROR([Octave requires some way to perform dynamic linking.])
+  ;;
+esac
 
-  case $lt_cv_dlopen in
-    dlopen)
-      dlopen_api=yes
-      DL_API_MSG="(dlopen)"
-      AC_DEFINE(HAVE_DLOPEN_API, 1,
-        [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
-      OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
-    ;;
-    shl_load)
-      shl_load_api=yes
-      DL_API_MSG="(shl_load)"
-      AC_DEFINE(HAVE_SHL_LOAD_API, 1,
-        [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
-    ;;
-    LoadLibrary)
-      loadlibrary_api=yes
-      DL_API_MSG="(LoadLibrary)"
-      AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
-        [Define to 1 if system has LoadLibrary for dynamic linking.])
-    ;;
-    dyld)
-      dyld_api=yes
-      DL_API_MSG="(dyld)"
-      AC_DEFINE(HAVE_DYLD_API, 1,
-        [Define to 1 if system has dyld for dynamic linking.])
-    ;;
-  esac
-
-  DL_LIBS="$lt_cv_dlopen_libs"
-  AC_SUBST(DL_LIBS)
-
-  ## Disable dynamic linking if capability is not present.
-  if test $dlopen_api = yes \
-      || test $shl_load_api = yes \
-      || test $loadlibrary_api = yes \
-      || test $dyld_api = yes; then
-    ## some form of dynamic linking present
-    ENABLE_DYNAMIC_LINKING=yes
-  else
-    ENABLE_DYNAMIC_LINKING=no
-  fi
-fi
-
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define to 1 if using dynamic linking.])
-fi
-
-AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
-  [test $ENABLE_DYNAMIC_LINKING = yes])
+DL_LIBS="$lt_cv_dlopen_libs"
 
 if test $SHARED_LIBS = yes; then
   LIBOCTINTERP="-loctinterp"
@@ -919,7 +897,6 @@ fi
 
 AC_SUBST(LD_CXX)
 AC_SUBST(RDYNAMIC_FLAG)
-AC_SUBST(ENABLE_DYNAMIC_LINKING)
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
 
@@ -1395,7 +1372,6 @@ AC_ARG_ENABLE([jit],
     [(EXPERIMENTAL) enable JIT compiler])],
   [if test "$enableval" = yes; then ENABLE_JIT=yes; fi], [])
 
-LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
@@ -1413,7 +1389,6 @@ if test $ENABLE_JIT = yes; then
     warn_llvm="LLVM was not found or is to old.  JIT compiler is disabled."
 
     save_CPPFLAGS="$CPPFLAGS"
-    save_CXXFLAGS="$CXXFLAGS"
     save_LDFLAGS="$LDFLAGS"
 
     dnl Use -isystem if available because we don't want to see warnings in LLVM
@@ -1424,7 +1399,6 @@ if test $ENABLE_JIT = yes; then
 
     dnl Use -isystem so we don't get warnings from llvm headers
     LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
-    LLVM_CXXFLAGS=
     LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
 
     LDFLAGS="$LDFLAGS $LLVM_LDFLAGS"
@@ -1436,7 +1410,6 @@ if test $ENABLE_JIT = yes; then
     dnl Ideally we should get these from llvm-config, but llvm-config isn't
     dnl very helpful.
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-    CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
 
@@ -1469,7 +1442,6 @@ if test $ENABLE_JIT = yes; then
     OCTAVE_LLVM_LEGACY_PASSMANAGER_API
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
-    CXXFLAGS="$save_CXXFLAGS"
     LDFLAGS="$save_LDFLAGS"
   fi
 
@@ -1478,7 +1450,6 @@ if test $ENABLE_JIT = yes; then
   else
     ENABLE_JIT=no
     LLVM_CPPFLAGS=
-    LLVM_CXXFLAGS=
     LLVM_LDFLAGS=
     LLVM_LIBS=
     OCTAVE_CONFIGURE_WARNING([warn_llvm])
@@ -1494,7 +1465,6 @@ if test $ENABLE_JIT = yes; then
 fi
 
 AC_SUBST(LLVM_CPPFLAGS)
-AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
 AM_CONDITIONAL([AMCOND_HAVE_LLVM], [test -z "$warn_llvm"])
@@ -1905,76 +1875,6 @@ esac
 DEFAULT_TERMINAL_FONT_SIZE=10
 AC_SUBST(DEFAULT_TERMINAL_FONT)
 AC_SUBST(DEFAULT_TERMINAL_FONT_SIZE)
-
-### Check for OSMesa.
-## Library is needed for offscreen rendering with Qt < 5.1 or FLTK.
-use_osmesa=auto
-AC_ARG_WITH([osmesa],
-  [AS_HELP_STRING([--with-osmesa],
-    [use OSMesa library for offscreen rendering of invisible figures])],
-  [if test x"$withval" = xyes; then
-     use_osmesa=yes
-   else
-     use_osmesa=no
-   fi])
-
-dnl If no argument given, only use OSMesa when Qt is too old
-if test $use_osmesa = auto; then
-  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
-  ## Qt is found.
-  if test "$octave_cv_qt_opengl_os_ok" = yes; then
-    use_osmesa=no
-  else
-    use_osmesa=yes
-  fi
-fi
-
-if test $use_osmesa = yes; then
-  dnl Pre-declare warning message, and unset if library is found
-  ## Quote $octave_cv_qt_opengl_os_ok because it will only be set if
-  ## Qt is found.
-  if test "$octave_cv_qt_opengl_os_ok" = no; then
-    warn_osmesa="OSMesa library not found and Qt < 5.1.  Offscreen rendering with OpenGL will be disabled."
-  else
-    warn_osmesa="OSMesa library not found.  Offscreen rendering with FLTK will be disabled."
-  fi
-
-  OSMESA_LIBS="-lOSMesa"
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  CPPFLAGS="$OSMESA_CPPFLAGS $CPPFLAGS"
-  LDFLAGS="$OSMESA_LDFLAGS $LDFLAGS"
-  LIBS="$OSMESA_LIBS $LIBS"
-  AC_LANG_PUSH(C++)
-  ac_octave_osmesa_check_for_lib=no
-  AC_CHECK_HEADERS([osmesa.h GL/osmesa.h],
-                   [ac_octave_osmesa_check_for_lib=yes; break])
-  if test $ac_octave_osmesa_check_for_lib = yes; then
-    AC_CACHE_CHECK([for OSMesaCreateContext in OSMesa],
-      octave_cv_lib_osmesa,
-      [AC_LINK_IFELSE([AC_LANG_CALL([], [OSMesaCreateContext])],
-        [octave_cv_lib_osmesa=yes], [octave_cv_lib_osmesa=no])
-    ])
-    if test $octave_cv_lib_osmesa = yes; then
-      warn_osmesa=
-      AC_DEFINE(HAVE_OSMESA, 1, [Define to 1 if OSMesa is available.])
-    fi
-  fi
-  AC_LANG_POP(C++)
-  CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
-  LIBS="$save_LIBS"
-
-  if test -n "$warn_osmesa"; then
-    OCTAVE_CONFIGURE_WARNING([warn_osmesa])
-    OSMESA_LIBS=
-  fi
-fi
-
-AC_SUBST(OSMESA_CPPFLAGS)
-AC_SUBST(OSMESA_LDFLAGS)
-AC_SUBST(OSMESA_LIBS)
 
 ### Check for FLTK library
 
@@ -2632,7 +2532,7 @@ AC_ARG_ENABLE([docs],
      OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
 if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || { test "$have_qt_opengl_offscreen" = no && test -n "$warn_osmesa"; }; then
+  if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."
@@ -2841,13 +2741,7 @@ LIBOCTAVE_LINK_OPTS="$CURL_LDFLAGS $SPARSE_XLDFLAGS $ARPACK_LDFLAGS $QRUPDATE_LD
 AC_SUBST(LIBOCTAVE_LINK_DEPS)
 AC_SUBST(LIBOCTAVE_LINK_OPTS)
 
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  LIBOCTINTERP_LINK_DEPS=""
-else
-  LIBOCTINTERP_LINK_DEPS="$DLDFCN_LIBS"
-fi
-
-LIBOCTINTERP_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
+LIBOCTINTERP_LINK_DEPS="$FT2_LIBS $HDF5_LIBS $MAGICK_LIBS $Z_LIBS $FFTW_XLIBS $OPENGL_LIBS $FONTCONFIG_LIBS $FREETYPE_LIBS $X11_LIBS $CARBON_LIBS $GL2PS_LIBS $LLVM_LIBS $JAVA_LIBS $LAPACK_LIBS"
 
 LIBOCTINTERP_LINK_OPTS="$FT2_LDFLAGS $HDF5_LDFLAGS $MAGICK_LDFLAGS $Z_LDFLAGS $FFTW_XLDFLAGS $LLVM_LDFLAGS"
 
@@ -2855,9 +2749,15 @@ OCTAVE_LINK_DEPS=""
 OCTAVE_LINK_OPTS=""
 
 OCT_LINK_DEPS=""
-OCT_LINK_OPTS="$LDFLAGS"
+OCT_GUI_LINK_DEPS=""
 
-if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
+OCT_LINK_OPTS="$LDFLAGS"
+OCT_GUI_LINK_OPTS="$LDFLAGS"
+
+if test $link_all_deps = yes; then
+  OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+  OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
+
   MKOCTFILE_OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS $MKOCTFILE_LIBOCTAVE_LINK_DEPS"
   MKOCTFILE_OCT_LINK_DEPS="$OCT_LINK_DEPS $MKOCTFILE_LIBOCTINTERP_LINK_DEPS"
 
@@ -2866,9 +2766,13 @@ if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
 
   OCTAVE_LINK_DEPS="$LIBOCTINTERP_LINK_DEPS"
   OCTAVE_LINK_OPTS="$LIBOCTINTERP_LINK_OPTS"
-
-  OCT_LINK_DEPS="$OCT_LINK_DEPS $LIBOCTINTERP_LINK_DEPS"
-  OCT_LINK_OPTS="$OCT_LINK_OPTS $LIBOCTINTERP_LINK_OPTS"
+else
+  case $host_os in
+    mingw* | msdosmsvc)
+      OCT_LINK_DEPS="libinterp/liboctinterp.la liboctave/liboctave.la"
+      OCT_GUI_LINK_DEPS="libgui/liboctgui.la libinterp/liboctinterp.la liboctave/liboctave.la"
+    ;;
+  esac
 fi
 
 AC_SUBST(LIBOCTINTERP_LINK_DEPS)
@@ -2880,6 +2784,9 @@ AC_SUBST(OCTAVE_LINK_OPTS)
 AC_SUBST(OCT_LINK_DEPS)
 AC_SUBST(OCT_LINK_OPTS)
 
+AC_SUBST(OCT_GUI_LINK_DEPS)
+AC_SUBST(OCT_GUI_LINK_OPTS)
+
 AC_SUBST(MKOCTFILE_OCTAVE_LINK_DEPS)
 AC_SUBST(MKOCTFILE_OCT_LINK_DEPS)
 
@@ -2890,13 +2797,7 @@ OCTAVE_GUI_LINK_DEPS=""
 OCTAVE_GUI_LINK_OPTS=""
 
 if test $build_qt_gui = yes; then
-  if test $ENABLE_DYNAMIC_LINKING = yes; then
-    LIBOCTGUI_LINK_DEPS=""
-  else
-    LIBOCTGUI_LINK_DEPS="$DLDFCN_LIBS"
-  fi
-
-  LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $QT_LIBS $OPENGL_LIBS"
+  LIBOCTGUI_LINK_DEPS="$QT_LIBS"
   LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
@@ -3016,7 +2917,9 @@ AC_CONFIG_FILES([
   Makefile
   build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
   doc/doxyhtml/Doxyfile
-  libgnu/Makefile])
+  libgnu/Makefile
+  liboctave/octave.pc:liboctave/octave.in.pc
+  libinterp/octinterp.pc:libinterp/octinterp.in.pc])
 
 dnl We use a .in.h file for oct-conf-post.h simply to copy it to the build tree
 dnl so that we don't have to add the -I${top_srcdir} to any CPPFLAGS variables.
@@ -3028,11 +2931,10 @@ AC_CONFIG_COMMANDS([oct-conf-post.h],
 OCTAVE_CONFIG_MOVE_IF_CHANGE_FILES([
   libgui/mk-default-qt-settings.sh
   liboctave/external/mk-f77-def.sh
+  liboctave/mk-version-h.sh
   libinterp/corefcn/mk-mxarray-h.sh
-  libinterp/mk-version-h.sh
   build-aux/subst-config-vals.sh
   build-aux/subst-cross-config-vals.sh
-  build-aux/subst-default-vals.sh
   build-aux/subst-script-vals.sh])
 
 AC_OUTPUT
@@ -3134,7 +3036,8 @@ Octave is now configured for $canonical_host_type
   QRUPDATE libraries:            $QRUPDATE_LIBS
   Qt CPPFLAGS:                   $QT_CPPFLAGS
   Qt LDFLAGS:                    $QT_LDFLAGS
-  Qt libraries:                  $QT_LIBS
+  Qt GUI libraries:              $QT_LIBS
+  Qt OpenGL libraries:           $QT_OPENGL_LIBS
   Qt moc:                        $MOC $MOCFLAGS
   Qt uic:                        $UIC $UICFLAGS
   Qt rcc:                        $RCC $RCCFLAGS
@@ -3170,7 +3073,7 @@ Octave is now configured for $canonical_host_type
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
-  Dynamic Linking:                      $ENABLE_DYNAMIC_LINKING $DL_API_MSG
+  Dynamic Linking API:                  $DL_API_MSG
   Include support for GNU readline:     $USE_READLINE
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
@@ -3183,15 +3086,6 @@ Octave is now configured for $canonical_host_type
 warn_msg_printed=false
 
 OCTAVE_CONFIGURE_WARNING_SUMMARY
-
-if test $ENABLE_DYNAMIC_LINKING = yes; then
-  if test $SHARED_LIBS = no; then
-    AC_MSG_WARN([])
-    AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
-    AC_MSG_WARN([Are you sure that is what you want to do?])
-    warn_msg_printed=true
-  fi
-fi
 
 if test $opengl_graphics = no; then
   AC_MSG_WARN([])

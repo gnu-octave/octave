@@ -141,9 +141,13 @@ namespace octave
 
     void displayed_directory_changed (const QString& dir);
 
-    //! Emitted, whenever the user requested to load a file.
+    //! Emitted, whenever the user requested to load a file in the text editor.
 
     void load_file_signal (const QString& fileName);
+
+    //! Emitted, whenever the user requested to open an unknown type file.
+
+    void open_any_signal (const QString& fileName);
 
     //! Emitted, whenever the user requested to run a file.
 
@@ -202,6 +206,7 @@ namespace octave
 
     QStringList m_columns_shown;
     QStringList m_columns_shown_keys;
+    QList <QVariant> m_columns_shown_defs;
     QSignalMapper *m_sig_mapper;
   };
 }

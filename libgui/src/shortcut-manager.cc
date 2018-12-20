@@ -329,6 +329,17 @@ namespace octave
     init (tr ("Move Tab Right"), "editor_tabs:move_tab_right",
           QKeySequence (Qt::AltModifier + Qt::Key_PageDown));
 
+    // Zooming
+    init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
+    init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
+#if defined (Q_OS_MAC)
+    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
+          QKeySequence (ctrl + Qt::Key_Underscore));
+#else
+    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
+          QKeySequence (ctrl + Qt::Key_Period));
+#endif
+
     // actions of the editor
 
     // file
@@ -435,15 +446,6 @@ namespace octave
           QKeySequence ());
     init (tr ("Show Horizontal Scrollbar"), "editor_view:show_hscrollbar",
           QKeySequence ());
-    init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
-    init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
-#if defined (Q_OS_MAC)
-    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-          QKeySequence (ctrl + Qt::Key_Underscore));
-#else
-    init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-          QKeySequence (ctrl + Qt::Key_Period));
-#endif
 
     // debug
     init (tr ("Toggle Breakpoint"), "editor_debug:toggle_breakpoint",
@@ -467,6 +469,12 @@ namespace octave
     init (tr ("Document on Keyword"), "editor_help:doc_keyword",
           QKeySequence (Qt::SHIFT + Qt::Key_F1));
 
+
+    // Documentation browser
+    init (tr ("Go to Homepage"), "doc_browser:go_home",
+              QKeySequence (Qt::AltModifier + Qt::Key_Home));
+    init (tr ("Go Back one Page"), "doc_browser:go_back", QKeySequence::Back);
+    init (tr ("Go Forward one Page"), "doc_browser:go_next", QKeySequence::Forward);
   }
 
   // write one or all actual shortcut set(s) into a settings file
@@ -509,6 +517,19 @@ namespace octave
       qDebug () << "Key: " << key << " not found in m_action_hash";
   }
 
+  void shortcut_manager::do_shortcut (QShortcut *sc, const QString& key)
+  {
+    int index;
+
+    index = m_action_hash[key] - 1;
+
+    if (index > -1 && index < m_sc.count ())
+      sc->setKey (QKeySequence (m_settings->value ("shortcuts/" + key,
+                                m_sc.at (index).m_default_sc).toString ()));
+    else
+      qDebug () << "Key: " << key << " not found in m_action_hash";
+  }
+
   void shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
   {
     m_dialog = nullptr;
@@ -537,6 +558,10 @@ namespace octave
     main_news->setText (0, tr ("News Menu"));
     QTreeWidgetItem *main_tabs = new QTreeWidgetItem (main);
     main_tabs->setText (0, tr ("Tab Handling in Dock Widgets"));
+    QTreeWidgetItem *main_find = new QTreeWidgetItem (main);
+    main_find->setText (0, tr ("Find & Replace in Dock Widgets"));
+    QTreeWidgetItem *main_zoom = new QTreeWidgetItem (main);
+    main_zoom->setText (0, tr ("Zooming in Editor and Documentation"));
 
     m_level_hash["main_file"]   = main_file;
     m_level_hash["main_edit"]   = main_edit;
@@ -546,6 +571,8 @@ namespace octave
     m_level_hash["main_news"]   = main_news;
     m_level_hash["main_tabs"]   = main_tabs;
     m_level_hash["editor_tabs"]   = main_tabs;
+    m_level_hash["editor_find"]   = main_find;
+    m_level_hash["editor_zoom"]   = main_zoom;
 
     QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
     editor->setText (0, tr ("Editor"));
@@ -570,6 +597,15 @@ namespace octave
     m_level_hash["editor_run"] = editor_run;
     m_level_hash["editor_help"] = editor_help;
 
+    QTreeWidgetItem *doc = new QTreeWidgetItem (tree_view);
+    doc->setText (0, tr ("Documentation Viewer"));
+    doc->setExpanded (true);
+
+    QTreeWidgetItem *doc_browser = new QTreeWidgetItem (doc);
+    doc_browser->setText (0, tr ("Browser"));
+
+    m_level_hash["doc_browser"] = doc_browser;
+
     connect (tree_view, SIGNAL (itemDoubleClicked (QTreeWidgetItem*, int)),
              this, SLOT (handle_double_clicked (QTreeWidgetItem*, int)));
 
@@ -586,6 +622,18 @@ namespace octave
             // Closing tabs now in global tab handling section
             if (sc.m_settings_key.contains ("editor_file:close"))
               section = main_tabs;
+          }
+        if (section == editor_edit)
+          {
+            // Find & replace now in global file & replace handling section
+            if (sc.m_settings_key.contains ("editor_edit:find"))
+              section = main_find;
+          }
+        if (section == editor_view)
+          {
+            // Zooming now in global zoom handling section
+            if (sc.m_settings_key.contains ("editor_view:zoom"))
+              section = main_zoom;
           }
 
         QTreeWidgetItem *tree_item = new QTreeWidgetItem (section);
@@ -625,16 +673,22 @@ namespace octave
       {
         QString file;
 
+        // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+        int opts = 0;  // No options by default.
+        if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+                                                        true).toBool ())
+          opts = QFileDialog::DontUseNativeDialog;
+
         if (action == OSC_IMPORT)
           file = QFileDialog::getOpenFileName (this,
-                                               tr ("Import shortcuts from file ..."), QString (),
+                                               tr ("Import shortcuts from file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr, QFileDialog::DontUseNativeDialog);
+                                               nullptr, QFileDialog::Option (opts));
         else if (action == OSC_EXPORT)
           file = QFileDialog::getSaveFileName (this,
-                                               tr ("Export shortcuts into file ..."), QString (),
+                                               tr ("Export shortcuts to file..."), QString (),
                                                tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
-                                               nullptr, QFileDialog::DontUseNativeDialog);
+                                               nullptr, QFileDialog::Option (opts));
 
         if (file.isEmpty ())
           return false;
@@ -643,7 +697,7 @@ namespace octave
 
         if (! osc_settings)
           {
-            qWarning () << tr ("Failed to open %1 as octave shortcut file")
+            qWarning () << tr ("Failed to open %1 as Octave shortcut file")
                         .arg (file);
             return false;
           }

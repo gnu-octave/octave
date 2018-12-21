@@ -38,6 +38,11 @@ namespace octave
 {
   namespace math
   {
+    extern OCTAVE_API bool isna (double x);
+    extern OCTAVE_API bool isna (float x);
+    extern OCTAVE_API bool isna (const Complex& x);
+    extern OCTAVE_API bool isna (const FloatComplex& x);
+
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
 

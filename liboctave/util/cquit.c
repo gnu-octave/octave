@@ -38,6 +38,10 @@ sig_atomic_t octave_exception_state = 0;
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
+sig_atomic_t octave_exit_exception_status = 0;
+
+sig_atomic_t octave_exit_exception_safe_to_return = 0;
+
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
 #  pragma GCC diagnostic pop
 #endif

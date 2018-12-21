@@ -287,11 +287,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand' instead")
-typedef octave::rand octave_rand;
-
-#endif
-
 #endif

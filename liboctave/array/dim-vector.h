@@ -424,10 +424,6 @@ public:
     return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
-  bool is_vector (void) const
-  { return isvector (); }
-
   bool is_nd_vector (void) const
   {
     int num_non_one = 0;

@@ -1023,10 +1023,6 @@ public:
 
   bool isvector (void) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
-  bool is_vector (void) const
-  { return isvector (); }
-
   // FIXME: these are here for compatibility.  They should be removed
   // when no longer in use.
 

@@ -152,26 +152,7 @@ namespace octave
     static void init (void);
 
     static bool is_thread (void);
-
-    OCTAVE_DEPRECATED (4.4, "use 'is_thread' instead")
-    static bool is_octave_thread (void) { return is_thread (); }
   };
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::mutex' instead")
-typedef octave::mutex octave_mutex;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::base_mutex' instead")
-typedef octave::base_mutex octave_base_mutex;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::autolock' instead")
-typedef octave::autolock octave_autolock;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::thread' instead")
-typedef octave::thread octave_thread;
-
-#endif
 
 #endif

@@ -207,14 +207,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_statement' instead")
-typedef octave::tree_statement tree_statement;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_statement_list' instead")
-typedef octave::tree_statement_list tree_statement_list;
-
-#endif
-
 #endif

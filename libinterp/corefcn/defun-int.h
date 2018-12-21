@@ -80,41 +80,6 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::auto_shlib' instead")
-typedef octave::auto_shlib octave_auto_shlib;
-
-OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
-extern OCTINTERP_API bool
-defun_isargout (int, int);
-
-OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::isargout' instead")
-extern OCTINTERP_API void
-defun_isargout (int, int, bool *);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
-extern OCTINTERP_API void
-install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_function' instead")
-extern OCTINTERP_API void
-install_builtin_function (octave_builtin::meth m, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool can_hide_function = true);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::alias_built_in_function' instead")
-extern OCTINTERP_API void
-alias_builtin (const std::string& alias, const std::string& name);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::symbol_table::install_built_in_dispatch' instead")
-extern OCTINTERP_API void
-install_builtin_dispatch (const std::string& name, const std::string& klass);
-
-#endif
-
 #define FORWARD_DECLARE_FUNX(name)              \
   extern OCTAVE_EXPORT octave_value_list        \
   name (const octave_value_list&, int)

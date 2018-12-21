@@ -152,17 +152,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_unary_expression' instead")
-typedef octave::tree_unary_expression tree_unary_expression;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_prefix_expression' instead")
-typedef octave::tree_prefix_expression tree_prefix_expression;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_postfix_expression' instead")
-typedef octave::tree_postfix_expression tree_postfix_expression;
-
-#endif
-
 #endif

@@ -185,14 +185,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_binary_expression' instead")
-typedef octave::tree_binary_expression tree_binary_expression;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_boolean_expression' instead")
-typedef octave::tree_boolean_expression tree_boolean_expression;
-
-#endif
-
 #endif

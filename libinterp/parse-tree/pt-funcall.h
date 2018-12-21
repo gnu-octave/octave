@@ -88,11 +88,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_funcall' instead")
-typedef octave::tree_funcall tree_funcall;
-
-#endif
-
 #endif

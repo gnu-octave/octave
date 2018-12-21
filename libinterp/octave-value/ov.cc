@@ -1106,10 +1106,6 @@ octave_value::octave_value (const octave_scalar_map& m, const std::string& id,
   : rep (new octave_class (m, id, plist))
 { }
 
-octave_value::octave_value (const octave_value_list& l, bool)
-  : rep (new octave_cs_list (l))
-{ }
-
 octave_value::octave_value (const octave_value_list& l)
   : rep (new octave_cs_list (l))
 { }

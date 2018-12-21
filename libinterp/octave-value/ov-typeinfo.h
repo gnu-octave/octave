@@ -286,52 +286,6 @@ namespace octave_value_typeinfo
                             const std::string& c_name,
                             const octave_value& val);
 
-  OCTAVE_DEPRECATED(4.4, "use octave::type_info::register_unary_class_op instead")
-  extern bool register_unary_class_op (octave_value::unary_op op,
-                                       unary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_unary_op instead")
-  extern bool register_unary_op (octave_value::unary_op op,
-                                 int t, unary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_non_const_unary_op instead")
-  extern bool register_non_const_unary_op (octave_value::unary_op op,
-                                           int t, non_const_unary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
-  extern bool register_binary_class_op (octave_value::binary_op op,
-                                        binary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
-  extern bool register_binary_op (octave_value::binary_op op,
-                                  int t1, int t2, binary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_class_op instead")
-  extern bool register_binary_class_op (octave_value::compound_binary_op op,
-                                        binary_class_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_binary_op instead")
-  extern bool register_binary_op (octave_value::compound_binary_op op,
-                                  int t1, int t2, binary_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_cat_op instead")
-  extern bool register_cat_op (int t1, int t2, cat_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assign_op instead")
-  extern bool register_assign_op (octave_value::assign_op op,
-                                  int t_lhs, int t_rhs, assign_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_assignany_op instead")
-  extern bool register_assignany_op (octave_value::assign_op op,
-                                     int t_lhs, assignany_op_fcn f);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_pref_assign_conv instead")
-  extern bool register_pref_assign_conv (int t_lhs, int t_rhs, int t_result);
-
-  OCTAVE_DEPRECATED (4.4, "use octave::type_info::register_widening_op instead")
-  extern bool register_widening_op (int t, int t_result,
-                                    octave_base_value::type_conv_fcn f);
-
   extern octave_value lookup_type (const std::string& nm);
 
   extern unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op op);

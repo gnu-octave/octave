@@ -83,32 +83,6 @@ check_version (const std::string& version, const std::string& fcn)
 // Install variables and functions in the symbol tables.
 
 void
-install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool /* can_hide_function -- not yet implemented */)
-{
-  octave_value fcn (new octave_builtin (f, name, file, doc));
-
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_function");
-
-  symtab.install_built_in_function (name, fcn);
-}
-
-void
-install_builtin_function (octave_builtin::meth m, const std::string& name,
-                          const std::string& file, const std::string& doc,
-                          bool /* can_hide_function -- not yet implemented */)
-{
-  octave_value fcn (new octave_builtin (m, name, file, doc));
-
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_function");
-
-  symtab.install_built_in_function (name, fcn);
-}
-
-void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
                       const octave::dynamic_library& shl, const std::string& doc,
                       bool relative)
@@ -161,23 +135,6 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
   symtab.install_built_in_function (name, fval);
 }
 
-void
-alias_builtin (const std::string& alias, const std::string& name)
-{
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("alias_builtin");
-
-  symtab.alias_built_in_function (alias, name);
-}
-
-void
-install_builtin_dispatch (const std::string& name, const std::string& klass)
-{
-  octave::symbol_table& symtab
-    = octave::__get_symbol_table__ ("install_builtin_dispatch");
-
-  symtab.install_built_in_dispatch (name, klass);
-}
-
 octave::dynamic_library
 get_current_shlib (void)
 {
@@ -204,20 +161,4 @@ get_current_shlib (void)
     }
 
   return retval;
-}
-
-bool
-defun_isargout (int nargout, int iout)
-{
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
-
-  return tw.isargout (nargout, iout);
-}
-
-void
-defun_isargout (int nargout, int nout, bool *isargout)
-{
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("defun_isargout");
-
-  return tw.isargout (nargout, nout, isargout);
 }

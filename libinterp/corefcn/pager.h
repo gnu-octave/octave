@@ -306,29 +306,6 @@ namespace octave
   extern std::ostream& __diary__ (void);
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::diary_buf' instead")
-typedef octave::diary_buf octave_diary_buf;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::diary_stream' instead")
-typedef octave::diary_stream octave_diary_stream;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::pager_buf' instead")
-typedef octave::pager_buf octave_pager_buf;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::pager_stream' instead")
-typedef octave::pager_stream octave_pager_stream;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::flush_stdout' instead")
-static inline void
-flush_octave_stdout (void)
-{
-  return octave::flush_stdout ();
-}
-
-#endif
-
 #define octave_stdout (octave::__stdout__ ())
 
 #define octave_diary (octave::__diary__ ())

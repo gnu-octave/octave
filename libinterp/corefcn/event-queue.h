@@ -122,14 +122,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::event_queue' instead")
-typedef octave::event_queue event_queue;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::event_queue_safe' instead")
-typedef octave::event_queue_safe event_queue_safe;
-
-#endif
-
 #endif

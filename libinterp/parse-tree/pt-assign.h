@@ -171,14 +171,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_simple_assignment' instead")
-typedef octave::tree_simple_assignment tree_simple_assignment;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_multi_assignment' instead")
-typedef octave::tree_multi_assignment tree_multi_assignment;
-
-#endif
-
 #endif

@@ -155,14 +155,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_fcn_handle' instead")
-typedef octave::tree_fcn_handle tree_fcn_handle;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_anon_fcn_handle' instead")
-typedef octave::tree_anon_fcn_handle tree_anon_fcn_handle;
-
-#endif
-
 #endif

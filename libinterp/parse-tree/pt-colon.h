@@ -109,11 +109,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_colon_expression' instead")
-typedef octave::tree_colon_expression tree_colon_expression;
-
-#endif
-
 #endif

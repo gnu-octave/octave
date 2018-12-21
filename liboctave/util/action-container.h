@@ -225,11 +225,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::action_container' instead")
-typedef octave::action_container action_container;
-
-#endif
-
 #endif

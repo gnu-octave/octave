@@ -98,10 +98,6 @@ public:
 
   bool issymmetric (void) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'issymmetric' instead")
-  bool is_symmetric (void) const
-  { return issymmetric (); }
-
   // destructive insert/delete/reorder operations
 
   FloatMatrix& insert (const FloatMatrix& a,

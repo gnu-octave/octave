@@ -45,9 +45,6 @@ extern "C" {
 #  define F77_FCN(f, F) F77_FUNC (f, F)
 #endif
 
-OCTAVE_DEPRECATED (4.4, "this variable is obsolete and should not be needed")
-static const int f77_exception_encountered = 0;
-
 /*
 
 The following macros are used for handling Fortran <-> C calling

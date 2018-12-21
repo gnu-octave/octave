@@ -111,50 +111,6 @@ set_internal_variable (int& var, const octave_value_list& args,
 
 extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
 
-OCTAVE_DEPRECATED (4.4, "use 'interpreter::mlock' instead")
-extern OCTINTERP_API void mlock (void);
-
-OCTAVE_DEPRECATED (4.4, "use 'interpreter::munlock' instead")
-extern OCTINTERP_API void munlock (const std::string&);
-
-OCTAVE_DEPRECATED (4.4, "use 'interpreter::mislocked' instead")
-extern OCTINTERP_API bool mislocked (const std::string&);
-
-OCTAVE_DEPRECATED (4.4, "use 'tree_evaluator::bind_ans' instead")
-extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::clear_mex_functions' instead")
-extern OCTINTERP_API void clear_mex_functions (void);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::clear_function' instead")
-extern OCTINTERP_API void clear_function (const std::string& nm);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::clear_variable' instead")
-extern OCTINTERP_API void clear_variable (const std::string& nm);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::clear_symbol' instead")
-extern OCTINTERP_API void clear_symbol (const std::string& nm);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::varval' instead")
-extern OCTINTERP_API octave_value
-lookup_function_handle (const std::string& nm);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::global_varval' instead")
-extern OCTINTERP_API octave_value
-get_global_value (const std::string& nm, bool silent = false);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::global_assign' instead")
-extern OCTINTERP_API void
-set_global_value (const std::string& nm, const octave_value& val);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::top_level_varval' instead")
-extern OCTINTERP_API octave_value
-get_top_level_value (const std::string& nm, bool silent = false);
-
-OCTAVE_DEPRECATED (4.4, "use 'symbol_table::top_level_assign' instead")
-extern OCTINTERP_API void
-set_top_level_value (const std::string& nm, const octave_value& val);
-
 OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
 extern OCTINTERP_API string_vector
 get_struct_elts (const std::string& text);

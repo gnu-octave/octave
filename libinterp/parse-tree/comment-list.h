@@ -102,14 +102,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::comment_list' instead")
-typedef octave::comment_list octave_comment_list;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::comment_elt' instead")
-typedef octave::comment_elt octave_comment_elt;
-
-#endif
-
 #endif

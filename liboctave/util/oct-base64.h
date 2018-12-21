@@ -38,16 +38,4 @@ namespace octave
   base64_decode (const std::string& str);
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::base_64_encode' instead")
-extern bool
-octave_base64_encode (const char *inc, const size_t inlen, char **out);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::base_64_decode' instead")
-extern Array<double>
-octave_base64_decode (const std::string& str);
-
-#endif
-
 #endif

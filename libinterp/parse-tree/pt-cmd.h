@@ -124,17 +124,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_command' instead")
-typedef octave::tree_command tree_command;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_no_op_command' instead")
-typedef octave::tree_no_op_command tree_no_op_command;
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_function_def' instead")
-typedef octave::tree_function_def tree_function_def;
-
-#endif
-
 #endif

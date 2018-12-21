@@ -111,10 +111,6 @@ public:
 
   bool ishermitian (void) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
-  bool is_hermitian (void) const
-  { return ishermitian (); }
-
   // destructive insert/delete/reorder operations
 
   ComplexMatrix& insert (const Matrix& a, octave_idx_type r, octave_idx_type c);

@@ -102,10 +102,6 @@ public:
 
   bool issymmetric (void) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'issymmetric' instead")
-  bool is_symmetric (void) const
-  { return issymmetric (); }
-
   SparseMatrix max (int dim = -1) const;
   SparseMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
   SparseMatrix min (int dim = -1) const;

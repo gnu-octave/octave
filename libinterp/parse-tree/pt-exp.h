@@ -158,11 +158,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_expression' instead")
-typedef octave::tree_expression tree_expression;
-
-#endif
-
 #endif

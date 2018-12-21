@@ -113,10 +113,6 @@ public:
 
   bool ishermitian (void) const;
 
-  OCTAVE_DEPRECATED (4.4, "use 'ishermitian' instead")
-  bool is_hermitian (void) const
-  { return ishermitian (); }
-
   SparseComplexMatrix max (int dim = -1) const;
   SparseComplexMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
   SparseComplexMatrix min (int dim = -1) const;

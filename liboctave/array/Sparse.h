@@ -231,11 +231,6 @@ public:
   //! This may differ from the actual number of elements, see nnz().
   octave_idx_type nzmax (void) const { return rep->length (); }
 
-  //! Amount of storage for nonzero elements.
-  //! Synonymous with nzmax().
-  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
-  octave_idx_type capacity (void) const { return nzmax (); }
-
   //! Actual number of nonzero terms.
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
@@ -245,12 +240,6 @@ public:
   {
     return dimensions.safe_numel ();
   }
-
-  OCTAVE_DEPRECATED (4.4, "use 'nzmax' instead")
-  octave_idx_type nelem (void) const { return nzmax (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type length (void) const { return numel (); }
 
   octave_idx_type dim1 (void) const { return dimensions(0); }
   octave_idx_type dim2 (void) const { return dimensions(1); }
@@ -470,16 +459,6 @@ public:
   Sparse<T>& insert (const Sparse<T>& a, const Array<octave_idx_type>& idx);
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
-  bool is_square (void) const
-  { return issquare (); }
-
-  bool isempty (void) const { return (rows () < 1 || cols () < 1); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
 
   Sparse<T> transpose (void) const;
 

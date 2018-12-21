@@ -38,22 +38,6 @@ namespace octave
 {
   namespace math
   {
-    extern OCTAVE_API bool isna (double x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (double x) { return math::isna (x); }
-
-    extern OCTAVE_API bool isna (float x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (float x) { return math::isna (x); }
-
-    extern OCTAVE_API bool isna (const Complex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (const Complex& x) { return math::isna (x); }
-
-    extern OCTAVE_API bool isna (const FloatComplex& x);
-    OCTAVE_DEPRECATED (4.4, "use 'math::isna' instead")
-    inline bool is_NA (const FloatComplex& x) { return math::isna (x); }
-
     extern OCTAVE_API bool is_NaN_or_NA (const Complex& x);
     extern OCTAVE_API bool is_NaN_or_NA (const FloatComplex& x);
 
@@ -207,19 +191,6 @@ namespace octave
     isfinite (const std::complex<T>& x)
     {
       return (isfinite (std::real (x)) && isfinite (std::imag (x)));
-    }
-
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    inline bool finite (double x) { return math::isfinite (x); }
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    inline bool finite (float x) { return math::isfinite (x); }
-
-    template <typename T>
-    OCTAVE_DEPRECATED (4.4, "use 'math::isfinite' instead")
-    bool
-    finite (const std::complex<T>& x)
-    {
-      return math::isfinite (x);
     }
 
     inline bool isinf (double x) { return std::isinf (x); }
@@ -478,22 +449,5 @@ namespace octave
     extern OCTAVE_API FloatComplex rc_sqrt (float);
   }
 }
-
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-inline bool xfinite (double x) { return octave::math::isfinite (x); }
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-inline bool xfinite (float x) { return octave::math::isfinite (x); }
-
-template <typename T>
-OCTAVE_DEPRECATED (4.4, "use 'octave::math::isfinite' instead")
-bool
-xfinite (const std::complex<T>& x)
-{
-  return octave::math::isfinite (x);
-}
-
-#endif
 
 #endif

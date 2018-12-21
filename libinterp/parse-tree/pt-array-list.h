@@ -85,11 +85,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_array_list' instead")
-typedef octave::tree_array_list tree_array_list;
-
-#endif
-
 #endif

@@ -69,11 +69,4 @@ namespace octave
   };
 }
 
-#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::tree_cell' instead")
-typedef octave::tree_cell tree_cell;
-
-#endif
-
 #endif

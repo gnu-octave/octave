@@ -80,19 +80,12 @@ public:
 
   octave_idx_type numel (void) const { return rng_numel; }
 
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type nelem (void) const { return numel (); }
-
   octave_idx_type rows (void) const { return 1; }
 
   octave_idx_type cols (void) const { return numel (); }
   octave_idx_type columns (void) const { return numel (); }
 
   bool isempty (void) const { return numel () == 0; }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
 
   bool all_elements_are_ints (void) const;
 
@@ -111,10 +104,6 @@ public:
               sortmode mode = ASCENDING) const;
 
   sortmode issorted (sortmode mode = ASCENDING) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  sortmode is_sorted (sortmode mode = ASCENDING) const
-  { return issorted (mode); }
 
   octave_idx_type nnz (void) const;
 

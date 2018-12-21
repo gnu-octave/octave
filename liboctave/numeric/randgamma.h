@@ -44,32 +44,4 @@ namespace octave
   }
 }
 
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<double>' instead")
-inline double
-oct_randg (double a)
-{
-  return octave::rand_gamma (a);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<float>' instead")
-inline float
-oct_float_randg (float a)
-{
-  return octave::rand_gamma (a);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<double>' instead")
-inline void
-oct_fill_randg (double a, octave_idx_type n, double *p)
-{
-  octave::rand_gamma (a, n, p);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::rand_gamma<float>' instead")
-inline void
-oct_fill_float_randg (float a, octave_idx_type n, float *p)
-{
-  octave::rand_gamma (a, n, p);
-}
-
 #endif

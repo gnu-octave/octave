@@ -25,8 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#if defined  (__cplusplus)
-
 #include <list>
 #include <string>
 
@@ -54,18 +52,12 @@ namespace octave
     bool debug_jit (void) const { return m_debug_jit; }
     bool echo_commands (void) const { return m_echo_commands; }
 
-    OCTAVE_DEPRECATED (4.4, "use 'gui' instead")
-    bool force_gui (void) const { return m_gui; }
-
     bool forced_interactive (void) const { return m_forced_interactive; }
     bool forced_line_editing (void) const { return m_forced_line_editing; }
     bool gui (void) const { return m_gui; }
     bool inhibit_startup_message (void) const { return m_inhibit_startup_message; }
     bool jit_compiler (void) const { return m_jit_compiler; }
     bool line_editing (void) const { return m_line_editing; }
-
-    OCTAVE_DEPRECATED (4.4, "use '! gui' instead")
-    bool no_gui (void) const { return ! gui (); }
 
     bool no_window_system (void) const { return m_no_window_system; }
     bool persist (void) const { return m_persist; }
@@ -90,18 +82,12 @@ namespace octave
     void debug_jit (bool arg) { m_debug_jit = arg; }
     void echo_commands (bool arg) { m_echo_commands = arg; }
 
-    OCTAVE_DEPRECATED (4.4, "use 'gui' instead")
-    void force_gui (bool arg) { m_gui = arg; }
-
     void forced_line_editing (bool arg) { m_forced_line_editing = arg; }
     void forced_interactive (bool arg) { m_forced_interactive = arg; }
     void gui (bool arg) { m_gui = arg; }
     void inhibit_startup_message (bool arg) { m_inhibit_startup_message = arg; }
     void jit_compiler (bool arg) { m_jit_compiler = arg; }
     void line_editing (bool arg) { m_line_editing = arg; }
-
-    OCTAVE_DEPRECATED (4.4, "this has been removed and is the default now")
-    void no_gui (bool) { return; }
 
     void no_window_system (bool arg) { m_no_window_system = arg; }
     void persist (bool arg) { m_persist = arg; }
@@ -384,18 +370,5 @@ namespace octave
     int execute (void);
   };
 }
-
-#endif
-
-#if defined  (__cplusplus)
-extern "C" {
-#endif
-
-OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
-extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
-
-#if defined  (__cplusplus)
-}
-#endif
 
 #endif

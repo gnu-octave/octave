@@ -396,28 +396,6 @@ namespace octave
   }
 }
 
-// embedded is int here because octave_main is extern "C".
-
-int
-octave_main (int argc, char **argv, int embedded)
-{
-  if (embedded)
-    {
-      if (argc > 0)
-        std::cerr << "warning: ignoring command line options for embedded octave\n";
-
-      static octave::interpreter embedded_interpreter;
-      return embedded_interpreter.execute ();
-    }
-  else
-    {
-      std::cerr << "warning: octave_main should only be used to create an embedded interpreter";
-
-      static octave::cli_application app (argc, argv);
-      return app.execute ();
-    }
-}
-
 DEFUN (isguirunning, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} isguirunning ()

@@ -334,34 +334,6 @@ public:
   void clear (octave_idx_type r, octave_idx_type c)
   { clear (dim_vector (r, c)); }
 
-  // Number of elements in the array.  These are all synonyms.
-  //@{
-  //! Number of elements in the array.
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type capacity (void) const { return numel (); }
-
-  //! Number of elements in the array.
-  //!
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  //!
-  //! @note
-  //! This is @em not the same as @c %length() at the Octave interpreter.
-  //! At the Octave interpreter, the function @c %length() returns the
-  //! length of the greatest dimension.  This method returns the total
-  //! number of elements.
-
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type length (void) const { return numel (); }
-
-  //! Number of elements in the array.
-  //! Synonymous with numel().
-  //! @note This method is deprecated in favour of numel().
-  OCTAVE_DEPRECATED (4.4, "use 'numel' instead")
-  octave_idx_type nelem (void) const { return numel (); }
-
   //! Number of elements in the array.
   octave_idx_type numel (void) const { return slice_len; }
   //@}
@@ -558,21 +530,9 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
-  OCTAVE_DEPRECATED (4.4, "use 'issquare' instead")
-  bool is_square (void) const
-  { return issquare (); }
-
   bool isempty (void) const { return numel () == 0; }
 
-  OCTAVE_DEPRECATED (4.4, "use 'isempty' instead")
-  bool is_empty (void) const
-  { return isempty (); }
-
   bool isvector (void) const { return dimensions.isvector (); }
-
-  OCTAVE_DEPRECATED (4.4, "use 'isvector' instead")
-  bool is_vector (void) const
-  { return isvector (); }
 
   bool is_nd_vector (void) const { return dimensions.is_nd_vector (); }
 
@@ -711,10 +671,6 @@ public:
 
   //! Ordering is auto-detected or can be specified.
   sortmode issorted (sortmode mode = UNSORTED) const;
-
-  OCTAVE_DEPRECATED (4.4, "use 'issorted' instead")
-  sortmode is_sorted (sortmode mode = UNSORTED) const
-  { return issorted (mode); }
 
   //! Sort by rows returns only indices.
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const;

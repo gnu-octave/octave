@@ -76,7 +76,8 @@ namespace QtHandles
     ObjectFactory *factory = ObjectFactory::instance ();
 
     connect (this, SIGNAL (createObject (double)),
-             factory, SLOT (createObject (double)));
+             factory, SLOT (createObject (double)),
+             Qt::BlockingQueuedConnection);
   }
 
   Backend::~Backend (void)
@@ -96,6 +97,11 @@ namespace QtHandles
         || go.isa ("uipushtool")
         || go.isa ("uitoggletool"))
       {
+        // FIXME: We need to unlock the mutex here but we have no way to know if
+        // if it was previously locked by this thread, and thus if we should
+        // re-lock it.
+        gh_manager::unlock ();
+
         Logger::debug ("Backend::initialize %s from thread %08x",
                        go.type ().c_str (), QThread::currentThreadId ());
 
@@ -154,6 +160,11 @@ namespace QtHandles
   void
   Backend::finalize (const graphics_object& go)
   {
+    // FIXME: We need to unlock the mutex here but we have no way to know if
+    // if it was previously locked by this thread, and thus if we should
+    // re-lock it.
+    gh_manager::unlock ();
+
     Logger::debug ("Backend::finalize %s from thread %08x",
                    go.type ().c_str (), QThread::currentThreadId ());
 

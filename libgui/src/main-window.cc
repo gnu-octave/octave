@@ -2750,6 +2750,24 @@ namespace octave
     emit finished ();
   }
 
+  //! Reimplements QApplication::notify.
+  /*! Octave's own exceptions are caugh and rethrown in the interpreter
+      thread.*/
+  bool
+  octave_qapplication::notify (QObject *receiver, QEvent *ev)
+  {
+    try
+      {
+        return QApplication::notify (receiver, ev);
+      }
+    catch (octave::execution_exception&)
+      {
+        octave_link::post_exception (std::current_exception ());
+      }
+
+   return false;
+  }
+
   octave_qt_app::octave_qt_app (gui_application& app_context)
     : QObject (), m_app_context (app_context),
       m_argc (m_app_context.sys_argc ()),
@@ -2796,7 +2814,7 @@ namespace octave
     // Even if START_GUI is false, we still set up the QApplication so
     // that we can use Qt widgets for plot windows.
 
-    m_qt_app = new QApplication (m_argc, m_argv);
+    m_qt_app = new octave_qapplication (m_argc, m_argv);
 
     // Force left-to-right alignment (see bug #46204)
     m_qt_app->setLayoutDirection (Qt::LeftToRight);

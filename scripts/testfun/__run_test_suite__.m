@@ -61,7 +61,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       test ("", "explain", fid);
       puts ("\nIntegrated test scripts:\n\n");
       for i = 1:length (fcndirs)
-        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i});
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i}, false);
         dp += p;
         dn += n;
         dxf += xf;
@@ -72,7 +72,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endfor
       puts ("\nFixed test scripts:\n\n");
       for i = 1:length (fixedtestdirs)
-        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fixedtestdirs{i});
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fixedtestdirs{i}, true);
         dp += p;
         dn += n;
         dxf += xf;
@@ -150,14 +150,14 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
     regress = drgrs;
   endif
 
-  function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_dir (fid, d)
+  function [dp, dn, dxf, dxb, dsk, drtsk, drgrs] = run_test_dir (fid, d, is_fixed = false)
 
     lst = dir (d);
     dp = dn = dxf = dxb = dsk = drtsk = drgrs = 0;
     for i = 1:length (lst)
       nm = lst(i).name;
       if (lst(i).isdir && nm(1) != "." && ! strcmp (nm, "private"))
-        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, [d, filesep, nm]);
+        [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, [d, filesep, nm], is_fixed);
         dp += p;
         dn += n;
         dxf += xf;
@@ -180,10 +180,9 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         if (nm(1) == '.')
           continue
         endif
-        if ((length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
-            || (length (nm) > 4
-                && (strcmpi (nm((end-3):end), "-tst")
-                    || strcmpi (nm((end-3):end), ".tst"))))
+        if ((! is_fixed && length (nm) > 2 && strcmpi (nm((end-1):end), ".m"))
+            || (! is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), "-tst"))
+            || (is_fixed && length (nm) > 4 && strcmpi (nm((end-3):end), ".tst")))
           p = n = xf = xb = sk = rtsk = rgrs = 0;
           ffnm = fullfile (d, nm);
           ## Only run if contains %!test, %!assert, %!error, %!fail, or %!warning

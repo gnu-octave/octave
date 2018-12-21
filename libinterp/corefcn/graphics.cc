@@ -6110,7 +6110,7 @@ axes::properties::update_ticklength (void)
   zticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
 
   double offset = get___fontsize_points__ () / 2;
-  
+
   xtickoffset = (mode2D ? std::max (0., xticklen) : std::abs (xticklen)) +
                 (xstate == AXE_HORZ_DIR ? offset*1.5 : offset);
   ytickoffset = (mode2D ? std::max (0., yticklen) : std::abs (yticklen)) +
@@ -10407,7 +10407,6 @@ uicontextmenu::~uicontextmenu (void)
 %!   assert (get (hax, "uicontextmenu"), hctx2);
 %!   assert (get (hf, "children"), [hctx2; hctx1; hax]);
 %!   delete (hctx2);
-%!   pause (.005);
 %!   assert (get (hf, "uicontextmenu"), []);
 %!   assert (get (hax, "uicontextmenu"), []);
 %!   assert (get (hf, "children"), [hctx1; hax]);
@@ -13158,23 +13157,9 @@ undocumented.
 
           graphics_object go = gh_manager::get_object (h);
 
-          // FIXME: when using qt toolkit the print_figure method
-          // returns immediately and Canvas::print doesn't have
-          // enough time to lock the mutex before we lock it here
-          // again.  We thus wait 50 ms (which may not be enough) to
-          // give it a chance: see http://octave.1599824.n4.nabble.com/Printing-issues-with-Qt-toolkit-tp4673270.html
-
           gh_manager::unlock ();
 
           go.get_toolkit ().print_figure (go, term, file, debug_file);
-
-          // FIXME: In ObjectProxy.cc ObjectProxy::init
-          // we now use connect (..., Qt::BlockingQueuedConnection)
-          // which should make the sleep unnecessary.
-          // See bug #44463 and #48519
-          // Remove it and the FIXME block above after testing.
-
-          // octave_sleep (0.05);
 
           gh_manager::lock ();
         }

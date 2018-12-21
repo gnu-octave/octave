@@ -91,7 +91,9 @@ function [v, lambda, c] = condeig (a)
     c = [];
   else
     ## Corresponding left eigenvectors
-    vl = inv (v)';
+    ## Use 2-argument form to suppress possible singular matrix warning.
+    [vl, ~] = inv (v);
+    vl = vl';
     ## Normalize vectors
     vl ./= repmat (sqrt (sum (abs (vl .^ 2))), rows (vl), 1);
 

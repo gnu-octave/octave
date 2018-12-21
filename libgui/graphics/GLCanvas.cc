@@ -140,20 +140,22 @@ namespace QtHandles
     if (obj.valid_object ())
       {
         graphics_object figObj (obj.get_ancestor ("figure"));
+        
+        // Make sure we have a valid current context
+        if (! begin_rendering ())
+          error ("print: no valid OpenGL offscreen context");
+        
         try
           {
-            // Make sure we have a valid current context
-            if (! begin_rendering ())
-              error ("print: no valid OpenGL offscreen context");
-
             octave::gl2ps_print (m_glfcns, figObj, file_cmd.toStdString (),
                                  term.toStdString ());
           }
         catch (octave::execution_exception& e)
           {
             octave_link::post_exception (std::current_exception ());
-            end_rendering ();
           }
+        
+        end_rendering ();
       }
   }
 

@@ -460,6 +460,8 @@ public:
 
   bool issquare (void) const { return (dim1 () == dim2 ()); }
 
+  bool isempty (void) const { return (rows () < 1 || cols () < 1); }
+
   Sparse<T> transpose (void) const;
 
   T * data (void) { make_unique (); return rep->d; }

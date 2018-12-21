@@ -113,8 +113,6 @@ namespace QtHandles
       if (! mapsInitialized)
         {
           weightMap["normal"] = QFont::Normal;
-          weightMap["light"] = QFont::Light;
-          weightMap["demi"] = QFont::DemiBold;
           weightMap["bold"] = QFont::Bold;
 
           angleMap["normal"] = QFont::StyleNormal;

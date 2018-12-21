@@ -245,10 +245,6 @@ namespace octave
 
           if (weight == "bold")
             fc_weight = FC_WEIGHT_BOLD;
-          else if (weight == "light")
-            fc_weight = FC_WEIGHT_LIGHT;
-          else if (weight == "demi")
-            fc_weight = FC_WEIGHT_DEMIBOLD;
           else
             fc_weight = FC_WEIGHT_NORMAL;
 

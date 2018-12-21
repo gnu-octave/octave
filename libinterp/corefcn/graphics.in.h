@@ -3186,16 +3186,6 @@ public:
       any_property __zoom_mode__ h , Matrix ()
       double_property __device_pixel_ratio__ hU , 1.0
 
-      // Obsolete properties: doublebuffer, mincolormap, wvisual, wvisualmode,
-      //                      xdisplay, xvisual, xvisualmode
-      // FIXME: DEPRECATED: Remove in version 6.
-      bool_property doublebuffer hd , "on"
-      double_property mincolormap hd , 64
-      string_property wvisual hmd , ""
-      radio_property wvisualmode hd , "{auto}|manual"
-      string_property xdisplay hd , ""
-      string_property xvisual hmd , ""
-      radio_property xvisualmode hd , "{auto}|manual"
     END_PROPERTIES
 
   protected:
@@ -3636,7 +3626,6 @@ public:
       array_property currentpoint , Matrix (2, 3, 0.0)
       row_vector_property dataaspectratio mu , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode u , "{auto}|manual"
-      radio_property drawmode hd , "{normal}|fast"
       radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
@@ -4360,7 +4349,7 @@ public:
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits SU , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       radio_property horizontalalignment mu , "{left}|center|right"
       radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
@@ -4444,18 +4433,17 @@ public:
     void update_color (void) { update_font (); update_text_extent (); }
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
-    void update_fontangle (void) { update_font (); update_text_extent (); }
-
-    void update_fontweight (void)
+    void update_fontangle (void)
     {
       update_font ();
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
         warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_font (); update_text_extent (); }
 
     void update_interpreter (void) { update_text_extent (); }
     void update_horizontalalignment (void) { update_text_extent (); }
@@ -5461,7 +5449,7 @@ public:
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       radio_property horizontalalignment , "left|{center}|right"
       callback_property keypressfcn , Matrix ()
@@ -5504,17 +5492,16 @@ public:
     void update_string (void) { update_text_extent (); }
     void update_fontname (void) { update_text_extent (); }
     void update_fontsize (void) { update_text_extent (); }
-    void update_fontangle (void) { update_text_extent (); }
-
-    void update_fontweight (void)
+    void update_fontangle (void)
     {
       update_text_extent ();
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
         warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_text_extent (); }
 
     void update_fontunits (const caseless_str& old_units);
 
@@ -5574,7 +5561,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position S , default_panel_position ()
@@ -5607,15 +5594,7 @@ public:
     // void update_fontname (void) { update_text_extent (); }
     // void update_fontsize (void) { update_text_extent (); }
     // void update_fontangle (void) { update_text_extent (); }
-
-    void update_fontweight (void)
-    {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-    }
+    // void update_fontweight (void) { update_fontweight (); }
 
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
@@ -5674,7 +5653,7 @@ public:
       string_property fontname , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       color_property highlightcolor , color_values (1, 1, 1)
       array_property position S , default_panel_position ()
@@ -5702,14 +5681,6 @@ public:
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
 
-    void update_fontweight (void)
-    {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-    }
   };
 
 private:
@@ -5776,7 +5747,7 @@ public:
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
       radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
-      radio_property fontweight u , "light|{normal}|demi|bold"
+      radio_property fontweight u , "{normal}|bold"
       color_property foregroundcolor , color_values (0, 0, 0)
       callback_property keypressfcn , Matrix ()
       callback_property keyreleasefcn , Matrix ()
@@ -5810,18 +5781,16 @@ public:
     void update_data (void) { update_table_extent (); }
     void update_fontname (void) { update_table_extent (); }
     void update_fontsize (void) { update_table_extent (); }
-    void update_fontangle (void) { update_table_extent (); }
-
-    void update_fontweight (void)
+    void update_fontangle (void)
     {
-      // FIXME: DEPRECATED: Remove warning with demi and light in version 6.
-      if (fontweight.is ("demi") || fontweight.is ("light"))
-        warning_with_id ("Octave:deprecated-property",
-                         "Setting 'fontweight' to '%s' is deprecated, \
-use 'normal' or 'bold'.", fontweight.current_value ().c_str ());
-
       update_table_extent ();
+      // FIXME: DEPRECATED: Remove warning for "oblique" in version 7.
+      if (fontangle.is ("oblique"))
+        warning_with_id ("Octave:deprecated-property",
+                         "Setting 'fontangle' to '%s' is deprecated, \
+use 'italic' or 'normal'.", fontangle.current_value ().c_str ());
     }
+    void update_fontweight (void) { update_table_extent (); }
   };
 
 private:

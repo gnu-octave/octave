@@ -480,13 +480,10 @@ function h = buildannot (hax, objtype, pos)
 
       hr = patch (x, y, "parent", h);
 
-      ## FIXME: DEPRECATED: Remove warn state switching in version 6.
-      old_warn_state = warning ("off", "Octave:deprecated-property");
       propnames = rectprops ("names");
       for ii = 1:numel (propnames)
         update_rect (h, {}, propnames{ii}, hr, objtype);
       endfor
-      warning (old_warn_state);
 
       rectmenu (hui, h);
       set (hr, "uicontextmenu", hui);

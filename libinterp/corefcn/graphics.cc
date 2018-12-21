@@ -5293,8 +5293,6 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // Note: dataspectratio (not mode) will be set through update_aspectratios
   dataaspectratiomode = "auto";
 
-  drawmode = "normal";
-
   fontangle = "normal";
   fontname = OCTAVE_DEFAULT_FONTNAME;
   fontsize = 10;

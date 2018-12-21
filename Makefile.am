@@ -289,6 +289,7 @@ noinst_SCRIPTS = run-octave
 CLEANFILES += \
   config-vars \
   make-vars \
+  oct-file-pkg-add \
   octave-config.h \
   run-octave
 

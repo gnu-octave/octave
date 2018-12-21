@@ -84,6 +84,10 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
       ## check for exact symmetry
       retval = ! any ((A != A')(:));
     else
+      if (islogical (A))
+        ## Hack to allow norm to work.  Choose single to minimize memory.
+        A = single (A);
+      endif
       norm_x = norm (A, Inf);
       retval = norm_x == 0 || norm (A - A', Inf) / norm_x <= tol;
     endif
@@ -92,6 +96,10 @@ function retval = ishermitian (A, skewopt = "nonskew", tol = 0)
     if (tol == 0)
       retval = ! any ((A != -A')(:));
     else
+      if (islogical (A))
+        ## Hack to allow norm to work.  Choose single to minimize memory.
+        A = single (A);
+      endif
       norm_x = norm (A, Inf);
       retval = norm_x == 0 || norm (A + A', Inf) / norm_x <= tol;
     endif
@@ -108,6 +116,8 @@ endfunction
 %!assert (ishermitian ([1, -2i; 2i, 1]))
 %!assert (ishermitian (speye (100)))
 %!assert (ishermitian (logical (eye (2))))
+%!assert (! ishermitian (logical ([1 1; 0 1])))
+%!assert (ishermitian (logical ([1 1; 0 1]), 0.5))
 %!assert (ishermitian ([0, 2i; 2i, 0], "skew"))
 %!assert (! ishermitian ([0, 2; -2, eps], "skew"))
 %!assert (ishermitian ([0, 2; -2, eps], "skew", eps))

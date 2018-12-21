@@ -282,7 +282,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   nf = 1;
 
   if (trace == 1)
-    printf ("f(x0) = %9.4e\n", f(1));
+    printf ("f(x0) = %9.4e\n", dirn * f(1));
   endif
 
   k = 0; m = 0;
@@ -321,7 +321,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   if (! isempty (outfcn))
     optimvalues.iteration = 0;
     optimvalues.funccount = nf;
-    optimvalues.fval = f(1);
+    optimvalues.fval = dirn * f(1);
     optimvalues.procedure = how;
     state = "init";
     stop = outfcn (x, optimvalues, state);
@@ -351,7 +351,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     if (trace == 1)
       printf ("Iter. %2.0f,", k);
       printf ("  how = %-11s", [how ","]);
-      printf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, fmax, ...
+      printf ("nf = %3.0f,  f = %9.4e  (%2.1f%%)\n", nf, dirn * fmax, ...
               100*(fmax-fmax_old)/(abs(fmax_old)+eps));
     endif
     fmax_old = fmax;
@@ -388,7 +388,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
     ## Call OutputFcn
     if (! isempty (outfcn))
       optimvalues.funccount = nf;
-      optimvalues.fval = f(1);
+      optimvalues.fval = dirn * f(1);
       optimvalues.iteration = k;
       optimvalues.procedure = how;
       state = "iter";
@@ -470,7 +470,7 @@ function [x, exitflag, output] = nmsmax (fun, x, options, varargin)
   ##        i.e., only when we have successfully converged?
   if (! isempty (outfcn))
     optimvalues.funccount = nf;
-    optimvalues.fval = f(1);
+    optimvalues.fval = dirn * f(1);
     optimvalues.iteration = k;
     optimvalues.procedure = how;
     state = "done";

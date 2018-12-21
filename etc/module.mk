@@ -9,6 +9,7 @@
   %reldir%/NEWS.2 \
   %reldir%/NEWS.3 \
   %reldir%/NEWS.4 \
+  %reldir%/NEWS.5 \
   %reldir%/PROJECTS \
   %reldir%/gdbinit
 

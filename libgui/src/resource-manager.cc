@@ -386,6 +386,12 @@ namespace octave
         QTextCodec *c = QTextCodec::codecForMib (mib);
         codecs->append (c->name ().toUpper ());
       }
+
+    // If on windows append SYSTEM even if not supported
+    if (ed_default_enc.def.toString () == "SYSTEM")
+      codecs->append (ed_default_enc.def.toString ());
+
+    // Clean up and sort list of codecs
     codecs->removeDuplicates ();
     qSort (*codecs);
   }
@@ -399,8 +405,11 @@ namespace octave
     // get the value from the settings file if no current encoding is given
     QString enc = current;
 
+    // Check for valid codec for the default. Allow "SYSTEM" even no valid
+    // codec exists, since codecForLocale will be chosen in this case
     bool default_exists = false;
-    if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ()))
+    if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())
+        || (ed_default_enc.def.toString () == "SYSTEM"))
       default_exists = true;
 
     if (enc.isEmpty ())

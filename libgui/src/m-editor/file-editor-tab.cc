@@ -2145,13 +2145,9 @@ namespace octave
     _encoding = _new_encoding;    // consider a possible new encoding
 
     // set the desired codec (if suitable for contents)
-    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
-
-    if (check_valid_codec (codec))
-      {
-        save_file_as (remove_on_success);
-        return;
-      }
+    QTextCodec *codec = check_valid_codec ();
+    if (! codec)
+      return;   // No valid codec
 
     // write the file
     QTextStream out (&file);
@@ -2305,34 +2301,39 @@ namespace octave
     return false;
   }
 
-  bool file_editor_tab::check_valid_codec (QTextCodec *codec)
+  QTextCodec* file_editor_tab::check_valid_codec ()
   {
+    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+
+    // "SYSTEM" is used as alias for locale on windows systems,
+    // which might not support "SYSTEM" codec
+    if ((! codec) && (_encoding == "SYSTEM"))
+      codec = QTextCodec::codecForLocale ();
+
     if (! codec)
       {
         QMessageBox::critical (nullptr,
                                tr ("Octave Editor"),
                                tr ("The current encoding %1\n"
                                    "can not be applied.\n\n"
-                                   "Please select another one or cancel saving!").arg (_encoding));
+                                   "Please select another one!").arg (_encoding));
 
-        return true;
+        return nullptr;
       }
 
     if (! codec->canEncode (_edit_area->text ()))
       {
-        int ans = QMessageBox::warning (nullptr,
-                                        tr ("Octave Editor"),
-                                        tr ("The current editor contents can not be encoded\n"
-                                            "with the selected encoding %1.\n"
-                                            "Using it will result in data loss!\n\n"
-                                            "Do you want to choose another encoding?").arg (_encoding),
-                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        QMessageBox::critical (nullptr,
+                               tr ("Octave Editor"),
+                               tr ("The current editor contents can not be encoded\n"
+                                   "with the selected encoding %1.\n"
+                                   "Using it would result in data loss!\n\n"
+                                   "Please select another one!").arg (_encoding));
 
-        if (ans == QMessageBox::Yes)
-          return true;
+        return nullptr;
       }
 
-    return false;
+    return codec;
   }
 
   void file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)

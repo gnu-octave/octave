@@ -1098,7 +1098,9 @@ file a certain function will be found.
 @subsection Function Locking
 
 It is sometime desirable to lock a function into memory with the @code{mlock}
-function.  This is typically used for dynamically linked functions in oct-files or mex-files that contain some initialization, and it is desirable that calling @code{clear} does not remove this initialization.
+function.  This is typically used for dynamically linked functions in
+oct-files or mex-files that contain some initialization, and it is desirable
+that calling @code{clear} does not remove this initialization.
 
 As an example,
 

@@ -140,7 +140,7 @@ index in the color map, and each row in the color map corresponds to
 an RGB color.  The color map must be of class @code{double} with values
 between 0 and 1.
 
-The following convenience functions are available for conversion between image 
+The following convenience functions are available for conversion between image
 formats.
 
 @DOCSTRING(im2double)
@@ -153,8 +153,8 @@ formats.
 
 @DOCSTRING(ind2rgb)
 
-Octave also provides tools to produce and work with movie frame structures. 
-Those structures encapsulate the image data (@qcode{"cdata"} field) together 
+Octave also provides tools to produce and work with movie frame structures.
+Those structures encapsulate the image data (@qcode{"cdata"} field) together
 with the corresponding colormap (@qcode{"colormap"} field).
 
 @DOCSTRING(getframe)
@@ -165,14 +165,15 @@ with the corresponding colormap (@qcode{"colormap"} field).
 
 @DOCSTRING(im2frame)
 
-The @code{colormap} function is used to change the colormap of the current axes or figure.
+The @code{colormap} function is used to change the colormap of the current
+axes or figure.
 
 @DOCSTRING(colormap)
 
 @DOCSTRING(iscolormap)
 
-The following functions return predefined colormaps, the same that can be 
-requested by name using the @code{colormap} function. 
+The following functions return predefined colormaps, the same that can be
+requested by name using the @code{colormap} function.
 
 @DOCSTRING(rgbplot)
 

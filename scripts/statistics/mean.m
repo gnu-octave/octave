@@ -142,6 +142,10 @@ function y = mean (x, varargin)
       print_usage ();
   endswitch
 
+  ## FIXME: Delete this when the "divide-by-zero" warning is
+  ##        removed in Octave 6.0.
+  warning ("off", "Octave:divide-by-zero", "local");
+
   ## The actual mean computation
   n = size (x, dim);
   switch (mean_type)

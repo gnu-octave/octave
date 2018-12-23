@@ -28,7 +28,6 @@
 ## Examples:
 ##
 ## @example
-## @group
 ## ## row vector
 ## flip ([1  2  3  4])
 ##       @result{}  4  3  2  1
@@ -49,7 +48,6 @@
 ## flip ([1 2; 3 4], 2)
 ##       @result{}  2  1
 ##           4  3
-## @end group
 ## @end example
 ##
 ## @seealso{fliplr, flipud, rot90, rotdim, permute, transpose}

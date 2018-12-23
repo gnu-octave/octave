@@ -153,7 +153,9 @@ To inquire whether a particular method exists for a user class, the
 For a polynomial class it makes sense to have a method to compute its roots.
 
 @example
+@group
 @EXAMPLEFILE(@polynomial/roots.m)
+@end group
 @end example
 
 We can check for the existence of the @code{roots}-method by calling:

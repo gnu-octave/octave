@@ -1850,7 +1850,7 @@ function handle @var{fcn_handle}.
 
 DEFMETHOD (str2func, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} str2func (@var{fcn_name})
+@deftypefn {} {} str2func (@var{fcn_name})
 Return a function handle constructed from the string @var{fcn_name}.
 
 Previous versions of Octave accepted an optional second argument,

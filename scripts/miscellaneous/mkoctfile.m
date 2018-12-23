@@ -107,6 +107,7 @@
 ## @code{mkoctfile}.
 ##
 ## @example
+## @group
 ##    AR
 ##    DEPEND_EXTRA_SED_PATTERN
 ##    DEPEND_FLAGS
@@ -119,19 +120,21 @@
 ##    LIBS
 ##    RANLIB
 ##    READLINE_LIBS
+## @end group
 ## @end example
 ##
 ## Octave configuration variables that are provided for informational
 ## purposes only.  Except for @samp{OCTAVE_HOME} and @samp{OCTAVE_EXEC_HOME},
 ## users may not override these variables.
 ##
-## If @env{OCTAVE_HOME} or @env{OCTAVE_EXEC_HOME} are set in the environment,
-## then other variables are adjusted accordingly with @env{OCTAVE_HOME} or
-## @env{OCTAVE_EXEC_HOME} substituted for the original value of the directory
-## specified by the @samp{--prefix} or @samp{--exec-prefix} options that were
-## used when Octave was configured.
+## If @w{@env{OCTAVE_HOME}} or @w{@env{OCTAVE_EXEC_HOME}} are set in the
+## environment, then other variables are adjusted accordingly with
+## @w{@env{OCTAVE_HOME}} or @w{@env{OCTAVE_EXEC_HOME}} substituted for the
+## original value of the directory specified by the @option{--prefix} or
+## @option{--exec-prefix} options that were used when Octave was configured.
 ##
 ## @example
+## @group
 ##    API_VERSION                 LOCALFCNFILEDIR
 ##    ARCHLIBDIR                  LOCALOCTFILEDIR
 ##    BINDIR                      LOCALSTARTUPFILEDIR
@@ -150,6 +153,7 @@
 ##    LOCALAPIFCNFILEDIR          STARTUPFILEDIR
 ##    LOCALAPIOCTFILEDIR          VERSION
 ##    LOCALARCHLIBDIR
+## @end group
 ## @end example
 ##
 ## @item --link-stand-alone

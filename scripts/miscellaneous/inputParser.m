@@ -24,18 +24,18 @@
 ## class supports four types of arguments:
 ##
 ## @enumerate
-## @item mandatory (see @command{addRequired});
+## @item mandatory (see @code{addRequired});
 ##
-## @item optional (see @command{addOptional});
+## @item optional (see @code{addOptional});
 ##
-## @item named (see @command{addParameter});
+## @item named (see @code{addParameter});
 ##
-## @item switch (see @command{addSwitch}).
+## @item switch (see @code{addSwitch}).
 ## @end enumerate
 ##
 ## After defining the function API with these methods, the supplied arguments
-## can be parsed with the @command{parse} method and the parsing results
-## accessed with the @command{Results} accessor.
+## can be parsed with the @code{parse} method and the parsing results
+## accessed with the @code{Results} accessor.
 ##
 ## @end deftypefn
 ## @deftypefn {} {} inputParser.Parameters
@@ -47,8 +47,8 @@
 ##
 ## @end deftypefn
 ## @deftypefn {} {} inputParser.Unmatched
-## Return structure similar to @command{Results}, but for unmatched parameters.
-## See the @command{KeepUnmatched} property.
+## Return structure similar to @code{Results}, but for unmatched parameters.
+## See the @code{KeepUnmatched} property.
 ##
 ## @end deftypefn
 ## @deftypefn {} {} inputParser.UsingDefaults
@@ -68,9 +68,9 @@
 ## Set whether an error should be given for non-defined arguments.  Defaults to
 ## false.  If set to true, the extra arguments can be accessed through
 ## @code{Unmatched} after the @code{parse} method.  Note that since
-## @command{Switch} and @command{Parameter} arguments can be mixed, it is
+## @code{Switch} and @code{Parameter} arguments can be mixed, it is
 ## not possible to know the unmatched type.  If argument is found unmatched
-## it is assumed to be of the @command{Parameter} type and it is expected to
+## it is assumed to be of the @code{Parameter} type and it is expected to
 ## be followed by a value.
 ##
 ## @end deftypefn
@@ -129,16 +129,16 @@
 ## @end example
 ##
 ## @emph{Note 1}: A function can have any mixture of the four API types but
-## they must appear in a specific order.  @command{Required} arguments must be
-## first and can be followed by any @command{Optional} arguments.  Only
-## the @command{Parameter} and @command{Switch} arguments may be mixed
+## they must appear in a specific order.  @code{Required} arguments must be
+## first and can be followed by any @code{Optional} arguments.  Only
+## the @code{Parameter} and @code{Switch} arguments may be mixed
 ## together and they must appear at the end.
 ##
-## @emph{Note 2}: If both @command{Optional} and @command{Parameter} arguments
+## @emph{Note 2}: If both @code{Optional} and @code{Parameter} arguments
 ## are mixed in a function API then once a string Optional argument fails to
-## validate it will be considered the end of the @command{Optional}
+## validate it will be considered the end of the @code{Optional}
 ## arguments.  The remaining arguments will be compared against any
-## @command{Parameter} or @command{Switch} arguments.
+## @code{Parameter} or @code{Switch} arguments.
 ##
 ## @seealso{nargin, validateattributes, validatestring, varargin}
 ## @end deftypefn
@@ -150,7 +150,7 @@
 ## inputParser to implement an ordered arguments type of API
 ##
 ## @var{argname} must be a string with the name of the new argument.  The order
-## in which new arguments are added with @command{addOptional}, represents the
+## in which new arguments are added with @code{addOptional}, represents the
 ## expected order of arguments.
 ##
 ## @var{default} will be the value used when the argument is not specified.
@@ -159,7 +159,7 @@
 ## values for the argument with name @var{argname}.  Alternatively, a
 ## function name can be used.
 ##
-## See @command{help inputParser} for examples.
+## See @code{help inputParser} for examples.
 ##
 ## @emph{Note}: if a string argument does not validate, it will be considered a
 ## ParamValue key.  If an optional argument is not given a validator, anything
@@ -183,7 +183,7 @@
 ## for the parameter with name @var{argname}.  Alternatively, a function name
 ## can be used.
 ##
-## See @command{help inputParser} for examples.
+## See @code{help inputParser} for examples.
 ##
 ## @end deftypefn
 
@@ -193,7 +193,7 @@
 ## Add new parameter to the object @var{parser} of the class inputParser to
 ## implement a name/value pair type of API.
 ##
-## This is an alias for @command{addParameter} method without the
+## This is an alias for @code{addParameter} method without the
 ## @qcode{"PartialMatchPriority"} option.  See it for the help text.
 ##
 ## @end deftypefn
@@ -207,17 +207,17 @@
 ## arguments type of API.
 ##
 ## @var{argname} must be a string with the name of the new argument.  The order
-## in which new arguments are added with @command{addrequired}, represents the
+## in which new arguments are added with @code{addrequired}, represents the
 ## expected order of arguments.
 ##
 ## @var{validator} is an optional function handle to validate the given values
 ## for the argument with name @var{argname}.  Alternatively, a function name
 ## can be used.
 ##
-## See @command{help inputParser} for examples.
+## See @code{help inputParser} for examples.
 ##
 ## @emph{Note}: this can be used together with the other type of arguments but
-## it must be the first (see @command{@@inputParser}).
+## it must be the first (see @code{@@inputParser}).
 ##
 ## @end deftypefn
 
@@ -236,7 +236,7 @@
 ## then after parsing the value of @var{parse}.Results.@var{argname} will be
 ## true.
 ##
-## See @command{help inputParser} for examples.
+## See @code{help inputParser} for examples.
 ##
 ## @end deftypefn
 
@@ -245,8 +245,8 @@
 ## Parses and validates list of arguments according to object @var{parser} of
 ## the class inputParser.
 ##
-## After parsing, the results can be accessed with the @command{Results}
-## accessor.  See @command{help inputParser} for a more complete description.
+## After parsing, the results can be accessed with the @code{Results}
+## accessor.  See @code{help inputParser} for a more complete description.
 ##
 ## @end deftypefn
 

@@ -572,9 +572,12 @@ x - y .* fix (x ./ y)
 An error message is printed if the dimensions of the arguments do not agree,
 or if either argument is complex.
 
-Programming Notes: Floating point numbers within a few eps of an integer
-will be rounded to an integer before computation for compatibility with
-@sc{matlab}.
+Programming Notes: When calculating with floating point numbers (double,
+single), values within a few eps of an integer will be rounded to that
+integer before computation for compatibility with @sc{matlab}.  Any floating
+point integers greater than @code{flintmax} (2^53 for double) will not compute
+correctly.  For larger integer values convert the input to @code{uint64} before
+calling this function.
 
 By convention,
 
@@ -582,7 +585,7 @@ By convention,
 @group
 rem (@var{x}, 0) = NaN  if @var{x} is a floating point variable
 rem (@var{x}, 0) = 0    if @var{x} is an integer variable
-rem (@var{x}, @var{y})        returns a value with the signbit from @var{x}
+rem (@var{x}, @var{y})  returns a value with the signbit from @var{x}
 @end group
 @end example
 
@@ -753,9 +756,12 @@ This function handles negative values correctly.  That is,
 An error results if the dimensions of the arguments do not agree, or if
 either of the arguments is complex.
 
-Programming Notes: Floating point numbers within a few eps of an integer
-will be rounded to an integer before computation for compatibility with
-@sc{matlab}.
+Programming Notes: When calculating with floating point numbers (double,
+single), values within a few eps of an integer will be rounded to that
+integer before computation for compatibility with @sc{matlab}.  Any floating
+point integers greater than @code{flintmax} (2^53 for double) will not compute
+correctly.  For larger integer values convert the input to @code{uint64} before
+calling this function.
 
 By convention,
 

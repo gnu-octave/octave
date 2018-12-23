@@ -26,7 +26,7 @@
 ##
 ## The hull @var{H} is a linear index vector into the original set of points
 ## that specifies which points form the enclosing hull.  For 2-D inputs only,
-## the output is ordered in a counter-clockwise manner around the hull.
+## the output is ordered in a counterclockwise manner around the hull.
 ##
 ## The input @var{x} may also be a matrix with two or three columns where the
 ## first column contains x-data, the second y-data, and the optional third

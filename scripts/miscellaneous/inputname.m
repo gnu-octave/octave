@@ -20,7 +20,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {} {} inputname (@var{n})
+## @deftypefn  {} {} inputname (@var{n})
 ## @deftypefnx {} {} inputname (@var{n}, @var{ids_only})
 ## Return the name of the @var{n}-th argument to the calling function.
 ##

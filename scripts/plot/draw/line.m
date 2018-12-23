@@ -33,7 +33,7 @@
 ## will attempt to orient scalars and vectors so the results can be plotted.
 ## This requires that one of the dimensions of the vector match either the
 ## number of rows or the number of columns of the matrix.
-## 
+##
 ## In the low-level calling form (50% higher performance) where the data is
 ## specified by name (@code{line ("xdata", @var{x}, @dots{})}) the data must be
 ## vectors.  If no data is specified (@code{line ()}) then

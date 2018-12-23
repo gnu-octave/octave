@@ -24,7 +24,7 @@
 ## the result in @var{str}.
 ##
 ## @var{date} is a serial date number (see @code{datenum}), a date vector (see
-## @code{datevec}), or a a string or cell array of strings. In the latter case,
+## @code{datevec}), or a string or cell array of strings.  In the latter case,
 ## it is passed to @code{datevec} to guess the input date format.
 ##
 ## @var{f} can be an integer which corresponds to one of the codes in the table

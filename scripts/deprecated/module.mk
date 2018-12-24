@@ -5,6 +5,7 @@ FCN_FILE_DIRS += scripts/deprecated
   %reldir%/comma.m \
   %reldir%/desktop.m \
   %reldir%/java2mat.m \
+  %reldir%/output_max_field_width.m \
   %reldir%/paren.m \
   %reldir%/semicolon.m \
   %reldir%/tmpnam.m \

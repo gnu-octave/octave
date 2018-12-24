@@ -26,12 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
-#include <QToolBar>
 #include <QAction>
+#include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSettings>
 #include <QStyle>
+#include <QToolBar>
 
 #include "resource-manager.h"
 #include "octave-dock-widget.h"
@@ -442,9 +443,17 @@ namespace octave
     else
       m_icon_color_active = "";
 
+    QRect available_size = QApplication::desktop ()->availableGeometry ();
+    int x1, y1, x2, y2;
+    available_size.getCoords (&x1, &y1, &x2, &y2);
+    QRect default_size = QRect (x1, y1, x2/3, y2/2);
+
     m_recent_float_geom = settings->value ("DockWidgets/" + objectName ()
                                            + "_floating_geometry",
-                                           QRect (50,100,480,480)).toRect ();
+                                           default_size).toRect ();
+
+    if (! available_size.contains (m_recent_float_geom, false))
+      m_recent_float_geom = default_size;
 
     m_recent_dock_geom = settings->value ("DockWidgets/" + objectName (),
                                           QByteArray ()).toByteArray ();

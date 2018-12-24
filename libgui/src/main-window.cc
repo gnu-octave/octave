@@ -1281,8 +1281,15 @@ namespace octave
 
   void main_window::set_window_layout (QSettings *settings)
   {
-    restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-    restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+    // Restore main window state and geometry from settings file or, in case
+    // of an error from the default layout
+    if (! restoreState (
+            settings->value (mw_state.key, mw_state.def).toByteArray ()))
+      restoreState (mw_state.def.toByteArray ());
+
+    if (! restoreGeometry (
+            settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
+      restoreGeometry (mw_geometry.def.toByteArray ());
 
     // Restore the geometry of all dock-widgets
     foreach (octave_dock_widget *widget, dock_widget_list ())

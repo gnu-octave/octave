@@ -881,9 +881,8 @@ namespace octave
 
   void main_window::reset_windows (void)
   {
-    QSettings *settings = resource_manager::get_default_settings ();
-
-    set_window_layout (settings);
+    hide ();
+    set_window_layout (nullptr);  // do not use the settings file
     showNormal ();  // make sure main window is not minimized
     focus_command_window ();
   }
@@ -1283,13 +1282,16 @@ namespace octave
   {
     // Restore main window state and geometry from settings file or, in case
     // of an error from the default layout
-    if (! restoreState (
-            settings->value (mw_state.key, mw_state.def).toByteArray ()))
-      restoreState (mw_state.def.toByteArray ());
+    if (settings)
+      {
+        if (! restoreState (
+                settings->value (mw_state.key, mw_state.def).toByteArray ()))
+          restoreState (mw_state.def.toByteArray ());
 
-    if (! restoreGeometry (
-            settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
-      restoreGeometry (mw_geometry.def.toByteArray ());
+        if (! restoreGeometry (
+                settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
+          restoreGeometry (mw_geometry.def.toByteArray ());
+      }
 
     // Restore the geometry of all dock-widgets
     foreach (octave_dock_widget *widget, dock_widget_list ())
@@ -1298,10 +1300,15 @@ namespace octave
 
         if (! name.isEmpty ())
           {
-            bool floating = settings->value
-              ("DockWidgets/" + name + "Floating", false).toBool ();
-            bool visible = settings->value
-              ("DockWidgets/" + name + "Visible", true).toBool ();
+            bool floating = false;
+            bool visible = true;
+            if (settings)
+              {
+                floating = settings->value
+                  ("DockWidgets/" + name + "Floating", false).toBool ();
+                visible = settings->value
+                  ("DockWidgets/" + name + "Visible", true).toBool ();
+              }
 
             // If floating, make window from widget.
             if (floating)
@@ -1310,8 +1317,9 @@ namespace octave
 
                 if (visible)
                   {
-                    if (settings->value ("DockWidgets/" + name
-                                         + "_minimized").toBool ())
+                    if (settings &&
+                        settings->value ("DockWidgets/" + name
+                                           + "_minimized").toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);
@@ -1326,6 +1334,12 @@ namespace octave
                 widget->setVisible (visible);   // not floating -> show
               }
           }
+      }
+
+    if (! settings)
+      {
+        restoreGeometry (mw_geometry.def.toByteArray ());
+        restoreState (mw_state.def.toByteArray ());
       }
 
     show ();

@@ -8175,33 +8175,16 @@ axes::update_axis_limits (const std::string& axis_type,
 
   char update_type = 0;
 
-  Matrix limits;
+  Matrix limits (1, 2);
   double val;
 
-#define FIX_LIMITS                              \
-  if (limits.numel () == 4)                     \
-    {                                           \
-      val = limits(0);                          \
-      if (octave::math::isfinite (val))         \
-        min_val = val;                          \
-      val = limits(1);                          \
-      if (octave::math::isfinite (val))         \
-        max_val = val;                          \
-      val = limits(2);                          \
-      if (octave::math::isfinite (val))         \
-        min_pos = val;                          \
-      val = limits(3);                          \
-      if (octave::math::isfinite (val))         \
-        max_neg = val;                          \
-    }                                           \
-  else                                          \
-    {                                           \
-      limits.resize (4, 1);                     \
-      limits(0) = min_val;                      \
-      limits(1) = max_val;                      \
-      limits(2) = min_pos;                      \
-      limits(3) = max_neg;                      \
-    }
+#define FIX_LIMITS                          \
+  val = limits(0);                          \
+  if (octave::math::isfinite (val))         \
+    min_val = val;                          \
+  val = limits(1);                          \
+  if (octave::math::isfinite (val))         \
+    max_val = val;
 
   if (axis_type == "xdata" || axis_type == "xscale"
       || axis_type == "xlimmode" || axis_type == "xliminclude"
@@ -8267,7 +8250,7 @@ axes::update_axis_limits (const std::string& axis_type,
       else
         {
           // FIXME: get_children_limits is only needed here in order to know
-          // if there are 3D children. Is there a way to avoid this call?
+          // if there are 3D children.  Is there a way to avoid this call?
           get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
           xproperties.set_has3Dkids ((max_val - min_val) >
@@ -8300,14 +8283,11 @@ axes::update_axis_limits (const std::string& axis_type,
               min_val -= 1;
             }
 
-          limits.resize (1, 2);
-
           limits(0) = min_val;
           limits(1) = max_val;
 
           update_type = 'c';
         }
-
     }
   else if (axis_type == "alphadata" || axis_type == "alimmode"
            || axis_type == "alphadatamapping" || axis_type == "aliminclude"
@@ -8328,14 +8308,11 @@ axes::update_axis_limits (const std::string& axis_type,
           else if (min_val == max_val)
             max_val = min_val + 1;
 
-          limits.resize (1, 2);
-
           limits(0) = min_val;
           limits(1) = max_val;
 
           update_type = 'a';
         }
-
     }
 
 #undef FIX_LIMITS
@@ -8388,6 +8365,9 @@ axes::update_axis_limits (const std::string& axis_type,
 
   xproperties.update_transform ();
 }
+
+// FIXME: This function is called repeatedly while the axes are being set up.
+// There is probably some way to make this more efficient.
 
 void
 axes::update_axis_limits (const std::string& axis_type)

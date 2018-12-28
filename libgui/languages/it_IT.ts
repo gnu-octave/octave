@@ -105,7 +105,7 @@
     <message>
         <location line="+3"/>
         <source>Run Selection</source>
-        <translation type="unfinished">Esegui selezione</translation>
+        <translation>Esegui selezione</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -131,72 +131,72 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici singoli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Scalare</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Espansione parametro</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Apici inversi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitatore di here document</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Here document con apici singoli</translation>
     </message>
 </context>
 <context>
@@ -204,42 +204,42 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascondi carattere comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando esterno</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variabile</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore</translation>
     </message>
 </context>
 <context>
@@ -247,212 +247,212 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Default inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C++ inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C in stile JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C inattivo in stile JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici singoli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici singoli inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocco del preprocessore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocco del preprocessore inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatore inattivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa aperta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive unclosed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa aperta inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa verbatim C#</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C# verbatim string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa verbatim C# inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espressione regolare JavaScript</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espressione regolare JavaScript inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C++ in stile JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento C++ inattivo in stile JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Parole chiave e identificatori secondari</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Parole chiave e identificatori secondari inattivi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave JavaDoc inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore parola chiave JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore parola chiave JavaDoc inattiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Classi e typedef globali</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Classi e typedef globali inattive</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa raw C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ raw string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa raw C++ inattiva</translation>
     </message>
 </context>
 <context>
@@ -460,42 +460,42 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>Intestazione</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished">Posizione</translation>
+        <translation>Posizione</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea rimossa</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea aggiunta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea modificata</translation>
     </message>
 </context>
 <context>
@@ -503,47 +503,47 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici singoli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi</translation>
     </message>
 </context>
 <context>
@@ -551,207 +551,207 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
         <source>Default</source>
-        <translation type="unfinished">Default</translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Commento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Parola chiave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici singoli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Scalare</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Vettore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Hash</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabella dei simboli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Espressione regolare</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituzione</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Apici inversi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Sezione dati</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitatore di here document</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Here document con apici singoli</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Here document con apici doppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document</source>
-        <translation type="unfinished"></translation>
+        <translation>Here document con apici inversi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (q)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (q)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qq)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qr)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qw)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>POD verbatim</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Prototipo subroutine</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatta identificatore</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Format body</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatta corpo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici doppi (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduzione</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Espressione regolare (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sostituzione (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apici inversi (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Here document con apici doppi (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backtick here document (interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici inversi (variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qq, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qq,variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qx, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qx,variabile interpolata)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Quoted string (qr, interpolated variable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa con apici (qr,variabile interpolata)</translation>
     </message>
 </context>
 <context>
@@ -759,37 +759,37 @@
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annulla</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Ripeti</translation>
+        <translation>&amp;Ripeti</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Taglia</translation>
+        <translation>&amp;Taglia</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copia</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Incolla</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished">Seleziona tutto</translation>
+        <translation>Seleziona tutto</translation>
     </message>
 </context>
 <context>
@@ -1059,64 +1059,67 @@ Le funzionalità di ricerca potrebbero risultarne compromesse.
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
 the Command Window will be available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile initizializzare i dati necessari
+per il visualizzatore della documentazione.
+Soltanto la documentazione nella Finestra
+dei comandi sarà disponibile.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trova:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca avanti</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerca indietro</translation>
     </message>
     <message>
         <location line="+74"/>
         <source>Function Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indice funzioni</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Go home</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai all&apos;inizio</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go back</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai indietro</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Go forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai avanti</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Find</source>
-        <translation type="unfinished">Trova</translation>
+        <translation>Trova</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingrandisci</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Riduci</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom original</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensione normale</translation>
     </message>
     <message>
         <location line="-206"/>
@@ -1137,12 +1140,12 @@ the Command Window will be available.</source>
     <message>
         <location line="+84"/>
         <source>Previous pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina precedente</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Next pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina successiva</translation>
     </message>
     <message>
         <location line="+383"/>
@@ -1168,27 +1171,27 @@ the Command Window will be available.</source>
     <message>
         <location filename="../src/dw-main-window.cc" line="+49"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Chiudi</translation>
+        <translation>&amp;Chiudi</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi &amp;tutto</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Close &amp;Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudi &amp;altro</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Switch to &amp;Left Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai al widget a &amp;sinistra</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Switch to &amp;Right Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai al widget a &amp;destra</translation>
     </message>
 </context>
 <context>
@@ -1464,7 +1467,7 @@ in scrittura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">A capo in stile Legacy &amp;Mac (CR)</translation>
+        <translation>A capo in stile Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1691,7 +1694,8 @@ in scrittura: %2.</translation>
         <location line="-1977"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aggiungere breakpoint a modificatore o file senza nome.
+Si desidera salvare ed aggiungere un breakpoint o annullare?</translation>
     </message>
     <message>
         <location line="+833"/>
@@ -1745,29 +1749,33 @@ sta per essere chiuso ma è stato modificato.  %2</translation>
 with the selected encoding %2.
 
 Modifying and saving the file might cause data loss!</source>
-        <translation type="unfinished"></translation>
+        <translation>Si sono riscontrati problemi nel leggere il file
+%1
+con la codifica selezionata %2.
+
+Modicare e salvare potrebbe causare perdita di dati!</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Edit anyway</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modifica comunque</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+57"/>
         <source>Chan&amp;ge encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Cam&amp;bia codifica</translation>
     </message>
     <message>
         <location line="-56"/>
         <location line="+49"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Chiudi</translation>
+        <translation>&amp;Chiudi</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Select new default encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli nuova codifica di default</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1776,7 +1784,10 @@ for reloading the current file.
 
 This does not change the default encoding.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare una nuova codifica
+per ricaricare il file corrente.
+
+Questo non cambierà la codifica di default.</translation>
     </message>
     <message>
         <location line="+212"/>
@@ -1803,7 +1814,10 @@ Uscire dal debug e salvare?</translation>
 can not be applied.
 
 Please select another one!</source>
-        <translation type="unfinished"></translation>
+        <translation>La codifica corrente %1
+non può essere applicata.
+
+Selezionarne un&apos;altra!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1812,7 +1826,11 @@ with the selected encoding %1.
 Using it would result in data loss!
 
 Please select another one!</source>
-        <translation type="unfinished"></translation>
+        <translation>I contenuti dell&apos;editor corrente non possono essere
+codificati con la codifica %1.
+Il suo utilizzo comporterebbe perdita di dati!
+
+Selezionarne un&apos;altra!</translation>
     </message>
     <message>
         <location line="-115"/>
@@ -1968,7 +1986,7 @@ sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
     <message>
         <location line="-329"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished"></translation>
+        <translation>Fare doppio click per aprire il file/cartella, o click destro per le alternative.</translation>
     </message>
     <message>
         <location line="+282"/>
@@ -2461,7 +2479,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+121"/>
         <source>Double-click a command to transfer it to the Command Window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fare doppio click su un comando per trasferirlo alla Finestra dei Comandi.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2598,7 +2616,8 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
         <location line="+44"/>
         <source>%1 is a built-in, compiled or inline
 function and can not be edited.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 è una funzione built-in, compilata o inline
+e non può essere modificata.</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -3095,54 +3114,54 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     <message>
         <location filename="../src/settings-dialog.cc" line="-573"/>
         <source>Octave Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferenze di Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Unable to save preferences.  Missing preferences file or unknown directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare le preferenze.  File mancante o cartella sconosciuta.</translation>
     </message>
     <message>
         <location line="+15"/>
         <location line="+4"/>
         <location line="+700"/>
         <source>System setting</source>
-        <translation type="unfinished">Impostazioni di sistema</translation>
+        <translation>Impostazioni di sistema</translation>
     </message>
     <message>
         <location line="-448"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished">Cursore IBeam</translation>
+        <translation>Cursore IBeam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished">Cursore blocco</translation>
+        <translation>Cursore blocco</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished">Cursore testo sottolineato</translation>
+        <translation>Cursore testo sottolineato</translation>
     </message>
     <message>
         <location line="+164"/>
         <source>Set Octave Startup Directory</source>
-        <translation type="unfinished">Scegli la cartella iniziale di Octave</translation>
+        <translation>Scegli la cartella iniziale di Octave</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set File Browser Startup Directory</source>
-        <translation type="unfinished">Scegli la cartella iniziale del gestore di file</translation>
+        <translation>Scegli la cartella iniziale del gestore di file</translation>
     </message>
     <message>
         <location line="+503"/>
         <source>Enable attribute colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Attiva colori attibuti</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide tools tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Nascodi suggerimenti strumenti</translation>
     </message>
 </context>
 <context>
@@ -3722,27 +3741,27 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     <message>
         <location line="+154"/>
         <source>Documentation Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizzatore della documentazione</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Browser</translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Import shortcuts from file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa scorciatoie da file...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export shortcuts to file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta scorciatoie su file...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file %1 come file di scorciatoie di Octave</translation>
     </message>
     <message>
         <location line="-367"/>
@@ -3803,17 +3822,17 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     <message>
         <location line="+5"/>
         <source>Go to Homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai alla pagina iniziale</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go Back one Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai indietro di una pagina</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Forward one Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai avanti di una pagina</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -3862,12 +3881,12 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
     <message>
         <location line="+2"/>
         <source>Find &amp; Replace in Dock Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Trova e sostituisci nel Dock Widget</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Zooming in Editor and Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom nell&apos;editor e nella documentazione</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -3979,27 +3998,27 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+281"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primo piano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Sfondo</translation>
+        <translation>Sfondo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli primo piano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli sfondo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Sfondo alternativo</translation>
     </message>
     <message>
         <location line="+273"/>
@@ -4354,7 +4373,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+5"/>
         <source>Legacy Mac (CR)</source>
-        <translation type="unfinished">Legacy Mac (CR)</translation>
+        <translation>Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4562,67 +4581,67 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="-833"/>
         <source>Preferences</source>
-        <translation type="unfinished">Impostazioni</translation>
+        <translation>Preferenze</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>(requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>(richiede riavvio)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Use native file dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa selettore file di sistema</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Use system icon theme if available (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa tema icone di sistema se disponibile (richiede riavvio)</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Toolbar Icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Icone barra degli strumenti</translation>
     </message>
     <message>
         <location line="+186"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingua</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella iniziale dell&apos;interprete di Octave</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Restore last working directory of previous session</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina l&apos;ultima cartella di lavoro della sessione precedente</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando</translation>
     </message>
     <message>
         <location line="+208"/>
         <source>Set focus to Command Window when running a command from within another widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona la Finestra dei Comandi quando esegui un comando da un altro widget</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Print debug location in Command Window in addition to the marker in the editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Stampa punto di debug nella Finestra dei Comandi oltre al marker nell&apos;editor</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Command Window Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colori della Finestra dei Comandi</translation>
     </message>
     <message>
         <location line="+157"/>
@@ -4737,12 +4756,12 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+34"/>
         <source>Debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Always show debug breakpoints and pointers (opens related file if closed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra sempre breakpoints di debug e puntatori (apre file corrispondenti se necessario)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -4797,7 +4816,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+32"/>
         <source>Initial file browser directory (only if not synchronized with initial working directory of Octave)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella iniziale dell&apos;esploratore file (solo se non sincronizzato con la cartella di lavoro di Octave)</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -4817,7 +4836,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+107"/>
         <source>Use Command Window font</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa carattere della Finestra dei Comandi</translation>
     </message>
     <message>
         <location line="+196"/>
@@ -4913,7 +4932,7 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     <message>
         <location line="+59"/>
         <source>Disable global shortcuts when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Disattiva scorciatoie globali quando la Finestra dei Comandi è attiva</translation>
     </message>
     <message>
         <location line="+211"/>

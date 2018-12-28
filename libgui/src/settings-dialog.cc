@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
-#include "gui-preferences.h"
 
 #include <QButtonGroup>
 #include <QDir>

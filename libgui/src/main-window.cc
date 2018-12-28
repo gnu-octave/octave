@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "settings-dialog.h"
 #include "shortcut-manager.h"
 #include "welcome-wizard.h"
+#include "gui-preferences-mw.h"
 
 #include "Array.h"
 #include "cmd-edit.h"

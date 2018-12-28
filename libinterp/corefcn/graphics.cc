@@ -10219,7 +10219,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
     }
   else
     {
-      limits.resize (4, 1);
+      limits.resize (1, 4);
       limits(0) = min_val;
       limits(1) = max_val;
       limits(2) = min_pos;
@@ -10267,7 +10267,8 @@ hggroup::update_axis_limits (const std::string& axis_type,
           break;
         }
 
-      base_graphics_object::update_axis_limits (axis_type, h);
+      graphics_handle hg = xproperties.get___myhandle__ ();
+      base_graphics_object::update_axis_limits (axis_type, hg);
     }
 }
 
@@ -10322,7 +10323,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
   updating_hggroup_limits = true;
 
-  Matrix limits (1, 4, 0.0);
+  Matrix limits (1, 4);
 
   limits(0) = min_val;
   limits(1) = max_val;

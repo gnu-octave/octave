@@ -4,7 +4,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/workspace-model.cc" line="+78"/>
+        <location filename="../src/workspace-model.cc" line="+81"/>
         <source>automatic</source>
         <translation>automático</translation>
     </message>
@@ -34,7 +34,7 @@
         <translation>persistente</translation>
     </message>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+65"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+66"/>
         <source>foreground</source>
         <translation>primer plano</translation>
     </message>
@@ -55,7 +55,7 @@
         <translation>cursor</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+137"/>
+        <location filename="../src/settings-dialog.cc" line="+664"/>
         <source>Difference to the default size</source>
         <translation>Diferencia con el tamaño predeterminado</translation>
     </message>
@@ -89,7 +89,7 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+135"/>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+139"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
@@ -102,6 +102,11 @@
         <location line="+5"/>
         <source>Select All</source>
         <translation>Seleccionar todo</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Run Selection</source>
+        <translation>Ejecutar selección</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -117,7 +122,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1789"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1804"/>
         <source>copied selection to clipboard</source>
         <translation>selección copiada al portapapeles</translation>
     </message>
@@ -125,7 +130,7 @@
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+299"/>
+        <location filename="../graphics/Figure.cc" line="+282"/>
         <source>Figure ToolBar</source>
         <translation>Barra de herramientas de figura</translation>
     </message>
@@ -143,59 +148,6 @@
         <location line="+4"/>
         <source>Autoscale</source>
         <translation>Autoescalado</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&amp;File</source>
-        <translatorcomment>Término &quot;archivo&quot; utilizado para &quot;file&quot; en vez del término &quot;fichero&quot;</translatorcomment>
-        <translation>&amp;Archivo</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Save</source>
-        <translation>&amp;Guardar</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Save &amp;As</source>
-        <translation>Guardar &amp;como</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Close Figure</source>
-        <translation>&amp;Cerrar figura</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>&amp;Edit</source>
-        <translation>&amp;Editar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Cop&amp;y</source>
-        <translation>Cop&amp;iar</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <location line="+533"/>
-        <source>About Octave</source>
-        <translation>Acerca de Octave</translation>
-    </message>
-    <message>
-        <location line="+41"/>
-        <source>Octave Figure File (*.ofig);;Vector Image Formats (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Bitmap Image Formats (*.gif *.jpg *.png *.tiff)</source>
-        <translation>Figura de archivo de Octave ((*.ofig));;Formatos de imagen vectorial (*.eps *.epsc *.pdf *.svg *.ps *.tikz);;Formatos de imagen de mapa de bits (*.gif *.jpg *.png *.tiff)</translation>
-    </message>
-    <message>
-        <location line="-576"/>
-        <source>&amp;Help</source>
-        <translation>&amp;Ayuda</translation>
-    </message>
-    <message>
-        <location line="+574"/>
-        <location line="+76"/>
-        <source>Save Figure As</source>
-        <translation>Guardar figura como</translation>
     </message>
 </context>
 <context>
@@ -225,16 +177,11 @@
         <source>Insert Text</source>
         <translation>Insertar texto</translation>
     </message>
-    <message>
-        <location line="+2"/>
-        <source>Select</source>
-        <translation>Seleccionar</translation>
-    </message>
 </context>
 <context>
     <name>UrlFilter</name>
     <message>
-        <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+628"/>
+        <location filename="../qterminal/libqterminal/unix/Filter.cpp" line="+625"/>
         <source>Open Link</source>
         <translation>Abrir enlace</translation>
     </message>
@@ -311,8 +258,7 @@
     <message>
         <location line="+22"/>
         <source>Horz alignment</source>
-        <translatorcomment>&quot;Alineación horizontal&quot; or &quot;Alineación hrz.&quot; (abbreviated form)</translatorcomment>
-        <translation type="unfinished">Alineación horizontal</translation>
+        <translation>Alineación horizontal</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -333,8 +279,7 @@
     <message>
         <location line="+8"/>
         <source>Vert alignment</source>
-        <translatorcomment>&quot;Alineación vertical.&quot; or &quot;Alineación vert.&quot; (abbreviated form)</translatorcomment>
-        <translation type="unfinished">Alineación vertical</translation>
+        <translation>Alineación vertical</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -394,8 +339,8 @@
     <message>
         <location line="+6"/>
         <source>Background</source>
-        <translatorcomment>Segundo plano o fondo</translatorcomment>
-        <translation>Segundo plano</translation>
+        <translatorcomment>En este contexto es más adecuada la traducción &quot;fondo&quot; en lugar de &quot;segundo plano&quot;</translatorcomment>
+        <translation>Fondo</translation>
     </message>
     <message>
         <location line="+444"/>
@@ -422,7 +367,7 @@
 <context>
     <name>octave::ListDialog</name>
     <message>
-        <location filename="../src/dialog.cc" line="+276"/>
+        <location filename="../src/dialog.cc" line="+279"/>
         <source>Select All</source>
         <translation>Seleccionar todo</translation>
     </message>
@@ -430,81 +375,122 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+78"/>
-        <location line="+10"/>
-        <location line="+317"/>
+        <location filename="../src/documentation.cc" line="+93"/>
+        <location line="+12"/>
+        <location line="+613"/>
         <source>Octave Documentation</source>
         <translation>Documentación de Octave</translation>
     </message>
     <message>
-        <location line="-326"/>
+        <location line="-624"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha posido copiar la ayuda a un fichero temporal.
+Las capacidades de búsqueda pueden verse afectadas.
+%1</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Could not setup the data required for the
 documentation viewer. Only help texts in
-the Console Widget will be available.</source>
-        <translation>No se pudieron configurar los datos necesarios 
-para el visor de documentación. Solo los textos 
-de ayuda estarán disponibles en el widget de la consola.</translation>
+the Command Window will be available.</source>
+        <translation>No se han podido establecer los datos requeridos para el visor de documentación.
+Sólo estará disponible la ayuda en la línea de comandos.</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+21"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Encontrar:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar hacia delante</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar hacia atrás</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <location line="+74"/>
+        <source>Function Index</source>
+        <translation>Índice de funciones</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+98"/>
+        <source>Go home</source>
+        <translation>Ir al directorio de usuario</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Go back</source>
+        <translation>Ir hacia atrás</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Go forward</source>
+        <translation>Ir hacia delante</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Find</source>
+        <translation>Buscar</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Zoom in</source>
+        <translation>Ampliar</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Zoom out</source>
+        <translation>Reducir</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Zoom original</source>
+        <translation>Zoom original</translation>
+    </message>
+    <message>
+        <location line="-206"/>
         <source>Contents</source>
         <translation>Contenido</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the indices</source>
-        <translation>Ingrese texto para buscar los índices</translation>
+        <translation>Introduzca texto para buscar en los índices</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location line="+37"/>
+        <location line="+39"/>
         <source>Search</source>
         <translation>Búsqueda</translation>
     </message>
     <message>
-        <location line="-22"/>
-        <source>Index</source>
-        <translation>Índice</translation>
+        <location line="+84"/>
+        <source>Previous pages</source>
+        <translation>Páginas anteriores</translation>
     </message>
     <message>
-        <location line="+203"/>
+        <location line="+14"/>
+        <source>Next pages</source>
+        <translation>Páginas siguientes</translation>
+    </message>
+    <message>
+        <location line="+383"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposible mostrar el fichero de ayuda %1.</translation>
     </message>
 </context>
 <context>
     <name>octave::documentation_dock_widget</name>
     <message>
-        <location filename="../src/documentation-dock-widget.cc" line="+39"/>
+        <location filename="../src/documentation-dock-widget.cc" line="+38"/>
         <source>Documentation</source>
         <translation>Documentación</translation>
     </message>
@@ -512,6 +498,34 @@ de ayuda estarán disponibles en el widget de la consola.</translation>
         <location line="+1"/>
         <source>See the documentation for help.</source>
         <translation>Consulte la documentación para obtener ayuda.</translation>
+    </message>
+</context>
+<context>
+    <name>octave::dw_main_window</name>
+    <message>
+        <location filename="../src/dw-main-window.cc" line="+49"/>
+        <source>&amp;Close</source>
+        <translation>C&amp;errar</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Close &amp;All</source>
+        <translation>Cerrar &amp;todo</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Close &amp;Other</source>
+        <translation>Cerrar los &amp;otros</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Switch to &amp;Left Widget</source>
+        <translation>Calbiar al widget de la &amp;izquierda</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Switch to &amp;Right Widget</source>
+        <translation>Calbiar al widget de la &amp;derecha</translation>
     </message>
 </context>
 <context>
@@ -533,23 +547,23 @@ de ayuda estarán disponibles en el widget de la consola.</translation>
         <location line="+45"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
-        <translation>No existe una configuración para editor personalizado aún.
+        <translation>Todavía no existe una configuración para editor personalizado.
 ¿Desea abrir las preferencias?</translation>
     </message>
 </context>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+834"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+860"/>
         <location line="+28"/>
-        <location line="+416"/>
-        <location line="+19"/>
+        <location line="+482"/>
+        <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="-487"/>
+        <location line="-552"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -563,7 +577,7 @@ ya se encuentra abierto en el editor</translation>
         <translation>La pestaña asociada del editor de texto ha desaparecido.</translation>
     </message>
     <message>
-        <location line="+416"/>
+        <location line="+482"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -572,7 +586,7 @@ for read: %2.</source>
 no puede ser abierto para lectura: %2.</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+18"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -600,7 +614,7 @@ for write: %2.</source>
 no puede ser abierto para escritura: %2.</translation>
     </message>
     <message>
-        <location line="+217"/>
+        <location line="+231"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
@@ -723,7 +737,7 @@ no puede ser abierto para escritura: %2.</translation>
         <location line="+5"/>
         <source>Transpose Line</source>
         <translatorcomment>also &quot;transponer línea&quot; or &quot;Intercambiar con línea anterior&quot;</translatorcomment>
-        <translation type="unfinished">Intercambiar línea</translation>
+        <translation>Intercambiar líneas</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -758,19 +772,19 @@ no puede ser abierto para escritura: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Comment (Choosing String)</source>
-        <translation>Comentar (Seleccionando cadena de texto)</translation>
+        <translation>Comentar (seleccionando cadena de texto)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Indent Selection Rigidly</source>
         <translatorcomment>Would use it. If possible verify.</translatorcomment>
-        <translation type="unfinished">&amp;Sangría selección rigurosa</translation>
+        <translation>&amp;Sangría rigurosa de la selección</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Unindent Selection Rigidly</source>
         <translatorcomment>Would use it. If possible verify.</translatorcomment>
-        <translation type="unfinished">&amp;Eliminar Sangría selección rigurosa</translation>
+        <translation>&amp;Eliminar sangría rigurosa de la selección</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -780,17 +794,17 @@ no puede ser abierto para escritura: %2.</translation>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir caracteres de find e línea a &amp;Windows (CR+LF)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
-        <translation>Convertir los finales de línea a &amp;Unix (LF)</translation>
+        <translation>Convertir caracteres de find e línea a &amp;Unix (LF)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>Convertir los finales de línea a &amp;Mac (CR)</translation>
+        <translation>Convertir caracteres de find e línea a &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -865,7 +879,7 @@ no puede ser abierto para escritura: %2.</translation>
     <message>
         <location line="+6"/>
         <source>Show Line &amp;Endings</source>
-        <translation>Mostrar &amp;fines de línea</translation>
+        <translation>Mostrar caracteres de &amp;fin de línea</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -965,10 +979,10 @@ no puede ser abierto para escritura: %2.</translation>
     <message>
         <location line="+25"/>
         <source>Recent Files</source>
-        <translation>Archivos Recientes</translation>
+        <translation>Archivos recientes</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+63"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -1002,26 +1016,27 @@ no puede ser abierto para escritura: %2.</translation>
         <translation>Condición de punto de interrupción</translation>
     </message>
     <message>
-        <location line="+91"/>
-        <location line="+1164"/>
-        <location line="+371"/>
-        <location line="+211"/>
-        <location line="+20"/>
+        <location line="+94"/>
+        <location line="+1160"/>
+        <location line="+136"/>
+        <location line="+356"/>
+        <location line="+155"/>
+        <location line="+27"/>
         <location line="+11"/>
-        <location line="+85"/>
+        <location line="+97"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="-1897"/>
-        <source>Cannot add breakpoint to modified file.
+        <location line="-1977"/>
+        <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-        <translation>No es posible agregar punto de interrupción al archivo modificado.
-¿Desea guardar y agregar punto de interrupción o cancelar?</translation>
+        <translation>No se puede añadir un punto de interrupción a un archivo modificado o sin nombre.
+¿Guardar y añadir el punto de interrupción o cancelar?</translation>
     </message>
     <message>
-        <location line="+837"/>
+        <location line="+833"/>
         <source>Goto line</source>
         <translation>Ir a la línea</translation>
     </message>
@@ -1040,7 +1055,8 @@ Save and add breakpoint, or cancel?</source>
         <source>Comment string to use:
 </source>
         <translatorcomment>Not sure here.</translatorcomment>
-        <translation>Comentar cadena de texto a utilizar:</translation>
+        <translation>Comentar cadena de texto a utilizar:
+</translation>
     </message>
     <message>
         <location line="+135"/>
@@ -1067,7 +1083,55 @@ is about to be closed but has been modified.  %2</source>
 está a punto de ser cerrado, pero ha sido modificado.  %2</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+126"/>
+        <source>There were problems reading the file
+%1
+with the selected encoding %2.
+
+Modifying and saving the file might cause data loss!</source>
+        <translation>Hubo problemas en la lectura del archivo
+%1
+con la codificación seleccionada %2.
+
+¡La modificación y guardado del archivo podría significar una pérdida de datos!</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Edit anyway</source>
+        <translation>&amp;Editar de todos modos</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+57"/>
+        <source>Chan&amp;ge encoding</source>
+        <translation>Cambi&amp;ar codificación</translation>
+    </message>
+    <message>
+        <location line="-56"/>
+        <location line="+49"/>
+        <source>&amp;Close</source>
+        <translation>C&amp;errar</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Select new default encoding</source>
+        <translation>Seleccione una nueva codificación por defecto</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Please select a new encoding
+for reloading the current file.
+
+This does not change the default encoding.
+</source>
+        <translation>Por favor, seleccione una nueva codificación
+para la recarga del archivo actual.
+
+Esto no cambiará la codificación predeterminada.
+</translation>
+    </message>
+    <message>
+        <location line="+212"/>
         <source>Debug or Save</source>
         <translation>Depurar programa o guardar</translation>
     </message>
@@ -1079,24 +1143,38 @@ Quit debugging and save?</source>
 ¿Desea interrumpir la depuración y guardar?</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+78"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>El archivo %1 no se puede abrir para escritura:
 %2.</translation>
     </message>
     <message>
-        <location line="+92"/>
-        <source>Line Endings:</source>
-        <translation>Fines de línea:</translation>
+        <location line="+182"/>
+        <source>The current encoding %1
+can not be applied.
+
+Please select another one!</source>
+        <translation>La codificación actual %1
+no se puede aplicar.
+
+¡Por favor, seleccione otra!</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>File Encoding:</source>
-        <translation>Codificación de archivo:</translation>
+        <location line="+11"/>
+        <source>The current editor contents can not be encoded
+with the selected encoding %1.
+Using it would result in data loss!
+
+Please select another one!</source>
+        <translation>El contenido actual del editor no puede ser codificado
+con la codificación seleccionada %1.
+¡Su utilización podría ocasionar una pérdida de datos!
+
+¡Por favor, seleccione otra codificación!</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-115"/>
         <source>Octave Files (*.m)</source>
         <translation>Archivos de Octave (*.m)</translation>
     </message>
@@ -1106,7 +1184,7 @@ Quit debugging and save?</source>
         <translation>Todos los archivos (*)</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+76"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -1123,24 +1201,7 @@ llamar a su script usando su nombre como comando de Octave.
 ¿Desea seleccionar otro nombre?</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>The current encoding %1
-can not be applied.
-
-Please select another one or cancel saving!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+11"/>
-        <source>The current editor contents can not be encoded
-with the selected encoding %1.
-Using it will result in data loss!
-
-Do you want to choose another encoding?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+85"/>
+        <location line="+135"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Parece que el archivo &apos;%1&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
     </message>
@@ -1173,7 +1234,7 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     <message>
         <location line="+1"/>
         <source>Browse your files</source>
-        <translation>Explorar archivos</translation>
+        <translation>Explorar sus archivos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1201,7 +1262,7 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
         <translation>Alternar colores de filas</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+33"/>
         <source>Enter the path or filename</source>
         <translatorcomment>or &quot;Introduzca la dirección o el nombre del archivo&quot;</translatorcomment>
         <translation>Introduzca la ruta o el nombre del archivo</translation>
@@ -1248,29 +1309,29 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+365"/>
+        <location line="+375"/>
         <source>Find Files...</source>
         <translation>Buscar archivos...</translation>
     </message>
     <message>
-        <location line="-361"/>
-        <location line="+374"/>
+        <location line="-371"/>
+        <location line="+384"/>
         <source>New File...</source>
         <translation>Nuevo archivo...</translation>
     </message>
     <message>
-        <location line="-371"/>
-        <location line="+374"/>
+        <location line="-381"/>
+        <location line="+384"/>
         <source>New Directory...</source>
         <translation>Nuevo directorio...</translation>
     </message>
     <message>
-        <location line="-320"/>
-        <source>Activate to open in editor, right click for alternatives</source>
-        <translation>Activar para abrir en el editor. Presione clic derecho para ver las alternativas</translation>
+        <location line="-329"/>
+        <source>Double-click to open file/folder, right click for alternatives</source>
+        <translation>Doble clic para abrir el archivo o la carpeta; clic en el botón derecho para ver las alternativas</translation>
     </message>
     <message>
-        <location line="+273"/>
+        <location line="+282"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
@@ -1352,12 +1413,12 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
         <translation>No se puede eliminar un directorio que no esté vacío</translation>
     </message>
     <message>
-        <location line="+145"/>
+        <location line="+152"/>
         <source>Set directory of file browser</source>
         <translation>Seleccionar el directorio del explorador de archivos</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+25"/>
         <source>Create File</source>
         <translation>Crear archivo</translation>
     </message>
@@ -1424,7 +1485,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Esperamos que Octave le sea útil.&lt;/p&gt;
-&lt;p&gt;Si se encuentra con problemas, existen varias formas de obtener ayuda, las cuales incluyen soporte comercial, listas de correo, un wiki y otros canales de comunicación sostenidos por la comunidad.
+&lt;p&gt;Si se encuentra con problemas, existen varias formas de obtener ayuda, las cuales incluyen soporte comercial, listas de correo, un wiki y otros canales de comunicación mantenidos por la comunidad.
 Puede encontrar más información visitando &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (se abre en una ventana externa del navegador).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -1453,10 +1514,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Obtenga la documentación en línea en formato &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o como &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;documento&lt;/span&gt;&lt;/a&gt; pdf (se abre en una ventana externa del navegador)&lt;/li&gt;
 &lt;li&gt;Abra el navegador de documentación de la GUI de Octave desde el menú de ayuda&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;
-
-
-</translation>
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1555,7 +1613,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation>%1 instancias reemplazadas</translation>
+        <translation>%1 instancia(s) reemplazada(s)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1644,7 +1702,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+1"/>
         <source>Enter the file content search expression</source>
         <translatorcomment>Please double check this!</translatorcomment>
-        <translation type="unfinished">Introducir expresión de búsuqeda en el contenido del archivo</translation>
+        <translation>Introducir expresión de búsqueda en el contenido del archivo</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1709,10 +1767,10 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+22"/>
         <source>%1 match (es)</source>
-        <translation>%1 coincidencia (s)</translation>
+        <translation>%1 coincidencia(s)</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+14"/>
         <source>Set search directory</source>
         <translation>Seleccionar el directorio de búsqueda</translation>
     </message>
@@ -1733,7 +1791,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>octave::history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+48"/>
+        <location filename="../src/history-dock-widget.cc" line="+47"/>
         <source>Browse and search the command history.</source>
         <translation>Explorar y buscar en el historial de comandos.</translation>
     </message>
@@ -1750,7 +1808,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Create script</source>
-        <translation>Crear un guión (script)</translation>
+        <translation>Crear un guion (script)</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1763,9 +1821,9 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Mostrar filtro</translation>
     </message>
     <message>
-        <location line="+123"/>
-        <source>Double-click a command to transfer it to the terminal.</source>
-        <translation>Haga doble clic en un comando para transferirlo al terminal.</translation>
+        <location line="+121"/>
+        <source>Double-click a command to transfer it to the Command Window.</source>
+        <translation>Haga doble clic en un comando para introducirlo en la ventana de comandos.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1817,7 +1875,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
 <context>
     <name>octave::label_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+52"/>
+        <location filename="../src/octave-dock-widget.cc" line="+71"/>
         <source>Undock widget</source>
         <translation>Desacoplar widget</translation>
     </message>
@@ -1830,17 +1888,17 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+367"/>
+        <location filename="../src/main-window.cc" line="+398"/>
         <source>Save Workspace As</source>
         <translation>Guardar el espacio de trabajo como</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+22"/>
         <source>Load Workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+85"/>
+        <location line="+114"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>El archivo de notas de versión %1 está vacío.</translation>
     </message>
@@ -1860,13 +1918,13 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>Noticas de la comunidad de Octave</translation>
     </message>
     <message>
-        <location line="+91"/>
-        <location line="+1747"/>
+        <location line="+85"/>
+        <location line="+1602"/>
         <source>About Octave</source>
         <translation>Acerca de Octave</translation>
     </message>
     <message>
-        <location line="-1626"/>
+        <location line="-1463"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1876,23 +1934,18 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>¿Está seguro de que desea salir de Octave?</translation>
     </message>
     <message>
-        <location line="+64"/>
-        <location line="+1623"/>
+        <location line="+61"/>
+        <location line="+1463"/>
         <source>Browse directories</source>
         <translation>Explorar directorios</translation>
     </message>
     <message>
-        <location line="-1467"/>
+        <location line="-1305"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Archivos de Octave (*.m);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>File Encoding:</source>
-        <translation>Condificación de archivo:</translation>
-    </message>
-    <message>
-        <location line="+53"/>
+        <location line="+37"/>
         <source>New Function</source>
         <translation>Nueva función</translation>
     </message>
@@ -1900,15 +1953,18 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation>Nombre para la nueva función:</translation>
+        <translation>Nombre para la nueva función:
+</translation>
     </message>
     <message>
-        <location line="+43"/>
-        <source>%1 is a built-in function</source>
-        <translation>%1 es una función integrada</translation>
+        <location line="+44"/>
+        <source>%1 is a built-in, compiled or inline
+function and can not be edited.</source>
+        <translation>%1 es una función integrada (built-in), compilada o inline,
+por lo que no puede ser editada.</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+40"/>
         <source>Can not find function %1</source>
         <translation>No se puede encontrar la función %1</translation>
     </message>
@@ -1918,7 +1974,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="+932"/>
+        <location line="+798"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
@@ -1955,7 +2011,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+4"/>
         <source>New Script</source>
-        <translation>Nuevo guión (script)</translation>
+        <translation>Nuevo guion (script)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2210,7 +2266,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
 <context>
     <name>octave::news_reader</name>
     <message>
-        <location line="+305"/>
+        <location line="+345"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -2229,12 +2285,12 @@ when you have a connection to the web (link opens in an external browser).
 Las fuentes de noticias de la comunidad Octave parece que no están disponibles.
 &lt;/p&gt;
 &lt;p&gt;
-Para ver las últimas novedades, visite
+Para ver las últimas novedades visite
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 cuando tenga conexión a la web (el enlace se abre en un navegador externo).
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Los desarrolladores de Octave,</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Los desarrolladores de Octave, </translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2257,30 +2313,24 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 La conexión a la web para mostrar las últimas novedades sobre Octave ha sido desactivada.
 &lt;/p&gt;
 &lt;p&gt;
-Para ver las últimas novedades, vaya a
+Para ver las últimas novedades vaya a
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
 cuando tenga conexión a la web (el enlace se abre en un navegador externo)
 o actívela para ver las novedades en el diálogo de configuración de red de Octave
 &lt;/p&gt;
 &lt;p&gt;
-&lt;small&gt;&lt;em&gt;&amp;mdash; Los desarrolladores de Octave,
-</translation>
+&lt;small&gt;&lt;em&gt;&amp;mdash; Los desarrolladores de Octave, </translation>
     </message>
 </context>
 <context>
     <name>octave::octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+69"/>
+        <location filename="../src/octave-dock-widget.cc" line="+138"/>
         <source>Hide widget</source>
         <translation>Ocultar widget</translation>
     </message>
     <message>
-        <location line="+43"/>
-        <source>Use &lt;Alt&gt; + &lt;Left Mouse Button&gt; for moving the window</source>
-        <translation>Utilice&lt;Alt&gt; + &lt;Botón izquierdo del ratón&gt; para mover la ventana</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+63"/>
         <source>Dock widget</source>
         <translation>Acoplar widget</translation>
     </message>
@@ -2293,7 +2343,7 @@ o actívela para ver las novedades en el diálogo de configuración de red de Oc
 <context>
     <name>octave::octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+277"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+281"/>
         <source>Help on</source>
         <translation>Ayuda sobre</translation>
     </message>
@@ -2321,20 +2371,20 @@ o actívela para ver las novedades en el diálogo de configuración de red de Oc
 <context>
     <name>octave::octave_qt_link</name>
     <message>
-        <location filename="../src/octave-qt-link.cc" line="+105"/>
-        <location line="+9"/>
+        <location filename="../src/octave-qt-link.cc" line="+108"/>
+        <location line="+8"/>
         <location line="+11"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location line="-20"/>
-        <location line="+268"/>
+        <location line="-19"/>
+        <location line="+260"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location line="-262"/>
+        <location line="-254"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -2343,27 +2393,24 @@ does not exist. Do you want to create it?</source>
 no existe. ¿Desea crearlo?</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Octave Editor</source>
         <translation>Editor de Octave</translation>
     </message>
     <message>
-        <location line="+252"/>
+        <location line="+245"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translatorcomment>dirección o ruta de carga.</translatorcomment>
-        <translation type="unfinished">El archivo %1 no existe en las ruta de carga (dirección). Para ejecutar o depurar la función que está editando tiene que cambiar al directorio %2 o agregarlo a las rutas de carga (path).</translation>
+        <translation>El archivo %1 no existe en las rutas de carga (load path). Para ejecutar o depurar la función que está editando tiene que cambiar al directorio %2 o agregarlo a las rutas de carga (load path).</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translatorcomment>dirección o ruta de carga.</translatorcomment>
-        <translation type="unfinished">Existe un archivo con el mismo nombre que %1 en la ruta de carga (dirección). Para ejecutar o depurar la función que se está editando cambie al directorio %2.</translation>
+        <translation>Existe un archivo con el mismo nombre que %1 en la ruta de carga (load path). Para ejecutar o depurar la función que se está editando cambie al directorio %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translatorcomment>dirección o ruta de carga.</translatorcomment>
-        <translation type="unfinished">Cambiar directorio o agregar directorio a la ruta de carga (dirección)</translation>
+        <translation>Cambiar directorio o agregar directorio a la ruta de carga (load path)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2373,7 +2420,7 @@ no existe. ¿Desea crearlo?</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation>&amp;Agregar directorio a ruta de carga</translation>
+        <translation>&amp;Agregar directorio a ruta de carga (load path)</translation>
     </message>
 </context>
 <context>
@@ -2381,13 +2428,13 @@ no existe. ¿Desea crearlo?</translation>
     <message>
         <location filename="../src/m-editor/octave-txt-lexer.cc" line="+40"/>
         <source>Default</source>
-        <translation>Valor predeterminado/por defecto</translation>
+        <translation>Valor predeterminado</translation>
     </message>
 </context>
 <context>
     <name>octave::resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+272"/>
+        <location filename="../src/resource-manager.cc" line="+302"/>
         <source>The settings file
 %1
 does not exist and can not be created.
@@ -2401,12 +2448,67 @@ no existe y no puede ser creado.
 Asegúrese de que tiene permisos de lectura y escritura en
 %2
 
-La interfaz gráfica de Octave se cerrará ahora.</translation>
+La interfaz gráfica de Octave se cerrará.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Octave Critical Error</source>
         <translation>Error crítico de Octave</translation>
+    </message>
+</context>
+<context>
+    <name>octave::settings_dialog</name>
+    <message>
+        <location filename="../src/settings-dialog.cc" line="-573"/>
+        <source>Octave Preferences</source>
+        <translation>Preferencias de Octave</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Unable to save preferences.  Missing preferences file or unknown directory.</source>
+        <translation>Imposible guardar las preferencias. No hay archivo de preferencias o directorio desconocido.</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <location line="+4"/>
+        <location line="+700"/>
+        <source>System setting</source>
+        <translation>Configuración del sistema</translation>
+    </message>
+    <message>
+        <location line="-448"/>
+        <source>IBeam Cursor</source>
+        <translation>Cursor IBeam</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Block Cursor</source>
+        <translation>Cursor de bloque</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Underline Cursor</source>
+        <translation>Cursor de subrayado</translation>
+    </message>
+    <message>
+        <location line="+164"/>
+        <source>Set Octave Startup Directory</source>
+        <translation>Ajuste del directorio de inicio de Octave</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set File Browser Startup Directory</source>
+        <translation>Ajuste del directorio de inicio del explorador de archivos</translation>
+    </message>
+    <message>
+        <location line="+503"/>
+        <source>Enable attribute colors</source>
+        <translation>Activar atributor de color</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide tools tips</source>
+        <translation>Ocultar ayuda emergente</translation>
     </message>
 </context>
 <context>
@@ -2482,7 +2584,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
   &quot;%1&quot;
 ya se utiliza para la acción
   &quot;%2&quot;.
-¿Desea utilizar el acceso directo de cualquier modo suprimiendo la acción previamente asignada?</translation>
+¿Desea utilizarlo de cualquier modo suprimiendo la acción previamente asignada?</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -2566,12 +2668,12 @@ ya se utiliza para la acción
     </message>
     <message>
         <location line="+1"/>
-        <location line="+162"/>
+        <location line="+173"/>
         <source>Preferences</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location line="-159"/>
+        <location line="-170"/>
         <source>Step</source>
         <translatorcomment>Would use it. If possible verify.</translatorcomment>
         <translation type="unfinished">Salto individual</translation>
@@ -2655,12 +2757,12 @@ ya se utiliza para la acción
     </message>
     <message>
         <location line="+2"/>
-        <location line="+258"/>
+        <location line="+285"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="-256"/>
+        <location line="-283"/>
         <source>Documentation</source>
         <translation>Documentación</translation>
     </message>
@@ -2755,7 +2857,7 @@ ya se utiliza para la acción
         <translation>Mover pestaña hacia la derecha</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+17"/>
         <source>Edit Function</source>
         <translation>Editar función</translation>
     </message>
@@ -2843,7 +2945,7 @@ ya se utiliza para la acción
         <location line="+2"/>
         <source>Transpose Line</source>
         <translatorcomment>also &quot;transponer línea&quot; or &quot;Intercambiar con línea anterior&quot;</translatorcomment>
-        <translation type="unfinished">Intercambiar línea</translation>
+        <translation>Intercambiar líneas</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2863,7 +2965,7 @@ ya se utiliza para la acción
     <message>
         <location line="+2"/>
         <source>Comment Selection (Choosing String)</source>
-        <translation>Comentar selección (Seleccionando cadena de texto)</translation>
+        <translation>Comentar selección (seleccionando cadena de texto)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2879,13 +2981,13 @@ ya se utiliza para la acción
         <location line="+4"/>
         <location line="+5"/>
         <source>Indent Selection Rigidly</source>
-        <translation>Sangría selección rigurosa</translation>
+        <translation>Sangría rigurosa de la selección</translation>
     </message>
     <message>
         <location line="-3"/>
         <location line="+5"/>
         <source>Unindent Selection Rigidly</source>
-        <translation>Eliminar sangría selección rigurosa</translation>
+        <translation>Eliminar sangría rigurosa de la selección</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2895,17 +2997,17 @@ ya se utiliza para la acción
     <message>
         <location line="+3"/>
         <source>Convert Line Endings to Windows</source>
-        <translation>Convertir fines de líneas a Windows</translation>
+        <translation>Convertir caracteres de fin de línea a Windows</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Unix</source>
-        <translation>Convertir fines de líneas a Unix</translation>
+        <translation>Convertir caracteres de fin de línea a Unix</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Mac</source>
-        <translation>Convertir fines de líneas a Mac</translation>
+        <translation>Convertir caracteres de fin de línea a Mac</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2988,7 +3090,32 @@ ya se utiliza para la acción
         <translation>Mostrar barra de desplazamiento horizontal</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+154"/>
+        <source>Documentation Viewer</source>
+        <translation>Visor de documentación</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Browser</source>
+        <translation>Explorador</translation>
+    </message>
+    <message>
+        <location line="+79"/>
+        <source>Import shortcuts from file...</source>
+        <translation>Importar accesos directos de archivo...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Export shortcuts to file...</source>
+        <translation>Exportar accesos directos a archivo...</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Failed to open %1 as Octave shortcut file</source>
+        <translation>Fallo al abrir %1 como fichero de accesos directos de Octave</translation>
+    </message>
+    <message>
+        <location line="-367"/>
         <source>Zoom In</source>
         <translation>Ampliar</translation>
     </message>
@@ -3001,10 +3128,10 @@ ya se utiliza para la acción
         <location line="+2"/>
         <location line="+3"/>
         <source>Zoom Normal</source>
-        <translation>Normal</translation>
+        <translation>Zoom normal</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+112"/>
         <source>Toggle Breakpoint</source>
         <translation>Alternar puntos de interrupción</translation>
     </message>
@@ -3044,41 +3171,56 @@ ya se utiliza para la acción
         <translation>Documentación de palabras clave</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+5"/>
+        <source>Go to Homepage</source>
+        <translation>Ir a la página principal</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Go Back one Page</source>
+        <translation>Una página hacia atrás</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Go Forward one Page</source>
+        <translation>Una página hacia delante</translation>
+    </message>
+    <message>
+        <location line="+68"/>
         <source>Global</source>
         <translation>Global</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+27"/>
+        <location line="+33"/>
         <source>File Menu</source>
         <translation>Menú archivo</translation>
     </message>
     <message>
-        <location line="-25"/>
-        <location line="+27"/>
+        <location line="-31"/>
+        <location line="+33"/>
         <source>Edit Menu</source>
         <translation>Menú editar</translation>
     </message>
     <message>
-        <location line="-25"/>
-        <location line="+29"/>
+        <location line="-31"/>
+        <location line="+35"/>
         <source>Debug Menu</source>
         <translation>Menú depuración</translation>
     </message>
     <message>
-        <location line="-27"/>
+        <location line="-33"/>
         <source>Window Menu</source>
         <translation>Menú ventana</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+29"/>
+        <location line="+35"/>
         <source>Help Menu</source>
         <translation>Menú ayuda</translation>
     </message>
     <message>
-        <location line="-27"/>
+        <location line="-33"/>
         <source>News Menu</source>
         <translation>Menú noticias</translation>
     </message>
@@ -3088,7 +3230,17 @@ ya se utiliza para la acción
         <translation>Manejo de pestañas en widgets acoplados</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+2"/>
+        <source>Find &amp; Replace in Dock Widgets</source>
+        <translation>Buscar y reemplazar en widgets acoplados</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Zooming in Editor and Documentation</source>
+        <translation>Zoom en el editor y documentación</translation>
+    </message>
+    <message>
+        <location line="+21"/>
         <source>View Menu</source>
         <translation>Menú ver</translation>
     </message>
@@ -3098,28 +3250,13 @@ ya se utiliza para la acción
         <translation>Menú ejecutar</translation>
     </message>
     <message>
-        <location line="+68"/>
-        <source>Import shortcuts from file ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Export shortcuts into file ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-4"/>
+        <location line="+96"/>
         <location line="+5"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
         <translation>Archivo de acceso directo de Octave (*.osc);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Failed to open %1 as octave shortcut file</source>
-        <translation>No se ha podido abrir %1 como archivo de accesos directos de Octave</translation>
-    </message>
-    <message>
-        <location line="+26"/>
+        <location line="+36"/>
         <source>Enter new Shortcut</source>
         <translation>Introducir nuevo acceso directo</translation>
     </message>
@@ -3169,7 +3306,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::terminal_dock_widget</name>
     <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+43"/>
+        <location filename="../src/terminal-dock-widget.cc" line="+49"/>
         <source>Command Window</source>
         <translation>Ventana de comandos</translation>
     </message>
@@ -3177,19 +3314,19 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_dock_widget</name>
     <message>
-        <location filename="../src/variable-editor.cc" line="+177"/>
+        <location filename="../src/variable-editor.cc" line="+181"/>
         <source>Dock widget</source>
         <translation>Acoplar widget</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+13"/>
         <source>Undock widget</source>
         <translation>Desacoplar widget</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+21"/>
         <source>Restore geometry</source>
-        <translation>Reestablecer geometría</translation>
+        <translation>Restablecer geometría</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3200,7 +3337,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+792"/>
+        <location line="+834"/>
         <source>Variable Editor</source>
         <translation>Editor de variables</translation>
     </message>
@@ -3210,32 +3347,33 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Editar variables.</translation>
     </message>
     <message>
-        <location line="+259"/>
+        <location line="+281"/>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer plano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Background</source>
-        <translation type="unfinished">Segundo plano</translation>
+        <translation>Segundo plano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer plano seleccionado</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Selected Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Segundo plano seleccionado</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternate Background</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>No estoy seguro de esta traducción</translatorcomment>
+        <translation type="unfinished">Alternan segundo plano</translation>
     </message>
     <message>
-        <location line="+255"/>
+        <location line="+273"/>
         <source>Variable Editor Toolbar</source>
         <translation>Barra de herramientas de editor de variables</translation>
     </message>
@@ -3280,31 +3418,21 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Pegar portapapeles a variable de datos</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Paste Table</source>
-        <translation>Pegar tabla</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Another paste clipboard into variable data</source>
-        <translation>Pegado adicional de portapapeles a variable de datos</translation>
-    </message>
-    <message>
         <location line="+9"/>
         <location line="+5"/>
         <location line="+7"/>
         <source>Plot</source>
-        <translation>Graficar</translation>
+        <translation>Dibujar</translation>
     </message>
     <message>
         <location line="-11"/>
         <source>Plot Selected Data</source>
-        <translation>Graficar datos seleccionados</translation>
+        <translation>Dibujar datos seleccionados</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Plot selected data</source>
-        <translation>Graficar datos seleccionados</translation>
+        <translation>Dibujar datos seleccionados</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -3314,13 +3442,13 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+1"/>
         <source>Go one level up in variable hierarchy</source>
-        <translation>Ir un nivel hacia arriba en jerarquia de variable</translation>
+        <translation>Ir un nivel hacia arriba en jerarquía de variables</translation>
     </message>
 </context>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1219"/>
+        <location line="-1212"/>
         <source>Save Variable %1 As</source>
         <translation>Guardar variable %1 como</translation>
     </message>
@@ -3328,7 +3456,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_view</name>
     <message>
-        <location line="+126"/>
+        <location line="+125"/>
         <source>Cut</source>
         <translation>Cortar</translation>
     </message>
@@ -3341,11 +3469,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+4"/>
         <source>Paste</source>
         <translation>Pegar</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Paste Table</source>
-        <translation>Pegar tabla</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3366,39 +3489,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+18"/>
         <source>Transpose</source>
         <translation>Transponer</translation>
-    </message>
-</context>
-<context>
-    <name>octave::webinfo</name>
-    <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+85"/>
-        <source>Type here and press &apos;Return&apos; to search</source>
-        <translation>Escriba aquí y pulse la tecla &apos;enter&apos; para buscar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Global search</source>
-        <translation>Búsqueda global</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>&amp;Close</source>
-        <translation>C&amp;errar</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Close &amp;Other Tabs</source>
-        <translation>Cerrar &amp;otras pestañas</translation>
-    </message>
-    <message>
-        <location line="+79"/>
-        <source>Error</source>
-        <translation>Error</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>The info file&lt;p&gt;%1&lt;p&gt;or compressed versions do not exist</source>
-        <translation>El archivo de información &lt;p&gt;%1&lt;p&gt; o la versión comprimida no existen</translation>
     </message>
 </context>
 <context>
@@ -3439,7 +3529,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+108"/>
         <source>Right click to copy, rename, or display</source>
-        <translation>Clic derecho para copiar, renombrar o mostrar</translation>
+        <translation>Clic con el botón derecho para copiar, renombrar o mostrar</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -3471,7 +3561,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Filtrar</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+131"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Ver las variables del espacio de trabajo activo.&lt;br&gt;</translation>
     </message>
@@ -3501,7 +3591,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Atributo</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="+129"/>
         <source>Open in Variable Editor</source>
         <translation>Abrir en el editor de variables</translation>
     </message>
@@ -3539,18 +3629,13 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.ui" line="+23"/>
-        <source>Settings</source>
-        <translation>Configuración</translation>
-    </message>
-    <message>
-        <location line="+19"/>
-        <location line="+478"/>
+        <location filename="../src/settings-dialog.ui" line="+42"/>
+        <location line="+798"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location line="-186"/>
+        <location line="-644"/>
         <source>Octave logo only</source>
         <translation>Sólo logo de Octave</translation>
     </message>
@@ -3565,12 +3650,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Iconos gráficos</translation>
     </message>
     <message>
-        <location line="-29"/>
+        <location line="-111"/>
         <source>Dock widget title bar</source>
         <translation>Acoplar widget de barra de título</translation>
     </message>
     <message>
-        <location line="-249"/>
+        <location line="+24"/>
         <source>Small</source>
         <translation>Pequeño</translation>
     </message>
@@ -3580,22 +3665,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Grande</translation>
     </message>
     <message>
-        <location line="+151"/>
+        <location line="+190"/>
         <source>Custom style</source>
         <translation>Estilo personalizado</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+133"/>
         <source>These preferences are applied after any .octaverc startup files.</source>
-        <translation>Estas configuraciones se aplicarán después de la ejecución de los archivos de inicio .octaverc.</translation>
+        <translation>Estas configuraciones se aplicarán después de la carga del archivo de inicio .octaverc.</translation>
     </message>
     <message>
-        <location line="+55"/>
-        <source>Restore working directory of previous session</source>
-        <translation>Restaurar el directorio de trabajo de la sesión anterior</translation>
-    </message>
-    <message>
-        <location line="+33"/>
+        <location line="+353"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -3612,15 +3692,15 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+309"/>
         <source>Wrap long lines at current window border</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar las líneas demasiado largas al tamaño de la ventana</translation>
     </message>
     <message>
-        <location line="+475"/>
+        <location line="+501"/>
         <source>Default EOL mode</source>
-        <translation>Identificador de fin de línea por defecto</translation>
+        <translation>Carácter de fin de línea por defecto</translation>
     </message>
     <message>
-        <location line="-420"/>
+        <location line="-446"/>
         <source>Indent width</source>
         <translation>Ancho de sangría</translation>
     </message>
@@ -3675,24 +3755,18 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Utilizar editor de archivos personalizado</translation>
     </message>
     <message>
-        <location line="+868"/>
+        <location line="+879"/>
         <source>Editor Styles</source>
         <translation>Estilos del editor</translation>
     </message>
     <message>
-        <location line="+280"/>
-        <source>Terminal Colors</source>
-        <translatorcomment>En es_ES, terminal suele ser masculino, aunque en el español iberoamericano suele adoptarse el femenino</translatorcomment>
-        <translation>Colores del terminal</translation>
-    </message>
-    <message>
-        <location line="-173"/>
-        <location line="+854"/>
+        <location line="-1499"/>
+        <location line="+1821"/>
         <source>Font</source>
         <translation>Tipo de fuente</translation>
     </message>
     <message>
-        <location line="-2046"/>
+        <location line="-1418"/>
         <source>Show line numbers</source>
         <translation>Mostrar números de línea</translation>
     </message>
@@ -3717,69 +3791,59 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Número de caracteres a escribir antes de mostrar la lista: </translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+150"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crear archivos no existentes sin consultar</translation>
     </message>
     <message>
-        <location line="-728"/>
+        <location line="-754"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>línea de comandos (%f=archivo, %l=linea):</translation>
     </message>
     <message>
-        <location line="+907"/>
-        <source>Terminal</source>
-        <translation>Terminal</translation>
-    </message>
-    <message>
-        <location line="+44"/>
+        <location line="-644"/>
         <source>Cursor type:</source>
         <translation>Tipo de cursor:</translation>
     </message>
     <message>
-        <location line="-1467"/>
+        <location line="-408"/>
         <source>Cursor blinking</source>
         <translation>Cursor parpadeante</translation>
     </message>
     <message>
-        <location line="+1456"/>
+        <location line="+397"/>
         <source>Use foreground color</source>
         <translation>Usar color de primer plano</translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+800"/>
+        <location line="+1767"/>
         <source>Font size</source>
         <translation>Tamaño de fuente</translation>
     </message>
     <message>
-        <location line="-677"/>
-        <source>Set focus to terminal when running a command from within another widget</source>
-        <translation>Foco al terminal cuando se ejecute un comando desde otro widget</translation>
-    </message>
-    <message>
-        <location line="+73"/>
+        <location line="-245"/>
         <source>File Browser</source>
         <translation>Explorador de archivos</translation>
     </message>
     <message>
-        <location line="-2031"/>
+        <location line="-2082"/>
         <source>Interface</source>
         <translation>Interfaz</translation>
     </message>
     <message>
-        <location line="+83"/>
+        <location line="+351"/>
         <source>Confirm before exiting</source>
         <translation>Confirmar antes de salir</translation>
     </message>
     <message>
-        <location line="+234"/>
-        <location line="+280"/>
+        <location line="-230"/>
+        <location line="+796"/>
         <source>Show status bar</source>
         <translation>Mostrar barra de estado</translation>
     </message>
     <message>
-        <location line="-458"/>
+        <location line="-686"/>
         <source>Text inactive</source>
         <translation>Texto inactivo</translation>
     </message>
@@ -3790,12 +3854,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Activo</translation>
     </message>
     <message>
-        <location line="-135"/>
+        <location line="-174"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+213"/>
         <source>Background inactive</source>
         <translation>Fondo inactivo</translation>
     </message>
@@ -3805,27 +3869,21 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>3D</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+95"/>
         <source>Octave Startup</source>
         <translation>Inicio de Octave</translation>
     </message>
     <message>
-        <location line="+41"/>
-        <location line="+1732"/>
-        <source>Startup path</source>
-        <translation>Ruta/Dirección de inicio</translation>
-    </message>
-    <message>
-        <location line="-1719"/>
-        <location line="+1712"/>
+        <location line="+46"/>
+        <location line="+1705"/>
         <source>Browse</source>
         <translation>Explorar</translation>
     </message>
     <message>
-        <location line="-1635"/>
+        <location line="-1355"/>
         <source>Tab width min.</source>
         <translatorcomment>Ancho del tabulador</translatorcomment>
-        <translation>Extensión mínima del tabulador.</translation>
+        <translation>Extensión mínima del tabulador</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -3844,9 +3902,9 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Activar plegado de código</translation>
     </message>
     <message>
-        <location line="+961"/>
+        <location line="+987"/>
         <source>Windows (CRLF)</source>
-        <translation>Windows (CRLF)</translation>
+        <translation>Windows (CR+LF)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3859,12 +3917,77 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Unix (LF)</translation>
     </message>
     <message>
-        <location line="-936"/>
+        <location line="-962"/>
         <source>Show horizontal scroll bar</source>
         <translation>Mostrar barra de desplazamiento horizontal</translation>
     </message>
     <message>
-        <location line="-119"/>
+        <location line="-1037"/>
+        <source>Preferences</source>
+        <translation>Preferencias</translation>
+    </message>
+    <message>
+        <location line="+57"/>
+        <source>(requires restart)</source>
+        <translation>(requiere reinicio)</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Use native file dialogs</source>
+        <translation>Usar selector de archivos nativo</translation>
+    </message>
+    <message>
+        <location line="+53"/>
+        <source>Use system icon theme if available (requires restart)</source>
+        <translation>Usar tema de iconos del sistema, si está disponible (requiere reinicio)</translation>
+    </message>
+    <message>
+        <location line="+70"/>
+        <source>Toolbar Icons</source>
+        <translation>Iconos de la barra de herramientas</translation>
+    </message>
+    <message>
+        <location line="+186"/>
+        <source>Language</source>
+        <translation>Lenguaje</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Style</source>
+        <translation>Estilo</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Initial working directory of Octave interpreter</source>
+        <translation>Directorio de trabajo de inicio del intérprete de Octave</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Restore last working directory of previous session</source>
+        <translation>Restaurar el directorio de trabajo de la sesión anterior</translation>
+    </message>
+    <message>
+        <location line="+45"/>
+        <source>Command</source>
+        <translation>Comandos</translation>
+    </message>
+    <message>
+        <location line="+208"/>
+        <source>Set focus to Command Window when running a command from within another widget</source>
+        <translation>Establecer el foco en la ventana de comandos cuando se ejecute un comando en otro widget</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Print debug location in Command Window in addition to the marker in the editor</source>
+        <translation>Mostrar el punto de depuración en la ventana de comandos además de en el editor</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Command Window Colors</source>
+        <translation>Colores de la ventana de comandos</translation>
+    </message>
+    <message>
+        <location line="+172"/>
         <source>Show complete path in title</source>
         <translation>Mostrar ruta completa en el título</translation>
     </message>
@@ -3876,7 +3999,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+31"/>
         <source>Number size as difference to editor font</source>
-        <translation>Tamaño del número como diferencia a la fuente del editor </translation>
+        <translation>Tamaño del número como diferencia con la fuente del editor</translation>
     </message>
     <message>
         <location line="+124"/>
@@ -3906,7 +4029,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+25"/>
         <source>Break long lines at line length</source>
-        <translatorcomment>Break=&quot;romper&quot; or &quot;partir&quot;. For this example not 100% sure.</translatorcomment>
         <translation>Partir líneas largas a partir de longitud de línea</translation>
     </message>
     <message>
@@ -3932,8 +4054,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+10"/>
         <source>Background</source>
-        <translatorcomment>Segundo plano o fondo</translatorcomment>
-        <translation>Segundo plano</translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -3948,17 +4069,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+11"/>
         <source>Auto insert after &quot;if&quot; etc.</source>
-        <translation>Inserción automática después de &quot;if&quot; etc.</translation>
+        <translation>Inserción automática después de &quot;if&quot;, etc.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Nothing</source>
-        <translation>Nada</translation>
+        <translation>nada</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&quot;endif&quot; etc.</source>
-        <translation>&quot;endif&quot; etc.</translation>
+        <translation>&quot;endif&quot;, etc.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3986,7 +4107,18 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Mostrar lista de comandos coincidentes automáticamente</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+34"/>
+        <source>Debugging</source>
+        <translation>Depurado</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Always show debug breakpoints and pointers (opens related file if closed)</source>
+        <translatorcomment>Traducción no muy bien hecha</translatorcomment>
+        <translation type="unfinished">Mostrar siempre puntos de depurado y punteros (abrir el archivo relacionado si está cerrado)</translation>
+    </message>
+    <message>
+        <location line="+15"/>
         <source>File handling</source>
         <translation>Manejo de archivos</translation>
     </message>
@@ -4011,12 +4143,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Cerrar todos los archivos cuando el widget del editor esté cerrado/oculto</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+32"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selección de fuente, tamaño (como diferencia con respecto al tamaño por defecto), estilo (&lt;b&gt;n&lt;/b&gt;egrita, &lt;b&gt;c&lt;/b&gt;ursiva, &lt;b&gt;s&lt;/b&gt;ubrayado), color y color de fondo (para el último caso, el magenta (255,0,255) es un sustituto para el color de fondo por defecto).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+185"/>
+        <location line="-1413"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(Cambiar el tamaño del buffer elimina el historial)</translation>
     </message>
@@ -4026,24 +4158,25 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Tamaño del buffer para el historial</translation>
     </message>
     <message>
-        <location line="+34"/>
-        <source>Print debug location in terminal window in addition to the marker in the editor</source>
-        <translation>Imprimir la ubicación de depuración en la ventana del terminal además de en el editor</translation>
-    </message>
-    <message>
-        <location line="+87"/>
+        <location line="+1447"/>
         <source>Behavior</source>
         <translation>Comportamiento</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+22"/>
         <source>Restore last directory of previous session</source>
         <translation>Restaurar último directorio de la sesión previa</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+32"/>
+        <source>Initial file browser directory (only if not synchronized with initial working directory of Octave)</source>
+        <translatorcomment>Traducción no muy buena</translatorcomment>
+        <translation type="unfinished">Directorio inicial del explorador de archivos (sólo si no está sincronizado con el directorio inicial de Octave)</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>Extensions of files to be opened in the default text editor (separated by &quot;;&quot;):</source>
-        <translation>Extensiones de archivo para abrir en el editor de texto predeterminado (separado por &quot;;&quot;):</translation>
+        <translation>Extensiones de archivo para abrir en el editor de texto predeterminado (separadas por &quot;;&quot;):</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -4056,12 +4189,12 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Colores para atributos de variables</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Hide tool tips</source>
-        <translation>Ocultar consejos de herramientas</translation>
+        <location line="+107"/>
+        <source>Use Command Window font</source>
+        <translation>Usar la fuente de la ventana de comandos</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+196"/>
         <source>Import shortcut set</source>
         <translation>Importar conjunto de accesos directos</translation>
     </message>
@@ -4084,7 +4217,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="-71"/>
         <source>Edit a shortcut by double-clicking in a cell</source>
-        <translation>Los accesos directos se pueden editar haciendo doble clic en la celda correspondiente</translation>
+        <translation>Editar el acceso directo haciendo doble clic en la celda correspondiente</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -4104,17 +4237,17 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+46"/>
         <source>Use proxy server</source>
-        <translation>Utilizar servidor &quot;proxy&quot;</translation>
+        <translation>Utilizar servidor proxy</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="-470"/>
         <source>Variable Editor</source>
         <translation>Editor de variables</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Default row height</source>
-        <translation>Altura predeterminada de fila </translation>
+        <translation>Altura predeterminada de fila</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -4122,12 +4255,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Ancho predeterminado de columna</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Use Terminal Font</source>
-        <translation>Usar fuente del terminal</translation>
-    </message>
-    <message>
-        <location line="+26"/>
+        <location line="+36"/>
         <source>Autofit</source>
         <translation>Ajuste automático</translation>
     </message>
@@ -4157,34 +4285,29 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Usar colores de filas alternos</translation>
     </message>
     <message>
-        <location line="-290"/>
+        <location line="+59"/>
+        <source>Disable global shortcuts when Command Window has focus</source>
+        <translation>Desactivar los accesos directos globales cuando el foco esté en la ventana de comandos</translation>
+    </message>
+    <message>
+        <location line="+211"/>
         <source>HttpProxy</source>
         <translation>HttpProxy</translation>
     </message>
     <message>
-        <location line="-2179"/>
+        <location line="-2559"/>
         <source>Icon set for dock widgets</source>
         <translation>Iconos para widget</translation>
     </message>
     <message>
-        <location line="-220"/>
-        <source>Language (requires restart)</source>
-        <translation>Lenguaje (requiere reinicio)</translation>
-    </message>
-    <message>
-        <location line="-17"/>
-        <source>Icon size</source>
-        <translation>Tamaño de icono</translation>
-    </message>
-    <message>
-        <location line="+1987"/>
+        <location line="+1929"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Sincronizar el directorio de trabajo de Octave con el explorador de archivos</translation>
     </message>
     <message>
-        <location line="+184"/>
+        <location line="+385"/>
         <source>Shortcuts</source>
-        <translation>Accesos Directos</translation>
+        <translation>Accesos directos</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -4192,12 +4315,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>Seleccione esta opción para evitar conflictos con los accesos directos de la línea de comandos</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Disable global shortcuts when terminal window has focus</source>
-        <translation>Deshabilitar los accesos directos globales cuando el terminal se enfoque</translation>
-    </message>
-    <message>
-        <location line="+53"/>
+        <location line="+56"/>
         <source>Export</source>
         <translation>Exportar</translation>
     </message>
@@ -4214,7 +4332,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+83"/>
         <source>Socks5Proxy</source>
-        <translation>&quot;Socks5Proxy&quot;</translation>
+        <translation>Socks5Proxy</translation>
     </message>
     <message>
         <location line="-16"/>
@@ -4240,48 +4358,6 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <location line="+37"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
-    </message>
-    <message>
-        <location filename="../src/settings-dialog.cc" line="+127"/>
-        <source>Octave Settings</source>
-        <translation>Configuraciones de Octave</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Unable to save settings.  Missing settings file or unknown directory.</source>
-        <translation>No se puede guardar la configuración.  Falta el archivo de configuración o el directorio es desconocido.</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <location line="+4"/>
-        <location line="+489"/>
-        <source>System setting</source>
-        <translation>Configuración del sistema</translation>
-    </message>
-    <message>
-        <location line="-260"/>
-        <source>IBeam Cursor</source>
-        <translation>Cursor IBeam</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Block Cursor</source>
-        <translation>Cursor de bloque</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Underline Cursor</source>
-        <translation>Cursor de subrayado</translation>
-    </message>
-    <message>
-        <location line="+172"/>
-        <source>Set Octave Startup Directory</source>
-        <translation>Ajuste del directorio de inicio de Octave</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Set File Browser Startup Directory</source>
-        <translation>Ajuste del directorio de inicio del explorador de archivos</translation>
     </message>
 </context>
 </TS>

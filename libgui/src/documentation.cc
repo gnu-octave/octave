@@ -319,7 +319,7 @@ namespace octave
 
     // popdown menu with prev pages files
     QToolButton *popdown_button_prev_pages = new QToolButton ();
-    popdown_button_prev_pages->setToolTip (tr ("Previous Pages"));
+    popdown_button_prev_pages->setToolTip (tr ("Previous pages"));
     popdown_button_prev_pages->setMenu (m_prev_pages_menu);
     popdown_button_prev_pages->setPopupMode (QToolButton::InstantPopup);
     popdown_button_prev_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
@@ -333,7 +333,7 @@ namespace octave
 
     // popdown menu with prev pages files
     QToolButton *popdown_button_next_pages = new QToolButton ();
-    popdown_button_next_pages->setToolTip (tr ("Next Pages"));
+    popdown_button_next_pages->setToolTip (tr ("Next pages"));
     popdown_button_next_pages->setMenu (m_next_pages_menu);
     popdown_button_next_pages->setPopupMode (QToolButton::InstantPopup);
     popdown_button_next_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);

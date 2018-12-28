@@ -244,7 +244,7 @@ uninstall-qthelp-files:
 .PHONY: uninstall-qthelp-files
 
 qthelp-installdir:
-	$(MKDIR_P) '$(DESTDIR)/$(octdocdir)'
+	$(MKDIR_P) '$(DESTDIR)$(octdocdir)'
 .PHONY: qthelp-installdir
 
 if AMCOND_BUILD_DOCS

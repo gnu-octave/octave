@@ -222,7 +222,7 @@ namespace octave
     m_file_tree_view->setSortingEnabled (true);
     m_file_tree_view->setAlternatingRowColors (true);
     m_file_tree_view->setAnimated (true);
-    m_file_tree_view->setToolTip (tr ("Double click to open file/folder, right click for alternatives"));
+    m_file_tree_view->setToolTip (tr ("Double-click to open file/folder, right click for alternatives"));
 
     // get sort column and order as well as cloumn state (order and width)
 

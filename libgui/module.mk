@@ -25,6 +25,7 @@ TRANSLATIONS = \
   %reldir%/languages/fr_FR.ts \
   %reldir%/languages/it_IT.ts \
   %reldir%/languages/ja_JP.ts \
+  %reldir%/languages/lt_LT.ts \
   %reldir%/languages/nl_NL.ts \
   %reldir%/languages/pt_BR.ts \
   %reldir%/languages/pt_PT.ts \

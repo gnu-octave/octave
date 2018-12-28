@@ -2217,7 +2217,7 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="lbl_file_browser_dir">
                     <property name="text">
-                     <string>Initial file browser directory (only if not synchronized with initial working directoy of Octave)</string>
+                     <string>Initial file browser directory (only if not synchronized with initial working directory of Octave)</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2434,7 +2434,7 @@
                <item row="0" column="5">
                 <widget class="QCheckBox" name="varedit_useTerminalFont">
                  <property name="text">
-                  <string>Use Command Window Font</string>
+                  <string>Use Command Window font</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>

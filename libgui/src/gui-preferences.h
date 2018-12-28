@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_editor_settings_h)
-#define octave_editor_settings_h 1
+#if ! defined (gui_preference_h)
+#define gui_preference_h 1
 
 //#if defined (HAVE_CONFIG_H)
 //#  include "config.h"
@@ -65,6 +65,7 @@ const gui_pref global_icon_theme ("use_system_icon_theme", QVariant (true));
 
 // Style
 const gui_pref global_style ("style", QVariant ("default"));
+
 
 // Console preferences
 

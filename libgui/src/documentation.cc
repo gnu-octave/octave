@@ -388,19 +388,28 @@ namespace octave
 
   void documentation::global_search (void)
   {
+
+    QString query_string;
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
     QString queries
       = m_help_engine->searchEngine ()->queryWidget ()->searchInput ();
-    m_query_string = queries.split (" ").first ();
+    query_string = queries;
 #else
+    // FIXME: drop this part when support for Qt4 is dropped
     QList<QHelpSearchQuery> queries
       = m_help_engine->searchEngine ()->queryWidget ()->query ();
     if (queries.count ())
-      m_query_string = queries.first ().wordList.first ();
+      query_string = queries.first ().wordList.join (" ");
     else
-      m_query_string = "";
+      query_string = "";
 #endif
 
+    // Get quoted search strings first, then take first string as fall back
+    QRegExp rx ("\"([^\"]*)\"");
+    if (rx.indexIn (query_string, 0) != -1)
+      m_query_string = rx.cap (1);
+    else
+      m_query_string = query_string.split (" ", QString::SkipEmptyParts).first ();
 
     m_help_engine->searchEngine ()->search (queries);
   }

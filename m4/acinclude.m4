@@ -2753,6 +2753,41 @@ AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
   fi
 ])
 dnl
+dnl Check llvm::IRBuilder API
+dnl
+AC_DEFUN([OCTAVE_LLVM_IRBUILDER_API], [
+  AC_CACHE_CHECK([check if llvm::IRBuilder has two template arguments],
+    [octave_cv_llvm_irbuilder_has_two_template_args],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+#if defined (HAVE_LLVM_IR_FUNCTION_H)
+          #include <llvm/IR/LLVMContext.h>
+#else
+          #include <llvm/LLVMContext.h>
+#endif
+#if defined (HAVE_LLVM_IR_IRBUILDER_H)
+          #include <llvm/IR/IRBuilder.h>
+#elif defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
+          #include <llvm/Support/IRBuilder.h>
+#else
+          #include <llvm/IRBuilder.h>
+#endif
+          using namespace llvm;
+          ]], [[
+          LLVMContext c;
+          IRBuilder<ConstantFolder,IRBuilderDefaultInserter>  irb (c);
+        ]])],
+        octave_cv_llvm_irbuilder_has_two_template_args=yes,
+        octave_cv_llvm_irbuilder_has_two_template_args=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_llvm_irbuilder_has_two_template_args = yes; then
+    AC_DEFINE(LLVM_IRBUILDER_HAS_TWO_TEMPLATE_ARGS, 1,
+      [Define to 1 if llvm::IRBuilder has two template arguments.])
+  fi
+])
+dnl
 dnl OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
 dnl
 dnl Set variables related to Fortran symbol names (append underscore,

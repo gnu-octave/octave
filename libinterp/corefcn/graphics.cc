@@ -5533,11 +5533,32 @@ void
 axes::properties::adopt (const graphics_handle& h)
 {
   graphics_object go (gh_manager::get_object (h));
+
   if (go.isa ("light") && go.get_properties ().is_visible ())
     increase_num_lights ();
 
   base_properties::adopt (h);
 
+  // FIXME: For performance reasons, we would like to call
+  //          update_axis_limits ("xlim", h);
+  //        which updates the limits based ONLY on the new data from h.
+  //        But this isn't working properly at the moment, so we
+  //        call the other form which invokes a full tree traversal of all
+  //        of the axes children.
+  if (xlimmode_is ("auto"))
+    update_axis_limits ("xlim");
+
+  if (ylimmode_is ("auto"))
+    update_axis_limits ("ylim");
+
+  if (zlimmode_is ("auto"))
+    update_axis_limits ("zlim");
+
+  if (climmode_is ("auto"))
+    update_axis_limits ("clim");
+
+  if (climmode_is ("auto"))
+    update_axis_limits ("alim");
 }
 
 inline Matrix
@@ -12455,8 +12476,6 @@ make_graphics_object (const std::string& go_name,
              go_name.c_str ());
     }
 
-  adopt (parent, h);
-
   try
     {
       xset (h, xargs);
@@ -12467,6 +12486,8 @@ make_graphics_object (const std::string& go_name,
       error (e, "__go_%s__: unable to create graphics handle",
              go_name.c_str ());
     }
+
+  adopt (parent, h);
 
   xcreatefcn (h);
   xinitialize (h);

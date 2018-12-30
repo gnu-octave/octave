@@ -400,7 +400,10 @@ Undocumented internal function.
   if (args.length () >= 2)
     value = args(1).string_value();
 
-  return ovl (octave_link::gui_preference (key, value));
+  if (octave::application::is_gui_running ())
+    return ovl (octave_link::gui_preference (key, value));
+  else
+    return ovl (value);
 }
 
 DEFUN (__octave_link_file_remove__, args, ,

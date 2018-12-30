@@ -30,8 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mach-info.h"
 
-class string_vector;
-class octave_value;
+#include "ovl.h"
 
 namespace octave
 {

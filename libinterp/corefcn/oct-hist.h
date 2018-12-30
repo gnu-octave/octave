@@ -29,8 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-hist.h"
 
+#include "ovl.h"
+
 namespace octave
 {
+  class interpreter;
+
   class history_system
   {
   public:

@@ -38,11 +38,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 #include "pt-arg-list.h"
+#include "pt-mat.h"
 
 namespace octave
 {
   class tree_evaluator;
-  class tree_matrix;
 
   // Evaluate tree_matrix objects and convert them to octave_value
   // arrays (full and sparse numeric, char, cell, struct, class and

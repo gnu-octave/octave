@@ -25,6 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <cstddef>
+
+class octave_value;
 class octave_value_list;
 
 namespace octave

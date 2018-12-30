@@ -27,13 +27,3 @@
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
-
-%!test
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   hax = axes ();
-%!   hg = hggroup ();
-%!   hl = line ([0, 1], [1, 1], "tag", "parent", "color", "r");
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect

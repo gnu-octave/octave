@@ -12439,7 +12439,9 @@ make_graphics_object (const std::string& go_name,
 
   caseless_str p ("parent");
 
-  for (int i = 0; i < xargs.length (); i++)
+  // Remove all "parent" property overrides of the first argument to function
+  // and accept only the last one (bug #55322).
+  for (int i = 0; i < xargs.length (); i += 2)
     {
       if (xargs(i).is_string () && p.compare (xargs(i).string_value ()))
         {
@@ -12450,7 +12452,7 @@ make_graphics_object (const std::string& go_name,
           val = xargs(i+1).double_value ();
 
           xargs = xargs.splice (i, 2);
-          break;
+          i -= 2;
         }
     }
 

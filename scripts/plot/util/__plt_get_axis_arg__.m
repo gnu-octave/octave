@@ -26,12 +26,12 @@
 function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
 
   h = [];
-  parent = find (strcmpi (varargin, "parent"), 1);
 
   ## Look for a scalar which is a graphics handle but not the
   ## Root Figure (0) or an ordinary figure (integer).
-  if (numel (varargin) > 0 && numel (varargin{1}) == 1
-      && ishghandle (varargin{1}) && varargin{1} != 0 && ! isfigure (varargin{1}))
+  if (! isempty (varargin) && isscalar (varargin{1})
+      && ishghandle (varargin{1}) && varargin{1} != 0
+      && ! isfigure (varargin{1}))
     htmp = varargin{1};
     if (! isaxes (htmp))
       error ("%s: first argument must be axes handle", caller);
@@ -41,18 +41,22 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
       varargin(1) = [];
     endif
   ## Look for "parent"/axis prop/value pair
-  elseif (numel (varargin) > 1 && ! isempty (parent))
-    if (parent < numel (varargin) && ishghandle (varargin{parent+1}))
+  elseif (numel (varargin) > 1)
+    ## FIXME: This can be fooled by any string "parent" such as
+    ##        the prop/val pair "tag"/"parent".
+    parent = find (strcmpi (varargin, "parent"), 1, "last");
+    if (! isempty (parent))
+      if (parent == numel (varargin) || ! ishghandle (varargin{parent+1}))
+        error ('%s: "parent" value must be an axes handle', caller);
+      endif
       htmp = varargin{parent+1};
       if (isaxes (htmp) && ! strcmp (get (htmp, "tag"), "legend"))
         h = htmp;
         varargin(parent:parent+1) = [];
       else
-        ## 'parent' property for some other type like hggroup
+        ## "parent" property for some other type like hggroup
         h = [ancestor(htmp, "axes"), htmp];
       endif
-    else
-      error ("%s: parent value must be an axes handle", caller);
     endif
   endif
 

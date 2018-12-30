@@ -592,6 +592,15 @@ namespace octave
   cleanup_statement_list (tree_statement_list **lst);
 }
 
+OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
+extern OCTINTERP_API octave_value_list
+eval_string (const std::string& str, bool silent, int& parse_status,
+             int nargout);
+
+OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
+extern OCTINTERP_API octave_value
+eval_string (const std::string& str, bool silent, int& parse_status);
+
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
 
 OCTAVE_DEPRECATED (4.4, "use 'octave::get_help_from_file' instead")
@@ -663,21 +672,6 @@ static inline octave_value_list
 feval (const octave_value_list& args, int nargout = 0)
 {
   return octave::feval (args, nargout);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string' instead")
-static inline octave_value_list
-eval_string (const std::string& str, bool silent, int& parse_status,
-             int nargout)
-{
-  return octave::eval_string (str, silent, parse_status, nargout);
-}
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::eval_string' instead")
-static inline octave_value
-eval_string (const std::string& str, bool silent, int& parse_status)
-{
-  return octave::eval_string (str, silent, parse_status);
 }
 
 OCTAVE_DEPRECATED (4.4, "use 'octave::cleanup_statement_list' instead")

@@ -5402,6 +5402,23 @@ namespace octave
   }
 }
 
+octave_value_list
+eval_string (const std::string& str, bool silent, int& parse_status,
+             int nargout)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("eval_string");
+
+  return interp.eval_string (str, silent, parse_status, nargout);
+}
+
+octave_value
+eval_string (const std::string& str, bool silent, int& parse_status)
+{
+  octave::interpreter& interp = octave::__get_interpreter__ ("eval_string");
+
+  return interp.eval_string (str, silent, parse_status);
+}
+
 DEFMETHOD (eval, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} eval (@var{try})

@@ -2212,7 +2212,7 @@ namespace octave
 
     // FIXME: Finalize what we want to store in octave_builtin, then add
     // functions to access these values in octave_value
-    octave_value ov_builtin = symtab.find (name);
+    octave_value ov_builtin = symtab.builtin_find (name);
     return dynamic_cast<octave_builtin *> (ov_builtin.internal_rep ());
   }
 

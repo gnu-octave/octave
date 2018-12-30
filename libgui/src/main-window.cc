@@ -1661,7 +1661,7 @@ namespace octave
   void main_window::closeEvent (QCloseEvent *e)
   {
     e->ignore ();
-    octave_cmd_exec *cmd = new octave_cmd_exec ("exit");
+    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fquit, ovl ());
     queue_cmd (cmd);
   }
 

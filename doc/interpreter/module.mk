@@ -142,6 +142,7 @@ MUNGED_TEXI_SRC = \
   %reldir%/intro.texi \
   %reldir%/io.texi \
   %reldir%/linalg.texi \
+  %reldir%/macros.texi \
   %reldir%/matrix.texi \
   %reldir%/nonlin.texi \
   %reldir%/numbers.texi \
@@ -360,6 +361,11 @@ doc-interpreter-dist-hook:
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES)
 
+## Additional dependency through @include
+%reldir%/octave.texi: %reldir%/macros.texi
+%reldir%/install.texi: %reldir%/macros.texi
+%reldir%/bugs.texi: %reldir%/macros.texi
+
 ## These two texi files have an additional dependency through the
 ## @EXAMPLEFILE macro.
 %reldir%/oop.texi: $(examples_code_SRC)
@@ -406,7 +412,6 @@ doc_EXTRA_DIST += \
   %reldir%/images \
   %reldir%/images.awk \
   %reldir%/images.mk \
-  %reldir%/macros.texi \
   %reldir%/mk-doc-cache.pl \
   %reldir%/mk-qthelp.pl \
   %reldir%/mkcontrib.awk \
@@ -452,7 +457,7 @@ octetc_DATA += \
 
 %reldir%/doc-cache: $(DOCSTRING_FILES) %reldir%/mk-doc-cache.pl | $(OCTAVE_INTERPRETER_TARGETS) %reldir%/$(octave_dirstamp)
 	$(AM_V_GEN)rm -f $@-t $@ && \
-	$(PERL) $(srcdir)/%reldir%/mk-doc-cache.pl $(srcdir) $(srcdir)/%reldir%/macros.texi $(DOCSTRING_FILES) > $@-t && \
+	$(PERL) $(srcdir)/%reldir%/mk-doc-cache.pl $(srcdir) %reldir%/macros.texi $(DOCSTRING_FILES) > $@-t && \
 	mv $@-t $@
 
 %reldir%/undocumented_list:

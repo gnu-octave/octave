@@ -334,7 +334,8 @@ function __update_polar_grid__ (hax, ~, hg)
   endif
 
   lprops = {"linestyle", get(hax, "gridlinestyle"), ...
-            "linewidth", get(hax, "linewidth")};
+            "linewidth", get(hax, "linewidth"), ...
+            "color", get(hax, "xcolor")};
   ## "fontunits" should be first because it affects "fontsize" property.
   tprops(1:2:12) = {"fontunits", "fontangle", "fontname", "fontsize", ...
                     "fontweight", "ticklabelinterpreter"};

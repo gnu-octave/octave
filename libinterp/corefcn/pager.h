@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 class octave_value;
+class octave_value_list;
 class oprocstream;
 
 namespace octave

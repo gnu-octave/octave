@@ -309,11 +309,11 @@ namespace octave
            "<style>\n"
            "a:link { text-decoration: underline; color: #0000ff; }\n"
            "</style>\n"
-           "<head/><body>\n"
+           "</head><body>\n"
            "<p>For more information about Octave:</p>\n"
            "<ul>\n"
            "<li>Visit <a href=\"https://octave.org\">https://octave.org</a> (opens in external browser)</li>\n"
-           "<li>Get the documentation online as <a href=\"https://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"https://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document (opens in external browser)</li>\n"
+           "<li>Get the documentation online as <a href=\"https://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"https://www.gnu.org/software/octave/octave.pdf\">pdf</a>-document (opens in external browser)</li>\n"
            "<li>Open the documentation browser of the Octave GUI with the help menu</li>\n"
            "</ul>\n"
            "</body></html>"));

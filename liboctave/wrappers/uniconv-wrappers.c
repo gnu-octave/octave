@@ -54,6 +54,14 @@ octave_u8_conv_to_encoding (const char *tocode, const uint8_t *src,
 }
 
 char *
+octave_u32_conv_to_encoding_strict (const char *tocode, const uint32_t *src,
+                            size_t srclen, size_t *lengthp)
+{
+  return u32_conv_to_encoding (tocode, iconveh_error,
+                              src, srclen, NULL, NULL, lengthp);
+}
+
+char *
 u8_from_wchar (const wchar_t *wc)
 {
   // Convert wide char array to multibyte UTF-8 char array

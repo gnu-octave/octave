@@ -69,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "marker.h"
 
 #include "file-ops.h"
+#include "uniconv-wrappers.h"
 
 #include "bp-table.h"
 #include "call-stack.h"
@@ -2321,7 +2322,32 @@ namespace octave
         return nullptr;
       }
 
-    if (! codec->canEncode (_edit_area->text ()))
+    QString editor_text = _edit_area->text ();
+    bool can_encode = codec->canEncode (editor_text);
+
+    // We cannot rely on QTextCodec::canEncode because it uses the
+    // ConverterState of convertFromUnicode which isn't updated by some
+    // implementations.
+    if (can_encode)
+      {
+        std::u32string u32_str = editor_text.toStdU32String ();
+        const uint32_t *src = reinterpret_cast<const uint32_t *>
+                              (u32_str.c_str ());
+
+        size_t length;
+        char *res_str =
+          octave_u32_conv_to_encoding_strict (_encoding.toStdString ().c_str (),
+                                              src, u32_str.length (), &length);
+        if (! res_str)
+          {
+            if (errno == EILSEQ)
+              can_encode = false;
+          }
+        else
+          ::free (static_cast<void *> (res_str));
+      }
+
+    if (! can_encode)
       {
         QMessageBox::critical (nullptr,
                                tr ("Octave Editor"),

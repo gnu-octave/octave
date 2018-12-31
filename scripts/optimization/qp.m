@@ -69,18 +69,19 @@
 ## the number of constraints.  The algorithm is faster if the initial guess is
 ## feasible.
 ##
-## @table @var
-## @item options
-## An optional structure containing the following parameter(s) used to define
-## the behavior of the solver.  Missing elements in the structure take on
-## default values, so you only need to set the elements that you wish to
-## change from the default.
+## @var{options} is a structure specifying additional parameters which
+## control the algorithm.  Currently, @code{qp} recognizes these options:
+## @qcode{"MaxIter"}, @qcode{"TolX"}.
 ##
-## @table @code
-## @item MaxIter (default: 200)
-## Maximum number of iterations.
-## @end table
-## @end table
+## @qcode{"MaxIter"} proscribes the maximum number of algorithm iterations
+## before optimization is halted.  The default value is 200.
+## The value must be a positive integer.
+##
+## @qcode{"TolX"} specifies the termination tolerance for the unknown variables
+## @var{x}.  The default is @code{sqrt (eps)} or approximately 1e-8.
+##
+## On return, @var{x} is the location of the minimum and @var{fval} contains
+## the value of the objective function at @var{x}.
 ##
 ## @table @var
 ## @item info
@@ -112,6 +113,7 @@
 ## @end table
 ## @end table
 ## @end table
+## @seealso{sqp}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
@@ -120,7 +122,7 @@
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 
   if (nargin == 1 && ischar (x0) && strcmp (x0, "defaults"))
-    x = struct ("MaxIter", 200);
+    x = struct ("MaxIter", 200, "TolX", sqrt (eps));
     return;
   endif
 

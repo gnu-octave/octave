@@ -46,7 +46,7 @@
 ## with a parameter named equal to the toolkit.  For example:
 ##
 ## @smallexample
-## @code{html_compare_plot_demos ({"gnuplot", "fltk"}, "gnuplot", " 4.6 patchlevel 5")}
+## @code{html_compare_plot_demos (@{"gnuplot", "fltk"@}, "gnuplot", " 4.6 patchlevel 5")}
 ## @end smallexample
 ##
 ## @seealso{compare_plot_demos, dump_demos, demo}

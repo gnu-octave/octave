@@ -58,8 +58,8 @@ namespace octave
           }
         else
           {
-            m_default_float_button = buttonlist.at (0);
-            m_default_close_button = buttonlist.at (1);
+            m_default_float_button = buttonlist.at (1);
+            m_default_close_button = buttonlist.at (0);
           }
       }
 

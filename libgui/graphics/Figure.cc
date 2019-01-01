@@ -67,25 +67,6 @@ namespace QtHandles
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
 
-  static bool
-  hasUiControlChildren (const figure::properties& fp)
-  {
-    gh_manager::auto_lock lock;
-
-    Matrix kids = fp.get_all_children ();
-
-    for (int i = 0; i < kids.numel (); i++)
-      {
-        graphics_object go (gh_manager::get_object (kids(i)));
-
-        if (go && (go.isa ("uicontrol") || go.isa ("uipanel")
-                   || go.isa ("uibuttongroup")))
-          return true;
-      }
-
-    return false;
-  }
-
   static QRect
   boundingBoxToRect (const Matrix& bb)
   {
@@ -132,8 +113,7 @@ namespace QtHandles
     int toffset = 0;
 
     if (fp.toolbar_is ("figure")
-        || (fp.toolbar_is ("auto") && fp.menubar_is ("figure")
-            && ! hasUiControlChildren (fp)))
+        || (fp.toolbar_is ("auto") && fp.menubar_is ("figure")))
       {
         toffset += m_figureToolBar->sizeHint ().height ();
         boffset += m_statusBar->sizeHint ().height ();
@@ -496,9 +476,8 @@ namespace QtHandles
           showFigureToolBar (false);
         else if (fp.toolbar_is ("figure"))
           showFigureToolBar (true);
-        else // "auto"
-          showFigureToolBar (! hasUiControlChildren (fp)
-                             && fp.menubar_is ("figure"));
+        else  // "auto"
+          showFigureToolBar (fp.menubar_is ("figure"));
         break;
 
       case figure::properties::ID_MENUBAR:

@@ -392,6 +392,12 @@ namespace octave
     static bool initialized;
     bool do_initialize (void);
 
+    // ----- LLVM context -----
+
+  public:
+
+    static llvm::LLVMContext llvm_context;
+
     // ----- Target machine ----
 
   public:

@@ -121,9 +121,9 @@ static int Vjit_failcnt = 0;
 
 namespace octave
 {
-  static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
+  static llvm::IRBuilder<> builder (tree_jit::llvm_context);
 
-  static llvm::LLVMContext& context = llvm::getGlobalContext ();
+  static llvm::LLVMContext& context = tree_jit::llvm_context;
 
   // -------------------- jit_break_exception --------------------
 
@@ -2100,6 +2100,8 @@ namespace octave
   // -------------------- tree_jit --------------------
 
   bool tree_jit::initialized = false;
+
+  llvm::LLVMContext tree_jit::llvm_context;
 
   int tree_jit::next_forloop_number = 0;
   int tree_jit::next_function_number = 0;

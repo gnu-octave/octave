@@ -111,6 +111,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 
+// Starting with LLVM 3.9.0, llvm::createGVNPass has
+// been moved to a new header file named GVN.h
+// (before that it was in llvm/Transforms/Scalar.h)
+#if defined (HAVE_LLVM_TRANSFORMS_SCALAR_GVN_H)
+#  include <llvm/Transforms/Scalar/GVN.h>
+#endif
+
 static bool Vdebug_jit = false;
 
 static bool Vjit_enable = false;

@@ -659,7 +659,9 @@ namespace octave
       {
         Matrix& bb = line_bbox.back ();
         bb(1) = m_ymin;
-        bb(3) = m_ymax - m_ymin;
+        // Add one pixel to the bbox height to avoid occasional text clipping.
+        // See bug #55328.
+        bb(3) = (m_ymax + 1) - m_ymin;
         if (m_deltax > 0)
           bb(2) += m_deltax;
       }

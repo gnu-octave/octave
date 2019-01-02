@@ -61,7 +61,7 @@ function interpimages (d, nm, typ)
     ys = interp1 (t,y,ti,"spline");
     yp = interp1 (t,y,ti,"pchip");
     plot (ti, ys,"r-", ti, yp,"g-");
-    legend ("spline","pchip", 4);
+    legend ("spline","pchip", "location", "southeast");
     print (outfile, d_typ);
   elseif (strcmp (nm, "interpderiv2"))
     t = -2:2;

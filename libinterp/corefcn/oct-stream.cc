@@ -6199,7 +6199,7 @@ namespace octave
 
     if (tc_origin.is_string ())
       {
-        std::string xorigin = tc_origin.string_value ("fseek: invalid value for origin");
+        std::string xorigin = tc_origin.xstring_value ("fseek: invalid value for origin");
 
         if (xorigin == "bof")
           origin = SEEK_SET;

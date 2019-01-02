@@ -1736,7 +1736,7 @@ particular output format.
   if (args.length () != 1)
     print_usage ();
 
-  octave_fcn_handle *fh = args(0).fcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
+  octave_fcn_handle *fh = args(0).xfcn_handle_value ("functions: FCN_HANDLE argument must be a function handle object");
 
   octave_function *fcn = (fh ? fh->function_value () : nullptr);
 
@@ -1825,7 +1825,7 @@ function handle @var{fcn_handle}.
   if (args.length () != 1)
     print_usage ();
 
-  octave_fcn_handle *fh = args(0).fcn_handle_value ("func2str: FCN_HANDLE argument must be a function handle object");
+  octave_fcn_handle *fh = args(0).xfcn_handle_value ("func2str: FCN_HANDLE argument must be a function handle object");
 
   if (! fh)
     error ("func2str: FCN_HANDLE must be a valid function handle");

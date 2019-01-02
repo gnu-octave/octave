@@ -214,7 +214,7 @@ initialize (void)
 
   std::string DEFAULT_LFLAGS;
 
-#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
+#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
 
   // We'll be linking the files we compile with -loctinterp and
   // -loctave, so we need to know where to find them.
@@ -554,24 +554,16 @@ is_true (const std::string& s)
 }
 
 static std::string
-do_getenv (const std::string& name)
-{
-  char *value = ::getenv (name.c_str ());
-
-  return value ? value : "";
-}
-
-static std::string
 get_temp_directory (void)
 {
   std::string tempd;
 
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
-  tempd = do_getenv ("TEMP");
+  tempd = octave_getenv ("TEMP");
 
   if (tempd.empty ())
-    tempd = do_getenv ("TMP");
+    tempd = octave_getenv ("TMP");
 
 #if defined (P_tmpdir)
   if (tempd.empty ())
@@ -585,7 +577,7 @@ get_temp_directory (void)
 
 #else
 
-  tempd = do_getenv ("TMP");
+  tempd = octave_getenv ("TMP");
 
 #if defined (P_tmpdir)
   if (tempd.empty ())

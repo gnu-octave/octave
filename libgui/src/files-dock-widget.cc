@@ -131,14 +131,14 @@ namespace octave
                      tr ("Show Octave directory"), m_navigation_tool_bar);
     m_sync_browser_directory_action->setToolTip (
                                                  tr ("Go to current Octave directory"));
-    m_sync_browser_directory_action->setEnabled ("false");
+    m_sync_browser_directory_action->setEnabled (false);
 
     m_sync_octave_directory_action
       = new QAction (resource_manager::icon ("go-last"),
                      tr ("Set Octave directory"), m_navigation_tool_bar);
     m_sync_octave_directory_action->setToolTip (
                                                 tr ("Set Octave directory to current browser directory"));
-    m_sync_octave_directory_action->setEnabled ("false");
+    m_sync_octave_directory_action->setEnabled (false);
 
     QToolButton *popdown_button = new QToolButton ();
     popdown_button->setToolTip (tr ("Actions on current directory"));

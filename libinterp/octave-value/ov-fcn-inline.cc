@@ -800,7 +800,7 @@ functions from strings is through the use of anonymous functions
       if (! args(1).is_scalar_type ())
         error ("inline: N must be an integer");
 
-      int n = args(1).int_value ("inline: N must be an integer");
+      int n = args(1).xint_value ("inline: N must be an integer");
 
       if (n < 0)
         error ("inline: N must be a positive integer or zero");

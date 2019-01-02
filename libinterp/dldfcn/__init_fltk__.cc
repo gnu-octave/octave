@@ -528,7 +528,7 @@ public:
           {
             if (uimenup.is_separator ())
               {
-                if (idx >= 0 && !(itemflags & FL_SUBMENU))
+                if (! (itemflags & FL_SUBMENU))
                   m_menubar->mode (idx, itemflags | FL_MENU_DIVIDER);
               }
             else

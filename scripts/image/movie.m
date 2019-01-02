@@ -67,8 +67,10 @@ function movie (varargin)
     if (strcmp (typ, "axes"))
       hax = varargin{1};
     elseif (strcmp (typ, "figure"))
-      figure (varargin{1});
-      hax = gca ();
+      hax = get (varargin{1}, "currentaxes");
+      if (isempty (hax))
+        hax = axes ("parent", varargin{1});
+      endif
     else
       error ("movie: H must be a handle to an axes or figure");
     endif
@@ -244,15 +246,15 @@ endfunction
 %!error <N must be a non-zero integer>
 %! movie (struct ("cdata", {[], []}, "colormap", []), [2.3 -6]);
 %!error <All elements N\(2:end\) must be valid indices into the MOV struct>
-%! movie (struct ("cdata", {[], []}, "colormap", []), [1 -1])
+%! movie (struct ("cdata", {[], []}, "colormap", []), [1 -1]);
 %!error <All elements N\(2:end\) must be valid indices into the MOV struct>
-%! movie (struct ("cdata", {[], []}, "colormap", []), [1 5])
+%! movie (struct ("cdata", {[], []}, "colormap", []), [1 5]);
 %!error <FPS must be a numeric scalar . 0>
-%! movie (struct ("cdata", {[], []}, "colormap", []), 1, "a")
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, "a");
 %!error <FPS must be a numeric scalar . 0>
-%! movie (struct ("cdata", {[], []}, "colormap", []), 1, [1 1])
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, [1 1]);
 %!error <FPS must be a numeric scalar . 0>
-%! movie (struct ("cdata", {[], []}, "colormap", []), 1, -1/12)
+%! movie (struct ("cdata", {[], []}, "colormap", []), 1, -1/12);
 %!error <empty image data at frame 1>
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -263,7 +265,7 @@ endfunction
 %!error <empty image data at frame 2>
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   movie (struct ("cdata", {ones(2), []}, "colormap", []))
+%!   movie (struct ("cdata", {ones(2), []}, "colormap", []));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -3162,7 +3162,7 @@ equivalent
   if (args.length () != 2)
     print_usage ();
 
-  std::string name = args(1).string_value ("__java_get__: NAME must be a string");
+  std::string name = args(1).xstring_value ("__java_get__: NAME must be a string");
 
   initialize_java ();
 

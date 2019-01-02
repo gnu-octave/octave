@@ -56,7 +56,7 @@ namespace QtHandles
 
   static const int AUTO_WIDTH = 75;
 
-#define AUTO_HEIGHT tp.get_fontsize () * 2 - 1
+#define AUTO_HEIGHT (tp.get_fontsize () * 2 - 1)
 
   static QSize realQSizeForTable (QTableWidget *t)
   {

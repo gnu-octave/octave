@@ -232,7 +232,7 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 // Ugh.  The signature of the compare method is not standard in older
 // versions of the GNU libstdc++.  Do this instead:
 
-#define SUBSTRING_COMPARE_EQ(s, pos, n, t) (s.substr (pos, n) == t)
+#define SUBSTRING_COMPARE_EQ(s, pos, n, t) (s.substr (pos, n) == (t))
 
 std::string
 read_text_data (std::istream& is, const std::string& filename, bool& global,

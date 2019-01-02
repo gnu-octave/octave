@@ -6765,7 +6765,6 @@ axes::properties::update_font (std::string prop)
       gh_manager::get_object (get_ylabel ()).set (prop, val);
       gh_manager::get_object (get_zlabel ()).set (prop, val);
       gh_manager::get_object (get_title ()).set (prop, tval);
-
     }
 
   double dpr = device_pixel_ratio (get___myhandle__ ());

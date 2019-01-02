@@ -333,7 +333,7 @@ symbol_exist (const std::string& name, const std::string& type)
 
 
 #define GET_IDX(LEN)                                                    \
-  static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
+  static_cast<int> (((LEN)-1) * static_cast<double> (rand ()) / RAND_MAX)
 
 std::string
 unique_symbol_name (const std::string& basename)

@@ -204,26 +204,23 @@ Undocumented internal function.
             error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
         }
 
-      if (! exitcode)
+      Matrix simpl (nf, dim+1);
+
+      FORALLfacets
         {
-          Matrix simpl (nf, dim+1);
-
-          FORALLfacets
+          if (! facet->upperdelaunay)
             {
-              if (! facet->upperdelaunay)
+              octave_idx_type j = 0;
+
+              FOREACHvertex_ (facet->vertices)
                 {
-                  octave_idx_type j = 0;
-
-                  FOREACHvertex_ (facet->vertices)
-                    {
-                      simpl(i, j++) = 1 + qh_pointid(vertex->point);
-                    }
-                  i++;
+                  simpl(i, j++) = 1 + qh_pointid(vertex->point);
                 }
+              i++;
             }
-
-          retval(0) = simpl;
         }
+
+      retval(0) = simpl;
     }
   else if (n == dim + 1)
     {

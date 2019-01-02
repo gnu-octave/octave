@@ -177,8 +177,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             dims.resize (2);
 
-            dims(0) = octave::math::nint_big (tmp.double_value ());
-            dims(1) = octave::math::nint_big (tmp.double_value ());
+            dims(0) = dims(1) = octave::math::nint_big (dval);
 
             goto gen_matrix;
           }

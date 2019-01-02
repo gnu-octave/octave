@@ -2098,6 +2098,13 @@ namespace octave
         return;
       }
 
+    _encoding = _new_encoding;    // consider a possible new encoding
+
+    // set the desired codec (if suitable for contents)
+    QTextCodec *codec = check_valid_codec ();
+    if (! codec)
+      return;   // No valid codec
+
     // Get a list of breakpoint line numbers, before  exit_debug_and_clear().
     emit report_marker_linenr (_bp_lines, _bp_conditions);
 
@@ -2142,13 +2149,6 @@ namespace octave
       }
 
     // save the contents into the file
-
-    _encoding = _new_encoding;    // consider a possible new encoding
-
-    // set the desired codec (if suitable for contents)
-    QTextCodec *codec = check_valid_codec ();
-    if (! codec)
-      return;   // No valid codec
 
     // write the file
     QTextStream out (&file);
@@ -2337,7 +2337,7 @@ namespace octave
         size_t length;
         char *res_str =
           octave_u32_conv_to_encoding_strict (_encoding.toStdString ().c_str (),
-                                              src, u32_str.size (), &length);
+                                              src, u32_str.length (), &length);
         if (! res_str)
           {
             if (errno == EILSEQ)

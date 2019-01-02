@@ -43,14 +43,8 @@ octave_sparse_params::instance_ok (void)
   if (! instance)
     {
       instance = new octave_sparse_params ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
+      singleton_cleanup_list::add (cleanup_instance);
     }
-
-  if (! instance)
-    (*current_liboctave_error_handler)
-      ("unable to create octave_sparse_params object!");
 
   return retval;
 }

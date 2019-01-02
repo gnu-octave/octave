@@ -149,13 +149,8 @@ namespace octave
       if (! instance)
         {
           instance = new ft_manager ();
-
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
+          singleton_cleanup_list::add (cleanup_instance);
         }
-
-      if (! instance)
-        error ("unable to create ft_manager!");
 
       return retval;
     }

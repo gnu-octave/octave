@@ -2230,9 +2230,6 @@ Undocumented internal function.
 
   audioplayer *recorder = new audioplayer ();
 
-  if (! recorder)
-    error ("__player_audioplayer__: Couldn't instantiate new audioplayer");
-
   bool is_function = (args(0).is_string () || args(0).is_function_handle ()
                       || args(0).is_inline_function ());
 

@@ -66,13 +66,8 @@ namespace octave
     if (! instance)
       {
         instance = new display_info (query);
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      error ("unable to create display_info object!");
 
     return retval;
   }

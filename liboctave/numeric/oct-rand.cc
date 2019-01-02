@@ -63,14 +63,8 @@ namespace octave
     if (! instance)
       {
         instance = new rand ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create rand object!");
 
     return retval;
   }

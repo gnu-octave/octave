@@ -446,12 +446,9 @@ namespace octave
     // pass a signal to.  Hence, functionality is here.
 
     file_editor_tab *fileEditorTab = new file_editor_tab (m_ced);
-    if (fileEditorTab)
-      {
-        add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
-        fileEditorTab->new_file (commands);       // title is updated here
-        focus ();                                 // focus editor and new tab
-      }
+    add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
+    fileEditorTab->new_file (commands);       // title is updated here
+    focus ();                                 // focus editor and new tab
   }
 
   void file_editor::request_close_file (bool)
@@ -1327,103 +1324,100 @@ namespace octave
             if (! fileEditorTab)
               fileEditorTab = new file_editor_tab ();
 
-            if (fileEditorTab)
+            fileEditorTab->set_encoding (encoding);
+            QString result = fileEditorTab->load_file (openFileName);
+            if (result == "")
               {
-                fileEditorTab->set_encoding (encoding);
-                QString result = fileEditorTab->load_file (openFileName);
-                if (result == "")
+                // Supply empty title then have the file_editor_tab update
+                // with full or short name.
+                if (! reusing)
+                  add_file_editor_tab (fileEditorTab, "", index);
+                fileEditorTab->update_window_title (false);
+                // file already loaded, add file to mru list here
+                QFileInfo file_info = QFileInfo (openFileName);
+                handle_mru_add_file (file_info.canonicalFilePath (),
+                                     encoding);
+
+                if (line > 0)
                   {
-                    // Supply empty title then have the file_editor_tab update
-                    // with full or short name.
-                    if (! reusing)
-                      add_file_editor_tab (fileEditorTab, "", index);
-                    fileEditorTab->update_window_title (false);
-                    // file already loaded, add file to mru list here
-                    QFileInfo file_info = QFileInfo (openFileName);
-                    handle_mru_add_file (file_info.canonicalFilePath (),
-                                         encoding);
+                    if (insert)
+                      emit fetab_goto_line (fileEditorTab, line);
 
-                    if (line > 0)
-                      {
-                        if (insert)
-                          emit fetab_goto_line (fileEditorTab, line);
+                    if (debug_pointer)
+                      emit fetab_insert_debugger_pointer (fileEditorTab,
+                                                          line);
+                    if (breakpoint_marker)
+                      emit fetab_do_breakpoint_marker (insert, fileEditorTab,
+                                                       line, cond);
+                  }
+              }
+            else
+              {
+                delete fileEditorTab;
+                fileEditorTab = nullptr;
 
-                        if (debug_pointer)
-                          emit fetab_insert_debugger_pointer (fileEditorTab,
-                                                              line);
-                        if (breakpoint_marker)
-                          emit fetab_do_breakpoint_marker (insert, fileEditorTab,
-                                                           line, cond);
-                      }
+                if (QFile::exists (openFileName))
+                  {
+                    // File not readable:
+                    // create a NonModal message about error.
+                    QMessageBox *msgBox
+                      = new QMessageBox (QMessageBox::Critical,
+                                         tr ("Octave Editor"),
+                                         tr ("Could not open file\n%1\nfor read: %2.").
+                                         arg (openFileName).arg (result),
+                                         QMessageBox::Ok, this);
+
+                    msgBox->setWindowModality (Qt::NonModal);
+                    msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                    msgBox->show ();
                   }
                 else
                   {
-                    delete fileEditorTab;
-                    fileEditorTab = nullptr;
+                    // File does not exist, should it be created?
+                    bool create_file = true;
+                    QMessageBox *msgBox;
 
-                    if (QFile::exists (openFileName))
+                    if (! settings->value ("editor/create_new_file", false).toBool ())
                       {
-                        // File not readable:
-                        // create a NonModal message about error.
-                        QMessageBox *msgBox
-                          = new QMessageBox (QMessageBox::Critical,
-                                             tr ("Octave Editor"),
-                                             tr ("Could not open file\n%1\nfor read: %2.").
-                                             arg (openFileName).arg (result),
-                                             QMessageBox::Ok, this);
+                        msgBox = new QMessageBox (QMessageBox::Question,
+                                                  tr ("Octave Editor"),
+                                                  tr ("File\n%1\ndoes not exist. "
+                                                      "Do you want to create it?").arg (openFileName),
+                                                  QMessageBox::NoButton,nullptr);
+                        QPushButton *create_button =
+                          msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
+                        msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
+                        msgBox->setDefaultButton (create_button);
+                        msgBox->exec ();
 
-                        msgBox->setWindowModality (Qt::NonModal);
-                        msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                        msgBox->show ();
+                        QAbstractButton *clicked_button = msgBox->clickedButton ();
+                        if (clicked_button != create_button)
+                          create_file = false;
+
+                        delete msgBox;
                       }
-                    else
+
+                    if (create_file)
                       {
-                        // File does not exist, should it be created?
-                        bool create_file = true;
-                        QMessageBox *msgBox;
-
-                        if (! settings->value ("editor/create_new_file", false).toBool ())
+                        // create the file and call the editor again
+                        QFile file (openFileName);
+                        if (! file.open (QIODevice::WriteOnly))
                           {
-                            msgBox = new QMessageBox (QMessageBox::Question,
+                            // error opening the file
+                            msgBox = new QMessageBox (QMessageBox::Critical,
                                                       tr ("Octave Editor"),
-                                                      tr ("File\n%1\ndoes not exist. "
-                                                          "Do you want to create it?").arg (openFileName),
-                                                      QMessageBox::NoButton,nullptr);
-                            QPushButton *create_button =
-                              msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
-                            msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
-                            msgBox->setDefaultButton (create_button);
-                            msgBox->exec ();
+                                                      tr ("Could not open file\n%1\nfor write: %2.").
+                                                      arg (openFileName).arg (file.errorString ()),
+                                                      QMessageBox::Ok, this);
 
-                            QAbstractButton *clicked_button = msgBox->clickedButton ();
-                            if (clicked_button != create_button)
-                              create_file = false;
-
-                            delete msgBox;
+                            msgBox->setWindowModality (Qt::NonModal);
+                            msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                            msgBox->show ();
                           }
-
-                        if (create_file)
+                        else
                           {
-                            // create the file and call the editor again
-                            QFile file (openFileName);
-                            if (! file.open (QIODevice::WriteOnly))
-                              {
-                                // error opening the file
-                                msgBox = new QMessageBox (QMessageBox::Critical,
-                                                          tr ("Octave Editor"),
-                                                          tr ("Could not open file\n%1\nfor write: %2.").
-                                                          arg (openFileName).arg (file.errorString ()),
-                                                          QMessageBox::Ok, this);
-
-                                msgBox->setWindowModality (Qt::NonModal);
-                                msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                                msgBox->show ();
-                              }
-                            else
-                              {
-                                file.close ();
-                                request_open_file (openFileName);
-                              }
+                            file.close ();
+                            request_open_file (openFileName);
                           }
                       }
                   }

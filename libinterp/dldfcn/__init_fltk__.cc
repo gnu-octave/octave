@@ -1852,9 +1852,6 @@ public:
     if (! instance)
       instance = new figure_manager ();
 
-    if (! instance)
-      error ("unable to create figure_manager object!");
-
     return retval;
   }
 

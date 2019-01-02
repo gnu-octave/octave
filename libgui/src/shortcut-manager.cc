@@ -172,13 +172,6 @@ namespace octave
     if (! instance)
       instance = new shortcut_manager ();
 
-    if (! instance)
-      {
-        error ("unable to create shortcut_manager object!");
-
-        retval = false;
-      }
-
     return retval;
   }
 
@@ -695,19 +688,10 @@ namespace octave
 
         QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
 
-        if (! osc_settings)
-          {
-            qWarning () << tr ("Failed to open %1 as Octave shortcut file")
-                        .arg (file);
-            return false;
-          }
-        else
-          {
-            if (action == OSC_IMPORT)
-              import_shortcuts (osc_settings);   // import (special action)
-            else if (action == OSC_EXPORT)
-              do_write_shortcuts (osc_settings, false); // export, (save settings)
-          }
+        if (action == OSC_IMPORT)
+          import_shortcuts (osc_settings);   // import (special action)
+        else if (action == OSC_EXPORT)
+          do_write_shortcuts (osc_settings, false); // export, (save settings)
       }
     else
       {

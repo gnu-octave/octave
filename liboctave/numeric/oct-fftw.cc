@@ -112,14 +112,8 @@ namespace octave
     if (! instance)
       {
         instance = new fftw_planner ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create fftw_planner object!");
 
     return retval;
   }
@@ -472,14 +466,8 @@ namespace octave
     if (! instance)
       {
         instance = new float_fftw_planner ();
-
-        if (instance)
-          singleton_cleanup_list::add (cleanup_instance);
+        singleton_cleanup_list::add (cleanup_instance);
       }
-
-    if (! instance)
-      (*current_liboctave_error_handler)
-        ("unable to create fftw_planner object!");
 
     return retval;
   }

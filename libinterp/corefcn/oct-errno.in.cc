@@ -296,13 +296,8 @@ octave_errno::instance_ok (void)
   if (! instance)
     {
       instance = new octave_errno ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
+      singleton_cleanup_list::add (cleanup_instance);
     }
-
-  if (! instance)
-    error ("unable to create errno object!");
 
   return retval;
 }

@@ -618,9 +618,8 @@ namespace octave
     else
       {
         // Otherwise, delete the newly created lexer and
-        // use the old, exisiting one
-        if (lexer)
-          delete lexer;
+        // use the old, existing one.
+        delete lexer;
       }
   }
 

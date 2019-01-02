@@ -3345,14 +3345,11 @@ namespace octave
       = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
                                   param_list, nullptr, body);
 
-    if (fcn)
-      {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+    comment_list *tc = m_lexer.m_comment_buf.get_comment ();
 
-        fcn->stash_trailing_comment (tc);
-        fcn->stash_fcn_end_location (end_fcn_stmt->line (),
-                                     end_fcn_stmt->column ());
-      }
+    fcn->stash_trailing_comment (tc);
+    fcn->stash_fcn_end_location (end_fcn_stmt->line (),
+                                 end_fcn_stmt->column ());
 
     // If input is coming from a file, issue a warning if the name of
     // the file does not match the name of the function stated in the

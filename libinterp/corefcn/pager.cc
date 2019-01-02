@@ -426,13 +426,10 @@ namespace octave
       {
         m_external_pager = new oprocstream (pgr.c_str ());
 
-        if (m_external_pager)
-          {
-            octave::child_list& kids = m_interpreter.get_child_list ();
+        octave::child_list& kids = m_interpreter.get_child_list ();
 
-            kids.insert (m_external_pager->pid (),
-                         pager_event_handler);
-          }
+        kids.insert (m_external_pager->pid (),
+                     pager_event_handler);
       }
   }
 

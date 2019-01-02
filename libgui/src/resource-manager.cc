@@ -176,13 +176,6 @@ namespace octave
     if (! instance)
       instance = new resource_manager ();
 
-    if (! instance)
-      {
-        error ("unable to create resource_manager object!");
-
-        retval = false;
-      }
-
     return retval;
   }
 
@@ -294,8 +287,7 @@ namespace octave
     delete m_settings;
     m_settings = new QSettings (file, QSettings::IniFormat);
 
-    if (! (m_settings
-           && QFile::exists (m_settings->fileName ())
+    if (! (QFile::exists (m_settings->fileName ())
            && m_settings->isWritable ()
            && m_settings->status () == QSettings::NoError))
       {

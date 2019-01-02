@@ -113,11 +113,8 @@ namespace octave
 
       ~bbp_nesting_level (void) = default;
 
-      void reset (void)
-      {
-        while (! m_context.empty ())
-          m_context.pop ();
-      }
+      // Alias for clear function.
+      void reset (void) { clear (); }
 
       void bracket (void) { m_context.push (BRACKET); }
 

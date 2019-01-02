@@ -1437,6 +1437,7 @@ if test $ENABLE_JIT = yes; then
     AC_CHECK_HEADERS([llvm/IR/Verifier.h])
     AC_CHECK_HEADERS([llvm/Analysis/BasicAliasAnalysis.h])
     AC_CHECK_HEADERS([llvm/Transforms/Scalar/GVN.h])
+    AC_CHECK_HEADERS([llvm/Bitcode/ReaderWriter.h])
 
     OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
     OCTAVE_LLVM_FUNCTION_ADDFNATTR_API

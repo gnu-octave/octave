@@ -65,7 +65,15 @@ along with Octave; see the file COPYING.  If not, see
 // In LLVM 3.7.x and earlier, we use createBasicAliasAnalysisPass
 // from llvm/Analysis/Passes.h (already included above)
 
-#include <llvm/Bitcode/ReaderWriter.h>
+#if defined (HAVE_LLVM_BITCODE_READERWRITER_H)
+// In LLVM <= 3.9, only one header for bitcode read/writer
+#  include <llvm/Bitcode/ReaderWriter.h>
+#else
+// Satrting with LLVM 4.0, two separate headers
+#  include <llvm/Bitcode/BitcodeReader.h>
+#  include <llvm/Bitcode/BitcodeWriter.h>
+#endif
+
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 // old JIT, LLVM < 3.6.0
 // #include <llvm/ExecutionEngine/JIT.h>

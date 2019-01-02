@@ -107,7 +107,7 @@ public:
   double
   double_value (bool = false) const
   {
-    double retval = lo_ieee_nan_value ();
+    double retval;
 
     if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");
@@ -123,7 +123,7 @@ public:
   float
   float_value (bool = false) const
   {
-    float retval = lo_ieee_float_nan_value ();
+    float retval;
 
     if (isempty ())
       err_invalid_conversion (type_name (), "real scalar");

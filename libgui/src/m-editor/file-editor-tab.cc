@@ -2337,7 +2337,7 @@ namespace octave
         size_t length;
         char *res_str =
           octave_u32_conv_to_encoding_strict (_encoding.toStdString ().c_str (),
-                                              src, u32_str.length (), &length);
+                                              src, u32_str.size (), &length);
         if (! res_str)
           {
             if (errno == EILSEQ)

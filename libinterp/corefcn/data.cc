@@ -101,7 +101,7 @@ If the optional argument @var{dim} is supplied, work along dimension
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-                         : args(1).int_value ("all: DIM must be an integer")-1);
+                         : args(1).xint_value ("all: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("all: invalid dimension argument = %d", dim + 1);
@@ -166,7 +166,7 @@ any (eye (2, 4), 2)
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-                         : args(1).int_value ("any: DIM must be an integer")-1);
+                         : args(1).xint_value ("any: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("any: invalid dimension argument = %d", dim + 1);
@@ -1135,7 +1135,7 @@ and @qcode{"double"}.
         {
           SparseMatrix cs = arg.sparse_matrix_value ().cumsum (dim);
           if (isnative)
-            retval = cs != 0.0;
+            retval = (cs != 0.0);
           else
             retval = cs;
         }
@@ -1143,7 +1143,7 @@ and @qcode{"double"}.
         {
           NDArray cs = arg.array_value ().cumsum (dim);
           if (isnative)
-            retval = cs != 0.0;
+            retval = (cs != 0.0);
           else
             retval = cs;
         }

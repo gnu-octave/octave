@@ -122,7 +122,7 @@ find_indexed_expression (const std::string& text)
     {
       if (line[pos] == ')')
         paren_count++;
-      else if (line[pos] == '}')
+      else
         curly_count++;
 
       while (curly_count + paren_count > 0 && --pos >= 0)
@@ -636,9 +636,6 @@ namespace octave
     if (input_buf[len - 1] != '\n')
       octave_diary << "\n";
 
-    if (len < 1)
-      return read_as_string ? octave_value ("") : octave_value (Matrix ());
-
     if (read_as_string)
       {
         // FIXME: fix gnu_readline and octave_gets instead!
@@ -1116,7 +1113,7 @@ namespace octave
       size_t srclen = src_str.length ();
 
       size_t length;
-      uint8_t *utf8_str = nullptr;
+      uint8_t *utf8_str;
 
       utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src, srclen,
                                                &length);
@@ -1483,7 +1480,7 @@ for input.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string hook_fcn_id = args(0).string_value ("remove_input_event_hook: argument not valid as a hook function name or id");
+  std::string hook_fcn_id = args(0).xstring_value ("remove_input_event_hook: argument not valid as a hook function name or id");
 
   bool warn = (nargin < 2);
 

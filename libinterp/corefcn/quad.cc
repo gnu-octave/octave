@@ -344,7 +344,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
 
           have_sing = true;
 
-          sing = args(4).vector_value ("quad: fifth argument SING must be a vector of singularities");
+          sing = args(4).xvector_value ("quad: fifth argument SING must be a vector of singularities");
           OCTAVE_FALLTHROUGH;
 
         case 4:

@@ -2330,9 +2330,9 @@ namespace octave
     // implementations.
     if (can_encode)
       {
-        std::u32string u32_str = editor_text.toStdU32String ();
+        QVector<uint> u32_str = editor_text.toUcs4 ();
         const uint32_t *src = reinterpret_cast<const uint32_t *>
-                              (u32_str.c_str ());
+                              (u32_str.data ());
 
         size_t length;
         char *res_str =

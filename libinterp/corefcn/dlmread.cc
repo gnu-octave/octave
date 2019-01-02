@@ -478,7 +478,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
                     {
                       double y = octave_read_double (tmp_stream);
 
-                      if (! iscmplx && y != 0.)
+                      if (! iscmplx && y != 0.0)
                         {
                           iscmplx = true;
                           cdata = ComplexMatrix (rdata);

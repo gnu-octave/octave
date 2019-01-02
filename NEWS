@@ -2,6 +2,9 @@ Summary of important user-visible changes for version 6.0 (yyyy-mm-dd):
 ----------------------------------------------------------------------
 
  ** New functions added in 6.0:
+ ** Specifying legend position with a numeric argument is deprecated and
+    will be removed in Octave 7.0.  Use a string argument instead.
+
 
 
 

@@ -105,7 +105,6 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       start_nc = 0;
       end_nc = nc;
       n_to_find = nz;
-      count = nz;
     }
   else if (direction > 0)
     {

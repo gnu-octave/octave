@@ -73,7 +73,7 @@ can have any value real or complex value.  However, for polygamma functions
     print_usage ();
 
   const octave_value oct_z = (nargin == 1) ? args(0) : args(1);
-  const octave_idx_type k = (nargin == 1) ? 0 : args(0).idx_type_value ("psi: K must be an integer");
+  const octave_idx_type k = (nargin == 1) ? 0 : args(0).xidx_type_value ("psi: K must be an integer");
   if (k < 0)
     error ("psi: K must be non-negative");
 
@@ -222,7 +222,7 @@ can have any value real or complex value.  However, for polygamma functions
 %!error psi ()
 %!error psi (1, 2, 3)
 %!error <Z must be> psi ("non numeric")
-%!error <conversion of 5.3 to int.* value failed> psi (5.3, 1)
+%!error <K must be an integer> psi ({5.3}, 1)
 %!error <K must be non-negative> psi (-5, 1)
 %!error <Z must be non-negative for polygamma> psi (5, -1)
 %!error <Z must be a floating point> psi (5, uint8 (-1))

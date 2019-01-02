@@ -114,7 +114,7 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
 
       if (tmp.length () && tmp(0).is_defined ())
         {
-          retval = tmp(0).complex_vector_value ("eigs: evaluation of user-supplied function failed");
+          retval = tmp(0).xcomplex_vector_value ("eigs: evaluation of user-supplied function failed");
         }
       else
         {
@@ -165,7 +165,7 @@ Undocumented internal function.
   std::string fcn_name;
   octave_idx_type n = 0;
   octave_idx_type k = 6;
-  Complex sigma = 0.;
+  Complex sigma = 0.0;
   double sigmar, sigmai;
   bool have_sigma = false;
   std::string typ = "LM";
@@ -304,7 +304,7 @@ Undocumented internal function.
           // Use STL function to convert to upper case
           transform (typ.begin (), typ.end (), typ.begin (), toupper);
 
-          sigma = 0.;
+          sigma = 0.0;
         }
       else
         {
@@ -330,14 +330,14 @@ Undocumented internal function.
       tmp = map.getfield ("issym");
       if (tmp.is_defined () && ! sym_tested)
         {
-          symmetric = tmp.double_value () != 0.;
+          symmetric = tmp.double_value () != 0.0;
           sym_tested = true;
         }
 
       // isreal is ignored if A is not a function
       tmp = map.getfield ("isreal");
       if (tmp.is_defined () && have_a_fun)
-        a_is_complex = ! (tmp.double_value () != 0.);
+        a_is_complex = ! (tmp.double_value () != 0.0);
 
       tmp = map.getfield ("tol");
       if (tmp.is_defined ())
@@ -366,7 +366,7 @@ Undocumented internal function.
 
       tmp = map.getfield ("cholB");
       if (tmp.is_defined ())
-        cholB = tmp.double_value () != 0.;
+        cholB = tmp.double_value () != 0.0;
 
       tmp = map.getfield ("permB");
       if (tmp.is_defined ())
@@ -459,7 +459,7 @@ Undocumented internal function.
       else
         retval = ovl (eig_vec, ComplexDiagMatrix (eig_val), double (info));
     }
-  else if (sigmai != 0.)
+  else if (sigmai != 0.0)
     {
       // Promote real problem to a complex one.
       ComplexMatrix eig_vec;

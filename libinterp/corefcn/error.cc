@@ -972,7 +972,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 {
   std::string retval;
 
-  std::string tstr;
+  std::string tmpstr;
 
   if (args.length () > 0)
     {
@@ -988,20 +988,18 @@ handle_message (error_fun f, const char *id, const char *msg,
 
       if (arg.is_defined ())
         {
-          if (arg.is_string ())
-            {
-              tstr = arg.string_value ();
-              msg = tstr.c_str ();
-
-              if (! msg)
-                return retval;
-            }
-          else if (arg.isempty ())
+          if (arg.isempty ())
             return retval;
+          else if (arg.is_string ())
+            {
+              tmpstr = arg.string_value ();  // 2-stage assignment required
+              msg = tmpstr.c_str ();         // in order to generate pointer  
+                                             // to valid memory.
+            }
         }
     }
 
-// Ugh.
+  // Ugh.
 
   size_t len = strlen (msg);
 

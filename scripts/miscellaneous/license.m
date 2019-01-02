@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2018 William Poetra Yoga Hadisoeseno
-## Copyright (C) 2014-2018 Carnë Draug
+## Copyright (C) 2005-2019 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2014-2019 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2018 David Bateman
+Copyright (C) 2005-2019 David Bateman
 Copyright (C) 2002-2005 Paul Kienzle
 Copyright (C) 2012 John W. Eaton
 

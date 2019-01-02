@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2018 Alexander Barth
+Copyright (C) 2006-2019 Alexander Barth
 Copyright (C) 2009 David Bateman
 
 This file is part of Octave.

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2018 Kurt Hornik
+## Copyright (C) 1995-2019 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##

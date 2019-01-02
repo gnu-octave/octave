@@ -1,5 +1,5 @@
-## Copyright (C) 2009-2018 Carlo de Falco
-## Copyright (C) 2016-2018 Cristiano Dorigo
+## Copyright (C) 2009-2019 Carlo de Falco
+## Copyright (C) 2016-2019 Cristiano Dorigo
 ##
 ## This file is part of Octave.
 ##

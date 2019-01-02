@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2018 Pantxo Diribarne
+## Copyright (C) 2014-2019 Pantxo Diribarne
 ##
 ## This file is part of Octave.
 ##
@@ -1949,7 +1949,7 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2018 Pantxo Diribarne\n\
+@c Copyright (C) 2014-2019 Pantxo Diribarne\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\

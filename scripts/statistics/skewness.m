@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2018 Julien Bect
-## Copyright (C) 1996-2018 John W. Eaton
+## Copyright (C) 2013-2019 Julien Bect
+## Copyright (C) 1996-2019 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

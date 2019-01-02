@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016-2018 M. Muetzel
+Copyright (C) 2016-2019 M. Muetzel
 
 This file is part of Octave.
 

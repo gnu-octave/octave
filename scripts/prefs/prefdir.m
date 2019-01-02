@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2018 John Donoghue
+## Copyright (C) 2013-2019 John Donoghue
 ##
 ## This file is part of Octave.
 ##

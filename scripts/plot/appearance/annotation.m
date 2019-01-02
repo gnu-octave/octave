@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2018 Pantxo Diribarne
+## Copyright (C) 2016-2019 Pantxo Diribarne
 ##
 ## This file is part of Octave.
 ##

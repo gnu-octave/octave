@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2016-2018 Andrew Thornton
+Copyright (C) 2016-2019 Andrew Thornton
 
 This file is part of Octave.
 

@@ -1,6 +1,6 @@
-## Copyright (C) 2017-2018 -2018 Rik Wehbring
-## Copyright (C) 2005-2018 William Poetra Yoga Hadisoeseno
-## Copyright (C) 2000-2018 Paul Kienzle
+## Copyright (C) 2017-2019 -2018 Rik Wehbring
+## Copyright (C) 2005-2019 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2000-2019 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##

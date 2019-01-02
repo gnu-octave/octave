@@ -1,4 +1,4 @@
-## Copyright (C) 1997-2018 Vincent Cautaerts
+## Copyright (C) 1997-2019 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##

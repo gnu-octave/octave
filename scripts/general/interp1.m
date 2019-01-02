@@ -1,5 +1,5 @@
-## Copyright (C) 2014-2018 Nir Krakauer
-## Copyright (C) 2000-2018 Paul Kienzle
+## Copyright (C) 2014-2019 Nir Krakauer
+## Copyright (C) 2000-2019 Paul Kienzle
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

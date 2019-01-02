@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2018 Martin Hepperle
+## Copyright (C) 2010-2019 Martin Hepperle
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2018 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2016-2019 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This file is part of Octave.
 ##

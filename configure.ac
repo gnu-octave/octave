@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993-2018 John W. Eaton
+dnl Copyright (C) 1993-2019 John W. Eaton
 ###
 ### This file is part of Octave.
 ###
@@ -39,7 +39,7 @@ OCTAVE_PATCH_VERSION=0
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2018 John W. Eaton and others."
+OCTAVE_COPYRIGHT="Copyright (C) 2018-2019 John W. Eaton and others."
 
 OCTAVE_RELEASE_DATE="2018-12-20"
 

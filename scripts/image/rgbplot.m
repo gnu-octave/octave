@@ -1,5 +1,5 @@
-## Copyright (C) 2012-2018 Rik Wehbring
-## Copyright (C) 2012-2018 Carnë Draug
+## Copyright (C) 2012-2019 Rik Wehbring
+## Copyright (C) 2012-2019 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

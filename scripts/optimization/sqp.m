@@ -1,5 +1,5 @@
-## Copyright (C) 2005-2018 John W. Eaton
-## Copyright (C) 2013-2018 Arun Giridhar
+## Copyright (C) 2005-2019 John W. Eaton
+## Copyright (C) 2013-2019 Arun Giridhar
 ##
 ## This file is part of Octave.
 ##

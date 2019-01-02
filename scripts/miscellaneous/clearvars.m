@@ -1,4 +1,4 @@
-## Copyright (C) 2018 Rik Wehbring
+## Copyright (C) 2018-2019 Rik Wehbring
 ## Copyright (C) 2013 David Turner
 ##
 ## This file is part of Octave.

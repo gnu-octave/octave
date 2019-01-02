@@ -1,4 +1,4 @@
-## Copyright (C) 2018 JuanPi Carbajal
+## Copyright (C) 2018-2019 JuanPi Carbajal
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
-## Copyright (C) 2001-2018 David Billinghurst
-## Copyright (C) 2001-2018 Paul Kienzle
-## Copyright (C) 2003-2018 Jaakko Ruohio
+## Copyright (C) 2001-2019 David Billinghurst
+## Copyright (C) 2001-2019 Paul Kienzle
+## Copyright (C) 2003-2019 Jaakko Ruohio
 ##
 ## This file is part of Octave.
 ##

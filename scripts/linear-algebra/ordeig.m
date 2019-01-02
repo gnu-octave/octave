@@ -1,5 +1,5 @@
-## Copyright (C) 2018 Marco Caliari
-## Copyright (C) 2018 Sébastien Villemot <sebastien@debian.org>
+## Copyright (C) 2018-2019 Marco Caliari
+## Copyright (C) 2018-2019 Sébastien Villemot <sebastien@debian.org>
 ##
 ## This file is part of Octave.
 ##

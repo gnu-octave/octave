@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2018 Vytautas Jančauskas
+## Copyright (C) 2013-2019 Vytautas Jančauskas
 ##
 ## This file is part of Octave.
 ##

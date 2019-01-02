@@ -224,13 +224,16 @@ public:
 
   scaler& operator = (const scaler& s)
   {
-    if (rep)
+    if (&s != this)
       {
-        delete rep;
-        rep = nullptr;
-      }
+        if (rep)
+          {
+            delete rep;
+            rep = nullptr;
+          }
 
-    rep = s.rep->clone ();
+        rep = s.rep->clone ();
+      }
 
     return *this;
   }
@@ -1821,22 +1824,18 @@ protected:
     if (! is_ok)
       error ("set: new children must be a permutation of existing children");
 
-    if (is_ok)
-      {
-        Matrix tmp = new_kids_column;
+    Matrix tmp = new_kids_column;
 
-        if (add_hidden)
-          tmp.stack (get_hidden ());
+    if (add_hidden)
+      tmp.stack (get_hidden ());
 
-        children_list.clear ();
+    children_list.clear ();
 
-        // Don't use do_init_children here, as that reverses the
-        // order of the list, and we don't want to do that if setting
-        // the child list directly.
-
-        for (octave_idx_type i = 0; i < tmp.numel (); i++)
-          children_list.push_back (tmp.xelem (i));
-      }
+    // Don't use do_init_children here, as that reverses the
+    // order of the list, and we don't want to do that if setting
+    // the child list directly.
+    for (octave_idx_type i = 0; i < tmp.numel (); i++)
+      children_list.push_back (tmp.xelem (i));
 
     return is_ok;
   }

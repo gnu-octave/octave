@@ -171,13 +171,6 @@ octave_get_sig_number (const char *signame, int *signum)
       return true;
 #endif
     }
-  else if (! strcmp (signame, "SIGINT"))
-    {
-#if defined (SIGINT)
-      *signum = SIGINT;
-      return true;
-#endif
-    }
   else if (! strcmp (signame, "SIGIOT"))
     {
 #if defined (SIGIOT)

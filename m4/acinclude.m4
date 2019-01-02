@@ -2788,6 +2788,29 @@ AC_DEFUN([OCTAVE_LLVM_IRBUILDER_API], [
   fi
 ])
 dnl
+dnl Check for llvm::createAlwaysInlinerPass
+dnl
+AC_DEFUN([OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS], [
+  AC_CACHE_CHECK([check if llvm::createAlwaysInlinerPass exists],
+    [octave_cv_llvm_has_createalwaysinlinerpass],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Transforms/IPO.h>
+          ]], [[
+          llvm::Pass *p;
+          p = llvm::createAlwaysInlinerPass ();
+        ]])],
+        octave_cv_llvm_has_createalwaysinlinerpass=yes,
+        octave_cv_llvm_has_createalwaysinlinerpass=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_llvm_has_createalwaysinlinerpass = yes; then
+    AC_DEFINE(LLVM_HAS_CREATEALWAYSINLINERPASS, 1,
+      [Define to 1 if llvm::createAlwaysInlinerPass exists.])
+  fi
+])
+dnl
 dnl OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
 dnl
 dnl Set variables related to Fortran symbol names (append underscore,

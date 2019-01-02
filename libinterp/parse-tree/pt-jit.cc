@@ -2421,8 +2421,12 @@ namespace octave
     jit::PassManager *module_pass_manager = new jit::PassManager ();
     jit::FunctionPassManager *pass_manager = new jit::FunctionPassManager (m_module);
 
+#if defined (LLVM_HAS_CREATEALWAYSINLINERPASS)
+    // This pass has been removed from LLVM's C++ API after 3.9.0
+    // FIXME: Provide a meaningful replacement instead of simply skipping it?
     module_pass_manager->add (llvm::createAlwaysInlinerPass ());
-
+#endif
+    
     // In 3.6, a pass was inserted in the pipeline to make the DataLayout accessible:
     //    MyPassManager->add(new DataLayoutPass(MyTargetMachine->getDataLayout()));
     // In 3.7, you don’t need a pass, you set the DataLayout on the Module:

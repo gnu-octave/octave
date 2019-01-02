@@ -388,7 +388,7 @@ These guidelines also appear in the automake manual.
 
 ################################################################################
 
-Copyright (C) 2009-2018 John W. Eaton
+Copyright (C) 2009-2019 John W. Eaton
 
 This file is part of Octave.
 

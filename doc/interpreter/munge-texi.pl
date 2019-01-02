@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-## Copyright (C) 2012-2018 Rik Wehbring
+## Copyright (C) 2012-2019 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##

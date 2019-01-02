@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2018 David Bateman
+Copyright (C) 2005-2019 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.

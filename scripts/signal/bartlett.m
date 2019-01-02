@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2018 Andreas Weingessel
+## Copyright (C) 1995-2019 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##

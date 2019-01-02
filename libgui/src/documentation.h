@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2018 Torsten <mttl@maibox.org>
+Copyright (C) 2018-2019 Torsten <mttl@maibox.org>
 
 This file is part of Octave.
 

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 1996-2018 John W. Eaton
-Copyright (C) 2016-2018 Barbara Lócsi
+Copyright (C) 1996-2019 John W. Eaton
+Copyright (C) 2016-2019 Barbara Lócsi
 
 This file is part of Octave.
 

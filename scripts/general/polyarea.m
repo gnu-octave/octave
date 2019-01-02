@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2018 David M. Doolin
+## Copyright (C) 1999-2019 David M. Doolin
 ##
 ## This file is part of Octave.
 ##

@@ -1,5 +1,5 @@
-## Copyright (C) 2018 Rik Wehbring
-## Copyright (C) 2001-2018 Paul Kienzle
+## Copyright (C) 2018-2019 Rik Wehbring
+## Copyright (C) 2001-2019 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##

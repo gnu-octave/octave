@@ -1,5 +1,5 @@
-## Copyright (C) 1999-2018 Kai Habel
-## Copyright (C) 2016-2018 Carnë Draug
+## Copyright (C) 1999-2019 Kai Habel
+## Copyright (C) 2016-2019 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

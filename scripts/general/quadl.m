@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2018 Walter Gautschi
+## Copyright (C) 1998-2019 Walter Gautschi
 ##
 ## This file is part of Octave.
 ##

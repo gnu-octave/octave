@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2018 Bill Denney
+## Copyright (C) 2005-2019 Bill Denney
 ##
 ## This file is part of Octave.
 ##

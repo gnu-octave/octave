@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 1996-2018 John W. Eaton
-Copyright (C) 2015-2018 Lachlan Andrew, Monash University
+Copyright (C) 1996-2019 John W. Eaton
+Copyright (C) 2015-2019 Lachlan Andrew, Monash University
 
 This file is part of Octave.
 

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2016-2018 Daniel J. Sebald
+Copyright (C) 2016-2019 Daniel J. Sebald
 
 This file is part of Octave.
 

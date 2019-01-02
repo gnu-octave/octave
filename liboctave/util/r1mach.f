@@ -1,4 +1,4 @@
-c Copyright (C) 2008-2018 David Bateman
+c Copyright (C) 2008-2019 David Bateman
 c
 c This file is part of Octave.
 c

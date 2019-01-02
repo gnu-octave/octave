@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2018 Teemu Ikonen
+## Copyright (C) 2000-2019 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2013-2018 Ben Abbott
+## Copyright (C) 2013-2019 Ben Abbott
 ## Copyright (C) 2007 Muthiah Annamalai
 ##
 ## This file is part of Octave.

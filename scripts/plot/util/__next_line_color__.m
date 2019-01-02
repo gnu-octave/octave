@@ -1,5 +1,5 @@
-## Copyright (C) 2013-2018 Carl Osterwisch
-## Copyright (C) 2007-2018 John W. Eaton
+## Copyright (C) 2013-2019 Carl Osterwisch
+## Copyright (C) 2007-2019 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

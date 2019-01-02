@@ -1,8 +1,8 @@
-## Copyright (C) 2016-2018 Carlo de Falco
-## Copyright (C) 2016-2018 Francesco Faccio <francesco.faccio@mail.polimi.it>
-## Copyright (C) 2014-2018 Jacopo Corno <jacopo.corno@gmail.com>
-## Copyright (C) 2013-2018 Roberto Porcu' <roberto.porcu@polimi.it>
-## Copyright (C) 2006-2018 Thomas Treichl <treichl@users.sourceforge.net>
+## Copyright (C) 2016-2019 Carlo de Falco
+## Copyright (C) 2016-2019 Francesco Faccio <francesco.faccio@mail.polimi.it>
+## Copyright (C) 2014-2019 Jacopo Corno <jacopo.corno@gmail.com>
+## Copyright (C) 2013-2019 Roberto Porcu' <roberto.porcu@polimi.it>
+## Copyright (C) 2006-2019 Thomas Treichl <treichl@users.sourceforge.net>
 ##
 ## This file is part of Octave.
 ##

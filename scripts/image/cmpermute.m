@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2018 Rik Wehbring
+## Copyright (C) 2012-2019 Rik Wehbring
 ## Copyright (C) 2004 Josep Mones i Teixidor
 ##
 ## This file is part of Octave.

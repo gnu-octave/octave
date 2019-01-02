@@ -1,4 +1,4 @@
-## Copyright (C) 2014-2018 Andreas Weber
+## Copyright (C) 2014-2019 Andreas Weber
 ##
 ## This file is part of Octave.
 ##

@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 1996-2018 John W. Eaton
-Copyright (C) 2015-2018 Olaf Till
+Copyright (C) 1996-2019 John W. Eaton
+Copyright (C) 2015-2019 Olaf Till
 
 This file is part of Octave.
 

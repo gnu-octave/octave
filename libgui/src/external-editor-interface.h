@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2017-2018 Torsten
+Copyright (C) 2017-2019 Torsten
 
 This file is part of Octave.
 

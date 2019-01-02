@@ -1,4 +1,4 @@
-## Copyright (C) 2016-2018 Marco Caliari
+## Copyright (C) 2016-2019 Marco Caliari
 ##
 ## This file is part of Octave.
 ##

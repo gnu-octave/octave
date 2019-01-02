@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2018 Jaroslav Hajek
+## Copyright (C) 2009-2019 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2018 Alois Schloegl
+## Copyright (C) 2004-2019 Alois Schloegl
 ##
 ## This file is part of Octave.
 ##

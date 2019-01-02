@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2018 Michael Weitzel
+Copyright (C) 2007-2019 Michael Weitzel
 
 This file is part of Octave.
 

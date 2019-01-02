@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2018 Friedrich Leisch
+## Copyright (C) 1995-2019 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##

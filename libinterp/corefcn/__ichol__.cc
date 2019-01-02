@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2014-2018 Eduardo Ramos Fernández <eduradical951@gmail.com>
-Copyright (C) 2013-2018 Kai T. Ohlhus <k.ohlhus@gmail.com>
+Copyright (C) 2014-2019 Eduardo Ramos Fernández <eduradical951@gmail.com>
+Copyright (C) 2013-2019 Kai T. Ohlhus <k.ohlhus@gmail.com>
 
 This file is part of Octave.
 

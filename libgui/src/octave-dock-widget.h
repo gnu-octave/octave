@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012-2018 Richard Crozier
+Copyright (C) 2012-2019 Richard Crozier
 
 This file is part of Octave.
 

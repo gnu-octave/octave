@@ -1,5 +1,5 @@
-## Copyright (C) 2018 Stefan Schlögl
-## Copyright (C) 2018 Michele Ginesi
+## Copyright (C) 2018-2019 Stefan Schlögl
+## Copyright (C) 2018-2019 Michele Ginesi
 ##
 ## This file is part of Octave.
 ##

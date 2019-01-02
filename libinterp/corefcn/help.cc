@@ -630,7 +630,7 @@ namespace octave
             // skip newline characters
             while (file
                    && (c = file.get ()) != std::istream::traits_type::eof ()
-                   && c == '\n' && c == '\r')
+                   && (c == '\n' || c == '\r'))
               ; // skip text
 
             file.unget ();

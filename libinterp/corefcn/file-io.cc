@@ -433,13 +433,15 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
         {
           FILE *fptr = std::fopen (fname.c_str (), mode.c_str ());
 
-          int fd = fileno (fptr);
-
-          gzFile gzf = ::gzdopen (fd, mode.c_str ());
-
           if (fptr)
-            retval = octave_zstdiostream::create (fname, gzf, fd,
-                                                  md, flt_fmt);
+            {
+              int fd = fileno (fptr);
+
+              gzFile gzf = ::gzdopen (fd, mode.c_str ());
+
+              retval = octave_zstdiostream::create (fname, gzf, fd,
+                                                    md, flt_fmt);
+            }
           else
             retval.error (std::strerror (errno));
         }

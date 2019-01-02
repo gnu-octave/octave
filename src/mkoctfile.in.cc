@@ -214,7 +214,7 @@ initialize (void)
 
   std::string DEFAULT_LFLAGS;
 
-#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
+#if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
 
   // We'll be linking the files we compile with -loctinterp and
   // -loctave, so we need to know where to find them.

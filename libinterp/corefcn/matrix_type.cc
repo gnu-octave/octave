@@ -266,7 +266,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
           if (nargin == 3
               && (str_typ == "upper" || str_typ == "lower"))
             {
-              const ColumnVector perm = args(2).vector_value ("matrix_type: Invalid permutation vector PERM");
+              const ColumnVector perm = args(2).xvector_value ("matrix_type: Invalid permutation vector PERM");
 
               octave_idx_type len = perm.numel ();
               dim_vector dv = args(0).dims ();
@@ -403,7 +403,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 
           if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
             {
-              const ColumnVector perm = args(2).vector_value ("matrix_type: Invalid permutation vector PERM");
+              const ColumnVector perm = args(2).xvector_value ("matrix_type: Invalid permutation vector PERM");
 
               octave_idx_type len = perm.numel ();
               dim_vector dv = args(0).dims ();

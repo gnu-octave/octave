@@ -108,8 +108,6 @@ namespace QtHandles
     void updateFigureToolBarAndMenuBar (void);
     void set_geometry (QRect r);
 
-    static void updateBoundingBoxHelper (void*);
-
     void close_figure_callback (void);
 
     void enableMouseTracking (void);

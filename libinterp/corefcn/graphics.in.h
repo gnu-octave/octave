@@ -3091,6 +3091,8 @@ public:
     void set_outerposition (const octave_value& val,
                             bool do_notify_toolkit = true);
 
+    Matrix bbox2position (const Matrix& bbox) const;
+
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
@@ -3889,7 +3891,7 @@ public:
       update_ytick ();
       update_ztick ();
     }
-    
+
     void update_xtick (void)
     {
       calc_ticks_and_lims (xlim, xtick, xminortickvalues, xlimmode.is ("auto"),
@@ -6163,8 +6165,8 @@ public:
 
   static graphics_event
   create_set_event (const graphics_handle& h, const std::string& name,
-                    const octave_value& value,
-                    bool notify_toolkit = true);
+                    const octave_value& value, bool notify_toolkit = true,
+                    bool redraw_figure = false);
 private:
 
   std::shared_ptr <base_graphics_event> rep;
@@ -6357,10 +6359,11 @@ public:
   }
 
   static void post_set (const graphics_handle& h, const std::string& name,
-                        const octave_value& value, bool notify_toolkit = true)
+                        const octave_value& value, bool notify_toolkit = true,
+                        bool redraw_figure = false)
   {
     if (instance_ok ())
-      instance->do_post_set (h, name, value, notify_toolkit);
+      instance->do_post_set (h, name, value, notify_toolkit, redraw_figure);
   }
 
   static int process_events (void)
@@ -6552,7 +6555,8 @@ private:
   void do_post_function (graphics_event::event_fcn fcn, void *fcn_data);
 
   void do_post_set (const graphics_handle& h, const std::string& name,
-                    const octave_value& value, bool notify_toolkit = true);
+                    const octave_value& value, bool notify_toolkit = true,
+                    bool redraw_figure = false);
 
   int do_process_events (bool force = false);
 

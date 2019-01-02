@@ -295,12 +295,12 @@ namespace QtHandles
         m_blockUpdates = false;
       }
   }
-  
+
   void
   Figure::set_geometry (QRect r)
   {
     QMainWindow *win = qWidget<QMainWindow> ();
-    
+
     if (! m_resizable)
       {
         win->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -308,7 +308,7 @@ namespace QtHandles
       }
 
     win->setGeometry (r);
-    
+
     if (! m_resizable)
       {
         win->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -328,10 +328,7 @@ namespace QtHandles
     Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)
-      {
-        canvas->redraw ();
-        //canvas->setMouseMode (RotateMode);
-      }
+      canvas->redraw ();
 
     foreach (QFrame *frame,
              qWidget<QWidget> ()->findChildren<QFrame*> ())
@@ -596,34 +593,15 @@ namespace QtHandles
   };
 
   void
-  Figure::updateBoundingBoxHelper (void *data)
-  {
-    gh_manager::auto_lock lock;
-
-    UpdateBoundingBoxData *d = reinterpret_cast<UpdateBoundingBoxData *> (data);
-    graphics_object go = gh_manager::get_object (d->m_handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        fp.set_boundingbox (d->m_bbox, d->m_internal, false);
-
-        if (d->m_internal)
-          emit d->m_figure->asyncUpdate ();
-      }
-
-    delete d;
-  }
-
-  void
   Figure::updateBoundingBox (bool internal, int flags)
   {
     QWidget *win = qWidget<QWidget> ();
     Matrix bb (1, 4);
+    std::string prop;
 
     if (internal)
       {
+        prop = "position";
         QRect r = m_innerRect;
 
         if (flags & UpdateBoundingBoxPosition)
@@ -645,6 +623,7 @@ namespace QtHandles
       }
     else
       {
+        prop = "outerposition";
         QRect r = m_outerRect;
 
         if (flags & UpdateBoundingBoxPosition)
@@ -665,14 +644,10 @@ namespace QtHandles
           return;
       }
 
-    UpdateBoundingBoxData *d = new UpdateBoundingBoxData ();
+    figure::properties& fp = properties<figure> ();
 
-    d->m_bbox = bb;
-    d->m_internal = internal;
-    d->m_handle = m_handle;
-    d->m_figure = this;
-
-    gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
+    gh_manager::post_set (m_handle, prop, fp.bbox2position (bb), false,
+                          prop == "position");
   }
 
   void

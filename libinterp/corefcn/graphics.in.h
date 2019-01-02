@@ -3991,6 +3991,7 @@ public:
 
     void update_titlefontsizemultiplier (void)
     {
+      // update_font handles title and axis labels
       update_font ("fontsize");
       sync_positions ();
     }
@@ -4003,6 +4004,7 @@ public:
 
     void update_titlefontweight (void)
     {
+      // update_font handles title and axis labels
       update_font ("fontweight");
       sync_positions ();
     }

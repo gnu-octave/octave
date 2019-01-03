@@ -533,8 +533,7 @@ public:
       {
         mwSize sz = sizeof (mxChar) * (strlen (str) + 1);
         retval = static_cast<char *> (mxArray::malloc (sz));
-        if (! retval)
-          strcpy (retval, str);
+        strcpy (retval, str);
       }
 
     return retval;

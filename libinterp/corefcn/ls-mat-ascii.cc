@@ -96,7 +96,7 @@ get_mat_data_input_line (std::istream& is)
             }
         }
     }
-  while (! (have_data || is.eof ()));
+  while (! (have_data || is.eof () || is.fail ()));
 
   return retval;
 }

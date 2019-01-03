@@ -422,9 +422,9 @@ colamd, csymamd, amd, colamd, symamd, and other related orderings.
 
       if (nel_User_knobs > 0)
         knobs[CCOLAMD_DENSE_ROW] = User_knobs(0);
-      if (nel_User_knobs > 0)
-        knobs[CCOLAMD_AGGRESSIVE] = User_knobs(1);
       if (nel_User_knobs > 1)
+        knobs[CCOLAMD_AGGRESSIVE] = User_knobs(1);
+      if (nel_User_knobs > 2)
         spumoni = static_cast<int> (User_knobs(2));
 
       // print knob settings if spumoni is set

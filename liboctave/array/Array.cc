@@ -2037,7 +2037,7 @@ Array<T>::issorted (sortmode mode) const
   octave_idx_type n = numel ();
 
   if (n <= 1)
-    return mode ? mode : ASCENDING;
+    return (mode == UNSORTED) ? ASCENDING : mode;
 
   if (mode == UNSORTED)
     {
@@ -2051,13 +2051,10 @@ Array<T>::issorted (sortmode mode) const
         mode = ASCENDING;
     }
 
-  if (mode != UNSORTED)
-    {
-      lsort.set_compare (safe_comparator (mode, *this, false));
+  lsort.set_compare (safe_comparator (mode, *this, false));
 
-      if (! lsort.issorted (data (), n))
-        mode = UNSORTED;
-    }
+  if (! lsort.issorted (data (), n))
+    mode = UNSORTED;
 
   return mode;
 
@@ -2091,7 +2088,7 @@ Array<T>::is_sorted_rows (sortmode mode) const
   octave_idx_type c = cols ();
 
   if (r <= 1 || c == 0)
-    return mode ? mode : ASCENDING;
+    return (mode == UNSORTED) ? ASCENDING : mode;
 
   if (mode == UNSORTED)
     {

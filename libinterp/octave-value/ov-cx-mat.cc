@@ -410,7 +410,7 @@ octave_complex_matrix::load_ascii (std::istream& is)
 }
 
 bool
-octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
+octave_complex_matrix::save_binary (std::ostream& os, bool save_as_floats)
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 1)

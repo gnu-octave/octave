@@ -176,7 +176,7 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
 
 bool
 octave_float_diag_matrix::save_binary (std::ostream& os,
-                                       bool& /* save_as_floats*/)
+                                       bool /* save_as_floats*/)
 {
 
   int32_t r = matrix.rows ();

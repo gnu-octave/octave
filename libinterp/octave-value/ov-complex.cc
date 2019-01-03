@@ -324,7 +324,7 @@ octave_complex::load_ascii (std::istream& is)
 }
 
 bool
-octave_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
+octave_complex::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
   char tmp = static_cast<char> (LS_DOUBLE);
   os.write (reinterpret_cast<char *> (&tmp), 1);

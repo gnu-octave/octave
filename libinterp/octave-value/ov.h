@@ -1269,7 +1269,7 @@ public:
 
   bool load_ascii (std::istream& is) { return rep->load_ascii (is); }
 
-  bool save_binary (std::ostream& os, bool& save_as_floats)
+  bool save_binary (std::ostream& os, bool save_as_floats)
   { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,

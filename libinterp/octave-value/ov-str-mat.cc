@@ -456,7 +456,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
 bool
 octave_char_matrix_str::save_binary (std::ostream& os,
-                                     bool& /* save_as_floats */)
+                                     bool /* save_as_floats */)
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 1)

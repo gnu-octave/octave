@@ -791,7 +791,7 @@ octave_struct::load_ascii (std::istream& is)
 }
 
 bool
-octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
+octave_struct::save_binary (std::ostream& os, bool save_as_floats)
 {
   octave_map m = map_value ();
 
@@ -1451,7 +1451,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
 }
 
 bool
-octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
+octave_scalar_struct::save_binary (std::ostream& os, bool save_as_floats)
 {
   octave_map m = map_value ();
 

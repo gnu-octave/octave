@@ -325,7 +325,7 @@ octave_base_int_matrix<T>::load_ascii (std::istream& is)
 
 template <typename T>
 bool
-octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
+octave_base_int_matrix<T>::save_binary (std::ostream& os, bool)
 {
   dim_vector dv = this->dims ();
   if (dv.ndims () < 1)
@@ -691,7 +691,7 @@ octave_base_int_scalar<T>::load_ascii (std::istream& is)
 
 template <typename T>
 bool
-octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
+octave_base_int_scalar<T>::save_binary (std::ostream& os, bool)
 {
   os.write (reinterpret_cast<char *> (&(this->scalar)), this->byte_size ());
   return true;

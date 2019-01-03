@@ -535,7 +535,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 }
 
 bool
-octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
+octave_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
 {
   if (nm == anonymous)
     {

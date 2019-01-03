@@ -2339,7 +2339,7 @@ octave_java::load_ascii (std::istream& /* is */)
 }
 
 bool
-octave_java::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
+octave_java::save_binary (std::ostream& /* os */, bool /* save_as_floats */)
 {
   warning ("save: unable to save java objects, skipping");
 

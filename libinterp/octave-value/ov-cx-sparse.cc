@@ -219,7 +219,7 @@ octave_sparse_complex_matrix::as_double (void) const
 
 bool
 octave_sparse_complex_matrix::save_binary (std::ostream& os,
-                                           bool& save_as_floats)
+                                           bool save_as_floats)
 {
   dim_vector dv = this->dims ();
   if (dv.ndims () < 1)

@@ -368,7 +368,7 @@ octave_perm_matrix::load_ascii (std::istream& is)
 }
 
 bool
-octave_perm_matrix::save_binary (std::ostream& os, bool&)
+octave_perm_matrix::save_binary (std::ostream& os, bool)
 {
 
   int32_t sz = matrix.rows ();

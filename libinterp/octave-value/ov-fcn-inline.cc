@@ -201,7 +201,7 @@ octave_fcn_inline::load_ascii (std::istream& is)
 }
 
 bool
-octave_fcn_inline::save_binary (std::ostream& os, bool&)
+octave_fcn_inline::save_binary (std::ostream& os, bool)
 {
   int32_t tmp = ifargs.numel ();
   os.write (reinterpret_cast<char *> (&tmp), 4);

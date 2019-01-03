@@ -887,7 +887,7 @@ octave_cell::load_ascii (std::istream& is)
 }
 
 bool
-octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
+octave_cell::save_binary (std::ostream& os, bool save_as_floats)
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 1)

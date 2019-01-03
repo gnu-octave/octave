@@ -941,7 +941,7 @@ octave_base_value::load_ascii (std::istream&)
 }
 
 bool
-octave_base_value::save_binary (std::ostream&, bool&)
+octave_base_value::save_binary (std::ostream&, bool)
 {
   err_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
 }

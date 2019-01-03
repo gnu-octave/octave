@@ -271,7 +271,7 @@ octave_float_complex::load_ascii (std::istream& is)
 }
 
 bool
-octave_float_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
+octave_float_complex::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
   char tmp = static_cast<char> (LS_FLOAT);
   os.write (reinterpret_cast<char *> (&tmp), 1);

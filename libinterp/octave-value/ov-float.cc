@@ -215,7 +215,7 @@ octave_float_scalar::load_ascii (std::istream& is)
 }
 
 bool
-octave_float_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
+octave_float_scalar::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
   char tmp = LS_FLOAT;
   os.write (reinterpret_cast<char *> (&tmp), 1);

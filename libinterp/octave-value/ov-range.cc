@@ -566,7 +566,7 @@ octave_range::load_ascii (std::istream& is)
 }
 
 bool
-octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
+octave_range::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
   char tmp = LS_DOUBLE;
   os.write (reinterpret_cast<char *> (&tmp), 1);

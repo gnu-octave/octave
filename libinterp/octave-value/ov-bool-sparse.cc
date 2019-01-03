@@ -202,7 +202,7 @@ octave_sparse_bool_matrix::as_double (void) const
 }
 
 bool
-octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
+octave_sparse_bool_matrix::save_binary (std::ostream& os, bool)
 {
   dim_vector dv = this->dims ();
   if (dv.ndims () < 1)

@@ -192,11 +192,8 @@ annotation_dialog::set_gui_props ()
               ui->sb_width->setValue (position(2));
               ui->sb_height->setValue (position(3));
             }
-          else
-            {
-              ui->sb_width->setValue (position(2));
-              ui->sb_height->setValue (position(3));
-            }
+          // FIXME: Should there be an else branch here?
+          // In annotation.m "textbox" is forced to have a 4-elem vector.
         }
       else if (name == "string")
         {

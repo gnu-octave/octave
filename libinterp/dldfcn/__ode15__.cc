@@ -1132,14 +1132,12 @@ Undocumented internal function.
     print_usage ();
 
   // Check odefun
-  octave_function *ida_fcn = nullptr;
-
   octave_value f_arg = args(0);
 
   if (! f_arg.is_function_handle ())
     error ("__ode15__: odefun must be a function handle");
 
-  ida_fcn = f_arg.function_value ();
+  octave_function *ida_fcn = f_arg.function_value ();
 
   // Check input tspan
   ColumnVector tspan
@@ -1151,7 +1149,7 @@ Undocumented internal function.
 
   if (numt < 2)
     error ("__ode15__: TRANGE must contain at least 2 elements");
-  else if (! tspan.issorted () || tspan(0) == tspan(numt - 1))
+  else if (tspan.issorted () == UNSORTED || tspan(0) == tspan(numt - 1))
     error ("__ode15__: TRANGE must be strictly monotonic");
 
   // input y0 and yp0

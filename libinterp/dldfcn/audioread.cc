@@ -346,7 +346,6 @@ Comment.
 
   info.channels = audio.columns ();
   info.samplerate = samplerate;
-  info.channels = audio.cols ();
   info.format |= extension_to_format (ext);
 
   std::string title = "";

@@ -152,11 +152,14 @@ namespace octave
 
     opengl_texture& operator = (const opengl_texture& tx)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (&tx != this)
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-      rep = tx.rep;
-      rep->count++;
+          rep = tx.rep;
+          rep->count++;
+        }
 
       return *this;
     }
@@ -429,11 +432,14 @@ namespace octave
 
     vertex_data& operator = (const vertex_data& v)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (&v != this)
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-      rep = v.rep;
-      rep->count++;
+          rep = v.rep;
+          rep->count++;
+        }
 
       return *this;
     }

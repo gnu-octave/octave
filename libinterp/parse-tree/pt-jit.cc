@@ -1373,11 +1373,13 @@ namespace octave
 
         for (size_t i = 0; i < m_argument_vec.size (); ++i)
           {
-            // LLVM <= 3.6
-            // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
+#if defined (LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_REQUIRES_TYPE)
             // LLVM >= 3.7
             llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);
-
+#else
+            // LLVM <= 3.6
+            llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
+#endif
             m_arguments[m_argument_vec[i].first] = loaded_arg;
           }
 

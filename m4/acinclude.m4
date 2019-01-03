@@ -2811,6 +2811,37 @@ AC_DEFUN([OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS], [
   fi
 ])
 dnl
+dnl Check llvm::IRBuilder::CreateConstInBoundsGEP1_32 API
+dbl
+AC_DEFUN([OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API], [
+  AC_CACHE_CHECK([check if llvm::IRBuilder::CreateConstInBoundsGEP1_32 requires a type argument],
+    [octave_cv_llvm_irbuilder_createconstinboundsgep1_32_requires_type],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+#if defined (HAVE_LLVM_IR_IRBUILDER_H)
+          #include <llvm/IR/IRBuilder.h>
+#elif defined (HAVE_LLVM_SUPPORT_IRBUILDER_H)
+          #include <llvm/Support/IRBuilder.h>
+#else
+          #include <llvm/IRBuilder.h>
+#endif
+          ]], [[
+          llvm::LLVMContext c;
+          llvm::IRBuilder<>  irb (c);
+          llvm::Value *v;
+          v = irb.CreateConstInBoundsGEP1_32 ((llvm::Value *) nullptr, 0);
+        ]])],
+        octave_cv_llvm_irbuilder_createconstinboundsgep1_32_requires_type=no,
+        octave_cv_llvm_irbuilder_createconstinboundsgep1_32_requires_type=yes)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_llvm_irbuilder_createconstinboundsgep1_32_requires_type = yes; then
+    AC_DEFINE(LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_REQUIRES_TYPE, 1,
+      [Define to 1 if llvm::IRBuilder::CreateConstInBoundsGEP1_32 requires a type argument.])
+  fi
+])
+dnl
 dnl OCTAVE_CHECK_FORTRAN_SYMBOL_AND_CALLING_CONVENTIONS
 dnl
 dnl Set variables related to Fortran symbol names (append underscore,

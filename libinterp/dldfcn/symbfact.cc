@@ -161,7 +161,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   else
     err_wrong_type_arg ("symbfact", args(0));
 
-  octave_idx_type coletree = false;
+  bool coletree = false;
   octave_idx_type n = A->nrow;
 
   if (nargin > 1)
@@ -210,7 +210,7 @@ Cholesky@tie{}factorization as determined by @var{typ}.
   CHOLMOD_NAME(start) (cm);
 
   double spu = octave_sparse_params::get_key ("spumoni");
-  if (spu == 0.)
+  if (spu == 0.0)
     {
       cm->print = -1;
       SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, nullptr);

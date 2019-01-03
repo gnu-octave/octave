@@ -65,7 +65,7 @@ plus_or_minus (MSparse<T>& a, const MSparse<T>& b, OP op, const char *op_name)
               ja_lt_max= ja < ja_max;
             }
           else if ((! ja_lt_max)
-                   || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+                   || (b.ridx (jb) < a.ridx (ja)))
             {
               r.ridx (jx) = b.ridx (jb);
               r.data (jx) = op (0., b.data (jb));
@@ -331,7 +331,7 @@ plus_or_minus (const MSparse<T>& a, const MSparse<T>& b, OP op,
                   ja_lt_max= ja < ja_max;
                 }
               else if ((! ja_lt_max)
-                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+                       || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.ridx (jx) = b.ridx (jb);
                   r.data (jx) = op (0.,  b.data (jb));
@@ -448,7 +448,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
                   ja++; ja_lt_max= ja < ja_max;
                 }
               else if ((! ja_lt_max)
-                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+                       || (b.ridx (jb) < a.ridx (ja)))
                 {
                   jb++; jb_lt_max= jb < jb_max;
                 }
@@ -567,7 +567,7 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
                   ja++; ja_lt_max= ja < ja_max;
                 }
               else if ((! ja_lt_max)
-                       || (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
+                       || (b.ridx (jb) < a.ridx (ja)))
                 {
                   r.elem (b.ridx (jb),i) = Zero / b.data (jb);
                   jb++; jb_lt_max= jb < jb_max;

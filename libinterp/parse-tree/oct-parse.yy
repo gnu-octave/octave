@@ -2518,7 +2518,7 @@ namespace octave
       = new tree_colon_expression (base, limit, incr, l, c);
 
     if (base->is_constant () && limit->is_constant ()
-        && (! incr || (incr && incr->is_constant ())))
+        && (! incr || incr->is_constant ()))
       {
         try
           {
@@ -3299,15 +3299,13 @@ namespace octave
                               tree_statement *end_fcn_stmt,
                               comment_list *lc)
   {
-    tree_function_def *retval = nullptr;
-
     int l = fcn_tok->line ();
     int c = fcn_tok->column ();
 
     octave_user_function *tmp_fcn
       = start_function (id, param_list, body, end_fcn_stmt);
 
-    retval = finish_function (ret_list, tmp_fcn, lc, l, c);
+    tree_function_def *retval = finish_function (ret_list, tmp_fcn, lc, l, c);
 
     recover_from_parsing_function ();
 

@@ -2929,7 +2929,7 @@ The original variable value is restored when exiting the function.
 #else
   octave_unused_parameter (args);
   octave_unused_parameter (nargout);
-  warn_disabled_feature ("jit_enable", "JIT");
+  warn_disabled_feature ("jit_startcnt", "JIT");
   return ovl ();
 #endif
 }

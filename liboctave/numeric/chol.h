@@ -39,7 +39,7 @@ namespace octave
       typedef typename T::column_vector_type VT;
       typedef typename T::real_elt_type COND_T;
 
-      chol (void) : chol_mat (), xrcond (0) { }
+      chol (void) : chol_mat (), xrcond (0), is_upper (true) { }
 
       chol (const T& a, bool upper = true, bool calc_cond = false)
         : chol_mat (), xrcond (0)
@@ -55,7 +55,7 @@ namespace octave
       }
 
       chol (const chol& a)
-        : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
+        : chol_mat (a.chol_mat), xrcond (a.xrcond), is_upper (a.is_upper) { }
 
       chol& operator = (const chol& a)
       {
@@ -63,6 +63,7 @@ namespace octave
           {
             chol_mat = a.chol_mat;
             xrcond = a.xrcond;
+            is_upper = a.is_upper;
           }
 
         return *this;

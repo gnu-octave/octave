@@ -71,7 +71,7 @@ chol2inv_internal (const Matrix& r, bool is_upper = true)
                                v, n, info
                                F77_CHAR_ARG_LEN (1)));
 
-  // FIXME: Should we check info exit value and possible report an error?
+  // FIXME: Should we check info exit value and possibly report an error?
 
   // If someone thinks of a more graceful way of doing this
   // (or faster for that matter :-)), please let me know!
@@ -119,7 +119,7 @@ chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
                                v, n, info
                                F77_CHAR_ARG_LEN (1)));
 
-  // FIXME: Should we check info exit value and possible report an error?
+  // FIXME: Should we check info exit value and possibly report an error?
 
   // If someone thinks of a more graceful way of doing this (or
   // faster for that matter :-)), please let me know!

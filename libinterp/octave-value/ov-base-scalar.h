@@ -109,7 +109,7 @@ public:
   }
 
   sortmode issorted (sortmode mode = UNSORTED) const
-  { return mode ? mode : ASCENDING; }
+  { return mode == UNSORTED ? ASCENDING : mode; }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
   {
@@ -118,7 +118,7 @@ public:
   }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-  { return mode ? mode : ASCENDING; }
+  { return mode == UNSORTED ? ASCENDING : mode; }
 
   MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const

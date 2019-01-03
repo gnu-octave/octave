@@ -87,10 +87,13 @@ public:
   octave_fields&
   operator = (const octave_fields& o)
   {
-    o.rep->count++;
-    if (--rep->count == 0)
-      delete rep;
-    rep = o.rep;
+    if (&o != this)
+      {
+        o.rep->count++;
+        if (--rep->count == 0)
+          delete rep;
+        rep = o.rep;
+      }
 
     return *this;
   }

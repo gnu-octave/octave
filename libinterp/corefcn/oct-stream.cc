@@ -4607,7 +4607,6 @@ namespace octave
     bool all_char_conv = fmt_list.all_character_conversions ();
 
     Matrix mval;
-    double *data = nullptr;
     octave_idx_type max_size = 0;
     octave_idx_type max_conv = 0;
 
@@ -4665,7 +4664,7 @@ namespace octave
         max_size = 32;
       }
 
-    data = mval.fortran_vec ();
+    double *data = mval.fortran_vec ();
 
     if (isp)
       {

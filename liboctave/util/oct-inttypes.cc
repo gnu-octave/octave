@@ -579,7 +579,7 @@ template <>
 OCTAVE_API octave_uint64
 operator * (const octave_uint64& x, const double& y)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
+  if (y >= 0 && y < octave_uint64::max () && y == octave::math::fix (y))
     return x * octave_uint64 (static_cast<uint64_t> (y));
   else if (y == 0.5)
     return x / octave_uint64 (static_cast<uint64_t> (2));
@@ -614,7 +614,7 @@ template <>
 OCTAVE_API octave_int64
 operator * (const octave_int64& x, const double& y)
 {
-  if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
+  if (fabs (y) < octave_int64::max () && y == octave::math::fix (y))
     return x * octave_int64 (static_cast<int64_t> (y));
   else if (fabs (y) == 0.5)
     return x / octave_int64 (static_cast<uint64_t> (4*y));
@@ -664,7 +664,7 @@ template <>
 OCTAVE_API octave_uint64
 operator / (const octave_uint64& x, const double& y)
 {
-  if (y >= 0 && y < octave_uint64::max () && y == octave::math::round (y))
+  if (y >= 0 && y < octave_uint64::max () && y == octave::math::fix (y))
     return x / octave_uint64 (y);
   else
     return x * (1.0/y);
@@ -674,7 +674,7 @@ template <>
 OCTAVE_API octave_int64
 operator / (const octave_int64& x, const double& y)
 {
-  if (fabs (y) < octave_int64::max () && y == octave::math::round (y))
+  if (fabs (y) < octave_int64::max () && y == octave::math::fix (y))
     return x / octave_int64 (y);
   else
     return x * (1.0/y);
@@ -751,7 +751,7 @@ octave_int<T>
 pow (const octave_int<T>& a, const double& b)
 {
   return ((b >= 0 && b < std::numeric_limits<T>::digits
-           && b == octave::math::round (b))
+           && b == octave::math::fix (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (std::pow (a.double_value (), b)));
 }
@@ -766,7 +766,7 @@ octave_int<T>
 pow (const octave_int<T>& a, const float& b)
 {
   return ((b >= 0 && b < std::numeric_limits<T>::digits
-           && b == octave::math::round (b))
+           && b == octave::math::fix (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (std::pow (a.double_value (),
                                      static_cast<double> (b))));
@@ -784,7 +784,7 @@ octave_int<T>
 powf (const octave_int<T>& a, const float& b)
 {
   return ((b >= 0 && b < std::numeric_limits<T>::digits
-           && b == octave::math::round (b))
+           && b == octave::math::fix (b))
           ? pow (a, octave_int<T> (static_cast<T> (b)))
           : octave_int<T> (std::pow (a.double_value (),
                                      static_cast<double> (b))));

@@ -824,7 +824,7 @@ static bool val_in_table (const Matrix& table, double val)
 
 static bool isargout1 (int nargout, const Matrix& ignored, double k)
 {
-  if (k != octave::math::round (k) || k <= 0)
+  if (k != octave::math::fix (k) || k <= 0)
     error ("isargout: K must be a positive integer");
 
   return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);

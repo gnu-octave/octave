@@ -5615,7 +5615,7 @@ namespace octave
       {
         double dval = val.double_value (true);
 
-        if (dval == math::round (dval) && dval <= limit)
+        if (dval == math::fix (dval) && dval <= limit)
           return true;
       }
 
@@ -5642,7 +5642,7 @@ namespace octave
 
         uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-        if (dval == math::round (dval) && dval >= 0 && dval <= limit)
+        if (dval == math::fix (dval) && dval >= 0 && dval <= limit)
           return true;
       }
 

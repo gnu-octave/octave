@@ -2609,7 +2609,7 @@ dnl
 dnl Check for CallInst::addAttribute API
 dnl
 AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
-  AC_CACHE_CHECK([check LLVM::CallInst::addAttribute arg type is llvm::Attributes],
+  AC_CACHE_CHECK([if llvm::CallInst::addAttribute's arg type is llvm::Attributes],
     [octave_cv_callinst_addattribute_arg_is_attributes],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2641,7 +2641,7 @@ dnl
 dnl Check for Function::addAttribute API
 dnl
 AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API], [
-  AC_CACHE_CHECK([check llvm::Function::addAttribute arg type is llvm::Attributes],
+  AC_CACHE_CHECK([if llvm::Function::addAttribute's arg type is llvm::Attributes],
     [octave_cv_function_addattribute_arg_is_attributes],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2675,7 +2675,7 @@ dnl
 dnl Check for Function::addFnAttr API
 dnl
 AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
-  AC_CACHE_CHECK([check LLVM::Function::addFnAttr arg type is llvm::Attributes],
+  AC_CACHE_CHECK([if llvm::Function::addFnAttr's arg type is llvm::Attributes],
     [octave_cv_function_addfnattr_arg_is_attributes],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2704,7 +2704,7 @@ dnl
 dnl Check for legacy::PassManager API
 dnl
 AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
-  AC_CACHE_CHECK([check for LLVM::legacy::PassManager],
+  AC_CACHE_CHECK([if llvm::legacy::PassManager exists],
     [octave_cv_legacy_passmanager],
     [AC_LANG_PUSH(C++)
       save_LIBS="$LIBS"
@@ -2733,7 +2733,7 @@ dnl
 dnl Check for raw_fd_ostream API
 dnl
 AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
-  AC_CACHE_CHECK([check LLVM::raw_fd_ostream arg type is llvm::sys:fs],
+  AC_CACHE_CHECK([if llvm::raw_fd_ostream's arg type is llvm::sys:fs],
     [octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2756,7 +2756,7 @@ dnl
 dnl Check llvm::IRBuilder API
 dnl
 AC_DEFUN([OCTAVE_LLVM_IRBUILDER_API], [
-  AC_CACHE_CHECK([check if llvm::IRBuilder has two template arguments],
+  AC_CACHE_CHECK([if llvm::IRBuilder has two template arguments],
     [octave_cv_llvm_irbuilder_has_two_template_args],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2791,7 +2791,7 @@ dnl
 dnl Check for llvm::createAlwaysInlinerPass
 dnl
 AC_DEFUN([OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS], [
-  AC_CACHE_CHECK([check if llvm::createAlwaysInlinerPass exists],
+  AC_CACHE_CHECK([if llvm::createAlwaysInlinerPass exists],
     [octave_cv_llvm_has_createalwaysinlinerpass],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
@@ -2814,7 +2814,7 @@ dnl
 dnl Check llvm::IRBuilder::CreateConstInBoundsGEP1_32 API
 dbl
 AC_DEFUN([OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API], [
-  AC_CACHE_CHECK([check if llvm::IRBuilder::CreateConstInBoundsGEP1_32 requires a type argument],
+  AC_CACHE_CHECK([if llvm::IRBuilder::CreateConstInBoundsGEP1_32 requires a type argument],
     [octave_cv_llvm_irbuilder_createconstinboundsgep1_32_requires_type],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(

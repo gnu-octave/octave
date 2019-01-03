@@ -26,11 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "graphics.h"
-#include "oct-opengl.h"
 #include "text-renderer.h"
 
 namespace octave
 {
+  class opengl_functions;
+
   class
   OCTINTERP_API
   opengl_renderer
@@ -168,9 +169,7 @@ namespace octave
 
     void init_maxlights (void);
 
-#if defined (HAVE_OPENGL)
-    std::string get_string (GLenum id) const;
-#endif
+    std::string get_string (unsigned int id) const;
 
     bool is_nan_or_inf (double x, double y, double z) const
     {

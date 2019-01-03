@@ -27,11 +27,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "oct-opengl.h"
 #include "graphics.h"
 
 namespace octave
 {
+  class opengl_functions;
+
   extern OCTINTERP_API void
   gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
                const std::string& stream, const std::string& term);

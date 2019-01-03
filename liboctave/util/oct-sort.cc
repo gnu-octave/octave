@@ -653,7 +653,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
       ++min_gallop;
       do
         {
-          min_gallop -= min_gallop > 1;
+          min_gallop -= (min_gallop > 1);
           ms->min_gallop = min_gallop;
           k = gallop_right (*pb, pa, na, 0, comp);
           acount = k;
@@ -787,7 +787,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
       ++min_gallop;
       do
         {
-          min_gallop -= min_gallop > 1;
+          min_gallop -= (min_gallop > 1);
           ms->min_gallop = min_gallop;
           k = gallop_right (*pb, pa, na, 0, comp);
           acount = k;
@@ -935,7 +935,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na,
       ++min_gallop;
       do
         {
-          min_gallop -= min_gallop > 1;
+          min_gallop -= (min_gallop > 1);
           ms->min_gallop = min_gallop;
           k = gallop_right (*pb, basea, na, na-1, comp);
           if (k < 0)
@@ -1076,7 +1076,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
       ++min_gallop;
       do
         {
-          min_gallop -= min_gallop > 1;
+          min_gallop -= (min_gallop > 1);
           ms->min_gallop = min_gallop;
           k = gallop_right (*pb, basea, na, na-1, comp);
           if (k < 0)

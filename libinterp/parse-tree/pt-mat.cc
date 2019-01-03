@@ -85,9 +85,7 @@ namespace octave
 
         // Order is important here...
 
-        if (c1 == "struct" && c2 == c1)
-          retval = c1;
-        else if (c1 == "cell" || c2 == "cell")
+        if (c1 == "cell" || c2 == "cell")
           retval = "cell";
         else if (c1_is_char && c2_is_built_in_type)
           retval = c1;

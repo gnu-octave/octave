@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2012-2019 Richard Crozier
-Copyright (C) 2013-2019 Torsten <ttl@justmail.de>
+Copyright (C) 2013-2019 Torsten <mttl@mailbox.org>
 
 This file is part of Octave.
 
@@ -443,7 +443,7 @@ namespace octave
     else
       m_icon_color_active = "";
 
-    QRect available_size = QApplication::desktop ()->availableGeometry ();
+    QRect available_size = QApplication::desktop ()->availableGeometry (m_parent);
     int x1, y1, x2, y2;
     available_size.getCoords (&x1, &y1, &x2, &y2);
     QRect default_size = QRect (x1, y1, x2/3, y2/2);
@@ -452,7 +452,10 @@ namespace octave
                                            + "_floating_geometry",
                                            default_size).toRect ();
 
-    if (! available_size.contains (m_recent_float_geom, false))
+    QWidget dummy;
+    dummy.setGeometry (m_recent_float_geom);
+
+    if (QApplication::desktop ()->screenNumber (&dummy) == -1)
       m_recent_float_geom = default_size;
 
     m_recent_dock_geom = settings->value ("DockWidgets/" + objectName (),

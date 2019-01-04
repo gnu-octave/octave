@@ -117,7 +117,7 @@ validate_property_name (const std::string& who, const std::string& what,
       error ("%s: ambiguous %s property name %s; possible matches:\n\n%s",
              who.c_str (), what.c_str (), pname.c_str (), match_list.c_str ());
     }
-  else if (num_matches == 1)
+  else  // num_matches == 1
     {
       // Exact match was handled above.
       std::string possible_match = *(matches.begin ());
@@ -2838,12 +2838,10 @@ reparent (const octave_value& ov, const std::string& who,
           const std::string& pname, const graphics_handle& new_parent,
           bool adopt = true)
 {
-  graphics_handle h = octave::numeric_limits<double>::NaN ();
-
   double hv = ov.xdouble_value ("%s: %s must be a graphics handle",
                                 who.c_str (), pname.c_str ());
 
-  h = gh_manager::lookup (hv);
+  graphics_handle h = gh_manager::lookup (hv);
 
   if (! h.ok ())
     error ("%s: invalid graphics handle (= %g) for %s",
@@ -3247,14 +3245,10 @@ void
 base_properties::set_parent (const octave_value& val)
 {
   double hp = val.xdouble_value ("set: parent must be a graphics handle");
-
-  graphics_handle new_parent = octave::numeric_limits<double>::NaN ();
-
   if (hp == __myhandle__)
     error ("set: can not set object parent to be object itself");
 
-  new_parent = gh_manager::lookup (hp);
-
+  graphics_handle new_parent = gh_manager::lookup (hp);
   if (! new_parent.ok ())
     error ("set: invalid graphics handle (= %g) for parent", hp);
 
@@ -5819,7 +5813,7 @@ axes::properties::update_camera (void)
   Matrix x_view = xform_matrix ();
   Matrix x_projection = xform_matrix ();
   Matrix x_viewport = xform_matrix ();
-  Matrix x_normrender = xform_matrix ();
+  Matrix x_normrender;
   Matrix x_pre = xform_matrix ();
 
   x_render = xform_matrix ();
@@ -11240,9 +11234,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 {
   graphics_handle h = get_handle (integer_figure_handle);
 
-  base_graphics_object *bgo = nullptr;
-
-  bgo = make_graphics_object_from_type (go_name, h, p);
+  base_graphics_object *bgo = make_graphics_object_from_type (go_name, h, p);
 
   if (! bgo)
     error ("gh_manager::do_make_graphics_handle: invalid object type '%s'",
@@ -12231,7 +12223,6 @@ being @qcode{"portrait"}.
       else
         {
           go.set (args.splice (0, 1));
-          request_drawnow = true;
         }
 
       request_drawnow = true;
@@ -13423,7 +13414,6 @@ set_property_in_handle (double handle, const std::string& property,
 {
   gh_manager::auto_lock guard;
 
-  int ret = false;
   graphics_object go = gh_manager::get_object (handle);
 
   if (! go)
@@ -13431,9 +13421,7 @@ set_property_in_handle (double handle, const std::string& property,
 
   go.set (caseless_str (property), arg);
 
-  ret = true;
-
-  return ret;
+  return true;
 }
 
 static bool

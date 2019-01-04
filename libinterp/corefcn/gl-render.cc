@@ -152,11 +152,14 @@ namespace octave
 
     opengl_texture& operator = (const opengl_texture& tx)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (&tx != this)
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-      rep = tx.rep;
-      rep->count++;
+          rep = tx.rep;
+          rep->count++;
+        }
 
       return *this;
     }
@@ -429,11 +432,14 @@ namespace octave
 
     vertex_data& operator = (const vertex_data& v)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (&v != this)
+        {
+          if (--rep->count == 0)
+            delete rep;
 
-      rep = v.rep;
-      rep->count++;
+          rep = v.rep;
+          rep->count++;
+        }
 
       return *this;
     }
@@ -4480,23 +4486,33 @@ namespace octave
 #endif
   }
 
+  std::string
+  opengl_renderer::get_string (unsigned int id) const
+  {
 #if defined (HAVE_OPENGL)
 
-  std::string
-  opengl_renderer::get_string (GLenum id) const
-  {
     // This is kind of ugly, but glGetString returns a pointer to GLubyte
     // and there is no std::string constructor that matches.  Is there a
     // better way?
 
     std::ostringstream buf;
 
-    buf << m_glfcns.glGetString (id);
+    buf << m_glfcns.glGetString (static_cast<GLenum> (id));
 
     return std::string (buf.str ());
-  }
+
+#else
+
+    octave_unused_parameter (id);
+
+    // This shouldn't happen because construction of opengl_renderer
+    // objects is supposed to be impossible if OpenGL is not available.
+
+    panic_impossible ();
+    return std::string ();
 
 #endif
+  }
 
   void
   opengl_renderer::set_normal (int bfl_mode, const NDArray& n, int j, int i)

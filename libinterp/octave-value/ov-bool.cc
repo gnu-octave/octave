@@ -194,7 +194,7 @@ octave_bool::save_ascii (std::ostream& os)
 bool
 octave_bool::load_ascii (std::istream& is)
 {
-  scalar = (octave_read_value<double> (is) != 0.);
+  scalar = (octave_read_value<double> (is) != 0.0);
 
   if (! is)
     error ("load: failed to load scalar constant");
@@ -294,7 +294,7 @@ octave_bool::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       return false;
     }
 
-  scalar = (dtmp != 0.);
+  scalar = (dtmp != 0.0);
 
   H5Dclose (data_hid);
 

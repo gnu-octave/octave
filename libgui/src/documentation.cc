@@ -538,6 +538,11 @@ namespace octave
 
   void documentation::notice_settings (const QSettings *settings)
   {
+    // If m_help_engine is not defined, the object accessed by this method
+    // are not valid. Thus, just return in this case
+    if (! m_help_engine)
+      return;
+
     // Icon size in the toolbar.
     int size_idx = settings->value (global_icon_size.key,
                                     global_icon_size.def).toInt ();

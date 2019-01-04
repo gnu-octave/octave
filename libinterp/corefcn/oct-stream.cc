@@ -4607,7 +4607,6 @@ namespace octave
     bool all_char_conv = fmt_list.all_character_conversions ();
 
     Matrix mval;
-    double *data = nullptr;
     octave_idx_type max_size = 0;
     octave_idx_type max_conv = 0;
 
@@ -4665,7 +4664,7 @@ namespace octave
         max_size = 32;
       }
 
-    data = mval.fortran_vec ();
+    double *data = mval.fortran_vec ();
 
     if (isp)
       {
@@ -5616,7 +5615,7 @@ namespace octave
       {
         double dval = val.double_value (true);
 
-        if (dval == math::round (dval) && dval <= limit)
+        if (dval == math::fix (dval) && dval <= limit)
           return true;
       }
 
@@ -5643,7 +5642,7 @@ namespace octave
 
         uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-        if (dval == math::round (dval) && dval >= 0 && dval <= limit)
+        if (dval == math::fix (dval) && dval >= 0 && dval <= limit)
           return true;
       }
 

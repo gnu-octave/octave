@@ -308,8 +308,6 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
                 const std::string& name, bool mark_global,
                 int precision)
 {
-  bool success = true;
-
   if (! name.empty ())
     os << "# name: " << name << "\n";
 
@@ -326,7 +324,7 @@ save_text_data (std::ostream& os, const octave_value& val_arg,
   long old_precision = os.precision ();
   os.precision (precision);
 
-  success = val.save_ascii (os);
+  bool success = val.save_ascii (os);
 
   // Insert an extra pair of newline characters after the data so that
   // multiple data elements may be handled separately by gnuplot (see

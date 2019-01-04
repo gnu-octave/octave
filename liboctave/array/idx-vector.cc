@@ -152,7 +152,7 @@ idx_vector::idx_range_rep::idx_range_rep (const Range& r)
           // find first non-integer, then gripe about it
           double b = r.base ();
           double inc = r.inc ();
-          octave::err_invalid_index (b != std::floor (b) ? b : b + inc);
+          octave::err_invalid_index (b != std::trunc (b) ? b : b + inc);
         }
     }
 }

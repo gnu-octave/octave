@@ -2024,7 +2024,7 @@ A(1)
       if (! args(2).is_real_scalar ())
         error ("cell2struct: DIM must be a real scalar");
 
-      dim = (nargin == 2 ? 0 : args(2).int_value () - 1);
+      dim = args(2).int_value () - 1;
     }
 
   if (dim < 0)

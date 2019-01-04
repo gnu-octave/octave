@@ -122,9 +122,7 @@ extract_function (const octave_value& arg, const std::string& warn_for,
                   const std::string& fname, const std::string& header,
                   const std::string& trailer)
 {
-  octave_function *retval = nullptr;
-
-  retval = is_valid_function (arg, warn_for, 0);
+  octave_function *retval = is_valid_function (arg, warn_for, 0);
 
   if (! retval)
     {
@@ -1272,7 +1270,7 @@ Executing @code{clear foo} a second time will clear the function definition.
 
   if (argc == 1)
     {
-      do_clear_variables (symtab, argv, argc, true);
+      do_clear_variables (symtab, argv, argc, argc);
 
       octave_link::clear_workspace ();
     }

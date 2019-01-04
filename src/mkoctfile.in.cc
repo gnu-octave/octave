@@ -216,9 +216,8 @@ initialize (void)
 
 #if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
 
-  // We'll be linking the files we compile with -loctinterp and
-  // -loctave, so we need to know where to find them.
-
+  // We'll be linking the files we compile with -loctinterp and -loctave,
+  // so we need to know where to find them.
   DEFAULT_LDFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
 #endif
 
@@ -1083,20 +1082,21 @@ main (int argc, char **argv)
     }
 
   std::string octave_libs;
-#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
-  octave_libs = "-loctinterp -loctave";
-#endif
 
   if (link_stand_alone)
     {
       if (! vars["LD_CXX"].empty ())
         {
+          octave_libs = vars["OCTAVE_LIBS"];
+
           std::string cmd
             = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LDFLAGS"] + ' ' + octave_libs + ' '
+               + ldflags + ' ' + vars["LDFLAGS"]
+               + " -L" + quote_path (vars["OCTLIBDIR"])
+               + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
           int status = run_command (cmd, printonly);
@@ -1116,6 +1116,10 @@ main (int argc, char **argv)
     }
   else
     {
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+      octave_libs = vars["OCTAVE_LIBS"];
+#endif
+
       std::string cmd
         = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
            + vars["DL_LDFLAGS"] + ' ' + pass_on_options

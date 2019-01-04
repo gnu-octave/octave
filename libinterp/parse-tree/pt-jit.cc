@@ -136,6 +136,17 @@ static int Vjit_failcnt = 0;
 
 namespace octave
 {
+  namespace jit
+  {    
+#if defined (LEGACY_PASSMANAGER)
+    typedef llvm::legacy::PassManager PassManager;
+    typedef llvm::legacy::FunctionPassManager FunctionPassManager;
+#else
+    typedef llvm::PassManager PassManager;
+    typedef llvm::FunctionPassManager FunctionPassManager;
+#endif
+  }
+
   static llvm::IRBuilder<> builder (tree_jit::llvm_context);
 
   static llvm::LLVMContext& context = tree_jit::llvm_context;

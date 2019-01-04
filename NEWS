@@ -170,6 +170,11 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
  ** It is now possible to use files and folders containing Unicode
     characters in Windows.
 
+ ** The environment variable used by mkoctfile for linker flags is now
+    LDFLAGS rather than LFLAGS.  LFLAGS is deprecated, and a warning
+    is emitted if is used, but it will continue to work until eventual
+    removal in Octave 7.0.
+
  ** The GUI requires Qt libraries.  The minimum Qt4 version supported is
     Qt4.8.  Qt5 of any version is preferred.
 

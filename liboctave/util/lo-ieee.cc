@@ -130,7 +130,7 @@ lo_ieee_float_nan_value (void)
 void
 octave_ieee_init (void)
 {
-  bool initialized = false;
+  static bool initialized = false;
 
   if (! initialized)
     {
@@ -180,7 +180,7 @@ octave_ieee_init (void)
           // floating point should be capable of removing this check and
           // the configure test.
           //
-          // If the the error handler returns, then we'll abort.
+          // If the error handler returns, then we'll abort.
 
           (*current_liboctave_error_handler)
             ("lo_ieee_init: floating point format is not IEEE!  Maybe DLAMCH is miscompiled, or you are using some strange system without IEEE floating point math?");

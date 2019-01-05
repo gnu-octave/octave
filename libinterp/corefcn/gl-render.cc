@@ -1553,7 +1553,7 @@ namespace octave
           {
             y_axis_pos = math::max (math::min (0., y_max), y_min);
             m_glfcns.glBegin (GL_LINES);
-            set_color (props.get_ycolor_rgb ());
+            set_color (props.get_xcolor_rgb ());
             m_glfcns.glVertex3d (x_min, y_axis_pos, zpTick);
             m_glfcns.glVertex3d (x_max, y_axis_pos, zpTick);
             m_glfcns.glEnd ();

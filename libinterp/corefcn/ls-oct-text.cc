@@ -398,7 +398,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
   os.precision (old_precision);
 
-  return (os);
+  return (static_cast<bool> (os));
 }
 
 DEFUN (save_precision, args, nargout,

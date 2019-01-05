@@ -2995,8 +2995,7 @@ namespace octave
               }
 
             // perform actual "catch" block
-            if (catch_code)
-              catch_code->accept (*this);
+            catch_code->accept (*this);
           }
       }
   }

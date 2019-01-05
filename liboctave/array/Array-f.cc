@@ -102,9 +102,9 @@ Array<float>::issorted (sortmode mode) const
   const float *el = data ();
 
   if (n <= 1)
-    return mode ? mode : ASCENDING;
+    return (mode == UNSORTED) ? ASCENDING : mode;
 
-  if (! mode)
+  if (mode == UNSORTED)
     {
       // Auto-detect mode.
       if (el[n-1] < el[0] || octave::math::isnan (el[0]))

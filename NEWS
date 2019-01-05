@@ -5,11 +5,6 @@ Summary of important user-visible changes for version 6.0 (yyyy-mm-dd):
  ** Specifying legend position with a numeric argument is deprecated and
     will be removed in Octave 7.0.  Use a string argument instead.
 
- ** The environment variable used by mkoctfile for linker flags is now
-    LDFLAGS rather than LFLAGS.  LFLAGS is deprecated, and a warning
-    is emitted if is used, but it will continue to work until eventual
-    removal in Octave 7.0.
-
 
 
 

@@ -353,8 +353,6 @@ save_text_data_for_plotting (std::ostream& os, const octave_value& t,
 bool
 save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 {
-  bool fail = false;
-
   octave_idx_type nr = tc.rows ();
   octave_idx_type nc = tc.columns ();
 
@@ -400,7 +398,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 
   os.precision (old_precision);
 
-  return (os && ! fail);
+  return (os);
 }
 
 DEFUN (save_precision, args, nargout,

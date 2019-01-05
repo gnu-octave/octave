@@ -50,8 +50,8 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) : octave_function (), f (nullptr), file (),
-                          jtype (nullptr)
+  octave_builtin (void) : octave_function (), f (nullptr), m (nullptr),
+                          file (), jtype (nullptr)
   { }
 
   typedef octave_value_list (*meth) (octave::interpreter&,

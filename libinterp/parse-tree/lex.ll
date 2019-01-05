@@ -858,7 +858,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_current_input_column += yyleng;
 
-    int result;
+    unsigned int result;
     sscanf (yytext+1, "%o", &result);
 
     if (result > 0xff)
@@ -882,7 +882,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_current_input_column += yyleng;
 
-    int result;
+    unsigned int result;
     sscanf (yytext+2, "%x", &result);
 
     // Truncate the value silently instead of checking the range like

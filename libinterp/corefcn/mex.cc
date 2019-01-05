@@ -2228,22 +2228,24 @@ public:
 
     if (ptr)
       {
+        auto p_local = memlist.find (ptr);
+        auto p_global = global_memlist.find (ptr);
+
         v = std::realloc (ptr, n);
 
-        auto p = memlist.find (ptr);
-
-        if (v && p != memlist.end ())
+        if (v)
           {
-            memlist.erase (p);
-            memlist.insert (v);
-          }
+            if (p_local != memlist.end ())
+              {
+                memlist.erase (p_local);
+                memlist.insert (v);
+              }
 
-        p = global_memlist.find (ptr);
-
-        if (v && p != global_memlist.end ())
-          {
-            global_memlist.erase (p);
-            global_memlist.insert (v);
+            if (p_global != global_memlist.end ())
+              {
+                global_memlist.erase (p_global);
+                global_memlist.insert (v);
+              }
           }
       }
     else

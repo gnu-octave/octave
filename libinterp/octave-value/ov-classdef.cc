@@ -2412,8 +2412,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 
             octave_value_list args;
 
-            if (type.length () > 1 && idx.size () > 1
-                && type[1] == '(')
+            if (type.length () > 1 && idx.size () > 1 && type[1] == '(')
               {
                 args = *(++(idx.begin ()));
                 skip++;

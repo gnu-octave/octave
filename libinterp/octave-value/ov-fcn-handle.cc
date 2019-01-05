@@ -1985,8 +1985,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
       && ! (param_list && param_list->takes_varargs ()))
     {
       // It's an index expression.
-      octave::tree_index_expression *idx_expr = dynamic_cast<octave::tree_index_expression *>
-                                        (body_expr);
+      octave::tree_index_expression *idx_expr = dynamic_cast<octave::tree_index_expression *> (body_expr);
       octave::tree_expression *head_expr = idx_expr->expression ();
       std::list<octave::tree_argument_list *> arg_lists = idx_expr->arg_lists ();
       std::string type_tags = idx_expr->type_tags ();

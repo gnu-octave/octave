@@ -102,6 +102,9 @@ octave_fgets (FILE *f, bool& eof)
   int max_size = grow_size;
 
   char *buf = static_cast<char *> (std::malloc (max_size));
+  if (! buf)
+    (*current_liboctave_error_handler) ("octave_fgets: unable to malloc %d bytes", max_size);
+
   char *bufptr = buf;
   int len = 0;
 
@@ -116,7 +119,13 @@ octave_fgets (FILE *f, bool& eof)
               int tmp = bufptr - buf + grow_size - 1;
               grow_size *= 2;
               max_size += grow_size;
-              buf = static_cast<char *> (std::realloc (buf, max_size));
+              auto tmpbuf = static_cast<char *> (std::realloc (buf, max_size));
+              if (! tmpbuf)
+                {
+                  free (buf);
+                  (*current_liboctave_error_handler) ("octave_fgets: unable to realloc %d bytes", max_size);
+                }
+              buf = tmpbuf;
               bufptr = buf + tmp;
 
               if (*(bufptr-1) == '\n')

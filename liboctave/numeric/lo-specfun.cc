@@ -1594,7 +1594,7 @@ namespace octave
               return;
             }
           Nn = n;
-          for (ii = 1; n > 0; ii = ii*2, --n) ; // ii = pow(2,Nn)
+          for (ii = 1; n > 0; ii *= 2, --n) {}  // ii = pow(2,Nn)
           phi = ii*a[Nn]*u;
           for (n = Nn; n > 0; --n)
             {

@@ -212,18 +212,17 @@ initialize (void)
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  std::string DEFAULT_LFLAGS;
+  std::string DEFAULT_LDFLAGS;
 
 #if (defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)) || (defined __APPLE__ && defined __MACH__)
 
-  // We'll be linking the files we compile with -loctinterp and
-  // -loctave, so we need to know where to find them.
-
-  DEFAULT_LFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
+  // We'll be linking the files we compile with -loctinterp and -loctave,
+  // so we need to know where to find them.
+  DEFAULT_LDFLAGS += "-L" + quote_path (vars["OCTLIBDIR"]);
 #endif
 
   if (vars["LIBDIR"] != "/usr/lib")
-    DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
+    DEFAULT_LDFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
   vars["CPPFLAGS"] = get_variable ("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
 
@@ -307,14 +306,15 @@ initialize (void)
   vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
                                         %OCTAVE_CONF_OCT_LINK_OPTS%);
 
-  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
+  vars["LDFLAGS"] = get_variable ("LDFLAGS", DEFAULT_LDFLAGS);
 
-  vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
+  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
 
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
 
-  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
+  // FIXME: Remove LFLAGS in Octave 7.0
+  vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
@@ -387,11 +387,11 @@ static std::string help_msg =
 "                          override with environment variables.  These are\n"
 "                          used in commands that mkoctfile executes.\n"
 "\n"
-"                            ALL_CFLAGS                  LAPACK_LIBS\n"
-"                            ALL_CXXFLAGS                LDFLAGS\n"
-"                            ALL_FFLAGS                  LD_CXX\n"
-"                            ALL_LDFLAGS                 LD_STATIC_FLAG\n"
-"                            BLAS_LIBS                   LFLAGS\n"
+"                            ALL_CFLAGS                  INCLUDEDIR\n"
+"                            ALL_CXXFLAGS                LAPACK_LIBS\n"
+"                            ALL_FFLAGS                  LDFLAGS\n"
+"                            ALL_LDFLAGS                 LD_CXX\n"
+"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
 "                            CC                          LIBDIR\n"
 "                            CFLAGS                      LIBOCTAVE\n"
 "                            CPICFLAG                    LIBOCTINTERP\n"
@@ -406,7 +406,6 @@ static std::string help_msg =
 "                            FFLAGS                      SPECIAL_MATH_LIB\n"
 "                            FPICFLAG                    XTRA_CFLAGS\n"
 "                            INCFLAGS                    XTRA_CXXFLAGS\n"
-"                            INCLUDEDIR\n"
 "\n"
 "                          Octave configuration variables as above, but\n"
 "                          currently unused by mkoctfile.\n"
@@ -721,7 +720,7 @@ main (int argc, char **argv)
         }
       else if (arg == "-largeArrayDims" || arg == "-compatibleArrayDims")
         {
-          std::cout << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
+          std::cerr << "warning: -largeArrayDims and -compatibleArrayDims are accepted for compatibility, but ignored" << std::endl;
         }
       else if (starts_with (arg, "-Wl,") || starts_with (arg, "-l")
                || starts_with (arg, "-L") || starts_with (arg, "-R"))
@@ -759,6 +758,10 @@ main (int argc, char **argv)
           if (i < argc-1)
             {
               arg = argv[++i];
+              // FIXME: Remove LFLAGS checking in Octave 7.0
+              if (arg == "LFLAGS")
+                std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+
               std::cout << vars[arg] << std::endl;
               return 0;
             }
@@ -1060,7 +1063,7 @@ main (int argc, char **argv)
         }
     }
 
-  // If we are only compliling, we are done.
+  // If we are only compiling, we are done.
 
   if (compile_only)
     return 0;
@@ -1071,21 +1074,29 @@ main (int argc, char **argv)
       return 1;
     }
 
+  // FIXME: Remove LFLAGS in Octave 7.0
+  if (vars["LFLAGS"] != vars["LDFLAGS"])
+    {
+      std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
+      vars["LDFLAGS"] = vars["LFLAGS"];
+    }
+
   std::string octave_libs;
-#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
-  octave_libs = "-loctinterp -loctave";
-#endif
 
   if (link_stand_alone)
     {
       if (! vars["LD_CXX"].empty ())
         {
+          octave_libs = vars["OCTAVE_LIBS"];
+
           std::string cmd
             = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+               + ldflags + ' ' + vars["LDFLAGS"]
+               + " -L" + quote_path (vars["OCTLIBDIR"])
+               + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
           int status = run_command (cmd, printonly);
@@ -1105,11 +1116,15 @@ main (int argc, char **argv)
     }
   else
     {
+#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+      octave_libs = vars["OCTAVE_LIBS"];
+#endif
+
       std::string cmd
         = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
            + vars["DL_LDFLAGS"] + ' ' + pass_on_options
            + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
-           + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
+           + ldflags + ' ' + vars["LDFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
       int status = run_command (cmd, printonly);

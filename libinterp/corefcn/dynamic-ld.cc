@@ -225,17 +225,14 @@ namespace octave
     if (! mex_file)
       error ("%s is not a valid shared library", file_name.c_str ());
 
-    void *function = nullptr;
-
     bool have_fmex = false;
 
-    function = mex_file.search (fcn_name, mex_mangler);
+    void *function = mex_file.search (fcn_name, mex_mangler);
 
     if (! function)
       {
-        // FIXME: can we determine this C mangling scheme
-        // automatically at run time or configure time?
-
+        // FIXME: Can we determine this C mangling scheme
+        //        automatically at run time or configure time?
         function = mex_file.search (fcn_name, mex_uscore_mangler);
 
         if (! function)
@@ -247,10 +244,10 @@ namespace octave
           }
       }
 
-    if (function)
-      retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
-    else
+    if (! function)
       error ("failed to install .mex file function '%s'", fcn_name.c_str ());
+
+    retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
 
     return retval;
   }
@@ -279,20 +276,8 @@ namespace octave
   dynamic_loader::remove_mex (const std::string& fcn_name,
                               dynamic_library& shl)
   {
-    bool retval = false;
-
-    // We don't need to do anything if this is called because we are in
-    // the process of reloading a .oct file that has changed.
-
-    if (! m_doing_load)
-      {
-        retval = shl.remove (fcn_name);
-
-        if (shl.number_of_functions_loaded () == 0)
-          m_loaded_shlibs.remove (shl);
-      }
-
-    return retval;
+    // Use the same procedure as for oct files.
+    return remove_oct (fcn_name, shl);
   }
 
   std::string

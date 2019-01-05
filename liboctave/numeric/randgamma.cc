@@ -110,7 +110,7 @@ namespace octave
       restart:
         x = rand_normal<T> ();
         v = (1+c*x);
-        v *= v*v;
+        v *= (v*v);
         if (v <= 0)
           goto restart; /* rare, so don't bother moving up */
         u = rand_uniform<T> ();

@@ -339,7 +339,7 @@ Range::issorted (sortmode mode) const
   else if (rng_numel > 1 && rng_inc < 0)
     mode = (mode == ASCENDING) ? UNSORTED : DESCENDING;
   else
-    mode = (mode ? mode : ASCENDING);
+    mode = (mode == UNSORTED) ? ASCENDING : mode;
 
   return mode;
 }

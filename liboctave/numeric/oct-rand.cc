@@ -93,7 +93,7 @@ namespace octave
   static int32_t
   force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
   {
-    assert (hi > lo && lo >= 0 && hi > lo);
+    assert (hi > lo && lo >= 0);
 
     i = (i > 0 ? i : -i);
 

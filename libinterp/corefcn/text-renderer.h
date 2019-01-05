@@ -135,7 +135,7 @@ namespace octave
 
       string (const string& s)
         : str (s.str), family (s.family), fnt (s.fnt), x (s.x), y (s.y),
-          xdata (s.xdata), code (s.code), color (s.color)
+          z (s.z), xdata (s.xdata), code (s.code), color (s.color)
       { }
 
       ~string (void) = default;
@@ -149,6 +149,7 @@ namespace octave
             fnt = s.fnt;
             x = s.x;
             y = s.y;
+            z = s.z;
             xdata = s.xdata;
             code = s.code;
             color = s.color;

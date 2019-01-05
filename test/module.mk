@@ -58,6 +58,7 @@ include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
 include %reldir%/bug-44940/module.mk
+include %reldir%/bug-45969/module.mk
 include %reldir%/bug-45972/module.mk
 include %reldir%/bug-46660/module.mk
 include %reldir%/bug-49379/module.mk
@@ -71,6 +72,9 @@ include %reldir%/bug-51599/module.mk
 include %reldir%/bug-52075/module.mk
 include %reldir%/bug-52722/module.mk
 include %reldir%/bug-53027/module.mk
+include %reldir%/bug-55308/module.mk
+include %reldir%/bug-55321/module.mk
+include %reldir%/bug-55322/module.mk
 include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk

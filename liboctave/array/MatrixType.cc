@@ -188,7 +188,7 @@ matrix_complex_probe (const MArray<std::complex<T>>& a)
         typ = MatrixType::Lower;
       else if (hermitian)
         typ = MatrixType::Hermitian;
-      else if (ncols == nrows)
+      else
         typ = MatrixType::Full;
     }
   else

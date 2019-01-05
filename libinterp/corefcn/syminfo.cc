@@ -99,9 +99,6 @@ namespace octave
               default:
                 error ("whos_line_format: modifier '%c' unknown",
                        param.modifier);
-
-                os << std::setiosflags (std::ios::right)
-                   << std::setw (param.parameter_length);
               }
 
             switch (param.command)
@@ -280,25 +277,22 @@ namespace octave
 
             if (param.command == 's' && param.modifier == 'c')
               {
-                if (param.modifier == 'c')
-                  {
-                    int a = param.first_parameter_length - param.balance;
-                    a = (a < 0 ? 0 : a);
-                    int b = param.parameter_length - a - param.text.length ();
-                    b = (b < 0 ? 0 : b);
-                    os << std::setiosflags (std::ios::left) << std::setw (a)
-                       << "" << std::resetiosflags (std::ios::left) << param.text
-                       << std::setiosflags (std::ios::left)
-                       << std::setw (b) << ""
-                       << std::resetiosflags (std::ios::left);
-                    param_buf << std::setiosflags (std::ios::left)
-                              << std::setw (a)
-                              << "" << std::resetiosflags (std::ios::left)
-                              << param.line
-                              << std::setiosflags (std::ios::left)
-                              << std::setw (b) << ""
-                              << std::resetiosflags (std::ios::left);
-                  }
+                int a = param.first_parameter_length - param.balance;
+                a = (a < 0 ? 0 : a);
+                int b = param.parameter_length - a - param.text.length ();
+                b = (b < 0 ? 0 : b);
+                os << std::setiosflags (std::ios::left) << std::setw (a)
+                   << "" << std::resetiosflags (std::ios::left) << param.text
+                   << std::setiosflags (std::ios::left)
+                   << std::setw (b) << ""
+                   << std::resetiosflags (std::ios::left);
+                param_buf << std::setiosflags (std::ios::left)
+                          << std::setw (a)
+                          << "" << std::resetiosflags (std::ios::left)
+                          << param.line
+                          << std::setiosflags (std::ios::left)
+                          << std::setw (b) << ""
+                          << std::resetiosflags (std::ios::left);
               }
             else
               {
@@ -431,7 +425,6 @@ namespace octave
 
         if (format[idx] == '%')
           {
-            bool error_encountered = false;
             param.modifier = 'r';
             param.parameter_length = 0;
 
@@ -546,9 +539,7 @@ namespace octave
                                          ? param_length(pos_s)
                                          : param.parameter_length));
 
-            // Parameter will not be pushed into parameter list if ...
-            if (! error_encountered)
-              params.push_back (param);
+            params.push_back (param);
           }
         else
           {

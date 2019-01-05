@@ -598,8 +598,6 @@ bitshift (10, [-2, -1, 0, 1, 2])
       int64_t mask = max_mantissa_value<double> ();
       if (nbits < bits_in_mantissa)
         mask = mask >> (bits_in_mantissa - nbits);
-      else if (nbits < 1)
-        mask = 0;
       int bits_in_type = sizeof (double)
                          * std::numeric_limits<unsigned char>::digits;
       NDArray m = m_arg.array_value ();
@@ -629,8 +627,6 @@ bitshift (10, [-2, -1, 0, 1, 2])
       int64_t mask = max_mantissa_value<float> ();
       if (nbits < bits_in_mantissa)
         mask = mask >> (bits_in_mantissa - nbits);
-      else if (nbits < 1)
-        mask = 0;
       int bits_in_type = sizeof (float)
                          * std::numeric_limits<unsigned char>::digits;
       FloatNDArray m = m_arg.float_array_value ();

@@ -155,7 +155,7 @@ public:
   { return Array<octave_idx_type> (dim_vector (1, 0)); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-  { return mode ? mode : ASCENDING; }
+  { return (mode == UNSORTED) ? ASCENDING : mode; }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 

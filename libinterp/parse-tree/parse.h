@@ -592,13 +592,4 @@ namespace octave
   cleanup_statement_list (tree_statement_list **lst);
 }
 
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
-extern OCTINTERP_API octave_value_list
-eval_string (const std::string& str, bool silent, int& parse_status,
-             int nargout);
-
-OCTAVE_DEPRECATED (4.4, "use 'octave::interpreter::eval_string' instead")
-extern OCTINTERP_API octave_value
-eval_string (const std::string& str, bool silent, int& parse_status);
-
 #endif

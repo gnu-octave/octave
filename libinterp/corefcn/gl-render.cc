@@ -2396,13 +2396,13 @@ namespace octave
     NDArray c;
     const NDArray vn = props.get_vertexnormals ().array_value ();
     dim_vector vn_dims = vn.dims ();
-    bool has_vertex_normals = ((vn_dims(0) == z.rows ()) &&
-                               (vn_dims(1) == z.columns ()) &&
+    bool has_vertex_normals = ((vn_dims(0) == zr) &&
+                               (vn_dims(1) == zc) &&
                                (vn_dims(2) == 3));
     const NDArray fn = props.get_facenormals ().array_value ();
     dim_vector fn_dims = fn.dims ();
-    bool has_face_normals = ((fn_dims(0) == z.rows () - 1) &&
-                             (fn_dims(1) == z.columns () - 1) &&
+    bool has_face_normals = ((fn_dims(0) == zr - 1) &&
+                             (fn_dims(1) == zc - 1) &&
                              (fn_dims(2) == 3));
 
     // FIXME: handle transparency
@@ -2789,8 +2789,12 @@ namespace octave
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
-                                      j-1, i);
+                          {
+                            if (el_mode == GOURAUD)
+                              set_normal (bfl_mode, vn, j-1, i);
+                            else
+                              set_normal (bfl_mode, fn, j-1, std::min (i, zc-2));
+                          }
 
                         m_glfcns.glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
@@ -2887,8 +2891,12 @@ namespace octave
                               }
                           }
                         if (el_mode > 0)
-                          set_normal (bfl_mode, (el_mode == GOURAUD ? vn : fn),
-                                      j, i-1);
+                          {
+                            if (el_mode == GOURAUD)
+                              set_normal (bfl_mode, vn, j, i-1);
+                            else
+                              set_normal (bfl_mode, fn, std::min (j, zr-2), i-1);
+                          }
 
                         m_glfcns.glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 

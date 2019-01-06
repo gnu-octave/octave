@@ -56,7 +56,7 @@ Q_DECLARE_METATYPE (octave::symbol_info_list)
 namespace octave
 {
   octave_qt_link::octave_qt_link (void)
-    : octave_link ()
+    : octave_link (), m_shutdown_confirm_result (false)
   {
     qRegisterMetaType<octave_value> ("octave_value");
     qRegisterMetaType<symbol_info_list> ("symbol_info_list");

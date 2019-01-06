@@ -2010,7 +2010,7 @@ save_mat5_array_length (const float* /* val */, octave_idx_type nel, bool)
 
       // Round nel up to nearest even number of elements.
       // Take into account short tags for 4 byte elements.
-      return PAD ((nel > 0 && nel * size <= 4 ? 4 : 8) + nel * size);
+      return PAD ((nel * size <= 4 ? 4 : 8) + nel * size);
     }
   else
     return 8;
@@ -2179,8 +2179,7 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       octave_idx_type nel = m.numel ();
 
       if (tc.is_inline_function ())
-        // length of "inline" is 6
-        ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
+        ret += 8 + PAD (6);  // length of "inline" is 6
       else if (tc.isobject ())
         {
           size_t classlen = tc.class_name ().length ();

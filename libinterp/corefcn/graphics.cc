@@ -9451,7 +9451,7 @@ patch::properties::update_data (void)
             {
               // find first element that is NaN to get number of corners
               octave_idx_type nc = 3;
-              while (! octave::math::isnan (idx(nc,jj)) && nc < fcmax)
+              while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
                 nc++;
 
               std::list<octave_idx_type> coplanar_ends;
@@ -9869,26 +9869,20 @@ surface::properties::update_face_normals (bool reset, bool force)
 
       for (int i = 0; i < p-1; i++)
         {
-          if (y_mat)
-            {
-              i1 = i;
-              i2 = i + 1;
-            }
+          i1 = i;
+          i2 = i + 1;
 
           for (int j = 0; j < q-1; j++)
             {
-              if (x_mat)
-                {
-                  j1 = j;
-                  j2 = j + 1;
-                }
+              j1 = j;
+              j2 = j + 1;
 
               if (x_mat || y_mat)
                 {
-                  x0 = x(j1,i1);
-                  x1 = x(j1,i2);
-                  x2 = x(j2,i2);
-                  x3 = x(j2,i1);
+                  x0 = x(x_mat?j1:0,y_mat?i1:0);
+                  x1 = x(x_mat?j1:0,y_mat?i2:0);
+                  x2 = x(x_mat?j2:0,y_mat?i2:0);
+                  x3 = x(x_mat?j2:0,y_mat?i1:0);
                   x1m0 = x1 - x0;
                   x2m1 = x2 - x1;
                   x3m2 = x3 - x2;
@@ -9897,10 +9891,10 @@ surface::properties::update_face_normals (bool reset, bool force)
                   x2p1 = x2 + x1;
                   x3p2 = x3 + x2;
                   x0p3 = x0 + x3;
-                  y0 = y(j1,i1);
-                  y1 = y(j1,i2);
-                  y2 = y(j2,i2);
-                  y3 = y(j2,i1);
+                  y0 = y(x_mat?j1:0,y_mat?i1:0);
+                  y1 = y(x_mat?j1:0,y_mat?i2:0);
+                  y2 = y(x_mat?j2:0,y_mat?i2:0);
+                  y3 = y(x_mat?j2:0,y_mat?i1:0);
                   y1m0 = y1 - y0;
                   y2m1 = y2 - y1;
                   y3m2 = y3 - y2;

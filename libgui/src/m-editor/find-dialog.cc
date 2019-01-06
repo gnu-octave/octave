@@ -122,7 +122,8 @@ namespace octave
     _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
 #if defined (HAVE_QSCI_FINDSELECTION)
     _search_selection_check_box->setCheckable (true);
-    _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
+    if (edit_area)
+      _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
 #else
     _search_selection_check_box->setCheckable (false);
     _search_selection_check_box->setEnabled (false);
@@ -245,7 +246,7 @@ namespace octave
   // initialize search text with selected text if this is in one single line
   void find_dialog::init_search_text (void)
   {
-    if (_edit_area->hasSelectedText ())
+    if (_edit_area && _edit_area->hasSelectedText ())
       {
         int lbeg, lend, cbeg, cend;
         _edit_area->getSelection (&lbeg,&cbeg,&lend,&cend);
@@ -274,6 +275,9 @@ namespace octave
 
   void find_dialog::find (bool forward)
   {
+    if (! _edit_area)
+      return;
+
     int line, col;
     line = col = -1;
     bool do_wrap = _wrap_check_box->isChecked ();
@@ -326,46 +330,44 @@ namespace octave
           }
       }
 
-    if (_edit_area)
+    if (_edit_area->hasSelectedText ()
+        && _search_selection_check_box->isChecked ())
       {
-        if (_edit_area->hasSelectedText ()
-            && _search_selection_check_box->isChecked ())
-          {
 #if defined (HAVE_QSCI_FINDSELECTION)
-            if (_find_result_available)
-              _find_result_available = _edit_area->findNext ();
-            else
-              _find_result_available
-                = _edit_area->findFirstInSelection (
-                                                    _search_line_edit->text (),
-                                                    _regex_check_box->isChecked (),
-                                                    _case_check_box->isChecked (),
-                                                    _whole_words_check_box->isChecked (),
-                                                    do_forward,
-                                                    true
-#if defined (HAVE_QSCI_VERSION_2_6_0)
-                                                    , true
-#endif
-                                                   );
-#endif
-          }
+        if (_find_result_available)
+          _find_result_available = _edit_area->findNext ();
         else
-          {
-            _find_result_available
-              = _edit_area->findFirst (_search_line_edit->text (),
-                                       _regex_check_box->isChecked (),
-                                       _case_check_box->isChecked (),
-                                       _whole_words_check_box->isChecked (),
-                                       do_wrap,
-                                       do_forward,
-                                       line,col,
-                                       true
+          _find_result_available
+            = _edit_area->findFirstInSelection (
+                                                _search_line_edit->text (),
+                                                _regex_check_box->isChecked (),
+                                                _case_check_box->isChecked (),
+                                                _whole_words_check_box->isChecked (),
+                                                do_forward,
+                                                true
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-                                       , true
+                                                , true
 #endif
-                                      );
-          }
+                                               );
+#endif
       }
+    else
+      {
+        _find_result_available
+          = _edit_area->findFirst (_search_line_edit->text (),
+                                   _regex_check_box->isChecked (),
+                                   _case_check_box->isChecked (),
+                                   _whole_words_check_box->isChecked (),
+                                   do_wrap,
+                                   do_forward,
+                                   line,col,
+                                   true
+#if defined (HAVE_QSCI_VERSION_2_6_0)
+                                    , true
+#endif
+                                  );
+      }
+
 
     if (_find_result_available)
       _from_start_check_box->setChecked (0);
@@ -375,9 +377,12 @@ namespace octave
 
   void find_dialog::do_replace (void)
   {
-    _rep_active = true;  // changes in selection not made by the user
-    _edit_area->replace (_replace_line_edit->text ());
-    _rep_active = false;
+    if (_edit_area)
+      {
+        _rep_active = true;  // changes in selection not made by the user
+        _edit_area->replace (_replace_line_edit->text ());
+        _rep_active = false;
+      }
   }
 
   void find_dialog::replace (void)

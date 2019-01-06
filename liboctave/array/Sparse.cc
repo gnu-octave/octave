@@ -2494,7 +2494,7 @@ Sparse<T>::diag (octave_idx_type k) const
           d = Sparse<T> (nr, nc, nz);
         }
     }
-  else if (nnr != 0 && nnc != 0)
+  else  // one of dimensions == 1 (vector)
     {
       octave_idx_type roff = 0;
       octave_idx_type coff = 0;

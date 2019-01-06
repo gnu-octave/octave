@@ -446,7 +446,7 @@ namespace octave
     QRect available_size = QApplication::desktop ()->availableGeometry (m_parent);
     int x1, y1, x2, y2;
     available_size.getCoords (&x1, &y1, &x2, &y2);
-    QRect default_size = QRect (x1, y1, x2/3, y2/2);
+    QRect default_size = QRect (x1+16, y1+32, x2/3, 2*y2/3);
 
     m_recent_float_geom = settings->value ("DockWidgets/" + objectName ()
                                            + "_floating_geometry",

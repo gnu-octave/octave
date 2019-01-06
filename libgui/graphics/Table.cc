@@ -1287,7 +1287,7 @@ namespace QtHandles
   {
     uitable::properties& tp = properties<uitable> ();
     bool enabled = tp.is_enable ();
-    m_tableWidget->setEnabled (! enabled);
+    m_tableWidget->setEnabled (enabled);
 
     bool rearrangeableColumns = tp.is_rearrangeablecolumns ();
 

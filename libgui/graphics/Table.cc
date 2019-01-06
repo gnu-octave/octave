@@ -353,7 +353,8 @@ namespace QtHandles
     {                                                  \
       ctype val;                                       \
       int n;                                           \
-      const char *c_str = ov.string_value ().c_str (); \
+      const std::string cxx_str = ov.string_value ();  \
+      const char *c_str = cxx_str.c_str ();            \
       int error = sscanf (c_str, format, &val, &n);    \
       if (error != 1 || c_str[n])                      \
         {                                              \
@@ -364,14 +365,14 @@ namespace QtHandles
 
     if (old_value.is_string ())
       retval = ov;
-    SCANF_AND_CONVERT(int8, int64_t, "%jd %n")
-    SCANF_AND_CONVERT(uint8, uint64_t, "%ju %n")
-    SCANF_AND_CONVERT(int16, int64_t, "%jd %n")
-    SCANF_AND_CONVERT(uint16, uint64_t, "%ju %n")
-    SCANF_AND_CONVERT(int32, int64_t, "%jd %n")
-    SCANF_AND_CONVERT(uint32, uint64_t, "%ju %n")
-    SCANF_AND_CONVERT(int64, int64_t, "%jd %n")
-    SCANF_AND_CONVERT(uint64, uint64_t, "%ju %n")
+    SCANF_AND_CONVERT(int8, int64_t, "%" PRId64 " %n")
+    SCANF_AND_CONVERT(uint8, uint64_t, "%" PRIu64 " %n")
+    SCANF_AND_CONVERT(int16, int64_t, "%" PRId64 " %n")
+    SCANF_AND_CONVERT(uint16, uint64_t, "%" PRIu64 " %n")
+    SCANF_AND_CONVERT(int32, int64_t, "%" PRId64 " %n")
+    SCANF_AND_CONVERT(uint32, uint64_t, "%" PRIu64 " %n")
+    SCANF_AND_CONVERT(int64, int64_t, "%" PRId64 " %n")
+    SCANF_AND_CONVERT(uint64, uint64_t, "%" PRIu64 " %n")
 
   #undef SCANF_AND_CONVERT
 

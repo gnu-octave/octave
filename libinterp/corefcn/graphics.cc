@@ -9453,7 +9453,7 @@ patch::properties::update_data (void)
             {
               // find first element that is NaN to get number of corners
               octave_idx_type nc = 3;
-              while (! octave::math::isnan (idx(nc,jj)) && nc < fcmax)
+              while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
                 nc++;
 
               std::list<octave_idx_type> coplanar_ends;

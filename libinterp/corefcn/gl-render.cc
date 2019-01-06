@@ -2489,6 +2489,7 @@ namespace octave
         if (fa_mode == 0)
           {
             fa = props.get_facealpha_double ();
+            cb[3] = fa;
             if (fc_mode == UNIFORM || fc_mode == TEXTURE)
               {
                 m_glfcns.glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
@@ -2562,7 +2563,6 @@ namespace octave
                         // FIXME: is there a smarter way to do this?
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i-1, k);
-                        cb[3] = fa;
                         m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
@@ -2593,7 +2593,6 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j-1, i, k);
-                        cb[3] = fa;
                         m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
@@ -2624,7 +2623,6 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i, k);
-                        cb[3] = fa;
                         m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
@@ -2654,7 +2652,6 @@ namespace octave
                       {
                         for (int k = 0; k < 3; k++)
                           cb[k] = c(j, i-1, k);
-                        cb[3] = fa;
                         m_glfcns.glColor4fv (cb);
 
                         if (fl_mode > 0)
@@ -2698,6 +2695,7 @@ namespace octave
       {
         if (props.get_edgealpha_double () == 1)
           {
+            cb[3] = 1.0; // edgealpha isn't implemented yet
             if (ec_mode == UNIFORM)
               {
                 m_glfcns.glColor3dv (ecolor.data ());

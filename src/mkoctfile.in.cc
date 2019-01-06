@@ -156,7 +156,7 @@ initialize (void)
   vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
   vars["EXEEXT"] = %OCTAVE_EXEEXT%;
   vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
-  vars["VERSION"] = %OCTAVE_VERSION%;
+  vars["OCTAVE_VERSION"] = %OCTAVE_VERSION%;
 
   vars["ARCHLIBDIR"] = prepend_octave_exec_home (%OCTAVE_ARCHLIBDIR%);
   vars["BINDIR"] = prepend_octave_exec_home (%OCTAVE_BINDIR%);
@@ -446,12 +446,12 @@ static std::string help_msg =
 "                            EXEEXT                      MANDIR\n"
 "                            FCNFILEDIR                  OCTAVE_EXEC_HOME\n"
 "                            IMAGEDIR                    OCTAVE_HOME\n"
-"                            INFODIR                     OCTDATADIR\n"
-"                            INFOFILE                    OCTDOCDIR\n"
-"                            LIBEXECDIR                  OCTFILEDIR\n"
-"                            LOCALAPIARCHLIBDIR          OCTFONTSDIR\n"
-"                            LOCALAPIFCNFILEDIR          STARTUPFILEDIR\n"
-"                            LOCALAPIOCTFILEDIR          VERSION\n"
+"                            INFODIR                     OCTAVE_VERSION\n"
+"                            INFOFILE                    OCTDATADIR\n"
+"                            LIBEXECDIR                  OCTDOCDIR\n"
+"                            LOCALAPIARCHLIBDIR          OCTFILEDIR\n"
+"                            LOCALAPIFCNFILEDIR          OCTFONTSDIR\n"
+"                            LOCALAPIOCTFILEDIR          STARTUPFILEDIR\n"
 "                            LOCALARCHLIBDIR\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"

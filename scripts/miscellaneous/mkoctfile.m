@@ -146,12 +146,12 @@
 ##    EXEEXT                      MANDIR
 ##    FCNFILEDIR                  OCTAVE_EXEC_HOME
 ##    IMAGEDIR                    OCTAVE_HOME
-##    INFODIR                     OCTDATADIR
-##    INFOFILE                    OCTDOCDIR
-##    LIBEXECDIR                  OCTFILEDIR
-##    LOCALAPIARCHLIBDIR          OCTFONTSDIR
-##    LOCALAPIFCNFILEDIR          STARTUPFILEDIR
-##    LOCALAPIOCTFILEDIR          VERSION
+##    INFODIR                     OCTAVE_VERSION
+##    INFOFILE                    OCTDATADIR
+##    LIBEXECDIR                  OCTDOCDIR
+##    LOCALAPIARCHLIBDIR          OCTFILEDIR
+##    LOCALAPIFCNFILEDIR          OCTFONTSDIR
+##    LOCALAPIOCTFILEDIR          STARTUPFILEDIR
 ##    LOCALARCHLIBDIR
 ## @end group
 ## @end example

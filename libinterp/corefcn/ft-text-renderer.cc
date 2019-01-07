@@ -367,8 +367,8 @@ namespace octave
     ft_text_renderer (void)
       : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
         xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-        color (dim_vector (1, 3), 0), m_ymin (0), m_ymax (0), m_deltax (0),
-        m_max_fontsize (0)
+        color (dim_vector (1, 3), 0), line_xoffset (0), m_ymin (0), m_ymax (0),
+        m_deltax (0), m_max_fontsize (0)
     { }
 
     // No copying!
@@ -831,6 +831,7 @@ namespace octave
                                         m_ymin);
                     m_ymax = math::max ((glyph_bbox.yMax >> 6) + yoffset,
                                         m_ymax);
+                    FT_Done_Glyph (glyph);
                     update_line_bbox ();
                   }
                 break;

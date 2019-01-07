@@ -4081,9 +4081,8 @@ figure::properties::get_boundingbox (bool internal, const Matrix&) const
   return pos;
 }
 
-void
-figure::properties::set_boundingbox (const Matrix& bb, bool internal,
-                                     bool do_notify_toolkit)
+Matrix
+figure::properties::bbox2position (const Matrix& bb) const
 {
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = bb;
@@ -4092,6 +4091,15 @@ figure::properties::set_boundingbox (const Matrix& bb, bool internal,
   pos(1)++;
   pos(0)++;
   pos = convert_position (pos, "pixels", get_units (), screen_size);
+  return pos;
+}
+
+void
+figure::properties::set_boundingbox (const Matrix& bb, bool internal,
+                                     bool do_notify_toolkit)
+{
+  Matrix screen_size = screen_size_pixels ();
+  Matrix pos = bbox2position (bb);
 
   if (internal)
     set_position (pos, do_notify_toolkit);
@@ -11384,9 +11392,12 @@ set_event : public base_graphics_event
 {
 public:
   set_event (const graphics_handle& h, const std::string& name,
-             const octave_value& value, bool do_notify_toolkit = true)
+             const octave_value& value, bool do_notify_toolkit = true,
+             bool redraw_figure = false)
     : base_graphics_event (), handle (h), property_name (name),
-      property_value (value), notify_toolkit (do_notify_toolkit) { }
+      property_value (value), notify_toolkit (do_notify_toolkit),
+      m_redraw_figure (redraw_figure)
+  { }
 
   void execute (void)
   {
@@ -11399,7 +11410,41 @@ public:
         property p = go.get_properties ().get_property (property_name);
 
         if (p.ok ())
-          p.set (property_value, true, notify_toolkit);
+          {
+            // FIXME: figure position and outerposition properties set_xxx have
+            // a signature that allows passing the notify_toolkit argument.
+            // Should we change all set_xxx signatures and allow
+            // base_properties::set to accept this also? This would allow for
+            // the use of high level set_xxx instead of directly changing the
+            // property value.
+            if (go.isa ("figure") && property_name == "position")
+              {
+                figure::properties& fprops
+                  = dynamic_cast<figure::properties&> (go.get_properties ());
+                fprops.set_position (property_value, notify_toolkit);
+              }
+            else if (go.isa ("figure") && property_name == "outerposition")
+              {
+                figure::properties& fprops
+                  = dynamic_cast<figure::properties&> (go.get_properties ());
+                fprops.set_outerposition (property_value, notify_toolkit);
+              }
+            else
+              p.set (property_value, true, notify_toolkit);
+
+            if (m_redraw_figure)
+              {
+                if (! go.isa ("figure"))
+                  go = go.get_ancestor ("figure");
+
+                if (go.valid_object ())
+                  {
+                    figure::properties& fprops
+                      = dynamic_cast<figure::properties&> (go.get_properties ());
+                    fprops.get_toolkit ().redraw_figure (go);
+                  }
+              }
+          }
       }
   }
 
@@ -11413,6 +11458,7 @@ private:
   std::string property_name;
   octave_value property_value;
   bool notify_toolkit;
+  bool m_redraw_figure;
 };
 
 graphics_event
@@ -11444,9 +11490,10 @@ graphics_event
 graphics_event::create_set_event (const graphics_handle& h,
                                   const std::string& name,
                                   const octave_value& data,
-                                  bool notify_toolkit)
+                                  bool notify_toolkit, bool redraw_figure)
 {
-  return graphics_event (new set_event (h, name, data, notify_toolkit));
+  return graphics_event (new set_event (h, name, data, notify_toolkit,
+                                        redraw_figure));
 }
 
 static void
@@ -11641,12 +11688,14 @@ gh_manager::do_post_function (graphics_event::event_fcn fcn, void *fcn_data)
 
 void
 gh_manager::do_post_set (const graphics_handle& h, const std::string& name,
-                         const octave_value& value, bool notify_toolkit)
+                         const octave_value& value, bool notify_toolkit,
+                         bool redraw_figure)
 {
   gh_manager::auto_lock guard;
 
   do_post_event (graphics_event::create_set_event (h, name, value,
-                                                   notify_toolkit));
+                                                   notify_toolkit,
+                                                   redraw_figure));
 }
 
 int

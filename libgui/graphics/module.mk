@@ -174,6 +174,8 @@ OCTAVE_INTERPRETER_TARGETS += $(GRAPHICS_OCT_FILES)
 
 OCT_FILE_LIBS += $(LIBOCTGUI_GRAPHICS_LIB)
 
+OCT_FILES += $(GRAPHICS_OCT_FILES)
+
 ## Use stamp files to avoid problems with checking timestamps
 ## of symbolic links
 

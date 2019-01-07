@@ -104,6 +104,9 @@ BEGIN {
   print "OCT_FILE_LIBS += \\";
   print " $(DLDFCN_LIBS)";
   print "";
+  print "OCT_FILES += \\";
+  print " $(DLDFCN_OCT_FILES)";
+  print "";
   print "DIRSTAMP_FILES += %reldir%/$(octave_dirstamp)";
 
   print "";

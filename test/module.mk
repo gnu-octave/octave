@@ -10,11 +10,16 @@ TEST_FILES += \
   %reldir%/bug-31371.tst \
   %reldir%/bug-38565.tst \
   %reldir%/bug-38576.tst \
+  %reldir%/bug-45969.tst \
+  %reldir%/bug-45972.tst \
   %reldir%/bug-46330.tst \
   %reldir%/bug-49904.tst \
   %reldir%/bug-53579.tst \
   %reldir%/bug-53599.tst \
   %reldir%/bug-54490.tst \
+  %reldir%/bug-55308.tst \
+  %reldir%/bug-55321.tst \
+  %reldir%/bug-55322.tst \
   %reldir%/colormaps.tst \
   %reldir%/command.tst \
   %reldir%/complex.tst \
@@ -58,8 +63,6 @@ include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
 include %reldir%/bug-44940/module.mk
-include %reldir%/bug-45969/module.mk
-include %reldir%/bug-45972/module.mk
 include %reldir%/bug-46660/module.mk
 include %reldir%/bug-49379/module.mk
 include %reldir%/bug-50014/module.mk
@@ -72,9 +75,6 @@ include %reldir%/bug-51599/module.mk
 include %reldir%/bug-52075/module.mk
 include %reldir%/bug-52722/module.mk
 include %reldir%/bug-53027/module.mk
-include %reldir%/bug-55308/module.mk
-include %reldir%/bug-55321/module.mk
-include %reldir%/bug-55322/module.mk
 include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk

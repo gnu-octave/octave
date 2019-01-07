@@ -479,7 +479,7 @@ octregexp (const octave_value_list& args, int nargout,
       octave_value_list new_retval;
       new_retval.resize (nargout);
 
-      int arg_used[7] {};
+      bool arg_used[7] {};
 
       for (int j = 2; j < nargin; j++)
         {

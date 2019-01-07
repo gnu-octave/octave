@@ -506,7 +506,7 @@ namespace octave
 
     QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|otherwise"
                             "|do|function|properties|events|classdef"
-                            "|unwind_protect|unwind_protect_cleanup|try"
+                            "|unwind_protect|try"
                             "|parfor|methods)"
                             "[\r]?[\n\t #%]");
     // last word except for comments, assuming no ' or " in comment.
@@ -549,7 +549,8 @@ namespace octave
         return;
       }
 
-    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch)[\r]?[\t #%\n]");
+    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch|unwind_protect_cleanup"
+                            "|case|otherwise)[\r]?[\t #%\n]");
     if (prevline.contains (mkey))
       {
         int prev_ind = indentation (line-1);
@@ -566,7 +567,7 @@ namespace octave
       }
 
     ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
-                    "|end_try_catch|end_unwind_protext)[\r]?[\t #%\n(;]");
+                    "|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
     if (prevline.contains (ekey))
       {
         if (indentation (line-1) <= indentation (line))
@@ -593,6 +594,12 @@ namespace octave
                  "|function"
                  "|classdef|properties|events|enumeration|methods"
                  "|unwind_protect|unwind_protect_cleanup|try|catch)"
+                 "[\r\n\t #%]");
+
+    QRegExp mid_block_regexp
+      = QRegExp ("^([\t ]*)(elseif|else"
+                 "|otherwise"
+                 "|unwind_protect_cleanup|catch)"
                  "[\r\n\t #%]");
 
     QRegExp end_block_regexp
@@ -635,6 +642,9 @@ namespace octave
 
         if (end_block_regexp.indexIn (line_text) > -1)
           indent_column -= indent_increment;
+
+        if (mid_block_regexp.indexIn (line_text) > -1)
+            indent_column -= indent_increment;
 
         setIndentation (line, indent_column);
 

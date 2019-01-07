@@ -76,9 +76,14 @@ u8_from_wchar (const wchar_t *wc)
 
   // result might not be 0 terminated
   char *retval = malloc (length + 1);
-  memcpy (retval, mbchar, length);
-  free ((void *) mbchar);
-  retval[length] = 0; // 0 terminate string
+  if (retval)
+    {
+      memcpy (retval, mbchar, length);
+      free ((void *) mbchar);
+      retval[length] = 0; // 0 terminate string
+    }
+  else
+    free ((void *) mbchar);
 
   return retval;
 }
@@ -98,9 +103,15 @@ u8_to_wchar (const char *u8)
                                      src, srclen, NULL, NULL, &length);
   // result might not be 0 terminated
   wchar_t *retval = malloc (length + 1 * sizeof (wchar_t));
-  memcpy (retval, wchar, length);
-  free ((void *) wchar);
-  retval[length / sizeof (wchar_t)] = 0; // 0 terminate string
+  if (retval)
+    {
+      memcpy (retval, wchar, length);
+      free ((void *) wchar);
+      retval[length / sizeof (wchar_t)] = 0; // 0 terminate string
+    }
+
+  else
+    free ((void *) wchar);
 
   return retval;
 }

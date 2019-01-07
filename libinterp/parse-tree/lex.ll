@@ -389,9 +389,6 @@ ANY_INCLUDING_NL (.|{NL})
 
     COMMAND_ARG_FINISH;
 
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
-
     HANDLE_STRING_CONTINUATION;
   }
 

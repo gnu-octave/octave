@@ -135,7 +135,7 @@ Array<double>::issorted (sortmode mode) const
         }
 
     }
-  else if (mode == ASCENDING)
+  else  // mode == ASCENDING
     {
       // Sort out NaNs.
       while (n > 0 && octave::math::isnan (el[n-1]))

@@ -1110,7 +1110,12 @@ namespace octave
   int
   command_editor::startup_handler (void)
   {
-    for (startup_hook_fcn f : startup_hook_set)
+    // Iterate over a copy of the set to avoid problems if a hook
+    // function attempts to remove itself from the startup_hook_set.
+
+    std::set<startup_hook_fcn> hook_set = startup_hook_set;
+
+    for (startup_hook_fcn f : hook_set)
       {
         if (f)
           f ();
@@ -1122,7 +1127,12 @@ namespace octave
   int
   command_editor::pre_input_handler (void)
   {
-    for (pre_input_hook_fcn f : pre_input_hook_set)
+    // Iterate over copy of the set to avoid problems if a hook function
+    // attempts to remove itself from the pre_input_hook_set.
+
+    std::set<pre_input_hook_fcn> hook_set = pre_input_hook_set;
+
+    for (pre_input_hook_fcn f : hook_set)
       {
         if (f)
           f ();

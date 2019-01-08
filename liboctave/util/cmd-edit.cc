@@ -529,7 +529,7 @@ namespace octave
         // Remove incomplete component.
         const char *f = strrchr (line, sys::file_ops::dir_sep_char ());
 
-        if (s[1] == '~' || (f && f != s))
+        if (f && (s[1] == '~' || f != s))
           {
             // For something like "A /b", f==s; don't assume a file.
 
@@ -833,7 +833,8 @@ namespace octave
       {
         retval = static_cast<char *> (std::malloc (len+1));
 
-        strcpy (retval, tmp.c_str ());
+        if (retval)
+          strcpy (retval, tmp.c_str ());
       }
 
     return retval;
@@ -854,7 +855,8 @@ namespace octave
       {
         retval = static_cast<char *> (std::malloc (len+1));
 
-        strcpy (retval, tmp.c_str ());
+        if (retval)
+          strcpy (retval, tmp.c_str ());
       }
 
     return retval;
@@ -875,7 +877,8 @@ namespace octave
       {
         retval = static_cast<char *> (std::malloc (len+1));
 
-        strcpy (retval, tmp.c_str ());
+        if (retval)
+          strcpy (retval, tmp.c_str ());
       }
 
     return retval;
@@ -905,9 +908,10 @@ namespace octave
   char **
   gnu_readline::command_completer (const char *text, int, int)
   {
-    char **matches = nullptr;
-    matches
-      = ::octave_rl_completion_matches (text, gnu_readline::command_generator);
+    char **matches =
+      ::octave_rl_completion_matches (text,
+                                      gnu_readline::command_generator);
+
     return matches;
   }
 
@@ -1736,7 +1740,7 @@ namespace octave
                     tmpstr = now.strftime ("%I:%M:%S");
                   else if (c == '@')
                     tmpstr = now.strftime ("%I:%M %p");
-                  else if (c == 'A')
+                  else // (c == 'A')
                     tmpstr = now.strftime ("%H:%M");
 
                   break;

@@ -407,9 +407,9 @@ namespace octave
     // Get quoted search strings first, then take first string as fall back
     QRegExp rx ("\"([^\"]*)\"");
     if (rx.indexIn (query_string, 0) != -1)
-      m_query_string = rx.cap (1);
+      m_internal_search = rx.cap (1);
     else
-      m_query_string = query_string.split (" ", QString::SkipEmptyParts).first ();
+      m_internal_search = query_string.split (" ", QString::SkipEmptyParts).first ();
 
     m_help_engine->searchEngine ()->search (queries);
   }
@@ -423,6 +423,8 @@ namespace octave
   {
     if (! m_internal_search.isEmpty ())
       {
+        m_query_string = m_internal_search;
+
         QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
         if (search_engine)
           {
@@ -473,9 +475,9 @@ namespace octave
 
                 if (! url.isEmpty ())
                   {
-                    connect (this, SIGNAL (show_single_result (const QUrl)),
-                             m_doc_browser,
-                             SLOT (handle_index_clicked (const QUrl)));
+                    connect (this, SIGNAL (show_single_result (const QUrl&)),
+                             this,
+                             SLOT (handle_search_result_clicked (const QUrl&)));
 
                     emit show_single_result (url);
                   }
@@ -500,12 +502,18 @@ namespace octave
     m_find_line_edit->setText (m_query_string);
     m_find_line_edit->parentWidget ()->show ();
 
-    // Go to to first occurrence of search text. Going to the end and then
-    // search backwards until the last occurrence ensures the search text
-    // is visible in the first line of the visible part of the text.
-    m_doc_browser->moveCursor (QTextCursor::End);
-    while (m_doc_browser->find (m_find_line_edit->text (),
-                                QTextDocument::FindBackward));
+    // If no occurrence can be found go to the top of the page
+    if (! m_doc_browser->find (m_find_line_edit->text ()))
+      m_doc_browser->moveCursor (QTextCursor::Start);
+    else
+      {
+        // Go to to first occurrence of search text. Going to the end and then
+        // search backwards until the last occurrence ensures the search text
+        // is visible in the first line of the visible part of the text.
+        m_doc_browser->moveCursor (QTextCursor::End);
+        while (m_doc_browser->find (m_find_line_edit->text (),
+                                    QTextDocument::FindBackward));
+      }
   }
 
   void documentation::select_all_occurrences (const QString& text)

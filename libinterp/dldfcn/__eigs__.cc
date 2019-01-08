@@ -241,7 +241,7 @@ Undocumented internal function.
           else
             acm = (args(0).complex_matrix_value ());
           a_is_complex = true;
-          symmetric = false; // ARPACK doesn't special case complex symmetric
+          symmetric = false;  // ARPACK doesn't special case complex symmetric
           sym_tested = true;
         }
       else
@@ -327,17 +327,31 @@ Undocumented internal function.
       octave_value tmp;
 
       // issym is ignored for complex matrix inputs
-      tmp = map.getfield ("issym");
-      if (tmp.is_defined () && ! sym_tested)
+      if (! sym_tested)
         {
-          symmetric = tmp.double_value () != 0.0;
-          sym_tested = true;
+          tmp = map.getfield ("issym");
+          if (tmp.is_defined ())
+            {
+              if (tmp.numel () != 1)
+                error ("eigs: OPTS.issym must be a scalar value");
+
+              symmetric = tmp.xbool_value ("eigs: OPTS.issym must be a logical value");
+              sym_tested = true;
+            }
         }
 
       // isreal is ignored if A is not a function
-      tmp = map.getfield ("isreal");
-      if (tmp.is_defined () && have_a_fun)
-        a_is_complex = ! (tmp.double_value () != 0.0);
+      if (have_a_fun)
+        {
+          tmp = map.getfield ("isreal");
+          if (tmp.is_defined ())
+            {
+              if (tmp.numel () != 1)
+                error ("eigs: OPTS.isreal must be a scalar value");
+
+              a_is_complex = ! tmp.xbool_value ("eigs: OPTS.isreal must be a logical value");
+            }
+        }
 
       tmp = map.getfield ("tol");
       if (tmp.is_defined ())
@@ -366,7 +380,12 @@ Undocumented internal function.
 
       tmp = map.getfield ("cholB");
       if (tmp.is_defined ())
-        cholB = tmp.double_value () != 0.0;
+        {
+          if (tmp.numel () != 1)
+            error ("eigs: OPTS.cholB must be a scalar value");
+
+          cholB = tmp.xbool_value ("eigs: OPTS.cholB must be a logical value");
+        }
 
       tmp = map.getfield ("permB");
       if (tmp.is_defined ())

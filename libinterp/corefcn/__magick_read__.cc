@@ -769,7 +769,7 @@ maybe_initialize_magick (void)
       // Save locale as GraphicsMagick might change this (fixed in
       // GraphicsMagick since version 1.3.13 released on December 24, 2011)
       const char *static_locale = setlocale (LC_ALL, nullptr);
-      const std::string locale (static_locale);
+      const std::string locale = (static_locale ? static_locale : "");
 
       const std::string program_name
         = octave::sys::env::get_program_invocation_name ();

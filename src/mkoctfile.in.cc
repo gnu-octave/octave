@@ -603,10 +603,12 @@ tmp_objfile_name (void)
   // mkostemps will open the file and return a file descriptor.  We
   // won't worry about closing it because we will need the file until we
   // are done and then the file will be closed when mkoctfile exits.
-
   octave_mkostemps_wrapper (ctmpl, 2);
 
-  return std::string (ctmpl);
+  std::string retval (ctmpl);  // make C++ string from filled-in template
+  delete [] ctmpl;
+
+  return retval;
 }
 
 static void

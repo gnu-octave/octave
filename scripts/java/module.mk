@@ -34,8 +34,18 @@ JAVA_CLASSES = $(JAVA_SRC:.java=.class)
 
 %canon_reldir%_JAVA_CLASSES = $(addprefix %reldir%/, $(JAVA_CLASSES))
 
+OCT_V_JAR = $(oct__v_JAR_$(V))
+oct__v_JAR_ = $(oct__v_JAR_$(AM_DEFAULT_VERBOSITY))
+oct__v_JAR_0 = @echo "  JAR     " $@;
+oct__v_JAR_1 =
+
+OCT_V_JAVAC = $(oct__v_JAVAC_$(V))
+oct__v_JAVAC_ = $(oct__v_JAVAC_$(AM_DEFAULT_VERBOSITY))
+oct__v_JAVAC_0 = @echo "  JAVAC   " $@;
+oct__v_JAVAC_1 =
+
 $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)$(MKDIR_P) %reldir%/$(org_octave_dir) && \
+	$(OCT_V_JAVAC)$(MKDIR_P) %reldir%/$(org_octave_dir) && \
 	( cd $(srcdir)/scripts/java; \
 	  "$(JAVAC)" -source 1.6 -target 1.6 -Xlint:-options \
 	             -d $(abs_top_builddir)/scripts/java \
@@ -43,7 +53,7 @@ $(%canon_reldir%_JAVA_CLASSES) : %.class : %.java | %reldir%/$(octave_dirstamp)
 
 if AMCOND_HAVE_JAVA
 %reldir%/octave.jar: $(%canon_reldir%_JAVA_CLASSES)
-	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(OCT_V_JAR)rm -f $@-t $@ && \
 	( cd scripts/java; \
 	  "$(JAR)" cf octave.jar-t $(JAVA_CLASSES) ) && \
 	mv $@-t $@

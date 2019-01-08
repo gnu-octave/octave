@@ -10483,14 +10483,17 @@ uicontrol::properties::set_style (const octave_value& st)
   // Don't notify the style change until the "value" property is fixed
   bool modified = style.set (st, true, false);
 
-  // We now need to override "value" for listbox and popupmenu and eventually
-  // notify the toolkit afterwards.
-  if (modified && (style_is ("listbox") || style_is ("popupmenu")))
+  // Override "value" property for listbox and popupmenu.
+  if (modified)
     {
-      Matrix v = value.get ().matrix_value ();
-      if (v.numel () == 1 && v(0) == 0)
-        value.set (octave_value (1), true, false);
+      if (style_is ("listbox") || style_is ("popupmenu"))
+        {
+          Matrix v = value.get ().matrix_value ();
+          if (v.numel () == 1 && v(0) == 0)
+            value.set (octave_value (1), true, false);
+        }
 
+      // Notify toolkit
       graphics_object go = gh_manager::get_object (get___myhandle__ ());
       if (go)
         go.update (style.get_id ());

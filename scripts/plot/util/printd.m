@@ -44,7 +44,7 @@ function pr_out = printd (obj, filename)
     error ("printd: output FILENAME '%s' requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
-  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);
+  [pf, tempf, mag] = mkstemp (fullfile (tempdir (), "oct-XXXXXX"), true);
   fprintf (pf, "%s", disp (obj));
   frewind (pf);
 
@@ -94,8 +94,8 @@ endfunction
 %! "   4 | 244"                    , ...
 %! "   5 | 2"                      );
 %! printd (r2, "test_p.txt");
-%! system ("cat test_p.txt");
-%! delete ("test_p.txt");
+%! type ("test_p.txt");
+%! unlink ("test_p.txt");
 
 %!test
 %! r2 = char (
@@ -106,8 +106,12 @@ endfunction
 %! "   3 | 98"                     ,
 %! "   4 | 244"                    ,
 %! "   5 | 2"                      );
-%! printd (r2, "test_p.txt");
-%! r4 = fileread ("test_p.txt");
-%! delete ("test_p.txt");
-%! r2 = disp (r2);
-%! assert (r4, r2);
+%! unwind_protect
+%!   filename = [tempname() ".txt"];
+%!   printd (r2, filename);
+%!   r4 = fileread (filename);
+%!   r2 = disp (r2);
+%!   assert (r4, r2);
+%! unwind_protect_cleanup
+%!   unlink (filename);
+%! end_unwind_protect

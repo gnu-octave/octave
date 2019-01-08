@@ -54,8 +54,8 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
         }
       else
         {
-          tmp_k = x(i);
           z(i) = 1;
+          tmp_k = x(i);
         }
     }
 
@@ -289,7 +289,7 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
 
   octave_idx_type tmp_np = 1;
 
-  bool match = dimy(0) == k && nd == dimy.ndims ();
+  bool match = ((dimy(0) == k) && (nd == dimy.ndims ()));
 
   dimz = dim_vector::alloc (nd);
 
@@ -297,7 +297,7 @@ get_blkmm_dims (const dim_vector& dimx, const dim_vector& dimy,
   dimz(1) = n;
   for (int i = 2; match && i < nd; i++)
     {
-      match = match && dimx(i) == dimy(i);
+      match = (dimx(i) == dimy(i));
       dimz(i) = dimx(i);
       tmp_np *= dimz(i);
     }

@@ -257,7 +257,7 @@ namespace octave
 
   history_system::history_system (interpreter& interp)
     : m_interpreter (interp), m_input_from_tmp_file (false),
-      m_timestamp_format_string ()
+      m_timestamp_format_string (default_timestamp_format ())
   { }
 
   void history_system::initialize (bool read_history_file)

@@ -61,6 +61,7 @@
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install (mfile_pkg_tgz{i});
+%!   system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 %!
@@ -70,6 +71,7 @@
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
+%!   system (["chmod -Rf u+w '" prefix "'"]);   ## FIXME: Work around bug #53578
 %!   pkg ("uninstall", mfile_pkg_name{i});
 %! endfor
 
@@ -90,14 +92,15 @@
 ## Action load/unload (within install/uninstall)
 %!testif HAVE_Z
 %! for i = 1:numel (mfile_pkg_name)
-%!  name = mfile_pkg_name{i};
-%!  silent_pkg_install ("-local", mfile_pkg_tgz{i});
-%!  unwind_protect
-%!    pkg ("load", name);
-%!    pkg ("unload", name);
-%!  unwind_protect_cleanup
-%!    pkg ("uninstall", name);
-%!  end_unwind_protect
+%!   name = mfile_pkg_name{i};
+%!   silent_pkg_install ("-local", mfile_pkg_tgz{i});
+%!   unwind_protect
+%!     pkg ("load", name);
+%!     pkg ("unload", name);
+%!   unwind_protect_cleanup
+%!     system (["chmod -Rf u+w '" prefix "'"]); ## FIXME: Work around bug #53578
+%!     pkg ("uninstall", name);
+%!   end_unwind_protect
 %! endfor
 %!
 %!error <package foobar is not installed> pkg ("load", "foobar");
@@ -122,6 +125,7 @@
 %! [desc, flag] = pkg ("describe", mfile_pkg_name{1});
 %! ## FIXME: this only tests that the describe command runs,
 %! ##        not that the output is in anyway correct.
+%! system (["chmod -Rf u+w '" prefix "'"]);     ## FIXME: Work around bug #53578
 %! pkg ("uninstall", mfile_pkg_name{1});
 
 # -verbose

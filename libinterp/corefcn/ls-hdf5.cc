@@ -1008,7 +1008,7 @@ save_hdf5_empty (octave_hdf5_id loc_id, const char *name, const dim_vector& d)
   H5Dclose (data_hid);
   H5Sclose (space_hid);
 
-  if (retval >= 0)
+  if (retval)
     retval = hdf5_add_attr (loc_id, "OCTAVE_EMPTY_MATRIX");
 
   return (retval == 0 ? 1 : retval);

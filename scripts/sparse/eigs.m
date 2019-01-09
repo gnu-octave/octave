@@ -871,7 +871,7 @@ endfunction
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! R = chol (B);
-%! opts.cholB = R;
+%! opts.cholB = true;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4
 %!   assert (A * v(:,i), d(i, i) * B * v(:,i), 1e-12)
@@ -880,7 +880,7 @@ endfunction
 %! A = toeplitz (sparse (1:10));
 %! B = toeplitz (sparse ([1, 1], [1, 2], [2, 1], 1, 10));
 %! [R, ~, permB] = chol (B, "vector");
-%! opts.cholB = R;
+%! opts.cholB = true;
 %! opts.permB = permB;
 %! [v, d] = eigs (A, R, 4, "lm", opts);
 %! for i = 1:4

@@ -127,7 +127,7 @@ namespace octave
 
   signals:
 
-    void show_single_result (const QUrl);
+    void show_single_result (const QUrl&);
 
   private:
 

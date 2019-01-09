@@ -170,7 +170,8 @@ namespace octave
 
       char *new_item = static_cast<char *> (std::malloc (new_len));
 
-      sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
+      if (new_item)
+        sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
 
       // As far as I can see there's no way to distinguish between the
       // various errors; putenv doesn't have errno values.

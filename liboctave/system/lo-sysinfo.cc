@@ -66,10 +66,7 @@ namespace octave
           s << "FlexiBLAS Version "
             << v_major << "." << v_minor << "." << v_patch;
 
-          if (! retval.empty ())
-            retval += "\n";
-
-          retval += s.str ();
+          retval = s.str ();
         }
 
       // OpenBLAS

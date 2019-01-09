@@ -190,6 +190,9 @@ namespace octave
         retval = 0;
       }
 
+    // Clean up memory
+    delete lxr;
+
     return retval;
   }
 

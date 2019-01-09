@@ -44,7 +44,8 @@ along with Octave; see the file COPYING.  If not, see
  \
   ss = malloc (strlen (s) + 1); \
  \
-  strcpy (ss, s)
+  if (ss) \
+    strcpy (ss, s)
 
 void
 octave_rl_redisplay (void)

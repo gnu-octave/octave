@@ -77,11 +77,12 @@ namespace octave
   {
     int retval = 0;
 
-    lexer *lxr = (interactive
-                  ? new lexer (m_interpreter)
-                  : new lexer (stdin, m_interpreter));
+    // The parser takes ownership of the lexer and will delete it when
+    // the parser goes out of scope.
 
-    parser parser (*lxr);
+    parser repl_parser (interactive
+                        ? new lexer (m_interpreter)
+                        : new lexer (stdin, m_interpreter));
 
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
@@ -91,18 +92,18 @@ namespace octave
           {
             reset_error_handler ();
 
-            parser.reset ();
+            repl_parser.reset ();
 
             if (symtab.at_top_level ())
               reset_debug_state ();
 
-            retval = parser.run ();
+            retval = repl_parser.run ();
 
             if (retval == 0)
               {
-                if (parser.m_stmt_list)
+                if (repl_parser.m_stmt_list)
                   {
-                    parser.m_stmt_list->accept (*this);
+                    repl_parser.m_stmt_list->accept (*this);
 
                     octave_quit ();
 
@@ -125,7 +126,7 @@ namespace octave
                     else
                       command_editor::increment_current_command_number ();
                   }
-                else if (parser.m_lexer.m_end_of_input)
+                else if (repl_parser.m_lexer.m_end_of_input)
                   {
                     retval = EOF;
                     break;
@@ -190,9 +191,6 @@ namespace octave
         retval = 0;
       }
 
-    // Clean up memory
-    delete lxr;
-
     return retval;
   }
 
@@ -202,22 +200,22 @@ namespace octave
   {
     octave_value_list retval;
 
-    parser parser (eval_str, m_interpreter);
+    parser eval_parser (eval_str, m_interpreter);
 
     do
       {
-        parser.reset ();
+        eval_parser.reset ();
 
-        parse_status = parser.run ();
+        parse_status = eval_parser.run ();
 
         if (parse_status == 0)
           {
-            if (parser.m_stmt_list)
+            if (eval_parser.m_stmt_list)
               {
                 tree_statement *stmt = nullptr;
 
-                if (parser.m_stmt_list->length () == 1
-                    && (stmt = parser.m_stmt_list->front ())
+                if (eval_parser.m_stmt_list->length () == 1
+                    && (stmt = eval_parser.m_stmt_list->front ())
                     && stmt->is_expression ())
                   {
                     tree_expression *expr = stmt->expression ();
@@ -251,14 +249,14 @@ namespace octave
                       retval = octave_value_list ();
                   }
                 else if (nargout == 0)
-                  parser.m_stmt_list->accept (*this);
+                  eval_parser.m_stmt_list->accept (*this);
                 else
                   error ("eval: invalid use of statement list");
 
                 if (returning () || breaking () || continuing ())
                   break;
               }
-            else if (parser.m_lexer.m_end_of_input)
+            else if (eval_parser.m_lexer.m_end_of_input)
               break;
           }
       }

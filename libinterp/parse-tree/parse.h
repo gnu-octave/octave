@@ -498,8 +498,12 @@ namespace octave
       : base_parser (*(new lexer (eval_string, interp)))
     { }
 
-    parser (lexer& lxr)
-      : base_parser (lxr)
+    // The lexer must be allocated with new.  The parser object
+    // takes ownership of and deletes the lexer object in its
+    // destructor.
+
+    parser (lexer *lxr)
+      : base_parser (*lxr)
     { }
 
     // No copying!

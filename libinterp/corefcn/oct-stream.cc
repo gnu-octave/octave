@@ -358,7 +358,7 @@ namespace octave
                              char& modifier);
 
     int finish_conversion (const std::string& s, size_t& i, size_t n,
-                           int& width, bool discard, char& type,
+                           int width, bool discard, char& type,
                            char modifier);
   };
 
@@ -569,7 +569,7 @@ namespace octave
 
   int
   scanf_format_list::finish_conversion (const std::string& s, size_t& i,
-                                        size_t n, int& width, bool discard,
+                                        size_t n, int width, bool discard,
                                         char& type, char modifier)
   {
     int retval = 0;
@@ -890,7 +890,7 @@ namespace octave
                   if (empty_buf)
                     {
                       process_conversion (s, i, n, args, flags, fw, prec,
-                                          type, modifier);
+                                          modifier, type);
 
                       // If there is nothing in the buffer, then
                       // add_elt_to_list must have just been called, so we
@@ -1756,7 +1756,7 @@ namespace octave
     std::string parse_char_class (const std::string& pattern) const;
 
     int finish_conversion (const std::string& s, size_t& i, size_t n,
-                           unsigned int& width, int& prec, int& bitwidth,
+                           unsigned int width, int prec, int bitwidth,
                            octave_value& val_type,
                            bool discard, char& type);
   };
@@ -2333,8 +2333,8 @@ namespace octave
 
   int
   textscan_format_list::finish_conversion (const std::string& s, size_t& i,
-                                           size_t n, unsigned int& width,
-                                           int& prec, int& bitwidth,
+                                           size_t n, unsigned int width,
+                                           int prec, int bitwidth,
                                            octave_value& val_type, bool discard,
                                            char& type)
   {
@@ -2457,7 +2457,6 @@ namespace octave
         bool already_skipped_delim = false;
         ts.skip_whitespace (ds);
         ds.progress_benchmark ();
-        bool progress = false;
         ts.scan_complex (ds, *fmt_elts[0], val);
         if (ds.fail ())
           {
@@ -2492,7 +2491,7 @@ namespace octave
         if (! already_skipped_delim)
           ts.skip_delim (ds);
 
-        if (! progress && ds.no_progress ())
+        if (ds.no_progress ())
           break;
 
         nconv++;
@@ -2643,7 +2642,7 @@ namespace octave
           {
             if (row == 0 || row >= size)
               {
-                size += size+1;
+                size += (size+1);
                 for (auto& col : out)
                   col = col.resize (dim_vector (size, 1), 0);
               }
@@ -2786,8 +2785,7 @@ namespace octave
         int precision = fmt.prec;
         int i;
 
-        if (width_left)
-          width_left--;                // Consider width of '.'
+        width_left--;                  // Consider width of '.'
 
         if (precision == -1)
           precision = 1<<30;           // FIXME: Should be MAXINT
@@ -2835,16 +2833,14 @@ namespace octave
             int exp_sign = 1;
             if (ch1 == '+')
               {
-                if (width_left)
-                  width_left--;
+                width_left--;
                 is.get ();
               }
             else if (ch1 == '-')
               {
+                width_left--;
                 exp_sign = -1;
                 is.get ();
-                if (width_left)
-                  width_left--;
               }
             valid = false;
             while (width_left-- && is && (ch = is.get ()) >= '0' && ch <= '9')

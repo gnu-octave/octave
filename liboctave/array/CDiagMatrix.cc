@@ -247,7 +247,7 @@ ComplexDiagMatrix::row (octave_idx_type i) const
     (*current_liboctave_error_handler) ("invalid row selection");
 
   ComplexRowVector retval (c, 0.0);
-  if (r <= c || (r > c && i < c))
+  if (r <= c || i < c)
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -259,7 +259,7 @@ ComplexDiagMatrix::row (char *s) const
   if (! s)
     (*current_liboctave_error_handler) ("invalid row selection");
 
-  char c = *s;
+  char c = s[0];
   if (c == 'f' || c == 'F')
     return row (static_cast<octave_idx_type> (0));
   else if (c == 'l' || c == 'L')
@@ -277,7 +277,7 @@ ComplexDiagMatrix::column (octave_idx_type i) const
     (*current_liboctave_error_handler) ("invalid column selection");
 
   ComplexColumnVector retval (r, 0.0);
-  if (r >= c || (r < c && i < r))
+  if (r >= c || i < r)
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -289,7 +289,7 @@ ComplexDiagMatrix::column (char *s) const
   if (! s)
     (*current_liboctave_error_handler) ("invalid column selection");
 
-  char c = *s;
+  char c = s[0];
   if (c == 'f' || c == 'F')
     return column (static_cast<octave_idx_type> (0));
   else if (c == 'l' || c == 'L')

@@ -261,7 +261,10 @@ namespace QtHandles
   static void
   autoscale_axes (axes::properties& ap)
   {
-    ap.clear_zoom_stack ();
+    gh_manager::auto_lock lock;
+
+    // Reset zoom stack
+    ap.clear_zoom_stack (false);
 
     ap.set_xlimmode ("auto");
     ap.set_ylimmode ("auto");

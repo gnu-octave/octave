@@ -412,8 +412,6 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
         }
 
       fw = 1 + ld + 1 + rd;
-      if (inf_or_nan && fw < 4)
-        fw = 4;
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
@@ -514,8 +512,6 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     {
       int digits = (x_max > x_min ? x_max : x_min);
       fw = (digits <= 0 ? 5 : digits + 4);
-      if (inf_or_nan && fw < 5)
-        fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -687,8 +683,6 @@ make_complex_format (int x_max, int x_min, int r_x,
       int digits = r_x;
       i_fw = 0;
       r_fw = (digits <= 0 ? 5 : digits + 4);
-      if (inf_or_nan && r_fw < 5)
-        r_fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -755,11 +749,6 @@ make_complex_format (int x_max, int x_min, int r_x,
 
       i_fw = ld + 1 + rd;
       r_fw = i_fw + 1;
-      if (inf_or_nan && i_fw < 3)
-        {
-          i_fw = 3;
-          r_fw = 4;
-        }
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
@@ -906,8 +895,6 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
       int digits = (r_x_max > r_x_min ? r_x_max : r_x_min);
       i_fw = 0;
       r_fw = (digits <= 0 ? 5 : digits + 4);
-      if (inf_or_nan && r_fw < 5)
-        r_fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -1837,7 +1824,7 @@ octave_print_matrix_internal (std::ostream& os, const MT& m,
                         os << "[ ";
                       else
                         {
-                          if (j > col && j < lim)
+                          if (j > col)
                             os << ", ";
                           else
                             os << "  ";
@@ -1953,7 +1940,7 @@ octave_print_diag_matrix_internal (std::ostream& os, const DMT& m,
                     os << "[ ";
                   else
                     {
-                      if (j > col && j < lim)
+                      if (j > col)
                         os << ", ";
                       else
                         os << "  ";
@@ -2091,8 +2078,7 @@ void print_nd_array (std::ostream& os, const NDA_T& nda,
               page.print_raw (os);
             }
 
-          if (i < m)
-            NDA_T::increment_index (ra_idx, dims, 2);
+          NDA_T::increment_index (ra_idx, dims, 2);
         }
     }
 }
@@ -2247,7 +2233,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
                     os << "[ ";
                   else
                     {
-                      if (j > col && j < lim)
+                      if (j > col)
                         os << ", ";
                       else
                         os << "  ";
@@ -2691,8 +2677,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           if (i < m - 1)
             os << "\n";
 
-          if (i < m)
-            increment_index (ra_idx, dims, 2);
+          increment_index (ra_idx, dims, 2);
         }
     }
 }

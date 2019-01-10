@@ -329,11 +329,9 @@ namespace octave
 #if defined (HAVE_QSCINTILLA)
 #  if defined (Q_OS_WIN32)
     int eol_mode = QsciScintilla::EolWindows;
-#elif defined (Q_OS_MAC)
-    int eol_mode = QsciScintilla::EolMac;
-#else
+#  else
     int eol_mode = QsciScintilla::EolUnix;
-#endif
+#  endif
 #else
     int eol_mode = 2;
 #endif

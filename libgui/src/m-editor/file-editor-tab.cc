@@ -1901,8 +1901,6 @@ namespace octave
     // get default from OS or from settings
 #if defined (Q_OS_WIN32)
     int os_eol_mode = QsciScintilla::EolWindows;
-#elif defined (Q_OS_MAC)
-    int os_eol_mode = QsciScintilla::EolMac;
 #else
     int os_eol_mode = QsciScintilla::EolUnix;
 #endif
@@ -1988,8 +1986,6 @@ namespace octave
     // missing in the settings
 #if defined (Q_OS_WIN32)
     int eol_mode = QsciScintilla::EolWindows;
-#elif defined (Q_OS_MAC)
-    int eol_mode = QsciScintilla::EolMac;
 #else
     int eol_mode = QsciScintilla::EolUnix;
 #endif

@@ -708,13 +708,6 @@ Begin a properties block in a classdef definition.
 Return from a function.
 @seealso{function}
 @end deftypefn
-static
-@c libinterp/parse-tree/oct-parse.yy
--*- texinfo -*-
-@deftypefn {} {} static
-This statement has been deprecated in favor of @code{persistent}.
-@seealso{persistent}
-@end deftypefn
 switch
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-

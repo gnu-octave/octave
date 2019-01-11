@@ -6161,6 +6161,10 @@ public:
                          int busyaction = base_graphics_event::QUEUE);
 
   static graphics_event
+  create_mcode_event (const graphics_handle& h, const std::string& cmd,
+                      int busyaction);
+
+  static graphics_event
   create_function_event (event_fcn fcn, void *data = nullptr);
 
   static graphics_event

@@ -231,6 +231,8 @@ NDArray::ifourierNd (void) const
 ComplexNDArray
 NDArray::fourier (int dim) const
 {
+  octave_unused_parameter (dim);
+
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
 
@@ -240,6 +242,8 @@ NDArray::fourier (int dim) const
 ComplexNDArray
 NDArray::ifourier (int dim) const
 {
+  octave_unused_parameter (dim);
+
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
 

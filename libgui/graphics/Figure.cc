@@ -650,15 +650,6 @@ namespace QtHandles
                           prop == "position");
   }
 
-  void
-  Figure::close_figure_callback (void)
-  {
-    figure::properties& fp = properties<figure> ();
-    octave_value fnum = fp.get___myhandle__ ().as_octave_value ();
-
-    Ffeval (ovl ("close", fnum));
-  }
-
   bool
   Figure::eventNotifyBefore (QObject *obj, QEvent *xevent)
   {
@@ -697,7 +688,7 @@ namespace QtHandles
               {
               case QEvent::Close:
                 xevent->ignore ();
-                octave_link::post_event (this, &Figure::close_figure_callback);
+                gh_manager::post_callback (m_handle, "closerequestfcn");
                 return true;
 
               default:

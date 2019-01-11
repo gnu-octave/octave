@@ -3388,17 +3388,6 @@ base_properties::update_handlevisibility (void)
   if (is_handle_visible ())
     return;
 
-  // This object should not be the root "callbackobject"
-  graphics_object rt = gh_manager::get_object (0);
-  octave_value cbo = rt.get ("callbackobject");
-  if (! cbo.isempty () && cbo.double_value () == __myhandle__)
-    {
-      gh_manager::auto_lock guard;
-      auto& root_props =
-        dynamic_cast<root_figure::properties&> (rt.get_properties ());
-      root_props.set_callbackobject (Matrix ());
-    }
-
   // This object should not be the figure "currentobject"
   graphics_object go (gh_manager::get_object (get___myhandle__ ()));
   graphics_object fig (go.get_ancestor ("figure"));
@@ -3438,17 +3427,16 @@ base_properties::update_handlevisibility (void)
 /*
 ## test current callback object have visible handle
 %!test
-%! hf = figure ("visible", "off");
-%! hax = axes ();
+%! hf = figure ("handlevisibility", "off", "visible", "off");
+%! hax = axes ("parent", hf, "handlevisibility", "off");
 %! unwind_protect
-%!   fcn = @(h) assert (gcbo (), h);
+%!   fcn = @(h) setappdata (h, "testdata", gcbo ());
+%!   addlistener (hf, "color", fcn);
 %!   addlistener (hax, "color", fcn);
-%!   set (hax, "color", "r");
-%!   dellistener (hax, "color", fcn);
-%!   set (hax, "handlevisibility", "off");
-%!   fcn = @() assert (gcbo (), []);
-%!   addlistener (hax, "color", fcn);
+%!   set (hf, "color", "b");
 %!   set (hax, "color", "b");
+%!   assert (getappdata (hf, "testdata"), hf)
+%!   assert (getappdata (hax, "testdata"), hax)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect;
@@ -11366,6 +11354,38 @@ private:
 };
 
 class
+mcode_event : public base_graphics_event
+{
+public:
+  mcode_event (const graphics_handle& h, const std::string& cmd,
+               int busyaction = base_graphics_event::QUEUE)
+    : base_graphics_event (busyaction), handle (h), mcode (cmd)
+  { }
+
+  void execute (void)
+  {
+    if (! mcode.empty ())
+      {
+        graphics_object go = gh_manager::get_object (handle);
+        if (go.valid_object ())
+          {
+            octave_value cb (mcode);
+            gh_manager::execute_callback (handle, cb);
+          }
+      }
+  }
+
+private:
+  mcode_event (void)
+    : base_graphics_event (), handle (), mcode ()
+  { }
+
+private:
+  graphics_handle handle;
+  std::string mcode;
+};
+
+class
 function_event : public base_graphics_event
 {
 public:
@@ -11489,6 +11509,14 @@ graphics_event::create_callback_event (const graphics_handle& h,
 }
 
 graphics_event
+graphics_event::create_mcode_event (const graphics_handle& h,
+                                    const std::string& cmd,
+                                    int busyaction)
+{
+  return graphics_event (new mcode_event (h, cmd, busyaction));
+}
+
+graphics_event
 graphics_event::create_function_event (graphics_event::event_fcn fcn,
                                        void *data)
 {
@@ -11566,12 +11594,10 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           //        const "get" method?
           gh_manager::auto_lock guard;
           callback_objects.push_front (go);
-          if (go.get ("handlevisibility").string_value () != "off")
-            xset_gcbo (h);
+          xset_gcbo (h);
         }
 
       // Copy CB because "function_value" method is non-const.
-
       octave_value cb = cb_arg;
 
       if (cb.is_function () || cb.is_function_handle ())
@@ -11668,22 +11694,26 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
       caseless_str cname (name);
       int busyaction = base_graphics_event::QUEUE;
 
-      if (cname.compare ("deletefcn")
-          || cname.compare ("createfcn")
-          || (go.isa ("figure")
-              && cname.compare ("closerequestfcn"))
-          || ((go.isa ("figure")
-               || go.isa ("uipanel")
+      if (cname == "deletefcn" || cname == "createfcn"
+          || cname == "closerequestfcn"
+          || ((go.isa ("figure") || go.isa ("uipanel")
                || go.isa ("uibuttongroup"))
-              && (cname.compare ("resizefcn")
-                  || cname.compare ("sizechangedfcn"))))
+              && (cname == "resizefcn" || cname == "sizechangedfcn")))
         busyaction = base_graphics_event::INTERRUPT;
       else if (go.get_properties ().get_busyaction () == "cancel")
         busyaction = base_graphics_event::CANCEL;
 
-
-      do_post_event (graphics_event::create_callback_event (h, name, data,
-                                                            busyaction));
+      // The "closerequestfcn" callback must be executed once the figure has
+      // been made current. Let "close" do the job.
+      if (cname == "closerequestfcn")
+        {
+          std::string cmd ("close (gcbf ());");
+          do_post_event (graphics_event::create_mcode_event (h, cmd,
+                                                             busyaction));
+        }
+      else
+        do_post_event (graphics_event::create_callback_event (h, name, data,
+                                                              busyaction));
     }
 }
 

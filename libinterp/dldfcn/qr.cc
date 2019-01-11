@@ -40,6 +40,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ovl.h"
 
+/*
+## Restore all rand* "state" values
+%!function restore_rand_states (state)
+%!  rand ("state", state.rand);
+%!  randn ("state", state.randn);
+%!endfunction
+
+%!shared old_state, restore_state
+%! ## Save and restore the states of both random number generators that are
+%! ## tested by the unit tests in this file.
+%! old_state.rand = rand ("state");
+%! old_state.randn = randn ("state");
+%! restore_state = onCleanup (@() restore_rand_states (old_state));
+*/
+
 template <typename MT>
 static octave_value
 get_qr_r (const octave::math::qr<MT>& fact)
@@ -842,12 +857,18 @@ orthogonal basis of @code{span (A)}.
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = sprandn (n,n,d) + speye (n,n);
 %! r = qr (a);
 %! assert (r'*r, a'*a, 1e-10);
 
 %!testif HAVE_COLAMD
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = sprandn (n,n,d) + speye (n,n);
 %! q = symamd (a);
 %! a = a(q,q);
@@ -856,12 +877,18 @@ orthogonal basis of @code{span (A)}.
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = sprandn (n,n,d) + speye (n,n);
 %! [c,r] = qr (a, ones (n,1));
 %! assert (r\c, full (a)\ones (n,1), 10e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = sprandn (n,n,d) + speye (n,n);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
@@ -870,6 +897,9 @@ orthogonal basis of @code{span (A)}.
 ## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = sprandn (n,n+1,d) + speye (n,n+1);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
@@ -877,12 +907,18 @@ orthogonal basis of @code{span (A)}.
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! r = qr (a);
 %! assert (r'*r,a'*a,1e-10);
 
 %!testif HAVE_COLAMD
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! q = symamd (a);
 %! a = a(q,q);
@@ -891,12 +927,18 @@ orthogonal basis of @code{span (A)}.
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! [c,r] = qr (a, ones (n,1));
 %! assert (r\c, full (a)\ones (n,1), 10e-10);
 
 %!testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = 1i*sprandn (n,n,d) + speye (n,n);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);
@@ -905,6 +947,9 @@ orthogonal basis of @code{span (A)}.
 ## Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
 %! n = 20;  d = 0.2;
+%! ## initialize generators to make behavior reproducible
+%! rand ("state", 42);
+%! randn ("state", 42);
 %! a = 1i*sprandn (n,n+1,d) + speye (n,n+1);
 %! b = randn (n,2);
 %! [c,r] = qr (a, b);

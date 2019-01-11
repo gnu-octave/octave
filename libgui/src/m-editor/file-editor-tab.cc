@@ -698,7 +698,14 @@ namespace octave
 
           }
 
-        if (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file))
+        // make sure the apis file is usable
+        QFile f (_prep_apis_file);
+        bool apis_usable = f.open (QIODevice::ReadWrite);
+        if (apis_usable)
+          f.close ();
+
+        if (apis_usable &&
+            (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file)))
           {
             // either we have decided to update the apis file or
             // no prepared info was loaded, prepare and save if possible

@@ -3388,17 +3388,6 @@ base_properties::update_handlevisibility (void)
   if (is_handle_visible ())
     return;
 
-  // This object should not be the root "callbackobject"
-  graphics_object rt = gh_manager::get_object (0);
-  octave_value cbo = rt.get ("callbackobject");
-  if (! cbo.isempty () && cbo.double_value () == __myhandle__)
-    {
-      gh_manager::auto_lock guard;
-      auto& root_props =
-        dynamic_cast<root_figure::properties&> (rt.get_properties ());
-      root_props.set_callbackobject (Matrix ());
-    }
-
   // This object should not be the figure "currentobject"
   graphics_object go (gh_manager::get_object (get___myhandle__ ()));
   graphics_object fig (go.get_ancestor ("figure"));
@@ -3438,17 +3427,16 @@ base_properties::update_handlevisibility (void)
 /*
 ## test current callback object have visible handle
 %!test
-%! hf = figure ("visible", "off");
-%! hax = axes ();
+%! hf = figure ("handlevisibility", "off", "visible", "off");
+%! hax = axes ("parent", hf, "handlevisibility", "off");
 %! unwind_protect
-%!   fcn = @(h) assert (gcbo (), h);
+%!   fcn = @(h) setappdata (h, "testdata", gcbo ());
+%!   addlistener (hf, "color", fcn);
 %!   addlistener (hax, "color", fcn);
-%!   set (hax, "color", "r");
-%!   dellistener (hax, "color", fcn);
-%!   set (hax, "handlevisibility", "off");
-%!   fcn = @() assert (gcbo (), []);
-%!   addlistener (hax, "color", fcn);
+%!   set (hf, "color", "b");
 %!   set (hax, "color", "b");
+%!   assert (getappdata (hf, "testdata"), hf)
+%!   assert (getappdata (hax, "testdata"), hax)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect;
@@ -11570,8 +11558,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           //        const "get" method?
           gh_manager::auto_lock guard;
           callback_objects.push_front (go);
-          if (go.get ("handlevisibility").string_value () != "off")
-            xset_gcbo (h);
+          xset_gcbo (h);
         }
 
       // Copy CB because "function_value" method is non-const.

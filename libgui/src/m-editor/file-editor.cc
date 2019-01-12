@@ -1849,7 +1849,7 @@ namespace octave
 
     m_conv_eol_mac_action
       = add_action (m_edit_fmt_menu,
-                    tr ("Convert Line Endings to &Mac (CR)"),
+                    tr ("Convert Line Endings to Legacy &Mac (CR)"),
                     SLOT (request_conv_eol_mac (bool)));
 
     m_edit_nav_menu = m_edit_menu->addMenu (tr ("Navi&gation"));

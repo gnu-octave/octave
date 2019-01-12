@@ -1446,7 +1446,7 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4221,7 +4221,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
+        <source>Legacy Mac (CR)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

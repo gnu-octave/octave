@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "lo-sysdep.h"
 #include "oct-env.h"
+#include "oct-process.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
 #include "parse.h"
@@ -67,10 +68,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_JAVA)
 
+// FIXME: Should these values be configurable at run time?
+
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  define LIBJVM_FILE_NAME "jvm.dll"
 #elif defined (__APPLE__)
 #  define LIBJVM_FILE_NAME "libjvm.dylib"
+#  define JAVA_HOME_CMD "/usr/libexec/java_home"
 #else
 #  define LIBJVM_FILE_NAME "libjvm.so"
 #endif
@@ -594,6 +598,7 @@ get_jvm_lib_path_from_registry ()
 }
 #endif
 
+
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
 //!
 //! If the jvm exists and is initialized, #jvm points to it, i.e. is not 0
@@ -634,7 +639,7 @@ initialize_jvm (void)
     locale = std::string (static_locale);
 
   octave::dynamic_library lib ("");
-  std::string jvm_lib_path = "linked in or loaded libraries";
+  std::string jvm_lib_path;
 
   // Check whether the Java VM library is already loaded or linked in.
   JNI_CreateJavaVM_t create_vm = reinterpret_cast<JNI_CreateJavaVM_t>
@@ -642,7 +647,9 @@ initialize_jvm (void)
   JNI_GetCreatedJavaVMs_t get_vm = reinterpret_cast<JNI_GetCreatedJavaVMs_t>
                                    (lib.search ("JNI_GetCreatedJavaVMs"));
 
-  if (! create_vm || ! get_vm)
+  if (create_vm && get_vm)
+    jvm_lib_path = "linked in or loaded libraries";
+  else
     {
       // JAVA_HOME environment variable takes precedence
       std::string java_home_env = octave::sys::env::getenv ("JAVA_HOME");
@@ -655,7 +662,36 @@ initialize_jvm (void)
           if (jvm_lib_path.empty ())
             jvm_lib_path = java_home_env + "/" LIBJVM_FILE_NAME;
         }
-      else
+
+#  if defined (__APPLE__)
+      // Use standard /usr/libexec/java_home if available.
+      if (jvm_lib_path.empty ())
+        {
+          octave::sys::file_stat libexec_java_home_exists (JAVA_HOME_CMD);
+          if (libexec_java_home_exists)
+            {
+              // FIXME: Should this command be fully configurable at run
+              // time?  Or is it OK for the options to be fixed here?
+
+              std::string java_home_cmd = std::string (JAVA_HOME_CMD)
+                + " --failfast --version 1.6+ 2>/dev/null";
+
+              process_execution_result rslt
+                = octave::run_command_and_return_output (java_home_cmd);
+
+              if (rslt.exit_status () == 0)
+                {
+                  std::string output = rslt.stdout_output ();
+                  std::string found_path = output.substr (0, output.length() - 1);
+                  std::string jvm_lib_found = get_jvm_lib_path_in_subdir (found_path);
+                  if (!jvm_lib_found.empty ())
+                    jvm_lib_path = jvm_lib_found;
+                }
+            }
+        }
+#  endif
+
+      if (jvm_lib_path.empty ())
         {
 #if defined (OCTAVE_USE_WINDOWS_API)
           jvm_lib_path = get_jvm_lib_path_from_registry ();

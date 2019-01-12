@@ -68,6 +68,7 @@ COREFCN_INC = \
   %reldir%/oct-obj.h \
   %reldir%/oct-prcstrm.h \
   %reldir%/oct-procbuf.h \
+  %reldir%/oct-process.h \
   %reldir%/oct-stdstrm.h \
   %reldir%/oct-stream.h \
   %reldir%/oct-strstrm.h \
@@ -208,6 +209,7 @@ COREFCN_SRC = \
   %reldir%/oct-map.cc \
   %reldir%/oct-prcstrm.cc \
   %reldir%/oct-procbuf.cc \
+  %reldir%/oct-process.cc \
   %reldir%/oct-stream.cc \
   %reldir%/oct-strstrm.cc \
   %reldir%/oct-tex-lexer.ll \

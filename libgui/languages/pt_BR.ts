@@ -793,8 +793,8 @@ para escrita: %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>Converter Finais de Linha para &amp;Mac (CR)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">Converter Finais de Linha para Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3884,8 +3884,8 @@ Gostaria de salvar o conjunto atual de teclas de atalho ou cancelar a ação?</t
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

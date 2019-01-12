@@ -1463,8 +1463,8 @@ in scrittura: %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>A capo in stile &amp;Mac (CR)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">A capo in stile Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4353,8 +4353,8 @@ Vorresti salvare le attuali scorciatoie o annullare l&apos;azione?</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

@@ -1455,8 +1455,8 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>行末文字を Mac 仕様にする (CR) (&amp;M)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">行末文字を Legacy Mac 仕様にする (CR) (&amp;M)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4360,8 +4360,8 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

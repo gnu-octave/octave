@@ -794,8 +794,8 @@ pour écrire : %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>Convertir les Fins de Lignes en &amp;Mac (CR)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">Convertir les Fins de Lignes en Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3884,8 +3884,8 @@ Voulez sauvegarder les raccourcis actuels ou annuler cette action ?</translation
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

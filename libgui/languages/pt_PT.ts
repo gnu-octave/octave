@@ -1452,8 +1452,8 @@ para escrita: %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation type="unfinished">Converter Fins de Linha para &amp;Mac (CR)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">Converter Fins de Linha para Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4509,8 +4509,8 @@ Would you like to save the current shortcut set or cancel the action?</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

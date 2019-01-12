@@ -801,8 +801,8 @@ konnte nicht zum Schreiben geöffnet werden:
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation>Zeilenenden für &amp;Mac umwandeln (CR)</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">Zeilenenden für Legacy &amp;Mac umwandeln (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3687,8 +3687,8 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

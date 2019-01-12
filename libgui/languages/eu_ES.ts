@@ -2433,8 +2433,8 @@ fitxategia ezin da idatzi: %2.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Convert Line Endings to &amp;Mac (CR)</source>
-        <translation type="unfinished">Lerro-amaiera &quot;&amp;Mac (CR)&quot;-era aldatu</translation>
+        <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
+        <translation type="unfinished">Lerro-amaiera &quot;Legacy &amp;Mac (CR)&quot;-era aldatu</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5504,8 +5504,8 @@ letra lodiak, etzanak eta normalak.</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Mac (CR)</source>
-        <translation>Mac (CR)</translation>
+        <source>Legacy Mac (CR)</source>
+        <translation type="unfinished">Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

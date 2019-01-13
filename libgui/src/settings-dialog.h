@@ -92,7 +92,7 @@ namespace octave
     color_picker *m_editor_current_line_color;
 
     QRadioButton *m_rb_comment_strings[ed_comment_strings_count];
-    QRadioButton *m_rb_uncomment_strings[ed_comment_strings_count];
+    QCheckBox *m_rb_uncomment_strings[ed_comment_strings_count];
 
     QCheckBox *m_ws_enable_colors;
     QCheckBox *m_ws_hide_tool_tips;

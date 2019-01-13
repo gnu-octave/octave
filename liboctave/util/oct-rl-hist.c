@@ -276,7 +276,7 @@ octave_history_list (int limit, int number_lines)
 
       beg = (limit < 0 || end < limit) ? 0 : (end - limit);
 
-      retval = malloc ((size_t) (end - beg + 1) * sizeof (char **));
+      retval = malloc ((size_t) (end - beg + 1) * sizeof (char *));
       // FIXME: Should this call current_liboctave_error_handler instead?
       if (! retval)
         return retval;

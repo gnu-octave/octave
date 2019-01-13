@@ -308,7 +308,7 @@ namespace octave
     for (int i = 0; i < ed_comment_strings_count; i++)
       {
         m_rb_comment_strings[i] = new QRadioButton ();
-        m_rb_uncomment_strings[i] = new QRadioButton ();
+        m_rb_uncomment_strings[i] = new QCheckBox ();
 
         connect (m_rb_comment_strings[i], SIGNAL (clicked (bool)),
                  m_rb_uncomment_strings[i], SLOT (setChecked (bool)));

@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <wchar.h>
 
 #  include "lo-hash.h"
+#  include "unwind-prot.h"
 #endif
 
 namespace octave
@@ -178,7 +179,8 @@ namespace octave
 
 #if defined (OCTAVE_USE_WINDOWS_API)
       wchar_t *wnew_item = u8_to_wchar (new_item);
-      std::free (static_cast<void *> (new_item));
+      octave::unwind_protect frame;
+      frame.add_fcn (std::free, static_cast<void *> (new_item));
       if (_wputenv (wnew_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 #else

@@ -629,7 +629,9 @@ initialize_jvm (void)
 
   JNIEnv *current_env;
   const char *static_locale = setlocale (LC_ALL, nullptr);
-  const std::string locale (static_locale);
+  std::string locale;
+  if (static_locale)
+    locale = std::string (static_locale);
 
   octave::dynamic_library lib ("");
   std::string jvm_lib_path = "linked in or loaded libraries";

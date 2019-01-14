@@ -44,16 +44,6 @@ namespace llvm
 {
   class Value;
   class Module;
-#if defined (LEGACY_PASSMANAGER)
-  namespace legacy
-  {
-    class FunctionPassManager;
-    class PassManager;
-  }
-#else
-  class FunctionPassManager;
-  class PassManager;
-#endif
   class ExecutionEngine;
   class Function;
   class BasicBlock;
@@ -70,6 +60,18 @@ namespace llvm
 
   class ConstantFolder;
 
+#if defined  LLVM_IRBUILDER_HAS_TWO_TEMPLATE_ARGS
+
+  class IRBuilderDefaultInserter;
+
+  template <typename T, typename Inserter>
+  class IRBuilder;
+
+  typedef IRBuilder<ConstantFolder, IRBuilderDefaultInserter>
+    IRBuilderD;
+
+#else
+
   template <bool preserveNames>
   class IRBuilderDefaultInserter;
 
@@ -78,6 +80,8 @@ namespace llvm
 
   typedef IRBuilder<true, ConstantFolder, IRBuilderDefaultInserter<true>>
     IRBuilderD;
+
+#endif
 }
 
 // some octave classes that are not (yet) in the octave namespace

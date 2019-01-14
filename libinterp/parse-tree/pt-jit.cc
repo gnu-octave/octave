@@ -65,7 +65,15 @@ along with Octave; see the file COPYING.  If not, see
 // In LLVM 3.7.x and earlier, we use createBasicAliasAnalysisPass
 // from llvm/Analysis/Passes.h (already included above)
 
-#include <llvm/Bitcode/ReaderWriter.h>
+#if defined (HAVE_LLVM_BITCODE_READERWRITER_H)
+// In LLVM <= 3.9, only one header for bitcode read/writer
+#  include <llvm/Bitcode/ReaderWriter.h>
+#else
+// Satrting with LLVM 4.0, two separate headers
+#  include <llvm/Bitcode/BitcodeReader.h>
+#  include <llvm/Bitcode/BitcodeWriter.h>
+#endif
+
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 // old JIT, LLVM < 3.6.0
 // #include <llvm/ExecutionEngine/JIT.h>
@@ -111,6 +119,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 
+// Starting with LLVM 3.9.0, llvm::createGVNPass has
+// been moved to a new header file named GVN.h
+// (before that it was in llvm/Transforms/Scalar.h)
+#if defined (HAVE_LLVM_TRANSFORMS_SCALAR_GVN_H)
+#  include <llvm/Transforms/Scalar/GVN.h>
+#endif
+
 static bool Vdebug_jit = false;
 
 static bool Vjit_enable = false;
@@ -121,9 +136,20 @@ static int Vjit_failcnt = 0;
 
 namespace octave
 {
-  static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
+  namespace jit
+  {    
+#if defined (LEGACY_PASSMANAGER)
+    typedef llvm::legacy::PassManager PassManager;
+    typedef llvm::legacy::FunctionPassManager FunctionPassManager;
+#else
+    typedef llvm::PassManager PassManager;
+    typedef llvm::FunctionPassManager FunctionPassManager;
+#endif
+  }
 
-  static llvm::LLVMContext& context = llvm::getGlobalContext ();
+  static llvm::IRBuilder<> builder (tree_jit::llvm_context);
+
+  static llvm::LLVMContext& context = tree_jit::llvm_context;
 
   // -------------------- jit_break_exception --------------------
 
@@ -1358,11 +1384,13 @@ namespace octave
 
         for (size_t i = 0; i < m_argument_vec.size (); ++i)
           {
-            // LLVM <= 3.6
-            // llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
+#if defined (LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_REQUIRES_TYPE)
             // LLVM >= 3.7
             llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg_type, arg, i);
-
+#else
+            // LLVM <= 3.6
+            llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
+#endif
             m_arguments[m_argument_vec[i].first] = loaded_arg;
           }
 
@@ -2101,6 +2129,8 @@ namespace octave
 
   bool tree_jit::initialized = false;
 
+  llvm::LLVMContext tree_jit::llvm_context;
+
   int tree_jit::next_forloop_number = 0;
   int tree_jit::next_function_number = 0;
   int tree_jit::next_module_number = 0;
@@ -2412,8 +2442,12 @@ namespace octave
     jit::PassManager *module_pass_manager = new jit::PassManager ();
     jit::FunctionPassManager *pass_manager = new jit::FunctionPassManager (m_module);
 
+#if defined (LLVM_HAS_CREATEALWAYSINLINERPASS)
+    // This pass has been removed from LLVM's C++ API after 3.9.0
+    // FIXME: Provide a meaningful replacement instead of simply skipping it?
     module_pass_manager->add (llvm::createAlwaysInlinerPass ());
-
+#endif
+    
     // In 3.6, a pass was inserted in the pipeline to make the DataLayout accessible:
     //    MyPassManager->add(new DataLayoutPass(MyTargetMachine->getDataLayout()));
     // In 3.7, you don’t need a pass, you set the DataLayout on the Module:

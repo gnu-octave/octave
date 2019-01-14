@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_LLVM)
 
+#include "jit-util.h"
 #include "jit-typeinfo.h"
 #include "jit-ir.h"
 #include "pt-walk.h"
@@ -41,14 +42,6 @@ namespace octave
 {
   namespace jit
   {
-#if defined (LEGACY_PASSMANAGER)
-    typedef llvm::legacy::PassManager PassManager;
-    typedef llvm::legacy::FunctionPassManager FunctionPassManager;
-#else
-    typedef llvm::PassManager PassManager;
-    typedef llvm::FunctionPassManager FunctionPassManager;
-#endif
-
     typedef std::unique_ptr<llvm::Module> ModuleOwner;
     typedef std::unique_ptr<llvm::ExecutionEngine> EngineOwner;
   }
@@ -391,6 +384,12 @@ namespace octave
 
     static bool initialized;
     bool do_initialize (void);
+
+    // ----- LLVM context -----
+
+  public:
+
+    static llvm::LLVMContext llvm_context;
 
     // ----- Target machine ----
 

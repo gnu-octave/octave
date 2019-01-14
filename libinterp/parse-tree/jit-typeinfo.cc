@@ -76,7 +76,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  static llvm::LLVMContext& context = llvm::getGlobalContext ();
+  static llvm::LLVMContext& context = tree_jit::llvm_context;
 
   std::ostream& jit_print (std::ostream& os, jit_type *atype)
   {

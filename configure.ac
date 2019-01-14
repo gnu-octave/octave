@@ -1419,12 +1419,14 @@ if test $ENABLE_JIT = yes; then
     if test $have_function_h = no; then
       warn_llvm="Missing LLVM file Function.h.  JIT compiler is disabled."
     fi
+
     have_irbuilder_h=no
     AC_CHECK_HEADERS([llvm/Support/IRBuilder.h llvm/IR/IRBuilder.h \
                       llvm/IRBuilder.h], [have_irbuilder_h=yes; break])
     if test $have_irbuilder_h = no; then
       warn_llvm="Missing LLVM file IRBuilder.h.  JIT compiler is disabled."
     fi
+
     have_llvm_data_h=no
     AC_CHECK_HEADERS([llvm/Target/TargetData.h llvm/IR/DataLayout.h \
                       llvm/DataLayout.h], [have_llvm_data_h=yes; break])
@@ -1434,12 +1436,18 @@ if test $ENABLE_JIT = yes; then
 
     AC_CHECK_HEADERS([llvm/IR/Verifier.h])
     AC_CHECK_HEADERS([llvm/Analysis/BasicAliasAnalysis.h])
+    AC_CHECK_HEADERS([llvm/Transforms/Scalar/GVN.h])
+    AC_CHECK_HEADERS([llvm/Bitcode/ReaderWriter.h])
 
     OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
     OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
     OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
     OCTAVE_LLVM_RAW_FD_OSTREAM_API
     OCTAVE_LLVM_LEGACY_PASSMANAGER_API
+    OCTAVE_LLVM_IRBUILDER_API
+    OCTAVE_LLVM_HAS_CREATEALWAYSINLINERPASS
+    OCTAVE_LLVM_IRBUILDER_CREATECONSTINBOUNDSGEP1_32_API
+
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     LDFLAGS="$save_LDFLAGS"

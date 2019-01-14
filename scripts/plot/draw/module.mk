@@ -54,6 +54,7 @@ FCN_FILE_DIRS += \
   %reldir%/isonormals.m \
   %reldir%/isosurface.m \
   %reldir%/light.m \
+  %reldir%/lightangle.m \
   %reldir%/line.m \
   %reldir%/loglog.m \
   %reldir%/loglogerr.m \

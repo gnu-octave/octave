@@ -459,6 +459,8 @@ three-dimensional plots.
 
 @DOCSTRING(camlight)
 
+@DOCSTRING(lightangle)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)

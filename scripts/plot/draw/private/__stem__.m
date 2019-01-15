@@ -173,9 +173,13 @@ function h = __stem__ (have_z, varargin)
         set (h, args{:});
     endif
 
-    if (! strcmp (hold_state, "add") && have_z)
-      set (hax, "view", [-37.5 30],
-                "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    if (! strcmp (hold_state, "add"))
+      if (! have_z)
+        set (hax, "box", "on");
+      else
+        set (hax, "view", [-37.5 30],
+                  "xgrid", "on", "ygrid", "on", "zgrid", "on");
+      endif
     endif
     set (hax, "nextplot", hold_state);
 

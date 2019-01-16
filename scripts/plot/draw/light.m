@@ -198,7 +198,8 @@ endfunction
 %! ## Diffuse and specular reflection
 %! clf;
 %! h_axes = axes ();
-%! [x,y,z] = meshgrid (-.2:0.04:.2, -.2:0.04:.2, -.2:0.04:.2);
+%! rng = linspace (-0.2, +0.2, 12);
+%! [x,y,z] = meshgrid (rng);
 %! val = (x.^2 + y.^2 + z.^2);
 %!
 %! fv = isosurface (x, y, z, val, .039);

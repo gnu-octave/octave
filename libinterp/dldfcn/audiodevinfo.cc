@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov-int32.h"
 #include "ov.h"
@@ -1816,8 +1817,8 @@ audiorecorder::get_stream (void)
 
 #endif
 
-DEFUN_DLD (__recorder_audiorecorder__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_audiorecorder__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})
 @deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels}, @var{id})
 @deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fcn}, @dots{})
@@ -1832,6 +1833,8 @@ Undocumented internal function.
   err_disabled_feature ("__recorder_audiorecorder__",
                         "audio playback and recording through PortAudio");
 #else
+
+  interp.mlock ();
 
   int nargin = args.length ();
 
@@ -1869,8 +1872,10 @@ Undocumented internal function.
 #if defined (HAVE_PORTAUDIO)
 
 static audiorecorder *
-get_recorder (const octave_value& ov)
+get_recorder (octave::interpreter& interp, const octave_value& ov)
 {
+  interp.mlock ();
+
   const octave_base_value& rep = ov.get_rep ();
 
   octave_base_value *ncrep = const_cast<octave_base_value *> (&rep);
@@ -1884,235 +1889,248 @@ get_recorder (const octave_value& ov)
 
 #endif
 
-DEFUN_DLD (__recorder_getaudiodata__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_getaudiodata__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{data} =} __recorder_getaudiodata__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_getaudiodata__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->getaudiodata ();
+  retval = get_recorder (interp, args(0))->getaudiodata ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_channels__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_channels__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __recorder_get_channels__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_channels__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_channels ();
+  retval = get_recorder (interp, args(0))->get_channels ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_fs__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_fs__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{fs} =} __recorder_get_fs__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_fs__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_fs ();
+  retval = get_recorder (interp, args(0))->get_fs ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_id__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_id__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{id} =} __recorder_get_id__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_id__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_id ();
+  retval = get_recorder (interp, args(0))->get_id ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_nbits__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_nbits__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{nbits} =} __recorder_get_nbits__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_nbits__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_nbits ();
+  retval = get_recorder (interp, args(0))->get_nbits ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_sample_number__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_sample_number__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __recorder_get_sample_number__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_sample_number__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_sample_number ();
+  retval = get_recorder (interp, args(0))->get_sample_number ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_tag__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_tag__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tag} =} __recorder_get_tag__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_tag__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_tag ();
+  retval = get_recorder (interp, args(0))->get_tag ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_total_samples__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_total_samples__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __recorder_get_total_samples__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_total_samples__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_total_samples ();
+  retval = get_recorder (interp, args(0))->get_total_samples ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_get_userdata__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_get_userdata__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{data} =} __recorder_get_userdata__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_get_userdata__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->get_userdata ();
+  retval = get_recorder (interp, args(0))->get_userdata ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_isrecording__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_isrecording__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_isrecording__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_isrecording__",
                         "audio playback and recording through PortAudio");
 #else
-  retval = get_recorder (args(0))->isrecording ();
+  retval = get_recorder (interp, args(0))->isrecording ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__recorder_pause__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_pause__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_pause__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_pause__",
                         "audio playback and recording through PortAudio");
 #else
-  get_recorder (args(0))->pause ();
+  get_recorder (interp, args(0))->pause ();
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_recordblocking__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_recordblocking__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_recordblocking__ (@var{recorder}, @var{seconds})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_recordblocking__",
                         "audio playback and recording through PortAudio");
 #else
   float seconds = args(1).float_value ();
-  get_recorder (args(0))->recordblocking (seconds);
+  get_recorder (interp, args(0))->recordblocking (seconds);
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_record__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_record__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {} __recorder_record__ (@var{recorder})
 @deftypefnx {} {} __recorder_record__ (@var{recorder}, @var{seconds})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_record__",
                         "audio playback and recording through PortAudio");
 #else
-  audiorecorder *recorder = get_recorder (args(0));
+  audiorecorder *recorder = get_recorder (interp, args(0));
 
   if (args.length () == 2)
     recorder->set_end_sample (args(1).int_value () * recorder->get_fs ());
@@ -2122,98 +2140,103 @@ Undocumented internal function.
 #endif
 }
 
-DEFUN_DLD (__recorder_resume__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_resume__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_resume__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_resume__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    get_recorder (args(0))->resume ();
+    get_recorder (interp, args(0))->resume ();
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_set_fs__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_set_fs__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_set_fs__ (@var{recorder}, @var{fs})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_fs__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_recorder (args(0))->set_fs (args(1).int_value ());
+    get_recorder (interp, args(0))->set_fs (args(1).int_value ());
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_set_tag__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_set_tag__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_set_tag__ (@var{recorder}, @var{tag})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_tag__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_recorder (args(0))->set_tag (args(1).char_matrix_value ());
+    get_recorder (interp, args(0))->set_tag (args(1).char_matrix_value ());
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_set_userdata__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_set_userdata__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_set_userdata__ (@var{recorder}, @var{data})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_set_userdata__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_recorder (args(0))->set_userdata (args(1));
+    get_recorder (interp, args(0))->set_userdata (args(1));
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__recorder_stop__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__recorder_stop__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __recorder_stop__ (@var{recorder})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__recorder_stop__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    get_recorder (args(0))->stop ();
+    get_recorder (interp, args(0))->stop ();
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_audioplayer__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_audioplayer__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs})
 @deftypefnx {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits})
 @deftypefnx {} {@var{player} =} __player_audioplayer__ (@var{y}, @var{fs}, @var{nbits}, @var{id})
@@ -2222,11 +2245,13 @@ Undocumented internal function.
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_audioplayer__",
                         "audio playback and recording through PortAudio");
 #else
+  interp.mlock ();
 
   audioplayer *recorder = new audioplayer ();
 
@@ -2267,8 +2292,10 @@ Undocumented internal function.
 #if defined (HAVE_PORTAUDIO)
 
 static audioplayer *
-get_player (const octave_value& ov)
+get_player (octave::interpreter& interp, const octave_value& ov)
 {
+  interp.mlock ();
+
   const octave_base_value& rep = ov.get_rep ();
 
   octave_base_value *ncrep = const_cast<octave_base_value *> (&rep);
@@ -2282,197 +2309,207 @@ get_player (const octave_value& ov)
 
 #endif
 
-DEFUN_DLD (__player_get_channels__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_channels__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __player_get_channels__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_channels__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_channels ();
+    retval = get_player (interp, args(0))->get_channels ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_fs__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_fs__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{fs} =} __player_get_fs__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_fs__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_fs ();
+    retval = get_player (interp, args(0))->get_fs ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_id__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_id__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{id} =} __player_get_id__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_id__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_id ();
+    retval = get_player (interp, args(0))->get_id ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_nbits__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_nbits__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{nbits} =} __player_get_nbits__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_nbits__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_nbits ();
+    retval = get_player (interp, args(0))->get_nbits ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_sample_number__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_sample_number__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __player_get_sample_number__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_sample_number__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_sample_number ();
+    retval = get_player (interp, args(0))->get_sample_number ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_tag__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_tag__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tag} =} __player_get_tag__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_tag__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_tag ();
+    retval = get_player (interp, args(0))->get_tag ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_total_samples__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_total_samples__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{n} =} __player_get_total_samples__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_total_samples__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_total_samples ();
+    retval = get_player (interp, args(0))->get_total_samples ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_get_userdata__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_get_userdata__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{data} =} __player_get_userdata__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_get_userdata__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->get_userdata ();
+    retval = get_player (interp, args(0))->get_userdata ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_isplaying__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_isplaying__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_isplaying__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_isplaying__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    retval = get_player (args(0))->isplaying ();
+    retval = get_player (interp, args(0))->isplaying ();
 #endif
   return retval;
 }
 
-DEFUN_DLD (__player_pause__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_pause__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_pause__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_pause__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    get_player (args(0))->pause ();
+    get_player (interp, args(0))->pause ();
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_playblocking__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_playblocking__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {} __player_playblocking__ (@var{player})
 @deftypefnx {} {} __player_playblocking__ (@var{player}, @var{start})
 @deftypefnx {} {} __player_playblocking__ (@var{player}, [@var{start}, @var{end}])
@@ -2480,13 +2517,14 @@ Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_playblocking__",
                         "audio playback and recording through PortAudio");
 #else
 
-  audioplayer *player = get_player (args(0));
+  audioplayer *player = get_player (interp, args(0));
 
   if (args.length () == 1)
     {
@@ -2525,8 +2563,8 @@ Undocumented internal function.
 #endif
 }
 
-DEFUN_DLD (__player_play__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_play__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn  {} {} __player_play__ (@var{player})
 @deftypefnx {} {} __player_play__ (@var{player}, @var{start})
 @deftypefnx {} {} __player_play__ (@var{player}, [@var{start}, @var{end}])
@@ -2534,6 +2572,7 @@ Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_play__",
@@ -2542,11 +2581,11 @@ Undocumented internal function.
 
   if (args.length () == 1)
     {
-      get_player (args(0))->play ();
+      get_player (interp, args(0))->play ();
     }
   else if (args.length () == 2)
     {
-      audioplayer *player = get_player (args(0));
+      audioplayer *player = get_player (interp, args(0));
 
       if (args(1).is_matrix_type ())
         {
@@ -2579,92 +2618,97 @@ Undocumented internal function.
 #endif
 }
 
-DEFUN_DLD (__player_resume__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_resume__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_resume__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_resume__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    get_player (args(0))->resume ();
+    get_player (interp, args(0))->resume ();
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_set_fs__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_set_fs__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_set_fs__ (@var{player}, @var{fs})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_fs__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_player (args(0))->set_fs (args(1).int_value ());
+    get_player (interp, args(0))->set_fs (args(1).int_value ());
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_set_tag__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_set_tag__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_set_tag__ (@var{player}, @var{tag})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_tag__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_player (args(0))->set_tag (args(1).char_matrix_value ());
+    get_player (interp, args(0))->set_tag (args(1).char_matrix_value ());
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_set_userdata__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_set_userdata__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_set_userdata__ (@var{player}, @var{data})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_set_userdata__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 2)
-    get_player (args(0))->set_userdata (args(1));
+    get_player (interp, args(0))->set_userdata (args(1));
   return ovl ();
 #endif
 }
 
-DEFUN_DLD (__player_stop__, args, ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__player_stop__, interp, args, ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __player_stop__ (@var{player})
 Undocumented internal function.
 @end deftypefn */)
 {
 #if ! defined (HAVE_PORTAUDIO)
+  octave_unused_parameter (interp);
   octave_unused_parameter (args);
 
   err_disabled_feature ("__player_stop__",
                         "audio playback and recording through PortAudio");
 #else
   if (args.length () == 1)
-    get_player (args(0))->stop ();
+    get_player (interp, args(0))->stop ();
   return ovl ();
 #endif
 }

@@ -132,7 +132,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();
@@ -162,7 +162,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();
@@ -191,7 +191,7 @@ endfunction
 %! scrn = get (0, "screensize");
 %! set (hobj, "position", [scrn(3)/2-pos(3)-10, scrn(4)/2-pos(4)/2, pos(3:4)]);
 %! drawnow ();
-%! hnew = copyobj (hobj);
+%! hnew = copyobj (hobj, groot);
 %! drawnow ();
 %! set (hnew, "name", "Copyobj");
 %! drawnow ();

@@ -1930,7 +1930,6 @@ namespace octave
     if (count_cr > count_max)
       {
         eol_mode = QsciScintilla::EolMac;
-        count_max = count_cr;
       }
 
     return eol_mode;

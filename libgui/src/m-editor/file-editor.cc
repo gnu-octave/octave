@@ -237,9 +237,7 @@ namespace octave
                     // editor is in this tab widget
                     in_tab = true;
                     int top = tab->currentIndex ();
-                    if (top > -1 && tab->tabText (top) == windowTitle ())
-                      real_visible = true;  // and is the current tab
-                    else
+                    if (! (top > -1 && tab->tabText (top) == windowTitle ()))
                       return; // not current tab -> not visible
                   }
                 j++;

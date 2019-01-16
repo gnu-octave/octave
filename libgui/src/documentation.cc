@@ -740,7 +740,6 @@ namespace octave
             QMessageBox::warning (this, tr ("Octave Documentation"),
                                   tr ("Unable to register help file %1.").
                                   arg (qch));
-            do_setup = false;
             return;
           }
 

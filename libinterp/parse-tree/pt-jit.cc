@@ -69,7 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 // In LLVM <= 3.9, only one header for bitcode read/writer
 #  include <llvm/Bitcode/ReaderWriter.h>
 #else
-// Satrting with LLVM 4.0, two separate headers
+// Starting with LLVM 4.0, two separate headers
 #  include <llvm/Bitcode/BitcodeReader.h>
 #  include <llvm/Bitcode/BitcodeWriter.h>
 #endif

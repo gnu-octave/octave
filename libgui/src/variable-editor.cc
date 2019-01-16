@@ -665,8 +665,6 @@ namespace octave
       {
         selectColumn (index);
         column_selection_count = 1;
-        current_column_selected = true;
-        whole_columns_selected = true;
       }
 
     QString column_string
@@ -715,8 +713,6 @@ namespace octave
       {
         selectRow (index);
         rowselection_count = 1;
-        current_row_selected = true;
-        whole_rows_selected = true;
       }
 
     QString row_string = tr (rowselection_count > 1 ? " rows" : " row");

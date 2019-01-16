@@ -57,6 +57,8 @@ namespace QtHandles
           {
             gh_manager::auto_lock lock;
 
+            interp.mlock ();
+
             qRegisterMetaType<graphics_object> ("graphics_object");
 
             gh_manager::enable_event_processing (true);

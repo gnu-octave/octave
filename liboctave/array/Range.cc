@@ -599,7 +599,7 @@ Range::numel_internal (void) const
 double
 Range::limit_internal (void) const
 {
-  double new_limit = rng_limit;
+  double new_limit;
 
   if (rng_inc > 0)
     new_limit = max ();

@@ -361,9 +361,12 @@ namespace octave
         // signal to all dock widgets for updating the style
         emit active_dock_changed (m_active_dock, dock);
 
-        QList<QDockWidget *> tabbed = tabifiedDockWidgets (dock);
-        if (tabbed.contains (m_active_dock))
-          dock->set_predecessor_widget (m_active_dock);
+        if (dock)
+          {
+            QList<QDockWidget *> tabbed = tabifiedDockWidgets (dock);
+            if (tabbed.contains (m_active_dock))
+              dock->set_predecessor_widget (m_active_dock);
+          }
 
         if (edit_dock_widget == dock)
           emit editor_focus_changed (true);

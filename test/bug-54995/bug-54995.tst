@@ -1,4 +1,4 @@
-## Copyright (C) 2018 Guillaume Flandin
+## Copyright (C) 2018-2019 Guillaume Flandin
 ##
 ## This file is part of Octave.
 ##
@@ -17,5 +17,5 @@
 ## <https://www.gnu.org/licenses/>.
 
 %!test <*54995>
-%! obj = testclass ();
+%! obj = testclass54995 ();
 %! assert (obj.x(1), 1);

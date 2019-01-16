@@ -288,8 +288,9 @@ endfunction
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");
-%! lcolor = get (gca, "ColorOrder")(1,:);
-%! rcolor = get (gca, "ColorOrder")(2,:);
+%! colororder = get (gca, "ColorOrder");
+%! lcolor = colororder(1,:);
+%! rcolor = colororder(2,:);
 %! text (0.5, 0.5, "Left Axis", ...
 %!       "color", lcolor, "horizontalalignment", "center", "parent", ax(1));
 %! text (4.5, 80, "Right Axis", ...

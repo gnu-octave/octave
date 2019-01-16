@@ -77,11 +77,11 @@ endfunction
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;
-%! ezplot3 (fx, fy, fz, [0, 10*pi], 100);
+%! ezplot3 (fx, fy, fz, [0, 10*pi]);
 
 %!demo
 %! clf;
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;
-%! ezplot3 (fx, fy, fz, [0, 5*pi], 100, "animate");
+%! ezplot3 (fx, fy, fz, [0, 5*pi], "animate");

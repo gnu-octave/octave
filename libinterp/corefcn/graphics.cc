@@ -6114,7 +6114,9 @@ axes::properties::update_ticklength (void)
   Matrix bbox = get_boundingbox (true);
   Matrix ticklen = get_ticklength ().matrix_value ();
   ticklen(0) *= std::max (bbox(2), bbox(3));
-  ticklen(1) *= std::max (bbox(2), bbox(3));
+  // FIXME: This algorithm is not Matlab-compatible.  See bug #55483.
+  //        Scale the results of Octave's algorithm for better visuals.
+  ticklen(1) *= (0.76 * std::max (bbox(2), bbox(3)));
 
   xticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));
   yticklen = ticksign * (mode2D ? ticklen(0) : ticklen(1));

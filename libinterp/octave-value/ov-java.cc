@@ -1811,7 +1811,6 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
         }
       else
         {
-          found = false;
           error ("cannot convert matrix of type '%s'",
                  val.class_name ().c_str ());
         }

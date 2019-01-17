@@ -107,7 +107,6 @@ do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
                 }
               if (bad_esc_seq || (brace && s[k++] != '}'))
                 {
-                  bad_esc_seq = true;
                   tmpi = 0;
                   warning (R"(malformed octal escape sequence '\o' -- converting to '\0')");
                 }

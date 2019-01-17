@@ -914,7 +914,6 @@ namespace octave
                   modifier = '\0';
                   type = '\0';
                   buf << s[i++];
-                  empty_buf = false;
                 }
                 break;
               }
@@ -2993,8 +2992,8 @@ namespace octave
 
         if (! is.eof () && ! as_empty)
           {
-            state = is.rdstate ();        // before tellg, since that fails at EOF
-            pos = is.tellg ();
+            state = is.rdstate ();   // before tellg, since that fails at EOF
+
             ch = is.peek ();   // ch == EOF if read failed; no need to chk fail
             if (ch == 'i' || ch == 'j')           // pure imaginary
               {

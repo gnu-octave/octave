@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cinttypes>
 #include <sstream>
 
 #include "DASPK.h"
@@ -359,7 +360,8 @@ DASPK::do_integrate (double tout)
                     lid = 40 + n;
                   else
                     (*current_liboctave_error_handler)
-                      ("daspk: invalid value for eiq: %d", eiq);
+                      ("daspk: invalid value for eiq: "
+                       "%" OCTAVE_IDX_TYPE_FORMAT, eiq);
 
                   for (F77_INT i = 0; i < n; i++)
                     iwork(lid+i) = (av(i) ? -1 : 1);
@@ -404,7 +406,8 @@ DASPK::do_integrate (double tout)
                 lid = 40 + n;
               else
                 (*current_liboctave_error_handler)
-                  ("daspk: invalid value for eiq: %d", eiq);
+                  ("daspk: invalid value for eiq: %" OCTAVE_IDX_TYPE_FORMAT,
+                   eiq);
 
               for (F77_INT i = 0; i < n; i++)
                 iwork(lid+i) = (av(i) ? -1 : 1);
@@ -533,7 +536,8 @@ DASPK::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from ddaspk", istate);
+        ("unrecognized value of istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
+         "returned from ddaspk", istate);
       break;
     }
 

@@ -53,7 +53,7 @@ F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DEF (s_arg, len)
       slen = strlen (s);
     }
 
-  (*current_liboctave_error_handler) ("%.*s", slen, s);
+  (*current_liboctave_error_handler) ("%.*s", (int) slen, s);
 
   F77_NORETURN (0)
 }

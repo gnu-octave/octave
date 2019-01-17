@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cinttypes>
 #include <cstdarg>
 #include <cstdio>
 
@@ -101,8 +102,9 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
 
           if (c[j] > nnz)
             (*current_liboctave_error_handler)
-              ("invalid sparse matrix: cidx[%d] = %d "
-               "exceeds number of nonzero elements", j, c[j]+1);
+              ("invalid sparse matrix: cidx[%" OCTAVE_IDX_TYPE_FORMAT "] = "
+               "%" OCTAVE_IDX_TYPE_FORMAT "exceeds number of nonzero elements",
+               j, c[j]+1);
 
           if (c[j] != jold)
             {
@@ -115,7 +117,8 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
 
                   if (r[i] >= nrows)
                     (*current_liboctave_error_handler)
-                      ("invalid sparse matrix: ridx[%d] = %d out of range",
+                      ("invalid sparse matrix: ridx[%" OCTAVE_IDX_TYPE_FORMAT
+                       "] = %" OCTAVE_IDX_TYPE_FORMAT " out of range",
                        i, r[i]+1);
                 }
 

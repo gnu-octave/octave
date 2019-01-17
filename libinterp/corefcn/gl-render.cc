@@ -3875,10 +3875,10 @@ namespace octave
 
     if (vp_lim_min(0) > vp_lim_max(0))
       std::swap (vp_lim_min(0), vp_lim_max(0));
-        
+
     if (vp_lim_min(1) > vp_lim_max(1))
       std::swap (vp_lim_min(1), vp_lim_max(1));
-        
+
     float clip_xmin =
       (do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0));
     float clip_ymin =
@@ -4246,21 +4246,26 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
+    int factor = math::round (linewidth * m_devpixratio);
+    if (factor < 1)
+      factor = 1;
+
+    uint16_t pattern = 0xFFFF;
+
     bool solid = false;
 
     if (s == "-")
-      {
-        m_glfcns.glLineStipple (1, static_cast<unsigned short> (0xFFFF));
-        solid = true;
-      }
+      solid = true;
     else if (s == ":")
-      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x5555));
+      pattern = 0x5555;
     else if (s == "--")
-      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x0F0F));
+      pattern = 0x0F0F;
     else if (s == "-.")
-      m_glfcns.glLineStipple (linewidth, static_cast<unsigned short> (0x6F6F));
+      pattern = 0x6F6F;
     else
-      m_glfcns.glLineStipple (1, static_cast<unsigned short> (0x0000));
+      pattern = 0x0000;
+
+    m_glfcns.glLineStipple (factor, pattern);
 
     if (solid && ! use_stipple)
       m_glfcns.glDisable (GL_LINE_STIPPLE);

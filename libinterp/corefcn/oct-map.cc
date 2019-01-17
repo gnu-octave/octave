@@ -124,7 +124,7 @@ bool
 octave_fields::equal_up_to_order (const octave_fields& other,
                                   octave_idx_type *perm) const
 {
-  bool retval = true;
+  bool retval;
 
   auto p = begin ();
   auto q = other.begin ();
@@ -133,10 +133,7 @@ octave_fields::equal_up_to_order (const octave_fields& other,
       if (p->first == q->first)
         perm[p->second] = q->second;
       else
-        {
-          retval = false;
-          break;
-        }
+        return false;
     }
 
   retval = (p == end () && q == other.end ());

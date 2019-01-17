@@ -116,6 +116,7 @@
 ## @qcode{"Renderer"} property.  When the figure @code{RendererMode} property
 ## is @qcode{"auto"} Octave will use the @qcode{"opengl"} renderer for raster
 ## formats (e.g., JPEG) and @qcode{"painters"} for vector formats (e.g., PDF).
+## Those options are only supported for the "qt" graphics tookit.
 ##
 ## @item -svgconvert
 ##   For OpenGL-based graphic toolkits, this enables a different backend

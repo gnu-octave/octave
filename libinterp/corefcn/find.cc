@@ -408,8 +408,6 @@ b = sparse (i, j, v, sz(1), sz(2));
   int direction = 1;
   if (nargin > 2)
     {
-      direction = 0;
-
       std::string s_arg = args(2).string_value ();
 
       if (s_arg == "first")

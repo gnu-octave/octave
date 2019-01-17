@@ -229,14 +229,28 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (strcmp (arg_st.renderer, "auto"))
     if (opengl_ok && strcmp (graphics_toolkit (arg_st.figure), "qt"))
-      arg_st.renderer = "opengl";
+      ## "opengl" renderer only does text rotations of 0°, 90°, 180°, 270°, ...
+      ht = findall (arg_st.figure, "type", "text");
+      angles = [get(ht, "rotation"){:}];
+      if (any (mod (angles, 90)))
+        arg_st.renderer = "painters";
+      else
+        arg_st.renderer = "opengl";
+      endif
     else
       arg_st.renderer = "painters";
     endif
   elseif (strcmp (arg_st.renderer, "opengl") && ! opengl_ok)
     arg_st.renderer = "painters";
-    warning (["print: unsupported output format \"%s\" for renderer ", ...
-              "\"opengl\"."], arg_st.devopt);
+    warning (['print: unsupported output format "%s" for renderer ', ...
+              '"opengl".'], arg_st.devopt);
+  elseif (! strcmp (graphics_toolkit (arg_st.figure), "qt")
+          && strcmp (arg_st.renderer, "opengl"))
+    ## The opengl renderer only works with the "qt" toolkit
+    arg_st.renderer = "painters";
+    warning ('Octave:print:unsupported-renderer',
+             'print: "opengl" renderer unsupported for "%s" toolkit',
+             graphics_toolkit (arg_st.figure));
   endif
 
   

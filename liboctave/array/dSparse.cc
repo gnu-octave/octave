@@ -4717,9 +4717,10 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
           double anorm;
           if (calc_cond)
             {
+              anorm = 0.0;
               for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
+                  double atmp = 0.0;
                   for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                     atmp += fabs (data (i));
                   if (atmp > anorm)
@@ -5056,9 +5057,10 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
           double anorm;
           if (calc_cond)
             {
+              anorm = 0.0;
               for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
+                  double atmp = 0.0;
                   for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                     atmp += fabs (data (i));
                   if (atmp > anorm)
@@ -5410,9 +5412,10 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
           double anorm;
           if (calc_cond)
             {
+              anorm = 0.0;
               for (octave_idx_type j = 0; j < nr; j++)
                 {
-                  double atmp = 0.;
+                  double atmp = 0.0;
                   for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                     atmp += fabs (data (i));
                   if (atmp > anorm)

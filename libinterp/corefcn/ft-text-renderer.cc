@@ -376,8 +376,9 @@ namespace octave
     ft_text_renderer (void)
       : base_text_renderer (), font (), bbox (1, 4, 0.0), halign (0),
         xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-        color (dim_vector (1, 3), 0), line_xoffset (0), m_ymin (0), m_ymax (0),
-        m_deltax (0), m_max_fontsize (0)
+        color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
+        line_xoffset (0), m_ymin (0), m_ymax (0), m_deltax (0),
+        m_max_fontsize (0)
     { }
 
     // No copying!
@@ -530,7 +531,8 @@ namespace octave
     uint8NDArray color;
 
     // A list of parsed strings to be used for printing.
-    std::list<text_renderer::string> strlist;
+    bool m_do_strlist;
+    std::list<text_renderer::string> m_strlist;
 
     // The X offset of the baseline for the current line.
     int line_xoffset;
@@ -862,9 +864,16 @@ namespace octave
 
     // First run text_to_pixels which will also build the string list
 
+    m_strlist = std::list<text_renderer::string> ();
+    
+    octave::unwind_protect frame;
+    frame.protect_var (m_do_strlist);
+    frame.protect_var (m_strlist);
+    m_do_strlist = true;
+    
     text_to_pixels (txt, pxls, box, ha, va, rot, interp, false);
 
-    lst = strlist;
+    lst = m_strlist;
   }
 
   void
@@ -894,38 +903,44 @@ namespace octave
             // character
             int mblen = octave_u8_strmbtouc_wrapper (&u32_c, c + icurr);
             n -= mblen;
-            
-            if (u32_c == 10)
+
+            if (m_do_strlist && mode == MODE_RENDER)
               {
-                // Finish previous string in strlist before processing
-                // the newline character
-                fs.set_y (line_yoffset + yoffset);
-                fs.set_color (color);
-                
-                std::string s = str.substr (ibegin, icurr - ibegin);
-                if (! s.empty ())
+                if (u32_c == 10)
                   {
-                    fs.set_string (s);
+                    // Finish previous string in m_strlist before processing
+                    // the newline character
                     fs.set_y (line_yoffset + yoffset);
-                    fs.set_xdata (xdata);
-                    fs.set_family (fname);
-                    strlist.push_back (fs);
+                    fs.set_color (color);
+                
+                    std::string s = str.substr (ibegin, icurr - ibegin);
+                    if (! s.empty ())
+                      {
+                        fs.set_string (s);
+                        fs.set_y (line_yoffset + yoffset);
+                        fs.set_xdata (xdata);
+                        fs.set_family (fname);
+                        m_strlist.push_back (fs);
+                      }
                   }
+                else
+                  xdata.push_back (xoffset);
               }
-            else
-              xdata.push_back (xoffset);
 
             glyph_index = process_character (u32_c, previous);
-
 
             if (u32_c == 10)
               {
                 previous = 0;
-                // Start a new string in strlist
-                ibegin = icurr+1;
-                xdata.clear ();
-                fs = text_renderer::string (str.substr (ibegin), font,
-                                            line_xoffset, yoffset);
+                
+                if (m_do_strlist && mode == MODE_RENDER)
+                  {
+                    // Start a new string in m_strlist
+                    ibegin = icurr+1;
+                    xdata.clear ();
+                    fs = text_renderer::string (str.substr (ibegin), font,
+                                                line_xoffset, yoffset);
+                  }
               }
             else
               previous = glyph_index;
@@ -933,13 +948,13 @@ namespace octave
             icurr += mblen;
           }
 
-        if (! fs.get_string ().empty ())
+        if (m_do_strlist && mode == MODE_RENDER && ! fs.get_string ().empty ())
           {
             fs.set_y (line_yoffset + yoffset);
             fs.set_color (color);
             fs.set_xdata (xdata);
             fs.set_family (fname);
-            strlist.push_back (fs);
+            m_strlist.push_back (fs);
           }
       }
   }
@@ -1088,18 +1103,21 @@ namespace octave
     if (code != text_element_symbol::invalid_code && font.is_valid ())
       {
         process_character (code);
-        fs.set_code (code);
-        fs.set_xdata (xdata);
+        if (m_do_strlist && mode == MODE_RENDER)
+          {
+            fs.set_code (code);
+            fs.set_xdata (xdata);
+          }
       }
     else if (font.is_valid ())
       ::warning ("ignoring unknown symbol: %d", e.get_symbol ());
 
-    if (fs.get_code ())
+    if (m_do_strlist && mode == MODE_RENDER && fs.get_code ())
       {
         fs.set_y (line_yoffset + yoffset);
         fs.set_color (color);
         fs.set_family (font.get_face ()->family_name);
-        strlist.push_back (fs);
+        m_strlist.push_back (fs);
       }
   }
 
@@ -1124,6 +1142,7 @@ namespace octave
   {
     set_mode (MODE_BBOX);
     set_color (Matrix (1, 3, 0.0));
+    m_strlist = std::list<text_renderer::string> ();
   }
 
   void
@@ -1148,8 +1167,6 @@ namespace octave
     box = bbox;
 
     set_mode (MODE_RENDER);
-    // Clear the list of parsed strings
-    strlist.clear ();
 
     if (pixels.numel () > 0)
       {

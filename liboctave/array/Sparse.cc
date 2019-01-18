@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 // this file.
 
 #include <cassert>
+#include <cinttypes>
 
 #include <algorithm>
 #include <istream>
@@ -294,14 +295,16 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
   if (nr < 0)
     nr = r.extent (0);
   else if (r.extent (nr) > nr)
-    (*current_liboctave_error_handler) ("sparse: row index %d out of bound %d",
-                                        r.extent (nr), nr);
+    (*current_liboctave_error_handler)
+      ("sparse: row index %" OCTAVE_IDX_TYPE_FORMAT "out of bound "
+       "%" OCTAVE_IDX_TYPE_FORMAT, r.extent (nr), nr);
 
   if (nc < 0)
     nc = c.extent (0);
   else if (c.extent (nc) > nc)
     (*current_liboctave_error_handler)
-      ("sparse: column index %d out of bound %d", r.extent (nc), nc);
+      ("sparse: column index %" OCTAVE_IDX_TYPE_FORMAT " out of bound "
+       "%" OCTAVE_IDX_TYPE_FORMAT, r.extent (nc), nc);
 
   dimensions = dim_vector (nr, nc);
 
@@ -735,14 +738,16 @@ template <typename T>
 T
 Sparse<T>::range_error (const char *fcn, octave_idx_type n) const
 {
-  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
+  (*current_liboctave_error_handler) ("%s (%" OCTAVE_IDX_TYPE_FORMAT "): "
+                                      "range error", fcn, n);
 }
 
 template <typename T>
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 {
-  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
+  (*current_liboctave_error_handler) ("%s (%" OCTAVE_IDX_TYPE_FORMAT "): "
+                                      "range error", fcn, n);
 }
 
 template <typename T>
@@ -750,14 +755,18 @@ T
 Sparse<T>::range_error (const char *fcn, octave_idx_type i,
                         octave_idx_type j) const
 {
-  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
+  (*current_liboctave_error_handler)
+    ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
+     "range error", fcn, i, j);
 }
 
 template <typename T>
 T&
 Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 {
-  (*current_liboctave_error_handler) ("%s (%d, %d): range error", fcn, i, j);
+  (*current_liboctave_error_handler)
+    ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
+     "range error", fcn, i, j);
 }
 
 template <typename T>
@@ -781,7 +790,7 @@ Sparse<T>::range_error (const char *fcn,
 
   std::string buf_str = buf.str ();
 
-  (*current_liboctave_error_handler) (buf_str.c_str ());
+  (*current_liboctave_error_handler) ("%s", buf_str.c_str ());
 }
 
 template <typename T>
@@ -804,7 +813,7 @@ Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 
   std::string buf_str = buf.str ();
 
-  (*current_liboctave_error_handler) (buf_str.c_str ());
+  (*current_liboctave_error_handler) ("%s", buf_str.c_str ());
 }
 
 template <typename T>
@@ -2728,7 +2737,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
               std::string err_field;
               is >> err_field;
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: element %d: "
+                ("invalid sparse matrix: element %" OCTAVE_IDX_TYPE_FORMAT ": "
                  "Symbols '%s' is not an integer format",
                  i+1, err_field.c_str ());
             }
@@ -2738,8 +2747,8 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
               is.setstate (std::ios::failbit);
 
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: element %d: "
-                 "row index = %d out of range",
+                ("invalid sparse matrix: element %" OCTAVE_IDX_TYPE_FORMAT ": "
+                 "row index = %" OCTAVE_IDX_TYPE_FORMAT " out of range",
                  i+1, itmp + 1);
             }
 
@@ -2748,8 +2757,8 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
               is.setstate (std::ios::failbit);
 
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: element %d: "
-                 "column index = %d out of range",
+                ("invalid sparse matrix: element %" OCTAVE_IDX_TYPE_FORMAT ": "
+                 "column index = %" OCTAVE_IDX_TYPE_FORMAT " out of range",
                  i+1, jtmp + 1);
             }
 
@@ -2758,8 +2767,9 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
               is.setstate (std::ios::failbit);
 
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: element %d:"
-                 "column indices must appear in ascending order (%d < %d)",
+                ("invalid sparse matrix: element %" OCTAVE_IDX_TYPE_FORMAT ":"
+                 "column indices must appear in ascending order "
+                 "(%" OCTAVE_IDX_TYPE_FORMAT " < %" OCTAVE_IDX_TYPE_FORMAT ")",
                  i+1, jtmp, jold);
             }
           else if (jtmp > jold)
@@ -2772,9 +2782,9 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
               is.setstate (std::ios::failbit);
 
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: element %d: "
+                ("invalid sparse matrix: element %" OCTAVE_IDX_TYPE_FORMAT ": "
                  "row indices must appear in ascending order in each column "
-                 "(%d < %d)",
+                 "(%" OCTAVE_IDX_TYPE_FORMAT " < %" OCTAVE_IDX_TYPE_FORMAT ")",
                  i+1, iold, itmp);
             }
 

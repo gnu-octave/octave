@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cinttypes>
 #include <sstream>
 
 #include "LSODE.h"
@@ -302,7 +303,8 @@ LSODE::do_integrate (double tout)
     default:
       integration_error = true;
       (*current_liboctave_error_handler)
-        ("unrecognized value of istate (= %d) returned from lsode", istate);
+        ("unrecognized value of istate (= %" OCTAVE_IDX_TYPE_FORMAT ") "
+         "returned from lsode", istate);
       break;
     }
 

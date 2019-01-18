@@ -53,14 +53,18 @@ typedef void (*liboctave_warning_with_id_handler) (const char *, const char *,
 
 /* Would be nice to make these pointers private, but we want to share
    them among all the liboctave classes. */
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN OCTAVE_API extern liboctave_error_handler
   current_liboctave_error_handler;
 
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_NORETURN OCTAVE_API extern liboctave_error_with_id_handler
   current_liboctave_error_with_id_handler;
 
+OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_API extern liboctave_warning_handler current_liboctave_warning_handler;
 
+OCTAVE_FORMAT_PRINTF (2, 3)
 OCTAVE_API extern liboctave_warning_with_id_handler
   current_liboctave_warning_with_id_handler;
 

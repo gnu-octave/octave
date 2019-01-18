@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cinttypes>
 #include <vector>
 
 #include "MatrixType.h"
@@ -865,12 +866,14 @@ MatrixType::info () const
       else if (typ == MatrixType::Banded)
         (*current_liboctave_warning_with_id_handler)
           ("Octave:matrix-type-info",
-           "banded sparse matrix %d-1-%d (density %f)",
+           "banded sparse matrix %" OCTAVE_IDX_TYPE_FORMAT "-1-"
+           "%" OCTAVE_IDX_TYPE_FORMAT " (density %f)",
            lower_band, upper_band, bandden);
       else if (typ == MatrixType::Banded_Hermitian)
         (*current_liboctave_warning_with_id_handler)
           ("Octave:matrix-type-info",
-           "banded hermitian/symmetric sparse matrix %d-1-%d (density %f)",
+           "banded hermitian/symmetric sparse matrix %" OCTAVE_IDX_TYPE_FORMAT
+           "-1-%" OCTAVE_IDX_TYPE_FORMAT " (density %f)",
            lower_band, upper_band, bandden);
       else if (typ == MatrixType::Hermitian)
         (*current_liboctave_warning_with_id_handler)

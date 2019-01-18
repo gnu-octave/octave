@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cinttypes>
 #include <cstdlib>
 
 #include <ostream>
@@ -1285,7 +1286,7 @@ idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
   if (! resize_ok && extent (z_len) > z_len)
     {
       (*current_liboctave_error_handler)
-        ("invalid matrix index = %d", extent (z_len));
+        ("invalid matrix index = %" OCTAVE_IDX_TYPE_FORMAT, extent (z_len));
       // FIXME: Should we call this before calling error_handler?
       rep->err = true;
       chkerr ();

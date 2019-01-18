@@ -828,7 +828,7 @@ Array<T>::Array (const Container<T>& a, const dim_vector& dv)
       std::string new_dims_str = dimensions.str ();
 
       (*current_liboctave_error_handler)
-        ("reshape: can't reshape %i elements into %s array",
+        ("reshape: can't reshape %zi elements into %s array",
          a.size (), new_dims_str.c_str ());
     }
 

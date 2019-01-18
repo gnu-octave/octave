@@ -416,21 +416,55 @@ function [local_packages, global_packages] = pkg (varargin)
         else
           ## If files do not exist, maybe they are not local files.
           ## Try to download them.
-          external_files_mask = cellfun (@(x) isempty (glob (x)), files);
-          if (any (external_files_mask))
+          not_local_files = cellfun (@(x) isempty (glob (x)), files);
+          if (any (not_local_files))
             [success, msg] = mkdir (tmp_dir);
             if (success != 1)
               error ("pkg: failed to create temporary directory: %s", msg);
             endif
 
-            for file_idx = find (external_files_mask)
-
-              [~, fname, fext] = fileparts (files{file_idx});
-              local_files{end+1} = fullfile (tmp_dir, [fname fext]);
-              [~, success, msg] = urlwrite (files{file_idx}, local_files{end});
-              if (success != 1)
-                error ("pkg: failed to read package '%s': %s",
-                       files{file_idx}, msg);
+            for file = files(not_local_files)
+              file = file{1};
+              [~, fname, fext] = fileparts (file);
+              tmp_file = fullfile (tmp_dir, [fname fext]);
+              local_files{end+1} = tmp_file;
+              looks_like_url = regexp (file, '^\w+://');
+              if (looks_like_url)
+                [~, success, msg] = urlwrite (file, local_files{end});
+                if (success != 1)
+                  error ("pkg: failed downloading '%s': %s", file, msg);
+                endif
+                ## Verify that download is a tarball,
+                ## to protect against ISP DNS hijacking.
+                ## FIXME: Need a test which does not rely on external OS.
+                #{
+                if (isunix ())
+                  [ok, file_descr] = ...
+                    system (sprintf ('file "%s" | cut -d ":" -f 2', ...
+                                     local_files{end}));
+                  if (! ok)
+                    if (strfind (file_descr, "HTML"))
+                      error (["pkg: Invalid package file downloaded from " ...
+                              "%s\n" ...
+                              "File is HTML, not a tar archive."], ...
+                             file);
+                    endif
+                  else
+                    ## Ignore: maybe something went wrong with the "file" call.
+                  endif
+                endif
+                #}
+              else
+                looks_like_pkg_name = regexp (file, '^[\w-]+$');
+                if (looks_like_pkg_name)
+                  error (["pkg: file not found: %s.\n" ...
+                          "This looks like an Octave Forge package name." ...
+                          "  Did you mean:\n" ...
+                          "       pkg install -forge %s"], ...
+                         file, file);
+                else
+                  error ("pkg: file not found: %s", file);
+                endif
               endif
               files{file_idx} = local_files{end};
 

@@ -481,6 +481,8 @@ function h = buildannot (hax, objtype, pos)
       hr = patch (x, y, "parent", h);
 
       propnames = rectprops ("names");
+      ## FIXME: Remove in Octave 6
+      propnames(strcmp ("edgecolor", propnames)) = [];
       for ii = 1:numel (propnames)
         update_rect (h, {}, propnames{ii}, hr, objtype);
       endfor

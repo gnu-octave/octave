@@ -269,7 +269,7 @@
 ##
 ## @item Octave:num-to-str
 ## If the @code{Octave:num-to-str} warning is enable, a warning is
-## printed for implicit conversions of numbers to their ASCII character
+## printed for implicit conversions of numbers to their UTF-8 encoded character
 ## equivalents when strings are constructed using a mixture of strings and
 ## numbers in matrix notation.  For example,
 ##
@@ -344,8 +344,8 @@
 ##
 ## @item Octave:str-to-num
 ## If the @code{Octave:str-to-num} warning is enabled, a warning is printed
-## for implicit conversions of strings to their numeric ASCII equivalents.
-## For example,
+## for implicit conversions of strings to their numeric UTF-8 encoded byte
+## sequences.  For example,
 ##
 ## @example
 ## @group

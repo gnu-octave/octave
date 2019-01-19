@@ -75,6 +75,13 @@
 ## Days can be fractional.
 ## @end itemize
 ##
+## @strong{Caution:} datenums represent a specific time for the Earth as a
+## a whole.  They do not take in to account time zones (shifts in time based
+## on location), nor seasonal changes due to Daylight Savings Time (shifts in
+## time based on local regulation).  Be aware that it is possible to create
+## datenums that, when interpreted by a function which accounts for time zone
+## and DST shifts such as @code{datestr}, are nonexistent or ambiguous.
+##
 ## @strong{Caution:} this function does not attempt to handle Julian calendars
 ## so dates before October 15, 1582 are wrong by as much as eleven days.  Also,
 ## be aware that only Roman Catholic countries adopted the calendar in 1582.
@@ -83,6 +90,7 @@
 ##
 ## @strong{Warning:} leap seconds are ignored.  A table of leap seconds is
 ## available on the Wikipedia entry for leap seconds.
+##
 ## @seealso{datestr, datevec, now, clock, date}
 ## @end deftypefn
 

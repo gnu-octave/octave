@@ -3,10 +3,52 @@
          xmlns:foaf="http://xmlns.com/foaf/0.1/"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">GNU Octave</name>
+  <name>GNU Octave</name>
   <shortname>octave</shortname>
 
-  <shortdesc xml:lang="en">Interactive programming environment for numerical computations</shortdesc>
+  <shortdesc>Interactive programming environment for numerical computations</shortdesc>
+  <shortdesc xml:lang="ca">Entorn de programació interactiva per a càlculs numèrics</shortdesc>
+  <shortdesc xml:lang="de">Interaktive Programmierumgebung für numerische Berechnungen</shortdesc>
+  <shortdesc xml:lang="es">Entorno de programación interactiva para cálculos numéricos</shortdesc>
+  <shortdesc xml:lang="fr">Environnement de programmation interactif pour le calcul numérique</shortdesc>
+  <shortdesc xml:lang="it">Ambiente di programmazione interattivo per il calcolo numerico</shortdesc>
+  <shortdesc xml:lang="ja">数値計算のための対話的なプログラミング環境</shortdesc>
+  <shortdesc xml:lang="nl">Interactieve programmeeromgeving voor numerieke berekeningen</shortdesc>
+  <shortdesc xml:lang="pt">Ambiente de programação interativo para computação numérica</shortdesc>
+  <shortdesc xml:lang="zh">数值计算交互式编程环境</shortdesc>
+
+  <description>
+    GNU Octave is a high-level interpreted language, primarily intended for
+    numerical computations. It provides capabilities for the numerical
+    solution of linear and nonlinear problems, and for performing other
+    numerical experiments. It also provides extensive graphics capabilities
+    for data visualization and manipulation. Octave is normally used through
+    its interactive command line interface, but it can also be used to write
+    non-interactive programs. The Octave language is quite similar to
+    Matlab so that most programs are easily portable.
+  </description>
+  <description xml:lang="de">
+    GNU Octave ist eine höhere, interpretierte Programmiersprache, die
+    hauptsächlich für numerische Berechnungen gedacht ist. Sie bietet
+    Funktionen für die numerische Lösung linearer und nichtlinearer Probleme
+    und für die Durchführung anderer numerischer Experimente. Darüber hinaus
+    bietet es umfangreiche Grafikfunktionen zur Datenvisualisierung und
+    -manipulation. Octave wird normalerweise mittels einer interaktiven
+    Befehlszeile verwendet, kann aber auch zum Schreiben nicht interaktiver
+    Programme verwendet werden. Die Octave-Programmiersprache ist sehr
+    ähnlich zu Matlab, so dass die meisten Programme leicht übertragbar sind.
+  </description>
+  <description xml:lang="fr">
+    GNU Octave est un langage de programmation interprété, destiné
+    principalement au calcul numérique. Il fournit des fonctionnalités
+    pour la résolution de problèmes linéaires et non-linéaires, et pour toutes
+    sortes d'expériences numériques.  Il s'accompagne d'un système complet
+    de visualisation et de manipulation des données. Octave s’utilise
+    généralement via son environnement en lignes de commandes interactif,
+    mais il peut aussi être utilisé pour écrire des programmes non
+    interactifs. Le langage Octave est très similaire à Matlab de telle sorte
+    que les programmes Matlab sont très faciles à porter sous Octave.
+  </description>
 
   <homepage rdf:resource="https://www.octave.org" />
   <license rdf:resource="https://www.gnu.org/licenses/gpl-3.0.txt" />

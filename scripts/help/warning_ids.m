@@ -247,6 +247,7 @@
 ##
 ## @item  Octave:nearly-singular-matrix
 ## @itemx Octave:singular-matrix
+## These warnings are emitted if a (nearly) singular matrix is inverted.
 ## By default, the @code{Octave:nearly-singular-matrix} and
 ## @code{Octave:singular-matrix} warnings are enabled.
 ##

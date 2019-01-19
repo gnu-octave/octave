@@ -86,7 +86,8 @@
 ## ## Create figure and panel on it
 ## f = figure;
 ## ## Create a button (default style)
-## b1 = uicontrol (f, "string", "A Button", "position", [10 10 150 40]);
+## b1 = uicontrol (f, "string", "A Button", ...
+##                    "position", [10 10 150 40]);
 ## ## Create an edit control
 ## e1 = uicontrol (f, "style", "edit", "string", "editable text", ...
 ##                    "position", [10 60 300 40]);

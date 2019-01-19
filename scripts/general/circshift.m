@@ -37,19 +37,23 @@
 ## x = [1, 2, 3;
 ##      4, 5, 6;
 ##      7, 8, 9];
-## circshift (x, 1)      # positive shift on rows (1st non-singular dim)
+## ## positive shift on rows (1st non-singular dim)
+## circshift (x, 1)
 ##  @result{}  7, 8, 9
 ##      1, 2, 3
 ##      4, 5, 6
-## circshift (x, -2)     # negative shift on rows (1st non-singular dim)
+## ## negative shift on rows (1st non-singular dim)
+## circshift (x, -2)
 ##  @result{}  7, 8, 9
 ##      1, 2, 3
 ##      4, 5, 6
-## circshift (x, [0,1])  # no shift of rows, shift columns by 1 (2nd dimension)
+## ## no shift of rows, shift columns by 1 (2nd dimension)
+## circshift (x, [0,1])
 ##  @result{}  3, 1, 2
 ##      6, 4, 5
 ##      9, 7, 8
-## circshift (x, 1, 2)   # shift columns (2nd dimension)
+## ## shift columns (2nd dimension)
+## circshift (x, 1, 2)
 ##  @result{}  3, 1, 2
 ##      6, 4, 5
 ##      9, 7, 8

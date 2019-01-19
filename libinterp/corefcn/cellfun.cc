@@ -1808,7 +1808,8 @@ num2cell (x, 2)
         [2,1] =
            3   4
       @}
-## all rows and cols appear in each element of C (hence, only 1 output)
+## all rows and cols appear in each element of C
+## (hence, only 1 output)
 num2cell (x, [1, 2])
    @result{}
       @{
@@ -2136,8 +2137,10 @@ x = reshape (1:12, [3, 4])'
    10   11   12
 
 @group
-## The 4 rows (dim1) are divided in to two cell elements with 2 rows each.
-## The 3 cols (dim2) are divided in to three cell elements with 1 col each.
+## The 4 rows (dim1) are divided in to two cell elements
+## with 2 rows each.
+## The 3 cols (dim2) are divided in to three cell elements
+## with 1 col each.
 mat2cell (x, [2,2], [1,1,1])
 @result{}
 @{
@@ -2172,7 +2175,8 @@ mat2cell (x, [2,2], [1,1,1])
 @end group
 
 @group
-## The 4 rows (dim1) are divided in to two cell elements with a 3/1 split.
+## The 4 rows (dim1) are divided in to two cell elements
+## with a 3/1 split.
 ## All columns appear in each output element.
 mat2cell (x, [3,1])
 @result{}

@@ -3387,12 +3387,26 @@ of properly displaying the object's name.  This can be done by using the
 
 /*
 %!test
-%! str = evalc ("x = 1.1; display (x)");
-%! assert (str, "x =  1.1000\n");
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   str = evalc ("x = 1.1; display (x)");
+%!   assert (str, "x =  1.1000\n");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
 %!test
-%! str = evalc ("display (1.1)");
-%! assert (str, " 1.1000\n");
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   str = evalc ("display (1.1)");
+%!   assert (str, " 1.1000\n");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
 ## Test input validation
 %!error display ()

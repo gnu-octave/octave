@@ -5819,10 +5819,17 @@ s = evalc ("t = 42"), t
 %!  b = 2;
 %!endfunction
 %!test
-%! [s, a, b] = evalc ("__f_evalc ()");
-%! assert (s, "foobar 3.1416\n");
-%! assert (a, 1);
-%! assert (b, 2);
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   [s, a, b] = evalc ("__f_evalc ()");
+%!   assert (s, "foobar 3.1416\n");
+%!   assert (a, 1);
+%!   assert (b, 2);
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
 %!error <foo> (evalc ("error ('foo')"))
 %!error <bar> (evalc ("error ('foo')", "error ('bar')"))

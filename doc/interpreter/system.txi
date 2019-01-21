@@ -533,6 +533,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(compare_versions)
 
+@DOCSTRING(verLessThan)
+
 @DOCSTRING(license)
 
 @DOCSTRING(getrusage)

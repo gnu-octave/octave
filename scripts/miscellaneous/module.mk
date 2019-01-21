@@ -78,6 +78,7 @@ FCN_FILE_DIRS += \
   %reldir%/unzip.m \
   %reldir%/validateattributes.m \
   %reldir%/ver.m \
+  %reldir%/verLessThan.m \
   %reldir%/version.m \
   %reldir%/what.m \
   %reldir%/zip.m

@@ -67,6 +67,10 @@
 #* Submit call for translations for GUI strings
 #: Completion Date:
 <!----------------------------------------------------------------------------->
+# Update shared library and oct file API version numbers
+#* Increment oct file API version number (configure.ac:OCTAVE_API_VERSION, increment number and drop "+" suffix)
+#* Increment libtool versioning (liboctave/module.mk:%canon_reldir%_%canon_reldir%_current, libinterp/module.mk:%canon_reldir%_liboctinterp_current, libgui/module.mk:%canon_reldir%_liboctgui_current)
+<!----------------------------------------------------------------------------->
 # Verify build process and create release candidates
 #* Update configure.ac with new version information
 #** Update AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION, OCTAVE_RELEASE_DATE
@@ -84,7 +88,6 @@
 # Final Release
 #* Update version information
 #** Update configure.ac (AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION, OCTAVE_RELEASE_DATE)
-#** Update libtool versioning (configure.ac:OCTAVE_API_VERSION, liboctave/module.mk:%canon_reldir%_%canon_reldir%_current, libinterp/module.mk:%canon_reldir%_liboctinterp_current, libgui/module.mk:%canon_reldir%_liboctgui_current)
 #** Update NEWS (final release date)
 #** Update CITATION (version, year, URL)
 #** Update org.octave.Octave.appdata.xml (version number and release date)
@@ -98,6 +101,7 @@
 <!----------------------------------------------------------------------------->
 # Post-Release
 #* Update configure.ac (AC_INIT, OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, OCTAVE_PATCH_VERSION) to next release cycle
+#* Update oct file API version number (configure.ac:OCTAVE_API_VERSION, add "+" suffix)
 #* Remove all deprecated functions (either OCTAVE_DEPRECATED in C++ or scripts/deprecated for m-files) scheduled for deletion in default branch
 #* Move NEWS file to backup in etc/NEWS.X
 #* Create new NEWS file

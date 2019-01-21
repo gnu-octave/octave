@@ -360,12 +360,6 @@ function dump_helper_fcns (fid)
 "end                                                                          "
 ]);  # End of rgbplot dump
 
-  ## Add viridis function
-  fdisp (fid, [
-
-
-]);  # End of viridis dump
-
   fprintf (fid, "\n");
 
   fprintf (fid, "\n%s\n", repmat ("%", [1, 60]));

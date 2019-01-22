@@ -274,7 +274,9 @@ namespace octave
       print_usage (who);
 
     // elements already processed
-    bool seen_in = false, seen_at = false, seen_if = false;
+    bool seen_in = false;
+    bool seen_at = false;
+    bool seen_if = false;
     int pos = 0;
     dbstop_args tok = dbstop_none;
     while (pos < nargin)

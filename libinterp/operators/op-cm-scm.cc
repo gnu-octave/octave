@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -54,14 +53,7 @@ DEFBINOP (div, complex_matrix, sparse_complex_matrix)
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
-    {
-      Complex d = v2.complex_value ();
-
-      if (d == 0.0)
-        warn_divide_by_zero ();
-
-      return octave_value (v1.complex_array_value () / d);
-    }
+    return octave_value (v1.complex_array_value () / v2.complex_value ());
   else
     {
       MatrixType typ = v2.matrix_type ();

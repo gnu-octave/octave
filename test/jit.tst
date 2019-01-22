@@ -377,15 +377,11 @@
 %! assert (jit_failcnt, 0);
 
 %!function test_divide ()
-%! state = warning ("query", "Octave:divide-by-zero").state;
 %! unwind_protect
-%!   warning ("error", "Octave:divide-by-zero");
 %!   for i=1:1e5
 %!     a = 1;
 %!     a / 0;
 %!   endfor
-%! unwind_protect_cleanup
-%!   warning (state, "Octave:divide-by-zero");
 %! end_unwind_protect
 %!endfunction
 

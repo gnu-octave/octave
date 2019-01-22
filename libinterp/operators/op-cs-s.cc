@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -46,12 +45,7 @@ DEFBINOP (div, complex, scalar)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  double d = v2.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.complex_value () / d);
+  return octave_value (v1.complex_value () / v2.double_value ());
 }
 
 DEFBINOP_FN (pow, complex, scalar, xpow)
@@ -61,12 +55,7 @@ DEFBINOP (ldiv, complex, scalar)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  Complex d = v1.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.double_value () / d);
+  return octave_value (v2.double_value () / v1.complex_value ());
 }
 
 DEFCMPLXCMPOP_OP (lt, complex, scalar, <)
@@ -83,12 +72,7 @@ DEFBINOP (el_div, complex, scalar)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  double d = v2.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.complex_value () / d);
+  return octave_value (v1.complex_value () / v2.double_value ());
 }
 
 DEFBINOP_FN (el_pow, complex, scalar, xpow)
@@ -98,12 +82,7 @@ DEFBINOP (el_ldiv, complex, scalar)
   const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  Complex d = v1.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.double_value () / d);
+  return octave_value (v2.double_value () / v1.complex_value ());
 }
 
 DEFBINOP (el_and, complex, scalar)

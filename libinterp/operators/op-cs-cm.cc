@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -64,12 +63,7 @@ DEFBINOP (ldiv, complex, complex_matrix)
   const octave_complex_matrix& v2
     = dynamic_cast<const octave_complex_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.complex_array_value () / d);
+  return octave_value (v2.complex_array_value () / v1.complex_value ());
 }
 
 DEFNDCMPLXCMPOP_FN (lt, complex, complex_matrix, complex, complex_array,
@@ -97,12 +91,7 @@ DEFBINOP (el_ldiv, complex, complex_matrix)
   const octave_complex_matrix& v2
     = dynamic_cast<const octave_complex_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.complex_array_value () / d);
+  return octave_value (v2.complex_array_value () / v1.complex_value ());
 }
 
 DEFNDBINOP_FN (el_and, complex, complex_matrix, complex, complex_array,

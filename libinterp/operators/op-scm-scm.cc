@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -34,15 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "sparse-xdiv.h"
 #include "sparse-xpow.h"
-#include "ov-re-sparse.h"
-#include "ov-cx-sparse.h"
-
-#include "errwarn.h"
-#include "ovl.h"
-#include "ov.h"
 #include "ov-cx-mat.h"
-#include "ov-typeinfo.h"
-#include "ops.h"
+#include "ov-cx-sparse.h"
+#include "ov-re-sparse.h"
+
 #include "xdiv.h"
 #include "xpow.h"
 
@@ -70,24 +64,6 @@ DEFUNOP (hermitian, sparse_complex_matrix)
           v.matrix_type ().transpose ());
 }
 
-#if 0
-DEFUNOP (incr, sparse_complex_matrix)
-{
-  const octave_sparse_complex_matrix& v
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a);
-
-  return octave_value (v.complex_matrix_value () .increment ());
-}
-
-DEFUNOP (decr, sparse_complex_matrix)
-{
-  const octave_sparse_complex_matrix& v
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a);
-
-  return octave_value (v.complex_matrix_value () .decrement ());
-}
-#endif
-
 // complex matrix by complex matrix ops.
 
 DEFBINOP_OP (add, sparse_complex_matrix, sparse_complex_matrix, +)
@@ -103,14 +79,7 @@ DEFBINOP (div, sparse_complex_matrix, sparse_complex_matrix)
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
-    {
-      Complex d = v2.complex_value ();
-
-      if (d == 0.0)
-        warn_divide_by_zero ();
-
-      return octave_value (v1.sparse_complex_matrix_value () / d);
-    }
+    return octave_value (v1.sparse_complex_matrix_value () / v2.complex_value ());
   else
     {
       MatrixType typ = v2.matrix_type ();
@@ -135,14 +104,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, sparse_complex_matrix)
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
-    {
-      Complex d = v1.complex_value ();
-
-      if (d == 0.0)
-        warn_divide_by_zero ();
-
-      return octave_value (v2.sparse_complex_matrix_value () / d);
-    }
+    return octave_value (v2.sparse_complex_matrix_value () / v1.complex_value ());
   else
     {
       MatrixType typ = v1.matrix_type ();
@@ -195,11 +157,6 @@ install_scm_scm_ops (octave::type_info& ti)
   INSTALL_UNOP_TI (ti, op_uminus, octave_sparse_complex_matrix, uminus);
   INSTALL_UNOP_TI (ti, op_transpose, octave_sparse_complex_matrix, transpose);
   INSTALL_UNOP_TI (ti, op_hermitian, octave_sparse_complex_matrix, hermitian);
-
-#if 0
-  INSTALL_NCUNOP_TI (ti, op_incr, octave_sparse_complex_matrix, incr);
-  INSTALL_NCUNOP_TI (ti, op_decr, octave_sparse_complex_matrix, decr);
-#endif
 
   INSTALL_BINOP_TI (ti, op_add, octave_sparse_complex_matrix,
                     octave_sparse_complex_matrix, add);

@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fs-fcnda.h"
 #include "mx-fcnda-fs.h"
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -77,12 +76,7 @@ DEFBINOP (ldiv, float_scalar, float_complex_matrix)
   const octave_float_complex_matrix& v2
     = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_array_value () / d);
+  return octave_value (v2.float_complex_array_value () / v1.float_value ());
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_scalar, float_complex_matrix, float_scalar,
@@ -112,12 +106,7 @@ DEFBINOP (el_ldiv, float_scalar, float_complex_matrix)
   const octave_float_complex_matrix& v2
     = dynamic_cast<const octave_float_complex_matrix&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_array_value () / d);
+  return octave_value (v2.float_complex_array_value () / v1.float_value ());
 }
 
 DEFNDBINOP_FN (el_and, float_scalar, float_complex_matrix, float_scalar,

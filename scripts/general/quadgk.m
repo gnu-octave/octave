@@ -318,10 +318,6 @@ function [q, err] = quadgk (f, a, b, varargin)
   endwhile
   subs = [subs(1:end-1), subs(2:end)];
 
-  ## Singularity will cause divide by zero warnings.
-  ## Turn off warning locally for quadgk function only.
-  warning ("off", "Octave:divide-by-zero", "local");
-
   warn_id = "Octave:quadgk:warning-termination";
 
   if (issingle)

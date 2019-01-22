@@ -12,7 +12,6 @@
 #include <octave/str-vec.h>
 
 #include <octave/defun-dld.h>
-#include <octave/errwarn.h>
 #include <octave/interpreter.h>
 #include <octave/ops.h>
 #include <octave/ov-base.h>
@@ -161,12 +160,7 @@ DEFBINOP (div, integer, integer)
   const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
   const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
-  int d = v2.integer_value ();
-
-  if (d == 0)
-    warn_divide_by_zero ();
-
-  return new octave_integer (v1.integer_value () / d);
+  return new octave_integer (v1.integer_value () / v2.integer_value ());
 }
 
 
@@ -175,12 +169,7 @@ DEFBINOP (i_s_div, integer, scalar)
   const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  double d = v2.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return new octave_scalar (v1.double_value () / d);
+  return new octave_scalar (v1.double_value () / v2.double_value ());
 }
 
 DEFBINOP (ldiv, integer, integer)
@@ -188,12 +177,7 @@ DEFBINOP (ldiv, integer, integer)
   const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
   const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
-  int d = v1.integer_value ();
-
-  if (d == 0)
-    warn_divide_by_zero ();
-
-  return new octave_integer (v2.integer_value () / d);
+  return new octave_integer (v2.integer_value () / v1.integer_value ());
 }
 
 DEFBINOP_OP (lt, integer, integer, <)
@@ -210,12 +194,7 @@ DEFBINOP (el_div, integer, integer)
   const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
   const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
-  int d = v2.integer_value ();
-
-  if (d == 0)
-    warn_divide_by_zero ();
-
-  return new octave_integer (v1.integer_value () / d);
+  return new octave_integer (v1.integer_value () / v2.integer_value ());
 }
 
 DEFBINOP (el_ldiv, integer, integer)
@@ -223,12 +202,7 @@ DEFBINOP (el_ldiv, integer, integer)
   const octave_integer& v1 = dynamic_cast<const octave_integer&> (a1);
   const octave_integer& v2 = dynamic_cast<const octave_integer&> (a2);
 
-  int d = v1.integer_value ();
-
-  if (d == 0)
-    warn_divide_by_zero ();
-
-  return new octave_integer (v2.integer_value () / d);
+  return new octave_integer (v2.integer_value () / v1.integer_value ());
 }
 
 DEFBINOP_OP (el_and, integer, integer, &&)

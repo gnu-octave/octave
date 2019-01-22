@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-s-cnda.h"
 #include "mx-cnda-s.h"
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -72,12 +71,7 @@ DEFBINOP (ldiv, scalar, complex_matrix)
   const octave_complex_matrix& v2
     = dynamic_cast<const octave_complex_matrix&> (a2);
 
-  double d = v1.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.complex_array_value () / d);
+  return octave_value (v2.complex_array_value () / v1.double_value ());
 }
 
 DEFNDCMPLXCMPOP_FN (lt, scalar, complex_matrix, scalar, complex_array, mx_el_lt)
@@ -97,12 +91,7 @@ DEFBINOP (el_ldiv, scalar, complex_matrix)
   const octave_complex_matrix& v2
     = dynamic_cast<const octave_complex_matrix&> (a2);
 
-  double d = v1.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.complex_array_value () / d);
+  return octave_value (v2.complex_array_value () / v1.double_value ());
 }
 
 DEFNDBINOP_FN (el_and, scalar, complex_matrix, scalar, complex_array, mx_el_and)

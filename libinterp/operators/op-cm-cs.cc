@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-cx-mat.h"
@@ -47,12 +46,7 @@ DEFBINOP (div, complex_matrix, complex)
     = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
-  Complex d = v2.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.complex_array_value () / d);
+  return octave_value (v1.complex_array_value () / v2.complex_value ());
 }
 
 DEFBINOP_FN (pow, complex_matrix, complex, xpow)
@@ -93,12 +87,7 @@ DEFBINOP (el_div, complex_matrix, complex)
     = dynamic_cast<const octave_complex_matrix&> (a1);
   const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
 
-  Complex d = v2.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.complex_array_value () / d);
+  return octave_value (v1.complex_array_value () / v2.complex_value ());
 }
 
 DEFNDBINOP_FN (el_pow, complex_matrix, complex, complex_array, complex,

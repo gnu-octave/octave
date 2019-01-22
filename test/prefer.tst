@@ -176,15 +176,9 @@
 %! warning (watv.state, "Octave:assign-as-truth-value");
 
 %!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("off", "Octave:divide-by-zero");
 %! assert (isinf (1/0));
-%! warning (wdbz.state, "Octave:divide-by-zero");
 
 %!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("on", "Octave:divide-by-zero");
 %! a = 1;
 %! b = 0;
-%! fail ("isinf (a/b);", "warning", "division by zero");
-%! warning (wdbz.state, "Octave:divide-by-zero");
+%! assert (isinf (a/b));

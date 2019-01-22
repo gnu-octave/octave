@@ -158,11 +158,6 @@
 ## is obsolete and scheduled for removal from Octave.
 ## By default, the @code{Octave:deprecated-property} warning is enabled.
 ##
-## @item Octave:divide-by-zero
-## If the @code{Octave:divide-by-zero} warning is enabled, a
-## warning is issued when Octave encounters a division by zero.
-## By default, the @code{Octave:divide-by-zero} warning is enabled.
-##
 ## @item Octave:eigs:UnconvergedEigenvalues
 ## If the @code{Octave:eigs:UnconvergedEigenvalues} warning is enabled then
 ## the eigs function will issue a warning if the number of calculated

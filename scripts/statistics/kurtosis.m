@@ -153,9 +153,8 @@ endfunction
 %!assert (kurtosis (single ([1:5 10])), single (2.9786513), eps ("single"))
 %!assert (kurtosis (single ([1 2]), 0), single (NaN))
 
-## Verify no "divide-by-zero" warnings
+## Verify no warnings
 %!test
-%! warning ("on", "Octave:divide-by-zero", "local");
 %! lastwarn ("");  # clear last warning
 %! kurtosis (1);
 %! assert (lastwarn (), "");

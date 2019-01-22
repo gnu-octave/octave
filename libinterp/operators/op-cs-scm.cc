@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-typeinfo.h"
@@ -51,14 +50,8 @@ DEFBINOP (div, complex, sparse_complex_matrix)
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
-    {
-      Complex d = v2.complex_value ();
-
-      if (d == 0.0)
-        warn_divide_by_zero ();
-
-      return octave_value (SparseComplexMatrix (1, 1, v1.complex_value () / d));
-    }
+    return octave_value (SparseComplexMatrix (1, 1, v1.complex_value ()
+                                                  / v2.complex_value ()));
   else
     {
       MatrixType typ = v2.matrix_type ();
@@ -84,12 +77,7 @@ DEFBINOP (ldiv, complex, sparse_complex_matrix)
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.sparse_complex_matrix_value () / d);
+  return octave_value (v2.sparse_complex_matrix_value () / v1.complex_value ());
 }
 
 DEFBINOP_FN (lt, complex, sparse_complex_matrix, mx_el_lt)
@@ -110,15 +98,7 @@ DEFBINOP (el_ldiv, complex, sparse_complex_matrix)
   const octave_sparse_complex_matrix& v2
     = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
 
-  Complex d = v1.complex_value ();
-  octave_value retval;
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  retval = octave_value (v2.sparse_complex_matrix_value () / d);
-
-  return retval;
+  return octave_value (v2.sparse_complex_matrix_value () / v1.complex_value ());
 }
 
 DEFBINOP_FN (el_and, complex, sparse_complex_matrix, mx_el_and)

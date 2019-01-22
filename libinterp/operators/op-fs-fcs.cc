@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -49,12 +48,7 @@ DEFBINOP (div, float_scalar, float_complex)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_value () / d);
+  return octave_value (v1.float_value () / v2.float_complex_value ());
 }
 
 DEFBINOP_FN (pow, float_scalar, float_complex, xpow)
@@ -64,12 +58,7 @@ DEFBINOP (ldiv, float_scalar, float_complex)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_value () / d);
+  return octave_value (v2.float_complex_value () / v1.float_value ());
 }
 
 DEFCMPLXCMPOP_OP (lt, float_scalar, float_complex, <)
@@ -86,12 +75,7 @@ DEFBINOP (el_div, float_scalar, float_complex)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_value () / d);
+  return octave_value (v1.float_value () / v2.float_complex_value ());
 }
 
 DEFBINOP_FN (el_pow, float_scalar, float_complex, xpow)
@@ -101,12 +85,7 @@ DEFBINOP (el_ldiv, float_scalar, float_complex)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_value () / d);
+  return octave_value (v2.float_complex_value () / v1.float_value ());
 }
 
 DEFBINOP (el_and, float_scalar, float_complex)

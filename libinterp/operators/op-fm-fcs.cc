@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-fnda-fcs.h"
 #include "mx-fcs-fnda.h"
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
@@ -54,12 +53,7 @@ DEFBINOP (div, float_matrix, float_complex)
   const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_array_value () / d);
+  return octave_value (v1.float_array_value () / v2.float_complex_value ());
 }
 
 DEFBINOP_FN (pow, float_matrix, float_complex, xpow)
@@ -100,12 +94,7 @@ DEFBINOP (el_div, float_matrix, float_complex)
   const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_array_value () / d);
+  return octave_value (v1.float_array_value () / v2.float_complex_value ());
 }
 
 DEFNDBINOP_FN (el_pow, float_matrix, float_complex, float_array,

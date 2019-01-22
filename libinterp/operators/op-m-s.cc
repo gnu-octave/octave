@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-re-mat.h"
@@ -47,12 +46,7 @@ DEFBINOP (div, matrix, scalar)
   const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  double d = v2.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.array_value () / d);
+  return octave_value (v1.array_value () / v2.double_value ());
 }
 
 DEFBINOP_FN (pow, matrix, scalar, xpow)
@@ -86,12 +80,7 @@ DEFBINOP (el_div, matrix, scalar)
   const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
   const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
 
-  double d = v2.double_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.array_value () / d);
+  return octave_value (v1.array_value () / v2.double_value ());
 }
 
 DEFNDBINOP_FN (el_pow, matrix, scalar, array, scalar, elem_xpow)

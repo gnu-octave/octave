@@ -324,12 +324,6 @@ warn_disabled_feature (const std::string& fcn, const std::string& feature,
 }
 
 void
-warn_divide_by_zero (void)
-{
-  warning_with_id ("Octave:divide-by-zero", "division by zero");
-}
-
-void
 warn_empty_arg (const char *name)
 {
   warning ("%s: argument is empty matrix", name);

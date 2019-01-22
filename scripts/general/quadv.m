@@ -152,18 +152,14 @@ endfunction
 %!assert (quadv (@sin, 0, pi), 2, 1e-6)
 
 ## Test weak singularities at the edge
-%!test
-%! warning ("off", "Octave:divide-by-zero", "local");
-%! assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 2e-6);
+%!assert (quadv (@(x) 1 ./ sqrt (x), 0, 1), 2, 2e-6);
 
 ## Test vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-6)
 
 ## Test matrix-valued functions
-%!test
-%! warning ("off", "Octave:divide-by-zero", "local");
-%! assert (quadv (@(x) [ x,x,x; x,1./sqrt(x),x; x,x,x ], 0, 1),
-%!         [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 2e-6);
+%!assert (quadv (@(x) [ x,x,x; x,1./sqrt(x),x; x,x,x ], 0, 1),
+%!        [0.5,0.5,0.5; 0.5,2,0.5; 0.5,0.5,0.5], 2e-6);
 
 ## Test input validation
 %!error quadv ()

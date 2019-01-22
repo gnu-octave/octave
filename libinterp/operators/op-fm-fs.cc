@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-flt-re-mat.h"
@@ -46,12 +45,7 @@ DEFBINOP (div, float_matrix, float)
   const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v2.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_array_value () / d);
+  return octave_value (v1.float_array_value () / v2.float_value ());
 }
 
 DEFBINOP_FN (pow, float_matrix, float_scalar, xpow)
@@ -91,12 +85,7 @@ DEFBINOP (el_div, float_matrix, float)
   const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v2.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_array_value () / d);
+  return octave_value (v1.float_array_value () / v2.float_value ());
 }
 
 DEFNDBINOP_FN (el_pow, float_matrix, float_scalar, float_array,

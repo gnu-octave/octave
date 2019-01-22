@@ -993,7 +993,7 @@ handle_message (error_fun f, const char *id, const char *msg,
           else if (arg.is_string ())
             {
               tmpstr = arg.string_value ();  // 2-stage assignment required
-              msg = tmpstr.c_str ();         // in order to generate pointer  
+              msg = tmpstr.c_str ();         // in order to generate pointer
                                              // to valid memory.
             }
         }
@@ -1819,7 +1819,7 @@ expansion use a second backslash before the sequence (e.g.,
 
 /*
 %!test <*51997>
-%! id = "Octave:divide-by-zero";
+%! id = "Octave:logical-conversion";
 %! current = warning ("query", id);
 %! current_all = warning ();
 %! previous = warning (current_all);

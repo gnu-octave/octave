@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-complex.h"
@@ -73,12 +72,7 @@ DEFBINOP (div, float_complex, float_complex)
   const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_complex_value () / d);
+  return octave_value (v1.float_complex_value () / v2.float_complex_value ());
 }
 
 DEFBINOP_FN (pow, float_complex, float_complex, xpow)
@@ -88,12 +82,7 @@ DEFBINOP (ldiv, float_complex, float_complex)
   const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v1.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_value () / d);
+  return octave_value (v2.float_complex_value () / v1.float_complex_value ());
 }
 
 DEFCMPLXCMPOP_OP (lt, float_complex, float_complex, <)
@@ -110,12 +99,7 @@ DEFBINOP (el_div, float_complex, float_complex)
   const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v2.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_complex_value () / d);
+  return octave_value (v1.float_complex_value () / v2.float_complex_value ());
 }
 
 DEFBINOP_FN (el_pow, float_complex, float_complex, xpow)
@@ -125,12 +109,7 @@ DEFBINOP (el_ldiv, float_complex, float_complex)
   const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
   const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
 
-  FloatComplex d = v1.float_complex_value ();
-
-  if (d == 0.0f)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_complex_value () / d);
+  return octave_value (v2.float_complex_value () / v1.float_complex_value ());
 }
 
 DEFBINOP (el_and, float_complex, float_complex)

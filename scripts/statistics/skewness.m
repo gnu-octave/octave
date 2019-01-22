@@ -152,9 +152,8 @@ endfunction
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
-## Verify no "divide-by-zero" warnings
+## Verify no warnings
 %!test
-%! warning ("on", "Octave:divide-by-zero", "local");
 %! lastwarn ("");  # clear last warning
 %! skewness (1);
 %! assert (lastwarn (), "");

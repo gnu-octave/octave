@@ -164,9 +164,6 @@ warn_disabled_feature (const std::string& fcn, const std::string& feature,
                        const std::string& pkg = "Octave");
 
 OCTINTERP_API extern void
-warn_divide_by_zero (void);
-
-OCTINTERP_API extern void
 warn_empty_arg (const char *name);
 
 OCTINTERP_API extern void
@@ -184,5 +181,12 @@ warn_logical_conversion (void);
 
 OCTINTERP_API extern void
 warn_wrong_type_arg (const char *name, const octave_value& tc);
+
+#if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)
+
+OCTAVE_DEPRECATED (6, "do not use 'Octave:divide-by-zero'")
+OCTINTERP_API extern void warn_divide_by_zero (void) {}
+
+#endif
 
 #endif

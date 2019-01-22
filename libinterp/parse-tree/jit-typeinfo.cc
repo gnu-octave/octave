@@ -386,10 +386,6 @@ namespace octave
   extern "C" Complex
   octave_jit_complex_div (Complex lhs, Complex rhs)
   {
-    // see src/OPERATORS/op-cs-cs.cc
-    if (rhs == 0.0)
-      warn_divide_by_zero ();
-
     return lhs / rhs;
   }
 
@@ -1355,10 +1351,6 @@ namespace octave
     add_binary_fcmp (m_scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
     add_binary_fcmp (m_scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
 
-    jit_function gripe_div0 = create_external (JIT_FN (warn_divide_by_zero),
-                                               nullptr);
-    gripe_div0.mark_can_error ();
-
     // divide is annoying because it might error
     fn = create_internal ("octave_jit_div_scalar_scalar", m_scalar, m_scalar,
                           m_scalar);
@@ -1376,7 +1368,6 @@ namespace octave
       m_builder.CreateCondBr (check, warn_block, normal_block);
 
       m_builder.SetInsertPoint (warn_block);
-      gripe_div0.call (m_builder);
       m_builder.CreateBr (normal_block);
 
       m_builder.SetInsertPoint (normal_block);

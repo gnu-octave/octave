@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 
-#include "errwarn.h"
 #include "ovl.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -69,12 +68,7 @@ DEFBINOP (div, float_scalar, float_scalar)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v2.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_value () / d);
+  return octave_value (v1.float_value () / v2.float_value ());
 }
 
 DEFBINOP_FN (pow, float_scalar, float_scalar, xpow)
@@ -84,12 +78,7 @@ DEFBINOP (ldiv, float_scalar, float_scalar)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_value () / d);
+  return octave_value (v2.float_value () / v1.float_value ());
 }
 
 DEFBINOP_OP (lt, float_scalar, float_scalar, <)
@@ -106,12 +95,7 @@ DEFBINOP (el_div, float_scalar, float_scalar)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v2.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v1.float_value () / d);
+  return octave_value (v1.float_value () / v2.float_value ());
 }
 
 DEFBINOP_FN (el_pow, float_scalar, float_scalar, xpow)
@@ -121,12 +105,7 @@ DEFBINOP (el_ldiv, float_scalar, float_scalar)
   const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
   const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
 
-  float d = v1.float_value ();
-
-  if (d == 0.0)
-    warn_divide_by_zero ();
-
-  return octave_value (v2.float_value () / d);
+  return octave_value (v2.float_value () / v1.float_value ());
 }
 
 DEFSCALARBOOLOP_OP (el_and, float_scalar, float_scalar, &&)

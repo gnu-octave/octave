@@ -209,12 +209,7 @@ gen_specific_tests() {
 %!assert (nnz (sparse (1,1,0)), 0)
 %!assert (nnz (sparse (eye (3))*0), 0)
 %!assert (nnz (sparse (eye (3))-sparse (eye (3))), 0)
-
-%!test
-%! wdbz = warning ("query", "Octave:divide-by-zero");
-%! warning ("off", "Octave:divide-by-zero");
-%! assert (full (sparse (eye (3))/0), full (eye (3)/0));
-%! warning (wdbz.state, "Octave:divide-by-zero");
+%!assert (full (sparse (eye (3))/0), full (eye (3)/0));
 
 EOF
 }

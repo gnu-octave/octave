@@ -43,10 +43,13 @@
 ## @group
 ## x = 0:0.1:1;
 ## y = x.^3;
+## ## No scaling
 ## q = trapz (y)
 ##   @result{} q = 2.5250
+## ## Approximation to integral by scaling
 ## q * 0.1
 ##   @result{} 0.25250
+## ## Same result by specifying @var{x}
 ## trapz (x, y)
 ##   @result{} 0.25250
 ## @end group

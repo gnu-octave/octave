@@ -80,6 +80,20 @@ function varargout = lightangle (varargin)
     el = varargin{3};
   endif
 
+  if (nargin == 1)
+    pos = get (hl, "Position");
+    [az, el] = cart2sph (pos(1), pos(2), pos(3));
+    az = rad2deg (az) + 90;  # see view.m
+    el = rad2deg (el);
+    varargout = { az, el };
+    return;
+  endif  
+
+  if (! isscalar (az) || ! isnumeric (az)
+      || ! isscalar (el) || ! isnumeric (el))
+    error ("lightangle: AZ and EL must be numeric scalars");
+  endif
+
   if (! isempty (hl))
     hax = ancestor (hl, "axes");
   endif
@@ -93,19 +107,6 @@ function varargout = lightangle (varargin)
   endif
 
   pos = get (hl, "Position");
-
-  if (nargin == 1)
-    [az, el] = cart2sph (pos(1), pos(2), pos(3));
-    az = rad2deg (az) + 90;  # see view.m
-    el = rad2deg (el);
-    varargout = { az, el };
-    return;
-  else
-    if (! isscalar (az) || ! isnumeric (az)
-        || ! isscalar (el) || ! isnumeric (el))
-      error ("lightangle: AZ and EL must be numeric scalars.");
-    endif
-  endif  
 
   az = deg2rad (az - 90);
   el = deg2rad (el);
@@ -154,9 +155,13 @@ endfunction
 %! end_unwind_protect
 
 ## Test input validation
-%!error <Invalid call> lightangle ();
-%!error <Invalid call> lightangle (1, 2, 3, 4);
-%!error <Invalid call> [a, b] = lightangle (45, 30);
-%!error <Invalid call> [a, b, c] = lightangle (45, 30);
-%!error <HL must be a handle to a light object> lightangle (0);
-%!error <H must be a handle to an axes or light object> lightangle (0, 90, 45);
+%!error <Invalid call> lightangle ()
+%!error <Invalid call> lightangle (1, 2, 3, 4)
+%!error <Invalid call> [a, b] = lightangle (45, 30)
+%!error <Invalid call> [a, b, c] = lightangle (45, 30)
+%!error <HL must be a handle to a light object> lightangle (0)
+%!error <H must be a handle to an axes or light object> lightangle (0, 90, 45)
+%!error <AZ and EL must be numeric scalars> lightangle ([1 2], 0) 
+%!error <AZ and EL must be numeric scalars> lightangle ({1}, 0) 
+%!error <AZ and EL must be numeric scalars> lightangle (0, [1 2]) 
+%!error <AZ and EL must be numeric scalars> lightangle (0, {1}) 

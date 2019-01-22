@@ -237,14 +237,17 @@ namespace octave
   {
     std::string file;
 
+    if (name.empty ())
+      return file;
+
     type = "";
-
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-    octave_value val = symtab.find_function (name);
 
     if (name.find_first_of ('.') == std::string::npos)
       {
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        octave_value val = symtab.find_function (name);
+
         if (val.is_defined ())
           {
             octave_function *fcn = val.function_value ();

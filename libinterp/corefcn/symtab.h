@@ -212,9 +212,21 @@ namespace octave
     fcn_table_find (const std::string& name,
                     const octave_value_list& args = octave_value_list ());
 
+    // If NAME is of the form @CLASS/FUNCTION, call
+    //
+    //   find_method (FUNCTION, CLASS)
+    //
+    // otherwise call
+    //
+    //   function_function (NAME, ovl ())
+
+    octave_value find_function (const std::string& name);
+
+    // NAME should just be function name; dispatch type determined
+    // from types of ARGS.
+
     octave_value
-    find_function (const std::string& name,
-                   const octave_value_list& args = octave_value_list ());
+    find_function (const std::string& name, const octave_value_list& args);
 
     octave_value find_user_function (const std::string& name)
     {

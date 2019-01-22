@@ -401,6 +401,27 @@ namespace octave
     return octave_value ();
   }
 
+  octave_value symbol_table::find_function (const std::string& name)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    if (name[0] == '@')
+      {
+        size_t pos = name.find_first_of ('/');
+
+        if (pos == std::string::npos)
+          return octave_value ();
+
+        std::string method = name.substr (pos+1);
+        std::string dispatch_type = name.substr (1, pos-1);
+
+        return find_method (method, dispatch_type);
+      }
+    else
+      return find_function (name, ovl ());
+  }
+
   octave_value
   symbol_table::find_function (const std::string& name,
                                const octave_value_list& args)

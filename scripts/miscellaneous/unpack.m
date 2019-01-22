@@ -308,7 +308,11 @@ function files = __parse_zip__ (output)
 endfunction
 
 function output = __parse_tar__ (output)
-  ## This is a no-op, but it makes things simpler for other cases.
+  ## BSD tar emits file actions in the first 2 columns
+
+  if (tar_is_bsd ())
+    output = cellfun (@(x) x(3:end), output, 'UniformOutput', false);
+  endif
 endfunction
 
 function files = __parse_gzip__ (output)

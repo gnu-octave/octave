@@ -60,8 +60,14 @@ function filelist = tar (tarfile, files, rootdir = ".")
     tarfile = __w2mpth__ (tarfile);
   endif
 
-  cmd = sprintf ("tar cvf %s -C %s %s",
-                          tarfile, rootdir, sprintf (" %s", files{:}));
+  ## BSD tar emits progress on stderr
+  if (tar_is_bsd ())
+    cmd = sprintf ("tar cvf %s -C %s %s 2>&1",
+                            tarfile, rootdir, sprintf (" '%s'", files{:}));
+  else
+    cmd = sprintf ("tar cvf %s -C %s %s",
+                            tarfile, rootdir, sprintf (" %s", files{:}));
+  end
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.
   tar_options_env = getenv ("TAR_OPTIONS");
@@ -81,6 +87,11 @@ function filelist = tar (tarfile, files, rootdir = ".")
   if (nargout > 0)
     filelist = ostrsplit (output, "\r\n", true);
     filelist = filelist';
+
+    ## BSD tar emits file actions in the first 2 columns
+    if (tar_is_bsd ())
+      filelist = cellfun (@(x) x(3:end), filelist, 'UniformOutput', false);
+    endif
   endif
 
 endfunction

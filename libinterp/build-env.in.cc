@@ -111,8 +111,6 @@ namespace octave
 
     const char *DL_LDFLAGS = %OCTAVE_CONF_DL_LDFLAGS%;
 
-    const char *DL_LIBS = %OCTAVE_CONF_DL_LIBS%;
-
     const char *EXEEXT = %OCTAVE_CONF_EXEEXT%;
 
     const char *GCC_VERSION = %OCTAVE_CONF_GCC_VERSION%;
@@ -228,12 +226,6 @@ namespace octave
     const char *OCT_LINK_OPTS = %OCTAVE_CONF_OCT_LINK_OPTS%;
 
     const char *OPENGL_LIBS = %OCTAVE_CONF_OPENGL_LIBS%;
-
-    const char *OSMESA_CPPFLAGS = %OCTAVE_CONF_OSMESA_CPPFLAGS%;
-
-    const char *OSMESA_LDFLAGS = %OCTAVE_CONF_OSMESA_LDFLAGS%;
-
-    const char *OSMESA_LIBS = %OCTAVE_CONF_OSMESA_LIBS%;
 
     const char *PCRE_CPPFLAGS = %OCTAVE_CONF_PCRE_CPPFLAGS%;
 

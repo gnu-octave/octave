@@ -39,7 +39,7 @@ function shg ()
   hf = get (0, "currentfigure");
   if (! isempty (hf))
     set (hf, "visible", "on");
-    __show_figure__ (hf));
+    __show_figure__ (hf);
   endif
 
 endfunction

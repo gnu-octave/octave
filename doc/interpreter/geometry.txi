@@ -313,7 +313,8 @@ diagram clearer.
 
 @float Figure,fig:voronoi
 @center @image{voronoi,4in}
-@caption{Delaunay triangulation and Voronoi diagram of a random set of points}
+@caption{Delaunay triangulation (blue lines) and Voronoi diagram (red lines)
+of a random set of points}
 @end float
 @end ifnotinfo
 

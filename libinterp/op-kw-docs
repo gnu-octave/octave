@@ -673,6 +673,18 @@ case statements match the input.
 @deftypefnx {} {} parfor (@var{i} = @var{range}, @var{maxproc})
 Begin a for loop that may execute in parallel.
 
+A @code{parfor} loop has the same syntax as a @code{for} loop.  If your Octave
+session has a parallel processing pool enabled, the iterations of the
+@code{parfor} loop will be executed in parallel across the pool's workers.
+Otherwise, @code{parfor} will behave exactly as @code{for}.
+
+When operating in parallel mode, a @code{parfor} loop's iterations are not
+guaranteed to occur sequentially, and there are additional restrictions about
+the data access operations you can do inside the loop body.
+
+@strong{Warning:} parallel processing pools are currently unimplemented in
+Octave; @code{parfor} currently behaves exactly as a normal @code{for} loop.
+
 @example
 @group
 parfor i = 1:10

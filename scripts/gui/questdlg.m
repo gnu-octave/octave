@@ -47,7 +47,8 @@
 ##
 ## @example
 ## @group
-## btn = questdlg ("Close Octave?", "Some fancy title", "Yes", "No", "No");
+## btn = questdlg ("Close Octave?", "Some fancy title", ...
+##                 "Yes", "No", "No");
 ## if (strcmp (btn, "Yes"))
 ##   exit ();
 ## endif

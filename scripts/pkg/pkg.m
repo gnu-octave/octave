@@ -186,7 +186,8 @@
 ## Display can be limited to a set of packages:
 ##
 ## @example
-## pkg describe control signal # describe control and signal packages
+## ## describe control and signal packages
+## pkg describe control signal
 ## @end example
 ##
 ## If one output is requested a cell of structure containing the

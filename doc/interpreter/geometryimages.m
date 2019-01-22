@@ -51,7 +51,8 @@ function geometryimages (d, nm, typ)
     yc = r * cos (pi*pc) + c(2);
     plot (xc, yc, "g-", "LineWidth", 3);
     axis ([0, 1, 0, 1]);
-    legend ("Delaunay Triangulation", "Voronoi Diagram");
+    set (gca, "dataaspectratio", [1, 1, 1],
+              "plotboxaspectratio", [1, 1, 1]);
     print (outfile, d_typ);
   elseif (strcmp (nm, "triplot"))
     rand ("state", 2)

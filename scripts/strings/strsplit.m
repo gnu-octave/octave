@@ -87,7 +87,8 @@
 ## Examples with @nospell{regularexpression} delimiters:
 ##
 ## @smallexample
-## strsplit ("a foo b,bar c", ',|\s|foo|bar', "delimitertype", "regularexpression")
+## strsplit ("a foo b,bar c", ',|\s|foo|bar', ...
+##           "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
 ##             [1,1] = a
@@ -95,7 +96,8 @@
 ##             [1,3] = c
 ##           @}
 ##
-## strsplit ("a,,b, c", '[, ]', "collapsedelimiters", false, "delimitertype", "regularexpression")
+## strsplit ("a,,b, c", '[, ]', "collapsedelimiters", false, ...
+##           "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
 ##             [1,1] = a

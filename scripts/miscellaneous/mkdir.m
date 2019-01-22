@@ -24,15 +24,16 @@
 ## Create a directory named @var{dirname} in the directory @var{parent},
 ## creating any intermediate directories if necessary.
 ##
-## If @var{dir} is a relative path, and no @var{parent} directory is specified,
-## then the present working directory is used.
+## If @var{dirname} is a relative path, and no @var{parent} directory is
+## specified, then the present working directory is used.
 ##
 ## If successful, @var{status} is 1, and @var{msg} and @var{msgid} are empty
 ## strings ("").  Otherwise, @var{status} is 0, @var{msg} contains a
 ## system-dependent error message, and @var{msgid} contains a unique message
 ## identifier.
 ##
-## When creating a directory permissions will be set to @code{0777 - UMASK}.
+## When creating a directory permissions will be set to
+## @w{@code{0777 - UMASK}}.
 ##
 ## @seealso{rmdir, pwd, cd, umask}
 ## @end deftypefn
@@ -70,6 +71,10 @@ endfunction
 function [status, msg, msgid] = mkdir_recur (parent, dirname)
 
   status = 1;
+
+  if (isempty (parent))
+    error ("mkdir: invalid PARENT");
+  endif
 
   if (! isfolder (parent))
     [grandparent, name, ext] = fileparts (parent);
@@ -114,6 +119,9 @@ endfunction
 %!     setenv ("HOME", HOME);
 %!   endif
 %! end_unwind_protect
+
+%!test <*55540>
+%! fail ('mkdir ("__%hello%__", "world")', "invalid PARENT");
 
 ## Test input validation
 %!error mkdir ()

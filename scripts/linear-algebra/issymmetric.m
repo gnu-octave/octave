@@ -81,7 +81,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   if (strcmp (skewopt, "nonskew"))
     if (tol == 0)
       ## check for exact symmetry
-      retval = ! any ((A != A.')(:));
+      retval = full (! any ((A != A.')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
@@ -93,7 +93,7 @@ function retval = issymmetric (A, skewopt = "nonskew", tol = 0)
   else
     ## skew symmetry
     if (tol == 0)
-      retval = ! any ((A != -A.')(:));
+      retval = full (! any ((A != -A.')(:)));
     else
       if (islogical (A))
         ## Hack to allow norm to work.  Choose single to minimize memory.
@@ -113,7 +113,7 @@ endfunction
 %!assert (issymmetric ([1, 2; 2, 1]))
 %!assert (issymmetric ([1, 2.1; 2, 1.1], 0.2))
 %!assert (issymmetric ([1, 2i; 2i, 1]))
-%!assert (issymmetric (speye (100)))
+%!assert (issymmetric (speye (100)), true)  # Return full logical value.
 %!assert (issymmetric (logical (eye (2))))
 %!assert (! issymmetric (logical ([1 1; 0 1])))
 %!assert (issymmetric (logical ([1 1; 0 1]), 0.5))

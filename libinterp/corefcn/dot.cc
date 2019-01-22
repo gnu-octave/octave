@@ -26,8 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-blas-proto.h"
 #include "mx-base.h"
-#include "error.h"
+
+#include "builtin-defun-decls.h"
 #include "defun.h"
+#include "error.h"
 #include "parse.h"
 
 static void
@@ -75,11 +77,12 @@ first non-singleton dimension.
 If the optional argument @var{dim} is given, calculate the dot products
 along this dimension.
 
-This is equivalent to
-@code{sum (conj (@var{X}) .* @var{Y}, @var{dim})},
-but avoids forming a temporary array and is faster.  When @var{X} and
-@var{Y} are column vectors, the result is equivalent to
-@code{@var{X}' * @var{Y}}.
+Implementation Note: This is equivalent to
+@code{sum (conj (@var{X}) .* @var{Y}, @var{dim})}, but avoids forming a
+temporary array and is faster.  When @var{X} and @var{Y} are column vectors,
+the result is equivalent to @code{@var{X}' * @var{Y}}.  Although, @code{dot}
+is defined for integer arrays, the output may differ from the expected result
+due to the limited range of integer objects.
 @seealso{cross, divergence}
 @end deftypefn */)
 {
@@ -177,11 +180,16 @@ but avoids forming a temporary array and is faster.  When @var{X} and
   else
     {
       // Non-optimized evaluation.
+      // FIXME: This may *not* do what the user expects.
+      // It might be more useful to issue a warning, or even an error, instead
+      // of calculating possibly garbage results.
+      // Think of the dot product of two int8 vectors where the multiplications
+      // exceed intmax.
       octave_value_list tmp;
       tmp(1) = dim + 1;
       tmp(0) = do_binary_op (octave_value::op_el_mul, argx, argy);
 
-      tmp = octave::feval ("sum", tmp, 1);
+      tmp = Fsum (tmp, 1);
       if (! tmp.empty ())
         retval = tmp(0);
     }
@@ -204,16 +212,22 @@ but avoids forming a temporary array and is faster.  When @var{X} and
 %! assert (dot (single (x), single (x)), single ([4, 20]));
 
 %!test
-%! x = int8 ([1 2]);
-%! y = int8 ([2 3]);
+%! x = int8 ([1, 2]);
+%! y = int8 ([2, 3]);
 %! assert (dot (x, y), 8);
 
 %!test
-%! x = int8 ([1 2; 3 4]);
-%! y = int8 ([5 6; 7 8]);
+%! x = int8 ([1, 2; 3, 4]);
+%! y = int8 ([5, 6; 7, 8]);
 %! assert (dot (x, y), [26 44]);
 %! assert (dot (x, y, 2), [17; 53]);
 %! assert (dot (x, y, 3), [5 12; 21 32]);
+
+## This is, perhaps, surprising.  Integer maximums and saturation mechanics
+## prevent accurate value from being calculated.
+%!test
+%! x = int8 ([127]);
+%! assert (dot (x, x), 127);
 
 ## Test input validation
 %!error dot ()

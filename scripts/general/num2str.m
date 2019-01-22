@@ -32,23 +32,24 @@
 ## @example
 ## @group
 ## num2str (123.456)
-##      @result{} "123.46"
+##   @result{} 123.456
 ##
 ## num2str (123.456, 4)
-##      @result{} "123.5"
+##   @result{} 123.5
 ##
 ## s = num2str ([1, 1.34; 3, 3.56], "%5.1f")
-##      @result{} s =
-##         1.0  1.3
-##         3.0  3.6
+##   @result{} s =
+##        1.0  1.3
+##        3.0  3.6
 ## whos s
-##      @result{}
-##       Attr Name        Size                     Bytes  Class
-##       ==== ====        ====                     =====  =====
-##            s           2x8                         16  char
+##   @result{} Variables in the current scope:
+##         Attr Name        Size                     Bytes  Class
+##         ==== ====        ====                     =====  =====
+##              s           2x8                         16  char
+##      Total is 16 elements using 16 bytes
 ##
 ## num2str (1.234 + 27.3i)
-##      @result{} "1.234+27.3i"
+##   @result{} 1.234+27.3i
 ## @end group
 ## @end example
 ##

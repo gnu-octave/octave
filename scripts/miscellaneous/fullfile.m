@@ -32,9 +32,12 @@
 ## @example
 ## @group
 ## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
-## @result{}  /home/username/data/f1.csv
-##     /home/username/data/f2.csv
-##     /home/username/data/f3.csv
+##   @result{}
+##       @{
+##         [1,1] = /home/username/data/f1.csv
+##         [1,2] = /home/username/data/f2.csv
+##         [1,3] = /home/username/data/f3.csv
+##       @}
 ## @end group
 ## @end example
 ##

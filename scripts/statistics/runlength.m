@@ -29,7 +29,7 @@
 ## @example
 ## @group
 ## runlength ([2, 2, 0, 4, 4, 4, 0, 1, 1, 1, 1])
-## @result{}  [2, 1, 3, 1, 4]
+## @result{}   2   1   3   1   4
 ## @end group
 ## @end example
 ## @seealso{run_count}

@@ -120,10 +120,10 @@ Example 1 (sum at repeated indices):
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4)
 @result{}
-Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
+   Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
-  (1, 1) ->  7
-  (2, 2) ->  5
+     (1, 1) ->  7
+     (2, 2) ->  5
 @end group
 @end example
 
@@ -134,10 +134,10 @@ Example 2 ("unique" option):
 @var{i} = [1 1 2]; @var{j} = [1 1 2]; @var{sv} = [3 4 5];
 sparse (@var{i}, @var{j}, @var{sv}, 3, 4, "unique")
 @result{}
-Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
+   Compressed Column Sparse (rows = 3, cols = 4, nnz = 2 [17%])
 
-  (1, 1) ->  4
-  (2, 2) ->  5
+     (1, 1) ->  4
+     (2, 2) ->  5
 @end group
 @end example
 @seealso{full, accumarray, spalloc, spdiags, speye, spones, sprand, sprandn, sprandsym, spconvert, spfun}

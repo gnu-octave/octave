@@ -52,13 +52,13 @@
 ## @example
 ## @group
 ## idivide (int8 ([-3, 3]), int8 (4), "fix")
-##   @result{} int8 ([0, 0])
+##   @result{}   0   0
 ## idivide (int8 ([-3, 3]), int8 (4), "round")
-##   @result{} int8 ([-1, 1])
+##   @result{}  -1   1
 ## idivide (int8 ([-3, 3]), int8 (4), "floor")
-##   @result{} int8 ([-1, 0])
+##   @result{}  -1   0
 ## idivide (int8 ([-3, 3]), int8 (4), "ceil")
-##   @result{} int8 ([0, 1])
+##   @result{}   0   1
 ## @end group
 ## @end example
 ##

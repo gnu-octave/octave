@@ -26,7 +26,7 @@
 ## @example
 ## @group
 ## swapbytes (uint16 (1:4))
-## @result{} [   256   512   768  1024]
+## @result{}   256   512   768  1024
 ## @end group
 ## @end example
 ##

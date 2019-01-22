@@ -50,7 +50,9 @@
 ## @group
 ## a = [1, 2; 3, 4];
 ## c = condeig (a)
-## @result{} [1.0150; 1.0150]
+##   @result{} c =
+##        1.0150
+##        1.0150
 ## @end group
 ## @end example
 ## @seealso{eig, cond, balance}

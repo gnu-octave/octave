@@ -225,7 +225,7 @@ function assert (cond, varargin)
             err.observed{end+1} = "O";
             err.expected{end+1} = "E";
             err.reason{end+1} = ["Class " class(cond) " != " class(expected)];
-          elseif (isnumeric (cond))
+          elseif (isnumeric (cond) || islogical (cond))
             if (issparse (cond) != issparse (expected))
               err.index{end+1} = "()";
               err.observed{end+1} = "O";

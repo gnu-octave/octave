@@ -25,7 +25,7 @@
 ## @example
 ## @group
 ## date ()
-##   @result{} "20-Aug-1993"
+##   @result{} 20-Aug-1993
 ## @end group
 ## @end example
 ## @seealso{now, clock, datestr, localtime}

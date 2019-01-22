@@ -313,6 +313,13 @@ endfunction
 %! assert (norm (L1 - L2, "fro") / norm (L1, "fro"), 0, eps);
 %! assert (norm (U1 - U2, "fro") / norm (U1, "fro"), 0, eps);
 
+## Restore rand "state" value
+%!shared old_rand_state, restore_state
+%! ## Save and restore the state of the random number generator that is used by
+%! ## the unit tests in this file.
+%! old_rand_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_rand_state));
+
 ## Tests for real matrices of different sizes for ilu0, iluc and ilutp.
 ## The difference A - L*U should be not greater than eps because with droptol
 ## equal to 0, the LU complete factorization is performed.
@@ -322,6 +329,8 @@ endfunction
 %! n_medium = 600;
 %! n_large = 10000;
 %! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
+%! ## initialize generator to make behavior reproducible
+%! rand ("state", 42);
 %! A_small = sprand (n_small, n_small, 1/n_small) + speye (n_small);
 %! A_medium = sprand (n_medium, n_medium, 1/n_medium) + speye (n_medium);
 %! A_large = sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
@@ -393,6 +402,8 @@ endfunction
 %! n_large = 10000;
 %! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
 %! A_tiny(1,1) += 1i;
+%! ## initialize generator to make behavior reproducible
+%! rand ("state", 42);
 %! A_small = sprand (n_small, n_small, 1/n_small) + ...
 %!   i * sprand (n_small, n_small, 1/n_small) + speye (n_small);
 %! A_medium = sprand (n_medium, n_medium, 1/n_medium) + ...

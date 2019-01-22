@@ -31,10 +31,10 @@
 ## @example
 ## @group
 ## computer ()
-##    @print{} i586-pc-linux-gnu
+##    @print{} x86_64-pc-linux-gnu
 ##
 ## mycomp = computer ()
-##    @result{} mycomp = "i586-pc-linux-gnu"
+##    @result{} mycomp = x86_64-pc-linux-gnu
 ## @end group
 ## @end example
 ##

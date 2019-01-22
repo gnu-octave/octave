@@ -12215,12 +12215,12 @@ For example,
 @group
 hf = figure ();
 set (hf, "paperorientation")
-@result{}  paperorientation:  [ landscape | @{portrait@} | rotated ]
+@result{}  [ landscape | @{portrait@} ]
 @end group
 @end example
 
 @noindent
-shows the paperorientation property can take three values with the default
+shows the paperorientation property can take two values with the default
 being @qcode{"portrait"}.
 @seealso{get}
 @end deftypefn */)

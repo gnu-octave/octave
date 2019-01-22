@@ -32,8 +32,9 @@
 ##
 ## @example
 ## @group
-## cross ([1,1,0], [0,1,1])
-##      @result{} [ 1; -1; 1 ]
+## cross ([1, 1, 0], [0, 1, 1])
+##   @result{}
+##        1   -1   1
 ## @end group
 ## @end example
 ##

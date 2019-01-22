@@ -31,7 +31,7 @@
 ## @example
 ## @group
 ## x = bitset (1, 3:5)
-## x =
+##   @result{} x =
 ##
 ##    5    9   17
 ##
@@ -48,7 +48,7 @@
 ## @example
 ## @group
 ## x = bitset ([15 14], 1, [0 1])
-## x =
+##   @result{} x =
 ##
 ##    14    15
 ## @end group

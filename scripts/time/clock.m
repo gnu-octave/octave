@@ -29,7 +29,7 @@
 ## @example
 ## @group
 ## fix (clock ())
-##      @result{} [ 1993, 8, 20, 4, 56, 1 ]
+##   @result{}   1993      8     20      4     56      1
 ## @end group
 ## @end example
 ##

@@ -39,24 +39,28 @@
 ##      7, 8, 9];
 ## ## positive shift on rows (1st non-singular dim)
 ## circshift (x, 1)
-##  @result{}  7, 8, 9
-##      1, 2, 3
-##      4, 5, 6
+##   @result{}
+##        7   8   9
+##        1   2   3
+##        4   5   6
 ## ## negative shift on rows (1st non-singular dim)
 ## circshift (x, -2)
-##  @result{}  7, 8, 9
-##      1, 2, 3
-##      4, 5, 6
+##   @result{}
+##        7   8   9
+##        1   2   3
+##        4   5   6
 ## ## no shift of rows, shift columns by 1 (2nd dimension)
 ## circshift (x, [0,1])
-##  @result{}  3, 1, 2
-##      6, 4, 5
-##      9, 7, 8
+##   @result{}
+##        3   1   2
+##        6   4   5
+##        9   7   8
 ## ## shift columns (2nd dimension)
 ## circshift (x, 1, 2)
-##  @result{}  3, 1, 2
-##      6, 4, 5
-##      9, 7, 8
+##   @result{}
+##        3   1   2
+##        6   4   5
+##        9   7   8
 ## @end example
 ## @seealso{permute, ipermute, shiftdim}
 ## @end deftypefn

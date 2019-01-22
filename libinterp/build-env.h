@@ -73,7 +73,6 @@ namespace octave
     extern const char *DEFS;
     extern const char *DL_LD;
     extern const char *DL_LDFLAGS;
-    extern const char *DL_LIBS;
     extern const char *EXEEXT;
     extern const char *GCC_VERSION;
     extern const char *GXX_VERSION;
@@ -132,9 +131,6 @@ namespace octave
     extern const char *OCT_LINK_DEPS;
     extern const char *OCT_LINK_OPTS;
     extern const char *OPENGL_LIBS;
-    extern const char *OSMESA_CPPFLAGS;
-    extern const char *OSMESA_LDFLAGS;
-    extern const char *OSMESA_LIBS;
     extern const char *PCRE_CPPFLAGS;
     extern const char *PCRE_LDFLAGS;
     extern const char *PCRE_LIBS;

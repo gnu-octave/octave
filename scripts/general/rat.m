@@ -38,14 +38,14 @@
 ##
 ## @example
 ## @group
-## @var{s} = rat (pi)
+## s = rat (pi)
 ## @result{} s = 3 + 1/(7 + 1/16)
 ##
-## [@var{n}, @var{d}] = rat (pi)
-## @result{} @var{n} =  355
-## @result{} @var{d} =  113
+## [n, d] = rat (pi)
+## @result{} n =  355
+## @result{} d =  113
 ##
-## @var{n}/@var{d} - pi
+## n / d - pi
 ## @result{} 0.00000026676
 ## @end group
 ## @end example

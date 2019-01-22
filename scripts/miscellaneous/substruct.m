@@ -26,21 +26,19 @@
 ## @example
 ## @group
 ## idx = substruct ("()", @{3, ":"@})
-##      @result{}
-##        idx =
-##        @{
+##   @result{} idx =
+##        scalar structure containing the fields:
 ##          type = ()
 ##          subs =
 ##          @{
 ##            [1,1] =  3
 ##            [1,2] = :
 ##          @}
-##        @}
 ## x = [1, 2, 3;
 ##      4, 5, 6;
 ##      7, 8, 9];
 ## subsref (x, idx)
-##    @result{} 7  8  9
+##   @result{}   7   8   9
 ## @end group
 ## @end example
 ## @seealso{subsref, subsasgn}

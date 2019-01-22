@@ -29,6 +29,11 @@
 * Octave: (octave).             Interactive language for numerical computations.
 @end direntry
 
+@c Settings for appearance of example blocks
+@c --------------------------------------------------------
+
+@exampleindent 2
+
 @c Settings for printing on 8-1/2 by 11 inch paper (default):
 @c --------------------------------------------------------
 
@@ -41,21 +46,20 @@
 @c Settings for small book format:
 @c ------------------------------
 
-@ignore
-@smallbook
-@setchapternewpage odd
-@finalout
-@iftex
-@cropmarks
-@end iftex
-@end ignore
+@c @smallbook
+@c @setchapternewpage odd
+@c @finalout
+@c @iftex
+@c @cropmarks
+@c @end iftex
+
+@c ------------------------------
 
 @defindex op
 @defindex pr
 
-@c The version.texi file doesn't include a chapter, so it must not be
-@c included if you want to run the Emacs function
-@c texinfo-multiple-files-update.
+@c The version.texi file doesn't include a chapter, so it must not be included
+@c if you want to run the Emacs function texinfo-multiple-files-update.
 @include version-octave.texi
 
 @settitle GNU Octave (version @value{VERSION})
@@ -927,6 +931,7 @@ Grammar and Parser
 @end menu
 
 @c ------------------------------------------------------------------------
+@c Chapters of manual.
 
 @include preface.texi
 @include intro.texi

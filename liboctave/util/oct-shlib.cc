@@ -27,15 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <map>
 
-#if defined (HAVE_SHL_LOAD_API)
-#  include <cerrno>
-#  include <cstring>
-#endif
-
-#if defined (HAVE_DYLD_API)
-#  include <mach-o/dyld.h>
-#endif
-
 extern "C"
 {
 #if defined (HAVE_DLOPEN_API)
@@ -47,8 +38,6 @@ extern const char * dlerror (void);
 extern void * dlsym (void *, const char *);
 extern int dlclose (void *);
 #  endif
-#elif defined (HAVE_SHL_LOAD_API)
-#  include <dl.h>
 #elif defined (HAVE_LOADLIBRARY_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
@@ -265,84 +254,6 @@ namespace octave
     return function;
   }
 
-#elif defined (HAVE_SHL_LOAD_API)
-
-  class
-  octave_shl_load_shlib : public dynamic_library::dynlib_rep
-  {
-  public:
-
-    octave_shl_load_shlib (const std::string& f);
-
-    // No copying!
-
-    octave_shl_load_shlib (const octave_shl_load_shlib&) = delete;
-
-    octave_shl_load_shlib& operator = (const octave_shl_load_shlib&) = delete;
-
-    ~octave_shl_load_shlib (void);
-
-    void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = 0);
-
-    bool is_open (void) const { return (search_all_loaded || library != 0); }
-
-  private:
-
-    shl_t library;
-  };
-
-  octave_shl_load_shlib::octave_shl_load_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), library (0)
-  {
-    file = f;
-
-    if (file.empty())
-      {
-        search_all_loaded = true;
-        return;
-      }
-
-    library = shl_load (file.c_str (), BIND_IMMEDIATE, 0L);
-
-    if (! library)
-      {
-        using namespace std;  // FIXME: Why have this line?
-        (*current_liboctave_error_handler) ("%s", std::strerror (errno));
-      }
-  }
-
-  octave_shl_load_shlib::~octave_shl_load_shlib (void)
-  {
-    if (library)
-      shl_unload (library);
-  }
-
-  void *
-  octave_shl_load_shlib::search (const std::string& name,
-                                 dynamic_library::name_mangler mangler)
-  {
-    void *function = nullptr;
-
-    if (! is_open ())
-      (*current_liboctave_error_handler)
-        ("shared library %s is not open", file.c_str ());
-
-    std::string sym_name = name;
-
-    if (mangler)
-      sym_name = mangler (name);
-
-    if (search_all_loaded)
-      int status = shl_findsym (nullptr, sym_name.c_str (),
-                                TYPE_UNDEFINED, &function);
-    else
-      int status = shl_findsym (&library, sym_name.c_str (),
-                                TYPE_UNDEFINED, &function);
-
-    return function;
-  }
-
 #elif defined (HAVE_LOADLIBRARY_API)
 
   class
@@ -503,108 +414,6 @@ namespace octave
     return function;
   }
 
-#elif defined (HAVE_DYLD_API)
-
-  class
-  octave_dyld_shlib : public dynamic_library::dynlib_rep
-  {
-  public:
-
-    octave_dyld_shlib (void);
-
-    // No copying!
-
-    octave_dyld_shlib (const octave_dyld_shlib&) = delete;
-
-    octave_dyld_shlib& operator = (const octave_dyld_shlib&) = delete;
-
-    ~octave_dyld_shlib (void);
-
-    void open (const std::string& f);
-
-    void * search (const std::string& name,
-                   dynamic_library::name_mangler mangler = nullptr);
-
-    void close (void);
-
-    bool is_open (void) const { return (search_all_loaded || handle != 0); }
-
-  private:
-
-    NSObjectFileImage img;
-    NSModule handle;
-  };
-
-  octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), handle (0)
-  {
-    if (f.empty ())
-      (*current_liboctave_error_handler)
-        ("global search is not implemented for DYLD_API");
-
-    int returnCode = NSCreateObjectFileImageFromFile (file.c_str (), &img);
-
-    if (NSObjectFileImageSuccess != returnCode)
-      {
-        (*current_liboctave_error_handler)
-          ("got NSObjectFileImageReturnCode %d", returnCode);
-
-        // FIXME: should use NSLinkEditError () to get
-        //        more info on what went wrong.
-      }
-
-    handle = NSLinkModule (img, file.c_str (),
-                           (NSLINKMODULE_OPTION_RETURN_ON_ERROR
-                            | NSLINKMODULE_OPTION_PRIVATE));
-    if (! handle)
-      {
-        NSLinkEditErrors ler;
-        int lerno;
-        const char *file2;
-        const char *errstr = nullptr;
-
-        NSLinkEditError (&ler, &lerno, &file2, &errstr);
-
-        if (! errstr)
-          errstr = "unspecified error";
-
-        (*current_liboctave_error_handler) ("%s: %s", file.c_str (), errstr);
-      }
-  }
-
-  octave_dyld_shlib::~octave_dyld_shlib (void)
-  {
-    if (handle)
-      NSUnLinkModule (handle, NSUNLINKMODULE_OPTION_RESET_LAZY_REFERENCES);
-
-    NSDestroyObjectFileImage (img);
-  }
-
-  void *
-  octave_dyld_shlib::search (const std::string& name,
-                             dynamic_library::name_mangler mangler)
-  {
-    void *function = nullptr;
-
-    if (! is_open ())
-      (*current_liboctave_error_handler)
-        ("bundle %s is not open", file.c_str ());
-
-    std::string sym_name = name;
-
-    if (mangler)
-      sym_name = mangler (name);
-
-    NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
-
-    if (symbol)
-      {
-        function = NSAddressOfSymbol (symbol);
-      }
-
-    return function;
-  }
-
 #endif
 
   dynamic_library::dynlib_rep *
@@ -612,12 +421,8 @@ namespace octave
   {
 #if defined (HAVE_DLOPEN_API)
     return new octave_dlopen_shlib (f);
-#elif defined (HAVE_SHL_LOAD_API)
-    return new octave_shl_load_shlib (f);
 #elif defined (HAVE_LOADLIBRARY_API)
     return new octave_w32_shlib (f);
-#elif defined (HAVE_DYLD_API)
-    return new octave_dyld_shlib (f);
 #else
     (*current_liboctave_error_handler)
       ("support for dynamically loaded libraries was unavailable or disabled when liboctave was built");

@@ -850,9 +850,7 @@ LD_CXX="${CXX}"
 RDYNAMIC_FLAG=
 DL_API_MSG=""
 dlopen_api=no
-shl_load_api=no
 loadlibrary_api=no
-dyld_api=no
 
 case $lt_cv_dlopen in
   dlopen)
@@ -862,23 +860,11 @@ case $lt_cv_dlopen in
       [Define to 1 if system has dlopen, dlsym, dlerror, and dlclose for dynamic linking.])
     OCTAVE_CXX_FLAG([-rdynamic], [RDYNAMIC_FLAG=-rdynamic])
   ;;
-  shl_load)
-    shl_load_api=yes
-    DL_API_MSG="shl_load"
-    AC_DEFINE(HAVE_SHL_LOAD_API, 1,
-      [Define to 1 if system has shl_load and shl_findsym for dynamic linking.])
-  ;;
   LoadLibrary)
     loadlibrary_api=yes
     DL_API_MSG="LoadLibrary"
     AC_DEFINE(HAVE_LOADLIBRARY_API, 1,
       [Define to 1 if system has LoadLibrary for dynamic linking.])
-  ;;
-  dyld)
-    dyld_api=yes
-    DL_API_MSG="dyld"
-    AC_DEFINE(HAVE_DYLD_API, 1,
-      [Define to 1 if system has dyld for dynamic linking.])
   ;;
   *)
     AC_MSG_ERROR([Octave requires some way to perform dynamic linking.])

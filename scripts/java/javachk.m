@@ -1,3 +1,4 @@
+## Copyright (C) 2019 Mike Miller
 ## Copyright (C) 2014-2019 Philip Nienhuis
 ##
 ## This file is part of Octave.
@@ -18,12 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {} javachk (@var{feature})
-## @deftypefnx {} {} javachk (@var{feature}, @var{component})
+## @deftypefnx {} {} javachk (@var{feature}, @var{caller})
 ## @deftypefnx {} {@var{msg} =} javachk (@dots{})
-## Check for the presence of the Java @var{feature} in the current session
-## and print or return an error message if it is not.
+## Check for the presence of the Java @var{feature} in the current session.
+## Return an error structure if @var{feature} is not available, not enabled,
+## or not recognized.
 ##
-## Possible features are:
+## Possible recognized features are:
 ##
 ## @table @asis
 ## @item @nospell{@qcode{"awt"}}
@@ -39,45 +41,22 @@
 ## Swing components for lightweight GUIs.
 ## @end table
 ##
-## If @var{feature} is supported and
+## If @var{feature} is not supported, a scalar struct with field
+## @qcode{"message"} and @qcode{"identifier"} is returned.  The field
+## @qcode{"message"} contains an error message mentioning @var{feature} as
+## well as the optional user-specified @var{caller}.  This structure is
+## suitable for passing in to the @code{error} function.
 ##
-## @itemize @bullet
-## @item
-## no output argument is requested:
-##
-## Return an empty string
-##
-## @item
-## an output argument is requested:
-##
-## Return a struct with fields @qcode{"feature"} and @qcode{"identifier"}
-## both empty
-## @end itemize
-##
-## If @var{feature} is not supported and
-##
-## @itemize @bullet
-## @item
-## no output argument is requested:
-##
-## Emit an error message
-##
-## @item
-## an output argument is requested:
-##
-## Return a struct with field @qcode{"feature"} set to @var{feature} and field
-## @qcode{"identifier"} set to @var{component}
-## @end itemize
-##
-## The optional input @var{component} will be used in place of @var{feature}
-## in any error messages for greater specificity.
+## If @var{feature} is supported and available, an empty struct array is
+## returned with fields @qcode{"message"} and @qcode{"identifier"}.
 ##
 ## @code{javachk} determines if specific Java features are available in an
 ## Octave session.  This function is provided for scripts which may alter
-## their behavior based on the availability of Java.  The feature
-## @qcode{"desktop"} is never available as Octave has no Java-based desktop.
-## Other features may be available if Octave was compiled with the Java
-## Interface and Java is installed.
+## their behavior based on the availability of Java or specific Java runtime
+## features.
+##
+## Compatibility Note: The feature @qcode{"desktop"} is never available since
+## Octave has no Java-based desktop.
 ##
 ## @seealso{usejava, error}
 ## @end deftypefn
@@ -85,9 +64,16 @@
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2014-04-19
 
-function msg = javachk (feature, component = "")
+function msg = javachk (feature, caller = "")
 
-  msg = "";
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  elseif (! ischar (feature))
+    error ("javachk: FEATURE must be a string");
+  elseif (! ischar (caller))
+    error ("javachk: CALLER must be a string");
+  endif
+
   chk = false;
   switch (feature)
     ## For each feature, try methods() on a Java class of a feature
@@ -109,40 +95,47 @@ function msg = javachk (feature, component = "")
         chk = true;
       end_try_catch
     otherwise
-      error ("javachk: unrecognized FEATURE '%s', can be one of 'awt'|'desktop'|'jvm'|'swing'\n", feature);
+      ## For compatibility, unrecognized feature is the same as disabled feature
   endswitch
 
+  if (isempty (caller))
+    caller = "this function";
+  endif
+
+  msg = struct ("message", "", "identifier", "");
   if (! chk)
-    ## Desired feature not present
-    if (nargout >= 1)
-      msg.message = sprintf ("javachk: %s is not supported", feature);
-      msg.identifier = component;
-    else
-      if (! isempty (component))
-        err = sprintf ("javachk: %s is not supported\n", component);
-      else
-        err = sprintf ("javachk: %s is not supported\n", feature);
-      endif
-      error (err);
-    endif
+    msg.message = sprintf (["javachk: %s is not supported, Java feature " ...
+                            "\"%s\" is not available"], caller, feature);
+    msg.identifier = "Octave:javachk:feature-not-available";
+  endif
+
+  if (isempty (msg.message))
+    ## Compatability: Matlab returns a 0x1 empty struct when javachk passes
+    msg = resize (msg, 0, 1);
   endif
 
 endfunction
 
 
-%!error <javachk: desktop is not supported> javachk ("desktop")
-%!error <Java DESKTOP is not supported> javachk ("desktop", "Java DESKTOP")
 %!test
 %! msg = javachk ("desktop");
-%! assert (msg.message, "javachk: desktop is not supported");
-%! assert (msg.identifier, "");
+%! assert (msg.message, "javachk: this function is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.identifier, "Octave:javachk:feature-not-available");
 %!test
 %! msg = javachk ("desktop", "Java DESKTOP");
-%! assert (msg.message, "javachk: desktop is not supported");
-%! assert (msg.identifier, "Java DESKTOP");
+%! assert (msg.message, "javachk: Java DESKTOP is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.identifier, "Octave:javachk:feature-not-available");
+%!test
+%! msg = javachk ("nosuchfeature");
+%! assert (msg.message, "javachk: this function is not supported, Java feature \"nosuchfeature\" is not available");
+%! assert (msg.identifier, "Octave:javachk:feature-not-available");
 
 %!testif HAVE_JAVA; usejava ("jvm")
-%! assert (javachk ("jvm"), "");
+%! stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
+%! assert (javachk ("jvm"), stnul);
 
 ## Test input validation
-%!error <javachk: unrecognized FEATURE 'foobar'> javachk ("foobar")
+%!error javachk ()
+%!error javachk (1)
+%!error javachk ("jvm", 2)
+%!error javachk ("jvm", "feature", "ok")

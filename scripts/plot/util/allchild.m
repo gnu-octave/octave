@@ -48,8 +48,8 @@ function h = allchild (handles)
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("fltk");
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
+%! toolkit = graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   l = line;

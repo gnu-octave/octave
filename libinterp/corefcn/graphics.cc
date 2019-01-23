@@ -5082,9 +5082,9 @@ axes::properties::sync_positions (void)
 }
 
 /*
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! hf = figure ("visible", "off");
-%! graphics_toolkit (hf, "fltk");
+%! graphics_toolkit (hf, "qt");
 %! unwind_protect
 %!   subplot(2,1,1); plot(rand(10,1)); subplot(2,1,2); plot(rand(10,1));
 %!   hax = findall (gcf (), "type", "axes");
@@ -5102,9 +5102,9 @@ axes::properties::sync_positions (void)
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! hf = figure ("visible", "off");
-%! graphics_toolkit (hf, "fltk");
+%! graphics_toolkit (hf, "qt");
 %! fpos = get (hf, "position");
 %! unwind_protect
 %!   plot (rand (3));
@@ -5122,9 +5122,9 @@ axes::properties::sync_positions (void)
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! hf = figure ("visible", "off");
-%! graphics_toolkit (hf, "fltk");
+%! graphics_toolkit (hf, "qt");
 %! fpos = get (hf, "position");
 %! set (gca, "activepositionproperty", "position");
 %! unwind_protect
@@ -11832,8 +11832,9 @@ gh_manager::do_process_events (bool force)
 %! setappdata (gcbf (), "cb_exec", [getappdata(gcbf (), "cb_exec") h]);
 %!endfunction
 %!
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! hf = figure ("visible", "off", "resizefcn", @cb);
+%! graphics_toolkit (hf, "qt");
 %! unwind_protect
 %!   ## Default
 %!   hui1 = uicontrol ("parent", hf, "interruptible", "on", "callback", @cb);

@@ -102,23 +102,22 @@ function retval = graphics_toolkit (name, hlist = [])
 
 endfunction
 
-
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
 %! unwind_protect
 %!   hf = figure ("visible", "off");
 %!   toolkit = graphics_toolkit ();
 %!   assert (get (0, "defaultfigure__graphics_toolkit__"), toolkit);
-%!   graphics_toolkit (hf, "fltk");
-%!   assert (graphics_toolkit (hf), "fltk");
+%!   graphics_toolkit (hf, "qt");
+%!   assert (graphics_toolkit (hf), "qt");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_OPENGL, HAVE_FLTK; have_window_system () && any (strcmp ("gnuplot", available_graphics_toolkits ())) && any (strcmp ("fltk", available_graphics_toolkits ()))
+%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("gnuplot", available_graphics_toolkits ())) && any (strcmp ("qt", available_graphics_toolkits ()))
 %! old_toolkit = graphics_toolkit ();
 %! switch (old_toolkit)
 %!   case {"gnuplot"}
-%!     new_toolkit = "fltk";
+%!     new_toolkit = "qt";
 %!   otherwise
 %!     new_toolkit = "gnuplot";
 %! endswitch

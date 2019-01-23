@@ -17,17 +17,20 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{out} =} verLessThan (@var{package}, @var{version})
-## True if the installed version of the package is less than @var{version}.
+## @deftypefn {} {} verLessThan (@var{package}, @var{version})
+## Return true if the installed version of the package is less than
+## @var{version}.
 ##
-## @var{package} is the name of the package to check the version of. Use
-## @code{"Octave"} as the @var{package} to check the version of Octave itself.
+## @var{package} is the name of the package to check.  Use @qcode{"Octave"} as
+## the @var{package} to check the version of Octave itself.
 ##
-## @var{version} is the version to compare it to. A version is a string in the
-## format accepted by @ref{XREFcompare_versions, ,compare_versions function}:
-## an arbitrarily long string made of numeric and period characters possibly
-## followed by an arbitrary string (e.g., @code{"1.2.3"}, @code{"0.3"},
-## @code{"0.1.2+"}, or @code{"1.2.3.4-test1"}).
+## @var{version} is the version to compare it to.  A version is a string in the
+## format accepted by @code{compare_versions}: an arbitrarily long string
+## composed of numeric and period characters, possibly followed by an arbitrary
+## string (e.g., @qcode{"1.2.3"}, @qcode{"0.3"}, @qcode{"0.1.2+"}, or
+## @qcode{"1.2.3.4-test1"}).
+##
+## Examples:
 ##
 ## @example
 ## @group
@@ -43,25 +46,35 @@
 ## @seealso{compare_versions, version, ver, pkg}
 ## @end deftypefn
 
-function out = verLessThan(package, version)
+function retval = verLessThan (package, version)
 
-  if (! ischar (package) || size (package, 1) > 1)
-    error ("verLessThan: package must be a char vector");
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  if (! ischar (package) || rows (package) != 1)
+    error ("verLessThan: PACKAGE must be a string");
   endif
 
   v = ver ();
   idx = find (strcmpi (package, {v.Name}));
   if (isempty (idx))
-    error ("verLessThan: Package ""%s"" is not installed.", package);
+    error ('verLessThan: package "%s" is not installed', package);
   endif
 
-  out = compare_versions (v(idx).Version, version, "<");
+  retval = compare_versions (v(idx).Version, version, "<");
 
 endfunction
 
+
 %!assert (! verLessThan ("Octave", "3.0.0"))
 %!assert (verLessThan ("Octave", "99.9.9"))
-%!error <Package "no-such-package" is not installed.>
+
+## Test input validation
+%!error verLessThan ()
+%!error verLessThan ("a")
+%!error verLessThan ("a", "1", "b")
+%!error <package "no-such-package" is not installed>
 %! verLessThan ("no-such-package", "1.1.1")
 %!error <compare_versions: version numbers V1 and V2 must be strings>
 %! verLessThan ("Octave", 4.1)

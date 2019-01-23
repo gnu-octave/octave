@@ -1328,7 +1328,6 @@ function rlist = missing_functions ()
   "varfun",
   "vartype",
   "verctrl",
-  "verLessThan",
   "vertexAttachments",
   "vertexNormal",
   "VideoReader",

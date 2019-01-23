@@ -135,11 +135,11 @@ namespace QtHandles
                       const graphics_handle& handle)
   {
     gh_manager::auto_lock lock;
-    graphics_object obj = gh_manager::get_object (handle);
+    graphics_object go = gh_manager::get_object (handle);
 
-    if (obj.valid_object ())
+    if (go.valid_object ())
       {
-        graphics_object figObj (obj.get_ancestor ("figure"));
+        graphics_object fig (go.get_ancestor ("figure"));
 
         // Make sure we have a valid current context
         if (! begin_rendering ())
@@ -147,8 +147,34 @@ namespace QtHandles
 
         try
           {
-            octave::gl2ps_print (m_glfcns, figObj, file_cmd.toStdString (),
+#if defined (Q_OS_MAC)
+            if (fig.get ("visible").string_value () == "on")
+              octave::gl2ps_print (m_glfcns, fig, file_cmd.toStdString (),
+                                   term.toStdString ());
+            else
+              {
+                // When the figure is not visible, we use a framebuffer object
+                // to make sure we are rendering on a suitably large frame.
+                Matrix pos = fig.get ("position").matrix_value ();
+                double dpr = fig.get ("__device_pixel_ratio__").double_value ();
+                pos(2) *= dpr;
+                pos(3) *= dpr;
+
+                OCTAVE_QT_OPENGL_FBO
+                  fbo (pos(2), pos(3),
+                       OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+
+                fbo.bind ();
+
+                octave::gl2ps_print (m_glfcns, fig, file_cmd.toStdString (),
+                                     term.toStdString ());
+
+                fbo.release ();
+              }
+#else
+            octave::gl2ps_print (m_glfcns, fig, file_cmd.toStdString (),
                                  term.toStdString ());
+#endif
           }
         catch (octave::execution_exception& e)
           {

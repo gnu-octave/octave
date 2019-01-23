@@ -306,7 +306,7 @@ initialize (void)
   vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
                                         %OCTAVE_CONF_OCT_LINK_OPTS%);
 
-  vars["LDFLAGS"] = get_variable ("LDFLAGS", DEFAULT_LDFLAGS);
+  vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
 
   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
 
@@ -315,6 +315,8 @@ initialize (void)
 
   // FIXME: Remove LFLAGS in Octave 7.0
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LDFLAGS);
+  if (vars["LFLAGS"] != DEFAULT_LDFLAGS)
+    std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
 
   vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
                                             %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
@@ -1076,29 +1078,21 @@ main (int argc, char **argv)
       return 1;
     }
 
-  // FIXME: Remove LFLAGS in Octave 7.0
-  if (vars["LFLAGS"] != vars["LDFLAGS"])
-    {
-      std::cerr << "warning: LFLAGS is deprecated and will be removed in a future version of Octave, use LDFLAGS instead" << std::endl;
-      vars["LDFLAGS"] = vars["LFLAGS"];
-    }
-
   std::string octave_libs;
 
   if (link_stand_alone)
     {
       if (! vars["LD_CXX"].empty ())
         {
-          octave_libs = vars["OCTAVE_LIBS"];
+          octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
+                      + ' ' + vars["OCTAVE_LIBS"];
 
           std::string cmd
             = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                + output_option + ' ' + objfiles + ' ' + libfiles + ' '
-               + ldflags + ' ' + vars["LDFLAGS"]
-               + " -L" + quote_path (vars["OCTLIBDIR"])
-               + ' ' + octave_libs + ' '
+               + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
                + vars["OCTAVE_LINK_OPTS"] + ' ' + vars["OCTAVE_LINK_DEPS"]);
 
           int status = run_command (cmd, printonly);
@@ -1119,14 +1113,15 @@ main (int argc, char **argv)
   else
     {
 #if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
-      octave_libs = vars["OCTAVE_LIBS"];
+      octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
+                  + ' ' + vars["OCTAVE_LIBS"];
 #endif
 
       std::string cmd
         = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
-           + vars["DL_LDFLAGS"] + ' ' + pass_on_options
+           + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' ' + pass_on_options
            + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
-           + ldflags + ' ' + vars["LDFLAGS"] + ' ' + octave_libs + ' '
+           + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
       int status = run_command (cmd, printonly);

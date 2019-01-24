@@ -145,7 +145,7 @@ endfunction
 %!   h = figure ("visible", "off");
 %!   ftmp = [tempname() ".ofig"];
 %!   hgsave (h, ftmp);
-%!   openfig (ftmp, "new", [1, 2, 3]); 
+%!   openfig (ftmp, "new", [1, 2, 3]);
 %! unwind_protect_cleanup
 %!   unlink (ftmp);
 %!   close (h);
@@ -155,7 +155,7 @@ endfunction
 %!   h = figure ("visible", "off");
 %!   ftmp = [tempname() ".ofig"];
 %!   hgsave (h, ftmp);
-%!   openfig (ftmp, "foobar"); 
+%!   openfig (ftmp, "foobar");
 %! unwind_protect_cleanup
 %!   unlink (ftmp);
 %!   close (h);

@@ -306,6 +306,7 @@ Since version 5, Octave uses the following rules for release numbering:
 
   5.0.0   (experimental)  active development of Octave 5 on default branch
   5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch
+  5.0.90  (pre-release)   first release candidate for 5.1.0
   6.0.0   (experimental)  active development of Octave 6 on default branch
   5.1.0   (release)       first release of Octave 5 from stable branch
   5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release
@@ -322,8 +323,10 @@ With this numbering scheme:
   * Any version X.0.0 means "this is an experimental development
     version".
 
-  * Any version X.Y.1 means, "this is a pre-release version meant
-    for bug fixing and testing".
+  * Any version X.Y.Z with Z > 0 means, "this is a pre-release version
+    meant for bug fixing and testing".  In practice, Z will be either 1
+    (stabilization period after and before making release candidates) or
+    90, 91, etc. (release candidate snapshots leading up to release).
 
   * Any version X.Y.0 with Y != 0 means "this is a released version".
 

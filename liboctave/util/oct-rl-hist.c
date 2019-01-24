@@ -280,7 +280,7 @@ octave_history_list (int limit, int number_lines)
       // FIXME: Should this call current_liboctave_error_handler instead?
       if (! retval)
         return retval;
-      
+
       k = 0;
       for (i = beg; i < end; i++)
         {

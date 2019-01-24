@@ -102,20 +102,20 @@ function ri = randi (bounds, varargin)
   elseif (nargin == 2 && isscalar (varargin{1}))
     varargin(2) = varargin(1);
   endif
-    
+
   ## Rejection Algorithm to guarantee unbiased results.  See bug #54619.
   rng = (imax - imin) + 1;              # requested range
   N = prod ([varargin{:}]);             # number of requested elements
   K = floor ((flintmax () + 1) / rng);  # number of primary integers ...
                                         # mapped to single output
   p = (K*rng) / (flintmax () + 1);      # expected proportion of used primaries
-  
-  do  
+
+  do
     M = ceil (N/p + 10*sqrt (N/p - N)); # number of requested primary integers
     r_prim = floor (rand (M,1) * (flintmax () + 1));
     r_prim = r_prim(r_prim < K*rng);
   until (numel (r_prim) >= N)           # should practically always be true
-  
+
   ri = imin + floor (reshape (r_prim(1:N), varargin{:}) / K);
 
   if (! strcmp (rclass, "double"))

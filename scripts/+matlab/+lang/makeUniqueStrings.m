@@ -41,7 +41,7 @@
 ## The optional input @var{maxlength} specifies the maximum length of any
 ## string in @var{uniqstr}.  If an input string cannot be made unique without
 ## exceeding @var{maxlength} an error is emitted.
-## 
+##
 ## The optional output @var{ismodified} is a logical array indicating whether
 ## each element in @var{str} was modified to make it unique.
 ##

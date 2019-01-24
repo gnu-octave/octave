@@ -278,10 +278,10 @@ endfunction
 %! disp ("Push the <cancel> button to stop the process.");
 %! hf = waitbar (0,"0","Name","Building Koch curve ...",...
 %!               "createcancelbtn", "setappdata (gcbf,'interrupt', true)");
-%! 
+%!
 %! pos2 = get (hf, "position");
 %! set (hf, "position", [pos1(1)+(pos1(3)-pos2(3))/2, pos1(2)+pos1(4), pos2(3:4)]);
-%! 
+%!
 %! for ii = 1:niter
 %!   ## Check cancel request
 %!   if (! ishghandle (hf))

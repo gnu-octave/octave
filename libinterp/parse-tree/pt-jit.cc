@@ -137,7 +137,7 @@ static int Vjit_failcnt = 0;
 namespace octave
 {
   namespace jit
-  {    
+  {
 #if defined (LEGACY_PASSMANAGER)
     typedef llvm::legacy::PassManager PassManager;
     typedef llvm::legacy::FunctionPassManager FunctionPassManager;
@@ -2447,7 +2447,7 @@ namespace octave
     // FIXME: Provide a meaningful replacement instead of simply skipping it?
     module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 #endif
-    
+
     // In 3.6, a pass was inserted in the pipeline to make the DataLayout accessible:
     //    MyPassManager->add(new DataLayoutPass(MyTargetMachine->getDataLayout()));
     // In 3.7, you don’t need a pass, you set the DataLayout on the Module:

@@ -123,14 +123,14 @@ function [X, Y] = fplot (varargin)
   while (i <= numel (varargin))
     arg = varargin{i};
     if (ischar (arg))
-      [~, valid_fmt] = __pltopt__ ("fplot", arg, false); 
+      [~, valid_fmt] = __pltopt__ ("fplot", arg, false);
       if (valid_fmt)
         fmt(end+1) = arg;
       else
         if (i == numel (varargin))
           error ("fplot: bad input in position %d", i);
         endif
-        fmt(end+(1:2)) = varargin([i, i+1]); 
+        fmt(end+(1:2)) = varargin([i, i+1]);
         i++;  # Skip PROPERTY.
       endif
     elseif (isnumeric (arg) && isscalar (arg) && arg > 0)

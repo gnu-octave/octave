@@ -441,7 +441,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     [x_new, alpha, obj_new, globals] = ...
         linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
                        obj, c, globals);
-    
+
     delx = x_new - x;
 
     ## Check if step size has become too small (indicates lack of progress).

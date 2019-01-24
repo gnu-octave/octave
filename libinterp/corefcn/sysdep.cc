@@ -1110,9 +1110,9 @@ graphics callbacks execution.
 @end deftypefn */)
 {
   octave_value_list retval;
-  
+
   int nargin = args.length ();
-  
+
   if (nargin > 1)
     print_usage ();
 
@@ -1120,7 +1120,7 @@ graphics callbacks execution.
     {
       bool saved_state = Vpause_enabled;
       std::string state = args(0).string_value ();
-      
+
       if (state == "on")
         Vpause_enabled = true;
       else if (state == "off")
@@ -1129,14 +1129,14 @@ graphics callbacks execution.
         ;// Do nothing
       else
         error ("pause: first argument must be \"on\", \"off\" or \"query\"");
-      
+
       if (nargout > 0 || state == "query")
         retval.append (saved_state ? "on" : "off");
     }
   else if (Vpause_enabled)
     {
       double dval;
-  
+
       if (nargin == 0)
         dval = octave_Inf;
       else
@@ -1147,7 +1147,7 @@ graphics callbacks execution.
       else
         {
           Fdrawnow ();
-      
+
           octave::sleep (dval, true);
         }
     }

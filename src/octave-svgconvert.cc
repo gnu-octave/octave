@@ -718,7 +718,7 @@ read from stdin\n\
 * font: specify a file name for the default FreeSans font\n\
 * reconstruct: specify wether to reconstruct triangle to polygons (0 or 1)\n\
 * outfile: output file name\n";
-  
+
   if (strcmp (argv[1], "-h") == 0)
     {
       std::cout << help;
@@ -804,7 +804,7 @@ read from stdin\n\
             {
               int id = QFontDatabase::addApplicationFont (fontpath);
               if (id < 0)
-                std::cerr << "warning: print: " 
+                std::cerr << "warning: print: "
                   "Unable to add default font to database\n";
             }
           else

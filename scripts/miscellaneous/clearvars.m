@@ -147,7 +147,7 @@ function clearvars (varargin)
   if (numvar > 0 && any ([vars.except]))
     ptn = strjoin ({ vars([vars.except]).var_name }, '|');
     idx_except = ! cellfun (@isempty, regexp (varlist, ptn));
-    idx_clear(idx_except) = false; 
+    idx_clear(idx_except) = false;
   endif
 
   varlist = varlist(idx_clear);

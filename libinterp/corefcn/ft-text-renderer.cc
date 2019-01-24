@@ -536,7 +536,7 @@ namespace octave
 
     // The X offset of the baseline for the current line.
     int line_xoffset;
-     
+
     // Min and max y coordinates of all glyphs in a line.
     FT_Pos m_ymin;
     FT_Pos m_ymax;
@@ -865,12 +865,12 @@ namespace octave
     // First run text_to_pixels which will also build the string list
 
     m_strlist = std::list<text_renderer::string> ();
-    
+
     octave::unwind_protect frame;
     frame.protect_var (m_do_strlist);
     frame.protect_var (m_strlist);
     m_do_strlist = true;
-    
+
     text_to_pixels (txt, pxls, box, ha, va, rot, interp, false);
 
     lst = m_strlist;
@@ -887,7 +887,7 @@ namespace octave
         std::string str = e.string_value ();
         const uint8_t *c = reinterpret_cast<const uint8_t *> (str.c_str ());
         uint32_t u32_c;
-        
+
         size_t n = str.size ();
         size_t icurr = 0;
         size_t ibegin = 0;
@@ -912,7 +912,7 @@ namespace octave
                     // the newline character
                     fs.set_y (line_yoffset + yoffset);
                     fs.set_color (color);
-                
+
                     std::string s = str.substr (ibegin, icurr - ibegin);
                     if (! s.empty ())
                       {
@@ -932,7 +932,7 @@ namespace octave
             if (u32_c == 10)
               {
                 previous = 0;
-                
+
                 if (m_do_strlist && mode == MODE_RENDER)
                   {
                     // Start a new string in m_strlist

@@ -253,7 +253,7 @@ function arg_st = __print_parse_opts__ (varargin)
              graphics_toolkit (arg_st.figure));
   endif
 
-  
+
   if (arg_st.use_color == 0)
     if (any (strcmp ({"ps", "ps2", "eps", "eps2"}, arg_st.devopt)))
       arg_st.use_color = -1;
@@ -615,7 +615,7 @@ function bin = __svgconv_binary__ ()
     if (isempty (bindir))
       bindir = __octave_config_info__ ("archlibdir");
     endif
-    
+
     binary = fullfile (bindir, "octave-svgconvert");
 
     if (! exist (binary, "file"))

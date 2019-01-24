@@ -12,7 +12,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     results are equally likely) sample of integers.  This may produce
     different results in existing code.  If it is necessary to reproduce
     the exact random integer sequence as in previous versions use
-    
+
       ri = imin + floor ((imax - imin + 1) * rand ());
 
  ** A new core function movfun will apply a function to a sliding
@@ -21,7 +21,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     scheme movXXX where "XXX" is the function that will be applied.
     For example, the moving average over a dataset is movmean.
     New moving window functions:
-   
+
     movfun   movslice
     movmad   movmax   movmean   movmedian   movmin   movprod
     movstd   movsum   movvar

@@ -1283,15 +1283,15 @@ namespace octave
     // is asleep
     if (do_graphics_events)
       gh_manager::unlock ();
-    
+
     if (octave::math::isinf (seconds))
       {
         // Wait for kbhit
         int c = -1;
         octave::flush_stdout ();
-        
+
         struct timespec one_tenth = { 0, 100000000 };
-        
+
         while (c < 0)
           {
             octave_nanosleep_wrapper (&one_tenth, nullptr);

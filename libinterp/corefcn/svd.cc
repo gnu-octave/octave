@@ -395,8 +395,8 @@ the full singular value decomposition (left and right singular matrices as
 well as singular values).  When calculating just the singular values the
 following discussion is not relevant.
 
-The default routine use by Octave is the newer @code{gesdd} which is based on a
-Divide-and-Conquer algorithm that is 5X faster than the alternative
+The default routine used by Octave is the newer @code{gesdd} which is based on
+a Divide-and-Conquer algorithm that is 5X faster than the alternative
 @code{gesvd}, which is based on QR factorization.  However, the new algorithm
 can use significantly more memory.  For an @nospell{MxN} input matrix the
 memory usage is of order O(min(M,N) ^ 2), whereas the alternative is of order

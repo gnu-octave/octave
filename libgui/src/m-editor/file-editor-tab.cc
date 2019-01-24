@@ -3101,6 +3101,7 @@ namespace octave
     QRegExp rxfun2 ("^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$");
     QRegExp rxfun3 ("^[\t ]*function[^=]+=[\t ]*([^\\s]+)[\t ]*$");
     QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\\s]+)[\t ]*$");
+    QRegExp rxfun5 ("^[\t ]*classdef[\t ]+([^\\s]+)[\t ]*$");
 
     QStringList lines = _edit_area->text ().split ("\n");
 
@@ -3114,6 +3115,8 @@ namespace octave
           return rxfun3.cap (1).remove (QRegExp ("[ \t]*"));
         else if (rxfun4.indexIn (lines.at (i)) != -1)
           return rxfun4.cap (1).remove (QRegExp ("[ \t]*"));
+        else if (rxfun5.indexIn (lines.at (i)) != -1)
+          return rxfun5.cap (1).remove (QRegExp ("[ \t]*"));
       }
 
     return QString ();

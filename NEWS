@@ -1,5 +1,5 @@
-Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
-----------------------------------------------------------------------
+Summary of important user-visible changes for version 5 (yyyy-mm-dd):
+--------------------------------------------------------------------
 
  ** The determination of an object's dimensions, size, and shape by the
     functions ndims, rows, columns, isscalar, isvector, isrow, iscolumn,
@@ -47,7 +47,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     exceeds the string length.  This behavior more closely matches
     common sense and is Matlab compatible.  Example:
 
-      Octave 5.0 : strncmp ("abc", "abc", 100) => true
+      Octave 5   : strncmp ("abc", "abc", 100) => true
       Previously : strncmp ("abc", "abc", 100) => false
 
  ** The intmax, intmin, and flintmax functions now accept a variable
@@ -57,7 +57,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     required.  Example:
 
                    x = int8 (3);
-      Octave 5.0 : range = [ intmin(x), intmax(x) ]
+      Octave 5   : range = [ intmin(x), intmax(x) ]
       Previously : range = [ intmin(class(x)), intmax(class(x)) ]
 
  ** The ranks function has been recoded for performance and is now 25X
@@ -196,7 +196,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
     expansion on path elements and Octave's load-path is no longer
     subject to these expansions.
 
- ** New functions added in 5.0:
+ ** New functions added in 5:
 
       clearvars
       isfile
@@ -242,16 +242,16 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
 
  ** Deprecated functions.
 
-    The following functions have been deprecated in Octave 5.0 and will
+    The following functions have been deprecated in Octave 5 and will
     be removed from Octave 7 (or whatever version is the second major
-    release after 5.0):
+    release after 5):
 
       Function               | Replacement
       -----------------------|------------------
       output_max_field_width | output_precision
 
  ** The following functions were deprecated in Octave 4.2 and have been
-    removed from Octave 5.0.
+    removed from Octave 5.
 
       Function             | Replacement
       ---------------------|------------------
@@ -268,8 +268,8 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
  ** Deprecated graphics properties.
 
     The following properties or allowed corresponding values have been
-    deprecated in Octave 5.0 and will be removed from Octave 7 (or
-    whatever version is the second major release after 5.0):
+    deprecated in Octave 5 and will be removed from Octave 7 (or
+    whatever version is the second major release after 5):
 
       Object               | Property                | Value
       ---------------------|-------------------------|-------------------
@@ -280,7 +280,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       uitable              | fontangle               | "oblique"
 
  ** The following properties or allowed corresponding values were
-    deprecated in Octave 4.2 and have been removed from Octave 5.0:
+    deprecated in Octave 4.2 and have been removed from Octave 5:
 
       Object               | Property                | Value
       ---------------------|-------------------------|-------------------
@@ -296,7 +296,7 @@ Summary of important user-visible changes for version 5.0 (yyyy-mm-dd):
       text                 | erasemode               |
 
  ** The C++ function is_keyword has been deprecated in favor of
-    iskeyword.  The old function will be removed two versions after 5.0.
+    iskeyword.  The old function will be removed two versions after 5.
 
 ---------------------------------------------------------
 

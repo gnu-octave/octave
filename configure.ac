@@ -39,9 +39,9 @@ OCTAVE_PATCH_VERSION=0
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
-OCTAVE_COPYRIGHT="Copyright (C) 2018-2019 John W. Eaton and others."
+OCTAVE_COPYRIGHT="Copyright (C) 2019 John W. Eaton and others."
 
-OCTAVE_RELEASE_DATE="2018-12-20"
+OCTAVE_RELEASE_DATE="2019-01-24"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly

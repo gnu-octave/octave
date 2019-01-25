@@ -34,11 +34,14 @@
 ##
 ## @example
 ## @group
-## tf = verLessThan ("Octave", "5.0.0")
-## tf = verLessThan ("io", "2.4.12")
+## tf = verLessThan ("Octave", "5")
+## @result{} tf = 0
 ##
-## if (! verLessThan ("Octave", "5.0.0"))
-##   ## ... use new Octave 5.0 features ...
+## tf = verLessThan ("io", "2.4.12")
+## @result{} ...
+##
+## if (! verLessThan ("Octave", "5"))
+##   ## ... use new Octave 5 features ...
 ## endif
 ## @end group
 ## @end example
@@ -67,6 +70,8 @@ function retval = verLessThan (package, version)
 endfunction
 
 
+%!assert (! verLessThan ("Octave", "0"))
+%!assert (! verLessThan ("Octave", "6"))
 %!assert (! verLessThan ("Octave", "3.0.0"))
 %!assert (verLessThan ("Octave", "99.9.9"))
 

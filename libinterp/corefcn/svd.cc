@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-static std::string Vsvd_driver = "gesdd";
+static std::string Vsvd_driver = "gesvd";
 
 template <typename T>
 static typename octave::math::svd<T>::Type
@@ -384,7 +384,7 @@ DEFUN (svd_driver, args, nargout,
 Query or set the underlying @sc{lapack} driver used by @code{svd}.
 
 Currently recognized values are @qcode{"gesdd"} and @qcode{"gesvd"}.
-The default is @qcode{"gesdd"}.
+The default is @qcode{"gesvd"}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
@@ -395,26 +395,17 @@ the full singular value decomposition (left and right singular matrices as
 well as singular values).  When calculating just the singular values the
 following discussion is not relevant.
 
-The default routine used by Octave is the newer @code{gesdd} which is based on
-a Divide-and-Conquer algorithm that is 5X faster than the alternative
-@code{gesvd}, which is based on QR factorization.  However, the new algorithm
-can use significantly more memory.  For an @nospell{MxN} input matrix the
-memory usage is of order O(min(M,N) ^ 2), whereas the alternative is of order
-O(max(M,N)).  In general, modern computers have abundant memory so Octave has
-chosen to prioritize speed.
+The newer @code{gesdd} routine is based on a Divide-and-Conquer algorithm that
+is 5X faster than the alternative @code{gesvd}, which is based on QR
+factorization.  However, the new algorithm can use significantly more memory.
+For an @nospell{MxN} input matrix the memory usage is of order O(min(M,N) ^ 2),
+whereas the alternative is of order O(max(M,N)).
 
-In addition, there have been instances in the past where some input matrices
-were not accurately decomposed by @code{gesdd}.  This appears to have been
-resolved with modern versions of @sc{lapack}.  However, if certainty is
-required the accuracy of the decomposition can always be tested after the fact
-with
-
-@example
-@group
-[@var{u}, @var{s}, @var{v}] = svd (@var{x});
-norm (@var{x} - @var{u}*@var{s}*@var{v'}, "fro")
-@end group
-@end example
+Beyond speed and memory issues, there have been instances where some input
+matrices were not accurately decomposed by @code{gesdd}.  See currently active
+bug @url{https://savannah.gnu.org/bugs/?55564}.  Until these accuracy issues
+are resolved in a new version of the @sc{lapack} library, the default driver
+in Octave has been set to @qcode{"gesvd"}.
 
 @seealso{svd}
 @end deftypefn */)

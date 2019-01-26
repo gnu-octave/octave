@@ -197,8 +197,6 @@ namespace octave
   octave_lvalue
   tree_index_expression::lvalue (tree_evaluator& tw)
   {
-    octave_lvalue retval;
-
     std::list<octave_value_list> idx;
     std::string tmp_type;
 
@@ -208,7 +206,7 @@ namespace octave
     auto p_arg_nm = m_arg_nm.begin ();
     auto p_dyn_field = m_dyn_field.begin ();
 
-    retval = m_expr->lvalue (tw);
+    octave_lvalue retval = m_expr->lvalue (tw);
 
     octave_value tmp = retval.value ();
 

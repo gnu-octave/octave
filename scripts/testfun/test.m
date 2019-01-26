@@ -741,7 +741,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
   endfor
 
   ## Clear any functions created during test run.
-  eval (__clearfcn, "");
+  __clear_functions = onCleanup (@() eval (__clearfcn, ""));
 
   ## Verify test file did not leak file descriptors.
   if (! isempty (setdiff (fopen ("all"), __fid_list_orig)))

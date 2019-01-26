@@ -173,6 +173,16 @@ namespace octave
     return octave_value ();
   }
 
+  std::list<std::string> symbol_info_list::names (void) const
+  {
+    std::list<std::string> retval;
+
+    for (const auto& syminfo : m_lst)
+      retval.push_back (syminfo.name ());
+
+    return retval;
+  }
+
   octave_map
   symbol_info_list::map_value (const std::string& caller_function_name,
                                int nesting_level) const

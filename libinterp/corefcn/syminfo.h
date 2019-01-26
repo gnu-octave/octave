@@ -100,6 +100,8 @@ namespace octave
 
     octave_value varval (const std::string& name) const;
 
+    std::list<std::string> names (void) const;
+
     octave_map map_value (const std::string& caller_function_name,
                           int nesting_level) const;
 

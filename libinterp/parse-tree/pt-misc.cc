@@ -59,23 +59,6 @@ namespace octave
     return retval;
   }
 
-  bool
-  tree_parameter_list::is_defined (symbol_record::context_id context)
-  {
-    bool status = true;
-
-    for (tree_decl_elt *elt : *this)
-      {
-        if (! elt->is_variable (context))
-          {
-            status = false;
-            break;
-          }
-      }
-
-    return status;
-  }
-
   tree_parameter_list *
   tree_parameter_list::dup (symbol_scope& scope) const
   {

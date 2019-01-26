@@ -77,8 +77,6 @@ namespace octave
 
     bool varargs_only (void) { return (m_marked_for_varargs < 0); }
 
-    bool is_defined (symbol_record::context_id context);
-
     std::list<std::string> variable_names (void) const;
 
     tree_parameter_list * dup (symbol_scope& scope) const;

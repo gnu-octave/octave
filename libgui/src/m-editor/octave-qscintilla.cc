@@ -504,7 +504,7 @@ namespace octave
   {
     QString prevline = text (line);
 
-    QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch|case|otherwise"
+    QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch"
                             "|do|function|properties|events|classdef"
                             "|unwind_protect|try"
                             "|parfor|methods)"
@@ -549,8 +549,8 @@ namespace octave
         return;
       }
 
-    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch|unwind_protect_cleanup"
-                            "|case|otherwise)[\r]?[\t #%\n]");
+    QRegExp mkey = QRegExp ("^[\t ]*(else|elseif|catch|unwind_protect_cleanup)"
+                            "[\r]?[\t #%\n]");
     if (prevline.contains (mkey))
       {
         int prev_ind = indentation (line-1);
@@ -564,6 +564,24 @@ namespace octave
             setCursorPosition (line+1, prev_ind);
           }
         return;
+      }
+
+    QRegExp case_key = QRegExp ("^[\t ]*(case|otherwise)[\r]?[\t #%\n]");
+    if (prevline.contains (case_key) && do_smart_indent)
+      {
+        QString last_line = text (line-1);
+        int act_ind = indentation (line);
+
+        if (last_line.contains ("switch"))
+          {
+            indent (line+1);
+            act_ind = indentation (line+1);
+          }
+        else
+          unindent (line);
+
+        setIndentation (line+1, act_ind);
+        setCursorPosition (line+1, act_ind);
       }
 
     ekey = QRegExp ("^[\t ]*(end|endif|endfor|endwhile|until|endfunction"
@@ -610,8 +628,13 @@ namespace octave
                  "|until)"
                  "[\r\n\t #%]");
 
+    QRegExp case_block_regexp
+      = QRegExp ("^([\t ]*)(case|otherwise)"
+                 "[\r\n\t #%]");
+
     int indent_column = -1;
     int indent_increment = indentationWidth ();
+    bool in_switch = false;
 
     for (int line = lineFrom-1; line >= 0; line--)
       {
@@ -627,7 +650,11 @@ namespace octave
             indent_column = indentation (line);
 
             if (begin_block_regexp.indexIn (line_text) > -1)
-              indent_column += indent_increment;
+              {
+                indent_column += indent_increment;
+                if (line_text.contains ("switch"))
+                  in_switch = true;
+              }
 
             break;
           }
@@ -636,20 +663,44 @@ namespace octave
     if (indent_column < 0)
       indent_column = indentation (lineFrom);
 
+    QString prev_line;
     for (int line = lineFrom; line <= lineTo; line++)
       {
         QString line_text = text (line);
 
         if (end_block_regexp.indexIn (line_text) > -1)
-          indent_column -= indent_increment;
+          {
+            indent_column -= indent_increment;
+            if (line_text.contains ("endswitch"))
+              {
+                // need a double de-indent for endswitch
+                if (in_switch)
+                  indent_column -= indent_increment;
+                in_switch = false;
+              }
+          }
 
         if (mid_block_regexp.indexIn (line_text) > -1)
             indent_column -= indent_increment;
 
+        if (case_block_regexp.indexIn (line_text) > -1)
+          {
+            if (case_block_regexp.indexIn (prev_line) < 0 && !prev_line.contains("switch"))
+              indent_column -= indent_increment;
+            in_switch = true;
+          }
+
         setIndentation (line, indent_column);
 
         if (begin_block_regexp.indexIn (line_text) > -1)
-          indent_column += indent_increment;
+          {
+            indent_column += indent_increment;
+            if (line_text.contains ("switch"))
+              in_switch = true;
+          }
+
+        if (blank_line_regexp.indexIn (line_text) < 0)
+          prev_line = line_text;
       }
   }
 

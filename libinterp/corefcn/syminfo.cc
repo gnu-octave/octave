@@ -324,7 +324,8 @@ namespace octave
     os << param_buf.str ();
   }
 
-  void symbol_info_list::display (std::ostream& os, const std::string& format)
+  void symbol_info_list::display (std::ostream& os,
+                                  const std::string& format) const
   {
     if (! m_lst.empty ())
       {
@@ -355,7 +356,7 @@ namespace octave
   }
 
   std::list<whos_parameter>
-  symbol_info_list::parse_whos_line_format (const std::string& format)
+  symbol_info_list::parse_whos_line_format (const std::string& format) const
   {
     int idx;
     size_t format_len = format.length ();

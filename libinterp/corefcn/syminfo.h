@@ -109,13 +109,13 @@ namespace octave
     void print_descriptor (std::ostream& os,
                            const std::list<whos_parameter> params) const;
 
-    void display (std::ostream& os, const std::string& format);
+    void display (std::ostream& os, const std::string& format) const;
 
     // Parse FORMAT, and return a parameter list,
     // containing all information needed to print the given
     // attributes of the symbols.
     std::list<whos_parameter>
-    parse_whos_line_format (const std::string& format);
+    parse_whos_line_format (const std::string& format) const;
   };
 }
 

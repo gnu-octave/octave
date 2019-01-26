@@ -52,18 +52,15 @@ namespace octave
   public:
 
     symbol_info (const std::string& name, const octave_value& value,
-                 bool is_automatic, bool is_complex, bool is_formal,
-                 bool is_global, bool is_persistent)
-      : m_name (name), m_value (value), m_is_automatic (is_automatic),
-        m_is_complex (is_complex), m_is_formal (is_formal),
-        m_is_global (is_global), m_is_persistent (is_persistent)
+                 bool is_formal, bool is_global, bool is_persistent)
+      : m_name (name), m_value (value), m_is_complex (value.iscomplex ()),
+        m_is_formal (is_formal), m_is_global (is_global),
+        m_is_persistent (is_persistent)
     { }
 
     std::string name (void) const { return m_name; }
 
     octave_value value (void) const { return m_value; }
-
-    bool is_automatic (void) const { return m_is_automatic; }
 
     bool is_complex (void) const { return m_is_complex; }
 
@@ -79,7 +76,6 @@ namespace octave
 
     std::string m_name;
     octave_value m_value;
-    bool m_is_automatic;
     bool m_is_complex;
     bool m_is_formal;
     bool m_is_global;

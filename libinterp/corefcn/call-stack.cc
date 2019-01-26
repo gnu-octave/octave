@@ -106,8 +106,8 @@ namespace octave
 
         if (value.is_defined ())
           {
-            symbol_info syminf (sr.name (), value, sr.is_automatic (),
-                                value.iscomplex (), sr.is_formal (),
+            symbol_info syminf (sr.name (), value,
+                                sr.is_formal (),
                                 sr.is_global (), sr.is_persistent ());
 
             symbol_stats.append (syminf);
@@ -802,8 +802,8 @@ do_who_two (octave::interpreter& interp, const string_vector& pats,
               if (verbose)
                 {
                   octave::symbol_info
-                    syminf (sr.name (), value, sr.is_automatic (),
-                            value.iscomplex (), sr.is_formal (),
+                    syminf (sr.name (), value,
+                            sr.is_formal (),
                             sr.is_global (), sr.is_persistent ());
 
                   symbol_stats.append (syminf);

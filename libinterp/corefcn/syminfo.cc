@@ -105,14 +105,13 @@ namespace octave
               {
               case 'a':
                 {
-                  char tmp[6];
+                  char tmp[5];
 
-                  tmp[0] = (m_is_automatic ? 'a' : ' ');
-                  tmp[1] = (m_is_complex ? 'c' : ' ');
-                  tmp[2] = (m_is_formal ? 'f' : ' ');
-                  tmp[3] = (m_is_global ? 'g' : ' ');
-                  tmp[4] = (m_is_persistent ? 'p' : ' ');
-                  tmp[5] = 0;
+                  tmp[0] = (m_is_complex ? 'c' : ' ');
+                  tmp[1] = (m_is_formal ? 'f' : ' ');
+                  tmp[2] = (m_is_global ? 'g' : ' ');
+                  tmp[3] = (m_is_persistent ? 'p' : ' ');
+                  tmp[4] = 0;
 
                   os << tmp;
                 }

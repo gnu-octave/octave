@@ -54,6 +54,7 @@
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate
+%!shared  # clear all shared variables for remainder of tests
 
 %%  Static method and Constant Property
 %!assert (foo_static_method_constant_property.radians_per_cycle, 2*pi)

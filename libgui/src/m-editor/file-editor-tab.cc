@@ -2018,13 +2018,7 @@ namespace octave
     octave_value sym;
     try
       {
-        // FIXME: maybe we should be looking up functions directly
-        // instead of using a function that can also find variables?
-
-        symbol_scope curr_scope
-          = __get_current_scope__ ("file_editor_tab::exit_debug_and_clear");
-
-        sym = curr_scope.find (base_name);
+        sym = symtab.find_user_function (base_name);
       }
     catch (const execution_exception& e)
       {

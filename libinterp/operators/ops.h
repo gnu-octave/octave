@@ -76,42 +76,6 @@ extern void install_ops (octave::type_info&);
   ti.install_widening_op                                                \
   (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
 
-// The following INSTALL_* macros are obsolete.
-
-#define INSTALL_UNOP(op, t, f)                                          \
-  octave_value_typeinfo::register_unary_op                              \
-  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
-
-#define INSTALL_NCUNOP(op, t, f)                                        \
-  octave_value_typeinfo::register_non_const_unary_op                    \
-  (octave_value::op, t::static_type_id (), CONCAT2 (oct_unop_, f));
-
-#define INSTALL_BINOP(op, t1, t2, f)                                    \
-  octave_value_typeinfo::register_binary_op                             \
-  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
-   CONCAT2 (oct_binop_, f));
-
-#define INSTALL_CATOP(t1, t2, f)                                        \
-  octave_value_typeinfo::register_cat_op                                \
-  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_catop_, f));
-
-#define INSTALL_ASSIGNOP(op, t1, t2, f)                                 \
-  octave_value_typeinfo::register_assign_op                             \
-  (octave_value::op, t1::static_type_id (), t2::static_type_id (),      \
-   CONCAT2 (oct_assignop_, f));
-
-#define INSTALL_ASSIGNANYOP(op, t1, f)                                  \
-  octave_value_typeinfo::register_assignany_op                          \
-  (octave_value::op, t1::static_type_id (), CONCAT2 (oct_assignop_, f));
-
-#define INSTALL_ASSIGNCONV(t1, t2, tr)                                  \
-  octave_value_typeinfo::register_pref_assign_conv                      \
-  (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
-
-#define INSTALL_WIDENOP(t1, t2, f)                                      \
-  octave_value_typeinfo::register_widening_op                           \
-  (t1::static_type_id (), t2::static_type_id (), CONCAT2 (oct_conv_, f));
-
 #define DEFASSIGNOP(name, t1, t2)                               \
   static octave_value                                           \
   CONCAT2 (oct_assignop_, name) (octave_base_value& a1,         \

@@ -64,8 +64,7 @@ namespace octave
   {
     tree_parameter_list *new_list = new tree_parameter_list ();
 
-    if (takes_varargs ())
-      new_list->mark_varargs ();
+    new_list->m_marked_for_varargs = m_marked_for_varargs;
 
     for (const tree_decl_elt *elt : *this)
       new_list->append (elt->dup (scope));

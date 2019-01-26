@@ -719,6 +719,8 @@ public:
 
   virtual bool islocked (void) const { return false; }
 
+  virtual void call_object_destructor (void) { }
+
   virtual octave_value dump (void) const;
 
   // Standard mappers.  Register new ones here.

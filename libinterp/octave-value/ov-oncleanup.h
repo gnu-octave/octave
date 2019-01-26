@@ -35,7 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 class octave_oncleanup : public octave_base_value
 {
 public:
-  octave_oncleanup (void) : fcn () { }
+
+  octave_oncleanup (void) = default;
 
   octave_oncleanup (const octave_value& fcn);
 
@@ -84,6 +85,8 @@ public:
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  void call_object_destructor (void);
 
 private:
 

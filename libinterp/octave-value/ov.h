@@ -1326,6 +1326,8 @@ public:
 
   bool islocked (void) const { return rep->islocked (); }
 
+  void call_object_destructor (void) { return rep->call_object_destructor (); }
+
   octave_value dump (void) const { return rep->dump (); }
 
 #define MAPPER_FORWARD(F) \

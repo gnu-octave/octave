@@ -61,10 +61,7 @@ namespace octave
     if (colors.isEmpty ())
       {
         colors << QColor (190, 255, 255)
-               << QColor (220, 255, 220)
-               << QColor (220, 220, 255)
                << QColor (255, 255, 190)
-               << QColor (255, 220, 220)
                << QColor (255, 190, 255);
       }
 
@@ -78,11 +75,8 @@ namespace octave
 
     if (names.isEmpty ())
       {
-        names << QObject::tr ("automatic")
-              << QObject::tr ("function")
+        names << QObject::tr ("argument")
               << QObject::tr ("global")
-              << QObject::tr ("hidden")
-              << QObject::tr ("inherited")
               << QObject::tr ("persistent");
       }
 
@@ -301,14 +295,12 @@ namespace octave
           dv(i) = sz(i);
 
         char storage = ' ';
-        if (syminfo.is_global ())
+        if (syminfo.is_formal ())
+          storage = 'a';
+        else if (syminfo.is_global ())
           storage = 'g';
         else if (syminfo.is_persistent ())
           storage = 'p';
-        else if (syminfo.is_automatic ())
-          storage = 'a';
-        else if (syminfo.is_formal ())
-          storage = 'f';
 
         std::ostringstream buf;
         val.short_disp (buf);

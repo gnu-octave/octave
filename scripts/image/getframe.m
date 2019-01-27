@@ -166,7 +166,7 @@ endfunction
 %! image (frame.cdata);
 %! title ("Lower left hand corner");
 
-%!testif HAVE_QT_OFFSCREEN; have_window_system ()
+%!testif HAVE_QT_OFFSCREEN; have_window_system () && strcmp ("qt", graphics_toolkit ())
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   pos = get (hf, "position");
@@ -175,7 +175,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!testif HAVE_QT_OFFSCREEN; have_window_system ()
+%!testif HAVE_QT_OFFSCREEN; have_window_system () && strcmp ("qt", graphics_toolkit ())
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("visible", "off", "position", [0 0 1 1]);

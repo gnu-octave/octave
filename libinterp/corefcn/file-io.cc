@@ -2278,8 +2278,8 @@ as the name of the function when reporting errors.
 /*
 ## Test input validation
 %!error textscan ()
-%!error textscan (single (40))
-%!error textscan ({40})
+%!error <file id must be> textscan (single (4))
+%!error <file id must be> textscan ({4})
 %!error <must be a string> textscan ("Hello World", 2)
 %!error <at most one character or>
 %! textscan ("Hello World", "%s", "EndOfLine", 3);

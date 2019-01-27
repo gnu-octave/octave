@@ -1013,10 +1013,22 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     }                                                                   \
   while (0)
 
-  if (cdata.is_uint8_type ())
+  if (cdata.is_int8_type ())
+    CONVERT_CDATA_1 (int8NDArray, int8_, false);
+  else if (cdata.is_int16_type ())
+    CONVERT_CDATA_1 (int16NDArray, int16_, false);
+  else if (cdata.is_int32_type ())
+    CONVERT_CDATA_1 (int32NDArray, int32_, false);
+  else if (cdata.is_int64_type ())
+    CONVERT_CDATA_1 (int64NDArray, int64_, false);
+  else if (cdata.is_uint8_type ())
     CONVERT_CDATA_1 (uint8NDArray, uint8_, false);
   else if (cdata.is_uint16_type ())
     CONVERT_CDATA_1 (uint16NDArray, uint16_, false);
+  else if (cdata.is_uint32_type ())
+    CONVERT_CDATA_1 (uint32NDArray, uint32_, false);
+  else if (cdata.is_uint64_type ())
+    CONVERT_CDATA_1 (uint64NDArray, uint64_, false);
   else if (cdata.is_double_type ())
     CONVERT_CDATA_1 (NDArray, , true);
   else if (cdata.is_single_type ())
@@ -1027,7 +1039,8 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     {
       // Don't throw an error; leads to an incomplete FLTK object (bug #46933).
       warning ("unsupported type for cdata (= %s).  "
-               "Valid types are uint8, uint16, double, single, and bool.",
+               "Valid types are int8, int16, int32, int64, uint8, uint16, "
+               "uint32, uint64, double, single, and bool.",
                cdata.type_name ().c_str ());
       a = NDArray (dv, 0);  // return 0 instead
     }

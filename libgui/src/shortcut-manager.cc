@@ -686,12 +686,21 @@ namespace octave
         if (file.isEmpty ())
           return false;
 
-        QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
+        QSettings osc_settings (file, QSettings::IniFormat);
 
-        if (action == OSC_IMPORT)
-          import_shortcuts (osc_settings);   // import (special action)
-        else if (action == OSC_EXPORT)
-          do_write_shortcuts (osc_settings, false); // export, (save settings)
+        if (osc_settings.status () !=  QSettings::NoError)
+          {
+            qWarning () << tr ("Failed to open %1 as Octave shortcut file")
+                        .arg (file);
+            return false;
+          }
+        else
+          {
+            if (action == OSC_IMPORT)
+              import_shortcuts (&osc_settings);   // import (special action)
+            else if (action == OSC_EXPORT)
+              do_write_shortcuts (&osc_settings, false); // export, (save settings)
+          }
       }
     else
       {

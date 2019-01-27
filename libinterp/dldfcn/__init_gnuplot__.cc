@@ -105,9 +105,19 @@ public:
 
   void redraw_figure (const graphics_object& go) const
   {
-    octave_value_list args;
-    args(0) = go.get_handle ().as_octave_value ();
-    octave::feval ("__gnuplot_drawnow__", args);
+    static bool drawnow_executing = false;
+
+    // Prevent recursion
+    if (! drawnow_executing)
+      {
+        octave::unwind_protect frame;
+        frame.protect_var (drawnow_executing);
+
+        drawnow_executing = true;
+        octave_value_list args;
+        args(0) = go.get_handle ().as_octave_value ();
+        octave::feval ("__gnuplot_drawnow__", args);
+      }
   }
 
   void print_figure (const graphics_object& go, const std::string& term,

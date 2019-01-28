@@ -35,11 +35,12 @@ class octave_user_script;
 class octave_value;
 class octave_value_list;
 
+#include "stack-frame.h"
 #include "symscope.h"
 
 namespace octave
 {
-  class interpreter;
+  class tree_evaluator;
   class symbol_info_list;
   class unwind_protect;
 
@@ -49,76 +50,25 @@ namespace octave
   {
   public:
 
-    class stack_frame
-    {
-    public:
+    typedef std::deque<stack_frame *> stack_frames;
 
-      friend class call_stack;
+    typedef stack_frames::iterator iterator;
+    typedef stack_frames::const_iterator const_iterator;
 
-      stack_frame (octave_function *fcn = nullptr,
-                   unwind_protect *up_frame = nullptr,
-                   const symbol_scope& scope = symbol_scope (),
-                   symbol_record::context_id context = 0, size_t prev = 0)
-        : m_fcn (fcn), m_unwind_protect_frame (up_frame),
-          m_line (-1), m_column (-1), m_scope (scope),
-          m_context (context), m_prev (prev)
-      { }
+    typedef stack_frames::reverse_iterator reverse_iterator;
+    typedef stack_frames::const_reverse_iterator const_reverse_iterator;
 
-      stack_frame (const stack_frame& elt)
-        : m_fcn (elt.m_fcn),
-          m_unwind_protect_frame (elt.m_unwind_protect_frame),
-          m_line (elt.m_line), m_column (elt.m_column),
-          m_scope (elt.m_scope), m_context (elt.m_context),
-          m_prev (elt.m_prev)
-      { }
-
-      int line (void) const { return m_line; }
-
-      int column (void) const { return m_column; }
-
-      std::string fcn_file_name (void) const;
-
-      std::string fcn_name (bool print_subfn = true) const;
-
-      bool operator == (const stack_frame& rhs) const;
-
-      symbol_info_list
-      make_symbol_info_list (const std::list<symbol_record>& srl) const;
-
-      symbol_info_list glob_symbol_info (const std::string& pat) const;
-
-      symbol_info_list regexp_symbol_info (const std::string& pat) const;
-
-      symbol_info_list get_symbol_info (void) const;
-
-    private:
-
-      octave_function *m_fcn;
-      unwind_protect *m_unwind_protect_frame;
-      int m_line;
-      int m_column;
-      symbol_scope m_scope;
-      symbol_record::context_id m_context;
-      size_t m_prev;
-    };
-
-    typedef std::deque<stack_frame>::iterator iterator;
-    typedef std::deque<stack_frame>::const_iterator const_iterator;
-
-    typedef std::deque<stack_frame>::reverse_iterator reverse_iterator;
-    typedef std::deque<stack_frame>::const_reverse_iterator const_reverse_iterator;
-
-    call_stack (interpreter& interp);
+    call_stack (tree_evaluator& evaluator);
 
     // Current function (top of stack).
     octave_function * current (void) const
     {
       octave_function *retval = nullptr;
 
-      if (! cs.empty ())
+      if (! m_cs.empty ())
         {
-          const stack_frame& elt = cs[curr_frame];
-          retval = elt.m_fcn;
+          const stack_frame *elt = m_cs[m_curr_frame];
+          retval = elt->function ();
         }
 
       return retval;
@@ -134,25 +84,39 @@ namespace octave
 
     octave_function * caller (void) const
     {
-      return curr_frame > 1 ? cs[curr_frame-1].m_fcn : cs[0].m_fcn;
+      return (m_curr_frame > 1
+              ? m_cs[m_curr_frame-1]->function () : m_cs[0]->function ());
     }
 
-    size_t current_frame (void) const { return curr_frame; }
+    size_t current_frame (void) const { return m_curr_frame; }
 
-    size_t size (void) const { return cs.size (); }
+    size_t size (void) const { return m_cs.size (); }
 
-    size_t num_user_code_frames (octave_idx_type& curr_user_frame) const;
+    const stack_frame& get_current_stack_frame (void) const
+    {
+      return *(m_cs[m_curr_frame]);
+    }
+
+    stack_frame& get_current_stack_frame (void)
+    {
+      return *(m_cs[m_curr_frame]);
+    }
+
+    symbol_scope top_scope (void) const
+    {
+      return m_cs[0]->get_scope ();
+    }
 
     symbol_scope current_scope (void) const
     {
-      return (curr_frame > 0 && curr_frame < cs.size ()
-              ? cs[curr_frame].m_scope : symbol_scope ());
+      // FIXME: Can m_curr_frame ever be invalid?
+      return (m_curr_frame < m_cs.size ()
+              ? m_cs[m_curr_frame]->get_scope () : symbol_scope ());
     }
 
-    symbol_record::context_id current_context (void) const
+    bool at_top_level (void) const
     {
-      return (curr_frame > 0 && curr_frame < cs.size ()
-              ? cs[curr_frame].m_context : 0);
+      return current_scope () == top_scope ();
     }
 
     // Function at location N on the call stack (N == 0 is current), may
@@ -161,10 +125,10 @@ namespace octave
     {
       octave_function *retval = nullptr;
 
-      if (cs.size () > n)
+      if (m_cs.size () > n)
         {
-          stack_frame& elt = cs[n];
-          retval = elt.m_fcn;
+          stack_frame *elt = m_cs[n];
+          retval = elt->function ();
         }
 
       return retval;
@@ -173,7 +137,7 @@ namespace octave
     // User code caller.
     octave_user_code * caller_user_code (size_t nskip = 0) const;
 
-    unwind_protect *curr_fcn_unwind_protect_frame (void) const;
+    unwind_protect * curr_fcn_unwind_protect_frame (void) const;
 
     // Line in user code caller.
     int caller_user_code_line (void) const;
@@ -193,45 +157,44 @@ namespace octave
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 
-    void push (octave_function *fcn = nullptr,
-               unwind_protect *up_frame = nullptr);
+    stack_frame * get_static_link (size_t prev_frame) const;
 
-    void push (octave_function *fcn, unwind_protect *up_frame,
-               const symbol_scope& scope, symbol_record::context_id context);
+    void push (const symbol_scope& scope);
 
-    void push (const symbol_scope& scope, symbol_record::context_id context)
-    {
-      push (nullptr, nullptr, scope, context);
-    }
+    void push (octave_user_function *fcn, unwind_protect *up_frame);
+
+    void push (octave_user_script *script, unwind_protect *up_frame);
+
+    void push (octave_function *fcn);
 
     void set_location (int l, int c)
     {
-      if (! cs.empty ())
+      if (! m_cs.empty ())
         {
-          stack_frame& elt = cs.back ();
+          stack_frame *elt = m_cs.back ();
 
-          elt.m_line = l;
-          elt.m_column = c;
+          elt->line (l);
+          elt->column (c);
         }
     }
 
     void set_line (int l)
     {
-      if (! cs.empty ())
+      if (! m_cs.empty ())
         {
-          stack_frame& elt = cs.back ();
+          stack_frame *elt = m_cs.back ();
 
-          elt.m_line = l;
+          elt->line (l);
         }
     }
 
     void set_column (int c)
     {
-      if (! cs.empty ())
+      if (! m_cs.empty ())
         {
-          stack_frame& elt = cs.back ();
+          stack_frame *elt = m_cs.back ();
 
-          elt.m_column = c;
+          elt->column (c);
         }
     }
 
@@ -244,15 +207,16 @@ namespace octave
 
     bool goto_frame_relative (int n, bool verbose = false);
 
+    size_t find_caller_frame (void);
+
     void goto_caller_frame (void);
 
     void goto_base_frame (void);
 
-    std::list<call_stack::stack_frame>
+    std::list<stack_frame *>
     backtrace_frames (size_t nskip, octave_idx_type& curr_user_frame) const;
 
-    std::list<call_stack::stack_frame>
-    backtrace_frames (size_t nskip = 0) const
+    std::list<stack_frame *> backtrace_frames (size_t nskip = 0) const
     {
       octave_idx_type curr_user_frame = -1;
 
@@ -268,28 +232,85 @@ namespace octave
 
     void pop (void);
 
-    void clear (void) { cs.clear (); }
+    void clear (void);
 
-    symbol_info_list glob_symbol_info (const std::string& pat) const;
+    symbol_info_list all_variables (void);
 
-    symbol_info_list regexp_symbol_info (const std::string& pat) const;
+    std::list<symbol_record> glob (const std::string& pattern) const;
 
-    symbol_info_list get_symbol_info (void) const;
+    std::list<symbol_record> regexp (const std::string& pattern) const;
+
+    std::list<std::string> variable_names (void) const;
+
+    std::list<std::string> global_variable_names (void) const;
+
+    void clear_global_variable (const std::string& name);
+
+    void clear_global_variable_pattern (const std::string& pattern);
+
+    void clear_global_variable_regexp(const std::string& pattern);
+
+    void clear_global_variables (void);
+
+    symbol_info_list glob_symbol_info (const std::string& pattern) const;
+
+    symbol_info_list regexp_symbol_info (const std::string& pattern) const;
+
+    symbol_info_list get_symbol_info (void);
 
     symbol_info_list top_scope_symbol_info (void) const;
 
     octave_value max_stack_depth (const octave_value_list& args, int nargout);
 
+    void make_persistent (const symbol_record& sym);
+
+    void make_global (const symbol_record& sym);
+
+    octave_value global_varval (const std::string& name) const;
+
+    octave_value& global_varref (const std::string& name);
+
+    octave_value get_top_level_value (const std::string& name) const;
+
+    void set_top_level_value (const std::string& name,
+                              const octave_value& value);
+
+    octave_value do_who_two (const string_vector& patterns, bool have_regexp,
+                             bool return_list, bool verbose,
+                             const std::string& msg = "");
+
+    octave_value do_global_who_two (const string_vector& patterns,
+                                    bool have_regexp, bool return_list,
+                                    bool verbose, const std::string& msg = "");
+
+    void clear_current_frame_values (void);
+
+    void display (void) const;
+
+    void set_auto_fcn_var (stack_frame::auto_var_type avt,
+                           const octave_value& val);
+
+    octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
+
   private:
 
-    // The current call stack.
-    std::deque<stack_frame> cs;
+    tree_evaluator& m_evaluator;
 
-    size_t curr_frame;
+    // The current call stack.
+    // FIXME: maybe we should be using a std::shared_ptr to manage the
+    // individual stack frames?
+    stack_frames m_cs;
+
+    // FIXME: Could we eliminate this varaible and manage the current
+    // frame in the evaluator class instead?  The current frame might
+    // always be the top of the stack.  Restoring the previous/current
+    // frame would be managed by other means, such as an
+    // unwind_protect frame.
+    size_t m_curr_frame;
 
     int m_max_stack_depth;
 
-    interpreter& m_interpreter;
+    std::map<std::string, octave_value> m_global_values;
   };
 }
 

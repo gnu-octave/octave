@@ -150,23 +150,6 @@ find_indexed_expression (const std::string& text)
     return std::string ();
 }
 
-static inline bool
-is_variable (octave::symbol_table& symtab, const std::string& name)
-{
-  bool retval = false;
-
-  if (! name.empty ())
-    {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      octave_value val = scope ? scope.varval (name) : octave_value ();
-
-      retval = val.is_defined ();
-    }
-
-  return retval;
-}
-
 static string_vector
 generate_struct_completions (const std::string& text,
                              std::string& prefix, std::string& hint)
@@ -201,9 +184,7 @@ generate_struct_completions (const std::string& text,
       octave::interpreter& interp
         = octave::__get_interpreter__ ("generate_struct_completions");
 
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-
-      if (is_variable (symtab, base_name))
+      if (interp.is_variable (base_name))
         {
           int parse_status;
 
@@ -1261,8 +1242,8 @@ If @code{keyboard} is invoked without arguments, a default prompt of
   frame.add_method (cs, &octave::call_stack::restore_frame,
                     cs.current_frame ());
 
-  // Skip the frame assigned to the keyboard function.
-  cs.goto_frame_relative (0);
+  // Go up to the nearest user code frame.
+  cs.goto_frame_relative (-1);
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 

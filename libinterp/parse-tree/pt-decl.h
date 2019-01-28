@@ -55,8 +55,7 @@ namespace octave
       persistent
     };
 
-    tree_decl_elt (tree_identifier *i = nullptr, tree_expression *e = nullptr)
-      : type (unknown), m_id (i), m_expr (e) { }
+    tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
 
     // No copying!
 
@@ -66,27 +65,16 @@ namespace octave
 
     ~tree_decl_elt (void);
 
-    bool is_defined (symbol_record::context_id context)
-    {
-      return m_id ? m_id->is_defined (context) : false;
-    }
-
-    bool is_variable (symbol_record::context_id context)
-    {
-      return m_id ? m_id->is_variable (context) : false;
-    }
-
     void mark_as_formal_parameter (void)
     {
-      if (m_id)
-        m_id->mark_as_formal_parameter ();
+      m_id->mark_as_formal_parameter ();
     }
 
-    bool lvalue_ok (void) { return m_id ? m_id->lvalue_ok () : false; }
+    bool lvalue_ok (void) { return m_id->lvalue_ok (); }
 
     octave_lvalue lvalue (tree_evaluator& tw)
     {
-      return m_id ? m_id->lvalue (tw) : octave_lvalue ();
+      return m_id->lvalue (tw);
     }
 
     void mark_global (void) { type = global; }
@@ -97,7 +85,7 @@ namespace octave
 
     tree_identifier * ident (void) { return m_id; }
 
-    std::string name (void) const { return m_id ? m_id->name () : ""; }
+    std::string name (void) const { return m_id->name (); }
 
     tree_expression * expression (void) { return m_expr; }
 

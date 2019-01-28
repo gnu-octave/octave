@@ -976,14 +976,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            octave::symbol_table& symtab = interp.get_symbol_table ();
-
-            octave::symbol_scope local_scope;
-
-            symtab.set_scope (local_scope);
-
             octave::call_stack& cs = interp.get_call_stack ();
-            cs.push (local_scope, 0);
+
+            octave::symbol_scope local_scope ("read_mat5_binary_element$dummy_scope");
+
+            cs.push (local_scope);
             frame.add_method (cs, &octave::call_stack::pop);
 
             if (m2.nfields () > 0)
@@ -995,7 +992,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string key = m2.key (p0);
                     octave_value val = m2.contents (p0);
 
-                    local_scope.assign (key, val, 0);
+                    interp.assign (key, val);
                   }
               }
 

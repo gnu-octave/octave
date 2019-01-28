@@ -38,15 +38,6 @@ namespace octave
 {
   // Symbols from the symbol table.
 
-  class tree_evaluator;
-
-  void tree_identifier::link_to_global (const symbol_scope& global_scope,
-                                        const symbol_record& global_sym)
-  {
-    if (! m_sym.is_global ())
-      m_sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
-  }
-
   void
   tree_identifier::eval_undefined_error (void)
   {
@@ -70,9 +61,7 @@ namespace octave
     if (m_sym.is_added_static ())
       static_workspace_error ();
 
-    symbol_scope scope = tw.get_current_scope ();
-
-    return octave_lvalue (m_sym, scope.current_context ());
+    return octave_lvalue (m_sym, tw.get_current_stack_frame ());
   }
 
   tree_identifier *
@@ -89,5 +78,15 @@ namespace octave
     new_id->copy_base (*this);
 
     return new_id;
+  }
+
+  octave_lvalue
+  tree_black_hole::lvalue (tree_evaluator& tw)
+  {
+    octave_lvalue retval (m_sym, tw.get_current_stack_frame ());
+
+    retval.mark_black_hole ();
+
+    return retval;
   }
 }

@@ -82,7 +82,10 @@ COREFCN_INC = \
   %reldir%/sighandlers.h \
   %reldir%/sparse-xdiv.h \
   %reldir%/sparse-xpow.h \
+  %reldir%/stack-frame.h \
+  %reldir%/stack-frame-walker.h \
   %reldir%/syminfo.h \
+  %reldir%/syminfo-accumulator.h \
   %reldir%/symrec.h \
   %reldir%/symscope.h \
   %reldir%/symtab.h \
@@ -232,6 +235,7 @@ COREFCN_SRC = \
   %reldir%/sparse.cc \
   %reldir%/spparms.cc \
   %reldir%/sqrtm.cc \
+  %reldir%/stack-frame.cc \
   %reldir%/strfind.cc \
   %reldir%/strfns.cc \
   %reldir%/sub2ind.cc \

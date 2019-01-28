@@ -1167,9 +1167,7 @@ public:
           error ("cannot call superclass constructor with variable `%s'",
                  mname.c_str ());
 
-        octave::symbol_scope scope = tw.get_current_scope ();
-
-        octave_value sym = scope.varval (mname);
+        octave_value sym = tw.varval (mname);
 
         cls.run_constructor (to_cdef_ref (sym), idx);
 
@@ -3377,10 +3375,10 @@ cdef_package::cdef_package_rep::find (const std::string& nm)
 {
   std::string symbol_name = get_name () + '.' + nm;
 
-  octave::symbol_scope curr_scope
-    = octave::__get_current_scope__ ("cdef_package::cdef_package_rep::find");
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("cdef_package::cdef_package_rep::find");
 
-  return curr_scope.find (symbol_name);
+  return interp.find (symbol_name);
 }
 
 octave_value_list
@@ -3788,12 +3786,7 @@ cdef_manager::find_class (const std::string& name, bool error_if_not_found,
           size_t pos = name.rfind ('.');
 
           if (pos == std::string::npos)
-            {
-              octave::symbol_scope curr_scope
-                = m_interpreter.get_current_scope ();
-
-              ov_cls = curr_scope.find (name);
-            }
+            ov_cls = m_interpreter.find (name);
           else
             {
               std::string pack_name = name.substr (0, pos);

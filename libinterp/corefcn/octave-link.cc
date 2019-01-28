@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "pager.h"
 #include "syminfo.h"
-#include "symtab.h"
 
 static int
 octave_readline_hook (void)
@@ -69,13 +68,10 @@ octave_link::set_workspace (void)
 {
   if (enabled ())
     {
-      octave::symbol_table& symtab
-         = octave::__get_symbol_table__ ("octave_link::set_workspace");
-
       octave::call_stack& cs
         = octave::__get_call_stack__ ("octave_link::set_workspace");
 
-      instance->do_set_workspace (symtab.at_top_level (),
+      instance->do_set_workspace (cs.at_top_level (),
                                   instance->debugging,
                                   cs.get_symbol_info (), true);
     }
@@ -465,9 +461,7 @@ Open the variable @var{name} in the graphical Variable Editor.
     warning ("openvar: GUI is not running, can't start Variable Editor");
   else
     {
-      octave::symbol_scope scope = interp.require_current_scope ("openvar");
-
-      octave_value val = scope.varval (name);
+      octave_value val = interp.varval (name);
 
       if (val.is_undefined ())
         error ("openvar: '%s' is not a variable", name.c_str ());

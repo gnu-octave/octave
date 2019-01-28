@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <string>
-#include <stack>
 
 #include "comment-list.h"
 #include "ovl.h"
@@ -44,6 +43,7 @@ class octave_value;
 namespace octave
 {
   class file_info;
+  class stack_frame;
   class tree_parameter_list;
   class tree_statement_list;
   class tree_evaluator;
@@ -67,8 +67,7 @@ protected:
     : octave_function (nm, ds), m_scope (scope), file_name (fnm),
       t_parsed (static_cast<time_t> (0)),
       t_checked (static_cast<time_t> (0)),
-      m_call_depth (-1), m_file_info (nullptr),
-      cmd_list (cmds)
+      m_file_info (nullptr), cmd_list (cmds)
   { }
 
 public:
@@ -113,13 +112,6 @@ public:
     return octave_value ();
   }
 
-  // XXX FIXME
-  int call_depth (void) const { return m_call_depth; }
-
-  void set_call_depth (int val) { m_call_depth = val; }
-
-  void increment_call_depth (void) { ++m_call_depth; }
-
   virtual std::map<std::string, octave_value> subfunctions (void) const;
 
   octave::tree_statement_list * body (void) { return cmd_list; }
@@ -142,9 +134,6 @@ protected:
   // The time the file was last checked to see if it needs to be
   // parsed again.
   octave::sys::time t_checked;
-
-  // Used to keep track of recursion depth.
-  int m_call_depth;
 
   // Cached text of function or script code with line offsets
   // calculated.
@@ -197,9 +186,6 @@ public:
 
   void accept (octave::tree_walker& tw);
 
-  // XXX FIXME
-  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
-
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
@@ -212,10 +198,13 @@ octave_user_function : public octave_user_code
 {
 public:
 
+  typedef std::map<std::string, octave_value> local_vars_map;
+
   octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
-                        octave::tree_statement_list *cl = nullptr);
+                        octave::tree_statement_list *cl = nullptr,
+                        const local_vars_map& lviv = local_vars_map ());
 
   // No copying!
 
@@ -224,12 +213,6 @@ public:
   octave_user_function& operator = (const octave_user_function& fn) = delete;
 
   ~octave_user_function (void);
-
-  octave::symbol_record::context_id active_context () const
-  {
-    return is_anonymous_function ()
-      ? 0 : static_cast<octave::symbol_record::context_id>(m_call_depth);
-  }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -380,6 +363,11 @@ public:
 
   octave::comment_list * trailing_comment (void) { return trail_comm; }
 
+  const local_vars_map& local_var_init_vals (void) const
+  {
+    return m_local_var_init_vals;
+  }
+
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
   octave::tree_expression * special_expr (void);
@@ -395,9 +383,6 @@ public:
 #endif
 
   octave_value dump (void) const;
-
-  // XXX FIXME
-  void set_call_depth (int val) { octave_user_code::set_call_depth (val); }
 
 private:
 
@@ -416,6 +401,9 @@ private:
   // List of parameters we return.  These are also local variables in
   // this function.
   octave::tree_parameter_list *ret_list;
+
+  // For anonymous function values inherited from parent scope.
+  local_vars_map m_local_var_init_vals;
 
   // The comments preceding the FUNCTION token.
   octave::comment_list *lead_comm;

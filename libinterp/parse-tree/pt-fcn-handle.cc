@@ -70,20 +70,10 @@ namespace octave
     symbol_scope af_scope = m_scope;
     symbol_scope af_parent_scope = m_parent_scope;
 
-    symbol_table& symtab
-      = __get_symbol_table__ ("tree_anon_fcn_handle::dup");
-
     symbol_scope new_scope;
 
     if (af_scope)
       new_scope = af_scope.dup ();
-
-    // FIXME: why should we inherit from the current scope here?  That
-    // doesn't seem right, but with the way things work now it appears
-    // to be required for bug-31371.tst to pass.
-
-    if (new_scope)
-      symtab.inherit (new_scope);
 
     // FIXME: if new scope is nullptr, then we are in big trouble here...
 

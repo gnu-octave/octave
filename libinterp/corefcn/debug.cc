@@ -943,7 +943,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
                  << std::endl;
             }
 
-          if (show_top_level)
+          if (cs.at_top_level () && show_top_level)
             os << "  --> top level" << std::endl;
         }
     }
@@ -951,7 +951,12 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
     {
       octave_map stk = cs.backtrace (nskip, curr_frame, false);
 
-      retval = ovl (stk, curr_frame < 0 ? 1 : curr_frame + 1);
+      // If current stack frame is not in the list curr_frame will be
+      // -1 and either nskip caused us to skip it or we are at the top
+      // level, which is not included in the list of frames.  So in the
+      // interpreter, 0 will be our invalid frame index value.
+
+      retval = ovl (stk, curr_frame + 1);
     }
 
   return retval;

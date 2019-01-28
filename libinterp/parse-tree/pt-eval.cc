@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 #include "profiler.h"
 #include "pt-all.h"
+#include "pt-anon-scopes.h"
 #include "pt-eval.h"
 #include "pt-tm-const.h"
 #include "symtab.h"
@@ -61,6 +62,11 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   // Normal evaluator.
+
+  bool tree_evaluator::at_top_level (void) const
+  {
+    return m_call_stack.at_top_level ();
+  }
 
   void
   tree_evaluator::reset (void)
@@ -84,8 +90,6 @@ namespace octave
                         ? new lexer (m_interpreter)
                         : new lexer (stdin, m_interpreter));
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
     do
       {
         try
@@ -94,7 +98,7 @@ namespace octave
 
             repl_parser.reset ();
 
-            if (symtab.at_top_level ())
+            if (at_top_level ())
               reset_debug_state ();
 
             retval = repl_parser.run ();
@@ -223,24 +227,14 @@ namespace octave
                     if (silent)
                       expr->set_print_flag (false);
 
+                    retval = evaluate_n (expr, nargout);
+
                     bool do_bind_ans = false;
 
                     if (expr->is_identifier ())
-                      {
-                        symbol_scope scope = get_current_scope ();
-
-                        symbol_record::context_id context
-                          = scope.current_context ();
-
-                        tree_identifier *id
-                          = dynamic_cast<tree_identifier *> (expr);
-
-                        do_bind_ans = (! id->is_variable (context));
-                      }
+                      do_bind_ans = ! is_variable (expr);
                     else
-                      do_bind_ans = (! expr->is_assignment_expression ());
-
-                    retval = evaluate_n (expr, nargout);
+                      do_bind_ans = ! expr->is_assignment_expression ();
 
                     if (do_bind_ans && ! retval.empty ())
                       bind_ans (retval(0), expr->print_result ());
@@ -298,18 +292,9 @@ namespace octave
 
     symbol_scope af_scope = anon_fh.scope ();
 
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-    symbol_scope af_parent_scope;
-    if (anon_fh.has_parent_scope ())
-      af_parent_scope = symtab.current_scope ();
-
     symbol_scope new_scope;
     if (af_scope)
       new_scope = af_scope.dup ();
-
-    if (new_scope && af_parent_scope)
-      new_scope.inherit (af_parent_scope);
 
     tree_parameter_list *param_list_dup
       = param_list ? param_list->dup (new_scope) : nullptr;
@@ -318,6 +303,11 @@ namespace octave
 
     tree_statement_list *stmt_list = nullptr;
 
+    symbol_scope parent_scope = get_current_scope ();
+
+    new_scope.set_parent (parent_scope);
+    new_scope.set_primary_parent (parent_scope);
+
     if (expr)
       {
         tree_expression *expr_dup = expr->dup (new_scope);
@@ -325,11 +315,25 @@ namespace octave
         stmt_list = new tree_statement_list (stmt);
       }
 
+    tree_anon_scopes anon_fcn_ctx (anon_fh);
+
+    std::set<std::string> free_vars = anon_fcn_ctx.free_variables ();
+
+    octave_user_function::local_vars_map local_var_init_vals;
+
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    for (auto& name : free_vars)
+      {
+        octave_value val = frame.varval (name);
+
+        if (val.is_defined ())
+          local_var_init_vals[name] = val;
+      }
+
     octave_user_function *af
       = new octave_user_function (new_scope, param_list_dup, ret_list,
-                                  stmt_list);
-
-    new_scope.set_parent (af_parent_scope);
+                                  stmt_list, local_var_init_vals);
 
     octave_function *curr_fcn = m_call_stack.current ();
 
@@ -341,19 +345,22 @@ namespace octave
         af->stash_parent_fcn_name (curr_fcn->name ());
         af->stash_dir_name (curr_fcn->dir_name ());
 
+        // The following is needed so that class method dispatch works
+        // properly for anonymous functions that wrap class methods.
+
         if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
           af->stash_dispatch_class (curr_fcn->dispatch_class ());
+
+        af->stash_fcn_file_name (curr_fcn->fcn_file_name ());
       }
 
     af->mark_as_anonymous_function ();
 
-    // FIXME: these should probably come from ANON_FH.
-    //    af->stash_fcn_file_name (expr.file_name ());
-    //    af->stash_fcn_location (expr.line (), expr.column ());
-
     octave_value ov_fcn (af);
 
-    octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, *this));
+    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, *this));
+
+    octave_value fh (new octave_fcn_handle (ov_fcn, octave_fcn_handle::anonymous));
 
     push_result (fh);
   }
@@ -751,6 +758,148 @@ namespace octave
     return id ? evaluate (id).storable_value () : octave_value ();
   }
 
+  bool
+  tree_evaluator::is_variable (const std::string& name) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.is_variable (name);
+  }
+
+  bool
+  tree_evaluator::is_local_variable (const std::string& name) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.is_local_variable (name);
+  }
+
+  bool
+  tree_evaluator::is_variable (const tree_expression *expr) const
+  {
+    if (expr->is_identifier ())
+      {
+        const tree_identifier *id
+          = dynamic_cast<const tree_identifier *> (expr);
+
+        if (id->is_black_hole ())
+          return false;
+
+        return is_variable (id->symbol ());
+      }
+
+    return false;
+  }
+
+  bool
+  tree_evaluator::is_defined (const tree_expression *expr) const
+  {
+    if (expr->is_identifier ())
+      {
+        const tree_identifier *id
+          = dynamic_cast<const tree_identifier *> (expr);
+
+        return is_defined (id->symbol ());
+      }
+
+    return false;
+  }
+
+  bool
+  tree_evaluator::is_variable (const symbol_record& sym) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.is_variable (sym);
+  }
+
+  bool
+  tree_evaluator::is_defined (const symbol_record& sym) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.is_defined (sym);
+  }
+
+  bool tree_evaluator::is_global (const std::string& name) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.is_global (name);
+  }
+
+  octave_value
+  tree_evaluator::varval (const symbol_record& sym) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.varval (sym);
+  }
+
+  octave_value
+  tree_evaluator::varval (const std::string& name) const
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.varval (name);
+  }
+
+  void tree_evaluator::install_variable (const std::string& name,
+                                         const octave_value& value,
+                                         bool global)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    return frame.install_variable (name, value, global);
+  }
+
+  octave_value
+  tree_evaluator::global_varval (const std::string& name) const
+  {
+    return m_call_stack.global_varval (name);
+  }
+
+  void
+  tree_evaluator::global_assign (const std::string& name,
+                                 const octave_value& val)
+  {
+    m_call_stack.global_varref (name) = val;
+  }
+
+  octave_value
+  tree_evaluator::top_level_varval (const std::string& name) const
+  {
+    return m_call_stack.get_top_level_value (name);
+  }
+
+  void
+  tree_evaluator::top_level_assign (const std::string& name,
+                                const octave_value& val)
+  {
+    m_call_stack.set_top_level_value (name, val);
+  }
+
+  void
+  tree_evaluator::assign (const std::string& name, const octave_value& val)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.assign (name, val);
+  }
+
+  void
+  tree_evaluator::set_auto_fcn_var (stack_frame::auto_var_type avt,
+                                    const octave_value& val)
+  {
+    m_call_stack.set_auto_fcn_var (avt, val);
+  }
+
+  octave_value
+  tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
+  {
+    return m_call_stack.get_auto_fcn_var (avt);
+  }
+
   void
   tree_evaluator::define_parameter_list_from_arg_vector
     (tree_parameter_list *param_list, const octave_value_list& args)
@@ -949,17 +1098,13 @@ namespace octave
       return varargout;
     else if (nargout <= len)
       {
-        symbol_scope scope = get_current_scope ();
-
-        symbol_record::context_id context = scope.current_context ();
-
         octave_value_list retval (nargout);
 
         int i = 0;
 
         for (tree_decl_elt *elt : *ret_list)
           {
-            if (elt->is_defined (context))
+            if (is_defined (elt->ident ()))
               {
                 octave_value tmp = evaluate (elt);
                 retval(i) = tmp;
@@ -1040,12 +1185,148 @@ namespace octave
     return false;
   }
 
-  symbol_scope
-  tree_evaluator::get_current_scope (void)
+  symbol_scope tree_evaluator::get_top_scope (void) const
   {
+    return m_call_stack.top_scope ();
+  }
+
+  symbol_scope tree_evaluator::get_current_scope (void) const
+  {
+    return m_call_stack.current_scope ();
+  }
+
+  octave_value tree_evaluator::find (const std::string& name)
+  {
+    const stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    octave_value val = frame.varval (name);
+
+    if (val.is_defined ())
+      return val;
+
+    // Subfunction.  I think it only makes sense to check for
+    // subfunctions if we are currently executing a function defined
+    // from a .m file.
+
+    octave_value fcn = frame.find_subfunction (name);
+
+    if (fcn.is_defined ())
+      return fcn;
+
     symbol_table& symtab = m_interpreter.get_symbol_table ();
 
-    return symtab.current_scope ();
+    return symtab.fcn_table_find (name, ovl ());
+  }
+
+  void tree_evaluator::clear_objects (void)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.clear_objects ();
+  }
+
+  void tree_evaluator::clear_variable (const std::string& name)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.clear_variable (name);
+  }
+
+  void tree_evaluator::clear_variable_pattern (const std::string& pattern)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.clear_variable_pattern (pattern);
+  }
+
+  void tree_evaluator::clear_variable_regexp (const std::string& pattern)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.clear_variable_regexp (pattern);
+  }
+
+  void tree_evaluator::clear_variables (void)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    frame.clear_variables ();
+  }
+
+  void tree_evaluator::clear_global_variable (const std::string& name)
+  {
+    m_call_stack.clear_global_variable (name);
+  }
+
+  void
+  tree_evaluator::clear_global_variable_pattern (const std::string& pattern)
+  {
+    m_call_stack.clear_global_variable_pattern (pattern);
+  }
+
+  void tree_evaluator::clear_global_variable_regexp(const std::string& pattern)
+  {
+    m_call_stack.clear_global_variable_regexp (pattern);
+  }
+
+  void tree_evaluator::clear_global_variables (void)
+  {
+    m_call_stack.clear_global_variables ();
+  }
+
+  void tree_evaluator::clear_all (bool force)
+  {
+    // FIXME: should this also clear objects?
+
+    clear_variables ();
+    clear_global_variables ();
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.clear_functions (force);
+  }
+
+  void tree_evaluator::clear_symbol (const std::string& name)
+  {
+    // FIXME: are we supposed to do both here?
+
+    clear_variable (name);
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.clear_function (name);
+  }
+
+  void tree_evaluator::clear_symbol_pattern (const std::string& pattern)
+  {
+    // FIXME: are we supposed to do both here?
+
+    clear_variable_pattern (pattern);
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.clear_function_pattern (pattern);
+  }
+
+  void tree_evaluator::clear_symbol_regexp (const std::string& pattern)
+  {
+    // FIXME: are we supposed to do both here?
+
+    clear_variable_regexp (pattern);
+
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.clear_function_regexp (pattern);
+  }
+
+  std::list<std::string> tree_evaluator::global_variable_names (void) const
+  {
+    return m_call_stack.global_variable_names ();
+  }
+
+  std::list<std::string> tree_evaluator::variable_names (void) const
+  {
+    return m_call_stack.variable_names ();
   }
 
   // Return a pointer to the user-defined function FNAME.  If FNAME is empty,
@@ -1161,60 +1442,9 @@ namespace octave
     if (id)
       {
         if (elt.is_global ())
-          {
-            std::string name = id->name ();
-
-            symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-            symbol_scope global_scope = symtab.global_scope ();
-
-            symbol_record global_sr = global_scope.find_symbol (name);
-
-            // FIXME: Hmmm.  Seems like this should happen automatically
-            // for symbols coming from the global scope...
-            global_sr.mark_global ();
-
-            symbol_scope scope = symtab.current_scope ();
-
-            if (! scope.is_global (name))
-              {
-                octave_value val = scope.varval (name);
-
-                bool local_val_is_defined = val.is_defined ();
-
-                if (local_val_is_defined)
-                  {
-                    warning_with_id ("Octave:global-local-conflict",
-                                     "global: '%s' is defined in the current scope.\n",
-                                     name.c_str ());
-                    warning_with_id ("Octave:global-local-conflict",
-                                     "global: in a future version, global variables must be declared before use.\n");
-
-                    // If the symbol is defined in the local but not the
-                    // global scope, then use the local value as the
-                    // initial value.  This value will also override any
-                    // initializer in the global statement.
-                    octave_value global_val = global_scope.varval (name);
-
-                    if (global_val.is_defined ())
-                      {
-                        warning_with_id ("Octave:global-local-conflict",
-                                         "global: global value overrides existing local value");
-                      }
-                    else
-                      {
-                        warning_with_id ("Octave:global-local-conflict",
-                                         "global: existing local value used to initialize global variable");
-
-                        global_scope.assign (name, val);
-                      }
-                  }
-
-                id->link_to_global (global_scope, global_sr);
-              }
-          }
+          m_call_stack.make_global (id->symbol ());
         else if (elt.is_persistent ())
-          id->mark_persistent ();
+          m_call_stack.make_persistent (id->symbol ());
         else
           error ("declaration list element not global or persistent");
 
@@ -1478,12 +1708,7 @@ namespace octave
 
     unwind_protect frame;
 
-    // XXX FIXME
-    frame.add_method (user_script, &octave_user_script::set_call_depth,
-                      user_script.call_depth ());
-    user_script.increment_call_depth ();
-
-    if (user_script.call_depth () >= max_recursion_depth ())
+    if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
     m_call_stack.push (&user_script, &frame);
@@ -1502,10 +1727,6 @@ namespace octave
     m_statement_context = SC_SCRIPT;
 
     profiler::enter<octave_user_script> block (m_profiler, user_script);
-
-    symbol_scope script_scope = user_script.scope ();
-    frame.add_method (script_scope, &symbol_scope::unbind_script_symbols);
-    script_scope.bind_script_symbols (get_current_scope ());
 
     if (echo ())
       push_echo_state (frame, tree_evaluator::ECHO_SCRIPTS, file_name);
@@ -1565,56 +1786,31 @@ namespace octave
 
     unwind_protect frame;
 
-    // XXX FIXME
-    frame.add_method (user_function, &octave_user_function::set_call_depth,
-                      user_function.call_depth ());
-    user_function.increment_call_depth ();
-
-    if (user_function.call_depth () >= max_recursion_depth ())
+    if (m_call_stack.size () >= static_cast<size_t> (m_max_recursion_depth))
       error ("max_recursion_depth exceeded");
 
     // Save old and set current symbol table context, for
     // eval_undefined_error().
 
-    symbol_scope fcn_scope = user_function.scope ();
-
-    symbol_record::context_id context = user_function.active_context ();
-
-    m_call_stack.push (&user_function, &frame, fcn_scope, context);
+    m_call_stack.push (&user_function, &frame);
 
     frame.protect_var (Vtrack_line_num);
     // update source line numbers, even if debugging
     Vtrack_line_num = true;
+
     frame.add_method (m_call_stack, &call_stack::pop);
 
-    if (user_function.call_depth () > 0
-        && ! user_function.is_anonymous_function ())
-      {
-        fcn_scope.push_context ();
-
-#if 0
-        std::cerr << name () << " scope: " << fcn_scope
-                  << " call depth: " << user_function.call_depth ()
-                  << " context: " << fcn_scope.current_context () << std::endl;
-#endif
-
-        frame.add_method (fcn_scope, &symbol_scope::pop_context);
-      }
-
-    bind_auto_fcn_vars (fcn_scope, xargs.name_tags (), args.length (),
+    bind_auto_fcn_vars (xargs.name_tags (), args.length (),
                         nargout, user_function.takes_varargs (),
                         user_function.all_va_args (args));
+
+    if (user_function.is_anonymous_function ())
+      init_local_fcn_vars (user_function);
 
     tree_parameter_list *param_list = user_function.parameter_list ();
 
     if (param_list && ! param_list->varargs_only ())
-      {
-#if 0
-        std::cerr << "defining param list, scope: " << fcn_scope
-                  << ", context: " << fcn_scope.current_context () << std::endl;
-#endif
-        define_parameter_list_from_arg_vector (param_list, args);
-      }
+      define_parameter_list_from_arg_vector (param_list, args);
 
     // For classdef constructor, pre-populate the output arguments
     // with the pre-initialized object instance, extracted above.
@@ -1634,32 +1830,17 @@ namespace octave
     // Doing so decrements the reference counts on the values of local
     // variables that are also named function parameters.
 
-    if (param_list)
-      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-                        param_list);
+    //    if (param_list)
+    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
+    //                        param_list);
 
     // Force return list to be undefined when this function exits.
     // Doing so decrements the reference counts on the values of local
     // variables that are also named values returned by this function.
 
-    if (ret_list)
-      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
-                        ret_list);
-
-    if (user_function.call_depth () == 0)
-      {
-        // Force symbols to be undefined again when this function
-        // exits.
-        //
-        // This cleanup function is added to the unwind_protect stack
-        // after the calls to clear the parameter lists so that local
-        // variables will be cleared before the parameter lists are
-        // cleared.  That way, any function parameters that have been
-        // declared global will be unmarked as global before they are
-        // undefined by the clear_param_list cleanup function.
-
-        frame.add_method (fcn_scope, &symbol_scope::refresh);
-      }
+    //    if (ret_list)
+    //      frame.add_method (this, &tree_evaluator::undefine_parameter_list,
+    //                        ret_list);
 
     frame.add_method (&user_function,
                       &octave_user_function::restore_warning_states);
@@ -1668,6 +1849,8 @@ namespace octave
 
     frame.protect_var (m_statement_context);
     m_statement_context = SC_FUNCTION;
+
+    frame.add_method (m_call_stack, &call_stack::clear_current_frame_values);
 
     {
       profiler::enter<octave_user_function> block (m_profiler, user_function);
@@ -1709,7 +1892,7 @@ namespace octave
 
         if (ret_list->takes_varargs ())
           {
-            octave_value varargout_varval = fcn_scope.varval ("varargout");
+            octave_value varargout_varval = varval ("varargout");
 
             if (varargout_varval.is_defined ())
               varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
@@ -1752,10 +1935,7 @@ namespace octave
         // Make sure that any variable with the same name as the new
         // function is cleared.
 
-        symbol_scope scope = symtab.current_scope ();
-
-        if (scope)
-          scope.assign (nm);
+        assign (nm);
       }
   }
 
@@ -1764,13 +1944,16 @@ namespace octave
   {
     octave_value_list retval;
 
-    symbol_scope scope = get_current_scope ();
-
-    symbol_record::context_id context = scope.current_context ();
-
     symbol_record sym = expr.symbol ();
 
-    octave_value val = sym.find (context);
+    octave_value val = varval (sym);
+
+    if (val.is_undefined ())
+      {
+        symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+        val = symtab.find_function (sym.name ());
+      }
 
     if (val.is_defined ())
       {
@@ -1967,11 +2150,7 @@ namespace octave
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-        symbol_scope scope = get_current_scope ();
-
-        symbol_record::context_id context = scope.current_context ();
-
-        if (! id->is_variable (context))
+        if (! is_variable (expr))
           {
             octave_value_list first_args;
 
@@ -1994,9 +2173,18 @@ namespace octave
                 first_args.stash_name_tags (anm);
               }
 
-            octave_function *fcn = nullptr;
+            symbol_record sym = id->symbol ();
 
-            octave_value val = id->do_lookup (context, first_args);
+            octave_value val = varval (sym);
+
+            if (val.is_undefined ())
+              {
+                symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+                val = symtab.find_function (sym.name (), first_args);
+              }
+
+            octave_function *fcn = nullptr;
 
             if (val.is_function ())
               fcn = val.function_value (true);
@@ -2780,19 +2968,9 @@ namespace octave
                     bool do_bind_ans = false;
 
                     if (expr->is_identifier ())
-                      {
-                        symbol_scope scope = get_current_scope ();
-
-                        symbol_record::context_id context
-                          = scope.current_context ();
-
-                        tree_identifier *id
-                          = dynamic_cast<tree_identifier *> (expr);
-
-                        do_bind_ans = (! id->is_variable (context));
-                      }
+                      do_bind_ans = ! is_variable (expr);
                     else
-                      do_bind_ans = (! expr->is_assignment_expression ());
+                      do_bind_ans = ! expr->is_assignment_expression ();
 
                     if (do_bind_ans)
                       bind_ans (tmp_result, expr->print_result ()
@@ -3247,9 +3425,7 @@ namespace octave
           }
         else
           {
-            symbol_scope scope = get_current_scope ();
-
-            scope.force_assign (ans, val);
+            assign (ans, val);
 
             if (print)
               {
@@ -3462,10 +3638,7 @@ namespace octave
 
     symbol_scope scope = get_current_scope ();
 
-    symbol_record::context_id ctxt = scope.current_context ();
-
-    if (expr->is_identifier ()
-        && dynamic_cast<const tree_identifier *> (expr)->is_variable (ctxt))
+    if (is_variable (expr))
       {
         std::string var = expr->name ();
 
@@ -3768,46 +3941,30 @@ namespace octave
     return quit;
   }
 
-  void tree_evaluator::bind_auto_fcn_vars (symbol_scope& scope,
-                                           const string_vector& arg_names,
+  void tree_evaluator::bind_auto_fcn_vars (const string_vector& arg_names,
                                            int nargin, int nargout,
                                            bool takes_varargs,
                                            const octave_value_list& va_args)
   {
-    scope.force_assign (".argn.", Cell (arg_names));
-    scope.mark_hidden (".argn.");
-    scope.mark_automatic (".argn.");
-
-    scope.force_assign (".ignored.", ignored_fcn_outputs ());
-    scope.mark_hidden (".ignored.");
-    scope.mark_automatic (".ignored.");
-
-    scope.force_assign (".nargin.", nargin);
-    scope.mark_hidden (".nargin.");
-    scope.mark_automatic (".nargin.");
-
-    scope.force_assign (".nargout.", nargout);
-    scope.mark_hidden (".nargout.");
-    scope.mark_automatic (".nargout.");
-
-    scope.force_assign (".saved_warning_states.", octave_value ());
-    scope.mark_hidden (".saved_warning_states.");
-    scope.mark_automatic (".saved_warning_states.");
-
-    if (! arg_names.empty ())
-      {
-        // It is better to save this in the hidden variable .argn. and
-        // then use that in the inputname function instead of using argn,
-        // which might be redefined in a function.  Keep the old argn name
-        // for backward compatibility of functions that use it directly.
-
-        charMatrix chm (arg_names, string_fill_char ());
-        scope.force_assign ("argn", chm);
-        scope.mark_automatic ("argn");
-      }
+    set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (arg_names));
+    set_auto_fcn_var (stack_frame::IGNORED, ignored_fcn_outputs ());
+    set_auto_fcn_var (stack_frame::NARGIN, nargin);
+    set_auto_fcn_var (stack_frame::NARGOUT, nargout);
+    set_auto_fcn_var (stack_frame::SAVED_WARNING_STATES, octave_value ());
 
     if (takes_varargs)
-      scope.assign ("varargin", va_args.cell_value ());
+      assign ("varargin", va_args.cell_value ());
+  }
+
+  void tree_evaluator::init_local_fcn_vars (octave_user_function& user_fcn)
+  {
+    stack_frame& frame = m_call_stack.get_current_stack_frame ();
+
+    const octave_user_function::local_vars_map& lviv
+      = user_fcn.local_var_init_vals ();
+
+    for (const auto& nm_ov : lviv)
+      frame.assign (nm_ov.first, nm_ov.second);
   }
 }
 
@@ -3864,8 +4021,7 @@ The following command sequences are available:
 
 @table @code
 @item %a
-Prints attributes of variables (g=global, p=persistent, f=formal parameter,
-a=automatic variable).
+Prints attributes of variables (g=global, p=persistent, f=formal parameter).
 
 @item %b
 Prints number of bytes occupied by variables.

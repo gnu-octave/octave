@@ -54,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pr-output.h"
 #include "pt-arg-list.h"
-#include "pt-anon-scopes.h"
 #include "pt-assign.h"
 #include "pt-cmd.h"
 #include "pt-eval.h"
@@ -357,31 +356,24 @@ octave_fcn_handle::save_ascii (std::ostream& os)
         return false;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope f_scope = f->scope ();
 
-      if (! f_scope)
-        error ("internal error, invalid scope");
+      octave_user_function::local_vars_map local_vars
+        = f->local_var_init_vals ();
 
-      octave::tree_anon_scopes tas (f);
+      size_t varlen = local_vars.size ();
 
       os << nm << "\n";
 
       print_raw (os, true);
       os << "\n";
 
-      size_t varlen = tas.symrec_map_size ();
-
       if (varlen > 0)
         {
-          octave::symbol_record::context_id context
-            = f_scope.current_context ();
-
           os << "# length: " << varlen << "\n";
 
-          for (const auto& name_symrec : tas)
+          for (const auto& nm_val : local_vars)
             {
-              if (! save_text_data (os, name_symrec.second.varval (context),
-                                    name_symrec.first, false, 0))
+              if (! save_text_data (os, nm_val.second, nm_val.first, false, 0))
                 return ! os.fail ();
             }
         }
@@ -483,17 +475,13 @@ octave_fcn_handle::load_ascii (std::istream& is)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::load_ascii");
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::load_ascii");
+
+      octave::call_stack& cs = interp.get_call_stack ();
 
       octave::symbol_scope local_scope (buf);
-
-      symtab.set_scope (local_scope);
-
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_fcn_handle::load_ascii");
-
-      cs.push (local_scope, 0);
+      cs.push (local_scope);
       frame.add_method (cs, &octave::call_stack::pop);
 
       octave_idx_type len = 0;
@@ -513,7 +501,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
                   if (! is)
                     error ("load: failed to load anonymous function handle");
 
-                  local_scope.assign (name, t2, 0);
+                  interp.assign (name, t2);
                 }
             }
         }
@@ -545,14 +533,11 @@ octave_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
         return false;
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope f_scope = f->scope ();
 
-      if (! f_scope)
-        error ("internal error, invalid scope");
+      octave_user_function::local_vars_map local_vars
+        = f->local_var_init_vals ();
 
-      octave::tree_anon_scopes tas (f);
-
-      size_t varlen = tas.symrec_map_size ();
+      size_t varlen = local_vars.size ();
 
       if (varlen > 0)
         nmbuf << nm << ' ' << varlen;
@@ -573,13 +558,10 @@ octave_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
 
       if (varlen > 0)
         {
-          octave::symbol_record::context_id context
-            = f_scope.current_context ();
-
-          for (const auto& name_symrec : tas)
+          for (const auto& nm_val : local_vars)
             {
-              if (! save_binary_data (os, name_symrec.second.varval (context),
-                                      name_symrec.first, "", 0, save_as_floats))
+              if (! save_binary_data (os, nm_val.second, nm_val.first,
+                                      "", 0, save_as_floats))
                 return ! os.fail ();
             }
         }
@@ -653,17 +635,13 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::load_binary");
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::load_binary");
+
+      octave::call_stack& cs = interp.get_call_stack ();
 
       octave::symbol_scope local_scope (ctmp2);
-
-      symtab.set_scope (local_scope);
-
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_fcn_handle::load_binary");
-
-      cs.push (local_scope, 0);
+      cs.push (local_scope);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0)
@@ -681,7 +659,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               if (! is)
                 error ("load: failed to load anonymous function handle");
 
-              local_scope.force_assign (name, t2);
+              interp.assign (name, t2);
             }
         }
 
@@ -805,14 +783,11 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       H5Dclose (data_hid);
 
       octave_user_function *f = fcn.user_function_value ();
-      octave::symbol_scope f_scope = f->scope ();
 
-      if (! f_scope)
-        error ("internal error, invalid scope");
+      octave_user_function::local_vars_map local_vars
+                     = f->local_var_init_vals ();
 
-      octave::tree_anon_scopes tas (f);
-
-      size_t varlen = tas.symrec_map_size ();
+      size_t varlen = local_vars.size ();
 
       if (varlen > 0)
         {
@@ -857,15 +832,10 @@ octave_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
               return false;
             }
 
-          octave::symbol_record::context_id context
-            = f_scope.current_context ();
-
-          for (const auto& name_symrec : tas)
+          for (const auto& nm_val : local_vars)
             {
-              if (! add_hdf5_data (data_hid,
-                                   name_symrec.second.varval (context),
-                                   name_symrec.first, "", false,
-                                   save_as_floats))
+              if (! add_hdf5_data (data_hid, nm_val.second, nm_val.first,
+                                   "", false, save_as_floats))
                 break;
             }
           H5Gclose (data_hid);
@@ -1161,17 +1131,13 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       // Set up temporary scope to use for evaluating the text that
       // defines the anonymous function.
 
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::load_hdf5");
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::load_hdf5");
+
+      octave::call_stack& cs = interp.get_call_stack ();
 
       octave::symbol_scope local_scope (fcn_tmp);
-
-      symtab.set_scope (local_scope);
-
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_fcn_handle::load_hdf5");
-
-      cs.push (local_scope, 0);
+      cs.push (local_scope);
       frame.add_method (cs, &octave::call_stack::pop);
 
       if (len > 0 && success)
@@ -1196,7 +1162,7 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
                                     &dsub) <= 0)
                 error ("load: failed to load anonymous function handle");
 
-              local_scope.force_assign (dsub.name, dsub.tc);
+              interp.assign (dsub.name, dsub.tc);
             }
         }
 
@@ -1781,27 +1747,13 @@ particular output format.
     {
       m.setfield ("file", nm);
 
-      std::list<octave::symbol_record> vars;
-
       octave_user_function *fu = fh->user_function_value ();
-      octave::symbol_scope fu_scope = fu->scope ();
-      octave::symbol_record::context_id context = 0;
-      if (fu_scope)
-        {
-          vars = fu_scope.all_variables ();
-          context = fu_scope.current_context ();
-        }
 
-      size_t varlen = vars.size ();
+      octave_scalar_map ws;
+      for (const auto& nm_val : fu->local_var_init_vals ())
+        ws.assign (nm_val.first, nm_val.second);
 
-      if (varlen > 0)
-        {
-          octave_scalar_map ws;
-          for (const auto& symrec : vars)
-            ws.assign (symrec.name (), symrec.varval (context));
-
-          m.setfield ("workspace", ws);
-        }
+      m.setfield ("workspace", ws);
     }
   else if (fcn->is_user_function () || fcn->is_user_script ())
     {
@@ -2017,11 +1969,6 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 
           if (arg_list && arg_list->length () > 0)
             {
-              octave::symbol_scope scope = tw.get_current_scope ();
-
-              octave::symbol_record::context_id context
-                = scope.current_context ();
-
               bool bad = false;
               int nargs = arg_list->length ();
               octave_value_list arg_template (nargs);
@@ -2047,7 +1994,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                         {
                           arg_mask[iarg] = arginmap[elt_id->name ()];
                         }
-                      else if (elt_id->is_defined (context))
+                      else if (tw.is_defined (elt_id))
                         {
                           arg_template(iarg) = tw.evaluate (elt_id);
                           arg_mask[iarg] = -1;
@@ -2070,7 +2017,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
               if (! bad)
                 {
                   // If the head is a value, use it as root.
-                  if (head_id->is_defined (context))
+                  if (tw.is_defined (head_id))
                     root_val = tw.evaluate (head_id);
                   else
                     {

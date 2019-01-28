@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "ovl.h"
+#include "call-stack.h"
 #include "symrec.h"
 
 namespace octave
@@ -36,13 +37,8 @@ namespace octave
   {
   public:
 
-    octave_lvalue (void)
-      : m_sym (), m_context (0), m_black_hole (false), m_type (),
-        m_idx (), m_nel (1)
-    { }
-
-    octave_lvalue (const symbol_record& sr, symbol_record::context_id context)
-      : m_sym (sr), m_context (context), m_black_hole (false),
+    octave_lvalue (const symbol_record& sr, stack_frame& frame)
+      : m_sym (sr), m_frame (frame), m_black_hole (false),
         m_type (), m_idx (), m_nel (1)
     { }
 
@@ -56,19 +52,14 @@ namespace octave
 
     void mark_black_hole (void) { m_black_hole = true; }
 
-    bool is_defined (void) const
-    {
-      return ! is_black_hole () && m_sym.is_defined (m_context);
-    }
+    bool is_defined (void) const;
 
-    bool is_undefined (void) const
-    {
-      return is_black_hole () || m_sym.is_undefined (m_context);
-    }
+    bool is_undefined (void) const;
 
     bool isstruct (void) const { return value().isstruct (); }
 
-    void define (const octave_value& v) { m_sym.assign (v, m_context); }
+    // OCTAVE_DEPRECATED (5, "foobar, for sure!")
+    void define (const octave_value& v);
 
     void assign (octave_value::assign_op, const octave_value&);
 
@@ -92,7 +83,7 @@ namespace octave
 
     symbol_record m_sym;
 
-    symbol_record::context_id m_context;
+    stack_frame& m_frame;
 
     bool m_black_hole;
 

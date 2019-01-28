@@ -2471,10 +2471,10 @@ namespace octave
 
   bool
   base_lexer::is_variable (const std::string& name,
-                           const symbol_scope& scope)
+                           const symbol_scope& /*scope*/)
   {
-    return ((scope && scope.is_variable (name))
-            || (m_pending_local_variables.find (name)
+    return (/* (scope && scope.is_variable (name))
+            || */ (m_pending_local_variables.find (name)
                 != m_pending_local_variables.end ()));
   }
 

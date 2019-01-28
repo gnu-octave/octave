@@ -31,16 +31,26 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  bool octave_lvalue::is_defined (void) const
+  {
+    return ! is_black_hole () && m_frame.is_defined (m_sym);
+  }
+
+  bool octave_lvalue::is_undefined (void) const
+  {
+    return ! is_defined ();
+  }
+
+  void octave_lvalue::define (const octave_value& v)
+  {
+    m_frame.assign (m_sym, v);
+  }
+
   void octave_lvalue::assign (octave_value::assign_op op,
                               const octave_value& rhs)
   {
     if (! is_black_hole ())
-      {
-        if (m_idx.empty ())
-          m_sym.assign (op, rhs, m_context);
-        else
-          m_sym.assign (op, m_type, m_idx, rhs, m_context);
-      }
+      m_frame.assign (op, m_sym, m_type, m_idx, rhs);
   }
 
   void octave_lvalue::set_index (const std::string& t,
@@ -70,37 +80,12 @@ namespace octave
   void octave_lvalue::do_unary_op (octave_value::unary_op op)
   {
     if (! is_black_hole ())
-      {
-        if (m_idx.empty ())
-          m_sym.do_non_const_unary_op (op, m_context);
-        else
-          m_sym.do_non_const_unary_op (op, m_type, m_idx, m_context);
-      }
+      m_frame.do_non_const_unary_op (op, m_sym, m_type, m_idx);
   }
 
   octave_value octave_lvalue::value (void) const
   {
-    octave_value retval;
-
-    if (! is_black_hole ())
-      {
-        octave_value val = m_sym.varval (m_context);
-
-        if (m_idx.empty ())
-          retval = val;
-        else
-          {
-            if (val.is_constant ())
-              retval = val.subsref (m_type, m_idx);
-            else
-              {
-                octave_value_list t = val.subsref (m_type, m_idx, 1);
-                if (t.length () > 0)
-                  retval = t(0);
-              }
-          }
-      }
-
-    return retval;
+    return (is_black_hole ()
+            ? octave_value () : m_frame.value (m_sym, m_type, m_idx));
   }
 }

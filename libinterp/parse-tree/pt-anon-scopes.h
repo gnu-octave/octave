@@ -24,8 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_pt_anon_scopes_h)
 #define octave_pt_anon_scopes_h 1
 
+#include <set>
+#include <string>
+
 #include "pt-walk.h"
-#include "ov-usr-fcn.h"
 
 namespace octave
 {
@@ -37,33 +39,9 @@ namespace octave
   {
   public:
 
-    tree_anon_scopes (void) : scopes (), merged_tables () { }
+    tree_anon_scopes (void) = delete;
 
-    tree_anon_scopes (octave_user_function *);
-
-    tree_anon_scopes& operator = (tree_anon_scopes&& tas)
-    {
-      scopes = std::move (tas.scopes);
-      merged_tables = std::move (tas.merged_tables);
-      return *this;
-    }
-
-    typedef std::map<std::string, symbol_record> symrec_map;
-
-    symrec_map::const_iterator begin (void)
-    {
-      return merged_tables.cbegin ();
-    }
-
-    symrec_map::const_iterator end (void)
-    {
-      return merged_tables.cend ();
-    }
-
-    unsigned int symrec_map_size (void)
-    {
-      return merged_tables.size ();
-    }
+    tree_anon_scopes (tree_anon_fcn_handle& anon_fh);
 
     // No copying!
 
@@ -71,7 +49,11 @@ namespace octave
 
     tree_anon_scopes& operator = (const tree_anon_scopes&) = delete;
 
-    ~tree_anon_scopes (void) { }
+    ~tree_anon_scopes (void) = default;
+
+    std::set<std::string> fcn_parameters (void) const { return m_params; }
+
+    std::set<std::string> free_variables (void) const { return m_vars; }
 
     // The following methods, though public, don't belong to the
     // intended user interface of this class.
@@ -160,27 +142,11 @@ namespace octave
 
   private:
 
-    void stash_scope_if_valid (const symbol_scope& sc)
-    {
-      if (sc)
-        scopes.push_back (sc);
-      else
-        error ("internal error, invalid scope");
-    }
+    // Variable names that are function parameters.
+    std::set<std::string> m_params;
 
-    // The scope of this anonymous function and the collected scopes
-    // of all anonymous functions whose definitions are nested in the
-    // current anonymous function definition.
-
-    std::vector<symbol_scope> scopes;
-
-    // Symbol records of all collected scopes are merged over variable names.
-
-    typedef std::list<symbol_record> symrec_list;
-
-    void merge_tables (void);
-
-    symrec_map merged_tables;
+    // Other variable names.
+    std::set<std::string> m_vars;
   };
 }
 

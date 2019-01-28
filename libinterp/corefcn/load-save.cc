@@ -66,7 +66,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "pager.h"
 #include "syminfo.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -685,17 +684,10 @@ namespace octave
 
         std::string struct_name = argv[argv_idx];
 
-        symbol_scope scope = m_interpreter.get_current_scope ();
+        if (! m_interpreter.is_variable (struct_name))
+          error ("save: no such variable: '%s'", struct_name.c_str ());
 
-        octave_value struct_var;
-
-        if (scope)
-          {
-            if (! scope.is_variable (struct_name))
-              error ("save: no such variable: '%s'", struct_name.c_str ());
-
-            struct_var = scope.varval (struct_name);
-          }
+        octave_value struct_var = m_interpreter.varval (struct_name);
 
         if (! struct_var.isstruct () || struct_var.numel () != 1)
           error ("save: '%s' is not a scalar structure", struct_name.c_str ());
@@ -1070,24 +1062,7 @@ namespace octave
                                                   bool global,
                                                   const std::string& /*doc*/)
   {
-    symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-    symbol_scope scope = symtab.require_current_scope ("load_save_system::install_loaded_variable");
-
-    if (global)
-      {
-        symbol_record sym = scope.find_symbol (name);
-
-        if (! sym.is_global ())
-          {
-            symbol_scope global_scope = symtab.global_scope ();
-            symbol_record global_sym = global_scope.find_symbol (name);
-
-            sym.bind_fwd_rep (global_scope.get_rep (), global_sym);
-          }
-      }
-
-    scope.assign (name, val);
+    m_interpreter.install_variable (name, val, global);
   }
 
   std::string load_save_system::init_save_header_format (void)

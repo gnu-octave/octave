@@ -129,7 +129,7 @@ namespace octave
       : m_interpreter (interp), m_statement_context (SC_OTHER),
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
         m_expr_result_value_list (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_bp_table (*this), m_call_stack (interp),
+        m_nargout_stack (), m_bp_table (*this), m_call_stack (*this),
         m_profiler (), m_current_frame (0), m_debug_mode (false),
         m_quiet_breakpoint_flag (false), m_max_recursion_depth (256),
         m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
@@ -138,8 +138,9 @@ namespace octave
         m_echo_state (false), m_echo_file_name (), m_echo_file_pos (1),
         m_echo_files (), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
-        m_indexed_object (nullptr), m_index_position (0), m_num_indices (0)
-    { }
+        m_indexed_object (nullptr), m_index_position (0),
+        m_num_indices (0)
+      { }
 
     // No copying!
 
@@ -148,6 +149,8 @@ namespace octave
     tree_evaluator& operator = (const tree_evaluator&) = delete;
 
     ~tree_evaluator (void) = default;
+
+    bool at_top_level (void) const;
 
     void reset (void);
 
@@ -366,6 +369,45 @@ namespace octave
 
     octave_value evaluate (tree_decl_elt *);
 
+    void install_variable (const std::string& name,
+                           const octave_value& value, bool global);
+
+    octave_value global_varval (const std::string& name) const;
+
+    void global_assign (const std::string& name,
+                        const octave_value& val = octave_value ());
+
+    octave_value top_level_varval (const std::string& name) const;
+
+    void top_level_assign (const std::string& name,
+                           const octave_value& val = octave_value ());
+
+    bool is_variable (const std::string& name) const;
+
+    bool is_local_variable (const std::string& name) const;
+
+    bool is_variable (const tree_expression *expr) const;
+
+    bool is_defined (const tree_expression *expr) const;
+
+    bool is_variable (const symbol_record& sym) const;
+
+    bool is_defined (const symbol_record& sym) const;
+
+    bool is_global (const std::string& name) const;
+
+    octave_value varval (const symbol_record& sym) const;
+
+    octave_value varval (const std::string& name) const;
+
+    void assign (const std::string& name,
+                 const octave_value& val = octave_value ());
+
+    void set_auto_fcn_var (stack_frame::auto_var_type avt,
+                           const octave_value& val = octave_value ());
+
+    octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
+
     void define_parameter_list_from_arg_vector
       (tree_parameter_list *param_list, const octave_value_list& args);
 
@@ -390,9 +432,52 @@ namespace octave
 
     call_stack& get_call_stack (void) { return m_call_stack; }
 
+    const stack_frame& get_current_stack_frame (void) const
+    {
+      return m_call_stack.get_current_stack_frame ();
+    }
+
+    stack_frame& get_current_stack_frame (void)
+    {
+      return m_call_stack.get_current_stack_frame ();
+    }
+
     profiler& get_profiler (void) { return m_profiler; }
 
-    symbol_scope get_current_scope (void);
+    symbol_scope get_top_scope (void) const;
+    symbol_scope get_current_scope (void) const;
+
+    octave_value find (const std::string& name);
+
+    void clear_objects (void);
+
+    void clear_variable (const std::string& name);
+
+    void clear_variable_pattern (const std::string& pattern);
+
+    void clear_variable_regexp (const std::string& pattern);
+
+    void clear_variables (void);
+
+    void clear_global_variable (const std::string& name);
+
+    void clear_global_variable_pattern (const std::string& pattern);
+
+    void clear_global_variable_regexp (const std::string& pattern);
+
+    void clear_global_variables (void);
+
+    void clear_all (bool force = false);
+
+    void clear_symbol (const std::string& name);
+
+    void clear_symbol_pattern (const std::string& pattern);
+
+    void clear_symbol_regexp (const std::string& pattern);
+
+    std::list<std::string> global_variable_names (void) const;
+
+    std::list<std::string> variable_names (void) const;
 
     octave_user_code * get_user_code (const std::string& fname = "");
 
@@ -570,10 +655,11 @@ namespace octave
 
     bool quit_loop_now (void);
 
-    void bind_auto_fcn_vars (symbol_scope& scope,
-                             const string_vector& arg_names, int nargin,
+    void bind_auto_fcn_vars (const string_vector& arg_names, int nargin,
                              int nargout, bool takes_varargs,
                              const octave_value_list& va_args);
+
+    void init_local_fcn_vars (octave_user_function& user_fcn);
 
     interpreter& m_interpreter;
 

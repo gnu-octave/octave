@@ -502,8 +502,9 @@ word_list       : string
 
 identifier      : NAME
                   {
-                    octave::symbol_record sr = $1->sym_rec ();
-                    $$ = new octave::tree_identifier (sr, $1->line (), $1->column ());
+                    $$ = new octave::tree_identifier ($1->sym_rec (),
+                                                      $1->line (),
+                                                      $1->column ());
                   }
                 ;
 
@@ -3467,7 +3468,6 @@ namespace octave
 
         symbol_scope fcn_scope = fcn->scope ();
         fcn_scope.cache_name (tmp);
-        fcn_scope.install_auto_fcn_vars ();
 
         if (lc)
           fcn->stash_leading_comment (lc);
@@ -4978,14 +4978,15 @@ namespace octave
       {
         call_stack& cs = __get_call_stack__ ("source_file");
 
+        frame.add_method (cs, &octave::call_stack::restore_frame,
+                          cs.current_frame ());
+
         if (context == "caller")
           cs.goto_caller_frame ();
         else if (context == "base")
           cs.goto_base_frame ();
         else
           error ("source: context must be \"caller\" or \"base\"");
-
-        frame.add_method (cs, &call_stack::pop);
       }
 
     // Find symbol name that would be in symbol_table, if it were loaded.
@@ -5001,8 +5002,8 @@ namespace octave
     std::string full_name = sys::canonicalize_file_name (file_name);
 
     // Check if this file is already loaded (or in the path)
-    symbol_scope curr_scope = __get_current_scope__ ("source_file");
-    octave_value ov_code = curr_scope.find (symbol);
+    symbol_table& symtab = __get_symbol_table__ ("source_file");
+    octave_value ov_code = symtab.fcn_table_find (symbol);
 
     // For compatibility with Matlab, accept both scripts and
     // functions.
@@ -5556,14 +5557,15 @@ may be either @qcode{"base"} or @qcode{"caller"}.
 
   octave::call_stack& cs = interp.get_call_stack ();
 
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
+
   if (context == "caller")
     cs.goto_caller_frame ();
   else if (context == "base")
     cs.goto_base_frame ();
   else
     error ("assignin: CONTEXT must be \"caller\" or \"base\"");
-
-  frame.add_method (cs, &octave::call_stack::pop);
 
   std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
 
@@ -5576,10 +5578,7 @@ may be either @qcode{"base"} or @qcode{"caller"}.
       if (octave::iskeyword (nm))
         error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
 
-      octave::symbol_scope scope = interp.get_current_scope ();
-
-      if (scope)
-        scope.assign (nm, args(2));
+      interp.assign (nm, args(2));
     }
   else
     error ("assignin: invalid variable name in argument VARNAME");
@@ -5615,14 +5614,15 @@ Like @code{eval}, except that the expressions are evaluated in the context
 
   octave::call_stack& cs = interp.get_call_stack ();
 
+  frame.add_method (cs, &octave::call_stack::restore_frame,
+                    cs.current_frame ());
+
   if (context == "caller")
     cs.goto_caller_frame ();
   else if (context == "base")
     cs.goto_base_frame ();
   else
     error ("evalin: CONTEXT must be \"caller\" or \"base\"");
-
-  frame.add_method (cs, &octave::call_stack::pop);
 
   if (nargin > 2)
     {

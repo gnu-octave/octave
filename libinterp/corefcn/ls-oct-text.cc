@@ -251,8 +251,7 @@ read_text_data (std::istream& is, const std::string& filename, bool& global,
       return "";
     }
 
-  if (! (name == ".nargin." || name == ".nargout."
-         || name == CELL_ELT_TAG || octave::valid_identifier (name)))
+  if (! (name == CELL_ELT_TAG || octave::valid_identifier (name)))
     error ("load: invalid identifier '%s' found in file '%s'",
            name.c_str (), filename.c_str ());
 

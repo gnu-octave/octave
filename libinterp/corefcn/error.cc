@@ -221,11 +221,7 @@ verror (bool save_last_error, std::ostream& os,
       octave_user_code *fcn = cs.caller_user_code ();
 
       if (fcn)
-        {
-          octave_idx_type curr_frame = -1;
-
-          Vlast_error_stack = cs.backtrace (0, curr_frame);
-        }
+        Vlast_error_stack = cs.backtrace ();
       else
         Vlast_error_stack = initialize_last_error_stack ();
     }
@@ -315,21 +311,20 @@ pr_where (std::ostream& os, const char *who)
 {
   octave::call_stack& cs = octave::__get_call_stack__ ("pr_where");
 
-  std::list<octave::call_stack::stack_frame> call_stack_frames
-    = cs.backtrace_frames ();
+  std::list<octave::stack_frame *> call_stack_frames = cs.backtrace_frames ();
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
   call_stack_frames.unique ();
 
   std::list<error_stack_frame> frames;
-  for (const auto& frm : call_stack_frames)
+  for (const auto *frm : call_stack_frames)
     {
       error_stack_frame frame;
 
-      frame.name = frm.fcn_name ();
-      frame.line = frm.line ();
-      frame.column = frm.column ();
+      frame.name = frm->fcn_name ();
+      frame.line = frm->line ();
+      frame.column = frm->column ();
 
       frames.push_back (frame);
     }
@@ -1559,22 +1554,18 @@ expansion use a second backslash before the sequence (e.g.,
           else
             old_warning_options = octave_map (warning_query (arg2));
 
-          octave::symbol_table& symtab = interp.get_symbol_table ();
-
-          if (nargin == 3 && argv[3] == "local"
-              && ! symtab.at_top_level ())
+          if (nargin == 3 && argv[3] == "local" && ! interp.at_top_level ())
             {
-              octave::symbol_scope scope
-                = symtab.require_current_scope ("warning");
-
               octave_scalar_map val = warning_query (arg2);
 
               octave_value curr_state = val.contents ("state");
 
               // FIXME: this might be better with a dictionary object.
 
+              octave::tree_evaluator& tw = interp.get_evaluator ();
+
               octave_value curr_warning_states
-                = scope.varval (".saved_warning_states.");
+                = tw.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
 
               octave_map m;
 
@@ -1622,7 +1613,7 @@ expansion use a second backslash before the sequence (e.g.,
               m.contents ("identifier") = ids;
               m.contents ("state") = states;
 
-              scope.force_assign (".saved_warning_states.", m);
+              tw.set_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES, m);
 
               // Now ignore the "local" argument and continue to
               // handle the current setting.
@@ -2032,12 +2023,9 @@ fields are set to their default values.
             }
           else
             {
-              // No stack field.  Fill it in with backtrace info.
-              octave_idx_type curr_frame = -1;
-
               octave::call_stack& cs = interp.get_call_stack ();
 
-              Vlast_error_stack = cs.backtrace (0, curr_frame);
+              Vlast_error_stack = cs.backtrace ();
             }
         }
       else

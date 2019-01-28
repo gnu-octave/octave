@@ -93,6 +93,8 @@ public:
   virtual octave::sys::time time_checked (void) const
   { return octave::sys::time (static_cast<time_t> (0)); }
 
+  virtual int call_depth (void) const { return 0; }
+
   virtual bool is_subfunction (void) const { return false; }
 
   virtual bool is_class_constructor (const std::string& = "") const

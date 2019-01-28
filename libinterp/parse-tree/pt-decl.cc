@@ -41,6 +41,13 @@ namespace octave
 {
   // Declarations (global, static, etc.).
 
+  tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
+    : type (unknown), m_id (i), m_expr (e)
+  {
+    if (! m_id)
+      error ("tree_decl_elt: invalid ID");
+  }
+
   tree_decl_elt::~tree_decl_elt (void)
   {
     delete m_id;
@@ -50,7 +57,7 @@ namespace octave
   tree_decl_elt *
   tree_decl_elt::dup (symbol_scope& scope) const
   {
-    return new tree_decl_elt (m_id ? m_id->dup (scope) : nullptr,
+    return new tree_decl_elt (m_id->dup (scope),
                               m_expr ? m_expr->dup (scope) : nullptr);
   }
 

@@ -384,6 +384,7 @@ namespace octave
         // they were defined within class methods and use local functions
         // (helper functions) we can still use those anonymous functions
 
+#if 0
         if (current_fcn->is_anonymous_function ())
           {
             if (fcn_file.empty ()
@@ -392,7 +393,7 @@ namespace octave
               fcn_file
                 = curr_scope.parent_scope ()->function ()->fcn_file_name();
           }
-
+#endif
         if (! fcn_file.empty ())
           {
             auto r = local_functions.find (fcn_file);

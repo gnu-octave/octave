@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <map>
 #include <string>
 
 #include "child-list.h"
@@ -194,24 +195,25 @@ namespace octave
       return m_load_save_system;
     }
 
-    symbol_table& get_symbol_table (void)
-    {
-      return m_symbol_table;
-    }
-
     type_info& get_type_info (void)
     {
       return m_type_info;
     }
 
-    symbol_scope get_current_scope (void);
-    symbol_scope require_current_scope (const std::string& who);
+    symbol_table& get_symbol_table (void)
+    {
+      return m_symbol_table;
+    }
+
+    tree_evaluator& get_evaluator (void);
 
     call_stack& get_call_stack (void);
 
-    profiler& get_profiler (void);
+    symbol_scope get_top_scope (void) const;
+    symbol_scope get_current_scope (void) const;
+    symbol_scope require_current_scope (const std::string& who) const;
 
-    tree_evaluator& get_evaluator (void);
+    profiler& get_profiler (void);
 
     stream_list& get_stream_list (void);
 
@@ -246,6 +248,76 @@ namespace octave
 
     octave_value_list eval_string (const octave_value& arg, bool silent,
                                    int& parse_status, int nargout);
+
+    void install_variable (const std::string& name, const octave_value& value,
+                           bool global);
+
+    void set_global_value (const std::string& name, const octave_value& value);
+
+    octave_value global_varval (const std::string& name) const;
+
+    void global_assign (const std::string& name,
+                        const octave_value& val = octave_value ());
+
+    octave_value top_level_varval (const std::string& name) const;
+
+    void top_level_assign (const std::string& name,
+                           const octave_value& val = octave_value ());
+
+    bool is_variable (const std::string& name) const;
+
+    bool is_local_variable (const std::string& name) const;
+
+    octave_value varval (const std::string& name) const;
+
+    void assign (const std::string& name,
+                 const octave_value& val = octave_value ());
+
+    bool at_top_level (void) const;
+
+    bool isglobal (const std::string& name) const;
+
+    octave_value find (const std::string& name);
+
+    void clear_all (bool force = false);
+
+    void clear_objects (void);
+
+    void clear_variable (const std::string& name);
+
+    void clear_variable_pattern (const std::string& pattern);
+
+    void clear_variable_regexp (const std::string& pattern);
+
+    void clear_variables (void);
+
+    void clear_global_variable (const std::string& name);
+
+    void clear_global_variable_pattern (const std::string& pattern);
+
+    void clear_global_variable_regexp (const std::string& pattern);
+
+    void clear_global_variables (void);
+
+    void clear_functions (bool force = false);
+
+    void clear_function (const std::string& name);
+
+    void clear_symbol (const std::string& name);
+
+    void clear_function_pattern (const std::string& pat);
+
+    void clear_function_regexp (const std::string& pat);
+
+    void clear_symbol_pattern (const std::string& pat);
+
+    void clear_symbol_regexp (const std::string& pat);
+
+    std::list<std::string> global_variable_names (void);
+
+    std::list<std::string> variable_names (void);
+
+    std::list<std::string> user_function_names (void);
 
     static void recover_from_exception (void);
 

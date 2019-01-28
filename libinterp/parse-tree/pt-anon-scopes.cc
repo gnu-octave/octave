@@ -33,46 +33,38 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  tree_anon_scopes::tree_anon_scopes (octave_user_function *f)
-    : scopes (), merged_tables ()
+  tree_anon_scopes::tree_anon_scopes (tree_anon_fcn_handle& anon_fh)
+    : m_params (), m_vars ()
   {
-    if (f)
-      {
-        if (! f->is_anonymous_function ())
-          panic_impossible ();
-
-        // Collect the scope of the outer anonymous function.
-
-        stash_scope_if_valid (f->scope ());
-
-        // Further walk the tree to find nested definitions of further
-        // anonymous functions.
-
-        tree_statement_list *cmd_list = f->body ();
-
-        if (cmd_list)
-          cmd_list->accept (*this);
-
-        // Collect symbol records of all collected scopes.
-
-        merge_tables ();
-      }
+    visit_anon_fcn_handle (anon_fh);
   }
 
   void
   tree_anon_scopes::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
   {
-    // Collect the scope of this anonymous function.
+    tree_parameter_list *param_list = afh.parameter_list ();
+    tree_expression *expr = afh.expression ();
 
-    stash_scope_if_valid (afh.scope ());
+    // Collect names of parameters.
 
-    // Further walk the tree to find nested definitions of further
-    // anonymous functions.
+    if (param_list)
+      {
+        std::list<std::string> pnames = param_list->variable_names ();
 
-    tree_expression *e = afh.expression ();
+        for (const auto& nm : pnames)
+          m_params.insert (nm);
 
-    if (e)
-      e->accept (*this);
+        // Hmm, should this be included in the list returned from
+        // tree_parameter_list::variable_names?
+        if (param_list->takes_varargs ())
+          m_params.insert ("varargin");
+      }
+
+    // Further walk the tree to find free variables in this expression
+    // and any nested definitions of additional anonymous functions.
+
+    if (expr)
+      expr->accept (*this);
   }
 
   // The rest of visit_... methods is only for walking the tree. Many of
@@ -191,8 +183,12 @@ namespace octave
   }
 
   void
-  tree_anon_scopes::visit_identifier (tree_identifier& /* id */)
+  tree_anon_scopes::visit_identifier (tree_identifier& id)
   {
+    std::string nm = id.name ();
+
+    if (m_params.find (nm) == m_params.end ())
+      m_vars.insert (nm);
   }
 
   void
@@ -416,18 +412,6 @@ namespace octave
   tree_anon_scopes::visit_do_until_command (tree_do_until_command&)
   {
     panic_impossible ();
-  }
-
-  void
-  tree_anon_scopes::merge_tables (void)
-  {
-    for (const auto& sc : scopes)
-      {
-        symrec_list vars = sc.all_variables ();
-
-        for (const auto& symrec : vars)
-          merged_tables[symrec.name ()] = symrec;
-      }
   }
 }
 

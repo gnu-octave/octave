@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include <sstream>
 
 #include "file-ops.h"
@@ -33,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 #include "bp-table.h"
+#include "call-stack.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "fcn-info.h"
@@ -57,9 +60,566 @@ static int Vignore_function_time_stamp = 1;
 
 namespace octave
 {
-  static void
-  split_name_with_package (const std::string& name, std::string& fname,
-                           std::string& pname)
+  symbol_table::symbol_table (interpreter& interp)
+    : m_interpreter (interp), m_fcn_table (), m_class_precedence_table (),
+      m_parent_map ()
+  {
+    install_builtins ();
+  }
+
+  symbol_scope symbol_table::current_scope (void) const
+  {
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    return tw.get_current_scope ();
+  }
+
+  bool symbol_table::is_built_in_function_name (const std::string& name)
+  {
+    octave_value val = find_built_in_function (name);
+
+    return val.is_defined ();
+  }
+
+  // FIXME: this function only finds legacy class methods, not
+  // classdef methods.
+
+  octave_value symbol_table::find_method (const std::string& name,
+                                          const std::string& dispatch_type)
+  {
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find_method (dispatch_type);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find_method (dispatch_type);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+  }
+
+  octave_value symbol_table::find_built_in_function (const std::string& name)
+  {
+    fcn_table_const_iterator p = m_fcn_table.find (name);
+
+    return (p != m_fcn_table.end ()
+            ? p->second.find_built_in_function () : octave_value ());
+  }
+
+  octave_value symbol_table::find_autoload (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    return (p != m_fcn_table.end ()
+            ? p->second.find_autoload () : octave_value ());
+  }
+
+  octave_value symbol_table::builtin_find (const std::string& name)
+  {
+    fcn_table_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.builtin_find ();
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.builtin_find ();
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+
+    return octave_value ();
+  }
+
+  octave_value symbol_table::fcn_table_find (const std::string& name,
+                                             const octave_value_list& args)
+  {
+    fcn_table_iterator p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      return p->second.find (args);
+    else
+      {
+        fcn_info finfo (name);
+
+        octave_value fcn = finfo.find (args);
+
+        if (fcn.is_defined ())
+          m_fcn_table[name] = finfo;
+
+        return fcn;
+      }
+
+    return octave_value ();
+  }
+
+  octave_value symbol_table::find_function (const std::string& name)
+  {
+    if (name.empty ())
+      return octave_value ();
+
+    if (name[0] == '@')
+      {
+        size_t pos = name.find_first_of ('/');
+
+        if (pos == std::string::npos)
+          return octave_value ();
+
+        std::string method = name.substr (pos+1);
+        std::string dispatch_type = name.substr (1, pos-1);
+
+        return find_method (method, dispatch_type);
+      }
+    else
+      return find_function (name, ovl ());
+  }
+
+  octave_value symbol_table::find_function (const std::string& name,
+                                            const octave_value_list& args)
+  {
+    octave_value fcn;
+
+    symbol_scope curr_scope = current_scope ();
+
+    if (curr_scope)
+      {
+        fcn = curr_scope.find_subfunction (name);
+
+        if (fcn.is_defined ())
+          return fcn;
+      }
+
+    return fcn_table_find (name, args);
+  }
+
+  octave_value symbol_table::find_user_function (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    return (p != m_fcn_table.end ()
+            ? p->second.find_user_function () : octave_value ());
+  }
+
+  octave_value symbol_table::find_cmdline_function (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    return (p != m_fcn_table.end ()
+            ? p->second.find_cmdline_function () : octave_value ());
+  }
+
+  void symbol_table::install_cmdline_function (const std::string& name,
+                                               const octave_value& fcn)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_cmdline_function (fcn);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_cmdline_function (fcn);
+
+        m_fcn_table[name] = finfo;
+      }
+  }
+
+  // Install local function FCN named NAME.  FILE_NAME is the name of
+  // the file containing the local function.
+
+  void symbol_table::install_local_function (const std::string& name,
+                                             const octave_value& fcn,
+                                             const std::string& file_name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_local_function (fcn, file_name);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_local_function (fcn, file_name);
+
+        m_fcn_table[name] = finfo;
+      }
+  }
+
+  void symbol_table::install_user_function (const std::string& name,
+                                            const octave_value& fcn)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_user_function (fcn);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_user_function (fcn);
+
+        m_fcn_table[name] = finfo;
+      }
+  }
+
+  // FIXME: should we ensure that FCN really is a built-in function
+  // object?
+  void symbol_table::install_built_in_function (const std::string& name,
+                                                const octave_value& fcn)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_built_in_function (fcn);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_built_in_function (fcn);
+
+        m_fcn_table[name] = finfo;
+      }
+  }
+
+  // This is written as two separate functions instead of a single
+  // function with default values so that it will work properly with
+  // unwind_protect.
+
+  void symbol_table::clear_functions (bool force)
+  {
+    auto p = m_fcn_table.begin ();
+
+    while (p != m_fcn_table.end ())
+      (p++)->second.clear (force);
+  }
+
+  void symbol_table::clear_function (const std::string& name)
+  {
+    clear_user_function (name);
+  }
+
+  void symbol_table::clear_function_pattern (const std::string& pat)
+  {
+    glob_match pattern (pat);
+
+    auto p = m_fcn_table.begin ();
+
+    while (p != m_fcn_table.end ())
+      {
+        if (pattern.match (p->first))
+          (p++)->second.clear_user_function ();
+        else
+          p++;
+      }
+  }
+
+  void symbol_table::clear_function_regexp (const std::string& pat)
+  {
+    regexp pattern (pat);
+
+    auto p = m_fcn_table.begin ();
+
+    while (p != m_fcn_table.end ())
+      {
+        if (pattern.is_match (p->first))
+          (p++)->second.clear_user_function ();
+        else
+          p++;
+      }
+  }
+
+  void symbol_table::clear_user_function (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.clear_user_function ();
+      }
+    // FIXME: is this necessary, or even useful?
+    // else
+    //   error ("clear: no such function '%s'", name.c_str ());
+  }
+
+  // This clears oct and mex files, including autoloads.
+  void symbol_table::clear_dld_function (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.clear_autoload_function ();
+        finfo.clear_user_function ();
+      }
+  }
+
+  void symbol_table::clear_mex_functions (void)
+  {
+    auto p = m_fcn_table.begin ();
+
+    while (p != m_fcn_table.end ())
+      (p++)->second.clear_mex_function ();
+  }
+
+  // Insert INF_CLASS in the set of class names that are considered
+  // inferior to SUP_CLASS.  Return FALSE if INF_CLASS is currently
+  // marked as superior to SUP_CLASS.
+
+  bool symbol_table::set_class_relationship (const std::string& sup_class,
+                                             const std::string& inf_class)
+  {
+    if (is_superiorto (inf_class, sup_class))
+      return false;
+
+    // If sup_class doesn't have an entry in the precedence table,
+    // this will automatically create it, and associate to it a
+    // singleton set {inf_class} of inferior classes.
+    m_class_precedence_table[sup_class].insert (inf_class);
+
+    return true;
+  }
+
+  // Has class A been marked as superior to class B?  Also returns
+  // TRUE if B has been marked as inferior to A, since we only keep
+  // one table, and convert inferiorto information to a superiorto
+  // relationship.  Two calls are required to determine whether there
+  // is no relationship between two classes:
+  //
+  //  if (symbol_table::is_superiorto (a, b))
+  //    // A is superior to B, or B has been marked inferior to A.
+  //  else if (symbol_table::is_superiorto (b, a))
+  //    // B is superior to A, or A has been marked inferior to B.
+  //  else
+  //    // No relation.
+
+  bool symbol_table::is_superiorto (const std::string& a, const std::string& b)
+  {
+    class_precedence_table_const_iterator p = m_class_precedence_table.find (a);
+    // If a has no entry in the precedence table, return false
+    if (p == m_class_precedence_table.end ())
+      return false;
+
+    const std::set<std::string>& inferior_classes = p->second;
+    std::set<std::string>::const_iterator q = inferior_classes.find (b);
+    return (q != inferior_classes.end ());
+  }
+
+  void symbol_table::alias_built_in_function (const std::string& alias,
+                                              const std::string& name)
+  {
+    octave_value fcn = find_built_in_function (name);
+
+    if (fcn.is_defined ())
+      {
+        fcn_info finfo (alias);
+
+        finfo.install_built_in_function (fcn);
+
+        m_fcn_table[alias] = finfo;
+      }
+    else
+      panic ("alias: '%s' is undefined", name.c_str ());
+  }
+
+  void symbol_table::install_built_in_dispatch (const std::string& name,
+                                                const std::string& klass)
+  {
+    auto p = m_fcn_table.find (name);
+
+    if (p != m_fcn_table.end ())
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_built_in_dispatch (klass);
+      }
+    else
+      error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
+  }
+
+  std::list<std::string> symbol_table::user_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (const auto& nm_finfo : m_fcn_table)
+      {
+        if (nm_finfo.second.is_user_function_defined ())
+          retval.push_back (nm_finfo.first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  std::list<std::string> symbol_table::built_in_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (const auto& nm_finfo : m_fcn_table)
+      {
+        octave_value fcn = nm_finfo.second.find_built_in_function ();
+
+        if (fcn.is_defined ())
+          retval.push_back (nm_finfo.first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  std::list<std::string> symbol_table::cmdline_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (const auto& nm_finfo : m_fcn_table)
+      {
+        octave_value fcn = nm_finfo.second.find_cmdline_function ();
+
+        if (fcn.is_defined ())
+          retval.push_back (nm_finfo.first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  template <template <typename, typename...> class C, typename V,
+            typename... A>
+  static octave_value
+  dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
+  {
+    if (container_map.empty ())
+      return octave_value (Matrix ());
+
+    std::map<std::string, octave_value> info_map;
+
+    for (const auto& nm_container : container_map)
+      {
+        std::string nm = nm_container.first;
+        const C<V, A...>& container = nm_container.second;
+        info_map[nm] = Cell (container);
+      }
+
+    return octave_value (info_map);
+  }
+
+  octave_value symbol_table::dump (void) const
+  {
+    std::map<std::string, octave_value> m
+      = {{ "function_info", dump_fcn_table_map () },
+         { "precedence_table", dump_container_map (m_class_precedence_table) },
+         { "parent_classes", dump_container_map (m_parent_map) }};
+
+    return octave_value (m);
+  }
+
+  void symbol_table::add_to_parent_map (const std::string& classname,
+                          const std::list<std::string>& parent_list)
+  {
+    m_parent_map[classname] = parent_list;
+  }
+
+  std::list<std::string> symbol_table::parent_classes (const std::string& dispatch_type)
+  {
+    std::list<std::string> retval;
+
+    const_parent_map_iterator it = m_parent_map.find (dispatch_type);
+
+    if (it != m_parent_map.end ())
+      retval = it->second;
+
+    for (const auto& nm : retval)
+      {
+        // Search for parents of parents and append them to the list.
+
+        // FIXME: should we worry about a circular inheritance graph?
+
+        std::list<std::string> parents = parent_classes (nm);
+
+        if (! parents.empty ())
+          retval.insert (retval.end (), parents.begin (), parents.end ());
+      }
+
+    return retval;
+  }
+
+  octave_user_function * symbol_table::get_curr_fcn (void)
+  {
+    symbol_scope curr_scope = current_scope ();
+
+    return curr_scope ? curr_scope.function () : nullptr;
+  }
+
+  void symbol_table::cleanup (void)
+  {
+    clear_functions ();
+
+    m_fcn_table.clear ();
+    m_class_precedence_table.clear ();
+    m_parent_map.clear ();
+  }
+
+  fcn_info * symbol_table::get_fcn_info (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+    return p != m_fcn_table.end () ? &p->second : nullptr;
+  }
+
+  octave_value symbol_table::dump_fcn_table_map (void) const
+  {
+    if (m_fcn_table.empty ())
+      return octave_value (Matrix ());
+
+    std::map<std::string, octave_value> info_map;
+
+    for (const auto& nm_finfo : m_fcn_table)
+      {
+        std::string nm = nm_finfo.first;
+        const fcn_info& finfo = nm_finfo.second;
+        info_map[nm] = finfo.dump ();
+      }
+
+    return octave_value (info_map);
+  }
+
+  static void split_name_with_package (const std::string& name,
+                                       std::string& fname, std::string& pname)
   {
     size_t pos = name.rfind ('.');
 
@@ -98,7 +658,7 @@ namespace octave
 
     octave_value ov_fcn
       = load_fcn_from_file (ff, dir_name, dispatch_type,
-                                    package_name);
+                            package_name);
 
     if (ov_fcn.is_defined ())
       {
@@ -112,10 +672,9 @@ namespace octave
     return retval;
   }
 
-  bool
-  out_of_date_check (octave_value& function,
-                     const std::string& dispatch_type,
-                     bool check_relative)
+  bool out_of_date_check (octave_value& function,
+                          const std::string& dispatch_type,
+                          bool check_relative)
   {
     bool retval = false;
 
@@ -125,7 +684,7 @@ namespace octave
       {
         // FIXME: we need to handle subfunctions properly here.
 
-        if (! fcn->is_subfunction ())
+        if (! (fcn->is_subfunction () || fcn->is_anonymous_function ()))
           {
             std::string ff = fcn->fcn_file_name ();
 
@@ -298,229 +857,6 @@ namespace octave
 
     return retval;
   }
-
-  void
-  symbol_table::clear_global (const std::string& name)
-  {
-    m_global_scope.clear_variable (name);
-  }
-
-  void
-  symbol_table::clear_global_pattern (const std::string& pattern)
-  {
-    m_global_scope.clear_variable_pattern (pattern);
-  }
-
-  // Insert INF_CLASS in the set of class names that are considered
-  // inferior to SUP_CLASS.  Return FALSE if INF_CLASS is currently
-  // marked as superior to SUP_CLASS.
-
-  bool
-  symbol_table::set_class_relationship (const std::string& sup_class,
-                                        const std::string& inf_class)
-  {
-    if (is_superiorto (inf_class, sup_class))
-      return false;
-
-    // If sup_class doesn't have an entry in the precedence table,
-    // this will automatically create it, and associate to it a
-    // singleton set {inf_class} of inferior classes.
-    m_class_precedence_table[sup_class].insert (inf_class);
-
-    return true;
-  }
-
-  // Has class A been marked as superior to class B?  Also returns
-  // TRUE if B has been marked as inferior to A, since we only keep
-  // one table, and convert inferiorto information to a superiorto
-  // relationship.  Two calls are required to determine whether there
-  // is no relationship between two classes:
-  //
-  //  if (symbol_table::is_superiorto (a, b))
-  //    // A is superior to B, or B has been marked inferior to A.
-  //  else if (symbol_table::is_superiorto (b, a))
-  //    // B is superior to A, or A has been marked inferior to B.
-  //  else
-  //    // No relation.
-
-  bool
-  symbol_table::is_superiorto (const std::string& a, const std::string& b)
-  {
-    class_precedence_table_const_iterator p = m_class_precedence_table.find (a);
-    // If a has no entry in the precedence table, return false
-    if (p == m_class_precedence_table.end ())
-      return false;
-
-    const std::set<std::string>& inferior_classes = p->second;
-    std::set<std::string>::const_iterator q = inferior_classes.find (b);
-    return (q != inferior_classes.end ());
-  }
-
-  octave_value
-  symbol_table::builtin_find (const std::string& name)
-  {
-    fcn_table_iterator p = m_fcn_table.find (name);
-
-    if (p != m_fcn_table.end ())
-      return p->second.builtin_find ();
-    else
-      {
-        fcn_info finfo (name);
-
-        octave_value fcn = finfo.builtin_find ();
-
-        if (fcn.is_defined ())
-          m_fcn_table[name] = finfo;
-
-        return fcn;
-      }
-
-    return octave_value ();
-  }
-
-  octave_value
-  symbol_table::fcn_table_find (const std::string& name,
-                                const octave_value_list& args)
-  {
-    fcn_table_iterator p = m_fcn_table.find (name);
-
-    if (p != m_fcn_table.end ())
-      return p->second.find (args);
-    else
-      {
-        fcn_info finfo (name);
-
-        octave_value fcn = finfo.find (args);
-
-        if (fcn.is_defined ())
-          m_fcn_table[name] = finfo;
-
-        return fcn;
-      }
-
-    return octave_value ();
-  }
-
-  octave_value symbol_table::find_function (const std::string& name)
-  {
-    if (name.empty ())
-      return octave_value ();
-
-    if (name[0] == '@')
-      {
-        size_t pos = name.find_first_of ('/');
-
-        if (pos == std::string::npos)
-          return octave_value ();
-
-        std::string method = name.substr (pos+1);
-        std::string dispatch_type = name.substr (1, pos-1);
-
-        return find_method (method, dispatch_type);
-      }
-    else
-      return find_function (name, ovl ());
-  }
-
-  octave_value
-  symbol_table::find_function (const std::string& name,
-                               const octave_value_list& args)
-  {
-    octave_value fcn;
-
-    if (m_current_scope)
-      {
-        fcn = m_current_scope.find_subfunction (name);
-
-        if (fcn.is_defined ())
-          return fcn;
-      }
-
-    return fcn_table_find (name, args);
-  }
-
-  // FIXME: this function only finds legacy class methods, not
-  // classdef methods.
-
-  octave_value
-  symbol_table::find_method (const std::string& name,
-                             const std::string& dispatch_type)
-  {
-    fcn_table_const_iterator p = m_fcn_table.find (name);
-
-    if (p != m_fcn_table.end ())
-      return p->second.find_method (dispatch_type);
-    else
-      {
-        fcn_info finfo (name);
-
-        octave_value fcn = finfo.find_method (dispatch_type);
-
-        if (fcn.is_defined ())
-          m_fcn_table[name] = finfo;
-
-        return fcn;
-      }
-  }
-
-  template <template <typename, typename...> class C, typename V,
-            typename... A>
-  static octave_value
-  dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
-  {
-    if (container_map.empty ())
-      return octave_value (Matrix ());
-
-    std::map<std::string, octave_value> info_map;
-
-    for (const auto& nm_container : container_map)
-      {
-        std::string nm = nm_container.first;
-        const C<V, A...>& container = nm_container.second;
-        info_map[nm] = Cell (container);
-      }
-
-    return octave_value (info_map);
-  }
-
-  octave_value
-  symbol_table::dump (void) const
-  {
-    std::map<std::string, octave_value> m
-      = {{ "function_info", dump_fcn_table_map () },
-         { "precedence_table", dump_container_map (m_class_precedence_table) },
-         { "parent_classes", dump_container_map (m_parent_map) }};
-
-    return octave_value (m);
-  }
-
-  void
-  symbol_table::cleanup (void)
-  {
-    clear_all (true);
-
-    m_fcn_table.clear ();
-    m_class_precedence_table.clear ();
-    m_parent_map.clear ();
-  }
-
-  octave_value
-  symbol_table::dump_fcn_table_map (void) const
-  {
-    if (m_fcn_table.empty ())
-      return octave_value (Matrix ());
-
-    std::map<std::string, octave_value> info_map;
-
-    for (const auto& nm_finfo : m_fcn_table)
-      {
-        std::string nm = nm_finfo.first;
-        const fcn_info& finfo = nm_finfo.second;
-        info_map[nm] = finfo.dump ();
-      }
-
-    return octave_value (info_map);
-  }
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
@@ -602,28 +938,11 @@ determine whether functions defined in function files need to recompiled.
 %!error (ignore_function_time_stamp (42))
 */
 
-DEFMETHOD (__current_scope__, interp, , ,
-           doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{scope}, @var{context}] =} __current_scope__ ()
-Return the current scope and context as integers.
-@seealso{__dump_symtab_info__}
-@end deftypefn */)
-{
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  std::string nm = scope ? scope.name () : "<unknown>";
-
-  return ovl (nm, symtab.current_context ());
-}
-
 DEFMETHOD (__dump_symtab_info__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} __dump_symtab_info__ ()
 @deftypefnx {} {} __dump_symtab_info__ (@var{function})
 Undocumented internal function.
-@seealso{__current_scope__}
 @end deftypefn */)
 {
   int nargin = args.length ();

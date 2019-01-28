@@ -3484,13 +3484,10 @@ mexGetVariable (const char *space, const char *name)
 
   octave_value val;
 
-  if (! strcmp (space, "global"))
-    {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("mexGetVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexGetVariable");
 
-      val = symtab.global_varval (name);
-    }
+  if (! strcmp (space, "global"))
+    val = interp.global_varval (name);
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3507,18 +3504,14 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave::call_stack& cs
-                = octave::__get_call_stack__ ("mexGetVariable");
+              octave::call_stack& cs = interp.get_call_stack ();
 
               cs.goto_base_frame ();
 
               frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          octave::symbol_scope scope
-            = octave::__require_current_scope__ ("mexGetVariable");
-
-          val = scope.varval (name);
+          val = interp.varval (name);
         }
       else
         mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
@@ -3555,13 +3548,10 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
   if (! name || name[0] == '\0')
     return 1;
 
-  if (! strcmp (space, "global"))
-    {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("mexPutVariable");
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexPutVariable");
 
-      symtab.global_assign (name, mxArray::as_octave_value (ptr));
-    }
+  if (! strcmp (space, "global"))
+    interp.global_assign (name, mxArray::as_octave_value (ptr));
   else
     {
       // FIXME: should this be in variables.cc?
@@ -3578,18 +3568,14 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave::call_stack& cs
-                = octave::__get_call_stack__ ("mexPutVariable");
+              octave::call_stack& cs = interp.get_call_stack ();
 
               cs.goto_base_frame ();
 
               frame.add_method (cs, &octave::call_stack::pop);
             }
 
-          octave::symbol_scope scope
-            = octave::__require_current_scope__ ("mexPutVariable");
-
-          scope.assign (name, mxArray::as_octave_value (ptr));
+          interp.assign (name, mxArray::as_octave_value (ptr));
         }
       else
         mexErrMsgTxt ("mexPutVariable: symbol table does not exist");

@@ -319,7 +319,7 @@ namespace octave
     const string_vector cfl = symtab.cmdline_function_names ();
     const int cfl_len = cfl.numel ();
 
-    const string_vector lcl = symtab.variable_names ();
+    const string_vector lcl = m_interpreter.variable_names ();
     const int lcl_len = lcl.numel ();
 
     load_path& lp = m_interpreter.get_load_path ();

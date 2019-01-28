@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "syminfo.h"
 
 namespace octave
@@ -415,10 +416,13 @@ namespace octave
       {
         QString var_name = get_var_name (index);
 
-        symbol_scope scope
-          = __get_current_scope__ ("workspace_view::handle_contextmenu_copy_value");
+        // FIXME: this looks suspciously unsafe.
+        interpreter& interp
+          = __get_interpreter__ ("workspace_view::handle_contextmenu_copy_value");
 
-        octave_value val = scope ? scope.varval (var_name.toStdString ()) : 0;
+        octave_value val = interp.varval (var_name.toStdString ());
+        if (val.is_undefined ())
+          val = 0;
         std::ostringstream buf;
         val.print_raw (buf, true);
 
@@ -464,7 +468,6 @@ namespace octave
         QString var_name = get_var_name (index);
 
         symbol_info_list syminfo = m_model->get_symbol_info ();
-
         octave_value val = syminfo.varval (var_name.toStdString ());
 
         emit edit_variable_signal (var_name, val);

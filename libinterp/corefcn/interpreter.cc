@@ -367,7 +367,7 @@ namespace octave
       m_load_path (),
       m_load_save_system (*this),
       m_type_info (),
-      m_symbol_table (),
+      m_symbol_table (*this),
       m_evaluator (*this),
       m_stream_list (*this),
       m_child_list (),
@@ -536,14 +536,7 @@ namespace octave
 
   void interpreter::intern_nargin (octave_idx_type nargs)
   {
-    // FIXME: should this explicitly be top_scope?
-    symbol_scope scope = m_symbol_table.current_scope ();
-
-    if (scope)
-      {
-        scope.assign (".nargin.", nargs);
-        scope.mark_hidden (".nargin.");
-      }
+    m_evaluator.set_auto_fcn_var (stack_frame::NARGIN, nargs);
   }
 
   // Read the history file unless a command-line option inhibits that.
@@ -1062,13 +1055,19 @@ namespace octave
   }
 
   symbol_scope
-  interpreter::get_current_scope (void)
+  interpreter::get_top_scope (void) const
   {
-    return m_symbol_table.current_scope ();
+    return m_evaluator.get_top_scope ();
   }
 
   symbol_scope
-  interpreter::require_current_scope (const std::string& who)
+  interpreter::get_current_scope (void) const
+  {
+    return m_evaluator.get_current_scope ();
+  }
+
+  symbol_scope
+  interpreter::require_current_scope (const std::string& who) const
   {
     symbol_scope scope = get_current_scope ();
 
@@ -1148,6 +1147,170 @@ namespace octave
                                               int nargout)
   {
     return m_evaluator.eval_string (arg, silent, parse_status, nargout);
+  }
+
+  void interpreter::install_variable (const std::string& name,
+                                      const octave_value& value, bool global)
+  {
+    m_evaluator.install_variable (name, value, global);
+  }
+
+  octave_value interpreter::global_varval (const std::string& name) const
+  {
+    return m_evaluator.global_varval (name);
+  }
+
+  void interpreter::global_assign (const std::string& name,
+                                   const octave_value& val)
+  {
+    m_evaluator.global_assign (name, val);
+  }
+
+  octave_value interpreter::top_level_varval (const std::string& name) const
+  {
+    return m_evaluator.top_level_varval (name);
+  }
+
+  void interpreter::top_level_assign (const std::string& name,
+                                      const octave_value& val)
+  {
+    m_evaluator.top_level_assign (name, val);
+  }
+
+  bool interpreter::is_variable (const std::string& name) const
+  {
+    return m_evaluator.is_variable (name);
+  }
+
+  bool interpreter::is_local_variable (const std::string& name) const
+  {
+    return m_evaluator.is_local_variable (name);
+  }
+
+  octave_value interpreter::varval (const std::string& name) const
+  {
+    return m_evaluator.varval (name);
+  }
+
+  void interpreter::assign (const std::string& name,
+                            const octave_value& val)
+  {
+    m_evaluator.assign (name, val);
+  }
+
+  bool interpreter::at_top_level (void) const
+  {
+    return m_evaluator.at_top_level ();
+  }
+
+  bool interpreter::isglobal (const std::string& name) const
+  {
+    return m_evaluator.is_global (name);
+  }
+
+  octave_value interpreter::find (const std::string& name)
+  {
+    return m_evaluator.find (name);
+  }
+
+  void interpreter::clear_all (bool force)
+  {
+    m_evaluator.clear_all (force);
+  }
+
+  void interpreter::clear_objects (void)
+  {
+    m_evaluator.clear_objects ();
+  }
+
+  void interpreter::clear_variable (const std::string& name)
+  {
+    m_evaluator.clear_variable (name);
+  }
+
+  void interpreter::clear_variable_pattern (const std::string& pattern)
+  {
+    m_evaluator.clear_variable_pattern (pattern);
+  }
+
+  void interpreter::clear_variable_regexp (const std::string& pattern)
+  {
+    m_evaluator.clear_variable_regexp (pattern);
+  }
+
+  void interpreter::clear_variables (void)
+  {
+    m_evaluator.clear_variables ();
+  }
+
+  void interpreter::clear_global_variable (const std::string& name)
+  {
+    m_evaluator.clear_global_variable (name);
+  }
+
+  void interpreter::clear_global_variable_pattern (const std::string& pattern)
+  {
+    m_evaluator.clear_global_variable_pattern (pattern);
+  }
+
+  void interpreter::clear_global_variable_regexp (const std::string& pattern)
+  {
+    m_evaluator.clear_global_variable_regexp (pattern);
+  }
+
+  void interpreter::clear_global_variables (void)
+  {
+    m_evaluator.clear_global_variables ();
+  }
+
+  void interpreter::clear_functions (bool force)
+  {
+    m_symbol_table.clear_functions (force);
+  }
+
+  void interpreter::clear_function (const std::string& name)
+  {
+    m_symbol_table.clear_function (name);
+  }
+
+  void interpreter::clear_symbol (const std::string& name)
+  {
+    m_evaluator.clear_symbol (name);
+  }
+
+  void interpreter::clear_function_pattern (const std::string& pat)
+  {
+    m_symbol_table.clear_function_pattern (pat);
+  }
+
+  void interpreter::clear_function_regexp (const std::string& pat)
+  {
+    m_symbol_table.clear_function_regexp (pat);
+  }
+
+  void interpreter::clear_symbol_pattern (const std::string& pat)
+  {
+    return m_evaluator.clear_symbol_pattern (pat);
+  }
+
+  void interpreter::clear_symbol_regexp (const std::string& pat)
+  {
+    return m_evaluator.clear_symbol_regexp (pat);
+  }
+
+  std::list<std::string> interpreter::global_variable_names (void)
+  {
+    return m_evaluator.global_variable_names ();
+  }
+
+  std::list<std::string> interpreter::variable_names (void)
+  {
+    return m_evaluator.variable_names ();
+  }
+
+  std::list<std::string> interpreter::user_function_names (void)
+  {
+    return m_symbol_table.user_function_names ();
   }
 
   void interpreter::recover_from_exception (void)

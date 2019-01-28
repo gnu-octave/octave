@@ -64,10 +64,15 @@ namespace octave
     subfunctions_iterator;
 
     symbol_scope_rep (const std::string& name = "")
-      : m_name (name), m_symbols (), m_subfunctions (), m_fcn (nullptr),
-        m_parent (), m_primary_parent (), m_children (),
-        m_nesting_depth (0), m_is_static (false), m_context (0)
-    { }
+      : m_name (name), m_symbols (), m_subfunctions (),
+        m_persistent_values (), m_fcn (nullptr), m_parent (),
+        m_primary_parent (), m_children (), m_nesting_depth (0),
+        m_is_static (false)
+    {
+      // All scopes have ans as the first symbol, initially undefined.
+
+      insert_local ("ans");
+    }
 
     // No copying!
 
@@ -77,14 +82,13 @@ namespace octave
 
     ~symbol_scope_rep (void) = default;
 
-    void insert_symbol_record (const symbol_record& sr)
-    {
-      m_symbols[sr.name ()] = sr;
-    }
+    size_t num_symbols (void) const { return m_symbols.size (); }
 
-    void install_auto_fcn_vars (void);
+    // Simply inserts symbol.  No non-local searching.
 
-    void install_auto_fcn_var (const std::string& name);
+    symbol_record insert_local (const std::string& name);
+
+    void insert_symbol_record (symbol_record& sr);
 
     bool is_nested (void) const { return m_nesting_depth > 0; }
 
@@ -111,23 +115,34 @@ namespace octave
       std::shared_ptr<symbol_scope_rep> new_sid
         = std::shared_ptr<symbol_scope_rep> (new symbol_scope_rep (m_name));
 
-      for (const auto& nm_sr : m_symbols)
-        new_sid->insert_symbol_record (nm_sr.second.dup (new_sid));
+      new_sid->m_name;
 
+      for (const auto& nm_sr : m_symbols)
+        new_sid->m_symbols[nm_sr.first] = nm_sr.second.dup ();
+
+      new_sid->m_subfunctions = m_subfunctions;
+      new_sid->m_persistent_values = m_persistent_values;
+      new_sid->m_subfunction_names = m_subfunction_names;
+      new_sid->m_fcn = m_fcn;
       new_sid->m_parent = m_parent;
       new_sid->m_primary_parent = m_primary_parent;
+      new_sid->m_children = m_children;
+      new_sid->m_nesting_depth = m_nesting_depth;
+      new_sid->m_is_static = m_is_static;
 
       return new_sid;
     }
 
-    void set_context (symbol_record::context_id context)
+    octave_value& persistent_varref (size_t data_offset)
     {
-      m_context = context;
+      return m_persistent_values[data_offset];
     }
 
-    symbol_record::context_id current_context (void) const
+    octave_value persistent_varval (size_t data_offset) const
     {
-      return m_context;
+      auto p = m_persistent_values.find (data_offset);
+
+      return p == m_persistent_values.end () ? octave_value () : p->second;
     }
 
     symbol_record find_symbol (const std::string& name)
@@ -140,51 +155,14 @@ namespace octave
         return p->second;
     }
 
-    void inherit_internal
-      (const std::shared_ptr<symbol_scope_rep>& donor_scope_rep)
+    symbol_record lookup_symbol (const std::string& name) const
     {
-      for (auto& nm_sr : m_symbols)
-        {
-          symbol_record& sr = nm_sr.second;
+      auto p = m_symbols.find (name);
 
-          if (! (sr.is_automatic () || sr.is_formal ()))
-            {
-              std::string nm = sr.name ();
-
-              if (nm != "__retval__")
-                {
-                  octave_value val = donor_scope_rep->varval (nm);
-
-                  if (val.is_defined ())
-                    {
-                      sr.assign (val, m_context);
-
-                      sr.mark_inherited ();
-                    }
-                }
-            }
-        }
+      return p == m_symbols.end () ? symbol_record () : p->second;
     }
 
-    void inherit (const std::shared_ptr<symbol_scope_rep>& donor_scope_rep)
-    {
-      std::shared_ptr<symbol_scope_rep> dsr = donor_scope_rep;
-
-      while (dsr)
-        {
-          inherit_internal (dsr);
-
-          if (dsr->is_nested ())
-            dsr = parent_scope_rep ();
-          else
-            break;
-        }
-    }
-
-    octave_value find (const std::string& name);
-
-    symbol_record&
-    insert (const std::string& name, bool force_add = false);
+    symbol_record insert (const std::string& name);
 
     void rename (const std::string& old_name, const std::string& new_name)
     {
@@ -200,289 +178,6 @@ namespace octave
 
           m_symbols[new_name] = sr;
         }
-    }
-
-    void assign (const std::string& name, const octave_value& value,
-                 bool force_add)
-    {
-      auto p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_record& sr = insert (name, force_add);
-
-          sr.assign (value, m_context);
-        }
-      else
-        p->second.assign (value, m_context);
-    }
-
-    void assign (const std::string& name,
-                 const octave_value& value = octave_value ())
-    {
-      assign (name, value, false);
-    }
-
-    void force_assign (const std::string& name, const octave_value& value)
-    {
-      auto p = m_symbols.find (name);
-
-      if (p == m_symbols.end ())
-        {
-          symbol_record& sr = insert (name, true);
-
-          sr.assign (value, m_context);
-        }
-      else
-        p->second.assign (value, m_context);
-    }
-
-    octave_value varval (const std::string& name) const
-    {
-      table_const_iterator p = m_symbols.find (name);
-
-      return (p != m_symbols.end ()
-              ? p->second.varval (m_context) : octave_value ());
-    }
-
-    bool is_variable (const std::string& name) const
-    {
-      bool retval = false;
-
-      table_const_iterator p = m_symbols.find (name);
-
-      if (p != m_symbols.end ())
-        {
-          const symbol_record& sr = p->second;
-
-          retval = sr.is_variable (m_context);
-        }
-
-      return retval;
-    }
-
-    void push_context (void)
-    {
-      for (auto& nm_sr : m_symbols)
-        nm_sr.second.push_context ();
-    }
-
-    void pop_context (void)
-    {
-      auto tbl_it = m_symbols.begin ();
-
-      while (tbl_it != m_symbols.end ())
-        {
-          if (tbl_it->second.pop_context () == 0)
-            m_symbols.erase (tbl_it++);
-          else
-            tbl_it++;
-        }
-    }
-
-    void refresh (void)
-    {
-      for (auto& nm_sr : m_symbols)
-        {
-          symbol_record& sr = nm_sr.second;
-
-          if (sr.is_global ())
-            sr.unbind_global_rep ();
-          else if (! (sr.is_persistent () || sr.is_forwarded ()))
-            sr.clear (m_context);
-        }
-    }
-
-    void clear_variables (void)
-    {
-      for (auto& nm_sr : m_symbols)
-        nm_sr.second.clear (m_context);
-    }
-
-    void clear_objects (void)
-    {
-      for (auto& nm_sr : m_symbols)
-        {
-          symbol_record& sr = nm_sr.second;
-          octave_value val = sr.varval (m_context);
-          if (val.isobject ())
-            nm_sr.second.clear (m_context);
-        }
-    }
-
-    void clear_variable (const std::string& name)
-    {
-      auto p = m_symbols.find (name);
-
-      if (p != m_symbols.end ())
-        p->second.clear (m_context);
-      else if (is_nested ())
-        {
-          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
-
-          if (psr)
-            psr->clear_variable (name);
-        }
-    }
-
-    void clear_variable_pattern (const std::string& pat)
-    {
-      glob_match pattern (pat);
-
-      for (auto& nm_sr : m_symbols)
-        {
-          symbol_record& sr = nm_sr.second;
-
-          if (sr.is_defined (m_context) || sr.is_global ())
-            {
-              if (pattern.match (sr.name ()))
-                sr.clear (m_context);
-            }
-        }
-
-      if (is_nested ())
-        {
-          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
-
-          if (psr)
-            psr->clear_variable_pattern (pat);
-        }
-    }
-
-    void clear_variable_regexp (const std::string& pat)
-    {
-      octave::regexp pattern (pat);
-
-      for (auto& nm_sr : m_symbols)
-        {
-          symbol_record& sr = nm_sr.second;
-
-          if (sr.is_defined (m_context) || sr.is_global ())
-            {
-              if (pattern.is_match (sr.name ()))
-                sr.clear (m_context);
-            }
-        }
-
-      if (is_nested ())
-        {
-          std::shared_ptr<symbol_scope_rep> psr = parent_scope_rep ();
-
-          if (psr)
-            psr->clear_variable_regexp (pat);
-        }
-    }
-
-    void mark_automatic (const std::string& name)
-    {
-      insert (name).mark_automatic ();
-    }
-
-    void mark_hidden (const std::string& name)
-    {
-      insert (name).mark_hidden ();
-    }
-
-    void mark_global (const std::string& name)
-    {
-      insert (name).mark_global ();
-    }
-
-    std::list<symbol_record>
-    all_variables (bool defined_only = true,
-                   unsigned int exclude = symbol_record::hidden) const
-    {
-      std::list<symbol_record> retval;
-
-      for (const auto& nm_sr : m_symbols)
-        {
-          const symbol_record& sr = nm_sr.second;
-
-          if ((defined_only && ! sr.is_defined (m_context))
-              || (sr.storage_class () & exclude))
-            continue;
-
-          retval.push_back (sr);
-        }
-
-      return retval;
-    }
-
-    std::list<symbol_record>
-    glob (const std::string& pattern, bool vars_only = false) const
-    {
-      std::list<symbol_record> retval;
-
-      glob_match pat (pattern);
-
-      for (const auto& nm_sr : m_symbols)
-        {
-          if (pat.match (nm_sr.first))
-            {
-              const symbol_record& sr = nm_sr.second;
-
-              if (vars_only && ! sr.is_variable (m_context))
-                continue;
-
-              retval.push_back (sr);
-            }
-        }
-
-      return retval;
-    }
-
-    std::list<symbol_record>
-    regexp (const std::string& pattern, bool vars_only = false) const
-    {
-      std::list<symbol_record> retval;
-
-      octave::regexp pat (pattern);
-
-      for (const auto& nm_sr : m_symbols)
-        {
-          if (pat.is_match (nm_sr.first))
-            {
-              const symbol_record& sr = nm_sr.second;
-
-              if (vars_only && ! sr.is_variable (m_context))
-                continue;
-
-              retval.push_back (sr);
-            }
-        }
-
-      return retval;
-    }
-
-    std::list<std::string> variable_names (void)
-    {
-      std::list<std::string> retval;
-
-      for (const auto& nm_sr : m_symbols)
-        {
-          if (nm_sr.second.is_variable (m_context))
-            retval.push_back (nm_sr.first);
-        }
-
-      retval.sort ();
-
-      return retval;
-    }
-
-    bool is_local_variable (const std::string& name) const
-    {
-      table_const_iterator p = m_symbols.find (name);
-
-      return (p != m_symbols.end ()
-              && ! p->second.is_global ()
-              && p->second.is_defined (m_context));
-    }
-
-    bool is_global (const std::string& name) const
-    {
-      table_const_iterator p = m_symbols.find (name);
-
-      return p != m_symbols.end () && p->second.is_global ();
     }
 
     void install_subfunction (const std::string& name,
@@ -559,13 +254,22 @@ namespace octave
 
     void update_nest (void);
 
-    bool look_nonlocal (const std::string& name, symbol_record& result);
-
-    void bind_script_symbols (const std::shared_ptr<symbol_scope_rep>& curr_scope);
-
-    void unbind_script_symbols (void);
+    bool look_nonlocal (const std::string& name, size_t offset,
+                        symbol_record& result);
 
     octave_value dump_symbols_map (void) const;
+
+    const std::map<std::string, symbol_record>& symbols (void) const
+    {
+      return m_symbols;
+    }
+
+    std::map<std::string, symbol_record>& symbols (void)
+    {
+      return m_symbols;
+    }
+
+    std::list<symbol_record> symbol_list (void) const;
 
   private:
 
@@ -581,6 +285,9 @@ namespace octave
     //! Map from symbol names to subfunctions.
 
     std::map<std::string, octave_value> m_subfunctions;
+
+    //! Map from data offset to persistent values in this scope.
+    std::map<size_t, octave_value> m_persistent_values;
 
     //! The list of subfunctions (if any) in the order they appear in
     //! the function file.
@@ -611,8 +318,6 @@ namespace octave
     //! If true then no variables can be added.
 
     bool m_is_static;
-
-    symbol_record::context_id m_context;
   };
 
   class symbol_scope
@@ -640,16 +345,20 @@ namespace octave
 
     explicit operator bool () const { return bool (m_rep); }
 
-    void insert_symbol_record (const symbol_record& sr)
+    size_t num_symbols (void) const
+    {
+      return m_rep ? m_rep->num_symbols () : 0;
+    }
+
+    symbol_record insert_local (const std::string& name)
+    {
+      return m_rep ? m_rep->insert_local (name) : symbol_record ();
+    }
+
+    void insert_symbol_record (symbol_record& sr)
     {
       if (m_rep)
         m_rep->insert_symbol_record (sr);
-    }
-
-    void install_auto_fcn_vars (void)
-    {
-      if (m_rep)
-        m_rep->install_auto_fcn_vars ();
     }
 
     bool is_nested (void) const
@@ -694,15 +403,16 @@ namespace octave
       return symbol_scope (m_rep ? m_rep->dup () : nullptr);
     }
 
-    void set_context (symbol_record::context_id context)
+    octave_value& persistent_varref (size_t data_offset)
     {
-      if (m_rep)
-        m_rep->set_context (context);
+      static octave_value dummy_value;
+
+      return m_rep ? m_rep->persistent_varref (data_offset) : dummy_value;
     }
 
-    symbol_record::context_id current_context (void) const
+    octave_value persistent_varval (size_t data_offset) const
     {
-      return m_rep ? m_rep->current_context () : 0;
+      return m_rep ? m_rep->persistent_varval (data_offset) : octave_value ();
     }
 
     symbol_record find_symbol (const std::string& name)
@@ -710,168 +420,21 @@ namespace octave
       return m_rep ? m_rep->find_symbol (name) : symbol_record ();
     }
 
-    void inherit (const symbol_scope& donor_scope)
+    // Like find_symbol, but does not insert.
+    symbol_record lookup_symbol (const std::string& name) const
     {
-      if (m_rep)
-        m_rep->inherit (donor_scope.get_rep ());
+      return m_rep ? m_rep->lookup_symbol (name) : symbol_record ();
     }
 
-    octave_value find (const std::string& name)
+    symbol_record insert (const std::string& name)
     {
-      return m_rep ? m_rep->find (name) : octave_value ();
-    }
-
-    symbol_record&
-    insert (const std::string& name, bool force_add = false)
-    {
-      static symbol_record dummy_symrec;
-      return m_rep ? m_rep->insert (name, force_add) : dummy_symrec;
+      return m_rep ? m_rep->insert (name) : symbol_record ();
     }
 
     void rename (const std::string& old_name, const std::string& new_name)
     {
       if (m_rep)
         m_rep->rename (old_name, new_name);
-    }
-
-    void assign (const std::string& name, const octave_value& value,
-                 bool force_add)
-    {
-      if (m_rep)
-        m_rep->assign (name, value, force_add);
-    }
-
-    void assign (const std::string& name,
-                 const octave_value& value = octave_value ())
-    {
-      if (m_rep)
-        m_rep->assign (name, value);
-    }
-
-    void force_assign (const std::string& name, const octave_value& value)
-    {
-      if (m_rep)
-        m_rep->force_assign (name, value);
-    }
-
-    octave_value varval (const std::string& name) const
-    {
-      return m_rep ? m_rep->varval (name) : octave_value ();
-    }
-
-    bool is_variable (const std::string& name) const
-    {
-      return m_rep ? m_rep->is_variable (name) : false;
-    }
-
-    void push_context (void)
-    {
-      if (m_rep)
-        m_rep->push_context ();
-    }
-
-    void pop_context (void)
-    {
-      if (m_rep)
-        m_rep->pop_context ();
-    }
-
-    void refresh (void)
-    {
-      if (m_rep)
-        m_rep->refresh ();
-    }
-
-    void clear_variables (void)
-    {
-      if (m_rep)
-        m_rep->clear_variables ();
-    }
-
-    void clear_objects (void)
-    {
-      if (m_rep)
-        m_rep->clear_objects ();
-    }
-
-    void clear_variable (const std::string& name)
-    {
-      if (m_rep)
-        m_rep->clear_variable (name);
-    }
-
-    void clear_variable_pattern (const std::string& pat)
-    {
-      if (m_rep)
-        m_rep->clear_variable_pattern (pat);
-    }
-
-    void clear_variable_regexp (const std::string& pat)
-    {
-      if (m_rep)
-        m_rep->clear_variable_regexp (pat);
-    }
-
-    void mark_automatic (const std::string& name)
-    {
-      if (m_rep)
-        m_rep->mark_automatic (name);
-    }
-
-    void mark_hidden (const std::string& name)
-    {
-      if (m_rep)
-        m_rep->mark_hidden (name);
-    }
-
-    // This function should only be called for the global
-    // symbol_scope, and that should only happen when it is added to
-    // the global symbol_scope.
-
-    void mark_global (const std::string& name)
-    {
-      if (m_rep)
-        m_rep->mark_global (name);
-    }
-
-    std::list<symbol_record>
-    all_variables (bool defined_only = true,
-                   unsigned int exclude = symbol_record::hidden) const
-    {
-      return (m_rep
-              ? m_rep->all_variables (defined_only, exclude)
-              : std::list<symbol_record> ());
-    }
-
-    std::list<symbol_record>
-    glob (const std::string& pattern, bool vars_only = false) const
-    {
-      return (m_rep
-              ? m_rep->glob (pattern, vars_only)
-              : std::list<symbol_record> ());
-    }
-
-    std::list<symbol_record>
-    regexp (const std::string& pattern, bool vars_only = false) const
-    {
-      return (m_rep
-              ? m_rep->regexp (pattern, vars_only)
-              : std::list<symbol_record> ());
-    }
-
-    std::list<std::string> variable_names (void)
-    {
-      return m_rep ? m_rep->variable_names () : std::list<std::string> ();
-    }
-
-    bool is_local_variable (const std::string& name) const
-    {
-      return m_rep ? m_rep->is_local_variable (name) : false;
-    }
-
-    bool is_global (const std::string& name) const
-    {
-      return m_rep ? m_rep->is_global (name) : false;
     }
 
     void install_subfunction (const std::string& name,
@@ -991,21 +554,10 @@ namespace octave
         m_rep->update_nest ();
     }
 
-    bool look_nonlocal (const std::string& name, symbol_record& result)
+    bool look_nonlocal (const std::string& name, size_t offset,
+                        symbol_record& result)
     {
-      return m_rep ? m_rep->look_nonlocal (name, result) : false;
-    }
-
-    void bind_script_symbols (const symbol_scope& curr_scope)
-    {
-      if (m_rep)
-        m_rep->bind_script_symbols (curr_scope.get_rep ());
-    }
-
-    void unbind_script_symbols (void)
-    {
-      if (m_rep)
-        m_rep->unbind_script_symbols ();
+      return m_rep ? m_rep->look_nonlocal (name, offset, result) : false;
     }
 
     std::shared_ptr<symbol_scope_rep> get_rep (void) const
@@ -1023,14 +575,30 @@ namespace octave
       return a.m_rep != b.m_rep;
     }
 
+    const std::map<std::string, symbol_record>& symbols (void) const
+    {
+      static const std::map<std::string, symbol_record> empty_map;
+
+      return m_rep ? m_rep->symbols () : empty_map;
+    }
+
+    std::map<std::string, symbol_record>& symbols (void)
+    {
+      static std::map<std::string, symbol_record> empty_map;
+
+      return m_rep ? m_rep->symbols () : empty_map;
+    }
+
+    std::list<symbol_record> symbol_list (void) const
+    {
+      static const std::list<symbol_record> empty_list;
+
+      return m_rep ? m_rep->symbol_list () : empty_list;
+    }
+
   private:
 
     std::shared_ptr<symbol_scope_rep> m_rep;
-
-    octave_value dump_symbols_map (void) const
-    {
-      return m_rep ? m_rep->dump_symbols_map () : octave_value ();
-    }
   };
 }
 

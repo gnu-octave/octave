@@ -128,8 +128,7 @@ octave_user_code::dump (void) const
     = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
        { "file_name", file_name },
        { "time_parsed", t_parsed },
-       { "time_checked", t_checked },
-       { "call_depth", m_call_depth }};
+       { "time_checked", t_checked }};
 
   return octave_value (m);
 }
@@ -185,9 +184,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 
 octave_user_function::octave_user_function
   (const octave::symbol_scope& scope, octave::tree_parameter_list *pl,
-   octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
+   octave::tree_parameter_list *rl, octave::tree_statement_list *cl,
+   const local_vars_map& lviv)
   : octave_user_code ("", "", scope, cl, ""),
     param_list (pl), ret_list (rl),
+    m_local_var_init_vals (lviv),
     lead_comm (), trail_comm (),
     location_line (0), location_column (0),
     parent_name (), system_fcn_file (false),
@@ -556,11 +557,17 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 void
 octave_user_function::restore_warning_states (void)
 {
-  octave_value val = m_scope.varval (".saved_warning_states.");
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
+
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  octave_value val
+    = cs.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
 
   if (val.is_defined ())
     {
-      // Fail spectacularly if .saved_warning_states. is not an
+      // Fail spectacularly if SAVED_WARNING_STATES is not an
       // octave_map (or octave_scalar_map) object.
 
       if (! val.isstruct ())
@@ -570,9 +577,6 @@ octave_user_function::restore_warning_states (void)
 
       Cell ids = m.contents ("identifier");
       Cell states = m.contents ("state");
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
 
       for (octave_idx_type i = 0; i < m.numel (); i++)
         Fwarning (interp, ovl (states(i), ids(i)));
@@ -619,14 +623,14 @@ Programming Note: @code{nargin} does not work on compiled functions
 
   octave_value retval;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   if (nargin == 1)
     {
       octave_value func = args(0);
 
       if (func.is_string ())
         {
+          octave::symbol_table& symtab = interp.get_symbol_table ();
+
           std::string name = func.string_value ();
           func = symtab.find_function (name);
           if (func.is_undefined ())
@@ -657,8 +661,9 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::symbol_scope scope = symtab.require_current_scope ("nargin");
-      retval = scope.varval (".nargin.");
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      retval = cs.get_auto_fcn_var (octave::stack_frame::NARGIN);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -729,14 +734,14 @@ returns -1 for all anonymous functions.
 
   octave_value retval;
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   if (nargin == 1)
     {
       octave_value func = args(0);
 
       if (func.is_string ())
         {
+          octave::symbol_table& symtab = interp.get_symbol_table ();
+
           std::string name = func.string_value ();
           func = symtab.find_function (name);
           if (func.is_undefined ())
@@ -780,11 +785,12 @@ returns -1 for all anonymous functions.
     }
   else
     {
-      if (symtab.at_top_level ())
+      if (interp.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::symbol_scope scope = symtab.require_current_scope ("nargout");
-      retval = scope.varval (".nargout.");
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      retval = cs.get_auto_fcn_var (octave::stack_frame::NARGOUT);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -851,17 +857,20 @@ element-by-element and a logical array is returned.  At the top level,
   if (args.length () != 1)
     print_usage ();
 
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
-  if (symtab.at_top_level ())
+  if (interp.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::symbol_scope scope = symtab.require_current_scope ("isargout");
+  octave::call_stack& cs = interp.get_call_stack ();
 
-  int nargout1 = scope.varval (".nargout.").int_value ();
+  octave_value tmp;
+
+  int nargout1 = 0;
+  tmp = cs.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+  if (tmp.is_defined ())
+    nargout1 = tmp.int_value ();
 
   Matrix ignored;
-  octave_value tmp = scope.varval (".ignored.");
+  tmp = cs.get_auto_fcn_var (octave::stack_frame::IGNORED);
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

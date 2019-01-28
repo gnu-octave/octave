@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iomanip>
+#include <list>
 #include <set>
 #include <string>
 
@@ -157,22 +158,6 @@ extract_function (const octave_value& arg, const std::string& warn_for,
   return retval;
 }
 
-static octave_value
-do_isglobal (octave::symbol_table& symtab, const octave_value_list& args)
-{
-  if (args.length () != 1)
-    print_usage ();
-
-  if (! args(0).is_string ())
-    error ("isglobal: NAME must be a string");
-
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  std::string name = args(0).string_value ();
-
-  return scope && scope.is_global (name);
-}
-
 DEFMETHOD (isglobal, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} isglobal (@var{name})
@@ -190,9 +175,12 @@ isglobal ("x")
 @seealso{isvarname, exist}
 @end deftypefn */)
 {
-  octave::symbol_table& symtab = interp.get_symbol_table ();
+  if (args.length () != 1)
+    print_usage ();
 
-  return do_isglobal (symtab, args);
+  std::string name = args(0).xstring_value ("isglobal: NAME must be a string");
+
+  return ovl (interp.isglobal (name));
 }
 
 /*
@@ -228,9 +216,7 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
 
   if (search_any || search_var)
     {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      octave_value val = scope ? scope.varval (name) : octave_value ();
+      octave_value val = interp.varval (name);
 
       if (val.is_constant () || val.isobject ()
           || val.is_function_handle ()
@@ -973,76 +959,59 @@ maybe_warn_exclusive (bool exclusive)
 }
 
 static void
-do_clear_functions (octave::symbol_table& symtab,
+do_clear_functions (octave::interpreter& interp,
                     const string_vector& argv, int argc, int idx,
                     bool exclusive = false)
 {
   if (idx == argc)
-    symtab.clear_functions ();
+    interp.clear_functions ();
   else
     {
       if (exclusive)
         {
-          string_vector fcns = symtab.user_function_names ();
+          std::list<std::string> fcns = interp.user_function_names ();
 
-          int fcount = fcns.numel ();
-
-          for (int i = 0; i < fcount; i++)
+          for (const auto& name : fcns)
             {
-              std::string nm = fcns[i];
-
-              if (! name_matches_any_pattern (nm, argv, argc, idx))
-                symtab.clear_function (nm);
+              if (! name_matches_any_pattern (name, argv, argc, idx))
+                interp.clear_function (name);
             }
         }
       else
         {
           while (idx < argc)
-            symtab.clear_function_pattern (argv[idx++]);
+            interp.clear_function_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_clear_globals (octave::symbol_table& symtab,
+do_clear_globals (octave::interpreter& interp,
                   const string_vector& argv, int argc, int idx,
                   bool exclusive = false)
 {
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  if (! scope)
-    return;
-
   if (idx == argc)
     {
-      string_vector gvars = symtab.global_variable_names ();
+      std::list<std::string> gvars = interp.global_variable_names ();
 
-      int gcount = gvars.numel ();
-
-      for (int i = 0; i < gcount; i++)
+      for (const auto& name : gvars)
         {
-          std::string name = gvars[i];
-
-          scope.clear_variable (name);
-          symtab.clear_global (name);
+          interp.clear_variable (name);
+          interp.clear_global_variable (name);
         }
     }
   else
     {
       if (exclusive)
         {
-          string_vector gvars = symtab.global_variable_names ();
+          std::list<std::string> gvars = interp.global_variable_names ();
 
-          int gcount = gvars.numel ();
-
-          for (int i = 0; i < gcount; i++)
+          for (const auto& name : gvars)
             {
-              std::string name = gvars[i];
-
               if (! name_matches_any_pattern (name, argv, argc, idx))
                 {
-                  scope.clear_variable (name);
-                  symtab.clear_global (name);
+                  interp.clear_variable (name);
+                  interp.clear_global_variable (name);
                 }
             }
         }
@@ -1052,64 +1021,53 @@ do_clear_globals (octave::symbol_table& symtab,
             {
               std::string pattern = argv[idx++];
 
-              scope.clear_variable_pattern (pattern);
-              symtab.clear_global_pattern (pattern);
+              interp.clear_variable_pattern (pattern);
+              interp.clear_global_variable_pattern (pattern);
             }
         }
     }
 }
 
 static void
-do_clear_variables (octave::symbol_table& symtab,
+do_clear_variables (octave::interpreter& interp,
                     const string_vector& argv, int argc, int idx,
                     bool exclusive = false, bool have_regexp = false)
 {
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  if (! scope)
-    return;
-
   if (idx == argc)
-    scope.clear_variables ();
+    interp.clear_variables ();
   else
     {
       if (exclusive)
         {
-          string_vector lvars = scope.variable_names ();
+          std::list<std::string> lvars = interp.variable_names ();
 
-          int lcount = lvars.numel ();
-
-          for (int i = 0; i < lcount; i++)
+          for (const auto& name : lvars)
             {
-              std::string nm = lvars[i];
-
-              if (! name_matches_any_pattern (nm, argv, argc, idx, have_regexp))
-                scope.clear_variable (nm);
+              if (! name_matches_any_pattern (name, argv, argc, idx,
+                                              have_regexp))
+                interp.clear_variable (name);
             }
         }
       else
         {
           if (have_regexp)
             while (idx < argc)
-              scope.clear_variable_regexp (argv[idx++]);
+              interp.clear_variable_regexp (argv[idx++]);
           else
             while (idx < argc)
-              scope.clear_variable_pattern (argv[idx++]);
+              interp.clear_variable_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_clear_symbols (octave::symbol_table& symtab,
+do_clear_symbols (octave::interpreter& interp,
                   const string_vector& argv, int argc, int idx,
                   bool exclusive = false)
 {
   if (idx == argc)
     {
-      octave::symbol_scope scope = symtab.current_scope ();
-
-      if (scope)
-        scope.clear_variables ();
+      interp.clear_variables ();
     }
   else
     {
@@ -1120,60 +1078,54 @@ do_clear_symbols (octave::symbol_table& symtab,
           // shadowed by local variables?  It seems that would be a
           // bit harder to do.
 
-          do_clear_variables (symtab, argv, argc, idx, exclusive);
-          do_clear_functions (symtab, argv, argc, idx, exclusive);
+          do_clear_variables (interp, argv, argc, idx, exclusive);
+          do_clear_functions (interp, argv, argc, idx, exclusive);
         }
       else
         {
           while (idx < argc)
-            symtab.clear_symbol_pattern (argv[idx++]);
+            interp.clear_symbol_pattern (argv[idx++]);
         }
     }
 }
 
 static void
-do_matlab_compatible_clear (octave::symbol_table& symtab,
+do_matlab_compatible_clear (octave::interpreter& interp,
                             const string_vector& argv, int argc, int idx)
 {
   // This is supposed to be mostly Matlab compatible.
 
-  octave::symbol_scope scope = symtab.current_scope ();
-
-  if (! scope)
-    return;
-
   for (; idx < argc; idx++)
     {
-      if (argv[idx] == "all"
-          && ! scope.is_local_variable ("all"))
+      if (argv[idx] == "all" && ! interp.is_local_variable ("all"))
         {
-          symtab.clear_all ();
+          interp.clear_all ();
         }
       else if (argv[idx] == "functions"
-               && ! scope.is_local_variable ("functions"))
+               && ! interp.is_local_variable ("functions"))
         {
-          do_clear_functions (symtab, argv, argc, ++idx);
+          do_clear_functions (interp, argv, argc, ++idx);
         }
       else if (argv[idx] == "global"
-               && ! scope.is_local_variable ("global"))
+               && ! interp.is_local_variable ("global"))
         {
-          do_clear_globals (symtab, argv, argc, ++idx);
+          do_clear_globals (interp, argv, argc, ++idx);
         }
       else if (argv[idx] == "variables"
-               && ! scope.is_local_variable ("variables"))
+               && ! interp.is_local_variable ("variables"))
         {
-          scope.clear_variables ();
+          interp.clear_variables ();
         }
       else if (argv[idx] == "classes"
-               && ! scope.is_local_variable ("classes"))
+               && ! interp.is_local_variable ("classes"))
         {
-          scope.clear_objects ();
+          interp.clear_objects ();
           octave_class::clear_exemplar_map ();
-          symtab.clear_all ();
+          interp.clear_all ();
         }
       else
         {
-          symtab.clear_symbol_pattern (argv[idx]);
+          interp.clear_symbol_pattern (argv[idx]);
         }
     }
 }
@@ -1262,15 +1214,13 @@ Executing @code{clear foo} a second time will clear the function definition.
 @seealso{who, whos, exist, mlock}
 @end deftypefn */)
 {
-  octave::symbol_table& symtab = interp.get_symbol_table ();
-
   int argc = args.length () + 1;
 
   string_vector argv = args.make_argv ("clear");
 
   if (argc == 1)
     {
-      do_clear_variables (symtab, argv, argc, argc);
+      do_clear_variables (interp, argv, argc, true);
 
       octave_link::clear_workspace ();
     }
@@ -1286,8 +1236,6 @@ Executing @code{clear foo} a second time will clear the function definition.
       bool exclusive = false;
       bool have_regexp = false;
       bool have_dash_option = false;
-
-      octave::symbol_scope scope = symtab.current_scope ();
 
       while (++idx < argc)
         {
@@ -1350,7 +1298,7 @@ Executing @code{clear foo} a second time will clear the function definition.
       if (idx <= argc)
         {
           if (! have_dash_option && ! exclusive)
-            do_matlab_compatible_clear (symtab, argv, argc, idx);
+            do_matlab_compatible_clear (interp, argv, argc, idx);
           else
             {
               if (clear_all)
@@ -1360,34 +1308,33 @@ Executing @code{clear foo} a second time will clear the function definition.
                   if (++idx < argc)
                     warning ("clear: ignoring extra arguments after -all");
 
-                  symtab.clear_all ();
+                  interp.clear_all ();
                 }
               else if (have_regexp)
                 {
-                  do_clear_variables (symtab, argv, argc, idx, exclusive, true);
+                  do_clear_variables (interp, argv, argc, idx, exclusive, true);
                 }
               else if (clear_functions)
                 {
-                  do_clear_functions (symtab, argv, argc, idx, exclusive);
+                  do_clear_functions (interp, argv, argc, idx, exclusive);
                 }
               else if (clear_globals)
                 {
-                  do_clear_globals (symtab, argv, argc, idx, exclusive);
+                  do_clear_globals (interp, argv, argc, idx, exclusive);
                 }
               else if (clear_variables)
                 {
-                  do_clear_variables (symtab, argv, argc, idx, exclusive);
+                  do_clear_variables (interp, argv, argc, idx, exclusive);
                 }
               else if (clear_objects)
                 {
-                  if (scope)
-                    scope.clear_objects ();
+                  interp.clear_objects ();
                   octave_class::clear_exemplar_map ();
-                  symtab.clear_all ();
+                  interp.clear_all ();
                 }
               else
                 {
-                  do_clear_symbols (symtab, argv, argc, idx, exclusive);
+                  do_clear_symbols (interp, argv, argc, idx, exclusive);
                 }
             }
         }
@@ -1472,9 +1419,18 @@ Return the value of the variable @var{name} directly from the symbol table.
 
   std::string name = args(0).xstring_value ("__varval__: first argument must be a variable name");
 
-  octave::symbol_scope scope = interp.get_current_scope ();
+  std::string nm = args(0).string_value ();
 
-  return scope ? scope.varval (args(0).string_value ()) : octave_value ();
+  // FIXME: we need this kluge to implement inputname in a .m file.
+
+  if (nm == ".argn.")
+    {
+      octave::call_stack& cs = interp.get_call_stack ();
+
+      return cs.get_auto_fcn_var (octave::stack_frame::ARG_NAMES);
+    }
+
+  return interp.varval (nm);
 }
 
 static std::string Vmissing_component_hook;
@@ -1510,7 +1466,7 @@ should return an error message to be displayed.
   return SET_INTERNAL_VARIABLE (missing_component_hook);
 }
 
-// The following functions are deprecated.
+// The following function is deprecated.
 
 string_vector
 get_struct_elts (const std::string& text)

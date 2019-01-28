@@ -36,7 +36,7 @@ function version = __gnuplot_version__ ()
       ## are skipped and people might actually see the message, read it,
       ## comprehend it, take the advice it gives, and stop asking us
       ## why plotting fails when gnuplot is not found.
-      error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n");
+      error ("The gnuplot executable '%s' was not found or does not work.  If you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n", gnuplot_binary ());
     endif
     output = strrep (output, "gnuplot", "");
     output = strrep (output, "patchlevel", ".");

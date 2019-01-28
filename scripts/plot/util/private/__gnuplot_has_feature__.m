@@ -37,12 +37,7 @@ function res = __gnuplot_has_feature__ (feature)
   persistent has_features;
 
   if (isempty (has_features))
-    try
-      gnuplot_version = __gnuplot_version__ ();
-    catch
-      ## Don't throw an error if gnuplot isn't installed
-      gnuplot_version = "0.0.0";
-    end_try_catch
+    gnuplot_version = __gnuplot_version__ ();
     versions  = {"4.4", "4.6", "5.0", "4.6", "4.6", "5.0", "5.0", "5.0"};
     operators = {">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" , ">=" };
     have_features = false (size (features));

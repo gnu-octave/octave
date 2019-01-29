@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-ieee.h"
+#include "lo-sysdep.h"
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -431,7 +432,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 #if defined (HAVE_ZLIB)
       if (use_zlib)
         {
-          FILE *fptr = std::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = octave::sys::fopen (fname.c_str (), mode.c_str ());
 
           if (fptr)
             {
@@ -448,7 +449,7 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
       else
 #endif
         {
-          FILE *fptr = std::fopen (fname.c_str (), mode.c_str ());
+          FILE *fptr = octave::sys::fopen (fname.c_str (), mode.c_str ());
 
           retval = octave_stdiostream::create (fname, fptr, md,
                                                flt_fmt);

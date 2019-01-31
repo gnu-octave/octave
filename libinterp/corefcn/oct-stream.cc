@@ -7503,6 +7503,9 @@ namespace octave
   {
     int conv_err = 0;
 
+    if (fid.is_single_type ())
+      ::error ("file id must be a file object or integer value");
+
     int int_fid = convert_to_valid_int (fid, conv_err);
 
     if (conv_err)
@@ -7584,6 +7587,8 @@ namespace octave
               }
           }
       }
+    else if (fid.is_single_type ())
+      ::error ("file id must be a file object, std::string, or integer value");
     else
       {
         int conv_err = 0;

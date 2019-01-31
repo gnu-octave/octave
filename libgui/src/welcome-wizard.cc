@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -63,8 +64,18 @@ namespace octave
     setWindowTitle (tr ("Welcome to GNU Octave"));
 
     setEnabled (true);
-    resize (600, 480);
-    setMinimumSize (QSize (600, 480));
+
+    QDesktopWidget *m_desktop = QApplication::desktop ();
+    int screen = m_desktop->screenNumber (this);  // screen of the main window
+    QRect screen_geo = m_desktop->availableGeometry (screen);
+
+    int win_x = screen_geo.width ();        // width of the screen
+    int win_y = screen_geo.height ();       // height of the screen
+    int ww_x = std::max (win_x/2, 600);    // desired width
+    int ww_y = std::max (win_y*2/3, 480);  // desired height
+
+    resize (ww_x, ww_y);
+    setMinimumSize (QSize (ww_x, ww_y));
 
     show_page ();
 

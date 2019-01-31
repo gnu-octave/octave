@@ -40,84 +40,84 @@ as the obsolete function, but should provide equivalent functionality.
 
 @multitable @columnfractions .3 .3 .15
 @headitem Obsolete Function @tab Replacement @tab Version
-@item @code{beta_cdf} @tab @code{betacdf} @tab 3.4.0
-@item @code{beta_inv} @tab @code{betainv} @tab 3.4.0
-@item @code{beta_pdf} @tab @code{betapdf} @tab 3.4.0
-@item @code{beta_rnd} @tab @code{betarnd} @tab 3.4.0
-@item @code{binomial_cdf} @tab @code{binocdf} @tab 3.4.0
-@item @code{binomial_inv} @tab @code{binoinv} @tab 3.4.0
-@item @code{binomial_pdf} @tab @code{binopdf} @tab 3.4.0
-@item @code{binomial_rnd} @tab @code{binornd} @tab 3.4.0
-@item @code{chisquare_cdf} @tab @code{chi2cdf} @tab 3.4.0
-@item @code{chisquare_inv} @tab @code{chi2inv} @tab 3.4.0
-@item @code{chisquare_pdf} @tab @code{chi2pdf} @tab 3.4.0
-@item @code{chisquare_rnd} @tab @code{chi2rnd} @tab 3.4.0
+@item @code{beta_cdf} @tab @code{betacdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{beta_inv} @tab @code{betainv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{beta_pdf} @tab @code{betapdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{beta_rnd} @tab @code{betarnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{binomial_cdf} @tab @code{binocdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{binomial_inv} @tab @code{binoinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{binomial_pdf} @tab @code{binopdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{binomial_rnd} @tab @code{binornd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{chisquare_cdf} @tab @code{chi2cdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{chisquare_inv} @tab @code{chi2inv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{chisquare_pdf} @tab @code{chi2pdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{chisquare_rnd} @tab @code{chi2rnd} in Octave Forge statistics pkg @tab 3.4.0
 @item @code{clearplot} @tab @code{clf} @tab 3.4.0
 @item @code{com2str} @tab @code{num2str} @tab 3.4.0
-@item @code{exponential_cdf} @tab @code{expcdf} @tab 3.4.0
-@item @code{exponential_inv} @tab @code{expinv} @tab 3.4.0
-@item @code{exponential_pdf} @tab @code{exppdf} @tab 3.4.0
-@item @code{exponential_rnd} @tab @code{exprnd} @tab 3.4.0
-@item @code{f_cdf} @tab @code{fcdf} @tab 3.4.0
-@item @code{f_inv} @tab @code{finv} @tab 3.4.0
-@item @code{f_pdf} @tab @code{fpdf} @tab 3.4.0
-@item @code{f_rnd} @tab @code{frnd} @tab 3.4.0
-@item @code{gamma_cdf} @tab @code{gamcdf} @tab 3.4.0
-@item @code{gamma_inv} @tab @code{gaminv} @tab 3.4.0
-@item @code{gamma_pdf} @tab @code{gampdf} @tab 3.4.0
-@item @code{gamma_rnd} @tab @code{gamrnd} @tab 3.4.0
-@item @code{geometric_cdf} @tab @code{geocdf} @tab 3.4.0
-@item @code{geometric_inv} @tab @code{geoinv} @tab 3.4.0
-@item @code{geometric_pdf} @tab @code{geopdf} @tab 3.4.0
-@item @code{geometric_rnd} @tab @code{geornd} @tab 3.4.0
-@item @code{hypergeometric_cdf} @tab @code{hygecdf} @tab 3.4.0
-@item @code{hypergeometric_inv} @tab @code{hygeinv} @tab 3.4.0
-@item @code{hypergeometric_pdf} @tab @code{hygepdf} @tab 3.4.0
-@item @code{hypergeometric_rnd} @tab @code{hygernd} @tab 3.4.0
+@item @code{exponential_cdf} @tab @code{expcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{exponential_inv} @tab @code{expinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{exponential_pdf} @tab @code{exppdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{exponential_rnd} @tab @code{exprnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{f_cdf} @tab @code{fcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{f_inv} @tab @code{finv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{f_pdf} @tab @code{fpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{f_rnd} @tab @code{frnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{gamma_cdf} @tab @code{gamcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{gamma_inv} @tab @code{gaminv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{gamma_pdf} @tab @code{gampdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{gamma_rnd} @tab @code{gamrnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{geometric_cdf} @tab @code{geocdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{geometric_inv} @tab @code{geoinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{geometric_pdf} @tab @code{geopdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{geometric_rnd} @tab @code{geornd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{hypergeometric_cdf} @tab @code{hygecdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{hypergeometric_inv} @tab @code{hygeinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{hypergeometric_pdf} @tab @code{hygepdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{hypergeometric_rnd} @tab @code{hygernd} in Octave Forge statistics pkg @tab 3.4.0
 @item @code{intersection} @tab @code{intersect} @tab 3.4.0
 @item @code{is_bool} @tab @code{isbool} @tab 3.4.0
 @item @code{is_complex} @tab @code{iscomplex} @tab 3.4.0
-@item @code{is_list} @tab @code{islist} @tab 3.4.0
+@item @code{is_list} @tab None @tab 3.4.0
 @item @code{is_matrix} @tab @code{ismatrix} @tab 3.4.0
 @item @code{is_scalar} @tab @code{isscalar} @tab 3.4.0
 @item @code{is_square} @tab @code{issquare} @tab 3.4.0
-@item @code{is_stream} @tab @code{isstream} @tab 3.4.0
+@item @code{is_stream} @tab None @tab 3.4.0
 @item @code{is_struct} @tab @code{isstruct} @tab 3.4.0
 @item @code{is_symmetric} @tab @code{issymmetric} @tab 3.4.0
 @item @code{is_vector} @tab @code{isvector} @tab 3.4.0
-@item @code{lognormal_cdf} @tab @code{logncdf} @tab 3.4.0
-@item @code{lognormal_inv} @tab @code{logninv} @tab 3.4.0
-@item @code{lognormal_pdf} @tab @code{lognpdf} @tab 3.4.0
-@item @code{lognormal_rnd} @tab @code{lognrnd} @tab 3.4.0
+@item @code{lognormal_cdf} @tab @code{logncdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{lognormal_inv} @tab @code{logninv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{lognormal_pdf} @tab @code{lognpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{lognormal_rnd} @tab @code{lognrnd} in Octave Forge statistics pkg @tab 3.4.0
 @item @code{meshdom} @tab @code{meshgrid} @tab 3.4.0
-@item @code{normal_cdf} @tab @code{normcdf} @tab 3.4.0
-@item @code{normal_inv} @tab @code{norminv} @tab 3.4.0
-@item @code{normal_pdf} @tab @code{normpdf} @tab 3.4.0
-@item @code{normal_rnd} @tab @code{normrnd} @tab 3.4.0
-@item @code{pascal_cdf} @tab @code{nbincdf} @tab 3.4.0
-@item @code{pascal_inv} @tab @code{nbininv} @tab 3.4.0
-@item @code{pascal_pdf} @tab @code{nbinpdf} @tab 3.4.0
-@item @code{pascal_rnd} @tab @code{nbinrnd} @tab 3.4.0
-@item @code{poisson_cdf} @tab @code{poisscdf} @tab 3.4.0
-@item @code{poisson_inv} @tab @code{poissinv} @tab 3.4.0
-@item @code{poisson_pdf} @tab @code{poisspdf} @tab 3.4.0
-@item @code{poisson_rnd} @tab @code{poissrnd} @tab 3.4.0
+@item @code{normal_cdf} @tab @code{normcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{normal_inv} @tab @code{norminv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{normal_pdf} @tab @code{normpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{normal_rnd} @tab @code{normrnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{pascal_cdf} @tab @code{nbincdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{pascal_inv} @tab @code{nbininv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{pascal_pdf} @tab @code{nbinpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{pascal_rnd} @tab @code{nbinrnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{poisson_cdf} @tab @code{poisscdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{poisson_inv} @tab @code{poissinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{poisson_pdf} @tab @code{poisspdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{poisson_rnd} @tab @code{poissrnd} in Octave Forge statistics pkg @tab 3.4.0
 @item @code{polyinteg} @tab @code{polyint} @tab 3.4.0
 @item @code{struct_contains} @tab @code{isfield} @tab 3.4.0
 @item @code{struct_elements} @tab @code{fieldnames} @tab 3.4.0
-@item @code{t_cdf} @tab @code{tcdf} @tab 3.4.0
-@item @code{t_inv} @tab @code{tinv} @tab 3.4.0
-@item @code{t_pdf} @tab @code{tpdf} @tab 3.4.0
-@item @code{t_rnd} @tab @code{trnd} @tab 3.4.0
-@item @code{uniform_cdf} @tab @code{unifcdf} @tab 3.4.0
-@item @code{uniform_inv} @tab @code{unifinv} @tab 3.4.0
-@item @code{uniform_pdf} @tab @code{unifpdf} @tab 3.4.0
-@item @code{uniform_rnd} @tab @code{unifrnd} @tab 3.4.0
-@item @code{weibull_cdf} @tab @code{wblcdf} @tab 3.4.0
-@item @code{weibull_inv} @tab @code{wblinv} @tab 3.4.0
-@item @code{weibull_pdf} @tab @code{wblpdf} @tab 3.4.0
-@item @code{weibull_rnd} @tab @code{wblrnd} @tab 3.4.0
-@item @code{wiener_rnd} @tab @code{wienrnd} @tab 3.4.0
+@item @code{t_cdf} @tab @code{tcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{t_inv} @tab @code{tinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{t_pdf} @tab @code{tpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{t_rnd} @tab @code{trnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{uniform_cdf} @tab @code{unifcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{uniform_inv} @tab @code{unifinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{uniform_pdf} @tab @code{unifpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{uniform_rnd} @tab @code{unifrnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{weibull_cdf} @tab @code{wblcdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{weibull_inv} @tab @code{wblinv} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{weibull_pdf} @tab @code{wblpdf} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{weibull_rnd} @tab @code{wblrnd} in Octave Forge statistics pkg @tab 3.4.0
+@item @code{wiener_rnd} @tab @code{wienrnd} in Octave Forge statistics pkg @tab 3.4.0
 @item @code{create_set} @tab @code{unique} @tab 3.6.0
 @item @code{dmult} @tab @code{diag (A) * B} @tab 3.6.0
 @item @code{iscommand} @tab None @tab 3.6.0
@@ -151,8 +151,8 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{str2mat} @tab @code{char} @tab 3.6.0
 @item @code{unmark_command} @tab None @tab 3.6.0
 @item @code{unmark_rawcommand} @tab None @tab 3.6.0
-@item @code{autocor} @tab Octave Forge signal pkg, @code{xcor} @tab 3.8.0
-@item @code{autocov} @tab Octave Forge signal pkg, @code{xcov} @tab 3.8.0
+@item @code{autocor} @tab @code{xcorr} in Octave Forge signal pkg @tab 3.8.0
+@item @code{autocov} @tab @code{xcov} in Octave Forge signal pkg @tab 3.8.0
 @item @code{betai} @tab @code{betainc} @tab 3.8.0
 @item @code{cellidx} @tab @code{ismember} @tab 3.8.0
 @item @code{cquad} @tab @code{quadcc} @tab 3.8.0
@@ -178,4 +178,47 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{shell_cmd} @tab @code{system} @tab 4.0.0
 @item @code{studentize} @tab @code{zscore} @tab 4.0.0
 @item @code{sylvester_matrix} @tab @code{hadamard (2^k)} @tab 4.0.0
+@item @code{default_save_options} @tab @code{save_default_options} @tab 4.2.0
+@item @code{gen_doc_cache} @tab @code{doc_cache_create} @tab 4.2.0
+@item @code{interp1q} @tab @code{interp1} @tab 4.2.0
+@item @code{isequalwithequalnans} @tab @code{isequaln} @tab 4.2.0
+@item @code{java_convert_matrix} @tab @code{java_matrix_autoconversion} @tab 4.2.0
+@item @code{java_debug} @tab @code{debug_java} @tab 4.2.0
+@item @code{java_invoke} @tab @code{javaMethod} @tab 4.2.0
+@item @code{java_new} @tab @code{javaObject} @tab 4.2.0
+@item @code{java_unsigned_conversion} @tab @code{java_unsigned_autoconversion} @tab 4.2.0
+@item @code{javafields} @tab @code{fieldnames} @tab 4.2.0
+@item @code{javamethods} @tab @code{methods} @tab 4.2.0
+@item @code{re_read_readline_init_file} @tab @code{readline_re_read_init_file} @tab 4.2.0
+@item @code{read_readline_init_file} @tab @code{readline_read_init_file} @tab 4.2.0
+@item @code{saving_history} @tab @code{history_save} @tab 4.2.0
+@item @code{allow_noninteger_range_as_index} @tab None @tab 4.4.0
+@item @code{bicubic} @tab @code{interp2} @tab 4.4.0
+@item @code{delaunay3} @tab @code{delaunay} @tab 4.4.0
+@item @code{do_braindead_shortcircuit_evaluation} @tab None @tab 4.4.0
+@item @code{dump_prefs} @tab @code{} None 4.4.0
+@item @code{find_dir_in_path} @tab @code{dir_in_loadpath} @tab 4.4.0
+@item @code{finite} @tab @code{isfinite} @tab 4.4.0
+@item @code{fmod} @tab @code{rem} @tab 4.4.0
+@item @code{fnmatch} @tab @code{glob} or @code{regexp} @tab 4.4.0
+@item @code{gmap40} @tab None @tab 4.4.0
+@item @code{loadaudio} @tab @code{audioread} @tab 4.4.0
+@item @code{luinc} @tab @code{ichol} or @code{ilu} @tab 4.4.0
+@item @code{mouse_wheel_zoom} @tab @code{mousehweelzoom} property @tab 4.4.0
+@item @code{nfields} @tab @code{numfields} @tab 4.4.0
+@item @code{octave_tmp_file_name} @tab @code{tempname} @tab 4.4.0
+@item @code{playaudio} @tab @code{audioplayer} @tab 4.4.0
+@item @code{saveaudio} @tab @code{audiowrite} @tab 4.4.0
+@item @code{setaudio} @tab None @tab 4.4.0
+@item @code{syl} @tab @code{sylvester} @tab 4.4.0
+@item @code{usage} @tab @code{print_usage} @tab 4.4.0
+@item @code{bitmax} @tab @code{flintmax} @tab 5.1.0
+@item @code{mahalanobis} @tab @code{mahal} in Octave Forge statistics pkg @tab 5.1.0
+@item @code{md5sum} @tab @code{hash} @tab 5.1.0
+@item @code{octave_config_info} @tab @code{__octave_config_info__} @tab 5.1.0
+@item @code{onenormest} @tab @code{normest1} @tab 5.1.0
+@item @code{sleep} @tab @code{pause} @tab 5.1.0
+@item @code{usleep} @tab @code{pause} @tab 5.1.0
+@item @code{wavread} @tab @code{audioread} @tab 5.1.0
+@item @code{wavwrite} @tab @code{audiowrite} @tab 5.1.0
 @end multitable

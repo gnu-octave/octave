@@ -59,7 +59,7 @@
 ## P+@var{order} degrees of freedom.  With periodic boundary conditions
 ## the degrees of freedom are reduced to P.
 ##
-## The optional property, @var{constaints}, is a structure specifying linear
+## The optional property, @var{constraints}, is a structure specifying linear
 ## constraints on the fit.  The structure has three fields, @qcode{"xc"},
 ## @qcode{"yc"}, and @qcode{"cc"}.
 ##
@@ -235,10 +235,10 @@ endfunction
 
 %!test
 %! y = interp1 (xb, yb, x, "linear");
-%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 20 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 20 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb), x), y, 20 * eps ());

@@ -561,10 +561,10 @@ namespace octave
         QRect screen_geo = m_desktop->availableGeometry (screen);
         int win_x = screen_geo.width ();        // width of the screen
         int win_y = screen_geo.height ();       // height of the screen
-        int reln_x = std::min (720, win_x-80);  // desired width of release notes
-        int reln_y = std::min (740, win_y-80);  // desired height of release notes
+        int reln_x = win_x*2/5;  // desired width of release notes
+        int reln_y = win_y*2/3;  // desired height of release notes
         m_release_notes_window->resize (reln_x, reln_y);  // set size
-        m_release_notes_window->move (20, 0);     // move to the top left corner
+        m_release_notes_window->move (20, 20);     // move to the top left corner
       }
 
     if (! m_release_notes_window->isVisible ())
@@ -638,8 +638,8 @@ namespace octave
         QRect screen_geo = m_desktop->availableGeometry (screen);
         int win_x = screen_geo.width ();        // width of the screen
         int win_y = screen_geo.height ();       // height of the screen
-        int news_x = std::min (640, win_x-80);  // desired width of news window
-        int news_y = std::min (480, win_y-80);  // desired height of news window
+        int news_x = win_x/2;  // desired width of news window
+        int news_y = win_y/2;  // desired height of news window
         m_community_news_window->resize (news_x, news_y);  // set size and center
         m_community_news_window->move ((win_x - m_community_news_window->width ())/2,
                                        (win_y - m_community_news_window->height ())/2);
@@ -1344,6 +1344,15 @@ namespace octave
       {
         restoreGeometry (mw_geometry.def.toByteArray ());
         restoreState (mw_state.def.toByteArray ());
+
+        QDesktopWidget *m_desktop = QApplication::desktop ();
+        int screen = m_desktop->screenNumber (this);  // screen of the main window
+        QRect screen_geo = m_desktop->availableGeometry (screen);
+
+        int win_x = screen_geo.width ();        // width of the screen
+        int win_y = screen_geo.height ();       // height of the screen
+
+        resize (std::max (width (), 2*win_x/3), std::max (height (), 7*win_y/8));
       }
 
     show ();

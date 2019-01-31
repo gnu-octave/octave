@@ -127,9 +127,9 @@ function clearvars (varargin)
   endfor
 
   if (global_mode)
-    varlist = evalin ("caller", "who global");
+    varlist = evalin ("caller", "who ('global')");
   else
-    varlist = evalin ("caller", "who");
+    varlist = evalin ("caller", "who ()");
   endif
 
   ## evalin will cause the automatic creation of 'ans' variable (bug #53339).
@@ -151,19 +151,19 @@ function clearvars (varargin)
   endif
 
   varlist = varlist(idx_clear);
-  names = strjoin (varlist, " ");
+  names = strjoin (varlist, "', '");
 
   if (! isempty (names))
     if (global_mode)
-      evalin ("caller", ["clear -global " names]);
+      evalin ("caller", ["clear ('-global', '", names, "')"]);
     else
-      evalin ("caller", ["clear " names]);
+      evalin ("caller", ["clear ('", names, "')"]);
     endif
   endif
 
   ## Clean up automatic variable "ans" if necessary
   if (clear_ans)
-    evalin ("caller", "clear ans");
+    evalin ("caller", "clear ('ans')");
   endif
 
 endfunction

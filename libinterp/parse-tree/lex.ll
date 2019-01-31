@@ -2085,6 +2085,7 @@ namespace octave
   lexical_feedback::reset (void)
   {
     m_end_of_input = false;
+    m_allow_command_syntax = true;
     m_at_beginning_of_statement = true;
     m_looking_at_anon_fcn_args = false;
     m_looking_at_return_list = false;
@@ -2197,6 +2198,9 @@ namespace octave
   bool
   lexical_feedback::previous_token_may_be_command (void) const
   {
+    if (! m_allow_command_syntax)
+      return false;
+
     const token *tok = m_tokens.front ();
     return tok ? tok->may_be_command () : false;
   }
@@ -2473,8 +2477,9 @@ namespace octave
   base_lexer::is_variable (const std::string& name,
                            const symbol_scope& /*scope*/)
   {
-    return (/* (scope && scope.is_variable (name))
-            || */ (m_pending_local_variables.find (name)
+    return ((m_interpreter.at_top_level ()
+             && m_interpreter.is_variable (name))
+            || (m_pending_local_variables.find (name)
                 != m_pending_local_variables.end ()));
   }
 
@@ -2947,6 +2952,9 @@ namespace octave
   bool
   base_lexer::looks_like_command_arg (void)
   {
+    if (! m_allow_command_syntax)
+      return false;
+
     bool space_before = space_follows_previous_token ();
     bool space_after = looking_at_space ();
 

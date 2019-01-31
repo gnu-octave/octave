@@ -259,6 +259,7 @@ namespace octave
 
     lexical_feedback (void)
       : m_end_of_input (false),
+        m_allow_command_syntax (true),
         m_at_beginning_of_statement (true),
         m_looking_at_anon_fcn_args (false),
         m_looking_at_return_list (false),
@@ -343,6 +344,9 @@ namespace octave
 
     // true means that we have encountered eof on the input stream.
     bool m_end_of_input;
+
+    // true means command syntax is allowed.
+    bool m_allow_command_syntax;
 
     // true means we are at the beginning of a statement, where a
     // command name is possible.

@@ -409,6 +409,11 @@ namespace octave
     append_statement_list (tree_statement_list *list, char sep,
                            tree_statement *stmt, bool warn_missing_semi);
 
+    // Don't allow parsing command syntax.  If the parser/lexer is
+    // reset, this setting is also reset to the default (allow command
+    // syntax).
+    void disallow_command_syntax (void);
+
     // Generic error messages.
     void bison_error (const std::string& s, int l = -1, int c = -1);
 

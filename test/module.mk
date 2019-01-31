@@ -8,8 +8,6 @@ TEST_FILES += \
   %reldir%/fntests.m \
   %reldir%/args.tst \
   %reldir%/bug-31371.tst \
-  %reldir%/bug-38565.tst \
-  %reldir%/bug-38576.tst \
   %reldir%/bug-45969.tst \
   %reldir%/bug-45972.tst \
   %reldir%/bug-46330.tst \
@@ -27,6 +25,7 @@ TEST_FILES += \
   %reldir%/diag-perm.tst \
   %reldir%/error.tst \
   %reldir%/eval-catch.tst \
+  %reldir%/eval-command.tst \
   %reldir%/for.tst \
   %reldir%/func.tst \
   %reldir%/global.tst \

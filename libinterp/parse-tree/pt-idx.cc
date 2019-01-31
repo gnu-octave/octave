@@ -45,13 +45,13 @@ namespace octave
 
   tree_index_expression::tree_index_expression (int l, int c)
     : tree_expression (l, c), m_expr (nullptr), m_args (0), m_type (),
-      m_arg_nm (), m_dyn_field () { }
+      m_arg_nm (), m_dyn_field (), m_word_list_cmd (false) { }
 
   tree_index_expression::tree_index_expression (tree_expression *e,
                                                 tree_argument_list *lst,
                                                 int l, int c, char t)
     : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
-      m_arg_nm (), m_dyn_field ()
+      m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
   {
     append (lst, t);
   }
@@ -60,7 +60,7 @@ namespace octave
                                                 const std::string& n,
                                                 int l, int c)
     : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
-      m_arg_nm (), m_dyn_field ()
+      m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
   {
     append (n);
   }
@@ -69,7 +69,7 @@ namespace octave
                                                 tree_expression *df,
                                                 int l, int c)
     : tree_expression (l, c), m_expr (e), m_args (0), m_type (),
-      m_arg_nm (), m_dyn_field ()
+      m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
   {
     append (df);
   }

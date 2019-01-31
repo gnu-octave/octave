@@ -89,6 +89,10 @@ namespace octave
 
     std::list<tree_expression *> dyn_fields (void) { return m_dyn_field; }
 
+    void mark_word_list_cmd (void) { m_word_list_cmd = true; }
+
+    bool is_word_list_cmd (void) const { return m_word_list_cmd; }
+
     bool lvalue_ok (void) const { return m_expr->lvalue_ok (); }
 
     bool rvalue_ok (void) const { return true; }
@@ -124,6 +128,9 @@ namespace octave
 
     // The list of dynamic field names, if any.
     std::list<tree_expression *> m_dyn_field;
+
+    // TRUE if this expression was parsed as a word list command.
+    bool m_word_list_cmd;
 
     tree_index_expression (int l, int c);
 

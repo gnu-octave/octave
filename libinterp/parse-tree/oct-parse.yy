@@ -484,6 +484,7 @@ word_list_cmd   : identifier word_list
                         // make_index_expression deleted $1 and $2.
                         YYABORT;
                       }
+                    $$->mark_word_list_cmd ();
                   }
                 ;
 
@@ -4311,6 +4312,12 @@ namespace octave
     list->append (stmt);
 
     return list;
+  }
+
+  void
+  base_parser::disallow_command_syntax (void)
+  {
+    m_lexer.m_allow_command_syntax = false;
   }
 
   void

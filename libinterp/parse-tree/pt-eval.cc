@@ -210,6 +210,15 @@ namespace octave
       {
         eval_parser.reset ();
 
+        // If we are looking at
+        //
+        //   val = eval ("code");
+        //
+        // then don't allow code to be parsed as a command.
+
+        if (nargout > 0)
+          eval_parser.disallow_command_syntax ();
+
         parse_status = eval_parser.run ();
 
         if (parse_status == 0)
@@ -2150,7 +2159,14 @@ namespace octave
       {
         tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-        if (! is_variable (expr))
+        bool is_var = is_variable (expr);
+
+        std::string nm =  id->name ();
+
+        if (is_var && idx_expr.is_word_list_cmd ())
+          error ("%s used as variable and later as function", nm.c_str ());
+
+        if (! is_var)
           {
             octave_value_list first_args;
 

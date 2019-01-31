@@ -765,6 +765,8 @@ read from stdin\n\
       file.close();
       return -1;
     }
+  
+  file.close ();
 
   // Format
   if (strcmp (argv[2], "pdf") != 0 && strcmp (argv[2], "svg") != 0)
@@ -837,7 +839,8 @@ read from stdin\n\
     {
       // Return modified svg document
       QTextStream out (&fout);
-      out << document.toString ();
+      out.setCodec ("UTF-8");
+      out << document.toByteArray ();
     }
 
   // Delete output file before writing with new data

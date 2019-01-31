@@ -235,10 +235,10 @@ endfunction
 
 %!test
 %! y = interp1 (xb, yb, x, "linear");
-%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 20 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 20 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb), x), y, 15 * eps ());
+%! assert (ppval (splinefit (x, y, xb), x), y, 20 * eps ());

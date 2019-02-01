@@ -758,7 +758,84 @@ namespace octave
     return sym;
   }
 
-  void script_stack_frame::get_val_offsets (const symbol_record& sym,
+  // Similar to set_script_offsets_internal except that we only return
+  // frame and data offsets for symbols found by name in parent scopes
+  // instead of updating the offsets stored in the script frame itself.
+
+  bool
+  script_stack_frame::get_val_offsets_internal (const symbol_record& script_sr,
+                                                size_t& frame_offset,
+                                                size_t& data_offset) const
+  {
+    bool found = false;
+
+    // This scope will be used to evaluate the script.  Find symbols
+    // here by name.
+
+    symbol_scope eval_scope = m_access_link->get_scope ();
+
+    if (eval_scope.is_nested ())
+      {
+        std::string name = script_sr.name ();
+
+        symbol_scope parent_scope = eval_scope;
+
+        size_t count = 1;
+
+        while (parent_scope)
+          {
+            const std::map<std::string, symbol_record>& parent_scope_symbols
+              = parent_scope.symbols ();
+
+            auto p = parent_scope_symbols.find (name);
+
+            if (p != parent_scope_symbols.end ())
+              {
+                found = true;
+                symbol_record parent_scope_sr = p->second;
+
+                frame_offset = parent_scope_sr.frame_offset () + 1;
+
+                data_offset = parent_scope_sr.data_offset ();
+
+                break;
+              }
+            else
+              {
+                count++;
+                parent_scope = parent_scope.parent_scope ();
+              }
+          }
+      }
+    else
+      {
+        const std::map<std::string, symbol_record>& eval_scope_symbols
+          = eval_scope.symbols ();
+
+        std::string name = script_sr.name ();
+
+        auto p = eval_scope_symbols.find (name);
+
+        symbol_record eval_scope_sr;
+
+        if (p != eval_scope_symbols.end ())
+          {
+            found = true;
+            eval_scope_sr = p->second;
+
+            // The +1 is for going from the script frame to the eval
+            // frame.  Only one access_link should need to be followed.
+
+            frame_offset = eval_scope_sr.frame_offset () + 1;
+
+            data_offset = eval_scope_sr.data_offset ();
+          }
+      }
+
+    return found;
+  }
+
+  bool script_stack_frame::get_val_offsets (const symbol_record& sym,
                                             size_t& frame_offset,
                                             size_t& data_offset) const
   {
@@ -767,11 +844,14 @@ namespace octave
 
     if (frame_offset == 0)
       {
-        // An out of range data_offset value here indicates an error in
-        // the implementation.
+        // An out of range data_offset value here means that we have a
+        // symbol that was not originally in the script.  But this
+        // function is called in places where we can't insert a new
+        // symbol, so we fail and it is up to the caller to decide what
+        // to do.
 
         if (data_offset >= size ())
-          panic_impossible ();
+          return get_val_offsets_internal (sym, frame_offset, data_offset);
 
         // Use frame and value offsets stored in this stack frame,
         // indexed by data_offset from the symbol_record to find the
@@ -788,6 +868,8 @@ namespace octave
         // that was not originally in the script.  The values should
         // have been determined by the script_stack_frame::lookup function.
       }
+
+    return true;
   }
 
   void script_stack_frame::get_val_offsets_with_insert (const symbol_record& sym,
@@ -830,7 +912,12 @@ namespace octave
   {
     size_t frame_offset;
     size_t data_offset;
-    get_val_offsets (sym, frame_offset, data_offset);
+
+    bool found = get_val_offsets (sym, frame_offset, data_offset);
+
+    // It can't be global or persistent, so call it local.
+    if (! found)
+      return LOCAL;
 
     // Follow frame_offset access links to stack frame that holds
     // the value.
@@ -853,7 +940,11 @@ namespace octave
   {
     size_t frame_offset;
     size_t data_offset;
-    get_val_offsets (sym, frame_offset, data_offset);
+
+    bool found = get_val_offsets (sym, frame_offset, data_offset);
+
+    if (! found)
+      return octave_value ();
 
     // Follow frame_offset access links to stack frame that holds
     // the value.

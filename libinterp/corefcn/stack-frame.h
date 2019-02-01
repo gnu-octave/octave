@@ -725,7 +725,11 @@ namespace octave
                                       size_t& frame_offset,
                                       size_t& data_offset);
 
-    void get_val_offsets (const symbol_record& sym, size_t& frame_offset,
+    bool get_val_offsets_internal (const symbol_record& sym,
+                                   size_t& frame_offset,
+                                   size_t& data_offset) const;
+
+    bool get_val_offsets (const symbol_record& sym, size_t& frame_offset,
                           size_t& data_offset) const;
 
     scope_flags scope_flag (const symbol_record& sym) const;

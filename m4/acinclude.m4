@@ -3180,6 +3180,7 @@ dnl Check for bison.
 dnl
 AC_DEFUN([OCTAVE_PROG_BISON], [
   AC_PROG_YACC
+  WARN_YFLAGS=
 
   case "`$YACC --version`" in
     *bison*) tmp_have_bison=yes ;;
@@ -3187,6 +3188,13 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
   esac
 
   if test $tmp_have_bison = yes; then
+    dnl FIXME: Call GNU bison with the `-Wno-yacc` option, which works with
+    dnl bison 2.5 and all later versions, as recommended by the bison NEWS.
+    dnl This is needed as long as Octave supports Autoconf version 2.69 or
+    dnl older.  In Autoconf 2.70, AC_PROG_YACC no longer adds the `-y`
+    dnl option to emulate POSIX yacc.
+    WARN_YFLAGS="-Wno-yacc"
+
     AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
                    [octave_cv_bison_api_prefix_decl_style], [
       style="api name"
@@ -3214,7 +3222,7 @@ input:;
 %%
 EOF
           ## Older versions of bison only warn and exit with success.
-          octave_bison_output=`$YACC conftest.yy 2>&1`
+          octave_bison_output=`$YACC $WARN_YFLAGS conftest.yy 2>&1`
           ac_status=$?
           if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
             octave_cv_bison_api_prefix_decl_style="$s $q"
@@ -3252,6 +3260,7 @@ building from VCS sources.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison])
   fi
+  AC_SUBST(WARN_YFLAGS)
 ])
 dnl
 dnl Find find program.

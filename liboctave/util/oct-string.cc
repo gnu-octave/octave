@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "uniconv-wrappers.h"
+#include "unwind-prot.h"
 
 template <typename T>
 static bool
@@ -482,6 +484,70 @@ octave::string::str2double (const std::string& str_arg)
     }
 
   return val;
+}
+
+std::string
+octave::string::u8_to_encoding (const std::string& who,
+                                const std::string& u8_string,
+                                const std::string& encoding)
+{
+  const uint8_t *src = reinterpret_cast<const uint8_t *>
+                       (u8_string.c_str ());
+  size_t srclen = u8_string.length ();
+
+  size_t length;
+  char *native_str = octave_u8_conv_to_encoding (encoding.c_str (), src,
+                                                 srclen, &length);
+
+  if (! native_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from UTF-8 to codepage '%s' failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_protect frame;
+  frame.add_fcn (::free, static_cast<void *> (native_str));
+
+  std::string retval = std::string (native_str, length);
+
+  return retval;
+}
+
+std::string
+octave::string::u8_from_encoding (const std::string& who,
+                                  const std::string& native_string,
+                                  const std::string& encoding)
+{
+  const char *src = native_string.c_str ();
+  size_t srclen = native_string.length ();
+
+  size_t length;
+  uint8_t *utf8_str = octave_u8_conv_from_encoding (encoding.c_str (), src,
+                                                    srclen, &length);
+  if (! utf8_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from codepage '%s' to UTF-8 failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_protect frame;
+  frame.add_fcn (::free, static_cast<void *> (utf8_str));
+
+  std::string retval = std::string (reinterpret_cast<char *> (utf8_str), length);
+
+  return retval;
 }
 
 template <typename T>

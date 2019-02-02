@@ -125,6 +125,14 @@ namespace octave
 
     extern OCTAVE_API Complex
     str2double (const std::string& str_arg);
+
+    extern OCTAVE_API std::string
+    u8_to_encoding (const std::string& who, const std::string& u8_string,
+                    const std::string& encoding);
+
+    extern OCTAVE_API std::string
+    u8_from_encoding (const std::string& who, const std::string& native_string,
+                      const std::string& encoding);
   }
 }
 

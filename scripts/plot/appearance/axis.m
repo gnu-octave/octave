@@ -487,6 +487,8 @@ endfunction
 
 %!demo
 %! clf;
+%! def_ticklen = get (0, "DefaultAxesTickLength");
+%! set (0, "DefaultAxesTickLength", [.028, .025]);
 %! t = 0:0.01:2*pi;
 %! x = sin (t);
 %!
@@ -534,6 +536,8 @@ endfunction
 %!  plot (t, x);
 %!  title ("all ticks and labels");
 %!  axis ("on");
+%!
+%! set (0, "DefaultAxesTickLength", def_ticklen);
 
 %!demo
 %! clf;

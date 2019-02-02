@@ -205,32 +205,41 @@ function limits = __axis__ (ca, varargin)
         set (ca, "dataaspectratiomode", "auto",
                  "plotboxaspectratio", [1, 1, 1]);
       elseif (strcmp (opt, "equal"))
-        ## Get position of axis in pixels
-        ca_units = get (ca, "units");
-        set (ca, "units", "pixels");
-        axis_pos = get (ca, "position");
-        set (ca, "units", ca_units);
-
-        pbar = get (ca, "plotboxaspectratio");
-        dx = diff (__get_tight_lims__ (ca, "x"));
-        dy = diff (__get_tight_lims__ (ca, "y"));
-        dz = diff (__get_tight_lims__ (ca, "z"));
-        new_pbar = [dx dy dz];
-        new_pbar(new_pbar == 0) = 1;
-        if (dx/pbar(1) < dy/pbar(2))
-          set (ca, "xlimmode", "auto");
-          new_pbar(1) = (dy / axis_pos(4)) * axis_pos(3);
-        else
-          set (ca, "ylimmode", "auto");
-          new_pbar(2) = (dx / axis_pos(3)) * axis_pos(4);
+        is2dview = (get (ca, "view")(2) == 90);
+        if (is2dview)
+          ## Save & later restore axes aspect ratio
+          ca_units = get (ca, "units");
+          set (ca, "units", "pixels");
+          axis_pos = get (ca, "position");
+          set (ca, "units", ca_units);
+          pbratio = [axis_pos(3), axis_pos(4), axis_pos(4)];
         endif
-        set (ca, "dataaspectratio", [1, 1, 1],
-                 "plotboxaspectratio", new_pbar);
+
+        daratio = get (ca, "dataaspectratio");
+        if (all (daratio != [1, 1, 1]))
+          set (ca, "dataaspectratio", [1, 1, 1]);
+        else
+          set (ca, "dataaspectratio", [1+eps, 1, 1],
+                   "dataaspectratio", [1, 1, 1]);
+        endif
+
+        ## Matlab only adjusts plotboxaspectratio for 2-D figures, but
+        ## Octave needs to do it for 3-D as well.
+        if (is2dview)
+          set (ca, "plotboxaspectratio", pbratio);
+        else
+          pbratio = get (ca, "plotboxaspectratio");
+          if (all (pbratio != [1, 1, 1]))
+            set (ca, "plotboxaspectratio", [1, 1, 1]);
+          else
+            set (ca, "plotboxaspectratio", [1+eps, 1, 1],
+                     "plotboxaspectratio", [1, 1, 1]);
+          endif
+        endif
       elseif (strcmpi (opt, "vis3d"))
         ## Fix aspect ratio modes for rotation without stretching.
         set (ca, "dataaspectratiomode", "manual",
                  "plotboxaspectratiomode", "manual");
-
       elseif (strcmpi (opt, "normal"))
         ## Set plotboxaspectratio to something obtuse so that switching
         ## back to "auto" will force a re-calculation.

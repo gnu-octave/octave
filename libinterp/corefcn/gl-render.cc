@@ -1487,8 +1487,14 @@ namespace octave
         double zpTick = props.get_zpTick ();
         double zpTickN = props.get_zpTickN ();
 
-        // X grid
-
+        // X ticks and grid properties
+        Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
+        Matrix xmticks = xform.xscale (props.get_xminortickvalues ().matrix_value ());
+        bool do_xminortick = props.is_xminortick () && ! xticks.isempty ();
+        string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
+        int wmax = 0;
+        int hmax = 0;
+        bool tick_along_z = nearhoriz || math::isinf (fy);
         double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
@@ -1498,18 +1504,14 @@ namespace octave
         double minorgridalpha = props.get_minorgridalpha ();
         bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
         bool do_xminorgrid = (props.is_xminorgrid ()
-                              && (minorgridstyle != "none"));
-        bool do_xminortick = props.is_xminortick ();
+                              && (minorgridstyle != "none")
+                              && ! xticks.isempty ());
         bool is_origin = props.xaxislocation_is ("origin") && props.get_is2D ()
                          && ! props.yscale_is ("log");
         bool is_origin_low = is_origin && (y_min + y_max) < 0;
-        Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
-        Matrix xmticks = xform.xscale (props.get_xminortickvalues ().matrix_value ());
-        string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
-        int wmax = 0;
-        int hmax = 0;
-        bool tick_along_z = nearhoriz || math::isinf (fy);
         bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
+
+        // X grid
 
         if (props.xcolormode_is ("manual"))
           {
@@ -1669,8 +1671,14 @@ namespace octave
         double zpTick = props.get_zpTick ();
         double zpTickN = props.get_zpTickN ();
 
-        // Y grid
-
+        // Y ticks and grid properties
+        Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
+        Matrix ymticks = xform.yscale (props.get_yminortickvalues ().matrix_value ());
+        bool do_yminortick = props.is_yminortick () && ! yticks.isempty ();
+        string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
+        int wmax = 0;
+        int hmax = 0;
+        bool tick_along_z = nearhoriz || math::isinf (fx);
         double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
@@ -1680,19 +1688,15 @@ namespace octave
         double minorgridalpha = props.get_minorgridalpha ();
         bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
         bool do_yminorgrid = (props.is_yminorgrid ()
-                              && (minorgridstyle != "none"));
-        bool do_yminortick = props.is_yminortick ();
+                              && (minorgridstyle != "none")
+                              && ! yticks.isempty ());
         bool is_origin = props.yaxislocation_is ("origin") && props.get_is2D ()
                          && ! props.xscale_is ("log");
         bool is_origin_low = is_origin && (x_min + x_max) < 0;
-        Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
-        Matrix ymticks = xform.yscale (props.get_yminortickvalues ().matrix_value ());
-        string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
-        int wmax = 0;
-        int hmax = 0;
-        bool tick_along_z = nearhoriz || math::isinf (fx);
         bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                       && (! props.has_property ("__plotyy_axes__"));
+
+        // Y grid
 
         if (props.ycolormode_is ("manual"))
           {
@@ -1841,8 +1845,13 @@ namespace octave
         double z_min = props.get_z_min ();
         double z_max = props.get_z_max ();
 
-        // Z Grid
-
+        // Z ticks and grid properties
+        Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
+        Matrix zmticks = xform.zscale (props.get_zminortickvalues ().matrix_value ());
+        bool do_zminortick = props.is_zminortick () && ! zticks.isempty ();
+        string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
+        int wmax = 0;
+        int hmax = 0;
         double linewidth = props.get_linewidth ();
         std::string gridstyle = props.get_gridlinestyle ();
         std::string minorgridstyle = props.get_minorgridlinestyle ();
@@ -1852,14 +1861,11 @@ namespace octave
         double minorgridalpha = props.get_minorgridalpha ();
         bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
         bool do_zminorgrid = (props.is_zminorgrid ()
-                              && (minorgridstyle != "none"));
-        bool do_zminortick = props.is_zminortick ();
-        Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
-        Matrix zmticks = xform.zscale (props.get_zminortickvalues ().matrix_value ());
-        string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
-        int wmax = 0;
-        int hmax = 0;
+                              && (minorgridstyle != "none")
+                              && ! zticks.isempty ());
         bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
+
+        // Z grid
 
         if (props.zcolormode_is ("manual"))
           {

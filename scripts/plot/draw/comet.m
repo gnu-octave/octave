@@ -28,7 +28,7 @@
 ##
 ## The speed of the comet may be controlled by @var{p}, which represents the
 ## time each point is displayed before moving to the next one.  The default for
-## @var{p} is 0.1 seconds.
+## @var{p} is @code{5 / numel (@var{y})}.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -47,11 +47,11 @@ function comet (varargin)
   elseif (nargin == 1)
     y = varargin{1};
     x = 1:numel (y);
-    p = 0.1;
+    p = 5 / numel (y);
   elseif (nargin == 2)
     x = varargin{1};
     y = varargin{2};
-    p = 0.1;
+    p = 5 / numel (y);
   elseif (nargin == 3)
     x = varargin{1};
     y = varargin{2};
@@ -73,6 +73,10 @@ function comet (varargin)
                x(1), y(1), "color", "b", "marker", "o");
     axis (limits);  # set manual limits to speed up plotting
 
+    ## Initialize the timer
+    t = p;
+    timerid = tic ();
+
     for n = 2:(num+dn)
       m = n - dn;
       m = max ([m, 1]);
@@ -80,8 +84,9 @@ function comet (varargin)
       set (hl(1), "xdata", x(1:m), "ydata", y(1:m));
       set (hl(2), "xdata", x(m:k), "ydata", y(m:k));
       set (hl(3), "xdata", x(k),   "ydata", y(k));
-      drawnow ();
-      pause (p);
+
+      pause (t - toc (timerid));
+      t += p;
     endfor
 
   unwind_protect_cleanup
@@ -100,5 +105,5 @@ endfunction
 %! t = 0:.1:2*pi;
 %! x = cos (2*t) .* (cos (t).^2);
 %! y = sin (2*t) .* (sin (t).^2);
-%! comet (x, y, 0.05);
+%! comet (x, y, .05);
 %! hold off;

@@ -445,10 +445,10 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
       endif
     elseif (isplot3)
       if (animate)
-        ## draw animation, then replace with true plot3
-        comet3 (hax, X, Y, Z, .05);
+        comet3 (hax, X, Y, Z);
+      else
+        h = feval (pltfunc, hax, X, Y, Z);
       endif
-      h = feval (pltfunc, hax, X, Y, Z);
       grid (hax, "on");
       zlabel (hax, "z");
     else  # mesh and surf plots

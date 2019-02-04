@@ -127,7 +127,8 @@ function y = movmax (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@max, x, wlen, __parse_movargs__ ("movmax", varargin{:}){:});
+  y = movfun (@max, x, wlen, "Endpoints", -Inf,
+              __parse_movargs__ ("movmax", varargin{:}){:});
 
 endfunction
 

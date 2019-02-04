@@ -127,7 +127,8 @@ function y = movprod (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@prod, x, wlen, __parse_movargs__ ("movprod", varargin{:}){:});
+  y = movfun (@prod, x, wlen, "Endpoints", 1,
+              __parse_movargs__ ("movprod", varargin{:}){:});
 
 endfunction
 

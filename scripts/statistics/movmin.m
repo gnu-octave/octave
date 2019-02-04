@@ -127,7 +127,8 @@ function y = movmin (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@min, x, wlen, __parse_movargs__ ("movmin", varargin{:}){:});
+  y = movfun (@min, x, wlen, "Endpoints", Inf,
+              __parse_movargs__ ("movmin", varargin{:}){:});
 
 endfunction
 

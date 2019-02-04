@@ -127,7 +127,8 @@ function y = movsum (x, wlen, varargin)
     print_usage ();
   endif
 
-  y = movfun (@sum, x, wlen, __parse_movargs__ ("movsum", varargin{:}){:});
+  y = movfun (@sum, x, wlen, "Endpoints", 0,
+              __parse_movargs__ ("movsum", varargin{:}){:});
 
 endfunction
 

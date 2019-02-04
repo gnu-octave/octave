@@ -368,7 +368,7 @@ namespace octave
   void stack_frame::install_variable (const symbol_record& sym,
                                       const octave_value& value, bool global)
   {
-    if (global)
+    if (global && ! is_global (sym))
       {
         octave_value val = varval (sym);
 

@@ -710,7 +710,6 @@ namespace octave
   opengl_renderer::draw_figure (const figure::properties& props)
   {
     // Initialize OpenGL context
-
     init_gl_context (props.is_graphicssmoothing (), props.get_color_rgb ());
 
 #if defined (HAVE_OPENGL)
@@ -1349,59 +1348,71 @@ namespace octave
       std::swap (zpTick, zpTickN);
 
     // X box
-    set_color (props.get_xcolor_rgb ());
+    Matrix color = props.get_xcolor_rgb ();
 
-    if (! isXOrigin || props.is_box() || ! is2D)
+    if (! color.isempty ())
       {
-        m_glfcns.glVertex3d (xPlaneN, ypTick, zpTick);
-        m_glfcns.glVertex3d (xPlane, ypTick, zpTick);
-      }
+        set_color (color);
 
-    if (props.is_box ())
-      {
-        m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTick);
-        m_glfcns.glVertex3d (xPlane, ypTickN, zpTick);
-        if (! is2D)
+        if (! isXOrigin || props.is_box() || ! is2D)
           {
-            m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTickN);
-            m_glfcns.glVertex3d (xPlane, ypTickN, zpTickN);
-            if (boxFull)
+            m_glfcns.glVertex3d (xPlaneN, ypTick, zpTick);
+            m_glfcns.glVertex3d (xPlane, ypTick, zpTick);
+          }
+
+        if (props.is_box ())
+          {
+            m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTick);
+            m_glfcns.glVertex3d (xPlane, ypTickN, zpTick);
+            if (! is2D)
               {
-                m_glfcns.glVertex3d (xPlaneN, ypTick, zpTickN);
-                m_glfcns.glVertex3d (xPlane, ypTick, zpTickN);
+                m_glfcns.glVertex3d (xPlaneN, ypTickN, zpTickN);
+                m_glfcns.glVertex3d (xPlane, ypTickN, zpTickN);
+                if (boxFull)
+                  {
+                    m_glfcns.glVertex3d (xPlaneN, ypTick, zpTickN);
+                    m_glfcns.glVertex3d (xPlane, ypTick, zpTickN);
+                  }
               }
           }
       }
 
     // Y box
-    set_color (props.get_ycolor_rgb ());
-    if (! isYOrigin || props.is_box() || ! is2D)
-      {
-        m_glfcns.glVertex3d (xpTick, yPlaneN, zpTick);
-        m_glfcns.glVertex3d (xpTick, yPlane, zpTick);
-      }
+    color = props.get_ycolor_rgb ();
 
-    if (props.is_box () && ! plotyy)
+    if (! color.isempty ())
       {
-        m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTick);
-        m_glfcns.glVertex3d (xpTickN, yPlane, zpTick);
-
-        if (! is2D)
+        set_color (color);
+        if (! isYOrigin || props.is_box() || ! is2D)
           {
-            m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTickN);
-            m_glfcns.glVertex3d (xpTickN, yPlane, zpTickN);
-            if (boxFull)
+            m_glfcns.glVertex3d (xpTick, yPlaneN, zpTick);
+            m_glfcns.glVertex3d (xpTick, yPlane, zpTick);
+          }
+
+        if (props.is_box () && ! plotyy)
+          {
+            m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTick);
+            m_glfcns.glVertex3d (xpTickN, yPlane, zpTick);
+
+            if (! is2D)
               {
-                m_glfcns.glVertex3d (xpTick, yPlaneN, zpTickN);
-                m_glfcns.glVertex3d (xpTick, yPlane, zpTickN);
+                m_glfcns.glVertex3d (xpTickN, yPlaneN, zpTickN);
+                m_glfcns.glVertex3d (xpTickN, yPlane, zpTickN);
+                if (boxFull)
+                  {
+                    m_glfcns.glVertex3d (xpTick, yPlaneN, zpTickN);
+                    m_glfcns.glVertex3d (xpTick, yPlane, zpTickN);
+                  }
               }
           }
       }
 
     // Z box
-    if (! is2D)
+    color = props.get_zcolor_rgb ();
+
+    if (! color.isempty () && ! is2D)
       {
-        set_color (props.get_zcolor_rgb ());
+        set_color (color);
 
         if (xySym)
           {
@@ -1513,14 +1524,20 @@ namespace octave
 
         // X grid
 
-        if (props.xcolormode_is ("manual"))
-          {
-            // use axis color for (minor)gridcolor
-            if (props.gridcolormode_is ("auto"))
-              gridcolor = props.get_xcolor_rgb ();
-            if (props.minorgridcolormode_is ("auto"))
-              minorgridcolor = props.get_xcolor_rgb ();
-          }
+        // possibly use axis color for gridcolor & minorgridcolor
+        if (props.gridcolormode_is ("auto"))
+          if (props.xcolormode_is ("manual") && ! props.xcolor_is ("none"))
+            gridcolor = props.get_xcolor_rgb ();
+
+        if (props.minorgridcolormode_is ("auto"))
+          if (props.xcolormode_is ("manual") && ! props.xcolor_is ("none"))
+            minorgridcolor = props.get_xcolor_rgb ();
+
+        if (gridcolor.isempty ())
+          do_xgrid = false;
+
+        if (minorgridcolor.isempty ())
+          do_xminorgrid = false;
 
         // set styles when drawing only minor grid
         if (do_xminorgrid && ! do_xgrid)
@@ -1546,6 +1563,10 @@ namespace octave
                        xticks, x_min, x_max,
                        yPlane, yPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
                        0, (zstate != AXE_DEPTH_DIR));
+
+        // Skip drawing axis, ticks, and ticklabels when color is "none"
+        if (props.xcolor_is ("none"))
+          return;
 
         set_color (props.get_xcolor_rgb ());
 
@@ -1698,14 +1719,20 @@ namespace octave
 
         // Y grid
 
-        if (props.ycolormode_is ("manual"))
-          {
-            // use axis color for (minor)gridcolor
-            if (props.gridcolormode_is ("auto"))
-              gridcolor = props.get_ycolor_rgb ();
-            if (props.minorgridcolormode_is ("auto"))
-              minorgridcolor = props.get_ycolor_rgb ();
-          }
+        // possibly use axis color for gridcolor & minorgridcolor
+        if (props.gridcolormode_is ("auto"))
+          if (props.ycolormode_is ("manual") && ! props.ycolor_is ("none"))
+            gridcolor = props.get_ycolor_rgb ();
+
+        if (props.minorgridcolormode_is ("auto"))
+          if (props.ycolormode_is ("manual") && ! props.ycolor_is ("none"))
+            minorgridcolor = props.get_ycolor_rgb ();
+
+        if (gridcolor.isempty ())
+          do_ygrid = false;
+
+        if (minorgridcolor.isempty ())
+          do_yminorgrid = false;
 
         // set styles when drawing only minor grid
         if (do_yminorgrid && ! do_ygrid)
@@ -1731,6 +1758,10 @@ namespace octave
                        yticks, y_min, y_max,
                        xPlane, xPlaneN, layer2Dtop ? zPlaneN : zPlane, zPlaneN,
                        1, (zstate != AXE_DEPTH_DIR));
+
+        // Skip drawing axis, ticks, and ticklabels when color is "none"
+        if (props.ycolor_is ("none"))
+          return;
 
         set_color (props.get_ycolor_rgb ());
 
@@ -1867,14 +1898,20 @@ namespace octave
 
         // Z grid
 
-        if (props.zcolormode_is ("manual"))
-          {
-            // use axis color for (minor)gridcolor
-            if (props.gridcolormode_is ("auto"))
-              gridcolor = props.get_zcolor_rgb ();
-            if (props.minorgridcolormode_is ("auto"))
-              minorgridcolor = props.get_zcolor_rgb ();
-          }
+        // possibly use axis color for gridcolor & minorgridcolor
+        if (props.gridcolormode_is ("auto"))
+          if (props.zcolormode_is ("manual") && ! props.zcolor_is ("none"))
+            gridcolor = props.get_zcolor_rgb ();
+
+        if (props.minorgridcolormode_is ("auto"))
+          if (props.zcolormode_is ("manual") && ! props.zcolor_is ("none"))
+            minorgridcolor = props.get_zcolor_rgb ();
+
+        if (gridcolor.isempty ())
+          do_zgrid = false;
+
+        if (minorgridcolor.isempty ())
+          do_zminorgrid = false;
 
         // set styles when drawing only minor grid
         if (do_zminorgrid && ! do_zgrid)
@@ -1898,6 +1935,10 @@ namespace octave
                        gridstyle, gridcolor, gridalpha,
                        zticks, z_min, z_max,
                        xPlane, xPlaneN, yPlane, yPlaneN, 2, true);
+
+        // Skip drawing axis, ticks, and ticklabels when color is "none"
+        if (props.zcolor_is ("none"))
+          return;
 
         set_color (props.get_zcolor_rgb ());
 
@@ -3637,7 +3678,7 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    if (props.get_string ().isempty ())
+    if (props.get_string ().isempty () || props.color_is ("none"))
       return;
 
     Matrix pos = xform.scale (props.get_data_position ());
@@ -4173,7 +4214,8 @@ namespace octave
 
     m_glfcns.glColor3dv (c.data ());
 
-    txt_renderer.set_color (c);
+    if (! c.isempty ())
+      txt_renderer.set_color (c);
 
 #else
 

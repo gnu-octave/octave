@@ -9165,7 +9165,10 @@ text::properties::update_font (void)
                          get ("fontangle").string_value (),
                          get ("__fontsize_points__").double_value () * dpr);
 
-  txt_renderer.set_color (get_color_rgb ());
+  Matrix c = get_color_rgb ();
+  if (! c.isempty ())
+    txt_renderer.set_color (c);
+
 }
 
 void

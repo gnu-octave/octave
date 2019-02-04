@@ -3635,7 +3635,7 @@ public:
       radio_property fontweight u , "{normal}|bold"
       double_property gridalpha m , 0.15
       radio_property gridalphamode , "{auto}|manual"
-      color_property gridcolor , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
+      color_property gridcolor m , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property gridcolormode , "{auto}|manual"
       radio_property gridlinestyle , "{-}|--|:|-.|none"
       double_property labelfontsizemultiplier u , 1.1
@@ -3669,7 +3669,7 @@ public:
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
       array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|origin"
-      color_property xcolor mu , color_values (0.15, 0.15, 0.15)
+      color_property xcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
@@ -3686,7 +3686,7 @@ public:
       double_property xticklabelrotation , 0.0
       radio_property xtickmode u , "{auto}|manual"
       radio_property yaxislocation u , "{left}|right|origin"
-      color_property ycolor mu , color_values (0.15, 0.15, 0.15)
+      color_property ycolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
@@ -3701,7 +3701,7 @@ public:
       radio_property yticklabelmode u , "{auto}|manual"
       double_property yticklabelrotation , 0.0
       radio_property ytickmode u , "{auto}|manual"
-      color_property zcolor mu , color_values (0.15, 0.15, 0.15)
+      color_property zcolor mu , color_property (color_values (0.15, 0.15, 0.15), radio_values ("none"))
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"
@@ -4343,7 +4343,7 @@ public:
 
     BEGIN_PROPERTIES (text)
       color_property backgroundcolor , color_property (radio_values ("{none}"), color_values (1, 1, 1))
-      color_property color u , color_values (0, 0, 0)
+      color_property color u , color_property (color_values (0, 0, 0), radio_values ("none"))
       color_property edgecolor , color_property (radio_values ("{none}"), color_values (0, 0, 0))
       bool_property editing , "off"
       array_property extent rG , Matrix (1, 4, 0.0)
@@ -4433,9 +4433,18 @@ public:
 
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
-    void update_color (void) { update_font (); update_text_extent (); }
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
+
+    void update_color (void)
+    {
+      if (! color.is ("none"))
+        {
+          update_font ();
+          update_text_extent ();
+        }
+    }
+
     void update_fontangle (void)
     {
       update_font ();

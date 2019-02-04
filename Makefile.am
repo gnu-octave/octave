@@ -35,7 +35,7 @@ api_version := ${OCTAVE_API_VERSION}
 
 AM_LFLAGS = @LFLAGS@
 
-AM_YFLAGS = -dv
+AM_YFLAGS = -dv ${WARN_YFLAGS}
 
 # Fortran compiler flags.
 

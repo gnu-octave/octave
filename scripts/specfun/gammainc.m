@@ -480,7 +480,7 @@ endfunction
 %!assert (gammainc (200, 201, "scaledupper"),
 %!        18.4904360746560462660798514, -eps)
 ## Here we are very good (no D (x,a)) involved
-%!assert (gammainc(1000, 1000.5, "scaledlower"), 39.48467539583672271, -2*eps)
+%!assert (gammainc (1000, 1000.5, "scaledlower"), 39.48467539583672271, -2*eps)
 %!assert (gammainc (709, 1000, "upper"), 0.99999999999999999999999954358, -eps)
 
 ## Test: case 9
@@ -489,11 +489,11 @@ endfunction
 %!         -10*eps);
 ## Matlab is better here than Octave
 %!assert (gammainc (751, 750, "upper"), 0.4805914320558831327179457887, -12*eps)
-%!assert (gammainc (200, 200, "upper"), 0.49059658199276367497217454, -5*eps)
+%!assert (gammainc (200, 200, "upper"), 0.49059658199276367497217454, -6*eps)
 %!assert (gammainc (200, 200), 0.509403418007236325027825459574527043, -5*eps)
 %!assert (gammainc (200, 200, "scaledupper"), 17.3984438553791505135122900,
-%!       -2*eps)
-%!assert (gammainc (200, 200, "scaledlower"), 18.065406676779221643065, -7*eps)
+%!       -3*eps)
+%!assert (gammainc (200, 200, "scaledlower"), 18.065406676779221643065, -8*eps)
 %!assert (gammainc (201, 200, "upper"), 0.46249244908276709524913736667,
 %!        -7*eps)
 %!assert <*54550> (gammainc (77, 2), 1)
@@ -544,7 +544,7 @@ endfunction
 %!assert (class (gammainc (single (1), 1)) == "single")
 %!assert (class (gammainc (int8 (1), 1)) == "double")
 %!assert (class (gammainc (1, single (1))) == "single")
-%!assert (class (gammainc (1, int8(1))) == "double")
+%!assert (class (gammainc (1, int8 (1))) == "double")
 %!assert (class (gammainc (1, 2)) == "double")
 %!assert (class (gammainc (single (1), 2)) == "single")
 %!assert (class (gammainc (int8 (1), 2)) == "double")

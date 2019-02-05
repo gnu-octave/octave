@@ -841,12 +841,12 @@ the return value is an empty cell array.
 
 /*
 %!test
-%! f = tempname (P_tmpdir, "oct_");
+%! f = tempname (tempdir (), "oct_");
 %! [~, fcn_name] = fileparts (f);
 %! f = [f ".m"];
 %! save_path = path ();
 %! unwind_protect
-%!   addpath (P_tmpdir);
+%!   addpath (tempdir ());
 %!   fid = fopen (f, "w+");
 %!   fprintf (fid, "function z = %s\n z = localfunctions; end\n", fcn_name);
 %!   fprintf (fid, "function z = b(x)\n z = x+1; end\n");

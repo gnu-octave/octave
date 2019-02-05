@@ -478,7 +478,7 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!   fid = fopen (tname, "w");
 %!   fclose (fid);
 %!   [~, fname] = fileparts (tname);
-%!   assert (exist (fullfile (P_tmpdir (), fname), "file"), 2);
+%!   assert (exist (fullfile (tempdir (), fname), "file"), 2);
 %! unwind_protect_cleanup
 %!   unlink (tname);
 %! end_unwind_protect

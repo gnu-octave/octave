@@ -131,25 +131,37 @@ function h = __line__ (hp, varargin)
     data_args = {"xdata", data{1}, "ydata", data{2}, "zdata", data{3}};
     mask = [false, ismat(1), false, ismat(2), false, ismat(3)];
 
-    handles = zeros (nlines, 1);
-    for i = 1:nlines
-      data_args(mask) = cellindexmat (data(ismat), ":", i);
+    [colororder_idx, styleorder_idx] = get (hp, {"ColorOrderIndex",
+                                                 "LinestyleOrderIndex"}){:};
 
-      ## FIXME: Technically, it may not be the right thing to do to rotate
-      ##        the style if the options in other_args specify a color
-      ##        or linestyle.  The plot will be made correctly, but the next
-      ##        call to line may not use the correct value.
-      [linestyle, marker] = __next_line_style__ ();
-      if (nr == 1)
-        ## Marker for a single point is always '.' (bug #38825).
-        marker = '.';
-      endif
-      color = __next_line_color__ ();
+    unwind_protect
+      handles = zeros (nlines, 1);
+      for i = 1:nlines
+        data_args(mask) = cellindexmat (data(ismat), ":", i);
 
-      handles(i) = __go_line__ (hp, data_args{:},
-                                "color", color, "linestyle", linestyle,
-                                "marker", marker, other_args{:});
-    endfor
+        ## FIXME: It would be potentially more efficient to write code to
+        ##        cycle line styles and colors within __line__.m itself.
+        ##        However, these are not easy routines to get exactly right,
+        ##        and then there would be duplicate code.  For the time being,
+        ##        use an unwind_protect block to restore any values we may
+        ##        have modified.  Testing shows only 4 millisecond extra delay
+        ##        when plotting 53 lines.
+        [linestyle, marker] = __next_line_style__ ();
+        if (nr == 1)
+          ## Marker for a single point is always '.' (bug #38825).
+          marker = '.';
+        endif
+        color = __next_line_color__ ();
+
+        handles(i) = __go_line__ (hp, data_args{:},
+                                  "color", color, "linestyle", linestyle,
+                                  "marker", marker, other_args{:});
+      endfor
+    unwind_protect_cleanup
+      set (hp, {"ColorOrderIndex", "LinestyleOrderIndex"},
+               {colororder_idx, styleorder_idx});
+    end_unwind_protect
+
   endif
 
   if (nargout > 0)

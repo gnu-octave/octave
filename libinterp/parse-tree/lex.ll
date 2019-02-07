@@ -2965,13 +2965,14 @@ namespace octave
   int
   base_lexer::handle_superclass_identifier (void)
   {
-    std::string meth = flex_yytext ();
+    std::string txt = flex_yytext ();
 
-    size_t pos = meth.find ("@");
-    std::string cls = meth.substr (pos + 1);
-    meth = meth.substr (0, pos);
+    size_t pos = txt.find ("@");
 
-    bool kw_token = (is_keyword_token (meth)
+    std::string meth_or_obj = txt.substr (0, pos);
+    std::string cls = txt.substr (pos + 1);
+
+    bool kw_token = (is_keyword_token (meth_or_obj)
                      || fq_identifier_contains_keyword (cls));
 
     if (kw_token)
@@ -2986,7 +2987,7 @@ namespace octave
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (SUPERCLASSREF, meth, cls,
+    push_token (new token (SUPERCLASSREF, meth_or_obj, cls,
                            m_input_line_number, m_current_input_column));
 
     m_current_input_column += flex_yyleng ();

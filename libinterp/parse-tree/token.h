@@ -120,7 +120,7 @@ namespace octave
     end_tok_type ettype (void) const;
     symbol_record sym_rec (void) const;
 
-    std::string superclass_method_name (void) const;
+    std::string superclass_method_or_object_name (void) const;
     std::string superclass_class_name (void) const;
 
     std::string text_rep (void) const;
@@ -155,8 +155,8 @@ namespace octave
         : m_sr (new symbol_record (sr))
       { }
 
-      tok_info (const std::string& method_nm, const std::string& class_nm)
-        : m_superclass_info (new superclass_info (method_nm, class_nm))
+      tok_info (const std::string& meth_or_obj, const std::string& cls)
+        : m_superclass_info (new superclass_info (meth_or_obj, cls))
       { }
 
       tok_info (const tok_info&) = delete;
@@ -177,9 +177,9 @@ namespace octave
       {
         superclass_info (void) = delete;
 
-        superclass_info (const std::string& method_nm,
-                         const std::string& class_nm)
-          : m_method_nm (method_nm), m_class_nm (class_nm)
+        superclass_info (const std::string& meth_or_obj,
+                         const std::string& cls)
+          : m_method_or_object_name (meth_or_obj), m_class_name (cls)
         { }
 
         superclass_info (const superclass_info&) = delete;
@@ -188,8 +188,8 @@ namespace octave
 
         ~superclass_info (void) = default;
 
-        std::string m_method_nm;
-        std::string m_class_nm;
+        std::string m_method_or_object_name;
+        std::string m_class_name;
       };
 
       superclass_info *m_superclass_info;

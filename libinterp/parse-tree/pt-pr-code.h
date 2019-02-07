@@ -117,8 +117,6 @@ namespace octave
 
     void visit_fcn_handle (tree_fcn_handle&);
 
-    void visit_funcall (tree_funcall&);
-
     void visit_parameter_list (tree_parameter_list&);
 
     void visit_postfix_expression (tree_postfix_expression&);
@@ -148,6 +146,10 @@ namespace octave
     void visit_while_command (tree_while_command&);
 
     void visit_do_until_command (tree_do_until_command&);
+
+    void visit_superclass_ref (tree_superclass_ref&);
+
+    void visit_metaclass_query (tree_metaclass_query&);
 
     void print_fcn_handle_body (tree_expression *);
 

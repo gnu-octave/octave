@@ -27,7 +27,6 @@ PARSE_TREE_INC = \
   %reldir%/pt-except.h \
   %reldir%/pt-exp.h \
   %reldir%/pt-fcn-handle.h \
-  %reldir%/pt-funcall.h \
   %reldir%/pt-id.h \
   %reldir%/pt-idx.h \
   %reldir%/pt-jit.h \
@@ -77,7 +76,6 @@ PARSE_TREE_SRC = \
   %reldir%/pt-except.cc \
   %reldir%/pt-exp.cc \
   %reldir%/pt-fcn-handle.cc \
-  %reldir%/pt-funcall.cc \
   %reldir%/pt-id.cc \
   %reldir%/pt-idx.cc \
   %reldir%/pt-jit.cc \

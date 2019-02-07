@@ -68,7 +68,6 @@ namespace octave
   class tree_decl_init_list;
   class tree_expression;
   class tree_fcn_handle;
-  class tree_funcall;
   class tree_function_def;
   class tree_identifier;
   class tree_if_clause;
@@ -303,13 +302,6 @@ namespace octave
     // Reset state after parsing function.
     void
     recover_from_parsing_function (void);
-
-    tree_funcall *
-    make_superclass_ref (const std::string& method_nm,
-                         const std::string& class_nm);
-
-    tree_funcall *
-    make_meta_class_query (const std::string& class_nm);
 
     tree_classdef *
     make_classdef (token *tok_val, tree_classdef_attribute_list *a,

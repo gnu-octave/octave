@@ -36,10 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
 #include "ov-usr-fcn.h"
+#include "parse.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-eval.h"
-#include "pt-funcall.h"
 #include "pt-idx.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
@@ -1125,8 +1125,11 @@ class octave_classdef_superclass_ref : public octave_function
 public:
   octave_classdef_superclass_ref (void) = delete;
 
-  octave_classdef_superclass_ref (const octave_value_list& a)
-    : octave_function (), args (a) { }
+  octave_classdef_superclass_ref (const std::string& meth_or_obj,
+                                  const std::string& cls)
+    : octave_function (), m_method_or_object_name (meth_or_obj),
+      m_class_name (cls)
+  { }
 
   octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
 
@@ -1152,8 +1155,8 @@ public:
     if (! ctx.ok ())
       error ("superclass calls can only occur in methods or constructors");
 
-    std::string mname = args(0).string_value ();
-    std::string cname = args(1).string_value ();
+    std::string mname = m_method_or_object_name;
+    std::string cname = m_class_name;
 
     cdef_class cls = lookup_class (cname);
 
@@ -1232,8 +1235,23 @@ private:
   }
 
 private:
-  octave_value_list args;
+
+  std::string m_method_or_object_name;
+  std::string m_class_name;
 };
+
+octave_value
+octave_classdef::superclass_ref (const std::string& meth_or_obj,
+                                 const std::string& cls)
+{
+  return octave_value (new octave_classdef_superclass_ref (meth_or_obj, cls));
+}
+
+octave_value
+octave_classdef::metaclass_query (const std::string& cls)
+{
+  return to_ov (lookup_class (cls));
+}
 
 //----------------------------------------------------------------------------
 
@@ -1979,34 +1997,6 @@ public:
     t.expression ()->accept (*this);
   }
 
-  void visit_funcall (octave::tree_funcall& t)
-  {
-    octave_value fcn = t.function ();
-
-    if (fcn.is_function ())
-      {
-        octave_function *of = fcn.function_value (true);
-
-        if (of)
-          {
-            if (of->name () == "__superclass_reference__")
-              {
-                octave_value_list args = t.arguments ();
-
-                if (args(0).string_value () == obj_name)
-                  {
-                    std::string class_name = args(1).string_value ();
-
-                    cdef_class cls = lookup_class (class_name, false);
-
-                    if (cls.ok ())
-                      ctor_list.push_back (cls);
-                  }
-              }
-          }
-      }
-  }
-
   std::list<cdef_class> get_constructor_list (void) const
   { return ctor_list; }
 
@@ -2046,6 +2036,19 @@ public:
   void visit_unwind_protect_command (octave::tree_unwind_protect_command&) { }
   void visit_while_command (octave::tree_while_command&) { }
   void visit_do_until_command (octave::tree_do_until_command&) { }
+
+  void visit_superclass_ref (octave::tree_superclass_ref& t)
+  {
+    if (t.method_or_object_name () == obj_name)
+      {
+        std::string class_name = t.class_name ();
+
+        cdef_class cls = lookup_class (class_name, false);
+
+        if (cls.ok ())
+          ctor_list.push_back (cls);
+      }
+  }
 
 private:
   // The name of the constructor being analyzed.
@@ -3909,35 +3912,6 @@ Undocumented internal function.
   std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
 
   return to_ov (lookup_package (cname));
-}
-
-DEFUN (__superclass_reference__, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __superclass_reference__ ()
-Undocumented internal function.
-@end deftypefn */)
-{
-  return ovl (new octave_classdef_superclass_ref (args));
-}
-
-DEFUN (__meta_class_query__, args, ,
-       doc: /* -*- texinfo -*-
-@deftypefn {} {} __meta_class_query__ ()
-Undocumented internal function.
-@end deftypefn */)
-{
-#if DEBUG_TRACE
-  std::cerr << "__meta_class_query__ ("
-            << args(0).string_value () << ')'
-            << std::endl;
-#endif
-
-  if (args.length () != 1)
-    print_usage ();
-
-  std::string cls = args(0).xstring_value ("CLASS_NAME must be a string");
-
-  return to_ov (lookup_class (cls));
 }
 
 DEFUN (metaclass, args, ,

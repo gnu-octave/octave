@@ -302,11 +302,6 @@ namespace octave
   }
 
   void
-  tree_anon_scopes::visit_funcall (tree_funcall& /* fc */)
-  {
-  }
-
-  void
   tree_anon_scopes::visit_parameter_list (tree_parameter_list&)
   {
     // In visit_anon_fcn_handle we only accept/visit the body of

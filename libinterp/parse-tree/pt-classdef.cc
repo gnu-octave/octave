@@ -29,6 +29,29 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  tree_superclass_ref *
+  tree_superclass_ref::dup (symbol_scope&) const
+  {
+    tree_superclass_ref *new_scr
+      = new tree_superclass_ref (m_method_or_object_name, m_class_name,
+                                 line (), column ());
+
+    new_scr->copy_base (*this);
+
+    return new_scr;
+  }
+
+  tree_metaclass_query *
+  tree_metaclass_query::dup (symbol_scope&) const
+  {
+    tree_metaclass_query *new_mcq
+      = new tree_metaclass_query (m_class_name, line (), column ());
+
+    new_mcq->copy_base (*this);
+
+    return new_mcq;
+  }
+
   // Classdef attribute
 
   // Classdef attribute_list

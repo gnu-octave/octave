@@ -732,18 +732,6 @@ namespace octave
   }
 
   void
-  tree_print_code::visit_funcall (tree_funcall& fc)
-  {
-    indent ();
-
-    print_parens (fc, "(");
-
-    fc.print_raw (m_os, true, m_print_original_text);
-
-    print_parens (fc, ")");
-  }
-
-  void
   tree_print_code::visit_parameter_list (tree_parameter_list& lst)
   {
     auto p = lst.begin ();
@@ -1142,6 +1130,18 @@ namespace octave
       expr->accept (*this);
 
     newline ();
+  }
+
+  void
+  tree_print_code::visit_superclass_ref (tree_superclass_ref& scr)
+  {
+    m_os << scr.method_or_object_name () << "@" << scr.class_name ();
+  }
+
+  void
+  tree_print_code::visit_metaclass_query (tree_metaclass_query& mcq)
+  {
+    m_os << "?" << mcq.class_name ();
   }
 
   void

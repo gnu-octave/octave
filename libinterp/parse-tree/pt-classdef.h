@@ -41,6 +41,78 @@ namespace octave
 {
   class interpreter;
 
+  class tree_superclass_ref : public tree_expression
+  {
+  public:
+
+    tree_superclass_ref (void) = delete;
+
+    tree_superclass_ref (const std::string& meth_or_obj,
+                         const std::string& cls, int l = -1, int c = -1)
+      : tree_expression (l, c), m_method_or_object_name (meth_or_obj),
+        m_class_name (cls)
+    { }
+
+    // No copying!
+
+    tree_superclass_ref (const tree_superclass_ref&) = delete;
+
+    tree_superclass_ref& operator = (const tree_superclass_ref&) = delete;
+
+    std::string method_or_object_name (void) const
+    {
+      return m_method_or_object_name;
+    }
+
+    std::string class_name (void) const { return m_class_name; }
+
+    bool has_magic_end (void) const { return false; }
+
+    tree_superclass_ref * dup (symbol_scope& scope) const;
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_superclass_ref (*this);
+    }
+
+  private:
+
+    std::string m_method_or_object_name;
+    std::string m_class_name;
+  };
+
+  class tree_metaclass_query : public tree_expression
+  {
+  public:
+
+    tree_metaclass_query (void) = delete;
+
+    tree_metaclass_query (const std::string& cls, int l = -1, int c = -1)
+      : tree_expression (l, c), m_class_name (cls)
+    { }
+
+    // No copying!
+
+    tree_metaclass_query (const tree_metaclass_query&) = delete;
+
+    tree_metaclass_query& operator = (const tree_metaclass_query&) = delete;
+
+    std::string class_name (void) const { return m_class_name; }
+
+    bool has_magic_end (void) const { return false; }
+
+    tree_metaclass_query * dup (symbol_scope& scope) const;
+
+    void accept (tree_walker& tw)
+    {
+      tw.visit_metaclass_query (*this);
+    }
+
+  private:
+
+    std::string m_class_name;
+  };
+
   class tree_classdef_attribute
   {
   public:

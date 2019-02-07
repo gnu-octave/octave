@@ -340,10 +340,6 @@ namespace octave
   { }
 
   void
-  tree_checker::visit_funcall (tree_funcall& /* fc */)
-  { }
-
-  void
   tree_checker::visit_parameter_list (tree_parameter_list& lst)
   {
     auto p = lst.begin ();

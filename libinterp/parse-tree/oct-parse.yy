@@ -75,7 +75,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-all.h"
 #include "pt-eval.h"
-#include "pt-funcall.h"
 #include "symtab.h"
 #include "token.h"
 #include "unwind-prot.h"
@@ -150,7 +149,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
   octave::tree_expression *tree_expression_type;
   octave::tree_constant *tree_constant_type;
   octave::tree_fcn_handle *tree_fcn_handle_type;
-  octave::tree_funcall *tree_funcall_type;
+  octave::tree_superclass_ref *tree_superclass_ref_type;
+  octave::tree_metaclass_query *tree_metaclass_query_type;
   octave::tree_function_def *tree_function_def_type;
   octave::tree_anon_fcn_handle *tree_anon_fcn_handle_type;
   octave::tree_identifier *tree_identifier_type;
@@ -248,7 +248,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_expression_type> primary_expr oper_expr power_expr expr_no_assign
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
-%type <tree_funcall_type> superclass_identifier meta_identifier
+%type <tree_superclass_ref_type> superclass_identifier
+%type <tree_metaclass_query_type> meta_identifier
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
@@ -325,7 +326,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_expression_type>
 %destructor { delete $$; } <tree_constant_type>
 %destructor { delete $$; } <tree_fcn_handle_type>
-%destructor { delete $$; } <tree_funcall_type>
+%destructor { delete $$; } <tree_superclass_ref_type>
+%destructor { delete $$; } <tree_metaclass_query_type>
 %destructor { delete $$; } <tree_function_def_type>
 %destructor { delete $$; } <tree_anon_fcn_handle_type>
 %destructor { delete $$; } <tree_identifier_type>
@@ -512,18 +514,22 @@ identifier      : NAME
 superclass_identifier
                 : SUPERCLASSREF
                   {
-                    std::string method_nm = $1->superclass_method_name ();
-                    std::string class_nm = $1->superclass_class_name ();
+                    std::string meth_or_obj
+                      = $1->superclass_method_or_object_name ();
+                    std::string cls = $1->superclass_class_name ();
 
-                    $$ = parser.make_superclass_ref (method_nm, class_nm);
+                    $$ = new octave::tree_superclass_ref (meth_or_obj, cls,
+                                                          $1->line (),
+                                                          $1->column ());
                   }
                 ;
 
 meta_identifier : METAQUERY
                   {
-                    std::string class_nm = $1->text ();
+                    std::string cls = $1->text ();
 
-                    $$ = parser.make_meta_class_query (class_nm);
+                    $$ = new octave::tree_metaclass_query (cls, $1->line (),
+                                                           $1->column ());
                   }
                 ;
 
@@ -3546,40 +3552,6 @@ namespace octave
     m_lexer.m_parsed_function_name.pop ();
     m_lexer.m_looking_at_return_list = false;
     m_lexer.m_looking_at_parameter_list = false;
-  }
-
-  tree_funcall *
-  base_parser::make_superclass_ref (const std::string& method_nm,
-                                    const std::string& class_nm)
-  {
-    octave_value_list args;
-
-    args(1) = class_nm;
-    args(0) = method_nm;
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("base_parser::make_superclass_ref");
-
-    octave_value fcn
-      = symtab.find_built_in_function ("__superclass_reference__");
-
-    return new tree_funcall (fcn, args);
-  }
-
-  tree_funcall *
-  base_parser::make_meta_class_query (const std::string& class_nm)
-  {
-    octave_value_list args;
-
-    args(0) = class_nm;
-
-    symbol_table& symtab
-      = __get_symbol_table__ ("base_parser::make_meta_class_query");
-
-    octave_value fcn
-      = symtab.find_built_in_function ("__meta_class_query__");
-
-    return new tree_funcall (fcn, args);
   }
 
   // A CLASSDEF block defines a class that has a constructor and other

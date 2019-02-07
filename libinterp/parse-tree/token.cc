@@ -73,11 +73,11 @@ namespace octave
       m_orig_text ()
   { }
 
-  token::token (int tv, const std::string& method_nm,
-                const std::string& class_nm, int l, int c)
+  token::token (int tv, const std::string& meth_or_obj,
+                const std::string& cls, int l, int c)
     : m_maybe_cmd (false), m_tspc (false), m_line_num (l), m_column_num (c),
       m_tok_val (tv), m_type_tag (scls_name_token),
-      m_tok_info (method_nm, class_nm), m_orig_text ()
+      m_tok_info (meth_or_obj, cls), m_orig_text ()
   { }
 
   token::~token (void)
@@ -132,17 +132,17 @@ namespace octave
   }
 
   std::string
-  token::superclass_method_name (void) const
+  token::superclass_method_or_object_name (void) const
   {
     assert (m_type_tag == scls_name_token);
-    return m_tok_info.m_superclass_info->m_method_nm;
+    return m_tok_info.m_superclass_info->m_method_or_object_name;
   }
 
   std::string
   token::superclass_class_name (void) const
   {
     assert (m_type_tag == scls_name_token);
-    return m_tok_info.m_superclass_info->m_class_nm;
+    return m_tok_info.m_superclass_info->m_class_name;
   }
 
   std::string

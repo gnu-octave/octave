@@ -1560,6 +1560,11 @@ public:
     return object.get_property (idx, name);
   }
 
+  static octave_value superclass_ref (const std::string& meth_or_obj,
+                                      const std::string& cls);
+
+  static octave_value metaclass_query (const std::string& cls);
+
 public:
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }

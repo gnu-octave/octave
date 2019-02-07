@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
+#include "parse.h"
 #include "profiler.h"
 #include "pt-all.h"
 #include "pt-anon-scopes.h"
@@ -2697,38 +2698,6 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_funcall (tree_funcall& expr)
-  {
-    octave_value_list retval;
-
-    octave_value fcn = expr.function ();
-
-    octave_value_list args = expr.arguments ();
-
-    int nargout = m_nargout_stack.top ();
-
-    retval = feval (fcn.function_value (), args, nargout);
-
-    if (retval.length () == 1 && retval(0).is_function ())
-      {
-        // The return object is a function.  We may need to re-index it
-        // using the same logic as for identifier.  This is primarily
-        // used for superclass references in classdef.
-
-        octave_value val = retval(0);
-        octave_function *f = val.function_value (true);
-
-        if (f && ! (expr.is_postfix_indexed ()
-                    && f->accepts_postfix_index (expr.postfix_index ())))
-          {
-            retval = f->call (*this, nargout);
-          }
-      }
-
-    push_result (retval);
-  }
-
-  void
   tree_evaluator::visit_parameter_list (tree_parameter_list&)
   {
     panic_impossible ();
@@ -3424,6 +3393,45 @@ namespace octave
         if (is_logically_true (expr, "do-until"))
           break;
       }
+  }
+
+  void
+  tree_evaluator::visit_superclass_ref (tree_superclass_ref& expr)
+  {
+    std::string meth_or_obj = expr.method_or_object_name ();
+    std::string cls = expr.class_name ();
+
+    octave_value tmp = octave_classdef::superclass_ref (meth_or_obj, cls);
+
+    if (! expr.is_postfix_indexed ())
+      {
+        // There was no index, so this superclass_ref object is not
+        // part of an index expression.  It is also not an identifier in
+        // the syntax tree but we need to handle it as if it were.  So
+        // call the function here.
+
+        octave_function *f = tmp.function_value (true);
+
+        assert (f);
+
+        int nargout = m_nargout_stack.top ();
+
+        push_result (f->call (*this, nargout));
+        return;
+      }
+
+    // The superclass_ref function object will be indexed as part of the
+    // enclosing index expression.
+
+    push_result (tmp);
+  }
+
+  void
+  tree_evaluator::visit_metaclass_query (tree_metaclass_query& expr)
+  {
+    std::string cls = expr.class_name ();
+
+    push_result (octave_classdef::metaclass_query (cls));
   }
 
   void tree_evaluator::bind_ans (const octave_value& val, bool print)

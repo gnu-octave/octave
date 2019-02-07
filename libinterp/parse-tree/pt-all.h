@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-except.h"
 #include "pt-exp.h"
 #include "pt-fcn-handle.h"
-#include "pt-funcall.h"
 #include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-jump.h"

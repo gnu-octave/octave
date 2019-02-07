@@ -65,7 +65,6 @@ namespace octave
   class tree_no_op_command;
   class tree_constant;
   class tree_fcn_handle;
-  class tree_funcall;
   class tree_parameter_list;
   class tree_postfix_expression;
   class tree_prefix_expression;
@@ -79,6 +78,8 @@ namespace octave
   class tree_while_command;
   class tree_do_until_command;
 
+  class tree_superclass_ref;
+  class tree_metaclass_query;
   class tree_classdef_attribute;
   class tree_classdef_attribute_list;
   class tree_classdef_superclass;
@@ -204,9 +205,6 @@ namespace octave
     visit_fcn_handle (tree_fcn_handle&) = 0;
 
     virtual void
-    visit_funcall (tree_funcall&) = 0;
-
-    virtual void
     visit_parameter_list (tree_parameter_list&) = 0;
 
     virtual void
@@ -241,6 +239,12 @@ namespace octave
 
     virtual void
     visit_do_until_command (tree_do_until_command&) = 0;
+
+    virtual void
+    visit_superclass_ref (tree_superclass_ref&) { } /* = 0; */
+
+    virtual void
+    visit_metaclass_query (tree_metaclass_query&) { } /* = 0; */
 
     virtual void
     visit_classdef_attribute (tree_classdef_attribute&) { } /* = 0; */

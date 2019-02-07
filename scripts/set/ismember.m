@@ -46,8 +46,8 @@
 ## a = @{"abc"@};
 ## s = @{"abc", "def"@};
 ## [tf, s_idx] = ismember (a, s)
-##      @result{} tf = [1, 0]
-##      @result{} s_idx = [1, 0]
+##      @result{} tf = 1
+##      @result{} s_idx = 1
 ## @end group
 ## @end example
 ##

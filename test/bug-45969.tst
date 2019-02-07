@@ -7,6 +7,7 @@
 %! f1 = @ (f, x) f (x) + a;
 %! f2 = @ (y) f1 (@ (z) z^2 + b * y, y) + c;
 %! f2_arg = 5;
+%! save_default_options ("-text", "local");
 %! unwind_protect
 %!   save (ascii_filename, "f2");
 %!   save ("-binary", binary_filename, "f2");
@@ -27,6 +28,7 @@
 %! f1 = @ (f, x) f (x) + a;
 %! f2 = @ (y) f1 (@ (z) z^2 + b * y, y) + c;
 %! f2_arg = 5;
+%! save_default_options ("-text", "local");
 %! unwind_protect
 %!   save ("-hdf5", hdf5_filename, "f2");
 %!   hdf5 = load (hdf5_filename);

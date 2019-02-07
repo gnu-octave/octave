@@ -1356,7 +1356,11 @@ Executing @code{clear foo} a second time will clear the function definition.
 %!endfunction
 
 %!test
-%! __test_clear_no_args__ ();
+%! unwind_protect
+%!   __test_clear_no_args__ ();
+%! unwind_protect_cleanup
+%!   clear -g x
+%! end_unwind_protect
 
 ## Test that multiple options cannot be given
 %!error clear -f -g

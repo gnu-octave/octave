@@ -4305,11 +4305,25 @@ namespace octave
     if (s == "-")
       solid = true;
     else if (s == ":")
-      pattern = 0x5555;
+      {
+        if (factor > 1)
+          pattern = 0x5555;
+        else
+          pattern = 0x1111;
+      }
     else if (s == "--")
-      pattern = 0x0F0F;
+        if (factor > 1)
+          pattern = 0x0F0F;
+        else
+          pattern = 0x01FF;
+
     else if (s == "-.")
-      pattern = 0x6F6F;
+      {
+        if (factor > 1)
+          pattern = 0x6F6F;
+        else
+          pattern = 0x18FF;
+      }
     else
       pattern = 0x0000;
 

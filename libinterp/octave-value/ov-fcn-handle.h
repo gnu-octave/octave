@@ -28,10 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 #include <string>
-#include <memory>
 
 #include "ov-base.h"
-#include "ov-base-mat.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 
@@ -187,29 +185,4 @@ namespace octave
   make_fcn_handle (interpreter& interp, const std::string& nm);
 }
 
-class
-OCTINTERP_API
-octave_fcn_binder : public octave_fcn_handle
-{
-private:
-  // Private ctor.
-  octave_fcn_binder (const octave_value& f, const octave_value& root,
-                     const octave_value_list& templ,
-                     const std::vector<int>& mask, int exp_nargin);
-
-public:
-
-  // Factory method.
-  static octave_fcn_handle * maybe_binder (const octave_value& f,
-                                           octave::interpreter& interp);
-
-protected:
-
-  octave_value_list call (int nargout, const octave_value_list& args);
-
-  octave_value root_handle;
-  octave_value_list arg_template;
-  std::vector<int> arg_mask;
-  int expected_nargin;
-};
 #endif

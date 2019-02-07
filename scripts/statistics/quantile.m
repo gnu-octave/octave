@@ -406,7 +406,7 @@ endfunction
 function inv = __quantile__ (x, p, method = 5)
 
   if (nargin < 2 || nargin > 3)
-    print_usage ();
+    print_usage ("quantile");
   endif
 
   if (isinteger (x) || islogical (x))

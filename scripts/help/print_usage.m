@@ -37,9 +37,9 @@ function print_usage (name)
     else
       error ("Octave:invalid-context", "print_usage: invalid function\n");
     endif
-    fullpath = evalin ("caller", 'mfilename ("fullpath")');
-    if (strcmp (fullpath(end-length(name)+1:end), name))
-      fullname = [fullpath ".m"];
+    fullname = evalin ("caller", 'mfilename ("fullpath")');
+    if (strcmp (fullname(end-length(name)+1:end), name))
+      fullname = [fullname ".m"];
     endif
   elseif (! ischar (name))
     error ("Octave:invalid-input-arg",

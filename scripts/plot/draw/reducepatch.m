@@ -197,7 +197,7 @@ function [faces, vertices, max_faces, patch_handle, fast, verbose] = ...
              "FACES, second argument must be a matrix containing VERTICES"]);
     endif
   else
-    print_usage ();
+    print_usage ("reducepatch");
   endif
 
   ## get reduction_factor

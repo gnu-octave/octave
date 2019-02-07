@@ -99,7 +99,7 @@ function varargout = matrix_gradient (m, varargin)
   endif
 
   if (nargin > 2 && nargin != nd + 1)
-    print_usage ();
+    print_usage ("gradient");
   endif
 
   ## cell d stores a spacing vector for each dimension

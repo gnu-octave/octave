@@ -1424,197 +1424,204 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
                            current_print_indent_level ());
 }
 
-octave_value
-make_fcn_handle (const std::string& nm)
+namespace octave
 {
-  octave_value retval;
+  // Hmm, should this function be a member of the interpreter class,
+  // possibly forwarded to an actual implementation in the
+  // tree_evaluator class?
 
-  // Bow to the god of compatibility.
+  octave_value
+  make_fcn_handle (interpreter& interp, const std::string& nm)
+  {
+    octave_value retval;
 
-  // FIXME: it seems ugly to put this here, but there is no single
-  // function in the parser that converts from the operator name to
-  // the corresponding function name.  At least try to do it without N
-  // string compares.
+    // Bow to the god of compatibility.
 
-  std::string tnm = nm;
+    // FIXME: it seems ugly to put this here, but there is no single
+    // function in the parser that converts from the operator name to
+    // the corresponding function name.  At least try to do it without N
+    // string compares.
 
-  size_t len = nm.length ();
+    std::string tnm = nm;
 
-  if (len == 3 && nm == ".**")
-    tnm = "power";
-  else if (len == 2)
-    {
-      if (nm[0] == '.')
-        {
-          switch (nm[1])
-            {
-            case '\'':
-              tnm = "transpose";
-              break;
+    size_t len = nm.length ();
 
-            case '+':
-              tnm = "plus";
-              break;
+    if (len == 3 && nm == ".**")
+      tnm = "power";
+    else if (len == 2)
+      {
+        if (nm[0] == '.')
+          {
+            switch (nm[1])
+              {
+              case '\'':
+                tnm = "transpose";
+                break;
 
-            case '-':
-              tnm = "minus";
-              break;
+              case '+':
+                tnm = "plus";
+                break;
 
-            case '*':
-              tnm = "times";
-              break;
+              case '-':
+                tnm = "minus";
+                break;
 
-            case '/':
-              tnm = "rdivide";
-              break;
+              case '*':
+                tnm = "times";
+                break;
 
-            case '^':
-              tnm = "power";
-              break;
+              case '/':
+                tnm = "rdivide";
+                break;
 
-            case '\\':
-              tnm = "ldivide";
-              break;
-            }
-        }
-      else if (nm[1] == '=')
-        {
-          switch (nm[0])
-            {
-            case '<':
-              tnm = "le";
-              break;
+              case '^':
+                tnm = "power";
+                break;
 
-            case '=':
-              tnm = "eq";
-              break;
+              case '\\':
+                tnm = "ldivide";
+                break;
+              }
+          }
+        else if (nm[1] == '=')
+          {
+            switch (nm[0])
+              {
+              case '<':
+                tnm = "le";
+                break;
 
-            case '>':
-              tnm = "ge";
-              break;
+              case '=':
+                tnm = "eq";
+                break;
 
-            case '~':
-            case '!':
-              tnm = "ne";
-              break;
-            }
-        }
-      else if (nm == "**")
-        tnm = "mpower";
-    }
-  else if (len == 1)
-    {
-      switch (nm[0])
-        {
-        case '~':
-        case '!':
-          tnm = "not";
-          break;
+              case '>':
+                tnm = "ge";
+                break;
 
-        case '\'':
-          tnm = "ctranspose";
-          break;
-
-        case '+':
-          tnm = "plus";
-          break;
-
-        case '-':
-          tnm = "minus";
-          break;
-
-        case '*':
-          tnm = "mtimes";
-          break;
-
-        case '/':
-          tnm = "mrdivide";
-          break;
-
-        case '^':
+              case '~':
+              case '!':
+                tnm = "ne";
+                break;
+              }
+          }
+        else if (nm == "**")
           tnm = "mpower";
-          break;
+      }
+    else if (len == 1)
+      {
+        switch (nm[0])
+          {
+          case '~':
+          case '!':
+            tnm = "not";
+            break;
 
-        case '\\':
-          tnm = "mldivide";
-          break;
+          case '\'':
+            tnm = "ctranspose";
+            break;
 
-        case '<':
-          tnm = "lt";
-          break;
+          case '+':
+            tnm = "plus";
+            break;
 
-        case '>':
-          tnm = "gt";
-          break;
+          case '-':
+            tnm = "minus";
+            break;
 
-        case '&':
-          tnm = "and";
-          break;
+          case '*':
+            tnm = "mtimes";
+            break;
 
-        case '|':
-          tnm = "or";
-          break;
-        }
-    }
+          case '/':
+            tnm = "mrdivide";
+            break;
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ("make_fcn_handle");
+          case '^':
+            tnm = "mpower";
+            break;
 
-  octave_value f = symtab.find_function (tnm, octave_value_list ());
+          case '\\':
+            tnm = "mldivide";
+            break;
 
-  octave_function *fptr = f.function_value (true);
+          case '<':
+            tnm = "lt";
+            break;
 
-  // Here we are just looking to see if FCN is a method or constructor
-  // for any class.
-  if (fptr && (fptr->is_subfunction () || fptr->is_private_function ()
-               || fptr->is_class_constructor ()
-               || fptr->is_classdef_constructor ()))
-    {
-      // Locally visible function.
-      retval = octave_value (new octave_fcn_handle (f, tnm));
-    }
-  else
-    {
-      octave::load_path& lp = octave::__get_load_path__ ("make_fcn_handle");
+          case '>':
+            tnm = "gt";
+            break;
 
-      // Globally visible (or no match yet).  Query overloads.
-      std::list<std::string> classes = lp.overloads (tnm);
-      bool any_match = fptr != nullptr || classes.size () > 0;
-      if (! any_match)
-        {
-          // No match found, try updating load_path and query classes again.
-          lp.update ();
-          classes = lp.overloads (tnm);
-          any_match = classes.size () > 0;
-        }
+          case '&':
+            tnm = "and";
+            break;
 
-      if (! any_match)
-        error ("@%s: no function and no method found", tnm.c_str ());
+          case '|':
+            tnm = "or";
+            break;
+          }
+      }
 
-      octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
-      retval = fh;
+    octave::symbol_table& symtab = interp.get_symbol_table ();
 
-      for (auto& cls : classes)
-        {
-          std::string class_name = cls;
-          octave_value fmeth = symtab.find_method (tnm, class_name);
+    octave_value f = symtab.find_function (tnm, octave_value_list ());
 
-          bool is_builtin = false;
-          for (int i = 0; i < btyp_num_types; i++)
-            {
-              // FIXME: Too slow? Maybe binary lookup?
-              if (class_name == btyp_class_name[i])
-                {
-                  is_builtin = true;
-                  fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
-                }
-            }
+    octave_function *fptr = f.function_value (true);
 
-          if (! is_builtin)
-            fh->set_overload (class_name, fmeth);
-        }
-    }
+    // Here we are just looking to see if FCN is a method or constructor
+    // for any class.
+    if (fptr && (fptr->is_subfunction () || fptr->is_private_function ()
+                 || fptr->is_class_constructor ()
+                 || fptr->is_classdef_constructor ()))
+      {
+        // Locally visible function.
+        retval = octave_value (new octave_fcn_handle (f, tnm));
+      }
+    else
+      {
+        octave::load_path& lp = interp.get_load_path ();
 
-  return retval;
+        // Globally visible (or no match yet).  Query overloads.
+        std::list<std::string> classes = lp.overloads (tnm);
+        bool any_match = fptr != nullptr || classes.size () > 0;
+        if (! any_match)
+          {
+            // No match found, try updating load_path and query classes again.
+            lp.update ();
+            classes = lp.overloads (tnm);
+            any_match = classes.size () > 0;
+          }
+
+        if (! any_match)
+          error ("@%s: no function and no method found", tnm.c_str ());
+
+        octave_fcn_handle *fh = new octave_fcn_handle (f, tnm);
+        retval = fh;
+
+        for (auto& cls : classes)
+          {
+            std::string class_name = cls;
+            octave_value fmeth = symtab.find_method (tnm, class_name);
+
+            bool is_builtin = false;
+            for (int i = 0; i < btyp_num_types; i++)
+              {
+                // FIXME: Too slow? Maybe binary lookup?
+                if (class_name == btyp_class_name[i])
+                  {
+                    is_builtin = true;
+                    fh->set_overload (static_cast<builtin_type_t> (i), fmeth);
+                  }
+              }
+
+            if (! is_builtin)
+              fh->set_overload (class_name, fmeth);
+          }
+      }
+
+    return retval;
+  }
 }
 
 /*
@@ -1835,7 +1842,7 @@ functions.  This option is no longer supported.
         warning_with_id ("Octave:str2func-global-argument",
                          "str2func: second argument ignored");
 
-      retval = make_fcn_handle (nm);
+      retval = octave::make_fcn_handle (interp, nm);
     }
 
   return retval;
@@ -1911,7 +1918,7 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
 
 octave_fcn_handle *
 octave_fcn_binder::maybe_binder (const octave_value& f,
-                                 octave::tree_evaluator& tw)
+                                 octave::interpreter& interp)
 {
   octave_fcn_handle *retval = nullptr;
 
@@ -1966,6 +1973,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
                     arginmap[id->name ()] = npar;
                 }
             }
+
+          octave::tree_evaluator& tw = interp.get_evaluator ();
 
           if (arg_list && arg_list->length () > 0)
             {
@@ -2034,7 +2043,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f,
 
                           try
                             {
-                              root_val = make_fcn_handle (head_name);
+                              root_val
+                                = octave::make_fcn_handle (interp, head_name);
                             }
                           catch (const octave::execution_exception&)
                             {

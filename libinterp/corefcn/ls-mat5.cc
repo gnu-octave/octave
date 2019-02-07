@@ -861,7 +861,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           {
             if (fpath.empty ())
               // We have a builtin function
-              tc = make_fcn_handle (fname);
+              tc = make_fcn_handle (interp, fname);
             else
               {
                 std::string mroot =

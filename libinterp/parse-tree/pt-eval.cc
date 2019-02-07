@@ -368,7 +368,7 @@ namespace octave
 
     octave_value ov_fcn (af);
 
-    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, *this));
+    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, m_interpreter));
 
     octave_value fh (new octave_fcn_handle (ov_fcn, octave_fcn_handle::anonymous));
 
@@ -2692,7 +2692,7 @@ namespace octave
   {
     std::string nm = expr.name ();
 
-    octave_value fh = make_fcn_handle (nm);
+    octave_value fh = make_fcn_handle (m_interpreter, nm);
 
     push_result (fh);
   }

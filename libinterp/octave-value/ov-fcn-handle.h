@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class tree_evaluator;
+  class interpreter;
 }
 
 // Function handles.
@@ -179,11 +179,13 @@ protected:
   bool parse_anon_fcn_handle (const std::string& fcn_text);
 
   virtual octave_value_list call (int nargout, const octave_value_list& args);
-
-  friend octave_value make_fcn_handle (const std::string &, bool);
 };
 
-extern octave_value make_fcn_handle (const std::string& nm);
+namespace octave
+{
+  extern octave_value
+  make_fcn_handle (interpreter& interp, const std::string& nm);
+}
 
 class
 OCTINTERP_API
@@ -199,7 +201,7 @@ public:
 
   // Factory method.
   static octave_fcn_handle * maybe_binder (const octave_value& f,
-                                           octave::tree_evaluator& tw);
+                                           octave::interpreter& interp);
 
 protected:
 

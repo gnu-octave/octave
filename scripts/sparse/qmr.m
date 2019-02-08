@@ -262,7 +262,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, rtol, maxit, M1, M2, x0)
       printf ("to a solution with relative residual %e\n", res1);
     endif
   else
-    print usage();
+    print_usage();
   endif
 
 endfunction

@@ -701,6 +701,7 @@ namespace octave
       m_data_cols = val.nfields ();
 
       maybe_resize_rows (m_data_rows + 16);
+      m_display_cols = m_data_cols;
     }
 
     ~vector_struct_model (void) = default;

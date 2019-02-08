@@ -3871,8 +3871,8 @@ namespace octave
 
         if (expr->is_index_expression ())
           {
-            tree_index_expression *tmp =
-              static_cast<tree_index_expression *> (expr);
+            tree_index_expression *tmp
+              = dynamic_cast<tree_index_expression *> (expr);
 
             tmp->append (args, type);
 
@@ -3901,7 +3901,8 @@ namespace octave
 
     if (expr->is_index_expression ())
       {
-        tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+        tree_index_expression *tmp
+          = dynamic_cast<tree_index_expression *> (expr);
 
         tmp->append (elt);
 
@@ -3931,7 +3932,8 @@ namespace octave
 
     if (expr->is_index_expression ())
       {
-        tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+        tree_index_expression *tmp
+          = dynamic_cast<tree_index_expression *> (expr);
 
         tmp->append (elt);
 

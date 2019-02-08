@@ -204,7 +204,7 @@ namespace octave
           {
             const NDArray xdata = data.array_value ();
 
-            OCTAVE_LOCAL_BUFFER (float, a, (3*tw*th));
+            OCTAVE_LOCAL_BUFFER (GLfloat, a, (3*tw*th));
 
             for (int i = 0; i < h; i++)
               {
@@ -216,13 +216,53 @@ namespace octave
                   }
               }
 
-            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB, GL_FLOAT, a);
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB,
+                                 GL_FLOAT, a);
+          }
+
+        else if (data.is_single_type ())
+          {
+            const FloatNDArray xdata = data.float_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLfloat, a, (3*tw*th));
+
+            for (int i = 0; i < h; i++)
+              {
+                for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+                  {
+                    a[idx]   = xdata(i,j,0);
+                    a[idx+1] = xdata(i,j,1);
+                    a[idx+2] = xdata(i,j,2);
+                  }
+              }
+
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0, GL_RGB,
+                                 GL_FLOAT, a);
+          }
+        else if (data.is_uint16_type ())
+          {
+            const uint16NDArray xdata = data.uint16_array_value ();
+
+            OCTAVE_LOCAL_BUFFER (GLushort, a, (3*tw*th));
+
+            for (int i = 0; i < h; i++)
+              {
+                for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
+                  {
+                    a[idx]   = xdata(i,j,0);
+                    a[idx+1] = xdata(i,j,1);
+                    a[idx+2] = xdata(i,j,2);
+                  }
+              }
+
+            glfcns.glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+                                 GL_RGB, GL_UNSIGNED_SHORT, a);
           }
         else if (data.is_uint8_type ())
           {
             const uint8NDArray xdata = data.uint8_array_value ();
 
-            OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*tw*th));
+            OCTAVE_LOCAL_BUFFER (GLubyte, a, (3*tw*th));
 
             for (int i = 0; i < h; i++)
               {
@@ -240,7 +280,7 @@ namespace octave
         else
           {
             ok = false;
-            warning ("opengl_texture::create: invalid texture data type (double or uint8 required)");
+            warning ("opengl_texture::create: invalid image data type, expected double, single, uint8, or uint16");
           }
 
         if (ok)
@@ -619,11 +659,11 @@ namespace octave
 #endif
 
   opengl_renderer::opengl_renderer (opengl_functions& glfcns)
-    : m_glfcns (glfcns), toolkit (), xform (), xmin (), xmax (), ymin (),
-      ymax (), zmin (), zmax (), xZ1 (), xZ2 (), marker_id (),
+    : m_glfcns (glfcns), xmin (), xmax (), ymin (), ymax (), zmin (), zmax (),
+      m_devpixratio (1.), xform (), toolkit (), xZ1 (), xZ2 (), marker_id (),
       filled_marker_id (), camera_pos (), camera_dir (), view_vector (),
       interpreter ("none"), txt_renderer (), m_current_light (0),
-      m_max_lights (0), selecting (false), m_devpixratio (1.)
+      m_max_lights (0), selecting (false)
   {
     // This constructor will fail if we don't have OpenGL or if the data
     // types we assumed in our public interface aren't compatible with the
@@ -3833,250 +3873,49 @@ namespace octave
     dim_vector dv (cdata.dims ());
     int h = dv(0);
     int w = dv(1);
+    double x0, x1, y0, y1;
 
     Matrix x = props.get_xdata ().matrix_value ();
-    Matrix y = props.get_ydata ().matrix_value ();
-
-    // Someone wants us to draw an empty image?  No way.
-    if (x.isempty () || y.isempty ())
-      return;
-
-    // Sort x/ydata and mark flipped dimensions
-    bool xflip = false;
-    if (x(0) > x(1))
-      {
-        std::swap (x(0), x(1));
-        xflip = true;
-      }
-    else if (w > 1 && x(1) == x(0))
-      x(1) = x(1) + (w-1);
-
-    bool yflip = false;
-    if (y(0) > y(1))
-      {
-        std::swap (y(0), y(1));
-        yflip = true;
-      }
-    else if (h > 1 && y(1) == y(0))
-      y(1) = y(1) + (h-1);
-
-    const ColumnVector p0 = xform.transform (x(0), y(0), 0);
-    const ColumnVector p1 = xform.transform (x(1), y(1), 0);
-
-    if (math::isnan (p0(0)) || math::isnan (p0(1))
-        || math::isnan (p1(0)) || math::isnan (p1(1)))
-      {
-        warning ("opengl_renderer: image X,Y data too large to draw");
-        return;
-      }
-
-    // image pixel size in screen pixel units
-    float pix_dx, pix_dy;
-    // image pixel size in normalized units
-    float nor_dx, nor_dy;
-
+    double dx = 1.0;
     if (w > 1)
-      {
-        pix_dx = (p1(0) - p0(0)) / (w-1);
-        nor_dx = (x(1) - x(0)) / (w-1);
-      }
-    else
-      {
-        const ColumnVector p1w = xform.transform (x(1) + 1, y(1), 0);
-        pix_dx = p1w(0) - p0(0);
-        nor_dx = 1;
-      }
+      dx = (x(1) - x(0)) / (w - 1);
 
+    x0 = x(0)-dx/2;
+    x1 = x(1)+dx/2;
+
+    Matrix y = props.get_ydata ().matrix_value ();
+    double dy = 1.0;
     if (h > 1)
-      {
-        pix_dy = (p1(1) - p0(1)) / (h-1);
-        nor_dy = (y(1) - y(0)) / (h-1);
-      }
-    else
-      {
-        const ColumnVector p1h = xform.transform (x(1), y(1) + 1, 0);
-        pix_dy = p1h(1) - p0(1);
-        nor_dy = 1;
-      }
+      dy = (y(1) - y(0)) / (h - 1);
 
-    // OpenGL won't draw any of the image if its origin is outside the
-    // viewport/clipping plane so we must do the clipping ourselves.
-
-    int j0, j1, jj, i0, i1, ii;
-    j0 = 0, j1 = w;
-    i0 = 0, i1 = h;
-
-    float im_xmin = x(0) - nor_dx/2;
-    float im_xmax = x(1) + nor_dx/2;
-    float im_ymin = y(0) - nor_dy/2;
-    float im_ymax = y(1) + nor_dy/2;
-
-    // Clip to axes or viewport
-    bool do_clip = props.is_clipping ();
-    Matrix vp = get_viewport_scaled ();
-
-    ColumnVector vp_lim_min =
-      xform.untransform (std::numeric_limits <float>::epsilon (),
-                         std::numeric_limits <float>::epsilon ());
-    ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
-
-    if (vp_lim_min(0) > vp_lim_max(0))
-      std::swap (vp_lim_min(0), vp_lim_max(0));
-
-    if (vp_lim_min(1) > vp_lim_max(1))
-      std::swap (vp_lim_min(1), vp_lim_max(1));
-
-    float clip_xmin =
-      (do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0));
-    float clip_ymin =
-      (do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1));
-
-    float clip_xmax =
-      (do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0));
-    float clip_ymax =
-      (do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1));
-
-    if (im_xmin < clip_xmin)
-      j0 += (clip_xmin - im_xmin)/nor_dx + 1;
-    if (im_xmax > clip_xmax)
-      j1 -= (im_xmax - clip_xmax)/nor_dx;
-
-    if (im_ymin < clip_ymin)
-      i0 += (clip_ymin - im_ymin)/nor_dy + 1;
-    if (im_ymax > clip_ymax)
-      i1 -= (im_ymax - clip_ymax)/nor_dy;
-
-    if (i0 >= i1 || j0 >= j1)
-      return;
-
-    m_glfcns.glPixelZoom (m_devpixratio * pix_dx,
-                          - m_devpixratio * pix_dy);
-    m_glfcns.glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
-
-    // by default this is 4
-    m_glfcns.glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+    y0 = y(0)-dy/2;
+    y1 = y(1)+dy/2;
 
     // Expect RGB data
     if (dv.ndims () == 3 && dv(2) == 3)
       {
-        if (cdata.is_double_type ())
-          {
-            const NDArray xcdata = cdata.array_value ();
+        opengl_texture tex (m_glfcns);
+        tex = opengl_texture::create (m_glfcns, cdata);
+        m_glfcns.glColor4d (1.0, 1.0, 1.0, 1.0);
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
+        m_glfcns.glEnable (GL_TEXTURE_2D);
 
-            for (int i = i0; i < i1; i++)
-              {
-                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-                  {
-                    if (! yflip)
-                      ii = i;
-                    else
-                      ii = h - i - 1;
+        m_glfcns.glBegin (GL_QUADS);
 
-                    if (! xflip)
-                      jj = j;
-                    else
-                      jj = w - j - 1;
+        tex.tex_coord (0.0, 0.0);
+        m_glfcns.glVertex3d (x0, y0, 0.0);
 
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
-                  }
-              }
+        tex.tex_coord (1.0, 0.0);
+        m_glfcns.glVertex3d (x1, y0, 0.0);
 
-            draw_pixels (j1-j0, i1-i0, a);
+        tex.tex_coord (1.0, 1.0);
+        m_glfcns.glVertex3d (x1, y1, 0.0);
 
-          }
-        else if (cdata.is_single_type ())
-          {
-            const FloatNDArray xcdata = cdata.float_array_value ();
+        tex.tex_coord (0.0, 1.0);
+        m_glfcns.glVertex3d (x0, y1, 0.0);
 
-            OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
-
-            for (int i = i0; i < i1; i++)
-              {
-                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-                  {
-                    if (! yflip)
-                      ii = i;
-                    else
-                      ii = h - i - 1;
-
-                    if (! xflip)
-                      jj = j;
-                    else
-                      jj = w - j - 1;
-
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
-                  }
-              }
-
-            draw_pixels (j1-j0, i1-i0, a);
-
-          }
-        else if (cdata.is_uint8_type ())
-          {
-            const uint8NDArray xcdata = cdata.uint8_array_value ();
-
-            OCTAVE_LOCAL_BUFFER (GLubyte, a, 3*(j1-j0)*(i1-i0));
-
-            for (int i = i0; i < i1; i++)
-              {
-                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-                  {
-                    if (! yflip)
-                      ii = i;
-                    else
-                      ii = h - i - 1;
-
-                    if (! xflip)
-                      jj = j;
-                    else
-                      jj = w - j - 1;
-
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
-                  }
-              }
-
-            draw_pixels (j1-j0, i1-i0, a);
-
-          }
-        else if (cdata.is_uint16_type ())
-          {
-            const uint16NDArray xcdata = cdata.uint16_array_value ();
-
-            OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
-
-            for (int i = i0; i < i1; i++)
-              {
-                for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
-                  {
-                    if (! yflip)
-                      ii = i;
-                    else
-                      ii = h - i - 1;
-
-                    if (! xflip)
-                      jj = j;
-                    else
-                      jj = w - j - 1;
-
-                    a[idx]   = xcdata(ii,jj,0);
-                    a[idx+1] = xcdata(ii,jj,1);
-                    a[idx+2] = xcdata(ii,jj,2);
-                  }
-              }
-
-            draw_pixels (j1-j0, i1-i0, a);
-
-          }
-        else
-          warning ("opengl_renderer: invalid image data type (expected double, single, uint8, or uint16)");
+        m_glfcns.glEnd ();
+        m_glfcns.glDisable (GL_TEXTURE_2D);
       }
     else
       warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");
@@ -4142,69 +3981,6 @@ namespace octave
 #endif
 
     return retval;
-  }
-
-  void
-  opengl_renderer::draw_pixels (int width, int height, const float *data)
-  {
-#if defined (HAVE_OPENGL)
-
-    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_FLOAT, data);
-
-#else
-
-    octave_unused_parameter (width);
-    octave_unused_parameter (height);
-    octave_unused_parameter (data);
-
-    // This shouldn't happen because construction of opengl_renderer
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-
-#endif
-  }
-
-  void
-  opengl_renderer::draw_pixels (int width, int height, const uint8_t *data)
-  {
-#if defined (HAVE_OPENGL)
-
-    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-#else
-
-    octave_unused_parameter (width);
-    octave_unused_parameter (height);
-    octave_unused_parameter (data);
-
-    // This shouldn't happen because construction of opengl_renderer
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-
-#endif
-  }
-
-  void
-  opengl_renderer::draw_pixels (int width, int height, const uint16_t *data)
-  {
-#if defined (HAVE_OPENGL)
-
-    m_glfcns.glDrawPixels (width, height, GL_RGB, GL_UNSIGNED_SHORT, data);
-
-#else
-
-    octave_unused_parameter (width);
-    octave_unused_parameter (height);
-    octave_unused_parameter (data);
-
-    // This shouldn't happen because construction of opengl_renderer
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
-
-#endif
   }
 
   void

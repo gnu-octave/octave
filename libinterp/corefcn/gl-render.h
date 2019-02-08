@@ -140,10 +140,6 @@ namespace octave
                                 double x, double y, double z,
                                 int halign, int valign, double rotation = 0.0);
 
-    virtual void draw_pixels (int w, int h, const float *data);
-    virtual void draw_pixels (int w, int h, const uint8_t *data);
-    virtual void draw_pixels (int w, int h, const uint16_t *data);
-
     virtual void render_grid (const double linewidth,
                               const std::string& gridstyle,
                               const Matrix& gridcolor, const double gridalpha,
@@ -212,18 +208,21 @@ namespace octave
 
     opengl_functions& m_glfcns;
 
-  private:
-
-    // The graphics toolkit associated with the figure being rendered.
-    graphics_toolkit toolkit;
-
-    // axes transformation data
-    graphics_xform xform;
-
     // axis limits in model scaled coordinate
     double xmin, xmax;
     double ymin, ymax;
     double zmin, zmax;
+    
+    // Factor used for translating Octave pixels to actual device pixels
+    double m_devpixratio;
+
+    // axes transformation data
+    graphics_xform xform;
+
+  private:
+
+    // The graphics toolkit associated with the figure being rendered.
+    graphics_toolkit toolkit;
 
     // Z projection limits in windows coordinate
     double xZ1, xZ2;
@@ -245,9 +244,6 @@ namespace octave
 
     // Indicate we are drawing for selection purpose
     bool selecting;
-
-    // Factor used for translating Octave pixels to actual device pixels
-    double m_devpixratio;
 
   private:
     class patch_tesselator;

@@ -466,6 +466,13 @@ function rgbout = print (varargin)
 
     drawnow ();
 
+    ## Set the __printing__ property first
+    props(1).h = opts.figure;
+    props(1).name = "__printing__";
+    props(1).value = {"off"};
+    set (opts.figure, "__printing__", "on");
+    nfig += 1;
+
     ## print() requires children of axes to have units = "normalized", or "data"
     hobj = findall (opts.figure, "-not", "type", "figure", ...
                     "-not", "type", "axes", "-property", "units", ...
@@ -552,13 +559,10 @@ function rgbout = print (varargin)
     ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
     props(end+1).h = opts.figure;
-    props(end).name = "__printing__";
-    props(end).value = {"off"};
-    props(end+1).h = opts.figure;
     props(end).name = "position";
     props(end).value = {fpos};
     fpos(3:4) = opts.canvas_size;
-    set (opts.figure, "__printing__", "on", "position", fpos);
+    set (opts.figure, "position", fpos);
     nfig += 1;
 
     ## Implement InvertHardCopy option
@@ -727,6 +731,9 @@ function rgbout = print (varargin)
       endfor
     endif
 
+    ## Avoid a redraw since the figure should not have changed
+    set (gcf, "__modified__", "off");
+
     ## Unlink temporary files
     for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
@@ -740,7 +747,6 @@ function rgbout = print (varargin)
   if (isfigure (orig_figure))
     set (0, "currentfigure", orig_figure);
   endif
-
 endfunction
 
 function cmd = epstool (opts, filein, fileout)

@@ -62,8 +62,7 @@
 ##
 ## If given the string input argument @qcode{"noshare"}, vertices may be
 ## returned multiple times for different faces.  The default behavior is to
-## eliminate vertices shared by adjacent faces with @code{unique} which may be
-## time consuming.
+## eliminate vertices shared by adjacent faces.
 ##
 ## The string input argument @qcode{"verbose"} is supported for @sc{matlab}
 ## compatibility, but has no effect.
@@ -169,7 +168,7 @@ function varargout = isosurface (varargin)
                                                               fvc.vertices);
 
     if (calc_colors)
-      fvc.facevertexcdata(J) = [];  # share very close vertices
+      fvc.facevertexcdata = fvc.facevertexcdata(J);  # share very close vertices
     endif
   endif
 

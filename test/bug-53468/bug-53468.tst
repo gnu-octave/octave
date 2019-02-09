@@ -18,12 +18,12 @@
 
 ## Load an Octave 4.0.3 figure file
 %!test
-%! hgload (fullfile ("figure_files", "ofig403.ofig"));
+%! hgload ("ofig403.ofig");
 
 ## Load an Octave 4.2.1 figure file
 %!test
-%! hgload (fullfile ("figure_files", "ofig421.ofig"));
+%! hgload ("ofig421.ofig");
 
 ## Load an Octave 5.1 figure file
 %!test
-%! hgload (fullfile ("figure_files", "ofig51.ofig"));
+%! hgload ("ofig51.ofig");

@@ -202,7 +202,7 @@ namespace octave
             break;
 
           case NO_SITE_FILE_OPTION:
-            m_read_site_files = 0;
+            m_read_site_files = false;
             break;
 
           case PERSIST_OPTION:

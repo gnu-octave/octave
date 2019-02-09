@@ -1492,9 +1492,9 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
   is.read (reinterpret_cast<char *> (&magic), 2);
 
   if (magic == 0x4d49)
-    swap = 0;
+    swap = false;
   else if (magic == 0x494d)
-    swap = 1;
+    swap = true;
   else
     {
       if (! quiet)

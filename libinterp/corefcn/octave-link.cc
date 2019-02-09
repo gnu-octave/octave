@@ -247,7 +247,7 @@ Undocumented internal function.
 
 DEFUN (__octave_link_list_dialog__, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
+@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
 Undocumented internal function.
 @end deftypefn */)
 {

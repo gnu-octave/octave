@@ -504,7 +504,7 @@ namespace octave
 
   // base_lexer inherits from lexical_feedback because we will
   // eventually have several different constructors and it is easier to
-  // intialize if everything is grouped in a parent class rather than
+  // initialize if everything is grouped in a parent class rather than
   // listing all the members in the base_lexer class.
 
   class

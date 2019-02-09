@@ -98,7 +98,7 @@ namespace octave
     void initialize_history (bool read_history_file = false);
 
     // If creating an embedded interpreter, you may inhibit setting
-    // the default compiled-in path by calling intialize_load_path
+    // the default compiled-in path by calling initialize_load_path
     // with set_initial_path = false prior calling initialize.  After
     // that, you can add directories to the load path to set up a
     // custom path.
@@ -110,7 +110,7 @@ namespace octave
     void initialize (void);
 
     // Initialize the interpreter (if not already done by an explicit
-    // call to intialize), execute startup files, --eval option code,
+    // call to initialize), execute startup files, --eval option code,
     // script files, and/or interactive commands.
 
     int execute (void);

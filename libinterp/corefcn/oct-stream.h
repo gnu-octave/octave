@@ -67,9 +67,10 @@ namespace octave
   public:
 
     base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
-                 mach_info::float_format ff = mach_info::native_float_format ())
-      : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true),
-        errmsg ()
+                 mach_info::float_format ff = mach_info::native_float_format (),
+                 const std::string& encoding = "utf-8")
+      : count (0), md (arg_md), flt_fmt (ff), mencoding (encoding),
+        fail (false), open_state (true), errmsg ()
     { }
 
     // No copying!
@@ -152,6 +153,8 @@ namespace octave
 
     mach_info::float_format float_format (void) const { return flt_fmt; }
 
+    std::string encoding (void) const { return mencoding; }
+
     // Set current error state and set fail to TRUE.
 
     void error (const std::string& msg);
@@ -176,6 +179,9 @@ namespace octave
 
     // Data format.
     mach_info::float_format flt_fmt;
+
+    // Code page
+    std::string mencoding;
 
     // TRUE if an error has occurred.
     bool fail;
@@ -229,7 +235,7 @@ namespace octave
     int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
                    const std::string& who /* = "printf" */);
 
-    int printf (const std::string& fmt, const octave_value_list& args,
+    int printf (std::string fmt, const octave_value_list& args,
                 const std::string& who /* = "printf" */);
 
     int puts (const std::string& s, const std::string& who /* = "puts" */);
@@ -362,6 +368,11 @@ namespace octave
     mach_info::float_format float_format (void) const;
 
     static std::string mode_as_string (int mode);
+    
+    std::string encoding (void)
+    {
+      return rep ? rep->encoding () : std::string ();
+    }
 
     std::istream * input_stream (void)
     {

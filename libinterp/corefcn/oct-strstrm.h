@@ -37,8 +37,9 @@ public:
 
   octave_base_strstream (std::ios::openmode m = std::ios::out,
                          octave::mach_info::float_format ff
-                           = octave::mach_info::native_float_format ())
-    : octave::base_stream (m, ff) { }
+                           = octave::mach_info::native_float_format (),
+                         const std::string& encoding = "utf-8")
+    : octave::base_stream (m, ff, encoding) { }
 
   // No copying!
 
@@ -79,14 +80,16 @@ public:
   octave_istrstream (const char *data,
                      std::ios::openmode arg_md = std::ios::out,
                      octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format ())
-    : octave_base_strstream (arg_md, ff), is (data) { }
+                       = octave::mach_info::native_float_format (),
+                     const std::string& encoding = "utf-8")
+    : octave_base_strstream (arg_md, ff, encoding), is (data) { }
 
   octave_istrstream (const std::string& data,
                      std::ios::openmode arg_md = std::ios::out,
                      octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format ())
-    : octave_base_strstream (arg_md, ff), is (data) { }
+                       = octave::mach_info::native_float_format (),
+                     const std::string& encoding = "utf-8")
+    : octave_base_strstream (arg_md, ff, encoding), is (data) { }
 
   // No copying!
 
@@ -104,12 +107,14 @@ public:
   static octave::stream
   create (const char *data, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format ());
+            = octave::mach_info::native_float_format (),
+          const std::string& encoding = "utf-8");
 
   static octave::stream
   create (const std::string& data, std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format ());
+            = octave::mach_info::native_float_format (),
+          const std::string& encoding = "utf-8");
 
   // Return nonzero if EOF has been reached on this stream.
 
@@ -139,8 +144,9 @@ public:
 
   octave_ostrstream (std::ios::openmode arg_md = std::ios::out,
                      octave::mach_info::float_format ff
-                       = octave::mach_info::native_float_format ())
-    : octave_base_strstream (arg_md, ff), os () { }
+                       = octave::mach_info::native_float_format (),
+                     const std::string& encoding = "utf-8")
+    : octave_base_strstream (arg_md, ff, encoding), os () { }
 
   // No copying!
 
@@ -157,7 +163,8 @@ public:
   static octave::stream
   create (std::ios::openmode arg_md = std::ios::out,
           octave::mach_info::float_format ff
-            = octave::mach_info::native_float_format ());
+            = octave::mach_info::native_float_format (),
+          const std::string& encoding = "utf-8");
 
   // Return nonzero if EOF has been reached on this stream.
 

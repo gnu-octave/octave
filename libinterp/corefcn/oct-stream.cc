@@ -54,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "oct-iostrm.h"
 #include "oct-stdstrm.h"
+#include "oct-string.h"
 #include "oct-stream.h"
 #include "ov.h"
 #include "ovl.h"
@@ -4529,6 +4530,8 @@ namespace octave
 #define FINISH_CHARACTER_CONVERSION()                                   \
   do                                                                    \
     {                                                                   \
+      if (encoding ().compare ("utf-8"))                                \
+        tmp = octave::string::u8_from_encoding (who, tmp, encoding ()); \
       width = tmp.length ();                                            \
                                                                         \
       if (is)                                                           \
@@ -5557,7 +5560,7 @@ namespace octave
   static size_t
   do_printf_string (std::ostream& os, const printf_format_elt *elt,
                     int nsa, int sa_1, int sa_2, const std::string& arg,
-                    const std::string& who)
+                    const std::string& encoding, const std::string& who)
   {
     if (nsa > 2)
       ::error ("%s: internal error handling format", who.c_str ());
@@ -5568,12 +5571,19 @@ namespace octave
 
     size_t len = arg.length ();
 
-    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
     size_t prec = (nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec));
 
-    os << std::setw (fw)
-       << (left ? std::left : std::right)
-       << (prec < len ? arg.substr (0, prec) : arg);
+    std::string print_str = prec < arg.length () ? arg.substr (0, prec) : arg;
+    if (encoding.compare ("utf-8"))
+      {
+        size_t src_len = print_str.length ();
+        print_str = string::u8_to_encoding (who, print_str, encoding);
+        len -= src_len - print_str.length ();
+      }
+
+    size_t fw = (nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw));
+
+    os << std::setw (fw) << (left ? std::left : std::right) << print_str;
 
     return len > fw ? len : fw;
   }
@@ -5846,7 +5856,8 @@ namespace octave
                         std::string sval = val.string_value ();
 
                         retval += do_printf_string (os, elt, nsa, sa_1,
-                                                    sa_2, sval, who);
+                                                    sa_2, sval, encoding (),
+                                                    who);
                       }
                     else
                       retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
@@ -5886,10 +5897,13 @@ namespace octave
   }
 
   int
-  base_stream::printf (const std::string& fmt,
+  base_stream::printf (std::string fmt,
                        const octave_value_list& args,
                        const std::string& who)
   {
+    if (encoding ().compare ("utf-8"))
+      fmt = string::u8_to_encoding (who, fmt, encoding ());
+
     printf_format_list fmt_list (fmt);
 
     if (fmt_list.num_conversions () == -1)

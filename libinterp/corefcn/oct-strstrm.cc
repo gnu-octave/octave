@@ -50,21 +50,27 @@ octave_base_strstream::tell (void)
 
 octave::stream
 octave_istrstream::create (const char *data, std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt,
+                           const std::string& encoding)
 {
-  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt));
+  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt,
+                                                encoding));
 }
 
 octave::stream
 octave_istrstream::create (const std::string& data, std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt,
+                           const std::string& encoding)
 {
-  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt));
+  return octave::stream (new octave_istrstream (data, arg_md, flt_fmt,
+                                                encoding));
 }
 
 octave::stream
 octave_ostrstream::create (std::ios::openmode arg_md,
-                           octave::mach_info::float_format flt_fmt)
+                           octave::mach_info::float_format flt_fmt,
+                           const std::string& encoding)
 {
-  return octave::stream (new octave_ostrstream (arg_md, flt_fmt));
+  return octave::stream (new octave_ostrstream (arg_md, flt_fmt,
+                                                encoding));
 }

@@ -31,16 +31,18 @@ along with Octave; see the file COPYING.  If not, see
 
 octave::stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
-                            octave::mach_info::float_format ff)
+                            octave::mach_info::float_format ff,
+                            const std::string& encoding)
 {
-  return octave::stream (new octave_iprocstream (n, arg_md, ff));
+  return octave::stream (new octave_iprocstream (n, arg_md, ff, encoding));
 }
 
 octave_iprocstream::octave_iprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
-                                        octave::mach_info::float_format ff)
+                                        octave::mach_info::float_format ff,
+                                        const std::string& encoding)
   : octave_stdiostream (n, octave::popen (n.c_str (), "r"),
-                        arg_md, ff, octave::pclose)
+                        arg_md, ff, encoding, octave::pclose)
 { }
 
 octave_iprocstream::~octave_iprocstream (void)
@@ -50,16 +52,18 @@ octave_iprocstream::~octave_iprocstream (void)
 
 octave::stream
 octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
-                            octave::mach_info::float_format ff)
+                            octave::mach_info::float_format ff,
+                            const std::string& encoding)
 {
-  return octave::stream (new octave_oprocstream (n, arg_md, ff));
+  return octave::stream (new octave_oprocstream (n, arg_md, ff, encoding));
 }
 
 octave_oprocstream::octave_oprocstream (const std::string& n,
                                         std::ios::openmode arg_md,
-                                        octave::mach_info::float_format ff)
+                                        octave::mach_info::float_format ff,
+                                        const std::string& encoding)
   : octave_stdiostream (n, octave::popen (n.c_str (), "w"),
-                        arg_md, ff, octave::pclose)
+                        arg_md, ff, encoding, octave::pclose)
 { }
 
 octave_oprocstream::~octave_oprocstream (void)

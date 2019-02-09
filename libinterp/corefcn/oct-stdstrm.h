@@ -40,8 +40,9 @@ public:
                        std::ios::openmode m = std::ios::in | std::ios::out,
                        octave::mach_info::float_format ff
                          = octave::mach_info::native_float_format (),
+                       const std::string& encoding = "utf-8",
                        typename BUF_T::close_fcn cf = BUF_T::file_close)
-    : octave::base_stream (m, ff), nm (n), md (m),
+    : octave::base_stream (m, ff, encoding), nm (n), md (m),
       s (f ? new STREAM_T (f, cf) : nullptr), fnum (fid)
   { }
 
@@ -108,18 +109,20 @@ public:
                       std::ios::openmode m = std::ios::in | std::ios::out,
                       octave::mach_info::float_format ff
                         = octave::mach_info::native_float_format (),
+                      const std::string& encoding = "utf-8",
                       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
     : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
-       (n, f, f ? fileno (f) : -1, m, ff, cf) { }
+       (n, f, f ? fileno (f) : -1, m, ff, encoding, cf) { }
 
   static octave::stream
   create (const std::string& n, FILE *f = nullptr,
           std::ios::openmode m = std::ios::in | std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format (),
+          const std::string& encoding = "utf-8",
           c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
   {
-    return octave::stream (new octave_stdiostream (n, f, m, ff, cf));
+    return octave::stream (new octave_stdiostream (n, f, m, ff, encoding, cf));
   }
 
   // No copying!
@@ -145,19 +148,22 @@ public:
                        std::ios::openmode m = std::ios::in | std::ios::out,
                        octave::mach_info::float_format ff
                          = octave::mach_info::native_float_format (),
+                       const std::string& encoding = "utf-8",
                        c_zfile_ptr_buf::close_fcn cf
                          = c_zfile_ptr_buf::file_close)
     : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
-       (n, f, fid, m, ff, cf) { }
+       (n, f, fid, m, ff, encoding, cf) { }
 
   static octave::stream
   create (const std::string& n, gzFile f = nullptr, int fid = 0,
           std::ios::openmode m = std::ios::in | std::ios::out,
           octave::mach_info::float_format ff
             = octave::mach_info::native_float_format (),
+          const std::string& encoding = "utf-8",
           c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
   {
-    return octave::stream (new octave_zstdiostream (n, f, fid, m, ff, cf));
+    return octave::stream (new octave_zstdiostream (n, f, fid, m, ff, encoding,
+                                                    cf));
   }
 
   // No copying!

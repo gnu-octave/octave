@@ -2105,6 +2105,8 @@ namespace octave
     m_looking_at_indirect_ref = false;
     m_parsing_class_method = false;
     m_parsing_classdef = false;
+    m_parsing_classdef_decl = false;
+    m_parsing_classdef_superclass = false;
     m_maybe_classdef_get_set_method = false;
     m_parsing_classdef_get_method = false;
     m_parsing_classdef_set_method = false;
@@ -3487,7 +3489,7 @@ namespace octave
         break;
 
       case INPUT_FILE_START:
-        std::cerr << "INPUT_FILE_BEGIN" << std::endl;
+        std::cerr << "INPUT_FILE_START" << std::endl;
         break;
 
       case BLOCK_COMMENT_START:
@@ -3504,6 +3506,10 @@ namespace octave
 
       case SQ_STRING_START:
         std::cerr << "SQ_STRING_START" << std::endl;
+        break;
+
+      case FQ_IDENT_START:
+        std::cerr << "FQ_IDENT_START" << std::endl;
         break;
 
       default:
@@ -3578,6 +3584,25 @@ namespace octave
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
 
+    switch (tok)
+      {
+      case EXPR_LT:
+        if (m_parsing_classdef_decl)
+          {
+            m_parsing_classdef_superclass = true;
+            push_start_state (FQ_IDENT_START);
+          }
+        break;
+
+      case EXPR_AND:
+        if (m_parsing_classdef_superclass)
+          push_start_state (FQ_IDENT_START);
+        break;
+
+      default:
+        break;
+      }
+
     return count_token_internal (tok);
   }
 
@@ -3637,12 +3662,6 @@ namespace octave
       }
 
     return tok;
-  }
-
-  void
-  base_lexer::enable_fq_identifier (void)
-  {
-    push_start_state (FQ_IDENT_START);
   }
 
   int

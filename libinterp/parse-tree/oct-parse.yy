@@ -1658,6 +1658,7 @@ classdef_beg    : CLASSDEF
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope ());
                     lexer.m_parsing_classdef = true;
+                    lexer.m_parsing_classdef_decl = true;
                     $$ = $1;
                   }
                 ;
@@ -1724,28 +1725,30 @@ attr            : identifier
 
 opt_superclass_list
                 : // empty
-                  { $$ = nullptr; }
+                  {
+                    lexer.m_parsing_classdef_decl = false;
+                    lexer.m_parsing_classdef_superclass = false;
+                    $$ = nullptr;
+                  }
                 | superclass_list
-                  { $$ = $1; }
+                  {
+                    lexer.m_parsing_classdef_decl = false;
+                    lexer.m_parsing_classdef_superclass = false;
+                    $$ = $1;
+                  }
                 ;
 
-superclass_list : EXPR_LT
+superclass_list : EXPR_LT superclass
                   {
                     YYUSE ($1);
 
-                    lexer.enable_fq_identifier ();
+                    $$ = new octave::tree_classdef_superclass_list ($2);
                   }
-                  superclass
-                  { $$ = new octave::tree_classdef_superclass_list ($3); }
-                | superclass_list EXPR_AND
+                | superclass_list EXPR_AND superclass
                   {
                     YYUSE ($2);
 
-                    lexer.enable_fq_identifier ();
-                  }
-                  superclass
-                  {
-                    $1->append ($4);
+                    $1->append ($3);
                     $$ = $1;
                   }
                 ;

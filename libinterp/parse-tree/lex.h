@@ -271,6 +271,8 @@ namespace octave
         m_looking_at_indirect_ref (false),
         m_parsing_class_method (false),
         m_parsing_classdef (false),
+        m_parsing_classdef_decl (false),
+        m_parsing_classdef_superclass (false),
         m_maybe_classdef_get_set_method (false),
         m_parsing_classdef_get_method (false),
         m_parsing_classdef_set_method (false),
@@ -385,6 +387,15 @@ namespace octave
 
     // true means we are parsing a classdef file
     bool m_parsing_classdef;
+
+    // true means we are parsing the initial classdef declaration
+    // portion of classdef file, from the "classdef" token through the
+    // optional list of superclasses.
+    bool m_parsing_classdef_decl;
+
+    // true means we are parsing the superclass part of a classdef
+    // declaration.
+    bool m_parsing_classdef_superclass;
 
     // true means we are parsing a class method declaration line in a
     // classdef file and can accept a property get or set method name.
@@ -750,8 +761,6 @@ namespace octave
     int count_token_internal (int tok);
 
     int show_token (int tok);
-
-    void enable_fq_identifier (void);
 
   protected:
 

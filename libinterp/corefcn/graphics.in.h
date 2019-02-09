@@ -4405,19 +4405,23 @@ public:
       Matrix pos = get_data_position ();
       Matrix lim;
 
-      lim = Matrix (1, 3, pos(0));
+      lim = Matrix (1, 4, pos(0));
       lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf () : lim(3));
       set_xlim (lim);
 
-      lim = Matrix (1, 3, pos(1));
+      lim = Matrix (1, 4, pos(1));
       lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf () : lim(2));
+      lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf () : lim(3));
       set_ylim (lim);
 
       if (pos.numel () == 3)
         {
-          lim = Matrix (1, 3, pos(2));
+          lim = Matrix (1, 4, pos(2));
           lim(2) = (lim(2) <= 0 ? octave::numeric_limits<double>::Inf ()
                                 : lim(2));
+          lim(3) = (lim(3) >= 0 ? -octave::numeric_limits<double>::Inf ()
+                                : lim(3));
           set_zliminclude ("on");
           set_zlim (lim);
         }

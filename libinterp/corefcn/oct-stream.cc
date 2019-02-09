@@ -1775,7 +1775,8 @@ namespace octave
   {
   public:
 
-    textscan (const std::string& who_arg = "textscan");
+    textscan (const std::string& who_arg = "textscan",
+              const std::string& encoding = "utf-8");
 
     // No copying!
 
@@ -1796,6 +1797,8 @@ namespace octave
 
     // What function name should be shown when reporting errors.
     std::string who;
+
+    std::string m_encoding;
 
     std::string buf;
 
@@ -2506,13 +2509,13 @@ namespace octave
     return retval;             // May have returned 4 above.
   }
 
-  textscan::textscan (const std::string& who_arg)
-    : who (who_arg), buf (), whitespace_table (), delim_table (),
-      delims (), comment_style (), comment_len (0), comment_char (-2),
-      buffer_size (0), date_locale (), inf_nan (init_inf_nan ()),
-      empty_value (numeric_limits<double>::NaN ()), exp_chars ("edED"),
-      header_lines (0), treat_as_empty (), treat_as_empty_len (0),
-      whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
+  textscan::textscan (const std::string& who_arg, const std::string& encoding)
+    : who (who_arg), m_encoding (encoding), buf (), whitespace_table (),
+      delim_table (), delims (), comment_style (), comment_len (0),
+      comment_char (-2), buffer_size (0), date_locale (),
+      inf_nan (init_inf_nan ()), empty_value (numeric_limits<double>::NaN ()),
+      exp_chars ("edED"), header_lines (0), treat_as_empty (),
+      treat_as_empty_len (0), whitespace (" \b\t"), eol1 ('\r'), eol2 ('\n'),
       return_on_error (1), collect_output (false),
       multiple_delims_as_one (false), default_exp (true), lines (0)
   { }
@@ -3148,6 +3151,10 @@ namespace octave
         ends[i++] = eol2;
         val = textscan::read_until (is, delim_list, ends);
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   // Return in VAL the run of characters from IS contained in PATTERN.
@@ -3195,6 +3202,10 @@ namespace octave
             is.get_undelim ();
           }
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   // Read from IS into VAL a string of the next fmt.width characters,
@@ -3217,6 +3228,10 @@ namespace octave
             break;
           }
       }
+
+    // convert from codepage
+    if (m_encoding.compare ("utf-8"))
+      val = string::u8_from_encoding ("textscan", val, m_encoding);
   }
 
   //  Read a single '%...' conversion and place it in position ROW of OV.
@@ -5309,7 +5324,7 @@ namespace octave
       invalid_operation (who, "reading");
     else
       {
-        textscan scanner (who);
+        textscan scanner (who, encoding ());
 
         retval = scanner.scan (*isp, fmt, ntimes, options, read_count);
       }

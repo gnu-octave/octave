@@ -2267,6 +2267,19 @@ as the name of the function when reporting errors.
 %! obs = textscan (str, "%f", "delimiter", {",",";","$"});
 %! assert (obs, { [0; 1; NaN; 2; 3] });
 
+## file stream with encoding
+%!test
+%! f = tempname ();
+%! fid = fopen (f, "w+", "n", "iso-8859-1");
+%! unwind_protect
+%!   fprintf (fid, "abc,äöü\n");
+%!   fseek (fid, 0, "bof");
+%!   obs = textscan (fid, "%s", "delimiter", ",");
+%!   fclose (fid);
+%!   assert (obs, { {"abc"; "äöü"} });
+%! unwind_protect_cleanup
+%!   unlink (f);
+%! end_unwind_protect
 */
 
 // These tests have end-comment sequences, so can't just be in a comment

@@ -652,12 +652,12 @@
 
 %!test   # write to and read from file with encoding
 %! temp_file = [tempname(), ".txt"];
-%! fid = fopen (temp_file, "wt", "n", "latin 1");
+%! fid = fopen (temp_file, "wt", "n", "iso-8859-1");
 %! unwind_protect
 %!   [name, mode, arch, codepage] = fopen (fid);
 %!   assert (name, temp_file);
 %!   assert (mode, "w");
-%!   assert (codepage, "latin 1");
+%!   assert (codepage, "iso-8859-1");
 %!   fprintf (fid, "aäu %s\n", "AÄU");
 %!   fclose (fid);
 %!   # open in binary mode
@@ -670,7 +670,7 @@
 %!   fclose (fid2);
 %!   assert (read_binary, [97 228 117 32 65 196 85 10].');
 %!   # open in text mode with correct encoding
-%!   fid3 = fopen (temp_file, "rt", "n", "latin 1");
+%!   fid3 = fopen (temp_file, "rt", "n", "iso-8859-1");
 %!   read_text = fscanf (fid3, "%s");
 %!   fclose (fid3);
 %!   assert (read_text, "aäuAÄU");

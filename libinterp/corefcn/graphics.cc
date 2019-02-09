@@ -308,6 +308,19 @@ default_data (void)
 }
 
 static Matrix
+default_data_lim (void)
+{
+  Matrix retval (1, 4);
+
+  retval(0) = 0;
+  retval(1) = 1;
+  retval(2) = 1;  // minimum positive
+  retval(3) = -octave::numeric_limits<double>::Inf (); // maximum negative
+
+  return retval;
+}
+
+static Matrix
 default_image_cdata (void)
 {
   Matrix m (64, 64);
@@ -7205,31 +7218,35 @@ check_limit_vals (double& min_val, double& max_val,
                   double& min_pos, double& max_neg,
                   const octave_value& data)
 {
+  Matrix m;
+
   if (data.is_matrix_type ())
+    m = data.matrix_value ();
+
+  if (m.numel () != 4)
     {
-      Matrix m = data.matrix_value ();
-
-      if (m.numel () == 4)
-        {
-          double val;
-
-          val = m(0);
-          if (octave::math::isfinite (val) && val < min_val)
-            min_val = val;
-
-          val = m(1);
-          if (octave::math::isfinite (val) && val > max_val)
-            max_val = val;
-
-          val = m(2);
-          if (octave::math::isfinite (val) && val > 0 && val < min_pos)
-            min_pos = val;
-
-          val = m(3);
-          if (octave::math::isfinite (val) && val < 0 && val > max_neg)
-            max_neg = val;
-        }
+      m = Matrix (1, 4, 0.0);
+      m(2) = octave::numeric_limits<double>::Inf ();
+      m(3) = -octave::numeric_limits<double>::Inf ();
     }
+
+  double val;
+
+  val = m(0);
+  if (octave::math::isfinite (val) && val < min_val)
+    min_val = val;
+
+  val = m(1);
+  if (octave::math::isfinite (val) && val > max_val)
+    max_val = val;
+
+  val = m(2);
+  if (octave::math::isfinite (val) && val > 0 && val < min_pos)
+    min_pos = val;
+
+  val = m(3);
+  if (octave::math::isfinite (val) && val < 0 && val > max_neg)
+    max_neg = val;
 }
 
 // magform(x) Returns (a, b),

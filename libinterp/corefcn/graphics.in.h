@@ -4246,12 +4246,12 @@ public:
       string_property zdatasource , ""
 
       // hidden properties for limit computation
-      row_vector_property xlim hlr , Matrix ()
-      row_vector_property ylim hlr , Matrix ()
+      row_vector_property xlim hlr , default_data_lim ()
+      row_vector_property ylim hlr , default_data_lim ()
       row_vector_property zlim hlr , Matrix ()
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
-      bool_property zliminclude hl , "off"
+      bool_property zliminclude hl , "on"
     END_PROPERTIES
 
   protected:
@@ -4269,11 +4269,7 @@ public:
 
     void update_ydata (void) { set_ylim (compute_ylim ()); }
 
-    void update_zdata (void)
-    {
-      set_zlim (zdata.get_limits ());
-      set_zliminclude (get_zdata ().numel () > 0);
-    }
+    void update_zdata (void) { set_zlim (zdata.get_limits ()); }
   };
 
 private:

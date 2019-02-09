@@ -323,6 +323,18 @@ object) relevant global values before and after the nested call.
      }                                                                  \
    while (0)
 
+static inline bool
+is_space_or_tab (char c)
+{
+  return c == ' ' || c == '\t';
+}
+
+static inline bool
+is_space_or_tab_or_eol (char c)
+{
+  return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
+
 %}
 
 D       [0-9]
@@ -725,7 +737,7 @@ ANY_INCLUDING_NL (.|{NL})
     while (i < len)
       {
         char c = yytext[i];
-        if (c == ' ' || c == '\t')
+        if (is_space_or_tab (c))
           {
             have_space = true;
             i++;
@@ -759,7 +771,7 @@ ANY_INCLUDING_NL (.|{NL})
             while (i < len)
               {
                 char c = yytext[i++];
-                if (! (c == ' ' || c == '\t' || c == '\n' || c == '\r'))
+                if (! is_space_or_tab_or_eol (c))
                   {
                     looks_like_block_comment = false;
                     break;
@@ -1802,12 +1814,6 @@ octave_free (void *ptr, yyscan_t)
   std::free (ptr);
 }
 
-static inline bool
-is_space_or_tab (char c)
-{
-  return c == ' ' || c == '\t';
-}
-
 static void
 display_character (char c)
 {
@@ -2463,7 +2469,7 @@ namespace octave
   {
     int c = text_yyinput ();
     xunput (c);
-    return (c == ' ' || c == '\t');
+    return is_space_or_tab (c);
   }
 
   bool
@@ -2868,7 +2874,7 @@ namespace octave
     while (offset < yylng)
       {
         char c = yytxt[offset];
-        if (c == ' ' || c == '\t')
+        if (is_space_or_tab (c))
           {
             have_space = true;
             offset++;
@@ -3547,7 +3553,7 @@ namespace octave
         int c = text_yyinput ();
         xunput (c);
 
-        bool space_after = (c == ' ' || c == '\t');
+        bool space_after = is_space_or_tab (c);
 
         if (! (prev_tok == '[' || prev_tok == '{'
                || previous_token_is_binop ()

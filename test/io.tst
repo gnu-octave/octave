@@ -233,6 +233,7 @@
 %! STR.struct_fld.y = 1;
 %!
 %! struct_dat = fullfile (P_tmpdir, "struct.dat");
+%! save_default_options ("-text", "local");
 %! save (struct_dat, "-struct", "STR");
 %! STR = load (struct_dat);
 %!

@@ -67,6 +67,7 @@ endfunction
 
 %!test
 %! HOME = getenv ("HOME");
+%! save_default_options ("-binary", "local");
 %! unwind_protect
 %!   setenv ("HOME", P_tmpdir ());
 %!   addpref ("group1", "pref1", [1 2 3]);

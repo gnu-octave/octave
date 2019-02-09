@@ -91,6 +91,7 @@
 
 ## Action load/unload (within install/uninstall)
 %!testif HAVE_Z
+%! save_default_options ("-binary", "local");
 %! for i = 1:numel (mfile_pkg_name)
 %!   name = mfile_pkg_name{i};
 %!   silent_pkg_install ("-local", mfile_pkg_tgz{i});

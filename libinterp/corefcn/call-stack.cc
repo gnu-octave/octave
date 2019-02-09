@@ -1179,6 +1179,7 @@ matching the given patterns.
 %!test
 %! avar = magic (4);
 %! ftmp = [tempname() ".mat"];
+%! save_default_options ("-binary", "local");
 %! unwind_protect
 %!   save (ftmp, "avar");
 %!   vars = whos ("-file", ftmp);

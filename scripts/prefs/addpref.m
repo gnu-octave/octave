@@ -77,6 +77,7 @@ endfunction
 
 %!test
 %! HOME = getenv ("HOME");
+%! save_default_options ("-binary", "local");
 %! unwind_protect
 %!   setenv ("HOME", P_tmpdir ());
 %!

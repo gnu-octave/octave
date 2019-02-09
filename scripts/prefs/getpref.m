@@ -109,6 +109,7 @@ endfunction
 %!test
 %! HOME = getenv ("HOME");
 %! tmp_home = tempname ();
+%! save_default_options ("-binary", "local");
 %! unwind_protect
 %!   mkdir (tmp_home);
 %!   setenv ("HOME", tmp_home);

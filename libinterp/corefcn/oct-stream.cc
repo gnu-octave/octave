@@ -7484,7 +7484,7 @@ namespace octave
 
   string_vector stream_list::get_info (int fid) const
   {
-    string_vector retval (3);
+    string_vector retval (4);
 
     if (fid < 0)
       return retval;
@@ -7509,6 +7509,7 @@ namespace octave
     retval(0) = os.name ();
     retval(1) = stream::mode_as_string (os.mode ());
     retval(2) = mach_info::float_format_as_string (os.float_format ());
+    retval(3) = os.encoding ();
 
     return retval;
   }

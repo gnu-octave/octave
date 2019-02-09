@@ -495,7 +495,7 @@
 %! assert (__prog_output_assert__ ("error:"));
 
 %!error <Invalid call to fopen> fopen ()
-%!error <Invalid call to fopen> fopen ("foo", "wb", "native", 1)
+%!error <Invalid call to fopen> fopen ("foo", "wb", "native", "utf-8", 1)
 
 %!error fclose (0)
 %!error <Invalid call to fclose> fclose (1, 2)
@@ -649,6 +649,34 @@
 %!   endif
 %!   unlink (nm);
 %! endif
+
+%!test   # write to and read from file with encoding
+%! temp_file = [tempname(), ".txt"];
+%! fid = fopen (temp_file, "wt", "n", "latin 1");
+%! unwind_protect
+%!   [name, mode, arch, codepage] = fopen (fid);
+%!   assert (name, temp_file);
+%!   assert (mode, "w");
+%!   assert (codepage, "latin 1");
+%!   fprintf (fid, "aäu %s\n", "AÄU");
+%!   fclose (fid);
+%!   # open in binary mode
+%!   fid2 = fopen (temp_file, "rb");
+%!   [name, mode, arch, codepage] = fopen (fid2);
+%!   assert (name, temp_file);
+%!   assert (mode, "rb");
+%!   assert (codepage, "utf-8");
+%!   read_binary = fread (fid2);
+%!   fclose (fid2);
+%!   assert (read_binary, [97 228 117 32 65 196 85 10].');
+%!   # open in text mode with correct encoding
+%!   fid3 = fopen (temp_file, "rt", "n", "latin 1");
+%!   read_text = fscanf (fid3, "%s");
+%!   fclose (fid3);
+%!   assert (read_text, "aäuAÄU");
+%! unwind_protect_cleanup
+%!   unlink (temp_file);
+%! end_unwind_protect
 
 %!assert (fputs (1, 1),-1)
 

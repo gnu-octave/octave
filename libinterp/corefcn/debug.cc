@@ -529,8 +529,8 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %! endif
 %! unwind_protect
 %!   dbclear all;   # Clear out breakpoints before test
-%!   dbstop @ftp/dir;
-%!   dbstop @audioplayer/set 70;
+%!   dbstop ("@ftp/dir");
+%!   dbstop ("@audioplayer/set", "70");
 %!   dbstop quantile>__quantile__;
 %!   dbstop ls;
 %!   s = dbstatus;

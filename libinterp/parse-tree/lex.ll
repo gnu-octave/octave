@@ -332,7 +332,7 @@ NL      ((\n)|(\r)|(\r\n))
 Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
-FQIDENT ({IDENT}(\.{IDENT})*)
+FQIDENT ({IDENT}({S}*\.{S}*{IDENT})*)
 EXPON   ([DdEe][+-]?{D}{D_}*)
 NUMBIN  (0[bB][01_]+)
 NUMHEX  (0[xX][0-9a-fA-F][0-9a-fA-F_]*)
@@ -1079,7 +1079,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 <FQ_IDENT_START>{FQIDENT} {
-    curr_lexer->lexer_debug ("<FQ_IDENT_START>{FQIDENT}");
+    curr_lexer->lexer_debug ("<FQ_IDENT_START>{FQIDENT}{S}*");
     curr_lexer->pop_start_state ();
 
     int id_tok = curr_lexer->handle_fq_identifier ();
@@ -1099,6 +1099,8 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <FQ_IDENT_START>. {
+    // If input doesn't match FQIDENT, return char and go to previous
+    // start state.
     yyless (0);
     curr_lexer->pop_start_state ();
   }
@@ -1245,8 +1247,8 @@ ANY_INCLUDING_NL (.|{NL})
 // Superclass method identifiers.
 %}
 
-{IDENT}@{FQIDENT} {
-    curr_lexer->lexer_debug ("{IDENT}@{FQIDENT}");
+{FQIDENT}{S}*@{S}*{FQIDENT} {
+    curr_lexer->lexer_debug ("{FQIDENT}{S}*@{S}*{FQIDENT}");
 
     if (curr_lexer->previous_token_may_be_command ())
       {
@@ -1270,8 +1272,8 @@ ANY_INCLUDING_NL (.|{NL})
 // Metaclass query
 %}
 
-\?{FQIDENT} {
-    curr_lexer->lexer_debug ("\\?{FQIDENT}");
+\?{S}*{FQIDENT} {
+    curr_lexer->lexer_debug ("\\?{S}*{FQIDENT}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -1798,6 +1800,12 @@ void
 octave_free (void *ptr, yyscan_t)
 {
   std::free (ptr);
+}
+
+static inline bool
+is_space_or_tab (char c)
+{
+  return c == ' ' || c == '\t';
 }
 
 static void
@@ -2967,6 +2975,9 @@ namespace octave
   {
     std::string txt = flex_yytext ();
 
+    txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
+               txt.end ());
+
     size_t pos = txt.find ("@");
 
     std::string meth_or_obj = txt.substr (0, pos);
@@ -2998,7 +3009,13 @@ namespace octave
   int
   base_lexer::handle_meta_identifier (void)
   {
-    std::string cls = std::string(flex_yytext ()).substr (1);
+    std::string txt = flex_yytext ();
+
+    txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
+               txt.end ());
+
+    // Eliminate leading '?'
+    std::string cls = txt.substr (1);
 
     if (fq_identifier_contains_keyword (cls))
       {
@@ -3021,9 +3038,12 @@ namespace octave
   int
   base_lexer::handle_fq_identifier (void)
   {
-    std::string fq_id = flex_yytext ();
+    std::string txt = flex_yytext ();
 
-    if (fq_identifier_contains_keyword (fq_id))
+    txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
+               txt.end ());
+
+    if (fq_identifier_contains_keyword (txt))
       {
         token *tok
           = new token (LEXICAL_ERROR,
@@ -3035,7 +3055,7 @@ namespace octave
         return count_token_internal (LEXICAL_ERROR);
       }
 
-    push_token (new token (FQ_IDENT, fq_id, m_input_line_number,
+    push_token (new token (FQ_IDENT, txt, m_input_line_number,
                            m_current_input_column));
 
     m_current_input_column += flex_yyleng ();

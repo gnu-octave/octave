@@ -234,6 +234,7 @@
 %!
 %! struct_dat = fullfile (P_tmpdir, "struct.dat");
 %! save_default_options ("-text", "local");
+%! save_precision (17, "local");
 %! save (struct_dat, "-struct", "STR");
 %! STR = load (struct_dat);
 %!

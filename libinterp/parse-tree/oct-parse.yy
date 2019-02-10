@@ -5748,7 +5748,17 @@ s = evalc ("t = 42"), t
 
 /*
 
-%!assert (evalc ("1"), "ans =  1\n")
+%!test
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   str = evalc ("1");
+%!   assert (str, "ans =  1\n");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
+
 %!assert (evalc ("1;"), "")
 
 %!test
@@ -5762,8 +5772,16 @@ s = evalc ("t = 42"), t
 %! assert (y, 1);
 
 %!test
-%! assert (evalc ("y = 2"), "y =  2\n");
-%! assert (y, 2);
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   str = evalc ("y = 2");
+%!   assert (str, "y =  2\n");
+%!   assert (y, 2);
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 
 %!test
 %! assert (evalc ("y = 3;"), "");

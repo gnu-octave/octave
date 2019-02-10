@@ -3163,17 +3163,23 @@ If the length of the smallest possible rational approximation exceeds
 }
 
 /*
-%!assert (rats (2.0005, 9), "4001/2000")
-%!assert (rats (-2.0005, 10), "-4001/2000")
-%!assert (strtrim (rats (2.0005, 30)), "4001/2000")
-%!assert (pi - str2num (rats (pi, 30)), 0, 4 * eps)
-%!assert (e - str2num (rats (e, 30)), 0, 4 * eps)
-%!assert (rats (123, 2), " *")
-
 %!test
-%! v = 1 / double (intmax);
-%! err = v - str2num (rats(v, 12));
-%! assert (err, 0, 4 * eps);
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   assert (rats (2.0005, 9), "4001/2000");
+%!   assert (rats (-2.0005, 10), "-4001/2000");
+%!   assert (strtrim (rats (2.0005, 30)), "4001/2000");
+%!   assert (pi - str2num (rats (pi, 30)), 0, 4 * eps);
+%!   assert (e - str2num (rats (e, 30)), 0, 4 * eps);
+%!   assert (rats (123, 2), " *");
+%!   v = 1 / double (intmax);
+%!   err = v - str2num (rats (v, 12));
+%!   assert (err, 0, 4 * eps);
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 */
 
 DEFUN (disp, args, nargout,

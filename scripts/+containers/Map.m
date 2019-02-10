@@ -785,9 +785,16 @@ endclassdef
 %!error <specified key .b. does not exist>
 %! m = containers.Map ("a", 1);
 %! m("b");
-%!error <specified key .2. does not exist>
-%! m = containers.Map (1, 1);
-%! m(2);
+%!test
+%! [old_fmt, old_spacing] = format ();
+%! unwind_protect
+%!   format short;
+%!   m = containers.Map (1, 1);
+%!   fail ("m(2)", "specified key <2> does not exist");
+%! unwind_protect_cleanup
+%!   format (old_fmt);
+%!   format (old_spacing);
+%! end_unwind_protect
 %!error <only '\(\)' indexing is supported>
 %! m = containers.Map ("a", 1);
 %! m{1};

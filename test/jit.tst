@@ -377,12 +377,10 @@
 %! assert (jit_failcnt, 0);
 
 %!function test_divide ()
-%! unwind_protect
-%!   for i=1:1e5
-%!     a = 1;
-%!     a / 0;
-%!   endfor
-%! end_unwind_protect
+%! for i=1:1e5
+%!   a = 1;
+%!   a / 0;
+%! endfor
 %!endfunction
 
 # %!testif HAVE_LLVM

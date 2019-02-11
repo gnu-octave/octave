@@ -1157,6 +1157,9 @@ public:
     std::string mname = m_method_name;
     std::string cname = m_class_name;
 
+    // CLS is the superclass.  The lookup_class function handles
+    // pkg.class names.
+
     cdef_class cls = lookup_class (cname);
 
     if (in_constructor)
@@ -1177,6 +1180,38 @@ public:
       }
     else
       {
+        size_t pos = mname.find ('.');
+
+        cdef_object obj;
+
+        if (pos != std::string::npos)
+          {
+            // We are looking at obj.meth.
+
+            std::string oname = m_method_name.substr (0, pos);
+            mname = mname.substr (pos + 1);
+
+            octave_value tval = tw.varval (oname);
+
+            // FIXME: Can we only call superclass methods on the current
+            // object?  If so, and we are looking at something like
+            //
+            //   function meth (obj, ...)
+            //     obj.meth@superclass (...)
+            //
+            // Do we need to verify that the object that was passed to
+            // meth is the same as the object we find when looking up
+            // obj in the expression obj.meth?  If so, what is the right
+            // way to perform that check?
+
+            if (tval.is_classdef_object ())
+              {
+                octave_classdef *cdobj = tval.classdef_object_value ();
+
+                obj = cdobj->get_object ();
+              }
+          }
+
         if (mname != meth_name)
           error ("method name mismatch (`%s' != `%s')",
                  mname.c_str (), meth_name.c_str ());
@@ -1202,8 +1237,9 @@ public:
           error ("no method `%s' found in superclass `%s'",
                  meth_name.c_str (), cname.c_str ());
 
-        retval = meth.execute (idx, nargout, true,
-                               meth_name);
+        retval = (obj.ok ()
+                  ? meth.execute (obj, idx, nargout, true, meth_name)
+                  : meth.execute (idx, nargout, true, meth_name));
       }
 
     return retval;

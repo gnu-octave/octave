@@ -8,6 +8,11 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
       (for example, the Y-axis of an axes object with "ycolor" = "none")
       without hiding the entire primitive ("visibility" = "off").
 
+    * "LineWidth" and "MarkerSize" properties are now measured in
+      points, *not* pixels.  This change was made for Matlab
+      compatibility.  Compared to previous versions of Octave, some
+      lines and markers will appear 4/3 larger.
+
     * The appearance of patterned lines (LineStyle = ":"|"--"|"-.") has
       been improved for small widths (LineWidth < 1.5 pixels) which is a
       common scenario.

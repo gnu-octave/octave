@@ -514,11 +514,10 @@ identifier      : NAME
 superclass_identifier
                 : SUPERCLASSREF
                   {
-                    std::string meth_or_obj
-                      = $1->superclass_method_or_object_name ();
+                    std::string meth = $1->superclass_method_name ();
                     std::string cls = $1->superclass_class_name ();
 
-                    $$ = new octave::tree_superclass_ref (meth_or_obj, cls,
+                    $$ = new octave::tree_superclass_ref (meth, cls,
                                                           $1->line (),
                                                           $1->column ());
                   }

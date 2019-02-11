@@ -1560,7 +1560,7 @@ public:
     return object.get_property (idx, name);
   }
 
-  static octave_value superclass_ref (const std::string& meth_or_obj,
+  static octave_value superclass_ref (const std::string& meth,
                                       const std::string& cls);
 
   static octave_value metaclass_query (const std::string& cls);

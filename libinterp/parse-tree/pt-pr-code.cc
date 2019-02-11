@@ -1135,7 +1135,7 @@ namespace octave
   void
   tree_print_code::visit_superclass_ref (tree_superclass_ref& scr)
   {
-    m_os << scr.method_or_object_name () << "@" << scr.class_name ();
+    m_os << scr.method_name () << "@" << scr.class_name ();
   }
 
   void

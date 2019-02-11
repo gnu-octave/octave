@@ -1125,10 +1125,9 @@ class octave_classdef_superclass_ref : public octave_function
 public:
   octave_classdef_superclass_ref (void) = delete;
 
-  octave_classdef_superclass_ref (const std::string& meth_or_obj,
+  octave_classdef_superclass_ref (const std::string& meth,
                                   const std::string& cls)
-    : octave_function (), m_method_or_object_name (meth_or_obj),
-      m_class_name (cls)
+    : octave_function (), m_method_name (meth), m_class_name (cls)
   { }
 
   octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
@@ -1155,7 +1154,7 @@ public:
     if (! ctx.ok ())
       error ("superclass calls can only occur in methods or constructors");
 
-    std::string mname = m_method_or_object_name;
+    std::string mname = m_method_name;
     std::string cname = m_class_name;
 
     cdef_class cls = lookup_class (cname);
@@ -1236,15 +1235,15 @@ private:
 
 private:
 
-  std::string m_method_or_object_name;
+  std::string m_method_name;
   std::string m_class_name;
 };
 
 octave_value
-octave_classdef::superclass_ref (const std::string& meth_or_obj,
+octave_classdef::superclass_ref (const std::string& meth,
                                  const std::string& cls)
 {
-  return octave_value (new octave_classdef_superclass_ref (meth_or_obj, cls));
+  return octave_value (new octave_classdef_superclass_ref (meth, cls));
 }
 
 octave_value
@@ -2039,7 +2038,7 @@ public:
 
   void visit_superclass_ref (octave::tree_superclass_ref& t)
   {
-    if (t.method_or_object_name () == obj_name)
+    if (t.method_name () == obj_name)
       {
         std::string class_name = t.class_name ();
 

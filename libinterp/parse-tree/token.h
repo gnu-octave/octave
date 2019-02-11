@@ -120,7 +120,7 @@ namespace octave
     end_tok_type ettype (void) const;
     symbol_record sym_rec (void) const;
 
-    std::string superclass_method_or_object_name (void) const;
+    std::string superclass_method_name (void) const;
     std::string superclass_class_name (void) const;
 
     std::string text_rep (void) const;
@@ -155,8 +155,8 @@ namespace octave
         : m_sr (new symbol_record (sr))
       { }
 
-      tok_info (const std::string& meth_or_obj, const std::string& cls)
-        : m_superclass_info (new superclass_info (meth_or_obj, cls))
+      tok_info (const std::string& meth, const std::string& cls)
+        : m_superclass_info (new superclass_info (meth, cls))
       { }
 
       tok_info (const tok_info&) = delete;
@@ -177,9 +177,9 @@ namespace octave
       {
         superclass_info (void) = delete;
 
-        superclass_info (const std::string& meth_or_obj,
+        superclass_info (const std::string& meth,
                          const std::string& cls)
-          : m_method_or_object_name (meth_or_obj), m_class_name (cls)
+          : m_method_name (meth), m_class_name (cls)
         { }
 
         superclass_info (const superclass_info&) = delete;
@@ -188,7 +188,12 @@ namespace octave
 
         ~superclass_info (void) = default;
 
-        std::string m_method_or_object_name;
+        // The name of the method to call.  This is the text before the
+        // "@" and may be of the form "object.method".
+        std::string m_method_name;
+
+        // The name of the superclass.  This is the text after the "@"
+        // and may be of the form "object.method".
         std::string m_class_name;
       };
 

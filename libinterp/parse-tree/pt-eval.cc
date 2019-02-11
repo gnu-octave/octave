@@ -3398,10 +3398,10 @@ namespace octave
   void
   tree_evaluator::visit_superclass_ref (tree_superclass_ref& expr)
   {
-    std::string meth_or_obj = expr.method_or_object_name ();
+    std::string meth = expr.method_name ();
     std::string cls = expr.class_name ();
 
-    octave_value tmp = octave_classdef::superclass_ref (meth_or_obj, cls);
+    octave_value tmp = octave_classdef::superclass_ref (meth, cls);
 
     if (! expr.is_postfix_indexed ())
       {

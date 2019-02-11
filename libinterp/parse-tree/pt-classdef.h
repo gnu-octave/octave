@@ -47,10 +47,9 @@ namespace octave
 
     tree_superclass_ref (void) = delete;
 
-    tree_superclass_ref (const std::string& meth_or_obj,
-                         const std::string& cls, int l = -1, int c = -1)
-      : tree_expression (l, c), m_method_or_object_name (meth_or_obj),
-        m_class_name (cls)
+    tree_superclass_ref (const std::string& meth, const std::string& cls,
+                         int l = -1, int c = -1)
+      : tree_expression (l, c), m_method_name (meth), m_class_name (cls)
     { }
 
     // No copying!
@@ -59,9 +58,9 @@ namespace octave
 
     tree_superclass_ref& operator = (const tree_superclass_ref&) = delete;
 
-    std::string method_or_object_name (void) const
+    std::string method_name (void) const
     {
-      return m_method_or_object_name;
+      return m_method_name;
     }
 
     std::string class_name (void) const { return m_class_name; }
@@ -77,7 +76,12 @@ namespace octave
 
   private:
 
-    std::string m_method_or_object_name;
+    // The name of the method to call.  This is the text before the
+    // "@" and may be of the form "object.method".
+    std::string m_method_name;
+
+    // The name of the superclass.  This is the text after the "@"
+    // and may be of the form "object.method".
     std::string m_class_name;
   };
 

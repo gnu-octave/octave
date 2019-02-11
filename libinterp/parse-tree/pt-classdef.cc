@@ -33,7 +33,7 @@ namespace octave
   tree_superclass_ref::dup (symbol_scope&) const
   {
     tree_superclass_ref *new_scr
-      = new tree_superclass_ref (m_method_or_object_name, m_class_name,
+      = new tree_superclass_ref (m_method_name, m_class_name,
                                  line (), column ());
 
     new_scr->copy_base (*this);

@@ -4273,8 +4273,15 @@ namespace octave
   opengl_renderer::set_linewidth (float w)
   {
 #if defined (HAVE_OPENGL)
+    // FIXME: See bug #53056 (measure LineWidth in points).
+    //        pts2pix and m_devpixratio should eventually be combined in to a
+    //        a single conversion factor so that only one multiplication per
+    //        function call is required.
+    const static double pts2pix =
+      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      / 72.0;
 
-    m_glfcns.glLineWidth (w * m_devpixratio);
+    m_glfcns.glLineWidth (w * pts2pix * m_devpixratio);
 
 #else
 
@@ -4294,7 +4301,11 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
-    int factor = math::round (linewidth * m_devpixratio);
+    // FIXME: See bug #53056 (measure LineWidth in points).
+    const static double pts2pix =
+      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      / 72.0;
+    int factor = math::round (linewidth * pts2pix * m_devpixratio);
     if (factor < 1)
       factor = 1;
 
@@ -4633,7 +4644,13 @@ namespace octave
       return 0;
 
     unsigned int ID = m_glfcns.glGenLists (1);
-    double sz = size * toolkit.get_screen_resolution () / 72.0;
+
+    // FIXME: See bug #53056 (measure LineWidth in points).
+    const static double pts2pix =
+      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      / 72.0;
+
+    double sz = size * pts2pix;
 
     // constants for the * marker
     const double sqrt2d4 = 0.35355339059327;

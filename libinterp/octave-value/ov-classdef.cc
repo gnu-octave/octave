@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "call-stack.h"
 #include "defun.h"
+#include "errwarn.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -3962,6 +3963,78 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 
   return to_ov (obj.get_class ());
 }
+
+// FIXME: What about dynamic properties if obj is a scalar, or the
+// properties of the class of obj if obj is an array?  Probably there
+// should be a function to do this job so that the DEFUN is just a
+// simple wrapper.
+
+DEFUN (properties, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} properties (@var{class_name})
+@deftypefnx {} {} properties (@var{obj})
+@deftypefnx {} {@var{plist} =} properties (@dots{})
+List of properties for the named class @var{class_name}
+or classdef object @var{obj}.  If output value is requested, return list
+of property names in a cell array.
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  octave_value arg = args(0);
+
+  std::string class_name;
+
+  if (arg.isobject ())
+    class_name = arg.class_name ();
+  else if (arg.is_string ())
+    class_name = arg.string_value ();
+  else
+    err_wrong_type_arg ("properties", arg);
+
+  cdef_class cls;
+
+  cls = lookup_class (class_name, false, true);
+
+  if (! cls.ok ())
+    error ("invalid class: %s", class_name.c_str ());
+
+  std::map<std::string, cdef_property> property_map = cls.get_property_map ();
+
+  std::list<std::string> property_names;
+
+  for (const auto& pname_prop : property_map)
+    {
+      std::string nm = pname_prop.second.get_name ();
+
+      octave_value acc = pname_prop.second.get ("GetAccess");
+
+      if (! acc.is_string() || acc.string_value () != "public")
+        continue;
+
+      property_names.push_back (nm);
+    }
+
+  if (nargout > 0)
+    return octave_value (Cell (string_vector (property_names)));
+
+  octave_stdout << "properties for class " << class_name << ":\n\n";
+
+  for (const auto& nm : property_names)
+    octave_stdout << "  " << nm << "\n";
+
+  octave_stdout << std::endl;
+
+  return octave_value ();
+}
+
+/*
+%!assert (properties ("inputParser"),
+%!        {"CaseSensitive"; "FunctionName"; "KeepUnmatched";
+%!         "Parameters"; "PartialMatching"; "Results";
+%!         "StructExpand"; "Unmatched"; "UsingDefaults"});
+*/
 
 /*
 ;;; Local Variables: ***

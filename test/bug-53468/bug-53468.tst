@@ -18,12 +18,30 @@
 
 ## Load an Octave 4.0.3 figure file
 %!test
-%! hgload ("ofig403.ofig");
+%! unwind_protect
+%!   hf = hgload ("ofig403.ofig");
+%! unwind_protect_cleanup
+%!   if (exist ("hf", "var") && isfigure (hf))
+%!     close (hf)
+%!   endif
+%! end_unwind_protect
 
 ## Load an Octave 4.2.1 figure file
 %!test
-%! hgload ("ofig421.ofig");
+%! unwind_protect
+%!   hf = hgload ("ofig421.ofig");
+%! unwind_protect_cleanup
+%!   if (exist ("hf", "var") && isfigure (hf))
+%!     close (hf)
+%!   endif
+%! end_unwind_protect
 
 ## Load an Octave 5.1 figure file
 %!test
-%! hgload ("ofig51.ofig");
+%! unwind_protect
+%!   hf = hgload ("ofig51.ofig");
+%! unwind_protect_cleanup
+%!   if (exist ("hf", "var") && isfigure (hf))
+%!     close (hf)
+%!   endif
+%! end_unwind_protect

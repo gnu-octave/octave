@@ -29,7 +29,7 @@
 
 function __finish__ ()
 
-  if (exist ("finish", "file"))
+  if (exist ("finish.m", "file"))
     ## Must use evalin for access to base workspace and user variables.
     ## No argument list for finish because it might be a script, not function.
     evalin ("base", "finish;");

@@ -711,7 +711,7 @@ namespace octave
   // occurs when reading any of them, but don't exit early because of an
   // exception.
 
-  int interpreter::execute_startup_files (void) const
+  int interpreter::execute_startup_files (void)
   {
     bool read_site_files = m_read_site_files;
     bool read_init_files = m_read_init_files;
@@ -758,6 +758,37 @@ namespace octave
 
     if (read_init_files)
       {
+        // Try to execute commands from the Matlab compatible startup.m file
+        // if it exists anywhere in the load path when starting Octave.
+        std::string ff_startup_m = file_in_path ("startup.m", "");
+
+        if (! ff_startup_m.empty ())
+          {
+            int parse_status = 0;
+
+            try
+              {
+                eval_string (std::string ("startup"), false, parse_status, 0);
+              }
+            catch (const interrupt_exception&)
+              {
+                recover_from_exception ();
+              }
+            catch (const execution_exception& e)
+              {
+                std::string stack_trace = e.info ();
+
+                if (! stack_trace.empty ())
+                  std::cerr << stack_trace;
+
+                recover_from_exception ();
+              }
+          }
+
+        // Schedule the Matlab compatible finish.m file to run if it exists
+        // anywhere in the load path when exiting Octave.
+        add_atexit_function ("__finish__");
+
         // Try to execute commands from $HOME/$OCTAVE_INITFILE and
         // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
         // .octaverc is assumed.

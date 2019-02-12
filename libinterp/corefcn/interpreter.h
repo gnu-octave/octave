@@ -343,7 +343,7 @@ namespace octave
 
     void display_startup_message (void) const;
 
-    int execute_startup_files (void) const;
+    int execute_startup_files (void);
 
     int execute_eval_option_code (void);
 

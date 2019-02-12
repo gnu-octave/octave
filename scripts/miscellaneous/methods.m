@@ -84,3 +84,10 @@ endfunction
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));
+
+## classdef
+%!assert (methods ("inputParser"),
+%!        {"addOptional"; "addParamValue"; "addParameter";
+%!         "addRequired"; "addSwitch"; "add_missing"; "delete";
+%!         "disp"; "error"; "is_argname"; "parse"; "validate_arg";
+%!         "validate_name"});

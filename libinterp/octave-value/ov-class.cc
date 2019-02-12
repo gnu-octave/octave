@@ -1970,33 +1970,6 @@ Return true if the string @var{method} is a valid method of the object
     return ovl (false);
 }
 
-DEFMETHOD (__methods__, interp, args, ,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} __methods__ (@var{x})
-@deftypefnx {} {} __methods__ ("classname")
-Internal function.
-
-Implements @code{methods} for Octave class objects and classnames.
-@seealso{methods}
-@end deftypefn */)
-{
-  // Input validation has already been done in methods.m.
-  octave_value arg = args(0);
-
-  std::string class_name;
-
-  if (arg.isobject ())
-    class_name = arg.class_name ();
-  else if (arg.is_string ())
-    class_name = arg.string_value ();
-
-  octave::load_path& lp = interp.get_load_path ();
-
-  string_vector sv = lp.methods (class_name);
-
-  return ovl (Cell (sv));
-}
-
 static bool
 is_built_in_class (const std::string& cn)
 {

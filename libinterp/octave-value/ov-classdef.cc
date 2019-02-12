@@ -2169,6 +2169,16 @@ cdef_class::cdef_class_rep::get_methods (void)
   return c;
 }
 
+std::map<std::string, cdef_method>
+cdef_class::cdef_class_rep::get_method_map (bool only_inherited)
+{
+  std::map<std::string, cdef_method> methods;
+
+  find_methods (methods, only_inherited);
+
+  return methods;
+}
+
 void
 cdef_class::cdef_class_rep::find_methods (std::map<std::string,
                                           cdef_method>& meths,
@@ -3974,9 +3984,9 @@ DEFUN (properties, args, nargout,
 @deftypefn {} {} properties (@var{class_name})
 @deftypefnx {} {} properties (@var{obj})
 @deftypefnx {} {@var{plist} =} properties (@dots{})
-List of properties for the named class @var{class_name}
-or classdef object @var{obj}.  If output value is requested, return list
-of property names in a cell array.
+Return or display the properties for the named class @var{class_name}
+or classdef object @var{obj}.  If an output value is requested, return
+list of property names in a cell array.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -4035,6 +4045,59 @@ of property names in a cell array.
 %!         "Parameters"; "PartialMatching"; "Results";
 %!         "StructExpand"; "Unmatched"; "UsingDefaults"});
 */
+
+// FIXME: Need to implement the -full option.
+
+DEFMETHOD (__methods__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {} __methods__ (@var{x})
+@deftypefnx {} {} __methods__ ("classname")
+Internal function.
+
+Implements @code{methods} for Octave class objects and classnames.
+@seealso{methods}
+@end deftypefn */)
+{
+  // Input validation has already been done in methods.m.
+  octave_value arg = args(0);
+
+  std::string class_name;
+
+  if (arg.isobject ())
+    class_name = arg.class_name ();
+  else if (arg.is_string ())
+    class_name = arg.string_value ();
+  else
+    err_wrong_type_arg ("__methods__", arg);
+
+  string_vector sv;
+
+  cdef_class cls = lookup_class (class_name, false, true);
+
+  if (cls.ok ())
+    {
+      std::map<std::string, cdef_method> method_map = cls.get_method_map ();
+
+      std::list<std::string> method_names;
+
+      for (const auto& nm_mthd : method_map)
+        {
+          std::string nm = nm_mthd.first;
+
+          method_names.push_back (nm);
+        }
+
+      sv = string_vector (method_names);
+    }
+
+  // The following will also find methods for legacy @CLASS objects.
+
+  octave::load_path& lp = interp.get_load_path ();
+
+  sv.append (lp.methods (class_name));
+
+  return ovl (Cell (sv));
+}
 
 /*
 ;;; Local Variables: ***

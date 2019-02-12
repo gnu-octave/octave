@@ -694,6 +694,8 @@ private:
 
     Cell get_methods (void);
 
+    std::map<std::string, cdef_method> get_method_map (bool only_inherited);
+
     cdef_property find_property (const std::string& nm);
 
     void install_property (const cdef_property& prop);
@@ -852,6 +854,10 @@ public:
   { get_rep ()->install_method (meth); }
 
   Cell get_methods (void) { return get_rep ()->get_methods (); }
+
+  std::map<std::string, cdef_method>
+  get_method_map (bool only_inherited = false)
+  { return get_rep ()->get_method_map (only_inherited); }
 
   cdef_property find_property (const std::string& nm);
 

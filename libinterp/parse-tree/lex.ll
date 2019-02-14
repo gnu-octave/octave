@@ -1306,8 +1306,9 @@ ANY_INCLUDING_NL (.|{NL})
       }
   }
 
-"@" {
-    curr_lexer->lexer_debug ("@");
+\@ |
+\@{S}*{FQIDENT} {
+    curr_lexer->lexer_debug ("\\@|\\@{S}*{FQIDENT}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -1317,11 +1318,11 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_val = curr_lexer->previous_token_value ();
 
         if (curr_lexer->whitespace_is_significant ()
             && curr_lexer->space_follows_previous_token ()
-            && ! (tok == '[' || tok == '{'
+            && ! (tok_val == '[' || tok_val == '{'
                   || curr_lexer->previous_token_is_binop ()))
           {
             yyless (0);
@@ -1331,13 +1332,46 @@ ANY_INCLUDING_NL (.|{NL})
           }
         else
           {
-            curr_lexer->m_current_input_column++;
-
-            curr_lexer->m_looking_at_function_handle++;
-            curr_lexer->m_looking_for_object_index = false;
+            curr_lexer->m_current_input_column += yyleng;
             curr_lexer->m_at_beginning_of_statement = false;
 
-            return curr_lexer->count_token ('@');
+            std::string ident = yytext;
+
+            if (ident == "@")
+              {
+                curr_lexer->m_looking_at_function_handle++;
+                curr_lexer->m_looking_for_object_index = false;
+
+                return curr_lexer->count_token ('@');
+              }
+            else
+              {
+                ident = ident.substr (1);
+                ident.erase (std::remove_if (ident.begin (), ident.end (),
+                                             is_space_or_tab), ident.end ());
+
+                int kw_token = curr_lexer->is_keyword_token (ident);
+
+                octave::token *tok;
+
+                if (kw_token)
+                  tok = new octave::token (LEXICAL_ERROR,
+                                           "function handles may not refer to keywords",
+                                           curr_lexer->m_input_line_number,
+                                           curr_lexer->m_current_input_column);
+                else
+                  {
+                    curr_lexer->m_looking_for_object_index = true;
+
+                    tok = new octave::token (FCN_HANDLE, ident,
+                                             curr_lexer->m_input_line_number,
+                                             curr_lexer->m_current_input_column);
+                  }
+
+                curr_lexer->push_token (tok);
+
+                return curr_lexer->count_token_internal (tok->token_value ());
+              }
           }
       }
   }
@@ -3101,33 +3135,6 @@ namespace octave
     // token, then m_at_beginning_of_statement will be false.
 
     int kw_token = is_keyword_token (ident);
-
-    if (m_looking_at_function_handle)
-      {
-        if (kw_token)
-          {
-            token *tok
-              = new token (LEXICAL_ERROR,
-                           "function handles may not refer to keywords",
-                           m_input_line_number, m_current_input_column);
-
-            push_token (tok);
-
-            return count_token_internal (LEXICAL_ERROR);
-          }
-        else
-          {
-            push_token (new token (FCN_HANDLE, ident, m_input_line_number,
-                                   m_current_input_column));
-
-            m_current_input_column += flex_yyleng ();
-            m_looking_for_object_index = true;
-
-            m_at_beginning_of_statement = false;
-
-            return FCN_HANDLE;
-          }
-      }
 
     // If we have a regular keyword, return it.
     // Keywords can be followed by identifiers.

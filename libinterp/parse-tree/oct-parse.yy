@@ -604,11 +604,8 @@ cell_or_matrix_row
                   { $$ = $2; }
                 ;
 
-fcn_handle      : '@' FCN_HANDLE
-                  {
-                    $$ = parser.make_fcn_handle ($2);
-                    lexer.m_looking_at_function_handle--;
-                  }
+fcn_handle      : FCN_HANDLE
+                  { $$ = parser.make_fcn_handle ($1); }
                 ;
 
 anon_fcn_handle : '@' param_list stmt_begin expr_no_assign

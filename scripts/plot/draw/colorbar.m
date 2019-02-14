@@ -443,7 +443,7 @@ endfunction
 ## Update colorbar when clim has changed
 function cb_clim (hax, ~, hcb, hi)
 
-  if (isaxes (hax))
+  if (isaxes (hax) && isaxes (hcb))
     clen = rows (get (hax, "colormap"));
     cext = get (hax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;

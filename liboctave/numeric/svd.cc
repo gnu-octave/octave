@@ -385,6 +385,13 @@ namespace octave
       else
         (*current_liboctave_error_handler) ("svd: unknown driver");
 
+      // LAPACK can return -0 which is a small problem (bug #55710).
+      for (octave_idx_type i = 0; i < sigma.diag_length (); i++)
+        {
+          if (! sigma.dgxelem (i))
+            sigma.dgxelem (i) = DM_P (0);
+        }
+
       if (! (jobv == 'N' || jobv == 'O'))
         right_sm = right_sm.hermitian ();
     }

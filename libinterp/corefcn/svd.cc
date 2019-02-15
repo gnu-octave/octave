@@ -372,6 +372,8 @@ and may be less accurate for some matrices.  See the documentation for
 %! [~,~,v] = svd ([1, 1, 1], "econ");
 %! assert (size (v), [3 1]);
 
+%!assert <*55710> (1 / svd (-0), Inf)
+
 %!error svd ()
 %!error svd ([1, 2; 4, 5], 2, 3)
 */

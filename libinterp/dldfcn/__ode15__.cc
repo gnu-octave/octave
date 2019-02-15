@@ -45,13 +45,29 @@ along with Octave; see the file COPYING.  If not, see
 #    include <ida/ida.h>
 #  endif
 
-#  if defined (HAVE_IDA_IDA_DENSE_H)
-#    include <ida/ida_dense.h>
+#  if defined (HAVE_SUNDIALS_SUNDIALS_MATRIX_H)
+#    include <sundials/sundials_matrix.h>
 #  endif
 
-#  if defined (HAVE_IDA_IDA_KLU_H)
-#    include <ida/ida_klu.h>
+#  if defined (HAVE_SUNDIALS_SUNDIALS_LINEARSOLVER_H)
+#    include <sundials/sundials_linearsolver.h>
+#  endif
+
+#  if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
+#    include <sunlinsol/sunlinsol_dense.h>
+#  endif
+
+#  if defined (HAVE_IDA_IDA_DIRECT_H)
+#    include <ida/ida_direct.h>
+#  endif
+
+#  if defined (HAVE_SUNDIALS_SUNDIALS_SPARSE_H)
 #    include <sundials/sundials_sparse.h>
+#  endif
+
+
+#  if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
+#    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 
 #  if defined (HAVE_NVECTOR_NVECTOR_SERIAL_H)
@@ -221,7 +237,7 @@ namespace octave
     jacdense_impl (realtype t, realtype cj,
                    N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ);
 
-#  if defined (HAVE_SUNDIALS_IDAKLU)
+#  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
     static int
     jacsparse (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
                N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
@@ -338,7 +354,7 @@ namespace octave
 
     if (havejacsparse)
       {
-#  if defined (HAVE_SUNDIALS_IDAKLU)
+#if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
 
         sunJacMatrix = SUNSparseMatrix (num, num, num*num, CSC_MAT);
         if (! sunJacMatrix)
@@ -405,7 +421,7 @@ namespace octave
     END_INTERRUPT_WITH_EXCEPTIONS;
   }
 
-#  if defined (HAVE_SUNDIALS_IDAKLU)
+#  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
   void
   IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
                        SUNMatrix& Jac)

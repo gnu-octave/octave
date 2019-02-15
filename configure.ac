@@ -2206,15 +2206,15 @@ OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
   [], [don't use SUNDIALS IDA library, solvers ode15i and ode15s will be disabled],
   [warn_sundials_ida=
    OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
-   OCTAVE_CHECK_SUNDIALS_IDA_DENSE
-   OCTAVE_CHECK_SUNDIALS_IDAKLU])
+   OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
+   OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU])
 LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that
 dnl the build features script will get the correct value.
 if test -n "$SUNDIALS_IDA_LIBS" \
     && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
-    && test $octave_cv_sundials_ida_dense = yes \
+    && test $octave_cv_sundials_sunlinsol_dense = yes \
     && test $octave_cv_sundials_realtype_is_double = yes; then
   AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 fi

@@ -2215,14 +2215,11 @@ dnl Check whether SUNDIALS IDA library is configured with double
 dnl precision realtype.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
-  AC_CHECK_HEADERS([ida/ida.h ida.h])
   AC_CACHE_CHECK([whether SUNDIALS IDA is configured with double precision realtype],
     [octave_cv_sundials_realtype_is_double],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
         #include <ida/ida.h>
-        #else
-        #include <ida.h>
         #endif
         #include <assert.h>
         ]], [[
@@ -2238,61 +2235,72 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
   fi
 ])
 dnl
-dnl Check whether SUNDIALS IDA library is configured with IDAKLU
+dnl Check whether SUNDIALS IDA library is configured with SUNLINSOL_KLU
 dnl enabled.
 dnl
-AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDAKLU], [
-  AC_CHECK_HEADERS([ida/ida_klu.h ida_klu.h])
-  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with IDAKLU enabled],
-    [octave_cv_sundials_idaklu],
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
+  AC_CHECK_HEADERS([sundials/sundials_sparse.h sunlinsol/sunlinsol_klu.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with SUNLINSOL_KLU enabled],
+    [octave_cv_sundials_sunlinsol_klu],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if defined (HAVE_IDA_IDA_KLU_H)
-         #include <ida/ida_klu.h>
-         #else
-         #include <ida_klu.h>
+         #if defined (HAVE_IDA_IDA_H)
+         #include <ida/ida.h>
+         #endif
+         #if defined (HAVE_SUNDIALS_SUNDIALS_SPARSE_H)
+         #include <sundials/sundials_sparse.h>
+         #endif
+         #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
+         #include <sunlinsol/sunlinsol_klu.h>
          #endif
          ]], [[
-         IDAKLU (0, 0, 0, 0);
+         SUNKLU (0, 0);
       ]])],
-      octave_cv_sundials_idaklu=yes,
-      octave_cv_sundials_idaklu=no)
+      octave_cv_sundials_sunlinsol_klu=yes,
+      octave_cv_sundials_sunlinsol_klu=no)
     ])
-  if test $octave_cv_sundials_idaklu = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_IDAKLU, 1,
-      [Define to 1 if SUNDIALS IDA is configured with IDAKLU enabled.])
+  if test $octave_cv_sundials_sunlinsol_klu = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
+      [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_idaklu="SUNDIALS IDA library not configured with IDAKLU, ode15i and ode15s will not support the sparse Jacobian feature"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_idaklu])
+    warn_sundials_idaklu="SUNDIALS IDA library not configured with SUNLINSOL_KLU, ode15i and ode15s will not support the sparse Jacobian feature"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])
 dnl
-dnl Check whether SUNDIALS IDA library has the IDADENSE linear solver.
+dnl Check whether SUNDIALS IDA library has the SUNLINSOL_DENSE linear solver.
 dnl The IDADENSE API was removed in SUNDIALS version 3.0.0.
 dnl
-AC_DEFUN([OCTAVE_CHECK_SUNDIALS_IDA_DENSE], [
-  AC_CHECK_HEADERS([ida/ida_dense.h ida_dense.h])
-  AC_CACHE_CHECK([whether SUNDIALS IDA includes the IDADENSE linear solver],
-    [octave_cv_sundials_ida_dense],
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_dense.h sundials/sundials_matrix.h sundials/sundials_linearsolver.h ida/ida_direct.h])
+  AC_CACHE_CHECK([whether SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver],
+    [octave_cv_sundials_sunlinsol_dense],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if defined (HAVE_IDA_IDA_DENSE_H)
-         #include <ida/ida_dense.h>
-         #else
-         #include <ida_dense.h>
+         #if defined (HAVE_IDA_IDA_H)
+         #include <ida/ida.h>
          #endif
+         #if defined (HAVE_SUNDIALS_SUNDIALS_MATRIX_H)
+         #include <sundials/sundials_matrix.h>
+         #endif
+         #if defined (HAVE_SUNDIALS_SUNDIALS_LINEARSOLVER_H)
+         #include <sundials/sundials_linearsolver.h>
+         #endif
+         #if defined (HAVE_IDA_IDA_DIRECT_H)
+         #include <ida/ida_direct.h>
+         #endif         
          ]], [[
          void *mem = 0;
          long int num = 0;
          IDADense (mem, num);
       ]])],
-      octave_cv_sundials_ida_dense=yes,
-      octave_cv_sundials_ida_dense=no)
+      octave_cv_sundials_sunlinsol_dense=yes,
+      octave_cv_sundials_sunlinsol_dense=no)
     ])
-  if test $octave_cv_sundials_ida_dense = yes; then
-    AC_DEFINE(HAVE_SUNDIALS_IDADENSE, 1,
-      [Define to 1 if SUNDIALS IDA includes the IDADENSE linear solver.])
+  if test $octave_cv_sundials_sunlinsol_dense = yes; then
+    AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_DENSE, 1,
+      [Define to 1 if SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver.])
   else
-    warn_sundials_ida_dense="SUNDIALS IDA library does not include the IDADENSE linear solver, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_ida_dense])
+    warn_sundials_ida_dense="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver, ode15i and ode15s will be disabled"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_dense])
   fi
 ])
 dnl

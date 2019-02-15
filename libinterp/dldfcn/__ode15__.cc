@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2016-2019 Francesco Faccio <francesco.faccio@mail.polimi.it>
+Copyright (C) 2019 William Greene <w.h.greene@gmail.com>
 
 This file is part of Octave.
 
@@ -112,7 +113,8 @@ namespace octave
         havejacsparse (false), mem (nullptr), num (), ida_fun (nullptr),
         ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
         spdfdyp (nullptr), fun (nullptr), jacfun (nullptr), jacspfun (nullptr),
-        jacdcell (nullptr), jacspcell (nullptr)
+        jacdcell (nullptr), jacspcell (nullptr),
+        sunJacMatrix (nullptr), sunLinearSolver (nullptr)
     { }
 
 
@@ -122,11 +124,17 @@ namespace octave
         havejacsparse (false), mem (nullptr), num (), ida_fun (ida_fcn),
         ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
         spdfdyp (nullptr), fun (daefun), jacfun (nullptr), jacspfun (nullptr),
-        jacdcell (nullptr), jacspcell (nullptr)
+        jacdcell (nullptr), jacspcell (nullptr),
+        sunJacMatrix (nullptr), sunLinearSolver (nullptr)
     { }
 
 
-    ~IDA (void) { IDAFree (&mem); }
+    ~IDA (void)
+    {
+      IDAFree (&mem);
+      SUNLinSolFree(sunLinearSolver);
+      SUNMatDestroy(sunJacMatrix);
+    }
 
     IDA&
     set_jacobian (octave_function *jac, DAEJacFuncDense j)
@@ -184,7 +192,7 @@ namespace octave
     static N_Vector ColToNVec (const ColumnVector& data, long int n);
 
     void
-    set_up (void);
+    set_up (const ColumnVector& y);
 
     void
     set_tolerance (ColumnVector& abstol, realtype reltol);
@@ -199,25 +207,24 @@ namespace octave
     void
     resfun_impl (realtype t, N_Vector& yy,
                  N_Vector& yyp, N_Vector& rr);
-
     static int
-    jacdense (long int Neq, realtype t,  realtype cj, N_Vector yy,
-              N_Vector yyp, N_Vector, DlsMat JJ, void *user_data,
+    jacdense (realtype t, realtype cj, N_Vector yy,
+              N_Vector yyp, N_Vector, SUNMatrix JJ, void *user_data,
               N_Vector, N_Vector, N_Vector)
     {
       IDA *self = static_cast <IDA *> (user_data);
-      self->jacdense_impl (Neq, t, cj, yy, yyp, JJ);
+      self->jacdense_impl (t, cj, yy, yyp, JJ);
       return 0;
     }
 
     void
-    jacdense_impl (long int Neq, realtype t, realtype cj,
-                   N_Vector& yy, N_Vector& yyp, DlsMat& JJ);
+    jacdense_impl (realtype t, realtype cj,
+                   N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ);
 
 #  if defined (HAVE_SUNDIALS_IDAKLU)
     static int
     jacsparse (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
-               N_Vector, SlsMat Jac, void *user_data, N_Vector,
+               N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
                N_Vector, N_Vector)
     {
       IDA *self = static_cast <IDA *> (user_data);
@@ -227,7 +234,7 @@ namespace octave
 
     void
     jacsparse_impl (realtype t, realtype cj, N_Vector& yy,
-                    N_Vector& yyp, SlsMat& Jac);
+                    N_Vector& yyp, SUNMatrix& Jac);
 #endif
 
     void set_maxstep (realtype maxstep);
@@ -291,6 +298,8 @@ namespace octave
     DAEJacFuncSparse jacspfun;
     DAEJacCellDense jacdcell;
     DAEJacCellSparse jacspcell;
+    SUNMatrix sunJacMatrix;
+    SUNLinearSolver sunLinearSolver;
   };
 
   int
@@ -323,35 +332,60 @@ namespace octave
   }
 
   void
-  IDA::set_up (void)
+  IDA::set_up (const ColumnVector& y)
   {
+    N_Vector yy = ColToNVec(y, num);
+
     if (havejacsparse)
       {
 #  if defined (HAVE_SUNDIALS_IDAKLU)
-        if (IDAKLU (mem, num, num*num, CSC_MAT) != 0)
-          error ("IDAKLU solver not initialized");
 
-        IDASlsSetSparseJacFn (mem, IDA::jacsparse);
+        sunJacMatrix = SUNSparseMatrix (num, num, num*num, CSC_MAT);
+        if (! sunJacMatrix)
+          error ("Unable to create sparse Jacobian for Sundials");
+
+        sunLinearSolver = SUNKLU (yy, sunJacMatrix);
+        if (! sunLinearSolver)
+          error ("Unable to create KLU sparse solver");
+
+        if (IDADlsSetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
+          error ("Unable to set sparse linear solver");
+
+        IDADlsSetJacFn (mem, IDA::jacsparse);
+
 #  else
-        error ("IDAKLU is not available in this version of Octave");
+        error ("SUNDIALS SUNLINSOL KLU is not available in this version of Octave");
 #  endif
+
       }
     else
       {
-        if (IDADense (mem, num) != 0)
-          error ("IDADense solver not initialized");
 
-        if (havejac && IDADlsSetDenseJacFn (mem, IDA::jacdense) != 0)
-          error ("Dense Jacobian not set");
+        sunJacMatrix = SUNDenseMatrix (num, num);
+        if (! sunJacMatrix)
+          error ("Unable to create dense Jacobian for Sundials");
+
+        sunLinearSolver = SUNDenseLinearSolver (yy, sunJacMatrix);
+        if (! sunLinearSolver)
+          error ("Unable to create dense linear solver");
+
+        if (IDADlsSetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
+          error ("Unable to set dense linear solver");
+
+        if (havejac && IDADlsSetJacFn (mem, IDA::jacdense) != 0)
+          error ("Unable to set dense Jacobian function");
+
       }
   }
 
   void
-  IDA::jacdense_impl (long int Neq, realtype t, realtype cj,
-                      N_Vector& yy, N_Vector& yyp, DlsMat& JJ)
+  IDA::jacdense_impl (realtype t, realtype cj,
+                      N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ)
 
   {
     BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+    long int Neq = NV_LENGTH_S(yy);
 
     ColumnVector y = NVecToCol (yy, Neq);
 
@@ -366,7 +400,7 @@ namespace octave
 
     std::copy (jac.fortran_vec (),
                jac.fortran_vec () + jac.numel (),
-               JJ->data);
+      SUNDenseMatrix_Data(JJ));
 
     END_INTERRUPT_WITH_EXCEPTIONS;
   }
@@ -374,7 +408,7 @@ namespace octave
 #  if defined (HAVE_SUNDIALS_IDAKLU)
   void
   IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
-                       SlsMat& Jac)
+                       SUNMatrix& Jac)
 
   {
     BEGIN_INTERRUPT_WITH_EXCEPTIONS;
@@ -390,17 +424,18 @@ namespace octave
     else
       jac = (*jacspcell) (spdfdy, spdfdyp, cj);
 
-    SparseSetMatToZero (Jac);
-    int *colptrs = *(Jac->colptrs);
-    int *rowvals = *(Jac->rowvals);
+    SUNMatZero_Sparse (Jac);
+    octave_idx_type *colptrs = SUNSparseMatrix_IndexPointers (Jac);
+    octave_idx_type *rowvals = SUNSparseMatrix_IndexValues (Jac);
 
     for (int i = 0; i < num + 1; i++)
       colptrs[i] = jac.cidx(i);
 
+    double *d = SUNSparseMatrix_Data (Jac);
     for (int i = 0; i < jac.nnz (); i++)
       {
         rowvals[i] = jac.ridx(i);
-        Jac->data[i] = jac.data(i);
+        d[i] = jac.data(i);
       }
 
     END_INTERRUPT_WITH_EXCEPTIONS;
@@ -567,7 +602,7 @@ namespace octave
 
         //main loop
         while (((posdirection == 1 && tsol < tend)
-                || (posdirection == 0 && tsol > tend))
+               || (posdirection == 0 && tsol > tend))
                && status == 0)
           {
             if (IDASolve (mem, tend, &tsol, yy, yyp, IDA_ONE_STEP) != 0)
@@ -692,7 +727,7 @@ namespace octave
             // Linear interpolation
             ie(0) = index(0);
             te(0) = tsol - val (index(0)) * (tsol - told)
-                    / (val (index(0)) - oldval (index(0)));
+              / (val (index(0)) - oldval (index(0)));
 
             ColumnVector ytemp
               = y - ((tsol - te(0)) * (y - yold) / (tsol - told));
@@ -717,7 +752,7 @@ namespace octave
                 // Linear interpolation
                 ie(temp+i) = index(i);
                 te(temp+i) = tsol - val(index(i)) * (tsol - told)
-                             / (val(index(i)) - oldval(index(i)));
+                  / (val(index(i)) - oldval(index(i)));
 
                 ColumnVector ytemp
                   = y - (tsol - te (temp + i)) * (y - yold) / (tsol - told);
@@ -1096,7 +1131,7 @@ namespace octave
       event_fcn = options.getfield("Events").function_value ();
 
     // Set up linear solver
-    dae.set_up ();
+    dae.set_up (y0);
 
     // Integrate
     retval = dae.integrate (numt, tspan, y0, yp0, refine,

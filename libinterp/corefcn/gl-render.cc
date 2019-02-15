@@ -191,6 +191,25 @@ namespace octave
         //        Should we check for dimensions larger than intmax?
         int h, w, tw, th;
         h = dv(0), w = dv(1);
+
+        // Return early if the image data are larger than the texture
+        // can hold
+        int max_size;
+        glGetIntegerv (GL_MAX_TEXTURE_SIZE, &max_size);
+        static bool warned = false;
+        if (h > max_size || w > max_size)
+          {
+            if (! warned)
+              {
+                warning ("opengl_texture::create: the opengl library in use "
+                         "doesn't support images with either dimension larger "
+                         "than %d. Not rendering.", max_size);
+                warned = true;
+              }
+            
+            return opengl_texture (glfcns);
+          }
+        
         GLuint id;
         bool ok = true;
 
@@ -3894,33 +3913,33 @@ namespace octave
     // Expect RGB data
     if (dv.ndims () == 3 && dv(2) == 3)
       {
-        opengl_texture tex (m_glfcns);
-        tex = opengl_texture::create (m_glfcns, cdata);
-        m_glfcns.glColor4d (1.0, 1.0, 1.0, 1.0);
+        opengl_texture tex  = opengl_texture::create (m_glfcns, cdata);
+        if (tex.is_valid ())
+          {
+            m_glfcns.glColor4d (1.0, 1.0, 1.0, 1.0);
 
-        m_glfcns.glEnable (GL_TEXTURE_2D);
+            m_glfcns.glEnable (GL_TEXTURE_2D);
 
-        m_glfcns.glBegin (GL_QUADS);
+            m_glfcns.glBegin (GL_QUADS);
 
-        tex.tex_coord (0.0, 0.0);
-        m_glfcns.glVertex3d (x0, y0, 0.0);
+            tex.tex_coord (0.0, 0.0);
+            m_glfcns.glVertex3d (x0, y0, 0.0);
 
-        tex.tex_coord (1.0, 0.0);
-        m_glfcns.glVertex3d (x1, y0, 0.0);
+            tex.tex_coord (1.0, 0.0);
+            m_glfcns.glVertex3d (x1, y0, 0.0);
 
-        tex.tex_coord (1.0, 1.0);
-        m_glfcns.glVertex3d (x1, y1, 0.0);
+            tex.tex_coord (1.0, 1.0);
+            m_glfcns.glVertex3d (x1, y1, 0.0);
 
-        tex.tex_coord (0.0, 1.0);
-        m_glfcns.glVertex3d (x0, y1, 0.0);
+            tex.tex_coord (0.0, 1.0);
+            m_glfcns.glVertex3d (x0, y1, 0.0);
 
-        m_glfcns.glEnd ();
-        m_glfcns.glDisable (GL_TEXTURE_2D);
+            m_glfcns.glEnd ();
+            m_glfcns.glDisable (GL_TEXTURE_2D);
+          }
       }
     else
       warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");
-
-    m_glfcns.glPixelZoom (1, 1);
 
 #else
 

@@ -159,10 +159,10 @@ is calculated.
 
 Algorithm Notes: When calculating the full decomposition (left and right
 singular matrices in addition to singular values) there is a choice of two
-routines in @sc{lapack}.  The default routine used by Octave is @code{gesdd}
-which is 5X faster than the alternative @code{gesvd}, but may use more memory
-and may be less accurate for some matrices.  See the documentation for
-@code{svd_driver} for more information.
+routines in @sc{lapack}.  The default routine used by Octave is @code{gesvd}.
+The alternative is @code{gesdd} which is 5X faster, but may use more memory
+and may be inaccurate for some input matrices.  See the documentation for
+@code{svd_driver} for more information on choosing a driver.
 @seealso{svd_driver, svds, eig, lu, chol, hess, qr, qz}
 @end deftypefn */)
 {

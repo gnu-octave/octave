@@ -77,6 +77,11 @@ namespace octave
     // of the original collection and load the help data
     m_help_engine = new QHelpEngine (collection, this);
 
+    // Mark help as readonly to avoid error if collection file is stored in a
+    // readonly location
+    m_help_engine->setProperty ("_q_readonly",
+                                QVariant::fromValue<bool> (true));
+
     QString tmpdir = QDir::tempPath();
     m_collection
       = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),

@@ -105,7 +105,8 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       ## Direct gnuplot to print to <STDOUT>
       fprintf (ostream, ['set print "-";' "\n"]);
       fflush (ostream);
-      gp_cmd = sprintf (["\n" 'if (exists("%s")) print "OCTAVE: ", %s; else print NaN' "\n"],
+      gp_cmd = sprintf (["\n" 'if (exists("%s")) print "OCTAVE: ", %s, ' ...
+                        '" :END_OCTAVE"; else print NaN' "\n"],
                         gp_var_name(1:n), gp_var_name);
       fputs (ostream, gp_cmd);
       fflush (ostream);
@@ -113,14 +114,16 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
       fputs (ostream, "set print;\n");
       fflush (ostream);
 
-      str = {};
-      while (isempty (str))
-        str = fread (istream, "*char")';
-        if (isempty (str))
-          pause (0.05);
-        else
-          str = regexp (str, 'OCTAVE:.*', "match");
-          str = str{end}(8:end);
+      str = "";
+      t_start = tic ();
+      while (toc (t_start) < 10)
+        str = [str, fread(istream, "*char")'];
+        if (! isempty (str))
+          re_str = regexp (str, "OCTAVE: (.*) :END_OCTAVE", "tokens");
+          if (! isempty (re_str))
+            str = re_str{end}{1};
+            break;
+          endif
         endif
         fclear (istream);
       endwhile

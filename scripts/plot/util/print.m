@@ -189,9 +189,9 @@
 ## Octave interpreter from recognizing the embedded comma (',').  For example,
 ## by writing @w{"-S640,480"}.
 ##
-## @item  -loose
-## @itemx -tight
-##   Force a tight or loose bounding box for EPS files.  The default is loose.
+## @item  -tight
+## @itemx -loose
+##   Force a tight or loose bounding box for EPS files.  The default is tight.
 ##
 ## @item -@var{preview}
 ##   Add a preview to EPS files.  Supported formats are:

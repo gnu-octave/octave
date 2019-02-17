@@ -64,7 +64,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.special_flag = "textnormal";
   arg_st.svgconvert = false;
   arg_st.svgconvert_binary = __quote_path__ (__svgconv_binary__ ());
-  arg_st.tight = false;
+  arg_st.tight = true;
   arg_st.use_color = 0; # 0=default, -1=mono, +1=color
 
   if (isunix ())

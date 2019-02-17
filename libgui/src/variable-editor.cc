@@ -1609,6 +1609,8 @@ namespace octave
     QAction *action;
     action = add_tool_bar_button (resource_manager::icon ("document-save"),
                                   tr ("Save"), this, SLOT (save ()));
+    addAction (action);
+    action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     action->setShortcuts (QKeySequence::Save);
     action->setStatusTip(tr("Save variable to a file"));
 

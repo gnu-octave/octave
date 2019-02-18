@@ -496,6 +496,12 @@ namespace octave
             t_fwd_rep->bind_fwd_rep (fwd_scope, fwd_rep);
           }
 
+        // Don't bind forward rep to this!  Avoids crash reported in
+        // bug #55728.
+
+        if (this == fwd_rep.get ())
+          return;
+
         m_fwd_scope = fwd_scope;
         m_fwd_rep = fwd_rep;
       }

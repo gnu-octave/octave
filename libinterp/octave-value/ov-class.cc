@@ -1937,39 +1937,6 @@ Return true if @var{x} is a class object.
   return ovl (args(0).isobject ());
 }
 
-DEFMETHOD (ismethod, interp, args, ,
-           doc: /* -*- texinfo -*-
-@deftypefn  {} {} ismethod (@var{obj}, @var{method})
-@deftypefnx {} {} ismethod (@var{clsname}, @var{method})
-Return true if the string @var{method} is a valid method of the object
-@var{obj} or of the class @var{clsname}.
-@seealso{isprop, isobject}
-@end deftypefn */)
-{
-  if (args.length () != 2)
-    print_usage ();
-
-  octave_value arg = args(0);
-
-  std::string class_name;
-
-  if (arg.isobject ())
-    class_name = arg.class_name ();
-  else if (arg.is_string ())
-    class_name = arg.string_value ();
-  else
-    error ("ismethod: first argument must be object or class name");
-
-  std::string method = args(1).string_value ();
-
-  octave::load_path& lp = interp.get_load_path ();
-
-  if (lp.find_method (class_name, method) != "")
-    return ovl (true);
-  else
-    return ovl (false);
-}
-
 static bool
 is_built_in_class (const std::string& cn)
 {

@@ -36,6 +36,7 @@ FCN_FILE_DIRS += \
   %reldir%/isfile.m \
   %reldir%/isfolder.m \
   %reldir%/ismac.m \
+  %reldir%/ismember.m \
   %reldir%/ispc.m \
   %reldir%/isunix.m \
   %reldir%/license.m \

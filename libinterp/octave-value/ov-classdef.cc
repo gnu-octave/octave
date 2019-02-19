@@ -1027,20 +1027,6 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 }
 
 bool
-octave_classdef::print_name_tag (std::ostream& os,
-                                 const std::string& name) const
-{
-  return octave_base_value::print_name_tag (os, name);
-}
-
-void
-octave_classdef::print_with_name (std::ostream& os, const std::string& name,
-                                  bool print_padding)
-{
-  octave_base_value::print_with_name (os, name, print_padding);
-}
-
-bool
 octave_classdef::is_instance_of (const std::string& cls_name) const
 {
   cdef_class cls = lookup_class (cls_name, false, false);

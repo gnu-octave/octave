@@ -1515,11 +1515,6 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
-
-  void print_with_name (std::ostream& os, const std::string& name,
-                        bool print_padding = true);
-
   bool is_instance_of (const std::string& cls_name) const;
 
   octave_value_list subsref (const std::string& type,

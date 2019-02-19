@@ -174,11 +174,6 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
-
-  void print_with_name (std::ostream& os, const std::string& name,
-                        bool print_padding = true);
-
   bool reconstruct_exemplar (void);
 
   static void clear_exemplar_map (void);

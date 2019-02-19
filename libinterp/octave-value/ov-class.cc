@@ -1023,19 +1023,6 @@ octave_class::print_raw (std::ostream& os, bool) const
   newline (os);
 }
 
-bool
-octave_class::print_name_tag (std::ostream& os, const std::string& name) const
-{
-  return octave_base_value::print_name_tag (os, name);
-}
-
-void
-octave_class::print_with_name (std::ostream& os, const std::string& name,
-                               bool print_padding)
-{
-  octave_base_value::print_with_name (os, name, print_padding);
-}
-
 // Loading a class properly requires an exemplar map entry for success.
 // If we don't have one, we attempt to create one by calling the constructor
 // with no arguments.

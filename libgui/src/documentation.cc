@@ -112,10 +112,11 @@ namespace octave
                                   "documentation viewer. Only help texts in\n"
                                   "the Command Window will be available."));
 #endif
-        if (m_help_engine)
-          delete m_help_engine;
-        m_help_engine = 0;
-        return;
+
+        disconnect (m_help_engine, 0, 0, 0);
+
+        delete m_help_engine;
+        m_help_engine = nullptr;
       }
 
     // The browser

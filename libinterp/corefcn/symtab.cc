@@ -87,6 +87,9 @@ namespace octave
   octave_value symbol_table::find_method (const std::string& name,
                                           const std::string& dispatch_type)
   {
+    if (name.empty ())
+      return octave_value ();
+
     fcn_table_const_iterator p = m_fcn_table.find (name);
 
     if (p != m_fcn_table.end ())
@@ -114,6 +117,9 @@ namespace octave
 
   octave_value symbol_table::find_autoload (const std::string& name)
   {
+    if (name.empty ())
+      return octave_value ();
+
     auto p = m_fcn_table.find (name);
 
     return (p != m_fcn_table.end ()
@@ -122,6 +128,9 @@ namespace octave
 
   octave_value symbol_table::builtin_find (const std::string& name)
   {
+    if (name.empty ())
+      return octave_value ();
+
     fcn_table_iterator p = m_fcn_table.find (name);
 
     if (p != m_fcn_table.end ())
@@ -144,6 +153,9 @@ namespace octave
   octave_value symbol_table::fcn_table_find (const std::string& name,
                                              const octave_value_list& args)
   {
+    if (name.empty ())
+      return octave_value ();
+
     fcn_table_iterator p = m_fcn_table.find (name);
 
     if (p != m_fcn_table.end ())
@@ -187,6 +199,9 @@ namespace octave
   octave_value symbol_table::find_function (const std::string& name,
                                             const octave_value_list& args)
   {
+    if (name.empty ())
+      return octave_value ();
+
     octave_value fcn;
 
     symbol_scope curr_scope = current_scope ();
@@ -204,6 +219,9 @@ namespace octave
 
   octave_value symbol_table::find_user_function (const std::string& name)
   {
+    if (name.empty ())
+      return octave_value ();
+
     auto p = m_fcn_table.find (name);
 
     return (p != m_fcn_table.end ()
@@ -212,6 +230,9 @@ namespace octave
 
   octave_value symbol_table::find_cmdline_function (const std::string& name)
   {
+    if (name.empty ())
+      return octave_value ();
+
     auto p = m_fcn_table.find (name);
 
     return (p != m_fcn_table.end ()

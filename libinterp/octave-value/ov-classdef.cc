@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <algorithm>
+#include <iomanip>
 
 #include "call-stack.h"
 #include "defun.h"
@@ -1018,12 +1019,50 @@ octave_classdef::print (std::ostream& os, bool)
 void
 octave_classdef::print_raw (std::ostream& os, bool) const
 {
-  indent (os);
-  os << "<object ";
-  if (object.is_array ())
-    os << "array ";
-  os << class_name () << '>';
-  newline (os);
+  cdef_class cls = object.get_class ();
+
+  if (cls.ok ())
+    {
+      indent (os);
+      os << class_name () << " object";
+      if (object.is_array ())
+        os << " array";
+      os << " with properties:";
+      newline (os);
+      newline (os);
+
+      std::map<std::string, cdef_property> props;
+
+      props = cls.get_property_map ();
+
+      size_t max_len = 0;
+      for (const auto& nm_prop : props)
+        {
+          const std::string& nm = nm_prop.first;
+
+          size_t sz = nm.size ();
+
+          if (sz > max_len)
+            max_len = sz;
+        }
+
+      for (auto& nm_prop : props)
+        {
+          const std::string& nm = nm_prop.first;
+          cdef_property& prop = nm_prop.second;
+          octave_value val = prop.get_value (object, false);
+          dim_vector dims = val.dims ();
+
+          os << std::setw (max_len+2) << nm << ": ";
+          if (val.is_string ())
+            os << val.string_value ();
+          else if (val.islogical ())
+            os << val.bool_value ();
+          else
+            os << "[" << dims.str () << " " << val.class_name () << "]";
+          newline (os);
+        }
+    }
 }
 
 bool

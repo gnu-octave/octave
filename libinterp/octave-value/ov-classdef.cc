@@ -3938,7 +3938,7 @@ cdef_manager::find_package (const std::string& name, bool error_if_not_found,
 
       if (load_if_not_found && lp.find_package (name))
         {
-          size_t pos = name.find ('.');
+          size_t pos = name.rfind ('.');
 
           if (pos == std::string::npos)
             retval = make_package (name, "");

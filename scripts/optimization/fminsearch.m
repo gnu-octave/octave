@@ -20,7 +20,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{x} =} fminsearch (@var{fun}, @var{x0})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options})
-## @deftypefnx {} {@var{x} =} fminsearch (@var{fun}, @var{x0}, @var{options}, @var{fun_arg1}, @var{fun_arg2}, @dots{})
 ## @deftypefnx {} {@var{x} =} fminsearch (@var{problem})
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}] =} fminsearch (@dots{})
 ##
@@ -50,10 +49,6 @@
 ## For a description of the other options, see @code{optimset}.  To initialize
 ## an options structure with default values for @code{fminsearch} use
 ## @code{options = optimset ("fminsearch")}.
-##
-## Additional inputs for the function @var{fun} can be passed as the fourth
-## and higher arguments.  To pass function arguments while using the default
-## @var{options} values, use @code{[]} for @var{options}.
 ##
 ## @code{fminsearch} may also be called with a single structure argument
 ## with the following fields:

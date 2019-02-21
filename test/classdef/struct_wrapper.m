@@ -3,7 +3,7 @@ classdef struct_wrapper
     s;
   end
   methods
-    function o = assigner ()
+    function o = struct_wrapper ()
       if (nargin == 0)
         o.s = struct ();
       else

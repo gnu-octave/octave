@@ -23,7 +23,7 @@
 %%        in MATLAB to test compatibility.  Don't break that!
 %%
 %%  To Do:  This script tests to ensure that things done correctly work
-%%          corrrectly.  It should also check that things done incorrectly
+%%          correctly.  It should also check that things done incorrectly
 %%          error properly.
 %%
 %%  The classes used for the tests reside in the test/classdef with others
@@ -42,23 +42,23 @@
 %!assert (isempty (q.rate))
 %!assert (isempty (q.principle))
 %!assert (isempty (q.term))
-%!assert (class (p), "foo_value_class")
-%!assert (p.term, 48)
-%!assert (p.rate, 4.0)
-%!assert (p.principle, 50e3)
+%!assert (strcmp (class (p), 'foo_value_class'))
+%!assert (p.term == 48)
+%!assert (p.rate == 4.0)
+%!assert (p.principle == 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
 %!xtest <53614>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
-%!test <42510>
+%!xtest <42510>
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate
 
 %%  Static method and Constant Property
-%!assert (foo_static_method_constant_property.radians_per_cycle, 2*pi)
-%!assert (foo_static_method_constant_property().radians_per_cycle, 2*pi)
-%!assert (foo_static_method_constant_property().pie, pi)
+%!assert (foo_static_method_constant_property.radians_per_cycle == 2*pi)
+%!assert (foo_static_method_constant_property().radians_per_cycle == 2*pi)
+%!assert (foo_static_method_constant_property().pie == pi)
 %!error <property `frequency' is not constant> foo_static_method_constant_property.frequency
 %!error <method `cosine' is not static> foo_static_method_constant_property.cosine
 %!test
@@ -70,30 +70,118 @@
 %!test
 %! obj = foo_method_changes_property_size (3);
 %! obj = obj.move_element_to_end (2);
-%! assert (obj.element, [1 3 2]);
+%! assert (isequal (obj.element, [1 3 2]));
 
 %!error <parse error> plist_t1
-%!assert (class (plist_t2), "plist_t2")
-%!assert (class (plist_t3), "plist_t3")
+%!assert (strcmp (class (plist_t2), 'plist_t2'))
+%!assert (strcmp (class (plist_t3), 'plist_t3'))
 
 %!test
 %! obj = struct_wrapper ();
 %! obj{'a'} = 1;
-%! assert (obj{'a'}, 1);
+%! assert (obj{'a'} == 1);
 %! obj{'bc'} = 2;
-%! assert (obj{'bc'}, 2);
-%! assert (obj{'a', 'bc'}, [ 1 2 ]);
+%! assert (obj{'bc'} == 2);
+%! assert (isequal (obj{'a', 'bc'}, [1 2]));
 
 %% Test for meta.class.fromName
 %!test <*51935>
 %! meta.class.fromName ("inputParser");
 
-## Do not change this to "containers.Map()".  This test is intended to
-## ensure that calling a function in a +package directory will work
-## properly.
+%% Do not change this to "containers.Map()".  This test is intended to
+%% ensure that calling a function in a +package directory will work
+%% properly.
 %!test <*51715>
 %! x = containers.Map;
 %! assert (isobject (x));
 
 %!assert <*52096> (isempty (meta.class.fromName ("__nonexi$tent_cl@$$__")))
 %!assert <*52096> (isempty (meta.package.fromName ("__nonexi$tent_p@ck@ge__")))
+
+%% Test overloaded subsref and subsasgn functions.
+%% (bug #54783, bug #54966, and bug #55223)
+%!test <*54783>
+%! obj = foo_subsref_subsasgn (1);
+%! obj(2) = 3;
+%! assert (obj(2) == 3)
+%! assert (obj{2} == 3)
+%! assert (isequal (obj.x, [1 3 3 4]))
+%! obj{2} = 4;
+%! assert (obj(2) == 4)
+%! assert (obj{2} == 4)
+%! assert (isequal (obj.x, [1 4 3 4]))
+%! obj(end) = 6;
+%! assert (obj(end) == 6)
+%! assert (obj{end} == 6)
+%! assert (isequal (obj.x, [1 4 3 6]))
+%! obj{end} = 8;
+%! assert (obj(end) == 8)
+%! assert (obj{end} == 8)
+%! assert (isequal (obj.x, [1 4 3 8]))
+%! obj.x = 1:4;
+%! assert (isequal (obj.x, 1:4))
+%! obj(1:3) = 7:9;
+%! assert (isequal (obj(1:3), 7:9))
+%! assert (isequal (obj.x, [7 8 9 4]))
+%! obj(2:end) = 5:7;
+%! assert (isequal (obj(2:end), 5:7))
+%! assert (isequal (obj.x, [7 5 6 7]))
+
+%!xtest <54966>
+%! obj = foo_subsref_subsasgn (1);
+%! obj{1:3} = 5:7;
+%! assert (isequal ([obj{1:3}], 5:7))
+%! assert (isequal (obj.x, [5 6 7 4]))
+%! obj{2:end} = 7:9;
+%! assert (isequal ([obj{2:end}], 7:9))
+%! assert (isequal (obj.x, [5 7 8 9]))
+
+%!test <*54783>
+%! obj = foo_subsref_subsasgn (1);
+%! obj.x(2) = 3;
+%! assert (obj.x(2) == 3)
+%! assert (obj.x{2} == 3)
+%! assert (isequal (obj.x, [1 3 3 4]))
+%! obj.x{2} = 4;
+%! assert (obj.x(2) == 4)
+%! assert (obj.x{2} == 4)
+%! assert (isequal (obj.x, [1 4 3 4]))
+%! obj.x(end) = 6;
+%! assert (obj.x(end) == 6)
+%! assert (obj.x{end} == 6)
+%! assert (isequal (obj.x, [1 4 3 6]))
+%! obj.x{end} = 8;
+%! assert (obj.x(end) == 8)
+%! assert (obj.x{end} == 8)
+%! assert (isequal (obj.x, [1 4 3 8]))
+%! obj.x = 1:4;
+%! assert (isequal (obj.x, 1:4))
+%! obj.x(1:3) = 7:9;
+%! assert (isequal (obj.x(1:3), 7:9))
+%! assert (isequal (obj.x, [7 8 9 4]))
+%! obj.x(2:end) = 5:7;
+%! assert (isequal (obj.x(2:end), 5:7))
+%! assert (isequal (obj.x, [7 5 6 7]))
+
+%!xtest <54966>
+%! obj = foo_subsref_subsasgn (1);
+%! obj.x{1:3} = 5:7;
+%! assert (isequal ([obj.x{1:3}], 5:7))
+%! assert (isequal (obj.x, [5 6 7 4]))
+%! obj.x{2:end} = 7:9;
+%! assert (isequal ([obj.x{2:end}], 7:9))
+%! assert (isequal (obj.x, [5 7 8 9]))
+
+%!test <*55223>
+%! obj = foo_subsref_subsasgn (2);
+%! obj{2}(2) = 3;
+%! assert (obj{2}(2) == 3);
+%! obj{2}{2} = 4;
+%! assert (obj{2}{2} == 4);
+
+%!xtest <54966>
+%! obj = foo_subsref_subsasgn (2);
+%! obj{1:2}(1:2) = ones (2);
+%! assert (isequal (obj{1:2}(1:2), ones (2)));
+%! obj{3:4}(3:4) = 4 * ones (2);
+%! assert (isequal (obj{3:4}(3:4), 4 * ones (2)));

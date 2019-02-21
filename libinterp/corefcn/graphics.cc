@@ -9441,7 +9441,8 @@ patch::properties::update_data (void)
 
   // check coplanarity for 3D-faces with more than 3 corners
   int fcmax = idx.rows ();
-  if (fcmax > 3 && vert.columns () > 2)
+  if (fcmax > 3 && vert.columns () > 2 && 
+      ! (facecolor_is ("none") && edgecolor_is ("none")))
     {
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
@@ -9467,11 +9468,15 @@ patch::properties::update_data (void)
                           fc(j,i) = vert(idx(j + i_start,jj)-1,i)
                                     - vert(idx(0,jj)-1,i);
 
+                      // FIXME: Using  svd's to check for co-planarity is slow
+                      // for faces with many vertices. Is there a better way to
+                      // check this?
+
                       // calculate rank of matrix
                       octave::math::svd<Matrix> result
                         (fc,
                          octave::math::svd<Matrix>::Type::sigma_only,
-                         octave::math::svd<Matrix>::Driver::GESVD);
+                         octave::math::svd<Matrix>::Driver::GESDD);
                       DiagMatrix sigma = result.singular_values ();
                       double tol = nc * sigma(0,0)
                                    * std::numeric_limits<double>::epsilon ();

@@ -201,16 +201,16 @@ function hg = __scatter__ (varargin)
     if (one_explicit_color)
       for i = 1 : numel (x)
         if (filled)
-          __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+          __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                        "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
                         "faces", 1, "vertices", [x(i), y(i), z(i,:)],
-                        "facecolor", "none", "edgecolor", "none",
                         "marker", marker,  "markersize", s(i),
                         "markeredgecolor", c, "markerfacecolor", c,
                         "linestyle", "none");
         else
-          __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+          __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                        "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
                         "faces", 1, "vertices", [x(i), y(i), z(i,:)],
-                        "facecolor", "none", "edgecolor", "none",
                         "marker", marker,  "markersize", s(i),
                         "markeredgecolor", c, "markerfacecolor", "none",
                         "linestyle", "none");
@@ -222,18 +222,18 @@ function hg = __scatter__ (varargin)
       endif
       for i = 1 : numel (x)
         if (filled)
-          __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+          __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                        "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
                         "faces", 1, "vertices", [x(i), y(i), z(i,:)],
-                        "facecolor", "none", "edgecolor", "none",
                         "marker", marker, "markersize", s(i),
                         "markeredgecolor", "none",
                         "markerfacecolor", "flat",
                         "cdata", c(i,:), "facevertexcdata", c(i,:),
                         "linestyle", "none");
         else
-          __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
+          __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                        "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
                         "faces", 1, "vertices", [x(i), y(i), z(i,:)],
-                        "facecolor", "none", "edgecolor", "none",
                         "marker", marker, "markersize", s(i),
                         "markeredgecolor", "flat",
                         "markerfacecolor", "none",
@@ -330,17 +330,17 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
                     && strcmp (toolkit, "gnuplot"));
     if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
-        __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+        __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                          "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel (x), "vertices", vert,
-                          "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", "none",
                           "markerfacecolor", c(1,:),
                           "markersize", s, "linestyle", "none");
       else
-        __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+        __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                          "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel (x), "vertices", vert,
-                          "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", c(1,:),
                           "markerfacecolor", "none",
@@ -348,18 +348,18 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
       endif
     else
       if (filled)
-        __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+        __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                          "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel (x), "vertices", vert,
-                          "facecolor", "none", "edgecolor", "none",
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "none",
                           "markerfacecolor", "flat",
                           "cdata", c, "facevertexcdata", c,
                           "linestyle", "none");
       else
-        __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
+        __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
+                          "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel (x), "vertices", vert,
-                          "facecolor", "none", "edgecolor", "none",
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "flat",
                           "markerfacecolor", "none",

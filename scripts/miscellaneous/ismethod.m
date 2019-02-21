@@ -43,3 +43,7 @@ function retval = ismethod (obj, method)
   retval = ismember (method, method_list);
 
 endfunction
+
+%!assert (ismethod (javaObject ("java.lang.String", "Yo"), "hashCode"))
+%!assert (ismethod (ftp (), "ascii"))
+%!assert (ismethod (inputParser (), "addRequired"))

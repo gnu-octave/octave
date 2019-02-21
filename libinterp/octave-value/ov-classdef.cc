@@ -906,8 +906,28 @@ octave_classdef::subsref (const std::string& type,
 
   // This variant of subsref is used to create temporary values when doing
   // assignment with multi-level indexing.  AFAIK this is only used for internal
-  // purpose (not sure we should even implement this) and any overload subsref
-  // should not be called.
+  // purpose (not sure we should even implement this).
+
+  cdef_class cls = object.get_class ();
+
+  if (! in_class_method (cls))
+    {
+      cdef_method meth = cls.find_method ("subsref");
+
+      if (meth.ok ())
+        {
+          octave_value_list args;
+
+          args(1) = make_idx_args (type, idx, "subsref");
+
+          count++;
+          args(0) = octave_value (this);
+
+          retval = meth.execute (args, 1, true, "subsref");
+
+          return retval.length () > 0 ? retval(0) : octave_value ();
+        }
+    }
 
   retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
 

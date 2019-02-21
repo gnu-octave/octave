@@ -56,6 +56,7 @@ function mtds = methods (obj, opt)
     if (isempty (mtds_list))
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
       mtds_list = ostrsplit (mtds_str, ';');
+      mtds_list = mtds_list(:);  # return a column vector for compatibility
       havesigs = true;
     endif
   elseif (isjava (obj))
@@ -68,6 +69,7 @@ function mtds = methods (obj, opt)
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
     end_try_catch
     mtds_list = strsplit (mtds_str, ';');
+    mtds_list = mtds_list(:);  # return a column vector for compatibility
     havesigs = true;
   else
     error ("methods: invalid input argument");

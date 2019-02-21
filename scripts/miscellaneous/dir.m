@@ -175,23 +175,36 @@ endfunction
 
 
 %!test
-%! list = dir ();
-%! assert (isstruct (list) && ! isempty (list));
-%! assert (fieldnames (list),
-%!         {"name"; "folder"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
+%! orig_dir = pwd ();
+%! tmp_dir = tempname ();
+%! unwind_protect
+%!   assert (mkdir (tmp_dir));
+%!   chdir (tmp_dir);
+%!   fclose (fopen ("f1", "w"));
+%!   list = dir ();
+%!   assert (isstruct (list) && ! isempty (list));
+%!   assert (fieldnames (list),
+%!           {"name"; "folder"; "date"; "bytes"; "isdir"; "datenum"; "statinfo"});
 %!
-%! if (isunix ())
-%!   idx = find (strcmp ({list.name}, "."), 1);
-%!   assert ({list(idx:idx+1).name}, {".", ".."});
-%!   assert ([list(idx:idx+1).isdir], [true true]);
-%! endif
+%!   if (isunix ())
+%!     idx = find (strcmp ({list.name}, "."), 1);
+%!     assert ({list(idx:idx+1).name}, {".", ".."});
+%!     assert ([list(idx:idx+1).isdir], [true true]);
+%!   endif
 %!
-%! ## test that specifying a filename works the same as using a directory.
-%! found = find (! [list.isdir], 1);
-%! if (! isempty (found))
-%!   list2 = dir (fullfile (list(found).folder, list(found).name));
-%!   assert (list(found), list2);
-%! endif
+%!   ## test that specifying a filename works the same as using a directory.
+%!   found = find (! [list.isdir], 1);
+%!   if (! isempty (found))
+%!     list2 = dir (fullfile (list(found).folder, list(found).name));
+%!     assert (list(found), list2);
+%!   endif
+%! unwind_protect_cleanup
+%!   chdir (orig_dir);
+%!   confirm_recursive_rmdir (false, "local");
+%!   if (exist (tmp_dir))
+%!     rmdir (tmp_dir, "s");
+%!   endif
+%! end_unwind_protect
 
 ## Test input validation
 %!error <DIRECTORY argument must be a string> dir (1)

@@ -32,11 +32,14 @@
 ## @seealso{fieldnames}
 ## @end deftypefn
 
-function mtds = methods (obj)
+function mtds = methods (obj, opt)
 
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
+  showsigs = (nargin > 1 && ischar (opt) && strcmp (opt, "-full"));
+  havesigs = false;
 
   if (isobject (obj))
     ## Call internal C++ function for Octave objects
@@ -48,6 +51,7 @@ function mtds = methods (obj)
     if (isempty (mtds_list))
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
       mtds_list = ostrsplit (mtds_str, ';');
+      havesigs = true;
     endif
   elseif (isjava (obj))
     ## FIXME: Function prototype accepts java obj, but doesn't work if obj
@@ -59,8 +63,14 @@ function mtds = methods (obj)
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
     end_try_catch
     mtds_list = strsplit (mtds_str, ';');
+    havesigs = true;
   else
-    error ("methods: Invalid input argument");
+    error ("methods: invalid input argument");
+  endif
+
+  if (havesigs && ! showsigs)
+    mtds_list = regexprep (mtds_list, '^(?:[^ ]+ )+(\w+)\(.*$', '$1');
+    mtds_list = unique (mtds_list);
   endif
 
   if (nargout == 0)
@@ -81,8 +91,14 @@ endfunction
 
 ## test Java classname
 %!testif HAVE_JAVA; usejava ("jvm")
-%! mtds = methods ("java.lang.Double");
+%! mtds = methods ("java.lang.Double", "-full");
 %! search = strfind (mtds, "java.lang.Double valueOf");
+%! assert (! isempty ([search{:}]));
+
+## test Java classname
+%!testif HAVE_JAVA; usejava ("jvm")
+%! mtds = methods ("java.lang.Double");
+%! search = strfind (mtds, "valueOf");
 %! assert (! isempty ([search{:}]));
 
 ## classdef

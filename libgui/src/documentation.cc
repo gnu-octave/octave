@@ -174,92 +174,95 @@ namespace octave
     find_footer->hide ();
     m_search_anchor_position = 0;
 
-    // Layout contents, index and search
-    QTabWidget *navi = new QTabWidget (this);
-    navi->setTabsClosable (false);
-    navi->setMovable (true);
+    if (m_help_engine)
+      {
+        // Layout contents, index and search
+        QTabWidget *navi = new QTabWidget (this);
+        navi->setTabsClosable (false);
+        navi->setMovable (true);
 
-    // Contents
-    QHelpContentWidget *content = m_help_engine->contentWidget ();
-    content->setObjectName ("documentation_tab_contents");
-    navi->addTab (content, tr ("Contents"));
+        // Contents
+        QHelpContentWidget *content = m_help_engine->contentWidget ();
+        content->setObjectName ("documentation_tab_contents");
+        navi->addTab (content, tr ("Contents"));
 
-    connect(m_help_engine->contentWidget (),
-            SIGNAL (linkActivated (const QUrl&)),
-            m_doc_browser, SLOT(handle_index_clicked (const QUrl&)));
+        connect(m_help_engine->contentWidget (),
+                SIGNAL (linkActivated (const QUrl&)),
+                m_doc_browser, SLOT(handle_index_clicked (const QUrl&)));
 
-    // Index
-    QHelpIndexWidget *index = m_help_engine->indexWidget ();
+        // Index
+        QHelpIndexWidget *index = m_help_engine->indexWidget ();
 
-    m_filter = new QComboBox (this);
-    m_filter->setToolTip (tr ("Enter text to search the indices"));
-    m_filter->setEditable (true);
-    m_filter->setInsertPolicy (QComboBox::NoInsert);
-    m_filter->setMaxCount (10);
-    m_filter->setMaxVisibleItems (10);
-    m_filter->setSizeAdjustPolicy (
-      QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
-    m_filter->setSizePolicy (sizePol);
-    m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
-    QLabel *filter_label = new QLabel (tr ("Search"));
+        m_filter = new QComboBox (this);
+        m_filter->setToolTip (tr ("Enter text to search the indices"));
+        m_filter->setEditable (true);
+        m_filter->setInsertPolicy (QComboBox::NoInsert);
+        m_filter->setMaxCount (10);
+        m_filter->setMaxVisibleItems (10);
+        m_filter->setSizeAdjustPolicy (
+                                       QComboBox::AdjustToMinimumContentsLengthWithIcon);
+        QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+        m_filter->setSizePolicy (sizePol);
+        m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
+        QLabel *filter_label = new QLabel (tr ("Search"));
 
-    QWidget *filter_all = new QWidget (navi);
-    QHBoxLayout *h_box_index = new QHBoxLayout (filter_all);
-    h_box_index->addWidget (filter_label);
-    h_box_index->addWidget (m_filter);
-    h_box_index->setMargin (2);
-    filter_all->setLayout (h_box_index);
+        QWidget *filter_all = new QWidget (navi);
+        QHBoxLayout *h_box_index = new QHBoxLayout (filter_all);
+        h_box_index->addWidget (filter_label);
+        h_box_index->addWidget (m_filter);
+        h_box_index->setMargin (2);
+        filter_all->setLayout (h_box_index);
 
-    QWidget *index_all = new QWidget (navi);
-    index_all->setObjectName ("documentation_tab_index");
-    QVBoxLayout *v_box_index = new QVBoxLayout (index_all);
-    v_box_index->addWidget (filter_all);
-    v_box_index->addWidget (index);
-    index_all->setLayout (v_box_index);
+        QWidget *index_all = new QWidget (navi);
+        index_all->setObjectName ("documentation_tab_index");
+        QVBoxLayout *v_box_index = new QVBoxLayout (index_all);
+        v_box_index->addWidget (filter_all);
+        v_box_index->addWidget (index);
+        index_all->setLayout (v_box_index);
 
-    navi->addTab (index_all, tr ("Function Index"));
+        navi->addTab (index_all, tr ("Function Index"));
 
-    connect(m_help_engine->indexWidget (),
-            SIGNAL (linkActivated (const QUrl&, const QString&)),
-            m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
-                                                      const QString&)));
+        connect(m_help_engine->indexWidget (),
+                SIGNAL (linkActivated (const QUrl&, const QString&)),
+                m_doc_browser, SLOT(handle_index_clicked (const QUrl&,
+                                                          const QString&)));
 
-    connect (m_filter, SIGNAL (editTextChanged (const QString&)),
-             this, SLOT(filter_update (const QString&)));
+        connect (m_filter, SIGNAL (editTextChanged (const QString&)),
+                 this, SLOT(filter_update (const QString&)));
 
-    connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
-             this, SLOT(filter_update_history (void)));
+        connect (m_filter->lineEdit (), SIGNAL (editingFinished (void)),
+                 this, SLOT(filter_update_history (void)));
 
-    // Search
-    QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
-    QHelpSearchQueryWidget *search = search_engine->queryWidget ();
-    QHelpSearchResultWidget *result = search_engine->resultWidget ();
-    QWidget *search_all = new QWidget (navi);
-    QVBoxLayout *v_box_search = new QVBoxLayout (search_all);
-    v_box_search->addWidget (search);
-    v_box_search->addWidget (result);
-    search_all->setLayout (v_box_search);
-    search_all->setObjectName ("documentation_tab_search");
-    navi->addTab (search_all, tr ("Search"));
+        // Search
+        QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
+        QHelpSearchQueryWidget *search = search_engine->queryWidget ();
+        QHelpSearchResultWidget *result = search_engine->resultWidget ();
+        QWidget *search_all = new QWidget (navi);
+        QVBoxLayout *v_box_search = new QVBoxLayout (search_all);
+        v_box_search->addWidget (search);
+        v_box_search->addWidget (result);
+        search_all->setLayout (v_box_search);
+        search_all->setObjectName ("documentation_tab_search");
+        navi->addTab (search_all, tr ("Search"));
 
-    connect (search, SIGNAL (search (void)),
-             this, SLOT(global_search (void)));
+        connect (search, SIGNAL (search (void)),
+                 this, SLOT(global_search (void)));
 
-    connect (search_engine, SIGNAL (searchingStarted (void)),
-             this, SLOT(global_search_started (void)));
-    connect (search_engine, SIGNAL (searchingFinished (int)),
-             this, SLOT(global_search_finished (int)));
+        connect (search_engine, SIGNAL (searchingStarted (void)),
+                 this, SLOT(global_search_started (void)));
+        connect (search_engine, SIGNAL (searchingFinished (int)),
+                 this, SLOT(global_search_finished (int)));
 
-    connect (search_engine->resultWidget (),
-             SIGNAL (requestShowLink (const QUrl&)),
-             this,
-             SLOT(handle_search_result_clicked (const QUrl&)));
+        connect (search_engine->resultWidget (),
+                 SIGNAL (requestShowLink (const QUrl&)),
+                 this,
+                 SLOT(handle_search_result_clicked (const QUrl&)));
 
-    // Fill the splitter
-    insertWidget (0, navi);
-    insertWidget (1, browser_find);
-    setStretchFactor (1, 1);
+        // Fill the splitter
+        insertWidget (0, navi);
+        insertWidget (1, browser_find);
+        setStretchFactor (1, 1);
+      }
 
     // Initial view: Contents
     m_doc_browser->setSource (QUrl (
@@ -394,6 +397,8 @@ namespace octave
 
   void documentation::global_search (void)
   {
+    if (! m_help_engine)
+      return;
 
     QString query_string;
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
@@ -427,6 +432,9 @@ namespace octave
 
   void documentation::global_search_finished (int)
   {
+    if (! m_help_engine)
+      return;
+
     if (! m_internal_search.isEmpty ())
       {
         m_query_string = m_internal_search;
@@ -756,6 +764,9 @@ namespace octave
 
   void documentation::unregisterDoc (const QString& qch)
   {
+    if (! m_help_engine)
+      return;
+
     QString ns = m_help_engine->namespaceName (qch);
     if (m_help_engine
         && m_help_engine->registeredDocumentations ().contains (ns)
@@ -881,7 +892,7 @@ namespace octave
 
   QVariant documentation_browser::loadResource (int type, const QUrl &url)
   {
-    if (url.scheme () == "qthelp")
+    if (m_help_engine && url.scheme () == "qthelp")
       return QVariant (m_help_engine->fileData(url));
     else
       return QTextBrowser::loadResource(type, url);

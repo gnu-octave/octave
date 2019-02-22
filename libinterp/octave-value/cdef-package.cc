@@ -90,15 +90,21 @@ map2Cell (const std::map<T1, T2>& m)
 
 Cell
 cdef_package::cdef_package_rep::get_classes (void) const
-{ return map2Cell (class_map); }
+{
+  return map2Cell (class_map);
+}
 
 Cell
 cdef_package::cdef_package_rep::get_functions (void) const
-{ return map2Cell (function_map); }
+{
+  return map2Cell (function_map);
+}
 
 Cell
 cdef_package::cdef_package_rep::get_packages (void) const
-{ return map2Cell (package_map); }
+{
+  return map2Cell (package_map);
+}
 
 octave_value
 cdef_package::cdef_package_rep::find (const std::string& nm)

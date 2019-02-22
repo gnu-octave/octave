@@ -45,6 +45,7 @@ private:
   cdef_method_rep : public cdef_meta_object_rep
   {
   public:
+
     cdef_method_rep (void)
       : cdef_meta_object_rep (), function (), dispatch_type ()
     { }
@@ -72,7 +73,9 @@ private:
     bool is_external (void) const { return ! dispatch_type.empty (); }
 
     void mark_as_external (const std::string& dtype)
-    { dispatch_type = dtype; }
+    {
+      dispatch_type = dtype;
+    }
 
     octave_value_list execute (const octave_value_list& args, int nargout,
                                bool do_check_access = true,
@@ -90,9 +93,12 @@ private:
                   const std::list<octave_value_list>& idx, int nargout);
 
     bool meta_accepts_postfix_index (char type) const
-    { return (type == '(' || type == '.'); }
+    {
+      return (type == '(' || type == '.');
+    }
 
   private:
+
     cdef_method_rep (const cdef_method_rep& m)
       : cdef_meta_object_rep (m), function (m.function),
         dispatch_type (m.dispatch_type)
@@ -110,18 +116,21 @@ private:
 
     // When non-empty, the method is externally defined and this member
     // is used to cache the dispatch type to look for the method.
+
     std::string dispatch_type;
   };
 
 public:
+
   cdef_method (void) : cdef_meta_object () { }
 
   cdef_method (const std::string& nm)
     : cdef_meta_object (new cdef_method_rep ())
-  { get_rep ()->set_name (nm); }
+  {
+    get_rep ()->set_name (nm);
+  }
 
-  cdef_method (const cdef_method& meth)
-    : cdef_meta_object (meth) { }
+  cdef_method (const cdef_method& meth) : cdef_meta_object (meth) { }
 
   cdef_method (const cdef_object& obj)
     : cdef_meta_object (obj)
@@ -145,14 +154,18 @@ public:
   octave_value_list execute (const octave_value_list& args, int nargout,
                              bool do_check_access = true,
                              const std::string& who = "")
-  { return get_rep ()->execute (args, nargout, do_check_access, who); }
+  {
+    return get_rep ()->execute (args, nargout, do_check_access, who);
+  }
 
   // dot-invocation: object is pushed as 1st argument
   octave_value_list execute (const cdef_object& obj,
                              const octave_value_list& args, int nargout,
                              bool do_check_access = true,
                              const std::string& who = "")
-  { return get_rep ()->execute (obj, args, nargout, do_check_access, who); }
+  {
+    return get_rep ()->execute (obj, args, nargout, do_check_access, who);
+  }
 
   bool check_access (void) const { return get_rep ()->check_access (); }
 
@@ -161,25 +174,38 @@ public:
   bool is_static (void) const { return get_rep ()->is_static (); }
 
   void set_function (const octave_value& fcn)
-  { get_rep ()->set_function (fcn); }
+  {
+    get_rep ()->set_function (fcn);
+  }
 
   octave_value get_function (void) const
-  { return get_rep ()->get_function (); }
+  {
+    return get_rep ()->get_function ();
+  }
 
   bool is_constructor (void) const
-  { return get_rep ()->is_constructor (); }
+  {
+    return get_rep ()->is_constructor ();
+  }
 
   bool is_external (void) const { return get_rep ()->is_external (); }
 
   void mark_as_external (const std::string& dtype)
-  { get_rep ()->mark_as_external (dtype); }
+  {
+    get_rep ()->mark_as_external (dtype);
+  }
 
 private:
+
   cdef_method_rep * get_rep (void)
-  { return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ());
+  }
 
   const cdef_method_rep * get_rep (void) const
-  { return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ());
+  }
 };
 
 #endif

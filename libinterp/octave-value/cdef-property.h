@@ -45,14 +45,17 @@ private:
   cdef_property_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_property_rep (void)
-      : cdef_meta_object_rep () { }
+
+    cdef_property_rep (void) : cdef_meta_object_rep () { }
 
     cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
 
     ~cdef_property_rep (void) = default;
 
-    cdef_object_rep * copy (void) const { return new cdef_property_rep (*this); }
+    cdef_object_rep * copy (void) const
+    {
+      return new cdef_property_rep (*this);
+    }
 
     bool is_property (void) const { return true; }
 
@@ -79,7 +82,8 @@ private:
 
   private:
     cdef_property_rep (const cdef_property_rep& p)
-      : cdef_meta_object_rep (p) { }
+      : cdef_meta_object_rep (p)
+    { }
 
     bool is_recursive_set (const cdef_object& obj) const;
 
@@ -91,14 +95,16 @@ private:
   };
 
 public:
+
   cdef_property (void) : cdef_meta_object () { }
 
   cdef_property (const std::string& nm)
     : cdef_meta_object (new cdef_property_rep ())
-  { get_rep ()->set_name (nm); }
+  {
+    get_rep ()->set_name (nm);
+  }
 
-  cdef_property (const cdef_property& prop)
-    : cdef_meta_object (prop) { }
+  cdef_property (const cdef_property& prop) : cdef_meta_object (prop) { }
 
   cdef_property (const cdef_object& obj)
     : cdef_meta_object (obj)
@@ -120,33 +126,48 @@ public:
 
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
                           const std::string& who = "")
-  { return get_rep ()->get_value (obj, do_check_access, who); }
+  {
+    return get_rep ()->get_value (obj, do_check_access, who);
+  }
 
   octave_value get_value (bool do_check_access = true,
                           const std::string& who = "")
-  { return get_rep ()->get_value (do_check_access, who); }
+  {
+    return get_rep ()->get_value (do_check_access, who);
+  }
 
   void set_value (cdef_object& obj, const octave_value& val,
                   bool do_check_access = true,
                   const std::string& who = "")
-  { get_rep ()->set_value (obj, val, do_check_access, who); }
+  {
+    get_rep ()->set_value (obj, val, do_check_access, who);
+  }
 
   bool check_get_access (void) const
-  { return get_rep ()->check_get_access (); }
+  {
+    return get_rep ()->check_get_access ();
+  }
 
   bool check_set_access (void) const
-  { return get_rep ()->check_set_access (); }
+  {
+    return get_rep ()->check_set_access ();
+  }
 
   std::string get_name (void) const { return get_rep ()->get_name (); }
 
   bool is_constant (void) const { return get_rep ()->is_constant (); }
 
 private:
+
   cdef_property_rep * get_rep (void)
-  { return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ());
+  }
 
   const cdef_property_rep * get_rep (void) const
-  { return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ());
+  }
 };
 
 #endif

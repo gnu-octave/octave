@@ -50,8 +50,8 @@ private:
   cdef_package_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_package_rep (void)
-      : cdef_meta_object_rep (), member_count (0) { }
+
+    cdef_package_rep (void) : cdef_meta_object_rep (), member_count (0) { }
 
     cdef_package_rep& operator = (const cdef_package_rep&) = delete;
 
@@ -101,11 +101,14 @@ private:
     void meta_release (void);
 
     bool meta_accepts_postfix_index (char type) const
-    { return (type == '.'); }
+    {
+      return (type == '.');
+    }
 
     octave_value find (const std::string& nm);
 
   private:
+
     std::string full_name;
     std::map<std::string, cdef_class> class_map;
     std::map<std::string, octave_value> function_map;
@@ -136,14 +139,16 @@ private:
   };
 
 public:
+
   cdef_package (void) : cdef_meta_object () { }
 
   cdef_package (const std::string& nm)
     : cdef_meta_object (new cdef_package_rep ())
-  { get_rep ()->set_name (nm); }
+  {
+    get_rep ()->set_name (nm);
+  }
 
-  cdef_package (const cdef_package& pack)
-    : cdef_meta_object (pack) { }
+  cdef_package (const cdef_package& pack) : cdef_meta_object (pack) { }
 
   cdef_package (const cdef_object& obj)
     : cdef_meta_object (obj)
@@ -164,33 +169,53 @@ public:
   ~cdef_package (void) = default;
 
   void install_class (const cdef_class& cls, const std::string& nm)
-  { get_rep ()->install_class (cls, nm); }
+  {
+    get_rep ()->install_class (cls, nm);
+  }
 
   void install_function (const octave_value& fcn, const std::string& nm)
-  { get_rep ()->install_function (fcn, nm); }
+  {
+    get_rep ()->install_function (fcn, nm);
+  }
 
   void install_package (const cdef_package& pack, const std::string& nm)
-  { get_rep ()->install_package (pack, nm); }
+  {
+    get_rep ()->install_package (pack, nm);
+  }
 
   Cell get_classes (void) const
-  { return get_rep ()->get_classes (); }
+  {
+    return get_rep ()->get_classes ();
+  }
 
   Cell get_functions (void) const
-  { return get_rep ()->get_functions (); }
+  {
+    return get_rep ()->get_functions ();
+  }
 
   Cell get_packages (void) const
-  { return get_rep ()->get_packages (); }
+  {
+    return get_rep ()->get_packages ();
+  }
 
   std::string get_name (void) const { return get_rep ()->get_name (); }
 
-  octave_value find (const std::string& nm) { return get_rep ()->find (nm); }
+  octave_value find (const std::string& nm)
+  {
+    return get_rep ()->find (nm);
+  }
 
 private:
+
   cdef_package_rep * get_rep (void)
-  { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ());
+  }
 
   const cdef_package_rep * get_rep (void) const
-  { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
+  }
 
   friend void install_classdef (octave::interpreter& interp);
 };

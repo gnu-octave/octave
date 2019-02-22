@@ -111,6 +111,7 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
 class ctor_analyzer : public octave::tree_walker
 {
 public:
+
   ctor_analyzer (void) = delete;
 
   ctor_analyzer (const std::string& ctor, const std::string& obj)
@@ -153,6 +154,7 @@ public:
   { return ctor_list; }
 
   // NO-OP
+
   void visit_anon_fcn_handle (octave::tree_anon_fcn_handle&) { }
   void visit_argument_list (octave::tree_argument_list&) { }
   void visit_binary_expression (octave::tree_binary_expression&) { }
@@ -203,6 +205,7 @@ public:
   }
 
 private:
+
   // The name of the constructor being analyzed.
   std::string who;
 

@@ -20,7 +20,10 @@ OV_SPARSE_INC = \
 OCTAVE_VALUE_INC = \
   %reldir%/cdef-class.h \
   %reldir%/cdef-manager.h \
+  %reldir%/cdef-method.h \
   %reldir%/cdef-object.h \
+  %reldir%/cdef-package.h \
+  %reldir%/cdef-property.h \
   %reldir%/cdef-utils.h \
   %reldir%/ov-base-diag.h \
   %reldir%/ov-base-mat.h \
@@ -85,7 +88,10 @@ OV_SPARSE_SRC = \
 OCTAVE_VALUE_SRC = \
   %reldir%/cdef-class.cc \
   %reldir%/cdef-manager.cc \
+  %reldir%/cdef-method.cc \
   %reldir%/cdef-object.cc \
+  %reldir%/cdef-package.cc \
+  %reldir%/cdef-property.cc \
   %reldir%/cdef-utils.cc \
   %reldir%/ov-base.cc \
   %reldir%/ov-bool-mat.cc \

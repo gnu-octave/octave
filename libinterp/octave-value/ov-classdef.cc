@@ -28,6 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iomanip>
 
 #include "call-stack.h"
+#include "cdef-class.h"
+#include "cdef-method.h"
+#include "cdef-package.h"
+#include "cdef-property.h"
 #include "cdef-utils.h"
 #include "defun.h"
 #include "errwarn.h"

@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include "cdef-class.h"
+#include "cdef-method.h"
+#include "cdef-package.h"
+#include "cdef-property.h"
+#include "ov-builtin.h"
 
 namespace octave
 {

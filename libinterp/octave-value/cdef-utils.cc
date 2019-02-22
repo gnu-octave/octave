@@ -25,7 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "call-stack.h"
+#include "cdef-class.h"
 #include "cdef-manager.h"
+#include "cdef-method.h"
+#include "cdef-package.h"
+#include "cdef-property.h"
 #include "cdef-utils.h"
 #include "interpreter-private.h"
 #include "ov-classdef.h"
@@ -229,4 +233,116 @@ get_class_context (void)
   bool dummy_bool;
 
   return get_class_context (dummy_string, dummy_bool);
+}
+
+bool
+check_access (const cdef_class& cls, const octave_value& acc,
+              const std::string& meth_name, const std::string& prop_name,
+              bool is_prop_set)
+{
+  if (acc.is_string ())
+    {
+      std::string acc_s = acc.string_value ();
+
+      if (acc_s == "public")
+        return true;
+
+      cdef_class ctx = get_class_context ();
+
+      // The access is private or protected, this requires a
+      // valid class context.
+
+      if (ctx.ok ())
+        {
+          if (acc_s == "private")
+            return (ctx == cls);
+          else if (acc_s == "protected")
+            {
+              if (is_superclass (cls, ctx))
+                // Calling a protected method in a superclass.
+                return true;
+              else if (is_strict_superclass (ctx, cls))
+                {
+                  // Calling a protected method or property in a derived class.
+                  // This is only allowed if the context class knows about it
+                  // and has access to it.
+
+                  if (! meth_name.empty ())
+                    {
+                      cdef_method m = ctx.find_method (meth_name);
+
+                      if (m.ok ())
+                        return check_access (ctx, m.get ("Access"), meth_name);
+
+                      return false;
+                    }
+                  else if (! prop_name.empty ())
+                    {
+                      cdef_property p = ctx.find_property (prop_name);
+
+                      if (p.ok ())
+                        {
+                          octave_value p_access = p.get (is_prop_set ?
+                                                         "SetAccess" :
+                                                         "GetAccess");
+
+                          return check_access (ctx, p_access, meth_name,
+                                               prop_name, is_prop_set);
+                        }
+
+                      return false;
+                    }
+                  else
+                    panic_impossible ();
+                }
+
+              return false;
+            }
+          else
+            panic_impossible ();
+        }
+    }
+  else if (acc.isobject ())
+    {
+      cdef_class ctx = get_class_context ();
+
+      // At this point, a class context is always required.
+      if (ctx.ok ())
+        {
+          if (ctx == cls)
+            return true;
+
+          cdef_class acc_cls (to_cdef (acc));
+
+          if (is_superclass (acc_cls, ctx))
+            return true;
+        }
+    }
+  else if (acc.iscell ())
+    {
+      Cell acc_c = acc.cell_value ();
+
+      cdef_class ctx = get_class_context ();
+
+      // At this point, a class context is always required.
+
+      if (ctx.ok ())
+        {
+          if (ctx == cls)
+            return true;
+
+          for (int i = 0; i < acc.numel (); i++)
+            {
+              cdef_class acc_cls (to_cdef (acc_c(i)));
+
+              if (is_superclass (acc_cls, ctx))
+                return true;
+            }
+        }
+    }
+  else
+    error ("invalid property/method access in class `%s'",
+           cls.get_name ().c_str ());
+
+  return false;
 }

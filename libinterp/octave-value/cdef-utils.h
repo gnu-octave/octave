@@ -81,4 +81,10 @@ get_class_context (std::string& name, bool& in_constructor);
 extern cdef_class
 get_class_context (void);
 
+extern bool
+check_access (const cdef_class& cls, const octave_value& acc,
+              const std::string& meth_name = "",
+              const std::string& prop_name = "",
+              bool is_prop_set = false);
+
 #endif

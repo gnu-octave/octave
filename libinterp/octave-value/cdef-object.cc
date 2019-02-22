@@ -24,7 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "cdef-class.h"
 #include "cdef-object.h"
+#include "cdef-property.h"
 #include "cdef-utils.h"
 #include "interpreter.h"
 #include "ov-classdef.h"

@@ -47,14 +47,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 
 static bool
-in_class_method (const cdef_class& cls)
+in_class_method (const octave::cdef_class& cls)
 {
-  cdef_class ctx = get_class_context ();
+  octave::cdef_class ctx = octave::get_class_context ();
 
-  return (ctx.ok () && is_superclass (ctx, cls));
+  return (ctx.ok () && octave::is_superclass (ctx, cls));
 }
-
-//----------------------------------------------------------------------------
 
 int octave_classdef::t_id (-1);
 
@@ -75,11 +73,11 @@ octave_classdef::subsref (const std::string& type,
   size_t skip = 0;
   octave_value_list retval;
 
-  cdef_class cls = object.get_class ();
+  octave::cdef_class cls = object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
-      cdef_method meth = cls.find_method ("subsref");
+      octave::cdef_method meth = cls.find_method ("subsref");
 
       if (meth.ok ())
         {
@@ -98,7 +96,7 @@ octave_classdef::subsref (const std::string& type,
 
   // At this point, the default subsref mechanism must be used.
 
-  retval = object.subsref (type, idx, nargout, skip, cdef_class ());
+  retval = object.subsref (type, idx, nargout, skip, octave::cdef_class ());
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (nargout, type, idx, skip);
@@ -118,11 +116,11 @@ octave_classdef::subsref (const std::string& type,
   // assignment with multi-level indexing.  AFAIK this is only used for internal
   // purpose (not sure we should even implement this).
 
-  cdef_class cls = object.get_class ();
+  octave::cdef_class cls = object.get_class ();
 
   if (! in_class_method (cls))
     {
-      cdef_method meth = cls.find_method ("subsref");
+      octave::cdef_method meth = cls.find_method ("subsref");
 
       if (meth.ok ())
         {
@@ -139,7 +137,7 @@ octave_classdef::subsref (const std::string& type,
         }
     }
 
-  retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
+  retval = object.subsref (type, idx, 1, skip, octave::cdef_class (), auto_add);
 
   if (type.length () > skip && idx.size () > skip)
     retval = retval(0).next_subsref (1, type, idx, skip);
@@ -154,11 +152,11 @@ octave_classdef::subsasgn (const std::string& type,
 {
   octave_value retval;
 
-  cdef_class cls = object.get_class ();
+  octave::cdef_class cls = object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
-      cdef_method meth = cls.find_method ("subsasgn");
+      octave::cdef_method meth = cls.find_method ("subsasgn");
 
       if (meth.ok ())
         {
@@ -209,11 +207,11 @@ octave_classdef::numel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
-  cdef_class cls = object.get_class ();
+  octave::cdef_class cls = object.get_class ();
 
   if (! in_class_method (cls) && ! called_from_builtin ())
     {
-      cdef_method meth = cls.find_method ("numel");
+      octave::cdef_method meth = cls.find_method ("numel");
 
       if (meth.ok ())
         {
@@ -249,7 +247,7 @@ octave_classdef::print (std::ostream& os, bool)
 void
 octave_classdef::print_raw (std::ostream& os, bool) const
 {
-  cdef_class cls = object.get_class ();
+  octave::cdef_class cls = object.get_class ();
 
   if (cls.ok ())
     {
@@ -261,7 +259,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       newline (os);
       newline (os);
 
-      std::map<std::string, cdef_property> props;
+      std::map<std::string, octave::cdef_property> props;
 
       props = cls.get_property_map ();
 
@@ -279,7 +277,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
       for (auto& nm_prop : props)
         {
           const std::string& nm = nm_prop.first;
-          cdef_property& prop = nm_prop.second;
+          octave::cdef_property& prop = nm_prop.second;
           octave_value val = prop.get_value (object, false);
           dim_vector dims = val.dims ();
 
@@ -298,15 +296,13 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 bool
 octave_classdef::is_instance_of (const std::string& cls_name) const
 {
-  cdef_class cls = lookup_class (cls_name, false, false);
+  octave::cdef_class cls = octave::lookup_class (cls_name, false, false);
 
   if (cls.ok ())
     return is_superclass (cls, object.get_class ());
 
   return false;
 }
-
-//----------------------------------------------------------------------------
 
 octave_value
 octave_classdef::superclass_ref (const std::string& meth,
@@ -318,10 +314,8 @@ octave_classdef::superclass_ref (const std::string& meth,
 octave_value
 octave_classdef::metaclass_query (const std::string& cls)
 {
-  return to_ov (lookup_class (cls));
+  return octave::to_ov (octave::lookup_class (cls));
 }
-
-//----------------------------------------------------------------------------
 
 bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) const
 {
@@ -333,7 +327,7 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
         retval = true;
       else
         {
-          cdef_class cls (object);
+          octave::cdef_class cls (object);
 
           if (cls.get_name () == cname)
             retval = true;
@@ -351,9 +345,9 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
 
   std::string meth_name;
   bool in_constructor;
-  cdef_class ctx;
+  octave::cdef_class ctx;
 
-  ctx = get_class_context (meth_name, in_constructor);
+  ctx = octave::get_class_context (meth_name, in_constructor);
 
   if (! ctx.ok ())
     error ("superclass calls can only occur in methods or constructors");
@@ -364,7 +358,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
   // CLS is the superclass.  The lookup_class function handles
   // pkg.class names.
 
-  cdef_class cls = lookup_class (cname);
+  octave::cdef_class cls = octave::lookup_class (cname);
 
   if (in_constructor)
     {
@@ -378,7 +372,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
 
       octave_value sym = tw.varval (mname);
 
-      cls.run_constructor (to_cdef_ref (sym), idx);
+      cls.run_constructor (octave::to_cdef_ref (sym), idx);
 
       retval(0) = sym;
     }
@@ -386,7 +380,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
     {
       size_t pos = mname.find ('.');
 
-      cdef_object obj;
+      octave::cdef_object obj;
 
       if (pos != std::string::npos)
         {
@@ -435,7 +429,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
       // Not being sure about the assumption of 1), I
       // go with option 2) for the time being.
 
-      cdef_method meth = cls.find_method (meth_name, false);
+      octave::cdef_method meth = cls.find_method (meth_name, false);
 
       if (! meth.ok ())
         error ("no method `%s' found in superclass `%s'",
@@ -472,8 +466,6 @@ bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluat
   return false;
 }
 
-//----------------------------------------------------------------------------
-
 DEFUN (__meta_get_package__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __meta_get_package__ ()
@@ -485,7 +477,7 @@ Undocumented internal function.
 
   std::string cname = args(0).xstring_value ("PACKAGE_NAME must be a string");
 
-  return to_ov (lookup_package (cname));
+  return octave::to_ov (octave::lookup_package (cname));
 }
 
 DEFUN (metaclass, args, ,
@@ -497,9 +489,9 @@ Returns the meta.class object corresponding to the class of @var{obj}.
   if (args.length () != 1)
     print_usage ();
 
-  cdef_object obj = to_cdef (args(0));
+  octave::cdef_object obj = octave::to_cdef (args(0));
 
-  return to_ov (obj.get_class ());
+  return octave::to_ov (obj.get_class ());
 }
 
 // FIXME: What about dynamic properties if obj is a scalar, or the
@@ -531,14 +523,14 @@ list of property names in a cell array.
   else
     err_wrong_type_arg ("properties", arg);
 
-  cdef_class cls;
+  octave::cdef_class cls;
 
-  cls = lookup_class (class_name, false, true);
+  cls = octave::lookup_class (class_name, false, true);
 
   if (! cls.ok ())
     error ("invalid class: %s", class_name.c_str ());
 
-  std::map<std::string, cdef_property> property_map = cls.get_property_map ();
+  std::map<std::string, octave::cdef_property> property_map = cls.get_property_map ();
 
   std::list<std::string> property_names;
 
@@ -600,11 +592,11 @@ Implements @code{methods} for Octave class objects and classnames.
 
   string_vector sv;
 
-  cdef_class cls = lookup_class (class_name, false, true);
+  octave::cdef_class cls = octave::lookup_class (class_name, false, true);
 
   if (cls.ok ())
     {
-      std::map<std::string, cdef_method> method_map = cls.get_method_map ();
+      std::map<std::string, octave::cdef_method> method_map = cls.get_method_map ();
 
       std::list<std::string> method_names;
 

@@ -31,10 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-fcn.h"
 
-class cdef_object;
-
 namespace octave
 {
+  class cdef_object;
   class interpreter;
   class tree_evaluator;
   class type_info;
@@ -44,10 +43,11 @@ class
 octave_classdef : public octave_base_value
 {
 public:
+
   octave_classdef (void)
     : octave_base_value (), object () { }
 
-  octave_classdef (const cdef_object& obj)
+  octave_classdef (const octave::cdef_object& obj)
     : octave_base_value (), object (obj) { }
 
   octave_classdef (const octave_classdef&) = delete;
@@ -64,9 +64,9 @@ public:
 
   octave_classdef * classdef_object_value (bool = false) { return this; }
 
-  cdef_object get_object (void) const { return object; }
+  octave::cdef_object get_object (void) const { return object; }
 
-  cdef_object& get_object_ref (void) { return object; }
+  octave::cdef_object& get_object_ref (void) { return object; }
 
   bool is_defined (void) const { return true; }
 
@@ -143,54 +143,19 @@ public:
 
 private:
 
-  cdef_object object;
+  octave::cdef_object object;
 
   static int t_id;
 
   static const std::string t_name;
 };
 
-inline octave_value
-to_ov (const cdef_object& obj)
-{
-  if (obj.ok ())
-    return octave_value (new octave_classdef (obj));
-  else
-    return octave_value (Matrix ());
-}
-
-inline octave_value
-to_ov (const octave_value& ov)
-{ return ov; }
-
-inline cdef_object
-to_cdef (const octave_value& val)
-{
-  if (val.type_name () != "object")
-    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-
-  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
-}
-
-inline cdef_object&
-to_cdef_ref (const octave_value& val)
-{
-  if (val.type_name () != "object")
-    error ("cannot convert `%s' into `object'", val.type_name().c_str ());
-
-  return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
-}
-
-inline cdef_object
-to_cdef (const cdef_object& obj)
-{ return obj; }
-
 OCTINTERP_API void install_classdef (octave::interpreter& interp);
 
 class octave_classdef_meta : public octave_function
 {
 public:
-  octave_classdef_meta (const cdef_meta_object& obj)
+  octave_classdef_meta (const octave::cdef_meta_object& obj)
     : object (obj) { }
 
   octave_classdef_meta (const octave_classdef_meta&) = delete;
@@ -232,7 +197,7 @@ public:
 
 private:
 
-  cdef_meta_object object;
+  octave::cdef_meta_object object;
 };
 
 //----------------------------------------------------------------------------

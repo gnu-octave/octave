@@ -29,12 +29,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
-class cdef_manager;
-
 namespace octave
 {
   class bp_table;
   class call_stack;
+  class cdef_manager;
   class child_list;
   class dynamic_loader;
   class gtk_manager;

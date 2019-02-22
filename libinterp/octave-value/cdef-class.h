@@ -42,401 +42,401 @@ namespace octave
 {
   class interpreter;
   class tree_classdef;
-}
-
-class
-cdef_class : public cdef_meta_object
-{
-private:
 
   class
-  cdef_class_rep : public cdef_meta_object_rep
+  cdef_class : public cdef_meta_object
   {
+  private:
+
+    class
+    cdef_class_rep : public cdef_meta_object_rep
+    {
+    public:
+      cdef_class_rep (void)
+        : cdef_meta_object_rep (), member_count (0), handle_class (false),
+          object_count (0), meta (false)
+      { }
+
+      cdef_class_rep (const std::list<cdef_class>& superclasses);
+
+      cdef_class_rep& operator = (const cdef_class_rep&) = delete;
+
+      ~cdef_class_rep (void) = default;
+
+      cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
+
+      bool is_class (void) const { return true; }
+
+      std::string get_name (void) const
+      { return get ("Name").string_value (); }
+
+      void set_name (const std::string& nm) { put ("Name", nm); }
+
+      bool is_abstract (void) const { return get ("Abstract").bool_value (); }
+
+      bool is_sealed (void) const { return get ("Sealed").bool_value (); }
+
+      cdef_method find_method (const std::string& nm, bool local = false);
+
+      void install_method (const cdef_method& meth);
+
+      Cell get_methods (void);
+
+      std::map<std::string, cdef_method> get_method_map (bool only_inherited);
+
+      cdef_property find_property (const std::string& nm);
+
+      void install_property (const cdef_property& prop);
+
+      Cell get_properties (int mode);
+
+      std::map<std::string, cdef_property> get_property_map (int mode);
+
+      string_vector get_names (void);
+
+      void set_directory (const std::string& dir) { directory = dir; }
+
+      std::string get_directory (void) const { return directory; }
+
+      void delete_object (const cdef_object& obj);
+
+      octave_value_list
+      meta_subsref (const std::string& type,
+                    const std::list<octave_value_list>& idx, int nargout);
+
+      void meta_release (void);
+
+      bool meta_accepts_postfix_index (char type) const
+      {
+        return (type == '(' || type == '.');
+      }
+
+      octave_value construct (const octave_value_list& args);
+
+      cdef_object construct_object (const octave_value_list& args);
+
+      void initialize_object (cdef_object& obj);
+
+      void run_constructor (cdef_object& obj, const octave_value_list& args);
+
+      void mark_as_handle_class (void) { handle_class = true; }
+
+      bool is_handle_class (void) const { return handle_class; }
+
+      void register_object (void) { object_count++; }
+
+      void unregister_object (void) { object_count--; }
+
+      octave_idx_type static_count (void) const { return member_count; }
+
+      void destroy (void)
+      {
+        if (member_count)
+          {
+            m_count++;
+            cdef_class lock (this);
+
+            member_count = 0;
+            method_map.clear ();
+            property_map.clear ();
+          }
+        else
+          delete this;
+      }
+
+      void mark_as_meta_class (void) { meta = true; }
+
+      bool is_meta_class (void) const { return meta; }
+
+    private:
+
+      void load_all_methods (void);
+
+      void find_names (std::set<std::string>& names, bool all);
+
+      void find_properties (std::map<std::string,cdef_property>& props,
+                            int mode = 0);
+
+      void find_methods (std::map<std::string, cdef_method>& meths,
+                         bool only_inherited);
+
+      cdef_class wrap (void)
+      {
+        m_count++;
+        return cdef_class (this);
+      }
+
+      // The @-directory were this class is loaded from.
+      // (not used yet)
+
+      std::string directory;
+
+      // The methods defined by this class.
+
+      std::map<std::string,cdef_method> method_map;
+
+      // The properties defined by this class.
+
+      std::map<std::string,cdef_property> property_map;
+
+      // The number of members in this class (methods, properties...)
+
+      octave_idx_type member_count;
+
+      // TRUE if this class is a handle class.  A class is a handle
+      // class when the abstract "handle" class is one of its superclasses.
+
+      bool handle_class;
+
+      // The list of super-class constructors that are called implicitly by the
+      // the classdef engine when creating an object.  These constructors are not
+      // called explicitly by the class constructor.
+
+      std::list<cdef_class> implicit_ctor_list;
+
+      // The number of objects of this class.
+
+      refcount<octave_idx_type> object_count;
+
+      // TRUE if this class is a built-in meta class.
+
+      bool meta;
+
+      // Utility iterator typedefs.
+
+      typedef std::map<std::string,cdef_method>::iterator method_iterator;
+      typedef std::map<std::string,cdef_method>::const_iterator method_const_iterator;
+      typedef std::map<std::string,cdef_property>::iterator property_iterator;
+      typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
+
+      cdef_class_rep (const cdef_class_rep& c)
+        : cdef_meta_object_rep (c), directory (c.directory),
+          method_map (c.method_map), property_map (c.property_map),
+          member_count (c.member_count), handle_class (c.handle_class),
+          implicit_ctor_list (c.implicit_ctor_list),
+          object_count (c.object_count), meta (c.meta) { }
+    };
+
   public:
-    cdef_class_rep (void)
-      : cdef_meta_object_rep (), member_count (0), handle_class (false),
-        object_count (0), meta (false)
-    { }
 
-    cdef_class_rep (const std::list<cdef_class>& superclasses);
+    // Create an invalid class object.
 
-    cdef_class_rep& operator = (const cdef_class_rep&) = delete;
+    cdef_class (void) : cdef_meta_object () { }
 
-    ~cdef_class_rep (void) = default;
+    cdef_class (const std::string& nm, const std::list<cdef_class>& superclasses)
+      : cdef_meta_object (new cdef_class_rep (superclasses))
+    {
+      get_rep ()->set_name (nm);
+    }
 
-    cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
+    cdef_class (const cdef_class& cls) : cdef_meta_object (cls) { }
 
-    bool is_class (void) const { return true; }
+    cdef_class (const cdef_object& obj)
+      : cdef_meta_object (obj)
+    {
+      // This should never happen...
+      if (! is_class ())
+        error ("internal error: invalid assignment from %s to meta.class object",
+               class_name ().c_str ());
+    }
 
-    std::string get_name (void) const
-    { return get ("Name").string_value (); }
+    cdef_class& operator = (const cdef_class& cls)
+    {
+      cdef_object::operator = (cls);
 
-    void set_name (const std::string& nm) { put ("Name", nm); }
+      return *this;
+    }
 
-    bool is_abstract (void) const { return get ("Abstract").bool_value (); }
-
-    bool is_sealed (void) const { return get ("Sealed").bool_value (); }
+    ~cdef_class (void) = default;
 
     cdef_method find_method (const std::string& nm, bool local = false);
 
-    void install_method (const cdef_method& meth);
+    void install_method (const cdef_method& meth)
+    {
+      get_rep ()->install_method (meth);
+    }
 
-    Cell get_methods (void);
+    Cell get_methods (void) { return get_rep ()->get_methods (); }
 
-    std::map<std::string, cdef_method> get_method_map (bool only_inherited);
+    std::map<std::string, cdef_method>
+    get_method_map (bool only_inherited = false)
+    {
+      return get_rep ()->get_method_map (only_inherited);
+    }
 
     cdef_property find_property (const std::string& nm);
 
-    void install_property (const cdef_property& prop);
-
-    Cell get_properties (int mode);
-
-    std::map<std::string, cdef_property> get_property_map (int mode);
-
-    string_vector get_names (void);
-
-    void set_directory (const std::string& dir) { directory = dir; }
-
-    std::string get_directory (void) const { return directory; }
-
-    void delete_object (const cdef_object& obj);
-
-    octave_value_list
-    meta_subsref (const std::string& type,
-                  const std::list<octave_value_list>& idx, int nargout);
-
-    void meta_release (void);
-
-    bool meta_accepts_postfix_index (char type) const
+    void install_property (const cdef_property& prop)
     {
-      return (type == '(' || type == '.');
+      get_rep ()->install_property (prop);
     }
 
-    octave_value construct (const octave_value_list& args);
-
-    cdef_object construct_object (const octave_value_list& args);
-
-    void initialize_object (cdef_object& obj);
-
-    void run_constructor (cdef_object& obj, const octave_value_list& args);
-
-    void mark_as_handle_class (void) { handle_class = true; }
-
-    bool is_handle_class (void) const { return handle_class; }
-
-    void register_object (void) { object_count++; }
-
-    void unregister_object (void) { object_count--; }
-
-    octave_idx_type static_count (void) const { return member_count; }
-
-    void destroy (void)
+    Cell get_properties (int mode = property_normal)
     {
-      if (member_count)
-        {
-          refcount++;
-          cdef_class lock (this);
-
-          member_count = 0;
-          method_map.clear ();
-          property_map.clear ();
-        }
-      else
-        delete this;
+      return get_rep ()->get_properties (mode);
     }
 
-    void mark_as_meta_class (void) { meta = true; }
+    std::map<std::string, cdef_property>
+    get_property_map (int mode = property_normal)
+    {
+      return get_rep ()->get_property_map (mode);
+    }
 
-    bool is_meta_class (void) const { return meta; }
+    string_vector get_names (void) { return get_rep ()->get_names (); }
+
+    bool is_abstract (void) const { return get_rep ()->is_abstract (); }
+
+    bool is_sealed (void) const { return get_rep ()->is_sealed (); }
+
+    void set_directory (const std::string& dir)
+    {
+      get_rep ()->set_directory (dir);
+    }
+
+    std::string get_directory (void) const
+    {
+      return get_rep ()->get_directory ();
+    }
+
+    std::string get_name (void) const { return get_rep ()->get_name (); }
+
+    bool is_builtin (void) const { return get_directory ().empty (); }
+
+    void delete_object (const cdef_object& obj)
+    {
+      get_rep ()->delete_object (obj);
+    }
+
+    //! Analyze the tree_classdef tree and transform it to a cdef_class
+    //!
+    //! <b>All attribute validation should occur here.</b>
+    //!
+    //! Classdef attribute values can be given in the form of
+    //! expressions.  These expressions must be evaluated before
+    //! assigning them as attribute values.  Evaluating them as they are
+    //! parsed causes trouble with possible recusion in the parser so we
+    //! do it here.  For example
+    //!
+    //! @code
+    //! classdef recursion_class
+    //!   methods (Access = ?recursion_class)
+    //!   endmethods
+    //! endclassdef
+    //! @endcode
+    //!
+    //! will fail because each attempt to compute the metaclass of
+    //! recursion_class will cause recursion_class to be parsed again.
+
+    static cdef_class
+    make_meta_class (interpreter& interp, tree_classdef *t,
+                     bool is_at_folder = false);
+
+    octave_function * get_method_function (const std::string& nm);
+
+    octave_function * get_constructor_function (void)
+    {
+      return get_method_function (get_name ());
+    }
+
+    octave_value construct (const octave_value_list& args)
+    {
+      return get_rep ()->construct (args);
+    }
+
+    cdef_object construct_object (const octave_value_list& args)
+    {
+      return get_rep ()->construct_object (args);
+    }
+
+    void initialize_object (cdef_object& obj)
+    {
+      get_rep ()->initialize_object (obj);
+    }
+
+    void run_constructor (cdef_object& obj, const octave_value_list& args)
+    {
+      get_rep ()->run_constructor (obj, args);
+    }
+
+    void mark_as_handle_class (void)
+    {
+      get_rep ()->mark_as_handle_class ();
+    }
+
+    bool is_handle_class (void) const
+    {
+      return get_rep ()->is_handle_class ();
+    }
+
+    void mark_as_meta_class (void) { get_rep ()->mark_as_meta_class (); }
+
+    bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
+
+    void register_object (void) { get_rep ()->register_object (); }
+
+    void unregister_object (void) { get_rep ()->unregister_object (); }
+
+  public:
+
+    enum
+      {
+       property_normal,
+       property_inherited,
+       property_all
+      };
 
   private:
 
-    void load_all_methods (void);
-
-    void find_names (std::set<std::string>& names, bool all);
-
-    void find_properties (std::map<std::string,cdef_property>& props,
-                          int mode = 0);
-
-    void find_methods (std::map<std::string, cdef_method>& meths,
-                       bool only_inherited);
-
-    cdef_class wrap (void)
+    cdef_class_rep * get_rep (void)
     {
-      refcount++;
-      return cdef_class (this);
+      return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ());
     }
 
-    // The @-directory were this class is loaded from.
-    // (not used yet)
+    const cdef_class_rep * get_rep (void) const
+    {
+      return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ());
+    }
 
-    std::string directory;
+    friend bool operator == (const cdef_class&, const cdef_class&);
+    friend bool operator != (const cdef_class&, const cdef_class&);
+    friend bool operator < (const cdef_class&, const cdef_class&);
 
-    // The methods defined by this class.
-
-    std::map<std::string,cdef_method> method_map;
-
-    // The properties defined by this class.
-
-    std::map<std::string,cdef_property> property_map;
-
-    // The number of members in this class (methods, properties...)
-
-    octave_idx_type member_count;
-
-    // TRUE if this class is a handle class.  A class is a handle
-    // class when the abstract "handle" class is one of its superclasses.
-
-    bool handle_class;
-
-    // The list of super-class constructors that are called implicitly by the
-    // the classdef engine when creating an object.  These constructors are not
-    // called explicitly by the class constructor.
-
-    std::list<cdef_class> implicit_ctor_list;
-
-    // The number of objects of this class.
-
-    octave::refcount<octave_idx_type> object_count;
-
-    // TRUE if this class is a built-in meta class.
-
-    bool meta;
-
-    // Utility iterator typedefs.
-
-    typedef std::map<std::string,cdef_method>::iterator method_iterator;
-    typedef std::map<std::string,cdef_method>::const_iterator method_const_iterator;
-    typedef std::map<std::string,cdef_property>::iterator property_iterator;
-    typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
-
-    cdef_class_rep (const cdef_class_rep& c)
-      : cdef_meta_object_rep (c), directory (c.directory),
-        method_map (c.method_map), property_map (c.property_map),
-        member_count (c.member_count), handle_class (c.handle_class),
-        implicit_ctor_list (c.implicit_ctor_list),
-        object_count (c.object_count), meta (c.meta) { }
+    friend void install_classdef (interpreter& interp);
   };
 
-public:
-
-  // Create an invalid class object.
-
-  cdef_class (void) : cdef_meta_object () { }
-
-  cdef_class (const std::string& nm, const std::list<cdef_class>& superclasses)
-    : cdef_meta_object (new cdef_class_rep (superclasses))
+  inline bool
+  operator == (const cdef_class& clsa, const cdef_class& clsb)
   {
-    get_rep ()->set_name (nm);
+    // FIXME: is this really the right way to check class equality?
+
+    return (clsa.get_rep () == clsb.get_rep ());
   }
 
-  cdef_class (const cdef_class& cls) : cdef_meta_object (cls) { }
-
-  cdef_class (const cdef_object& obj)
-    : cdef_meta_object (obj)
+  inline bool
+  operator != (const cdef_class& clsa, const cdef_class& clsb)
   {
-    // This should never happen...
-    if (! is_class ())
-      error ("internal error: invalid assignment from %s to meta.class object",
-             class_name ().c_str ());
+    return ! (clsa == clsb);
   }
 
-  cdef_class& operator = (const cdef_class& cls)
-  {
-    cdef_object::operator = (cls);
+  // This is only to be able to use cdef_class as map keys.
 
-    return *this;
+  inline bool
+  operator < (const cdef_class& clsa, const cdef_class& clsb)
+  {
+    return clsa.get_rep () < clsb.get_rep ();
   }
 
-  ~cdef_class (void) = default;
-
-  cdef_method find_method (const std::string& nm, bool local = false);
-
-  void install_method (const cdef_method& meth)
+  inline cdef_method
+  cdef_class::find_method (const std::string& nm, bool local)
   {
-    get_rep ()->install_method (meth);
+    return get_rep ()->find_method (nm, local);
   }
 
-  Cell get_methods (void) { return get_rep ()->get_methods (); }
-
-  std::map<std::string, cdef_method>
-  get_method_map (bool only_inherited = false)
+  inline cdef_property
+  cdef_class::find_property (const std::string& nm)
   {
-    return get_rep ()->get_method_map (only_inherited);
+    return get_rep ()->find_property (nm);
   }
-
-  cdef_property find_property (const std::string& nm);
-
-  void install_property (const cdef_property& prop)
-  {
-    get_rep ()->install_property (prop);
-  }
-
-  Cell get_properties (int mode = property_normal)
-  {
-    return get_rep ()->get_properties (mode);
-  }
-
-  std::map<std::string, cdef_property>
-  get_property_map (int mode = property_normal)
-  {
-    return get_rep ()->get_property_map (mode);
-  }
-
-  string_vector get_names (void) { return get_rep ()->get_names (); }
-
-  bool is_abstract (void) const { return get_rep ()->is_abstract (); }
-
-  bool is_sealed (void) const { return get_rep ()->is_sealed (); }
-
-  void set_directory (const std::string& dir)
-  {
-    get_rep ()->set_directory (dir);
-  }
-
-  std::string get_directory (void) const
-  {
-    return get_rep ()->get_directory ();
-  }
-
-  std::string get_name (void) const { return get_rep ()->get_name (); }
-
-  bool is_builtin (void) const { return get_directory ().empty (); }
-
-  void delete_object (const cdef_object& obj)
-  {
-    get_rep ()->delete_object (obj);
-  }
-
-  //! Analyze the tree_classdef tree and transform it to a cdef_class
-  //!
-  //! <b>All attribute validation should occur here.</b>
-  //!
-  //! Classdef attribute values can be given in the form of
-  //! expressions.  These expressions must be evaluated before
-  //! assigning them as attribute values.  Evaluating them as they are
-  //! parsed causes trouble with possible recusion in the parser so we
-  //! do it here.  For example
-  //!
-  //! @code
-  //! classdef recursion_class
-  //!   methods (Access = ?recursion_class)
-  //!   endmethods
-  //! endclassdef
-  //! @endcode
-  //!
-  //! will fail because each attempt to compute the metaclass of
-  //! recursion_class will cause recursion_class to be parsed again.
-
-  static cdef_class
-  make_meta_class (octave::interpreter& interp, octave::tree_classdef *t,
-                   bool is_at_folder = false);
-
-  octave_function * get_method_function (const std::string& nm);
-
-  octave_function * get_constructor_function (void)
-  {
-    return get_method_function (get_name ());
-  }
-
-  octave_value construct (const octave_value_list& args)
-  {
-    return get_rep ()->construct (args);
-  }
-
-  cdef_object construct_object (const octave_value_list& args)
-  {
-    return get_rep ()->construct_object (args);
-  }
-
-  void initialize_object (cdef_object& obj)
-  {
-    get_rep ()->initialize_object (obj);
-  }
-
-  void run_constructor (cdef_object& obj, const octave_value_list& args)
-  {
-    get_rep ()->run_constructor (obj, args);
-  }
-
-  void mark_as_handle_class (void)
-  {
-    get_rep ()->mark_as_handle_class ();
-  }
-
-  bool is_handle_class (void) const
-  {
-    return get_rep ()->is_handle_class ();
-  }
-
-  void mark_as_meta_class (void) { get_rep ()->mark_as_meta_class (); }
-
-  bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
-
-  void register_object (void) { get_rep ()->register_object (); }
-
-  void unregister_object (void) { get_rep ()->unregister_object (); }
-
-public:
-
-  enum
-  {
-    property_normal,
-    property_inherited,
-    property_all
-  };
-
-private:
-
-  cdef_class_rep * get_rep (void)
-  {
-    return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ());
-  }
-
-  const cdef_class_rep * get_rep (void) const
-  {
-    return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ());
-  }
-
-  friend bool operator == (const cdef_class&, const cdef_class&);
-  friend bool operator != (const cdef_class&, const cdef_class&);
-  friend bool operator < (const cdef_class&, const cdef_class&);
-
-  friend void install_classdef (octave::interpreter& interp);
-};
-
-inline bool
-operator == (const cdef_class& clsa, const cdef_class& clsb)
-{
-  // FIXME: is this really the right way to check class equality?
-
-  return (clsa.get_rep () == clsb.get_rep ());
-}
-
-inline bool
-operator != (const cdef_class& clsa, const cdef_class& clsb)
-{
-  return ! (clsa == clsb);
-}
-
-// This is only to be able to use cdef_class as map keys.
-
-inline bool
-operator < (const cdef_class& clsa, const cdef_class& clsb)
-{
-  return clsa.get_rep () < clsb.get_rep ();
-}
-
-inline cdef_method
-cdef_class::find_method (const std::string& nm, bool local)
-{
-  return get_rep ()->find_method (nm, local);
-}
-
-inline cdef_property
-cdef_class::find_property (const std::string& nm)
-{
-  return get_rep ()->find_property (nm);
 }
 
 #endif

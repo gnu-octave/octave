@@ -34,119 +34,119 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class interpreter;
+
+  class
+    cdef_manager
+  {
+  public:
+
+    cdef_manager (interpreter& interp);
+
+    // No copying!
+
+    cdef_manager (const cdef_manager&) = delete;
+
+    cdef_manager& operator = (const cdef_manager&) = delete;
+
+    ~cdef_manager (void) = default;
+
+    cdef_class find_class (const std::string& name, bool error_if_not_found = true,
+                           bool load_if_not_found = true);
+
+    octave_function * find_method_symbol (const std::string& method_name,
+                                          const std::string& class_name);
+
+    cdef_package find_package (const std::string& name,
+                               bool error_if_not_found = true,
+                               bool load_if_not_found = true);
+
+    octave_function * find_package_symbol (const std::string& pack_name);
+
+    void register_class (const cdef_class& cls)
+    {
+      m_all_classes[cls.get_name ()] = cls;
+    }
+
+    void unregister_class (const cdef_class& cls)
+    {
+      m_all_classes.erase(cls.get_name ());
+    }
+
+    void register_package (const cdef_package& pkg)
+    {
+      m_all_packages[pkg.get_name ()] = pkg;
+    }
+
+    void unregister_package (const cdef_package& pkg)
+    {
+      m_all_packages.erase (pkg.get_name ());
+    }
+
+    const cdef_class& meta_class (void) const { return m_meta_class; }
+    const cdef_class& meta_property (void) const { return m_meta_property; }
+    const cdef_class& meta_method (void) const { return m_meta_method; }
+    const cdef_class& meta_package (void) const { return m_meta_package; }
+
+    const cdef_package& meta (void) const { return m_meta; }
+
+    cdef_class
+      make_class (const std::string& name,
+                  const std::list<cdef_class>& super_list = std::list<cdef_class> ());
+
+    cdef_class
+      make_class (const std::string& name, const cdef_class& super);
+
+    cdef_class
+      make_meta_class (const std::string& name, const cdef_class& super);
+
+    cdef_property
+      make_property (const cdef_class& cls, const std::string& name,
+                     const octave_value& get_method = Matrix (),
+                     const std::string& get_access = "public",
+                     const octave_value& set_method = Matrix (),
+                     const std::string& set_access = "public");
+
+    cdef_property
+      make_attribute (const cdef_class& cls, const std::string& name);
+
+    cdef_method
+      make_method (const cdef_class& cls, const std::string& name,
+                   const octave_value& fcn,
+                   const std::string& m_access = "public",
+                   bool is_static = false);
+
+    cdef_method
+      make_method (const cdef_class& cls, const std::string& name,
+                   octave_builtin::fcn ff,
+                   const std::string& m_access = "public",
+                   bool is_static = false);
+
+    cdef_method
+      make_method (const cdef_class& cls, const std::string& name,
+                   octave_builtin::meth mm,
+                   const std::string& m_access = "public",
+                   bool is_static = false);
+
+    cdef_package
+      make_package (const std::string& nm, const std::string& parent = "");
+
+  private:
+
+    interpreter& m_interpreter;
+
+    // All registered/loaded classes
+    std::map<std::string, cdef_class> m_all_classes;
+
+    // All registered/loaded packages
+    std::map<std::string, cdef_package> m_all_packages;
+
+    cdef_class m_meta_class;
+    cdef_class m_meta_property;
+    cdef_class m_meta_method;
+    cdef_class m_meta_package;
+
+    cdef_package m_meta;
+  };
 }
-
-class
-cdef_manager
-{
-public:
-
-  cdef_manager (octave::interpreter& interp);
-
-  // No copying!
-
-  cdef_manager (const cdef_manager&) = delete;
-
-  cdef_manager& operator = (const cdef_manager&) = delete;
-
-  ~cdef_manager (void) = default;
-
-  cdef_class find_class (const std::string& name, bool error_if_not_found = true,
-                         bool load_if_not_found = true);
-
-  octave_function * find_method_symbol (const std::string& method_name,
-                                        const std::string& class_name);
-
-  cdef_package find_package (const std::string& name,
-                             bool error_if_not_found = true,
-                             bool load_if_not_found = true);
-
-  octave_function * find_package_symbol (const std::string& pack_name);
-
-  void register_class (const cdef_class& cls)
-  {
-    m_all_classes[cls.get_name ()] = cls;
-  }
-
-  void unregister_class (const cdef_class& cls)
-  {
-    m_all_classes.erase(cls.get_name ());
-  }
-
-  void register_package (const cdef_package& pkg)
-  {
-    m_all_packages[pkg.get_name ()] = pkg;
-  }
-
-  void unregister_package (const cdef_package& pkg)
-  {
-    m_all_packages.erase (pkg.get_name ());
-  }
-
-  const cdef_class& meta_class (void) const { return m_meta_class; }
-  const cdef_class& meta_property (void) const { return m_meta_property; }
-  const cdef_class& meta_method (void) const { return m_meta_method; }
-  const cdef_class& meta_package (void) const { return m_meta_package; }
-
-  const cdef_package& meta (void) const { return m_meta; }
-
-  cdef_class
-  make_class (const std::string& name,
-              const std::list<cdef_class>& super_list = std::list<cdef_class> ());
-
-  cdef_class
-  make_class (const std::string& name, const cdef_class& super);
-
-  cdef_class
-  make_meta_class (const std::string& name, const cdef_class& super);
-
-  cdef_property
-  make_property (const cdef_class& cls, const std::string& name,
-                 const octave_value& get_method = Matrix (),
-                 const std::string& get_access = "public",
-                 const octave_value& set_method = Matrix (),
-                 const std::string& set_access = "public");
-
-  cdef_property
-  make_attribute (const cdef_class& cls, const std::string& name);
-
-  cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               const octave_value& fcn,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               octave_builtin::fcn ff,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  cdef_method
-  make_method (const cdef_class& cls, const std::string& name,
-               octave_builtin::meth mm,
-               const std::string& m_access = "public",
-               bool is_static = false);
-
-  cdef_package
-  make_package (const std::string& nm, const std::string& parent = "");
-
-private:
-
-  octave::interpreter& m_interpreter;
-
-  // All registered/loaded classes
-  std::map<std::string, cdef_class> m_all_classes;
-
-  // All registered/loaded packages
-  std::map<std::string, cdef_package> m_all_packages;
-
-  cdef_class m_meta_class;
-  cdef_class m_meta_property;
-  cdef_class m_meta_method;
-  cdef_class m_meta_package;
-
-  cdef_package m_meta;
-};
 
 #endif

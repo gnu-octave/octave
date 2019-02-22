@@ -47,199 +47,199 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "pt-walk.h"
 
-OCTAVE_NORETURN static
-void
-err_property_access (const std::string& from, const cdef_property& prop,
-                     bool is_set = false)
+namespace octave
 {
-  octave_value acc = (prop.get (is_set ? "SetAccess" : "GetAccess"));
-  std::string acc_s;
+  OCTAVE_NORETURN static
+  void
+  err_property_access (const std::string& from, const cdef_property& prop,
+                       bool is_set = false)
+  {
+    octave_value acc = (prop.get (is_set ? "SetAccess" : "GetAccess"));
+    std::string acc_s;
 
-  if (acc.is_string ())
-    acc_s = acc.string_value ();
-  else
-    acc_s = "class-restricted";
+    if (acc.is_string ())
+      acc_s = acc.string_value ();
+    else
+      acc_s = "class-restricted";
 
-  if (is_set)
-    error ("%s: property `%s' has %s access and cannot be set in this context",
-           from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
-  else
-    error ("%s: property `%s' has %s access and cannot be obtained in this context",
-           from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
-}
+    if (is_set)
+      error ("%s: property `%s' has %s access and cannot be set in this context",
+             from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
+    else
+      error ("%s: property `%s' has %s access and cannot be obtained in this context",
+             from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
+  }
 
-static bool
-is_method_executing (const octave_value& ov, const cdef_object& obj)
-{
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("is_method_executing");
+  static bool
+  is_method_executing (const octave_value& ov, const cdef_object& obj)
+  {
+    tree_evaluator& tw = __get_evaluator__ ("is_method_executing");
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("is_method_executing");
+    call_stack& cs = __get_call_stack__ ("is_method_executing");
 
-  octave_function *stack_fcn = cs.current ();
+    octave_function *stack_fcn = cs.current ();
 
-  octave_function *method_fcn = ov.function_value (true);
+    octave_function *method_fcn = ov.function_value (true);
 
-  // Does the top of the call stack match our target function?
+    // Does the top of the call stack match our target function?
 
-  if (stack_fcn && stack_fcn == method_fcn)
-    {
-      octave_user_function *uf = method_fcn->user_function_value (true);
+    if (stack_fcn && stack_fcn == method_fcn)
+      {
+        octave_user_function *uf = method_fcn->user_function_value (true);
 
-      // We can only check the context object for user-function (not builtin),
-      // where we have access to the parameters (arguments and return values).
-      // That's ok as there's no need to call this function for builtin
-      // methods.
+        // We can only check the context object for user-function (not builtin),
+        // where we have access to the parameters (arguments and return values).
+        // That's ok as there's no need to call this function for builtin
+        // methods.
 
-      if (uf)
-        {
-          // At this point, the method is executing, but we still need to
-          // check the context object for which the method is executing.  For
-          // methods, it's the first argument of the function; for ctors, it
-          // is the first return value.
+        if (uf)
+          {
+            // At this point, the method is executing, but we still need to
+            // check the context object for which the method is executing.  For
+            // methods, it's the first argument of the function; for ctors, it
+            // is the first return value.
 
-          octave::tree_parameter_list *pl = uf->is_classdef_constructor ()
-            ? uf->return_list () : uf->parameter_list ();
+            tree_parameter_list *pl = uf->is_classdef_constructor ()
+              ? uf->return_list () : uf->parameter_list ();
 
-          if (pl && pl->size () > 0)
-            {
-              octave::tree_decl_elt *elt = pl->front ();
+            if (pl && pl->size () > 0)
+              {
+                tree_decl_elt *elt = pl->front ();
 
-              octave_value arg0 = tw.evaluate (elt);
+                octave_value arg0 = tw.evaluate (elt);
 
-              if (arg0.is_defined () && arg0.type_name () == "object")
-                {
-                  cdef_object arg0_obj = to_cdef (arg0);
+                if (arg0.is_defined () && arg0.type_name () == "object")
+                  {
+                    cdef_object arg0_obj = to_cdef (arg0);
 
-                  return obj.is (arg0_obj);
-                }
-            }
-        }
-    }
+                    return obj.is (arg0_obj);
+                  }
+              }
+          }
+      }
 
-  return false;
-}
+    return false;
+  }
 
-octave_value
-cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
-                                             bool do_check_access,
-                                             const std::string& who)
-{
-  octave_value retval;
+  octave_value
+  cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
+                                               bool do_check_access,
+                                               const std::string& who)
+  {
+    octave_value retval;
 
-  if (do_check_access && ! check_get_access ())
-    err_property_access (who, wrap (), false);
+    if (do_check_access && ! check_get_access ())
+      err_property_access (who, wrap (), false);
 
-  if (! obj.is_constructed ())
-    {
-      cdef_class cls (to_cdef (get ("DefiningClass")));
+    if (! obj.is_constructed ())
+      {
+        cdef_class cls (to_cdef (get ("DefiningClass")));
 
-      if (! obj.is_partially_constructed_for (cls))
-        error ("cannot reference properties of class `%s' for non-constructed object",
-               cls.get_name ().c_str ());
-    }
+        if (! obj.is_partially_constructed_for (cls))
+          error ("cannot reference properties of class `%s' for non-constructed object",
+                 cls.get_name ().c_str ());
+      }
 
-  octave_value get_fcn = get ("GetMethod");
+    octave_value get_fcn = get ("GetMethod");
 
-  // FIXME: should check whether we're already in get accessor method
+    // FIXME: should check whether we're already in get accessor method
 
-  if (get_fcn.isempty () || is_method_executing (get_fcn, obj))
-    retval = obj.get (get ("Name").string_value ());
-  else
-    {
-      octave_value_list args;
+    if (get_fcn.isempty () || is_method_executing (get_fcn, obj))
+      retval = obj.get (get ("Name").string_value ());
+    else
+      {
+        octave_value_list args;
 
-      args(0) = to_ov (obj);
+        args(0) = to_ov (obj);
 
-      args = octave::feval (get_fcn, args, 1);
+        args = feval (get_fcn, args, 1);
 
-      retval = args(0);
-    }
+        retval = args(0);
+      }
 
-  return retval;
-}
+    return retval;
+  }
 
-octave_value
-cdef_property::cdef_property_rep::get_value (bool do_check_access,
-                                             const std::string& who)
-{
-  if (do_check_access && ! check_get_access ())
-    err_property_access (who, wrap (), false);
+  octave_value
+  cdef_property::cdef_property_rep::get_value (bool do_check_access,
+                                               const std::string& who)
+  {
+    if (do_check_access && ! check_get_access ())
+      err_property_access (who, wrap (), false);
 
-  return get ("DefaultValue");
-}
+    return get ("DefaultValue");
+  }
 
-bool
-cdef_property::cdef_property_rep::is_recursive_set (const cdef_object& /* obj */) const
-{
-  // FIXME: implement
-  return false;
-}
+  bool
+  cdef_property::cdef_property_rep::is_recursive_set (const cdef_object& /* obj */) const
+  {
+    // FIXME: implement
+    return false;
+  }
 
-void
-cdef_property::cdef_property_rep::set_value (cdef_object& obj,
-                                             const octave_value& val,
-                                             bool do_check_access,
-                                             const std::string& who)
-{
-  if (do_check_access && ! check_set_access ())
-    err_property_access (who, wrap (), true);
+  void
+  cdef_property::cdef_property_rep::set_value (cdef_object& obj,
+                                               const octave_value& val,
+                                               bool do_check_access,
+                                               const std::string& who)
+  {
+    if (do_check_access && ! check_set_access ())
+      err_property_access (who, wrap (), true);
 
-  if (! obj.is_constructed ())
-    {
-      cdef_class cls (to_cdef (get ("DefiningClass")));
+    if (! obj.is_constructed ())
+      {
+        cdef_class cls (to_cdef (get ("DefiningClass")));
 
-      if (! obj.is_partially_constructed_for (cls))
-        error ("cannot reference properties of class `%s' for non-constructed object",
-               cls.get_name ().c_str ());
-    }
+        if (! obj.is_partially_constructed_for (cls))
+          error ("cannot reference properties of class `%s' for non-constructed object",
+                 cls.get_name ().c_str ());
+      }
 
-  octave_value set_fcn = get ("SetMethod");
+    octave_value set_fcn = get ("SetMethod");
 
-  if (set_fcn.isempty () || is_method_executing (set_fcn, obj))
-    obj.put (get ("Name").string_value (), val);
-  else
-    {
-      octave_value_list args;
+    if (set_fcn.isempty () || is_method_executing (set_fcn, obj))
+      obj.put (get ("Name").string_value (), val);
+    else
+      {
+        octave_value_list args;
 
-      args(0) = to_ov (obj);
-      args(1) = val;
+        args(0) = to_ov (obj);
+        args(1) = val;
 
-      args = octave::feval (set_fcn, args, 1);
+        args = feval (set_fcn, args, 1);
 
-      if (args.length () > 0 && args(0).is_defined ())
-        {
-          if (args (0).is_classdef_object ())
-            {
-              cdef_object new_obj = to_cdef (args(0));
+        if (args.length () > 0 && args(0).is_defined ())
+          {
+            if (args (0).is_classdef_object ())
+              {
+                cdef_object new_obj = to_cdef (args(0));
 
-              obj = new_obj;
-            }
-          else
-            ::warning ("set-method of property `%s' returned a non-classdef object",
-                       get_name ().c_str ());
-        }
-    }
-}
+                obj = new_obj;
+              }
+            else
+              ::warning ("set-method of property `%s' returned a non-classdef object",
+                         get_name ().c_str ());
+          }
+      }
+  }
 
-bool
-cdef_property::cdef_property_rep::check_get_access (void) const
-{
-  cdef_class cls (to_cdef (get ("DefiningClass")));
+  bool
+  cdef_property::cdef_property_rep::check_get_access (void) const
+  {
+    cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  return ::check_access (cls, get ("GetAccess"), "",
-                         get_name (), false);
+    return check_access (cls, get ("GetAccess"), "", get_name (), false);
 
-  return false;
-}
+    return false;
+  }
 
-bool
-cdef_property::cdef_property_rep::check_set_access (void) const
-{
-  cdef_class cls (to_cdef (get ("DefiningClass")));
+  bool
+  cdef_property::cdef_property_rep::check_set_access (void) const
+  {
+    cdef_class cls (to_cdef (get ("DefiningClass")));
 
-  return ::check_access (cls, get ("SetAccess"), "",
-                         get_name (), true);
+    return check_access (cls, get ("SetAccess"), "", get_name (), true);
 
-  return false;
+    return false;
+  }
 }

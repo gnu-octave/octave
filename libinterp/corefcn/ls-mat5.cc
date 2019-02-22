@@ -1188,7 +1188,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                cdef_manager& cdm = interp.get_cdef_manager ();
+                octave::cdef_manager& cdm = interp.get_cdef_manager ();
 
                 if (cdm.find_class (classname, false, true).ok ())
                   {

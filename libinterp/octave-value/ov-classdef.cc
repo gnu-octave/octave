@@ -501,12 +501,17 @@ Returns the meta.class object corresponding to the class of @var{obj}.
 
 DEFUN (properties, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} properties (@var{class_name})
+@deftypefn  {} {} properties (@var{class_name})
 @deftypefnx {} {} properties (@var{obj})
 @deftypefnx {} {@var{plist} =} properties (@dots{})
-Return or display the properties for the named class @var{class_name}
-or classdef object @var{obj}.  If an output value is requested, return
-list of property names in a cell array.
+Return or display the public properties for the named class @var{class_name} or
+classdef object @var{obj}.
+
+If an output value is requested, return the list of property names in a cell
+array.
+
+Programming Note: Property names are returned if the @code{GetAccess} attribute is public and if the @code{Hidden} attribute is false.
+@seealso{methods}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -540,7 +545,7 @@ list of property names in a cell array.
 
       octave_value acc = pname_prop.second.get ("GetAccess");
 
-      if (! acc.is_string() || acc.string_value () != "public")
+      if (! acc.is_string () || acc.string_value () != "public")
         continue;
 
       property_names.push_back (nm);

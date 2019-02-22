@@ -57,10 +57,14 @@ public:
   ~octave_classdef (void) = default;
 
   octave_base_value * clone (void) const
-  { return new octave_classdef (object.clone ()); }
+  {
+    return new octave_classdef (object.clone ());
+  }
 
   octave_base_value * empty_clone (void) const
-  { return new octave_classdef (object.empty_clone ()); }
+  {
+    return new octave_classdef (object.empty_clone ());
+  }
 
   octave_classdef * classdef_object_value (bool = false) { return this; }
 
@@ -132,6 +136,7 @@ public:
   static octave_value metaclass_query (const std::string& cls);
 
 public:
+
   int type_id (void) const { return t_id; }
   std::string type_name (void) const { return t_name; }
   std::string class_name (void) const { return object.class_name (); }
@@ -155,15 +160,16 @@ OCTINTERP_API void install_classdef (octave::interpreter& interp);
 class octave_classdef_meta : public octave_function
 {
 public:
+
   octave_classdef_meta (const octave::cdef_meta_object& obj)
-    : object (obj) { }
+    : object (obj)
+  { }
 
   octave_classdef_meta (const octave_classdef_meta&) = delete;
 
   octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
 
-  ~octave_classdef_meta (void)
-  { object.meta_release (); }
+  ~octave_classdef_meta (void) { object.meta_release (); }
 
   bool is_classdef_meta (void) const { return true; }
 
@@ -199,8 +205,6 @@ private:
 
   octave::cdef_meta_object object;
 };
-
-//----------------------------------------------------------------------------
 
 class octave_classdef_superclass_ref : public octave_function
 {

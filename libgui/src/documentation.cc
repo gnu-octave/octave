@@ -600,7 +600,7 @@ namespace octave
 
   void documentation::load_ref (const QString& ref_name)
   {
-    if (! m_help_engine)
+    if (! m_help_engine || ref_name.isEmpty ())
       return;
 
     // First search in the function index

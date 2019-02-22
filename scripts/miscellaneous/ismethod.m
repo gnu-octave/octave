@@ -45,7 +45,7 @@ function retval = ismethod (obj, method)
 endfunction
 
 %!testif HAVE_JAVA; usejava ("jvm")
-%! assert (ismethod (javaObject ("java.lang.String", "Yo"), "hashCode"))
+%! assert (ismethod (javaObject ("java.lang.String", "Yo"), "hashCode"));
 
 %!assert (ismethod (ftp (), "ascii"))
 %!assert (ismethod (inputParser (), "addRequired"))

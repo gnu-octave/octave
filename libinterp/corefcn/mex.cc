@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ovl.h"
 #include "ov.h"
+#include "ov-classdef.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"

@@ -30,7 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.cc"
 
 #include "ov.h"
-#include "ov-classdef.h"
+#include "cdef-class.h"
+#include "cdef-object.h"
 
 #include "oct-sort.cc"
 

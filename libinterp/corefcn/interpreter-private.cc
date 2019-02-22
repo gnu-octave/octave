@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
+#include "cdef-manager.h"
 #include "child-list.h"
 #include "error.h"
 #include "gtk-manager.h"
@@ -38,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hist.h"
-#include "ov-classdef.h"
 #include "pager.h"
 #include "symtab.h"
 

@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "ov-re-sparse.h"

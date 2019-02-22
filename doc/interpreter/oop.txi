@@ -900,6 +900,8 @@ initialized once within the @code{properties} block.
 By default, in the example @var{prop4}, properties are not constant and have
 public read and write access.
 
+@DOCSTRING(properties)
+
 @node Methods
 @subsection Methods
 

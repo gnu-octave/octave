@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "str-vec.h"
 
+#include "cdef-manager.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "gtk-manager.h"
@@ -41,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-save.h"
 #include "oct-hist.h"
 #include "oct-stream.h"
-#include "ov-classdef.h"
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"

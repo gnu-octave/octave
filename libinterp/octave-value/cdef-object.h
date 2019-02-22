@@ -44,12 +44,10 @@ class
 cdef_object_rep
 {
 public:
+
   friend class cdef_object;
 
-public:
-
-  cdef_object_rep (void) : refcount (1)
-  { }
+  cdef_object_rep (void) : refcount (1) { }
 
   cdef_object_rep& operator = (const cdef_object_rep&) = delete;
 
@@ -58,7 +56,9 @@ public:
   virtual cdef_class get_class (void) const;
 
   virtual void set_class (const cdef_class&)
-  { err_invalid_object ("set_class"); }
+  {
+    err_invalid_object ("set_class");
+  }
 
   virtual cdef_object_rep * clone (void) const
   {
@@ -175,38 +175,31 @@ protected:
   // Reference count
   octave::refcount<octave_idx_type> refcount;
 
-protected:
-
   // Restricted copying.
 
-  cdef_object_rep (const cdef_object_rep&)
-    : refcount (1)
-  { }
+  cdef_object_rep (const cdef_object_rep&) : refcount (1) { }
 
 private:
 
   OCTAVE_NORETURN void err_invalid_object (const char *who) const
-  { error ("%s: invalid object", who); }
+  {
+    error ("%s: invalid object", who);
+  }
 };
 
 class
 cdef_object
 {
 public:
-  // FIXME: use a null object
-  cdef_object (void)
-    : rep (new cdef_object_rep ()) { }
 
-  cdef_object (const cdef_object& obj)
-    : rep (obj.rep) { rep->refcount++; }
+  // FIXME: use a null object?
+  cdef_object (void) : rep (new cdef_object_rep ()) { }
 
-  cdef_object (cdef_object_rep *r)
-    : rep (r) { }
+  cdef_object (const cdef_object& obj) : rep (obj.rep) { rep->refcount++; }
 
-  virtual ~cdef_object (void)
-  {
-    rep->release (*this);
-  }
+  cdef_object (cdef_object_rep *r) : rep (r) { }
+
+  virtual ~cdef_object (void) { rep->release (*this); }
 
   cdef_object& operator = (const cdef_object& obj)
   {
@@ -225,22 +218,23 @@ public:
 
   void set_class (const cdef_class& cls) { rep->set_class (cls); }
 
-  std::string class_name (void) const
-  { return rep->class_name (); }
+  std::string class_name (void) const { return rep->class_name (); }
 
-  cdef_object clone (void) const
-  { return cdef_object (rep->clone ()); }
+  cdef_object clone (void) const { return cdef_object (rep->clone ()); }
 
   cdef_object empty_clone (void) const
-  { return cdef_object (rep->empty_clone ()); }
+  {
+    return cdef_object (rep->empty_clone ());
+  }
 
   dim_vector dims (void) const { return rep->dims (); }
 
   cdef_object make_array (void) const
-  { return cdef_object (rep->make_array ()); }
+  {
+    return cdef_object (rep->make_array ());
+  }
 
-  cdef_object copy (void) const
-  { return cdef_object (rep->copy ()); }
+  cdef_object copy (void) const { return cdef_object (rep->copy ()); }
 
   bool is_array (void) const { return rep->is_array (); }
 
@@ -253,24 +247,34 @@ public:
   Array<cdef_object> array_value (void) const { return rep->array_value (); }
 
   void put (const std::string& pname, const octave_value& val)
-  { rep->put (pname, val); }
+  {
+    rep->put (pname, val);
+  }
 
   octave_value get (const std::string& pname) const
-  { return rep->get (pname); }
+  {
+    return rep->get (pname);
+  }
 
   void set_property (octave_idx_type idx, const std::string& pname,
                      const octave_value& pval)
-  { return rep->set_property (idx, pname, pval); }
+  {
+    return rep->set_property (idx, pname, pval);
+  }
 
   octave_value
   get_property (octave_idx_type idx, const std::string& pname) const
-  { return rep->get_property (idx, pname); }
+  {
+    return rep->get_property (idx, pname);
+  }
 
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout, size_t& skip, const cdef_class& context,
            bool auto_add = false)
-  { return rep->subsref (type, idx, nargout, skip, context, auto_add); }
+  {
+    return rep->subsref (type, idx, nargout, skip, context, auto_add);
+  }
 
   octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
@@ -289,15 +293,21 @@ public:
   bool ok (void) const { return rep->is_valid (); }
 
   void mark_for_construction (const cdef_class& cls)
-  { rep->mark_for_construction (cls); }
+  {
+    rep->mark_for_construction (cls);
+  }
 
   bool is_constructed (void) const { return rep->is_constructed (); }
 
   bool is_constructed_for (const cdef_class& cls) const
-  { return rep->is_constructed_for (cls); }
+  {
+    return rep->is_constructed_for (cls);
+  }
 
   bool is_partially_constructed_for (const cdef_class& cls) const
-  { return rep->is_partially_constructed_for (cls); }
+  {
+    return rep->is_partially_constructed_for (cls);
+  }
 
   void mark_as_constructed (void) { rep->mark_as_constructed (); }
 
@@ -307,6 +317,7 @@ public:
   bool is (const cdef_object& obj) const { return rep == obj.rep; }
 
 protected:
+
   cdef_object_rep * get_rep (void) { return rep; }
 
   void make_unique (int ignore_copies)
@@ -316,6 +327,7 @@ protected:
   }
 
 private:
+
   cdef_object_rep *rep;
 };
 
@@ -323,6 +335,7 @@ class
 cdef_object_base : public cdef_object_rep
 {
 public:
+
   cdef_object_base (void)
     : cdef_object_rep (), klass ()
   {
@@ -338,11 +351,14 @@ public:
   void set_class (const cdef_class& cls);
 
   cdef_object_rep * empty_clone (void) const
-  { return new cdef_object_base (*this); }
+  {
+    return new cdef_object_base (*this);
+  }
 
   cdef_object_rep * make_array (void) const;
 
 protected:
+
   // Restricted copying!
   cdef_object_base (const cdef_object_base& obj)
     : cdef_object_rep (obj), klass (obj.klass)
@@ -351,6 +367,7 @@ protected:
   }
 
 private:
+
   void register_object (void);
 
   void unregister_object (void);
@@ -363,17 +380,21 @@ class
 cdef_object_array : public cdef_object_base
 {
 public:
+
   cdef_object_array (void) : cdef_object_base () { }
 
   cdef_object_array (const Array<cdef_object>& a)
-    : cdef_object_base (), array (a) { }
+    : cdef_object_base (), array (a)
+  { }
 
   cdef_object_array& operator = (const cdef_object_array&) = delete;
 
   ~cdef_object_array (void) = default;
 
   cdef_object_rep * clone (void) const
-  { return new cdef_object_array (*this); }
+  {
+    return new cdef_object_array (*this);
+  }
 
   dim_vector dims (void) const { return array.dims (); }
 
@@ -409,6 +430,7 @@ public:
   }
 
 private:
+
   Array<cdef_object> array;
 
   void fill_empty_values (void) { fill_empty_values (array); }
@@ -417,13 +439,15 @@ private:
 
   // Private copying!
   cdef_object_array (const cdef_object_array& obj)
-    : cdef_object_base (obj), array (obj.array) { }
+    : cdef_object_base (obj), array (obj.array)
+  { }
 };
 
 class
 cdef_object_scalar : public cdef_object_base
 {
 public:
+
   cdef_object_scalar (void) : cdef_object_base () { }
 
   cdef_object_scalar& operator = (const cdef_object_scalar&) = delete;
@@ -433,7 +457,9 @@ public:
   dim_vector dims (void) const { return dim_vector (1, 1); }
 
   void put (const std::string& pname, const octave_value& val)
-  { map.assign (pname, val); }
+  {
+    map.assign (pname, val);
+  }
 
   octave_value get (const std::string& pname) const
   {
@@ -485,6 +511,7 @@ public:
   bool is_constructed (void) const { return ctor_list.empty (); }
 
 protected:
+
   // Object property values
   octave_scalar_map map;
 
@@ -492,17 +519,19 @@ protected:
   std::map< cdef_class, std::list<cdef_class>> ctor_list;
 
 protected:
+
   // Restricted object copying!
   cdef_object_scalar (const cdef_object_scalar& obj)
-    : cdef_object_base (obj), map (obj.map), ctor_list (obj.ctor_list) { }
+    : cdef_object_base (obj), map (obj.map), ctor_list (obj.ctor_list)
+  { }
 };
 
 class
 handle_cdef_object : public cdef_object_scalar
 {
 public:
-  handle_cdef_object (void)
-    : cdef_object_scalar () { }
+
+  handle_cdef_object (void) : cdef_object_scalar () { }
 
   handle_cdef_object& operator = (const handle_cdef_object&) = delete;
 
@@ -516,31 +545,37 @@ public:
   }
 
   cdef_object_rep * copy (void) const
-  { return new handle_cdef_object (*this); }
+  {
+    return new handle_cdef_object (*this);
+  }
 
   bool is_valid (void) const { return true; }
 
   bool is_handle_object (void) const { return true; }
 
 protected:
+
   // Restricted copying!
   handle_cdef_object (const handle_cdef_object& obj)
-    : cdef_object_scalar (obj) { }
+    : cdef_object_scalar (obj)
+  { }
 };
 
 class
 value_cdef_object : public cdef_object_scalar
 {
 public:
-  value_cdef_object (void)
-    : cdef_object_scalar () { }
+
+  value_cdef_object (void) : cdef_object_scalar () { }
 
   value_cdef_object& operator = (const value_cdef_object&) = delete;
 
   ~value_cdef_object (void);
 
   cdef_object_rep * clone (void) const
-  { return new value_cdef_object (*this); }
+  {
+    return new value_cdef_object (*this);
+  }
 
   cdef_object_rep * copy (void) const { return clone (); }
 
@@ -549,17 +584,19 @@ public:
   bool is_value_object (void) const { return true; }
 
 private:
+
   // Private copying!
   value_cdef_object (const value_cdef_object& obj)
-    : cdef_object_scalar (obj) { }
+    : cdef_object_scalar (obj)
+  { }
 };
 
 class
 cdef_meta_object_rep : public handle_cdef_object
 {
 public:
-  cdef_meta_object_rep (void)
-    : handle_cdef_object () { }
+
+  cdef_meta_object_rep (void) : handle_cdef_object () { }
 
   cdef_meta_object_rep& operator = (const cdef_meta_object_rep&) = delete;
 
@@ -589,30 +626,31 @@ public:
   virtual void meta_release (void) { }
 
   virtual bool meta_accepts_postfix_index (char /* type */) const
-  { return false; }
+  {
+    return false;
+  }
 
 protected:
+
   // Restricted copying!
   cdef_meta_object_rep (const cdef_meta_object_rep& obj)
-    : handle_cdef_object (obj) { }
+    : handle_cdef_object (obj)
+  { }
 };
 
 class
 cdef_meta_object : public cdef_object
 {
 public:
-  cdef_meta_object (void)
-    : cdef_object () { }
+
+  cdef_meta_object (void) : cdef_object () { }
 
   // Object consistency is checked in sub-classes.
-  cdef_meta_object (const cdef_meta_object& obj)
-    : cdef_object (obj) { }
+  cdef_meta_object (const cdef_meta_object& obj) : cdef_object (obj) { }
 
-  cdef_meta_object (cdef_meta_object_rep *r)
-    : cdef_object (r) { }
+  cdef_meta_object (cdef_meta_object_rep *r) : cdef_object (r) { }
 
-  cdef_meta_object (const cdef_object& obj)
-    : cdef_object (obj) { }
+  cdef_meta_object (const cdef_object& obj) : cdef_object (obj) { }
 
   cdef_meta_object& operator = (const cdef_object&) = delete;
 
@@ -629,19 +667,28 @@ public:
   octave_value_list
   meta_subsref (const std::string& type,
                 const std::list<octave_value_list>& idx, int nargout)
-  { return get_rep ()->meta_subsref (type, idx, nargout); }
+  {
+    return get_rep ()->meta_subsref (type, idx, nargout);
+  }
 
   void meta_release (void) { get_rep ()->meta_release (); }
 
   bool meta_accepts_postfix_index (char type) const
-  { return get_rep ()->meta_accepts_postfix_index (type); }
+  {
+    return get_rep ()->meta_accepts_postfix_index (type);
+  }
 
 private:
+
   cdef_meta_object_rep * get_rep (void)
-  { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ());
+  }
 
   const cdef_meta_object_rep * get_rep (void) const
-  { return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ()); }
+  {
+    return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ());
+  }
 };
 
 #endif

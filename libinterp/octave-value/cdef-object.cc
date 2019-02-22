@@ -175,7 +175,9 @@ cdef_object::get_class (void) const
 
 cdef_class
 cdef_object_base::get_class (void) const
-{ return cdef_class (klass); }
+{
+  return cdef_class (klass);
+}
 
 void
 cdef_object_base::set_class (const cdef_class& cls)
@@ -733,7 +735,7 @@ cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
   return true;
 }
 
-inline void
+void
 cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
 {
   ctor_list.erase (cls);

@@ -330,6 +330,8 @@ function render_size_color (hg, vert, s, c, marker, filled, isflat)
                     && strcmp (toolkit, "gnuplot"));
     if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
+        ## "facecolor" and "edgecolor" must be set before any other properties
+        ## to skip co-planarity check (see bug #55751).
         __go_patch__ (hg, "facecolor", "none", "edgecolor", "none",
                           "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel (x), "vertices", vert,

@@ -36,6 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
+#include "cdef-manager.h"
+#include "cdef-package.h"
+#include "cdef-utils.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "fcn-info.h"
@@ -486,6 +489,46 @@ namespace octave
       }
     else
       error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
+  }
+
+  // Install a +package directory object in the function table.
+  void symbol_table::install_package (const std::string& name)
+  {
+    auto p = m_fcn_table.find (name);
+
+    bool found_in_fcn_table = (p != m_fcn_table.end ());
+
+    if (found_in_fcn_table)
+      {
+        fcn_info& finfo = p->second;
+
+        if (finfo.is_package_defined ())
+          return;
+      }
+
+    cdef_manager& cdm = m_interpreter.get_cdef_manager ();
+
+    octave_function *tmp = cdm.make_package_symbol (name);
+
+    if (! tmp)
+      return;
+
+    octave_value pack = tmp;
+
+    if (found_in_fcn_table)
+      {
+        fcn_info& finfo = p->second;
+
+        finfo.install_package (pack);
+      }
+    else
+      {
+        fcn_info finfo (name);
+
+        finfo.install_package (pack);
+
+        m_fcn_table[name] = finfo;
+      }
   }
 
   std::list<std::string> symbol_table::user_function_names (void)

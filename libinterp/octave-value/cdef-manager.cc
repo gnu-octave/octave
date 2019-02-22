@@ -719,18 +719,7 @@ namespace octave
         load_path& lp = m_interpreter.get_load_path ();
 
         if (load_if_not_found && lp.find_package (name))
-          {
-            size_t pos = name.rfind ('.');
-
-            if (pos == std::string::npos)
-              retval = make_package (name, "");
-            else
-              {
-                std::string parent_name = name.substr (0, pos);
-
-                retval = make_package (name, parent_name);
-              }
-          }
+          retval = make_package (name);
         else if (error_if_not_found)
           error ("unknown package `%s'", name.c_str ());
       }
@@ -744,6 +733,19 @@ namespace octave
     octave_function *retval = nullptr;
 
     cdef_package pack = find_package (pack_name, false);
+
+    if (pack.ok ())
+      retval = new octave_classdef_meta (pack);
+
+    return retval;
+  }
+
+  octave_function *
+  cdef_manager::make_package_symbol (const std::string& pack_name)
+  {
+    octave_function *retval = nullptr;
+
+    cdef_package pack = make_package (pack_name);
 
     if (pack.ok ())
       retval = new octave_classdef_meta (pack);
@@ -920,9 +922,16 @@ namespace octave
   }
 
   cdef_package
-  cdef_manager::make_package (const std::string& nm, const std::string& parent)
+  cdef_manager::make_package (const std::string& package_name)
   {
-    cdef_package pack (nm);
+    cdef_package pack (package_name);
+
+    std::string parent;
+
+    size_t pos = package_name.rfind ('.');
+
+    if (pos != std::string::npos)
+      parent = package_name.substr (0, pos);
 
     pack.set_class (meta_package ());
 
@@ -931,7 +940,7 @@ namespace octave
     else
       pack.put ("ContainingPackage", to_ov (find_package (parent)));
 
-    if (! nm.empty ())
+    if (! package_name.empty ())
       register_package (pack);
 
     return pack;

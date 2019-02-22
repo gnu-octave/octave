@@ -1225,7 +1225,7 @@ namespace octave
   }
 
   void
-  load_path::dir_info::initialize (void)
+  load_path::dir_info::initialize (const std::string& parent_package)
   {
     is_relative = ! sys::env::absolute_pathname (dir_name);
 
@@ -1241,7 +1241,7 @@ namespace octave
         dir_mtime = fs.mtime ();
         dir_time_last_checked = sys::time ();
 
-        get_file_list (dir_name);
+        get_file_list (dir_name, parent_package);
 
         try
           {
@@ -1269,7 +1269,8 @@ namespace octave
   }
 
   void
-  load_path::dir_info::get_file_list (const std::string& d)
+  load_path::dir_info::get_file_list (const std::string& d,
+                                      const std::string& parent_package)
   {
     sys::dir_entry dir (d);
 
@@ -1302,7 +1303,14 @@ namespace octave
                     else if (fname[0] == '@')
                       get_method_file_map (full_name, fname.substr (1));
                     else if (fname[0] == '+')
-                      get_package_dir (full_name, fname.substr (1));
+                      {
+                        std::string pkg_name = fname.substr (1);
+
+                        if (! parent_package.empty ())
+                          pkg_name = parent_package + "." + pkg_name;
+
+                        get_package_dir (full_name, pkg_name);
+                      }
                   }
                 else
                   {
@@ -1360,7 +1368,12 @@ namespace octave
   load_path::dir_info::get_package_dir (const std::string& d,
                                         const std::string& package_name)
   {
-    package_dir_map[package_name] = dir_info (d);
+    symbol_table& symtab
+      = __get_symbol_table__ ("load_path::dir_info::get_package_dir");
+
+    symtab.install_package (package_name);
+
+    package_dir_map[package_name] = dir_info (d, package_name);
   }
 
   void

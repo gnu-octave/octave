@@ -34,13 +34,12 @@
 
 function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
 
-  lut = (1:size (vertices, 1))';
+  lut = (1:rows (vertices))';
   J = lut;
   for di = 1:3
     [v, idx] = sortrows (vertices, 1 + mod ((0:2)+di, 3));
     Js = [true;
-          any(abs (diff (v, 1, 1)) 
-              > eps (1.0) * abs (v(2:end,:)+v(1:end-1,:)), 2)];
+          any(abs (diff (v, 1, 1)) > eps * abs (v(2:end,:)+v(1:end-1,:)), 2)];
     vertices = v(Js,:);
     J = J(idx(Js));
     l(idx) = cumsum (Js);
@@ -51,7 +50,7 @@ function [faces, vertices, J] = __unite_shared_vertices__ (faces, vertices)
   vertices = vertices(idx,:);
   faces = j(lut(faces));
 
-  ## eliminate faces with zero area
+  ## Eliminate faces with zero area
   faces = faces(all (faces - faces(:, [2 3 1]) != 0, 2), :);
 
 endfunction

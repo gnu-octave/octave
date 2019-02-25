@@ -3403,16 +3403,16 @@ namespace octave
             if (m_lexer.m_parsing_classdef)
               {
                 if (m_curr_class_name == id_name)
-                  fcn->mark_as_legacy_constructor ();
+                  fcn->mark_as_classdef_constructor ();
                 else
-                  fcn->mark_as_legacy_method ();
+                  fcn->mark_as_classdef_method ();
               }
             else
               {
                 if (m_curr_class_name == id_name)
-                  fcn->mark_as_classdef_constructor ();
+                  fcn->mark_as_legacy_constructor ();
                 else
-                  fcn->mark_as_classdef_method ();
+                  fcn->mark_as_legacy_method ();
               }
 
             fcn->stash_dispatch_class (m_curr_class_name);

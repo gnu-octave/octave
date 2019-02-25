@@ -237,7 +237,7 @@ namespace octave
            "<style>\n"
            "a:link { text-decoration: underline; color: #0000ff; }\n"
            "</style>\n"
-           "<head/><body>\n"
+           "</head><body>\n"
            "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
            "</body></html>"));
     m_checkbox_message->setWordWrap (true);

@@ -61,6 +61,7 @@ include %reldir%/bug-36025/module.mk
 include %reldir%/bug-38236/module.mk
 include %reldir%/bug-38691/module.mk
 include %reldir%/bug-41723/module.mk
+include %reldir%/bug-45351/module.mk
 include %reldir%/bug-44940/module.mk
 include %reldir%/bug-46660/module.mk
 include %reldir%/bug-47680/module.mk

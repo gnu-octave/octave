@@ -1563,9 +1563,22 @@ namespace octave
           }
       }
 
+    octave::call_stack& cs = interp.get_call_stack();
+
+    std::string dispatch_class;
+    bool is_method_or_ctor_executing
+      = (cs.is_class_method_executing (dispatch_class)
+         || cs.is_class_constructor_executing (dispatch_class));
+
     octave::symbol_table& symtab = interp.get_symbol_table ();
 
-    octave_value f = symtab.find_function (tnm, octave_value_list ());
+    octave_value f;
+
+    if (is_method_or_ctor_executing)
+      f = symtab.find_method (tnm, dispatch_class);
+
+    if (f.is_undefined ())
+      f = symtab.find_function (tnm, octave_value_list ());
 
     octave_function *fptr = f.function_value (true);
 

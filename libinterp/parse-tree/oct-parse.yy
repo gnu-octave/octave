@@ -3400,10 +3400,20 @@ namespace octave
 
         if (m_lexer.m_parsing_class_method)
           {
-            if (m_curr_class_name == id_name)
-              fcn->mark_as_class_constructor ();
+            if (m_lexer.m_parsing_classdef)
+              {
+                if (m_curr_class_name == id_name)
+                  fcn->mark_as_legacy_constructor ();
+                else
+                  fcn->mark_as_legacy_method ();
+              }
             else
-              fcn->mark_as_class_method ();
+              {
+                if (m_curr_class_name == id_name)
+                  fcn->mark_as_classdef_constructor ();
+                else
+                  fcn->mark_as_classdef_method ();
+              }
 
             fcn->stash_dispatch_class (m_curr_class_name);
           }

@@ -323,32 +323,40 @@ public:
     return is_inline_function () || is_anonymous_function ();
   }
 
-  bool is_nested_function (void) const { return nested_function; }
-
   void mark_as_nested_function (void) { nested_function = true; }
 
-  void mark_as_class_constructor (void) { class_constructor = legacy; }
+  bool is_nested_function (void) const { return nested_function; }
+
+  void mark_as_legacy_constructor (void) { class_constructor = legacy; }
+
+  bool is_legacy_constructor (const std::string& cname = "") const
+  {
+    return (class_constructor == legacy
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
+  }
 
   void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
-  bool is_class_constructor (const std::string& cname = "") const
-  {
-    return class_constructor == legacy
-      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
-  }
-
   bool is_classdef_constructor (const std::string& cname = "") const
   {
-    return class_constructor == classdef
-      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    return (class_constructor == classdef
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  void mark_as_class_method (void) { class_method = true; }
+  void mark_as_legacy_method (void) { class_method = legacy; }
 
-  bool is_class_method (const std::string& cname = "") const
+  bool is_legacy_method (const std::string& cname = "") const
   {
-    return class_method
-           ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+    return (class_method == legacy
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
+  }
+
+  void mark_as_classdef_method (void) { class_method = classdef; }
+
+  bool is_classdef_method (const std::string& cname = "") const
+  {
+    return (class_method == classdef
+            ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
   octave_value_list
@@ -386,7 +394,7 @@ public:
 
 private:
 
-  enum class_ctor_type
+  enum class_method_type
   {
     none,
     legacy,
@@ -394,6 +402,7 @@ private:
   };
 
   std::string ctor_type_str (void) const;
+  std::string method_type_str (void) const;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *param_list;
@@ -441,10 +450,10 @@ private:
   bool nested_function;
 
   // Enum describing whether this function is the constructor for class object.
-  class_ctor_type class_constructor;
+  class_method_type class_constructor;
 
-  // TRUE means this function is a method for a class.
-  bool class_method;
+  // Enum describing whether this function is a method for a class.
+  class_method_type class_method;
 
 #if defined (HAVE_LLVM)
   octave::jit_function_info *jit_info;

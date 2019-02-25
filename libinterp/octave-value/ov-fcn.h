@@ -97,14 +97,28 @@ public:
 
   virtual bool is_subfunction (void) const { return false; }
 
-  virtual bool is_class_constructor (const std::string& = "") const
+  bool is_class_constructor (const std::string& cname = "") const
+  {
+    return (is_classdef_constructor (cname) || is_legacy_constructor (cname));
+  }
+
+  bool is_class_method (const std::string& cname = "") const
+  {
+    return (is_classdef_method (cname) || is_legacy_method (cname));
+  }
+
+  virtual bool
+  is_legacy_constructor (const std::string& = "") const
   { return false; }
 
   virtual bool
   is_classdef_constructor (const std::string& = "") const
   { return false; }
 
-  virtual bool is_class_method (const std::string& = "") const
+  virtual bool is_legacy_method (const std::string& = "") const
+  { return false; }
+
+  virtual bool is_classdef_method (const std::string& = "") const
   { return false; }
 
   virtual bool takes_varargs (void) const { return false; }

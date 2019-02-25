@@ -195,7 +195,7 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
-    class_constructor (none), class_method (false)
+    class_constructor (none), class_method (none)
 #if defined (HAVE_LLVM)
     , jit_info (0)
 #endif
@@ -495,6 +495,33 @@ octave_user_function::ctor_type_str (void) const
   std::string retval;
 
   switch (class_constructor)
+    {
+    case none:
+      retval = "none";
+      break;
+
+    case legacy:
+      retval = "legacy";
+      break;
+
+    case classdef:
+      retval = "classdef";
+      break;
+
+    default:
+      retval = "unrecognized enum value";
+      break;
+    }
+
+  return retval;
+}
+
+std::string
+octave_user_function::method_type_str (void) const
+{
+  std::string retval;
+
+  switch (class_method)
     {
     case none:
       retval = "none";

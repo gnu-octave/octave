@@ -61,12 +61,9 @@ namespace octave
     if (uf)
       {
         if (get_base_name (class_name) == uf->name ())
-          {
-            uf->mark_as_class_constructor ();
-            uf->mark_as_classdef_constructor ();
-          }
+          uf->mark_as_classdef_constructor ();
         else
-          uf->mark_as_class_method ();
+          uf->mark_as_classdef_method ();
       }
   }
 

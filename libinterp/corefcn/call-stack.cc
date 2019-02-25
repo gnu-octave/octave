@@ -354,6 +354,34 @@ namespace octave
     return retval;
   }
 
+  bool call_stack::is_class_method_executing (std::string& dispatch_class) const
+  {
+    dispatch_class = "";
+
+    octave_function *f = current ();
+
+    bool retval = (f && f->is_class_method ());
+
+    if (retval)
+      dispatch_class = f->dispatch_class ();
+
+    return retval;
+  }
+
+  bool call_stack::is_class_constructor_executing (std::string& dispatch_class) const
+  {
+    dispatch_class = "";
+
+    octave_function *f = current ();
+
+    bool retval = (f && f->is_class_constructor ());
+
+    if (retval)
+      dispatch_class = f->dispatch_class ();
+
+    return retval;
+  }
+
   bool call_stack::all_scripts (void) const
   {
     bool retval = true;

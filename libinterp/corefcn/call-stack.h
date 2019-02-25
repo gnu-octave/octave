@@ -154,6 +154,10 @@ namespace octave
     // Column number in current function that we are debugging.
     int debug_user_code_column (void) const;
 
+    bool is_class_method_executing (std::string& dispatch_class) const;
+
+    bool is_class_constructor_executing (std::string& dispatch_class) const;
+
     // Return TRUE if all elements on the call stack are scripts.
     bool all_scripts (void) const;
 

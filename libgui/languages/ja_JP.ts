@@ -54,7 +54,7 @@
         <translation>カーソル</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+664"/>
+        <location filename="../src/settings-dialog.cc" line="+661"/>
         <source>Difference to the default size</source>
         <translation>既定のサイズとの差</translation>
     </message>
@@ -792,7 +792,7 @@
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+282"/>
+        <location filename="../graphics/Figure.cc" line="+262"/>
         <source>Figure ToolBar</source>
         <translation>フィギュアツールバー</translation>
     </message>
@@ -1034,14 +1034,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+93"/>
+        <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+613"/>
+        <location line="+644"/>
         <source>Octave Documentation</source>
         <translation>Octave ドキュメント</translation>
     </message>
     <message>
-        <location line="-624"/>
+        <location line="-655"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1058,7 +1058,7 @@ the Command Window will be available.</source>
 設定できませんでした．コマンドウィンドウのヘルプテキストのみが使用可能です．</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Find:</source>
         <translation>検索:</translation>
     </message>
@@ -1075,12 +1075,12 @@ the Command Window will be available.</source>
         <translation>後方検索</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Function Index</source>
         <translation>関数インデックス</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+99"/>
         <source>Go home</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1115,7 +1115,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-206"/>
+        <location line="-207"/>
         <source>Contents</source>
         <translation>コンテント</translation>
     </message>
@@ -1131,7 +1131,7 @@ the Command Window will be available.</source>
         <translation>検索</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+85"/>
         <source>Previous pages</source>
         <translation>前のページ</translation>
     </message>
@@ -1141,7 +1141,7 @@ the Command Window will be available.</source>
         <translation>次のページ</translation>
     </message>
     <message>
-        <location line="+383"/>
+        <location line="+410"/>
         <source>Unable to register help file %1.</source>
         <translation type="unfinished">ヘルプファイル %1 を登録できません．</translation>
     </message>
@@ -1212,7 +1212,7 @@ Do you want to open the preferences?</source>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+860"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+858"/>
         <location line="+28"/>
         <location line="+482"/>
         <location line="+18"/>
@@ -1269,7 +1269,7 @@ does not exist. Do you want to create it?</source>
 for write: %2.</source>
         <translation>ファイル
 %1
-が開けません: %2　の書き込みのために.</translation>
+が開けません: %2&#x3000;の書き込みのために.</translation>
     </message>
     <message>
         <location line="+231"/>
@@ -1645,7 +1645,7 @@ for write: %2.</source>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+140"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+141"/>
         <source>line:</source>
         <translation>行:</translation>
     </message>
@@ -1671,25 +1671,25 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1160"/>
+        <location line="+1167"/>
         <location line="+136"/>
-        <location line="+356"/>
-        <location line="+155"/>
+        <location line="+358"/>
+        <location line="+148"/>
         <location line="+27"/>
-        <location line="+11"/>
-        <location line="+97"/>
+        <location line="+37"/>
+        <location line="+102"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-1977"/>
+        <location line="-2010"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+833"/>
+        <location line="+840"/>
         <source>Goto line</source>
         <translation>指定行へ行く</translation>
     </message>
@@ -1778,7 +1778,7 @@ This does not change the default encoding.
 これは既定のエンコードに影響を与えません．</translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+207"/>
         <source>Debug or Save</source>
         <translation>デバッグまたは保存</translation>
     </message>
@@ -1789,14 +1789,14 @@ Quit debugging and save?</source>
         <translation>このファイルは現在実行中です．デバッグを終了して保存しますか?</translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+85"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>ファイル %1 を書き込み用として開けません:
 %2.</translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+175"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -1807,7 +1807,7 @@ Please select another one!</source>
 他のエンコードを選択してください !</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+37"/>
         <source>The current editor contents can not be encoded
 with the selected encoding %1.
 Using it would result in data loss!
@@ -1818,7 +1818,7 @@ Please select another one!</source>
 他のエンコードを選択してください !</translation>
     </message>
     <message>
-        <location line="-115"/>
+        <location line="-141"/>
         <source>Octave Files (*.m)</source>
         <translation>Octave のファイル (*.m)</translation>
     </message>
@@ -1845,7 +1845,7 @@ Octave のコマンドとしてコールできません．.
 他の名前を選択しますか ?</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+166"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>&apos;%1&apos; は他のアプリケーションで変更されたいます．再読込しますか？</translation>
     </message>
@@ -2100,7 +2100,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+274"/>
+        <location filename="../src/welcome-wizard.cc" line="+285"/>
         <source>Enjoy!</source>
         <translation>エンジョイ！</translation>
     </message>
@@ -2138,11 +2138,11 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
@@ -2150,11 +2150,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Octave についてさらなる情報を得るには: &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;次を参照 &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (外部ブラウザでアクセスする．)&lt;/li&gt;
-&lt;li&gt;オンラインドキュメントは次を参照 &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- 或 &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt; PDF 形式 &lt;/span&gt;&lt;/a&gt;-ドキュメント (外部ブラウザでアクセスする．)&lt;/li&gt;
+&lt;li&gt;オンラインドキュメントは次を参照 &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- 或 &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt; PDF 形式 &lt;/a&gt;-ドキュメント (外部ブラウザでアクセスする．)&lt;/li&gt;
 &lt;li&gt;Octave GUI のヘルプメニューのドキュメントラウザを開く．&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -2238,7 +2238,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>選択部を検索 (&amp;L)</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+87"/>
         <source>Search from end</source>
         <translation>ファイルの終わりから検索</translation>
     </message>
@@ -2248,7 +2248,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>始めから検索</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+213"/>
         <source>Replace Result</source>
         <translation>置換結果</translation>
     </message>
@@ -2529,7 +2529,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+398"/>
+        <location filename="../src/main-window.cc" line="+402"/>
         <source>Save Workspace As</source>
         <translation>ワークスペースを別名で保存</translation>
     </message>
@@ -2560,12 +2560,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1602"/>
+        <location line="+1625"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
     <message>
-        <location line="-1463"/>
+        <location line="-1486"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2575,13 +2575,13 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>本当に Octave を終了しますか？</translation>
     </message>
     <message>
-        <location line="+61"/>
-        <location line="+1463"/>
+        <location line="+60"/>
+        <location line="+1487"/>
         <source>Browse directories</source>
         <translation>ディレクトリのブラウズ</translation>
     </message>
     <message>
-        <location line="-1305"/>
+        <location line="-1329"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
@@ -2615,7 +2615,7 @@ function and can not be edited.</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="+798"/>
+        <location line="+822"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -3000,7 +3000,7 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+461"/>
+        <location line="+522"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3096,7 +3096,7 @@ Octave GUI はすぐ閉じられます．</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-573"/>
+        <location filename="../src/settings-dialog.cc" line="-571"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3108,7 +3108,7 @@ Octave GUI はすぐ閉じられます．</translation>
     <message>
         <location line="+15"/>
         <location line="+4"/>
-        <location line="+700"/>
+        <location line="+698"/>
         <source>System setting</source>
         <translation type="unfinished">システム設定</translation>
     </message>
@@ -3181,7 +3181,7 @@ The check will happen at most once each day and news will only be displayed if t
         <translation>&lt;p&gt;Octave 起動時，Octave コミュニティの現在のニュースや情報をオプションで検索します．
 このチェックは一日一回で最後のニュースをみた時点からなにかあたらしいニュースが存在する場合のみ表示されます．&lt;/p&gt;
 &lt;p&gt;ニュースは &quot;ヘルプ&quot; メニュー内の &quot;コミュニティ ニュース&quot; の項目を選択するかまたは in  
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;　を訪問したときに表示されます.&lt;/p&gt;
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;&#x3000;を訪問したときに表示されます.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
     </message>
@@ -3191,14 +3191,14 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Octave が起動時に Octave コミュニティーに関する最新のニュースや情報を表示するために Octave ウェブサイトに接続することを許可する．&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -3737,12 +3737,7 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>ファイルからショートカットをインポート</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>ファイルへショートカットをエキスポート</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+16"/>
         <source>Failed to open %1 as Octave shortcut file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3888,7 +3883,12 @@ Do you want to use the shortcut anyhow removing it from the previous action?</so
         <translation>Octave ショートカットファイル (*.osc);;全てのファイル (*)</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="-1"/>
+        <source>Export shortcuts to file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+37"/>
         <source>Enter new Shortcut</source>
         <translation>新しいショートカットの入力</translation>
     </message>
@@ -3969,7 +3969,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+834"/>
+        <location line="+830"/>
         <source>Variable Editor</source>
         <translation>変数エディタ</translation>
     </message>
@@ -4014,7 +4014,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>Save variable to a file</source>
         <translation>変数をファイルに保存</translation>
     </message>
@@ -4079,7 +4079,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1212"/>
+        <location line="-1210"/>
         <source>Save Variable %1 As</source>
         <translation>変数 %1 を別名で保存</translation>
     </message>
@@ -4121,11 +4121,31 @@ Would you like to save the current shortcut set or cancel the action?</source>
         <source>Transpose</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location line="+50"/>
+        <source> columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source> rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> row</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-162"/>
+        <location filename="../src/welcome-wizard.cc" line="-172"/>
         <source>Welcome to GNU Octave</source>
         <translation>GNU Octave へようこそ</translation>
     </message>
@@ -4633,7 +4653,7 @@ Would you like to save the current shortcut set or cancel the action?</source>
     <message>
         <location line="+18"/>
         <source>Restore last working directory of previous session</source>
-        <translation >前のセッションの作業ディレクトリをリストア</translation>
+        <translation>前のセッションの作業ディレクトリをリストア</translation>
     </message>
     <message>
         <location line="+45"/>

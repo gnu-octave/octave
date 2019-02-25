@@ -582,7 +582,7 @@ Wil je die toch verwijderen?</translation>
         <translation>aanwijzer</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+664"/>
+        <location filename="../src/settings-dialog.cc" line="+661"/>
         <source>Difference to the default size</source>
         <translation>Verschil met standaardgrootte</translation>
     </message>
@@ -1782,7 +1782,7 @@ Wil je die overschrijven?</translation>
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+282"/>
+        <location filename="../graphics/Figure.cc" line="+262"/>
         <source>Figure ToolBar</source>
         <translation>Figuurwerkbalk</translation>
     </message>
@@ -2024,14 +2024,14 @@ Wil je die overschrijven?</translation>
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+93"/>
+        <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+613"/>
+        <location line="+644"/>
         <source>Octave Documentation</source>
         <translation>Octave documentatie</translation>
     </message>
     <message>
-        <location line="-624"/>
+        <location line="-655"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -2049,7 +2049,7 @@ documentatielezer niet instellen. Er is alleen helptekst in
 het Opdrachtvenster beschikbaar</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Find:</source>
         <translation>Zoek:</translation>
     </message>
@@ -2066,12 +2066,12 @@ het Opdrachtvenster beschikbaar</translation>
         <translation>Zoek achterwaarts</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Function Index</source>
         <translation>Functie-index</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+99"/>
         <source>Go home</source>
         <translation>Naar begin</translation>
     </message>
@@ -2106,7 +2106,7 @@ het Opdrachtvenster beschikbaar</translation>
         <translation>Oorspronkelijke grootte</translation>
     </message>
     <message>
-        <location line="-206"/>
+        <location line="-207"/>
         <source>Contents</source>
         <translation>Inhoud</translation>
     </message>
@@ -2122,17 +2122,17 @@ het Opdrachtvenster beschikbaar</translation>
         <translation>Zoek</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+85"/>
         <source>Previous pages</source>
-        <translation>Voorgaande pagina's</translation>
+        <translation>Voorgaande pagina&apos;s</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Next pages</source>
-        <translation>Volgende pagina's</translation>
+        <translation>Volgende pagina&apos;s</translation>
     </message>
     <message>
-        <location line="+383"/>
+        <location line="+410"/>
         <source>Unable to register help file %1.</source>
         <translation>Kan help bestand %1 niet registreren.</translation>
     </message>
@@ -2204,7 +2204,7 @@ Wilt u de voorkeursinstellingen aanpassen?</translation>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+860"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+858"/>
         <location line="+28"/>
         <location line="+482"/>
         <location line="+18"/>
@@ -2637,7 +2637,7 @@ niet openen om te schrijven: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+140"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+141"/>
         <source>line:</source>
         <translation>regel:</translation>
     </message>
@@ -2663,26 +2663,26 @@ niet openen om te schrijven: %2.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1160"/>
+        <location line="+1167"/>
         <location line="+136"/>
-        <location line="+356"/>
-        <location line="+155"/>
+        <location line="+358"/>
+        <location line="+148"/>
         <location line="+27"/>
-        <location line="+11"/>
-        <location line="+97"/>
+        <location line="+37"/>
+        <location line="+102"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-1977"/>
+        <location line="-2010"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Kan geen onderbrekingspunt instellen in een veranderd of nog niet benoemd bestand.
 Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
     </message>
     <message>
-        <location line="+833"/>
+        <location line="+840"/>
         <source>Goto line</source>
         <translation>Ga naar regel</translation>
     </message>
@@ -2774,7 +2774,7 @@ om het betand opnieuw mee te lezen.
 Dit heeft geen invloed op de standaard codering.</translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+207"/>
         <source>Debug or Save</source>
         <translation>Debug of Opslaan</translation>
     </message>
@@ -2786,14 +2786,14 @@ Quit debugging and save?</source>
 Debuggen afsluiten en opslaan?</translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+85"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Kon bestand %1 niet openen om te schrijven:
 %2.</translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+175"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -2804,7 +2804,7 @@ kon net worden toegepast.
 Kies s.v.p.een andere!</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+37"/>
         <source>The current editor contents can not be encoded
 with the selected encoding %1.
 Using it would result in data loss!
@@ -2817,7 +2817,7 @@ Toch toepassen zou leiden tot gegevensverlies!
 Kies s.v.p.een andere!</translation>
     </message>
     <message>
-        <location line="-115"/>
+        <location line="-141"/>
         <source>Octave Files (*.m)</source>
         <translation>Octave bestanden (*.m)</translation>
     </message>
@@ -2844,7 +2844,7 @@ niet aanroepen met de naam als Octave commando.
 Wil je een andere naam kiezen?</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+166"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
     </message>
@@ -3099,7 +3099,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+274"/>
+        <location filename="../src/welcome-wizard.cc" line="+285"/>
         <source>Enjoy!</source>
         <translation>Veel plezier!</translation>
     </message>
@@ -3137,11 +3137,11 @@ Meer informatie hierover is te verkrijgen via een bezoek aan &lt;a href=&quot;ht
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
@@ -3149,11 +3149,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Voor meer informatie over Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Bezoek &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opent in een nieuw venster)&lt;/li&gt;
-&lt;li&gt;Bekijk de online documentatie als &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- of &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opent in een nieuw venster)&lt;/li&gt;
+&lt;li&gt;Bekijk de online documentatie als &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- of &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opent in een nieuw venster)&lt;/li&gt;
 &lt;li&gt;Open de documentatie van de Octave GUI via het help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -3237,7 +3237,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>In se&amp;lectie zoeken</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+87"/>
         <source>Search from end</source>
         <translation>Vanaf einde terug zoeken</translation>
     </message>
@@ -3247,7 +3247,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Zoeken vanaf begin</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+213"/>
         <source>Replace Result</source>
         <translation>Resultaat vervangen</translation>
     </message>
@@ -3528,7 +3528,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+398"/>
+        <location filename="../src/main-window.cc" line="+402"/>
         <source>Save Workspace As</source>
         <translation>Sla Werkruimte Op Als</translation>
     </message>
@@ -3559,12 +3559,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1602"/>
+        <location line="+1625"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
     </message>
     <message>
-        <location line="-1463"/>
+        <location line="-1486"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -3574,13 +3574,13 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Zeker weten dat je Octave wil afsluiten?</translation>
     </message>
     <message>
-        <location line="+61"/>
-        <location line="+1463"/>
+        <location line="+60"/>
+        <location line="+1487"/>
         <source>Browse directories</source>
         <translation>Blader door mappen</translation>
     </message>
     <message>
-        <location line="-1305"/>
+        <location line="-1329"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
@@ -3614,7 +3614,7 @@ functie en kan niet worden bewerkt.</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+798"/>
+        <location line="+822"/>
         <source>&amp;File</source>
         <translation>Bestand</translation>
     </message>
@@ -4000,7 +4000,7 @@ of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van O
         <translation>dbstop als ...</translation>
     </message>
     <message>
-        <location line="+461"/>
+        <location line="+522"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Druk op &apos;%1&apos; om alle voorkomens van &apos;%2&apos; te vervangen door &apos;%3&apos;.</translation>
     </message>
@@ -4096,7 +4096,7 @@ De Octave GUI moet nu gesloten worden.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-573"/>
+        <location filename="../src/settings-dialog.cc" line="-571"/>
         <source>Octave Preferences</source>
         <translation>Octave voorkeuren</translation>
     </message>
@@ -4108,7 +4108,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location line="+15"/>
         <location line="+4"/>
-        <location line="+700"/>
+        <location line="+698"/>
         <source>System setting</source>
         <translation>Systeeminstelling</translation>
     </message>
@@ -4191,14 +4191,14 @@ Dit zal hooguit eenmaal daags geschieden en nieuws wordt alleen weergegeven als 
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Sta Octave toe om verbinding te maken met de Octave website bij het opstarten om recent nieuws en informatie over de Octave community weer te geven.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4970,7 +4970,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+834"/>
+        <location line="+830"/>
         <source>Variable Editor</source>
         <translation>Variable Editor</translation>
     </message>
@@ -5015,7 +5015,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <translation>Bewaar</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>Save variable to a file</source>
         <translation>Sla variable in een bestand op</translation>
     </message>
@@ -5080,7 +5080,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1212"/>
+        <location line="-1210"/>
         <source>Save Variable %1 As</source>
         <translation>Sla variable %1 op als</translation>
     </message>
@@ -5122,11 +5122,31 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
         <source>Transpose</source>
         <translation>Transponeren</translation>
     </message>
+    <message>
+        <location line="+50"/>
+        <source> columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source> rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> row</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-162"/>
+        <location filename="../src/welcome-wizard.cc" line="-172"/>
         <source>Welcome to GNU Octave</source>
         <translation>Welkom bij GNU Octave</translation>
     </message>
@@ -5590,7 +5610,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
-        <translation>Start-werkdirectory van Octave's interpretator</translation>
+        <translation>Start-werkdirectory van Octave&apos;s interpretator</translation>
     </message>
     <message>
         <location line="+18"/>

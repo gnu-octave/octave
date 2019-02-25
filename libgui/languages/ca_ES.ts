@@ -54,7 +54,7 @@
         <translation>cursor</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+664"/>
+        <location filename="../src/settings-dialog.cc" line="+661"/>
         <source>Difference to the default size</source>
         <translation>Diferència amb la mida predeterminada</translation>
     </message>
@@ -792,7 +792,7 @@
 <context>
     <name>QtHandles::Figure</name>
     <message>
-        <location filename="../graphics/Figure.cc" line="+282"/>
+        <location filename="../graphics/Figure.cc" line="+262"/>
         <source>Figure ToolBar</source>
         <translation>Barra d&apos;eines de la figura</translation>
     </message>
@@ -1034,14 +1034,14 @@
 <context>
     <name>octave::documentation</name>
     <message>
-        <location filename="../src/documentation.cc" line="+93"/>
+        <location filename="../src/documentation.cc" line="+98"/>
         <location line="+12"/>
-        <location line="+613"/>
+        <location line="+644"/>
         <source>Octave Documentation</source>
         <translation>Documentació de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-624"/>
+        <location line="-655"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
@@ -1057,7 +1057,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Find:</source>
         <translation>Cerca:</translation>
     </message>
@@ -1074,12 +1074,12 @@ the Command Window will be available.</source>
         <translation>Cerca cap enrere</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+76"/>
         <source>Function Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+99"/>
         <source>Go home</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1114,7 +1114,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-206"/>
+        <location line="-207"/>
         <source>Contents</source>
         <translation>Contingut</translation>
     </message>
@@ -1130,7 +1130,7 @@ the Command Window will be available.</source>
         <translation>Cerca</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+85"/>
         <source>Previous pages</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1140,7 +1140,7 @@ the Command Window will be available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+383"/>
+        <location line="+410"/>
         <source>Unable to register help file %1.</source>
         <translation>No es pot registrar el fitxer d&apos;ajuda %1.</translation>
     </message>
@@ -1212,7 +1212,7 @@ Vols obrir la configuració?</translation>
 <context>
     <name>octave::file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+860"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+858"/>
         <location line="+28"/>
         <location line="+482"/>
         <location line="+18"/>
@@ -1645,7 +1645,7 @@ en mode escriptura: %2.</translation>
 <context>
     <name>octave::file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+140"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+141"/>
         <source>line:</source>
         <translation>línia:</translation>
     </message>
@@ -1671,25 +1671,25 @@ en mode escriptura: %2.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1160"/>
+        <location line="+1167"/>
         <location line="+136"/>
-        <location line="+356"/>
-        <location line="+155"/>
+        <location line="+358"/>
+        <location line="+148"/>
         <location line="+27"/>
-        <location line="+11"/>
-        <location line="+97"/>
+        <location line="+37"/>
+        <location line="+102"/>
         <location line="+36"/>
         <source>Octave Editor</source>
         <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1977"/>
+        <location line="-2010"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+833"/>
+        <location line="+840"/>
         <source>Goto line</source>
         <translation>Ves a la línia</translation>
     </message>
@@ -1774,7 +1774,7 @@ This does not change the default encoding.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+207"/>
         <source>Debug or Save</source>
         <translation>Depura o Desa</translation>
     </message>
@@ -1786,14 +1786,14 @@ Quit debugging and save?</source>
 Vols interrompre la depuració i desar?</translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+85"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>El fixer %1 no es pot obrir en mode escriptura:
 %2.</translation>
     </message>
     <message>
-        <location line="+182"/>
+        <location line="+175"/>
         <source>The current encoding %1
 can not be applied.
 
@@ -1801,7 +1801,7 @@ Please select another one!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+37"/>
         <source>The current editor contents can not be encoded
 with the selected encoding %1.
 Using it would result in data loss!
@@ -1810,7 +1810,7 @@ Please select another one!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-115"/>
+        <location line="-141"/>
         <source>Octave Files (*.m)</source>
         <translation>Fitxers d&apos;Octave (*.m)</translation>
     </message>
@@ -1836,7 +1836,7 @@ Si manteniu aquest nom de fitxer, no podreu executar el codi pel seu nom a l&apo
 Vols seleccionar un altre nom?</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+166"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Sembla que el fitxer &apos;%1&apos; ha estat modificat per una altra aplicació. Vols recarregar-lo?</translation>
     </message>
@@ -2091,7 +2091,7 @@ ha estat esborrat o reanomenat. Vols desar-lo ara?%2</translation>
 <context>
     <name>octave::final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+274"/>
+        <location filename="../src/welcome-wizard.cc" line="+285"/>
         <source>Enjoy!</source>
         <translation>Gaudeix-ne!</translation>
     </message>
@@ -2129,11 +2129,11 @@ Pots trobar més informació visitant &lt;a href=&quot;https://octave.org/suppor
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;For more information about Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
@@ -2141,11 +2141,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Per més informació quant a l&apos;Octave:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Visita &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
-&lt;li&gt;Obté la documentació en línia en format &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o com a &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;document pdf&lt;/span&gt;&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
+&lt;li&gt;Obté la documentació en línia en format &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; o com a &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;document pdf&lt;/a&gt; (s&apos;obre a un navegador extern)&lt;/li&gt;
 &lt;li&gt;Obre el navegador de documentació de l&apos;Octave des del menú ajuda&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
@@ -2229,7 +2229,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca se&amp;lecció</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+87"/>
         <source>Search from end</source>
         <translation>Cerca des de la fi</translation>
     </message>
@@ -2239,7 +2239,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca des de l&apos;inici</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+213"/>
         <source>Replace Result</source>
         <translation>Substitueix el resultat</translation>
     </message>
@@ -2520,7 +2520,7 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
 <context>
     <name>octave::main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+398"/>
+        <location filename="../src/main-window.cc" line="+402"/>
         <source>Save Workspace As</source>
         <translation>Desa l&apos;espai de treball com a</translation>
     </message>
@@ -2551,12 +2551,12 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1602"/>
+        <location line="+1625"/>
         <source>About Octave</source>
         <translation>Quant a l&apos;Octave</translation>
     </message>
     <message>
-        <location line="-1463"/>
+        <location line="-1486"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2566,13 +2566,13 @@ Feu clic a &apos;Següent&apos; per crear un fitxer de configuració i iniciar l
         <translation>N&apos;estàs segur que vols sortir de l&apos;Octave?</translation>
     </message>
     <message>
-        <location line="+61"/>
-        <location line="+1463"/>
+        <location line="+60"/>
+        <location line="+1487"/>
         <source>Browse directories</source>
         <translation>Explora directoris</translation>
     </message>
     <message>
-        <location line="-1305"/>
+        <location line="-1329"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Fitxers de l&apos;Octave (*.m);;Tots els fitxers (*)</translation>
     </message>
@@ -2604,7 +2604,7 @@ function and can not be edited.</source>
         <translation>Editor de l&apos;Octave</translation>
     </message>
     <message>
-        <location line="+798"/>
+        <location line="+822"/>
         <source>&amp;File</source>
         <translation>&amp;Fitxer</translation>
     </message>
@@ -2990,7 +2990,7 @@ o activa-la per veure les novetats al diàleg de configuració de la xarxa de l&
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+461"/>
+        <location line="+522"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
         <translation>Fes clic a &apos;%1&apos; per substituir tots els casos de &apos;%2&apos; amb &apos;%3&apos;.</translation>
     </message>
@@ -3086,7 +3086,7 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
 <context>
     <name>octave::settings_dialog</name>
     <message>
-        <location filename="../src/settings-dialog.cc" line="-573"/>
+        <location filename="../src/settings-dialog.cc" line="-571"/>
         <source>Octave Preferences</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3098,7 +3098,7 @@ La interfície gràfica de l&apos;Octave es tancarà.</translation>
     <message>
         <location line="+15"/>
         <location line="+4"/>
-        <location line="+700"/>
+        <location line="+698"/>
         <source>System setting</source>
         <translation type="unfinished">Configuració de sistema</translation>
     </message>
@@ -3181,14 +3181,14 @@ Aquesta revisió es farà una vegada al dia com a màxim i les notícies sols es
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;
 &lt;style&gt;
 a:link { text-decoration: underline; color: #0000ff; }
 &lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
+&lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Permet la connexió amb el lloc web de l&apos;Octave a l&apos;inici per mostrar novetats i informació en quant a la comunitat.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -3960,7 +3960,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::variable_editor</name>
     <message>
-        <location line="+834"/>
+        <location line="+830"/>
         <source>Variable Editor</source>
         <translation>Editor de variables</translation>
     </message>
@@ -4005,7 +4005,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <translation>Desa</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>Save variable to a file</source>
         <translation>Desa la variable a un fitxer</translation>
     </message>
@@ -4070,7 +4070,7 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
 <context>
     <name>octave::variable_editor_stack</name>
     <message>
-        <location line="-1212"/>
+        <location line="-1210"/>
         <source>Save Variable %1 As</source>
         <translation>Desa la variable %1 com a</translation>
     </message>
@@ -4112,11 +4112,31 @@ Vols desar el conjunt de dreceres actual o cancel·lar l&apos;acció?</translati
         <source>Transpose</source>
         <translation>Transposa</translation>
     </message>
+    <message>
+        <location line="+50"/>
+        <source> columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source> rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> row</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>octave::welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-162"/>
+        <location filename="../src/welcome-wizard.cc" line="-172"/>
         <source>Welcome to GNU Octave</source>
         <translation>Benvingut al GNU Octave</translation>
     </message>

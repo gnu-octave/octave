@@ -668,7 +668,7 @@ namespace octave
       }
 
     QString column_string
-      = tr (column_selection_count > 1 ? " columns" : " column");
+      = column_selection_count > 1 ? tr (" columns") : tr (" column");
 
     QMenu *menu = new QMenu (this);
 
@@ -715,7 +715,7 @@ namespace octave
         rowselection_count = 1;
       }
 
-    QString row_string = tr (rowselection_count > 1 ? " rows" : " row");
+    QString row_string = rowselection_count > 1 ? tr (" rows") : tr (" row");
 
     QMenu *menu = new QMenu (this);
 

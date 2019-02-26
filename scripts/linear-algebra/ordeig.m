@@ -99,10 +99,14 @@ function lambda = ordeig (A, B)
 
 endfunction
 
-# Checks whether a matrix is quasi-triangular
+## Check whether a matrix is quasi-triangular
 function retval = isquasitri (A)
-  v = diag (A, -1) != 0;
-  retval = all (tril (A, -2)(:) == 0) && all (v(1:end-1) + v(2:end) < 2);
+  if (length (A) <= 2)
+    retval = true;
+  else
+    v = diag (A, -1) != 0;
+    retval = (all (tril (A, -2)(:) == 0) && all (v(1:end-1) + v(2:end) < 2));
+  endif
 endfunction
 
 
@@ -123,6 +127,11 @@ endfunction
 %! assert (iscomplex (AA) && iscomplex (BB));
 %! lambda = ordeig (AA, BB);
 %! assert (lambda, diag (AA) ./ diag (BB));
+
+## Check trivial 1x1 case
+%!test <*55779>
+%! lambda = ordeig ([6], [2]);
+%! assert (lambda, 3);
 
 ## Test input validation
 %!error ordeig ()

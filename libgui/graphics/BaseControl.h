@@ -43,6 +43,7 @@ namespace QtHandles
 
   protected:
     void init (QWidget *w, bool callBase = false);
+    void redraw (void);
     void update (int pId);
 
   private:

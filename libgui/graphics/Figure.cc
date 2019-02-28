@@ -330,13 +330,14 @@ namespace QtHandles
     if (canvas)
       canvas->redraw ();
 
-    foreach (QFrame *frame,
-             qWidget<QWidget> ()->findChildren<QFrame*> ())
+    foreach (QObject *qobj,
+             qWidget<QWidget> ()->findChildren<QObject*> ())
       {
-        if (frame->objectName () == "UIPanel"
-            || frame->objectName () == "UIButtonGroup")
+        if (qobj->objectName () == "UIPanel"
+            || qobj->objectName () == "UIButtonGroup"
+            || qobj->objectName () == "UIControl")
           {
-            Object *obj = Object::fromQObject (frame);
+            Object *obj = Object::fromQObject (qobj);
 
             if (obj)
               obj->slotRedraw ();

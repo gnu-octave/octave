@@ -93,6 +93,7 @@ namespace QtHandles
   BaseControl::BaseControl (const graphics_object& go, QWidget *w)
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
+    qObject ()->setObjectName ("UIControl");
     init (w);
   }
 
@@ -121,6 +122,12 @@ namespace QtHandles
 
   BaseControl::~BaseControl (void)
   { }
+
+  void
+  BaseControl::redraw (void)
+  {
+    update (uicontrol::properties::ID_POSITION);
+  }
 
   void
   BaseControl::update (int pId)

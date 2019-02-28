@@ -378,6 +378,9 @@ namespace QtHandles
   void
   ButtonGroup::redraw (void)
   {
+    update (uibuttongroup::properties::ID_POSITION);
+
+    // FIXME: is it really necessary to update the opengl canvas here?
     Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)

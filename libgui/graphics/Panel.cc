@@ -337,6 +337,8 @@ namespace QtHandles
   void
   Panel::redraw (void)
   {
+    update (uipanel::properties::ID_POSITION);
+
     Canvas *canvas = m_container->canvas (m_handle);
 
     if (canvas)

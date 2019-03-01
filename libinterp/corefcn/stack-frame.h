@@ -791,9 +791,10 @@ namespace octave
         m_auto_vars (NUM_AUTO_VARS, octave_value ())
     { }
 
-    base_value_stack_frame (const stack_frame& elt) = delete;
+    base_value_stack_frame (const base_value_stack_frame& elt) = delete;
 
-    base_value_stack_frame& operator = (const stack_frame& elt) = delete;
+    base_value_stack_frame&
+    operator = (const base_value_stack_frame& elt) = delete;
 
     ~base_value_stack_frame (void) = default;
 
@@ -889,7 +890,8 @@ namespace octave
 
     user_fcn_stack_frame (const user_fcn_stack_frame& elt) = delete;
 
-    user_fcn_stack_frame& operator = (const user_fcn_stack_frame& elt) = delete;
+    user_fcn_stack_frame&
+    operator = (const user_fcn_stack_frame& elt) = delete;
 
     ~user_fcn_stack_frame (void) = default;
 
@@ -961,9 +963,9 @@ namespace octave
         m_scope (scope)
     { }
 
-    scope_stack_frame (const stack_frame& elt) = delete;
+    scope_stack_frame (const scope_stack_frame& elt) = delete;
 
-    scope_stack_frame& operator = (const stack_frame& elt) = delete;
+    scope_stack_frame& operator = (const scope_stack_frame& elt) = delete;
 
     ~scope_stack_frame (void) = default;
 

@@ -75,10 +75,16 @@ function install (files, handle_deps, prefix, archprefix, verbose,
         endif
 
         ## Uncompress the package.
-        if (verbose)
-          printf ("untar (%s, %s)\n", tgz, tmpdir);
+        [~, ~, ext] = fileparts (tgz);
+        if (strcmpi (ext, ".zip"))
+          func_uncompress = @unzip;
+        else
+          func_uncompress = @untar;
         endif
-        untar (tgz, tmpdir);
+        if (verbose)
+          printf ("%s (%s, %s)\n", func2str (func_uncompress), tgz, tmpdir);
+        endif
+        func_uncompress (tgz, tmpdir);
 
         ## Get the name of the directories produced by tar.
         [dirlist, err, msg] = readdir (tmpdir);

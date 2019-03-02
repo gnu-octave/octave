@@ -203,23 +203,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   find_leg_hdl = (nargs == 0);  # possibly overridden
   propvals = {};
 
-  ## Process old way of specifying location with a number rather than a string.
-  ## FIXME: When can this be deleted?
-  if (nargs > 0)
-    pos = varargin{nargs};
-    if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
-      warning ("legend: specifying location with a numeric argument is obsolete and will be removed from a future version of Octave, use a string specification instead");
-      if (pos >= -1 && pos <= 4)
-        location = [{"northeastoutside", "best", "northeast",
-                     "northwest", "southwest", "southeast"}] {pos + 2};
-        varargin(nargs) = [];
-        nargs -= 1;
-      else
-        error ("legend: invalid location specified");
-      endif
-    endif
-  endif
-
   ## Find "location" and "orientation" property/value pairs
   while (nargs > 1)
     pos = varargin{nargs-1};

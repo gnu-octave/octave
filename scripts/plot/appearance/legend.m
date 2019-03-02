@@ -204,20 +204,20 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   propvals = {};
 
   ## Find "location" and "orientation" property/value pairs
-  while (nargs > 1)
-    pos = varargin{nargs-1};
-    str = varargin{nargs};
+  i = nargs - 1;
+  while (i > 0)
+    pos = varargin{i};
+    str = varargin{i+1};
     if (strcmpi (pos, "location") && ischar (str))
       location = lower (str);
-      varargin(nargs-1:nargs) = [];
+      varargin(i:i+1) = [];
       nargs -= 2;
     elseif (strcmpi (pos, "orientation") && ischar (str))
       orientation = lower (str);
-      varargin(nargs-1:nargs) = [];
+      varargin(i:i+1) = [];
       nargs -= 2;
-    else
-      break;
     endif
+    i -= 2;
   endwhile
 
   ## Validate the orientation

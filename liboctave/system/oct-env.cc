@@ -579,6 +579,16 @@ namespace octave
           while (sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;
 
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+          // Don't strip file letter part.
+          if (i == 1 && path[i] == ':')
+            {
+              // Keep path separator if present.
+              i = std::min (i+2, path.length ());
+              break;
+            }
+#endif
+
           while (! sys::file_ops::is_dir_sep (path[i]) && i > 0)
             i--;
 

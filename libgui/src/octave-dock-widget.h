@@ -96,7 +96,7 @@ namespace octave
 
     void active_changed (bool active);
 
-    void queue_make_window (void);
+    void queue_make_window (bool widget_was_dragged);
 
     void queue_make_widget (void);
 
@@ -142,7 +142,7 @@ namespace octave
 
     void resizeEvent (QResizeEvent *event);
 
-    void make_window (bool not_used = false);
+    void make_window (bool widget_was_dragged = false);
 
     void make_widget (bool not_used = false);
 

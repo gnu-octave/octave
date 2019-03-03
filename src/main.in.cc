@@ -369,6 +369,7 @@ main (int argc, char **argv)
   // so we can forward them to the child.
 
   octave_block_async_signals ();
+  octave_block_signal_by_name ("SIGTSTP");
 
 #if defined (HAVE_OCTAVE_QT_GUI) && ! defined (OCTAVE_USE_WINDOWS_API)
 
@@ -412,6 +413,7 @@ main (int argc, char **argv)
           install_signal_handlers ();
 
           octave_unblock_async_signals ();
+          octave_unblock_signal_by_name ("SIGTSTP");
 
           int status;
 

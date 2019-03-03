@@ -285,6 +285,7 @@ systems.
   frame.add_fcn (restore_signal_mask, get_signal_mask ());
 
   octave_unblock_async_signals ();
+  octave_unblock_signal_by_name ("SIGTSTP");
 
   if (type == et_async)
     retval(0) = octave_async_system_wrapper (cmd_str.c_str ());

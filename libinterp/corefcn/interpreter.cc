@@ -417,7 +417,10 @@ namespace octave
     initialize_error_handlers ();
 
     if (m_app_context)
-      install_signal_handlers ();
+      {
+        install_signal_handlers ();
+        octave_unblock_signal_by_name ("SIGTSTP");
+      }
     else
       quit_allowed = false;
 

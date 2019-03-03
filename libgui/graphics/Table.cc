@@ -442,6 +442,7 @@ namespace QtHandles
     : Object (go, tableWidget), m_tableWidget (tableWidget), m_curData (),
       m_blockUpdates (false)
   {
+    qObject ()->setObjectName ("UItable");
     uitable::properties& tp = properties<uitable> ();
 
     m_curData = octave_value (tp.get_data ());
@@ -860,6 +861,12 @@ namespace QtHandles
       }
 
     m_blockUpdates = false;
+  }
+
+  void
+  Table::redraw (void)
+  {
+    update (uitable::properties::ID_POSITION);
   }
 
   void

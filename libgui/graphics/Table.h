@@ -50,7 +50,7 @@ namespace QtHandles
 
   protected:
     void update (int pId);
-    //void redraw (void);
+    void redraw (void);
     void updateColumnname (void);
     void updateColumnwidth (void);
     void updateData (void);

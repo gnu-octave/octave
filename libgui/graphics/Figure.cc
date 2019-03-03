@@ -335,7 +335,8 @@ namespace QtHandles
       {
         if (qobj->objectName () == "UIPanel"
             || qobj->objectName () == "UIButtonGroup"
-            || qobj->objectName () == "UIControl")
+            || qobj->objectName () == "UIControl"
+            || qobj->objectName () == "UITable")
           {
             Object *obj = Object::fromQObject (qobj);
 

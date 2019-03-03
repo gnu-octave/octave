@@ -86,8 +86,12 @@ function h = imshow (im, varargin)
   ## Get the image.
   if (ischar (im))
     [im, map] = imread (im);
-    indexed = true;
-    colormap (gca, map);
+    if (isempty (map))
+      indexed = false;
+    else
+      indexed = true;
+      colormap (gca, map);
+    endif
   endif
 
   nd = ndims (im);

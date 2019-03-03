@@ -437,7 +437,8 @@ namespace octave
     m_cs.push_back (new scope_stack_frame (*this, prev_frame, scope, slink));
   }
 
-  void call_stack::push (octave_user_function *fcn, unwind_protect *up_frame)
+  void call_stack::push (octave_user_function *fcn, unwind_protect *up_frame,
+                         stack_frame *closure_frames)
   {
     size_t prev_frame = m_curr_frame;
     m_curr_frame = m_cs.size ();
@@ -449,7 +450,8 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     m_cs.push_back (new user_fcn_stack_frame (*this, fcn, up_frame,
-                                              prev_frame, slink));
+                                              prev_frame, slink,
+                                              closure_frames));
   }
 
   void call_stack::push (octave_user_script *script, unwind_protect *up_frame)

@@ -33,12 +33,21 @@ octave_base_value *
 octave_function::clone (void) const
 {
   panic_impossible ();
-  return nullptr;
 }
 
 octave_base_value *
 octave_function::empty_clone (void) const
 {
   panic_impossible ();
-  return nullptr;
+}
+
+octave_value_list
+octave_function::call (octave::tree_evaluator& tw, int nargout,
+                       const octave_value_list& args,
+                       octave::stack_frame *closure_context)
+{
+  if (closure_context)
+    panic_impossible ();
+
+  return call (tw, nargout, args);
 }

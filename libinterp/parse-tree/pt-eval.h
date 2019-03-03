@@ -200,8 +200,9 @@ namespace octave
     void visit_octave_user_function (octave_user_function&);
 
     octave_value_list
-    execute_user_function (octave_user_function& user_function, int nargout,
-                           const octave_value_list& args);
+    execute_user_function (octave_user_function& user_function,
+                           int nargout, const octave_value_list& args,
+                           stack_frame *closure_frames = nullptr);
 
     void visit_octave_user_function_header (octave_user_function&);
 

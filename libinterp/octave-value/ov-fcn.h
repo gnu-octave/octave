@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class stack_frame;
   class tree_evaluator;
   class tree_walker;
 }
@@ -220,7 +221,12 @@ public:
   call (octave::tree_evaluator& tw, int nargout = 0,
         const octave_value_list& args = octave_value_list ()) = 0;
 
-protected:
+  virtual octave_value_list
+  call (octave::tree_evaluator& tw, int nargout,
+        const octave_value_list& args,
+        octave::stack_frame *closure_context);
+
+ protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")

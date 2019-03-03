@@ -451,9 +451,10 @@ octave_user_function::all_va_args (const octave_value_list& args)
 
 octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
-                            const octave_value_list& args)
+                            const octave_value_list& args,
+                            octave::stack_frame *closure_frames)
 {
-  return tw.execute_user_function (*this, nargout, args);
+  return tw.execute_user_function (*this, nargout, args, closure_frames);
 }
 
 void

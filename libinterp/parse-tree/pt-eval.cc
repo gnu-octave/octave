@@ -1763,7 +1763,8 @@ namespace octave
   octave_value_list
   tree_evaluator::execute_user_function (octave_user_function& user_function,
                                          int nargout,
-                                         const octave_value_list& xargs)
+                                         const octave_value_list& xargs,
+                                         stack_frame *closure_frames)
   {
     octave_value_list retval;
 
@@ -1803,7 +1804,10 @@ namespace octave
     // Save old and set current symbol table context, for
     // eval_undefined_error().
 
-    m_call_stack.push (&user_function, &frame);
+    //    std::cerr << "eval: " << user_function.name ()
+    //              << " with closure_frames: " << closure_frames << std::endl;
+
+    m_call_stack.push (&user_function, &frame, closure_frames);
 
     frame.protect_var (Vtrack_line_num);
     // update source line numbers, even if debugging
@@ -1911,6 +1915,28 @@ namespace octave
 
         retval = convert_return_list_to_const_vector (ret_list, nargout,
                                                       varargout);
+      }
+
+    if (user_function.is_nested_function ()
+        || user_function.is_parent_function ())
+      {
+        // Copy current stack frame to handles to nested functions.
+
+        for (octave_idx_type i = 0; i < retval.length (); i++)
+          {
+            octave_value val = retval(i);
+
+            if (val.is_function_handle ())
+              {
+                octave_fcn_handle *fh = val.fcn_handle_value ();
+
+                if (fh && fh->is_nested ())
+                  {
+                    // std::cerr << "pushing closure context" << std::endl;
+                    fh->push_closure_context (*this);
+                  }
+              }
+          }
       }
 
     return retval;

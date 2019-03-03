@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <iosfwd>
+#include <list>
 #include <string>
 
 #include "ov-base.h"
@@ -36,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class interpreter;
+  class stack_frame;
+  class tree_evaluator;
 }
 
 // Function handles.
@@ -53,16 +56,21 @@ public:
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : fcn (), nm (), has_overloads (false), overloads () { }
+    : fcn (), nm (), has_overloads (false), overloads (),
+      m_is_nested (false), m_closure_frames (nullptr)
+  { }
 
   octave_fcn_handle (const std::string& n)
-    : fcn (), nm (n), has_overloads (false), overloads () { }
+    : fcn (), nm (n), has_overloads (false), overloads (),
+      m_is_nested (false), m_closure_frames (nullptr)
+  { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n = anonymous);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm),
-      has_overloads (fh.has_overloads), overloads ()
+      has_overloads (fh.has_overloads), overloads (),
+      m_is_nested (fh.m_is_nested), m_closure_frames (fh.m_closure_frames)
   {
     for (int i = 0; i < btyp_num_types; i++)
       builtin_overloads[i] = fh.builtin_overloads[i];
@@ -70,7 +78,7 @@ public:
     overloads = fh.overloads;
   }
 
-  ~octave_fcn_handle (void) = default;
+  ~octave_fcn_handle (void);
 
   octave_base_value * clone (void) const
   { return new octave_fcn_handle (*this); }
@@ -96,19 +104,29 @@ public:
 
   bool is_overloaded (void) const { return has_overloads; }
 
+  bool is_nested (void) const { return m_is_nested; }
+
   dim_vector dims (void) const;
 
   octave_function * function_value (bool = false)
-  { return fcn.function_value (); }
+  {
+    return fcn.function_value ();
+  }
 
   octave_user_function * user_function_value (bool = false)
-  { return fcn.user_function_value (); }
+  {
+    return fcn.user_function_value ();
+  }
 
   octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
   octave_value fcn_val (void) const { return fcn; }
 
   std::string fcn_name (void) const { return nm; }
+
+  void push_closure_context (octave::tree_evaluator& tw);
+
+  octave_value workspace (void) const;
 
   void set_overload (builtin_type_t btyp, const octave_value& ov_fcn)
   {
@@ -173,6 +191,14 @@ protected:
 
   // Overloads for other classes.
   str_ov_map overloads;
+
+  // TRUE means this is a handle to a nested function.
+  bool m_is_nested;
+
+  // Saved stack frames for handles to nested functions.  This allows us
+  // to access non-locals and other context info when calling nested
+  // functions indirectly through handles.
+  std::list<octave::stack_frame *> *m_closure_frames;
 
   bool parse_anon_fcn_handle (const std::string& fcn_text);
 

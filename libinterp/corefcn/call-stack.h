@@ -165,7 +165,8 @@ namespace octave
 
     void push (const symbol_scope& scope);
 
-    void push (octave_user_function *fcn, unwind_protect *up_frame);
+    void push (octave_user_function *fcn, unwind_protect *up_frame,
+               stack_frame *closure_frames = nullptr);
 
     void push (octave_user_script *script, unwind_protect *up_frame);
 

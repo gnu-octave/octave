@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <ostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "file-ops.h"
@@ -62,6 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
+#include "syminfo.h"
 #include "symscope.h"
 #include "unwind-prot.h"
 #include "variables.h"
@@ -82,7 +84,8 @@ const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
-  : fcn (f), nm (n), has_overloads (false)
+  : fcn (f), nm (n), has_overloads (false), overloads (),
+    m_is_nested (false), m_closure_frames (nullptr)
 {
   octave_user_function *uf = fcn.user_function_value (true);
 
@@ -95,7 +98,24 @@ octave_fcn_handle::octave_fcn_handle (const octave_value& f,
     }
 
   if (uf && uf->is_nested_function () && ! uf->is_subfunction ())
-    error ("handles to nested functions are not yet supported");
+    m_is_nested = true;
+}
+
+octave_fcn_handle::~octave_fcn_handle (void)
+{
+  if (m_closure_frames)
+    {
+      while (m_closure_frames->size () > 0)
+        {
+          octave::stack_frame *elt = m_closure_frames->back ();
+
+          delete elt;
+
+          m_closure_frames->pop_back ();
+        }
+
+      delete m_closure_frames;
+    }
 }
 
 octave_value_list
@@ -140,15 +160,13 @@ octave_fcn_handle::subsref (const std::string& type,
 octave_value_list
 octave_fcn_handle::call (int nargout, const octave_value_list& args)
 {
-  octave_value_list retval;
-
   octave::out_of_date_check (fcn, "", false);
+
+  // Possibly overloaded function.
+  octave_value fcn_to_call = fcn;
 
   if (has_overloads)
     {
-      // Possibly overloaded function.
-      octave_value ov_fcn;
-
       // Compute dispatch type.
       builtin_type_t btyp;
       std::string dispatch_type = octave::get_dispatch_type (args, btyp);
@@ -157,7 +175,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
       if (btyp != btyp_unknown)
         {
           octave::out_of_date_check (builtin_overloads[btyp], dispatch_type, false);
-          ov_fcn = builtin_overloads[btyp];
+          fcn_to_call = builtin_overloads[btyp];
         }
       else
         {
@@ -188,7 +206,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
                       set_overload (pname, ftmp);
 
                       octave::out_of_date_check (ftmp, pname, false);
-                      ov_fcn = ftmp;
+                      fcn_to_call = ftmp;
 
                       break;
                     }
@@ -199,28 +217,28 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
           else
             {
               octave::out_of_date_check (it->second, dispatch_type, false);
-              ov_fcn = it->second;
+              fcn_to_call = it->second;
             }
         }
 
-      if (ov_fcn.is_defined ())
-        retval = octave::feval (ov_fcn, args, nargout);
-      else if (fcn.is_defined ())
-        retval = octave::feval (fcn, args, nargout);
-      else
+      if (! fcn_to_call.is_defined ())
         error ("%s: no method for class %s",
                nm.c_str (), dispatch_type.c_str ());
     }
-  else
-    {
-      // Non-overloaded function (anonymous, subfunction, private function).
-      if (fcn.is_defined ())
-        retval = octave::feval (fcn, args, nargout);
-      else
-        error ("%s: no longer valid function handle", nm.c_str ());
-    }
+  else if (! fcn_to_call.is_defined ())
+    error ("%s: no longer valid function handle", nm.c_str ());
 
-  return retval;
+  octave::stack_frame *closure_context = nullptr;
+
+  if (m_closure_frames && m_closure_frames->size () > 0)
+    closure_context = m_closure_frames->front ();
+
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("octave_fcn_handle::call");
+
+  octave_function *of = fcn_to_call.function_value ();
+
+  return of->call (tw, nargout, args, closure_context);
 }
 
 dim_vector
@@ -228,6 +246,83 @@ octave_fcn_handle::dims (void) const
 {
   static dim_vector dv (1, 1);
   return dv;
+}
+
+// Save call stack frames for handles to nested functions.
+
+void
+octave_fcn_handle::push_closure_context (octave::tree_evaluator& tw)
+{
+  if (! m_closure_frames)
+    m_closure_frames = new std::list<octave::stack_frame *> ();
+
+  octave::call_stack& main_cs = tw.get_call_stack ();
+
+  octave::stack_frame& curr_frame = main_cs.get_current_stack_frame ();
+
+  octave::stack_frame *dup_frame = curr_frame.dup ();
+
+  if (! m_closure_frames->empty ())
+    {
+      octave::stack_frame *top_frame = m_closure_frames->back ();
+
+      // Arrange for static and access links in the top stack frame (the
+      // last one saved before this one) to point to the new duplicated
+      // frame.  This way we will look up through the duplicated frames
+      // when evaluating the function.
+
+      top_frame->set_closure_links (dup_frame);
+    }
+
+  m_closure_frames->push_back (dup_frame);
+}
+
+octave_value
+octave_fcn_handle::workspace (void) const
+{
+  if (nm == anonymous)
+    {
+      octave_user_function *fu = fcn.user_function_value ();
+
+      octave_scalar_map ws;
+
+      if (fu)
+        {
+          for (const auto& nm_val : fu->local_var_init_vals ())
+            ws.assign (nm_val.first, nm_val.second);
+        }
+
+      return ws;
+    }
+  else if (m_closure_frames)
+    {
+      octave_idx_type num_frames = m_closure_frames->size ();
+
+      Cell ws_frames (num_frames, 1);
+
+      octave_idx_type i = 0;
+
+      for (auto elt : *m_closure_frames)
+        {
+          octave::symbol_info_list symbols = elt->all_variables ();
+
+          octave_scalar_map ws;
+
+          for (auto sym_name : symbols.names ())
+            {
+              octave_value val = symbols.varval (sym_name);
+
+              if (val.is_defined ())
+                ws.assign (sym_name, val);
+            }
+
+          ws_frames(i++) = ws;
+        }
+
+      return ws_frames;
+    }
+
+  return Cell ();
 }
 
 bool
@@ -1704,6 +1799,9 @@ The function is a built-in or m-file function.
 The function is a subfunction within an m-file.
 @end table
 
+@item nested
+The function is nested.
+
 @item file
 The m-file that will be called to perform the function.  This field is empty
 for anonymous and built-in functions.
@@ -1755,6 +1853,8 @@ particular output format.
         }
       else if (fcn->is_private_function ())
         m.setfield ("type", "private");
+      else if (fh->is_nested ())
+        m.setfield ("type", "nested");
       else if (fh->is_overloaded ())
         m.setfield ("type", "overloaded");
       else
@@ -1767,18 +1867,14 @@ particular output format.
     {
       m.setfield ("file", nm);
 
-      octave_user_function *fu = fh->user_function_value ();
-
-      octave_scalar_map ws;
-      for (const auto& nm_val : fu->local_var_init_vals ())
-        ws.assign (nm_val.first, nm_val.second);
-
-      m.setfield ("workspace", ws);
+      m.setfield ("workspace", fh->workspace ());
     }
   else if (fcn->is_user_function () || fcn->is_user_script ())
     {
       octave_function *fu = fh->function_value ();
       m.setfield ("file", fu->fcn_file_name ());
+
+      m.setfield ("workspace", fh->workspace ());
     }
   else
     m.setfield ("file", "");

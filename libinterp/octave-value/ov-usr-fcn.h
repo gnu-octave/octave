@@ -327,6 +327,8 @@ public:
 
   bool is_nested_function (void) const { return nested_function; }
 
+  bool is_parent_function (void) const { return m_scope.is_parent (); }
+
   void mark_as_legacy_constructor (void) { class_constructor = legacy; }
 
   bool is_legacy_constructor (const std::string& cname = "") const
@@ -361,7 +363,14 @@ public:
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout = 0,
-        const octave_value_list& args = octave_value_list ());
+        const octave_value_list& args = octave_value_list ())
+  {
+    return call (tw, nargout, args, nullptr);
+  }
+
+  octave_value_list
+  call (octave::tree_evaluator& tw, int nargout,
+        const octave_value_list& args, octave::stack_frame *);
 
   octave::tree_parameter_list * parameter_list (void) { return param_list; }
 
@@ -446,8 +455,11 @@ private:
   // TRUE means this is an anonymous function.
   bool anonymous_function;
 
-  // TRUE means this is a nested function. (either a child or parent)
+  // TRUE means this is a nested function.
   bool nested_function;
+
+  // TRUE means this function contains a nested function.
+  bool parent_function;
 
   // Enum describing whether this function is the constructor for class object.
   class_method_type class_constructor;

@@ -70,3 +70,69 @@
 %!error <D' undefined near line 7> scope2
 %!error <can not add variable "y" to a static workspace> nest_eval ("y = 5;", "")
 %!error <can not add variable "y" to a static workspace> nest_eval ("y;", "")
+
+## Test the way that non-local variables referenced by nested functions
+## work with function handles.
+
+## FH1 and FH2 were created separately so will have distinct
+## closure contexts.handles, FH3 is a copy of FH2 so they will
+## share the same context.
+
+%!test <39257>
+%! fh1 = nst1 (13);
+%! fh2 = nst1 (13);
+%! fh3 = fh2;
+%!
+%! assert (fh1 (), 13);
+%! assert (fh2 (), 13);
+%! assert (fh3 (), 13);
+%!
+%! assert (fh1 (42), 42);
+%! assert (fh2 (), 13);
+%! assert (fh3 (), 13);
+%!
+%! assert (fh2 (pi), pi);
+%! assert (fh1 (), 42);
+%! assert (fh3 (), pi);
+
+## Similar to the test above, but with persistent variables.  These are
+## stored in the function, not the closure context, so are shared among
+## all handles whether they are created separately or copied.
+
+%!test
+%! fh1 = nst2 (13);
+%! fh2 = nst2 (13);
+%! fh3 = fh2;
+%!
+%! assert (fh1 (), 13);
+%! assert (fh2 (), 13);
+%! assert (fh3 (), 13);
+%!
+%! assert (fh1 (42), 42);
+%! assert (fh2 (), 42);
+%! assert (fh3 (), 42);
+%!
+%! assert (fh2 (pi), pi);
+%! assert (fh1 (), pi);
+%! assert (fh3 (), pi);
+
+## And again with global variables.
+
+%!test
+%! fh1 = nst3 (13);
+%! fh2 = nst3 (13);
+%! fh3 = fh2;
+%!
+%! assert (fh1 (), 13);
+%! assert (fh2 (), 13);
+%! assert (fh3 (), 13);
+%!
+%! assert (fh1 (42), 42);
+%! assert (fh2 (), 42);
+%! assert (fh3 (), 42);
+%!
+%! assert (fh2 (pi), pi);
+%! assert (fh1 (), pi);
+%! assert (fh3 (), pi);
+%!
+%! clear -global g;  # cleanup after tests

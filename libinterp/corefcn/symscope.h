@@ -96,6 +96,8 @@ namespace octave
 
     void set_nesting_depth (size_t depth) { m_nesting_depth = depth; }
 
+    bool is_parent (void) const { return ! m_children.empty (); }
+
     bool is_static (void) const { return m_is_static; }
 
     void mark_static (void) { m_is_static = true; }
@@ -364,6 +366,11 @@ namespace octave
     bool is_nested (void) const
     {
       return m_rep ? m_rep->is_nested () : false;
+    }
+
+    bool is_parent (void) const
+    {
+      return m_rep ? m_rep->is_parent () : false;
     }
 
     void set_nesting_depth (size_t depth)

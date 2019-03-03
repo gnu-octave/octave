@@ -309,6 +309,12 @@ namespace octave
 
     stack_frame * access_link (void) const {return m_access_link; }
 
+    void set_closure_links (stack_frame *dup_frame)
+    {
+      m_static_link = dup_frame;
+      m_access_link = dup_frame;
+    }
+
     virtual size_t size (void) const;
 
     virtual void resize (size_t);
@@ -888,9 +894,12 @@ namespace octave
 
     user_fcn_stack_frame (call_stack& cs, octave_user_function *fcn,
                           unwind_protect *up_frame, size_t prev,
-                          stack_frame *static_link)
+                          stack_frame *static_link,
+                          stack_frame *access_link = nullptr)
       : base_value_stack_frame (cs, get_num_symbols (fcn), prev, static_link,
-                                get_access_link (fcn, static_link)),
+                                (access_link
+                                 ? access_link
+                                 : get_access_link (fcn, static_link))),
         m_fcn (fcn), m_unwind_protect_frame (up_frame)
     { }
 

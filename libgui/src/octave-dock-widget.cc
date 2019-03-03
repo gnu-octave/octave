@@ -204,8 +204,8 @@ namespace octave
         connect (m_default_float_button, SIGNAL (clicked (bool)),
                  this, SLOT (make_window (bool)));
       }
-    connect (this, SIGNAL (queue_make_window ()),
-             this, SLOT (make_window ()), Qt::QueuedConnection);
+    connect (this, SIGNAL (queue_make_window (bool)),
+             this, SLOT (make_window (bool)), Qt::QueuedConnection);
     connect (this, SIGNAL (queue_make_widget ()),
              this, SLOT (make_widget ()), Qt::QueuedConnection);
 
@@ -249,7 +249,7 @@ namespace octave
 
   // make the widget floating
   void
-  octave_dock_widget::make_window (bool)
+  octave_dock_widget::make_window (bool widget_was_dragged)
   {
     bool vis = isVisible ();
 
@@ -258,18 +258,25 @@ namespace octave
 
     set_focus_predecessor ();  // set focus previously active widget if tabbed
 
+    // Before unparenting, get current geometry for restoring if dragged
+    QRect geom = geometry ();
+
     // the widget has to be reparented (parent = 0), preferably
     // from a non-toplevel widget otherwise may not have full
     // decorations, e.g., no taskbar icon and always in front
     if (isFloating ())
       setFloating (false);
+
 // Remove after thorough testing 3/20/18    m_parent->removeDockWidget (this);
+
     setParent (0, Qt::CustomizeWindowHint | Qt::WindowTitleHint |
                Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::Window);
 
-    // restore the last geometry when floating
-    QRect geom = m_recent_float_geom.isNull () ? QRect (50,100,480,480)
-                                               : m_recent_float_geom;
+    // restore the last geometry when floating only if we have not dragged
+    // the window outside the main window
+    if (! widget_was_dragged)
+      geom = m_recent_float_geom.isNull () ? QRect (50,100,480,480)
+                                           : m_recent_float_geom;
     setGeometry (geom);
 
     // adjust the (un)dock icon
@@ -383,14 +390,14 @@ namespace octave
   {
     // low-level check of whether docked-widget became a window via
     // double-click or via drag-and-drop
-    if ((event->type () == QEvent::MouseButtonDblClick && ! isFloating ())
+    if ( (event->type () == QEvent::MouseButtonDblClick && ! isFloating ())
         || (event->type () == QEvent::ActivationChange && m_waiting_for_mouse_button_release))
       {
         bool retval = QDockWidget::event (event);
         if (isFloating () && parent () != 0)
           {
             m_waiting_for_mouse_button_release = false;
-            emit queue_make_window ();
+            emit queue_make_window (event->type () != QEvent::MouseButtonDblClick);
           }
         return retval;
       }

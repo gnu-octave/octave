@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QDebug>
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QKeySequence>
@@ -50,6 +51,7 @@ namespace octave
   enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
   {
     m_direct_shortcut = true;      // the shortcut is directly entered
+    m_shift_modifier = false;      // the shift modifier is not added
   }
 
   // new keyPressEvent
@@ -68,9 +70,9 @@ namespace octave
         if (key == Qt::Key_unknown || key == 0)
           return;
 
-        Qt::KeyboardModifiers modifiers = e->modifiers ();
+        Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers (); //e->modifiers ();
 
-        if (modifiers & Qt::ShiftModifier)
+        if (m_shift_modifier || (modifiers & Qt::ShiftModifier))
           key += Qt::SHIFT;
         if (modifiers & Qt::ControlModifier)
           key += Qt::CTRL;
@@ -91,6 +93,16 @@ namespace octave
     else
       m_direct_shortcut = false; // the shortcut has to be written as text
   }
+
+  // slot for checkbox whether the shift modifier should be added
+  void enter_shortcut::handle_shift_modifier (int state)
+  {
+    if (state)
+      m_shift_modifier = true;  // the shortcut is directly entered
+    else
+      m_shift_modifier = false; // the shortcut has to be written as text
+  }
+
 
   shortcut_manager *shortcut_manager::instance = nullptr;
 
@@ -719,6 +731,8 @@ namespace octave
         m_dialog->setWindowTitle (tr ("Enter new Shortcut"));
 
         QVBoxLayout *box = new QVBoxLayout (m_dialog);
+        box->setSpacing (2);
+        box->setContentsMargins (12, 12, 12, 12);
 
         QLabel *help = new QLabel (tr ("Apply the desired shortcut or click "
                                        "on the right button to reset the "
@@ -728,8 +742,20 @@ namespace octave
 
         QCheckBox *direct = new QCheckBox (
                                            tr ("Enter shortcut directly by performing it"));
+        QCheckBox *shift = new QCheckBox (
+                                 tr ("Add Shift modifier\n"
+                                     "(allows to enter number keys)"));
+        shift->setStyleSheet ("QCheckBox::indicator { subcontrol-position: left top; }");
+
+        connect (direct, SIGNAL (clicked (bool)),
+                 shift, SLOT (setEnabled (bool)));
+
         direct->setCheckState (Qt::Checked);
+
         box->addWidget (direct);
+        box->addWidget (shift);
+
+        box->addSpacing (15);
 
         QGridLayout *grid = new QGridLayout ();
 
@@ -752,6 +778,8 @@ namespace octave
 
         box->addLayout (grid);
 
+        box->addSpacing (18);
+
         QDialogButtonBox *button_box = new QDialogButtonBox (QDialogButtonBox::Ok
                                                              | QDialogButtonBox::Cancel);
         QList<QAbstractButton *> buttons = button_box->buttons ();
@@ -765,6 +793,8 @@ namespace octave
 
         connect (direct, SIGNAL (stateChanged (int)),
                  m_edit_actual, SLOT (handle_direct_shortcut (int)));
+        connect (shift, SIGNAL (stateChanged (int)),
+                 m_edit_actual, SLOT (handle_shift_modifier (int)));
         connect (m_dialog, SIGNAL (finished (int)),
                  this, SLOT (shortcut_dialog_finished (int)));
 

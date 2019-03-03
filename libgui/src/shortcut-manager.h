@@ -48,10 +48,12 @@ namespace octave
   public slots:
 
     void handle_direct_shortcut (int);
+    void handle_shift_modifier (int);
 
   private:
 
     bool m_direct_shortcut;
+    bool m_shift_modifier;
 
   };
 

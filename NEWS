@@ -23,6 +23,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
     Matlab compatible.  If necessary use the "-loose" option to
     reproduce figures as they appeared in previous versions of Octave.
 
+ ** The edit function option "editinplace" now defaults to true.  Files
+    will no longer be copied to the user's HOME directory for editing
+    and then copied back to their original location.
+
  ** New functions added in Octave 6:
 
       lightangle

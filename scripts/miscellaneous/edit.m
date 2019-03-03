@@ -114,7 +114,7 @@
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to
-## whether they are modifiable or not.  The default is @code{false}.
+## whether they are modifiable or not.  The default is @code{true}.
 ## @end table
 ## @end deftypefn
 
@@ -133,7 +133,7 @@ function retval = edit (varargin)
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
                                 "MODE", "async",
-                                "EDITINPLACE", false);
+                                "EDITINPLACE", true);
   ## Make sure the stateval variables survive "clear functions".
   mlock;
 

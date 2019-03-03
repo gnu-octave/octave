@@ -326,6 +326,10 @@ namespace octave
         return true;
 #endif
 
+      // check if using file URI scheme
+      if (len > 4 && s.compare (0, 5, "file:") == 0)
+        return true;
+
       return false;
     }
 

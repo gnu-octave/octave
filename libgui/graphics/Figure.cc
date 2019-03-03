@@ -307,6 +307,11 @@ namespace QtHandles
         win->setFixedSize (QSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
       }
 
+    // Unlock window if it is maximized or full-screen
+    int state = win->windowState ();
+    if (state == Qt::WindowFullScreen || state == Qt::WindowMaximized)
+      win->setWindowState (Qt::WindowNoState);
+
     win->setGeometry (r);
 
     if (! m_resizable)

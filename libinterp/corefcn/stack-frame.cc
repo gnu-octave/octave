@@ -518,6 +518,12 @@ namespace octave
       }
   }
 
+  compiled_fcn_stack_frame *
+  compiled_fcn_stack_frame::dup (void) const
+  {
+    return new compiled_fcn_stack_frame (*this);
+  }
+
   void compiled_fcn_stack_frame::display (bool follow) const
   {
     std::ostream& os = octave_stdout;
@@ -545,6 +551,12 @@ namespace octave
       m_value_offsets (get_num_symbols (script), 0)
   {
     set_script_offsets ();
+  }
+
+  script_stack_frame *
+  script_stack_frame::dup (void) const
+  {
+    return new script_stack_frame (*this);
   }
 
   size_t script_stack_frame::get_num_symbols (octave_user_script *script)
@@ -1087,6 +1099,12 @@ namespace octave
       }
   }
 
+  user_fcn_stack_frame *
+  user_fcn_stack_frame::dup (void) const
+  {
+    return new user_fcn_stack_frame (*this);
+  }
+
   // If this is a nested scope, set access_link to nearest parent
   // stack frame that corresponds to the lexical parent of this scope.
 
@@ -1356,6 +1374,12 @@ namespace octave
   void user_fcn_stack_frame::accept (stack_frame_walker& sfw)
   {
     sfw.visit_user_fcn_stack_frame (*this);
+  }
+
+  scope_stack_frame *
+  scope_stack_frame::dup (void) const
+  {
+    return new scope_stack_frame (*this);
   }
 
   symbol_record scope_stack_frame::insert_symbol (const std::string& name)

@@ -152,6 +152,8 @@ namespace octave
 
     virtual ~stack_frame (void) = default;
 
+    virtual stack_frame * dup (void) const = 0;
+
     // FIXME: It would be nice to eliminate these but there are a few
     // places where we still need to know the specific type of the
     // stack frame that we are handling.
@@ -580,6 +582,8 @@ namespace octave
 
     ~compiled_fcn_stack_frame (void) = default;
 
+    compiled_fcn_stack_frame * dup (void) const;
+
     bool is_compiled_fcn_frame (void) const { return true; }
 
     symbol_scope get_scope (void) const
@@ -689,6 +693,8 @@ namespace octave
     script_stack_frame& operator = (const script_stack_frame& elt) = delete;
 
     ~script_stack_frame (void) = default;
+
+    script_stack_frame * dup (void) const;
 
     bool is_user_script_frame (void) const { return true; }
 
@@ -895,6 +901,8 @@ namespace octave
 
     ~user_fcn_stack_frame (void) = default;
 
+    user_fcn_stack_frame * dup (void) const;
+
     bool is_user_fcn_frame (void) const { return true; }
 
     static stack_frame *
@@ -968,6 +976,8 @@ namespace octave
     scope_stack_frame& operator = (const scope_stack_frame& elt) = delete;
 
     ~scope_stack_frame (void) = default;
+
+    scope_stack_frame * dup (void) const;
 
     bool is_scope_frame (void) const { return true; }
 

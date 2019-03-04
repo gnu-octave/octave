@@ -610,6 +610,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           fontsz *= 0.90;  # Reduce legend fontsize to 90% of axes fontsize
           set (hlegend, {"fontunits", "fontsize"}, {fontunits, fontsz});
           set (hlegend, "fontunits", "points");  # legend always works in pts.
+          ## Also inherit colormap from axes if it is different than figure
+          cax_cmap = get (cax, "colormap");
+          if (! isequal (cax_cmap, get (hpar, "colormap")))
+            set (hlegend, "colormap", cax_cmap);
+          endif
           old_hplots = [];
         else
           ## Re-use existing legend.
@@ -1067,6 +1072,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
 
         if (addprops)
+          addlistener (cax, "colormap", {@cb_legend_colormap_update, hlegend});
           addlistener (hlegend, "edgecolor", @cb_legend_text_update);
           addlistener (hlegend, "fontangle", @cb_legend_text_update);
           addlistener (hlegend, "fontname", @cb_legend_text_update);
@@ -1120,6 +1126,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     labels = text_strings;
   endif
 
+endfunction
+
+## Colormap of the base axes has changed.
+function cb_legend_colormap_update (cax, ~, hlegend)
+  set (hlegend, "colormap", get (cax, "colormap"));
 endfunction
 
 ## A non-text property of legend has changed requiring an update.

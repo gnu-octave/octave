@@ -17,8 +17,8 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} quiver3 (@var{u}, @var{v}, @var{w})
 ## @deftypefnx {} {} quiver3 (@var{x}, @var{y}, @var{z}, @var{u}, @var{v}, @var{w})
+## @deftypefn  {} {} quiver3 (@var{z}, @var{u}, @var{v}, @var{w})
 ## @deftypefnx {} {} quiver3 (@dots{}, @var{s})
 ## @deftypefnx {} {} quiver3 (@dots{}, @var{style})
 ## @deftypefnx {} {} quiver3 (@dots{}, "filled")
@@ -32,10 +32,9 @@
 ## then @var{x}, @var{y}, and @var{z} can be specified as vectors and
 ## @code{meshgrid} is used to create the 3-D grid.
 ##
-## If @var{x}, @var{y}, and @var{z} are not given they are assumed to be
-## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where
-## @code{[@var{m}, @var{n}] = size (@var{u})} and
-## @code{@var{p} = max (size (@var{w}))}.
+## If @var{x} and @var{y} are not given they are assumed to be
+## @code{(1:@var{m}, 1:@var{n})} where
+## @code{[@var{m}, @var{n}] = size (@var{u})}.
 ##
 ## The optional input @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 1.0 will

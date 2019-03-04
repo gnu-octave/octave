@@ -43,14 +43,15 @@ function hg = __quiver__ (varargin)
 
   ioff = 3;
   if (nargin < (6 + is3d) || firstnonnumeric < (6 + is3d))
+    if (is3d)
+      z = varargin{ioff++};
+    endif
     u = varargin{ioff++};
     v = varargin{ioff++};
     if (is3d)
       w = varargin{ioff++};
-      [x, y, z] = meshgrid (1:columns (u), 1:rows (u), 1:max (size (w)));
-    else
-      [x, y] = meshgrid (1:columns (u), 1:rows (u));
     endif
+    [x, y] = meshgrid (1:columns (u), 1:rows (u));
     if (nargin >= ioff && isnumeric (varargin{ioff})
         && isscalar (varargin{ioff}))
       autoscale = varargin{ioff++};

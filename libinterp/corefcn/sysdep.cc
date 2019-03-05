@@ -328,7 +328,7 @@ namespace octave
     size_t len = name.length ();
     bool candidate = false;
     if (len > 1 && isalpha(name[0]) && name[1]==':' 
-         && (len == 2 || name[2] == '\\'))
+         && (len == 2 || (len == 3 && name[2] == '\\')))
       candidate = true;
     if (len > 4 && name[0] == '\\' && name[1] == '\\')
       {

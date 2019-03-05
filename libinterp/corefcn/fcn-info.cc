@@ -345,14 +345,14 @@ namespace octave
   //   built-in function
 
   octave_value
-  fcn_info::fcn_info_rep::find (const octave_value_list& args,
-                                const symbol_scope& scope)
+  fcn_info::fcn_info_rep::find (const symbol_scope& scope,
+                                const octave_value_list& args)
   {
     symbol_scope search_scope
       = (scope
          ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
 
-    octave_value retval = xfind (args, search_scope);
+    octave_value retval = xfind (search_scope, args);
 
     if (retval.is_undefined ())
       {
@@ -364,15 +364,15 @@ namespace octave
 
         lp.update ();
 
-        retval = xfind (args, search_scope);
+        retval = xfind (search_scope, args);
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
-                                 const symbol_scope& search_scope)
+  fcn_info::fcn_info_rep::xfind (const symbol_scope& search_scope,
+                                 const octave_value_list& args)
   {
     octave_user_function *current_fcn
       = search_scope ? search_scope.function () : nullptr;

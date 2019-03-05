@@ -129,13 +129,17 @@ namespace octave
             ? p->second.find_autoload () : octave_value ());
   }
 
-  octave_value symbol_table::builtin_find (const std::string& name,
-                                           const symbol_scope& search_scope)
+  octave_value
+  symbol_table::builtin_find (const std::string& name,
+                              const symbol_scope& search_scope_arg)
   {
     if (name.empty ())
       return octave_value ();
 
     fcn_table_iterator p = m_fcn_table.find (name);
+
+    symbol_scope search_scope
+      = (search_scope_arg ? search_scope_arg : current_scope ());
 
     if (p != m_fcn_table.end ())
       return p->second.builtin_find (search_scope);
@@ -154,22 +158,26 @@ namespace octave
     return octave_value ();
   }
 
-  octave_value symbol_table::fcn_table_find (const std::string& name,
-                                             const octave_value_list& args,
-                                             const symbol_scope& search_scope)
+  octave_value
+  symbol_table::fcn_table_find (const std::string& name,
+                                const octave_value_list& args,
+                                const symbol_scope& search_scope_arg)
   {
     if (name.empty ())
       return octave_value ();
 
     fcn_table_iterator p = m_fcn_table.find (name);
 
+    symbol_scope search_scope
+      = (search_scope_arg ? search_scope_arg : current_scope ());
+
     if (p != m_fcn_table.end ())
-      return p->second.find (args, search_scope);
+      return p->second.find (search_scope, args);
     else
       {
         fcn_info finfo (name);
 
-        octave_value fcn = finfo.find (args, search_scope);
+        octave_value fcn = finfo.find (search_scope, args);
 
         if (fcn.is_defined ())
           m_fcn_table[name] = finfo;
@@ -180,8 +188,9 @@ namespace octave
     return octave_value ();
   }
 
-  octave_value symbol_table::find_function (const std::string& name,
-                                            const symbol_scope& search_scope)
+  octave_value
+  symbol_table::find_function (const std::string& name,
+                               const symbol_scope& search_scope_arg)
   {
     if (name.empty ())
       return octave_value ();
@@ -199,17 +208,23 @@ namespace octave
         return find_method (method, dispatch_type);
       }
     else
-      return find_function (name, ovl (), search_scope);
+      {
+        symbol_scope search_scope
+          = (search_scope_arg ? search_scope_arg : current_scope ());
+
+        return find_function (name, ovl (), search_scope);
+      }
   }
 
-  octave_value symbol_table::find_function (const std::string& name,
-                                            const octave_value_list& args,
-                                            const symbol_scope& scope_arg)
+  octave_value
+  symbol_table::find_function (const std::string& name,
+                               const octave_value_list& args,
+                               const symbol_scope& search_scope)
   {
     if (name.empty ())
       return octave_value ();
 
-    return fcn_table_find (name, args, scope_arg);
+    return fcn_table_find (name, args, search_scope);
   }
 
   octave_value

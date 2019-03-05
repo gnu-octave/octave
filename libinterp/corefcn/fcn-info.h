@@ -80,8 +80,8 @@ namespace octave
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args,
-                         const symbol_scope& search_scope);
+      octave_value find (const symbol_scope& search_scope,
+                         const octave_value_list& args);
 
       octave_value builtin_find (const symbol_scope& search_scope);
 
@@ -103,10 +103,10 @@ namespace octave
         return package.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args,
-                                  const symbol_scope& search_scope)
+      octave_value find_function (const symbol_scope& search_scope,
+                                  const octave_value_list& args)
       {
-        return find (args, search_scope);
+        return find (search_scope, args);
       }
 
       void install_cmdline_function (const octave_value& f)
@@ -232,8 +232,8 @@ namespace octave
 
     private:
 
-      octave_value xfind (const octave_value_list& args,
-                          const symbol_scope& search_scope);
+      octave_value xfind (const symbol_scope& search_scope,
+                          const octave_value_list& args);
 
       octave_value x_builtin_find (const symbol_scope& search_scope);
     };
@@ -249,14 +249,14 @@ namespace octave
 
     ~fcn_info (void) = default;
 
-    octave_value find (const octave_value_list& args = octave_value_list (),
-                       const symbol_scope& search_scope = symbol_scope ())
+    octave_value find (const symbol_scope& search_scope,
+                       const octave_value_list& args = octave_value_list ())
     {
-      return m_rep->find (args, search_scope);
+      return m_rep->find (search_scope, args);
     }
 
     octave_value
-    builtin_find (const symbol_scope& search_scope = symbol_scope ())
+    builtin_find (const symbol_scope& search_scope)
     {
       return m_rep->builtin_find (search_scope);
     }
@@ -298,10 +298,10 @@ namespace octave
     }
 
     octave_value
-    find_function (const octave_value_list& args = octave_value_list (),
-                   const symbol_scope& search_scope = symbol_scope ())
+    find_function (const symbol_scope& search_scope,
+                   const octave_value_list& args = octave_value_list ())
     {
-      return m_rep->find_function (args, search_scope);
+      return m_rep->find_function (search_scope, args);
     }
 
     void install_cmdline_function (const octave_value& f)

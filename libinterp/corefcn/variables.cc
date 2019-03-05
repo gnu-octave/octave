@@ -63,6 +63,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "syminfo.h"
 #include "symtab.h"
+#include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -269,6 +270,10 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
 
       if (file_name.empty ())
         file_name = name;
+
+      // "stat" doesn't work on UNC shares and drive letters.
+      if ((search_any || search_file) && octave::drive_or_unc_share (file_name))
+        return 7;
 
       octave::sys::file_stat fs (file_name);
 

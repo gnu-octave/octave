@@ -320,6 +320,57 @@ namespace octave
 #endif
   }
 
+  // Return TRUE if NAME refers to an existing drive letter or UNC share
+  
+  bool drive_or_unc_share (const std::string& name)
+  {
+#if defined (OCTAVE_USE_WINDOWS_API)
+    size_t len = name.length ();
+    bool candidate = false;
+    if (len > 1 && isalpha(name[0]) && name[1]==':' 
+         && (len == 2 || name[2] == '\\'))
+      candidate = true;
+    if (len > 4 && name[0] == '\\' && name[1] == '\\')
+      {
+        // It starts with two slashes.  Find the next slash.
+        size_t next_slash = name.find ("\\", 3);
+        if (next_slash != -1 && len > next_slash+1)
+          {
+            // Check if it ends with the share
+            size_t last_slash = name.find ("\\", next_slash+1);
+            if (last_slash == -1 ||
+                (len > next_slash+2 && last_slash == len-1))
+              candidate = true;
+          }
+      }
+
+    if (candidate)
+      {
+        // Open a handle to the file.
+        std::wstring wname = octave::sys::u8_to_wstring (name);
+        HANDLE h =
+          CreateFileW (wname.c_str (), FILE_READ_ATTRIBUTES,
+                       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                       nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS,
+                       nullptr);
+        if (h != INVALID_HANDLE_VALUE)
+          {
+            CloseHandle (h);
+            return true;
+          }
+      }
+
+    return false;
+
+#else
+
+    octave_unused_parameter (name);
+
+    return false;
+
+#endif
+  }
+  
   void sysdep_init (void)
   {
     // Use a function from libgomp to force loading of OpenMP library.

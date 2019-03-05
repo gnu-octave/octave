@@ -52,6 +52,8 @@ namespace octave
 
   extern OCTINTERP_API bool same_file_internal (const std::string&,
                                                 const std::string&);
+
+  extern OCTINTERP_API bool drive_or_unc_share (const std::string&);
 }
 
 #if defined (OCTAVE_USE_DEPRECATED_FUNCTIONS)

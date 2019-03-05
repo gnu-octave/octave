@@ -53,6 +53,7 @@ icon_IMAGE_FILES = \
   %reldir%/icons/octave-sombrero.png
 
 icon_PNG_SIZES = \
+  1024 \
   512 \
   256 \
   128 \

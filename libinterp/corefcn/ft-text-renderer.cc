@@ -369,7 +369,7 @@ namespace octave
         xoffset (0), line_yoffset (0), yoffset (0), mode (MODE_BBOX),
         color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
         line_xoffset (0), m_ymin (0), m_ymax (0), m_deltax (0),
-        m_max_fontsize (0)
+        m_max_fontsize (0), m_antialias (true)
     { }
 
     // No copying!
@@ -412,6 +412,8 @@ namespace octave
     Matrix get_extent (text_element *elt, double rotation = 0.0);
     Matrix get_extent (const std::string& txt, double rotation,
                        const caseless_str& interpreter);
+
+    void set_anti_aliasing (bool val) { m_antialias = val; };
 
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
@@ -537,6 +539,9 @@ namespace octave
 
     // Used for computing the distance between lines.
     double m_max_fontsize;
+    
+    // Anti-aliasing.
+    bool m_antialias;
 
   };
 
@@ -703,7 +708,17 @@ namespace octave
         break;
       }
   }
-
+  bool is_opaque (const FT_GlyphSlot &glyph, const int x, const int y)
+  {
+    // Borrowed from https://stackoverflow.com/questions/14800827/
+    //    indexing-pixels-in-a-monochrome-freetype-glyph-buffer
+    int pitch = std::abs (glyph->bitmap.pitch);
+    unsigned char *row = &glyph->bitmap.buffer[pitch * y];
+    char cvalue = row[x >> 3];
+    
+    return ((cvalue & (128 >> (x & 7))) != 0);
+  }
+  
   FT_UInt
   ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
   {
@@ -745,7 +760,9 @@ namespace octave
             switch (mode)
               {
               case MODE_RENDER:
-                if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                if (FT_Render_Glyph (face->glyph, (m_antialias
+                                                   ? FT_RENDER_MODE_NORMAL
+                                                   : FT_RENDER_MODE_MONO)))
                   {
                     glyph_index = 0;
                     warn_glyph_render (code);
@@ -777,7 +794,11 @@ namespace octave
                     for (int r = 0; static_cast<unsigned int> (r) < bitmap.rows; r++)
                       for (int c = 0; static_cast<unsigned int> (c) < bitmap.width; c++)
                         {
-                          unsigned char pix = bitmap.buffer[r*bitmap.width+c];
+                          unsigned char pix
+                            = (m_antialias
+                               ? bitmap.buffer[r*bitmap.width+c]
+                               : (is_opaque (face->glyph, c, r) ? 255 : 0));
+                          
                           if (x0+c < 0 || x0+c >= pixels.dim2 ()
                               || y0-r < 0 || y0-r >= pixels.dim3 ())
                             {

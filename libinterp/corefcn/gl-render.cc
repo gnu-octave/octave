@@ -4008,6 +4008,8 @@ namespace octave
   void
   opengl_renderer::set_font (const base_properties& props)
   {
+    bool do_anti_alias = props.get ("fontsmoothing").string_value () == "on";
+    txt_renderer.set_anti_aliasing (do_anti_alias);
     txt_renderer.set_font (props.get ("fontname").string_value (),
                            props.get ("fontweight").string_value (),
                            props.get ("fontangle").string_value (),

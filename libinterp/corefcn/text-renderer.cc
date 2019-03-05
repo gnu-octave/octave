@@ -87,6 +87,13 @@ namespace octave
   }
 
   void
+  text_renderer::set_anti_aliasing (bool val)
+  {
+    if (ok ())
+      rep->set_anti_aliasing (val);
+  }
+
+  void
   text_renderer::set_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size)
   {

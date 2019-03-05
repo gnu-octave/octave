@@ -3630,8 +3630,8 @@ public:
       radio_property fontangle u , "{normal}|italic"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
+      bool_property fontsmoothing u , "on"
       radio_property fontunits SU , "{points}|inches|centimeters|normalized|pixels"
-      bool_property fontsmoothing , "on"
       radio_property fontweight u , "{normal}|bold"
       double_property gridalpha m , 0.15
       radio_property gridalphamode , "{auto}|manual"
@@ -3967,6 +3967,10 @@ public:
     {
       update_font ("fontsize");
       sync_positions ();
+    }
+    void update_fontsmoothing (void)
+    {
+      update_font ("fontsmoothing");
     }
     void update_fontangle (void)
     {
@@ -4347,6 +4351,7 @@ public:
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
+      bool_property fontsmoothing u , "on"
       radio_property fontunits SU , "inches|centimeters|normalized|{points}|pixels"
       radio_property fontweight u , "{normal}|bold"
       radio_property horizontalalignment mu , "{left}|center|right"
@@ -4435,6 +4440,7 @@ public:
     void update_rotation (void) { update_text_extent (); }
     void update_fontname (void) { update_font (); update_text_extent (); }
     void update_fontsize (void) { update_font (); update_text_extent (); }
+    void update_fontsmoothing (void) { update_font (); update_text_extent (); }
 
     void update_color (void)
     {

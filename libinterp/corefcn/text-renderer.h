@@ -62,6 +62,8 @@ namespace octave
     Matrix get_extent (const std::string& txt, double rotation = 0.0,
                        const caseless_str& interpreter = "tex");
 
+    void set_anti_aliasing (bool val);
+    
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
 

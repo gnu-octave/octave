@@ -52,6 +52,9 @@ namespace octave
 
     virtual ~base_text_renderer (void) = default;
 
+    virtual void
+    set_anti_aliasing (bool val) = 0;
+
     virtual Matrix
     get_extent (text_element *elt, double rotation) = 0;
 

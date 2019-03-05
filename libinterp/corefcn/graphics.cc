@@ -9182,6 +9182,8 @@ text::properties::update_font (void)
                          get ("fontangle").string_value (),
                          get ("__fontsize_points__").double_value () * dpr);
 
+  txt_renderer.set_anti_aliasing (is_fontsmoothing ());
+
   Matrix c = get_color_rgb ();
   if (! c.isempty ())
     txt_renderer.set_color (c);
@@ -9474,7 +9476,7 @@ patch::properties::update_data (void)
 
   // check coplanarity for 3D-faces with more than 3 corners
   int fcmax = idx.rows ();
-  if (fcmax > 3 && vert.columns () > 2 && 
+  if (fcmax > 3 && vert.columns () > 2 &&
       ! (facecolor_is ("none") && edgecolor_is ("none")))
     {
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)

@@ -14,6 +14,11 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   (for example, the Y-axis of an axes object with `"ycolor" = "none"`)
   without hiding the entire primitive `"visibility" = "off"`.
 
+- A new property `"FontSmoothing"` has been added to text and axes
+  objects that controls whether anti-aliasing is used during the
+  rendering of characters.  The default is "on" which produces smooth,
+  more visually appealing text. 
+
 - The appearance of patterned lines `"LineStyle" = ":"|"--"|"-."` has
   been improved for small widths (`"LineWidth"` less than 1.5 pixels)
   which is a common scenario.

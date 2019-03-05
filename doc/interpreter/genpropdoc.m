@@ -696,11 +696,11 @@ to be the same as the length of 2 units on the y-axis.  \
         s.doc = doc_fontsize;
         s.valid = "scalar";
 
+      case "fontsmoothing"
+        s.doc = "Control whether any text associated with __objname__ is anti-aliased.";
+
       case "fontunits"
         s.doc = doc_fontunits;
-
-      case "fontsmoothing"
-        s.doc = doc_unused;
 
       case "fontweight"
         s.doc = doc_fontweight;
@@ -1081,6 +1081,9 @@ and location of the text string.";
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
+
+      case "fontsmoothing"
+        s.doc = "Control whether anti-aliasing is used when rendering text.";
 
       case "fontsize"
         s.doc = doc_fontsize;

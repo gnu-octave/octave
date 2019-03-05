@@ -79,12 +79,11 @@ namespace octave
 #endif
 
     QString xdg_config_home = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
-    QDir dir (xdg_config_home);
 
-    if (xdg_config_home.isEmpty () || ! dir.exists ())
+    if (xdg_config_home.isEmpty ())
       m_settings_directory = home_path + "/.config/octave";
     else
-      m_settings_directory = xdg_config_home;
+      m_settings_directory = xdg_config_home + "/octave";
 
     m_settings_file = m_settings_directory + "/qt-settings";
 

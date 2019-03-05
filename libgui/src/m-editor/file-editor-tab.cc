@@ -698,9 +698,16 @@ namespace octave
 
           }
 
-        // make sure the apis file is usable
+        // Make sure the apis file is usable, otherwise the gui might crash,
+        // e.g., in case of max. number of opened files
         QFile f (_prep_apis_file);
-        bool apis_usable = f.open (QIODevice::ReadWrite);
+
+        bool apis_usable = f.open (QIODevice::ReadOnly);
+        if (! apis_usable)
+          {
+            QDir ().mkpath (QFileInfo (f).absolutePath ());
+            apis_usable = f.open (QIODevice::WriteOnly);
+          }
         if (apis_usable)
           f.close ();
 

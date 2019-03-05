@@ -244,7 +244,7 @@ namespace octave
 
     void cache_name (const std::string& name) { m_name = name; }
 
-    octave_user_function *function (void) { return m_fcn; }
+    octave_user_function *function (void) const { return m_fcn; }
 
     void set_function (octave_user_function *fcn) { m_fcn = fcn; }
 
@@ -527,7 +527,7 @@ namespace octave
         m_rep->cache_name (name);
     }
 
-    octave_user_function * function (void)
+    octave_user_function * function (void) const
     {
       return m_rep ? m_rep->function () : nullptr;
     }

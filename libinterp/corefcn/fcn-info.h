@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov.h"
 #include "ovl.h"
+#include "symscope.h"
 
 namespace octave
 {
@@ -79,9 +80,10 @@ namespace octave
 
       octave_value load_class_method (const std::string& dispatch_type);
 
-      octave_value find (const octave_value_list& args);
+      octave_value find (const octave_value_list& args,
+                         const symbol_scope& search_scope);
 
-      octave_value builtin_find (void);
+      octave_value builtin_find (const symbol_scope& search_scope);
 
       octave_value find_method (const std::string& dispatch_type);
 
@@ -101,9 +103,10 @@ namespace octave
         return package.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args)
+      octave_value find_function (const octave_value_list& args,
+                                  const symbol_scope& search_scope)
       {
-        return find (args);
+        return find (args, search_scope);
       }
 
       void install_cmdline_function (const octave_value& f)
@@ -229,9 +232,10 @@ namespace octave
 
     private:
 
-      octave_value xfind (const octave_value_list& args);
+      octave_value xfind (const octave_value_list& args,
+                          const symbol_scope& search_scope);
 
-      octave_value x_builtin_find (void);
+      octave_value x_builtin_find (const symbol_scope& search_scope);
     };
 
   public:
@@ -245,14 +249,16 @@ namespace octave
 
     ~fcn_info (void) = default;
 
-    octave_value find (const octave_value_list& args = octave_value_list ())
+    octave_value find (const octave_value_list& args = octave_value_list (),
+                       const symbol_scope& search_scope = symbol_scope ())
     {
-      return m_rep->find (args);
+      return m_rep->find (args, search_scope);
     }
 
-    octave_value builtin_find (void)
+    octave_value
+    builtin_find (const symbol_scope& search_scope = symbol_scope ())
     {
-      return m_rep->builtin_find ();
+      return m_rep->builtin_find (search_scope);
     }
 
     octave_value find_method (const std::string& dispatch_type) const
@@ -275,6 +281,7 @@ namespace octave
       return m_rep->find_autoload ();
     }
 
+    // FIXME: find_function_on_path might be a better name?
     octave_value find_user_function (void)
     {
       return m_rep->find_user_function ();
@@ -290,10 +297,11 @@ namespace octave
       return m_rep->is_package_defined ();
     }
 
-    octave_value find_function (const octave_value_list& args
-                                = octave_value_list ())
+    octave_value
+    find_function (const octave_value_list& args = octave_value_list (),
+                   const symbol_scope& search_scope = symbol_scope ())
     {
-      return m_rep->find_function (args);
+      return m_rep->find_function (args, search_scope);
     }
 
     void install_cmdline_function (const octave_value& f)

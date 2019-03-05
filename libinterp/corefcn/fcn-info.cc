@@ -333,21 +333,26 @@ namespace octave
 
   // Find function definition according to the following precedence list:
   //
+  //   nested functions (and subfunctions)
+  //   local functions in the current file
   //   private function
   //   class method
   //   class constructor
   //   command-line function
   //   autoload function
-  //   function on the path
+  //   functions on the load_path (current directory is always first)
+  //   package (FIXME: does this belong here?)
   //   built-in function
-  //
-  // Matlab documentation states that constructors have higher precedence
-  // than methods, but that does not seem to be the case.
 
   octave_value
-  fcn_info::fcn_info_rep::find (const octave_value_list& args)
+  fcn_info::fcn_info_rep::find (const octave_value_list& args,
+                                const symbol_scope& scope)
   {
-    octave_value retval = xfind (args);
+    symbol_scope search_scope
+      = (scope
+         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+
+    octave_value retval = xfind (args, search_scope);
 
     if (retval.is_undefined ())
       {
@@ -359,20 +364,30 @@ namespace octave
 
         lp.update ();
 
-        retval = xfind (args);
+        retval = xfind (args, search_scope);
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::xfind (const octave_value_list& args)
+  fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
+                                 const symbol_scope& search_scope)
   {
-    symbol_scope curr_scope
-      = __get_current_scope__ ("fcn_info::fcn_info_rep::xfind");
-
     octave_user_function *current_fcn
-      = curr_scope ? curr_scope.function () : nullptr;
+      = search_scope ? search_scope.function () : nullptr;
+
+    // Subfunction.  I think it only makes sense to check for
+    // subfunctions if we are currently executing a function defined
+    // from a .m file.
+
+    if (search_scope)
+      {
+        octave_value fcn = search_scope.find_subfunction (name);
+
+        if (fcn.is_defined ())
+          return fcn;
+      }
 
     // Local function.
 
@@ -384,16 +399,6 @@ namespace octave
         // they were defined within class methods and use local functions
         // (helper functions) we can still use those anonymous functions
 
-#if 0
-        if (current_fcn->is_anonymous_function ())
-          {
-            if (fcn_file.empty ()
-                && curr_scope.parent_scope ()
-                && curr_scope.parent_scope ()->function () != nullptr)
-              fcn_file
-                = curr_scope.parent_scope ()->function ()->fcn_file_name();
-          }
-#endif
         if (! fcn_file.empty ())
           {
             auto r = local_functions.find (fcn_file);
@@ -538,9 +543,13 @@ namespace octave
   // so class methods and constructors are skipped.
 
   octave_value
-  fcn_info::fcn_info_rep::builtin_find (void)
+  fcn_info::fcn_info_rep::builtin_find (const symbol_scope& scope)
   {
-    octave_value retval = x_builtin_find ();
+    symbol_scope search_scope
+      = (scope
+         ? scope : __get_current_scope__("fcn_info::fcn_info_rep::find"));
+
+    octave_value retval = x_builtin_find (search_scope);
 
     if (! retval.is_defined ())
       {
@@ -552,14 +561,14 @@ namespace octave
 
         lp.update ();
 
-        retval = x_builtin_find ();
+        retval = x_builtin_find (search_scope);
       }
 
     return retval;
   }
 
   octave_value
-  fcn_info::fcn_info_rep::x_builtin_find (void)
+  fcn_info::fcn_info_rep::x_builtin_find (const symbol_scope& search_scope)
   {
     // Built-in function.
     if (built_in_function.is_defined ())
@@ -586,11 +595,8 @@ namespace octave
 
     // Private function.
 
-    symbol_scope curr_scope
-      = __get_current_scope__ ("fcn_info::fcn_info_rep::x_builtin_find");
-
-    octave_user_function *current_fcn = curr_scope ? curr_scope.function ()
-                                                   : nullptr;
+    octave_user_function *current_fcn
+      = search_scope ? search_scope.function () : nullptr;
 
     if (current_fcn)
       {
@@ -652,9 +658,9 @@ namespace octave
     // subfunctions if we are currently executing a function defined
     // from a .m file.
 
-    if (curr_scope)
+    if (search_scope)
       {
-        octave_value val = curr_scope.find_subfunction (name);
+        octave_value val = search_scope.find_subfunction (name);
 
         if (val.is_defined ())
           return val;

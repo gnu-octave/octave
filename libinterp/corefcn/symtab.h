@@ -76,10 +76,14 @@ namespace octave
 
     octave_value find_autoload (const std::string& name);
 
-    octave_value builtin_find (const std::string& name);
+    octave_value
+    builtin_find (const std::string& name,
+                  const symbol_scope& search_scope = symbol_scope ());
 
-    octave_value fcn_table_find (const std::string& name,
-                                 const octave_value_list& args = ovl ());
+    octave_value
+    fcn_table_find (const std::string& name,
+                    const octave_value_list& args = ovl (),
+                    const symbol_scope& search_scope = symbol_scope ());
 
     // If NAME is of the form @CLASS/FUNCTION, call
     //
@@ -87,15 +91,19 @@ namespace octave
     //
     // otherwise call
     //
-    //   function_function (NAME, ovl ())
+    //   find_function (NAME, ovl ())
 
-    octave_value find_function (const std::string& name);
+    octave_value
+    find_function (const std::string& name,
+                   const symbol_scope& search_scope = symbol_scope ());
 
     // NAME should just be function name; dispatch type determined
     // from types of ARGS.
 
-    octave_value find_function (const std::string& name,
-                                const octave_value_list& args);
+    octave_value
+    find_function (const std::string& name,
+                   const octave_value_list& args,
+                   const symbol_scope& search_scope = symbol_scope ());
 
     octave_value find_user_function (const std::string& name);
 

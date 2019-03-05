@@ -11616,6 +11616,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
   if (cb_arg.is_defined () && ! cb_arg.isempty ())
     {
       octave_value_list args;
+      octave_value ov_fcn;
       octave_function *fcn = nullptr;
 
       args(0) = h.as_octave_value ();
@@ -11640,8 +11641,10 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       // Copy CB because "function_value" method is non-const.
       octave_value cb = cb_arg;
 
-      if (cb.is_function () || cb.is_function_handle ())
+      if (cb.is_function ())
         fcn = cb.function_value ();
+      else if (cb.is_function_handle ())
+        ov_fcn = cb;
       else if (cb.is_string ())
         {
           int status;
@@ -11669,7 +11672,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
         {
           Cell c = cb.cell_value ();
 
-          fcn = c(0).function_value ();
+          ov_fcn = c(0);
 
           for (int i = 1; i < c.numel () ; i++)
             args(1+i) = c(i);
@@ -11681,10 +11684,13 @@ gh_manager::do_execute_callback (const graphics_handle& h,
                  nm.c_str ());
         }
 
-      if (fcn)
+      if (fcn || ov_fcn.is_defined ())
         try
           {
-            octave::feval (fcn, args);
+            if (ov_fcn.is_defined ())
+              octave::feval (ov_fcn, args);
+            else
+              octave::feval (fcn, args);
           }
         catch (octave::execution_exception&)
           {

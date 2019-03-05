@@ -461,6 +461,11 @@ v = cellfun (@@det, a); # faster
   {
     if (func.is_function_handle ())
       {
+        // We can't check for overloads now.  Is there something else we
+        // should be doing instead?
+        goto nevermind;
+
+#if 0
         octave_fcn_handle *f = func.fcn_handle_value ();
 
         // Overloaded function handles need to check the type of the
@@ -468,6 +473,7 @@ v = cellfun (@@det, a); # faster
         // optimized this way.
         if (f -> is_overloaded ())
           goto nevermind;
+#endif
       }
 
     std::string name = func.function_value () -> name ();
@@ -1176,6 +1182,11 @@ arrayfun (@@str2num, [1234],
         {
           if (func.is_function_handle ())
             {
+              // We can't check for overloads now.  Is there something
+              // else we should be doing instead?
+              goto nevermind;
+
+#if 0
               octave_fcn_handle *f = func.fcn_handle_value ();
 
               // Overloaded function handles need to check the type of the
@@ -1183,7 +1194,9 @@ arrayfun (@@str2num, [1234],
               // optimized this way.
               if (f -> is_overloaded ())
                 goto nevermind;
+#endif
             }
+
           octave_value f
             = symtab.find_function (func.function_value () -> name ());
 

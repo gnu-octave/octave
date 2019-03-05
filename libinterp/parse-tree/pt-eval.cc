@@ -1804,9 +1804,6 @@ namespace octave
     // Save old and set current symbol table context, for
     // eval_undefined_error().
 
-    //    std::cerr << "eval: " << user_function.name ()
-    //              << " with closure_frames: " << closure_frames << std::endl;
-
     m_call_stack.push (&user_function, &frame, closure_frames);
 
     frame.protect_var (Vtrack_line_num);
@@ -1930,11 +1927,8 @@ namespace octave
               {
                 octave_fcn_handle *fh = val.fcn_handle_value ();
 
-                if (fh && fh->is_nested ())
-                  {
-                    // std::cerr << "pushing closure context" << std::endl;
-                    fh->push_closure_context (*this);
-                  }
+                if (fh)
+                  fh->push_closure_context (*this);
               }
           }
       }

@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
+#include "symscope.h"
 
 namespace octave
 {
@@ -56,27 +57,26 @@ public:
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : fcn (), nm (), has_overloads (false), overloads (),
-      m_is_nested (false), m_closure_frames (nullptr)
+    : fcn (), nm (), m_scope (), m_is_nested (false),
+      m_closure_frames (nullptr)
   { }
 
-  octave_fcn_handle (const std::string& n)
-    : fcn (), nm (n), has_overloads (false), overloads (),
-      m_is_nested (false), m_closure_frames (nullptr)
-  { }
-
-  octave_fcn_handle (const octave_value& f,  const std::string& n = anonymous);
-
-  octave_fcn_handle (const octave_fcn_handle& fh)
-    : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm),
-      has_overloads (fh.has_overloads), overloads (),
-      m_is_nested (fh.m_is_nested), m_closure_frames (fh.m_closure_frames)
+  octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n)
+    : fcn (), nm (n), m_scope (scope), m_is_nested (false),
+      m_closure_frames (nullptr)
   {
-    for (int i = 0; i < btyp_num_types; i++)
-      builtin_overloads[i] = fh.builtin_overloads[i];
-
-    overloads = fh.overloads;
+    if (! nm.empty () && nm[0] == '@')
+      nm = nm.substr (1);
   }
+
+  octave_fcn_handle (const octave::symbol_scope& scope,
+                     const octave_value& f,
+                     const std::string& n = anonymous);
+
+  octave_fcn_handle (const octave_value& f,
+                     const std::string& n = anonymous);
+
+  octave_fcn_handle (const octave_fcn_handle& fh) = default;
 
   ~octave_fcn_handle (void);
 
@@ -100,23 +100,14 @@ public:
 
   bool is_function_handle (void) const { return true; }
 
-  builtin_type_t builtin_type (void) const { return btyp_func_handle; }
-
-  bool is_overloaded (void) const { return has_overloads; }
-
   bool is_nested (void) const { return m_is_nested; }
 
   dim_vector dims (void) const;
 
-  octave_function * function_value (bool = false)
-  {
-    return fcn.function_value ();
-  }
-
-  octave_user_function * user_function_value (bool = false)
-  {
-    return fcn.user_function_value ();
-  }
+  // FIXME: These must go away.  They don't do the right thing for
+  // scoping or overloads.
+  octave_function * function_value (bool = false);
+  octave_user_function * user_function_value (bool = false);
 
   octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
@@ -127,23 +118,6 @@ public:
   void push_closure_context (octave::tree_evaluator& tw);
 
   octave_value workspace (void) const;
-
-  void set_overload (builtin_type_t btyp, const octave_value& ov_fcn)
-  {
-    if (btyp != btyp_unknown)
-      {
-        has_overloads = true;
-        builtin_overloads[btyp] = ov_fcn;
-      }
-
-  }
-
-  void set_overload (const std::string& dispatch_type,
-                     const octave_value& ov_fcn)
-  {
-    has_overloads = true;
-    overloads[dispatch_type] = ov_fcn;
-  }
 
   bool is_equal_to (const octave_fcn_handle&) const;
 
@@ -177,20 +151,22 @@ private:
 
 protected:
 
-  // The function we are handling.
+  // The function we are handling (this should be valid for handles to
+  // anonymous functions and some other special cases).  Otherwise, we
+  // perform dynamic lookup based on the name of the function we are
+  // handling and the scope where the funtion handle object was created.
   octave_value fcn;
 
-  // The name of the handle, including the "@".
+  // The function we would find without considering argument types.  We
+  // cache this value so that the function_value and user_function_value
+  // methods may continue to work.
+  octave_value m_generic_fcn;
+
+  // The name of the handle, not including the "@".
   std::string nm;
 
-  // Whether the function is overloaded at all.
-  bool has_overloads;
-
-  // Overloads for builtin types.  We use array to make lookup faster.
-  octave_value builtin_overloads[btyp_num_types];
-
-  // Overloads for other classes.
-  str_ov_map overloads;
+  // The scope where this object was defined.
+  octave::symbol_scope m_scope;
 
   // TRUE means this is a handle to a nested function.
   bool m_is_nested;

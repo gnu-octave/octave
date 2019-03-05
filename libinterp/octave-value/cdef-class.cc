@@ -56,12 +56,19 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   static octave_value
-  make_fcn_handle (const octave_value& fcn, const std::string& nm)
+  make_fcn_handle (interpreter& interp, const octave_value& fcn,
+                   const std::string& nm)
   {
     octave_value retval;
 
     if (fcn.is_defined ())
-      retval = octave_value (new octave_fcn_handle (fcn, nm));
+      {
+        tree_evaluator& tw = interp.get_evaluator ();
+
+        symbol_scope curr_scope = tw.get_current_scope ();
+
+        retval = octave_value (new octave_fcn_handle (curr_scope, fcn, nm));
+      }
 
     return retval;
   }
@@ -946,10 +953,12 @@ namespace octave
 
                     if (mprefix == "get.")
                       get_methods[mname.substr (4)] =
-                        make_fcn_handle (mtd, full_class_name + '>' + mname);
+                        make_fcn_handle (interp, mtd,
+                                         full_class_name + '>' + mname);
                     else if (mprefix == "set.")
                       set_methods[mname.substr (4)] =
-                        make_fcn_handle (mtd, full_class_name + '>' + mname);
+                        make_fcn_handle (interp, mtd,
+                                         full_class_name + '>' + mname);
                     else
                       {
                         cdef_method meth = cdm.make_method (retval, mname, mtd);

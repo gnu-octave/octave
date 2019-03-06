@@ -639,15 +639,9 @@ namespace octave
         bool update_apis = false;  // flag, whether update of apis files
 
         // get path to prepared api info
-#if defined (HAVE_QSTANDARDPATHS)
-        QString prep_apis_path
-          = QStandardPaths::writableLocation (QStandardPaths::HomeLocation)
-            + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
-#else
-        QString prep_apis_path
-          = QDesktopServices::storageLocation (QDesktopServices::HomeLocation)
-            + "/.config/octave/" + QString (OCTAVE_VERSION) + "/qsci/";
-#endif
+        QFileInfo settings_file = resource_manager::get_settings_file ();
+        QString prep_apis_path = settings_file.absolutePath () + "/"
+                                  + QString (OCTAVE_VERSION) + "/qsci/";
 
         // get settings which infos are used for octave
         bool octave_builtins = settings->value (

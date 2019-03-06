@@ -57,6 +57,13 @@ Free Software Foundation, Inc.
 #include "singleton-cleanup.h"
 #include "unistd-wrappers.h"
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include "uniconv-wrappers.h"
+
+#  include <windows.h>
+#  include <shlobj.h>
+#endif
+
 namespace octave
 {
   namespace sys
@@ -148,6 +155,13 @@ namespace octave
     }
 
     std::string
+    env::get_user_config_directory ()
+    {
+      return (instance_ok ())
+        ? instance->do_get_user_config_directory () : "";
+    }
+
+    std::string
     env::get_program_name (void)
     {
       return (instance_ok ())
@@ -219,6 +233,32 @@ namespace octave
 #endif
 
       return tempd;
+    }
+
+    std::string
+    env::do_get_user_config_directory (void) const
+    {
+      std::string cfg_dir;
+
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && defined (OCTAVE_USE_WINDOWS_API)
+      wchar_t path[MAX_PATH+1];
+      if (SHGetFolderPathW (nullptr,
+                            CSIDL_LOCAL_APPDATA | CSIDL_FLAG_DONT_VERIFY,
+                            nullptr, SHGFP_TYPE_CURRENT, path) == S_OK)
+        {
+          char *local_app_data = u8_from_wchar (path);
+          cfg_dir = local_app_data;
+          free (local_app_data);
+        }
+#else
+      cfg_dir = do_getenv ("XDG_CONFIG_HOME");
+
+      if (cfg_dir.empty ())
+        cfg_dir = do_get_home_directory () + sys::file_ops::dir_sep_str ()
+             + ".config";
+#endif
+
+      return cfg_dir;
     }
 
     // FIXME: this leaves no way to distinguish between a

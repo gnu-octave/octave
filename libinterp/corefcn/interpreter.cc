@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "file-ops.h"
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
@@ -889,6 +890,26 @@ namespace octave
               {
                 handle_exception (e);
               }
+          }
+
+        // Try to execute commands from $CONFIG/octave/octaverc, where
+        // $CONFIG is the platform-dependent location for user local
+        // configuration files.
+
+        std::string user_config_dir = sys::env::get_user_config_directory ();
+
+        std::string cfg_dir = user_config_dir + sys::file_ops::dir_sep_str ()
+                            + "octave";
+
+        std::string cfg_rc = sys::env::make_absolute ("octaverc", cfg_dir);
+
+        if (! cfg_rc.empty ())
+          {
+            int status = safe_source_file (cfg_rc, context, verbose,
+                                           require_file);
+
+            if (status)
+              exit_status = status;
           }
 
         // Try to execute commands from $HOME/$OCTAVE_INITFILE and

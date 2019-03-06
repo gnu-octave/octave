@@ -358,8 +358,12 @@ The package manager currently recognizes the following keywords
 Name of the package.
 
 @item Version
-Version of the package.  A package version must be 3 numbers separated
-by dots.
+Version of the package.  A package version is typically digits separated by
+dots but may also contain @samp{+}, @samp{-}, @samp{~}, and alphanumeric
+characters (in the "C" locale).  For example, @qcode{"2.1.0+"} could indicate
+a development version of a package.
+@c regexp in get_description.m:is_valid_pkg_version_string
+Versions are compared using @ref{XREFcompare_versions,,compare_versions}.
 
 @item Date
 Date of last update.

@@ -68,11 +68,20 @@ function h = line (varargin)
 
   if (isempty (hax))
     hax = gca ();
+    oldfig = [];
   else
     hax = hax(1);
+    oldfig = get (0, "currentfigure");
+    set (0, "currentfigure", ancestor (hax, "figure"));
   endif
 
-  htmp = __line__ (hax, varargin{:});
+  unwind_protect
+    htmp = __line__ (hax, varargin{:});
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

@@ -559,9 +559,12 @@ get_temp_directory (void)
 {
   std::string tempd;
 
+  tempd = octave_getenv ("TMPDIR");
+
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
-  tempd = octave_getenv ("TEMP");
+  if (tempd.empty ())
+    tempd = octave_getenv ("TEMP");
 
   if (tempd.empty ())
     tempd = octave_getenv ("TMP");
@@ -577,8 +580,6 @@ get_temp_directory (void)
     tempd = R"(c:\temp)";
 
 #else
-
-  tempd = octave_getenv ("TMP");
 
 #if defined (P_tmpdir)
   if (tempd.empty ())

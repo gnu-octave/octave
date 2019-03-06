@@ -467,7 +467,7 @@ function [local_packages, global_packages] = pkg (varargin)
                   error ("pkg: file not found: %s", file);
                 endif
               endif
-              files{file_idx} = local_files{end};
+              files{strcmp (files, file)} = local_files{end};
 
             endfor
           endif

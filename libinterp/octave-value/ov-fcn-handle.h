@@ -57,16 +57,16 @@ public:
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : fcn (), nm (), m_scope (), m_is_nested (false),
+    : m_fcn (), m_name (), m_scope (), m_is_nested (false),
       m_closure_frames (nullptr)
   { }
 
   octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n)
-    : fcn (), nm (n), m_scope (scope), m_is_nested (false),
+    : m_fcn (), m_name (n), m_scope (scope), m_is_nested (false),
       m_closure_frames (nullptr)
   {
-    if (! nm.empty () && nm[0] == '@')
-      nm = nm.substr (1);
+    if (! m_name.empty () && m_name[0] == '@')
+      m_name = m_name.substr (1);
   }
 
   octave_fcn_handle (const octave::symbol_scope& scope,
@@ -111,9 +111,9 @@ public:
 
   octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
-  octave_value fcn_val (void) const { return fcn; }
+  octave_value fcn_val (void) const { return m_fcn; }
 
-  std::string fcn_name (void) const { return nm; }
+  std::string fcn_name (void) const { return m_name; }
 
   void push_closure_context (octave::tree_evaluator& tw);
 
@@ -141,7 +141,7 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   // Simple function handles are printed without a newline.
-  bool print_as_scalar (void) const { return nm != anonymous; }
+  bool print_as_scalar (void) const { return m_name != anonymous; }
 
 private:
 
@@ -155,7 +155,7 @@ protected:
   // anonymous functions and some other special cases).  Otherwise, we
   // perform dynamic lookup based on the name of the function we are
   // handling and the scope where the funtion handle object was created.
-  octave_value fcn;
+  octave_value m_fcn;
 
   // The function we would find without considering argument types.  We
   // cache this value so that the function_value and user_function_value
@@ -163,7 +163,7 @@ protected:
   octave_value m_generic_fcn;
 
   // The name of the handle, not including the "@".
-  std::string nm;
+  std::string m_name;
 
   // The scope where this object was defined.
   octave::symbol_scope m_scope;
@@ -184,7 +184,7 @@ protected:
 namespace octave
 {
   extern octave_value
-  make_fcn_handle (interpreter& interp, const std::string& nm);
+  make_fcn_handle (interpreter& interp, const std::string& name);
 }
 
 #endif

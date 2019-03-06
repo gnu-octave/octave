@@ -43,13 +43,13 @@ octave_fcn_inline : public octave_fcn_handle
 public:
 
   octave_fcn_inline (void)
-    : octave_fcn_handle (), iftext (), ifargs () { }
+    : octave_fcn_handle (), m_text (), m_args () { }
 
   octave_fcn_inline (const std::string& f, const string_vector& a,
                      const std::string& n = "");
 
   octave_fcn_inline (const octave_fcn_inline& fi)
-    : octave_fcn_handle (fi), iftext (fi.iftext), ifargs (fi.ifargs) { }
+    : octave_fcn_handle (fi), m_text (fi.m_text), m_args (fi.m_args) { }
 
   ~octave_fcn_inline (void) = default;
 
@@ -62,9 +62,9 @@ public:
 
   octave_fcn_inline * fcn_inline_value (bool = false) { return this; }
 
-  std::string fcn_text (void) const { return iftext; }
+  std::string fcn_text (void) const { return m_text; }
 
-  string_vector fcn_arg_names (void) const { return ifargs; }
+  string_vector fcn_arg_names (void) const { return m_args; }
 
   octave_value convert_to_str_internal (bool, bool, char) const;
 
@@ -92,10 +92,10 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
   // The expression of an inline function.
-  std::string iftext;
+  std::string m_text;
 
   // The args of an inline function.
-  string_vector ifargs;
+  string_vector m_args;
 };
 
 #endif

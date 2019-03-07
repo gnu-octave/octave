@@ -71,15 +71,17 @@ function h = clf (varargin)
 
   if (do_reset)
     ## Delete all the children, including the ones with hidden handles,
-    ## except default menus.
+    ## except default menus and toolbar.
     kids = allchild (hfig);
     ismenu = cellfun (@(s) strncmp (s, "__default_menu_", 15), ...
                       get (kids, "tag"));
-    delete (kids(! ismenu));
+    istoolbar = cellfun (@(s) strncmp (s, "__default_toolbar_menu_", 18), ...
+                         get (kids, "tag"));
+    delete (kids(! ismenu & ! istoolbar));
     reset (hfig);
 
     ## Recover figure listeners which have been deleted
-    __add_default_menu__ (hfig, kids(ismenu));
+    __add_default_menu__ (hfig, kids(ismenu), kids(istoolbar));
 
     __set_default_mouse_modes__ (hfig);
   else

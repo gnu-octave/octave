@@ -94,7 +94,8 @@ namespace QtHandles
       dynamic_cast<Figure *> (Object::fromQObject (bar->parentWidget ()));
 
     if (m_figure)
-      m_figure->addCustomToolBar (bar, tp.is_visible ());
+      m_figure->addCustomToolBar (bar, tp.is_visible (),
+                                  tp.get_tag () == "__default_toolbar__");
 
     bar->installEventFilter (this);
   }

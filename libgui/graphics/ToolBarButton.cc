@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ToolBarButton.h"
 #include "QtHandlesUtils.h"
+#include "resource-manager.h"
 
 namespace QtHandles
 {
@@ -41,8 +42,22 @@ namespace QtHandles
 
     action->setToolTip (Utils::fromStdString (tp.get_tooltipstring ()));
     action->setVisible (tp.is_visible ());
-    QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
-    action->setIcon (QIcon (QPixmap::fromImage (img)));
+
+    // Get the icon data from cdata or as a named icon
+    QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
+    
+    if (img.width () == 0)
+      {
+        QIcon ico;
+        std::string name = tp.get___named_icon__ ();
+        if (! name.empty ())
+          ico = octave::resource_manager::icon (QString::fromStdString (name));
+
+        action->setIcon (ico);
+      }
+    else   
+      action->setIcon (QIcon (QPixmap::fromImage (img)));
+    
     if (tp.is_separator ())
       {
         m_separator = new QAction (action);
@@ -83,9 +98,20 @@ namespace QtHandles
 
       case T::properties::ID_CDATA:
         {
-          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
-
-          action->setIcon (QIcon (QPixmap::fromImage (img)));
+          // Get the icon data from cdata or as a named icon
+          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
+          
+          if (img.width () == 0)
+            {
+              QIcon ico;
+              std::string name = tp.get___named_icon__ ();
+              if (! name.empty ())
+                ico = octave::resource_manager::icon (QString::fromStdString (name));
+              action->setIcon (ico);
+          
+            }
+          else
+            action->setIcon (QIcon (QPixmap::fromImage (img)));
         }
         break;
 

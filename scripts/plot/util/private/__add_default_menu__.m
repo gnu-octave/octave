@@ -28,7 +28,12 @@
 
 ## Author: Kai Habel
 
-function __add_default_menu__ (hf, hmenu = [])
+function __add_default_menu__ (hf, hmenu = [], htb = [])
+
+  ## Gnuplot doesn't handle uimenu and uitoolbar objects
+  if (strcmp (graphics_toolkit (), "gnuplot"))
+    return
+  endif
 
   ## Create
   if (isempty (hmenu))
@@ -37,9 +42,9 @@ function __add_default_menu__ (hf, hmenu = [])
                   "tag", "__default_menu__File");
     uimenu (hui, "label", "&Open", "callback", @open_cb, ...
             "accelerator", "o");
-    uimenu (hui, "label", "&Save", "callback", @save_cb, ...
+    uimenu (hui, "label", "&Save", "callback", {@save_cb, "save"}, ...
             "accelerator", "s");
-    uimenu (hui, "label", "Save &As", "callback", @save_cb, ...
+    uimenu (hui, "label", "Save &As", "callback", {@save_cb, "saveas"}, ...
             "accelerator", "S");
     uimenu (hui, "label", "&Close", "callback", @close_cb, ...
             "accelerator", "w", "separator", "on");
@@ -86,11 +91,64 @@ function __add_default_menu__ (hf, hmenu = [])
     uimenu (hui2, "label", "Disable mousezoom", "tag", "zoom_off", ...
             "callback", @guimode_cb);
     hmenu(3) = hui;
+
+    ## Default toolbar
+    init_mouse_tools (hf);
+    htb = uitoolbar (hf, "tag", "__default_toolbar__", ...
+                     "handlevisibility", "off");
+
+    ht(1) = uitoggletool (htb, "tooltipstring", "Pan", ...
+                          "tag", "__default_button_pan__", ...
+                          "__named_icon__", "figure-pan");
+    ht(2) = uitoggletool (htb, "tooltipstring", "Rotate", ...
+                          "tag", "__default_button_rotate__", ...
+                          "__named_icon__", "figure-rotate");
+
+    ht(3) = uitoggletool (htb, "tooltipstring", "Zoom In", ...
+                          "tag", "__default_button_zoomin__", ...
+                          "__named_icon__", "figure-zoom-in", ...
+                          "separator", "on");
+    ht(4) = uitoggletool (htb, "tooltipstring", "Zoom Out", ...
+                          "tag", "__default_button_zoomout__", ...
+                          "__named_icon__", "figure-zoom-out");
+    uipushtool (htb, "tooltipstring", "Automatic limits for current axes", ...
+                "clickedcallback", @auto_cb, ...
+                "__named_icon__", "figure-zoom-original");
+
+    ht(5) = uitoggletool (htb, "tooltipstring", "Insert Text", ...
+                          "tag", "__default_button_text__", ...
+                          "separator", "on", "__named_icon__", "figure-text");
+
+    uipushtool (htb, "tooltipstring", "Toggle current axes visibility", ...
+                "clickedcallback", @axes_cb, "separator", "on", ...
+                "__named_icon__", "figure-axes");
+    uipushtool (htb, "tooltipstring", "Toggle current axes grid visibility", ...
+                "clickedcallback", @grid_cb,  "__named_icon__", "figure-grid");
+
+    set (ht(1), "oncallback", {@mouse_tools_cb, ht, "pan"}, ...
+         "offcallback", {@mouse_tools_cb, ht, "pan"});
+    set (ht(2), "oncallback", {@mouse_tools_cb, ht, "rotate"}, ...
+         "offcallback", {@mouse_tools_cb, ht, "rotate"});
+    set (ht(3), "oncallback", {@mouse_tools_cb, ht, "zoomin"}, ...
+         "offcallback", {@mouse_tools_cb, ht, "zoomin"});
+    set (ht(4), "oncallback", {@mouse_tools_cb, ht, "zoomout"}, ...
+         "offcallback", {@mouse_tools_cb, ht, "zoomout"});
+    set (ht(5), "oncallback", {@mouse_tools_cb, ht, "text"}, ...
+         "offcallback", {@mouse_tools_cb, ht, "text"});
   endif
 
-  ## Figure listeners
+  ## Add/Restore figure listeners
   toggle_visibility_cb (hf, [], hmenu);
   addlistener (hf, "menubar", {@toggle_visibility_cb, hmenu});
+
+  if (! exist ("ht", "var"))
+    ht = get (htb, "children")(end:-1:1);
+    istoggletool = strcmp (get (ht, "type"), "uitoggletool");
+    ht(! istoggletool) = [];
+  endif
+
+  addlistener (hf, "__mouse_mode__", {@mouse_tools_cb, ht, "mode"});
+  addlistener (hf, "__zoom_mode__", {@mouse_tools_cb, ht, "mode"});
 
 endfunction
 
@@ -112,28 +170,30 @@ function open_cb (h, e)
   endif
 endfunction
 
-function save_cb (h, e)
-  [hcbo, hfig] = gcbo ();
-  lbl = get (hcbo, "label");
-  if (strcmp (lbl, "&Save"))
-    fname = get (hfig, "filename");
+function save_cb (h, e, action)
+  hfig = gcbf ();
+  fname = get (hfig, "filename");
+
+  if (strcmp (action, "save"))
     if (isempty (fname))
       __save_as__ (hfig);
     else
       saveas (hfig, fname);
     endif
-  elseif (strcmp (lbl, "Save &As"))
-    __save_as__ (hfig);
+  elseif (strcmp (action, "saveas"))
+    __save_as__ (hfig, fname);
   endif
 endfunction
 
 
-function __save_as__ (hf)
-  [filename, filedir] = uiputfile ...
-    ({"*.ofig", "Octave Figure File";
-      "*.eps;*.epsc;*.pdf;*.svg;*.ps;*.tikz", "Vector Image Formats";
-      "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"},
-     "Save Figure", fullfile (pwd, "untitled.ofig"));
+function __save_as__ (hf, fname = "")
+  filter = ifelse (! isempty (fname), fname, ...
+                   {"*.ofig", "Octave Figure File";
+                    "*.eps;*.pdf;*.svg;*.ps", "Vector Image Formats";
+                    "*.gif;*.jpg;*.png;*.tiff", "Bitmap Image Formats"});
+  def = ifelse (! isempty (fname), fname, fullfile (pwd, "untitled.ofig"));
+
+  [filename, filedir] = uiputfile (filter, "Save Figure", def);
 
   if (filename != 0)
     fname = fullfile (filedir, filename);
@@ -161,26 +221,24 @@ function [hax, fig] = __get_axes__ (h)
   hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
-
-function grid_cb (h, e)
-  hax = __get_axes__ (h);
-  id = get (h, "tag");
-  switch (id)
-    case "toggle"
-      arrayfun (@grid, hax);
-    otherwise
-      arrayfun (@(h) grid(h, id), hax);
-  endswitch
-  drawnow ();
-endfunction
-
-
 function autoscale_cb (h, e)
   hax = __get_axes__ (h);
   arrayfun (@(h) axis (h, "auto"), hax);
   drawnow ();
 endfunction
 
+function init_mouse_tools (hf)
+  set (hf, "__pan_mode__", struct ("Enable", "off",
+                                   "Motion", "both",
+                                   "FigureHandle", hf),
+       "__rotate_mode__", struct ("Enable", "off",
+                                  "RotateStyle", "box",
+                                  "FigureHandle", hf),
+       "__zoom_mode__", struct ("Enable", "off",
+                                "Motion", "both",
+                                "Direction", "in",
+                                "FigureHandle", hf));
+endfunction
 
 function guimode_cb (h, e)
   [hax, fig] = __get_axes__ (h);
@@ -202,4 +260,119 @@ function guimode_cb (h, e)
     case "zoom_off"
       arrayfun (@(h) set (h, "mousewheelzoom", 0.0), hax);
   endswitch
+endfunction
+
+function mouse_tools_cb (h, ev, htools, typ = "")
+
+  persistent recursion = false;
+
+  if (! recursion)
+    recursion = true;
+
+    hf = gcbf ();
+
+    if (strcmp (typ, "mode"))
+      ## The mouse mode has been changed from outside this callback,
+      ## change the buttons state accordingly
+      mode = get (hf, "__mouse_mode__");
+      state = "on";
+
+      switch mode
+        case "zoom"
+          zm = get (hf, "__zoom_mode__");
+          if (strcmp (zm.Direction, "in"))
+            htool = htools(3);
+          else
+            htool = htools(4);
+          endif
+        case "pan"
+          htool = htools(1);
+        case "rotate"
+          htool = htools(2);
+        case "text"
+          htool = htools(5);
+        case "none"
+          state = "off";
+          htool = htools;
+      endswitch
+
+      set (htool, "state", state);
+      if (strcmp (state, "on"))
+        set (htools(htools != htool), "state", "off");
+      endif
+
+    else
+      ## Update the mouse mode according to the button state
+      state = get (h, "state");
+
+      switch typ
+        case {"zoomin", "zoomout"}
+          prop = "__zoom_mode__";
+          val = get (hf, prop);
+
+          if (strcmp (state, "on"))
+            if (strcmp (typ, "zoomin"))
+              val.Direction = "in";
+            else
+              val.Direction = "out";
+            endif
+            set (hf, "__mouse_mode__" , "zoom");
+          endif
+          val.Enable = state;
+          set (hf, prop, val)
+
+        case {"pan", "rotate"}
+          prop = ["__", typ, "_mode__"];
+          val = get (hf, prop);
+          if (strcmp (state, "on"))
+            set (hf, "__mouse_mode__" , typ);
+          endif
+          val.Enable = state;
+          set (hf, prop, val);
+
+        case {"text", "select"}
+          if (strcmp (state, "on"))
+            set (hf, "__mouse_mode__" , typ);
+          endif
+      endswitch
+
+      if (strcmp (state, "on"))
+        set (htools(htools != h), "state", "off");
+      elseif (! any (strcmp (get (htools, "state"), "on")))
+        set (hf, "__mouse_mode__" , "none");
+      endif
+    endif
+
+    recursion = false;
+  endif
+
+endfunction
+
+function axes_cb (h)
+  hax = get (gcbf (), "currentaxes");
+  if (! isempty (hax))
+    if (strcmp (get (hax, "visible"), "on"))
+      set (hax, "visible", "off");
+    else
+      set (hax, "visible", "on")
+    endif
+  endif
+endfunction
+
+function grid_cb (h)
+  hax = get (gcbf (), "currentaxes");
+  if (! isempty (hax))
+    if (strcmp (get (hax, "xgrid"), "on") && strcmp (get (hax, "ygrid"), "on"))
+      grid (hax, "off");
+    else
+      grid (hax, "on")
+    endif
+  endif
+endfunction
+
+function auto_cb (h)
+  hax = get (gcbf (), "currentaxes");
+  if (! isempty (hax))
+    axis (hax, "auto");
+  endif
 endfunction

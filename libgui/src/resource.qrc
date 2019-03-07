@@ -26,6 +26,14 @@
         <file>icons/edit-paste.png</file>
         <file>icons/edit-redo.png</file>
         <file>icons/edit-undo.png</file>
+        <file>icons/figure-axes.png</file>
+        <file>icons/figure-grid.png</file>
+        <file>icons/figure-pan.png</file>
+        <file>icons/figure-rotate.png</file>
+        <file>icons/figure-text.png</file>
+        <file>icons/figure-zoom-in.png</file>
+        <file>icons/figure-zoom-original.png</file>
+        <file>icons/figure-zoom-out.png</file>
         <file>icons/folder.png</file>
         <file>icons/folder-new.png</file>
         <file>icons/go-down.png</file>

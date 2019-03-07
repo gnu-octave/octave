@@ -850,7 +850,7 @@ function addbasemenu (hm, hpar, pname, vals, mainlabel = "" )
       val = label = vals{ii};
     else
       val = vals(ii);
-      label = num2str (val);
+      label = disp (val);
     endif
 
     fcn = @() set (hpar, pname, val);
@@ -867,7 +867,7 @@ function handle_check (h, dummy, hmenus, prop, is_numeric)
   vals = get (hmenus, "label");
   current = get (h, prop);
   if (is_numeric)
-    current = num2str (current);
+    current = disp (current);
   endif
 
   idx = strcmp (vals, current);

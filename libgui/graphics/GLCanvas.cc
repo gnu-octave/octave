@@ -159,24 +159,6 @@ namespace QtHandles
       }
   }
 
-  void
-  GLCanvas::toggleAxes (const graphics_handle& gh)
-  {
-    canvasToggleAxes (gh);
-  }
-
-  void
-  GLCanvas::toggleGrid (const graphics_handle& gh)
-  {
-    canvasToggleGrid (gh);
-  }
-
-  void
-  GLCanvas::autoAxes (const graphics_handle& gh)
-  {
-    canvasAutoAxes (gh);
-  }
-
   graphics_object
   GLCanvas::selectFromAxes (const graphics_object& ax, const QPoint& pt)
   {

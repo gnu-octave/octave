@@ -13,7 +13,6 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-FigureWindow.cc \
   %reldir%/moc-ListBoxControl.cc \
   %reldir%/moc-Menu.cc \
-  %reldir%/moc-MouseModeActionGroup.cc \
   %reldir%/moc-Object.cc \
   %reldir%/moc-ObjectFactory.cc \
   %reldir%/moc-ObjectProxy.cc \
@@ -40,12 +39,6 @@ __init_qt___UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(__init_qt___UI))
 
 $(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
 
-BUILT_SOURCES += $(__init_qt___UI_H)
-
-__init_qt___RC = %reldir%/qrc-qthandles.cc
-
-$(__init_qt___RC): | %reldir%/$(octave_dirstamp)
-
 noinst_HEADERS += \
   %reldir%/__init_qt__.h \
   %reldir%/annotation-dialog.h \
@@ -67,7 +60,6 @@ noinst_HEADERS += \
   %reldir%/Logger.h \
   %reldir%/Menu.h \
   %reldir%/MenuContainer.h \
-  %reldir%/MouseModeActionGroup.h \
   %reldir%/Object.h \
   %reldir%/ObjectFactory.h \
   %reldir%/ObjectProxy.h \
@@ -108,7 +100,6 @@ noinst_HEADERS += \
   %reldir%/ListBoxControl.cc \
   %reldir%/Logger.cc \
   %reldir%/Menu.cc \
-  %reldir%/MouseModeActionGroup.cc \
   %reldir%/Object.cc \
   %reldir%/ObjectFactory.cc \
   %reldir%/ObjectProxy.cc \
@@ -130,7 +121,7 @@ noinst_HEADERS += \
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc
 
-nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___RC)
+nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC)
 
 %canon_reldir%___init_qt___la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
@@ -193,20 +184,12 @@ OCT_FILE_PKG_ADD_FILES += \
   $(GRAPHICS_PKG_ADD_FILE)
 
 libgui_EXTRA_DIST += \
-  %reldir%/qthandles.qrc \
-  %reldir%/images/README \
-  %reldir%/images/pan.png \
-  %reldir%/images/rotate.png \
-  %reldir%/images/select.png \
-  %reldir%/images/zoom-in.png \
-  %reldir%/images/zoom-out.png \
   $(__init_qt___UI)
 
 libgui_CLEANFILES += \
   $(GRAPHICS_OCT_FILES) \
   $(GRAPHICS_PKG_ADD_FILE) \
   $(__init_qt___MOC) \
-  $(__init_qt___RC) \
   $(__init_qt___UI_H)
 
 endif

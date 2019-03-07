@@ -5984,6 +5984,7 @@ public:
       string_property tooltipstring , ""
 
       // Octave-specific properties
+      string_property __named_icon__ , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 
@@ -6047,6 +6048,7 @@ public:
       string_property tooltipstring , ""
 
       // Octave-specific properties
+      string_property __named_icon__ , ""
       any_property __object__ h , Matrix ()
     END_PROPERTIES
 

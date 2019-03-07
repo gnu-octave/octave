@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-opengl.h"
 #include "octave-qt-link.h"
+#include "resource-manager.h"
 
 #include "builtin-defun-decls.h"
 
@@ -73,30 +74,45 @@ namespace QtHandles
   Canvas::setCursor (MouseMode mode)
   {
     QWidget *w = qWidget ();
-
+    QCursor cursor = Qt::ArrowCursor;
     if (w)
       {
-        static QCursor origCursor = w->cursor ();
-
         switch (mode)
           {
+          case NoMode:
+          case SelectMode:
+            cursor = Qt::ArrowCursor;
+            break;
+
           case PanMode:
+            cursor = QCursor (octave::resource_manager::icon ("figure-pan")
+                              .pixmap (22, 22));
+            break;
+
           case RotateMode:
-            w->setCursor (Qt::OpenHandCursor);
+            cursor = QCursor (octave::resource_manager::icon ("figure-rotate")
+                              .pixmap (22, 22));
+            break;
+
+          case TextMode:
+            cursor = Qt::IBeamCursor;
             break;
 
           case ZoomInMode:
-            w->setCursor (QPixmap (":/images/zoom-in.png"));
+            cursor = QCursor (octave::resource_manager::icon ("figure-zoom-in")
+                              .pixmap (22, 22), 9, 9);
             break;
 
           case ZoomOutMode:
-            w->setCursor (QPixmap (":/images/zoom-out.png"));
+            cursor = QCursor (octave::resource_manager::icon ("figure-zoom-out")
+                              .pixmap (22, 22), 9, 9);
             break;
 
           default:
-            w->setCursor (origCursor);
+            cursor = Qt::ArrowCursor;
             break;
           }
+        w->setCursor (cursor);
       }
   }
 
@@ -191,73 +207,6 @@ namespace QtHandles
     redraw ();
   }
 
-  void
-  Canvas::canvasToggleAxes (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            if (ap.handlevisibility_is ("on"))
-              {
-                ap.set_visible (! ap.is_visible ());
-
-                redraw (true);
-              }
-          }
-      }
-  }
-
-  void
-  Canvas::canvasToggleGrid (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            std::string tmp;
-
-            // If any grid is off, then turn them all on.  If they are all
-            // on, then turn them off.
-
-            std::string state = ((ap.get_xgrid () == "off"
-                                  || ap.get_ygrid () == "off"
-                                  || ap.get_zgrid () == "off")
-                                 ? "on" : "off");
-
-            ap.set_xgrid (state);
-            ap.set_ygrid (state);
-            ap.set_zgrid (state);
-
-            redraw (true);
-          }
-      }
-  }
-
   static void
   autoscale_axes (axes::properties& ap)
   {
@@ -269,32 +218,6 @@ namespace QtHandles
     ap.set_xlimmode ("auto");
     ap.set_ylimmode ("auto");
     ap.set_zlimmode ("auto");
-  }
-
-  void
-  Canvas::canvasAutoAxes (const graphics_handle& handle)
-  {
-    gh_manager::auto_lock lock;
-
-    graphics_object go = gh_manager::get_object (handle);
-
-    if (go.valid_object ())
-      {
-        figure::properties& fp = Utils::properties<figure> (go);
-
-        graphics_handle ah = fp.get_currentaxes ();
-
-        graphics_object ax = gh_manager::get_object (ah);
-
-        if (ax.valid_object ())
-          {
-            axes::properties& ap = Utils::properties<axes> (ax);
-
-            autoscale_axes (ap);
-
-            redraw (true);
-          }
-      }
   }
 
   void

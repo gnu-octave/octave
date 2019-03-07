@@ -70,10 +70,6 @@ namespace QtHandles
     static Canvas * create (const std::string& name, QWidget *parent,
                             const graphics_handle& handle);
 
-    virtual void toggleAxes (const graphics_handle& handle) = 0;
-    virtual void toggleGrid (const graphics_handle& handle) = 0;
-    virtual void autoAxes (const graphics_handle& handle) = 0;
-
     virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
 
   protected:

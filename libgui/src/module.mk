@@ -24,6 +24,14 @@ octave_gui_ICONS = \
   %reldir%/icons/edit-find-replace.png \
   %reldir%/icons/edit-paste.png \
   %reldir%/icons/edit-redo.png \
+  %reldir%/icons/figure-axes.png \
+  %reldir%/icons/figure-grid.png \
+  %reldir%/icons/figure-pan.png \
+  %reldir%/icons/figure-rotate.png \
+  %reldir%/icons/figure-text.png \
+  %reldir%/icons/figure-zoom-in.png \
+  %reldir%/icons/figure-zoom-original.png \
+  %reldir%/icons/figure-zoom-out.png \
   %reldir%/icons/edit-undo.png \
   %reldir%/icons/folder.png \
   %reldir%/icons/folder-new.png \

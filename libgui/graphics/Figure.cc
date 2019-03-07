@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QAction>
 #include <QActionEvent>
-#include <QActionGroup>
 #include <QApplication>
 #include <QClipboard>
 #include <QEvent>
@@ -50,7 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "Figure.h"
 #include "FigureWindow.h"
-#include "MouseModeActionGroup.h"
 #include "QtHandlesUtils.h"
 
 #include "file-ops.h"
@@ -92,7 +90,7 @@ namespace QtHandles
   Figure::Figure (const graphics_object& go, FigureWindow *win)
     : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
       m_menuBar (nullptr), m_innerRect (), m_outerRect (),
-      m_mouseModeGroup (nullptr), m_previousHeight (0), m_resizable (true)
+      m_previousHeight (0), m_resizable (true)
   {
     m_container = new Container (win);
     win->setCentralWidget (m_container);
@@ -104,30 +102,23 @@ namespace QtHandles
     connect (win, SIGNAL (figureWindowShown ()),
              this, SLOT (figureWindowShown ()));
 
+    // Menubar
+    m_menuBar = new MenuBar (win);
+    win->setMenuBar (m_menuBar);
+    m_menuBar->addReceiver (this);
+
     // Status bar
     m_statusBar = win->statusBar ();
     int boffset = 0;
 
-    // Toolbar and menubar
-    createFigureToolBarAndMenuBar ();
-    int toffset = 0;
-
     if (fp.toolbar_is ("figure")
         || (fp.toolbar_is ("auto") && fp.menubar_is ("figure")))
-      {
-        toffset += m_figureToolBar->sizeHint ().height ();
-        boffset += m_statusBar->sizeHint ().height ();
-      }
-    else
-      {
-        m_figureToolBar->hide ();
-        m_statusBar->hide ();
-      }
+      boffset += m_statusBar->sizeHint ().height ();
 
     m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
     m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
 
-    set_geometry (m_innerRect.adjusted (0, -toffset, 0, boffset));
+    set_geometry (m_innerRect.adjusted (0, 0, 0, boffset));
 
     // Enable mouse tracking unconditionally
     enableMouseTracking ();
@@ -161,55 +152,6 @@ namespace QtHandles
 
   Figure::~Figure (void)
   { }
-
-  static std::string
-  mouse_mode_to_string (MouseMode mode)
-  {
-    switch (mode)
-      {
-      case NoMode:
-        return "none";
-
-      case RotateMode:
-        return "rotate";
-
-      case ZoomInMode:
-        return "zoom in";
-
-      case ZoomOutMode:
-        return "zoom out";
-
-      case PanMode:
-        return "pan";
-
-      case TextMode:
-        return "text";
-
-      default:
-        break;
-      }
-
-    return "none";
-  }
-
-  static MouseMode
-  mouse_mode_from_string (const std::string& mode)
-  {
-    if (mode == "none")
-      return NoMode;
-    else if (mode == "rotate")
-      return RotateMode;
-    else if (mode == "zoom in")
-      return ZoomInMode;
-    else if (mode == "zoom out")
-      return ZoomOutMode;
-    else if (mode == "pan")
-      return PanMode;
-    else if (mode == "text")
-      return TextMode;
-    else
-      return NoMode;
-  }
 
   QString
   Figure::fileName (void)
@@ -251,49 +193,18 @@ namespace QtHandles
         mode += ' ' + direction;
       }
 
-    return mouse_mode_from_string (mode);
-  }
+    if (mode == "rotate")
+      return RotateMode;
+    else if (mode == "zoom in")
+      return ZoomInMode;
+    else if (mode == "zoom out")
+      return ZoomOutMode;
+    else if (mode == "pan")
+      return PanMode;
+    else if (mode == "text")
+      return TextMode;
 
-  void
-  Figure::createFigureToolBarAndMenuBar (void)
-  {
-    QMainWindow *win = qWidget<QMainWindow> ();
-
-    m_figureToolBar = win->addToolBar (tr ("Figure ToolBar"));
-    m_figureToolBar->setMovable (false);
-    m_figureToolBar->setFloatable (false);
-
-    m_mouseModeGroup = new MouseModeActionGroup (win);
-    connect (m_mouseModeGroup, SIGNAL (modeChanged (MouseMode)),
-             SLOT (setMouseMode (MouseMode)));
-    m_figureToolBar->addActions (m_mouseModeGroup->actions ());
-
-    QAction *toggle_axes = m_figureToolBar->addAction (tr ("Axes"));
-    connect (toggle_axes, SIGNAL (triggered (void)),
-             this, SLOT (toggleAxes (void)));
-
-    QAction *toggle_grid = m_figureToolBar->addAction (tr ("Grid"));
-    connect (toggle_grid, SIGNAL (triggered (void)),
-             this, SLOT (toggleGrid (void)));
-
-    QAction *auto_axes = m_figureToolBar->addAction (tr ("Autoscale"));
-    connect (auto_axes, SIGNAL (triggered (void)),
-             this, SLOT (autoAxes (void)));
-
-    m_menuBar = new MenuBar (win);
-    win->setMenuBar (m_menuBar);
-    m_menuBar->addReceiver (this);
-  }
-
-  void
-  Figure::updateFigureToolBarAndMenuBar (void)
-  {
-    if (m_mouseModeGroup)
-      {
-        m_blockUpdates = true;
-        m_mouseModeGroup->setMode (mouseMode ());
-        m_blockUpdates = false;
-      }
+    return NoMode;
   }
 
   void
@@ -349,8 +260,6 @@ namespace QtHandles
               obj->slotRedraw ();
           }
       }
-
-    updateFigureToolBarAndMenuBar ();
   }
 
   void
@@ -395,7 +304,6 @@ namespace QtHandles
     if (canvas)
       canvas->blockRedraw (true);
 
-    m_menuBar->removeReceiver (this);
     m_container->removeReceiver (this);
     qWidget<FigureWindow> ()->removeReceiver (this);
   }
@@ -522,6 +430,7 @@ namespace QtHandles
         break;
 
       case figure::properties::ID___MOUSE_MODE__:
+      case figure::properties::ID___ZOOM_MODE__:
         m_container->canvas (m_handle)->setCursor (mouseMode ());
         break;
 
@@ -535,7 +444,8 @@ namespace QtHandles
   void
   Figure::showFigureToolBar (bool visible)
   {
-    if ((! m_figureToolBar->isHidden ()) != visible)
+    if (m_figureToolBar
+        && (! m_figureToolBar->isHidden ()) != visible)
       {
         int dy1 = m_figureToolBar->sizeHint ().height ();
         int dy2 = m_statusBar->sizeHint ().height ();
@@ -786,27 +696,12 @@ namespace QtHandles
   }
 
   void
-  Figure::setMouseMode (MouseMode mode)
-  {
-    if (m_blockUpdates)
-      return;
-
-    gh_manager::auto_lock lock;
-
-    figure::properties& fp = properties<figure> ();
-
-    fp.set___mouse_mode__ (mouse_mode_to_string (mode));
-
-    Canvas *canvas = m_container->canvas (m_handle);
-
-    if (canvas)
-      canvas->setCursor (mode);
-  }
-
-  void
-  Figure::addCustomToolBar (QToolBar *bar, bool visible)
+  Figure::addCustomToolBar (QToolBar *bar, bool visible, bool isdefault)
   {
     QMainWindow *win = qWidget<QMainWindow> ();
+
+    if (isdefault)
+      m_figureToolBar = bar;
 
     if (! visible)
       win->addToolBar (bar);
@@ -857,33 +752,6 @@ namespace QtHandles
   Figure::updateContainer (void)
   {
     redraw ();
-  }
-
-  void
-  Figure::toggleAxes (void)
-  {
-    Canvas *canvas = m_container->canvas (m_handle);
-
-    if (canvas)
-      canvas->toggleAxes (m_handle);
-  }
-
-  void
-  Figure::toggleGrid (void)
-  {
-    Canvas *canvas = m_container->canvas (m_handle);
-
-    if (canvas)
-      canvas->toggleGrid (m_handle);
-  }
-
-  void
-  Figure::autoAxes (void)
-  {
-    Canvas *canvas = m_container->canvas (m_handle);
-
-    if (canvas)
-      canvas->autoAxes (m_handle);
   }
 
   void

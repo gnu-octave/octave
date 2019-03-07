@@ -39,23 +39,19 @@ namespace QtHandles
 
   enum MouseMode
   {
-    // NOTE: These values must match the order of the buttons in the
-    // MouseModeActionGroup object.
-
-    NoMode      = 0,
-    RotateMode  = 1,
-    ZoomInMode  = 2,
-    ZoomOutMode = 3,
-    PanMode     = 4,
-    TextMode    = 5
+    NoMode,
+    RotateMode,
+    ZoomInMode,
+    ZoomOutMode,
+    PanMode,
+    SelectMode,
+    TextMode
   };
 
   class Container;
   class FigureWindow;
   class MenuBar;
   class ToolBar;
-
-  class MouseModeActionGroup;
 
   class Figure :
   public Object,
@@ -101,22 +97,16 @@ namespace QtHandles
     void beingDeleted (void);
 
   private:
-    void createFigureToolBarAndMenuBar (void);
     void showFigureToolBar (bool visible);
-    void addCustomToolBar (QToolBar *bar, bool visible);
+    void addCustomToolBar (QToolBar *bar, bool visible, bool isdefault);
     void showCustomToolBar (QToolBar *bar, bool visible);
-    void updateFigureToolBarAndMenuBar (void);
     void set_geometry (QRect r);
 
     void enableMouseTracking (void);
 
   private slots:
-    void setMouseMode (MouseMode mode);
     void updateFigureHeight (int delta_h);
     void updateContainer (void);
-    void toggleAxes (void);
-    void toggleGrid (void);
-    void autoAxes (void);
     void figureWindowShown ();
     void screenChanged (QScreen*);
 
@@ -134,7 +124,6 @@ namespace QtHandles
     QStatusBar *m_statusBar;
     QRect m_innerRect;
     QRect m_outerRect;
-    MouseModeActionGroup *m_mouseModeGroup;
     int m_previousHeight;
     bool m_resizable;
   };

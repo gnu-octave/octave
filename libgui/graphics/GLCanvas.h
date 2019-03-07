@@ -60,9 +60,6 @@ namespace QtHandles
     uint8NDArray  do_getPixels (const graphics_handle& handle);
     void do_print (const QString& file_cmd, const QString& term,
                    const graphics_handle& handle);
-    void toggleAxes (const graphics_handle& handle);
-    void toggleGrid (const graphics_handle& handle);
-    void autoAxes (const graphics_handle& handle);
     void drawZoomBox (const QPoint& p1, const QPoint& p2);
     void resize (int /* x */, int /* y */,
                  int /* width */, int /* height */) { }

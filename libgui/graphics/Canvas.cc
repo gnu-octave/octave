@@ -639,14 +639,15 @@ namespace QtHandles
               currentObj = graphics_object ();
           }
 
-        if (axesObj)
-          {
-            if (axesObj.get_properties ().handlevisibility_is ("on")
-                && axesObj.get_properties ().get_tag () != "legend"
-                && axesObj.get_properties ().get_tag () != "colorbar")
-              Utils::properties<figure> (figObj)
-              .set_currentaxes (axesObj.get_handle ().as_octave_value ());
-          }
+        // Make selected axes current
+        bool valid_axes = axesObj.valid_object ()
+          && axesObj.get_properties ().handlevisibility_is ("on")
+          && axesObj.get_properties ().get_tag () != "legend"
+          && axesObj.get_properties ().get_tag () != "colorbar";
+        
+        if (valid_axes)
+          Utils::properties<figure> (figObj)
+            .set_currentaxes (axesObj.get_handle ().as_octave_value ());
 
         Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
@@ -718,7 +719,7 @@ namespace QtHandles
           case RotateMode:
           case ZoomInMode:
           case ZoomOutMode:
-            if (axesObj && axesObj.get_properties ().handlevisibility_is ("on"))
+            if (valid_axes)
               {
                 bool redraw_figure = true;
 

@@ -409,33 +409,31 @@ function retval = edit (varargin)
     switch (uclicense)
       case "GPL"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software: you can redistribute it and/or modify it\n\
-under the terms of the GNU General Public License as published by\n\
+This program is free software: you can redistribute it and/or modify\n\
+it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation, either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
-This program is distributed in the hope that it will be useful, but\n\
-WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+This program is distributed in the hope that it will be useful,\n\
+but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with this program.  If not, see\n\
-<https://www.gnu.org/licenses/>.\
+along with this program.  If not, see <https://www.gnu.org/licenses/>.\
 ");
         tail = [author, "\n", revs];
 
       case "BSD"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software; redistribution and use in source and\n\
+This program is free software: redistribution and use in source and\n\
 binary forms, with or without modification, are permitted provided that\n\
 the following conditions are met:\n\
-\n\
-   1.Redistributions of source code must retain the above copyright\n\
-     notice, this list of conditions and the following disclaimer.\n\
-   2.Redistributions in binary form must reproduce the above copyright\n\
-     notice, this list of conditions and the following disclaimer in the\n\
-     documentation and/or other materials provided with the distribution.\n\
+1. Redistributions of source code must retain the above copyright\n\
+   notice, this list of conditions and the following disclaimer.\n\
+2. Redistributions in binary form must reproduce the above copyright\n\
+   notice, this list of conditions and the following disclaimer in the\n\
+   documentation and/or other materials provided with the distribution.\n\
 \n\
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND\n\
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n\
@@ -504,12 +502,13 @@ SUCH DAMAGE.\
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
           comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
-                     "## -*- texinfo -*- \n## @deftypefn {} " ...
+                     "## -*- texinfo -*-\n## @deftypefn {} " ...
                      "{@var{retval} =} " basename                          ...
                      " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         endif
+        comment = strrep (comment, " \n", "\n");
         text = [comment, body];
     endswitch
 

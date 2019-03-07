@@ -136,3 +136,10 @@
 %! assert (fh3 (), pi);
 %!
 %! clear -global g;  # cleanup after tests
+
+## Test case from <https://stackoverflow.com/q/26238491/6579744>
+%!test
+%! f1 = counter ();
+%! f2 = counter ();
+%! observed = [f1(), f1(), f2(), f1(), f2()];
+%! assert (observed, [1, 2, 1, 3, 2]);

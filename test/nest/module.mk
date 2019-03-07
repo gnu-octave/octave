@@ -1,6 +1,7 @@
 nest_TEST_FILES = \
   %reldir%/arg_nest.m \
   %reldir%/arg_ret.m \
+  %reldir%/counter.m \
   %reldir%/nest.tst \
   %reldir%/nest_eval.m \
   %reldir%/no_closure.m \

@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <list>
 #include <string>
 
 #include "bp-table.h"
@@ -39,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hist.h"
+#include "ov.h"
+#include "ov-fcn-inline.h"
 #include "pager.h"
 #include "symtab.h"
 
@@ -177,5 +180,46 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_gtk_manager ();
+  }
+
+  octave_value
+  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+                       const std::string& parameter_name)
+  {
+    std::list<std::string> parameter_names;
+    parameter_names.push_back (parameter_name);
+    return get_function_handle (interp, arg, parameter_names);
+  }
+
+  octave_value
+  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+                       const std::list<std::string>& parameter_names)
+  {
+    if (arg.is_function_handle () || arg.is_inline_function ())
+      return arg;
+    else if (arg.is_string ())
+      {
+        std::string fstr = arg.string_value ();
+
+        if (fstr.empty ())
+          return octave_value ();
+
+        octave::symbol_table& symtab = interp.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function (fstr);
+
+        if (fcn.is_defined ())
+          return fcn;
+
+        fcn = octave_value (new octave_fcn_inline (fstr, parameter_names));
+
+        if (fcn.is_defined ())
+          warning_with_id ("Octave:function-from-text",
+                           "get_function_handle: passing function body as text is discouraged; use an anonymous function instead");
+
+        return fcn;
+      }
+
+    return octave_value ();
   }
 }

@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
 
 #include "symtab.h"
@@ -82,6 +83,24 @@ namespace octave
   extern cdef_manager& __get_cdef_manager__ (const std::string& who);
 
   extern gtk_manager& __get_gtk_manager__ (const std::string& who);
+
+
+  // Functions that could be methods in the interpreter class but maybe
+  // shouldn't be exposed as part of the public interface.
+
+  // Convert octave_value object ARG to be a function handle object.  It
+  // may be a function handle, inline function, the name of a function,
+  // or the text of an inline function that has the given argument names
+  // PARAMETER_NAMES.  The latter form is deprecated.
+
+  octave_value
+  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+                       const std::string& parameter_name);
+
+  octave_value
+  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+                       const std::list<std::string>& parameter_names
+                         = std::list<std::string> ());
 }
 
 #endif

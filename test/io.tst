@@ -659,7 +659,7 @@
 %!   assert (name, temp_file);
 %!   assert (mode, "w");
 %!   assert (codepage, "iso-8859-1");
-%!   fprintf (fid, "aäu %s\n", "AÄU");
+%!   fprintf (fid, "aäu %s", "AÄU");
 %!   fclose (fid);
 %!   # open in binary mode
 %!   fid2 = fopen (temp_file, "rb");
@@ -669,7 +669,7 @@
 %!   assert (codepage, "utf-8");
 %!   read_binary = fread (fid2);
 %!   fclose (fid2);
-%!   assert (read_binary, [97 228 117 32 65 196 85 10].');
+%!   assert (read_binary, [97 228 117 32 65 196 85].');
 %!   # open in text mode with correct encoding
 %!   fid3 = fopen (temp_file, "rt", "n", "iso-8859-1");
 %!   read_text = fscanf (fid3, "%s");

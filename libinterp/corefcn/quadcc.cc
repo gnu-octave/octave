@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "error.h"
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "parse.h"
 #include "utils.h"
@@ -1483,8 +1484,8 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 // The actual integration routine.
 
-DEFUN (quadcc, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (quadcc, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})
 @deftypefnx {} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
@@ -1575,7 +1576,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
 
   // Arguments left and right.
   int nargin = args.length ();
-  octave_function *fcn;
+  octave_value fcn;
   double a, b, abstol, reltol, *sing;
   bool issingle;
 
@@ -1600,17 +1601,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.
   if (nargin < 3)
     print_usage ();
 
-  if (args(0).is_function_handle () || args(0).is_inline_function ())
-    fcn = args(0).function_value ();
-  else
-    {
-      std::string fcn_name = unique_symbol_name ("__quadcc_fcn__");
-      std::string fname = "function y = ";
-      fname.append (fcn_name);
-      fname.append ("(x) y = ");
-      fcn = extract_function (args(0), "quadcc", fcn_name, fname,
-                              "; endfunction");
-    }
+  fcn = octave::get_function_handle (interp, args(0), "x");
 
   if (! args(1).is_real_scalar ())
     error ("quadcc: lower limit of integration (A) must be a real scalar");

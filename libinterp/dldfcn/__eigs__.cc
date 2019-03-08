@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"
@@ -44,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_ARPACK)
 
 // Global pointer for user defined function.
-static octave_function *eigs_fcn = nullptr;
+static octave_value eigs_fcn;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_imaginary = false;
@@ -59,7 +60,7 @@ eigs_func (const ColumnVector& x, int& eigs_error)
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn)
+  if (eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -99,7 +100,7 @@ eigs_complex_func (const ComplexColumnVector& x, int& eigs_error)
   octave_value_list args;
   args(0) = x;
 
-  if (eigs_fcn)
+  if (eigs_fcn.is_defined ())
     {
       octave_value_list tmp;
 
@@ -206,20 +207,9 @@ Undocumented internal function.
   if (args(0).is_function_handle () || args(0).is_inline_function ()
       || args(0).is_string ())
     {
-      if (args(0).is_string ())
-        {
-          std::string name = args(0).string_value ();
-          std::string fname = "function y = ";
-          fcn_name = unique_symbol_name ("__eigs_fcn__");
-          fname.append (fcn_name);
-          fname.append ("(x) y = ");
-          eigs_fcn = extract_function (args(0), "eigs", fcn_name, fname,
-                                       "; endfunction");
-        }
-      else
-        eigs_fcn = args(0).function_value ();
+      eigs_fcn = octave::get_function_handle (interp, args(0), "x");
 
-      if (! eigs_fcn)
+      if (eigs_fcn.is_undefined ())
         error ("eigs: unknown function");
 
       if (nargin < 2)

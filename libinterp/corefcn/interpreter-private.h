@@ -91,7 +91,7 @@ namespace octave
   // Convert octave_value object ARG to be a function handle object.  It
   // may be a function handle, inline function, the name of a function,
   // or the text of an inline function that has the given argument names
-  // PARAMETER_NAMES.  The latter form is deprecated.
+  // PARAMETER_NAMES.  Use of the latter form is discouraged.
 
   octave_value
   get_function_handle (octave::interpreter& interp, const octave_value& arg,

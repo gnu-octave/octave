@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "oct-map.h"
 #include "defun.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "parse.h"
 #include "variables.h"
@@ -426,17 +427,7 @@ v = cellfun (@@det, a); # faster
       std::string name = args(0).string_value ();
 
       if (! octave::valid_identifier (name))
-        {
-          std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
-          std::string fname = "function y = " + fcn_name + "(x) y = ";
-
-          octave_function *ptr_func
-            = extract_function (args(0), "cellfun", fcn_name,
-                                fname, "; endfunction");
-
-          if (ptr_func)
-            func = octave_value (ptr_func, true);
-        }
+        func = octave::get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);
@@ -1147,17 +1138,7 @@ arrayfun (@@str2num, [1234],
       std::string name = args(0).string_value ();
 
       if (! octave::valid_identifier (name))
-        {
-          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
-          std::string fname = "function y = " + fcn_name + "(x) y = ";
-
-          octave_function *ptr_func
-            = extract_function (args(0), "arrayfun", fcn_name,
-                                fname, "; endfunction");
-
-          if (ptr_func)
-            func = octave_value (ptr_func, true);
-        }
+        func = octave::get_function_handle (interp, args(0), "x");
       else
         {
           func = symtab.find_function (name);

@@ -213,9 +213,8 @@ namespace octave
 
         fcn = octave_value (new octave_fcn_inline (fstr, parameter_names));
 
-        if (fcn.is_defined ())
-          warning_with_id ("Octave:function-from-text",
-                           "get_function_handle: passing function body as text is discouraged; use an anonymous function instead");
+        // Possibly warn here that passing the function body in a
+        // character string is discouraged.
 
         return fcn;
       }

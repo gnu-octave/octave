@@ -564,6 +564,11 @@ namespace octave
                const std::string& warn_for = "");
 
   extern OCTINTERP_API octave_value_list
+  feval (const char *name,
+         const octave_value_list& args = octave_value_list (),
+         int nargout = 0);
+
+  extern OCTINTERP_API octave_value_list
   feval (const std::string& name,
          const octave_value_list& args = octave_value_list (),
          int nargout = 0);
@@ -574,7 +579,7 @@ namespace octave
          int nargout = 0);
 
   extern OCTINTERP_API octave_value_list
-  feval (octave_value& val,
+  feval (const octave_value& val,
          const octave_value_list& args = octave_value_list (),
          int nargout = 0);
 

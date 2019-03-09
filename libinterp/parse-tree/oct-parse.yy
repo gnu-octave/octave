@@ -5170,6 +5170,12 @@ namespace octave
   //!         necessarily the same as @c nargout.
 
   octave_value_list
+  feval (const char *name, const octave_value_list& args, int nargout)
+  {
+    return feval (std::string (name), args, nargout);
+  }
+
+  octave_value_list
   feval (const std::string& name, const octave_value_list& args, int nargout)
   {
     octave_value_list retval;
@@ -5208,7 +5214,7 @@ namespace octave
   }
 
   octave_value_list
-  feval (octave_value& val, const octave_value_list& args, int nargout)
+  feval (const octave_value& val, const octave_value_list& args, int nargout)
   {
     if (val.is_function ())
       {
@@ -5222,7 +5228,14 @@ namespace octave
         std::list<octave_value_list> arg_list;
         arg_list.push_back (args);
 
-        return val.subsref ("(", arg_list, nargout);
+        // FIXME: could we make octave_value::subsref a const method?
+        // It would be difficult because there are instances of
+        // incrementing the reference count inside subsref methods,
+        // which means they can't be const with the current way of
+        // handling reference counting.
+
+        octave_value xval = val;
+        return xval.subsref ("(", arg_list, nargout);
       }
     else if (val.is_string ())
       {

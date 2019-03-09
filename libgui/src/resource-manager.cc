@@ -125,23 +125,31 @@ namespace octave
         language = settings->value ("language", "SYSTEM").toString ();
       }
 
+    // load the translations depending on the settings
     if (language == "SYSTEM")
-      language = QLocale::system ().name ();    // get system wide locale
+      {
+        // get the system locale and pass it to the translators for loading
+        // the suitable translation files
+        QLocale sys_locale = QLocale::system ();
 
-    // load the translator file for qt strings
-    loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
+        qt_tr->load (sys_locale, "qt", "_", qt_trans_dir);
+        qsci_tr->load (sys_locale, "qscintilla", "_", qt_trans_dir);
+        gui_tr->load (sys_locale, "", "", get_gui_translation_dir ());
+      }
+    else
+      {
+        // load the translation files depending on the given locale name
+        loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
+        if (! loaded) // try lower case
+          qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
 
-    if (! loaded) // try lower case
-      qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
+        loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
+        if (! loaded) // try lower case
+          qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
 
-    // load the translator file for qscintilla settings
-    loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
+        gui_tr->load (language, get_gui_translation_dir ());
+      }
 
-    if (! loaded) // try lower case
-      qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
-
-    // load the translator file for gui strings
-    gui_tr->load (language, get_gui_translation_dir ());
   }
 
   QStringList resource_manager::storage_class_names (void)

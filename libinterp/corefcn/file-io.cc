@@ -418,10 +418,15 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
   if (encoding.compare ("utf-8"))
   {
     // check if encoding is valid
-    octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
-    if (errno == EINVAL)
-      error ("fopen: conversion from codepage '%s' not supported",
-             encoding.c_str ());
+    void *codec = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
+    if (codec == reinterpret_cast<void *> (-1))
+      {
+        if (errno == EINVAL)
+          error ("fopen: conversion from codepage '%s' not supported",
+                 encoding.c_str ());
+      }
+    else
+      octave_iconv_close_wrapper (codec);
   }
 
   std::string mode = mode_arg;

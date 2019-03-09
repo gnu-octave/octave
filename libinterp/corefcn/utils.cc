@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
+#include "oct-string.h"
 #include "pathsearch.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -1232,6 +1233,33 @@ namespace octave
     std::string s = vasprintf (fmt, args);
 
     os << s;
+
+    return s.length ();
+  }
+
+  size_t format (std::ostream& os, const std::string& enc, const char *fmt, ...)
+  {
+    size_t retval;
+
+    va_list args;
+    va_start (args, fmt);
+
+    retval = vformat (os, enc, fmt, args);
+
+    va_end (args);
+
+    return retval;
+  }
+
+  size_t vformat (std::ostream& os, const std::string& enc, const char *fmt,
+                  va_list args)
+  {
+    std::string s = vasprintf (fmt, args);
+
+    if (enc.compare ("utf-8"))
+      os << string::u8_to_encoding ("printf", s, enc);
+    else
+      os << s;
 
     return s.length ();
   }

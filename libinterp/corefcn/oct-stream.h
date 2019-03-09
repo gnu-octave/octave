@@ -235,7 +235,7 @@ namespace octave
     int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
                    const std::string& who /* = "printf" */);
 
-    int printf (std::string fmt, const octave_value_list& args,
+    int printf (const std::string& fmt, const octave_value_list& args,
                 const std::string& who /* = "printf" */);
 
     int puts (const std::string& s, const std::string& who /* = "puts" */);

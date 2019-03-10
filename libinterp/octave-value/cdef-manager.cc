@@ -213,7 +213,7 @@ namespace octave
         retval(0) = prop.get ("DefaultValue");
 
         if (! retval(0).is_defined ())
-          error_with_id ("Octave:class:NotDefaultDefined",
+          error_with_id ("Octave:class:NoDefaultDefined",
                          "no default value for property `%s'",
                          prop.get_name ().c_str ());
       }

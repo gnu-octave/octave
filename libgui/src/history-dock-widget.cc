@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 #include "cmd-hist.h"
 
@@ -340,4 +341,18 @@ namespace octave
 
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }
+
+  void history_dock_widget::notice_settings (const QSettings *settings)
+  {
+    QFont font = QFont ();
+
+    font.setStyleHint (QFont::TypeWriter);
+    QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
+
+    font.setFamily (settings->value (cs_font.key, default_font).toString ());
+    font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+
+    m_history_list_view->setFont (font);
+  }
+
 }

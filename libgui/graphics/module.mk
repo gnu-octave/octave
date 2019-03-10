@@ -39,6 +39,8 @@ __init_qt___UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(__init_qt___UI))
 
 $(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
 
+BUILT_SOURCES += $(__init_qt___UI_H)
+
 noinst_HEADERS += \
   %reldir%/__init_qt__.h \
   %reldir%/annotation-dialog.h \

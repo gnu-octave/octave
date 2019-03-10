@@ -177,6 +177,7 @@ namespace octave
     void file_loaded_signal (void);
 
     void editor_tabs_changed_signal (bool);
+    void request_dbcont_signal (void);
 
   public slots:
 

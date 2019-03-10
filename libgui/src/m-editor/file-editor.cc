@@ -149,14 +149,20 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    m_run_action->setEnabled (false);
-    m_run_action->setShortcut (QKeySequence ());
+    QSettings *settings = resource_manager::get_settings ();
+    QString sc_run = settings->value ("shortcuts/editor_run:run_file").toString ();
+    QString sc_cont = settings->value ("shortcuts/main_debug:continue").toString ();
+
+    if (sc_run == sc_cont)
+      m_run_action->setShortcut (QKeySequence ());  // prevent ambigous shortcuts
+
+    m_run_action->setToolTip (tr ("Continue"));   // update tool tip
   }
 
   void file_editor::handle_exit_debug_mode (void)
   {
-    m_run_action->setEnabled (true);
     shortcut_manager::set_shortcut (m_run_action, "editor_run:run_file");
+    m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
   }
 
   void file_editor::check_actions (void)
@@ -541,7 +547,10 @@ namespace octave
 
   void file_editor::request_run_file (bool)
   {
-    emit fetab_run_file (m_tab_widget->currentWidget ());
+    if ((Fisdebugmode ())(0).is_true ())
+      emit request_dbcont_signal ();
+    else
+      emit fetab_run_file (m_tab_widget->currentWidget ());
   }
 
   void file_editor::request_step_into_file ()
@@ -2025,7 +2034,7 @@ namespace octave
     m_run_action
       = add_action (_run_menu,
                     resource_manager::icon ("system-run"),
-                    tr ("Save File and Run"),
+                    tr ("Save File and Run / Continue"),
                     SLOT (request_run_file (bool)));
 
     m_run_selection_action
@@ -2119,6 +2128,9 @@ namespace octave
     connect (this, SIGNAL (request_settings_dialog (const QString&)),
              main_win (),
              SLOT (process_settings_dialog_request (const QString&)));
+
+    connect (this, SIGNAL (request_dbcont_signal (void)),
+             main_win (), SLOT (debug_continue (void)));
 
     connect (m_mru_file_menu, SIGNAL (triggered (QAction *)),
              this, SLOT (request_mru_open_file (QAction *)));

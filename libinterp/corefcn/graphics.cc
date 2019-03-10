@@ -7640,18 +7640,17 @@ axes::properties::check_axis_limits (Matrix &limits, const Matrix kids,
       do_update = true;
     }
   // FIXME: maybe this test should also be relative?
-  else if (std::abs (limits(0) - limits(1)) < sqrt (eps))
+  else if (! logscale && (std::abs (limits(0) - limits(1)) < sqrt (eps)))
     {
-      if (logscale)
-        {
-          limits(0) = (limits(0) < 0 ? 10.0 * limits(0) : 0.1 * limits(0));
-          limits(1) = (limits(1) < 0 ? 0.1 * limits(1) : 10.0 * limits(1));
-        }
-      else
-        {
-          limits(0) -= 0.1 * std::abs (limits(0));
-          limits(1) += 0.1 * std::abs (limits(1));
-        }
+      limits(0) -= 0.1 * std::abs (limits(0));
+      limits(1) += 0.1 * std::abs (limits(1));
+      do_update = true;
+    }
+  else if (logscale
+           && (std::abs (std::log10 (limits(0) / limits(1))) < sqrt (eps)))
+    {
+      limits(0) = (limits(0) < 0 ? 10.0 * limits(0) : 0.1 * limits(0));
+      limits(1) = (limits(1) < 0 ? 0.1 * limits(1) : 10.0 * limits(1));
       do_update = true;
     }
 

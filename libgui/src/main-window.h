@@ -123,6 +123,7 @@ namespace octave
     void new_file_signal (const QString&);
     void open_file_signal (const QString&);
     void open_file_signal (const QString& file, const QString& enc, int line);
+    void step_into_file_signal (void);
 
     void show_doc_signal (const QString&);
     void register_doc_signal (const QString&);
@@ -194,6 +195,7 @@ namespace octave
     void debug_step_over (void);
     void debug_step_out (void);
     void debug_quit (void);
+    void editor_tabs_changed (bool);
 
     void request_open_file (void);
     void request_new_script (const QString& commands = QString ());
@@ -455,6 +457,7 @@ namespace octave
     //!@{
     bool m_prevent_readline_conflicts;
     bool m_suppress_dbg_location;
+    bool m_editor_has_tabs;
 
     //! Flag for closing the whole application.
 

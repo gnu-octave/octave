@@ -194,6 +194,8 @@ namespace octave
     m_close_action->setEnabled (have_tabs);
     m_close_all_action->setEnabled (have_tabs);
     m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
+
+    emit editor_tabs_changed_signal (have_tabs);
   }
 
   // empty_script determines whether we have to create an empty script
@@ -540,6 +542,11 @@ namespace octave
   void file_editor::request_run_file (bool)
   {
     emit fetab_run_file (m_tab_widget->currentWidget ());
+  }
+
+  void file_editor::request_step_into_file ()
+  {
+    emit fetab_run_file (m_tab_widget->currentWidget (), true);
   }
 
   void file_editor::request_context_run (bool)
@@ -2240,8 +2247,8 @@ namespace octave
     connect (this, SIGNAL (fetab_print_file (const QWidget*)),
              f, SLOT (print_file (const QWidget*)));
 
-    connect (this, SIGNAL (fetab_run_file (const QWidget*)),
-             f, SLOT (run_file (const QWidget*)));
+    connect (this, SIGNAL (fetab_run_file (const QWidget*, bool)),
+             f, SLOT (run_file (const QWidget*, bool)));
 
     connect (this, SIGNAL (fetab_context_run (const QWidget*)),
              f, SLOT (context_run (const QWidget*)));

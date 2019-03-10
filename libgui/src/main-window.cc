@@ -1011,7 +1011,7 @@ namespace octave
 
     m_debug_continue->setEnabled (false);
     m_debug_step_into->setEnabled (false);
-    m_debug_step_over->setEnabled (false);
+    m_debug_step_over->setEnabled (m_editor_has_tabs);
     m_debug_step_out->setEnabled (false);
     m_debug_quit->setEnabled (false);
 
@@ -1035,9 +1035,18 @@ namespace octave
 
   void main_window::debug_step_over (void)
   {
-    octave_cmd_debug *cmd
-      = new octave_cmd_debug ("step", m_suppress_dbg_location);
-    queue_cmd (cmd);
+    if (m_debug_quit->isEnabled ())
+      {
+        // We are in debug mode, just call dbstep
+        octave_cmd_debug *cmd
+          = new octave_cmd_debug ("step", m_suppress_dbg_location);
+        queue_cmd (cmd);
+      }
+    else
+      {
+        // Not in debug mode: "step into" the current editor file
+        emit step_into_file_signal ();
+      }
   }
 
   void main_window::debug_step_out (void)
@@ -1768,6 +1777,12 @@ namespace octave
     connect (this, SIGNAL (editor_focus_changed (bool)),
              m_editor_window, SLOT (enable_menu_shortcuts (bool)));
 
+    connect (this, SIGNAL (step_into_file_signal (void)),
+             m_editor_window, SLOT (request_step_into_file (void)));
+
+    connect (m_editor_window, SIGNAL (editor_tabs_changed_signal (bool)),
+             this, SLOT (editor_tabs_changed (bool)));
+
     connect (m_editor_window,
              SIGNAL (request_open_file_external (const QString&, int)),
              m_external_editor,
@@ -2229,6 +2244,13 @@ namespace octave
     m_debug_quit = construct_debug_menu_item (
                                               "db-stop", tr ("Quit Debug Mode"),
                                               SLOT (debug_quit (void)));
+  }
+
+  void main_window::editor_tabs_changed (bool have_tabs)
+  {
+    // Set state of action which depend on the existance of editor tabs
+    m_editor_has_tabs = have_tabs;
+    m_debug_step_over->setEnabled (have_tabs);
   }
 
   QAction * main_window::construct_window_menu_item (QMenu *p,

@@ -909,7 +909,7 @@ namespace octave
     delete printer;
   }
 
-  void file_editor_tab::run_file (const QWidget *ID)
+  void file_editor_tab::run_file (const QWidget *ID, bool step_into)
   {
     if (ID != this)
       return;
@@ -920,6 +920,9 @@ namespace octave
         if (! valid_file_name ())
           return;   // still invalid filename: "save as" was cancelled
       }
+
+    if (step_into)
+      handle_request_add_breakpoint (1, QString ());
 
     QFileInfo info (_file_name);
     emit run_file_signal (info);

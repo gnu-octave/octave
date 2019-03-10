@@ -136,7 +136,7 @@ namespace octave
     void fetab_save_file (const QWidget *ID);
     void fetab_save_file_as (const QWidget *ID);
     void fetab_print_file (const QWidget *ID);
-    void fetab_run_file (const QWidget *ID);
+    void fetab_run_file (const QWidget *ID, bool step_into = false);
     void fetab_context_run (const QWidget *ID);
     void fetab_toggle_bookmark (const QWidget *ID);
     void fetab_next_bookmark (const QWidget *ID);
@@ -176,6 +176,8 @@ namespace octave
     void request_open_file_external (const QString& file_name, int line);
     void file_loaded_signal (void);
 
+    void editor_tabs_changed_signal (bool);
+
   public slots:
 
     void focus (void);
@@ -198,6 +200,7 @@ namespace octave
     void request_save_file (bool);
     void request_save_file_as (bool);
     void request_run_file (bool);
+    void request_step_into_file ();
     void request_context_run (bool);
     void request_toggle_bookmark (bool);
     void request_next_bookmark (bool);

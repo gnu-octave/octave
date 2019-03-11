@@ -34,8 +34,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uibuttongroup object.
 ##
-## Properties of uibuttongroup objects are documented at
-## @ref{Uibuttongroup Properties}.
+## The full list of properties is documented at @ref{Uibuttongroup Properties}.
 ##
 ## Examples:
 ##

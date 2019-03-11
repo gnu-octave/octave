@@ -38,7 +38,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uitoggletool object.
 ##
-## Uitoggletool properties are documented at @ref{Uitoggletool Properties}.
+## The full list of properties is documented at @ref{Uitoggletool Properties}.
 ##
 ## The optional return value @var{hui} is a graphics handle to the created
 ## uitoggletool object.

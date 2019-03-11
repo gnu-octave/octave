@@ -62,8 +62,7 @@
 ##
 ## @end table
 ##
-## The full list of properties is documented at
-## @ref{Uimenu Properties,,Uimenu Properties}.
+## The full list of properties is documented at @ref{Uimenu Properties}.
 ##
 ## Examples:
 ##

@@ -32,8 +32,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uitable object.
 ##
-## Properties of uitable objects are documented at
-## @ref{Uitable Properties}.
+## The full list of properties is documented at @ref{Uitable Properties}.
 ##
 ## Examples:
 ##

@@ -1508,16 +1508,12 @@ In the following documentation, default values are enclosed in @{ @}.
 @subsubsection Root Figure Properties
 @prindex @sortas{@ Root Figure Properties} Root Figure Properties
 
-The @code{root figure} properties are:
-
 @include plot-rootproperties.texi
 
 
 @node Figure Properties
 @subsubsection Figure Properties
 @prindex @sortas{@ Figure Properties} Figure Properties
-
-The @code{figure} properties are:
 
 @include plot-figureproperties.texi
 
@@ -1526,16 +1522,12 @@ The @code{figure} properties are:
 @subsubsection Axes Properties
 @prindex @sortas{@ Axes Properties} Axes Properties
 
-The @code{axes} properties are:
-
 @include plot-axesproperties.texi
 
 
 @node Line Properties
 @subsubsection Line Properties
 @prindex @sortas{@ Line Properties} Line Properties
-
-The @code{line} properties are:
 
 @include plot-lineproperties.texi
 
@@ -1544,16 +1536,12 @@ The @code{line} properties are:
 @subsubsection Text Properties
 @prindex @sortas{@ Text Properties} Text Properties
 
-The @code{text} properties are:
-
 @include plot-textproperties.texi
 
 
 @node Image Properties
 @subsubsection Image Properties
 @prindex @sortas{@ Image Properties} Image Properties
-
-The @code{image} properties are:
 
 @include plot-imageproperties.texi
 
@@ -1562,16 +1550,12 @@ The @code{image} properties are:
 @subsubsection Patch Properties
 @prindex @sortas{@ Patch Properties} Patch Properties
 
-The @code{patch} properties are:
-
 @include plot-patchproperties.texi
 
 
 @node Surface Properties
 @subsubsection Surface Properties
 @prindex @sortas{@ Surface Properties} Surface Properties
-
-The @code{surface} properties are:
 
 @include plot-surfaceproperties.texi
 
@@ -1580,15 +1564,11 @@ The @code{surface} properties are:
 @subsubsection Light Properties
 @prindex @sortas{@ Light Properties} Light Properties
 
-The @code{light} properties are:
-
 @include plot-lightproperties.texi
 
 @node Uimenu Properties
 @subsubsection Uimenu Properties
 @prindex @sortas{@ Uimenu Properties} Uimenu Properties
-
-The @code{uimenu} properties are:
 
 @include plot-uimenuproperties.texi
 
@@ -1596,15 +1576,11 @@ The @code{uimenu} properties are:
 @subsubsection Uibuttongroup Properties
 @prindex @sortas{@ Uibuttongroup Properties} Uibuttongroup Properties
 
-The @code{uibuttongroup} properties are:
-
 @include plot-uibuttongroupproperties.texi
 
 @node Uicontextmenu Properties
 @subsubsection Uicontextmenu Properties
 @prindex @sortas{@ Uicontextmenu Properties} Uicontextmenu Properties
-
-The @code{uicontextmenu} properties are:
 
 @include plot-uicontextmenuproperties.texi
 
@@ -1612,15 +1588,11 @@ The @code{uicontextmenu} properties are:
 @subsubsection Uipanel Properties
 @prindex @sortas{@ Uipanel Properties} Uipanel Properties
 
-The @code{uipanel} properties are:
-
 @include plot-uipanelproperties.texi
 
 @node Uicontrol Properties
 @subsubsection Uicontrol Properties
 @prindex @sortas{@ Uicontrol Properties} Uicontrol Properties
-
-The @code{uicontrol} properties are:
 
 @include plot-uicontrolproperties.texi
 
@@ -1628,15 +1600,11 @@ The @code{uicontrol} properties are:
 @subsubsection Uitable Properties
 @cindex uitable properties
 
-The @code{uitable} properties are:
-
 @include plot-uitableproperties.texi
 
 @node Uitoolbar Properties
 @subsubsection Uitoolbar Properties
 @prindex @sortas{@ Uitoolbar Properties} Uitoolbar Properties
-
-The @code{uitoolbar} properties are:
 
 @include plot-uitoolbarproperties.texi
 
@@ -1644,15 +1612,11 @@ The @code{uitoolbar} properties are:
 @subsubsection Uipushtool Properties
 @prindex @sortas{@ Uipushtool Properties} Uipushtool Properties
 
-The @code{uipushtool} properties are:
-
 @include plot-uipushtoolproperties.texi
 
 @node Uitoggletool Properties
 @subsubsection Uitoggletool Properties
 @prindex @sortas{@ Uitoggletool Properties} Uitoggletool Properties
-
-The @code{uitoggletool} properties are:
 
 @include plot-uitoggletoolproperties.texi
 

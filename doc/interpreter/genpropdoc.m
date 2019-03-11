@@ -1906,8 +1906,15 @@ function str = printdoc (objname, obj)
   fields = sort (fieldnames (obj));
   nf = numel (fields);
 
-  ## File header and begining of properties table
-  str = [warn_autogen() "\n\n@table @asis"];
+  ## File header and beginning of properties table
+  str = warn_autogen ();
+  if (strcmp (objname, "root"))
+    str = sprintf ("%s\n\nProperties of the root graphics object:", str);
+  else
+    str = sprintf ("%s\n\nProperties of @code{%s} objects (@pxref{XREF%s,,%s}):",
+                   str, objname, objname, objname);
+  endif
+  str = sprintf ("%s\n\n@table @asis", str);
 
   for ii = 1:nf
     field = fields{ii};

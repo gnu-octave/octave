@@ -35,8 +35,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uicontrol object.
 ##
-## Properties of uicontrol objects are documented at
-## @ref{Uicontrol Properties}.
+## The full list of properties is documented at @ref{Uicontrol Properties}.
 ##
 ## The type of uicontrol created is specified by the @var{style} property.  If
 ## no style property is provided, a push button will be created.

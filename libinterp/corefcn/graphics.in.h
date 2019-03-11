@@ -3243,7 +3243,7 @@ public:
 
   void override_defaults (base_graphics_object& obj)
   {
-    // Allow parent (root figure) to override first (properties knows how
+    // Allow parent (root object) to override first (properties knows how
     // to find the parent object).
     xproperties.override_defaults (obj);
 

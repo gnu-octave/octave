@@ -62,7 +62,7 @@ function retval = close (arg1, arg2)
     ## Close current figure.
     ## Can't use gcf because it opens a new plot window if one does not exist.
     figs = get (0, "currentfigure");
-    if (figs == 0)  # don't close root figure
+    if (figs == 0)  # don't call close on root object
       figs = [];
     endif
   elseif (nargin == 1)

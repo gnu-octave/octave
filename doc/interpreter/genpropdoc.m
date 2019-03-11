@@ -242,7 +242,7 @@ not rendered on screen.";
         s.doc = doc_unused;
 
       case "parent"
-        s.doc = "Root figure has no parent graphics object.  __prop__ \
+        s.doc = "Root object has no parent graphics object.  __prop__ \
 is always empty.";
 
       case "hittest"

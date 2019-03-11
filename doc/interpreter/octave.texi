@@ -562,7 +562,7 @@ Graphics Data Structures
 
 Graphics Object Properties
 
-* Root Figure Properties::
+* Root Properties::
 * Figure Properties::
 * Axes Properties::
 * Line Properties::

@@ -2725,7 +2725,7 @@ gh_manager::do_free (const graphics_handle& h)
   if (h.ok ())
     {
       if (h.value () == 0)
-        error ("graphics_handle::free: can't delete root figure");
+        error ("graphics_handle::free: can't delete root object");
 
       auto p = handle_map.find (h);
 
@@ -12151,7 +12151,7 @@ each individual object will be reset.
 %!   close (hf);
 %! end_unwind_protect
 
-%!test  # root figure object
+%!test  # root object
 %! set (0, "defaultfigurevisible", "off");
 %! hf = figure ("visible", "off", "paperunits", "centimeters",
 %!              "papertype", "a4");
@@ -13626,7 +13626,7 @@ call is pending at the top-level.
 
 In the first form, program execution is suspended until the graphics object
 @var{h} is destroyed.  If the graphics handle is invalid or if @var{h} is
-the root figure handle and no property @var{prop} was provided, the function
+the root graphics handle and no property @var{prop} was provided, the function
 returns immediately.
 
 In the second form, execution is suspended until the graphics object is

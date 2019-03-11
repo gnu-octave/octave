@@ -1260,9 +1260,9 @@ graphics objects are always referenced by @dfn{handle}.
 @table @asis
 @c @group
 
-@item root figure
-@cindex root figure graphics object
-@cindex graphics object, root figure
+@item root
+@cindex root graphics object
+@cindex graphics object, root
 The top level of the hierarchy and the parent of all figure objects.
 Use @code{groot} to obtain the handle of the root graphics object.
 
@@ -1385,12 +1385,12 @@ get (groot)
 @end example
 
 @noindent
-returns a structure containing all the properties of the root figure.
+returns a structure containing all the properties of the root graphics object.
 As with all functions in Octave, the structure is returned by value, so
-modifying it will not modify the internal root figure plot object.  To
-do that, you must use the @code{set} function.  Also, note that in this
-case, the @code{currentfigure} property is empty, which indicates that
-there is no current figure window.
+modifying it will not modify the internal root object.  To do that, you must
+use the @code{set} function.  Also, note that in this case, the
+@code{currentfigure} property is empty, which indicates that there is no
+current figure window.
 
 The @code{get} function may also be used to find the value of a single
 property.  For example,
@@ -1471,7 +1471,7 @@ struct2hdl (fig_struct);
 @cindex graphics object properties
 
 @menu
-* Root Figure Properties::
+* Root Properties::
 * Figure Properties::
 * Axes Properties::
 * Line Properties::
@@ -1491,22 +1491,21 @@ struct2hdl (fig_struct);
 * Uitoggletool Properties::
 @end menu
 
-In this Section the graphics object properties are discussed in detail,
-starting with the root figure properties and continuing through the objects
-hierarchy.  The documentation about a specific graphics object can be
-displayed using @code{doc} function, e.g., @code{doc ("axes properties")} will
-show
+In this section the graphics object properties are discussed in detail,
+starting with the root properties and continuing through the object hierarchy.
+The documentation about a specific graphics object can be displayed using
+@code{doc} function, e.g., @code{doc ("axes properties")} will show
 @ref{Axes Properties}.
 
 The allowed values for radio (string) properties can be retrieved
-programmatically or displayed using the one or
-two arguments call to @code{set} function.  @xref{XREFset, , set}.
+programmatically or displayed using the one or two argument calling form of the
+@code{set} function.  @xref{XREFset, , set}.
 
-In the following documentation, default values are enclosed in @{ @}.
+In the following documentation default values are enclosed in @{ @}.
 
-@node Root Figure Properties
-@subsubsection Root Figure Properties
-@prindex @sortas{@ Root Figure Properties} Root Figure Properties
+@node Root Properties
+@subsubsection Root Properties
+@prindex @sortas{@ Root Properties} Root Properties
 
 @include plot-rootproperties.texi
 
@@ -1658,11 +1657,11 @@ This rule can lead to some strange looking names, for example
 @code{defaultlinelinewidth"} specifies the default @code{linewidth}
 property for @code{line} objects.
 
-The example above used the root figure object so the default
-property value will apply to all line objects.  However, default values
-are hierarchical, so defaults set in a figure objects override those
-set in the root figure object.  Likewise, defaults set in axes objects
-override those set in figure or root figure objects.  For example,
+The example above used the root object so the default property value will apply
+to all line objects.  However, default values are hierarchical, so defaults set
+in a figure objects override those set in the root object.  Likewise, defaults
+set in an axes object override those set in figure or root objects.  For
+example,
 
 @example
 @group
@@ -1684,7 +1683,7 @@ figure is blue because it inherits its color from its parent axes
 object.  The line in the second subplot window of the first figure is
 green because it inherits its color from its parent figure object.  The
 line in the second figure window is red because it inherits its color
-from the global root figure parent object.
+from the global root object.
 
 To remove a user-defined default setting, set the default property to
 the value @qcode{"remove"}.  For example,
@@ -1730,8 +1729,7 @@ get (gca (), "default");
 returns a list of user-defined default values for the current axes
 object.
 
-Factory default values are stored in the root figure object.  The
-command
+Factory default values are stored in the root object.  The command
 
 @example
 get (groot, "factory");

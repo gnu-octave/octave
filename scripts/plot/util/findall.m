@@ -56,7 +56,11 @@ endfunction
 %! unwind_protect
 %!   h = findall (hf);
 %!   all_handles(1) = {"figure"};
-%!   all_handles(2:24,1) = {"uimenu"};
+%!   all_handles(2,1) = {"uitoolbar"};
+%!   all_handles(3:5) = {"uimenu"};
+%!   all_handles([6:7, 9]) = {"uipushtool"};
+%!   all_handles([8, 10:13]) = {"uitoggletool"};
+%!   all_handles(14:33) = {"uimenu"};
 %!   assert (get (h, "type"), all_handles);
 %! unwind_protect_cleanup
 %!   close (hf);

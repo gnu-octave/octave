@@ -498,22 +498,25 @@ namespace octave
                             m_mfile_encoding.end (),
                             m_mfile_encoding.begin (), ::tolower);
 
-            std::string codepage = (m_mfile_encoding.compare ("system") == 0)
+            std::string encoding = (m_mfile_encoding.compare ("system") == 0)
               ? octave_locale_charset_wrapper () : m_mfile_encoding;
 
-            // Check for valid codepage.
+            // Check for valid encoding name.
             void *codec
-              = octave_iconv_open_wrapper (codepage.c_str (), "utf-8");
+              = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
 
-            if (errno == EINVAL)
+            if (codec == reinterpret_cast<void *> (-1))
               {
                 m_mfile_encoding = saved_encoding;
-
-                error ("__mfile_encoding__: conversion from codepage '%s' not supported",
-                       codepage.c_str ());
+                if (errno == EINVAL)
+                  error ("__mfile_encoding__: conversion from encoding '%s' "
+                         "not supported", encoding.c_str ());
+                else
+                  error ("__mfile_encoding__: error %d opening encoding '%s'.",
+                         errno, encoding.c_str ());
               }
-
-            octave_iconv_close_wrapper (codec);
+            else
+              octave_iconv_close_wrapper (codec);
           }
 
       }

@@ -1820,7 +1820,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OFFSCREEN_OK], [
   AC_LANG_PUSH(C++)
   ac_octave_save_CPPFLAGS="$CPPFLAGS"
   ac_octave_save_CXXFLAGS="$CXXFLAGS"
-  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CPPFLAGS="$QT_OPENGL_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
   CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
   AC_CHECK_HEADERS([QOffscreenSurface])
   AC_CACHE_CHECK([whether Qt supports full offscreen OpenGL rendering],
@@ -1874,7 +1874,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
   AC_LANG_PUSH(C++)
   ac_octave_save_CPPFLAGS="$CPPFLAGS"
   ac_octave_save_CXXFLAGS="$CXXFLAGS"
-  CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+  CPPFLAGS="$QT_OPENGL_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
   CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
   AC_CHECK_HEADERS([QOpenGLWidget QGLWidget QGLFunctions_1_1])
   AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
@@ -2009,6 +2009,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+    QT_OPENGL_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
+    QT_OPENGL_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
     QT_OPENGL_LIBS="$($PKG_CONFIG --libs-only-l $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
 
     case $host_os in
@@ -2017,6 +2019,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         if test -z "$QT_LIBS"; then
           QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
           QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          QT_OPENGL_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
           QT_OPENGL_LIBS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
@@ -2173,6 +2176,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   AC_SUBST(QT_CPPFLAGS)
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_LIBS)
+  AC_SUBST(QT_OPENGL_CPPFLAGS)
+  AC_SUBST(QT_OPENGL_LDFLAGS)
   AC_SUBST(QT_OPENGL_LIBS)
 ])
 dnl

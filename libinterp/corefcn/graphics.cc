@@ -9432,6 +9432,18 @@ patch::properties::update_fvc (void)
   facevertexcdata.set (fvc);
 }
 
+// core coplanar tester
+bool is_coplanar (const Matrix &cov)
+{
+  // Accuracy note: this test will also accept single precision input (although
+  // stored in double precision). This is because the error threshold is
+  // sqrt(tol) = 1.5e-7.
+  double tol = 100 * std::numeric_limits<double>::epsilon ();
+  EIG eig (cov, false, false, true);
+  ColumnVector ev = real (eig.eigenvalues ());
+  return ev.min () <= tol * ev.max ();
+}
+
 void
 patch::properties::update_data (void)
 {
@@ -9480,48 +9492,95 @@ patch::properties::update_data (void)
     {
       for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
         {
-          if (! octave::math::isnan (idx(3,jj)))
+          if (octave::math::isnan (idx(3,jj)))
+            continue;
+
+          // find first element that is NaN to get number of corners
+          octave_idx_type nc = 3;
+          while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
+            nc++;
+
+          std::list<octave_idx_type> coplanar_ends;
+
+          Matrix plane_pivot = Matrix (1, 3, 0.0);
+          for (octave_idx_type i = 0; i < 3; i++)
+            plane_pivot(0,i) = vert(idx(0,jj)-1,i);
+
+          Matrix fc = Matrix (0, 3, 0.0);  // face corner vertex coordinates
+          Matrix fa = Matrix (1, 3, 0.0);  // for append face corner
+          Matrix coor_cov = Matrix (3, 3, 0.0);
+
+          if (nc >= 5)
             {
-              // find first element that is NaN to get number of corners
-              octave_idx_type nc = 3;
-              while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
-                nc++;
+              // Coplanar test that involves all points.
+              // For nc == 4, this initial test is not beneficial at all.
+              // If the probability of coplanar input is more than half, for
+              // the best average performance, we should use nc >= 5.
+              // Higher threshold is meaningful only when input is known to be
+              // non-coplanar and nc is small.
 
-              std::list<octave_idx_type> coplanar_ends;
+              fc.resize (nc - 1, 3);
+              for (octave_idx_type j = 1; j < nc; j++)
+                for (octave_idx_type i = 0; i < 3; i++)
+                  fc(j-1,i) = vert(idx(j,jj)-1,i) - plane_pivot(i);
 
-              octave_idx_type i_start = 1;
-              octave_idx_type i_end = 2;
-              while (i_end < nc - 1)
+              coor_cov = fc.transpose () * fc;
+              if (is_coplanar (coor_cov))
                 {
-                  // look for coplanar subsets
-                  for (i_end = nc-1; i_end > i_start+1; i_end--)
-                    {
-                      Matrix fc = Matrix (i_end - i_start + 1, 3, 0.0);
-                      for (octave_idx_type j = 0; j <= i_end-i_start; j++)
-                        for (octave_idx_type i = 0; i < 3; i++)
-                          fc(j,i) = vert(idx(j + i_start,jj)-1,i)
-                                    - vert(idx(0,jj)-1,i);
-
-                      // FIXME: Using  svd's to check for co-planarity is slow
-                      // for faces with many vertices. Is there a better way to
-                      // check this?
-
-                      // calculate rank of matrix
-                      octave::math::svd<Matrix> result
-                        (fc,
-                         octave::math::svd<Matrix>::Type::sigma_only,
-                         octave::math::svd<Matrix>::Driver::GESDD);
-                      DiagMatrix sigma = result.singular_values ();
-                      double tol = nc * sigma(0,0)
-                                   * std::numeric_limits<double>::epsilon ();
-                      if (sigma(2,2) < tol)
-                        break;
-                    }
-                  coplanar_ends.push_back (i_end);
-                  i_start = i_end;
+                  coplanar_ends.push_back (nc - 1);
+                  coplanar_last_idx.push_back (coplanar_ends);
+                  continue;
                 }
-              coplanar_last_idx.push_back (coplanar_ends);
             }
+
+          fc.resize (3, 3);
+          octave_idx_type i_start = 1;
+          octave_idx_type i_end = 2;
+
+          // Split the polygon into coplanar segments.
+          // The first point is common corner of all planes.
+          while (i_start < nc - 1)
+            {
+              i_end = i_start + 2;
+              if (i_end > nc - 1)
+                {
+                  coplanar_ends.push_back (nc - 1);
+                  break;
+                }
+
+              // Algorithm: Start from 3 points, keep adding points until the
+              // point set is no more in a plane. Record the coplanar point
+              // set, then advance i_start.
+
+              // Prepare 1+3 points for coplanar test.
+              // The first point is implicitly included.
+              for (octave_idx_type j = 0; j < 3; j++)
+                for (octave_idx_type i = 0; i < 3; i++)
+                  fc(j,i) = vert(idx(j+i_start,jj)-1,i) - plane_pivot(i);
+
+              // covariance matrix between coordinates of vertex
+              coor_cov = fc.transpose () * fc;
+
+              while (true)
+                {
+                  // coplanar test
+                  if (! is_coplanar (coor_cov))
+                    break;
+
+                  i_end++;
+                  if (i_end > nc - 1)
+                    break;
+
+                  // add a point to plane
+                  for (octave_idx_type i = 0; i < 3; i++)
+                    fa(0,i) = vert(idx(i_end,jj)-1,i) - plane_pivot(i);
+                  coor_cov += fa.transpose () * fa;
+                }
+
+              i_start = i_end - 1;
+              coplanar_ends.push_back (i_start);
+            }
+          coplanar_last_idx.push_back (coplanar_ends);
         }
     }
 

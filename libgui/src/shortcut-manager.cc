@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QDebug>
 #include <QGridLayout>
-#include <QGuiApplication>
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QKeySequence>
@@ -70,7 +70,11 @@ namespace octave
         if (key == Qt::Key_unknown || key == 0)
           return;
 
+#if defined (HAVE_QGUIAPPLICATION)
         Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers (); //e->modifiers ();
+#else
+        Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers (); //e->modifiers ();
+#endif
 
         if (m_shift_modifier || (modifiers & Qt::ShiftModifier))
           key += Qt::SHIFT;

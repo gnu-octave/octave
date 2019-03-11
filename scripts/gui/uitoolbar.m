@@ -33,7 +33,7 @@
 ## Any provided property value pairs will override the default values of the
 ## created uitoolbar object.
 ##
-## Uitoolbar properties are documented at @ref{Uitoolbar Properties}.
+## The full list of properties is documented at @ref{Uitoolbar Properties}.
 ##
 ## The optional return value @var{hui} is a graphics handle to the created
 ## uitoolbar object.

@@ -58,8 +58,8 @@ function h = gcf ()
   if (nargin == 0)
     h = get (0, "currentfigure");
     if (isempty (h) || h == 0)
-      ## We only have a root figure object, so create a new figure
-      ## object and make it the current figure.
+      ## We only have a root object, so create a new figure object
+      ## and make it the current figure.
       h = figure ();
     endif
   else

@@ -28,7 +28,7 @@
 ## If the handle of an existing figure or axes is specified, @var{p}, the new
 ## object will be created as a child of that object.  If no parent handle is
 ## provided then a new figure and the necessary children will be constructed
-## using the default values from the root figure.
+## using the default values from the root object.
 ##
 ## A third boolean argument @var{hilev} can be passed to specify whether the
 ## function should preserve listeners/callbacks, e.g., for legends or

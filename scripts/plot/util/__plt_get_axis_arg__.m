@@ -28,7 +28,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   h = [];
 
   ## Look for a scalar which is a graphics handle but not the
-  ## Root Figure (0) or an ordinary figure (integer).
+  ## root object (0) or an ordinary figure (integer).
   if (! isempty (varargin) && isscalar (varargin{1})
       && ishghandle (varargin{1}) && varargin{1} != 0
       && ! isfigure (varargin{1}))

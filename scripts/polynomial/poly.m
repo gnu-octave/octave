@@ -81,9 +81,13 @@ function y = poly (x)
   if (isreal (x))
     y = real (y);
   else
-    tmp = sort (v(imag (v) > 0)) == sort (conj (v(imag (v) < 0)));
-    if (! isempty (tmp) && all (tmp))
-      y = real (y);
+    pos_imag = sort (v(imag (v) > 0));
+    neg_imag = sort (conj (v(imag (v) < 0)));
+    if (size_equal (pos_imag, neg_imag))
+      is_equal = (pos_imag == neg_imag);
+      if (! isempty (is_equal) && all (is_equal))
+        y = real (y);
+      endif
     endif
   endif
 
@@ -99,6 +103,11 @@ endfunction
 %!      -sqrt(2)/2-sqrt(2)/2*i, -1i, sqrt(2)/2-sqrt(2)/2*i];
 %! y = poly (x);
 %! assert (isreal (y), true);
+
+%!test <53897>
+%! x = [1 + 1i, 1 + 2i, 3, 4];
+%! y = poly (x);
+%! assert (y, [1 + 0i, -9 - 3i, 25 + 24i, -17 - 57i, -12 + 36i]);
 
 %!error poly ()
 %!error poly (1,2)

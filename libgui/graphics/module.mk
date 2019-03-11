@@ -138,7 +138,7 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
   $(FONTCONFIG_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  @QT_CPPFLAGS@ \
+  @QT_OPENGL_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Isrc -I$(srcdir)/libgui/src \
   -Iliboctave \
@@ -153,7 +153,9 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC) $(__init_qt___
   -I$(srcdir)/libinterp/octave-value
 
 %canon_reldir%___init_qt___la_LDFLAGS = \
-  -avoid-version -module $(NO_UNDEFINED_LDFLAG) $(WARN_LDFLAGS)
+  -avoid-version -module $(NO_UNDEFINED_LDFLAG) \
+  $(QT_OPENGL_LDFLAGS) \
+  $(WARN_LDFLAGS)
 
 DLD_LIBOCTGUI_LIBADD = $(OCT_GUI_LINK_DEPS)
 

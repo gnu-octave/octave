@@ -893,7 +893,6 @@ namespace QtHandles
 
     connect (window, SIGNAL (screenChanged (QScreen*)),
              this, SLOT (screenChanged (QScreen*)));
-
 #endif
   }
 
@@ -914,6 +913,8 @@ namespace QtHandles
         // from the GUI thread does not necessarily trigger a redraw. Force it.
         redraw ();
       }
+#else
+    octave_unused_parameter (screen);
 #endif
   }
 

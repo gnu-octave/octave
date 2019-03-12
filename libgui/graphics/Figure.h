@@ -97,7 +97,7 @@ namespace QtHandles
     void beingDeleted (void);
 
   private:
-    void showFigureToolBar (bool visible);
+    void showFigureStatusBar (bool visible);
     void addCustomToolBar (QToolBar *bar, bool visible, bool isdefault);
     void showCustomToolBar (QToolBar *bar, bool visible);
     void set_geometry (QRect r);

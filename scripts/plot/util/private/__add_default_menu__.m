@@ -137,9 +137,6 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
          "offcallback", {@mouse_tools_cb, ht, "text"});
   endif
 
-  ## Add/Restore figure listeners
-  toggle_visibility_cb (hf, [], hmenu);
-  addlistener (hf, "menubar", {@toggle_visibility_cb, hmenu});
 
   if (! exist ("ht", "var"))
     ht = get (htb, "children")(end:-1:1);
@@ -147,17 +144,26 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
     ht(! istoggletool) = [];
   endif
 
+  ## Add/Restore figure listeners
+  toggle_visibility_cb (hf, [], hmenu, htb);
+  addlistener (hf, "menubar", {@toggle_visibility_cb, hmenu, htb});
+  addlistener (hf, "toolbar", {@toggle_visibility_cb, hmenu, htb});
   addlistener (hf, "__mouse_mode__", {@mouse_tools_cb, ht, "mode"});
   addlistener (hf, "__zoom_mode__", {@mouse_tools_cb, ht, "mode"});
 
 endfunction
 
-function toggle_visibility_cb (hf, ~, hmenu)
-  if (strcmp (get (hf, "menubar"), "none"))
-    set (hmenu, "visible", "off")
-  else
-    set (hmenu, "visible", "on")
+function toggle_visibility_cb (hf, ~, hmenu, htb)
+  menu_state = ifelse (strcmp (get (hf, "menubar"), "figure"), "on", "off");
+  toolbar_state = "on";
+  if (strcmp (get (hf, "toolbar"), "auto"))
+    toolbar_state = menu_state;
+  elseif (strcmp (get (hf, "toolbar"), "none"))
+    toolbar_state = "off";
   endif
+  
+  set (hmenu, "visible", menu_state);
+  set (htb, "visible", toolbar_state);
 endfunction
 
 function open_cb (h, e)
@@ -231,13 +237,13 @@ function init_mouse_tools (hf)
   set (hf, "__pan_mode__", struct ("Enable", "off",
                                    "Motion", "both",
                                    "FigureHandle", hf),
-       "__rotate_mode__", struct ("Enable", "off",
-                                  "RotateStyle", "box",
-                                  "FigureHandle", hf),
-       "__zoom_mode__", struct ("Enable", "off",
-                                "Motion", "both",
-                                "Direction", "in",
-                                "FigureHandle", hf));
+           "__rotate_mode__", struct ("Enable", "off",
+                                      "RotateStyle", "box",
+                                      "FigureHandle", hf),
+           "__zoom_mode__", struct ("Enable", "off",
+                                    "Motion", "both",
+                                    "Direction", "in",
+                                    "FigureHandle", hf));
 endfunction
 
 function guimode_cb (h, e)
@@ -319,7 +325,7 @@ function mouse_tools_cb (h, ev, htools, typ = "")
             set (hf, "__mouse_mode__" , "zoom");
           endif
           val.Enable = state;
-          set (hf, prop, val)
+          set (hf, prop, val);
 
         case {"pan", "rotate"}
           prop = ["__", typ, "_mode__"];
@@ -354,7 +360,7 @@ function axes_cb (h)
     if (strcmp (get (hax, "visible"), "on"))
       set (hax, "visible", "off");
     else
-      set (hax, "visible", "on")
+      set (hax, "visible", "on");
     endif
   endif
 endfunction
@@ -365,7 +371,7 @@ function grid_cb (h)
     if (strcmp (get (hax, "xgrid"), "on") && strcmp (get (hax, "ygrid"), "on"))
       grid (hax, "off");
     else
-      grid (hax, "on")
+      grid (hax, "on");
     endif
   endif
 endfunction

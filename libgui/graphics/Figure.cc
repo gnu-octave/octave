@@ -97,10 +97,11 @@ namespace QtHandles
 
     figure::properties& fp = properties<figure> ();
 
-    // Register for the signal that indicates when a window has moved
-    // to a different screen
-    connect (win, SIGNAL (figureWindowShown ()),
-             this, SLOT (figureWindowShown ()));
+    // Adjust figure position
+    m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
+    m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
+
+    set_geometry (m_innerRect);
 
     // Menubar
     m_menuBar = new MenuBar (win);
@@ -109,16 +110,11 @@ namespace QtHandles
 
     // Status bar
     m_statusBar = win->statusBar ();
-    int boffset = 0;
+    m_statusBar->setVisible (false);
 
     if (fp.toolbar_is ("figure")
         || (fp.toolbar_is ("auto") && fp.menubar_is ("figure")))
-      boffset += m_statusBar->sizeHint ().height ();
-
-    m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
-    m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));
-
-    set_geometry (m_innerRect.adjusted (0, 0, 0, boffset));
+      showFigureStatusBar (true);
 
     // Enable mouse tracking unconditionally
     enableMouseTracking ();
@@ -145,6 +141,11 @@ namespace QtHandles
 
     connect (this, SIGNAL (asyncUpdate (void)),
              this, SLOT (updateContainer (void)));
+
+    // Register for the signal that indicates when a window has moved
+    // to a different screen
+    connect (win, SIGNAL (figureWindowShown ()),
+             this, SLOT (figureWindowShown ()));
 
     win->addReceiver (this);
     m_container->addReceiver (this);
@@ -383,18 +384,14 @@ namespace QtHandles
           }
         break;
 
+      case figure::properties::ID_MENUBAR:
       case figure::properties::ID_TOOLBAR:
         if (fp.toolbar_is ("none"))
-          showFigureToolBar (false);
+          showFigureStatusBar (false);
         else if (fp.toolbar_is ("figure"))
-          showFigureToolBar (true);
+          showFigureStatusBar (true);
         else  // "auto"
-          showFigureToolBar (fp.menubar_is ("figure"));
-        break;
-
-      case figure::properties::ID_MENUBAR:
-        if (fp.toolbar_is ("auto"))
-          showFigureToolBar (fp.menubar_is ("figure"));
+          showFigureStatusBar (fp.menubar_is ("figure"));
         break;
 
       case figure::properties::ID_KEYPRESSFCN:
@@ -442,23 +439,21 @@ namespace QtHandles
   }
 
   void
-  Figure::showFigureToolBar (bool visible)
+  Figure::showFigureStatusBar (bool visible)
   {
-    if (m_figureToolBar
-        && (! m_figureToolBar->isHidden ()) != visible)
+    if (m_statusBar
+        && (! m_statusBar->isHidden ()) != visible)
       {
-        int dy1 = m_figureToolBar->sizeHint ().height ();
-        int dy2 = m_statusBar->sizeHint ().height ();
+        int dy = m_statusBar->sizeHint ().height ();
         QRect r = qWidget<QWidget> ()->geometry ();
 
         if (! visible)
-          r.adjust (0, dy1, 0, -dy2);
+          r.adjust (0, 0, 0, -dy);
         else
-          r.adjust (0, -dy1, 0, dy2);
+          r.adjust (0, 0, 0, dy);
 
         m_blockUpdates = true;
         set_geometry (r);
-        m_figureToolBar->setVisible (visible);
         m_statusBar->setVisible (visible);
         m_blockUpdates = false;
 
@@ -500,14 +495,6 @@ namespace QtHandles
   {
     return qWidget<QMainWindow> ()->menuBar ();
   }
-
-  struct UpdateBoundingBoxData
-  {
-    Matrix m_bbox;
-    bool m_internal;
-    graphics_handle m_handle;
-    Figure *m_figure;
-  };
 
   void
   Figure::updateBoundingBox (bool internal, int flags)
@@ -709,7 +696,6 @@ namespace QtHandles
       {
         QSize sz = bar->sizeHint ();
         QRect r = win->geometry ();
-        //qDebug () << "Figure::addCustomToolBar:" << r;
 
         r.adjust (0, -sz.height (), 0, 0);
 
@@ -719,7 +705,6 @@ namespace QtHandles
         win->addToolBar (bar);
         m_blockUpdates = false;
 
-        //qDebug () << "Figure::addCustomToolBar:" << win->geometry ();
         updateBoundingBox (false);
       }
   }

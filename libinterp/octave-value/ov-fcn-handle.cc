@@ -191,7 +191,7 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
     }
 
   if (! fcn_to_call.is_defined ())
-    error ("%s: no longer valid function handle", m_name.c_str ());
+    error ("%s: invalid function handle", m_name.c_str ());
 
   octave::stack_frame *closure_context = nullptr;
 

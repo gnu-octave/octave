@@ -2240,6 +2240,8 @@ dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h])
+  AC_CHECK_LIB([sundials_sunlinsolklu], [SUNKLU],
+               [SUNDIALS_SUNLINSOL_KLU_LIBS=-lsundials_sunlinsolklu])
   AC_CACHE_CHECK([whether SUNDIALS IDA is configured with SUNLINSOL_KLU enabled],
     [octave_cv_sundials_sunlinsol_klu],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[

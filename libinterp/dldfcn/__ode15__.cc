@@ -47,6 +47,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #  if defined (HAVE_IDA_IDA_H)
 #    include <ida/ida.h>
+#  elif defined (HAVE_IDA_H)
+#    include <ida.h>
+#  endif
+#  if defined (HAVE_IDA_IDA_DIRECT_H)
+#    include <ida/ida_direct.h>
+#  elif defined (HAVE_IDA_DIRECT_H)
+#    include <ida_direct.h>
 #  endif
 
 #  if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
@@ -67,6 +74,38 @@ along with Octave; see the file COPYING.  If not, see
 #      include <ufsparse/klu.h>
 #    endif
 #    include <sunlinsol/sunlinsol_klu.h>
+#  endif
+
+#  if ! defined (HAVE_IDASETJACFN) && defined (HAVE_IDADLSSETJACFN)
+static inline int
+IDASetJacFn (void *ida_mem, IDADlsJacFn jac)
+{
+  return IDADlsSetJacFn (ida_mem, jac);
+}
+#  endif
+
+#  if ! defined (HAVE_IDASETLINEARSOLVER) && defined (HAVE_IDADLSSETLINEARSOLVER)
+static inline int
+IDASetLinearSolver (void *ida_mem, SUNLinearSolver LS, SUNMatrix A)
+{
+  return IDADlsSetLinearSolver (ida_mem, LS, A);
+}
+#  endif
+
+#  if ! defined (HAVE_SUNLINSOL_DENSE) && defined (HAVE_SUNDENSELINEARSOLVER)
+static inline SUNLinearSolver
+SUNLinSol_Dense (N_Vector y, SUNMatrix A)
+{
+  return SUNDenseLinearSolver (y, A);
+}
+#  endif
+
+#  if ! defined (HAVE_SUNLINSOL_KLU) && defined (HAVE_SUNKLU)
+static inline SUNLinearSolver
+SUNLinSol_KLU (N_Vector y, SUNMatrix A)
+{
+  return SUNKLU (y, A);
+}
 #  endif
 
 static inline realtype *

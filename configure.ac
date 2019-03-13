@@ -2212,11 +2212,20 @@ LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that
 dnl the build features script will get the correct value.
+dnl
+dnl The test on the sunlinsol_klu.h header is a bit of a kluge.
+dnl How can we do a better job here?  Do we need to disable sundials
+dnl any tests fail, or can we fix __ode15__.cc so that it still partially
+dnl works when some things are missing (for example, KLU)?
 if test -n "$SUNDIALS_IDA_LIBS" \
     && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
+    && test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes \
     && test $octave_cv_sundials_sunlinsol_dense = yes \
     && test $octave_cv_sundials_realtype_is_double = yes; then
   AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
+else
+  warn_sundials_disabled="disabling SUNDIALS because something is missing, solvers odee15i and ode15s will be disabled"
+  OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
 fi
 
 ## Collections of flags.
@@ -2229,11 +2238,20 @@ SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CP
 
 SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
 
-SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
+SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOL_KLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
 
 AC_SUBST(SUNDIALS_XCPPFLAGS)
 AC_SUBST(SUNDIALS_XLDFLAGS)
 AC_SUBST(SUNDIALS_XLIBS)
+
+save_LIBS="$LIBS"
+LIBS="$SUNDIALS_XLIBS $LIBS"
+## Current interface:
+AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNLinSol_KLU])
+## Deprecated interface:
+AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
+AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver SUNKLU])
+LIBS="$save_LIBS"
 
 ### Check for ARPACK library.
 

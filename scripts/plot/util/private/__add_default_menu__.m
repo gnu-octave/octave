@@ -38,8 +38,8 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
   ## Create
   if (isempty (hmenu))
     ## File menu
-    hui = uimenu (hf, "label", "&File", "handlevisibility", "off", ...
-                  "tag", "__default_menu__File");
+    hui = uimenu (hf, "label", "&File", "tag", "__default_menu__File", ...
+                      "handlevisibility", "off");
     uimenu (hui, "label", "&Open", "callback", @open_cb, ...
             "accelerator", "o");
     uimenu (hui, "label", "&Save", "callback", {@save_cb, "save"}, ...
@@ -95,7 +95,7 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
     ## Default toolbar
     init_mouse_tools (hf);
     htb = uitoolbar (hf, "tag", "__default_toolbar__", ...
-                     "handlevisibility", "off");
+                     "handlevisibility", "off", "visible", "off");
 
     ht(1) = uitoggletool (htb, "tooltipstring", "Pan", ...
                           "tag", "__default_button_pan__", ...
@@ -136,7 +136,6 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
     set (ht(5), "oncallback", {@mouse_tools_cb, ht, "text"}, ...
          "offcallback", {@mouse_tools_cb, ht, "text"});
   endif
-
 
   if (! exist ("ht", "var"))
     ht = get (htb, "children")(end:-1:1);

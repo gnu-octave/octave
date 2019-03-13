@@ -67,6 +67,18 @@ along with Octave; see the file COPYING.  If not, see
 
 
 #  if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
+#    if defined (HAVE_KLU_H)
+#      include <klu.h>
+#    endif
+#    if defined (HAVE_KLU_KLU_H)
+#      include <klu/klu.h>
+#    endif
+#    if defined (HAVE_SUITESPARSE_KLU_H)
+#      include <suitesparse/klu.h>
+#    endif
+#    if defined (HAVE_UFPARSE_KLU_H)
+#      include <ufsparse/klu.h>
+#    endif
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 
@@ -355,7 +367,9 @@ namespace octave
     if (havejacsparse)
       {
 #if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
-
+        // FIXME : one should not allocate space for a full Jacobian
+        // when using a sparse format. Consider allocating less space
+        // then possibly using SUNSparseMatrixReallocate to increase it.
         sunJacMatrix = SUNSparseMatrix (num, num, num*num, CSC_MAT);
         if (! sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");

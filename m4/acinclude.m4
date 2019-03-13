@@ -2249,6 +2249,18 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
          #if defined (HAVE_SUNDIALS_SUNDIALS_SPARSE_H)
          #include <sundials/sundials_sparse.h>
          #endif
+         #if defined (HAVE_KLU_H)
+         #include <klu.h>
+         #endif
+         #if defined (HAVE_KLU_KLU_H)
+         #include <klu/klu.h>
+         #endif
+         #if defined (HAVE_SUITESPARSE_KLU_H)
+         #include <suitesparse/klu.h>
+         #endif
+         #if defined (HAVE_UFPARSE_KLU_H)
+         #include <ufsparse/klu.h>
+         #endif
          #if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
          #include <sunlinsol/sunlinsol_klu.h>
          #endif

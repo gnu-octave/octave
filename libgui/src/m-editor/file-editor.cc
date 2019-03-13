@@ -2429,6 +2429,9 @@ namespace octave
     for (auto p = m_editor_tab_map.cbegin ();
          p != m_editor_tab_map.cend (); p++)
       {
+        if (p->first.isEmpty ())
+          continue;   // Nothing to do, no valid file name
+
         QString rel_path_to_file = old_dir.relativeFilePath (p->first);
         if (rel_path_to_file.left (3) != QString ("../"))
           {

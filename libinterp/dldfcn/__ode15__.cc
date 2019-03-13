@@ -455,8 +455,8 @@ namespace octave
       jac = (*jacspcell) (spdfdy, spdfdyp, cj);
 
     SUNMatZero_Sparse (Jac);
-    octave_idx_type *colptrs = SUNSparseMatrix_IndexPointers (Jac);
-    octave_idx_type *rowvals = SUNSparseMatrix_IndexValues (Jac);
+    sunindextype *colptrs = SUNSparseMatrix_IndexPointers (Jac);
+    sunindextype *rowvals = SUNSparseMatrix_IndexValues (Jac);
 
     for (int i = 0; i < num + 1; i++)
       colptrs[i] = jac.cidx(i);

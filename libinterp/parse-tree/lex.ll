@@ -1269,11 +1269,30 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
+        if (curr_lexer->m_at_beginning_of_statement)
+          {
+            std::string txt = yytext;
+
+            size_t at_or_dot_pos = txt.find_first_of ("@.");
+
+            if (at_or_dot_pos != std::string::npos)
+              {
+                size_t spc_pos = txt.find_first_of (" \t");
+
+                if (spc_pos != std::string::npos && spc_pos < at_or_dot_pos)
+                  {
+                    yyless (spc_pos);
+                    return curr_lexer->handle_identifier ();
+                  }
+              }
+          }
+
         int id_tok = curr_lexer->handle_superclass_identifier ();
 
         if (id_tok >= 0)
           {
             curr_lexer->m_looking_for_object_index = true;
+            curr_lexer->m_at_beginning_of_statement = false;
 
             return curr_lexer->count_token_internal (id_tok);
           }

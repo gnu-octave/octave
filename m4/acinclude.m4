@@ -2219,7 +2219,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
     [octave_cv_sundials_realtype_is_double],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
         #if defined (HAVE_IDA_IDA_H)
-        #include <ida/ida.h>
+        #  include <ida/ida.h>
         #endif
         #include <assert.h>
         ]], [[
@@ -2271,7 +2271,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_idaklu="SUNDIALS IDA library not configured with SUNLINSOL_KLU, ode15i and ode15s will not support the sparse Jacobian feature"
+    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU, ode15i and ode15s will not support the sparse Jacobian feature"
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])
@@ -2285,12 +2285,11 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
     [octave_cv_sundials_sunlinsol_dense],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
-         #include <ida/ida.h>
+         #  include <ida/ida.h>
          #endif
          #if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
-         #include <sunlinsol/sunlinsol_dense.h>
+         #  include <sunlinsol/sunlinsol_dense.h>
          #endif
-         #endif         
          ]], [[
          void *mem = 0;
          long int num = 0;
@@ -2303,7 +2302,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_DENSE, 1,
       [Define to 1 if SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver.])
   else
-    warn_sundials_ida_dense="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver, ode15i and ode15s will be disabled"
+    warn_sundials_sunlinsol_dense="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver, ode15i and ode15s will be disabled"
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_dense])
   fi
 ])

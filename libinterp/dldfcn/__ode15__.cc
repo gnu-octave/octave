@@ -41,30 +41,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_SUNDIALS)
 
+#  if defined (HAVE_NVECTOR_NVECTOR_SERIAL_H)
+#    include <nvector/nvector_serial.h>
+#  endif
+
 #  if defined (HAVE_IDA_IDA_H)
 #    include <ida/ida.h>
-#  endif
-
-#  if defined (HAVE_SUNDIALS_SUNDIALS_MATRIX_H)
-#    include <sundials/sundials_matrix.h>
-#  endif
-
-#  if defined (HAVE_SUNDIALS_SUNDIALS_LINEARSOLVER_H)
-#    include <sundials/sundials_linearsolver.h>
 #  endif
 
 #  if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
 #    include <sunlinsol/sunlinsol_dense.h>
 #  endif
-
-#  if defined (HAVE_IDA_IDA_DIRECT_H)
-#    include <ida/ida_direct.h>
-#  endif
-
-#  if defined (HAVE_SUNDIALS_SUNDIALS_SPARSE_H)
-#    include <sundials/sundials_sparse.h>
-#  endif
-
 
 #  if defined (HAVE_SUNLINSOL_SUNLINSOL_KLU_H)
 #    if defined (HAVE_KLU_H)
@@ -80,10 +67,6 @@ along with Octave; see the file COPYING.  If not, see
 #      include <ufsparse/klu.h>
 #    endif
 #    include <sunlinsol/sunlinsol_klu.h>
-#  endif
-
-#  if defined (HAVE_NVECTOR_NVECTOR_SERIAL_H)
-#    include <nvector/nvector_serial.h>
 #  endif
 
 static inline realtype *
@@ -263,7 +246,7 @@ namespace octave
     void
     jacsparse_impl (realtype t, realtype cj, N_Vector& yy,
                     N_Vector& yyp, SUNMatrix& Jac);
-#endif
+#  endif
 
     void set_maxstep (realtype maxstep);
 
@@ -366,7 +349,7 @@ namespace octave
 
     if (havejacsparse)
       {
-#if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
+#  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
         // FIXME : one should not allocate space for a full Jacobian
         // when using a sparse format. Consider allocating less space
         // then possibly using SUNSparseMatrixReallocate to increase it.
@@ -374,14 +357,14 @@ namespace octave
         if (! sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");
 
-        sunLinearSolver = SUNKLU (yy, sunJacMatrix);
+        sunLinearSolver = SUNLinSol_KLU (yy, sunJacMatrix);
         if (! sunLinearSolver)
           error ("Unable to create KLU sparse solver");
 
-        if (IDADlsSetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
+        if (IDASetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
           error ("Unable to set sparse linear solver");
 
-        IDADlsSetJacFn (mem, IDA::jacsparse);
+        IDASetJacFn (mem, IDA::jacsparse);
 
 #  else
         error ("SUNDIALS SUNLINSOL KLU is not available in this version of Octave");
@@ -395,14 +378,14 @@ namespace octave
         if (! sunJacMatrix)
           error ("Unable to create dense Jacobian for Sundials");
 
-        sunLinearSolver = SUNDenseLinearSolver (yy, sunJacMatrix);
+        sunLinearSolver = SUNLinSol_Dense (yy, sunJacMatrix);
         if (! sunLinearSolver)
           error ("Unable to create dense linear solver");
 
-        if (IDADlsSetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
+        if (IDASetLinearSolver (mem, sunLinearSolver, sunJacMatrix))
           error ("Unable to set dense linear solver");
 
-        if (havejac && IDADlsSetJacFn (mem, IDA::jacdense) != 0)
+        if (havejac && IDASetJacFn (mem, IDA::jacdense) != 0)
           error ("Unable to set dense Jacobian function");
 
       }
@@ -470,7 +453,7 @@ namespace octave
 
     END_INTERRUPT_WITH_EXCEPTIONS;
   }
-#endif
+#  endif
 
   ColumnVector
   IDA::NVecToCol (N_Vector& v, long int n)

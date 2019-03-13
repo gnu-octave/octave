@@ -2239,15 +2239,12 @@ dnl Check whether SUNDIALS IDA library is configured with SUNLINSOL_KLU
 dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
-  AC_CHECK_HEADERS([sundials/sundials_sparse.h sunlinsol/sunlinsol_klu.h])
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h])
   AC_CACHE_CHECK([whether SUNDIALS IDA is configured with SUNLINSOL_KLU enabled],
     [octave_cv_sundials_sunlinsol_klu],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
          #include <ida/ida.h>
-         #endif
-         #if defined (HAVE_SUNDIALS_SUNDIALS_SPARSE_H)
-         #include <sundials/sundials_sparse.h>
          #endif
          #if defined (HAVE_KLU_H)
          #include <klu.h>
@@ -2283,21 +2280,16 @@ dnl Check whether SUNDIALS IDA library has the SUNLINSOL_DENSE linear solver.
 dnl The IDADENSE API was removed in SUNDIALS version 3.0.0.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
-  AC_CHECK_HEADERS([sunlinsol/sunlinsol_dense.h sundials/sundials_matrix.h sundials/sundials_linearsolver.h ida/ida_direct.h])
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_dense.h])
   AC_CACHE_CHECK([whether SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver],
     [octave_cv_sundials_sunlinsol_dense],
     [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
          #include <ida/ida.h>
          #endif
-         #if defined (HAVE_SUNDIALS_SUNDIALS_MATRIX_H)
-         #include <sundials/sundials_matrix.h>
+         #if defined (HAVE_SUNLINSOL_SUNLINSOL_DENSE_H)
+         #include <sunlinsol/sunlinsol_dense.h>
          #endif
-         #if defined (HAVE_SUNDIALS_SUNDIALS_LINEARSOLVER_H)
-         #include <sundials/sundials_linearsolver.h>
-         #endif
-         #if defined (HAVE_IDA_IDA_DIRECT_H)
-         #include <ida/ida_direct.h>
          #endif         
          ]], [[
          void *mem = 0;

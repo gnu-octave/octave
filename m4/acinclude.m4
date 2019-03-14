@@ -2239,12 +2239,12 @@ dnl Check whether SUNDIALS IDA library is configured with SUNLINSOL_KLU
 dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
-  AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h])
-  AC_CHECK_LIB([sundials_sunlinsolklu], [SUNKLU],
-               [SUNDIALS_SUNLINSOL_KLU_LIBS=-lsundials_sunlinsolklu])
-  AC_CACHE_CHECK([whether SUNDIALS IDA is configured with SUNLINSOL_KLU enabled],
-    [octave_cv_sundials_sunlinsol_klu],
-    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+  OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
+    [sunlinsol/sunlinsol_klu.h], [SUNKLU], [],
+    [don't use SUNLINSOL_KLU library],
+    [AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
+      [octave_cv_sundials_sunlinsol_klu],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)
          #include <ida/ida.h>
          #endif
@@ -2268,7 +2268,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
       ]])],
       octave_cv_sundials_sunlinsol_klu=yes,
       octave_cv_sundials_sunlinsol_klu=no)
-    ])
+    ])])
   if test $octave_cv_sundials_sunlinsol_klu = yes \
      && test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes; then
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,

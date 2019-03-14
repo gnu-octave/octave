@@ -161,6 +161,9 @@ namespace octave
     extern const char *SUNDIALS_NVECSERIAL_CPPFLAGS;
     extern const char *SUNDIALS_NVECSERIAL_LDFLAGS;
     extern const char *SUNDIALS_NVECSERIAL_LIBS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_CPPFLAGS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_LDFLAGS;
+    extern const char *SUNDIALS_SUNLINSOLKLU_LIBS;
     extern const char *TERM_LIBS;
     extern const char *UMFPACK_CPPFLAGS;
     extern const char *UMFPACK_LDFLAGS;

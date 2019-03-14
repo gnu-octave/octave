@@ -5216,6 +5216,15 @@ namespace octave
   octave_value_list
   feval (const octave_value& val, const octave_value_list& args, int nargout)
   {
+    // FIXME: do we really want to silently return an empty ovl if
+    // the function object is undefined?  It's essentially what the
+    // version above that accepts a pointer to an octave_function
+    // object does and some code was apparently written to rely on it
+    // (for example, __ode15__).
+
+    if (val.is_undefined ())
+      return ovl ();
+
     if (val.is_function ())
       {
         return feval (val.function_value (), args, nargout);

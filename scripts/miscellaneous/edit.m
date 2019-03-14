@@ -165,9 +165,6 @@ function retval = edit (varargin)
         error ("Octave:deprecated-function",
                "The EDITOR option of edit has been removed.  Use EDITOR() directly.");
       case "HOME"
-        if (! isempty (stateval) && stateval(1) == "~")
-          stateval = [ get_home_directory, stateval(2:end) ];
-        endif
         FUNCTION.HOME = stateval;
         return;
       case "AUTHOR"
@@ -218,15 +215,23 @@ function retval = edit (varargin)
     endif
   endif
 
+  ## Only use the legacy "HOME" directory if the user explicitly configured
+  ## it and if the directory exists.  In previous versions of Octave, HOME
+  ## was ~/octave by default and edited functions were copied into ~/octave.
+  ## Now 'edit_file_in_place' should be true by default unless the user
+  ## opts in by setting "EDITINPLACE" to false and "HOME" to a directory.
+  edit_file_in_place = (FUNCTION.EDITINPLACE || isempty (FUNCTION.HOME)
+                        || ! isfolder (FUNCTION.HOME));
+
   ## Start the editor without a file if no file is given.
   if (nargin == 0)
-    if (isfolder (FUNCTION.HOME))
+    if (! edit_file_in_place && ! strcmp (FUNCTION.HOME, "."))
       curr_dir = pwd ();
       unwind_protect
-        cd (FUNCTION.HOME);
+        chdir (FUNCTION.HOME);
         do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
       unwind_protect_cleanup
-        cd (curr_dir);
+        chdir (curr_dir);
       end_unwind_protect
     else
       do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
@@ -307,7 +312,7 @@ function retval = edit (varargin)
 
     if (! isempty (fileandpath))
       ## If the file exists, then edit it.
-      if (FUNCTION.EDITINPLACE)
+      if (edit_file_in_place)
         ## Edit in place even if it is protected.
         do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
         return;
@@ -317,7 +322,8 @@ function retval = edit (varargin)
         fid = fopen (fileandpath, "r+t");
         if (fid < 0)
           from = fileandpath;
-          fileandpath = [FUNCTION.HOME, from(rindex(from, filesep):end)];
+          [~, fname, ext] = fileparts (from);
+          fileandpath = fullfile (tilde_expand (FUNCTION.HOME), [fname, ext]);
           [status, msg] = copyfile (from, fileandpath, 1);
           if (status == 0)
             error (msg);

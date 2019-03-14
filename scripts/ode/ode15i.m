@@ -575,14 +575,16 @@ endfunction
 %!       "invalid value assigned to field 'Jacobian'");
 
 ## Jacobian strange field
-## FIXME: we need a better way to silence the warning from odeset.
-%!testif HAVE_SUNDIALS
-%! saved_opts = warning ();
-%! warning ("off", "all");
-%! opt = odeset ("Jacobian", "_5yVNhWVJWJn47RKnzxPsyb_");
-%! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
-%!       "invalid value assigned to field 'Jacobian'");
-%! warning (saved_opts);
+## FIXME: for compatibility with Matlab, it is no longer an error to
+## create a handle to a nonexistent function and ode15i just checks that
+## the argument is a function handle (it is) so there is no error for
+## this case now.  If this check really must be done early, before
+## attempting to use the invalid function handle, then one way is to
+## call "functions" on it and catch the error if it is invalid.
+##%!testif HAVE_SUNDIALS
+##%! opt = odeset ("Jacobian", "_5yVNhWVJWJn47RKnzxPsyb_");
+##%! fail ("[t, y] = ode15i (@rob, [0, 4e6], [1; 0; 0], [-1e-4; 1e-4; 0], opt)",
+##%!       "invalid value assigned to field 'Jacobian'");
 
 %!function ydot = fun (t, y, yp)
 %!  ydot = [y - yp];

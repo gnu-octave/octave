@@ -136,18 +136,18 @@ namespace octave
     typedef
     ColumnVector (*DAERHSFuncIDA) (const ColumnVector& x,
                                    const ColumnVector& xdot,
-                                   realtype t, octave_function *idaf);
+                                   realtype t, const octave_value& idaf);
 
     typedef
     Matrix (*DAEJacFuncDense) (const ColumnVector& x,
                                const ColumnVector& xdot, realtype t,
-                               realtype cj, octave_function *idaj);
+                               realtype cj, const octave_value& idaj);
 
     typedef
     SparseMatrix (*DAEJacFuncSparse) (const ColumnVector& x,
                                       const ColumnVector& xdot,
                                       realtype t, realtype cj,
-                                      octave_function *idaj);
+                                      const octave_value& idaj);
 
     typedef
     Matrix (*DAEJacCellDense) (Matrix *dfdy, Matrix *dfdyp,
@@ -160,8 +160,8 @@ namespace octave
     //Default
     IDA (void)
       : t0 (0.0), y0 (), yp0 (), havejac (false), havejacfun (false),
-        havejacsparse (false), mem (nullptr), num (), ida_fun (nullptr),
-        ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
+        havejacsparse (false), mem (nullptr), num (), ida_fun (),
+        ida_jac (), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
         spdfdyp (nullptr), fun (nullptr), jacfun (nullptr), jacspfun (nullptr),
         jacdcell (nullptr), jacspcell (nullptr),
         sunJacMatrix (nullptr), sunLinearSolver (nullptr)
@@ -169,10 +169,10 @@ namespace octave
 
 
     IDA (realtype t, ColumnVector y, ColumnVector yp,
-         octave_function *ida_fcn, DAERHSFuncIDA daefun)
+         const octave_value& ida_fcn, DAERHSFuncIDA daefun)
       : t0 (t), y0 (y), yp0 (yp), havejac (false), havejacfun (false),
         havejacsparse (false), mem (nullptr), num (), ida_fun (ida_fcn),
-        ida_jac (nullptr), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
+        ida_jac (), dfdy (nullptr), dfdyp (nullptr), spdfdy (nullptr),
         spdfdyp (nullptr), fun (daefun), jacfun (nullptr), jacspfun (nullptr),
         jacdcell (nullptr), jacspcell (nullptr),
         sunJacMatrix (nullptr), sunLinearSolver (nullptr)
@@ -187,7 +187,7 @@ namespace octave
     }
 
     IDA&
-    set_jacobian (octave_function *jac, DAEJacFuncDense j)
+    set_jacobian (const octave_value& jac, DAEJacFuncDense j)
     {
       jacfun = j;
       ida_jac = jac;
@@ -198,7 +198,7 @@ namespace octave
     }
 
     IDA&
-    set_jacobian (octave_function *jac, DAEJacFuncSparse j)
+    set_jacobian (const octave_value& jac, DAEJacFuncSparse j)
     {
       jacspfun = j;
       ida_jac = jac;
@@ -294,21 +294,21 @@ namespace octave
     bool
     interpolate (int& cont, Matrix& output, ColumnVector& tout,
                  int refine, realtype tend, bool haveoutputfcn,
-                 bool haveoutputsel, octave_function *output_fcn,
+                 bool haveoutputsel, const octave_value& output_fcn,
                  ColumnVector& outputsel, bool haveeventfunction,
-                 octave_function *event_fcn, ColumnVector& te,
+                 const octave_value& event_fcn, ColumnVector& te,
                  Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                  ColumnVector& oldisterminal, ColumnVector& olddir,
                  int& temp, ColumnVector& yold);
 
     bool
-    outputfun (octave_function *output_fcn, bool haveoutputsel,
+    outputfun (const octave_value& output_fcn, bool haveoutputsel,
                const ColumnVector& output, realtype tout, realtype tend,
                ColumnVector& outputsel, const std::string& flag);
 
 
     bool
-    event (octave_function *event_fcn,
+    event (const octave_value& event_fcn,
            ColumnVector& te, Matrix& ye, ColumnVector& ie,
            realtype tsol, const ColumnVector& y, const std::string& flag,
            const ColumnVector& yp, ColumnVector& oldval,
@@ -321,9 +321,9 @@ namespace octave
     integrate (const int numt, const ColumnVector& tt,
                const ColumnVector& y0, const ColumnVector& yp0,
                const int refine, bool haverefine, bool haveoutputfcn,
-               octave_function *output_fcn, bool haveoutputsel,
+               const octave_value& output_fcn, bool haveoutputsel,
                ColumnVector& outputsel, bool haveeventfunction,
-               octave_function *event_fcn);
+               const octave_value& event_fcn);
 
     void print_stat (void);
 
@@ -337,8 +337,8 @@ namespace octave
     bool havejacsparse;
     void *mem;
     int num;
-    octave_function *ida_fun;
-    octave_function *ida_jac;
+    octave_value ida_fun;
+    octave_value ida_jac;
     Matrix *dfdy;
     Matrix *dfdyp;
     SparseMatrix *spdfdy;
@@ -566,9 +566,9 @@ namespace octave
   IDA::integrate (const int numt, const ColumnVector& tspan,
                   const ColumnVector& y, const ColumnVector& yp,
                   const int refine, bool haverefine, bool haveoutputfcn,
-                  octave_function *output_fcn, bool haveoutputsel,
+                  const octave_value& output_fcn, bool haveoutputsel,
                   ColumnVector& outputsel, bool haveeventfunction,
-                  octave_function *event_fcn)
+                  const octave_value& event_fcn)
   {
     // Set up output
     ColumnVector tout, yout (num), ypout (num), ysel (outputsel.numel ());
@@ -729,7 +729,7 @@ namespace octave
   }
 
   bool
-  IDA::event (octave_function *event_fcn,
+  IDA::event (const octave_value& event_fcn,
               ColumnVector& te, Matrix& ye, ColumnVector& ie,
               realtype tsol, const ColumnVector& y, const std::string& flag,
               const ColumnVector& yp, ColumnVector& oldval,
@@ -831,9 +831,9 @@ namespace octave
   bool
   IDA::interpolate (int& cont, Matrix& output, ColumnVector& tout,
                     int refine, realtype tend, bool haveoutputfcn,
-                    bool haveoutputsel, octave_function *output_fcn,
+                    bool haveoutputsel, const octave_value& output_fcn,
                     ColumnVector& outputsel, bool haveeventfunction,
-                    octave_function *event_fcn, ColumnVector& te,
+                    const octave_value& event_fcn, ColumnVector& te,
                     Matrix& ye, ColumnVector& ie, ColumnVector& oldval,
                     ColumnVector& oldisterminal, ColumnVector& olddir,
                     int& temp, ColumnVector& yold)
@@ -897,7 +897,7 @@ namespace octave
   }
 
   bool
-  IDA::outputfun (octave_function *output_fcn, bool haveoutputsel,
+  IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
                   const ColumnVector& yout, realtype tsol,
                   realtype tend, ColumnVector& outputsel,
                   const std::string& flag)
@@ -988,7 +988,7 @@ namespace octave
 
   ColumnVector
   ida_user_function (const ColumnVector& x, const ColumnVector& xdot,
-                     double t, octave_function *ida_fc)
+                     double t, const octave_value& ida_fc)
   {
     octave_value_list tmp;
 
@@ -1006,7 +1006,7 @@ namespace octave
 
   Matrix
   ida_dense_jac (const ColumnVector& x, const ColumnVector& xdot,
-                 double t, double cj, octave_function *ida_jc)
+                 double t, double cj, const octave_value& ida_jc)
   {
     octave_value_list tmp;
 
@@ -1024,7 +1024,7 @@ namespace octave
 
   SparseMatrix
   ida_sparse_jac (const ColumnVector& x, const ColumnVector& xdot,
-                  double t, double cj, octave_function *ida_jc)
+                  double t, double cj, const octave_value& ida_jc)
   {
     octave_value_list tmp;
 
@@ -1054,7 +1054,7 @@ namespace octave
   }
 
   octave_value_list
-  do_ode15 (octave_function *ida_fcn,
+  do_ode15 (const octave_value& ida_fcn,
             const ColumnVector& tspan,
             const int numt,
             const realtype t0,
@@ -1076,14 +1076,14 @@ namespace octave
 
     Matrix ida_dfdy, ida_dfdyp, *dfdy, *dfdyp;
     SparseMatrix ida_spdfdy, ida_spdfdyp, *spdfdy, *spdfdyp;
-    octave_function *ida_jac;
+    octave_value ida_jac;
     Cell jaccell;
 
     if (havejac)
       {
         if (havejacfun)
           {
-            ida_jac = options.getfield ("Jacobian").function_value ();
+            ida_jac = options.getfield ("Jacobian");
 
             if (havejacsparse)
               dae.set_jacobian (ida_jac, ida_sparse_jac);
@@ -1157,7 +1157,7 @@ namespace octave
 
     bool haverefine = (refine > 1);
 
-    octave_function *output_fcn = nullptr;
+    octave_value output_fcn;
     ColumnVector outputsel;
 
     // OutputFcn
@@ -1165,7 +1165,7 @@ namespace octave
       = options.getfield("haveoutputfunction").bool_value ();
 
     if (haveoutputfunction)
-      output_fcn = options.getfield("OutputFcn").function_value ();
+      output_fcn = options.getfield("OutputFcn");
 
     // OutputSel
     bool haveoutputsel = options.getfield("haveoutputselection").bool_value ();
@@ -1173,14 +1173,14 @@ namespace octave
     if (haveoutputsel)
       outputsel = options.getfield("OutputSel").vector_value ();
 
-    octave_function *event_fcn = nullptr;
+    octave_value event_fcn;
 
     // Events
     bool haveeventfunction
       = options.getfield("haveeventfunction").bool_value ();
 
     if (haveeventfunction)
-      event_fcn = options.getfield("Events").function_value ();
+      event_fcn = options.getfield("Events");
 
     // Set up linear solver
     dae.set_up (y0);
@@ -1219,12 +1219,10 @@ Undocumented internal function.
     print_usage ();
 
   // Check odefun
-  octave_value f_arg = args(0);
+  octave_value ida_fcn = args(0);
 
-  if (! f_arg.is_function_handle ())
+  if (! ida_fcn.is_function_handle ())
     error ("__ode15__: odefun must be a function handle");
-
-  octave_function *ida_fcn = f_arg.function_value ();
 
   // Check input tspan
   ColumnVector tspan

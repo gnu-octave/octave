@@ -627,6 +627,12 @@ namespace octave
       return m_static_link->get_auto_fcn_var (avt);
     }
 
+    // We only need to override one of each of these functions.  The
+    // using declaration will avoid warnings about partially-overloaded
+    // virtual functions.
+    using stack_frame::varval;
+    using stack_frame::varref;
+
     octave_value varval (const symbol_record& sym) const
     {
       // Look in closest stack frame that contains values (either the
@@ -756,6 +762,12 @@ namespace octave
       return m_access_link->get_auto_fcn_var (avt);
     }
 
+    // We only need to override one of each of these functions.  The
+    // using declaration will avoid warnings about partially-overloaded
+    // virtual functions.
+    using stack_frame::varval;
+    using stack_frame::varref;
+
     octave_value varval (const symbol_record& sym) const;
 
     octave_value& varref (const symbol_record& sym);
@@ -840,6 +852,12 @@ namespace octave
     {
       m_auto_vars.at (avt) = val;
     }
+
+    // We only need to override one of each of these functions.  The
+    // using declaration will avoid warnings about partially-overloaded
+    // virtual functions.
+    using stack_frame::varval;
+    using stack_frame::varref;
 
     octave_value varval (size_t data_offset) const
     {
@@ -939,6 +957,12 @@ namespace octave
 
     scope_flags scope_flag (const symbol_record& sym) const;
 
+    // We only need to override one of each of these functions.  The
+    // using declaration will avoid warnings about partially-overloaded
+    // virtual functions.
+    using base_value_stack_frame::varval;
+    using base_value_stack_frame::varref;
+
     octave_value varval (const symbol_record& sym) const;
 
     octave_value& varref (const symbol_record& sym);
@@ -1000,6 +1024,12 @@ namespace octave
     symbol_record insert_symbol (const std::string&);
 
     scope_flags scope_flag (const symbol_record& sym) const;
+
+    // We only need to override one of each of these functions.  The
+    // using declaration will avoid warnings about partially-overloaded
+    // virtual functions.
+    using base_value_stack_frame::varval;
+    using base_value_stack_frame::varref;
 
     octave_value varval (const symbol_record& sym) const;
 

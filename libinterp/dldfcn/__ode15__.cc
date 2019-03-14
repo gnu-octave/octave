@@ -100,12 +100,14 @@ SUNLinSol_Dense (N_Vector y, SUNMatrix A)
 }
 #  endif
 
-#  if ! defined (HAVE_SUNLINSOL_KLU) && defined (HAVE_SUNKLU)
+#  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
+#    if ! defined (HAVE_SUNLINSOL_KLU) && defined (HAVE_SUNKLU)
 static inline SUNLinearSolver
 SUNLinSol_KLU (N_Vector y, SUNMatrix A)
 {
   return SUNKLU (y, A);
 }
+#    endif
 #  endif
 
 static inline realtype *

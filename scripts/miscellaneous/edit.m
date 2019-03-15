@@ -28,31 +28,27 @@
 ##
 ## @itemize @bullet
 ## @item
-## If the function @var{name} is available in a file on your path and that
-## file is modifiable, then it will be edited in place.  If it is a system
-## function, then it will first be copied to the directory @env{HOME} (see
-## below) and then edited.  If no file is found, then the m-file variant,
-## ending with @qcode{".m"}, will be considered.  If still no file is found,
-## then variants with a leading @qcode{"@@"} and then with both a leading
-## @qcode{"@@"} and trailing @qcode{".m"} will be considered.
+## If the function @var{name} is available in a file on your path, then it
+## will be opened in the editor.  If no file is found, then the m-file
+## variant, ending with @qcode{".m"}, will be considered.  If still no file is
+## found, then variants with a leading @qcode{"@@"} and then with both a
+## leading @qcode{"@@"} and trailing @qcode{".m"} will be considered.
 ##
 ## @item
-## If @var{name} is the name of a function defined in the interpreter but not
-## in an m-file, then an m-file will be created in @env{HOME} to contain that
-## function along with its current definition.
+## If @var{name} is the name of a command-line function, then an m-file will
+## be created to contain that function along with its current definition.
 ##
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
-## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in the current directory.  If @var{name}
-## happens to be an m-file or interpreter defined function, then the text of
-## that function will be inserted into the .cc file as a comment.
+## @file{@var{name}.cc} in the path and open it in the editor.  If the file is
+## not found, then a new @file{.cc} file will be created.  If @var{name}
+## happens to be an m-file or command-line function, then the text of that
+## function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
 ## the editor will be started with @file{@var{name}.ext} in the current
-## directory as the filename.  If @file{@var{name}.ext} is not modifiable,
-## it will be copied to @env{HOME} before editing.
+## directory as the filename.
 ##
 ## @strong{Warning:} You may need to clear @var{name} before the new definition
 ## is available.  If you are editing a .cc file, you will need to execute
@@ -72,10 +68,6 @@
 ## The following control fields are used:
 ##
 ## @table @samp
-## @item home
-## This is the location of user local m-files.  Be sure it is in your path.
-## The default is @file{~/octave}.
-##
 ## @item author
 ## This is the name to put after the "## Author:" field of new functions.  By
 ## default it guesses from the @code{gecos} field of the password database.
@@ -115,7 +107,19 @@
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to
 ## whether they are modifiable or not.  The default is @code{true}.
+## Set it to @code{false} to have read-only function files automatically
+## copied to @samp{home}, if it exists, when editing them.
+##
+## @item home
+## This value indicates a directory that system m-files should be copied into
+## before opening them in the editor.  The intent is that this directory is
+## also in the path, so that the edited copy of a system function file shadows
+## the original.  This setting only has an effect when @samp{editinplace} is
+## set to @code{false}.  The default is the empty matrix (@code{[]}), which
+## means it is not used.  The default in previous versions of Octave was
+## @file{~/octave}.
 ## @end table
+## @seealso{EDITOR, path}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -127,8 +131,7 @@ function retval = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("HOME",
-                                fullfile (get_home_directory (), "octave"),
+  persistent FUNCTION = struct ("HOME", [],
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",

@@ -191,7 +191,7 @@ octave_base_value::size (void)
 }
 
 octave_idx_type
-octave_base_value::numel (const octave_value_list& idx)
+octave_base_value::xnumel (const octave_value_list& idx)
 {
   return octave::dims_to_numel (dims (), idx);
 }

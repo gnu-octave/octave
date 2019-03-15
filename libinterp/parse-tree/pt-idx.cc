@@ -270,7 +270,7 @@ namespace octave
                   tmp = Cell ();
                 }
 
-              retval.numel (tmp.numel (tidx));
+              retval.numel (tmp.xnumel (tidx));
 
               idx.push_back (tidx);
               tmpidx.push_back (tidx);
@@ -302,7 +302,7 @@ namespace octave
                   else if (autoconv)
                     tmp = octave_map ();
 
-                  retval.numel (tmp.numel (pidx));
+                  retval.numel (tmp.xnumel (pidx));
 
                   tmpi = i-1;
                   tmpidx.push_back (tidx);
@@ -316,7 +316,7 @@ namespace octave
                     }
                   else
                     {
-                      retval.numel (tmp.numel (octave_value_list ()));
+                      retval.numel (tmp.xnumel (octave_value_list ()));
 
                       tmpi = i;
                       tmpidx.push_back (tidx);

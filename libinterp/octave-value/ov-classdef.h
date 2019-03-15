@@ -110,7 +110,7 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  octave_idx_type numel (const octave_value_list&);
+  octave_idx_type xnumel (const octave_value_list&);
 
   string_vector map_keys (void) const { return object.map_keys (); }
 

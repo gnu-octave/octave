@@ -85,7 +85,7 @@ public:
 
   Matrix size (void);
 
-  octave_idx_type numel (const octave_value_list&);
+  octave_idx_type xnumel (const octave_value_list&);
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual

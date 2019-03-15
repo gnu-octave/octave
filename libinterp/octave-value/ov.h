@@ -406,8 +406,10 @@ public:
   Matrix size (void)
   { return rep->size (); }
 
-  octave_idx_type numel (const octave_value_list& idx)
-  { return rep->numel (idx); }
+  // FIXME: should this function be deprecated and removed?  It supports
+  // an undocumented feature of Matlab.
+  octave_idx_type xnumel (const octave_value_list& idx)
+  { return rep->xnumel (idx); }
 
   // FIXME: Do we really need all these different versions of subsref
   // and related functions?

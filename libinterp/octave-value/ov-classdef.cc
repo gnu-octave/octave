@@ -203,7 +203,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 }
 
 octave_idx_type
-octave_classdef::numel (const octave_value_list& idx)
+octave_classdef::xnumel (const octave_value_list& idx)
 {
   octave_idx_type retval = -1;
 
@@ -233,7 +233,7 @@ octave_classdef::numel (const octave_value_list& idx)
         }
     }
 
-  retval = octave_base_value::numel (idx);
+  retval = octave_base_value::xnumel (idx);
 
   return retval;
 }

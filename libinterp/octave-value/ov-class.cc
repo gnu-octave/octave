@@ -332,10 +332,10 @@ octave_class::size (void)
 }
 
 octave_idx_type
-octave_class::numel (const octave_value_list& idx)
+octave_class::xnumel (const octave_value_list& idx)
 {
   if (in_class_method () || called_from_builtin ())
-    return octave_base_value::numel (idx);
+    return octave_base_value::xnumel (idx);
 
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
@@ -362,7 +362,7 @@ octave_class::numel (const octave_value_list& idx)
       retval = lv(0).idx_type_value (true);
     }
   else
-    retval = octave_base_value::numel (idx);
+    retval = octave_base_value::xnumel (idx);
 
   return retval;
 }
@@ -466,7 +466,7 @@ octave_class::subsref (const std::string& type,
               // Set up a proper nargout for the subsref call by calling numel.
               octave_value_list tmp;
               if (type[0] != '.') tmp = idx.front ();
-              true_nargout = numel (tmp);
+              true_nargout = xnumel (tmp);
             }
 
           retval = octave::feval (meth.function_value (), args, true_nargout);

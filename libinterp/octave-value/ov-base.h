@@ -278,7 +278,7 @@ public:
 
   virtual Matrix size (void);
 
-  virtual octave_idx_type numel (const octave_value_list&);
+  virtual octave_idx_type xnumel (const octave_value_list&);
 
   // FIXME: Do we really need all three of these versions of subsref?
 

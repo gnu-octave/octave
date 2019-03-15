@@ -125,10 +125,6 @@ function opts = __opengl_print__ (opts)
       cmd = sprintf (opts.pstoedit_cmd (opts), "pdf", tmp, tmp);
       gl2ps_device = {"svg"};
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
-    case {"corel", "gif"}
-      error ("print:unsupporteddevice",
-             "print.m: %s output is not available for OpenGL graphics toolkits",
-             upper (opts.devopt));
     case opts.ghostscript.device
       ## Except for postscript, use svg format and first convert to pdf
       ## before going through ghostscript for final adjusments

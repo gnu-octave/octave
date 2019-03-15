@@ -210,6 +210,16 @@ function arg_st = __print_parse_opts__ (varargin)
     endif
   endif
 
+  ## Warn about deprecated output formats
+  persistent unsupported = {"aifm", "ill","cdr", "corel", ...
+                            "hpgl", "mf", "cgm", "dxf"}
+
+  if (any (strcmp (unsupported, arg_st.devopt)))
+    warning ('Octave:print:deprecated-format',
+             'print: "%s" format is no more officially supported', ...
+             arg_st.devopt);
+  endif
+
   ## By default, postprocess svg files using svgconvert.
   if (strcmp (arg_st.devopt, "svg"))
     arg_st.svgconvert = true;

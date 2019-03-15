@@ -217,7 +217,7 @@
 ## @itemx -F@var{fontname}:@var{size}
 ## @itemx -F:@var{size}
 ##   Use @var{fontname} and/or @var{fontsize} for all text.
-## @var{fontname} is ignored for some devices: dxf, fig, hpgl, etc.
+## @var{fontname} is ignored for some devices: fig, etc.
 ##
 ## @item -d@var{device}
 ##   The available output format is specified by the option @var{device}, and
@@ -299,16 +299,6 @@
 ##   @item canvas*
 ##     Javascript-based drawing on an HTML5 canvas viewable in a web browser.
 ##
-##   @item  cdr*
-##   @itemx @nospell{corel*}
-##     CorelDraw
-##
-##   @item cgm*
-##     Computer Graphics Metafile, Version 1, ANSI X3.122-1986
-##
-##   @item dxf
-##     AutoCAD
-##
 ##   @item  emf
 ##   @itemx meta
 ##     Microsoft Enhanced Metafile
@@ -319,19 +309,9 @@
 ## whether the special flag should be set for the text in the figure.
 ## (default is @option{-textnormal})
 ##
-##   @item hpgl
-##     HP plotter language
-##
-##   @item  ill
-##   @itemx @nospell{aifm}
-##     Adobe Illustrator (obsolete for Gnuplot versions > 4.2)
-##
 ##   @item  latex*
 ##   @itemx eepic*
 ##     @LaTeX{} picture environment and extended picture environment.
-##
-##   @item mf*
-##     Metafont
 ##
 ##   @item  tikz
 ##   @itemx tikzstandalone*

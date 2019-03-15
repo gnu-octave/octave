@@ -31,6 +31,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   Matlab compatible.  If necessary use the `"-loose"` option to
   reproduce figures as they appeared in previous versions of Octave.
 
+- The following print devices are no more officially supported: cdr, corel,
+  aifm, ill, cgm, hpgl, mf and dxf.  A warning will be thrown when using
+  those devices and the actual code for supporting those formats will eventually
+  be removed from a future version of Octave. 
 
 ### Matlab compatibility
 

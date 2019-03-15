@@ -2594,7 +2594,7 @@ case "$GCC_VERSION" in
 esac
 
 GCC_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
-GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
+GXX_EXTRA_FLAGS="-Wall -W $GCC_WSHADOW_OPTION -Woverloaded-virtual -Wold-style-cast -Wformat -Wpointer-arith -Wwrite-strings -Wcast-align -Wcast-qual"
 
 try_extra_warning_flags=yes
 AC_ARG_ENABLE([extra-warning-flags],

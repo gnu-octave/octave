@@ -409,6 +409,9 @@ public:
   octave_idx_type numel (const octave_value_list& idx)
   { return rep->numel (idx); }
 
+  // FIXME: Do we really need all these different versions of subsref
+  // and related functions?
+
   octave_value single_subsref (const std::string& type,
                                const octave_value_list& idx);
 

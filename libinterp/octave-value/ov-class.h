@@ -87,6 +87,11 @@ public:
 
   octave_idx_type numel (const octave_value_list&);
 
+  // We don't need to override all three forms of subsref.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::subsref;
+
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
   {

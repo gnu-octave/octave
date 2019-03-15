@@ -280,6 +280,8 @@ public:
 
   virtual octave_idx_type numel (const octave_value_list&);
 
+  // FIXME: Do we really need all three of these versions of subsref?
+
   virtual octave_value
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx);

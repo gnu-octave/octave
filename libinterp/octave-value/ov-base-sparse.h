@@ -127,6 +127,11 @@ public:
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (matrix.diag (k)); }
 

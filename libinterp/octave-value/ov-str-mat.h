@@ -106,6 +106,11 @@ public:
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_char_matrix::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (matrix.diag (k)); }
 
@@ -236,6 +241,11 @@ public:
     retval.resize (dv);
     return octave_value (retval, '\'');
   }
+
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_char_matrix_str::diag;
 
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (matrix.diag (k), '\''); }

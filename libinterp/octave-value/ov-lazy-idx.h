@@ -182,6 +182,11 @@ public:
   FORWARD_VALUE_QUERY1 (SparseMatrix, sparse_matrix_value)
   FORWARD_VALUE_QUERY1 (SparseComplexMatrix, sparse_complex_matrix_value)
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   {
     return make_value ().diag (k);

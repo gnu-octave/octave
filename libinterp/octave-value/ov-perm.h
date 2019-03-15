@@ -91,6 +91,11 @@ public:
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_value::diag;
+
   octave_value diag (octave_idx_type k = 0) const
   { return to_dense () .diag (k); }
 

@@ -229,6 +229,11 @@ public:
   octave_value as_uint32 (void) const;
   octave_value as_uint64 (void) const;
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_scalar<float>::diag;
+
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;

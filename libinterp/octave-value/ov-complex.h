@@ -159,6 +159,11 @@ public:
   octave_value as_double (void) const;
   octave_value as_single (void) const;
 
+  // We don't need to override both forms of the diag method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_base_scalar<Complex>::diag;
+
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   void increment (void) { scalar += 1.0; }

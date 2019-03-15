@@ -78,6 +78,7 @@ include %reldir%/bug-52722/module.mk
 include %reldir%/bug-53027/module.mk
 include %reldir%/bug-53468/module.mk
 include %reldir%/bug-54995/module.mk
+include %reldir%/bug-55758/module.mk
 include %reldir%/class-concat/module.mk
 include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk

@@ -2257,6 +2257,12 @@ namespace octave
                   {
                     // No more indices, so we are done.
 
+                    // See note at end of function about deleting
+                    // temporaries prior to pushing result.
+
+                    base_expr_val = octave_value ();
+                    first_args = octave_value_list ();
+
                     push_result (retval);
                     return;
                   }
@@ -2443,6 +2449,19 @@ namespace octave
             retval = fcn->call (*this, nargout, final_args);
           }
       }
+
+    // Delete any temporary values prior to pushing the result and
+    // returning so that destructors for any temporary classdef handle
+    // objects will be called before we return.  Otherwise, the
+    // destructor may push result values that will wipe out the result
+    // that we push below.  Although the method name is "push_result"
+    // there is only a single register (either an octave_value or an
+    // octave_value_list) not a stack.
+
+    idx.clear ();
+    partial_expr_val = octave_value ();
+    base_expr_val = octave_value ();
+    val = octave_value ();
 
     push_result (retval);
   }

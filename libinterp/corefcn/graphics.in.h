@@ -2468,7 +2468,10 @@ public:
     error ("base_graphics_object::set_defaults: invalid graphics object");
   }
 
-  virtual octave_value get (bool all = false) const
+  // The following version of the get method is not declared virtual
+  // because no derived class overrides it.
+
+  octave_value get (bool all = false) const
   {
     if (! valid_object ())
       error ("base_graphics_object::get: invalid graphics object");

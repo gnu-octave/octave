@@ -190,6 +190,11 @@ public:
     return object.meta_subsref (type, idx, nargout);
   }
 
+  // We don't need to override both forms of the call method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_function::call;
+
   octave_value_list call (octave::tree_evaluator&, int nargout,
                           const octave_value_list& args)
   {
@@ -230,6 +235,11 @@ public:
   bool is_classdef_superclass_ref (void) const { return true; }
 
   octave_function * function_value (bool = false) { return this; }
+
+  // We don't need to override both forms of the call method.  The using
+  // declaration will avoid warnings about partially-overloaded virtual
+  // functions.
+  using octave_function::call;
 
   octave_value_list
   call (octave::tree_evaluator& tw, int nargout, const octave_value_list& idx);

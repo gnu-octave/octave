@@ -90,6 +90,8 @@ namespace octave
 
       bool is_constructor (void) const;
 
+      bool is_defined_in_class (const std::string& cname) const;
+
       octave_value_list
       meta_subsref (const std::string& type,
                     const std::list<octave_value_list>& idx, int nargout);
@@ -188,6 +190,11 @@ namespace octave
     bool is_constructor (void) const
     {
       return get_rep ()->is_constructor ();
+    }
+
+    bool is_defined_in_class (const std::string& cname) const
+    {
+      return get_rep ()->is_defined_in_class (cname);
     }
 
     bool is_external (void) const { return get_rep ()->is_external (); }

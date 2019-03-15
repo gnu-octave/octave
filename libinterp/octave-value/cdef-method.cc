@@ -181,6 +181,14 @@ namespace octave
   }
 
   bool
+  cdef_method::cdef_method_rep::is_defined_in_class (const std::string &cname) const
+  {
+    return (function.is_function ()
+            ? function.function_value ()->dispatch_class () == cname
+            : false);
+  }
+
+  bool
   cdef_method::cdef_method_rep::check_access (void) const
   {
     cdef_class cls (to_cdef (get ("DefiningClass")));

@@ -529,7 +529,10 @@ namespace octave
   {
     cdef_method dtor = find_method ("delete");
 
-    if (dtor.ok ())
+    // FIXME: would it be better to tell find_method above to not find
+    // overloaded functions?
+
+    if (dtor.ok () && dtor.is_defined_in_class (get_name ()))
       dtor.execute (obj, octave_value_list (), 0, true, "destructor");
 
     // FIXME: should we destroy corresponding properties here?

@@ -638,9 +638,23 @@ namespace octave
 
         bool update_apis = false;  // flag, whether update of apis files
 
-        // get path to prepared api info
-        QFileInfo settings_file = resource_manager::get_settings_file ();
-        QString prep_apis_path = settings_file.absolutePath () + "/"
+        // Get path to prepared api info (cache). Temporarily set the
+        // application name to 'octave' instead of 'GNU Octave' name for
+        // not having blanks in the path.
+        QString tmp_app_name = QCoreApplication::applicationName ();
+        QCoreApplication::setApplicationName ("octave");  // Set new name
+
+#if defined (HAVE_QSTANDARDPATHS)
+        QString local_data_path
+          = QStandardPaths::writableLocation (QStandardPaths::CacheLocation);
+#else
+        QString local_data_path
+          = QDesktopServices::storageLocation (QDesktopServices::CacheLocation);
+#endif
+
+        QCoreApplication::setApplicationName ("octave");  // Set temp. name
+
+        QString prep_apis_path = local_data_path + "/"
                                   + QString (OCTAVE_VERSION) + "/qsci/";
 
         // get settings which infos are used for octave
@@ -648,6 +662,8 @@ namespace octave
                                  "editor/codeCompletion_octave_builtins", true).toBool ();
         bool octave_functions = settings->value (
                                   "editor/codeCompletion_octave_functions", true).toBool ();
+
+        QCoreApplication::setApplicationName (tmp_app_name);  // Restore name
 
         if (_is_octave_file)
           {

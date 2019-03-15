@@ -2269,8 +2269,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
       octave_cv_sundials_sunlinsol_klu=yes,
       octave_cv_sundials_sunlinsol_klu=no)
     ])])
-  if test $octave_cv_sundials_sunlinsol_klu = yes \
-     && test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes; then
+  if test "x$ac_cv_header_sunlinsol_sunlinsol_klu_h" = xyes \
+     && test "x$octave_cv_sundials_sunlinsol_klu" = xyes; then
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else

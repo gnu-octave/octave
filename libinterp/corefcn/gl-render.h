@@ -52,7 +52,10 @@ namespace octave
 
     virtual void draw (const graphics_object& go, bool toplevel = true);
 
-    virtual void draw (const Matrix& hlist, bool toplevel = false)
+    // The following version of the draw method is not declared virtual
+    // because no derived class overrides it.
+
+    void draw (const Matrix& hlist, bool toplevel = false)
     {
       int len = hlist.numel ();
 

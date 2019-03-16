@@ -1764,6 +1764,11 @@ public:
     do_delete_children (clear);
   }
 
+  void delete_children (bool clear, bool from_root)
+  {
+    do_delete_children (clear, from_root);
+  }
+
   void renumber (graphics_handle old_gh, graphics_handle new_gh)
   {
     for (auto& hchild : children_list)
@@ -1886,6 +1891,8 @@ private:
   }
 
   void do_delete_children (bool clear);
+
+  void do_delete_children (bool clear, bool from_root);
 };
 
 // ---------------------------------------------------------------------
@@ -2243,6 +2250,15 @@ public:
       }
   }
 
+  virtual void remove_child (const graphics_handle& h, bool)
+  {
+    if (children.remove_child (h.value ()))
+      {
+        children.run_listeners ();
+        mark_modified ();
+      }
+  }
+
   virtual void adopt (const graphics_handle& h)
   {
     children.adopt (h.value ());
@@ -2309,6 +2325,11 @@ public:
   virtual void delete_children (bool clear = false)
   {
     children.delete_children (clear);
+  }
+
+  virtual void delete_children (bool clear, bool from_root)
+  {
+    children.delete_children (clear, from_root);
   }
 
   void renumber_child (graphics_handle old_gh, graphics_handle new_gh)
@@ -2544,6 +2565,14 @@ public:
       error ("base_graphics_object::remove_child: invalid graphics object");
 
     get_properties ().remove_child (h);
+  }
+
+  virtual void remove_child (const graphics_handle& h, bool from_root)
+  {
+    if (! valid_object ())
+      error ("base_graphics_object::remove_child: invalid graphics object");
+
+    get_properties ().remove_child (h, from_root);
   }
 
   virtual void adopt (const graphics_handle& h)
@@ -2894,6 +2923,8 @@ public:
   public:
     void remove_child (const graphics_handle& h);
 
+    void remove_child (const graphics_handle& h, bool from_root);
+
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
 
@@ -3074,6 +3105,8 @@ public:
     }
 
     void remove_child (const graphics_handle& h);
+
+    void remove_child (const graphics_handle& h, bool from_root);
 
     void set_visible (const octave_value& val);
 
@@ -3410,6 +3443,8 @@ public:
 
     void remove_child (const graphics_handle& h);
 
+    void remove_child (const graphics_handle& h, bool from_root);
+
     void adopt (const graphics_handle& h);
 
     const scaler& get_x_scaler (void) const { return sx; }
@@ -3607,6 +3642,8 @@ public:
                          const octave_value& v);
 
     void delete_text_child (handle_property& h);
+
+    void delete_text_child (handle_property& h, bool from_root);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5233,6 +5270,8 @@ public:
   public:
     void remove_child (const graphics_handle& h);
 
+    void remove_child (const graphics_handle& h, bool from_root);
+
     void adopt (const graphics_handle& h);
 
     // See the genprops.awk script for an explanation of the
@@ -5308,6 +5347,11 @@ public:
     void remove_child (const graphics_handle& h)
     {
       base_properties::remove_child (h);
+    }
+
+    void remove_child (const graphics_handle& h, bool from_root)
+    {
+      base_properties::remove_child (h, from_root);
     }
 
     void adopt (const graphics_handle& h)
@@ -6214,6 +6258,12 @@ public:
       instance->do_free (h);
   }
 
+  static void free (const graphics_handle& h, bool from_root)
+  {
+    if (instance_ok ())
+      instance->do_free (h, from_root);
+  }
+
   static void renumber_figure (const graphics_handle& old_gh,
                                const graphics_handle& new_gh)
   {
@@ -6464,6 +6514,8 @@ private:
   graphics_handle do_get_handle (bool integer_figure_handle);
 
   void do_free (const graphics_handle& h);
+
+  void do_free (const graphics_handle& h, bool from_root);
 
   void do_renumber_figure (const graphics_handle& old_gh,
                            const graphics_handle& new_gh);

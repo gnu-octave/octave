@@ -1759,9 +1759,9 @@ public:
     return octave_value (get_children ());
   }
 
-  void delete_children (bool clear = false)
+  void delete_children (bool clear = false, bool from_root = false)
   {
-    do_delete_children (clear);
+    do_delete_children (clear, from_root);
   }
 
   void renumber (graphics_handle old_gh, graphics_handle new_gh)
@@ -1885,7 +1885,7 @@ private:
     children_list.push_front (val);
   }
 
-  void do_delete_children (bool clear);
+  void do_delete_children (bool clear, bool from_root);
 };
 
 // ---------------------------------------------------------------------
@@ -2234,7 +2234,7 @@ public:
 
   bool is_modified (void) const { return is___modified__ (); }
 
-  virtual void remove_child (const graphics_handle& h)
+  virtual void remove_child (const graphics_handle& h, bool = false)
   {
     if (children.remove_child (h.value ()))
       {
@@ -2306,9 +2306,9 @@ public:
 
   virtual void update_uicontextmenu (void) const;
 
-  virtual void delete_children (bool clear = false)
+  virtual void delete_children (bool clear = false, bool from_root = false)
   {
-    children.delete_children (clear);
+    children.delete_children (clear, from_root);
   }
 
   void renumber_child (graphics_handle old_gh, graphics_handle new_gh)
@@ -2541,12 +2541,12 @@ public:
     return get_properties ().get___myhandle__ ();
   }
 
-  virtual void remove_child (const graphics_handle& h)
+  virtual void remove_child (const graphics_handle& h, bool from_root = false)
   {
     if (! valid_object ())
       error ("base_graphics_object::remove_child: invalid graphics object");
 
-    get_properties ().remove_child (h);
+    get_properties ().remove_child (h, from_root);
   }
 
   virtual void adopt (const graphics_handle& h)
@@ -2895,7 +2895,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     Matrix get_boundingbox (bool internal = false,
                             const Matrix& parent_pix_size = Matrix ()) const;
@@ -3076,7 +3076,7 @@ public:
       integerhandle = val;
     }
 
-    void remove_child (const graphics_handle& h);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void set_visible (const octave_value& val);
 
@@ -3401,7 +3401,7 @@ public:
   public:
     void set_defaults (base_graphics_object& obj, const std::string& mode);
 
-    void remove_child (const graphics_handle& h);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void adopt (const graphics_handle& h);
 
@@ -3599,7 +3599,7 @@ public:
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
 
-    void delete_text_child (handle_property& h);
+    void delete_text_child (handle_property& h, bool from_root = false);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -5264,7 +5264,7 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h);
+    void remove_child (const graphics_handle& h, bool from_root = false);
 
     void adopt (const graphics_handle& h);
 
@@ -5338,9 +5338,9 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
-    void remove_child (const graphics_handle& h)
+    void remove_child (const graphics_handle& h, bool from_root = false)
     {
-      base_properties::remove_child (h);
+      base_properties::remove_child (h, from_root);
     }
 
     void adopt (const graphics_handle& h)
@@ -6224,10 +6224,10 @@ public:
            : graphics_handle ();
   }
 
-  static void free (const graphics_handle& h)
+  static void free (const graphics_handle& h, bool from_root = false)
   {
     if (instance_ok ())
-      instance->do_free (h);
+      instance->do_free (h, from_root);
   }
 
   static void renumber_figure (const graphics_handle& old_gh,
@@ -6479,7 +6479,7 @@ private:
 
   graphics_handle do_get_handle (bool integer_figure_handle);
 
-  void do_free (const graphics_handle& h);
+  void do_free (const graphics_handle& h, bool from_root);
 
   void do_renumber_figure (const graphics_handle& old_gh,
                            const graphics_handle& new_gh);

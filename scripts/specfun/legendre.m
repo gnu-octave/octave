@@ -196,9 +196,9 @@ function retval = legendre (n, x, normalization)
 
   ## Based on the recurrence relation below
   ##            m                 m              m
-  ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+1)*P (x)
+  ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+m)*P (x)
   ##            n+1               n              n-1
-  ## http://en.wikipedia.org/wiki/Associated_Legendre_function
+  ## https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
 
   overflow = false;
   retval = zeros ([n+1, size(x)]);

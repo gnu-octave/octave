@@ -117,8 +117,6 @@ namespace octave
       std::shared_ptr<symbol_scope_rep> new_sid
         = std::shared_ptr<symbol_scope_rep> (new symbol_scope_rep (m_name));
 
-      new_sid->m_name;
-
       for (const auto& nm_sr : m_symbols)
         new_sid->m_symbols[nm_sr.first] = nm_sr.second.dup ();
 

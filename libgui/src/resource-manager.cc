@@ -70,25 +70,54 @@ namespace octave
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr)
   {
+    // Let QSettings decide where to put the ini file with gui preferences
+    m_default_settings
+              = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                              "octave", "octave-gui");
+
+    m_settings_file = m_default_settings->fileName ();
+
+    QFileInfo sfile (m_settings_file);
+    m_settings_directory = sfile.absolutePath ();
+
+    QString xdg_config_home
+        = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
+
+    if (! sfile.exists ())// && xdg_config_home.isEmpty ())
+      {
+        // File does not exist yet: Look for a settings file at the old
+        // location ($HOME/.config/octave/qt-settings) for impoting all
+        // available keys into the new settings file.
+        // Do not look for an old settings file if XDG_CONFIG_HOME is set,
+        // since then a non-existin new settings file does not necessarily
+        // indicate a first run of octave with new config file locations.
 #if defined (HAVE_QSTANDARDPATHS)
-    QString home_path
-      = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
+        QString home_path
+            = QStandardPaths::writableLocation (QStandardPaths::HomeLocation);
 #else
-    QString home_path
-      = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
+        QString home_path
+            = QDesktopServices::storageLocation (QDesktopServices::HomeLocation);
 #endif
 
-    QString xdg_config_home = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
+        QString old_settings_directory = home_path + "/.config/octave";
+        QString old_settings_file = old_settings_directory + "/qt-settings";
 
-    if (xdg_config_home.isEmpty ())
-      m_settings_directory = home_path + "/.config/octave";
-    else
-      m_settings_directory = xdg_config_home + "/octave";
+        QFile ofile (old_settings_file);
 
-    m_settings_file = m_settings_directory + "/qt-settings";
+        if (ofile.exists ())
+          {
+            // Old settings file exists, create a QSettings object related
+            // to it and copy all available keys to the new settings
+            QSettings old_settings (old_settings_file, QSettings::IniFormat);
 
-    m_default_settings = new QSettings (default_qt_settings_file (),
-                                        QSettings::IniFormat);
+            QStringList keys = old_settings.allKeys ();
+            for (int i = 0; i < keys.count(); i++)
+              m_default_settings->setValue (keys.at(i),
+                                            old_settings.value(keys.at(i)));
+
+            m_default_settings->sync ();  // Done, make sure keys are written
+          }
+      }
   }
 
   resource_manager::~resource_manager (void)

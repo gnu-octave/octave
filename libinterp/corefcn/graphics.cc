@@ -9454,6 +9454,92 @@ bool is_coplanar (const Matrix &cov)
   return ev.min () <= tol * ev.max ();
 }
 
+std::list<octave_idx_type>
+coplanar_partition (const Matrix &vert, const Matrix &idx,
+                    octave_idx_type nc, octave_idx_type jj)
+{
+  std::list<octave_idx_type> coplanar_ends;
+  
+  Matrix plane_pivot = Matrix (1, 3, 0.0);
+  for (octave_idx_type i = 0; i < 3; i++)
+    plane_pivot(0,i) = vert(idx(0,jj)-1,i);
+
+  Matrix fc = Matrix (0, 3, 0.0);  // face corner vertex coordinates
+  Matrix fa = Matrix (1, 3, 0.0);  // for append face corner
+  Matrix coor_cov = Matrix (3, 3, 0.0);
+
+  if (nc >= 5)
+    {
+      // Coplanar test that involves all points.
+      // For nc == 4, this initial test is not beneficial at all.
+      // If the probability of coplanar input is more than half, for
+      // the best average performance, we should use nc >= 5.
+      // Higher threshold is meaningful only when input is known to be
+      // non-coplanar and nc is small.
+
+      fc.resize (nc - 1, 3);
+      for (octave_idx_type j = 1; j < nc; j++)
+        for (octave_idx_type i = 0; i < 3; i++)
+          fc(j-1,i) = vert(idx(j,jj)-1,i) - plane_pivot(i);
+
+      coor_cov = fc.transpose () * fc;
+      if (is_coplanar (coor_cov))
+        {
+          coplanar_ends.push_back (nc - 1);
+          return coplanar_ends;
+        }
+    }
+
+  fc.resize (3, 3);
+  octave_idx_type i_start = 1;
+  octave_idx_type i_end = 2;
+
+  // Split the polygon into coplanar segments.
+  // The first point is common corner of all planes.
+  while (i_start < nc - 1)
+    {
+      i_end = i_start + 2;
+      if (i_end > nc - 1)
+        {
+          coplanar_ends.push_back (nc - 1);
+          break;
+        }
+
+      // Algorithm: Start from 3 points, keep adding points until the point set
+      // is no more in a plane. Record the coplanar point set, then advance
+      // i_start.
+
+      // Prepare 1+3 points for coplanar test.
+      // The first point is implicitly included.
+      for (octave_idx_type j = 0; j < 3; j++)
+        for (octave_idx_type i = 0; i < 3; i++)
+          fc(j,i) = vert(idx(j+i_start,jj)-1,i) - plane_pivot(i);
+
+      // covariance matrix between coordinates of vertices
+      coor_cov = fc.transpose () * fc;
+
+      while (true)
+        {
+          // coplanar test
+          if (! is_coplanar (coor_cov))
+            break;
+
+          i_end++;
+          if (i_end > nc - 1)
+            break;
+
+          // add a point to plane
+          for (octave_idx_type i = 0; i < 3; i++)
+            fa(0,i) = vert(idx(i_end,jj)-1,i) - plane_pivot(i);
+          coor_cov += fa.transpose () * fa;
+        }
+
+      i_start = i_end - 1;
+      coplanar_ends.push_back (i_start);
+    }
+  return coplanar_ends;
+}
+
 void
 patch::properties::update_data (void)
 {
@@ -9510,87 +9596,24 @@ patch::properties::update_data (void)
           while (nc < fcmax && ! octave::math::isnan (idx(nc,jj)))
             nc++;
 
-          std::list<octave_idx_type> coplanar_ends;
-
-          Matrix plane_pivot = Matrix (1, 3, 0.0);
-          for (octave_idx_type i = 0; i < 3; i++)
-            plane_pivot(0,i) = vert(idx(0,jj)-1,i);
-
-          Matrix fc = Matrix (0, 3, 0.0);  // face corner vertex coordinates
-          Matrix fa = Matrix (1, 3, 0.0);  // for append face corner
-          Matrix coor_cov = Matrix (3, 3, 0.0);
-
-          if (nc >= 5)
+          // If any of the corners is NaN or Inf, skip coplanar test.
+          // FIXME: Add support for non-coplanar faces with unclosed contour.
+          bool is_unclosed = false;
+          for (octave_idx_type j = 0; j < nc; j++)
             {
-              // Coplanar test that involves all points.
-              // For nc == 4, this initial test is not beneficial at all.
-              // If the probability of coplanar input is more than half, for
-              // the best average performance, we should use nc >= 5.
-              // Higher threshold is meaningful only when input is known to be
-              // non-coplanar and nc is small.
-
-              fc.resize (nc - 1, 3);
-              for (octave_idx_type j = 1; j < nc; j++)
-                for (octave_idx_type i = 0; i < 3; i++)
-                  fc(j-1,i) = vert(idx(j,jj)-1,i) - plane_pivot(i);
-
-              coor_cov = fc.transpose () * fc;
-              if (is_coplanar (coor_cov))
+              const octave_idx_type k = idx(j, jj) - 1;
+              if (! (octave::math::isfinite (vert(k, 0))
+                  && octave::math::isfinite (vert(k, 1))
+                  && octave::math::isfinite (vert(k, 2))))
                 {
-                  coplanar_ends.push_back (nc - 1);
-                  coplanar_last_idx.push_back (coplanar_ends);
-                  continue;
-                }
-            }
-
-          fc.resize (3, 3);
-          octave_idx_type i_start = 1;
-          octave_idx_type i_end = 2;
-
-          // Split the polygon into coplanar segments.
-          // The first point is common corner of all planes.
-          while (i_start < nc - 1)
-            {
-              i_end = i_start + 2;
-              if (i_end > nc - 1)
-                {
-                  coplanar_ends.push_back (nc - 1);
+                  is_unclosed = true;
                   break;
                 }
-
-              // Algorithm: Start from 3 points, keep adding points until the
-              // point set is no more in a plane. Record the coplanar point
-              // set, then advance i_start.
-
-              // Prepare 1+3 points for coplanar test.
-              // The first point is implicitly included.
-              for (octave_idx_type j = 0; j < 3; j++)
-                for (octave_idx_type i = 0; i < 3; i++)
-                  fc(j,i) = vert(idx(j+i_start,jj)-1,i) - plane_pivot(i);
-
-              // covariance matrix between coordinates of vertex
-              coor_cov = fc.transpose () * fc;
-
-              while (true)
-                {
-                  // coplanar test
-                  if (! is_coplanar (coor_cov))
-                    break;
-
-                  i_end++;
-                  if (i_end > nc - 1)
-                    break;
-
-                  // add a point to plane
-                  for (octave_idx_type i = 0; i < 3; i++)
-                    fa(0,i) = vert(idx(i_end,jj)-1,i) - plane_pivot(i);
-                  coor_cov += fa.transpose () * fa;
-                }
-
-              i_start = i_end - 1;
-              coplanar_ends.push_back (i_start);
             }
-          coplanar_last_idx.push_back (coplanar_ends);
+          if (is_unclosed)
+            continue;
+
+          coplanar_last_idx.push_back (coplanar_partition (vert, idx, nc, jj));
         }
     }
 

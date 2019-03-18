@@ -2239,8 +2239,17 @@ dnl Check whether SUNDIALS IDA library is configured with SUNLINSOL_KLU
 dnl enabled.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
+  ## Including <sunlinsol/sunlinsol_klu.h> may depend on including
+  ## <suitesparse/klu.h> first.  So perform the check as follows instead
+  ## of using OCTAVE_CHECK_LIB to check for sunlinsol_klu.h.
+  AC_CHECK_HEADERS([suitesparse/klu.h])
+  AC_CHECK_HEADERS([sunlinsol/sunlinsol_klu.h], [], [],
+    [#ifdef HAVE_SUITESPARSE_KLU_H
+     # include <suitesparse/klu.h>
+     #endif
+    ])
   OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
-    [sunlinsol/sunlinsol_klu.h], [SUNKLU], [],
+    [], [SUNKLU], [],
     [don't use SUNLINSOL_KLU library],
     [AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
       [octave_cv_sundials_sunlinsol_klu],

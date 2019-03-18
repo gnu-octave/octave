@@ -88,9 +88,9 @@ function opts = __opengl_print__ (opts)
         pipeline = {sprintf("cat > %s", opts.name)};
       endif
     case fig2dev_devices
-      cmd_pstoedit = opts.pstoedit_cmd (opts, "fig");
       cmd_fig2dev = opts.fig2dev_cmd (opts, opts.devopt);
       if (strcmp (opts.devopt, "pstex"))
+        cmd_pstoedit = opts.pstoedit_cmd (opts, "fig", false);
         [~, ~, ext] = fileparts (opts.name);
         if (any (strcmpi (ext, {".ps", ".tex", "."})))
           opts.name = opts.name(1:end-numel(ext));
@@ -104,17 +104,26 @@ function opts = __opengl_print__ (opts)
         pipeline{2} = sprintf ("%s | %s > %s", cmd_pstoedit,
                                cmd_fig2dev, strrep(opts.name, ".ps", ".tex"));
       else
+        ## Using svgconvert
+        tmp = tempname ();
+        opts.unlink = [opts.unlink tmp];
+        cmd_pstoedit = sprintf (opts.pstoedit_cmd (opts, "fig"), ...
+                                "pdf", tmp, tmp);
         cmd = sprintf ("%s | %s > %s", cmd_pstoedit, cmd_fig2dev, opts.name);
-        gl2ps_device = {"eps"};
+        gl2ps_device = {"svg"};
         pipeline = {cmd};
       endif
     case "aifm"
-      cmd = opts.pstoedit_cmd (opts, "ps2ai");
-      gl2ps_device = {"eps"};
+      tmp = tempname ();
+      opts.unlink = [opts.unlink tmp];
+      cmd = sprintf (opts.pstoedit_cmd (opts, "ps2ai"), "pdf", tmp, tmp);
+      gl2ps_device = {"svg"};
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
     case {"dxf", "emf", "fig", "hpgl"}
-      cmd = opts.pstoedit_cmd (opts);
-      gl2ps_device = {"eps"};
+      tmp = tempname ();
+      opts.unlink = [opts.unlink tmp];
+      cmd = sprintf (opts.pstoedit_cmd (opts), "pdf", tmp, tmp);
+      gl2ps_device = {"svg"};
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
     case {"corel", "gif"}
       error ("print:unsupporteddevice",

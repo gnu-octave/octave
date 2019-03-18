@@ -1020,22 +1020,36 @@ function cmd = lpr (opts)
 
 endfunction
 
-function cmd = pstoedit (opts, devopt)
+function cmd = pstoedit (opts, devopt, do_svg = true)
 
   if (nargin < 2)
     devopt = opts.devopt;
   endif
 
   if (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", "print.m: 'pstoedit' is required for specified output format, but binary is not available in PATH");
+    error ("print:nopstoedit", ...
+           ["print.m: 'pstoedit' is required for specified output format, ", ...
+            "but binary is not available in PATH"]);
   endif
 
   dos_shell = (ispc () && ! isunix ());
-  if (dos_shell)
-    cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
+  
+  if (! do_svg)
+    if (dos_shell)
+      cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
+    else
+      cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+      endi;f
+    endif
   else
-    ## FIXME: Is this the right thing to do for DOS?
-    cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
+    cmd = svgconvert (opts, devopt);
+    if (dos_shell)
+      cmd = sprintf ("%s & %s -ssp -f %s %%s 2> NUL", cmd, ...
+                     opts.pstoedit_binary, devopt);
+    else
+      cmd = sprintf ("%s ; %s -ssp -f %s %%s 2> /dev/null", cmd,  ...
+                     opts.pstoedit_binary, devopt);
+    endif
   endif
 
   if (opts.debug)

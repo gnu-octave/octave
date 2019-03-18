@@ -366,7 +366,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.rgb_output)
     if (! isempty (arg_st.printer) || ! isempty (arg_st.name))
-      warning ("octave:print:ignored_argument",
+      warning ("Octave:print:ignored_argument",
                "print: ignoring file name and printer argument when using -RGBImage option");
     endif
   elseif (! isempty (arg_st.printer) || isempty (arg_st.name))
@@ -495,7 +495,7 @@ function arg_st = __print_parse_opts__ (varargin)
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
       warning ("octave:print:missing_gs", ...
-               ["print.m: Ghostscript binary is not available.  ", ...
+               ["print: Ghostscript binary is not available.  ", ...
                 "Only eps output is possible"]);
     endif
     warn_on_missing_ghostscript = false;
@@ -590,8 +590,8 @@ function gs = __ghostscript_binary__ ()
         || (! isempty (GSC) && file_in_path (getenv ("PATH"), GSC)))
       gs_binaries = {GSC};
     elseif (! isempty (GSC) && warn_on_bad_gsc)
-      warning ("octave:print:badgscenv",
-               "print.m: GSC environment variable not set properly");
+      warning ("Octave:print:badgscenv",
+               "print: GSC environment variable not set properly");
       warn_on_bad_gsc = false;
       gs_binaries = {};
     else

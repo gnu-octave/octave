@@ -721,8 +721,8 @@ function rgbout = print (varargin)
     for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
-        warning ("octave:print:unlinkerror", ...
-                 "print.m: %s, '%s'", output, opts.unlink{n});
+        warning ("Octave:print:unlinkerror", ...
+                 "print: %s, '%s'", output, opts.unlink{n});
       endif
     endfor
   end_unwind_protect
@@ -789,8 +789,8 @@ function cmd = epstool (opts, filein, fileout)
   endif
 
   if (! isempty (opts.preview) && opts.tight)
-    warning ("octave:print:previewandtight",
-             "print.m: eps preview may not be combined with -tight");
+    warning ("Octave:print:previewandtight",
+             "print: eps preview may not be combined with -tight");
   endif
   if (! isempty (opts.preview) || opts.tight)
 
@@ -1050,9 +1050,9 @@ function cmd = svgconvert (opts, devopt)
   endif
 
   if (isempty (opts.svgconvert_binary))
-    warning ("octave:print:nosvgconvert", ...
-             ["print.m: unale to find octave-svgconvert, ", ...
-              "falling back to eps convertion"]);
+    warning ("Octave:print:nosvgconvert", ...
+             ["print: unable to find octave-svgconvert, ", ...
+              "falling back to eps conversion"]);
   else
     fontdir = getenv ("OCTAVE_FONTS_DIR");
 

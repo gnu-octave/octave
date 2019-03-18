@@ -659,6 +659,9 @@ function rgbout = print (varargin)
     ## When exporting latex files use "latex" for the ticklabelinterpreter.
     ## It will format tick labels in log axes correctly
     if (strfind (opts.devopt, "latex"))
+      ## Disable warnings about Latex being unsupported since Octave will be
+      ## passing Latex code directly to interpreter with no rendering.
+      warning ("off", "Octave:text_interpreter", "local");
       h = findall (opts.figure, "type", "axes");
       for n = 1:numel (h)
         if (ishghandle (h(n)))

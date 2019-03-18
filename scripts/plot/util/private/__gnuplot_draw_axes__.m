@@ -2254,8 +2254,12 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     endfor
   elseif (strcmp (interpreter, "latex"))
     if (! warned_latex)
-      warning ("latex markup not supported for tick marks");
-      warned_latex = true;
+      do_warn = (warning ("query", "Octave:text_interpreter")).state;
+      if (strcmp (do_warn, "on"))
+        warning ("Octave:text_interpreter",
+                 "latex markup not supported for tick marks");
+        warned_latex = true;
+      endif
     endif
   endif
   if (strcmp (scale, "log"))
@@ -2421,8 +2425,12 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, ntrp)
       endif
     elseif (strcmp (ntrp, "latex"))
       if (! warned_latex)
-        warning ("latex markup not supported for text objects");
-        warned_latex = true;
+        do_warn = (warning ("query", "Octave:text_interpreter")).state;
+        if (strcmp (do_warn, "on"))
+          warning ("Octave:text_interpreter",
+                   "latex markup not supported for text objects");
+          warned_latex = true;
+        endif
       endif
     endif
   endif

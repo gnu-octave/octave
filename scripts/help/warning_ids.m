@@ -195,6 +195,13 @@
 ## @item Octave:glyph-render
 ## By default, the @code{Octave:glyph-render} warning is enabled.
 ##
+## @item Octave:text_interpreter
+## If the @code{Octave:text_interpreter} warning is enabled, a warning is
+## printed when the @qcode{"interpreter"} property of a text graphics object
+## is set to the unsupported value of @qcode{"latex"}.  Even when enabled,
+## the warning message is printed just once per Octave session.
+## By default, the @code{Octave:glyph-render} warning is enabled.
+##
 ## @item Octave:imag-to-real
 ## If the @code{Octave:imag-to-real} warning is enabled, a warning is
 ## printed for implicit conversions of complex numbers to real numbers.

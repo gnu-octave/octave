@@ -2222,22 +2222,24 @@ if test -n "$SUNDIALS_IDA_LIBS" \
     && test $octave_cv_sundials_sunlinsol_dense = yes \
     && test $octave_cv_sundials_realtype_is_double = yes; then
   AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
+
+  ## Collections of options needed to build with SUNDIALS and its dependencies.
+  SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
+  SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
+  SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
 else
+  SUNDIALS_IDA_CPPFLAGS=
+  SUNDIALS_IDA_LDFLAGS=
+  SUNDIALS_IDA_LIBS=
+  SUNDIALS_NVECSERIAL_CPPFLAGS=
+  SUNDIALS_NVECSERIAL_LDFLAGS=
+  SUNDIALS_NVECSERIAL_LIBS=
+  SUNDIALS_XCPPFLAGS=
+  SUNDIALS_XLDFLAGS=
+  SUNDIALS_XLIBS=
   warn_sundials_disabled="disabling SUNDIALS because something is missing, solvers odee15i and ode15s will be disabled"
   OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
 fi
-
-## Collections of flags.
-dnl These are here instead of just in the Makefile.am file because we
-dnl substitute some of them into other source files like mkoctfile.
-
-dnl Order matters, at least on some systems (Cygwin, for example).
-
-SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
-
-SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
-
-SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
 
 AC_SUBST(SUNDIALS_XCPPFLAGS)
 AC_SUBST(SUNDIALS_XLDFLAGS)

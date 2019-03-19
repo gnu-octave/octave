@@ -71,6 +71,8 @@ sub make_texinfo_file
           next if $in_header;
           next if $line =~ /$tex_delim_pat/;
 
+          $line =~ s/\@seealso/\@xseealso/g;
+
           ## escape {}@ characters for texinfo
           $line =~ s/([{}\@])/\@$1/g
             if $line =~ m/^$doc_delim/;

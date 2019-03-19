@@ -73,6 +73,8 @@ print '@c DO NOT EDIT!  Generated automatically by munge-texi.pl.',"\n\n";
 
 TXI_LINE: while (<STDIN>)
 {
+  s/\@seealso/\@xseealso/g;
+
   if (/^\s*\@DOCSTRING\((\S+)\)/)
   {
     $func = $1;
@@ -139,7 +141,9 @@ sub extract_docstring
         $repl .= "\@ref{XREF$node,,$func}, ";
       }
       substr($repl,-2) = "";   # Remove last ', '
-      $_ = "\@seealso{$repl}$rest_of_line";
+      # write out @xseealso because we have our own macro that conflicts
+      # with the one introduced in Texinfo 6.
+      $_ = "\@xseealso{$repl}$rest_of_line";
     }
 
     $docstring .= $_;

@@ -46,9 +46,14 @@
 @c Implementation Note:
 @c For TeX, @vskip produces a nice separation.
 @c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
+@c for HTML.  We use a simple blank line to produce the correct
+@c behavior.
+@c
+@c We use @xseealso now because Texinfo introduced its own @seealso
+@c command.  But instead of modifying all source files, we'll have the
+@c munge-texi script convert @seealso to @xseealso.
 
-@macro seealso {args}
+@macro xseealso {args}
 @iftex
 @vskip 2pt
 @end iftex

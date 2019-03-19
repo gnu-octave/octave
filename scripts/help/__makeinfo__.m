@@ -94,6 +94,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   endif
   ## Texinfo crashes if @end tex does not appear first on the line.
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
+  text = regexprep (text, '@seealso', '@xseealso');
 
   file = texi_macros_file ();
   fid = fopen (file, "r");

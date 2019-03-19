@@ -53,7 +53,8 @@ namespace octave
       enum class Driver
       {
         GESVD,
-        GESDD
+        GESDD,
+        GEJSV
       };
 
       svd (void)
@@ -112,6 +113,14 @@ namespace octave
                   P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
                   P *vt, octave_f77_int_type nrow_vt1, std::vector<P>& work,
                   octave_f77_int_type& lwork, octave_f77_int_type *iwork,
+                  octave_f77_int_type& info);
+
+      void gejsv (char& joba, char& jobu, char& jobv, char& jobr, char& jobt,
+                  char& jobp, octave_f77_int_type m, octave_f77_int_type n,
+                  P *tmp_data, octave_f77_int_type m1, DM_P *s_vec, P *u,
+                  P *v, octave_f77_int_type nrow_v1, std::vector<P>& work,
+                  octave_f77_int_type& lwork,
+                  std::vector<octave_f77_int_type>& iwork,
                   octave_f77_int_type& info);
     };
   }

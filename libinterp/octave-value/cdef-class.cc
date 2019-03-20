@@ -284,11 +284,11 @@ namespace octave
   }
 
   Cell
-  cdef_class::cdef_class_rep::get_methods (void)
+  cdef_class::cdef_class_rep::get_methods (bool include_ctor)
   {
     std::map<std::string,cdef_method> meths;
 
-    find_methods (meths, false);
+    find_methods (meths, false, include_ctor);
 
     Cell c (meths.size (), 1);
 
@@ -301,19 +301,19 @@ namespace octave
   }
 
   std::map<std::string, cdef_method>
-  cdef_class::cdef_class_rep::get_method_map (bool only_inherited)
+  cdef_class::cdef_class_rep::get_method_map (bool only_inherited,
+                                              bool include_ctor)
   {
     std::map<std::string, cdef_method> methods;
 
-    find_methods (methods, only_inherited);
+    find_methods (methods, only_inherited, include_ctor);
 
     return methods;
   }
 
   void
-  cdef_class::cdef_class_rep::find_methods (std::map<std::string,
-                                            cdef_method>& meths,
-                                            bool only_inherited)
+  cdef_class::cdef_class_rep::find_methods (std::map<std::string, cdef_method>& meths,
+                                            bool only_inherited, bool include_ctor)
   {
     load_all_methods ();
 
@@ -321,7 +321,7 @@ namespace octave
 
     for (it = method_map.begin (); it != method_map.end (); ++it)
       {
-        if (! it->second.is_constructor ())
+        if (include_ctor || ! it->second.is_constructor ())
           {
             std::string nm = it->second.get_name ();
 
@@ -349,7 +349,7 @@ namespace octave
       {
         cdef_class cls = lookup_class (super_classes(i));
 
-        cls.get_rep ()->find_methods (meths, true);
+        cls.get_rep ()->find_methods (meths, true, false);
       }
   }
 

@@ -80,9 +80,10 @@ namespace octave
 
       void install_method (const cdef_method& meth);
 
-      Cell get_methods (void);
+      Cell get_methods (bool include_ctor);
 
-      std::map<std::string, cdef_method> get_method_map (bool only_inherited);
+      std::map<std::string, cdef_method>
+      get_method_map (bool only_inherited, bool include_ctor);
 
       cdef_property find_property (const std::string& nm);
 
@@ -158,7 +159,7 @@ namespace octave
                             int mode = 0);
 
       void find_methods (std::map<std::string, cdef_method>& meths,
-                         bool only_inherited);
+                         bool only_inherited, bool include_ctor = false);
 
       cdef_class wrap (void)
       {
@@ -256,12 +257,15 @@ namespace octave
       get_rep ()->install_method (meth);
     }
 
-    Cell get_methods (void) { return get_rep ()->get_methods (); }
+    Cell get_methods (bool include_ctor = false)
+    {
+      return get_rep ()->get_methods (include_ctor);
+    }
 
     std::map<std::string, cdef_method>
-    get_method_map (bool only_inherited = false)
+    get_method_map (bool only_inherited = false, bool include_ctor = false)
     {
-      return get_rep ()->get_method_map (only_inherited);
+      return get_rep ()->get_method_map (only_inherited, include_ctor);
     }
 
     cdef_property find_property (const std::string& nm);

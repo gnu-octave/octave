@@ -601,7 +601,8 @@ Implements @code{methods} for Octave class objects and classnames.
 
   if (cls.ok ())
     {
-      std::map<std::string, octave::cdef_method> method_map = cls.get_method_map ();
+      std::map<std::string, octave::cdef_method> method_map
+        = cls.get_method_map (false, true);
 
       std::list<std::string> method_names;
 

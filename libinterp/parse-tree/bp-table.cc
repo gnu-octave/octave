@@ -252,22 +252,29 @@ namespace octave
     dbstop_none
   };
 
+  // FIXME: This function probalby needs to be completely overhauled to
+  // correctly parse the full syntax of the dbstop command and properly
+  // reject incorrect forms.
+
   // Parse parameters (args) of dbstop and dbclear commands.
   // For dbstop, who=="dbstop"; for dbclear, who=="dbclear".
-  // The syntax is: dbstop [[in] symbol] [[at] line [line [...]]] [if condition]
+  // The syntax is: dbstop [[in] symbol] [[at] [method | line [line [...]]]] [if condition]
   // where the form of condition depends on whether or not a file or line has
-  // been seen.
+  // been seen.  IF symbol and method are specified, then symbol should
+  // be a class name.  Otherwise it should be a function name.
   // Also execute "if [error|warning|interrupt|naninf]" clauses.
 
   void bp_table::parse_dbfunction_params (const char *who,
                                           const octave_value_list& args,
-                                          std::string& symbol_name,
+                                          std::string& func_name,
+                                          std::string& class_name,
                                           bp_table::intmap& lines,
                                           std::string& cond)
   {
     int nargin = args.length ();
     int list_idx = 0;
-    symbol_name = "";
+    func_name = "";
+    class_name = "";
     lines = bp_table::intmap ();
 
     if (nargin == 0 || ! args(0).is_string ())
@@ -317,10 +324,10 @@ namespace octave
         switch (tok)
           {
           case dbstop_in:
-            symbol_name = args(pos).string_value ();
+            func_name = args(pos).string_value ();
             if (seen_in)
               error ("%s: Too many function names specified -- %s",
-                     who, symbol_name.c_str ());
+                     who, func_name.c_str ());
             else if (seen_at || seen_if)
               error ("%s: function name must come before line number and 'if'",
                      who);
@@ -336,18 +343,36 @@ namespace octave
               error ("%s: line number must come before 'if' clause\n", who);
             seen_at = true;
 
-            if (! seen_in)
+            if (seen_if)
+              error ("%s: line number must come before 'if' clause\n", who);
+            else if (seen_in)
+              {
+                std::string arg = args(pos).string_value ();
+
+                // FIXME: we really want to distinguish number
+                // vs. method name here.
+
+                if (atoi (arg.c_str ()) == 0)
+                  {
+                    // We have class and function names but already
+                    // stored the class name in func_name.
+                    class_name = func_name;
+                    func_name = arg;
+                    pos++;
+                    break;
+                  }
+
+              }
+            else
               {
                 // It was a line number.  Get function name from debugger.
                 if (Vdebugging)
-                  symbol_name = m_evaluator.get_user_code ()->profiler_name ();
+                  func_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
                          "and 'if'", who);
                 seen_in = true;
               }
-            else if (seen_if)
-              error ("%s: line number must come before 'if' clause\n", who);
 
             // Read a list of line numbers (or arrays thereof)
             for ( ; pos < nargin; pos++)
@@ -359,7 +384,7 @@ namespace octave
                     if (line > 0)
                       lines[list_idx++] = line;
                     else
-                      break;        // may be "if"
+                      break;        // may be "if" or a method name
                   }
                 else if (args(pos).isnumeric ())
                   {

@@ -90,10 +90,13 @@ DEFMETHOD (dbstop, interp, args, ,
 @deftypefnx {} {} dbstop in @var{func}
 @deftypefnx {} {} dbstop in @var{func} at @var{line}
 @deftypefnx {} {} dbstop in @var{func} at @var{line} if "@var{condition}"
+@deftypefnx {} {} dbstop in @var{class} at @var{method}
 @deftypefnx {} {} dbstop if @var{event}
 @deftypefnx {} {} dbstop if @var{event} @var{ID}
 @deftypefnx {} {} dbstop (@var{bp_struct})
 @deftypefnx {} {@var{rline} =} dbstop @dots{}
+dbstop in waveClass at waveClass.plotEta
+dbstop waveClass at waveClass.plotEta
 
 Set breakpoints for the built-in debugger.
 
@@ -173,6 +176,7 @@ all breakpoints within the file are cleared.
 {
   octave::bp_table::intmap retmap;
   std::string symbol_name = "";  // stays empty for "dbstop if error" etc
+  std::string class_name = "";
   octave::bp_table::intmap lines;
   std::string condition = "";
   octave_value retval;
@@ -185,7 +189,7 @@ all breakpoints within the file are cleared.
     {
       // explicit function / line / condition
       bptab.parse_dbfunction_params ("dbstop", args, symbol_name,
-                                     lines, condition);
+                                     class_name, lines, condition);
 
       if (lines.size () == 0)
         lines[0] = 1;
@@ -300,6 +304,7 @@ files.
 @end deftypefn */)
 {
   std::string symbol_name = "";  // stays empty for "dbclear if error" etc
+  std::string class_name = "";
   octave::bp_table::intmap lines;
   std::string dummy;             // "if" condition -- only used for dbstop
 
@@ -309,7 +314,7 @@ files.
 
   octave::bp_table& bptab = tw.get_bp_table ();
 
-  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, lines, dummy);
+  bptab.parse_dbfunction_params ("dbclear", args, symbol_name, class_name, lines, dummy);
 
   if (nargin == 1 && symbol_name == "all")
     {

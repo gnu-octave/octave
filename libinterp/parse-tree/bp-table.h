@@ -121,9 +121,9 @@ namespace octave
 
     bool condition_valid (const std::string& cond);
 
-    void parse_dbfunction_params (const char *, const octave_value_list&,
-                                  std::string&, bp_table::intmap&,
-                                  std::string&);
+    void parse_dbfunction_params (const char *who, const octave_value_list& args,
+                                  std::string& func_name, std::string& class_name,
+                                  bp_table::intmap& lines, std::string& cond);
 
   private:
 

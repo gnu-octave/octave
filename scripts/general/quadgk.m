@@ -462,7 +462,7 @@ endfunction
 %!assert (quadgk (@sin,-pi,pi, "WayPoints", 0, "MaxIntervalCount", 100,
 %!                "RelTol", 1e-3, "AbsTol", 1e-6, "trace", false), 0, 1e-6)
 %!assert (quadgk (@sin,-pi,pi, 1e-6, false), 0, 1e-6)
-%!assert <51867> (quadgk (@(x) x, 0, 0), 0, 0)
+%!assert <*51867> (quadgk (@(x) x, 0, 0), 0, 0)
 
 %!assert (quadgk (@sin,-pi,0), -2, 1e-10)
 %!assert (quadgk (@sin,0,pi), 2, 1e-10)

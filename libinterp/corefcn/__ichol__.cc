@@ -453,7 +453,7 @@ Undocumented internal function.
 }
 
 /*
-%!test <51736>
+%!test <*51736>
 %! k = 4;
 %! n = 2^k;
 %! Afull = diag (ones (n,1)) / ...

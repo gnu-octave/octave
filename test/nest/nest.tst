@@ -62,7 +62,7 @@
 %! assert (f("foo"), "nested foo");
 %! assert (f("foo"), "nested foo");
 
-%!test <39257>
+%!test <*39257>
 %! f = no_closure (1);
 %! assert (f(), "nested");
 %! assert (f("foo"), "nested foo");
@@ -78,7 +78,7 @@
 ## closure contexts.handles, FH3 is a copy of FH2 so they will
 ## share the same context.
 
-%!test <39257>
+%!test <*39257>
 %! fh1 = nst1 (13);
 %! fh2 = nst1 (13);
 %! fh3 = fh2;

@@ -2235,37 +2235,37 @@ as the name of the function when reporting errors.
 %! ret = textscan (str, "%s", "delimiter", "\t");
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} });
 
-%!test <52479>
+%!test <*52479>
 %! str = "\t\ta\tb\tc\n";
 %! ret = textscan (str, "%s", "delimiter", {"\t"});
 %! assert (ret, { {''; ''; 'a'; 'b'; 'c'} });
 
-%!test <52550>
+%!test <*52550>
 %! str = ",,1,2,3\n";
 %! obs = textscan (str, "%d", "delimiter", ",");
 %! assert (obs, { [0; 0; 1; 2; 3] });
 %! obs = textscan (str, "%d", "delimiter", {","});
 %! assert (obs, { [0; 0; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " , ,1,2,3\n";
 %! obs = textscan (str, "%d", "delimiter", ",");
 %! assert (obs, { [0; 0; 1; 2; 3] });
 %! textscan (str, "%d", "delimiter", {","});
 %! assert (obs, { [0; 0; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0 , 5+6j , -INF+INFj ,NaN,3\n";
 %! obs = textscan (str, "%f", "delimiter", ",");
 %! assert (obs, { [0; 5+6i; complex(-Inf,Inf); NaN; 3] });
 %! obs = textscan (str, "%f", "delimiter", {","});
 %! assert (obs, { [0; 5+6i; complex(-Inf,Inf); NaN; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0;,;,1;,2;,3\n";
 %! assert (textscan (str, "%f", "delimiter", {";,"}), { [0; NaN; 1; 2; 3] });
 
-%!test <52550>
+%!test <*52550>
 %! str = " 0 ;1 , $ 2 ;3\n";
 %! obs = textscan (str, "%f", "delimiter", ",;$");
 %! assert (obs, { [0; 1; NaN; 2; 3] });

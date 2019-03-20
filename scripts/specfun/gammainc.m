@@ -484,7 +484,7 @@ endfunction
 %!assert (gammainc (709, 1000, "upper"), 0.99999999999999999999999954358, -eps)
 
 ## Test: case 9
-%!test <47800>
+%!test <*47800>
 %! assert (gammainc (60, 6, "upper"), 6.18022358081160257327264261e-20,
 %!         -10*eps);
 ## Matlab is better here than Octave

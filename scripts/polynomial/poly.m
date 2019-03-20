@@ -104,7 +104,7 @@ endfunction
 %! y = poly (x);
 %! assert (isreal (y), true);
 
-%!test <53897>
+%!test <*53897>
 %! x = [1 + 1i, 1 + 2i, 3, 4];
 %! y = poly (x);
 %! assert (y, [1 + 0i, -9 - 3i, 25 + 24i, -17 - 57i, -12 + 36i]);

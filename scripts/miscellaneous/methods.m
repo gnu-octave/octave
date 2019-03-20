@@ -77,7 +77,10 @@ function mtds = methods (obj, opt)
 
   if (havesigs && ! showsigs)
     mtds_list = regexprep (mtds_list, '^(?:[^(]+) (\w+) ?\(.*$', '$1');
+    mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)(\w+) ?\(.*$', '$1');
     mtds_list = unique (mtds_list);
+  else
+    mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)(\w+ ?\(.*)$', '$1');
   endif
 
   if (nargout == 0)

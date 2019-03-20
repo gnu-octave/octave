@@ -143,11 +143,57 @@ public class ClassHelper
   public static String getMethods (Class klass)
   {
     StringBuilder sb = new StringBuilder();
+    boolean first = true;
+
+    Constructor theConstructor[] = klass.getConstructors ();
+    for (int i = 0; i < theConstructor.length; i++)
+      {
+        if (first)
+          {
+            first = false;
+          }
+        else
+          {
+            sb.append (";");
+          }
+
+        sb.append (theConstructor[i].getName ());
+        sb.append ("(");
+
+        Class theParameter[] = theConstructor[i].getParameterTypes ();
+        for (int j = 0; j < theParameter.length; j++)
+          {
+            if (j > 0)
+              {
+                sb.append (", ");
+              }
+            sb.append (theParameter[j].getCanonicalName ());
+          }
+        sb.append (")");
+
+        Class theExceptions[] = theConstructor[i].getExceptionTypes ();
+        if (theExceptions.length > 0)
+          {
+            sb.append (" throws ");
+            for (int j = 0; j < theExceptions.length; j++)
+              {
+                if (j > 0)
+                  {
+                    sb.append (", ");
+                  }
+                sb.append (theExceptions[j].getCanonicalName ());
+              }
+          }
+      }
 
     Method theMethod[] = klass.getMethods ();
     for (int i = 0; i < theMethod.length; i++)
       {
-        if (i > 0)
+        if (first)
+          {
+            first = false;
+          }
+        else
           {
             sb.append (";");
           }

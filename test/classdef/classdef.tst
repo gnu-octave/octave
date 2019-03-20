@@ -48,9 +48,9 @@
 %!assert (p.principle == 50e3)
 %!assert (p.amount, amt, eps ())
 %!assert (amount (p), amt, eps ())
-%!xtest <*53614>
+%!xtest <55961>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
-%!xtest <*42510>
+%!xtest <55858>
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate

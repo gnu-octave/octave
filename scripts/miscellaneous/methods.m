@@ -76,10 +76,17 @@ function mtds = methods (obj, opt)
   endif
 
   if (havesigs && ! showsigs)
+    ## Extract only the method name for ordinary class methods, delete the
+    ## return type and the argument list.
     mtds_list = regexprep (mtds_list, '^(?:[^(]+) (\w+) ?\(.*$', '$1');
-    mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)(\w+) ?\(.*$', '$1');
+
+    ## Extract only the class name for class constructors, delete the optional
+    ## "org.example." package prefix and the argument list.
+    mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)?(\w+) ?\(.*$', '$1');
+
     mtds_list = unique (mtds_list);
   else
+    ## Delete the "org.example." package prefix if present.
     mtds_list = regexprep (mtds_list, '^(?:[\.\w]+\.)(\w+ ?\(.*)$', '$1');
   endif
 

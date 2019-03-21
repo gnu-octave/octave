@@ -177,21 +177,130 @@ octave_fcn_handle::subsref (const std::string& type,
   return retval;
 }
 
+static void
+err_invalid_fcn_handle (const std::string& name)
+{
+  error ("%s: invalid function handle", name.c_str ());
+}
+
 octave_value_list
 octave_fcn_handle::call (int nargout, const octave_value_list& args)
 {
+  // FIXME: if m_name has a '.' in the name, lookup first component.  If
+  // it is a classdef meta object, then build TYPE and IDX arguments and
+  // make a subsref call using them.
+
   octave_value fcn_to_call = m_fcn;
 
   if (! fcn_to_call.is_defined ())
     {
+      // The following code is similar to part of
+      // tree_evaluator::visit_index_expression but simpler because it
+      // handles a more restricted case.
+
       octave::symbol_table& symtab
         = octave::__get_symbol_table__ ("octave_fcn_handle::call");
 
-      fcn_to_call = symtab.find_function (m_name, args, m_scope);
+      size_t pos = m_name.find ('.');
+
+      if (pos != std::string::npos)
+        {
+          // We can have one of
+          //
+          //   pkg-list . fcn  (args)
+          //   pkg-list . cls . meth (args)
+          //   cls . meth  (args)
+
+          // Evaluate package elements until we find a function or a
+          // classdef_meta object that is not a package.
+          // subsref call.
+
+          size_t beg = 0;
+          size_t end = pos;
+
+          std::vector<std::string> idx_elts;
+
+          while (true)
+            {
+              end = m_name.find ('.', beg);
+
+              idx_elts.push_back (m_name.substr (beg, end-beg));
+
+              if (end == std::string::npos)
+                break;
+
+              beg = end+1;
+            }
+
+          octave_value partial_expr_val
+            = symtab.find_function (idx_elts[0], ovl (), m_scope);
+
+          std::string type;
+          std::list<octave_value_list> arg_list;
+
+          size_t n_elts = idx_elts.size ();
+
+          for (size_t i = 1; i < n_elts; i++)
+            {
+              if (partial_expr_val.is_package ())
+                {
+                  type = ".";
+                  arg_list.push_back (ovl (idx_elts[i]));
+
+                  try
+                    {
+                      // Silently ignore extra output values.
+
+                      octave_value_list tmp_list
+                        = partial_expr_val.subsref (type, arg_list, 0);
+
+                      partial_expr_val
+                        = tmp_list.length () ? tmp_list(0) : octave_value ();
+
+                      if (partial_expr_val.is_cs_list ())
+                        err_invalid_fcn_handle (m_name);
+
+                      arg_list.clear ();
+                    }
+                  catch (octave::index_exception&)
+                    {
+                      err_invalid_fcn_handle (m_name);
+                    }
+                }
+              else if (partial_expr_val.is_classdef_meta ())
+                {
+                  // Class name must be the next to the last element (it
+                  // was the previous one, so if this is the final
+                  // element, it should be as static classdef method,
+                  // but we'll let the classdef_meta subsref function
+                  // sort that out.
+
+                  if (i != n_elts-1)
+                    err_invalid_fcn_handle (m_name);
+
+                  type = ".(";
+                  arg_list.push_back (ovl (idx_elts[i]));
+                  arg_list.push_back (args);
+
+                  return partial_expr_val.subsref (type, arg_list, nargout);
+                }
+              else
+                err_invalid_fcn_handle (m_name);
+            }
+
+          // If we get here, we must have a function to call.
+
+          if (! partial_expr_val.is_function ())
+            err_invalid_fcn_handle (m_name);
+
+          fcn_to_call = partial_expr_val;
+        }
+      else
+        fcn_to_call = symtab.find_function (m_name, args, m_scope);
     }
 
   if (! fcn_to_call.is_defined ())
-    error ("%s: invalid function handle", m_name.c_str ());
+    err_invalid_fcn_handle (m_name);
 
   octave::stack_frame *closure_context = nullptr;
 

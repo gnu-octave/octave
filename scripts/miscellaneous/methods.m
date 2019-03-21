@@ -60,14 +60,15 @@ function mtds = methods (obj, opt)
       havesigs = true;
     endif
   elseif (isjava (obj))
-    ## FIXME: Function prototype accepts java obj, but doesn't work if obj
-    ##        is e.g., java.lang.String.  Convert obj to classname then.
-    try
+    ## If obj is a String or a subclass of String, then get the methods of its
+    ## class name, not the methods of the class that may be named by the
+    ## content of the string.
+    if (isa (obj, "java.lang.String"))
+      klass = class (obj);
+      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", klass);
+    else
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
-    catch
-      obj = class (obj);
-      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
-    end_try_catch
+    endif
     mtds_list = strsplit (mtds_str, ';');
     mtds_list = mtds_list(:);  # return a column vector for compatibility
     havesigs = true;
@@ -117,6 +118,11 @@ endfunction
 %! mtds = methods ("java.lang.Double");
 %! search = strfind (mtds, "valueOf");
 %! assert (! isempty ([search{:}]));
+
+## Test that methods does the right thing when passed a String object
+%!testif HAVE_JAVA; usejava ("jvm") <*48758>
+%! object = javaObject ("java.lang.String", "java.lang.Integer");
+%! assert (methods (object), methods ("java.lang.String"))
 
 ## classdef
 %!assert (methods ("inputParser"),

@@ -28,7 +28,7 @@
 %% that is exactly the case when running 'make check' since the ctor-vs-method
 %% test also uses an @parent, @derived, and @other class.
 %% Until the bug is fixed, it suffices to make the class names unique so that
-%% there is no re-use.  Using the prefix fhdr (fcn-handle-derived-resolution)
+%% there is no re-use.  Using the prefix fhdr (fcn-handle/derived-resolution)
 %% for this directory.
 %%!shared
 %%! #clear -classes

@@ -85,7 +85,7 @@ include %reldir%/classdef/module.mk
 include %reldir%/classdef-multiple-inheritance/module.mk
 include %reldir%/classes/module.mk
 include %reldir%/ctor-vs-method/module.mk
-include %reldir%/fcn-handle-derived-resolution/module.mk
+include %reldir%/fcn-handle/module.mk
 include %reldir%/local-functions/module.mk
 include %reldir%/mex/module.mk
 include %reldir%/nest/module.mk

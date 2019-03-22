@@ -59,7 +59,14 @@ function [m, state] = str2num (s)
   s(:, end+1) = ";";
   s = sprintf ("m = [%s];", reshape (s', 1, numel (s)));
   state = true;
-  eval (s, "m = []; state = false;");
+  ## Swallow any errors from eval (bug #55939).
+  try
+    eval (s);
+  catch
+    m = [];
+    state = false;
+  end_try_catch
+
   if (ischar (m))
     m = [];
     state = false;

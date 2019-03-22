@@ -32,6 +32,7 @@ etc., is relevant to Octave users.
 * Voronoi Diagrams::
 * Convex Hull::
 * Interpolation on Scattered Data::
+* Vector Rotation Matrices::
 @end menu
 
 @node Delaunay Triangulation
@@ -448,3 +449,28 @@ The output of the above can be seen in @ref{fig:griddata}.
 @caption{Interpolation from a scattered data to a regular grid}
 @end float
 @end ifnotinfo
+
+@node Vector Rotation Matrices
+@section Vector Rotation Matrices
+
+Also included in Octave's geometry functions are primitive functions to enable
+vector rotations in 3 dimensional space. Separate functions are provided for
+rotation about each of the principle axes, @var{x}, @var{y}, and @var{z}.
+According to Euler's rotation theorem, any arbitrary rotation, @var{R}, of any
+vector, @var{p}, can be expressed as a product of the three principle rotations:
+
+@tex
+$p' = R \cdot p = R_z \cdot R_y \cdot R_x \cdot p$
+@end tex
+
+@ifnottex
+@example
+p' = Rp = Rz*Ry*Rx*p
+@end example
+@end ifnottex
+
+@DOCSTRING(rotx)
+
+@DOCSTRING(roty)
+
+@DOCSTRING(rotz)

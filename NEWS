@@ -81,6 +81,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 - `lightangle`
 - `newline`
+- `rotx`
+- `roty`
+- `rotz`
 - `verLessThan`
 - `web`
 - `weboptions`

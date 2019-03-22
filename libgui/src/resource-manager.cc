@@ -83,7 +83,7 @@ namespace octave
     QString xdg_config_home
         = QString::fromLocal8Bit (qgetenv ("XDG_CONFIG_HOME"));
 
-    if (! sfile.exists ())// && xdg_config_home.isEmpty ())
+    if ((! sfile.exists ()) && xdg_config_home.isEmpty ())
       {
         // File does not exist yet: Look for a settings file at the old
         // location ($HOME/.config/octave/qt-settings) for impoting all

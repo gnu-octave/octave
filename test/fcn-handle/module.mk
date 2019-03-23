@@ -11,8 +11,10 @@ fcn_handle_TEST_FILES = \
   %reldir%/@fhdr_parent/fhdr_parent.m \
   %reldir%/@fhdr_parent/numel.m \
   %reldir%/bug51709_a.m \
+  %reldir%/bug51709_c.m \
   %reldir%/derived-resolution.tst \
   %reldir%/f1.m \
+  %reldir%/object-method.tst \
   %reldir%/package-function.tst \
   %reldir%/static-method.tst
 

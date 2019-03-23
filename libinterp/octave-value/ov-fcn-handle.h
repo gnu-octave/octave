@@ -57,17 +57,11 @@ public:
   static const std::string anonymous;
 
   octave_fcn_handle (void)
-    : m_fcn (), m_name (), m_scope (), m_is_nested (false),
+    : m_fcn (), m_obj (), m_name (), m_scope (), m_is_nested (false),
       m_closure_frames (nullptr)
   { }
 
-  octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n)
-    : m_fcn (), m_name (n), m_scope (scope), m_is_nested (false),
-      m_closure_frames (nullptr)
-  {
-    if (! m_name.empty () && m_name[0] == '@')
-      m_name = m_name.substr (1);
-  }
+  octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n);
 
   octave_fcn_handle (const octave::symbol_scope& scope,
                      const octave_value& f,
@@ -159,8 +153,12 @@ protected:
   // The function we are handling (this should be valid for handles to
   // anonymous functions and some other special cases).  Otherwise, we
   // perform dynamic lookup based on the name of the function we are
-  // handling and the scope where the funtion handle object was created.
+  // handling and the scope where the function handle object was created.
   octave_value m_fcn;
+
+  // If defined, this is the classdef object corresponding to the
+  // classdef method we are handling.
+  octave_value m_obj;
 
   // The function we would find without considering argument types.  We
   // cache this value so that the function_value and user_function_value

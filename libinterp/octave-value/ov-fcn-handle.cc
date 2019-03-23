@@ -83,9 +83,42 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 
 octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
+                                      const std::string& n)
+  : m_fcn (), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
+    m_closure_frames (nullptr)
+{
+  if (! m_name.empty () && m_name[0] == '@')
+    m_name = m_name.substr (1);
+
+  size_t pos = m_name.find ('.');
+
+  if (pos != std::string::npos)
+    {
+      // If we are looking at
+      //
+      //   obj . meth
+      //
+      // Store the object so that calling METH for OBJ will work even if
+      // it is done outside of the scope whre OBJ was initially defined
+      // or if OBJ is cleared before the method call is made through the
+      // function handle.
+
+      std::string obj_name = m_name.substr (0, pos);
+
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::octave_fcn_handle");
+
+      octave_value val = interp.varval (obj_name);
+
+      if (val.is_classdef_object ())
+        m_obj = val;
+    }
+}
+
+octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const octave_value& f,
                                       const std::string& n)
-  : m_fcn (f), m_name (n), m_scope (scope), m_is_nested (false),
+  : m_fcn (f), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
     m_closure_frames (nullptr)
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
@@ -104,7 +137,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
 
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
-  : m_fcn (f), m_name (n), m_scope (), m_is_nested (false),
+  : m_fcn (f), m_obj (), m_name (n), m_scope (), m_is_nested (false),
     m_closure_frames (nullptr)
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
@@ -198,8 +231,10 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
       // tree_evaluator::visit_index_expression but simpler because it
       // handles a more restricted case.
 
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_fcn_handle::call");
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("octave_fcn_handle::call");
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       size_t pos = m_name.find ('.');
 
@@ -211,9 +246,10 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
           //   pkg-list . cls . meth (args)
           //   cls . meth  (args)
 
-          // Evaluate package elements until we find a function or a
-          // classdef_meta object that is not a package.
-          // subsref call.
+          // Evaluate package elements until we find a function,
+          // classdef object, or classdef_meta object that is not a
+          // package.  An object may only appear as the first element,
+          // then it must be followed directly by a function name.
 
           size_t beg = 0;
           size_t end = pos;
@@ -232,18 +268,55 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
               beg = end+1;
             }
 
-          octave_value partial_expr_val
-            = symtab.find_function (idx_elts[0], ovl (), m_scope);
+          size_t n_elts = idx_elts.size ();
+
+          bool have_object = false;
+          octave_value partial_expr_val;
+
+          if (m_obj.is_defined ())
+            {
+              // The first element was already defined elsewhere,
+              // possibly in the scope where the function handle was
+              // created.
+
+              partial_expr_val = m_obj;
+
+              if (m_obj.is_classdef_object ())
+                have_object = true;
+              else
+                err_invalid_fcn_handle (m_name);
+            }
+          else
+            {
+              // Lazy evaluation.  The first element was not known to be
+              // defined as an object in the scope where the handle was
+              // created.  See if there is a definition in the current
+              // scope.
+
+              partial_expr_val = interp.varval (idx_elts[0]);
+            }
+
+          if (partial_expr_val.is_defined ())
+            {
+              if (! partial_expr_val.is_classdef_object () || n_elts != 2)
+                err_invalid_fcn_handle (m_name);
+
+              have_object = true;
+            }
+          else
+            partial_expr_val
+              = symtab.find_function (idx_elts[0], ovl (), m_scope);
 
           std::string type;
           std::list<octave_value_list> arg_list;
-
-          size_t n_elts = idx_elts.size ();
 
           for (size_t i = 1; i < n_elts; i++)
             {
               if (partial_expr_val.is_package ())
                 {
+                  if (have_object)
+                    err_invalid_fcn_handle (m_name);
+
                   type = ".";
                   arg_list.push_back (ovl (idx_elts[i]));
 
@@ -267,13 +340,13 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
                       err_invalid_fcn_handle (m_name);
                     }
                 }
-              else if (partial_expr_val.is_classdef_meta ())
+              else if (have_object || partial_expr_val.is_classdef_meta ())
                 {
-                  // Class name must be the next to the last element (it
-                  // was the previous one, so if this is the final
-                  // element, it should be as static classdef method,
-                  // but we'll let the classdef_meta subsref function
-                  // sort that out.
+                  // Object or class name must be the next to the last
+                  // element (it was the previous one, so if this is the
+                  // final element, it should be a classdef method,
+                  // but we'll let the classdef or classdef_meta subsref
+                  // function sort that out.
 
                   if (i != n_elts-1)
                     err_invalid_fcn_handle (m_name);

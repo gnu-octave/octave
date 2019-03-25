@@ -29,8 +29,8 @@
 ##
 ## @code{polyeig} solves the eigenvalue problem
 ##
-## @code{(@var{C0} + @var{C1} @var{z} + @dots{} + @var{Cl} z^@var{l}) @var{v} =
-## 0}.
+## @code{(@var{C0} + @var{C1} @var{z} + @dots{} + @var{Cl} @var{z}^@var{l})
+## @var{v} = 0}.
 ##
 ## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial.
 ## @var{z} is a row vector with @code{@var{n}*@var{l}} elements.  @var{v} is a

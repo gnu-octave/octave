@@ -2112,7 +2112,7 @@ Each dimension argument (@var{dim1}, @var{dim2}, etc.@:) is a vector of
 integers which specifies how to divide that dimension's elements amongst the
 new elements in the output @var{C}.  The number of elements in the @var{i}-th
 dimension is @code{size (@var{A}, @var{i})}.  Because all elements in @var{A}
-must be partitioned, there is a requirement that @code{sum (@var{di}) == size
+must be partitioned, there is a requirement that @code{sum (@var{dimi}) == size
 (@var{A}, i)}.  The size of the output cell @var{C} is numel (@var{dim1}) x
 numel (@var{dim2}) x @dots{} x numel (@var{dimn}).
 

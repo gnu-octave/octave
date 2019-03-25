@@ -457,7 +457,7 @@ namespace octave
             if (! robj.ok ()
                 || robj.is_array ()
                 || robj.get_class () != get_class ())
-              error ("subasgn: invalid assignment into array of %s objects",
+              error ("subsasgn: invalid assignment into array of %s objects",
                      class_name ().c_str ());
 
             // Small optimization, when dealing with handle

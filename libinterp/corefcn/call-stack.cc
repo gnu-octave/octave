@@ -354,6 +354,16 @@ namespace octave
     return retval;
   }
 
+  std::string call_stack::get_dispatch_class (void) const
+  {
+    return m_cs[m_curr_frame]->get_dispatch_class ();
+  }
+
+  void call_stack::set_dispatch_class (const std::string& class_name)
+  {
+    m_cs[m_curr_frame]->set_dispatch_class (class_name);
+  }
+
   bool call_stack::is_class_method_executing (std::string& dispatch_class) const
   {
     dispatch_class = "";

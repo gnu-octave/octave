@@ -154,6 +154,10 @@ namespace octave
     // Column number in current function that we are debugging.
     int debug_user_code_column (void) const;
 
+    std::string get_dispatch_class (void) const;
+
+    void set_dispatch_class (const std::string& class_name);
+
     bool is_class_method_executing (std::string& dispatch_class) const;
 
     bool is_class_constructor_executing (std::string& dispatch_class) const;

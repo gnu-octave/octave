@@ -143,7 +143,8 @@ namespace octave
     stack_frame (call_stack& cs, size_t prev, stack_frame *static_link,
                  stack_frame *access_link)
       : m_call_stack (cs), m_line (-1), m_column (-1), m_prev (prev),
-        m_static_link (static_link), m_access_link (access_link)
+        m_static_link (static_link), m_access_link (access_link),
+        m_dispatch_class ()
     { }
 
     stack_frame (const stack_frame& elt) = default;
@@ -536,6 +537,13 @@ namespace octave
 
     void clear_variables (void);
 
+    std::string get_dispatch_class (void) const { return m_dispatch_class; }
+
+    void set_dispatch_class (const std::string& class_name)
+    {
+      m_dispatch_class = class_name;
+    }
+
     virtual void mark_scope (const symbol_record&, scope_flags) = 0;
 
     virtual void display (bool follow = true) const;
@@ -567,6 +575,10 @@ namespace octave
     // non-local variables for nested and anonymous functions or as a
     // link to the parent frame in which a script is executed.
     stack_frame *m_access_link;
+
+    // Allow function handles to temporarily store their dispatch class
+    // in the call stack.
+    std::string m_dispatch_class;
   };
 
   class compiled_fcn_stack_frame : public stack_frame

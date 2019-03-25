@@ -2432,12 +2432,23 @@ namespace octave
         if (p->first.isEmpty ())
           continue;   // Nothing to do, no valid file name
 
+        // Get abs. file path and its path relative to the removed directory
         QString rel_path_to_file = old_dir.relativeFilePath (p->first);
-        if (rel_path_to_file.left (3) != QString ("../"))
+        QString abs_path_to_file = old_dir.absoluteFilePath (p->first);
+
+        // Test whether the file is located within the directory that will
+        // be removed. For this, two conditions must be met:
+        // 1. The path of the file rel. to the dir is not equal to the
+        //    its absolute one.
+        //    If both are equal, then there is no relative path and removed
+        //    directoy and file are on different drives (e.g.on windows)
+        // 2. The (real) relative path does not start with "../", i.e.,
+        //    the file can be reached from the directory by descending only
+        if ((rel_path_to_file != abs_path_to_file)
+            && (rel_path_to_file.left (3) != QString ("../")))
           {
-            // We directly go down from old_dir to reach our file: Our
-            // file is included in the removed/renamed diectory.
-            // Thus delete it.
+            // The currently considered file is included in the
+            // removed/renamed diectory: Delete it.
             m_no_focus = true;  // Remember for not focussing editor
             file_editor_tab *editor_tab
               = static_cast<file_editor_tab *> (p->second.fet_ID);

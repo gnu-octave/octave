@@ -27,8 +27,12 @@
 ##
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
 ## prompt.  Calling it from the Octave prompt simply delegates the call to
-## the shell prompt.  The output is stored in the @var{output} variable and
-## the exit status in the @var{status} variable.
+## the shell prompt.  Any output is stored in the @var{output} variable and
+## the exit status in the @var{status} variable.  If called with no outputs
+## and the compilation fails then Octave will emit an error.  If the programmer
+## requests @var{output} or @var{status}, however, Octave will merely issue
+## a warning and it is the programmer's responsibility to verify the command
+## was successful.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
 ## except for the filename of the code you wish to compile:
@@ -69,8 +73,8 @@
 ##
 ## @item  -o FILE
 ## @itemx --output FILE
-## Output filename.  Default extension is .oct (or .mex if @samp{--mex} is
-## specified) unless linking a stand-alone executable.
+## Output filename.  Default extension is @file{.oct} (or @file{.mex} if
+## @samp{--mex} is specified) unless linking a stand-alone executable.
 ##
 ## @item  -p VAR
 ## @itemx --print VAR
@@ -160,8 +164,8 @@
 ## Link a stand-alone executable file.
 ##
 ## @item --mex
-## Assume we are creating a MEX file.  Set the default output extension to
-## ".mex".
+## Assume creation of a MEX file.  Set the default output extension to
+## @file{.mex}.
 ##
 ## @item  -s
 ## @itemx --strip
@@ -213,16 +217,18 @@ function [output, status] = mkoctfile (varargin)
     cmd = [cmd ' "' varargin{i} '"'];
   endfor
 
-  [sys, out] = system (cmd);
+  [sts, out] = system (cmd);
 
   if (nargout > 0)
-    [output, status] = deal (out, sys);
+    [output, status] = deal (out, sts);
+    if (sts != 0)
+      warning ("mkoctfile: building exited with failure status\n");
+    endif
   else
     printf ("%s", out);
-  endif
-
-  if (sys != 0)
-    warning ("mkoctfile: building exited with failure status\n");
+    if (sts != 0)
+      error ("mkoctfile: building exited with failure status\n");
+    endif
   endif
 
 endfunction

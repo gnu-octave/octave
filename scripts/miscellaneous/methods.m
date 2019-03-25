@@ -43,8 +43,14 @@ function mtds = methods (obj, opt)
     print_usage ();
   endif
 
-  showsigs = (nargin > 1 && ischar (opt) && strcmp (opt, "-full"));
   havesigs = false;
+  showsigs = false;
+  if (nargin == 2)
+    if (! strcmp (opt, "-full"))
+      error ("methods: invalid option");
+    endif
+    showsigs = true;
+  endif
 
   if (isobject (obj))
     ## Call internal C++ function for Octave objects
@@ -102,16 +108,10 @@ function mtds = methods (obj, opt)
 endfunction
 
 
-## test Octave classname
+## test old-style @classname
 %!test
 %! mtds = methods ("ftp");
 %! assert (mtds{1}, "ascii");
-
-## test Java classname
-%!testif HAVE_JAVA; usejava ("jvm")
-%! mtds = methods ("java.lang.Double", "-full");
-%! search = strfind (mtds, "java.lang.Double valueOf");
-%! assert (! isempty ([search{:}]));
 
 ## test Java classname
 %!testif HAVE_JAVA; usejava ("jvm")
@@ -119,14 +119,26 @@ endfunction
 %! search = strfind (mtds, "valueOf");
 %! assert (! isempty ([search{:}]));
 
-## Test that methods does the right thing when passed a String object
+## test Java classname with -full prototypes
+%!testif HAVE_JAVA; usejava ("jvm")
+%! mtds = methods ("java.lang.Double", "-full");
+%! search = strfind (mtds, "java.lang.Double valueOf");
+%! assert (! isempty ([search{:}]));
+
+## test that methods does the right thing when passed a String object
 %!testif HAVE_JAVA; usejava ("jvm") <*48758>
 %! object = javaObject ("java.lang.String", "java.lang.Integer");
-%! assert (methods (object), methods ("java.lang.String"))
+%! assert (methods (object), methods ("java.lang.String"));
 
-## classdef
+## test classdef classname
 %!assert (methods ("inputParser"),
 %!        {"addOptional"; "addParamValue"; "addParameter";
 %!         "addRequired"; "addSwitch"; "add_missing"; "delete";
 %!         "disp"; "error"; "is_argname"; "parse"; "validate_arg";
 %!         "validate_name"});
+
+## Test input validation
+%!error methods ()
+%!error methods ("a", "b", "c")
+%!error <invalid option> methods ("ftp", "option1")
+%!error <invalid input argument> methods (1)

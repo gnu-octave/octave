@@ -16,14 +16,14 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
-%!test <51709>
+%!test <*51709>
 %! fh = @pkga.pkgb.bug51709_a.smeth;
 %! assert (fh (), "pkg bug51709_a");
 
-%!test <55975>
+%!test <*55975>
 %! fh = @pkga.pkgb.bug51709_b.smeth;
 %! assert (fh (), "pkg bug51709_b");
 
 ## Also test without function handle.
-%!assert <55975> (pkga.pkgb.bug51709_a.smeth (), "pkg bug51709_a");
+%!assert <*55975> (pkga.pkgb.bug51709_a.smeth (), "pkg bug51709_a");
 %!assert (pkga.pkgb.bug51709_b.smeth (), "pkg bug51709_b");

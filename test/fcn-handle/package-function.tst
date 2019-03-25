@@ -16,14 +16,14 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <https://www.gnu.org/licenses/>.
 
-%!test <46659>
+%!test <*46659>
 %! fh = @pkga.pkgb.f2;
 %! assert (fh (), "pkg f2");
 
-%!test <55975>
+%!test <*55975>
 %! fh = @pkga.pkgb.f1;
 %! assert (fh (), "pkg f1");
 
 ## Also test without function handle.
-%!assert <55975> (pkga.pkgb.f1 (), "pkg f1");
+%!assert <*55975> (pkga.pkgb.f1 (), "pkg f1");
 %!assert (pkga.pkgb.f2 (), "pkg f2");

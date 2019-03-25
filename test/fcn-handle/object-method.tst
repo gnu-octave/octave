@@ -22,7 +22,7 @@
 %!  fhsm = @obj.smeth;
 %!endfunction
 
-%!test <51709>
+%!test <*51709>
 %! [fhm, fhsm] = foo ();
 %!
 %! out = fhm (42);
@@ -32,7 +32,7 @@
 %! assert (isobject (tmp{1}));
 %! assert (tmp{2}, 42);
 
-%!test <51709>
+%!test <*51709>
 %! [fhm, fhsm] = foo ();
 %!
 %! out = fhsm (42);
@@ -41,7 +41,7 @@
 %! assert (numel (tmp), 1);
 %! assert (tmp{1}, 42);
 
-%!test <51709>
+%!test <*51709>
 %! fhm = @obj.meth;
 %!
 %! obj = bug51709_c ();
@@ -53,7 +53,7 @@
 %! assert (isobject (tmp{1}));
 %! assert (tmp{2}, 42);
 
-%!test <51709>
+%!test <*51709>
 %! fhsm = @obj.smeth;
 %!
 %! obj = bug51709_c ();

@@ -262,12 +262,12 @@ namespace octave
       // constructor for any other purpose.
       dir_info (void) = default;
 
-      dir_info (const std::string& d, const std::string& parent_package = "")
+      dir_info (const std::string& d)
         : dir_name (d), abs_dir_name (), is_relative (false),
           dir_mtime (), dir_time_last_checked (), all_files (), fcn_files (),
           private_file_map (), method_file_map (), package_dir_map ()
       {
-        initialize (parent_package);
+        initialize ();
       }
 
       dir_info (const dir_info&) = default;
@@ -293,10 +293,9 @@ namespace octave
 
     private:
 
-      void initialize (const std::string& parent_package = "");
+      void initialize (void);
 
-      void get_file_list (const std::string& d,
-                          const std::string& parent_package);
+      void get_file_list (const std::string& d);
 
       void get_private_file_map (const std::string& d);
 

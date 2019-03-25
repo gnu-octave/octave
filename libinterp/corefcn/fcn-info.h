@@ -74,6 +74,8 @@ namespace octave
 
       ~fcn_info_rep (void) = default;
 
+      octave_value install_local_function (const std::string& file_name);
+
       octave_value load_private_function (const std::string& dir_name);
 
       octave_value load_class_constructor (void);
@@ -98,11 +100,6 @@ namespace octave
         return function_on_path.is_defined ();
       }
 
-      bool is_package_defined (void) const
-      {
-        return package.is_defined ();
-      }
-
       octave_value find_function (const symbol_scope& search_scope,
                                   const octave_value_list& args)
       {
@@ -118,11 +115,6 @@ namespace octave
                                    const std::string& file_name)
       {
         local_functions[file_name] = f;
-      }
-
-      void install_package (const octave_value& pack)
-      {
-        package = pack;
       }
 
       void install_user_function (const octave_value& f)
@@ -292,11 +284,6 @@ namespace octave
       return m_rep->is_user_function_defined ();
     }
 
-    bool is_package_defined (void) const
-    {
-      return m_rep->is_package_defined ();
-    }
-
     octave_value
     find_function (const symbol_scope& search_scope,
                    const octave_value_list& args = octave_value_list ())
@@ -313,11 +300,6 @@ namespace octave
                                  const std::string& file_name)
     {
       m_rep->install_local_function (f, file_name);
-    }
-
-    void install_package (const octave_value& pack)
-    {
-      m_rep->install_package (pack);
     }
 
     void install_user_function (const octave_value& f)

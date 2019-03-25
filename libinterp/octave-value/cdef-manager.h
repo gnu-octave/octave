@@ -62,8 +62,6 @@ namespace octave
 
     octave_function * find_package_symbol (const std::string& pack_name);
 
-    octave_function * make_package_symbol (const std::string& pack_name);
-
     void register_class (const cdef_class& cls)
     {
       m_all_classes[cls.get_name ()] = cls;
@@ -130,7 +128,7 @@ namespace octave
                    bool is_static = false);
 
     cdef_package
-      make_package (const std::string& package_name);
+      make_package (const std::string& nm, const std::string& parent = "");
 
   private:
 

@@ -241,13 +241,25 @@ namespace octave
   cdef_class
   get_class_context (std::string& name, bool& in_constructor)
   {
+    name = "";
+    in_constructor = false;
+
     cdef_class cls;
+
+    // If the dispatch class is set in the current stack frame it
+    // overrides whatever dispatch class there is for the currently
+    // executing function so that function handles returned from class
+    // methods will use the dispatch class of the class in which they
+    // are defined instead of the class in which they are executing.
 
     call_stack& cs = __get_call_stack__ ("get_class_context");
 
-    octave_function *fcn = cs.current ();
+    std::string dispatch_class = cs.get_dispatch_class ();
 
-    in_constructor = false;
+    if (! dispatch_class.empty ())
+      return lookup_class (dispatch_class);
+
+    octave_function *fcn = cs.current ();
 
     if (fcn && (fcn->is_class_method ()
                 || fcn->is_classdef_constructor ()

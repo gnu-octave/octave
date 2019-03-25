@@ -85,7 +85,7 @@ const std::string octave_fcn_handle::anonymous ("@<anonymous>");
 octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const std::string& n)
   : m_fcn (), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (nullptr)
+    m_closure_frames (nullptr), m_dispatch_class ()
 {
   if (! m_name.empty () && m_name[0] == '@')
     m_name = m_name.substr (1);
@@ -119,7 +119,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
                                       const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (scope), m_is_nested (false),
-    m_closure_frames (nullptr)
+    m_closure_frames (nullptr), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -138,7 +138,7 @@ octave_fcn_handle::octave_fcn_handle (const octave::symbol_scope& scope,
 octave_fcn_handle::octave_fcn_handle (const octave_value& f,
                                       const std::string& n)
   : m_fcn (f), m_obj (), m_name (n), m_scope (), m_is_nested (false),
-    m_closure_frames (nullptr)
+    m_closure_frames (nullptr), m_dispatch_class ()
 {
   octave_user_function *uf = m_fcn.user_function_value (true);
 
@@ -225,14 +225,14 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave_value fcn_to_call = m_fcn;
 
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_fcn_handle::call");
+
   if (! fcn_to_call.is_defined ())
     {
       // The following code is similar to part of
       // tree_evaluator::visit_index_expression but simpler because it
       // handles a more restricted case.
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("octave_fcn_handle::call");
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -380,10 +380,18 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
   if (m_closure_frames && m_closure_frames->size () > 0)
     closure_context = m_closure_frames->front ();
 
-  octave::tree_evaluator& tw
-    = octave::__get_evaluator__ ("octave_fcn_handle::call");
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   octave_function *of = fcn_to_call.function_value ();
+
+  octave::unwind_protect frame;
+
+  octave::call_stack& cs = interp.get_call_stack ();
+
+  frame.add_method (cs, &octave::call_stack::set_dispatch_class,
+                    std::string ());
+
+  cs.set_dispatch_class (m_dispatch_class);
 
   return of->call (tw, nargout, args, closure_context);
 }
@@ -1829,13 +1837,21 @@ namespace octave
           }
       }
 
-    octave::tree_evaluator& tw = interp.get_evaluator ();
+    tree_evaluator& tw = interp.get_evaluator ();
 
     octave::symbol_scope curr_scope = tw.get_current_scope ();
 
-    return new octave_fcn_handle (curr_scope, tnm);
+    octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, tnm);
 
-    return retval;
+    octave::call_stack& cs = interp.get_call_stack ();
+
+    std::string dispatch_class;
+
+    if (cs.is_class_method_executing (dispatch_class)
+        || cs.is_class_constructor_executing (dispatch_class))
+      fh->set_dispatch_class (dispatch_class);
+
+    return octave_value (fh);
   }
 }
 

@@ -58,7 +58,7 @@ public:
 
   octave_fcn_handle (void)
     : m_fcn (), m_obj (), m_name (), m_scope (), m_is_nested (false),
-      m_closure_frames (nullptr)
+      m_closure_frames (nullptr), m_dispatch_class ()
   { }
 
   octave_fcn_handle (const octave::symbol_scope& scope, const std::string& n);
@@ -117,6 +117,13 @@ public:
   void push_closure_context (octave::tree_evaluator& tw);
 
   octave_value workspace (void) const;
+
+  void set_dispatch_class (const std::string& class_name)
+  {
+    m_dispatch_class = class_name;
+  }
+
+  std::string get_dispatch_class (void) const { return m_dispatch_class; }
 
   bool is_equal_to (const octave_fcn_handle&) const;
 
@@ -178,6 +185,11 @@ protected:
   // to access non-locals and other context info when calling nested
   // functions indirectly through handles.
   std::list<octave::stack_frame *> *m_closure_frames;
+
+  // The name of the class in which this handle was created, if any.
+  // Used to determine access permission when the referenced function is
+  // called.
+  std::string m_dispatch_class;
 
   bool parse_anon_fcn_handle (const std::string& fcn_text);
 

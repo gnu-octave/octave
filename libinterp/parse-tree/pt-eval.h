@@ -481,7 +481,8 @@ namespace octave
 
     std::list<std::string> variable_names (void) const;
 
-    octave_user_code * get_user_code (const std::string& fname = "");
+    octave_user_code * get_user_code (const std::string& fname = "",
+                                      const std::string& class_name = "");
 
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 

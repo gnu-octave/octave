@@ -112,6 +112,8 @@ namespace octave
         return (type == '(' || type == '.');
       }
 
+      octave_value get_method (const std::string& name) const;
+
       octave_value construct (const octave_value_list& args);
 
       cdef_object construct_object (const octave_value_list& args);
@@ -334,6 +336,11 @@ namespace octave
     static cdef_class
     make_meta_class (interpreter& interp, tree_classdef *t,
                      bool is_at_folder = false);
+
+    octave_value get_method (const std::string& nm) const
+    {
+      return get_rep ()->get_method (nm);
+    }
 
     octave_function * get_method_function (const std::string& nm);
 

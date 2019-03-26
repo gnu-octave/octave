@@ -581,10 +581,11 @@ namespace octave
   // Given file name fname, find the subfunction at line and create
   // a breakpoint there.  Put the system into debug_mode.
   bp_table::intmap bp_table::add_breakpoint (const std::string& fname,
+                                             const std::string& class_name,
                                              const bp_table::intmap& line,
                                              const std::string& condition)
   {
-    octave_user_code *main_fcn = m_evaluator.get_user_code (fname);
+    octave_user_code *main_fcn = m_evaluator.get_user_code (fname, class_name);
 
     if (! main_fcn)
       error ("add_breakpoint: unable to find function '%s'\n", fname.c_str ());

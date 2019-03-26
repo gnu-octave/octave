@@ -936,4 +936,13 @@ namespace octave
 
     return pack;
   }
+
+  octave_value
+  cdef_manager::find_method (const std::string& class_name,
+                             const std::string& name) const
+  {
+    cdef_class cls = lookup_class (class_name);
+
+    return cls.get_method (name);
+  }
 }

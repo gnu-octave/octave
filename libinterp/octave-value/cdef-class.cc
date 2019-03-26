@@ -703,6 +703,18 @@ namespace octave
   }
 
   octave_value
+  cdef_class::cdef_class_rep::get_method (const std::string& name) const
+  {
+    auto p = method_map.find (name);
+
+    if (p == method_map.end ())
+      return octave_value ();
+
+    return p->second.get_function ();
+  }
+
+
+  octave_value
   cdef_class::cdef_class_rep::construct (const octave_value_list& args)
   {
     cdef_object obj = construct_object (args);

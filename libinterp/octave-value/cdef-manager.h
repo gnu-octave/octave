@@ -130,6 +130,9 @@ namespace octave
     cdef_package
       make_package (const std::string& nm, const std::string& parent = "");
 
+    octave_value find_method (const std::string& class_name,
+                              const std::string& name) const;
+
   private:
 
     interpreter& m_interpreter;

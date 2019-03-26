@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
+#include "cdef-manager.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -1345,7 +1346,8 @@ namespace octave
   // current call stack.
 
   octave_user_code *
-  tree_evaluator::get_user_code (const std::string& fname)
+  tree_evaluator::get_user_code (const std::string& fname,
+                                 const std::string& class_name)
   {
     octave_user_code *user_code = nullptr;
 
@@ -1373,7 +1375,7 @@ namespace octave
         symbol_table& symtab = m_interpreter.get_symbol_table ();
 
         octave_value fcn;
-        size_t p2;
+        size_t p2 = std::string::npos;
 
         if (name[0] == '@')
           {
@@ -1389,6 +1391,16 @@ namespace octave
             std::string method = name.substr (p1+1, p2-1);
 
             fcn = symtab.find_method (method, dispatch_type);
+          }
+        else if (! class_name.empty ())
+          {
+            cdef_manager& cdm = m_interpreter.get_cdef_manager ();
+
+            fcn = cdm.find_method (class_name, name);
+
+            // If there is no classdef method, then try legacy classes.
+            if (fcn.is_undefined ())
+              fcn = symtab.find_method (name, class_name);
           }
         else
           {

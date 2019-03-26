@@ -196,7 +196,8 @@ all breakpoints within the file are cleared.
 
       if (symbol_name != "")
         {
-          retmap = bptab.add_breakpoint (symbol_name, lines, condition);
+          retmap = bptab.add_breakpoint (symbol_name, class_name,
+                                         lines, condition);
           retval = intmap_to_ov (retmap);
         }
     }
@@ -247,7 +248,7 @@ all breakpoints within the file are cleared.
           for (octave_idx_type i = 0; i < line.numel (); i++)
             {
               lines [0] = line(i).double_value ();
-              bptab.add_breakpoint (name(i).string_value (), lines,
+              bptab.add_breakpoint (name(i).string_value (), "", lines,
                                     (use_cond
                                      ? cond(i).string_value ()
                                      : unconditional));

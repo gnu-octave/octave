@@ -75,6 +75,7 @@ namespace octave
 
     // Add a breakpoint at the nearest executable line.
     intmap add_breakpoint (const std::string& fname = "",
+                           const std::string& class_name = "",
                            const intmap& lines = intmap (),
                            const std::string& condition = "");
 

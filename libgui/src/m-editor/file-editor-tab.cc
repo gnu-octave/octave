@@ -1026,7 +1026,7 @@ namespace octave
       {
         bp_table& bptab = __get_bp_table__ ("octave_qt_link::file_in_path");
 
-        bptab.add_breakpoint (info.function_name, line_info, info.condition);
+        bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
       }
   }
 

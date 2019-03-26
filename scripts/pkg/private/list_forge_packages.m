@@ -32,15 +32,41 @@ function list = list_forge_packages ()
   list = ostrsplit (list, " \n\t", true);
 
   if (nargout == 0)
+    ## FIXME: This is a convoluted way to get the latest version number
+    ##        for each package in less than 56 seconds (bug #39479).
+
+    ## Get the list of all packages ever published
+    [html, succ] = urlread ('https://sourceforge.net/projects/octave/files/Octave%20Forge%20Packages/Individual%20Package%20Releases');
+
+    if (! succ)
+      error ("pkg: failed to fetch list of packages from sourceforge.net");
+    endif
+
+    ## Scrape the HTML
+    ptn = '<tr\s+title="(.*?gz)"\s+class="file';
+    [succ, tok] = regexp (html, ptn, "start", "tokens");
+    if (isempty (succ))
+      error ("pkg: failed to parse list of packages from sourceforge.net");
+    endif
+
+    ## Remove version numbers and produce unique list of packages
+    files = cellstr (tok);
+    pkg_names = cellstr (regexp (files, '^.*?(?=-\d)', "match"));
+    [~, idx] = unique (pkg_names, "first");
+    files = files(idx);
+
     page_screen_output (false, "local");
     puts ("Octave Forge provides these packages:\n");
     for i = 1:length (list)
-      try
-        ver = get_forge_pkg (list{i});
-      catch
+      pkg_nm = list{i};
+      idx = regexp (files, sprintf ('^%s(?=-\\d)', pkg_nm));
+      idx = ! cellfun (@isempty, idx);
+      if (any (idx))
+        ver = regexp (files{idx}, '\d+\.\d+\.\d+', "match"){1};
+      else
         ver = "unknown";
-      end_try_catch
-      printf ("  %s %s\n", list{i}, ver);
+      endif
+      printf ("  %s %s\n", pkg_nm, ver);
     endfor
   endif
 

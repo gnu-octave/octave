@@ -64,6 +64,12 @@ static bool Voptimize_subsasgn_calls = true;
 
 octave_user_code::~octave_user_code (void)
 {
+  // This function is no longer valid, so remove the pointer to it from
+  // the corresponding scope.
+  // FIXME: would it be better to use shared/weak pointers for this job
+  // instead of storing a bare pointer in the scope object?
+  m_scope.set_function (nullptr);
+
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
     cmd_list->remove_all_breakpoints (file_name);

@@ -124,6 +124,11 @@ typedef unsigned long ino_t;
 #  define OCTAVE_USE_OS_X_API 1
 #endif
 
+/* Silence deprecated API warning from Apple OS > 10.14 */
+#if defined (__APPLE__) && defined (__MACH__) && defined (HAVE_OPENGL)
+#  define GL_SILENCE_DEPRECATION 1
+#endif
+
 /* Define to 1 if we expect to have <windows.h>, Sleep, etc. */
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #  define OCTAVE_USE_WINDOWS_API 1

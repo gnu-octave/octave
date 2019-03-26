@@ -1228,7 +1228,10 @@ jump_command    : BREAK
                       YYABORT;
                   }
                 | CONTINUE
-                  { $$ = parser.make_continue_command ($1); }
+                  {
+                    if (! ($$ = parser.make_continue_command ($1)))
+                      YYABORT;
+                  }
                 | FUNC_RET
                   { $$ = parser.make_return_command ($1); }
                 ;
@@ -2991,7 +2994,13 @@ namespace octave
     int l = continue_tok->line ();
     int c = continue_tok->column ();
 
-    return new tree_continue_command (l, c);
+    if (! m_lexer.m_looping)
+      {
+        bison_error ("continue must appear in a loop in the same file as loop command");
+        return nullptr;
+      }
+    else
+      return new tree_continue_command (l, c);
   }
 
   // Build a return command.

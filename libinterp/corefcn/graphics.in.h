@@ -2960,8 +2960,10 @@ public:
     END_PROPERTIES
 
   private:
-    std::list<graphics_handle> cbo_stack;
 
+    // Even though this data member is now unused, keep it for now to
+    // ensure backward compatibility.  It will be removed in version 6.
+    std::list<graphics_handle> cbo_stack;
   };
 
 private:

@@ -3765,23 +3765,9 @@ root_figure::properties::set_callbackobject (const octave_value& v)
   graphics_handle val (v);
 
   if (octave::math::isnan (val.value ()))
-    {
-      if (! cbo_stack.empty ())
-        {
-          val = cbo_stack.front ();
-
-          cbo_stack.pop_front ();
-        }
-
-      callbackobject = val;
-    }
+    callbackobject = graphics_handle ();
   else if (ishghandle (val))
-    {
-      if (get_callbackobject ().ok ())
-        cbo_stack.push_front (get_callbackobject ());
-
-      callbackobject = val;
-    }
+    callbackobject = val;
   else
     err_set_invalid ("callbackobject");
 }

@@ -2930,10 +2930,6 @@ public:
       // Hide base properties which don't make sense for root object
       //radio_property beingdeleted h , "{off}|on"
     END_PROPERTIES
-
-  private:
-    std::list<graphics_handle> cbo_stack;
-
   };
 
 private:

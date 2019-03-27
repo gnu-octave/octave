@@ -63,7 +63,7 @@ namespace octave
                        const caseless_str& interpreter = "tex");
 
     void set_anti_aliasing (bool val);
-    
+
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
 

@@ -9445,7 +9445,7 @@ coplanar_partition (const Matrix &vert, const Matrix &idx,
                     octave_idx_type nc, octave_idx_type jj)
 {
   std::list<octave_idx_type> coplanar_ends;
-  
+
   Matrix plane_pivot = Matrix (1, 3, 0.0);
   for (octave_idx_type i = 0; i < 3; i++)
     plane_pivot(0,i) = vert(idx(0,jj)-1,i);

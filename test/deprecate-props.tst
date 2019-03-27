@@ -33,7 +33,7 @@
 
 ## text/uicontrol/uipanel/uibuttongroup/uitable  "oblique" value for
 ## "fontangle" property was deprecated in 5.0, remove from version 7:
-##   * remove "oblique" options in graphics.in.h, QtHandlesUtils.cc, 
+##   * remove "oblique" options in graphics.in.h, QtHandlesUtils.cc,
 ##     and ft-text-renderer.cc
 ##   * remove warnings from update_fontangle in graphics.in.h
 %!test

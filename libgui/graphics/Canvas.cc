@@ -567,7 +567,7 @@ namespace QtHandles
           && axesObj.get_properties ().handlevisibility_is ("on")
           && axesObj.get_properties ().get_tag () != "legend"
           && axesObj.get_properties ().get_tag () != "colorbar";
-        
+
         if (valid_axes)
           Utils::properties<figure> (figObj)
             .set_currentaxes (axesObj.get_handle ().as_octave_value ());

@@ -45,7 +45,7 @@ namespace QtHandles
 
     // Get the icon data from cdata or as a named icon
     QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
-    
+
     if (img.width () == 0)
       {
         QIcon ico;
@@ -55,9 +55,9 @@ namespace QtHandles
 
         action->setIcon (ico);
       }
-    else   
+    else
       action->setIcon (QIcon (QPixmap::fromImage (img)));
-    
+
     if (tp.is_separator ())
       {
         m_separator = new QAction (action);
@@ -100,7 +100,7 @@ namespace QtHandles
         {
           // Get the icon data from cdata or as a named icon
           QImage img = Utils::makeImageFromCData (tp.get_cdata (), 32, 32);
-          
+
           if (img.width () == 0)
             {
               QIcon ico;
@@ -108,7 +108,6 @@ namespace QtHandles
               if (! name.empty ())
                 ico = octave::resource_manager::icon (QString::fromStdString (name));
               action->setIcon (ico);
-          
             }
           else
             action->setIcon (QIcon (QPixmap::fromImage (img)));

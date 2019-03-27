@@ -206,10 +206,10 @@ namespace octave
                          "than %d. Not rendering.", max_size);
                 warned = true;
               }
-            
+
             return opengl_texture (glfcns);
           }
-        
+
         GLuint id;
         bool ok = true;
 

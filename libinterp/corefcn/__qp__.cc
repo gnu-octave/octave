@@ -503,7 +503,7 @@ Undocumented internal function.
   const ColumnVector bin (args(6).vector_value ());
   const int maxit        (args(7).int_value ());
   const double rtol      (args(8).double_value());
-    
+
   int iter = 0;
 
   // Copy the initial guess into the working variable

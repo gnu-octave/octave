@@ -215,7 +215,7 @@ namespace octave
     double xmin, xmax;
     double ymin, ymax;
     double zmin, zmax;
-    
+
     // Factor used for translating Octave pixels to actual device pixels
     double m_devpixratio;
 

@@ -368,7 +368,7 @@ namespace octave
     mach_info::float_format float_format (void) const;
 
     static std::string mode_as_string (int mode);
-    
+
     std::string encoding (void)
     {
       return rep ? rep->encoding () : std::string ();

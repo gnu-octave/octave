@@ -410,7 +410,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       x0 = xbar;
     endif
   endif
-  
+
   if (info == 0)
     ## The initial (or computed) guess is feasible.  Call the solver.
     [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit, rtol);

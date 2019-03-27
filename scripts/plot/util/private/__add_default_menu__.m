@@ -160,7 +160,7 @@ function toggle_visibility_cb (hf, ~, hmenu, htb)
   elseif (strcmp (get (hf, "toolbar"), "none"))
     toolbar_state = "off";
   endif
-  
+
   set (hmenu, "visible", menu_state);
   set (htb, "visible", toolbar_state);
 endfunction

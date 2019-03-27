@@ -539,7 +539,7 @@ namespace octave
 
     // Used for computing the distance between lines.
     double m_max_fontsize;
-    
+
     // Anti-aliasing.
     bool m_antialias;
 
@@ -715,10 +715,10 @@ namespace octave
     int pitch = std::abs (glyph->bitmap.pitch);
     unsigned char *row = &glyph->bitmap.buffer[pitch * y];
     char cvalue = row[x >> 3];
-    
+
     return ((cvalue & (128 >> (x & 7))) != 0);
   }
-  
+
   FT_UInt
   ft_text_renderer::process_character (FT_ULong code, FT_UInt previous)
   {
@@ -798,7 +798,7 @@ namespace octave
                             = (m_antialias
                                ? bitmap.buffer[r*bitmap.width+c]
                                : (is_opaque (face->glyph, c, r) ? 255 : 0));
-                          
+
                           if (x0+c < 0 || x0+c >= pixels.dim2 ()
                               || y0-r < 0 || y0-r >= pixels.dim3 ())
                             {

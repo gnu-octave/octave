@@ -87,7 +87,7 @@ function varargout = lightangle (varargin)
     el = rad2deg (el);
     varargout = { az, el };
     return;
-  endif  
+  endif
 
   if (! isscalar (az) || ! isnumeric (az)
       || ! isscalar (el) || ! isnumeric (el))
@@ -113,7 +113,7 @@ function varargout = lightangle (varargin)
 
   if (strcmp (get (hl, "Style"), "local"))
     pos -= get (hax, "CameraTarget");
-  endif 
+  endif
 
   pos = sph2cart (az, el, norm (pos));
 
@@ -161,7 +161,7 @@ endfunction
 %!error <Invalid call> [a, b, c] = lightangle (45, 30)
 %!error <HL must be a handle to a light object> lightangle (0)
 %!error <H must be a handle to an axes or light object> lightangle (0, 90, 45)
-%!error <AZ and EL must be numeric scalars> lightangle ([1 2], 0) 
-%!error <AZ and EL must be numeric scalars> lightangle ({1}, 0) 
-%!error <AZ and EL must be numeric scalars> lightangle (0, [1 2]) 
-%!error <AZ and EL must be numeric scalars> lightangle (0, {1}) 
+%!error <AZ and EL must be numeric scalars> lightangle ([1 2], 0)
+%!error <AZ and EL must be numeric scalars> lightangle ({1}, 0)
+%!error <AZ and EL must be numeric scalars> lightangle (0, [1 2])
+%!error <AZ and EL must be numeric scalars> lightangle (0, {1})

@@ -99,7 +99,7 @@ syntax: regexp
 (^|/)doc/interpreter/octave\.html/
 (^|/)doc/liboctave/liboctave\.html/
 
-# Miscellaneous auto-generated files 
+# Miscellaneous auto-generated files
 (^|/)doc/interpreter/octave\.dvi$
 (^|/)doc/interpreter/octave\.ps$
 (^|/)doc/interpreter/doc-cache$

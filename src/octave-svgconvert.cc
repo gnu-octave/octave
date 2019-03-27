@@ -765,7 +765,7 @@ read from stdin\n\
       file.close();
       return -1;
     }
-  
+
   file.close ();
 
   // Format

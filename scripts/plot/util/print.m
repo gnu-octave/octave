@@ -1016,7 +1016,7 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
   endif
 
   dos_shell = (ispc () && ! isunix ());
-  
+
   if (! do_svg)
     if (dos_shell)
       cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);

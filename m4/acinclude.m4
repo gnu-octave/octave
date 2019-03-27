@@ -2242,8 +2242,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   fi
   AC_MSG_RESULT([$octave_have_sundials_compatible_api])
   if test $octave_have_sundials_compatible_api = no; then
-    warn_sundials_api="SUNDIALS libraries do not provide an API that is compatible with Octave, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_api])
+    warn_sundials_disabled="SUNDIALS libraries do not provide an API that is compatible with Octave.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
   fi
 ])
 dnl
@@ -2266,8 +2266,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
       octave_cv_sundials_realtype_is_double=no)
   ])
   if test $octave_cv_sundials_realtype_is_double = no; then
-    warn_sundials_realtype="SUNDIALS IDA library not configured with double precision realtype, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_realtype])
+    warn_sundials_disabled="SUNDIALS IDA library not configured with double precision realtype.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
   fi
 ])
 dnl
@@ -2293,7 +2293,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     ])
   OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
     [], [SUNKLU], [],
-    [don't use SUNLINSOL_KLU library],
+    [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
     [AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
       [octave_cv_sundials_sunlinsol_klu],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -2326,7 +2326,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_KLU, 1,
       [Define to 1 if SUNDIALS IDA is configured with SUNLINSOL_KLU enabled.])
   else
-    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinksol_klu.h is not usable; ode15i and ode15s will not support the sparse Jacobian feature"
+    warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinksol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
 ])
@@ -2357,8 +2357,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE], [
     AC_DEFINE(HAVE_SUNDIALS_SUNLINSOL_DENSE, 1,
       [Define to 1 if SUNDIALS IDA includes the SUNLINSOL_DENSE linear solver.])
   else
-    warn_sundials_sunlinsol_dense="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver, ode15i and ode15s will be disabled"
-    OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_dense])
+    warn_sundials_disabled="SUNDIALS IDA library does not include the SUNLINSOL_DENSE linear solver.  The solvers ode15i and ode15s will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
   fi
 ])
 dnl

@@ -2211,6 +2211,42 @@ c assume the default integer size is 32-bits.
   ])
 ])
 dnl
+dnl Check whether SUNDIALS libraries provide a compatible interface.
+dnl The current recommended interface was introduced in SUNDIALS version 4.
+dnl The deprecated interface that Octave currently works to be compatible with
+dnl was introduced in SUNDIALS version 3.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
+  ac_octave_save_LIBS=$LIBS
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $LIBS"
+  dnl Current API functions present in SUNDIALS version 4
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNLinSol_KLU])
+  dnl FIXME: The purpose of the following tests is to detect the deprecated
+  dnl API from SUNDIALS version 3, which should only be used if the current
+  dnl API tests above failed. For now, always test for ida_direct.h.
+  AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
+  dnl Each of these is a deprecated analog to the functions listed above.
+  AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver SUNKLU])
+  LIBS=$ac_octave_save_LIBS
+  AC_MSG_CHECKING([whether SUNDIALS API provides the necessary functions])
+  if test "x$ac_cv_func_IDASetJacFn" = xyes \
+     && test "x$ac_cv_func_IDASetLinearSolver" = xyes \
+     && test "x$ac_cv_func_SUNLinSol_Dense" = xyes; then
+    octave_have_sundials_compatible_api=yes
+  elif test "x$ac_cv_func_IDADlsSetJacFn" = xyes \
+     && test "x$ac_cv_func_IDADlsSetLinearSolver" = xyes \
+     && test "x$ac_cv_func_SUNDenseLinearSolver" = xyes; then
+    octave_have_sundials_compatible_api=yes
+  else
+    octave_have_sundials_compatible_api=no
+  fi
+  AC_MSG_RESULT([$octave_have_sundials_compatible_api])
+  if test $octave_have_sundials_compatible_api = no; then
+    warn_sundials_api="SUNDIALS libraries do not provide an API that is compatible with Octave, ode15i and ode15s will be disabled"
+    OCTAVE_CONFIGURE_WARNING([warn_sundials_api])
+  fi
+])
+dnl
 dnl Check whether SUNDIALS IDA library is configured with double
 dnl precision realtype.
 dnl

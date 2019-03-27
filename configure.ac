@@ -2207,7 +2207,8 @@ OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
   [warn_sundials_ida=
    OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
-   OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU])
+   OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
+   OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API])
 LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that
@@ -2220,7 +2221,8 @@ dnl works when some things are missing (for example, KLU)?
 if test -n "$SUNDIALS_IDA_LIBS" \
     && test -n "$SUNDIALS_NVECSERIAL_LIBS" \
     && test $octave_cv_sundials_sunlinsol_dense = yes \
-    && test $octave_cv_sundials_realtype_is_double = yes; then
+    && test $octave_cv_sundials_realtype_is_double = yes \
+    && test $octave_have_sundials_compatible_api = yes; then
   AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
   ## Collections of options needed to build with SUNDIALS and its dependencies.
@@ -2233,7 +2235,7 @@ else
   SUNDIALS_IDA_LIBS=
   SUNDIALS_SUNLINSOLKLU_CPPFLAGS=
   SUNDIALS_SUNLINSOLKLU_LDFLAGS=
-  SUNDIALS_SUNLINSOLKLU_LIBS
+  SUNDIALS_SUNLINSOLKLU_LIBS=
   SUNDIALS_NVECSERIAL_CPPFLAGS=
   SUNDIALS_NVECSERIAL_LDFLAGS=
   SUNDIALS_NVECSERIAL_LIBS=
@@ -2247,15 +2249,6 @@ fi
 AC_SUBST(SUNDIALS_XCPPFLAGS)
 AC_SUBST(SUNDIALS_XLDFLAGS)
 AC_SUBST(SUNDIALS_XLIBS)
-
-save_LIBS="$LIBS"
-LIBS="$SUNDIALS_XLIBS $LIBS"
-## Current interface:
-AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNLinSol_KLU])
-## Deprecated interface:
-AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
-AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver SUNKLU])
-LIBS="$save_LIBS"
 
 ### Check for ARPACK library.
 

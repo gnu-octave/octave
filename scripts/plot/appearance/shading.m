@@ -77,11 +77,18 @@ function shading (varargin)
         parents(end+1) = hglist(i);
       endif
     endfor
-    kids = get (parents, "children");
+    if (numel (parents) <= 1)
+      kids = get (parents, "children");
+    else
+      ## See bug #55993 where multiple hggroups caused failure.
+      kids = get (parents, "children");
+      kids = [kids{:}](:);  # convert cell array to column vector of handles
+    endif
+
   endwhile
 
-  ## FIXME: This is the old, simple code.
-  ##        Unfortunately, it also shades contour plots which is not desirable.
+  ## NOTE: This is the old, simple code.
+  ##       Unfortunately, it also shades contour plots which is not desirable.
   ##hp = findobj (hax, "type", "patch");
   ##hs = findobj (hax, "type", "surface");
   ##hlist = [hp(:); hs(:)];

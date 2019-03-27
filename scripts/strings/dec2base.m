@@ -112,7 +112,7 @@ function retval = dec2base (d, base, len)
   ## have a leading zero to remove.  But if LEN >= MAX_LEN, we should
   ## not remove any leading zeros.
   if ((nargin == 2 || (nargin == 3 && max_len > len))
-      && length (retval) != 1 && ! any (retval(:,1) != symbols(1)))
+      && columns (retval) != 1 && ! any (retval(:,1) != symbols(1)))
     retval = retval(:,2:end);
   endif
 
@@ -155,6 +155,8 @@ endfunction
 %!test
 %! a = 0:3;
 %! assert (dec2base (! a, 2, 1), ["1"; "0"; "0"; "0"]);
+
+%!assert <*56005> (dec2base ([0, 0], 16), ["0"; "0"])
 
 ## Test input validation
 %!error dec2base ()

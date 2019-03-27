@@ -132,16 +132,24 @@ function h = waitbar (varargin)
 
     ## Add createcancelbtn property
     addproperty ("createcancelbtn", hf, "figurebuttondownfcn");
-    addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
+    ## FIXME: Can't add listener because of bug #55963.
+    #addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
 
     if (! isempty (varargin))
       set (hf, varargin{:});
     endif
 
+    ## Add listener and create cancel button only after setting properties
+    ## which could change "createcancelbtn" property (bug #55963).
+    addlistener (hf, "createcancelbtn", {@updatecancelbutton, ax});
+    if (any (strcmp ("createcancelbtn", varargin)))
+      updatecancelbutton (hf, [], ax);
+    endif
+
     hp = patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
     ## Cache the axes and patch handles.
-    set (hf, "__guidata__", [ax hp]);
+    set (hf, "__guidata__", [ax, hp]);
 
     if (! (ischar (msg) || iscellstr (msg)))
       msg = "Please wait...";
@@ -162,10 +170,10 @@ function h = waitbar (varargin)
 
 endfunction
 
-function updatecancelbutton (hf, dummy, hax)
+function updatecancelbutton (hf, ~, hax)
 
-  if (! strcmpi (get (hf, "__graphics_toolkit__"), "qt"))
-    return
+  if (! strcmp (get (hf, "__graphics_toolkit__"), "qt"))
+    return;
   endif
 
   hbtn = findobj (hf, "type", "uicontrol", "-and", "style", "pushbutton");
@@ -177,15 +185,15 @@ function updatecancelbutton (hf, dummy, hax)
       set (hax, "units", "pixels");
       apos = get (hax, "position");
 
-      fpos (2) -= 40;
-      fpos (4) += 40;
-      apos (2) += 40;
+      fpos(2) -= 40;
+      fpos(4) += 40;
+      apos(2) += 40;
       set (hf, "position", fpos);
       set (hax, "position", apos, "units", units);
 
-      hbtn = uicontrol ("style", "pushbutton", "string", "Cancel", ...
-                        "position", [fpos(3)-100 10 60 25],...
-                        "callback", cb, "parent", hf);
+      hbtn = uicontrol (hf, "style", "pushbutton", "string", "Cancel", ...
+                            "position", [fpos(3)-100, 10, 60, 25], ...
+                            "callback", cb);
     else
       set (hbtn, "callback", cb);
     endif
@@ -196,9 +204,9 @@ function updatecancelbutton (hf, dummy, hax)
     set (hax, "units", "pixels");
     apos = get (hax, "position");
 
-    fpos (2) += 40;
-    fpos (4) -= 40;
-    apos (2) -= 40;
+    fpos(2) += 40;
+    fpos(4) -= 40;
+    apos(2) -= 40;
     set (hf, "position", fpos);
     set (hax, "position", apos, "units", units);
   endif

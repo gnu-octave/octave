@@ -2216,6 +2216,12 @@ if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
   dnl skipped if a warning message has already been generated that SUNDIALS is
   dnl disabled.
   warn_sundials_disabled=
+  dnl If using Sundials 3.1, the test for sunlinsol_klu library must be done before
+  dnl checking for SUNKLU because we must link with the sunlinsol_klu library in
+  dnl order to find the SUNKLU function.
+  if test -z "$warn_sundials_disabled"; then
+    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
+  fi
   if test -z "$warn_sundials_disabled"; then
     OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
   fi
@@ -2224,11 +2230,6 @@ if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
   fi
   if test -z "$warn_sundials_disabled"; then
     OCTAVE_CHECK_SUNDIALS_SUNLINSOL_DENSE
-  fi
-  dnl The following tests determine whether certain optional features are
-  dnl present in the SUNDIALS libraries, but will not disable using SUNDIALS.
-  if test -z "$warn_sundials_disabled"; then
-    OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
   fi
 fi
 LIBS="$save_LIBS"

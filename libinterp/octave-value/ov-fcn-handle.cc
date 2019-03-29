@@ -1406,11 +1406,10 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       octave::interpreter& interp
         = octave::__get_interpreter__ ("octave_fcn_handle::load_hdf5");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave::symbol_scope local_scope (fcn_tmp);
-      cs.push (local_scope);
-      frame.add_method (cs, &octave::call_stack::pop);
+      tw.push_dummy_scope (fcn_tmp);
+      frame.add_method (tw, &octave::tree_evaluator::pop_scope);
 
       if (len > 0 && success)
         {
@@ -1440,8 +1439,6 @@ octave_fcn_handle::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       if (success)
         success = parse_anon_fcn_handle (fcn_tmp);
-
-      frame.run ();
     }
   else
     {

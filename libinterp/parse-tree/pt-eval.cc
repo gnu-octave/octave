@@ -1197,6 +1197,18 @@ namespace octave
     return false;
   }
 
+  void tree_evaluator::push_dummy_scope (const std::string& name)
+  {
+    symbol_scope dummy_scope (name + "$dummy");
+
+    m_call_stack.push (dummy_scope);
+  }
+
+  void tree_evaluator::pop_scope (void)
+  {
+    m_call_stack.pop ();
+  }
+
   symbol_scope tree_evaluator::get_top_scope (void) const
   {
     return m_call_stack.top_scope ();

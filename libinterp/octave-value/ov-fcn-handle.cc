@@ -752,11 +752,10 @@ octave_fcn_handle::load_ascii (std::istream& is)
       octave::interpreter& interp
         = octave::__get_interpreter__ ("octave_fcn_handle::load_ascii");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave::symbol_scope local_scope (buf);
-      cs.push (local_scope);
-      frame.add_method (cs, &octave::call_stack::pop);
+      tw.push_dummy_scope (buf);
+      frame.add_method (tw, &octave::tree_evaluator::pop_scope);
 
       octave_idx_type len = 0;
 
@@ -912,11 +911,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       octave::interpreter& interp
         = octave::__get_interpreter__ ("octave_fcn_handle::load_binary");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave::symbol_scope local_scope (ctmp2);
-      cs.push (local_scope);
-      frame.add_method (cs, &octave::call_stack::pop);
+      tw.push_dummy_scope (ctmp2);
+      frame.add_method (tw, &octave::tree_evaluator::pop_scope);
 
       if (len > 0)
         {

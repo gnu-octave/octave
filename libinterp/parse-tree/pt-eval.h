@@ -432,6 +432,8 @@ namespace octave
 
     bp_table& get_bp_table (void) { return m_bp_table; }
 
+    profiler& get_profiler (void) { return m_profiler; }
+
     call_stack& get_call_stack (void) { return m_call_stack; }
 
     const stack_frame& get_current_stack_frame (void) const
@@ -444,7 +446,8 @@ namespace octave
       return m_call_stack.get_current_stack_frame ();
     }
 
-    profiler& get_profiler (void) { return m_profiler; }
+    void push_dummy_scope (const std::string& name);
+    void pop_scope (void);
 
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;

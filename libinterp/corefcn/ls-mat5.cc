@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -70,6 +69,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "pager.h"
 #include "parse.h"
+#include "pt-eval.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -976,12 +976,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             // Set up temporary scope to use for evaluating the text
             // that defines the anonymous function.
 
-            octave::call_stack& cs = interp.get_call_stack ();
-
-            octave::symbol_scope local_scope ("read_mat5_binary_element$dummy_scope");
-
-            cs.push (local_scope);
-            frame.add_method (cs, &octave::call_stack::pop);
+            octave::tree_evaluator& tw = interp.get_evaluator ();
+            tw.push_dummy_scope ("read_mat5_binary_element");
+            frame.add_method (tw, &octave::tree_evaluator::pop_scope);
 
             if (m2.nfields () > 0)
               {
@@ -1010,8 +1007,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: failed to load anonymous function handle");
 
             tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
-
-            frame.run ();
           }
         else
           error ("load: invalid function handle type");

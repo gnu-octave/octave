@@ -2979,7 +2979,7 @@ namespace octave
 
     if (! m_lexer.m_looping)
       {
-        bison_error ("break must appear in a loop in the same file as loop command");
+        bison_error ("break must appear within a loop");
         return nullptr;
       }
     else
@@ -2996,7 +2996,7 @@ namespace octave
 
     if (! m_lexer.m_looping)
       {
-        bison_error ("continue must appear in a loop in the same file as loop command");
+        bison_error ("continue must appear within a loop");
         return nullptr;
       }
     else

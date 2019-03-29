@@ -28,6 +28,11 @@ syntax: regexp
 ^Makefile\.in$
 ^INSTALL$
 
+## CMake associated files
+# Octave doesn't use CMake, but some IDEs use this index file to indicate
+# what files are part of a project (e.g., CLion).  Ignore it (bug #55901).
+^CMakeLists.txt$
+
 ## Emacs associated files
 (^|/)TAGS$
 (^|/)semantic.cache$
@@ -59,7 +64,6 @@ syntax: regexp
 .*/\.libs/
 .*\.Plo$
 .*\.Po$
-
 
 ## DLDFCN associated files
 ^libinterp/dldfcn/module\.mk$

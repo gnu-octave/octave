@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "oct-lvalue.h"
 #include "pager.h"
-#include "pt-eval.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "symtab.h"

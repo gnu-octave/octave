@@ -48,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "build-env.h"
 #include "liboctinterp-build-info.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"

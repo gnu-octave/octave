@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "defun-int.h"
-#include "call-stack.h"
 #include "error.h"
 #include "interpreter.h"
 #include "interpreter-private.h"

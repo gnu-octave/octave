@@ -41,11 +41,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
-#include "pt-eval.h"
 #include "pt-idx.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
-#include "pt-walk.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0

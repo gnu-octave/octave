@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-walk.h"
-#include "symrec.h"
 
 namespace octave
 {

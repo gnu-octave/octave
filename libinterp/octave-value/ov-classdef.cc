@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-eval.h"
 #include "pt-misc.h"
-#include "symtab.h"
 
 static bool
 in_class_method (const octave::cdef_class& cls)

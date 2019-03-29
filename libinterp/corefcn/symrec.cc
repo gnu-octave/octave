@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "symrec.h"
-#include "symscope.h"
 
 namespace octave
 {

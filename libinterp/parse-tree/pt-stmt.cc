@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-jump.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#include "pt-walk.h"
 #include "utils.h"
 #include "variables.h"
 

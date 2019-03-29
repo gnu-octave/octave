@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 
 #include "bp-table.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "fcn-info.h"
@@ -48,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pt-pr-code.h"
-#include "symrec.h"
 #include "symscope.h"
 #include "symtab.h"
 #include "unwind-prot.h"

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "ovl.h"
-#include "call-stack.h"
+#include "stack-frame.h"
 #include "symrec.h"
 
 namespace octave

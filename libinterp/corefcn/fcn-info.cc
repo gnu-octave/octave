@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "parse.h"
-#include "symrec.h"
 #include "symscope.h"
 #include "symtab.h"
 

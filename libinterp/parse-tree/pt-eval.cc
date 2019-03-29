@@ -3751,6 +3751,13 @@ namespace octave
     error_with_id (e.err_id (), "%s", msg.c_str ());
   }
 
+  octave_value
+  tree_evaluator::do_who (int argc, const string_vector& argv,
+                          bool return_list, bool verbose)
+  {
+    return m_call_stack.do_who (argc, argv, return_list, verbose);
+  }
+
   void
   tree_evaluator::push_echo_state (unwind_protect& frame, int type,
                                    const std::string& file_name,

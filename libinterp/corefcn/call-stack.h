@@ -284,6 +284,9 @@ namespace octave
     void set_top_level_value (const std::string& name,
                               const octave_value& value);
 
+    octave_value do_who (int argc, const string_vector& argv,
+                         bool return_list, bool verbose = false);
+
     octave_value do_who_two (const string_vector& patterns, bool have_regexp,
                              bool return_list, bool verbose,
                              const std::string& msg = "");

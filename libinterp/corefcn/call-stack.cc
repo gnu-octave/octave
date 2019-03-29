@@ -863,6 +863,104 @@ namespace octave
     m_cs[0]->assign (name, value);
   }
 
+  octave_value call_stack::do_who (int argc, const string_vector& argv,
+                                   bool return_list, bool verbose)
+  {
+    octave_value retval;
+
+    std::string my_name = argv[0];
+
+    std::string file_name;
+
+    bool from_file = false;
+    bool global_only = false;
+    bool have_regexp = false;
+
+    int i = 1;
+    while (i < argc)
+      {
+        if (argv[i] == "-file")
+          {
+            if (from_file)
+              error ("%s: -file option may only be specified once",
+                     my_name.c_str ());
+
+            from_file = true;
+
+            if (i == argc - 1)
+              error ("%s: -file argument must be followed by a filename",
+                     my_name.c_str ());
+
+            file_name = argv[++i];
+          }
+        else if (argv[i] == "-regexp")
+          {
+            have_regexp = true;
+          }
+        else if (argv[i] == "global")
+          global_only = true;
+        else if (argv[i][0] == '-')
+          warning ("%s: unrecognized option '%s'", my_name.c_str (),
+                   argv[i].c_str ());
+        else
+          break;
+
+        i++;
+      }
+
+    int npatterns = argc - i;
+    string_vector patterns;
+    if (npatterns > 0)
+      {
+        patterns.resize (npatterns);
+        for (int j = 0; j < npatterns; j++)
+          patterns[j] = argv[i+j];
+      }
+    else
+      {
+        patterns.resize (1);
+        patterns[0] = "*";
+      }
+
+    if (from_file)
+      {
+        // FIXME: This is an inefficient manner to implement this as the
+        // variables are loaded in to a temporary context and then treated.
+        // It would be better to refactor symbol_info_list to not store the
+        // symbol records and then use it in load-save.cc (do_load) to
+        // implement this option there so that the variables are never
+        // stored at all.
+
+        unwind_protect frame;
+
+        // Set up temporary scope.
+
+        symbol_scope tmp_scope ("$dummy_scope$");
+
+        push (tmp_scope);
+        frame.add_method (*this, &call_stack::pop);
+
+        feval ("load", octave_value (file_name), 0);
+
+        std::string newmsg = "Variables in the file " + file_name + ":\n\n";
+
+        if (global_only)
+          return do_global_who_two (patterns, have_regexp, return_list,
+                                    verbose, newmsg);
+        else
+          return do_who_two (patterns, have_regexp, return_list, verbose,
+                             newmsg);
+      }
+    else
+      {
+        if (global_only)
+          return do_global_who_two (patterns, have_regexp, return_list,
+                                    verbose);
+        else
+          return do_who_two (patterns, have_regexp, return_list, verbose);
+      }
+  }
+
   octave_value call_stack::do_who_two (const string_vector& patterns,
                                        bool have_regexp, bool return_list,
                                        bool verbose, const std::string& msg)
@@ -1072,107 +1170,6 @@ The original variable value is restored when exiting the function.
 %!error (max_stack_depth (1, 2))
 */
 
-static octave_value
-do_who (octave::interpreter& interp, int argc, const string_vector& argv,
-        bool return_list, bool verbose = false)
-{
-  octave_value retval;
-
-  std::string my_name = argv[0];
-
-  std::string file_name;
-
-  bool from_file = false;
-  bool global_only = false;
-  bool have_regexp = false;
-
-  int i = 1;
-  while (i < argc)
-    {
-      if (argv[i] == "-file")
-        {
-          if (from_file)
-            error ("%s: -file option may only be specified once",
-                   my_name.c_str ());
-
-          from_file = true;
-
-          if (i == argc - 1)
-            error ("%s: -file argument must be followed by a filename",
-                   my_name.c_str ());
-
-          file_name = argv[++i];
-        }
-      else if (argv[i] == "-regexp")
-        {
-          have_regexp = true;
-        }
-      else if (argv[i] == "global")
-        global_only = true;
-      else if (argv[i][0] == '-')
-        warning ("%s: unrecognized option '%s'", my_name.c_str (),
-                 argv[i].c_str ());
-      else
-        break;
-
-      i++;
-    }
-
-  int npatterns = argc - i;
-  string_vector patterns;
-  if (npatterns > 0)
-    {
-      patterns.resize (npatterns);
-      for (int j = 0; j < npatterns; j++)
-        patterns[j] = argv[i+j];
-    }
-  else
-    {
-      patterns.resize (1);
-      patterns[0] = "*";
-    }
-
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  if (from_file)
-    {
-      // FIXME: This is an inefficient manner to implement this as the
-      // variables are loaded in to a temporary context and then treated.
-      // It would be better to refactor symbol_info_list to not store the
-      // symbol records and then use it in load-save.cc (do_load) to
-      // implement this option there so that the variables are never
-      // stored at all.
-
-      octave::unwind_protect frame;
-
-      // Set up temporary scope.
-
-      octave::symbol_scope tmp_scope ("$dummy_scope$");
-
-      cs.push (tmp_scope);
-      frame.add_method (cs, &octave::call_stack::pop);
-
-      octave::feval ("load", octave_value (file_name), 0);
-
-      std::string newmsg = "Variables in the file " + file_name + ":\n\n";
-
-      if (global_only)
-        return cs.do_global_who_two (patterns, have_regexp, return_list,
-                                     verbose, newmsg);
-      else
-        return cs.do_who_two (patterns, have_regexp, return_list,
-                              verbose, newmsg);
-    }
-  else
-    {
-      if (global_only)
-        return cs.do_global_who_two (patterns, have_regexp, return_list,
-                                     verbose);
-      else
-        return cs.do_who_two (patterns, have_regexp, return_list, verbose);
-    }
-}
-
 DEFMETHOD (who, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} who
@@ -1212,7 +1209,9 @@ matching the given patterns.
 
   string_vector argv = args.make_argv ("who");
 
-  return do_who (interp, argc, argv, nargout == 1);
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.do_who (argc, argv, nargout == 1);
 }
 
 /*
@@ -1298,5 +1297,7 @@ complex, nesting, persistent.
 
   string_vector argv = args.make_argv ("whos");
 
-  return do_who (interp, argc, argv, nargout == 1, true);
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  return tw.do_who (argc, argv, nargout == 1, true);
 }

@@ -621,6 +621,9 @@ namespace octave
 
     void final_index_error (index_exception& e, const tree_expression *expr);
 
+    octave_value do_who (int argc, const string_vector& argv,
+                         bool return_list, bool verbose = false);
+
     void push_echo_state (unwind_protect& frame, int type,
                           const std::string& file_name, size_t pos = 1);
 

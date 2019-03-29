@@ -676,7 +676,7 @@ initialize_jvm (void)
               std::string java_home_cmd = std::string (JAVA_HOME_CMD)
                 + " --failfast --version 1.6+ 2>/dev/null";
 
-              process_execution_result rslt
+              octave::process_execution_result rslt
                 = octave::run_command_and_return_output (java_home_cmd);
 
               if (rslt.exit_status () == 0)

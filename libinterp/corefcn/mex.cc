@@ -3507,9 +3507,10 @@ mexGetVariable (const char *space, const char *name)
             {
               octave::call_stack& cs = interp.get_call_stack ();
 
-              cs.goto_base_frame ();
+              frame.add_method (cs, &octave::call_stack::restore_frame,
+                                cs.current_frame ());
 
-              frame.add_method (cs, &octave::call_stack::pop);
+              cs.goto_base_frame ();
             }
 
           val = interp.varval (name);
@@ -3571,9 +3572,10 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
             {
               octave::call_stack& cs = interp.get_call_stack ();
 
-              cs.goto_base_frame ();
+              frame.add_method (cs, &octave::call_stack::restore_frame,
+                                cs.current_frame ());
 
-              frame.add_method (cs, &octave::call_stack::pop);
+              cs.goto_base_frame ();
             }
 
           interp.assign (name, mxArray::as_octave_value (ptr));

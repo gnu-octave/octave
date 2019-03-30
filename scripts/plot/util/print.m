@@ -615,44 +615,65 @@ function rgbout = print (varargin)
       endfor
     endif
 
-    if (! isempty (opts.font) || ! isempty (opts.fontsize))
+    do_font = ! isempty (opts.font);
+    do_scalefontsize =  ! isempty (opts.scalefontsize) && opts.scalefontsize != 1;
+    do_fontsize = ! isempty (opts.fontsize) || do_scalefontsize;
+    if (do_font || do_fontsize)
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
       for n = 1:numel (h)
         if (ishghandle (h(n)))
-          if (! isempty (opts.font))
+          if (do_font)
             props(end+1).h = h(n);
             props(end).name = "fontname";
             props(end).value = {get(h(n), "fontname")};
           endif
-        endif
-        if (ishghandle (h(n)))
-          if (! isempty (opts.fontsize))
+          if (do_fontsize)
             props(end+1).h = h(n);
             props(end).name = "fontsize";
             props(end).value = {get(h(n), "fontsize")};
           endif
         endif
       endfor
-      if (! isempty (opts.font))
+      if (do_font)
         set (h(ishghandle (h)), "fontname", opts.font);
       endif
-      if (! isempty (opts.fontsize))
-        if (ischar (opts.fontsize))
-          fontsize = str2double (opts.fontsize);
+      if (do_fontsize)
+        if (! isempty (opts.fontsize))
+          ## Changing all fontsizes to a fixed value
+          if (ischar (opts.fontsize))
+            fontsize = str2double (opts.fontsize);
+          else
+            fontsize = opts.fontsize;
+          endif
+          if (do_scalefontsize)
+            ## This is done to work around the bbox being whole numbers.
+            fontsize *= opts.scalefontsize;
+          endif
+
+          ## FIXME: legend child objects need to be acted on first.
+          ##        or legend fontsize callback will destroy them.
+          hlist = h(ishghandle (h));
+          haxes = strcmp (get (hlist, "type"), "axes");
+          set (hlist(! haxes), "fontsize", fontsize);
+          set (hlist(haxes), "fontsize", fontsize);
+
         else
-          fontsize = opts.fontsize;
+          ## Scaling fonts
+          ## FIXME: legend child objects need to be acted on first.
+          ##        or legend fontsize callback will destroy them.
+          hlist = h(ishghandle (h));
+          haxes = strcmp (get (hlist, "type"), "axes");
+          for h = hlist(! haxes).'
+            fontsz = get (h, "fontsize");
+            set (h, "fontsize", fontsz * opts.scalefontsize);
+          endfor
+          for h = hlist(haxes).'
+            fontsz = get (h, "fontsize");
+            set (h, "fontsize", fontsz * opts.scalefontsize);
+          endfor
+
         endif
-        if (! isempty (opts.scalefontsize) && ! opts.scalefontsize != 1)
-          ## This is done to work around the bbox being whole numbers.
-          fontsize *= opts.scalefontsize;
-        endif
-        ## FIXME: legend child objects need to be acted on first.
-        ##        or legend fontsize callback will destroy them.
-        hlist = h(ishghandle (h));
-        haxes = strcmp (get (hlist, "type"), "axes");
-        set (hlist(! haxes), "fontsize", fontsize);
-        set (hlist(haxes), "fontsize", fontsize);
       endif
     endif
 

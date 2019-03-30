@@ -34,7 +34,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.epstool_binary = __quote_path__ (__find_binary__ ("epstool"));
   arg_st.figure = get (0, "currentfigure");
   arg_st.fig2dev_binary = __quote_path__ (__find_binary__ ("fig2dev"));
-  arg_st.fontsize = "";
+  arg_st.fontsize = [];
   arg_st.font = "";
   arg_st.scalefontsize = 1;
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
@@ -474,11 +474,12 @@ function arg_st = __print_parse_opts__ (varargin)
       arg_st.ghostscript.pageoffset = paperposition(1:2);
     endif
   else
-    ## Convert canvas size to points from pixels.
-    if (! isempty (arg_st.fontsize))
-      ## Work around the eps bbox having whole numbers (both gnuplot & gl2ps).
-      arg_st.scalefontsize = arg_st.ghostscript.resolution / 72;
+    ## Size specified with -S option
+    if (arg_st.ghostscript.resolution != 150)
+      warning ("print: '-Sxsize,ysize' overrides resolution option -r\n");
     endif
+    arg_st.scalefontsize = arg_st.canvas_size(1) / ...
+                           6 / get (0, "screenpixelsperinch");
     arg_st.ghostscript.resolution = 72;
     arg_st.ghostscript.papersize = arg_st.canvas_size;
     arg_st.ghostscript.epscrop = true;

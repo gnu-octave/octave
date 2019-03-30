@@ -321,6 +321,13 @@ namespace octave
     bool _lines_changed;
     bool _highlight_all_occurrences;
     int m_bp_restore_count;
+
+    struct
+      {
+        bool        remove_next;
+        int         remove_line;
+        int         do_not_remove_line;
+      } m_breakpoint_info;
   };
 }
 

@@ -113,6 +113,9 @@ namespace octave
     _bp_conditions.clear ();
     m_bp_restore_count = 0;
 
+    m_breakpoint_info.remove_next = false;
+    m_breakpoint_info.remove_line = -1;
+
     // Initialize last modification date to now
     m_last_modified = QDateTime::currentDateTimeUtc();
 
@@ -938,7 +941,20 @@ namespace octave
       }
 
     if (step_into)
-      handle_request_add_breakpoint (1, QString ());
+      {
+        // Get current first breakpoint and set breakpoint waiting for
+        // the returned line number. Store whether to remove this breakpoint
+        // afterwards.
+        int first_bp_line
+              = _edit_area->markerFindNext (0, (1 << marker::breakpoint)) + 1;
+
+        // Set flag for storing the line number of the breakpoint
+        m_breakpoint_info.remove_next = true;
+        m_breakpoint_info.do_not_remove_line = first_bp_line;
+
+        // Add breakpoint, storing its line number
+        handle_request_add_breakpoint (1, QString ());
+      }
 
     QFileInfo info (_file_name);
     emit run_file_signal (info);
@@ -1026,7 +1042,16 @@ namespace octave
       {
         bp_table& bptab = __get_bp_table__ ("octave_qt_link::file_in_path");
 
-        bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
+        bp_table::intmap bpmap
+          = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
+
+        // Store some info breakpoint
+        if (m_breakpoint_info.remove_next && (bpmap.size() > 0))
+          {
+            bp_table::intmap::iterator bp_it = bpmap.begin();
+            m_breakpoint_info.remove_line = bp_it->second;
+            m_breakpoint_info.remove_next = false;
+          }
       }
   }
 
@@ -2830,7 +2855,18 @@ namespace octave
               }
           }
         else
-          dp = new marker (_edit_area, line, marker::debugger_position);
+          {
+            dp = new marker (_edit_area, line, marker::debugger_position);
+
+            // In case of a not modified file we might have to remove
+            // a breakpoint here if we have stepped into the file
+            if (line == m_breakpoint_info.remove_line)
+              {
+                m_breakpoint_info.remove_line = -1;
+                if (line != m_breakpoint_info.do_not_remove_line)
+                  handle_request_remove_breakpoint (line);
+              }
+          }
 
         connect (this, SIGNAL (remove_position_via_debugger_linenr (int)),
                  dp,   SLOT (handle_remove_via_original_linenr (int)));

@@ -900,6 +900,42 @@ namespace octave
   }
 
   void
+  tree_evaluator::assignin (const std::string& context,
+                            const std::string& name, const octave_value& val)
+  {
+    // FIXME: Can this be done without an unwind-protect frame, simply
+    // by geting a reference to the caller or base stack frame and
+    // calling assign on that?
+
+    octave::unwind_protect frame;
+
+    frame.add_method (m_call_stack, &call_stack::restore_frame,
+                      m_call_stack.current_frame ());
+
+    if (context == "caller")
+      m_call_stack.goto_caller_frame ();
+    else if (context == "base")
+      m_call_stack.goto_base_frame ();
+    else
+      error ("assignin: CONTEXT must be \"caller\" or \"base\"");
+
+    if (valid_identifier (name))
+      {
+        // Put the check here so that we don't slow down assignments
+        // generally.  Any that go through Octave's parser should have
+        // already been checked.
+
+        if (iskeyword (name))
+          error ("assignin: invalid assignment to keyword '%s'",
+                 name.c_str ());
+
+        assign (name, val);
+      }
+    else
+      error ("assignin: invalid variable name '%s'", name.c_str ());
+  }
+
+  void
   tree_evaluator::set_auto_fcn_var (stack_frame::auto_var_type avt,
                                     const octave_value& val)
   {

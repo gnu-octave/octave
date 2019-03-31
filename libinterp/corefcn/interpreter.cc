@@ -1232,6 +1232,13 @@ namespace octave
     m_evaluator.assign (name, val);
   }
 
+  void interpreter::assignin (const std::string& context,
+                              const std::string& name,
+                              const octave_value& val)
+  {
+    m_evaluator.assignin (context, name, val);
+  }
+
   bool interpreter::at_top_level (void) const
   {
     return m_evaluator.at_top_level ();

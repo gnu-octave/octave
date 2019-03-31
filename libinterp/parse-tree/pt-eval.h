@@ -405,6 +405,9 @@ namespace octave
     void assign (const std::string& name,
                  const octave_value& val = octave_value ());
 
+    void assignin (const std::string& context, const std::string& name,
+                   const octave_value& val = octave_value ());
+
     void set_auto_fcn_var (stack_frame::auto_var_type avt,
                            const octave_value& val = octave_value ());
 

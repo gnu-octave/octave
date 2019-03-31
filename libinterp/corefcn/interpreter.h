@@ -273,6 +273,9 @@ namespace octave
     void assign (const std::string& name,
                  const octave_value& val = octave_value ());
 
+    void assignin (const std::string& context, const std::string& varname, 
+                   const octave_value& val = octave_value ());
+
     bool at_top_level (void) const;
 
     bool isglobal (const std::string& name) const;

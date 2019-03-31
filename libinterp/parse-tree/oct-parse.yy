@@ -5567,44 +5567,18 @@ may be either @qcode{"base"} or @qcode{"caller"}.
 @seealso{evalin}
 @end deftypefn */)
 {
-  octave_value_list retval;
-
   if (args.length () != 3)
     print_usage ();
 
-  std::string context = args(0).xstring_value ("assignin: CONTEXT must be a string");
+  std::string context
+    = args(0).xstring_value ("assignin: CONTEXT must be a string");
 
-  octave::unwind_protect frame;
+  std::string varname
+    = args(1).xstring_value ("assignin: VARNAME must be a string");
 
-  octave::call_stack& cs = interp.get_call_stack ();
+  interp.assignin (context, varname, args(2));
 
-  frame.add_method (cs, &octave::call_stack::restore_frame,
-                    cs.current_frame ());
-
-  if (context == "caller")
-    cs.goto_caller_frame ();
-  else if (context == "base")
-    cs.goto_base_frame ();
-  else
-    error ("assignin: CONTEXT must be \"caller\" or \"base\"");
-
-  std::string nm = args(1).xstring_value ("assignin: VARNAME must be a string");
-
-  if (octave::valid_identifier (nm))
-    {
-      // Put the check here so that we don't slow down assignments
-      // generally.  Any that go through Octave's parser should have
-      // already been checked.
-
-      if (octave::iskeyword (nm))
-        error ("assignin: invalid assignment to keyword '%s'", nm.c_str ());
-
-      interp.assign (nm, args(2));
-    }
-  else
-    error ("assignin: invalid variable name in argument VARNAME");
-
-  return retval;
+  return octave_value_list ();
 }
 
 /*
@@ -5622,6 +5596,7 @@ Like @code{eval}, except that the expressions are evaluated in the context
 @seealso{eval, assignin}
 @end deftypefn */)
 {
+
   octave_value_list retval;
 
   int nargin = args.length ();

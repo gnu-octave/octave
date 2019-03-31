@@ -5063,7 +5063,7 @@ namespace octave
 
     if (verbose)
       octave_stdout << "done." << std::endl;
-  }
+ }
 }
 
 DEFMETHOD (mfilename, interp, args, ,
@@ -5085,51 +5085,17 @@ the filename and the extension.
 @seealso{inputname, dbstack}
 @end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin > 1)
     print_usage ();
 
-  std::string arg;
+  std::string opt;
 
   if (nargin == 1)
-    arg = args(0).xstring_value ("mfilename: argument must be a string");
+    opt = args(0).xstring_value ("mfilename: option argument must be a string");
 
-  std::string fname;
-
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  octave_user_code *fcn = cs.caller_user_code ();
-
-  if (fcn)
-    {
-      fname = fcn->fcn_file_name ();
-
-      if (fname.empty ())
-        fname = fcn->name ();
-    }
-
-  if (arg == "fullpathext")
-    retval = fname;
-  else
-    {
-      size_t dpos = fname.rfind (octave::sys::file_ops::dir_sep_char ());
-      size_t epos = fname.rfind ('.');
-
-      if (epos <= dpos+1)
-        epos = std::string::npos;
-
-      fname = (epos != std::string::npos) ? fname.substr (0, epos) : fname;
-
-      if (arg == "fullpath")
-        retval = fname;
-      else
-        retval = (dpos != std::string::npos) ? fname.substr (dpos+1) : fname;
-    }
-
-  return retval;
+  return octave_value (interp.mfilename (opt));
 }
 
 DEFUN (source, args, ,

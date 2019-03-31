@@ -201,6 +201,42 @@ namespace octave
     return retval;
   }
 
+  std::string
+  tree_evaluator::mfilename (const std::string& opt) const
+  {
+    std::string fname;
+
+    octave_user_code *fcn = m_call_stack.caller_user_code ();
+
+    if (fcn)
+      {
+        fname = fcn->fcn_file_name ();
+
+        if (fname.empty ())
+          fname = fcn->name ();
+      }
+
+    if (opt == "fullpathext")
+      return fname;
+
+    size_t dpos = fname.rfind (sys::file_ops::dir_sep_char ());
+    size_t epos = fname.rfind ('.');
+
+    if (epos <= dpos+1)
+      epos = std::string::npos;
+
+    if (epos != std::string::npos)
+      fname = fname.substr (0, epos);
+
+    if (opt == "fullpath")
+      return fname;
+
+    if (dpos != std::string::npos)
+      fname = fname.substr (dpos+1);
+
+    return fname;
+  }
+
   octave_value_list
   tree_evaluator::eval_string (const std::string& eval_str, bool silent,
                                int& parse_status, int nargout)

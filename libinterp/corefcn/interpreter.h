@@ -240,6 +240,8 @@ namespace octave
 
     bool mislocked (const std::string& nm);
 
+    std::string mfilename (const std::string& opt = "") const;
+
     octave_value_list eval_string (const std::string& eval_str, bool silent,
                                    int& parse_status, int nargout);
 

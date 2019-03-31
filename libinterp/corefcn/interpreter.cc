@@ -1163,6 +1163,11 @@ namespace octave
     return retval;
   }
 
+  std::string interpreter::mfilename (const std::string& opt) const
+  {
+    return m_evaluator.mfilename (opt);
+  }
+
   octave_value_list interpreter::eval_string (const std::string& eval_str,
                                               bool silent, int& parse_status,
                                               int nargout)

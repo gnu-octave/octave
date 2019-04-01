@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-regexp.h"
 #include "str-vec.h"
 
-#include "call-stack.h"
 #include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -537,10 +536,10 @@ wants_local_change (const octave_value_list& args, int& nargin)
 static octave::unwind_protect *
 curr_fcn_unwind_protect_frame (void)
 {
-  octave::call_stack& cs
-    = octave::__get_call_stack__ ("curr_fcn_unwind_protect_frame");
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("curr_fcn_unwind_protect_frame");
 
-  return cs.curr_fcn_unwind_protect_frame ();
+  return tw.curr_fcn_unwind_protect_frame ();
 }
 
 template <typename T>
@@ -835,9 +834,9 @@ Lock the current function into memory so that it can't be removed with
   if (args.length () != 0)
     print_usage ();
 
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   if (! fcn)
     error ("mlock: invalid use outside a function");
@@ -871,9 +870,9 @@ If no function is named then unlock the current function.
     }
   else
     {
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave_function *fcn = cs.caller ();
+      octave_function *fcn = tw.caller_function ();
 
       if (! fcn)
         error ("munlock: invalid use outside a function");
@@ -909,9 +908,9 @@ If no function is named then return true if the current function is locked.
     }
   else
     {
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave_function *fcn = cs.caller ();
+      octave_function *fcn = tw.caller_function ();
 
       if (! fcn)
         error ("mislocked: invalid use outside a function");
@@ -1441,9 +1440,9 @@ Return the value of the variable @var{name} directly from the symbol table.
 
   if (nm == ".argn.")
     {
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      return cs.get_auto_fcn_var (octave::stack_frame::ARG_NAMES);
+      return tw.get_auto_fcn_var (octave::stack_frame::ARG_NAMES);
     }
 
   return interp.varval (nm);

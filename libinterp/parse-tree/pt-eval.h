@@ -488,18 +488,14 @@ namespace octave
 
     octave_user_code * current_user_code (void) const;
 
-    // Line in user code caller.
-    int caller_user_code_line (void) const;
-
-    // Column in user code caller.
-    int caller_user_code_column (void) const;
-
-    octave_user_code * caller_user_code (size_t nskip = 0) const;
+    unwind_protect * curr_fcn_unwind_protect_frame (void) const;
 
     // Current function that we are debugging.
     octave_user_code * debug_user_code (void) const;
 
     octave_function * current_function (void) const;
+
+    octave_function * caller_function (void) const;
 
     bool goto_frame (size_t n = 0, bool verbose = false);
 

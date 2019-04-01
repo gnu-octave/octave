@@ -495,6 +495,9 @@ namespace octave
 
     octave_user_code * caller_user_code (size_t nskip = 0) const;
 
+    // Current function that we are debugging.
+    octave_user_code * debug_user_code (void) const;
+
     octave_function * current_function (void) const;
 
     bool goto_frame (size_t n = 0, bool verbose = false);

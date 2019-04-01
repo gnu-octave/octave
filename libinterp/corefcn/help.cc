@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -487,9 +486,9 @@ namespace octave
   {
     string_vector retval;
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    octave_user_code *curr_fcn = cs.current_user_code ();
+    octave_user_code *curr_fcn = tw.current_user_code ();
 
     if (! curr_fcn)
       return retval;
@@ -812,8 +811,8 @@ the return value is an empty cell array.
   Cell retval;
 
   // Find the main function we are in.
-  octave::call_stack& cs = interp.get_call_stack ();
-  octave_user_code *parent_fcn = cs.debug_user_code ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+  octave_user_code *parent_fcn = tw.debug_user_code ();
 
   if (! parent_fcn)
     return ovl (retval);

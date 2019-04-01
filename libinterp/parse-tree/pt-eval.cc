@@ -1881,6 +1881,11 @@ namespace octave
     return m_call_stack.current_user_code ();
   }
 
+  octave_user_code * tree_evaluator::debug_user_code (void) const
+  {
+    return m_call_stack.debug_user_code ();
+  }
+
   octave_function * tree_evaluator::current_function (void) const
   {
     return m_call_stack.current ();

@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "call-stack.h"
 #include "cdef-class.h"
 #include "cdef-manager.h"
 #include "cdef-method.h"
@@ -34,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "ov-classdef.h"
 #include "ov-usr-fcn.h"
+#include "pt-eval.h"
 
 namespace octave
 {
@@ -252,14 +252,14 @@ namespace octave
     // methods will use the dispatch class of the class in which they
     // are defined instead of the class in which they are executing.
 
-    call_stack& cs = __get_call_stack__ ("get_class_context");
+    tree_evaluator& tw = __get_evaluator__ ("get_class_context");
 
-    std::string dispatch_class = cs.get_dispatch_class ();
+    std::string dispatch_class = tw.get_dispatch_class ();
 
     if (! dispatch_class.empty ())
       return lookup_class (dispatch_class);
 
-    octave_function *fcn = cs.current ();
+    octave_function *fcn = tw.current_function ();
 
     if (fcn && (fcn->is_class_method ()
                 || fcn->is_classdef_constructor ()

@@ -35,7 +35,6 @@ Open Source Initiative (www.opensource.org)
 
 #include "oct-locbuf.h"
 
-#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
@@ -101,9 +100,9 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 
           if (uf)
             {
-              octave::call_stack& cs = interp.get_call_stack ();
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              octave_function *curr_fcn = cs.current ();
+              octave_function *curr_fcn = tw.current_function ();
 
               if (curr_fcn)
                 {

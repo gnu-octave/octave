@@ -1936,6 +1936,16 @@ namespace octave
     return m_call_stack.restore_frame (n);
   }
 
+  std::string tree_evaluator::get_dispatch_class (void) const
+  {
+    return m_call_stack.get_dispatch_class ();
+  }
+
+  void tree_evaluator::set_dispatch_class (const std::string& class_name)
+  {
+    m_call_stack.set_dispatch_class (class_name);
+  }
+
   std::list<stack_frame *>
   tree_evaluator::backtrace_frames (octave_idx_type& curr_user_frame) const
   {

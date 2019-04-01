@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <algorithm>
 #include <iomanip>
 
-#include "call-stack.h"
 #include "cdef-class.h"
 #include "cdef-method.h"
 #include "cdef-package.h"
@@ -490,9 +489,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
 bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluator& tw,
                                                             const std::string& nm)
 {
-  octave::call_stack& cs = tw.get_call_stack ();
-
-  octave_function *of = cs.current ();
+  octave_function *of = tw.current_function ();
 
   if (of->is_classdef_constructor ())
     {

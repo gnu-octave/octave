@@ -521,6 +521,10 @@ namespace octave
 
     std::list<stack_frame *> backtrace_frames () const;
 
+    std::string get_dispatch_class (void) const;
+
+    void set_dispatch_class (const std::string& class_name);
+
     octave_map backtrace (octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;
 

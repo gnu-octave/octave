@@ -54,9 +54,7 @@ namespace octave
   {
     tree_evaluator& tw = __get_evaluator__ ("is_method_executing");
 
-    call_stack& cs = __get_call_stack__ ("is_method_executing");
-
-    octave_function *stack_fcn = cs.current ();
+    octave_function *stack_fcn = tw.current_function ();
 
     octave_function *method_fcn = ov.function_value (true);
 

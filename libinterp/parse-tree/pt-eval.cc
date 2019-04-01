@@ -137,16 +137,13 @@ namespace octave
 
     bool silent = tw.quiet_breakpoint_flag (false);
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    frame.add_method (tw, &tree_evaluator::restore_frame,
+                      tw.current_call_stack_frame_number ());
 
-    frame.add_method (cs, &call_stack::restore_frame,
-                      cs.current_frame ());
+    tw.goto_frame (tw.debug_frame ());
 
-    cs.goto_frame (tw.debug_frame ());
-
-    octave_user_code *caller = cs.current_user_code ();
+    octave_user_code *caller = tw.current_user_code ();
     std::string nm;
-    int curr_debug_line;
 
     if (caller)
       {
@@ -154,11 +151,9 @@ namespace octave
 
         if (nm.empty ())
           nm = caller->name ();
-
-        curr_debug_line = cs.current_user_code_line ();
       }
-    else
-      curr_debug_line = cs.current_line ();
+
+    int curr_debug_line = tw.current_line ();
 
     std::ostringstream buf;
 
@@ -180,7 +175,7 @@ namespace octave
 
             if (! silent)
               {
-                stack_frame *frm = cs.current_user_frame ();
+                stack_frame *frm = tw.current_user_frame ();
 
                 frm->display_stopped_in_message (buf);
               }
@@ -277,7 +272,7 @@ namespace octave
                     // something like "dbup; dbstack"?  Will the call to
                     // dbstack use the right frame?  If not, how can we
                     // fix this problem?
-                    cs.goto_frame (tw.debug_frame ());
+                    tw.goto_frame (tw.debug_frame ());
                   }
 
                 octave_quit ();
@@ -1867,6 +1862,33 @@ namespace octave
       }
 
     return false;
+  }
+
+  // Current line in current function.
+  int tree_evaluator::current_line (void) const
+  {
+    return m_call_stack.current_line ();
+  }
+
+  // Current column in current function.
+  int tree_evaluator::current_column (void) const
+  {
+    return m_call_stack.current_column ();
+  }
+
+  octave_user_code * tree_evaluator::current_user_code (void) const
+  {
+    return m_call_stack.current_user_code ();
+  }
+
+  bool tree_evaluator::goto_frame (size_t n, bool verbose)
+  {
+    return m_call_stack.goto_frame (n, verbose);
+  }
+
+  void tree_evaluator::restore_frame (size_t n)
+  {
+    return m_call_stack.restore_frame (n);
   }
 
   std::list<stack_frame *>

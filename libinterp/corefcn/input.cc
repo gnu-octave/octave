@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "uniconv-wrappers.h"
 
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -408,7 +407,7 @@ namespace octave
 
     void input_system::initialize (bool line_editing)
     {
-// Force default line editor if we don't want readline editing.
+      // Force default line editor if we don't want readline editing.
       if (! line_editing)
         {
           command_editor::force_default_editor ();

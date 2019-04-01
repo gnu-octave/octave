@@ -474,6 +474,33 @@ namespace octave
       return m_call_stack.get_current_stack_frame ();
     }
 
+    stack_frame * current_user_frame (void) const
+    {
+      return m_call_stack.current_user_frame ();
+    }
+
+    // Current line in current function.
+    int current_line (void) const;
+
+    // Current column in current function.
+    int current_column (void) const;
+
+    octave_user_code * current_user_code (void) const;
+
+    // Line in user code caller.
+    int caller_user_code_line (void) const;
+
+    // Column in user code caller.
+    int caller_user_code_column (void) const;
+
+    octave_user_code * caller_user_code (size_t nskip = 0) const;
+
+    bool goto_frame (size_t n = 0, bool verbose = false);
+
+    void restore_frame (size_t n);
+
+    bool goto_frame_relative (int n, bool verbose = false);
+
     std::list<stack_frame *>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 

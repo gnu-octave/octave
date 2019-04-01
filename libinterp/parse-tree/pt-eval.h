@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <iosfwd>
 #include <list>
 #include <set>
 #include <stack>
@@ -485,6 +486,14 @@ namespace octave
 
     // Current column in current function.
     int current_column (void) const;
+
+    // Line number in current function that we are debugging.
+    int debug_user_code_line (void) const;
+
+    // Column number in current function that we are debugging.
+    int debug_user_code_column (void) const;
+
+    void debug_where (std::ostream& os) const;
 
     octave_user_code * current_user_code (void) const;
 

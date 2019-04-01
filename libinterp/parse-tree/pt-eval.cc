@@ -1864,16 +1864,31 @@ namespace octave
     return false;
   }
 
-  // Current line in current function.
   int tree_evaluator::current_line (void) const
   {
     return m_call_stack.current_line ();
   }
 
-  // Current column in current function.
   int tree_evaluator::current_column (void) const
   {
     return m_call_stack.current_column ();
+  }
+
+  int tree_evaluator::debug_user_code_line (void) const
+  {
+    return m_call_stack.debug_user_code_line ();
+  }
+
+  int tree_evaluator::debug_user_code_column (void) const
+  {
+    return m_call_stack.debug_user_code_column ();
+  }
+
+  void tree_evaluator::debug_where (std::ostream& os) const
+  {
+    stack_frame *frm = m_call_stack.current_user_frame ();
+
+    frm->display_stopped_in_message (os);
   }
 
   octave_user_code * tree_evaluator::current_user_code (void) const

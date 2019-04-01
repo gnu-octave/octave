@@ -495,6 +495,8 @@ namespace octave
 
     octave_user_code * caller_user_code (size_t nskip = 0) const;
 
+    octave_function * current_function (void) const;
+
     bool goto_frame (size_t n = 0, bool verbose = false);
 
     void restore_frame (size_t n);

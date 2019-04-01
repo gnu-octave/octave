@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include "call-stack.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
@@ -50,9 +49,9 @@ along with Octave; see the file COPYING.  If not, see
 void
 print_usage (void)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("print_usage");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("print_usage");
 
-  const octave_function *cur = cs.current ();
+  const octave_function *cur = tw.current_function ();
 
   if (cur)
     print_usage (cur->name ());
@@ -139,9 +138,9 @@ get_current_shlib (void)
 {
   octave::dynamic_library retval;
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("get_current_shlib");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("get_current_shlib");
 
-  octave_function *curr_fcn = cs.current ();
+  octave_function *curr_fcn = tw.current_function ();
 
   if (curr_fcn)
     {

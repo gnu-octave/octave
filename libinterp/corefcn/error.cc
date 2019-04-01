@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -138,9 +137,9 @@ pr_where (std::ostream& os, const char *who,
 static void
 pr_where (std::ostream& os, const char *who)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("pr_where");
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("pr_where");
 
-  std::list<octave::stack_frame *> call_stack_frames = cs.backtrace_frames ();
+  std::list<octave::stack_frame *> call_stack_frames = tw.backtrace_frames ();
 
   // Print the error message only if it is different from the previous one;
   // Makes the output more concise and readable.
@@ -394,9 +393,9 @@ namespace octave
   static octave_map
   init_error_stack (interpreter& interp)
   {
-    call_stack& cs = interp.get_call_stack ();
+    tree_evaluator& tw = interp.get_evaluator ();
 
-    return cs.empty_backtrace ();
+    return tw.empty_backtrace ();
   }
 
   error_system::error_system (interpreter& interp)
@@ -643,7 +642,7 @@ namespace octave
           msg_string += std::string (name) + ": ";
       }
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
     // If with_fcn is specified, we'll attempt to prefix the message with the name
     // of the current executing function.  But we'll do so only if:
@@ -651,19 +650,14 @@ namespace octave
     // 2. it is not already there (including the following colon)
     if (with_cfn)
       {
-        octave_function *curfcn = cs.current ();
-        if (curfcn)
+        std::string cfn = tw.current_function_name ();
+
+        if (! cfn.empty ())
           {
-            std::string cfn = curfcn->name ();
-            if (! cfn.empty ())
-              {
-                cfn += ':';
-                if (cfn.length () > base_msg.length ()
-                    || base_msg.compare (0, cfn.length (), cfn) != 0)
-                  {
-                    msg_string += cfn + ' ';
-                  }
-              }
+            cfn += ':';
+            if (cfn.length () > base_msg.length ()
+                || base_msg.compare (0, cfn.length (), cfn) != 0)
+              msg_string += cfn + ' ';
           }
       }
 
@@ -675,13 +669,8 @@ namespace octave
 
         last_error_id (id);
         last_error_message (base_msg);
-
-        octave_user_code *fcn = cs.current_user_code ();
-
-        if (fcn)
-          last_error_stack (cs.backtrace ());
-        else
-          last_error_stack (init_error_stack (m_interpreter));
+        last_error_stack (tw.in_user_code ()
+                          ? tw.backtrace () : tw.empty_backtrace ());
       }
 
     if (! buffer_error_messages () || debug_on_caught ())
@@ -694,7 +683,6 @@ namespace octave
   void error_system::maybe_enter_debugger (execution_exception& e,
                                            bool show_stack_trace)
   {
-    call_stack& cs = m_interpreter.get_call_stack ();
     tree_evaluator& tw = m_interpreter.get_evaluator ();
     bp_table& bptab = tw.get_bp_table ();
 
@@ -704,7 +692,7 @@ namespace octave
              && bptab.debug_on_err (last_error_id ()))
             || (debug_on_caught ()
                 && bptab.debug_on_caught (last_error_id ())))
-        && cs.current_user_code ())
+        && tw.in_user_code ())
       {
         unwind_protect frame;
 
@@ -792,11 +780,9 @@ namespace octave
                   {
                     verror (true, os, name, id, fmt, args, with_cfn);
 
-                    call_stack& cs = m_interpreter.get_call_stack ();
+                    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-                    bool in_user_code = cs.current_user_code () != nullptr;
-
-                    if (in_user_code && ! discard_error_messages ())
+                    if (tw.in_user_code () && ! discard_error_messages ())
                       show_stack_trace = true;
                   }
               }
@@ -844,16 +830,15 @@ namespace octave
         else
           vwarning ("warning", id, fmt, args);
 
-        call_stack& cs = m_interpreter.get_call_stack ();
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-        bool in_user_code = cs.current_user_code () != nullptr;
+        bool in_user_code = tw.in_user_code ();
 
         if (! fmt_suppresses_backtrace && in_user_code
             && backtrace_on_warning ()
             && ! discard_warning_messages ())
           pr_where (std::cerr, "warning");
 
-        tree_evaluator& tw = m_interpreter.get_evaluator ();
         bp_table& bptab = tw.get_bp_table ();
 
         if ((application::interactive ()
@@ -2093,7 +2078,7 @@ fields are set to their default values.
 
   if (nargin == 1)
     {
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
       if (args(0).is_string ())
         {
@@ -2103,7 +2088,7 @@ fields are set to their default values.
           es.last_error_message ("");
           es.last_error_id ("");
 
-          es.last_error_stack (cs.empty_backtrace ());
+          es.last_error_stack (tw.empty_backtrace ());
         }
       else if (args(0).isstruct ())
         {
@@ -2174,7 +2159,7 @@ fields are set to their default values.
           es.last_error_id (new_error_id);
 
           if (initialize_stack)
-            es.last_error_stack (cs.empty_backtrace ());
+            es.last_error_stack (tw.empty_backtrace ());
           else if (new_err.contains ("stack"))
             {
               new_err_stack.setfield ("file", new_error_file);
@@ -2185,7 +2170,7 @@ fields are set to their default values.
               es.last_error_stack (new_err_stack);
             }
           else
-            es.last_error_stack (cs.backtrace ());
+            es.last_error_stack (tw.backtrace ());
         }
       else
         error ("lasterror: argument must be a structure or a string");

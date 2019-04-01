@@ -1869,6 +1869,35 @@ namespace octave
     return false;
   }
 
+  std::list<stack_frame *>
+  tree_evaluator::backtrace_frames (octave_idx_type& curr_user_frame) const
+  {
+    return m_call_stack.backtrace_frames (curr_user_frame);
+  }
+
+  std::list<stack_frame *>
+  tree_evaluator::backtrace_frames (void) const
+  {
+    return m_call_stack.backtrace_frames ();
+  }
+
+  octave_map
+  tree_evaluator::backtrace (octave_idx_type& curr_user_frame,
+                             bool print_subfn) const
+  {
+    return m_call_stack.backtrace (curr_user_frame, print_subfn);
+  }
+
+  octave_map tree_evaluator::backtrace (void)
+  {
+    return m_call_stack.backtrace ();
+  }
+
+  octave_map tree_evaluator::empty_backtrace (void) const
+  {
+    return m_call_stack.empty_backtrace ();
+  }
+
   void tree_evaluator::push_dummy_scope (const std::string& name)
   {
     symbol_scope dummy_scope (name + "$dummy");
@@ -2116,6 +2145,23 @@ namespace octave
       }
 
     return user_code;
+  }
+
+  std::string
+  tree_evaluator::current_function_name (void) const
+  {
+    octave_function *curfcn = m_call_stack.current ();
+
+    if (curfcn)
+      return curfcn->name ();
+
+    return "";
+  }
+
+  bool
+  tree_evaluator::in_user_code (void) const
+  {
+    return m_call_stack.current_user_code () != nullptr;
   }
 
   void

@@ -474,6 +474,18 @@ namespace octave
       return m_call_stack.get_current_stack_frame ();
     }
 
+    std::list<stack_frame *>
+    backtrace_frames (octave_idx_type& curr_user_frame) const;
+
+    std::list<stack_frame *> backtrace_frames () const;
+
+    octave_map backtrace (octave_idx_type& curr_user_frame,
+                          bool print_subfn = true) const;
+
+    octave_map backtrace ();
+
+    octave_map empty_backtrace (void) const;
+
     void push_dummy_scope (const std::string& name);
     void pop_scope (void);
 
@@ -514,6 +526,10 @@ namespace octave
 
     octave_user_code * get_user_code (const std::string& fname = "",
                                       const std::string& class_name = "");
+
+    std::string current_function_name (void) const;
+
+    bool in_user_code (void) const;
 
     octave_map get_autoload_map (void) const;
 
@@ -569,6 +585,11 @@ namespace octave
       size_t val = m_debug_frame;
       m_debug_frame = n;
       return val;
+    }
+
+    size_t current_call_stack_frame_number (void) const
+    {
+      return m_call_stack.current_frame ();
     }
 
     bool debug_mode (void) const { return m_debug_mode; }

@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "Cell.h"
 #include "defun.h"
@@ -594,10 +593,10 @@ octave_user_function::restore_warning_states (void)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("octave_user_function::restore_warning_states");
 
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   octave_value val
-    = cs.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
+    = tw.get_auto_fcn_var (octave::stack_frame::SAVED_WARNING_STATES);
 
   if (val.is_defined ())
     {
@@ -695,9 +694,9 @@ Programming Note: @code{nargin} does not work on compiled functions
     }
   else
     {
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      retval = cs.get_auto_fcn_var (octave::stack_frame::NARGIN);
+      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGIN);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -822,9 +821,9 @@ returns -1 for all anonymous functions.
       if (interp.at_top_level ())
         error ("nargout: invalid call at top level");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      retval = cs.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+      retval = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
 
       if (retval.is_undefined ())
         retval = 0;
@@ -894,17 +893,17 @@ element-by-element and a logical array is returned.  At the top level,
   if (interp.at_top_level ())
     error ("isargout: invalid call at top level");
 
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   octave_value tmp;
 
   int nargout1 = 0;
-  tmp = cs.get_auto_fcn_var (octave::stack_frame::NARGOUT);
+  tmp = tw.get_auto_fcn_var (octave::stack_frame::NARGOUT);
   if (tmp.is_defined ())
     nargout1 = tmp.int_value ();
 
   Matrix ignored;
-  tmp = cs.get_auto_fcn_var (octave::stack_frame::IGNORED);
+  tmp = tw.get_auto_fcn_var (octave::stack_frame::IGNORED);
   if (tmp.is_defined ())
     ignored = tmp.matrix_value ();
 

@@ -508,6 +508,10 @@ namespace octave
 
     bool goto_frame (size_t n = 0, bool verbose = false);
 
+    void goto_caller_frame (void);
+
+    void goto_base_frame (void);
+
     void restore_frame (size_t n);
 
     bool goto_frame_relative (int n, bool verbose = false);

@@ -1921,6 +1921,16 @@ namespace octave
     return m_call_stack.goto_frame (n, verbose);
   }
 
+  void tree_evaluator::goto_caller_frame (void)
+  {
+    m_call_stack.goto_caller_frame ();
+  }
+
+  void tree_evaluator::goto_base_frame (void)
+  {
+    m_call_stack.goto_base_frame ();
+  }
+
   void tree_evaluator::restore_frame (size_t n)
   {
     return m_call_stack.restore_frame (n);

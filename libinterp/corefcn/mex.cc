@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "error.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -2163,10 +2162,10 @@ public:
   {
     if (! fname)
       {
-        octave::call_stack& cs
-          = octave::__get_call_stack__ ("mex::function_name");
+        octave::tree_evaluator& tw
+          = octave::__get_evaluator__ ("mex::function_name");
 
-        octave_function *fcn = cs.current ();
+        octave_function *fcn = tw.current_function ();
 
         if (fcn)
           {
@@ -3512,12 +3511,12 @@ mexGetVariable (const char *space, const char *name)
 
           if (base)
             {
-              octave::call_stack& cs = interp.get_call_stack ();
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              frame.add_method (cs, &octave::call_stack::restore_frame,
-                                cs.current_frame ());
+              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
+                                tw.current_call_stack_frame_number ());
 
-              cs.goto_base_frame ();
+              tw.goto_base_frame ();
             }
 
           val = interp.varval (name);
@@ -3577,12 +3576,12 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
 
           if (base)
             {
-              octave::call_stack& cs = interp.get_call_stack ();
+              octave::tree_evaluator& tw = interp.get_evaluator ();
 
-              frame.add_method (cs, &octave::call_stack::restore_frame,
-                                cs.current_frame ());
+              frame.add_method (tw, &octave::tree_evaluator::restore_frame,
+                                tw.current_call_stack_frame_number ());
 
-              cs.goto_base_frame ();
+              tw.goto_base_frame ();
             }
 
           interp.assign (name, mxArray::as_octave_value (ptr));

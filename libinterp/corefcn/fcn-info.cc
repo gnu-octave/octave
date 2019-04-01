@@ -713,7 +713,10 @@ namespace octave
 
     if (! autoload_function.is_defined ())
       {
-        std::string file_name = lookup_autoload (name);
+        tree_evaluator& tw
+          = __get_evaluator__ ("fcn_info::fcn_info_rep::x_builtin_find");
+
+        std::string file_name = tw.lookup_autoload (name);
 
         if (! file_name.empty ())
           {

@@ -86,9 +86,6 @@ along with Octave; see the file COPYING.  If not, see
 
 extern int octave_lex (YYSTYPE *, void *);
 
-// List of autoloads (function -> file mapping).
-static std::map<std::string, std::string> autoload_map;
-
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
@@ -4640,49 +4637,6 @@ namespace octave
     return get_help_from_file (nm, symbol_found, file);
   }
 
-  std::string
-  lookup_autoload (const std::string& nm)
-  {
-    std::string retval;
-
-    typedef std::map<std::string, std::string>::const_iterator am_iter;
-
-    am_iter p = autoload_map.find (nm);
-
-    if (p != autoload_map.end ())
-      {
-        load_path& lp = __get_load_path__ ("lookup_autoload");
-
-        retval = lp.find_file (p->second);
-      }
-
-    return retval;
-  }
-
-  string_vector
-  autoloaded_functions (void)
-  {
-    string_vector names (autoload_map.size ());
-
-    octave_idx_type i = 0;
-    for (const auto& fcn_fname : autoload_map)
-      names[i++] = fcn_fname.first;
-
-    return names;
-  }
-
-  string_vector
-  reverse_lookup_autoload (const std::string& nm)
-  {
-    string_vector names;
-
-    for (const auto& fcn_fname : autoload_map)
-      if (nm == fcn_fname.second)
-        names.append (fcn_fname.first);
-
-    return names;
-  }
-
   octave_value
   load_fcn_from_file (const std::string& file_name,
                       const std::string& dir_name,
@@ -4821,87 +4775,32 @@ not loaded anymore during the current Octave session.
 @seealso{PKG_ADD}
 @end deftypefn */)
 {
-  octave_value retval;
-
   int nargin = args.length ();
 
   if (nargin == 1 || nargin > 3)
     print_usage ();
 
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
   if (nargin == 0)
-    {
-      Cell func_names (dim_vector (autoload_map.size (), 1));
-      Cell file_names (dim_vector (autoload_map.size (), 1));
-
-      octave_idx_type i = 0;
-      for (const auto& fcn_fname : autoload_map)
-        {
-          func_names(i) = fcn_fname.first;
-          file_names(i) = fcn_fname.second;
-
-          i++;
-        }
-
-      octave_map m;
-
-      m.assign ("function", func_names);
-      m.assign ("file", file_names);
-
-      retval = m;
-    }
+    return octave_value (tw.get_autoload_map ());
   else
     {
       string_vector argv = args.make_argv ("autoload");
 
-      std::string nm = argv[2];
-
-      if (! octave::sys::env::absolute_pathname (nm))
-        {
-          octave::call_stack& cs = interp.get_call_stack ();
-
-          octave_user_code *fcn = cs.caller_user_code ();
-
-          bool found = false;
-
-          if (fcn)
-            {
-              std::string fname = fcn->fcn_file_name ();
-
-              if (! fname.empty ())
-                {
-                  fname = octave::sys::env::make_absolute (fname);
-                  fname = fname.substr (0, fname.find_last_of (octave::sys::file_ops::dir_sep_str ()) + 1);
-
-                  octave::sys::file_stat fs (fname + nm);
-
-                  if (fs.exists ())
-                    {
-                      nm = fname + nm;
-                      found = true;
-                    }
-                }
-            }
-          if (! found)
-            warning_with_id ("Octave:autoload-relative-file-name",
-                             "autoload: '%s' is not an absolute filename",
-                             nm.c_str ());
-        }
       if (nargin == 2)
-        autoload_map[argv[1]] = nm;
+        tw.add_autoload (argv[1], argv[2]);
       else if (nargin == 3)
         {
           if (argv[3] != "remove")
             error_with_id ("Octave:invalid-input-arg",
                            "autoload: third argument can only be 'remove'");
 
-          // Remove function from symbol table and autoload map.
-          octave::symbol_table& symtab = interp.get_symbol_table ();
-          symtab.clear_dld_function (argv[1]);
-          autoload_map.erase (argv[1]);
+          tw.remove_autoload (argv[1], argv[2]);
         }
     }
 
-  return retval;
+  return octave_value_list ();
 }
 
 namespace octave

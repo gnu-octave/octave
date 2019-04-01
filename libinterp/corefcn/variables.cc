@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
+#include "pt-eval.h"
 #include "syminfo.h"
 #include "symtab.h"
 #include "sysdep.h"
@@ -243,7 +244,9 @@ symbol_exist (octave::interpreter& interp, const std::string& name,
 
   if (search_any || search_file || search_dir)
     {
-      std::string file_name = octave::lookup_autoload (name);
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+
+      std::string file_name = tw.lookup_autoload (name);
 
       if (file_name.empty ())
         {

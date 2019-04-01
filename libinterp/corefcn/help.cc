@@ -327,7 +327,7 @@ namespace octave
     const string_vector ffl = lp.fcn_names ();
     const int ffl_len = ffl.numel ();
 
-    const string_vector afl = autoloaded_functions ();
+    const string_vector afl = m_interpreter.autoloaded_functions ();
     const int afl_len = afl.numel ();
 
     const string_vector lfl = local_functions ();
@@ -923,7 +923,7 @@ in that directory.
     {
       // Get list of all functions
       string_vector ffl = lp.fcn_names ();
-      string_vector afl = octave::autoloaded_functions ();
+      string_vector afl = interp.autoloaded_functions ();
 
       retval = Cell (ffl.append (afl));
     }

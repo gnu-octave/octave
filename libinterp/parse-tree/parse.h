@@ -540,15 +540,6 @@ namespace octave
   extern OCTINTERP_API std::string
   get_help_from_file (const std::string& nm, bool& symbol_found);
 
-  extern OCTINTERP_API
-  std::string lookup_autoload (const std::string& nm);
-
-  extern OCTINTERP_API string_vector
-  autoloaded_functions (void);
-
-  extern OCTINTERP_API string_vector
-  reverse_lookup_autoload (const std::string& nm);
-
   extern OCTINTERP_API octave_value
   load_fcn_from_file (const std::string& file_name,
                       const std::string& dir_name = "",

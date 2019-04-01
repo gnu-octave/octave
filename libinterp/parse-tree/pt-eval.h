@@ -129,9 +129,10 @@ namespace octave
       : m_interpreter (interp), m_statement_context (SC_OTHER),
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
         m_expr_result_value_list (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_bp_table (*this), m_call_stack (*this),
-        m_profiler (), m_current_frame (0), m_debug_mode (false),
-        m_quiet_breakpoint_flag (false), m_max_recursion_depth (256),
+        m_nargout_stack (), m_autoload_map (), m_bp_table (*this),
+        m_call_stack (*this), m_profiler (), m_current_frame (0),
+        m_debug_mode (false), m_quiet_breakpoint_flag (false),
+        m_max_recursion_depth (256),
         m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
@@ -492,6 +493,18 @@ namespace octave
     octave_user_code * get_user_code (const std::string& fname = "",
                                       const std::string& class_name = "");
 
+    octave_map get_autoload_map (void) const;
+
+    std::string lookup_autoload (const std::string& nm) const;
+
+    std::list<std::string> autoloaded_functions (void) const;
+
+    std::list<std::string> reverse_lookup_autoload (const std::string& nm) const;
+
+    void add_autoload (const std::string& fcn, const std::string& nm);
+
+    void remove_autoload (const std::string& fcn, const std::string& nm);
+
     int max_recursion_depth (void) const { return m_max_recursion_depth; }
 
     int max_recursion_depth (int n)
@@ -675,6 +688,8 @@ namespace octave
 
     void init_local_fcn_vars (octave_user_function& user_fcn);
 
+    std::string check_autoload_file (const std::string& nm) const;
+
     interpreter& m_interpreter;
 
     // The context for the current evaluation.
@@ -687,6 +702,9 @@ namespace octave
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 
     value_stack<int> m_nargout_stack;
+
+    // List of autoloads (function -> file mapping).
+    std::map<std::string, std::string> m_autoload_map;
 
     bp_table m_bp_table;
 

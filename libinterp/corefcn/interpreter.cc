@@ -1359,6 +1359,11 @@ namespace octave
     return m_symbol_table.user_function_names ();
   }
 
+  std::list<std::string> interpreter::autoloaded_functions (void) const
+  {
+    return m_evaluator.autoloaded_functions ();
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;

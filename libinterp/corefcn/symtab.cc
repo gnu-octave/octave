@@ -793,7 +793,12 @@ namespace octave
 
                             // Maybe it's an autoload?
                             if (file.empty ())
-                              file = lookup_autoload (nm);
+                              {
+                                tree_evaluator& tw
+                                  = __get_evaluator__ ("out_of_data_check");
+
+                                file = tw.lookup_autoload (nm);
+                              }
 
                             if (file.empty ())
                               {

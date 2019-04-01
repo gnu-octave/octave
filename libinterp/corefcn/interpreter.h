@@ -324,6 +324,8 @@ namespace octave
 
     std::list<std::string> user_function_names (void);
 
+    std::list<std::string> autoloaded_functions (void) const;
+
     static void recover_from_exception (void);
 
     static void add_atexit_function (const std::string& fname);

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "oct-env.h"
 
 #include "bp-table.h"
@@ -3766,6 +3767,87 @@ namespace octave
                                   "max_recursion_depth", 0);
   }
 
+  octave_map tree_evaluator::get_autoload_map (void) const
+  {
+    Cell func_names (dim_vector (m_autoload_map.size (), 1));
+    Cell file_names (dim_vector (m_autoload_map.size (), 1));
+
+    octave_idx_type i = 0;
+    for (const auto& fcn_fname : m_autoload_map)
+      {
+        func_names(i) = fcn_fname.first;
+        file_names(i) = fcn_fname.second;
+
+        i++;
+      }
+
+    octave_map m;
+
+    m.assign ("function", func_names);
+    m.assign ("file", file_names);
+
+    return m;
+  }
+
+  std::string tree_evaluator::lookup_autoload (const std::string& nm) const
+  {
+    std::string retval;
+
+    auto p = m_autoload_map.find (nm);
+
+    if (p != m_autoload_map.end ())
+      {
+        load_path& lp = m_interpreter.get_load_path ();
+
+        retval = lp.find_file (p->second);
+      }
+
+    return retval;
+  }
+
+  std::list<std::string> tree_evaluator::autoloaded_functions (void) const
+  {
+    std::list<std::string> names;
+
+    for (const auto& fcn_fname : m_autoload_map)
+      names.push_back (fcn_fname.first);
+
+    return names;
+  }
+
+  std::list<std::string>
+  tree_evaluator::reverse_lookup_autoload (const std::string& nm) const
+  {
+    std::list<std::string> names;
+
+    for (const auto& fcn_fname : m_autoload_map)
+      if (nm == fcn_fname.second)
+        names.push_back (fcn_fname.first);
+
+    return names;
+  }
+
+  void tree_evaluator::add_autoload (const std::string& fcn,
+                                     const std::string& nm)
+  {
+    std::string file_name = check_autoload_file (nm);
+
+    m_autoload_map[fcn] = file_name;
+  }
+
+  void tree_evaluator::remove_autoload (const std::string& fcn,
+                                        const std::string& nm)
+  {
+    check_autoload_file (nm);
+
+    // Remove function from symbol table and autoload map.
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+    symtab.clear_dld_function (fcn);
+
+    m_autoload_map.erase (fcn);
+  }
+
   octave_value
   tree_evaluator::whos_line_format (const octave_value_list& args, int nargout)
   {
@@ -4132,6 +4214,45 @@ namespace octave
 
     for (const auto& nm_ov : lviv)
       frame.assign (nm_ov.first, nm_ov.second);
+  }
+
+  std::string
+  tree_evaluator::check_autoload_file (const std::string& nm) const
+  {
+    if (sys::env::absolute_pathname (nm))
+      return nm;
+
+    std::string full_name = nm;
+
+    octave_user_code *fcn = m_call_stack.caller_user_code ();
+
+    bool found = false;
+
+    if (fcn)
+      {
+        std::string fname = fcn->fcn_file_name ();
+
+        if (! fname.empty ())
+          {
+            fname = sys::env::make_absolute (fname);
+            fname = fname.substr (0, fname.find_last_of (sys::file_ops::dir_sep_str ()) + 1);
+
+            sys::file_stat fs (fname + nm);
+
+            if (fs.exists ())
+              {
+                full_name = fname + nm;
+                found = true;
+              }
+          }
+      }
+
+    if (! found)
+      warning_with_id ("Octave:autoload-relative-file-name",
+                       "autoload: '%s' is not an absolute filename",
+                       nm.c_str ());
+
+    return full_name;
   }
 }
 

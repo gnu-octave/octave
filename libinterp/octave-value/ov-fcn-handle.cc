@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "oct-locbuf.h"
 
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
@@ -386,12 +385,10 @@ octave_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave::unwind_protect frame;
 
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  frame.add_method (cs, &octave::call_stack::set_dispatch_class,
+  frame.add_method (tw, &octave::tree_evaluator::set_dispatch_class,
                     std::string ());
 
-  cs.set_dispatch_class (m_dispatch_class);
+  tw.set_dispatch_class (m_dispatch_class);
 
   return of->call (tw, nargout, args, closure_context);
 }
@@ -445,9 +442,7 @@ octave_fcn_handle::push_closure_context (octave::tree_evaluator& tw)
   if (! m_closure_frames)
     m_closure_frames = new std::list<octave::stack_frame *> ();
 
-  octave::call_stack& main_cs = tw.get_call_stack ();
-
-  octave::stack_frame& curr_frame = main_cs.get_current_stack_frame ();
+  octave::stack_frame& curr_frame = tw.get_current_stack_frame ();
 
   octave::stack_frame *dup_frame = curr_frame.dup ();
 
@@ -1838,12 +1833,10 @@ namespace octave
 
     octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, tnm);
 
-    call_stack& cs = interp.get_call_stack ();
-
     std::string dispatch_class;
 
-    if (cs.is_class_method_executing (dispatch_class)
-        || cs.is_class_constructor_executing (dispatch_class))
+    if (tw.is_class_method_executing (dispatch_class)
+        || tw.is_class_constructor_executing (dispatch_class))
       fh->set_dispatch_class (dispatch_class);
 
     return octave_value (fh);

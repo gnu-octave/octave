@@ -466,6 +466,19 @@ namespace octave
 
     call_stack& get_call_stack (void) { return m_call_stack; }
 
+    void push_stack_frame (const symbol_scope& scope);
+
+    void push_stack_frame (octave_user_function *fcn,
+                           unwind_protect *up_frame,
+                           stack_frame *closure_frames = nullptr);
+
+    void push_stack_frame (octave_user_script *script,
+                           unwind_protect *up_frame);
+
+    void push_stack_frame (octave_function *fcn);
+
+    void pop_stack_frame (void);
+
     const stack_frame& get_current_stack_frame (void) const
     {
       return m_call_stack.get_current_stack_frame ();
@@ -514,16 +527,18 @@ namespace octave
 
     void restore_frame (size_t n);
 
-    bool goto_frame_relative (int n, bool verbose = false);
+    std::string get_dispatch_class (void) const;
+
+    void set_dispatch_class (const std::string& class_name);
+
+    bool is_class_method_executing (std::string& dispatch_class) const;
+
+    bool is_class_constructor_executing (std::string& dispatch_class) const;
 
     std::list<stack_frame *>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 
     std::list<stack_frame *> backtrace_frames () const;
-
-    std::string get_dispatch_class (void) const;
-
-    void set_dispatch_class (const std::string& class_name);
 
     octave_map backtrace (octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;

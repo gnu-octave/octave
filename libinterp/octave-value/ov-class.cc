@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 
 #include "Cell.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
@@ -229,10 +228,10 @@ octave_class::get_current_method_class (void)
 
   if (nparents () > 0)
     {
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_class::get_current_method_class");
+      octave::tree_evaluator& tw
+        = octave::__get_evaluator__ ("octave_class::get_current_method_class");
 
-      octave_function *fcn = cs.current ();
+      octave_function *fcn = tw.current_function ();
 
       // Here we are just looking to see if FCN is a method or constructor
       // for any class, not specifically this one.
@@ -1642,10 +1641,10 @@ octave_class::as_mxArray (void) const
 bool
 octave_class::in_class_method (void)
 {
-  octave::call_stack& cs
-    = octave::__get_call_stack__ ("octave_class::in_class_method");
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("octave_class::in_class_method");
 
-  octave_function *fcn = cs.current ();
+  octave_function *fcn = tw.current_function ();
 
   return (fcn
           && (fcn->is_class_method ()
@@ -1737,9 +1736,9 @@ is derived.
       // Called as class constructor
       std::string id = args(1).xstring_value ("class: ID (class name) must be a string");
 
-      octave::call_stack& cs = interp.get_call_stack ();
+      octave::tree_evaluator& tw = interp.get_evaluator ();
 
-      octave_function *fcn = cs.caller ();
+      octave_function *fcn = tw.caller_function ();
 
       if (! fcn)
         error ("class: invalid call from outside class constructor or method");
@@ -1962,9 +1961,9 @@ may @emph{only} be called from a class constructor.
 @seealso{inferiorto}
 @end deftypefn */)
 {
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   if (! fcn || ! fcn->is_class_constructor ())
     error ("superiorto: invalid call from outside class constructor");
@@ -2000,9 +1999,9 @@ may @emph{only} be called from a class constructor.
 @seealso{superiorto}
 @end deftypefn */)
 {
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   if (! fcn || ! fcn->is_class_constructor ())
     error ("inferiorto: invalid call from outside class constructor");

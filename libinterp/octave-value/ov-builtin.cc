@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "call-stack.h"
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
@@ -51,11 +50,9 @@ octave_builtin::call (octave::tree_evaluator& tw, int nargout,
 
   octave::unwind_protect frame;
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("octave_builtin::call");
+  tw.push_stack_frame (this);
 
-  cs.push (this);
-
-  frame.add_method (cs, &octave::call_stack::pop);
+  frame.add_method (tw, &octave::tree_evaluator::pop_stack_frame);
 
   octave::profiler& profiler = tw.get_profiler ();
 

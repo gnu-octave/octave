@@ -1864,6 +1864,34 @@ namespace octave
     return false;
   }
 
+  void tree_evaluator::push_stack_frame (const symbol_scope& scope)
+  {
+    m_call_stack.push (scope);
+  }
+
+  void tree_evaluator::push_stack_frame (octave_user_function *fcn,
+                                         unwind_protect *up_frame,
+                                         stack_frame *closure_frames)
+  {
+    m_call_stack.push (fcn, up_frame, closure_frames);
+  }
+
+  void tree_evaluator::push_stack_frame (octave_user_script *script,
+                                         unwind_protect *up_frame)
+  {
+    m_call_stack.push (script, up_frame);
+  }
+
+  void tree_evaluator::push_stack_frame (octave_function *fcn)
+  {
+    m_call_stack.push (fcn);
+  }
+
+  void tree_evaluator::pop_stack_frame (void)
+  {
+    m_call_stack.pop ();
+  }
+
   int tree_evaluator::current_line (void) const
   {
     return m_call_stack.current_line ();
@@ -1944,6 +1972,18 @@ namespace octave
   void tree_evaluator::set_dispatch_class (const std::string& class_name)
   {
     m_call_stack.set_dispatch_class (class_name);
+  }
+
+  bool
+  tree_evaluator::is_class_method_executing (std::string& dclass) const
+  {
+    return m_call_stack.is_class_method_executing (dclass);
+  }
+
+  bool
+  tree_evaluator::is_class_constructor_executing (std::string& dclass) const
+  {
+    return m_call_stack.is_class_constructor_executing (dclass);
   }
 
   std::list<stack_frame *>

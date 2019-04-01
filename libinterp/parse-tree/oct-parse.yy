@@ -5196,77 +5196,26 @@ Like @code{eval}, except that the expressions are evaluated in the context
 @seealso{eval, assignin}
 @end deftypefn */)
 {
-
-  octave_value_list retval;
-
   int nargin = args.length ();
 
-  if (nargin < 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  std::string context = args(0).xstring_value ("evalin: CONTEXT must be a string");
+  std::string context
+    = args(0).xstring_value ("evalin: CONTEXT must be a string");
 
-  octave::unwind_protect frame;
+  std::string try_code
+    = args(1).xstring_value ("evalin: TRY must be a string");
 
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  frame.add_method (cs, &octave::call_stack::restore_frame,
-                    cs.current_frame ());
-
-  if (context == "caller")
-    cs.goto_caller_frame ();
-  else if (context == "base")
-    cs.goto_base_frame ();
-  else
-    error ("evalin: CONTEXT must be \"caller\" or \"base\"");
-
-  if (nargin > 2)
+  if (nargin == 3)
     {
-      frame.protect_var (buffer_error_messages);
-      buffer_error_messages++;
+      std::string catch_code
+        = args(2).xstring_value ("evalin: CATCH must be a string");
+
+      return interp.evalin (context, try_code, catch_code, nargout);
     }
 
-  int parse_status = 0;
-
-  bool execution_error = false;
-
-  octave_value_list tmp;
-
-  try
-    {
-      tmp = interp.eval_string (args(1), nargout > 0, parse_status, nargout);
-    }
-  catch (const octave::execution_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      execution_error = true;
-    }
-
-  if (nargin > 2 && (parse_status != 0 || execution_error))
-    {
-      // Set up for letting the user print any messages from
-      // errors that occurred in the first part of this eval().
-
-      buffer_error_messages--;
-
-      tmp = interp.eval_string (args(2), nargout > 0, parse_status, nargout);
-
-      retval = (nargout > 0) ? tmp : octave_value_list ();
-    }
-  else
-    {
-      if (nargout > 0)
-        retval = tmp;
-
-      // FIXME: we should really be rethrowing whatever
-      // exception occurred, not just throwing an
-      // execution exception.
-      if (execution_error)
-        octave_throw_execution_exception ();
-    }
-
-  return retval;
+  return interp.evalin (context, try_code, nargout);
 }
 
 static void

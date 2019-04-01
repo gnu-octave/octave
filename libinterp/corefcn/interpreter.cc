@@ -1191,6 +1191,21 @@ namespace octave
     return m_evaluator.eval_string (arg, silent, parse_status, nargout);
   }
 
+  octave_value_list interpreter::evalin (const std::string& context,
+                                         const std::string& try_code,
+                                         int nargout)
+  {
+    return m_evaluator.evalin (context, try_code, nargout);
+  }
+
+  octave_value_list interpreter::evalin (const std::string& context,
+                                         const std::string& try_code,
+                                         const std::string& catch_code,
+                                         int nargout)
+  {
+    return m_evaluator.evalin (context, try_code, catch_code, nargout);
+  }
+
   void interpreter::install_variable (const std::string& name,
                                       const octave_value& value, bool global)
   {

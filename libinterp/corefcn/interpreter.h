@@ -251,6 +251,13 @@ namespace octave
     octave_value_list eval_string (const octave_value& arg, bool silent,
                                    int& parse_status, int nargout);
 
+    octave_value_list evalin (const std::string& context,
+                              const std::string& try_code, int nargout);
+
+    octave_value_list evalin (const std::string& context,
+                              const std::string& try_code,
+                              const std::string& catch_code, int nargout);
+
     void install_variable (const std::string& name, const octave_value& value,
                            bool global);
 

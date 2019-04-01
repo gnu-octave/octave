@@ -37,7 +37,7 @@ function varargout = which (varargin)
   ## functions in name resolution.
   for i = 1:nargin
     m(i).is_variable = evalin ("caller",
-                               ['exist ("' undo_string_escapes(m(i).name) '", "var")'], false);
+                               ['exist ("' undo_string_escapes(m(i).name) '", "var")'], "");
     if (m(i).is_variable)
       m(i).file = "variable";
     endif

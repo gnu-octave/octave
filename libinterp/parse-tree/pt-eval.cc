@@ -330,6 +330,92 @@ namespace octave
     return eval_string (s, silent, parse_status, nargout);
   }
 
+  octave_value_list tree_evaluator::evalin (const std::string& context,
+                                            const std::string& try_code,
+                                            int nargout)
+  {
+    octave::unwind_protect frame;
+
+    frame.add_method (m_call_stack, &call_stack::restore_frame,
+                      m_call_stack.current_frame ());
+
+    if (context == "caller")
+      m_call_stack.goto_caller_frame ();
+    else if (context == "base")
+      m_call_stack.goto_base_frame ();
+    else
+      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+
+    int parse_status = 0;
+
+    return eval_string (try_code, nargout > 0, parse_status, nargout);
+  }
+
+  octave_value_list tree_evaluator::evalin (const std::string& context,
+                                            const std::string& try_code,
+                                            const std::string& catch_code,
+                                            int nargout)
+  {
+    octave_value_list retval;
+
+    octave::unwind_protect frame;
+
+    frame.add_method (m_call_stack, &call_stack::restore_frame,
+                      m_call_stack.current_frame ());
+
+    if (context == "caller")
+      m_call_stack.goto_caller_frame ();
+    else if (context == "base")
+      m_call_stack.goto_base_frame ();
+    else
+      error ("evalin: CONTEXT must be \"caller\" or \"base\"");
+
+    frame.protect_var (buffer_error_messages);
+    buffer_error_messages++;
+
+    int parse_status = 0;
+
+    bool execution_error = false;
+
+    octave_value_list tmp;
+
+    try
+      {
+        tmp = eval_string (try_code, nargout > 0, parse_status, nargout);
+      }
+    catch (const octave::execution_exception&)
+      {
+        octave::interpreter::recover_from_exception ();
+
+        execution_error = true;
+      }
+
+    if (parse_status != 0 || execution_error)
+      {
+        // Set up for letting the user print any messages from
+        // errors that occurred in the first part of this eval().
+
+        buffer_error_messages--;
+
+        tmp = eval_string (catch_code, nargout > 0, parse_status, nargout);
+
+        retval = (nargout > 0) ? tmp : octave_value_list ();
+      }
+    else
+      {
+        if (nargout > 0)
+          retval = tmp;
+
+        // FIXME: we should really be rethrowing whatever
+        // exception occurred, not just throwing an
+        // execution exception.
+        if (execution_error)
+          octave_throw_execution_exception ();
+      }
+
+    return retval;
+  }
+
   void
   tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& anon_fh)
   {

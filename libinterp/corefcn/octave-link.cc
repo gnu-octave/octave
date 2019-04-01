@@ -68,12 +68,12 @@ octave_link::set_workspace (void)
 {
   if (enabled ())
     {
-      octave::call_stack& cs
-        = octave::__get_call_stack__ ("octave_link::set_workspace");
+      octave::tree_evaluator& tw
+        = octave::__get_evaluator__ ("octave_link::set_workspace");
 
-      instance->do_set_workspace (cs.at_top_level (),
+      instance->do_set_workspace (tw.at_top_level (),
                                   instance->debugging,
-                                  cs.get_symbol_info (), true);
+                                  tw.get_symbol_info (), true);
     }
 }
 

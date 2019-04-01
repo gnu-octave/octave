@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
-#include "call-stack.h"
 #include "defun.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
@@ -1464,9 +1463,10 @@ make_idx_args (const std::string& type,
 bool
 called_from_builtin (void)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("called_from_builtin");
+  octave::tree_evaluator& tw
+    = octave::__get_evaluator__ ("called_from_builtin");
 
-  octave_function *fcn = cs.caller ();
+  octave_function *fcn = tw.caller_function ();
 
   // FIXME: we probably need a better check here, or some other
   // mechanism to avoid overloaded functions when builtin is used.

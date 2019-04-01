@@ -72,7 +72,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "uniconv-wrappers.h"
 
 #include "bp-table.h"
-#include "call-stack.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -2131,10 +2130,12 @@ namespace octave
 
     // If this file is loaded, check that we aren't currently running it
     bool retval = true;
+
     octave_idx_type curr_frame = -1;
-    call_stack& cs
-      = __get_call_stack__ ("file_editor_tab::exit_debug_and_clear");
-    octave_map stk = cs.backtrace (curr_frame, false);
+    tree_evaluator& tw
+      = __get_evaluator__ ("file_editor_tab::exit_debug_and_clear");
+    octave_map stk = tw.backtrace (curr_frame, false);
+
     Cell names = stk.contents ("name");
     for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
       {
@@ -2155,7 +2156,7 @@ namespace octave
                 while (names.numel () > i)
                   {
                     sleep (0.01);
-                    stk = cs.backtrace (curr_frame, false);
+                    stk = tw.backtrace (curr_frame, false);
                     names = stk.contents ("name");
                   }
               }

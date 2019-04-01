@@ -70,7 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defaults.h"
 #include "defun.h"
 #include "interpreter-private.h"
@@ -2458,10 +2457,10 @@ namespace octave
       {
         scope.rename (names.first, names.second);
 
-        call_stack& cs
-          = __get_call_stack__ ("main_window::rename_variable_callback");
+        tree_evaluator& tw
+          = __get_evaluator__ ("main_window::rename_variable_callback");
 
-        octave_link::set_workspace (true, cs.get_symbol_info ());
+        octave_link::set_workspace (true, tw.get_symbol_info ());
       }
 
     // FIXME: if this action fails, do we need a way to display that info
@@ -2505,10 +2504,10 @@ namespace octave
     feval ("open", ovl (file));
 
     // Update the workspace since open.m may have loaded new variables.
-    call_stack& cs
-      = __get_call_stack__ ("main_window::open_any_callback");
+    tree_evaluator& tw
+      = __get_evaluator__ ("main_window::open_any_callback");
 
-    octave_link::set_workspace (true, cs.get_symbol_info ());
+    octave_link::set_workspace (true, tw.get_symbol_info ());
   }
 
   void main_window::clear_history_callback (void)
@@ -2525,10 +2524,10 @@ namespace octave
   {
     // INTERPRETER THREAD
 
-    call_stack& cs
-      = __get_call_stack__ ("main_window::force_refresh_workspace");
+    tree_evaluator& tw
+      = __get_evaluator__ ("main_window::force_refresh_workspace");
 
-    octave_link::set_workspace (true, cs.get_symbol_info (), false);
+    octave_link::set_workspace (true, tw.get_symbol_info (), false);
   }
 
   bool main_window::focus_console_after_command (void)

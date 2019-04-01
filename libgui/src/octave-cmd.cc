@@ -89,10 +89,10 @@ namespace octave
       {
         case CMD_UPD_WORKSPACE:
           {
-            call_stack& cs
-              = __get_call_stack__ ("octave_cmd_builtin::execute");
+            tree_evaluator& tw
+              = __get_evaluator__ ("octave_cmd_builtin::execute");
 
-            octave_link::set_workspace (true, cs.get_symbol_info ());
+            octave_link::set_workspace (true, tw.get_symbol_info ());
           }
           break;
 

@@ -655,7 +655,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   Array<double> rwork (dim_vector (lrwork, 1));
   double *prwork = rwork.fortran_vec ();
 
-  F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
+  F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            n, F77_DBLE_CMPLX_ARG (atmp_data), n,
                            F77_DBLE_CMPLX_ARG (btmp_data), n,
@@ -675,7 +675,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   Array<Complex> work (dim_vector (lwork, 1));
   Complex *pwork = work.fortran_vec ();
 
-  F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 ("N", 1),
+  F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            n,  F77_DBLE_CMPLX_ARG (atmp_data), n,
                            F77_DBLE_CMPLX_ARG (btmp_data), n,

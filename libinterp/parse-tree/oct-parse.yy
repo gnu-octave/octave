@@ -54,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "builtin-defun-decls.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "dynamic-ld.h"
@@ -4781,127 +4780,46 @@ namespace octave
   octave_value_list
   feval (const char *name, const octave_value_list& args, int nargout)
   {
-    return feval (std::string (name), args, nargout);
+    interpreter& interp = __get_interpreter__ ("feval");
+
+    return interp.feval (name, args, nargout);
   }
 
   octave_value_list
   feval (const std::string& name, const octave_value_list& args, int nargout)
   {
-    octave_value_list retval;
+    interpreter& interp = __get_interpreter__ ("feval");
 
-    symbol_table& symtab = __get_symbol_table__ ("feval");
-
-    octave_value fcn = symtab.find_function (name, args);
-
-    if (fcn.is_defined ())
-      {
-        tree_evaluator& tw = __get_evaluator__ ("feval");
-
-        octave_function *of = fcn.function_value ();
-
-        retval = of->call (tw, nargout, args);
-      }
-    else
-      error ("feval: function '%s' not found", name.c_str ());
-
-    return retval;
+    return interp.feval (name, args, nargout);
   }
 
   octave_value_list
   feval (octave_function *fcn, const octave_value_list& args, int nargout)
   {
-    octave_value_list retval;
+    interpreter& interp = __get_interpreter__ ("feval");
 
-    if (fcn)
-      {
-        tree_evaluator& tw = __get_evaluator__ ("feval");
-
-        retval = fcn->call (tw, nargout, args);
-      }
-
-    return retval;
+    return interp.feval (fcn, args, nargout);
   }
 
   octave_value_list
   feval (const octave_value& val, const octave_value_list& args, int nargout)
   {
-    // FIXME: do we really want to silently return an empty ovl if
-    // the function object is undefined?  It's essentially what the
-    // version above that accepts a pointer to an octave_function
-    // object does and some code was apparently written to rely on it
-    // (for example, __ode15__).
+    interpreter& interp = __get_interpreter__ ("feval");
 
-    if (val.is_undefined ())
-      return ovl ();
-
-    if (val.is_function ())
-      {
-        return feval (val.function_value (), args, nargout);
-      }
-    else if (val.is_function_handle ())
-      {
-        // This covers function handles, inline functions, and anonymous
-        //  functions.
-
-        std::list<octave_value_list> arg_list;
-        arg_list.push_back (args);
-
-        // FIXME: could we make octave_value::subsref a const method?
-        // It would be difficult because there are instances of
-        // incrementing the reference count inside subsref methods,
-        // which means they can't be const with the current way of
-        // handling reference counting.
-
-        octave_value xval = val;
-        return xval.subsref ("(", arg_list, nargout);
-      }
-    else if (val.is_string ())
-      {
-        return feval (val.string_value (), args, nargout);
-      }
-    else
-      error ("feval: first argument must be a string, inline function, or a function handle");
-
-    return ovl ();
+    return interp.feval (val, args, nargout);
   }
-
-  static octave_value_list
-  get_feval_args (const octave_value_list& args)
-  {
-    return args.slice (1, args.length () - 1, true);
-  }
-
-  //! Evaluate an Octave function (built-in or interpreted) and return
-  //! the list of result values.
-  //!
-  //! @param args The first element of @c args is the function to call.
-  //!             It may be the name of the function as a string, a function
-  //!             handle, or an inline function.  The remaining arguments are
-  //!             passed to the function.
-  //! @param nargout The number of output arguments expected.
-  //! @return A list of output values.  The length of the list is not
-  //!         necessarily the same as @c nargout.
 
   octave_value_list
   feval (const octave_value_list& args, int nargout)
   {
-    if (args.length () > 0)
-      {
-        octave_value f_arg = args(0);
+    interpreter& interp = __get_interpreter__ ("feval");
 
-        octave_value_list tmp_args = get_feval_args (args);
-
-        return feval (f_arg, tmp_args, nargout);
-      }
-    else
-      error ("feval: first argument must be a string, inline function, or a function handle");
-
-    return ovl ();
+    return interp.feval (args, nargout);
   }
 }
 
-DEFUN (feval, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (feval, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} feval (@var{name}, @dots{})
 Evaluate the function named @var{name}.
 
@@ -4943,7 +4861,7 @@ instead.
   if (args.length () == 0)
     print_usage ();
 
-  return octave::feval (args, nargout);
+  return interp.feval (args, nargout);
 }
 
 DEFMETHOD (builtin, interp, args, nargout,
@@ -4984,7 +4902,7 @@ builtin ("sin", 0)
   octave_value fcn = symtab.builtin_find (name);
 
   if (fcn.is_defined ())
-    retval = octave::feval (fcn.function_value (), args.splice (0, 1), nargout);
+    retval = interp.feval (fcn.function_value (), args.splice (0, 1), nargout);
   else
     error ("builtin: lookup for symbol '%s' failed", name.c_str ());
 

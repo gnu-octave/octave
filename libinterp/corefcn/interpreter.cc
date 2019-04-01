@@ -1219,6 +1219,114 @@ namespace octave
     return m_evaluator.evalin (context, try_code, catch_code, nargout);
   }
 
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param name The name of the function to call.
+  //! @param args The arguments to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
+
+  octave_value_list interpreter::feval (const char *name,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    return feval (std::string (name), args, nargout);
+  }
+
+  octave_value_list interpreter::feval (const std::string& name,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    octave_value fcn = m_symbol_table.find_function (name, args);
+
+    if (fcn.is_undefined ())
+      error ("feval: function '%s' not found", name.c_str ());
+
+    octave_function *of = fcn.function_value ();
+
+    return of->call (m_evaluator, nargout, args);
+  }
+
+  octave_value_list interpreter::feval (octave_function *fcn,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    if (fcn)
+      return fcn->call (m_evaluator, nargout, args);
+
+    return octave_value_list ();
+  }
+
+  octave_value_list interpreter::feval (const octave_value& val,
+                                        const octave_value_list& args,
+                                        int nargout)
+  {
+    // FIXME: do we really want to silently return an empty ovl if
+    // the function object is undefined?  It's essentially what the
+    // version above that accepts a pointer to an octave_function
+    // object does and some code was apparently written to rely on it
+    // (for example, __ode15__).
+
+    if (val.is_undefined ())
+      return ovl ();
+
+    if (val.is_function ())
+      {
+        return feval (val.function_value (), args, nargout);
+      }
+    else if (val.is_function_handle ())
+      {
+        // This covers function handles, inline functions, and anonymous
+        //  functions.
+
+        std::list<octave_value_list> arg_list;
+        arg_list.push_back (args);
+
+        // FIXME: could we make octave_value::subsref a const method?
+        // It would be difficult because there are instances of
+        // incrementing the reference count inside subsref methods,
+        // which means they can't be const with the current way of
+        // handling reference counting.
+
+        octave_value xval = val;
+        return xval.subsref ("(", arg_list, nargout);
+      }
+    else if (val.is_string ())
+      {
+        return feval (val.string_value (), args, nargout);
+      }
+    else
+      error ("feval: first argument must be a string, inline function, or a function handle");
+
+    return ovl ();
+  }
+
+  //! Evaluate an Octave function (built-in or interpreted) and return
+  //! the list of result values.
+  //!
+  //! @param args The first element of @c args is the function to call.
+  //!             It may be the name of the function as a string, a function
+  //!             handle, or an inline function.  The remaining arguments are
+  //!             passed to the function.
+  //! @param nargout The number of output arguments expected.
+  //! @return A list of output values.  The length of the list is not
+  //!         necessarily the same as @c nargout.
+
+  octave_value_list interpreter::feval (const octave_value_list& args,
+                                        int nargout)
+  {
+    if (args.length () == 0)
+      error ("feval: first argument must be a string, inline function, or a function handle");
+
+    octave_value f_arg = args(0);
+
+    octave_value_list tmp_args = args.slice (1, args.length () - 1, true);
+
+    return feval (f_arg, tmp_args, nargout);
+  }
+
   void interpreter::install_variable (const std::string& name,
                                       const octave_value& value, bool global)
   {

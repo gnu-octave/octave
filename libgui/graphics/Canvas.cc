@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "annotation-dialog.h"
 
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-opengl.h"
 #include "octave-qt-link.h"
 #include "resource-manager.h"
@@ -202,7 +204,10 @@ namespace QtHandles
   void
   Canvas::annotation_callback (const octave_value_list& args)
   {
-    Ffeval (ovl ("annotation").append (args));
+    octave::interpreter& interp
+      = octave::__get_interpreter__ ("Canvas::annotation_callback");
+
+    interp.feval ("annotation", args);
 
     redraw ();
   }

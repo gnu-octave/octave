@@ -263,6 +263,28 @@ namespace octave
                               const std::string& try_code,
                               const std::string& catch_code, int nargout);
 
+    octave_value_list
+    feval (const char *name,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (const std::string& name,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (octave_function *fcn,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list
+    feval (const octave_value& f_arg,
+           const octave_value_list& args = octave_value_list (),
+           int nargout = 0);
+
+    octave_value_list feval (const octave_value_list& args, int nargout = 0);
+
     void install_variable (const std::string& name, const octave_value& value,
                            bool global);
 

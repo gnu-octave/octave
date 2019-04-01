@@ -906,9 +906,9 @@ namespace octave
                                       const load_save_format& fmt,
                                       bool save_as_floats)
   {
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    symbol_info_list syminfo_list = cs.glob_symbol_info (pattern);
+    symbol_info_list syminfo_list = tw.glob_symbol_info (pattern);
 
     size_t saved = 0;
 
@@ -1024,9 +1024,9 @@ namespace octave
   {
     write_header (os, fmt);
 
-    call_stack& cs = m_interpreter.get_call_stack ();
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    symbol_info_list syminfo_list = cs.top_scope_symbol_info ();
+    symbol_info_list syminfo_list = tw.top_scope_symbol_info ();
 
     double save_mem_size = 0;
 

@@ -4460,6 +4460,30 @@ namespace octave
                                   "max_recursion_depth", 0);
   }
 
+  symbol_info_list
+  tree_evaluator::glob_symbol_info (const std::string& pattern) const
+  {
+    return m_call_stack.glob_symbol_info (pattern);
+  }
+
+  symbol_info_list
+  tree_evaluator::regexp_symbol_info (const std::string& pattern) const
+  {
+    return m_call_stack.regexp_symbol_info (pattern);
+  }
+
+  symbol_info_list
+  tree_evaluator::get_symbol_info (void)
+  {
+    return m_call_stack.get_symbol_info ();
+  }
+
+  symbol_info_list
+  tree_evaluator::top_scope_symbol_info (void) const
+  {
+    return m_call_stack.top_scope_symbol_info ();
+  }
+
   octave_map tree_evaluator::get_autoload_map (void) const
   {
     Cell func_names (dim_vector (m_autoload_map.size (), 1));

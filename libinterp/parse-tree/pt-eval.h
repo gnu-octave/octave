@@ -42,6 +42,7 @@ class octave_user_code;
 
 namespace octave
 {
+  class symbol_info_list;
   class symbol_scope;
   class tree_decl_elt;
   class tree_expression;
@@ -562,6 +563,14 @@ namespace octave
     std::string current_function_name (void) const;
 
     bool in_user_code (void) const;
+
+    symbol_info_list glob_symbol_info (const std::string& pattern) const;
+
+    symbol_info_list regexp_symbol_info (const std::string& pattern) const;
+
+    symbol_info_list get_symbol_info (void);
+
+    symbol_info_list top_scope_symbol_info (void) const;
 
     octave_map get_autoload_map (void) const;
 

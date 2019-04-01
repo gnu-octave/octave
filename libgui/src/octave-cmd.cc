@@ -65,8 +65,9 @@ namespace octave
       }
     else
       {
-        // no valid identifier: use Fsource (), no debug possible
-        Fsource (ovl (file_path));
+        interpreter& interp = __get_interpreter__ ("octave_cmd_eval::execute");
+        // no valid identifier: use equivalent of Fsource (), no debug possible
+        interp.source_file (file_path);
         command_editor::replace_line ("");
       }
 

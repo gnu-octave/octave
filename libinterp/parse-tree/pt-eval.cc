@@ -973,6 +973,160 @@ namespace octave
   }
 
   void
+  tree_evaluator::source_file (const std::string& file_name,
+                               const std::string& context,
+                               bool verbose, bool require_file,
+                               const std::string& warn_for)
+  {
+    // Map from absolute name of script file to recursion level.  We
+    // use a map instead of simply placing a limit on recursion in the
+    // source_file function so that two mutually recursive scripts
+    // written as
+    //
+    //   foo1.m:
+    //   ------
+    //   foo2
+    //
+    //   foo2.m:
+    //   ------
+    //   foo1
+    //
+    // and called with
+    //
+    //   foo1
+    //
+    // (for example) will behave the same if they are written as
+    //
+    //   foo1.m:
+    //   ------
+    //   source ("foo2.m")
+    //
+    //   foo2.m:
+    //   ------
+    //   source ("foo1.m")
+    //
+    // and called with
+    //
+    //   source ("foo1.m")
+    //
+    // (for example).
+
+    static std::map<std::string, int> source_call_depth;
+
+    std::string file_full_name
+      = sys::file_ops::tilde_expand (file_name);
+
+    size_t pos
+      = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
+
+    std::string dir_name = file_full_name.substr (0, pos);
+
+    file_full_name = sys::env::make_absolute (file_full_name);
+
+    unwind_protect frame;
+
+    if (source_call_depth.find (file_full_name) == source_call_depth.end ())
+      source_call_depth[file_full_name] = -1;
+
+    frame.protect_var (source_call_depth[file_full_name]);
+
+    source_call_depth[file_full_name]++;
+
+    if (source_call_depth[file_full_name] >= max_recursion_depth ())
+      error ("max_recursion_depth exceeded");
+
+    if (! context.empty ())
+      {
+        frame.add_method (m_call_stack, &call_stack::restore_frame,
+                          m_call_stack.current_frame ());
+
+        if (context == "caller")
+          m_call_stack.goto_caller_frame ();
+        else if (context == "base")
+          m_call_stack.goto_base_frame ();
+        else
+          error ("source: context must be \"caller\" or \"base\"");
+      }
+
+    // Find symbol name that would be in symbol_table, if it were loaded.
+    size_t dir_end
+      = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
+    dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
+
+    size_t extension = file_name.find_last_of ('.');
+    if (extension == std::string::npos)
+      extension = file_name.length ();
+
+    std::string symbol = file_name.substr (dir_end, extension - dir_end);
+    std::string full_name = sys::canonicalize_file_name (file_name);
+
+    // Check if this file is already loaded (or in the path)
+    symbol_table& symtab = m_interpreter.get_symbol_table ();
+    octave_value ov_code = symtab.fcn_table_find (symbol);
+
+    // For compatibility with Matlab, accept both scripts and
+    // functions.
+
+    if (ov_code.is_user_code ())
+      {
+        octave_user_code *code = ov_code.user_code_value ();
+
+        if (! code
+            || (sys::canonicalize_file_name (code->fcn_file_name ())
+                != full_name))
+          {
+            // Wrong file, so load it below.
+            ov_code = octave_value ();
+          }
+      }
+    else
+      {
+        // Not a script, so load it below.
+        ov_code = octave_value ();
+      }
+
+    // If no symbol of this name, or the symbol is for a different
+    // file, load.
+
+    if (ov_code.is_undefined ())
+      {
+        try
+          {
+            ov_code = m_interpreter.parse_fcn_file (file_full_name, file_name,
+                                                    dir_name, "", "",
+                                                    require_file, true, false,
+                                                    false, warn_for);
+          }
+        catch (execution_exception& e)
+          {
+            error (e, "source: error sourcing file '%s'",
+                   file_full_name.c_str ());
+          }
+      }
+
+    // Return or error if we don't have a valid script or function.
+
+    if (ov_code.is_undefined ())
+      return;
+
+    if (! ov_code.is_user_code ())
+      error ("source: %s is not a script", full_name.c_str ());
+
+    if (verbose)
+      {
+        octave_stdout << "executing commands from " << full_name << " ... ";
+        octave_stdout.flush ();
+      }
+
+    octave_user_code *code = ov_code.user_code_value ();
+
+    code->call (*this, 0, octave_value_list ());
+
+    if (verbose)
+      octave_stdout << "done." << std::endl;
+  }
+
+  void
   tree_evaluator::set_auto_fcn_var (stack_frame::auto_var_type avt,
                                     const octave_value& val)
   {

@@ -4466,126 +4466,6 @@ namespace octave
     return status;
   }
 
-  static void
-  safe_fclose (FILE *f)
-  {
-    if (f)
-      fclose (static_cast<FILE *> (f));
-  }
-
-  static octave_value
-  parse_fcn_file (const std::string& full_file, const std::string& file,
-                  const std::string& dir_name, const std::string& dispatch_type,
-                  const std::string& package_name, bool require_file,
-                  bool force_script, bool autoload, bool relative_lookup,
-                  const std::string& warn_for)
-  {
-    octave_value retval;
-
-    unwind_protect frame;
-
-    octave_function *fcn_ptr = nullptr;
-
-    // Open function file and parse.
-
-    FILE *in_stream = command_editor::get_input_stream ();
-
-    frame.add_fcn (command_editor::set_input_stream, in_stream);
-
-    frame.add_fcn (command_history::ignore_entries,
-                   command_history::ignoring_entries ());
-
-    command_history::ignore_entries ();
-
-    FILE *ffile = nullptr;
-
-    if (! full_file.empty ())
-      ffile = octave::sys::fopen (full_file, "rb");
-
-    if (ffile)
-      {
-        frame.add_fcn (safe_fclose, ffile);
-
-        interpreter& interp = __get_interpreter__ ("parse_fcn_file");
-
-        parser parser (ffile, interp);
-
-        parser.m_curr_class_name = dispatch_type;
-        parser.m_curr_package_name = package_name;
-        parser.m_autoloading = autoload;
-        parser.m_fcn_file_from_relative_lookup = relative_lookup;
-
-        parser.m_lexer.m_force_script = force_script;
-        parser.m_lexer.prep_for_file ();
-        parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
-
-        parser.m_lexer.m_fcn_file_name = file;
-        parser.m_lexer.m_fcn_file_full_name = full_file;
-        parser.m_lexer.m_dir_name = dir_name;
-        parser.m_lexer.m_package_name = package_name;
-
-        int status = parser.run ();
-
-        fcn_ptr = parser.m_primary_fcn_ptr;
-
-        if (status == 0)
-          {
-            if (parser.m_lexer.m_reading_classdef_file
-                && parser.m_classdef_object)
-              {
-                // Convert parse tree for classdef object to
-                // meta.class info (and stash it in the symbol
-                // table?).  Return pointer to constructor?
-
-                if (fcn_ptr)
-                  panic_impossible ();
-
-                bool is_at_folder = ! dispatch_type.empty ();
-
-                try
-                  {
-                    fcn_ptr = parser.m_classdef_object->make_meta_class (interp, is_at_folder);
-                  }
-                catch (const execution_exception&)
-                  {
-                    delete parser.m_classdef_object;
-                    throw;
-                  }
-
-                if (fcn_ptr)
-                  retval = octave_value (fcn_ptr);
-
-                delete parser.m_classdef_object;
-
-                parser.m_classdef_object = nullptr;
-              }
-            else if (fcn_ptr)
-              {
-                retval = octave_value (fcn_ptr);
-
-                fcn_ptr->maybe_relocate_end ();
-
-                if (parser.m_parsing_subfunctions)
-                  {
-                    if (! parser.m_endfunction_found)
-                      parser.m_subfunction_names.reverse ();
-
-                    fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
-                  }
-              }
-          }
-        else
-          error ("parse error while reading file %s", full_file.c_str ());
-      }
-    else if (require_file)
-      error ("no such file, '%s'", full_file.c_str ());
-    else if (! warn_for.empty ())
-      error ("%s: unable to open file '%s'", warn_for.c_str (),
-             full_file.c_str ());
-
-    return retval;
-  }
-
   std::string
   get_help_from_file (const std::string& nm, bool& symbol_found,
                       std::string& full_file)
@@ -4612,11 +4492,13 @@ namespace octave
 
     if (! file.empty ())
       {
+        interpreter& interp = __get_interpreter__ ("get_help_from_file");
+
         symbol_found = true;
 
         octave_value ov_fcn
-          = parse_fcn_file (full_file, file, "", "", "", true,
-                            false, false, false, "");
+          = interp.parse_fcn_file (full_file, file, "", "", "", true,
+                                   false, false, false, "");
 
         if (ov_fcn.is_defined ())
           {
@@ -4676,8 +4558,9 @@ namespace octave
 
     int len = file.length ();
 
-      dynamic_loader& dyn_loader
-        = __get_dynamic_loader__ ("~octave_mex_function");
+    interpreter& interp = __get_interpreter__ ("load_fcn_from_file");
+
+    dynamic_loader& dyn_loader = interp.get_dynamic_loader ();
 
     if (len > 4 && file.substr (len-4, len-1) == ".oct")
       {
@@ -4701,9 +4584,9 @@ namespace octave
         std::string doc_string;
 
         octave_value ov_fcn
-          = parse_fcn_file (file.substr (0, len - 2), nm, dir_name,
-                            dispatch_type, package_name, false,
-                            autoload, autoload, relative_lookup, "");
+          = interp.parse_fcn_file (file.substr (0, len - 2), nm, dir_name,
+                                   dispatch_type, package_name, false,
+                                   autoload, autoload, relative_lookup, "");
 
         if (ov_fcn.is_defined ())
           {
@@ -4726,9 +4609,9 @@ namespace octave
       }
     else if (len > 2)
       {
-        retval = parse_fcn_file (file, nm, dir_name, dispatch_type,
-                                 package_name, true, autoload, autoload,
-                                 relative_lookup, "");
+        retval = interp.parse_fcn_file (file, nm, dir_name, dispatch_type,
+                                        package_name, true, autoload,
+                                        autoload, relative_lookup, "");
       }
 
     return retval;
@@ -4803,168 +4686,6 @@ not loaded anymore during the current Octave session.
   return octave_value_list ();
 }
 
-namespace octave
-{
-  // Execute the contents of a script file.  For compatibility with
-  // Matlab, also execute a function file by calling the function it
-  // defines with no arguments and nargout = 0.
-
-  void
-  source_file (const std::string& file_name, const std::string& context,
-               bool verbose, bool require_file, const std::string& warn_for)
-  {
-    // Map from absolute name of script file to recursion level.  We
-    // use a map instead of simply placing a limit on recursion in the
-    // source_file function so that two mutually recursive scripts
-    // written as
-    //
-    //   foo1.m:
-    //   ------
-    //   foo2
-    //
-    //   foo2.m:
-    //   ------
-    //   foo1
-    //
-    // and called with
-    //
-    //   foo1
-    //
-    // (for example) will behave the same if they are written as
-    //
-    //   foo1.m:
-    //   ------
-    //   source ("foo2.m")
-    //
-    //   foo2.m:
-    //   ------
-    //   source ("foo1.m")
-    //
-    // and called with
-    //
-    //   source ("foo1.m")
-    //
-    // (for example).
-
-    static std::map<std::string, int> source_call_depth;
-
-    std::string file_full_name
-      = sys::file_ops::tilde_expand (file_name);
-
-    size_t pos
-      = file_full_name.find_last_of (sys::file_ops::dir_sep_str ());
-
-    std::string dir_name = file_full_name.substr (0, pos);
-
-    file_full_name = sys::env::make_absolute (file_full_name);
-
-    unwind_protect frame;
-
-    if (source_call_depth.find (file_full_name) == source_call_depth.end ())
-      source_call_depth[file_full_name] = -1;
-
-    frame.protect_var (source_call_depth[file_full_name]);
-
-    source_call_depth[file_full_name]++;
-
-    tree_evaluator& tw = __get_evaluator__ ("source_file");
-
-    if (source_call_depth[file_full_name] >= tw.max_recursion_depth ())
-      error ("max_recursion_depth exceeded");
-
-    if (! context.empty ())
-      {
-        call_stack& cs = __get_call_stack__ ("source_file");
-
-        frame.add_method (cs, &octave::call_stack::restore_frame,
-                          cs.current_frame ());
-
-        if (context == "caller")
-          cs.goto_caller_frame ();
-        else if (context == "base")
-          cs.goto_base_frame ();
-        else
-          error ("source: context must be \"caller\" or \"base\"");
-      }
-
-    // Find symbol name that would be in symbol_table, if it were loaded.
-    size_t dir_end
-      = file_name.find_last_of (sys::file_ops::dir_sep_chars ());
-    dir_end = (dir_end == std::string::npos) ? 0 : dir_end + 1;
-
-    size_t extension = file_name.find_last_of ('.');
-    if (extension == std::string::npos)
-      extension = file_name.length ();
-
-    std::string symbol = file_name.substr (dir_end, extension - dir_end);
-    std::string full_name = sys::canonicalize_file_name (file_name);
-
-    // Check if this file is already loaded (or in the path)
-    symbol_table& symtab = __get_symbol_table__ ("source_file");
-    octave_value ov_code = symtab.fcn_table_find (symbol);
-
-    // For compatibility with Matlab, accept both scripts and
-    // functions.
-
-    if (ov_code.is_user_code ())
-      {
-        octave_user_code *code = ov_code.user_code_value ();
-
-        if (! code
-            || (sys::canonicalize_file_name (code->fcn_file_name ())
-                != full_name))
-          {
-            // Wrong file, so load it below.
-            ov_code = octave_value ();
-          }
-      }
-    else
-      {
-        // Not a script, so load it below.
-        ov_code = octave_value ();
-      }
-
-    // If no symbol of this name, or the symbol is for a different
-    // file, load.
-
-    if (ov_code.is_undefined ())
-      {
-        try
-          {
-            ov_code = parse_fcn_file (file_full_name, file_name, dir_name,
-                                      "", "", require_file, true, false,
-                                      false, warn_for);
-          }
-        catch (execution_exception& e)
-          {
-            error (e, "source: error sourcing file '%s'",
-                   file_full_name.c_str ());
-          }
-      }
-
-    // Return or error if we don't have a valid script or function.
-
-    if (ov_code.is_undefined ())
-      return;
-
-    if (! ov_code.is_user_code ())
-      error ("source: %s is not a script", full_name.c_str ());
-
-    if (verbose)
-      {
-        octave_stdout << "executing commands from " << full_name << " ... ";
-        octave_stdout.flush ();
-      }
-
-    octave_user_code *code = ov_code.user_code_value ();
-
-    code->call (tw, 0, octave_value_list ());
-
-    if (verbose)
-      octave_stdout << "done." << std::endl;
- }
-}
-
 DEFMETHOD (mfilename, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} mfilename ()
@@ -4997,8 +4718,24 @@ the filename and the extension.
   return octave_value (interp.mfilename (opt));
 }
 
-DEFUN (source, args, ,
-       doc: /* -*- texinfo -*-
+namespace octave
+{
+  // Execute the contents of a script file.  For compatibility with
+  // Matlab, also execute a function file by calling the function it
+  // defines with no arguments and nargout = 0.
+
+  void
+  source_file (const std::string& file_name, const std::string& context,
+               bool verbose, bool require_file, const std::string& warn_for)
+  {
+    interpreter& interp = __get_interpreter__ ("source_file");
+
+    interp.source_file (file_name, context, verbose, require_file, warn_for);
+  }
+}
+
+DEFMETHOD (source, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} source (@var{file})
 @deftypefnx {} {} source (@var{file}, @var{context})
 Parse and execute the contents of @var{file}.
@@ -5013,23 +4750,21 @@ context of the function that called the present function
 @seealso{run}
 @end deftypefn */)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string file_name = args(0).xstring_value ("source: FILE must be a string");
+  std::string file_name
+    = args(0).xstring_value ("source: FILE must be a string");
 
   std::string context;
-
   if (nargin == 2)
     context = args(1).xstring_value ("source: CONTEXT must be a string");
 
-  octave::source_file (file_name, context);
+  interp.source_file (file_name, context);
 
-  return retval;
+  return octave_value_list ();
 }
 
 namespace octave
@@ -5726,8 +5461,8 @@ prints debug information as it processes an expression.
   return retval;
 }
 
-DEFUN (__parse_file__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__parse_file__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __parse_file__ (@var{file}, @var{verbose})
 Undocumented internal function.
 @end deftypefn */)
@@ -5769,8 +5504,8 @@ Undocumented internal function.
     octave_stdout << "parsing " << full_file << std::endl;
 
   octave_value ov_fcn
-    = octave::parse_fcn_file (full_file, file, dir_name, "", "", true, false,
-                              false, false, "__parse_file__");
+    = interp.parse_fcn_file (full_file, file, dir_name, "", "", true, false,
+                             false, false, "__parse_file__");
 
   return retval;
 }

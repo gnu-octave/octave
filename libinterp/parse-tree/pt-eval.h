@@ -411,6 +411,11 @@ namespace octave
     void assignin (const std::string& context, const std::string& name,
                    const octave_value& val = octave_value ());
 
+    void source_file (const std::string& file_name,
+                      const std::string& context = "",
+                      bool verbose = false, bool require_file = true,
+                      const std::string& warn_for = "");
+
     void set_auto_fcn_var (stack_frame::auto_var_type avt,
                            const octave_value& val = octave_value ());
 

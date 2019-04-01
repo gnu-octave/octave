@@ -275,8 +275,22 @@ namespace octave
     void assign (const std::string& name,
                  const octave_value& val = octave_value ());
 
-    void assignin (const std::string& context, const std::string& varname, 
+    void assignin (const std::string& context, const std::string& varname,
                    const octave_value& val = octave_value ());
+
+    void source_file (const std::string& file_name,
+                      const std::string& context = "",
+                      bool verbose = false, bool require_file = true,
+                      const std::string& warn_for = "");
+
+    octave_value parse_fcn_file (const std::string& full_file,
+                                 const std::string& file,
+                                 const std::string& dir_name,
+                                 const std::string& dispatch_type,
+                                 const std::string& package_name,
+                                 bool require_file, bool force_script,
+                                 bool autoload, bool relative_lookup,
+                                 const std::string& warn_for);
 
     bool at_top_level (void) const;
 

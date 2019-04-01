@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cstdio>
+
 #include <string>
 #include <iostream>
 
@@ -62,6 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-classdef.h"
 #include "parse.h"
+#include "pt-classdef.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
@@ -1242,6 +1245,137 @@ namespace octave
                               const octave_value& val)
   {
     m_evaluator.assignin (context, name, val);
+  }
+
+  void interpreter::source_file (const std::string& file_name,
+                                 const std::string& context, bool verbose,
+                                 bool require_file,
+                                 const std::string& warn_for)
+  {
+    m_evaluator.source_file (file_name, context, verbose, require_file,
+                             warn_for);
+  }
+
+  static void
+  safe_fclose (FILE *f)
+  {
+    if (f)
+      fclose (static_cast<FILE *> (f));
+  }
+
+  octave_value
+  interpreter::parse_fcn_file (const std::string& full_file,
+                               const std::string& file,
+                               const std::string& dir_name,
+                               const std::string& dispatch_type,
+                               const std::string& package_name,
+                               bool require_file,
+                               bool force_script, bool autoload,
+                               bool relative_lookup,
+                               const std::string& warn_for)
+  {
+    octave_value retval;
+
+    unwind_protect frame;
+
+    octave_function *fcn_ptr = nullptr;
+
+    // Open function file and parse.
+
+    FILE *in_stream = command_editor::get_input_stream ();
+
+    frame.add_fcn (command_editor::set_input_stream, in_stream);
+
+    frame.add_fcn (command_history::ignore_entries,
+                   command_history::ignoring_entries ());
+
+    command_history::ignore_entries ();
+
+    FILE *ffile = nullptr;
+
+    if (! full_file.empty ())
+      ffile = sys::fopen (full_file, "rb");
+
+    if (ffile)
+      {
+        frame.add_fcn (safe_fclose, ffile);
+
+        parser parser (ffile, *this);
+
+        parser.m_curr_class_name = dispatch_type;
+        parser.m_curr_package_name = package_name;
+        parser.m_autoloading = autoload;
+        parser.m_fcn_file_from_relative_lookup = relative_lookup;
+
+        parser.m_lexer.m_force_script = force_script;
+        parser.m_lexer.prep_for_file ();
+        parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
+
+        parser.m_lexer.m_fcn_file_name = file;
+        parser.m_lexer.m_fcn_file_full_name = full_file;
+        parser.m_lexer.m_dir_name = dir_name;
+        parser.m_lexer.m_package_name = package_name;
+
+        int status = parser.run ();
+
+        fcn_ptr = parser.m_primary_fcn_ptr;
+
+        if (status == 0)
+          {
+            if (parser.m_lexer.m_reading_classdef_file
+                && parser.m_classdef_object)
+              {
+                // Convert parse tree for classdef object to
+                // meta.class info (and stash it in the symbol
+                // table?).  Return pointer to constructor?
+
+                if (fcn_ptr)
+                  panic_impossible ();
+
+                bool is_at_folder = ! dispatch_type.empty ();
+
+                try
+                  {
+                    fcn_ptr = parser.m_classdef_object->make_meta_class (*this, is_at_folder);
+                  }
+                catch (const execution_exception&)
+                  {
+                    delete parser.m_classdef_object;
+                    throw;
+                  }
+
+                if (fcn_ptr)
+                  retval = octave_value (fcn_ptr);
+
+                delete parser.m_classdef_object;
+
+                parser.m_classdef_object = nullptr;
+              }
+            else if (fcn_ptr)
+              {
+                retval = octave_value (fcn_ptr);
+
+                fcn_ptr->maybe_relocate_end ();
+
+                if (parser.m_parsing_subfunctions)
+                  {
+                    if (! parser.m_endfunction_found)
+                      parser.m_subfunction_names.reverse ();
+
+                    fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
+                  }
+              }
+          }
+        else
+          error ("parse error while reading file %s", full_file.c_str ());
+      }
+    else if (require_file)
+      error ("no such file, '%s'", full_file.c_str ());
+    else if (! warn_for.empty ())
+      error ("%s: unable to open file '%s'", warn_for.c_str (),
+             full_file.c_str ());
+
+    return retval;
   }
 
   bool interpreter::at_top_level (void) const

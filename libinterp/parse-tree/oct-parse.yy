@@ -5061,62 +5061,23 @@ does.
 @seealso{evalin, evalc, assignin, feval}
 @end deftypefn */)
 {
-  octave_value_list retval;
-
   int nargin = args.length ();
 
-  if (nargin == 0)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  octave::unwind_protect frame;
+  std::string try_code
+    = args(0).xstring_value ("eval: TRY must be a string");
 
-  if (nargin > 1)
+  if (nargin == 2)
     {
-      frame.protect_var (buffer_error_messages);
-      buffer_error_messages++;
+      std::string catch_code
+        = args(1).xstring_value ("eval: CATCH must be a string");
+
+      return interp.eval (try_code, catch_code, nargout);
     }
 
-  int parse_status = 0;
-
-  bool execution_error = false;
-
-  octave_value_list tmp;
-
-  try
-    {
-      tmp = interp.eval_string (args(0), nargout > 0, parse_status, nargout);
-    }
-  catch (const octave::execution_exception&)
-    {
-      octave::interpreter::recover_from_exception ();
-
-      execution_error = true;
-    }
-
-  if (nargin > 1 && (parse_status != 0 || execution_error))
-    {
-      // Set up for letting the user print any messages from
-      // errors that occurred in the first part of this eval().
-
-      buffer_error_messages--;
-
-      tmp = interp.eval_string (args(1), nargout > 0, parse_status, nargout);
-
-      if (nargout > 0)
-        retval = tmp;
-    }
-  else
-    {
-      if (nargout > 0)
-        retval = tmp;
-
-      // FIXME: we should really be rethrowing whatever exception occurred,
-      // not just throwing an execution exception.
-      if (execution_error)
-        octave_throw_execution_exception ();
-    }
-
-  return retval;
+  return interp.eval (try_code, nargout);
 }
 
 /*

@@ -617,7 +617,10 @@ namespace octave
     int c = std::cin.get ();
 
     if (std::cin.fail () || std::cin.eof ())
-      std::cin.clear ();
+      {
+        std::cin.clear ();
+        clearerr (stdin);
+      }
 
     // Restore it, enabling system call restarts (if possible).
     octave::set_interrupt_handler (saved_interrupt_handler, true);

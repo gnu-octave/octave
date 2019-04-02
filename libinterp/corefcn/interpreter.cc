@@ -1126,14 +1126,7 @@ namespace octave
 
   void interpreter::mlock (void)
   {
-    call_stack& cs = get_call_stack ();
-
-    octave_function *fcn = cs.current ();
-
-    if (! fcn)
-      error ("mlock: invalid use outside a function");
-
-    fcn->lock ();
+    m_evaluator.mlock ();
   }
 
   void interpreter::munlock (const std::string& nm)

@@ -2043,6 +2043,16 @@ namespace octave
     return m_call_stack.current_scope ();
   }
 
+  void tree_evaluator::mlock (void) const
+  {
+    octave_function *fcn = m_call_stack.current ();
+
+    if (! fcn)
+      error ("mlock: invalid use outside a function");
+
+    fcn->lock ();
+  }
+
   octave_value
   tree_evaluator::max_stack_depth (const octave_value_list& args, int nargout)
   {

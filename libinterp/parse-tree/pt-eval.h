@@ -555,6 +555,8 @@ namespace octave
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;
 
+    void mlock (void) const;
+
     octave_value max_stack_depth (const octave_value_list& args, int nargout);
 
     // Useful for debugging

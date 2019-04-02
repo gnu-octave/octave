@@ -2218,15 +2218,15 @@ dnl was introduced in SUNDIALS version 3.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   ac_octave_save_LIBS=$LIBS
-  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $LIBS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
   dnl Current API functions present in SUNDIALS version 4
-  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNLinSol_KLU])
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense])
   dnl FIXME: The purpose of the following tests is to detect the deprecated
   dnl API from SUNDIALS version 3, which should only be used if the current
   dnl API tests above failed. For now, always test for ida_direct.h.
   AC_CHECK_HEADERS([ida/ida_direct.h ida_direct.h])
   dnl Each of these is a deprecated analog to the functions listed above.
-  AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver SUNKLU])
+  AC_CHECK_FUNCS([IDADlsSetJacFn IDADlsSetLinearSolver SUNDenseLinearSolver])
   LIBS=$ac_octave_save_LIBS
   AC_MSG_CHECKING([whether SUNDIALS API provides the necessary functions])
   if test "x$ac_cv_func_IDASetJacFn" = xyes \
@@ -2294,7 +2294,8 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
     [], [SUNKLU], [],
     [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
-    [AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
+    [AC_CHECK_FUNCS([SUNLinSol_KLU SUNKLU])
+     AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
       [octave_cv_sundials_sunlinsol_klu],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
          #if defined (HAVE_IDA_IDA_H)

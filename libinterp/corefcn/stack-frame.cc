@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-regexp.h"
 #include "str-vec.h"
 
-#include "call-stack.h"
 #include "defun.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
@@ -38,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
+#include "pt-eval.h"
 #include "stack-frame.h"
 #include "stack-frame-walker.h"
 #include "syminfo.h"
@@ -386,7 +386,7 @@ namespace octave
             // global scope, then use the local value as the
             // initial value.  This value will also override any
             // initializer in the global statement.
-            octave_value global_val = m_call_stack.global_varval (nm);
+            octave_value global_val = m_evaluator.global_varval (nm);
 
             if (global_val.is_defined ())
               {
@@ -400,7 +400,7 @@ namespace octave
                 warning_with_id ("Octave:global-local-conflict",
                                  "global: existing local value used to initialize global variable");
 
-                m_call_stack.global_varref (nm) = val;
+                m_evaluator.global_varref (nm) = val;
               }
           }
 
@@ -556,12 +556,12 @@ namespace octave
     sfw.visit_compiled_fcn_stack_frame (*this);
   }
 
-  script_stack_frame::script_stack_frame (call_stack& cs,
+  script_stack_frame::script_stack_frame (tree_evaluator& tw,
                                           octave_user_script *script,
                                           unwind_protect *up_frame,
                                           size_t index,
                                           stack_frame *static_link)
-    : stack_frame (cs, index, static_link, get_access_link (static_link)),
+    : stack_frame (tw, index, static_link, get_access_link (static_link)),
       m_script (script), m_unwind_protect_frame (up_frame),
       m_lexical_frame_offsets (get_num_symbols (script), 1),
       m_value_offsets (get_num_symbols (script), 0)
@@ -1034,7 +1034,7 @@ namespace octave
         }
 
       case GLOBAL:
-        return m_call_stack.global_varval (sym.name ());
+        return m_evaluator.global_varval (sym.name ());
       }
 
     error ("internal error: invalid switch case");
@@ -1070,7 +1070,7 @@ namespace octave
         }
 
       case GLOBAL:
-        return m_call_stack.global_varref (sym.name ());
+        return m_evaluator.global_varref (sym.name ());
       }
 
     error ("internal error: invalid switch case");
@@ -1351,7 +1351,7 @@ namespace octave
         }
 
       case GLOBAL:
-        return m_call_stack.global_varval (sym.name ());
+        return m_evaluator.global_varval (sym.name ());
       }
 
     error ("internal error: invalid switch case");
@@ -1386,7 +1386,7 @@ namespace octave
         }
 
       case GLOBAL:
-        return m_call_stack.global_varref (sym.name ());
+        return m_evaluator.global_varref (sym.name ());
       }
 
     error ("internal error: invalid switch case");
@@ -1484,7 +1484,7 @@ namespace octave
         return m_scope.persistent_varval (data_offset);
 
       case GLOBAL:
-        return m_call_stack.global_varval (sym.name ());
+        return m_evaluator.global_varval (sym.name ());
       }
 
     error ("internal error: invalid switch case");
@@ -1509,7 +1509,7 @@ namespace octave
         return m_scope.persistent_varref (data_offset);
 
       case GLOBAL:
-        return m_call_stack.global_varref (sym.name ());
+        return m_evaluator.global_varref (sym.name ());
       }
 
     error ("internal error: invalid switch case");

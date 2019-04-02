@@ -1340,6 +1340,12 @@ namespace octave
     return m_call_stack.global_varval (name);
   }
 
+  octave_value&
+  tree_evaluator::global_varref (const std::string& name)
+  {
+    return m_call_stack.global_varref (name);
+  }
+
   void
   tree_evaluator::global_assign (const std::string& name,
                                  const octave_value& val)
@@ -2035,6 +2041,17 @@ namespace octave
   symbol_scope tree_evaluator::get_current_scope (void) const
   {
     return m_call_stack.current_scope ();
+  }
+
+  octave_value
+  tree_evaluator::max_stack_depth (const octave_value_list& args, int nargout)
+  {
+    return m_call_stack.max_stack_depth (args, nargout);
+  }
+
+  void tree_evaluator::display_call_stack (void) const
+  {
+    m_call_stack.display ();
   }
 
   octave_value tree_evaluator::find (const std::string& name)

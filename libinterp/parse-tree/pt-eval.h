@@ -398,6 +398,8 @@ namespace octave
 
     octave_value global_varval (const std::string& name) const;
 
+    octave_value& global_varref (const std::string& name);
+
     void global_assign (const std::string& name,
                         const octave_value& val = octave_value ());
 
@@ -552,6 +554,11 @@ namespace octave
 
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;
+
+    octave_value max_stack_depth (const octave_value_list& args, int nargout);
+
+    // Useful for debugging
+    void display_call_stack (void) const;
 
     octave_value find (const std::string& name);
 

@@ -352,7 +352,7 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new scope_stack_frame (*this, scope, m_curr_frame, slink);
+      = new scope_stack_frame (m_evaluator, scope, m_curr_frame, slink);
 
     m_cs.push_back (new_frame);
   }
@@ -370,7 +370,7 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new user_fcn_stack_frame (*this, fcn, up_frame, m_curr_frame,
+      = new user_fcn_stack_frame (m_evaluator, fcn, up_frame, m_curr_frame,
                                   slink, closure_frames);
 
     m_cs.push_back (new_frame);
@@ -388,7 +388,8 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new script_stack_frame (*this, script, up_frame, m_curr_frame, slink);
+      = new script_stack_frame (m_evaluator, script, up_frame, m_curr_frame,
+                                slink);
 
     m_cs.push_back (new_frame);
   }
@@ -405,7 +406,7 @@ namespace octave
     stack_frame *slink = get_static_link (prev_frame);
 
     stack_frame *new_frame
-      = new compiled_fcn_stack_frame (*this, fcn, m_curr_frame, slink);
+      = new compiled_fcn_stack_frame (m_evaluator, fcn, m_curr_frame, slink);
 
     m_cs.push_back (new_frame);
   }
@@ -1077,13 +1078,6 @@ namespace octave
       }
   }
 
-  void display_call_stack (void)
-  {
-    call_stack& cs = __get_call_stack__ ("display_call_stack");
-
-    cs.display ();
-  }
-
   void call_stack::set_auto_fcn_var (stack_frame::auto_var_type avt,
                                      const octave_value& val)
   {
@@ -1114,9 +1108,9 @@ The original variable value is restored when exiting the function.
 @seealso{max_recursion_depth}
 @end deftypefn */)
 {
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  return cs.max_stack_depth (args, nargout);
+  return tw.max_stack_depth (args, nargout);
 }
 
 /*

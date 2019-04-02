@@ -72,9 +72,9 @@ class octave_value_list;
 //
 // All stack frames also contain the following data:
 //
-//  * a reference to the call stack that contains the frame
+//  * a reference to the evaluator that contains the frame
 //
-//    Global variables are now stored in the call stack and this link
+//    Global variables are now stored in the evaluator and this link
 //    gives us immediate access to them.
 //
 //  * line and column in the source file where the stack frame was created
@@ -97,7 +97,6 @@ class octave_value_list;
 
 namespace octave
 {
-  class call_stack;
   class tree_evaluator;
   class symbol_info_list;
   class unwind_protect;
@@ -115,7 +114,7 @@ namespace octave
 
     // Markers indicating the type of a variable.  Values for local
     // variables are stored in the stack frame.  Values for
-    // global variables are stored in the call_stack object that
+    // global variables are stored in the tree_evaluator object that
     // contains the stack frame.  Values for persistent variables are
     // stored in the function scope corresponding to the stack frame.
 
@@ -141,9 +140,9 @@ namespace octave
 
     stack_frame (void) = delete;
 
-    stack_frame (call_stack& cs, size_t index,
+    stack_frame (tree_evaluator& tw, size_t index,
                  stack_frame *static_link, stack_frame *access_link)
-      : m_call_stack (cs), m_line (-1), m_column (-1), m_index (index),
+      : m_evaluator (tw), m_line (-1), m_column (-1), m_index (index),
         m_static_link (static_link), m_access_link (access_link),
         m_dispatch_class ()
     { }
@@ -558,7 +557,7 @@ namespace octave
     // Reference to the call stack that contains this frame.  Global
     // variables are stored in the call stack.  This link gives us
     // immediate access to them.
-    call_stack& m_call_stack;
+    tree_evaluator& m_evaluator;
 
     // The line and column of the source file where this stack frame
     // was created.  Used to print stack traces.
@@ -588,9 +587,9 @@ namespace octave
 
     compiled_fcn_stack_frame (void) = delete;
 
-    compiled_fcn_stack_frame (call_stack& cs, octave_function *fcn,
+    compiled_fcn_stack_frame (tree_evaluator& tw, octave_function *fcn,
                               size_t index, stack_frame *static_link)
-      : stack_frame (cs, index, static_link, static_link->access_link ()),
+      : stack_frame (tw, index, static_link, static_link->access_link ()),
         m_fcn (fcn)
     { }
 
@@ -709,7 +708,7 @@ namespace octave
 
     script_stack_frame (void) = delete;
 
-    script_stack_frame (call_stack& cs, octave_user_script *script,
+    script_stack_frame (tree_evaluator& tw, octave_user_script *script,
                         unwind_protect *up_frame, size_t index,
                         stack_frame *static_link);
 
@@ -819,10 +818,10 @@ namespace octave
 
     base_value_stack_frame (void) = delete;
 
-    base_value_stack_frame (call_stack& cs, size_t num_symbols,
+    base_value_stack_frame (tree_evaluator& tw, size_t num_symbols,
                             size_t index, stack_frame *static_link,
                             stack_frame *access_link)
-      : stack_frame (cs, index, static_link, access_link),
+      : stack_frame (tw, index, static_link, access_link),
         m_values (num_symbols, octave_value ()),
         m_flags (num_symbols, LOCAL),
         m_auto_vars (NUM_AUTO_VARS, octave_value ())
@@ -895,7 +894,7 @@ namespace octave
     // value.  This array is indexed by the data_offset value stored
     // in the symbol_record objects of the scope associated with this
     // stack frame.  Local values are found in the M_VALUES array.
-    // Global values are stored in the call_stack object that contains
+    // Global values are stored in the tree_evaluator object that contains
     // the stack frame.  Persistent values are stored in the function
     // scope corresponding to the stack frame.
     std::vector<scope_flags> m_flags;
@@ -923,11 +922,11 @@ namespace octave
 
     user_fcn_stack_frame (void) = delete;
 
-    user_fcn_stack_frame (call_stack& cs, octave_user_function *fcn,
+    user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
                           unwind_protect *up_frame, size_t index,
                           stack_frame *static_link,
                           stack_frame *access_link = nullptr)
-      : base_value_stack_frame (cs, get_num_symbols (fcn), index, static_link,
+      : base_value_stack_frame (tw, get_num_symbols (fcn), index, static_link,
                                 (access_link
                                  ? access_link
                                  : get_access_link (fcn, static_link))),
@@ -1010,9 +1009,9 @@ namespace octave
 
     scope_stack_frame (void) = delete;
 
-    scope_stack_frame (call_stack& cs, const symbol_scope& scope,
-                        size_t index, stack_frame *static_link)
-      : base_value_stack_frame (cs, scope.num_symbols (), index,
+    scope_stack_frame (tree_evaluator& tw, const symbol_scope& scope,
+                       size_t index, stack_frame *static_link)
+      : base_value_stack_frame (tw, scope.num_symbols (), index,
                                 static_link, nullptr),
         m_scope (scope)
     { }

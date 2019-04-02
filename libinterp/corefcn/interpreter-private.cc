@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "bp-table.h"
-#include "call-stack.h"
 #include "cdef-manager.h"
 #include "child-list.h"
 #include "error.h"
@@ -159,13 +158,6 @@ namespace octave
     tree_evaluator& tw = __get_evaluator__ (who);
 
     return tw.get_bp_table ();
-  }
-
-  call_stack& __get_call_stack__ (const std::string& who)
-  {
-    interpreter& interp = __get_interpreter__ (who);
-
-    return interp.get_call_stack ();
   }
 
   child_list& __get_child_list__ (const std::string& who)

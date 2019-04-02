@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class bp_table;
-  class call_stack;
   class cdef_manager;
   class child_list;
   class dynamic_loader;
@@ -78,8 +77,6 @@ namespace octave
   extern tree_evaluator& __get_evaluator__ (const std::string& who);
 
   extern bp_table& __get_bp_table__ (const std::string& who);
-
-  extern call_stack& __get_call_stack__ (const std::string& who);
 
   extern child_list& __get_child_list__ (const std::string& who);
 

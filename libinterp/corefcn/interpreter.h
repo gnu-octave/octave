@@ -62,7 +62,6 @@ extern OCTINTERP_API bool octave_initialized;
 namespace octave
 {
   class profiler;
-  class call_stack;
   class child_list;
 
   // The application object contains a pointer to the current
@@ -212,8 +211,6 @@ namespace octave
     }
 
     tree_evaluator& get_evaluator (void);
-
-    call_stack& get_call_stack (void);
 
     symbol_scope get_top_scope (void) const;
     symbol_scope get_current_scope (void) const;

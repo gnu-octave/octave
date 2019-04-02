@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "defaults.h"
 #include "Cell.h"
-#include "call-stack.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
@@ -1112,11 +1111,6 @@ namespace octave
       error ("%s: symbol table scope missing", who.c_str ());
 
     return scope;
-  }
-
-  call_stack& interpreter::get_call_stack (void)
-  {
-    return m_evaluator.get_call_stack ();
   }
 
   profiler& interpreter::get_profiler (void)

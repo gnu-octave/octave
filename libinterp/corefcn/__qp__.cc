@@ -303,7 +303,7 @@ qp (const Matrix& H, const ColumnVector& q,
               indminR = 0;
               for (octave_idx_type i = 0; i < n; i++)
                 {
-                  if (mRrH == eigenvalH(i))
+                  if (mRrH == eigenvalrH(i))
                     {
                       indminR = i;
                       break;

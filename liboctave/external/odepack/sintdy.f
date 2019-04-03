@@ -97,14 +97,14 @@ C
       RETURN
 C
  80   CALL XERRWD('SINTDY-  K (=I1) illegal      ',
-     1     30, 51, 0, 1, K, 0, 0, 0.0E0, 0.0E0)
+     1     30, 51, 0, 1, K, 0, 0, 0.0D0, 0.0D0)
       IFLAG = -1
       RETURN
  90   CALL XERRWD('SINTDY-  T (=R1) illegal      ',
-     1     30, 52, 0, 0, 0, 0, 1, T, 0.0E0)
+     1     30, 52, 0, 0, 0, 0, 1, DBLE (T), 0.0D0)
       CALL XERRWD(
      1   '      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ',
-     1    60, 52, 0, 0, 0, 0, 2, TP, TN)
+     1    60, 52, 0, 0, 0, 0, 2, DBLE (TP), TN)
       IFLAG = -2
       RETURN
 C----------------------- END OF SUBROUTINE SINTDY ----------------------

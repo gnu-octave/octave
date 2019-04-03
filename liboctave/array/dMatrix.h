@@ -56,7 +56,13 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  Matrix (void) : NDArray () { }
+  Matrix (void) = default;
+
+  Matrix (const Matrix& a) = default;
+
+  Matrix& operator = (const Matrix& a) = default;
+
+  ~Matrix (void) = default;
 
   Matrix (octave_idx_type r, octave_idx_type c)
     : NDArray (dim_vector (r, c)) { }
@@ -68,8 +74,6 @@ public:
 
   Matrix (const dim_vector& dv, double val)
     : NDArray (dv.redim (2), val) { }
-
-  Matrix (const Matrix& a) : NDArray (a) { }
 
   template <typename U>
   Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }

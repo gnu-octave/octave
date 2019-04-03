@@ -42,7 +42,13 @@ charMatrix : public charNDArray
 
 public:
 
-  charMatrix (void) : charNDArray () { }
+  charMatrix (void) = default;
+
+  charMatrix (const charMatrix& a) = default;
+
+  charMatrix& operator = (const charMatrix& a) = default;
+
+  ~charMatrix (void) = default;
 
   charMatrix (octave_idx_type r, octave_idx_type c)
     : charNDArray (dim_vector (r, c)) { }
@@ -56,8 +62,6 @@ public:
     : charNDArray (dv.redim (2), val) { }
 
   charMatrix (const Array<char>& a) : charNDArray (a.as_matrix ()) { }
-
-  charMatrix (const charMatrix& a) : charNDArray (a) { }
 
   charMatrix (char c) : charNDArray (c) { }
 

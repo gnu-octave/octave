@@ -39,15 +39,19 @@ public:
 
   typedef Matrix full_matrix_type;
 
-  DiagMatrix (void) : MDiagArray2<double> () { }
+  DiagMatrix (void) = default;
+
+  DiagMatrix (const DiagMatrix& a) = default;
+
+  DiagMatrix& operator = (const DiagMatrix& a) = default;
+
+  ~DiagMatrix (void) = default;
 
   DiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<double> (r, c) { }
 
   DiagMatrix (octave_idx_type r, octave_idx_type c, double val)
     : MDiagArray2<double> (r, c, val) { }
-
-  DiagMatrix (const DiagMatrix& a) : MDiagArray2<double> (a) { }
 
   DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
 
@@ -58,12 +62,6 @@ public:
 
   DiagMatrix (const Array<double>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<double> (a, r, c) { }
-
-  DiagMatrix& operator = (const DiagMatrix& a)
-  {
-    MDiagArray2<double>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const DiagMatrix& a) const;
   bool operator != (const DiagMatrix& a) const;

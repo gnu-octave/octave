@@ -39,9 +39,11 @@ public:
   Range (void)
     : rng_base (0), rng_limit (0), rng_inc (0), rng_numel (0), cache (1, 0) { }
 
-  Range (const Range& r)
-    : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_numel (r.rng_numel), cache (r.cache) { }
+  Range (const Range& r) = default;
+
+  Range& operator = (const Range& r) = default;
+
+  ~Range (void) = default;
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),

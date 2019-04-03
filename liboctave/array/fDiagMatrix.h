@@ -39,15 +39,19 @@ public:
 
   typedef FloatMatrix full_matrix_type;
 
-  FloatDiagMatrix (void) : MDiagArray2<float> () { }
+  FloatDiagMatrix (void) = default;
+
+  FloatDiagMatrix (const FloatDiagMatrix& a) = default;
+
+  FloatDiagMatrix& operator = (const FloatDiagMatrix& a) = default;
+
+  ~FloatDiagMatrix (void) = default;
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (r, c) { }
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c, float val)
     : MDiagArray2<float> (r, c, val) { }
-
-  FloatDiagMatrix (const FloatDiagMatrix& a) : MDiagArray2<float> (a) { }
 
   FloatDiagMatrix (const MDiagArray2<float>& a) : MDiagArray2<float> (a) { }
 
@@ -58,12 +62,6 @@ public:
 
   FloatDiagMatrix (const Array<float>& a, octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (a, r, c) { }
-
-  FloatDiagMatrix& operator = (const FloatDiagMatrix& a)
-  {
-    MDiagArray2<float>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const FloatDiagMatrix& a) const;
   bool operator != (const FloatDiagMatrix& a) const;

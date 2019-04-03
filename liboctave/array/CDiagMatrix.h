@@ -45,7 +45,13 @@ public:
   typedef Complex complex_elt_type;
   typedef Complex element_type;
 
-  ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
+  ComplexDiagMatrix (void) = default;
+
+  ComplexDiagMatrix (const ComplexDiagMatrix& a) = default;
+
+  ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a) = default;
+
+  ~ComplexDiagMatrix (void) = default;
 
   ComplexDiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<Complex> (r, c) { }
@@ -68,18 +74,9 @@ public:
   ComplexDiagMatrix (const MDiagArray2<Complex>& a)
     : MDiagArray2<Complex> (a) { }
 
-  ComplexDiagMatrix (const ComplexDiagMatrix& a)
-    : MDiagArray2<Complex> (a) { }
-
   template <typename U>
   ComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<Complex> (a) { }
-
-  ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
-  {
-    MDiagArray2<Complex>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const ComplexDiagMatrix& a) const;
   bool operator != (const ComplexDiagMatrix& a) const;

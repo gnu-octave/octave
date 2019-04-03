@@ -57,7 +57,13 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  ComplexMatrix (void) : ComplexNDArray () { }
+  ComplexMatrix (void) = default;
+
+  ComplexMatrix (const ComplexMatrix& a) = default;
+
+  ComplexMatrix& operator = (const ComplexMatrix& a) = default;
+
+  ~ComplexMatrix (void) = default;
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c)
     : ComplexNDArray (dim_vector (r, c)) { }
@@ -69,8 +75,6 @@ public:
 
   ComplexMatrix (const dim_vector& dv, const Complex& val)
     : ComplexNDArray (dv.redim (2), val) { }
-
-  ComplexMatrix (const ComplexMatrix& a) : ComplexNDArray (a) { }
 
   template <typename U>
   ComplexMatrix (const MArray<U>& a) : ComplexNDArray (a.as_matrix ()) { }

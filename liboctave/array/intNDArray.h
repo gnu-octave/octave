@@ -38,7 +38,13 @@ public:
 
   using typename MArray<T>::element_type;
 
-  intNDArray (void) : MArray<T> () { }
+  intNDArray (void) = default;
+
+  intNDArray (const intNDArray<T>& a) = default;
+
+  intNDArray& operator = (const intNDArray<T>& a) = default;
+
+  ~intNDArray (void) = default;
 
   intNDArray (T val) : MArray<T> (dim_vector (1, 1), val) { }
 
@@ -55,12 +61,6 @@ public:
 
   template <typename U>
   intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
-
-  intNDArray& operator = (const intNDArray<T>& a)
-  {
-    MArray<T>::operator = (a);
-    return *this;
-  }
 
   boolNDArray operator ! (void) const;
 

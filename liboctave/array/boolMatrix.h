@@ -37,7 +37,13 @@ boolMatrix : public boolNDArray
 {
 public:
 
-  boolMatrix (void) : boolNDArray () { }
+  boolMatrix (void) = default;
+
+  boolMatrix (const boolMatrix& a) = default;
+
+  boolMatrix& operator = (const boolMatrix& a) = default;
+
+  ~boolMatrix (void) = default;
 
   boolMatrix (octave_idx_type r, octave_idx_type c)
     : boolNDArray (dim_vector (r, c)) { }
@@ -51,8 +57,6 @@ public:
     : boolNDArray (dv.redim (2), val) { }
 
   boolMatrix (const Array<bool>& a) : boolNDArray (a.as_matrix ()) { }
-
-  boolMatrix (const boolMatrix& a) : boolNDArray (a) { }
 
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;

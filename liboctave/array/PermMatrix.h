@@ -35,13 +35,17 @@ class OCTAVE_API PermMatrix : protected Array<octave_idx_type>
 {
 public:
 
-  PermMatrix (void) : Array<octave_idx_type> () { }
+  PermMatrix (void) = default;
+
+  PermMatrix (const PermMatrix& m) = default;
+
+  PermMatrix& operator = (const PermMatrix& m) = default;
+
+  ~PermMatrix (void) = default;
 
   PermMatrix (octave_idx_type n);
 
   PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check = true);
-
-  PermMatrix (const PermMatrix& m) : Array<octave_idx_type> (m) { }
 
   PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n = 0);
 

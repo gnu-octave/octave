@@ -45,7 +45,13 @@ public:
   typedef FloatComplex complex_elt_type;
   typedef FloatComplex element_type;
 
-  FloatComplexDiagMatrix (void) : MDiagArray2<FloatComplex> () { }
+  FloatComplexDiagMatrix (void) = default;
+
+  FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a) = default;
+
+  FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a) = default;
+
+  ~FloatComplexDiagMatrix (void) = default;
 
   FloatComplexDiagMatrix (octave_idx_type r,
                           octave_idx_type c)
@@ -70,18 +76,9 @@ public:
   FloatComplexDiagMatrix (const MDiagArray2<FloatComplex>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a)
-    : MDiagArray2<FloatComplex> (a) { }
-
   template <typename U>
   FloatComplexDiagMatrix (const DiagArray2<U>& a)
     : MDiagArray2<FloatComplex> (a) { }
-
-  FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a)
-  {
-    MDiagArray2<FloatComplex>::operator = (a);
-    return *this;
-  }
 
   bool operator == (const FloatComplexDiagMatrix& a) const;
   bool operator != (const FloatComplexDiagMatrix& a) const;

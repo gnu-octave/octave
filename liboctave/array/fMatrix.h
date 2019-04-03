@@ -56,7 +56,13 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : FloatNDArray () { }
+  FloatMatrix (void) = default;
+
+  FloatMatrix (const FloatMatrix& a) = default;
+
+  FloatMatrix& operator = (const FloatMatrix& a) = default;
+
+  ~FloatMatrix (void) = default;
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
     : FloatNDArray (dim_vector (r, c)) { }
@@ -68,8 +74,6 @@ public:
 
   FloatMatrix (const dim_vector& dv, float val)
     : FloatNDArray (dv.redim (2), val) { }
-
-  FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
   template <typename U>
   FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }

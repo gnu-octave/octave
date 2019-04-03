@@ -40,8 +40,13 @@ Cell : public Array<octave_value>
 {
 public:
 
-  Cell (void)
-    : Array<octave_value> (dim_vector (0, 0)) { }
+  Cell (void) = default;
+
+  Cell (const Cell& c) = default;
+
+  Cell& operator = (const Cell& c) = default;
+
+  ~Cell (void) = default;
 
   Cell (const octave_value& val)
     : Array<octave_value> (dim_vector (1, 1), val) { }
@@ -86,9 +91,6 @@ public:
   Cell (const Array<std::string>& sa);
 
   Cell (const dim_vector& dv, const string_vector& sv, bool trim = false);
-
-  Cell (const Cell& c)
-    : Array<octave_value> (c) { }
 
   bool iscellstr (void) const;
 

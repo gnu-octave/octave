@@ -148,7 +148,10 @@ parse_range_spec (const octave_value& range_spec,
     }
   else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
     {
-      ColumnVector range (range_spec.vector_value ());
+      NDArray range (range_spec.array_value ());
+      if (range.any_element_is_nan ())
+        error ("dlmread: NaN is not a valid row or column specifier");
+
       // double --> unsigned int avoiding any overflow
       rlo = static_cast<octave_idx_type> (std::min (range(0), idx_max_dbl));
       clo = static_cast<octave_idx_type> (std::min (range(1), idx_max_dbl));
@@ -181,10 +184,11 @@ i.e., the first data row corresponds to an index of zero.
 The @var{range} parameter specifies exactly which data elements are read.
 The first form of the parameter is a 4-element vector containing the upper
 left and lower right corners @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}
-where the indices are zero-based.  Alternatively, a spreadsheet style
-form such as @qcode{"A2..Q15"} or @qcode{"T1:AA5"} can be used.  The
-lowest alphabetical index @qcode{'A'} refers to the first column.  The
-lowest row index is 1.
+where the indices are zero-based.  To specify the last column---the equivalent
+of @code{end} when indexing---use the specifier @code{Inf}.  Alternatively, a
+spreadsheet style form such as @qcode{"A2..Q15"} or @qcode{"T1:AA5"} can be
+used.  The lowest alphabetical index @qcode{'A'} refers to the first column.
+The lowest row index is 1.
 
 @var{file} should be a filename or a file id given by @code{fopen}.  In the
 latter case, the file is read until end of file is reached.
@@ -274,7 +278,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
         }
 
       if (r0 < 0 || c0 < 0)
-        error ("dlmread: left & top must be positive");
+        error ("dlmread: left (R0) and top (C0) must be positive");
 
       // Short-circuit and return if range is empty
       if (r1 < r0 || c1 < c0)

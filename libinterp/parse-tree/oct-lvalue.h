@@ -58,7 +58,6 @@ namespace octave
 
     bool isstruct (void) const { return value().isstruct (); }
 
-    // OCTAVE_DEPRECATED (5, "foobar, for sure!")
     void define (const octave_value& v);
 
     void assign (octave_value::assign_op, const octave_value&);

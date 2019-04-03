@@ -44,7 +44,7 @@ namespace octave
 
     octave_lvalue (const octave_lvalue&) = default;
 
-    octave_lvalue& operator = (const octave_lvalue&) = default;
+    octave_lvalue& operator = (const octave_lvalue&) = delete;
 
     ~octave_lvalue (void) = default;
 

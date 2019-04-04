@@ -40,6 +40,18 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "utils.h"
 
+static octave_idx_type
+min_index (const ColumnVector& x)
+{
+  double min_val = x.min ();
+
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    if (min_val == x.xelem (i))
+      return i;
+
+  return 0;
+}
+
 static Matrix
 null (const Matrix& A, octave_idx_type& rank)
 {
@@ -151,16 +163,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
   Matrix eigenvecH = real (eigH.right_eigenvectors ());
-  double minReal = eigenvalH.min ();
-  octave_idx_type indminR = 0;
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      if (minReal == eigenvalH(i))
-        {
-          indminR = i;
-          break;
-        }
-    }
+  octave_idx_type indminR = min_index (eigenvalH);
 
   bool done = false;
 
@@ -186,6 +189,8 @@ qp (const Matrix& H, const ColumnVector& q,
       if (n_act == 0)
         {
           // There are no active constraints.
+
+          double minReal = eigenvalH.xelem (indminR);
 
           if (minReal > 0.0)
             {
@@ -299,16 +304,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
               ColumnVector eigenvalrH = real (eigrH.eigenvalues ());
               Matrix eigenvecrH = real (eigrH.right_eigenvectors ());
-              double mRrH = eigenvalrH.min ();
-              indminR = 0;
-              for (octave_idx_type i = 0; i < n; i++)
-                {
-                  if (mRrH == eigenvalrH(i))
-                    {
-                      indminR = i;
-                      break;
-                    }
-                }
+              indminR = min_index (eigenvalrH);
 
               ColumnVector eVrH = eigenvecrH.column (indminR);
 

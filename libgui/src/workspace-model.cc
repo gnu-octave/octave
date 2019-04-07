@@ -48,7 +48,12 @@ namespace octave
     m_columnNames.append (tr ("Value"));
     m_columnNames.append (tr ("Attribute"));
 
-    for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+    // Initialize the bachground and foreground colors of special
+    // classes in the workspace view. The structure is
+    // m_storage_class_colors(1,2,...,colors):        background colors
+    // m_storage_class_colors(colors+1,...,2*colors): foreground colors
+    int colors = resource_manager::storage_class_chars ().length ();
+    for (int i = 0; i < 2*colors; i++)
       m_storage_class_colors.append (QColor (Qt::white));
 
   }
@@ -128,13 +133,21 @@ namespace octave
 
     if (idx.isValid ())
       {
-        if (role == Qt::BackgroundColorRole && m_enable_colors)
+        if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
+            && m_enable_colors)
           {
             QString class_chars = resource_manager::storage_class_chars ();
             int actual_class
               = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
-              return QVariant (m_storage_class_colors.at (actual_class));
+              {
+                // Valid class: Get backgorund (normal indexes) or foreground
+                // color (indexes with offset)
+                if (role == Qt::ForegroundRole)
+                  actual_class += class_chars.length ();
+
+                return QVariant (m_storage_class_colors.at (actual_class));
+              }
             else
               return retval;
           }
@@ -260,7 +273,13 @@ namespace octave
         QColor setting_color = settings->value ("workspaceview/color_"
                                                 + class_chars.mid (i,1),
                                                 default_var).value<QColor> ();
+
+        QPalette p (setting_color);
         m_storage_class_colors.replace (i,setting_color);
+
+        QColor fg_color = p.color (QPalette::WindowText);
+        m_storage_class_colors.replace (i + class_chars.length (), fg_color);
+
       }
   }
 

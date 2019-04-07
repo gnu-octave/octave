@@ -199,11 +199,13 @@ namespace octave
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));
-        for (i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+        int colors = resource_manager::storage_class_chars ().length ();
+        for (i = 0; i < colors; i++)
           {
             tool_tip +=
-              QString (R"(<div style="background-color:%1;color:#000000">%2</div>)")
+              QString (R"(<div style="background-color:%1;color:%2">%3</div>)")
               .arg (m_model->storage_class_color (i).name ())
+              .arg (m_model->storage_class_color (i + colors).name ())
               .arg (resource_manager::storage_class_names ().at (i));
           }
       }

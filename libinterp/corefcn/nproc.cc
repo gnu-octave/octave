@@ -54,7 +54,7 @@ same as @code{current}, but overridable through the
   if (nargin > 1)
     print_usage ();
 
-  octave_nproc_query query = OCTAVE_NPROC_CURRENT;
+  octave_nproc_query query = OCTAVE_NPROC_CURRENT_OVERRIDABLE;
 
   if (nargin == 1)
     {
@@ -80,6 +80,9 @@ same as @code{current}, but overridable through the
 %!assert (nproc () >= 1)
 %!assert (nproc ("all") >= 1)
 %!assert (nproc ("current") >= 1)
+
+## Test that "overridable" is the default
+%!assert (nproc ("overridable"), nproc ())
 
 %!test
 %! c = nproc ("current");

@@ -79,7 +79,7 @@ namespace octave
 
     // Use number of processors available to the current process
     // This can be later changed with fftw ("threads", nthreads).
-    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
+    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT_OVERRIDABLE);
     fftw_plan_with_nthreads (nthreads);
 #endif
 
@@ -433,7 +433,7 @@ namespace octave
 
     // Use number of processors available to the current process
     // This can be later changed with fftw ("threads", nthreads).
-    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT);
+    nthreads = octave_num_processors_wrapper (OCTAVE_NPROC_CURRENT_OVERRIDABLE);
     fftwf_plan_with_nthreads (nthreads);
 #endif
 

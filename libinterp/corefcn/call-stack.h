@@ -135,15 +135,15 @@ namespace octave
     }
 
     // User code caller.
-    octave_user_code * caller_user_code (size_t nskip = 0) const;
+    octave_user_code * current_user_code (void) const;
 
     unwind_protect * curr_fcn_unwind_protect_frame (void) const;
 
     // Line in user code caller.
-    int caller_user_code_line (void) const;
+    int current_user_code_line (void) const;
 
     // Column in user code caller.
-    int caller_user_code_column (void) const;
+    int current_user_code_column (void) const;
 
     // Current function that we are debugging.
     octave_user_code * debug_user_code (void) const;
@@ -214,28 +214,25 @@ namespace octave
       goto_frame (n);
     }
 
-    bool goto_frame_relative (int n, bool verbose = false);
+    size_t find_current_user_frame (void) const;
+    stack_frame *current_user_frame (void) const;
 
-    size_t find_caller_frame (void);
+    size_t dbupdown (size_t start, int n, bool verbose);
+    size_t dbupdown (int n = -1, bool verbose = false);
 
     void goto_caller_frame (void);
 
     void goto_base_frame (void);
 
     std::list<stack_frame *>
-    backtrace_frames (size_t nskip, octave_idx_type& curr_user_frame) const;
+    backtrace_frames (octave_idx_type& curr_user_frame) const;
 
-    std::list<stack_frame *> backtrace_frames (size_t nskip = 0) const
-    {
-      octave_idx_type curr_user_frame = -1;
+    std::list<stack_frame *> backtrace_frames (void) const;
 
-      return backtrace_frames (nskip, curr_user_frame);
-    }
-
-    octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame,
+    octave_map backtrace (octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;
 
-    octave_map backtrace (size_t nskip = 0);
+    octave_map backtrace (void) const;
 
     octave_map empty_backtrace (void) const;
 

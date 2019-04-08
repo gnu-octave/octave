@@ -2085,10 +2085,9 @@ namespace octave
     // If this file is loaded, check that we aren't currently running it
     bool retval = true;
     octave_idx_type curr_frame = -1;
-    size_t nskip = 0;
     call_stack& cs
       = __get_call_stack__ ("file_editor_tab::exit_debug_and_clear");
-    octave_map stk = cs.backtrace (nskip, curr_frame, false);
+    octave_map stk = cs.backtrace (curr_frame, false);
     Cell names = stk.contents ("name");
     for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
       {
@@ -2109,7 +2108,7 @@ namespace octave
                 while (names.numel () > i)
                   {
                     octave::sleep (0.01);
-                    stk = cs.backtrace (nskip, curr_frame, false);
+                    stk = cs.backtrace (curr_frame, false);
                     names = stk.contents ("name");
                   }
               }

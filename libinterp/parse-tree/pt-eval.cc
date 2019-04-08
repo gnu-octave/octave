@@ -44,6 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "octave-link.h"
+#include "octave.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
@@ -67,6 +69,230 @@ namespace octave
 {
   // Normal evaluator.
 
+  class debugger
+  {
+  public:
+
+    debugger (interpreter& interp, size_t level)
+      : m_interpreter (interp), m_level (level), m_in_debug_repl (false),
+        m_exit_debug_repl (false), m_abort_debug_repl (false)
+    { }
+
+    void repl (const std::string& prompt = "debug> ");
+
+    bool in_debug_repl (void) const { return m_in_debug_repl; }
+
+    bool in_debug_repl (bool flag)
+    {
+      bool val = m_in_debug_repl;
+      m_in_debug_repl = flag;
+      return val;
+    }
+
+    bool exit_debug_repl (void) const { return m_exit_debug_repl; }
+
+    bool exit_debug_repl (bool flag)
+    {
+      bool val = m_exit_debug_repl;
+      m_exit_debug_repl = flag;
+      return val;
+    }
+
+    bool abort_debug_repl (void) const { return m_abort_debug_repl; }
+
+    bool abort_debug_repl (bool flag)
+    {
+      bool val = m_abort_debug_repl;
+      m_abort_debug_repl = flag;
+      return val;
+    }
+
+  private:
+
+    interpreter& m_interpreter;
+
+    size_t m_level;
+    size_t m_debug_frame;
+    bool m_in_debug_repl;
+    bool m_exit_debug_repl;
+    bool m_abort_debug_repl;
+  };
+
+  static void
+  execute_in_debugger_handler (const std::pair<std::string, int>& arg)
+  {
+    octave_link::execute_in_debugger_event (arg.first, arg.second);
+  }
+
+  void debugger::repl (const std::string& prompt)
+  {
+    unwind_protect frame;
+
+    frame.protect_var (m_in_debug_repl);
+
+    m_in_debug_repl = true;
+
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    bool silent = tw.quiet_breakpoint_flag (false);
+
+    call_stack& cs = m_interpreter.get_call_stack ();
+
+    frame.add_method (cs, &call_stack::restore_frame,
+                      cs.current_frame ());
+
+    cs.goto_frame (tw.debug_frame ());
+
+    octave_user_code *caller = cs.current_user_code ();
+    std::string nm;
+    int curr_debug_line;
+
+    if (caller)
+      {
+        nm = caller->fcn_file_name ();
+
+        if (nm.empty ())
+          nm = caller->name ();
+
+        curr_debug_line = cs.current_user_code_line ();
+      }
+    else
+      curr_debug_line = cs.current_line ();
+
+    std::ostringstream buf;
+
+    input_system& input_sys = m_interpreter.get_input_system ();
+
+    if (! nm.empty ())
+      {
+        if (input_sys.gud_mode ())
+          {
+            static char ctrl_z = 'Z' & 0x1f;
+
+            buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
+          }
+        else
+          {
+            // FIXME: we should come up with a clean way to detect
+            // that we are stopped on the no-op command that marks the
+            // end of a function or script.
+
+            if (! silent)
+              {
+                stack_frame *frm = cs.current_user_frame ();
+
+                frm->display_stopped_in_message (buf);
+              }
+
+            octave_link::enter_debugger_event (nm, curr_debug_line);
+
+            octave_link::set_workspace ();
+
+            frame.add_fcn (execute_in_debugger_handler,
+                           std::pair<std::string, int> (nm, curr_debug_line));
+
+            if (! silent)
+              {
+                std::string line_buf;
+
+                if (caller)
+                  line_buf = caller->get_code_line (curr_debug_line);
+
+                if (! line_buf.empty ())
+                  buf << curr_debug_line << ": " << line_buf;
+              }
+          }
+      }
+
+    if (silent)
+      command_editor::erase_empty_line (true);
+
+    std::string msg = buf.str ();
+
+    if (! msg.empty ())
+      std::cerr << msg << std::endl;
+
+    std::string tmp_prompt = prompt;
+    if (m_level > 0)
+      tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt;
+
+    frame.add_method (input_sys, &input_system::set_PS1, input_sys.PS1 ());
+    input_sys.PS1 (tmp_prompt);
+
+    // FIXME: should debugging be possible in an embedded interpreter?
+
+    application *app = application::app ();
+
+    if (! app->interactive ())
+      {
+
+        frame.add_method (app, &application::interactive,
+                          app->interactive ());
+
+        frame.add_method (app, &application::forced_interactive,
+                          app->forced_interactive ());
+
+        app->interactive (true);
+
+        app->forced_interactive (true);
+      }
+
+    parser curr_parser (m_interpreter);
+
+    while (m_in_debug_repl)
+      {
+        if (m_exit_debug_repl || m_abort_debug_repl || tw.dbstep_flag ())
+          break;
+
+        try
+          {
+            Vtrack_line_num = false;
+
+            reset_error_handler ();
+
+            curr_parser.reset ();
+
+            int retval = curr_parser.run ();
+
+            if (command_editor::interrupt (false))
+              break;
+            else
+              {
+                if (retval == 0 && curr_parser.m_stmt_list)
+                  {
+                    curr_parser.m_stmt_list->accept (tw);
+
+                    if (octave_completion_matches_called)
+                      octave_completion_matches_called = false;
+
+                    // FIXME: the following statement is here because
+                    // the last command may have been a dbup, dbdown, or
+                    // dbstep command that changed the current debug
+                    // frame.  If so, we need to reset the current frame
+                    // for the call stack.  But is this right way to do
+                    // this job?  What if the statement list was
+                    // something like "dbup; dbstack"?  Will the call to
+                    // dbstack use the right frame?  If not, how can we
+                    // fix this problem?
+                    cs.goto_frame (tw.debug_frame ());
+                  }
+
+                octave_quit ();
+              }
+          }
+        catch (const execution_exception& e)
+          {
+            std::string stack_trace = e.info ();
+
+            if (! stack_trace.empty ())
+              std::cerr << stack_trace;
+
+            // Ignore errors when in debugging mode;
+            interpreter::recover_from_exception ();
+          }
+      }
+  }
+
   bool tree_evaluator::at_top_level (void) const
   {
     return m_call_stack.at_top_level ();
@@ -81,6 +307,12 @@ namespace octave
     m_expr_result_value_list = octave_value_list ();
     m_lvalue_list_stack.clear ();
     m_nargout_stack.clear ();
+
+    while (! m_debugger_stack.empty ())
+      {
+        delete m_debugger_stack.top ();
+        m_debugger_stack.pop ();
+      }
   }
 
   int tree_evaluator::repl (bool interactive)
@@ -207,7 +439,7 @@ namespace octave
   {
     std::string fname;
 
-    octave_user_code *fcn = m_call_stack.caller_user_code ();
+    octave_user_code *fcn = m_call_stack.current_user_code ();
 
     if (fcn)
       {
@@ -844,17 +1076,59 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    m_debug_mode = m_bp_table.have_breakpoints () || Vdebugging;
-
-    m_dbstep_flag = 0;
+    m_debug_mode = (m_bp_table.have_breakpoints () ||
+                    m_dbstep_flag != 0 || in_debug_repl ());
   }
 
   void
   tree_evaluator::reset_debug_state (bool mode)
   {
     m_debug_mode = mode;
+  }
 
-    m_dbstep_flag = 0;
+  void
+  tree_evaluator::enter_debugger (const std::string& prompt)
+  {
+    octave::unwind_protect frame;
+
+    frame.add_fcn (octave::command_history::ignore_entries,
+                   octave::command_history::ignoring_entries ());
+
+    octave::command_history::ignore_entries (false);
+
+    frame.add_method (m_call_stack, &octave::call_stack::restore_frame,
+                      m_call_stack.current_frame ());
+
+    // Go up to the nearest user code frame.
+    m_call_stack.dbupdown (0);
+
+    // FIXME: probably we just want to print one line, not the
+    // entire statement, which might span many lines...
+    //
+    // tree_print_code tpc (octave_stdout);
+    // stmt.accept (tpc);
+
+    Vtrack_line_num = false;
+
+    debugger *dbgr = new debugger (m_interpreter, m_debugger_stack.size ());
+
+    m_debug_frame = m_call_stack.current_frame ();
+
+    m_debugger_stack.push (dbgr);
+
+    dbgr->repl (prompt);
+  }
+
+  void
+  tree_evaluator::keyboard (const std::string& prompt)
+  {
+    enter_debugger (prompt);
+  }
+
+  void
+  tree_evaluator::dbupdown (int n, bool verbose)
+  {
+    m_debug_frame = m_call_stack.dbupdown (n, verbose);
   }
 
   Matrix
@@ -3244,11 +3518,11 @@ namespace octave
 
     // Act like dbcont.
 
-    if (Vdebugging && m_call_stack.current_frame () == m_current_frame)
+    if (in_debug_repl () && m_call_stack.current_frame () == m_debug_frame)
       {
-        Vdebugging = false;
+        m_dbstep_flag = 0;
 
-        reset_debug_state ();
+        exit_debug_repl (true);
       }
     else if (m_statement_context == SC_FUNCTION
              || m_statement_context == SC_SCRIPT
@@ -3913,17 +4187,42 @@ namespace octave
   {
     bool break_on_this_statement = false;
 
+    debugger *curr_debugger
+      = (m_debugger_stack.empty () ? nullptr : m_debugger_stack.top ());
+
+    if (curr_debugger)
+      {
+        if (curr_debugger->exit_debug_repl ())
+          {
+            // This action corresponds to dbcont.
+
+            m_debugger_stack.pop ();
+            delete curr_debugger;
+
+            reset_debug_state ();
+          }
+        else if (curr_debugger->abort_debug_repl ())
+          {
+            // This action corresponds to dbquit.
+
+            m_debugger_stack.pop ();
+            delete curr_debugger;
+
+            debug_mode (false);
+
+            throw interrupt_exception ();
+          }
+      }
+
     if (is_breakpoint)
       {
-        break_on_this_statement = true;
-
         m_dbstep_flag = 0;
 
-        m_current_frame = m_call_stack.current_frame ();
+        enter_debugger ();
       }
     else if (m_dbstep_flag > 0)
       {
-        if (m_call_stack.current_frame () == m_current_frame)
+        if (m_call_stack.current_frame () == m_debug_frame)
           {
             if (m_dbstep_flag == 1 || is_end_of_fcn_or_script)
               {
@@ -3934,8 +4233,6 @@ namespace octave
                 // return to prompt.
 
                 break_on_this_statement = true;
-
-                m_dbstep_flag = 0;
               }
             else
               {
@@ -3946,15 +4243,13 @@ namespace octave
 
           }
         else if (m_dbstep_flag == 1
-                 && m_call_stack.current_frame () < m_current_frame)
+                 && m_call_stack.current_frame () < m_debug_frame)
           {
             // We stepped out from the end of a function.
 
-            m_current_frame = m_call_stack.current_frame ();
+            m_debug_frame = m_call_stack.current_frame ();
 
             break_on_this_statement = true;
-
-            m_dbstep_flag = 0;
           }
       }
     else if (m_dbstep_flag == -1)
@@ -3963,9 +4258,7 @@ namespace octave
 
         break_on_this_statement = true;
 
-        m_dbstep_flag = 0;
-
-        m_current_frame = m_call_stack.current_frame ();
+        m_debug_frame = m_call_stack.current_frame ();
       }
     else if (m_dbstep_flag == -2)
       {
@@ -3976,28 +4269,21 @@ namespace octave
         // that frame.
 
         if (is_end_of_fcn_or_script
-            && m_call_stack.current_frame () == m_current_frame)
+            && m_call_stack.current_frame () == m_debug_frame)
           m_dbstep_flag = -1;
       }
 
     if (break_on_this_statement)
       {
-        input_system& input_sys = m_interpreter.get_input_system ();
+        m_dbstep_flag = 0;
 
-        input_sys.keyboard ();
+        // We are stepping so the debugger should already exist.  If
+        // not, something went wrong.
+        if (m_debugger_stack.empty ())
+          error ("internal error: dbstep without an active debugger!");
+
+        m_debugger_stack.top()->repl ();
       }
-  }
-
-  // ARGS is currently unused, but since the do_keyboard function in
-  // input.cc accepts an argument list, we preserve it here so that the
-  // interface won't have to change if we decide to use it in the future.
-
-  octave_value
-  tree_evaluator::do_keyboard (const octave_value_list& args) const
-  {
-    input_system& input_sys = m_interpreter.get_input_system ();
-
-    return input_sys.keyboard (args);
   }
 
   bool
@@ -4415,6 +4701,48 @@ namespace octave
     return octave_value ();
   }
 
+  bool tree_evaluator::in_debug_repl (void) const
+  {
+    return (m_debugger_stack.empty ()
+            ? false : m_debugger_stack.top()->in_debug_repl ());
+  }
+
+  bool tree_evaluator::in_debug_repl (bool flag)
+  {
+    if (! m_debugger_stack.empty ())
+      error ("attempt to set in_debug_repl without debugger object");
+
+    return m_debugger_stack.top()->in_debug_repl (flag);
+  }
+
+  bool tree_evaluator::exit_debug_repl (void) const
+  {
+    return (m_debugger_stack.empty ()
+            ? false : m_debugger_stack.top()->exit_debug_repl (true));
+  }
+
+  bool tree_evaluator::exit_debug_repl (bool flag)
+  {
+    if (m_debugger_stack.empty ())
+      error ("attempt to set exit_debug_repl without debugger object");
+
+    return m_debugger_stack.top()->exit_debug_repl (flag);
+  }
+
+  bool tree_evaluator::abort_debug_repl (void) const
+  {
+    return (m_debugger_stack.empty ()
+            ? false : m_debugger_stack.top()->abort_debug_repl ());
+  }
+
+  bool tree_evaluator::abort_debug_repl (bool flag)
+  {
+    if (m_debugger_stack.empty ())
+      error ("attempt to set abort_debug_repl without debugger object");
+
+    return m_debugger_stack.top()->abort_debug_repl (flag);
+  }
+
   octave_value
   tree_evaluator::PS4 (const octave_value_list& args, int nargout)
   {
@@ -4526,7 +4854,7 @@ namespace octave
 
     std::string full_name = nm;
 
-    octave_user_code *fcn = m_call_stack.caller_user_code ();
+    octave_user_code *fcn = m_call_stack.current_user_code ();
 
     bool found = false;
 

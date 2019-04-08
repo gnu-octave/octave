@@ -44,9 +44,6 @@ extern bool octave_completion_matches_called;
 // the next user prompt.
 extern OCTINTERP_API bool Vdrawnow_requested;
 
-// TRUE if we are in debugging mode.
-extern OCTINTERP_API bool Vdebugging;
-
 // TRUE if we are not executing a command direct from debug> prompt.
 extern OCTINTERP_API bool Vtrack_line_num;
 
@@ -155,9 +152,6 @@ namespace octave
     octave_value_list
     get_user_input (const octave_value_list& args, int nargout);
 
-    octave_value
-    keyboard (const octave_value_list& args = octave_value_list ());
-
     bool have_input_event_hooks (void) const;
 
     void add_input_event_hook (const hook_function& hook_fcn);
@@ -196,8 +190,6 @@ namespace octave
     hook_function_list m_input_event_hook_functions;
 
     std::string gnu_readline (const std::string& s, bool& eof) const;
-
-    void get_debug_input (const std::string& prompt);
   };
 
   class base_reader
@@ -338,10 +330,6 @@ namespace octave
 
 OCTAVE_DEPRECATED (5, "use 'octave::input_system::yes_or_no' instead")
 extern bool octave_yes_or_no (const std::string& prompt);
-
-OCTAVE_DEPRECATED (5, "use 'octave::input_system::keyboard' instead")
-extern octave_value do_keyboard (const octave_value_list& args
-                                 = octave_value_list ());
 
 OCTAVE_DEPRECATED (5, "use 'octave::input_system::clear_input_event_hooks' instead")
 extern void remove_input_event_hook_functions (void);

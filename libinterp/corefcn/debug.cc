@@ -257,6 +257,9 @@ all breakpoints within the file are cleared.
         }
     }
 
+  // If we add a breakpoint, we also need to reset debug_mode.
+  tw.reset_debug_state ();
+
   return retval;
 }
 
@@ -327,6 +330,9 @@ files.
       if (symbol_name != "")
         bptab.remove_breakpoint (symbol_name, lines);
     }
+
+  // If we remove a breakpoint, we also need to reset debug_mode.
+  tw.reset_debug_state ();
 
   return ovl ();
 }
@@ -401,7 +407,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
   else
     {
 /*
-      if (Vdebugging)
+      if (tw.in_debug_repl ())
         {
           octave_user_code *dbg_fcn = tw.get_user_code ();
           if (dbg_fcn)
@@ -561,42 +567,11 @@ is stopped.
 @seealso{dbstack, dblist, dbstatus, dbcont, dbstep, dbup, dbdown}
 @end deftypefn */)
 {
-  octave::tree_evaluator& tw = interp.get_evaluator ();
-
-  octave_user_code *dbg_fcn = tw.get_user_code ();
-
-  if (! dbg_fcn)
-    {
-      octave_stdout << "stopped at top level" << std::endl;
-      return ovl ();
-    }
-
-  octave_stdout << "stopped in " << dbg_fcn->name () << " at ";
-
   octave::call_stack& cs = interp.get_call_stack ();
 
-  int l = cs.debug_user_code_line ();
+  octave::stack_frame *frm = cs.current_user_frame ();
 
-  if (l > 0)
-    {
-      octave_stdout << "line " << l;
-
-      std::string file_name = dbg_fcn->fcn_file_name ();
-
-      if (! file_name.empty ())
-        {
-          octave_stdout << " [" << file_name << ']' << std::endl;
-
-          std::string line = dbg_fcn->get_code_line (l);
-
-          if (! line.empty ())
-            octave_stdout << l << ": " << line << std::endl;
-        }
-      else
-        octave_stdout << std::endl;
-    }
-  else
-    octave_stdout << "<unknown line>" << std::endl;
+  frm->display_stopped_in_message (octave_stdout);
 
   return ovl ();
 }
@@ -909,10 +884,10 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
   if (nargout == 0)
     {
-      octave_map stk = cs.backtrace (nskip, curr_frame);
-      octave_idx_type nframes_to_display = stk.numel ();
+      octave_map stk = cs.backtrace (curr_frame);
+      octave_idx_type nframes = stk.numel ();
 
-      if (nframes_to_display > 0)
+      if (nframes > 0)
         {
           octave::preserve_stream_state stream_state (os);
 
@@ -926,14 +901,14 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 
           size_t max_name_len = 0;
 
-          for (octave_idx_type i = 0; i < nframes_to_display; i++)
+          for (octave_idx_type i = nskip; i < nframes; i++)
             {
               std::string name = names(i).string_value ();
 
               max_name_len = std::max (name.length (), max_name_len);
             }
 
-          for (octave_idx_type i = 0; i < nframes_to_display; i++)
+          for (octave_idx_type i = nskip; i < nframes; i++)
             {
               std::string name = names(i).string_value ();
               std::string file = files(i).string_value ();
@@ -955,7 +930,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
     }
   else
     {
-      octave_map stk = cs.backtrace (nskip, curr_frame, false);
+      octave_map stk = cs.backtrace (curr_frame, false);
 
       // If current stack frame is not in the list curr_frame will be
       // -1 and either nskip caused us to skip it or we are at the top
@@ -1050,10 +1025,9 @@ do_dbupdown (octave::interpreter& interp, const octave_value_list& args,
   if (who == "dbup")
     n = -n;
 
-  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  if (! cs.goto_frame_relative (n, true))
-    error ("%s: invalid stack frame", who.c_str ());
+  tw.dbupdown (n, true);
 }
 
 DEFMETHOD (dbup, interp, args, ,
@@ -1109,7 +1083,9 @@ function returns.
 @seealso{dbcont, dbquit}
 @end deftypefn */)
 {
-  if (! Vdebugging)
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  if (! tw.in_debug_repl ())
     error ("dbstep: can only be called in debug mode");
 
   int nargin = args.length ();
@@ -1117,45 +1093,37 @@ function returns.
   if (nargin > 1)
     print_usage ();
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
+  int n = 0;
 
   if (nargin == 1)
     {
-      std::string arg = args(0).xstring_value ("dbstep: input argument must be a string");
+      std::string arg
+        = args(0).xstring_value ("dbstep: input argument must be a string");
 
       if (arg == "in")
-        {
-          Vdebugging = false;
-          Vtrack_line_num = true;
-
-          tw.set_dbstep_flag (-1);
-        }
+        n = -1;
       else if (arg == "out")
-        {
-          Vdebugging = false;
-          Vtrack_line_num = true;
-
-          tw.set_dbstep_flag (-2);
-        }
+        n = -2;
       else
         {
-          int n = atoi (arg.c_str ());
+          n = atoi (arg.c_str ());
 
           if (n < 1)
             error ("dbstep: invalid argument");
-
-          Vdebugging = false;
-          Vtrack_line_num = true;
-
-          tw.set_dbstep_flag (n);
         }
     }
   else
+    n = 1;
+
+  if (n != 0)
     {
-      Vdebugging = false;
       Vtrack_line_num = true;
 
-      tw.set_dbstep_flag (1);
+      tw.set_dbstep_flag (n);
+
+      // If we set the dbstep flag, we also need to reset debug_mode.
+      tw.reset_debug_state ();
+
     }
 
   return ovl ();
@@ -1170,18 +1138,17 @@ Leave command-line debugging mode and continue code execution normally.
 @seealso{dbstep, dbquit}
 @end deftypefn */)
 {
-  if (! Vdebugging)
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  if (! tw.in_debug_repl ())
     error ("dbcont: can only be called in debug mode");
 
   if (args.length () != 0)
     print_usage ();
 
-  Vdebugging = false;
   Vtrack_line_num = true;
 
-  octave::tree_evaluator& tw = interp.get_evaluator ();
-
-  tw.reset_debug_state ();
+  tw.exit_debug_repl (true);
 
   return ovl ();
 }
@@ -1194,21 +1161,15 @@ the Octave prompt.
 @seealso{dbcont, dbstep}
 @end deftypefn */)
 {
-  if (! Vdebugging)
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+
+  if (! tw.in_debug_repl ())
     error ("dbquit: can only be called in debug mode");
 
   if (args.length () != 0)
     print_usage ();
 
-  // FIXME: there are too many debug mode flags!
-
-  Vdebugging = false;
-
-  octave::tree_evaluator& tw = interp.get_evaluator ();
-
-  tw.reset_debug_state (false);
-
-  throw octave::interrupt_exception ();
+  tw.abort_debug_repl (true);
 
   return ovl ();
 }
@@ -1223,7 +1184,9 @@ Return true if in debugging mode, otherwise false.
   if (args.length () != 0)
     print_usage ();
 
-  return ovl (Vdebugging);
+  octave::tree_evaluator& tw = octave::__get_evaluator__ ("Fisdebugmode");
+
+  return ovl (tw.in_debug_repl ());
 }
 
 DEFMETHOD (__db_next_breakpoint_quiet__, interp, args, ,

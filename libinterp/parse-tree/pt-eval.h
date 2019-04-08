@@ -46,6 +46,7 @@ namespace octave
   class tree_decl_elt;
   class tree_expression;
 
+  class debugger;
   class interpreter;
   class unwind_protect;
 
@@ -130,9 +131,9 @@ namespace octave
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
         m_expr_result_value_list (), m_lvalue_list_stack (),
         m_nargout_stack (), m_autoload_map (), m_bp_table (*this),
-        m_call_stack (*this), m_profiler (), m_current_frame (0),
+        m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
-        m_max_recursion_depth (256),
+        m_debugger_stack (), m_max_recursion_depth (256),
         m_whos_line_format ("  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n"),
         m_silent_functions (false), m_string_fill_char (' '),
         m_PS4 ("+ "), m_dbstep_flag (0), m_echo (ECHO_OFF),
@@ -289,7 +290,11 @@ namespace octave
 
     void reset_debug_state (bool mode);
 
-    void set_dbstep_flag (int step) { m_dbstep_flag = step; }
+    void enter_debugger (const std::string& prompt = "debug> ");
+
+    void keyboard (const std::string& prompt = "keyboard> ");
+
+    void dbupdown (int n, bool verbose = false);
 
     // Possible types of evaluation contexts.
     enum stmt_list_type
@@ -557,12 +562,12 @@ namespace octave
     octave_value
     silent_functions (const octave_value_list& args, int nargout);
 
-    size_t current_frame (void) const { return m_current_frame; }
+    size_t debug_frame (void) const { return m_debug_frame; }
 
-    size_t current_frame (size_t n)
+    size_t debug_frame (size_t n)
     {
-      size_t val = m_current_frame;
-      m_current_frame = n;
+      size_t val = m_debug_frame;
+      m_debug_frame = n;
       return val;
     }
 
@@ -592,6 +597,16 @@ namespace octave
       m_string_fill_char = c;
       return val;
     }
+
+    // The following functions are provided for convenience and forward
+    // to the corresponding functions in the debugger class for the
+    // current debugger (if any).
+    bool in_debug_repl (void) const;
+    bool in_debug_repl (bool flag);
+    bool exit_debug_repl (void) const;
+    bool exit_debug_repl (bool flag);
+    bool abort_debug_repl (void) const;
+    bool abort_debug_repl (bool flag);
 
     octave_value PS4 (const octave_value_list& args, int nargout);
 
@@ -640,6 +655,17 @@ namespace octave
       return val;
     }
 
+    int dbstep_flag (void) const { return m_dbstep_flag; }
+
+    int dbstep_flag (int val)
+    {
+      int old_val = m_dbstep_flag;
+      m_dbstep_flag = val;
+      return old_val;
+    }
+
+    void set_dbstep_flag (int step) { m_dbstep_flag = step; }
+
     octave_value echo (const octave_value_list& args, int nargout);
 
     int echo (void) const { return m_echo; }
@@ -676,9 +702,6 @@ namespace octave
 
     void do_breakpoint (bool is_breakpoint,
                         bool is_end_of_fcn_or_script = false);
-
-    virtual octave_value
-    do_keyboard (const octave_value_list& args = octave_value_list ()) const;
 
     bool is_logically_true (tree_expression *expr, const char *warn_for);
 
@@ -730,11 +753,18 @@ namespace octave
     profiler m_profiler;
 
     // The number of the stack frame we are currently debugging.
-    size_t m_current_frame;
+    size_t m_debug_frame;
 
     bool m_debug_mode;
 
     bool m_quiet_breakpoint_flag;
+
+    // When entering the debugger we push it on this stack.  Managing
+    // debugger invocations this way allows us to handle recursive
+    // debugger calls.  When we exit a debugger the object is popped
+    // from the stack and deleted and we resume working with the
+    // previous debugger (if any) that is now at the top of the stack.
+    std::stack<debugger *> m_debugger_stack;
 
     // Maximum nesting level for functions, scripts, or sourced files
     // called recursively.

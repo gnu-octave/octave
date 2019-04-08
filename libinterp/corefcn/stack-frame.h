@@ -140,9 +140,9 @@ namespace octave
 
     stack_frame (void) = delete;
 
-    stack_frame (call_stack& cs, size_t prev, stack_frame *static_link,
-                 stack_frame *access_link)
-      : m_call_stack (cs), m_line (-1), m_column (-1), m_prev (prev),
+    stack_frame (call_stack& cs, size_t index,
+                 stack_frame *static_link, stack_frame *access_link)
+      : m_call_stack (cs), m_line (-1), m_column (-1), m_index (index),
         m_static_link (static_link), m_access_link (access_link),
         m_dispatch_class ()
     { }
@@ -166,7 +166,7 @@ namespace octave
 
     virtual void clear_values (void);
 
-    size_t previous (void) const { return m_prev; }
+    size_t index (void) const { return m_index; }
 
     void line (int l) { m_line = l; }
     int line (void) const { return m_line; }
@@ -544,6 +544,8 @@ namespace octave
       m_dispatch_class = class_name;
     }
 
+    void display_stopped_in_message (std::ostream& os) const;
+
     virtual void mark_scope (const symbol_record&, scope_flags) = 0;
 
     virtual void display (bool follow = true) const;
@@ -562,10 +564,8 @@ namespace octave
     int m_line;
     int m_column;
 
-    // FIXME: We could probably eliminate this variable.  Now that we
-    // maintain the static and access links to previous frames, this
-    // index should not be necessary.
-    size_t m_prev;
+    // Index in call stack.
+    size_t m_index;
 
     // Pointer to the nearest parent frame that contains variable
     // information (script, function, or scope).
@@ -588,8 +588,8 @@ namespace octave
     compiled_fcn_stack_frame (void) = delete;
 
     compiled_fcn_stack_frame (call_stack& cs, octave_function *fcn,
-                              size_t prev, stack_frame *static_link)
-      : stack_frame (cs, prev, static_link, static_link->access_link ()),
+                              size_t index, stack_frame *static_link)
+      : stack_frame (cs, index, static_link, static_link->access_link ()),
         m_fcn (fcn)
     { }
 
@@ -709,7 +709,7 @@ namespace octave
     script_stack_frame (void) = delete;
 
     script_stack_frame (call_stack& cs, octave_user_script *script,
-                        unwind_protect *up_frame, size_t prev,
+                        unwind_protect *up_frame, size_t index,
                         stack_frame *static_link);
 
     script_stack_frame (const script_stack_frame& elt) = default;
@@ -819,9 +819,9 @@ namespace octave
     base_value_stack_frame (void) = delete;
 
     base_value_stack_frame (call_stack& cs, size_t num_symbols,
-                            size_t prev, stack_frame *static_link,
+                            size_t index, stack_frame *static_link,
                             stack_frame *access_link)
-      : stack_frame (cs, prev, static_link, access_link),
+      : stack_frame (cs, index, static_link, access_link),
         m_values (num_symbols, octave_value ()),
         m_flags (num_symbols, LOCAL),
         m_auto_vars (NUM_AUTO_VARS, octave_value ())
@@ -923,10 +923,10 @@ namespace octave
     user_fcn_stack_frame (void) = delete;
 
     user_fcn_stack_frame (call_stack& cs, octave_user_function *fcn,
-                          unwind_protect *up_frame, size_t prev,
+                          unwind_protect *up_frame, size_t index,
                           stack_frame *static_link,
                           stack_frame *access_link = nullptr)
-      : base_value_stack_frame (cs, get_num_symbols (fcn), prev, static_link,
+      : base_value_stack_frame (cs, get_num_symbols (fcn), index, static_link,
                                 (access_link
                                  ? access_link
                                  : get_access_link (fcn, static_link))),
@@ -1009,9 +1009,9 @@ namespace octave
 
     scope_stack_frame (void) = delete;
 
-    scope_stack_frame (call_stack& cs, size_t prev, const symbol_scope& scope,
-                       stack_frame *static_link)
-      : base_value_stack_frame (cs, scope.num_symbols (), prev,
+    scope_stack_frame (call_stack& cs, const symbol_scope& scope,
+                        size_t index, stack_frame *static_link)
+      : base_value_stack_frame (cs, scope.num_symbols (), index,
                                 static_link, nullptr),
         m_scope (scope)
     { }

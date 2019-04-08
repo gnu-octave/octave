@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "lo-regexp.h"
 #include "str-vec.h"
 
@@ -54,86 +56,6 @@ static const octave_fields bt_fields (bt_fieldnames);
 
 namespace octave
 {
-  class stack_trace_generator : public stack_frame_walker
-  {
-  public:
-
-    stack_trace_generator (size_t nskip = 0)
-      : stack_frame_walker (), m_frames (), m_nskip (nskip),
-        m_curr_frame (0)
-    { }
-
-    stack_trace_generator (const stack_trace_generator&) = delete;
-
-    stack_trace_generator& operator = (const stack_trace_generator&) = delete;
-
-    ~stack_trace_generator (void) = default;
-
-    std::list<stack_frame *> frames (void) const { return m_frames; }
-
-    size_t current_frame (void) const { return m_curr_frame; }
-
-    void visit_compiled_fcn_stack_frame (compiled_fcn_stack_frame& frame)
-    {
-      stack_frame *slink = frame.static_link ();
-
-      if (slink)
-        slink->accept (*this);
-    }
-
-    void visit_script_stack_frame (script_stack_frame& frame)
-    {
-      maybe_add_frame (frame);
-
-      stack_frame *slink = frame.static_link ();
-
-      if (slink)
-        slink->accept (*this);
-    }
-
-    void visit_user_fcn_stack_frame (user_fcn_stack_frame& frame)
-    {
-      maybe_add_frame (frame);
-
-      symbol_scope scope = frame.get_scope ();
-
-      stack_frame *slink = frame.static_link ();
-
-      if (slink)
-        slink->accept (*this);
-    }
-
-    void visit_scope_stack_frame (scope_stack_frame& frame)
-    {
-      symbol_scope scope = frame.get_scope ();
-
-      stack_frame *slink = frame.static_link ();
-
-      if (slink)
-        slink->accept (*this);
-    }
-
-  private:
-
-    void maybe_add_frame (stack_frame& frame)
-    {
-      if (m_nskip > 0)
-        {
-          m_nskip--;
-          return;
-        }
-
-      m_frames.push_back (&frame);
-    }
-
-    std::list<stack_frame *> m_frames;
-
-    // Number of user code frames to skip.
-    size_t m_nskip;
-
-    size_t m_curr_frame;
-  };
-
   call_stack::call_stack (tree_evaluator& evaluator)
     : m_evaluator (evaluator), m_cs (), m_curr_frame (0),
       m_max_stack_depth (1024), m_global_values ()
@@ -167,42 +89,32 @@ namespace octave
     return retval;
   }
 
-  octave_user_code * call_stack::caller_user_code (size_t nskip) const
+  octave_user_code * call_stack::current_user_code (void) const
   {
-    octave_user_code *retval = nullptr;
+    // Start at current frame.
 
-    size_t xframe = m_curr_frame;
+    size_t xframe = find_current_user_frame ();
 
-    while (xframe != 0)
+    if (xframe > 0)
       {
         const stack_frame *elt = m_cs[xframe];
 
         octave_function *f = elt->function ();
 
         if (f && f->is_user_code ())
-          {
-            if (nskip > 0)
-              nskip--;
-            else
-              {
-                retval = dynamic_cast<octave_user_code *> (f);
-                break;
-              }
-          }
-
-        xframe = m_cs[xframe]->previous ();
+          return dynamic_cast<octave_user_code *> (f);
       }
 
-    return retval;
+    return nullptr;
   }
 
-  int call_stack::caller_user_code_line (void) const
+  int call_stack::current_user_code_line (void) const
   {
-    int retval = -1;
+    // Start at current frame.
 
-    size_t xframe = m_curr_frame;
+    size_t xframe = find_current_user_frame ();
 
-    while (xframe != 0)
+    if (xframe > 0)
       {
         const stack_frame *elt = m_cs[xframe];
 
@@ -210,24 +122,47 @@ namespace octave
 
         if (f && f->is_user_code ())
           {
-            if (elt->line () > 0)
-              {
-                retval = elt->line ();
-                break;
-              }
-          }
+            int line = elt->line ();
 
-        xframe = m_cs[xframe]->previous ();
+            if (line > 0)
+              return line;
+          }
       }
 
-    return retval;
+    return -1;
+  }
+
+  int call_stack::current_user_code_column (void) const
+  {
+    // Start at current frame.
+
+    size_t xframe = find_current_user_frame ();
+
+    if (xframe > 0)
+      {
+        const stack_frame *elt = m_cs[xframe];
+
+        octave_function *f = elt->function ();
+
+        if (f && f->is_user_code ())
+          {
+            int column = elt->column ();
+
+            if (column > 0)
+              return column;
+          }
+      }
+
+    return -1;
   }
 
   unwind_protect * call_stack::curr_fcn_unwind_protect_frame (void) const
   {
-    size_t xframe = m_curr_frame;
+    // Start at current frame.
 
-    while (xframe != 0)
+    size_t xframe = find_current_user_frame ();
+
+    if (xframe > 0)
       {
         const stack_frame *elt = m_cs[xframe];
 
@@ -235,38 +170,9 @@ namespace octave
 
         if (f && f->is_user_code ())
           return elt->unwind_protect_frame ();
-
-        xframe = m_cs[xframe]->previous ();
       }
 
     return nullptr;
-  }
-
-  int call_stack::caller_user_code_column (void) const
-  {
-    int retval = -1;
-
-    size_t xframe = m_curr_frame;
-
-    while (xframe != 0)
-      {
-        const stack_frame *elt = m_cs[xframe];
-
-        octave_function *f = elt->function ();
-
-        if (f && f->is_user_code ())
-          {
-            if (elt->column ())
-              {
-                retval = elt->column ();
-                break;
-              }
-          }
-
-        xframe = m_cs[xframe]->previous ();
-      }
-
-    return retval;
   }
 
   octave_user_code * call_stack::debug_user_code (void) const
@@ -444,7 +350,10 @@ namespace octave
 
     stack_frame *slink = get_static_link (prev_frame);
 
-    m_cs.push_back (new scope_stack_frame (*this, prev_frame, scope, slink));
+    stack_frame *new_frame
+      = new scope_stack_frame (*this, scope, m_curr_frame, slink);
+
+    m_cs.push_back (new_frame);
   }
 
   void call_stack::push (octave_user_function *fcn, unwind_protect *up_frame,
@@ -459,9 +368,11 @@ namespace octave
 
     stack_frame *slink = get_static_link (prev_frame);
 
-    m_cs.push_back (new user_fcn_stack_frame (*this, fcn, up_frame,
-                                              prev_frame, slink,
-                                              closure_frames));
+    stack_frame *new_frame
+      = new user_fcn_stack_frame (*this, fcn, up_frame, m_curr_frame,
+                                  slink, closure_frames);
+
+    m_cs.push_back (new_frame);
   }
 
   void call_stack::push (octave_user_script *script, unwind_protect *up_frame)
@@ -475,8 +386,10 @@ namespace octave
 
     stack_frame *slink = get_static_link (prev_frame);
 
-    m_cs.push_back (new script_stack_frame (*this, script, up_frame,
-                                            prev_frame, slink));
+    stack_frame *new_frame
+      = new script_stack_frame (*this, script, up_frame, m_curr_frame, slink);
+
+    m_cs.push_back (new_frame);
   }
 
   void call_stack::push (octave_function *fcn)
@@ -490,8 +403,10 @@ namespace octave
 
     stack_frame *slink = get_static_link (prev_frame);
 
-    m_cs.push_back (new compiled_fcn_stack_frame (*this, fcn, prev_frame,
-                                                  slink));
+    stack_frame *new_frame
+      = new compiled_fcn_stack_frame (*this, fcn, m_curr_frame, slink);
+
+    m_cs.push_back (new_frame);
   }
 
   bool call_stack::goto_frame (size_t n, bool verbose)
@@ -504,111 +419,156 @@ namespace octave
 
         m_curr_frame = n;
 
-        const stack_frame *elt = m_cs[n];
-
         if (verbose)
-          octave_stdout << "stopped in " << elt->fcn_name ()
-                        << " at line " << elt->line ()
-                        << " column " << elt->column ()
-                        << " [" << elt->fcn_file_name () << "] "
-                        << std::endl;
+          {
+            const stack_frame *elt = m_cs[n];
+
+            elt->display_stopped_in_message (octave_stdout);
+          }
       }
 
     return retval;
   }
 
-  bool call_stack::goto_frame_relative (int nskip, bool verbose)
+  size_t call_stack::find_current_user_frame (void) const
   {
-    bool retval = false;
+    size_t user_frame = m_curr_frame;
+
+    stack_frame *frm = m_cs[user_frame];
+
+    if (! (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
+           || frm->is_scope_frame ()))
+      {
+        frm = frm->static_link ();
+
+        user_frame = frm->index ();
+      }
+
+    return user_frame;
+  }
+
+  stack_frame *call_stack::current_user_frame (void) const
+  {
+    size_t frame = find_current_user_frame ();
+
+    return m_cs[frame];
+  }
+
+  // Go to the Nth frame (up if N is negative or down if positive) in
+  // the call stack that corresponds to a script, function, or scope
+  // beginning with the frame indexed by START.
+
+  size_t call_stack::dbupdown (size_t start, int n, bool verbose)
+  {
+    if (start >= m_cs.size ())
+      error ("invalid stack frame");
+
+    // Can't go up from here.
+
+    if (start == 0 && n < 0)
+      {
+        if (verbose)
+          m_cs[start]->display_stopped_in_message (octave_stdout);
+
+        return start;
+      }
+
+    stack_frame *frm = m_cs[start];
+
+    if (! (frm && (frm->is_user_fcn_frame ()
+                   || frm->is_user_script_frame ()
+                   || frm->is_scope_frame ())))
+      error ("call_stack::dbupdown: invalid initial frame in call stack!");
+
+    // Use index into the call stack to begin the search.  At this point
+    // we iterate up or down using indexing instead of static links
+    // because ... FIXME: it's a bit complicated, but deserves
+    // explanation.  May be easiest with some pictures of the call stack
+    // for an example or two.
+
+    size_t xframe = frm->index ();
+
+    if (n == 0)
+      {
+        if (verbose)
+          frm->display_stopped_in_message (octave_stdout);
+
+        return xframe;
+      }
 
     int incr = 0;
 
-    if (nskip < 0)
-      incr = -1;
-    else if (nskip > 0)
+    if (n < 0)
+      {
+        incr = -1;
+        n = -n;
+      }
+    else if (n > 0)
       incr = 1;
 
-    size_t xframe = m_curr_frame;
+    size_t last_good_frame = 0;
 
     while (true)
       {
-        if ((incr < 0 && xframe == 0) || (incr > 0 && xframe == m_cs.size () - 1))
-          break;
+        frm = m_cs[xframe];
+
+        if (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
+            || frm->is_scope_frame ())
+          {
+            last_good_frame = xframe;
+
+            if (n == 0)
+              break;
+
+            n--;
+          }
 
         xframe += incr;
 
-        const stack_frame *elt = m_cs[xframe];
-
-        octave_function *f = elt->function ();
-
-        if (xframe == 0 || (f && f->is_user_code ()))
+        if (xframe == 0)
           {
-            if (nskip > 0)
-              nskip--;
-            else if (nskip < 0)
-              nskip++;
-
-            if (nskip == 0)
-              {
-                m_curr_frame = xframe;
-
-                if (verbose)
-                  {
-                    std::ostringstream buf;
-
-                    if (f)
-                      buf << "stopped in " << elt->fcn_name ()
-                          << " at line " << elt->line ()
-                          << " [" << elt->fcn_file_name () << "] "
-                          << std::endl;
-                    else
-                      buf << "at top level" << std::endl;
-
-                    octave_stdout << buf.str ();
-                  }
-
-                retval = true;
-                break;
-              }
+            last_good_frame = 0;
+            break;
           }
-        else if (incr == 0)  // Break out of infinite loop by choosing an incr.
-          incr = -1;
+
+        if (xframe == m_cs.size ())
+          break;
       }
 
-    return retval;
+    if (verbose)
+      m_cs[last_good_frame]->display_stopped_in_message (octave_stdout);
+
+    return last_good_frame;
   }
 
-  size_t call_stack::find_caller_frame (void)
+  // Like dbupdown above but find the starting frame automatically from
+  // the current frame.  If the current frame is already a user
+  // function, script, or scope frame, use that.  Otherwise, follow
+  // the static link for the current frame.  If that is not a user
+  // function, script or scope frame then there is an error in the
+  // implementation.
+
+  size_t call_stack::dbupdown (int n, bool verbose)
   {
-    // Find the preceeding frame that corresponds to a script or
-    // function.  Expected to be called from a stack frame corresponding
-    // to a compiled function.
+    size_t start = find_current_user_frame ();
 
-    size_t xframe = m_curr_frame;
-
-    bool skipped = false;
-
-    while (xframe != 0)
-      {
-        xframe = m_cs[xframe]->previous ();
-
-        stack_frame *frm = m_cs[xframe];
-        if (frm->is_user_fcn_frame () || frm->is_user_script_frame ())
-          {
-            if (! skipped)
-              // We found the current user code frame, so skip it.
-              skipped = true;
-            else
-              return xframe;
-          }
-      }
-
-    return 0;
+    return dbupdown (start, n, verbose);
   }
+
+  // May be used to temporarily change the value ov m_curr_frame inside
+  // a function like evalin.  If used in a function like dbup, the new
+  // value of m_curr_frame would be wiped out when dbup returns and the
+  // stack frame for dbup is popped.
 
   void call_stack::goto_caller_frame (void)
   {
-    m_curr_frame = find_caller_frame ();
+    size_t start = find_current_user_frame ();
+
+    // FIXME: is this supposed to be an error?
+    if (start == 0)
+      error ("already at top level");
+
+    m_curr_frame = dbupdown (start, -1, false);
   }
 
   void call_stack::goto_base_frame (void)
@@ -618,58 +578,51 @@ namespace octave
   }
 
   std::list<stack_frame *>
-  call_stack::backtrace_frames (size_t nskip,
-                                octave_idx_type& curr_user_frame) const
+  call_stack::backtrace_frames (octave_idx_type& curr_user_frame) const
   {
-    stack_trace_generator stack_tracer (nskip);
+    std::list<stack_frame *> frames;
 
-    // Start at the end of the stack, even if the current pointer is
-    // somewhere else.
+    // curr_frame is the index to the current frame in the overall call
+    // stack, which includes any compiled function frames and scope
+    // frames.  The curr_user_frame value we set is the index into the
+    // subset of frames returned in the octave_map object.
 
-    size_t n = m_cs.size () - 1;
+    size_t curr_frame = find_current_user_frame ();
 
-    m_cs[n]->accept (stack_tracer);
+    // Don't include top-level stack frame in the list.
 
-    std::list<stack_frame *> frame_list = stack_tracer.frames ();
-
-    if (frame_list.empty ())
-      return frame_list;
-
-    // Find the index into the list of frames where we are currently.
-    // We'll just search the list of frames for the one that matches
-    // where we are now.
-
-    stack_frame *frame = m_cs[m_curr_frame];
-
-    octave_function *fcn = frame->function ();
-
-    if (! (fcn && fcn->is_user_code ()))
-      frame = frame->static_link ();
-
-    curr_user_frame = 0;
-    bool found = false;
-    for (const auto *frm : frame_list)
+    for (size_t n = m_cs.size () - 1; n > 0; n--)
       {
-        if (frm == frame)
+        stack_frame *frm = m_cs[n];
+
+        if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
+            || frm->is_scope_frame ())
           {
-            found = true;
-            break;
+            if (frm->index () == curr_frame)
+              curr_user_frame = frames.size ();
+
+            frames.push_back (frm);
           }
 
-        curr_user_frame++;
+        if (n == 0)
+          break;
       }
 
-    if (! found)
-      curr_user_frame = -1;
-
-    return frame_list;
+    return frames;
   }
 
-  octave_map call_stack::backtrace (size_t nskip,
-                                    octave_idx_type& curr_user_frame,
+  std::list<stack_frame *>
+  call_stack::backtrace_frames (void) const
+  {
+    octave_idx_type curr_user_frame = -1;
+
+    return backtrace_frames (curr_user_frame);
+  }
+
+  octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
                                     bool print_subfn) const
   {
-    std::list<stack_frame *> frames = backtrace_frames (nskip, curr_user_frame);
+    std::list<stack_frame *> frames = backtrace_frames (curr_user_frame);
 
     size_t nframes = frames.size ();
 
@@ -684,22 +637,26 @@ namespace octave
 
     for (const auto *frm : frames)
       {
-        file(k) = frm->fcn_file_name ();
-        name(k) = frm->fcn_name (print_subfn);
-        line(k) = frm->line ();
-        column(k) = frm->column ();
+        if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
+            || frm->is_scope_frame ())
+          {
+            file(k) = frm->fcn_file_name ();
+            name(k) = frm->fcn_name (print_subfn);
+            line(k) = frm->line ();
+            column(k) = frm->column ();
 
-        k++;
+            k++;
+          }
       }
 
     return retval;
   }
 
-  octave_map call_stack::backtrace (size_t nskip)
+  octave_map call_stack::backtrace (void) const
   {
     octave_idx_type curr_user_frame = -1;
 
-    return backtrace (nskip, curr_user_frame, true);
+    return backtrace (curr_user_frame, true);
   }
 
   octave_map call_stack::empty_backtrace (void) const
@@ -712,11 +669,13 @@ namespace octave
     // Never pop top scope.
     // FIXME: is it possible for this case to happen?
 
-    if (m_cs.size () > 0)
+    if (m_cs.size () > 1)
       {
         stack_frame *elt = m_cs.back ();
 
-        m_curr_frame = elt->previous ();
+        stack_frame *caller = elt->static_link ();
+
+        m_curr_frame = caller->index ();
 
         m_cs.pop_back ();
 

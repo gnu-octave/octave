@@ -218,7 +218,7 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_id = id;
       Vlast_error_message = base_msg;
 
-      octave_user_code *fcn = cs.caller_user_code ();
+      octave_user_code *fcn = cs.current_user_code ();
 
       if (fcn)
         Vlast_error_stack = cs.backtrace ();
@@ -357,7 +357,7 @@ maybe_enter_debugger (octave::execution_exception& e,
        || octave::application::forced_interactive ())
       && ((Vdebug_on_error && bptab.debug_on_err (last_error_id ()))
           || (Vdebug_on_caught && bptab.debug_on_caught (last_error_id ())))
-      && cs.caller_user_code ())
+      && cs.current_user_code ())
     {
       octave::unwind_protect frame;
       frame.protect_var (Vdebug_on_error);
@@ -365,9 +365,6 @@ maybe_enter_debugger (octave::execution_exception& e,
 
       octave::tree_evaluator& tw
         = octave::__get_evaluator__ ("maybe_enter_debugger");
-
-      tw.debug_mode (true);
-      tw.current_frame (cs.current_frame ());
 
       if (show_stack_trace)
         {
@@ -381,10 +378,7 @@ maybe_enter_debugger (octave::execution_exception& e,
             }
         }
 
-      octave::input_system& input_sys
-        = octave::__get_input_system__ ("maybe_enter_debugger");
-
-      input_sys.keyboard ();
+      tw.enter_debugger ();
     }
 }
 
@@ -527,7 +521,7 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                   octave::call_stack& cs
                     = octave::__get_call_stack__ ("error_1");
 
-                  bool in_user_code = cs.caller_user_code () != nullptr;
+                  bool in_user_code = cs.current_user_code () != nullptr;
 
                   if (in_user_code && ! discard_error_messages)
                     show_stack_trace = true;
@@ -749,7 +743,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
       octave::call_stack& cs = octave::__get_call_stack__ ("warning_1");
 
-      bool in_user_code = cs.caller_user_code () != nullptr;
+      bool in_user_code = cs.current_user_code () != nullptr;
 
       if (! fmt_suppresses_backtrace && in_user_code
           && Vbacktrace_on_warning
@@ -770,13 +764,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
           octave::tree_evaluator& tw
             = octave::__get_evaluator__ ("warning_1");
 
-          tw.debug_mode (true);
-          tw.current_frame (cs.current_frame ());
-
-          octave::input_system& input_sys
-            = octave::__get_input_system__ ("warning_1");
-
-          input_sys.keyboard ();
+          tw.enter_debugger ();
         }
     }
 }

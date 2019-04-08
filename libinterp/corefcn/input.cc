@@ -86,9 +86,6 @@ bool octave_completion_matches_called = false;
 // the next user prompt.
 bool Vdrawnow_requested = false;
 
-// TRUE if we are in debugging mode.
-bool Vdebugging = false;
-
 // TRUE if we are recording line numbers in a source file.
 // Always true except when debugging and taking input directly from
 // the terminal.
@@ -635,49 +632,11 @@ namespace octave
         retval
           = m_interpreter.eval_string (input_buf, true, parse_status, nargout);
 
-        if (! Vdebugging && retval.empty ())
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+        if (! tw.in_debug_repl () && retval.empty ())
           retval(0) = Matrix ();
       }
-
-    return retval;
-  }
-
-  octave_value input_system::keyboard (const octave_value_list& args)
-  {
-    octave_value retval;
-
-    int nargin = args.length ();
-
-    assert (nargin == 0 || nargin == 1);
-
-    octave::unwind_protect frame;
-
-    frame.add_fcn (octave::command_history::ignore_entries,
-                   octave::command_history::ignoring_entries ());
-
-    octave::command_history::ignore_entries (false);
-
-    frame.protect_var (Vdebugging);
-
-    octave::call_stack& cs = m_interpreter.get_call_stack ();
-
-    frame.add_method (cs, &octave::call_stack::restore_frame,
-                      cs.current_frame ());
-
-    // FIXME: probably we just want to print one line, not the
-    // entire statement, which might span many lines...
-    //
-    // tree_print_code tpc (octave_stdout);
-    // stmt.accept (tpc);
-
-    Vdebugging = true;
-    Vtrack_line_num = false;
-
-    std::string prompt = "debug> ";
-    if (nargin > 0)
-      prompt = args(0).string_value ();
-
-    get_debug_input (prompt);
 
     return retval;
   }
@@ -729,153 +688,6 @@ namespace octave
     return retval;
   }
 
-  static void
-  execute_in_debugger_handler (const std::pair<std::string, int>& arg)
-  {
-    octave_link::execute_in_debugger_event (arg.first, arg.second);
-  }
-
-  void input_system::get_debug_input (const std::string& prompt)
-  {
-    octave::unwind_protect frame;
-
-    octave::tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-    bool silent = tw.quiet_breakpoint_flag (false);
-
-    octave::call_stack& cs = m_interpreter.get_call_stack ();
-
-    octave_user_code *caller = cs.caller_user_code ();
-    std::string nm;
-    int curr_debug_line;
-
-    if (caller)
-      {
-        nm = caller->fcn_file_name ();
-
-        if (nm.empty ())
-          nm = caller->name ();
-
-        curr_debug_line = cs.caller_user_code_line ();
-      }
-    else
-      curr_debug_line = cs.current_line ();
-
-    std::ostringstream buf;
-
-    if (! nm.empty ())
-      {
-        if (m_gud_mode)
-          {
-            static char ctrl_z = 'Z' & 0x1f;
-
-            buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
-          }
-        else
-          {
-            // FIXME: we should come up with a clean way to detect
-            // that we are stopped on the no-op command that marks the
-            // end of a function or script.
-
-            if (! silent)
-              {
-                buf << "stopped in " << nm;
-
-                if (curr_debug_line > 0)
-                  buf << " at line " << curr_debug_line;
-              }
-
-            octave_link::enter_debugger_event (nm, curr_debug_line);
-
-            octave_link::set_workspace ();
-
-            frame.add_fcn (execute_in_debugger_handler,
-                           std::pair<std::string, int> (nm, curr_debug_line));
-
-            if (! silent)
-              {
-                std::string line_buf;
-
-                if (caller)
-                  line_buf = caller->get_code_line (curr_debug_line);
-
-                if (! line_buf.empty ())
-                  buf << "\n" << curr_debug_line << ": " << line_buf;
-              }
-          }
-      }
-
-    if (silent)
-      octave::command_editor::erase_empty_line (true);
-
-    std::string msg = buf.str ();
-
-    if (! msg.empty ())
-      std::cerr << msg << std::endl;
-
-    frame.add_method (*this, &octave::input_system::set_PS1, m_PS1);
-    m_PS1 = prompt;
-
-    // FIXME: should debugging be possible in an embedded interpreter?
-
-    octave::application *app = octave::application::app ();
-
-    if (! app->interactive ())
-      {
-
-        frame.add_method (app, &octave::application::interactive,
-                          app->interactive ());
-
-        frame.add_method (app, &octave::application::forced_interactive,
-                          app->forced_interactive ());
-
-        app->interactive (true);
-
-        app->forced_interactive (true);
-      }
-
-    octave::parser curr_parser (m_interpreter);
-
-    while (Vdebugging)
-      {
-        try
-          {
-            Vtrack_line_num = false;
-
-            reset_error_handler ();
-
-            curr_parser.reset ();
-
-            int retval = curr_parser.run ();
-
-            if (octave::command_editor::interrupt (false))
-              break;
-            else
-              {
-                if (retval == 0 && curr_parser.m_stmt_list)
-                  {
-                    curr_parser.m_stmt_list->accept (tw);
-
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
-                  }
-
-                octave_quit ();
-              }
-          }
-        catch (const octave::execution_exception& e)
-          {
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
-
-            // Ignore errors when in debugging mode;
-            octave::interpreter::recover_from_exception ();
-          }
-      }
-  }
-
   std::string base_reader::octave_gets (bool& eof)
   {
     octave_quit ();
@@ -887,9 +699,13 @@ namespace octave
     // Process pre input event hook function prior to flushing output and
     // printing the prompt.
 
+    interpreter& interp = __get_interpreter__ ("base_reader::octave_gets");
+
+    tree_evaluator& tw = interp.get_evaluator ();
+
     if (application::interactive ())
       {
-        if (! Vdebugging)
+        if (! tw.in_debug_repl ())
           octave_link::exit_debugger_event ();
 
         octave_link::pre_input_event ();
@@ -899,7 +715,7 @@ namespace octave
 
     bool history_skip_auto_repeated_debugging_command = false;
 
-    input_system& input_sys = __get_input_system__ ("base_reader::octave_gets");
+    input_system& input_sys = interp.get_input_system ();
 
     std::string ps = (m_pflag > 0) ? input_sys.PS1 () : input_sys.PS2 ();
 
@@ -907,7 +723,7 @@ namespace octave
 
     pipe_handler_error_count = 0;
 
-    output_system& output_sys = __get_output_system__ ("do_sync");
+    output_system& output_sys = interp.get_output_system ();
 
     output_sys.reset ();
 
@@ -920,16 +736,16 @@ namespace octave
     if (retval != "\n"
         && retval.find_first_not_of (" \t\n\r") != std::string::npos)
       {
-        load_path& lp = __get_load_path__ ("base_reader::octave_gets");
+        load_path& lp = interp.get_load_path ();
 
         lp.update ();
 
-        if (Vdebugging)
+        if (tw.in_debug_repl ())
           input_sys.last_debugging_command (retval);
         else
           input_sys.last_debugging_command ("\n");
       }
-    else if (Vdebugging)
+    else if (tw.in_debug_repl ())
       {
         retval = input_sys.last_debugging_command ();
         history_skip_auto_repeated_debugging_command = true;
@@ -1235,28 +1051,22 @@ If @code{keyboard} is invoked without arguments, a default prompt of
 @seealso{dbstop, dbcont, dbquit}
 @end deftypefn */)
 {
-  if (args.length () > 1)
+  int nargin = args.length ();
+
+  if (nargin > 1)
     print_usage ();
-
-  octave::unwind_protect frame;
-
-  octave::call_stack& cs = interp.get_call_stack ();
-
-  frame.add_method (cs, &octave::call_stack::restore_frame,
-                    cs.current_frame ());
-
-  // Go up to the nearest user code frame.
-  cs.goto_frame_relative (-1);
 
   octave::tree_evaluator& tw = interp.get_evaluator ();
 
-  tw.debug_mode (true);
-  tw.quiet_breakpoint_flag (false);
-  tw.current_frame (cs.current_frame ());
+  if (nargin == 1)
+    {
+      std::string prompt
+        = args(0).xstring_value ("keyboard: PROMPT must be a string");
 
-  octave::input_system& input_sys = interp.get_input_system ();
-
-  input_sys.keyboard (args);
+      tw.keyboard (prompt);
+    }
+  else
+    tw.keyboard ();
 
   return ovl ();
 }
@@ -1623,15 +1433,6 @@ octave_yes_or_no (const std::string& prompt)
     = octave::__get_input_system__ ("set_default_prompts");
 
   return input_sys.yes_or_no (prompt);
-}
-
-octave_value
-do_keyboard (const octave_value_list& args)
-{
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("do_keyboard");
-
-  return input_sys.keyboard (args);
 }
 
 void

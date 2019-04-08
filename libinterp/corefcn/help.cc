@@ -489,7 +489,7 @@ namespace octave
 
     call_stack& cs = m_interpreter.get_call_stack ();
 
-    octave_user_code *curr_fcn = cs.caller_user_code ();
+    octave_user_code *curr_fcn = cs.current_user_code ();
 
     if (! curr_fcn)
       return retval;

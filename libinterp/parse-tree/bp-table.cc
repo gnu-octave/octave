@@ -365,7 +365,7 @@ namespace octave
             else
               {
                 // It was a line number.  Get function name from debugger.
-                if (Vdebugging)
+                if (m_evaluator.in_debug_repl ())
                   func_name = m_evaluator.get_user_code ()->profiler_name ();
                 else
                   error ("%s: function name must come before line number "
@@ -615,7 +615,7 @@ namespace octave
           }
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -711,7 +711,7 @@ namespace octave
           }
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -745,7 +745,7 @@ namespace octave
       error ("remove_all_breakpoint_in_file: "
              "unable to find function %s\n", fname.c_str ());
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
 
     return retval;
   }
@@ -762,7 +762,7 @@ namespace octave
         remove_all_breakpoints_in_file (*it);
       }
 
-    m_evaluator.debug_mode (bp_table::have_breakpoints () || Vdebugging);
+    m_evaluator.reset_debug_state ();
   }
 
   std::string find_bkpt_list (octave_value_list slist, std::string match)

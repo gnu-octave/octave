@@ -478,6 +478,22 @@ namespace octave
     accept (sc);
   }
 
+  void stack_frame::display_stopped_in_message (std::ostream& os) const
+  {
+    if (index () == 0)
+      os << "at top level" << std::endl;
+    else
+      {
+        os << "stopped in " << fcn_name ();
+
+        int l = line ();
+        if (l > 0)
+          os << " at line " << line ();
+
+        os << " [" << fcn_file_name () << "] " << std::endl;
+      }
+  }
+
   void stack_frame::display (bool follow) const
   {
     std::ostream& os = octave_stdout;
@@ -500,7 +516,7 @@ namespace octave
 
     os << "line: " << m_line << std::endl;
     os << "column: " << m_column << std::endl;
-    os << "prev: " << m_prev << std::endl;
+    os << "index: " << m_index << std::endl;
 
     os << std::endl;
 
@@ -543,9 +559,9 @@ namespace octave
   script_stack_frame::script_stack_frame (call_stack& cs,
                                           octave_user_script *script,
                                           unwind_protect *up_frame,
-                                          size_t prev,
+                                          size_t index,
                                           stack_frame *static_link)
-    : stack_frame (cs, prev, static_link, get_access_link (static_link)),
+    : stack_frame (cs, index, static_link, get_access_link (static_link)),
       m_script (script), m_unwind_protect_frame (up_frame),
       m_lexical_frame_offsets (get_num_symbols (script), 1),
       m_value_offsets (get_num_symbols (script), 0)

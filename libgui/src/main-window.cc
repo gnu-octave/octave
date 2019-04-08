@@ -128,10 +128,6 @@ namespace octave
 
             input_sys.PS1 (">> ");
             input_sys.PS2 ("");
-
-            tree_evaluator& tw = interp.get_evaluator ();
-
-            tw.PS4 ("");
           }
 
         if (interp.initialized ())

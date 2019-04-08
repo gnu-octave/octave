@@ -6862,16 +6862,14 @@ DEFUN (issorted, args, ,
 @deftypefn  {} {} issorted (@var{a})
 @deftypefnx {} {} issorted (@var{a}, @var{mode})
 @deftypefnx {} {} issorted (@var{a}, "rows", @var{mode})
-Return true if the array is sorted according to @var{mode}, which
-may be either @qcode{"ascending"}, @qcode{"descending"}, or
-@qcode{"either"}.
+Return true if the array is sorted according to @var{mode}, which may be either
+@qcode{"ascend"}, @qcode{"descend"}, or @qcode{"either"}.
 
-By default,  @var{mode} is @qcode{"ascending"}.  NaNs are treated in the
-same manner as @code{sort}.
+By default, @var{mode} is @qcode{"ascend"}.  NaNs are treated in the same
+manner as @code{sort}.
 
-If the optional argument @qcode{"rows"} is supplied, check whether
-the array is sorted by rows as output by the function @code{sortrows}
-(with no options).
+If the optional argument @qcode{"rows"} is supplied, check whether the array is
+sorted by rows as output by the function @code{sortrows} (with no options).
 
 This function does not support sparse matrices.
 @seealso{sort, sortrows}

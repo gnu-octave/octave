@@ -495,7 +495,9 @@ namespace octave
     m_octave_qt_link->lock ();
 
     // Close the file if opened
+#if defined (HAVE_QSCINTILLA)
     m_editor_window->handle_file_remove (o, n);
+#endif
 
     // We are done: Unlock and wake the worker thread
     m_octave_qt_link->unlock ();
@@ -1868,12 +1870,14 @@ namespace octave
              m_editor_window, SLOT (handle_file_renamed (bool)));
 
     // Signals for removing/renaming files/dirs in the temrinal window
-    connect (m_octave_qt_link,
-             SIGNAL (file_remove_signal (const QString&, const QString&)),
-             this, SLOT (file_remove_proxy (const QString&, const QString&)));
     connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
              m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
+
+    // Signals for removing/renaming files/dirs in the temrinal window
+    connect (m_octave_qt_link,
+             SIGNAL (file_remove_signal (const QString&, const QString&)),
+             this, SLOT (file_remove_proxy (const QString&, const QString&)));
 
     octave_link::post_event (this,
                              &main_window::resize_command_window_callback);

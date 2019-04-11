@@ -1097,6 +1097,25 @@ error message.
   return ovl (status, msg);
 }
 
+/*
+%!test
+%! file = tempname ();
+%! fid = fopen (file, "wt");
+%! if (fid < 0)
+%!   error ("Could not open temporary file for unlink BIST test");
+%! endif
+%! fdisp (fid, pi);
+%! fclose (fid);
+%! [err, msg] = unlink (file);
+%! assert (err, 0);
+%! assert (msg, "");
+
+## Test input validation
+%!error unlink ()
+%!error unlink ("a", "b")
+%!error <FILE must be a string> unlink (123)
+*/
+
 DEFUNX ("waitpid", Fwaitpid, args, ,
         doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{pid}, @var{status}, @var{msg}] =} waitpid (@var{pid}, @var{options})

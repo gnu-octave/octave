@@ -501,6 +501,9 @@ namespace octave
     // Close the file if opened
 #if defined (HAVE_QSCINTILLA)
     m_editor_window->handle_file_remove (o, n);
+#else
+    octave_unused_parameter (o);
+    octave_unused_parameter (n);
 #endif
 
     // We are done: Unlock and wake the worker thread

@@ -2314,7 +2314,8 @@ looks_like_copyright (const std::string& s)
       size_t offset = s.find_first_not_of (" \t");
 
       retval = (s.substr (offset, 9) == "Copyright"
-                || s.substr (offset, 6) == "Author");
+                || s.substr (offset, 6) == "Author"
+                || s.substr (offset, 23) == "SPDX-License-Identifier");
     }
 
   return retval;

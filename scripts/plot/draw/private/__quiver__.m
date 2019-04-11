@@ -51,7 +51,17 @@ function hg = __quiver__ (varargin)
     if (is3d)
       w = varargin{ioff++};
     endif
+    if (is3d)
+      if (! size_equal (z, u, v, w))
+        error ("quiver3: Z, U, V, and W must be the same size");
+      endif
+    else
+      if (! size_equal (u, v))
+        error ("quiver: U and V must be the same size");
+      endif
+    endif
     [x, y] = meshgrid (1:columns (u), 1:rows (u));
+
     if (nargin >= ioff && isnumeric (varargin{ioff})
         && isscalar (varargin{ioff}))
       autoscale = varargin{ioff++};
@@ -75,6 +85,16 @@ function hg = __quiver__ (varargin)
         [x, y] = meshgrid (x, y);
       endif
     endif
+    if (is3d)
+      if (! size_equal (x, y, z, u, v, w))
+        error ("quiver3: X, Y, Z, U, V, and W must be the same size");
+      endif
+    else
+      if (! size_equal (x, y, u, v))
+        error ("quiver: X, Y, U, and V must be the same size");
+      endif
+    endif
+
     if (nargin >= ioff && isnumeric (varargin{ioff})
         && isscalar (varargin{ioff}))
       autoscale = varargin{ioff++};

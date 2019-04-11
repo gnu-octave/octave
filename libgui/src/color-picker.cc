@@ -39,7 +39,7 @@ namespace octave
   {
     m_color = old_color;
     setFlat (true);
-    setFocusPolicy (Qt::NoFocus);  // no focus, would changes the color
+    setFocusPolicy (Qt::NoFocus);  // no focus, would change the color
     update_button ();
     connect (this, SIGNAL (clicked (void)), SLOT (select_color (void)));
   }

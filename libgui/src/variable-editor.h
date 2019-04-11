@@ -220,9 +220,8 @@ namespace octave
     variable_editor_model *m_var_model;
   };
 
-  // Gadgets to keep track and restore what variable window
-  // was in focus just prior to selecting something on the
-  // menu bar
+  // Gadgets to keep track of and restore what variable window was in focus
+  // just prior to selecting something on the menu bar.
 
   class HoverToolButton : public QToolButton
   {

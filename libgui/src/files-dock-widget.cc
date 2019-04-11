@@ -226,7 +226,7 @@ namespace octave
     m_file_tree_view->setAnimated (true);
     m_file_tree_view->setToolTip (tr ("Double-click to open file/folder, right click for alternatives"));
 
-    // get sort column and order as well as cloumn state (order and width)
+    // get sort column and order as well as column state (order and width)
 
     m_file_tree_view->sortByColumn
       (settings->value (fb_sort_column).toInt (),
@@ -298,7 +298,7 @@ namespace octave
 
     setFocusProxy (m_current_directory);
 
-    m_sync_octave_dir = true;   // default, overwirtten with notice_settings ()
+    m_sync_octave_dir = true;   // default, overwritten with notice_settings ()
     m_octave_dir = "";
   }
 
@@ -390,8 +390,8 @@ namespace octave
             if (m_sync_octave_dir && set_octave_dir)
               process_set_current_dir (fileInfo.absoluteFilePath ());
 
-            // see if its in the list, and if it is,
-            // remove it and then, put at top of the list
+            // see if it's in the list, and if it is,
+            // remove it and then put at top of the list
             int index
               = m_current_directory->findText (fileInfo.absoluteFilePath ());
             if (index != -1)
@@ -726,7 +726,7 @@ namespace octave
           {
             if (info.isDir ())
               {
-                // see if direcory is empty
+                // see if directory is empty
                 QDir path (info.absoluteFilePath ());
                 QList<QFileInfo> fileLst = path.entryInfoList (QDir::AllEntries |
                                                                QDir::NoDotAndDotDot);
@@ -743,7 +743,7 @@ namespace octave
                 emit file_remove_signal (info.filePath (), QString ());
                 // Remove the file.
                 bool st = m_file_system_model->remove (index);
-                // reload the old file if removing was not successful
+                // Reload the old file if removing was not successful
                 if (! st)
                   emit file_renamed_signal (false);
               }
@@ -864,7 +864,7 @@ namespace octave
 
   void files_dock_widget::notice_settings (const gui_settings *settings)
   {
-    // Qsettings pointer is checked before emitting.
+    // QSettings pointer is checked before emitting.
 
     int size_idx = settings->value (global_icon_size).toInt ();
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2

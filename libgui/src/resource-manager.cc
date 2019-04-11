@@ -92,7 +92,7 @@ namespace octave
         // location ($HOME/.config/octave/qt-settings) for impoting all
         // available keys into the new settings file.
         // Do not look for an old settings file if XDG_CONFIG_HOME is set,
-        // since then a non-existin new settings file does not necessarily
+        // since then a nonexistent new settings file does not necessarily
         // indicate a first run of octave with new config file locations.
 #if defined (HAVE_QSTANDARDPATHS)
         QString home_path
@@ -109,7 +109,7 @@ namespace octave
 
         if (ofile.exists ())
           {
-            // Old settings file exists, create a gui_settings object related
+            // Old settings file exists; create a gui_settings object related
             // to it and copy all available keys to the new settings
             gui_settings old_settings (old_settings_file, QSettings::IniFormat);
 
@@ -377,8 +377,8 @@ namespace octave
     if (! m_settings->value (global_icon_theme).toBool ())
       return QIcon (":/actions/icons/" + icon_name + ".png");
 
-    // Use system icon theme with own files as fallback except the fallback is
-    // explicitly disabled (fallback=false)
+    // Use system icon theme with own files as fallback except when the
+    // fallback is explicitly disabled (fallback=false)
     if (fallback)
       return QIcon::fromTheme (icon_name,
                                QIcon (":/actions/icons/" + icon_name + ".png"));

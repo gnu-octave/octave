@@ -180,7 +180,7 @@ namespace octave
 
     m_view->setModel (&m_filter_model);
 
-    // set the sorting after a model was set, it would be ignored otherwise
+    // set the sorting after the model is set, it would be ignored otherwise
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     m_view->sortByColumn (
@@ -333,7 +333,7 @@ namespace octave
 
     QModelIndex index = m_view->indexAt (qpos);
 
-    // if it isnt Local, Glocal etc, allow the ctx menu
+    // if it isn't Local, Global etc, allow the ctx menu
     if (index.isValid () && index.column () == 0)
       {
         QString var_name = get_var_name (index);

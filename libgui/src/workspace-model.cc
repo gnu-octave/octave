@@ -48,7 +48,7 @@ namespace octave
     m_columnNames.append (tr ("Value"));
     m_columnNames.append (tr ("Attribute"));
 
-    // Initialize the bachground and foreground colors of special
+    // Initialize the background and foreground colors of special
     // classes in the workspace view. The structure is
     // m_storage_class_colors(1,2,...,colors):        background colors
     // m_storage_class_colors(colors+1,...,2*colors): foreground colors
@@ -109,7 +109,7 @@ namespace octave
               = ws_class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
               {
-                // Valid class: Get backgorund (normal indexes) or foreground
+                // Valid class: Get background (normal indexes) or foreground
                 // color (indexes with offset)
                 if (role == Qt::ForegroundRole)
                   actual_class += ws_colors_count;

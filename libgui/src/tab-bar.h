@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // This file implements a tab bar derived from QTabBar with a contextmenu
-// and possibility to close a tab via double-left and middle mouse click.
+// and possibility to close a tab via double-left or middle mouse click.
 
 #if ! defined (octave_tab_bar_h)
 #define octave_tab_bar_h 1

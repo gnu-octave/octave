@@ -613,7 +613,7 @@ namespace octave
         _edit_area->getCursorPosition (&line,&col);
 
         _rep_all = 1;
-        find_next ();  // find first occurence (forward)
+        find_next ();  // find first occurrence (forward)
 
         _edit_area->beginUndoAction ();
         while (_find_result_available)   // while search string is found

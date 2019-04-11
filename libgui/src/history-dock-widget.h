@@ -50,12 +50,12 @@ namespace octave
 
     void information (const QString& message);
 
-    //! Signal emitted, whenever the user double-clicked a command in the
+    //! Signal emitted whenever the user double-clicks a command in the
     //! history.
 
     void command_double_clicked (const QString& command);
 
-    //! Signale emitted, whenever the user selects commands and chooses
+    //! Signal emitted whenever the user selects commands and chooses
     //! "Create script" from the popup menu.
 
     void command_create_script (const QString& commands);

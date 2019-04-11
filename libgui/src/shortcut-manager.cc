@@ -191,8 +191,8 @@ namespace octave
     init (tr ("Community News"), sc_main_news_community_news);
 
     // Tab handling
-    // The following shortcuts are moved into a separate tab. The key names
-    // are not change for preserving compatibility with older versions
+    // The following shortcuts are moved into a separate tab.  The key names
+    // are not changed, to preserve compatibility with older versions.
     init (tr ("Close Tab"), sc_edit_file_close);
     init (tr ("Close All Tabs"), sc_edit_file_close_all);
     init (tr ("Close Other Tabs"), sc_edit_file_close_other);
@@ -620,7 +620,7 @@ namespace octave
     shortcut_info.m_default_sc = settings->sc_def_value (sc);
     m_sc << shortcut_info;
 
-    // insert shortcut in order check for duplicates later
+    // insert shortcut in order to check for duplicates later
     if (! actual.isEmpty ())
       m_shortcut_hash[actual.toString ()] = m_sc.count ();
     m_action_hash[sc.key] = m_sc.count ();

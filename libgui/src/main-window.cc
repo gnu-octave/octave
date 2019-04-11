@@ -228,7 +228,7 @@ namespace octave
 
     init_terminal_size ();
 
-    // Connect signals for changes in visibility not before window is
+    // Connect signals for changes in visibility now before window is
     // shown.
 
     connect_visibility_changed ();
@@ -311,7 +311,7 @@ namespace octave
   void main_window::focus_changed (QWidget *, QWidget *new_widget)
   {
     // If there is no new widget (e.g., when pressing <alt> and the global
-    // menu gets active, we can return immediately
+    // menu gets active), we can return immediately
     if (! new_widget)
       return;
 
@@ -325,7 +325,7 @@ namespace octave
     while (w_new && w_new != m_main_tool_bar && count < 100)
       {
         // Go through all dock widgets and check whether the current widget
-        // widget with focus is a child of one of it
+        // with focus is a child of one of them.
         for (auto w : w_list)
           {
             if (w->isAncestorOf (w_new))
@@ -335,7 +335,7 @@ namespace octave
         if (dock)
           break;
 
-        // If not yet found (in case w_new is not a childs of its dock widget),
+        // If not yet found (in case w_new is not a child of its dock widget),
         // test next widget in the focus chain
         w_new = qobject_cast<QWidget *> (w_new->previousInFocusChain ());
 
@@ -880,7 +880,7 @@ namespace octave
         QString name = widget->objectName ();
         if (! name.isEmpty ())
           {
-            // if children has a name
+            // if child has a name
             icon = dw_icon_set_names[icon_set_found].path; // prefix | octave-logo
             if (dw_icon_set_names[icon_set_found].name != "NONE")
               icon += name + ".png"; // add widget name and ext.
@@ -1041,7 +1041,7 @@ namespace octave
   void main_window::accept_directory_line_edit (void)
   {
     // Get new directory name, and change to it if it is new.  Otherwise,
-    // the combo box will triggers the "activated" signal to change to the
+    // the combo box will trigger the "activated" signal to change to the
     // directory.
 
     QString dir = m_current_directory_combo_box->currentText ();
@@ -1303,7 +1303,7 @@ namespace octave
 
     if (ok && new_name.length () > 0)
       {
-        // append suffix if it not already exists
+        // append suffix if it does not already exist
         if (new_name.rightRef (2) != ".m")
           new_name.append (".m");
         // check whether new files are created without prompt
@@ -1329,7 +1329,7 @@ namespace octave
        {
          // INTERPRETER THREAD
 
-         // Split possible subfuntions
+         // Split possible subfunctions
          QStringList fcn_list = fname.split ('>');
          QString fcn_name = fcn_list.at (0) + ".m";
 
@@ -1484,7 +1484,7 @@ namespace octave
   void main_window::set_window_layout (gui_settings *settings)
   {
     // Restore main window state and geometry from settings file or, in case
-    // of an error from the default layout
+    // of an error, from the default layout.
     if (settings)
       {
         if (! restoreState (settings->value (mw_state).toByteArray ()))
@@ -1567,7 +1567,7 @@ namespace octave
 
     settings->setValue (mw_geometry.key, saveGeometry ());
     settings->setValue (mw_state.key, saveState ());
-    // write the list of recent used directories
+    // write the list of recently used directories
     QStringList curr_dirs;
     for (int i=0; i<m_current_directory_combo_box->count (); i++)
       {
@@ -1776,7 +1776,7 @@ namespace octave
   {
     // this slot is called when the terminal gets/loses focus
 
-    // return if the user don't want to use readline shortcuts
+    // return if the user doesn't want to use readline shortcuts
     if (! m_prevent_readline_conflicts)
       return;
 
@@ -1884,7 +1884,7 @@ namespace octave
   }
 
   // The following slot is called after files have been selected in the
-  // open file dialog., possibly with a new selected encoding stored in
+  // open file dialog, possibly with a new selected encoding stored in
   // m_file_encoding
   void main_window::request_open_files (const QStringList& open_file_names)
   {
@@ -2145,7 +2145,7 @@ namespace octave
     connect (m_file_browser_window, SIGNAL (file_renamed_signal (bool)),
              m_editor_window, SLOT (handle_file_renamed (bool)));
 
-    // Signals for removing/renaming files/dirs in the temrinal window
+    // Signals for removing/renaming files/dirs in the terminal window
     connect (qt_link, SIGNAL (file_renamed_signal (bool)),
              m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
@@ -2475,7 +2475,7 @@ namespace octave
     clipboard_has_changed ();
 #if defined (Q_OS_WIN32)
     // Always enable paste action (unreliable clipboard signals in windows)
-    // FIXME: This has to be removed, when the clipboards signals in windows
+    // FIXME: This has to be removed, when the clipboard signals in windows
     //        are working again
     m_paste_action->setEnabled (true);
     m_clear_clipboard_action->setEnabled (true);
@@ -2539,7 +2539,7 @@ namespace octave
 
   void main_window::editor_tabs_changed (bool have_tabs)
   {
-    // Set state of action which depend on the existance of editor tabs
+    // Set state of actions which depend on the existence of editor tabs
     m_editor_has_tabs = have_tabs;
     m_debug_step_over->setEnabled (have_tabs);
   }
@@ -2559,7 +2559,7 @@ namespace octave
       {
         if (checkable)
           {
-            // action for visibilty of dock widget
+            // action for visibility of dock widget
             connect (action, SIGNAL (toggled (bool)),
                      widget, SLOT (setVisible (bool)));
 

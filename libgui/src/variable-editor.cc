@@ -1291,7 +1291,7 @@ namespace octave
 
     // Must supply a title for a QLabel to be created.  Calling set_title()
     // more than once will add more QLabels.  Could change octave_dock_widget
-    // to always supply a QLabl (initially empty) and then simply update its
+    // to always supply a QLabel (initially empty) and then simply update its
     // contents.
     page->set_title (name);
     if (page->titleBarWidget () != nullptr)
@@ -1660,7 +1660,7 @@ namespace octave
     action->setStatusTip(tr("Go one level up in variable hierarchy"));
 
     // The QToolButton mouse-clicks change active window, so connect all
-    // HoverToolButton and RuternFocusToolButton objects to the mechanism
+    // HoverToolButton and ReturnFocusToolButton objects to the mechanism
     // that restores active window and focus before acting.
     QList<HoverToolButton *> hbuttonlist
       = m_tool_bar->findChildren<HoverToolButton *> (""

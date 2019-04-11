@@ -21,7 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // This file implements a tab bar derived from QTabBar with a contextmenu
-// and possibility to close a tab via double-left and middle mouse click.
+// and possibility to close a tab via double-left or middle mouse click.
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -182,8 +182,8 @@ namespace octave
                 // A tab was closed:
                 // Was the possibly only closed tab before or after the
                 // previously current tab? According to the result, use previous
-                // index or reduce it by one. Also prevent using a too large
-                // if other or all files were closed.
+                // index or reduce it by one.  Also prevent using a too large
+                // index if other or all files were closed.
                 int new_idx = count () - 1;
                 if (new_idx > 0)
                   {

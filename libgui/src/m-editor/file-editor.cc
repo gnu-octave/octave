@@ -96,12 +96,12 @@ namespace octave
   file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
     : file_editor_interface (p, oct_qobj)
   {
-    // Set current editing directory before construct because loaded
+    // Set current editing directory before construction because loaded
     // files will change ced accordingly.
     m_ced = QDir::currentPath ();
 
-    // set action that are later added by the main window to null,
-    // preventing access to them when they are still undefined
+    // Set actions that are later added by the main window to null,
+    // preventing access to them when they are still undefined.
     m_undo_action = nullptr;
     m_copy_action = nullptr;
     m_paste_action = nullptr;
@@ -171,7 +171,7 @@ namespace octave
     QString sc_cont = settings->sc_value (sc_main_debug_continue);
 
     if (sc_run == sc_cont)
-      m_run_action->setShortcut (QKeySequence ());  // prevent ambigous shortcuts
+      m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
 
     m_run_action->setToolTip (tr ("Continue"));   // update tool tip
   }
@@ -247,7 +247,7 @@ namespace octave
 
     if (startup && ! isFloating ())
       {
-        // check is editor is really visible or hidden between tabbed widgets
+        // check if editor is really visible or hidden between tabbed widgets
         QList<QTabBar *> tab_list = main_win ()->findChildren<QTabBar *>();
 
         bool in_tab = false;
@@ -323,7 +323,7 @@ namespace octave
 
     qSort (s_data);
 
-    // finally open the file with the desired encoding in the desired order
+    // finally open the files with the desired encoding in the desired order
     for (int n = 0; n < s_data.count (); ++n)
       request_open_file (s_data.at (n).file_name, s_data.at (n).encoding,
                          s_data.at (n).line);
@@ -391,13 +391,12 @@ namespace octave
 
   bool file_editor::check_closing (void)
   {
-    // When the application or the editor is closing and the user wants
-    // to close all files in the latter case all editor tabs are checked
-    // whether they need to be saved. During these ckecked the tabs are
-    // not closed since the user might cancel closing octave during one
-    // of these saving dialogs. Therefore, saving the session for
-    // restoring at next start is not done before the application is
-    // definitely closing.
+    // When the application or the editor is closing and the user wants to
+    // close all files, in the latter case all editor tabs are checked whether
+    // they need to be saved.  During these checks tabs are not closed since
+    // the user might cancel closing Octave during one of these saving dialogs.
+    // Therefore, saving the session for restoring at next start is not done
+    // before the application is definitely closing.
 
     std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
     m_number_of_tabs = fe_tab_lst.size ();
@@ -415,11 +414,10 @@ namespace octave
 
     for (auto fe_tab : fe_tab_lst)
       {
-        // If there was a cancellation, make the already saved/discarded
-        // tabs recovering from the exit by removing the read-only state
-        // and by recovering the debugger breakpoints. Finally return
-        // false in order to cancel closing the application or the
-        // editor
+        // If there was a cancellation, make the already saved/discarded tabs
+        // recover from the exit by removing the read-only state and by
+        // recovering the debugger breakpoints.  Finally return false in order
+        // to cancel closing the application or the editor.
 
         if (fe_tab->check_file_modified (false) == QMessageBox::Cancel)
           {
@@ -497,7 +495,7 @@ namespace octave
     // Finally close all the tabs and return indication that we can exit
     // the application or close the editor.
     // Closing and deleting the tabs makes the editor visible. In case it was
-    // hidden before, this state has to be restored afterwards
+    // hidden before, this state has to be restored afterwards.
     bool vis = isVisible ();
 
     for (auto editor_tab : editor_tab_lst)
@@ -997,7 +995,7 @@ namespace octave
       {
         // Note: to overwrite the contents of some other file editor tab
         // with the same name requires identifying which file editor tab
-        // that is (not too difficult) then close that tab.  Of course,
+        // that is (not too difficult) then closing that tab.  Of course,
         // that could trigger another dialog box if the file editor tab
         // with the same name has modifications in it.  This could become
         // somewhat confusing to the user.  For now, opt to do nothing.
@@ -1086,7 +1084,7 @@ namespace octave
     request_open_file (file);
   }
 
-  // Slot used for signals indicating that a file was changed/rename or
+  // Slot used for signals indicating that a file was changed/renamed or
   // is going to be deleted/renamed
   void file_editor::handle_file_remove (const QString& old_name,
                                         const QString& new_name)
@@ -1165,8 +1163,8 @@ namespace octave
   {
     m_no_focus = true;  // Remember for not focussing editor
 
-    // Loop over all file that have to be reloaded. Start at the end of the
-    // list, otherwise the stored indexes are not correct
+    // Loop over all files that have to be reloaded. Start at the end of the
+    // list, otherwise the stored indexes are not correct.
     for (int i = m_tmp_closed_files.count () - 1; i >= 0; i--)
       {
         // Load old or new file
@@ -1297,8 +1295,8 @@ namespace octave
 
   void file_editor::set_shortcuts (void)
   {
-    // Shortcuts also available in the main window, as well as the realted
-    // ahotcuts, are defined in main_window and added to the editor
+    // Shortcuts also available in the main window, as well as the related
+    // shortcuts, are defined in main_window and added to the editor
 
     shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
@@ -1388,8 +1386,8 @@ namespace octave
   }
 
   // This slot is a reimplementation of the virtual slot in octave_dock_widget.
-  // We need this for creating an empty script when the editor has no open files
-  // and is made visible
+  // We need this for creating an empty script when the editor has no open
+  // files and is made visible.
   void file_editor::handle_visibility (bool visible)
   {
     if (m_closed && visible)
@@ -1473,8 +1471,8 @@ namespace octave
 
     if (openFileName.isEmpty ())
       {
-        // This happens if edit is calles without an argument
-        // Open eitor with empty edit area instead (as new file would do)
+        // This happens if edit is called without an argument
+        // Open editor with empty edit area instead (as new file would do)
         request_new_file ("");
       }
     else
@@ -1807,7 +1805,7 @@ namespace octave
     // FIXME: what was the intended purpose of this unused variable?
     // QStyle *editor_style = QApplication::style ();
 
-    // Menu bar: do not set it native, required in MacOS and Ubuntu Unity (Qt5)
+    // Menu bar: do not set it native, required in macOS and Ubuntu Unity (Qt5)
     // for a visible menu bar in the editor widget. This property is ignored
     // on other platforms.
     m_menu_bar = new QMenuBar (editor_widget);
@@ -2590,7 +2588,7 @@ namespace octave
         // 1. The path of the file rel. to the dir is not equal to the
         //    its absolute one.
         //    If both are equal, then there is no relative path and removed
-        //    directoy and file are on different drives (e.g.on windows)
+        //    directory and file are on different drives (e.g. on windows)
         // 2. The (real) relative path does not start with "../", i.e.,
         //    the file can be reached from the directory by descending only
         if ((rel_path_to_file != abs_path_to_file)

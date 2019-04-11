@@ -609,7 +609,7 @@ namespace octave
       }
   }
 
-  // Do smart indendation of current selection or line.
+  // Do smart indentation of current selection or line.
   void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
                                                               int lineTo)
   {
@@ -1171,7 +1171,7 @@ namespace octave
   void octave_qscintilla::auto_close (int auto_endif, int linenr,
                                       const QString& line, QString& first_word)
   {
-    // Insert and "end" for an "if" etc., if needed.
+    // Insert an "end" for an "if" etc., if needed.
     // (Use of "while" allows "return" to skip the rest.
     // It may be clearer to use "if" and "goto",
     // but that violates the coding standards.)

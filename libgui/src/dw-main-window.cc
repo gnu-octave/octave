@@ -231,7 +231,7 @@ namespace octave
     if (ev->type () == QEvent::StyleChange)
       {
         // This might indicate un- or re-docking a widget: Make sure
-        // floating widget get a copy of our actions
+        // floating widgets get a copy of our actions
         for (int i = m_dw_list.length () - 1; i >= 0; i--)
           {
             // First remove possibly existing actions

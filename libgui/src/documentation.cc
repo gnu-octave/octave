@@ -559,15 +559,15 @@ namespace octave
         selected.append (selected_item);
       }
 
-      // Apply selection and move back to the beginning
-      m_doc_browser->setExtraSelections (selected);
-      m_doc_browser->moveCursor (QTextCursor::Start);
+    // Apply selection and move back to the beginning
+    m_doc_browser->setExtraSelections (selected);
+    m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
   void documentation::notice_settings (const gui_settings *settings)
   {
-    // If m_help_engine is not defined, the object accessed by this method
-    // are not valid. Thus, just return in this case
+    // If m_help_engine is not defined, the objects accessed by this method
+    // are not valid.  Thus, just return in this case.
     if (! m_help_engine)
       return;
 
@@ -840,7 +840,7 @@ namespace octave
         QString title = m_doc_browser->historyTitle (prev_next*(i+1));
         title.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
 
-        // Sinve the title only contains the section name and not the
+        // Since the title only contains the section name and not the
         // specific anchor, extract the latter from the url and append
         // it to the title
         QString url = m_doc_browser->historyUrl (prev_next*(i+1)).toString ();
@@ -856,7 +856,7 @@ namespace octave
             anchor.remove ("Concept-Index_cp_letter-");
             anchor.replace ("-"," ");
 
-            // replace encoded special chars by there unencoded versions
+            // replace encoded special chars by their unencoded versions
             QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
             int pos = 0;
             while ((pos = rx.indexIn(anchor, pos)) != -1)

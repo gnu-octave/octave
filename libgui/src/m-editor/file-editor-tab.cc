@@ -323,8 +323,9 @@ namespace octave
 
   void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
   {
-    // search for a subfunction in actual file (this is done at first because
-    // octave finds this function before other with same name in the search path
+    // Search for a subfunction in actual file (this is done first because
+    // Octave finds this function before others with the same name in the
+    // search path.
     QRegExp rxfun1 ("^[\t ]*function[^=]+=[\t ]*"
                     + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
     QRegExp rxfun2 ("^[\t ]*function[\t ]+"
@@ -366,7 +367,7 @@ namespace octave
 
   // If "dbstop if ..." selected from context menu, create a conditional
   // breakpoint.  The default condition is (a) the existing condition if there
-  // is already a breakpoint (b) any selected text, or (c) empty
+  // is already a breakpoint, (b) any selected text, or (c) empty
   void file_editor_tab::handle_context_menu_break_condition (int linenr)
   {
     // Ensure editor line numbers match Octave core's line numbers.
@@ -631,7 +632,7 @@ namespace octave
           }
         else if (! valid_file_name ())
           {
-            // new, no yet named file: let us assume it is octave
+            // new, not yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
             lexer = new QsciLexerOctave ();
             m_is_octave_file = true;
@@ -662,7 +663,7 @@ namespace octave
           delete old_lexer;
         m_edit_area->setLexer (lexer);
 
-        // build information for auto completion (APIs)
+        // Build information for auto completion (APIs)
         m_lexer_apis = new QsciAPIs (lexer);
 
         connect (this, SIGNAL (request_add_octave_apis (const QStringList&)),
@@ -725,14 +726,14 @@ namespace octave
         if (m_is_octave_file)
           {
             // Keywords and Builtins do not change, these informations can be
-            // stored in prepared form in a file. Information on function are
-            // changing frequently, then if functions should also be auto-
-            // completed, the date of any existing file is checked.
+            // stored in prepared form in a file.  Informations on functions
+            // are changing frequently, then if functions should also be
+            // auto-completed, the date of any existing file is checked.
 
             // Keywords are always used
             m_prep_apis_file = m_prep_apis_path + lexer->lexer () + "_k";
 
-            // Buitlins are only used if the user settings say so
+            // Builtins are only used if the user settings say so
             if (octave_builtins)
               m_prep_apis_file += 'b';
 
@@ -887,7 +888,7 @@ namespace octave
     m_edit_area->set_selection_marker_color (hg);
 
     // fix line number width with respect to the font size of the lexer and
-    // set the line numbers font depending on the lexers font
+    // set the line numbers font depending on the lexer's font
     if (settings->value (ed_show_line_numbers).toBool ())
       {
         // Line numbers width
@@ -1773,7 +1774,7 @@ namespace octave
     // reset the possibly still existing read only state
     m_edit_area->setReadOnly (false);
 
-    // if we are in this slot and the list of breakpoint is not empty,
+    // if we are in this slot and the list of breakpoints is not empty,
     // then this tab was saved during an exit of the applications (not
     // restoring the breakpoints and not emptying the list) and the user
     // canceled this closing late on.
@@ -1972,7 +1973,7 @@ namespace octave
 
     int count_crlf = text.count (eol_crlf);
     int count_lf = text.count (eol_lf) - count_crlf;  // isolated lf
-    int count_cr = text.count (eol_cr) - count_crlf;  // isolated cr;
+    int count_cr = text.count (eol_cr) - count_crlf;  // isolated cr
 
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
@@ -2283,7 +2284,7 @@ namespace octave
     // set the window title to actual filename (not modified)
     update_window_title (false);
 
-    // files is save -> not modified, update encoding in statusbar
+    // file is save -> not modified, update encoding in statusbar
     m_edit_area->setModified (false);
     m_enc_indicator->setText (m_encoding);
 
@@ -2534,7 +2535,7 @@ namespace octave
     if (file_exists && ! do_close)
       {
         // Test if file is really modified or if just the timezone has
-        // changed. In the latter, just return without doing anything
+        // changed.  In the latter, just return without doing anything.
         QDateTime modified = QFileInfo (m_file_name).lastModified ().toUTC ();
 
         if (modified <= m_last_modified)
@@ -2592,7 +2593,7 @@ namespace octave
           }
 
         // give editor and this tab the focus,
-        // possibly making the editor visible  if it is hidden
+        // possibly making the editor visible if it is hidden
         emit set_focus_editor_signal (this);
         m_edit_area->setFocus ();
 
@@ -2827,7 +2828,7 @@ namespace octave
       }
     else
       {
-        // do not reload: readd to the file watche
+        // do not reload: readd to the file watcher
         m_file_system_watcher.addPath (m_file_name);
       }
   }
@@ -2864,7 +2865,7 @@ namespace octave
 
         if (m_edit_area->isModified ())
           {
-            // The best that can be done if the editor contents has been
+            // The best that can be done if the editor contents have been
             // modified is to see if there is a match with the original
             // line number of any existing breakpoints.  We can put a normal
             // debugger pointer at that breakpoint position.  Otherwise, it
@@ -3083,9 +3084,9 @@ namespace octave
 
         // Here we go for breaking the current line by inserting a newline.
         // For determining the position of a specific column, we have to get
-        // the column from the QScintila function without taking tab lengths
-        // into account, since the calculation from line/col to position ignores
-        // this, too
+        // the column from the QScintilla function without taking tab lengths
+        // into account, since the calculation from line/col to position
+        // ignores this, too.
         m_edit_area->getCursorPosition (&line, &col);
         int c = 0;
         int col_space = col;

@@ -224,7 +224,6 @@ namespace octave
       case Qt::DisplayRole:
       case Qt::EditRole:
         return edit_display (idx, role);
-        return edit_display (idx, role);
       }
 
     // Invalid.

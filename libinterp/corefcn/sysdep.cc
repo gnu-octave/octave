@@ -544,12 +544,16 @@ namespace octave
   {
 #if defined (HAVE__KBHIT) && defined (HAVE__GETCH)
     // This essentially means we are on a Windows system.
+
+    // The value to return when wait is false and no input is ready.
+    static constexpr int eof = std::istream::traits_type::eof ();
+
     int c;
 
     if (wait)
       c = _getch ();
     else
-      c = (! _kbhit ()) ? 0 : _getch ();
+      c = (! _kbhit ()) ? eof : _getch ();
 
 #else
     raw_mode (true, wait);

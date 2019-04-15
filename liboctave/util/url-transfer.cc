@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "unwind-prot.h"
 #include "url-transfer.h"
+#include "version.h"
 
 #if defined (HAVE_CURL)
 #  include <curl/curl.h>
@@ -643,40 +644,154 @@ namespace octave
 
     void http_get (const Array<std::string>& param)
     {
-      url = host_or_url;
-
-      std::string query_string = form_query_string (param);
-
-      if (! query_string.empty ())
-        url += '?' + query_string;
-
-      SETOPT (CURLOPT_URL, url.c_str ());
-
-      perform ();
+      http_action (param, "get");
     }
 
     void http_post (const Array<std::string>& param)
     {
-      SETOPT (CURLOPT_URL, host_or_url.c_str ());
-
-      std::string query_string = form_query_string (param);
-
-      SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
-
-      perform ();
+      http_action (param, "post");
     }
 
     void http_action (const Array<std::string>& param, const std::string& action)
     {
+      url = host_or_url;
+
+      std::string query_string;
+
+      query_string = form_query_string (param);
+
       if (action.empty () || action == "get")
-        http_get (param);
-      else if (action == "post")
-        http_post (param);
+        {
+          if (! query_string.empty ())
+            url += '?' + query_string;
+
+          SETOPT (CURLOPT_URL, url.c_str ());
+        }
+      else if (action == "post" || action == "put" || action == "delete")
+        {
+          SETOPT (CURLOPT_POSTFIELDS, query_string.c_str ());
+
+          if (action == "put")
+            {
+              SETOPT (CURLOPT_CUSTOMREQUEST, "PUT");
+            }
+
+          if (action == "delete")
+            {
+              SETOPT (CURLOPT_CUSTOMREQUEST, "DELETE");
+            }
+
+          SETOPT (CURLOPT_URL, url.c_str ());
+        }
       else
         {
           ok = false;
           errmsg = "curl_transfer: unknown http action";
         }
+
+      if (ok)
+        perform ();
+    }
+
+    void cookie_jar (const std::string& filename)
+    {
+      SETOPT (CURLOPT_COOKIEJAR, filename.c_str ());
+
+      SETOPT (CURLOPT_COOKIEFILE, filename.c_str ());
+    }
+
+    // Sets the header fields in a transfer. Input should be in the form
+    // of an array of strings with pairs of keys and values together
+    void set_header_fields (const Array<std::string>& param)
+    {
+      struct curl_slist *slist = nullptr;
+
+      unwind_protect frame;
+
+      frame.add_fcn (curl_slist_free_all, slist);
+
+      if (param.numel () >= 2)
+      {
+        for (int i = 0; i < param.numel (); i += 2)
+        {
+          std::string header = param(i) + ": " + param(i+1);
+
+          slist = curl_slist_append (slist, header.c_str ());
+        }
+
+        SETOPT (CURLOPT_HTTPHEADER, slist);
+      }
+    }
+
+    // Sets and sends the form data associated with a transfer.
+    // Input should be an array of strings with each pair of strings
+    // corresponding to the fieldname and it's value.
+    // To attach a file, you should use 'file' as the fieldname with the
+    // path of the file as its value.
+    void form_data_post (const Array<std::string>& param)
+    {
+      struct curl_httppost *post = NULL, *last = NULL;
+
+      SETOPT (CURLOPT_URL, host_or_url.c_str ());
+
+      unwind_protect frame;
+
+      frame.add_fcn (curl_formfree, post);
+
+      if (param.numel () >= 2)
+      {
+        for (int i = 0; i < param.numel (); i += 2)
+          {
+            std::string name = param(i);
+            std::string data = param(i+1);
+
+            if (name == "file")
+               curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                            CURLFORM_FILE, data.c_str (), CURLFORM_END);
+            else
+               curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
+                            CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
+          }
+
+        SETOPT (CURLOPT_HTTPPOST, post);
+      }
+
+      perform ();
+    }
+
+    // Sets the various options specified by weboptions object.
+    void set_weboptions (const struct weboptions& options)
+    {
+      // Remove this after completing fixmes.
+      std::string temp = "";
+
+      set_header_fields (options.HeaderFields);
+
+      SETOPT (CURLOPT_TIMEOUT, options.Timeout);
+
+      if (! options.UserAgent.empty ())
+        SETOPT (CURLOPT_USERAGENT, options.UserAgent.c_str ());
+
+      if (! options.Username.empty ())
+      {
+        if (! options.Password.empty ())
+          SETOPT (CURLOPT_USERPWD, (options.Username + ":" + options.Password)
+                                                                   .c_str ());
+        else
+          SETOPT (CURLOPT_USERPWD, (options.Username + ":").c_str ());
+      }
+
+      // Unimplemented. Only for MATLAB complatiblity.
+      if (! options.ContentReader.empty ())
+        temp = options.ContentReader;
+
+      // Unimplemented. Only for MATLAB complatiblity.
+      if (! options.ArrayFormat.empty ())
+        temp = options.ArrayFormat;
+
+      // Unimplemented. Only for MATLAB complatiblity.
+      if (! options.CertificateFilename.empty ())
+        temp = options.CertificateFilename;
     }
 
   private:
@@ -736,6 +851,17 @@ namespace octave
       // instead.
       SETOPT (CURLOPT_FTP_USE_EPSV, false);
 
+      // Set the user agent for the curl request
+      // Needed by mediaWiki API.
+      curl_version_info_data * data = curl_version_info(CURLVERSION_NOW);
+      const char *lib_ver = data->version;
+      std::string user_agent =
+          "GNU Octave/" + std::string (OCTAVE_VERSION) +
+          " (https://www.gnu.org/software/octave/ ; help@octave.org) libcurl/"
+          + std::string (lib_ver);
+
+      SETOPT (CURLOPT_USERAGENT, user_agent.c_str ());
+
       SETOPT (CURLOPT_NOPROGRESS, true);
       SETOPT (CURLOPT_FAILONERROR, true);
 
@@ -747,25 +873,26 @@ namespace octave
     {
       std::ostringstream query;
 
-      for (int i = 0; i < param.numel (); i += 2)
-        {
-          std::string name = param(i);
-          std::string text = param(i+1);
+      if (param.numel () >= 2)
+        for (int i = 0; i < param.numel (); i += 2)
+          {
+            std::string name = param(i);
+            std::string text = param(i+1);
 
-          // Encode strings.
-          char *enc_name = curl_easy_escape (curl, name.c_str (),
-                                             name.length ());
-          char *enc_text = curl_easy_escape (curl, text.c_str (),
-                                             text.length ());
+            // Encode strings.
+            char *enc_name = curl_easy_escape (curl, name.c_str (),
+                                               name.length ());
+            char *enc_text = curl_easy_escape (curl, text.c_str (),
+                                               text.length ());
 
-          query << enc_name << '=' << enc_text;
+            query << enc_name << '=' << enc_text;
 
-          curl_free (enc_name);
-          curl_free (enc_text);
+            curl_free (enc_name);
+            curl_free (enc_text);
 
-          if (i < param.numel ()-1)
-            query << '&';
-        }
+            if (i < param.numel ()-2)
+              query << '&';
+          }
 
       query.flush ();
 

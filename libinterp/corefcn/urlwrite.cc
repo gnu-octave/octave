@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-refcount.h"
 #include "ov-cell.h"
+#include "ov-classdef.h"
 #include "ovl.h"
 #include "pager.h"
 #include "unwind-prot.h"
@@ -680,7 +681,8 @@ Undocumented internal function
   std::string target;
 
   if (nargin == 3 && ! args(2).isempty ())
-    target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string") + octave::sys::file_ops::dir_sep_str ();
+    target = args(2).xstring_value ("__ftp_mget__: TARGET must be a string")
+                        + octave::sys::file_ops::dir_sep_str ();
 
   octave::url_handle_manager& uhm = interp.get_url_handle_manager ();
 
@@ -737,4 +739,94 @@ Undocumented internal function
     error ("__ftp_mget__: file not found");
 
   return ovl ();
+}
+
+DEFUN (__restful_service__, args, nargout,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{response} =} __restful_service__ (@var{url}, @var{param}, @var{weboptions})
+Undocumented internal function.
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1)
+    print_usage ();
+
+  std::string url = args(0).xstring_value ("__restful_service__: URL must be a string");
+
+  std::ostringstream content;
+
+  octave::url_transfer url_xfer (url, content);
+
+  if (! url_xfer.is_valid ())
+    error ("support for URL transfers was disabled when Octave was built");
+
+  Array<std::string> param = args(1).cellstr_value ();
+
+  std::string data, method;
+
+  struct octave::weboptions options;
+
+  octave::cdef_object object = args (nargin - 1).classdef_object_value ()
+                                                         -> get_object ();
+
+  // We could've used object.map_value () instead to return a map but that
+  // shows a warning about about overriding access restrictions.
+  // Nevertheless, we are keeping checking that here if the keys are not
+  // equal to "delete" and "display", getting away with the warning.
+  string_vector keys = object.map_keys ();
+
+  for (int i = 0; i < keys.numel (); i++)
+  {
+    if (keys(i) == "Timeout")
+    {
+      float timeout = object.get (keys(i)).float_value ();
+      options.Timeout = static_cast<long>(timeout * 1000);
+    }
+
+    if (keys(i) == "HeaderFields")
+    {
+      options.HeaderFields = object.get (keys(i)).cellstr_value ();
+    }
+
+    // FIXME: 'delete' and 'display', auto-generated, probably by cdef_object
+    // class?  Remaining fields have already been adjusted elsewhere in the
+    // m-script.  Set 'value' as the Value of the Key wherever it's a string.
+    if (keys(i) != "Timeout" && keys(i) != "HeaderFields"
+        && keys(i) != "delete" && keys(i) != "display")
+    {
+      std::string value = object.get (keys(i)).string_value ();
+
+      if (keys(i) == "UserAgent")
+        options.UserAgent = value;
+
+      if (keys(i) == "Username")
+        options.Username = value;
+
+      if (keys(i) == "Password")
+        options.Password = value;
+
+      if (keys(i) == "ContentReader")
+        // Unimplemented. Only for MATLAB compatibility.
+        options.ContentReader = "";
+
+      if (keys(i) == "RequestMethod")
+        method = value;
+
+      if (keys(i) == "ArrayFormat")
+        options.ArrayFormat = value;
+
+      if (keys(i) == "CertificateFilename")
+        options.CertificateFilename = "";
+    }
+  }
+
+  url_xfer.set_weboptions (options);
+
+  url_xfer.http_action (param, method);
+
+  if (nargout < 2 && ! url_xfer.good ())
+    error ("__restful_service__: %s", url_xfer.lasterror ().c_str ());
+
+  return ovl (content.str ());
 }

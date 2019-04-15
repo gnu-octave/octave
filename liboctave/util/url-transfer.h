@@ -41,6 +41,19 @@ template <typename T> class Array;
 
 namespace octave
 {
+  struct weboptions
+  {
+    std::string UserAgent;
+    long Timeout;
+    std::string Username;
+    std::string Password;
+    Array<std::string> HeaderFields;
+    std::string ContentReader;
+    std::string RequestMethod;
+    std::string ArrayFormat;
+    std::string CertificateFilename;
+  };
+
   class
   OCTAVE_API
   base_url_transfer
@@ -142,6 +155,13 @@ namespace octave
     virtual void http_action (const Array<std::string>& /* param */,
                               const std::string& /* action */) { }
 
+    virtual void cookie_jar (const std::string& /* filename */) { }
+
+    virtual void set_header_fields (const Array<std::string>& /* param */) { }
+
+    virtual void form_data_post (const Array<std::string>& /* param */) { }
+
+    virtual void set_weboptions (const struct weboptions& /* param */) { }
   protected:
 
     // Host for ftp transfers or full URL for http requests.
@@ -255,6 +275,25 @@ namespace octave
       rep->http_action (param, action);
     }
 
+    void cookie_jar (const std::string& filename)
+    {
+      rep->cookie_jar (filename);
+    }
+
+    void set_header_fields (const Array<std::string>& param)
+    {
+      rep->set_header_fields (param);
+    }
+
+    void form_data_post (const Array<std::string>& param)
+    {
+      rep->form_data_post (param);
+    }
+
+    void set_weboptions (const struct weboptions& param)
+    {
+      rep->set_weboptions (param);
+    }
   private:
 
     std::shared_ptr<base_url_transfer> rep;

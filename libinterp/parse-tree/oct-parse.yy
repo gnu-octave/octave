@@ -4308,6 +4308,36 @@ namespace octave
     m_lexer.m_allow_command_syntax = false;
   }
 
+  // FIXME: this function partially duplicates do_dbtype in debug.cc.
+  static std::string
+  get_file_line (const std::string& name, int line)
+  {
+    // NAME should be an absolute file name and the file should exist.
+
+    std::string ascii_fname = octave::sys::get_ASCII_filename (name);
+
+    std::ifstream fs (ascii_fname.c_str (), std::ios::in);
+
+    std::string text;
+
+    if (fs)
+      {
+        int i = 1;
+
+        do
+          {
+            if (! std::getline (fs, text))
+              {
+                text = "";
+                break;
+              }
+          }
+        while (i++ < line);
+      }
+
+    return text;
+  }
+
   void
   base_parser::bison_error (const std::string& str, int l, int c)
   {
@@ -4328,10 +4358,20 @@ namespace octave
 
     output_buf << "\n\n";
 
-    std::string curr_line = m_lexer.m_current_input_line;
+    std::string curr_line;
+
+    if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
+        || m_lexer.m_reading_classdef_file)
+      curr_line = get_file_line (m_lexer.m_fcn_file_full_name, l);
+    else
+      curr_line = m_lexer.m_current_input_line;
 
     if (! curr_line.empty ())
       {
+        // FIXME: we could do better if we just cached lines from the
+        // input file in a list.  See also functions for managing input
+        // buffers in lex.ll.
+
         size_t len = curr_line.length ();
 
         if (curr_line[len-1] == '\n')

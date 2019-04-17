@@ -1092,6 +1092,7 @@ ANY_INCLUDING_NL (.|{NL})
 
 <FQ_IDENT_START>{FQIDENT} {
     curr_lexer->lexer_debug ("<FQ_IDENT_START>{FQIDENT}{S}*");
+
     curr_lexer->pop_start_state ();
 
     int id_tok = curr_lexer->handle_fq_identifier ();
@@ -1105,14 +1106,26 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <FQ_IDENT_START>{S}+ {
+    curr_lexer->lexer_debug ("<FQ_IDENT_START>{S}+");
+
     curr_lexer->m_current_input_column += yyleng;
 
     curr_lexer->mark_previous_token_trailing_space ();
   }
 
-<FQ_IDENT_START>. {
+<FQ_IDENT_START>(\.\.\.){ANY_EXCEPT_NL}*{NL} {
+    curr_lexer->lexer_debug ("<FQ_IDENT_START>(\\.\\.\\.){ANY_EXCEPT_NL}*{NL}");
+
+    curr_lexer->m_input_line_number++;
+    curr_lexer->m_current_input_column = 1;
+  }
+
+<FQ_IDENT_START>{ANY_INCLUDING_NL} {
+    curr_lexer->lexer_debug ("<FQ_IDENT_START>{ANY_INCLUDING_NL}");
+
     // If input doesn't match FQIDENT, return char and go to previous
     // start state.
+
     yyless (0);
     curr_lexer->pop_start_state ();
   }

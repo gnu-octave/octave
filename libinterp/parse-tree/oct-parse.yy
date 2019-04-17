@@ -3597,12 +3597,15 @@ namespace octave
 
     if (nm != cls_name)
       {
+        int l = id->line ();
+        int c = id->column ();
+
         delete a;
         delete id;
         delete sc;
         delete body;
 
-        bison_error ("invalid classdef definition, the class name must match the filename");
+        bison_error ("invalid classdef definition, the class name must match the filename", l, c);
 
       }
     else

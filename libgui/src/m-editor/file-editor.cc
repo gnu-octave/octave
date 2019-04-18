@@ -66,6 +66,7 @@ namespace octave
     this->setTabBar (bar);
 
     setTabsClosable (true);
+    setUsesScrollButtons (true);
 #if defined (HAVE_QTABWIDGET_SETMOVABLE)
     setMovable (true);
 #endif

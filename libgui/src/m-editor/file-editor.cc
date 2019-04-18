@@ -756,7 +756,8 @@ namespace octave
   }
 
   void file_editor::handle_file_name_changed (const QString& fname,
-                                              const QString& tip)
+                                              const QString& tip,
+                                              bool modified)
   {
     QObject *fileEditorTab = sender ();
     if (fileEditorTab)
@@ -767,6 +768,11 @@ namespace octave
               {
                 m_tab_widget->setTabText (i, fname);
                 m_tab_widget->setTabToolTip (i, tip);
+                if (modified)
+                  m_tab_widget->setTabIcon (i,
+                                  resource_manager::icon ("document-save"));
+                else
+                  m_tab_widget->setTabIcon (i, QIcon ());
               }
           }
       }
@@ -2173,9 +2179,9 @@ namespace octave
              main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
     // Signals from the file editor_tab
-    connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
+    connect (f, SIGNAL (file_name_changed (const QString&, const QString&, bool)),
              this, SLOT (handle_file_name_changed (const QString&,
-                                                   const QString&)));
+                                                   const QString&, bool)));
 
     connect (f, SIGNAL (editor_state_changed (bool, bool)),
              this, SLOT (handle_editor_state_changed (bool, bool)));

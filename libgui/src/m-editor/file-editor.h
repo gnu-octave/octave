@@ -246,7 +246,8 @@ namespace octave
     void request_completion (bool);
 
     void handle_file_name_changed (const QString& fileName,
-                                   const QString& toolTip);
+                                   const QString& toolTip,
+                                   bool modified);
     void handle_tab_close_request (int index);
     void handle_tab_remove_request (void);
     void handle_add_filename_to_list (const QString& fileName,

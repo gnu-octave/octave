@@ -154,7 +154,9 @@ namespace octave
 
   signals:
 
-    void file_name_changed (const QString& fileName, const QString& toolTip);
+    void file_name_changed (const QString& fileName,
+                            const QString& toolTip,
+                            bool modified);
     void editor_state_changed (bool copy_available, bool is_octave_file);
     void set_focus_editor_signal (QWidget *);
     void tab_remove_request (void);

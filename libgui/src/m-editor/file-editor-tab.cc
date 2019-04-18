@@ -1641,10 +1641,7 @@ namespace octave
           }
       }
 
-    if (modified)
-      emit file_name_changed (title.prepend ("* "), tooltip);
-    else
-      emit file_name_changed (title, tooltip);
+    emit file_name_changed (title, tooltip, modified);
   }
 
   void file_editor_tab::handle_copy_available (bool enableCopy)

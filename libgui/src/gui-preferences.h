@@ -28,8 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 //#endif
 
 #include <QStringList>
-#include <QVariant>
 #include <QStyle>
+#include <QTabWidget>
+#include <QVariant>
 
 // Structure for the definition of pairs: key and default value
 
@@ -98,6 +99,14 @@ const gui_pref ed_session_ind ("editor/saved_session_tab_index",
 const gui_pref ed_session_lines ("editor/saved_session_lines",
                                   QVariant (QStringList ()));
 
+// Tabs
+const QStringList ed_tab_position_names (
+     QStringList () << QT_TRANSLATE_NOOP ("file_editor::file_editor","Top")
+                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Bottom")
+                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Left")
+                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Right"));
+const gui_pref ed_tab_position ("editor/tab_position",
+                                QVariant (QTabWidget::North));
 
 // File handling
 const gui_pref ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));

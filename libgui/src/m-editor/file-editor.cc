@@ -1102,7 +1102,8 @@ namespace octave
     else
       m_tab_widget->setElideMode (Qt::ElideNone);
 
-    m_tab_widget->setUsesScrollButtons (true);
+    m_tab_widget->setTabPosition (static_cast<QTabWidget::TabPosition>(
+        settings->value (ed_tab_position.key, ed_tab_position.def).toInt ()));
 
     bool show_it;
     show_it = settings->value ("editor/showLineNumbers",true).toBool ();

@@ -293,6 +293,10 @@ namespace octave
     cb_show_eol->setChecked (settings->value ("editor/show_eol_chars", false).toBool ());
     cb_show_hscrollbar->setChecked (settings->value ("editor/show_hscroll_bar", true).toBool ());
 
+    editor_combox_tab_pos->insertItems (0, ed_tab_position_names);
+    editor_combox_tab_pos->setCurrentIndex (
+          settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+
     int selected_comment_string, selected_uncomment_string;
 
     if (settings->contains (ed_comment_str.key))   // new version (radio buttons)
@@ -886,6 +890,8 @@ namespace octave
     settings->setValue ("editor/show_eol_chars", cb_show_eol->isChecked ());
     settings->setValue ("editor/show_hscroll_bar", cb_show_hscrollbar->isChecked ());
     settings->setValue ("editor/default_eol_mode", combo_eol_mode->currentIndex ());
+
+    settings->setValue (ed_tab_position.key, editor_combox_tab_pos->currentIndex ());
 
     // Comment strings
     int rb_uncomment = 0;

@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>617</width>
-            <height>575</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -561,8 +561,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>638</width>
-            <height>543</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -842,8 +842,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>662</width>
-            <height>1307</height>
+            <width>644</width>
+            <height>1322</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -858,120 +858,7 @@
                 <property name="topMargin">
                  <number>0</number>
                 </property>
-                <item row="1" column="2">
-                 <layout class="QGridLayout" name="gridLayout_6">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="editor_lbl_min_tab_width">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Tab width min.</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <widget class="QSpinBox" name="editor_notebook_tab_width_min">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimum">
-                     <number>80</number>
-                    </property>
-                    <property name="maximum">
-                     <number>600</number>
-                    </property>
-                    <property name="singleStep">
-                     <number>20</number>
-                    </property>
-                    <property name="value">
-                     <number>160</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="6">
-                   <spacer name="horizontalSpacer_25">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="5">
-                   <widget class="QSpinBox" name="editor_notebook_tab_width_max">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimum">
-                     <number>180</number>
-                    </property>
-                    <property name="maximum">
-                     <number>600</number>
-                    </property>
-                    <property name="singleStep">
-                     <number>20</number>
-                    </property>
-                    <property name="value">
-                     <number>300</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QLabel" name="editor_lbl_max_tab_width">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>max.</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="editor_longWindowTitle">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>Show complete path in title</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <spacer name="horizontalSpacer_24">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>10</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="3" column="2">
+                <item row="2" column="2">
                  <widget class="QCheckBox" name="editor_ws_indent_checkbox">
                   <property name="enabled">
                    <bool>false</bool>
@@ -981,7 +868,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="0">
+                <item row="9" column="0">
                  <widget class="QCheckBox" name="cb_edit_status_bar">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -997,7 +884,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item row="1" column="0">
                  <widget class="QCheckBox" name="editor_showLineNumbers">
                   <property name="enabled">
                    <bool>true</bool>
@@ -1013,7 +900,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
+                <item row="2" column="0">
                  <widget class="QCheckBox" name="editor_ws_checkbox">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1026,7 +913,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="0">
+                <item row="8" column="0">
                  <widget class="QCheckBox" name="cb_code_folding">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1042,7 +929,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="2">
+                <item row="9" column="2">
                  <widget class="QCheckBox" name="cb_edit_tool_bar">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1058,7 +945,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="2">
+                <item row="8" column="2">
                  <widget class="QCheckBox" name="cb_show_hscrollbar">
                   <property name="enabled">
                    <bool>true</bool>
@@ -1077,7 +964,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="2">
+                <item row="1" column="2">
                  <layout class="QGridLayout" name="gridLayout_17">
                   <item row="0" column="0">
                    <widget class="QLabel" name="editor_linenr_size_label">
@@ -1120,7 +1007,7 @@
                   </item>
                  </layout>
                 </item>
-                <item row="4" column="2">
+                <item row="3" column="2">
                  <layout class="QGridLayout" name="gridLayout_16">
                   <item row="0" column="1">
                    <spacer name="horizontalSpacer_11">
@@ -1183,7 +1070,7 @@
                   </item>
                  </layout>
                 </item>
-                <item row="4" column="0">
+                <item row="3" column="0">
                  <widget class="QCheckBox" name="cb_show_eol">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1195,6 +1082,22 @@
                    <string>Show EOL characters</string>
                   </property>
                  </widget>
+                </item>
+                <item row="1" column="1">
+                 <spacer name="horizontalSpacer_36">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
@@ -1252,6 +1155,162 @@
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_12">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_11">
+             <property name="title">
+              <string>Tabs</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_32">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_23">
+                <item row="1" column="1">
+                 <spacer name="horizontalSpacer_24">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_21">
+                  <item>
+                   <widget class="QComboBox" name="editor_combox_tab_pos"/>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_25">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>Tab position</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_20">
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="editor_lbl_min_tab_width">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Tab width min.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="editor_notebook_tab_width_min">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimum">
+                     <number>80</number>
+                    </property>
+                    <property name="maximum">
+                     <number>600</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>20</number>
+                    </property>
+                    <property name="value">
+                     <number>160</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="editor_lbl_max_tab_width">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>max.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="editor_notebook_tab_width_max">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimum">
+                     <number>180</number>
+                    </property>
+                    <property name="maximum">
+                     <number>600</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>20</number>
+                    </property>
+                    <property name="value">
+                     <number>300</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QCheckBox" name="editor_longWindowTitle">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Show complete path in title</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <spacer name="horizontalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -2168,8 +2227,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>628</width>
-            <height>558</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -2318,8 +2377,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>628</width>
-            <height>558</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -2380,8 +2439,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>720</width>
-            <height>543</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_vesc_manual">
@@ -2582,8 +2641,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>628</width>
-            <height>558</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2781,8 +2840,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>628</width>
-            <height>558</height>
+            <width>658</width>
+            <height>576</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

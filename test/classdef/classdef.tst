@@ -186,3 +186,10 @@
 %! assert (isequal (obj{1:2}(1:2), ones (2)));
 %! obj{3:4}(3:4) = 4 * ones (2);
 %! assert (isequal (obj{3:4}(3:4), 4 * ones (2)));
+
+%!test <52614>
+%! A = class_bug52614A ();
+%! assert (A.a, 1);
+%! B = class_bug52614B ();
+%! assert (B.a, 1);
+%! assert (B.b, 2);

@@ -724,16 +724,17 @@ namespace octave
   bool
   cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) const
   {
-    std::map< cdef_class, std::list<cdef_class>>::const_iterator it;
-
     if (is_constructed ())
       return true;
-    else if ((it = ctor_list.find (cls)) == ctor_list.end ()
-             || it->second.empty ())
+
+    std::map<cdef_class, std::list<cdef_class>>::const_iterator it
+      = ctor_list.find (cls);
+
+    if (it == ctor_list.end () || it->second.empty ())
       return true;
 
     for (const auto& cdef_cls : it->second)
-      if (! is_constructed_for (cdef_cls))
+      if (! is_partially_constructed_for (cdef_cls))
         return false;
 
     return true;

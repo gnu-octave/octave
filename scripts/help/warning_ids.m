@@ -33,7 +33,7 @@
 ## @item Octave:array-as-logical
 ## If the @code{Octave:array-as-logical} warning is enabled,
 ## Octave will warn when an array of size greater than 1x1 is used
-## as a truth value in an if, while or until statement.
+## as a truth value in an if, while, or until statement.
 ## By default, the @code{Octave:array-as-logical} warning is disabled.
 ##
 ## @item Octave:array-to-scalar
@@ -140,6 +140,14 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:data-file-in-path
+## If the @code{Octave:data-file-in-path} warning is enabled, a warning is
+## issued when Octave does not find the target of a file operation such as
+## @code{load} or @code{fopen} directly, but is able to locate the file in
+## Octave's search @code{path} for files.  The warning could indicate that a
+## different file target than the programmer intended is being used.
+## By default, the @code{Octave:data-file-in-path} warning is enabled.
+##
 ## @item Octave:deprecated-function
 ## If the @code{Octave:deprecated-function} warning is enabled, a
 ## warning is issued when Octave encounters a function that is obsolete and
@@ -165,19 +173,17 @@
 ## By default, the @code{Octave:eigs:UnconvergedEigenvalues} warning is
 ## enabled.
 ##
+## @item Octave:empty-index
+## If the @code{Octave:index} warning is enabled then Octave will emit a
+## warning whenever indexing operators are used without an index, for example
+## @code{@var{x}()}.
+## By default, the @code{Octave:empty-index} warning is enabled.
+##
 ## @item Octave:erase:chararray
 ## If the @code{Octave:erase:chararray} warning is enabled then the erase
 ## function will issue a warning if the input pattern is a character array
 ## rather than a string or cell array of strings.
 ## By default, the @code{Octave:erase:chararray} warning is enabled.
-##
-## @item Octave:data-file-in-path
-## If the @code{Octave:data-file-in-path} warning is enabled, a warning is
-## issued when Octave does not find the target of a file operation such as
-## @code{load} or @code{fopen} directly, but is able to locate the file in
-## Octave's search @code{path} for files.  The warning could indicate that a
-## different file target than the programmer intended is being used.
-## By default, the @code{Octave:data-file-in-path} warning is enabled.
 ##
 ## @item Octave:function-name-clash
 ## If the @code{Octave:function-name-clash} warning is enabled, a
@@ -193,13 +199,6 @@
 ## By default, the @code{Octave:future-time-stamp} warning is enabled.
 ##
 ## @item Octave:glyph-render
-## By default, the @code{Octave:glyph-render} warning is enabled.
-##
-## @item Octave:text_interpreter
-## If the @code{Octave:text_interpreter} warning is enabled, a warning is
-## printed when the @qcode{"interpreter"} property of a text graphics object
-## is set to the unsupported value of @qcode{"latex"}.  Even when enabled,
-## the warning message is printed just once per Octave session.
 ## By default, the @code{Octave:glyph-render} warning is enabled.
 ##
 ## @item Octave:imag-to-real
@@ -360,6 +359,13 @@
 ## @noindent
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
+##
+## @item Octave:text_interpreter
+## If the @code{Octave:text_interpreter} warning is enabled, a warning is
+## printed when the @qcode{"interpreter"} property of a text graphics object
+## is set to the unsupported value of @qcode{"latex"}.  Even when enabled,
+## the warning message is printed just once per Octave session.
+## By default, the @code{Octave:glyph-render} warning is enabled.
 ##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave

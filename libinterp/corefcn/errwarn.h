@@ -167,6 +167,9 @@ OCTINTERP_API extern void
 warn_empty_arg (const char *name);
 
 OCTINTERP_API extern void
+warn_empty_index (const std::string& type_name);
+
+OCTINTERP_API extern void
 warn_implicit_conversion (const char *id, const char *from, const char *to);
 
 OCTINTERP_API extern void

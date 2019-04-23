@@ -149,6 +149,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
       switch (n_idx)
         {
         case 0:
+          warn_empty_index (type_name ());
           retval = matrix;
           break;
 

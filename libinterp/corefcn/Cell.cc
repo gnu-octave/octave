@@ -166,6 +166,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
       switch (n)
         {
         case 0:
+          warn_empty_index ("cell array");
           retval = *this;
           break;
 

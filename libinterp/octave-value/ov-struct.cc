@@ -539,7 +539,10 @@ octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
   if (idx.length () == 0)
-    return map;
+    {
+      warn_empty_index (type_name ());
+      return map;
+    }
   else  // octave_map handles indexing itself.
     return map.index (idx, resize_ok);
 }

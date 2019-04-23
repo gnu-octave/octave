@@ -330,6 +330,14 @@ warn_empty_arg (const char *name)
 }
 
 void
+warn_empty_index (const std::string& type_name)
+{
+  warning_with_id ("Octave:empty-index",
+                   "'%s' object indexed with empty index list",
+                   type_name.c_str ());
+}
+
+void
 warn_implicit_conversion (const char *id, const char *from, const char *to)
 {
   warning_with_id (id, "implicit conversion from %s to %s", from, to);

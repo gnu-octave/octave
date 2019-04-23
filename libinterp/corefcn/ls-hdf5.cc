@@ -717,10 +717,10 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
       // check for OCTAVE_GLOBAL attribute:
       d->global = hdf5_check_attr (data_id, "OCTAVE_GLOBAL");
 
+      retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
+
       H5Tclose (type_id);
       H5Dclose (data_id);
-
-      retval = (d->tc.load_hdf5 (group_id, name) ? 1 : -1);
     }
 
   if (! ident_valid)
@@ -733,7 +733,11 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
 done:
   if (retval < 0)
-    error ("load: error while reading hdf5 item %s", name);
+    {
+      // Must be warning.  A call to error aborts and leaves H5Giterate in
+      // a mangled state that causes segfault on exit (bug #56149).
+      warning ("load: error while reading hdf5 item '%s'", name);
+    }
 
   if (retval > 0)
     {
@@ -793,7 +797,7 @@ hdf5_h5g_iterate (octave_hdf5_id loc_id, const char *name, int *idx,
 }
 
 // Read the next Octave variable from the stream IS, which must really be an
-// hdf5_ifstream.  Return the variable value in tc, its doc string in doc, and
+// hdf5_ifstream.  Return the variable value in tc, its docstring in doc, and
 // whether it is global in global.  The return value is the name of the
 // variable, or NULL if none were found or there was an error.
 std::string
@@ -864,9 +868,9 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
     }
   else
     {
-      // an error occurred (H5Giterate_retval < 0) or there are no
-      // more datasets print an error message if retval < 0?
-      // hdf5_read_next_data already printed one, probably.
+      // An error occurred (H5Giterate_retval < 0),
+      // or there are no more datasets (H5Giterate_retval == 0).
+      // hdf5_read_next_data_internal has already printed a warning msg.
     }
 
   if (! d.name.empty ())

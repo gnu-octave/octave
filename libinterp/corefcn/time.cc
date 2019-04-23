@@ -156,7 +156,7 @@ gmtime (time ())
 @seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
-  if (args.length () != 1)
+  if (args.length () != 1 || args(0).numel () != 1)
     print_usage ();
 
   double tmp = args(0).double_value ();
@@ -211,7 +211,7 @@ localtime (time ())
 @seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}
 @end deftypefn */)
 {
-  if (args.length () != 1)
+  if (args.length () != 1 || args(0).numel () != 1)
     print_usage ();
 
   double tmp = args(0).double_value ();

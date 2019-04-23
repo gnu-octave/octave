@@ -770,8 +770,8 @@ function cmd = epstool (opts, filein, fileout)
   persistent epsdevice;
   if (dos_shell && isempty (epsdevice))
     if (isempty (opts.ghostscript.binary))
-      error ("octave:print:missing_gs",
-             "print: Ghostscript is required for specified output format, but binary is not available in PATH");
+      error ("print:nogs",
+             "print: 'gs' (Ghostscript) is required for specified output format, but binary is not available in PATH");
     endif
 
     [status, devlist] = system (sprintf ("%s -h", opts.ghostscript.binary));
@@ -821,7 +821,7 @@ function cmd = epstool (opts, filein, fileout)
   if (! isempty (opts.preview) || opts.tight)
 
     if (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print.m: 'epstool' is required for specified output format, but binary is not available in PATH");
+      error ("print:noepstool", "print: 'epstool' is required for specified output format, but binary is not available in PATH");
     endif
 
     if (opts.tight)
@@ -838,7 +838,7 @@ function cmd = epstool (opts, filein, fileout)
           cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
         otherwise
           error ("print:invalidpreview",
-                 "print.m: epstool cannot include preview for format '%s'",
+                 "print: epstool cannot include preview for format '%s'",
                  opts.preview);
       endswitch
       if (! isempty (opts.ghostscript.resolution))
@@ -873,7 +873,7 @@ function cmd = epstool (opts, filein, fileout)
     if (! isempty (cleanup))
       if (pipeout && dos_shell)
         error ("print:epstoolpipe",
-               "print.m: cannot pipe output of 'epstool' for DOS shell");
+               "print: cannot pipe output of 'epstool' for DOS shell");
       elseif (pipeout)
         cmd = sprintf ("( %s %s )", cmd, cleanup);
       else
@@ -928,7 +928,7 @@ function cmd = fig2dev (opts, devopt)
   endif
 
   if (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print.m: 'fig2dev' is required for specified output format, but binary is not available in PATH");
+    error ("print:nofig2dev", "print: 'fig2dev' is required for specified output format, but binary is not available in PATH");
   endif
 
   dos_shell = (ispc () && ! isunix ());
@@ -977,13 +977,13 @@ function latex_standalone (opts)
   fid = fopen (latexfile, "r");
   if (fid < 0)
     error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile);
+           "print: error opening file '%s'", latexfile);
   endif
   latex = fscanf (fid, "%c", Inf);
   status = fclose (fid);
   if (status != 0)
     error ("print:errorclosingfile",
-           "print.m: error closing file '%s'", latexfile);
+           "print: error closing file '%s'", latexfile);
   endif
   ## FIXME: should this be fixed in GL2PS?
   latex = strrep (latex, "\\includegraphics{}",
@@ -997,11 +997,11 @@ function latex_standalone (opts)
     status = fclose (fid);
     if (status != 0)
       error ("print:errorclosingfile",
-             "print.m: error closing file '%s'", latexfile);
+             "print: error closing file '%s'", latexfile);
     endif
   else
     error ("print:erroropeningfile",
-           "print.m: error opening file '%s'", latexfile);
+           "print: error opening file '%s'", latexfile);
   endif
 
 endfunction
@@ -1021,7 +1021,7 @@ function cmd = lpr (opts)
       cmd = sprintf ("%s %s", cmd, opts.printer);
     endif
   elseif (isempty (opts.lpr_binary))
-    error ("print:nolpr", "print.m: 'lpr' not found in PATH");
+    error ("print:nolpr", "print: 'lpr' not found in PATH");
   endif
   if (opts.debug)
     fprintf ("lpr command: '%s'\n", cmd);
@@ -1037,8 +1037,7 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
 
   if (isempty (opts.pstoedit_binary))
     error ("print:nopstoedit", ...
-           ["print.m: 'pstoedit' is required for specified output format, ", ...
-            "but binary is not available in PATH"]);
+           "print: 'pstoedit' is required for specified output format, but binary is not available in PATH");
   endif
 
   dos_shell = (ispc () && ! isunix ());

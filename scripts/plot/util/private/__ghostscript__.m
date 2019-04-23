@@ -61,7 +61,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
   endfor
 
   if (isempty (opts.binary))
-    error ("print:no_ghostscript", "__ghostscript__.m: Ghostscript binary is required for specified output format, but binary is not available in PATH");
+    error ("print:nogs", "__ghostscript__: 'gs' (Ghostscript) binary is required for specified output format, but binary is not available in PATH");
   endif
 
   if (isempty (opts.papersize))

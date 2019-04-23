@@ -179,7 +179,7 @@ function opts = __opengl_print__ (opts)
       endif
     otherwise
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for OpenGL toolkits",
+             "print: %s output is not available for OpenGL toolkits",
              upper (opts.devopt));
   endswitch
 

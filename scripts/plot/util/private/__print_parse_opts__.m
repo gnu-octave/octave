@@ -355,10 +355,10 @@ function arg_st = __print_parse_opts__ (varargin)
         endif
       else
         arg_st.append_to_file = false;
-        warning ("print.m: appended output requires Ghostscript to be installed");
+        warning ("print: appended output requires Ghostscript to be installed");
       endif
     else
-      warning ("print.m: appended output is not supported for device '%s'",
+      warning ("print: appended output is not supported for device '%s'",
                arg_st.devopt);
       arg_st.append_to_file = false;
     endif
@@ -746,7 +746,7 @@ function value = convert2points (value, units)
       value *= (72 / 2.54);
     case "normalized"
       error ("print:customnormalized",
-             "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");
+             "print: papersize=='<custom>' and paperunits='normalized' may not be combined");
   endswitch
 
 endfunction

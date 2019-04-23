@@ -114,7 +114,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow (["tikz " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case "svg"
@@ -144,7 +144,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow ([term " " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case {"canvas", "cgm", "dxf", "hpgl", "latex", "mf", "gif", ...
@@ -153,7 +153,7 @@ function opts = __gnuplot_print__ (opts)
         local_drawnow ([opts.devopt " " gp_opts], opts.name, opts);
       else
         error (sprintf ("print:no%soutput", opts.devopt),
-               "print.m: '%s' output is not available for gnuplot-%s",
+               "print: '%s' output is not available for gnuplot-%s",
                upper (opts.devopt), __gnuplot_version__ ());
       endif
     case "dumb"
@@ -187,7 +187,7 @@ function opts = __gnuplot_print__ (opts)
       endif
     otherwise
       error (sprintf ("print:no%soutput", opts.devopt),
-             "print.m: %s output is not available for the Gnuplot graphics toolkit",
+             "print: %s output is not available for the Gnuplot graphics toolkit",
              upper (opts.devopt));
   endswitch
 

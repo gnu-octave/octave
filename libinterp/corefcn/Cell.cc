@@ -211,9 +211,11 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 }
 
 /*
-%!test
+%% This behavior is required for Matlab compatibility.
+%!shared a
 %! a = {"foo", "bar"};
-%! assert (a(), a);
+%!assert (a(), a);
+%!error <invalid empty index expression> a{}
 */
 
 void

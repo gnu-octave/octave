@@ -210,6 +210,13 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
+/*
+%% This behavior is required for Matlab compatibility.
+%!test
+%! a = [1, 2; 3, 4];
+%! assert (a(), a);
+*/
+
 template <typename MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)

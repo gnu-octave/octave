@@ -764,9 +764,16 @@ function cmd = epstool (opts, filein, fileout)
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
+  dos_shell = (ispc () && ! isunix ());
+
   ## HACK: Keep track of whether ghostscript supports epswrite or eps2write.
   persistent epsdevice;
-  if (isempty (epsdevice))
+  if (dos_shell && isempty (epsdevice))
+    if (isempty (opts.ghostscript.binary))
+      error ("octave:print:missing_gs",
+             "print: Ghostscript is required for specified output format, but binary is not available in PATH");
+    endif
+
     [status, devlist] = system (sprintf ("%s -h", opts.ghostscript.binary));
     if (isempty (strfind (devlist, "eps2write")))
       epsdevice = "epswrite";
@@ -774,8 +781,6 @@ function cmd = epstool (opts, filein, fileout)
       epsdevice = "eps2write";
     endif
   endif
-
-  dos_shell = (ispc () && ! isunix ());
 
   cleanup = "";
   if (nargin < 3)

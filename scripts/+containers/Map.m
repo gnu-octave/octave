@@ -376,6 +376,9 @@ classdef Map < handle
             otherwise
               error ("containers.Map: unknown property '%s'", s(1).subs);
           endswitch
+          if (numel (s) > 1 && strcmp (s(2).type, "()") && isempty (s(2).subs))
+            s(1) = [];
+          endif
         case "()"
           if (isempty (s(1).subs))
             error ("containers.Map: no key specified");

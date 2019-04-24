@@ -174,7 +174,7 @@
 ## enabled.
 ##
 ## @item Octave:empty-index
-## If the @code{Octave:index} warning is enabled then Octave will emit a
+## If the @code{Octave:empty-index} warning is enabled then Octave will emit a
 ## warning whenever indexing operators are used without an index, for example
 ## @code{@var{x}()}.
 ## By default, the @code{Octave:empty-index} warning is enabled.

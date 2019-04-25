@@ -495,9 +495,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (warn_on_missing_ghostscript)
     if (isempty (arg_st.ghostscript.binary))
-      warning ("octave:print:missing_gs", ...
-               ["print: Ghostscript binary is not available.  ", ...
-                "Only eps output is possible"]);
+      warning ("print:nogs", ...
+               "print: 'gs' (Ghostscript) binary is not available.  Many formats may not be available\n");
     endif
     warn_on_missing_ghostscript = false;
   endif

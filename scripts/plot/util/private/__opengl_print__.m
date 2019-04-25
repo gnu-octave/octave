@@ -127,7 +127,7 @@ function opts = __opengl_print__ (opts)
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
     case opts.ghostscript.device
       ## Except for postscript, use svg format and first convert to pdf
-      ## before going through ghostscript for final adjusments
+      ## before going through ghostscript for final adjustments.
       svgcmd = "";
       if (opts.svgconvert)
         svgcmd = opts.svgconvert_cmd (opts, opts.ghostscript.device);

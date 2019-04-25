@@ -744,7 +744,7 @@ function value = convert2points (value, units)
     case "centimeters"
       value *= (72 / 2.54);
     case "normalized"
-      error ("print:customnormalized",
+      error ("Octave:print:customnormalized",
              "print: papersize=='<custom>' and paperunits='normalized' may not be combined");
   endswitch
 

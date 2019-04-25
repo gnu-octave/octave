@@ -57,7 +57,7 @@ function opts = __opengl_print__ (opts)
           suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
         endif
       else
-        error ("print:invalid-suffix",
+        error ("Octave:print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif

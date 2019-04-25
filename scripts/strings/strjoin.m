@@ -71,7 +71,7 @@ function rval = strjoin (cstr, delimiter)
     delimiter = repmat (delimiter, 1, num);
     delimiter(end) = {""};
   elseif (num > 0 && numel (delimiter) != num - 1)
-    error ("strjoin:cellstring_delimiter_mismatch",
+    error ("Octave:strjoin:cellstring_delimiter_mismatch",
       "strjoin: the number of delimiters does not match the number of strings");
   else
     delimiter(end+1) = {""};

@@ -197,7 +197,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   endif
 
   if (! (sign (fa) * sign (fb) <= 0))
-    error ("fzero:bracket", "fzero: not a valid initial bracketing");
+    error ("Octave:fzero:bracket", "fzero: not a valid initial bracketing");
   endif
 
   slope0 = (fb - fa) / (b - a);
@@ -331,7 +331,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
       break;
     else
       ## This should never happen.
-      error ("fzero:bracket", "fzero: zero point is not bracketed");
+      error ("Octave:fzero:bracket", "fzero: zero point is not bracketed");
     endif
 
     ## If there's an output function, use it now.
@@ -385,9 +385,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fzero:notreal", "fzero: non-real value encountered");
+    error ("Octave:fzero:notreal", "fzero: non-real value encountered");
   elseif (isnan (fx))
-    error ("fzero:isnan", "fzero: NaN value encountered");
+    error ("Octave:fzero:isnan", "fzero: NaN value encountered");
   endif
 endfunction
 

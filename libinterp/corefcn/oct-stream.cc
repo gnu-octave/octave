@@ -2306,13 +2306,13 @@ namespace octave
             if (mask[ch]++ == 0)
               retval[out++] = ch;
             else if (ch != '-')
-              warning_with_id ("octave:textscan-pattern",
+              warning_with_id ("Octave:textscan-pattern",
                                "%s: [...] contains two '%c's",
                                who.c_str (), ch);
 
             if (prev == '-' && mask['-'] >= 2)
               warning_with_id
-                ("octave:textscan-pattern",
+                ("Octave:textscan-pattern",
                  "%s: [...] contains two '-'s outside range expressions",
                  who.c_str ());
           }

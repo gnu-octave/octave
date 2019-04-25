@@ -154,7 +154,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
     if (any (strcmpi (params{n}, fields)))
       args.(tolower (params{n})) = params{n+1};
     elseif (ischar (varargin{n}))
-      error ("strsplit:invalid_parameter_name",
+      error ("Octave:strsplit:invalid_parameter_name",
              "strsplit: invalid parameter name, '%s'", varargin{n});
     else
       print_usage ();
@@ -190,7 +190,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
   elseif (strncmpi (args.delimitertype, "regularexpression", length_deltype))
     is_simple = false;
   else
-    error ("strsplit:invalid_delimitertype", "strsplit: Invalid DELIMITERTYPE");
+    error ("Octave:strsplit:invalid_delimitertype", "strsplit: Invalid DELIMITERTYPE");
   endif
 
   if (is_simple)

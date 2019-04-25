@@ -93,7 +93,7 @@ function opts = __gnuplot_print__ (opts)
           suffix = ext;  # If user provides eps/ps/pdf suffix, use it.
         endif
       else
-        error ("print:invalid-suffix",
+        error ("Octave:print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
                ext, lower (opts.devopt));
       endif
@@ -204,7 +204,7 @@ function opts = __gnuplot_print__ (opts)
                "---------- output begin ----------",
                output,
                "----------- output end -----------");
-      error ("gnuplot:failedpipe", "print: failed to print");
+      error ("Octave:gnuplot:failedpipe", "print: failed to print");
     endif
   endfor
 

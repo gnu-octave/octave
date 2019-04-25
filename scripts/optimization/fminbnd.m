@@ -272,9 +272,9 @@ function fx = guarded_eval (fun, x)
   fx = fun (x);
   fx = fx(1);
   if (! isreal (fx))
-    error ("fminbnd:notreal", "fminbnd: non-real value encountered");
+    error ("Octave:fmindbnd:notreal", "fminbnd: non-real value encountered");
   elseif (isnan (fx))
-    error ("fminbnd:isnan", "fminbnd: NaN value encountered");
+    error ("Octave:fmindbnd:isnan", "fminbnd: NaN value encountered");
   endif
 endfunction
 

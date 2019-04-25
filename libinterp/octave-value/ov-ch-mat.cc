@@ -325,7 +325,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
         U8_FCN (in, matrix.numel (), nullptr, buf, &output_length);            \
         if (output_length != static_cast<size_t> (matrix.numel ()))            \
           {                                                                    \
-            warning_with_id ("octave:multi_byte_char_length",                  \
+            warning_with_id ("Octave:multi_byte_char_length",                  \
                              "UMAP: Possible multi-byte error.");              \
             return octave_value (matrix.map<char, int (&) (int)> (STD_FCN));   \
           }                                                                    \

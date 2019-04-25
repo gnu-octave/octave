@@ -61,7 +61,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
   endfor
 
   if (isempty (opts.binary))
-    error ("print:nogs", "__ghostscript__: 'gs' (Ghostscript) binary is required for specified output format, but binary is not available in PATH");
+    error ("Octave:print:nogs", "__ghostscript__: 'gs' (Ghostscript) binary is required for specified output format, but binary is not available in PATH");
   endif
 
   if (isempty (opts.papersize))
@@ -111,7 +111,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
         gs_opts = sprintf ("%s -dNORANGEPAGESIZE", gs_opts);
       endif
     else
-      error ("print:badpapersize", "__ghostscript__.m: invalid 'papersize'");
+      error ("Octave:print:badpapersize", "__ghostscript__.m: invalid 'papersize'");
     endif
     gs_opts = sprintf ("%s -dFIXEDMEDIA", gs_opts);
     ## "pageoffset" is relative to the coordinates, not the BBox LLHC.
@@ -132,13 +132,13 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     unwind_protect
       fid = fopen (offsetfile, "w");
       if (fid == -1)
-        error ("print:fopenfailed", "__ghostscript__.m: fopen () failed");
+        error ("Octave:print:fopenfailed", "__ghostscript__.m: fopen () failed");
       endif
       fprintf (fid, "%s\n", offset_ps{:});
     unwind_protect_cleanup
       status = fclose (fid);
       if (status == -1)
-        error ("print:fclosefailed", "__ghostscript__.m: fclose () failed");
+        error ("Octave:print:fclosefailed", "__ghostscript__.m: fclose () failed");
       endif
     end_unwind_protect
     if (opts.debug)

@@ -410,11 +410,11 @@ function [fx, gx] = guarded_eval (fun, x)
   endif
 
   if (! (isreal (fx) && isreal (gx)))
-    error ("fminunc:notreal", "fminunc: non-real value encountered");
+    error ("Octave:fminunc:notreal", "fminunc: non-real value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fminunc:isnan", "fminunc: NaN value encountered");
+    error ("Octave:fminunc:isnan", "fminunc: NaN value encountered");
   elseif (any (isinf (fx(:))))
-    error ("fminunc:isinf", "fminunc: Inf value encountered");
+    error ("Octave:fminunc:isinf", "fminunc: Inf value encountered");
   endif
 
 endfunction

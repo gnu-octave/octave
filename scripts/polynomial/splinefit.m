@@ -111,7 +111,7 @@ function pp = splinefit (x, y, breaks, varargin)
   for f = 1:numel (fields)
     if (! any (strcmp (fields{f},
                        {"periodic", "robust", "beta", "order", "constraints"})))
-      error ("splinefit:invalidproperty",
+      error ("Octave:splinefit:invalidproperty",
              "unrecognized property '%s'", fields{f});
     endif
   endfor
@@ -127,14 +127,14 @@ function pp = splinefit (x, y, breaks, varargin)
     if (0 < props.beta && props.beta < 1)
       args{end+1} = props.beta;
     else
-      error ("splinefit:invalidbeta", "invalid beta parameter (0 < BETA < 1)");
+      error ("Octave:splinefit:invalidbeta", "invalid beta parameter (0 < BETA < 1)");
     endif
   endif
   if (isfield (props, "order"))
     if (props.order >= 0)
       args{end+1} = props.order + 1;
     else
-      error ("splinefit:invalidorder", "invalid ORDER");
+      error ("Octave:splinefit:invalidorder", "invalid ORDER");
     endif
   endif
   if (isfield (props, "constraints"))

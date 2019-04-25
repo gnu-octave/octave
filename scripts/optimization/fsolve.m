@@ -499,13 +499,13 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
   endif
 
   if (! complexeqn && ! (isreal (fx) && isreal (jx)))
-    error ("fsolve:notreal", "fsolve: non-real value encountered");
+    error ("Octave:fsolve:notreal", "fsolve: non-real value encountered");
   elseif (complexeqn && ! (isnumeric (fx) && isnumeric (jx)))
-    error ("fsolve:notnum", "fsolve: non-numeric value encountered");
+    error ("Octave:fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
-    error ("fsolve:isnan", "fsolve: NaN value encountered");
+    error ("Octave:fsolve:isnan", "fsolve: NaN value encountered");
   elseif (any (isinf (fx(:))))
-    error ("fsolve:isinf", "fsolve: Inf value encountered");
+    error ("Octave:fsolve:isinf", "fsolve: Inf value encountered");
   endif
 
 endfunction

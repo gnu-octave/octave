@@ -770,7 +770,7 @@ function cmd = epstool (opts, filein, fileout)
   persistent epsdevice;
   if (dos_shell && isempty (epsdevice))
     if (isempty (opts.ghostscript.binary))
-      error ("print:nogs",
+      error ("Octave:print:nogs",
              "print: 'gs' (Ghostscript) is required for specified output format, but binary is not available in PATH");
     endif
 
@@ -821,7 +821,7 @@ function cmd = epstool (opts, filein, fileout)
   if (! isempty (opts.preview) || opts.tight)
 
     if (isempty (opts.epstool_binary))
-      error ("print:noepstool", "print: 'epstool' is required for specified output format, but binary is not available in PATH");
+      error ("Octave:print:noepstool", "print: 'epstool' is required for specified output format, but binary is not available in PATH");
     endif
 
     if (opts.tight)
@@ -837,7 +837,7 @@ function cmd = epstool (opts, filein, fileout)
         case "pict"
           cmd = sprintf ("--add-%s-preview --mac-single", opts.preview);
         otherwise
-          error ("print:invalidpreview",
+          error ("Octave:print:invalidpreview",
                  "print: epstool cannot include preview for format '%s'",
                  opts.preview);
       endswitch
@@ -872,7 +872,7 @@ function cmd = epstool (opts, filein, fileout)
     endif
     if (! isempty (cleanup))
       if (pipeout && dos_shell)
-        error ("print:epstoolpipe",
+        error ("Octave:print:epstoolpipe",
                "print: cannot pipe output of 'epstool' for DOS shell");
       elseif (pipeout)
         cmd = sprintf ("( %s %s )", cmd, cleanup);
@@ -928,7 +928,7 @@ function cmd = fig2dev (opts, devopt)
   endif
 
   if (isempty (opts.fig2dev_binary))
-    error ("print:nofig2dev", "print: 'fig2dev' is required for specified output format, but binary is not available in PATH");
+    error ("Octave:print:nofig2dev", "print: 'fig2dev' is required for specified output format, but binary is not available in PATH");
   endif
 
   dos_shell = (ispc () && ! isunix ());
@@ -976,13 +976,13 @@ function latex_standalone (opts)
 
   fid = fopen (latexfile, "r");
   if (fid < 0)
-    error ("print:erroropeningfile",
+    error ("Octave:print:erroropeningfile",
            "print: error opening file '%s'", latexfile);
   endif
   latex = fscanf (fid, "%c", Inf);
   status = fclose (fid);
   if (status != 0)
-    error ("print:errorclosingfile",
+    error ("Octave:print:errorclosingfile",
            "print: error closing file '%s'", latexfile);
   endif
   ## FIXME: should this be fixed in GL2PS?
@@ -996,11 +996,11 @@ function latex_standalone (opts)
     fprintf (fid, "%s\n", postpend{:});
     status = fclose (fid);
     if (status != 0)
-      error ("print:errorclosingfile",
+      error ("Octave:print:errorclosingfile",
              "print: error closing file '%s'", latexfile);
     endif
   else
-    error ("print:erroropeningfile",
+    error ("Octave:print:erroropeningfile",
            "print: error opening file '%s'", latexfile);
   endif
 
@@ -1021,7 +1021,7 @@ function cmd = lpr (opts)
       cmd = sprintf ("%s %s", cmd, opts.printer);
     endif
   elseif (isempty (opts.lpr_binary))
-    error ("print:nolpr", "print: 'lpr' not found in PATH");
+    error ("Octave:print:nolpr", "print: 'lpr' not found in PATH");
   endif
   if (opts.debug)
     fprintf ("lpr command: '%s'\n", cmd);
@@ -1036,7 +1036,7 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
   endif
 
   if (isempty (opts.pstoedit_binary))
-    error ("print:nopstoedit", ...
+    error ("Octave:print:nopstoedit", ...
            "print: 'pstoedit' is required for specified output format, but binary is not available in PATH");
   endif
 

@@ -65,6 +65,19 @@ namespace octave
 
     ~symbol_info_accumulator (void) = default;
 
+    bool is_empty  (void) const
+    {
+      for (const auto& nm_sil : m_sym_inf_list)
+        {
+          const symbol_info_list& lst = nm_sil.second;
+
+          if (! lst.empty ())
+            return false;
+        }
+
+      return true;
+    }
+
     std::list<std::string> names (void) const
     {
       std::list<std::string> retval;

@@ -935,8 +935,9 @@ namespace octave
         else
           return Cell (string_vector (sym_inf_accum.names ()));
       }
-    else
+    else if (! sym_inf_accum.is_empty ())
       {
+
         if (msg.empty ())
           octave_stdout << "Variables visible from the current scope:\n";
         else

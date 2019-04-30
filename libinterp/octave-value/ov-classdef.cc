@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov-usr-fcn.h"
 #include "parse.h"
+#include "pr-output.h"
 #include "pt-eval.h"
 #include "pt-misc.h"
 
@@ -250,13 +251,20 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
   if (cls.ok ())
     {
+      bool is_array = object.is_array ();
+
+      increment_indent_level ();
+
       indent (os);
       os << class_name () << " object";
-      if (object.is_array ())
+      if (is_array)
         os << " array";
       os << " with properties:";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
+      increment_indent_level ();
 
       std::map<std::string, octave::cdef_property> props;
 
@@ -275,20 +283,33 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
       for (auto& nm_prop : props)
         {
-          const std::string& nm = nm_prop.first;
-          octave::cdef_property& prop = nm_prop.second;
-          octave_value val = prop.get_value (object, false);
-          dim_vector dims = val.dims ();
+          indent (os);
 
-          os << std::setw (max_len+2) << nm << ": ";
-          if (val.is_string ())
-            os << val.string_value ();
-          else if (val.islogical ())
-            os << val.bool_value ();
+          const std::string& nm = nm_prop.first;
+
+          if (is_array)
+            os << "  " << nm;
           else
-            os << "[" << dims.str () << " " << val.class_name () << "]";
+            {
+              octave::cdef_property& prop = nm_prop.second;
+
+              octave_value val = prop.get_value (object, false);
+              dim_vector dims = val.dims ();
+
+              os << std::setw (max_len+2) << nm << ": ";
+              if (val.is_string ())
+                os << val.string_value ();
+              else if (val.islogical ())
+                os << val.bool_value ();
+              else
+                os << "[" << dims.str () << " " << val.class_name () << "]";
+            }
+
           newline (os);
         }
+
+      decrement_indent_level ();
+      decrement_indent_level ();
     }
 }
 

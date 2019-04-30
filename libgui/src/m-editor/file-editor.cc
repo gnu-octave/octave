@@ -130,10 +130,6 @@ namespace octave
     m_undo_action = shared_actions.at (UNDO_ACTION);
     m_tool_bar->insertAction (m_redo_action,m_undo_action);
     m_edit_menu->insertAction (m_redo_action,m_undo_action);
-    // copy
-    m_copy_action = shared_actions.at (COPY_ACTION);
-    m_tool_bar->insertAction (m_cut_action,m_copy_action);
-    m_edit_menu->insertAction (m_cut_action,m_copy_action);
     // select all
     m_selectall_action = shared_actions.at (SELECTALL_ACTION);
     m_edit_menu->insertAction (m_find_action,m_selectall_action);
@@ -143,6 +139,10 @@ namespace octave
     m_tool_bar->insertAction (m_find_action,m_paste_action);
     m_edit_menu->insertAction (m_selectall_action,m_paste_action);
     m_edit_menu->insertSeparator (m_selectall_action);
+    // copy
+    m_copy_action = shared_actions.at (COPY_ACTION);
+    m_tool_bar->insertAction (m_paste_action,m_copy_action);
+    m_edit_menu->insertAction (m_paste_action,m_copy_action);
     // find files
     m_find_files_action = shared_actions.at (FIND_FILES_ACTION);
     m_edit_menu->insertAction (m_find_action, m_find_files_action);
@@ -2102,8 +2102,8 @@ namespace octave
     // m_undo_action: later via main window
     m_tool_bar->addAction (m_redo_action);
     m_tool_bar->addSeparator ();
-    // m_copy_action: later via the main window
     m_tool_bar->addAction (m_cut_action);
+    // m_copy_action: later via the main window
     // m_paste_action: later via the main window
     m_tool_bar->addAction (m_find_action);
     //m_tool_bar->addAction (m_find_next_action);

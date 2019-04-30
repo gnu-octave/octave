@@ -1613,9 +1613,9 @@ Force Octave to assume the file is in Octave's binary format.
 Force Octave to assume the file is in @sc{hdf5} format.
 (@sc{hdf5} is a free, portable binary format developed by the National
 Center for Supercomputing Applications at the University of Illinois.)
-Note that Octave can read @sc{hdf5} files not created by itself, but may
-skip some datasets in formats that it cannot support.  This format is
-only available if Octave was built with a link to the @sc{hdf5} libraries.
+Note that Octave can only read @sc{hdf5} files that were created by itself with
+@code{save}.  This format is only available if Octave was built with a link to
+the @sc{hdf5} libraries.
 
 @item -import
 This option is accepted for backward compatibility but is ignored.

@@ -96,6 +96,9 @@ namespace octave
     m_closed = false;
     m_no_focus = false;
 
+    m_copy_action_enabled = false;
+    m_undo_action_enabled = false;
+
     construct ();
 
     // actions that should also be available in the find dialog
@@ -349,10 +352,20 @@ namespace octave
 
     // when editor loses focus, enable the actions, which are always active
     // in the main window due to missing info on selected text and undo actions
-    if (! enable && m_copy_action && m_undo_action)
+    if (m_copy_action && m_undo_action)
       {
-        m_copy_action->setEnabled (true);
-        m_undo_action->setEnabled (true);
+        if (enable)
+          {
+            m_copy_action->setEnabled (m_copy_action_enabled);
+            m_undo_action->setEnabled (m_undo_action_enabled);
+          }
+        else
+          {
+            m_copy_action_enabled = m_copy_action->isEnabled ();
+            m_undo_action_enabled = m_undo_action->isEnabled ();
+            m_copy_action->setEnabled (true);
+            m_undo_action->setEnabled (true);
+          }
       }
   }
 
@@ -840,6 +853,9 @@ namespace octave
 
         setFocusProxy (m_tab_widget->currentWidget ());
       }
+
+    m_copy_action_enabled = m_copy_action->isEnabled ();
+    m_undo_action_enabled = m_undo_action->isEnabled ();
   }
 
   void file_editor::handle_mru_add_file (const QString& file_name,

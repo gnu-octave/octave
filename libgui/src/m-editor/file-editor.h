@@ -434,6 +434,9 @@ namespace octave
     QAction *m_previous_breakpoint_action;
     QAction *m_remove_all_breakpoints_action;
 
+    bool m_copy_action_enabled;
+    bool m_undo_action_enabled;
+
     QMenu *m_edit_menu;
     QMenu *m_edit_cmd_menu;
     QMenu *m_edit_fmt_menu;

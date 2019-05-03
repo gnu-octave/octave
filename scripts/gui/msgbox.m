@@ -94,9 +94,18 @@ function retval = msgbox (msg, tit = "", icon = "none", varargin)
     print_usage ();
   elseif (! ischar (msg) && ! iscellstr (msg))
     error ("msgbox: MSG must be a string or cell array of strings");
+  endif
+  if (isstruct (tit))
+    if (nargin != 2)
+      error ("msgbox: OPT must be last argument");
+    endif
+    varargin{end+1} = tit;
+    nargs += 1;
+    tit = "";
   elseif (! ischar (tit))
     error ("msgbox: TITLE must be a string");
-  elseif (isstruct (icon))
+  endif
+  if (isstruct (icon))
     varargin{end+1} = icon;
     nargs += 1;
     icon = "none";
@@ -327,6 +336,7 @@ endfunction
 
 ## Test input validation
 %!error <MSG must be a string or cell array of strings> msgbox (1)
+%!error <OPT must be last argument> msgbox ("msg", struct(), "title")
 %!error <TITLE must be a string> msgbox ("msg", 1)
 %!error <unhandled value for ICON data> msgbox ("msg", "title", 1)
 %!error <missing data for 'custom' icon> msgbox ("msg", "title", "custom")

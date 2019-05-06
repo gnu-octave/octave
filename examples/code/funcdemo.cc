@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 #include <octave/parse.h>
 
-DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
+DEFMETHOD_DLD (funcdemo, interp, args, nargout, "Function Demo")
 {
   int nargin = args.length ();
 
@@ -15,18 +15,9 @@ DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
 
   octave_value_list retval;
 
-  if (args(0).is_function_handle () || args(0).is_inline_function ())
-    {
-      octave_function *fcn = args(0).function_value ();
-
-      retval = feval (fcn, newargs, nargout);
-    }
-  else if (args(0).is_string ())
-    {
-      std::string fcn = args(0).string_value ();
-
-      retval = feval (fcn, newargs, nargout);
-    }
+  if (args(0).is_function_handle () || args(0).is_inline_function ()
+      || args(0).is_string ())
+    retval = interp.feval (args(0), newargs, nargout);
   else
     error ("funcdemo: INPUT must be string, inline, or function handle");
 

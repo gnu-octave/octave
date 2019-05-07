@@ -58,6 +58,10 @@ Summary of important user-visible changes for version 5 (2019-02-23):
 - A new printing device is available, `"-ddumb"`, which produces ASCII
   art for plots.  This device is only available with the gnuplot toolkit.
 
+- The `msgbox` function has changed in two respects: the default WindowStyle
+  is now `"non-modal"`, and the default interpreter for the message is now
+  `"tex"`.  Both WindowStyle and Interpreter can be controlled by passing an
+  option struct argument.
 
 ### Dependencies
 

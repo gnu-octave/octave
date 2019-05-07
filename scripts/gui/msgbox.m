@@ -44,8 +44,10 @@
 ## The dialog is normal.
 ##
 ## @item @qcode{"modal"}
-## The dialog is displayed @qcode{"modal"} which means it prevents users from
-## interacting with any other GUI element until the dialog has been closed.
+## If any dialogs already exist with the same title, the most recent is reused
+## and all others are closed.  The dialog is displayed @qcode{"modal"} which
+## means it prevents users from interacting with any other GUI element until
+## the dialog has been closed.
 ##
 ## @item @qcode{"replace"}
 ## If any dialogs already exist with the same title, the most recent is reused
@@ -86,68 +88,81 @@
 ## @seealso{errordlg, helpdlg, inputdlg, listdlg, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = msgbox (msg, tit = "", icon = "none", varargin)
+function retval = msgbox (msg, varargin)
 
-  ## Input checks
-  nargs = numel (varargin);
   if (nargin < 1)
     print_usage ();
-  elseif (! ischar (msg) && ! iscellstr (msg))
+  endif
+
+  if (! ischar (msg) && ! iscellstr (msg))
     error ("msgbox: MSG must be a string or cell array of strings");
   endif
-  if (isstruct (tit))
-    if (nargin != 2)
-      error ("msgbox: OPT must be last argument");
+
+  nargs = numel (varargin);
+  tit = "";
+  icon = "none";
+  windowstyle = "non-modal";
+  interpreter = "tex";
+
+  if (nargs > 0)
+    ## Check for option argument in last position
+    if (isstruct (varargin{nargs}))
+      opts = varargin{nargs};
+      if (isfield (opts, "WindowStyle"))
+        windowstyle = opts.WindowStyle;
+      endif
+      if (isfield (opts, "Interpreter"))
+        interpreter = opts.Interpreter;
+      endif
+
+      if (! any (strcmp (windowstyle, {"non-modal", "modal", "replace"})))
+        error ('msgbox: invalid value "%s" for WindowStyle', windowstyle);
+      endif
+      nargs -= 1;
+
+    elseif (any (strcmp (varargin{nargs}, {"non-modal", "modal", "replace"})))
+      windowstyle = varargin{nargs};
+      nargs -= 1;
     endif
-    varargin{end+1} = tit;
-    nargs += 1;
-    tit = "";
-  elseif (! ischar (tit))
-    error ("msgbox: TITLE must be a string");
   endif
-  if (isstruct (icon))
-    varargin{end+1} = icon;
-    nargs += 1;
-    icon = "none";
-  elseif (! any (strcmp (icon, {"help", "warn", "error", "none", "custom"})))
-    error ("msgbox: unhandled value for ICON data");
-  elseif (strcmp (icon, "custom"))
-    if (nargs < 1)
-      error ("msgbox: missing data for 'custom' icon");
+
+  if (nargs > 0)
+    tit = varargin{1};
+    if (! ischar (tit))
+      error ("msgbox: TITLE must be a string");
     endif
-    icon = struct ("cdata", varargin{1}, "colormap", []);
-    ## FIXME: This doesn't seem to be a robust test for RGB data.
-    if (! (ismatrix (icon.cdata) || size (icon.cdata, 3) == 3))
-      error ("msgbox: unhandled data for 'custom' icon");
-    elseif (size (icon.cdata, 3) == 1 && nargs > 1)
-      icon.colormap = varargin{2};
-      varargin(2) = [];
-      nargs--;
+    if (nargs > 1)
+      icon = varargin{2};
+      if (! any (strcmp (icon, {"help", "warn", "error", "none", "custom"})))
+        if (ischar (icon))
+          error ('msgbox: invalid value "%s" for ICON', icon);
+        else
+          error ("msgbox: ICON must be a string");
+        endif
+      elseif (strcmp (icon, "custom"))
+        if (nargs < 3)
+          error ('msgbox: missing data for "custom" icon');
+        endif
+        icon = struct ("cdata", varargin{3}, "colormap", []);
+        if (! isnumeric (icon.cdata))
+          error ('msgbox: invalid data for "custom" icon');
+        elseif (! ismatrix (icon.cdata)
+                && (ndims (icon.cdata) != 3 || size (icon.cdata, 3) != 3))
+          error ('msgbox: invalid data for "custom" icon');
+        elseif (ismatrix (icon.cdata) && nargs == 4)
+          icon.colormap = varargin{4};
+        else
+          print_usage ();
+        endif
+      elseif (nargs > 2)
+        print_usage ();
+      endif
     endif
-    varargin(1) = [];
-    nargs--;
   endif
 
   ## Window behavior and text interpreter
-  windowstyle = "normal";
-  interpreter = "tex";
-  if (nargs > 0)
-    if (isstruct (varargin{1}))
-      if (isfield (varargin{1}, "WindowStyle"))
-        windowstyle = varargin{1}.WindowStyle;
-      endif
-      if (isfield (varargin{1}, "Interpreter"))
-        interpreter = varargin{1}.Interpreter;
-      endif
-    else
-      windowstyle = varargin{1};
-    endif
-
-    if (! any (strcmp (windowstyle, {"non-modal", "modal", "replace"})))
-      error ("msgbox: unhandled value %s for OPT", windowstyle);
-    elseif (strcmp (windowstyle, "non-modal"))
-      windowstyle = "normal";
-    endif
+  if (strcmp (windowstyle, "non-modal"))
+    windowstyle = "normal";
   endif
 
   ## Make a GUI element or print to console
@@ -171,9 +186,11 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
 
   ## Prepare graphics objects
   hf = [];
+  if (strcmp (windowstyle, "replace") || strcmp (windowstyle, "modal"))
+    hf = findall (groot, "tag", "__dialog__", "-and", "name", tit);
+  endif
   if (strcmp (windowstyle, "replace"))
     windowstyle = "normal";
-    hf = findall (groot, "tag", "__dialog__", "-and", "name", tit);
   endif
 
   if (! isempty (hf))
@@ -335,9 +352,15 @@ endfunction
 %!         "Dialog Title", "custom", cdata, copper (64));
 
 ## Test input validation
+%!error msgbox ()
 %!error <MSG must be a string or cell array of strings> msgbox (1)
-%!error <OPT must be last argument> msgbox ("msg", struct(), "title")
+%!error <invalid value "foobar" for WindowStyle>
+%! msgbox ("msg", struct ("WindowStyle", "foobar"))
 %!error <TITLE must be a string> msgbox ("msg", 1)
-%!error <unhandled value for ICON data> msgbox ("msg", "title", 1)
-%!error <missing data for 'custom' icon> msgbox ("msg", "title", "custom")
-%!error <unhandled value 1 for OPT> msgbox ("msg", "title", "help", "1")
+%!error <invalid value "foobar" for ICON> msgbox ("msg", "title", "foobar")
+%!error <ICON must be a string> msgbox ("msg", "title", {1})
+%!error <missing data for "custom" icon> msgbox ("msg", "title", "custom")
+%!error <invalid data for "custom" icon>
+%! msgbox ("msg", "title", "custom", {{1}})
+%!error <Invalid call to msgbox> msgbox ("msg", "title", "custom", 1, 2, 3)
+%!error <Invalid call to msgbox> msgbox ("msg", "title", "help", "1")

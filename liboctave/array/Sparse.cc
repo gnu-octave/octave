@@ -143,6 +143,9 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
   for (octave_idx_type j = ncols; j > 0 && c[j] > nz; j--)
     c[j] = nz;
 
+  // Always preserve space for 1 element.
+  nz = (nz > 0 ? nz : 1);
+
   // Skip reallocation if we have less than 1/frac extra elements to discard.
   static const int frac = 5;
   if (nz > nzmx || nz < nzmx - nzmx/frac)

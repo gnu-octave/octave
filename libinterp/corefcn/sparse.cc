@@ -267,9 +267,9 @@ the pre-allocated memory, provided they are of one of the simple forms
 @b{and} that the following conditions are met:
 
 @itemize
-@item the assignment does not decrease nnz (@var{S}).
+@item the assignment does not decrease @code{nnz (@var{S})}.
 
-@item after the assignment, nnz (@var{S}) does not exceed @var{nz}.
+@item after the assignment, @code{nnz (@var{S})} does not exceed @var{nz}.
 
 @item no index is out of bounds.
 @end itemize
@@ -281,6 +281,9 @@ contiguous block of columns.
 
 The amount of pre-allocated memory for a given matrix may be queried using
 the function @code{nzmax}.
+
+Programming Note: Octave always reserves memory for at least one value,
+even if @var{nz} is 0.
 @seealso{nzmax, sparse}
 @end deftypefn */)
 {

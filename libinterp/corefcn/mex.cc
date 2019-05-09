@@ -1491,12 +1491,15 @@ public:
 
   mxArray_sparse (mxClassID id_arg, mwSize m, mwSize n, mwSize nzmax_arg,
                   mxComplexity flag = mxREAL)
-    : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
-      pr (mxArray::calloc (nzmax, get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : nullptr),
-      ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
-      jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
-  { }
+    : mxArray_matlab (id_arg, m, n)
+  {
+    nzmax = (nzmax_arg > 0 ? nzmax_arg : 1);
+    pr = mxArray::calloc (nzmax, get_element_size ());
+    pi = (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ())
+                            : nullptr);
+    ir = (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex))));
+    jc = (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))));
+  }
 
 private:
 
@@ -1561,7 +1564,11 @@ public:
 
   void set_jc (mwIndex *jc_arg) { jc = jc_arg; }
 
-  void set_nzmax (mwSize nzmax_arg) { nzmax = nzmax_arg; }
+  void set_nzmax (mwSize nzmax_arg)
+  {
+    /* Require storage for at least 1 element */
+    nzmax = (nzmax_arg > 0 ? nzmax_arg : 1);
+  }
 
   octave_value as_octave_value (void) const
   {

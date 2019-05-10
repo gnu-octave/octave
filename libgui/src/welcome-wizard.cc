@@ -53,7 +53,8 @@ namespace octave
   welcome_wizard::welcome_wizard (QWidget *p)
     : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
       m_current_page (initial_page::create (this)),
-      m_allow_web_connect_state (false)
+      m_allow_web_connect_state (false),
+      m_max_height (0), m_max_width (0)
   {
     m_page_ctor_list.push_back (initial_page::create);
     m_page_ctor_list.push_back (setup_community_news::create);
@@ -65,24 +66,41 @@ namespace octave
 
     setEnabled (true);
 
-    QDesktopWidget *m_desktop = QApplication::desktop ();
-    int screen = m_desktop->screenNumber (this);  // screen of the main window
-    QRect screen_geo = m_desktop->availableGeometry (screen);
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    int win_x = screen_geo.width ();        // width of the screen
-    int win_y = screen_geo.height ();       // height of the screen
-    int ww_x = std::max (win_x/2, 600);    // desired width
-    int ww_y = std::max (win_y*2/3, 480);  // desired height
-
-    resize (ww_x, ww_y);
-    setMinimumSize (QSize (ww_x, ww_y));
-
+    // Create all pages for pre-setting the minimal required size for all pages
     show_page ();
+    adjust_size ();
+    next_page ();
+    adjust_size ();
+    next_page ();
+    adjust_size ();
+    // now go back to the first page
+    previous_page ();
+    previous_page ();
+
+    // Set the size determined above
+    resize (m_max_width, m_max_height);
 
 #if defined (OCTAVE_USE_WINDOWS_API)
     // HACK to forceshow of dialog if started minimized
     ShowWindow (reinterpret_cast<HWND> (winId ()), SW_SHOWNORMAL);
 #endif
+  }
+
+  void welcome_wizard::adjust_size (void)
+  {
+    // Get adjusted size for the current page
+    adjustSize ();
+    QSize sz = size ();
+
+    // Update the max. size of the three pages if required
+
+    if (sz.height () > m_max_height)
+      m_max_height = sz.height ();
+
+    if (sz.width () > m_max_width)
+      m_max_width = sz.width ();
   }
 
   void welcome_wizard::handle_web_connect_option (int state)
@@ -180,7 +198,10 @@ namespace octave
 
     page_layout->addLayout (message_and_logo);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_next->setDefault (true);
     m_next->setFocus ();
@@ -267,7 +288,10 @@ namespace octave
 
     page_layout->addLayout (message_logo_and_checkbox);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_next->setDefault (true);
     m_next->setFocus ();
@@ -345,7 +369,10 @@ namespace octave
     page_layout->addSpacing (20);
     page_layout->addWidget (m_links);
     page_layout->addStretch (10);
+    page_layout->addSpacing (20);
     page_layout->addLayout (button_bar);
+
+    setSizePolicy (QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
     m_finish->setDefault (true);
     m_finish->setFocus ();

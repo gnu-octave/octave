@@ -42,12 +42,16 @@ namespace octave
 
     ~welcome_wizard (void) = default;
 
+    void adjust_size (void);
+
   private:
 
     QList<page_creator_fptr> m_page_ctor_list;
     QList<page_creator_fptr>::iterator m_page_list_iterator;
     QWidget *m_current_page;
     bool m_allow_web_connect_state;
+    int m_max_height;
+    int m_max_width;
 
   private slots:
 

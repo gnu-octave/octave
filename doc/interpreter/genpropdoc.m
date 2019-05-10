@@ -1112,10 +1112,10 @@ of the @qcode{\"fontunits\"} property.";
         s.valid = "scalar";
 
       case "position"
-        s.doc = "Vector @code{[X0 Y0 Z0]} where X0, Y0 and Z0 indicate the \
+        s.doc = "Vector @code{[X0 Y0 Z0]} where X0, Y0, and Z0 indicate the \
 position of the text anchor as defined by @code{verticalalignment} and \
 @code{horizontalalignment}.";
-        s.valid = valid_4elvec;
+        s.valid = valid_3elvec;
 
       case "rotation"
         s.doc = "The angle of rotation for the displayed text, \

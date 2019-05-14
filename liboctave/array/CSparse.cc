@@ -985,6 +985,12 @@ SparseComplexMatrix
 SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                               double& rcond, bool, bool calc_cond) const
 {
+  if (nnz () == 0)
+    {
+      (*current_liboctave_error_handler)
+        ("inverse of the null matrix not defined");
+    }
+
   int typ = mattype.type (false);
   SparseComplexMatrix ret;
 
@@ -1035,6 +1041,18 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
                                                              Qinit, Matrix (),
                                                              false, false);
           rcond = fact.rcond ();
+          if (rcond == 0.0)
+            {
+              // Return all Inf matrix with sparsity pattern of input.
+              octave_idx_type nz = nnz ();
+              ret = SparseComplexMatrix (rows (), cols (), nz);
+              std::fill (ret.xdata (), ret.xdata () + nz,
+                         octave::numeric_limits<double>::Inf ());
+              std::copy_n (ridx (), nz, ret.xridx ());
+              std::copy_n (cidx (), cols () + 1, ret.xcidx ());
+
+              return ret;
+            }
           double rcond2;
           SparseComplexMatrix InvL = fact.L ().transpose ().
                                      tinverse (tmp_typ, info, rcond2,

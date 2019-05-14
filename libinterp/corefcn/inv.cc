@@ -83,13 +83,17 @@ sparse matrix if possible.
           if (isfloat)
             {
               result = arg.float_complex_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                frcond = 0.0f;
+              else if (nargout > 1)
                 frcond = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
               result = arg.complex_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                rcond = 0.0;
+              else if (nargout > 1)
                 rcond = arg.complex_diag_matrix_value ().rcond ();
             }
         }
@@ -98,13 +102,17 @@ sparse matrix if possible.
           if (isfloat)
             {
               result = arg.float_diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                frcond = 0.0f;
+              else if (nargout > 1)
                 frcond = arg.float_diag_matrix_value ().rcond ();
             }
           else
             {
               result = arg.diag_matrix_value ().inverse (info);
-              if (nargout > 1)
+              if (info == -1)
+                rcond = 0.0;
+              else if (nargout > 1)
                 rcond = arg.diag_matrix_value ().rcond ();
             }
         }
@@ -189,7 +197,7 @@ sparse matrix if possible.
   if (isfloat)
     {
       volatile float xrcond = frcond;
-      rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
+      rcond_plus_one_eq_one = xrcond + 1.0f == 1.0f;
     }
   else
     {
@@ -225,10 +233,29 @@ sparse matrix if possible.
 %! assert (isa (xinv, "double"));
 %! assert (isa (rcond, "double"));
 
+%!test
+%! fail ("A = inv (sparse ([1, 2;0 ,0]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, Inf; 0, 0]));
+
+%!test
+%! fail ("A = inv (sparse ([1i, 2;0 ,0]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, Inf; 0, 0]));
+
+%!test
+%! fail ("A = inv (diag ([1, 0, 1]))", "warning", "matrix singular");
+%! assert (A, diag ([Inf, Inf, Inf]));
+
+%!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
+%!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
+
+%!test
+%! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))", "warning", "matrix singular");
+%! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
+
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
-
+%!error <inverse of the null matrix not defined> inv (sparse (2, 2, 0))
 */
 
 DEFALIAS (inverse, inv);

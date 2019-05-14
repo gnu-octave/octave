@@ -265,11 +265,12 @@
 %! assert (full (D - A), D - full (A));
 
 ## inverse preserves diagonal structure even for singular matrices (bug #46103)
+## but set all the diagonal elements to Inf (bug #56232)
 %!test
 %! x = diag (1:3);
 %! assert (inv (x), diag ([1 1/2 1/3]));
-%! x = diag (0:2);
-%! assert (inv (x), diag ([Inf 1 1/2]));
+%!warning <matrix singular> A = inv (diag (0:2));
+%! assert (A, diag ([Inf Inf Inf]));
 
 ## assignment to diagonal elements preserves diagonal structure (bug #36932)
 %!test

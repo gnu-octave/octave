@@ -233,19 +233,41 @@ DiagMatrix::inverse (octave_idx_type& info) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
-  octave_idx_type len = length ();
   if (r != c)
     (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   DiagMatrix retval (r, c);
 
   info = 0;
+  octave_idx_type len = r;        // alias for readability
+  octave_idx_type z_count  = 0;   // zeros
+  octave_idx_type nz_count = 0;   // non-zeros
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) == 0.0)
-        retval.elem (i, i) = octave::numeric_limits<double>::Inf ();
+      if (xelem (i, i) == 0.0)
+        {
+          z_count++;
+          if (nz_count > 0)
+            break;
+        }
       else
-        retval.elem (i, i) = 1.0 / elem (i, i);
+        {
+          nz_count++;
+          if (z_count > 0)
+            break;
+          retval.elem (i, i) = 1.0 / xelem (i, i);
+        }
+    }
+  if (nz_count == 0)
+    {
+      (*current_liboctave_error_handler)
+        ("inverse of the null matrix not defined");
+    }
+  else if (z_count > 0)
+    {
+      info = -1;
+      element_type *data = retval.fortran_vec ();
+      std::fill (data, data + len, octave::numeric_limits<double>::Inf ());
     }
 
   return retval;

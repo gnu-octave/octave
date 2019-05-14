@@ -77,10 +77,36 @@ namespace octave
   class find_dialog : public QDialog
   {
     Q_OBJECT
+
   public:
+
+    typedef struct
+      {
+        QList<QAction *>  actions;
+        QString           text;
+        QString           replace_text;
+        QRect             geometry;
+        bool              is_visible;
+        int               options;
+      } find_dialog_data;
+
+    enum find_dialog_options
+      {
+        FIND_DLG_MORE  = 1,
+        FIND_DLG_CASE  = 2,
+        FIND_DLG_START = 4,
+        FIND_DLG_WRAP  = 8,
+        FIND_DLG_REGX  = 16,
+        FIND_DLG_WORDS = 32,
+        FIND_DLG_BACK  = 64,
+        FIND_DLG_SEL   = 128
+      };
+
     find_dialog (QsciScintilla *edit_area, QList<QAction *> find_actions,
                  QWidget *parent = nullptr);
     void init_search_text (void);
+    void save_data (find_dialog_data *fdlg_data);
+    void restore_data (const find_dialog_data *fdlg_data);
 
   private slots:
     void handle_sel_search_changed (int);

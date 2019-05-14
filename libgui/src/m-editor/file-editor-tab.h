@@ -84,6 +84,7 @@ namespace octave
     // Simply transmit filename.
     void file_name_query (const QWidget *ID);
 
+    void handle_toplevel_changed (bool);
     void set_focus (const QWidget *ID);
     void set_current_directory (const QString& dir);
     void context_help (const QWidget *ID, bool);
@@ -246,6 +247,8 @@ namespace octave
       std::string condition;
     };
 
+    void find_create (void);
+
     bool valid_file_name (const QString& file = QString ());
     bool exit_debug_and_clear (const QString& full_name,
                                const QString& base_name);
@@ -307,10 +310,6 @@ namespace octave
     QIntList _bp_lines;
     QStringList _bp_conditions;
 
-    find_dialog *_find_dialog;
-    bool _find_dialog_is_visible;
-    QRect _find_dialog_geometry;
-
     QsciAPIs *_lexer_apis;
     QString _prep_apis_file;
 
@@ -330,6 +329,10 @@ namespace octave
         int         remove_line;
         int         do_not_remove_line;
       } m_breakpoint_info;
+
+    find_dialog *_find_dialog;
+    find_dialog::find_dialog_data m_find_dlg_data;
+
   };
 }
 

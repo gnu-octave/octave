@@ -1255,6 +1255,12 @@ namespace octave
 
   }
 
+  void file_editor::toplevel_change (bool toplevel)
+  {
+    emit fetab_toplevel_changed (toplevel);
+    octave_dock_widget::toplevel_change (toplevel);
+  }
+
   void file_editor::update_octave_directory (const QString& dir)
   {
     m_ced = dir;
@@ -2356,6 +2362,9 @@ namespace octave
 
     connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
              f, SLOT (set_focus (const QWidget*)));
+
+    connect (this, SIGNAL (fetab_toplevel_changed (bool)),
+             f, SLOT (handle_toplevel_changed (bool)));
 
     connect (this, SIGNAL (fetab_insert_debugger_pointer (const QWidget*, int)),
              f, SLOT (insert_debugger_pointer (const QWidget*, int)));

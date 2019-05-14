@@ -166,7 +166,6 @@ namespace octave
 
     // Leave the find dialog box out of memory until requested.
     _find_dialog = nullptr;
-    _find_dialog_is_visible = false;
 
     // symbols
     _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
@@ -855,6 +854,31 @@ namespace octave
     _lexer_apis->savePrepared (_prep_apis_file);
   }
 
+  // Slot for editors signal is its toplevel state has changed
+  void file_editor_tab::handle_toplevel_changed (bool)
+  {
+    // The find dialog has to be re-created since making the editor
+    // floating or docked obviously changes the parent/child relation
+    // of the find dialog
+    if (_find_dialog == nullptr)
+      return;
+    else
+      {
+        if (_find_dialog->isVisible ())
+          {
+            _find_dialog->save_data (&m_find_dlg_data);     // Save current data
+            delete _find_dialog;
+            _find_dialog = nullptr;
+
+            find_create ();                                 // Create new dialog
+
+            _find_dialog->restore_data (&m_find_dlg_data);  // Restore data
+
+            _edit_area->setFocus ();
+          }
+      }
+  }
+
   // slot for fetab_set_focus: sets the focus to the current edit area
   void file_editor_tab::set_focus (const QWidget *ID)
   {
@@ -1288,15 +1312,36 @@ namespace octave
   {
     // Find dialog is going to hide.  Save location of window for
     // when it is reshown.
-    _find_dialog_geometry = _find_dialog->geometry ();
-    _find_dialog_is_visible = false;
+    m_find_dlg_data.geometry = _find_dialog->geometry ();
+    m_find_dlg_data.is_visible = false;
   }
 
+  // Slot for initially creating and showing the find dialog
   void file_editor_tab::find (const QWidget *ID, QList<QAction *> fetab_actions)
   {
     if (ID != this)
       return;
 
+    m_find_dlg_data.actions = fetab_actions.mid (0,2);
+
+    // Create the dialog
+    find_create ();
+
+    // Since find_create shows the dialog without activating the widget
+    // (which is reuqired in other cases) do this manually here
+    _find_dialog->activateWindow ();
+
+    // Initiate search text from possible selection and save the initial
+    // data from the dialog on the defined structure
+    _find_dialog->init_search_text ();
+    _find_dialog->save_data (&m_find_dlg_data);
+  }
+
+  // This methos creates the find dialog in way that is at first suitable
+  // for re-creating it after the toplevel of the editor has changed.
+  // The find dialog is initially creatied, activated and shown with find ()
+  void file_editor_tab::find_create ()
+  {
     // The find_dialog feature doesn't need a slot for return info.
     // Rather than Qt::DeleteOnClose, let the find feature hang about
     // in case it contains useful information like previous searches
@@ -1307,8 +1352,8 @@ namespace octave
     if (! _find_dialog)
       {
         _find_dialog = new find_dialog (_edit_area,
-                                        fetab_actions.mid (0,2),
-                                        qobject_cast<QWidget *> (sender ()));
+                                        m_find_dlg_data.actions,
+                                        this);
         connect (_find_dialog, SIGNAL (finished (int)),
                  this, SLOT (handle_find_dialog_finished (int)));
 
@@ -1319,20 +1364,16 @@ namespace octave
                  _find_dialog, SLOT (find_prev ()));
 
         _find_dialog->setWindowModality (Qt::NonModal);
-        _find_dialog_geometry = _find_dialog->geometry ();
       }
     else if (! _find_dialog->isVisible ())
       {
-        _find_dialog->setGeometry (_find_dialog_geometry);
+        _find_dialog->setGeometry (m_find_dlg_data.geometry);
         QPoint p = _find_dialog->pos ();
         _find_dialog->move (p.x ()+10, p.y ()+10);
       }
 
+    _find_dialog->setAttribute(Qt::WA_ShowWithoutActivating);
     _find_dialog->show ();
-    _find_dialog_is_visible = true;
-    _find_dialog->activateWindow ();
-    _find_dialog->init_search_text ();
-
   }
 
   void file_editor_tab::find_next (const QWidget *ID)
@@ -2738,16 +2779,16 @@ namespace octave
           {
             if (_find_dialog->isVisible ())
               {
-                _find_dialog_geometry = _find_dialog->geometry ();
+                m_find_dlg_data.geometry = _find_dialog->geometry ();
                 _find_dialog->hide ();
               }
           }
         return;
       }
 
-    if (_find_dialog && _find_dialog_is_visible)
+    if (_find_dialog && m_find_dlg_data.is_visible)
       {
-        _find_dialog->setGeometry (_find_dialog_geometry);
+        _find_dialog->setGeometry (m_find_dlg_data.geometry);
         QPoint p = _find_dialog->pos ();
         _find_dialog->move (p.x ()+10, p.y ()+10);
         _find_dialog->show ();

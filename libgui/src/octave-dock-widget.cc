@@ -305,6 +305,8 @@ namespace octave
       focus ();
       set_style (true);
     }
+
+    emit topLevelChanged (true);  // Be sure signal is emitted
   }
 
   // dock the widget

@@ -150,6 +150,8 @@ namespace octave
 
   protected slots:
 
+    virtual void toplevel_change (bool);
+
     //! Slot to steer changing visibility from outside.
 
     virtual void handle_visibility_changed (bool visible)
@@ -165,7 +167,6 @@ namespace octave
   private slots:
 
     void change_visibility (bool);
-    void toplevel_change (bool);
 
   private:
 

@@ -202,6 +202,39 @@ namespace octave
 
   }
 
+  void find_dialog::save_data (find_dialog_data *fdlg_data)
+  {
+    fdlg_data->text = _search_line_edit->text ();
+    fdlg_data->replace_text = _replace_line_edit->text ();
+    fdlg_data->geometry = geometry ();
+    fdlg_data->is_visible = isVisible ();
+    fdlg_data->options = 0
+          + _extension->isVisible () * FIND_DLG_MORE
+          + _case_check_box->isChecked () * FIND_DLG_CASE
+          + _from_start_check_box->isChecked () * FIND_DLG_START
+          + _wrap_check_box->isChecked () * FIND_DLG_WRAP
+          + _regex_check_box->isChecked () * FIND_DLG_REGX
+          + _whole_words_check_box->isChecked () * FIND_DLG_WORDS
+          + _backward_check_box->isChecked () * FIND_DLG_BACK
+          + _search_selection_check_box->isChecked () * FIND_DLG_SEL;
+  }
+
+  void find_dialog::restore_data (const find_dialog_data* fdlg_data)
+  {
+    setGeometry (fdlg_data->geometry);
+    setVisible (fdlg_data->is_visible);
+    _search_line_edit->setText (fdlg_data->text);
+    _replace_line_edit->setText (fdlg_data->replace_text);
+    _extension->setVisible (FIND_DLG_MORE & fdlg_data->options);
+    _case_check_box->setChecked (FIND_DLG_CASE & fdlg_data->options);
+    _from_start_check_box->setChecked (FIND_DLG_START & fdlg_data->options);
+    _wrap_check_box->setChecked (FIND_DLG_WRAP & fdlg_data->options);
+    _regex_check_box->setChecked (FIND_DLG_REGX & fdlg_data->options);
+    _whole_words_check_box->setChecked (FIND_DLG_WORDS & fdlg_data->options);
+    _backward_check_box->setChecked (FIND_DLG_BACK & fdlg_data->options);
+    _search_selection_check_box->setChecked (FIND_DLG_SEL & fdlg_data->options);
+  }
+
   // set text of "search from start" depending on backward search
   void find_dialog::handle_backward_search_changed (int backward)
   {

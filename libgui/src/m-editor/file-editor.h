@@ -122,6 +122,7 @@ namespace octave
 
   signals:
 
+    void fetab_toplevel_changed (bool);
     void fetab_settings_changed (const QSettings *settings);
     void fetab_change_request (const QWidget *ID);
     void fetab_file_name_query (const QWidget *ID);
@@ -180,6 +181,8 @@ namespace octave
     void request_dbcont_signal (void);
 
   public slots:
+
+    void toplevel_change (bool);
 
     void focus (void);
     void set_focus (QWidget *fet);

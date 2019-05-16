@@ -1102,24 +1102,51 @@ namespace octave
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
+    // Tab position
+    QTabWidget::TabPosition pos = static_cast<QTabWidget::TabPosition>(
+          settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+    m_tab_widget->setTabPosition (pos);
+
+    // Update style sheet properties depending on position
+    QString width_str ("width");
+    QString height_str ("height");
+    if (pos == QTabWidget::West || pos == QTabWidget::East)
+      {
+        width_str = QString ("height");
+        height_str = QString ("width");
+      }
+
+    // Min and max width for full path titles
     int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
                         .toInt ();
     int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
                         .toInt ();
 
+    // Get suitable height of a tab related to font and icon size
+    int height = 1.5*QFontMetrics (m_tab_widget->font ()).height ();
+    int is = 1.5*m_tab_widget->iconSize ().height ();
+    if (is > height)
+      height = is;
+
+    // Style sheet for tab height
+    QString style_sheet = QString ("QTabBar::tab {max-" + height_str + ": %1px;}")
+                                   .arg (height);
+
+    // Style sheet for tab height together with width
     if (settings->value ("editor/longWindowTitle", false).toBool ())
       {
-        QString style_sheet = QString ("QTabBar::tab "
-                                       "{min-width: %1px; max-width: %2px;}")
-                              .arg (tab_width_min).arg (tab_width_max);
+        style_sheet = QString ("QTabBar::tab "
+                               " {max-" + height_str + ": %1px;"
+                               "  min-" + width_str + ": %2px;"
+                               "  max-" + width_str + ": %3px;}")
+                              .arg (height).arg (tab_width_min).arg (tab_width_max);
         m_tab_widget->setElideMode (Qt::ElideLeft);
-        m_tab_widget->setStyleSheet (style_sheet);
       }
     else
-      m_tab_widget->setElideMode (Qt::ElideNone);
-
-    m_tab_widget->setTabPosition (static_cast<QTabWidget::TabPosition>(
-        settings->value (ed_tab_position.key, ed_tab_position.def).toInt ()));
+      {
+        m_tab_widget->setElideMode (Qt::ElideNone);
+      }
+    m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;
     show_it = settings->value ("editor/showLineNumbers",true).toBool ();
@@ -2144,6 +2171,7 @@ namespace octave
     vbox_layout->addWidget (m_tool_bar);
     vbox_layout->addWidget (m_tab_widget);
     vbox_layout->setMargin (0);
+    vbox_layout->setSpacing (0);
     editor_widget->setLayout (vbox_layout);
     setWidget (editor_widget);
 

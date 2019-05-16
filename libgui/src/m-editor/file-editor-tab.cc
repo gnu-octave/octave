@@ -212,6 +212,7 @@ namespace octave
     edit_area_layout->addWidget (_edit_area);
     edit_area_layout->addWidget (_status_bar);
     edit_area_layout->setMargin (0);
+    edit_area_layout->setSpacing (0);
     setLayout (edit_area_layout);
 
     // connect modified signal

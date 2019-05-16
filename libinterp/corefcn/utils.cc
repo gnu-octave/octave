@@ -1306,57 +1306,39 @@ namespace octave
       }
     else
       {
-        // Split delay into whole seconds and the remainder as a decimal
-        // fraction.
+        octave::sys::time now;
+        double end_time = now.double_value () + seconds;
+        double remaining_time = seconds;
 
-        double fraction = std::modf (seconds, &seconds);
+        // Split pause into 100 ms time steps to allow the execution of
+        // graphics events and interrupts.
+        struct timespec nano_laps = { 0, 100000000 };
 
-        // Further split the fractional seconds into whole tenths and the
-        // nearest number of nanoseconds remaining.
-
-        double tenths = 0;
-        fraction = std::modf (fraction * 10, &tenths) / 10;
-        fraction = std::round (fraction * 1000000000);
-
-        // Sleep for the hundredths portion.
-
-        struct timespec hundredths_delay = { 0, static_cast<long> (fraction) };
-
-        octave_nanosleep_wrapper (&hundredths_delay, nullptr);
-
-        // Sleep for the whole tenths portion, allowing interrupts every
-        // tenth.
-
-        struct timespec one_tenth = { 0, 100000000 };
-
-        for (int i = 0; i < static_cast<int> (tenths); i++)
+        while (remaining_time > 0.1)
           {
-            octave_nanosleep_wrapper (&one_tenth, nullptr);
-
             octave_quit ();
 
             if (do_graphics_events)
-              gh_manager::process_events ();
+              {
+                gh_manager::process_events ();
+
+                now.stamp ();
+                remaining_time = end_time - now.double_value ();
+
+                if (remaining_time < 0.1)
+                  break;
+              }
+
+            octave_nanosleep_wrapper (&nano_laps, nullptr);
+
+            now.stamp ();
+            remaining_time = end_time - now.double_value ();
           }
 
-        // Sleep for the whole seconds portion, allowing interrupts every
-        // tenth.
-
-        time_t sec = ((seconds > std::numeric_limits<time_t>::max ())
-                      ? std::numeric_limits<time_t>::max ()
-                      : static_cast<time_t> (seconds));
-
-        for (time_t s = 0; s < sec; s++)
+        if (remaining_time > 0.0)
           {
-            for (int i = 0; i < 10; i++)
-              {
-                octave_nanosleep_wrapper (&one_tenth, nullptr);
-
-                octave_quit ();
-
-                if (do_graphics_events)
-                  gh_manager::process_events ();
-              }
+            nano_laps = { 0, static_cast<int> (remaining_time * 1e9) };
+            octave_nanosleep_wrapper (&nano_laps, nullptr);
           }
       }
   }

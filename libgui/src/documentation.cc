@@ -133,7 +133,7 @@ namespace octave
     QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
     m_find_line_edit = new QLineEdit (find_footer);
     connect (m_find_line_edit, SIGNAL (returnPressed (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     connect (m_find_line_edit, SIGNAL (textEdited (const QString&)),
              this, SLOT(find_forward_from_anchor (const QString&)));
     QToolButton *forward_button = new QToolButton (find_footer);
@@ -141,7 +141,7 @@ namespace octave
     forward_button->setToolTip (tr ("Search forward"));
     forward_button->setIcon (resource_manager::icon ("go-down"));
     connect (forward_button, SIGNAL (pressed (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     QToolButton *backward_button = new QToolButton (find_footer);
     backward_button->setText (tr ("Search backward"));
     backward_button->setToolTip (tr ("Search backward"));
@@ -166,7 +166,7 @@ namespace octave
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findnext_shortcut, SIGNAL (activated (void)),
-             this, SLOT(find_forward (void)));
+             this, SLOT(find (void)));
     m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findprev_shortcut, SIGNAL (activated (void)),
              this, SLOT(find_backward (void)));
@@ -687,21 +687,32 @@ namespace octave
     m_filter->setCurrentIndex (0);
   }
 
-  void documentation::find_forward (void)
-  {
-    if (! m_help_engine)
-      return;
-
-    m_doc_browser->find (m_find_line_edit->text ());
-    record_anchor_position ();
-  }
-
   void documentation::find_backward (void)
   {
+    find (true);
+  }
+
+  void documentation::find (bool backward)
+  {
     if (! m_help_engine)
       return;
 
-    m_doc_browser->find (m_find_line_edit->text (), QTextDocument::FindBackward);
+    QTextDocument::FindFlags find_flags = 0;
+    if (backward)
+      find_flags = QTextDocument::FindBackward;
+
+    if (! m_doc_browser->find (m_find_line_edit->text (), find_flags))
+    {
+      // Nothing was found, restart search from the begin or end of text
+      QTextCursor textcur = m_doc_browser->textCursor ();
+      if (backward)
+        textcur.movePosition (QTextCursor::End);
+      else
+        textcur.movePosition (QTextCursor::Start);
+      m_doc_browser->setTextCursor (textcur);
+      m_doc_browser->find (m_find_line_edit->text (), find_flags);
+    }
+
     record_anchor_position ();
   }
 
@@ -718,7 +729,7 @@ namespace octave
     if (! m_doc_browser->find (text))
       {
         // Nothing was found, restart search from the beginning
-        textcur.setPosition (0);
+        textcur.movePosition (QTextCursor::Start);
         m_doc_browser->setTextCursor (textcur);
         m_doc_browser->find (text);
       }

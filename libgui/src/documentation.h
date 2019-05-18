@@ -115,7 +115,7 @@ namespace octave
     void global_search_finished (int hits);
     void filter_update (const QString& expression);
     void filter_update_history (void);
-    void find_forward (void);
+    void find (bool backward = false);
     void find_backward (void);
     void find_forward_from_anchor (const QString& text);
     void record_anchor_position (void);

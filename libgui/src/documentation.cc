@@ -710,10 +710,18 @@ namespace octave
     if (! m_help_engine)
       return;
 
+    // Search from the current position
     QTextCursor textcur = m_doc_browser->textCursor ();
     textcur.setPosition (m_search_anchor_position);
     m_doc_browser->setTextCursor (textcur);
-    m_doc_browser->find (text);
+
+    if (! m_doc_browser->find (text))
+      {
+        // Nothing was found, restart search from the beginning
+        textcur.setPosition (0);
+        m_doc_browser->setTextCursor (textcur);
+        m_doc_browser->find (text);
+      }
   }
 
   void documentation::record_anchor_position (void)

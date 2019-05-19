@@ -1,9 +1,14 @@
 octave_gui_ICONS = \
   %reldir%/icons/applications-system.png \
+  %reldir%/icons/bottom_left_corner.png \
+  %reldir%/icons/bottom_right_corner.png \
+  %reldir%/icons/bottom_side.png \
   %reldir%/icons/bp-next.png \
   %reldir%/icons/bp-prev.png \
   %reldir%/icons/bp-rm-all.png \
   %reldir%/icons/bp-toggle.png \
+  %reldir%/icons/circle.png \
+  %reldir%/icons/cross.png \
   %reldir%/icons/db-cont.png \
   %reldir%/icons/db-step-in.png \
   %reldir%/icons/db-step-out.png \
@@ -24,6 +29,7 @@ octave_gui_ICONS = \
   %reldir%/icons/edit-find-replace.png \
   %reldir%/icons/edit-paste.png \
   %reldir%/icons/edit-redo.png \
+  %reldir%/icons/edit-undo.png \
   %reldir%/icons/figure-axes.png \
   %reldir%/icons/figure-grid.png \
   %reldir%/icons/figure-pan.png \
@@ -32,7 +38,7 @@ octave_gui_ICONS = \
   %reldir%/icons/figure-zoom-in.png \
   %reldir%/icons/figure-zoom-original.png \
   %reldir%/icons/figure-zoom-out.png \
-  %reldir%/icons/edit-undo.png \
+  %reldir%/icons/fleur.png \
   %reldir%/icons/folder.png \
   %reldir%/icons/folder-new.png \
   %reldir%/icons/go-down.png \
@@ -60,7 +66,9 @@ octave_gui_ICONS = \
   %reldir%/icons/graphic_logo_WorkspaceView.svg \
   %reldir%/icons/graphic_logo_ReleaseWidget.svg \
   %reldir%/icons/graphic_logo_VariableEditor.svg \
+  %reldir%/icons/hand2.png \
   %reldir%/icons/icons_license \
+  %reldir%/icons/left_side.png \
   %reldir%/icons/letter_logo_DocumentationDockWidget.png \
   %reldir%/icons/letter_logo_FileEditor.png \
   %reldir%/icons/letter_logo_FilesDockWidget.png \
@@ -82,7 +90,11 @@ octave_gui_ICONS = \
   %reldir%/icons/logo.png \
   %reldir%/icons/plot-xy-curve.png \
   %reldir%/icons/preferences-system.png \
+  %reldir%/icons/right_side.png \
   %reldir%/icons/system-run.png \
+  %reldir%/icons/top_left_corner.png \
+  %reldir%/icons/top_right_corner.png \
+  %reldir%/icons/top_side.png \
   %reldir%/icons/user-home.png \
   %reldir%/icons/view-refresh.png \
   %reldir%/icons/widget-close.png \

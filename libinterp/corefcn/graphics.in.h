@@ -3142,9 +3142,9 @@ public:
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
-      radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
-      array_property pointershapecdata , Matrix (16, 16, 0)
-      array_property pointershapehotspot , Matrix (1, 2, 0)
+      radio_property pointer , "crosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
+      array_property pointershapecdata , Matrix (16, 16, 1)
+      array_property pointershapehotspot , Matrix (1, 2, 1)
       array_property position s , default_figure_position ()
       radio_property renderer m , "{opengl}|painters"
       radio_property renderermode , "{auto}|manual"
@@ -3201,6 +3201,7 @@ public:
       papersize.add_constraint (dim_vector (1, 2));
       papersize.add_constraint (FINITE);
       pointershapecdata.add_constraint (dim_vector (16, 16));
+      pointershapecdata.add_constraint (dim_vector (32, 32));
       pointershapehotspot.add_constraint (dim_vector (1, 2));
       position.add_constraint (dim_vector (1, 4));
       position.add_constraint (FINITE);

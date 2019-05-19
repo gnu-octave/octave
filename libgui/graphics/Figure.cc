@@ -81,6 +81,29 @@ namespace QtHandles
     return r;
   }
 
+  static QImage
+  pointer_to_qimage (const Matrix& cdata)
+  {
+    QImage retval (cdata.rows (), cdata.columns (), QImage::Format_ARGB32);
+    QColor tmp ("White");
+    QColor black ("Black");
+    QColor white ("White");
+    for (octave_idx_type ii = 0; ii < cdata.rows (); ii++)
+      for (octave_idx_type jj = 0; jj < cdata.columns (); jj++)
+        {
+          if (cdata(ii,jj) == 1.0)
+            tmp = black;
+          else if (cdata(ii,jj) == 2.0)
+            tmp = white;
+          else
+            tmp.setAlpha (0);
+
+          retval.setPixelColor(jj, ii, tmp);
+        }
+
+    return retval;
+  }
+
   Figure*
   Figure::create (const graphics_object& go)
   {
@@ -135,6 +158,9 @@ namespace QtHandles
 
     // Handle resizing constraints
     update (figure::properties::ID_RESIZE);
+
+    // Custom pointer data
+    update (figure::properties::ID_POINTERSHAPECDATA);
 
     // Visibility
     update (figure::properties::ID_VISIBLE);
@@ -426,9 +452,23 @@ namespace QtHandles
 
         break;
 
+      case figure::properties::ID_POINTERSHAPECDATA:
+        m_pointer_cdata =
+          pointer_to_qimage (fp.get_pointershapecdata ().matrix_value ());
+        if (fp.get_pointer () != "custom")
+          break;
+        // Avoid warning about potential fallthrough
+        [[fallthrough]];
+
+      case figure::properties::ID_POINTER:
+      case figure::properties::ID_POINTERSHAPEHOTSPOT:
       case figure::properties::ID___MOUSE_MODE__:
       case figure::properties::ID___ZOOM_MODE__:
-        m_container->canvas (m_handle)->setCursor (mouseMode ());
+        m_container->canvas (m_handle)->setCursor (mouseMode (),
+                                                   fp.get_pointer (),
+                                                   m_pointer_cdata,
+                                                   fp.get_pointershapehotspot ()
+                                                   .matrix_value());
         break;
 
       default:

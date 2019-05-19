@@ -63,7 +63,8 @@ namespace QtHandles
     void clearEventMask (int m) { m_eventMask &= (~m); }
     void setEventMask (int m) { m_eventMask = m; }
 
-    void setCursor (MouseMode mode);
+    void setCursor (MouseMode mode, std::string fallback,
+                    QImage cdata, Matrix hotspot);
 
     virtual QWidget * qWidget (void) = 0;
 

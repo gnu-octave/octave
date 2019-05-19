@@ -503,11 +503,24 @@ units (ex: @code{\"inches\"}) and @code{\"pixels\"} is dependent on the \
 @code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
-        s.doc = doc_unused;
+        s.doc = "Name of the mouse pointer shape associated with the canvas \
+of the figure.  When __prop__ is \"custom\", the shape is determined by \
+the @code{pointershapecdata} property.\n\n\
+__prop__ has no effect when the figure is in zoom, pan, or rotate mode. \
+In this case, Octave automatically uses a pointer shape appropriate \
+to the mode.";
+
       case "pointershapecdata"
-        s.doc = doc_unused;
+        s.doc ="m-by-m matrix defining a custom pointer.  Each \
+element defines a pixel with the element (1,1) representing the \
+top-left pixel.  A value of 1 is colored black, a value of 2 is colored white, \
+and all other values are rendered as transparent.";
+        s.valid = "16-by-16 or 32-by-32 Matrix";
+
       case "pointershapehotspot"
-        s.doc = doc_unused;
+        s.doc ="For custom pointers only __prop__ defines the row and column \
+of the pixel in @code{pointershapecdata} that is used as the pointer location.";
+        s.valid = valid_2elvec;
 
       case "position"
         s.doc = "Specify the position and size of the figure canvas.  \

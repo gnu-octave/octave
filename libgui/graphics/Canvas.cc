@@ -73,7 +73,8 @@ namespace QtHandles
   }
 
   void
-  Canvas::setCursor (MouseMode mode)
+  Canvas::setCursor (MouseMode mode, std::string fallback,
+                     QImage cdata, Matrix hotspot)
   {
     QWidget *w = qWidget ();
     QCursor cursor = Qt::ArrowCursor;
@@ -82,6 +83,70 @@ namespace QtHandles
         switch (mode)
           {
           case NoMode:
+            {
+              cursor = Qt::ArrowCursor;
+
+              if (fallback == "arrow")
+                cursor = Qt::ArrowCursor;
+              else if (fallback == "botl")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("bottom_left_corner").pixmap (22,22),
+                                  5, 16);
+              else if (fallback == "botr")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("bottom_right_corner").pixmap (22, 22),
+                                  16, 16);
+              else if (fallback == "bottom")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("bottom_side").pixmap (22, 22),
+                                  11, 16);
+              else if (fallback == "circle")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("circle").pixmap (22, 22),
+                                  10, 10);
+              else if (fallback == "cross" || fallback == "crosshair")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("cross").pixmap (22, 22), 10, 10);
+              else if (fallback == "custom")
+                {
+                  if (hotspot(0) > cdata.width () || hotspot(0) < 1.0
+                      || hotspot(1) > cdata.height () || hotspot(1) < 1.0)
+                    hotspot = Matrix (1, 2, 1);
+
+                  cursor = QCursor (QPixmap::fromImage (cdata),
+                                    static_cast<int> (hotspot(1) - 1),
+                                    static_cast<int> (hotspot(0) - 1));
+                }
+              else if (fallback == "fleur")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("fleur").pixmap (22, 22), 10, 4);
+              else if (fallback == "hand")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("hand2").pixmap (22, 22), 7, 3);
+              else if (fallback == "ibeam")
+                cursor = Qt::IBeamCursor;
+              else if (fallback == "left")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("left_side").pixmap (22, 22), 4, 10);
+              else if (fallback == "right")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("right_side").pixmap (22, 22),
+                                  17, 10);
+              else if (fallback == "top")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("top_side").pixmap (22, 22), 11, 4);
+              else if (fallback == "topl")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("top_left_corner").pixmap (22, 22),
+                                  4, 4);
+              else if (fallback == "topr")
+                cursor = QCursor (octave::resource_manager::icon
+                                  ("top_right_corner").pixmap (22, 22),
+                                  16, 4);
+              else if (fallback == "watch")
+                cursor = Qt::BusyCursor;
+            }
+            break;
           case SelectMode:
             cursor = Qt::ArrowCursor;
             break;

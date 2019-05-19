@@ -124,6 +124,7 @@ namespace QtHandles
     QStatusBar *m_statusBar;
     QRect m_innerRect;
     QRect m_outerRect;
+    QImage m_pointer_cdata;
     int m_previousHeight;
     bool m_resizable;
   };

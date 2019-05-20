@@ -286,7 +286,7 @@
 ##
 ## @end deftypefn
 ##
-## @deftypefn {} {@var{a} =} gallery ("Poisson", @var{n})
+## @deftypefn {} {@var{a} =} gallery ("poisson", @var{n})
 ## Create a block tridiagonal matrix from Poisson's equation (sparse).
 ##
 ## @end deftypefn

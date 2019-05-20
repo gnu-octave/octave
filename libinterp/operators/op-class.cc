@@ -71,8 +71,59 @@ along with Octave; see the file COPYING.  If not, see
 DEF_CLASS_UNOP (not)
 DEF_CLASS_UNOP (uplus)
 DEF_CLASS_UNOP (uminus)
-DEF_CLASS_UNOP (transpose)
-DEF_CLASS_UNOP (ctranspose)
+
+// In case of (conjugate) transpose first check for overloaded class method.
+// If not overloaded, just transpose the underlying map_value, if the number
+// of dimensions is maximal two.  Matlab compatibility.
+
+// FIXME: Default transposition for classdef arrays.
+
+#define DEF_CLASS_UNOP_TRANS(name)                                       \
+  static octave_value                                                    \
+  oct_unop_ ## name (const octave_value& a)                              \
+  {                                                                      \
+    octave_value retval;                                                 \
+                                                                         \
+    std::string class_name = a.class_name ();                            \
+                                                                         \
+    octave::symbol_table& symtab                                         \
+      = octave::__get_symbol_table__ ("oct_unop_" #name);                \
+                                                                         \
+    octave_value meth = symtab.find_method (#name, class_name);          \
+                                                                         \
+    if (meth.is_undefined ())                                            \
+      {                                                                  \
+        if (a.ndims () > 2)                                              \
+          error ("#name not defined for N-D objects");                   \
+                                                                         \
+        if (! a.is_classdef_object ())                                   \
+          {                                                              \
+            const octave_class& v                                        \
+              = dynamic_cast<const octave_class&> (a.get_rep ());        \
+                                                                         \
+            return octave_value (v.map_value ().transpose (),            \
+                                 v.class_name (),                        \
+                                 v.parent_class_name_list ());           \
+          }                                                              \
+        else                                                             \
+          error ("%s method not defined for %s class", #name,            \
+             class_name.c_str ());                                       \
+      }                                                                  \
+                                                                         \
+    octave_value_list args;                                              \
+                                                                         \
+    args(0) = a;                                                         \
+                                                                         \
+    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
+                                                                         \
+    if (tmp.length () > 0)                                               \
+      retval = tmp(0);                                                   \
+                                                                         \
+    return retval;                                                       \
+  }
+
+DEF_CLASS_UNOP_TRANS (transpose)
+DEF_CLASS_UNOP_TRANS (ctranspose)
 
 // The precedence of the oct_binop_*-functions is as follows:
 //

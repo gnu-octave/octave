@@ -5,6 +5,7 @@ function x = subsref (g, s)
     switch s.subs
     case 'gyrk'
       x = g.gyrk;
+    end
   end
 
 end

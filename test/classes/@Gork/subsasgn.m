@@ -5,6 +5,7 @@ function g = subsasgn (g, s, x)
     switch s.subs
     case 'gyrk'
       g.gyrk = x;
+    end
   end
 
 end

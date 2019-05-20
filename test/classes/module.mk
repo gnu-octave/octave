@@ -48,6 +48,7 @@ class_Sneetch_TEST_FILES = \
 class_Snork_TEST_FILES = \
   %reldir%/@Snork/Snork.m \
   %reldir%/@Snork/cack.m \
+  %reldir%/@Snork/ctranspose.m \
   %reldir%/@Snork/display.m \
   %reldir%/@Snork/double.m \
   %reldir%/@Snork/end.m \
@@ -79,6 +80,7 @@ class_Snork_TEST_FILES = \
   %reldir%/@Snork/subsref.m \
   %reldir%/@Snork/tattack.m \
   %reldir%/@Snork/times.m \
+  %reldir%/@Snork/transpose.m \
   %reldir%/@Snork/uminus.m \
   %reldir%/@Snork/uplus.m \
   %reldir%/@Snork/vertcat.m

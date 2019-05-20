@@ -272,17 +272,17 @@
 %!assert (s1 == s1)
 %!assert (s1 == x1)
 %!assert (x1 == s1)
-%!assert (!(s1 == (s1 + 1)))
-%!assert (!(s1 == (x1 + 1)))
-%!assert (!(x1 == (s1 + 1)))
+%!assert (~(s1 == (s1 + 1)))
+%!assert (~(s1 == (x1 + 1)))
+%!assert (~(x1 == (s1 + 1)))
 
-%% Test overloaded ne (!=) for the Snork class
-%!assert (!(s1 != s1))
-%!assert (!(s1 != x1))
-%!assert (!(x1 != s1))
-%!assert (s1 != (s1 + 1))
-%!assert (x1 != (s1 + 1))
-%!assert (s1 != (x1 + 1))
+%% Test overloaded ne (~=) for the Snork class
+%!assert (~(s1 ~= s1))
+%!assert (~(s1 ~= x1))
+%!assert (~(x1 ~= s1))
+%!assert (s1 ~= (s1 + 1))
+%!assert (x1 ~= (s1 + 1))
+%!assert (s1 ~= (x1 + 1))
 
 %% Test overloaded lt (<) for the Snork class
 %!assert (s1 < (s1 + 1))
@@ -304,9 +304,13 @@
 %!assert (s1 >= (x1 - 1))
 %!assert (x1 >= (s1 - 1))
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Testing horizontal & vertical concatenation %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Testing concatenation and transposition %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Test overloaded (c)transpose for the Snork class
+%!assert (isequal (s1',  Snork (double (s1)'  + 4)))  % +4 is intentional
+%!assert (isequal (s1.', Snork (double (s1).' + 2)))  % +2 is intentional
 
 %% Test overloaded vertcat() for the Snork class
 %!test <*38128>
@@ -324,8 +328,8 @@
 %!test <*38128>
 %! s = [x1 s2];  assert (isa (s, 'Snork') && isequal (s.gick, [x1 x2]));
 
-%% Test with the Blork class, where neither vertcat() nor horzcat()
-%% is overloaded
+%% Test with the Blork class, where neither ctranspose(), transpose(),
+%% vertcat() nor horzcat() is overloaded
 %!shared x1, x2, x3
 %!test x1 = Blork ();
 %!test x2 = [x1 x1];
@@ -338,6 +342,9 @@
 %!assert (isa (x3, 'Blork') && isequal (size (x3), [2 2]))
 %!error <dimension mismatch> x4 = [x1, x3]
 %!error <dimension mismatch> x4 = [x1; x3]
+%!test x2 = [x1 x1];
+%!assert (isequal (x2',  [x1; x1]) && isequal (size (x2'),  [2 1]))
+%!assert (isequal (x2.', [x1; x1]) && isequal (size (x2.'), [2 1]))
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %% Testing precedence %%
@@ -372,11 +379,11 @@
 %% Trying to change to CPrecendenceTester3 > Snork
 %!error D = CPrecedenceTester3 (1)
 
-##############################################
-## Testing overridden size+numel method     ##
-## (builtin size method and similar methods ##
-## use the size of the struct container)    ##
-##############################################
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Testing overridden size+numel method     %%
+%% (builtin size method and similar methods %%
+%% use the size of the struct container)    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %!shared st
 %!test st = SizeTester ([1 1]);

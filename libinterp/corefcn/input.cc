@@ -91,302 +91,302 @@ bool Vdrawnow_requested = false;
 // the terminal.
 bool Vtrack_line_num = true;
 
-static std::string
-quoting_filename (const std::string& text, int, char quote)
-{
-  if (quote)
-    return text;
-  else
-    return ("'" + text);
-}
-
-// Try to parse a partial command line in reverse, excluding trailing TEXT.
-// If it appears a variable has been indexed by () or {},
-// return that expression,
-// to allow autocomplete of field names of arrays of structures.
-static std::string
-find_indexed_expression (const std::string& text)
-{
-  std::string line = octave::command_editor::get_line_buffer ();
-
-  int pos = line.length () - text.length ();
-  int curly_count = 0;
-  int paren_count = 0;
-
-  int last = --pos;
-
-  while (pos >= 0 && (line[pos] == ')' || line[pos] == '}'))
-    {
-      if (line[pos] == ')')
-        paren_count++;
-      else
-        curly_count++;
-
-      while (curly_count + paren_count > 0 && --pos >= 0)
-        {
-          if (line[pos] == ')')
-            paren_count++;
-          else if (line[pos] == '(')
-            paren_count--;
-          else if (line[pos] == '}')
-            curly_count++;
-          else if (line[pos] == '{')
-            curly_count--;
-        }
-
-      while (--pos >= 0 && line[pos] == ' ')
-        ;
-    }
-
-  while (pos >= 0 && (isalnum (line[pos]) || line[pos] == '_'))
-    pos--;
-
-  if (++pos >= 0)
-    return (line.substr (pos, last + 1 - pos));
-  else
-    return std::string ();
-}
-
-static string_vector
-generate_struct_completions (const std::string& text,
-                             std::string& prefix, std::string& hint)
-{
-  string_vector names;
-
-  size_t pos = text.rfind ('.');
-  bool array = false;
-
-  if (pos != std::string::npos)
-    {
-      if (pos == text.length ())
-        hint = "";
-      else
-        hint = text.substr (pos+1);
-
-      prefix = text.substr (0, pos);
-
-      if (prefix == "")
-        {
-          array = true;
-          prefix = find_indexed_expression (text);
-        }
-
-      std::string base_name = prefix;
-
-      pos = base_name.find_first_of ("{(. ");
-
-      if (pos != std::string::npos)
-        base_name = base_name.substr (0, pos);
-
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("generate_struct_completions");
-
-      if (interp.is_variable (base_name))
-        {
-          int parse_status;
-
-          octave::unwind_protect frame;
-
-          frame.protect_var (discard_error_messages);
-          frame.protect_var (discard_warning_messages);
-
-          discard_error_messages = true;
-          discard_warning_messages = true;
-
-          try
-            {
-              octave_value tmp
-                = interp.eval_string (prefix, true, parse_status);
-
-              frame.run ();
-
-              if (tmp.is_defined ()
-                  && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
-                names = tmp.map_keys ();
-            }
-          catch (const octave::execution_exception&)
-            {
-              octave::interpreter::recover_from_exception ();
-            }
-        }
-    }
-
-  // Undo look-back that found the array expression,
-  // but insert an extra "." to distinguish from the non-struct case.
-  if (array)
-    prefix = ".";
-
-  return names;
-}
-
-// FIXME: this will have to be much smarter to work "correctly".
-static bool
-looks_like_struct (const std::string& text, char prev_char)
-{
-  bool retval = (! text.empty ()
-                 && (text != "." || prev_char == ')' || prev_char == '}')
-                 && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
-                 && text.find ("..") == std::string::npos
-                 && text.rfind ('.') != std::string::npos);
-
-  return retval;
-}
-
-// FIXME: make this generate filenames when appropriate.
-
-static string_vector
-generate_possible_completions (const std::string& text, std::string& prefix,
-                               std::string& hint, bool& deemed_struct)
-{
-  string_vector names;
-
-  prefix = "";
-
-  char prev_char = octave::command_editor::get_prev_char (text.length ());
-  deemed_struct = looks_like_struct (text, prev_char);
-
-  if (deemed_struct)
-    names = generate_struct_completions (text, prefix, hint);
-  else
-    names = octave::make_name_list ();
-
-  // Sort and remove duplicates.
-
-  names.sort (true);
-
-  return names;
-}
-
-static bool
-is_completing_dirfns (void)
-{
-  static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
-  static const size_t dirfns_commands_length = 4;
-
-  bool retval = false;
-
-  std::string line = octave::command_editor::get_line_buffer ();
-
-  for (size_t i = 0; i < dirfns_commands_length; i++)
-    {
-      int index = line.find (dirfns_commands[i] + ' ');
-
-      if (index == 0)
-        {
-          retval = true;
-          break;
-        }
-    }
-
-  return retval;
-}
-
-static std::string
-generate_completion (const std::string& text, int state)
-{
-  std::string retval;
-
-  static std::string prefix;
-  static std::string hint;
-
-  static size_t hint_len = 0;
-
-  static int list_index = 0;
-  static int name_list_len = 0;
-  static int name_list_total_len = 0;
-  static string_vector name_list;
-  static string_vector file_name_list;
-
-  static int matches = 0;
-
-  if (state == 0)
-    {
-      list_index = 0;
-
-      prefix = "";
-
-      hint = text;
-
-      // No reason to display symbols while completing a
-      // file/directory operation.
-
-      bool deemed_struct = false;
-
-      if (is_completing_dirfns ())
-        name_list = string_vector ();
-      else
-        name_list = generate_possible_completions (text, prefix, hint,
-                                                   deemed_struct);
-
-      name_list_len = name_list.numel ();
-
-      // If the line was something like "a{1}." then text = "." but
-      // we don't want to expand all the . files.
-      if (! deemed_struct)
-        {
-
-          file_name_list = octave::command_editor::generate_filename_completions (text);
-
-          name_list.append (file_name_list);
-
-        }
-
-      name_list_total_len = name_list.numel ();
-
-      hint_len = hint.length ();
-
-      matches = 0;
-
-      for (int i = 0; i < name_list_len; i++)
-        if (hint == name_list[i].substr (0, hint_len))
-          matches++;
-    }
-
-  if (name_list_total_len > 0 && matches > 0)
-    {
-      while (list_index < name_list_total_len)
-        {
-          std::string name = name_list[list_index];
-
-          list_index++;
-
-          if (hint == name.substr (0, hint_len))
-            {
-              // Special case: array reference forces prefix="."
-              //               in generate_struct_completions ()
-              if (list_index <= name_list_len && ! prefix.empty ())
-                retval = (prefix == "." ? "" : prefix) + '.' + name;
-              else
-                retval = name;
-
-              char prev_char = octave::command_editor::get_prev_char
-                                                       (text.length ());
-              if (matches == 1 && looks_like_struct (retval, prev_char))
-                {
-                  // Don't append anything, since we don't know
-                  // whether it should be '(' or '.'.
-
-                  octave::command_editor::set_completion_append_character ('\0');
-                }
-              else
-                {
-                  octave::input_system& input_sys
-                    = octave::__get_input_system__ ("generate_completion");
-
-                  octave::command_editor::set_completion_append_character
-                    (input_sys.completion_append_char ());
-                }
-
-              break;
-            }
-        }
-    }
-
-  return retval;
-}
-
 namespace octave
 {
+  static std::string
+  quoting_filename (const std::string& text, int, char quote)
+  {
+    if (quote)
+      return text;
+    else
+      return ("'" + text);
+  }
+
+  // Try to parse a partial command line in reverse, excluding trailing TEXT.
+  // If it appears a variable has been indexed by () or {},
+  // return that expression,
+  // to allow autocomplete of field names of arrays of structures.
+  static std::string
+  find_indexed_expression (const std::string& text)
+  {
+    std::string line = octave::command_editor::get_line_buffer ();
+
+    int pos = line.length () - text.length ();
+    int curly_count = 0;
+    int paren_count = 0;
+
+    int last = --pos;
+
+    while (pos >= 0 && (line[pos] == ')' || line[pos] == '}'))
+      {
+        if (line[pos] == ')')
+          paren_count++;
+        else
+          curly_count++;
+
+        while (curly_count + paren_count > 0 && --pos >= 0)
+          {
+            if (line[pos] == ')')
+              paren_count++;
+            else if (line[pos] == '(')
+              paren_count--;
+            else if (line[pos] == '}')
+              curly_count++;
+            else if (line[pos] == '{')
+              curly_count--;
+          }
+
+        while (--pos >= 0 && line[pos] == ' ')
+          ;
+      }
+
+    while (pos >= 0 && (isalnum (line[pos]) || line[pos] == '_'))
+      pos--;
+
+    if (++pos >= 0)
+      return (line.substr (pos, last + 1 - pos));
+    else
+      return std::string ();
+  }
+
+  static string_vector
+  generate_struct_completions (const std::string& text,
+                               std::string& prefix, std::string& hint)
+  {
+    string_vector names;
+
+    size_t pos = text.rfind ('.');
+    bool array = false;
+
+    if (pos != std::string::npos)
+      {
+        if (pos == text.length ())
+          hint = "";
+        else
+          hint = text.substr (pos+1);
+
+        prefix = text.substr (0, pos);
+
+        if (prefix == "")
+          {
+            array = true;
+            prefix = find_indexed_expression (text);
+          }
+
+        std::string base_name = prefix;
+
+        pos = base_name.find_first_of ("{(. ");
+
+        if (pos != std::string::npos)
+          base_name = base_name.substr (0, pos);
+
+        octave::interpreter& interp
+          = octave::__get_interpreter__ ("generate_struct_completions");
+
+        if (interp.is_variable (base_name))
+          {
+            int parse_status;
+
+            octave::unwind_protect frame;
+
+            frame.protect_var (discard_error_messages);
+            frame.protect_var (discard_warning_messages);
+
+            discard_error_messages = true;
+            discard_warning_messages = true;
+
+            try
+              {
+                octave_value tmp
+                  = interp.eval_string (prefix, true, parse_status);
+
+                frame.run ();
+
+                if (tmp.is_defined ()
+                    && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
+                  names = tmp.map_keys ();
+              }
+            catch (const octave::execution_exception&)
+              {
+                octave::interpreter::recover_from_exception ();
+              }
+          }
+      }
+
+    // Undo look-back that found the array expression,
+    // but insert an extra "." to distinguish from the non-struct case.
+    if (array)
+      prefix = ".";
+
+    return names;
+  }
+
+  // FIXME: this will have to be much smarter to work "correctly".
+  static bool
+  looks_like_struct (const std::string& text, char prev_char)
+  {
+    bool retval = (! text.empty ()
+                   && (text != "." || prev_char == ')' || prev_char == '}')
+                   && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
+                   && text.find ("..") == std::string::npos
+                   && text.rfind ('.') != std::string::npos);
+
+    return retval;
+  }
+
+  // FIXME: make this generate filenames when appropriate.
+
+  static string_vector
+  generate_possible_completions (const std::string& text, std::string& prefix,
+                                 std::string& hint, bool& deemed_struct)
+  {
+    string_vector names;
+
+    prefix = "";
+
+    char prev_char = octave::command_editor::get_prev_char (text.length ());
+    deemed_struct = looks_like_struct (text, prev_char);
+
+    if (deemed_struct)
+      names = generate_struct_completions (text, prefix, hint);
+    else
+      names = octave::make_name_list ();
+
+    // Sort and remove duplicates.
+
+    names.sort (true);
+
+    return names;
+  }
+
+  static bool
+  is_completing_dirfns (void)
+  {
+    static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
+    static const size_t dirfns_commands_length = 4;
+
+    bool retval = false;
+
+    std::string line = octave::command_editor::get_line_buffer ();
+
+    for (size_t i = 0; i < dirfns_commands_length; i++)
+      {
+        int index = line.find (dirfns_commands[i] + ' ');
+
+        if (index == 0)
+          {
+            retval = true;
+            break;
+          }
+      }
+
+    return retval;
+  }
+
+  static std::string
+  generate_completion (const std::string& text, int state)
+  {
+    std::string retval;
+
+    static std::string prefix;
+    static std::string hint;
+
+    static size_t hint_len = 0;
+
+    static int list_index = 0;
+    static int name_list_len = 0;
+    static int name_list_total_len = 0;
+    static string_vector name_list;
+    static string_vector file_name_list;
+
+    static int matches = 0;
+
+    if (state == 0)
+      {
+        list_index = 0;
+
+        prefix = "";
+
+        hint = text;
+
+        // No reason to display symbols while completing a
+        // file/directory operation.
+
+        bool deemed_struct = false;
+
+        if (is_completing_dirfns ())
+          name_list = string_vector ();
+        else
+          name_list = generate_possible_completions (text, prefix, hint,
+                                                     deemed_struct);
+
+        name_list_len = name_list.numel ();
+
+        // If the line was something like "a{1}." then text = "." but
+        // we don't want to expand all the . files.
+        if (! deemed_struct)
+          {
+
+            file_name_list = octave::command_editor::generate_filename_completions (text);
+
+            name_list.append (file_name_list);
+
+          }
+
+        name_list_total_len = name_list.numel ();
+
+        hint_len = hint.length ();
+
+        matches = 0;
+
+        for (int i = 0; i < name_list_len; i++)
+          if (hint == name_list[i].substr (0, hint_len))
+            matches++;
+      }
+
+    if (name_list_total_len > 0 && matches > 0)
+      {
+        while (list_index < name_list_total_len)
+          {
+            std::string name = name_list[list_index];
+
+            list_index++;
+
+            if (hint == name.substr (0, hint_len))
+              {
+                // Special case: array reference forces prefix="."
+                //               in generate_struct_completions ()
+                if (list_index <= name_list_len && ! prefix.empty ())
+                  retval = (prefix == "." ? "" : prefix) + '.' + name;
+                else
+                  retval = name;
+
+                char prev_char = octave::command_editor::get_prev_char
+                  (text.length ());
+                if (matches == 1 && looks_like_struct (retval, prev_char))
+                  {
+                    // Don't append anything, since we don't know
+                    // whether it should be '(' or '.'.
+
+                    octave::command_editor::set_completion_append_character ('\0');
+                  }
+                else
+                  {
+                    octave::input_system& input_sys
+                      = octave::__get_input_system__ ("generate_completion");
+
+                    octave::command_editor::set_completion_append_character
+                      (input_sys.completion_append_char ());
+                  }
+
+                break;
+              }
+          }
+      }
+
+    return retval;
+  }
+
   // Use literal "octave" in default setting for PS1 instead of
   // "\\s" to avoid setting the prompt to "octave.exe" or
   // "octave-gui", etc.
@@ -1097,7 +1097,7 @@ a feature, not a bug.
 
   for (;;)
     {
-      std::string cmd = generate_completion (hint, k);
+      std::string cmd = octave::generate_completion (hint, k);
 
       if (! cmd.empty ())
         {
@@ -1203,18 +1203,20 @@ for details.
   return ovl ();
 }
 
-static int
-internal_input_event_hook_fcn (void)
+namespace octave
 {
-  octave::input_system& input_sys
-    = octave::__get_input_system__ ("internal_input_event_hook_fcn");
+  static int internal_input_event_hook_fcn (void)
+  {
+    input_system& input_sys
+      = __get_input_system__ ("internal_input_event_hook_fcn");
 
-  input_sys.run_input_event_hooks ();
+    input_sys.run_input_event_hooks ();
 
-  if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    if (! input_sys.have_input_event_hooks ())
+      command_editor::remove_event_hook (internal_input_event_hook_fcn);
 
-  return 0;
+    return 0;
+  }
 }
 
 DEFMETHOD (add_input_event_hook, interp, args, ,
@@ -1252,7 +1254,7 @@ list of input hook functions.
   hook_function hook_fcn (args(0), user_data);
 
   if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::add_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::add_event_hook (octave::internal_input_event_hook_fcn);
 
   input_sys.add_input_event_hook (hook_fcn);
 
@@ -1285,7 +1287,7 @@ for input.
              hook_fcn_id.c_str ());
 
   if (! input_sys.have_input_event_hooks ())
-    octave::command_editor::remove_event_hook (internal_input_event_hook_fcn);
+    octave::command_editor::remove_event_hook (octave::internal_input_event_hook_fcn);
 
   return ovl ();
 }

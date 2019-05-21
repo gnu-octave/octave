@@ -46,146 +46,146 @@
 #include "unwind-prot.h"
 #include "utils.h"
 
-static void
-maybe_add_path_elts (std::string& path, const std::string& dir)
-{
-  std::string tpath = octave::genpath (dir);
-
-  if (! tpath.empty ())
-    {
-      if (path.empty ())
-        path = tpath;
-      else
-        path += octave::directory_path::path_sep_str () + tpath;
-    }
-}
-
-static std::list<std::string>
-split_path (const std::string& p)
-{
-  std::list<std::string> retval;
-
-  size_t beg = 0;
-  size_t end = p.find (octave::directory_path::path_sep_char ());
-
-  size_t len = p.length ();
-
-  while (end != std::string::npos)
-    {
-      std::string elt = p.substr (beg, end-beg);
-
-      if (! elt.empty ())
-        retval.push_back (elt);
-
-      beg = end + 1;
-
-      if (beg == len)
-        break;
-
-      end = p.find (octave::directory_path::path_sep_char (), beg);
-    }
-
-  std::string elt = p.substr (beg);
-
-  if (! elt.empty ())
-    retval.push_back (elt);
-
-  return retval;
-}
-
-// Strip trailing directory separators.
-
-static std::string
-strip_trailing_separators (const std::string& dir_arg)
-{
-  std::string dir = dir_arg;
-
-  size_t k = dir.length ();
-
-  while (k > 1 && octave::sys::file_ops::is_dir_sep (dir[k-1]))
-    k--;
-
-  if (k < dir.length ())
-    dir.resize (k);
-
-  return dir;
-}
-
-// Should we cache all files in private directories, or is it OK to just
-// look them up each time as needed?
-
-static std::string
-find_private_file (const std::string& fname)
-{
-  std::string retval;
-
-  // Look in private directory corresponding to current function (if
-  // any).
-
-  octave::symbol_scope scope = octave::__get_current_scope__ ("find_private_file");
-
-  octave_user_function *curr_fcn = scope ? scope.function () : nullptr;
-
-  if (curr_fcn)
-    {
-      // Even for private functions, dir_name doesn't contain the
-      // "private" directory component so we append it here in all
-      // cases.
-
-      std::string dir_name = curr_fcn->dir_name ();
-
-      if (! dir_name.empty ())
-        {
-          std::string pfname = dir_name + octave::sys::file_ops::dir_sep_str ()
-                               + "private" + octave::sys::file_ops::dir_sep_str () + fname;
-
-          octave::sys::file_stat fs (pfname);
-
-          if (fs.exists () && fs.is_reg ())
-            retval = pfname;
-        }
-    }
-
-  return retval;
-}
-
-// True if a path is contained in a path list separated by path_sep_char
-
-static bool
-in_path_list (const std::string& path_list, const std::string& path)
-{
-  size_t ps = path.size ();
-  size_t pls = path_list.size ();
-  size_t pos = path_list.find (path);
-  char psc = octave::directory_path::path_sep_char ();
-  while (pos != std::string::npos)
-    {
-      if ((pos == 0 || path_list[pos-1] == psc)
-          && (pos + ps == pls || path_list[pos + ps] == psc))
-        return true;
-      else
-        pos = path_list.find (path, pos + 1);
-    }
-
-  return false;
-}
-
-static void
-rehash_internal (void)
-{
-  octave::load_path& lp = octave::__get_load_path__ ("rehash_internal");
-
-  lp.update ();
-
-  // FIXME: maybe we should rename this variable since it is being
-  // used for more than keeping track of the prompt time.
-
-  // This will force updated functions to be found.
-  Vlast_prompt_time.stamp ();
-}
-
 namespace octave
 {
+  static void
+  maybe_add_path_elts (std::string& path, const std::string& dir)
+  {
+    std::string tpath = octave::genpath (dir);
+
+    if (! tpath.empty ())
+      {
+        if (path.empty ())
+          path = tpath;
+        else
+          path += octave::directory_path::path_sep_str () + tpath;
+      }
+  }
+
+  static std::list<std::string>
+  split_path (const std::string& p)
+  {
+    std::list<std::string> retval;
+
+    size_t beg = 0;
+    size_t end = p.find (octave::directory_path::path_sep_char ());
+
+    size_t len = p.length ();
+
+    while (end != std::string::npos)
+      {
+        std::string elt = p.substr (beg, end-beg);
+
+        if (! elt.empty ())
+          retval.push_back (elt);
+
+        beg = end + 1;
+
+        if (beg == len)
+          break;
+
+        end = p.find (octave::directory_path::path_sep_char (), beg);
+      }
+
+    std::string elt = p.substr (beg);
+
+    if (! elt.empty ())
+      retval.push_back (elt);
+
+    return retval;
+  }
+
+  // Strip trailing directory separators.
+
+  static std::string
+  strip_trailing_separators (const std::string& dir_arg)
+  {
+    std::string dir = dir_arg;
+
+    size_t k = dir.length ();
+
+    while (k > 1 && octave::sys::file_ops::is_dir_sep (dir[k-1]))
+      k--;
+
+    if (k < dir.length ())
+      dir.resize (k);
+
+    return dir;
+  }
+
+  // Should we cache all files in private directories, or is it OK to just
+  // look them up each time as needed?
+
+  static std::string
+  find_private_file (const std::string& fname)
+  {
+    std::string retval;
+
+    // Look in private directory corresponding to current function (if
+    // any).
+
+    octave::symbol_scope scope = octave::__get_current_scope__ ("find_private_file");
+
+    octave_user_function *curr_fcn = scope ? scope.function () : nullptr;
+
+    if (curr_fcn)
+      {
+        // Even for private functions, dir_name doesn't contain the
+        // "private" directory component so we append it here in all
+        // cases.
+
+        std::string dir_name = curr_fcn->dir_name ();
+
+        if (! dir_name.empty ())
+          {
+            std::string pfname = dir_name + octave::sys::file_ops::dir_sep_str ()
+              + "private" + octave::sys::file_ops::dir_sep_str () + fname;
+
+            octave::sys::file_stat fs (pfname);
+
+            if (fs.exists () && fs.is_reg ())
+              retval = pfname;
+          }
+      }
+
+    return retval;
+  }
+
+  // True if a path is contained in a path list separated by path_sep_char
+
+  static bool
+  in_path_list (const std::string& path_list, const std::string& path)
+  {
+    size_t ps = path.size ();
+    size_t pls = path_list.size ();
+    size_t pos = path_list.find (path);
+    char psc = octave::directory_path::path_sep_char ();
+    while (pos != std::string::npos)
+      {
+        if ((pos == 0 || path_list[pos-1] == psc)
+            && (pos + ps == pls || path_list[pos + ps] == psc))
+          return true;
+        else
+          pos = path_list.find (path, pos + 1);
+      }
+
+    return false;
+  }
+
+  static void
+  rehash_internal (void)
+  {
+    octave::load_path& lp = octave::__get_load_path__ ("rehash_internal");
+
+    lp.update ();
+
+    // FIXME: maybe we should rename this variable since it is being
+    // used for more than keeping track of the prompt time.
+
+    // This will force updated functions to be found.
+    Vlast_prompt_time.stamp ();
+  }
+
   std::string load_path::sys_path;
   load_path::abs_dir_cache_type load_path::abs_dir_cache;
 
@@ -2246,7 +2246,7 @@ DEFUN (rehash, , ,
 Reinitialize Octave's load path directory cache.
 @end deftypefn */)
 {
-  rehash_internal ();
+  octave::rehash_internal ();
 
   return ovl ();
 }
@@ -2337,7 +2337,7 @@ No checks are made for duplicate elements.
 
       lp.set (path, true);
 
-      rehash_internal ();
+      octave::rehash_internal ();
     }
 
   if (nargout > 0)
@@ -2438,7 +2438,7 @@ For each directory that is added, and that was not already in the path,
     {
       std::string arg = arglist(i).xstring_value ("addpath: all arguments must be strings");
 
-      std::list<std::string> dir_elts = split_path (arg);
+      std::list<std::string> dir_elts = octave::split_path (arg);
 
       if (! append)
         std::reverse (dir_elts.begin (), dir_elts.end ());
@@ -2483,7 +2483,7 @@ For each directory that is added, and that was not already in the path,
     }
 
   if (need_to_update)
-    rehash_internal ();
+    octave::rehash_internal ();
 
   return retval;
 }
@@ -2527,7 +2527,7 @@ and runs it if it exists.
   for (int i = 0; i < nargin; i++)
     {
       std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
-      std::list<std::string> dir_elts = split_path (arg);
+      std::list<std::string> dir_elts = octave::split_path (arg);
 
       for (const auto& dir : dir_elts)
         {
@@ -2542,7 +2542,7 @@ and runs it if it exists.
     }
 
   if (need_to_update)
-    rehash_internal ();
+    octave::rehash_internal ();
 
   return retval;
 }

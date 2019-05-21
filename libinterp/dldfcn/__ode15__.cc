@@ -76,61 +76,61 @@ along with Octave; see the file COPYING.  If not, see
 #    include <sunlinsol/sunlinsol_klu.h>
 #  endif
 
-#  if ! defined (HAVE_IDASETJACFN) && defined (HAVE_IDADLSSETJACFN)
-static inline int
-IDASetJacFn (void *ida_mem, IDADlsJacFn jac)
+namespace octave
 {
-  return IDADlsSetJacFn (ida_mem, jac);
-}
+#  if ! defined (HAVE_IDASETJACFN) && defined (HAVE_IDADLSSETJACFN)
+  static inline int
+  IDASetJacFn (void *ida_mem, IDADlsJacFn jac)
+  {
+    return IDADlsSetJacFn (ida_mem, jac);
+  }
 #  endif
 
 #  if ! defined (HAVE_IDASETLINEARSOLVER) && defined (HAVE_IDADLSSETLINEARSOLVER)
-static inline int
-IDASetLinearSolver (void *ida_mem, SUNLinearSolver LS, SUNMatrix A)
-{
-  return IDADlsSetLinearSolver (ida_mem, LS, A);
-}
+  static inline int
+  IDASetLinearSolver (void *ida_mem, SUNLinearSolver LS, SUNMatrix A)
+  {
+    return IDADlsSetLinearSolver (ida_mem, LS, A);
+  }
 #  endif
 
 #  if ! defined (HAVE_SUNLINSOL_DENSE) && defined (HAVE_SUNDENSELINEARSOLVER)
-static inline SUNLinearSolver
-SUNLinSol_Dense (N_Vector y, SUNMatrix A)
-{
-  return SUNDenseLinearSolver (y, A);
-}
+  static inline SUNLinearSolver
+  SUNLinSol_Dense (N_Vector y, SUNMatrix A)
+  {
+    return SUNDenseLinearSolver (y, A);
+  }
 #  endif
 
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
 #    if ! defined (HAVE_SUNLINSOL_KLU) && defined (HAVE_SUNKLU)
-static inline SUNLinearSolver
-SUNLinSol_KLU (N_Vector y, SUNMatrix A)
-{
-  return SUNKLU (y, A);
-}
+  static inline SUNLinearSolver
+  SUNLinSol_KLU (N_Vector y, SUNMatrix A)
+  {
+    return SUNKLU (y, A);
+  }
 #    endif
 #  endif
 
-static inline realtype *
-nv_data_s (N_Vector& v)
-{
+  static inline realtype *
+  nv_data_s (N_Vector& v)
+  {
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-   // Disable warning from GCC about old-style casts in Sundials
-   // macro expansions.  Do this in a function so that this
-   // diagnostic may still be enabled for the rest of the file.
+    // Disable warning from GCC about old-style casts in Sundials
+    // macro expansions.  Do this in a function so that this
+    // diagnostic may still be enabled for the rest of the file.
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
-  return NV_DATA_S (v);
+    return NV_DATA_S (v);
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-   // Restore prevailing warning state for remainder of the file.
+    // Restore prevailing warning state for remainder of the file.
 #  pragma GCC diagnostic pop
 #endif
-}
+  }
 
-namespace octave
-{
   class IDA
   {
   public:

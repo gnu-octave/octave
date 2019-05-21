@@ -39,16 +39,16 @@ along with Octave; see the file COPYING.  If not, see
 // transforms the glob_match::glob function to be glob_match::rpl_glob,
 // which is not what we want...
 
-static bool
-single_match_exists (const std::string& file)
-{
-  octave::sys::file_stat s (file);
-
-  return s.exists ();
-}
-
 namespace octave
 {
+  static bool
+  single_match_exists (const std::string& file)
+  {
+    octave::sys::file_stat s (file);
+
+    return s.exists ();
+  }
+
   namespace sys
   {
     bool

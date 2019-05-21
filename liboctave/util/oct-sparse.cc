@@ -31,19 +31,19 @@ along with Octave; see the file COPYING.  If not, see
      || defined (HAVE_CHOLMOD) || defined (HAVE_COLAMD)         \
      || defined (HAVE_CXSPARSE) || defined (HAVE_UMFPACK))
 
-static inline void
-check_suitesparse_integer_size (void)
-{
-  // FIXME: maybe it would be better to make this a configure check and
-  // disable suitesparse if it fails?
-
-  if (sizeof (octave::suitesparse_integer) != sizeof (octave_idx_type))
-    (*current_liboctave_error_handler)
-      ("size of suitesparse integer does not match octave_idx_type!");
-}
-
 namespace octave
 {
+  static inline void
+  check_suitesparse_integer_size (void)
+  {
+    // FIXME: maybe it would be better to make this a configure check and
+    // disable suitesparse if it fails?
+
+    if (sizeof (octave::suitesparse_integer) != sizeof (octave_idx_type))
+      (*current_liboctave_error_handler)
+        ("size of suitesparse integer does not match octave_idx_type!");
+  }
+
   suitesparse_integer *
   to_suitesparse_intptr (octave_idx_type *i)
   {

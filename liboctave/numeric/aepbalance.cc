@@ -35,14 +35,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-lapack-proto.h"
 
-static inline char
-get_job (bool noperm, bool noscal)
-{
-  return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
-}
-
 namespace octave
 {
+  static inline char
+  get_job (bool noperm, bool noscal)
+  {
+    return noperm ? (noscal ? 'N' : 'S') : (noscal ? 'P' : 'B');
+  }
+
   namespace math
   {
     template <>

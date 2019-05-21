@@ -80,30 +80,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "version.h"
 
-static octave::file_editor_interface *
-create_default_editor (QWidget *p)
-{
-#if defined (HAVE_QSCINTILLA)
-  return new octave::file_editor (p);
-#else
-  octave_unused_parameter (p);
-
-  return 0;
-#endif
-}
-
-// Disable all Qt messages by default.
-
-static void
-#if defined (QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT)
-message_handler (QtMsgType, const QMessageLogContext &, const QString &)
-#else
-message_handler (QtMsgType, const char *)
-#endif
-{ }
-
 namespace octave
 {
+  static file_editor_interface *
+  create_default_editor (QWidget *p)
+  {
+#if defined (HAVE_QSCINTILLA)
+    return new octave::file_editor (p);
+#else
+    octave_unused_parameter (p);
+
+    return 0;
+#endif
+  }
+
+  // Disable all Qt messages by default.
+
+  static void
+#if defined (QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT)
+  message_handler (QtMsgType, const QMessageLogContext &, const QString &)
+#else
+  message_handler (QtMsgType, const char *)
+#endif
+  { }
+
   octave_interpreter::octave_interpreter (gui_application& app_context)
     : QObject (), m_app_context (app_context)
   { }

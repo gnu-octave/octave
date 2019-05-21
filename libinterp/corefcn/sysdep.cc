@@ -88,20 +88,6 @@ along with Octave; see the file COPYING.  If not, see
 #  define STDIN_FILENO 1
 #endif
 
-#if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
-static void
-BSD_init (void)
-{
-#  if defined (HAVE_FLOATINGPOINT_H)
-  // Disable trapping on common exceptions.
-#    if ! defined (FP_X_DNML)
-#      define FP_X_DNML 0
-#    endif
-  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#  endif
-}
-#endif
-
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
 #define WIN32_LEAN_AND_MEAN
@@ -109,65 +95,85 @@ BSD_init (void)
 #include <tlhelp32.h>
 #include <shellapi.h>
 
-static void
-w32_set_octave_home (void)
-{
-  std::string bin_dir;
-
-  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
-#if defined (TH32CS_SNAPMODULE32)
-                                       | TH32CS_SNAPMODULE32
-#endif
-                                       , 0);
-
-  if (h != INVALID_HANDLE_VALUE)
-    {
-      MODULEENTRY32W mod_info;
-
-      ZeroMemory (&mod_info, sizeof (mod_info));
-      mod_info.dwSize = sizeof (mod_info);
-
-      if (Module32FirstW (h, &mod_info))
-        {
-          do
-            {
-              std::string mod_name (octave::sys::u8_from_wstring (mod_info.szModule));
-
-              if (mod_name.find ("octinterp") != std::string::npos)
-                {
-                  bin_dir = octave::sys::u8_from_wstring (mod_info.szExePath);
-                  if (! bin_dir.empty () && bin_dir.back () != '\\')
-                    bin_dir.push_back ('\\');
-                  break;
-                }
-            }
-          while (Module32NextW (h, &mod_info));
-        }
-
-      CloseHandle (h);
-    }
-
-  if (! bin_dir.empty ())
-    {
-      size_t pos = bin_dir.rfind (R"(\bin\)");
-
-      if (pos != std::string::npos)
-        octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
-    }
-}
-
-static void
-w32_init (void)
-{
-  w32_set_octave_home ();
-
-  octave::command_editor::prefer_env_winsize (true);
-}
-
 #endif
 
 namespace octave
 {
+#if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
+
+  static void
+  BSD_init (void)
+  {
+#  if defined (HAVE_FLOATINGPOINT_H)
+    // Disable trapping on common exceptions.
+#    if ! defined (FP_X_DNML)
+#      define FP_X_DNML 0
+#    endif
+    fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#  endif
+  }
+
+#endif
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+
+  static void
+  w32_set_octave_home (void)
+  {
+    std::string bin_dir;
+
+    HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
+#if defined (TH32CS_SNAPMODULE32)
+                                         | TH32CS_SNAPMODULE32
+#endif
+                                         , 0);
+
+    if (h != INVALID_HANDLE_VALUE)
+      {
+        MODULEENTRY32W mod_info;
+
+        ZeroMemory (&mod_info, sizeof (mod_info));
+        mod_info.dwSize = sizeof (mod_info);
+
+        if (Module32FirstW (h, &mod_info))
+          {
+            do
+              {
+                std::string mod_name (octave::sys::u8_from_wstring (mod_info.szModule));
+
+                if (mod_name.find ("octinterp") != std::string::npos)
+                  {
+                    bin_dir = octave::sys::u8_from_wstring (mod_info.szExePath);
+                    if (! bin_dir.empty () && bin_dir.back () != '\\')
+                      bin_dir.push_back ('\\');
+                    break;
+                  }
+              }
+            while (Module32NextW (h, &mod_info));
+          }
+
+        CloseHandle (h);
+      }
+
+    if (! bin_dir.empty ())
+      {
+        size_t pos = bin_dir.rfind (R"(\bin\)");
+
+        if (pos != std::string::npos)
+          octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+      }
+  }
+
+  static void
+  w32_init (void)
+  {
+    w32_set_octave_home ();
+
+    octave::command_editor::prefer_env_winsize (true);
+  }
+
+#endif
+
   // Set app id if we have the SetCurrentProcessExplicitAppUserModelID
   // available (>= Win7).  FIXME: Could we check for existence of this
   // function in the configure script instead of dynamically loading
@@ -236,24 +242,28 @@ Undocumented internal function.
   return retval;
 }
 
-#if defined (__MINGW32__)
-static void
-MINGW_init (void)
+namespace octave
 {
-  w32_init ();
-}
+#if defined (__MINGW32__)
+
+  static void
+  MINGW_init (void)
+  {
+    w32_init ();
+  }
+
 #endif
 
 #if defined (_MSC_VER)
-static void
-MSVC_init (void)
-{
-  w32_init ();
-}
+
+  static void
+  MSVC_init (void)
+  {
+    w32_init ();
+  }
+
 #endif
 
-namespace octave
-{
   // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
   bool same_file_internal (const std::string& file1, const std::string& file2)
@@ -780,91 +790,95 @@ occurred.
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-static void
-reg_close_key_wrapper (HKEY key)
+namespace octave
 {
-  RegCloseKey (key);
-}
+  static void
+  reg_close_key_wrapper (HKEY key)
+  {
+    RegCloseKey (key);
+  }
 
-LONG
-get_regkey_value (HKEY h_rootkey, const std::string subkey,
-                  const std::string name, octave_value& value)
-{
-  LONG result;
-  HKEY h_subkey;
+  static LONG
+  get_regkey_value (HKEY h_rootkey, const std::string subkey,
+                    const std::string name, octave_value& value)
+  {
+    LONG result;
+    HKEY h_subkey;
 
-  result = RegOpenKeyExW (h_rootkey,
-                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
-                          KEY_READ, &h_subkey);
-  if (result != ERROR_SUCCESS)
+    result = RegOpenKeyExW (h_rootkey,
+                            octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                            KEY_READ, &h_subkey);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    octave::unwind_protect frame;
+
+    frame.add_fcn (reg_close_key_wrapper, h_subkey);
+
+    DWORD length = 0;
+    result = RegQueryValueExW (h_subkey,
+                               octave::sys::u8_to_wstring (name).c_str (),
+                               nullptr, nullptr, nullptr, &length);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    DWORD type = 0;
+    OCTAVE_LOCAL_BUFFER (BYTE, data, length);
+    result = RegQueryValueExW (h_subkey,
+                               octave::sys::u8_to_wstring (name).c_str (),
+                               nullptr, &type, data, &length);
+    if (result != ERROR_SUCCESS)
+      return result;
+
+    if (type == REG_DWORD)
+      value = octave_int32 (*data);
+    else if (type == REG_SZ || type == REG_EXPAND_SZ)
+      value = string_vector (octave::sys::u8_from_wstring (
+                                                           reinterpret_cast<wchar_t *> (data)));
+
     return result;
+  }
 
-  octave::unwind_protect frame;
+  static LONG
+  get_regkey_names (HKEY h_rootkey, const std::string subkey,
+                    std::list<std::string> &fields)
+  {
+    LONG retval;
+    HKEY h_subkey;
 
-  frame.add_fcn (reg_close_key_wrapper, h_subkey);
+    fields.clear ();
 
-  DWORD length = 0;
-  result = RegQueryValueExW (h_subkey,
-                             octave::sys::u8_to_wstring (name).c_str (),
-                             nullptr, nullptr, nullptr, &length);
-  if (result != ERROR_SUCCESS)
-    return result;
+    retval = RegOpenKeyExW (h_rootkey,
+                            octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                            KEY_READ, &h_subkey);
+    if (retval != ERROR_SUCCESS)
+      return retval;
 
-  DWORD type = 0;
-  OCTAVE_LOCAL_BUFFER (BYTE, data, length);
-  result = RegQueryValueExW (h_subkey,
-                             octave::sys::u8_to_wstring (name).c_str (),
-                             nullptr, &type, data, &length);
-  if (result != ERROR_SUCCESS)
-    return result;
+    DWORD idx = 0;
+    const int MAX_VALUE_NAME_SIZE = 32766;
+    wchar_t value_name[MAX_VALUE_NAME_SIZE+1];
+    DWORD value_name_size = MAX_VALUE_NAME_SIZE;
 
-  if (type == REG_DWORD)
-    value = octave_int32 (*data);
-  else if (type == REG_SZ || type == REG_EXPAND_SZ)
-    value = string_vector (octave::sys::u8_from_wstring (
-                                        reinterpret_cast<wchar_t *> (data)));
+    while (true)
+      {
+        retval = RegEnumValueW (h_subkey, idx, value_name, &value_name_size,
+                                nullptr, nullptr, nullptr, nullptr);
+        if (retval != ERROR_SUCCESS)
+          break;
+        fields.push_back (octave::sys::u8_from_wstring (value_name));
+        value_name_size = MAX_VALUE_NAME_SIZE;
+        idx++;
+      }
 
-  return result;
-}
+    if (retval == ERROR_NO_MORE_ITEMS)
+      retval = ERROR_SUCCESS;
 
-static LONG
-get_regkey_names (HKEY h_rootkey, const std::string subkey,
-                  std::list<std::string> &fields)
-{
-  LONG retval;
-  HKEY h_subkey;
+    RegCloseKey (h_subkey);
 
-  fields.clear ();
-
-  retval = RegOpenKeyExW (h_rootkey,
-                          octave::sys::u8_to_wstring (subkey).c_str (), 0,
-                          KEY_READ, &h_subkey);
-  if (retval != ERROR_SUCCESS)
     return retval;
-
-  DWORD idx = 0;
-  const int MAX_VALUE_NAME_SIZE = 32766;
-  wchar_t value_name[MAX_VALUE_NAME_SIZE+1];
-  DWORD value_name_size = MAX_VALUE_NAME_SIZE;
-
-  while (true)
-    {
-      retval = RegEnumValueW (h_subkey, idx, value_name, &value_name_size,
-                              nullptr, nullptr, nullptr, nullptr);
-      if (retval != ERROR_SUCCESS)
-        break;
-      fields.push_back (octave::sys::u8_from_wstring (value_name));
-      value_name_size = MAX_VALUE_NAME_SIZE;
-      idx++;
-    }
-
-  if (retval == ERROR_NO_MORE_ITEMS)
-    retval = ERROR_SUCCESS;
-
-  RegCloseKey (h_subkey);
-
-  return retval;
+  }
 }
+
 #endif
 
 DEFUN (winqueryreg, args, ,
@@ -989,7 +1003,7 @@ On non-Windows platforms this function fails with an error.
     {
       std::list<std::string> fields;
 
-      LONG retval = get_regkey_names (h_rootkey, subkey_name, fields);
+      LONG retval = octave::get_regkey_names (h_rootkey, subkey_name, fields);
       if (retval != ERROR_SUCCESS)
         error ("winqueryreg: error %ld reading names from registry", retval);
 
@@ -1004,8 +1018,8 @@ On non-Windows platforms this function fails with an error.
   else
     {
       octave_value key_val;
-      LONG retval = get_regkey_value (h_rootkey, subkey_name, value_name,
-                                      key_val);
+      LONG retval = octave::get_regkey_value (h_rootkey, subkey_name,
+                                              value_name, key_val);
       if (retval == ERROR_FILE_NOT_FOUND)
         error ("winqueryreg: no value found for '%s' at %s\\%s.",
                value_name.c_str (), rootkey_name.c_str (),

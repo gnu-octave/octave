@@ -45,194 +45,194 @@ along with Octave; see the file COPYING.  If not, see
 #  include "qr.h"
 #endif
 
-static Matrix
-chol2inv_internal (const Matrix& r, bool is_upper = true)
-{
-  Matrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = octave::to_f77_int (r_nc);
-  F77_INT info;
-
-  Matrix tmp = r;
-  double *v = tmp.fortran_vec ();
-
-  if (is_upper)
-    F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // FIXME: Should we check info exit value and possibly report an error?
-
-  // If someone thinks of a more graceful way of doing this
-  // (or faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
-    }
-
-  retval = tmp;
-
-  return retval;
-}
-
-static FloatMatrix
-chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
-{
-  FloatMatrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = octave::to_f77_int (r_nc);
-  F77_INT info;
-
-  FloatMatrix tmp = r;
-  float *v = tmp.fortran_vec ();
-
-  if (is_upper)
-    F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               v, n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // FIXME: Should we check info exit value and possibly report an error?
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = tmp.xelem (j, i);
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = tmp.xelem (i, j);
-    }
-
-  retval = tmp;
-
-  return retval;
-}
-
-static ComplexMatrix
-chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
-{
-  ComplexMatrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = octave::to_f77_int (r_nc);
-  F77_INT info;
-
-  ComplexMatrix tmp = r;
-
-  if (is_upper)
-    F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
-    }
-
-  retval = tmp;
-
-  return retval;
-}
-
-static FloatComplexMatrix
-chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
-{
-  FloatComplexMatrix retval;
-
-  octave_idx_type r_nr = r.rows ();
-  octave_idx_type r_nc = r.cols ();
-
-  if (r_nr != r_nc)
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
-
-  F77_INT n = octave::to_f77_int (r_nc);
-  F77_INT info;
-
-  FloatComplexMatrix tmp = r;
-
-  if (is_upper)
-    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                               F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-  else
-    F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
-                               F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
-                               F77_CHAR_ARG_LEN (1)));
-
-  // If someone thinks of a more graceful way of doing this (or
-  // faster for that matter :-)), please let me know!
-
-  if (n > 1)
-    {
-      if (is_upper)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
-      else
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
-    }
-
-  retval = tmp;
-
-  return retval;
-}
-
 namespace octave
 {
+  static Matrix
+  chol2inv_internal (const Matrix& r, bool is_upper = true)
+  {
+    Matrix retval;
+
+    octave_idx_type r_nr = r.rows ();
+    octave_idx_type r_nc = r.cols ();
+
+    if (r_nr != r_nc)
+      (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+
+    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT info;
+
+    Matrix tmp = r;
+    double *v = tmp.fortran_vec ();
+
+    if (is_upper)
+      F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                 v, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    else
+      F77_XFCN (dpotri, DPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                                 v, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+    // FIXME: Should we check info exit value and possibly report an error?
+
+    // If someone thinks of a more graceful way of doing this
+    // (or faster for that matter :-)), please let me know!
+
+    if (n > 1)
+      {
+        if (is_upper)
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (i, j) = tmp.xelem (j, i);
+        else
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (j, i) = tmp.xelem (i, j);
+      }
+
+    retval = tmp;
+
+    return retval;
+  }
+
+  static FloatMatrix
+  chol2inv_internal (const FloatMatrix& r, bool is_upper = true)
+  {
+    FloatMatrix retval;
+
+    octave_idx_type r_nr = r.rows ();
+    octave_idx_type r_nc = r.cols ();
+
+    if (r_nr != r_nc)
+      (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+
+    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT info;
+
+    FloatMatrix tmp = r;
+    float *v = tmp.fortran_vec ();
+
+    if (is_upper)
+      F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                 v, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    else
+      F77_XFCN (spotri, SPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                                 v, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+    // FIXME: Should we check info exit value and possibly report an error?
+
+    // If someone thinks of a more graceful way of doing this (or
+    // faster for that matter :-)), please let me know!
+
+    if (n > 1)
+      {
+        if (is_upper)
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (i, j) = tmp.xelem (j, i);
+        else
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (j, i) = tmp.xelem (i, j);
+      }
+
+    retval = tmp;
+
+    return retval;
+  }
+
+  static ComplexMatrix
+  chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
+  {
+    ComplexMatrix retval;
+
+    octave_idx_type r_nr = r.rows ();
+    octave_idx_type r_nc = r.cols ();
+
+    if (r_nr != r_nc)
+      (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+
+    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT info;
+
+    ComplexMatrix tmp = r;
+
+    if (is_upper)
+      F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                 F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    else
+      F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                                 F77_DBLE_CMPLX_ARG (tmp.fortran_vec ()), n, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+    // If someone thinks of a more graceful way of doing this (or
+    // faster for that matter :-)), please let me know!
+
+    if (n > 1)
+      {
+        if (is_upper)
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
+        else
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
+      }
+
+    retval = tmp;
+
+    return retval;
+  }
+
+  static FloatComplexMatrix
+  chol2inv_internal (const FloatComplexMatrix& r, bool is_upper = true)
+  {
+    FloatComplexMatrix retval;
+
+    octave_idx_type r_nr = r.rows ();
+    octave_idx_type r_nc = r.cols ();
+
+    if (r_nr != r_nc)
+      (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+
+    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT info;
+
+    FloatComplexMatrix tmp = r;
+
+    if (is_upper)
+      F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                 F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    else
+      F77_XFCN (cpotri, CPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                                 F77_CMPLX_ARG (tmp.fortran_vec ()), n, info
+                                 F77_CHAR_ARG_LEN (1)));
+
+    // If someone thinks of a more graceful way of doing this (or
+    // faster for that matter :-)), please let me know!
+
+    if (n > 1)
+      {
+        if (is_upper)
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
+        else
+          for (octave_idx_type j = 0; j < r_nc; j++)
+            for (octave_idx_type i = j+1; i < r_nr; i++)
+              tmp.xelem (j, i) = std::conj (tmp.xelem (i, j));
+      }
+
+    retval = tmp;
+
+    return retval;
+  }
+
   namespace math
   {
     template <typename T>

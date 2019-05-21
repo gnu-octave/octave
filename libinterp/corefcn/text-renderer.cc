@@ -30,17 +30,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "ft-text-renderer.h"
 #include "text-renderer.h"
 
-static octave::base_text_renderer *
-make_text_renderer (void)
-{
-  // Allow the possibility of choosing different text rendering
-  // implementations.
-
-  return octave::make_ft_text_renderer ();
-}
-
 namespace octave
 {
+  static octave::base_text_renderer *
+  make_text_renderer (void)
+  {
+    // Allow the possibility of choosing different text rendering
+    // implementations.
+
+    return octave::make_ft_text_renderer ();
+  }
+
   text_renderer::text_renderer (void)
     : rep (make_text_renderer ())
   { }

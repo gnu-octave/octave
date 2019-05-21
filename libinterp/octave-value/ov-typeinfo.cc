@@ -36,33 +36,31 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov.h"
 
-// FIXME: we should also store all class names and provide a
-// way to list them (calling class with nargin == 0?).
-
-static NDArray
-as_nd_array (const Array<int>& x)
-{
-  NDArray retval (x.dims ());
-
-  for (int i = 0; i < x.numel (); i++)
-    retval.xelem(i) = x(i);
-
-  return retval;
-}
-
-static boolNDArray
-as_bool_nd_array (const Array<void *>& x)
-{
-  boolNDArray retval (x.dims ());
-
-  for (octave_idx_type i = 0; i < x.numel (); i++)
-    retval.xelem (i) = x(i);
-
-  return retval;
-}
-
 namespace octave
 {
+  // FIXME: we should also store all class names and provide a
+  // way to list them (calling class with nargin == 0?).
+
+  static NDArray as_nd_array (const Array<int>& x)
+  {
+    NDArray retval (x.dims ());
+
+    for (int i = 0; i < x.numel (); i++)
+      retval.xelem(i) = x(i);
+
+    return retval;
+  }
+
+  static boolNDArray as_bool_nd_array (const Array<void *>& x)
+  {
+    boolNDArray retval (x.dims ());
+
+    for (octave_idx_type i = 0; i < x.numel (); i++)
+      retval.xelem (i) = x(i);
+
+    return retval;
+  }
+
   type_info::type_info (int init_tab_sz)
     : num_types (0), types (dim_vector (init_tab_sz, 1), ""),
       vals (dim_vector (init_tab_sz, 1)),

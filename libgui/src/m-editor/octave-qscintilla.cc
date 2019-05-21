@@ -65,45 +65,45 @@ along with Octave; see the file COPYING.  If not, see
 // Used for testing the last word of an "if" etc. line,
 // or the first word of the following line.
 
-static bool
-is_end (const QString& candidate, const QString& opening)
-{
-  bool retval = false;
-
-  if (opening == "do")          // The only one that can't be ended by "end"
-    {
-      if (candidate == "until")
-        retval = true;
-    }
-  else
-    {
-      if (candidate == "end")
-        retval =  true;
-      else
-        {
-          if (opening == "try")
-            {
-              if (candidate == "catch" || candidate == "end_try_catch")
-                retval = true;
-            }
-          else if (opening == "unwind_protect")
-            {
-              if (candidate == "unwind_protect_cleanup"
-                  || candidate == "end_unwind_protect")
-                retval = true;
-            }
-          else if (candidate == "end" + opening)
-            retval = true;
-          else if (opening == "if" && candidate == "else")
-            retval = true;
-        }
-    }
-
-  return retval;
-}
-
 namespace octave
 {
+  static bool
+  is_end (const QString& candidate, const QString& opening)
+  {
+    bool retval = false;
+
+    if (opening == "do")          // The only one that can't be ended by "end"
+      {
+        if (candidate == "until")
+          retval = true;
+      }
+    else
+      {
+        if (candidate == "end")
+          retval =  true;
+        else
+          {
+            if (opening == "try")
+              {
+                if (candidate == "catch" || candidate == "end_try_catch")
+                  retval = true;
+              }
+            else if (opening == "unwind_protect")
+              {
+                if (candidate == "unwind_protect_cleanup"
+                    || candidate == "end_unwind_protect")
+                  retval = true;
+              }
+            else if (candidate == "end" + opening)
+              retval = true;
+            else if (opening == "if" && candidate == "else")
+              retval = true;
+          }
+      }
+
+    return retval;
+  }
+
   octave_qscintilla::octave_qscintilla (QWidget *p)
     : QsciScintilla (p), m_word_at_cursor (), m_selection (),
       m_selection_replacement (), m_selection_line (-1),

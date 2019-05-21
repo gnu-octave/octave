@@ -39,17 +39,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "welcome-wizard.h"
 #include "resource-manager.h"
 
-static QLabel *
-make_octave_logo (QWidget *p = nullptr, int height = 100)
-{
-  QLabel *logo = new QLabel (p);
-  QPixmap logo_pixmap (":/actions/icons/logo.png");
-  logo->setPixmap (logo_pixmap.scaledToHeight (height));
-  return logo;
-};
-
 namespace octave
 {
+  static QLabel *
+  make_octave_logo (QWidget *p = nullptr, int height = 100)
+  {
+    QLabel *logo = new QLabel (p);
+    QPixmap logo_pixmap (":/actions/icons/logo.png");
+    logo->setPixmap (logo_pixmap.scaledToHeight (height));
+    return logo;
+  };
+
   welcome_wizard::welcome_wizard (QWidget *p)
     : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
       m_current_page (initial_page::create (this)),

@@ -45,20 +45,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-regexp.h"
 #include "str-vec.h"
 
-// Define the maximum number of retries for a pattern
-// that possibly results in an infinite recursion.
-#define PCRE_MATCHLIMIT_MAX 10
-
-// FIXME: should this be configurable?
-#define MAXLOOKBEHIND 10
-
-static bool lookbehind_warned = false;
-
-// FIXME: don't bother collecting and composing return values
-//        the user doesn't want.
-
 namespace octave
 {
+  // Define the maximum number of retries for a pattern
+  // that possibly results in an infinite recursion.
+#define PCRE_MATCHLIMIT_MAX 10
+
+  // FIXME: should this be configurable?
+#define MAXLOOKBEHIND 10
+
+  static bool lookbehind_warned = false;
+
+  // FIXME: don't bother collecting and composing return values
+  //        the user doesn't want.
+
   void
   regexp::free (void)
   {

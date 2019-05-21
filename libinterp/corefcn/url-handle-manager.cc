@@ -30,16 +30,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "url-handle-manager.h"
 
-static double
-make_handle_fraction (void)
-{
-  static double maxrand = RAND_MAX + 2.0;
-
-  return (rand () + 1.0) / maxrand;
-}
-
 namespace octave
 {
+  static double
+  make_handle_fraction (void)
+  {
+    static double maxrand = RAND_MAX + 2.0;
+
+    return (rand () + 1.0) / maxrand;
+  }
+
   url_handle url_handle_manager::get_handle (void)
   {
     url_handle retval;

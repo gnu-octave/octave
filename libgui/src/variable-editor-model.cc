@@ -46,48 +46,48 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-static bool
-cell_is_editable (const octave_value& val)
-{
-  if ((val.isnumeric () || val.islogical ()) && val.numel () == 1)
-    return true;
-
-  if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
-    return true;
-
-  return false;
-}
-
-static char
-get_quote_char (const octave_value& val)
-{
-  if (val.is_sq_string ())
-    return '\'';
-
-  if (val.is_dq_string ())
-    return '"';
-
-  return 0;
-}
-
-static float_display_format
-get_edit_display_format (const octave_value& val)
-{
-  // FIXME: make this limit configurable.
-
-  return (val.numel () > 250000
-          ? float_display_format () : val.get_edit_display_format ());
-}
-
-static bool
-do_requires_sub_editor_sub (const octave_value& elt)
-{
-  return (! ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
-             || (elt.is_string () && (elt.rows () == 1 || elt.isempty ()))));
-}
-
 namespace octave
 {
+  static bool
+  cell_is_editable (const octave_value& val)
+  {
+    if ((val.isnumeric () || val.islogical ()) && val.numel () == 1)
+      return true;
+
+    if (val.is_string () && (val.rows () == 1 || val.is_zero_by_zero ()))
+      return true;
+
+    return false;
+  }
+
+  static char
+  get_quote_char (const octave_value& val)
+  {
+    if (val.is_sq_string ())
+      return '\'';
+
+    if (val.is_dq_string ())
+      return '"';
+
+    return 0;
+  }
+
+  static float_display_format
+  get_edit_display_format (const octave_value& val)
+  {
+    // FIXME: make this limit configurable.
+
+    return (val.numel () > 250000
+            ? float_display_format () : val.get_edit_display_format ());
+  }
+
+  static bool
+  do_requires_sub_editor_sub (const octave_value& elt)
+  {
+    return (! ((elt.numel () == 1 && (elt.isnumeric () || elt.islogical ()))
+               || (elt.is_string () && (elt.rows () == 1 || elt.isempty ()))));
+  }
+
   base_ve_model::base_ve_model (const QString& expr, const octave_value& val)
     : m_name (expr.toStdString ()),
       m_value (val),

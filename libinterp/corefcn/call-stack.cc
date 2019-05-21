@@ -48,14 +48,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "symscope.h"
 #include "variables.h"
 
-// Use static fields for the best efficiency.
-// NOTE: C++0x will allow these two to be merged into one.
-static const char *bt_fieldnames[] =
-  { "file", "name", "line", "column", "scope", nullptr };
-static const octave_fields bt_fields (bt_fieldnames);
-
 namespace octave
 {
+  // Use static fields for the best efficiency.
+  // NOTE: C++0x will allow these two to be merged into one.
+  static const char *bt_fieldnames[] =
+    { "file", "name", "line", "column", "scope", nullptr };
+
+  static const octave_fields bt_fields (bt_fieldnames);
+
   call_stack::call_stack (tree_evaluator& evaluator)
     : m_evaluator (evaluator), m_cs (), m_curr_frame (0),
       m_max_stack_depth (1024), m_global_values ()

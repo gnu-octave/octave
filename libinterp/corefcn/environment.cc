@@ -38,35 +38,35 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "variables.h"
 
-static void append_to_shell_path (const std::string& exec_path)
-{
-  // FIXME: should there be a way to remove a previous setting from
-  // PATH?
-
-  if (exec_path.empty ())
-    return;
-
-  // FIXME: should we really be modifying PATH in the environment?
-
-  std::string shell_path = octave::sys::env::getenv ("PATH");
-
-  if (shell_path.empty ())
-    octave::sys::env::putenv ("PATH", exec_path);
-  else
-    {
-      // If PATH doesn't already have exec_path, append it.
-      // FIXME: should we search for the elements individually, and
-      // only append those that are missing?
-
-      std::string path_sep = octave::directory_path::path_sep_str ();
-
-      if (shell_path.find (exec_path) == std::string::npos)
-        octave::sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
-    }
-}
-
 namespace octave
 {
+  static void append_to_shell_path (const std::string& exec_path)
+  {
+    // FIXME: should there be a way to remove a previous setting from
+    // PATH?
+
+    if (exec_path.empty ())
+      return;
+
+    // FIXME: should we really be modifying PATH in the environment?
+
+    std::string shell_path = octave::sys::env::getenv ("PATH");
+
+    if (shell_path.empty ())
+      octave::sys::env::putenv ("PATH", exec_path);
+    else
+      {
+        // If PATH doesn't already have exec_path, append it.
+        // FIXME: should we search for the elements individually, and
+        // only append those that are missing?
+
+        std::string path_sep = octave::directory_path::path_sep_str ();
+
+        if (shell_path.find (exec_path) == std::string::npos)
+          octave::sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
+      }
+  }
+
   octave_value
   environment::editor (const octave_value_list& args, int nargout)
   {

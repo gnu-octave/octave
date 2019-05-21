@@ -54,36 +54,36 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor-model.h"
 #include "gui-preferences.h"
 
-// Code reuse functions
-
-static QString
-idx_to_expr (int32_t from, int32_t to)
-{
-  return (from == to
-          ? QString ("%1").arg (from)
-          : QString ("%1:%2").arg (from).arg (to));
-}
-
-static QSignalMapper *
-make_plot_mapper (QMenu *menu)
-{
-  QList<QString> list;
-  list << "plot" << "bar" << "stem" << "stairs" << "area" << "pie" << "hist";
-
-  QSignalMapper *plot_mapper = new QSignalMapper (menu);
-
-  for (int i = 0; i < list.size(); ++i)
-    {
-      plot_mapper->setMapping
-        (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
-         "figure (); " + list.at (i) + " (%1); title (\"%1\");");
-    }
-
-  return plot_mapper;
-}
-
 namespace octave
 {
+  // Code reuse functions
+
+  static QString
+  idx_to_expr (int32_t from, int32_t to)
+  {
+    return (from == to
+            ? QString ("%1").arg (from)
+            : QString ("%1:%2").arg (from).arg (to));
+  }
+
+  static QSignalMapper *
+  make_plot_mapper (QMenu *menu)
+  {
+    QList<QString> list;
+    list << "plot" << "bar" << "stem" << "stairs" << "area" << "pie" << "hist";
+
+    QSignalMapper *plot_mapper = new QSignalMapper (menu);
+
+    for (int i = 0; i < list.size(); ++i)
+      {
+        plot_mapper->setMapping
+          (menu->addAction (list.at (i), plot_mapper, SLOT (map ())),
+           "figure (); " + list.at (i) + " (%1); title (\"%1\");");
+      }
+
+    return plot_mapper;
+  }
+
   // Variable dock widget
 
   variable_dock_widget::variable_dock_widget (QWidget *p)

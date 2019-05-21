@@ -72,86 +72,86 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "default-defs.h"
 
-const static char * const operators[] =
-{
-  "!",
-  "~",
-  "!=",
-  "~=",
-  R"(")",
-  "#",
-  "%",
-  "#{",
-  "%{",
-  "#}",
-  "%}",
-  "...",
-  "&",
-  "&&",
-  "'",
-  "(",
-  ")",
-  "*",
-  "**",
-  "^",
-  "+",
-  "++",
-  ",",
-  "-",
-  "--",
-  ".'",
-  ".*",
-  ".**",
-  ".^",
-  "./",
-  "/",
-  R"(.\)",
-  R"(\)",
-  ":",
-  ";",
-  "<",
-  "<=",
-  "=",
-  "==",
-  ">",
-  ">=",
-  "[",
-  "]",
-  "|",
-  "||",
-  nullptr
-};
-
-const static string_vector operator_names (operators);
-
-static bool
-looks_like_html (const std::string& msg)
-{
-  const size_t p1 = msg.find ('\n');
-  std::string t = msg.substr (0, p1);
-  // FIXME: this comparison should be case-insensitive
-  const size_t p2 = t.find ("<html");
-
-  return (p2 != std::string::npos);
-}
-
-static bool
-looks_like_texinfo (const std::string& msg, size_t& p1)
-{
-  p1 = msg.find ('\n');
-
-  std::string t = msg.substr (0, p1);
-
-  if (p1 == std::string::npos)
-    p1 = 0;
-
-  size_t p2 = t.find ("-*- texinfo -*-");
-
-  return (p2 != std::string::npos);
-}
-
 namespace octave
 {
+  const static char * const operators[] =
+    {
+     "!",
+     "~",
+     "!=",
+     "~=",
+     R"(")",
+     "#",
+     "%",
+     "#{",
+     "%{",
+     "#}",
+     "%}",
+     "...",
+     "&",
+     "&&",
+     "'",
+     "(",
+     ")",
+     "*",
+     "**",
+     "^",
+     "+",
+     "++",
+     ",",
+     "-",
+     "--",
+     ".'",
+     ".*",
+     ".**",
+     ".^",
+     "./",
+     "/",
+     R"(.\)",
+     R"(\)",
+     ":",
+     ";",
+     "<",
+     "<=",
+     "=",
+     "==",
+     ">",
+     ">=",
+     "[",
+     "]",
+     "|",
+     "||",
+     nullptr
+    };
+
+  const static string_vector operator_names (operators);
+
+  static bool
+  looks_like_html (const std::string& msg)
+  {
+    const size_t p1 = msg.find ('\n');
+    std::string t = msg.substr (0, p1);
+    // FIXME: this comparison should be case-insensitive
+    const size_t p2 = t.find ("<html");
+
+    return (p2 != std::string::npos);
+  }
+
+  static bool
+  looks_like_texinfo (const std::string& msg, size_t& p1)
+  {
+    p1 = msg.find ('\n');
+
+    std::string t = msg.substr (0, p1);
+
+    if (p1 == std::string::npos)
+      p1 = 0;
+
+    size_t p2 = t.find ("-*- texinfo -*-");
+
+    return (p2 != std::string::npos);
+  }
+
   octave_value
   help_system::built_in_docstrings_file (const octave_value_list& args,
                                          int nargout)
@@ -766,7 +766,7 @@ DEFUN (__operators__, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (Cell (operator_names));
+  return ovl (Cell (octave::operator_names));
 }
 
 // Return a cell array of strings containing the names of all keywords.

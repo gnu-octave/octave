@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-ieee.h"
 #include "oct-env.h"
 
 #include "bp-table.h"
@@ -1635,8 +1636,11 @@ Example:
   int index_position = tw.index_position ();
   int num_indices = tw.num_indices ();
 
+  // Return invalid index value instead of throwing an error so that we
+  // will see an error about the object that is indexed rather than
+  // "end" being used incorrectly.
   if (! indexed_object)
-    error ("invalid use of end");
+    return ovl (octave_NaN);
 
   if (indexed_object->isobject ())
     {
@@ -1684,6 +1688,11 @@ Example:
 
   return retval;
 }
+
+/*
+%!test <33637>
+%! fail ("__undef_sym__ (end)", "'__undef_sym__' undefined");
+*/
 
 namespace octave
 {

@@ -20,6 +20,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+//! @file op-class.cc
+//! Unary and binary operators for classdef and old style classes.
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -37,189 +40,182 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "parse.h"
 
-// class ops.
+//! Default unary class operator.
+//!
+//! @param a operand
+//! @param opname operator name
 
-#define DEF_CLASS_UNOP(name)                                            \
-  static octave_value                                                   \
-  oct_unop_ ## name (const octave_value& a)                             \
-  {                                                                     \
-    octave_value retval;                                                \
-                                                                        \
-    std::string class_name = a.class_name ();                           \
-                                                                        \
-    octave::symbol_table& symtab                                        \
-      = octave::__get_symbol_table__ ("oct_unop_" #name);               \
-                                                                        \
-    octave_value meth = symtab.find_method (#name, class_name);         \
-                                                                        \
-    if (meth.is_undefined ())                                           \
-      error ("%s method not defined for %s class", #name,               \
-             class_name.c_str ());                                      \
-                                                                        \
-    octave_value_list args;                                             \
-                                                                        \
-    args(0) = a;                                                        \
-                                                                        \
-    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
-                                                                        \
-    if (tmp.length () > 0)                                              \
-      retval = tmp(0);                                                  \
-                                                                        \
-    return retval;                                                      \
+static octave_value
+oct_unop_default (const octave_value& a, const std::string& opname)
+{
+  std::string class_name = a.class_name ();
+
+  octave_value meth
+    = octave::__get_symbol_table__ ("oct_unop_" + opname)
+      .find_method (opname, class_name);
+
+  if (meth.is_defined ())
+    {
+      // Call overloaded unary class operator.
+      octave_value_list tmp = octave::feval (meth.function_value (),
+                                             ovl (a), 1);
+
+      // Return first element if present.
+      if (tmp.length () > 0)
+        return tmp(0);
+
+      return octave_value ();
+    }
+
+  // Matlab compatibility:  If (conjugate) transpose is not overloaded and
+  // the number of dimensions is maximal two, just transpose the array of
+  // that class.
+
+  if ((opname == "transpose") || (opname == "ctranspose"))
+    {
+      if (a.ndims () > 2)
+        error ("%s not defined for N-D objects of %s class", opname.c_str (),
+               class_name.c_str ());
+
+      if (a.is_classdef_object ())
+        {
+          // FIXME: Default transposition for classdef arrays.
+
+          error ("%s method not defined for %s class", opname.c_str (),
+                 class_name.c_str ());
+        }
+      else
+        {
+          const octave_class& v
+            = dynamic_cast<const octave_class&> (a.get_rep ());
+
+          return octave_value (v.map_value ().transpose (),
+                               v.class_name (),
+                               v.parent_class_name_list ());
+        }
+    }
+  else
+    error ("%s method not defined for %s class", opname.c_str (),
+           class_name.c_str ());
+}
+
+//! Helper macro to define unary class operators.
+
+#define DEF_CLASS_UNOP(opname)                 \
+  static octave_value                          \
+  oct_unop_ ## opname (const octave_value& a)  \
+  {                                            \
+    return oct_unop_default (a, #opname);      \
   }
 
-DEF_CLASS_UNOP (not)
-DEF_CLASS_UNOP (uplus)
-DEF_CLASS_UNOP (uminus)
+DEF_CLASS_UNOP (not)         // !a or ~a
+DEF_CLASS_UNOP (uplus)       // +a
+DEF_CLASS_UNOP (uminus)      // -a
+DEF_CLASS_UNOP (transpose)   //  a.'
+DEF_CLASS_UNOP (ctranspose)  //  a'
+#undef DEF_CLASS_UNOP
 
-// In case of (conjugate) transpose first check for overloaded class method.
-// If not overloaded, just transpose the underlying map_value, if the number
-// of dimensions is maximal two.  Matlab compatibility.
+//! Default binary class operator.
+//!
+//! @param a1 first  operand
+//! @param a2 second operand
+//! @param opname operator name
+//!
+//! The operator precedence is as follows:
+//!
+//! 1.   If exactly one of the operands is a user defined class object, then
+//!      the class method of that operand is invoked.
+//!
+//! 2.   If both operands are user defined class objects, then
+//! 2.1  The superior class method is invoked.
+//! 2.2  The leftmost class method is invoked if both classes are the same
+//!      or their precedence is not defined by superiorto/inferiorto.
 
-// FIXME: Default transposition for classdef arrays.
+static octave_value
+oct_binop_default (const octave_value& a1, const octave_value& a2,
+                   const std::string& opname)
+{
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("oct_binop_" + opname);
 
-#define DEF_CLASS_UNOP_TRANS(name)                                       \
+  // Dispatch to first (leftmost) operand by default.
+  std::string dispatch_type = a1.class_name ();
+
+  // Determine, if second operand takes precedence (see rules above).
+  if (! a1.isobject ()
+      || (a1.isobject () && a2.isobject ()
+          && symtab.is_superiorto (a2.class_name (), dispatch_type)))
+    dispatch_type = a2.class_name ();
+
+  octave_value meth = symtab.find_method (opname, dispatch_type);
+
+  if (meth.is_undefined ())
+    error ("%s method not defined for %s class", opname.c_str (),
+           dispatch_type.c_str ());
+
+  octave_value_list tmp = octave::feval (meth.function_value (),
+                                         ovl (a1, a2), 1);
+
+  if (tmp.length () > 0)
+    return tmp(0);
+
+  return octave_value ();
+}
+
+//! Helper macro to define binary class operators.
+
+#define DEF_CLASS_BINOP(opname)                                          \
   static octave_value                                                    \
-  oct_unop_ ## name (const octave_value& a)                              \
+  oct_binop_ ## opname (const octave_value& a1, const octave_value& a2)  \
   {                                                                      \
-    octave_value retval;                                                 \
-                                                                         \
-    std::string class_name = a.class_name ();                            \
-                                                                         \
-    octave::symbol_table& symtab                                         \
-      = octave::__get_symbol_table__ ("oct_unop_" #name);                \
-                                                                         \
-    octave_value meth = symtab.find_method (#name, class_name);          \
-                                                                         \
-    if (meth.is_undefined ())                                            \
-      {                                                                  \
-        if (a.ndims () > 2)                                              \
-          error ("#name not defined for N-D objects");                   \
-                                                                         \
-        if (! a.is_classdef_object ())                                   \
-          {                                                              \
-            const octave_class& v                                        \
-              = dynamic_cast<const octave_class&> (a.get_rep ());        \
-                                                                         \
-            return octave_value (v.map_value ().transpose (),            \
-                                 v.class_name (),                        \
-                                 v.parent_class_name_list ());           \
-          }                                                              \
-        else                                                             \
-          error ("%s method not defined for %s class", #name,            \
-             class_name.c_str ());                                       \
-      }                                                                  \
-                                                                         \
-    octave_value_list args;                                              \
-                                                                         \
-    args(0) = a;                                                         \
-                                                                         \
-    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
-                                                                         \
-    if (tmp.length () > 0)                                               \
-      retval = tmp(0);                                                   \
-                                                                         \
-    return retval;                                                       \
+    return oct_binop_default (a1, a2, #opname);                          \
   }
 
-DEF_CLASS_UNOP_TRANS (transpose)
-DEF_CLASS_UNOP_TRANS (ctranspose)
-
-// The precedence of the oct_binop_*-functions is as follows:
-//
-// 1.   If exactly one of the arguments is a user defined class object, then
-//      the function of that operand's class is invoked.
-//
-// 2.   If both arguments are user defined class objects, then
-// 2.1  The superior class function is invoked.
-// 2.2  The leftmost class function is invoked if both classes are the same
-//      or their precedence is not defined by superiorto/inferiorto.
-
-#define DEF_CLASS_BINOP(name)                                           \
-  static octave_value                                                   \
-  oct_binop_ ## name (const octave_value& a1, const octave_value& a2)   \
-  {                                                                     \
-    octave_value retval;                                                \
-                                                                        \
-    octave::symbol_table& symtab                                        \
-      = octave::__get_symbol_table__ ("oct_binop_" #name);              \
-                                                                        \
-    std::string dispatch_type = a1.class_name ();                       \
-                                                                        \
-    if (! a1.isobject ()                                                \
-        || (a1.isobject () && a2.isobject ()                            \
-            && symtab.is_superiorto (a2.class_name (), dispatch_type))) \
-      dispatch_type = a2.class_name ();                                 \
-                                                                        \
-    octave_value meth = symtab.find_method (#name, dispatch_type);      \
-                                                                        \
-    if (meth.is_undefined ())                                           \
-      error ("%s method not defined for %s class", #name,               \
-             dispatch_type.c_str ());                                   \
-                                                                        \
-    octave_value_list args;                                             \
-                                                                        \
-    args(1) = a2;                                                       \
-    args(0) = a1;                                                       \
-                                                                        \
-    octave_value_list tmp = octave::feval (meth.function_value (), args, 1); \
-                                                                        \
-    if (tmp.length () > 0)                                              \
-      retval = tmp(0);                                                  \
-                                                                        \
-    return retval;                                                      \
-  }
-
-DEF_CLASS_BINOP (plus)
-DEF_CLASS_BINOP (minus)
-DEF_CLASS_BINOP (mtimes)
-DEF_CLASS_BINOP (mrdivide)
-DEF_CLASS_BINOP (mpower)
-DEF_CLASS_BINOP (mldivide)
-DEF_CLASS_BINOP (lt)
-DEF_CLASS_BINOP (le)
-DEF_CLASS_BINOP (eq)
-DEF_CLASS_BINOP (ge)
-DEF_CLASS_BINOP (gt)
-DEF_CLASS_BINOP (ne)
-DEF_CLASS_BINOP (times)
-DEF_CLASS_BINOP (rdivide)
-DEF_CLASS_BINOP (power)
-DEF_CLASS_BINOP (ldivide)
-DEF_CLASS_BINOP (and)
-DEF_CLASS_BINOP (or)
-
-#define INSTALL_CLASS_UNOP_TI(ti, op, f)                        \
-  ti.install_unary_class_op (octave_value::op, oct_unop_ ## f)
-
-#define INSTALL_CLASS_BINOP_TI(ti, op, f)                       \
-  ti.install_binary_class_op (octave_value::op, oct_binop_ ## f)
+DEF_CLASS_BINOP (plus)     // a1 + a2
+DEF_CLASS_BINOP (minus)    // a1 - a2
+DEF_CLASS_BINOP (mtimes)   // a1 * a2
+DEF_CLASS_BINOP (mrdivide) // a1 / a2
+DEF_CLASS_BINOP (mpower)   // a1 ^ a2
+DEF_CLASS_BINOP (mldivide) // a1 \ a2
+DEF_CLASS_BINOP (lt)       // a1 <  a2
+DEF_CLASS_BINOP (le)       // a1 <= a2
+DEF_CLASS_BINOP (eq)       // a1 <= a2
+DEF_CLASS_BINOP (ge)       // a1 >= a2
+DEF_CLASS_BINOP (gt)       // a1 >  a2
+DEF_CLASS_BINOP (ne)       // a1 ~= a2 or a1 != a2
+DEF_CLASS_BINOP (times)    // a1 .* a2
+DEF_CLASS_BINOP (rdivide)  // a1 ./ a2
+DEF_CLASS_BINOP (power)    // a1 .^ a2
+DEF_CLASS_BINOP (ldivide)  // a1 .\ a2
+DEF_CLASS_BINOP (and)      // a1 & a2
+DEF_CLASS_BINOP (or)       // a1 | a2
+#undef DEF_CLASS_BINOP
 
 void
 install_class_ops (octave::type_info& ti)
 {
-  INSTALL_CLASS_UNOP_TI (ti, op_not, not);
-  INSTALL_CLASS_UNOP_TI (ti, op_uplus, uplus);
-  INSTALL_CLASS_UNOP_TI (ti, op_uminus, uminus);
-  INSTALL_CLASS_UNOP_TI (ti, op_transpose, transpose);
-  INSTALL_CLASS_UNOP_TI (ti, op_hermitian, ctranspose);
+  ti.install_unary_class_op (octave_value::op_not,       oct_unop_not);
+  ti.install_unary_class_op (octave_value::op_uplus,     oct_unop_uplus);
+  ti.install_unary_class_op (octave_value::op_uminus,    oct_unop_uminus);
+  ti.install_unary_class_op (octave_value::op_transpose, oct_unop_transpose);
+  ti.install_unary_class_op (octave_value::op_hermitian, oct_unop_ctranspose);
 
-  INSTALL_CLASS_BINOP_TI (ti, op_add, plus);
-  INSTALL_CLASS_BINOP_TI (ti, op_sub, minus);
-  INSTALL_CLASS_BINOP_TI (ti, op_mul, mtimes);
-  INSTALL_CLASS_BINOP_TI (ti, op_div, mrdivide);
-  INSTALL_CLASS_BINOP_TI (ti, op_pow, mpower);
-  INSTALL_CLASS_BINOP_TI (ti, op_ldiv, mldivide);
-  INSTALL_CLASS_BINOP_TI (ti, op_lt, lt);
-  INSTALL_CLASS_BINOP_TI (ti, op_le, le);
-  INSTALL_CLASS_BINOP_TI (ti, op_eq, eq);
-  INSTALL_CLASS_BINOP_TI (ti, op_ge, ge);
-  INSTALL_CLASS_BINOP_TI (ti, op_gt, gt);
-  INSTALL_CLASS_BINOP_TI (ti, op_ne, ne);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_mul, times);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_div, rdivide);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_pow, power);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_ldiv, ldivide);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_and, and);
-  INSTALL_CLASS_BINOP_TI (ti, op_el_or, or);
+  ti.install_binary_class_op (octave_value::op_add,     oct_binop_plus);
+  ti.install_binary_class_op (octave_value::op_sub,     oct_binop_minus);
+  ti.install_binary_class_op (octave_value::op_mul,     oct_binop_mtimes);
+  ti.install_binary_class_op (octave_value::op_div,     oct_binop_mrdivide);
+  ti.install_binary_class_op (octave_value::op_pow,     oct_binop_mpower);
+  ti.install_binary_class_op (octave_value::op_ldiv,    oct_binop_mldivide);
+  ti.install_binary_class_op (octave_value::op_lt,      oct_binop_lt);
+  ti.install_binary_class_op (octave_value::op_le,      oct_binop_le);
+  ti.install_binary_class_op (octave_value::op_eq,      oct_binop_eq);
+  ti.install_binary_class_op (octave_value::op_ge,      oct_binop_ge);
+  ti.install_binary_class_op (octave_value::op_gt,      oct_binop_gt);
+  ti.install_binary_class_op (octave_value::op_ne,      oct_binop_ne);
+  ti.install_binary_class_op (octave_value::op_el_mul,  oct_binop_times);
+  ti.install_binary_class_op (octave_value::op_el_div,  oct_binop_rdivide);
+  ti.install_binary_class_op (octave_value::op_el_pow,  oct_binop_power);
+  ti.install_binary_class_op (octave_value::op_el_ldiv, oct_binop_ldivide);
+  ti.install_binary_class_op (octave_value::op_el_and,  oct_binop_and);
+  ti.install_binary_class_op (octave_value::op_el_or,   oct_binop_or);
 }

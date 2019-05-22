@@ -1044,7 +1044,7 @@ namespace octave
                     std::string ndir = new_name.toStdString ();
                     std::string ofile = old.fileName ().toStdString ();
                     f_data.new_file_name = QString::fromStdString (
-                      octave::sys::env::make_absolute (ofile, ndir));
+                      sys::env::make_absolute (ofile, ndir));
                   }
                 else
                   f_data.new_file_name = new_name;

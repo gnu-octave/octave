@@ -878,7 +878,7 @@ namespace octave
 
     m_strlist = std::list<text_renderer::string> ();
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
     frame.protect_var (m_do_strlist);
     frame.protect_var (m_strlist);
     m_do_strlist = true;

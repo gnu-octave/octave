@@ -139,11 +139,11 @@ namespace octave
           {
             do
               {
-                std::string mod_name (octave::sys::u8_from_wstring (mod_info.szModule));
+                std::string mod_name (sys::u8_from_wstring (mod_info.szModule));
 
                 if (mod_name.find ("octinterp") != std::string::npos)
                   {
-                    bin_dir = octave::sys::u8_from_wstring (mod_info.szExePath);
+                    bin_dir = sys::u8_from_wstring (mod_info.szExePath);
                     if (! bin_dir.empty () && bin_dir.back () != '\\')
                       bin_dir.push_back ('\\');
                     break;
@@ -160,7 +160,7 @@ namespace octave
         size_t pos = bin_dir.rfind (R"(\bin\)");
 
         if (pos != std::string::npos)
-          octave::sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+          sys::env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
       }
   }
 
@@ -169,7 +169,7 @@ namespace octave
   {
     w32_set_octave_home ();
 
-    octave::command_editor::prefer_env_winsize (true);
+    command_editor::prefer_env_winsize (true);
   }
 
 #endif
@@ -272,8 +272,8 @@ namespace octave
 
     bool retval = false;
 
-    std::wstring file1w = octave::sys::u8_to_wstring (file1);
-    std::wstring file2w = octave::sys::u8_to_wstring (file2);
+    std::wstring file1w = sys::u8_to_wstring (file1);
+    std::wstring file2w = sys::u8_to_wstring (file2);
     const wchar_t *f1 = file1w.c_str ();
     const wchar_t *f2 = file2w.c_str ();
 
@@ -320,8 +320,8 @@ namespace octave
 
     // POSIX Code
 
-    octave::sys::file_stat fs_file1 (file1);
-    octave::sys::file_stat fs_file2 (file2);
+    sys::file_stat fs_file1 (file1);
+    sys::file_stat fs_file2 (file2);
 
     return (fs_file1 && fs_file2
             && fs_file1.ino () == fs_file2.ino ()
@@ -357,7 +357,7 @@ namespace octave
     if (candidate)
       {
         // Open a handle to the file.
-        std::wstring wname = octave::sys::u8_to_wstring (name);
+        std::wstring wname = sys::u8_to_wstring (name);
         HANDLE h =
           CreateFileW (wname.c_str (), FILE_READ_ATTRIBUTES,
                        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -426,8 +426,8 @@ namespace octave
     int tty_fd = STDIN_FILENO;
     if (! octave_isatty_wrapper (tty_fd))
       {
-        if (octave::application::interactive ()
-            && ! octave::application::forced_interactive ())
+        if (application::interactive ()
+            && ! application::forced_interactive ())
           error ("stdin is not a tty!");
       }
 
@@ -572,7 +572,7 @@ namespace octave
     wchar_t *wcommand = u8_to_wchar (command);
     wchar_t *wmode = u8_to_wchar (mode);
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
     frame.add_fcn (::free, static_cast<void *> (wcommand));
     frame.add_fcn (::free, static_cast<void *> (wmode));
 
@@ -620,13 +620,13 @@ namespace octave
     raw_mode (true, wait);
 
     // Get current handler.
-    octave::interrupt_handler saved_interrupt_handler
-      = octave::ignore_interrupts ();
+    interrupt_handler saved_interrupt_handler
+      = ignore_interrupts ();
 
     // Restore it, disabling system call restarts (if possible) so the
     // read can be interrupted.
 
-    octave::set_interrupt_handler (saved_interrupt_handler, false);
+    set_interrupt_handler (saved_interrupt_handler, false);
 
     int c = std::cin.get ();
 
@@ -637,7 +637,7 @@ namespace octave
       }
 
     // Restore it, enabling system call restarts (if possible).
-    octave::set_interrupt_handler (saved_interrupt_handler, true);
+    set_interrupt_handler (saved_interrupt_handler, true);
 
     raw_mode (false, true);
 #endif
@@ -661,10 +661,10 @@ namespace octave
 
     if (retval.empty () || retval == R"(\)")
       {
-        retval = octave::sys::env::getenv ("TEMP");
+        retval = sys::env::getenv ("TEMP");
 
         if (retval.empty ())
-          retval = octave::sys::env::getenv ("TMP");
+          retval = sys::env::getenv ("TMP");
 
         if (retval.empty ())
           retval = R"(c:\temp)";
@@ -806,18 +806,18 @@ namespace octave
     HKEY h_subkey;
 
     result = RegOpenKeyExW (h_rootkey,
-                            octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                            sys::u8_to_wstring (subkey).c_str (), 0,
                             KEY_READ, &h_subkey);
     if (result != ERROR_SUCCESS)
       return result;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.add_fcn (reg_close_key_wrapper, h_subkey);
 
     DWORD length = 0;
     result = RegQueryValueExW (h_subkey,
-                               octave::sys::u8_to_wstring (name).c_str (),
+                               sys::u8_to_wstring (name).c_str (),
                                nullptr, nullptr, nullptr, &length);
     if (result != ERROR_SUCCESS)
       return result;
@@ -825,7 +825,7 @@ namespace octave
     DWORD type = 0;
     OCTAVE_LOCAL_BUFFER (BYTE, data, length);
     result = RegQueryValueExW (h_subkey,
-                               octave::sys::u8_to_wstring (name).c_str (),
+                               sys::u8_to_wstring (name).c_str (),
                                nullptr, &type, data, &length);
     if (result != ERROR_SUCCESS)
       return result;
@@ -833,7 +833,7 @@ namespace octave
     if (type == REG_DWORD)
       value = octave_int32 (*data);
     else if (type == REG_SZ || type == REG_EXPAND_SZ)
-      value = string_vector (octave::sys::u8_from_wstring (
+      value = string_vector (sys::u8_from_wstring (
                                                            reinterpret_cast<wchar_t *> (data)));
 
     return result;
@@ -849,7 +849,7 @@ namespace octave
     fields.clear ();
 
     retval = RegOpenKeyExW (h_rootkey,
-                            octave::sys::u8_to_wstring (subkey).c_str (), 0,
+                            sys::u8_to_wstring (subkey).c_str (), 0,
                             KEY_READ, &h_subkey);
     if (retval != ERROR_SUCCESS)
       return retval;
@@ -865,7 +865,7 @@ namespace octave
                                 nullptr, nullptr, nullptr, nullptr);
         if (retval != ERROR_SUCCESS)
           break;
-        fields.push_back (octave::sys::u8_from_wstring (value_name));
+        fields.push_back (sys::u8_from_wstring (value_name));
         value_name_size = MAX_VALUE_NAME_SIZE;
         idx++;
       }

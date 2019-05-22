@@ -1707,13 +1707,13 @@ namespace octave
       {
         m_load_path.execute_pkg_add (dir);
       }
-    catch (const octave::interrupt_exception&)
+    catch (const interrupt_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
       }
   }
 }

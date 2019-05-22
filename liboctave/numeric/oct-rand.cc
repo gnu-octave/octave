@@ -295,7 +295,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, retval);
     else
-      retval = octave::rand_uniform<double> ();
+      retval = rand_uniform<double> ();
 
     return retval;
   }
@@ -308,7 +308,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, retval);
     else
-      retval = octave::rand_normal<double> ();
+      retval = rand_normal<double> ();
 
     return retval;
   }
@@ -321,7 +321,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (dgenexp, DGENEXP) (1.0, retval);
     else
-      retval = octave::rand_exponential<double> ();
+      retval = rand_exponential<double> ();
 
     return retval;
   }
@@ -343,7 +343,7 @@ namespace octave
           }
       }
     else
-      retval = octave::rand_poisson<double> (a);
+      retval = rand_poisson<double> (a);
 
     return retval;
   }
@@ -361,7 +361,7 @@ namespace octave
           F77_FUNC (dgengam, DGENGAM) (1.0, a, retval);
       }
     else
-      retval = octave::rand_gamma<double> (a);
+      retval = rand_gamma<double> (a);
 
     return retval;
   }
@@ -374,7 +374,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, retval);
     else
-      retval = octave::rand_uniform<float> ();
+      retval = rand_uniform<float> ();
 
     return retval;
   }
@@ -387,7 +387,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, retval);
     else
-      retval = octave::rand_normal<float> ();
+      retval = rand_normal<float> ();
 
     return retval;
   }
@@ -400,7 +400,7 @@ namespace octave
     if (use_old_generators)
       F77_FUNC (fgenexp, FGENEXP) (1.0f, retval);
     else
-      retval = octave::rand_exponential<float> ();
+      retval = rand_exponential<float> ();
 
     return retval;
   }
@@ -424,7 +424,7 @@ namespace octave
     else
       {
         // Keep poisson distribution in double precision for accuracy
-        retval = octave::rand_poisson<double> (a);
+        retval = rand_poisson<double> (a);
       }
 
     return retval;
@@ -443,7 +443,7 @@ namespace octave
           F77_FUNC (fgengam, FGENGAM) (1.0f, a, retval);
       }
     else
-      retval = octave::rand_gamma<float> (a);
+      retval = rand_gamma<float> (a);
 
     return retval;
   }
@@ -729,21 +729,21 @@ namespace octave
         if (use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
         else
-          octave::rand_uniform<float> (len, v);
+          rand_uniform<float> (len, v);
         break;
 
       case normal_dist:
         if (use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
         else
-          octave::rand_normal<float> (len, v);
+          rand_normal<float> (len, v);
         break;
 
       case expon_dist:
         if (use_old_generators)
           std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
         else
-          octave::rand_exponential<float> (len, v);
+          rand_exponential<float> (len, v);
         break;
 
       case poisson_dist:
@@ -760,7 +760,7 @@ namespace octave
               }
           }
         else
-          octave::rand_poisson<float> (a, len, v);
+          rand_poisson<float> (a, len, v);
         break;
 
       case gamma_dist:
@@ -772,7 +772,7 @@ namespace octave
               std::generate_n (v, len, [a](void) { float x; F77_FUNC (fgengam, FGENGAM) (1.0f, a, x); return x; });
           }
         else
-          octave::rand_gamma<float> (a, len, v);
+          rand_gamma<float> (a, len, v);
         break;
 
       default:

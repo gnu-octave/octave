@@ -44,7 +44,7 @@ namespace octave
   static bool
   single_match_exists (const std::string& file)
   {
-    octave::sys::file_stat s (file);
+    sys::file_stat s (file);
 
     return s.exists ();
   }

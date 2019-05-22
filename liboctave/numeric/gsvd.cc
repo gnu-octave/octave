@@ -55,7 +55,7 @@ namespace octave
     if (gsvd_initialized)
       return;
 
-    octave::dynamic_library libs ("");
+    dynamic_library libs ("");
     if (! libs)
       {
         // FIXME: Should we throw an error if we cannot check the libraries?

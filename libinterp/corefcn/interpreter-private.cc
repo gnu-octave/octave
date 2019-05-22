@@ -183,7 +183,7 @@ namespace octave
   }
 
   octave_value
-  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+  get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::string& parameter_name)
   {
     std::list<std::string> parameter_names;
@@ -192,7 +192,7 @@ namespace octave
   }
 
   octave_value
-  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+  get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::list<std::string>& parameter_names)
   {
     if (arg.is_function_handle () || arg.is_inline_function ())
@@ -204,7 +204,7 @@ namespace octave
         if (fstr.empty ())
           return octave_value ();
 
-        octave::symbol_table& symtab = interp.get_symbol_table ();
+        symbol_table& symtab = interp.get_symbol_table ();
 
         octave_value fcn = symtab.find_function (fstr);
 

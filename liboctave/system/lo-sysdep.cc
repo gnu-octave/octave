@@ -179,7 +179,7 @@ namespace octave
 
 #if defined (OCTAVE_USE_WINDOWS_API)
       wchar_t *wnew_item = u8_to_wchar (new_item);
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (std::free, static_cast<void *> (new_item));
       if (_wputenv (wnew_item) < 0)
         (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
@@ -374,7 +374,7 @@ namespace octave
       if (test_dir.empty ())
       {
         std::string msg;
-        int status = octave::sys::mkdir (oct_ascii_dir, 0777, msg);
+        int status = sys::mkdir (oct_ascii_dir, 0777, msg);
 
         if (status < 0)
           return orig_file_name;
@@ -386,12 +386,12 @@ namespace octave
       // Create file from hash of full filename.
       std::string filename_hash
         = (oct_ascii_dir + file_ops::dir_sep_str ()
-           + octave::crypto::hash ("SHA1", orig_file_name));
+           + crypto::hash ("SHA1", orig_file_name));
 
       std::string abs_filename_hash = canonicalize_file_name (filename_hash);
 
       if (! abs_filename_hash.empty ())
-        octave::sys::unlink (filename_hash);
+        sys::unlink (filename_hash);
 
       wchar_t w_filename_hash[filename_hash.length ()+1] = {0};
 

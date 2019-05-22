@@ -178,7 +178,7 @@ namespace octave
       {
         /* generate uniform number U -- U(0, p6)                           */
         /* case distinction corresponding to U                             */
-        if ((U = octave::rand_uniform<double> () * p6) < p2)
+        if ((U = rand_uniform<double> () * p6) < p2)
           {                                            /* centre left      */
 
             /* immediate acceptance region
@@ -190,7 +190,7 @@ namespace octave
 
             /* computation of candidate X < k2, and its counterpart Y > k2 */
             /* either squeeze-acceptance of X or acceptance-rejection of Y */
-            Dk = std::floor (dl * octave::rand_uniform<double> ()) + 1.0;
+            Dk = std::floor (dl * rand_uniform<double> ()) + 1.0;
             if (W <= f2 - Dk * (f2 - f2/r2))
               {                                        /* quick accept of  */
                 return (k2 - Dk);                      /* X = k2 - Dk      */
@@ -217,7 +217,7 @@ namespace octave
 
             /* computation of candidate X > k4, and its counterpart Y < k4 */
             /* either squeeze-acceptance of X or acceptance-rejection of Y */
-            Dk = std::floor (dr * octave::rand_uniform<double> ()) + 1.0;
+            Dk = std::floor (dr * rand_uniform<double> ()) + 1.0;
             if (W <= f4 - Dk * (f4 - f4*r4))
               {                                        /* quick accept of  */
                 return (k4 + Dk);                      /* X = k4 + Dk      */
@@ -235,7 +235,7 @@ namespace octave
           }
         else
           {
-            W = octave::rand_uniform<double> ();
+            W = rand_uniform<double> ();
             if (U < p5)
               {                                        /* expon. tail left */
                 Dk = std::floor (1.0 - std::log (W)/ll);
@@ -299,7 +299,7 @@ namespace octave
 
     while (i-- > 0)
       {
-        double u = octave::rand_uniform<double> ();
+        double u = rand_uniform<double> ();
 
         /* If u > 0.458 we know we can jump to floor(lambda) before
          * comparing (this observation is based on Stadlober's winrand
@@ -358,12 +358,12 @@ namespace octave
           {
             do
               {
-                y = tan (M_PI*octave::rand_uniform<double> ());
+                y = tan (M_PI*rand_uniform<double> ());
                 em = sq * y + lambda;
               } while (em < 0.0);
             em = std::floor (em);
             t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
-          } while (octave::rand_uniform<double> () > t);
+          } while (rand_uniform<double> () > t);
         p[i] = em;
       }
   }

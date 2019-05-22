@@ -463,8 +463,7 @@ namespace octave
     //
     // We might also start with a empty octave_value using
     //
-    //    ctmp = octave::type_info::lookup_type
-    //          (tmp.begin() -> begin() -> type_name());
+    //   ctmp = type_info::lookup_type (tmp.begin() -> begin() -> type_name());
     //
     // and then directly resize.  However, for some types there might be
     // some additional setup needed, and so this should be avoided.

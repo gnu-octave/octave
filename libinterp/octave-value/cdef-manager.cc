@@ -753,7 +753,7 @@ namespace octave
 
   cdef_class
   cdef_manager::make_class (const std::string& name,
-                            const std::list<octave::cdef_class>& super_list)
+                            const std::list<cdef_class>& super_list)
   {
     cdef_class cls (name, super_list);
 

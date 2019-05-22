@@ -32,13 +32,13 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  static octave::base_text_renderer *
+  static base_text_renderer *
   make_text_renderer (void)
   {
     // Allow the possibility of choosing different text rendering
     // implementations.
 
-    return octave::make_ft_text_renderer ();
+    return make_ft_text_renderer ();
   }
 
   text_renderer::text_renderer (void)

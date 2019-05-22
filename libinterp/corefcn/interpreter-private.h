@@ -94,11 +94,11 @@ namespace octave
   // PARAMETER_NAMES.  Use of the latter form is discouraged.
 
   octave_value
-  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+  get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::string& parameter_name);
 
   octave_value
-  get_function_handle (octave::interpreter& interp, const octave_value& arg,
+  get_function_handle (interpreter& interp, const octave_value& arg,
                        const std::list<std::string>& parameter_names
                          = std::list<std::string> ());
 }

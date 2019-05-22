@@ -134,7 +134,7 @@ namespace octave
           tmp.resize (len - 1);
 
         if (! tmp.empty ())
-          if (octave::command_history::add (tmp))
+          if (command_history::add (tmp))
             octave_link::append_history (tmp);
       }
   }
@@ -162,7 +162,7 @@ namespace octave
   mk_tmp_hist_file (const octave_value_list& args,
                     bool insert_curr, const char *warn_for)
   {
-    string_vector hlist = octave::command_history::list ();
+    string_vector hlist = command_history::list ();
 
     int hist_count = hlist.numel () - 1;  // switch to zero-based indexing
 
@@ -172,7 +172,7 @@ namespace octave
     // but the actual commands performed will.
 
     if (! insert_curr)
-      octave::command_history::remove (hist_count);
+      command_history::remove (hist_count);
 
     hist_count--;  // skip last entry in history list
 
@@ -225,7 +225,7 @@ namespace octave
         reverse = true;
       }
 
-    std::string name = octave::sys::tempnam ("", "oct-");
+    std::string name = sys::tempnam ("", "oct-");
 
     std::fstream file (name.c_str (), std::ios::out);
 

@@ -50,6 +50,7 @@ namespace octave
   {
   public:
 
+    // Make symbol_table::scope and symbol_table::fcn_info valid type names.
     typedef octave::symbol_scope scope;
     typedef octave::fcn_info fcn_info;
 

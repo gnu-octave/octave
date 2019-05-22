@@ -65,7 +65,7 @@ namespace octave
 {
   // Programming Note: There are two very different error functions used
   // in the stream code.  When invoked with "error (...)" the member
-  // function from octave::stream or octave::base_stream is called.  This
+  // function from stream or base_stream is called.  This
   // function sets the error state on the stream AND returns control to
   // the caller.  The caller must then return a value at the end of the
   // function.  When invoked with "::error (...)" the exception-based
@@ -4546,7 +4546,7 @@ namespace octave
   do                                                                    \
     {                                                                   \
       if (encoding ().compare ("utf-8"))                                \
-        tmp = octave::string::u8_from_encoding (who, tmp, encoding ()); \
+        tmp = string::u8_from_encoding (who, tmp, encoding ());         \
       width = tmp.length ();                                            \
                                                                         \
       if (is)                                                           \
@@ -5553,15 +5553,15 @@ namespace octave
     switch (nsa)
       {
       case 2:
-        retval = octave::format (os, fmt, sa_1, sa_2, arg);
+        retval = format (os, fmt, sa_1, sa_2, arg);
         break;
 
       case 1:
-        retval = octave::format (os, fmt, sa_1, arg);
+        retval = format (os, fmt, sa_1, arg);
         break;
 
       case 0:
-        retval = octave::format (os, fmt, arg);
+        retval = format (os, fmt, arg);
         break;
 
       default:

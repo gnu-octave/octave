@@ -46,7 +46,7 @@ namespace octave
 
     auto i = params.begin ();
 
-    octave::preserve_stream_state stream_state (os);
+    preserve_stream_state stream_state (os);
 
     while (i != params.end ())
       {
@@ -244,7 +244,7 @@ namespace octave
   {
     std::ostringstream param_buf;
 
-    octave::preserve_stream_state stream_state (os);
+    preserve_stream_state stream_state (os);
 
     for (const auto& param : params)
       {

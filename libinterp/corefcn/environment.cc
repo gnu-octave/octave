@@ -50,20 +50,20 @@ namespace octave
 
     // FIXME: should we really be modifying PATH in the environment?
 
-    std::string shell_path = octave::sys::env::getenv ("PATH");
+    std::string shell_path = sys::env::getenv ("PATH");
 
     if (shell_path.empty ())
-      octave::sys::env::putenv ("PATH", exec_path);
+      sys::env::putenv ("PATH", exec_path);
     else
       {
         // If PATH doesn't already have exec_path, append it.
         // FIXME: should we search for the elements individually, and
         // only append those that are missing?
 
-        std::string path_sep = octave::directory_path::path_sep_str ();
+        std::string path_sep = directory_path::path_sep_str ();
 
         if (shell_path.find (exec_path) == std::string::npos)
-          octave::sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
+          sys::env::putenv ("PATH", shell_path + path_sep + exec_path);
       }
   }
 

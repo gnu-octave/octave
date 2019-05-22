@@ -273,7 +273,7 @@ namespace octave
 
     /* If there isn't enough entropy, gather some from various sources */
 
-    octave::sys::time now;
+    sys::time now;
 
     if (n < MT_N)
       entropy[n++] = now.unix_time (); /* Current time in seconds */

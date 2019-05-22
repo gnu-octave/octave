@@ -4317,7 +4317,7 @@ namespace octave
   {
     // NAME should be an absolute file name and the file should exist.
 
-    std::string ascii_fname = octave::sys::get_ASCII_filename (name);
+    std::string ascii_fname = sys::get_ASCII_filename (name);
 
     std::ifstream fs (ascii_fname.c_str (), std::ios::in);
 

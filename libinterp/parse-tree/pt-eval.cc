@@ -577,7 +577,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.protect_var (buffer_error_messages);
     buffer_error_messages++;
@@ -592,9 +592,9 @@ namespace octave
       {
         tmp = eval_string (try_code, nargout > 0, parse_status, nargout);
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
 
         execution_error = true;
       }
@@ -629,7 +629,7 @@ namespace octave
                                             const std::string& try_code,
                                             int nargout)
   {
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.add_method (m_call_stack, &call_stack::restore_frame,
                       m_call_stack.current_frame ());
@@ -653,7 +653,7 @@ namespace octave
   {
     octave_value_list retval;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.add_method (m_call_stack, &call_stack::restore_frame,
                       m_call_stack.current_frame ());
@@ -678,9 +678,9 @@ namespace octave
       {
         tmp = eval_string (try_code, nargout > 0, parse_status, nargout);
       }
-    catch (const octave::execution_exception&)
+    catch (const execution_exception&)
       {
-        octave::interpreter::recover_from_exception ();
+        interpreter::recover_from_exception ();
 
         execution_error = true;
       }
@@ -1090,14 +1090,14 @@ namespace octave
   void
   tree_evaluator::enter_debugger (const std::string& prompt)
   {
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
-    frame.add_fcn (octave::command_history::ignore_entries,
-                   octave::command_history::ignoring_entries ());
+    frame.add_fcn (command_history::ignore_entries,
+                   command_history::ignoring_entries ());
 
-    octave::command_history::ignore_entries (false);
+    command_history::ignore_entries (false);
 
-    frame.add_method (m_call_stack, &octave::call_stack::restore_frame,
+    frame.add_method (m_call_stack, &call_stack::restore_frame,
                       m_call_stack.current_frame ());
 
     // Go up to the nearest user code frame.
@@ -1367,7 +1367,7 @@ namespace octave
     // by geting a reference to the caller or base stack frame and
     // calling assign on that?
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
     frame.add_method (m_call_stack, &call_stack::restore_frame,
                       m_call_stack.current_frame ());

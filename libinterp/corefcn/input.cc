@@ -109,7 +109,7 @@ namespace octave
   static std::string
   find_indexed_expression (const std::string& text)
   {
-    std::string line = octave::command_editor::get_line_buffer ();
+    std::string line = command_editor::get_line_buffer ();
 
     int pos = line.length () - text.length ();
     int curly_count = 0;
@@ -180,14 +180,14 @@ namespace octave
         if (pos != std::string::npos)
           base_name = base_name.substr (0, pos);
 
-        octave::interpreter& interp
-          = octave::__get_interpreter__ ("generate_struct_completions");
+        interpreter& interp
+          = __get_interpreter__ ("generate_struct_completions");
 
         if (interp.is_variable (base_name))
           {
             int parse_status;
 
-            octave::unwind_protect frame;
+            unwind_protect frame;
 
             frame.protect_var (discard_error_messages);
             frame.protect_var (discard_warning_messages);
@@ -206,9 +206,9 @@ namespace octave
                     && (tmp.isstruct () || tmp.isjava () || tmp.is_classdef_object ()))
                   names = tmp.map_keys ();
               }
-            catch (const octave::execution_exception&)
+            catch (const execution_exception&)
               {
-                octave::interpreter::recover_from_exception ();
+                interpreter::recover_from_exception ();
               }
           }
       }
@@ -227,7 +227,7 @@ namespace octave
   {
     bool retval = (! text.empty ()
                    && (text != "." || prev_char == ')' || prev_char == '}')
-                   && text.find_first_of (octave::sys::file_ops::dir_sep_chars ()) == std::string::npos
+                   && text.find_first_of (sys::file_ops::dir_sep_chars ()) == std::string::npos
                    && text.find ("..") == std::string::npos
                    && text.rfind ('.') != std::string::npos);
 
@@ -244,13 +244,13 @@ namespace octave
 
     prefix = "";
 
-    char prev_char = octave::command_editor::get_prev_char (text.length ());
+    char prev_char = command_editor::get_prev_char (text.length ());
     deemed_struct = looks_like_struct (text, prev_char);
 
     if (deemed_struct)
       names = generate_struct_completions (text, prefix, hint);
     else
-      names = octave::make_name_list ();
+      names = make_name_list ();
 
     // Sort and remove duplicates.
 
@@ -267,7 +267,7 @@ namespace octave
 
     bool retval = false;
 
-    std::string line = octave::command_editor::get_line_buffer ();
+    std::string line = command_editor::get_line_buffer ();
 
     for (size_t i = 0; i < dirfns_commands_length; i++)
       {
@@ -327,7 +327,7 @@ namespace octave
         if (! deemed_struct)
           {
 
-            file_name_list = octave::command_editor::generate_filename_completions (text);
+            file_name_list = command_editor::generate_filename_completions (text);
 
             name_list.append (file_name_list);
 
@@ -361,21 +361,21 @@ namespace octave
                 else
                   retval = name;
 
-                char prev_char = octave::command_editor::get_prev_char
+                char prev_char = command_editor::get_prev_char
                   (text.length ());
                 if (matches == 1 && looks_like_struct (retval, prev_char))
                   {
                     // Don't append anything, since we don't know
                     // whether it should be '(' or '.'.
 
-                    octave::command_editor::set_completion_append_character ('\0');
+                    command_editor::set_completion_append_character ('\0');
                   }
                 else
                   {
-                    octave::input_system& input_sys
-                      = octave::__get_input_system__ ("generate_completion");
+                    input_system& input_sys
+                      = __get_input_system__ ("generate_completion");
 
-                    octave::command_editor::set_completion_append_character
+                    command_editor::set_completion_append_character
                       (input_sys.completion_append_char ());
                   }
 
@@ -414,26 +414,26 @@ namespace octave
       // If we are using readline, this allows conditional parsing of the
       // .inputrc file.
 
-      octave::command_editor::set_name ("Octave");
+      command_editor::set_name ("Octave");
 
       // FIXME: this needs to include a comma too, but that
       // causes trouble for the new struct element completion code.
 
       static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
 
-      octave::command_editor::set_basic_word_break_characters (s);
+      command_editor::set_basic_word_break_characters (s);
 
-      octave::command_editor::set_completer_word_break_characters (s);
+      command_editor::set_completer_word_break_characters (s);
 
-      octave::command_editor::set_basic_quote_characters (R"(")");
+      command_editor::set_basic_quote_characters (R"(")");
 
-      octave::command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
+      command_editor::set_filename_quote_characters (" \t\n\\\"'@<>=;|&()#$`?*[!:{");
 
-      octave::command_editor::set_completer_quote_characters (R"('")");
+      command_editor::set_completer_quote_characters (R"('")");
 
-      octave::command_editor::set_completion_function (generate_completion);
+      command_editor::set_completion_function (generate_completion);
 
-      octave::command_editor::set_quoting_function (quoting_filename);
+      command_editor::set_quoting_function (quoting_filename);
   }
 
   octave_value
@@ -519,8 +519,8 @@ namespace octave
       }
 
     // Synchronize the related gui preference for editor encoding
-    octave::feval ("__octave_link_gui_preference__",
-                   ovl ("editor/default_encoding", m_mfile_encoding));
+    feval ("__octave_link_gui_preference__",
+           ovl ("editor/default_encoding", m_mfile_encoding));
 
     return retval;
   }
@@ -548,7 +548,7 @@ namespace octave
   {
     Vlast_prompt_time.stamp ();
 
-    if (Vdrawnow_requested && octave::application::interactive ())
+    if (Vdrawnow_requested && application::interactive ())
       {
         bool eval_error = false;
 
@@ -556,7 +556,7 @@ namespace octave
           {
             Fdrawnow ();
           }
-        catch (const octave::execution_exception& e)
+        catch (const execution_exception& e)
           {
             eval_error = true;
 
@@ -565,11 +565,11 @@ namespace octave
             if (! stack_trace.empty ())
               std::cerr << stack_trace;
 
-            if (octave::application::interactive ())
-              octave::interpreter::recover_from_exception ();
+            if (application::interactive ())
+              interpreter::recover_from_exception ();
           }
 
-        octave::flush_stdout ();
+        flush_stdout ();
 
         // We set Vdrawnow_requested to false even if there is an error in
         // drawnow so that the error doesn't reappear at every prompt.
@@ -680,7 +680,7 @@ namespace octave
 
     eof = false;
 
-    std::string retval = octave::command_editor::readline (s, eof);
+    std::string retval = command_editor::readline (s, eof);
 
     if (! eof && retval.empty ())
       retval = "\n";
@@ -891,8 +891,8 @@ namespace octave
 
     std::string src_str = octave_fgets (m_file, eof);
 
-    octave::input_system& input_sys
-      = octave::__get_input_system__ ("get_input");
+    input_system& input_sys
+      = __get_input_system__ ("get_input");
 
     std::string mfile_encoding = input_sys.mfile_encoding ();
 
@@ -922,7 +922,7 @@ namespace octave
         error ("file_reader::get_input: converting from codepage '%s' to UTF-8: %s",
                encoding.c_str (), std::strerror (errno));
 
-      octave::unwind_protect frame;
+      unwind_protect frame;
       frame.add_fcn (::free, static_cast<void *> (utf8_str));
 
       src_str = std::string (reinterpret_cast<char *> (utf8_str), length);

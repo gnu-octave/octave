@@ -39,7 +39,7 @@ namespace octave
     // FIXME: maybe it would be better to make this a configure check and
     // disable suitesparse if it fails?
 
-    if (sizeof (octave::suitesparse_integer) != sizeof (octave_idx_type))
+    if (sizeof (suitesparse_integer) != sizeof (octave_idx_type))
       (*current_liboctave_error_handler)
         ("size of suitesparse integer does not match octave_idx_type!");
   }

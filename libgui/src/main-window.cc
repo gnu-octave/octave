@@ -86,7 +86,7 @@ namespace octave
   create_default_editor (QWidget *p)
   {
 #if defined (HAVE_QSCINTILLA)
-    return new octave::file_editor (p);
+    return new file_editor (p);
 #else
     octave_unused_parameter (p);
 
@@ -2559,7 +2559,7 @@ namespace octave
   {
     // INTERPRETER THREAD
 
-    octave::feval ("open", ovl (file));
+    feval ("open", ovl (file));
 
     // Update the workspace since open.m may have loaded new variables.
     call_stack& cs
@@ -2819,7 +2819,7 @@ namespace octave
       {
         return QApplication::notify (receiver, ev);
       }
-    catch (octave::execution_exception&)
+    catch (execution_exception&)
       {
         octave_link::post_exception (std::current_exception ());
       }

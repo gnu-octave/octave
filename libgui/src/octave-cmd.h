@@ -98,7 +98,7 @@ namespace octave
      *               the executing Ff
      */
     octave_cmd_builtin (
-          octave_value_list (*Ff) (octave::interpreter&, const octave_value_list&, int),
+          octave_value_list (*Ff) (interpreter&, const octave_value_list&, int),
           octave_value_list argin = ovl (), cmd_upd update = CMD_UPD_NO)
       : octave_cmd (), m_callback_fi (Ff), m_callback_f (nullptr),
         m_argin (argin), m_nargout (0), m_argout_receiver (nullptr),
@@ -129,7 +129,7 @@ namespace octave
      * worker thread is busy and can not execute the desired command immediately.
      */
     octave_cmd_builtin (
-          octave_value_list (*Ff) (octave::interpreter&, const octave_value_list&, int),
+          octave_value_list (*Ff) (interpreter&, const octave_value_list&, int),
           octave_value_list argin, int nargout, QObject *argout_receiver,
           const char *argout_handler = nullptr, cmd_upd update = CMD_UPD_NO)
       : octave_cmd (), m_callback_fi (Ff), m_callback_f (nullptr),
@@ -160,7 +160,7 @@ namespace octave
 
   protected:
 
-    octave_value_list (*m_callback_fi) (octave::interpreter&,
+    octave_value_list (*m_callback_fi) (interpreter&,
                                         const octave_value_list&, int);
     octave_value_list (*m_callback_f) (const octave_value_list&, int);
 

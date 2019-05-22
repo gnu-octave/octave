@@ -58,7 +58,7 @@ namespace octave
 
     if (pid > 0)
       {
-        if (octave::sys::wifexited (status) || octave::sys::wifsignaled (status))
+        if (sys::wifexited (status) || sys::wifsignaled (status))
           {
             // Avoid warning() since that will put us back in the pager,
             // which would be bad news.
@@ -85,9 +85,9 @@ namespace octave
   {
     if (s)
       {
-        int available_rows = octave::command_editor::terminal_rows () - 2;
+        int available_rows = command_editor::terminal_rows () - 2;
 
-        int cols = octave::command_editor::terminal_cols ();
+        int cols = command_editor::terminal_cols ();
 
         int count = 0;
 
@@ -124,8 +124,7 @@ namespace octave
   int
   pager_buf::sync (void)
   {
-    octave::output_system& output_sys
-      = octave::__get_output_system__ ("pager_buf::sync");
+    output_system& output_sys = __get_output_system__ ("pager_buf::sync");
 
     char *buf = eback ();
 
@@ -426,7 +425,7 @@ namespace octave
       {
         m_external_pager = new oprocstream (pgr.c_str ());
 
-        octave::child_list& kids = m_interpreter.get_child_list ();
+        child_list& kids = m_interpreter.get_child_list ();
 
         kids.insert (m_external_pager->pid (),
                      pager_event_handler);

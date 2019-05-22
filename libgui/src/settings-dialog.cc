@@ -496,7 +496,7 @@ namespace octave
     read_lexer_settings (lexer, settings);
     delete lexer;
 
-    lexer = new octave::octave_txt_lexer ();
+    lexer = new octave_txt_lexer ();
     read_lexer_settings (lexer, settings);
     delete lexer;
 
@@ -996,7 +996,7 @@ namespace octave
     write_lexer_settings (lexer, settings);
     delete lexer;
 
-    lexer = new octave::octave_txt_lexer ();
+    lexer = new octave_txt_lexer ();
     write_lexer_settings (lexer, settings);
     delete lexer;
 
@@ -1163,8 +1163,8 @@ namespace octave
 
   void settings_dialog::read_varedit_colors (QSettings *settings)
   {
-    QList<QColor> default_colors = octave::variable_editor::default_colors ();
-    QStringList class_names = octave::variable_editor::color_names ();
+    QList<QColor> default_colors = variable_editor::default_colors ();
+    QStringList class_names = variable_editor::color_names ();
     QString class_chars = resource_manager::varedit_color_chars ();
     int nr_of_classes = class_chars.length ();
 

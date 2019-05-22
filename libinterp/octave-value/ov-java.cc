@@ -251,7 +251,7 @@ namespace octave
 
     void read_java_opts (const std::string& filename)
     {
-      std::string ascii_fname = octave::sys::get_ASCII_filename (filename);
+      std::string ascii_fname = sys::get_ASCII_filename (filename);
 
       std::ifstream js (ascii_fname.c_str ());
 

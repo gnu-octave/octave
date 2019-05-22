@@ -965,7 +965,7 @@ namespace octave
                                               bool return_list, bool verbose,
                                               const std::string& msg)
   {
-    octave::symbol_info_list symbol_stats;
+    symbol_info_list symbol_stats;
     std::list<std::string> symbol_names;
 
     octave_idx_type npatterns = patterns.numel ();
@@ -1009,7 +1009,7 @@ namespace octave
                     bool is_global = true;
                     bool is_persistent = false;
 
-                    octave::symbol_info
+                    symbol_info
                       syminf (nm, value, is_formal,
                               is_global, is_persistent);
 

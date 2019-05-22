@@ -100,7 +100,7 @@ namespace octave
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
 
-    std::string abs_fname = octave::sys::env::make_absolute (file);
+    std::string abs_fname = sys::env::make_absolute (file);
 
     QStringList btn;
     QStringList role;

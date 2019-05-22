@@ -586,7 +586,7 @@ namespace octave
     if (! initialized)
       {
         std::string ascii_fname
-          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+          = sys::get_ASCII_filename (m_built_in_docstrings_file);
 
         std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);
@@ -672,7 +672,7 @@ namespace octave
         std::streamoff len = txt_limits.second;
 
         std::string ascii_fname
-          = octave::sys::get_ASCII_filename (m_built_in_docstrings_file);
+          = sys::get_ASCII_filename (m_built_in_docstrings_file);
 
         std::ifstream file (ascii_fname.c_str (),
                             std::ios::in | std::ios::binary);

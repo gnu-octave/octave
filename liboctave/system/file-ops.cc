@@ -75,7 +75,7 @@ namespace octave
     if (s_len == 0 || s[0] == '~')
       return 0;
 
-    string_vector prefixes = octave::sys::file_ops::tilde_additional_prefixes;
+    string_vector prefixes = sys::file_ops::tilde_additional_prefixes;
 
     if (! prefixes.empty ())
       {
@@ -105,13 +105,13 @@ namespace octave
   {
     size_t s_len = s.length ();
 
-    string_vector suffixes = octave::sys::file_ops::tilde_additional_suffixes;
+    string_vector suffixes = sys::file_ops::tilde_additional_suffixes;
 
     size_t i = 0;
 
     for ( ; i < s_len; i++)
       {
-        if (octave::sys::file_ops::is_dir_sep (s[i]))
+        if (sys::file_ops::is_dir_sep (s[i]))
           break;
 
         if (! suffixes.empty ())
@@ -138,7 +138,7 @@ namespace octave
 
     size_t len = 1;
 
-    while (len < f_len && ! octave::sys::file_ops::is_dir_sep (fname[len]))
+    while (len < f_len && ! sys::file_ops::is_dir_sep (fname[len]))
       len++;
 
     return fname.substr (1, len);
@@ -159,8 +159,8 @@ namespace octave
     // of $HOME or the home directory of the current user, regardless of
     // any preexpansion hook.
 
-    if (f_len == 1 || octave::sys::file_ops::is_dir_sep (filename[1]))
-      return octave::sys::env::get_home_directory () + filename.substr (1);
+    if (f_len == 1 || sys::file_ops::is_dir_sep (filename[1]))
+      return sys::env::get_home_directory () + filename.substr (1);
 
     std::string username = isolate_tilde_prefix (filename);
 
@@ -168,10 +168,10 @@ namespace octave
 
     std::string dirname;
 
-    if (octave::sys::file_ops::tilde_expansion_preexpansion_hook)
+    if (sys::file_ops::tilde_expansion_preexpansion_hook)
       {
         std::string expansion
-          = octave::sys::file_ops::tilde_expansion_preexpansion_hook (username);
+          = sys::file_ops::tilde_expansion_preexpansion_hook (username);
 
         if (! expansion.empty ())
           return expansion + filename.substr (user_len+1);
@@ -180,17 +180,17 @@ namespace octave
     // No preexpansion hook, or the preexpansion hook failed.  Look in the
     // password database.
 
-    octave::sys::password pw = octave::sys::password::getpwnam (username);
+    sys::password pw = sys::password::getpwnam (username);
 
     if (! pw)
       {
         // If the calling program has a special syntax for expanding tildes,
         // and we couldn't find a standard expansion, then let them try.
 
-        if (octave::sys::file_ops::tilde_expansion_failure_hook)
+        if (sys::file_ops::tilde_expansion_failure_hook)
           {
             std::string expansion
-              = octave::sys::file_ops::tilde_expansion_failure_hook (username);
+              = sys::file_ops::tilde_expansion_failure_hook (username);
 
             if (! expansion.empty ())
               dirname = expansion + filename.substr (user_len+1);

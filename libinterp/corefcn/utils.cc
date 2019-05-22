@@ -1106,7 +1106,7 @@ namespace octave
       for (octave_idx_type i = 0; i < n; i++)
         dim(i) = v(i);
 
-    octave::check_dimensions (dim, warn_for);
+    check_dimensions (dim, warn_for);
   }
 
   void get_dimensions (const octave_value& a, const char *warn_for,
@@ -1129,7 +1129,7 @@ namespace octave
         nc = v(1);
       }
 
-    octave::check_dimensions (nr, nc, warn_for);
+    check_dimensions (nr, nc, warn_for);
   }
 
   void get_dimensions (const octave_value& a, const octave_value& b,
@@ -1139,7 +1139,7 @@ namespace octave
     nr = (a.isempty () ? 0 : a.idx_type_value (true));
     nc = (b.isempty () ? 0 : b.idx_type_value (true));
 
-    octave::check_dimensions (nr, nc, warn_for);
+    check_dimensions (nr, nc, warn_for);
   }
 
   octave_idx_type dims_to_numel (const dim_vector& dims,
@@ -1284,11 +1284,11 @@ namespace octave
     if (do_graphics_events)
       gh_manager::unlock ();
 
-    if (octave::math::isinf (seconds))
+    if (math::isinf (seconds))
       {
         // Wait for kbhit
         int c = -1;
-        octave::flush_stdout ();
+        flush_stdout ();
 
         struct timespec one_tenth = { 0, 100000000 };
 
@@ -1301,12 +1301,12 @@ namespace octave
             if (do_graphics_events)
               gh_manager::process_events ();
 
-            c = octave::kbhit (false);
+            c = kbhit (false);
           }
       }
     else
       {
-        octave::sys::time now;
+        sys::time now;
         double end_time = now.double_value () + seconds;
         double remaining_time = seconds;
 
@@ -1483,7 +1483,7 @@ namespace octave
   {
     octave_value retval;
 
-    const octave_value_list tmp = octave::do_simple_cellfun (fun, fun_name, args, 1);
+    const octave_value_list tmp = do_simple_cellfun (fun, fun_name, args, 1);
 
     if (tmp.length () > 0)
       retval = tmp(0);

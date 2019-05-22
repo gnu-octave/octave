@@ -1834,11 +1834,11 @@ namespace octave
 
     tree_evaluator& tw = interp.get_evaluator ();
 
-    octave::symbol_scope curr_scope = tw.get_current_scope ();
+    symbol_scope curr_scope = tw.get_current_scope ();
 
     octave_fcn_handle *fh = new octave_fcn_handle (curr_scope, tnm);
 
-    octave::call_stack& cs = interp.get_call_stack ();
+    call_stack& cs = interp.get_call_stack ();
 
     std::string dispatch_class;
 

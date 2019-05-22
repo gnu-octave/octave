@@ -51,14 +51,14 @@ namespace octave
   static void
   maybe_add_path_elts (std::string& path, const std::string& dir)
   {
-    std::string tpath = octave::genpath (dir);
+    std::string tpath = genpath (dir);
 
     if (! tpath.empty ())
       {
         if (path.empty ())
           path = tpath;
         else
-          path += octave::directory_path::path_sep_str () + tpath;
+          path += directory_path::path_sep_str () + tpath;
       }
   }
 
@@ -68,7 +68,7 @@ namespace octave
     std::list<std::string> retval;
 
     size_t beg = 0;
-    size_t end = p.find (octave::directory_path::path_sep_char ());
+    size_t end = p.find (directory_path::path_sep_char ());
 
     size_t len = p.length ();
 
@@ -84,7 +84,7 @@ namespace octave
         if (beg == len)
           break;
 
-        end = p.find (octave::directory_path::path_sep_char (), beg);
+        end = p.find (directory_path::path_sep_char (), beg);
       }
 
     std::string elt = p.substr (beg);
@@ -104,7 +104,7 @@ namespace octave
 
     size_t k = dir.length ();
 
-    while (k > 1 && octave::sys::file_ops::is_dir_sep (dir[k-1]))
+    while (k > 1 && sys::file_ops::is_dir_sep (dir[k-1]))
       k--;
 
     if (k < dir.length ())
@@ -124,7 +124,7 @@ namespace octave
     // Look in private directory corresponding to current function (if
     // any).
 
-    octave::symbol_scope scope = octave::__get_current_scope__ ("find_private_file");
+    symbol_scope scope = __get_current_scope__ ("find_private_file");
 
     octave_user_function *curr_fcn = scope ? scope.function () : nullptr;
 
@@ -138,10 +138,10 @@ namespace octave
 
         if (! dir_name.empty ())
           {
-            std::string pfname = dir_name + octave::sys::file_ops::dir_sep_str ()
-              + "private" + octave::sys::file_ops::dir_sep_str () + fname;
+            std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
+              + "private" + sys::file_ops::dir_sep_str () + fname;
 
-            octave::sys::file_stat fs (pfname);
+            sys::file_stat fs (pfname);
 
             if (fs.exists () && fs.is_reg ())
               retval = pfname;
@@ -159,7 +159,7 @@ namespace octave
     size_t ps = path.size ();
     size_t pls = path_list.size ();
     size_t pos = path_list.find (path);
-    char psc = octave::directory_path::path_sep_char ();
+    char psc = directory_path::path_sep_char ();
     while (pos != std::string::npos)
       {
         if ((pos == 0 || path_list[pos-1] == psc)
@@ -175,7 +175,7 @@ namespace octave
   static void
   rehash_internal (void)
   {
-    octave::load_path& lp = octave::__get_load_path__ ("rehash_internal");
+    load_path& lp = __get_load_path__ ("rehash_internal");
 
     lp.update ();
 
@@ -846,14 +846,14 @@ namespace octave
     if (! octave_interpreter_ready)
       return;
 
-    octave::unwind_protect frame;
+    unwind_protect frame;
 
-    std::string file = octave::sys::file_ops::concat (dir, script_file);
+    std::string file = sys::file_ops::concat (dir, script_file);
 
-    octave::sys::file_stat fs (file);
+    sys::file_stat fs (file);
 
     if (fs.exists ())
-      octave::source_file (file, "base");
+      source_file (file, "base");
   }
 
   // FIXME: maybe we should also maintain a map to speed up this method of access.
@@ -1082,7 +1082,7 @@ namespace octave
     string_vector flist;
     std::string msg;
 
-    if (! octave::sys::get_dirlist (d, flist, msg))
+    if (! sys::get_dirlist (d, flist, msg))
       warning ("load_path: %s: %s", d.c_str (), msg.c_str ());
     else
       {

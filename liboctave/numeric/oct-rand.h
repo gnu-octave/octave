@@ -53,8 +53,8 @@ namespace octave
     // Return the current seed.
     static double seed (void)
     {
-      return instance_ok () ? instance->do_seed ()
-        : octave::numeric_limits<double>::NaN ();
+      return (instance_ok ()
+              ? instance->do_seed () : numeric_limits<double>::NaN ());
     }
 
     // Set the seed.
@@ -139,15 +139,15 @@ namespace octave
     // Return the next number from the sequence.
     static double scalar (double a = 1.0)
     {
-      return instance_ok () ? instance->do_scalar (a)
-        : octave::numeric_limits<double>::NaN ();
+      return (instance_ok ()
+              ? instance->do_scalar (a) : numeric_limits<double>::NaN ());
     }
 
     // Return the next number from the sequence.
     static float float_scalar (float a = 1.0)
     {
-      return instance_ok () ? instance->do_scalar (a)
-        : octave::numeric_limits<float>::NaN ();
+      return (instance_ok ()
+              ? instance->do_scalar (a) : numeric_limits<float>::NaN ());
     }
 
     // Return an array of numbers from the sequence.
@@ -173,8 +173,8 @@ namespace octave
     // filled in column major order.
     static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
     {
-      return instance_ok () ? instance->do_float_nd_array (dims, a)
-        : FloatNDArray ();
+      return (instance_ok ()
+              ? instance->do_float_nd_array (dims, a) : FloatNDArray ());
     }
 
   private:

@@ -1400,7 +1400,7 @@ namespace octave
 
         std::string cmd = stream.substr (1);
 
-        fp = octave::popen (cmd.c_str (), "w");
+        fp = popen (cmd.c_str (), "w");
 
         if (! fp)
           error (R"(print: failed to open pipe "%s")", stream.c_str ());
@@ -1411,7 +1411,7 @@ namespace octave
       {
         // Write gl2ps output directly to file.
 
-        fp = octave::sys::fopen (stream.c_str (), "w");
+        fp = sys::fopen (stream.c_str (), "w");
 
         if (! fp)
           error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());

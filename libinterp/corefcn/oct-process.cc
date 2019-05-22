@@ -78,8 +78,8 @@ namespace octave
 
     int cmd_status = cmd.close ();
 
-    if (octave::sys::wifexited (cmd_status))
-      cmd_status = octave::sys::wexitstatus (cmd_status);
+    if (sys::wifexited (cmd_status))
+      cmd_status = sys::wexitstatus (cmd_status);
     else
       cmd_status = 127;
 

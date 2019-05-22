@@ -81,7 +81,7 @@ namespace octave
 
     size_t sz = fs.size ();
 
-    std::string ascii_fname = octave::sys::get_ASCII_filename (fname);
+    std::string ascii_fname = sys::get_ASCII_filename (fname);
 
     std::ifstream file (ascii_fname.c_str (), std::ios::in | std::ios::binary);
 

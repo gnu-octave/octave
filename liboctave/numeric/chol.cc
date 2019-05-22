@@ -58,7 +58,7 @@ namespace octave
     if (r_nr != r_nc)
       (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT n = to_f77_int (r_nc);
     F77_INT info;
 
     Matrix tmp = r;
@@ -106,7 +106,7 @@ namespace octave
     if (r_nr != r_nc)
       (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT n = to_f77_int (r_nc);
     F77_INT info;
 
     FloatMatrix tmp = r;
@@ -154,7 +154,7 @@ namespace octave
     if (r_nr != r_nc)
       (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT n = to_f77_int (r_nc);
     F77_INT info;
 
     ComplexMatrix tmp = r;
@@ -199,7 +199,7 @@ namespace octave
     if (r_nr != r_nc)
       (*current_liboctave_error_handler) ("chol2inv requires square matrix");
 
-    F77_INT n = octave::to_f77_int (r_nc);
+    F77_INT n = to_f77_int (r_nc);
     F77_INT info;
 
     FloatComplexMatrix tmp = r;

@@ -98,7 +98,7 @@ namespace QtHandles
           else
             tmp.setAlpha (0);
 
-          retval.setPixelColor(jj, ii, tmp);
+          retval.setPixel (jj, ii, tmp.rgba ());
         }
 
     return retval;
@@ -457,8 +457,7 @@ namespace QtHandles
           pointer_to_qimage (fp.get_pointershapecdata ().matrix_value ());
         if (fp.get_pointer () != "custom")
           break;
-        // Avoid warning about potential fallthrough
-        [[fallthrough]];
+        OCTAVE_FALLTHROUGH;
 
       case figure::properties::ID_POINTER:
       case figure::properties::ID_POINTERSHAPEHOTSPOT:

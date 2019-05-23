@@ -154,8 +154,8 @@ function __gnuplot_draw_axes__ (h, plot_stream, enhanced, bg_is_set,
       ## Change meaning of "normalized", but it at least gives user some control
       if (! strcmp (get (axis_obj.title, "units"), "normalized"))
         unwind_protect
-          set (axis_obj.title, "units", "normalized");
-          set (axis_obj.title, "position", [0.5 1.02 0.5]);
+          set (axis_obj.title, "units", "normalized",
+                               "position", [0.5 1.02 0.5]);
         unwind_protect_cleanup
         end_unwind_protect
       endif

@@ -542,8 +542,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       ## Rely on listener to handle conversion.
       units = get (cax, "units");
       unwind_protect
-        set (cax, "units", "points");
-        set (cax, "fontunits", "points");
+        set (cax, "units", "points", "fontunits", "points");
         if (isempty (hlegend) || ! isprop (hlegend, "unmodified_axes_position"))
           unmodified_axes_position = get (cax, "position");
           unmodified_axes_outerposition = get (cax, "outerposition");
@@ -853,8 +852,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
 
         units = get (hlegend, "units");
         unwind_protect
-          set (hlegend, "units", "points");
-          set (hlegend, "position", lpos);
+          set (hlegend, "units", "points", "position", lpos);
         unwind_protect_cleanup
           set (hlegend, "units", units);
         end_unwind_protect
@@ -1028,8 +1026,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 ## Let gnuplot handle the positioning of the keybox.
                 ## This violates strict Matlab compatibility, but reliably
                 ## renders an aesthetic result.
-                set (ca(i), "position",  unmodified_axes_position);
-                set (ca(i), "activepositionproperty", "outerposition");
+                set (ca(i), "position",  unmodified_axes_position,
+                            "activepositionproperty", "outerposition");
               else
                 ## numel (ca) > 1 for axes overlays (like plotyy)
                 set (ca(i), "position", new_pos);
@@ -1150,11 +1148,9 @@ function cb_legend_update (hleg, ~)
       set (hax, "units", "points");
       switch (get (hax, "activepositionproperty"))
         case "position"
-          set (hax, "outerposition", outerposition);
-          set (hax, "position", position);
+          set (hax, "outerposition", outerposition, "position", position);
         case "outerposition"
-          set (hax, "position", position);
-          set (hax, "outerposition", outerposition);
+          set (hax, "position", position, "outerposition", outerposition);
       endswitch
       if (isscalar (hax))
         set (hax, "units", units);
@@ -1253,8 +1249,7 @@ function cb_restore_axes (~, ~, ca, pos, outpos, htdel, hplots)
       if (isaxes (cax))
         units = get (cax, "units");
         unwind_protect
-          set (cax, "units", "points");
-          set (cax, "position", pos);
+          set (cax, "units", "points", "position", pos);
         unwind_protect_cleanup
           set (cax, "units", units);
         end_unwind_protect

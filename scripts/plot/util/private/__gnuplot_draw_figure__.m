@@ -166,8 +166,8 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
               unwind_protect_cleanup
                 ## Return axes "units" and "position" back to
                 ## their original values.
-                set (kids(i), "units", orig_axes_units);
-                set (kids(i), "position", orig_axes_position);
+                set (kids(i), "units", orig_axes_units,
+                              "position", orig_axes_position);
                 bg_is_set = false;
                 fg_is_set = false;
               end_unwind_protect

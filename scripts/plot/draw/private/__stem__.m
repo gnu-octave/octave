@@ -416,8 +416,7 @@ function move_baseline (h, ~)
   b0 = get (h, "basevalue");
   bl = get (h, "baseline");
 
-  set (bl, "ydata", [b0, b0]);
-  set (bl, "basevalue", b0);
+  set (bl, "ydata", [b0, b0], "basevalue", b0);
 
   kids = get (h, "children");
   yt = get (h, "ydata")(:)';

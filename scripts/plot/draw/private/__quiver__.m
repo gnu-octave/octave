@@ -393,8 +393,8 @@ function update_data (h, ~)
     zend = z + w(:);
   endif
 
-  set (kids(3), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids(3), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(3), "xdata", [x.'; xend.'; NaN(1, length (x))](:),
+                "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(3), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
@@ -417,20 +417,19 @@ function update_data (h, ~)
     yarrw2 = ytmp + u(:) * arrowsize / 3;
   endif
 
-  set (kids(2), "xdata", [x.'; xend.'; NaN(1, length (x))](:));
-  set (kids(2), "ydata", [y.'; yend.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [x.'; xend.'; NaN(1, length (x))](:),
+                "ydata", [y.'; yend.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(2), "zdata", [z.'; zend.'; NaN(1, length (z))](:));
   endif
 
-  set (kids(2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:));
-  set (kids(2), "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
+  set (kids(2), "xdata", [xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
+                "ydata", [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
   if (is3d)
     set (kids(2), "zdata", [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:));
   endif
 
-  set (kids(1), "xdata", x);
-  set (kids(1), "ydata", y);
+  set (kids(1), "xdata", x, "ydata", y);
   if (is3d)
     set (kids(1), "zdata", z);
   endif

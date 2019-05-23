@@ -40,8 +40,8 @@ function pos = __actual_axis_position__ (h)
     set (axis_obj.parent, "units", "pixels");
     fig_position = get (axis_obj.parent, "position");
   unwind_protect_cleanup
-    set (axis_obj.parent, "units", orig_fig_units);
-    set (axis_obj.parent, "position", orig_fig_position);
+    set (axis_obj.parent, "units", orig_fig_units,
+                          "position", orig_fig_position);
   end_unwind_protect
   ## Get axes size in pixels
   if (strcmp (get (axis_obj.parent, "__graphics_toolkit__"), "gnuplot")

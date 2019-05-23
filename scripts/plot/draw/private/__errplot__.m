@@ -389,14 +389,12 @@ function update_data (hg, ~, hl)
   xudata = get (hg, "xudata");
   ifmt = get (hg, "format");
 
-  set (hl(2), "xdata", xdata);
-  set (hl(2), "ydata", ydata);
+  set (hl(2), "xdata", xdata, "ydata", ydata);
 
   [errorbar_xdata, errorbar_ydata] = ...
           errorbar_data (xdata, ydata, ldata, udata, xldata, xudata, ...
                          ifmt, xscale, yscale);
 
-  set (hl(1), "xdata", errorbar_xdata);
-  set (hl(1), "ydata", errorbar_ydata);
+  set (hl(1), "xdata", errorbar_xdata, "ydata", errorbar_ydata);
 
 endfunction

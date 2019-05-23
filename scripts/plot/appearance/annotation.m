@@ -938,16 +938,14 @@ function update_line (h, dummy, prop, hli)
         y = [pos(2) (pos(2) + pos(4))];
 
         recursive = true;
-        set (h, "x", x);
-        set (h, "y", y);
+        set (h, "x", x, "y", y);
         recursive = false;
 
         ## Draw in normalized coordinates
         pos = getnormpos (h);
         x = [pos(1) (pos(1) + pos(3))];
         y = [pos(2) (pos(2) + pos(4))];
-        set (hli, "xdata", x);
-        set (hli, "ydata", y);
+        set (hli, "xdata", x, "ydata", y);
 
     endswitch
   endif
@@ -1034,8 +1032,8 @@ function update_arrow (h, dummy, prop, hpa = [])
           [x, y] = arrowcoordinates (h, nar);
           set (hpa(ii), "xdata", x, "ydata", y);
         case "color"
-          set (hpa(ii), "facecolor", get (h, "color"));
-          set (hpa(ii), "edgecolor", get (h, "color"));
+          set (hpa(ii), "facecolor", get (h, "color"),
+                        "edgecolor", get (h, "color"));
       endswitch
     endif
   endfor

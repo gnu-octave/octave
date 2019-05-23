@@ -60,8 +60,7 @@ function h = rgbplot (cmap, style = "profile")
     case "profile"
       x = 1:rows (cmap);
       htmp = plot (x,cmap(:,1),"r", x,cmap(:,2),"g", x,cmap(:,3),"b");
-      set (gca (), "ytick", 0:0.1:1);
-      set (gca (), "xlim", [0 rows(cmap)]);
+      set (gca, "ytick", 0:0.1:1, "xlim", [0 rows(cmap)]);
     case "composite"
       htmp = image (1:rows (cmap));
       set (gca, "ytick", []);

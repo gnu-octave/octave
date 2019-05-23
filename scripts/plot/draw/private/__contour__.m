@@ -470,8 +470,7 @@ function update_data (h, ~, prop = "")
       else
         lvl = lvl(1) : lvs : lvl(2);
       endif
-      set (h, "levellist", lvl);
-      set (h, "levellistmode", "auto");
+      set (h, "levellist", lvl, "levellistmode", "auto");
     else
       z = get (h, "zdata");
       ## FIXME: The levels should be determined similarly to {x,y,z}ticks

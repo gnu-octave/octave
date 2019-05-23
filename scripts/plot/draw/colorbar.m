@@ -209,8 +209,8 @@ function h = colorbar (varargin)
     ## Restore original axes position before applying new colorbar settings
     orig_props = get (hcb, "deletefcn"){3};
     units = get (hax, "units");
-    set (hax, "units", orig_props.units);
-    set (hax, "position", orig_props.position,
+    set (hax, "units", orig_props.units,
+              "position", orig_props.position,
               "outerposition", orig_props.outerposition,
               "activepositionproperty", orig_props.activepositionproperty);
     set (hax, "units", units);
@@ -428,8 +428,8 @@ function cb_restore_axes (hcb, ~, hax, orig_props)
 
     ## Restore original axes position
     units = get (hax, "units");
-    set (hax, "units", orig_props.units);
-    set (hax, "position", orig_props.position,
+    set (hax, "units", orig_props.units,
+              "position", orig_props.position,
               "outerposition", orig_props.outerposition,
               "activepositionproperty", orig_props.activepositionproperty);
     set (hax, "units", units);

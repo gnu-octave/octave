@@ -85,9 +85,9 @@ function retval = orient (varargin)
           ##        set the papersize and paperposition here.
           papersize = get (cf, "papersize");
           paperposition = get (cf, "paperposition");
-          set (cf, "paperorientation", orientation);
-          set (cf, "papersize", papersize([2, 1]));
-          set (cf, "paperposition", paperposition([2, 1, 4, 3]));
+          set (cf, "paperorientation", orientation,
+                   "papersize", papersize([2, 1]),
+                   "paperposition", paperposition([2, 1, 4, 3]));
         endif
         if (strcmpi (orientation, "portrait"))
           ## portrait restores the default

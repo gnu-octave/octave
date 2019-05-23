@@ -477,6 +477,59 @@ Do you want to delete it anyway?</source>
     </message>
 </context>
 <context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Previous search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInputDialog</name>
     <message>
         <location filename="../../../octave-qt/qinputdialog.cpp" line="+223"/>
@@ -2646,7 +2699,7 @@ fitxategia ezin da idatzi: %2.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1167"/>
+        <location line="+1174"/>
         <location line="+136"/>
         <location line="+358"/>
         <location line="+148"/>
@@ -2658,13 +2711,13 @@ fitxategia ezin da idatzi: %2.</translation>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="-2010"/>
+        <location line="-2017"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+840"/>
+        <location line="+847"/>
         <source>Goto line</source>
         <translation type="unfinished">Lerrora joan</translation>
     </message>
@@ -3506,7 +3559,7 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+119"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation type="unfinished">%1 bertsioaren noten fitxategia hutsik dago.</translation>
     </message>
@@ -3527,12 +3580,12 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1625"/>
+        <location line="+1627"/>
         <source>About Octave</source>
         <translation type="unfinished">&quot;Octave&quot;-ri buruz</translation>
     </message>
     <message>
-        <location line="-1486"/>
+        <location line="-1488"/>
         <source>Octave</source>
         <translation type="unfinished">Octave</translation>
     </message>
@@ -3543,12 +3596,12 @@ Sakatu &apos;Hurrengoa&apos; konfigurazio-fitxategi bat sortzeko eta Octave abia
     </message>
     <message>
         <location line="+60"/>
-        <location line="+1487"/>
+        <location line="+1489"/>
         <source>Browse directories</source>
         <translation type="unfinished">Direktorioak arakatu</translation>
     </message>
     <message>
-        <location line="-1329"/>
+        <location line="-1331"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished">Octaveren fitxategiak (*.m);;Fitxategi guztiak (*)</translation>
     </message>
@@ -3581,7 +3634,7 @@ function and can not be edited.</source>
         <translation type="unfinished">Octaveren editorea</translation>
     </message>
     <message>
-        <location line="+822"/>
+        <location line="+824"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Fitxategia</translation>
     </message>
@@ -3935,7 +3988,7 @@ edo aktibatu web-konexioa azken berrikuntzak Octaveren sare ezarpen-elkarrizketa
         <translation type="unfinished">Ezkutatu widgeta</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+70"/>
         <source>Dock widget</source>
         <translation type="unfinished">Akoplatu widgeta</translation>
     </message>

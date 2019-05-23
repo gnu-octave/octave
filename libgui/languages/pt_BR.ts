@@ -2,6 +2,59 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="pt_BR" sourcelanguage="en">
 <context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Previous search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation type="unfinished">Buscar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/workspace-model.cc" line="+81"/>
@@ -1006,7 +1059,7 @@ para escrita: %2.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1167"/>
+        <location line="+1174"/>
         <location line="+136"/>
         <location line="+358"/>
         <location line="+148"/>
@@ -1018,14 +1071,14 @@ para escrita: %2.</translation>
         <translation>Editor do Octave</translation>
     </message>
     <message>
-        <location line="-2010"/>
+        <location line="-2017"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Não é possível adicionar o ponto de parada a arquivo modificado ou sem nome.
 Salvar e adicionar ponto de parada ou cancelar?</translation>
     </message>
     <message>
-        <location line="+840"/>
+        <location line="+847"/>
         <source>Goto line</source>
         <translation>Ir para linha</translation>
     </message>
@@ -1883,7 +1936,7 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
         <translation>Carregar Ambiente de Trabalho</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+119"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>O arquivo de notas da versão &apos;%1&apos; está vazio.</translation>
     </message>
@@ -1904,12 +1957,12 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1625"/>
+        <location line="+1627"/>
         <source>About Octave</source>
         <translation>Sobre o Octave</translation>
     </message>
     <message>
-        <location line="-1486"/>
+        <location line="-1488"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1920,12 +1973,12 @@ Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar
     </message>
     <message>
         <location line="+60"/>
-        <location line="+1487"/>
+        <location line="+1489"/>
         <source>Browse directories</source>
         <translation>Navegar pelos diretórios</translation>
     </message>
     <message>
-        <location line="-1329"/>
+        <location line="-1331"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Arquivos do Octave (*.m);;Todos os Arquivos (*)</translation>
     </message>
@@ -1959,7 +2012,7 @@ e não pode ser editada.</translation>
         <translation>Editor do Octave</translation>
     </message>
     <message>
-        <location line="+822"/>
+        <location line="+824"/>
         <source>&amp;File</source>
         <translation>&amp;Arquivo</translation>
     </message>
@@ -2312,7 +2365,7 @@ ou habilite a conexão à Internet nas preferências de rede do Octave.
         <translation>Ocultar painel</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+70"/>
         <source>Dock widget</source>
         <translation>Acoplar painel</translation>
     </message>

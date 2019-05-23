@@ -483,6 +483,59 @@ Wil je die toch verwijderen?</translation>
     </message>
 </context>
 <context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Previous search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation type="unfinished">Zoek</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInputDialog</name>
     <message>
         <location filename="../../../octave-qt/qinputdialog.cpp" line="+223"/>
@@ -2663,7 +2716,7 @@ niet openen om te schrijven: %2.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1167"/>
+        <location line="+1174"/>
         <location line="+136"/>
         <location line="+358"/>
         <location line="+148"/>
@@ -2675,14 +2728,14 @@ niet openen om te schrijven: %2.</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-2010"/>
+        <location line="-2017"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Kan geen onderbrekingspunt instellen in een veranderd of nog niet benoemd bestand.
 Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
     </message>
     <message>
-        <location line="+840"/>
+        <location line="+847"/>
         <source>Goto line</source>
         <translation>Ga naar regel</translation>
     </message>
@@ -3538,7 +3591,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Werkruimte laden</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+119"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Bestand met release notes &apos;%1&apos; is leeg.</translation>
     </message>
@@ -3559,12 +3612,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1625"/>
+        <location line="+1627"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
     </message>
     <message>
-        <location line="-1486"/>
+        <location line="-1488"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -3575,12 +3628,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     </message>
     <message>
         <location line="+60"/>
-        <location line="+1487"/>
+        <location line="+1489"/>
         <source>Browse directories</source>
         <translation>Blader door mappen</translation>
     </message>
     <message>
-        <location line="-1329"/>
+        <location line="-1331"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
@@ -3614,7 +3667,7 @@ functie en kan niet worden bewerkt.</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+822"/>
+        <location line="+824"/>
         <source>&amp;File</source>
         <translation>Bestand</translation>
     </message>
@@ -3967,7 +4020,7 @@ of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van O
         <translation>Widget verbergen</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+70"/>
         <source>Dock widget</source>
         <translation>Widget in venster opnemen</translation>
     </message>

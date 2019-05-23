@@ -2,6 +2,59 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ja_JP">
 <context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <source>Search for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Previous search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation type="unfinished">検索</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/workspace-model.cc" line="+81"/>
@@ -1671,7 +1724,7 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1167"/>
+        <location line="+1174"/>
         <location line="+136"/>
         <location line="+358"/>
         <location line="+148"/>
@@ -1683,13 +1736,13 @@ for write: %2.</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="-2010"/>
+        <location line="-2017"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+840"/>
+        <location line="+847"/>
         <source>Goto line</source>
         <translation>指定行へ行く</translation>
     </message>
@@ -2539,7 +2592,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>ワークスペースをロード</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+119"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>リリースノートファイル &apos;%1&apos; が空です．</translation>
     </message>
@@ -2560,12 +2613,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1625"/>
+        <location line="+1627"/>
         <source>About Octave</source>
         <translation>Octave について</translation>
     </message>
     <message>
-        <location line="-1486"/>
+        <location line="-1488"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -2576,12 +2629,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="+60"/>
-        <location line="+1487"/>
+        <location line="+1489"/>
         <source>Browse directories</source>
         <translation>ディレクトリのブラウズ</translation>
     </message>
     <message>
-        <location line="-1329"/>
+        <location line="-1331"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave ファイル (*.m);;全てのファイル (*)</translation>
     </message>
@@ -2615,7 +2668,7 @@ function and can not be edited.</source>
         <translation>Octave エディタ</translation>
     </message>
     <message>
-        <location line="+822"/>
+        <location line="+824"/>
         <source>&amp;File</source>
         <translation>ファイル (&amp;F)</translation>
     </message>
@@ -2967,7 +3020,7 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <translation>ウィジェットを隠す</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+70"/>
         <source>Dock widget</source>
         <translation>ウィジェットをドック</translation>
     </message>

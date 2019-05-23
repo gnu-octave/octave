@@ -2,6 +2,59 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>QHelpSearchQueryWidget</name>
+    <message>
+        <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <source>Search for:</source>
+        <translation>Suchen nach:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Previous search</source>
+        <translation>Vorherige Suche</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next search</source>
+        <translation>Nächste Suche</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search</source>
+        <translation>Suchen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Advanced search</source>
+        <translation>Fortgeschrittene Suche</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
+        <translation>Wörter &lt;b&gt;ähnlich&lt;/b&gt; zu:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
+        <translation>&lt;b&gt;ohne&lt;/b&gt; diese Wörter:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
+        <translation>mit &lt;b&gt;dem exaktem Ausdruck&lt;/b&gt;:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
+        <translation>mit &lt;b&gt;allen&lt;/b&gt; diesen Wörtern:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
+        <translation>mit &lt;b&gt;mindestens einem&lt;/b&gt; der Wörter:</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/workspace-model.cc" line="+81"/>
@@ -21,12 +74,12 @@
     <message>
         <location line="+1"/>
         <source>hidden</source>
-        <translation>Verborgen</translation>
+        <translation>Versteckt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>inherited</source>
-        <translation>Ererbt</translation>
+        <translation>Geerbt</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -128,7 +181,7 @@
     <message>
         <location filename="../graphics/Figure.cc" line="+262"/>
         <source>Figure ToolBar</source>
-        <translation>Werkzeugleiste</translation>
+        <translation>Grafik Werkzeugleiste</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -143,7 +196,7 @@
     <message>
         <location line="+4"/>
         <source>Autoscale</source>
-        <translation>Autoskalierung</translation>
+        <translation>Automatische Saklierung</translation>
     </message>
 </context>
 <context>
@@ -151,7 +204,7 @@
     <message>
         <location filename="../graphics/MouseModeActionGroup.cc" line="+40"/>
         <source>Rotate</source>
-        <translation>Rotieren</translation>
+        <translation>Drehen</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -166,7 +219,7 @@
     <message>
         <location line="+4"/>
         <source>Pan</source>
-        <translation>Schwenken</translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -802,7 +855,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">Zeilenenden für Legacy &amp;Mac umwandeln (CR)</translation>
+        <translation>Zeilenenden für Legacy &amp;Mac umwandeln (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1014,7 +1067,7 @@ konnte nicht zum Schreiben geöffnet werden:
     </message>
     <message>
         <location line="+94"/>
-        <location line="+1167"/>
+        <location line="+1174"/>
         <location line="+136"/>
         <location line="+358"/>
         <location line="+148"/>
@@ -1026,14 +1079,14 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-2010"/>
+        <location line="-2017"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
         <translation>Haltepunkte können nicht in geänderten oder unbenannten Dateien gesetzt werden.
 Speichern und Haltepunkt setzen, oder abbrechen?</translation>
     </message>
     <message>
-        <location line="+840"/>
+        <location line="+847"/>
         <source>Goto line</source>
         <translation>Gehe zu Zeile</translation>
     </message>
@@ -1891,7 +1944,7 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
         <translation>Arbeitsumgebung laden</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+119"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
     </message>
@@ -1912,12 +1965,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+85"/>
-        <location line="+1625"/>
+        <location line="+1627"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-1486"/>
+        <location line="-1488"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
@@ -1928,12 +1981,12 @@ Klicken Sie auf &apos;Weiter&apos;, um eine Konfigurationsdatei anzulegen und Oc
     </message>
     <message>
         <location line="+60"/>
-        <location line="+1487"/>
+        <location line="+1489"/>
         <source>Browse directories</source>
         <translation>Verzeichnisse durchsuchen</translation>
     </message>
     <message>
-        <location line="-1329"/>
+        <location line="-1331"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
@@ -1967,7 +2020,7 @@ die nicht editiert werden kann.</translation>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="+822"/>
+        <location line="+824"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -2320,7 +2373,7 @@ oder aktivieren Sie die Internetverbindung in den Einstellungen unter Netzwerk.
         <translation>Bedienelement verbergen</translation>
     </message>
     <message>
-        <location line="+63"/>
+        <location line="+70"/>
         <source>Dock widget</source>
         <translation>Bedienelement andocken</translation>
     </message>
@@ -3480,22 +3533,22 @@ Die eingestellten Tastenkürzel speichern oder die Aktion abbrechen?</translatio
     <message>
         <location line="+50"/>
         <source> columns</source>
-        <translation type="unfinished"></translation>
+        <translation> Spalten</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation type="unfinished"></translation>
+        <translation> Spalte</translation>
     </message>
     <message>
         <location line="+47"/>
         <source> rows</source>
-        <translation type="unfinished"></translation>
+        <translation> Zeilen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation type="unfinished"></translation>
+        <translation> Zeile</translation>
     </message>
 </context>
 <context>
@@ -3708,7 +3761,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+5"/>
         <source>Legacy Mac (CR)</source>
-        <translation type="unfinished">Legacy Mac (CR)</translation>
+        <translation>Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4018,7 +4071,7 @@ oder wenn unterschiedliche Schriftgrößen oder -stile (fett/kursiv/normal) verw
     <message>
         <location line="+27"/>
         <source>Initial working directory of Octave interpreter</source>
-        <translation type="unfinished">Arbeitsverzeichnis des Octave Interpreters zum Programmstart</translation>
+        <translation>Arbeitsverzeichnis des Octave Interpreters zum Programmstart</translation>
     </message>
     <message>
         <location line="+18"/>

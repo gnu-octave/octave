@@ -31,11 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 typedef double (*integrand_fcn) (double x);
 typedef float (*float_integrand_fcn) (float x);
 
-// FIXME: would be nice to not have to have this global variable.
-// Nonzero means an error occurred in the calculation of the integrand
-// function, and the user wants us to quit.
-extern OCTAVE_API int quad_integration_error;
-
 #include "Quad-opts.h"
 
 class

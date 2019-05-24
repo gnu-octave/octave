@@ -35,11 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 static integrand_fcn user_fcn;
 static float_integrand_fcn float_user_fcn;
 
-// FIXME: would be nice to not have to have this global variable.
-// Nonzero means an error occurred in the calculation of the integrand
-// function, and the user wants us to quit.
-int quad_integration_error = 0;
-
 typedef F77_INT (*quad_fcn_ptr) (const double&, int&, double&);
 typedef F77_INT (*quad_float_fcn_ptr) (const float&, int&, float&);
 
@@ -79,27 +74,17 @@ extern "C"
 }
 
 static F77_INT
-user_function (const double& x, int& ierr, double& result)
+user_function (const double& x, int&, double& result)
 {
-  quad_integration_error = 0;
-
   result = (*user_fcn) (x);
-
-  if (quad_integration_error)
-    ierr = -1;
 
   return 0;
 }
 
 static F77_INT
-float_user_function (const float& x, int& ierr, float& result)
+float_user_function (const float& x, int&, float& result)
 {
-  quad_integration_error = 0;
-
   result = (*float_user_fcn) (x);
-
-  if (quad_integration_error)
-    ierr = -1;
 
   return 0;
 }

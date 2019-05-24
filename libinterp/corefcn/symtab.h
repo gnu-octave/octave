@@ -219,10 +219,6 @@ namespace octave
     // This function is generated automatically by mk-builtins.pl.
     void install_builtins (void);
   };
-
-  extern bool out_of_date_check (octave_value& function,
-                                 const std::string& dispatch_type = "",
-                                 bool check_relative = true);
 }
 
 #endif

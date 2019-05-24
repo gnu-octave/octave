@@ -81,8 +81,6 @@ extern "C"
 static F77_INT
 user_function (const double& x, int& ierr, double& result)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   quad_integration_error = 0;
 
   result = (*user_fcn) (x);
@@ -90,24 +88,18 @@ user_function (const double& x, int& ierr, double& result)
   if (quad_integration_error)
     ierr = -1;
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
 static F77_INT
 float_user_function (const float& x, int& ierr, float& result)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   quad_integration_error = 0;
 
   result = (*float_user_fcn) (x);
 
   if (quad_integration_error)
     ierr = -1;
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

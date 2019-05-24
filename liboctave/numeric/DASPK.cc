@@ -66,8 +66,6 @@ static F77_INT
 ddaspk_f (const double& time, const double *state, const double *deriv,
           const double&, double *delta, F77_INT& ires, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   ColumnVector tmp_deriv (nn);
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
@@ -95,8 +93,6 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
         }
     }
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -109,11 +105,7 @@ ddaspk_psol (const F77_INT&, const double&, const double *,
              const double *, double *, F77_INT *, double *,
              const double&, F77_INT&, double *, F77_INT*)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   (*current_liboctave_error_handler) ("daspk: PSOL is not implemented");
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }
@@ -122,8 +114,6 @@ static F77_INT
 ddaspk_j (const double& time, const double *state, const double *deriv,
           double *pd, const double& cj, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   // FIXME: would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -140,8 +130,6 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
   for (F77_INT j = 0; j < nn; j++)
     for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

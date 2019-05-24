@@ -57,8 +57,6 @@ static F77_INT
 lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
          F77_INT& ierr)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   ColumnVector tmp_deriv;
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -75,8 +73,6 @@ lsode_f (const F77_INT& neq, const double& time, double *, double *deriv,
         deriv[i] = tmp_deriv.elem (i);
     }
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -84,8 +80,6 @@ static F77_INT
 lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
          const F77_INT&, double *pd, const F77_INT& nrowpd)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   Matrix tmp_jac (neq, neq);
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -97,8 +91,6 @@ lsode_j (const F77_INT& neq, const double& time, double *, const F77_INT&,
   for (F77_INT j = 0; j < neq; j++)
     for (F77_INT i = 0; i < neq; i++)
       pd[nrowpd * j + i] = tmp_jac (i, j);
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

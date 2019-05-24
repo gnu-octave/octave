@@ -367,8 +367,6 @@ namespace octave
   IDA::resfun_impl (realtype t, N_Vector& yy,
                     N_Vector& yyp, N_Vector& rr)
   {
-    BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
     ColumnVector y = IDA::NVecToCol (yy, num);
 
     ColumnVector yp = IDA::NVecToCol (yyp, num);
@@ -379,8 +377,6 @@ namespace octave
 
     for (octave_idx_type i = 0; i < num; i++)
       puntrr[i] = res(i);
-
-    END_INTERRUPT_WITH_EXCEPTIONS;
   }
 
   void
@@ -437,8 +433,6 @@ namespace octave
                       N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ)
 
   {
-    BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
     long int Neq = NV_LENGTH_S(yy);
 
     ColumnVector y = NVecToCol (yy, Neq);
@@ -455,8 +449,6 @@ namespace octave
     std::copy (jac.fortran_vec (),
                jac.fortran_vec () + jac.numel (),
       SUNDenseMatrix_Data(JJ));
-
-    END_INTERRUPT_WITH_EXCEPTIONS;
   }
 
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
@@ -465,8 +457,6 @@ namespace octave
                        SUNMatrix& Jac)
 
   {
-    BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
     ColumnVector y = NVecToCol (yy, num);
 
     ColumnVector yp = NVecToCol (yyp, num);
@@ -491,8 +481,6 @@ namespace octave
         rowvals[i] = jac.ridx(i);
         d[i] = jac.data(i);
       }
-
-    END_INTERRUPT_WITH_EXCEPTIONS;
   }
 #  endif
 

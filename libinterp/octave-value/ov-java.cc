@@ -2027,8 +2027,6 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           oct_args(i) = box (env, jobj, nullptr);
         }
 
-      BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
       if (val.is_function_handle ())
         {
           octave_function *fcn = val.function_value ();
@@ -2048,8 +2046,6 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
         }
       else
         error ("trying to invoke non-invocable object");
-
-      END_INTERRUPT_WITH_EXCEPTIONS;
     }
 }
 

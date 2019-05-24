@@ -64,8 +64,6 @@ static F77_INT
 ddasrt_f (const double& t, const double *state, const double *deriv,
           double *delta, F77_INT& ires, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
@@ -89,8 +87,6 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
         delta[i] = tmp_fval(i);
     }
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -98,8 +94,6 @@ F77_INT
 ddasrt_j (const double& time, const double *state, const double *deriv,
           double *pd, const double& cj, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   // FIXME: would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -117,8 +111,6 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
     for (F77_INT i = 0; i < nn; i++)
       pd[nn * j + i] = tmp_pd.elem (i, j);
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
-
   return 0;
 }
 
@@ -126,8 +118,6 @@ static F77_INT
 ddasrt_g (const F77_INT& neq, const double& t, const double *state,
           const F77_INT& ng, double *gout, double *, F77_INT *)
 {
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
-
   F77_INT n = neq;
 
   ColumnVector tmp_state (n);
@@ -138,8 +128,6 @@ ddasrt_g (const F77_INT& neq, const double& t, const double *state,
 
   for (F77_INT i = 0; i < ng; i++)
     gout[i] = tmp_fval(i);
-
-  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

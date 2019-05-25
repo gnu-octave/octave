@@ -415,6 +415,9 @@ namespace octave
       query_string = "";
 #endif
 
+    if (query_string.isEmpty ())
+      return;
+
     // Get quoted search strings first, then take first string as fall back
     QRegExp rx ("\"([^\"]*)\"");
     if (rx.indexIn (query_string, 0) != -1)

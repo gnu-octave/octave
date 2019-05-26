@@ -26,7 +26,7 @@
 ##
 ## If no directory is specified, operate on all directories in Octave's search
 ## path for functions.
-## @seealso{demo, runtests, path}
+## @seealso{demo, oruntests, path}
 ## @end deftypefn
 
 ## Author: jwe

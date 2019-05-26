@@ -17,8 +17,8 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} runtests ()
-## @deftypefnx {} {} runtests (@var{directory})
+## @deftypefn  {} {} oruntests ()
+## @deftypefnx {} {} oruntests (@var{directory})
 ## Execute built-in tests for all m-files in the specified @var{directory}.
 ##
 ## Test blocks in any C++ source files (@file{*.cc}) will also be executed
@@ -31,7 +31,7 @@
 
 ## Author: jwe
 
-function runtests (directory)
+function oruntests (directory)
 
   if (nargin == 0)
     dirs = ostrsplit (path (), pathsep ());
@@ -45,7 +45,7 @@ function runtests (directory)
       endif
       fullname = dir_in_loadpath (directory);
       if (isempty (fullname))
-        error ("runtests: DIRECTORY argument must be a valid pathname");
+        error ("oruntests: DIRECTORY argument must be a valid pathname");
       endif
       dirs = {fullname};
     endif
@@ -109,7 +109,7 @@ function retval = has_functions (f)
   if (n > 3 && strcmpi (f((end-2):end), ".cc"))
     fid = fopen (f);
     if (fid < 0)
-      error ("runtests: fopen failed: %s", f);
+      error ("oruntests: fopen failed: %s", f);
     endif
     str = fread (fid, "*char")';
     fclose (fid);
@@ -127,7 +127,7 @@ function retval = has_tests (f)
 
   fid = fopen (f);
   if (fid < 0)
-    error ("runtests: fopen failed: %s", f);
+    error ("oruntests: fopen failed: %s", f);
   endif
 
   str = fread (fid, "*char").';
@@ -172,5 +172,5 @@ function print_test_file_name (nm)
 endfunction
 
 
-%!error runtests ("foo", 1)
-%!error <DIRECTORY argument> runtests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
+%!error oruntests ("foo", 1)
+%!error <DIRECTORY argument> oruntests ("#_TOTALLY_/_INVALID_/_PATHNAME_#")

@@ -41,7 +41,7 @@ function retval = output_max_field_width (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "output_max_field_width is obsolete and will be removed from a future version of Octave, please use output_precision instead");
+             "output_max_field_width is obsolete and will be removed from a future version of Octave, please use output_precision instead\n");
   endif
 
   retval = 20;

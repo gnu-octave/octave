@@ -21,6 +21,11 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   rendering of characters.  The default is "on" which produces smooth,
   more visually appealing text.
 
+- The graphics properties `"pointer"`, `"pointershapecdata"`, and
+  `"pointershapehotspot"` are now implemented.  This makes it possible
+  to change the shape of the cursor (pointer in Matlab-speak) displayed
+  in a plot window.
+
 - The appearance of patterned lines `"LineStyle" = ":"|"--"|"-."` has
   been improved for small widths (`"LineWidth"` less than 1.5 pixels)
   which is a common scenario.
@@ -31,17 +36,17 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   Matlab compatible.  If necessary use the `"-loose"` option to
   reproduce figures as they appeared in previous versions of Octave.
 
-- The following print devices are no more officially supported: cdr, corel,
-  aifm, ill, cgm, hpgl, mf and dxf.  A warning will be thrown when using
-  those devices and the actual code for supporting those formats will eventually
-  be removed from a future version of Octave.
+- The following print devices are no longer officially supported: cdr,
+  corel, aifm, ill, cgm, hpgl, mf and dxf.  A warning will be thrown
+  when using those devices, and the code for supporting those formats
+  will eventually be removed from a future version of Octave.
 
 ### Matlab compatibility
 
 - Complex RESTful web services can now be accessed by the `webread` and
-  `webwrite` functions alongside with the `weboptions` structure.  One major
-  feature is the support for cookies to enable RESTful communication with the
-  web service.
+  `webwrite` functions alongside with the `weboptions` structure.  One
+  major feature is the support for cookies to enable RESTful
+  communication with the web service.
 
 - The interpreter now supports handles to nested functions.
 
@@ -53,8 +58,8 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 ### Deprecated functions and properties
 
 The following functions and properties have been deprecated in Octave 6
-and will be removed from Octave 8 (or whatever version is the second major
-release after 6):
+and will be removed from Octave 8 (or whatever version is the second
+major release after 6):
 
 - Functions
 

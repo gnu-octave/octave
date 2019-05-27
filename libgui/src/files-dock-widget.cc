@@ -671,7 +671,8 @@ namespace octave
             // editor: close old
             emit file_remove_signal (old_name, new_name);
             // Do the renaming
-            bool st = path.rename (old_name, new_name);
+            QFile f (old_name);  // Must use QFile, not QDir (bug #56298)
+            bool st = f.rename (new_name);
             // editor: load new/old file depending on success
             emit file_renamed_signal (st);
             // Clear cache of file browser

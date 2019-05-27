@@ -968,6 +968,7 @@ namespace octave
         int offset = 1;
         size_t next_start;
         QString next_line;
+
         do                            // find next non-blank line
           {
             next_line = text (linenr + offset++);
@@ -975,8 +976,11 @@ namespace octave
           }
         while (linenr + offset < lines ()
                && next_start == std::string::npos);
+
         if (next_start == std::string::npos)
           next_start = 0;
+        if (start == 0 && next_start == 0)
+          return;                     // bug #56160, don't add at 0
         if (next_start > start)       // more indented => don't add "end"
           return;
         if (next_start == start)      // same => check if already is "end"

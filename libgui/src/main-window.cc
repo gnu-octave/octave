@@ -2069,6 +2069,7 @@ namespace octave
     file_menu->addSeparator ();
 
     m_exit_action = file_menu->addAction (tr ("Exit"));
+    m_exit_action->setMenuRole (QAction::QuitRole);
     m_exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
     connect (m_open_action, SIGNAL (triggered (void)),

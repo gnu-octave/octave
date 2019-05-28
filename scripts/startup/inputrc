@@ -1,6 +1,13 @@
+########################################################################
 ## This file configures the behavior of line-input editing for all
 ## Octave users when Octave is configured to use GNU Readline library
 ## for input-line editing.
+##
+## This file is NOT an Octave script.
+##
+## Do not make changes to this file unless you understand how
+## GNU Readline configuration works.
+########################################################################
 
 ## history-search-backward:
 ##
@@ -20,12 +27,12 @@
 
 "\e[B": history-search-forward
 
-## Disable so the usual paste shortcut will work on Windows systems.
+## Disable Ctrl+v so the usual paste shortcut will work on Windows.
 ## \C-q should still be available for quoted insert.
 
 "\C-v": ""
 
-## In windows, disable audiable bell which is enabled by default
+## On Windows, disable audible bell which is enabled by default.
 $if term=cygwin
    set bell-style none
 $endif

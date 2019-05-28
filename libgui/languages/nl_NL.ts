@@ -487,52 +487,52 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location filename="../../../octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek naar:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous search</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek vorige</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next search</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek volgende</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search</source>
-        <translation type="unfinished">Zoek</translation>
+        <translation>Zoek</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Geavanceerd zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation type="unfinished"></translation>
+        <translation>woorden &lt;B&gt;gelijkend&lt;/B&gt; aan:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;zonder&lt;/B&gt; de woorden:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation type="unfinished"></translation>
+        <translation>met de &lt;B&gt;exacte zin&lt;/B&gt;:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>met &lt;B&gt;alle&lt;/B&gt; woorden:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
+        <translation>met &lt;B&gt;minstens een&lt;/B&gt; van de woorden:</translation>
     </message>
 </context>
 <context>
@@ -2504,7 +2504,7 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">Zet regeleindes om naar Legacy &amp;Mac (CR)</translation>
+        <translation>Zet regeleindes om naar Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5178,22 +5178,22 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+50"/>
         <source> columns</source>
-        <translation type="unfinished"></translation>
+        <translation>kolommen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation type="unfinished"></translation>
+        <translation>kolom</translation>
     </message>
     <message>
         <location line="+47"/>
         <source> rows</source>
-        <translation type="unfinished"></translation>
+        <translation>rijen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation type="unfinished"></translation>
+        <translation>rij</translation>
     </message>
 </context>
 <context>
@@ -5613,7 +5613,7 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location line="+5"/>
         <source>Legacy Mac (CR)</source>
-        <translation type="unfinished">Legacy Mac (CR)</translation>
+        <translation>Legacy Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>

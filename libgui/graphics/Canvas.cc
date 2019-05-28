@@ -906,6 +906,8 @@ namespace QtHandles
       {
         std::string mode;
 
+        graphics_object figObj (obj.get_ancestor ("figure"));
+
         graphics_object axesObj;
 
         Matrix children = obj.get_properties ().get_children ();
@@ -930,8 +932,6 @@ namespace QtHandles
         if (axesObj)
           {
             MouseMode newMouseMode = NoMode;
-
-            graphics_object figObj (obj.get_ancestor ("figure"));
 
             Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
 
@@ -1005,6 +1005,13 @@ namespace QtHandles
 
             if (redrawFigure)
               redraw (false);
+          }
+        
+        if (! figObj.get ("windowscrollwheelfcn").isempty ())
+          {
+            octave_scalar_map eventData = Utils::makeScrollEventStruct (event);
+            gh_manager::post_callback (m_handle, "windowscrollwheelfcn",
+                                       eventData);
           }
       }
   }

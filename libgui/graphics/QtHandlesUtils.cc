@@ -388,6 +388,23 @@ namespace QtHandles
       return retval;
     }
 
+    octave_scalar_map
+    makeScrollEventStruct (QWheelEvent *event)
+    {
+      octave_scalar_map retval;
+
+      // We assume a standard mouse with 15 degree steps and Qt returns
+      // 1/8 of a degree.
+      retval.setfield ("VerticalScrollCount",
+                       octave_value (- event->angleDelta().y () / 120));
+      // FIXME: Is there any way to access the number of lines a scroll step
+      // should correspond to?
+      retval.setfield ("VerticalScrollAmount", octave_value (3));
+      retval.setfield ("EventName", octave_value ("WindowScrollWheel"));
+
+      return retval;
+    }
+
   }
 
 }

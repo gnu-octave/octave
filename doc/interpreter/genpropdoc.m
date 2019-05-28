@@ -594,7 +594,21 @@ the figure has focus.\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowscrollwheelfcn"
-        s.doc = doc_unused;
+        s.doc = "Function that is executed when a user manipulates \
+the mouse wheel over this figure.  \
+The function is called with two input arguments.  The first \
+argument holds the handle of the calling figure.  The second argument holds \
+an event structure which has the following members:\n\
+@table @code\n\
+@item VerticalScrollCount:\n\
+The number of wheel steps, typically 1 when scrolling down and -1 when \
+scrolling up.\n\
+@item VerticalScrollAmount:\n\
+The number of lines a wheel step should scroll.  This value is always 3.\n\
+@item EventName:\n\
+The event name which is \"WindowScrollWheel\".\
+@end table\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "windowstyle"

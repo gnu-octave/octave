@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class QKeyEvent;
 class QMouseEvent;
+class QWheelEvent;
 
 namespace QtHandles
 {
@@ -78,6 +79,7 @@ namespace QtHandles
                                int height = -1);
 
     octave_scalar_map makeKeyEventStruct (QKeyEvent *event);
+    octave_scalar_map makeScrollEventStruct (QWheelEvent *event);
   }
 
 }

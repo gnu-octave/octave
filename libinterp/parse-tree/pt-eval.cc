@@ -1690,7 +1690,7 @@ Example:
 }
 
 /*
-%!test <33637>
+%!test <*33637>
 %! fail ("__undef_sym__ (end)", "'__undef_sym__' undefined");
 */
 

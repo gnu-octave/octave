@@ -50,7 +50,7 @@
 %!assert (amount (p), amt, eps ())
 %!xtest <55961>
 %! assert (properties (p), {'rate'; 'term'; 'principle'});
-%!xtest <55858>
+%!xtest <*55858>
 %! assert (methods (p), {'amount'; 'foo_value_class'});
 %!assert (isempty (foo_value_class().rate))
 %!error <property `rate' is not constant> foo_value_class.rate
@@ -187,7 +187,7 @@
 %! obj{3:4}(3:4) = 4 * ones (2);
 %! assert (isequal (obj{3:4}(3:4), 4 * ones (2)));
 
-%!test <52614>
+%!test <*52614>
 %! A = class_bug52614A ();
 %! assert (A.a, 1);
 %! B = class_bug52614B ();

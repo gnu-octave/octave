@@ -233,11 +233,11 @@ sparse matrix if possible.
 %! assert (isa (xinv, "double"));
 %! assert (isa (rcond, "double"));
 
-%!test
+%!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1, 2;0 ,0]))", "warning", "matrix singular");
 %! assert (A, sparse ([Inf, Inf; 0, 0]));
 
-%!test
+%!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1i, 2;0 ,0]))", "warning", "matrix singular");
 %! assert (A, sparse ([Inf, Inf; 0, 0]));
 
@@ -248,7 +248,7 @@ sparse matrix if possible.
 %!error <inverse of the null matrix not defined> inv (diag ([0, 0]))
 %!error <inverse of the null matrix not defined> inv (diag (complex ([0, 0])))
 
-%!test
+%!testif HAVE_UMFPACK <*56232>
 %! fail ("A = inv (sparse ([1, 0, 0; 0, 0, 0; 0, 0, 1]))", "warning", "matrix singular");
 %! assert (A, sparse ([Inf, 0, 0; 0, 0, 0; 0, 0, Inf]));
 

@@ -1146,6 +1146,19 @@ namespace octave
       {
         m_tab_widget->setElideMode (Qt::ElideNone);
       }
+
+#if defined (Q_OS_MAC)
+    // FIXME: This is a workaround for missing tab close buttons on MacOS
+    // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
+    QString close_button_css (
+      "QTabBar::close-button"
+      "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
+      "QTabBar::close-button:hover"
+      "  { background-color: #cccccc; }"
+      );
+    style_sheet = style_sheet + close_button_css;
+#endif
+
     m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;

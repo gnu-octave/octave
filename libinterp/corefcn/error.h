@@ -164,6 +164,7 @@ extern OCTINTERP_API bool Vdebug_on_warning;
 
 //! Current error state.
 
+OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
 extern OCTINTERP_API int error_state;
 
 //! Tell the error handler whether to print messages, or just store

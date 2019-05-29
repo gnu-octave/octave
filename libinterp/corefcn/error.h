@@ -166,10 +166,6 @@ extern OCTINTERP_API bool Vdebug_on_warning;
 
 extern OCTINTERP_API int error_state;
 
-//! Current warning state.
-
-extern OCTINTERP_API int warning_state;
-
 //! Tell the error handler whether to print messages, or just store
 //! them for later.  Used for handling errors in eval() and
 //! the 'unwind_protect' statement.

@@ -798,7 +798,10 @@ namespace octave
     RegCloseKey (key);
   }
 
-  static LONG
+  // This function is also used in ov-java.cc, so don't declare static.
+  // Maybe the functions that use it should be here instead?
+
+  LONG
   get_regkey_value (HKEY h_rootkey, const std::string subkey,
                     const std::string name, octave_value& value)
   {

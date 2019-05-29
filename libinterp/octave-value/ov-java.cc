@@ -532,10 +532,14 @@ get_jvm_lib_path_in_subdir (std::string java_home_path)
 }
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-// Declare function defined in sysdep.cc
-extern LONG
-get_regkey_value (HKEY h_rootkey, const std::string subkey,
-                  const std::string name, octave_value& value);
+
+namespace octave
+{
+  // Declare function defined in sysdep.cc
+  extern LONG
+  get_regkey_value (HKEY h_rootkey, const std::string subkey,
+                    const std::string name, octave_value& value);
+}
 
 static std::string
 get_jvm_lib_path_from_registry ()
@@ -553,14 +557,13 @@ get_jvm_lib_path_from_registry ()
   if (jversion.empty ())
     {
       value = "CurrentVersion";
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
 
       if (retval != ERROR_SUCCESS)
         {
           // Search for JRE < 9
           key = R"(software\javasoft\java runtime environment)";
-          retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value,
-                                     regval);
+          retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
         }
 
       if (retval != ERROR_SUCCESS)
@@ -574,12 +577,12 @@ get_jvm_lib_path_from_registry ()
 
   key = key + '\\' + jversion;
   value = "RuntimeLib";
-  retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+  retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
   if (retval != ERROR_SUCCESS)
     {
       // Search for JRE < 9
       key = R"(software\javasoft\java runtime environment\)" + jversion;
-      retval = get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
+      retval = octave::get_regkey_value (HKEY_LOCAL_MACHINE, key, value, regval);
     }
 
   if (retval != ERROR_SUCCESS)

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-refcount.h"
 
+#include "error.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cdef-object.h"
 #include "cdef-package.h"
 #include "cdef-property.h"
+#include "error.h"
 #include "ov.h"
 #include "ovl.h"
 

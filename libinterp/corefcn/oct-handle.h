@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dMatrix.h"
 #include "lo-ieee.h"
 
+#include "error.h"
 #include "ov.h"
 
 // ---------------------------------------------------------------------

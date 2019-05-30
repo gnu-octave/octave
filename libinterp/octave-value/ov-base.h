@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-base.h"
 #include "str-vec.h"
 
-#include "error.h"
 #include "oct-hdf5-types.h"
 #include "oct-stream.h"
 

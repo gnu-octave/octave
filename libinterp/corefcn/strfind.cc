@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "defun.h"
 #include "errwarn.h"
+#include "error.h"
 #include "ov.h"
 #include "unwind-prot.h"
 #include "utils.h"

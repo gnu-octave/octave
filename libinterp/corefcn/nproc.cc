@@ -24,8 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "defun.h"
 #include "nproc-wrapper.h"
+
+#include "defun.h"
+#include "error.h"
 
 DEFUN (nproc, args, ,
        doc: /* -*- texinfo -*-

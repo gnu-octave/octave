@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 
 #include "Cell.h"
+#include "error.h"
 #include "octave-preserve-stream-state.h"
 #include "ov.h"
 #include "oct-map.h"

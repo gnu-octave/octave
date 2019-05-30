@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-refcount.h"
 
 #include "cdef-object.h"
+#include "error.h"
 #include "ov.h"
 
 namespace octave

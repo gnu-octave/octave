@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 class octave_value_list;
 
+#include "error.h"
 #include "ov-fcn.h"
 #include "ov-fcn.h"
 #include "ov-fcn-handle.h"

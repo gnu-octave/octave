@@ -447,12 +447,15 @@ namespace octave
 
         _rep_all = 1;
         find_next ();  // find first occurence (forward)
+
+        _edit_area->beginUndoAction ();
         while (_find_result_available)   // while search string is found
           {
             do_replace ();
             _rep_all++;                                          // inc counter
             find_next ();                                        // find next
           }
+        _edit_area->endUndoAction ();
 
         QMessageBox msg_box (QMessageBox::Information, tr ("Replace Result"),
                              tr ("%1 items replaced").arg (_rep_all-1),

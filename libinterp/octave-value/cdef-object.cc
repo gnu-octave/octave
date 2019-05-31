@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cdef-property.h"
 #include "cdef-utils.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "ov-classdef.h"
 
 // Define to 1 to enable debugging statements.
@@ -79,7 +80,11 @@ namespace octave
           }
         catch (const execution_exception&)
           {
-            std::string msg = last_error_message ();
+            octave::error_system& es
+              = octave::__get_error_system__ ("cdef_object::release");
+
+            std::string msg = es.last_error_message ();
+
             warning ("error caught while executing handle class delete method:\n%s\n",
                      msg.c_str ());
 

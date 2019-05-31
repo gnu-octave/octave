@@ -187,13 +187,17 @@ namespace octave
           {
             int parse_status;
 
+            error_system& es = interp.get_error_system ();
+
             unwind_protect frame;
 
-            frame.protect_var (discard_error_messages);
-            frame.protect_var (discard_warning_messages);
+            frame.add_method (es, &error_system::set_discard_error_messages,
+                              es.discard_error_messages ());
+            frame.add_method (es, &error_system::set_discard_warning_messages,
+                              es.discard_warning_messages ());
 
-            discard_error_messages = true;
-            discard_warning_messages = true;
+            es.discard_error_messages (true);
+            es.discard_warning_messages (true);
 
             try
               {

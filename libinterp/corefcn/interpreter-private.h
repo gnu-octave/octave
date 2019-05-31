@@ -37,6 +37,7 @@ namespace octave
   class cdef_manager;
   class child_list;
   class dynamic_loader;
+  class error_system;
   class gtk_manager;
   class help_system;
   class history_system;
@@ -51,6 +52,8 @@ namespace octave
   extern interpreter& __get_interpreter__ (const std::string& who);
 
   extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
+
+  extern error_system& __get_error_system__ (const std::string& who);
 
   extern help_system& __get_help_system__ (const std::string& who);
 

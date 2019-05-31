@@ -143,6 +143,14 @@ namespace octave
     std::set<std::string> m_caught_that_stop;
     std::set<std::string> m_warnings_that_stop;
 
+    void set_stop_flag (const char *who, const std::string& condition,
+                        bool on_off);
+
+    void process_id_list (const char *who, const std::string& condition,
+                          const octave_value_list& args,
+                          int nargin, int& pos, bool on_off,
+                          std::set<std::string>& id_list);
+
     bool add_breakpoint_1 (octave_user_code *fcn, const std::string& fname,
                            const intmap& line, const std::string& condition,
                            intmap& retval);

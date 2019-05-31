@@ -394,15 +394,23 @@ namespace octave
                                    &ok);
         if (ok)     // If cancel, don't change breakpoint condition.
           {
+            interpreter& interp
+              = __get_interpreter__ ("handle_context_menu_break_condition");
+
+            error_system& es = interp.get_error_system ();
+
             try
               {
                 // Suppress error messages on the console.
                 unwind_protect frame;
-                frame.protect_var (buffer_error_messages);
-                buffer_error_messages++;
 
-                bp_table& bptab
-                  = __get_bp_table__ ("handle_context_menu_break_condition");
+                int bem = es.buffer_error_messages ();
+                frame.add_method (es, &error_system::set_buffer_error_messages, bem);
+
+                es.buffer_error_messages (bem + 1);
+
+                tree_evaluator& tw = interp.get_evaluator ();
+                bp_table& bptab = tw.get_bp_table ();
 
                 bptab.condition_valid (new_condition.toStdString ());
                 valid = true;
@@ -416,7 +424,7 @@ namespace octave
               }
 
             // In case we repeat, set new prompt.
-            prompt = "ERROR: " + last_error_message () + "\n\ndbstop if";
+            prompt = "ERROR: " + es.last_error_message () + "\n\ndbstop if";
             cond = new_condition;
           }
         else

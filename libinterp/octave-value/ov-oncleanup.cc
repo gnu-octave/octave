@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
@@ -175,7 +176,11 @@ octave_oncleanup::call_object_destructor (void)
     }
   catch (const octave::execution_exception&)
     {
-      std::string msg = last_error_message ();
+      octave::error_system& es
+        = octave::__get_error_system__ ("octave_oncleanup::call_object_destructor");
+
+      std::string msg = es.last_error_message ();
+
       warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
                msg.c_str ());
 

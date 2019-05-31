@@ -362,6 +362,7 @@ namespace octave
     : m_app_context (app_context),
       m_environment (),
       m_settings (),
+      m_error_system (*this),
       m_help_system (*this),
       m_input_system (*this),
       m_output_system (*this),
@@ -996,19 +997,23 @@ namespace octave
     {                                                                   \
       try                                                               \
         {                                                               \
-          unwind_protect frame;                                 \
+          unwind_protect frame;                                         \
                                                                         \
-          frame.protect_var (Vdebug_on_error);                          \
-          frame.protect_var (Vdebug_on_warning);                        \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_error,          \
+                            m_error_system.debug_on_error ());          \
+          frame.add_method (m_error_system,                             \
+                            &error_system::set_debug_on_warning,        \
+                            m_error_system.debug_on_warning ());        \
                                                                         \
-          Vdebug_on_error = false;                                      \
-          Vdebug_on_warning = false;                                    \
+          m_error_system.debug_on_error (false);                        \
+          m_error_system.debug_on_warning (false);                      \
                                                                         \
           F ARGS;                                                       \
         }                                                               \
-      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)           \
-      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)      \
-      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)      \
+      OCTAVE_IGNORE_EXCEPTION (const exit_exception&)                   \
+      OCTAVE_IGNORE_EXCEPTION (const interrupt_exception&)              \
+      OCTAVE_IGNORE_EXCEPTION (const execution_exception&)              \
       OCTAVE_IGNORE_EXCEPTION (const std::bad_alloc&)                   \
     }                                                                   \
   while (0)
@@ -1029,7 +1034,7 @@ namespace octave
 
         atexit_functions.pop_front ();
 
-        OCTAVE_SAFE_CALL (reset_error_handler, ());
+        OCTAVE_SAFE_CALL (m_error_system.reset, ());
 
         OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
@@ -1685,7 +1690,7 @@ namespace octave
 
     m_history_system.timestamp_format_string ("%%-- %D %I:%M %p --%%");
 
-    Fbeep_on_error (octave_value (true));
+    m_error_system.beep_on_error (true);
     Fconfirm_recursive_rmdir (octave_value (false));
 
     Fdisable_diagonal_matrix (octave_value (true));

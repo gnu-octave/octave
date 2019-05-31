@@ -240,6 +240,8 @@ namespace octave
 
     parser curr_parser (m_interpreter);
 
+    error_system& es = m_interpreter.get_error_system ();
+
     while (m_in_debug_repl)
       {
         if (m_exit_debug_repl || m_abort_debug_repl || tw.dbstep_flag ())
@@ -249,7 +251,7 @@ namespace octave
           {
             Vtrack_line_num = false;
 
-            reset_error_handler ();
+            es.reset ();
 
             curr_parser.reset ();
 
@@ -327,11 +329,13 @@ namespace octave
                         ? new lexer (m_interpreter)
                         : new lexer (stdin, m_interpreter));
 
+    error_system& es = m_interpreter.get_error_system ();
+
     do
       {
         try
           {
-            reset_error_handler ();
+            es.reset ();
 
             repl_parser.reset ();
 
@@ -415,7 +419,9 @@ namespace octave
           }
 
 #if defined (DBSTOP_NANINF)
-        if (Vdebug_on_naninf)
+        error_system& es = m_interpreter.get_error_system ();
+
+        if (es.debug_on_naninf ())
           {
             if (setjump (naninf_jump) != 0)
               debug_or_throw_exception (true);  // true = stack trace
@@ -577,10 +583,14 @@ namespace octave
   {
     octave_value_list retval;
 
+    error_system& es = m_interpreter.get_error_system ();
+
     unwind_protect frame;
 
-    frame.protect_var (buffer_error_messages);
-    buffer_error_messages++;
+    int bem = es.buffer_error_messages ();
+    frame.add_method (es, &error_system::set_buffer_error_messages, bem);
+
+    es.buffer_error_messages (bem + 1);
 
     int parse_status = 0;
 
@@ -604,7 +614,7 @@ namespace octave
         // Set up for letting the user print any messages from
         // errors that occurred in the first part of this eval().
 
-        buffer_error_messages--;
+        es.buffer_error_messages (es.buffer_error_messages () - 1);
 
         tmp = eval_string (catch_code, nargout > 0, parse_status, nargout);
 
@@ -665,8 +675,12 @@ namespace octave
     else
       error ("evalin: CONTEXT must be \"caller\" or \"base\"");
 
-    frame.protect_var (buffer_error_messages);
-    buffer_error_messages++;
+    error_system& es = m_interpreter.get_error_system ();
+
+    int bem = es.buffer_error_messages ();
+    frame.add_method (es, &error_system::set_buffer_error_messages, bem);
+
+    es.buffer_error_messages (bem + 1);
 
     int parse_status = 0;
 
@@ -690,7 +704,7 @@ namespace octave
         // Set up for letting the user print any messages from
         // errors that occurred in the first part of this eval().
 
-        buffer_error_messages--;
+        es.buffer_error_messages (es.buffer_error_messages () - 1);
 
         tmp = eval_string (catch_code, nargout > 0, parse_status, nargout);
 
@@ -3820,19 +3834,15 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
+    error_system& es = m_interpreter.get_error_system ();
+
     bool execution_error = false;
 
     {
       // unwind frame before catch block
       unwind_protect frame;
 
-      frame.protect_var (buffer_error_messages);
-      frame.protect_var (Vdebug_on_error);
-      frame.protect_var (Vdebug_on_warning);
-
-      buffer_error_messages++;
-      Vdebug_on_error = false;
-      Vdebug_on_warning = false;
+      interpreter_try (frame);
 
       // The catch code is *not* added to unwind_protect stack;
       // it doesn't need to be run on interrupts.
@@ -3843,15 +3853,20 @@ namespace octave
         {
           try
             {
-              in_try_catch++;
+              unwind_protect inner_frame;
+
+              int itc = es.in_try_catch ();
+              inner_frame.add_method (es, &error_system::set_in_try_catch,
+                                      es.in_try_catch ());
+
+              es.in_try_catch (itc + 1);
+
               try_code->accept (*this);
-              in_try_catch--;
             }
           catch (const execution_exception&)
             {
               interpreter::recover_from_exception ();
 
-              in_try_catch--;          // must be restored before "catch" block
               execution_error = true;
             }
         }
@@ -3873,9 +3888,9 @@ namespace octave
 
                 octave_scalar_map err;
 
-                err.assign ("message", last_error_message ());
-                err.assign ("identifier", last_error_id ());
-                err.assign ("stack", last_error_stack ());
+                err.assign ("message", es.last_error_message ());
+                err.assign ("identifier", es.last_error_id ());
+                err.assign ("stack", es.last_error_stack ());
 
                 ult.assign (octave_value::op_asn_eq, err);
               }

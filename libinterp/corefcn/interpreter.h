@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cdef-manager.h"
 #include "dynamic-ld.h"
 #include "environment.h"
+#include "error.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -158,6 +159,11 @@ namespace octave
     settings& get_settings (void)
     {
       return m_settings;
+    }
+
+    error_system& get_error_system (void)
+    {
+      return m_error_system;
     }
 
     help_system& get_help_system (void)
@@ -413,6 +419,8 @@ namespace octave
     environment m_environment;
 
     settings m_settings;
+
+    error_system m_error_system;
 
     help_system m_help_system;
 

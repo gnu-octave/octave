@@ -57,13 +57,16 @@ namespace octave
 
   void bp_table::dbclear_all_signals (void)
   {
-    Vdebug_on_error = false;
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
+    es.debug_on_error (false);
     bp_table::m_errors_that_stop.clear ();
 
-    Vdebug_on_caught = false;
+    es.debug_on_caught (false);
     bp_table::m_caught_that_stop.clear ();
 
-    Vdebug_on_warning = false;
+    es.debug_on_warning (false);
     bp_table::m_warnings_that_stop.clear ();
 
     Vdebug_on_interrupt = false;
@@ -74,6 +77,9 @@ namespace octave
 
   void bp_table::dbstop_process_map_args (const octave_map& mv)
   {
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
     // process errs
     // why so many levels of indirection needed?
     bool fail = false;
@@ -84,7 +90,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_error = 1;    // like "dbstop if error" with no identifier
+          es.debug_on_error (true);    // like "dbstop if error" with no identifier
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -93,7 +99,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_errors_that_stop.insert (V(i).string_value ());
-                Vdebug_on_error = 1;
+                es.debug_on_error (true);
               }
           }
       }
@@ -111,7 +117,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_caught = 1;    // like "dbstop if caught error" with no ID
+          es.debug_on_caught (true);    // like "dbstop if caught error" with no ID
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -120,7 +126,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_caught_that_stop.insert (V(i).string_value ());
-                Vdebug_on_caught = 1;
+                es.debug_on_caught (true);
               }
           }
       }
@@ -138,7 +144,7 @@ namespace octave
       {
         Array<octave_value> W = U.index (static_cast<octave_idx_type> (0));
         if (W.isempty () || W(0).isempty ())
-          Vdebug_on_warning = 1;    // like "dbstop if warning" with no identifier
+          es.debug_on_warning (true);    // like "dbstop if warning" with no identifier
         else if (! W(0).iscell ())
           fail = true;
         else
@@ -147,7 +153,7 @@ namespace octave
             for (int i = 0; i < V.numel (); i++)
               {
                 m_warnings_that_stop.insert (V(i).string_value ());
-                Vdebug_on_warning = 1;
+                es.debug_on_warning (true);
               }
           }
       }
@@ -157,7 +163,7 @@ namespace octave
 
     // process interrupt
     if (mv.isfield ("intr"))
-      Vdebug_on_interrupt = 1;
+      Vdebug_on_interrupt = true;
   }
 
   // Insert a breakpoint in function fcn at line within file fname,
@@ -415,28 +421,23 @@ namespace octave
             else    // stop on event (error, warning, interrupt, NaN/inf)
               {
                 std::string condition = args(pos).string_value ();
-                int on_off = ! strcmp(who, "dbstop");
+                bool on_off = ! strcmp (who, "dbstop");
 
-                // list of error/warning IDs to update
-                std::set<std::string> *id_list = nullptr;
-                bool *stop_flag = nullptr;         // Vdebug_on_... flag
+                // FIXME: the following seems a bit messy in the way it
+                // duplicates checks on CONDITION.
 
                 if (condition == "error")
-                  {
-                    id_list = &m_errors_that_stop;
-                    stop_flag = &Vdebug_on_error;
-                  }
+                  process_id_list (who, condition, args, nargin, pos, on_off,
+                                   m_errors_that_stop);
                 else if (condition == "warning")
-                  {
-                    id_list = &m_warnings_that_stop;
-                    stop_flag = &Vdebug_on_warning;
-                  }
+                  process_id_list (who, condition, args, nargin, pos, on_off,
+                                   m_warnings_that_stop);
                 else if (condition == "caught" && nargin > pos+1
                          && args(pos+1).string_value () == "error")
                   {
-                    id_list = &m_caught_that_stop;
-                    stop_flag = &Vdebug_on_caught;
                     pos++;
+                    process_id_list (who, condition, args, nargin, pos, on_off,
+                                     m_caught_that_stop);
                   }
                 else if (condition == "interrupt")
                   {
@@ -455,38 +456,6 @@ namespace octave
                 else
                   error ("%s: invalid condition %s",
                          who, condition.c_str ());
-
-                // process ID list for "dbstop if error <error_ID>" etc
-                if (id_list)
-                  {
-                    pos++;
-                    if (pos < nargin)       // only affect a single error ID
-                      {
-                        if (! args(pos).is_string () || nargin > pos+1)
-                          error ("%s: ID must be a single string", who);
-                        else if (on_off == 1)
-                          {
-                            id_list->insert (args(pos).string_value ());
-                            *stop_flag = true;
-                          }
-                        else
-                          {
-                            id_list->erase (args(pos).string_value ());
-                            if (id_list->empty ())
-                              *stop_flag = false;
-                          }
-                      }
-                    else   // unqualified.  Turn all on or off
-                      {
-                        id_list->clear ();
-                        *stop_flag = on_off;
-                        if (stop_flag == &Vdebug_on_error)
-                          {
-                            // Matlab stops on both.
-                            Vdebug_on_interrupt = on_off;
-                          }
-                      }
-                  }
 
                 pos = nargin;
               }
@@ -513,6 +482,59 @@ namespace octave
     %! assert ([s.bkpt(:).line], [48, 100, 201, 58, 100]);
     %! assert (s.errs, {"Octave:undefined-function"});
   */
+
+  void bp_table::set_stop_flag (const char *who, const std::string& condition,
+                                bool on_off)
+  {
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
+    if (condition == "error")
+      es.debug_on_error (on_off);
+    else if (condition == "warning")
+      es.debug_on_warning (on_off);
+    else if (condition == "caught")
+      es.debug_on_caught (on_off);
+    else
+      error ("%s: internal error in set_stop_flag", who);
+  }
+
+  void bp_table::process_id_list (const char *who,
+                                  const std::string& condition,
+                                  const octave_value_list& args,
+                                  int nargin, int& pos, bool on_off,
+                                  std::set<std::string>& id_list)
+  {
+    pos++;
+
+    if (nargin > pos)       // only affect a single error ID
+      {
+        if (! args(pos).is_string () || nargin > pos+1)
+          error ("%s: ID must be a single string", who);
+        else if (on_off)
+          {
+            id_list.insert (args(pos).string_value ());
+            set_stop_flag (who, condition, true);
+          }
+        else
+          {
+            id_list.erase (args(pos).string_value ());
+            if (id_list.empty ())
+              set_stop_flag (who, condition, false);
+          }
+      }
+    else   // unqualified.  Turn all on or off
+      {
+        id_list.clear ();
+        set_stop_flag (who, condition, on_off);
+
+        if (condition == "error")
+          {
+            // Matlab stops on both.
+            Vdebug_on_interrupt = on_off;
+          }
+      }
+  }
 
   // Return the sub/nested/main function of MAIN_FCN that contains
   // line number LINENO of the source file.
@@ -861,8 +883,11 @@ namespace octave
   {
     octave_map retval;
 
+    interpreter& interp = m_evaluator.get_interpreter ();
+    error_system& es = interp.get_error_system ();
+
     // print dbstop if error information
-    if (Vdebug_on_error)
+    if (es.debug_on_error ())
       {
         if (m_errors_that_stop.empty ())
           {
@@ -889,7 +914,7 @@ namespace octave
       }
 
     // print dbstop if caught error information
-    if (Vdebug_on_caught)
+    if (es.debug_on_caught ())
       {
         if (m_caught_that_stop.empty ())
           {
@@ -916,7 +941,7 @@ namespace octave
       }
 
     // print dbstop if warning information
-    if (Vdebug_on_warning)
+    if (es.debug_on_warning ())
       {
         if (m_warnings_that_stop.empty ())
           {

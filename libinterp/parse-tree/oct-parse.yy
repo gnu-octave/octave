@@ -2500,13 +2500,18 @@ namespace octave
   {
     tree_expression *retval = nullptr;
 
+    interpreter& interp = __get_interpreter__ ("finish_colon_expression");
+    error_system& es = interp.get_error_system ();
+
     unwind_protect frame;
 
-    frame.protect_var (discard_error_messages);
-    frame.protect_var (discard_warning_messages);
+    frame.add_method (es, &error_system::set_discard_error_messages,
+                      es.discard_error_messages ());
+    frame.add_method (es, &error_system::set_discard_warning_messages,
+                      es.discard_warning_messages ());
 
-    discard_error_messages = true;
-    discard_warning_messages = true;
+    es.discard_error_messages (true);
+    es.discard_warning_messages (true);
 
     if (! base || ! limit)
       {
@@ -2528,8 +2533,7 @@ namespace octave
       {
         try
           {
-            tree_evaluator& tw
-              = __get_evaluator__ ("finish_colon_expression");
+            tree_evaluator& tw = interp.get_evaluator ();
 
             octave_value tmp = tw.evaluate (e);
 
@@ -4163,20 +4167,24 @@ namespace octave
   {
     tree_expression *retval = array_list;
 
+    interpreter& interp = __get_interpreter__ ("finish_array_list");
+    error_system& es = interp.get_error_system ();
+
     unwind_protect frame;
 
-    frame.protect_var (discard_error_messages);
-    frame.protect_var (discard_warning_messages);
+    frame.add_method (es, &error_system::set_discard_error_messages,
+                      es.discard_error_messages ());
+    frame.add_method (es, &error_system::set_discard_warning_messages,
+                      es.discard_warning_messages ());
 
-    discard_error_messages = true;
-    discard_warning_messages = true;
+    es.discard_error_messages (true);
+    es.discard_warning_messages (true);
 
     if (array_list->all_elements_are_constant ())
       {
         try
           {
-            tree_evaluator& tw
-              = __get_evaluator__ ("finish_array_list");
+            tree_evaluator& tw = interp.get_evaluator ();
 
             octave_value tmp = tw.evaluate (array_list);
 
@@ -5144,10 +5152,19 @@ static void
 maybe_print_last_error_message (bool *doit)
 {
   if (doit && *doit)
-    // Print error message again, which was lost because of the stderr buffer
-    // Note: this keeps error_state and last_error_stack intact
-    message_with_id ("error", last_error_id ().c_str (),
-                     "%s", last_error_message ().c_str ());
+    {
+      // Print error message again, which was lost because of the stderr
+      // buffer.  Note: this keeps error_state and last_error_stack
+      // intact.
+
+      octave::error_system& es
+        = octave::__get_error_system__ ("maybe_print_last_error_message");
+
+      std::string id = es.last_error_id ();
+      std::string msg = es.last_error_message ();
+
+      message_with_id ("error", id.c_str (), "%s", msg.c_str ());
+    }
 }
 
 static void

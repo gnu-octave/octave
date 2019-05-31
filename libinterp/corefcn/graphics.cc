@@ -3570,13 +3570,22 @@ base_graphics_object::remove_all_listeners (void)
 
       octave::unwind_protect frame;
 
-      frame.protect_var (discard_error_messages);
-      frame.protect_var (Vdebug_on_error);
-      frame.protect_var (Vdebug_on_warning);
+      octave::error_system& es
+        = octave::__get_error_system__ ("base_graphics_object::remove_all_listeners");
 
-      discard_error_messages = true;
-      Vdebug_on_error = false;
-      Vdebug_on_warning = false;
+      // Almost the same as interpreter_try but discard instead of
+      // buffer error messages.
+
+      frame.add_method (es, &octave::error_system::set_discard_error_messages,
+                        es.discard_error_messages ());
+      frame.add_method (es, &octave::error_system::set_debug_on_error,
+                        es.debug_on_error ());
+      frame.add_method (es, &octave::error_system::set_debug_on_warning,
+                        es.debug_on_warning ());
+
+      es.discard_error_messages (true);
+      es.debug_on_error (false);
+      es.debug_on_warning (false);
 
       try
         {
@@ -11720,6 +11729,11 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       // Copy CB because "function_value" method is non-const.
       octave_value cb = cb_arg;
 
+      octave::interpreter& interp
+        = octave::__get_interpreter__ ("gh_manager::do_execute_callback");
+
+      octave::error_system& es = interp.get_error_system ();
+
       if (cb.is_function ())
         fcn = cb.function_value ();
       else if (cb.is_function_handle ())
@@ -11731,16 +11745,16 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
           try
             {
-              octave::interpreter& interp
-                = octave::__get_interpreter__ ("gh_manager::do_execute_callback");
-
               interp.eval_string (s, false, status, 0);
             }
           catch (octave::execution_exception&)
             {
               std::cerr << "execution error in graphics callback function"
                         << std::endl;
-              Flasterr (ovl ("execution error in graphics callback function"));
+
+              es.last_error_id ("");
+              es.last_error_message ("execution error in graphics callback function");
+
               octave::interpreter::recover_from_exception ();
             }
         }
@@ -11775,7 +11789,10 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           {
             std::cerr << "execution error in graphics callback function"
                       << std::endl;
-            Flasterr (ovl ("execution error in graphics callback function"));
+
+            es.last_error_id ("");
+            es.last_error_message ("execution error in graphics callback function");
+
             octave::interpreter::recover_from_exception ();
           }
 

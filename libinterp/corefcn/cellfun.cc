@@ -66,7 +66,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 
 static octave_value_list
-get_output_list (octave_idx_type count, octave_idx_type nargout,
+get_output_list (octave::error_system& es,
+                 octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
                  octave_value& func,
                  octave_value& error_handler)
@@ -96,8 +97,8 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
       if (error_handler.is_defined ())
         {
           octave_scalar_map msg;
-          msg.assign ("identifier", last_error_id ());
-          msg.assign ("message", last_error_message ());
+          msg.assign ("identifier", es.last_error_id ());
+          msg.assign ("message", es.last_error_message ());
           msg.assign ("index",
                       static_cast<double> (count
                                            + static_cast<octave_idx_type> (1)));
@@ -105,7 +106,7 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
 
-          buffer_error_messages--;
+          es.buffer_error_messages (es.buffer_error_messages () - 1);
 
           tmp = octave::feval (error_handler, errlist, nargout);
         }
@@ -541,11 +542,15 @@ nevermind:
         }
     }
 
+  octave::error_system& es = interp.get_error_system ();
+
   octave::unwind_protect frame;
-  frame.protect_var (buffer_error_messages);
+
+  int bem = es.buffer_error_messages ();
+  frame.add_method (es, &octave::error_system::set_buffer_error_messages, bem);
 
   if (error_handler.is_defined ())
-    buffer_error_messages++;
+    es.buffer_error_messages (bem + 1);
 
   // Apply functions.
 
@@ -566,7 +571,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, func,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -647,7 +652,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (count, nargout, inputlist, func,
+            = get_output_list (es, count, nargout, inputlist, func,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -1230,11 +1235,16 @@ arrayfun (@@str2num, [1234],
             }
         }
 
+      octave::error_system& es = interp.get_error_system ();
+
       octave::unwind_protect frame;
-      frame.protect_var (buffer_error_messages);
+
+      int bem = es.buffer_error_messages ();
+      frame.add_method (es, &octave::error_system::set_buffer_error_messages,
+                        bem);
 
       if (error_handler.is_defined ())
-        buffer_error_messages++;
+        es.buffer_error_messages (bem + 1);
 
       // Apply functions.
 
@@ -1257,7 +1267,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, func,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1349,7 +1359,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (count, nargout, inputlist, func,
+                = get_output_list (es, count, nargout, inputlist, func,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)

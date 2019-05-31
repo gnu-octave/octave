@@ -52,101 +52,169 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// TRUE means that Octave will try to beep obnoxiously before printing
-// error messages.
-static bool Vbeep_on_error = false;
-
-// TRUE means that Octave will try to enter the debugger when an error
-// is encountered.  This will also inhibit printing of the normal
-// traceback message (you will only see the top-level error message).
-bool Vdebug_on_error = false;
-
-// TRUE means that Octave will try to enter the debugger when an error
-// is encountered within the 'try' section of a 'try' / 'catch' block.
-bool Vdebug_on_caught = false;
-
-// TRUE means that Octave will try to enter the debugger when a warning
-// is encountered.
-bool Vdebug_on_warning = false;
-
-// TRUE means that Octave will try to display a stack trace when a
-// warning is encountered.
-static bool Vbacktrace_on_warning = true;
-
-// TRUE means that Octave will print a verbose warning.  Currently unused.
-static bool Vverbose_warning;
-
-// TRUE means that Octave will print no warnings, but lastwarn will be updated
-static bool Vquiet_warning = false;
-
-// A structure containing (most of) the current state of warnings.
-static octave_map warning_options;
-
-// The text of the last error message.
-static std::string Vlast_error_message;
-
-// The text of the last warning message.
-static std::string Vlast_warning_message;
-
-// The last warning message id.
-static std::string Vlast_warning_id;
-
-// The last error message id.
-static std::string Vlast_error_id;
-
-// The last file in which an error occurred
-static octave_map Vlast_error_stack;
-
-// Current error state.
-//
-// Valid values:
-//
-//    0: no error
-//    1: an error has occurred
-//
+// This variable is obsolete and always has the value 0.
 int error_state = 0;
-
-// Tell the error handler whether to print messages, or just store
-// them for later.  Used for handling errors in eval() and
-// the 'unwind_protect' statement.
-int buffer_error_messages = 0;
-
-// The number of layers of try / catch blocks we're in.  Used to print
-// "caught error" instead of error when "dbstop if caught error" is on.
-int in_try_catch = 0;
-
-// TRUE means error messages are turned off.
-bool discard_error_messages = false;
-
-// TRUE means warning messages are turned off.
-bool discard_warning_messages = false;
 
 void
 reset_error_handler (void)
 {
-  buffer_error_messages = 0;
-  in_try_catch = 0;
-  discard_error_messages = false;
+  octave::error_system& es
+    = octave::__get_error_system__ ("reset_error_handler");
+
+  es.reset ();
 }
 
-static void
-initialize_warning_options (const std::string& state)
+namespace octave
 {
-  octave_scalar_map initw;
+  static octave_scalar_map
+  init_warning_options (const std::string& state)
+  {
+    octave_scalar_map initw;
 
-  initw.setfield ("identifier", "all");
-  initw.setfield ("state", state);
+    initw.setfield ("identifier", "all");
+    initw.setfield ("state", state);
 
-  warning_options = initw;
-}
+    return initw;
+  }
 
-static octave_map
-initialize_last_error_stack (void)
-{
-  octave::call_stack& cs
-    = octave::__get_call_stack__ ("initialize_last_error_stack");
+  static octave_map
+  init_error_stack (interpreter& interp)
+  {
+    octave::call_stack& cs = interp.get_call_stack ();
 
-  return cs.empty_backtrace ();
+    return cs.empty_backtrace ();
+  }
+
+  error_system::error_system (interpreter& interp)
+    : m_interpreter (interp),
+      m_debug_on_error (false),
+      m_debug_on_caught (false),
+      m_debug_on_warning (false),
+      m_buffer_error_messages (0),
+      m_in_try_catch (0),
+      m_discard_error_messages (false),
+      m_discard_warning_messages (false),
+      m_beep_on_error (false),
+      m_backtrace_on_warning (true),
+      m_verbose_warning (false),
+      m_quiet_warning (false),
+      m_warning_options (init_warning_options ("on")),
+      m_last_error_message (),
+      m_last_warning_message (),
+      m_last_warning_id (),
+      m_last_error_id (),
+      m_last_error_stack (init_error_stack (interp))
+  { }
+
+  octave_value
+  error_system::debug_on_error (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_debug_on_error, args, nargout,
+                                  "debug_on_error");
+  }
+
+  octave_value
+  error_system::debug_on_caught (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_debug_on_caught, args, nargout,
+                                  "debug_on_caught");
+  }
+
+  octave_value
+  error_system::debug_on_warning (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_debug_on_warning, args, nargout,
+                                  "debug_on_warning");
+  }
+
+  octave_value
+  error_system::buffer_error_messages (const octave_value_list& args,
+                                        int nargout)
+  {
+    return set_internal_variable (m_buffer_error_messages, args, nargout,
+                                  "buffer_error_messages");
+  }
+
+  octave_value
+  error_system::in_try_catch (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_in_try_catch, args, nargout,
+                                  "in_try_catch");
+  }
+
+  octave_value
+  error_system::discard_error_messages (const octave_value_list& args,
+                                        int nargout)
+  {
+    return set_internal_variable (m_discard_error_messages, args, nargout,
+                                  "discard_error_messages");
+  }
+
+  octave_value
+  error_system::discard_warning_messages (const octave_value_list& args,
+                                          int nargout)
+  {
+    return set_internal_variable (m_discard_warning_messages, args, nargout,
+                                  "discard_warning_messages");
+  }
+
+  octave_value
+  error_system::beep_on_error (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_beep_on_error, args, nargout,
+                                  "beep_on_error");
+  }
+
+  octave_value
+  error_system::backtrace_on_warning (const octave_value_list& args,
+                                      int nargout)
+  {
+    return set_internal_variable (m_backtrace_on_warning, args, nargout,
+                                  "backtrace_on_warning");
+  }
+
+  octave_value
+  error_system::verbose_warning (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_verbose_warning, args, nargout,
+                                  "verbose_warning");
+  }
+
+  octave_value
+  error_system::quiet_warning (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_quiet_warning, args, nargout,
+                                  "quiet_warning");
+  }
+
+  octave_value
+  error_system::last_error_message (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_last_error_message, args, nargout,
+                                  "last_error_message");
+  }
+
+  octave_value
+  error_system::last_warning_message (const octave_value_list& args,
+                                      int nargout)
+  {
+    return set_internal_variable (m_last_warning_message, args, nargout,
+                                  "last_warning_message");
+  }
+
+  octave_value
+  error_system::last_warning_id (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_last_warning_id, args, nargout,
+                                  "last_warning_id");
+  }
+
+  octave_value
+  error_system::last_error_id (const octave_value_list& args, int nargout)
+  {
+    return set_internal_variable (m_last_error_id, args, nargout,
+                                  "last_error_id");
+  }
 }
 
 static void
@@ -154,10 +222,14 @@ verror (bool save_last_error, std::ostream& os,
         const char *name, const char *id, const char *fmt, va_list args,
         bool with_cfn = false)
 {
-  if (discard_error_messages && ! Vdebug_on_caught)
+  octave::interpreter& interp = octave::__get_interpreter__ ("verror");
+
+  octave::error_system& es = interp.get_error_system ();
+
+  if (es.discard_error_messages () && ! es.debug_on_caught ())
     return;
 
-  if (! buffer_error_messages || Vdebug_on_caught)
+  if (! es.buffer_error_messages () || es.debug_on_caught ())
     octave::flush_stdout ();
 
   // FIXME: we really want to capture the message before it has all the
@@ -170,7 +242,7 @@ verror (bool save_last_error, std::ostream& os,
 
   std::string base_msg = output_buf.str ();
 
-  bool to_beep_or_not_to_beep_p = Vbeep_on_error;
+  bool to_beep_or_not_to_beep_p = es.beep_on_error ();
 
   std::string msg_string;
 
@@ -179,13 +251,13 @@ verror (bool save_last_error, std::ostream& os,
 
   if (name)
     {
-      if (in_try_catch && ! strcmp (name, "error"))
+      if (es.in_try_catch () && ! strcmp (name, "error"))
         msg_string += "caught error: ";
       else
         msg_string += std::string (name) + ": ";
     }
 
-  octave::call_stack& cs = octave::__get_call_stack__ ("verror");
+  octave::call_stack& cs = interp.get_call_stack ();
 
   // If with_fcn is specified, we'll attempt to prefix the message with the name
   // of the current executing function.  But we'll do so only if:
@@ -215,18 +287,18 @@ verror (bool save_last_error, std::ostream& os,
     {
       // This is the first error in a possible series.
 
-      Vlast_error_id = id;
-      Vlast_error_message = base_msg;
+      es.last_error_id (id);
+      es.last_error_message (base_msg);
 
       octave_user_code *fcn = cs.current_user_code ();
 
       if (fcn)
-        Vlast_error_stack = cs.backtrace ();
+        es.last_error_stack (cs.backtrace ());
       else
-        Vlast_error_stack = initialize_last_error_stack ();
+        es.last_error_stack (octave::init_error_stack (interp));
     }
 
-  if (! buffer_error_messages || Vdebug_on_caught)
+  if (! es.buffer_error_messages () || es.debug_on_caught ())
     {
       octave_diary << msg_string;
       os << msg_string;
@@ -350,21 +422,27 @@ static void
 maybe_enter_debugger (octave::execution_exception& e,
                       bool show_stack_trace = false)
 {
-  octave::call_stack& cs = octave::__get_call_stack__ ("maybe_enter_debugger");
-  octave::bp_table& bptab = octave::__get_bp_table__ ("maybe_enter_debugger");
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("maybe_enter_debugger");
+
+  octave::call_stack& cs = interp.get_call_stack ();
+  octave::tree_evaluator& tw = interp.get_evaluator ();
+  octave::bp_table& bptab = tw.get_bp_table ();
+  octave::error_system& es = interp.get_error_system ();
 
   if ((octave::application::interactive ()
        || octave::application::forced_interactive ())
-      && ((Vdebug_on_error && bptab.debug_on_err (last_error_id ()))
-          || (Vdebug_on_caught && bptab.debug_on_caught (last_error_id ())))
+      && ((es.debug_on_error ()
+           && bptab.debug_on_err (es.last_error_id ()))
+          || (es.debug_on_caught ()
+              && bptab.debug_on_caught (es.last_error_id ())))
       && cs.current_user_code ())
     {
       octave::unwind_protect frame;
-      frame.protect_var (Vdebug_on_error);
-      Vdebug_on_error = false;
 
-      octave::tree_evaluator& tw
-        = octave::__get_evaluator__ ("maybe_enter_debugger");
+      frame.add_method (es, &octave::error_system::set_debug_on_error,
+                        es.debug_on_error ());
+      es.debug_on_error (false);
 
       if (show_stack_trace)
         {
@@ -387,7 +465,11 @@ maybe_enter_debugger (octave::execution_exception& e,
 static void
 vwarning (const char *name, const char *id, const char *fmt, va_list args)
 {
-  if (discard_warning_messages)
+  octave::interpreter& interp = octave::__get_interpreter__ ("vwarning");
+
+  octave::error_system& es = interp.get_error_system ();
+
+  if (es.discard_warning_messages ())
     return;
 
   octave::flush_stdout ();
@@ -408,10 +490,10 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   msg_string += base_msg + '\n';
 
-  Vlast_warning_id = id;
-  Vlast_warning_message = base_msg;
+  es.last_warning_id (id);
+  es.last_warning_message (base_msg);
 
-  if (! Vquiet_warning)
+  if (! es.quiet_warning ())
     {
       octave_diary << msg_string;
 
@@ -518,12 +600,15 @@ error_1 (octave::execution_exception& e, std::ostream& os,
                 {
                   verror (true, os, name, id, fmt, args, with_cfn);
 
-                  octave::call_stack& cs
-                    = octave::__get_call_stack__ ("error_1");
+                  octave::interpreter& interp
+                    = octave::__get_interpreter__ ("error_1");
+
+                  octave::call_stack& cs = interp.get_call_stack ();
+                  octave::error_system& es = interp.get_error_system ();
 
                   bool in_user_code = cs.current_user_code () != nullptr;
 
-                  if (in_user_code && ! discard_error_messages)
+                  if (in_user_code && ! es.discard_error_messages ())
                     show_stack_trace = true;
                 }
             }
@@ -652,12 +737,17 @@ warning_enabled (const std::string& id)
   int all_state = -1;
   int id_state = -1;
 
-  octave_idx_type nel = warning_options.numel ();
+  octave::error_system& es
+    = octave::__get_error_system__ ("warning_enabled");
+
+  octave_map opts = es.warning_options ();
+
+  octave_idx_type nel = opts.numel ();
 
   if (nel > 0)
     {
-      Cell identifier = warning_options.contents ("identifier");
-      Cell state = warning_options.contents ("state");
+      Cell identifier = opts.contents ("identifier");
+      Cell state = opts.contents ("state");
 
       bool all_found = false;
       bool id_found = false;
@@ -741,28 +831,30 @@ warning_1 (const char *id, const char *fmt, va_list args)
       else
         vwarning ("warning", id, fmt, args);
 
-      octave::call_stack& cs = octave::__get_call_stack__ ("warning_1");
+      octave::interpreter& interp = octave::__get_interpreter__ ("warning_1");
+
+      octave::call_stack& cs = interp.get_call_stack ();
+      octave::error_system& es = interp.get_error_system ();
 
       bool in_user_code = cs.current_user_code () != nullptr;
 
       if (! fmt_suppresses_backtrace && in_user_code
-          && Vbacktrace_on_warning
-          && ! discard_warning_messages)
+          && es.backtrace_on_warning ()
+          && ! es.discard_warning_messages ())
         pr_where (std::cerr, "warning");
 
-      octave::bp_table& bptab
-        = octave::__get_bp_table__ ("warning_1");
+      octave::tree_evaluator& tw = interp.get_evaluator ();
+      octave::bp_table& bptab = tw.get_bp_table ();
 
       if ((octave::application::interactive ()
            || octave::application::forced_interactive ())
-          && Vdebug_on_warning && in_user_code && bptab.debug_on_warn (id))
+          && es.debug_on_warning () && in_user_code && bptab.debug_on_warn (id))
         {
           octave::unwind_protect frame;
-          frame.protect_var (Vdebug_on_warning);
-          Vdebug_on_warning = false;
 
-          octave::tree_evaluator& tw
-            = octave::__get_evaluator__ ("warning_1");
+          frame.add_method (es, &octave::error_system::set_debug_on_warning,
+                            es.debug_on_warning ());
+          es.debug_on_warning (false);
 
           tw.enter_debugger ();
         }
@@ -890,9 +982,11 @@ rethrow_error (const std::string& id, const std::string& msg,
             && stack.contains ("line")))
     error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
 
-  Vlast_error_id = id;
-  Vlast_error_message = msg;
-  Vlast_error_stack = stack;
+  octave::error_system& es = octave::__get_error_system__ ("rethrow_error");
+
+  es.last_error_id (id);
+  es.last_error_message (msg);
+  es.last_error_stack (stack);
 
   size_t len = msg.length ();
 
@@ -922,11 +1016,18 @@ void
 panic (const char *fmt, ...)
 {
   va_list args;
+
   va_start (args, fmt);
-  buffer_error_messages = 0;
-  discard_error_messages = false;
+
+  octave::error_system& es = octave::__get_error_system__ ("panic");
+
+  es.buffer_error_messages (0);
+  es.discard_error_messages (false);
+
   verror (false, std::cerr, "panic", "", fmt, args);
+
   va_end (args);
+
   abort ();
 }
 
@@ -1007,8 +1108,8 @@ handle_message (error_fun f, const char *id, const char *msg,
   return retval;
 }
 
-DEFUN (rethrow, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (rethrow, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} rethrow (@var{err})
 Reissue a previous error as defined by @var{err}.
 
@@ -1030,7 +1131,7 @@ error.  Typically @var{err} is returned from @code{lasterror}.
   std::string msg = err.contents ("message").string_value ();
   std::string id = err.contents ("identifier").string_value ();
 
-  octave_map err_stack = initialize_last_error_stack ();
+  octave_map err_stack = octave::init_error_stack (interp);
 
   if (err.contains ("stack"))
     err_stack = err.contents ("stack").xmap_value ("ERR.STACK must be a struct");
@@ -1238,11 +1339,15 @@ warning_query (const std::string& id_arg)
 
   std::string id = id_arg;
 
-  if (id == "last")
-    id = Vlast_warning_id;
+  octave::error_system& es = octave::__get_error_system__ ("warning_query");
 
-  Cell ident = warning_options.contents ("identifier");
-  Cell state = warning_options.contents ("state");
+  if (id == "last")
+    id = es.last_warning_id ();
+
+  octave_map opts = es.warning_options ();
+
+  Cell ident = opts.contents ("identifier");
+  Cell state = opts.contents ("state");
 
   octave_idx_type nel = ident.numel ();
 
@@ -1292,8 +1397,13 @@ default_warning_state (void)
 {
   std::string retval = "on";
 
-  Cell ident = warning_options.contents ("identifier");
-  Cell state = warning_options.contents ("state");
+  octave::error_system& es
+    = octave::__get_error_system__ ("default_warning_state");
+
+  octave_map opts = es.warning_options ();
+
+  Cell ident = opts.contents ("identifier");
+  Cell state = opts.contents ("state");
 
   octave_idx_type nel = ident.numel ();
 
@@ -1312,8 +1422,13 @@ default_warning_state (void)
 static void
 display_warning_options (std::ostream& os)
 {
-  Cell ident = warning_options.contents ("identifier");
-  Cell state = warning_options.contents ("state");
+  octave::error_system& es
+    = octave::__get_error_system__ ("display_warning_options");
+
+  octave_map opts = es.warning_options ();
+
+  Cell ident = opts.contents ("identifier");
+  Cell state = opts.contents ("state");
 
   octave_idx_type nel = ident.numel ();
 
@@ -1352,8 +1467,13 @@ set_warning_option (const std::string& state, const std::string& ident)
   if (state != "on" && state != "off" && state != "error")
     error ("invalid warning state: %s", state.c_str ());
 
-  Cell tid = warning_options.contents ("identifier");
-  Cell tst = warning_options.contents ("state");
+  octave::error_system& es
+    = octave::__get_error_system__ ("set_warning_option");
+
+  octave_map opts = es.warning_options ();
+
+  Cell tid = opts.contents ("identifier");
+  Cell tst = opts.contents ("state");
 
   octave_idx_type nel = tid.numel ();
 
@@ -1379,10 +1499,12 @@ set_warning_option (const std::string& state, const std::string& ident)
           else
             tst(i) = state;
 
-          warning_options.clear ();
+          opts.clear ();
 
-          warning_options.assign ("identifier", tid);
-          warning_options.assign ("state", tst);
+          opts.assign ("identifier", tid);
+          opts.assign ("state", tst);
+
+          es.warning_options (opts);
 
           return;
         }
@@ -1396,10 +1518,12 @@ set_warning_option (const std::string& state, const std::string& ident)
   tid(nel) = ident;
   tst(nel) = state;
 
-  warning_options.clear ();
+  opts.clear ();
 
-  warning_options.assign ("identifier", tid);
-  warning_options.assign ("state", tst);
+  opts.assign ("identifier", tid);
+  opts.assign ("state", tst);
+
+  es.warning_options (opts);
 }
 
 DEFMETHOD (warning, interp, args, nargout,
@@ -1529,6 +1653,8 @@ expansion use a second backslash before the sequence (e.g.,
   int nargin = args.length ();
   bool done = false;
 
+  octave::error_system& es = interp.get_error_system ();
+
   if (nargin > 0 && args.all_strings_p ())
     {
       string_vector argv = args.make_argv ("warning");
@@ -1544,7 +1670,7 @@ expansion use a second backslash before the sequence (e.g.,
           // Prepare output structure
           octave_map old_warning_options;
           if (arg2 == "all")
-            old_warning_options = warning_options;
+            old_warning_options = es.warning_options ();
           else
             old_warning_options = octave_map (warning_query (arg2));
 
@@ -1644,7 +1770,7 @@ expansion use a second backslash before the sequence (e.g.,
               tmp.assign ("identifier", id);
               tmp.assign ("state", st);
 
-              warning_options = tmp;
+              es.warning_options (tmp);
 
               done = true;
             }
@@ -1652,7 +1778,7 @@ expansion use a second backslash before the sequence (e.g.,
             {
               if (arg1 != "error")
                 {
-                  Vbacktrace_on_warning = (arg1 == "on");
+                  es.backtrace_on_warning (arg1 == "on");
                   done = true;
                 }
             }
@@ -1660,7 +1786,7 @@ expansion use a second backslash before the sequence (e.g.,
             {
               if (arg1 != "error")
                 {
-                  Vdebug_on_warning = (arg1 == "on");
+                  es.debug_on_warning (arg1 == "on");
                   done = true;
                 }
             }
@@ -1668,7 +1794,7 @@ expansion use a second backslash before the sequence (e.g.,
             {
               if (arg1 != "error")
                 {
-                  Vverbose_warning = (arg1 == "on");
+                  es.verbose_warning (arg1 == "on");
                   done = true;
                 }
             }
@@ -1676,14 +1802,14 @@ expansion use a second backslash before the sequence (e.g.,
             {
               if (arg1 != "error")
                 {
-                  Vquiet_warning = (arg1 == "on");
+                  es.quiet_warning (arg1 == "on");
                   done = true;
                 }
             }
           else
             {
               if (arg2 == "last")
-                arg2 = Vlast_warning_id;
+                arg2 = es.last_warning_id ();
 
               set_warning_option (arg1, arg2);
 
@@ -1696,20 +1822,20 @@ expansion use a second backslash before the sequence (e.g.,
       else if (arg1 == "query")
         {
           if (arg2 == "all")
-            retval = warning_options;
+            retval = es.warning_options ();
           else if (arg2 == "backtrace" || arg2 == "debug"
                    || arg2 == "verbose" || arg2 == "quiet")
             {
               octave_scalar_map tmp;
               tmp.assign ("identifier", arg2);
               if (arg2 == "backtrace")
-                tmp.assign ("state", Vbacktrace_on_warning ? "on" : "off");
+                tmp.assign ("state", es.backtrace_on_warning () ? "on" : "off");
               else if (arg2 == "debug")
-                tmp.assign ("state", Vdebug_on_warning ? "on" : "off");
+                tmp.assign ("state", es.debug_on_warning () ? "on" : "off");
               else if (arg2 == "verbose")
-                tmp.assign ("state", Vverbose_warning ? "on" : "off");
+                tmp.assign ("state", es.verbose_warning () ? "on" : "off");
               else
-                tmp.assign ("state", Vquiet_warning ? "on" : "off");
+                tmp.assign ("state", es.quiet_warning () ? "on" : "off");
 
               retval = tmp;
             }
@@ -1722,7 +1848,7 @@ expansion use a second backslash before the sequence (e.g.,
   else if (nargin == 0)
     {
       if (nargout > 0)
-        retval = warning_options;
+        retval = es.warning_options ();
       else
         display_warning_options (octave_stdout);
 
@@ -1783,7 +1909,7 @@ expansion use a second backslash before the sequence (e.g.,
 
       bool have_fmt = maybe_extract_message_id ("warning", args, nargs, id);
 
-      std::string prev_msg = Vlast_warning_message;
+      std::string prev_msg = es.last_warning_message ();
 
       std::string curr_msg = handle_message (warning_with_id, id.c_str (),
                                              "unspecified warning", nargs,
@@ -1847,7 +1973,10 @@ disable_warning (const std::string& id)
 void
 initialize_default_warning_state (void)
 {
-  initialize_warning_options ("on");
+  octave::error_system& es
+    = octave::__get_error_system__ ("initialize_default_warning_state");
+
+  es.warning_options (octave::init_warning_options ("on"));
 
   // Most people will want to have the following disabled.
 
@@ -1918,24 +2047,28 @@ fields are set to their default values.
   if (nargin > 1)
     print_usage ();
 
+  octave::error_system& es = interp.get_error_system ();
+
   octave_scalar_map err;
 
-  err.assign ("message", Vlast_error_message);
-  err.assign ("identifier", Vlast_error_id);
+  err.assign ("message", es.last_error_message ());
+  err.assign ("identifier", es.last_error_id ());
 
-  err.assign ("stack", octave_value (Vlast_error_stack));
+  err.assign ("stack", octave_value (es.last_error_stack ()));
 
   if (nargin == 1)
     {
+      octave::call_stack& cs = interp.get_call_stack ();
+
       if (args(0).is_string ())
         {
           if (args(0).string_value () != "reset")
             error ("lasterror: unrecognized string argument");
 
-          Vlast_error_message = "";
-          Vlast_error_id = "";
+          es.last_error_message ("");
+          es.last_error_id ("");
 
-          Vlast_error_stack = initialize_last_error_stack ();
+          es.last_error_stack (cs.empty_backtrace ());
         }
       else if (args(0).isstruct ())
         {
@@ -2002,25 +2135,22 @@ fields are set to their default values.
                 }
             }
 
-          Vlast_error_message = new_error_message;
-          Vlast_error_id = new_error_id;
+          es.last_error_message (new_error_message);
+          es.last_error_id (new_error_id);
 
           if (initialize_stack)
-            Vlast_error_stack = initialize_last_error_stack ();
+            es.last_error_stack (cs.empty_backtrace ());
           else if (new_err.contains ("stack"))
             {
               new_err_stack.setfield ("file", new_error_file);
               new_err_stack.setfield ("name", new_error_name);
               new_err_stack.setfield ("line", new_error_line);
               new_err_stack.setfield ("column", new_error_column);
-              Vlast_error_stack = new_err_stack;
+
+              es.last_error_stack (new_err_stack);
             }
           else
-            {
-              octave::call_stack& cs = interp.get_call_stack ();
-
-              Vlast_error_stack = cs.backtrace ();
-            }
+            es.last_error_stack (cs.backtrace ());
         }
       else
         error ("lasterror: argument must be a structure or a string");
@@ -2042,8 +2172,8 @@ fields are set to their default values.
 %! assert (y, x);
 */
 
-DEFUN (lasterr, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lasterr, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{msg}, @var{msgid}] =} lasterr ()
 @deftypefnx {} {} lasterr (@var{msg})
 @deftypefnx {} {} lasterr (@var{msg}, @var{msgid})
@@ -2063,20 +2193,22 @@ With two arguments, also set the last message identifier.
   if (nargin > 2)
     print_usage ();
 
+  octave::error_system& es = interp.get_error_system ();
+
   string_vector argv = args.make_argv ("lasterr");
 
-  std::string prev_error_id = Vlast_error_id;
-  std::string prev_error_message = Vlast_error_message;
+  std::string prev_error_id = es.last_error_id ();
+  std::string prev_error_message = es.last_error_message ();
 
   if (nargin == 2)
     {
-      Vlast_error_id = argv[2];
-      Vlast_error_message = argv[1];
+      es.last_error_id (argv[2]);
+      es.last_error_message (argv[1]);
     }
   else if (nargin == 1)
     {
-      Vlast_error_id = "";
-      Vlast_error_message = argv[1];
+      es.last_error_id ("");
+      es.last_error_message (argv[1]);
     }
 
   if (nargin == 0 || nargout > 0)
@@ -2085,8 +2217,8 @@ With two arguments, also set the last message identifier.
     return ovl ();
 }
 
-DEFUN (lastwarn, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (lastwarn, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{msg}, @var{msgid}] =} lastwarn ()
 @deftypefnx {} {} lastwarn (@var{msg})
 @deftypefnx {} {} lastwarn (@var{msg}, @var{msgid})
@@ -2106,20 +2238,22 @@ With two arguments, also set the last message identifier.
   if (nargin > 2)
     print_usage ();
 
+  octave::error_system& es = interp.get_error_system ();
+
   string_vector argv = args.make_argv ("lastwarn");
 
-  std::string prev_warning_id = Vlast_warning_id;
-  std::string prev_warning_message = Vlast_warning_message;
+  std::string prev_warning_id = es.last_warning_id ();
+  std::string prev_warning_message = es.last_warning_message ();
 
   if (nargin == 2)
     {
-      Vlast_warning_id = argv[2];
-      Vlast_warning_message = argv[1];
+      es.last_warning_id (argv[2]);
+      es.last_warning_message (argv[1]);
     }
   else if (nargin == 1)
     {
-      Vlast_warning_id = "";
-      Vlast_warning_message = argv[1];
+      es.last_warning_id ("");
+      es.last_warning_message (argv[1]);
     }
 
   if (nargin == 0 || nargout > 0)
@@ -2128,8 +2262,8 @@ With two arguments, also set the last message identifier.
     return ovl ();
 }
 
-DEFUN (beep_on_error, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (beep_on_error, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} beep_on_error ()
 @deftypefnx {} {@var{old_val} =} beep_on_error (@var{new_val})
 @deftypefnx {} {} beep_on_error (@var{new_val}, "local")
@@ -2141,11 +2275,13 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (beep_on_error);
+  octave::error_system& es = interp.get_error_system ();
+
+  return es.beep_on_error (args, nargout);
 }
 
-DEFUN (debug_on_error, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (debug_on_error, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_error ()
 @deftypefnx {} {@var{old_val} =} debug_on_error (@var{new_val})
 @deftypefnx {} {} debug_on_error (@var{new_val}, "local")
@@ -2161,11 +2297,13 @@ The original variable value is restored when exiting the function.
 @seealso{debug_on_warning, debug_on_interrupt}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (debug_on_error);
+  octave::error_system& es = interp.get_error_system ();
+
+  return es.debug_on_error (args, nargout);
 }
 
-DEFUN (debug_on_warning, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (debug_on_warning, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} debug_on_warning ()
 @deftypefnx {} {@var{old_val} =} debug_on_warning (@var{new_val})
 @deftypefnx {} {} debug_on_warning (@var{new_val}, "local")
@@ -2178,48 +2316,73 @@ The original variable value is restored when exiting the function.
 @seealso{debug_on_error, debug_on_interrupt}
 @end deftypefn */)
 {
-  return SET_INTERNAL_VARIABLE (debug_on_warning);
+  octave::error_system& es = interp.get_error_system ();
+
+  return es.debug_on_warning (args, nargout);
 }
 
 std::string
 last_error_message (void)
 {
-  return Vlast_error_message;
+  octave::error_system& es
+    = octave::__get_error_system__ ("last_error_message");
+
+  return es.last_error_message ();
 }
 
 std::string
 last_error_id (void)
 {
-  return Vlast_error_id;
+  octave::error_system& es
+    = octave::__get_error_system__ ("last_error_id");
+
+  return es.last_error_id ();
 }
 
 octave_map
 last_error_stack (void)
 {
-  return Vlast_error_stack;
+  octave::error_system& es
+    = octave::__get_error_system__ ("last_error_stack");
+
+  return es.last_error_stack ();
 }
 
 std::string
 last_warning_message (void)
 {
-  return Vlast_warning_message;
+  octave::error_system& es
+    = octave::__get_error_system__ ("last_warning_message");
+
+  return es.last_warning_message ();
 }
 
 std::string
 last_warning_id (void)
 {
-  return Vlast_warning_id;
+  octave::error_system& es
+    = octave::__get_error_system__ ("last_warning_id");
+
+  return es.last_warning_id ();
 }
 
 void
 interpreter_try (octave::unwind_protect& frame)
 {
-  frame.protect_var (buffer_error_messages);
-  frame.protect_var (Vdebug_on_error);
-  frame.protect_var (Vdebug_on_warning);
+  octave::error_system& es
+    = octave::__get_error_system__ ("interpreter_try");
 
-  buffer_error_messages++;
-  Vdebug_on_error = false;
-  Vdebug_on_warning = false;
-  // leave Vdebug_on_caught as it was, so errors in try/catch are still caught
+  int bem = es.buffer_error_messages ();
+  frame.add_method (es, &octave::error_system::set_buffer_error_messages, bem);
+  frame.add_method (es, &octave::error_system::set_debug_on_error,
+                    es.debug_on_error ());
+  frame.add_method (es, &octave::error_system::set_debug_on_warning,
+                    es.debug_on_warning ());
+
+  es.buffer_error_messages (bem + 1);
+  es.debug_on_error (false);
+  es.debug_on_warning (false);
+
+  // Leave debug_on_caught as it was, so errors in try/catch are still
+  // caught.
 }

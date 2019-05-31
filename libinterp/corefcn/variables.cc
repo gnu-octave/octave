@@ -1396,27 +1396,31 @@ The original variable value is restored when exiting the function.
 void
 maybe_missing_function_hook (const std::string& name)
 {
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("maybe_missing_function_hook");
+
+  octave::error_system& es = interp.get_error_system ();
+
   // Don't do this if we're handling errors.
-  if (buffer_error_messages == 0 && ! Vmissing_function_hook.empty ())
+  if (es.buffer_error_messages () || Vmissing_function_hook.empty ())
+    return;
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
+  octave_value val = symtab.find_function (Vmissing_function_hook);
+
+  if (val.is_defined ())
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("maybe_missing_function_hook");
+      // Ensure auto-restoration.
+      octave::unwind_protect frame;
+      frame.protect_var (Vmissing_function_hook);
 
-      octave_value val = symtab.find_function (Vmissing_function_hook);
+      // Clear the variable prior to calling the function.
+      const std::string func_name = Vmissing_function_hook;
+      Vmissing_function_hook.clear ();
 
-      if (val.is_defined ())
-        {
-          // Ensure auto-restoration.
-          octave::unwind_protect frame;
-          frame.protect_var (Vmissing_function_hook);
-
-          // Clear the variable prior to calling the function.
-          const std::string func_name = Vmissing_function_hook;
-          Vmissing_function_hook.clear ();
-
-          // Call.
-          octave::feval (func_name, octave_value (name));
-        }
+      // Call.
+      octave::feval (func_name, octave_value (name));
     }
 }
 

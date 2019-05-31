@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#include "interpreter.h"
 #include "ov-fcn.h"
 #include "pt.h"
 #include "pt-eval.h"
@@ -89,8 +90,13 @@ namespace octave
           }
         catch (const execution_exception& e)
           {
+            interpreter& interp = tw.get_interpreter ();
+            error_system& es = interp.get_error_system ();
+
+            std::string tmp = es.last_error_message ();
+
             warning ("Error evaluating breakpoint condition:\n    %s",
-                     last_error_message ().c_str ());
+                     tmp.c_str ());
           }
       }
     return retval;

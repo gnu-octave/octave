@@ -67,6 +67,13 @@ namespace octave
     return interp.get_dynamic_loader ();
   }
 
+  error_system& __get_error_system__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_error_system ();
+  }
+
   help_system& __get_help_system__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);

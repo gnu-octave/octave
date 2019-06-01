@@ -549,7 +549,19 @@ changing its @qcode{\"position\"} property.";
         s.valid = valid_fcn;
 
       case "selectiontype"
-        ## FIXME: docstring explaining what "{normal}|open|alt|extend" mean.
+        s.doc = "Selection type of the latest mouse click.\n\n\
+__prop__ may take different values depending on the combination of mouse \
+button and keyboard modifier that were used:\n\
+@table @code\n\
+@item normal:\n\
+Left-click.\n\
+@item alt:\n\
+Right-click or Ctrl+Left-click.\n\
+@item extend:\n\
+Shitf+Left-click, Middle click, or combined Left-click and Right-click.\n\
+@item open:\n\
+Double Left-click.\
+@end table";
 
       case "sizechangedfcn"
         s.doc = "Callback triggered when the figure window size is changed.\

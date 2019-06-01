@@ -184,13 +184,9 @@ namespace QtHandles
                 return "normal";
               else if (buttons == Qt::RightButton)
                 return "alt";
-#if defined (Q_WS_WIN)
-              else if (buttons == (Qt::LeftButton | Qt::RightButton))
+              else if (buttons == Qt::MidButton
+                       || buttons == (Qt::LeftButton | Qt::RightButton))
                 return "extend";
-#elif defined (Q_WS_X11)
-              else if (buttons == Qt::MidButton)
-                return "extend";
-#endif
             }
           else if (buttons == Qt::LeftButton)
             {

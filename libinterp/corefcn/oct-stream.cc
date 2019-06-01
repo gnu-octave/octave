@@ -4269,14 +4269,40 @@ namespace octave
       {
         // Limit input to fmt.width characters by reading into a
         // temporary stringstream buffer.
-        std::string tmp;
+        std::string strbuf;
+
+        auto orig_pos = is.tellg ();
 
         is.width (fmt.width);
-        is >> tmp;
+        is >> strbuf;
 
-        std::istringstream ss (tmp);
+        std::istringstream ss (strbuf);
 
         octave_scan_1 (ss, fmt, valptr);
+
+        if (! ss.eof ())
+          {
+            // If fewer characters than width were used to read a number then
+            // the original istream object positioning is incorrect.
+            // Rather than attempt to update istream state and positioning,
+            // just redo the '>>' operation with the correct width so that
+            // all flags get set correctly.
+
+            is.clear ();  // Clear EOF, FAILBIT, BADBIT
+            is.seekg (orig_pos, is.beg);
+
+            int chars_read = ss.tellg ();
+            if (chars_read > 0)
+              {
+                is.width (chars_read);
+                is >> strbuf;
+              }
+          }
+
+        // If pattern failed to match then propagate fail bit to 'is' stream.
+        if (ss.fail ())
+          is.setstate (std::ios::failbit);
+
       }
     else
       octave_scan_1 (is, fmt, valptr);

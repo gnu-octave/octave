@@ -726,11 +726,12 @@ namespace octave
       }
   }
 
-  void octave_qscintilla::show_selection_markers (int line, int col, int len)
+  void octave_qscintilla::show_selection_markers (int l1, int c1, int l2, int c2)
   {
-    fillIndicatorRange (line, col - len, line, col, m_indicator_id);
+    fillIndicatorRange (l1, c1, l2, c2, m_indicator_id);
 
-    markerAdd (line, marker::selection);
+    if (l1 == l2)
+      markerAdd (l1, marker::selection);
   }
 
   void octave_qscintilla::contextmenu_help (bool)

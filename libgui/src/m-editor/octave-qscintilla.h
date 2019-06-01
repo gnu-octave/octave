@@ -69,7 +69,7 @@ namespace octave
 
     void set_word_selection (const QString& word = QString ());
 
-    void show_selection_markers (int line, int col, int len);
+    void show_selection_markers (int l1, int c1, int l2, int c2);
 
     void set_selection_marker_color (const QColor& c);
 

@@ -592,46 +592,6 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QMOUSEEVENT_LOCALPOS], [
   fi
 ])
 dnl
-dnl Check whether the QScintilla class QsciScintilla has the
-dnl findFirstInSelection member function.  This member function was introduced
-dnl in QScintilla 2.7.
-dnl
-dnl FIXME: Delete this entirely when we can safely assume that QScintilla 2.7
-dnl or later is in use everywhere, or when we drop support for Qt 4 (Qt 5 only
-dnl works with QScintilla 2.7.1 or later).
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
-  AC_CACHE_CHECK([for QsciScintilla::findFirstInSelection in <Qsci/qsciscintilla.h>],
-    [octave_cv_func_qsci_findfirstinselection],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <Qsci/qsciscintilla.h>
-        class qsci : public QsciScintilla
-        {
-        public:
-          qsci (QWidget *parent = 0) : QsciScintilla (parent)
-          { this->findFirstInSelection (QString ("x"),true,true,true,true,true); }
-          ~qsci () {}
-        };
-        ]], [[
-        qsci edit;
-        ]])],
-      octave_cv_func_qsci_findfirstinselection=yes,
-      octave_cv_func_qsci_findfirstinselection=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_qsci_findfirstinselection = yes; then
-    AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
-      [Define to 1 if you have the `QsciScintilla::findFirstInSelection' member function.])
-  fi
-])
-dnl
 dnl Check whether QObject::findChildren accepts Qt::FindChildOptions
 dnl argument.
 dnl

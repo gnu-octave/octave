@@ -63,7 +63,8 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_find_dialog_h 1
 
 #include <QDialog>
-#include <Qsci/qsciscintilla.h>
+
+#include "octave-qscintilla.h"
 
 class QCheckBox;
 class QDialogButtonBox;
@@ -102,7 +103,7 @@ namespace octave
         FIND_DLG_SEL   = 128
       };
 
-    find_dialog (QsciScintilla *edit_area, QList<QAction *> find_actions,
+    find_dialog (octave_qscintilla *edit_area, QList<QAction *> find_actions,
                  QWidget *parent = nullptr);
     void init_search_text (void);
     void save_data (find_dialog_data *fdlg_data);
@@ -144,10 +145,14 @@ namespace octave
     QPushButton       *_replace_all_button;
     QPushButton       *_more_button;
     QWidget           *_extension;
-    QsciScintilla     *_edit_area;
+    octave_qscintilla  *_edit_area;
     bool               _find_result_available;
     int                _rep_all;
     bool               _rep_active;
+
+    bool               m_in_sel;
+    int                m_sel_beg;
+    int                m_sel_end;
   };
 }
 

@@ -3166,7 +3166,7 @@ namespace octave
                     // get cursor position after having found an occurrence
                     _edit_area->getCursorPosition (&oline, &ocol);
                     // mark the selection
-                    _edit_area->show_selection_markers (oline, ocol, wlen);
+                    _edit_area->show_selection_markers (oline, ocol-wlen, oline, ocol);
 
                     // find next occurrence
                     find_result_available = _edit_area->findNext ();

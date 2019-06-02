@@ -4891,11 +4891,11 @@ namespace octave
                     break;
 
                   case 'p':
-                    error ("%s: unsupported format specifier", who.c_str ());
+                    error (who, "unsupported format specifier");
                     break;
 
                   default:
-                    error ("%s: internal format error", who.c_str ());
+                    error (who, "internal format error");
                     break;
                   }
 
@@ -4964,7 +4964,7 @@ namespace octave
               }
             else
               {
-                error ("%s: internal format error", who.c_str ());
+                error (who, "internal format error");
                 break;
               }
 
@@ -5229,11 +5229,11 @@ namespace octave
             break;
 
           case 'p':
-            error ("%s: unsupported format specifier", who.c_str ());
+            error (who, "unsupported format specifier");
             break;
 
           default:
-            error ("%s: internal format error", who.c_str ());
+            error (who, "internal format error");
             break;
           }
       }
@@ -5815,7 +5815,7 @@ namespace octave
           default:
             // Note: error is member fcn from base_stream, not ::error.
             // This error does not halt execution so "return ..." must exist.
-            error ("%s: invalid format specifier", who.c_str ());
+            error (who, "invalid format specifier");
             return -1;
             break;
           }
@@ -5923,7 +5923,7 @@ namespace octave
 
             if (! os)
               {
-                error ("%s: write error", who.c_str ());
+                error (who, "write error");
                 break;
               }
 
@@ -5969,7 +5969,7 @@ namespace octave
         os << s;
 
         if (! os)
-          error ("%s: write error", who.c_str ());
+          error (who, "write error");
         else
           {
             // FIXME: why does this seem to be necessary?
@@ -5983,7 +5983,7 @@ namespace octave
             if (os)
               retval = 0;
             else
-              error ("%s: write error", who.c_str ());
+              error (who, "write error");
           }
       }
 

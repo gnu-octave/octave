@@ -928,12 +928,26 @@ namespace octave
               {
                 int mblen = octave_u8_strmblen_wrapper (c + i);
 
+                // Replace multibyte or non ascii characters by a question mark
                 if (mblen > 1)
                   {
-                    str += " ";
+                    str += "?";
                     if (! warned)
                       {
                         warning_with_id ("Octave:print:unsupported-multibyte",
+                                         "print: only ASCII characters are "
+                                         "supported for EPS and derived "
+                                         "formats.");
+                        warned = true;
+                      }
+                  }
+                else if (mblen < 1)
+                  {
+                    mblen = 1;
+                    str += "?";
+                    if (! warned)
+                      {
+                        warning_with_id ("Octave:print:unhandled-character",
                                          "print: only ASCII characters are "
                                          "supported for EPS and derived "
                                          "formats.");

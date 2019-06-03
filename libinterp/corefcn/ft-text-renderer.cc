@@ -902,6 +902,13 @@ namespace octave
             // Retrieve the length and the u32 representation of the current
             // character
             int mblen = octave_u8_strmbtouc_wrapper (&u32_c, c + icurr);
+            if (mblen < 1)
+              {
+                // This is not an UTF-8 character, use a replacement character
+                mblen = 1;
+                u32_c = 0xFFFD;
+              }
+                
             n -= mblen;
 
             if (m_do_strlist && mode == MODE_RENDER)

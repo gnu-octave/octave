@@ -336,7 +336,7 @@
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!xtest <47413>
@@ -345,14 +345,14 @@
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!testif ; ! ismac ()
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
-%! assert (msg, "");
+%! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
 %!xtest <47413>

@@ -4903,7 +4903,7 @@ namespace octave
                   {
                     break;
                   }
-                else if (! is)
+                else if (is.eof () || ! is)
                   {
                     if (all_char_conv)
                       {
@@ -4945,7 +4945,10 @@ namespace octave
                     // If it looks like we have a matching failure, then
                     // reset the failbit in the stream state.
                     if (is.rdstate () & std::ios::failbit)
-                      is.clear (is.rdstate () & (~std::ios::failbit));
+                      {
+                        error (who, "format failed to match");
+                        is.clear (is.rdstate () & (~std::ios::failbit));
+                      }
 
                     // FIXME: is this the right thing to do?
                     if (application::interactive ()
@@ -4996,15 +4999,12 @@ namespace octave
           }
       }
 
-    if (ok ())
-      {
-        mval.resize (final_nr, final_nc, 0.0);
+    mval.resize (final_nr, final_nc, 0.0);
 
-        retval = mval;
+    retval = mval;
 
-        if (all_char_conv)
-          retval = retval.convert_to_str (false, true);
-      }
+    if (all_char_conv)
+      retval = retval.convert_to_str (false, true);
 
     return retval;
   }

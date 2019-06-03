@@ -1166,6 +1166,15 @@ character to be read is returned in @var{pos}.
   return retval;
 }
 
+/*
+%!test <*56396>
+%! [val, count, errmsg, nextpos] = sscanf ('1234a6', '%2d', 3);
+%! assert (val, [12; 34]);
+%! assert (count, 2);
+%! assert (errmsg, "sscanf: format failed to match");
+%! assert (nextpos, 5);
+*/
+
 DEFMETHOD (scanf, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})

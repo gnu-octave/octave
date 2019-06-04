@@ -206,7 +206,7 @@ namespace octave
 DEFUN (__open_with_system_app__, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __open_with_system_app__ (@var{file})
-Undocumented internal function.
+Internal function.  Returns 1 on successful system call and 0 otherwise.
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -214,32 +214,29 @@ Undocumented internal function.
 
   std::string file = args(0).xstring_value ("__open_with_system_app__: argument must be a filename");
 
-  octave_value retval;
-
 #if defined (OCTAVE_USE_WINDOWS_API)
-  HINSTANCE status = ShellExecuteW (0, 0,
-                                    octave::sys::u8_to_wstring (file).c_str (),
-                                    0, 0, SW_SHOWNORMAL);
+  HINSTANCE status
+    = ShellExecuteW (0, 0, octave::sys::u8_to_wstring (file).c_str (),
+                     0, 0, SW_SHOWNORMAL);
 
   // ShellExecute returns a value greater than 32 if successful.
-  retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
-#elif defined (__APPLE__)
-  octave_value_list tmp
-    = Fsystem (ovl ("open " + file + " 2> /dev/null",
-                    false, "async"),
-               1);
-
-  retval = (tmp(0).double_value () == 0);
+  return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
+#  if defined (__APPLE__)
+#    define FSYSTEM_OPEN_STR "open "
+#  else
+#    define FSYSTEM_OPEN_STR "xdg-open "
+#  endif
   octave_value_list tmp
-    = Fsystem (ovl ("xdg-open " + file + " 2> /dev/null",
+    = Fsystem (ovl (FSYSTEM_OPEN_STR + file + " 2> /dev/null",
                     false, "async"),
                1);
+#  undef FSYSTEM_OPEN_STR
 
-  retval = (tmp(0).double_value () == 0);
+  // Asynchronous Fsystem calls return the new child process identifier,
+  // which must be greater than 1 if successful.
+  return octave_value (tmp(0).double_value () > 1);
 #endif
-
-  return retval;
 }
 
 namespace octave

@@ -67,6 +67,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - `newline`
 - `verLessThan`
 - `web`
+- `weboptions`
+- `webread`
+- `webwrite`
 
 
 ### Deprecated functions and properties

@@ -52,6 +52,8 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   major feature is the support for cookies to enable RESTful
   communication with the web service.
 
+  Additionally, the system web browser can be opened by the `web` function.
+
 - The interpreter now supports handles to nested functions.
 
 - The graphics properties `"LineWidth"` and `"MarkerSize"` are now
@@ -64,6 +66,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - `lightangle`
 - `newline`
 - `verLessThan`
+- `web`
 
 
 ### Deprecated functions and properties

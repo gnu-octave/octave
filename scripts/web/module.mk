@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += scripts/web
 
 %canon_reldir%_FCN_FILES = \
+  %reldir%/web.m \
   %reldir%/weboptions.m \
   %reldir%/webread.m \
   %reldir%/webwrite.m

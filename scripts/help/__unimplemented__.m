@@ -1336,7 +1336,6 @@ function rlist = missing_functions ()
   "volume",
   "volumebounds",
   "voronoiDiagram",
-  "web",
   "weboptions",
   "webread",
   "websave",

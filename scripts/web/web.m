@@ -20,17 +20,16 @@
 ## @deftypefn  {} {@var{status} =} web ()
 ## @deftypefnx {} {@var{status} =} web (@var{url})
 ## @deftypefnx {} {@var{status} =} web (@var{url}, @var{option})
-## @deftypefnx {} {@var{status} =} web (@var{url}, @var{option1}, @dots{}, @var{optionN})
-## @deftypefnx {} {[@var{status}, @var{h}] =} web (@dots{})
+## @deftypefnx {} {@var{status} =} web (@var{url}, @var{option_1}, @dots{}, @var{option_N})
 ## @deftypefnx {} {[@var{status}, @var{h}, @var{url}] =} web (@dots{})
 ##
 ## Open @var{url} in the default system web browser.
 ##
-## With no arguments given, the address @code{https://www.octave.org} is
+## With no arguments given, the address @url{https://www.octave.org} is
 ## opened.
 ##
-## Additional options can be passed due to Matlab compatibility, but they have
-## no effect on the system web browser:
+## Additional options can be passed for @sc{matlab} compatibility, but are
+## ignored.
 ##
 ## @itemize @bullet
 ## @item
@@ -73,16 +72,16 @@ function [status, h, url] = web (url, varargin)
     url = "https://www.octave.org";
   endif
 
-  if (! (ischar (url) && isvector (url)))
+  if (! (ischar (url) && isrow (url)))
     error ("web: URL must be a string");
   endif
 
-  for i = 1:length (varargin)
-    validatestring (varargin{i}, ...
-      {"-browser", "-new", "-noaddressbox", "-notoolbar"});
+  for i = 1:numel (varargin)
+    validatestring (varargin{i},
+                    {"-browser", "-new", "-noaddressbox", "-notoolbar"});
   endfor
 
-  ## Store text after "text://" to temporary file and open it.
+  ## Store text after "text://" to a temporary file and open it.
   if (strncmpi (url, "text://", 7))
     fname = [tempname() ".html"];
     fid = fopen (fname, "w");
@@ -91,7 +90,7 @@ function [status, h, url] = web (url, varargin)
     endif
     fprintf (fid, "%s", url(8:end));
     fclose (fid);
-    url = ["file://", fname];
+    url = ["file://" fname];
   endif
 
   status = __open_with_system_app__ (url);
@@ -101,7 +100,7 @@ function [status, h, url] = web (url, varargin)
     status = 2;
   endif
 
-  h = [];  ## Empty handle, as we cannot control an external browser.
+  h = [];  # Empty handle, as we cannot control an external browser.
 
   ## For Matlab compatibility.
   if (any (strcmp (varargin, "-browser")))
@@ -110,7 +109,8 @@ function [status, h, url] = web (url, varargin)
 
 endfunction
 
-%!error <URL must be a string> web ([])
+
+%!error <URL must be a string> web (1)
 %!error <URL must be a string> web ('')
 %!error <'-invalid_Option' does not match>
 %!  web ("https://www.octave.org", "-invalid_Option")

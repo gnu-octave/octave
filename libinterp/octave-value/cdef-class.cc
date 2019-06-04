@@ -52,6 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
+#if DEBUG_TRACE
+#  include <iostream>
+#endif
 
 namespace octave
 {
@@ -1092,7 +1095,7 @@ namespace octave
 
 #if DEBUG_TRACE
                         std::cerr << "property default: "
-                                  << attribute_value_to_string (*pit, pvalue)
+                                  << attribute_value_to_string (prop_p, pvalue)
                                   << std::endl;
 #endif
 

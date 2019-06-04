@@ -560,7 +560,7 @@ Right-click or Ctrl+Left-click.\n\
 @item extend:\n\
 Shitf+Left-click, Middle click, or combined Left-click and Right-click.\n\
 @item open:\n\
-Double Left-click.\
+Double Left-click.\n\
 @end table";
 
       case "sizechangedfcn"
@@ -618,7 +618,7 @@ scrolling up.\n\
 @item VerticalScrollAmount:\n\
 The number of lines a wheel step should scroll.  This value is always 3.\n\
 @item EventName:\n\
-The event name which is \"WindowScrollWheel\".\
+The event name which is \"WindowScrollWheel\".\n\
 @end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;

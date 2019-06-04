@@ -888,6 +888,18 @@ namespace octave
         // invoked.
 
         frame_offset = m_lexical_frame_offsets.at (data_offset);
+
+        if (frame_offset == 0)
+          {
+            // If the frame offset stored in m_lexical_frame_offsets is
+            // zero, then the data offset in the evaluation scope has
+            // not been determined so try to do that now.  The symbol
+            // may have been added by eval and without calling
+            // resize_and_update_script_offsets.
+
+            return get_val_offsets_internal (sym, frame_offset, data_offset);
+          }
+
         data_offset = m_value_offsets.at (data_offset);
       }
     else
@@ -925,6 +937,27 @@ namespace octave
         // invoked.
 
         frame_offset = m_lexical_frame_offsets.at (data_offset);
+
+        if (frame_offset == 0)
+          {
+            // If the frame offset stored in m_lexical_frame_offsets is
+            // zero, then the data offset in the evaluation scope has
+            // not been determined so try to do that now.  The symbol
+            // may have been added by eval and without calling
+            // resize_and_update_script_offsets.
+
+            // We don't need to resize here.  That case is handled above.
+
+            // FIXME: We should be able to avoid creating the map object
+            // and the looping in the set_scripts_offsets_internal
+            // function.  Can we do that without (or with minimal) code
+            // duplication?
+
+            std::map<std::string, symbol_record> tmp_symbols;
+            tmp_symbols[sym.name ()] = sym;
+            set_script_offsets_internal (tmp_symbols);
+          }
+
         data_offset = m_value_offsets.at (data_offset);
       }
     else

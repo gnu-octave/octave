@@ -414,6 +414,24 @@ hdf5_make_complex_type (octave_hdf5_id num_type)
 
 #if defined (HAVE_HDF5)
 
+// The following subroutine creates an HDF5 representation of the way
+// we will store Octave range types (triplets of floating-point numbers).
+// NUM_TYPE is the HDF5 numeric type to use for storage
+// (e.g., H5T_NATIVE_DOUBLE to save as 'double').
+// Note that any necessary conversions are handled automatically by HDF5.
+
+static hid_t
+hdf5_make_range_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
+
+  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
+
+  return type_id;
+}
+
 // This function is designed to be passed to H5Giterate, which calls it
 // on each data item in an HDF5 file.  For the item whose name is NAME in
 // the group GROUP_ID, this function sets dv->tc to an Octave representation
@@ -686,6 +704,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
       else if (type_class_id == H5T_COMPOUND)
         {
           hid_t complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+          hid_t range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
 
           if (hdf5_types_compatible (type_id, complex_type))
             {
@@ -700,17 +719,25 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
 
               H5Sclose (space_id);
             }
-          else
-            // Assume that if its not complex its a range.
-            // If its not, it'll be rejected later in the range code.
-            d->tc = type_info.lookup_type ("range");
+          else if (hdf5_types_compatible (type_id, range_type))
+            {
+               // If it's not a complex, check if it's a range
+               d->tc = octave_value_typeinfo::lookup_type ("range");
+            }
+          else // Otherwise, just ignore it with a warning.
+            {
+               warning ("load: can't read `%s' (unknown datatype)", name);
+               retval = 0;  // unknown datatype; skip
+               return retval;
+            }
 
+          H5Tclose (range_type);
           H5Tclose (complex_type);
         }
       else
         {
           warning ("load: can't read '%s' (unknown datatype)", name);
-          retval = 0; // unknown datatype; skip
+          retval = 0;  // unknown datatype; skip
           return retval;
         }
 

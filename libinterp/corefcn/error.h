@@ -39,125 +39,17 @@ namespace octave
   class execution_exception;
 }
 
-#define panic_impossible()                                              \
-  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
-
-OCTAVE_DEPRECATED (6, "use 'error_system::reset' instead")
-extern OCTINTERP_API void reset_error_handler (void);
-
-extern OCTINTERP_API int warning_enabled (const std::string& id);
-
-extern OCTINTERP_API octave::execution_exception
-make_execution_exception (const char *who);
-
-extern OCTINTERP_API void
-vmessage (const char *name, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
-
-extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
-OCTAVE_FORMAT_PRINTF (1, 2)
-extern OCTINTERP_API void warning (const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void verror (const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (1, 2)
-OCTAVE_NORETURN OCTINTERP_API extern
-void error (const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void verror (octave::execution_exception&, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-OCTAVE_NORETURN OCTINTERP_API extern
-void error (octave::execution_exception&, const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void verror_with_cfn (const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (1, 2)
-OCTAVE_NORETURN OCTINTERP_API extern
-void error_with_cfn (const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void vparse_error (const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (1, 2)
-OCTAVE_NORETURN OCTINTERP_API extern
-void parse_error (const char *fmt, ...);
-
-extern OCTINTERP_API void
-vmessage_with_id (const char *id, const char *name,
-                  const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (3, 4)
-extern OCTINTERP_API void
-message_with_id (const char *id, const char *name, const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void vusage_with_id (const char *id, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-OCTAVE_NORETURN OCTINTERP_API extern
-void usage_with_id (const char *id, const char *fmt, ...);
-
-extern OCTINTERP_API void
-vwarning_with_id (const char *id, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-extern OCTINTERP_API void
-warning_with_id (const char *id, const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void verror_with_id (const char *id, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-OCTAVE_NORETURN OCTINTERP_API extern
-void error_with_id (const char *id, const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void verror_with_id_cfn (const char *id, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-OCTAVE_NORETURN OCTINTERP_API extern
-void error_with_id_cfn (const char *id, const char *fmt, ...);
-
-OCTAVE_NORETURN OCTINTERP_API extern
-void vparse_error_with_id (const char *id, const char *fmt, va_list args);
-
-OCTAVE_FORMAT_PRINTF (2, 3)
-OCTAVE_NORETURN OCTINTERP_API extern
-void parse_error_with_id (const char *id, const char *fmt, ...);
-
-OCTAVE_FORMAT_PRINTF (1, 2)
-OCTAVE_NORETURN OCTINTERP_API extern
-void panic (const char *fmt, ...);
-
-//! Helper function for print_usage defined in defun.cc.
-
-extern OCTINTERP_API void defun_usage_message (const std::string& msg);
-
-extern OCTINTERP_API octave_value_list
-set_warning_state (const std::string& id, const std::string& state);
-
-extern OCTINTERP_API octave_value_list
-set_warning_state (const octave_value_list& args);
-
-extern OCTINTERP_API void disable_warning (const std::string& id);
-extern OCTINTERP_API void initialize_default_warning_state (void);
-
-OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
-extern OCTINTERP_API int error_state;
-
-extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
-
 namespace octave
 {
   class error_system
   {
   public:
+
+    enum try_option
+      {
+        buffer = 1,
+        discard = 2,
+      };
 
     error_system (interpreter& interp);
 
@@ -394,6 +286,59 @@ namespace octave
       return val;
     }
 
+    //! For given warning ID, return 0 if warnings are disabled, 1 if
+    //! enabled, and 2 if the given ID should be an error instead of a
+    //! warning.
+
+    int warning_enabled (const std::string& id);
+
+    void verror (bool save_last_error, std::ostream& os, const char *name,
+                 const char *id, const char *fmt, va_list args,
+                 bool with_cfn = false);
+
+    void maybe_enter_debugger (execution_exception& e,
+                               bool show_stack_trace = false);
+
+    void vwarning (const char *name, const char *id, const char *fmt,
+                   va_list args);
+
+    OCTAVE_NORETURN
+    void error_1 (execution_exception& e, std::ostream& os,
+                  const char *name, const char *id, const char *fmt,
+                  va_list args, bool with_cfn = false);
+
+    OCTAVE_NORETURN
+    void error_1 (std::ostream& os, const char *name, const char *id,
+                  const char *fmt, va_list args, bool with_cfn);
+
+    void vwarning (const char *id, const char *fmt, va_list args);
+
+    void rethrow_error (const char *id, const char *fmt, ...);
+
+    void rethrow_error (const std::string& id, const std::string& msg,
+                        const octave_map& stack);
+
+    OCTAVE_NORETURN
+    void vpanic (const char *fmt, va_list args);
+
+    OCTAVE_NORETURN
+    void panic (const char *fmt, ...);
+
+    octave_scalar_map warning_query (const std::string& id_arg);
+
+    std::string default_warning_state (void);
+
+    void display_warning_options (std::ostream& os);
+
+    void set_warning_option (const std::string& state, const std::string& id);
+
+    void disable_warning (const std::string& id);
+
+    void initialize_default_warning_state (void);
+
+    void interpreter_try (octave::unwind_protect& frame,
+                          try_option = buffer);
+
   private:
 
     interpreter& m_interpreter;
@@ -468,5 +413,144 @@ namespace octave
     octave_map m_last_error_stack;
   };
 }
+
+// FIXME: should we move the following functions inside the octave
+// namespace?  If so, should the functions outside of the namespace be
+// deprecated?  Doing that might cause a lot of trouble...  If they are
+// not deprecated and eventually removed, does it make sense to also
+// define them inside the octave namespace?
+
+#define panic_impossible()                                              \
+  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+extern OCTINTERP_API int warning_enabled (const std::string& id);
+
+extern OCTINTERP_API octave::execution_exception
+make_execution_exception (const char *who);
+
+extern OCTINTERP_API void
+vmessage (const char *name, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
+
+extern OCTINTERP_API void vwarning (const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (1, 2)
+extern OCTINTERP_API void warning (const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void verror (const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (1, 2)
+OCTAVE_NORETURN
+extern OCTINTERP_API void error (const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+verror (octave::execution_exception&, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+error (octave::execution_exception&, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+verror_with_cfn (const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (1, 2)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+error_with_cfn (const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+vparse_error (const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (1, 2)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+parse_error (const char *fmt, ...);
+
+extern OCTINTERP_API void
+vmessage_with_id (const char *id, const char *name, const char *fmt,
+                  va_list args);
+
+OCTAVE_FORMAT_PRINTF (3, 4)
+extern OCTINTERP_API void
+message_with_id (const char *id, const char *name, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+vusage_with_id (const char *id, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+usage_with_id (const char *id, const char *fmt, ...);
+
+extern OCTINTERP_API void
+vwarning_with_id (const char *id, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+extern OCTINTERP_API void
+warning_with_id (const char *id, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+verror_with_id (const char *id, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+error_with_id (const char *id, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+verror_with_id_cfn (const char *id, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+error_with_id_cfn (const char *id, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+vparse_error_with_id (const char *id, const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (2, 3)
+OCTAVE_NORETURN
+extern OCTINTERP_API void
+parse_error_with_id (const char *id, const char *fmt, ...);
+
+OCTAVE_NORETURN
+extern OCTINTERP_API void vpanic (const char *fmt, va_list args);
+
+OCTAVE_FORMAT_PRINTF (1, 2)
+OCTAVE_NORETURN
+extern OCTINTERP_API void panic (const char *fmt, ...);
+
+//! Helper function for print_usage defined in defun.cc.
+
+extern OCTINTERP_API void defun_usage_message (const std::string& msg);
+
+extern OCTINTERP_API octave_value_list
+set_warning_state (const std::string& id, const std::string& state);
+
+extern OCTINTERP_API octave_value_list
+set_warning_state (const octave_value_list& args);
+
+extern OCTINTERP_API void disable_warning (const std::string& id);
+
+extern OCTINTERP_API void
+interpreter_try (octave::unwind_protect&,
+                 octave::error_system::try_option = octave::error_system::buffer);
+
+OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
+extern OCTINTERP_API int error_state;
+
+OCTAVE_DEPRECATED (6, "use 'error_system::reset' instead")
+extern OCTINTERP_API void reset_error_handler (void);
 
 #endif

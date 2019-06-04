@@ -409,11 +409,6 @@ namespace octave
 
     thread::init ();
 
-    // Initialize default warning state before --traditional option
-    // that may reset them.
-
-    initialize_default_warning_state ();
-
     octave_ieee_init ();
 
     initialize_xerbla_error_handler ();

@@ -3570,22 +3570,7 @@ base_graphics_object::remove_all_listeners (void)
 
       octave::unwind_protect frame;
 
-      octave::error_system& es
-        = octave::__get_error_system__ ("base_graphics_object::remove_all_listeners");
-
-      // Almost the same as interpreter_try but discard instead of
-      // buffer error messages.
-
-      frame.add_method (es, &octave::error_system::set_discard_error_messages,
-                        es.discard_error_messages ());
-      frame.add_method (es, &octave::error_system::set_debug_on_error,
-                        es.debug_on_error ());
-      frame.add_method (es, &octave::error_system::set_debug_on_warning,
-                        es.debug_on_warning ());
-
-      es.discard_error_messages (true);
-      es.debug_on_error (false);
-      es.debug_on_warning (false);
+      interpreter_try (frame, octave::error_system::discard);
 
       try
         {

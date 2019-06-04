@@ -1030,6 +1030,42 @@ unicode_idx ("aäbc")
 %!assert (unicode_idx (["aäou"; "Ä∞"]), [1 2 2 3 4; 5 5 6 6 6]);
 */
 
+DEFUN (newline, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} newline
+Return the character corresponding to a newline.
+
+This is equivalent to @qcode{"@xbackslashchar{}n"}.
+
+Example Code
+
+@example
+@group
+joined_string = [newline "line1" newline "line2"]
+@result{}
+line1
+line2
+@end group
+@end example
+
+@seealso{strcat, strjoin, strsplit}
+@end deftypefn */)
+{
+  if (args.length () != 0)
+  print_usage ();
+ 
+  static octave_value_list retval = ovl ("\n");
+ 
+  return retval;
+}
+
+/*
+%!assert (newline (), "\n")
+
+%!error newline (1)
+%!error [a, b] = newline ();
+*/
+
 DEFUN (list_in_columns, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})

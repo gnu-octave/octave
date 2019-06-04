@@ -59,6 +59,13 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   of Octave, some lines and markers will appear 4/3 larger.
 
 
+### Alphabetical list of new functions added in Octave 6
+
+- `lightangle`
+- `newline`
+- `verLessThan`
+
+
 ### Deprecated functions and properties
 
 The following functions and properties have been deprecated in Octave 6
@@ -111,13 +118,6 @@ and have been removed from Octave 6.
   `uipanel`            | `fontweight`              | `"demi"` and `"light"`
   `uibuttongroup`      | `fontweight`              | `"demi"` and `"light"`
   `uitable`            | `fontweight`              | `"demi"` and `"light"`
-
-
-
-### Alphabetical list of new functions added in Octave 6
-
-- `lightangle`
-- `verLessThan`
 
 
 ### Old release news

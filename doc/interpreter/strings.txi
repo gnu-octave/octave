@@ -248,7 +248,12 @@ immediately begins joining the strings without having to process
 the overhead of a function call and the input validation of the associated
 function.
 
-Nevertheless, there are several other functions for concatenating string
+The @code{newline} function can be used to join strings such that they appear
+as multiple lines of text when displayed.
+
+@DOCSTRING(newline)
+
+In addition, there are several other functions for concatenating string
 objects which can be useful in specific circumstances: @code{char},
 @code{strvcat}, @code{strcat}, and @code{cstrcat}.  Finally, the general
 purpose concatenation functions can be used: see @ref{XREFcat,,cat},

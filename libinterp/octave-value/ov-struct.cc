@@ -157,12 +157,10 @@ octave_struct::subsref (const std::string& type,
 
     case '.':
       {
-        if (map.numel () > 0)
-          {
-            const Cell t = dotref (idx.front ());
+        const Cell t = dotref (idx.front ());
 
-            retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
-          }
+        if (! map.isempty ())
+          retval(0) = (t.numel () == 1) ? t(0) : octave_value (t, true);
       }
       break;
 

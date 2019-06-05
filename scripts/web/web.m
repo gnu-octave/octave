@@ -93,18 +93,18 @@ function [status, h, url] = web (url, varargin)
     url = ["file://" fname];
   endif
 
-  status = __open_with_system_app__ (url);
-  if (status == 1)
-    status = 0;
-  else
-    status = 2;
-  endif
+  sts = __open_with_system_app__ (url);
+  sts = ifelse (sts == 1, 0, 2);
 
   h = [];  # Empty handle, as we cannot control an external browser.
 
   ## For Matlab compatibility.
   if (any (strcmp (varargin, "-browser")))
     url = [];
+  endif
+  
+  if (nargout > 0)
+    status = sts;
   endif
 
 endfunction

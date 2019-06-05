@@ -18,24 +18,22 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{response} =} webread (@var{url})
-## @deftypefnx {} {@var{response} =} webread (@var{url}, @var{name1}, @var{value1},...)
-## @deftypefnx {} {@var{response} =} webread (..., @var{options})
+## @deftypefnx {} {@var{response} =} webread (@var{url}, @var{name1}, @var{value1}, @dots{})
+## @deftypefnx {} {@var{response} =} webread (@dots{}, @var{options})
 ##
 ## Read content from RESTful web service.
 ##
-## Reads content from the web service specified by @var{url} and returns the
+## Read content from the web service specified by @var{url} and return the
 ## content in @var{response}.
 ##
-## If the pairs @var{name1}, @var{value1}... are given, append these key-value
-## pairs of query parameters to @var{url}.  To put a query into the body of the
-## message, use @code{webwrite}.  The web service defines the query parameters.
+## All key-value pairs given (@var{name1}, @var{value1}, @dots{}) are appended
+## as query parameters to @var{url}.  To place a query in the body of the
+## message, use @code{webwrite}.  The web service defines the acceptable query
+## parameters.
 ##
-## @var{options} is a @code{weboptions} object to be used to add other HTTP
-## request options.  You can use this option with any of the input arguments of
-## the previous syntax.
-##
-## See help text for @code{weboptions} to see the complete list of supported
-## HTTP operations.
+## @var{options} is a @code{weboptions} object that may be used to add other
+## HTTP request options.  This argument can be used with either calling form.
+## See @code{help weboptions} for a complete list of supported HTTP options.
 ##
 ## @seealso{weboptions, webwrite, websave}
 ## @end deftypefn
@@ -46,18 +44,17 @@ function response = webread (url, varargin)
     print_usage();
   endif
 
-  if (! (ischar (url) && isvector (url)))
+  if (! (ischar (url) && isrow (url)))
     error ("webread: URL must be a string");
   endif
 
-  has_weboptions = false;
-  options = weboptions;
-
-  if (numel (varargin) > 0)
-    if (isa (varargin{end}, "weboptions"))
-      has_weboptions = true;
-      options = varargin{end};
-    endif
+  if (isa (varargin{end}, "weboptions"))
+    has_weboptions = true;
+    options = varargin{end};
+    varargin(end) = [];
+  else
+    has_weboptions = false;
+    options = weboptions ();
   endif
 
   if (strcmp (options.MediaType, "auto"))
@@ -67,8 +64,8 @@ function response = webread (url, varargin)
   ## If MediaType is set by the user, append it to other headers.
   if (! strcmp (options.CharacterEncoding, "auto"))
     options.HeaderFields{end+1,1} = "Content-Type";
-    options.HeaderFields{end,2} = [options.MediaType,...
-                                  "; charset=", options.CharacterEncoding];
+    options.HeaderFields{end,2} = [options.MediaType, ...
+                                   "; charset=", options.CharacterEncoding];
   endif
 
   if (! isempty (options.KeyName))
@@ -84,21 +81,25 @@ function response = webread (url, varargin)
   ## a flattened array.
   options.HeaderFields = options.HeaderFields(:)';
 
-  if (nargin == 1 || (nargin == 2 && has_weboptions))
-    response = __restful_service__ (url, cell, options);
-  elseif (rem (numel (varargin), 2) == 1 && has_weboptions)
-    if (iscellstr (varargin(1:end-1)))
-      response = __restful_service__ (url, varargin(1:end-1), options);
+  nargs = 1 + numel (varargin);
+  if (nargs == 1)
+    response = __restful_service__ (url, cell (), options);
+  elseif (rem (nargs, 2) == 1)
+    if (! iscellstr (varargin))
+      error ("webwrite: KEYS and VALUES must be strings");
     else
-      error ("webread: Keys and Values must be string.");
-    endif
-  elseif (rem (numel (varargin), 2) == 0 && ! has_weboptions)
-    if (iscellstr (varargin))
       response = __restful_service__ (url, varargin, options);
-    else
-      error ("webread: Keys and Values must be string.");
     endif
   else
-    error ("webread: Wrong input arguments");
+    error ("webread: KEYS/VALUES must occur in pairs");
   endif
+
 endfunction
+
+
+## Test input validation
+%!error webread ()
+%!error <URL must be a string> webread (1)
+%!error <URL must be a string> webread (["a";"b"])
+%!error <KEYS and VALUES must be strings> webread ("URL", "NAME1", 5)
+%!error <KEYS/VALUES must occur in pairs> webread ("URL", "KEY1")

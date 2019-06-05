@@ -39,7 +39,7 @@
 
 function response = webwrite (url, varargin)
 
-  if (numel (varargin) < 1)
+  if (nargin < 2)
     print_usage();
   endif
 
@@ -63,7 +63,7 @@ function response = webwrite (url, varargin)
   ## If MediaType is set by the user, append it to other headers.
   if (! strcmp (options.CharacterEncoding, "auto"))
     options.HeaderFields{end+1, 1} = "Content-Type";
-    options.HeaderFields{end, 2} = [options.MediaType,...
+    options.HeaderFields{end, 2} = [options.MediaType, ...
                                     "; charset=", options.CharacterEncoding];
   endif
 

@@ -17,23 +17,21 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{response} =} webwrite (@var{url}, @var{name1}, @var{value1},...)
+## @deftypefn  {} {@var{response} =} webwrite (@var{url}, @var{name1}, @var{value1}, @dots{})
 ## @deftypefnx {} {@var{response} =} webwrite (@var{url}, @var{data})
-## @deftypefnx {} {@var{response} =} webwrite (..., @var{options})
+## @deftypefnx {} {@var{response} =} webwrite (@dots{}, @var{options})
 ##
 ## Write data to RESTful web services.
 ##
-## Writes content to web service specified by @var{url} and returns the
+## Write content to the web service specified by @var{url} and return the
 ## response in @var{response}.
 ##
-## All pairs @var{name1}, @var{value1}... are given, adds these key-value
-## pairs of query parameters to the body of request method (@code{get},
-## @code{post}, @code{put}, etc).
+## All key-value pairs given (@var{name1}, @var{value1}, @dots{}) are added
+## as pairs of query parameters to the body of request method (@code{get},
+## @code{post}, @code{put}, etc.).
 ##
-## @var{options} is a @code{weboptions} object to be used to add other HTTP
-## request options.  You can use this option with any of the input arguments of
-## the previous syntax.
-##
+## @var{options} is a @code{weboptions} object that may be used to add other
+## HTTP request options.  This argument can be used with either calling form.
 ## See @code{help weboptions} for a complete list of supported HTTP options.
 ##
 ## @seealso{weboptions, webread, websave}
@@ -45,16 +43,17 @@ function response = webwrite (url, varargin)
     print_usage();
   endif
 
-  if (! (ischar (url) && isvector (url)))
+  if (! (ischar (url) && isrow (url)))
     error ("webwrite: URL must be a string");
   endif
-
-  options = weboptions;
-  has_weboptions = false;
 
   if (isa (varargin{end}, "weboptions"))
     has_weboptions = true;
     options = varargin{end};
+    varargin(end) = [];
+  else
+    has_weboptions = false;
+    options = weboptions ();
   endif
 
   if (strcmp (options.MediaType, "auto"))
@@ -65,7 +64,7 @@ function response = webwrite (url, varargin)
   if (! strcmp (options.CharacterEncoding, "auto"))
     options.HeaderFields{end+1, 1} = "Content-Type";
     options.HeaderFields{end, 2} = [options.MediaType,...
-                                  "; charset=", options.CharacterEncoding];
+                                    "; charset=", options.CharacterEncoding];
   endif
 
   if (! isempty (options.KeyName))
@@ -81,28 +80,38 @@ function response = webwrite (url, varargin)
   ## a flattened array.
   options.HeaderFields = options.HeaderFields(:)';
 
-  if (numel (varargin) == 2)
-    if ((ischar (varargin{1}) && isvector (varargin{1})) && has_weboptions)
+  nargs = numel (varargin);
+  if (nargs == 0)
+    error ("webwrite: DATA must be a string");
+  elseif (nargs == 1)
+    if (ischar (varargin{1}) && isrow (varargin{1}))
       param = strsplit (varargin{1}, {"=", "&"});
       response = __restful_service__ (url, param, options);
-    elseif (! has_weboptions && iscellstr (varargin))
+    elseif  (! iscellstr (varargin))
+      error ("webwrite: DATA must be a string");
+    else
       response = __restful_service__ (url, varargin, options);
-    else
-      error ("webwrite: data should be a character array or string.");
     endif
-  elseif (rem (numel (varargin), 2) == 1 && has_weboptions)
-    if (iscellstr (varargin(1:end-1)))
-      response = __restful_service__ (url, varargin(1:end-1), options);
+  elseif (rem (nargs, 2) == 0)
+    if (! iscellstr (varargin))
+      error ("webwrite: KEYS and VALUES must be strings");
     else
-      error ("webwrite: Keys and Values must be string.");
-    endif
-  elseif (rem (numel (varargin), 2) == 0 && ! has_weboptions)
-    if (iscellstr (varargin))
       response = __restful_service__ (url, varargin, options);
-    else
-      error ("webwrite: Keys and Values must be string.");
     endif
   else
-    error ("webwrite: Wrong input arguments");
+    error ("webwrite: KEYS/VALUES must occur in pairs");
   endif
+
 endfunction
+
+
+## Test input validation
+%!error webwrite ()
+%!error webwrite ("abc")
+%!error <URL must be a string> webwrite (1, "NAME1", "VALUE1")
+%!error <URL must be a string> webwrite (["a";"b"], "NAME1", "VALUE1")
+%!error <DATA must be a string> webwrite ("URL", 1, weboptions ())
+%!error <DATA must be a string> webwrite ("URL", 1)
+%!error <KEYS and VALUES must be strings> webwrite ("URL", "NAME1", 5)
+%!error <KEYS/VALUES must occur in pairs> webwrite ("URL", "KEY1", "VAL1", "A")
+

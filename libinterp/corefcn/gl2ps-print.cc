@@ -961,6 +961,7 @@ namespace octave
               }
           }
 
+        escape_character ("\\", str);
         escape_character ("(", str);
         escape_character (")", str);
 

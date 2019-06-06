@@ -3092,10 +3092,21 @@ octave_print_internal (std::ostream&, const octave_value&, bool)
 
 DEFUN (rats, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} rats (@var{x}, @var{len})
+@deftypefn  {} {@var{s} =} rats (@var{x})
+@deftypefnx {} {@var{s} =} rats (@var{x}, @var{len})
 Convert @var{x} into a rational approximation represented as a string.
 
-The string can be converted back into a matrix as follows:
+A rational approximation to a floating point number is a simple fraction
+with numerator @var{N} and denominator @var{D} such that
+@code{@var{x} = @var{N}/@var{D}}.
+
+The optional second argument defines the maximum length of the string
+representing the elements of @var{x}.  By default, @var{len} is 9.
+
+If the length of the smallest possible rational approximation exceeds
+@var{len}, an asterisk (*) padded with spaces will be returned instead.
+
+Example conversion from matrix to string, and back again.
 
 @example
 @group
@@ -3104,12 +3115,7 @@ x = str2num (r)
 @end group
 @end example
 
-The optional second argument defines the maximum length of the string
-representing the elements of @var{x}.  By default @var{len} is 9.
-
-If the length of the smallest possible rational approximation exceeds
-@var{len}, an asterisk (*) padded with spaces will be returned instead.
-@seealso{format, rat}
+@seealso{rat, format}
 @end deftypefn */)
 {
   int nargin = args.length ();

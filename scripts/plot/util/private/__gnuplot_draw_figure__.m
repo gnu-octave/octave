@@ -172,7 +172,7 @@ function __gnuplot_draw_figure__ (h, plot_stream, enhanced)
                 fg_is_set = false;
               end_unwind_protect
             endif
-          case {"uimenu", "uicontextmenu"}
+          case {"uimenu", "uicontextmenu", "uitoolbar"}
             ## ignore uimenu objects
             kids(i) = [];
           otherwise

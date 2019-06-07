@@ -608,18 +608,43 @@ The current state can be determined via @code{page_screen_output}.
   return ovl ();
 }
 
-DEFUN (terminal_size, , ,
+DEFUN (terminal_size, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} terminal_size ()
-Return a two-element row vector containing the current size of the terminal
-window in characters (rows and columns).
+Query or set the size of the terminal window.  If called with no
+arguments, return a two-element row vector containing the current size
+of the terminal window in characters (rows and columns).  If called with
+a two-element vector of integer values, set the terminal size and return
+the previous setting.  Setting the size manually should not be needed
+when using readline for command-line editing.
 @seealso{list_in_columns}
 @end deftypefn */)
 {
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    print_usage ();
+
   RowVector size (2, 0.0);
 
   size(0) = octave::command_editor::terminal_rows ();
   size(1) = octave::command_editor::terminal_cols ();
+
+  if (nargin == 1)
+    {
+      Matrix m = args(0).xmatrix_value ("argument must be a 2-element array");
+
+      if (m.numel () != 2)
+        error ("terminal_size: argument must be a 2-element array");
+
+      int rows = octave::math::x_nint (m(0));
+      int cols = octave::math::x_nint (m(1));
+
+      if (rows <= 0 || cols <= 0)
+        error ("terminal_size: rows and columns must be positive integers");
+
+      octave::command_editor::set_screen_size (rows, cols);
+    }
 
   return ovl (size);
 }

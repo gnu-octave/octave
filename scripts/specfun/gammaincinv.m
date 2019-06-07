@@ -131,7 +131,7 @@ function x = gammaincinv (y, a, tail = "lower")
   ## Special cases, a = 1 or y = 0, 1.
 
   if (strcmpi (tail, "lower"))
-    x(a == 1) = - log (1 - y(a == 1));
+    x(a == 1) = - log1p (- y(a == 1));
     x(y == 0) = 0;
     x(y == 1) = Inf;
     p = y;
@@ -152,28 +152,30 @@ function x = gammaincinv (y, a, tail = "lower")
 
   i_flag_1 = todo & (p < ((0.2 * (1 + a)) .^ a) ./ gamma (1 + a));
 
-  aa = a(i_flag_1);
-  pp = p(i_flag_1);
+  if (any (i_flag_1))
+    aa = a(i_flag_1);
+    pp = p(i_flag_1);
 
-  ## Initial guess.
+    ## Initial guess.
 
-  r = (pp .* gamma (1 + aa)) .^ (1 ./ aa);
+    r = (pp .* gamma (1 + aa)) .^ (1 ./ aa);
 
-  c2 = 1 ./ (aa + 1);
-  c3 = (3  * aa + 5) ./ (2 * (aa + 1) .^2 .* (aa + 2));
-  c4 = (8 * aa .^ 2 + 33 * aa + 31) ./ (3 * (aa + 1) .^ 3 .* (aa + 2) .* ...
-       (aa + 3));
-  c5 = (125 * aa .^ 4 + 1179 * aa .^ 3 + 3971 * aa.^2 + 5661 * aa + 2888) ...
-       ./ (24 * (1 + aa) .^4 .* (aa + 2) .^ 2 .* (aa + 3) .* (aa + 4));
+    c2 = 1 ./ (aa + 1);
+    c3 = (3  * aa + 5) ./ (2 * (aa + 1) .^2 .* (aa + 2));
+    c4 = (8 * aa .^ 2 + 33 * aa + 31) ./ (3 * (aa + 1) .^ 3 .* (aa + 2) .* ...
+         (aa + 3));
+    c5 = (125 * aa .^ 4 + 1179 * aa .^ 3 + 3971 * aa.^2 + 5661 * aa + 2888) ...
+         ./ (24 * (1 + aa) .^4 .* (aa + 2) .^ 2 .* (aa + 3) .* (aa + 4));
 
-  ## FIXME: Would polyval() be better here for more accuracy?
-  x0 = r + c2 .* r .^ 2 + c3 .* r .^ 3 + c4 .* r .^4 + c5 .* r .^ 5;
+    ## FIXME: Would polyval() be better here for more accuracy?
+    x0 = r + c2 .* r .^ 2 + c3 .* r .^ 3 + c4 .* r .^4 + c5 .* r .^ 5;
 
-  ## For this case we invert the lower version.
+    ## For this case we invert the lower version.
 
-  F = @(p, a, x) p - gammainc (x, a, "lower");
-  JF = @(a, x) - exp (-gammaln (a) - x + (a - 1) .* log (x));
-  x(i_flag_1) = newton_method (F, JF, pp, aa, x0, tol, maxit);
+    F = @(p, a, x) p - gammainc (x, a, "lower");
+    JF = @(a, x) - exp (- gammaln (a) - x + (a - 1) .* log (x));
+    x(i_flag_1) = newton_method (F, JF, pp, aa, x0, tol, maxit);
+  endif
 
   todo(i_flag_1) = false;
 
@@ -182,18 +184,20 @@ function x = gammaincinv (y, a, tail = "lower")
   i_flag_2 = (q < exp (- 0.5 * a) ./ gamma (1 + a)) & (a > 0) & (a < 10);
   i_flag_2 &= todo;
 
-  aa = a(i_flag_2);
-  qq = q(i_flag_2);
+  if (any (i_flag_2))
+    aa = a(i_flag_2);
+    qq = q(i_flag_2);
 
-  ## Initial guess.
+    ## Initial guess.
 
-  x0 = (-log (qq) - gammaln (aa));
+    x0 = (-log (qq) - gammaln (aa));
 
-  ## For this case, we invert the upper version.
+    ## For this case, we invert the upper version.
 
-  F = @(q, a, x) q - gammainc (x, a, "upper");
-  JF = @(a, x) exp (- gammaln (a) - x) .* x .^ (a - 1);
-  x(i_flag_2) = newton_method (F, JF, qq, aa, x0, tol, maxit);
+    F = @(q, a, x) q - gammainc (x, a, "upper");
+    JF = @(a, x) exp (- gammaln (a) - x) .* x .^ (a - 1);
+    x(i_flag_2) = newton_method (F, JF, qq, aa, x0, tol, maxit);
+  endif
 
   todo(i_flag_2) = false;
 
@@ -201,39 +205,44 @@ function x = gammaincinv (y, a, tail = "lower")
 
   i_flag_3 = todo & ((a > 0) & (a < 1));
 
-  aa = a(i_flag_3);
-  pp = p(i_flag_3);
+  if (any (i_flag_3))
+    aa = a(i_flag_3);
+    pp = p(i_flag_3);
 
-  ## Initial guess
+    ## Initial guess
 
-  xl = (pp .* gamma (aa + 1)) .^ (1 ./ aa);
-  x0 = xl;
+    xl = (pp .* gamma (aa + 1)) .^ (1 ./ aa);
+    x0 = xl;
 
-  ## For this case, we invert the lower version.
+    ## For this case, we invert the lower version.
 
-  F = @(p, a, x) p - gammainc (x, a, "lower");
-  JF = @(a, x) - exp (-gammaln (a) - x) .* x .^ (a - 1);
-  x(i_flag_3) = newton_method (F, JF, pp, aa, x0, tol, maxit);
+    F = @(p, a, x) p - gammainc (x, a, "lower");
+    JF = @(a, x) - exp (-gammaln (a) - x) .* x .^ (a - 1);
+    x(i_flag_3) = newton_method (F, JF, pp, aa, x0, tol, maxit);
+  endif
 
   todo(i_flag_3) = false;
 
   ## Case 4: a large.
 
   i_flag_4 = todo;
-  aa = a(i_flag_4);
-  qq = q(i_flag_4);
 
-  ## Initial guess
+  if (any (i_flag_4))
+    aa = a(i_flag_4);
+    qq = q(i_flag_4);
 
-  d = 1 ./ (9 * aa);
-  t = 1 - d + sqrt (2) * erfcinv (2 * qq) .* sqrt (d);
-  x0 = aa .* (t .^ 3);
+    ## Initial guess
 
-  ## For this case, we invert the upper version.
+    d = 1 ./ (9 * aa);
+    t = 1 - d + sqrt (2) * erfcinv (2 * qq) .* sqrt (d);
+    x0 = aa .* (t .^ 3);
 
-  F = @(q, a, x) q - gammainc (x, a, "upper");
-  JF = @(a, x) exp (- gammaln (a) - x + (a - 1) .* log (x));
-  x(i_flag_4) = newton_method (F, JF, qq, aa, x0, tol, maxit);
+    ## For this case, we invert the upper version.
+
+    F = @(q, a, x) q - gammainc (x, a, "upper");
+    JF = @(a, x) exp (- gammaln (a) - x + (a - 1) .* log (x));
+    x(i_flag_4) = newton_method (F, JF, qq, aa, x0, tol, maxit);
+  endif
 
   ## Restore original shape
   x = reshape (x, orig_sz);
@@ -283,6 +292,10 @@ endfunction
 %! [x, a] = ndgrid (x, a);
 %! xx = gammainc (gammaincinv (x, a, "upper"), a, "upper");
 %! assert (xx, x, -1e-13);
+
+%!test <*56453>
+%! assert (gammaincinv (1e-15, 1) * 2, 2e-15, -1e-15);
+%! assert (gammaincinv (1e-16, 1) * 2, 2e-16, -1e-15);
 
 ## Test the conservation of the input class
 %!assert (class (gammaincinv (0.5, 1)), "double")

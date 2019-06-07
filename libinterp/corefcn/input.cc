@@ -782,17 +782,17 @@ namespace octave
 
   bool base_reader::reading_fcn_file (void) const
   {
-    return m_lexer ? m_lexer->m_reading_fcn_file : false;
+    return m_lexer.m_reading_fcn_file;
   }
 
   bool base_reader::reading_classdef_file (void) const
   {
-    return m_lexer ? m_lexer->m_reading_classdef_file : false;
+    return m_lexer.m_reading_classdef_file;
   }
 
   bool base_reader::reading_script_file (void) const
   {
-    return m_lexer ? m_lexer->m_reading_script_file : false;
+    return m_lexer.m_reading_script_file;
   }
 
   class
@@ -800,7 +800,7 @@ namespace octave
   {
   public:
 
-    terminal_reader (base_lexer *lxr = nullptr)
+    terminal_reader (base_lexer& lxr)
       : base_reader (lxr)
     { }
 
@@ -820,7 +820,7 @@ namespace octave
   {
   public:
 
-    file_reader (FILE *f_arg, base_lexer *lxr = nullptr)
+    file_reader (FILE *f_arg, base_lexer& lxr)
       : base_reader (lxr), m_file (f_arg) { }
 
     std::string get_input (bool& eof);
@@ -841,7 +841,7 @@ namespace octave
   {
   public:
 
-    eval_string_reader (const std::string& str, base_lexer *lxr = nullptr)
+    eval_string_reader (const std::string& str, base_lexer& lxr)
       : base_reader (lxr), m_eval_string (str)
     { }
 
@@ -858,15 +858,15 @@ namespace octave
     static const std::string s_in_src;
   };
 
-  input_reader::input_reader (base_lexer *lxr)
+  input_reader::input_reader (base_lexer& lxr)
     : m_rep (new terminal_reader (lxr))
   { }
 
-  input_reader::input_reader (FILE *file, base_lexer *lxr)
+  input_reader::input_reader (FILE *file, base_lexer& lxr)
     : m_rep (new file_reader (file, lxr))
   { }
 
-  input_reader::input_reader (const std::string& str, base_lexer *lxr)
+  input_reader::input_reader (const std::string& str, base_lexer& lxr)
     : m_rep (new eval_string_reader (str, lxr))
   { }
 

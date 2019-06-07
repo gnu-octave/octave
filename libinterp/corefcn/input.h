@@ -198,7 +198,7 @@ namespace octave
 
     friend class input_reader;
 
-    base_reader (base_lexer *lxr)
+    base_reader (base_lexer& lxr)
       : m_count (1), m_pflag (0), m_lexer (lxr)
     { }
 
@@ -247,7 +247,7 @@ namespace octave
 
     int m_pflag;
 
-    base_lexer *m_lexer;
+    base_lexer& m_lexer;
 
     static const std::string s_in_src;
   };
@@ -256,11 +256,11 @@ namespace octave
   {
   public:
 
-    input_reader (base_lexer *lxr = nullptr);
+    input_reader (base_lexer& lxr);
 
-    input_reader (FILE *file, base_lexer *lxr = nullptr);
+    input_reader (FILE *file, base_lexer& lxr);
 
-    input_reader (const std::string& str, base_lexer *lxr = nullptr);
+    input_reader (const std::string& str, base_lexer& lxr);
 
     input_reader (const input_reader& ir)
     {

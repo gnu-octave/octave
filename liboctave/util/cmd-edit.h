@@ -41,7 +41,9 @@ namespace octave
   protected:
 
     command_editor (void)
-      : command_number (0), interrupted (false), initial_input () { }
+      : command_number (0), m_rows (24), m_cols (80), interrupted (false),
+        initial_input ()
+      { }
 
   public:
 
@@ -249,15 +251,19 @@ namespace octave
 
     virtual void do_redisplay (void) { }
 
-    virtual int do_terminal_rows (void) { return 24; }
+    virtual int do_terminal_rows (void) { return m_rows; }
 
-    virtual int do_terminal_cols (void) { return 80; }
+    virtual int do_terminal_cols (void) { return m_cols; }
 
     virtual void do_clear_screen (bool) { }
 
     virtual void do_resize_terminal (void) { }
 
-    virtual void do_set_screen_size (int, int) { }
+    virtual void do_set_screen_size (int ht, int wd)
+    {
+      m_rows = ht;
+      m_cols = wd;
+    }
 
     virtual std::string do_decode_prompt_string (const std::string&);
 
@@ -364,6 +370,9 @@ namespace octave
 
     // The current command number.
     int command_number;
+
+    int m_rows;
+    int m_cols;
 
     bool interrupted;
 

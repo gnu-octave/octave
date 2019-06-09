@@ -5035,18 +5035,23 @@ does.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string try_code
-    = args(0).xstring_value ("eval: TRY must be a string");
+  if (! args(0).is_string () || args(0).rows () > 1 || args(0).ndims () != 2) 
+    error ("eval: TRY must be a string");
 
-  if (nargin == 2)
+  std::string try_code = args(0).string_value ();
+
+  if (nargin == 1)
+    return interp.eval (try_code, nargout);
+  else
     {
-      std::string catch_code
-        = args(1).xstring_value ("eval: CATCH must be a string");
+      if (! args(1).is_string () || args(1).rows () > 1
+          || args(1).ndims () != 2) 
+        error ("eval: CATCH must be a string");
+
+      std::string catch_code = args(1).string_value ();
 
       return interp.eval (try_code, catch_code, nargout);
     }
-
-  return interp.eval (try_code, nargout);
 }
 
 /*
@@ -5080,12 +5085,24 @@ does.
 %!endfunction
 %!assert (__f(), 2)
 
-% bug #35645
-%!test
+%!test <*35645>
 %! [a,] = gcd (1,2);
 %! [a,b,] = gcd (1, 2);
 
+## Can't assign to a keyword
 %!error eval ("switch = 13;")
+
+%!shared str
+%! str = "disp ('hello');";
+%! str(:,:,2) = str(:,:,1);
+
+%!error <TRY must be a string> eval (1)
+%!error <TRY must be a string> eval (['a';'b'])
+%!error <TRY must be a string> eval (str)
+
+%!error <CATCH must be a string> eval (str(:,:,1), 1)
+%!error <CATCH must be a string> eval (str(:,:,1), ['a';'b'])
+%!error <CATCH must be a string> eval (str(:,:,1), str)
 
 */
 

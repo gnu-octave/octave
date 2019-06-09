@@ -125,8 +125,8 @@ function [nn, xx] = hist (varargin)
       error ("hist: bin specification must be a numeric scalar or vector");
     endif
 
-    ## Do not convert if input is of class single (or if already is double).
-    if (! isfloat (x))
+    ## Convert integer types or a single specification of N bins to double
+    if (! isfloat (x) || isscalar (x))
       x = double (x);
     endif
 
@@ -365,6 +365,17 @@ endfunction
 %! [nn, xx] = hist (y);
 %! assert (nn, [2 0 0 0 0 0 0 0 0 2]);
 %! assert (xx, 0.5:10);
+
+## Test return class of second output
+%!test <*56465>
+%! [nn, xx] = hist (double (1:10), single (7));
+%! assert (isa (xx, "double"));
+%! [nn, xx] = hist (single (1:10), double (7));
+%! assert (isa (xx, "single"));
+%! [nn, xx] = hist (single (1:10), double ([1, 5, 10]));
+%! assert (isa (xx, "double"));
+%! [nn, xx] = hist (double (1:10), single ([1, 5, 10]));
+%! assert (isa (xx, "single"));
 
 ## Test input validation
 %!error hist ()

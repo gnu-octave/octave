@@ -147,7 +147,6 @@ namespace QtHandles
 
         try
           {
-#if defined (Q_OS_MAC)
             if (fig.get ("visible").string_value () == "on")
               octave::gl2ps_print (m_glfcns, fig, file_cmd.toStdString (),
                                    term.toStdString ());
@@ -171,10 +170,6 @@ namespace QtHandles
 
                 fbo.release ();
               }
-#else
-            octave::gl2ps_print (m_glfcns, fig, file_cmd.toStdString (),
-                                 term.toStdString ());
-#endif
           }
         catch (octave::execution_exception& e)
           {

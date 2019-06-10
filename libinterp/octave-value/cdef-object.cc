@@ -148,7 +148,7 @@ cdef_object::map_value () const
 
   if (cls.ok ())
     {
-      std::map<std::string, cdef_property> props;
+      std::map<property_key, cdef_property> props;
 
       props = cls.get_property_map (cdef_class::property_all);
 
@@ -164,14 +164,14 @@ cdef_object::map_value () const
               for (octave_idx_type i = 0; i < a_obj.numel (); i++)
                 cvalue (i) = prop_val.second.get_value (a_obj(i), false);
 
-              retval.setfield (prop_val.first, cvalue);
+              retval.setfield (prop_val.second.get_name (), cvalue);
             }
           else
             {
               Cell cvalue (dim_vector (1, 1),
                            prop_val.second.get_value (*this, false));
 
-              retval.setfield (prop_val.first, cvalue);
+              retval.setfield (prop_val.second.get_name (), cvalue);
             }
         }
     }

@@ -385,6 +385,8 @@ void
 cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
 {
   m_property_map[prop.get_name ()] = prop;
+  // Register the insertion rank of this property
+  m_property_rank_map[prop.get_name ()] = m_member_count;
 
   m_member_count++;
 }
@@ -392,7 +394,7 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
 Cell
 cdef_class::cdef_class_rep::get_properties (int mode)
 {
-  std::map<std::string, cdef_property> props;
+  std::map<property_key, cdef_property> props;
 
   props = get_property_map (mode);
 
@@ -406,10 +408,10 @@ cdef_class::cdef_class_rep::get_properties (int mode)
   return c;
 }
 
-std::map<std::string, cdef_property>
+std::map<property_key, cdef_property>
 cdef_class::cdef_class_rep::get_property_map (int mode)
 {
-  std::map<std::string, cdef_property> props;
+  std::map<property_key, cdef_property> props;
 
   find_properties (props, mode);
 
@@ -417,15 +419,32 @@ cdef_class::cdef_class_rep::get_property_map (int mode)
 }
 
 void
-cdef_class::cdef_class_rep::find_properties (std::map<std::string,
-    cdef_property>& props,
-    int mode)
+cdef_class::cdef_class_rep::find_properties
+  (std::map<property_key, cdef_property>& props, int mode)
 {
+  std::set<std::string> prop_names;
+
+  // The only reason we are introducing 'prop_names' is to keep
+  // track of property names and avoid returning duplicates.
+  // There is no easy way to do it based on 'props', which is going
+  // to use complex keys of type 'property_key'.
+  find_properties_aux (props, prop_names, mode);
+}
+
+void
+cdef_class::cdef_class_rep::find_properties_aux
+  (std::map<property_key, cdef_property>& props,
+   std::set<std::string>& prop_names, int mode)
+{
+  // 'offset' starts at 0 and is incremented whenever we move
+  // in the class ancestry list.
+  static unsigned int property_offset {0};
+
   for (const auto& it : m_property_map)
     {
       std::string nm = it.second.get_name ();
 
-      if (props.find (nm) == props.end ())
+      if (prop_names.find (nm) == prop_names.end ())
         {
           if (mode == property_inherited)
             {
@@ -436,9 +455,14 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
                 continue;
             }
 
-          props[nm] = it.second;
+          const property_key pk =
+            std::make_pair (property_offset + m_property_rank_map[nm], nm);
+          props[pk] = it.second;
+          prop_names.insert (nm);
         }
     }
+
+  property_offset += m_member_count;
 
   // Look into superclasses
 
@@ -448,11 +472,13 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
     {
       cdef_class cls = lookup_class (super_classes(i));
 
-      cls.get_rep ()->find_properties (props,
-                                       (mode == property_all
-                                        ? property_all
-                                        : property_inherited));
+      cls.get_rep ()->find_properties_aux (props, prop_names,
+                                           (mode == property_all
+                                            ? property_all
+                                            : property_inherited));
     }
+
+  property_offset = 0;
 }
 
 void

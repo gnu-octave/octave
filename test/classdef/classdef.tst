@@ -203,7 +203,7 @@
 
 %!test <*55766>
 %! x = class_bug55766 ();
-%! props = {"notahiddentestprop"; "publictestprop"; "testprop"};
+%! props = {"testprop"; "publictestprop"; "notahiddentestprop"};
 %! assert (properties (x), props);
 
 %!test <*60763>

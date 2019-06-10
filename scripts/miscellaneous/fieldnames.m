@@ -89,7 +89,7 @@ endfunction
 %!test
 %! m = containers.Map ();
 %! f = fieldnames (m);
-%! assert (f, {"Count"; "KeyType"; "ValueType"; "map"; "numeric_keys"});
+%! assert (f, {"KeyType"; "ValueType"; "Count"; "map"; "numeric_keys"});
 
 ## Test old-style @class object
 %!test

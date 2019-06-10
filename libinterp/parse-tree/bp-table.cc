@@ -853,7 +853,7 @@ private:
             }
 
           // Check get and set methods of properties
-          const std::map<std::string, cdef_property>& prop_map
+          const std::map<property_key, cdef_property>& prop_map
             = m_cls.get_property_map (cdef_class::property_all);
           for (const auto& prop : prop_map)
             {

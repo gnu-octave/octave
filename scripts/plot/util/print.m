@@ -996,13 +996,13 @@ function latex_standalone (opts)
       graphicsfile = [opts.name "-inc.eps"];
   endswitch
 
+  packages = {packages "\\usepackage[utf8]{inputenc}"};
+
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
                        fix (opts.canvas_size), fix (opts.canvas_size));
-  prepend = {"\\documentclass{minimal}";
-             packages;
-             papersize;
-             "\\begin{document}";
-             "\\centering"};
+
+  prepend = {"\\documentclass{minimal}", packages{:}, papersize, ...
+             "\\begin{document}", "\\centering"};
   postpend = {"\\end{document}"};
 
   fid = fopen (latexfile, "r");

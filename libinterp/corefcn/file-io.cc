@@ -297,7 +297,7 @@ To read a line and return the terminating newline see @code{fgets}.
 @seealso{fgets, fscanf, fread, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fgetl";
+  static const std::string who = "fgetl";
 
   int nargin = args.length ();
 
@@ -339,7 +339,7 @@ To read a line and discard the terminating newline see @code{fgetl}.
 @seealso{fputs, fgetl, fscanf, fread, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fgets";
+  static const std::string who = "fgets";
 
   int nargin = args.length ();
 
@@ -381,7 +381,7 @@ Returns the number of lines skipped (end-of-line sequences encountered).
 @seealso{fgetl, fgets, fscanf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fskipl";
+  static const std::string who = "fskipl";
 
   int nargin = args.length ();
 
@@ -852,7 +852,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fprintf";
+  static const std::string who = "fprintf";
 
   return printf_internal (interp, who, args, nargout);
 }
@@ -875,7 +875,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{fprintf, sprintf, scanf}
 @end deftypefn */)
 {
-  static std::string who = "printf";
+  static const std::string who = "printf";
 
   octave_value_list tmp_args = args;
 
@@ -911,7 +911,7 @@ Return a non-negative number on success or EOF on error.
 @seealso{fdisp, fprintf, fwrite, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fputs";
+  static const std::string who = "fputs";
 
   return puts_internal (interp, who, args);
 }
@@ -929,7 +929,7 @@ Return a non-negative number on success and EOF on error.
 @seealso{fputs, disp}
 @end deftypefn */)
 {
-  static std::string who = "puts";
+  static const std::string who = "puts";
 
   octave_value_list tmp_args = args;
 
@@ -952,7 +952,7 @@ expanded even when the template string is defined with single quotes.
 @seealso{printf, fprintf, sscanf}
 @end deftypefn */)
 {
-  static std::string who = "sprintf";
+  static const std::string who = "sprintf";
 
   int nargin = args.length ();
 
@@ -1088,7 +1088,7 @@ complete description of the syntax of the template string.
 @seealso{fgets, fgetl, fread, scanf, sscanf, fopen}
 @end deftypefn */)
 {
-  static std::string who = "fscanf";
+  static const std::string who = "fscanf";
 
   return scanf_internal (interp, who, args);
 }
@@ -1121,7 +1121,7 @@ character to be read is returned in @var{pos}.
 @seealso{fscanf, scanf, sprintf}
 @end deftypefn */)
 {
-  static std::string who = "sscanf";
+  static const std::string who = "sscanf";
 
   int nargin = args.length ();
 
@@ -1185,7 +1185,7 @@ It is currently not useful to call @code{scanf} in interactive programs.
 @seealso{fscanf, sscanf, printf}
 @end deftypefn */)
 {
-  static std::string who = "scanf";
+  static const std::string who = "scanf";
 
   octave_value_list tmp_args = args;
 
@@ -1530,7 +1530,7 @@ from the beginning of the file or string, where processing stopped.
 @seealso{dlmread, fscanf, load, strread, textread}
 @end deftypefn */)
 {
-  static std::string who = "textscan";
+  static const std::string who = "textscan";
 
   return textscan_internal (interp, who, args);
 }

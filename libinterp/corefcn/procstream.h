@@ -38,7 +38,7 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : pb () { pb_init (); }
+  procstreambase (void) : pb () { }
 
   procstreambase (const std::string& name, int mode);
 
@@ -62,8 +62,6 @@ public:
 private:
 
   octave_procbuf pb;
-
-  void pb_init (void) { init (&pb); }
 
   procstreambase (const procstreambase&);
 

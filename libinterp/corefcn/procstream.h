@@ -38,7 +38,7 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : pb () { }
+  procstreambase (void) : m_pb () { }
 
   procstreambase (const std::string& name, int mode);
 
@@ -47,21 +47,23 @@ public:
   ~procstreambase (void) { close (); }
 
   void open (const std::string& name, int mode)
-  { open (name.c_str (), mode); }
+  {
+    open (name.c_str (), mode);
+  }
 
   void open (const char *name, int mode);
 
-  int is_open (void) const { return pb.is_open (); }
+  int is_open (void) const { return m_pb.is_open (); }
 
   int close (void);
 
-  pid_t pid (void) const { return pb.pid (); }
+  pid_t pid (void) const { return m_pb.pid (); }
 
-  int file_number (void) const { return pb.file_number (); }
+  int file_number (void) const { return m_pb.file_number (); }
 
 private:
 
-  octave_procbuf pb;
+  octave_procbuf m_pb;
 
   procstreambase (const procstreambase&);
 
@@ -78,18 +80,24 @@ public:
   iprocstream (void) : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
-    : std::istream (nullptr), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode)
+  { }
 
   iprocstream (const char *name, int mode = std::ios::in)
-    : std::istream (nullptr), procstreambase (name, mode) { }
+    : std::istream (nullptr), procstreambase (name, mode)
+  { }
 
   ~iprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::in)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode = std::ios::in)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 
@@ -101,7 +109,6 @@ private:
 class
 OCTINTERP_API
 oprocstream : public std::ostream, public procstreambase
-// oprocstream : public procstreambase, public std::ostream
 {
 public:
 
@@ -116,10 +123,14 @@ public:
   ~oprocstream (void) = default;
 
   void open (const std::string& name, int mode = std::ios::out)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode = std::ios::out)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 
@@ -131,25 +142,30 @@ private:
 class
 OCTINTERP_API
 procstream : public std::iostream, public procstreambase
-// procstream : public procstreambase, public std::iostream
 {
 public:
 
   procstream (void) : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
-    : std::iostream (nullptr), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode)
+  { }
 
   procstream (const char *name, int mode)
-    : std::iostream (nullptr), procstreambase (name, mode) { }
+    : std::iostream (nullptr), procstreambase (name, mode)
+  { }
 
   ~procstream (void) = default;
 
   void open (const std::string& name, int mode)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
   void open (const char *name, int mode)
-  { procstreambase::open (name, mode); }
+  {
+    procstreambase::open (name, mode);
+  }
 
 private:
 

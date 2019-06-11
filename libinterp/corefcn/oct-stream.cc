@@ -3972,22 +3972,22 @@ namespace octave
   void
   base_stream::error (const std::string& msg)
   {
-    fail = true;
-    errmsg = msg;
+    m_fail = true;
+    m_errmsg = msg;
   }
 
   void
   base_stream::error (const std::string& who, const std::string& msg)
   {
-    fail = true;
-    errmsg = who + ": " + msg;
+    m_fail = true;
+    m_errmsg = who + ": " + msg;
   }
 
   void
   base_stream::clear (void)
   {
-    fail = false;
-    errmsg = "";
+    m_fail = false;
+    m_errmsg = "";
   }
 
   void
@@ -5995,9 +5995,9 @@ namespace octave
   std::string
   base_stream::error (bool clear_err, int& err_num)
   {
-    err_num = (fail ? -1 : 0);
+    err_num = (m_fail ? -1 : 0);
 
-    std::string tmp = errmsg;
+    std::string tmp = m_errmsg;
 
     if (clear_err)
       clear ();
@@ -6013,37 +6013,37 @@ namespace octave
   }
 
   stream::stream (base_stream *bs)
-    : rep (bs)
+    : m_rep (bs)
   {
-    if (rep)
-      rep->count = 1;
+    if (m_rep)
+      m_rep->m_count = 1;
   }
 
   stream::~stream (void)
   {
-    if (rep && --rep->count == 0)
-      delete rep;
+    if (m_rep && --m_rep->m_count == 0)
+      delete m_rep;
   }
 
   stream::stream (const stream& s)
-    : rep (s.rep)
+    : m_rep (s.m_rep)
   {
-    if (rep)
-      rep->count++;
+    if (m_rep)
+      m_rep->m_count++;
   }
 
   stream&
   stream::operator = (const stream& s)
   {
-    if (rep != s.rep)
+    if (m_rep != s.m_rep)
       {
-        if (rep && --rep->count == 0)
-          delete rep;
+        if (m_rep && --m_rep->m_count == 0)
+          delete m_rep;
 
-        rep = s.rep;
+        m_rep = s.m_rep;
 
-        if (rep)
-          rep->count++;
+        if (m_rep)
+          m_rep->m_count++;
       }
 
     return *this;
@@ -6055,7 +6055,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->flush ();
+      retval = m_rep->flush ();
 
     return retval;
   }
@@ -6066,7 +6066,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->getl (max_len, err, who);
+      retval = m_rep->getl (max_len, err, who);
 
     return retval;
   }
@@ -6101,7 +6101,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->gets (max_len, err, who);
+      retval = m_rep->gets (max_len, err, who);
 
     return retval;
   }
@@ -6136,7 +6136,7 @@ namespace octave
     off_t retval = -1;
 
     if (stream_ok ())
-      retval = rep->skipl (count, err, who);
+      retval = m_rep->skipl (count, err, who);
 
     return retval;
   }
@@ -6181,31 +6181,31 @@ namespace octave
         clearerr ();
 
         // Find current position so we can return to it if needed.
-        off_t orig_pos = rep->tell ();
+        off_t orig_pos = m_rep->tell ();
 
         // Move to end of file.  If successful, find the offset of the end.
-        status = rep->seek (0, SEEK_END);
+        status = m_rep->seek (0, SEEK_END);
 
         if (status == 0)
           {
-            off_t eof_pos = rep->tell ();
+            off_t eof_pos = m_rep->tell ();
 
             if (origin == SEEK_CUR)
               {
                 // Move back to original position, otherwise we will be seeking
                 // from the end of file which is probably not the original
                 // location.
-                rep->seek (orig_pos, SEEK_SET);
+                m_rep->seek (orig_pos, SEEK_SET);
               }
 
             // Attempt to move to desired position; may be outside bounds of
             // existing file.
-            status = rep->seek (offset, origin);
+            status = m_rep->seek (offset, origin);
 
             if (status == 0)
               {
                 // Where are we after moving to desired position?
-                off_t desired_pos = rep->tell ();
+                off_t desired_pos = m_rep->tell ();
 
                 // I don't think save_pos can be less than zero,
                 // but we'll check anyway...
@@ -6213,7 +6213,7 @@ namespace octave
                   {
                     // Seek outside bounds of file.
                     // Failure should leave position unchanged.
-                    rep->seek (orig_pos, SEEK_SET);
+                    m_rep->seek (orig_pos, SEEK_SET);
 
                     status = -1;
                   }
@@ -6222,7 +6222,7 @@ namespace octave
               {
                 // Seeking to the desired position failed.
                 // Move back to original position and return failure status.
-                rep->seek (orig_pos, SEEK_SET);
+                m_rep->seek (orig_pos, SEEK_SET);
 
                 status = -1;
               }
@@ -6294,7 +6294,7 @@ namespace octave
     off_t retval = -1;
 
     if (stream_ok ())
-      retval = rep->tell ();
+      retval = m_rep->tell ();
 
     return retval;
   }
@@ -6311,7 +6311,7 @@ namespace octave
     bool retval = false;
 
     if (stream_ok ())
-      retval = rep->is_open ();
+      retval = m_rep->is_open ();
 
     return retval;
   }
@@ -6320,7 +6320,7 @@ namespace octave
   stream::close (void)
   {
     if (stream_ok ())
-      rep->close ();
+      m_rep->close ();
   }
 
   // FIXME: maybe these should be defined in lo-ieee.h?
@@ -7105,7 +7105,7 @@ namespace octave
     octave_value retval;
 
     if (stream_ok ())
-      retval = rep->scanf (fmt, size, count, who);
+      retval = m_rep->scanf (fmt, size, count, who);
 
     return retval;
   }
@@ -7140,7 +7140,7 @@ namespace octave
     octave_value_list retval;
 
     if (stream_ok ())
-      retval = rep->oscanf (fmt, who);
+      retval = m_rep->oscanf (fmt, who);
 
     return retval;
   }
@@ -7174,7 +7174,7 @@ namespace octave
                     const std::string& who, octave_idx_type& count)
   {
     return (stream_ok ()
-            ? rep->do_textscan (fmt, ntimes, options, who, count)
+            ? m_rep->do_textscan (fmt, ntimes, options, who, count)
             : octave_value ());
   }
 
@@ -7185,7 +7185,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->printf (fmt, args, who);
+      retval = m_rep->printf (fmt, args, who);
 
     return retval;
   }
@@ -7220,7 +7220,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->puts (s, who);
+      retval = m_rep->puts (s, who);
 
     return retval;
   }
@@ -7252,7 +7252,7 @@ namespace octave
     int retval = -1;
 
     if (stream_ok ())
-      retval = rep->eof ();
+      retval = m_rep->eof ();
 
     return retval;
   }
@@ -7263,7 +7263,7 @@ namespace octave
     std::string retval = "invalid stream object";
 
     if (stream_ok (false))
-      retval = rep->error (clear, err_num);
+      retval = m_rep->error (clear, err_num);
 
     return retval;
   }
@@ -7274,7 +7274,7 @@ namespace octave
     std::string retval;
 
     if (stream_ok ())
-      retval = rep->name ();
+      retval = m_rep->name ();
 
     return retval;
   }
@@ -7285,7 +7285,7 @@ namespace octave
     int retval = 0;
 
     if (stream_ok ())
-      retval = rep->mode ();
+      retval = m_rep->mode ();
 
     return retval;
   }
@@ -7296,7 +7296,7 @@ namespace octave
     mach_info::float_format retval = mach_info::flt_fmt_unknown;
 
     if (stream_ok ())
-      retval = rep->float_format ();
+      retval = m_rep->float_format ();
 
     return retval;
   }
@@ -7340,7 +7340,7 @@ namespace octave
   }
 
   stream_list::stream_list (interpreter& interp)
-    : list (), lookup_cache (list.end ()), m_stdin_file (-1),
+    : m_list (), m_lookup_cache (m_list.end ()), m_stdin_file (-1),
       m_stdout_file (-1), m_stderr_file (-1)
   {
     stream stdin_stream = octave_istream::create (&std::cin, "stdin");
@@ -7378,8 +7378,8 @@ namespace octave
 
     // Should we test for
     //
-    //  (list.find (stream_number) != list.end ()
-    //   && list[stream_number].is_open ())
+    //  (m_list.find (stream_number) != m_list.end ()
+    //   && m_list[stream_number].is_open ())
     //
     // and respond with "error ("internal error: ...")"?  It should not
     // happen except for some bug or if the user has opened a stream with
@@ -7389,10 +7389,10 @@ namespace octave
     // overwrite this entry, although the wrong entry might have done harm
     // before.
 
-    if (list.size () >= list.max_size ())
+    if (m_list.size () >= m_list.max_size ())
       ::error ("could not create file id");
 
-    list[stream_number] = os;
+    m_list[stream_number] = os;
 
     return stream_number;
   }
@@ -7414,17 +7414,17 @@ namespace octave
     if (fid < 0)
       err_invalid_file_id (fid, who);
 
-    if (lookup_cache != list.end () && lookup_cache->first == fid)
-      retval = lookup_cache->second;
+    if (m_lookup_cache != m_list.end () && m_lookup_cache->first == fid)
+      retval = m_lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        ostrl_map::const_iterator iter = m_list.find (fid);
 
-        if (iter == list.end ())
+        if (iter == m_list.end ())
           err_invalid_file_id (fid, who);
 
         retval = iter->second;
-        lookup_cache = iter;
+        m_lookup_cache = iter;
       }
 
     return retval;
@@ -7444,14 +7444,14 @@ namespace octave
     if (fid < 3)
       err_invalid_file_id (fid, who);
 
-    auto iter = list.find (fid);
+    auto iter = m_list.find (fid);
 
-    if (iter == list.end ())
+    if (iter == m_list.end ())
       err_invalid_file_id (fid, who);
 
     stream os = iter->second;
-    list.erase (iter);
-    lookup_cache = list.end ();
+    m_list.erase (iter);
+    m_lookup_cache = m_list.end ();
 
     // FIXME: is this check redundant?
     if (! os.is_valid ())
@@ -7487,11 +7487,11 @@ namespace octave
     if (flush)
       {
         // Flush stdout and stderr.
-        list[1].flush ();
-        list[2].flush ();
+        m_list[1].flush ();
+        m_list[2].flush ();
       }
 
-    for (auto iter = list.begin (); iter != list.end (); )
+    for (auto iter = m_list.begin (); iter != m_list.end (); )
       {
         int fid = iter->first;
         if (fid < 3)  // Don't delete stdin, stdout, stderr
@@ -7513,14 +7513,14 @@ namespace octave
             continue;
           }
 
-        // Normal file handle.  Close and delete from list.
+        // Normal file handle.  Close and delete from m_list.
         if (os.is_valid ())
           os.close ();
 
-        list.erase (iter++);
+        m_list.erase (iter++);
       }
 
-    lookup_cache = list.end ();
+    m_lookup_cache = m_list.end ();
   }
 
   string_vector stream_list::get_info (int fid) const
@@ -7531,17 +7531,17 @@ namespace octave
       return retval;
 
     stream os;
-    if (lookup_cache != list.end () && lookup_cache->first == fid)
-      os = lookup_cache->second;
+    if (m_lookup_cache != m_list.end () && m_lookup_cache->first == fid)
+      os = m_lookup_cache->second;
     else
       {
-        ostrl_map::const_iterator iter = list.find (fid);
+        ostrl_map::const_iterator iter = m_list.find (fid);
 
-        if (iter == list.end ())
+        if (iter == m_list.end ())
           return retval;
 
         os = iter->second;
-        lookup_cache = iter;
+        m_lookup_cache = iter;
       }
 
     if (! os.is_valid ())
@@ -7578,7 +7578,7 @@ namespace octave
         << "  number  mode  arch       name\n"
         << "  ------  ----  ----       ----\n";
 
-    for (const auto& fid_strm : list)
+    for (const auto& fid_strm : m_list)
       {
         stream os = fid_strm.second;
 
@@ -7604,11 +7604,11 @@ namespace octave
 
   octave_value stream_list::open_file_numbers (void) const
   {
-    Matrix retval (1, list.size (), 0.0);
+    Matrix retval (1, m_list.size (), 0.0);
 
     int num_open = 0;
 
-    for (const auto& fid_strm : list)
+    for (const auto& fid_strm : m_list)
       {
         // Skip stdin, stdout, and stderr.
         if (fid_strm.first > 2 && fid_strm.second)
@@ -7628,7 +7628,7 @@ namespace octave
       {
         std::string nm = fid.string_value ();
 
-        for (const auto& fid_strm : list)
+        for (const auto& fid_strm : m_list)
           {
             // stdin, stdout, and stderr are unnamed.
             if (fid_strm.first > 2)

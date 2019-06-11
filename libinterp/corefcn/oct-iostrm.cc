@@ -69,7 +69,7 @@ octave_base_iostream::invalid_operation (void) const
 bool
 octave_istream::eof (void) const
 {
-  return is && is->eof ();
+  return m_istream && m_istream->eof ();
 }
 
 octave::stream
@@ -83,7 +83,7 @@ octave_istream::create (std::istream *arg, const std::string& n)
 bool
 octave_ostream::eof (void) const
 {
-  return os && os->eof ();
+  return m_ostream && m_ostream->eof ();
 }
 
 octave::stream

@@ -82,14 +82,14 @@ public:
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format (),
                      const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), is (data) { }
+    : octave_base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
   octave_istrstream (const std::string& data,
                      std::ios::openmode arg_md = std::ios::out,
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format (),
                      const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), is (data) { }
+    : octave_base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
   // No copying!
 
@@ -118,23 +118,26 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const { return is.eof (); }
+  bool eof (void) const { return m_istream.eof (); }
 
-  std::istream * input_stream (void) { return &is; }
+  std::istream * input_stream (void) { return &m_istream; }
 
   std::ostream * output_stream (void) { return nullptr; }
 
-  off_t tell (void) { return is.tellg (); }
+  off_t tell (void) { return m_istream.tellg (); }
 
-  std::streambuf * rdbuf (void) { return is ? is.rdbuf () : nullptr; }
+  std::streambuf * rdbuf (void)
+  {
+    return m_istream ? m_istream.rdbuf () : nullptr;
+  }
 
-  bool bad (void) const { return is.bad (); }
+  bool bad (void) const { return m_istream.bad (); }
 
-  void clear (void) { is.clear (); }
+  void clear (void) { m_istream.clear (); }
 
 private:
 
-  std::istringstream is;
+  std::istringstream m_istream;
 };
 
 class
@@ -146,7 +149,7 @@ public:
                      octave::mach_info::float_format ff
                        = octave::mach_info::native_float_format (),
                      const std::string& encoding = "utf-8")
-    : octave_base_strstream (arg_md, ff, encoding), os () { }
+    : octave_base_strstream (arg_md, ff, encoding), m_ostream () { }
 
   // No copying!
 
@@ -168,23 +171,26 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const { return os.eof (); }
+  bool eof (void) const { return m_ostream.eof (); }
 
   std::istream * input_stream (void) { return nullptr; }
 
-  std::ostream * output_stream (void) { return &os; }
+  std::ostream * output_stream (void) { return &m_ostream; }
 
-  std::string str (void) { return os.str (); }
+  std::string str (void) { return m_ostream.str (); }
 
-  std::streambuf * rdbuf (void) { return os ? os.rdbuf () : nullptr; }
+  std::streambuf * rdbuf (void)
+  {
+    return m_ostream ? m_ostream.rdbuf () : nullptr;
+  }
 
-  bool bad (void) const { return os.bad (); }
+  bool bad (void) const { return m_ostream.bad (); }
 
-  void clear (void) { os.clear (); }
+  void clear (void) { m_ostream.clear (); }
 
 private:
 
-  std::ostringstream os;
+  std::ostringstream m_ostream;
 };
 
 #endif

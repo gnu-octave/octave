@@ -68,7 +68,7 @@ public:
 
   // The name of the file.
 
-  std::string name (void) const { return nm; }
+  std::string name (void) const { return m_name; }
 
   std::istream * input_stream (void);
 
@@ -80,9 +80,9 @@ protected:
 
 private:
 
-  std::string nm;
+  std::string m_name;
 
-  std::fstream fs;
+  std::fstream m_fstream;
 };
 
 #endif

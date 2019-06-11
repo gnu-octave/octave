@@ -38,7 +38,7 @@ public:
                         std::ios::openmode m = std::ios::in | std::ios::out,
                         octave::mach_info::float_format ff
                           = octave::mach_info::native_float_format ())
-    : octave::base_stream (m, ff), nm (n) { }
+    : octave::base_stream (m, ff), m_name (n) { }
 
   // No copying!
 
@@ -66,7 +66,7 @@ public:
 
   // The name of the file.
 
-  std::string name (void) const { return nm; }
+  std::string name (void) const { return m_name; }
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
 
 private:
 
-  std::string nm;
+  std::string m_name;
 
   virtual const char * stream_type (void) const = 0;
 };
@@ -87,7 +87,7 @@ public:
   octave_istream (std::istream *arg = nullptr, const std::string& n = "")
     : octave_base_iostream (n, std::ios::in,
                             octave::mach_info::native_float_format ()),
-      is (arg)
+      m_istream (arg)
   { }
 
   static octave::stream
@@ -97,7 +97,7 @@ public:
 
   bool eof (void) const;
 
-  std::istream * input_stream (void) { return is; }
+  std::istream * input_stream (void) { return m_istream; }
 
   std::ostream * output_stream (void) { return nullptr; }
 
@@ -107,7 +107,7 @@ protected:
 
 private:
 
-  std::istream *is;
+  std::istream *m_istream;
 
   const char * stream_type (void) const { return "octave_istream"; }
 
@@ -126,7 +126,7 @@ public:
   octave_ostream (std::ostream *arg, const std::string& n = "")
     : octave_base_iostream (n, std::ios::out,
                             octave::mach_info::native_float_format ()),
-      os (arg)
+      m_ostream (arg)
   { }
 
   static octave::stream
@@ -138,7 +138,7 @@ public:
 
   std::istream * input_stream (void) { return nullptr; }
 
-  std::ostream * output_stream (void) { return os; }
+  std::ostream * output_stream (void) { return m_ostream; }
 
 protected:
 
@@ -146,7 +146,7 @@ protected:
 
 private:
 
-  std::ostream *os;
+  std::ostream *m_ostream;
 
   const char * stream_type (void) const { return "octave_ostream"; }
 

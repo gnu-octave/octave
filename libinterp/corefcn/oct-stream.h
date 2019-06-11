@@ -69,8 +69,8 @@ namespace octave
     base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
                  mach_info::float_format ff = mach_info::native_float_format (),
                  const std::string& encoding = "utf-8")
-      : count (0), md (arg_md), flt_fmt (ff), mencoding (encoding),
-        fail (false), open_state (true), errmsg ()
+      : m_count (0), m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
+        m_fail (false), m_open_state (true), m_errmsg ()
     { }
 
     // No copying!
@@ -114,7 +114,7 @@ namespace octave
 
     // Return TRUE if this stream is open.
 
-    bool is_open (void) const { return open_state; }
+    bool is_open (void) const { return m_open_state; }
 
     virtual void do_close (void) { }
 
@@ -122,7 +122,7 @@ namespace octave
     {
       if (is_open ())
         {
-          open_state = false;
+          m_open_state = false;
           do_close ();
         }
     }
@@ -141,7 +141,7 @@ namespace octave
         return -1;
     }
 
-    bool ok (void) const { return ! fail; }
+    bool ok (void) const { return ! m_fail; }
 
     // Return current error message for this stream.
 
@@ -149,11 +149,11 @@ namespace octave
 
   protected:
 
-    int mode (void) const { return md; }
+    int mode (void) const { return m_mode; }
 
-    mach_info::float_format float_format (void) const { return flt_fmt; }
+    mach_info::float_format float_format (void) const { return m_flt_fmt; }
 
-    std::string encoding (void) const { return mencoding; }
+    std::string encoding (void) const { return m_encoding; }
 
     // Set current error state and set fail to TRUE.
 
@@ -171,26 +171,26 @@ namespace octave
   private:
 
     // A reference count.
-    refcount<octave_idx_type> count;
+    refcount<octave_idx_type> m_count;
 
     // The permission bits for the file.  Should be some combination of
     // std::ios::open_mode bits.
-    int md;
+    int m_mode;
 
     // Data format.
-    mach_info::float_format flt_fmt;
+    mach_info::float_format m_flt_fmt;
 
     // Code page
-    std::string mencoding;
+    std::string m_encoding;
 
     // TRUE if an error has occurred.
-    bool fail;
+    bool m_fail;
 
     // TRUE if this stream is open.
-    bool open_state;
+    bool m_open_state;
 
     // Should contain error message if fail is TRUE.
-    std::string errmsg;
+    std::string m_errmsg;
 
     // Functions that are defined for all input streams (input streams
     // are those that define is).
@@ -347,17 +347,17 @@ namespace octave
 
     void error (const std::string& msg)
     {
-      if (rep)
-        rep->error (msg);
+      if (m_rep)
+        m_rep->error (msg);
     }
 
     void error (const char *msg) { error (std::string (msg)); }
 
-    int file_number (void) { return rep ? rep->file_number () : -1; }
+    int file_number (void) { return m_rep ? m_rep->file_number () : -1; }
 
-    bool is_valid (void) const { return (rep != nullptr); }
+    bool is_valid (void) const { return (m_rep != nullptr); }
 
-    bool ok (void) const { return rep && rep->ok (); }
+    bool ok (void) const { return m_rep && m_rep->ok (); }
 
     operator bool () const { return ok (); }
 
@@ -371,34 +371,34 @@ namespace octave
 
     std::string encoding (void)
     {
-      return rep ? rep->encoding () : std::string ();
+      return m_rep ? m_rep->encoding () : std::string ();
     }
 
     std::istream * input_stream (void)
     {
-      return rep ? rep->input_stream () : nullptr;
+      return m_rep ? m_rep->input_stream () : nullptr;
     }
 
     std::ostream * output_stream (void)
     {
-      return rep ? rep->output_stream () : nullptr;
+      return m_rep ? m_rep->output_stream () : nullptr;
     }
 
-    void clearerr (void) { if (rep) rep->clearerr (); }
+    void clearerr (void) { if (m_rep) m_rep->clearerr (); }
 
   private:
 
     // The actual representation of this stream.
-    base_stream *rep;
+    base_stream *m_rep;
 
     bool stream_ok (bool clear = true) const
     {
       bool retval = true;
 
-      if (rep)
+      if (m_rep)
         {
           if (clear)
-            rep->clear ();
+            m_rep->clear ();
         }
       else
         retval = false;
@@ -408,8 +408,8 @@ namespace octave
 
     void invalid_operation (const std::string& who, const char *rw)
     {
-      if (rep)
-        rep->invalid_operation (who, rw);
+      if (m_rep)
+        m_rep->invalid_operation (who, rw);
     }
 
     octave_value
@@ -462,9 +462,9 @@ namespace octave
 
     typedef std::map<int, stream> ostrl_map;
 
-    ostrl_map list;
+    ostrl_map m_list;
 
-    mutable ostrl_map::const_iterator lookup_cache;
+    mutable ostrl_map::const_iterator m_lookup_cache;
 
     int m_stdin_file;
     int m_stdout_file;

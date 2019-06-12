@@ -32,6 +32,7 @@ class
 octave_sparse_sort_idxl
 {
 public:
+
   octave_idx_type r;
   octave_idx_type c;
   octave_idx_type idx;
@@ -44,6 +45,7 @@ class
 octave_idx_vector_sort
 {
 public:
+
   octave_idx_type i;
   octave_idx_type idx;
 };

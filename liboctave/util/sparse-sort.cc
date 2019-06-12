@@ -42,11 +42,13 @@ octave_sparse_sidxl_comp (octave_sparse_sort_idxl *i,
                           octave_sparse_sort_idxl *j)
 {
   octave_idx_type tmp = i->c - j->c;
+
   if (tmp < 0)
     return true;
   else if (tmp > 0)
     return false;
-  return  (i->r < j->r);
+
+  return (i->r < j->r);
 }
 
 template class octave_sort<octave_sparse_sort_idxl *>;

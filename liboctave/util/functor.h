@@ -25,10 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+// FIXME: could we use std::function objects instead?
+
 template <typename RT, typename PT>
 class fcn_ptr
 {
 public:
+
   typedef RT (*TYPE) (PT);
 };
 
@@ -36,28 +39,32 @@ template <typename RT, typename PT>
 class functor
 {
 private:
+
   typedef typename fcn_ptr<RT, PT>::TYPE fcn_ptr_type;
-  fcn_ptr_type fptr;
+
+  fcn_ptr_type m_fptr;
 
 public:
 
-  functor (fcn_ptr_type p) : fptr (p) { }
+  functor (fcn_ptr_type p) : m_fptr (p) { }
 
-  RT operator () (PT arg) { return fptr (arg); }
+  RT operator () (PT arg) { return m_fptr (arg); }
 };
 
 template <typename CT, typename RT, typename PT>
 class functor_with_conversion
 {
 private:
+
   typedef typename fcn_ptr<RT, PT>::TYPE fcn_ptr_type;
-  fcn_ptr_type fptr;
+
+  fcn_ptr_type m_fptr;
 
 public:
 
-  functor_with_conversion (fcn_ptr_type p) : fptr (p) { }
+  functor_with_conversion (fcn_ptr_type p) : m_fptr (p) { }
 
-  CT operator () (PT arg) { return CT (fptr (arg)); }
+  CT operator () (PT arg) { return CT (m_fptr (arg)); }
 };
 
 template <typename RT, typename PT>

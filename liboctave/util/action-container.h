@@ -88,7 +88,7 @@ namespace octave
     public:
 
       restore_var_elem (T& ref, const T& val)
-        : e_ptr (&ref), e_val (val) { }
+        : m_ptr (&ref), m_val (val) { }
 
       // No copying!
 
@@ -96,11 +96,11 @@ namespace octave
 
       restore_var_elem& operator = (const restore_var_elem&) = delete;
 
-      void run (void) { *e_ptr = e_val; }
+      void run (void) { *m_ptr = m_val; }
 
     private:
 
-      T *e_ptr, e_val;
+      T *m_ptr, m_val;
     };
 
     // Deletes a class allocated using new.
@@ -111,7 +111,7 @@ namespace octave
     public:
 
       delete_ptr_elem (T *ptr)
-        : e_ptr (ptr) { }
+        : m_ptr (ptr) { }
 
       // No copying!
 
@@ -119,11 +119,11 @@ namespace octave
 
       delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
 
-      void run (void) { delete e_ptr; }
+      void run (void) { delete m_ptr; }
 
     private:
 
-      T *e_ptr;
+      T *m_ptr;
     };
 
     action_container (void) { }

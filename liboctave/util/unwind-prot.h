@@ -41,7 +41,7 @@ namespace octave
   {
   public:
 
-    unwind_protect (void) : lifo () { }
+    unwind_protect (void) : m_lifo () { }
 
     // No copying!
 
@@ -62,8 +62,8 @@ namespace octave
       if (! empty ())
         {
           // No leak on exception!
-          std::unique_ptr<elem> ptr (lifo.top ());
-          lifo.pop ();
+          std::unique_ptr<elem> ptr (m_lifo.top ());
+          m_lifo.pop ();
           ptr->run ();
         }
     }
@@ -72,22 +72,22 @@ namespace octave
     {
       if (! empty ())
         {
-          elem *ptr = lifo.top ();
-          lifo.pop ();
+          elem *ptr = m_lifo.top ();
+          m_lifo.pop ();
           delete ptr;
         }
     }
 
-    size_t size (void) const { return lifo.size (); }
+    size_t size (void) const { return m_lifo.size (); }
 
   protected:
 
     virtual void add_action (elem *new_elem)
     {
-      lifo.push (new_elem);
+      m_lifo.push (new_elem);
     }
 
-    std::stack<elem *> lifo;
+    std::stack<elem *> m_lifo;
   };
 
   // Like unwind_protect, but this one will guard against the possibility

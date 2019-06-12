@@ -77,33 +77,33 @@ namespace octave
     typedef T count_type;
 
     refcount (count_type initial_count)
-      : count (initial_count)
+      : m_count (initial_count)
     { }
 
     // Increment/Decrement.  int is postfix.
     count_type operator++ (void)
     {
-      return OCTAVE_ATOMIC_INCREMENT (&count);
+      return OCTAVE_ATOMIC_INCREMENT (&m_count);
     }
 
     count_type operator++ (int)
     {
-      return OCTAVE_ATOMIC_POST_INCREMENT (&count);
+      return OCTAVE_ATOMIC_POST_INCREMENT (&m_count);
     }
 
     count_type operator-- (void)
     {
-      return OCTAVE_ATOMIC_DECREMENT (&count);
+      return OCTAVE_ATOMIC_DECREMENT (&m_count);
     }
 
     count_type operator-- (int)
     {
-      return OCTAVE_ATOMIC_POST_DECREMENT (&count);
+      return OCTAVE_ATOMIC_POST_DECREMENT (&m_count);
     }
 
     count_type value (void) const
     {
-      return static_cast<count_type const volatile&> (count);
+      return static_cast<count_type const volatile&> (m_count);
     }
 
     operator count_type (void) const
@@ -113,12 +113,12 @@ namespace octave
 
     count_type * get (void)
     {
-      return &count;
+      return &m_count;
     }
 
   private:
 
-    count_type count;
+    count_type m_count;
   };
 }
 

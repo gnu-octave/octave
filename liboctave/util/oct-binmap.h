@@ -66,40 +66,42 @@ template <typename R, typename X, typename Y, typename F>
 class bsxfun_wrapper
 {
 private:
-  static F f;
+
+  static F s_fcn;
 
 public:
+
   static void
   set_f (const F& f_in)
   {
-    f = f_in;
+    s_fcn = f_in;
   }
 
   static void
   op_mm (size_t n, R *r, const X *x , const Y *y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x[i], y[i]);
+      r[i] = s_fcn (x[i], y[i]);
   }
 
   static void
   op_sm (size_t n, R *r, X x, const Y *y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x, y[i]);
+      r[i] = s_fcn (x, y[i]);
   }
 
   static void
   op_ms (size_t n , R *r, const X *x, Y y)
   {
     for (size_t i = 0; i < n; i++)
-      r[i] = f (x[i], y);
+      r[i] = s_fcn (x[i], y);
   }
 };
 
 // Static init
 template <typename R, typename X, typename Y, typename F>
-F bsxfun_wrapper<R, X, Y, F>::f;
+F bsxfun_wrapper<R, X, Y, F>::s_fcn;
 
 // scalar-Array
 template <typename U, typename T, typename R, typename F>

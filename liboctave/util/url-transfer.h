@@ -88,31 +88,31 @@ namespace octave
 
     virtual ~base_url_transfer (void) = default;
 
-    bool is_valid (void) const { return valid; }
+    bool is_valid (void) const { return m_valid; }
 
-    bool good (void) const { return valid && ok; }
+    bool good (void) const { return m_valid && m_ok; }
 
     virtual void perform (void) { }
 
-    virtual std::string lasterror (void) const { return errmsg; }
+    virtual std::string lasterror (void) const { return m_errmsg; }
 
     virtual std::ostream& set_ostream (std::ostream& /* os */)
     {
-      return *curr_ostream;
+      return *m_curr_ostream;
     }
 
     virtual std::istream& set_istream (std::istream& /* is */)
     {
-      return *curr_istream;
+      return *m_curr_istream;
     }
 
     virtual void ascii (void) { }
 
     virtual void binary (void) { }
 
-    bool is_ascii (void) const { return ascii_mode; }
+    bool is_ascii (void) const { return m_ascii_mode; }
 
-    bool is_binary (void) const { return ! ascii_mode; }
+    bool is_binary (void) const { return ! m_ascii_mode; }
 
     virtual void cwd (const std::string& /* path */) { }
 
@@ -162,17 +162,18 @@ namespace octave
     virtual void form_data_post (const Array<std::string>& /* param */) { }
 
     virtual void set_weboptions (const struct weboptions& /* param */) { }
+
   protected:
 
     // Host for ftp transfers or full URL for http requests.
-    std::string host_or_url;
-    bool valid;
-    bool ftp;
-    bool ascii_mode;
-    bool ok;
-    std::string errmsg;
-    std::istream *curr_istream;
-    std::ostream *curr_ostream;
+    std::string m_host_or_url;
+    bool m_valid;
+    bool m_ftp;
+    bool m_ascii_mode;
+    bool m_ok;
+    std::string m_errmsg;
+    std::istream *m_curr_istream;
+    std::ostream *m_curr_ostream;
   };
 
   class
@@ -194,109 +195,116 @@ namespace octave
 
     ~url_transfer (void) = default;
 
-    bool is_valid (void) const { return rep->is_valid (); }
+    bool is_valid (void) const { return m_rep->is_valid (); }
 
-    bool good (void) const { return rep->good (); }
+    bool good (void) const { return m_rep->good (); }
 
-    std::string lasterror (void) const { return rep->lasterror (); }
+    std::string lasterror (void) const { return m_rep->lasterror (); }
 
     std::ostream& set_ostream (std::ostream& os)
     {
-      return rep->set_ostream (os);
+      return m_rep->set_ostream (os);
     }
 
     std::istream& set_istream (std::istream& is)
     {
-      return rep->set_istream (is);
+      return m_rep->set_istream (is);
     }
 
-    void ascii (void) { rep->ascii (); }
+    void ascii (void) { m_rep->ascii (); }
 
-    void binary (void) { rep->binary (); }
+    void binary (void) { m_rep->binary (); }
 
-    bool is_ascii (void) const { return rep->is_ascii (); }
+    bool is_ascii (void) const { return m_rep->is_ascii (); }
 
-    bool is_binary (void) const { return rep->is_binary (); }
+    bool is_binary (void) const { return m_rep->is_binary (); }
 
-    void cwd (const std::string& path) { rep->cwd (path); }
+    void cwd (const std::string& path) { m_rep->cwd (path); }
 
-    void del (const std::string& file) { rep->del (file); }
+    void del (const std::string& file) { m_rep->del (file); }
 
-    void rmdir (const std::string& path) { rep->rmdir (path); }
+    void rmdir (const std::string& path) { m_rep->rmdir (path); }
 
-    void mkdir (const std::string& path) { rep->mkdir (path); }
+    void mkdir (const std::string& path) { m_rep->mkdir (path); }
 
     void rename (const std::string& oldname, const std::string& newname)
     {
-      rep->rename (oldname, newname);
+      m_rep->rename (oldname, newname);
     }
 
     void put (const std::string& file, std::istream& is)
     {
-      rep->put (file, is);
+      m_rep->put (file, is);
     }
 
     void get (const std::string& file, std::ostream& os)
     {
-      rep->get (file, os);
+      m_rep->get (file, os);
     }
 
     void mget_directory (const std::string& directory,
                          const std::string& target)
     {
-      rep->mget_directory (directory, target);
+      m_rep->mget_directory (directory, target);
     }
 
     string_vector mput_directory (const std::string& base,
                                   const std::string& directory)
     {
-      return rep->mput_directory (base, directory);
+      return m_rep->mput_directory (base, directory);
     }
 
-    void dir (void) { rep->dir (); }
+    void dir (void) { m_rep->dir (); }
 
-    string_vector list (void) { return rep->list (); }
+    string_vector list (void) { return m_rep->list (); }
 
     void get_fileinfo (const std::string& filename, double& filesize,
                        time_t& filetime, bool& fileisdir)
     {
-      rep->get_fileinfo (filename, filesize, filetime, fileisdir);
+      m_rep->get_fileinfo (filename, filesize, filetime, fileisdir);
     }
 
-    std::string pwd (void) { return rep->pwd (); }
+    std::string pwd (void) { return m_rep->pwd (); }
 
-    void http_get (const Array<std::string>& param) { rep->http_get (param); }
+    void http_get (const Array<std::string>& param)
+    {
+      m_rep->http_get (param);
+    }
 
-    void http_post (const Array<std::string>& param) { rep->http_post (param); }
+    void http_post (const Array<std::string>& param)
+    {
+      m_rep->http_post (param);
+    }
 
     void http_action (const Array<std::string>& param,
                       const std::string& action)
     {
-      rep->http_action (param, action);
+      m_rep->http_action (param, action);
     }
 
     void cookie_jar (const std::string& filename)
     {
-      rep->cookie_jar (filename);
+      m_rep->cookie_jar (filename);
     }
 
     void set_header_fields (const Array<std::string>& param)
     {
-      rep->set_header_fields (param);
+      m_rep->set_header_fields (param);
     }
 
     void form_data_post (const Array<std::string>& param)
     {
-      rep->form_data_post (param);
+      m_rep->form_data_post (param);
     }
 
     void set_weboptions (const struct weboptions& param)
     {
-      rep->set_weboptions (param);
+      m_rep->set_weboptions (param);
     }
+
   private:
 
-    std::shared_ptr<base_url_transfer> rep;
+    std::shared_ptr<base_url_transfer> m_rep;
   };
 }
 

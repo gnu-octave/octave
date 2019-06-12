@@ -69,7 +69,7 @@ private:
   {
     // Explicit initialization of the std::ios object is needed.
     // FIXME: is there a better way to organize these classes?
-    init (&pb);
+    init (&m_pb);
   }
 
   procstreambase (const procstreambase&);

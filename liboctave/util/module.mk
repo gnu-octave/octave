@@ -7,7 +7,6 @@ UTIL_INC = \
   %reldir%/cmd-hist.h \
   %reldir%/data-conv.h \
   %reldir%/file-info.h \
-  %reldir%/functor.h \
   %reldir%/glob-match.h \
   %reldir%/lo-array-errwarn.h \
   %reldir%/lo-cutils.h \

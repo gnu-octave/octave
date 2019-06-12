@@ -40,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "CSparse.h"
 #include "boolSparse.h"
 #include "dSparse.h"
-#include "functor.h"
 #include "oct-spparms.h"
 #include "sparse-lu.h"
 #include "MatrixType.h"

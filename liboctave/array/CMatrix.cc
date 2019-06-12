@@ -44,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
 #include "dRowVector.h"
-#include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "lo-ieee.h"

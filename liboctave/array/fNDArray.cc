@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array-util.h"
 #include "f77-fcn.h"
 #include "fNDArray.h"
-#include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

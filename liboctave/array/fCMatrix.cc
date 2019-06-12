@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "fCMatrix.h"
 #include "fCNDArray.h"
 #include "fCRowVector.h"
-#include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "lo-ieee.h"

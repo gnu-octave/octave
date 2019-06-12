@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ostream>
 
 #include "Array-util.h"
-#include "functor.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
 #include "mx-base.h"

@@ -126,13 +126,11 @@ function opts = __opengl_print__ (opts)
       gl2ps_device = {"svg"};
       pipeline = {sprintf("%s > %s", cmd, opts.name)};
     case opts.ghostscript.device
-      ## Except for postscript, use svg format and first convert to pdf
-      ## before going through ghostscript for final adjustments.
       svgcmd = "";
       if (opts.svgconvert)
         svgcmd = opts.svgconvert_cmd (opts, opts.ghostscript.device);
       endif
-      dosvg = ! (strcmp (opts.devopt, "ps2write") || isempty (svgcmd));
+      dosvg = ! isempty (svgcmd);
       if (! dosvg)
         opts.ghostscript.source = "-";
       else

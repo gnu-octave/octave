@@ -2109,6 +2109,9 @@ namespace octave
 
         fcn = user_code->find_subfunction (subfuns);
 
+        if (fcn.is_undefined ())
+          return nullptr;
+
         user_code = fcn.user_code_value ();
       }
 

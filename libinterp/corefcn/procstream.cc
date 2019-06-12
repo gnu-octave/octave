@@ -30,12 +30,16 @@ along with Octave; see the file COPYING.  If not, see
 
 procstreambase::procstreambase (const std::string& command, int mode)
 {
+  pb_init ();
+
   if (! m_pb.open (command.c_str (), mode))
     std::ios::setstate (std::ios::badbit);
 }
 
 procstreambase::procstreambase (const char *command, int mode)
 {
+  pb_init ();
+
   if (! m_pb.open (command, mode))
     std::ios::setstate (std::ios::badbit);
 }

@@ -38,7 +38,7 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : m_pb () { }
+  procstreambase (void) : m_pb () { pb_init (); }
 
   procstreambase (const std::string& name, int mode);
 
@@ -65,6 +65,13 @@ private:
 
   octave_procbuf m_pb;
 
+  void pb_init (void)
+  {
+    // Explicit initialization of the std::ios object is needed.
+    // FIXME: is there a better way to organize these classes?
+    init (&pb);
+  }
+
   procstreambase (const procstreambase&);
 
   procstreambase& operator = (const procstreambase&);
@@ -73,7 +80,6 @@ private:
 class
 OCTINTERP_API
 iprocstream : public std::istream, public procstreambase
-// iprocstream : public procstreambase, public std::istream
 {
 public:
 

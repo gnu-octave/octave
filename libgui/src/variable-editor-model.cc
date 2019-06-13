@@ -129,8 +129,8 @@ namespace octave
     float_format r_fmt = m_display_fmt.real_format ();
     float_format i_fmt = m_display_fmt.imag_format ();
 
-    int rw = r_fmt.fw;
-    int iw = i_fmt.fw;
+    int rw = r_fmt.width ();
+    int iw = i_fmt.width ();
 
     if (rw > 0)
       {

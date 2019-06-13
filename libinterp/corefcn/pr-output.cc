@@ -188,14 +188,13 @@ operator << (std::ostream& os, const pr_engineering_float<T>& pef)
 
   float_format real_fmt = pef.m_ff;
 
-  if (real_fmt.fw >= 0)
-    os << std::setw (real_fmt.fw - real_fmt.ex);
+  if (real_fmt.width () >= 0)
+    os << std::setw (real_fmt.width () - real_fmt.exponent_width ());
 
-  if (real_fmt.prec >= 0)
-    os << std::setprecision (real_fmt.prec);
+  if (real_fmt.precision () >= 0)
+    os << std::setprecision (real_fmt.precision ());
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
   os << pef.mantissa ();
 
@@ -208,7 +207,8 @@ operator << (std::ostream& os, const pr_engineering_float<T>& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (real_fmt.ex - 2) << std::setfill ('0') << ex;
+  os << std::setw (real_fmt.exponent_width () - 2)
+     << std::setfill ('0') << ex;
 
   return os;
 }
@@ -221,14 +221,13 @@ operator << (std::ostream& os, const pr_formatted_float<T>& pff)
 
   float_format real_fmt = pff.m_ff;
 
-  if (real_fmt.fw >= 0)
-    os << std::setw (real_fmt.fw);
+  if (real_fmt.width () >= 0)
+    os << std::setw (real_fmt.width ());
 
-  if (real_fmt.prec >= 0)
-    os << std::setprecision (real_fmt.prec);
+  if (real_fmt.precision () >= 0)
+    os << std::setprecision (real_fmt.precision ());
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
   os << pff.m_val;
 
@@ -243,14 +242,13 @@ operator << (std::ostream& os, const pr_rational_float<T>& prf)
 
   float_format real_fmt = prf.m_ff;
 
-  int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.fw);
+  int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.width ());
   std::string s = rational_approx (prf.m_val, fw);
 
   if (fw >= 0)
     os << std::setw (fw);
 
-  os.flags (static_cast<std::ios::fmtflags>
-            (real_fmt.fmt | real_fmt.up | real_fmt.sp));
+  os.flags (real_fmt.format_flags ());
 
   if (fw > 0 && s.length () > static_cast<unsigned int> (fw))
     os << '*';
@@ -1300,7 +1298,7 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
   //   {bit,hex}_format == 1: print big-endian
   //   {bit,hex}_format == 2: print native
 
-  int fw = fmt.fw;
+  int fw = fmt.width ();
 
   if (hex_format)
     {
@@ -1755,8 +1753,8 @@ pr_plus_format_matrix (std::ostream& os, const MT& m)
 static inline int
 get_column_width (const float_display_format& fmt)
 {
-  int r_fw = fmt.real_format().fw;
-  int i_fw = fmt.imag_format().fw;
+  int r_fw = fmt.real_format().width ();
+  int i_fw = fmt.imag_format().width ();
 
   int retval = r_fw + i_fw + 2;
 
@@ -2807,7 +2805,7 @@ octave_print_internal_template (std::ostream& os,
         {
           float_format r_fmt = fmt.real_format ();
 
-          pr_int (os, val, r_fmt.fw);
+          pr_int (os, val, r_fmt.width ());
         }
     }
 }

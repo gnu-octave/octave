@@ -414,8 +414,6 @@ namespace octave
 
                     if (octave_completion_matches_called)
                       octave_completion_matches_called = false;
-                    else
-                      command_editor::increment_current_command_number ();
                   }
                 else if (repl_parser.m_lexer.m_end_of_input)
                   {

@@ -69,11 +69,11 @@ namespace octave
       bool is_constant (void) const { return get("Constant").bool_value (); }
 
       octave_value get_value (bool do_check_access = true,
-                              const std::string& who = "");
+                              const std::string& who = "") const;
 
       octave_value get_value (const cdef_object& obj,
                               bool do_check_access = true,
-                              const std::string& who = "");
+                              const std::string& who = "") const;
 
       void set_value (cdef_object& obj, const octave_value& val,
                       bool do_check_access = true,
@@ -95,6 +95,10 @@ namespace octave
         m_count++;
         return cdef_property (this);
       }
+
+      OCTAVE_NORETURN
+      void err_property_access (const std::string& from,
+                                bool is_set = false) const;
     };
 
   public:
@@ -128,13 +132,13 @@ namespace octave
     ~cdef_property (void) = default;
 
     octave_value get_value (const cdef_object& obj, bool do_check_access = true,
-                            const std::string& who = "")
+                            const std::string& who = "") const
     {
       return get_rep ()->get_value (obj, do_check_access, who);
     }
 
     octave_value get_value (bool do_check_access = true,
-                            const std::string& who = "")
+                            const std::string& who = "") const
     {
       return get_rep ()->get_value (do_check_access, who);
     }

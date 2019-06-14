@@ -49,27 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  OCTAVE_NORETURN static
-  void
-  err_property_access (const std::string& from, const cdef_property& prop,
-                       bool is_set = false)
-  {
-    octave_value acc = (prop.get (is_set ? "SetAccess" : "GetAccess"));
-    std::string acc_s;
-
-    if (acc.is_string ())
-      acc_s = acc.string_value ();
-    else
-      acc_s = "class-restricted";
-
-    if (is_set)
-      error ("%s: property `%s' has %s access and cannot be set in this context",
-             from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
-    else
-      error ("%s: property `%s' has %s access and cannot be obtained in this context",
-             from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
-  }
-
   static bool
   is_method_executing (const octave_value& ov, const cdef_object& obj)
   {
@@ -124,12 +103,12 @@ namespace octave
   octave_value
   cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
                                                bool do_check_access,
-                                               const std::string& who)
+                                               const std::string& who) const
   {
     octave_value retval;
 
     if (do_check_access && ! check_get_access ())
-      err_property_access (who, wrap (), false);
+      err_property_access (who, false);
 
     if (! obj.is_constructed ())
       {
@@ -162,10 +141,10 @@ namespace octave
 
   octave_value
   cdef_property::cdef_property_rep::get_value (bool do_check_access,
-                                               const std::string& who)
+                                               const std::string& who) const
   {
     if (do_check_access && ! check_get_access ())
-      err_property_access (who, wrap (), false);
+      err_property_access (who, false);
 
     return get ("DefaultValue");
   }
@@ -177,6 +156,26 @@ namespace octave
     return false;
   }
 
+  OCTAVE_NORETURN void
+  cdef_property::cdef_property_rep::err_property_access
+    (const std::string& from, bool is_set) const
+  {
+    octave_value acc = get (is_set ? "SetAccess" : "GetAccess");
+    std::string acc_s;
+
+    if (acc.is_string ())
+      acc_s = acc.string_value ();
+    else
+      acc_s = "class-restricted";
+
+    if (is_set)
+      error ("%s: property `%s' has %s access and cannot be set in this context",
+             from.c_str (), get_name ().c_str (), acc_s.c_str ());
+    else
+      error ("%s: property `%s' has %s access and cannot be obtained in this context",
+             from.c_str (), get_name ().c_str (), acc_s.c_str ());
+  }
+
   void
   cdef_property::cdef_property_rep::set_value (cdef_object& obj,
                                                const octave_value& val,
@@ -184,7 +183,7 @@ namespace octave
                                                const std::string& who)
   {
     if (do_check_access && ! check_set_access ())
-      err_property_access (who, wrap (), true);
+      err_property_access (who, true);
 
     if (! obj.is_constructed ())
       {

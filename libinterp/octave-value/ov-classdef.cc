@@ -266,14 +266,28 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      std::map<std::string, octave::cdef_property> props;
-
-      props = cls.get_property_map ();
+      std::map<std::string, octave::cdef_property> property_map
+        = cls.get_property_map ();
 
       size_t max_len = 0;
-      for (const auto& nm_prop : props)
+      for (const auto& pname_prop : property_map)
         {
-          const std::string& nm = nm_prop.first;
+          // FIXME: this loop duplicates a significant portion of the
+          // loop below and the loop in Fproperties.
+
+          const octave::cdef_property& prop = pname_prop.second;
+
+          const std::string nm = prop.get_name ();
+
+          octave_value acc = prop.get ("GetAccess");
+
+          if (! acc.is_string () || acc.string_value () != "public")
+            continue;
+
+          octave_value hid = prop.get ("Hidden");
+
+          if (hid.bool_value ())
+            continue;
 
           size_t sz = nm.size ();
 
@@ -281,18 +295,28 @@ octave_classdef::print_raw (std::ostream& os, bool) const
             max_len = sz;
         }
 
-      for (auto& nm_prop : props)
+      for (auto& pname_prop : property_map)
         {
-          indent (os);
+          const octave::cdef_property& prop = pname_prop.second;
 
-          const std::string& nm = nm_prop.first;
+          const std::string nm = prop.get_name ();
+
+          octave_value acc = prop.get ("GetAccess");
+
+          if (! acc.is_string () || acc.string_value () != "public")
+            continue;
+
+          octave_value hid = prop.get ("Hidden");
+
+          if (hid.bool_value ())
+            continue;
+
+          indent (os);
 
           if (is_array)
             os << "  " << nm;
           else
             {
-              octave::cdef_property& prop = nm_prop.second;
-
               octave_value val = prop.get_value (object, false);
               dim_vector dims = val.dims ();
 
@@ -562,6 +586,9 @@ attribute is public and if the @code{Hidden} attribute is false.
 
   for (const auto& pname_prop : property_map)
     {
+      // FIXME: this loop duplicates a significant portion of the loops
+      // in octave_classdef::print_raw.
+
       const octave::cdef_property& prop = pname_prop.second;
 
       std::string nm = prop.get_name ();

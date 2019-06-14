@@ -524,13 +524,14 @@ DEFUN (properties, args, nargout,
 @deftypefn  {} {} properties (@var{class_name})
 @deftypefnx {} {} properties (@var{obj})
 @deftypefnx {} {@var{plist} =} properties (@dots{})
-Return or display the public properties for the named class @var{class_name} or
-classdef object @var{obj}.
+Return or display the public properties for the named class
+@var{class_name} or classdef object @var{obj}.
 
-If an output value is requested, return the list of property names in a cell
-array.
+If an output value is requested, return the list of property names in a
+cell array.
 
-Programming Note: Property names are returned if the @code{GetAccess} attribute is public and if the @code{Hidden} attribute is false.
+Programming Note: Property names are returned if the @code{GetAccess}
+attribute is public and if the @code{Hidden} attribute is false.
 @seealso{methods}
 @end deftypefn */)
 {
@@ -561,11 +562,18 @@ Programming Note: Property names are returned if the @code{GetAccess} attribute 
 
   for (const auto& pname_prop : property_map)
     {
-      std::string nm = pname_prop.second.get_name ();
+      const octave::cdef_property& prop = pname_prop.second;
 
-      octave_value acc = pname_prop.second.get ("GetAccess");
+      std::string nm = prop.get_name ();
+
+      octave_value acc = prop.get ("GetAccess");
 
       if (! acc.is_string () || acc.string_value () != "public")
+        continue;
+
+      octave_value hid = prop.get ("Hidden");
+
+      if (hid.bool_value ())
         continue;
 
       property_names.push_back (nm);

@@ -193,3 +193,8 @@
 %! B = class_bug52614B ();
 %! assert (B.a, 1);
 %! assert (B.b, 2);
+
+%!test <*55766>
+%! x = class_bug55766 ();
+%! props = {"notahiddentestprop"; "publictestprop"; "testprop"};
+%! assert (properties (x), props);

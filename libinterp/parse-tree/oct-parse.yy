@@ -3624,7 +3624,8 @@ namespace octave
             if (! body)
               body = new tree_classdef_body ();
 
-            retval = new tree_classdef (a, id, sc, body, lc, tc,
+            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
+                                        a, id, sc, body, lc, tc,
                                         m_curr_package_name, l, c);
           }
         else

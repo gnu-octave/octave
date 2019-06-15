@@ -727,13 +727,14 @@ namespace octave
   {
   public:
 
-    tree_classdef (tree_classdef_attribute_list *a, tree_identifier *i,
+    tree_classdef (const octave::symbol_scope& scope,
+                   tree_classdef_attribute_list *a, tree_identifier *i,
                    tree_classdef_superclass_list *sc,
                    tree_classdef_body *b, comment_list *lc,
                    comment_list *tc,
                    const std::string& pn = "", int l = -1,
                    int c = -1)
-      : tree_command (l, c), m_attr_list (a), m_id (i),
+      : tree_command (l, c), m_scope (scope), m_attr_list (a), m_id (i),
         m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
         m_trail_comm (tc), m_pack_name (pn)
     { }
@@ -753,6 +754,8 @@ namespace octave
       delete m_lead_comm;
       delete m_trail_comm;
     }
+
+    octave::symbol_scope scope (void) { return m_scope; }
 
     tree_classdef_attribute_list *
     attribute_list (void) { return m_attr_list; }
@@ -778,6 +781,12 @@ namespace octave
     }
 
   private:
+
+    // The scope that was used when parsing the classdef object and that
+    // corresponds to any identifiers that were found in attribute lists
+    // (for example).  Used again when computing the meta class object.
+
+    octave::symbol_scope m_scope;
 
     tree_classdef_attribute_list *m_attr_list;
 

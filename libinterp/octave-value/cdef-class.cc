@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-misc.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "unwind-prot.h"
 
 // Define to 1 to enable debugging statements.
 #define DEBUG_TRACE 0
@@ -861,6 +862,18 @@ namespace octave
     std::cerr << "class: " << full_class_name << std::endl;
 #endif
 
+    // Push a dummy scope frame on the call stack that corresponds to
+    // the scope that was used when parsing classdef object.  Without
+    // this, we may pick up stray values from the current scope when
+    // evaluating expressions found in things like attribute lists.
+
+    unwind_protect frame;
+
+    tree_evaluator& tw = interp.get_evaluator ();
+
+    tw.push_dummy_scope (full_class_name);
+    frame.add_method (tw, &octave::tree_evaluator::pop_scope);
+
     std::list<cdef_class> slist;
 
     if (t->superclass_list ())
@@ -898,8 +911,6 @@ namespace octave
       }
 
     // Class attributes
-
-    tree_evaluator& tw = interp.get_evaluator ();
 
     if (t->attribute_list ())
       {

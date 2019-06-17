@@ -97,12 +97,13 @@ DEFUN (cd, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} cd @var{dir}
 @deftypefnx {} {} cd
+@deftypefnx {} {@var{old_dir} =} cd
 @deftypefnx {} {@var{old_dir} =} cd (@var{dir})
 @deftypefnx {} {} chdir @dots{}
 Change the current working directory to @var{dir}.
 
-If @var{dir} is omitted, the current directory is changed to the user's home
-directory (@qcode{"~"}).
+If called with no input or output arguments, the current directory is
+changed to the user's home directory (@qcode{"~"}).
 
 For example,
 
@@ -140,7 +141,7 @@ present working directory rather than changing to the user's home directory.
       if (! dirname.empty ())
         octave_change_to_directory (dirname);
     }
-  else
+  else if (nargout == 0)
     {
       std::string home_dir = octave::sys::env::get_home_directory ();
 

@@ -278,6 +278,8 @@
 
 %!test
 %! xdir = pwd ();
+%! ydir = cd ();
+%! assert (xdir, ydir);
 %! cd /
 %! d1 = pwd ();
 %! cd (xdir);

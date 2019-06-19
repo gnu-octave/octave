@@ -104,6 +104,14 @@ public:
     return retval;
   }
 
+  template <typename F, typename... Args>
+  static void
+  post_event (F&& fcn, Args&&... args)
+  {
+    if (enabled ())
+      instance->do_post_event (fcn, std::forward<Args> (args)...);
+  }
+
   template <typename T, typename... Params, typename... Args>
   static void
   post_event (T *obj, void (T::*method) (Params...), Args&&... args)
@@ -464,6 +472,12 @@ protected:
   void do_generate_events (void);
   void do_process_events (void);
   void do_discard_events (void);
+
+  template <typename F, typename... Args>
+  void do_post_event (F&& fcn, Args&&... args)
+  {
+    gui_event_queue.add (fcn, std::forward<Args> (args)...);
+  }
 
   template <typename T, typename... Params, typename... Args>
   void do_post_event (T *obj, void (T::*method) (Params...), Args&&... args)

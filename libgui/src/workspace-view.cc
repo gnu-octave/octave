@@ -357,10 +357,9 @@ namespace octave
         QAction *rename = menu.addAction (tr ("Rename"), this,
                                           SLOT (handle_contextmenu_rename ()));
 
-        QAbstractItemModel *m = m_view->model ();
-        const workspace_model *wm = static_cast<const workspace_model *> (m);
-
-        if (! wm->is_top_level ())
+        // Use m_model here instead of using "m_view->model ()" because
+        // that points to the proxy model.
+        if (! m_model->is_top_level ())
           {
             rename->setDisabled (true);
             rename->setToolTip (tr ("Only top-level symbols may be renamed"));

@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
+#include "interpreter-qobject.h"
 #include "main-window.h"
 #include "news-reader.h"
 #include "settings-dialog.h"
@@ -104,57 +105,6 @@ namespace octave
   message_handler (QtMsgType, const char *)
 #endif
   { }
-
-  octave_interpreter::octave_interpreter (gui_application& app_context)
-    : QObject (), m_app_context (app_context)
-  { }
-
-  void octave_interpreter::execute (void)
-  {
-    // The application context owns the interpreter.
-
-    interpreter& interp = m_app_context.create_interpreter ();
-
-    int exit_status = 0;
-
-    try
-      {
-        // Final initialization.
-
-        interp.initialize ();
-
-        if (m_app_context.start_gui_p ())
-          {
-            input_system& input_sys = interp.get_input_system ();
-
-            input_sys.PS1 (">> ");
-            input_sys.PS2 ("");
-          }
-
-        if (interp.initialized ())
-          {
-            // The interpreter should be completely ready at this point so let
-            // the GUI know.
-
-            emit octave_ready_signal ();
-
-            // Start executing commands in the command window.
-
-            exit_status = interp.execute ();
-          }
-      }
-    catch (const exit_exception& ex)
-      {
-        exit_status = ex.exit_status ();
-      }
-
-    // Whether or not initialization succeeds we need to clean up the
-    // interpreter once we are done with it.
-
-    m_app_context.delete_interpreter ();
-
-    emit octave_finished_signal (exit_status);
-  }
 
   main_window::main_window (octave_qt_app& oct_qt_app,
                             octave_qt_link *oct_qt_lnk)
@@ -2726,7 +2676,7 @@ namespace octave
       m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_octave_qt_link (new octave_qt_link ()),
-      m_interpreter (new octave_interpreter (m_app_context)),
+      m_interpreter_qobject (new interpreter_qobject (m_app_context)),
       m_main_thread (new QThread ())
   {
     std::string show_gui_msgs =
@@ -2780,10 +2730,10 @@ namespace octave
 
     connect_uiwidget_links ();
 
-    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
              this, SLOT (handle_octave_finished (int)));
 
-    connect (m_interpreter, SIGNAL (octave_finished_signal (int)),
+    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
              m_main_thread, SLOT (quit (void)));
 
     connect (m_main_thread, SIGNAL (finished (void)),
@@ -2792,7 +2742,7 @@ namespace octave
 
   octave_qt_app::~octave_qt_app (void)
   {
-    delete m_interpreter;
+    delete m_interpreter_qobject;
     delete m_qt_app;
 
     string_vector::delete_c_str_vec (m_argv);
@@ -2816,9 +2766,9 @@ namespace octave
   {
     // Defer initializing and executing the interpreter until after the main
     // window and QApplication are running to prevent race conditions
-    QTimer::singleShot (0, m_interpreter, SLOT (execute (void)));
+    QTimer::singleShot (0, m_interpreter_qobject, SLOT (execute (void)));
 
-    m_interpreter->moveToThread (m_main_thread);
+    m_interpreter_qobject->moveToThread (m_main_thread);
 
     m_main_thread->start ();
   }
@@ -3003,7 +2953,7 @@ namespace octave
     : octave_qt_app (app_context),
       m_main_window (new main_window (*this, m_octave_qt_link))
   {
-    connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
+    connect (m_interpreter_qobject, SIGNAL (octave_ready_signal (void)),
              m_main_window, SLOT (handle_octave_ready (void)));
 
     m_app_context.gui_running (true);

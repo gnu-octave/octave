@@ -138,6 +138,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-history-dock-widget.cc \
+  %reldir%/moc-interpreter-qobject.cc \
   %reldir%/moc-main-window.cc \
   %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-cmd.cc \
@@ -188,6 +189,7 @@ noinst_HEADERS += \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
   %reldir%/history-dock-widget.h \
+  %reldir%/interpreter-qobject.h \
   %reldir%/m-editor/file-editor-interface.h \
   %reldir%/m-editor/file-editor-tab.h \
   %reldir%/m-editor/file-editor.h \
@@ -222,6 +224,7 @@ noinst_HEADERS += \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/history-dock-widget.cc \
+  %reldir%/interpreter-qobject.cc \
   %reldir%/m-editor/file-editor-tab.cc \
   %reldir%/m-editor/file-editor.cc \
   %reldir%/m-editor/find-dialog.cc \

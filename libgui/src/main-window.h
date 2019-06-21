@@ -66,32 +66,6 @@ namespace octave
 {
   class settings_dialog;
 
-  class octave_interpreter : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_interpreter (gui_application& app_context);
-
-    ~octave_interpreter (void) = default;
-
-  signals:
-
-    void octave_ready_signal (void);
-    void octave_finished_signal (int);
-
-  public slots:
-
-    //! Initialize and execute the octave interpreter.
-
-    void execute (void);
-
-  private:
-
-    gui_application& m_app_context;
-  };
-
   class octave_qt_app;
 
   //! Represents the main window.
@@ -480,6 +454,8 @@ namespace octave
     ~octave_qapplication (void) { };
   };
 
+  class interpreter_qobject;
+
   class octave_qt_app : public QObject
   {
     Q_OBJECT
@@ -549,7 +525,7 @@ namespace octave
 
     octave_qt_link *m_octave_qt_link;
 
-    octave_interpreter *m_interpreter;
+    interpreter_qobject *m_interpreter_qobject;
 
     QThread *m_main_thread;
 

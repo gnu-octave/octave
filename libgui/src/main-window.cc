@@ -56,6 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include "file-editor.h"
 #endif
 #include "main-window.h"
+#include "news-reader.h"
 #include "settings-dialog.h"
 #include "shortcut-manager.h"
 #include "welcome-wizard.h"
@@ -2698,116 +2699,6 @@ namespace octave
     list.append (static_cast<octave_dock_widget *> (m_workspace_window));
     list.append (static_cast<octave_dock_widget *> (m_variable_editor_window));
     return list;
-  }
-
-  void news_reader::process (void)
-  {
-    QString html_text;
-
-    if (m_connect_to_web)
-      {
-        // Run this part in a separate thread so Octave can continue to
-        // run while we wait for the page to load.  Then emit the signal
-        // to display it when we have the page contents.
-
-        QString url = m_base_url + '/' + m_page;
-        std::ostringstream buf;
-        url_transfer octave_dot_org (url.toStdString (), buf);
-
-        if (octave_dot_org.is_valid ())
-          {
-            Array<std::string> param;
-            octave_dot_org.http_get (param);
-
-            if (octave_dot_org.good ())
-              html_text = QString::fromStdString (buf.str ());
-          }
-
-        if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
-          {
-            if (m_serial >= 0)
-              {
-                QSettings *settings = resource_manager::get_settings ();
-
-                if (settings)
-                  {
-                    settings->setValue ("news/last_time_checked",
-                                        QDateTime::currentDateTime ());
-
-                    settings->sync ();
-                  }
-
-                QString tag ("community-news-page-serial=");
-
-                int b = html_text.indexOf (tag);
-
-                if (b)
-                  {
-                    b += tag.length ();
-
-                    int e = html_text.indexOf ("\n", b);
-
-                    QString tmp = html_text.mid (b, e-b);
-
-                    int curr_page_serial = tmp.toInt ();
-
-                    if (curr_page_serial > m_serial)
-                      {
-                        if (settings)
-                          {
-                            settings->setValue ("news/last_news_item",
-                                                curr_page_serial);
-
-                            settings->sync ();
-                          }
-                      }
-                    else
-                      return;
-                  }
-                else
-                  return;
-              }
-          }
-        else
-          html_text = QString
-            (tr ("<html>\n"
-                 "<body>\n"
-                 "<p>\n"
-                 "Octave's community news source seems to be unavailable.\n"
-                 "</p>\n"
-                 "<p>\n"
-                 "For the latest news, please check\n"
-                 "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
-                 "when you have a connection to the web (link opens in an external browser).\n"
-                 "</p>\n"
-                 "<p>\n"
-                 "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
-             "</p>\n"
-             "</body>\n"
-             "</html>\n");
-      }
-    else
-      html_text = QString
-        (tr ("<html>\n"
-             "<body>\n"
-             "<p>\n"
-             "Connecting to the web to display the latest Octave Community news has been disabled.\n"
-             "</p>\n"
-             "<p>\n"
-             "For the latest news, please check\n"
-             "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
-             "when you have a connection to the web (link opens in an external browser)\n"
-             "or enable web connections for news in Octave's network settings dialog.\n"
-             "</p>\n"
-             "<p>\n"
-             "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
-         "</p>\n"
-         "</body>\n"
-         "</html>\n");
-
-    emit display_news_signal (html_text);
-
-    emit finished ();
   }
 
   //! Reimplements QApplication::notify.

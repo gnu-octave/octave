@@ -467,36 +467,6 @@ namespace octave
     QString m_file_encoding;
   };
 
-  class news_reader : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    news_reader (const QString& base_url, const QString& page,
-                 int serial = -1, bool connect_to_web = false)
-      : QObject (), m_base_url (base_url), m_page (page), m_serial (serial),
-        m_connect_to_web (connect_to_web)
-    { }
-
-  public slots:
-
-    void process (void);
-
-  signals:
-
-    void display_news_signal (const QString& news);
-
-    void finished (void);
-
-  private:
-
-    QString m_base_url;
-    QString m_page;
-    int m_serial;
-    bool m_connect_to_web;
-  };
-
   class octave_qapplication : public QApplication
   {
   public:

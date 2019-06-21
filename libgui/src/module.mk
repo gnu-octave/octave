@@ -139,6 +139,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-files-dock-widget.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-main-window.cc \
+  %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-cmd.cc \
   %reldir%/moc-octave-qt-link.cc \
   %reldir%/moc-settings-dialog.cc \
@@ -195,6 +196,7 @@ noinst_HEADERS += \
   %reldir%/m-editor/octave-txt-lexer.h \
   %reldir%/m-editor/marker.h \
   %reldir%/main-window.h \
+  %reldir%/news-reader.h \
   %reldir%/octave-gui.h \
   %reldir%/octave-cmd.h \
   %reldir%/octave-qt-link.h \
@@ -227,6 +229,7 @@ noinst_HEADERS += \
   %reldir%/m-editor/octave-txt-lexer.cc \
   %reldir%/m-editor/marker.cc \
   %reldir%/main-window.cc \
+  %reldir%/news-reader.cc \
   %reldir%/octave-cmd.cc \
   %reldir%/octave-dock-widget.cc \
   %reldir%/octave-gui.cc \

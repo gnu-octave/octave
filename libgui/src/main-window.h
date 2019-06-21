@@ -492,7 +492,7 @@ namespace octave
 
     void config_translators (void);
 
-    void create_main_window (void);
+    void start_main_thread (void);
 
     int exec (void);
 
@@ -502,7 +502,7 @@ namespace octave
 
     void handle_octave_finished (int);
 
-    void confirm_shutdown_octave (void);
+    virtual void confirm_shutdown_octave (void);
 
     void copy_image_to_clipboard (const QString& file, bool remove_file);
 
@@ -529,7 +529,7 @@ namespace octave
                                    const QString& dirname,
                                    const QString& multimode);
 
-  private:
+  protected:
 
     gui_application& m_app_context;
 
@@ -553,9 +553,39 @@ namespace octave
 
     QThread *m_main_thread;
 
-    main_window *m_main_window;
-
     void connect_uiwidget_links (void);
+
+    void confirm_shutdown_octave_internal (bool closenow);
+  };
+
+  class octave_qt_cli_app : public octave_qt_app
+  {
+    Q_OBJECT
+
+  public:
+
+    octave_qt_cli_app (gui_application& app_context);
+
+    ~octave_qt_cli_app (void) = default;
+  };
+
+  class octave_qt_gui_app : public octave_qt_app
+  {
+    Q_OBJECT
+
+  public:
+
+    octave_qt_gui_app (gui_application& app_context);
+
+    ~octave_qt_gui_app (void);
+
+  public slots:
+
+    void confirm_shutdown_octave (void);
+
+  private:
+
+    main_window *m_main_window;
   };
 }
 

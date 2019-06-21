@@ -2727,8 +2727,7 @@ namespace octave
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_octave_qt_link (new octave_qt_link ()),
       m_interpreter (new octave_interpreter (m_app_context)),
-      m_main_thread (new QThread ()),
-      m_main_window (nullptr)
+      m_main_thread (new QThread ())
   {
     std::string show_gui_msgs =
       sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
@@ -2789,32 +2788,10 @@ namespace octave
 
     connect (m_main_thread, SIGNAL (finished (void)),
              m_main_thread, SLOT (deleteLater (void)));
-
-    if (m_app_context.start_gui_p ())
-      create_main_window ();
-    else
-      {
-        // Get settings file.
-        resource_manager::reload_settings ();
-
-        // After settings.
-        config_translators ();
-
-        m_qt_app->setQuitOnLastWindowClosed (false);
-      }
-
-    // Defer initializing and executing the interpreter until after the main
-    // window and QApplication are running to prevent race conditions
-    QTimer::singleShot (0, m_interpreter, SLOT (execute (void)));
-
-    m_interpreter->moveToThread (m_main_thread);
-
-    m_main_thread->start ();
   }
 
   octave_qt_app::~octave_qt_app (void)
   {
-    delete m_main_window;
     delete m_interpreter;
     delete m_qt_app;
 
@@ -2835,14 +2812,15 @@ namespace octave
     m_translators_installed = true;
   }
 
-  void octave_qt_app::create_main_window (void)
+  void octave_qt_app::start_main_thread (void)
   {
-    m_main_window = new main_window (*this, m_octave_qt_link);
+    // Defer initializing and executing the interpreter until after the main
+    // window and QApplication are running to prevent race conditions
+    QTimer::singleShot (0, m_interpreter, SLOT (execute (void)));
 
-    connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
-             m_main_window, SLOT (handle_octave_ready (void)));
+    m_interpreter->moveToThread (m_main_thread);
 
-    m_app_context.gui_running (true);
+    m_main_thread->start ();
   }
 
   int octave_qt_app::exec (void)
@@ -2857,20 +2835,7 @@ namespace octave
 
   void octave_qt_app::confirm_shutdown_octave (void)
   {
-    bool closenow = true;
-
-    if (m_main_window)
-      closenow = m_main_window->confirm_shutdown_octave ();
-
-    // Wait for link thread to go to sleep state.
-    m_octave_qt_link->lock ();
-
-    m_octave_qt_link->shutdown_confirmation (closenow);
-
-    m_octave_qt_link->unlock ();
-
-    // Awake the worker thread so that it continues shutting down (or not).
-    m_octave_qt_link->wake_all ();
+    confirm_shutdown_octave_internal (true);
   }
 
   void octave_qt_app::copy_image_to_clipboard (const QString& file,
@@ -3005,5 +2970,59 @@ namespace octave
              SLOT (handle_create_filedialog (const QStringList &, const QString&,
                                              const QString&, const QString&,
                                              const QString&)));
+  }
+
+  void octave_qt_app::confirm_shutdown_octave_internal (bool closenow)
+  {
+    // Wait for link thread to go to sleep state.
+    m_octave_qt_link->lock ();
+
+    m_octave_qt_link->shutdown_confirmation (closenow);
+
+    m_octave_qt_link->unlock ();
+
+    // Awake the worker thread so that it continues shutting down (or not).
+    m_octave_qt_link->wake_all ();
+  }
+
+  octave_qt_cli_app::octave_qt_cli_app (gui_application& app_context)
+    : octave_qt_app (app_context)
+  {
+    // Get settings file.
+    resource_manager::reload_settings ();
+
+    // After settings.
+    config_translators ();
+
+    m_qt_app->setQuitOnLastWindowClosed (false);
+
+    start_main_thread ();
+  }
+
+  octave_qt_gui_app::octave_qt_gui_app (gui_application& app_context)
+    : octave_qt_app (app_context),
+      m_main_window (new main_window (*this, m_octave_qt_link))
+  {
+    connect (m_interpreter, SIGNAL (octave_ready_signal (void)),
+             m_main_window, SLOT (handle_octave_ready (void)));
+
+    m_app_context.gui_running (true);
+
+    start_main_thread ();
+  }
+
+  octave_qt_gui_app::~octave_qt_gui_app (void)
+  {
+    delete m_main_window;
+  }
+
+  void octave_qt_gui_app::confirm_shutdown_octave (void)
+  {
+    bool closenow = true;
+
+    if (m_main_window)
+      closenow = m_main_window->confirm_shutdown_octave ();
+
+    confirm_shutdown_octave_internal (closenow);
   }
 }

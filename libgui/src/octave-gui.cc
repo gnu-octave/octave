@@ -59,8 +59,15 @@ namespace octave
 
     // Create and show main window.
 
-    octave_qt_app oct_qt_app (*this);
-
-    return oct_qt_app.exec ();
+    if (start_gui_p ())
+      {
+        octave_qt_gui_app octave_app (*this);
+        return octave_app.exec ();
+      }
+    else
+      {
+        octave_qt_cli_app octave_app (*this);
+        return octave_app.exec ();
+      }
   }
 }

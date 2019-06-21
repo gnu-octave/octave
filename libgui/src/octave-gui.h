@@ -51,9 +51,6 @@ namespace octave
 
   private:
 
-    int m_argc;
-    char **m_argv;
-
     // If TRUE, the GUI should be started.
     bool m_gui_running = false;
   };

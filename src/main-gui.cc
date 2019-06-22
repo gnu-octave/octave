@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave.h"
 #include "octave-build-info.h"
-#include "octave-gui.h"
+#include "qt-application.h"
 #include "sysdep.h"
 
 static void
@@ -98,7 +98,7 @@ main (int argc, char **argv)
 
   octave::sys::env::set_program_name (argv[0]);
 
-  octave::gui_application app (argc, argv);
+  octave::qt_application app (argc, argv);
 
   return app.execute ();
 }

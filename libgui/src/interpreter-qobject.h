@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class gui_application;
+  class qt_application;
 
   class interpreter_qobject : public QObject
   {
@@ -36,7 +36,7 @@ namespace octave
 
   public:
 
-    interpreter_qobject (gui_application& app_context);
+    interpreter_qobject (qt_application& app_context);
 
     ~interpreter_qobject (void) = default;
 
@@ -53,7 +53,7 @@ namespace octave
 
   private:
 
-    gui_application& m_app_context;
+    qt_application& m_app_context;
   };
 }
 

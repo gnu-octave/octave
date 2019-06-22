@@ -35,23 +35,24 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 
 #include "main-window.h"
-#include "octave-gui.h"
+#include "octave-qobject.h"
+#include "qt-application.h"
 
 namespace octave
 {
-  gui_application::gui_application (int argc, char **argv)
+  qt_application::qt_application (int argc, char **argv)
     : application (argc, argv)
   {
     // This should probably happen early.
     sysdep_init ();
   }
 
-  bool gui_application::start_gui_p (void) const
+  bool qt_application::start_gui_p (void) const
   {
     return m_options.gui ();
   }
 
-  int gui_application::execute (void)
+  int qt_application::execute (void)
   {
     octave_block_interrupt_signal ();
 
@@ -61,13 +62,13 @@ namespace octave
 
     if (start_gui_p ())
       {
-        octave_qt_gui_app octave_app (*this);
-        return octave_app.exec ();
+        gui_qobject gui_interface (*this);
+        return gui_interface.exec ();
       }
     else
       {
-        octave_qt_cli_app octave_app (*this);
-        return octave_app.exec ();
+        cli_qobject cli_interface (*this);
+        return cli_interface.exec ();
       }
   }
 }

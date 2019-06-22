@@ -52,8 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "history-dock-widget.h"
 #include "octave-cmd.h"
 #include "octave-dock-widget.h"
-#include "octave-gui.h"
 #include "octave-qt-link.h"
+#include "qt-application.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
@@ -64,9 +64,8 @@ class octave_value;
 
 namespace octave
 {
+  class base_qobject;
   class settings_dialog;
-
-  class octave_qt_app;
 
   //! Represents the main window.
 
@@ -79,7 +78,7 @@ namespace octave
     typedef std::pair <std::string, std::string> name_pair;
     typedef std::pair <int, int> int_pair;
 
-    main_window (octave_qt_app& oct_qt_app, octave_qt_link *oct_qt_lnk);
+    main_window (base_qobject& qapp, octave_qt_link *lnk);
 
     ~main_window (void);
 
@@ -308,7 +307,7 @@ namespace octave
 
     QList<octave_dock_widget *> dock_widget_list (void);
 
-    QApplication *m_qt_app;
+    QApplication *m_octave_qapp;
 
     octave_qt_link *m_octave_qt_link;
 
@@ -439,129 +438,6 @@ namespace octave
     //!@}
 
     QString m_file_encoding;
-  };
-
-  class octave_qapplication : public QApplication
-  {
-  public:
-
-    octave_qapplication (int& argc, char **argv)
-    : QApplication (argc, argv)
-    { }
-
-    virtual bool notify (QObject *receiver, QEvent *e) override;
-
-    ~octave_qapplication (void) { };
-  };
-
-  class interpreter_qobject;
-
-  class octave_qt_app : public QObject
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_qt_app (gui_application& app_context);
-
-    ~octave_qt_app (void);
-
-    void config_translators (void);
-
-    void start_main_thread (void);
-
-    int exec (void);
-
-    QApplication *qt_app (void) { return m_qt_app; };
-
-  public slots:
-
-    void handle_octave_finished (int);
-
-    virtual void confirm_shutdown_octave (void);
-
-    void copy_image_to_clipboard (const QString& file, bool remove_file);
-
-    void handle_create_dialog (const QString& message, const QString& title,
-                               const QString& icon, const QStringList& button,
-                               const QString& defbutton,
-                               const QStringList& role);
-
-    void handle_create_listview (const QStringList& list, const QString& mode,
-                                 int width, int height,
-                                 const QIntList& initial,
-                                 const QString& name,
-                                 const QStringList& prompt,
-                                 const QString& ok_string,
-                                 const QString& cancel_string);
-
-    void handle_create_inputlayout (const QStringList&, const QString&,
-                                    const QFloatList&, const QFloatList&,
-                                    const QStringList&);
-
-    void handle_create_filedialog (const QStringList& filters,
-                                   const QString& title,
-                                   const QString& filename,
-                                   const QString& dirname,
-                                   const QString& multimode);
-
-  protected:
-
-    gui_application& m_app_context;
-
-    // Use these to ensure that argc and argv exist for as long as the
-    // QApplication object.
-
-    int m_argc;
-    char **m_argv;
-
-    octave_qapplication *m_qt_app;
-
-    QTranslator *m_qt_tr;
-    QTranslator *m_gui_tr;
-    QTranslator *m_qsci_tr;
-
-    bool m_translators_installed;
-
-    octave_qt_link *m_octave_qt_link;
-
-    interpreter_qobject *m_interpreter_qobject;
-
-    QThread *m_main_thread;
-
-    void connect_uiwidget_links (void);
-
-    void confirm_shutdown_octave_internal (bool closenow);
-  };
-
-  class octave_qt_cli_app : public octave_qt_app
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_qt_cli_app (gui_application& app_context);
-
-    ~octave_qt_cli_app (void) = default;
-  };
-
-  class octave_qt_gui_app : public octave_qt_app
-  {
-    Q_OBJECT
-
-  public:
-
-    octave_qt_gui_app (gui_application& app_context);
-
-    ~octave_qt_gui_app (void);
-
-  public slots:
-
-    void confirm_shutdown_octave (void);
-
-  private:
-
-    main_window *m_main_window;
   };
 }
 

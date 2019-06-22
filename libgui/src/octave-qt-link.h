@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMutex>
 #include <QWaitCondition>
 
-#include "octave-gui.h"
+#include "qt-application.h"
+
 #include "octave-link.h"
 
 // Defined for purposes of sending QList<int> as part of signal.

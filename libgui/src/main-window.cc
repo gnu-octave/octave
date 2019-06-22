@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "news-reader.h"
+#include "octave-qobject.h"
 #include "settings-dialog.h"
 #include "shortcut-manager.h"
 #include "welcome-wizard.h"
@@ -96,20 +97,10 @@ namespace octave
 #endif
   }
 
-  // Disable all Qt messages by default.
-
-  static void
-#if defined (QTMESSAGEHANDLER_ACCEPTS_QMESSAGELOGCONTEXT)
-  message_handler (QtMsgType, const QMessageLogContext &, const QString &)
-#else
-  message_handler (QtMsgType, const char *)
-#endif
-  { }
-
-  main_window::main_window (octave_qt_app& oct_qt_app,
-                            octave_qt_link *oct_qt_lnk)
+  main_window::main_window (base_qobject& qobj,
+                            octave_qt_link *lnk)
     : QMainWindow (),
-      m_qt_app (oct_qt_app.qt_app ()), m_octave_qt_link (oct_qt_lnk),
+      m_octave_qapp (qobj.octave_qapp ()), m_octave_qt_link (lnk),
       m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
@@ -126,7 +117,7 @@ namespace octave
     if (resource_manager::is_first_run ())
       {
         // Before wizard.
-        oct_qt_app.config_translators ();
+        qobj.config_translators ();
 
         welcome_wizard welcomeWizard;
 
@@ -142,7 +133,7 @@ namespace octave
         resource_manager::reload_settings ();
 
         // After settings.
-        oct_qt_app.config_translators ();
+        qobj.config_translators ();
       }
 
     resource_manager::update_network_settings ();
@@ -176,7 +167,7 @@ namespace octave
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
 
-    m_default_style = m_qt_app->style ()->objectName ();
+    m_default_style = m_octave_qapp->style ()->objectName ();
 
     QSettings *settings = resource_manager::get_settings ();
 
@@ -685,7 +676,7 @@ namespace octave
 
     QStyle *new_style = QStyleFactory::create (preferred_style);
     if (new_style)
-      m_qt_app->setStyle (new_style);
+      m_octave_qapp->setStyle (new_style);
 
     // the widget's icons (when floating)
     QString icon_set
@@ -2649,330 +2640,5 @@ namespace octave
     list.append (static_cast<octave_dock_widget *> (m_workspace_window));
     list.append (static_cast<octave_dock_widget *> (m_variable_editor_window));
     return list;
-  }
-
-  //! Reimplements QApplication::notify.
-  /*! Octave's own exceptions are caugh and rethrown in the interpreter
-      thread.*/
-  bool
-  octave_qapplication::notify (QObject *receiver, QEvent *ev)
-  {
-    try
-      {
-        return QApplication::notify (receiver, ev);
-      }
-    catch (execution_exception&)
-      {
-        octave_link::post_exception (std::current_exception ());
-      }
-
-   return false;
-  }
-
-  octave_qt_app::octave_qt_app (gui_application& app_context)
-    : QObject (), m_app_context (app_context),
-      m_argc (m_app_context.sys_argc ()),
-      m_argv (m_app_context.sys_argv ()), m_qt_app (nullptr),
-      m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
-      m_qsci_tr (new QTranslator ()), m_translators_installed (false),
-      m_octave_qt_link (new octave_qt_link ()),
-      m_interpreter_qobject (new interpreter_qobject (m_app_context)),
-      m_main_thread (new QThread ())
-  {
-    std::string show_gui_msgs =
-      sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
-
-    // Installing our handler suppresses the messages.
-
-    if (show_gui_msgs.empty ())
-      {
-#if defined (HAVE_QINSTALLMESSAGEHANDLER)
-        qInstallMessageHandler (message_handler);
-#else
-        qInstallMsgHandler (message_handler);
-#endif
-      }
-
-    // Set the codec for all strings (before wizard or any GUI object)
-#if ! defined (Q_OS_WIN32)
-    QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
-#endif
-
-#if defined (HAVE_QT4)
-    QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
-#endif
-
-    // Initialize global Qt application metadata.
-
-    QCoreApplication::setApplicationName ("GNU Octave");
-    QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
-
-    // Register octave_value_list for connecting thread crossing signals.
-
-    qRegisterMetaType<octave_value_list> ("octave_value_list");
-
-    // Even if START_GUI is false, we still set up the QApplication so
-    // that we can use Qt widgets for plot windows.
-
-    m_qt_app = new octave_qapplication (m_argc, m_argv);
-
-    // Force left-to-right alignment (see bug #46204)
-    m_qt_app->setLayoutDirection (Qt::LeftToRight);
-
-    octave_link::connect_link (m_octave_qt_link);
-
-    connect (m_octave_qt_link, SIGNAL (confirm_shutdown_signal (void)),
-             this, SLOT (confirm_shutdown_octave (void)));
-
-    connect (m_octave_qt_link,
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
-
-    connect_uiwidget_links ();
-
-    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
-             this, SLOT (handle_octave_finished (int)));
-
-    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
-             m_main_thread, SLOT (quit (void)));
-
-    connect (m_main_thread, SIGNAL (finished (void)),
-             m_main_thread, SLOT (deleteLater (void)));
-  }
-
-  octave_qt_app::~octave_qt_app (void)
-  {
-    delete m_interpreter_qobject;
-    delete m_qt_app;
-
-    string_vector::delete_c_str_vec (m_argv);
-  }
-
-  void octave_qt_app::config_translators (void)
-  {
-    if (m_translators_installed)
-      return;
-
-    resource_manager::config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
-
-    m_qt_app->installTranslator (m_qt_tr);
-    m_qt_app->installTranslator (m_gui_tr);
-    m_qt_app->installTranslator (m_qsci_tr);
-
-    m_translators_installed = true;
-  }
-
-  void octave_qt_app::start_main_thread (void)
-  {
-    // Defer initializing and executing the interpreter until after the main
-    // window and QApplication are running to prevent race conditions
-    QTimer::singleShot (0, m_interpreter_qobject, SLOT (execute (void)));
-
-    m_interpreter_qobject->moveToThread (m_main_thread);
-
-    m_main_thread->start ();
-  }
-
-  int octave_qt_app::exec (void)
-  {
-    return m_qt_app->exec ();
-  }
-
-  void octave_qt_app::handle_octave_finished (int exit_status)
-  {
-    qApp->exit (exit_status);
-  }
-
-  void octave_qt_app::confirm_shutdown_octave (void)
-  {
-    confirm_shutdown_octave_internal (true);
-  }
-
-  void octave_qt_app::copy_image_to_clipboard (const QString& file,
-                                                bool remove_file)
-  {
-    QClipboard *clipboard = QApplication::clipboard ();
-
-    QImage img (file);
-
-    if (img.isNull ())
-      {
-        // Report error?
-        return;
-      }
-
-    clipboard->setImage (img);
-
-    if (remove_file)
-      QFile::remove (file);
-  }
-
-  // Create a message dialog with specified string, buttons and decorative
-  // text.
-
-  void octave_qt_app::handle_create_dialog (const QString& message,
-                                            const QString& title,
-                                            const QString& icon,
-                                            const QStringList& button,
-                                            const QString& defbutton,
-                                            const QStringList& role)
-  {
-    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
-                                                       button, defbutton, role);
-    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    message_dialog->show ();
-  }
-
-  // Create a list dialog with specified list, initially selected, mode,
-  // view size and decorative text.
-
-  void octave_qt_app::handle_create_listview (const QStringList& list,
-                                              const QString& mode,
-                                              int wd, int ht,
-                                              const QIntList& initial,
-                                              const QString& name,
-                                              const QStringList& prompt,
-                                              const QString& ok_string,
-                                              const QString& cancel_string)
-  {
-    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
-                                              initial, name, prompt,
-                                              ok_string, cancel_string);
-
-    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    list_dialog->show ();
-  }
-
-  // Create an input dialog with specified prompts and defaults, title and
-  // row/column size specifications.
-  void octave_qt_app::handle_create_inputlayout (const QStringList& prompt,
-                                                 const QString& title,
-                                                 const QFloatList& nr,
-                                                 const QFloatList& nc,
-                                                 const QStringList& defaults)
-  {
-    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
-                                                 defaults);
-
-    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    input_dialog->show ();
-  }
-
-  void octave_qt_app::handle_create_filedialog (const QStringList& filters,
-                                                const QString& title,
-                                                const QString& filename,
-                                                const QString& dirname,
-                                                const QString& multimode)
-  {
-    FileDialog *file_dialog = new FileDialog (filters, title, filename,
-                                              dirname, multimode);
-
-    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    file_dialog->show ();
-  }
-
-  // Connect the signals emitted when the Octave thread wants to create
-  // a dialog box of some sort.  Perhaps a better place for this would be
-  // as part of the QUIWidgetCreator class.  However, mainWindow currently
-  // is not a global variable and not accessible for connecting.
-
-  void octave_qt_app::connect_uiwidget_links (void)
-  {
-    connect (&uiwidget_creator,
-             SIGNAL (create_dialog (const QString&, const QString&,
-                                    const QString&, const QStringList&,
-                                    const QString&, const QStringList&)),
-             this,
-             SLOT (handle_create_dialog (const QString&, const QString&,
-                                         const QString&, const QStringList&,
-                                         const QString&, const QStringList&)));
-
-    // Register QIntList so that list of ints may be part of a signal.
-    qRegisterMetaType<QIntList> ("QIntList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_listview (const QStringList&, const QString&,
-                                      int, int, const QIntList&,
-                                      const QString&, const QStringList&,
-                                      const QString&, const QString&)),
-             this,
-             SLOT (handle_create_listview (const QStringList&, const QString&,
-                                           int, int, const QIntList&,
-                                           const QString&, const QStringList&,
-                                           const QString&, const QString&)));
-
-    // Register QFloatList so that list of floats may be part of a signal.
-    qRegisterMetaType<QFloatList> ("QFloatList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_inputlayout (const QStringList&, const QString&,
-                                         const QFloatList&, const QFloatList&,
-                                         const QStringList&)),
-             this,
-             SLOT (handle_create_inputlayout (const QStringList&, const QString&,
-                                              const QFloatList&,
-                                              const QFloatList&,
-                                              const QStringList&)));
-
-    connect (&uiwidget_creator,
-             SIGNAL (create_filedialog (const QStringList &,const QString&,
-                                        const QString&, const QString&,
-                                        const QString&)),
-             this,
-             SLOT (handle_create_filedialog (const QStringList &, const QString&,
-                                             const QString&, const QString&,
-                                             const QString&)));
-  }
-
-  void octave_qt_app::confirm_shutdown_octave_internal (bool closenow)
-  {
-    // Wait for link thread to go to sleep state.
-    m_octave_qt_link->lock ();
-
-    m_octave_qt_link->shutdown_confirmation (closenow);
-
-    m_octave_qt_link->unlock ();
-
-    // Awake the worker thread so that it continues shutting down (or not).
-    m_octave_qt_link->wake_all ();
-  }
-
-  octave_qt_cli_app::octave_qt_cli_app (gui_application& app_context)
-    : octave_qt_app (app_context)
-  {
-    // Get settings file.
-    resource_manager::reload_settings ();
-
-    // After settings.
-    config_translators ();
-
-    m_qt_app->setQuitOnLastWindowClosed (false);
-
-    start_main_thread ();
-  }
-
-  octave_qt_gui_app::octave_qt_gui_app (gui_application& app_context)
-    : octave_qt_app (app_context),
-      m_main_window (new main_window (*this, m_octave_qt_link))
-  {
-    connect (m_interpreter_qobject, SIGNAL (octave_ready_signal (void)),
-             m_main_window, SLOT (handle_octave_ready (void)));
-
-    m_app_context.gui_running (true);
-
-    start_main_thread ();
-  }
-
-  octave_qt_gui_app::~octave_qt_gui_app (void)
-  {
-    delete m_main_window;
-  }
-
-  void octave_qt_gui_app::confirm_shutdown_octave (void)
-  {
-    bool closenow = true;
-
-    if (m_main_window)
-      closenow = m_main_window->confirm_shutdown_octave ();
-
-    confirm_shutdown_octave_internal (closenow);
   }
 }

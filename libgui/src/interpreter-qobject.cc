@@ -26,14 +26,14 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "interpreter-qobject.h"
-#include "octave-gui.h"
+#include "qt-application.h"
 
 #include "input.h"
 #include "interpreter.h"
 
 namespace octave
 {
-  interpreter_qobject::interpreter_qobject (gui_application& app_context)
+  interpreter_qobject::interpreter_qobject (qt_application& app_context)
     : QObject (), m_app_context (app_context)
   { }
 

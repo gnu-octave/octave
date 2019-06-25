@@ -304,6 +304,7 @@ namespace octave
     bool _always_reload_changed_files;
     bool _smart_indent;
     int _auto_endif;
+    int m_ind_char_width;
 
     QFileSystemWatcher _file_system_watcher;
 

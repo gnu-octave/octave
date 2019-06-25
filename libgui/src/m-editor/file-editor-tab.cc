@@ -2691,6 +2691,10 @@ namespace octave
     _edit_area->setTabWidth
       (settings->value ("editor/tab_width",2).toInt ());
 
+    m_ind_char_width = 1;
+    if (_edit_area->indentationsUseTabs ())
+      m_ind_char_width = _edit_area->tabWidth ();
+
     _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
                                settings->value ("editor/show_hscroll_bar",true).toBool ());
     _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
@@ -3040,7 +3044,8 @@ namespace octave
           {
             // Obviously, we have a newline here
             if (_smart_indent || _auto_endif)
-              _edit_area->smart_indent (_smart_indent, _auto_endif, _line);
+              _edit_area->smart_indent (_smart_indent, _auto_endif,
+                                        _line, m_ind_char_width);
           }
       }
 

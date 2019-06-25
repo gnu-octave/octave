@@ -63,7 +63,8 @@ namespace octave
     QStringList comment_string (bool comment = true);
     int get_style (int pos = -1);
     int is_style_comment (int pos = -1);
-    void smart_indent (bool do_smart_indent, int do_auto_close, int line);
+    void smart_indent (bool do_smart_indent, int do_auto_close,
+                       int line, int ind_char_width);
 
     void smart_indent_line_or_selected_text (int lineFrom, int lineTo);
 

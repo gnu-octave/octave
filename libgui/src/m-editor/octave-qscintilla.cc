@@ -499,8 +499,8 @@ namespace octave
   }
 
   // Do smart indendation after if, for, ...
-  void octave_qscintilla::smart_indent (bool do_smart_indent,
-                                        int do_auto_close, int line)
+  void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
+                                        int line, int ind_char_width)
   {
     QString prevline = text (line);
 
@@ -534,7 +534,7 @@ namespace octave
           {
             // Do smart indent in the current line (line+1)
             indent (line+1);
-            setCursorPosition (line+1, indentation (line) + indentationWidth ());
+            setCursorPosition (line+1, indentation (line+1) / ind_char_width);
           }
 
         if (do_auto_close

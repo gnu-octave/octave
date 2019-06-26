@@ -593,7 +593,7 @@ namespace octave
           if (meth.ok ())
             {
               if (! meth.is_static ())
-                error ("method `%s' is not static", nm.c_str ());
+                error ("method '%s' is not static", nm.c_str ());
 
               octave_value_list args;
 
@@ -612,10 +612,10 @@ namespace octave
               cdef_property prop = find_property (nm);
 
               if (! prop.ok ())
-                error ("no such method or property `%s'", nm.c_str ());
+                error ("no such method or property '%s'", nm.c_str ());
 
               if (! prop.is_constant ())
-                error ("property `%s' is not constant", nm.c_str ());
+                error ("property '%s' is not constant", nm.c_str ());
 
               retval(0) = prop.get_value (true, "meta.class");
             }
@@ -733,7 +733,7 @@ namespace octave
   cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
   {
     if (is_abstract ())
-      error ("cannot instantiate object for abstract class `%s'",
+      error ("cannot instantiate object for abstract class '%s'",
              get_name ().c_str ());
 
     cdef_object obj;
@@ -889,7 +889,7 @@ namespace octave
             cdef_class sclass = lookup_class (sclass_name);
 
             if (sclass.get ("Sealed").bool_value ())
-              error ("`%s' cannot inherit from `%s', because it is sealed",
+              error ("'%s' cannot inherit from '%s', because it is sealed",
                      full_class_name.c_str (), sclass_name.c_str ());
 
             slist.push_back (sclass);

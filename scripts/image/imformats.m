@@ -106,7 +106,7 @@ function varargout = imformats (arg1, arg2, arg3)
           ##        whole format, or just that extension from the format?
           match = find_ext_idx (formats, arg2);
           if (! any (match))
-            error ("imformats: no EXT `%s' found.", arg2);
+            error ("imformats: no EXT '%s' found.", arg2);
           endif
           if (strcmpi (arg1, "remove"))
             formats(match) = [];
@@ -155,7 +155,7 @@ function rformats = default_formats ()
   ## It will still fail if we test only the ones marked as readable and
   ## writable because some RW coders are not of image formats (NULL, 8BIM,
   ## or EXIF for example).
-  ## So we'd need a blacklist (unacceptable because a `bad' coder may be
+  ## So we'd need a blacklist (unacceptable because a 'bad' coder may be
   ## added later) or a whitelist.  A whitelist means that even with a
   ## super-fancy recent build of GraphicsMagick, some formats won't be listed
   ## by imformats but in truth, we will still be able to read and write them
@@ -268,7 +268,7 @@ function is_valid_format (format)
   min_fields  = {"ext", "read", "isa", "write", "info", "alpha", "description"};
   fields_mask = isfield (format, min_fields);
   if (! all (fields_mask))
-    error ("imformats: structure has missing field `%s'.", min_fields(! fields_mask){1});
+    error ("imformats: structure has missing field '%s'.", min_fields(! fields_mask){1});
   endif
 
 endfunction

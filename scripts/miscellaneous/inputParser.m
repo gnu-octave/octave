@@ -123,7 +123,7 @@
 ## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
 ##
 ## ## following returns an error since not all optional arguments,
-## ## `path' and `mat', were given before the named argument `type'.
+## ## 'path' and 'mat', were given before the named argument 'type'.
 ## check ("mech", "~/dev", "type", "linear");
 ## @end group
 ## @end example

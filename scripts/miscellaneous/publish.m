@@ -819,7 +819,7 @@ function str = format_text (str, formatter)
 
   ## Helper to clarify the following regular expressions.  It is suitable for
   ## inline formatting, that is delimited literally at start and end by
-  ## `delim`.  `term` is an indicating character for the end delimiter.
+  ## 'delim'.  'term' is an indicating character for the end delimiter.
   ##
   ## Best explained by example ('^' start and '$' end of input):
   ##
@@ -1104,7 +1104,7 @@ function cstr = eval_context (op)
 endfunction
 
 
-## Note: Functional BIST tests are located in the `test/publish` directory.
+## Note: Functional BIST tests are located in the 'test/publish' directory.
 
 ## Test input validation
 %!error publish ()

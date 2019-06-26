@@ -5073,7 +5073,7 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
 void
 axes::properties::sync_positions (void)
 {
-  // First part is equivalent to `update_tightinset ()'
+  // First part is equivalent to 'update_tightinset ()'
   if (activepositionproperty.is ("position"))
     update_position ();
   else

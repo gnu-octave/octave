@@ -70,7 +70,7 @@ check_history_control (const char *line, int history_control)
 }
 
 /* Remove all entries matching LINE from the history list.  Triggered when
-   HISTCONTROL includes `erasedups'.  */
+   HISTCONTROL includes 'erasedups'.  */
 
 static void
 hc_erasedups (const char *line)

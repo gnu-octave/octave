@@ -113,7 +113,7 @@ namespace octave
         cdef_class cls (to_cdef (get ("DefiningClass")));
 
         if (! obj.is_partially_constructed_for (cls))
-          error ("cannot reference properties of class `%s' for non-constructed object",
+          error ("cannot reference properties of class '%s' for non-constructed object",
                  cls.get_name ().c_str ());
       }
 
@@ -167,10 +167,10 @@ namespace octave
       acc_s = "class-restricted";
 
     if (is_set)
-      error ("%s: property `%s' has %s access and cannot be set in this context",
+      error ("%s: property '%s' has %s access and cannot be set in this context",
              from.c_str (), get_name ().c_str (), acc_s.c_str ());
     else
-      error ("%s: property `%s' has %s access and cannot be obtained in this context",
+      error ("%s: property '%s' has %s access and cannot be obtained in this context",
              from.c_str (), get_name ().c_str (), acc_s.c_str ());
   }
 
@@ -188,7 +188,7 @@ namespace octave
         cdef_class cls (to_cdef (get ("DefiningClass")));
 
         if (! obj.is_partially_constructed_for (cls))
-          error ("cannot reference properties of class `%s' for non-constructed object",
+          error ("cannot reference properties of class '%s' for non-constructed object",
                  cls.get_name ().c_str ());
       }
 
@@ -214,7 +214,7 @@ namespace octave
                 obj = new_obj;
               }
             else
-              ::warning ("set-method of property `%s' returned a non-classdef object",
+              ::warning ("set-method of property '%s' returned a non-classdef object",
                          get_name ().c_str ());
           }
       }

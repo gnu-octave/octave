@@ -60,7 +60,7 @@ namespace octave
     else
       acc_s = "class-restricted";
 
-    error ("%s: method `%s' has %s access and cannot be run in this context",
+    error ("%s: method '%s' has %s access and cannot be run in this context",
            from.c_str (), meth.get_name ().c_str (), acc_s.c_str ());
   }
 
@@ -110,7 +110,7 @@ namespace octave
           }
 
         if (is_dummy_method (function))
-          error ("no definition found for method `%s' of class `%s'",
+          error ("no definition found for method '%s' of class '%s'",
                  get_name ().c_str (), dispatch_type.c_str ());
       }
   }

@@ -619,7 +619,7 @@ namespace octave
         break;
 
       default:
-        error ("object cannot be indexed with `%c'", type[0]);
+        error ("object cannot be indexed with '%c'", type[0]);
         break;
       }
 
@@ -700,7 +700,7 @@ namespace octave
         break;
 
       default:
-        error ("subsasgn: object cannot be index with `%c'", type[0]);
+        error ("subsasgn: object cannot be index with '%c'", type[0]);
         break;
       }
 

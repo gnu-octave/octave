@@ -365,7 +365,7 @@ initial_java_dir (void)
 //!
 //! @returns A string consisting of the lines of @c filepath which are neither
 //!   comments nor empty without trailing whitespace separated by
-//!   `octave::directory_path::path_sep_str()`.  The returned string also
+//!   'octave::directory_path::path_sep_str()'.  The returned string also
 //!   starts with that path separator.
 
 static std::string
@@ -611,10 +611,10 @@ get_jvm_lib_path_from_registry ()
 //! it by setting #jvm_attached.  Otherwise, create a #jvm with some hard-
 //! coded options:
 //!
-//! - `-Djava.class.path=classpath`, where @c classpath is given by
+//! - '-Djava.class.path=classpath', where @c classpath is given by
 //!   #initial_class_path().
-//! - `-Djava.system.class.loader=org.octave.OctClassLoader`.
-//! - `-Xrs`
+//! - '-Djava.system.class.loader=org.octave.OctClassLoader'.
+//! - '-Xrs'
 //!
 //! Further options are read from the file @c java.opts in the directory given
 //! by #java_init_dir().

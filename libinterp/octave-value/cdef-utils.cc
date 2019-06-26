@@ -140,7 +140,7 @@ namespace octave
   to_cdef (const octave_value& val)
   {
     if (val.type_name () != "object")
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
+      error ("cannot convert '%s' into 'object'", val.type_name().c_str ());
 
     return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
   }
@@ -149,7 +149,7 @@ namespace octave
   to_cdef_ref (const octave_value& val)
   {
     if (val.type_name () != "object")
-      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
+      error ("cannot convert '%s' into 'object'", val.type_name().c_str ());
 
     return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
   }
@@ -391,7 +391,7 @@ namespace octave
           }
       }
     else
-      error ("invalid property/method access in class `%s'",
+      error ("invalid property/method access in class '%s'",
              cls.get_name ().c_str ());
 
     return false;

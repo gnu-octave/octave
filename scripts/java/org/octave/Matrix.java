@@ -96,7 +96,7 @@ public class Matrix
     if (data instanceof DoubleBuffer)
       return ((DoubleBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `double'");
+      throw new ClassCastException ("matrix is not of type 'double'");
   }
 
   public byte[] toByte ()
@@ -104,7 +104,7 @@ public class Matrix
     if (data instanceof ByteBuffer)
       return ((ByteBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `byte'");
+      throw new ClassCastException ("matrix is not of type 'byte'");
   }
 
   public int[] toInt ()
@@ -112,7 +112,7 @@ public class Matrix
     if (data instanceof IntBuffer)
       return ((IntBuffer)data).array ();
     else
-      throw new ClassCastException ("matrix is not of type `integer'");
+      throw new ClassCastException ("matrix is not of type 'integer'");
   }
 
   public int getNDims ()
@@ -330,7 +330,7 @@ public class Matrix
             val = buf[i];
       }
     else
-      System.out.println ("Warning: cannot compute min value for array of type `" + getClassName () + "'");
+      System.out.println ("Warning: cannot compute min value for array of type '" + getClassName () + "'");
 
     return val;
   }
@@ -354,7 +354,7 @@ public class Matrix
             val = buf[i];
       }
     else
-      System.out.println ("Warning: cannot compute max value for array of type `" + getClassName () + "'");
+      System.out.println ("Warning: cannot compute max value for array of type '" + getClassName () + "'");
 
     return val;
   }

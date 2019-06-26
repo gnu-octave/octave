@@ -1641,11 +1641,11 @@ namespace octave
     // or 64.  For floating point values, bitwidth may be 32 or 64.
     int bitwidth;
 
-    // The class of characters in a `[' or `^' format.
+    // The class of characters in a '[' or '^' format.
     std::string char_class;
 
     // Type of conversion
-    //  -- `d', `u', `f', `n', `s', `q', `c', `%', `C', `D', `[' or `^'.
+    //  -- 'd', 'u', 'f', 'n', 's', 'q', 'c', '%', 'C', 'D', '[' or '^'.
     char type;
 
     // TRUE if we are not storing the result of this conversion.
@@ -2425,8 +2425,8 @@ namespace octave
           std::cerr << elt->type << "\n";
 
         std::cerr
-          << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
-          << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
+          << "char_class: '" << undo_string_escapes (elt->char_class) << "'\n"
+          << "text:       '" << undo_string_escapes (elt->text) << "'\n\n";
       }
   }
 

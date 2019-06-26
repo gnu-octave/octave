@@ -1410,9 +1410,9 @@ public:
   octave_value map (octave_base_value::unary_mapper_t umap) const
   { return rep->map (umap); }
 
-  //! Extract the n-th element, aka `val(n)`.
+  //! Extract the n-th element, aka 'val(n)'.
   //!
-  //! @return Result is undefined if `val` is not an array type
+  //! @return Result is undefined if 'val' is not an array type
   //!         or @p n is out of range.
   //!
   //! @warning Function calls should never error.
@@ -1421,9 +1421,9 @@ public:
   fast_elem_extract (octave_idx_type n) const
   { return rep->fast_elem_extract (n); }
 
-  //! Assign the n-th element, aka `val(n) = x`.
+  //! Assign the n-th element, aka 'val(n) = x'.
   //!
-  //! @returns false if `val` is not an array type,
+  //! @returns false if 'val' is not an array type,
   //!          @p x is not a matching scalar type,
   //!          or @p n is out of range.
   //!

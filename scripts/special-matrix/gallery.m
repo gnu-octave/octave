@@ -69,7 +69,7 @@
 ## @deftypefn  {} {@var{a} =} gallery ("condex", @var{n})
 ## @deftypefnx {} {@var{a} =} gallery ("condex", @var{n}, @var{k})
 ## @deftypefnx {} {@var{a} =} gallery ("condex", @var{n}, @var{k}, @var{theta})
-## Create a `counterexample' matrix to a condition estimator.
+## Create a 'counterexample' matrix to a condition estimator.
 ##
 ## @end deftypefn
 ##
@@ -335,7 +335,7 @@
 ##
 ## @deftypefn  {} {@var{a} =} gallery ("smoke", @var{n})
 ## @deftypefnx {} {@var{a} =} gallery ("smoke", @var{n}, @var{k})
-## Create a complex matrix, with a `smoke ring' pseudospectrum.
+## Create a complex matrix, with a 'smoke ring' pseudospectrum.
 ##
 ## @end deftypefn
 ##
@@ -563,7 +563,7 @@ function C = chebspec (n, k = 0)
   ## CHEBSPEC  Chebyshev spectral differentiation matrix.
   ##   C = CHEBSPEC(N, K) is a Chebyshev spectral differentiation
   ##   matrix of order N.  K = 0 (the default) or 1.
-  ##   For K = 0 (`no boundary conditions'), C is nilpotent, with
+  ##   For K = 0 ('no boundary conditions'), C is nilpotent, with
   ##       C^N = 0 and it has the null vector ONES(N,1).
   ##       C is similar to a Jordan block of size N with eigenvalue zero.
   ##   For K = 1, C is nonsingular and well-conditioned, and its eigenvalues
@@ -711,7 +711,7 @@ function C = circul (v)
   ##   (A circulant matrix has the property that each row is obtained
   ##   from the previous one by cyclically permuting the entries one step
   ##   forward; it is a special Toeplitz matrix in which the diagonals
-  ##   `wrap round'.)
+  ##   'wrap round'.)
   ##   Special case: if V is a scalar then C = CIRCUL(1:V).
   ##   The eigensystem of C (N-by-N) is known explicitly.   If t is an Nth
   ##   root of unity, then the inner product of V with W = [1 t t^2 ... t^N]
@@ -814,7 +814,7 @@ function C = compar (A, k = 0)
 
   if (k == 0)
     ## This code uses less temporary storage than
-    ## the `high level' definition above.
+    ## the 'high level' definition above.
     C = -abs (A);
     for j = 1:p
       C(j,j) = abs (A(j,j));
@@ -840,10 +840,10 @@ function C = compar (A, k = 0)
 endfunction
 
 function A = condex (n, k = 4, theta = 100)
-  ## CONDEX   `Counterexamples' to matrix condition number estimators.
-  ##   CONDEX(N, K, THETA) is a `counterexample' matrix to a condition
+  ## CONDEX   'Counterexamples' to matrix condition number estimators.
+  ##   CONDEX(N, K, THETA) is a 'counterexample' matrix to a condition
   ##   estimator.  It has order N and scalar parameter THETA (default 100).
-  ##   If N is not equal to the `natural' size of the matrix then
+  ##   If N is not equal to the 'natural' size of the matrix then
   ##   the matrix is padded out with an identity matrix to order N.
   ##   The matrix, its natural size, and the estimator to which it applies
   ##   are specified by K (default K = 4) as follows:
@@ -2291,7 +2291,7 @@ function A = redheff (n)
   ##   a new proof of the prime number theorem.
   ##   The Riemann hypothesis is true if and only if
   ##   DET(A) = O( N^(1/2+epsilon) ) for every epsilon > 0
-  ##                                     (`!' denotes factorial).
+  ##                                     ('!' denotes factorial).
   ##   See also RIEMANN.
   ##
   ##   Reference:
@@ -2315,7 +2315,7 @@ function A = riemann (n)
   ##   A = RIEMANN(N) is an N-by-N matrix for which the
   ##   Riemann hypothesis is true if and only if
   ##   DET(A) = O( N! N^(-1/2+epsilon) ) for every epsilon > 0
-  ##                                     (`!' denotes factorial).
+  ##                                     ('!' denotes factorial).
   ##   A = B(2:N+1, 2:N+1), where
   ##   B(i,j) = i-1 if i divides j and -1 otherwise.
   ##   Properties include, with M = N+1:
@@ -2366,7 +2366,7 @@ function A = ris (n)
 endfunction
 
 function A = smoke (n, k = 0)
-  ## SMOKE     Smoke matrix - complex, with a `smoke ring' pseudospectrum.
+  ## SMOKE     Smoke matrix - complex, with a 'smoke ring' pseudospectrum.
   ##   SMOKE(N) is an N-by-N matrix with 1s on the
   ##   superdiagonal, 1 in the (N,1) position, and powers of
   ##   roots of unity along the diagonal.
@@ -2446,9 +2446,9 @@ function P = toeppen (n, a = 1, b = -10, c = 0, d = 10, e = 1)
   ##             the line segment 2*cos(2*t) + 20*i*sin(t).
   ##
   ##   Interesting plots are
-  ##   PS(FULL(TOEPPEN(32,0,1,0,0,1/4)))  - `triangle'
-  ##   PS(FULL(TOEPPEN(32,0,1/2,0,0,1)))  - `propeller'
-  ##   PS(FULL(TOEPPEN(32,0,1/2,1,1,1)))  - `fish'
+  ##   PS(FULL(TOEPPEN(32,0,1,0,0,1/4)))  - 'triangle'
+  ##   PS(FULL(TOEPPEN(32,0,1/2,0,0,1)))  - 'propeller'
+  ##   PS(FULL(TOEPPEN(32,0,1/2,1,1,1)))  - 'fish'
   ##
   ##   References:
   ##   R.M. Beam and R.F. Warming, The asymptotic spectra of
@@ -2810,7 +2810,7 @@ function A = bandred (A, kl, ku)
   ##   If KU is omitted it defaults to KL.
   ##
   ##   Called by RANDSVD.
-  ##   This is a `standard' reduction.  Cf. reduction to bidiagonal form
+  ##   This is a 'standard' reduction.  Cf. reduction to bidiagonal form
   ##   prior to computing the SVD.  This code is a little wasteful in that
   ##   it computes certain elements which are immediately set to zero!
   ##

@@ -3787,7 +3787,7 @@ namespace octave
         // Methods that cannot be declared outside the classdef file:
         // - methods with '.' character (e.g. property accessors)
         // - class constructor
-        // - `delete'
+        // - 'delete'
 
         if (mname.find_first_of (".") == std::string::npos
             && mname != "delete"
@@ -3807,7 +3807,7 @@ namespace octave
           }
         else
           bison_error ("invalid external method declaration, an external "
-                       "method cannot be the class constructor, `delete' "
+                       "method cannot be the class constructor, 'delete' "
                        "or have a dot (.) character in its name");
       }
     else

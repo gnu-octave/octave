@@ -140,7 +140,7 @@ namespace octave
           octave_value o = find (nm);
 
           if (! o.is_defined ())
-            error ("member `%s' in package `%s' does not exist",
+            error ("member '%s' in package '%s' does not exist",
                    nm.c_str (), get_name ().c_str ());
 
           if (o.is_function ())

@@ -68,7 +68,7 @@ function varargout = __imread__ (filename, varargin)
     endif
     val = varargin{shift (idx, 1)};
     if (! is_valid_index_option (val) && ! strcmpi (val, "all"))
-      error ("imread: %s must be a vector or the string `all'", varargin{idx});
+      error ("imread: %s must be a vector or the string 'all'", varargin{idx});
     endif
     options.index = val;
   endif
@@ -123,7 +123,7 @@ function varargout = __imread__ (filename, varargin)
         ## we allow to load multiple pages with one command.
 
       otherwise
-        error ("imread: invalid PARAMETER `%s'", varargin{idx});
+        error ("imread: invalid PARAMETER '%s'", varargin{idx});
 
     endswitch
   endfor

@@ -172,7 +172,7 @@ octave_classdef::subsasgn (const std::string& type,
           retlist = meth.execute (args, 1, true, "subsasgn");
 
           if (retlist.empty ())
-            error ("overloaded method `subsasgn' did not return any value");
+            error ("overloaded method 'subsasgn' did not return any value");
 
           retval = retlist(0);
         }
@@ -406,11 +406,11 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
   if (in_constructor)
     {
       if (! is_direct_superclass (cls, ctx))
-        error ("`%s' is not a direct superclass of `%s'",
+        error ("'%s' is not a direct superclass of '%s'",
                cname.c_str (), ctx.get_name ().c_str ());
 
       if (! is_constructed_object (tw, mname))
-        error ("cannot call superclass constructor with variable `%s'",
+        error ("cannot call superclass constructor with variable '%s'",
                mname.c_str ());
 
       octave_value sym = tw.varval (mname);
@@ -454,11 +454,11 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
         }
 
       if (mname != meth_name)
-        error ("method name mismatch (`%s' != `%s')",
+        error ("method name mismatch ('%s' != '%s')",
                mname.c_str (), meth_name.c_str ());
 
       if (! is_strict_superclass (cls, ctx))
-        error ("`%s' is not a superclass of `%s'",
+        error ("'%s' is not a superclass of '%s'",
                cname.c_str (), ctx.get_name ().c_str ());
 
       // I see 2 possible implementations here:
@@ -475,7 +475,7 @@ octave_classdef_superclass_ref::call (octave::tree_evaluator& tw,
       octave::cdef_method meth = cls.find_method (meth_name, false);
 
       if (! meth.ok ())
-        error ("no method `%s' found in superclass `%s'",
+        error ("no method '%s' found in superclass '%s'",
                meth_name.c_str (), cname.c_str ());
 
       retval = (obj.ok ()

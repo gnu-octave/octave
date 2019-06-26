@@ -103,8 +103,8 @@ along with Octave; see the file COPYING.  If not, see
 //!
 //! ### size_type
 //!
-//! Array::size_type is `octave_idx_type` which is a typedef for `int`
-//! or `long int`, depending whether Octave was configured for 64-bit
+//! Array::size_type is 'octave_idx_type' which is a typedef for 'int'
+//! or 'long int', depending whether Octave was configured for 64-bit
 //! indexing.
 //!
 //! This is a signed integer which may cause problems when mixed with
@@ -398,7 +398,7 @@ public:
   //! Dimensions beyond the Array number of dimensions return 1 as
   //! those are implicit singleton dimensions.
   //!
-  //! Equivalent to Octave's `size (A, DIM)`
+  //! Equivalent to Octave's 'size (A, DIM)'
 
   size_type size (const size_type d) const
   {

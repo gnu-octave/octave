@@ -101,7 +101,7 @@ function [v, lambda, c] = condeig (a)
 
     ## Condition numbers
     ## Definition: cos (angle) = (norm (v1) * norm (v2)) / dot (v1, v2)
-    ## Eigenvectors have been normalized so `norm (v1) * norm (v2)' = 1
+    ## Eigenvectors have been normalized so 'norm (v1) * norm (v2)' = 1
     c = abs (1 ./ dot (vl, v)');
   endif
 

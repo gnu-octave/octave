@@ -138,7 +138,7 @@ namespace QtHandles
                 else if (go.isa ("uitoggletool"))
                   obj = ToggleTool::create (go);
                 else
-                  qWarning ("ObjectFactory::createObject: unsupported type `%s'",
+                  qWarning ("ObjectFactory::createObject: unsupported type '%s'",
                             go.type ().c_str ());
 
                 if (obj)

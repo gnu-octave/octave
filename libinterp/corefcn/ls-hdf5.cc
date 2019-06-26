@@ -726,7 +726,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
             }
           else // Otherwise, just ignore it with a warning.
             {
-               warning ("load: can't read `%s' (unknown datatype)", name);
+               warning ("load: can't read '%s' (unknown datatype)", name);
                retval = 0;  // unknown datatype; skip
                return retval;
             }

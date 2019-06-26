@@ -96,7 +96,7 @@ function configure_make (desc, packdir, verbose)
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);
-        error ("pkg: error running `make' for the %s package.", desc.name);
+        error ("pkg: error running 'make' for the %s package.", desc.name);
       endif
     endif
   endif
@@ -129,7 +129,7 @@ function [status, output] = shell (cmd, verbose)
     endif
   endif
   ## if verbose, we want to display the output in real time.  To do this, we
-  ## must call system with 1 output argument.  But then the variable `output'
+  ## must call system with 1 output argument.  But then the variable 'output'
   ## won't exist.  So we initialize it empty.  If an error does occur, and we
   ## are verbose we will return an empty string but it's all fine since
   ## the error message has already been displayed.

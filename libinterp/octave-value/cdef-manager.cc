@@ -139,7 +139,7 @@ namespace octave
       error ("fevalStatic: method not found: %s", meth_name.c_str ());
 
     if (! meth.is_static ())
-      error ("fevalStatic: method `%s' is not static", meth_name.c_str ());
+      error ("fevalStatic: method '%s' is not static", meth_name.c_str ());
 
     return meth.execute (args.splice (0, 2), nargout, true, "fevalStatic");
   }
@@ -164,7 +164,7 @@ namespace octave
              prop_name.c_str ());
 
     if (! prop.is_constant ())
-      error ("getConstant: property `%s' is not constant",
+      error ("getConstant: property '%s' is not constant",
              prop_name.c_str ());
 
     retval(0) = prop.get_value (true, "getConstant");
@@ -214,7 +214,7 @@ namespace octave
 
         if (! retval(0).is_defined ())
           error_with_id ("Octave:class:NoDefaultDefined",
-                         "no default value for property `%s'",
+                         "no default value for property '%s'",
                          prop.get_name ().c_str ());
       }
 
@@ -712,7 +712,7 @@ namespace octave
         retval = it->second;
 
         if (! retval.ok ())
-          error ("invalid package `%s'", name.c_str ());
+          error ("invalid package '%s'", name.c_str ());
       }
     else
       {
@@ -732,7 +732,7 @@ namespace octave
               }
           }
         else if (error_if_not_found)
-          error ("unknown package `%s'", name.c_str ());
+          error ("unknown package '%s'", name.c_str ());
       }
 
     return retval;

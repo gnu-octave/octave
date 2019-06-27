@@ -47,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #include "octave-qt-link.h"
-#include "qt-application.h"
 #include "resource-manager.h"
 
 Q_DECLARE_METATYPE (octave_value)

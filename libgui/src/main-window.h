@@ -53,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-cmd.h"
 #include "octave-dock-widget.h"
 #include "octave-qt-link.h"
-#include "qt-application.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"

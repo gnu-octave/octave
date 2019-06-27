@@ -30,8 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QStringList>
 
-#include "qt-application.h"
-
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
@@ -43,6 +41,7 @@ namespace octave
   class interpreter_qobject;
   class main_window;
   class octave_qt_link;
+  class qt_application;
 
   //! This class is a simple wrapper around QApplication so that we can
   //! reimplement QApplication::notify.  The octave_qapplication object

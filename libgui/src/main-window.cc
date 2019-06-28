@@ -96,11 +96,8 @@ namespace octave
 #endif
   }
 
-  main_window::main_window (base_qobject& qobj,
-                            octave_qt_link *lnk)
-    : QMainWindow (),
-      m_octave_qapp (qobj.octave_qapp ()), m_octave_qt_link (lnk),
-      m_workspace_model (nullptr),
+  main_window::main_window (base_qobject& qobj)
+    : QMainWindow (), m_octave_qobj (qobj), m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
@@ -166,7 +163,9 @@ namespace octave
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
 #endif
 
-    m_default_style = m_octave_qapp->style ()->objectName ();
+    QApplication *qapp = m_octave_qobj.qapplication ();
+
+    m_default_style = qapp->style ()->objectName ();
 
     QSettings *settings = resource_manager::get_settings ();
 
@@ -432,8 +431,12 @@ namespace octave
 
   void main_window::file_remove_proxy (const QString& o, const QString& n)
   {
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    octave_qt_link *qt_link = interp_qobj->qt_link ();
+
     // Wait for worker to suspend
-    m_octave_qt_link->lock ();
+    qt_link->lock ();
 
     // Close the file if opened
 #if defined (HAVE_QSCINTILLA)
@@ -444,8 +447,8 @@ namespace octave
 #endif
 
     // We are done: Unlock and wake the worker thread
-    m_octave_qt_link->unlock ();
-    m_octave_qt_link->wake_all ();
+    qt_link->unlock ();
+    qt_link->wake_all ();
   }
 
   void main_window::open_online_documentation_page (void)
@@ -675,7 +678,11 @@ namespace octave
 
     QStyle *new_style = QStyleFactory::create (preferred_style);
     if (new_style)
-      m_octave_qapp->setStyle (new_style);
+      {
+        QApplication *qapp = m_octave_qobj.qapplication ();
+
+        qapp->setStyle (new_style);
+      }
 
     // the widget's icons (when floating)
     QString icon_set
@@ -1653,13 +1660,17 @@ namespace octave
     connect (m_workspace_model, SIGNAL (model_changed (void)),
              m_workspace_window, SLOT (handle_model_changed (void)));
 
-    connect (m_octave_qt_link,
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    octave_qt_link *qt_link = interp_qobj->qt_link ();
+
+    connect (qt_link,
              SIGNAL (edit_variable_signal (const QString&,
                                            const octave_value&)),
              this,
              SLOT (edit_variable (const QString&, const octave_value&)));
 
-    connect (m_octave_qt_link, SIGNAL (refresh_variable_editor_signal (void)),
+    connect (qt_link, SIGNAL (refresh_variable_editor_signal (void)),
              this, SLOT (refresh_variable_editor (void)));
 
     connect (m_workspace_model,
@@ -1814,12 +1825,12 @@ namespace octave
              m_editor_window, SLOT (handle_file_renamed (bool)));
 
     // Signals for removing/renaming files/dirs in the temrinal window
-    connect (m_octave_qt_link, SIGNAL (file_renamed_signal (bool)),
+    connect (qt_link, SIGNAL (file_renamed_signal (bool)),
              m_editor_window, SLOT (handle_file_renamed (bool)));
 #endif
 
     // Signals for removing/renaming files/dirs in the temrinal window
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (file_remove_signal (const QString&, const QString&)),
              this, SLOT (file_remove_proxy (const QString&, const QString&)));
 
@@ -1831,88 +1842,92 @@ namespace octave
 
   void main_window::construct_octave_qt_link (void)
   {
-    connect (m_octave_qt_link,
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    octave_qt_link *qt_link = interp_qobj->qt_link ();
+
+    connect (qt_link,
              SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),
              m_workspace_model,
              SLOT (set_workspace (bool, bool, const symbol_info_list&)));
 
-    connect (m_octave_qt_link, SIGNAL (clear_workspace_signal (void)),
+    connect (qt_link, SIGNAL (clear_workspace_signal (void)),
              m_workspace_model, SLOT (clear_workspace (void)));
 
-    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+    connect (qt_link, SIGNAL (change_directory_signal (QString)),
              this, SLOT (change_directory (QString)));
 
-    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+    connect (qt_link, SIGNAL (change_directory_signal (QString)),
              m_file_browser_window, SLOT (update_octave_directory (QString)));
 
-    connect (m_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+    connect (qt_link, SIGNAL (change_directory_signal (QString)),
              m_editor_window, SLOT (update_octave_directory (QString)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (execute_command_in_terminal_signal (QString)),
              this, SLOT (execute_command_in_terminal (QString)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (set_history_signal (const QStringList&)),
              m_history_window, SLOT (set_history (const QStringList&)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (append_history_signal (const QString&)),
              m_history_window, SLOT (append_history (const QString&)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (clear_history_signal (void)),
              m_history_window, SLOT (clear_history (void)));
 
-    connect (m_octave_qt_link, SIGNAL (enter_debugger_signal (void)),
+    connect (qt_link, SIGNAL (enter_debugger_signal (void)),
              this, SLOT (handle_enter_debugger (void)));
 
-    connect (m_octave_qt_link, SIGNAL (exit_debugger_signal (void)),
+    connect (qt_link, SIGNAL (exit_debugger_signal (void)),
              this, SLOT (handle_exit_debugger (void)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (show_preferences_signal (void)),
              this, SLOT (process_settings_dialog_request (void)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (gui_preference_signal (const QString&, const QString&,
                                             QString*)),
              this, SLOT (gui_preference (const QString&, const QString&,
                                          QString*)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (edit_file_signal (const QString&)),
              m_active_editor,
              SLOT (handle_edit_file_request (const QString&)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (insert_debugger_pointer_signal (const QString&, int)),
              this,
              SLOT (handle_insert_debugger_pointer_request (const QString&,
                                                            int)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (delete_debugger_pointer_signal (const QString&, int)),
              this,
              SLOT (handle_delete_debugger_pointer_request (const QString&,
                                                            int)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (update_breakpoint_marker_signal (bool, const QString&,
                                                       int, const QString&)),
              this,
              SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
                                                             int, const QString&)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (show_doc_signal (const QString &)),
              this, SLOT (handle_show_doc (const QString &)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (register_doc_signal (const QString &)),
              this, SLOT (handle_register_doc (const QString &)));
 
-    connect (m_octave_qt_link,
+    connect (qt_link,
              SIGNAL (unregister_doc_signal (const QString &)),
              this, SLOT (handle_unregister_doc (const QString &)));
   }
@@ -2428,8 +2443,12 @@ namespace octave
     QSettings *settings = resource_manager::get_settings ();
     *read_value = settings->value (key).toString ();
 
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
+    octave_qt_link *qt_link = interp_qobj->qt_link ();
+
     // Wait for worker to suspend
-    m_octave_qt_link->lock ();
+    qt_link->lock ();
 
     // Some preferences need extra handling
     QString adjusted_value = gui_preference_adjust (key, value);
@@ -2442,8 +2461,8 @@ namespace octave
       }
 
     // We are done: Unlock and wake the worker thread
-    m_octave_qt_link->unlock ();
-    m_octave_qt_link->wake_all ();
+    qt_link->unlock ();
+    qt_link->wake_all ();
   }
 
   void main_window::rename_variable_callback (const main_window::name_pair& names)

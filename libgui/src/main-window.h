@@ -77,7 +77,7 @@ namespace octave
     typedef std::pair <std::string, std::string> name_pair;
     typedef std::pair <int, int> int_pair;
 
-    main_window (base_qobject& qapp, octave_qt_link *lnk);
+    main_window (base_qobject& qapp);
 
     ~main_window (void);
 
@@ -306,9 +306,7 @@ namespace octave
 
     QList<octave_dock_widget *> dock_widget_list (void);
 
-    QApplication *m_octave_qapp;
-
-    octave_qt_link *m_octave_qt_link;
+    base_qobject& m_octave_qobj;
 
     workspace_model *m_workspace_model;
 

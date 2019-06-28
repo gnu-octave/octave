@@ -40,7 +40,6 @@ namespace octave
 {
   class interpreter_qobject;
   class main_window;
-  class octave_qt_link;
   class qt_application;
 
   //! This class is a simple wrapper around QApplication so that we can
@@ -84,7 +83,18 @@ namespace octave
 
     int exec (void);
 
-    QApplication *octave_qapp (void) { return m_octave_qapp; };
+    // The Octave application context.
+    qt_application& app_context (void) { return m_app_context; }
+
+    // The Qt QApplication.
+    QApplication * qapplication (void) { return m_qapplication; };
+
+    interpreter_qobject * interpreter_qobj (void)
+    {
+      return m_interpreter_qobj;
+    }
+
+    QThread *main_thread (void) { return m_main_thread; }
 
   public slots:
 
@@ -127,7 +137,7 @@ namespace octave
     int m_argc;
     char **m_argv;
 
-    QApplication *m_octave_qapp;
+    QApplication *m_qapplication;
 
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;
@@ -135,15 +145,11 @@ namespace octave
 
     bool m_translators_installed;
 
-    octave_qt_link *m_octave_qt_link;
-
-    interpreter_qobject *m_interpreter_qobject;
+    interpreter_qobject *m_interpreter_qobj;
 
     QThread *m_main_thread;
 
     void connect_uiwidget_links (void);
-
-    void confirm_shutdown_octave_internal (bool closenow);
   };
 
   //! This object provides a command-line interface to Octave that may

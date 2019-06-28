@@ -87,11 +87,10 @@ namespace octave
     : QObject (), m_app_context (app_context),
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
-      m_octave_qapp (new octave_qapplication (m_argc, m_argv)),
+      m_qapplication (new octave_qapplication (m_argc, m_argv)),
       m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
-      m_octave_qt_link (new octave_qt_link ()),
-      m_interpreter_qobject (new interpreter_qobject (m_app_context)),
+      m_interpreter_qobj (new interpreter_qobject (this)),
       m_main_thread (new QThread ())
   {
     std::string show_gui_msgs =
@@ -127,23 +126,14 @@ namespace octave
     qRegisterMetaType<octave_value_list> ("octave_value_list");
 
     // Force left-to-right alignment (see bug #46204)
-    m_octave_qapp->setLayoutDirection (Qt::LeftToRight);
-
-    octave_link::connect_link (m_octave_qt_link);
-
-    connect (m_octave_qt_link, SIGNAL (confirm_shutdown_signal (void)),
-             this, SLOT (confirm_shutdown_octave (void)));
-
-    connect (m_octave_qt_link,
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
+    m_qapplication->setLayoutDirection (Qt::LeftToRight);
 
     connect_uiwidget_links ();
 
-    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
+    connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
              this, SLOT (handle_octave_finished (int)));
 
-    connect (m_interpreter_qobject, SIGNAL (octave_finished_signal (int)),
+    connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
              m_main_thread, SLOT (quit (void)));
 
     connect (m_main_thread, SIGNAL (finished (void)),
@@ -152,8 +142,8 @@ namespace octave
 
   base_qobject::~base_qobject (void)
   {
-    delete m_interpreter_qobject;
-    delete m_octave_qapp;
+    delete m_interpreter_qobj;
+    delete m_qapplication;
 
     string_vector::delete_c_str_vec (m_argv);
   }
@@ -165,9 +155,9 @@ namespace octave
 
     resource_manager::config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
 
-    m_octave_qapp->installTranslator (m_qt_tr);
-    m_octave_qapp->installTranslator (m_gui_tr);
-    m_octave_qapp->installTranslator (m_qsci_tr);
+    m_qapplication->installTranslator (m_qt_tr);
+    m_qapplication->installTranslator (m_gui_tr);
+    m_qapplication->installTranslator (m_qsci_tr);
 
     m_translators_installed = true;
   }
@@ -176,16 +166,16 @@ namespace octave
   {
     // Defer initializing and executing the interpreter until after the main
     // window and QApplication are running to prevent race conditions
-    QTimer::singleShot (0, m_interpreter_qobject, SLOT (execute (void)));
+    QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute (void)));
 
-    m_interpreter_qobject->moveToThread (m_main_thread);
+    m_interpreter_qobj->moveToThread (m_main_thread);
 
     m_main_thread->start ();
   }
 
   int base_qobject::exec (void)
   {
-    return m_octave_qapp->exec ();
+    return m_qapplication->exec ();
   }
 
   void base_qobject::handle_octave_finished (int exit_status)
@@ -195,7 +185,7 @@ namespace octave
 
   void base_qobject::confirm_shutdown_octave (void)
   {
-    confirm_shutdown_octave_internal (true);
+    m_interpreter_qobj->confirm_shutdown (true);
   }
 
   void base_qobject::copy_image_to_clipboard (const QString& file,
@@ -332,19 +322,6 @@ namespace octave
                                              const QString&)));
   }
 
-  void base_qobject::confirm_shutdown_octave_internal (bool closenow)
-  {
-    // Wait for link thread to go to sleep state.
-    m_octave_qt_link->lock ();
-
-    m_octave_qt_link->shutdown_confirmation (closenow);
-
-    m_octave_qt_link->unlock ();
-
-    // Awake the worker thread so that it continues shutting down (or not).
-    m_octave_qt_link->wake_all ();
-  }
-
   cli_qobject::cli_qobject (qt_application& app_context)
     : base_qobject (app_context)
   {
@@ -354,16 +331,15 @@ namespace octave
     // After settings.
     config_translators ();
 
-    m_octave_qapp->setQuitOnLastWindowClosed (false);
+    m_qapplication->setQuitOnLastWindowClosed (false);
 
     start_main_thread ();
   }
 
   gui_qobject::gui_qobject (qt_application& app_context)
-    : base_qobject (app_context),
-      m_main_window (new main_window (*this, m_octave_qt_link))
+    : base_qobject (app_context), m_main_window (new main_window (*this))
   {
-    connect (m_interpreter_qobject, SIGNAL (octave_ready_signal (void)),
+    connect (m_interpreter_qobj, SIGNAL (octave_ready_signal (void)),
              m_main_window, SLOT (handle_octave_ready (void)));
 
     m_app_context.gui_running (true);
@@ -383,6 +359,6 @@ namespace octave
     if (m_main_window)
       closenow = m_main_window->confirm_shutdown_octave ();
 
-    confirm_shutdown_octave_internal (closenow);
+    m_interpreter_qobj->confirm_shutdown (closenow);
   }
 }

@@ -28,7 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class qt_application;
+  class base_qobject;
+  class octave_qt_link;
 
   class interpreter_qobject : public QObject
   {
@@ -36,9 +37,13 @@ namespace octave
 
   public:
 
-    interpreter_qobject (qt_application& app_context);
+    interpreter_qobject (base_qobject *oct_qobj);
 
     ~interpreter_qobject (void) = default;
+
+    octave_qt_link * qt_link (void) { return m_qt_link; }
+
+    void confirm_shutdown (bool closenow);
 
   signals:
 
@@ -53,7 +58,9 @@ namespace octave
 
   private:
 
-    qt_application& m_app_context;
+    base_qobject *m_octave_qobject;
+
+    octave_qt_link *m_qt_link;
   };
 }
 

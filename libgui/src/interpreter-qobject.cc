@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "interpreter-qobject.h"
+#include "octave-qobject.h"
+#include "octave-qt-link.h"
 #include "qt-application.h"
 
 #include "input.h"
@@ -33,15 +35,28 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  interpreter_qobject::interpreter_qobject (qt_application& app_context)
-    : QObject (), m_app_context (app_context)
-  { }
+  interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
+    : QObject (), m_octave_qobject (oct_qobj),
+      m_qt_link (new octave_qt_link ())
+  {
+    octave_link::connect_link (m_qt_link);
+
+    connect (m_qt_link, SIGNAL (confirm_shutdown_signal (void)),
+             m_octave_qobject, SLOT (confirm_shutdown_octave (void)));
+
+    connect (m_qt_link,
+             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+             m_octave_qobject,
+             SLOT (copy_image_to_clipboard (const QString&, bool)));
+  }
 
   void interpreter_qobject::execute (void)
   {
-    // The application context owns the interpreter.
+    // The Octave application context owns the interpreter.
 
-    interpreter& interp = m_app_context.create_interpreter ();
+    qt_application& app_context = m_octave_qobject->app_context ();
+
+    interpreter& interp = app_context.create_interpreter ();
 
     int exit_status = 0;
 
@@ -51,7 +66,7 @@ namespace octave
 
         interp.initialize ();
 
-        if (m_app_context.start_gui_p ())
+        if (app_context.start_gui_p ())
           {
             input_system& input_sys = interp.get_input_system ();
 
@@ -79,8 +94,21 @@ namespace octave
     // Whether or not initialization succeeds we need to clean up the
     // interpreter once we are done with it.
 
-    m_app_context.delete_interpreter ();
+    app_context.delete_interpreter ();
 
     emit octave_finished_signal (exit_status);
+  }
+
+  void interpreter_qobject::confirm_shutdown (bool closenow)
+  {
+    // Wait for link thread to go to sleep state.
+    m_qt_link->lock ();
+
+    m_qt_link->shutdown_confirmation (closenow);
+
+    m_qt_link->unlock ();
+
+    // Awake the worker thread so that it continues shutting down (or not).
+    m_qt_link->wake_all ();
   }
 }

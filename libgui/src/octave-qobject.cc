@@ -142,7 +142,14 @@ namespace octave
 
   base_qobject::~base_qobject (void)
   {
+    // Note that we don't delete m_main_thread here.  That is handled by
+    // deleteLater slot that is called when the m_main_thread issues a
+    // finished signal.
+
     delete m_interpreter_qobj;
+    delete m_qsci_tr;
+    delete m_gui_tr;
+    delete m_qt_tr;
     delete m_qapplication;
 
     string_vector::delete_c_str_vec (m_argv);

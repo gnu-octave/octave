@@ -215,10 +215,6 @@ namespace octave
 
   main_window::~main_window (void)
   {
-    // Note that we don't delete m_main_thread here.  That is handled by
-    // deleteLater slot that is called when the m_main_thread issues a
-    // finished signal.
-
     // Destroy the terminal first so that STDERR stream is redirected back
     // to its original pipe to capture error messages at exit.
 

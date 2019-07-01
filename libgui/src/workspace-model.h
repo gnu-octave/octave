@@ -66,9 +66,6 @@ namespace octave
 
     QVariant data (const QModelIndex& index, int role) const;
 
-    bool setData (const QModelIndex& index, const QVariant& value,
-                  int role = Qt::EditRole);
-
     bool is_top_level (void) const { return m_top_level; }
 
     QColor storage_class_color (int s_class)
@@ -91,8 +88,6 @@ namespace octave
 
     void model_changed (void);
     void prompt_variable_editor(void);
-
-    void rename_variable (const QString& old_name, const QString& new_name);
 
   private:
 

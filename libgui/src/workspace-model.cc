@@ -213,31 +213,6 @@ namespace octave
     return retval;
   }
 
-  bool
-  workspace_model::setData (const QModelIndex& idx, const QVariant& value,
-                            int role)
-  {
-    bool retval = false;
-
-    if (idx.column () == 0 && role == Qt::EditRole)
-      {
-        QString qold_name = m_symbols[idx.row ()];
-
-        QString qnew_name = value.toString ();
-
-        std::string new_name = qnew_name.toStdString ();
-
-        if (valid_identifier (new_name))
-          {
-            emit rename_variable (qold_name, qnew_name);
-
-            retval = true;
-          }
-      }
-
-    return retval;
-  }
-
   void
   workspace_model::set_workspace (bool top_level, bool /* debug */,
                                   const symbol_info_list& syminfo)

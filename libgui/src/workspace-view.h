@@ -63,6 +63,10 @@ namespace octave
 
     void command_requested (const QString& cmd);
 
+    //! Signal that user wants to rename a variable.
+
+    void rename_variable_signal (const QString&, const QString&);
+
     //! Signal that user wants to edit a variable.
 
     void edit_variable_signal (const QString&, const octave_value&);

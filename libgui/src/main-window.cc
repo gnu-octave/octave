@@ -1669,8 +1669,8 @@ namespace octave
     connect (qt_link, SIGNAL (refresh_variable_editor_signal (void)),
              this, SLOT (refresh_variable_editor (void)));
 
-    connect (m_workspace_model,
-             SIGNAL (rename_variable (const QString&, const QString&)),
+    connect (m_workspace_window,
+             SIGNAL (rename_variable_signal (const QString&, const QString&)),
              this,
              SLOT (handle_rename_variable_request (const QString&,
                                                    const QString&)));

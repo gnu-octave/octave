@@ -452,10 +452,7 @@ namespace octave
                                   QLineEdit::Normal, var_name, &ok);
 
         if (ok && ! new_name.isEmpty ())
-          {
-            QAbstractItemModel *m = m_view->model ();
-            m->setData (index, new_name, Qt::EditRole);
-          }
+          emit rename_variable_signal (var_name, new_name);
       }
   }
 

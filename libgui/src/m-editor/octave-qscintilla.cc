@@ -966,7 +966,8 @@ namespace octave
     //       end* (until) (catch)
     if (linenr < lines () - 1)
       {
-        int offset = 1;
+        int offset = 2;     // linenr is the old line, thus, linnr+1 is the
+                            // new one and can not be taken into account
         size_t next_start;
         QString next_line;
 
@@ -1027,7 +1028,9 @@ namespace octave
         next_line = "end" + first_word + "\n";
       }
 
-    insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
+    //insertAt (QString (start, ' ') + next_line, linenr + 2, 0);
+    insertAt (next_line, linenr + 2, 0);
+    setIndentation (linenr + 2, indentation (linenr));
   }
 
   void octave_qscintilla::dragEnterEvent (QDragEnterEvent *e)

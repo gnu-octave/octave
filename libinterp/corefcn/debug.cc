@@ -1164,7 +1164,9 @@ the Octave prompt.
   if (args.length () != 0)
     print_usage ();
 
-  tw.abort_debug_repl (true);
+  tw.debug_mode (false);
+
+  throw octave::interrupt_exception ();
 
   return ovl ();
 }

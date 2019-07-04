@@ -1126,6 +1126,12 @@ namespace octave
 
     m_debugger_stack.push (dbgr);
 
+    frame.add ([this] (void)
+               {
+                 delete m_debugger_stack.top ();
+                 m_debugger_stack.pop ();
+               });
+
     dbgr->repl (prompt);
   }
 
@@ -4412,19 +4418,11 @@ namespace octave
         if (curr_debugger->exit_debug_repl ())
           {
             // This action corresponds to dbcont.
-
-            m_debugger_stack.pop ();
-            delete curr_debugger;
-
             reset_debug_state ();
           }
         else if (curr_debugger->abort_debug_repl ())
           {
             // This action corresponds to dbquit.
-
-            m_debugger_stack.pop ();
-            delete curr_debugger;
-
             debug_mode (false);
 
             throw interrupt_exception ();

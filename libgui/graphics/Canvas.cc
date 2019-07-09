@@ -664,9 +664,10 @@ namespace QtHandles
                 fprop.set_currentobject (Matrix ());
 
               // Update figure "selectiontype" and "currentpoint"
-              gh_manager::post_set (
-                                    figObj.get_handle (), "selectiontype",
-                                    Utils::figureSelectionType (event, isdblclick), false);
+              gh_manager::post_set (figObj.get_handle (), "selectiontype",
+                                    Utils::figureSelectionType (event,
+                                                                isdblclick),
+                                    false);
 
               updateCurrentPoint (figObj, obj, event);
 
@@ -1029,13 +1030,14 @@ namespace QtHandles
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             updateCurrentPoint (figObj, obj);
+
+            octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
+
+            gh_manager::post_set (figObj.get_handle (), "currentcharacter",
+                                  eventData.getfield ("Character"), false);
+            gh_manager::post_callback (figObj.get_handle (), "keypressfcn",
+                                       eventData);
           }
-
-        octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
-
-        gh_manager::post_set (m_handle, "currentcharacter",
-                              eventData.getfield ("Character"), false);
-        gh_manager::post_callback (m_handle, "keypressfcn", eventData);
 
         return true;
       }
@@ -1048,8 +1050,15 @@ namespace QtHandles
   {
     if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
       {
-        gh_manager::post_callback (m_handle, "keyreleasefcn",
-                                   Utils::makeKeyEventStruct (event));
+        gh_manager::auto_lock lock;
+        graphics_object obj = gh_manager::get_object (m_handle);
+
+        if (obj.valid_object ())
+          {
+            graphics_object figObj (obj.get_ancestor ("figure"));
+            gh_manager::post_callback (figObj.get_handle (), "keyreleasefcn",
+                                       Utils::makeKeyEventStruct (event));
+          }
 
         return true;
       }

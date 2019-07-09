@@ -138,6 +138,13 @@ namespace QtHandles
 
     frame->installEventFilter (this);
     m_container->installEventFilter (this);
+    
+    graphics_object fig (go.get_ancestor ("figure"));
+    if (! fig.get ("keypressfcn").isempty ())
+      m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
+    
+    if (! fig.get ("keyreleasefcn").isempty ())
+      m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
 
     if (pp.is_visible ())
       QTimer::singleShot (0, frame, SLOT (show (void)));

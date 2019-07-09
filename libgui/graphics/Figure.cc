@@ -425,6 +425,25 @@ namespace QtHandles
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
+        // Signal the change to uipanels as well
+        foreach (QObject *qobj,
+                 qWidget<QWidget> ()->findChildren<QObject*> ())
+          {
+            if (qobj->objectName () == "UIPanel")
+              {
+                Object *obj = Object::fromQObject (qobj);
+
+                if (obj)
+                  {
+                    if (fp.get_keypressfcn ().isempty ())
+                      obj->innerContainer ()->canvas (m_handle)->
+                        clearEventMask (Canvas::KeyPress);
+                    else
+                      obj->innerContainer ()->canvas (m_handle)->
+                        addEventMask (Canvas::KeyPress);
+                  }
+              }
+          }
         break;
 
       case figure::properties::ID_KEYRELEASEFCN:
@@ -432,6 +451,26 @@ namespace QtHandles
           m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
         else
           m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
+        break;
+        // Signal the change to uipanels as well
+        foreach (QObject *qobj,
+                 qWidget<QWidget> ()->findChildren<QObject*> ())
+          {
+            if (qobj->objectName () == "UIPanel")
+              {
+                Object *obj = Object::fromQObject (qobj);
+
+                if (obj)
+                  {
+                    if (fp.get_keypressfcn ().isempty ())
+                      obj->innerContainer ()->canvas (m_handle)->
+                        clearEventMask (Canvas::KeyRelease);
+                    else
+                      obj->innerContainer ()->canvas (m_handle)->
+                        addEventMask (Canvas::KeyRelease);
+                  }
+              }
+          }
         break;
 
       case figure::properties::ID_WINDOWSTYLE:

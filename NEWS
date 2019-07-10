@@ -47,6 +47,12 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 ### Matlab compatibility
 
+- The function `unique` now returns column index vectors for the second
+  and third outputs.  When duplicate values are present, the default
+  index to return is now the `"first"` occurrence.  The previous Octave
+  behavior, or Matlab behavior from releases prior to R2012b, can be
+  obtained by using the `"legacy"` flag.
+
 - Complex RESTful web services can now be accessed by the `webread` and
   `webwrite` functions alongside with the `weboptions` structure.  One
   major feature is the support for cookies to enable RESTful

@@ -20,6 +20,7 @@
 ## @deftypefn  {} {} text (@var{x}, @var{y}, @var{string})
 ## @deftypefnx {} {} text (@var{x}, @var{y}, @var{z}, @var{string})
 ## @deftypefnx {} {} text (@dots{}, @var{prop}, @var{val}, @dots{})
+## @deftypefnx {} {} text (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} text (@dots{})
 ## Create a text object with text @var{string} at position @var{x}, @var{y},
 ## (@var{z}) on the current axes.
@@ -30,6 +31,9 @@
 ##
 ## Optional property/value pairs may be used to control the appearance of the
 ## text.
+##
+## If the first argument @var{hax} is an axes handle, then add text to this
+## axes, rather than the current axes returned by @code{gca}.
 ##
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## created text objects.
@@ -45,6 +49,8 @@
 ##       full of hidden assumptions.  Be very wary when modifying.
 
 function h = text (varargin)
+
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("text", varargin{:});
 
   nargs = nargin;
   offset = 0;
@@ -81,9 +87,6 @@ function h = text (varargin)
   if (rem (numel (varargin), 2) != 0)
     print_usage ();
   endif
-
-  ## Get axis argument which may be in a "parent" PROP/VAL pair
-  [hax, varargin] = __plt_get_axis_arg__ ("text", varargin{:});
 
   ## String argument may be in PROP/VAL pair
   idx = find (strcmpi (varargin, "string"), 1);

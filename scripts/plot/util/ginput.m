@@ -146,8 +146,8 @@ endfunction
 function ginput_keypressfcn (~, evt)
 
   point = get (gca (), "currentpoint");
-  if (strcmp (evt.Key, "return"))
-    ## Enter key stops ginput.
+  if (strcmp (evt.Key, "return") || strcmp (evt.Key, "enter"))
+    ## <Return> or <Enter> on numeric keypad stops ginput.
     ginput_accumulator (2, NaN, NaN, NaN);
   else
     character = evt.Character;

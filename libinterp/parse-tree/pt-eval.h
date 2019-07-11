@@ -156,8 +156,6 @@ namespace octave
 
     bool at_top_level (void) const;
 
-    void reset (void);
-
     int repl (bool interactive);
 
     std::string mfilename (const std::string& opt = "") const;
@@ -334,11 +332,7 @@ namespace octave
     {
       octave_value retval;
 
-      m_nargout_stack.push (nargout);
-
-      expr->accept (*this);
-
-      m_nargout_stack.pop ();
+      evaluate_internal (expr, nargout);
 
       switch (m_result_type)
         {
@@ -358,6 +352,8 @@ namespace octave
           break;
         }
 
+      m_result_type = RT_UNDEFINED;
+
       return retval;
     }
 
@@ -365,11 +361,7 @@ namespace octave
     {
       octave_value_list retval;
 
-      m_nargout_stack.push (nargout);
-
-      expr->accept (*this);
-
-      m_nargout_stack.pop ();
+      evaluate_internal (expr, nargout);
 
       switch (m_result_type)
         {
@@ -387,6 +379,8 @@ namespace octave
           m_expr_result_value_list = octave_value_list ();
           break;
         }
+
+      m_result_type = RT_UNDEFINED;
 
       return retval;
     }
@@ -796,6 +790,8 @@ namespace octave
     void push_echo_state_cleanup (unwind_protect& frame);
 
     bool maybe_push_echo_state_cleanup (void);
+
+    void evaluate_internal (tree_expression *expr, int nargout);
 
     void do_breakpoint (tree_statement& stmt);
 

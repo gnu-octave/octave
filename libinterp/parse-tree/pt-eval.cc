@@ -296,23 +296,6 @@ namespace octave
     return m_call_stack.at_top_level ();
   }
 
-  void
-  tree_evaluator::reset (void)
-  {
-    m_statement_context = SC_OTHER;
-    m_result_type = RT_UNDEFINED;
-    m_expr_result_value = octave_value ();
-    m_expr_result_value_list = octave_value_list ();
-    m_lvalue_list_stack.clear ();
-    m_nargout_stack.clear ();
-
-    while (! m_debugger_stack.empty ())
-      {
-        delete m_debugger_stack.top ();
-        m_debugger_stack.pop ();
-      }
-  }
-
   int tree_evaluator::repl (bool interactive)
   {
     int retval = 0;
@@ -4395,6 +4378,18 @@ namespace octave
               }
           }
       }
+  }
+
+  void
+  tree_evaluator::evaluate_internal (tree_expression *expr, int nargout)
+  {
+    unwind_protect frame;
+
+    m_nargout_stack.push (nargout);
+
+    frame.add_method (m_nargout_stack, &value_stack<int>::pop);
+
+    expr->accept (*this);
   }
 
   void

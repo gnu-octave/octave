@@ -4430,11 +4430,7 @@ namespace octave
       }
 
     if (is_breakpoint)
-      {
-        m_dbstep_flag = 0;
-
-        enter_debugger ();
-      }
+      break_on_this_statement = true;
     else if (m_dbstep_flag > 0)
       {
         if (m_call_stack.current_frame () == m_debug_frame)
@@ -4492,12 +4488,7 @@ namespace octave
       {
         m_dbstep_flag = 0;
 
-        // We are stepping so the debugger should already exist.  If
-        // not, something went wrong.
-        if (m_debugger_stack.empty ())
-          error ("internal error: dbstep without an active debugger!");
-
-        m_debugger_stack.top()->repl ();
+        enter_debugger ();
       }
   }
 

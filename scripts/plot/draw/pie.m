@@ -20,8 +20,8 @@
 ## @deftypefn  {} {} pie (@var{x})
 ## @deftypefnx {} {} pie (@dots{}, @var{explode})
 ## @deftypefnx {} {} pie (@dots{}, @var{labels})
-## @deftypefnx {} {} pie (@var{hax}, @dots{});
-## @deftypefnx {} {@var{h} =} pie (@dots{});
+## @deftypefnx {} {} pie (@var{hax}, @dots{})
+## @deftypefnx {} {@var{h} =} pie (@dots{})
 ## Plot a 2-D pie chart.
 ##
 ## When called with a single vector argument, produce a pie chart of the

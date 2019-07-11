@@ -105,6 +105,7 @@ function [y, i, j] = unique (x, varargin)
 
   if (optrows)
     n = rows (x);
+    isrowvec = false;
   else
     n = numel (x);
     isrowvec = isrow (x);
@@ -232,6 +233,13 @@ endfunction
 %! assert (a, [1,2,3,4]);
 %! assert (i, [2,3,6,7]);
 %! assert (j, [1,1,2,3,3,3,4]);
+
+%!test
+%! A = [1,2,3; 1,2,3];
+%! [a,i,j] = unique (A, "rows", "legacy");
+%! assert (a, [1,2,3]);
+%! assert (A(i,:), a);
+%! assert (a(j,:), A);
 
 ## Test input validation
 %!error unique ()

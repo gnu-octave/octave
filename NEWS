@@ -53,9 +53,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   behavior, or Matlab behavior from releases prior to R2012b, can be
   obtained by using the `"legacy"` flag.
 
-- The function `intersect` now accepts a `"legacy"` flag which changes
-  the index values (second and third outputs) as well as the orientation
-  of the outputs to match Matlab releases prior to R2012b.
+- The functions `intersect`, `union` now accept a `"legacy"` flag which
+  changes the index values (second and third outputs) as well as the
+  orientation of the outputs to match Matlab releases prior to R2012b.
 
 - Complex RESTful web services can now be accessed by the `webread` and
   `webwrite` functions alongside with the `weboptions` structure.  One

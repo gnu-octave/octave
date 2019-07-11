@@ -33,8 +33,8 @@
 ## either @var{a} or @var{b}.  The inputs must be 2-D matrices to use this
 ## option.
 ##
-## The optional outputs @var{ia} and @var{ib} are index vectors such that
-## @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
+## The optional outputs @var{ia} and @var{ib} are column index vectors such
+## that @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
 ## whose union is @var{c}.
 ##
 ## @seealso{unique, intersect, setdiff, setxor, ismember}
@@ -44,14 +44,20 @@
 
 function [y, ia, ib] = union (a, b, varargin)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   [a, b] = validsetargs ("union", a, b, varargin{:});
 
-  by_rows = nargin == 3;
-  isrowvec = isrow (a) && isrow (b);
+  by_rows = any (strcmp ("rows", varargin));
+  optlegacy = any (strcmp ("legacy", varargin));
+
+  if (optlegacy)
+    isrowvec = ! iscolumn (a) || ! iscolumn (b);
+  else
+    isrowvec = isrow (a) && isrow (b);
+  endif
 
   if (by_rows)
     y = [a; b];
@@ -103,6 +109,19 @@ endfunction
 %!assert (nthargout (2:3, @union, [1, 2, 4], [2, 3, 5]), {[1; 2; 3], [2; 3]})
 %!assert (nthargout (2:3, @union, [1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
 %!        {[1; 3], [1; 2; 3]})
+
+## Test "legacy" option
+%!test
+%! a = [5, 7, 1];
+%! b = [3, 1, 1];
+%! [c, ia, ib] = union (a,b);
+%! assert (c, [1, 3, 5, 7]);
+%! assert (ia, [3; 1; 2]);
+%! assert (ib, [1]);
+%! [c, ia, ib] = union (a,b, "legacy");
+%! assert (c, [1, 3, 5, 7]);
+%! assert (ia, [1, 2]);
+%! assert (ib, [3, 1]);
 
 ## Test empty cell string array unions
 %!assert (union ({}, []), cell (0,1))

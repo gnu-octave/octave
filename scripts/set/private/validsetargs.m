@@ -61,7 +61,7 @@ function [x, y] = validsetargs (caller, x, y, varargin)
           endif
 
         otherwise
-          error ("%s: invalid option: %s", caller, byrows_arg);
+          error ("%s: invalid option: %s", caller, arg{1});
 
       endswitch
     endfor

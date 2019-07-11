@@ -19,7 +19,7 @@
 
 ## Validate arguments for binary set operation.
 
-function [x, y] = validsetargs (caller, x, y, byrows_arg)
+function [x, y] = validsetargs (caller, x, y, varargin)
 
   isallowedarraytype = @(x) isnumeric (x) || ischar (x) || islogical (x);
 
@@ -42,21 +42,29 @@ function [x, y] = validsetargs (caller, x, y, byrows_arg)
       error ("%s: A and B must be arrays or cell arrays of strings", caller);
     endif
   elseif (nargin == 4)
-    if (! strcmpi (byrows_arg, "rows"))
-      error ("%s: invalid option: %s", caller, byrows_arg);
-    endif
+    for arg = varargin
+      switch (arg{1})
+        case "legacy"
+          ## Accepted option, do nothing.
 
-    if (iscell (x) || iscell (y))
-      error ('%s: cells not supported with "rows"', caller);
-    elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
-      error ("%s: A and B must be arrays or cell arrays of strings", caller);
-    else
-      if (ndims (x) > 2 || ndims (y) > 2)
-        error ('%s: A and B must be 2-dimensional matrices for "rows"', caller);
-      elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
-        error ("%s: number of columns in A and B must match", caller);
-      endif
-    endif
+        case "rows"
+          if (iscell (x) || iscell (y))
+            error ('%s: cells not supported with "rows"', caller);
+          elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
+            error ("%s: A and B must be arrays or cell arrays of strings", caller);
+          else
+            if (ndims (x) > 2 || ndims (y) > 2)
+              error ('%s: A and B must be 2-dimensional matrices for "rows"', caller);
+            elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
+              error ("%s: number of columns in A and B must match", caller);
+            endif
+          endif
+
+        otherwise
+          error ("%s: invalid option: %s", caller, byrows_arg);
+
+      endswitch
+    endfor
   endif
 
 endfunction

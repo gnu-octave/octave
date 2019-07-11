@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} intersect (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} intersect (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
 ##
 ## Return the unique elements common to both @var{a} and @var{b} sorted in
@@ -32,15 +33,19 @@
 ## If the optional input @qcode{"rows"} is given then return the common rows of
 ## @var{a} and @var{b}.  The inputs must be 2-D matrices to use this option.
 ##
-## If requested, return index vectors @var{ia} and @var{ib} such that
+## If requested, return column index vectors @var{ia} and @var{ib} such that
 ## @code{@var{c} = @var{a}(@var{ia})} and @code{@var{c} = @var{b}(@var{ib})}.
+##
+## Programming Note: The input flag @qcode{"legacy"} changes the shape of the
+## outputs (@var{c}, @var{i}, @var{j} to row vectors whenever at least one of
+## the inputs is a row vector.
 ##
 ## @seealso{unique, union, setdiff, setxor, ismember}
 ## @end deftypefn
 
 function [c, ia, ib] = intersect (a, b, varargin)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
@@ -58,13 +63,21 @@ function [c, ia, ib] = intersect (a, b, varargin)
     endif
     ia = ib = [];
   else
-    by_rows = nargin == 3;
-    isrowvec = isrow (a) && isrow (b);
+    by_rows = any (strcmp ("rows", varargin));
+    optlegacy = any (strcmp ("legacy", varargin));
+
+    if (optlegacy)
+      isrowvec = ! iscolumn (a) || ! iscolumn (b);
+    else
+      isrowvec = isrow (a) && isrow (b);
+    endif
 
     ## Form A and B into sets
     if (nargout > 1)
       [a, ja] = unique (a, varargin{:});
+      ja = ja(:);
       [b, jb] = unique (b, varargin{:});
+      jb = jb(:);
     else
       a = unique (a, varargin{:});
       b = unique (b, varargin{:});
@@ -72,13 +85,21 @@ function [c, ia, ib] = intersect (a, b, varargin)
 
     if (by_rows)
       c = [a; b];
-      [c, ic] = sortrows (c);
+      if (nargout > 1)
+        [c, ic] = sortrows (c);
+      else
+        c = sortrows (c);
+      endif
       ii = find (all (c(1:end-1,:) == c(2:end,:), 2));
       c = c(ii,:);
       len_a = rows (a);
     else
       c = [a(:); b(:)];
-      [c, ic] = sort (c);         # [a(:);b(:)](ic) == c
+      if (nargout > 1)
+        [c, ic] = sort (c);         # [a(:);b(:)](ic) == c
+      else
+        c = sort (c);
+      endif
       if (iscellstr (c))
         ii = find (strcmp (c(1:end-1), c(2:end)));
       else
@@ -88,15 +109,20 @@ function [c, ia, ib] = intersect (a, b, varargin)
       len_a = length (a);
     endif
 
+    ## Adjust output orientation for Matlab compatibility
+    if (isrowvec)
+      c = c.';
+    endif
+
     if (nargout > 1)
       ia = ja(ic(ii));            # a(ia) == c
       ib = jb(ic(ii+1) - len_a);  # b(ib) == c
+      if (optlegacy && isrowvec)
+        ia = ia.';
+        ib = ib.';
+      endif
     endif
 
-    ## Adjust output orientation for Matlab compatibility
-    if (! by_rows && isrowvec)
-      c = c.';
-    endif
   endif
 
 endfunction
@@ -107,10 +133,17 @@ endfunction
 %! a = 1:4;
 %! b = 2:5;
 
-%!assert (size (intersect (a, b)), [1 3])
-%!assert (size (intersect (a', b)), [3 1])
-%!assert (size (intersect (a, b')), [3 1])
-%!assert (size (intersect (a', b')), [3 1])
+%!assert (size (intersect (a, b)), [1, 3])
+%!assert (size (intersect (a', b)), [3, 1])
+%!assert (size (intersect (a, b')), [3, 1])
+%!assert (size (intersect (a', b')), [3, 1])
+%!assert (size (intersect (a, b, "legacy")), [1, 3])
+%!assert (size (intersect (a', b, "legacy")), [1, 3])
+%!assert (size (intersect (a, b', "legacy")), [1, 3])
+%!assert (size (intersect (a', b', "legacy")), [3, 1])
+
+## Clear shared variables
+%!shared
 
 ## Test multi-dimensional arrays
 %!test
@@ -149,6 +182,19 @@ endfunction
 %! assert (b, a);
 %! assert (ia, [1:3]');
 %! assert (ib, [1:3]');
+
+## Test "legacy" argument
+%!test
+%! a = [7 1 7 7 4]; 
+%! b = [7 0 4 4 0];
+%! [c, ia, ib] = intersect (a, b);
+%! assert (c, [4, 7]);
+%! assert (ia, [5; 1]);
+%! assert (ib, [3; 1]);
+%! [c, ia, ib] = intersect (a, b, "legacy");
+%! assert (c, [4, 7]);
+%! assert (ia, [5, 4]);
+%! assert (ib, [4, 1]);
 
 ## Test return type of empty intersections
 %!assert (intersect (['a', 'b'], {}), {})

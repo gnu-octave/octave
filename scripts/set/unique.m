@@ -43,9 +43,11 @@
 ## @qcode{"first"} is specified, return the lowest.  The default is
 ## @qcode{"first"}.
 ##
-## Programming Note: The input flag @qcode{"legacy"} changes the default
-## to @qcode{"last"}, and the shape of the outputs @var{i}, @var{j} will follow
-## the shape of the input @var{x} rather than always being column vectors.
+## Programming Note: The input flag @qcode{"legacy"} changes the algorithm
+## to be compatible with @sc{matlab} releases prior to R2012b.  Specifically,
+## The index ordering flag is changed to @qcode{"last"}, and the shape of the
+## outputs @var{i}, @var{j} will follow the shape of the input @var{x} rather
+## than always being column vectors.
 ##
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn

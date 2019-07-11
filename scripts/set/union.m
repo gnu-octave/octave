@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} union (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} union (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} union (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} union (@dots{})
 ##
 ## Return the unique elements that are in either @var{a} or @var{b} sorted in
@@ -36,6 +37,9 @@
 ## The optional outputs @var{ia} and @var{ib} are column index vectors such
 ## that @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
 ## whose union is @var{c}.
+##
+## Programming Note: The input flag @qcode{"legacy"} changes the algorithm
+## to be compatible with @sc{matlab} releases prior to R2012b.
 ##
 ## @seealso{unique, intersect, setdiff, setxor, ismember}
 ## @end deftypefn

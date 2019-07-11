@@ -36,9 +36,8 @@
 ## If requested, return column index vectors @var{ia} and @var{ib} such that
 ## @code{@var{c} = @var{a}(@var{ia})} and @code{@var{c} = @var{b}(@var{ib})}.
 ##
-## Programming Note: The input flag @qcode{"legacy"} changes the shape of the
-## outputs (@var{c}, @var{i}, @var{j} to row vectors whenever at least one of
-## the inputs is a row vector.
+## Programming Note: The input flag @qcode{"legacy"} changes the algorithm
+## to be compatible with @sc{matlab} releases prior to R2012b.
 ##
 ## @seealso{unique, union, setdiff, setxor, ismember}
 ## @end deftypefn

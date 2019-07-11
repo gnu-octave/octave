@@ -112,7 +112,7 @@ endfunction
 
 %!assert (nthargout (2:3, @union, [1, 2, 4], [2, 3, 5]), {[1; 2; 3], [2; 3]})
 %!assert (nthargout (2:3, @union, [1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
-%!        {[1; 3], [1; 2; 3]})
+%!        {[1; 2; 3], [2; 3]})
 
 ## Test "legacy" option
 %!test

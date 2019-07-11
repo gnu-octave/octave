@@ -76,6 +76,11 @@ function [y, i, j] = unique (x, varargin)
       error ("unique: invalid option");
     endif
 
+    ## Set default to "first" if not set earlier.
+    if (! optfirst && ! optlast)
+      optfirst = true;
+    endif
+
     if (optrows && iscellstr (x))
       warning ('unique: "rows" is ignored for cell arrays');
       optrows = false;
@@ -167,7 +172,7 @@ function [y, i, j] = unique (x, varargin)
 
   if (isargout (2))
     idx = find (match);
-    if (optfirst)
+    if (! optlegacy && optfirst)
       idx += 1;   # in-place is faster than other forms of increment
     endif
     i(idx) = [];
@@ -206,42 +211,42 @@ endfunction
 %!assert (unique (uint8 ([1,2,2,3,2,4]'), "rows"), uint8 ([1,2,3,4]'))
 
 %!test
-%! [a,i,j] = unique ([1,1,2,3,3,3,4]);
-%! assert (a, [1,2,3,4]);
+%! [y,i,j] = unique ([1,1,2,3,3,3,4]);
+%! assert (y, [1,2,3,4]);
 %! assert (i, [1;3;4;7]);
 %! assert (j, [1;1;2;3;3;3;4]);
 
 %!test
-%! [a,i,j] = unique ([1,1,2,3,3,3,4]', "last");
-%! assert (a, [1,2,3,4]');
+%! [y,i,j] = unique ([1,1,2,3,3,3,4]', "last");
+%! assert (y, [1,2,3,4]');
 %! assert (i, [2;3;6;7]);
 %! assert (j, [1;1;2;3;3;3;4]);
 
 %!test
-%! [a,i,j] = unique ({"z"; "z"; "z"});
-%! assert (a, {"z"});
+%! [y,i,j] = unique ({"z"; "z"; "z"});
+%! assert (y, {"z"});
 %! assert (i, [1]);
 %! assert (j, [1;1;1]);
 
 %!test
 %! A = [1,2,3; 1,2,3];
-%! [a,i,j] = unique (A, "rows");
-%! assert (a, [1,2,3]);
-%! assert (A(i,:), a);
-%! assert (a(j,:), A);
+%! [y,i,j] = unique (A, "rows");
+%! assert (y, [1,2,3]);
+%! assert (A(i,:), y);
+%! assert (y(j,:), A);
 
 %!test
-%! [a,i,j] = unique ([1,1,2,3,3,3,4], "legacy");
-%! assert (a, [1,2,3,4]);
+%! [y,i,j] = unique ([1,1,2,3,3,3,4], "legacy");
+%! assert (y, [1,2,3,4]);
 %! assert (i, [2,3,6,7]);
 %! assert (j, [1,1,2,3,3,3,4]);
 
 %!test
-%! A = [1,2,3; 1,2,3];
-%! [a,i,j] = unique (A, "rows", "legacy");
-%! assert (a, [1,2,3]);
-%! assert (A(i,:), a);
-%! assert (a(j,:), A);
+%! A = [7 9 7; 0 0 0; 7 9 7; 5 5 5; 1 4 5];
+%! [y,i,j] = unique (A, "rows", "legacy");
+%! assert (y, [0 0 0; 1 4 5; 5 5 5; 7 9 7]);
+%! assert (i, [2; 5; 4; 3]);
+%! assert (j, [4; 1; 4; 3; 2]);
 
 ## Test input validation
 %!error unique ()

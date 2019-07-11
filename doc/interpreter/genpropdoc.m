@@ -1683,6 +1683,11 @@ point source (@qcode{\"local\"}).";
       case "cdata"
       case "enable"
       case "extent"
+        s.doc = "Size of the text string associated to the uicontrol \
+ returned in the form @code{[0 0 width height]} (the two first elements \
+are always zero).\n\n\
+For multi-line strings the returned @code{width} and @code{height} \
+indicate the size of the rectangle enclosing all lines.";
         s.valid = valid_4elvec;
         s.printdefault = false;
 

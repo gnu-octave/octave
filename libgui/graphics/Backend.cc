@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdint>
 
 #include <QApplication>
+#include <QFontMetrics>
 #include <QThread>
 
 #include "Backend.h"
@@ -34,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Object.h"
 #include "ObjectFactory.h"
 #include "ObjectProxy.h"
+#include "QtHandlesUtils.h"
 
 //#if INTPTR_MAX == INT32_MAX
 //# define OCTAVE_PTR_TYPE octave_uint32
@@ -232,6 +234,56 @@ namespace QtHandles
       }
 
     return retval;
+  }
+
+  Matrix
+  Backend::get_text_extent (const graphics_object& go) const
+  {
+    Matrix ext (1, 4, 0.0);
+
+    if (go.isa ("uicontrol"))
+      {
+        octave_value str = go.get ("string");
+        if (! str.isempty ())
+          {
+            const uicontrol::properties& up =
+              dynamic_cast<const uicontrol::properties&> (go.get_properties ());
+            Matrix bb = up.get_boundingbox (false);
+            QFont font = Utils::computeFont<uicontrol> (up, bb(3));
+            QFontMetrics fm (font);
+
+            QString s;
+            QSize sz;
+
+            if (str.is_string ())
+              {
+                s = QString::fromStdString (str.string_value ());
+                sz = fm.size (Qt::TextSingleLine, s);
+                ext(2) = sz.width ();
+                ext(3) = sz.height ();
+              }
+            else if (str.iscellstr ())
+              {
+                string_vector sv = str.string_vector_value ();
+                double wd = 0.0;
+                double hg = 0.0;
+                for (octave_idx_type ii = 0; ii < sv.numel (); ii++)
+                  {
+                    s = QString::fromStdString (sv(ii));
+                    sz = fm.size (Qt::TextSingleLine, s);
+                    wd = std::max (wd, static_cast<double> (sz.width ()));
+                    hg = std::max (hg, static_cast<double> (sz.height ()));
+                  }
+
+                ext(2) = wd;
+                // FIXME: Find a better way to determine the height of e.g.
+                // listbox uicontrol objects
+                ext(3) = hg * sv.numel ();
+              }
+          }
+      }
+
+    return ext;
   }
 
   Object*

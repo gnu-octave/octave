@@ -87,6 +87,12 @@ public:
     return Matrix (1, 2, 0.0);
   }
 
+  virtual Matrix get_text_extent (const graphics_object&) const
+  {
+    gripe_if_tkit_invalid ("get_text_extent");
+    return Matrix ();
+  }
+
   // Callback function executed when the given graphics object
   // changes.  This allows the graphics toolkit to act on property
   // changes if needed.
@@ -197,6 +203,9 @@ public:
 
   Matrix get_screen_size (void) const
   { return rep->get_screen_size (); }
+
+  Matrix get_text_extent (const graphics_object& go) const
+  { return rep->get_text_extent (go); }
 
   // Notifies graphics toolkit that object't property has changed.
   void update (const graphics_object& go, int id)

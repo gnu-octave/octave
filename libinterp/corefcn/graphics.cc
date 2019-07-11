@@ -10535,32 +10535,10 @@ uicontrol::properties::get_extent (void) const
 void
 uicontrol::properties::update_text_extent (void)
 {
-  octave::text_element *elt;
-  octave::text_renderer txt_renderer;
-  Matrix box;
-
-  // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
+  graphics_object go = gh_manager::get_object (get___myhandle__ ());
 
-  elt = octave::text_parser::parse (get_string_string (), "none");
-
-  gh_manager::auto_lock guard;
-  txt_renderer.set_font (get_fontname (), get_fontweight (),
-                         get_fontangle (), get_fontsize ());
-
-  box = txt_renderer.get_extent (elt, 0);
-
-  delete elt;
-
-  Matrix ext (1, 4);
-
-  // FIXME: also handle left and bottom components
-
-  ext(0) = ext(1) = 1;
-  ext(2) = box(0);
-  ext(3) = box(1);
-
-  set_extent (ext);
+  set_extent (go.get_toolkit ().get_text_extent (go));
 }
 
 void

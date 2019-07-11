@@ -63,6 +63,8 @@ namespace QtHandles
 
     uint8NDArray get_pixels (const graphics_object& go) const;
 
+    Matrix get_text_extent (const graphics_object& go) const;
+
     static Object * toolkitObject (const graphics_object& go);
 
     static ObjectProxy * toolkitObjectProxy (const graphics_object& go);

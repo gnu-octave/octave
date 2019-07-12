@@ -434,8 +434,7 @@ namespace octave
       {
         info.condition = cond.toStdString ();
 
-        octave_link::post_event
-          (this, &file_editor_tab::add_breakpoint_callback, info);
+        add_breakpoint_event (info);
       }
   }
 
@@ -1065,51 +1064,6 @@ namespace octave
     _edit_area->markerDeleteAll (marker::bookmark);
   }
 
-  void file_editor_tab::add_breakpoint_callback (const bp_info& info)
-  {
-    bp_table::intmap line_info;
-    line_info[0] = info.line;
-
-    if (octave_qt_link::file_in_path (info.file, info.dir))
-      {
-        bp_table& bptab = __get_bp_table__ ("octave_qt_link::file_in_path");
-
-        bp_table::intmap bpmap
-          = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
-
-        // Store some info breakpoint
-        if (m_breakpoint_info.remove_next && (bpmap.size() > 0))
-          {
-            bp_table::intmap::iterator bp_it = bpmap.begin();
-            m_breakpoint_info.remove_line = bp_it->second;
-            m_breakpoint_info.remove_next = false;
-          }
-      }
-  }
-
-  void file_editor_tab::remove_breakpoint_callback (const bp_info& info)
-  {
-    bp_table::intmap line_info;
-    line_info[0] = info.line;
-
-    if (octave_qt_link::file_in_path (info.file, info.dir))
-      {
-        bp_table& bptab = __get_bp_table__ ("remove_breakpoint_callback");
-
-        bptab.remove_breakpoint (info.function_name, line_info);
-      }
-  }
-
-  void file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
-  {
-    if (octave_qt_link::file_in_path (info.file, info.dir))
-      {
-        bp_table& bptab = __get_bp_table__ ("remove_all_breakpoints_callback");
-
-        bptab.remove_all_breakpoints_in_file (info.function_name, true);
-      }
-  }
-
   file_editor_tab::bp_info::bp_info (const QString& fname, int l,
                                      const QString& cond)
     : line (l), file (fname.toStdString ()), condition (cond.toStdString ())
@@ -1146,8 +1100,7 @@ namespace octave
   {
     bp_info info (_file_name, line, condition);
 
-    octave_link::post_event
-      (this, &file_editor_tab::add_breakpoint_callback, info);
+    add_breakpoint_event (info);
   }
 
   void file_editor_tab::handle_request_remove_breakpoint (int line)
@@ -1155,7 +1108,18 @@ namespace octave
     bp_info info (_file_name, line);
 
     octave_link::post_event
-      (this, &file_editor_tab::remove_breakpoint_callback, info);
+      ([info] (void)
+       {
+         bp_table::intmap line_info;
+         line_info[0] = info.line;
+
+         if (octave_qt_link::file_in_path (info.file, info.dir))
+           {
+             bp_table& bptab = __get_bp_table__ ("file_editor_tab::handle_request_remove_breakpoint");
+
+             bptab.remove_breakpoint (info.function_name, line_info);
+           }
+       });
   }
 
   void file_editor_tab::toggle_breakpoint (const QWidget *ID)
@@ -1227,7 +1191,15 @@ namespace octave
     bp_info info (_file_name);
 
     octave_link::post_event
-      (this, &file_editor_tab::remove_all_breakpoints_callback, info);
+      ([info] (void)
+       {
+         if (octave_qt_link::file_in_path (info.file, info.dir))
+           {
+             bp_table& bptab = __get_bp_table__ ("file_editor_tab::remove_all_breakpoints");
+
+             bptab.remove_all_breakpoints_in_file (info.function_name, true);
+           }
+       });
   }
 
   void file_editor_tab::scintilla_command (const QWidget *ID, unsigned int sci_msg)
@@ -1343,6 +1315,32 @@ namespace octave
     // data from the dialog on the defined structure
     _find_dialog->init_search_text ();
     _find_dialog->save_data (&m_find_dlg_data);
+  }
+
+  void file_editor_tab::add_breakpoint_event (const bp_info& info)
+  {
+    octave_link::post_event
+      ([this, info] (void)
+       {
+         bp_table::intmap line_info;
+         line_info[0] = info.line;
+
+         if (octave_qt_link::file_in_path (info.file, info.dir))
+           {
+             bp_table& bptab = __get_bp_table__ ("file_editor_tab::add_breakpoint_event");
+
+             bp_table::intmap bpmap
+               = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
+
+             // Store some info breakpoint
+             if (m_breakpoint_info.remove_next && (bpmap.size() > 0))
+               {
+                 bp_table::intmap::iterator bp_it = bpmap.begin();
+                 m_breakpoint_info.remove_line = bp_it->second;
+                 m_breakpoint_info.remove_next = false;
+               }
+           }
+       });
   }
 
   // This methos creates the find dialog in way that is at first suitable

@@ -266,17 +266,6 @@ namespace QtHandles
       }
   }
 
-  void
-  Canvas::annotation_callback (const octave_value_list& args)
-  {
-    octave::interpreter& interp
-      = octave::__get_interpreter__ ("Canvas::annotation_callback");
-
-    interp.feval ("annotation", args);
-
-    redraw ();
-  }
-
   static void
   autoscale_axes (axes::properties& ap)
   {
@@ -886,8 +875,16 @@ namespace QtHandles
                     props = anno_dlg.get_properties ();
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
-                    octave_link::post_event (this, &Canvas::annotation_callback,
-                                             props);
+                    octave_link::post_event
+                      ([this, props] (void)
+                       {
+                         octave::interpreter& interp
+                           = octave::__get_interpreter__ ("Canvas::canvasMouseReleaseEvent");
+
+                         interp.feval ("annotation", props);
+
+                         redraw ();
+                       });
                   }
               }
           }

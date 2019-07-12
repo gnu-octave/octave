@@ -299,12 +299,9 @@ namespace octave
 
     base_ve_model *rep;
 
-    void set_data_oct (const std::string& name, const std::string& expr,
-                       const QModelIndex&);
+    void init_from_oct (void);
 
-    void init_from_oct (const std::string& str);
-
-    void eval_oct (const std::string& name, const std::string& expr);
+    void eval_expr_event (const QString& expr);
 
     octave_value retrieve_variable (const std::string& name);
 

@@ -247,6 +247,8 @@ namespace octave
       std::string condition;
     };
 
+    void add_breakpoint_event (const bp_info& info);
+
     void find_create (void);
 
     bool valid_file_name (const QString& file = QString ());
@@ -269,9 +271,6 @@ namespace octave
     void do_indent_selected_text (bool indent);
     void do_smart_indent_line_or_selected_text (void);
 
-    void add_breakpoint_callback (const bp_info& info);
-    void remove_breakpoint_callback (const bp_info& info);
-    void remove_all_breakpoints_callback (const bp_info& info);
     void check_restore_breakpoints (void);
     void center_current_line (bool always=true);
 

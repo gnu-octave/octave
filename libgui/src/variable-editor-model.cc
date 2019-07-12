@@ -1013,7 +1013,34 @@ namespace octave
     std::string expr = os.str ();
 
     octave_link::post_event
-      (this, &variable_editor_model::set_data_oct, nm, expr, idx);
+      ([this, nm, expr, idx] (void)
+       {
+         // INTERPRETER THREAD
+
+         try
+           {
+             interpreter& interp
+               = __get_interpreter__ ("variable_editor_model::setData");
+
+             int parse_status = 0;
+             interp.eval_string (expr, true, parse_status);
+
+             octave_value val = retrieve_variable (nm);
+
+             emit update_data_signal (val);
+           }
+         catch (execution_exception&)
+           {
+             clear_update_pending ();
+
+             evaluation_error (expr);
+
+             // This will cause the data in the cell to be reset
+             // from the cached octave_value object.
+
+             emit dataChanged (idx, idx);
+           }
+       });
 
     return true;
   }
@@ -1049,13 +1076,11 @@ namespace octave
   {
     // FIXME: cells?
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1 = [ %1(1:%2,:) ; zeros(%3, columns(%1)) ; %1(%2+%3:end,:) ]")
+    eval_expr_event
+      (QString ("%1 = [%1(1:%2,:); zeros(%3,columns(%1)); %1(%2+%3:end,:)]")
        .arg (QString::fromStdString (name ()))
        .arg (row)
-       .arg (count)
-       .toStdString ());
+       .arg (count));
 
     return true;
   }
@@ -1071,13 +1096,11 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1(%2:%3, :) = []")
+    eval_expr_event
+      (QString ("%1(%2:%3,:) = []")
        .arg (QString::fromStdString (name ()))
        .arg (row)
-       .arg (row + count)
-       .toStdString ());
+       .arg (row + count));
 
     return true;
   }
@@ -1085,13 +1108,11 @@ namespace octave
   bool
   variable_editor_model::insertColumns (int col, int count, const QModelIndex&)
   {
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1 = [ %1(:,1:%2) ; zeros(rows(%1), %3) %1(:,%2+%3:end) ]")
+    eval_expr_event
+      (QString ("%1 = [%1(:,1:%2); zeros(rows(%1),%3) %1(:,%2+%3:end)]")
        .arg (QString::fromStdString (name ()))
        .arg (col)
-       .arg (count)
-       .toStdString ());
+       .arg (count));
 
     return true;
   }
@@ -1107,89 +1128,62 @@ namespace octave
         return false;
       }
 
-    octave_link::post_event
-      (this, &variable_editor_model::eval_oct, name (),
-       QString ("%1(:, %2:%3) = []")
+    eval_expr_event
+      (QString ("%1(:,%2:%3) = []")
        .arg (QString::fromStdString (name ()))
        .arg (col)
-       .arg (col + count)
-       .toStdString ());
+       .arg (col + count));
 
     return true;
   }
 
   void
-  variable_editor_model::set_data_oct (const std::string& name,
-                                       const std::string& expr,
-                                       const QModelIndex& idx)
+  variable_editor_model::init_from_oct (void)
   {
     // INTERPRETER THREAD
 
-    try
-      {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::set_data_oct");
-
-        int parse_status = 0;
-        interp.eval_string (expr, true, parse_status);
-
-        octave_value val = retrieve_variable (name);
-
-        emit update_data_signal (val);
-      }
-    catch (execution_exception&)
-      {
-        clear_update_pending ();
-
-        evaluation_error (expr);
-
-        // This will cause the data in the cell to be reset
-        // from the cached octave_value object.
-
-        emit dataChanged (idx, idx);
-      }
-  }
-
-  void
-  variable_editor_model::init_from_oct (const std::string& name)
-  {
-    // INTERPRETER THREAD
+    std::string nm = name ();
 
     try
       {
-        octave_value val = retrieve_variable (name);
+        octave_value val = retrieve_variable (nm);
 
         emit update_data_signal (val);
       }
     catch (execution_exception&)
       {
         QString msg = (QString ("variable '%1' is invalid or undefined")
-                       .arg (QString::fromStdString (name)));
+                       .arg (QString::fromStdString (nm)));
 
         emit data_error_signal (msg);
       }
   }
 
   void
-  variable_editor_model::eval_oct (const std::string& name,
-                                   const std::string& expr)
+  variable_editor_model::eval_expr_event (const QString& expr_arg)
   {
-    // INTERPRETER THREAD
+    std::string expr = expr_arg.toStdString ();
 
-    try
-      {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::eval_oct");
+    octave_link::post_event
+      ([this, expr] (void)
+       {
+         // INTERPRETER THREAD
 
-        int parse_status = 0;
-        interp.eval_string (expr, true, parse_status);
+         try
+           {
+             interpreter& interp
+               = __get_interpreter__ ("variable_editor_model::eval_expr_event");
 
-        init_from_oct (name);
-      }
-    catch  (execution_exception&)
-      {
-        evaluation_error (expr);
-      }
+             int parse_status = 0;
+             interp.eval_string (expr, true, parse_status);
+
+             init_from_oct ();
+           }
+         catch  (execution_exception&)
+           {
+             evaluation_error (expr);
+           }
+       });
   }
 
   // If the variable exists, load it into the data model.  If it doesn't
@@ -1242,7 +1236,12 @@ namespace octave
   variable_editor_model::update_data_cache (void)
   {
     octave_link::post_event
-      (this, &variable_editor_model::init_from_oct, name ());
+      ([this] (void)
+       {
+         // INTERPRETER_THREAD
+
+         init_from_oct ();
+       });
   }
 
   void

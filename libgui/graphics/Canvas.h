@@ -110,7 +110,6 @@ namespace QtHandles
     void updateCurrentPoint (const graphics_object& fig,
                              const graphics_object& obj);
 
-    void annotation_callback (const octave_value_list& args);
     void select_object (graphics_object obj, QMouseEvent *event,
                         graphics_object& currentObj, graphics_object& axesObj,
                         bool axes_only = false,

@@ -282,25 +282,7 @@ namespace octave
 
     QString gui_preference_adjust (const QString& key, const QString& value);
 
-    void open_any_callback (const std::string& file);
-
-    void rename_variable_callback (const name_pair& names);
-
-    void command_window_undo_callback (void);
-
-    void clear_command_window_callback (void);
-
-    void resize_command_window_callback (void);
-
-    void set_screen_size_callback (const int_pair&);
-
-    void clear_history_callback (void);
-
-    void refresh_workspace_callback (void);
-
     bool focus_console_after_command (void);
-
-    void new_figure_callback (void);
 
     void configure_shortcuts (void);
 

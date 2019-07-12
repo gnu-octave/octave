@@ -368,8 +368,24 @@ namespace octave
   void main_window::handle_open_any_request (const QString& file_arg)
   {
     if (! file_arg.isEmpty ())
-      octave_link::post_event (this, &main_window::open_any_callback,
-                               file_arg.toStdString ());
+      {
+        std::string file = file_arg.toStdString ();
+
+        octave_link::post_event
+          ([file] (void)
+           {
+             // INTERPRETER THREAD
+
+             feval ("open", ovl (file));
+
+             // Update the workspace since open.m may have loaded new
+             // variables.
+             tree_evaluator& tw
+               = __get_evaluator__ ("main_window::handle_open_any_request");
+
+             octave_link::set_workspace (true, tw.get_symbol_info ());
+           });
+      }
   }
 
   void main_window::handle_clear_workspace_request (void)
@@ -381,30 +397,75 @@ namespace octave
 
   void main_window::handle_clear_command_window_request (void)
   {
-    octave_link::post_event (this, &main_window::clear_command_window_callback);
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         command_editor::kill_full_line ();
+         command_editor::clear_screen ();
+       });
   }
 
   void main_window::handle_clear_history_request (void)
   {
-    octave_link::post_event (this, &main_window::clear_history_callback);
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         history_system& history_sys
+           = __get_history_system__ ("main_window::clear_history_request");
+
+         history_sys.do_history (ovl ("-c"));
+       });
   }
 
   void main_window::handle_undo_request (void)
   {
     if (command_window_has_focus ())
-      octave_link::post_event (this, &main_window::command_window_undo_callback);
+      {
+        octave_link::post_event
+          ([] (void)
+           {
+             // INTERPRETER THREAD
+
+             command_editor::undo ();
+             command_editor::redisplay ();
+           });
+      }
     else
       emit undo_signal ();
   }
 
-  void main_window::handle_rename_variable_request (const QString& old_name,
-                                                    const QString& new_name)
+  void main_window::handle_rename_variable_request (const QString& old_name_arg,
+                                                    const QString& new_name_arg)
 
   {
-    name_pair names (old_name.toStdString (), new_name.toStdString ());
+    std::string old_name = old_name_arg.toStdString ();
+    std::string new_name = new_name_arg.toStdString ();
 
-    octave_link::post_event (this, &main_window::rename_variable_callback,
-                             names);
+    octave_link::post_event
+      ([old_name, new_name] (void)
+       {
+         // INTERPRETER THREAD
+
+         symbol_scope scope
+           = __get_current_scope__ ("main_window::rename_variable_request");
+
+         if (scope)
+           {
+             scope.rename (old_name, new_name);
+
+             tree_evaluator& tw
+               = __get_evaluator__ ("main_window::rename_variable_request");
+
+             octave_link::set_workspace (true, tw.get_symbol_info ());
+           }
+
+         // FIXME: if this action fails, do we need a way to display that info
+         // in the GUI?
+       });
   }
 
   void main_window::new_file (const QString& commands)
@@ -932,7 +993,17 @@ namespace octave
 
   void main_window::handle_new_figure_request (void)
   {
-    octave_link::post_event (this, &main_window::new_figure_callback);
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::new_figure_request");
+
+         Fbuiltin (interp, ovl ("figure"));
+         Fdrawnow ();
+       });
   }
 
   void main_window::handle_enter_debugger (void)
@@ -1091,7 +1162,7 @@ namespace octave
                                                int line)
   {
     interpreter& interp
-      = __get_interpreter__ ("main_window::clear_workspace_callback");
+      = __get_interpreter__ ("main_window::handle_edit_mfile_request");
 
     // Split possible subfuntions
     QStringList fcn_list = fname.split ('>');
@@ -1540,8 +1611,13 @@ namespace octave
 
   void main_window::set_screen_size (int ht, int wd)
   {
-    octave_link::post_event (this, &main_window::set_screen_size_callback,
-                             int_pair (ht, wd));
+    octave_link::post_event
+      ([ht, wd] (void)
+       {
+         // INTERPRETER THREAD
+
+         command_editor::set_screen_size (ht, wd);
+       });
   }
 
   void main_window::clipboard_has_changed (void)
@@ -1621,7 +1697,16 @@ namespace octave
     // interpreter.  That will eventually cause the workspace view in the
     // GUI to be updated.
 
-    octave_link::post_event (this, &main_window::refresh_workspace_callback);
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         tree_evaluator& tw
+           = __get_evaluator__ ("main_window::handle_variable_editor_update");
+
+         octave_link::set_workspace (true, tw.get_symbol_info (), false);
+       });
   }
 
   void main_window::closeEvent (QCloseEvent *e)
@@ -1830,8 +1915,13 @@ namespace octave
              SIGNAL (file_remove_signal (const QString&, const QString&)),
              this, SLOT (file_remove_proxy (const QString&, const QString&)));
 
-    octave_link::post_event (this,
-                             &main_window::resize_command_window_callback);
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         command_editor::resize_terminal ();
+       });
 
     configure_shortcuts ();
   }
@@ -2461,105 +2551,10 @@ namespace octave
     qt_link->wake_all ();
   }
 
-  void main_window::rename_variable_callback (const main_window::name_pair& names)
-  {
-    // INTERPRETER THREAD
-
-    symbol_scope scope
-      = __get_current_scope__ ("main_window::rename_variable_callback");
-
-    if (scope)
-      {
-        scope.rename (names.first, names.second);
-
-        tree_evaluator& tw
-          = __get_evaluator__ ("main_window::rename_variable_callback");
-
-        octave_link::set_workspace (true, tw.get_symbol_info ());
-      }
-
-    // FIXME: if this action fails, do we need a way to display that info
-    // in the GUI?
-  }
-
-  void main_window::command_window_undo_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    command_editor::undo ();
-    command_editor::redisplay ();
-  }
-
-  void main_window::clear_command_window_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    command_editor::kill_full_line ();
-    command_editor::clear_screen ();
-  }
-
-  void main_window::resize_command_window_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    command_editor::resize_terminal ();
-  }
-
-  void main_window::set_screen_size_callback (const int_pair& sz)
-  {
-    // INTERPRETER THREAD
-
-    command_editor::set_screen_size (sz.first, sz.second);
-  }
-
-  void main_window::open_any_callback (const std::string& file)
-  {
-    // INTERPRETER THREAD
-
-    feval ("open", ovl (file));
-
-    // Update the workspace since open.m may have loaded new variables.
-    tree_evaluator& tw
-      = __get_evaluator__ ("main_window::open_any_callback");
-
-    octave_link::set_workspace (true, tw.get_symbol_info ());
-  }
-
-  void main_window::clear_history_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    history_system& history_sys
-      = __get_history_system__ ("main_window::clear_history_callback");
-
-    history_sys.do_history (ovl ("-c"));
-  }
-
-  void main_window::refresh_workspace_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    tree_evaluator& tw
-      = __get_evaluator__ ("main_window::force_refresh_workspace");
-
-    octave_link::set_workspace (true, tw.get_symbol_info (), false);
-  }
-
   bool main_window::focus_console_after_command (void)
   {
     QSettings *settings = resource_manager::get_settings ();
     return settings->value ("terminal/focus_after_command",false).toBool ();
-  }
-
-  void main_window::new_figure_callback (void)
-  {
-    // INTERPRETER THREAD
-
-    interpreter& interp
-      = __get_interpreter__ ("main_window::new_figure_callback");
-
-    Fbuiltin (interp, ovl ("figure"));
-    Fdrawnow ();
   }
 
   void main_window::configure_shortcuts (void)

@@ -111,7 +111,7 @@ function retval = dir (directory)
     endif
   endif
 
-  if (numel (flst) > 0)
+  if (nf > 0)
 
     fs = regexptranslate ("escape", filesep ("all"));
     re = sprintf ('(^.+)[%s]([^%s.]*)([.][^%s]*)?$', fs, fs, fs);
@@ -119,11 +119,13 @@ function retval = dir (directory)
     info(nf,1).name = "";  # pre-declare size of struct array
 
     ## Collect results.
-    for i = nf:-1:1
+    cnt = 0;
+    for i = 1:nf
       fn = flst{i};
       [st, err, msg] = lstat (fn);
       if (err < 0)
         warning ("dir: 'lstat (%s)' failed: %s", fn, msg);
+        continue;
       else
         ## If we are looking at a link that points to something,
         ## return info about the target of the link, otherwise, return
@@ -136,27 +138,28 @@ function retval = dir (directory)
         endif
         tmpdir = regexprep (fn, re, '$1');
         fn = regexprep (fn, re, '$2$3');
-        info(i).name = fn;
+        info(++cnt).name = fn;
         if (! strcmp (last_dir, tmpdir))
           ## Caching mechanism to speed up function
           last_dir = tmpdir;
           last_absdir = canonicalize_file_name (last_dir);
         endif
-        info(i).folder = last_absdir;
+        info(cnt).folder = last_absdir;
         lt = localtime (st.mtime);
-        info(i).date = strftime ("%d-%b-%Y %T", lt);
-        info(i).bytes = st.size;
-        info(i).isdir = S_ISDIR (st.mode);
-        info(i).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
+        info(cnt).date = strftime ("%d-%b-%Y %T", lt);
+        info(cnt).bytes = st.size;
+        info(cnt).isdir = S_ISDIR (st.mode);
+        info(cnt).datenum = [lt.year + 1900, lt.mon + 1, lt.mday, ...
                              lt.hour, lt.min, lt.sec];
-        info(i).statinfo = st;
+        info(cnt).statinfo = st;
       endif
     endfor
+    info((cnt+1):end) = [];  # remove any unused entries
     ## A lot of gymnastics in order to call datenum just once.  2x speed up.
     dvec = [info.datenum]([[1:6:end]', [2:6:end]', [3:6:end]', ...
                            [4:6:end]', [5:6:end]', [6:6:end]']);
     dnum = datenum (dvec);
-    ctmp = mat2cell (dnum, ones (nf,1), 1);
+    ctmp = mat2cell (dnum, ones (cnt,1), 1);
     [info.datenum] = ctmp{:};
   endif
 

@@ -81,7 +81,9 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
     yt = y(tri(tri_list,:));
 
     ## Use barycentric coordinate of point to calculate yi
-    yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
+    if (! isempty (bary_list))
+      yi(valid) = sum (y(tri(tri_list,:))' .* bary_list, 2);
+    endif
 
   else
     error ("griddatan: unknown interpolation METHOD");

@@ -41,7 +41,7 @@ function [x, y] = validsetargs (caller, x, y, varargin)
     elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
       error ("%s: A and B must be arrays or cell arrays of strings", caller);
     endif
-  elseif (nargin == 4)
+  else
     for arg = varargin
       switch (arg{1})
         case "legacy"
@@ -49,12 +49,12 @@ function [x, y] = validsetargs (caller, x, y, varargin)
 
         case "rows"
           if (iscell (x) || iscell (y))
-            error ('%s: cells not supported with "rows"', caller);
+            error ('%s: cells not supported with "rows" flag', caller);
           elseif (! (isallowedarraytype (x) && isallowedarraytype (y)))
             error ("%s: A and B must be arrays or cell arrays of strings", caller);
           else
             if (ndims (x) > 2 || ndims (y) > 2)
-              error ('%s: A and B must be 2-dimensional matrices for "rows"', caller);
+              error ('%s: A and B must be 2-dimensional matrices with "rows" flag', caller);
             elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
               error ("%s: number of columns in A and B must match", caller);
             endif
@@ -70,4 +70,4 @@ function [x, y] = validsetargs (caller, x, y, varargin)
 endfunction
 
 
-## %!tests for function are in union.m
+## BIST tests for function are in union.m

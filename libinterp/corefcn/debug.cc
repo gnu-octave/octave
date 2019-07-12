@@ -1151,8 +1151,10 @@ Leave command-line debugging mode and continue code execution normally.
 DEFMETHOD (dbquit, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} dbquit
-Quit debugging mode immediately without further code execution and return to
-the Octave prompt.
+@deftypefnx {} {} dbquit all
+Quit debugging mode immediately without further code execution.  With no
+arguments, exit the current debugging level.  With argument @code{all},
+exit all debugging levels and return to the Octave prompt.
 @seealso{dbcont, dbstep}
 @end deftypefn */)
 {
@@ -1161,12 +1163,25 @@ the Octave prompt.
   if (! tw.in_debug_repl ())
     error ("dbquit: can only be called in debug mode");
 
-  if (args.length () != 0)
+  int nargin = args.length ();
+
+  if (nargin > 1)
     print_usage ();
 
-  tw.debug_mode (false);
+  if (nargin == 1)
+    {
+      std::string arg
+        = args(0).xstring_value ("dbquit: input argument must be a string");
 
-  throw octave::interrupt_exception ();
+      if (arg == "all")
+        tw.abort_debug_repl (true);
+      else
+        error ("dbquit: unrecognized argument '%s'", arg.c_str ());
+    }
+  else
+    tw.exit_debug_repl (true);
+
+  tw.debug_mode (false);
 
   return ovl ();
 }

@@ -239,8 +239,11 @@ namespace octave
 
     while (m_in_debug_repl)
       {
-        if (m_exit_debug_repl || m_abort_debug_repl || tw.dbstep_flag ())
+        if (m_exit_debug_repl || tw.dbstep_flag ())
           break;
+
+        if (m_abort_debug_repl)
+          throw interrupt_exception ();
 
         try
           {
@@ -4404,25 +4407,6 @@ namespace octave
                                  bool is_end_of_fcn_or_script)
   {
     bool break_on_this_statement = false;
-
-    debugger *curr_debugger
-      = (m_debugger_stack.empty () ? nullptr : m_debugger_stack.top ());
-
-    if (curr_debugger)
-      {
-        if (curr_debugger->exit_debug_repl ())
-          {
-            // This action corresponds to dbcont.
-            reset_debug_state ();
-          }
-        else if (curr_debugger->abort_debug_repl ())
-          {
-            // This action corresponds to dbquit.
-            debug_mode (false);
-
-            throw interrupt_exception ();
-          }
-      }
 
     if (is_breakpoint)
       break_on_this_statement = true;

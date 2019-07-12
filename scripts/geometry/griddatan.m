@@ -72,17 +72,16 @@ function yi = griddatan (x, y, xi, method = "linear", varargin)
 
     ## only keep the points within triangles.
     valid = ! isnan (tri_list);
-    tri_list = tri_list(! isnan (tri_list));
-    bary_list = bary_list(! isnan (tri_list), :);
+    tri_list = tri_list(valid);
+    bary_list = bary_list(valid, :);
     nr_t = rows (tri_list);
 
-    ## assign x,y for each point of simplex
-    xt = reshape (x(tri(tri_list,:),:), [nr_t, n+1, n]);
-    yt = y(tri(tri_list,:));
-
     ## Use barycentric coordinate of point to calculate yi
-    if (! isempty (bary_list))
-      yi(valid) = sum (y(tri(tri_list,:))' .* bary_list, 2);
+    if (isscalar (tri_list))
+      ## Special case required by orientation rules for vector/vector index.
+      yi(valid) = sum (y(tri(tri_list,:)).' .* bary_list, 2);
+    else
+      yi(valid) = sum (y(tri(tri_list,:)) .* bary_list, 2);
     endif
 
   else
@@ -111,3 +110,9 @@ endfunction
 %! zz = griddatan (x,y,xi,"nearest");
 %! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
 %! assert (zz, zz2, 1e-10);
+
+%!testif HAVE_QHULL <56515>
+%! x = [ 0, 0; 1, 1; 0, 1; 1, 0 ];
+%! y = [ 1; 2; 3; 4 ];
+%! xi = [ .5, .5 ];
+%! yi = griddatan (x, y, xi);

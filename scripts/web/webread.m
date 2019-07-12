@@ -40,7 +40,7 @@
 
 function response = webread (url, varargin)
 
-  if (nargin < 1)
+  if (nargin == 0)
     print_usage();
   endif
 
@@ -48,7 +48,7 @@ function response = webread (url, varargin)
     error ("webread: URL must be a string");
   endif
 
-  if (isa (varargin{end}, "weboptions"))
+  if (nargin > 1 && isa (varargin{end}, "weboptions"))
     has_weboptions = true;
     options = varargin{end};
     varargin(end) = [];

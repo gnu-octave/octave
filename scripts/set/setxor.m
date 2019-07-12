@@ -21,6 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} setxor (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} setxor (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
 ##
 ## Return the unique elements exclusive to sets @var{a} or @var{b} sorted in
@@ -34,23 +35,32 @@
 ## to sets @var{a} and @var{b}.  The inputs must be 2-D matrices to use this
 ## option.
 ##
-## If requested, return index vectors @var{ia} and @var{ib} such that
-## @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
+## The optional outputs @var{ia} and @var{ib} are column index vectors such
+## that @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
 ## whose union is @var{c}.
+##
+## Programming Note: The input flag @qcode{"legacy"} changes the algorithm
+## to be compatible with @sc{matlab} releases prior to R2012b.
 ##
 ## @seealso{unique, union, intersect, setdiff, ismember}
 ## @end deftypefn
 
 function [c, ia, ib] = setxor (a, b, varargin)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   [a, b] = validsetargs ("setxor", a, b, varargin{:});
 
-  by_rows = nargin == 3;
-  isrowvec = isrow (a) && isrow (b);
+  by_rows = any (strcmp ("rows", varargin));
+  optlegacy = any (strcmp ("legacy", varargin));
+
+  if (optlegacy)
+    isrowvec = ! iscolumn (a) || ! iscolumn (b);
+  else
+    isrowvec = isrow (a) && isrow (b);
+  endif
 
   ## Form A and B into sets.
   if (nargout > 1)
@@ -99,6 +109,10 @@ function [c, ia, ib] = setxor (a, b, varargin)
     if (nargout > 1)
       ia = ia(i(i <= na));
       ib = ib(i(i > na) - na);
+      if (optlegacy && isrowvec)
+        ia = ia(:).';
+        ib = ib(:).';
+      endif
     endif
   endif
 
@@ -166,3 +180,16 @@ endfunction
 %! b = a;
 %! b(1,1,1) = 2;
 %! assert (intersect (a, b), sort (a(2:end)'));
+
+## Test "legacy" input
+%!test
+%! a = [5 1 3 3 3];
+%! b = [4 1 2 2];
+%! [c,ia,ib] = setxor (a,b);
+%! assert (c, [2, 3, 4, 5]);
+%! assert (ia, [3; 1]);
+%! assert (ib, [3; 1]);
+%! [c,ia,ib] = setxor (a,b, "legacy");
+%! assert (c, [2, 3, 4, 5]);
+%! assert (ia, [5, 1]);
+%! assert (ib, [4, 1]);

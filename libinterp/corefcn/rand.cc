@@ -170,14 +170,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           }
         else if (tmp.is_scalar_type ())
           {
-            double dval = tmp.double_value ();
-
-            if (octave::math::isnan (dval))
-              error ("%s: NaN is invalid matrix dimension", fcn);
+            octave_idx_type n = tmp.idx_type_value (true);
 
             dims.resize (2);
 
-            dims(0) = dims(1) = octave::math::nint_big (dval);
+            dims(0) = dims(1) = n;
 
             goto gen_matrix;
           }

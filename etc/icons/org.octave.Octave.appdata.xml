@@ -120,6 +120,7 @@
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
   <developer_name>John W. Eaton and others</developer_name>
+  <content_rating type="oars-1.0"/>
   <releases>
     <release date="2019-02-23" version="5.1.0"/>
     <release date="2018-08-09" version="4.4.1"/>

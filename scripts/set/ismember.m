@@ -130,7 +130,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
 
     ## Remove NaNs from table because lookup can't handle them
     if (isreal (s) && ! isempty (s) && isnan (s(end)))
-      s = s(1:end - sum (isnan (s)));
+      s = s(1:(end - sum (isnan (s))));
     endif
 
     if (nargout > 1)

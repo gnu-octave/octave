@@ -714,7 +714,7 @@ broadcastable to the same shape.
 Right division.  This is conceptually equivalent to the expression
 
 @example
-(inverse (y') * x')'
+(inv (y') * x')'
 @end example
 
 @noindent
@@ -732,7 +732,7 @@ Element-by-element right division.
 Left division.  This is conceptually equivalent to the expression
 
 @example
-inverse (x) * y
+inv (x) * y
 @end example
 
 @noindent

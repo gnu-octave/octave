@@ -28,7 +28,7 @@
 ## the elements of @var{x}.
 ##
 ## When @var{mu} is present, evaluate the polynomial for
-## (@var{x}-@var{mu}(1))/@var{mu}(2).
+## @w{(@var{x} - @var{mu}(1)) / @var{mu}(2)}.
 ##
 ## In addition to evaluating the polynomial, the second output represents the
 ## prediction interval, @var{y} +/- @var{dy}, which contains at least 50% of
@@ -49,50 +49,60 @@ function [y, dy] = polyval (p, x, s = [], mu)
     print_usage ();
   endif
 
-  if (isempty (x))
-    y = x;
+  ## Algorithm requires floating point values
+  if (! isfloat (p) || (! isvector (p) && ! isempty (p)))
+    error ("polyval: P must be a numeric floating point vector");
+  endif
+  if (! isfloat (x))
+    error ("polyval: X must be numeric floating point");
+  endif
+
+  if (nargout > 1)
+    if (isempty (s))
+      error ("polyval: S input is required for DY output argument");
+    elseif (isstruct (s))
+      if (! all (ismember ({"R", "normr", "df"}, fieldnames (s))))
+        error ("polyval: S input is missing required fields");
+      endif
+    else
+      error ("polyval: S input must be a structure");
+    endif
+  endif
+
+  if (nargin == 4 && (! isfloat (mu) || numel (mu) < 2))
+    error ("polyval: MU must be numeric floating point with 2 values");
+  endif
+
+  if (isempty (p) || isempty (x))
+    if (isa (p, "single") || isa (x, "single"))
+      y = zeros (size (x), "single");
+    else
+      y = zeros (size (x));
+    endif
     return;
-  elseif (isempty (p))
-    y = zeros (size (x));
-    return;
-  elseif (! isvector (p))
-    error ("polyval: P must be a vector");
   endif
 
   if (nargin == 4)
     x = (x - mu(1)) / mu(2);
   endif
 
-  n = length (p) - 1;
-  y = p(1) * ones (size (x));
+  n = numel (p) - 1;
+  y = p(1) * ones (size (x), class (x));
   for i = 2:n+1
     y = y .* x + p(i);
   endfor
 
-  if (nargout == 2)
+  if (nargout > 1)
     ## Note: the F-Distribution is generally considered to be single-sided.
     ## http://www.itl.nist.gov/div898/handbook/eda/section3/eda3673.htm
     ##   t = finv (1-alpha, s.df, s.df);
     ##   dy = t * sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df)
     ## If my inference is correct, then t must equal 1 for polyval.
     ## This is because finv (0.5, n, n) = 1.0 for any n.
-    try
-      k = numel (x);
-      A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
-      dy = sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df);
-      dy = reshape (dy, size (x));
-    catch
-      if (isempty (s))
-        error ("polyval: S input is required for DY output argument");
-      elseif (isstruct (s)
-              && all (ismember ({"R", "normr", "df"}, fieldnames (s))))
-        error (lasterr ());
-      elseif (isstruct (s))
-        error ("polyval: S input is missing required fields");
-      else
-        error ("polyval: S input must be a structure");
-      endif
-    end_try_catch
+    k = numel (x);
+    A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
+    dy = sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df);
+    dy = reshape (dy, size (x));
   endif
 
 endfunction
@@ -149,17 +159,35 @@ endfunction
 %! assert (y, polyval (p,x), eps);
 %! x = reshape (x, [1, 1, 5, 2]);
 
-%!assert (zeros (1, 10), polyval ([], 1:10))
-%!assert ([], polyval (1, []))
-%!assert ([], polyval ([], []))
-%!assert (zeros (0, 1), polyval (1, zeros (0,1)))
+## Test empty combinations
+%!assert (polyval ([], 1:10), zeros (1, 10))
+%!assert (class (polyval (single ([]), 1:10)), "single")
+%!assert (class (polyval ([], single (1:10))), "single")
+%!assert (polyval (1, []), [])
+%!assert (polyval ([], []), [])
+%!assert (polyval (1, zeros (0,3)), zeros (0, 3))
+%!assert (class (polyval (single (1), [])), "single")
+%!assert (class (polyval (1, single ([]))), "single")
+%!assert (class (polyval (single ([]), [])), "single")
+%!assert (class (polyval ([], single ([]))), "single")
 
 ## Test input validation
 %!error polyval ()
 %!error polyval (1)
 %!error polyval (1,2,3,4,5)
-%!error <P must be a vector> polyval ([1,0;0,1],0:10)
+%!error [y, dy] = polyval (1, 2)
+%!error <P must be a numeric floating point vector> polyval ({1, 0}, 0:10)
+%!error <P must be a numeric floating point vector> polyval (int8 ([1]), 0:10)
+%!error <P must be a numeric floating point vector> polyval ([1,0;0,1], 0:10)
+%!error <X must be numeric floating point> polyval ([1,0], {0:10})
+%!error <X must be numeric floating point> polyval ([1,0], int8 (0:10))
 %!error <S input is required> [y, dy] = polyval (1, 1, [])
 %!error <S input is missing required fields>
-%!  [y, dy] = polyval (1, 1, struct ("T", 0, "normr", 1, "df", 2))
+%! [y, dy] = polyval (1, 1, struct ("T", 0, "normr", 1, "df", 2));
 %!error <S input must be a structure> [y, dy] = polyval (1, 1, 2)
+%!error <MU must be numeric floating point with 2 values>
+%! polyval (1, 1, [], {1, 2});
+%!error <MU must be numeric floating point with 2 values>
+%! polyval (1, 1, [], int8 ([1,2]));
+%!error <MU must be numeric floating point with 2 values>
+%! polyval (1, 1, [], [1]);

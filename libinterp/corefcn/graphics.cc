@@ -9147,7 +9147,7 @@ text::properties::update_fontunits (const caseless_str& old_units)
   double parent_height = 0;
   double fontsz = get_fontsize ();
 
-  if (new_units == "normalized")
+  if (new_units == "normalized" || old_units == "normalized")
     {
       graphics_object go (gh_manager::get_object (get___myhandle__ ()));
       graphics_object ax (go.get_ancestor ("axes"));

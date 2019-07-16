@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-application.h"
 #include "resource-manager.h"
 
+#include "ovl.h"
 #include "oct-env.h"
 #include "version.h"
 

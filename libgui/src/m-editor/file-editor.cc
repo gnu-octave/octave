@@ -2281,9 +2281,6 @@ namespace octave
     connect (f, SIGNAL (set_focus_editor_signal (QWidget*)),
              this, SLOT (set_focus (QWidget*)));
 
-    connect (f, SIGNAL (request_queue_cmd (octave_cmd*)),
-             main_win (), SLOT (queue_cmd (octave_cmd*)));
-
     // Signals from the file_editor non-trivial operations
     connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
              f, SLOT (notice_settings (const QSettings *)));
@@ -2412,6 +2409,9 @@ namespace octave
 
     connect (this, SIGNAL (fetab_delete_debugger_pointer (const QWidget*, int)),
              f, SLOT (delete_debugger_pointer (const QWidget*, int)));
+
+    connect (f, SIGNAL (debug_quit_signal (void)),
+             main_win (), SLOT (debug_quit (void)));
 
     connect (this, SIGNAL (fetab_do_breakpoint_marker (bool, const QWidget*,
                                                        int, const QString&)),

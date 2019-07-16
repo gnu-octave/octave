@@ -50,7 +50,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "files-dock-widget.h"
 #include "find-files-dialog.h"
 #include "history-dock-widget.h"
-#include "octave-cmd.h"
 #include "octave-dock-widget.h"
 #include "octave-qt-link.h"
 #include "resource-manager.h"
@@ -216,13 +215,6 @@ namespace octave
     void clipboard_has_changed (void);
     void clear_clipboard ();
     //!@}
-
-    //! Queue a command into the worker thread's command queue
-
-    void queue_cmd (octave_cmd *cmd)
-    {
-      m_cmd_queue.add_cmd (cmd);
-    }
 
     //! Returns a list of dock widgets.
 
@@ -399,11 +391,6 @@ namespace octave
     QWidget *m_community_news_window;
 
     QClipboard *m_clipboard;
-
-    //! Command queue and semaphore to synchronize execution signals and
-    //! related callbacks.
-
-    octave_command_queue m_cmd_queue;
 
     //! Some class global flags.
     //!@{

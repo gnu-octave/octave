@@ -2044,13 +2044,24 @@ namespace octave
     if (_file_name.isEmpty ())
       return;
 
-    octave_value_list argout = ovl ();
+    // Create and queue the command object.
 
-    // Create and queue the command object
-    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fdbstatus, ovl (), 1,
-        this, SLOT (update_breakpoints_handler (const octave_value_list&)));
+    octave_link::post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
 
-    emit request_queue_cmd (cmd);
+         interpreter& interp
+           = __get_interpreter__ ("file_editor_tab::update_breakpoints");
+
+         octave_value_list argout = Fdbstatus (interp, ovl (), 1);
+
+         connect (this, SIGNAL (update_breakpoints_signal (const octave_value_list&)),
+                  this, SLOT (update_breakpoints_handler (const octave_value_list&)),
+                  Qt::QueuedConnection);
+
+         emit update_breakpoints_signal (argout);
+       });
   }
 
   void file_editor_tab::update_breakpoints_handler (const octave_value_list& argout)
@@ -2146,11 +2157,9 @@ namespace octave
 
             if (ans == QMessageBox::Save)
               {
-                // add a dbquit command to the queue
-                octave_cmd_debug *cmd = new octave_cmd_debug ("quit", true);
-                emit request_queue_cmd (cmd);
+                emit debug_quit_signal ();
 
-                // Wait until dbquit has actually occurred
+                // Wait until dbquit has actually occurred.
                 while (names.numel () > i)
                   {
                     sleep (0.01);

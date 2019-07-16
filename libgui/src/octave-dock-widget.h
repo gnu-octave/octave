@@ -30,8 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QMouseEvent>
 
-#include "octave-cmd.h"
-
 namespace octave
 {
 
@@ -99,8 +97,6 @@ namespace octave
     void queue_make_window (bool widget_was_dragged);
 
     void queue_make_widget (void);
-
-    void request_queue_cmd (octave_cmd *);
 
   protected:
 

@@ -336,9 +336,16 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        octave_cmd_builtin *cmd
-                = new octave_cmd_builtin (&Fsave, ovl (file.toStdString ()));
-        queue_cmd (cmd);
+        octave_link::post_event
+          ([file] (void)
+           {
+             // INTERPRETER THREAD
+
+             interpreter& interp
+               = __get_interpreter__ ("main_window::handle_save_workspace_request");
+
+             Fsave (interp, ovl (file.toStdString ()));
+           });
       }
   }
 
@@ -358,10 +365,20 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        octave_cmd_builtin *cmd
-          = new octave_cmd_builtin (&Fload, ovl (file.toStdString ()),
-                                    octave_cmd_builtin::CMD_UPD_WORKSPACE);
-        queue_cmd (cmd);
+        octave_link::post_event
+          ([file] (void)
+           {
+             // INTERPRETER THREAD
+
+             interpreter& interp
+               = __get_interpreter__ ("main_window::handle_load_workspace_request");
+
+             Fload (interp, ovl (file.toStdString ()));
+
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             octave_link::set_workspace (true, tw.get_symbol_info ());
+           });
       }
   }
 
@@ -390,9 +407,16 @@ namespace octave
 
   void main_window::handle_clear_workspace_request (void)
   {
-    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fclear, ovl ());
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
 
-    queue_cmd (cmd);
+         interpreter& interp
+           = __get_interpreter__ ("main_window::handle_clear_workspace_request");
+
+         Fclear (interp);
+       });
   }
 
   void main_window::handle_clear_command_window_request (void)
@@ -828,10 +852,18 @@ namespace octave
     if (new_default_encoding != m_default_encoding)
       {
         m_default_encoding = new_default_encoding;
-        octave_cmd_builtin *cmd = new octave_cmd_builtin (
-                                    &F__mfile_encoding__,
-                                    ovl (m_default_encoding.toStdString ()));
-        queue_cmd (cmd);
+
+        octave_link::post_event
+          ([this] (void)
+           {
+             // INTERPRETER THREAD
+
+             interpreter& interp
+               = __get_interpreter__ ("main_window::notice_settings");
+
+             F__mfile_encoding__ (interp,
+                                  ovl (m_default_encoding.toStdString ()));
+           });
       }
 
     // Set cursor blinking depending on the settings
@@ -942,9 +974,13 @@ namespace octave
 
     if (fileInfo.exists () && fileInfo.isDir ())
       {
-        octave_cmd_builtin *cmd
-                = new octave_cmd_builtin (&Fcd, ovl (xdir.toStdString ()));
-        queue_cmd (cmd);
+        octave_link::post_event
+          ([xdir] (void)
+           {
+             // INTERPRETER THREAD
+
+             Fcd (ovl (xdir.toStdString ()));
+           });
       }
   }
 
@@ -973,9 +1009,18 @@ namespace octave
 
   void main_window::execute_command_in_terminal (const QString& command)
   {
-    octave_cmd_exec *cmd = new octave_cmd_exec (command);
+    octave_link::post_event
+      ([command] (void)
+       {
+         // INTERPRETER THREAD
 
-    queue_cmd (cmd);
+         std::string pending_input = command_editor::get_current_line ();
+
+         command_editor::set_initial_input (pending_input);
+         command_editor::replace_line (command.toStdString ());
+         command_editor::redisplay ();
+         command_editor::accept_line ();
+       });
 
     if (focus_console_after_command ())
       focus_command_window ();
@@ -983,9 +1028,45 @@ namespace octave
 
   void main_window::run_file_in_terminal (const QFileInfo& info)
   {
-    octave_cmd_eval *cmd = new octave_cmd_eval (info);
+    octave_link::post_event
+      ([info] (void)
+       {
+         // INTERPRETER THREAD
 
-    queue_cmd (cmd);
+         QString function_name = info.fileName ();
+         function_name.chop (info.suffix ().length () + 1);
+         std::string file_path = info.absoluteFilePath ().toStdString ();
+
+         std::string pending_input = command_editor::get_current_line ();
+
+         if (valid_identifier (function_name.toStdString ()))
+           {
+             // Valid identifier: call as function with possibility to
+             // debug.
+
+             std::string path = info.absolutePath ().toStdString ();
+
+             if (octave_qt_link::file_in_path (file_path, path))
+               command_editor::replace_line (function_name.toStdString ());
+           }
+         else
+           {
+             interpreter& interp
+               = __get_interpreter__ ("main_window::run_file_in_terminal");
+
+             // No valid identifier: use equivalent of Fsource (), no
+             // debug possible.
+
+             interp.source_file (file_path);
+
+             command_editor::replace_line ("");
+           }
+
+         command_editor::set_initial_input (pending_input);
+         command_editor::redisplay ();
+
+         command_editor::accept_line ();
+       });
 
     if (focus_console_after_command ())
       focus_command_window ();
@@ -1038,25 +1119,57 @@ namespace octave
 
   void main_window::debug_continue (void)
   {
-    octave_cmd_debug *cmd
-      = new octave_cmd_debug ("cont", m_suppress_dbg_location);
-    queue_cmd (cmd);
+    octave_link::post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::debug_continue");
+
+         F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+         Fdbcont (interp);
+
+         command_editor::interrupt (true);
+       });
   }
 
   void main_window::debug_step_into (void)
   {
-    octave_cmd_debug *cmd = new octave_cmd_debug ("in", m_suppress_dbg_location);
-    queue_cmd (cmd);
+    octave_link::post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::debug_step_into");
+
+         F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+         Fdbstep (interp, ovl ("in"));
+
+         command_editor::interrupt (true);
+       });
   }
 
   void main_window::debug_step_over (void)
   {
     if (m_debug_quit->isEnabled ())
       {
-        // We are in debug mode, just call dbstep
-        octave_cmd_debug *cmd
-          = new octave_cmd_debug ("step", m_suppress_dbg_location);
-        queue_cmd (cmd);
+        // We are in debug mode, just call dbstep.
+
+        octave_link::post_event
+          ([this] (void)
+           {
+             // INTERPRETER THREAD
+
+             interpreter& interp
+               = __get_interpreter__ ("main_window::debug_step_over");
+
+             F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+             Fdbstep (interp);
+
+             command_editor::interrupt (true);
+           });
       }
     else
       {
@@ -1067,15 +1180,35 @@ namespace octave
 
   void main_window::debug_step_out (void)
   {
-    octave_cmd_debug *cmd = new octave_cmd_debug ("out", m_suppress_dbg_location);
-    queue_cmd (cmd);
+    octave_link::post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::debug_step_out");
+
+         F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+         Fdbstep (interp, ovl ("out"));
+
+         command_editor::interrupt (true);
+       });
   }
 
   void main_window::debug_quit (void)
   {
-    octave_cmd_debug *cmd
-      = new octave_cmd_debug ("quit", m_suppress_dbg_location);
-    queue_cmd (cmd);
+    octave_link::post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::debug_quit");
+
+         Fdbquit (interp);
+
+         command_editor::interrupt (true);
+       });
   }
 
   //
@@ -1712,8 +1845,14 @@ namespace octave
   void main_window::closeEvent (QCloseEvent *e)
   {
     e->ignore ();
-    octave_cmd_builtin *cmd = new octave_cmd_builtin (&Fquit, ovl ());
-    queue_cmd (cmd);
+
+    octave_link::post_event
+      ([] (void)
+       {
+         // INTERPRETER THREAD
+
+         Fquit ();
+       });
   }
 
   void main_window::construct_central_widget (void)

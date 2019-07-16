@@ -66,7 +66,7 @@
 ## directly via the theory of Cauchy matrices.  See @nospell{J. W. Demmel},
 ## @cite{Applied Numerical Linear Algebra}, p. 92.
 ##
-## Compare this with the numerical calculation of @code{inverse (hilb (n))},
+## Compare this with the numerical calculation of @code{inv (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
 ## @seealso{hilb}

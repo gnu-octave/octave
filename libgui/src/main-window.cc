@@ -2466,6 +2466,10 @@ namespace octave
             connect (action, SIGNAL (triggered (void)), widget, SLOT (focus (void)));
           }
       }
+    else
+      {
+        action->setEnabled (false);
+      }
 
     return action;
   }

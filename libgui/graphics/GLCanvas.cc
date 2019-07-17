@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
+#include "interpreter-private.h"
 #include "octave-link.h"
 
 #include "GLCanvas.h"
@@ -173,7 +174,10 @@ namespace QtHandles
           }
         catch (octave::execution_exception& e)
           {
-            octave_link::post_exception (std::current_exception ());
+            octave_link& olnk
+              = octave::__get_octave_link__ ("GLCanvas::do_print");
+
+            olnk.post_exception (std::current_exception ());
           }
 
         end_rendering ();

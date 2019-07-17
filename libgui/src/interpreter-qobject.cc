@@ -38,17 +38,7 @@ namespace octave
   interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
     : QObject (), m_octave_qobject (oct_qobj),
       m_qt_link (new octave_qt_link_events ())
-  {
-    octave_link::connect_link (m_qt_link);
-
-    connect (m_qt_link, SIGNAL (confirm_shutdown_signal (void)),
-             m_octave_qobject, SLOT (confirm_shutdown_octave (void)));
-
-    connect (m_qt_link,
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             m_octave_qobject,
-             SLOT (copy_image_to_clipboard (const QString&, bool)));
-  }
+  { }
 
   void interpreter_qobject::execute (void)
   {
@@ -57,6 +47,18 @@ namespace octave
     qt_application& app_context = m_octave_qobject->app_context ();
 
     interpreter& interp = app_context.create_interpreter ();
+
+    octave_link& olnk = interp.get_octave_link ();
+
+    olnk.connect_link (m_qt_link);
+
+    connect (m_qt_link, SIGNAL (confirm_shutdown_signal (void)),
+             m_octave_qobject, SLOT (confirm_shutdown_octave (void)));
+
+    connect (m_qt_link,
+             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+             m_octave_qobject,
+             SLOT (copy_image_to_clipboard (const QString&, bool)));
 
     int exit_status = 0;
 

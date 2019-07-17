@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
+class octave_link;
+
 namespace octave
 {
   class bp_table;
@@ -63,6 +65,8 @@ namespace octave
   extern load_path& __get_load_path__ (const std::string& who);
 
   extern load_save_system& __get_load_save_system__ (const std::string& who);
+
+  extern octave_link& __get_octave_link__ (const std::string& who);
 
   extern output_system& __get_output_system__ (const std::string& who);
 

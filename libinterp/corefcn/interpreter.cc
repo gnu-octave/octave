@@ -129,8 +129,8 @@ Undocumented internal function.
   return retval;
 }
 
-DEFUN (quit, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (quit, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} exit
 @deftypefnx {} {} exit (@var{status})
 @deftypefnx {} {} quit
@@ -150,7 +150,10 @@ to run using @code{atexit}.
   // Confirm OK to shutdown.  Note: A dynamic function installation similar
   // to overriding polymorphism for which the GUI can install its own "quit"
   // yet call this base "quit" could be nice.  No link would be needed here.
-  if (! octave_link::confirm_shutdown ())
+
+  octave_link& olnk = interp.get_octave_link ();
+
+  if (! olnk.confirm_shutdown ())
     return ovl ();
 
   if (! quit_allowed)
@@ -377,6 +380,7 @@ namespace octave
       m_url_handle_manager (),
       m_cdef_manager (*this),
       m_gtk_manager (),
+      m_octave_link (),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
@@ -1017,8 +1021,8 @@ namespace octave
     // If we are attached to a GUI, process pending events and
     // disconnect the link.
 
-    octave_link::process_events (true);
-    octave_link::disconnect_link ();
+    m_octave_link.process_events (true);
+    m_octave_link.disconnect_link ();
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 

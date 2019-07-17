@@ -83,12 +83,16 @@ octave_change_to_directory (const std::string& newdir)
   // FIXME: should these actions be handled as a list of functions
   // to call so users can add their own chdir handlers?
 
-  octave::load_path& lp =
-    octave::__get_load_path__ ("octave_change_to_directory");
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_change_to_directory");
+
+  octave::load_path& lp = interp.get_load_path ();
 
   lp.update ();
 
-  octave_link::change_directory (octave::sys::env::get_current_directory ());
+  octave_link& olnk = interp.get_octave_link ();
+
+  olnk.change_directory (octave::sys::env::get_current_directory ());
 
   return cd_ok;
 }
@@ -280,6 +284,8 @@ identifier.
   int status = -1;
   std::string msg;
 
+  octave_link& olnk = interp.get_octave_link ();
+
   if (nargin == 2)
     {
       if (args(1).string_value () != "s")
@@ -300,17 +306,17 @@ identifier.
 
       if (doit)
         {
-          octave_link::file_remove (fulldir, "");
+          olnk.file_remove (fulldir, "");
           status = octave::sys::recursive_rmdir (fulldir, msg);
         }
     }
   else
     {
-      octave_link::file_remove (fulldir, "");
+      olnk.file_remove (fulldir, "");
       status = octave::sys::rmdir (fulldir, msg);
     }
 
-  octave_link::file_renamed (status >= 0);
+  olnk.file_renamed (status >= 0);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -410,8 +416,8 @@ error message.
     return ovl (result, status, "");
 }
 
-DEFUNX ("rename", Frename, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("rename", Frename, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn  {} {} rename @var{old} @var{new}
 @deftypefnx {} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
 Change the name of file @var{old} to @var{new}.
@@ -433,18 +439,20 @@ error message.
 
   std::string msg;
 
-  octave_link::file_remove (from, to);
+  octave_link& olnk = interp.get_octave_link ();
+
+  olnk.file_remove (from, to);
 
   int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
     {
-      octave_link::file_renamed (false);
+      olnk.file_renamed (false);
       return ovl (-1.0, msg);
     }
   else
     {
-      octave_link::file_renamed (true);
+      olnk.file_renamed (true);
       return ovl (status, "");
     }
 }

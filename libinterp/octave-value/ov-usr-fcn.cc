@@ -71,7 +71,12 @@ octave_user_code::~octave_user_code (void)
 
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
-    cmd_list->remove_all_breakpoints (file_name);
+    {
+      octave_link& olnk
+        = octave::__get_octave_link__ ("octave_user_code::~octave_user_code");
+
+      cmd_list->remove_all_breakpoints (olnk, file_name);
+    }
 
   delete cmd_list;
   delete m_file_info;

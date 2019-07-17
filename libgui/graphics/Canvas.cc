@@ -875,7 +875,10 @@ namespace QtHandles
                     props = anno_dlg.get_properties ();
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
-                    octave_link::post_event
+                    octave_link& olnk
+                      = octave::__get_octave_link__ ("Canvas::canvasMouseReleaseEvent");
+
+                    olnk.post_event
                       ([this, props] (void)
                        {
                          octave::interpreter& interp

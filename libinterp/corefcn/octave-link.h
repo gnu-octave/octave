@@ -200,11 +200,9 @@ class
 OCTINTERP_API
 octave_link
 {
-protected:
+public:
 
   octave_link (void);
-
-public:
 
   // No copying!
 
@@ -214,25 +212,25 @@ public:
 
   virtual ~octave_link (void);
 
-  static void connect_link (octave_link_events *obj);
+  void connect_link (octave_link_events *obj);
 
-  static octave_link_events * disconnect_link (bool delete_instance = true);
+  octave_link_events * disconnect_link (bool delete_instance = true);
 
-  static bool enable (void)
+  bool enable (void)
   {
     bool retval = link_enabled;
     link_enabled = true;
     return retval;
   }
 
-  static bool disable (void)
+  bool disable (void)
   {
     bool retval = link_enabled;
     link_enabled = false;
     return retval;
   }
 
-  static bool enabled (void)
+  bool enabled (void) const
   {
     return link_enabled;
   }
@@ -240,11 +238,11 @@ public:
   // If disable is TRUE, then no additional events will be processed
   // other than exit.
 
-  static void process_events (bool disable_arg = false);
+  void process_events (bool disable = false);
 
-  static void discard_events (void);
+  void discard_events (void);
 
-  static bool confirm_shutdown (void)
+  bool confirm_shutdown (void)
   {
     bool retval = true;
 
@@ -255,47 +253,41 @@ public:
   }
 
   template <typename F, typename... Args>
-  static void
-  post_event (F&& fcn, Args&&... args)
+  void post_event (F&& fcn, Args&&... args)
   {
     if (enabled ())
       gui_event_queue.add (fcn, std::forward<Args> (args)...);
   }
 
   template <typename T, typename... Params, typename... Args>
-  static void
-  post_event (T *obj, void (T::*method) (Params...), Args&&... args)
+  void post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
     if (enabled ())
       gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
   }
 
-  static void
-  post_exception (const std::exception_ptr &p)
+  void post_exception (const std::exception_ptr& p)
   {
     if (enabled ())
-      post_event (&octave_link::rethrow_exception_callback, p);
+      post_event (this, &octave_link::rethrow_exception_callback, p);
   }
 
-  static bool
-  copy_image_to_clipboard (const std::string& file)
+  bool copy_image_to_clipboard (const std::string& file)
   {
     return enabled () ? instance->do_copy_image_to_clipboard (file) : false;
   }
 
-  static bool
-  edit_file (const std::string& file)
+  bool edit_file (const std::string& file)
   {
     return enabled () ? instance->do_edit_file (file) : false;
   }
 
-  static bool
-  prompt_new_edit_file (const std::string& file)
+  bool prompt_new_edit_file (const std::string& file)
   {
     return enabled () ? instance->do_prompt_new_edit_file (file) : false;
   }
 
-  static std::string
+  std::string
   question_dialog (const std::string& msg, const std::string& title,
                    const std::string& btn1, const std::string& btn2,
                    const std::string& btn3, const std::string& btndef)
@@ -304,7 +296,7 @@ public:
                                                       btn2, btn3, btndef) : "";
   }
 
-  static std::pair<std::list<int>, int>
+  std::pair<std::list<int>, int>
   list_dialog (const std::list<std::string>& list,
                const std::string& mode,
                int width, int height,
@@ -314,129 +306,125 @@ public:
                const std::string& ok_string,
                const std::string& cancel_string)
   {
-    return enabled ()
-           ? instance->do_list_dialog (list, mode, width, height,
-                                       initial_value, name, prompt,
-                                       ok_string, cancel_string)
-           : std::pair<std::list<int>, int> ();
+    return (enabled ()
+            ? instance->do_list_dialog (list, mode, width, height,
+                                        initial_value, name, prompt,
+                                        ok_string, cancel_string)
+            : std::pair<std::list<int>, int> ());
   }
 
-  static std::list<std::string>
+  std::list<std::string>
   input_dialog (const std::list<std::string>& prompt,
                 const std::string& title,
                 const std::list<float>& nr,
                 const std::list<float>& nc,
                 const std::list<std::string>& defaults)
   {
-    return enabled ()
-           ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
-           : std::list<std::string> ();
+    return (enabled ()
+            ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
+            : std::list<std::string> ());
   }
 
   typedef std::list<std::pair<std::string, std::string>> filter_list;
 
-  static std::list<std::string>
+  std::list<std::string>
   file_dialog (const filter_list& filter, const std::string& title,
                const std::string& filename, const std::string& dirname,
                const std::string& multimode)
   {
-    return enabled ()
-           ? instance->do_file_dialog (filter, title, filename, dirname,
-                                       multimode)
-           : std::list<std::string> ();
+    return (enabled ()
+            ? instance->do_file_dialog (filter, title, filename, dirname,
+                                        multimode)
+            : std::list<std::string> ());
   }
 
-  static int debug_cd_or_addpath_error (const std::string& file,
-                                        const std::string& dir,
-                                        bool addpath_option)
+  int debug_cd_or_addpath_error (const std::string& file,
+                                 const std::string& dir, bool addpath_option)
   {
-    return enabled ()
-           ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option)
-           : 0;
+    return (enabled ()
+            ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option)
+            : 0);
   }
 
-  static void change_directory (const std::string& dir)
+  void change_directory (const std::string& dir)
   {
     if (enabled ())
       instance->do_change_directory (dir);
   }
 
   // Methods for removing/renaming files which might be open in editor
-  static void file_remove (const std::string& old_name,
-                           const std::string& new_name)
+  void file_remove (const std::string& old_name, const std::string& new_name)
   {
     if (octave::application::is_gui_running () && enabled ())
       instance->do_file_remove (old_name, new_name);
   }
 
-  static void file_renamed (bool load_new)
+  void file_renamed (bool load_new)
   {
     if (octave::application::is_gui_running () && enabled ())
       instance->do_file_renamed (load_new);
   }
 
   // Preserves pending input.
-  static void execute_command_in_terminal (const std::string& command)
+  void execute_command_in_terminal (const std::string& command)
   {
     if (enabled ())
       instance->do_execute_command_in_terminal (command);
   }
 
-  static uint8NDArray
-  get_named_icon (const std::string& icon_name)
+  uint8NDArray get_named_icon (const std::string& icon_name)
   {
     return (enabled () ?
             instance->do_get_named_icon (icon_name) : uint8NDArray ());
   }
 
-  static void set_workspace (void);
+  void set_workspace (void);
 
-  static void set_workspace (bool top_level,
-                             const octave::symbol_info_list& syminfo,
-                             bool update_variable_editor = true)
+  void set_workspace (bool top_level, const octave::symbol_info_list& syminfo,
+                      bool update_variable_editor = true)
   {
     if (enabled ())
       instance->do_set_workspace (top_level, debugging, syminfo,
                                   update_variable_editor);
   }
 
-  static void clear_workspace (void)
+  void clear_workspace (void)
   {
     if (enabled ())
       instance->do_clear_workspace ();
   }
 
-  static void set_history (const string_vector& hist)
+  void set_history (const string_vector& hist)
   {
     if (enabled ())
       instance->do_set_history (hist);
   }
 
-  static void append_history (const std::string& hist_entry)
+  void append_history (const std::string& hist_entry)
   {
     if (enabled ())
       instance->do_append_history (hist_entry);
   }
 
-  static void clear_history (void)
+  void clear_history (void)
   {
     if (enabled ())
       instance->do_clear_history ();
   }
 
-  static void pre_input_event (void)
+  void pre_input_event (void)
   {
     if (enabled ())
       instance->do_pre_input_event ();
   }
 
-  static void post_input_event (void)
+  void post_input_event (void)
   {
     if (enabled ())
       instance->do_post_input_event ();
   }
 
-  static void enter_debugger_event (const std::string& file, int line)
+  void enter_debugger_event (const std::string& file, int line)
   {
     if (enabled ())
       {
@@ -446,13 +434,13 @@ public:
       }
   }
 
-  static void execute_in_debugger_event (const std::string& file, int line)
+  void execute_in_debugger_event (const std::string& file, int line)
   {
     if (enabled ())
       instance->do_execute_in_debugger_event (file, line);
   }
 
-  static void exit_debugger_event (void)
+  void exit_debugger_event (void)
   {
     if (enabled () && debugging)
       {
@@ -462,16 +450,14 @@ public:
       }
   }
 
-  static void
-  update_breakpoint (bool insert, const std::string& file, int line,
-                     const std::string& cond = "")
+  void update_breakpoint (bool insert, const std::string& file,
+                          int line, const std::string& cond = "")
   {
     if (enabled ())
       instance->do_update_breakpoint (insert, file, line, cond);
   }
 
-  static bool
-  show_preferences ()
+  bool show_preferences (void)
   {
     if (enabled ())
       {
@@ -482,9 +468,7 @@ public:
       return false;
   }
 
-  static std::string
-  gui_preference (const std::string& key,
-                  const std::string& value)
+  std::string gui_preference (const std::string& key, const std::string& value)
   {
     if (enabled ())
       {
@@ -494,8 +478,7 @@ public:
       return "";
   }
 
-  static bool
-  show_doc (const std::string & file)
+  bool show_doc (const std::string& file)
   {
     if (enabled ())
       {
@@ -506,8 +489,7 @@ public:
       return false;
   }
 
-  static bool
-  register_doc (const std::string & file)
+  bool register_doc (const std::string& file)
   {
     if (enabled ())
       {
@@ -518,8 +500,7 @@ public:
       return false;
   }
 
-  static bool
-  unregister_doc (const std::string & file)
+  bool unregister_doc (const std::string& file)
   {
     if (enabled ())
       {
@@ -531,8 +512,7 @@ public:
 
   }
 
-  static bool
-  edit_variable (const std::string &name, const octave_value& val)
+  bool edit_variable (const std::string& name, const octave_value& val)
   {
     if (enabled ())
       {
@@ -545,22 +525,22 @@ public:
 
 private:
 
-  static octave_link_events *instance;
+  octave_link_events *instance;
 
-  static bool instance_ok (void) { return instance != nullptr; }
+  bool instance_ok (void) { return instance != nullptr; }
 
 protected:
 
   // Semaphore to lock access to the event queue.
-  static octave::mutex *event_queue_mutex;
+  octave::mutex *event_queue_mutex;
 
   // Event Queue.
-  static octave::event_queue gui_event_queue;
+  octave::event_queue gui_event_queue;
 
-  static bool debugging;
-  static bool link_enabled;
+  bool debugging;
+  bool link_enabled;
 
-  static void rethrow_exception_callback (const std::exception_ptr &p)
+  void rethrow_exception_callback (const std::exception_ptr& p)
   {
     std::rethrow_exception (p);
   }

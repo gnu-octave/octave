@@ -608,7 +608,11 @@ namespace octave
 
     if (! ok)
       {
-        int action = octave_link::debug_cd_or_addpath_error (file, dir, addpath_option);
+        octave_link& olnk
+          = __get_octave_link__ ("octave_qt_link_events::file_in_path");
+
+        int action = olnk.debug_cd_or_addpath_error (file, dir, addpath_option);
+
         switch (action)
           {
           case 1:

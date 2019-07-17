@@ -382,6 +382,9 @@ namespace octave
           cond = '(' + cond + ") || (" + _edit_area->selectedText () + ')';
       }
 
+    interpreter& interp
+      = __get_interpreter__ ("handle_context_menu_break_condition");
+
     bool valid = false;
     std::string prompt = "dbstop if";
     bool ok;
@@ -393,9 +396,6 @@ namespace octave
                                    &ok);
         if (ok)     // If cancel, don't change breakpoint condition.
           {
-            interpreter& interp
-              = __get_interpreter__ ("handle_context_menu_break_condition");
-
             error_system& es = interp.get_error_system ();
 
             try
@@ -1107,7 +1107,10 @@ namespace octave
   {
     bp_info info (_file_name, line);
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("file_editor_tab::handle_request_remove_breakpoint");
+
+    olnk.post_event
       ([info] (void)
        {
          bp_table::intmap line_info;
@@ -1190,7 +1193,10 @@ namespace octave
 
     bp_info info (_file_name);
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("file_editor_tab::remove_all_breakpoints");
+
+    olnk.post_event
       ([info] (void)
        {
          if (octave_qt_link_events::file_in_path (info.file, info.dir))
@@ -1319,7 +1325,10 @@ namespace octave
 
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("file_editor_tab::add_breakpoint_event");
+
+    olnk.post_event
       ([this, info] (void)
        {
          bp_table::intmap line_info;
@@ -2046,7 +2055,10 @@ namespace octave
 
     // Create and queue the command object.
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("file_editor_tab::update_breakpoints");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD

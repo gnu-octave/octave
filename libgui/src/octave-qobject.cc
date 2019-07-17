@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-application.h"
 #include "resource-manager.h"
 
+#include "interpreter-private.h"
 #include "ovl.h"
 #include "oct-env.h"
 #include "version.h"
@@ -69,7 +70,9 @@ namespace octave
       }
     catch (execution_exception&)
       {
-        octave_link::post_exception (std::current_exception ());
+        octave_link& olnk = __get_octave_link__ ("octave_qapplication::notify");
+
+        olnk.post_exception (std::current_exception ());
       }
 
    return false;

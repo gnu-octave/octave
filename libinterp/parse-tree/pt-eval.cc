@@ -119,12 +119,6 @@ namespace octave
     bool m_abort_debug_repl;
   };
 
-  static void
-  execute_in_debugger_handler (const std::pair<std::string, int>& arg)
-  {
-    octave_link::execute_in_debugger_event (arg.first, arg.second);
-  }
-
   void debugger::repl (const std::string& prompt)
   {
     unwind_protect frame;
@@ -180,12 +174,15 @@ namespace octave
                 frm->display_stopped_in_message (buf);
               }
 
-            octave_link::enter_debugger_event (nm, curr_debug_line);
+            octave_link& olnk = m_interpreter.get_octave_link ();
 
-            octave_link::set_workspace ();
+            olnk.enter_debugger_event (nm, curr_debug_line);
 
-            frame.add_fcn (execute_in_debugger_handler,
-                           std::pair<std::string, int> (nm, curr_debug_line));
+            olnk.set_workspace ();
+
+            frame.add ([nm, curr_debug_line] (octave_link& ol) {
+                         ol.execute_in_debugger_event (nm, curr_debug_line);
+                       }, std::ref (olnk));
 
             if (! silent)
               {

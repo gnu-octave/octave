@@ -1012,7 +1012,9 @@ namespace octave
 
     std::string expr = os.str ();
 
-    octave_link::post_event
+    octave_link& olnk = __get_octave_link__ ("variable_editor_model::setData");
+
+    olnk.post_event
       ([this, nm, expr, idx] (void)
        {
          // INTERPRETER THREAD
@@ -1164,7 +1166,10 @@ namespace octave
   {
     std::string expr = expr_arg.toStdString ();
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("variable_editor_model::eval_expr_event");
+
+    olnk.post_event
       ([this, expr] (void)
        {
          // INTERPRETER THREAD
@@ -1235,7 +1240,10 @@ namespace octave
   void
   variable_editor_model::update_data_cache (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("variable_editor_model::update_data_cache");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER_THREAD

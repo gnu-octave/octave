@@ -336,7 +336,10 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::handle_save_workspace_request");
+
+        olnk.post_event
           ([file] (void)
            {
              // INTERPRETER THREAD
@@ -365,7 +368,10 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::handle_load_workspace_request");
+
+        olnk.post_event
           ([file] (void)
            {
              // INTERPRETER THREAD
@@ -377,7 +383,9 @@ namespace octave
 
              tree_evaluator& tw = interp.get_evaluator ();
 
-             octave_link::set_workspace (true, tw.get_symbol_info ());
+             octave_link& xolnk = interp.get_octave_link ();
+
+             xolnk.set_workspace (true, tw.get_symbol_info ());
            });
       }
   }
@@ -388,26 +396,36 @@ namespace octave
       {
         std::string file = file_arg.toStdString ();
 
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::handle_open_any_request");
+
+        olnk.post_event
           ([file] (void)
            {
              // INTERPRETER THREAD
+
+             interpreter& interp
+               = __get_interpreter__ ("main_window::handle_open_any_request");
 
              feval ("open", ovl (file));
 
              // Update the workspace since open.m may have loaded new
              // variables.
-             tree_evaluator& tw
-               = __get_evaluator__ ("main_window::handle_open_any_request");
+             tree_evaluator& tw = interp.get_evaluator ();
 
-             octave_link::set_workspace (true, tw.get_symbol_info ());
+             octave_link& xolnk = interp.get_octave_link ();
+
+             xolnk.set_workspace (true, tw.get_symbol_info ());
            });
       }
   }
 
   void main_window::handle_clear_workspace_request (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_clear_workspace_request");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
@@ -421,7 +439,10 @@ namespace octave
 
   void main_window::handle_clear_command_window_request (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_clear_command_window_request");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
@@ -433,7 +454,10 @@ namespace octave
 
   void main_window::handle_clear_history_request (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_clear_history_request");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
@@ -449,7 +473,10 @@ namespace octave
   {
     if (command_window_has_focus ())
       {
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::handle_undo_request");
+
+        olnk.post_event
           ([] (void)
            {
              // INTERPRETER THREAD
@@ -469,22 +496,28 @@ namespace octave
     std::string old_name = old_name_arg.toStdString ();
     std::string new_name = new_name_arg.toStdString ();
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_rename_variable_request");
+
+    olnk.post_event
       ([old_name, new_name] (void)
        {
          // INTERPRETER THREAD
 
-         symbol_scope scope
-           = __get_current_scope__ ("main_window::rename_variable_request");
+         interpreter& interp
+           = __get_interpreter__ ("main_window::rename_variable_request");
+
+         symbol_scope scope = interp.get_current_scope ();
 
          if (scope)
            {
              scope.rename (old_name, new_name);
 
-             tree_evaluator& tw
-               = __get_evaluator__ ("main_window::rename_variable_request");
+             tree_evaluator& tw = interp.get_evaluator ();
 
-             octave_link::set_workspace (true, tw.get_symbol_info ());
+             octave_link& xolnk = interp.get_octave_link ();
+
+             xolnk.set_workspace (true, tw.get_symbol_info ());
            }
 
          // FIXME: if this action fails, do we need a way to display that info
@@ -853,7 +886,10 @@ namespace octave
       {
         m_default_encoding = new_default_encoding;
 
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::notice_settings");
+
+        olnk.post_event
           ([this] (void)
            {
              // INTERPRETER THREAD
@@ -974,7 +1010,10 @@ namespace octave
 
     if (fileInfo.exists () && fileInfo.isDir ())
       {
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::set_current_working_directory");
+
+        olnk.post_event
           ([xdir] (void)
            {
              // INTERPRETER THREAD
@@ -1009,7 +1048,10 @@ namespace octave
 
   void main_window::execute_command_in_terminal (const QString& command)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::execute_command_in_terminal");
+
+    olnk.post_event
       ([command] (void)
        {
          // INTERPRETER THREAD
@@ -1028,7 +1070,10 @@ namespace octave
 
   void main_window::run_file_in_terminal (const QFileInfo& info)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::run_file_in_terminal");
+
+    olnk.post_event
       ([info] (void)
        {
          // INTERPRETER THREAD
@@ -1074,7 +1119,10 @@ namespace octave
 
   void main_window::handle_new_figure_request (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_new_figure_request");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
@@ -1119,7 +1167,10 @@ namespace octave
 
   void main_window::debug_continue (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::debug_continue");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD
@@ -1136,7 +1187,10 @@ namespace octave
 
   void main_window::debug_step_into (void)
   {
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::debug_step_into");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD
@@ -1157,7 +1211,10 @@ namespace octave
       {
         // We are in debug mode, just call dbstep.
 
-        octave_link::post_event
+        octave_link& olnk
+          = __get_octave_link__ ("main_window::debug_step_over");
+
+        olnk.post_event
           ([this] (void)
            {
              // INTERPRETER THREAD
@@ -1180,7 +1237,9 @@ namespace octave
 
   void main_window::debug_step_out (void)
   {
-    octave_link::post_event
+    octave_link& olnk = __get_octave_link__ ("main_window::debug_step_out");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD
@@ -1197,7 +1256,9 @@ namespace octave
 
   void main_window::debug_quit (void)
   {
-    octave_link::post_event
+    octave_link& olnk = __get_octave_link__ ("main_window::debug_quit");
+
+    olnk.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD
@@ -1744,7 +1805,9 @@ namespace octave
 
   void main_window::set_screen_size (int ht, int wd)
   {
-    octave_link::post_event
+    octave_link& olnk = __get_octave_link__ ("main_window::set_screen_size");
+
+    olnk.post_event
       ([ht, wd] (void)
        {
          // INTERPRETER THREAD
@@ -1830,15 +1893,22 @@ namespace octave
     // interpreter.  That will eventually cause the workspace view in the
     // GUI to be updated.
 
-    octave_link::post_event
+    octave_link& olnk
+      = __get_octave_link__ ("main_window::handle_variable_editor_update");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
 
-         tree_evaluator& tw
-           = __get_evaluator__ ("main_window::handle_variable_editor_update");
+         interpreter& interp
+           = __get_interpreter__ ("main_window::handle_variable_editor_update");
 
-         octave_link::set_workspace (true, tw.get_symbol_info (), false);
+         tree_evaluator& tw = interp.get_evaluator ();
+
+         octave_link& xolnk = interp.get_octave_link ();
+
+         xolnk.set_workspace (true, tw.get_symbol_info (), false);
        });
   }
 
@@ -1846,12 +1916,16 @@ namespace octave
   {
     e->ignore ();
 
-    octave_link::post_event
+    octave_link& olnk = __get_octave_link__ ("main_window::closeEvent");
+
+    olnk.post_event
       ([] (void)
        {
          // INTERPRETER THREAD
 
-         Fquit ();
+         interpreter& interp = __get_interpreter__ ("main_window::closeEvent");
+
+         Fquit (interp);
        });
   }
 
@@ -2053,14 +2127,6 @@ namespace octave
     connect (qt_link,
              SIGNAL (file_remove_signal (const QString&, const QString&)),
              this, SLOT (file_remove_proxy (const QString&, const QString&)));
-
-    octave_link::post_event
-      ([] (void)
-       {
-         // INTERPRETER THREAD
-
-         command_editor::resize_terminal ();
-       });
 
     configure_shortcuts ();
   }

@@ -1229,7 +1229,9 @@ Executing @code{clear foo} a second time will clear the function definition.
     {
       do_clear_variables (interp, argv, argc, true);
 
-      octave_link::clear_workspace ();
+      octave_link& olnk = interp.get_octave_link ();
+
+      olnk.clear_workspace ();
     }
   else
     {

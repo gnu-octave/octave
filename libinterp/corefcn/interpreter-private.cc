@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hist.h"
+#include "octave-link.h"
 #include "ov.h"
 #include "ov-fcn-inline.h"
 #include "pager.h"
@@ -113,6 +114,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_load_save_system ();
+  }
+
+  octave_link& __get_octave_link__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_octave_link ();
   }
 
   type_info& __get_type_info__ (const std::string& who)

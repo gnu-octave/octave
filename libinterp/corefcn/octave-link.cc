@@ -41,23 +41,19 @@ along with Octave; see the file COPYING.  If not, see
 static int
 octave_readline_hook (void)
 {
-  octave_link::process_events ();
+  octave_link& olnk = octave::__get_octave_link__ ("octave_readline_hook");
+
+  olnk.process_events ();
 
   return 0;
 }
 
-octave_link_events *octave_link::instance = nullptr;
-
-octave::mutex *octave_link::event_queue_mutex = new octave::mutex ();
-
-octave::event_queue octave_link::gui_event_queue;
-
-bool octave_link::debugging = false;
-
-bool octave_link::link_enabled = true;
-
 octave_link::octave_link (void)
-{ }
+  : instance (nullptr), event_queue_mutex (new octave::mutex ()),
+    gui_event_queue (), debugging (false), link_enabled (true)
+{
+  octave::command_editor::add_event_hook (octave_readline_hook);
+}
 
 octave_link::~octave_link (void)
 {
@@ -75,8 +71,6 @@ octave_link::connect_link (octave_link_events *obj)
     error ("octave_link is already linked!");
 
   instance = obj;
-
-  octave::command_editor::add_event_hook (octave_readline_hook);
 }
 
 octave_link_events *
@@ -138,22 +132,26 @@ octave_link::set_workspace (void)
     }
 }
 
-DEFUN (__octave_link_enabled__, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_enabled__, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_enabled__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (octave_link::enabled ());
+  octave_link& olnk = interp.get_octave_link ();
+
+  return ovl (olnk.enabled ());
 }
 
-DEFUN (__octave_link_edit_file__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_edit_file__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_edit_file__ (@var{file})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
+
+  octave_link& olnk = interp.get_octave_link ();
 
   if (args.length () == 1)
     {
@@ -161,7 +159,7 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      retval = octave_link::edit_file (file);
+      retval = olnk.edit_file (file);
     }
   else if (args.length () == 2)
     {
@@ -169,14 +167,14 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      retval = octave_link::prompt_new_edit_file (file);
+      retval = olnk.prompt_new_edit_file (file);
     }
 
   return retval;
 }
 
-DEFUN (__octave_link_question_dialog__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_question_dialog__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 Undocumented internal function.
 @end deftypefn */)
@@ -194,15 +192,16 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
-                                             btndef);
+      octave_link& olnk = interp.get_octave_link ();
+
+      retval = olnk.question_dialog (msg, title, btn1, btn2, btn3, btndef);
     }
 
   return retval;
 }
 
-DEFUN (__octave_link_file_dialog__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_file_dialog__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
 Undocumented internal function.
 @end deftypefn */)
@@ -220,6 +219,7 @@ Undocumented internal function.
   std::string pathname = args(5).string_value ();
 
   octave_idx_type nel;
+
   octave_link::filter_list filter_lst;
 
   for (octave_idx_type i = 0; i < flist.rows (); i++)
@@ -229,9 +229,10 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
+  octave_link& olnk = interp.get_octave_link ();
+
   std::list<std::string> items_lst
-    = octave_link::file_dialog (filter_lst, title, filename, pathname,
-                                multi_on);
+    = olnk.file_dialog (filter_lst, title, filename, pathname, multi_on);
 
   nel = items_lst.size ();
 
@@ -269,8 +270,8 @@ Undocumented internal function.
   return retval;
 }
 
-DEFUN (__octave_link_list_dialog__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_list_dialog__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
 Undocumented internal function.
 @end deftypefn */)
@@ -309,10 +310,11 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
+  octave_link& olnk = interp.get_octave_link ();
+
   std::pair<std::list<int>, int> result
-    = octave_link::list_dialog (list_lst, mode, width, height,
-                                initial_lst, name, prompt_lst,
-                                ok_string, cancel_string);
+    = olnk.list_dialog (list_lst, mode, width, height, initial_lst,
+                        name, prompt_lst, ok_string, cancel_string);
 
   std::list<int> items_lst = result.first;
   nel = items_lst.size ();
@@ -324,8 +326,8 @@ Undocumented internal function.
   return ovl (items, result.second);
 }
 
-DEFUN (__octave_link_input_dialog__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_input_dialog__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 Undocumented internal function.
 @end deftypefn */)
@@ -361,9 +363,10 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
+  octave_link& olnk = interp.get_octave_link ();
+
   std::list<std::string> items_lst
-    = octave_link::input_dialog (prompt_lst, title, nr, nc,
-                                 defaults_lst);
+    = olnk.input_dialog (prompt_lst, title, nr, nc, defaults_lst);
 
   nel = items_lst.size ();
   Cell items (dim_vector (nel, 1));
@@ -375,8 +378,8 @@ Undocumented internal function.
 }
 
 
-DEFUN (__octave_link_named_icon__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_named_icon__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_dialog_icons__ (@var{icon_name})
 Undocumented internal function.
 @end deftypefn */)
@@ -387,23 +390,27 @@ Undocumented internal function.
     {
       std::string icon_name = args(0).xstring_value ("invalid arguments");
 
-      retval = octave_link::get_named_icon (icon_name);
+      octave_link& olnk = interp.get_octave_link ();
+
+      retval = olnk.get_named_icon (icon_name);
     }
 
   return ovl (retval);
 }
 
-DEFUN (__octave_link_show_preferences__, , ,
+DEFMETHOD (__octave_link_show_preferences__, interp, , ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_show_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (octave_link::show_preferences ());
+  octave_link& olnk = interp.get_octave_link ();
+
+  return ovl (olnk.show_preferences ());
 }
 
-DEFUN (__octave_link_gui_preference__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_gui_preference__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_gui_preference__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -421,13 +428,17 @@ Undocumented internal function.
     value = args(1).string_value();
 
   if (octave::application::is_gui_running ())
-    return ovl (octave_link::gui_preference (key, value));
+    {
+      octave_link& olnk = interp.get_octave_link ();
+
+      return ovl (olnk.gui_preference (key, value));
+    }
   else
     return ovl (value);
 }
 
-DEFUN (__octave_link_file_remove__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_file_remove__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_file_remove__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -443,13 +454,15 @@ Undocumented internal function.
     error ("__octave_link_file_remove__: "
            "old and new name expected as arguments");
 
-  octave_link::file_remove (old_name, new_name);
+  octave_link& olnk = interp.get_octave_link ();
+
+  olnk.file_remove (old_name, new_name);
 
   return ovl ();
 }
 
-DEFUN (__octave_link_file_renamed__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_file_renamed__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_file_renamed__ ()
 Undocumented internal function.
 @end deftypefn */)
@@ -462,7 +475,9 @@ Undocumented internal function.
     error ("__octave_link_file_renamed__: "
            "first argument must be boolean for reload new named file");
 
-  octave_link::file_renamed (load_new);
+  octave_link& olnk = interp.get_octave_link ();
+
+  olnk.file_renamed (load_new);
 
   return ovl ();
 }
@@ -490,7 +505,9 @@ Open the variable @var{name} in the graphical Variable Editor.
       if (val.is_undefined ())
         error ("openvar: '%s' is not a variable", name.c_str ());
 
-      octave_link::edit_variable (name, val);
+      octave_link& olnk = interp.get_octave_link ();
+
+      olnk.edit_variable (name, val);
     }
 
   return ovl ();
@@ -502,8 +519,8 @@ Open the variable @var{name} in the graphical Variable Editor.
 %!error <NAME must be a string> openvar (1:10)
 */
 
-DEFUN (__octave_link_show_doc__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_show_doc__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_show_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
@@ -513,11 +530,13 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  return ovl (octave_link::show_doc (file));
+  octave_link& olnk = interp.get_octave_link ();
+
+  return ovl (olnk.show_doc (file));
 }
 
-DEFUN (__octave_link_register_doc__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_register_doc__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_register_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
@@ -527,11 +546,13 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  return ovl (octave_link::register_doc (file));
+  octave_link& olnk = interp.get_octave_link ();
+
+  return ovl (olnk.register_doc (file));
 }
 
-DEFUN (__octave_link_unregister_doc__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__octave_link_unregister_doc__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __octave_link_unregister_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
@@ -541,5 +562,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  return ovl (octave_link::unregister_doc (file));
+  octave_link& olnk = interp.get_octave_link ();
+
+  return ovl (olnk.unregister_doc (file));
 }

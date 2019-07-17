@@ -184,7 +184,11 @@ namespace octave
 
     if (cmds)
       {
-        retval = cmds->add_breakpoint (file, line, condition);
+        interpreter& interp = m_evaluator.get_interpreter ();
+
+        octave_link& olnk = interp.get_octave_link ();
+
+        retval = cmds->add_breakpoint (olnk, file, line, condition);
 
         for (auto& idx_line_p : retval)
           {
@@ -660,6 +664,10 @@ namespace octave
 
         if (results.length () > 0)
           {
+            interpreter& interp = m_evaluator.get_interpreter ();
+
+            octave_link& olnk = interp.get_octave_link ();
+
             octave_idx_type len = line.size ();
 
             for (int i = 0; i < len; i++)
@@ -673,7 +681,7 @@ namespace octave
                     cmds->delete_breakpoint (lineno);
 
                     if (! file.empty ())
-                      octave_link::update_breakpoint (false, file, lineno);
+                      olnk.update_breakpoint (false, file, lineno);
                   }
               }
 
@@ -756,7 +764,11 @@ namespace octave
 
         if (cmds)
           {
-            retval = cmds->remove_all_breakpoints (file);
+            interpreter& interp = m_evaluator.get_interpreter ();
+
+            octave_link& olnk = interp.get_octave_link ();
+
+            retval = cmds->remove_all_breakpoints (olnk, file);
 
             auto it = m_bp_set.find (fname);
             if (it != m_bp_set.end ())

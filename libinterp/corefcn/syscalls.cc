@@ -1070,8 +1070,8 @@ system-dependent error message.
 %! endif
 */
 
-DEFUNX ("unlink", Funlink, args, ,
-        doc: /* -*- texinfo -*-
+DEFMETHODX ("unlink", Funlink, interp, args, ,
+            doc: /* -*- texinfo -*-
 @deftypefn {} {[@var{err}, @var{msg}] =} unlink (@var{file})
 Delete the file named @var{file}.
 
@@ -1088,11 +1088,13 @@ error message.
 
   std::string msg;
 
-  octave_link::file_remove (name, "");
+  octave_link& olnk = interp.get_octave_link ();
+
+  olnk.file_remove (name, "");
 
   int status = octave::sys::unlink (name, msg);
 
-  octave_link::file_renamed (status == 0);
+  olnk.file_renamed (status == 0);
 
   return ovl (status, msg);
 }

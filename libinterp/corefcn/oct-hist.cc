@@ -61,6 +61,7 @@ Software Foundation, Inc.
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "interpreter.h"
+#include "interpreter-private.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -134,8 +135,15 @@ namespace octave
           tmp.resize (len - 1);
 
         if (! tmp.empty ())
-          if (command_history::add (tmp))
-            octave_link::append_history (tmp);
+          {
+            if (command_history::add (tmp))
+              {
+                octave_link& olnk
+                  = __get_octave_link__ ("edit_history_add_hist");
+
+                olnk.append_history (tmp);
+              }
+          }
       }
   }
 
@@ -266,7 +274,9 @@ namespace octave
                                  default_size (),
                                  sys::env::getenv ("OCTAVE_HISTCONTROL"));
 
-    octave_link::set_history (command_history::list ());
+    octave_link& olnk = m_interpreter.get_octave_link ();
+
+    olnk.set_history (command_history::list ());
   }
 
   void history_system::write_timestamp (void)
@@ -276,8 +286,14 @@ namespace octave
     std::string timestamp = now.strftime (m_timestamp_format_string);
 
     if (! timestamp.empty ())
-      if (command_history::add (timestamp))
-        octave_link::append_history (timestamp);
+      {
+        if (command_history::add (timestamp))
+          {
+            octave_link& olnk = m_interpreter.get_octave_link ();
+
+            olnk.append_history (timestamp);
+          }
+      }
   }
 
   octave_value
@@ -336,6 +352,8 @@ namespace octave
         else
           err_wrong_type_arg ("history", arg);
 
+        octave_link& olnk = m_interpreter.get_octave_link ();
+
         if (option == "-r" || option == "-w" || option == "-a"
             || option == "-n")
           {
@@ -362,14 +380,14 @@ namespace octave
               {
                 // Read entire file.
                 command_history::read ();
-                octave_link::set_history (command_history::list ());
+                olnk.set_history (command_history::list ());
               }
 
             else if (option == "-n")
               {
                 // Read 'new' history from file.
                 command_history::read_range ();
-                octave_link::set_history (command_history::list ());
+                olnk.set_history (command_history::list ());
               }
 
             else
@@ -380,7 +398,7 @@ namespace octave
         else if (option == "-c")
           {
             command_history::clear ();
-            octave_link::clear_history ();
+            olnk.clear_history ();
           }
         else if (option == "-q")
           numbered_output = false;

@@ -706,14 +706,16 @@ namespace octave
 
     tree_evaluator& tw = interp.get_evaluator ();
 
+    octave_link& olnk = interp.get_octave_link ();
+
     if (application::interactive ())
       {
         if (! tw.in_debug_repl ())
-          octave_link::exit_debugger_event ();
+          olnk.exit_debugger_event ();
 
-        octave_link::pre_input_event ();
+        olnk.pre_input_event ();
 
-        octave_link::set_workspace ();
+        olnk.set_workspace ();
       }
 
     bool history_skip_auto_repeated_debugging_command = false;
@@ -759,7 +761,7 @@ namespace octave
         if (! history_skip_auto_repeated_debugging_command)
           {
             if (command_history::add (retval))
-              octave_link::append_history (retval);
+              olnk.append_history (retval);
           }
 
         octave_diary << retval;
@@ -774,7 +776,7 @@ namespace octave
     // list has been updated.
 
     if (application::interactive ())
-      octave_link::post_input_event ();
+      olnk.post_input_event ();
 
     return retval;
   }

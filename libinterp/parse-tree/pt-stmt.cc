@@ -247,7 +247,8 @@ namespace octave
   // FIXME: COME BACK TO ME.
 
   bp_table::intmap
-  tree_statement_list::add_breakpoint (const std::string& file,
+  tree_statement_list::add_breakpoint (octave_link& olnk,
+                                       const std::string& file,
                                        const bp_table::intmap& line,
                                        const std::string& condition)
   {
@@ -266,7 +267,7 @@ namespace octave
             retval[i] = set_breakpoint (lineno, condition);
 
             if (retval[i] != 0 && ! file.empty ())
-              octave_link::update_breakpoint (true, file, retval[i], condition);
+              olnk.update_breakpoint (true, file, retval[i], condition);
           }
       }
 
@@ -274,7 +275,8 @@ namespace octave
   }
 
   bp_table::intmap
-  tree_statement_list::remove_all_breakpoints (const std::string& file)
+  tree_statement_list::remove_all_breakpoints (octave_link& olnk,
+                                               const std::string& file)
   {
     bp_table::intmap retval;
 
@@ -289,7 +291,7 @@ namespace octave
         retval[i] = lineno;
 
         if (! file.empty ())
-          octave_link::update_breakpoint (false, file, lineno);
+          olnk.update_breakpoint (false, file, lineno);
       }
 
     return retval;

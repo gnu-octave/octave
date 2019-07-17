@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-save.h"
 #include "oct-hist.h"
 #include "oct-stream.h"
+#include "octave-link.h"
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
@@ -235,6 +236,11 @@ namespace octave
     gtk_manager& get_gtk_manager (void)
     {
       return m_gtk_manager;
+    }
+
+    octave_link& get_octave_link (void)
+    {
+      return m_octave_link;
     }
 
     void mlock (void);
@@ -448,6 +454,8 @@ namespace octave
     cdef_manager m_cdef_manager;
 
     gtk_manager m_gtk_manager;
+
+    octave_link m_octave_link;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

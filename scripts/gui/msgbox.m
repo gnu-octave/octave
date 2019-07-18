@@ -166,7 +166,7 @@ function retval = msgbox (msg, varargin)
   endif
 
   ## Make a GUI element or print to console
-  if (__octave_link_enabled__ ())
+  if (__event_manager_enabled__ ())
     retval = __msgbox__ (msg, tit, icon, windowstyle, interpreter);
   else
     if (iscellstr (msg))
@@ -231,7 +231,7 @@ function hf = __msgbox__ (msg, tit, icon, windowstyle, interpreter)
         elseif (strcmp (icon_name, "warn"))
           icon_name = "warning";
         endif
-        tmp = __octave_link_named_icon__ (["dialog-" icon_name]);
+        tmp = __event_manager_named_icon__ (["dialog-" icon_name]);
         ## Fake transparency until the opengl renderer handles it:
         ## RGB data from Qt are premultiplied, we only need to add the
         ## background part

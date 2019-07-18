@@ -47,10 +47,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "input.h"
 #include "load-path.h"
 #include "octave.h"
-#include "octave-link.h"
 #include "ovl.h"
 #include "pager.h"
 #include "procstream.h"
@@ -90,9 +90,9 @@ octave_change_to_directory (const std::string& newdir)
 
   lp.update ();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  olnk.change_directory (octave::sys::env::get_current_directory ());
+  evmgr.change_directory (octave::sys::env::get_current_directory ());
 
   return cd_ok;
 }
@@ -284,7 +284,7 @@ identifier.
   int status = -1;
   std::string msg;
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
   if (nargin == 2)
     {
@@ -306,17 +306,17 @@ identifier.
 
       if (doit)
         {
-          olnk.file_remove (fulldir, "");
+          evmgr.file_remove (fulldir, "");
           status = octave::sys::recursive_rmdir (fulldir, msg);
         }
     }
   else
     {
-      olnk.file_remove (fulldir, "");
+      evmgr.file_remove (fulldir, "");
       status = octave::sys::rmdir (fulldir, msg);
     }
 
-  olnk.file_renamed (status >= 0);
+  evmgr.file_renamed (status >= 0);
 
   if (status < 0)
     return ovl (false, msg, "rmdir");
@@ -439,20 +439,20 @@ error message.
 
   std::string msg;
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  olnk.file_remove (from, to);
+  evmgr.file_remove (from, to);
 
   int status = octave::sys::rename (from, to, msg);
 
   if (status < 0)
     {
-      olnk.file_renamed (false);
+      evmgr.file_renamed (false);
       return ovl (-1.0, msg);
     }
   else
     {
-      olnk.file_renamed (true);
+      evmgr.file_renamed (true);
       return ovl (status, "");
     }
 }

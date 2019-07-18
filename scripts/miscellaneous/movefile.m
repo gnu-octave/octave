@@ -118,7 +118,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       endif
 
       ## Close old file(s) in editor
-      __octave_link_file_remove__ (p1, p2);
+      __event_manager_file_remove__ (p1, p2);
       ## Move the file(s).
       [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
       if (err != 0)
@@ -126,7 +126,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
         msgid = "movefile";
       endif
       ## Load new file(s) in editor
-      __octave_link_file_renamed__ (status);
+      __event_manager_file_renamed__ (status);
     endwhile
   else
     if (ispc () && ! isunix ()
@@ -136,7 +136,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     endif
 
     ## Close old file(s) in editor
-    __octave_link_file_remove__ (p1, p2);
+    __event_manager_file_remove__ (p1, p2);
     ## Move the file(s).
     [err, msg] = system (sprintf ('%s %s "%s"', cmd, p1, p2));
     if (err != 0)
@@ -144,7 +144,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       msgid = "movefile";
     endif
     ## Load new file(s) in editor
-    __octave_link_file_renamed__ (status);
+    __event_manager_file_renamed__ (status);
   endif
 
 endfunction

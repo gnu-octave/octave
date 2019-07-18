@@ -44,14 +44,14 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
     init_path = fileparts (init_path);
   endif
 
-  if (__octave_link_enabled__ ())
+  if (__event_manager_enabled__ ())
     file_filter = cell (0, 2);
     default_file_name = "";
     dialog_position = [240, 120];
     dialog_mode = "dir";
 
     [filename, dirname, filterindex] ...
-      = __octave_link_file_dialog__ (file_filter, dialog_name,
+      = __event_manager_file_dialog__ (file_filter, dialog_name,
                                      default_file_name, dialog_position,
                                      dialog_mode, init_path);
   else

@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "help.h"
 #include "hook-fcn.h"
 #include "input.h"
@@ -56,11 +57,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "load-path.h"
 #include "octave.h"
-#include "octave-link.h"
 #include "oct-map.h"
 #include "oct-hist.h"
 #include "interpreter.h"
-#include "octave-link.h"
+#include "event-manager.h"
 #include "ovl.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
@@ -522,7 +522,7 @@ namespace octave
       }
 
     // Synchronize the related gui preference for editor encoding
-    feval ("__octave_link_gui_preference__",
+    feval ("__event_manager_gui_preference__",
            ovl ("editor/default_encoding", m_mfile_encoding));
 
     return retval;
@@ -706,16 +706,16 @@ namespace octave
 
     tree_evaluator& tw = interp.get_evaluator ();
 
-    octave_link& olnk = interp.get_octave_link ();
+    event_manager& evmgr = interp.get_event_manager ();
 
     if (application::interactive ())
       {
         if (! tw.in_debug_repl ())
-          olnk.exit_debugger_event ();
+          evmgr.exit_debugger_event ();
 
-        olnk.pre_input_event ();
+        evmgr.pre_input_event ();
 
-        olnk.set_workspace ();
+        evmgr.set_workspace ();
       }
 
     bool history_skip_auto_repeated_debugging_command = false;
@@ -761,7 +761,7 @@ namespace octave
         if (! history_skip_auto_repeated_debugging_command)
           {
             if (command_history::add (retval))
-              olnk.append_history (retval);
+              evmgr.append_history (retval);
           }
 
         octave_diary << retval;
@@ -776,7 +776,7 @@ namespace octave
     // list has been updated.
 
     if (application::interactive ())
-      olnk.post_input_event ();
+      evmgr.post_input_event ();
 
     return retval;
   }

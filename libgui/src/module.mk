@@ -142,11 +142,11 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-main-window.cc \
   %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-qobject.cc \
-  %reldir%/moc-octave-qt-link.cc \
   %reldir%/moc-settings-dialog.cc \
   %reldir%/moc-terminal-dock-widget.cc \
   %reldir%/moc-color-picker.cc \
   %reldir%/moc-tab-bar.cc \
+  %reldir%/moc-qt-interpreter-events.cc \
   %reldir%/moc-resource-manager.cc \
   %reldir%/moc-shortcut-manager.cc \
   %reldir%/moc-welcome-wizard.cc \
@@ -200,8 +200,8 @@ noinst_HEADERS += \
   %reldir%/main-window.h \
   %reldir%/news-reader.h \
   %reldir%/octave-qobject.h \
-  %reldir%/octave-qt-link.h \
   %reldir%/qt-application.h \
+  %reldir%/qt-interpreter-events.h \
   %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcut-manager.h \
@@ -235,7 +235,7 @@ noinst_HEADERS += \
   %reldir%/news-reader.cc \
   %reldir%/octave-dock-widget.cc \
   %reldir%/octave-qobject.cc \
-  %reldir%/octave-qt-link.cc \
+  %reldir%/qt-interpreter-events.cc \
   %reldir%/qt-application.cc \
   %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \

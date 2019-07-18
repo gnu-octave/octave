@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-dialog.h"
 #include "history-dock-widget.h"
 #include "octave-dock-widget.h"
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"

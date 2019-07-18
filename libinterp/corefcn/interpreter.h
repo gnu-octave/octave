@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "error.h"
+#include "event-manager.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -43,7 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-save.h"
 #include "oct-hist.h"
 #include "oct-stream.h"
-#include "octave-link.h"
 #include "ov-typeinfo.h"
 #include "pager.h"
 #include "pt-eval.h"
@@ -238,9 +238,9 @@ namespace octave
       return m_gtk_manager;
     }
 
-    octave_link& get_octave_link (void)
+    event_manager& get_event_manager (void)
     {
-      return m_octave_link;
+      return m_event_manager;
     }
 
     void mlock (void);
@@ -455,7 +455,7 @@ namespace octave
 
     gtk_manager m_gtk_manager;
 
-    octave_link m_octave_link;
+    event_manager m_event_manager;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

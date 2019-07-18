@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-opengl.h"
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
 #include "builtin-defun-decls.h"
@@ -875,10 +875,10 @@ namespace QtHandles
                     props = anno_dlg.get_properties ();
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
-                    octave_link& olnk
-                      = octave::__get_octave_link__ ("Canvas::canvasMouseReleaseEvent");
+                    octave::event_manager& evmgr
+                      = octave::__get_event_manager__ ("Canvas::canvasMouseReleaseEvent");
 
-                    olnk.post_event
+                    evmgr.post_event
                       ([this, props] (void)
                        {
                          octave::interpreter& interp

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cdef-manager.h"
 #include "child-list.h"
 #include "error.h"
+#include "event-manager.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -39,7 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "load-save.h"
 #include "oct-hist.h"
-#include "octave-link.h"
 #include "ov.h"
 #include "ov-fcn-inline.h"
 #include "pager.h"
@@ -116,11 +116,11 @@ namespace octave
     return interp.get_load_save_system ();
   }
 
-  octave_link& __get_octave_link__ (const std::string& who)
+  event_manager& __get_event_manager__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);
 
-    return interp.get_octave_link ();
+    return interp.get_event_manager ();
   }
 
   type_info& __get_type_info__ (const std::string& who)

@@ -535,7 +535,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 /*
 %!test
 %! if (isguirunning ())
-%!   orig_show_dbg = __octave_link_gui_preference__ ("editor/show_dbg_file",
+%!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
 %!                                                   "0");
 %! endif
 %! unwind_protect
@@ -553,7 +553,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!   assert (s(2).file(end-10:end), [filesep "@ftp" filesep "dir.m"]);
 %! unwind_protect_cleanup
 %!   if (isguirunning ())
-%!     __octave_link_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
 %!   endif
 %! end_unwind_protect
 */

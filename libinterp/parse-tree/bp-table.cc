@@ -37,10 +37,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "bp-table.h"
 #include "defun-int.h"
 #include "error.h"
+#include "event-manager.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
-#include "octave-link.h"
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "ovl.h"
@@ -186,9 +186,9 @@ namespace octave
       {
         interpreter& interp = m_evaluator.get_interpreter ();
 
-        octave_link& olnk = interp.get_octave_link ();
+        event_manager& evmgr = interp.get_event_manager ();
 
-        retval = cmds->add_breakpoint (olnk, file, line, condition);
+        retval = cmds->add_breakpoint (evmgr, file, line, condition);
 
         for (auto& idx_line_p : retval)
           {
@@ -666,7 +666,7 @@ namespace octave
           {
             interpreter& interp = m_evaluator.get_interpreter ();
 
-            octave_link& olnk = interp.get_octave_link ();
+            event_manager& evmgr = interp.get_event_manager ();
 
             octave_idx_type len = line.size ();
 
@@ -681,7 +681,7 @@ namespace octave
                     cmds->delete_breakpoint (lineno);
 
                     if (! file.empty ())
-                      olnk.update_breakpoint (false, file, lineno);
+                      evmgr.update_breakpoint (false, file, lineno);
                   }
               }
 
@@ -766,9 +766,9 @@ namespace octave
           {
             interpreter& interp = m_evaluator.get_interpreter ();
 
-            octave_link& olnk = interp.get_octave_link ();
+            event_manager& evmgr = interp.get_event_manager ();
 
-            retval = cmds->remove_all_breakpoints (olnk, file);
+            retval = cmds->remove_all_breakpoints (evmgr, file);
 
             auto it = m_bp_set.find (fname);
             if (it != m_bp_set.end ())

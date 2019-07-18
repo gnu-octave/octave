@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "event-manager.h"
 #include "file-io.h"
 #include "graphics.h"
 #include "help.h"
@@ -54,7 +55,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "load-path.h"
 #include "load-save.h"
-#include "octave-link.h"
 #include "octave.h"
 #include "oct-hist.h"
 #include "oct-map.h"
@@ -151,9 +151,9 @@ to run using @code{atexit}.
   // to overriding polymorphism for which the GUI can install its own "quit"
   // yet call this base "quit" could be nice.  No link would be needed here.
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  if (! olnk.confirm_shutdown ())
+  if (! evmgr.confirm_shutdown ())
     return ovl ();
 
   if (! quit_allowed)
@@ -380,7 +380,7 @@ namespace octave
       m_url_handle_manager (),
       m_cdef_manager (*this),
       m_gtk_manager (),
-      m_octave_link (),
+      m_event_manager (),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
@@ -1021,8 +1021,8 @@ namespace octave
     // If we are attached to a GUI, process pending events and
     // disable the link.
 
-    m_octave_link.process_events (true);
-    m_octave_link.disable ();
+    m_event_manager.process_events (true);
+    m_event_manager.disable ();
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 

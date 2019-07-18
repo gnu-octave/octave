@@ -29,127 +29,125 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "cmd-edit.h"
 #include "defun.h"
+#include "event-manager.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
-#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "ovl.h"
 #include "pager.h"
 #include "syminfo.h"
 
-static int
-octave_readline_hook (void)
+namespace octave
 {
-  octave_link& olnk = octave::__get_octave_link__ ("octave_readline_hook");
+  static int readline_event_hook (void)
+  {
+    event_manager& evmgr = __get_event_manager__ ("octave_readline_hook");
 
-  olnk.process_events ();
+    evmgr.process_events ();
 
-  return 0;
+    return 0;
+  }
+
+  event_manager::event_manager (void)
+    : instance (nullptr), event_queue_mutex (new mutex ()),
+      gui_event_queue (), debugging (false), link_enabled (false)
+  {
+    command_editor::add_event_hook (readline_event_hook);
+  }
+
+  event_manager::~event_manager (void)
+  {
+    delete event_queue_mutex;
+  }
+
+  // Programming Note: It is possible to disable the link without deleting
+  // the connection.  This allows it to be temporarily disabled.  But if
+  // the link is removed, we also set the link_enabled flag to false
+  // because if there is no link, it can't be enabled.  Also, access to
+  // instance is only protected by a check on the link_enabled flag.
+
+  void
+  event_manager::connect_link (const std::shared_ptr<interpreter_events>& obj)
+  {
+    if (! obj)
+      disable ();
+
+    instance = obj;
+  }
+
+  bool event_manager::enable (void)
+  {
+    bool retval = link_enabled;
+
+    if (instance)
+      link_enabled = true;
+    else
+      warning ("event_manager: must have connected link to enable");
+
+    return retval;
+  }
+
+  void event_manager::process_events (bool disable_flag)
+  {
+    if (enabled ())
+      {
+        if (disable_flag)
+          disable ();
+
+        event_queue_mutex->lock ();
+
+        gui_event_queue.run ();
+
+        event_queue_mutex->unlock ();
+      }
+  }
+
+  void event_manager::discard_events (void)
+  {
+    if (enabled ())
+      {
+        event_queue_mutex->lock ();
+
+        gui_event_queue.discard ();
+
+        event_queue_mutex->unlock ();
+      }
+  }
+
+  void event_manager::set_workspace (void)
+  {
+    if (enabled ())
+      {
+        tree_evaluator& tw
+          = __get_evaluator__ ("event_manager::set_workspace");
+
+        instance->do_set_workspace (tw.at_top_level (), debugging,
+                                    tw.get_symbol_info (), true);
+      }
+  }
 }
 
-octave_link::octave_link (void)
-  : instance (nullptr), event_queue_mutex (new octave::mutex ()),
-    gui_event_queue (), debugging (false), link_enabled (false)
-{
-  octave::command_editor::add_event_hook (octave_readline_hook);
-}
-
-octave_link::~octave_link (void)
-{
-  delete event_queue_mutex;
-}
-
-// Programming Note: It is possible to disable the link without deleting
-// the connection.  This allows it to be temporarily disabled.  But if
-// the link is removed, we also set the link_enabled flag to false
-// because if there is no link, it can't be enabled.  Also, access to
-// instance is only protected by a check on the link_enabled flag.
-
-void
-octave_link::connect_link (const std::shared_ptr<octave_link_events>& obj)
-{
-  if (! obj)
-    disable ();
-
-  instance = obj;
-}
-
-bool
-octave_link::enable (void)
-{
-  bool retval = link_enabled;
-
-  if (instance)
-    link_enabled = true;
-  else
-    warning ("octave_link: must have connected link to enable");
-
-  return retval;
-}
-
-void
-octave_link::process_events (bool disable_flag)
-{
-  if (enabled ())
-    {
-      if (disable_flag)
-        disable ();
-
-      event_queue_mutex->lock ();
-
-      gui_event_queue.run ();
-
-      event_queue_mutex->unlock ();
-    }
-}
-
-void
-octave_link::discard_events (void)
-{
-  if (enabled ())
-    {
-      event_queue_mutex->lock ();
-
-      gui_event_queue.discard ();
-
-      event_queue_mutex->unlock ();
-    }
-}
-
-void
-octave_link::set_workspace (void)
-{
-  if (enabled ())
-    {
-      octave::tree_evaluator& tw
-        = octave::__get_evaluator__ ("octave_link::set_workspace");
-
-      instance->do_set_workspace (tw.at_top_level (), debugging,
-                                  tw.get_symbol_info (), true);
-    }
-}
-
-DEFMETHOD (__octave_link_enabled__, interp, , ,
+DEFMETHOD (__event_manager_enabled__, interp, , ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_enabled__ ()
+@deftypefn {} {} __event_manager_enabled__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (olnk.enabled ());
+  return ovl (evmgr.enabled ());
 }
 
-DEFMETHOD (__octave_link_edit_file__, interp, args, ,
+DEFMETHOD (__event_manager_edit_file__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_edit_file__ (@var{file})
+@deftypefn {} {} __event_manager_edit_file__ (@var{file})
 Undocumented internal function.
 @end deftypefn */)
 {
   octave_value retval;
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
   if (args.length () == 1)
     {
@@ -157,7 +155,7 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      retval = olnk.edit_file (file);
+      retval = evmgr.edit_file (file);
     }
   else if (args.length () == 2)
     {
@@ -165,15 +163,15 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      retval = olnk.prompt_new_edit_file (file);
+      retval = evmgr.prompt_new_edit_file (file);
     }
 
   return retval;
 }
 
-DEFMETHOD (__octave_link_question_dialog__, interp, args, ,
+DEFMETHOD (__event_manager_question_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
+@deftypefn {} {} __event_manager_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -190,17 +188,17 @@ Undocumented internal function.
 
       octave::flush_stdout ();
 
-      octave_link& olnk = interp.get_octave_link ();
+      octave::event_manager& evmgr = interp.get_event_manager ();
 
-      retval = olnk.question_dialog (msg, title, btn1, btn2, btn3, btndef);
+      retval = evmgr.question_dialog (msg, title, btn1, btn2, btn3, btndef);
     }
 
   return retval;
 }
 
-DEFMETHOD (__octave_link_file_dialog__, interp, args, ,
+DEFMETHOD (__event_manager_file_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
+@deftypefn {} {} __event_manager_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -218,7 +216,7 @@ Undocumented internal function.
 
   octave_idx_type nel;
 
-  octave_link::filter_list filter_lst;
+  octave::event_manager::filter_list filter_lst;
 
   for (octave_idx_type i = 0; i < flist.rows (); i++)
     filter_lst.push_back (std::make_pair (flist(i,0),
@@ -227,10 +225,10 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
-    = olnk.file_dialog (filter_lst, title, filename, pathname, multi_on);
+    = evmgr.file_dialog (filter_lst, title, filename, pathname, multi_on);
 
   nel = items_lst.size ();
 
@@ -268,9 +266,9 @@ Undocumented internal function.
   return retval;
 }
 
-DEFMETHOD (__octave_link_list_dialog__, interp, args, ,
+DEFMETHOD (__event_manager_list_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
+@deftypefn {} {} __event_manager_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{initial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -308,10 +306,10 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
   std::pair<std::list<int>, int> result
-    = olnk.list_dialog (list_lst, mode, width, height, initial_lst,
+    = evmgr.list_dialog (list_lst, mode, width, height, initial_lst,
                         name, prompt_lst, ok_string, cancel_string);
 
   std::list<int> items_lst = result.first;
@@ -324,9 +322,9 @@ Undocumented internal function.
   return ovl (items, result.second);
 }
 
-DEFMETHOD (__octave_link_input_dialog__, interp, args, ,
+DEFMETHOD (__event_manager_input_dialog__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
+@deftypefn {} {} __event_manager_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -361,10 +359,10 @@ Undocumented internal function.
 
   octave::flush_stdout ();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
   std::list<std::string> items_lst
-    = olnk.input_dialog (prompt_lst, title, nr, nc, defaults_lst);
+    = evmgr.input_dialog (prompt_lst, title, nr, nc, defaults_lst);
 
   nel = items_lst.size ();
   Cell items (dim_vector (nel, 1));
@@ -376,9 +374,9 @@ Undocumented internal function.
 }
 
 
-DEFMETHOD (__octave_link_named_icon__, interp, args, ,
+DEFMETHOD (__event_manager_named_icon__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_dialog_icons__ (@var{icon_name})
+@deftypefn {} {} __event_manager_dialog_icons__ (@var{icon_name})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -388,28 +386,28 @@ Undocumented internal function.
     {
       std::string icon_name = args(0).xstring_value ("invalid arguments");
 
-      octave_link& olnk = interp.get_octave_link ();
+      octave::event_manager& evmgr = interp.get_event_manager ();
 
-      retval = olnk.get_named_icon (icon_name);
+      retval = evmgr.get_named_icon (icon_name);
     }
 
   return ovl (retval);
 }
 
-DEFMETHOD (__octave_link_show_preferences__, interp, , ,
+DEFMETHOD (__event_manager_show_preferences__, interp, , ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_show_preferences__ ()
+@deftypefn {} {} __event_manager_show_preferences__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (olnk.show_preferences ());
+  return ovl (evmgr.show_preferences ());
 }
 
-DEFMETHOD (__octave_link_gui_preference__, interp, args, ,
+DEFMETHOD (__event_manager_gui_preference__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_gui_preference__ ()
+@deftypefn {} {} __event_manager_gui_preference__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -419,7 +417,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     key = args(0).string_value();
   else
-    error ("__octave_link_gui_preference__: "
+    error ("__event_manager_gui_preference__: "
            "first argument must be the preference key");
 
   if (args.length () >= 2)
@@ -427,17 +425,17 @@ Undocumented internal function.
 
   if (octave::application::is_gui_running ())
     {
-      octave_link& olnk = interp.get_octave_link ();
+      octave::event_manager& evmgr = interp.get_event_manager ();
 
-      return ovl (olnk.gui_preference (key, value));
+      return ovl (evmgr.gui_preference (key, value));
     }
   else
     return ovl (value);
 }
 
-DEFMETHOD (__octave_link_file_remove__, interp, args, ,
+DEFMETHOD (__event_manager_file_remove__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_file_remove__ ()
+@deftypefn {} {} __event_manager_file_remove__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -449,19 +447,19 @@ Undocumented internal function.
       new_name = args(1).string_value();
     }
   else
-    error ("__octave_link_file_remove__: "
+    error ("__event_manager_file_remove__: "
            "old and new name expected as arguments");
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  olnk.file_remove (old_name, new_name);
+  evmgr.file_remove (old_name, new_name);
 
   return ovl ();
 }
 
-DEFMETHOD (__octave_link_file_renamed__, interp, args, ,
+DEFMETHOD (__event_manager_file_renamed__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_file_renamed__ ()
+@deftypefn {} {} __event_manager_file_renamed__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -470,12 +468,12 @@ Undocumented internal function.
   if (args.length () == 1)
     load_new = args(0).bool_value();
   else
-    error ("__octave_link_file_renamed__: "
+    error ("__event_manager_file_renamed__: "
            "first argument must be boolean for reload new named file");
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  olnk.file_renamed (load_new);
+  evmgr.file_renamed (load_new);
 
   return ovl ();
 }
@@ -503,9 +501,9 @@ Open the variable @var{name} in the graphical Variable Editor.
       if (val.is_undefined ())
         error ("openvar: '%s' is not a variable", name.c_str ());
 
-      octave_link& olnk = interp.get_octave_link ();
+      octave::event_manager& evmgr = interp.get_event_manager ();
 
-      olnk.edit_variable (name, val);
+      evmgr.edit_variable (name, val);
     }
 
   return ovl ();
@@ -517,9 +515,9 @@ Open the variable @var{name} in the graphical Variable Editor.
 %!error <NAME must be a string> openvar (1:10)
 */
 
-DEFMETHOD (__octave_link_show_doc__, interp, args, ,
+DEFMETHOD (__event_manager_show_doc__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_show_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_show_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -528,14 +526,14 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (olnk.show_doc (file));
+  return ovl (evmgr.show_doc (file));
 }
 
-DEFMETHOD (__octave_link_register_doc__, interp, args, ,
+DEFMETHOD (__event_manager_register_doc__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_register_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_register_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -544,14 +542,14 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (olnk.register_doc (file));
+  return ovl (evmgr.register_doc (file));
 }
 
-DEFMETHOD (__octave_link_unregister_doc__, interp, args, ,
+DEFMETHOD (__event_manager_unregister_doc__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} __octave_link_unregister_doc__ (@var{filename})
+@deftypefn {} {} __event_manager_unregister_doc__ (@var{filename})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -560,7 +558,7 @@ Undocumented internal function.
   if (args.length () >= 1)
     file = args(0).string_value();
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return ovl (olnk.unregister_doc (file));
+  return ovl (evmgr.unregister_doc (file));
 }

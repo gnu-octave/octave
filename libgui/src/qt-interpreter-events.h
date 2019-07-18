@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_qt_link_h)
-#define octave_qt_link_h 1
+#if ! defined (octave_qt_interpreter_events_h)
+#define octave_qt_interpreter_events_h 1
 
 #include <list>
 #include <string>
@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMutex>
 #include <QWaitCondition>
 
-#include "octave-link.h"
+#include "event-manager.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -50,21 +50,21 @@ namespace octave
   //! buffering access operations to octave and executing them in the
   //! readline event hook, which lives in the octave thread.
 
-  class octave_qt_link_events : public QObject, public octave_link_events
+  class qt_interpreter_events : public QObject, public interpreter_events
   {
     Q_OBJECT
 
   public:
 
-    octave_qt_link_events (void);
+    qt_interpreter_events (void);
 
     // No copying!
 
-    octave_qt_link_events (const octave_qt_link_events&) = delete;
+    qt_interpreter_events (const qt_interpreter_events&) = delete;
 
-    octave_qt_link_events& operator = (const octave_qt_link_events&) = delete;
+    qt_interpreter_events& operator = (const qt_interpreter_events&) = delete;
 
-    ~octave_qt_link_events (void) = default;
+    ~qt_interpreter_events (void) = default;
 
     bool do_confirm_shutdown (void);
 

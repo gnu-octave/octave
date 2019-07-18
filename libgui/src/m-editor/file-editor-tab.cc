@@ -75,7 +75,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "ov-usr-fcn.h"
 #include "symtab.h"
 #include "unwind-prot.h"
@@ -1107,16 +1107,16 @@ namespace octave
   {
     bp_info info (_file_name, line);
 
-    octave_link& olnk
-      = __get_octave_link__ ("file_editor_tab::handle_request_remove_breakpoint");
+    event_manager& evmgr
+      = __get_event_manager__ ("file_editor_tab::handle_request_remove_breakpoint");
 
-    olnk.post_event
+    evmgr.post_event
       ([info] (void)
        {
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (octave_qt_link_events::file_in_path (info.file, info.dir))
+         if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::handle_request_remove_breakpoint");
 
@@ -1193,13 +1193,13 @@ namespace octave
 
     bp_info info (_file_name);
 
-    octave_link& olnk
-      = __get_octave_link__ ("file_editor_tab::remove_all_breakpoints");
+    event_manager& evmgr
+      = __get_event_manager__ ("file_editor_tab::remove_all_breakpoints");
 
-    olnk.post_event
+    evmgr.post_event
       ([info] (void)
        {
-         if (octave_qt_link_events::file_in_path (info.file, info.dir))
+         if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::remove_all_breakpoints");
 
@@ -1325,16 +1325,16 @@ namespace octave
 
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
   {
-    octave_link& olnk
-      = __get_octave_link__ ("file_editor_tab::add_breakpoint_event");
+    event_manager& evmgr
+      = __get_event_manager__ ("file_editor_tab::add_breakpoint_event");
 
-    olnk.post_event
+    evmgr.post_event
       ([this, info] (void)
        {
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (octave_qt_link_events::file_in_path (info.file, info.dir))
+         if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::add_breakpoint_event");
 
@@ -1917,10 +1917,10 @@ namespace octave
     // commands processed in the background.
 
     /*
-      connect (octave_link, SIGNAL (fileSelected (QObject *, const QString&, const octave_value_list&)),
+      connect (event_manager, SIGNAL (fileSelected (QObject *, const QString&, const octave_value_list&)),
       this, SLOT (handle_feval_result (QObject *, const QString&, const octave_value_list&)));
       connect (this, SIGNAL (evaluate_octave_command (const QString&)),
-      octave_link, SLOT (queue_octave_command (const QString&)));
+      event_manager, SLOT (queue_octave_command (const QString&)));
 
       emit evaluate_octave_command ("dbstatus");
     */
@@ -2055,10 +2055,10 @@ namespace octave
 
     // Create and queue the command object.
 
-    octave_link& olnk
-      = __get_octave_link__ ("file_editor_tab::update_breakpoints");
+    event_manager& evmgr
+      = __get_event_manager__ ("file_editor_tab::update_breakpoints");
 
-    olnk.post_event
+    evmgr.post_event
       ([this] (void)
        {
          // INTERPRETER THREAD

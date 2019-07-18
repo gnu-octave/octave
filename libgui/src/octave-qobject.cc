@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "octave-qobject.h"
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "qt-application.h"
 #include "resource-manager.h"
 
@@ -70,9 +70,9 @@ namespace octave
       }
     catch (execution_exception&)
       {
-        octave_link& olnk = __get_octave_link__ ("octave_qapplication::notify");
+        event_manager& evmgr = __get_event_manager__ ("octave_qapplication::notify");
 
-        olnk.post_exception (std::current_exception ());
+        evmgr.post_exception (std::current_exception ());
       }
 
    return false;

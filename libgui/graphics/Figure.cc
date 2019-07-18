@@ -56,7 +56,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "version.h"
 
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
 

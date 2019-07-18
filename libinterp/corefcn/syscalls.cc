@@ -42,20 +42,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-syscalls.h"
 #include "oct-uname.h"
+
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
+#include "input.h"
 #include "interpreter.h"
 #include "oct-hist.h"
 #include "oct-map.h"
-#include "ovl.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
-#include "octave-link.h"
+#include "ovl.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
-#include "input.h"
 
 static octave_scalar_map
 mk_stat_map (const octave::sys::base_file_stat& fs)
@@ -1088,13 +1089,13 @@ error message.
 
   std::string msg;
 
-  octave_link& olnk = interp.get_octave_link ();
+  octave::event_manager& evmgr = interp.get_event_manager ();
 
-  olnk.file_remove (name, "");
+  evmgr.file_remove (name, "");
 
   int status = octave::sys::unlink (name, msg);
 
-  olnk.file_renamed (status == 0);
+  evmgr.file_renamed (status == 0);
 
   return ovl (status, msg);
 }

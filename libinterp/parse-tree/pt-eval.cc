@@ -42,10 +42,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "octave-link.h"
 #include "octave.h"
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
@@ -174,15 +174,15 @@ namespace octave
                 frm->display_stopped_in_message (buf);
               }
 
-            octave_link& olnk = m_interpreter.get_octave_link ();
+            event_manager& evmgr = m_interpreter.get_event_manager ();
 
-            olnk.enter_debugger_event (nm, curr_debug_line);
+            evmgr.enter_debugger_event (nm, curr_debug_line);
 
-            olnk.set_workspace ();
+            evmgr.set_workspace ();
 
-            frame.add ([nm, curr_debug_line] (octave_link& ol) {
+            frame.add ([nm, curr_debug_line] (event_manager& ol) {
                          ol.execute_in_debugger_event (nm, curr_debug_line);
-                       }, std::ref (olnk));
+                       }, std::ref (evmgr));
 
             if (! silent)
               {

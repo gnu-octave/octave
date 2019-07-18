@@ -72,10 +72,10 @@ octave_user_code::~octave_user_code (void)
   // FIXME: shouldn't this happen automatically when deleting cmd_list?
   if (cmd_list)
     {
-      octave_link& olnk
-        = octave::__get_octave_link__ ("octave_user_code::~octave_user_code");
+      octave::event_manager& evmgr
+        = octave::__get_event_manager__ ("octave_user_code::~octave_user_code");
 
-      cmd_list->remove_all_breakpoints (olnk, file_name);
+      cmd_list->remove_all_breakpoints (evmgr, file_name);
     }
 
   delete cmd_list;

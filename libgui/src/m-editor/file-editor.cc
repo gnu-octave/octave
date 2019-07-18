@@ -44,12 +44,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
-#include "main-window.h"
-#include "gui-preferences.h"
+#include "event-manager.h"
 #include "oct-env.h"
 #include "oct-map.h"
-#include "octave-link.h"
 #include "utils.h"
+
+#include "main-window.h"
+#include "gui-preferences.h"
 
 namespace octave
 {

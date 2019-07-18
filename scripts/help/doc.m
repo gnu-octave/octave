@@ -53,7 +53,7 @@ function retval = doc (function_name)
 
   ## if GUI is running, let it display the function
   if (isguirunning ())
-    status = ! __octave_link_show_doc__ (function_name);
+    status = ! __event_manager_show_doc__ (function_name);
   else
     if (ftype == 2 || ftype == 3)
       ffile = which (function_name);

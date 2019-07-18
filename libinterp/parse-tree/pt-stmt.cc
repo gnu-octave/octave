@@ -30,9 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "comment-list.h"
+#include "event-manager.h"
 #include "input.h"
 #include "oct-lvalue.h"
-#include "octave-link.h"
 #include "ov.h"
 #include "pager.h"
 #include "pt-bp.h"
@@ -243,11 +243,11 @@ namespace octave
 
   // Add breakpoints to  file  at multiple lines (the second arguments
   // of  line), to stop only if  condition  is true.
-  // Updates GUI via  octave_link::update_breakpoint.
+  // Updates GUI via  event_manager::update_breakpoint.
   // FIXME: COME BACK TO ME.
 
   bp_table::intmap
-  tree_statement_list::add_breakpoint (octave_link& olnk,
+  tree_statement_list::add_breakpoint (event_manager& evmgr,
                                        const std::string& file,
                                        const bp_table::intmap& line,
                                        const std::string& condition)
@@ -267,7 +267,7 @@ namespace octave
             retval[i] = set_breakpoint (lineno, condition);
 
             if (retval[i] != 0 && ! file.empty ())
-              olnk.update_breakpoint (true, file, retval[i], condition);
+              evmgr.update_breakpoint (true, file, retval[i], condition);
           }
       }
 
@@ -275,7 +275,7 @@ namespace octave
   }
 
   bp_table::intmap
-  tree_statement_list::remove_all_breakpoints (octave_link& olnk,
+  tree_statement_list::remove_all_breakpoints (event_manager& evmgr,
                                                const std::string& file)
   {
     bp_table::intmap retval;
@@ -291,7 +291,7 @@ namespace octave
         retval[i] = lineno;
 
         if (! file.empty ())
-          olnk.update_breakpoint (false, file, lineno);
+          evmgr.update_breakpoint (false, file, lineno);
       }
 
     return retval;

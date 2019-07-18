@@ -24,11 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "event-manager.h"
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "interpreter-private.h"
-#include "octave-link.h"
 
 #include "GLCanvas.h"
 #include "gl-select.h"
@@ -174,10 +174,10 @@ namespace QtHandles
           }
         catch (octave::execution_exception& e)
           {
-            octave_link& olnk
-              = octave::__get_octave_link__ ("GLCanvas::do_print");
+            octave::event_manager& evmgr
+              = octave::__get_event_manager__ ("GLCanvas::do_print");
 
-            olnk.post_exception (std::current_exception ());
+            evmgr.post_exception (std::current_exception ());
           }
 
         end_rendering ();

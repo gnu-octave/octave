@@ -28,7 +28,7 @@
 
 function funcname = __get_funcname__ (basename)
 
-  if (! __octave_link_enabled__ ())
+  if (! __event_manager_enabled__ ())
     tk = graphics_toolkit ();
     funcname = [ "__" basename "_" tk "__"];
     if (numel (tk) > 0 && ! strcmp (tk, "fltk")

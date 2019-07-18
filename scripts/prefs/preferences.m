@@ -26,7 +26,7 @@
 function preferences ()
 
   if (isguirunning ())
-    __octave_link_show_preferences__ ();
+    __event_manager_show_preferences__ ();
   else
     warning ("preferences: GUI must be running to use preferences dialog");
   endif

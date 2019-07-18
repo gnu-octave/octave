@@ -33,6 +33,7 @@ COREFCN_INC = \
   %reldir%/environment.h \
   %reldir%/error.h \
   %reldir%/errwarn.h \
+  %reldir%/event-manager.h \
   %reldir%/event-queue.h \
   %reldir%/fcn-info.h \
   %reldir%/file-io.h \
@@ -74,7 +75,6 @@ COREFCN_INC = \
   %reldir%/oct-strstrm.h \
   %reldir%/oct.h \
   %reldir%/octave-default-image.h \
-  %reldir%/octave-link.h \
   %reldir%/pager.h \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
@@ -153,6 +153,7 @@ COREFCN_SRC = \
   %reldir%/environment.cc \
   %reldir%/error.cc \
   %reldir%/errwarn.cc \
+  %reldir%/event-manager.cc \
   %reldir%/event-queue.cc \
   %reldir%/fcn-info.cc \
   %reldir%/fft.cc \
@@ -215,7 +216,6 @@ COREFCN_SRC = \
   %reldir%/oct-tex-lexer.ll \
   %reldir%/oct-tex-parser.h \
   %reldir%/oct-tex-parser.yy \
-  %reldir%/octave-link.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
   %reldir%/pinv.cc \

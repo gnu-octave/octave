@@ -55,7 +55,7 @@ function choice = menu (title, varargin)
     error ("menu: OPTIONS must be string or cell array of strings");
   endif
 
-  if (__octave_link_enabled__ ())  # GUI menu
+  if (__event_manager_enabled__ ())  # GUI menu
     [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
                             "ListString", varargin, "SelectionMode", "Single");
     if (! ok)

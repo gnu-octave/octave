@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "interpreter-qobject.h"
 #include "octave-qobject.h"
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "qt-application.h"
 
 #include "input.h"
@@ -37,7 +37,7 @@ namespace octave
 {
   interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
     : QObject (), m_octave_qobject (oct_qobj),
-      m_qt_link (new octave_qt_link_events ())
+      m_qt_link (new qt_interpreter_events ())
   { }
 
   void interpreter_qobject::execute (void)
@@ -48,10 +48,10 @@ namespace octave
 
     interpreter& interp = app_context.create_interpreter ();
 
-    octave_link& olnk = interp.get_octave_link ();
+    event_manager& evmgr = interp.get_event_manager ();
 
-    olnk.connect_link (m_qt_link);
-    olnk.enable ();
+    evmgr.connect_link (m_qt_link);
+    evmgr.enable ();
 
     connect (qt_link (), SIGNAL (confirm_shutdown_signal (void)),
              m_octave_qobject, SLOT (confirm_shutdown_octave (void)));

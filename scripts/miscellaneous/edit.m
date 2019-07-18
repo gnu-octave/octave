@@ -341,7 +341,7 @@ function retval = edit (varargin)
 
     ## If editing a new file, prompt for creation if GUI is running
     if (isguirunning ())
-      if (! __octave_link_edit_file__ (file, "prompt"))
+      if (! __event_manager_edit_file__ (file, "prompt"))
         return;
       endif
     endif
@@ -564,7 +564,7 @@ endfunction
 function do_edit (editor, file, mode)
 
   if (isguirunning ())
-    __octave_link_edit_file__ (file);
+    __event_manager_edit_file__ (file);
   else
     system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
   endif

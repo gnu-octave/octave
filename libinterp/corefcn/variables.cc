@@ -45,13 +45,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "help.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "load-path.h"
-#include "octave-link.h"
 #include "octave-preserve-stream-state.h"
 #include "oct-map.h"
 #include "ovl.h"
@@ -1229,9 +1229,9 @@ Executing @code{clear foo} a second time will clear the function definition.
     {
       do_clear_variables (interp, argv, argc, true);
 
-      octave_link& olnk = interp.get_octave_link ();
+      octave::event_manager& evmgr = interp.get_event_manager ();
 
-      olnk.clear_workspace ();
+      evmgr.clear_workspace ();
     }
   else
     {

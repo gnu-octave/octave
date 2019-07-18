@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QTableView>
 
-#include "octave-qt-link.h"
+#include "qt-interpreter-events.h"
 #include "variable-editor-model.h"
 
 #include "interpreter.h"
@@ -1012,9 +1012,9 @@ namespace octave
 
     std::string expr = os.str ();
 
-    octave_link& olnk = __get_octave_link__ ("variable_editor_model::setData");
+    event_manager& evmgr = __get_event_manager__ ("variable_editor_model::setData");
 
-    olnk.post_event
+    evmgr.post_event
       ([this, nm, expr, idx] (void)
        {
          // INTERPRETER THREAD
@@ -1166,10 +1166,10 @@ namespace octave
   {
     std::string expr = expr_arg.toStdString ();
 
-    octave_link& olnk
-      = __get_octave_link__ ("variable_editor_model::eval_expr_event");
+    event_manager& evmgr
+      = __get_event_manager__ ("variable_editor_model::eval_expr_event");
 
-    olnk.post_event
+    evmgr.post_event
       ([this, expr] (void)
        {
          // INTERPRETER THREAD
@@ -1240,10 +1240,10 @@ namespace octave
   void
   variable_editor_model::update_data_cache (void)
   {
-    octave_link& olnk
-      = __get_octave_link__ ("variable_editor_model::update_data_cache");
+    event_manager& evmgr
+      = __get_event_manager__ ("variable_editor_model::update_data_cache");
 
-    olnk.post_event
+    evmgr.post_event
       ([this] (void)
        {
          // INTERPRETER_THREAD

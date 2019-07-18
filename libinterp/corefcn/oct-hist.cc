@@ -44,7 +44,6 @@ Software Foundation, Inc.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
-#include "octave-link.h"
 #include "oct-env.h"
 #include "oct-time.h"
 #include "str-vec.h"
@@ -53,6 +52,7 @@ Software Foundation, Inc.
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "event-manager.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "ovl.h"
@@ -138,10 +138,10 @@ namespace octave
           {
             if (command_history::add (tmp))
               {
-                octave_link& olnk
-                  = __get_octave_link__ ("edit_history_add_hist");
+                event_manager& evmgr
+                  = __get_event_manager__ ("edit_history_add_hist");
 
-                olnk.append_history (tmp);
+                evmgr.append_history (tmp);
               }
           }
       }
@@ -274,9 +274,9 @@ namespace octave
                                  default_size (),
                                  sys::env::getenv ("OCTAVE_HISTCONTROL"));
 
-    octave_link& olnk = m_interpreter.get_octave_link ();
+    event_manager& evmgr = m_interpreter.get_event_manager ();
 
-    olnk.set_history (command_history::list ());
+    evmgr.set_history (command_history::list ());
   }
 
   void history_system::write_timestamp (void)
@@ -289,9 +289,9 @@ namespace octave
       {
         if (command_history::add (timestamp))
           {
-            octave_link& olnk = m_interpreter.get_octave_link ();
+            event_manager& evmgr = m_interpreter.get_event_manager ();
 
-            olnk.append_history (timestamp);
+            evmgr.append_history (timestamp);
           }
       }
   }
@@ -352,7 +352,7 @@ namespace octave
         else
           err_wrong_type_arg ("history", arg);
 
-        octave_link& olnk = m_interpreter.get_octave_link ();
+        event_manager& evmgr = m_interpreter.get_event_manager ();
 
         if (option == "-r" || option == "-w" || option == "-a"
             || option == "-n")
@@ -380,14 +380,14 @@ namespace octave
               {
                 // Read entire file.
                 command_history::read ();
-                olnk.set_history (command_history::list ());
+                evmgr.set_history (command_history::list ());
               }
 
             else if (option == "-n")
               {
                 // Read 'new' history from file.
                 command_history::read_range ();
-                olnk.set_history (command_history::list ());
+                evmgr.set_history (command_history::list ());
               }
 
             else
@@ -398,7 +398,7 @@ namespace octave
         else if (option == "-c")
           {
             command_history::clear ();
-            olnk.clear_history ();
+            evmgr.clear_history ();
           }
         else if (option == "-q")
           numbered_output = false;

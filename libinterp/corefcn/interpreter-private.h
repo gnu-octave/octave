@@ -30,8 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
-class octave_link;
-
 namespace octave
 {
   class bp_table;
@@ -39,6 +37,7 @@ namespace octave
   class child_list;
   class dynamic_loader;
   class error_system;
+  class event_manager;
   class gtk_manager;
   class help_system;
   class history_system;
@@ -66,7 +65,7 @@ namespace octave
 
   extern load_save_system& __get_load_save_system__ (const std::string& who);
 
-  extern octave_link& __get_octave_link__ (const std::string& who);
+  extern event_manager& __get_event_manager__ (const std::string& who);
 
   extern output_system& __get_output_system__ (const std::string& who);
 

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class base_qobject;
-  class octave_qt_link_events;
+  class qt_interpreter_events;
 
   class interpreter_qobject : public QObject
   {
@@ -43,7 +43,7 @@ namespace octave
 
     ~interpreter_qobject (void) = default;
 
-    octave_qt_link_events * qt_link (void) { return m_qt_link.get (); }
+    qt_interpreter_events * qt_link (void) { return m_qt_link.get (); }
 
     void confirm_shutdown (bool closenow);
 
@@ -62,7 +62,7 @@ namespace octave
 
     base_qobject *m_octave_qobject;
 
-    std::shared_ptr<octave_qt_link_events> m_qt_link;
+    std::shared_ptr<qt_interpreter_events> m_qt_link;
   };
 }
 

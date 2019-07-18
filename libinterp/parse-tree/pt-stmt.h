@@ -34,7 +34,7 @@ class octave_value_list;
 #include "pt.h"
 #include "pt-walk.h"
 
-class octave_link;
+class event_manager;
 
 namespace octave
 {
@@ -185,12 +185,12 @@ namespace octave
 
     std::list<bp_type> breakpoints_and_conds (void);
 
-    bp_table::intmap add_breakpoint (octave_link& olnk,
+    bp_table::intmap add_breakpoint (event_manager& evmgr,
                                      const std::string& file,
                                      const bp_table::intmap& line,
                                      const std::string& condition);
 
-    bp_table::intmap remove_all_breakpoints (octave_link& olnk,
+    bp_table::intmap remove_all_breakpoints (event_manager& evmgr,
                                              const std::string& file);
 
     void accept (tree_walker& tw)

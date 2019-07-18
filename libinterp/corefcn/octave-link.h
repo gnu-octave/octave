@@ -68,12 +68,6 @@ public:
 
   virtual ~octave_link (void);
 
-  static void generate_events (void)
-  {
-    if (enabled ())
-      instance->do_generate_events ();
-  }
-
   // If disable is TRUE, then no additional events will be processed
   // other than exit.
 
@@ -125,18 +119,6 @@ public:
   {
     if (enabled ())
       instance->do_post_exception (p);
-  }
-
-  static void entered_readline_hook (void)
-  {
-    if (enabled ())
-      instance->do_entered_readline_hook ();
-  }
-
-  static void finished_readline_hook (void)
-  {
-    if (enabled ())
-      instance->do_finished_readline_hook ();
   }
 
   static bool
@@ -469,7 +451,6 @@ protected:
   bool debugging;
   bool link_enabled;
 
-  void do_generate_events (void);
   void do_process_events (void);
   void do_discard_events (void);
 

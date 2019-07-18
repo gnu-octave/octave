@@ -41,10 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 static int
 octave_readline_hook (void)
 {
-  octave_link::entered_readline_hook ();
-  octave_link::generate_events ();
   octave_link::process_events ();
-  octave_link::finished_readline_hook ();
 
   return 0;
 }
@@ -89,10 +86,6 @@ octave_link::connect_link (octave_link *obj)
 
   instance = obj;
 }
-
-void
-octave_link::do_generate_events (void)
-{ }
 
 void
 octave_link::do_process_events (void)

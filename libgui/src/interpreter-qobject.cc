@@ -51,11 +51,12 @@ namespace octave
     octave_link& olnk = interp.get_octave_link ();
 
     olnk.connect_link (m_qt_link);
+    olnk.enable ();
 
-    connect (m_qt_link, SIGNAL (confirm_shutdown_signal (void)),
+    connect (qt_link (), SIGNAL (confirm_shutdown_signal (void)),
              m_octave_qobject, SLOT (confirm_shutdown_octave (void)));
 
-    connect (m_qt_link,
+    connect (qt_link (),
              SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
              m_octave_qobject,
              SLOT (copy_image_to_clipboard (const QString&, bool)));

@@ -1019,10 +1019,10 @@ namespace octave
   void interpreter::cleanup (void)
   {
     // If we are attached to a GUI, process pending events and
-    // disconnect the link.
+    // disable the link.
 
     m_octave_link.process_events (true);
-    m_octave_link.disconnect_link ();
+    m_octave_link.disable ();
 
     OCTAVE_SAFE_CALL (m_input_system.clear_input_event_hooks, ());
 

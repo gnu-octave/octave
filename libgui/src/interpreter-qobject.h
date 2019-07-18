@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_interpreter_qobject_h)
 #define octave_interpreter_qobject_h 1
 
+#include <memory>
+
 #include <QObject>
 
 namespace octave
@@ -41,7 +43,7 @@ namespace octave
 
     ~interpreter_qobject (void) = default;
 
-    octave_qt_link_events * qt_link (void) { return m_qt_link; }
+    octave_qt_link_events * qt_link (void) { return m_qt_link.get (); }
 
     void confirm_shutdown (bool closenow);
 
@@ -60,7 +62,7 @@ namespace octave
 
     base_qobject *m_octave_qobject;
 
-    octave_qt_link_events *m_qt_link;
+    std::shared_ptr<octave_qt_link_events> m_qt_link;
   };
 }
 

@@ -50,7 +50,7 @@ octave_readline_hook (void)
 
 octave_link::octave_link (void)
   : instance (nullptr), event_queue_mutex (new octave::mutex ()),
-    gui_event_queue (), debugging (false), link_enabled (true)
+    gui_event_queue (), debugging (false), link_enabled (false)
 {
   octave::command_editor::add_event_hook (octave_readline_hook);
 }
@@ -60,34 +60,32 @@ octave_link::~octave_link (void)
   delete event_queue_mutex;
 }
 
-// OBJ should be an object of a class that is derived from the base
-// class octave_link, or 0 to disconnect the link.  It is the
-// responsibility of the caller to delete obj.
+// Programming Note: It is possible to disable the link without deleting
+// the connection.  This allows it to be temporarily disabled.  But if
+// the link is removed, we also set the link_enabled flag to false
+// because if there is no link, it can't be enabled.  Also, access to
+// instance is only protected by a check on the link_enabled flag.
 
 void
-octave_link::connect_link (octave_link_events *obj)
+octave_link::connect_link (const std::shared_ptr<octave_link_events>& obj)
 {
-  if (obj && instance)
-    error ("octave_link is already linked!");
+  if (! obj)
+    disable ();
 
   instance = obj;
 }
 
-octave_link_events *
-octave_link::disconnect_link (bool delete_instance)
+bool
+octave_link::enable (void)
 {
-  if (delete_instance)
-    {
-      delete instance;
-      instance = nullptr;
-      return nullptr;
-    }
+  bool retval = link_enabled;
+
+  if (instance)
+    link_enabled = true;
   else
-    {
-      octave_link_events *retval = instance;
-      instance = nullptr;
-      return retval;
-    }
+    warning ("octave_link: must have connected link to enable");
+
+  return retval;
 }
 
 void

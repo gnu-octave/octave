@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <list>
+#include <memory>
 #include <string>
 
 #include "oct-mutex.h"
@@ -212,16 +213,13 @@ public:
 
   virtual ~octave_link (void);
 
-  void connect_link (octave_link_events *obj);
+  // OBJ should be an object of a class that is derived from the base
+  // class octave_link_events, or nullptr to disconnect and delete the
+  // previous link.
 
-  octave_link_events * disconnect_link (bool delete_instance = true);
+  void connect_link (const std::shared_ptr<octave_link_events>& obj);
 
-  bool enable (void)
-  {
-    bool retval = link_enabled;
-    link_enabled = true;
-    return retval;
-  }
+  bool enable (void);
 
   bool disable (void)
   {
@@ -525,9 +523,10 @@ public:
 
 private:
 
-  octave_link_events *instance;
+  // Using a shared_ptr to manage the link_events object ensures that it
+  // will be valid until it is no longer needed.
 
-  bool instance_ok (void) { return instance != nullptr; }
+  std::shared_ptr<octave_link_events> instance;
 
 protected:
 

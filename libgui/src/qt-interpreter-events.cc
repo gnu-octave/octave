@@ -109,10 +109,10 @@ namespace octave
     // Lock mutex before signaling.
     uiwidget_creator.lock ();
 
-    uiwidget_creator.signal_dialog (
-                                    tr ("File\n%1\ndoes not exist. Do you want to create it?").
-                                    arg (QString::fromStdString (abs_fname)),
-                                    tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
+    uiwidget_creator.signal_dialog
+      (tr ("File\n%1\ndoes not exist. Do you want to create it?").
+       arg (QString::fromStdString (abs_fname)),
+       tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
 
     // Wait while the user is responding to message box.
     uiwidget_creator.wait ();
@@ -152,12 +152,13 @@ namespace octave
     return retval;
   }
 
-  std::string qt_interpreter_events::do_question_dialog (const std::string& msg,
-                                                  const std::string& title,
-                                                  const std::string& btn1,
-                                                  const std::string& btn2,
-                                                  const std::string& btn3,
-                                                  const std::string& btndef)
+  std::string
+  qt_interpreter_events::do_question_dialog (const std::string& msg,
+                                             const std::string& title,
+                                             const std::string& btn1,
+                                             const std::string& btn2,
+                                             const std::string& btn3,
+                                             const std::string& btndef)
   {
     QStringList btn;
     QStringList role;
@@ -238,13 +239,13 @@ namespace octave
 
   std::pair<std::list<int>, int>
   qt_interpreter_events::do_list_dialog (const std::list<std::string>& list,
-                                  const std::string& mode,
-                                  int width, int height,
-                                  const std::list<int>& initial,
-                                  const std::string& name,
-                                  const std::list<std::string>& prompt,
-                                  const std::string& ok_string,
-                                  const std::string& cancel_string)
+                                         const std::string& mode,
+                                         int width, int height,
+                                         const std::list<int>& initial,
+                                         const std::string& name,
+                                         const std::list<std::string>& prompt,
+                                         const std::string& ok_string,
+                                         const std::string& cancel_string)
   {
     // Lock mutex before signaling.
     uiwidget_creator.lock ();
@@ -273,10 +274,10 @@ namespace octave
 
   std::list<std::string>
   qt_interpreter_events::do_input_dialog (const std::list<std::string>& prompt,
-                                   const std::string& title,
-                                   const std::list<float>& nr,
-                                   const std::list<float>& nc,
-                                   const std::list<std::string>& defaults)
+                                          const std::string& title,
+                                          const std::list<float>& nr,
+                                          const std::list<float>& nc,
+                                          const std::list<std::string>& defaults)
   {
     std::list<std::string> retval;
 
@@ -306,10 +307,10 @@ namespace octave
 
   std::list<std::string>
   qt_interpreter_events::do_file_dialog (const filter_list& filter,
-                                  const std::string& title,
-                                  const std::string& filename,
-                                  const std::string& dirname,
-                                  const std::string& multimode)
+                                         const std::string& title,
+                                         const std::string& filename,
+                                         const std::string& dirname,
+                                         const std::string& multimode)
   {
     std::list<std::string> retval;
 
@@ -342,14 +343,17 @@ namespace octave
     return retval;
   }
 
-  // Prompt to allow file to be run by setting cwd (or if addpath_option==true,
-  // alternatively setting the path).
-  // This uses a QMessageBox unlike other functions in this file,
-  // because uiwidget_creator.waitcondition.wait hangs when called from
-  // file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
-  int qt_interpreter_events::do_debug_cd_or_addpath_error (const std::string& file,
-                                                    const std::string& dir,
-                                                    bool addpath_option)
+  // Prompt to allow file to be run by setting cwd (or if
+  // addpath_option==true, alternatively setting the path).  This uses a
+  // QMessageBox unlike other functions in this file, because
+  // uiwidget_creator.waitcondition.wait hangs when called from
+  // file_editor_tab::handle_context_menu_break_condition().  (FIXME:
+  // why hang?)
+
+  int
+  qt_interpreter_events::do_debug_cd_or_addpath_error (const std::string& file,
+                                                       const std::string& dir,
+                                                       bool addpath_option)
   {
     int retval = -1;
 
@@ -406,7 +410,7 @@ namespace octave
   }
 
   void qt_interpreter_events::do_file_remove (const std::string& old_name,
-                                       const std::string& new_name)
+                                              const std::string& new_name)
   {
     // Lock the mutex before signaling
     lock ();
@@ -432,8 +436,8 @@ namespace octave
   }
 
   void qt_interpreter_events::do_set_workspace (bool top_level, bool debug,
-                                         const symbol_info_list& syminfo,
-                                         bool update_variable_editor)
+                                                const symbol_info_list& syminfo,
+                                                bool update_variable_editor)
   {
     if (! top_level && ! debug)
       return;
@@ -478,8 +482,9 @@ namespace octave
   void qt_interpreter_events::do_enter_debugger_event (const std::string& file,
                                                 int line)
   {
-    interpreter& interp = __get_interpreter__ (
-                                  "qt_interpreter_events::do_enter_debugger_event");
+    interpreter& interp
+      = __get_interpreter__ ("qt_interpreter_events::do_enter_debugger_event");
+
     octave_value_list fct = F__which__ (interp, ovl (file),0);
     octave_map map = fct(0).map_value ();
 
@@ -492,8 +497,9 @@ namespace octave
     emit enter_debugger_signal ();
   }
 
-  void qt_interpreter_events::do_execute_in_debugger_event (const std::string& file,
-                                                     int line)
+  void
+  qt_interpreter_events::do_execute_in_debugger_event (const std::string& file,
+                                                       int line)
   {
     do_delete_debugger_pointer (file, line);
   }
@@ -506,9 +512,9 @@ namespace octave
   // Display (if @insert true) or remove the appropriate symbol for a breakpoint
   // in @file at @line with condition @cond.
   void qt_interpreter_events::do_update_breakpoint (bool insert,
-                                             const std::string& file,
-                                             int line,
-                                             const std::string& cond)
+                                                    const std::string& file,
+                                                    int line,
+                                                    const std::string& cond)
   {
     emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
                                           line, QString::fromStdString (cond));
@@ -519,8 +525,9 @@ namespace octave
     emit show_preferences_signal ();
   }
 
-  std::string qt_interpreter_events::do_gui_preference (const std::string& key,
-                                                 const std::string& value)
+  std::string
+  qt_interpreter_events::do_gui_preference (const std::string& key,
+                                            const std::string& value)
   {
     QString pref_value;
 
@@ -554,13 +561,13 @@ namespace octave
   }
 
   void qt_interpreter_events::do_edit_variable (const std::string& expr,
-                                         const octave_value& val)
+                                                const octave_value& val)
   {
     emit edit_variable_signal (QString::fromStdString (expr), val);
   }
 
   bool qt_interpreter_events::file_in_path (const std::string& file,
-                                     const std::string& dir)
+                                            const std::string& dir)
   {
 
     bool ok = false;
@@ -572,7 +579,8 @@ namespace octave
       ok = true;
     else
       {
-        load_path& lp = __get_load_path__ ("qt_interpreter_events::file_in_path");
+        load_path& lp
+          = __get_load_path__ ("qt_interpreter_events::file_in_path");
 
         bool dir_in_load_path = lp.contains_canonical (dir);
 
@@ -622,7 +630,8 @@ namespace octave
 
           case 2:
             {
-              load_path& lp = __get_load_path__ ("qt_interpreter_events::file_in_path");
+              load_path& lp
+                = __get_load_path__ ("qt_interpreter_events::file_in_path");
 
               lp.prepend (dir);
               ok = true;
@@ -637,14 +646,16 @@ namespace octave
     return ok;
   }
 
-  void qt_interpreter_events::do_insert_debugger_pointer (const std::string& file,
-                                                          int line)
+  void
+  qt_interpreter_events::do_insert_debugger_pointer (const std::string& file,
+                                                     int line)
   {
     emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
   }
 
-  void qt_interpreter_events::do_delete_debugger_pointer (const std::string& file,
-                                                          int line)
+  void
+  qt_interpreter_events::do_delete_debugger_pointer (const std::string& file,
+                                                     int line)
   {
     emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
   }

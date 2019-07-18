@@ -289,8 +289,10 @@ namespace octave
                      const std::string& btn1, const std::string& btn2,
                      const std::string& btn3, const std::string& btndef)
     {
-      return enabled () ? instance->do_question_dialog (msg, title, btn1,
-                                                        btn2, btn3, btndef) : "";
+      return (enabled ()
+              ? instance->do_question_dialog (msg, title, btn1,
+                                              btn2, btn3, btndef)
+              : "");
     }
 
     std::pair<std::list<int>, int>
@@ -339,7 +341,8 @@ namespace octave
                                    const std::string& dir, bool addpath_option)
     {
       return (enabled ()
-              ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option)
+              ? instance->do_debug_cd_or_addpath_error (file, dir,
+                                                        addpath_option)
               : 0);
     }
 
@@ -371,8 +374,8 @@ namespace octave
 
     uint8NDArray get_named_icon (const std::string& icon_name)
     {
-      return (enabled () ?
-              instance->do_get_named_icon (icon_name) : uint8NDArray ());
+      return (enabled ()
+              ? instance->do_get_named_icon (icon_name) : uint8NDArray ());
     }
 
     void set_workspace (void);

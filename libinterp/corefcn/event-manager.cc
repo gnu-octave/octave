@@ -151,7 +151,8 @@ Undocumented internal function.
 
   if (args.length () == 1)
     {
-      std::string file = args(0).xstring_value ("first argument must be filename");
+      std::string file
+        = args(0).xstring_value ("first argument must be filename");
 
       octave::flush_stdout ();
 
@@ -159,7 +160,8 @@ Undocumented internal function.
     }
   else if (args.length () == 2)
     {
-      std::string file = args(0).xstring_value ("first argument must be filename");
+      std::string file
+        = args(0).xstring_value ("first argument must be filename");
 
       octave::flush_stdout ();
 

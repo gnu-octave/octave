@@ -54,14 +54,14 @@ Q_DECLARE_METATYPE (octave::symbol_info_list)
 
 namespace octave
 {
-  octave_qt_link::octave_qt_link (void)
-    : octave_link (), m_shutdown_confirm_result (false)
+  octave_qt_link_events::octave_qt_link_events (void)
+    : octave_link_events (), m_shutdown_confirm_result (false)
   {
     qRegisterMetaType<octave_value> ("octave_value");
     qRegisterMetaType<symbol_info_list> ("symbol_info_list");
   }
 
-  bool octave_qt_link::do_confirm_shutdown (void)
+  bool octave_qt_link_events::do_confirm_shutdown (void)
   {
     // Lock the mutex before emitting signal.
     lock ();
@@ -78,21 +78,21 @@ namespace octave
     return m_shutdown_confirm_result;
   }
 
-  bool octave_qt_link::do_copy_image_to_clipboard (const std::string& file)
+  bool octave_qt_link_events::do_copy_image_to_clipboard (const std::string& file)
   {
     emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
 
     return true;
   }
 
-  bool octave_qt_link::do_edit_file (const std::string& file)
+  bool octave_qt_link_events::do_edit_file (const std::string& file)
   {
     emit edit_file_signal (QString::fromStdString (file));
 
     return true;
   }
 
-  bool octave_qt_link::do_prompt_new_edit_file (const std::string& file)
+  bool octave_qt_link_events::do_prompt_new_edit_file (const std::string& file)
   {
     QSettings *settings = resource_manager::get_settings ();
 
@@ -126,7 +126,7 @@ namespace octave
     return (answer == tr ("Create"));
   }
 
-  uint8NDArray octave_qt_link::do_get_named_icon (const std::string& icon_name)
+  uint8NDArray octave_qt_link_events::do_get_named_icon (const std::string& icon_name)
   {
     uint8NDArray retval;
     QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
@@ -152,7 +152,7 @@ namespace octave
     return retval;
   }
 
-  std::string octave_qt_link::do_question_dialog (const std::string& msg,
+  std::string octave_qt_link_events::do_question_dialog (const std::string& msg,
                                                   const std::string& title,
                                                   const std::string& btn1,
                                                   const std::string& btn2,
@@ -237,7 +237,7 @@ namespace octave
   }
 
   std::pair<std::list<int>, int>
-  octave_qt_link::do_list_dialog (const std::list<std::string>& list,
+  octave_qt_link_events::do_list_dialog (const std::list<std::string>& list,
                                   const std::string& mode,
                                   int width, int height,
                                   const std::list<int>& initial,
@@ -272,7 +272,7 @@ namespace octave
   }
 
   std::list<std::string>
-  octave_qt_link::do_input_dialog (const std::list<std::string>& prompt,
+  octave_qt_link_events::do_input_dialog (const std::list<std::string>& prompt,
                                    const std::string& title,
                                    const std::list<float>& nr,
                                    const std::list<float>& nc,
@@ -305,7 +305,7 @@ namespace octave
   }
 
   std::list<std::string>
-  octave_qt_link::do_file_dialog (const filter_list& filter,
+  octave_qt_link_events::do_file_dialog (const filter_list& filter,
                                   const std::string& title,
                                   const std::string& filename,
                                   const std::string& dirname,
@@ -347,7 +347,7 @@ namespace octave
   // This uses a QMessageBox unlike other functions in this file,
   // because uiwidget_creator.waitcondition.wait hangs when called from
   // file_editor_tab::handle_context_menu_break_condition().  (FIXME: why hang?)
-  int octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
+  int octave_qt_link_events::do_debug_cd_or_addpath_error (const std::string& file,
                                                     const std::string& dir,
                                                     bool addpath_option)
   {
@@ -400,12 +400,12 @@ namespace octave
     return retval;
   }
 
-  void octave_qt_link::do_change_directory (const std::string& dir)
+  void octave_qt_link_events::do_change_directory (const std::string& dir)
   {
     emit change_directory_signal (QString::fromStdString (dir));
   }
 
-  void octave_qt_link::do_file_remove (const std::string& old_name,
+  void octave_qt_link_events::do_file_remove (const std::string& old_name,
                                        const std::string& new_name)
   {
     // Lock the mutex before signaling
@@ -420,18 +420,18 @@ namespace octave
     unlock ();
   }
 
-  void octave_qt_link::do_file_renamed (bool load_new)
+  void octave_qt_link_events::do_file_renamed (bool load_new)
   {
     emit file_renamed_signal (load_new);
   }
 
-  void octave_qt_link::do_execute_command_in_terminal
+  void octave_qt_link_events::do_execute_command_in_terminal
     (const std::string& command)
   {
     emit execute_command_in_terminal_signal (QString::fromStdString (command));
   }
 
-  void octave_qt_link::do_set_workspace (bool top_level, bool debug,
+  void octave_qt_link_events::do_set_workspace (bool top_level, bool debug,
                                          const symbol_info_list& syminfo,
                                          bool update_variable_editor)
   {
@@ -444,12 +444,12 @@ namespace octave
       emit refresh_variable_editor_signal ();
   }
 
-  void octave_qt_link::do_clear_workspace (void)
+  void octave_qt_link_events::do_clear_workspace (void)
   {
     emit clear_workspace_signal ();
   }
 
-  void octave_qt_link::do_set_history (const string_vector& hist)
+  void octave_qt_link_events::do_set_history (const string_vector& hist)
   {
     QStringList qt_hist;
 
@@ -459,27 +459,27 @@ namespace octave
     emit set_history_signal (qt_hist);
   }
 
-  void octave_qt_link::do_append_history (const std::string& hist_entry)
+  void octave_qt_link_events::do_append_history (const std::string& hist_entry)
   {
     emit append_history_signal (QString::fromStdString (hist_entry));
   }
 
-  void octave_qt_link::do_clear_history (void)
+  void octave_qt_link_events::do_clear_history (void)
   {
     emit clear_history_signal ();
   }
 
-  void octave_qt_link::do_pre_input_event (void)
+  void octave_qt_link_events::do_pre_input_event (void)
   { }
 
-  void octave_qt_link::do_post_input_event (void)
+  void octave_qt_link_events::do_post_input_event (void)
   { }
 
-  void octave_qt_link::do_enter_debugger_event (const std::string& file,
+  void octave_qt_link_events::do_enter_debugger_event (const std::string& file,
                                                 int line)
   {
     interpreter& interp = __get_interpreter__ (
-                                  "octave_qt_link::do_enter_debugger_event");
+                                  "octave_qt_link_events::do_enter_debugger_event");
     octave_value_list fct = F__which__ (interp, ovl (file),0);
     octave_map map = fct(0).map_value ();
 
@@ -492,20 +492,20 @@ namespace octave
     emit enter_debugger_signal ();
   }
 
-  void octave_qt_link::do_execute_in_debugger_event (const std::string& file,
+  void octave_qt_link_events::do_execute_in_debugger_event (const std::string& file,
                                                      int line)
   {
     do_delete_debugger_pointer (file, line);
   }
 
-  void octave_qt_link::do_exit_debugger_event (void)
+  void octave_qt_link_events::do_exit_debugger_event (void)
   {
     emit exit_debugger_signal ();
   }
 
   // Display (if @insert true) or remove the appropriate symbol for a breakpoint
   // in @file at @line with condition @cond.
-  void octave_qt_link::do_update_breakpoint (bool insert,
+  void octave_qt_link_events::do_update_breakpoint (bool insert,
                                              const std::string& file,
                                              int line,
                                              const std::string& cond)
@@ -514,7 +514,52 @@ namespace octave
                                           line, QString::fromStdString (cond));
   }
 
-  bool octave_qt_link::file_in_path (const std::string& file,
+  void octave_qt_link_events::do_show_preferences (void)
+  {
+    emit show_preferences_signal ();
+  }
+
+  std::string octave_qt_link_events::do_gui_preference (const std::string& key,
+                                                 const std::string& value)
+  {
+    QString pref_value;
+
+    // Lock the mutex before signaling
+    lock ();
+
+    // Emit the signal for changing or getting a preference
+    emit gui_preference_signal (QString::fromStdString (key),
+                                QString::fromStdString (value), &pref_value);
+
+    // Wait for the GUI and unlock when resumed
+    wait ();
+    unlock ();
+
+    return pref_value.toStdString ();
+  }
+
+  void octave_qt_link_events::do_show_doc (const std::string& file)
+  {
+    emit show_doc_signal (QString::fromStdString (file));
+  }
+
+  void octave_qt_link_events::do_register_doc (const std::string& file)
+  {
+    emit register_doc_signal (QString::fromStdString (file));
+  }
+
+  void octave_qt_link_events::do_unregister_doc (const std::string& file)
+  {
+    emit unregister_doc_signal (QString::fromStdString (file));
+  }
+
+  void octave_qt_link_events::do_edit_variable (const std::string& expr,
+                                         const octave_value& val)
+  {
+    emit edit_variable_signal (QString::fromStdString (expr), val);
+  }
+
+  bool octave_qt_link_events::file_in_path (const std::string& file,
                                      const std::string& dir)
   {
 
@@ -527,7 +572,7 @@ namespace octave
       ok = true;
     else
       {
-        load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
+        load_path& lp = __get_load_path__ ("octave_qt_link_events::file_in_path");
 
         bool dir_in_load_path = lp.contains_canonical (dir);
 
@@ -563,7 +608,7 @@ namespace octave
 
     if (! ok)
       {
-        int action = debug_cd_or_addpath_error (file, dir, addpath_option);
+        int action = octave_link::debug_cd_or_addpath_error (file, dir, addpath_option);
         switch (action)
           {
           case 1:
@@ -573,7 +618,7 @@ namespace octave
 
           case 2:
             {
-              load_path& lp = __get_load_path__ ("octave_qt_link::file_in_path");
+              load_path& lp = __get_load_path__ ("octave_qt_link_events::file_in_path");
 
               lp.prepend (dir);
               ok = true;
@@ -588,59 +633,14 @@ namespace octave
     return ok;
   }
 
-  void octave_qt_link::do_show_preferences (void)
-  {
-    emit show_preferences_signal ();
-  }
-
-  std::string octave_qt_link::do_gui_preference (const std::string& key,
-                                                 const std::string& value)
-  {
-    QString pref_value;
-
-    // Lock the mutex before signaling
-    lock ();
-
-    // Emit the signal for changing or getting a preference
-    emit gui_preference_signal (QString::fromStdString (key),
-                                QString::fromStdString (value), &pref_value);
-
-    // Wait for the GUI and unlock when resumed
-    wait ();
-    unlock ();
-
-    return pref_value.toStdString ();
-  }
-
-  void octave_qt_link::do_show_doc (const std::string& file)
-  {
-    emit show_doc_signal (QString::fromStdString (file));
-  }
-
-  void octave_qt_link::do_register_doc (const std::string& file)
-  {
-    emit register_doc_signal (QString::fromStdString (file));
-  }
-
-  void octave_qt_link::do_unregister_doc (const std::string& file)
-  {
-    emit unregister_doc_signal (QString::fromStdString (file));
-  }
-
-  void octave_qt_link::do_edit_variable (const std::string& expr,
-                                         const octave_value& val)
-  {
-    emit edit_variable_signal (QString::fromStdString (expr), val);
-  }
-
-  void octave_qt_link::do_insert_debugger_pointer (const std::string& file,
-                                                   int line)
+  void octave_qt_link_events::do_insert_debugger_pointer (const std::string& file,
+                                                          int line)
   {
     emit insert_debugger_pointer_signal (QString::fromStdString (file), line);
   }
 
-  void octave_qt_link::do_delete_debugger_pointer (const std::string& file,
-                                                   int line)
+  void octave_qt_link_events::do_delete_debugger_pointer (const std::string& file,
+                                                          int line)
   {
     emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
   }

@@ -514,7 +514,7 @@ namespace octave
   {
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
-    octave_qt_link *qt_link = interp_qobj->qt_link ();
+    octave_qt_link_events *qt_link = interp_qobj->qt_link ();
 
     // Wait for worker to suspend
     qt_link->lock ();
@@ -1046,7 +1046,7 @@ namespace octave
 
              std::string path = info.absolutePath ().toStdString ();
 
-             if (octave_qt_link::file_in_path (file_path, path))
+             if (octave_qt_link_events::file_in_path (file_path, path))
                command_editor::replace_line (function_name.toStdString ());
            }
          else
@@ -1882,7 +1882,7 @@ namespace octave
 
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
-    octave_qt_link *qt_link = interp_qobj->qt_link ();
+    octave_qt_link_events *qt_link = interp_qobj->qt_link ();
 
     connect (qt_link,
              SIGNAL (edit_variable_signal (const QString&,
@@ -2069,7 +2069,7 @@ namespace octave
   {
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
-    octave_qt_link *qt_link = interp_qobj->qt_link ();
+    octave_qt_link_events *qt_link = interp_qobj->qt_link ();
 
     connect (qt_link,
              SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),
@@ -2674,7 +2674,7 @@ namespace octave
 
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
-    octave_qt_link *qt_link = interp_qobj->qt_link ();
+    octave_qt_link_events *qt_link = interp_qobj->qt_link ();
 
     // Wait for worker to suspend
     qt_link->lock ();

@@ -50,27 +50,28 @@ namespace octave
   //! buffering access operations to octave and executing them in the
   //! readline event hook, which lives in the octave thread.
 
-  class octave_qt_link : public QObject, public octave_link
+  class octave_qt_link_events : public QObject, public octave_link_events
   {
     Q_OBJECT
 
   public:
 
-    octave_qt_link (void);
+    octave_qt_link_events (void);
 
     // No copying!
 
-    octave_qt_link (const octave_qt_link&) = delete;
+    octave_qt_link_events (const octave_qt_link_events&) = delete;
 
-    octave_qt_link& operator = (const octave_qt_link&) = delete;
+    octave_qt_link_events& operator = (const octave_qt_link_events&) = delete;
 
-    ~octave_qt_link (void) = default;
+    ~octave_qt_link_events (void) = default;
 
     bool do_confirm_shutdown (void);
 
     bool do_copy_image_to_clipboard (const std::string& file);
 
     bool do_edit_file (const std::string& file);
+
     bool do_prompt_new_edit_file (const std::string& file);
 
     std::string
@@ -122,46 +123,58 @@ namespace octave
     void do_clear_workspace (void);
 
     void do_set_history (const string_vector& hist);
+
     void do_append_history (const std::string& hist_entry);
+
     void do_clear_history (void);
 
     void do_pre_input_event (void);
+
     void do_post_input_event (void);
 
     void do_enter_debugger_event (const std::string& file, int line);
+
     void do_execute_in_debugger_event (const std::string& file, int line);
+
     void do_exit_debugger_event (void);
 
     void do_update_breakpoint (bool insert, const std::string& file, int line,
                                const std::string& cond);
-
-    static bool file_in_path (const std::string& file, const std::string& dir);
 
     void do_show_preferences (void);
 
     std::string do_gui_preference (const std::string& key,
                                    const std::string& value);
     void do_show_doc (const std::string& file);
+
     void do_register_doc (const std::string& file);
+
     void do_unregister_doc (const std::string& file);
 
     void do_edit_variable (const std::string& name, const octave_value& val);
 
     void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
+    static bool file_in_path (const std::string& file, const std::string& dir);
+
     void lock (void) { m_mutex.lock (); }
+
     void wait (void) { m_waitcondition.wait (&m_mutex); }
+
     void unlock (void) { m_mutex.unlock (); }
+
     void wake_all (void) { m_waitcondition.wakeAll (); }
 
   private:
 
     void do_insert_debugger_pointer (const std::string& file, int line);
+
     void do_delete_debugger_pointer (const std::string& file, int line);
 
     bool m_shutdown_confirm_result;
 
     QMutex m_mutex;
+
     QWaitCondition m_waitcondition;
 
   signals:
@@ -173,6 +186,7 @@ namespace octave
     void change_directory_signal (const QString& dir);
 
     void file_remove_signal (const QString& old_name, const QString& new_name);
+
     void file_renamed_signal (bool load_new);
 
     void execute_command_in_terminal_signal (const QString& command);
@@ -183,16 +197,20 @@ namespace octave
     void clear_workspace_signal (void);
 
     void set_history_signal (const QStringList& hist);
+
     void append_history_signal (const QString& hist_entry);
+
     void clear_history_signal (void);
 
     void enter_debugger_signal (void);
+
     void exit_debugger_signal (void);
 
     void update_breakpoint_marker_signal (bool insert, const QString& file,
                                           int line, const QString& cond);
 
     void insert_debugger_pointer_signal (const QString&, int);
+
     void delete_debugger_pointer_signal (const QString&, int);
 
     void show_preferences_signal (void);

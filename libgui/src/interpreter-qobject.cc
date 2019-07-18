@@ -37,7 +37,7 @@ namespace octave
 {
   interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
     : QObject (), m_octave_qobject (oct_qobj),
-      m_qt_link (new octave_qt_link ())
+      m_qt_link (new octave_qt_link_events ())
   {
     octave_link::connect_link (m_qt_link);
 

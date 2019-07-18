@@ -46,18 +46,83 @@ octave_readline_hook (void)
   return 0;
 }
 
-octave_link *octave_link::instance = nullptr;
+octave_link_events *octave_link::instance = nullptr;
+
+octave::mutex *octave_link::event_queue_mutex = new octave::mutex ();
+
+octave::event_queue octave_link::gui_event_queue;
+
+bool octave_link::debugging = false;
+
+bool octave_link::link_enabled = true;
 
 octave_link::octave_link (void)
-  : event_queue_mutex (new octave::mutex ()), gui_event_queue (),
-    debugging (false), link_enabled (true)
-{
-  octave::command_editor::add_event_hook (octave_readline_hook);
-}
+{ }
 
 octave_link::~octave_link (void)
 {
   delete event_queue_mutex;
+}
+
+// OBJ should be an object of a class that is derived from the base
+// class octave_link, or 0 to disconnect the link.  It is the
+// responsibility of the caller to delete obj.
+
+void
+octave_link::connect_link (octave_link_events *obj)
+{
+  if (obj && instance)
+    error ("octave_link is already linked!");
+
+  instance = obj;
+
+  octave::command_editor::add_event_hook (octave_readline_hook);
+}
+
+octave_link_events *
+octave_link::disconnect_link (bool delete_instance)
+{
+  if (delete_instance)
+    {
+      delete instance;
+      instance = nullptr;
+      return nullptr;
+    }
+  else
+    {
+      octave_link_events *retval = instance;
+      instance = nullptr;
+      return retval;
+    }
+}
+
+void
+octave_link::process_events (bool disable_flag)
+{
+  if (enabled ())
+    {
+      if (disable_flag)
+        disable ();
+
+      event_queue_mutex->lock ();
+
+      gui_event_queue.run ();
+
+      event_queue_mutex->unlock ();
+    }
+}
+
+void
+octave_link::discard_events (void)
+{
+  if (enabled ())
+    {
+      event_queue_mutex->lock ();
+
+      gui_event_queue.discard ();
+
+      event_queue_mutex->unlock ();
+    }
 }
 
 void
@@ -68,43 +133,9 @@ octave_link::set_workspace (void)
       octave::tree_evaluator& tw
         = octave::__get_evaluator__ ("octave_link::set_workspace");
 
-      instance->do_set_workspace (tw.at_top_level (),
-                                  instance->debugging,
+      instance->do_set_workspace (tw.at_top_level (), debugging,
                                   tw.get_symbol_info (), true);
     }
-}
-
-// OBJ should be an object of a class that is derived from the base
-// class octave_link, or 0 to disconnect the link.  It is the
-// responsibility of the caller to delete obj.
-
-void
-octave_link::connect_link (octave_link *obj)
-{
-  if (obj && instance)
-    error ("octave_link is already linked!");
-
-  instance = obj;
-}
-
-void
-octave_link::do_process_events (void)
-{
-  event_queue_mutex->lock ();
-
-  gui_event_queue.run ();
-
-  event_queue_mutex->unlock ();
-}
-
-void
-octave_link::do_discard_events (void)
-{
-  event_queue_mutex->lock ();
-
-  gui_event_queue.discard ();
-
-  event_queue_mutex->unlock ();
 }
 
 DEFUN (__octave_link_enabled__, , ,

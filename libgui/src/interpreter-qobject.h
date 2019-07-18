@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   class base_qobject;
-  class octave_qt_link;
+  class octave_qt_link_events;
 
   class interpreter_qobject : public QObject
   {
@@ -41,7 +41,7 @@ namespace octave
 
     ~interpreter_qobject (void) = default;
 
-    octave_qt_link * qt_link (void) { return m_qt_link; }
+    octave_qt_link_events * qt_link (void) { return m_qt_link; }
 
     void confirm_shutdown (bool closenow);
 
@@ -60,7 +60,7 @@ namespace octave
 
     base_qobject *m_octave_qobject;
 
-    octave_qt_link *m_qt_link;
+    octave_qt_link_events *m_qt_link;
   };
 }
 

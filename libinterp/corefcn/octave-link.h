@@ -43,6 +43,152 @@ namespace octave
   class symbol_info_list;
 }
 
+class
+octave_link_events
+{
+public:
+
+  octave_link_events (void) = default;
+
+  octave_link_events (const octave_link_events&) = default;
+
+  octave_link_events& operator = (const octave_link_events&) = default;
+
+  virtual ~octave_link_events (void) = default;
+
+  virtual bool do_confirm_shutdown (void) { return false; }
+
+  virtual bool do_copy_image_to_clipboard (const std::string& /*file*/)
+  {
+    return false;
+  }
+
+  virtual bool do_edit_file (const std::string& /*file*/) { return false; }
+
+  virtual bool do_prompt_new_edit_file (const std::string& /*file*/)
+  {
+    return false;
+  }
+
+  virtual std::string
+  do_question_dialog (const std::string& /*msg*/,
+                      const std::string& /*title*/,
+                      const std::string& /*btn1*/,
+                      const std::string& /*btn2*/,
+                      const std::string& /*btn3*/,
+                      const std::string& /*btndef*/)
+  {
+    return "";
+  }
+
+  virtual std::pair<std::list<int>, int>
+  do_list_dialog (const std::list<std::string>& /*list*/,
+                  const std::string& /*mode*/,
+                  int /*width*/, int /*height*/,
+                  const std::list<int>& /*initial_value*/,
+                  const std::string& /*name*/,
+                  const std::list<std::string>& /*prompt*/,
+                  const std::string& /*ok_string*/,
+                  const std::string& /*cancel_string*/)
+  {
+    return std::pair<std::list<int>, int> ();
+  }
+
+  virtual std::list<std::string>
+  do_input_dialog (const std::list<std::string>& /*prompt*/,
+                   const std::string& /*title*/,
+                   const std::list<float>& /*nr*/,
+                   const std::list<float>& /*nc*/,
+                   const std::list<std::string>& /*defaults*/)
+  {
+    return std::list<std::string> ();
+  }
+
+  typedef std::list<std::pair<std::string, std::string>> filter_list;
+
+  virtual std::list<std::string>
+  do_file_dialog (const filter_list& /*filter*/,
+                  const std::string& /*title*/,
+                  const std::string& /*filename*/,
+                  const std::string& /*dirname*/,
+                  const std::string& /*multimode*/)
+  {
+    return std::list<std::string> ();
+  }
+
+  virtual int
+  do_debug_cd_or_addpath_error (const std::string& /*file*/,
+                                const std::string& /*dir*/,
+                                bool /*addpath_option*/)
+  {
+    return -1;
+  }
+
+  virtual void do_change_directory (const std::string& /*dir*/) { }
+
+  virtual void do_file_remove (const std::string& /*old_name*/,
+                               const std::string& /*new_name*/)
+  { }
+
+  virtual void do_file_renamed (bool) { }
+
+  virtual void
+  do_execute_command_in_terminal (const std::string& /*command*/) { }
+
+  virtual uint8NDArray do_get_named_icon (const std::string& /*icon_name*/)
+  {
+    return uint8NDArray ();
+  }
+
+  virtual void do_set_workspace (bool /*top_level*/, bool /*debug*/,
+                                 const octave::symbol_info_list& /*syminfo*/,
+                                 bool /*update_variable_editor*/)
+  { }
+
+  virtual void do_clear_workspace (void) { }
+
+  virtual void do_set_history (const string_vector& /*hist*/) { }
+
+  virtual void do_append_history (const std::string& /*hist_entry*/) { }
+
+  virtual void do_clear_history (void) { }
+
+  virtual void do_pre_input_event (void) { }
+
+  virtual void do_post_input_event (void) { }
+
+  virtual void
+  do_enter_debugger_event (const std::string& /*file*/, int /*line*/) { }
+
+  virtual void
+  do_execute_in_debugger_event (const std::string& /*file*/, int /*line*/) { }
+
+  virtual void do_exit_debugger_event (void) { }
+
+  virtual void do_update_breakpoint (bool /*insert*/,
+                                     const std::string& /*file*/,
+                                     int /*line*/, const std::string& /*cond*/)
+  { }
+
+  virtual void do_show_preferences (void) { }
+
+  virtual std::string do_gui_preference (const std::string& /*key*/,
+                                         const std::string& /*value*/)
+  {
+    return "";
+  }
+
+  virtual void do_show_doc (const std::string& /*file*/) { }
+
+  virtual void do_register_doc (const std::string& /*file*/) { }
+
+  virtual void do_unregister_doc (const std::string& /*file*/) { }
+
+  virtual void do_edit_variable (const std::string& /*name*/,
+                                 const octave_value& /*val*/)
+  { }
+};
+
 //! Provides threadsafe access to octave.
 //! @author Jacob Dawid
 //!
@@ -68,25 +214,35 @@ public:
 
   virtual ~octave_link (void);
 
+  static void connect_link (octave_link_events *obj);
+
+  static octave_link_events * disconnect_link (bool delete_instance = true);
+
+  static bool enable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = true;
+    return retval;
+  }
+
+  static bool disable (void)
+  {
+    bool retval = link_enabled;
+    link_enabled = false;
+    return retval;
+  }
+
+  static bool enabled (void)
+  {
+    return link_enabled;
+  }
+
   // If disable is TRUE, then no additional events will be processed
   // other than exit.
 
-  static void process_events (bool disable = false)
-  {
-    if (enabled ())
-      {
-        if (disable)
-          instance->do_disable ();
+  static void process_events (bool disable_arg = false);
 
-        instance->do_process_events ();
-      }
-  }
-
-  static void discard_events (void)
-  {
-    if (enabled ())
-      instance->do_discard_events ();
-  }
+  static void discard_events (void);
 
   static bool confirm_shutdown (void)
   {
@@ -103,7 +259,7 @@ public:
   post_event (F&& fcn, Args&&... args)
   {
     if (enabled ())
-      instance->do_post_event (fcn, std::forward<Args> (args)...);
+      gui_event_queue.add (fcn, std::forward<Args> (args)...);
   }
 
   template <typename T, typename... Params, typename... Args>
@@ -111,14 +267,14 @@ public:
   post_event (T *obj, void (T::*method) (Params...), Args&&... args)
   {
     if (enabled ())
-      instance->do_post_event (obj, method, std::forward<Args> (args)...);
+      gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
   }
 
   static void
   post_exception (const std::exception_ptr &p)
   {
     if (enabled ())
-      instance->do_post_exception (p);
+      post_event (&octave_link::rethrow_exception_callback, p);
   }
 
   static bool
@@ -240,7 +396,7 @@ public:
                              bool update_variable_editor = true)
   {
     if (enabled ())
-      instance->do_set_workspace (top_level, instance->debugging, syminfo,
+      instance->do_set_workspace (top_level, debugging, syminfo,
                                   update_variable_editor);
   }
 
@@ -284,7 +440,7 @@ public:
   {
     if (enabled ())
       {
-        instance->debugging = true;
+        debugging = true;
 
         instance->do_enter_debugger_event (file, line);
       }
@@ -298,9 +454,9 @@ public:
 
   static void exit_debugger_event (void)
   {
-    if (enabled () && instance->debugging)
+    if (enabled () && debugging)
       {
-        instance->debugging = false;
+        debugging = false;
 
         instance->do_exit_debugger_event ();
       }
@@ -312,53 +468,6 @@ public:
   {
     if (enabled ())
       instance->do_update_breakpoint (insert, file, line, cond);
-  }
-
-  static void connect_link (octave_link *);
-
-  static octave_link * disconnect_link (bool delete_instance = true)
-  {
-    if (delete_instance)
-      {
-        delete instance;
-        instance = nullptr;
-        return nullptr;
-      }
-    else
-      {
-        octave_link *retval = instance;
-        instance = nullptr;
-        return retval;
-      }
-  }
-
-  static bool enable (void)
-  {
-    return instance_ok () ? instance->do_enable () : false;
-  }
-
-  static bool disable (void)
-  {
-    return instance_ok () ? instance->do_disable () : false;
-  }
-
-  bool do_enable (void)
-  {
-    bool retval = link_enabled;
-    link_enabled = true;
-    return retval;
-  }
-
-  bool do_disable (void)
-  {
-    bool retval = link_enabled;
-    link_enabled = false;
-    return retval;
-  }
-
-  static bool enabled (void)
-  {
-    return instance_ok () ? instance->link_enabled : false;
   }
 
   static bool
@@ -436,139 +545,25 @@ public:
 
 private:
 
-  static octave_link *instance;
+  static octave_link_events *instance;
 
   static bool instance_ok (void) { return instance != nullptr; }
 
 protected:
 
   // Semaphore to lock access to the event queue.
-  octave::mutex *event_queue_mutex;
+  static octave::mutex *event_queue_mutex;
 
   // Event Queue.
-  octave::event_queue gui_event_queue;
+  static octave::event_queue gui_event_queue;
 
-  bool debugging;
-  bool link_enabled;
+  static bool debugging;
+  static bool link_enabled;
 
-  void do_process_events (void);
-  void do_discard_events (void);
-
-  template <typename F, typename... Args>
-  void do_post_event (F&& fcn, Args&&... args)
-  {
-    gui_event_queue.add (fcn, std::forward<Args> (args)...);
-  }
-
-  template <typename T, typename... Params, typename... Args>
-  void do_post_event (T *obj, void (T::*method) (Params...), Args&&... args)
-  {
-    gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
-  }
-
-  void
-  rethrow_exception_callback (const std::exception_ptr &p)
+  static void rethrow_exception_callback (const std::exception_ptr &p)
   {
     std::rethrow_exception (p);
   }
-
-  void
-  do_post_exception (const std::exception_ptr &p)
-  {
-    do_post_event (this, &octave_link::rethrow_exception_callback, p);
-  }
-
-  void do_entered_readline_hook (void) { }
-  void do_finished_readline_hook (void) { }
-
-  virtual bool do_confirm_shutdown (void) = 0;
-
-  virtual bool do_copy_image_to_clipboard (const std::string& file) = 0;
-
-  virtual bool do_edit_file (const std::string& file) = 0;
-  virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
-  virtual std::string
-  do_question_dialog (const std::string& msg, const std::string& title,
-                      const std::string& btn1, const std::string& btn2,
-                      const std::string& btn3, const std::string& btndef) = 0;
-
-  virtual std::pair<std::list<int>, int>
-  do_list_dialog (const std::list<std::string>& list,
-                  const std::string& mode,
-                  int width, int height,
-                  const std::list<int>& initial_value,
-                  const std::string& name,
-                  const std::list<std::string>& prompt,
-                  const std::string& ok_string,
-                  const std::string& cancel_string) = 0;
-
-  virtual std::list<std::string>
-  do_input_dialog (const std::list<std::string>& prompt,
-                   const std::string& title,
-                   const std::list<float>& nr,
-                   const std::list<float>& nc,
-                   const std::list<std::string>& defaults) = 0;
-
-  virtual std::list<std::string>
-  do_file_dialog (const filter_list& filter, const std::string& title,
-                  const std::string& filename, const std::string& dirname,
-                  const std::string& multimode) = 0;
-
-  virtual int
-  do_debug_cd_or_addpath_error (const std::string& file,
-                                const std::string& dir,
-                                bool addpath_option) = 0;
-
-  virtual void do_change_directory (const std::string& dir) = 0;
-
-  virtual void do_file_remove (const std::string& old_name,
-                               const std::string& new_name) = 0;
-  virtual void do_file_renamed (bool) = 0;
-
-  virtual void do_execute_command_in_terminal (const std::string& command) = 0;
-
-  virtual uint8NDArray
-  do_get_named_icon (const std::string& icon_name) = 0;
-
-  virtual void
-  do_set_workspace (bool top_level, bool debug,
-                    const octave::symbol_info_list& syminfo,
-                    bool update_variable_editor) = 0;
-
-  virtual void do_clear_workspace (void) = 0;
-
-  virtual void do_set_history (const string_vector& hist) = 0;
-  virtual void do_append_history (const std::string& hist_entry) = 0;
-  virtual void do_clear_history (void) = 0;
-
-  virtual void do_pre_input_event (void) = 0;
-  virtual void do_post_input_event (void) = 0;
-
-  virtual void
-  do_enter_debugger_event (const std::string& file, int line) = 0;
-
-  virtual void
-  do_execute_in_debugger_event (const std::string& file, int line) = 0;
-
-  virtual void do_exit_debugger_event (void) = 0;
-
-  virtual void do_update_breakpoint (bool insert,
-                                     const std::string& file, int line,
-                                     const std::string& cond) = 0;
-
-  virtual void do_show_preferences (void) = 0;
-
-  virtual std::string do_gui_preference (const std::string& key,
-                                         const std::string& value) = 0;
-
-  virtual void do_show_doc (const std::string& file) = 0;
-
-  virtual void do_register_doc (const std::string& file) = 0;
-
-  virtual void do_unregister_doc (const std::string& file) = 0;
-
-  virtual void
-  do_edit_variable (const std::string& name, const octave_value& val) = 0;
 };
 
 #endif

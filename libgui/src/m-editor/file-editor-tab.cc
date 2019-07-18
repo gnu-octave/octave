@@ -1113,7 +1113,7 @@ namespace octave
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (octave_qt_link::file_in_path (info.file, info.dir))
+         if (octave_qt_link_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::handle_request_remove_breakpoint");
 
@@ -1193,7 +1193,7 @@ namespace octave
     octave_link::post_event
       ([info] (void)
        {
-         if (octave_qt_link::file_in_path (info.file, info.dir))
+         if (octave_qt_link_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::remove_all_breakpoints");
 
@@ -1325,7 +1325,7 @@ namespace octave
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (octave_qt_link::file_in_path (info.file, info.dir))
+         if (octave_qt_link_events::file_in_path (info.file, info.dir))
            {
              bp_table& bptab = __get_bp_table__ ("file_editor_tab::add_breakpoint_event");
 

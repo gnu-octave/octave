@@ -157,7 +157,12 @@ namespace octave
     m_variable_editor_window = new variable_editor (this);
     m_workspace_window = new workspace_view (this);
 
-    m_active_editor = m_editor_window;
+    // Set active editor depending on editor window. If the latter is
+    // not initialized (qscintilla not present), use the external editor.
+    if (m_editor_window)
+      m_active_editor = m_editor_window;
+    else
+      m_active_editor = m_external_editor;
 
 #if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");

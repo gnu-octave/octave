@@ -14,7 +14,6 @@ noinst_HEADERS += \
   %reldir%/libqterminal/unix/konsole_wcwidth.h \
   %reldir%/libqterminal/unix/kpty.h \
   %reldir%/libqterminal/unix/kpty_p.h \
-  %reldir%/libqterminal/unix/LineFont.h \
   %reldir%/libqterminal/unix/QUnixTerminalImpl.h \
   %reldir%/libqterminal/unix/Screen.h \
   %reldir%/libqterminal/unix/ScreenWindow.h \

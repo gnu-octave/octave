@@ -142,13 +142,6 @@ void TerminalView::setColorTable(const ColorEntry table[])
    QCodec.
 */
 
-static inline bool isLineChar(quint16 c) { return ((c & 0xFF80) == 0x2500);}
-static inline bool isLineCharString(const QString& string)
-{
-  return (string.length() > 0) && (isLineChar(string.at(0).unicode()));
-}
-
-
 // assert for i in [0..31] : vt100extended(vt100_graphics[i]) == i.
 
 unsigned short vt100_graphics[32] =
@@ -405,96 +398,6 @@ enum LineEncode
   BotR  = (1<<23)
 };
 
-#include "LineFont.h"
-
-static void drawLineChar(QPainter& paint, int x, int y, int w, int h, uchar code)
-{
-  //Calculate cell midpoints, end points.
-  int cx = x + w/2;
-  int cy = y + h/2;
-  int ex = x + w - 1;
-  int ey = y + h - 1;
-
-  quint32 toDraw = LineChars[code];
-
-  //Top _lines:
-  if (toDraw & TopL)
-    paint.drawLine(cx-1, y, cx-1, cy-2);
-  if (toDraw & TopC)
-    paint.drawLine(cx, y, cx, cy-2);
-  if (toDraw & TopR)
-    paint.drawLine(cx+1, y, cx+1, cy-2);
-
-  //Bot _lines:
-  if (toDraw & BotL)
-    paint.drawLine(cx-1, cy+2, cx-1, ey);
-  if (toDraw & BotC)
-    paint.drawLine(cx, cy+2, cx, ey);
-  if (toDraw & BotR)
-    paint.drawLine(cx+1, cy+2, cx+1, ey);
-
-  //Left _lines:
-  if (toDraw & LeftT)
-    paint.drawLine(x, cy-1, cx-2, cy-1);
-  if (toDraw & LeftC)
-    paint.drawLine(x, cy, cx-2, cy);
-  if (toDraw & LeftB)
-    paint.drawLine(x, cy+1, cx-2, cy+1);
-
-  //Right _lines:
-  if (toDraw & RightT)
-    paint.drawLine(cx+2, cy-1, ex, cy-1);
-  if (toDraw & RightC)
-    paint.drawLine(cx+2, cy, ex, cy);
-  if (toDraw & RightB)
-    paint.drawLine(cx+2, cy+1, ex, cy+1);
-
-  //Intersection points.
-  if (toDraw & Int11)
-    paint.drawPoint(cx-1, cy-1);
-  if (toDraw & Int12)
-    paint.drawPoint(cx, cy-1);
-  if (toDraw & Int13)
-    paint.drawPoint(cx+1, cy-1);
-
-  if (toDraw & Int21)
-    paint.drawPoint(cx-1, cy);
-  if (toDraw & Int22)
-    paint.drawPoint(cx, cy);
-  if (toDraw & Int23)
-    paint.drawPoint(cx+1, cy);
-
-  if (toDraw & Int31)
-    paint.drawPoint(cx-1, cy+1);
-  if (toDraw & Int32)
-    paint.drawPoint(cx, cy+1);
-  if (toDraw & Int33)
-    paint.drawPoint(cx+1, cy+1);
-
-}
-
-void TerminalView::drawLineCharString(	QPainter& painter, int x, int y, const QString& str,
-                                       const Character* attributes)
-{
-  const QPen& currentPen = painter.pen();
-
-  if ( attributes->rendition & RE_BOLD )
-    {
-      QPen boldPen(currentPen);
-      boldPen.setWidth(3);
-      painter.setPen( boldPen );
-    }
-
-  for (int i=0 ; i < str.length(); i++)
-    {
-      uchar code = str[i].cell();
-      if (LineChars[code])
-        drawLineChar(painter, x + (_fontWidth*i), y, _fontWidth, _fontHeight, code);
-    }
-
-  painter.setPen( currentPen );
-}
-
 void TerminalView::setKeyboardCursorShape(KeyboardCursorShape shape)
 {
   _cursorShape = shape;
@@ -626,18 +529,12 @@ void TerminalView::drawCharacters(QPainter& painter,
       painter.setPen(color);
     }
   // draw text
-  if ( isLineCharString(text) ) {
-      drawLineCharString(painter,rect.x(),rect.y(),text,style);
-    }
-  else
-    {
-      // the drawText(rect,flags,string) overload is used here with null flags
-      // instead of drawText(rect,string) because the (rect,string) overload causes
-      // the application's default layout direction to be used instead of
-      // the widget-specific layout direction, which should always be
-      // Qt::LeftToRight for this widget
-      painter.drawText(rect,0,text);
-    }
+  // the drawText(rect,flags,string) overload is used here with null flags
+  // instead of drawText(rect,string) because the (rect,string) overload causes
+  // the application's default layout direction to be used instead of
+  // the widget-specific layout direction, which should always be
+  // Qt::LeftToRight for this widget
+  painter.drawText(rect,0,text);
 }
 
 void TerminalView::drawTextFragment(QPainter& painter ,
@@ -903,7 +800,6 @@ void TerminalView::updateImage()
                   continue;
                 int p = 0;
                 disstrU[p++] = c; //fontMap(c);
-                bool lineDraw = isLineChar(c);
                 bool doubleWidth = (x+1 == columnsToUpdate) ? false : (newLine[x+1].character == 0);
                 cr = newLine[x].rendition;
                 _clipboard = newLine[x].backgroundColor;
@@ -922,7 +818,6 @@ void TerminalView::updateImage()
                           ch.backgroundColor != _clipboard ||
                           ch.rendition != cr ||
                           !dirtyMask[x+len] ||
-                          isLineChar(c) != lineDraw ||
                           nextIsDoubleWidth != doubleWidth )
                       break;
 
@@ -932,8 +827,6 @@ void TerminalView::updateImage()
                 QString unistr(disstrU, p);
 
                 bool saveFixedFont = _fixedFont;
-                if (lineDraw)
-                  _fixedFont = false;
                 if (doubleWidth)
                   _fixedFont = false;
 
@@ -1287,7 +1180,6 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
                 }
             }
 
-          bool lineDraw = isLineChar(c);
           bool doubleWidth = (_image[ qMin(loc(x,y)+1,_imageSize) ].character == 0);
           CharacterColor currentForeground = _image[loc(x,y)].foregroundColor;
           CharacterColor currentBackground = _image[loc(x,y)].backgroundColor;
@@ -1297,9 +1189,9 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
                  _image[loc(x+len,y)].foregroundColor == currentForeground &&
                  _image[loc(x+len,y)].backgroundColor == currentBackground &&
                  _image[loc(x+len,y)].rendition == currentRendition &&
-                 (_image[ qMin(loc(x+len,y)+1,_imageSize) ].character == 0) == doubleWidth &&
-                 isLineChar( c = _image[loc(x+len,y)].character) == lineDraw) // Assignment!
+                 (_image[ qMin(loc(x+len,y)+1,_imageSize) ].character == 0) == doubleWidth)
             {
+              c = _image[loc(x+len,y)].character;
               if (c)
                 disstrU[p++] = c; //fontMap(c);
               if (doubleWidth) // assert((_image[loc(x+len,y)+1].character == 0)), see above if condition
@@ -1310,8 +1202,6 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
             len++; // Adjust for trailing part of multi-column character
 
           bool save__fixedFont = _fixedFont;
-          if (lineDraw)
-            _fixedFont = false;
           if (doubleWidth)
             _fixedFont = false;
           QString unistr(disstrU,p);

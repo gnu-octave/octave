@@ -333,13 +333,16 @@ namespace octave
            && m_settings->isWritable ()
            && m_settings->status () == QSettings::NoError))
       {
-        QString msg = QString (QT_TR_NOOP (
-                                           "The settings file\n%1\n"
-                                           "does not exist and can not be created.\n"
-                                           "Make sure you have read and write permissions to\n%2\n\n"
-                                           "Octave GUI must be closed now."));
-        QMessageBox::critical (nullptr, QString (QT_TR_NOOP ("Octave Critical Error")),
+        QString msg
+          = QString (QT_TR_NOOP ("The settings file\n%1\n"
+                                 "does not exist and can not be created.\n"
+                                 "Make sure you have read and write permissions to\n%2\n\n"
+                                 "Octave GUI must be closed now."));
+
+        QMessageBox::critical (nullptr,
+                               QString (QT_TR_NOOP ("Octave Critical Error")),
                                msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+
         exit (1);
       }
   }

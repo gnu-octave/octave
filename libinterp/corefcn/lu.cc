@@ -211,10 +211,9 @@ permutation information.
                 {
                   retval.resize (nargout == 3 ? 3 : 2);
                   retval(1)
-                    = octave_value (
-                        fact.U () * fact.Pc_mat ().transpose (),
-                        MatrixType (MatrixType::Permuted_Upper,
-                                    nc, fact.col_perm ()));
+                    = octave_value (fact.U () * fact.Pc_mat ().transpose (),
+                                    MatrixType (MatrixType::Permuted_Upper,
+                                                nc, fact.col_perm ()));
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseMatrix L = fact.L ();
@@ -281,10 +280,9 @@ permutation information.
                 {
                   retval.resize (nargout == 3 ? 3 : 2);
                   retval(1)
-                    = octave_value (
-                        fact.U () * fact.Pc_mat ().transpose (),
-                        MatrixType (MatrixType::Permuted_Upper,
-                                    nc, fact.col_perm ()));
+                    = octave_value (fact.U () * fact.Pc_mat ().transpose (),
+                                    MatrixType (MatrixType::Permuted_Upper,
+                                                nc, fact.col_perm ()));
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseComplexMatrix L = fact.L ();

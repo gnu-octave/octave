@@ -572,8 +572,8 @@ namespace octave
 
   void main_window::open_online_documentation_page (void)
   {
-    QDesktopServices::openUrl (
-                               QUrl ("https://octave.org/doc/interpreter/index.html"));
+    QDesktopServices::openUrl
+      (QUrl ("https://octave.org/doc/interpreter/index.html"));
   }
 
   void main_window::display_release_notes (void)
@@ -1495,12 +1495,10 @@ namespace octave
     // of an error from the default layout
     if (settings)
       {
-        if (! restoreState (
-                settings->value (mw_state.key, mw_state.def).toByteArray ()))
+        if (! restoreState (settings->value (mw_state.key, mw_state.def).toByteArray ()))
           restoreState (mw_state.def.toByteArray ());
 
-        if (! restoreGeometry (
-                settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
+        if (! restoreGeometry (settings->value (mw_geometry.key, mw_geometry.def).toByteArray ()))
           restoreGeometry (mw_geometry.def.toByteArray ());
       }
 
@@ -2463,30 +2461,30 @@ namespace octave
   {
     m_debug_menu = m_add_menu (p, tr ("De&bug"));
 
-    m_debug_step_over = construct_debug_menu_item (
-                                                   "db-step", tr ("Step"),
-                                                   SLOT (debug_step_over (void)));
+    m_debug_step_over
+      = construct_debug_menu_item ("db-step", tr ("Step"),
+                                   SLOT (debug_step_over (void)));
 
-    m_debug_step_into = construct_debug_menu_item (
-                                                   "db-step-in", tr ("Step In"),
-                                                   SLOT (debug_step_into (void)));
+    m_debug_step_into
+      = construct_debug_menu_item ("db-step-in", tr ("Step In"),
+                                   SLOT (debug_step_into (void)));
 
-    m_debug_step_out = construct_debug_menu_item (
-                                                  "db-step-out", tr ("Step Out"),
-                                                  SLOT (debug_step_out (void)));
+    m_debug_step_out
+      = construct_debug_menu_item ("db-step-out", tr ("Step Out"),
+                                   SLOT (debug_step_out (void)));
 
-    m_debug_continue = construct_debug_menu_item (
-                                                  "db-cont", tr ("Continue"),
-                                                  SLOT (debug_continue (void)));
+    m_debug_continue
+      = construct_debug_menu_item ("db-cont", tr ("Continue"),
+                                   SLOT (debug_continue (void)));
 
     m_debug_menu->addSeparator ();
 #if defined (HAVE_QSCINTILLA)
     m_editor_window->debug_menu ()->addSeparator ();
 #endif
 
-    m_debug_quit = construct_debug_menu_item (
-                                              "db-stop", tr ("Quit Debug Mode"),
-                                              SLOT (debug_quit (void)));
+    m_debug_quit
+      = construct_debug_menu_item ("db-stop", tr ("Quit Debug Mode"),
+                                   SLOT (debug_quit (void)));
   }
 
   void main_window::editor_tabs_changed (bool have_tabs)
@@ -2656,8 +2654,7 @@ namespace octave
     m_current_directory_combo_box->setEditable (true);
     m_current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
     m_current_directory_combo_box->setToolTip (tr ("Enter directory name"));
-    m_current_directory_combo_box->setMaxVisibleItems (
-                                                       current_directory_max_visible);
+    m_current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
     m_current_directory_combo_box->setMaxCount (current_directory_max_count);
     QSizePolicy sizePol (QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_current_directory_combo_box->setSizePolicy (sizePol);
@@ -2666,12 +2663,12 @@ namespace octave
     // need to delete these upon destroying this main_window.
     m_main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
     m_main_tool_bar->addWidget (m_current_directory_combo_box);
-    QAction *current_dir_up = m_main_tool_bar->addAction (
-                                                          resource_manager::icon ("go-up"),
-                                                          tr ("One directory up"));
-    QAction *current_dir_search = m_main_tool_bar->addAction (
-                                                              resource_manager::icon ("folder"),
-                                                              tr ("Browse directories"));
+    QAction *current_dir_up
+      = m_main_tool_bar->addAction (resource_manager::icon ("go-up"),
+                                    tr ("One directory up"));
+    QAction *current_dir_search
+      = m_main_tool_bar->addAction (resource_manager::icon ("folder"),
+                                    tr ("Browse directories"));
 
     connect (m_current_directory_combo_box, SIGNAL (activated (QString)),
              this, SLOT (set_current_working_directory (QString)));

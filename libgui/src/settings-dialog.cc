@@ -294,8 +294,8 @@ namespace octave
     cb_show_hscrollbar->setChecked (settings->value ("editor/show_hscroll_bar", true).toBool ());
 
     editor_combox_tab_pos->insertItems (0, ed_tab_position_names);
-    editor_combox_tab_pos->setCurrentIndex (
-          settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+    editor_combox_tab_pos->setCurrentIndex
+      (settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
 
     int selected_comment_string, selected_uncomment_string;
 
@@ -1054,8 +1054,8 @@ namespace octave
     style_grid->addWidget (m_ws_hide_tool_tips, row++, column, 1, 4);
     connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
              m_ws_hide_tool_tips, SLOT(setEnabled (bool)));
-    m_ws_hide_tool_tips->setChecked (
-      settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
+    m_ws_hide_tool_tips->setChecked
+      (settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
 
     for (int i = 0; i < nr_of_classes; i++)
       {

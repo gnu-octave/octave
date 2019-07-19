@@ -647,8 +647,8 @@ namespace octave
   {
     // Populate the object with default property values
 
-    std::list<cdef_class> super_classes = lookup_classes (
-                                                          get ("SuperClasses").cell_value ());
+    std::list<cdef_class> super_classes
+      = lookup_classes (get ("SuperClasses").cell_value ());
 
     for (auto& cls : super_classes)
       cls.initialize_object (obj);

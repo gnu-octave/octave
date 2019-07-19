@@ -120,8 +120,7 @@ namespace octave
     m_current_directory->setEditable (true);
     m_current_directory->setMaxCount (MaxMRUDirs);
     m_current_directory->setInsertPolicy (QComboBox::NoInsert);
-    m_current_directory->setSizeAdjustPolicy (
-                                              QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    m_current_directory->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_current_directory->setSizePolicy (sizePol);
 
@@ -132,15 +131,13 @@ namespace octave
     m_sync_browser_directory_action
       = new QAction (resource_manager::icon ("go-first"),
                      tr ("Show Octave directory"), m_navigation_tool_bar);
-    m_sync_browser_directory_action->setToolTip (
-                                                 tr ("Go to current Octave directory"));
+    m_sync_browser_directory_action->setToolTip (tr ("Go to current Octave directory"));
     m_sync_browser_directory_action->setEnabled (false);
 
     m_sync_octave_directory_action
       = new QAction (resource_manager::icon ("go-last"),
                      tr ("Set Octave directory"), m_navigation_tool_bar);
-    m_sync_octave_directory_action->setToolTip (
-                                                tr ("Set Octave directory to current browser directory"));
+    m_sync_octave_directory_action->setToolTip (tr ("Set Octave directory to current browser directory"));
     m_sync_octave_directory_action->setEnabled (false);
 
     QToolButton *popdown_button = new QToolButton ();
@@ -153,8 +150,8 @@ namespace octave
     popdown_menu->addAction (m_sync_octave_directory_action);
     popdown_button->setMenu (popdown_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
-    popdown_button->setDefaultAction (new QAction (
-                                                   resource_manager::icon ("applications-system"), "",
+    popdown_button->setDefaultAction (new QAction (resource_manager::icon ("applications-system"),
+                                                   "",
                                                    m_navigation_tool_bar));
 
     popdown_menu->addSeparator ();
@@ -214,8 +211,8 @@ namespace octave
       }
 
     m_file_system_model = new QFileSystemModel (this);
-    QModelIndex rootPathIndex = m_file_system_model->setRootPath (
-                                                                  startup_dir.absolutePath ());
+    QModelIndex rootPathIndex
+      = m_file_system_model->setRootPath (startup_dir.absolutePath ());
 
     // Attach the model to the QTreeView and set the root index
     m_file_tree_view = new FileTreeViewer (container);
@@ -229,14 +226,13 @@ namespace octave
 
     // get sort column and order as well as cloumn state (order and width)
 
-    m_file_tree_view->sortByColumn (
-          settings->value (fb_sort_column.key, fb_sort_column.def).toInt (),
-          static_cast<Qt::SortOrder> (
-            settings->value (fb_sort_order.key, fb_sort_order.def).toUInt ()));
+    m_file_tree_view->sortByColumn
+      (settings->value (fb_sort_column.key, fb_sort_column.def).toInt (),
+       static_cast<Qt::SortOrder> (settings->value (fb_sort_order.key, fb_sort_order.def).toUInt ()));
 
     if (settings->contains (fb_column_state.key))
-      m_file_tree_view->header ()->restoreState (
-                          settings->value (fb_column_state.key).toByteArray ());
+      m_file_tree_view->header ()->restoreState
+        (settings->value (fb_column_state.key).toByteArray ());
 
     // Set header properties for sorting
 #if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
@@ -255,8 +251,8 @@ namespace octave
       settings->value (fb_mru_list.key).toStringList ();
     m_current_directory->addItems (mru_dirs);
 
-    m_current_directory->setEditText (
-                                      m_file_system_model->fileInfo (rootPathIndex).  absoluteFilePath ());
+    m_current_directory->setEditText
+      (m_file_system_model->fileInfo (rootPathIndex). absoluteFilePath ());
 
     connect (m_file_tree_view, SIGNAL (activated (const QModelIndex &)),
              this, SLOT (item_double_clicked (const QModelIndex &)));
@@ -472,8 +468,9 @@ namespace octave
                                           m_sig_mapper, SLOT (map ()));
         m_sig_mapper->setMapping (action, i);
         action->setCheckable (true);
-        action->setChecked (settings->value (
-          m_columns_shown_keys.at (i), m_columns_shown_defs.at (i)).toBool ());
+        action->setChecked
+          (settings->value (m_columns_shown_keys.at (i),
+                            m_columns_shown_defs.at (i)).toBool ());
       }
 
     connect (m_sig_mapper, SIGNAL (mapped (int)),
@@ -907,8 +904,8 @@ namespace octave
     else
       m_file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
 
-    m_file_tree_view->setAlternatingRowColors (
-                                               settings->value (m_columns_shown_keys.at (4),true).toBool ());
+    m_file_tree_view->setAlternatingRowColors
+      (settings->value (m_columns_shown_keys.at (4),true).toBool ());
     m_file_tree_view->setModel (m_file_system_model);
 
     // enable the buttons to sync octave/browser dir

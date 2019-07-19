@@ -27,12 +27,12 @@ from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
 Free Software Foundation, Inc.
 
   octave::sys::env::do_absolute_pathname
-  octave::sys:env::do_base_pathname
-  octave::sys:env::do_chdir
-  octave::sys:env::do_getcwd
-  octave::sys:env::do_make_absolute
-  octave::sys:env::do_polite_directory_format
-  octave::sys:env::pathname_backup
+  octave::sys::env::do_base_pathname
+  octave::sys::env::do_chdir
+  octave::sys::env::do_getcwd
+  octave::sys::env::do_make_absolute
+  octave::sys::env::do_polite_directory_format
+  octave::sys::env::pathname_backup
 
 */
 
@@ -484,8 +484,7 @@ namespace octave
 
       if (hd.empty ())
         {
-          sys::password pw = sys::password::getpwuid (
-                                       sys::getuid ());
+          sys::password pw = sys::password::getpwuid (sys::getuid ());
 
           hd = (pw ? pw.dir () : std::string (sys::file_ops::dir_sep_str ()));
         }
@@ -498,8 +497,7 @@ namespace octave
     {
       if (user_name.empty ())
         {
-          sys::password pw = sys::password::getpwuid (
-                                       sys::getuid ());
+          sys::password pw = sys::password::getpwuid (sys::getuid ());
 
           user_name = (pw ? pw.name () : "unknown");
         }

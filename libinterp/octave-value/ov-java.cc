@@ -570,9 +570,8 @@ get_jvm_lib_path_from_registry ()
         error ("unable to find Java Runtime Environment: %s::%s",
                key.c_str (), value.c_str ());
 
-      jversion = regval.xstring_value (
-        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-        value.c_str (), key.c_str ());
+      jversion = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+                                       value.c_str (), key.c_str ());
     }
 
   key = key + '\\' + jversion;
@@ -589,9 +588,9 @@ get_jvm_lib_path_from_registry ()
     error ("unable to find Java Runtime Environment: %s::%s",
            key.c_str (), value.c_str ());
 
-  std::string jvm_lib_path = regval.xstring_value (
-        "initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
-        value.c_str (), key.c_str ());
+  std::string jvm_lib_path
+    = regval.xstring_value ("initialize_jvm: registry value \"%s\" at \"%s\" must be a string",
+                            value.c_str (), key.c_str ());
 
   if (jvm_lib_path.empty ())
     error ("unable to find Java Runtime Environment: %s::%s",

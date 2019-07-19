@@ -206,23 +206,23 @@ annotation_dialog::set_gui_props ()
         }
       else if (name == "units")
         {
-          ui->cb_units->setCurrentIndex (ui->cb_units->findText (props(
-                                            1*i +1).string_value ().c_str ()));
+          ui->cb_units->setCurrentIndex
+            (ui->cb_units->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "horizontalalignment")
         {
-          ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_horz_align->setCurrentIndex
+            (ui->cb_horz_align->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "verticalalignment")
         {
-          ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_vert_align->setCurrentIndex
+            (ui->cb_vert_align->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontname")
         {
-          ui->cb_vert_align->setCurrentIndex (ui->cb_font_name->findText (props(
-                                                 1*i +1).string_value ().c_str ()));
+          ui->cb_vert_align->setCurrentIndex
+            (ui->cb_font_name->findText (props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontsize")
         {

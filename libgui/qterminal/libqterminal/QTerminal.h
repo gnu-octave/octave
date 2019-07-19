@@ -134,24 +134,24 @@ protected:
 
     _contextMenu = new QMenu (this);
 
-    _copy_action = _contextMenu->addAction
-      (octave::resource_manager::icon ("edit-copy"),
-       tr ("Copy"), this, SLOT (copyClipboard ()));
+    _copy_action
+      = _contextMenu->addAction (octave::resource_manager::icon ("edit-copy"),
+                                 tr ("Copy"), this, SLOT (copyClipboard ()));
 
-    _paste_action = _contextMenu->addAction
-     (octave::resource_manager::icon ("edit-paste"),
-      tr ("Paste"), this, SLOT (pasteClipboard ()));
+    _paste_action
+      = _contextMenu->addAction (octave::resource_manager::icon ("edit-paste"),
+                                 tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 
-    _selectall_action = _contextMenu->addAction (
-                          tr ("Select All"), this, SLOT (selectAll ()));
+    _selectall_action
+      = _contextMenu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
 
-    _run_selection_action = _contextMenu->addAction (
-                     tr ("Run Selection"), this, SLOT (run_selection ()));
+    _run_selection_action
+      = _contextMenu->addAction (tr ("Run Selection"), this,
+                                 SLOT (run_selection ()));
 
-    _edit_action = _contextMenu->addAction (
-                     tr (""), this, SLOT (edit_file ()));
+    _edit_action = _contextMenu->addAction (tr (""), this, SLOT (edit_file ()));
 
     _contextMenu->addSeparator ();
 
@@ -189,8 +189,8 @@ protected:
     _interrupt_action = new QAction (this);
     addAction (_interrupt_action);
 
-    _interrupt_action->setShortcut (
-      QKeySequence (Qt::ControlModifier + Qt::Key_C));
+    _interrupt_action->setShortcut
+      (QKeySequence (Qt::ControlModifier + Qt::Key_C));
 
     connect (_interrupt_action, SIGNAL (triggered ()),
              this, SLOT (terminal_interrupt ()));
@@ -199,8 +199,7 @@ protected:
     _nop_action = new QAction (this);
     addAction (_nop_action);
 
-    _nop_action->setShortcut (
-      QKeySequence (Qt::ControlModifier + Qt::Key_D));
+    _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
   }
 
 private:

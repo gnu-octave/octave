@@ -664,10 +664,10 @@ namespace octave
                                   + QString (OCTAVE_VERSION) + "/qsci/";
 
         // get settings which infos are used for octave
-        bool octave_builtins = settings->value (
-                                 "editor/codeCompletion_octave_builtins", true).toBool ();
-        bool octave_functions = settings->value (
-                                  "editor/codeCompletion_octave_functions", true).toBool ();
+        bool octave_builtins
+          = settings->value ("editor/codeCompletion_octave_builtins", true).toBool ();
+        bool octave_functions
+          = settings->value ("editor/codeCompletion_octave_functions", true).toBool ();
 
         QCoreApplication::setApplicationName (tmp_app_name);  // Restore name
 
@@ -1544,11 +1544,12 @@ namespace octave
             bool ok;
             QSettings *settings = resource_manager::get_settings ();
 
-            used_comment_str = QInputDialog::getText (
-                                 this, tr ("Comment selected text"),
-                                 tr ("Comment string to use:\n"), QLineEdit::Normal,
-                                 settings->value (ed_last_comment_str, comment_str.at (0)).toString (),
-                                 &ok);
+            used_comment_str
+              = QInputDialog::getText (this, tr ("Comment selected text"),
+                                       tr ("Comment string to use:\n"),
+                                       QLineEdit::Normal,
+                                       settings->value (ed_last_comment_str, comment_str.at (0)).toString (),
+                                       &ok);
 
             if ((! ok) || used_comment_str.isEmpty ())
               return;  // No input, do nothing
@@ -2006,8 +2007,8 @@ namespace octave
     int os_eol_mode = QsciScintilla::EolUnix;
 #endif
     QSettings *settings = resource_manager::get_settings ();
-    QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
-                                        settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
+    QsciScintilla::EolMode eol_mode
+      = static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
 
     int count_max = 0;
 
@@ -2103,9 +2104,7 @@ namespace octave
 #else
     int eol_mode = QsciScintilla::EolUnix;
 #endif
-    _edit_area->setEolMode (
-      static_cast<QsciScintilla::EolMode> (
-        settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
+    _edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
 
     update_eol_indicator ();
 
@@ -2675,8 +2674,7 @@ namespace octave
     else
       _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
 
-    _edit_area->setEolVisibility (
-                                  settings->value ("editor/show_eol_chars",false).toBool ());
+    _edit_area->setEolVisibility (settings->value ("editor/show_eol_chars",false).toBool ());
 
     if (settings->value ("editor/showLineNumbers", true).toBool ())
       {

@@ -570,8 +570,8 @@ namespace octave
     if (looks_like_filename (l, ' ') || looks_like_filename (l, '\'')
         || looks_like_filename (l, '"'))
       {
-        ::octave_rl_set_completer_quote_characters (
-          completer_quote_characters.c_str ());
+        ::octave_rl_set_completer_quote_characters
+          (completer_quote_characters.c_str ());
 
         return dir_sep;
       }

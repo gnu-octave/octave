@@ -83,10 +83,11 @@ QTerminal::set_global_shortcuts (bool focus_out)
       }
     else
       {
-        _interrupt_action->setShortcut (
-              QKeySequence (Qt::ControlModifier | Qt::Key_C));
-        _nop_action->setShortcut (
-              QKeySequence (Qt::ControlModifier | Qt::Key_D));
+        _interrupt_action->setShortcut
+          (QKeySequence (Qt::ControlModifier | Qt::Key_C));
+
+        _nop_action->setShortcut
+          (QKeySequence (Qt::ControlModifier | Qt::Key_D));
       }
   }
 

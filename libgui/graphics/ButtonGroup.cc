@@ -489,8 +489,7 @@ namespace QtHandles
         eventData.setfield ("NewValue", newValue.as_octave_value ());
         eventData.setfield ("Source", bp.get___myhandle__ ().as_octave_value ());
         eventData.setfield ("EventName", "SelectionChanged");
-        octave_value selectionChangedEventObject = octave_value (new octave_struct (
-              eventData));
+        octave_value selectionChangedEventObject (new octave_struct (eventData));
         gh_manager::post_callback (m_handle, "selectionchangedfcn",
                                    selectionChangedEventObject);
       }

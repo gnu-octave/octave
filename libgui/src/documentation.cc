@@ -199,8 +199,7 @@ namespace octave
         m_filter->setInsertPolicy (QComboBox::NoInsert);
         m_filter->setMaxCount (10);
         m_filter->setMaxVisibleItems (10);
-        m_filter->setSizeAdjustPolicy (
-                                       QComboBox::AdjustToMinimumContentsLengthWithIcon);
+        m_filter->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
         QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
         m_filter->setSizePolicy (sizePol);
         m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
@@ -265,8 +264,8 @@ namespace octave
       }
 
     // Initial view: Contents
-    m_doc_browser->setSource (QUrl (
-        "qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
+    m_doc_browser->setSource
+      (QUrl ("qthelp://org.octave.interpreter-1.0/doc/octave.html/index.html"));
   }
 
   documentation::~documentation (void)

@@ -520,8 +520,8 @@ namespace octave
     index = m_action_hash[key] - 1;
 
     if (index > -1 && index < m_sc.count ())
-      action->setShortcut (QKeySequence (
-                                         m_settings->value ("shortcuts/" + key, m_sc.at (index).m_default_sc).toString ()));
+      action->setShortcut
+        (QKeySequence (m_settings->value ("shortcuts/" + key, m_sc.at (index).m_default_sc).toString ()));
     else
       qDebug () << "Key: " << key << " not found in m_action_hash";
   }
@@ -744,12 +744,15 @@ namespace octave
         help->setWordWrap (true);
         box->addWidget (help);
 
-        QCheckBox *direct = new QCheckBox (
-                                           tr ("Enter shortcut directly by performing it"));
-        QCheckBox *shift = new QCheckBox (
-                                 tr ("Add Shift modifier\n"
-                                     "(allows to enter number keys)"));
-        shift->setStyleSheet ("QCheckBox::indicator { subcontrol-position: left top; }");
+        QCheckBox *direct
+          = new QCheckBox (tr ("Enter shortcut directly by performing it"));
+
+        QCheckBox *shift
+          = new QCheckBox (tr ("Add Shift modifier\n"
+                               "(allows to enter number keys)"));
+
+        shift->setStyleSheet
+          ("QCheckBox::indicator { subcontrol-position: left top; }");
 
         connect (direct, SIGNAL (clicked (bool)),
                  shift, SLOT (setEnabled (bool)));

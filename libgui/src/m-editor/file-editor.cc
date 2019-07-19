@@ -1044,8 +1044,8 @@ namespace octave
                   {
                     std::string ndir = new_name.toStdString ();
                     std::string ofile = old.fileName ().toStdString ();
-                    f_data.new_file_name = QString::fromStdString (
-                      sys::env::make_absolute (ofile, ndir));
+                    f_data.new_file_name
+                      = QString::fromStdString (sys::env::make_absolute (ofile, ndir));
                   }
                 else
                   f_data.new_file_name = new_name;
@@ -1104,8 +1104,9 @@ namespace octave
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     // Tab position
-    QTabWidget::TabPosition pos = static_cast<QTabWidget::TabPosition>(
-          settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+    QTabWidget::TabPosition pos
+      = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position.key, ed_tab_position.def).toInt ());
+
     m_tab_widget->setTabPosition (pos);
 
     // Update style sheet properties depending on position
@@ -1151,12 +1152,12 @@ namespace octave
 #if defined (Q_OS_MAC)
     // FIXME: This is a workaround for missing tab close buttons on MacOS
     // in several Qt versions (https://bugreports.qt.io/browse/QTBUG-61092)
-    QString close_button_css (
-      "QTabBar::close-button"
-      "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
-      "QTabBar::close-button:hover"
-      "  { background-color: #cccccc; }"
-      );
+    QString close_button_css
+      ("QTabBar::close-button"
+       "  { width: 6px; image: url(:/actions/icons/widget-close.png);}\n"
+       "QTabBar::close-button:hover"
+       "  { background-color: #cccccc; }");
+
     style_sheet = style_sheet + close_button_css;
 #endif
 

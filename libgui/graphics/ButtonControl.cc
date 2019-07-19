@@ -92,8 +92,7 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        Object *parent = Object::parentObject (gh_manager::get_object (
-                            up.get___myhandle__ ()));
+                        Object *parent = Object::parentObject (gh_manager::get_object (up.get___myhandle__ ()));
                         ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();

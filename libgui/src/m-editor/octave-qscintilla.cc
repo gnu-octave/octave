@@ -462,15 +462,12 @@ namespace octave
     switch (lexer)
       {
       case SCLEX_CPP:
-        return (ST_LINE_COMMENT * (
-                                   style == QsciLexerCPP::CommentLine
+        return (ST_LINE_COMMENT * (style == QsciLexerCPP::CommentLine
                                    || style == QsciLexerCPP::CommentLineDoc)
-                + ST_BLOCK_COMMENT * (
-                                      style == QsciLexerCPP::Comment
+                + ST_BLOCK_COMMENT * (style == QsciLexerCPP::Comment
                                       || style == QsciLexerCPP::CommentDoc
                                       || style == QsciLexerCPP::CommentDocKeyword
-                                      || style == QsciLexerCPP::CommentDocKeywordError)
-                );
+                                      || style == QsciLexerCPP::CommentDocKeywordError));
 
 #if defined (HAVE_LEXER_MATLAB)
       case SCLEX_MATLAB:
@@ -539,8 +536,7 @@ namespace octave
 
         if (do_auto_close
             && ! inline_end
-            && ! first_word.contains (
-                                      QRegExp ("(case|otherwise|unwind_protect_cleanup)")))
+            && ! first_word.contains (QRegExp ("(case|otherwise|unwind_protect_cleanup)")))
           {
             // Do auto close
             auto_close (do_auto_close, line, prevline, first_word);

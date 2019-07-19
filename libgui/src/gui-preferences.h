@@ -92,20 +92,25 @@ const int ed_comment_strings_count = 5;
 
 // Session data
 const gui_pref ed_session_names ("editor/savedSessionTabs",
-                                  QVariant (QStringList ()));
+                                 QVariant (QStringList ()));
+
 const gui_pref ed_session_enc ("editor/saved_session_encodings",
-                                  QVariant (QStringList ()));
+                               QVariant (QStringList ()));
+
 const gui_pref ed_session_ind ("editor/saved_session_tab_index",
-                                  QVariant (QStringList ()));
+                               QVariant (QStringList ()));
+
 const gui_pref ed_session_lines ("editor/saved_session_lines",
-                                  QVariant (QStringList ()));
+                                 QVariant (QStringList ()));
 
 // Tabs
-const QStringList ed_tab_position_names (
-     QStringList () << QT_TRANSLATE_NOOP ("file_editor::file_editor","Top")
-                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Bottom")
-                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Left")
-                    << QT_TRANSLATE_NOOP ("file_editor::file_editor","Right"));
+const QStringList
+ed_tab_position_names (QStringList ()
+                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Top")
+                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Bottom")
+                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Left")
+                       << QT_TRANSLATE_NOOP ("file_editor::file_editor", "Right"));
+
 const gui_pref ed_tab_position ("editor/tab_position",
                                 QVariant (QTabWidget::North));
 

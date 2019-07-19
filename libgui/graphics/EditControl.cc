@@ -104,8 +104,8 @@ namespace QtHandles
     uicontrol::properties& up = properties<uicontrol> ();
 
     edit->setAcceptRichText (false);
-    edit->setPlainText (Utils::fromStringVector (
-                          up.get_string_vector ()).join ("\n"));
+    edit->setPlainText (Utils::fromStringVector
+                        (up.get_string_vector ()).join ("\n"));
 
     connect (edit, SIGNAL (textChanged (void)),
              SLOT (textChanged (void)));
@@ -190,8 +190,8 @@ namespace QtHandles
     switch (pId)
       {
       case uicontrol::properties::ID_STRING:
-        edit->setPlainText (Utils::fromStringVector (
-                              up.get_string_vector ()).join ("\n"));
+        edit->setPlainText (Utils::fromStringVector
+                            (up.get_string_vector ()).join ("\n"));
         return true;
 
       case uicontrol::properties::ID_MIN:

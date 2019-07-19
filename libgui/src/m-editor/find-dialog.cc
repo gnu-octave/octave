@@ -385,19 +385,19 @@ namespace octave
       }
 
     // Do the search
-    _find_result_available = _edit_area->findFirst (
-                                  _search_line_edit->text (),
-                                  _regex_check_box->isChecked (),
-                                  _case_check_box->isChecked (),
-                                  _whole_words_check_box->isChecked (),
-                                  do_wrap,
-                                  do_forward,
-                                  line,col,
-                                  true
+    _find_result_available
+      = _edit_area->findFirst (_search_line_edit->text (),
+                               _regex_check_box->isChecked (),
+                               _case_check_box->isChecked (),
+                               _whole_words_check_box->isChecked (),
+                               do_wrap,
+                               do_forward,
+                               line,col,
+                               true
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-                                , true
+                               , true
 #endif
-                              );
+                               );
 
     if (_find_result_available)
       {

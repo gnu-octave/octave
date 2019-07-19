@@ -872,12 +872,10 @@ convert_text_position (const Matrix& pos, const text::properties& props,
               if (is_rectangle)
                 {
                   ColumnVector v1, v2;
-                  v1 = ax_xform.untransform (
-                         retval(0)  + ax_bbox(0) - 1,
-                         ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
-                  v2 = ax_xform.untransform (
-                         retval(0)  + retval(2)  + ax_bbox(0) - 1,
-                         ax_bbox(1) + ax_bbox(3) - (retval(1) + retval(3)) + 1);
+                  v1 = ax_xform.untransform (retval(0)  + ax_bbox(0) - 1,
+                                             ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
+                  v2 = ax_xform.untransform (retval(0)  + retval(2)  + ax_bbox(0) - 1,
+                                             ax_bbox(1) + ax_bbox(3) - (retval(1) + retval(3)) + 1);
 
                   retval.resize (1, 4);
 
@@ -889,9 +887,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
               else
                 {
                   ColumnVector v;
-                  v = ax_xform.untransform (
-                        retval(0)  + ax_bbox(0) - 1,
-                        ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
+                  v = ax_xform.untransform (retval(0)  + ax_bbox(0) - 1,
+                                            ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
 
                   retval.resize (1, 3);
 

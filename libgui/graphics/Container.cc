@@ -94,9 +94,11 @@ namespace QtHandles
                   {
                     Matrix bb = go.get_properties ().get_boundingbox (false);
 
-                    obj->qWidget<QWidget> ()->setGeometry (
-                      octave::math::round (bb(0)), octave::math::round (bb(1)),
-                      octave::math::round (bb(2)), octave::math::round (bb(3)));
+                    obj->qWidget<QWidget> ()->setGeometry
+                      (octave::math::round (bb(0)),
+                       octave::math::round (bb(1)),
+                       octave::math::round (bb(2)),
+                       octave::math::round (bb(3)));
                   }
               }
           }

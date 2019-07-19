@@ -183,8 +183,8 @@ namespace QtHandles
         text = Utils::fromStdString ("");      \
     }
 
-  static std::pair<Qt::AlignmentFlag, QString> qStringValueFor (
-    octave_value val, std::string format = "")
+  static std::pair<Qt::AlignmentFlag, QString>
+  qStringValueFor (octave_value val, std::string format = "")
   {
     Qt::AlignmentFlag flag = Qt::AlignRight;
     QString text;
@@ -507,18 +507,17 @@ namespace QtHandles
   Table::cellClicked (int row, int col)
   {
     QCheckBox *checkBox = nullptr;
-    QWidget *widget = qobject_cast<QWidget *> (
-                        m_tableWidget->cellWidget (row, col));
+    QWidget *widget
+      = qobject_cast<QWidget *> (m_tableWidget->cellWidget (row, col));
     if (widget && ! widget->children ().isEmpty ())
       {
-        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                widget->children ().first ());
+        QHBoxLayout *layout
+          = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
         if (layout && layout->count () > 0)
-          {
-            checkBox = qobject_cast<QCheckBox *> (
-                         layout->itemAt (0)-> widget ());
-          }
+          checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
       }
+
     if (checkBox && checkBox->property ("Enabled").toBool ())
       checkBoxClicked (row, col, checkBox);
   }
@@ -1237,8 +1236,8 @@ namespace QtHandles
         int index = -1;
         for (int k = 0; k < format_value.numel (); k++)
           {
-            QString popup_item = Utils::fromStdString (
-                                   format_value.fast_elem_extract (k).string_value ());
+            QString popup_item
+              = Utils::fromStdString (format_value.fast_elem_extract (k).string_value ());
 
             comboBox->addItem (popup_item);
 
@@ -1331,21 +1330,20 @@ namespace QtHandles
               QCheckBox *checkBox = nullptr;
               if (widget && ! widget->children ().isEmpty ())
                 {
-                  QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                          widget->children ().first ());
+                  QHBoxLayout *layout
+                    = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
                   if (layout && layout->count () > 0)
-                    {
-                      checkBox = qobject_cast<QCheckBox *> (
-                                   layout->itemAt (0)-> widget ());
-                    }
+                    checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
                 }
+
               if (checkBox)
-                {
-                  widget->setProperty ("Enabled", QVariant (enabled & editable));
-                }
+                widget->setProperty ("Enabled", QVariant (enabled & editable));
               else
                 {
-                  widget->setAttribute (Qt::WA_TransparentForMouseEvents, !(editable & enabled));
+                  widget->setAttribute (Qt::WA_TransparentForMouseEvents,
+                                        !(editable & enabled));
+
                   widget->setFocusPolicy (Qt::NoFocus);
                 }
             }
@@ -1571,24 +1569,25 @@ namespace QtHandles
                 case Qt::Key_Space:
                   {
                     QCheckBox *checkBox = nullptr;
-                    QWidget *widget = qobject_cast<QWidget *> (
-                                        m_tableWidget->cellWidget (row, col));
+
+                    QWidget *widget
+                      = qobject_cast<QWidget *> (m_tableWidget->cellWidget (row, col));
+
                     if (widget && ! widget->children ().isEmpty ())
                       {
-                        QHBoxLayout *layout = qobject_cast<QHBoxLayout *> (
-                                                widget->children ().first ());
+                        QHBoxLayout *layout
+                          = qobject_cast<QHBoxLayout *> (widget->children ().first ());
+
                         if (layout && layout->count () > 0)
-                          {
-                            checkBox = qobject_cast<QCheckBox *> (
-                                         layout->itemAt (0)-> widget ());
-                          }
+                          checkBox = qobject_cast<QCheckBox *> (layout->itemAt (0)-> widget ());
                       }
+
                     if (checkBox && checkBox->property ("Enabled").toBool ())
                       checkBoxClicked (row, col, checkBox);
 
-                    QComboBox *comboBox = qobject_cast<QComboBox *> (
-                                            m_tableWidget->cellWidget (row,
-                                                                       col));
+                    QComboBox *comboBox
+                      = qobject_cast<QComboBox *> (m_tableWidget->cellWidget (row, col));
+
                     if (comboBox)
                       comboBox->showPopup ();
                   }
@@ -1692,8 +1691,9 @@ namespace QtHandles
                     {
                       for (int col = 0; col < m_tableWidget->columnCount (); col++)
                         {
-                          QComboBox *comboBox_1 = qobject_cast<QComboBox *> (
-                                                    m_tableWidget->cellWidget (row, col));
+                          QComboBox *comboBox_1
+                            = qobject_cast<QComboBox *> (m_tableWidget->cellWidget (row, col));
+
                           if (comboBox_0 == comboBox_1)
                             m_tableWidget->setCurrentCell (row, col);
                         }

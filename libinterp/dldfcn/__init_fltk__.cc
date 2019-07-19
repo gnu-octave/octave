@@ -2460,7 +2460,9 @@ Undocumented internal function.
 @end deftypefn */)
 {
 #if defined (HAVE_FLTK)
-  if (! octave::display_info::display_available ())
+  octave::display_info& dpy_info = interp.get_display_info ();
+
+  if (! dpy_info.display_available ())
     error ("__init_fltk__: no graphics DISPLAY available");
   else if (! toolkit_loaded)
     {

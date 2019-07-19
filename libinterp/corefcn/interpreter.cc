@@ -362,6 +362,7 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
+      m_display_info (),
       m_environment (),
       m_settings (),
       m_error_system (*this),
@@ -426,6 +427,9 @@ namespace octave
     else
       quit_allowed = false;
 
+    if (! m_app_context)
+      m_display_info.initialize ();
+
     bool line_editing = false;
     bool traditional = false;
 
@@ -457,8 +461,8 @@ namespace octave
         if (! image_path.empty ())
           m_environment.image_path (image_path);
 
-        if (options.no_window_system ())
-          display_info::no_window_system ();
+        if (! options.no_window_system ())
+          m_display_info.initialize ();
 
         // Is input coming from a terminal?  If so, we are probably
         // interactive.

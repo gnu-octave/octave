@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "cdef-manager.h"
+#include "display.h"
 #include "dynamic-ld.h"
 #include "environment.h"
 #include "error.h"
@@ -149,6 +150,11 @@ namespace octave
     bool initialized (void) const
     {
       return m_initialized;
+    }
+
+    display_info& get_display_info (void)
+    {
+      return m_display_info;
     }
 
     environment& get_environment (void)
@@ -418,6 +424,8 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
+
+    display_info m_display_info;
 
     environment m_environment;
 

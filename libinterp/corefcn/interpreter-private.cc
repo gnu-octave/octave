@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "bp-table.h"
 #include "cdef-manager.h"
 #include "child-list.h"
+#include "display.h"
 #include "error.h"
 #include "event-manager.h"
 #include "gtk-manager.h"
@@ -180,6 +181,13 @@ namespace octave
     interpreter& interp = __get_interpreter__ (who);
 
     return interp.get_cdef_manager ();
+  }
+
+  display_info& __get_display_info__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_display_info ();
   }
 
   gtk_manager& __get_gtk_manager__ (const std::string& who)

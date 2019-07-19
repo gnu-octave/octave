@@ -35,6 +35,7 @@ namespace octave
   class bp_table;
   class cdef_manager;
   class child_list;
+  class display_info;
   class dynamic_loader;
   class error_system;
   class event_manager;
@@ -84,6 +85,8 @@ namespace octave
   extern child_list& __get_child_list__ (const std::string& who);
 
   extern cdef_manager& __get_cdef_manager__ (const std::string& who);
+
+  extern display_info& __get_display_info__ (const std::string& who);
 
   extern gtk_manager& __get_gtk_manager__ (const std::string& who);
 

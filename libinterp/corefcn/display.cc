@@ -30,56 +30,36 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "display.h"
 #include "error.h"
+#include "interpreter.h"
 #include "ov.h"
 #include "ovl.h"
 
 namespace octave
 {
-  display_info *display_info::instance = nullptr;
-
-  void
-  display_info::init (const std::string& dpy_name, bool query)
+  void display_info::initialize (void)
   {
-    if (query)
-      {
-        int avail = 0;
+    int avail = 0;
 
-        const char *display_name
-          = dpy_name.empty () ? nullptr : dpy_name.c_str ();
+    const char *msg
+      = octave_get_display_info (nullptr, &m_ht, &m_wd, &m_dp,
+                                 &m_rx, &m_ry, &avail);
 
-        const char *msg
-          = octave_get_display_info (display_name, &m_ht, &m_wd, &m_dp,
-                                     &m_rx, &m_ry, &avail);
+    m_dpy_avail = avail;
 
-        m_dpy_avail = avail;
-
-        if (msg)
-          m_err_msg = msg;
-      }
-  }
-
-  bool
-  display_info::instance_ok (bool query)
-  {
-    bool retval = true;
-
-    if (! instance)
-      {
-        instance = new display_info (query);
-        singleton_cleanup_list::add (cleanup_instance);
-      }
-
-    return retval;
+    if (msg)
+      warning ("%s", msg);
   }
 }
 
-DEFUN (have_window_system, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (have_window_system, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} have_window_system ()
 Return true if a window system is available (X11, Windows, or Apple OS X)
 and false otherwise.
 @seealso{isguirunning}
 @end deftypefn */)
 {
-  return ovl (octave::display_info::display_available ());
+  octave::display_info& dpy_info = interp.get_display_info ();
+
+  return ovl (dpy_info.display_available ());
 }

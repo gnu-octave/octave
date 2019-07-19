@@ -976,6 +976,17 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   return ovl (retval);
 }
 
+DEFUN (__locale_charset__, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{charset} =} __locale_charset__ ()
+Return the identifier for the charset used if the encoding is set to "locale".
+@end deftypefn */)
+{
+  const char *charset = octave_locale_charset_wrapper ();
+  std::string charset_str (charset);
+  return ovl (charset_str);
+}
+
 DEFUN (unicode_idx, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{idx} =} unicode_idx (@var{str})

@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDate>
 #include <QObject>
 #include <QWidget>
+#include <QList>
 #include <QListWidget>
 #include <QFileSystemModel>
 #include <QToolBar>
@@ -112,6 +113,8 @@ namespace octave
     void contextmenu_newfile (bool);
     void contextmenu_newdir (bool);
     void contextmenu_setcurrentdir (bool);
+    void contextmenu_add_to_path (bool, bool subdirs=false);
+    void contextmenu_add_to_path_subdirs (bool);
     void contextmenu_findfiles (bool);
     //!@}
 
@@ -167,8 +170,17 @@ namespace octave
 
   private:
 
+    //! Get currently selected QFileInfo object.
+
+    QList<QFileInfo> get_selected_items_info (bool);
+
+    //! Process new file/directory actions
+
     void process_new_file (const QString& parent_name);
     void process_new_dir (const QString& parent_name);
+
+    //! Process setting current dir or find in files
+
     void process_set_current_dir (const QString& parent_name);
     void process_find_files (const QString& dir_name);
 

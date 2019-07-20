@@ -1,5 +1,4 @@
 /*
-
 Copyright (C) 2013-2019 John P. Swensen
 Copyright (C) 2011-2019 Jacob Dawid
 
@@ -48,6 +47,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "load-save.h"
 #include "oct-env.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
+#include "qt-interpreter-events.h"
+#include "builtin-defun-decls.h"
 
 namespace octave
 {
@@ -533,7 +536,16 @@ namespace octave
             menu.addAction (resource_manager::icon ("go-first"),
                             tr ("Set Current Directory"),
                             this, SLOT (contextmenu_setcurrentdir (bool)));
+
+            QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
+
+            add_path_menu->addAction (tr ("Selected Directories"),
+                            this, SLOT (contextmenu_add_to_path (bool)));
+            add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
+                            this, SLOT (contextmenu_add_to_path_subdirs (bool)));
+
             menu.addSeparator ();
+
             menu.addAction (resource_manager::icon ("edit-find"),
                             tr ("Find Files..."), this,
                             SLOT (contextmenu_findfiles (bool)));
@@ -729,6 +741,28 @@ namespace octave
       }
   }
 
+  // Get the currently selectd files/dirs and return their file infos in a list
+  QList<QFileInfo> files_dock_widget::get_selected_items_info (bool dir)
+  {
+    QItemSelectionModel *m = m_file_tree_view->selectionModel ();
+    QModelIndexList rows = m->selectedRows ();
+
+    QList<QFileInfo> infos;
+
+    for (auto it = rows.begin (); it != rows.end (); it++)
+      {
+        QModelIndex index = *it;
+
+        QFileInfo info = m_file_system_model->fileInfo (index);
+
+        if (info.exists () &&
+              ((dir & info.isDir ()) || (! dir && info.isFile ())))
+          infos.append (info);
+      }
+
+    return infos;
+  }
+
   void files_dock_widget::contextmenu_newfile (bool)
   {
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
@@ -763,20 +797,53 @@ namespace octave
 
   void files_dock_widget::contextmenu_setcurrentdir (bool)
   {
-    QItemSelectionModel *m = m_file_tree_view->selectionModel ();
-    QModelIndexList rows = m->selectedRows ();
+    QList<QFileInfo> infos = get_selected_items_info (true);
 
-    if (rows.size () > 0)
+    if (infos.length () > 0 && infos.first ().isDir ())
+      process_set_current_dir (infos.first ().absoluteFilePath ());
+  }
+
+  void files_dock_widget::contextmenu_add_to_path (bool, bool subdirs)
+  {
+    QList<QFileInfo> infos = get_selected_items_info (true);
+
+    octave_value_list dir_list = ovl ();
+
+    for (int i = 0; i < infos.length (); i++)
+      dir_list.append (infos.at (i).absoluteFilePath ().toStdString ());
+
+    if (infos.length () > 0)
       {
-        QModelIndex index = rows[0];
+        event_manager& evmgr
+          = __get_event_manager__ ("files_dock_widget::contextmenu_add_to_path");
 
-        QFileInfo info = m_file_system_model->fileInfo (index);
-
-        if (info.isDir ())
+        evmgr.post_event
+          ([dir_list, subdirs] (void)
           {
-            process_set_current_dir (info.absoluteFilePath ());
-          }
+            // INTERPRETER THREAD
+
+            interpreter& interp
+              = __get_interpreter__ ("files_dock_widget::contextmenu_add_to_path");
+
+            octave_value_list paths = ovl ();
+
+            if (subdirs)
+              {
+                // Loop over all directories in order to get all subdirs
+                for (octave_idx_type i = 0; i < dir_list.length (); i++)
+                  paths.append (Fgenpath (dir_list(i)));
+              }
+            else
+              paths = dir_list;
+
+            Faddpath (interp, paths);
+          });
       }
+  }
+
+  void files_dock_widget::contextmenu_add_to_path_subdirs (bool)
+  {
+    contextmenu_add_to_path (true, true);
   }
 
   void files_dock_widget::contextmenu_findfiles (bool)

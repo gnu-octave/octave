@@ -544,9 +544,9 @@ Texinfo.
 
 GNU Make, @code{gcc} (and @code{libstdc++}), @code{gnuplot},
 @code{bison}, @code{flex}, and Texinfo are all available from many
-anonymous ftp archives.  The primary site is @url{ftp.gnu.org}, but it
+anonymous ftp archives.  The primary site is @url{ftp://ftp.gnu.org}, but it
 is often very busy.  A list of sites that mirror the software on
-@url{ftp.gnu.org} is available by anonymous ftp from
+@url{ftp://ftp.gnu.org} is available by anonymous ftp from
 @url{ftp://ftp.gnu.org/pub/gnu/GNUinfo/FTP}.
 
 Octave requires approximately 1.4 GB of disk storage to unpack and
@@ -674,7 +674,7 @@ All libraries and header files will be installed in subdirectories of
 @item @sc{blas} and @sc{lapack} (@url{http://www.netlib.org/lapack})
 
 Reference versions for both libraries are included in the reference
-@sc{lapack} 3.2.1 distribution from @url{netlib.org}.
+@sc{lapack} 3.2.1 distribution from @url{http://www.netlib.org/}.
 
 @itemize @minus
 @item

@@ -884,28 +884,11 @@ namespace octave
     set_global_shortcuts (m_active_dock == m_command_window);
     disable_menu_shortcuts (m_active_dock == m_editor_window);
 
-    // Ckeck whether some octave internal preferences have to be updated
+    // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
       = settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
     if (new_default_encoding != m_default_encoding)
-      {
-        m_default_encoding = new_default_encoding;
-
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::notice_settings");
-
-        evmgr.post_event
-          ([this] (void)
-           {
-             // INTERPRETER THREAD
-
-             interpreter& interp
-               = __get_interpreter__ ("main_window::notice_settings");
-
-             F__mfile_encoding__ (interp,
-                                  ovl (m_default_encoding.toStdString ()));
-           });
-      }
+      update_default_encoding (new_default_encoding);
 
     // Set cursor blinking depending on the settings
     // Cursor blinking: consider old terminal related setting if not yet set
@@ -1699,6 +1682,10 @@ namespace octave
             startup_dir
               = QDir (settings->value ("octave_startup_dir").toString ());
           }
+
+        update_default_encoding
+          (settings->value (ed_default_enc.key,
+                            ed_default_enc.def).toString ());
       }
 
     if (! startup_dir.exists ())
@@ -2864,4 +2851,25 @@ namespace octave
     list.append (static_cast<octave_dock_widget *> (m_variable_editor_window));
     return list;
   }
+
+  void main_window::update_default_encoding (const QString& default_encoding)
+  {
+    m_default_encoding = default_encoding;
+
+    event_manager& evmgr
+      = __get_event_manager__ ("main_window::notice_settings");
+
+    evmgr.post_event
+      ([this] (void)
+       {
+         // INTERPRETER THREAD
+
+         interpreter& interp
+           = __get_interpreter__ ("main_window::notice_settings");
+
+         F__mfile_encoding__ (interp,
+                              ovl (m_default_encoding.toStdString ()));
+       });
+  }
+
 }

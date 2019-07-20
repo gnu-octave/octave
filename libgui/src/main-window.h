@@ -279,6 +279,8 @@ namespace octave
     void configure_shortcuts (void);
 
     QList<octave_dock_widget *> dock_widget_list (void);
+    
+    void update_default_encoding (const QString& default_encoding);
 
     base_qobject& m_octave_qobj;
 

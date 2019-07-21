@@ -397,12 +397,9 @@ namespace octave
   input_system::input_system (interpreter& interp)
     : m_interpreter (interp), m_PS1 (R"(octave:\#> )"), m_PS2 ("> "),
       m_completion_append_char (' '), m_gud_mode (false),
-      m_mfile_encoding ("utf-8"), m_last_debugging_command ("\n"),
+      m_mfile_encoding ("system"), m_last_debugging_command ("\n"),
       m_input_event_hook_functions ()
   {
-#if defined (OCTAVE_USE_WINDOWS_API)
-    m_mfile_encoding = "system";
-#endif
   }
 
     void input_system::initialize (bool line_editing)
@@ -486,11 +483,7 @@ namespace octave
       {
         if (m_mfile_encoding.empty ())
           {
-#if defined (OCTAVE_USE_WINDOWS_API)
             m_mfile_encoding = "system";
-#else
-            m_mfile_encoding = "utf-8";
-#endif
           }
         else
           {

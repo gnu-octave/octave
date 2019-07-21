@@ -231,15 +231,10 @@ namespace octave
     setFocusProxy (_edit_area);
 
     // encoding, not updated with the settings
-#if defined (Q_OS_WIN32)
     QString locale_enc_name =
       QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
     _encoding = settings->value ("editor/default_encoding", locale_enc_name)
                 .toString ();
-#else
-    _encoding = settings->value ("editor/default_encoding", "UTF-8")
-                .toString ();
-#endif
     _enc_indicator->setText (_encoding);
     // no changes in encoding yet
     _new_encoding = _encoding;
@@ -2414,7 +2409,7 @@ namespace octave
   {
     QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
 
-    // "SYSTEM" is used as alias for the locale encoding on Windows systems.
+    // "SYSTEM" is used as alias for the locale encoding.
     if ((! codec) && _encoding.startsWith("SYSTEM"))
       codec = QTextCodec::codecForLocale ();
 

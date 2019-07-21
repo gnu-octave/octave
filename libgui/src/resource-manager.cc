@@ -421,10 +421,9 @@ namespace octave
         codecs->append (c->name ().toUpper ());
       }
 
-    // If on Windows, append "SYSTEM"
-    if (ed_default_enc.def.toString ().startsWith("SYSTEM"))
-      codecs->append (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
-                        ("SYSTEM (").append (")"));
+    // Append SYSTEM
+    codecs->append (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
+                      ("SYSTEM (").append (")"));
 
     // Clean up and sort list of codecs
     codecs->removeDuplicates ();
@@ -442,6 +441,8 @@ namespace octave
 
     // Check for valid codec for the default. If this fails, "SYSTEM" (i.e.
     // codecForLocale) will be chosen.
+    // FIXME: The default is "SYSTEM" on all platforms. So can this fallback
+    // logic be removed completely?
     bool default_exists = false;
     if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())
         || (ed_default_enc.def.toString ().startsWith ("SYSTEM")))

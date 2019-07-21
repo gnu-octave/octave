@@ -111,14 +111,10 @@ const gui_pref ed_tab_position ("editor/tab_position",
 
 // File handling
 const gui_pref ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
-#if defined (Q_OS_WIN32)
 const gui_pref ed_default_enc
   ("editor/default_encoding",
    QVariant (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
                ("SYSTEM (").append (")")));
-#else
-const gui_pref ed_default_enc ("editor/default_encoding", QVariant ("UTF-8"));
-#endif
 
 
 // Files dock widget

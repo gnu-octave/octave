@@ -261,8 +261,8 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                   octave::rand::reset (fcn);
                 else
                   {
-                    ColumnVector s =
-                      ColumnVector (args(idx+1).vector_value (false, true));
+                    ColumnVector s
+                      = ColumnVector (args(idx+1).vector_value (false, true));
 
                     // Backwards compatibility with previous versions of
                     // Octave which mapped Inf to 0.

@@ -73,8 +73,8 @@ public:
   {
     if (go.isa ("figure"))
       {
-        const figure::properties& props =
-          dynamic_cast<const figure::properties&> (go.get_properties ());
+        const figure::properties& props
+          = dynamic_cast<const figure::properties&> (go.get_properties ());
 
         send_quit (props.get___plot_stream__ ());
       }
@@ -86,8 +86,8 @@ public:
       {
         graphics_object obj (go);
 
-        figure::properties& props =
-          dynamic_cast<figure::properties&> (obj.get_properties ());
+        figure::properties& props
+          = dynamic_cast<figure::properties&> (obj.get_properties ());
 
         switch (id)
           {

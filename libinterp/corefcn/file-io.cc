@@ -435,8 +435,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::string_to_float_format (arch);
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::string_to_float_format (arch);
 
   std::string fname = octave::sys::file_ops::tilde_expand (name);
 

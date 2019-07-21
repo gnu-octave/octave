@@ -74,8 +74,8 @@ namespace octave
 
     tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
 
-    tree_compound_binary_expression& operator =
-    (const tree_compound_binary_expression&) = delete;
+    tree_compound_binary_expression&
+    operator = (const tree_compound_binary_expression&) = delete;
   };
 
   // a "virtual constructor"

@@ -922,8 +922,8 @@ namespace octave
 
             // Check that the string is composed of single byte characters
             const std::string tmpstr = txtobj.get_string ();
-            const uint8_t *c =
-              reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
+            const uint8_t *c
+              = reinterpret_cast<const uint8_t *> (tmpstr.c_str ());
 
             for (size_t i = 0; i < tmpstr.size ();)
               {
@@ -1034,10 +1034,10 @@ namespace octave
     fontsize = props.get ("__fontsize_points__").double_value ();
 
     caseless_str fn = props.get ("fontname").xtolower ().string_value ();
-    bool isbold =
-      (props.get ("fontweight").xtolower ().string_value () == "bold");
-    bool isitalic =
-      (props.get ("fontangle").xtolower ().string_value () == "italic");
+    bool isbold
+      =(props.get ("fontweight").xtolower ().string_value () == "bold");
+    bool isitalic
+      = (props.get ("fontangle").xtolower ().string_value () == "italic");
 
     fontname = select_font (fn, isbold, isitalic);
   }
@@ -1132,9 +1132,9 @@ namespace octave
     bool do_clip = props.is_clipping ();
     Matrix vp = get_viewport_scaled ();
 
-    ColumnVector vp_lim_min =
-      xform.untransform (std::numeric_limits <float>::epsilon (),
-                         std::numeric_limits <float>::epsilon ());
+    ColumnVector vp_lim_min
+      = xform.untransform (std::numeric_limits <float>::epsilon (),
+                           std::numeric_limits <float>::epsilon ());
     ColumnVector vp_lim_max = xform.untransform (vp(2), vp(3));
 
     if (vp_lim_min(0) > vp_lim_max(0))
@@ -1143,23 +1143,27 @@ namespace octave
     if (vp_lim_min(1) > vp_lim_max(1))
       std::swap (vp_lim_min(1), vp_lim_max(1));
 
-    float clip_xmin =
-      (do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0));
-    float clip_ymin =
-      (do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1));
+    float clip_xmin
+      = do_clip ? (vp_lim_min(0) > xmin ? vp_lim_min(0) : xmin) : vp_lim_min(0);
 
-    float clip_xmax =
-      (do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0));
-    float clip_ymax =
-      (do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1));
+    float clip_ymin
+      = do_clip ? (vp_lim_min(1) > ymin ? vp_lim_min(1) : ymin) : vp_lim_min(1);
+
+    float clip_xmax
+      = do_clip ? (vp_lim_max(0) < xmax ? vp_lim_max(0) : xmax) : vp_lim_max(0);
+
+    float clip_ymax
+      = do_clip ? (vp_lim_max(1) < ymax ? vp_lim_max(1) : ymax) : vp_lim_max(1);
 
     if (im_xmin < clip_xmin)
       j0 += (clip_xmin - im_xmin)/nor_dx + 1;
+
     if (im_xmax > clip_xmax)
       j1 -= (im_xmax - clip_xmax)/nor_dx;
 
     if (im_ymin < clip_ymin)
       i0 += (clip_ymin - im_ymin)/nor_dy + 1;
+
     if (im_ymax > clip_ymax)
       i1 -= (im_ymax - clip_ymax)/nor_dy;
 
@@ -1171,8 +1175,7 @@ namespace octave
     float zoom_y;
     m_glfcns.glGetFloatv (GL_ZOOM_Y, &zoom_y);
 
-    m_glfcns.glPixelZoom (m_devpixratio * pix_dx,
-                          - m_devpixratio * pix_dy);
+    m_glfcns.glPixelZoom (m_devpixratio * pix_dx, - m_devpixratio * pix_dy);
     m_glfcns.glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
 
     // Expect RGB data

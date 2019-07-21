@@ -201,8 +201,8 @@ namespace octave
                 symbol_table& symtab
                   = __get_symbol_table__ ("fcn_info::fcn_info_rep::load_class_method");
 
-                const std::list<std::string>& plist =
-                  symtab.parent_classes (dispatch_type);
+                const std::list<std::string>& plist
+                  = symtab.parent_classes (dispatch_type);
 
                 auto it = plist.begin ();
 
@@ -256,15 +256,15 @@ namespace octave
           builtin_type_t ityp = static_cast<builtin_type_t> (i);
           builtin_type_t jtyp = static_cast<builtin_type_t> (j);
           // FIXME: Is this really right?
-          bool use_j =
-            (jtyp == btyp_func_handle || ityp == btyp_bool
-             || (btyp_isarray (ityp)
-                 && (! btyp_isarray (jtyp)
-                     || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
-                     || ((ityp == btyp_double || ityp == btyp_complex
-                          || ityp == btyp_char)
-                         && (jtyp == btyp_float
-                             || jtyp == btyp_float_complex)))));
+          bool use_j
+            = (jtyp == btyp_func_handle || ityp == btyp_bool
+               || (btyp_isarray (ityp)
+                   && (! btyp_isarray (jtyp)
+                       || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
+                       || ((ityp == btyp_double || ityp == btyp_complex
+                            || ityp == btyp_char)
+                           && (jtyp == btyp_float
+                               || jtyp == btyp_float_complex)))));
 
           sup_table[i][j] = (use_j ? jtyp : ityp);
         }
@@ -1004,16 +1004,16 @@ namespace octave
       {
         std::string dir_name;
 
-        load_path& lp =
-          __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
+        load_path& lp
+          = __get_load_path__ ("fcn_info::fcn_info_rep::find_user_function");
 
 
         std::string file_name = lp.find_fcn (name, dir_name, package_name);
 
         if (! file_name.empty ())
           {
-            octave_value ov_fcn =
-              load_fcn_from_file (file_name, dir_name, "", package_name);
+            octave_value ov_fcn
+              = load_fcn_from_file (file_name, dir_name, "", package_name);
 
             if (ov_fcn.is_defined ())
               function_on_path = ov_fcn;

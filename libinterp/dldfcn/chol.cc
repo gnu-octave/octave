@@ -670,8 +670,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
         {
           // complex case
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
-          FloatComplexColumnVector u =
-            argu.float_complex_column_vector_value ();
+          FloatComplexColumnVector u
+            = argu.float_complex_column_vector_value ();
 
           octave::math::chol<FloatComplexMatrix> fact;
           fact.set (R);
@@ -860,8 +860,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
         {
           // complex case
           FloatComplexMatrix R = argr.float_complex_matrix_value ();
-          FloatComplexColumnVector u =
-            argu.float_complex_column_vector_value ();
+          FloatComplexColumnVector u
+            = argu.float_complex_column_vector_value ();
 
           octave::math::chol<FloatComplexMatrix> fact;
           fact.set (R);
@@ -888,8 +888,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
         {
           // complex case
           ComplexMatrix R = argr.complex_matrix_value ();
-          ComplexColumnVector u =
-            argu.complex_column_vector_value ();
+          ComplexColumnVector u = argu.complex_column_vector_value ();
 
           octave::math::chol<ComplexMatrix> fact;
           fact.set (R);

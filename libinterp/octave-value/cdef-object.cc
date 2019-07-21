@@ -662,8 +662,7 @@ namespace octave
             }
           else
             {
-              octave_value val =
-                prop.get_value (obj, true, "subsasgn");
+              octave_value val = prop.get_value (obj, true, "subsasgn");
 
               std::list<octave_value_list> args (idx);
 

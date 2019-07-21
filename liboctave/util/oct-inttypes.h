@@ -138,12 +138,13 @@ class octave_int_cmp_op
     static const bool t1sig = std::numeric_limits<T1>::is_signed;
     static const bool t2sig = std::numeric_limits<T2>::is_signed;
 
-    static const bool psig =
-      (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
+    static const bool psig
+      = (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
 
-    static const int psize =
-      (pint ? sizeof (int) : (sizeof (T2) > sizeof (T1)
-                              ? sizeof (T2) : sizeof (T1)));
+    static const int psize
+      = (pint
+         ? sizeof (int)
+         : (sizeof (T2) > sizeof (T1) ? sizeof (T2) : sizeof (T1)));
   public:
 
     typedef typename query_integer_type<psize, psig>::type type;
@@ -371,12 +372,12 @@ public:
     static const int t_size = sizeof (T);
     static const int s_size = sizeof (S);
 
-    static const bool omit_chk_min =
-      (! s_is_signed || (t_is_signed && t_size >= s_size));
+    static const bool omit_chk_min
+      = (! s_is_signed || (t_is_signed && t_size >= s_size));
 
-    static const bool omit_chk_max =
-      (t_size > s_size || (t_size == s_size
-                           && (! t_is_signed || s_is_signed)));
+    static const bool omit_chk_max
+      = (t_size > s_size
+         || (t_size == s_size && (! t_is_signed || s_is_signed)));
 
     // If the check can be omitted, substitute constant false
     // relation.

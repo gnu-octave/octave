@@ -6644,8 +6644,8 @@ namespace octave
     octave_idx_type input_elt_size
       = oct_data_conv::data_type_size (input_type);
 
-    ptrdiff_t input_buf_size =
-      static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
+    ptrdiff_t input_buf_size
+      = static_cast<ptrdiff_t> (input_buf_elts) * input_elt_size;
 
     assert (input_buf_size >= 0);
 

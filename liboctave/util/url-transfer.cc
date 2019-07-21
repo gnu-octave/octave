@@ -864,10 +864,11 @@ namespace octave
       // Needed by mediaWiki API.
       curl_version_info_data * data = curl_version_info(CURLVERSION_NOW);
       const char *lib_ver = data->version;
-      std::string user_agent =
-          "GNU Octave/" + std::string (OCTAVE_VERSION) +
-          " (https://www.gnu.org/software/octave/ ; help@octave.org) libcurl/"
-          + std::string (lib_ver);
+      std::string user_agent
+        ("GNU Octave/"
+         + std::string (OCTAVE_VERSION)
+         + " (https://www.gnu.org/software/octave/ ; help@octave.org) libcurl/"
+         + std::string (lib_ver));
 
       SETOPT (CURLOPT_USERAGENT, user_agent.c_str ());
 

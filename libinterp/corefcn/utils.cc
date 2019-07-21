@@ -453,12 +453,10 @@ namespace octave
 
         if (! local_file_ok)
           {
-            load_path& lp =
-              __get_load_path__ ("find_data_file_in_load_path");
+            load_path& lp = __get_load_path__ ("find_data_file_in_load_path");
 
             // Not directly found; search load path.
-            std::string tmp
-              = sys::env::make_absolute (lp.find_file (fname));
+            std::string tmp = sys::env::make_absolute (lp.find_file (fname));
 
             if (! tmp.empty ())
               {

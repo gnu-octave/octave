@@ -173,10 +173,10 @@ static void maybe_fill_table (void)
   REGISTER_OP_HANDLER (bsxfun_builtin_or, btyp_bool, boolNDArray, bsxfun_or);
 
   // Register power handlers.
-  bsxfun_handler_table[bsxfun_builtin_power][btyp_double] =
-    do_bsxfun_real_pow<NDArray, ComplexNDArray>;
-  bsxfun_handler_table[bsxfun_builtin_power][btyp_float] =
-    do_bsxfun_real_pow<FloatNDArray, FloatComplexNDArray>;
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_double]
+    = do_bsxfun_real_pow<NDArray, ComplexNDArray>;
+  bsxfun_handler_table[bsxfun_builtin_power][btyp_float]
+    = do_bsxfun_real_pow<FloatNDArray, FloatComplexNDArray>;
 
   REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray,
                        bsxfun_pow);
@@ -485,8 +485,8 @@ as the other array.
                           else
                             {
                               have_ComplexNDArray = true;
-                              result_ComplexNDArray =
-                                tmp(0).complex_array_value ();
+                              result_ComplexNDArray
+                                = tmp(0).complex_array_value ();
                               result_ComplexNDArray.resize (dvc);
                             }
                         }
@@ -495,15 +495,15 @@ as the other array.
                           if (tmp(0).isreal ())
                             {
                               have_FloatNDArray = true;
-                              result_FloatNDArray =
-                                tmp(0).float_array_value ();
+                              result_FloatNDArray
+                                = tmp(0).float_array_value ();
                               result_FloatNDArray.resize (dvc);
                             }
                           else
                             {
                               have_FloatComplexNDArray = true;
-                              result_FloatComplexNDArray =
-                                tmp(0).float_complex_array_value ();
+                              result_FloatComplexNDArray
+                                = tmp(0).float_complex_array_value ();
                               result_FloatComplexNDArray.resize (dvc);
                             }
                         }
@@ -544,8 +544,8 @@ as the other array.
                         result_NDArray.insert (tmp(0).array_value (), ra_idx);
                       else
                         {
-                          result_ComplexNDArray =
-                            ComplexNDArray (result_NDArray);
+                          result_ComplexNDArray
+                            = ComplexNDArray (result_NDArray);
                           result_ComplexNDArray.insert
                             (tmp(0).complex_array_value (), ra_idx);
                           have_NDArray = false;
@@ -565,8 +565,8 @@ as the other array.
                           (tmp(0).float_array_value (), ra_idx);
                       else
                         {
-                          result_FloatComplexNDArray =
-                            FloatComplexNDArray (result_FloatNDArray);
+                          result_FloatComplexNDArray
+                            = FloatComplexNDArray (result_FloatNDArray);
                           result_FloatComplexNDArray.insert
                             (tmp(0).float_complex_array_value (), ra_idx);
                           have_FloatNDArray = false;

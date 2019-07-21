@@ -1313,8 +1313,8 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
       // interrupted before resetting the format flags and fill
       // character?
 
-      octave::mach_info::float_format flt_fmt =
-        octave::mach_info::native_float_format ();
+      octave::mach_info::float_format flt_fmt
+        = octave::mach_info::native_float_format ();
 
       os.fill ('0');
       os.flags (std::ios::right | std::ios::hex);
@@ -1336,8 +1336,8 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
       equiv<T> tmp;
       tmp.val = val;
 
-      octave::mach_info::float_format flt_fmt =
-        octave::mach_info::native_float_format ();
+      octave::mach_info::float_format flt_fmt
+        = octave::mach_info::native_float_format ();
 
       if (flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
         {

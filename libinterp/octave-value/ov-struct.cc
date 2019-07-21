@@ -444,8 +444,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                const octave_map& cmap =
-                  const_cast<const octave_map &> (map);
+                const octave_map& cmap = const_cast<const octave_map &> (map);
                 // cast to const reference, avoid forced key insertion.
                 if (idxf.all_scalars ()
                     || cmap.contents (key).index (idxf, true).numel () == 1)

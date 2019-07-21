@@ -220,8 +220,8 @@ namespace octave
   // Reimplemented Event
   bool dw_main_window::event (QEvent *ev)
   {
-    if (ev->type () == QEvent::ChildAdded ||
-        ev->type () == QEvent::ChildRemoved)
+    if (ev->type () == QEvent::ChildAdded
+        || ev->type () == QEvent::ChildRemoved)
       {
         // Adding or Removing a child indicates that a dock widget was
         // created or removed.

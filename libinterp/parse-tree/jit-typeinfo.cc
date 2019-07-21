@@ -1293,8 +1293,8 @@ namespace octave
 
     for (int op = 0; op < octave_value::num_binary_ops; ++op)
       {
-        const llvm::Twine &fn_name =
-          "octave_jit_binary_any_any_" + llvm::Twine (op);
+        const llvm::Twine& fn_name
+          = "octave_jit_binary_any_any_" + llvm::Twine (op);
 
         fn = create_internal (fn_name, m_any, m_any, m_any);
         fn.mark_can_error ();

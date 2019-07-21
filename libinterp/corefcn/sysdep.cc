@@ -189,9 +189,8 @@ namespace octave
 
     if (hShell)
       {
-        SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID =
-          reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell,
-                                                             "SetCurrentProcessExplicitAppUserModelID"));
+        SETCURRENTAPPID pfnSetCurrentProcessExplicitAppUserModelID
+          = reinterpret_cast<SETCURRENTAPPID> (GetProcAddress (hShell, "SetCurrentProcessExplicitAppUserModelID"));
 
         if (pfnSetCurrentProcessExplicitAppUserModelID)
           pfnSetCurrentProcessExplicitAppUserModelID (L"gnu.octave." VERSION);
@@ -345,8 +344,7 @@ namespace octave
           {
             // Check if it ends with the share
             size_t last_slash = name.find ("\\", next_slash+1);
-            if (last_slash == -1 ||
-                (len > next_slash+2 && last_slash == len-1))
+            if (last_slash == -1 || (len > next_slash+2 && last_slash == len-1))
               candidate = true;
           }
       }
@@ -355,11 +353,11 @@ namespace octave
       {
         // Open a handle to the file.
         std::wstring wname = sys::u8_to_wstring (name);
-        HANDLE h =
-          CreateFileW (wname.c_str (), FILE_READ_ATTRIBUTES,
-                       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-                       nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS,
-                       nullptr);
+        HANDLE h
+          = CreateFileW (wname.c_str (), FILE_READ_ATTRIBUTES,
+                         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                         nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS,
+                         nullptr);
         if (h != INVALID_HANDLE_VALUE)
           {
             CloseHandle (h);
@@ -955,9 +953,9 @@ On non-Windows platforms this function fails with an error.
     print_usage ();
 
   // Input check
-  std::string rootkey_name =
-    args(0).xstring_value ("winqueryreg: the first argument must be 'name' "
-                           "or a valid ROOTKEY identifier");
+  std::string rootkey_name
+    = args(0).xstring_value ("winqueryreg: the first argument must be 'name' "
+                             "or a valid ROOTKEY identifier");
   std::string subkey_name = "";
   std::string value_name = "";
   bool get_names = false;
@@ -967,18 +965,19 @@ On non-Windows platforms this function fails with an error.
         error ("winqueryreg: if the first argument is 'name', "
                "ROOTKEY and SUBKEY must be given");
       get_names = true;
-      rootkey_name =
-        args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");
-      subkey_name =
-        args(2).xstring_value ("winqueryreg: SUBKEY must be a string");
+      rootkey_name
+        = args(1).xstring_value ("winqueryreg: ROOTKEY must be a string");
+      subkey_name
+        = args(2).xstring_value ("winqueryreg: SUBKEY must be a string");
     }
   else
     {
-      subkey_name =
-        args(1).xstring_value ("winqueryreg: SUBKEY must be a string");
+      subkey_name
+        = args(1).xstring_value ("winqueryreg: SUBKEY must be a string");
+
       if (args.length () == 3)
-        value_name =
-          args(2).xstring_value ("winqueryreg: VALUENAME must be a string");
+        value_name
+          = args(2).xstring_value ("winqueryreg: VALUENAME must be a string");
     }
 
   // Get rootkey handle
@@ -1245,8 +1244,8 @@ for floating point calculations.
 No actual tests are performed.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::native_float_format ();
 
   return ovl (flt_fmt == octave::mach_info::flt_fmt_ieee_little_endian
               || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian);
@@ -1262,8 +1261,8 @@ DEFUN (native_float_format, , ,
 Return the native floating point format as a string.
 @end deftypefn */)
 {
-  octave::mach_info::float_format flt_fmt =
-    octave::mach_info::native_float_format ();
+  octave::mach_info::float_format flt_fmt
+    = octave::mach_info::native_float_format ();
 
   return ovl (octave::mach_info::float_format_as_string (flt_fmt));
 }

@@ -1067,8 +1067,9 @@ namespace QtHandles
     uitable::properties& tp = properties<uitable> ();
 
     octave_value columnwidth = tp.get_columnwidth ();
-    if (columnwidth.isempty () ||
-        (columnwidth.is_string () && columnwidth.string_value (false) == "auto"))
+    if (columnwidth.isempty ()
+        || (columnwidth.is_string ()
+            && columnwidth.string_value (false) == "auto"))
       for (int i = 0; i < m_tableWidget->columnCount (); i++)
         m_tableWidget->setColumnWidth (i, AUTO_WIDTH);
     else if (columnwidth.is_string ()

@@ -153,8 +153,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,
 
               if (mattyp.is_unknown () && autocomp)
                 {
-                  SparseComplexMatrix m =
-                    args(0).sparse_complex_matrix_value ();
+                  SparseComplexMatrix m
+                    = args(0).sparse_complex_matrix_value ();
 
                   mattyp = MatrixType (m);
                   args(0).matrix_type (mattyp);

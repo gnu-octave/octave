@@ -1638,8 +1638,8 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("attempt_type_conversion");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("attempt_type_conversion");
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -3398,8 +3398,8 @@ complex ([1, 2], [3, 4])
                       octave_idx_type off = j * nr;
                       for (octave_idx_type i = im_val.cidx (j);
                            i < im_val.cidx (j + 1); i++)
-                        result.data (im_val.ridx (i) + off) +=
-                          Complex (0, im_val.data (i));
+                        result.data (im_val.ridx (i) + off)
+                          += Complex (0, im_val.data (i));
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -3421,8 +3421,8 @@ complex ([1, 2], [3, 4])
                       octave_idx_type off = j * nr;
                       for (octave_idx_type i = re_val.cidx (j);
                            i < re_val.cidx (j + 1); i++)
-                        result.data (re_val.ridx (i) + off) +=
-                          re_val.data (i);
+                        result.data (re_val.ridx (i) + off)
+                          += re_val.data (i);
                     }
                 }
               retval = octave_value (new octave_sparse_complex_matrix (result));
@@ -7199,8 +7199,8 @@ do_accumarray_minmax (const idx_vector& idx, const NDT& vals,
   NDT retval (dim_vector (n, 1), zero_val);
 
   // Pick minimizer or maximizer.
-  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&) =
-    ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
+  void (MArray<T>::*op) (const idx_vector&, const MArray<T>&)
+    = ismin ? (&MArray<T>::idx_min) : (&MArray<T>::idx_max);
 
   octave_idx_type l = idx.length (n);
   if (vals.numel () == 1)
@@ -8022,8 +8022,8 @@ dimensions of the decoded array.
     {
       dim_vector dims;
 
-      const Array<octave_idx_type> size =
-        args(1).octave_idx_type_vector_value ();
+      const Array<octave_idx_type> size
+        = args(1).octave_idx_type_vector_value ();
 
       dims = dim_vector::alloc (size.numel ());
       for (octave_idx_type i = 0; i < size.numel (); i++)

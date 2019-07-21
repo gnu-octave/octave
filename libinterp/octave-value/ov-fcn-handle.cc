@@ -557,8 +557,8 @@ octave_fcn_handle::set_fcn (const std::string& octaveroot,
           names.push_back (m_name + ".mex");
           names.push_back (m_name + ".m");
 
-          octave::load_path& lp =
-            octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
+          octave::load_path& lp
+            = octave::__get_load_path__ ("octave_fcn_handle::set_fcn");
 
           octave::directory_path p (lp.system_path ());
 
@@ -919,9 +919,8 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
               bool dummy;
               std::string doc;
 
-              std::string name =
-                read_binary_data (is, swap, fmt, "",
-                                  dummy, t2, doc);
+              std::string name
+                = read_binary_data (is, swap, fmt, "", dummy, t2, doc);
 
               if (! is)
                 error ("load: failed to load anonymous function handle");

@@ -58,10 +58,10 @@ DEFBINOP_OP (add, sparse_matrix, sparse_matrix, +)
 static octave_value
 oct_binop_sub (const octave_base_value& a1, const octave_base_value& a2)
 {
-  const octave_sparse_matrix& v1 =
-    dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_sparse_matrix& v2 =
-    dynamic_cast<const octave_sparse_matrix&> (a2);
+  const octave_sparse_matrix& v1
+    = dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_sparse_matrix& v2
+    = dynamic_cast<const octave_sparse_matrix&> (a2);
   SparseMatrix m = v1.sparse_matrix_value () - v2.sparse_matrix_value ();
 
   return octave_value (m);

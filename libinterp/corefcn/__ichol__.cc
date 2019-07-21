@@ -204,8 +204,8 @@ Undocumented internal function.
     }
   else
     {
-      SparseComplexMatrix sm =
-        Ftril (args(0))(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm
+        = Ftril (args(0))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
                ichol_checkpivot_complex> (sm, michol);
       return ovl (sm);
@@ -440,8 +440,8 @@ Undocumented internal function.
   else
     {
       SparseComplexMatrix L;
-      SparseComplexMatrix sm_l =
-        Ftril (args(0))(0).sparse_complex_matrix_value ();
+      SparseComplexMatrix sm_l
+        = Ftril (args(0))(0).sparse_complex_matrix_value ();
       Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
                Complex, ichol_mult_complex, ichol_checkpivot_complex>

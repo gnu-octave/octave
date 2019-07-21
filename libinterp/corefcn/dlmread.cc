@@ -44,8 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ovl.h"
 #include "utils.h"
 
-static const octave_idx_type idx_max =
-  std::numeric_limits<octave_idx_type>::max () - 1;
+static const octave_idx_type idx_max
+  = std::numeric_limits<octave_idx_type>::max () - 1;
 
 static const double idx_max_dbl = double (idx_max);
 

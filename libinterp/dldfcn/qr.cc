@@ -1243,12 +1243,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
       if (argq.is_single_type () || argr.is_single_type ()
           || argx.is_single_type ())
         {
-          FloatComplexMatrix Q =
-            argq.float_complex_matrix_value ();
-          FloatComplexMatrix R =
-            argr.float_complex_matrix_value ();
-          FloatComplexMatrix x =
-            argx.float_complex_matrix_value ();
+          FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
+          FloatComplexMatrix x = argx.float_complex_matrix_value ();
 
           octave::math::qr<FloatComplexMatrix> fact (Q, R);
 
@@ -1435,10 +1432,8 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
       // complex case
       if (argq.is_single_type () || argr.is_single_type ())
         {
-          FloatComplexMatrix Q =
-            argq.float_complex_matrix_value ();
-          FloatComplexMatrix R =
-            argr.float_complex_matrix_value ();
+          FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+          FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
           octave::math::qr<FloatComplexMatrix> fact (Q, R);
 

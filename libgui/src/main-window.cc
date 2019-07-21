@@ -1526,9 +1526,8 @@ namespace octave
 
                 if (visible)
                   {
-                    if (settings &&
-                        settings->value ("DockWidgets/" + name
-                                           + "_minimized").toBool ())
+                    if (settings && settings->value ("DockWidgets/" + name
+                                                     + "_minimized").toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);

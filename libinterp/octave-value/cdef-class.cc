@@ -981,13 +981,13 @@ namespace octave
                     std::string mprefix = mname.substr (0, 4);
 
                     if (mprefix == "get.")
-                      get_methods[mname.substr (4)] =
-                        make_fcn_handle (interp, mtd,
-                                         full_class_name + '>' + mname);
+                      get_methods[mname.substr (4)]
+                        = make_fcn_handle (interp, mtd,
+                                           full_class_name + '>' + mname);
                     else if (mprefix == "set.")
-                      set_methods[mname.substr (4)] =
-                        make_fcn_handle (interp, mtd,
-                                         full_class_name + '>' + mname);
+                      set_methods[mname.substr (4)]
+                        = make_fcn_handle (interp, mtd,
+                                           full_class_name + '>' + mname);
                     else
                       {
                         cdef_method meth = cdm.make_method (retval, mname, mtd);

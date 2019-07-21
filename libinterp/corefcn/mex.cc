@@ -3679,9 +3679,9 @@ mexLock (void)
 int
 mexSet (double handle, const char *property, mxArray *val)
 {
-  bool ret =
-    set_property_in_handle (handle, property, mxArray::as_octave_value (val),
-                            "mexSet");
+  bool ret
+    = set_property_in_handle (handle, property, mxArray::as_octave_value (val),
+                              "mexSet");
   return (ret ? 0 : 1);
 }
 

@@ -6393,16 +6393,16 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
 
               for (octave_idx_type j = 0, iidx = 0; j < b_nc; j++, iidx += b_nr)
                 {
-                  status =
-                    UMFPACK_ZNAME (solve) (UMFPACK_A,
-                                           octave::to_suitesparse_intptr (Ap),
-                                           octave::to_suitesparse_intptr (Ai),
-                                           reinterpret_cast<const double *> (Ax),
-                                           nullptr,
-                                           reinterpret_cast<double *> (&Xx[iidx]),
-                                           nullptr,
-                                           reinterpret_cast<const double *> (&Bx[iidx]),
-                                           nullptr, Numeric, control, info);
+                  status
+                    = UMFPACK_ZNAME (solve) (UMFPACK_A,
+                                             octave::to_suitesparse_intptr (Ap),
+                                             octave::to_suitesparse_intptr (Ai),
+                                             reinterpret_cast<const double *> (Ax),
+                                             nullptr,
+                                             reinterpret_cast<double *> (&Xx[iidx]),
+                                             nullptr,
+                                             reinterpret_cast<const double *> (&Bx[iidx]),
+                                             nullptr, Numeric, control, info);
 
                   if (status < 0)
                     {

@@ -726,8 +726,8 @@ namespace octave
         if (apis_usable)
           f.close ();
 
-        if (apis_usable &&
-            (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file)))
+        if (apis_usable
+            && (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file)))
           {
             // either we have decided to update the apis file or
             // no prepared info was loaded, prepare and save if possible

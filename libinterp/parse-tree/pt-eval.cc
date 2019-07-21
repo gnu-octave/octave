@@ -1069,8 +1069,8 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    m_debug_mode = (m_bp_table.have_breakpoints () ||
-                    m_dbstep_flag != 0 || in_debug_repl ());
+    m_debug_mode
+      = (m_bp_table.have_breakpoints () || m_dbstep_flag != 0 || in_debug_repl ());
   }
 
   void

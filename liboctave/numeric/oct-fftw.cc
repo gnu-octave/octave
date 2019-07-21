@@ -241,21 +241,21 @@ namespace octave
               (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (itmp),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft (rank, tmp, howmany,
+                                    reinterpret_cast<fftw_complex *> (itmp),
+                                    nullptr, stride, dist,
+                                    reinterpret_cast<fftw_complex *> (out),
+                                    nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft (rank, tmp, howmany,
+                                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
+                                    nullptr, stride, dist,
+                                    reinterpret_cast<fftw_complex *> (out),
+                                    nullptr, stride, dist, dir, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -360,20 +360,20 @@ namespace octave
               (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                        nullptr, stride, dist,
+                                        reinterpret_cast<fftw_complex *> (out),
+                                        nullptr, stride, dist, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftw_plan_many_dft_r2c (rank, tmp, howmany,
-                                      (const_cast<double *> (in)),
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftw_plan_many_dft_r2c (rank, tmp, howmany,
+                                        (const_cast<double *> (in)),
+                                        nullptr, stride, dist,
+                                        reinterpret_cast<fftw_complex *> (out),
+                                        nullptr, stride, dist, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -593,21 +593,21 @@ namespace octave
               (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (itmp),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft (rank, tmp, howmany,
+                                     reinterpret_cast<fftwf_complex *> (itmp),
+                                     nullptr, stride, dist,
+                                     reinterpret_cast<fftwf_complex *> (out),
+                                     nullptr, stride, dist, dir, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft (rank, tmp, howmany,
+                                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
+                                     nullptr, stride, dist,
+                                     reinterpret_cast<fftwf_complex *> (out),
+                                     nullptr, stride, dist, dir, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)
@@ -712,20 +712,20 @@ namespace octave
               (((reinterpret_cast<ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-            *cur_plan_p =
-              fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                         nullptr, stride, dist,
+                                         reinterpret_cast<fftwf_complex *> (out),
+                                         nullptr, stride, dist, plan_flags);
           }
         else
           {
-            *cur_plan_p =
-              fftwf_plan_many_dft_r2c (rank, tmp, howmany,
-                                       (const_cast<float *> (in)),
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
+            *cur_plan_p
+              = fftwf_plan_many_dft_r2c (rank, tmp, howmany,
+                                         (const_cast<float *> (in)),
+                                         nullptr, stride, dist,
+                                         reinterpret_cast<fftwf_complex *> (out),
+                                         nullptr, stride, dist, plan_flags);
           }
 
         if (*cur_plan_p == nullptr)

@@ -4250,8 +4250,7 @@ SparseMatrix::trisolve (MatrixType& mattype, const SparseComplexMatrix& b,
                     if (Bx[i] != 0. || Bz[i] != 0.)
                       {
                         retval.xridx (ii) = i;
-                        retval.xdata (ii++) =
-                          Complex (Bx[i], Bz[i]);
+                        retval.xdata (ii++) = Complex (Bx[i], Bz[i]);
                       }
 
                   retval.xcidx (j+1) = ii;
@@ -5391,8 +5390,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                         if (Bx[i] != 0. || Bz[i] != 0.)
                           {
                             retval.xridx (ii) = i;
-                            retval.xdata (ii++) =
-                              Complex (Bx[i], Bz[i]);
+                            retval.xdata (ii++) = Complex (Bx[i], Bz[i]);
                           }
 
                       retval.xcidx (j+1) = ii;
@@ -5570,8 +5568,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                         if (Bx[i] != 0. || Bz[i] != 0.)
                           {
                             retval.xridx (ii) = i;
-                            retval.xdata (ii++) =
-                              Complex (Bx[i], Bz[i]);
+                            retval.xdata (ii++) = Complex (Bx[i], Bz[i]);
                           }
                       retval.xcidx (j+1) = ii;
                     }
@@ -5872,8 +5869,8 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
         {
 #if defined (HAVE_UMFPACK)
           Matrix Control, Info;
-          void *Numeric =
-            factorize (err, rcond, Control, Info, sing_handler, calc_cond);
+          void *Numeric
+            = factorize (err, rcond, Control, Info, sing_handler, calc_cond);
 
           if (err == 0)
             {

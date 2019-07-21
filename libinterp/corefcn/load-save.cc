@@ -826,8 +826,7 @@ namespace octave
           os << (mach_info::words_big_endian ()
                  ? "Octave-1-B" : "Octave-1-L");
 
-          mach_info::float_format flt_fmt =
-            mach_info::native_float_format ();
+          mach_info::float_format flt_fmt = mach_info::native_float_format ();
 
           char tmp = static_cast<char> (float_format_to_mopt_digit (flt_fmt));
 

@@ -93,8 +93,8 @@ is_indexed (const Magick::Image& img)
           // always has a value in libpng so if we get nothing, we assume this
           // GM version does not store them and we have to go with whatever
           // GM PseudoClass says.
-          const std::string color_type =
-            const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
+          const std::string color_type
+            = const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
           if (! color_type.empty () && color_type != "3")
             indexed = false;
         }
@@ -331,8 +331,8 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
       // return the colormap of the first frame.  To obtain the colormaps
       // of different frames, one needs can either use imfinfo or a for
       // loop around imread.
-      const octave_value_list maps =
-        read_maps (const_cast<Magick::Image&> (imvec[frameidx(def_elem)]));
+      const octave_value_list maps
+        = read_maps (const_cast<Magick::Image&> (imvec[frameidx(def_elem)]));
 
       retval(1) = maps(0);
 
@@ -959,8 +959,8 @@ static octave_idx_type
 bitdepth_from_class ()
 {
   typedef typename T::element_type P;
-  const octave_idx_type bitdepth =
-    sizeof (P) * std::numeric_limits<unsigned char>::digits;
+  const octave_idx_type bitdepth
+    = sizeof (P) * std::numeric_limits<unsigned char>::digits;
   return bitdepth;
 }
 
@@ -1550,10 +1550,10 @@ Use @code{imwrite} instead.
   const octave_idx_type nFrames = imvec.size ();
 
   const octave_idx_type quality = options.getfield ("quality").int_value ();
-  const ColumnVector delaytime =
-    options.getfield ("delaytime").column_vector_value ();
-  const Array<std::string> disposalmethod =
-    options.getfield ("disposalmethod").cellstr_value ();
+  const ColumnVector delaytime
+    = options.getfield ("delaytime").column_vector_value ();
+  const Array<std::string> disposalmethod
+    = options.getfield ("disposalmethod").cellstr_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
     {
       imvec[i].quality (quality);
@@ -2014,8 +2014,7 @@ Use @code{imfinfo} instead.
         if (is_indexed (img))
           {
             color_type = "indexed";
-            cmap =
-              read_maps (const_cast<Magick::Image&> (img))(0).matrix_value ();
+            cmap = read_maps (const_cast<Magick::Image&> (img))(0).matrix_value ();
           }
         else
           {

@@ -790,8 +790,8 @@ namespace octave
                                  const graphics_object& go)
   {
     graphics_object fig = go.get_ancestor ("figure");
-    const figure::properties& figProps =
-      dynamic_cast<const figure::properties&> (fig.get_properties ());
+    const figure::properties& figProps
+      = dynamic_cast<const figure::properties&> (fig.get_properties ());
 
     // Initialize OpenGL context
 
@@ -808,8 +808,8 @@ namespace octave
                                        const graphics_object& go)
   {
     graphics_object fig = go.get_ancestor ("figure");
-    const figure::properties& figProps =
-      dynamic_cast<const figure::properties&> (fig.get_properties ());
+    const figure::properties& figProps
+      = dynamic_cast<const figure::properties&> (fig.get_properties ());
 
     // Initialize OpenGL context
 
@@ -2502,14 +2502,12 @@ namespace octave
     NDArray c;
     const NDArray vn = props.get_vertexnormals ().array_value ();
     dim_vector vn_dims = vn.dims ();
-    bool has_vertex_normals = ((vn_dims(0) == zr) &&
-                               (vn_dims(1) == zc) &&
-                               (vn_dims(2) == 3));
+    bool has_vertex_normals = (vn_dims(0) == zr && vn_dims(1) == zc
+                               && vn_dims(2) == 3);
     const NDArray fn = props.get_facenormals ().array_value ();
     dim_vector fn_dims = fn.dims ();
-    bool has_face_normals = ((fn_dims(0) == zr - 1) &&
-                             (fn_dims(1) == zc - 1) &&
-                             (fn_dims(2) == 3));
+    bool has_face_normals = (fn_dims(0) == zr - 1 && fn_dims(1) == zc - 1
+                             && fn_dims(2) == 3);
 
     // FIXME: handle transparency
     Matrix a;
@@ -3288,8 +3286,7 @@ namespace octave
               fnn(1) = dir * fn(i,1);
               fnn(2) = dir * fn(i,2);
             }
-          if (((fl_mode == GOURAUD) || (el_mode == GOURAUD)) &&
-              has_vertex_normals)
+          if ((fl_mode == GOURAUD || el_mode == GOURAUD) && has_vertex_normals)
             {
               double dir = 1.0;
               if (bfl_mode > 0)
@@ -3405,8 +3402,8 @@ namespace octave
                     // Add vertices in reverse order for Matlab compatibility
                     for (int j = i_end; j > i_start; j--)
                       {
-                        vertex_data::vertex_data_rep *vv =
-                          vdata[i+j*fr].get_rep ();
+                        vertex_data::vertex_data_rep *vv
+                          = vdata[i+j*fr].get_rep ();
 
                         tess.add_vertex (vv->coords.fortran_vec (), vv);
                       }
@@ -4074,9 +4071,9 @@ namespace octave
     //        pts2pix and m_devpixratio should eventually be combined in to a
     //        a single conversion factor so that only one multiplication per
     //        function call is required.
-    const static double pts2pix =
-      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
-      / 72.0;
+    const static double pts2pix
+      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+         / 72.0);
 
     m_glfcns.glLineWidth (w * pts2pix * m_devpixratio);
 
@@ -4099,9 +4096,9 @@ namespace octave
 #if defined (HAVE_OPENGL)
 
     // FIXME: See bug #53056 (measure LineWidth in points).
-    const static double pts2pix =
-      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
-      / 72.0;
+    const static double pts2pix
+      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+         / 72.0);
     int factor = math::round (linewidth * pts2pix * m_devpixratio);
     if (factor < 1)
       factor = 1;
@@ -4443,9 +4440,9 @@ namespace octave
     unsigned int ID = m_glfcns.glGenLists (1);
 
     // FIXME: See bug #53056 (measure LineWidth in points).
-    const static double pts2pix =
-      gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
-      / 72.0;
+    const static double pts2pix
+      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+         / 72.0);
 
     double sz = size * pts2pix;
 

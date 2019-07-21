@@ -864,8 +864,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               tc = make_fcn_handle (interp, fname);
             else
               {
-                std::string mroot =
-                  m0.contents ("matlabroot").string_value ();
+                std::string mroot = m0.contents ("matlabroot").string_value ();
 
                 if ((fpath.length () >= mroot.length ())
                     && fpath.substr (0, mroot.length ()) == mroot
@@ -910,8 +909,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                         octave::directory_path p (lp.system_path ());
 
-                        str =
-                          octave::sys::env::make_absolute (p.find_first_of (names));
+                        str = octave::sys::env::make_absolute (p.find_first_of (names));
 
                         size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
@@ -1000,8 +998,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             if (parse_status != 0)
               error ("load: failed to load anonymous function handle");
 
-            octave_fcn_handle *fh =
-              anon_fcn_handle.fcn_handle_value ();
+            octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
 
             if (! fh)
               error ("load: failed to load anonymous function handle");
@@ -1177,9 +1174,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               {
                 // inline is not an object in Octave but rather an
                 // overload of a function handle.  Special case.
-                tc =
-                  new octave_fcn_inline (m.contents ("expr")(0).string_value (),
-                                         m.contents ("args")(0).string_value ());
+                tc = new octave_fcn_inline (m.contents ("expr")(0).string_value (),
+                                            m.contents ("args")(0).string_value ());
               }
             else
               {

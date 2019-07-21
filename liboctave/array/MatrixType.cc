@@ -345,10 +345,11 @@ MatrixType::MatrixType (const MSparse<T>& a)
               else
                 typ = MatrixType::Banded;
 
-              octave_idx_type nnz_in_band =
-                (upper_band + lower_band + 1) * nrows -
-                (1 + upper_band) * upper_band / 2 -
-                (1 + lower_band) * lower_band / 2;
+              octave_idx_type nnz_in_band
+                = ((upper_band + lower_band + 1) * nrows
+                   - (1 + upper_band) * upper_band / 2
+                   - (1 + lower_band) * lower_band / 2);
+
               if (nnz_in_band == nnz)
                 dense = true;
               else

@@ -109,9 +109,9 @@ DEFBINOP (ldiv, sparse_complex_matrix, sparse_complex_matrix)
     {
       MatrixType typ = v1.matrix_type ();
 
-      SparseComplexMatrix ret =
-        xleftdiv (v1.sparse_complex_matrix_value (),
-                  v2.sparse_complex_matrix_value (), typ);
+      SparseComplexMatrix ret
+        = xleftdiv (v1.sparse_complex_matrix_value (),
+                    v2.sparse_complex_matrix_value (), typ);
 
       v1.matrix_type (typ);
       return ret;

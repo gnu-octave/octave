@@ -43,8 +43,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  const octave_complex_diag_matrix& v =
-    dynamic_cast<const octave_complex_diag_matrix&> (a);
+  const octave_complex_diag_matrix& v
+    = dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
 }
@@ -60,8 +60,8 @@ octave_complex_diag_matrix::numeric_conversion_function (void) const
 static octave_base_value *
 default_numeric_demotion_function (const octave_base_value& a)
 {
-  const octave_complex_diag_matrix& v =
-    dynamic_cast<const octave_complex_diag_matrix&> (a);
+  const octave_complex_diag_matrix& v
+    = dynamic_cast<const octave_complex_diag_matrix&> (a);
 
   return new octave_float_complex_diag_matrix
                (v.float_complex_diag_matrix_value ());
@@ -165,8 +165,8 @@ octave_complex_diag_matrix::map (unary_mapper_t umap) const
       return ::imag (matrix);
     case umap_sqrt:
       {
-        ComplexColumnVector tmp =
-          matrix.extract_diag ().map<Complex> (std::sqrt);
+        ComplexColumnVector tmp
+          = matrix.extract_diag ().map<Complex> (std::sqrt);
         ComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;

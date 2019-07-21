@@ -908,9 +908,8 @@ namespace octave
   char **
   gnu_readline::command_completer (const char *text, int, int)
   {
-    char **matches =
-      ::octave_rl_completion_matches (text,
-                                      gnu_readline::command_generator);
+    char **matches
+      = ::octave_rl_completion_matches (text, gnu_readline::command_generator);
 
     return matches;
   }

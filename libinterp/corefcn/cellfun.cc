@@ -481,12 +481,9 @@ v = cellfun (@@det, a); # faster
             tmp_args(0) = name;
 
             if (uniform_output)
-              retval =
-                try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
-                                                                nargin);
+              retval = try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args, nargin);
             else
-              retval =
-                try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
+              retval = try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
 
             if (! retval.empty ())
               return retval;

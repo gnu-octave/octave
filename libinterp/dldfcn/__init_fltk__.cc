@@ -403,9 +403,7 @@ public:
         if (kidgo.valid_object () && kidgo.isa ("uimenu"))
           {
             uimenu_childs(k) = uimenu_childs(ii);
-            pos(k++) =
-              dynamic_cast<uimenu::properties&>
-              (kidgo.get_properties ()).get_position ();
+            pos(k++) = dynamic_cast<uimenu::properties&> (kidgo.get_properties ()).get_position ();
           }
       }
 
@@ -435,8 +433,8 @@ public:
     std::string fltk_label = uimenup.get___fltk_label__ ();
     if (! fltk_label.empty ())
       {
-        Fl_Menu_Item *item =
-          const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
+        Fl_Menu_Item *item = const_cast<Fl_Menu_Item *> (m_menubar->find_item (fltk_label.c_str ()));
+
         if (item)
           {
             std::string acc = uimenup.get_accelerator ();
@@ -916,12 +914,12 @@ public:
 
     if (uimenu_obj.valid_object () && uimenu_obj.isa ("uimenu"))
       {
-        uimenu::properties& uimenup =
-          dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
+        uimenu::properties& uimenup
+          = dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
         std::string fltk_label = uimenup.get___fltk_label__ ();
         graphics_object fig = uimenu_obj.get_ancestor ("figure");
-        figure::properties& figp =
-          dynamic_cast<figure::properties&> (fig.get_properties ());
+        figure::properties& figp
+          = dynamic_cast<figure::properties&> (fig.get_properties ());
 
         switch (id)
           {
@@ -1121,8 +1119,8 @@ private:
         && m_ax_obj.get_properties ().get_tag () != "legend"
         && m_ax_obj.get_properties ().get_tag () != "colorbar")
       {
-        axes::properties& ap =
-          dynamic_cast<axes::properties&>(m_ax_obj.get_properties ());
+        axes::properties& ap
+          = dynamic_cast<axes::properties&>(m_ax_obj.get_properties ());
         ap.set (name, value);
       }
     else // no axes object clicked so far, take currentaxes
@@ -1131,8 +1129,8 @@ private:
         if (gh.ok ())
           {
             graphics_object go = gh_manager::get_object (gh);
-            axes::properties& ap =
-              dynamic_cast<axes::properties&>(go.get_properties ());
+            axes::properties& ap
+              = dynamic_cast<axes::properties&>(go.get_properties ());
             ap.set (name, value);
           }
       }
@@ -1171,8 +1169,8 @@ private:
   {
     if (ax && ax.isa ("axes"))
       {
-        axes::properties& ap =
-          dynamic_cast<axes::properties&> (ax.get_properties ());
+        axes::properties& ap
+          = dynamic_cast<axes::properties&> (ax.get_properties ());
         ColumnVector pp = ap.pixel2coord (px, py);
         xx = pp(0);
         yy = pp(1);
@@ -1236,8 +1234,8 @@ private:
   {
     if (ax && ax.isa ("axes"))
       {
-        axes::properties& ap =
-          dynamic_cast<axes::properties&> (ax.get_properties ());
+        axes::properties& ap
+          = dynamic_cast<axes::properties&> (ax.get_properties ());
         std::stringstream cbuf;
         cbuf.precision (4);
         cbuf.width (6);
@@ -1256,8 +1254,8 @@ private:
         Matrix pos = m_fp.map_from_boundingbox (px, py);
         m_fp.set_currentpoint (pos);
         graphics_object robj = gh_manager::get_object (m_fp.get_parent ());
-        root_figure::properties& rp =
-          dynamic_cast<root_figure::properties&> (robj.get_properties ());
+        root_figure::properties& rp
+          = dynamic_cast<root_figure::properties&> (robj.get_properties ());
         rp.set_currentfigure (m_fp.get___myhandle__ ().value ());
       }
   }
@@ -1266,8 +1264,8 @@ private:
   {
     if (ax.valid_object () && ax.isa ("axes"))
       {
-        axes::properties& ap =
-          dynamic_cast<axes::properties&> (ax.get_properties ());
+        axes::properties& ap
+          = dynamic_cast<axes::properties&> (ax.get_properties ());
 
         Matrix x_zlim = ap.get_transform_zlim ();
         Matrix pos (2, 3, 0.0);
@@ -1649,9 +1647,7 @@ private:
                 {
                   if (m_ax_obj && m_ax_obj.isa ("axes"))
                     {
-                      axes::properties& ap =
-                        dynamic_cast<axes::properties&>
-                        (m_ax_obj.get_properties ());
+                      axes::properties& ap = dynamic_cast<axes::properties&> (m_ax_obj.get_properties ());
 
                       // Don't pan or rotate legend
                       if (ap.get_tag () != "legend")
@@ -1721,14 +1717,14 @@ private:
 
             case FL_MOUSEWHEEL:
               {
-                graphics_object ax =
-                  gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
-                                          Fl::event_y ()
-                                          - menu_dy ()));
+                graphics_object ax
+                  = gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
+                                                              Fl::event_y ()
+                                                              - menu_dy ()));
                 if (ax && ax.isa ("axes"))
                   {
-                    axes::properties& ap =
-                      dynamic_cast<axes::properties&> (ax.get_properties ());
+                    axes::properties& ap
+                      = dynamic_cast<axes::properties&> (ax.get_properties ());
 
                     // Control how fast to zoom when using scroll wheel.
                     double wheel_zoom_speed = ap.get_mousewheelzoom ();
@@ -2195,8 +2191,8 @@ private:
     graphics_object fobj = gh_manager::get_object (h);
     if (fobj &&  fobj.isa ("figure"))
       {
-        figure::properties& fp =
-          dynamic_cast<figure::properties&> (fobj.get_properties ());
+        figure::properties& fp
+          = dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
 
@@ -2260,8 +2256,8 @@ public:
   {
     if (uimenu_obj.valid_object ())
       {
-        uimenu::properties& uimenup =
-          dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
+        uimenu::properties& uimenup
+          = dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
         std::string fltk_label = uimenup.get_label ();
         graphics_object go = gh_manager::get_object (uimenu_obj.get_parent ());
         if (go.isa ("uimenu"))
@@ -2286,8 +2282,8 @@ public:
 
         if (! ov.isempty ())
           {
-            const figure::properties& fp =
-              dynamic_cast<const figure::properties&> (go.get_properties ());
+            const figure::properties& fp
+              = dynamic_cast<const figure::properties&> (go.get_properties ());
 
             switch (id)
               {
@@ -2354,8 +2350,9 @@ public:
             graphics_object fobj = gh_manager::get_object (children (n));
             if (fobj && fobj.isa ("figure"))
               {
-                figure::properties& fp =
-                  dynamic_cast<figure::properties&> (fobj.get_properties ());
+                figure::properties& fp
+                  = dynamic_cast<figure::properties&> (fobj.get_properties ());
+
                 if (fp.get___graphics_toolkit__ ()
                     == FLTK_GRAPHICS_TOOLKIT_NAME)
                   figure_manager::new_window (fp);

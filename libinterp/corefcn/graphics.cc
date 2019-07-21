@@ -829,8 +829,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
 
   if (ax.valid_object ())
     {
-      const axes::properties& ax_props =
-        dynamic_cast<const axes::properties&> (ax.get_properties ());
+      const axes::properties& ax_props
+        = dynamic_cast<const axes::properties&> (ax.get_properties ());
       graphics_xform ax_xform = ax_props.get_transform ();
       bool is_rectangle = (pos.numel () == 4);
       Matrix ax_bbox = ax_props.get_boundingbox (true),
@@ -1774,8 +1774,8 @@ children_property::do_get_children (bool return_hidden) const
 
   graphics_object go = gh_manager::get_object (0);
 
-  root_figure::properties& props =
-    dynamic_cast<root_figure::properties&> (go.get_properties ());
+  root_figure::properties& props
+    = dynamic_cast<root_figure::properties&> (go.get_properties ());
 
   if (! props.is_showhiddenhandles ())
     {
@@ -1994,13 +1994,12 @@ property::create (const std::string& name, const graphics_handle& h,
 
       graphics_object go;
 
-      std::map<caseless_str, graphics_object>::const_iterator it =
-        dprop_obj_map.find (go_name);
+      std::map<caseless_str, graphics_object>::const_iterator it
+        = dprop_obj_map.find (go_name);
 
       if (it == dprop_obj_map.end ())
         {
-          base_graphics_object *bgo =
-            make_graphics_object_from_type (go_name);
+          base_graphics_object *bgo = make_graphics_object_from_type (go_name);
 
           if (bgo)
             {
@@ -3216,8 +3215,8 @@ base_properties::set_from_list (base_graphics_object& bgo,
 octave_value
 base_properties::get_dynamic (const caseless_str& pname) const
 {
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (pname);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it
+    = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get: unknown property "%s")", pname.c_str ());
@@ -3274,8 +3273,8 @@ base_properties::set_dynamic (const caseless_str& pname,
 property
 base_properties::get_property_dynamic (const caseless_str& pname)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
-    all_props.find (pname);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it
+    = all_props.find (pname);
 
   if (it == all_props.end ())
     error (R"(get_property: unknown property "%s")", pname.c_str ());
@@ -3377,8 +3376,8 @@ base_properties::update_uicontextmenu (void) const
   graphics_object go = gh_manager::get_object (uicontextmenu.get ());
   if (go && go.isa ("uicontextmenu"))
     {
-      uicontextmenu::properties& props =
-        reinterpret_cast<uicontextmenu::properties&> (go.get_properties ());
+      uicontextmenu::properties& props
+        = reinterpret_cast<uicontextmenu::properties&> (go.get_properties ());
       props.add_dependent_obj (__myhandle__);
     }
 }
@@ -3439,8 +3438,7 @@ base_properties::update_handlevisibility (void)
       if (! co.isempty () && co.double_value () == __myhandle__)
         {
           gh_manager::auto_lock guard;
-          auto& fig_props =
-            dynamic_cast<figure::properties&> (fig.get_properties ());
+          auto& fig_props = dynamic_cast<figure::properties&> (fig.get_properties ());
           fig_props.set_currentobject (Matrix ());
         }
     }
@@ -3620,9 +3618,8 @@ base_graphics_object::reset_default_properties (void)
 {
   if (valid_object ())
     {
-      property_list::pval_map_type factory_pval =
-        gh_manager::get_object (0).get_factory_defaults_list ()
-        .find (type ())->second;
+      property_list::pval_map_type factory_pval
+        = gh_manager::get_object (0).get_factory_defaults_list ().find (type ())->second;
 
       remove_all_listeners ();
       xreset_default_properties (get_handle (), factory_pval);
@@ -6261,8 +6258,8 @@ axes::properties::update_xlabel_position (void)
       double wmax = ext(0) + margin;
       double hmax = ext(1) + margin;
       double angle = 0.0;
-      ColumnVector p =
-        graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
+      ColumnVector p
+        = graphics_xform::xform_vector ((xpTickN + xpTick)/2, ypTick, zpTick);
 
       bool tick_along_z = nearhoriz || octave::math::isinf (fy);
       if (tick_along_z)
@@ -6363,8 +6360,8 @@ axes::properties::update_ylabel_position (void)
       double wmax = ext(0) + margin;
       double hmax = ext(1) + margin;
       double angle = 0.0;
-      ColumnVector p =
-        graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
+      ColumnVector p
+        = graphics_xform::xform_vector (xpTick, (ypTickN + ypTick)/2, zpTick);
 
       bool tick_along_z = nearhoriz || octave::math::isinf (fx);
       if (tick_along_z)
@@ -6562,10 +6559,9 @@ axes::properties::update_title_position (void)
       // FIXME: bbox should be stored in axes::properties
       Matrix bbox = get_extent (false);
 
-      ColumnVector p =
-        graphics_xform::xform_vector (bbox(0) + bbox(2)/2,
-                                      bbox(1) - 10,
-                                      (x_zlim(0) + x_zlim(1))/2);
+      ColumnVector p
+        = graphics_xform::xform_vector (bbox(0) + bbox(2)/2, bbox(1) - 10,
+                                        (x_zlim(0) + x_zlim(1))/2);
 
       if (x2Dtop)
         {
@@ -6805,8 +6801,8 @@ axes::properties::get_boundingbox (bool internal,
       graphics_object go = gh_manager::get_object (get_parent ());
 
       if (go.valid_object ())
-        parent_size =
-          go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+        parent_size
+          = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
       else
         parent_size = default_figure_position ();
     }
@@ -9022,14 +9018,14 @@ axes::properties::trigger_normals_calc (void)
       graphics_object kid = *children_list_iter;
       if (kid.isa ("patch"))
         {
-          patch::properties& patch_props =
-              dynamic_cast<patch::properties&> (kid.get_properties ());
+          patch::properties& patch_props
+            = dynamic_cast<patch::properties&> (kid.get_properties ());
           patch_props.update_normals (false);
         }
       else
         {
-          surface::properties& surface_props =
-              dynamic_cast<surface::properties&> (kid.get_properties ());
+          surface::properties& surface_props
+            = dynamic_cast<surface::properties&> (kid.get_properties ());
           surface_props.update_normals (false);
         }
     }
@@ -9304,8 +9300,8 @@ light::initialize (const graphics_object& go)
   base_graphics_object::initialize (go);
 
   // trigger normals calculation for the respective children of this axes object
-  axes::properties& parent_axes_prop =
-    dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
+  axes::properties& parent_axes_prop
+    = dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
   parent_axes_prop.trigger_normals_calc ();
 }
 
@@ -9787,8 +9783,8 @@ patch::properties::update_face_normals (bool reset, bool force)
   if (updating_patch_data || ! facenormalsmode_is ("auto"))
     return;
 
-  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
-                get_do_lighting ()))
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat"))
+                && get_do_lighting ()))
     {
       Matrix f = get_faces ().matrix_value ();
 
@@ -9874,9 +9870,7 @@ patch::properties::update_vertex_normals (bool reset, bool force)
                   RowVector vn1 = *it;
                   // Use sign of dot product to point vectors in a similar
                   // direction before taking the average.
-                  double dir =
-                    (vn0(0)*vn1(0) + vn0(1)*vn1(1) + vn0(2)*vn1(2) < 0) ? -1
-                                                                        : 1;
+                  double dir = (vn0(0)*vn1(0) + vn0(1)*vn1(1) + vn0(2)*vn1(2) < 0) ? -1 : 1;
                   for (octave_idx_type j = 0; j < 3; j++)
                     vn0(j) += dir * vn1(j);
                 }
@@ -9945,8 +9939,8 @@ surface::properties::update_face_normals (bool reset, bool force)
   if (! facenormalsmode_is ("auto"))
     return;
 
-  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat")) &&
-                get_do_lighting ()))
+  if (force || ((facelighting_is ("flat") || edgelighting_is ("flat"))
+                && get_do_lighting ()))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -10057,9 +10051,9 @@ surface::properties::update_vertex_normals (bool reset, bool force)
   if (! vertexnormalsmode_is ("auto"))
     return;
 
-  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong") ||
-      edgelighting_is ("gouraud") || edgelighting_is ("phong")) &&
-      get_do_lighting ()))
+  if (force || ((facelighting_is ("gouraud") || facelighting_is ("phong")
+                 || edgelighting_is ("gouraud") || edgelighting_is ("phong"))
+                && get_do_lighting ()))
     {
       Matrix x = get_xdata ().matrix_value ();
       Matrix y = get_ydata ().matrix_value ();
@@ -10168,14 +10162,14 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
 
   if (go.isa ("surface"))
     {
-      surface::properties& props =
-        dynamic_cast <surface::properties&> (go.get_properties ());
+      surface::properties& props
+        = dynamic_cast <surface::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else if (go.isa ("patch"))
     {
-      patch::properties& props =
-        dynamic_cast <patch::properties&> (go.get_properties ());
+      patch::properties& props
+        = dynamic_cast <patch::properties&> (go.get_properties ());
       props.update_normals (false, true);
     }
   else
@@ -10222,9 +10216,8 @@ hggroup::properties::remove_child (const graphics_handle& h, bool from_root)
   graphics_object go = gh_manager::get_object (h);
   if (! from_root && go.isa ("light") && go.get_properties ().is_visible ())
     {
-      axes::properties& ax_props =
-        dynamic_cast<axes::properties&>
-        (go.get_ancestor ("axes").get_properties ());
+      axes::properties& ax_props
+        = dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
       ax_props.decrease_num_lights ();
     }
   base_properties::remove_child (h, from_root);
@@ -10237,9 +10230,8 @@ hggroup::properties::adopt (const graphics_handle& h)
   graphics_object go = gh_manager::get_object (h);
   if (go.isa ("light") && go.get_properties ().is_visible ())
     {
-      axes::properties& ax_props =
-        dynamic_cast<axes::properties&>
-        (go.get_ancestor ("axes").get_properties ());
+      axes::properties& ax_props
+        = dynamic_cast<axes::properties&> (go.get_ancestor ("axes").get_properties ());
       ax_props.increase_num_lights ();
     }
   base_properties::adopt (h);
@@ -10597,8 +10589,7 @@ uicontrol::properties::get_boundingbox (bool,
       graphics_object go = gh_manager::get_object (get_parent ());
 
       if (go.valid_object ())
-        parent_size =
-          go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+        parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
       else
         parent_size = default_figure_position ();
     }
@@ -10661,8 +10652,7 @@ uibuttongroup::properties::get_boundingbox (bool internal,
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
-      parent_size =
-        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -10863,8 +10853,7 @@ uipanel::properties::get_boundingbox (bool internal,
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
-      parent_size =
-        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -11027,8 +11016,7 @@ uitable::properties::get_boundingbox (bool,
     {
       graphics_object go = gh_manager::get_object (get_parent ());
 
-      parent_size =
-        go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+      parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -11346,8 +11334,8 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
       // them can't work before the axes object is fully
       // constructed.
 
-      axes::properties& props =
-        dynamic_cast<axes::properties&> (go.get_properties ());
+      axes::properties& props
+        = dynamic_cast<axes::properties&> (go.get_properties ());
 
       graphics_object tgo;
 
@@ -11634,8 +11622,8 @@ static void
 xset_gcbo (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (0);
-  root_figure::properties& props =
-    dynamic_cast<root_figure::properties&> (go.get_properties ());
+  root_figure::properties& props
+    = dynamic_cast<root_figure::properties&> (go.get_properties ());
 
   props.set_callbackobject (h.as_octave_value ());
 }
@@ -11882,8 +11870,7 @@ gh_manager::do_process_events (bool force)
                   }
                 else
                   {
-                    std::list<graphics_event>::iterator p =
-                      event_queue.begin ();
+                    std::list<graphics_event>::iterator p = event_queue.begin ();
 
                     while (p != event_queue.end ())
                       if (p->get_busyaction () == base_graphics_event::CANCEL)
@@ -13127,8 +13114,8 @@ Internal function: returns the pixel size of the image in normalized units.
   if (! go || ! go.isa ("image"))
     error ("__image_pixel_size__: object is not an image");
 
-  image::properties& ip =
-    dynamic_cast<image::properties&> (go.get_properties ());
+  image::properties& ip
+    = dynamic_cast<image::properties&> (go.get_properties ());
 
   Matrix dp = Matrix (1, 2);
   dp(0) = ip.pixel_xsize ();
@@ -13795,9 +13782,9 @@ In all cases, typing CTRL-C stops program execution immediately.
           static octave_value wf_listener;
 
           if (! wf_listener.is_defined ())
-            wf_listener =
-              octave_value (new octave_builtin (waitfor_listener,
-                                                "waitfor_listener"));
+            wf_listener
+              = octave_value (new octave_builtin (waitfor_listener,
+                                                  "waitfor_listener"));
 
           max_arg_index++;
           if (args.length () > 2)
@@ -13854,10 +13841,10 @@ In all cases, typing CTRL-C stops program execution immediately.
                       static octave_value wf_del_listener;
 
                       if (! wf_del_listener.is_defined ())
-                        wf_del_listener =
-                          octave_value (new octave_builtin
-                                        (waitfor_del_listener,
-                                         "waitfor_del_listener"));
+                        wf_del_listener
+                          = octave_value (new octave_builtin
+                                          (waitfor_del_listener,
+                                           "waitfor_del_listener"));
 
                       Cell del_listener (1, 4);
 
@@ -13981,8 +13968,8 @@ Undocumented internal function.
 
   graphics_object ax = gh_manager::get_object (handle);
 
-  axes::properties& ax_props =
-    dynamic_cast<axes::properties&> (ax.get_properties ());
+  axes::properties& ax_props
+    = dynamic_cast<axes::properties&> (ax.get_properties ());
 
   if (nargin == 2)
     {

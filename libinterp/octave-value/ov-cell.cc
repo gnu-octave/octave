@@ -128,8 +128,7 @@ bool
 octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
                                             const octave_value& x)
 {
-  const octave_cell *xrep =
-    dynamic_cast<const octave_cell *> (&x.get_rep ());
+  const octave_cell *xrep = dynamic_cast<const octave_cell *> (&x.get_rep ());
 
   bool retval = xrep && xrep->matrix.numel () == 1 && n < matrix.numel ();
   if (retval)

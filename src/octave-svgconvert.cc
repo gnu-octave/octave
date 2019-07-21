@@ -251,10 +251,10 @@ public:
   static inline
   bool eq (QPointF p1, QPointF p2)
   {
-    return ((qAbs (p1.x () - p2.x ()) <=
-             0.00001 * qMin (qAbs (p1.x ()), qAbs (p2.x ())))
-            && (qAbs (p1.y () - p2.y ()) <=
-                0.00001 * qMin (qAbs (p1.y ()), qAbs (p2.y ()))));
+    return ((qAbs (p1.x () - p2.x ())
+             <= 0.00001 * qMin (qAbs (p1.x ()), qAbs (p2.x ())))
+            && (qAbs (p1.y () - p2.y ())
+                <= 0.00001 * qMin (qAbs (p1.y ()), qAbs (p2.y ()))));
   }
 
   static
@@ -533,9 +533,8 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
           // Images are represented as a base64 stream of png formated data
           QString href_att = elt.attribute ("xlink:href");
           QString prefix ("data:image/png;base64,");
-          QByteArray data =
-            QByteArray::fromBase64(href_att.mid (prefix.length ())
-                                   .toLatin1 ());
+          QByteArray data
+            = QByteArray::fromBase64 (href_att.mid (prefix.length ()).toLatin1 ());
           QImage img;
           if (img.loadFromData (data, "PNG"))
             {
@@ -707,8 +706,7 @@ void reconstruct_polygons (QDomElement& parent_elt)
 int main(int argc, char *argv[])
 {
   const char *doc = "See \"octave-svgconvert -h\"";
-  const char *help =
-"Usage:\n\
+  const char *help = "Usage:\n\
 octave-svgconvert infile fmt dpi font reconstruct outfile\n\n\
 Convert svg file to pdf, or svg. All arguments are mandatory:\n\
 * infile: input svg file or \"-\" to indicate that the input svg file should be \

@@ -100,8 +100,8 @@ namespace octave
               (*current_liboctave_error_handler)
                 ("regexp: syntax error in pattern");
 
-            std::string tmp_name =
-              pattern.substr (new_pos+3, tmp_pos-new_pos-3);
+            std::string tmp_name
+              = pattern.substr (new_pos+3, tmp_pos-new_pos-3);
 
             bool found = false;
 
@@ -384,9 +384,9 @@ namespace octave
                                 if (nidx[j] == i)
                                   {
                                     size_t len = ovector[2*i+1] - ovector[2*i];
-                                    named_tokens(named_idx(j)) =
-                                      std::string (*(listptr+i-pos_offset),
-                                                   len);
+                                    named_tokens(named_idx(j))
+                                      = std::string (*(listptr+i-pos_offset),
+                                                     len);
                                     break;
                                   }
                               }

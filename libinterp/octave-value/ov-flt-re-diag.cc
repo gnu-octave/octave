@@ -41,8 +41,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_diag_matrix,
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
-  const octave_float_diag_matrix& v =
-    dynamic_cast<const octave_float_diag_matrix&> (a);
+  const octave_float_diag_matrix& v
+    = dynamic_cast<const octave_float_diag_matrix&> (a);
 
   return new octave_float_matrix (v.float_matrix_value ());
 }

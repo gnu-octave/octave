@@ -2213,12 +2213,12 @@ do_binary_op (octave::type_info& ti, octave_value::binary_op op,
       else
         {
           octave_value tv1;
-          octave_base_value::type_conv_info cf1 =
-            v1.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf1
+            = v1.numeric_conversion_function ();
 
           octave_value tv2;
-          octave_base_value::type_conv_info cf2 =
-            v2.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf2
+            = v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
           if (cf2.type_id () >= 0

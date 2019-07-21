@@ -298,8 +298,8 @@ octave_class::size (void)
 
   Matrix retval (1, 2, 1.0);
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::size");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::size");
 
   octave_value meth = symtab.find_method ("size", class_name ());
 
@@ -339,8 +339,8 @@ octave_class::xnumel (const octave_value_list& idx)
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::numel");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::numel");
 
   octave_value meth = symtab.find_method ("numel", cn);
 
@@ -435,8 +435,8 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      octave::symbol_table& symtab =
-        octave::__get_symbol_table__ ("octave_class::subsref");
+      octave::symbol_table& symtab
+        = octave::__get_symbol_table__ ("octave_class::subsref");
 
       octave_value meth = symtab.find_method ("subsref", class_name ());
 
@@ -814,8 +814,8 @@ octave_class::subsasgn_common (const octave_value& obj,
 idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::index_vector");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::index_vector");
 
   octave_value meth = symtab.find_method ("subsindex", class_name ());
 
@@ -863,8 +863,8 @@ octave_class::is_true (void) const
 {
   bool retval = false;
 
-  octave::symbol_table& symtab =
-    octave::__get_symbol_table__ ("octave_class::is_true");
+  octave::symbol_table& symtab
+    = octave::__get_symbol_table__ ("octave_class::is_true");
 
   octave_value meth = symtab.find_method ("logical", class_name ());
 

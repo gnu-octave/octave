@@ -1469,9 +1469,8 @@ downdate (double *c, int n, int d, int *nans, int nnans)
       b_new[n + 1] = b_new[n + 1] / Lalpha[n];
       b_new[n] = (b_new[n] + xi[nans[i]] * b_new[n + 1]) / Lalpha[n - 1];
       for (j = n - 1; j > 0; j--)
-        b_new[j] =
-          (b_new[j] + xi[nans[i]] * b_new[j + 1] -
-           Lgamma[j + 1] * b_new[j + 2]) / Lalpha[j - 1];
+        b_new[j] = (b_new[j] + xi[nans[i]] * b_new[j + 1]
+                    - Lgamma[j + 1] * b_new[j + 2]) / Lalpha[j - 1];
       for (j = 0; j <= n; j++)
         b_new[j] = b_new[j + 1];
       alpha = c[n] / b_new[n];

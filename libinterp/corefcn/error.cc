@@ -2104,15 +2104,15 @@ fields are set to their default values.
 
           if (new_err.contains ("message"))
             {
-              const std::string tmp =
-                new_err.getfield ("message").string_value ();
+              const std::string tmp
+                = new_err.getfield ("message").string_value ();
               new_error_message = tmp;
             }
 
           if (new_err.contains ("identifier"))
             {
-              const std::string tmp =
-                new_err.getfield ("identifier").string_value ();
+              const std::string tmp
+                = new_err.getfield ("identifier").string_value ();
               new_error_id = tmp;
             }
 
@@ -2122,34 +2122,34 @@ fields are set to their default values.
                 initialize_stack = true;
               else
                 {
-                  new_err_stack =
-                    new_err.getfield ("stack").scalar_map_value ();
+                  new_err_stack
+                    = new_err.getfield ("stack").scalar_map_value ();
 
                   if (new_err_stack.contains ("file"))
                     {
-                      const std::string tmp =
-                        new_err_stack.getfield ("file").string_value ();
+                      const std::string tmp
+                        = new_err_stack.getfield ("file").string_value ();
                       new_error_file = tmp;
                     }
 
                   if (new_err_stack.contains ("name"))
                     {
-                      const std::string tmp =
-                        new_err_stack.getfield ("name").string_value ();
+                      const std::string tmp
+                        = new_err_stack.getfield ("name").string_value ();
                       new_error_name = tmp;
                     }
 
                   if (new_err_stack.contains ("line"))
                     {
-                      const int tmp =
-                        new_err_stack.getfield ("line").nint_value ();
+                      const int tmp
+                        = new_err_stack.getfield ("line").nint_value ();
                       new_error_line = tmp;
                     }
 
                   if (new_err_stack.contains ("column"))
                     {
-                      const int tmp =
-                        new_err_stack.getfield ("column").nint_value ();
+                      const int tmp
+                        = new_err_stack.getfield ("column").nint_value ();
                       new_error_column = tmp;
                     }
                 }

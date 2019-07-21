@@ -206,8 +206,8 @@ used per default.
         }
       else //planner getter
         {
-          octave::fftw_planner::FftwMethod meth =
-            octave::fftw_planner::method ();
+          octave::fftw_planner::FftwMethod meth
+            = octave::fftw_planner::method ();
 
           if (meth == octave::fftw_planner::MEASURE)
             retval = octave_value ("measure");

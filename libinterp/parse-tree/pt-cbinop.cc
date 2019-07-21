@@ -40,8 +40,8 @@ namespace octave
   {
     if (exp->is_unary_expression ())
       {
-        tree_unary_expression *uexp =
-          dynamic_cast<tree_unary_expression *> (exp);
+        tree_unary_expression *uexp
+          = dynamic_cast<tree_unary_expression *> (exp);
 
         octave_value::unary_op op = uexp->op_type ();
 
@@ -66,8 +66,8 @@ namespace octave
   {
     if (exp->is_unary_expression ())
       {
-        tree_unary_expression *uexp =
-          dynamic_cast<tree_unary_expression *> (exp);
+        tree_unary_expression *uexp
+          = dynamic_cast<tree_unary_expression *> (exp);
 
         octave_value::unary_op op = uexp->op_type ();
 

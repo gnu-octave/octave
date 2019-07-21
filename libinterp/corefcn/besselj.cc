@@ -158,8 +158,8 @@ do_bessel (enum bessel_type type, const char *fn,
             {
               FloatRowVector ralpha = args(0).xfloat_row_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              FloatComplexColumnVector cx =
-                x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+              FloatComplexColumnVector cx
+                = x_arg.xfloat_complex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
               Array<octave_idx_type> ierr;
               octave_value result;
@@ -248,8 +248,8 @@ do_bessel (enum bessel_type type, const char *fn,
             {
               RowVector ralpha = args(0).xrow_vector_value ("%s: ALPHA must be a scalar or matrix", fn);
 
-              ComplexColumnVector cx =
-                x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
+              ComplexColumnVector cx
+                = x_arg.xcomplex_column_vector_value ("%s: X must be a scalar or matrix", fn);
 
               Array<octave_idx_type> ierr;
               octave_value result;

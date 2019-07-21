@@ -133,9 +133,7 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
             for (k = 0; k < len; k++)
               idx_vec(k) = idx(k).index_vector ();
 
-            retval =
-              octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-                            type);
+            retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)), type);
           }
           break;
         }

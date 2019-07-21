@@ -449,8 +449,8 @@ done:
           for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
             {
               octave_quit ();
-              complex_result.xelem (a.ridx (i), j) =
-                std::pow (Complex (a.data (i)), Complex (b(a.ridx (i), j)));
+              complex_result.xelem (a.ridx (i), j)
+                = std::pow (Complex (a.data (i)), Complex (b(a.ridx (i), j)));
             }
         }
       complex_result.maybe_compress (true);
@@ -597,8 +597,8 @@ elem_xpow (const SparseComplexMatrix& a, double b)
             for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-                result (a.ridx (i), j) =
-                  std::pow (a.data (i), static_cast<int> (b));
+                result (a.ridx (i), j)
+                  = std::pow (a.data (i), static_cast<int> (b));
               }
         }
       else

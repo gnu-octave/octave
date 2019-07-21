@@ -113,8 +113,10 @@ namespace octave
     void contextmenu_newfile (bool);
     void contextmenu_newdir (bool);
     void contextmenu_setcurrentdir (bool);
-    void contextmenu_add_to_path (bool, bool subdirs=false);
+    void contextmenu_add_to_path (bool, bool rm=false, bool subdirs=false);
     void contextmenu_add_to_path_subdirs (bool);
+    void contextmenu_rm_from_path (bool);
+    void contextmenu_rm_from_path_subdirs (bool);
     void contextmenu_findfiles (bool);
     //!@}
 

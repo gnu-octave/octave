@@ -544,6 +544,13 @@ namespace octave
             add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
                             this, SLOT (contextmenu_add_to_path_subdirs (bool)));
 
+            QMenu *rm_path_menu = menu.addMenu (tr ("Remove from Path"));
+
+            rm_path_menu->addAction (tr ("Selected Directories"),
+                            this, SLOT (contextmenu_rm_from_path (bool)));
+            rm_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
+                            this, SLOT (contextmenu_rm_from_path_subdirs (bool)));
+
             menu.addSeparator ();
 
             menu.addAction (resource_manager::icon ("edit-find"),
@@ -803,7 +810,7 @@ namespace octave
       process_set_current_dir (infos.first ().absoluteFilePath ());
   }
 
-  void files_dock_widget::contextmenu_add_to_path (bool, bool subdirs)
+  void files_dock_widget::contextmenu_add_to_path (bool, bool rm, bool subdirs)
   {
     QList<QFileInfo> infos = get_selected_items_info (true);
 
@@ -818,7 +825,7 @@ namespace octave
           = __get_event_manager__ ("files_dock_widget::contextmenu_add_to_path");
 
         evmgr.post_event
-          ([dir_list, subdirs] (void)
+          ([dir_list, rm, subdirs] (void)
           {
             // INTERPRETER THREAD
 
@@ -836,14 +843,27 @@ namespace octave
             else
               paths = dir_list;
 
-            Faddpath (interp, paths);
+            if (rm)
+              Frmpath (interp, paths);
+            else
+              Faddpath (interp, paths);
           });
       }
   }
 
   void files_dock_widget::contextmenu_add_to_path_subdirs (bool)
   {
-    contextmenu_add_to_path (true, true);
+    contextmenu_add_to_path (true, false, true);
+  }
+
+  void files_dock_widget::contextmenu_rm_from_path (bool)
+  {
+    contextmenu_add_to_path (true, true, false);
+  }
+
+  void files_dock_widget::contextmenu_rm_from_path_subdirs (bool)
+  {
+    contextmenu_add_to_path (true, true, true);
   }
 
   void files_dock_widget::contextmenu_findfiles (bool)

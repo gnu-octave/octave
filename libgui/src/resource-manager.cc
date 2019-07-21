@@ -421,9 +421,10 @@ namespace octave
         codecs->append (c->name ().toUpper ());
       }
 
-    // If on windows append SYSTEM even if not supported
-    if (ed_default_enc.def.toString () == "SYSTEM")
-      codecs->append (ed_default_enc.def.toString ());
+    // If on Windows, append "SYSTEM"
+    if (ed_default_enc.def.toString ().startsWith("SYSTEM"))
+      codecs->append (QTextCodec::codecForLocale ()->name ().toUpper ().prepend
+                        ("SYSTEM (").append (")"));
 
     // Clean up and sort list of codecs
     codecs->removeDuplicates ();
@@ -439,13 +440,16 @@ namespace octave
     // get the value from the settings file if no current encoding is given
     QString enc = current;
 
-    // Check for valid codec for the default. Allow "SYSTEM" even no valid
-    // codec exists, since codecForLocale will be chosen in this case
+    // Check for valid codec for the default. If this fails, "SYSTEM" (i.e.
+    // codecForLocale) will be chosen.
     bool default_exists = false;
     if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ())
-        || (ed_default_enc.def.toString () == "SYSTEM"))
+        || (ed_default_enc.def.toString ().startsWith ("SYSTEM")))
       default_exists = true;
 
+    QString default_enc =
+      QTextCodec::codecForLocale ()->name ().toUpper ().prepend
+        ("SYSTEM (").append (")");
     if (enc.isEmpty ())
       {
         enc = m_settings->value (ed_default_enc.key, ed_default_enc.def).toString ();
@@ -455,7 +459,7 @@ namespace octave
             if (default_exists)
               enc = ed_default_enc.def.toString ();
             else
-              enc = QTextCodec::codecForLocale ()->name ().toUpper ();
+              enc = default_enc;
           }
       }
 
@@ -468,7 +472,7 @@ namespace octave
     if (default_exists)
       combo->insertItem (0, ed_default_enc.def.toString ());
     else
-      combo->insertItem (0, QTextCodec::codecForLocale ()->name ().toUpper ());
+      combo->insertItem (0, default_enc);
 
     // select the default or the current one
     int idx = combo->findText (enc, Qt::MatchExactly);

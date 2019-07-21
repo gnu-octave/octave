@@ -232,7 +232,9 @@ namespace octave
 
     // encoding, not updated with the settings
 #if defined (Q_OS_WIN32)
-    _encoding = settings->value ("editor/default_encoding", "SYSTEM")
+    QString locale_enc_name =
+      QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
+    _encoding = settings->value ("editor/default_encoding", locale_enc_name)
                 .toString ();
 #else
     _encoding = settings->value ("editor/default_encoding", "UTF-8")
@@ -2412,9 +2414,8 @@ namespace octave
   {
     QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
 
-    // "SYSTEM" is used as alias for locale on windows systems,
-    // which might not support "SYSTEM" codec
-    if ((! codec) && (_encoding == "SYSTEM"))
+    // "SYSTEM" is used as alias for the locale encoding on Windows systems.
+    if ((! codec) && _encoding.startsWith("SYSTEM"))
       codec = QTextCodec::codecForLocale ();
 
     if (! codec)

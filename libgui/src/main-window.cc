@@ -2708,7 +2708,10 @@ namespace octave
         resource_manager::get_codecs (&codecs);
 
         QRegExp re ("^CP(\\d+)$");
-        if (re.indexIn (adjusted_value) > -1)
+        if (adjusted_value == "SYSTEM")
+          adjusted_value =
+            QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
+        else if (re.indexIn (adjusted_value) > -1)
           {
             if (codecs.contains ("IBM" + re.cap (1)))
               adjusted_value = "IBM" + re.cap (1);
@@ -2855,12 +2858,15 @@ namespace octave
   void main_window::update_default_encoding (const QString& default_encoding)
   {
     m_default_encoding = default_encoding;
+    std::string mfile_encoding = m_default_encoding.toStdString ();
+    if (m_default_encoding.startsWith ("SYSTEM", Qt::CaseInsensitive))
+      mfile_encoding = "SYSTEM";
 
     event_manager& evmgr
       = __get_event_manager__ ("main_window::notice_settings");
 
     evmgr.post_event
-      ([this] (void)
+      ([this, mfile_encoding] (void)
        {
          // INTERPRETER THREAD
 
@@ -2868,7 +2874,7 @@ namespace octave
            = __get_interpreter__ ("main_window::notice_settings");
 
          F__mfile_encoding__ (interp,
-                              ovl (m_default_encoding.toStdString ()));
+                              ovl (mfile_encoding));
        });
   }
 

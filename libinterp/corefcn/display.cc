@@ -47,7 +47,7 @@ namespace octave
     m_dpy_avail = avail;
 
     if (msg)
-      warning ("%s", msg);
+      m_msg = msg;
   }
 }
 

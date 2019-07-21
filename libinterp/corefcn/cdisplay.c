@@ -148,13 +148,13 @@ octave_get_display_info (const char *dpy_name, int *ht, int *wd, int *dp,
 
           ht_mm = DisplayHeightMM (display, screen_number);
           wd_mm = DisplayWidthMM (display, screen_number);
+
+          *dpy_avail = 1;
         }
       else
         msg = "X11 display has no default screen";
 
       XCloseDisplay (display);
-
-      *dpy_avail = 1;
     }
   else
     msg = "unable to open X11 DISPLAY";

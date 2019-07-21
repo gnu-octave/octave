@@ -40,7 +40,8 @@ namespace octave
     // display.
 
     display_info (void)
-      : m_rx (72), m_ry (72), m_ht (1), m_wd (1), m_dp (0), m_dpy_avail (false)
+      : m_rx (72), m_ry (72), m_ht (1), m_wd (1), m_dp (0),
+        m_dpy_avail (false), m_msg ()
     { }
 
     ~display_info (void) = default;
@@ -63,6 +64,8 @@ namespace octave
 
     bool display_available (void) const { return m_dpy_avail; }
 
+    std::string message (void) const { return m_msg; }
+
   private:
 
     // X- and Y- Resolution of the display in dots (pixels) per inch.
@@ -75,6 +78,10 @@ namespace octave
     int m_dp;
 
     bool m_dpy_avail;
+
+    // Message associated with any initiailization failure.  Set if
+    // m_dpy_avail is false.
+    std::string m_msg;
   };
 }
 

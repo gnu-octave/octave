@@ -299,7 +299,7 @@ namespace octave
     if (vis)
     {
       show ();
-      focus ();
+      setFocus ();
       set_style (true);
     }
 
@@ -347,7 +347,7 @@ namespace octave
     if (vis)
       {
         show ();
-        focus ();
+        setFocus ();
         set_style (true);
       }
   }
@@ -566,7 +566,23 @@ namespace octave
     emit active_changed (false);
   }
 
-  void
+  void octave_dock_widget::activate (void)
+  {
+    if (! isVisible ())
+      setVisible (true);
+
+    setFocus ();
+    activateWindow ();
+    raise ();
+  }
+
+  void octave_dock_widget::handle_visibility (bool visible)
+  {
+    if (visible && ! isFloating ())
+      setFocus ();
+  }
+
+ void
   octave_dock_widget::toplevel_change (bool toplevel)
   {
     QObject *dockobj;
@@ -710,7 +726,7 @@ namespace octave
   {
     // only != 0 if widget was tabbed
     if (m_predecessor_widget && m_predecessor_widget->isVisible ())
-      m_predecessor_widget->focus ();
+      m_predecessor_widget->setFocus ();
 
     m_predecessor_widget = nullptr;
     // FIXME: Until cset bda0c5b38bda, the wrong keys "Dockwidget/..." were used

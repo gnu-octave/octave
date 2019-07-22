@@ -108,21 +108,9 @@ namespace octave
 
   public slots:
 
-    virtual void focus (void)
-    {
-      if (! isVisible ())
-        setVisible (true);
+    virtual void activate (void);
 
-      setFocus ();
-      activateWindow ();
-      raise ();
-    }
-
-    virtual void handle_visibility (bool visible)
-    {
-      if (visible && ! isFloating ())
-        focus ();
-    }
+    virtual void handle_visibility (bool visible);
 
     virtual void notice_settings (const QSettings*) { }
 

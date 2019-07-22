@@ -43,8 +43,6 @@ namespace octave
 
     bool has_focus (void) const;
 
-    void focus (void);
-
   signals:
 
     void interrupt_signal (void);

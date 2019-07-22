@@ -184,7 +184,7 @@ namespace octave
 
     void toplevel_change (bool);
 
-    void focus (void);
+    void activate (void);
     void set_focus (QWidget *fet);
     void enable_menu_shortcuts (bool);
     bool check_closing (void);

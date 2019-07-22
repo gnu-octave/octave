@@ -97,17 +97,6 @@ namespace octave
     return w->hasFocus ();
   }
 
-  void terminal_dock_widget::focus (void)
-  {
-    octave_dock_widget::focus ();
-
-    QWidget *w = widget ();
-
-    w->setFocus ();
-    w->activateWindow ();
-    w->raise ();
-  }
-
   void terminal_dock_widget::terminal_interrupt (void)
   {
     // FIXME: Protect with mutex?

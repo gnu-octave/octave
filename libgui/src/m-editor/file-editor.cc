@@ -317,12 +317,12 @@ namespace octave
                          s_data.at (n).line);
   }
 
-  void file_editor::focus (void)
+  void file_editor::activate (void)
   {
     if (m_no_focus)
       return;  // No focus for the editor if external open/close request
 
-    octave_dock_widget::focus ();
+    octave_dock_widget::activate ();
 
     // set focus to current tab
     QWidget *fileEditorTab = m_tab_widget->currentWidget ();
@@ -332,7 +332,7 @@ namespace octave
 
   void file_editor::set_focus (QWidget *fet)
   {
-    octave_dock_widget::focus ();
+    setFocus ();
 
     // set focus to desired tab
     if (fet)
@@ -469,7 +469,7 @@ namespace octave
     file_editor_tab *fileEditorTab = new file_editor_tab (m_ced);
     add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
     fileEditorTab->new_file (commands);       // title is updated here
-    focus ();                                 // focus editor and new tab
+    activate ();                              // focus editor and new tab
   }
 
   void file_editor::request_close_file (bool)
@@ -820,7 +820,7 @@ namespace octave
       }
     check_actions ();
 
-    focus ();     // focus stays in editor when tab is closed
+    activate ();     // focus stays in editor when tab is closed
 
   }
 
@@ -836,7 +836,7 @@ namespace octave
   void file_editor::active_tab_changed (int index)
   {
     emit fetab_change_request (m_tab_widget->widget (index));
-    focus ();
+    activate ();
   }
 
   void file_editor::handle_editor_state_changed (bool copy_available,
@@ -1293,7 +1293,7 @@ namespace octave
     empty_script (false, visible);
 
     if (visible && ! isFloating ())
-      focus ();
+      setFocus ();
 
   }
 
@@ -1382,7 +1382,7 @@ namespace octave
             if (show_dbg_file && ! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
               {
                 emit fetab_set_focus (tab);
-                focus ();
+                activate ();
               }
           }
         else
@@ -1515,7 +1515,7 @@ namespace octave
                 // and the current editor tab
                 if (fileEditorTab)
                   fileEditorTab->update_breakpoints ();
-                focus ();
+                activate ();
                 emit file_loaded_signal ();
               }
           }

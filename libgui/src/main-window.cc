@@ -247,7 +247,7 @@ namespace octave
 
   void main_window::focus_command_window (void)
   {
-    m_command_window->focus ();
+    m_command_window->activate ();
   }
 
   // catch focus changes and determine the active dock widget
@@ -2518,7 +2518,7 @@ namespace octave
         else
           {
             // action for focus of dock widget
-            connect (action, SIGNAL (triggered (void)), widget, SLOT (focus (void)));
+            connect (action, SIGNAL (triggered (void)), widget, SLOT (activate (void)));
           }
       }
     else
@@ -2614,7 +2614,7 @@ namespace octave
     QMenu *doc_menu = p->addMenu (tr ("Documentation"));
 
     m_ondisk_doc_action = add_action (doc_menu, QIcon (),
-                                      tr ("On Disk"), SLOT (focus ()), m_doc_browser_window);
+                                      tr ("On Disk"), SLOT (activate ()), m_doc_browser_window);
 
     m_online_doc_action = add_action (doc_menu, QIcon (),
                                       tr ("Online"), SLOT (open_online_documentation_page ()));

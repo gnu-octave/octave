@@ -1806,15 +1806,29 @@ children_property::do_get_children (bool return_hidden) const
 void
 children_property::do_delete_children (bool clear, bool from_root)
 {
-  for (graphics_handle hchild : children_list)
+  if (from_root)
     {
-      graphics_object go = gh_manager::get_object (hchild);
-
-      if (hchild.value () > 0 && go.valid_object ()
-          && ! go.get_properties ().is_beingdeleted ())
-        gh_manager::free (hchild, from_root);
+      for (graphics_handle hchild : children_list)
+        {
+          graphics_object go = gh_manager::get_object (hchild);
+          if (go.valid_object ()
+              && ! go.get_properties ().is_beingdeleted ())
+            gh_manager::free (hchild, from_root);
+        }
+      children_list.clear ();
     }
+  else
+    while (! children_list.empty ())
+      {
+        // gh_manager::free removes hchild from children_list
+        graphics_handle hchild = children_list.front ();
+        graphics_object go = gh_manager::get_object (hchild);
+        if (go.valid_object ()
+            && ! go.get_properties ().is_beingdeleted ())
+          gh_manager::free (hchild, from_root);
+      }
 
+  // FIXME: children_list should be clear anyway at this point.
   if (clear)
     children_list.clear ();
 }
@@ -2756,6 +2770,14 @@ gh_manager::do_get_handle (bool integer_figure_handle)
   return retval;
 }
 
+static bool
+isfigure (double val)
+{
+  graphics_object go = gh_manager::get_object (val);
+
+  return go && go.isa ("figure");
+}
+
 void
 gh_manager::do_free (const graphics_handle& h, bool from_root)
 {
@@ -2776,7 +2798,7 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
 
       graphics_handle parent_h = p->second.get_parent ();
       graphics_object parent_go = nullptr;
-      if (! from_root)
+      if (! from_root || isfigure (h.value ()))
         parent_go = gh_manager::get_object (parent_h);
 
       bp.set_beingdeleted (true);
@@ -2784,7 +2806,7 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
       // delete listeners before invalidating object
       p->second.remove_all_listeners ();
 
-      bp.delete_children ();
+      bp.delete_children (true, from_root);
 
       // NOTE: Call the delete function while the object's state is still valid.
       octave_value val = bp.get_deletefcn ();
@@ -2798,7 +2820,8 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
       // NOTE: Call remove_child before erasing the go from the map if not
       // removing from groot.
       // A callback function might have already deleted the parent
-      if (! from_root && parent_go.valid_object () && h.ok ())
+      if ((! from_root || isfigure (h.value ())) && parent_go.valid_object ()
+          && h.ok ())
         parent_go.remove_child (h);
 
       // Note: this will be valid only for first explicitly deleted
@@ -2937,7 +2960,7 @@ delete_graphics_object (const graphics_handle& h, bool from_root = false)
           // NOTE: Freeing the handle also calls any deletefcn.  It also calls
           //       the parent's delete_child function.
 
-          gh_manager::free (h, from_root);
+          gh_manager::free (h, from_root || go.isa ("figure"));
 
           Vdrawnow_requested = true;
         }
@@ -2947,7 +2970,7 @@ delete_graphics_object (const graphics_handle& h, bool from_root = false)
 static void
 delete_graphics_object (double val, bool from_root = false)
 {
-  delete_graphics_object (gh_manager::lookup (val), from_root);
+  delete_graphics_object (gh_manager::lookup (val), from_root || isfigure (val));
 }
 
 // Flag to stop redraws due to callbacks while deletion is in progress.
@@ -3070,14 +3093,6 @@ ishghandle (const octave_value& val)
     }
 
   return retval;
-}
-
-static bool
-isfigure (double val)
-{
-  graphics_object go = gh_manager::get_object (val);
-
-  return go && go.isa ("figure");
 }
 
 static void

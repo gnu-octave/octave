@@ -143,7 +143,7 @@ namespace octave
         m_echo_files (), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
         m_indexed_object (nullptr), m_index_position (0),
-        m_num_indices (0)
+        m_num_indices (0), m_in_top_level_repl (false)
       { }
 
     // No copying!
@@ -664,15 +664,6 @@ namespace octave
       return m_call_stack.current_frame ();
     }
 
-    bool debug_mode (void) const { return m_debug_mode; }
-
-    bool debug_mode (bool flag)
-    {
-      bool val = m_debug_mode;
-      m_debug_mode = flag;
-      return val;
-    }
-
     bool quiet_breakpoint_flag (void) const { return m_quiet_breakpoint_flag; }
 
     bool quiet_breakpoint_flag (bool flag)
@@ -691,15 +682,15 @@ namespace octave
       return val;
     }
 
-    // The following functions are provided for convenience and forward
-    // to the corresponding functions in the debugger class for the
+    // The following functions are provided for convenience.  They
+    // call the corresponding functions in the debugger class for the
     // current debugger (if any).
+
     bool in_debug_repl (void) const;
-    bool in_debug_repl (bool flag);
-    bool exit_debug_repl (void) const;
-    bool exit_debug_repl (bool flag);
-    bool abort_debug_repl (void) const;
-    bool abort_debug_repl (bool flag);
+
+    void dbcont (void);
+
+    void dbquit (bool all = false);
 
     octave_value PS4 (const octave_value_list& args, int nargout);
 
@@ -720,6 +711,8 @@ namespace octave
     int index_position (void) const { return m_index_position; }
 
     int num_indices (void) const { return m_num_indices; }
+
+    bool in_top_level_repl (void) const { return m_in_top_level_repl; }
 
     int breaking (void) const { return m_breaking; }
 
@@ -919,6 +912,9 @@ namespace octave
     const octave_value *m_indexed_object;
     int m_index_position;
     int m_num_indices;
+
+    // TRUE if we are in the top level interactive read eval print loop.
+    bool m_in_top_level_repl;
   };
 }
 

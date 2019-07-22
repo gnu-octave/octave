@@ -70,42 +70,57 @@ namespace octave
 {
   // Normal evaluator.
 
+  class quit_debug_exception
+  {
+  public:
+
+    quit_debug_exception (bool all = false) : m_all (all) { }
+
+    quit_debug_exception (const quit_debug_exception&) = default;
+
+    quit_debug_exception& operator = (const quit_debug_exception&) = default;
+
+    ~quit_debug_exception (void) = default;
+
+    bool all (void) const { return m_all; }
+
+  private:
+
+    bool m_all;
+  };
+
   class debugger
   {
   public:
 
+    enum execution_mode
+      {
+        EX_NORMAL = 0,
+        EX_CONTINUE = 1,
+        EX_QUIT = 2,
+        EX_QUIT_ALL = 3
+      };
+
     debugger (interpreter& interp, size_t level)
-      : m_interpreter (interp), m_level (level), m_in_debug_repl (false),
-        m_exit_debug_repl (false), m_abort_debug_repl (false)
+      : m_interpreter (interp), m_level (level), m_debug_frame (0),
+        m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
 
     void repl (const std::string& prompt = "debug> ");
 
     bool in_debug_repl (void) const { return m_in_debug_repl; }
 
-    bool in_debug_repl (bool flag)
+    void dbcont (void)
     {
-      bool val = m_in_debug_repl;
-      m_in_debug_repl = flag;
-      return val;
+      m_execution_mode = EX_CONTINUE;
     }
 
-    bool exit_debug_repl (void) const { return m_exit_debug_repl; }
-
-    bool exit_debug_repl (bool flag)
+    void dbquit (bool all = false)
     {
-      bool val = m_exit_debug_repl;
-      m_exit_debug_repl = flag;
-      return val;
-    }
-
-    bool abort_debug_repl (void) const { return m_abort_debug_repl; }
-
-    bool abort_debug_repl (bool flag)
-    {
-      bool val = m_abort_debug_repl;
-      m_abort_debug_repl = flag;
-      return val;
+      if (all)
+        m_execution_mode = EX_QUIT_ALL;
+      else
+        m_execution_mode = EX_QUIT;
     }
 
   private:
@@ -114,9 +129,8 @@ namespace octave
 
     size_t m_level;
     size_t m_debug_frame;
+    execution_mode m_execution_mode;
     bool m_in_debug_repl;
-    bool m_exit_debug_repl;
-    bool m_abort_debug_repl;
   };
 
   void debugger::repl (const std::string& prompt)
@@ -124,6 +138,7 @@ namespace octave
     unwind_protect frame;
 
     frame.protect_var (m_in_debug_repl);
+    frame.protect_var (m_execution_mode);
 
     m_in_debug_repl = true;
 
@@ -236,11 +251,30 @@ namespace octave
 
     while (m_in_debug_repl)
       {
-        if (m_exit_debug_repl || tw.dbstep_flag ())
+        if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
           break;
 
-        if (m_abort_debug_repl)
-          throw interrupt_exception ();
+        if (m_execution_mode == EX_QUIT)
+          {
+            // If there is no enclosing debug level or the top-level
+            // repl is not active, handle dbquit the same as dbcont.
+
+            if (m_level > 0 || tw.in_top_level_repl ())
+              throw quit_debug_exception ();
+            else
+              break;
+          }
+
+        if (m_execution_mode == EX_QUIT_ALL)
+          {
+            // If the top-level repl is not active, handle "dbquit all"
+            // the same as dbcont.
+
+            if (tw.in_top_level_repl ())
+              throw quit_debug_exception (true);
+            else
+              break;
+          }
 
         try
           {
@@ -278,15 +312,22 @@ namespace octave
                 octave_quit ();
               }
           }
-        catch (const execution_exception& e)
+        catch (const execution_exception& ee)
           {
-            std::string stack_trace = e.info ();
+            std::string stack_trace = ee.info ();
 
             if (! stack_trace.empty ())
               std::cerr << stack_trace;
 
             // Ignore errors when in debugging mode;
             interpreter::recover_from_exception ();
+          }
+        catch (const quit_debug_exception& qde)
+          {
+            if (qde.all ())
+              throw;
+
+            // Continue in this debug level.
           }
       }
   }
@@ -313,6 +354,12 @@ namespace octave
       {
         try
           {
+            unwind_protect frame;
+
+            frame.protect_var (m_in_top_level_repl);
+
+            m_in_top_level_repl = true;
+
             es.reset ();
 
             repl_parser.reset ();
@@ -363,6 +410,10 @@ namespace octave
             // Required newline when the user does Ctrl+C at the prompt.
             if (interactive)
               octave_stdout << "\n";
+          }
+        catch (const quit_debug_exception&)
+          {
+            m_interpreter.recover_from_exception ();
           }
         catch (const index_exception& e)
           {
@@ -1069,8 +1120,8 @@ namespace octave
   void
   tree_evaluator::reset_debug_state (void)
   {
-    m_debug_mode
-      = (m_bp_table.have_breakpoints () || m_dbstep_flag != 0 || in_debug_repl ());
+    m_debug_mode = (m_bp_table.have_breakpoints () || m_dbstep_flag != 0
+                    || in_debug_repl ());
   }
 
   void
@@ -3724,11 +3775,7 @@ namespace octave
     // Act like dbcont.
 
     if (in_debug_repl () && m_call_stack.current_frame () == m_debug_frame)
-      {
-        m_dbstep_flag = 0;
-
-        exit_debug_repl (true);
-      }
+      dbcont ();
     else if (m_statement_context == SC_FUNCTION
              || m_statement_context == SC_SCRIPT
              || m_in_loop_command)
@@ -4913,40 +4960,16 @@ namespace octave
             ? false : m_debugger_stack.top()->in_debug_repl ());
   }
 
-  bool tree_evaluator::in_debug_repl (bool flag)
+  void tree_evaluator::dbcont (void)
   {
     if (! m_debugger_stack.empty ())
-      error ("attempt to set in_debug_repl without debugger object");
-
-    return m_debugger_stack.top()->in_debug_repl (flag);
+      m_debugger_stack.top()->dbcont ();
   }
 
-  bool tree_evaluator::exit_debug_repl (void) const
+  void tree_evaluator::dbquit (bool all)
   {
-    return (m_debugger_stack.empty ()
-            ? false : m_debugger_stack.top()->exit_debug_repl (true));
-  }
-
-  bool tree_evaluator::exit_debug_repl (bool flag)
-  {
-    if (m_debugger_stack.empty ())
-      error ("attempt to set exit_debug_repl without debugger object");
-
-    return m_debugger_stack.top()->exit_debug_repl (flag);
-  }
-
-  bool tree_evaluator::abort_debug_repl (void) const
-  {
-    return (m_debugger_stack.empty ()
-            ? false : m_debugger_stack.top()->abort_debug_repl ());
-  }
-
-  bool tree_evaluator::abort_debug_repl (bool flag)
-  {
-    if (m_debugger_stack.empty ())
-      error ("attempt to set abort_debug_repl without debugger object");
-
-    return m_debugger_stack.top()->abort_debug_repl (flag);
+    if (! m_debugger_stack.empty ())
+      m_debugger_stack.top()->dbquit (all);
   }
 
   octave_value

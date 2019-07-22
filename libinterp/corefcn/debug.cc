@@ -1143,7 +1143,7 @@ Leave command-line debugging mode and continue code execution normally.
 
   Vtrack_line_num = true;
 
-  tw.exit_debug_repl (true);
+  tw.dbcont ();
 
   return ovl ();
 }
@@ -1174,14 +1174,12 @@ exit all debugging levels and return to the Octave prompt.
         = args(0).xstring_value ("dbquit: input argument must be a string");
 
       if (arg == "all")
-        tw.abort_debug_repl (true);
+        tw.dbquit (true);
       else
         error ("dbquit: unrecognized argument '%s'", arg.c_str ());
     }
   else
-    tw.exit_debug_repl (true);
-
-  tw.debug_mode (false);
+    tw.dbquit ();
 
   return ovl ();
 }

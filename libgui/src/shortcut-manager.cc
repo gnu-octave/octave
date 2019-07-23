@@ -262,6 +262,7 @@ namespace octave
     init (tr ("Clear Command History"), "main_edit:clear_history",
           QKeySequence ());
     init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence ());
+    init (tr ("Set Path"), "main_edit:set_path", QKeySequence ());
     init (tr ("Preferences"), "main_edit:preferences", QKeySequence ());
 
     // debug

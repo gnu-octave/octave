@@ -1143,6 +1143,20 @@ namespace octave
     frame.add_method (m_call_stack, &call_stack::restore_frame,
                       m_call_stack.current_frame ());
 
+    // Don't allow errors or warnings at the debug prompt to push us
+    // into deeper levels of debugging.
+
+    error_system& es = m_interpreter.get_error_system ();
+
+    frame.add_method (es, &error_system::set_debug_on_error,
+                      es.debug_on_error ());
+
+    frame.add_method (es, &error_system::set_debug_on_warning,
+                      es.debug_on_warning ());
+
+    es.debug_on_error (false);
+    es.debug_on_warning (false);
+
     // Go up to the nearest user code frame.
     m_call_stack.dbupdown (0);
 

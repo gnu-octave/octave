@@ -694,11 +694,6 @@ namespace octave
                 && bptab.debug_on_caught (last_error_id ())))
         && tw.in_user_code ())
       {
-        unwind_protect frame;
-
-        frame.protect_var (m_debug_on_error);
-        m_debug_on_error = false;
-
         if (show_stack_trace)
           {
             std::string stack_trace = e.info ();

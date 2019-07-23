@@ -43,12 +43,21 @@ class octave_value;
 
 namespace octave
 {
-  //! Provides threadsafe access to octave.
-  //! @author Jacob Dawid
-  //!
-  //! This class is a wrapper around octave and provides thread safety by
-  //! buffering access operations to octave and executing them in the
-  //! readline event hook, which lives in the octave thread.
+  // The functions in this class are not normally called directly, but
+  // are invoked from the Octave interpreter thead by methods in the
+  // event_manager class.  In most cases, they should only translate
+  // data from the types typically used in the interpreter to whatever
+  // is required by the GUI (for example, std::string to QString) and
+  // emit a Qt signal.
+  //
+  // The use of Qt signals provides a thread-safe way for the Octave
+  // interpreter to notify the GUI of events (directory or workspace has
+  // changed, for example) or to request that the GUI perform actions
+  // (display a dialog, for example).
+  //
+  // By using this class as a wrapper around the Qt signals, we maintain
+  // a separation between the Octave interpreter and any specific GUI
+  // toolkit (no Qt headers are used in the Octave interpreter sources).
 
   class qt_interpreter_events : public QObject, public interpreter_events
   {

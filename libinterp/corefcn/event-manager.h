@@ -43,6 +43,31 @@ namespace octave
 {
   class symbol_info_list;
 
+  // The methods in this class provide a way to pass signals to the GUI
+  // thread.  A GUI that wishes to act on these events should derive
+  // from this class and perform actions in a thread-safe way.  In
+  // Octave's Qt-based GUI, for example, these functions are all
+  // implemented as wrappers around Qt signals that trigger actions in
+  // the GUI.  The Qt signal/slot mechanism ensures that the actions are
+  // properly queued for execution when the objects corresponding to the
+  // signal and slot belong to different threads.
+  //
+  // These functions should not be called directly.  Instead all
+  // requests from the interpreter for GUI actions should be done
+  // through the event_manager class.  That class checks to ensure that
+  // the GUI is connected and enabled before calling these virtual
+  // functions.
+
+  // FIXME: it would be nice if instead of requiring the GUI to derive
+  // from this class, it could subscribe to individual events, possibly
+  // multiple times.  In that way, it would be more flexible and
+  // decentralized, similar to the Qt signal/slot connection mechanism
+  // and would allow the GUI to connect multiple signals to a single
+  // action or multiple actions to a singal signal.
+
+  // FIXME: audit this list of functions and determine whether they are
+  // all necessary and whether there might be better names for them.
+
   class interpreter_events
   {
   public:
@@ -186,11 +211,9 @@ namespace octave
   };
 
   //! Provides threadsafe access to octave.
-  //! @author Jacob Dawid
   //!
-  //! This class is a wrapper around octave and provides thread safety by
-  //! buffering access operations to octave and executing them in the
-  //! readline event hook, which lives in the octave thread.
+  //! This class provides thread-safe communication between the
+  //! interpreter and a GUI.
 
   class event_manager
   {
@@ -234,15 +257,10 @@ namespace octave
 
     void discard_events (void);
 
-    bool confirm_shutdown (void)
-    {
-      bool retval = true;
-
-      if (enabled ())
-        retval = instance->confirm_shutdown ();
-
-      return retval;
-    }
+    // The post_event and post_exception functions provide a thread-safe
+    // way for the GUI to queue interpreter functions for execution.
+    // The queued functions are executed when the interpreter is
+    // otherwise idle.
 
     template <typename F, typename... Args>
     void post_event (F&& fcn, Args&&... args)
@@ -262,6 +280,22 @@ namespace octave
     {
       if (enabled ())
         post_event (this, &event_manager::rethrow_exception_callback, p);
+    }
+
+    // The following functions correspond to the virtual fuunctions in
+    // the interpreter_events class.  They provide a way for the
+    // interperter to notify the GUI that some event has occurred
+    // (directory or workspace changed, for example) or to request the
+    // GUI to perform some action (display a dialog, for example).
+
+    bool confirm_shutdown (void)
+    {
+      bool retval = true;
+
+      if (enabled ())
+        retval = instance->confirm_shutdown ();
+
+      return retval;
     }
 
     bool copy_image_to_clipboard (const std::string& file)

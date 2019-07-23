@@ -122,8 +122,8 @@ namespace octave
         tree_evaluator& tw
           = __get_evaluator__ ("event_manager::set_workspace");
 
-        instance->do_set_workspace (tw.at_top_level (), debugging,
-                                    tw.get_symbol_info (), true);
+        instance->set_workspace (tw.at_top_level (), debugging,
+                                 tw.get_symbol_info (), true);
       }
   }
 }

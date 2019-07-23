@@ -66,92 +66,91 @@ namespace octave
 
     ~qt_interpreter_events (void) = default;
 
-    bool do_confirm_shutdown (void);
+    bool confirm_shutdown (void);
 
-    bool do_copy_image_to_clipboard (const std::string& file);
+    bool copy_image_to_clipboard (const std::string& file);
 
-    bool do_edit_file (const std::string& file);
+    bool edit_file (const std::string& file);
 
-    bool do_prompt_new_edit_file (const std::string& file);
+    bool prompt_new_edit_file (const std::string& file);
 
     std::string
-    do_question_dialog (const std::string& msg, const std::string& title,
-                        const std::string& btn1, const std::string& btn2,
-                        const std::string& btn3, const std::string& btndef);
+    question_dialog (const std::string& msg, const std::string& title,
+                     const std::string& btn1, const std::string& btn2,
+                     const std::string& btn3, const std::string& btndef);
 
     std::pair<std::list<int>, int>
-    do_list_dialog (const std::list<std::string>& list,
-                    const std::string& mode,
-                    int width, int height,
-                    const std::list<int>& initial_value,
-                    const std::string& name,
-                    const std::list<std::string>& prompt,
-                    const std::string& ok_string,
-                    const std::string& cancel_string);
+    list_dialog (const std::list<std::string>& list,
+                 const std::string& mode, int width, int height,
+                 const std::list<int>& initial_value,
+                 const std::string& name,
+                 const std::list<std::string>& prompt,
+                 const std::string& ok_string,
+                 const std::string& cancel_string);
 
     std::list<std::string>
-    do_input_dialog (const std::list<std::string>& prompt,
-                     const std::string& title,
-                     const std::list<float>& nr,
-                     const std::list<float>& nc,
-                     const std::list<std::string>& defaults);
+    input_dialog (const std::list<std::string>& prompt,
+                  const std::string& title, const std::list<float>& nr,
+                  const std::list<float>& nc,
+                  const std::list<std::string>& defaults);
 
     std::list<std::string>
-    do_file_dialog (const filter_list& filter, const std::string& title,
-                    const std::string& filename, const std::string& pathname,
-                    const std::string& multimode);
+    file_dialog (const filter_list& filter, const std::string& title,
+                 const std::string& filename, const std::string& pathname,
+                 const std::string& multimode);
 
-    int
-    do_debug_cd_or_addpath_error (const std::string& file,
-                                  const std::string& dir,
-                                  bool addpath_option);
+    int debug_cd_or_addpath_error (const std::string& file,
+                                   const std::string& dir,
+                                   bool addpath_option);
 
-    void do_change_directory (const std::string& dir);
+    void change_directory (const std::string& dir);
 
-    void do_file_remove (const std::string& old_name,
-                         const std::string& new_name);
-    void do_file_renamed (bool load_new = true);
+    void file_remove (const std::string& old_name,
+                      const std::string& new_name);
 
-    void do_execute_command_in_terminal (const std::string& command);
+    void file_renamed (bool load_new = true);
 
-    uint8NDArray do_get_named_icon (const std::string& icon_name);
+    void execute_command_in_terminal (const std::string& command);
 
-    void do_set_workspace (bool top_level, bool debug,
-                           const symbol_info_list& syminfo,
-                           bool update_variable_editor);
+    uint8NDArray get_named_icon (const std::string& icon_name);
 
-    void do_clear_workspace (void);
+    void set_workspace (bool top_level, bool debug,
+                        const symbol_info_list& syminfo,
+                        bool update_variable_editor);
 
-    void do_set_history (const string_vector& hist);
+    void clear_workspace (void);
 
-    void do_append_history (const std::string& hist_entry);
+    void set_history (const string_vector& hist);
 
-    void do_clear_history (void);
+    void append_history (const std::string& hist_entry);
 
-    void do_pre_input_event (void);
+    void clear_history (void);
 
-    void do_post_input_event (void);
+    void pre_input_event (void);
 
-    void do_enter_debugger_event (const std::string& file, int line);
+    void post_input_event (void);
 
-    void do_execute_in_debugger_event (const std::string& file, int line);
+    void enter_debugger_event (const std::string& file, int line);
 
-    void do_exit_debugger_event (void);
+    void execute_in_debugger_event (const std::string& file, int line);
 
-    void do_update_breakpoint (bool insert, const std::string& file, int line,
-                               const std::string& cond);
+    void exit_debugger_event (void);
 
-    void do_show_preferences (void);
+    void update_breakpoint (bool insert, const std::string& file, int line,
+                            const std::string& cond);
 
-    std::string do_gui_preference (const std::string& key,
-                                   const std::string& value);
-    void do_show_doc (const std::string& file);
+    void show_preferences (void);
 
-    void do_register_doc (const std::string& file);
+    std::string gui_preference (const std::string& key,
+                                const std::string& value);
 
-    void do_unregister_doc (const std::string& file);
+    void show_doc (const std::string& file);
 
-    void do_edit_variable (const std::string& name, const octave_value& val);
+    void register_doc (const std::string& file);
+
+    void unregister_doc (const std::string& file);
+
+    void edit_variable (const std::string& name, const octave_value& val);
 
     void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
@@ -167,9 +166,9 @@ namespace octave
 
   private:
 
-    void do_insert_debugger_pointer (const std::string& file, int line);
+    void insert_debugger_pointer (const std::string& file, int line);
 
-    void do_delete_debugger_pointer (const std::string& file, int line);
+    void delete_debugger_pointer (const std::string& file, int line);
 
     bool m_shutdown_confirm_result;
 

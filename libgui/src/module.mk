@@ -156,9 +156,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-variable-editor-model.cc \
   %reldir%/moc-find-files-dialog.cc \
   %reldir%/moc-find-files-model.cc \
-  %reldir%/moc-octave-dock-widget.cc \
-  %reldir%/moc-set-path-dialog.cc \
-  %reldir%/moc-set-path-model.cc
+  %reldir%/moc-octave-dock-widget.cc
 
 octave_gui_MOC += \
   $(OCTAVE_GUI_SRC_MOC) \
@@ -216,10 +214,7 @@ noinst_HEADERS += \
   %reldir%/workspace-model.h \
   %reldir%/workspace-view.h \
   %reldir%/variable-editor.h \
-  %reldir%/variable-editor-model.h \
-  %reldir%/set-path-dialog.h \
-  %reldir%/set-path-model.h
-
+  %reldir%/variable-editor-model.h
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
   %reldir%/dialog.cc \
@@ -254,9 +249,7 @@ noinst_HEADERS += \
   %reldir%/workspace-model.cc \
   %reldir%/workspace-view.cc \
   %reldir%/variable-editor.cc \
-  %reldir%/variable-editor-model.cc \
-  %reldir%/set-path-dialog.cc \
-  %reldir%/set-path-model.cc
+  %reldir%/variable-editor-model.cc
 
 nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   $(octave_gui_MOC) \

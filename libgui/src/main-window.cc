@@ -103,8 +103,8 @@ namespace octave
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
       m_workspace_window (nullptr), m_variable_editor_window (nullptr),
       m_external_editor (new external_editor_interface (this)),
-      m_active_editor (m_external_editor), m_settings_dlg (nullptr),
-      m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
+      m_active_editor (m_external_editor),
+      m_settings_dlg (nullptr), m_find_files_dlg (nullptr),
       m_release_notes_window (nullptr), m_community_news_window (nullptr),
       m_clipboard (QApplication::clipboard ()),
       m_prevent_readline_conflicts (true), m_suppress_dbg_location (true),
@@ -236,7 +236,7 @@ namespace octave
 
     delete m_find_files_dlg;
     delete m_release_notes_window;
-    delete m_community_news_window;
+    delete m_settings_dlg;
     delete m_community_news_window;
   }
 
@@ -1707,18 +1707,6 @@ namespace octave
     focus_command_window ();  // make sure that the command window has focus
   }
 
-  void main_window::handle_set_path_dialog_request (void)
-  {
-    if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
-      return;
-
-    m_set_path_dlg = new set_path_dialog (this);
-
-    m_set_path_dlg->setModal (false);
-    m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
-    m_set_path_dlg->show ();
-  }
-
   void main_window::find_files (const QString& start_dir)
   {
 
@@ -1776,7 +1764,6 @@ namespace octave
         m_load_workspace_action->setShortcut (no_key);
         m_save_workspace_action->setShortcut (no_key);
         m_preferences_action->setShortcut (no_key);
-        m_set_path_action->setShortcut (no_key);
         m_exit_action->setShortcut (no_key);
 
         // edit menu
@@ -2420,9 +2407,6 @@ namespace octave
 
     edit_menu->addSeparator ();
 
-    m_set_path_action
-      = edit_menu->addAction (tr ("Set Path"));
-
     m_preferences_action
       = edit_menu->addAction (resource_manager::icon ("preferences-system"),
                               tr ("Preferences..."));
@@ -2452,10 +2436,6 @@ namespace octave
 
     connect (m_preferences_action, SIGNAL (triggered (void)),
              this, SLOT (process_settings_dialog_request (void)));
-
-    connect (m_set_path_action, SIGNAL (triggered (void)),
-             this, SLOT (handle_set_path_dialog_request (void)));
-
   }
 
   QAction * main_window::construct_debug_menu_item (const char *icon,
@@ -2790,7 +2770,6 @@ namespace octave
     shortcut_manager::set_shortcut (m_save_workspace_action,
                                     "main_file:save_workspace");
     shortcut_manager::set_shortcut (m_preferences_action, "main_file:preferences");
-    shortcut_manager::set_shortcut (m_set_path_action, "main_file:set_path");
     shortcut_manager::set_shortcut (m_exit_action,"main_file:exit");
 
     // edit menu

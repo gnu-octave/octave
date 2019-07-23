@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
 #include "find-files-dialog.h"
+#include "set-path-dialog.h"
 #include "history-dock-widget.h"
 #include "octave-dock-widget.h"
 #include "qt-interpreter-events.h"
@@ -198,6 +199,8 @@ namespace octave
 
     void handle_octave_ready ();
 
+    void handle_set_path_dialog_request (void);
+
     //! Find files dialog.
     //!@{
     void find_files (const QString& startdir = QDir::currentPath ());
@@ -330,6 +333,7 @@ namespace octave
     QAction *m_new_figure_action;
     QAction *m_load_workspace_action;
     QAction *m_save_workspace_action;
+    QAction *m_set_path_action;
     QAction *m_preferences_action;
     QAction *m_exit_action;
 
@@ -385,6 +389,9 @@ namespace octave
     //! Find files dialog.
 
     find_files_dialog *m_find_files_dlg;
+
+    //! Set path dialog
+    QPointer<set_path_dialog> m_set_path_dlg;
 
     //! Release notes window.
 

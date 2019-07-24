@@ -1158,7 +1158,8 @@ namespace octave
     es.debug_on_warning (false);
 
     // Go up to the nearest user code frame.
-    m_call_stack.dbupdown (0);
+
+    m_debug_frame = m_call_stack.dbupdown (0);
 
     // FIXME: probably we just want to print one line, not the
     // entire statement, which might span many lines...
@@ -1169,8 +1170,6 @@ namespace octave
     Vtrack_line_num = false;
 
     debugger *dbgr = new debugger (m_interpreter, m_debugger_stack.size ());
-
-    m_debug_frame = m_call_stack.current_frame ();
 
     m_debugger_stack.push (dbgr);
 

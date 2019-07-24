@@ -365,7 +365,10 @@ namespace octave
             repl_parser.reset ();
 
             if (at_top_level ())
-              reset_debug_state ();
+              {
+                m_dbstep_flag = 0;
+                reset_debug_state ();
+              }
 
             retval = repl_parser.run ();
 

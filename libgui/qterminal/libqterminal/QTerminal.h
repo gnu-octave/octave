@@ -99,6 +99,8 @@ signals:
 
   void edit_mfile_request (const QString&, int);
 
+  void show_doc_signal (const QString&);
+
   void execute_command_in_terminal_signal (const QString&);
 
 public slots:
@@ -122,6 +124,12 @@ public slots:
   void run_selection (void);
 
   void edit_file (void);
+
+  void edit_selected (void);
+
+  void help_on_expression (void);
+
+  void doc_on_expression (void);
 
   virtual void handle_visibility_changed (bool) { };
 
@@ -151,6 +159,16 @@ protected:
       = _contextMenu->addAction (tr ("Run Selection"), this,
                                  SLOT (run_selection ()));
 
+    m_edit_selected_action
+      = _contextMenu->addAction (tr ("Edit selection"), this,
+                                 SLOT (edit_selected ()));
+    m_help_selected_action
+      = _contextMenu->addAction (tr ("Help on selection"), this,
+                                 SLOT (help_on_expression ()));
+    m_doc_selected_action
+      = _contextMenu->addAction (tr ("Documentation on selection"), this,
+                                 SLOT (doc_on_expression ()));
+
     _edit_action = _contextMenu->addAction (tr (""), this, SLOT (edit_file ()));
 
     _contextMenu->addSeparator ();
@@ -163,6 +181,9 @@ protected:
 
     connect (this, SIGNAL (report_status_message (const QString&)),
              xparent, SLOT (report_status_message (const QString&)));
+
+    connect (this, SIGNAL (show_doc_signal (const QString&)),
+             xparent, SLOT (handle_show_doc (const QString&)));
 
     connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
              xparent, SLOT (edit_mfile (const QString&, int)));
@@ -210,6 +231,9 @@ private:
   QAction * _selectall_action;
   QAction * _edit_action;
   QAction * _run_selection_action;
+  QAction * m_edit_selected_action;
+  QAction * m_help_selected_action;
+  QAction * m_doc_selected_action;
 
   QAction *_interrupt_action;
   QAction *_nop_action;

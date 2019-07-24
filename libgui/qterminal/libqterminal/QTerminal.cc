@@ -100,6 +100,9 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     bool has_selected_text = ! selected_text.isEmpty ();
 
     _edit_action->setVisible (false);
+    m_edit_selected_action->setVisible (false);
+    m_help_selected_action->setVisible (false);
+    m_doc_selected_action->setVisible (false);
 
 #if defined (Q_OS_WIN32)
     // include this when in windows because there is no filter for
@@ -126,9 +129,34 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
       }
 #endif
 
+    if (has_selected_text)
+      {
+        QRegExp expr (".*\b*(\\w+)\b*.*");
+
+        int pos = expr.indexIn (selected_text);
+
+        if (pos > -1)
+          {
+            QString expr_found = expr.cap (1);
+
+            m_edit_selected_action->setVisible (true);
+            m_edit_selected_action->setText (tr ("Edit %1").arg (expr_found));
+            m_edit_selected_action->setData (expr_found);
+
+            m_help_selected_action->setVisible (true);
+            m_help_selected_action->setText (tr ("Help on %1").arg (expr_found));
+            m_help_selected_action->setData (expr_found);
+
+            m_doc_selected_action->setVisible (true);
+            m_doc_selected_action->setText (tr ("Documentation on %1")
+                                            .arg (expr_found));
+            m_doc_selected_action->setData (expr_found);
+          }
+      }
+
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (has_selected_text);
-    _run_selection_action->setEnabled (has_selected_text);
+    _run_selection_action->setVisible (has_selected_text);
 
     // Get the actions of any hotspots the filters may have found
     QList<QAction*> actions = get_hotspot_actions (at);
@@ -164,6 +192,30 @@ QTerminal::edit_file ()
   int line = _edit_action->data ().toStringList ().at (1).toInt ();
 
   emit edit_mfile_request (file,line);
+}
+
+// slot for edit selected function names
+void QTerminal::edit_selected ()
+{
+  QString file = m_edit_selected_action->data ().toString ();
+
+  emit edit_mfile_request (file,0);
+}
+
+// slot for showing help on selected epxression
+void QTerminal::help_on_expression ()
+{
+  QString expr = m_help_selected_action->data ().toString ();
+
+  emit execute_command_in_terminal_signal ("help " + expr);
+}
+
+// slot for showing documentation on selected epxression
+void QTerminal::doc_on_expression ()
+{
+  QString expr = m_doc_selected_action->data ().toString ();
+
+  emit show_doc_signal (expr);
 }
 
 void

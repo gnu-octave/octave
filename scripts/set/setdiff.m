@@ -20,17 +20,23 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} setdiff (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} setdiff (@dots{}, "sorted")
+## @deftypefnx {} {@var{c} =} setdiff (@dots{}, "stable")
 ## @deftypefnx {} {@var{c} =} setdiff (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}] =} setdiff (@dots{})
-## Return the unique elements in @var{a} that are not in @var{b} sorted in
-## ascending order.
+## Return the unique elements in @var{a} that are not in @var{b}.
 ##
 ## If @var{a} is a row vector return a row vector; Otherwise, return a
 ## column vector.  The inputs may also be cell arrays of strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the rows in
-## @var{a} that are not in @var{b}.  The inputs must be 2-D matrices to use
-## this option.
+## @var{a} that are not in @var{b}.  The inputs must be 2-D numeric matrices to
+## use this option.
+##
+## The optional argument @qcode{"sorted"}/@qcode{"stable"} controls the order
+## in which unique values appear in the output.  The default is
+## @qcode{"sorted"} and values in the output are placed in ascending order.
+## The alternative @qcode{"stable"} preserves the order found in the input.
 ##
 ## If requested, return the index vector @var{ia} such that
 ## @code{@var{c} = @var{a}(@var{ia})}.
@@ -121,12 +127,26 @@ endfunction
 %!assert (setdiff ([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
 %!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}), {"four"})
 
+## Test sorting order
 %!test
-%! a = [3, 1, 4, 1, 5];
-%! b = [1, 2, 3, 4];
-%! [c, ia] = setdiff (a, b');
-%! assert (c, [5]);
-%! assert (c, a(ia));
+%! a = [5, 1, 4, 1, 3];
+%! b = [1; 2; 4];
+%! [c, ia] = setdiff (a, b, "sorted");
+%! assert (c, [3, 5]);
+%! assert (ia, [5; 1]);
+
+%!test
+%! a = [5, 1, 4, 1, 3];
+%! b = [1; 2; 4];
+%! [c, ia] = setdiff (a, b, "stable");
+%! assert (c, [5, 3]);
+%! assert (ia, [1; 5]);
+
+## Test multi-dimensional input
+%!test
+%! a = rand (3,3,3);
+%! b = a(1);
+%! assert (setdiff (a, b), sort (a(2:end)'));
 
 ## Test output orientation compatibility
 %!assert <*42577> (setdiff ([1:5], 2), [1,3,4,5])
@@ -136,18 +156,20 @@ endfunction
 %!assert <*42577> (setdiff ([1:5]', [2:3]), [1;4;5])
 %!assert <*42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
 
-%!test
-%! a = rand (3,3,3);
-%! b = a(1);
-%! assert (setdiff (a, b), sort (a(2:end)'));
-
-## Test "rows" compatibility
+## Test "rows"
 %!test
 %! a = [7 9 7; 0 0 0; 7 9 7; 5 5 5; 1 4 5];
 %! b = [0 0 0; 5 5 5];
 %! [c, ia] = setdiff (a, b, "rows");
 %! assert (c, [1, 4 ,5; 7, 9 7]);
 %! assert (ia, [5; 1]);
+
+%!test
+%! a = [7 9 7; 0 0 0; 7 9 7; 5 5 5; 1 4 5];
+%! b = [0 0 0; 5 5 5];
+%! [c, ia] = setdiff (a, b, "rows", "stable");
+%! assert (c, [7, 9 7; 1, 4 ,5]);
+%! assert (ia, [1; 5]);
 
 ## Test "legacy" option
 %!test

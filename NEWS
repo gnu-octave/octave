@@ -9,9 +9,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   behavior can be restored by setting `"editinplace"` to `false` and
   `"home"` to `"~/octave"`.
 
-- The `unique`, `union` functions accept a new sorting option `"stable"`
-  which will return output values in the same order as the input, rather
-  than in ascending order.
+- The `setdiff', `union`, `unique` functions accept a new sorting option
+  `"stable"` which will return output values in the same order as the
+  input, rather than in ascending order.
 
 #### Graphics backend
 

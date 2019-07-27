@@ -20,19 +20,25 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} union (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} union (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} union (@dots{}, "sorted")
+## @deftypefnx {} {@var{c} =} union (@dots{}, "stable")
 ## @deftypefnx {} {@var{c} =} union (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} union (@dots{})
 ##
-## Return the unique elements that are in either @var{a} or @var{b} sorted in
-## ascending order.
+## Return the unique elements that are in either @var{a} or @var{b}.
 ##
 ## If @var{a} and @var{b} are both row vectors then return a row vector;
 ## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return rows that are in
-## either @var{a} or @var{b}.  The inputs must be 2-D matrices to use this
-## option.
+## either @var{a} or @var{b}.  The inputs must be 2-D numeric matrices to use
+## this option.
+##
+## The optional argument @qcode{"sorted"}/@qcode{"stable"} controls the order
+## in which unique values appear in the output.  The default is
+## @qcode{"sorted"} and values in the output are placed in ascending order.
+## The alternative @qcode{"stable"} preserves the order found in the input.
 ##
 ## The optional outputs @var{ia} and @var{ib} are column index vectors such
 ## that @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
@@ -105,14 +111,44 @@ endfunction
 
 %!test
 %! a = [3, 1, 4, 1, 5];
-%! b = [1, 2, 3, 4];
-%! [y, ia, ib] = union (a, b.');
+%! b = [1; 2; 3; 4];
+%! [y, ia, ib] = union (a, b);
 %! assert (y, [1; 2; 3; 4; 5]);
 %! assert (y, sort ([a(ia)'; b(ib)']));
 
-%!assert (nthargout (2:3, @union, [1, 2, 4], [2, 3, 5]), {[1; 2; 3], [2; 3]})
-%!assert (nthargout (2:3, @union, [1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"),
-%!        {[1; 2; 3], [2; 3]})
+## Test "stable" sorting order
+%!assert (union ([1, 2, 4], [2, 3, 5], "stable"), [1, 2, 4, 3, 5])
+%!assert (union ([1, 2, 4]', [2, 3, 5], "stable"), [1; 2; 4; 3; 5])
+%!assert (union ([1, 2, 4], [2, 3, 5]', "stable"), [1; 2; 4; 3; 5])
+
+%!test
+%! a = [3, 1, 4, 1, 5];
+%! b = [1; 2; 3; 4];
+%! [y, ia, ib] = union (a, b, "stable");
+%! assert (y, [3; 1; 4; 5; 2]);
+%! assert (ia, [1; 2; 3; 5]);
+%! assert (ib, [2]);
+
+## Test indexing outputs
+%!test
+%! a = [1, 4, 2];
+%! b = [2, 3, 5];
+%! [~, ia, ib] = union (a, b);
+%! assert (ia, [1; 3; 2]);
+%! assert (ib, [2; 3]);
+%! [~, ia, ib] = union (a, b, "stable");
+%! assert (ia, [1; 2; 3]);
+%! assert (ib, [2; 3]);
+
+%!test
+%! a = [1 2; 4 5; 2 3];
+%! b = [2 3; 3 4; 5 6];
+%! [~, ia, ib] = union (a, b, "rows");
+%! assert (ia, [1; 3; 2]);
+%! assert ([2; 3]);
+%! [~, ia, ib] = union (a, b, "rows", "stable");
+%! assert (ia, [1; 2; 3]);
+%! assert ([2; 3]);
 
 ## Test "legacy" option
 %!test
@@ -138,17 +174,25 @@ endfunction
 ## Test common input validation for set routines contained in validsetargs
 %!error <cell array of strings cannot be combined> union ({"a"}, 1)
 %!error <A and B must be arrays or cell arrays> union (@sin, 1)
-%!error <invalid option: columns> union (1, 2, "columns")
 %!error <cells not supported with "rows"> union ({"a"}, {"b"}, "rows")
+%!error <cells not supported with "rows"> union ({"a"}, {"b"}, "rows","legacy")
 %!error <A and B must be arrays or cell arrays> union (@sin, 1, "rows")
+%!error <A and B must be arrays or cell arrays> union (@sin,1,"rows","legacy")
 %!error <A and B must be 2-dimensional matrices> union (rand(2,2,2), 1, "rows")
 %!error <A and B must be 2-dimensional matrices> union (1, rand(2,2,2), "rows")
+%!error <A and B must be 2-dimensional matrices>
+%! union (rand(2,2,2), 1, "rows", "legacy");
+%!error <A and B must be 2-dimensional matrices>
+%! union (1, rand(2,2,2), "rows", "legacy");
 %!error <number of columns in A and B must match> union ([1 2], 1, "rows")
 %!error <number of columns in A and B must match> union (1, [1 2], "rows")
+%!error <number of columns in A and B must match>
+%! union ([1 2], 1, "rows", "legacy");
+%!error <number of columns in A and B must match>
+%! union (1, [1 2], "rows", "legacy");
+%!error <invalid option: columns> union (1, 2, "columns")
 %!error <invalid option: columns> union (1, 2, "legacy", "columns")
-%!error <cells not supported with "rows"> union ({"a"}, {"b"}, "rows", "legacy")
-%!error <A and B must be arrays or cell arrays> union (@sin, 1, "rows", "legacy")
-%!error <A and B must be 2-dimensional matrices> union (rand(2,2,2), 1, "rows", "legacy")
-%!error <A and B must be 2-dimensional matrices> union (1, rand(2,2,2), "rows", "legacy")
-%!error <number of columns in A and B must match> union ([1 2], 1, "rows", "legacy")
-%!error <number of columns in A and B must match> union (1, [1 2], "rows", "legacy")
+%!error <only one of "sorted", "stable", or "legacy" may be specified>
+%! union (1, 2, "sorted", "stable");
+%!error <only one of "sorted", "stable", or "legacy" may be specified>
+%! union (1, 2, "sorted", "legacy");

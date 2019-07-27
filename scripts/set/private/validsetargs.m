@@ -42,10 +42,14 @@ function [x, y] = validsetargs (caller, x, y, varargin)
       error ("%s: A and B must be arrays or cell arrays of strings", caller);
     endif
   else
+    optlegacy = false;
+    optsorted = false;
+    optstable = false;
+
     for arg = varargin
       switch (arg{1})
         case "legacy"
-          ## Accepted option, do nothing.
+          optlegacy = true;
 
         case "rows"
           if (iscell (x) || iscell (y))
@@ -60,11 +64,23 @@ function [x, y] = validsetargs (caller, x, y, varargin)
             endif
           endif
 
+        case "sorted"
+          optsorted = true;
+
+        case "stable"
+          optstable = true;
+
         otherwise
           error ("%s: invalid option: %s", caller, arg{1});
 
       endswitch
     endfor
+
+    if (optsorted + optstable + optlegacy > 1)
+      error ('%s: only one of "sorted", "stable", or "legacy" may be specified',
+             caller);
+    endif
+
   endif
 
 endfunction

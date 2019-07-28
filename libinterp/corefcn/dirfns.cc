@@ -293,7 +293,7 @@ identifier.
 
       bool doit = true;
 
-      if (octave::application::interactive ()
+      if (interp.interactive ()
           && ! octave::application::forced_interactive ()
           && Vconfirm_recursive_rmdir)
         {

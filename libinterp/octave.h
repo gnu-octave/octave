@@ -280,8 +280,6 @@ namespace octave
 
     void forced_interactive (bool arg) { m_options.forced_interactive (arg); }
 
-    void interactive (bool arg);
-
     static application * app (void) { return instance; }
 
     static std::string program_invocation_name (void)
@@ -307,7 +305,6 @@ namespace octave
     // Convenience functions.
 
     static bool forced_interactive (void);
-    static bool interactive (void);
 
   private:
 

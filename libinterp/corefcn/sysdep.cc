@@ -73,6 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "octave.h"
 #include "ov.h"
 #include "ovl.h"
@@ -421,8 +422,9 @@ namespace octave
     int tty_fd = STDIN_FILENO;
     if (! octave_isatty_wrapper (tty_fd))
       {
-        if (application::interactive ()
-            && ! application::forced_interactive ())
+        interpreter& interp = __get_interpreter__ ("raw_mode");
+
+        if (interp.interactive () && ! application::forced_interactive ())
           error ("stdin is not a tty!");
       }
 

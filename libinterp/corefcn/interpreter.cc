@@ -979,7 +979,7 @@ namespace octave
 
     // The big loop.
 
-    return m_evaluator.repl (application::interactive ());
+    return m_evaluator.repl (m_interactive);
   }
 
   // Call a function with exceptions handled to avoid problems with

@@ -2413,7 +2413,7 @@ namespace octave
     // Only ask for input from stdin if we are expecting interactive
     // input.
 
-    if (application::interactive ()
+    if (m_interpreter.interactive ()
         && ! (m_reading_fcn_file
               || m_reading_classdef_file
               || m_reading_script_file

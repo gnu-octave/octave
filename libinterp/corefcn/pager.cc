@@ -376,13 +376,13 @@ namespace octave
 
   bool output_system::sync (const char *buf, int len)
   {
-    if (! application::interactive ()
+    if (! m_interpreter.interactive ()
         || application::forced_interactive ()
         || m_really_flush_to_pager
         || (m_page_screen_output && m_page_output_immediately)
         || ! m_page_screen_output)
       {
-        bool bypass_pager = (! application::interactive ()
+        bool bypass_pager = (! m_interpreter.interactive ()
                              || application::forced_interactive ()
                              || ! m_page_screen_output
                              || (m_really_flush_to_pager

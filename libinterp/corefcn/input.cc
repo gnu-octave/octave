@@ -544,7 +544,7 @@ namespace octave
   {
     Vlast_prompt_time.stamp ();
 
-    if (Vdrawnow_requested && application::interactive ())
+    if (Vdrawnow_requested && m_interpreter.interactive ())
       {
         bool eval_error = false;
 
@@ -561,7 +561,7 @@ namespace octave
             if (! stack_trace.empty ())
               std::cerr << stack_trace;
 
-            if (application::interactive ())
+            if (m_interpreter.interactive ())
               interpreter::recover_from_exception ();
           }
 
@@ -701,7 +701,7 @@ namespace octave
 
     event_manager& evmgr = interp.get_event_manager ();
 
-    if (application::interactive ())
+    if (interp.interactive ())
       {
         if (! tw.in_debug_repl ())
           evmgr.exit_debugger_event ();
@@ -768,7 +768,7 @@ namespace octave
     // Process post input event hook function after the internal history
     // list has been updated.
 
-    if (application::interactive ())
+    if (interp.interactive ())
       evmgr.post_input_event ();
 
     return retval;

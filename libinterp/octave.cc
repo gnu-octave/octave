@@ -274,24 +274,9 @@ namespace octave
       }
   }
 
-  void application::interactive (bool arg)
-  {
-    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
-
-    if (interp)
-      interp->interactive (arg);
-  }
-
   bool application::forced_interactive (void)
   {
     return instance ? instance->m_options.forced_interactive () : false;
-  }
-
-  bool application::interactive (void)
-  {
-    interpreter *interp = (instance ? instance->m_interpreter : nullptr);
-
-    return interp ? interp->interactive () : false;
   }
 
   application::~application (void)

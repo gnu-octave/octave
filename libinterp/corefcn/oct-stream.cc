@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "octave.h"
 #include "oct-iostrm.h"
@@ -4010,7 +4011,9 @@ namespace octave
   base_stream::do_gets (octave_idx_type max_len, bool& err,
                         bool strip_newline, const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_gets");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4121,7 +4124,9 @@ namespace octave
   off_t
   base_stream::skipl (off_t num, bool& err, const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::skipl");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4621,7 +4626,9 @@ namespace octave
                          octave_idx_type& conversion_count,
                          const std::string& who)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_scanf");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 
@@ -4951,7 +4958,7 @@ namespace octave
                       }
 
                     // FIXME: is this the right thing to do?
-                    if (application::interactive ()
+                    if (interp.interactive ()
                         && ! application::forced_interactive ()
                         && name () == "stdin")
                       {
@@ -5244,8 +5251,9 @@ namespace octave
 
         // FIXME: is this the right thing to do?
 
-        if (application::interactive ()
-            && ! application::forced_interactive ()
+        interpreter& interp = __get_interpreter__ ("base_stream::do_oscanf");
+
+        if (interp.interactive () && ! application::forced_interactive ()
             && name () == "stdin")
           {
             // Skip to end of line.
@@ -5338,7 +5346,9 @@ namespace octave
                             const std::string& who,
                             octave_idx_type& read_count)
   {
-    if (application::interactive () && file_number () == 0)
+    interpreter& interp = __get_interpreter__ ("base_stream::do_textscan");
+
+    if (interp.interactive () && file_number () == 0)
       ::error ("%s: unable to read from stdin while running interactively",
                who.c_str ());
 

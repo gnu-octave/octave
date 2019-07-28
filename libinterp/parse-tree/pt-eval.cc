@@ -227,22 +227,26 @@ namespace octave
     frame.add_method (input_sys, &input_system::set_PS1, input_sys.PS1 ());
     input_sys.PS1 (tmp_prompt);
 
-    // FIXME: should debugging be possible in an embedded interpreter?
-
-    application *app = application::app ();
-
-    if (! app->interactive ())
+    if (! m_interpreter.interactive ())
       {
 
-        frame.add_method (app, &application::interactive,
-                          app->interactive ());
+        frame.add_method (m_interpreter, &interpreter::interactive,
+                          m_interpreter.interactive ());
 
-        frame.add_method (app, &application::forced_interactive,
-                          app->forced_interactive ());
+        m_interpreter.interactive (true);
 
-        app->interactive (true);
+        // FIXME: should debugging be possible in an embedded
+        // interpreter?
 
-        app->forced_interactive (true);
+        application *app = application::app ();
+
+        if (app)
+          {
+            frame.add_method (app, &application::forced_interactive,
+                              app->forced_interactive ());
+
+            app->forced_interactive (true);
+          }
       }
 
     parser curr_parser (m_interpreter);

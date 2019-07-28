@@ -686,8 +686,7 @@ namespace octave
     tree_evaluator& tw = m_interpreter.get_evaluator ();
     bp_table& bptab = tw.get_bp_table ();
 
-    if ((application::interactive ()
-         || application::forced_interactive ())
+    if ((m_interpreter.interactive () || application::forced_interactive ())
         && ((debug_on_error ()
              && bptab.debug_on_err (last_error_id ()))
             || (debug_on_caught ()
@@ -836,7 +835,7 @@ namespace octave
 
         bp_table& bptab = tw.get_bp_table ();
 
-        if ((application::interactive ()
+        if ((m_interpreter.interactive ()
              || application::forced_interactive ())
             && debug_on_warning () && in_user_code && bptab.debug_on_warn (id))
           {

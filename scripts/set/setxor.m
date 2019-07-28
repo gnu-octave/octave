@@ -21,19 +21,25 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{c} =} setxor (@var{a}, @var{b})
 ## @deftypefnx {} {@var{c} =} setxor (@var{a}, @var{b}, "rows")
+## @deftypefnx {} {@var{c} =} setxor (@dots{}, "sorted")
+## @deftypefnx {} {@var{c} =} setxor (@dots{}, "stable")
 ## @deftypefnx {} {@var{c} =} setxor (@dots{}, "legacy")
 ## @deftypefnx {} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@dots{})
 ##
-## Return the unique elements exclusive to sets @var{a} or @var{b} sorted in
-## ascending order.
+## Return the unique elements exclusive to sets @var{a} or @var{b}.
 ##
 ## If @var{a} and @var{b} are both row vectors then return a row vector;
 ## Otherwise, return a column vector.  The inputs may also be cell arrays of
 ## strings.
 ##
 ## If the optional input @qcode{"rows"} is given then return the rows exclusive
-## to sets @var{a} and @var{b}.  The inputs must be 2-D matrices to use this
-## option.
+## to sets @var{a} and @var{b}.  The inputs must be 2-D numeric matrices to use
+## this option.
+##
+## The optional argument @qcode{"sorted"}/@qcode{"stable"} controls the order
+## in which unique values appear in the output.  The default is
+## @qcode{"sorted"} and values in the output are placed in ascending order.
+## The alternative @qcode{"stable"} preserves the order found in the input.
 ##
 ## The optional outputs @var{ia} and @var{ib} are column index vectors such
 ## that @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
@@ -54,6 +60,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
   [a, b] = validsetargs ("setxor", a, b, varargin{:});
 
   by_rows = any (strcmp ("rows", varargin));
+  optsorted = ! any (strcmp ("stable", varargin));
   optlegacy = any (strcmp ("legacy", varargin));
 
   if (optlegacy)
@@ -63,7 +70,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
   endif
 
   ## Form A and B into sets.
-  if (nargout > 1)
+  if (nargout > 1 || ! optsorted)
     [a, ia] = unique (a, varargin{:});
     [b, ib] = unique (b, varargin{:});
   else
@@ -82,22 +89,42 @@ function [c, ia, ib] = setxor (a, b, varargin)
       [c, i] = sortrows ([a; b]);
       n = rows (c);
       idx = find (all (c(1:n-1, :) == c(2:n, :), 2));
-      if (! isempty (idx))
-        c([idx, idx+1],:) = [];
-        i([idx, idx+1],:) = [];
+      if (optsorted)
+        if (! isempty (idx))
+          c([idx, idx+1],:) = [];
+          i([idx, idx+1],:) = [];
+        endif
+      else
+        c = [a; b];
+        c(i([idx, idx+1]), :) = [];
+        if (nargout > 1)
+          i([idx, idx+1]) = [];
+          ## FIXME: Is there a way to avoid a call to sort?
+          i = sort (i);
+        endif
       endif
     else
       na = numel (a);  nb = numel (b);
       [c, i] = sort ([a(:); b(:)]);
-      n = length (c);
+      n = numel (c);
       if (iscell (c))
         idx = find (strcmp (c(1:n-1), c(2:n)));
       else
         idx = find (c(1:n-1) == c(2:n));
       endif
-      if (! isempty (idx))
-        c([idx, idx+1]) = [];
-        i([idx, idx+1]) = [];
+      if (optsorted)
+        if (! isempty (idx))
+          c([idx, idx+1]) = [];
+          i([idx, idx+1]) = [];
+        endif
+      else
+        c = [a(:); b(:)];
+        c(i([idx, idx+1])) = [];
+        if (nargout > 1)
+          i([idx, idx+1]) = [];
+          ## FIXME: Is there a way to avoid a call to sort?
+          i = sort (i);
+        endif
       endif
 
       ## Adjust output orientation for Matlab compatibility
@@ -119,37 +146,58 @@ function [c, ia, ib] = setxor (a, b, varargin)
 endfunction
 
 
-%!assert (setxor ([1,2,3], [2,3,4]), [1,4])
+%!assert (setxor ([3,1,2], [4,3,2]), [1,4])
 %!assert (setxor ({'a'}, {'a', 'b'}), {'b'})
+%!assert (setxor ([5, NaN, NaN], [NaN, NaN, 5]), [NaN NaN NaN NaN])
 
 %!test
 %! a = [3, 1, 4, 1, 5];
-%! b = [1, 2, 3, 4];
-%! [c, ia, ib] = setxor (a, b.');
+%! b = [1; 2; 3; 4];
+%! [c, ia, ib] = setxor (a, b);
 %! assert (c, [2; 5]);
-%! assert (c, sort ([a(ia)'; b(ib)']));
+%! assert (ia, [5]);
+%! assert (ib, [2]);
 
+## Test "rows" input
 %!test
 %! a = [1 2; 4 5; 1 3];
 %! b = [1 1; 1 2; 4 5; 2 10];
 %! [c, ia, ib] = setxor (a, b, "rows");
 %! assert (c, [1 1; 1 3; 2 10]);
-%! assert (c, sortrows ([a(ia,:); b(ib,:)]));
+%! assert (ia, [3]);
+%! assert (ib, [1; 4]);
 
+## Test "stable" sort order
+%!test
+%! a = [3, 1, 4, 1, 5];
+%! b = [1; 2; 3; 4];
+%! [c, ia, ib] = setxor (a, b, "stable");
+%! assert (c, [5; 2]);
+%! assert (ia, [5]);
+%! assert (ib, [2]);
+
+%!test
+%! a = [1 2; 4 5; 1 3];
+%! b = [1 1; 1 2; 4 5; 2 10];
+%! [c, ia, ib] = setxor (a, b, "rows", "stable");
+%! assert (c, [1 3; 1 1; 2 10]);
+%! assert (ia, [3]);
+%! assert (ib, [1; 4]);
+
+## Test various empty matrix inputs
 %!assert (setxor (1, []), 1)
 %!assert (setxor ([], 1), 1)
 
 %!test
-%! [c, ia, ib] = setxor (1, []);
-%! assert (c, 1);
-%! assert (ia, 1);
-%! assert (isempty (ib));
-
+%! [c, ia, ib] = setxor ([3 1], []);
+%! assert (c, [1 3]);
+%! assert (ia, [2; 1]);
+%! assert (ib, []);
 %!test
-%! [c, ia, ib] = setxor ([], 1);
-%! assert (c, 1);
-%! assert (isempty (ia));
-%! assert (ib, 1);
+%! [c, ia, ib] = setxor ([], [3 1]);
+%! assert (c, [1 3]);
+%! assert (ia, []);
+%! assert (ib, [2; 1]);
 
 %!test
 %! a = [2 1; 4 3];  b = [];
@@ -164,6 +212,7 @@ endfunction
 %! assert (c, [1; 2; 3; 4]);
 %! assert (isempty (ia));
 %! assert (ib, [3; 1; 4; 2]);
+
 ## Test orientation of output
 %!shared x,y
 %! x = 1:3;

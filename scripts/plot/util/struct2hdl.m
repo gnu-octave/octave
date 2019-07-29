@@ -172,6 +172,9 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
       s.properties = rmfield (s.properties, "extent");
     endif
     [h, s] = createui (s, par);
+    if (strcmp (s.type, "uicontextmenu"))
+      set (p(2, ismember (p(1,:), s.special)), 'UIContextMenu', h);
+    endif
   else
     error ("struct2hdl: %s objects are not implemented yet", s.type);
   endif

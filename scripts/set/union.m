@@ -163,6 +163,19 @@ endfunction
 %! assert (ia, [1, 2]);
 %! assert (ib, [3, 1]);
 
+## Test orientation of output
+%!shared x,y
+%! x = 1:3;
+%! y = 2:5;
+
+%!assert (size (union (x, y)), [1 5])
+%!assert (size (union (x', y)), [5 1])
+%!assert (size (union (x, y')), [5 1])
+%!assert (size (union (x', y')), [5 1])
+
+## Clear shared variables
+%!shared
+
 ## Test empty cell string array unions
 %!assert (union ({}, []), cell (0,1))
 %!assert (union ([], {}), cell (0,1))

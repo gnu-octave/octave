@@ -277,19 +277,20 @@ endfunction
 %!assert (unique ({}), {})
 %!assert (unique ([1,2,2,3,2,4], "rows"), [1,2,2,3,2,4])
 %!assert (unique ([1,2,2,3,2,4]), [1,2,3,4])
-%!assert (unique ([1,2,2,3,2,4]', "rows"), [1,2,3,4]')
-%!assert (unique (sparse ([2,0;2,0])), [0,2]')
-%!assert (unique (sparse ([1,2;2,3])), [1,2,3]')
-%!assert (unique ([1,2,2,3,2,4]', "rows"), [1,2,3,4]')
+%!assert (unique ([1,2,2,3,2,4]', "rows"), [1;2;3;4])
+%!assert (unique (sparse ([2,0;2,0])), [0;2])
+%!assert (unique (sparse ([1,2;2,3])), [1;2;3])
+%!assert (unique ([1,2,2,3,2,4]', "rows"), [1;2;3;4])
 %!assert (unique (single ([1,2,2,3,2,4]), "rows"), single ([1,2,2,3,2,4]))
 %!assert (unique (single ([1,2,2,3,2,4])), single ([1,2,3,4]))
-%!assert (unique (single ([1,2,2,3,2,4]'), "rows"), single ([1,2,3,4]'))
+%!assert (unique (single ([1,2,2,3,2,4]'), "rows"), single ([1;2;3;4]))
 %!assert (unique (uint8 ([1,2,2,3,2,4]), "rows"), uint8 ([1,2,2,3,2,4]))
 %!assert (unique (uint8 ([1,2,2,3,2,4])), uint8 ([1,2,3,4]))
-%!assert (unique (uint8 ([1,2,2,3,2,4]'), "rows"), uint8 ([1,2,3,4]'))
+%!assert (unique (uint8 ([1,2,2,3,2,4]'), "rows"), uint8 ([1;2;3;4]))
 
+## Test options with numeric inputs
 %!test
-%! [y,i,j] = unique ([1,1,2,3,3,3,4]);
+%! [y,i,j] = unique ([1,1,2,3,3,3,4], "sorted");
 %! assert (y, [1,2,3,4]);
 %! assert (i, [1;3;4;7]);
 %! assert (j, [1;1;2;3;3;3;4]);
@@ -306,6 +307,7 @@ endfunction
 %! assert (i, [2;3;6;7]);
 %! assert (j, [1;1;2;3;3;3;4]);
 
+## Test options with cellstr inputs
 %!test
 %! [y,i,j] = unique ({"z"; "z"; "z"});
 %! assert (y, {"z"});
@@ -331,6 +333,7 @@ endfunction
 %! assert (A(i,:), y);
 %! ##assert (y(j,:), A);
 
+## Test "legacy" option
 %!test
 %! [y,i,j] = unique ([1,1,2,3,3,3,4], "legacy");
 %! assert (y, [1,2,3,4]);

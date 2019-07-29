@@ -76,9 +76,9 @@ function [c, ia] = setdiff (a, b, varargin)
     if (! isempty (c) && ! isempty (b))
       ## Form A and B into combined set.
       b = unique (b, varargin{:});
-      [tmp, idx] = sortrows ([c; b]);
+      [csort, idx] = sortrows ([c; b]);
       ## Eliminate those elements of A that are the same as in B.
-      dups = find (all (tmp(1:end-1,:) == tmp(2:end,:), 2));
+      dups = find (all (csort(1:end-1,:) == csort(2:end,:), 2));
       c(idx(dups),:) = [];
       if (nargout > 1)
         ia(idx(dups),:) = [];
@@ -93,20 +93,22 @@ function [c, ia] = setdiff (a, b, varargin)
     if (! isempty (c) && ! isempty (b))
       ## Form a and b into combined set.
       b = unique (b);
-      [tmp, idx] = sort ([c(:); b(:)]);
+      [csort, idx] = sort ([c(:); b(:)]);
       ## Eliminate those elements of a that are the same as in b.
-      if (iscellstr (tmp))
-        dups = find (strcmp (tmp(1:end-1), tmp(2:end)));
+      if (iscellstr (csort))
+        dups = find (strcmp (csort(1:end-1), csort(2:end)));
       else
-        dups = find (tmp(1:end-1) == tmp(2:end));
+        dups = find (csort(1:end-1) == csort(2:end));
       endif
       c(idx(dups)) = [];
+
       ## Reshape if necessary for Matlab compatibility.
       if (isrowvec)
         c = c(:).';
       else
         c = c(:);
       endif
+
       if (nargout > 1)
         ia(idx(dups)) = [];
         if (optlegacy && isrowvec)
@@ -127,34 +129,11 @@ endfunction
 %!assert (setdiff ([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
 %!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}), {"four"})
 
-## Test sorting order
-%!test
-%! a = [5, 1, 4, 1, 3];
-%! b = [1; 2; 4];
-%! [c, ia] = setdiff (a, b, "sorted");
-%! assert (c, [3, 5]);
-%! assert (ia, [5; 1]);
-
-%!test
-%! a = [5, 1, 4, 1, 3];
-%! b = [1; 2; 4];
-%! [c, ia] = setdiff (a, b, "stable");
-%! assert (c, [5, 3]);
-%! assert (ia, [1; 5]);
-
 ## Test multi-dimensional input
 %!test
 %! a = rand (3,3,3);
 %! b = a(1);
 %! assert (setdiff (a, b), sort (a(2:end)'));
-
-## Test output orientation compatibility
-%!assert <*42577> (setdiff ([1:5], 2), [1,3,4,5])
-%!assert <*42577> (setdiff ([1:5]', 2), [1;3;4;5])
-%!assert <*42577> (setdiff ([1:5], [2:3]), [1,4,5])
-%!assert <*42577> (setdiff ([1:5], [2:3]'), [1,4,5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]), [1;4;5])
-%!assert <*42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
 
 ## Test "rows"
 %!test
@@ -170,6 +149,29 @@ endfunction
 %! [c, ia] = setdiff (a, b, "rows", "stable");
 %! assert (c, [7, 9 7; 1, 4 ,5]);
 %! assert (ia, [1; 5]);
+
+## Test sorting order
+%!test
+%! a = [5, 1, 4, 1, 3];
+%! b = [1; 2; 4];
+%! [c, ia] = setdiff (a, b, "sorted");
+%! assert (c, [3, 5]);
+%! assert (ia, [5; 1]);
+
+%!test
+%! a = [5, 1, 4, 1, 3];
+%! b = [1; 2; 4];
+%! [c, ia] = setdiff (a, b, "stable");
+%! assert (c, [5, 3]);
+%! assert (ia, [1; 5]);
+
+## Test output orientation compatibility
+%!assert <*42577> (setdiff ([1:5], 2), [1,3,4,5])
+%!assert <*42577> (setdiff ([1:5]', 2), [1;3;4;5])
+%!assert <*42577> (setdiff ([1:5], [2:3]), [1,4,5])
+%!assert <*42577> (setdiff ([1:5], [2:3]'), [1,4,5])
+%!assert <*42577> (setdiff ([1:5]', [2:3]), [1;4;5])
+%!assert <*42577> (setdiff ([1:5]', [2:3]'), [1;4;5])
 
 ## Test "legacy" option
 %!test

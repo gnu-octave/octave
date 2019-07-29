@@ -157,6 +157,12 @@ endfunction
 %!assert (intersect ([1 2; 2 3; 4 5], [2 3; 3 4; 5 6], "rows"), [2 3])
 %!assert (intersect ([1 NaN], [NaN NaN 5]), zeros (1,0))
 
+%!test
+%! a = [1 1 1 2 2 2];
+%! b = [1 2 3 4 5 6];
+%! c = intersect (a, b);
+%! assert (c, [1,2]);
+
 ## Test multi-dimensional arrays
 %!test
 %! a = rand (3,3,3);
@@ -174,12 +180,6 @@ endfunction
 %! assert (ib, [4; 1; 2; 6]);
 %! assert (a(ia), c);
 %! assert (b(ib), c);
-
-%!test
-%! a = [1 1 1 2 2 2];
-%! b = [1 2 3 4 5 6];
-%! c = intersect (a, b);
-%! assert(c, [1,2]);
 
 ## Test "rows" argument
 %!test
@@ -201,6 +201,12 @@ endfunction
 
 ## Test "stable" argument
 %!test
+%! a = [2 2 2 1 1 1];
+%! b = [1 2 3 4 5 6];
+%! c = intersect (a, b, "stable");
+%! assert (c, [2,1]);
+
+%!test
 %! a = [3 2 4 5 7 6 5 1 0 13 13];
 %! b = [3 5 12 1 1 7];
 %! [c, ia, ib] = intersect (a, b, "stable");
@@ -209,12 +215,6 @@ endfunction
 %! assert (ib, [1; 2; 6; 4]);
 %! assert (a(ia), c);
 %! assert (b(ib), c);
-
-%!test
-%! a = [2 2 2 1 1 1];
-%! b = [1 2 3 4 5 6];
-%! c = intersect (a, b, "stable");
-%! assert(c, [2,1]);
 
 %!test
 %! a = [1,4,5;1,1,2;2,1,7];

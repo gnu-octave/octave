@@ -106,11 +106,10 @@ function [c, ia, ib] = setxor (a, b, varargin)
     else
       na = numel (a);  nb = numel (b);
       [c, i] = sort ([a(:); b(:)]);
-      n = numel (c);
       if (iscell (c))
-        idx = find (strcmp (c(1:n-1), c(2:n)));
+        idx = find (strcmp (c(1:end-1), c(2:end)));
       else
-        idx = find (c(1:n-1) == c(2:n));
+        idx = find (c(1:end-1) == c(2:end));
       endif
       if (optsorted)
         if (! isempty (idx))
@@ -157,6 +156,13 @@ endfunction
 %! assert (c, [2; 5]);
 %! assert (ia, [5]);
 %! assert (ib, [2]);
+
+## Test multi-dimensional arrays
+%!test
+%! a = rand (3,3,3);
+%! b = a;
+%! b(1,1,1) = 2;
+%! assert (intersect (a, b), sort (a(2:end)'));
 
 ## Test "rows" input
 %!test
@@ -222,13 +228,6 @@ endfunction
 %!assert (size (setxor (x', y)), [3 1])
 %!assert (size (setxor (x, y')), [3 1])
 %!assert (size (setxor (x', y')), [3 1])
-
-## Test multi-dimensional arrays
-%!test
-%! a = rand (3,3,3);
-%! b = a;
-%! b(1,1,1) = 2;
-%! assert (intersect (a, b), sort (a(2:end)'));
 
 ## Test "legacy" input
 %!test

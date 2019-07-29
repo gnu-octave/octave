@@ -115,9 +115,14 @@ function [tf, s_idx] = ismember (a, s, varargin)
     a = double (a);
   endif
 
+  if (any (strcmp ("stable", varargin)) || any (strcmp ("sorted", varargin)))
+    error ('ismember: "stable" or "sorted" are not valid options');
+  endif
   [a, s] = validsetargs ("ismember", a, s, varargin{:});
 
-  by_rows = nargin == 3;
+  by_rows = any (strcmp ("rows", varargin));
+  ## FIXME: uncomment if bug #56692 is addressed.
+  ##optlegacy = any (strcmp ("legacy", varargin));
 
   if (! by_rows)
     s = s(:);
@@ -292,3 +297,10 @@ endfunction
 %! assert (tf, logical ([1 0 0]))
 %! [~, s_idx] = ismember ([5 4-3j 3+4j], 5);
 %! assert (s_idx, [1 0 0])
+
+## Test input validation
+%!error ismember ()
+%!error ismember (1)
+%!error ismember (1,2,3,4)
+%!error <"stable" or "sorted" are not valid options> ismember (1,2, "sorted")
+%!error <"stable" or "sorted" are not valid options> ismember (1,2, "stable")

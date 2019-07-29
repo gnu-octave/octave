@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-dialog.h"
 #include "set-path-dialog.h"
 #include "history-dock-widget.h"
+#include "interpreter-qobject.h"
 #include "octave-dock-widget.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
@@ -63,7 +64,8 @@ class octave_value;
 
 namespace octave
 {
-  class base_qobject;
+  class interpreter;
+
   class settings_dialog;
 
   //! Represents the main window.
@@ -112,6 +114,9 @@ namespace octave
     void undo_signal (void);
 
     void add_actions_signal (QList <QAction *> action_list);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 
@@ -282,7 +287,7 @@ namespace octave
     void configure_shortcuts (void);
 
     QList<octave_dock_widget *> dock_widget_list (void);
-    
+
     void update_default_encoding (const QString& default_encoding);
 
     base_qobject& m_octave_qobj;

@@ -1104,18 +1104,17 @@ namespace octave
   {
     bp_info info (_file_name, line);
 
-    event_manager& evmgr
-      = __get_event_manager__ ("file_editor_tab::handle_request_remove_breakpoint");
-
-    evmgr.post_event
-      ([info] (void)
+    emit interpreter_event
+      ([info] (interpreter& interp)
        {
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
          if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
-             bp_table& bptab = __get_bp_table__ ("file_editor_tab::handle_request_remove_breakpoint");
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             bp_table& bptab = tw.get_bp_table ();
 
              bptab.remove_breakpoint (info.function_name, line_info);
            }
@@ -1190,15 +1189,14 @@ namespace octave
 
     bp_info info (_file_name);
 
-    event_manager& evmgr
-      = __get_event_manager__ ("file_editor_tab::remove_all_breakpoints");
-
-    evmgr.post_event
-      ([info] (void)
+    emit interpreter_event
+      ([info] (interpreter& interp)
        {
          if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
-             bp_table& bptab = __get_bp_table__ ("file_editor_tab::remove_all_breakpoints");
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             bp_table& bptab = tw.get_bp_table ();
 
              bptab.remove_all_breakpoints_in_file (info.function_name, true);
            }
@@ -1322,18 +1320,17 @@ namespace octave
 
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("file_editor_tab::add_breakpoint_event");
-
-    evmgr.post_event
-      ([this, info] (void)
+    emit interpreter_event
+      ([this, info] (interpreter& interp)
        {
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
          if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
-             bp_table& bptab = __get_bp_table__ ("file_editor_tab::add_breakpoint_event");
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             bp_table& bptab = tw.get_bp_table ();
 
              bp_table::intmap bpmap
                = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
@@ -2053,16 +2050,10 @@ namespace octave
 
     // Create and queue the command object.
 
-    event_manager& evmgr
-      = __get_event_manager__ ("file_editor_tab::update_breakpoints");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("file_editor_tab::update_breakpoints");
 
          octave_value_list argout = Fdbstatus (interp, ovl (), 1);
 
@@ -2119,8 +2110,10 @@ namespace octave
   bool file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
                                               const QString& base_name_q)
   {
-    symbol_table& symtab
-      = __get_symbol_table__ ("file_editor_tab::exit_debug_and_clear");
+    interpreter& interp
+      = __get_interpreter__ ("file_editor_tab::exit_debug_and_clear");
+
+    symbol_table& symtab = interp.get_symbol_table ();
 
     std::string base_name = base_name_q.toStdString ();
     octave_value sym;
@@ -2149,8 +2142,9 @@ namespace octave
     bool retval = true;
 
     octave_idx_type curr_frame = -1;
-    tree_evaluator& tw
-      = __get_evaluator__ ("file_editor_tab::exit_debug_and_clear");
+
+    tree_evaluator& tw = interp.get_evaluator ();
+
     octave_map stk = tw.backtrace (curr_frame, false);
 
     Cell names = stk.contents ("name");

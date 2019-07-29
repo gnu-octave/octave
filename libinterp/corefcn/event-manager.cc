@@ -49,9 +49,10 @@ namespace octave
     return 0;
   }
 
-  event_manager::event_manager (void)
-    : instance (nullptr), event_queue_mutex (new mutex ()),
-      gui_event_queue (), debugging (false), link_enabled (false)
+  event_manager::event_manager (interpreter& interp)
+    : m_interpreter (interp), instance (nullptr),
+      event_queue_mutex (new mutex ()), gui_event_queue (),
+      debugging (false), link_enabled (false)
   {
     command_editor::add_event_hook (readline_event_hook);
   }

@@ -45,12 +45,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDesktopServices>
 #include <QFileDialog>
 
+#include "qt-interpreter-events.h"
+
+#include "builtin-defun-decls.h"
+#include "interpreter.h"
 #include "load-save.h"
 #include "oct-env.h"
-#include "interpreter-private.h"
-#include "interpreter.h"
-#include "qt-interpreter-events.h"
-#include "builtin-defun-decls.h"
 
 namespace octave
 {
@@ -818,16 +818,10 @@ namespace octave
 
     if (infos.length () > 0)
       {
-        event_manager& evmgr
-          = __get_event_manager__ ("files_dock_widget::contextmenu_add_to_path");
-
-        evmgr.post_event
-          ([dir_list, rm, subdirs] (void)
+        emit interpreter_event
+          ([dir_list, rm, subdirs] (interpreter& interp)
           {
             // INTERPRETER THREAD
-
-            interpreter& interp
-              = __get_interpreter__ ("files_dock_widget::contextmenu_add_to_path");
 
             octave_value_list paths = ovl ();
 

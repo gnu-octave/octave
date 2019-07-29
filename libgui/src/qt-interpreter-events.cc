@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 
 Q_DECLARE_METATYPE (octave_value)
 Q_DECLARE_METATYPE (octave::symbol_info_list)
+Q_DECLARE_METATYPE (octave::fcn_callback)
+Q_DECLARE_METATYPE (octave::meth_callback)
 
 namespace octave
 {
@@ -59,6 +61,9 @@ namespace octave
   {
     qRegisterMetaType<octave_value> ("octave_value");
     qRegisterMetaType<symbol_info_list> ("symbol_info_list");
+
+    qRegisterMetaType<fcn_callback> ("fcn_callback");
+    qRegisterMetaType<meth_callback> ("meth_callback");
   }
 
   bool qt_interpreter_events::confirm_shutdown (void)

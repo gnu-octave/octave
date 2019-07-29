@@ -90,7 +90,6 @@ namespace octave
 
   extern gtk_manager& __get_gtk_manager__ (const std::string& who);
 
-
   // Functions that could be methods in the interpreter class but maybe
   // shouldn't be exposed as part of the public interface.
 

@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QStringList>
 
+#include "interpreter-qobject.h"
+
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
@@ -38,7 +40,6 @@ typedef QList<float> QFloatList;
 
 namespace octave
 {
-  class interpreter_qobject;
   class main_window;
   class qt_application;
 
@@ -51,6 +52,8 @@ namespace octave
 
   class octave_qapplication : public QApplication
   {
+    Q_OBJECT
+
   public:
 
     octave_qapplication (int& argc, char **argv)
@@ -60,6 +63,11 @@ namespace octave
     virtual bool notify (QObject *receiver, QEvent *e) override;
 
     ~octave_qapplication (void) { };
+
+  signals:
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
   };
 
   //! Base class for Octave interfaces that use Qt.  There are two
@@ -127,6 +135,10 @@ namespace octave
                                    const QString& dirname,
                                    const QString& multimode);
 
+    void interpreter_event (const fcn_callback& fcn);
+
+    void interpreter_event (const meth_callback& meth);
+
   protected:
 
     qt_application& m_app_context;
@@ -137,7 +149,7 @@ namespace octave
     int m_argc;
     char **m_argv;
 
-    QApplication *m_qapplication;
+    octave_qapplication *m_qapplication;
 
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;

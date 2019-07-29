@@ -39,7 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "variable-editor-model.h"
 
 #include "interpreter.h"
-#include "interpreter-private.h"
 #include "ov.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"
@@ -1012,22 +1011,17 @@ namespace octave
 
     std::string expr = os.str ();
 
-    event_manager& evmgr = __get_event_manager__ ("variable_editor_model::setData");
-
-    evmgr.post_event
-      ([this, nm, expr, idx] (void)
+    emit interpreter_event
+      ([this, nm, expr, idx] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
          try
            {
-             interpreter& interp
-               = __get_interpreter__ ("variable_editor_model::setData");
-
              int parse_status = 0;
              interp.eval_string (expr, true, parse_status);
 
-             octave_value val = retrieve_variable (nm);
+             octave_value val = retrieve_variable (interp, nm);
 
              emit update_data_signal (val);
            }
@@ -1140,7 +1134,7 @@ namespace octave
   }
 
   void
-  variable_editor_model::init_from_oct (void)
+  variable_editor_model::init_from_oct (interpreter& interp)
   {
     // INTERPRETER THREAD
 
@@ -1148,7 +1142,7 @@ namespace octave
 
     try
       {
-        octave_value val = retrieve_variable (nm);
+        octave_value val = retrieve_variable (interp, nm);
 
         emit update_data_signal (val);
       }
@@ -1166,23 +1160,17 @@ namespace octave
   {
     std::string expr = expr_arg.toStdString ();
 
-    event_manager& evmgr
-      = __get_event_manager__ ("variable_editor_model::eval_expr_event");
-
-    evmgr.post_event
-      ([this, expr] (void)
+    emit interpreter_event
+      ([this, expr] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
          try
            {
-             interpreter& interp
-               = __get_interpreter__ ("variable_editor_model::eval_expr_event");
-
              int parse_status = 0;
              interp.eval_string (expr, true, parse_status);
 
-             init_from_oct ();
+             init_from_oct (interp);
            }
          catch  (execution_exception&)
            {
@@ -1200,7 +1188,8 @@ namespace octave
   // try-catch block that catches execution exceptions.
 
   octave_value
-  variable_editor_model::retrieve_variable (const std::string& x)
+  variable_editor_model::retrieve_variable (interpreter& interp,
+                                            const std::string& x)
   {
     // INTERPRETER THREAD
 
@@ -1213,9 +1202,6 @@ namespace octave
 
     if (symbol_exist (name, "var") > 0)
       {
-        interpreter& interp
-          = __get_interpreter__ ("variable_editor_model::retrieve_variable");
-
         int parse_status = 0;
         return interp.eval_string (x, true, parse_status);
       }
@@ -1240,15 +1226,12 @@ namespace octave
   void
   variable_editor_model::update_data_cache (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("variable_editor_model::update_data_cache");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
          // INTERPRETER_THREAD
 
-         init_from_oct ();
+         init_from_oct (interp);
        });
   }
 

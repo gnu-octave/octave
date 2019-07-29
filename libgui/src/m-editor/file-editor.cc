@@ -2420,6 +2420,15 @@ namespace octave
              f, SLOT (do_breakpoint_marker (bool, const QWidget*, int,
                                             const QString&)));
 
+    // Any interpreter_event signal from a file_editor_tab_widget is
+    // handled the same as for the parent main_window object.
+
+    connect (f, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (f, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     m_tab_widget->setCurrentWidget (f);
 
     check_actions ();

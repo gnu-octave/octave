@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
-    : QObject (), m_octave_qobject (oct_qobj),
+    : QObject (), m_octave_qobject (oct_qobj), m_interpreter (nullptr),
       m_qt_link (new qt_interpreter_events ())
   { }
 
@@ -82,6 +82,8 @@ namespace octave
             // The interpreter should be completely ready at this point so let
             // the GUI know.
 
+            m_interpreter = &interp;
+
             emit octave_ready_signal ();
 
             // Start executing commands in the command window.
@@ -94,12 +96,36 @@ namespace octave
         exit_status = ex.exit_status ();
       }
 
+    // Disable events from being passed from the GUI to the interpreter.
+
+    m_interpreter = nullptr;
+
     // Whether or not initialization succeeds we need to clean up the
     // interpreter once we are done with it.
 
     app_context.delete_interpreter ();
 
     emit octave_finished_signal (exit_status);
+  }
+
+  void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
+  {
+    if (! m_interpreter)
+      return;
+
+    event_manager& evmgr = m_interpreter->get_event_manager ();
+
+    evmgr.post_event (fcn);
+  }
+
+  void interpreter_qobject::interpreter_event (const meth_callback& meth)
+  {
+    if (! m_interpreter)
+      return;
+
+    event_manager& evmgr = m_interpreter->get_event_manager ();
+
+    evmgr.post_event (meth);
   }
 
   void interpreter_qobject::confirm_shutdown (bool closenow)

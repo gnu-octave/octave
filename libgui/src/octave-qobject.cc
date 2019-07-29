@@ -42,7 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-application.h"
 #include "resource-manager.h"
 
-#include "interpreter-private.h"
 #include "ovl.h"
 #include "oct-env.h"
 #include "version.h"
@@ -70,9 +69,11 @@ namespace octave
       }
     catch (execution_exception&)
       {
-        event_manager& evmgr = __get_event_manager__ ("octave_qapplication::notify");
-
-        evmgr.post_exception (std::current_exception ());
+        emit interpreter_event
+          ([] (void)
+           {
+             std::rethrow_exception (std::current_exception ());
+           });
       }
 
    return false;
@@ -142,6 +143,15 @@ namespace octave
 
     connect (m_main_thread, SIGNAL (finished (void)),
              m_main_thread, SLOT (deleteLater (void)));
+
+    // Handle any interpreter_event signal from the octave_qapplication
+    // object here.
+
+    connect (m_qapplication, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SLOT (interpreter_event (const fcn_callback&)));
+
+    connect (m_qapplication, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SLOT (interpreter_event (const meth_callback&)));
   }
 
   base_qobject::~base_qobject (void)
@@ -192,6 +202,30 @@ namespace octave
   void base_qobject::handle_octave_finished (int exit_status)
   {
     qApp->exit (exit_status);
+  }
+
+  void base_qobject::interpreter_event (const fcn_callback& fcn)
+  {
+    // The following is a direct function call across threads.  It works
+    // because the it is accessing a thread-safe queue of events that
+    // are later executed by the Octave interpreter in the other thread.
+
+    // See also the comments in interpreter-qobject.h about
+    // interpreter_qobject slots.
+
+    m_interpreter_qobj->interpreter_event (fcn);
+  }
+
+  void base_qobject::interpreter_event (const meth_callback& meth)
+  {
+    // The following is a direct function call across threads.  It works
+    // because the it is accessing a thread-safe queue of events that
+    // are later executed by the Octave interpreter in the other thread.
+
+    // See also the comments in interpreter-qobject.h about
+    // interpreter_qobject slots.
+
+    m_interpreter_qobj->interpreter_event (meth);
   }
 
   void base_qobject::confirm_shutdown_octave (void)

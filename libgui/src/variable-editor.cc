@@ -1257,6 +1257,15 @@ namespace octave
     connect (edit_view, SIGNAL (doubleClicked (const QModelIndex&)),
              model, SLOT (double_click (const QModelIndex&)));
 
+    // Any interpreter_event signal from a variable_editor_model object is
+    // handled the same as for the parent variable_editor object.
+
+    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     // Must supply a title for a QLabel to be created.  Calling set_title()
     // more than once will add more QLabels.  Could change octave_dock_widget
     // to always supply a QLabl (initially empty) and then simply update its

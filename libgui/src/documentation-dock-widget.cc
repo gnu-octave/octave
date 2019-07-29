@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "documentation-dock-widget.h"
 
 #include "help.h"
-#include "interpreter-private.h"
 
 namespace octave
 {

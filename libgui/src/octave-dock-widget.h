@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QMouseEvent>
 
+#include "qt-interpreter-events.h"
+
 namespace octave
 {
 
@@ -97,6 +99,9 @@ namespace octave
     void queue_make_window (bool widget_was_dragged);
 
     void queue_make_widget (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   protected:
 

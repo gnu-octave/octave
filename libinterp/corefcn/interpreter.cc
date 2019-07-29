@@ -381,7 +381,7 @@ namespace octave
       m_url_handle_manager (),
       m_cdef_manager (*this),
       m_gtk_manager (),
-      m_event_manager (),
+      m_event_manager (*this),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),

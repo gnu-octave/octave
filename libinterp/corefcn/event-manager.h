@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
+#include <functional>
 #include <list>
 #include <memory>
 #include <string>
@@ -41,6 +42,9 @@ class string_vector;
 
 namespace octave
 {
+  typedef std::function<void (void)> fcn_callback;
+  typedef std::function<void (octave::interpreter&)> meth_callback;
+
   class symbol_info_list;
 
   // The methods in this class provide a way to pass signals to the GUI
@@ -219,7 +223,7 @@ namespace octave
   {
   public:
 
-    event_manager (void);
+    event_manager (interpreter& interp);
 
     // No copying!
 
@@ -262,24 +266,16 @@ namespace octave
     // The queued functions are executed when the interpreter is
     // otherwise idle.
 
-    template <typename F, typename... Args>
-    void post_event (F&& fcn, Args&&... args)
+    void post_event (const fcn_callback& fcn)
     {
       if (enabled ())
-        gui_event_queue.add (fcn, std::forward<Args> (args)...);
+        gui_event_queue.add (fcn);
     }
 
-    template <typename T, typename... Params, typename... Args>
-    void post_event (T *obj, void (T::*method) (Params...), Args&&... args)
+    void post_event (const meth_callback& meth)
     {
       if (enabled ())
-        gui_event_queue.add_method (obj, method, std::forward<Args> (args)...);
-    }
-
-    void post_exception (const std::exception_ptr& p)
-    {
-      if (enabled ())
-        post_event (this, &event_manager::rethrow_exception_callback, p);
+        gui_event_queue.add (std::bind (meth, std::ref (m_interpreter)));
     }
 
     // The following functions correspond to the virtual fuunctions in
@@ -549,6 +545,8 @@ namespace octave
 
   private:
 
+    interpreter& m_interpreter;
+
     // Using a shared_ptr to manage the link_events object ensures that it
     // will be valid until it is no longer needed.
 
@@ -564,11 +562,6 @@ namespace octave
 
     bool debugging;
     bool link_enabled;
-
-    void rethrow_exception_callback (const std::exception_ptr& p)
-    {
-      std::rethrow_exception (p);
-    }
   };
 }
 

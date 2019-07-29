@@ -177,7 +177,11 @@ namespace QtHandles
             octave::event_manager& evmgr
               = octave::__get_event_manager__ ("GLCanvas::do_print");
 
-            evmgr.post_exception (std::current_exception ());
+            evmgr.post_event
+              ([] (void)
+               {
+                 std::rethrow_exception (std::current_exception ());
+               });
           }
 
         end_rendering ();

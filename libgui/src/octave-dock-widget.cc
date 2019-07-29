@@ -211,6 +211,15 @@ namespace octave
     connect (m_close_action, SIGNAL (triggered (bool)),
              this, SLOT (change_visibility (bool)));
 
+    // Any interpreter_event signal from an octave_dock_widget object is
+    // handled the same as for the parent main_window object.
+
+    connect (this, SIGNAL (interpreter_event (const fcn_callback&)),
+             p, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (this, SIGNAL (interpreter_event (const meth_callback&)),
+             p, SIGNAL (interpreter_event (const meth_callback&)));
+
     m_close_action->setToolTip (tr ("Hide widget"));
 
     setStyleSheet (qdockwidget_css (QString (":/actions/icons/widget-close.png"),

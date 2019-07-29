@@ -36,10 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
-#include "builtin-defun-decls.h"
+// Only needed for typedef of "QIntList", which may be typedefed
+// elsewhere.  Could use common location.
+#include "marker.h"
+#include "qt-interpreter-events.h"
 
-#include "marker.h" /* Only needed for typedef of "QIntList", which may be
-                       typedefed elsewhere.  Could use common location. */
+#include "builtin-defun-decls.h"
 
 class octave_value_list;
 
@@ -186,6 +188,9 @@ namespace octave
     void remove_all_positions (void);
 
     void debug_quit_signal (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to

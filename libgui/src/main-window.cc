@@ -341,16 +341,10 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::handle_save_workspace_request");
-
-        evmgr.post_event
-          ([file] (void)
+        emit interpreter_event
+          ([file] (interpreter& interp)
            {
              // INTERPRETER THREAD
-
-             interpreter& interp
-               = __get_interpreter__ ("main_window::handle_save_workspace_request");
 
              Fsave (interp, ovl (file.toStdString ()));
            });
@@ -373,16 +367,10 @@ namespace octave
 
     if (! file.isEmpty ())
       {
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::handle_load_workspace_request");
-
-        evmgr.post_event
-          ([file] (void)
+        emit interpreter_event
+          ([file] (interpreter& interp)
            {
              // INTERPRETER THREAD
-
-             interpreter& interp
-               = __get_interpreter__ ("main_window::handle_load_workspace_request");
 
              Fload (interp, ovl (file.toStdString ()));
 
@@ -401,16 +389,10 @@ namespace octave
       {
         std::string file = file_arg.toStdString ();
 
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::handle_open_any_request");
-
-        evmgr.post_event
-          ([file] (void)
+        emit interpreter_event
+          ([file] (interpreter& interp)
            {
              // INTERPRETER THREAD
-
-             interpreter& interp
-               = __get_interpreter__ ("main_window::handle_open_any_request");
 
              feval ("open", ovl (file));
 
@@ -427,16 +409,10 @@ namespace octave
 
   void main_window::handle_clear_workspace_request (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_clear_workspace_request");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::handle_clear_workspace_request");
 
          Fclear (interp);
        });
@@ -444,10 +420,7 @@ namespace octave
 
   void main_window::handle_clear_command_window_request (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_clear_command_window_request");
-
-    evmgr.post_event
+    emit interpreter_event
       ([] (void)
        {
          // INTERPRETER THREAD
@@ -459,16 +432,12 @@ namespace octave
 
   void main_window::handle_clear_history_request (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_clear_history_request");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         history_system& history_sys
-           = __get_history_system__ ("main_window::clear_history_request");
+         history_system& history_sys = interp.get_history_system ();
 
          history_sys.do_history (ovl ("-c"));
        });
@@ -478,10 +447,7 @@ namespace octave
   {
     if (command_window_has_focus ())
       {
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::handle_undo_request");
-
-        evmgr.post_event
+        emit interpreter_event
           ([] (void)
            {
              // INTERPRETER THREAD
@@ -501,16 +467,10 @@ namespace octave
     std::string old_name = old_name_arg.toStdString ();
     std::string new_name = new_name_arg.toStdString ();
 
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_rename_variable_request");
-
-    evmgr.post_event
-      ([old_name, new_name] (void)
+    emit interpreter_event
+      ([old_name, new_name] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::rename_variable_request");
 
          symbol_scope scope = interp.get_current_scope ();
 
@@ -998,10 +958,7 @@ namespace octave
 
     if (fileInfo.exists () && fileInfo.isDir ())
       {
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::set_current_working_directory");
-
-        evmgr.post_event
+        emit interpreter_event
           ([xdir] (void)
            {
              // INTERPRETER THREAD
@@ -1036,10 +993,7 @@ namespace octave
 
   void main_window::execute_command_in_terminal (const QString& command)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::execute_command_in_terminal");
-
-    evmgr.post_event
+    emit interpreter_event
       ([command] (void)
        {
          // INTERPRETER THREAD
@@ -1058,11 +1012,8 @@ namespace octave
 
   void main_window::run_file_in_terminal (const QFileInfo& info)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::run_file_in_terminal");
-
-    evmgr.post_event
-      ([info] (void)
+    emit interpreter_event
+      ([info] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
@@ -1084,9 +1035,6 @@ namespace octave
            }
          else
            {
-             interpreter& interp
-               = __get_interpreter__ ("main_window::run_file_in_terminal");
-
              // No valid identifier: use equivalent of Fsource (), no
              // debug possible.
 
@@ -1107,16 +1055,10 @@ namespace octave
 
   void main_window::handle_new_figure_request (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_new_figure_request");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::new_figure_request");
 
          Fbuiltin (interp, ovl ("figure"));
          Fdrawnow ();
@@ -1155,16 +1097,10 @@ namespace octave
 
   void main_window::debug_continue (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::debug_continue");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::debug_continue");
 
          F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
          Fdbcont (interp);
@@ -1175,16 +1111,10 @@ namespace octave
 
   void main_window::debug_step_into (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::debug_step_into");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::debug_step_into");
 
          F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
          Fdbstep (interp, ovl ("in"));
@@ -1199,18 +1129,11 @@ namespace octave
       {
         // We are in debug mode, just call dbstep.
 
-        event_manager& evmgr
-          = __get_event_manager__ ("main_window::debug_step_over");
-
-        evmgr.post_event
-          ([this] (void)
+        emit interpreter_event
+          ([this] (interpreter& interp)
            {
-             // INTERPRETER THREAD
-
-             interpreter& interp
-               = __get_interpreter__ ("main_window::debug_step_over");
-
-             F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+             F__db_next_breakpoint_quiet__ (interp,
+                                            ovl (m_suppress_dbg_location));
              Fdbstep (interp);
 
              command_editor::interrupt (true);
@@ -1225,15 +1148,10 @@ namespace octave
 
   void main_window::debug_step_out (void)
   {
-    event_manager& evmgr = __get_event_manager__ ("main_window::debug_step_out");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::debug_step_out");
 
          F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
          Fdbstep (interp, ovl ("out"));
@@ -1244,15 +1162,10 @@ namespace octave
 
   void main_window::debug_quit (void)
   {
-    event_manager& evmgr = __get_event_manager__ ("main_window::debug_quit");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::debug_quit");
 
          Fdbquit (interp);
 
@@ -1807,9 +1720,7 @@ namespace octave
 
   void main_window::set_screen_size (int ht, int wd)
   {
-    event_manager& evmgr = __get_event_manager__ ("main_window::set_screen_size");
-
-    evmgr.post_event
+    emit interpreter_event
       ([ht, wd] (void)
        {
          // INTERPRETER THREAD
@@ -1895,16 +1806,10 @@ namespace octave
     // interpreter.  That will eventually cause the workspace view in the
     // GUI to be updated.
 
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::handle_variable_editor_update");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp
-           = __get_interpreter__ ("main_window::handle_variable_editor_update");
 
          tree_evaluator& tw = interp.get_evaluator ();
 
@@ -1918,14 +1823,10 @@ namespace octave
   {
     e->ignore ();
 
-    event_manager& evmgr = __get_event_manager__ ("main_window::closeEvent");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp = __get_interpreter__ ("main_window::closeEvent");
 
          Fquit (interp);
        });
@@ -2129,6 +2030,12 @@ namespace octave
     connect (qt_link,
              SIGNAL (file_remove_signal (const QString&, const QString&)),
              this, SLOT (file_remove_proxy (const QString&, const QString&)));
+
+    connect (this, SIGNAL (interpreter_event (const fcn_callback&)),
+             &m_octave_qobj, SLOT (interpreter_event (const fcn_callback&)));
+
+    connect (this, SIGNAL (interpreter_event (const meth_callback&)),
+             &m_octave_qobj, SLOT (interpreter_event (const meth_callback&)));
 
     configure_shortcuts ();
   }
@@ -2879,20 +2786,12 @@ namespace octave
     if (m_default_encoding.startsWith ("SYSTEM", Qt::CaseInsensitive))
       mfile_encoding = "SYSTEM";
 
-    event_manager& evmgr
-      = __get_event_manager__ ("main_window::notice_settings");
-
-    evmgr.post_event
-      ([this, mfile_encoding] (void)
+    emit interpreter_event
+      ([mfile_encoding] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         interpreter& interp
-           = __get_interpreter__ ("main_window::notice_settings");
-
-         F__mfile_encoding__ (interp,
-                              ovl (mfile_encoding));
+         F__mfile_encoding__ (interp, ovl (mfile_encoding));
        });
   }
-
 }

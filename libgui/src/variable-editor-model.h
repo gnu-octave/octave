@@ -29,11 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMap>
 #include <QString>
 
+#include "qt-interpreter-events.h"
+
 #include "ov.h"
 #include "pr-flt-fmt.h"
 
 namespace octave
 {
+  class interpreter;
+
   class base_ve_model
   {
   public:
@@ -281,6 +285,9 @@ namespace octave
 
     void edit_variable_signal (const QString& name, const octave_value& val);
 
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void update_data (const octave_value& val);
@@ -299,11 +306,11 @@ namespace octave
 
     base_ve_model *rep;
 
-    void init_from_oct (void);
+    void init_from_oct (interpreter& interp);
 
     void eval_expr_event (const QString& expr);
 
-    octave_value retrieve_variable (const std::string& name);
+    octave_value retrieve_variable (interpreter&, const std::string& name);
 
     bool is_valid (void) const
     {

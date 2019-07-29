@@ -136,6 +136,12 @@ namespace QtHandles
     m_container = new Container (frame);
     m_container->canvas (m_handle);
 
+    connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
+             this, SIGNAL (interpeter_event (const fcn_callback&)));
+
+    connect (m_container, SIGNAL (interpeter_event (const meth_callback&)),
+             this, SIGNAL (interpeter_event (const meth_callback&)));
+
     if (frame->hasMouseTracking ())
       {
         foreach (QWidget *w, frame->findChildren<QWidget*> ())

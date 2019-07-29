@@ -29,7 +29,7 @@ class graphics_object;
 
 namespace QtHandles
 {
-
+  class Backend;
   class Object;
 
   class ObjectFactory : public QObject
@@ -40,7 +40,7 @@ namespace QtHandles
     static ObjectFactory * instance (void);
 
   public slots:
-    void createObject (double handle);
+    void createObject (Backend *, double handle);
 
   private:
     ObjectFactory (void)

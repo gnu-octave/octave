@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "GenericEventNotify.h"
 
+#include "event-manager.h"
 #include "graphics.h"
 
 namespace QtHandles
@@ -38,11 +39,18 @@ namespace QtHandles
 
   class Container : public ContainerBase
   {
+    Q_OBJECT
+
   public:
     Container (QWidget *parent);
     ~Container (void);
 
     Canvas * canvas (const graphics_handle& handle, bool create = true);
+
+  signals:
+
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
 
   protected:
     void childEvent (QChildEvent *event);

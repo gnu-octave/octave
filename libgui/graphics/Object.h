@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QObject>
 
+#include "event-manager.h"
 #include "graphics.h"
 
 class QObject;
@@ -76,6 +77,11 @@ namespace QtHandles
     virtual Container * innerContainer (void) = 0;
 
     static Object * fromQObject (QObject *obj);
+
+  signals:
+
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
 
   public slots:
     void slotUpdate (int pId);

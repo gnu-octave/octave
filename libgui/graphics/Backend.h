@@ -25,7 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QObject>
 
+#include "event-manager.h"
 #include "graphics.h"
+
+namespace octave
+{
+  class interpreter;
+}
 
 namespace QtHandles
 {
@@ -40,7 +46,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    Backend (void);
+    Backend (octave::interpreter& interp);
 
     ~Backend (void);
 
@@ -70,7 +76,16 @@ namespace QtHandles
     static ObjectProxy * toolkitObjectProxy (const graphics_object& go);
 
   signals:
-    void createObject (double handle);
+    void createObject (Backend *, double handle);
+
+  public slots:
+
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
+
+  private:
+
+    octave::interpreter& m_interpreter;
   };
 
 }

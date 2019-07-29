@@ -23,8 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_Canvas_h)
 #define octave_Canvas_h 1
 
+#include <QObject>
 #include <QPoint>
 
+#include "event-manager.h"
 #include "graphics.h"
 
 #include "Figure.h"
@@ -39,8 +41,10 @@ class octave_value_list;
 namespace QtHandles
 {
 
-  class Canvas
+  class Canvas : public QObject
   {
+    Q_OBJECT
+
   public:
     enum EventMask
     {
@@ -72,6 +76,11 @@ namespace QtHandles
                             const graphics_handle& handle);
 
     virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
+
+  signals:
+
+    void interpreter_event (const octave::fcn_callback& fcn);
+    void interpreter_event (const octave::meth_callback& meth);
 
   protected:
     virtual void draw (const graphics_handle& handle) = 0;

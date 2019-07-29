@@ -7,6 +7,8 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-Backend.cc \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
+  %reldir%/moc-Canvas.cc \
+  %reldir%/moc-Container.cc \
   %reldir%/moc-ContextMenu.cc \
   %reldir%/moc-EditControl.cc \
   %reldir%/moc-Figure.cc \

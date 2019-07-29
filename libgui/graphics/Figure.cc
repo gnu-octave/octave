@@ -118,6 +118,12 @@ namespace QtHandles
     m_container = new Container (win);
     win->setCentralWidget (m_container);
 
+    connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
+             this, SIGNAL (interpeter_event (const fcn_callback&)));
+
+    connect (m_container, SIGNAL (interpeter_event (const meth_callback&)),
+             this, SIGNAL (interpeter_event (const meth_callback&)));
+
     figure::properties& fp = properties<figure> ();
 
     // Adjust figure position

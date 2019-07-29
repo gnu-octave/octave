@@ -65,7 +65,7 @@ namespace QtHandles
 
             octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-            graphics_toolkit tk (new Backend ());
+            graphics_toolkit tk (new Backend (interp));
             gtk_mgr.load_toolkit (tk);
 
             octave::interpreter::add_atexit_function ("__shutdown_qt__");

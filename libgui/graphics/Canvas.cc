@@ -875,15 +875,9 @@ namespace QtHandles
                     props = anno_dlg.get_properties ();
                     props.prepend (figObj.get_handle ().as_octave_value ());
 
-                    octave::event_manager& evmgr
-                      = octave::__get_event_manager__ ("Canvas::canvasMouseReleaseEvent");
-
-                    evmgr.post_event
-                      ([this, props] (void)
+                    emit interpreter_event
+                      ([this, props] (octave::interpreter& interp)
                        {
-                         octave::interpreter& interp
-                           = octave::__get_interpreter__ ("Canvas::canvasMouseReleaseEvent");
-
                          interp.feval ("annotation", props);
 
                          redraw ();

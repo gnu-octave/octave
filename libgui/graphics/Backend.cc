@@ -37,6 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ObjectProxy.h"
 #include "QtHandlesUtils.h"
 
+#include "event-manager.h"
+#include "interpreter.h"
+
 //#if INTPTR_MAX == INT32_MAX
 //# define OCTAVE_PTR_TYPE octave_uint32
 //# define OCTAVE_INTPTR_TYPE uint32_t
@@ -72,13 +75,13 @@ namespace QtHandles
     return "";
   }
 
-  Backend::Backend (void)
-    : QObject (), base_graphics_toolkit ("qt")
+  Backend::Backend (octave::interpreter& interp)
+    : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp)
   {
     ObjectFactory *factory = ObjectFactory::instance ();
 
-    connect (this, SIGNAL (createObject (double)),
-             factory, SLOT (createObject (double)),
+    connect (this, SIGNAL (createObject (Backend *, double)),
+             factory, SLOT (createObject (Backend *, double)),
              Qt::BlockingQueuedConnection);
   }
 
@@ -113,7 +116,7 @@ namespace QtHandles
         OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
         gObj.get_properties ().set (toolkitObjectProperty (go), tmp);
 
-        emit createObject (go.get_handle ().value ());
+        emit createObject (this, go.get_handle ().value ());
 
         return true;
       }
@@ -315,4 +318,17 @@ namespace QtHandles
     return nullptr;
   }
 
+  void Backend::interpreter_event (const octave::fcn_callback& fcn)
+  {
+    octave::event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    evmgr.post_event (fcn);
+  }
+
+  void Backend::interpreter_event (const octave::meth_callback& meth)
+  {
+    octave::event_manager& evmgr = m_interpreter.get_event_manager ();
+
+    evmgr.post_event (meth);
+  }
 };

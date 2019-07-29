@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QApplication>
 #include <QThread>
 
+#include "event-manager.h"
 #include "graphics.h"
 
 #include "Backend.h"
@@ -73,7 +74,7 @@ namespace QtHandles
   }
 
   void
-  ObjectFactory::createObject (double handle)
+  ObjectFactory::createObject (Backend *backend, double handle)
   {
     gh_manager::auto_lock lock;
 
@@ -142,7 +143,14 @@ namespace QtHandles
                             go.type ().c_str ());
 
                 if (obj)
-                  proxy->setObject (obj);
+                  {
+                    proxy->setObject (obj);
+
+                    connect (obj,
+                             SIGNAL (interpreter_event (const octave::fcn_callback&)),
+                             backend,
+                             SLOT (interpreter_event (const octave::meth_callback&)));
+                  }
               }
             else
               qWarning ("ObjectFactory::createObject: no proxy for handle %g",

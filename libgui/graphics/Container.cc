@@ -61,6 +61,12 @@ namespace QtHandles
             m_canvas = Canvas::create (fig.get ("renderer").string_value (),
                                        this, gh);
 
+            connect (m_canvas, SIGNAL (interpeter_event (const fcn_callback&)),
+                     this, SIGNAL (interpeter_event (const fcn_callback&)));
+
+            connect (m_canvas, SIGNAL (interpeter_event (const meth_callback&)),
+                     this, SIGNAL (interpeter_event (const meth_callback&)));
+
             QWidget *canvasWidget = m_canvas->qWidget ();
 
             canvasWidget->lower ();

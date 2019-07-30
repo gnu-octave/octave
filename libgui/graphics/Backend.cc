@@ -76,17 +76,21 @@ namespace QtHandles
   }
 
   Backend::Backend (octave::interpreter& interp)
-    : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp)
+    : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp),
+      m_factory (new ObjectFactory ())
   {
-    ObjectFactory *factory = ObjectFactory::instance ();
+    if (QThread::currentThread () != QApplication::instance ()->thread ())
+      m_factory->moveToThread (QApplication::instance ()->thread ());
 
     connect (this, SIGNAL (createObject (Backend *, double)),
-             factory, SLOT (createObject (Backend *, double)),
+             m_factory, SLOT (createObject (Backend *, double)),
              Qt::BlockingQueuedConnection);
   }
 
   Backend::~Backend (void)
-  { }
+  {
+    delete m_factory;
+  }
 
   bool
   Backend::initialize (const graphics_object& go)

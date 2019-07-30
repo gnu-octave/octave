@@ -37,15 +37,12 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    static ObjectFactory * instance (void);
+
+    ObjectFactory (void) : QObject () { }
 
   public slots:
-    void createObject (Backend *, double handle);
 
-  private:
-    ObjectFactory (void)
-      : QObject ()
-    { }
+    void createObject (Backend *, double handle);
   };
 
 };

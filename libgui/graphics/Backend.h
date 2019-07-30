@@ -35,8 +35,8 @@ namespace octave
 
 namespace QtHandles
 {
-
   class Object;
+  class ObjectFactory;
   class ObjectProxy;
 
   class Backend :
@@ -46,6 +46,7 @@ namespace QtHandles
     Q_OBJECT
 
   public:
+
     Backend (octave::interpreter& interp);
 
     ~Backend (void);
@@ -86,6 +87,8 @@ namespace QtHandles
   private:
 
     octave::interpreter& m_interpreter;
+
+    ObjectFactory *m_factory;
   };
 
 }

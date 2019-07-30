@@ -56,23 +56,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace QtHandles
 {
-
-  ObjectFactory*
-  ObjectFactory::instance (void)
-  {
-    static ObjectFactory s_instance;
-    static bool s_instanceCreated = false;
-
-    if (! s_instanceCreated)
-      {
-        if (QThread::currentThread () != QApplication::instance ()->thread ())
-          s_instance.moveToThread (QApplication::instance ()->thread ());
-        s_instanceCreated = true;
-      }
-
-    return &s_instance;
-  }
-
   void
   ObjectFactory::createObject (Backend *backend, double handle)
   {

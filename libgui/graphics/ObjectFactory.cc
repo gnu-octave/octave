@@ -149,6 +149,11 @@ namespace QtHandles
                     connect (obj,
                              SIGNAL (interpreter_event (const octave::fcn_callback&)),
                              backend,
+                             SLOT (interpreter_event (const octave::fcn_callback&)));
+
+                    connect (obj,
+                             SIGNAL (interpreter_event (const octave::meth_callback&)),
+                             backend,
                              SLOT (interpreter_event (const octave::meth_callback&)));
                   }
               }

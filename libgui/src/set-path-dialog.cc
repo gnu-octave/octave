@@ -163,8 +163,13 @@ namespace octave
                                            "",
                                            (QFileDialog::ShowDirsOnly
                                             | QFileDialog::DontResolveSymlinks));
-    set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
-    m->add_dir (dir);
+
+    if (! dir.isEmpty ())
+      {
+        set_path_model *m
+            = static_cast<set_path_model *> (m_path_list->model ());
+        m->add_dir (dir);
+      }
   }
 
   void set_path_dialog::rm_dir (void)

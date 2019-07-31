@@ -768,7 +768,7 @@ get_regkey_value (HKEY h_rootkey, const std::string subkey,
     return result;
 
   if (type == REG_DWORD)
-    value = octave_int32 (*data);
+    value = octave_int32 (*(reinterpret_cast<DWORD *>(data)));
   else if (type == REG_SZ || type == REG_EXPAND_SZ)
     value = string_vector (octave::sys::u8_from_wstring (
                                         reinterpret_cast<wchar_t *> (data)));

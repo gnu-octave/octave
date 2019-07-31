@@ -819,7 +819,7 @@ namespace octave
     if (infos.length () > 0)
       {
         emit interpreter_event
-          ([dir_list, rm, subdirs] (interpreter& interp)
+          ([dir_list, rm, subdirs, this] (interpreter& interp)
           {
             // INTERPRETER THREAD
 
@@ -838,6 +838,8 @@ namespace octave
               Frmpath (interp, paths);
             else
               Faddpath (interp, paths);
+
+            emit path_changed_signal ();
           });
       }
   }

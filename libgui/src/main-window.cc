@@ -1630,6 +1630,9 @@ namespace octave
     m_set_path_dlg->setModal (false);
     m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
     m_set_path_dlg->show ();
+
+    connect (m_file_browser_window, SIGNAL (path_changed_signal (void)),
+             m_set_path_dlg, SLOT (update_model (void)));
   }
 
   void main_window::find_files (const QString& start_dir)

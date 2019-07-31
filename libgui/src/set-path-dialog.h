@@ -44,6 +44,10 @@ namespace octave
 
     virtual ~set_path_dialog (void);
 
+  public slots:
+
+    void update_model (void);
+
   private slots:
 
     void add_dir(void);

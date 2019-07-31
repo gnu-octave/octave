@@ -170,6 +170,10 @@ namespace octave
 
     void file_renamed_signal (bool);
 
+    //! Emitted, when the load path was changed.
+
+    void path_changed_signal (void);
+
   private:
 
     //! Get currently selected QFileInfo object.

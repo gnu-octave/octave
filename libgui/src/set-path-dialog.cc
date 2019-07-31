@@ -150,6 +150,12 @@ namespace octave
   {
   }
 
+  void set_path_dialog::update_model (void)
+  {
+    set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
+    m->path_to_model ();
+  }
+
   void set_path_dialog::add_dir(void)
   {
     QString dir

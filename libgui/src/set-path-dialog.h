@@ -61,6 +61,7 @@ namespace octave
   private:
 
     QLabel *m_info_label;
+    QPushButton *m_reload_button;
     QPushButton *m_save_button;
     QPushButton *m_close_button;
     QPushButton *m_revert_button;

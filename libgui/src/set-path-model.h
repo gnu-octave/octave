@@ -67,6 +67,8 @@ namespace octave
 
   public slots:
 
+    void path_to_model (void);
+
     void save (void);
 
     void revert (void);
@@ -83,13 +85,13 @@ namespace octave
 
   private:
 
-    void construct (void);
-
     QStringList m_dirs;
 
     QStringList m_orig_dirs;
 
     QStringList m_last_dirs;
+
+    bool m_revertible;
   };
 }
 

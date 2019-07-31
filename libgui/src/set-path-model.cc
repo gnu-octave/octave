@@ -50,7 +50,8 @@ namespace octave
     connect (this, SIGNAL (update_data_signal (const QStringList&)),
              this, SLOT (update_data (const QStringList&)));
 
-    construct ();
+    m_revertible = false;
+    path_to_model ();
   }
 
   std::string set_path_model::to_string (void)
@@ -288,14 +289,14 @@ namespace octave
     return retval;
   }
 
-  void set_path_model::construct (void)
+  void set_path_model::path_to_model (void)
   {
-    event_manager& evmgr = __get_event_manager__ ("set_path_model::construct");
+    event_manager& evmgr = __get_event_manager__ ("set_path_model::path_to_model");
 
     evmgr.post_event
       ([this] (void)
        {
-         load_path& lp = __get_load_path__ ("set_path_model::construct");
+         load_path& lp = __get_load_path__ ("set_path_model::path_to_model");
 
          std::list<std::string> dir_list = lp.dir_list ();
 
@@ -306,6 +307,8 @@ namespace octave
 
          emit update_data_signal (qs_dir_list);
        });
+
+       m_revertible = false;
   }
 
   void set_path_model::update_data (const QStringList& dirs)
@@ -314,11 +317,13 @@ namespace octave
 
     m_dirs.removeAll (".");
 
-    if (m_orig_dirs.isEmpty ())
+    if (! m_revertible)
       {
         // first time update
         m_orig_dirs = m_dirs;
         m_last_dirs = m_dirs;
+
+        m_revertible = true;
       }
 
     int numel = m_dirs.size ();

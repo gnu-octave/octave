@@ -65,6 +65,7 @@ namespace octave
     m_move_down_button = new QPushButton (tr ("Move Down"));
     m_remove_button = new QPushButton (tr ("Remove"));
 
+    m_reload_button = new QPushButton (tr ("Reload"));
     m_save_button = new QPushButton (tr ("Save"));
     m_revert_button = new QPushButton (tr ("Revert"));
     m_revert_last_button = new QPushButton (tr ("Revert Last"));
@@ -91,6 +92,9 @@ namespace octave
 
     set_path_model *model = new set_path_model (this);
 
+    connect (m_reload_button, SIGNAL (clicked (void)),
+             model, SLOT (path_to_model (void)));
+
     connect (m_save_button, SIGNAL (clicked (void)),
              model, SLOT (save (void)));
 
@@ -106,10 +110,12 @@ namespace octave
     m_path_list->setSelectionBehavior (QAbstractItemView::SelectRows);
     m_path_list->setSelectionMode (QAbstractItemView::ExtendedSelection);
     m_path_list->setAlternatingRowColors (true);
+    m_path_list->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // layout everything
     QDialogButtonBox *button_box = new QDialogButtonBox (Qt::Horizontal);
     button_box->addButton (m_save_button, QDialogButtonBox::ActionRole);
+    button_box->addButton (m_reload_button, QDialogButtonBox::ActionRole);
 
     // add dialog close button
     m_close_button = button_box->addButton (QDialogButtonBox::Close);

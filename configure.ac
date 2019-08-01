@@ -1674,10 +1674,6 @@ if test $check_magick = yes; then
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     LIBS="$save_LIBS"
-
-    AC_CHECK_FUNCS([setlocale], [],
-      [use_magick=no
-       warn_magick="$magick++ requires setlocale function.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])
   ],
   [use_magick=no
    warn_magick="$magick++ library not found.  The imread, imwrite, and imfinfo functions for reading and writing image files will not be fully functional."])

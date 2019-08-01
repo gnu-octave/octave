@@ -403,6 +403,7 @@ namespace octave
     instance = this;
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+    setlocale (LC_ALL, "");
     setlocale (LC_NUMERIC, "C");
     setlocale (LC_TIME, "C");
     sys::env::putenv ("LC_NUMERIC", "C");

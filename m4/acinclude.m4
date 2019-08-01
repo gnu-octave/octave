@@ -1780,9 +1780,6 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     if test -n "$warn_qt_tools"; then
         OCTAVE_CONFIGURE_WARNING([warn_qt_tools])
     fi
-    if test -n "$warn_qt_setlocale"; then
-      OCTAVE_CONFIGURE_WARNING([warn_qt_setlocale])
-    fi
     if test -n "$warn_qt_setvbuf"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_setvbuf])
     fi
@@ -1961,7 +1958,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   warn_qt_libraries=""
   warn_qt_version=""
   warn_qt_tools=""
-  warn_qt_setlocale=""
   warn_qt_setvbuf=""
   warn_qt_lib_fcns=""
   warn_qt_abstract_item_model=""
@@ -2075,12 +2071,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       $as_unset ac_cv_prog_QHELPGENERATOR_QTVER
       $as_unset ac_cv_prog_ac_ct_QHELPGENERATOR_QTVER
     fi
-  fi
-
-  if test $build_qt_gui = yes; then
-    AC_CHECK_FUNCS([setlocale], [],
-      [build_qt_gui=no
-       warn_qt_setlocale="setlocale not found; disabling Qt GUI"])
   fi
 
   if test $build_qt_gui = yes; then

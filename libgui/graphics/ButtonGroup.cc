@@ -39,8 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ButtonGroup.h"
 #include "ToggleButtonControl.h"
 #include "RadioButtonControl.h"
-#include "Backend.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "ov-struct.h"
 
@@ -355,7 +355,7 @@ namespace QtHandles
           graphics_handle h = pp.get_selectedobject ();
           gh_manager::auto_lock lock;
           graphics_object go = gh_manager::get_object (h);
-          Object *selectedObject = Backend::toolkitObject (go);
+          Object *selectedObject = qt_graphics_toolkit::toolkitObject (go);
           ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
           RadioButtonControl *radio = static_cast<RadioButtonControl *>(selectedObject);

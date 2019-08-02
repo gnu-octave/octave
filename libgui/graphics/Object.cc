@@ -27,9 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QVariant>
 
-#include "Backend.h"
 #include "Object.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 namespace QtHandles
 {
@@ -179,7 +179,7 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    Object *parent = Backend::toolkitObject
+    Object *parent = qt_graphics_toolkit::toolkitObject
                      (gh_manager::get_object (go.get_parent ()));
 
     return parent;

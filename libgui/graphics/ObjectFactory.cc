@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "event-manager.h"
 #include "graphics.h"
 
-#include "Backend.h"
 #include "ButtonGroup.h"
 #include "CheckBoxControl.h"
 #include "ContextMenu.h"
@@ -53,11 +52,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "ToggleTool.h"
 #include "ToolBar.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 namespace QtHandles
 {
   void
-  ObjectFactory::createObject (Backend *backend, double handle)
+  ObjectFactory::createObject (qt_graphics_toolkit *qt_gtk, double handle)
   {
     gh_manager::auto_lock lock;
 
@@ -69,7 +69,7 @@ namespace QtHandles
           qWarning ("ObjectFactory::createObject: object is being deleted");
         else
           {
-            ObjectProxy *proxy = Backend::toolkitObjectProxy (go);
+            ObjectProxy *proxy = qt_graphics_toolkit::toolkitObjectProxy (go);
 
             if (proxy)
               {
@@ -131,12 +131,12 @@ namespace QtHandles
 
                     connect (obj,
                              SIGNAL (interpreter_event (const octave::fcn_callback&)),
-                             backend,
+                             qt_gtk,
                              SLOT (interpreter_event (const octave::fcn_callback&)));
 
                     connect (obj,
                              SIGNAL (interpreter_event (const octave::meth_callback&)),
-                             backend,
+                             qt_gtk,
                              SLOT (interpreter_event (const octave::meth_callback&)));
                   }
               }

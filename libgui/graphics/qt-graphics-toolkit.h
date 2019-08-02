@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_Backend_h)
-#define octave_Backend_h 1
+#if ! defined (octave_qt_graphics_toolkit_h)
+#define octave_qt_graphics_toolkit_h 1
 
 #include <QObject>
 
@@ -39,17 +39,15 @@ namespace QtHandles
   class ObjectFactory;
   class ObjectProxy;
 
-  class Backend :
-  public QObject,
-  public base_graphics_toolkit
+  class qt_graphics_toolkit : public QObject, public base_graphics_toolkit
   {
     Q_OBJECT
 
   public:
 
-    Backend (octave::interpreter& interp);
+    qt_graphics_toolkit (octave::interpreter& interp);
 
-    ~Backend (void);
+    ~qt_graphics_toolkit (void);
 
     bool is_valid (void) const { return true; }
 
@@ -77,7 +75,7 @@ namespace QtHandles
     static ObjectProxy * toolkitObjectProxy (const graphics_object& go);
 
   signals:
-    void createObject (Backend *, double handle);
+    void createObject (qt_graphics_toolkit *, double handle);
 
   public slots:
 

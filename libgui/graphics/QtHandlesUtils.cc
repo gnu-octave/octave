@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "graphics.h"
 
-#include "Backend.h"
 #include "Container.h"
 #include "KeyMap.h"
 #include "Object.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "oct-string.h"
 
@@ -208,7 +208,7 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig, QMouseEvent *event)
     {
-      Object *tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = qt_graphics_toolkit::toolkitObject (fig);
 
       if (tkFig)
         {
@@ -229,7 +229,7 @@ namespace QtHandles
     Matrix
     figureCurrentPoint (const graphics_object& fig)
     {
-      Object *tkFig = Backend::toolkitObject (fig);
+      Object *tkFig = qt_graphics_toolkit::toolkitObject (fig);
 
       if (tkFig)
         {

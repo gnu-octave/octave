@@ -108,11 +108,12 @@ namespace QtHandles
 
     // Store the graphics object directly so that it will exist when
     // we need it.  Previously, it was possible for the graphics
-    // backend to get a handle to a figure, then have the interpreter
-    // thread delete the corresponding object before the backend (GUI)
-    // thread had a chance to display it.  It should be OK to store
-    // this object and use it in both threads (graphics_object uses a
-    // std::shared_ptr) provided that we protect access with mutex locks.
+    // toolkit to get a handle to a figure, then have the interpreter
+    // thread delete the corresponding object before the graphics
+    // toolkit (GUI) thread had a chance to display it.  It should be OK
+    // to store this object and use it in both threads (graphics_object
+    // uses a std::shared_ptr) provided that we protect access with
+    // mutex locks.
     graphics_object m_go;
 
     // Handle to the graphics object.  This may be redundant now.

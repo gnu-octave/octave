@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "interpreter.h"
 #include "symtab.h"
 
-#include "Backend.h"
+#include "qt-graphics-toolkit.h"
 #include "QtHandlesUtils.h"
 #include "__init_qt__.h"
 
@@ -65,7 +65,7 @@ namespace QtHandles
 
             octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-            graphics_toolkit tk (new Backend (interp));
+            graphics_toolkit tk (new qt_graphics_toolkit (interp));
             gtk_mgr.load_toolkit (tk);
 
             octave::interpreter::add_atexit_function ("__shutdown_qt__");

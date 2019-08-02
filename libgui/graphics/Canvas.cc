@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWheelEvent>
 #include <QRectF>
 
-#include "Backend.h"
 #include "Canvas.h"
 #include "ContextMenu.h"
 #include "GLCanvas.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "annotation-dialog.h"
 
@@ -533,7 +533,7 @@ namespace QtHandles
             // FIXME: should we use signal/slot mechanism instead of
             //        directly calling parent fig methods
             Figure *fig =
-              dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+              dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
             axes::properties& ap = Utils::properties<axes> (axesObj);
 
             if (fig)
@@ -631,7 +631,7 @@ namespace QtHandles
           Utils::properties<figure> (figObj)
             .set_currentaxes (axesObj.get_handle ().as_octave_value ());
 
-        Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+        Figure *fig = dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
 
         MouseMode newMouseMode = NoMode;
 
@@ -928,7 +928,7 @@ namespace QtHandles
           {
             MouseMode newMouseMode = NoMode;
 
-            Figure *fig = dynamic_cast<Figure *> (Backend::toolkitObject (figObj));
+            Figure *fig = dynamic_cast<Figure *> (qt_graphics_toolkit::toolkitObject (figObj));
 
             if (fig)
               newMouseMode = fig->mouseMode ();

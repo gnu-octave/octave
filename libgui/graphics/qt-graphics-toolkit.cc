@@ -30,12 +30,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFontMetrics>
 #include <QThread>
 
-#include "Backend.h"
 #include "Logger.h"
 #include "Object.h"
 #include "ObjectFactory.h"
 #include "ObjectProxy.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 #include "event-manager.h"
 #include "interpreter.h"
@@ -69,31 +69,31 @@ namespace QtHandles
              || go.isa ("uitoggletool"))
       return "__object__";
     else
-      qCritical ("QtHandles::Backend: no __object__ property known for object "
+      qCritical ("QtHandles::qt_graphics_toolkit: no __object__ property known for object "
                  "of type %s", go.type ().c_str ());
 
     return "";
   }
 
-  Backend::Backend (octave::interpreter& interp)
+  qt_graphics_toolkit::qt_graphics_toolkit (octave::interpreter& interp)
     : QObject (), base_graphics_toolkit ("qt"), m_interpreter (interp),
       m_factory (new ObjectFactory ())
   {
     if (QThread::currentThread () != QApplication::instance ()->thread ())
       m_factory->moveToThread (QApplication::instance ()->thread ());
 
-    connect (this, SIGNAL (createObject (Backend *, double)),
-             m_factory, SLOT (createObject (Backend *, double)),
+    connect (this, SIGNAL (createObject (qt_graphics_toolkit *, double)),
+             m_factory, SLOT (createObject (qt_graphics_toolkit *, double)),
              Qt::BlockingQueuedConnection);
   }
 
-  Backend::~Backend (void)
+  qt_graphics_toolkit::~qt_graphics_toolkit (void)
   {
     delete m_factory;
   }
 
   bool
-  Backend::initialize (const graphics_object& go)
+  qt_graphics_toolkit::initialize (const graphics_object& go)
   {
     if (go.isa ("figure")
         || go.isa ("uicontrol")
@@ -111,7 +111,7 @@ namespace QtHandles
         // re-lock it.
         gh_manager::unlock ();
 
-        Logger::debug ("Backend::initialize %s from thread %08x",
+        Logger::debug ("qt_graphics_toolkit::initialize %s from thread %08x",
                        go.type ().c_str (), QThread::currentThreadId ());
 
         ObjectProxy *proxy = new ObjectProxy ();
@@ -129,7 +129,7 @@ namespace QtHandles
   }
 
   void
-  Backend::update (const graphics_object& go, int pId)
+  qt_graphics_toolkit::update (const graphics_object& go, int pId)
   {
     // Rule out obvious properties we want to ignore.
     if (pId == figure::properties::ID___PLOT_STREAM__
@@ -145,7 +145,7 @@ namespace QtHandles
         || pId == base_properties::ID___MODIFIED__)
       return;
 
-    Logger::debug ("Backend::update %s(%d) from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::update %s(%d) from thread %08x",
                    go.type ().c_str (), pId, QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -167,14 +167,14 @@ namespace QtHandles
   }
 
   void
-  Backend::finalize (const graphics_object& go)
+  qt_graphics_toolkit::finalize (const graphics_object& go)
   {
     // FIXME: We need to unlock the mutex here but we have no way to know if
     // if it was previously locked by this thread, and thus if we should
     // re-lock it.
     gh_manager::unlock ();
 
-    Logger::debug ("Backend::finalize %s from thread %08x",
+    Logger::debug ("qt_graphics_toolkit::finalize %s from thread %08x",
                    go.type ().c_str (), QThread::currentThreadId ());
 
     ObjectProxy *proxy = toolkitObjectProxy (go);
@@ -191,7 +191,7 @@ namespace QtHandles
   }
 
   void
-  Backend::redraw_figure (const graphics_object& go) const
+  qt_graphics_toolkit::redraw_figure (const graphics_object& go) const
   {
     if (go.get_properties ().is_visible ())
       {
@@ -203,7 +203,7 @@ namespace QtHandles
   }
 
   void
-  Backend::show_figure (const graphics_object& go) const
+  qt_graphics_toolkit::show_figure (const graphics_object& go) const
   {
     if (go.get_properties ().is_visible ())
       {
@@ -215,7 +215,7 @@ namespace QtHandles
   }
 
   void
-  Backend::print_figure (const graphics_object& go,
+  qt_graphics_toolkit::print_figure (const graphics_object& go,
                          const std::string& term,
                          const std::string& file_cmd,
                          const std::string& /*debug_file*/) const
@@ -228,7 +228,7 @@ namespace QtHandles
   }
 
   uint8NDArray
-  Backend::get_pixels (const graphics_object& go) const
+  qt_graphics_toolkit::get_pixels (const graphics_object& go) const
   {
     uint8NDArray retval;
 
@@ -244,7 +244,7 @@ namespace QtHandles
   }
 
   Matrix
-  Backend::get_text_extent (const graphics_object& go) const
+  qt_graphics_toolkit::get_text_extent (const graphics_object& go) const
   {
     Matrix ext (1, 4, 0.0);
 
@@ -294,7 +294,7 @@ namespace QtHandles
   }
 
   Object*
-  Backend::toolkitObject (const graphics_object& go)
+  qt_graphics_toolkit::toolkitObject (const graphics_object& go)
   {
     ObjectProxy *proxy = toolkitObjectProxy (go);
 
@@ -305,7 +305,7 @@ namespace QtHandles
   }
 
   ObjectProxy*
-  Backend::toolkitObjectProxy (const graphics_object& go)
+  qt_graphics_toolkit::toolkitObjectProxy (const graphics_object& go)
   {
     if (go)
       {
@@ -322,14 +322,16 @@ namespace QtHandles
     return nullptr;
   }
 
-  void Backend::interpreter_event (const octave::fcn_callback& fcn)
+  void
+  qt_graphics_toolkit::interpreter_event (const octave::fcn_callback& fcn)
   {
     octave::event_manager& evmgr = m_interpreter.get_event_manager ();
 
     evmgr.post_event (fcn);
   }
 
-  void Backend::interpreter_event (const octave::meth_callback& meth)
+  void
+  qt_graphics_toolkit::interpreter_event (const octave::meth_callback& meth)
   {
     octave::event_manager& evmgr = m_interpreter.get_event_manager ();
 

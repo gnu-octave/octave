@@ -3,8 +3,6 @@ if AMCOND_BUILD_QT_GRAPHICS
 LIBOCTGUI_GRAPHICS_LIB = %reldir%/__init_qt__.la
 
 OCTAVE_GUI_GRAPHICS_MOC = \
-  %reldir%/moc-annotation-dialog.cc \
-  %reldir%/moc-Backend.cc \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
   %reldir%/moc-Canvas.cc \
@@ -21,10 +19,12 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-PopupMenuControl.cc \
   %reldir%/moc-PushTool.cc \
   %reldir%/moc-SliderControl.cc \
-  %reldir%/moc-TextEdit.cc \
   %reldir%/moc-Table.cc \
+  %reldir%/moc-TextEdit.cc \
   %reldir%/moc-ToggleTool.cc \
-  %reldir%/moc-ToolBar.cc
+  %reldir%/moc-ToolBar.cc \
+  %reldir%/moc-annotation-dialog.cc \
+  %reldir%/moc-qt-graphics-toolkit.cc
 
 $(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 
@@ -44,9 +44,6 @@ $(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
 BUILT_SOURCES += $(__init_qt___UI_H)
 
 noinst_HEADERS += \
-  %reldir%/__init_qt__.h \
-  %reldir%/annotation-dialog.h \
-  %reldir%/Backend.h \
   %reldir%/BaseControl.h \
   %reldir%/ButtonControl.h \
   %reldir%/ButtonGroup.h \
@@ -57,8 +54,8 @@ noinst_HEADERS += \
   %reldir%/EditControl.h \
   %reldir%/Figure.h \
   %reldir%/FigureWindow.h \
-  %reldir%/GenericEventNotify.h \
   %reldir%/GLCanvas.h \
+  %reldir%/GenericEventNotify.h \
   %reldir%/KeyMap.h \
   %reldir%/ListBoxControl.h \
   %reldir%/Logger.h \
@@ -81,14 +78,14 @@ noinst_HEADERS += \
   %reldir%/ToggleTool.h \
   %reldir%/ToolBar.h \
   %reldir%/ToolBarButton.h \
+  %reldir%/__init_qt__.h \
+  %reldir%/annotation-dialog.h \
   %reldir%/gl-select.h \
   %reldir%/qopengl-functions.h \
+  %reldir%/qt-graphics-toolkit.h \
   $(TEMPLATE_SRC)
 
 %canon_reldir%___init_qt___la_SOURCES = \
-  %reldir%/__init_qt__.cc \
-  %reldir%/annotation-dialog.cc \
-  %reldir%/Backend.cc \
   %reldir%/BaseControl.cc \
   %reldir%/ButtonControl.cc \
   %reldir%/ButtonGroup.cc \
@@ -120,7 +117,10 @@ noinst_HEADERS += \
   %reldir%/ToggleButtonControl.cc \
   %reldir%/ToggleTool.cc \
   %reldir%/ToolBar.cc \
-  %reldir%/gl-select.cc
+  %reldir%/__init_qt__.cc \
+  %reldir%/annotation-dialog.cc \
+  %reldir%/gl-select.cc \
+  %reldir%/qt-graphics-toolkit.cc
 
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc

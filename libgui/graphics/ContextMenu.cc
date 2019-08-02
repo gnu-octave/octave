@@ -26,9 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QMenu>
 
-#include "Backend.h"
 #include "ContextMenu.h"
 #include "QtHandlesUtils.h"
+#include "qt-graphics-toolkit.h"
 
 namespace QtHandles
 {
@@ -122,7 +122,7 @@ namespace QtHandles
         if (go.valid_object ())
           {
             ContextMenu *cMenu =
-              dynamic_cast<ContextMenu *> (Backend::toolkitObject (go));
+              dynamic_cast<ContextMenu *> (qt_graphics_toolkit::toolkitObject (go));
 
             if (cMenu)
               {

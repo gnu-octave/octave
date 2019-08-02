@@ -110,6 +110,11 @@ namespace octave
              main_win (),
              SLOT (set_current_working_directory (const QString&)));
 
+    connect (this,
+             SIGNAL (modify_path_signal (const octave_value_list&, bool, bool)),
+             main_win (),
+             SLOT (modify_path (const octave_value_list&, bool, bool)));
+
     // Create a toolbar
     m_navigation_tool_bar = new QToolBar ("", container);
     m_navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
@@ -817,31 +822,7 @@ namespace octave
       dir_list.append (infos.at (i).absoluteFilePath ().toStdString ());
 
     if (infos.length () > 0)
-      {
-        emit interpreter_event
-          ([dir_list, rm, subdirs, this] (interpreter& interp)
-          {
-            // INTERPRETER THREAD
-
-            octave_value_list paths = ovl ();
-
-            if (subdirs)
-              {
-                // Loop over all directories in order to get all subdirs
-                for (octave_idx_type i = 0; i < dir_list.length (); i++)
-                  paths.append (Fgenpath (dir_list(i)));
-              }
-            else
-              paths = dir_list;
-
-            if (rm)
-              Frmpath (interp, paths);
-            else
-              Faddpath (interp, paths);
-
-            emit path_changed_signal ();
-          });
-      }
+      emit modify_path_signal (dir_list, rm, subdirs);
   }
 
   void files_dock_widget::contextmenu_add_to_path_subdirs (bool)

@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QIcon>
+#include <QMenu>
 #include <QFileInfo>
 #include <QTimer>
 #include <QDirIterator>
@@ -59,6 +60,14 @@ namespace octave
     m_info_label = new QLabel (tr ("All changes take effect immediately."));
 
     m_add_folder_button = new QPushButton (tr ("Add Folder..."));
+
+    QMenu *add_dir_menu = new QMenu ();
+    m_add_folder_button->setMenu (add_dir_menu);
+    add_dir_menu->addAction (tr ("Single Folder"),
+                             this, SLOT (add_dir (void)));
+    add_dir_menu->addAction (tr ("Folder with Subfolders"),
+                             this, SLOT (add_dir_subdirs (void)));
+
     m_move_to_top_button = new QPushButton (tr ("Move to Top"));
     m_move_to_bottom_button = new QPushButton (tr ("Move to Bottom"));
     m_move_up_button = new QPushButton (tr ("Move Up"));
@@ -71,9 +80,6 @@ namespace octave
     m_revert_last_button = new QPushButton (tr ("Revert Last"));
 
     m_save_button->setFocus ();
-
-    connect (m_add_folder_button, SIGNAL (clicked (void)),
-             this, SLOT (add_dir (void)));
 
     connect (m_remove_button, SIGNAL (clicked (void)),
              this, SLOT (rm_dir (void)));
@@ -156,7 +162,7 @@ namespace octave
     m->path_to_model ();
   }
 
-  void set_path_dialog::add_dir(void)
+  void set_path_dialog::add_dir_common (bool subdirs)
   {
     QString dir
       = QFileDialog::getExistingDirectory (this, tr ("Open Directory"),
@@ -166,10 +172,31 @@ namespace octave
 
     if (! dir.isEmpty ())
       {
-        set_path_model *m
-            = static_cast<set_path_model *> (m_path_list->model ());
-        m->add_dir (dir);
+        if (subdirs)
+        {
+          // Use existing method mofifying load path and updating dialog
+          // instead of adding string and updating load path
+          octave_value_list dirlist = ovl ();
+          dirlist.append (dir.toStdString ());
+          emit modify_path_signal (dirlist, false, true);
+        }
+        else
+          {
+            set_path_model *m
+                = static_cast<set_path_model *> (m_path_list->model ());
+            m->add_dir (dir);
+          }
       }
+  }
+
+  void set_path_dialog::add_dir(void)
+  {
+    add_dir_common (false);
+  }
+
+  void set_path_dialog::add_dir_subdirs (void)
+  {
+    add_dir_common (true);
   }
 
   void set_path_dialog::rm_dir (void)

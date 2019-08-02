@@ -490,6 +490,34 @@ namespace octave
        });
   }
 
+  void main_window::modify_path (const octave_value_list& dir_list,
+                                 bool rm, bool subdirs)
+  {
+    emit interpreter_event
+      ([dir_list, rm, subdirs, this] (interpreter& interp)
+      {
+        // INTERPRETER THREAD
+
+        octave_value_list paths = ovl ();
+
+        if (subdirs)
+          {
+            // Loop over all directories in order to get all subdirs
+            for (octave_idx_type i = 0; i < dir_list.length (); i++)
+              paths.append (Fgenpath (dir_list(i)));
+          }
+        else
+          paths = dir_list;
+
+        if (rm)
+          Frmpath (interp, paths);
+        else
+          Faddpath (interp, paths);
+
+        emit path_changed_signal ();
+      });
+  }
+
   void main_window::new_file (const QString& commands)
   {
     emit new_file_signal (commands);
@@ -1631,7 +1659,11 @@ namespace octave
     m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
     m_set_path_dlg->show ();
 
-    connect (m_file_browser_window, SIGNAL (path_changed_signal (void)),
+    connect (m_set_path_dlg,
+             SIGNAL (modify_path_signal (const octave_value_list&, bool, bool)),
+             this, SLOT (modify_path (const octave_value_list&, bool, bool)));
+
+    connect (this, SIGNAL (path_changed_signal (void)),
              m_set_path_dlg, SLOT (update_model (void)));
   }
 

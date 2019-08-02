@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QModelIndex>
 #include <QFileInfo>
 
+#include "ovl.h"
+
 class QLabel;
 class QPushButton;
 class QListView;
@@ -44,13 +46,21 @@ namespace octave
 
     virtual ~set_path_dialog (void);
 
+  signals:
+
+    //! Emitted, when the path has to be modified
+
+    void modify_path_signal (const octave_value_list& dir_list,
+                             bool rm, bool subdirs);
+
   public slots:
 
     void update_model (void);
 
   private slots:
 
-    void add_dir(void);
+    void add_dir (void);
+    void add_dir_subdirs (void);
 
     void rm_dir (void);
 
@@ -63,6 +73,8 @@ namespace octave
     void move_dir_bottom (void);
 
   private:
+
+    void add_dir_common (bool subdirs);
 
     QLabel *m_info_label;
     QPushButton *m_reload_button;

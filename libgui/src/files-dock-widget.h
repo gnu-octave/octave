@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QComboBox>
 #include "octave-dock-widget.h"
+#include "ovl.h"
 
 namespace octave
 {
@@ -170,9 +171,10 @@ namespace octave
 
     void file_renamed_signal (bool);
 
-    //! Emitted, when the load path was changed.
+    //! Emitted, when the path has to be modified
 
-    void path_changed_signal (void);
+    void modify_path_signal (const octave_value_list& dir_list,
+                             bool rm, bool subdirs);
 
   private:
 

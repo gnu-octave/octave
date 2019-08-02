@@ -108,6 +108,8 @@ namespace octave
     void update_breakpoint_marker_signal (bool insert, const QString& file,
                                           int line, const QString& cond);
 
+    void path_changed_signal (void);
+
     void copyClipboard_signal (void);
     void pasteClipboard_signal (void);
     void selectAll_signal (void);
@@ -133,6 +135,7 @@ namespace octave
     void handle_undo_request (void);
     void handle_rename_variable_request (const QString& old_name,
                                          const QString& new_name);
+    void modify_path (const octave_value_list& dir_list, bool rm, bool subdirs);
     void new_file (const QString& commands = QString ());
     void open_file (const QString& file_name = QString (), int line = -1);
     void edit_mfile (const QString&, int);

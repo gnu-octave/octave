@@ -175,8 +175,8 @@ namespace QtHandles
         foreach (const QModelIndex& idx, l)
           value(i++) = idx.row () + 1;
 
-        gh_manager::post_set (m_handle, "value", octave_value (value), false);
-        gh_manager::post_callback (m_handle, "callback");
+        emit gh_set_event (m_handle, "value", octave_value (value), false);
+        emit gh_callback_event (m_handle, "callback");
       }
 
     m_selectionChanged = false;

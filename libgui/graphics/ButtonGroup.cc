@@ -469,8 +469,8 @@ namespace QtHandles
           }
 
         if (oldValue != newValue)
-          gh_manager::post_set (m_handle, "selectedobject", newValue.as_octave_value (),
-                                false);
+          emit gh_set_event (m_handle, "selectedobject",
+                             newValue.as_octave_value (), false);
       }
   }
 
@@ -496,8 +496,8 @@ namespace QtHandles
         eventData.setfield ("Source", bp.get___myhandle__ ().as_octave_value ());
         eventData.setfield ("EventName", "SelectionChanged");
         octave_value selectionChangedEventObject (new octave_struct (eventData));
-        gh_manager::post_callback (m_handle, "selectionchangedfcn",
-                                   selectionChangedEventObject);
+        emit gh_callback_event (m_handle, "selectionchangedfcn",
+                                selectionChangedEventObject);
       }
   }
 

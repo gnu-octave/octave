@@ -93,14 +93,14 @@ namespace QtHandles
   void
   ContextMenu::aboutToShow (void)
   {
-    gh_manager::post_callback (m_handle, "callback");
-    gh_manager::post_set (m_handle, "visible", "on", false);
+    emit gh_callback_event (m_handle, "callback");
+    emit gh_set_event (m_handle, "visible", "on", false);
   }
 
   void
   ContextMenu::aboutToHide (void)
   {
-    gh_manager::post_set (m_handle, "visible", "off", false);
+    emit gh_set_event (m_handle, "visible", "off", false);
   }
 
   QWidget*

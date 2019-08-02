@@ -433,6 +433,56 @@ namespace QtHandles
                              SIGNAL (interpreter_event (const octave::meth_callback&)),
                              this,
                              SLOT (interpreter_event (const octave::meth_callback&)));
+
+                    connect (obj,
+                             SIGNAL (interpreter_event (const octave::meth_callback&)),
+                             this,
+                             SLOT (interpreter_event (const octave::meth_callback&)));
+
+                    connect (obj,
+                             SIGNAL (gh_callback_event (const graphics_handle&,
+                                                        const std::string&)),
+                             this,
+                             SLOT (gh_callback_event (const graphics_handle&,
+                                                      const std::string&)));
+
+                    connect (obj,
+                             SIGNAL (gh_callback_event (const graphics_handle&,
+                                                        const std::string&,
+                                                        const octave_value&)),
+                             this,
+                             SLOT (gh_callback_event (const graphics_handle&,
+                                                      const std::string&,
+                                                      const octave_value&)));
+
+                    connect (obj,
+                             SIGNAL (gh_set_event (const graphics_handle&,
+                                                   const std::string&,
+                                                   const octave_value&)),
+                             this,
+                             SLOT (gh_set_event (const graphics_handle&,
+                                                 const std::string&,
+                                                 const octave_value&)));
+
+                    connect (obj,
+                             SIGNAL (gh_set_event (const graphics_handle&,
+                                                   const std::string&,
+                                                   const octave_value&, bool)),
+                             this,
+                             SLOT (gh_set_event (const graphics_handle&,
+                                                 const std::string&,
+                                                 const octave_value&, bool)));
+
+                    connect (obj,
+                             SIGNAL (gh_set_event (const graphics_handle&,
+                                                   const std::string&,
+                                                   const octave_value&,
+                                                   bool, bool)),
+                             this,
+                             SLOT (gh_set_event (const graphics_handle&,
+                                                 const std::string&,
+                                                 const octave_value&,
+                                                 bool, bool)));
                   }
               }
             else
@@ -445,4 +495,40 @@ namespace QtHandles
                 handle);
   }
 
+  void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
+                                               const std::string& nm)
+  {
+    gh_manager::post_callback (h, nm);
+  }
+
+  void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
+                                               const std::string& nm,
+                                               const octave_value& data)
+  {
+    gh_manager::post_callback (h, nm, data);
+  }
+
+  void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                          const std::string& nm,
+                                          const octave_value& value)
+  {
+    gh_manager::post_set (h, nm, value);
+  }
+
+  void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                          const std::string& nm,
+                                          const octave_value& value,
+                                          bool notify_toolkit)
+  {
+    gh_manager::post_set (h, nm, value, notify_toolkit);
+  }
+
+  void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                          const std::string& nm,
+                                          const octave_value& value,
+                                          bool notify_toolkit,
+                                          bool redraw_figure)
+  {
+    gh_manager::post_set (h, nm, value, notify_toolkit, redraw_figure);
+  }
 };

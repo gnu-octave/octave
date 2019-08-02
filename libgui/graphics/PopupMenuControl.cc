@@ -88,10 +88,9 @@ namespace QtHandles
             }
           else
             {
-              gh_manager::post_set (m_handle, "value",
-                                    octave_value (box->count () > 0
-                                                  ? 1.0 : 0.0),
-                                    false);
+              emit gh_set_event (m_handle, "value",
+                                 octave_value (box->count () > 0 ? 1.0 : 0.0),
+                                 false);
             }
         }
         m_blockUpdate = false;
@@ -134,10 +133,9 @@ namespace QtHandles
   {
     if (! m_blockUpdate)
       {
-        gh_manager::post_set (m_handle, "value",
-                              octave_value (double (index + 1)),
-                              false);
-        gh_manager::post_callback (m_handle, "callback");
+        emit gh_set_event (m_handle, "value", octave_value (double (index + 1)),
+                           false);
+        emit gh_callback_event (m_handle, "callback");
       }
   }
 

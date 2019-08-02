@@ -83,12 +83,9 @@ namespace QtHandles
   void
   ToggleTool::triggered (bool checked)
   {
-    gh_manager::post_set (m_handle, "state", checked, false);
-    gh_manager::post_callback (m_handle,
-                               checked
-                               ? "oncallback"
-                               : "offcallback");
-    gh_manager::post_callback (m_handle, "clickedcallback");
+    emit gh_set_event (m_handle, "state", checked, false);
+    emit gh_callback_event (m_handle, checked ? "oncallback" : "offcallback");
+    emit gh_callback_event (m_handle, "clickedcallback");
   }
 
 };

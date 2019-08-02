@@ -67,6 +67,49 @@ namespace QtHandles
             connect (m_canvas, SIGNAL (interpeter_event (const meth_callback&)),
                      this, SIGNAL (interpeter_event (const meth_callback&)));
 
+            connect (m_canvas,
+                     SIGNAL (gh_callback_event (const graphics_handle&,
+                                                const std::string&)),
+                     this,
+                     SIGNAL (gh_callback_event (const graphics_handle&,
+                                                const std::string&)));
+
+            connect (m_canvas,
+                     SIGNAL (gh_callback_event (const graphics_handle&,
+                                                const std::string&,
+                                                const octave_value&)),
+                     this,
+                     SIGNAL (gh_callback_event (const graphics_handle&,
+                                                const std::string&,
+                                                const octave_value&)));
+
+            connect (m_canvas,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&)),
+                     this,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&)));
+
+            connect (m_canvas,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&, bool)),
+                     this,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&, bool)));
+
+            connect (m_canvas,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&, bool, bool)),
+                     this,
+                     SIGNAL (gh_set_event (const graphics_handle&,
+                                           const std::string&,
+                                           const octave_value&, bool, bool)));
+
             QWidget *canvasWidget = m_canvas->qWidget ();
 
             canvasWidget->lower ();

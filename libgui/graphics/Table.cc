@@ -497,9 +497,8 @@ namespace QtHandles
         eventData.setfield ("Indices", indices);
         octave_value cellSelectionCallbackEventObject =
           octave_value (new octave_struct (eventData));
-        gh_manager::post_callback (m_handle,
-                                   "cellselectioncallback",
-                                   cellSelectionCallbackEventObject);
+        emit gh_callback_event (m_handle, "cellselectioncallback",
+                                cellSelectionCallbackEventObject);
       }
   }
 
@@ -547,9 +546,8 @@ namespace QtHandles
         octave_value cellEditCallbackEventObject =
           octave_value (new octave_struct (eventData));
 
-        gh_manager::post_callback (m_handle,
-                                   "celleditcallback",
-                                   cellEditCallbackEventObject);
+        emit gh_callback_event (m_handle, "celleditcallback",
+                                cellEditCallbackEventObject);
       }
     else if (error.string_value ().length () > 0)
       warning ("%s", error.string_value ().c_str ());
@@ -584,10 +582,8 @@ namespace QtHandles
                 if (edit_data.string_value () != old_data.string_value ())
                   {
                     m_curData = octave_value (cell);
-                    gh_manager::post_set (m_handle,
-                                          "data",
-                                          octave_value (cell),
-                                          false);
+                    emit gh_set_event (m_handle, "data", octave_value (cell),
+                                       false);
                   }
 
                 octave_value error = octave_value ("");
@@ -607,7 +603,8 @@ namespace QtHandles
                             columnformat (col), columneditable (col));
 
                 m_curData = octave_value (cell);
-                gh_manager::post_set (m_handle, "data", octave_value (cell), false);
+                emit gh_set_event (m_handle, "data", octave_value (cell),
+                                   false);
 
                 octave_value error = octave_value ("");
                 sendCellEditCallback (row,
@@ -635,7 +632,7 @@ namespace QtHandles
                         columneditable (col));
 
             m_curData = octave_value (data);
-            gh_manager::post_set (m_handle, "data", data, false);
+            emit gh_set_event (m_handle, "data", data, false);
 
             octave_value error = octave_value ("");
             sendCellEditCallback (row,
@@ -696,8 +693,8 @@ namespace QtHandles
             if (new_value != old_value)
               {
                 m_curData = octave_value (matrix);
-                gh_manager::post_set (m_handle, "data",
-                                      octave_value (matrix), false);
+                emit gh_set_event (m_handle, "data", octave_value (matrix),
+                                   false);
               }
 
             sendCellEditCallback (row, col,
@@ -730,7 +727,8 @@ namespace QtHandles
                 if (new_value != old_value)
                   {
                     m_curData = octave_value (cell);
-                    gh_manager::post_set (m_handle, "data", octave_value (cell), false);
+                    emit gh_set_event (m_handle, "data", octave_value (cell),
+                                       false);
                   }
 
                 sendCellEditCallback (row,
@@ -836,7 +834,7 @@ namespace QtHandles
             new_data = data;
           }
         m_curData = octave_value (new_data);
-        gh_manager::post_set (m_handle, "data", new_data, false);
+        emit gh_set_event (m_handle, "data", new_data, false);
 
         sendCellEditCallback (row,
                               col,
@@ -1361,7 +1359,7 @@ namespace QtHandles
     extent(0, 2) = s.width ();
     extent(0, 3) = s.height () ;
     graphics_object go = object ();
-    gh_manager::post_set (go.get_handle (), "extent", extent, false);
+    emit gh_set_event (go.get_handle (), "extent", extent, false);
   }
 
   void
@@ -1529,22 +1527,22 @@ namespace QtHandles
 
               if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
                     ContextMenu::executeAt (properties (), m->globalPos ());
                 }
               else
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        octave_value ("normal"), false);
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     octave_value ("normal"), false);
                 }
             }
             break;
@@ -1559,9 +1557,9 @@ namespace QtHandles
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
 
-                  gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                        keyData.getfield ("Character"), false);
-                  gh_manager::post_callback (m_handle, "keypressfcn", keyData);
+                  emit gh_set_event (fig.get_handle (), "currentcharacter",
+                                     keyData.getfield ("Character"), false);
+                  emit gh_callback_event (m_handle, "keypressfcn", keyData);
                 }
               int row = m_tableWidget->currentRow ();
               int col = m_tableWidget->currentColumn ();
@@ -1644,10 +1642,9 @@ namespace QtHandles
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
 
-                  gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                        keyData.getfield ("Character"), false);
-                  gh_manager::post_callback (m_handle, "keyreleasefcn",
-                                             keyData);
+                  emit gh_set_event (fig.get_handle (), "currentcharacter",
+                                     keyData.getfield ("Character"), false);
+                  emit gh_callback_event (m_handle, "keyreleasefcn", keyData);
                 }
             }
             break;
@@ -1670,22 +1667,22 @@ namespace QtHandles
 
               if (m->button () != Qt::LeftButton || ! tp.is_enable ())
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
                     ContextMenu::executeAt (tp, m->globalPos ());
                 }
               else
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
 
                   QComboBox *comboBox_0 = qobject_cast<QComboBox *> (watched);
                   for (int row = 0; row < m_tableWidget->rowCount (); row++)

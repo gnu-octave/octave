@@ -217,19 +217,19 @@ namespace QtHandles
           graphics_object fig = go.get_ancestor ("figure");
           if (fig)
             {
-              gh_manager::post_set (fig.get_handle (), "currentobject",
-                                    m_handle.value (), false);
+              emit gh_set_event (fig.get_handle (), "currentobject",
+                                 m_handle.value (), false);
 
               if (m->button () != Qt::LeftButton || ! up.enable_is ("on"))
                 {
-                  gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                        Utils::figureSelectionType (m), false);
-                  gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                        Utils::figureCurrentPoint (fig, m),
-                                        false);
-                  gh_manager::post_callback (fig.get_handle (),
-                                             "windowbuttondownfcn");
-                  gh_manager::post_callback (m_handle, "buttondownfcn");
+                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                                     Utils::figureSelectionType (m), false);
+                  emit gh_set_event (fig.get_handle (), "currentpoint",
+                                     Utils::figureCurrentPoint (fig, m),
+                                     false);
+                  emit gh_callback_event (fig.get_handle (),
+                                          "windowbuttondownfcn");
+                  emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
                     ContextMenu::executeAt (up, m->globalPos ());
@@ -237,12 +237,12 @@ namespace QtHandles
               else
                 {
                   if (up.style_is ("listbox"))
-                    gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                          Utils::figureSelectionType (m),
-                                          false);
+                    emit gh_set_event (fig.get_handle (), "selectiontype",
+                                       Utils::figureSelectionType (m),
+                                       false);
                   else
-                    gh_manager::post_set (fig.get_handle (), "selectiontype",
-                                          octave_value ("normal"), false);
+                    emit gh_set_event (fig.get_handle (), "selectiontype",
+                                       octave_value ("normal"), false);
                 }
             }
         }
@@ -259,10 +259,10 @@ namespace QtHandles
 
             if (fig)
               {
-                gh_manager::post_set (fig.get_handle (), "currentpoint",
-                                      Utils::figureCurrentPoint (fig, m), false);
-                gh_manager::post_callback (fig.get_handle (),
-                                           "windowbuttonmotionfcn");
+                emit gh_set_event (fig.get_handle (), "currentpoint",
+                                   Utils::figureCurrentPoint (fig, m), false);
+                emit gh_callback_event (fig.get_handle (),
+                                        "windowbuttonmotionfcn");
               }
           }
         break;
@@ -276,18 +276,18 @@ namespace QtHandles
               Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
             graphics_object fig = object ().get_ancestor ("figure");
 
-            gh_manager::post_set (fig.get_handle (), "currentcharacter",
-                                  keyData.getfield ("Character"), false);
-            gh_manager::post_callback (m_handle, "keypressfcn", keyData);
+            emit gh_set_event (fig.get_handle (), "currentcharacter",
+                               keyData.getfield ("Character"), false);
+            emit gh_callback_event (m_handle, "keypressfcn", keyData);
           }
         break;
 
       case QEvent::FocusIn:
-        gh_manager::post_set (m_handle, "__focus__", "on", false);
+        emit gh_set_event (m_handle, "__focus__", "on", false);
         break;
 
       case QEvent::FocusOut:
-        gh_manager::post_set (m_handle, "__focus__", "off", false);
+        emit gh_set_event (m_handle, "__focus__", "off", false);
         break;
 
       default:

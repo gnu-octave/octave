@@ -126,8 +126,8 @@ namespace QtHandles
         double newValue = (checked ? up.get_max () : up.get_min ());
 
         if (oldValue.numel () != 1 || (newValue != oldValue(0)))
-          gh_manager::post_set (m_handle, "value", newValue, false);
-        gh_manager::post_callback (m_handle, "callback");
+          emit gh_set_event (m_handle, "value", newValue, false);
+        emit gh_callback_event (m_handle, "callback");
       }
   }
 
@@ -137,7 +137,7 @@ namespace QtHandles
     QAbstractButton *btn = qWidget<QAbstractButton> ();
 
     if (! btn->isCheckable ())
-      gh_manager::post_callback (m_handle, "callback");
+      emit gh_callback_event (m_handle, "callback");
   }
 
 };

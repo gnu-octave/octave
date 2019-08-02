@@ -99,11 +99,24 @@ namespace QtHandles
 
     void create_object (double handle);
 
+    void gh_callback_event (const graphics_handle& h, const std::string& name);
+
+    void gh_callback_event (const graphics_handle& h, const std::string& name,
+                            const octave_value& data);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit,
+                       bool redraw_figure);
   private:
 
     octave::interpreter& m_interpreter;
   };
-
 }
 
 #endif

@@ -147,8 +147,8 @@ namespace QtHandles
               {
                 double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
 
-                gh_manager::post_set (m_handle, "value", octave_value (dval));
-                gh_manager::post_callback (m_handle, "callback");
+                emit gh_set_event (m_handle, "value", octave_value (dval));
+                emit gh_callback_event (m_handle, "callback");
               }
           }
       }

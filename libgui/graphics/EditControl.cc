@@ -228,17 +228,17 @@ namespace QtHandles
     if (m_textChanged)
       {
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toCellString (txt.split ("\n")), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toStdString (txt), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toStdString (txt), false);
 
         m_textChanged = false;
       }
 
     if (txt.length () > 0)
-      gh_manager::post_callback (m_handle, "callback");
+      emit gh_callback_event (m_handle, "callback");
   }
 
   void
@@ -250,12 +250,12 @@ namespace QtHandles
                        ? qWidget<TextEdit> ()->toPlainText ()
                        : qWidget<QLineEdit> ()->text ());
         if (m_multiLine)
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toCellString (txt.split ("\n")), false);
+          emit gh_set_event (m_handle, "string",
+                             Utils::toCellString (txt.split ("\n")), false);
         else
-          gh_manager::post_set (m_handle, "string",
-                                Utils::toStdString (txt), false);
-        gh_manager::post_callback (m_handle, "callback");
+          emit gh_set_event (m_handle, "string", Utils::toStdString (txt),
+                             false);
+        emit gh_callback_event (m_handle, "callback");
 
         m_textChanged = false;
       }

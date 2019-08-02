@@ -286,13 +286,13 @@ namespace QtHandles
 
     if (action->isCheckable ())
       action->setChecked (! action->isChecked ());
-    gh_manager::post_callback (m_handle, "callback");
+    emit gh_callback_event (m_handle, "callback");
   }
 
   void
   Menu::actionHovered (void)
   {
-    gh_manager::post_callback (m_handle, "callback");
+    emit gh_callback_event (m_handle, "callback");
   }
 
   void

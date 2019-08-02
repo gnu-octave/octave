@@ -634,8 +634,8 @@ namespace QtHandles
 
     figure::properties& fp = properties<figure> ();
 
-    gh_manager::post_set (m_handle, prop, fp.bbox2position (bb), false,
-                          prop == "position");
+    emit gh_set_event (m_handle, prop, fp.bbox2position (bb), false,
+                       prop == "position");
   }
 
   bool
@@ -676,7 +676,7 @@ namespace QtHandles
               {
               case QEvent::Close:
                 xevent->ignore ();
-                gh_manager::post_callback (m_handle, "closerequestfcn");
+                emit gh_callback_event (m_handle, "closerequestfcn");
                 return true;
 
               default:

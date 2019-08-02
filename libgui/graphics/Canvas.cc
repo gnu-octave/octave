@@ -194,8 +194,8 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    gh_manager::post_set (fig.get_handle (), "currentpoint",
-                          Utils::figureCurrentPoint (fig, event), false);
+    emit gh_set_event (fig.get_handle (), "currentpoint",
+                       Utils::figureCurrentPoint (fig, event), false);
 
     Matrix children = obj.get_properties ().get_children ();
     octave_idx_type num_children = children.numel ();
@@ -220,8 +220,8 @@ namespace QtHandles
             cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
             cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                  false);
+            emit gh_set_event (childObj.get_handle (), "currentpoint", cp,
+                               false);
           }
       }
   }
@@ -232,8 +232,8 @@ namespace QtHandles
   {
     gh_manager::auto_lock lock;
 
-    gh_manager::post_set (fig.get_handle (), "currentpoint",
-                          Utils::figureCurrentPoint (fig), false);
+    emit gh_set_event (fig.get_handle (), "currentpoint",
+                       Utils::figureCurrentPoint (fig), false);
 
     Matrix children = obj.get_properties ().get_children ();
     octave_idx_type num_children = children.numel ();
@@ -260,8 +260,8 @@ namespace QtHandles
             cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
             cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
 
-            gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
-                                  false);
+            emit gh_set_event (childObj.get_handle (), "currentpoint", cp,
+                               false);
           }
       }
   }
@@ -512,8 +512,8 @@ namespace QtHandles
                 && ! figObj.get ("windowbuttonmotionfcn").isempty ())
               {
                 updateCurrentPoint (figObj, obj, event);
-                gh_manager::post_callback (figObj.get_handle (),
-                                           "windowbuttonmotionfcn");
+                emit gh_callback_event (figObj.get_handle (),
+                                        "windowbuttonmotionfcn");
               }
           }
       }
@@ -653,27 +653,24 @@ namespace QtHandles
                 fprop.set_currentobject (Matrix ());
 
               // Update figure "selectiontype" and "currentpoint"
-              gh_manager::post_set (figObj.get_handle (), "selectiontype",
-                                    Utils::figureSelectionType (event,
-                                                                isdblclick),
-                                    false);
+              emit gh_set_event (figObj.get_handle (), "selectiontype",
+                                 Utils::figureSelectionType (event, isdblclick),
+                                 false);
 
               updateCurrentPoint (figObj, obj, event);
 
-              gh_manager::post_callback (figObj.get_handle (),
-                                         "windowbuttondownfcn",
-                                         button_number (event));
+              emit gh_callback_event (figObj.get_handle (),
+                                      "windowbuttondownfcn",
+                                      button_number (event));
 
               // Execute the "buttondownfcn" of the selected object. If the
               // latter is empty then execute the figure "buttondownfcn"
               if (currentObj && ! currentObj.get ("buttondownfcn").isempty ())
-                gh_manager::post_callback (currentObj.get_handle (),
-                                           "buttondownfcn",
-                                           button_number (event));
+                emit gh_callback_event (currentObj.get_handle (),
+                                        "buttondownfcn", button_number (event));
               else if (figObj && ! figObj.get ("buttondownfcn").isempty ())
-                gh_manager::post_callback (figObj.get_handle (),
-                                           "buttondownfcn",
-                                           button_number (event));
+                emit gh_callback_event (figObj.get_handle (),
+                                        "buttondownfcn", button_number (event));
 
               // Show context menu of the selected object
               if (currentObj && event->button () == Qt::RightButton)
@@ -845,8 +842,7 @@ namespace QtHandles
             graphics_object figObj (obj.get_ancestor ("figure"));
 
             updateCurrentPoint (figObj, obj, event);
-            gh_manager::post_callback (figObj.get_handle (),
-                                       "windowbuttonupfcn");
+            emit gh_callback_event (figObj.get_handle (), "windowbuttonupfcn");
           }
       }
     else if (m_mouseMode == TextMode)
@@ -1005,8 +1001,8 @@ namespace QtHandles
         if (! figObj.get ("windowscrollwheelfcn").isempty ())
           {
             octave_scalar_map eventData = Utils::makeScrollEventStruct (event);
-            gh_manager::post_callback (m_handle, "windowscrollwheelfcn",
-                                       eventData);
+            emit gh_callback_event (m_handle, "windowscrollwheelfcn",
+                                    eventData);
           }
       }
   }
@@ -1027,10 +1023,10 @@ namespace QtHandles
 
             octave_scalar_map eventData = Utils::makeKeyEventStruct (event);
 
-            gh_manager::post_set (figObj.get_handle (), "currentcharacter",
-                                  eventData.getfield ("Character"), false);
-            gh_manager::post_callback (figObj.get_handle (), "keypressfcn",
-                                       eventData);
+            emit gh_set_event (figObj.get_handle (), "currentcharacter",
+                               eventData.getfield ("Character"), false);
+            emit gh_callback_event (figObj.get_handle (), "keypressfcn",
+                                    eventData);
           }
 
         return true;
@@ -1050,8 +1046,8 @@ namespace QtHandles
         if (obj.valid_object ())
           {
             graphics_object figObj (obj.get_ancestor ("figure"));
-            gh_manager::post_callback (figObj.get_handle (), "keyreleasefcn",
-                                       Utils::makeKeyEventStruct (event));
+            emit gh_callback_event (figObj.get_handle (), "keyreleasefcn",
+                                    Utils::makeKeyEventStruct (event));
           }
 
         return true;

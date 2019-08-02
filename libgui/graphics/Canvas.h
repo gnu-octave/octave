@@ -82,6 +82,20 @@ namespace QtHandles
     void interpreter_event (const octave::fcn_callback& fcn);
     void interpreter_event (const octave::meth_callback& meth);
 
+    void gh_callback_event (const graphics_handle& h, const std::string& name);
+
+    void gh_callback_event (const graphics_handle& h, const std::string& name,
+                            const octave_value& data);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit);
+
+    void gh_set_event (const graphics_handle& h, const std::string& name,
+                       const octave_value& value, bool notify_toolkit,
+                       bool redraw_figure);
   protected:
     virtual void draw (const graphics_handle& handle) = 0;
     virtual void drawZoomBox (const QPoint& p1, const QPoint& p2) = 0;

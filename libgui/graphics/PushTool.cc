@@ -70,7 +70,7 @@ namespace QtHandles
   void
   PushTool::clicked (void)
   {
-    gh_manager::post_callback (m_handle, "clickedcallback");
+    emit gh_callback_event (m_handle, "clickedcallback");
   }
 
 };

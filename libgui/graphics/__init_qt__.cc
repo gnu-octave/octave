@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMetaType>
 #include <QPalette>
 #include <QRegExp>
+#include <QThread>
 
 #include "defun-dld.h"
 #include "graphics.h"
@@ -65,7 +66,14 @@ namespace QtHandles
 
             octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-            graphics_toolkit tk (new qt_graphics_toolkit (interp));
+            qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
+
+            if (QThread::currentThread ()
+                != QApplication::instance ()->thread ())
+              qt_gtk->moveToThread (QApplication::instance ()->thread ());
+
+            graphics_toolkit tk (qt_gtk);
+
             gtk_mgr.load_toolkit (tk);
 
             octave::interpreter::add_atexit_function ("__shutdown_qt__");

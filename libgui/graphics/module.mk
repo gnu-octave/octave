@@ -14,7 +14,6 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-ListBoxControl.cc \
   %reldir%/moc-Menu.cc \
   %reldir%/moc-Object.cc \
-  %reldir%/moc-ObjectFactory.cc \
   %reldir%/moc-ObjectProxy.cc \
   %reldir%/moc-PopupMenuControl.cc \
   %reldir%/moc-PushTool.cc \
@@ -62,7 +61,6 @@ noinst_HEADERS += \
   %reldir%/Menu.h \
   %reldir%/MenuContainer.h \
   %reldir%/Object.h \
-  %reldir%/ObjectFactory.h \
   %reldir%/ObjectProxy.h \
   %reldir%/Panel.h \
   %reldir%/PopupMenuControl.h \
@@ -102,7 +100,6 @@ noinst_HEADERS += \
   %reldir%/Logger.cc \
   %reldir%/Menu.cc \
   %reldir%/Object.cc \
-  %reldir%/ObjectFactory.cc \
   %reldir%/ObjectProxy.cc \
   %reldir%/Panel.cc \
   %reldir%/PopupMenuControl.cc \

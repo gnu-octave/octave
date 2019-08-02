@@ -57,6 +57,8 @@ namespace octave
   {
     setWindowTitle (tr ("Set Path"));
 
+    set_path_model *model = new set_path_model (this);
+
     m_info_label = new QLabel (tr ("All changes take effect immediately."));
 
     m_add_folder_button = new QPushButton (tr ("Add Folder..."));
@@ -76,8 +78,15 @@ namespace octave
 
     m_reload_button = new QPushButton (tr ("Reload"));
     m_save_button = new QPushButton (tr ("Save"));
+
     m_revert_button = new QPushButton (tr ("Revert"));
-    m_revert_last_button = new QPushButton (tr ("Revert Last"));
+
+    QMenu *revert_menu = new QMenu ();
+    m_revert_button->setMenu (revert_menu);
+    revert_menu->addAction (tr ("Revert Last Change"),
+                            model, SLOT (revert_last (void)));
+    revert_menu->addAction (tr ("Revert All Changes"),
+                            model, SLOT (revert (void)));
 
     m_save_button->setFocus ();
 
@@ -96,19 +105,11 @@ namespace octave
     connect (m_move_down_button, SIGNAL (clicked (void)),
              this, SLOT (move_dir_down (void)));
 
-    set_path_model *model = new set_path_model (this);
-
     connect (m_reload_button, SIGNAL (clicked (void)),
              model, SLOT (path_to_model (void)));
 
     connect (m_save_button, SIGNAL (clicked (void)),
              model, SLOT (save (void)));
-
-    connect (m_revert_button, SIGNAL (clicked (void)),
-             model, SLOT (revert (void)));
-
-    connect (m_revert_last_button, SIGNAL (clicked (void)),
-             model, SLOT (revert_last (void)));
 
     m_path_list = new QListView (this);
     m_path_list->setWordWrap (false);
@@ -127,7 +128,6 @@ namespace octave
     m_close_button = button_box->addButton (QDialogButtonBox::Close);
     connect (button_box, SIGNAL (rejected (void)), this, SLOT (close (void)));
 
-    button_box->addButton (m_revert_last_button, QDialogButtonBox::ActionRole);
     button_box->addButton (m_revert_button, QDialogButtonBox::ActionRole);
 
     // path edit options

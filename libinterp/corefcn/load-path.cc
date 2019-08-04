@@ -179,6 +179,10 @@ namespace octave
 
     lp.update ();
 
+    // Signal the GUI allowing updating the load path dialog
+    event_manager& evmgr = __get_event_manager__ ("rehash_internal");
+    evmgr.update_path_dialog ();
+
     // FIXME: maybe we should rename this variable since it is being
     // used for more than keeping track of the prompt time.
 

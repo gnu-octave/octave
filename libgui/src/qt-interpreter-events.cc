@@ -412,6 +412,11 @@ namespace octave
     emit change_directory_signal (QString::fromStdString (dir));
   }
 
+  void qt_interpreter_events::update_path_dialog (void)
+  {
+    emit update_path_dialog_signal ();
+  }
+
   void qt_interpreter_events::file_remove (const std::string& old_name,
                                            const std::string& new_name)
   {

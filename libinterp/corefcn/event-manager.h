@@ -84,6 +84,8 @@ namespace octave
 
     virtual ~interpreter_events (void) = default;
 
+    virtual void update_path_dialog (void) {  }
+
     virtual bool confirm_shutdown (void) { return false; }
 
     virtual bool copy_image_to_clipboard (const std::string& /*file*/)
@@ -283,6 +285,12 @@ namespace octave
     // interperter to notify the GUI that some event has occurred
     // (directory or workspace changed, for example) or to request the
     // GUI to perform some action (display a dialog, for example).
+
+    void update_path_dialog (void)
+    {
+      if (octave::application::is_gui_running () && enabled ())
+        instance->update_path_dialog ();
+    }
 
     bool confirm_shutdown (void)
     {

@@ -114,6 +114,8 @@ namespace octave
 
     void change_directory (const std::string& dir);
 
+    void update_path_dialog (void);
+
     void file_remove (const std::string& old_name,
                       const std::string& new_name);
 
@@ -192,6 +194,8 @@ namespace octave
     void edit_file_signal (const QString& file);
 
     void change_directory_signal (const QString& dir);
+
+    void update_path_dialog_signal (void);
 
     void file_remove_signal (const QString& old_name, const QString& new_name);
 

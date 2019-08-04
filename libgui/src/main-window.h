@@ -108,8 +108,6 @@ namespace octave
     void update_breakpoint_marker_signal (bool insert, const QString& file,
                                           int line, const QString& cond);
 
-    void path_changed_signal (void);
-
     void copyClipboard_signal (void);
     void pasteClipboard_signal (void);
     void selectAll_signal (void);

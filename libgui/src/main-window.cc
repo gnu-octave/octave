@@ -513,8 +513,6 @@ namespace octave
           Frmpath (interp, paths);
         else
           Faddpath (interp, paths);
-
-        emit path_changed_signal ();
       });
   }
 
@@ -1663,7 +1661,9 @@ namespace octave
              SIGNAL (modify_path_signal (const octave_value_list&, bool, bool)),
              this, SLOT (modify_path (const octave_value_list&, bool, bool)));
 
-    connect (this, SIGNAL (path_changed_signal (void)),
+    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+    qt_interpreter_events *qt_link = interp_qobj->qt_link ();
+    connect (qt_link, SIGNAL (update_path_dialog_signal (void)),
              m_set_path_dlg, SLOT (update_model (void)));
   }
 

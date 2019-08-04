@@ -46,6 +46,8 @@ namespace octave
 
     virtual ~set_path_dialog (void);
 
+    void save_settings (void);
+
   signals:
 
     //! Emitted, when the path has to be modified
@@ -56,6 +58,10 @@ namespace octave
   public slots:
 
     void update_model (void);
+
+  protected:
+
+    void closeEvent (QCloseEvent *e);
 
   private slots:
 

@@ -68,6 +68,9 @@ const gui_pref global_icon_theme ("use_system_icon_theme", QVariant (true));
 // Style
 const gui_pref global_style ("style", QVariant ("default"));
 
+// Dialog properties
+const gui_pref path_dialog_geometry ("path_dlg_geometry",
+                                     QVariant (QByteArray ()));
 
 // Console preferences
 

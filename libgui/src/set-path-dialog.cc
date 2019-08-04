@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "set-path-dialog.h"
 #include "set-path-model.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -150,6 +151,10 @@ namespace octave
     main_layout->addWidget (button_box,2, 0);
 
     setLayout (main_layout);
+
+    QSettings *settings = resource_manager::get_settings ();
+    restoreGeometry (
+            settings->value(path_dialog_geometry.key).toByteArray());
   }
 
   set_path_dialog::~set_path_dialog (void)
@@ -279,6 +284,19 @@ namespace octave
                         QItemSelectionModel::Select);
 
     m_path_list->scrollTo (m->index (row_count - 1));
+  }
+
+  void set_path_dialog::save_settings ()
+  {
+    QSettings *settings = resource_manager::get_settings ();
+    settings->setValue (path_dialog_geometry.key, saveGeometry ());
+  }
+
+  void set_path_dialog::closeEvent (QCloseEvent *e)
+  {
+    save_settings ();
+
+    QWidget::closeEvent (e);
   }
 
 }

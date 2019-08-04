@@ -928,6 +928,9 @@ namespace octave
     if (m_find_files_dlg)
       m_find_files_dlg->save_settings ();
 
+    if (m_set_path_dlg)
+      m_set_path_dlg->save_settings ();
+
     write_settings ();
   }
 

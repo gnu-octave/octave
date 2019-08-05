@@ -382,6 +382,7 @@ namespace octave
       m_cdef_manager (*this),
       m_gtk_manager (),
       m_event_manager (*this),
+      m_gh_manager (nullptr),
       m_interactive (false),
       m_read_site_files (true),
       m_read_init_files (m_app_context != nullptr),
@@ -401,6 +402,19 @@ namespace octave
         ("only one Octave interpreter may be active");
 
     instance = this;
+
+    // FIXME: we defer creation of the gh_manager object because it
+    // creates a root_figure object that requires the display_info
+    // object, but that is currently only accessible through the global
+    // interpreter object and that is not available until after the
+    // interpreter::instance pointer is set (above).  It would be better
+    // if m_gh_manager could be an object value instead of a pointer and
+    // created as part of the interpreter initialization.  To do that,
+    // we should either make the display_info object independent of the
+    // interpreter object (does it really need to cache any
+    // information?) or defer creation of the root_figure object until
+    // it is actually needed.
+    m_gh_manager = new gh_manager (*this);
 
     // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
     setlocale (LC_ALL, "");

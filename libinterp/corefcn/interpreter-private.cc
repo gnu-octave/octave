@@ -75,6 +75,13 @@ namespace octave
     return interp.get_error_system ();
   }
 
+  gh_manager& __get_gh_manager__ (const std::string& who)
+  {
+    interpreter& interp = __get_interpreter__ (who);
+
+    return interp.get_gh_manager ();
+  }
+
   help_system& __get_help_system__ (const std::string& who)
   {
     interpreter& interp = __get_interpreter__ (who);

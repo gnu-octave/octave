@@ -6196,58 +6196,40 @@ private:
 
 class OCTINTERP_API gh_manager
 {
-protected:
-
-  gh_manager (void);
-
 public:
 
-  static void create_instance (void);
+  gh_manager (octave::interpreter& interp);
 
-  static bool instance_ok (void)
-  {
-    bool retval = true;
+  // FIXME: eventually eliminate these static functions and access
+  // gh_manager object through the interpreter.
 
-    if (! instance)
-      create_instance ();
-
-    if (! instance)
-      error ("unable to create gh_manager!");
-
-    return retval;
-  }
-
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+  static gh_manager& instance (void);
 
   static graphics_handle get_handle (bool integer_figure_handle)
   {
-    return instance_ok ()
-           ? instance->do_get_handle (integer_figure_handle)
-           : graphics_handle ();
+    return instance().do_get_handle (integer_figure_handle);
   }
 
   static void free (const graphics_handle& h, bool from_root = false)
   {
-    if (instance_ok ())
-      instance->do_free (h, from_root);
+    instance().do_free (h, from_root);
   }
 
   static void renumber_figure (const graphics_handle& old_gh,
                                const graphics_handle& new_gh)
   {
-    if (instance_ok ())
-      instance->do_renumber_figure (old_gh, new_gh);
+    instance().do_renumber_figure (old_gh, new_gh);
   }
 
   static graphics_handle lookup (double val)
   {
-    return instance_ok () ? instance->do_lookup (val) : graphics_handle ();
+    return instance().do_lookup (val);
   }
 
   static graphics_handle lookup (const octave_value& val)
   {
-    return val.is_real_scalar ()
-           ? lookup (val.double_value ()) : graphics_handle ();
+    return (val.is_real_scalar ()
+            ? lookup (val.double_value ()) : graphics_handle ());
   }
 
   static graphics_object get_object (double val)
@@ -6257,7 +6239,7 @@ public:
 
   static graphics_object get_object (const graphics_handle& h)
   {
-    return instance_ok () ? instance->do_get_object (h) : graphics_object ();
+    return instance().do_get_object (h);
   }
 
   static graphics_handle
@@ -6267,76 +6249,62 @@ public:
                         bool do_createfcn = true,
                         bool do_notify_toolkit = true)
   {
-    return instance_ok ()
-           ? instance->do_make_graphics_handle (go_name, parent,
-               integer_figure_handle,
-               do_createfcn, do_notify_toolkit)
-           : graphics_handle ();
+    return instance().do_make_graphics_handle (go_name, parent,
+                                               integer_figure_handle,
+                                               do_createfcn,
+                                               do_notify_toolkit);
   }
 
   static graphics_handle make_figure_handle (double val,
                                              bool do_notify_toolkit = true)
   {
-    return instance_ok ()
-           ? instance->do_make_figure_handle (val, do_notify_toolkit)
-           : graphics_handle ();
+    return instance().do_make_figure_handle (val, do_notify_toolkit);
   }
 
   static void push_figure (const graphics_handle& h)
   {
-    if (instance_ok ())
-      instance->do_push_figure (h);
+    instance().do_push_figure (h);
   }
 
   static void pop_figure (const graphics_handle& h)
   {
-    if (instance_ok ())
-      instance->do_pop_figure (h);
+    instance().do_pop_figure (h);
   }
 
   static graphics_handle current_figure (void)
   {
-    return instance_ok ()
-           ? instance->do_current_figure () : graphics_handle ();
+    return instance().do_current_figure ();
   }
 
   static Matrix handle_list (bool show_hidden = false)
   {
-    return instance_ok ()
-           ? instance->do_handle_list (show_hidden) : Matrix ();
+    return instance().do_handle_list (show_hidden);
   }
 
   static void lock (void)
   {
-    if (instance_ok ())
-      instance->do_lock ();
+    instance().do_lock ();
   }
 
   static bool try_lock (void)
   {
-    if (instance_ok ())
-      return instance->do_try_lock ();
-    else
-      return false;
+    return instance().do_try_lock ();
   }
 
   static void unlock (void)
   {
-    if (instance_ok ())
-      instance->do_unlock ();
+    instance().do_unlock ();
   }
 
   static Matrix figure_handle_list (bool show_hidden = false)
   {
-    return instance_ok ()
-           ? instance->do_figure_handle_list (show_hidden) : Matrix ();
+    return instance().do_figure_handle_list (show_hidden);
   }
 
   static void execute_listener (const graphics_handle& h,
                                 const octave_value& l)
   {
-    if (instance_ok ())
-      instance->do_execute_listener (h, l);
+    instance().do_execute_listener (h, l);
   }
 
   static void execute_callback (const graphics_handle& h,
@@ -6362,46 +6330,41 @@ public:
                                 const octave_value& cb,
                                 const octave_value& data = Matrix ())
   {
-    if (instance_ok ())
-      instance->do_execute_callback (h, cb, data);
+    instance().do_execute_callback (h, cb, data);
   }
 
   static void post_callback (const graphics_handle& h,
                              const std::string& name,
                              const octave_value& data = Matrix ())
   {
-    if (instance_ok ())
-      instance->do_post_callback (h, name, data);
+    instance().do_post_callback (h, name, data);
   }
 
   static void post_function (graphics_event::event_fcn fcn, void *data = nullptr)
   {
-    if (instance_ok ())
-      instance->do_post_function (fcn, data);
+    instance().do_post_function (fcn, data);
   }
 
   static void post_set (const graphics_handle& h, const std::string& name,
                         const octave_value& value, bool notify_toolkit = true,
                         bool redraw_figure = false)
   {
-    if (instance_ok ())
-      instance->do_post_set (h, name, value, notify_toolkit, redraw_figure);
+    instance().do_post_set (h, name, value, notify_toolkit, redraw_figure);
   }
 
   static int process_events (void)
   {
-    return (instance_ok () ?  instance->do_process_events () : 0);
+    return instance().do_process_events ();
   }
 
   static int flush_events (void)
   {
-    return (instance_ok () ?  instance->do_process_events (true) : 0);
+    return instance().do_process_events (true);
   }
 
   static void enable_event_processing (bool enable = true)
   {
-    if (instance_ok ())
-      instance->do_enable_event_processing (enable);
+    instance().do_enable_event_processing (enable);
   }
 
   static bool is_handle_visible (const graphics_handle& h)
@@ -6418,8 +6381,7 @@ public:
 
   static void close_all_figures (void)
   {
-    if (instance_ok ())
-      instance->do_close_all_figures ();
+    instance().do_close_all_figures ();
   }
 
 public:
@@ -6427,10 +6389,7 @@ public:
   {
   public:
     auto_lock (bool wait = true)
-      : octave::autolock (instance_ok ()
-                          ? instance->graphics_lock
-                          : octave::mutex (),
-                          wait)
+      : octave::autolock (instance().graphics_lock, wait)
     { }
 
     // No copying!
@@ -6442,8 +6401,6 @@ public:
 
 private:
 
-  static gh_manager *instance;
-
   typedef std::map<graphics_handle, graphics_object>::iterator iterator;
   typedef std::map<graphics_handle, graphics_object>::const_iterator
     const_iterator;
@@ -6453,6 +6410,8 @@ private:
 
   typedef std::list<graphics_handle>::iterator figure_list_iterator;
   typedef std::list<graphics_handle>::const_iterator const_figure_list_iterator;
+
+  octave::interpreter& m_interpreter;
 
   // A map of handles to graphics objects.
   std::map<graphics_handle, graphics_object> handle_map;
@@ -6488,8 +6447,8 @@ private:
 
   graphics_handle do_lookup (double val)
   {
-    iterator p = (octave::math::isnan (val) ? handle_map.end ()
-                                            : handle_map.find (val));
+    iterator p = (octave::math::isnan (val)
+                  ? handle_map.end () : handle_map.find (val));
 
     return (p != handle_map.end ()) ? p->first : graphics_handle ();
   }
@@ -6586,8 +6545,7 @@ private:
 
   static void restore_gcbo (void)
   {
-    if (instance_ok ())
-      instance->do_restore_gcbo ();
+    instance().do_restore_gcbo ();
   }
 
   void do_restore_gcbo (void);

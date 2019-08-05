@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "symtab.h"
 
+class gh_manager;
+
 namespace octave
 {
   class bp_table;
@@ -55,6 +57,8 @@ namespace octave
   extern dynamic_loader& __get_dynamic_loader__ (const std::string& who);
 
   extern error_system& __get_error_system__ (const std::string& who);
+
+  extern gh_manager& __get_gh_manager__ (const std::string& who);
 
   extern help_system& __get_help_system__ (const std::string& who);
 

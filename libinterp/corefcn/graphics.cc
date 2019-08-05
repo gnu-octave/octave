@@ -43,7 +43,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
-#include "singleton-cleanup.h"
 
 #include "builtin-defun-decls.h"
 #include "defun.h"
@@ -2869,8 +2868,6 @@ gh_manager::do_renumber_figure (const graphics_handle& old_gh,
         }
     }
 }
-
-gh_manager *gh_manager::instance = nullptr;
 
 static void
 xset (const graphics_handle& h, const caseless_str& pname,
@@ -11299,8 +11296,8 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
 
 // We use a random value for the handle to avoid issues with plots and
 // scalar values for the first argument.
-gh_manager::gh_manager (void)
-  : handle_map (), handle_free_list (),
+gh_manager::gh_manager (octave::interpreter& interp)
+  : m_interpreter (interp), handle_map (), handle_free_list (),
     next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
     figure_list (), graphics_lock (),  event_queue (),
     callback_objects (), event_processing (0)
@@ -11313,11 +11310,9 @@ gh_manager::gh_manager (void)
   gtk_mgr.default_toolkit ();
 }
 
-void
-gh_manager::create_instance (void)
+gh_manager& gh_manager::instance (void)
 {
-  instance = new gh_manager ();
-  singleton_cleanup_list::add (cleanup_instance);
+  return octave::__get_gh_manager__ ("gh_manager::instance");
 }
 
 graphics_handle

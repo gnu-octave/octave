@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "environment.h"
 #include "error.h"
 #include "event-manager.h"
+#include "graphics.h"
 #include "gtk-manager.h"
 #include "help.h"
 #include "input.h"
@@ -247,6 +248,11 @@ namespace octave
     event_manager& get_event_manager (void)
     {
       return m_event_manager;
+    }
+
+    gh_manager& get_gh_manager (void)
+    {
+      return *m_gh_manager;
     }
 
     void mlock (void);
@@ -464,6 +470,8 @@ namespace octave
     gtk_manager m_gtk_manager;
 
     event_manager m_event_manager;
+
+    gh_manager *m_gh_manager;
 
     // TRUE means this is an interactive interpreter (forced or not).
     bool m_interactive;

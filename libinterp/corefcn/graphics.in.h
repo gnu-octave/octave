@@ -6389,7 +6389,7 @@ public:
   {
   public:
     auto_lock (bool wait = true)
-      : octave::autolock (instance().graphics_lock, wait)
+      : octave::autolock (instance().m_graphics_lock, wait)
     { }
 
     // No copying!
@@ -6414,29 +6414,29 @@ private:
   octave::interpreter& m_interpreter;
 
   // A map of handles to graphics objects.
-  std::map<graphics_handle, graphics_object> handle_map;
+  std::map<graphics_handle, graphics_object> m_handle_map;
 
   // The available graphics handles.
-  std::set<graphics_handle> handle_free_list;
+  std::set<graphics_handle> m_handle_free_list;
 
-  // The next handle available if handle_free_list is empty.
-  double next_handle;
+  // The next handle available if m_handle_free_list is empty.
+  double m_next_handle;
 
   // The allocated figure handles.  Top of the stack is most recently
   // created.
-  std::list<graphics_handle> figure_list;
+  std::list<graphics_handle> m_figure_list;
 
   // The lock for accessing the graphics sytsem.
-  octave::mutex graphics_lock;
+  octave::mutex m_graphics_lock;
 
   // The list of events queued by graphics toolkits.
-  std::list<graphics_event> event_queue;
+  std::list<graphics_event> m_event_queue;
 
   // The stack of callback objects.
-  std::list<graphics_object> callback_objects;
+  std::list<graphics_object> m_callback_objects;
 
   // A flag telling whether event processing must be constantly on.
-  int event_processing;
+  int m_event_processing;
 
   graphics_handle do_get_handle (bool integer_figure_handle);
 
@@ -6448,16 +6448,16 @@ private:
   graphics_handle do_lookup (double val)
   {
     iterator p = (octave::math::isnan (val)
-                  ? handle_map.end () : handle_map.find (val));
+                  ? m_handle_map.end () : m_handle_map.find (val));
 
-    return (p != handle_map.end ()) ? p->first : graphics_handle ();
+    return (p != m_handle_map.end ()) ? p->first : graphics_handle ();
   }
 
   graphics_object do_get_object (const graphics_handle& h)
   {
-    iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
+    iterator p = (h.ok () ? m_handle_map.find (h) : m_handle_map.end ());
 
-    return (p != handle_map.end ()) ? p->second : graphics_object ();
+    return (p != m_handle_map.end ()) ? p->second : graphics_object ();
   }
 
   graphics_handle do_make_graphics_handle (const std::string& go_name,
@@ -6470,10 +6470,10 @@ private:
 
   Matrix do_handle_list (bool show_hidden)
   {
-    Matrix retval (1, handle_map.size ());
+    Matrix retval (1, m_handle_map.size ());
 
     octave_idx_type i = 0;
-    for (const auto& h_iter : handle_map)
+    for (const auto& h_iter : m_handle_map)
       {
         graphics_handle h = h_iter.first;
 
@@ -6488,10 +6488,10 @@ private:
 
   Matrix do_figure_handle_list (bool show_hidden)
   {
-    Matrix retval (1, figure_list.size ());
+    Matrix retval (1, m_figure_list.size ());
 
     octave_idx_type i = 0;
-    for (const auto& hfig : figure_list)
+    for (const auto& hfig : m_figure_list)
       {
         if (show_hidden || is_handle_visible (hfig))
           retval(i++) = hfig.value ();
@@ -6510,7 +6510,7 @@ private:
   {
     graphics_handle retval;
 
-    for (const auto& hfig : figure_list)
+    for (const auto& hfig : m_figure_list)
       {
         if (is_handle_visible (hfig))
           retval = hfig;
@@ -6519,11 +6519,11 @@ private:
     return retval;
   }
 
-  void do_lock (void) { graphics_lock.lock (); }
+  void do_lock (void) { m_graphics_lock.lock (); }
 
-  bool do_try_lock (void) { return graphics_lock.try_lock (); }
+  bool do_try_lock (void) { return m_graphics_lock.try_lock (); }
 
-  void do_unlock (void) { graphics_lock.unlock (); }
+  void do_unlock (void) { m_graphics_lock.unlock (); }
 
   void do_execute_listener (const graphics_handle& h, const octave_value& l);
 

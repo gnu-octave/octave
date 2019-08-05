@@ -2742,7 +2742,7 @@ gh_manager::do_get_handle (bool integer_figure_handle)
 
       retval = 1;
 
-      while (handle_map.find (retval) != handle_map.end ())
+      while (m_handle_map.find (retval) != m_handle_map.end ())
         retval++;
     }
   else
@@ -2751,18 +2751,18 @@ gh_manager::do_get_handle (bool integer_figure_handle)
       // fractional part.  To avoid running out of integers, we recycle the
       // integer part but tack on a new random part each time.
 
-      auto p = handle_free_list.begin ();
+      auto p = m_handle_free_list.begin ();
 
-      if (p != handle_free_list.end ())
+      if (p != m_handle_free_list.end ())
         {
           retval = *p;
-          handle_free_list.erase (p);
+          m_handle_free_list.erase (p);
         }
       else
         {
-          retval = graphics_handle (next_handle);
+          retval = graphics_handle (m_next_handle);
 
-          next_handle = std::ceil (next_handle) - 1.0 - make_handle_fraction ();
+          m_next_handle = std::ceil (m_next_handle) - 1.0 - make_handle_fraction ();
         }
     }
 
@@ -2785,9 +2785,9 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
       if (h.value () == 0)
         error ("graphics_handle::free: can't delete root object");
 
-      auto p = handle_map.find (h);
+      auto p = m_handle_map.find (h);
 
-      if (p == handle_map.end ())
+      if (p == m_handle_map.end ())
         error ("graphics_handle::free: invalid object %g", h.value ());
 
       base_properties& bp = p->second.get_properties ();
@@ -2832,10 +2832,10 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
       // running out of integers, we recycle the integer part
       // but tack on a new random part each time.
 
-      handle_map.erase (p);
+      m_handle_map.erase (p);
 
       if (h.value () < 0)
-        handle_free_list.insert
+        m_handle_free_list.insert
           (std::ceil (h.value ()) - make_handle_fraction ());
     }
 }
@@ -2844,22 +2844,22 @@ void
 gh_manager::do_renumber_figure (const graphics_handle& old_gh,
                                 const graphics_handle& new_gh)
 {
-  auto p = handle_map.find (old_gh);
+  auto p = m_handle_map.find (old_gh);
 
-  if (p == handle_map.end ())
+  if (p == m_handle_map.end ())
     error ("graphics_handle::free: invalid object %g", old_gh.value ());
 
   graphics_object go = p->second;
 
-  handle_map.erase (p);
+  m_handle_map.erase (p);
 
-  handle_map[new_gh] = go;
+  m_handle_map[new_gh] = go;
 
   if (old_gh.value () < 0)
-    handle_free_list.insert (std::ceil (old_gh.value ())
+    m_handle_free_list.insert (std::ceil (old_gh.value ())
                              - make_handle_fraction ());
 
-  for (auto& hfig : figure_list)
+  for (auto& hfig : m_figure_list)
     {
       if (hfig == old_gh)
         {
@@ -3010,9 +3010,9 @@ gh_manager::do_close_all_figures (void)
 {
   // FIXME: should we process or discard pending events?
 
-  event_queue.clear ();
+  m_event_queue.clear ();
 
-  // Don't use figure_list_iterator because we'll be removing elements
+  // Don't use m_figure_list_iterator because we'll be removing elements
   // from the list elsewhere.
 
   Matrix hlist = do_figure_handle_list (true);
@@ -3046,7 +3046,7 @@ gh_manager::do_close_all_figures (void)
 
   // Clear all callback objects from our list.
 
-  callback_objects.clear ();
+  m_callback_objects.clear ();
 }
 
 static void
@@ -11297,12 +11297,12 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
 // We use a random value for the handle to avoid issues with plots and
 // scalar values for the first argument.
 gh_manager::gh_manager (octave::interpreter& interp)
-  : m_interpreter (interp), handle_map (), handle_free_list (),
-    next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
-    figure_list (), graphics_lock (),  event_queue (),
-    callback_objects (), event_processing (0)
+  : m_interpreter (interp), m_handle_map (), m_handle_free_list (),
+    m_next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
+    m_figure_list (), m_graphics_lock (),  m_event_queue (),
+    m_callback_objects (), m_event_processing (0)
 {
-  handle_map[0] = graphics_object (new root_figure ());
+  m_handle_map[0] = graphics_object (new root_figure ());
 
   octave::gtk_manager& gtk_mgr = octave::__get_gtk_manager__ ("gh_manager");
 
@@ -11332,7 +11332,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 
   graphics_object go (bgo);
 
-  handle_map[h] = go;
+  m_handle_map[h] = go;
 
   // Overriding defaults will work now because the handle is valid
   // and we can find parent objects (not just handles).
@@ -11380,7 +11380,7 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
   base_graphics_object *bgo = new figure (h, 0);
   graphics_object go (bgo);
 
-  handle_map[h] = go;
+  m_handle_map[h] = go;
 
   // Notify graphics toolkit.
   if (do_notify_toolkit)
@@ -11396,17 +11396,17 @@ gh_manager::do_push_figure (const graphics_handle& h)
 {
   do_pop_figure (h);
 
-  figure_list.push_front (h);
+  m_figure_list.push_front (h);
 }
 
 void
 gh_manager::do_pop_figure (const graphics_handle& h)
 {
-  for (auto it = figure_list.begin (); it != figure_list.end (); it++)
+  for (auto it = m_figure_list.begin (); it != m_figure_list.end (); it++)
     {
       if (*it == h)
         {
-          figure_list.erase (it);
+          m_figure_list.erase (it);
           break;
         }
     }
@@ -11643,10 +11643,10 @@ gh_manager::do_restore_gcbo (void)
 {
   gh_manager::auto_lock guard;
 
-  callback_objects.pop_front ();
+  m_callback_objects.pop_front ();
 
-  xset_gcbo (callback_objects.empty ()
-             ? graphics_handle () : callback_objects.front ().get_handle ());
+  xset_gcbo (m_callback_objects.empty ()
+             ? graphics_handle () : m_callback_objects.front ().get_handle ());
 }
 
 void
@@ -11689,7 +11689,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           // FIXME: Is the lock necessary when we're only calling a
           //        const "get" method?
           gh_manager::auto_lock guard;
-          callback_objects.push_front (go);
+          m_callback_objects.push_front (go);
           xset_gcbo (h);
         }
 
@@ -11785,7 +11785,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 void
 gh_manager::do_post_event (const graphics_event& e)
 {
-  event_queue.push_back (e);
+  m_event_queue.push_back (e);
 
   octave::command_editor::add_event_hook (gh_manager::process_events);
 }
@@ -11860,38 +11860,38 @@ gh_manager::do_process_events (bool force)
       {
         gh_manager::auto_lock guard;
 
-        if (! event_queue.empty ())
+        if (! m_event_queue.empty ())
           {
-            if (callback_objects.empty () || force)
+            if (m_callback_objects.empty () || force)
               {
-                e = event_queue.front ();
+                e = m_event_queue.front ();
 
-                event_queue.pop_front ();
+                m_event_queue.pop_front ();
               }
             else
               {
-                const graphics_object& go = callback_objects.front ();
+                const graphics_object& go = m_callback_objects.front ();
 
                 if (go.get_properties ().is_interruptible ())
                   {
-                    e = event_queue.front ();
+                    e = m_event_queue.front ();
 
-                    event_queue.pop_front ();
+                    m_event_queue.pop_front ();
                   }
                 else
                   {
-                    std::list<graphics_event>::iterator p = event_queue.begin ();
+                    std::list<graphics_event>::iterator p = m_event_queue.begin ();
 
-                    while (p != event_queue.end ())
+                    while (p != m_event_queue.end ())
                       if (p->get_busyaction () == base_graphics_event::CANCEL)
                         {
-                          p = event_queue.erase (p);
+                          p = m_event_queue.erase (p);
                         }
                       else if (p->get_busyaction ()
                                == base_graphics_event::INTERRUPT)
                         {
                           e = (*p);
-                          event_queue.erase (p);
+                          m_event_queue.erase (p);
                           break;
                         }
                       else
@@ -11912,7 +11912,7 @@ gh_manager::do_process_events (bool force)
   {
     gh_manager::auto_lock guard;
 
-    if (event_queue.empty () && event_processing == 0)
+    if (m_event_queue.empty () && m_event_processing == 0)
       octave::command_editor::remove_event_hook (gh_manager::process_events);
   }
 
@@ -11991,15 +11991,15 @@ gh_manager::do_enable_event_processing (bool enable)
 
   if (enable)
     {
-      event_processing++;
+      m_event_processing++;
 
       octave::command_editor::add_event_hook (gh_manager::process_events);
     }
   else
     {
-      event_processing--;
+      m_event_processing--;
 
-      if (event_queue.empty () && event_processing == 0)
+      if (m_event_queue.empty () && m_event_processing == 0)
         octave::command_editor::remove_event_hook (gh_manager::process_events);
     }
 }

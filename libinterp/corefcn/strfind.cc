@@ -151,6 +151,7 @@ DEFUN (strfind, args, ,
 @deftypefn  {} {@var{idx} =} strfind (@var{str}, @var{pattern})
 @deftypefnx {} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})
 @deftypefnx {} {@var{idx} =} strfind (@dots{}, "overlaps", @var{val})
+@deftypefnx {} {@var{idx} =} strfind (@dots{}, "forcecelloutput", @var{val})
 Search for @var{pattern} in the string @var{str} and return the starting
 index of every such occurrence in the vector @var{idx}.
 
@@ -164,6 +165,9 @@ occurrences of the complete pattern (false).  The default is true.
 
 If a cell array of strings @var{cellstr} is specified then @var{idx} is a
 cell array of vectors, as specified above.
+
+The optional argument @qcode{"forcecelloutput"} forces @var{idx} to be
+returned as a cell array of vectors.  The default is false.
 
 Examples:
 
@@ -185,6 +189,14 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
           [1,2] = [](1x0)
           [1,3] = [](1x0)
         @}
+
+strfind ("abababa", "aba", "forcecelloutput", true)
+     @result{}
+        @{
+          [1,1] =
+
+             1   3   5
+        @}
 @end group
 @end example
 @seealso{regexp, regexpi, find}
@@ -196,15 +208,19 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
     print_usage ();
 
   bool overlaps = true;
+  bool forcecelloutput = false;
   if (nargin == 4)
     {
       if (! args(2).is_string () || ! args(3).is_scalar_type ())
         error ("strfind: invalid optional arguments");
 
       std::string opt = args(2).string_value ();
+      std::transform (opt.begin (), opt.end (), opt.begin (), tolower);
 
       if (opt == "overlaps")
         overlaps = args(3).bool_value ();
+      else if (opt == "forcecelloutput")
+        forcecelloutput = args(3).bool_value ();
       else
         error ("strfind: unknown option: %s", opt.c_str ());
     }
@@ -221,14 +237,18 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
       qs_preprocess (needle, table);
 
       if (argstr.is_string ())
-        if (argpat.isempty ())
-          // Return a null matrix for null pattern for MW compatibility
-          retval = Matrix ();
-        else
-          retval = octave_value (qs_search (needle,
-                                            argstr.char_array_value (),
-                                            table, overlaps),
-                                 true, true);
+        {
+          if (argpat.isempty ())
+            // Return a null matrix for null pattern for MW compatibility
+            retval = Matrix ();
+          else
+            retval = octave_value (qs_search (needle,
+                                              argstr.char_array_value (),
+                                              table, overlaps),
+                                   true, true);
+          if (forcecelloutput)
+            retval = Cell (retval);
+        }
       else if (argstr.iscell ())
         {
           const Cell argsc = argstr.cell_value ();
@@ -266,7 +286,11 @@ strfind (@{"abababa", "bebebe", "ab"@}, "aba")
 /*
 %!assert (strfind ("abababa", "aba"), [1, 3, 5])
 %!assert (strfind ("abababa", "aba", "overlaps", false), [1, 5])
+%!assert (strfind ("abababa", "aba", "forcecelloutput", false), [1, 3, 5])
+%!assert (strfind ("abababa", "aba", "forcecelloutput", true), {[1, 3, 5]})
 %!assert (strfind ({"abababa", "bla", "bla"}, "a"), {[1, 3, 5, 7], 3, 3})
+%!assert (strfind ({"abababa", "bla", "bla"}, "a", "forcecelloutput", false), {[1, 3, 5, 7], 3, 3})
+%!assert (strfind ({"abababa", "bla", "bla"}, "a", "forcecelloutput", true), {[1, 3, 5, 7], 3, 3})
 %!assert (strfind ("Linux _is_ user-friendly. It just isn't ignorant-friendly or idiot-friendly.", "friendly"), [17, 50, 68])
 %!assert (strfind ("abc", ""), [])
 %!assert (strfind ("abc", {"", "b", ""}), {[], 2, []})

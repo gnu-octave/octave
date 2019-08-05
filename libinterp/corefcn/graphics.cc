@@ -1241,7 +1241,7 @@ base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
 
       // run listeners
       if (do_run)
-        run_listeners (POSTSET);
+        run_listeners (GCB_POSTSET);
 
       return true;
     }
@@ -4190,7 +4190,7 @@ figure::properties::set_position (const octave_value& v,
 
   if (modified)
     {
-      position.run_listeners (POSTSET);
+      position.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
 
@@ -6981,7 +6981,7 @@ axes::properties::set_xticklabel (const octave_value& val)
   if (xticklabel.set (convert_ticklabel_string (val), false))
     {
       set_xticklabelmode ("manual");
-      xticklabel.run_listeners (POSTSET);
+      xticklabel.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
   else
@@ -6996,7 +6996,7 @@ axes::properties::set_yticklabel (const octave_value& val)
   if (yticklabel.set (convert_ticklabel_string (val), false))
     {
       set_yticklabelmode ("manual");
-      yticklabel.run_listeners (POSTSET);
+      yticklabel.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
   else
@@ -7011,7 +7011,7 @@ axes::properties::set_zticklabel (const octave_value& val)
   if (zticklabel.set (convert_ticklabel_string (val), false))
     {
       set_zticklabelmode ("manual");
-      zticklabel.run_listeners (POSTSET);
+      zticklabel.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
   else
@@ -10750,7 +10750,7 @@ uibuttongroup::properties::set_position (const octave_value& v)
 
   if (modified)
     {
-      position.run_listeners (POSTSET);
+      position.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
 }
@@ -10951,7 +10951,7 @@ uipanel::properties::set_position (const octave_value& v)
 
   if (modified)
     {
-      position.run_listeners (POSTSET);
+      position.run_listeners (GCB_POSTSET);
       mark_modified ();
     }
 }
@@ -13400,13 +13400,13 @@ addlistener (gcf, "position", @{@@my_listener, "my string"@})
 
   graphics_object go = gh_manager::get_object (gh);
 
-  go.add_property_listener (pname, args(2), POSTSET);
+  go.add_property_listener (pname, args(2), GCB_POSTSET);
 
   if (args.length () == 4)
     {
       caseless_str persistent = args(3).string_value ();
       if (persistent.compare ("persistent"))
-        go.add_property_listener (pname, args(2), PERSISTENT);
+        go.add_property_listener (pname, args(2), GCB_PERSISTENT);
     }
 
   return ovl ();
@@ -13458,19 +13458,19 @@ dellistener (gcf, "position", c);
   graphics_object go = gh_manager::get_object (gh);
 
   if (args.length () == 2)
-    go.delete_property_listener (pname, octave_value (), POSTSET);
+    go.delete_property_listener (pname, octave_value (), GCB_POSTSET);
   else
     {
       if (args(2).is_string ()
           && args(2).string_value () == "persistent")
         {
           go.delete_property_listener (pname, octave_value (),
-                                       PERSISTENT);
+                                       GCB_PERSISTENT);
           go.delete_property_listener (pname, octave_value (),
-                                       POSTSET);
+                                       GCB_POSTSET);
         }
       else
-        go.delete_property_listener (pname, args(2), POSTSET);
+        go.delete_property_listener (pname, args(2), GCB_POSTSET);
     }
 
   return ovl ();
@@ -13633,7 +13633,7 @@ cleanup_waitfor_id (uint32_t id)
 
 static void
 do_cleanup_waitfor_listener (const octave_value& listener,
-                             listener_mode mode = POSTSET)
+                             listener_mode mode = GCB_POSTSET)
 {
   Cell c = listener.cell_value ();
 
@@ -13655,9 +13655,9 @@ do_cleanup_waitfor_listener (const octave_value& listener,
             {
               go.get_properties ().delete_listener (pname, listener, mode);
 
-              if (mode == POSTSET)
+              if (mode == GCB_POSTSET)
                 go.get_properties ().delete_listener (pname, listener,
-                                                      PERSISTENT);
+                                                      GCB_PERSISTENT);
             }
         }
     }
@@ -13665,11 +13665,11 @@ do_cleanup_waitfor_listener (const octave_value& listener,
 
 static void
 cleanup_waitfor_postset_listener (const octave_value& listener)
-{ do_cleanup_waitfor_listener (listener, POSTSET); }
+{ do_cleanup_waitfor_listener (listener, GCB_POSTSET); }
 
 static void
 cleanup_waitfor_predelete_listener (const octave_value& listener)
-{ do_cleanup_waitfor_listener (listener, PREDELETE); }
+{ do_cleanup_waitfor_listener (listener, GCB_PREDELETE); }
 
 DECLARE_STATIC_FUNX (waitfor_listener, args, )
 {
@@ -13848,8 +13848,8 @@ In all cases, typing CTRL-C stops program execution immediately.
                 {
 
                   frame.add_fcn (cleanup_waitfor_postset_listener, ov_listener);
-                  go.add_property_listener (pname, ov_listener, POSTSET);
-                  go.add_property_listener (pname, ov_listener, PERSISTENT);
+                  go.add_property_listener (pname, ov_listener, GCB_POSTSET);
+                  go.add_property_listener (pname, ov_listener, GCB_PERSISTENT);
 
                   if (go.get_properties ().has_dynamic_property (pname))
                     {
@@ -13873,7 +13873,7 @@ In all cases, typing CTRL-C stops program execution immediately.
                       frame.add_fcn (cleanup_waitfor_predelete_listener,
                                      ov_del_listener);
                       go.add_property_listener (pname, ov_del_listener,
-                                                PREDELETE);
+                                                GCB_PREDELETE);
                     }
                 }
             }

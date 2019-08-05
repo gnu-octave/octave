@@ -266,7 +266,12 @@ private:
 
 class property;
 
-enum listener_mode { POSTSET, PERSISTENT, PREDELETE };
+// FIXME: These values should probably be defined inside a namespace or
+// class, but which one is most appropriate?  For now, prefix with
+// "GCB_" to avoid conflict with PERSISTENT token ID used in the lexer.
+// The lexer token IDs should probably also be fixed...
+
+enum listener_mode { GCB_POSTSET, GCB_PERSISTENT, GCB_PREDELETE };
 
 class base_property
 {
@@ -335,14 +340,14 @@ public:
     return *this;
   }
 
-  void add_listener (const octave_value& v, listener_mode mode = POSTSET)
+  void add_listener (const octave_value& v, listener_mode mode = GCB_POSTSET)
   {
     octave_value_list& l = listeners[mode];
     l.resize (l.length () + 1, v);
   }
 
   void delete_listener (const octave_value& v = octave_value (),
-                        listener_mode mode = POSTSET)
+                        listener_mode mode = GCB_POSTSET)
   {
     octave_value_list& l = listeners[mode];
 
@@ -369,12 +374,12 @@ public:
       }
     else
       {
-        if (mode == PERSISTENT)
+        if (mode == GCB_PERSISTENT)
           l.resize (0);
         else
           {
             octave_value_list lnew (0);
-            octave_value_list& lp = listeners[PERSISTENT];
+            octave_value_list& lp = listeners[GCB_PERSISTENT];
             for (int i = l.length () - 1; i >= 0 ; i--)
               {
                 for (int j = 0; j < lp.length (); j++)
@@ -392,7 +397,7 @@ public:
 
   }
 
-  OCTINTERP_API void run_listeners (listener_mode mode = POSTSET);
+  OCTINTERP_API void run_listeners (listener_mode mode = GCB_POSTSET);
 
   virtual base_property * clone (void) const
   { return new base_property (*this); }
@@ -2018,14 +2023,14 @@ public:
     return *this;
   }
 
-  void add_listener (const octave_value& v, listener_mode mode = POSTSET)
+  void add_listener (const octave_value& v, listener_mode mode = GCB_POSTSET)
   { rep->add_listener (v, mode); }
 
   void delete_listener (const octave_value& v = octave_value (),
-                        listener_mode mode = POSTSET)
+                        listener_mode mode = GCB_POSTSET)
   { rep->delete_listener (v, mode); }
 
-  void run_listeners (listener_mode mode = POSTSET)
+  void run_listeners (listener_mode mode = GCB_POSTSET)
   { rep->run_listeners (mode); }
 
   OCTINTERP_API static
@@ -2262,10 +2267,10 @@ public:
   virtual void update_autopos (const std::string& elem_type);
 
   virtual void add_listener (const caseless_str&, const octave_value&,
-                             listener_mode = POSTSET);
+                             listener_mode = GCB_POSTSET);
 
   virtual void delete_listener (const caseless_str&, const octave_value&,
-                                listener_mode = POSTSET);
+                                listener_mode = GCB_POSTSET);
 
   void set_tag (const octave_value& val) { tag = val; }
 
@@ -2618,7 +2623,7 @@ public:
 
   virtual void add_property_listener (const std::string& nm,
                                       const octave_value& v,
-                                      listener_mode mode = POSTSET)
+                                      listener_mode mode = GCB_POSTSET)
   {
     if (valid_object ())
       get_properties ().add_listener (nm, v, mode);
@@ -2626,7 +2631,7 @@ public:
 
   virtual void delete_property_listener (const std::string& nm,
                                          const octave_value& v,
-                                         listener_mode mode = POSTSET)
+                                         listener_mode mode = GCB_POSTSET)
   {
     if (valid_object ())
       get_properties ().delete_listener (nm, v, mode);
@@ -2858,11 +2863,11 @@ public:
   graphics_toolkit get_toolkit (void) const { return rep->get_toolkit (); }
 
   void add_property_listener (const std::string& nm, const octave_value& v,
-                              listener_mode mode = POSTSET)
+                              listener_mode mode = GCB_POSTSET)
   { rep->add_property_listener (nm, v, mode); }
 
   void delete_property_listener (const std::string& nm, const octave_value& v,
-                                 listener_mode mode = POSTSET)
+                                 listener_mode mode = GCB_POSTSET)
   { rep->delete_property_listener (nm, v, mode); }
 
   void remove_all_listeners (void) { rep->remove_all_listeners (); }
@@ -4048,7 +4053,7 @@ public:
 
     void update___colormap__ (void)
     {
-      colormap.run_listeners (POSTSET);
+      colormap.run_listeners (GCB_POSTSET);
     }
 
     octave_value get_colormap (void) const;
@@ -4330,7 +4335,7 @@ public:
         {
           set_positionmode ("manual");
           update_position ();
-          position.run_listeners (POSTSET);
+          position.run_listeners (GCB_POSTSET);
           mark_modified ();
         }
       else

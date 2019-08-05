@@ -397,7 +397,7 @@ function emit_declarations ()
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (has_builtin_listeners)
-          printf ("        %s.run_listeners (POSTSET);\n", name[i]);
+          printf ("        %s.run_listeners (GCB_POSTSET);\n", name[i]);
         if (! mutable[i])
           printf ("        mark_modified ();\n");
         printf ("      }\n");

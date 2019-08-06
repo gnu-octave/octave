@@ -2617,7 +2617,8 @@ Array<T>::diag (octave_idx_type m, octave_idx_type n) const
 
   Array<T> retval (dim_vector (m, n), resize_fill_value ());
 
-  for (octave_idx_type i = 0; i < numel (); i++)
+  octave_idx_type nel = std::min (numel (), std::min (m, n));
+  for (octave_idx_type i = 0; i < nel; i++)
     retval.xelem (i, i) = xelem (i);
 
   return retval;

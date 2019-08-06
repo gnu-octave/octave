@@ -1283,6 +1283,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (1, 2, 3), [1,0,0; 0,0,0])
 %!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]})
 %!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]})
+%!assert <*56711> (diag ({1,2,3}, 2, 1), {1; []})
 
 ## Test out-of-range diagonals
 %!assert (diag (ones (3,3), 4), zeros (0, 1))

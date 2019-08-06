@@ -23,7 +23,7 @@
 ## Unpack the TAR archive @var{tarfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather
-## than the one where @var{tarfile} is located.
+## than the current directory.
 ##
 ## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{tar, unpack, bunzip2, gunzip, unzip}
@@ -36,10 +36,6 @@ function filelist = untar (tarfile, dir = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (isempty (dir))
-    dir = fileparts (tarfile);
   endif
 
   if (nargout > 0)

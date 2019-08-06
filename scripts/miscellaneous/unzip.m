@@ -23,7 +23,7 @@
 ## Unpack the ZIP archive @var{zipfile}.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather
-## than the one where @var{zipfile} is located.
+## than the current directory.
 ##
 ## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{zip, unpack, bunzip2, gunzip, untar}
@@ -36,10 +36,6 @@ function filelist = unzip (zipfile, dir = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (isempty (dir))
-    dir = fileparts (zipfile);
   endif
 
   if (nargout > 0)

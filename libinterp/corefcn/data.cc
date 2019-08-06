@@ -1231,8 +1231,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
       if (arg0.ndims () != 2 || (arg0.rows () != 1 && arg0.columns () != 1))
         error ("diag: V must be a vector");
 
-      octave_idx_type m = args(1).xidx_type_value ("diag: invalid dimensions");
-      octave_idx_type n = args(2).xidx_type_value ("diag: invalid dimensions");
+      octave_idx_type m = args(1).xidx_type_value ("diag: invalid dimension M");
+      octave_idx_type n = args(2).xidx_type_value ("diag: invalid dimension N");
 
       retval = arg0.diag (m, n);
     }
@@ -1274,6 +1274,15 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 %!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
 %!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
+%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
+%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
+%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
+%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
+%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
+%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
+%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
+%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
+
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1)), diag([5 0 0 ]))
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1), 2),  [0 0 5 0 0; zeros(4, 5)])
 %!assert <*37411> (diag (diag ([5, 2, 3])(:,1), -2), [[0 0 5 0 0]', zeros(5, 4)])
@@ -1293,17 +1302,10 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
 ## Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)
-%!error diag (ones (2), 3, 3)
+%!error <V must be a vector> diag (ones (2), 3, 3)
 %!error diag (1:3, -4, 3)
+%!error diag (1:3, 4, -3)
 
-%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
-%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
-%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
-%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
-%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
-%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
-%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
-%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
 */
 
 DEFUN (prod, args, ,

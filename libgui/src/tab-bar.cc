@@ -90,6 +90,43 @@ namespace octave
       setCurrentIndex (new_pos);
   }
 
+  void tab_bar::sort_tabs_alph (void)
+  {
+    QString current_title = tabText (currentIndex ());
+    int tab_with_focus = 0;
+
+    // Get all tab title and sort
+    QStringList tab_texts;
+
+    for (int i = 0; i < count (); i++)
+      tab_texts.append (tabText (i));
+
+    tab_texts.sort ();
+
+    // Move tab into the order of the generated string list
+    for (int title = 0; title < tab_texts.count (); title++)
+      {
+        // Target tab is same as palce of title in QStringList.
+        // Find index of next title in string list, leaving out the
+        // tabs (or titles) that were alredy moved
+        for (int tab = title; tab < count (); tab++)
+          {
+            if (tabText (tab) == tab_texts.at (title))
+              {
+                // Index of next tile found, so move tab into next position
+                moveTab (tab, title);
+
+                if (tab_texts.at (title) == current_title)
+                    tab_with_focus = title;
+
+                break;
+              }
+          }
+      }
+
+    setCurrentIndex (tab_with_focus);
+  }
+
   // Reimplement mouse event for filtering out the desired mouse clicks
   void tab_bar::mousePressEvent (QMouseEvent *me)
   {
@@ -111,6 +148,8 @@ namespace octave
     if (clicked_idx >= 0)
       {
         int current_idx = currentIndex ();
+        int current_count = count ();
+
         // detect the mouse click
         if ((me->type () == QEvent::MouseButtonDblClick
              && me->button() == Qt::LeftButton)
@@ -138,8 +177,9 @@ namespace octave
                 // No action selected, back to previous tab
                 setCurrentIndex (current_idx);
               }
-            else
+            else if (count () < current_count)
               {
+                // A tab was closed:
                 // Was the possibly only closed tab before or after the
                 // previously current tab? According to the result, use previous
                 // index or reduce it by one. Also prevent using a too large

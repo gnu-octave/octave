@@ -431,6 +431,7 @@ namespace octave
     QAction *m_switch_right_tab_action;
     QAction *m_move_tab_left_action;
     QAction *m_move_tab_right_action;
+    QAction *m_sort_tabs_action;
 
     QAction *m_toggle_breakpoint_action;
     QAction *m_next_breakpoint_action;

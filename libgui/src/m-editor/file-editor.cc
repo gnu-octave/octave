@@ -205,6 +205,7 @@ namespace octave
     m_close_action->setEnabled (have_tabs);
     m_close_all_action->setEnabled (have_tabs);
     m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
+    m_sort_tabs_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
 
     emit editor_tabs_changed_signal (have_tabs);
   }
@@ -1255,6 +1256,7 @@ namespace octave
     shortcut_manager::set_shortcut (m_zoom_in_action, "editor_view:zoom_in");
     shortcut_manager::set_shortcut (m_zoom_out_action, "editor_view:zoom_out");
     shortcut_manager::set_shortcut (m_zoom_normal_action, "editor_view:zoom_normal");
+    shortcut_manager::set_shortcut (m_sort_tabs_action, "editor_view:sort_tabs");
 
     // Debug menu
     shortcut_manager::set_shortcut (m_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
@@ -2065,6 +2067,13 @@ namespace octave
                     tr ("&Normal Size"),
                     SLOT (zoom_normal (bool)));
 
+    view_menu->addSeparator ();
+
+    m_sort_tabs_action
+      = add_action (view_menu, tr ("&Sort Tabs Alphabetically"),
+                    SLOT (sort_tabs_alph (void)),
+                    m_tab_widget->get_tab_bar ());
+
     m_menu_bar->addMenu (view_menu);
 
     // debug menu
@@ -2196,6 +2205,8 @@ namespace octave
     ctx_men->addAction (m_close_action);
     ctx_men->addAction (m_close_all_action);
     ctx_men->addAction (m_close_others_action);
+    ctx_men->addSeparator ();
+    ctx_men->addAction (m_sort_tabs_action);
 
     // signals
     connect (this, SIGNAL (request_settings_dialog (const QString&)),

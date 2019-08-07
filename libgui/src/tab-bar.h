@@ -56,6 +56,7 @@ namespace octave
     void switch_right_tab (void);
     void move_tab_left (void);
     void move_tab_right (void);
+    void sort_tabs_alph (void);
 
   protected:
 

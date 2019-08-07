@@ -456,6 +456,8 @@ namespace octave
           QKeySequence ());
     init (tr ("Show Horizontal Scrollbar"), "editor_view:show_hscrollbar",
           QKeySequence ());
+    init (tr ("Sort Tabs Alphabetically"), "editor_view:sort_tabs",
+          QKeySequence ());
 
     // debug
     init (tr ("Toggle Breakpoint"), "editor_debug:toggle_breakpoint",

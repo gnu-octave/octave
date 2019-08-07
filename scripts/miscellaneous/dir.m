@@ -136,11 +136,10 @@ function retval = dir (directory)
             st = xst;
           endif
         endif
-        [sts, tmpdir] = regexp (fn, re, "start", "tokens");
-        if (isempty (sts))
+        tmpdir = regexprep (fn, re, '$1');
+        if (strcmp (fn, tmpdir))
+          ## regexrep failed to match, no directory component.
           tmpdir = ".";
-        else
-          tmpdir = tmpdir{1}{1};
         endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;

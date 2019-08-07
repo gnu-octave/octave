@@ -136,7 +136,12 @@ function retval = dir (directory)
             st = xst;
           endif
         endif
-        tmpdir = regexprep (fn, re, '$1');
+        [sts, tmpdir] = regexp (fn, re, "start", "tokens");
+        if (isempty (sts))
+          tmpdir = ".";
+        else
+          tmpdir = tmpdir{1}{1};
+        endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;
         if (! strcmp (last_dir, tmpdir))

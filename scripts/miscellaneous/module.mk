@@ -6,7 +6,8 @@ FCN_FILE_DIRS += \
   %reldir%/private/__publish_html_output__.m \
   %reldir%/private/__publish_latex_output__.m \
   %reldir%/private/__w2mpth__.m \
-  %reldir%/private/display_info_file.m
+  %reldir%/private/display_info_file.m \
+  %reldir%/private/tar_is_bsd.m
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/bug_report.m \

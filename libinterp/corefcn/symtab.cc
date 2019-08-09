@@ -674,7 +674,7 @@ Undocumented internal function.
   if (args.length () != 1)
     print_usage ();
 
-  std::string name = args(0).xstring_value ("__get_cmd_line_function_text__: first argument must be function name");
+  std::string name = args(0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
 
   octave::symbol_table& symtab = interp.get_symbol_table ();
 

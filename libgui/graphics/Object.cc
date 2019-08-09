@@ -31,15 +31,20 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
+
 namespace QtHandles
 {
 
   Object::Object (const graphics_object& go, QObject *obj)
     : QObject (), m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
   {
-    gh_manager::auto_lock lock (false);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::Object");
 
-    if (! lock)
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    if (! guard)
       qCritical ("QtHandles::Object::Object: "
                  "creating Object (h=%g) without a valid lock!!!",
                  m_handle.value ());
@@ -71,9 +76,11 @@ namespace QtHandles
   graphics_object
   Object::object (void) const
   {
-    gh_manager::auto_lock lock (false);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::object");
 
-    if (! lock)
+    octave::autolock guard (gh_mgr.graphics_lock (), false);
+
+    if (! guard)
       qCritical ("QtHandles::Object::object: "
                  "accessing graphics object (h=%g) without a valid lock!!!",
                  m_handle.value ());
@@ -84,7 +91,9 @@ namespace QtHandles
   void
   Object::slotUpdate (int pId)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::slotUpdate");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     switch (pId)
       {
@@ -105,7 +114,9 @@ namespace QtHandles
   void
   Object::slotFinalize (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::slotFinalize");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     finalize ();
   }
@@ -113,7 +124,9 @@ namespace QtHandles
   void
   Object::slotRedraw (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::slotRedraw");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       redraw ();
@@ -122,7 +135,9 @@ namespace QtHandles
   void
   Object::slotShow (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::slotShow");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       show ();
@@ -131,7 +146,9 @@ namespace QtHandles
   void
   Object::slotPrint (const QString& file_cmd, const QString& term)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::slotPrint");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     if (object ().valid_object ())
       print (file_cmd, term);
@@ -177,10 +194,12 @@ namespace QtHandles
   Object*
   Object::parentObject (const graphics_object& go)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Object::parentObject");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     Object *parent = qt_graphics_toolkit::toolkitObject
-                     (gh_manager::get_object (go.get_parent ()));
+                     (gh_mgr.get_object (go.get_parent ()));
 
     return parent;
   }

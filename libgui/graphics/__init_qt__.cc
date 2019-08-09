@@ -56,13 +56,15 @@ namespace QtHandles
       {
         if (qApp)
           {
-            gh_manager::auto_lock lock;
+            gh_manager& gh_mgr = interp.get_gh_manager ();
+
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             interp.mlock ();
 
             qRegisterMetaType<graphics_object> ("graphics_object");
 
-            gh_manager::enable_event_processing (true);
+            gh_mgr.enable_event_processing (true);
 
             octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
@@ -90,13 +92,15 @@ namespace QtHandles
   }
 
   bool
-  __shutdown__ (void)
+  __shutdown__ (octave::interpreter& interp)
   {
     if (qtHandlesInitialized)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = interp.get_gh_manager ();
 
-        gh_manager::enable_event_processing (false);
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        gh_mgr.enable_event_processing (false);
 
         qtHandlesInitialized = false;
 
@@ -114,9 +118,9 @@ DEFMETHOD_DLD (__init_qt__, interp, , , "")
   return octave_value ();
 }
 
-DEFUN_DLD (__shutdown_qt__, , , "")
+DEFMETHOD_DLD (__shutdown_qt__, interp, , , "")
 {
-  QtHandles::__shutdown__ ();
+  QtHandles::__shutdown__ (interp);
 
   return octave_value ();
 }

@@ -1084,8 +1084,8 @@ On non-Windows platforms this function fails with an error.
 
 // FIXME: perhaps kbhit should also be able to print a prompt?
 
-DEFUN (kbhit, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (kbhit, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} kbhit ()
 @deftypefnx {} {} kbhit (1)
 Read a single keystroke from the keyboard.
@@ -1114,7 +1114,7 @@ returning the empty string if no key is available.
 {
   // FIXME: add timeout and default value args?
 
-  Fdrawnow ();
+  Fdrawnow (interp);
 
   int c = octave::kbhit (args.length () == 0);
 
@@ -1129,8 +1129,8 @@ returning the empty string if no key is available.
 // State of the pause system
 static bool Vpause_enabled = true;
 
-DEFUN (pause, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (pause, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} pause ()
 @deftypefnx {} {} pause (@var{n})
 @deftypefnx {} {@var{old_state} =} pause ("on")
@@ -1218,7 +1218,7 @@ graphics callbacks execution.
         warning ("pause: NaN is an invalid delay");
       else
         {
-          Fdrawnow ();
+          Fdrawnow (interp);
 
           octave::sleep (dval, true);
         }

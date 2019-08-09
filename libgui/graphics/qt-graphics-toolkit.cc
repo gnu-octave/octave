@@ -122,7 +122,10 @@ namespace QtHandles
         // FIXME: We need to unlock the mutex here but we have no way to know if
         // if it was previously locked by this thread, and thus if we should
         // re-lock it.
-        gh_manager::unlock ();
+
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        gh_mgr.unlock ();
 
         Logger::debug ("qt_graphics_toolkit::initialize %s from thread %08x",
                        go.type ().c_str (), QThread::currentThreadId ());
@@ -185,7 +188,10 @@ namespace QtHandles
     // FIXME: We need to unlock the mutex here but we have no way to know if
     // if it was previously locked by this thread, and thus if we should
     // re-lock it.
-    gh_manager::unlock ();
+
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.unlock ();
 
     Logger::debug ("qt_graphics_toolkit::finalize %s from thread %08x",
                    go.type ().c_str (), QThread::currentThreadId ());
@@ -354,9 +360,11 @@ namespace QtHandles
   void
   qt_graphics_toolkit::create_object (double handle)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-    graphics_object go (gh_manager::get_object (graphics_handle (handle)));
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    graphics_object go (gh_mgr.get_object (graphics_handle (handle)));
 
     if (go.valid_object ())
       {
@@ -498,21 +506,27 @@ namespace QtHandles
   void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
                                                const std::string& nm)
   {
-    gh_manager::post_callback (h, nm);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.post_callback (h, nm);
   }
 
   void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
                                                const std::string& nm,
                                                const octave_value& data)
   {
-    gh_manager::post_callback (h, nm, data);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.post_callback (h, nm, data);
   }
 
   void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
                                           const std::string& nm,
                                           const octave_value& value)
   {
-    gh_manager::post_set (h, nm, value);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.post_set (h, nm, value);
   }
 
   void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
@@ -520,7 +534,9 @@ namespace QtHandles
                                           const octave_value& value,
                                           bool notify_toolkit)
   {
-    gh_manager::post_set (h, nm, value, notify_toolkit);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.post_set (h, nm, value, notify_toolkit);
   }
 
   void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
@@ -529,6 +545,8 @@ namespace QtHandles
                                           bool notify_toolkit,
                                           bool redraw_figure)
   {
-    gh_manager::post_set (h, nm, value, notify_toolkit, redraw_figure);
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    gh_mgr.post_set (h, nm, value, notify_toolkit, redraw_figure);
   }
 };

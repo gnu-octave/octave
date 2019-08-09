@@ -56,6 +56,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "version.h"
 
+#include "interpreter-private.h"
+
 #include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
@@ -189,7 +191,9 @@ namespace QtHandles
   QString
   Figure::fileName (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::fileName");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     const figure::properties& fp = properties<figure> ();
 
@@ -201,7 +205,9 @@ namespace QtHandles
   void
   Figure::setFileName (const QString& name)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::setFileName");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     figure::properties& fp = properties<figure> ();
 
@@ -211,7 +217,9 @@ namespace QtHandles
   MouseMode
   Figure::mouseMode (void)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::mouseMode");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     const figure::properties& fp = properties<figure> ();
 
@@ -321,8 +329,10 @@ namespace QtHandles
 
     if (canvas)
       {
-        gh_manager::process_events ();
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::slotGetPixels");
+
+        gh_mgr.process_events ();
+        octave::autolock guard (gh_mgr.graphics_lock ());
         retval = canvas->getPixels ();
       }
 
@@ -393,7 +403,9 @@ namespace QtHandles
             QTimer::singleShot (0, win, SLOT (show ()));
             if (! fp.is___gl_window__ ())
               {
-                gh_manager::auto_lock lock;
+                gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::update");
+
+                octave::autolock guard (gh_mgr.graphics_lock ());
                 fp.set ("__gl_window__", "on");
               }
           }
@@ -548,7 +560,9 @@ namespace QtHandles
   void
   Figure::updateFigureHeight (int dh)
   {
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::updateFigureHeight");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
     graphics_object go = object ();
 
     if (go.valid_object () && dh != 0)
@@ -647,7 +661,11 @@ namespace QtHandles
         if (xevent->type () == QEvent::MouseButtonPress)
           {
             figure::properties& fp = properties<figure> ();
-            graphics_object root = gh_manager::get_object (0);
+
+            gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::eventNotifyBefore");
+
+            graphics_object root = gh_mgr.get_object (0);
+
             if (fp.get_handlevisibility () == "on")
               root.set ("currentfigure",
                         fp.get___myhandle__ ().as_octave_value ());
@@ -695,6 +713,8 @@ namespace QtHandles
       {
         if (watched == m_container)
           {
+            gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::eventNotifyAfter");
+
             switch (xevent->type ())
               {
               case QEvent::Resize:
@@ -705,7 +725,7 @@ namespace QtHandles
                 if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
                     update (figure::properties::ID_TOOLBAR);
 
                     enableMouseTracking ();
@@ -716,7 +736,7 @@ namespace QtHandles
                 if (dynamic_cast<QChildEvent *> (xevent)->child
                     ()->isWidgetType())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
                     update (figure::properties::ID_TOOLBAR);
                   }
                 break;
@@ -830,7 +850,9 @@ namespace QtHandles
     QWindow* window = qWidget<QMainWindow> ()->windowHandle ();
     QScreen* screen = window->screen ();
 
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::figureWindowShown");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     figure::properties& fp = properties<figure> ();
     fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
@@ -844,7 +866,9 @@ namespace QtHandles
   Figure::screenChanged (QScreen* screen)
   {
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::screenChanged");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     figure::properties& fp = properties<figure> ();
     double old_dpr = fp.get___device_pixel_ratio__ ();

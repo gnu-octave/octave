@@ -31,6 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
+
 namespace QtHandles
 {
 
@@ -92,7 +95,9 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        Object *parent = Object::parentObject (gh_manager::get_object (up.get___myhandle__ ()));
+                        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonControl::update");
+
+                        Object *parent = Object::parentObject (gh_mgr.get_object (up.get___myhandle__ ()));
                         ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
@@ -118,7 +123,9 @@ namespace QtHandles
 
     if (! m_blockCallback && btn->isCheckable ())
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonControl::toggled");
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
 
         uicontrol::properties& up = properties<uicontrol> ();
 

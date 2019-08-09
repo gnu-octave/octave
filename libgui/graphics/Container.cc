@@ -27,12 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QChildEvent>
 #include <QVBoxLayout>
 
-#include "graphics.h"
-
 #include "Canvas.h"
 #include "Container.h"
 #include "Object.h"
 #include "QtHandlesUtils.h"
+
+#include "graphics.h"
+#include "interpreter-private.h"
 
 namespace QtHandles
 {
@@ -51,8 +52,11 @@ namespace QtHandles
   {
     if (! m_canvas && xcreate)
       {
-        gh_manager::auto_lock lock;
-        graphics_object go = gh_manager::get_object (gh);
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Container::canvas");
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object go = gh_mgr.get_object (gh);
 
         if (go)
           {
@@ -127,7 +131,9 @@ namespace QtHandles
     if (m_canvas)
       m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());
 
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Container::resizeEvent");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     foreach (QObject *qObj, children ())
       {

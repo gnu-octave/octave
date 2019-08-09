@@ -3667,7 +3667,7 @@ public:
       radio_property ticklabelinterpreter u , "{tex}|latex|none"
       array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property title SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       double_property titlefontsizemultiplier u , 1.1
       radio_property titlefontweight u , "{bold}|normal"
       // FIXME: uicontextmenu should be moved here.
@@ -3678,7 +3678,7 @@ public:
       radio_property xcolormode , "{auto}|manual"
       radio_property xdir u , "{normal}|reverse"
       bool_property xgrid , "off"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property xlabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property xlim mu , default_lim ()
       radio_property xlimmode al , "{auto}|manual"
       bool_property xminorgrid , "off"
@@ -3695,7 +3695,7 @@ public:
       radio_property ycolormode , "{auto}|manual"
       radio_property ydir u , "{normal}|reverse"
       bool_property ygrid , "off"
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property ylabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property ylim mu , default_lim ()
       radio_property ylimmode al , "{auto}|manual"
       bool_property yminorgrid , "off"
@@ -3710,7 +3710,7 @@ public:
       radio_property zcolormode , "{auto}|manual"
       radio_property zdir u , "{normal}|reverse"
       bool_property zgrid , "off"
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property zlabel SOf , make_graphics_handle ("text", __myhandle__, false, false, false)
       row_vector_property zlim mu , default_lim ()
       radio_property zlimmode al , "{auto}|manual"
       bool_property zminorgrid , "off"
@@ -6203,119 +6203,116 @@ public:
   // FIXME: eventually eliminate these static functions and access
   // gh_manager object through the interpreter.
 
-  static gh_manager& instance (void);
+  graphics_handle get_handle (bool integer_figure_handle);
 
-  static graphics_handle get_handle (bool integer_figure_handle)
+  void free (const graphics_handle& h, bool from_root = false);
+
+  void renumber_figure (const graphics_handle& old_gh,
+                           const graphics_handle& new_gh);
+
+  graphics_handle lookup (double val) const
   {
-    return instance().do_get_handle (integer_figure_handle);
+    const_iterator p = (octave::math::isnan (val)
+                        ? m_handle_map.end () : m_handle_map.find (val));
+
+    return (p != m_handle_map.end ()) ? p->first : graphics_handle ();
   }
 
-  static void free (const graphics_handle& h, bool from_root = false)
-  {
-    instance().do_free (h, from_root);
-  }
-
-  static void renumber_figure (const graphics_handle& old_gh,
-                               const graphics_handle& new_gh)
-  {
-    instance().do_renumber_figure (old_gh, new_gh);
-  }
-
-  static graphics_handle lookup (double val)
-  {
-    return instance().do_lookup (val);
-  }
-
-  static graphics_handle lookup (const octave_value& val)
+  graphics_handle lookup (const octave_value& val) const
   {
     return (val.is_real_scalar ()
             ? lookup (val.double_value ()) : graphics_handle ());
   }
 
-  static graphics_object get_object (double val)
+  graphics_object get_object (double val) const
   {
     return get_object (lookup (val));
   }
 
-  static graphics_object get_object (const graphics_handle& h)
+  graphics_object get_object (const graphics_handle& h) const
   {
-    return instance().do_get_object (h);
+    const_iterator p = (h.ok () ? m_handle_map.find (h) : m_handle_map.end ());
+
+    return (p != m_handle_map.end ()) ? p->second : graphics_object ();
   }
 
-  static graphics_handle
-  make_graphics_handle (const std::string& go_name,
-                        const graphics_handle& parent,
-                        bool integer_figure_handle = false,
-                        bool do_createfcn = true,
-                        bool do_notify_toolkit = true)
+graphics_handle make_graphics_handle (const std::string& go_name,
+                                      const graphics_handle& p,
+                                      bool integer_figure_handle = false,
+                                      bool call_createfcn = true,
+                                      bool notify_toolkit = true);
+
+  graphics_handle make_figure_handle (double val,
+                                      bool notify_toolkit = true);
+
+  void push_figure (const graphics_handle& h);
+
+  void pop_figure (const graphics_handle& h);
+
+  graphics_handle current_figure (void) const
   {
-    return instance().do_make_graphics_handle (go_name, parent,
-                                               integer_figure_handle,
-                                               do_createfcn,
-                                               do_notify_toolkit);
+    graphics_handle retval;
+
+    for (const auto& hfig : m_figure_list)
+      {
+        if (is_handle_visible (hfig))
+          retval = hfig;
+      }
+
+    return retval;
   }
 
-  static graphics_handle make_figure_handle (double val,
-                                             bool do_notify_toolkit = true)
+  Matrix handle_list (bool show_hidden = false)
   {
-    return instance().do_make_figure_handle (val, do_notify_toolkit);
+    Matrix retval (1, m_handle_map.size ());
+
+    octave_idx_type i = 0;
+    for (const auto& h_iter : m_handle_map)
+      {
+        graphics_handle h = h_iter.first;
+
+        if (show_hidden || is_handle_visible (h))
+          retval(i++) = h.value ();
+      }
+
+    retval.resize (1, i);
+
+    return retval;
   }
 
-  static void push_figure (const graphics_handle& h)
+  void lock (void) { m_graphics_lock.lock (); }
+
+  bool try_lock (void) { return m_graphics_lock.try_lock (); }
+
+  void unlock (void) { m_graphics_lock.unlock (); }
+
+  Matrix figure_handle_list (bool show_hidden = false)
   {
-    instance().do_push_figure (h);
+    Matrix retval (1, m_figure_list.size ());
+
+    octave_idx_type i = 0;
+    for (const auto& hfig : m_figure_list)
+      {
+        if (show_hidden || is_handle_visible (hfig))
+          retval(i++) = hfig.value ();
+      }
+
+    retval.resize (1, i);
+
+    return retval;
   }
 
-  static void pop_figure (const graphics_handle& h)
-  {
-    instance().do_pop_figure (h);
-  }
+  void execute_listener (const graphics_handle& h, const octave_value& l);
 
-  static graphics_handle current_figure (void)
-  {
-    return instance().do_current_figure ();
-  }
-
-  static Matrix handle_list (bool show_hidden = false)
-  {
-    return instance().do_handle_list (show_hidden);
-  }
-
-  static void lock (void)
-  {
-    instance().do_lock ();
-  }
-
-  static bool try_lock (void)
-  {
-    return instance().do_try_lock ();
-  }
-
-  static void unlock (void)
-  {
-    instance().do_unlock ();
-  }
-
-  static Matrix figure_handle_list (bool show_hidden = false)
-  {
-    return instance().do_figure_handle_list (show_hidden);
-  }
-
-  static void execute_listener (const graphics_handle& h,
-                                const octave_value& l)
-  {
-    instance().do_execute_listener (h, l);
-  }
-
-  static void execute_callback (const graphics_handle& h,
-                                const std::string& name,
-                                const octave_value& data = Matrix ())
+  void execute_callback (const graphics_handle& h,
+                         const std::string& name,
+                         const octave_value& data = Matrix ())
   {
     octave_value cb;
 
     if (true)
       {
-        gh_manager::auto_lock lock;
+        octave::autolock guard (graphics_lock ());
 
         graphics_object go = get_object (h);
 
@@ -6326,48 +6323,23 @@ public:
     execute_callback (h, cb, data);
   }
 
-  static void execute_callback (const graphics_handle& h,
-                                const octave_value& cb,
-                                const octave_value& data = Matrix ())
-  {
-    instance().do_execute_callback (h, cb, data);
-  }
+  void execute_callback (const graphics_handle& h, const octave_value& cb,
+                         const octave_value& data = Matrix ());
 
-  static void post_callback (const graphics_handle& h,
-                             const std::string& name,
-                             const octave_value& data = Matrix ())
-  {
-    instance().do_post_callback (h, name, data);
-  }
+  void post_callback (const graphics_handle& h, const std::string& name,
+                      const octave_value& data = Matrix ());
 
-  static void post_function (graphics_event::event_fcn fcn, void *data = nullptr)
-  {
-    instance().do_post_function (fcn, data);
-  }
+  void post_function (graphics_event::event_fcn fcn, void *fcn_data = nullptr);
 
-  static void post_set (const graphics_handle& h, const std::string& name,
-                        const octave_value& value, bool notify_toolkit = true,
-                        bool redraw_figure = false)
-  {
-    instance().do_post_set (h, name, value, notify_toolkit, redraw_figure);
-  }
+  void post_set (const graphics_handle& h, const std::string& name,
+                 const octave_value& value, bool notify_toolkit = true,
+                 bool redraw_figure = false);
 
-  static int process_events (void)
-  {
-    return instance().do_process_events ();
-  }
+  int process_events (bool force = false);
 
-  static int flush_events (void)
-  {
-    return instance().do_process_events (true);
-  }
+  void enable_event_processing (bool enable = true);
 
-  static void enable_event_processing (bool enable = true)
-  {
-    instance().do_enable_event_processing (enable);
-  }
-
-  static bool is_handle_visible (const graphics_handle& h)
+  bool is_handle_visible (const graphics_handle& h) const
   {
     bool retval = false;
 
@@ -6379,25 +6351,16 @@ public:
     return retval;
   }
 
-  static void close_all_figures (void)
+  void close_all_figures (void);
+
+  void restore_gcbo (void);
+
+  void post_event (const graphics_event& e);
+
+  octave::mutex graphics_lock (void)
   {
-    instance().do_close_all_figures ();
+    return m_graphics_lock;
   }
-
-public:
-  class auto_lock : public octave::autolock
-  {
-  public:
-    auto_lock (bool wait = true)
-      : octave::autolock (instance().m_graphics_lock, wait)
-    { }
-
-    // No copying!
-
-    auto_lock (const auto_lock&) = delete;
-
-    auto_lock& operator = (const auto_lock&) = delete;
-  };
 
 private:
 
@@ -6437,122 +6400,6 @@ private:
 
   // A flag telling whether event processing must be constantly on.
   int m_event_processing;
-
-  graphics_handle do_get_handle (bool integer_figure_handle);
-
-  void do_free (const graphics_handle& h, bool from_root);
-
-  void do_renumber_figure (const graphics_handle& old_gh,
-                           const graphics_handle& new_gh);
-
-  graphics_handle do_lookup (double val)
-  {
-    iterator p = (octave::math::isnan (val)
-                  ? m_handle_map.end () : m_handle_map.find (val));
-
-    return (p != m_handle_map.end ()) ? p->first : graphics_handle ();
-  }
-
-  graphics_object do_get_object (const graphics_handle& h)
-  {
-    iterator p = (h.ok () ? m_handle_map.find (h) : m_handle_map.end ());
-
-    return (p != m_handle_map.end ()) ? p->second : graphics_object ();
-  }
-
-  graphics_handle do_make_graphics_handle (const std::string& go_name,
-                                           const graphics_handle& p,
-                                           bool integer_figure_handle,
-                                           bool do_createfcn,
-                                           bool do_notify_toolkit);
-
-  graphics_handle do_make_figure_handle (double val, bool do_notify_toolkit);
-
-  Matrix do_handle_list (bool show_hidden)
-  {
-    Matrix retval (1, m_handle_map.size ());
-
-    octave_idx_type i = 0;
-    for (const auto& h_iter : m_handle_map)
-      {
-        graphics_handle h = h_iter.first;
-
-        if (show_hidden || is_handle_visible (h))
-          retval(i++) = h.value ();
-      }
-
-    retval.resize (1, i);
-
-    return retval;
-  }
-
-  Matrix do_figure_handle_list (bool show_hidden)
-  {
-    Matrix retval (1, m_figure_list.size ());
-
-    octave_idx_type i = 0;
-    for (const auto& hfig : m_figure_list)
-      {
-        if (show_hidden || is_handle_visible (hfig))
-          retval(i++) = hfig.value ();
-      }
-
-    retval.resize (1, i);
-
-    return retval;
-  }
-
-  void do_push_figure (const graphics_handle& h);
-
-  void do_pop_figure (const graphics_handle& h);
-
-  graphics_handle do_current_figure (void) const
-  {
-    graphics_handle retval;
-
-    for (const auto& hfig : m_figure_list)
-      {
-        if (is_handle_visible (hfig))
-          retval = hfig;
-      }
-
-    return retval;
-  }
-
-  void do_lock (void) { m_graphics_lock.lock (); }
-
-  bool do_try_lock (void) { return m_graphics_lock.try_lock (); }
-
-  void do_unlock (void) { m_graphics_lock.unlock (); }
-
-  void do_execute_listener (const graphics_handle& h, const octave_value& l);
-
-  void do_execute_callback (const graphics_handle& h, const octave_value& cb,
-                            const octave_value& data);
-
-  void do_post_callback (const graphics_handle& h, const std::string& name,
-                         const octave_value& data);
-
-  void do_post_function (graphics_event::event_fcn fcn, void *fcn_data);
-
-  void do_post_set (const graphics_handle& h, const std::string& name,
-                    const octave_value& value, bool notify_toolkit = true,
-                    bool redraw_figure = false);
-
-  int do_process_events (bool force = false);
-
-  void do_close_all_figures (void);
-
-  static void restore_gcbo (void)
-  {
-    instance().do_restore_gcbo ();
-  }
-
-  void do_restore_gcbo (void);
-
-  void do_post_event (const graphics_event& e);
-
-  void do_enable_event_processing (bool enable = true);
 };
 
 void get_children_limits (double& min_val, double& max_val,

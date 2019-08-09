@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "SliderControl.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
+
 #define RANGE_INT_MAX 1000000
 
 namespace QtHandles
@@ -128,7 +131,10 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("SliderControl::valueChanged");
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
         graphics_object go = object ();
 
         if (go.valid_object ())

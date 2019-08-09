@@ -1090,7 +1090,7 @@ namespace octave
          // INTERPRETER THREAD
 
          Fbuiltin (interp, ovl ("figure"));
-         Fdrawnow ();
+         Fdrawnow (interp);
        });
   }
 

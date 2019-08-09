@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
+#include "interpreter-private.h"
+
 namespace QtHandles
 {
 
@@ -116,8 +118,10 @@ namespace QtHandles
 
     if (h.ok ())
       {
-        gh_manager::auto_lock lock;
-        graphics_object go = gh_manager::get_object (h);
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ContextMenu::executeAt");
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
+        graphics_object go = gh_mgr.get_object (h);
 
         if (go.valid_object ())
           {

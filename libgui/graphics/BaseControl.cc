@@ -33,6 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ContextMenu.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
+
 namespace QtHandles
 {
 
@@ -195,12 +198,14 @@ namespace QtHandles
   bool
   BaseControl::eventFilter (QObject *watched, QEvent *xevent)
   {
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("BaseControl::eventFilter");
+
     switch (xevent->type ())
       {
       case QEvent::Resize:
         if (m_normalizedFont)
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             qWidget<QWidget> ()->setFont (Utils::computeFont<uicontrol>
                                           (properties<uicontrol> ()));
@@ -209,7 +214,7 @@ namespace QtHandles
 
       case QEvent::MouseButtonPress:
         {
-          gh_manager::auto_lock lock;
+          octave::autolock guard (gh_mgr.graphics_lock ());
 
           QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
           graphics_object go = object ();
@@ -251,7 +256,7 @@ namespace QtHandles
       case QEvent::MouseMove:
         if (qWidget<QWidget> ()->hasMouseTracking ())
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
             graphics_object go = object ();
@@ -270,7 +275,7 @@ namespace QtHandles
       case QEvent::KeyPress:
         if (m_keyPressHandlerDefined)
           {
-            gh_manager::auto_lock lock;
+            octave::autolock guard (gh_mgr.graphics_lock ());
 
             octave_scalar_map keyData =
               Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));

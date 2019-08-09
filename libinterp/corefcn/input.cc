@@ -550,7 +550,7 @@ namespace octave
 
         try
           {
-            Fdrawnow ();
+            Fdrawnow (m_interpreter);
           }
         catch (const execution_exception& e)
           {

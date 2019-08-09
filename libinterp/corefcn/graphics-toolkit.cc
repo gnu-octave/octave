@@ -26,11 +26,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "graphics.h"
 #include "gtk-manager.h"
+#include "interpreter-private.h"
 
 void
 base_graphics_toolkit::update (const graphics_handle& h, int id)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_toolkit::update");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   update (go, id);
 }
@@ -38,7 +42,10 @@ base_graphics_toolkit::update (const graphics_handle& h, int id)
 bool
 base_graphics_toolkit::initialize (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_toolkit::initialize");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   return initialize (go);
 }

@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "errwarn.h"
 #include "gl-render.h"
+#include "interpreter-private.h"
 #include "oct-opengl.h"
 #include "text-renderer.h"
 
@@ -1529,6 +1530,9 @@ namespace octave
   {
 #if defined (HAVE_OPENGL)
 
+    gh_manager& gh_mgr
+      = __get_gh_manager__ ("opengl_renderer::draw_axes_x_grid");
+
     int xstate = props.get_xstate ();
 
     if (xstate != AXE_DEPTH_DIR
@@ -1701,10 +1705,10 @@ namespace octave
                                 zpTick, 0, halign, valign, wmax, hmax);
           }
 
-        gh_manager::get_object (props.get_xlabel ()).set ("visible", "on");
+        gh_mgr.get_object (props.get_xlabel ()).set ("visible", "on");
       }
     else
-      gh_manager::get_object (props.get_xlabel ()).set ("visible", "off");
+      gh_mgr.get_object (props.get_xlabel ()).set ("visible", "off");
 
 #else
 
@@ -1722,6 +1726,9 @@ namespace octave
   opengl_renderer::draw_axes_y_grid (const axes::properties& props)
   {
 #if defined (HAVE_OPENGL)
+
+    gh_manager& gh_mgr
+      = __get_gh_manager__ ("opengl_renderer::draw_axes_y_grid");
 
     int ystate = props.get_ystate ();
 
@@ -1896,10 +1903,10 @@ namespace octave
                                 zpTick, 1, halign, valign, wmax, hmax);
           }
 
-        gh_manager::get_object (props.get_ylabel ()).set ("visible", "on");
+        gh_mgr.get_object (props.get_ylabel ()).set ("visible", "on");
       }
     else
-      gh_manager::get_object (props.get_ylabel ()).set ("visible", "off");
+      gh_mgr.get_object (props.get_ylabel ()).set ("visible", "off");
 
 #else
 
@@ -1916,6 +1923,9 @@ namespace octave
   void
   opengl_renderer::draw_axes_z_grid (const axes::properties& props)
   {
+    gh_manager& gh_mgr
+      = __get_gh_manager__ ("opengl_renderer::draw_axes_z_grid");
+
     int zstate = props.get_zstate ();
 
     if (zstate != AXE_DEPTH_DIR && props.is_visible ()
@@ -2090,10 +2100,10 @@ namespace octave
               }
           }
 
-        gh_manager::get_object (props.get_zlabel ()).set ("visible", "on");
+        gh_mgr.get_object (props.get_zlabel ()).set ("visible", "on");
       }
     else
-      gh_manager::get_object (props.get_zlabel ()).set ("visible", "off");
+      gh_mgr.get_object (props.get_zlabel ()).set ("visible", "off");
   }
 
   void
@@ -2136,11 +2146,14 @@ namespace octave
                                     std::list<graphics_object>& obj_list)
   {
 #if defined (HAVE_OPENGL)
+    gh_manager& gh_mgr
+      = __get_gh_manager__ ("opengl_renderer::draw_axes_all_lights");
+
     Matrix children = props.get_all_children ();
 
     for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
       {
-        graphics_object go = gh_manager::get_object (children(i));
+        graphics_object go = gh_mgr.get_object (children(i));
 
         base_properties p = go.get_properties ();
 
@@ -3950,6 +3963,21 @@ namespace octave
 #endif
   }
 
+  void opengl_renderer::draw (const Matrix& hlist, bool toplevel)
+  {
+    int len = hlist.numel ();
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::draw");
+
+    for (int i = len-1; i >= 0; i--)
+      {
+        graphics_object obj = gh_mgr.get_object (hlist(i));
+
+        if (obj)
+          draw (obj, toplevel);
+      }
+  }
+
   void
   opengl_renderer::set_viewport (int w, int h)
   {
@@ -4067,12 +4095,14 @@ namespace octave
   opengl_renderer::set_linewidth (float w)
   {
 #if defined (HAVE_OPENGL)
+    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::set_linewidth");
+
     // FIXME: See bug #53056 (measure LineWidth in points).
     //        pts2pix and m_devpixratio should eventually be combined in to a
     //        a single conversion factor so that only one multiplication per
     //        function call is required.
     const static double pts2pix
-      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
          / 72.0);
 
     m_glfcns.glLineWidth (w * pts2pix * m_devpixratio);
@@ -4094,10 +4124,11 @@ namespace octave
                                   double linewidth)
   {
 #if defined (HAVE_OPENGL)
+    gh_manager& gh_mgr = __get_gh_manager__ ("opengl_renderer::set_linestyle");
 
     // FIXME: See bug #53056 (measure LineWidth in points).
     const static double pts2pix
-      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
          / 72.0);
     int factor = math::round (linewidth * pts2pix * m_devpixratio);
     if (factor < 1)
@@ -4437,11 +4468,14 @@ namespace octave
     if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
       return 0;
 
+    gh_manager& gh_mgr
+      = __get_gh_manager__ ("opengl_renderer::make_marker_list");
+
     unsigned int ID = m_glfcns.glGenLists (1);
 
     // FIXME: See bug #53056 (measure LineWidth in points).
     const static double pts2pix
-      = (gh_manager::get_object (0).get ("screenpixelsperinch").double_value ()
+      = (gh_mgr.get_object (0).get ("screenpixelsperinch").double_value ()
          / 72.0);
 
     double sz = size * pts2pix;

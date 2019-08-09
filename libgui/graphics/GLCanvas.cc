@@ -68,8 +68,11 @@ namespace QtHandles
   void
   GLCanvas::draw (const graphics_handle& gh)
   {
-    gh_manager::auto_lock lock;
-    graphics_object go = gh_manager::get_object (gh);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::draw");
+
+    octave::autolock guard  (gh_mgr.graphics_lock ());
+
+    graphics_object go = gh_mgr.get_object (gh);
 
     if (go)
       {
@@ -85,7 +88,10 @@ namespace QtHandles
   GLCanvas::do_getPixels (const graphics_handle& gh)
   {
     uint8NDArray retval;
-    graphics_object go = gh_manager::get_object (gh);
+
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::do_getPixels");
+
+    graphics_object go = gh_mgr.get_object (gh);
 
     if (go && go.isa ("figure"))
       {
@@ -135,8 +141,11 @@ namespace QtHandles
   GLCanvas::do_print (const QString& file_cmd, const QString& term,
                       const graphics_handle& handle)
   {
-    gh_manager::auto_lock lock;
-    graphics_object go = gh_manager::get_object (handle);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::do_print");
+
+    octave::autolock guard  (gh_mgr.graphics_lock ());
+
+    graphics_object go = gh_mgr.get_object (handle);
 
     if (go.valid_object ())
       {

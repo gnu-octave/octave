@@ -55,18 +55,7 @@ namespace octave
     // The following version of the draw method is not declared virtual
     // because no derived class overrides it.
 
-    void draw (const Matrix& hlist, bool toplevel = false)
-    {
-      int len = hlist.numel ();
-
-      for (int i = len-1; i >= 0; i--)
-        {
-          graphics_object obj = gh_manager::get_object (hlist(i));
-
-          if (obj)
-            draw (obj, toplevel);
-        }
-    }
+    void draw (const Matrix& hlist, bool toplevel = false);
 
     virtual void set_viewport (int w, int h);
     virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }

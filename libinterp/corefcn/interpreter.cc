@@ -556,6 +556,8 @@ namespace octave
   interpreter::~interpreter (void)
   {
     cleanup ();
+
+    delete m_gh_manager;
   }
 
   void interpreter::intern_nargin (octave_idx_type nargs)
@@ -1070,7 +1072,7 @@ namespace octave
     if (! command_history::ignoring_entries ())
       OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
-    OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+    OCTAVE_SAFE_CALL (m_gh_manager->close_all_figures, ());
 
     m_gtk_manager.unload_all_toolkits ();
 

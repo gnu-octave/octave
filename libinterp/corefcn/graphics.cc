@@ -613,6 +613,19 @@ default_table_backgroundcolor (void)
   return retval;
 }
 
+static graphics_handle
+make_graphics_handle (const std::string& go_name,
+                      const graphics_handle& parent,
+                      bool integer_figure_handle = false,
+                      bool call_createfcn = true,
+                      bool notify_toolkit = true)
+{
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("make_graphics_handle");
+
+  return gh_mgr.make_graphics_handle (go_name, parent, integer_figure_handle,
+                                      call_createfcn, notify_toolkit);
+}
+
 static double
 convert_font_size (double font_size, const caseless_str& from_units,
                    const caseless_str& to_units, double parent_height = 0)
@@ -821,7 +834,10 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                        const caseless_str& from_units,
                        const caseless_str& to_units)
 {
-  graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("convert_text_position");
+
+  graphics_object go = gh_mgr.get_object (props.get___myhandle__ ());
+
   graphics_object ax = go.get_ancestor ("axes");
 
   Matrix retval;
@@ -908,8 +924,12 @@ convert_text_position (const Matrix& pos, const text::properties& props,
 static Matrix
 screen_size_pixels (void)
 {
-  graphics_object obj = gh_manager::get_object (0);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("scren_size_pixels");
+
+  graphics_object obj = gh_mgr.get_object (0);
+
   Matrix sz = obj.get ("screensize").matrix_value ();
+
   return convert_position (sz, obj.get ("units").string_value (), "pixels",
                            sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
 }
@@ -919,7 +939,9 @@ device_pixel_ratio (graphics_handle h)
 {
   double retval = 1.0;
 
-  graphics_object fig = gh_manager::get_object (h).get_ancestor ("figure");
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("device_pixel_ratio");
+
+  graphics_object fig = gh_mgr.get_object (h).get_ancestor ("figure");
 
   if (fig.valid_object ())
     retval = fig.get ("__device_pixel_ratio__").double_value ();
@@ -982,7 +1004,9 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   Matrix cmap (1, 3, 0.0);
   Matrix clim (1, 2, 0.0);
 
-  graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("convert_cdata");
+
+  graphics_object go = gh_mgr.get_object (props.get___myhandle__ ());
   graphics_object ax = go.get_ancestor ("axes");
 
   if (ax.valid_object ())
@@ -1233,7 +1257,10 @@ base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
       // Notify graphics toolkit.
       if (id >= 0 && do_notify_toolkit)
         {
-          graphics_object go = gh_manager::get_object (parent);
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("base_property::set");
+
+          graphics_object go = gh_mgr.get_object (parent);
           if (go)
             go.update (id);
         }
@@ -1253,8 +1280,11 @@ base_property::run_listeners (listener_mode mode)
 {
   const octave_value_list& l = listeners[mode];
 
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_property::run_listeners");
+
   for (int i = 0; i < l.length (); i++)
-    gh_manager::execute_listener (parent, l(i));
+    gh_mgr.execute_listener (parent, l(i));
 }
 
 radio_values::radio_values (const std::string& opt_string)
@@ -1711,14 +1741,16 @@ handle_property::do_set (const octave_value& v)
   double dv = v.xdouble_value (R"(set: invalid graphics handle for property "%s")",
                                get_name ().c_str ());
 
-  graphics_handle gh = gh_manager::lookup (dv);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("handle_property::do_set");
+
+  graphics_handle gh = gh_mgr.lookup (dv);
 
   // Check the object type if necessary
   bool type_ok = true;
   if (gh.ok () && ! type_constraints.empty ())
     {
       type_ok = false;
-      graphics_object obj = gh_manager::get_object (gh);
+      graphics_object obj = gh_mgr.get_object (gh);
 
       for (const auto& type : type_constraints)
         if (obj.isa (type))
@@ -1771,7 +1803,10 @@ children_property::do_get_children (bool return_hidden) const
   Matrix retval (children_list.size (), 1);
   octave_idx_type k = 0;
 
-  graphics_object go = gh_manager::get_object (0);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("children_property::do_get_children");
+
+  graphics_object go = gh_mgr.get_object (0);
 
   root_figure::properties& props
     = dynamic_cast<root_figure::properties&> (go.get_properties ());
@@ -1782,7 +1817,7 @@ children_property::do_get_children (bool return_hidden) const
         {
           graphics_handle kid = hchild;
 
-          if (gh_manager::is_handle_visible (kid))
+          if (gh_mgr.is_handle_visible (kid))
             {
               if (! return_hidden)
                 retval(k++) = hchild;
@@ -1805,26 +1840,29 @@ children_property::do_get_children (bool return_hidden) const
 void
 children_property::do_delete_children (bool clear, bool from_root)
 {
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("children_property::do_delete_children");
+
   if (from_root)
     {
       for (graphics_handle hchild : children_list)
         {
-          graphics_object go = gh_manager::get_object (hchild);
+          graphics_object go = gh_mgr.get_object (hchild);
           if (go.valid_object ()
               && ! go.get_properties ().is_beingdeleted ())
-            gh_manager::free (hchild, from_root);
+            gh_mgr.free (hchild, from_root);
         }
       children_list.clear ();
     }
   else
     while (! children_list.empty ())
       {
-        // gh_manager::free removes hchild from children_list
+        // gh_mgr.free removes hchild from children_list
         graphics_handle hchild = children_list.front ();
-        graphics_object go = gh_manager::get_object (hchild);
+        graphics_object go = gh_mgr.get_object (hchild);
         if (go.valid_object ()
             && ! go.get_properties ().is_beingdeleted ())
-          gh_manager::free (hchild, from_root);
+          gh_mgr.free (hchild, from_root);
       }
 
   // FIXME: children_list should be clear anyway at this point.
@@ -1910,7 +1948,12 @@ callback_property::execute (const octave_value& data) const
       executing_callbacks.insert (this);
 
       if (callback.is_defined () && ! callback.isempty ())
-        gh_manager::execute_callback (get_parent (), callback, data);
+        {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("callback_property::execute");
+
+          gh_mgr.execute_callback (get_parent (), callback, data);
+        }
     }
 }
 
@@ -2045,7 +2088,9 @@ property::create (const std::string& name, const graphics_handle& h,
 static void
 finalize_r (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("finalize_r");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   if (go)
     {
@@ -2061,7 +2106,9 @@ finalize_r (const graphics_handle& h)
 static void
 initialize_r (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("initialize_r");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   if (go)
     {
@@ -2153,17 +2200,23 @@ figure::properties::update_handlevisibility (void)
 {
   if (! is_handle_visible ())
     {
-      octave_value cf = gh_manager::get_object (0).get ("currentfigure");
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("figure::properties::update_handlevisibility");
+
+      octave_value cf = gh_mgr.get_object (0).get ("currentfigure");
+
       if (! cf.isempty () && cf.double_value () == __myhandle__)
         {
-          gh_manager::auto_lock guard;
-          octave_value kids =  gh_manager::get_object (0).get ("children");
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
+          octave_value kids =  gh_mgr.get_object (0).get ("children");
+
           if (kids.isempty ())
-            gh_manager::get_object (0).set ("currentfigure", Matrix ());
+            gh_mgr.get_object (0).set ("currentfigure", Matrix ());
           else
             {
               NDArray kidsarray = kids.array_value ();
-              gh_manager::get_object (0).set ("currentfigure", kidsarray(0));
+              gh_mgr.get_object (0).set ("currentfigure", kidsarray(0));
             }
         }
     }
@@ -2174,7 +2227,10 @@ figure::properties::update_handlevisibility (void)
 static void
 update_text_pos (graphics_handle h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("update_text_pos");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   if (go.isa ("text"))
     {
       text::properties& tp
@@ -2729,7 +2785,7 @@ make_handle_fraction (void)
 }
 
 graphics_handle
-gh_manager::do_get_handle (bool integer_figure_handle)
+gh_manager::get_handle (bool integer_figure_handle)
 {
   graphics_handle retval;
 
@@ -2772,13 +2828,15 @@ gh_manager::do_get_handle (bool integer_figure_handle)
 static bool
 isfigure (double val)
 {
-  graphics_object go = gh_manager::get_object (val);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("isfigure");
+
+  graphics_object go = gh_mgr.get_object (val);
 
   return go && go.isa ("figure");
 }
 
 void
-gh_manager::do_free (const graphics_handle& h, bool from_root)
+gh_manager::free (const graphics_handle& h, bool from_root)
 {
   if (h.ok ())
     {
@@ -2798,7 +2856,7 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
       graphics_handle parent_h = p->second.get_parent ();
       graphics_object parent_go = nullptr;
       if (! from_root || isfigure (h.value ()))
-        parent_go = gh_manager::get_object (parent_h);
+        parent_go = get_object (parent_h);
 
       bp.set_beingdeleted (true);
 
@@ -2841,8 +2899,8 @@ gh_manager::do_free (const graphics_handle& h, bool from_root)
 }
 
 void
-gh_manager::do_renumber_figure (const graphics_handle& old_gh,
-                                const graphics_handle& new_gh)
+gh_manager::renumber_figure (const graphics_handle& old_gh,
+                             const graphics_handle& new_gh)
 {
   auto p = m_handle_map.find (old_gh);
 
@@ -2873,7 +2931,10 @@ static void
 xset (const graphics_handle& h, const caseless_str& pname,
       const octave_value& val)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("xset");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   go.set (pname, val);
 }
 
@@ -2882,7 +2943,10 @@ xset (const graphics_handle& h, const octave_value_list& args)
 {
   if (args.length () > 0)
     {
-      graphics_object go = gh_manager::get_object (h);
+      gh_manager& gh_mgr = octave::__get_gh_manager__ ("xset");
+
+      graphics_object go = gh_mgr.get_object (h);
+
       go.set (args);
     }
 }
@@ -2890,7 +2954,10 @@ xset (const graphics_handle& h, const octave_value_list& args)
 static octave_value
 xget (const graphics_handle& h, const caseless_str& pname)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("xget");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   return go.get (pname);
 }
 
@@ -2902,17 +2969,19 @@ reparent (const octave_value& ov, const std::string& who,
   double hv = ov.xdouble_value ("%s: %s must be a graphics handle",
                                 who.c_str (), pname.c_str ());
 
-  graphics_handle h = gh_manager::lookup (hv);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("reparent");
+
+  graphics_handle h = gh_mgr.lookup (hv);
 
   if (! h.ok ())
     error ("%s: invalid graphics handle (= %g) for %s",
            who.c_str (), hv, pname.c_str ());
 
-  graphics_object go = gh_manager::get_object (h);
+  graphics_object go = gh_mgr.get_object (h);
 
   graphics_handle parent_h = go.get_parent ();
 
-  graphics_object parent_go = gh_manager::get_object (parent_h);
+  graphics_object parent_go = gh_mgr.get_object (parent_h);
 
   parent_go.remove_child (h);
 
@@ -2949,7 +3018,10 @@ delete_graphics_object (const graphics_handle& h, bool from_root = false)
 {
   if (h.ok ())
     {
-      graphics_object go = gh_manager::get_object (h);
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("delete_graphics_object");
+
+      graphics_object go = gh_mgr.get_object (h);
 
       // Don't do recursive deleting, due to callbacks
       if (! go.get_properties ().is_beingdeleted ())
@@ -2957,7 +3029,7 @@ delete_graphics_object (const graphics_handle& h, bool from_root = false)
           // NOTE: Freeing the handle also calls any deletefcn.  It also calls
           //       the parent's delete_child function.
 
-          gh_manager::free (h, from_root || go.isa ("figure"));
+          gh_mgr.free (h, from_root || go.isa ("figure"));
 
           Vdrawnow_requested = true;
         }
@@ -2967,7 +3039,9 @@ delete_graphics_object (const graphics_handle& h, bool from_root = false)
 static void
 delete_graphics_object (double val, bool from_root = false)
 {
-  delete_graphics_object (gh_manager::lookup (val), from_root || isfigure (val));
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("delete_graphics_object");
+
+  delete_graphics_object (gh_mgr.lookup (val), from_root || isfigure (val));
 }
 
 // Flag to stop redraws due to callbacks while deletion is in progress.
@@ -2990,7 +3064,9 @@ close_figure (const graphics_handle& h)
 {
   octave_value closerequestfcn = xget (h, "closerequestfcn");
 
-  gh_manager::execute_callback (h, closerequestfcn);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("close_figure");
+
+  gh_mgr.execute_callback (h, closerequestfcn);
 }
 
 static void
@@ -3006,7 +3082,7 @@ force_close_figure (const graphics_handle& h)
 }
 
 void
-gh_manager::do_close_all_figures (void)
+gh_manager::close_all_figures (void)
 {
   // FIXME: should we process or discard pending events?
 
@@ -3015,11 +3091,11 @@ gh_manager::do_close_all_figures (void)
   // Don't use m_figure_list_iterator because we'll be removing elements
   // from the list elsewhere.
 
-  Matrix hlist = do_figure_handle_list (true);
+  Matrix hlist = figure_handle_list (true);
 
   for (octave_idx_type i = 0; i < hlist.numel (); i++)
     {
-      graphics_handle h = gh_manager::lookup (hlist(i));
+      graphics_handle h = lookup (hlist(i));
 
       if (h.ok ())
         close_figure (h);
@@ -3027,11 +3103,11 @@ gh_manager::do_close_all_figures (void)
 
   // They should all be closed now.  If not, force them to close.
 
-  hlist = do_figure_handle_list (true);
+  hlist = figure_handle_list (true);
 
   for (octave_idx_type i = 0; i < hlist.numel (); i++)
     {
-      graphics_handle h = gh_manager::lookup (hlist(i));
+      graphics_handle h = lookup (hlist(i));
 
       if (h.ok ())
         force_close_figure (h);
@@ -3039,10 +3115,10 @@ gh_manager::do_close_all_figures (void)
 
   // None left now, right?
 
-  hlist = do_figure_handle_list (true);
+  hlist = figure_handle_list (true);
 
   if (hlist.numel () != 0)
-    warning ("gh_manager::do_close_all_figures: some graphics elements failed to close.");
+    warning ("gh_manager::close_all_figures: some graphics elements failed to close.");
 
   // Clear all callback objects from our list.
 
@@ -3052,7 +3128,10 @@ gh_manager::do_close_all_figures (void)
 static void
 adopt (const graphics_handle& parent_h, const graphics_handle& h)
 {
-  graphics_object parent_go = gh_manager::get_object (parent_h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("adopt");
+
+  graphics_object parent_go = gh_mgr.get_object (parent_h);
+
   parent_go.adopt (h);
 }
 
@@ -3065,7 +3144,9 @@ ishghandle (const graphics_handle& h)
 static bool
 ishghandle (double val)
 {
-  graphics_handle h = gh_manager::lookup (val);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("ishghandle");
+
+  graphics_handle h = gh_mgr.lookup (val);
 
   return h.ok ();
 }
@@ -3095,14 +3176,19 @@ ishghandle (const octave_value& val)
 static void
 xcreatefcn (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("xcreatefcn");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   go.get_properties ().execute_createfcn  ();
 }
 
 static void
 xinitialize (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("xinitialize");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   if (go)
     go.initialize ();
@@ -3113,7 +3199,10 @@ xinitialize (const graphics_handle& h)
 void
 base_graphics_toolkit::finalize (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_toolkit::finalize");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   finalize (go);
 }
@@ -3140,7 +3229,10 @@ static void
 xreset_default_properties (graphics_handle h,
                            property_list::pval_map_type factory_pval)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("xreset_default_properties");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   // Replace factory defaults by user defined ones
   std::string go_name = go.get_properties ().graphics_object_name ();
@@ -3301,13 +3393,16 @@ base_properties::set_parent (const octave_value& val)
   if (hp == __myhandle__)
     error ("set: can not set object parent to be object itself");
 
-  graphics_handle new_parent = gh_manager::lookup (hp);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::set_parent");
+
+  graphics_handle new_parent = gh_mgr.lookup (hp);
   if (! new_parent.ok ())
     error ("set: invalid graphics handle (= %g) for parent", hp);
 
   // Remove child from current parent
   graphics_object old_parent_go;
-  old_parent_go = gh_manager::get_object (get_parent ());
+  old_parent_go = gh_mgr.get_object (get_parent ());
 
   if (old_parent_go.get_handle () != hp)
     old_parent_go.remove_child (__myhandle__);
@@ -3316,7 +3411,7 @@ base_properties::set_parent (const octave_value& val)
 
   // Check new parent's parent is not this child to avoid recursion
   graphics_object new_parent_go;
-  new_parent_go = gh_manager::get_object (new_parent);
+  new_parent_go = gh_mgr.get_object (new_parent);
   if (new_parent_go.get_parent () == __myhandle__)
     {
       // new parent's parent gets child's original parent
@@ -3345,8 +3440,14 @@ base_properties::mark_modified (void)
 {
   // Mark existing object as modified
   __modified__ = "on";
+
   // Attempt to mark parent object as modified if it exists
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::mark_modified");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   if (parent_go)
     parent_go.mark_modified ();
 }
@@ -3354,7 +3455,10 @@ base_properties::mark_modified (void)
 void
 base_properties::override_defaults (base_graphics_object& obj)
 {
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::override_defaults");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
   if (parent_go)
     parent_go.override_defaults (obj);
@@ -3363,7 +3467,10 @@ base_properties::override_defaults (base_graphics_object& obj)
 void
 base_properties::update_axis_limits (const std::string& axis_type) const
 {
-  graphics_object go = gh_manager::get_object (__myhandle__);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_axis_limits");
+
+  graphics_object go = gh_mgr.get_object (__myhandle__);
 
   if (go)
     go.update_axis_limits (axis_type);
@@ -3373,7 +3480,10 @@ void
 base_properties::update_axis_limits (const std::string& axis_type,
                                      const graphics_handle& h) const
 {
-  graphics_object go = gh_manager::get_object (__myhandle__);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_axis_limits");
+
+  graphics_object go = gh_mgr.get_object (__myhandle__);
 
   if (go)
     go.update_axis_limits (axis_type, h);
@@ -3385,7 +3495,11 @@ base_properties::update_uicontextmenu (void) const
   if (uicontextmenu.get ().isempty ())
     return;
 
-  graphics_object go = gh_manager::get_object (uicontextmenu.get ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_uicontextmenu");
+
+  graphics_object go = gh_mgr.get_object (uicontextmenu.get ());
+
   if (go && go.isa ("uicontextmenu"))
     {
       uicontextmenu::properties& props
@@ -3404,7 +3518,10 @@ base_properties::is_handle_visible (void) const
 graphics_toolkit
 base_properties::get_toolkit (void) const
 {
-  graphics_object go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::get_toolkit");
+
+  graphics_object go = gh_mgr.get_object (get_parent ());
 
   if (go)
     return go.get_toolkit ();
@@ -3417,9 +3534,12 @@ base_properties::update_boundingbox (void)
 {
   Matrix kids = get_children ();
 
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_boundingbox");
+
   for (int i = 0; i < kids.numel (); i++)
     {
-      graphics_object go = gh_manager::get_object (kids(i));
+      graphics_object go = gh_mgr.get_object (kids(i));
 
       if (go.valid_object ())
         go.get_properties ().update_boundingbox ();
@@ -3429,7 +3549,10 @@ base_properties::update_boundingbox (void)
 void
 base_properties::update_autopos (const std::string& elem_type)
 {
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_autopos");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
   if (parent_go.valid_object ())
     parent_go.get_properties ().update_autopos (elem_type);
@@ -3442,14 +3565,21 @@ base_properties::update_handlevisibility (void)
     return;
 
   // This object should not be the figure "currentobject"
-  graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::update_handlevisibility");
+
+  graphics_object go (gh_mgr.get_object (get___myhandle__ ()));
+
   graphics_object fig (go.get_ancestor ("figure"));
+
   if (fig.valid_object ())
     {
       octave_value co = fig.get ("currentobject");
       if (! co.isempty () && co.double_value () == __myhandle__)
         {
-          gh_manager::auto_lock guard;
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
           auto& fig_props = dynamic_cast<figure::properties&> (fig.get_properties ());
           fig_props.set_currentobject (Matrix ());
         }
@@ -3522,14 +3652,18 @@ base_properties::get_children_of_type (const caseless_str& chtype,
                                        bool traverse,
                                        std::list<graphics_object> &children_list) const
 {
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_properties::get_children_of_type");
+
   Matrix ch = get_children ();
+
   for (octave_idx_type i = 0; i < ch.numel (); i++)
     {
-      graphics_handle hkid = gh_manager::lookup (ch(i));
+      graphics_handle hkid = gh_mgr.lookup (ch(i));
 
       if (hkid.ok ())
         {
-          graphics_object go = gh_manager::get_object (hkid);
+          graphics_object go = gh_mgr.get_object (hkid);
           if ( get_invisible || go.get_properties ().is_visible () )
             {
               if (go.isa (chtype))
@@ -3552,7 +3686,10 @@ base_graphics_object::update_axis_limits (const std::string& axis_type)
   if (! valid_object ())
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::update_axis_limits");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
   if (parent_go)
     parent_go.update_axis_limits (axis_type);
@@ -3565,7 +3702,10 @@ base_graphics_object::update_axis_limits (const std::string& axis_type,
   if (! valid_object ())
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::update_axis_limits");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
   if (parent_go)
     parent_go.update_axis_limits (axis_type, h);
@@ -3619,7 +3759,10 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type& def
         }
     }
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::build_user_defaults_map");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
   if (parent_go)
     parent_go.build_user_defaults_map (def, go_name);
@@ -3630,8 +3773,11 @@ base_graphics_object::reset_default_properties (void)
 {
   if (valid_object ())
     {
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("base_graphics_object::reset_default_properties");
+
       property_list::pval_map_type factory_pval
-        = gh_manager::get_object (0).get_factory_defaults_list ().find (type ())->second;
+        = gh_mgr.get_object (0).get_factory_defaults_list ().find (type ())->second;
 
       remove_all_listeners ();
       xreset_default_properties (get_handle (), factory_pval);
@@ -3646,7 +3792,11 @@ base_graphics_object::values_as_string (void)
 
   std::string retval;
   octave_map m = get ().map_value ();
-  graphics_object go = gh_manager::get_object (get_handle ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::values_as_string");
+
+  graphics_object go = gh_mgr.get_object (get_handle ());
 
   for (const auto& pm : m)
     {
@@ -3678,7 +3828,10 @@ base_graphics_object::value_as_string (const std::string& prop)
   if (! valid_object ())
     error ("base_graphics_object::value_as_string: invalid graphics object");
 
-  graphics_object go = gh_manager::get_object (get_handle ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::value_as_string");
+
+  graphics_object go = gh_mgr.get_object (get_handle ());
 
   if (prop != "children" && ! go.has_readonly_property (prop))
     {
@@ -3706,7 +3859,11 @@ base_graphics_object::values_as_struct (void)
     error ("base_graphics_object::values_as_struct: invalid graphics object");
 
   octave_scalar_map m = get ().scalar_map_value ();
-  graphics_object go = gh_manager::get_object (get_handle ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::values_as_struct");
+
+  graphics_object go = gh_mgr.get_object (get_handle ());
 
   for (const auto& pm : m)
     {
@@ -3756,7 +3913,12 @@ graphics_object::get_ancestor (const std::string& obj_type) const
       if (isa (obj_type))
         return *this;
       else
-        return gh_manager::get_object (get_parent ()).get_ancestor (obj_type);
+        {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("graphics_object::get_ancestor");
+
+          return gh_mgr.get_object (get_parent ()).get_ancestor (obj_type);
+        }
     }
   else
     return graphics_object ();
@@ -3791,7 +3953,12 @@ root_figure::properties::set_currentfigure (const octave_value& v)
       currentfigure = val;
 
       if (val.ok ())
-        gh_manager::push_figure (val);
+        {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("root_figure::properties::set_currentfigure");
+
+          gh_mgr.push_figure (val);
+        }
     }
   else
     err_set_invalid ("currentfigure");
@@ -3804,15 +3971,18 @@ figure::properties::set_integerhandle (const octave_value& val)
     {
       bool int_fig_handle = integerhandle.is_on ();
 
-      graphics_object this_go = gh_manager::get_object (__myhandle__);
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("figure::properties::set_integerhandle");
+
+      graphics_object this_go = gh_mgr.get_object (__myhandle__);
 
       graphics_handle old_myhandle = __myhandle__;
 
-      __myhandle__ = gh_manager::get_handle (int_fig_handle);
+      __myhandle__ = gh_mgr.get_handle (int_fig_handle);
 
-      gh_manager::renumber_figure (old_myhandle, __myhandle__);
+      gh_mgr.renumber_figure (old_myhandle, __myhandle__);
 
-      graphics_object parent_go = gh_manager::get_object (get_parent ());
+      graphics_object parent_go = gh_mgr.get_object (get_parent ());
 
       base_properties& props = parent_go.get_properties ();
 
@@ -3822,12 +3992,12 @@ figure::properties::set_integerhandle (const octave_value& val)
 
       for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
-          graphics_object kid = gh_manager::get_object (kids(i));
+          graphics_object kid = gh_mgr.get_object (kids(i));
 
           kid.get_properties ().renumber_parent (__myhandle__);
         }
 
-      graphics_handle cf = gh_manager::current_figure ();
+      graphics_handle cf = gh_mgr.current_figure ();
 
       if (__myhandle__ == cf)
         xset (0, "currentfigure", __myhandle__.value ());
@@ -3933,9 +4103,12 @@ root_figure::properties::get_boundingbox (bool, const Matrix&) const
 void
 root_figure::properties::remove_child (const graphics_handle& h, bool)
 {
-  gh_manager::pop_figure (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("root_figure::properties::remove_child");
 
-  graphics_handle cf = gh_manager::current_figure ();
+  gh_mgr.pop_figure (h);
+
+  graphics_handle cf = gh_mgr.current_figure ();
 
   xset (0, "currentfigure", cf.value ());
 
@@ -3977,11 +4150,14 @@ figure::properties::remove_child (const graphics_handle& h, bool from_root)
 
       Matrix kids = get_children ();
 
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("root_figure::properties::remove_child");
+
       for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
           graphics_handle kid = kids(i);
 
-          graphics_object go = gh_manager::get_object (kid);
+          graphics_object go = gh_mgr.get_object (kid);
 
           if (go.isa ("axes"))
             {
@@ -4047,7 +4223,10 @@ figure::properties::adopt (const graphics_handle& h)
 
   if (! get_currentaxes ().ok ())
     {
-      graphics_object go = gh_manager::get_object (h);
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("figure::properties::adopt");
+
+      graphics_object go = gh_mgr.get_object (h);
 
       if (go.type () == "axes")
         set_currentaxes (h.as_octave_value ());
@@ -4175,11 +4354,14 @@ figure::properties::set_position (const octave_value& v,
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("figure::properties::set_position");
+
           if (! get_resizefcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "resizefcn");
+            gh_mgr.post_callback (__myhandle__, "resizefcn");
 
           if (! get_sizechangedfcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+            gh_mgr.post_callback (__myhandle__, "sizechangedfcn");
 
           update_boundingbox ();
         }
@@ -4864,7 +5046,10 @@ figure::get_default (const caseless_str& name) const
   if (retval.is_undefined ())
     {
       graphics_handle parent_h = get_parent ();
-      graphics_object parent_go = gh_manager::get_object (parent_h);
+
+      gh_manager& gh_mgr = octave::__get_gh_manager__ ("figure::get_default");
+
+      graphics_object parent_go = gh_mgr.get_object (parent_h);
 
       retval = parent_go.get_default (name);
     }
@@ -5053,7 +5238,12 @@ Matrix
 axes::properties::calc_tightbox (const Matrix& init_pos)
 {
   Matrix pos = init_pos;
-  graphics_object go = gh_manager::get_object (get_parent ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::calc_tightbox");
+
+  graphics_object go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bb = go.get_properties ().get_boundingbox (true);
 
   // FIXME: The layout should be clean at this stage and we should not have to
@@ -5187,7 +5377,11 @@ axes::properties::set_text_child (handle_property& hp,
     }
 
   graphics_handle val;
-  graphics_object go = gh_manager::get_object (gh_manager::lookup (v));
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::set_text_child");
+
+  graphics_object go = gh_mgr.get_object (gh_mgr.lookup (v));
 
   if (go.isa ("text"))
     val = ::reparent (v, "set", who, __myhandle__, false);
@@ -5201,7 +5395,7 @@ axes::properties::set_text_child (handle_property& hp,
 
   xset (val, "handlevisibility", "off");
 
-  gh_manager::free (hp.handle_value ());
+  gh_mgr.free (hp.handle_value ());
 
   hp = val;
 
@@ -5413,13 +5607,16 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 
   visible = "on";
 
-  graphics_object go = gh_manager::get_object (xlabel.handle_value ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::set_defaults");
+
+  graphics_object go = gh_mgr.get_object (xlabel.handle_value ());
   go.reset_default_properties ();
-  go = gh_manager::get_object (ylabel.handle_value ());
+  go = gh_mgr.get_object (ylabel.handle_value ());
   go.reset_default_properties ();
-  go = gh_manager::get_object (zlabel.handle_value ());
+  go = gh_mgr.get_object (zlabel.handle_value ());
   go.reset_default_properties ();
-  go = gh_manager::get_object (title.handle_value ());
+  go = gh_mgr.get_object (title.handle_value ());
   go.reset_default_properties ();
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
@@ -5477,7 +5674,10 @@ axes::properties::get_colormap (void) const
 {
   if (__colormap__.get ().isempty ())
     {
-      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("axes::properties::get_colormap");
+
+      graphics_object go (gh_mgr.get_object (get___myhandle__ ()));
       graphics_object go_f (go.get_ancestor ("figure"));
       figure::properties& figure_props
         = reinterpret_cast<figure::properties&> (go_f.get_properties ());
@@ -5492,12 +5692,15 @@ axes::properties::delete_text_child (handle_property& hp, bool from_root)
 {
   graphics_handle h = hp.handle_value ();
 
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::delete_text_child");
+
   if (h.ok ())
     {
-      graphics_object go = gh_manager::get_object (h);
+      graphics_object go = gh_mgr.get_object (h);
 
       if (go.valid_object ())
-        gh_manager::free (h, from_root);
+        gh_mgr.free (h, from_root);
     }
 
   // FIXME: is it necessary to check whether the axes object is
@@ -5507,7 +5710,7 @@ axes::properties::delete_text_child (handle_property& hp, bool from_root)
 
   if (! is_beingdeleted ())
     {
-      hp = gh_manager::make_graphics_handle ("text", __myhandle__,
+      hp = gh_mgr.make_graphics_handle ("text", __myhandle__,
                                              false, false);
 
       xset (hp.handle_value (), "handlevisibility", "off");
@@ -5519,7 +5722,10 @@ axes::properties::delete_text_child (handle_property& hp, bool from_root)
 void
 axes::properties::remove_child (const graphics_handle& h, bool from_root)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::remove_child");
+
+  graphics_object go = gh_mgr.get_object (h);
 
   if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
     {
@@ -5553,7 +5759,9 @@ axes::properties::remove_child (const graphics_handle& h, bool from_root)
 void
 axes::properties::adopt (const graphics_handle& h)
 {
-  graphics_object go (gh_manager::get_object (h));
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("axes::properties::adopt");
+
+  graphics_object go (gh_mgr.get_object (h));
 
   if (go.isa ("light") && go.get_properties ().is_visible ())
     increase_num_lights ();
@@ -6223,7 +6431,10 @@ axes::properties::update_xlabel_position (void)
   if (updating_xlabel_position)
     return;
 
-  graphics_object go = gh_manager::get_object (get_xlabel ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_xlabel_position");
+
+  graphics_object go = gh_mgr.get_object (get_xlabel ());
 
   if (! go.valid_object ())
     return;
@@ -6325,7 +6536,10 @@ axes::properties::update_ylabel_position (void)
   if (updating_ylabel_position)
     return;
 
-  graphics_object go = gh_manager::get_object (get_ylabel ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_ylabel_position");
+
+  graphics_object go = gh_mgr.get_object (get_ylabel ());
 
   if (! go.valid_object ())
     return;
@@ -6427,7 +6641,10 @@ axes::properties::update_zlabel_position (void)
   if (updating_zlabel_position)
     return;
 
-  graphics_object go = gh_manager::get_object (get_zlabel ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_zlabel_position");
+
+  graphics_object go = gh_mgr.get_object (get_zlabel ());
 
   if (! go.valid_object ())
     return;
@@ -6552,7 +6769,10 @@ axes::properties::update_title_position (void)
   if (updating_title_position)
     return;
 
-  graphics_object go = gh_manager::get_object (get_title ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_title_position");
+
+  graphics_object go = gh_mgr.get_object (get_title ());
 
   if (! go.valid_object ())
     return;
@@ -6763,12 +6983,18 @@ void
 axes::properties::update_label_color (handle_property label,
                                       color_property col)
 {
-  gh_manager::get_object (label.handle_value ()).set ("color", col.get ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_label_color");
+
+  gh_mgr.get_object (label.handle_value ()).set ("color", col.get ());
 }
 
 void
 axes::properties::update_font (std::string prop)
 {
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_font");
+
   if (! prop.empty ())
     {
       octave_value val = get (prop);
@@ -6783,15 +7009,16 @@ axes::properties::update_font (std::string prop)
       else if (prop == "fontweight")
         tval = get ("titlefontweight");
 
-      gh_manager::get_object (get_xlabel ()).set (prop, val);
-      gh_manager::get_object (get_ylabel ()).set (prop, val);
-      gh_manager::get_object (get_zlabel ()).set (prop, val);
-      gh_manager::get_object (get_title ()).set (prop, tval);
+      gh_mgr.get_object (get_xlabel ()).set (prop, val);
+      gh_mgr.get_object (get_ylabel ()).set (prop, val);
+      gh_mgr.get_object (get_zlabel ()).set (prop, val);
+      gh_mgr.get_object (get_title ()).set (prop, tval);
     }
 
   double dpr = device_pixel_ratio (get___myhandle__ ());
 
-  gh_manager::auto_lock guard;
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
@@ -6810,7 +7037,10 @@ axes::properties::get_boundingbox (bool internal,
 
   if (parent_size.isempty ())
     {
-      graphics_object go = gh_manager::get_object (get_parent ());
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("axes::properties::get_boundingbox");
+
+      graphics_object go = gh_mgr.get_object (get_parent ());
 
       if (go.valid_object ())
         parent_size
@@ -6863,9 +7093,12 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           else if (i == 3)
             htext = get_zlabel ();
 
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("axes::properties::get_extent");
+
           text::properties& text_props
             = reinterpret_cast<text::properties&>
-                (gh_manager::get_object (htext).get_properties ());
+                (gh_mgr.get_object (htext).get_properties ());
 
           Matrix text_pos = text_props.get_data_position ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
@@ -7079,9 +7312,14 @@ axes::properties::set_units (const octave_value& val)
 void
 axes::properties::update_units (const caseless_str& old_units)
 {
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("axes::properties::update_units");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bb
     = parent_go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+
   caseless_str new_units = get_units ();
   position.set (octave_value (convert_position (get_position ().matrix_value (),
                                                 old_units, new_units,
@@ -7186,7 +7424,11 @@ axes::get_default (const caseless_str& pname) const
   if (retval.is_undefined ())
     {
       graphics_handle parent_h = get_parent ();
-      graphics_object parent_go = gh_manager::get_object (parent_h);
+
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("axes::properties::get_default");
+
+      graphics_object parent_go = gh_mgr.get_object (parent_h);
 
       retval = parent_go.get_default (pname);
     }
@@ -8091,7 +8333,11 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 
           if (txt_renderer.ok ())
             {
-              gh_manager::auto_lock guard;
+              gh_manager& gh_mgr
+                = octave::__get_gh_manager__ ("axes::properties::get_ticklabel_extents");
+
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               ext = txt_renderer.get_extent (label, 0.0,
                                              get_ticklabelinterpreter ());
 
@@ -8122,12 +8368,14 @@ get_children_limits (double& min_val, double& max_val,
 {
   octave_idx_type n = kids.numel ();
 
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("get_children_limits");
+
   switch (limit_type)
     {
     case 'x':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object go = gh_manager::get_object (kids(i));
+          graphics_object go = gh_mgr.get_object (kids(i));
 
           if (go.is_xliminclude ())
             {
@@ -8141,7 +8389,7 @@ get_children_limits (double& min_val, double& max_val,
     case 'y':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object go = gh_manager::get_object (kids(i));
+          graphics_object go = gh_mgr.get_object (kids(i));
 
           if (go.is_yliminclude ())
             {
@@ -8155,7 +8403,7 @@ get_children_limits (double& min_val, double& max_val,
     case 'z':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object go = gh_manager::get_object (kids(i));
+          graphics_object go = gh_mgr.get_object (kids(i));
 
           if (go.is_zliminclude ())
             {
@@ -8169,7 +8417,7 @@ get_children_limits (double& min_val, double& max_val,
     case 'c':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object go = gh_manager::get_object (kids(i));
+          graphics_object go = gh_mgr.get_object (kids(i));
 
           if (go.is_climinclude ())
             {
@@ -8183,7 +8431,7 @@ get_children_limits (double& min_val, double& max_val,
     case 'a':
       for (octave_idx_type i = 0; i < n; i++)
         {
-          graphics_object go = gh_manager::get_object (kids(i));
+          graphics_object go = gh_mgr.get_object (kids(i));
 
           if (go.is_aliminclude ())
             {
@@ -8982,12 +9230,17 @@ axes::properties::update_handlevisibility (void)
 {
   if (! is_handle_visible ())
     {
-      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("axes::properties::update_handlevisibility");
+
+      graphics_object go (gh_mgr.get_object (get___myhandle__ ()));
+
       graphics_object fig (go.get_ancestor ("figure"));
       octave_value ca = fig.get ("currentaxes");
       if (! ca.isempty () && ca.double_value () == __myhandle__)
         {
-          gh_manager::auto_lock guard;
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
           octave_value kids =  fig.get ("children");
           if (kids.isempty ())
             fig.set ("currentaxes", Matrix ());
@@ -9163,7 +9416,11 @@ text::properties::update_fontunits (const caseless_str& old_units)
 
   if (new_units == "normalized" || old_units == "normalized")
     {
-      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("text::properties::update_fontunits");
+
+      graphics_object go (gh_mgr.get_object (get___myhandle__ ()));
+
       graphics_object ax (go.get_ancestor ("axes"));
 
       parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
@@ -9179,7 +9436,11 @@ text::properties::update_font (void)
 {
   double dpr = device_pixel_ratio (get___myhandle__ ());
 
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("text::properties::update_font");
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
   txt_renderer.set_font (get ("fontname").string_value (),
                          get ("fontweight").string_value (),
                          get ("fontangle").string_value (),
@@ -9221,7 +9482,11 @@ text::properties::update_text_extent (void)
 
   string_vector sv = string_prop.string_vector_value ();
 
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("text::properties::update_text_extent");
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
   txt_renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                                halign, valign, get_rotation (),
                                get_interpreter ());
@@ -9285,7 +9550,11 @@ text::properties::get___fontsize_points__ (double box_pix_height) const
   double fontsz = get_fontsize ();
   double parent_height = box_pix_height;
 
-  graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("text::properties::get___fontsize_points__");
+
+  graphics_object go (gh_mgr.get_object (get___myhandle__ ()));
+
   if (fontunits_is ("normalized") && parent_height <= 0)
     {
       graphics_object ax (go.get_ancestor ("axes"));
@@ -9320,7 +9589,11 @@ light::initialize (const graphics_object& go)
 void
 light::properties::update_visible (void)
 {
-  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("light::properties::update_visible");
+
+  graphics_object go = gh_mgr.get_object (get___myhandle__ ());
+
   axes::properties& ax_props = dynamic_cast<axes::properties&>
     (go.get_ancestor ("axes").get_properties ());
   if (is_visible ())
@@ -9334,7 +9607,11 @@ light::properties::update_visible (void)
 bool
 patch::properties::get_do_lighting (void) const
 {
-  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("patch::properties::get_do_lighting");
+
+  graphics_object go = gh_mgr.get_object (get___myhandle__ ());
+
   axes::properties& ax_props = dynamic_cast<axes::properties&>
     (go.get_ancestor ("axes").get_properties ());
 
@@ -9938,7 +10215,11 @@ surface::properties::get_color_data (void) const
 bool
 surface::properties::get_do_lighting (void) const
 {
-  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("surface::properties::get_do_lighting");
+
+  graphics_object go = gh_mgr.get_object (get___myhandle__ ());
+
   axes::properties& ax_prop = dynamic_cast<axes::properties&>
     (go.get_ancestor ("axes").get_properties ());
 
@@ -10155,22 +10436,24 @@ surface::properties::update_vertex_normals (bool reset, bool force)
     vertexnormals = Matrix ();
 }
 
-DEFUN (__update_normals__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__update_normals__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __update_normals__ (@var{h})
 Update FaceNormals and VertexNormals of the patch or surface referred to by
 @var{h}.
 
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
 
   octave_value val = args(0);
 
-  graphics_object go = gh_manager::get_object (val);
+  graphics_object go = gh_mgr.get_object (val);
 
   if (go.isa ("surface"))
     {
@@ -10225,7 +10508,11 @@ Update FaceNormals and VertexNormals of the patch or surface referred to by
 void
 hggroup::properties::remove_child (const graphics_handle& h, bool from_root)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("hggroup::properties::remove_child");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   if (! from_root && go.isa ("light") && go.get_properties ().is_visible ())
     {
       axes::properties& ax_props
@@ -10239,7 +10526,11 @@ hggroup::properties::remove_child (const graphics_handle& h, bool from_root)
 void
 hggroup::properties::adopt (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("hggroup::properties::adopt");
+
+  graphics_object go = gh_mgr.get_object (h);
+
   if (go.isa ("light") && go.get_properties ().is_visible ())
     {
       axes::properties& ax_props
@@ -10253,7 +10544,10 @@ hggroup::properties::adopt (const graphics_handle& h)
 void
 hggroup::properties::update_limits (void) const
 {
-  graphics_object go = gh_manager::get_object (__myhandle__);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("hggroup::properties::update_limits");
+
+  graphics_object go = gh_mgr.get_object (__myhandle__);
 
   if (go)
     {
@@ -10268,7 +10562,10 @@ hggroup::properties::update_limits (void) const
 void
 hggroup::properties::update_limits (const graphics_handle& h) const
 {
-  graphics_object go = gh_manager::get_object (__myhandle__);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("hggroup::properties::update_limits");
+
+  graphics_object go = gh_mgr.get_object (__myhandle__);
 
   if (go)
     {
@@ -10491,9 +10788,12 @@ uicontextmenu::~uicontextmenu (void)
   std::list<graphics_handle> lst = xproperties.get_dependent_obj_list ();
   std::list<graphics_handle>::const_iterator it;
 
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uicontextmenu::~uicontextmenu");
+
   for (it = lst.begin (); it != lst.end (); it++)
     {
-      graphics_object go = gh_manager::get_object (*it);
+      graphics_object go = gh_mgr.get_object (*it);
 
       if (go.valid_object ()
           && go.get ("uicontextmenu") == xproperties.get___myhandle__ ())
@@ -10535,7 +10835,11 @@ uicontrol::properties::get_extent (void) const
 {
   Matrix m = extent.get ().matrix_value ();
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uicontrol::properties::get_extent");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
   Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -10546,7 +10850,11 @@ void
 uicontrol::properties::update_text_extent (void)
 {
   // FIXME: support multiline text
-  graphics_object go = gh_manager::get_object (get___myhandle__ ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uicontrol::properties::update_text_extent");
+
+  graphics_object go = gh_mgr.get_object (get___myhandle__ ());
 
   set_extent (go.get_toolkit ().get_text_extent (go));
 }
@@ -10556,7 +10864,11 @@ uicontrol::properties::update_units (void)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uicontrol::properties::update_units");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
   Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -10583,7 +10895,12 @@ uicontrol::properties::set_style (const octave_value& st)
         }
 
       // Notify toolkit
-      graphics_object go = gh_manager::get_object (get___myhandle__ ());
+
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uicontrol::properties::set_style");
+
+      graphics_object go = gh_mgr.get_object (get___myhandle__ ());
+
       if (go)
         go.update (style.get_id ());
     }
@@ -10598,7 +10915,10 @@ uicontrol::properties::get_boundingbox (bool,
 
   if (parent_size.isempty ())
     {
-      graphics_object go = gh_manager::get_object (get_parent ());
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uicontrol::properties::get_boundingbox");
+
+      graphics_object go = gh_mgr.get_object (get_parent ());
 
       if (go.valid_object ())
         parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
@@ -10662,7 +10982,10 @@ uibuttongroup::properties::get_boundingbox (bool internal,
 
   if (parent_size.isempty ())
     {
-      graphics_object go = gh_manager::get_object (get_parent ());
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uibuttongroup::properties::get_boundingbox");
+
+      graphics_object go = gh_mgr.get_object (get_parent ());
 
       parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
@@ -10735,11 +11058,14 @@ uibuttongroup::properties::set_position (const octave_value& v)
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("uibuttongroup::properties::set_position");
+
           if (! get_resizefcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "resizefcn");
+            gh_mgr.post_callback (__myhandle__, "resizefcn");
 
           if (! get_sizechangedfcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+            gh_mgr.post_callback (__myhandle__, "sizechangedfcn");
 
           update_boundingbox ();
         }
@@ -10769,7 +11095,11 @@ uibuttongroup::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uibuttongroup::properties::update_units");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
   Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -10831,7 +11161,11 @@ uibuttongroup::properties::set_selectedobject (const octave_value& v)
   graphics_handle val (v);
   if (val.ok ())
     {
-      graphics_object go (gh_manager::get_object (val));
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uibuttongroup::properties::set_selectedobject");
+
+      graphics_object go (gh_mgr.get_object (val));
+
       base_properties& gop = go.get_properties ();
 
       if (go.valid_object ()
@@ -10863,7 +11197,10 @@ uipanel::properties::get_boundingbox (bool internal,
 
   if (parent_size.isempty ())
     {
-      graphics_object go = gh_manager::get_object (get_parent ());
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uipanel::properties::get_boundingbox");
+
+      graphics_object go = gh_mgr.get_object (get_parent ());
 
       parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
@@ -10936,11 +11273,14 @@ uipanel::properties::set_position (const octave_value& v)
     {
       if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
         {
+          gh_manager& gh_mgr
+            = octave::__get_gh_manager__ ("uipanel::properties::set_position");
+
           if (! get_resizefcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "resizefcn");
+            gh_mgr.post_callback (__myhandle__, "resizefcn");
 
           if (! get_sizechangedfcn ().isempty ())
-            gh_manager::post_callback (__myhandle__, "sizechangedfcn");
+            gh_mgr.post_callback (__myhandle__, "sizechangedfcn");
 
           update_boundingbox ();
         }
@@ -10971,7 +11311,11 @@ uipanel::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uipanel::properties::update_units");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
   Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -11026,7 +11370,10 @@ uitable::properties::get_boundingbox (bool,
 
   if (parent_size.isempty ())
     {
-      graphics_object go = gh_manager::get_object (get_parent ());
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uitable::properties::get_boundingbox");
+
+      graphics_object go = gh_mgr.get_object (get_parent ());
 
       parent_size = go.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
@@ -11150,7 +11497,11 @@ uitable::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uitable::properties::update_units");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
   Matrix parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -11235,7 +11586,12 @@ uitable::properties::get_extent (void) const
 {
   // FIXME: Is it really acceptable to just let the toolkit update the extent?
   Matrix m = extent.get ().matrix_value ();
-  graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("uitable::properties::get_extent");
+
+  graphics_object parent_go = gh_mgr.get_object (get_parent ());
+
   if (parent_go)
     {
       Matrix parent_bbox = parent_go.get_properties ().get_boundingbox (true);
@@ -11257,7 +11613,11 @@ uitoolbar::get_default (const caseless_str& pname) const
   if (retval.is_undefined ())
     {
       graphics_handle parent_h = get_parent ();
-      graphics_object parent_go = gh_manager::get_object (parent_h);
+
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("uitoolbar::get_default");
+
+      graphics_object parent_go = gh_mgr.get_object (parent_h);
 
       retval = parent_go.get_default (pname);
     }
@@ -11281,7 +11641,11 @@ octave_value
 base_graphics_object::get_default (const caseless_str& pname) const
 {
   graphics_handle parent_h = get_parent ();
-  graphics_object parent_go = gh_manager::get_object (parent_h);
+
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::get_default");
+
+  graphics_object parent_go = gh_mgr.get_object (parent_h);
 
   return parent_go.get_default (type () + pname);
 }
@@ -11289,7 +11653,10 @@ base_graphics_object::get_default (const caseless_str& pname) const
 octave_value
 base_graphics_object::get_factory_default (const caseless_str& name) const
 {
-  graphics_object parent_go = gh_manager::get_object (0);
+  gh_manager& gh_mgr
+    = octave::__get_gh_manager__ ("base_graphics_object::get_factory_default");
+
+  graphics_object parent_go = gh_mgr.get_object (0);
 
   return parent_go.get_factory_default (type () + name);
 }
@@ -11310,24 +11677,18 @@ gh_manager::gh_manager (octave::interpreter& interp)
   gtk_mgr.default_toolkit ();
 }
 
-gh_manager& gh_manager::instance (void)
-{
-  return octave::__get_gh_manager__ ("gh_manager::instance");
-}
-
 graphics_handle
-gh_manager::do_make_graphics_handle (const std::string& go_name,
-                                     const graphics_handle& p,
-                                     bool integer_figure_handle,
-                                     bool do_createfcn,
-                                     bool do_notify_toolkit)
+gh_manager::make_graphics_handle (const std::string& go_name,
+                                  const graphics_handle& p,
+                                  bool integer_figure_handle,
+                                  bool call_createfcn, bool notify_toolkit)
 {
   graphics_handle h = get_handle (integer_figure_handle);
 
   base_graphics_object *bgo = make_graphics_object_from_type (go_name, h, p);
 
   if (! bgo)
-    error ("gh_manager::do_make_graphics_handle: invalid object type '%s'",
+    error ("gh_manager::make_graphics_handle: invalid object type '%s'",
            go_name.c_str ());
 
   graphics_object go (bgo);
@@ -11349,31 +11710,31 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 
       graphics_object tgo;
 
-      tgo = gh_manager::get_object (props.get_xlabel ());
+      tgo = get_object (props.get_xlabel ());
       tgo.override_defaults ();
 
-      tgo = gh_manager::get_object (props.get_ylabel ());
+      tgo = get_object (props.get_ylabel ());
       tgo.override_defaults ();
 
-      tgo = gh_manager::get_object (props.get_zlabel ());
+      tgo = get_object (props.get_zlabel ());
       tgo.override_defaults ();
 
-      tgo = gh_manager::get_object (props.get_title ());
+      tgo = get_object (props.get_title ());
       tgo.override_defaults ();
     }
 
-  if (do_createfcn)
+  if (call_createfcn)
     bgo->get_properties ().execute_createfcn ();
 
   // Notify graphics toolkit.
-  if (do_notify_toolkit)
+  if (notify_toolkit)
     go.initialize ();
 
   return h;
 }
 
 graphics_handle
-gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
+gh_manager::make_figure_handle (double val, bool notify_toolkit)
 {
   graphics_handle h = val;
 
@@ -11383,7 +11744,7 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
   m_handle_map[h] = go;
 
   // Notify graphics toolkit.
-  if (do_notify_toolkit)
+  if (notify_toolkit)
     go.initialize ();
 
   go.override_defaults ();
@@ -11392,15 +11753,15 @@ gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
 }
 
 void
-gh_manager::do_push_figure (const graphics_handle& h)
+gh_manager::push_figure (const graphics_handle& h)
 {
-  do_pop_figure (h);
+  pop_figure (h);
 
   m_figure_list.push_front (h);
 }
 
 void
-gh_manager::do_pop_figure (const graphics_handle& h)
+gh_manager::pop_figure (const graphics_handle& h)
 {
   for (auto it = m_figure_list.begin (); it != m_figure_list.end (); it++)
     {
@@ -11430,10 +11791,13 @@ public:
 
   void execute (void)
   {
+    gh_manager& gh_mgr
+      = octave::__get_gh_manager__ ("callback_event::execute");
+
     if (callback.is_defined ())
-      gh_manager::execute_callback (handle, callback, callback_data);
+      gh_mgr.execute_callback (handle, callback, callback_data);
     else
-      gh_manager::execute_callback (handle, callback_name, callback_data);
+      gh_mgr.execute_callback (handle, callback_name, callback_data);
   }
 
 private:
@@ -11461,11 +11825,15 @@ public:
   {
     if (! mcode.empty ())
       {
-        graphics_object go = gh_manager::get_object (handle);
+        gh_manager& gh_mgr
+          = octave::__get_gh_manager__ ("mcode_event::execute");
+
+        graphics_object go = gh_mgr.get_object (handle);
+
         if (go.valid_object ())
           {
             octave_value cb (mcode);
-            gh_manager::execute_callback (handle, cb);
+            gh_mgr.execute_callback (handle, cb);
           }
       }
   }
@@ -11525,9 +11893,11 @@ public:
 
   void execute (void)
   {
-    gh_manager::auto_lock guard;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("set_event::execute");
 
-    graphics_object go = gh_manager::get_object (handle);
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
+    graphics_object go = gh_mgr.get_object (handle);
 
     if (go)
       {
@@ -11631,7 +12001,10 @@ graphics_event::create_set_event (const graphics_handle& h,
 static void
 xset_gcbo (const graphics_handle& h)
 {
-  graphics_object go = gh_manager::get_object (0);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("xset_gcbo");
+
+  graphics_object go = gh_mgr.get_object (0);
+
   root_figure::properties& props
     = dynamic_cast<root_figure::properties&> (go.get_properties ());
 
@@ -11639,9 +12012,9 @@ xset_gcbo (const graphics_handle& h)
 }
 
 void
-gh_manager::do_restore_gcbo (void)
+gh_manager::restore_gcbo (void)
 {
-  gh_manager::auto_lock guard;
+  octave::autolock guard (m_graphics_lock);
 
   m_callback_objects.pop_front ();
 
@@ -11650,23 +12023,22 @@ gh_manager::do_restore_gcbo (void)
 }
 
 void
-gh_manager::do_execute_listener (const graphics_handle& h,
-                                 const octave_value& l)
+gh_manager::execute_listener (const graphics_handle& h, const octave_value& l)
 {
   if (octave::thread::is_thread ())
-    gh_manager::execute_callback (h, l, octave_value ());
+    execute_callback (h, l, octave_value ());
   else
     {
-      gh_manager::auto_lock guard;
+      octave::autolock guard (m_graphics_lock);
 
-      do_post_event (graphics_event::create_callback_event (h, l));
+      post_event (graphics_event::create_callback_event (h, l));
     }
 }
 
 void
-gh_manager::do_execute_callback (const graphics_handle& h,
-                                 const octave_value& cb_arg,
-                                 const octave_value& data)
+gh_manager::execute_callback (const graphics_handle& h,
+                              const octave_value& cb_arg,
+                              const octave_value& data)
 {
   if (cb_arg.is_defined () && ! cb_arg.isempty ())
     {
@@ -11681,14 +12053,15 @@ gh_manager::do_execute_callback (const graphics_handle& h,
         args(1) = Matrix ();
 
       octave::unwind_protect_safe frame;
-      frame.add_fcn (gh_manager::restore_gcbo);
+
+      frame.add_method (this, &gh_manager::restore_gcbo);
 
       graphics_object go (get_object (h));
       if (go)
         {
           // FIXME: Is the lock necessary when we're only calling a
           //        const "get" method?
-          gh_manager::auto_lock guard;
+          octave::autolock guard (m_graphics_lock);
           m_callback_objects.push_front (go);
           xset_gcbo (h);
         }
@@ -11696,10 +12069,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
       // Copy CB because "function_value" method is non-const.
       octave_value cb = cb_arg;
 
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("gh_manager::do_execute_callback");
-
-      octave::error_system& es = interp.get_error_system ();
+      octave::error_system& es = m_interpreter.get_error_system ();
 
       if (cb.is_function ())
         fcn = cb.function_value ();
@@ -11712,7 +12082,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
           try
             {
-              interp.eval_string (s, false, status, 0);
+              m_interpreter.eval_string (s, false, status, 0);
             }
           catch (octave::execution_exception&)
             {
@@ -11774,7 +12144,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
               if (go_name.length () > 1
                   && go_name[0] == 'u' && go_name[1] == 'i')
                 {
-                  Fdrawnow ();
+                  Fdrawnow (m_interpreter);
                   Vdrawnow_requested = false;
                 }
             }
@@ -11782,19 +12152,27 @@ gh_manager::do_execute_callback (const graphics_handle& h,
     }
 }
 
-void
-gh_manager::do_post_event (const graphics_event& e)
+static int
+process_graphics_events (void)
 {
-  m_event_queue.push_back (e);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("process_graphics_events");
 
-  octave::command_editor::add_event_hook (gh_manager::process_events);
+  return gh_mgr.process_events ();
 }
 
 void
-gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
-                              const octave_value& data)
+gh_manager::post_event (const graphics_event& e)
 {
-  gh_manager::auto_lock guard;
+  m_event_queue.push_back (e);
+
+  octave::command_editor::add_event_hook (process_graphics_events);
+}
+
+void
+gh_manager::post_callback (const graphics_handle& h, const std::string& name,
+                           const octave_value& data)
+{
+  octave::autolock guard (m_graphics_lock);
 
   graphics_object go = get_object (h);
 
@@ -11817,37 +12195,35 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
       if (cname == "closerequestfcn")
         {
           std::string cmd ("close (gcbf ());");
-          do_post_event (graphics_event::create_mcode_event (h, cmd,
-                                                             busyaction));
+          post_event (graphics_event::create_mcode_event (h, cmd, busyaction));
         }
       else
-        do_post_event (graphics_event::create_callback_event (h, name, data,
-                                                              busyaction));
+        post_event (graphics_event::create_callback_event (h, name, data,
+                                                           busyaction));
     }
 }
 
 void
-gh_manager::do_post_function (graphics_event::event_fcn fcn, void *fcn_data)
+gh_manager::post_function (graphics_event::event_fcn fcn, void *fcn_data)
 {
-  gh_manager::auto_lock guard;
+  octave::autolock guard (m_graphics_lock);
 
-  do_post_event (graphics_event::create_function_event (fcn, fcn_data));
+  post_event (graphics_event::create_function_event (fcn, fcn_data));
 }
 
 void
-gh_manager::do_post_set (const graphics_handle& h, const std::string& name,
-                         const octave_value& value, bool notify_toolkit,
-                         bool redraw_figure)
+gh_manager::post_set (const graphics_handle& h, const std::string& name,
+                      const octave_value& value, bool notify_toolkit,
+                      bool redraw_figure)
 {
-  gh_manager::auto_lock guard;
+  octave::autolock guard (m_graphics_lock);
 
-  do_post_event (graphics_event::create_set_event (h, name, value,
-                                                   notify_toolkit,
-                                                   redraw_figure));
+  post_event (graphics_event::create_set_event (h, name, value, notify_toolkit,
+                                                redraw_figure));
 }
 
 int
-gh_manager::do_process_events (bool force)
+gh_manager::process_events (bool force)
 {
   graphics_event e;
   bool old_Vdrawnow_requested = Vdrawnow_requested;
@@ -11858,7 +12234,7 @@ gh_manager::do_process_events (bool force)
       e = graphics_event ();
 
       {
-        gh_manager::auto_lock guard;
+        octave::autolock guard (m_graphics_lock);
 
         if (! m_event_queue.empty ())
           {
@@ -11910,10 +12286,10 @@ gh_manager::do_process_events (bool force)
   while (e.ok ());
 
   {
-    gh_manager::auto_lock guard;
+    octave::autolock guard (m_graphics_lock);
 
     if (m_event_queue.empty () && m_event_processing == 0)
-      octave::command_editor::remove_event_hook (gh_manager::process_events);
+      octave::command_editor::remove_event_hook (process_graphics_events);
   }
 
   if (events_executed)
@@ -11921,7 +12297,7 @@ gh_manager::do_process_events (bool force)
 
   if (Vdrawnow_requested && ! old_Vdrawnow_requested)
     {
-      Fdrawnow ();
+      Fdrawnow (m_interpreter);
 
       Vdrawnow_requested = false;
     }
@@ -11985,22 +12361,22 @@ gh_manager::do_process_events (bool force)
 */
 
 void
-gh_manager::do_enable_event_processing (bool enable)
+gh_manager::enable_event_processing (bool enable)
 {
-  gh_manager::auto_lock guard;
+  octave::autolock guard (m_graphics_lock);
 
   if (enable)
     {
       m_event_processing++;
 
-      octave::command_editor::add_event_hook (gh_manager::process_events);
+      octave::command_editor::add_event_hook (process_graphics_events);
     }
   else
     {
       m_event_processing--;
 
       if (m_event_queue.empty () && m_event_processing == 0)
-        octave::command_editor::remove_event_hook (gh_manager::process_events);
+        octave::command_editor::remove_event_hook (process_graphics_events);
     }
 }
 
@@ -12032,8 +12408,8 @@ root_figure::init_factory_properties (void)
 
 // ---------------------------------------------------------------------
 
-DEFUN (ishghandle, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (ishghandle, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} ishghandle (@var{h})
 Return true if @var{h} is a graphics handle and false otherwise.
 
@@ -12043,7 +12419,9 @@ false where they are not.
 @seealso{isgraphics, isaxes, isfigure, ishandle}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
@@ -12073,13 +12451,17 @@ false where they are not.
 static bool
 is_handle_visible (const graphics_handle& h)
 {
-  return h.ok () && gh_manager::is_handle_visible (h);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("is_handle_visible");
+
+  return h.ok () && gh_mgr.is_handle_visible (h);
 }
 
 static bool
 is_handle_visible (double val)
 {
-  return is_handle_visible (gh_manager::lookup (val));
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("is_handle_visible");
+
+  return is_handle_visible (gh_mgr.lookup (val));
 }
 
 static octave_value
@@ -12116,8 +12498,8 @@ Undocumented internal function.
   return ovl (is_handle_visible (args(0)));
 }
 
-DEFUN (reset, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (reset, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} reset (@var{h})
 Reset the properties of the graphic object @var{h} to their default values.
 
@@ -12137,9 +12519,11 @@ each individual object will be reset.
   // get vector of graphics handles
   ColumnVector hcv = args(0).xvector_value ("reset: H must be a graphics handle");
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   // loop over graphics objects
   for (octave_idx_type n = 0; n < hcv.numel (); n++)
-    gh_manager::get_object (hcv(n)).reset_default_properties ();
+    gh_mgr.get_object (hcv(n)).reset_default_properties ();
 
   Vdrawnow_requested = true;
 
@@ -12267,8 +12651,8 @@ each individual object will be reset.
 
 */
 
-DEFUN (set, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (set, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} set (@var{h}, @var{property}, @var{value}, @dots{})
 @deftypefnx {} {} set (@var{h}, @var{properties}, @var{values})
 @deftypefnx {} {} set (@var{h}, @var{pv})
@@ -12332,7 +12716,9 @@ being @qcode{"portrait"}.
 @seealso{get}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   int nargin = args.length ();
 
@@ -12349,7 +12735,7 @@ being @qcode{"portrait"}.
   // loop over graphics objects
   for (octave_idx_type n = 0; n < hcv.numel (); n++)
     {
-      graphics_object go = gh_manager::get_object (hcv(n));
+      graphics_object go = gh_mgr.get_object (hcv(n));
 
       if (! go)
         error ("set: invalid handle (= %g)", hcv(n));
@@ -12426,7 +12812,9 @@ get_graphics_object_type (double val)
 {
   std::string retval;
 
-  graphics_object go = gh_manager::get_object (val);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("get_graphics_object_type");
+
+  graphics_object go = gh_mgr.get_object (val);
 
   if (! go)
     error ("get: invalid handle (= %g)", val);
@@ -12434,8 +12822,8 @@ get_graphics_object_type (double val)
   return go.type ();
 }
 
-DEFUN (get, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (get, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} get (@var{h})
 @deftypefnx {} {@var{val} =} get (@var{h}, @var{p})
 Return the value of the named property @var{p} from the graphics handle
@@ -12448,7 +12836,9 @@ lists respectively.
 @seealso{set}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   int nargin = args.length ();
 
@@ -12491,7 +12881,7 @@ lists respectively.
 
       for (octave_idx_type n = 0; n < hcv_len; n++)
         {
-          graphics_object go = gh_manager::get_object (hcv(n));
+          graphics_object go = gh_mgr.get_object (hcv(n));
 
           if (! go)
             error ("get: invalid handle (= %g)", hcv(n));
@@ -12515,7 +12905,7 @@ lists respectively.
 
       for (octave_idx_type n = 0; n < hcv_len; n++)
         {
-          graphics_object go = gh_manager::get_object (hcv(n));
+          graphics_object go = gh_mgr.get_object (hcv(n));
 
           if (! go)
             error ("get: invalid handle (= %g)", hcv(n));
@@ -12561,13 +12951,15 @@ lists respectively.
 // If @var{h} is a vector, return a cell array including the
 // property values or lists respectively.
 
-DEFUN (__get__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__get__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __get__ (@var{h})
 Undocumented internal function.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
@@ -12582,7 +12974,7 @@ Undocumented internal function.
 
   for (octave_idx_type n = 0; n < hcv_len; n++)
     {
-      graphics_object go = gh_manager::get_object (hcv(n));
+      graphics_object go = gh_mgr.get_object (hcv(n));
 
       if (! go)
         error ("get: invalid handle (= %g)", hcv(n));
@@ -12638,7 +13030,9 @@ make_graphics_object (const std::string& go_name,
   if (octave::math::isnan (val))
     val = args(0).xdouble_value ("__go_%s__: invalid parent", go_name.c_str ());
 
-  graphics_handle parent = gh_manager::lookup (val);
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("make_graphics_object");
+
+  graphics_handle parent = gh_mgr.lookup (val);
 
   if (! parent.ok ())
     error ("__go_%s__: invalid parent", go_name.c_str ());
@@ -12647,9 +13041,8 @@ make_graphics_object (const std::string& go_name,
 
   try
     {
-      h = gh_manager::make_graphics_handle (go_name, parent,
-                                            integer_figure_handle,
-                                            false, false);
+      h = gh_mgr.make_graphics_handle (go_name, parent,
+                                          integer_figure_handle, false, false);
     }
   catch (octave::execution_exception& e)
     {
@@ -12680,13 +13073,15 @@ make_graphics_object (const std::string& go_name,
   return retval;
 }
 
-DEFUN (__go_figure__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_figure__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_figure__ (@var{fignum})
 Undocumented internal function.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () == 0)
     print_usage ();
@@ -12697,7 +13092,7 @@ Undocumented internal function.
 
   if (isfigure (val))
     {
-      graphics_handle h = gh_manager::lookup (val);
+      graphics_handle h = gh_mgr.lookup (val);
 
       xset (h, args.splice (0, 1));
 
@@ -12733,28 +13128,27 @@ Undocumented internal function.
                 }
             }
 
-          h = gh_manager::make_graphics_handle ("figure", 0,
-                                                int_fig_handle,
-                                                false, false);
+          h = gh_mgr.make_graphics_handle ("figure", 0, int_fig_handle,
+                                              false, false);
 
           if (! int_fig_handle)
             {
               // We need to initialize the integerhandle property
               // without calling the set_integerhandle method,
               // because doing that will generate a new handle value...
-              graphics_object go = gh_manager::get_object (h);
+              graphics_object go = gh_mgr.get_object (h);
               go.get_properties ().init_integerhandle ("off");
             }
         }
       else if (val > 0 && octave::math::x_nint (val) == val)
-        h = gh_manager::make_figure_handle (val, false);
+        h = gh_mgr.make_figure_handle (val, false);
 
       if (! h.ok ())
         error ("__go_figure__: failed to create figure handle");
 
       adopt (0, h);
 
-      gh_manager::push_figure (h);
+      gh_mgr.push_figure (h);
 
       xset (h, xargs);
       xcreatefcn (h);
@@ -12767,7 +13161,9 @@ Undocumented internal function.
 }
 
 #define GO_BODY(TYPE)                                                   \
-  gh_manager::auto_lock guard;                                          \
+  gh_manager& gh_mgr = interp.get_gh_manager ();                        \
+                                                                        \
+  octave::autolock guard (gh_mgr.graphics_lock ());                     \
                                                                         \
   if (args.length () == 0)                                              \
     print_usage ();                                                     \
@@ -12788,13 +13184,15 @@ calc_dimensions (const graphics_object& go)
     {
       Matrix kids = go.get_properties ().get_children ();
 
+      gh_manager& gh_mgr = octave::__get_gh_manager__ ("calc_dimensions");
+
       for (octave_idx_type i = 0; i < kids.numel (); i++)
         {
-          graphics_handle hkid = gh_manager::lookup (kids(i));
+          graphics_handle hkid = gh_mgr.lookup (kids(i));
 
           if (hkid.ok ())
             {
-              const graphics_object& kid = gh_manager::get_object (hkid);
+              const graphics_object& kid = gh_mgr.get_object (hkid);
 
               if (kid.valid_object ())
                 nd = calc_dimensions (kid);
@@ -12808,26 +13206,28 @@ calc_dimensions (const graphics_object& go)
   return nd;
 }
 
-DEFUN (__calc_dimensions__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__calc_dimensions__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __calc_dimensions__ (@var{axes})
 Internal function.
 
 Determine the number of dimensions in a graphics object, either 2 or 3.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
 
   double h = args(0).xdouble_value ("__calc_dimensions__: first argument must be a graphics handle");
 
-  return ovl (calc_dimensions (gh_manager::get_object (h)));
+  return ovl (calc_dimensions (gh_mgr.get_object (h)));
 }
 
-DEFUN (__go_axes__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_axes__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_axes__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12835,8 +13235,8 @@ Undocumented internal function.
   GO_BODY (axes);
 }
 
-DEFUN (__go_line__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_line__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_line__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12844,8 +13244,8 @@ Undocumented internal function.
   GO_BODY (line);
 }
 
-DEFUN (__go_text__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_text__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_text__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12853,8 +13253,8 @@ Undocumented internal function.
   GO_BODY (text);
 }
 
-DEFUN (__go_image__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_image__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_image__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12862,8 +13262,8 @@ Undocumented internal function.
   GO_BODY (image);
 }
 
-DEFUN (__go_surface__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_surface__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_surface__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12871,8 +13271,8 @@ Undocumented internal function.
   GO_BODY (surface);
 }
 
-DEFUN (__go_patch__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_patch__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_patch__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12880,8 +13280,8 @@ Undocumented internal function.
   GO_BODY (patch);
 }
 
-DEFUN (__go_light__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_light__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_light__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12889,8 +13289,8 @@ Undocumented internal function.
   GO_BODY (light);
 }
 
-DEFUN (__go_hggroup__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_hggroup__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_hggroup__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12898,8 +13298,8 @@ Undocumented internal function.
   GO_BODY (hggroup);
 }
 
-DEFUN (__go_uimenu__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uimenu__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uimenu__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12907,8 +13307,8 @@ Undocumented internal function.
   GO_BODY (uimenu);
 }
 
-DEFUN (__go_uicontrol__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uicontrol__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uicontrol__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12916,8 +13316,8 @@ Undocumented internal function.
   GO_BODY (uicontrol);
 }
 
-DEFUN (__go_uibuttongroup__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uibuttongroup__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uibuttongroup__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12925,8 +13325,8 @@ Undocumented internal function.
   GO_BODY (uibuttongroup);
 }
 
-DEFUN (__go_uipanel__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uipanel__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uipanel__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12934,8 +13334,8 @@ Undocumented internal function.
   GO_BODY (uipanel);
 }
 
-DEFUN (__go_uicontextmenu__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uicontextmenu__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uicontextmenu__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12943,8 +13343,8 @@ Undocumented internal function.
   GO_BODY (uicontextmenu);
 }
 
-DEFUN (__go_uitable__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uitable__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uitable__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12952,8 +13352,8 @@ Undocumented internal function.
   GO_BODY (uitable);
 }
 
-DEFUN (__go_uitoolbar__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uitoolbar__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uitoolbar__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12961,8 +13361,8 @@ Undocumented internal function.
   GO_BODY (uitoolbar);
 }
 
-DEFUN (__go_uipushtool__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uipushtool__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uipushtool__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12970,8 +13370,8 @@ Undocumented internal function.
   GO_BODY (uipushtool);
 }
 
-DEFUN (__go_uitoggletool__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_uitoggletool__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_uitoggletool__ (@var{parent})
 Undocumented internal function.
 @end deftypefn */)
@@ -12979,13 +13379,15 @@ Undocumented internal function.
   GO_BODY (uitoggletool);
 }
 
-DEFUN (__go_delete__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_delete__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_delete__ (@var{h})
 Undocumented internal function.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
@@ -12998,7 +13400,7 @@ Undocumented internal function.
   // as callbacks might delete one of the handles we later want to delete.
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     {
-      h = gh_manager::lookup (vals(i));
+      h = gh_mgr.lookup (vals(i));
 
       if (! h.ok ())
         error ("delete: invalid graphics object (= %g)", vals(i));
@@ -13009,40 +13411,44 @@ Undocumented internal function.
   return ovl ();
 }
 
-DEFUN (__go_handles__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_handles__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_handles__ (@var{show_hidden})
 Undocumented internal function.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   bool show_hidden = false;
 
   if (args.length () > 0)
     show_hidden = args(0).bool_value ();
 
-  return ovl (gh_manager::handle_list (show_hidden));
+  return ovl (gh_mgr.handle_list (show_hidden));
 }
 
-DEFUN (__go_figure_handles__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_figure_handles__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __go_figure_handles__ (@var{show_hidden})
 Undocumented internal function.
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   bool show_hidden = false;
 
   if (args.length () > 0)
     show_hidden = args(0).bool_value ();
 
-  return ovl (gh_manager::figure_handle_list (show_hidden));
+  return ovl (gh_mgr.figure_handle_list (show_hidden));
 }
 
-DEFUN (__go_execute_callback__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_execute_callback__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __go_execute_callback__ (@var{h}, @var{name})
 @deftypefnx {} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})
 Undocumented internal function.
@@ -13057,26 +13463,28 @@ Undocumented internal function.
 
   std::string name = args(1).xstring_value ("__go_execute_callback__: invalid callback name");
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     {
       double val = vals(i);
 
-      graphics_handle h = gh_manager::lookup (val);
+      graphics_handle h = gh_mgr.lookup (val);
 
       if (! h.ok ())
         error ("__go_execute_callback__: invalid graphics object (= %g)", val);
 
       if (nargin == 2)
-        gh_manager::execute_callback (h, name);
+        gh_mgr.execute_callback (h, name);
       else
-        gh_manager::execute_callback (h, name, args(2));
+        gh_mgr.execute_callback (h, name, args(2));
     }
 
   return ovl ();
 }
 
-DEFUN (__go_post_callback__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__go_post_callback__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __go_post_callback__ (@var{h}, @var{name})
 @deftypefnx {} {} __go_post_callback__ (@var{h}, @var{name}, @var{param})
 Undocumented internal function.
@@ -13091,26 +13499,28 @@ Undocumented internal function.
 
   std::string name = args(1).xstring_value ("__go_post_callback__: invalid callback name");
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   for (octave_idx_type i = 0; i < vals.numel (); i++)
     {
       double val = vals(i);
 
-      graphics_handle h = gh_manager::lookup (val);
+      graphics_handle h = gh_mgr.lookup (val);
 
       if (! h.ok ())
         error ("__go_execute_callback__: invalid graphics object (= %g)", val);
 
       if (nargin == 2)
-        gh_manager::post_callback (h, name);
+        gh_mgr.post_callback (h, name);
       else
-        gh_manager::post_callback (h, name, args(2));
+        gh_mgr.post_callback (h, name, args(2));
     }
 
   return ovl ();
 }
 
-DEFUN (__image_pixel_size__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__image_pixel_size__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{sz} =} __image_pixel_size__ (@var{h})
 Internal function: returns the pixel size of the image in normalized units.
 @end deftypefn */)
@@ -13118,9 +13528,12 @@ Internal function: returns the pixel size of the image in normalized units.
   if (args.length () != 1)
     print_usage ();
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   double h = args(0).xdouble_value ("__image_pixel_size__: argument is not a handle");
 
-  graphics_object go = gh_manager::get_object (h);
+  graphics_object go = gh_mgr.get_object (h);
+
   if (! go || ! go.isa ("image"))
     error ("__image_pixel_size__: object is not an image");
 
@@ -13140,7 +13553,9 @@ Return a cell array of registered graphics toolkits.
 @seealso{graphics_toolkit, register_graphics_toolkit}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
@@ -13154,7 +13569,9 @@ List @var{toolkit} as an available graphics toolkit.
 @seealso{available_graphics_toolkits}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () != 1)
     print_usage ();
@@ -13175,15 +13592,17 @@ Return a cell array of the currently loaded graphics toolkits.
 @seealso{available_graphics_toolkits}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
   return ovl (gtk_mgr.loaded_toolkits_list ());
 }
 
-DEFUN (__show_figure__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__show_figure__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} __show_figure__ (@var{n})
 Undocumented internal function.
 @end deftypefn */)
@@ -13191,14 +13610,16 @@ Undocumented internal function.
   if (args.length () != 1)
     print_usage ();
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   double h = args(0).xdouble_value ("__show_figure__: invalid handle H");
 
-  graphics_handle gh = gh_manager::lookup (h);
+  graphics_handle gh = gh_mgr.lookup (h);
 
   if (! gh.ok ())
     error ("__show_figure__: invalid graphics object (= %g)", h);
 
-  graphics_object go = gh_manager::get_object (gh);
+  graphics_object go = gh_mgr.get_object (gh);
 
   figure::properties& fprops
     = dynamic_cast<figure::properties&> (go.get_properties ());
@@ -13208,8 +13629,8 @@ Undocumented internal function.
   return ovl ();
 }
 
-DEFUN (drawnow, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (drawnow, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} drawnow ()
 @deftypefnx {} {} drawnow ("expose")
 @deftypefnx {} {} drawnow (@var{term}, @var{file}, @var{debug_file})
@@ -13236,7 +13657,9 @@ undocumented.
 
   if (! delete_executing)
     {
-      gh_manager::auto_lock guard;
+      gh_manager& gh_mgr = interp.get_gh_manager ();
+
+      octave::autolock guard (gh_mgr.graphics_lock ());
 
       if (args.length () <= 1)
         {
@@ -13256,23 +13679,23 @@ undocumented.
 
           if (do_events)
             {
-              gh_manager::unlock ();
+              gh_mgr.unlock ();
 
-              gh_manager::process_events ();
+              gh_mgr.process_events ();
 
-              gh_manager::lock ();
+              gh_mgr.lock ();
             }
 
-          Matrix hlist = gh_manager::figure_handle_list (true);
+          Matrix hlist = gh_mgr.figure_handle_list (true);
 
           // Redraw modified figures
           for (int i = 0; i < hlist.numel (); i++)
             {
-              graphics_handle h = gh_manager::lookup (hlist(i));
+              graphics_handle h = gh_mgr.lookup (hlist(i));
 
               if (h.ok () && h != 0)
                 {
-                  graphics_object go = gh_manager::get_object (h);
+                  graphics_object go = gh_mgr.get_object (h);
                   figure::properties& fprops
                     = dynamic_cast<figure::properties&> (go.get_properties ());
 
@@ -13280,11 +13703,11 @@ undocumented.
                     {
                       if (fprops.is_visible ())
                         {
-                          gh_manager::unlock ();
+                          gh_mgr.unlock ();
 
                           fprops.get_toolkit ().redraw_figure (go);
 
-                          gh_manager::lock ();
+                          gh_mgr.lock ();
                         }
 
                       fprops.set_modified (false);
@@ -13329,21 +13752,21 @@ undocumented.
           if (! h.ok ())
             error ("drawnow: nothing to draw");
 
-          graphics_object go = gh_manager::get_object (h);
+          graphics_object go = gh_mgr.get_object (h);
 
-          gh_manager::unlock ();
+          gh_mgr.unlock ();
 
           go.get_toolkit ().print_figure (go, term, file, debug_file);
 
-          gh_manager::lock ();
+          gh_mgr.lock ();
         }
     }
 
   return ovl ();
 }
 
-DEFUN (addlistener, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (addlistener, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} addlistener (@var{h}, @var{prop}, @var{fcn})
 Register @var{fcn} as listener for the property @var{prop} of the graphics
 object @var{h}.
@@ -13377,7 +13800,9 @@ addlistener (gcf, "position", @{@@my_listener, "my string"@})
 @seealso{dellistener, addproperty, hggroup}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   int nargin = args.length ();
 
@@ -13388,12 +13813,12 @@ addlistener (gcf, "position", @{@@my_listener, "my string"@})
 
   std::string pname = args(1).xstring_value ("addlistener: PROP must be a string");
 
-  graphics_handle gh = gh_manager::lookup (h);
+  graphics_handle gh = gh_mgr.lookup (h);
 
   if (! gh.ok ())
     error ("addlistener: invalid graphics object (= %g)", h);
 
-  graphics_object go = gh_manager::get_object (gh);
+  graphics_object go = gh_mgr.get_object (gh);
 
   go.add_property_listener (pname, args(2), GCB_POSTSET);
 
@@ -13407,8 +13832,8 @@ addlistener (gcf, "position", @{@@my_listener, "my string"@})
   return ovl ();
 }
 
-DEFUN (dellistener, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (dellistener, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} dellistener (@var{h}, @var{prop}, @var{fcn})
 Remove the registration of @var{fcn} as a listener for the property
 @var{prop} of the graphics object @var{h}.
@@ -13436,7 +13861,9 @@ dellistener (gcf, "position", c);
 @seealso{addlistener}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () < 2 || args.length () > 3)
     print_usage ();
@@ -13445,12 +13872,12 @@ dellistener (gcf, "position", c);
 
   std::string pname = args(1).xstring_value ("dellistener: PROP must be a string");
 
-  graphics_handle gh = gh_manager::lookup (h);
+  graphics_handle gh = gh_mgr.lookup (h);
 
   if (! gh.ok ())
     error ("dellistener: invalid graphics object (= %g)", h);
 
-  graphics_object go = gh_manager::get_object (gh);
+  graphics_object go = gh_mgr.get_object (gh);
 
   if (args.length () == 2)
     go.delete_property_listener (pname, octave_value (), GCB_POSTSET);
@@ -13471,8 +13898,8 @@ dellistener (gcf, "position", c);
   return ovl ();
 }
 
-DEFUN (addproperty, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (addproperty, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} addproperty (@var{name}, @var{h}, @var{type})
 @deftypefnx {} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})
 Create a new property named @var{name} in graphics object @var{h}.
@@ -13543,7 +13970,9 @@ addproperty ("my_style", gcf, "linelinestyle", "--");
 @seealso{addlistener, hggroup}
 @end deftypefn */)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  octave::autolock guard (gh_mgr.graphics_lock ());
 
   if (args.length () < 3)
     print_usage ();
@@ -13552,12 +13981,12 @@ addproperty ("my_style", gcf, "linelinestyle", "--");
 
   double h = args(1).xdouble_value ("addproperty: invalid handle H");
 
-  graphics_handle gh = gh_manager::lookup (h);
+  graphics_handle gh = gh_mgr.lookup (h);
 
   if (! gh.ok ())
     error ("addproperty: invalid graphics object (= %g)", h);
 
-  graphics_object go = gh_manager::get_object (gh);
+  graphics_object go = gh_mgr.get_object (gh);
 
   std::string type = args(2).xstring_value ("addproperty: TYPE must be a string");
 
@@ -13576,9 +14005,11 @@ octave_value
 get_property_from_handle (double handle, const std::string& property,
                           const std::string& func)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("get_property_from_handle");
 
-  graphics_object go = gh_manager::get_object (handle);
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
+  graphics_object go = gh_mgr.get_object (handle);
 
   if (! go)
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
@@ -13590,9 +14021,11 @@ bool
 set_property_in_handle (double handle, const std::string& property,
                         const octave_value& arg, const std::string& func)
 {
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = octave::__get_gh_manager__ ("set_property_in_handle");
 
-  graphics_object go = gh_manager::get_object (handle);
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
+  graphics_object go = gh_mgr.get_object (handle);
 
   if (! go)
     error ("%s: invalid handle (= %g)", func.c_str (), handle);
@@ -13638,13 +14071,16 @@ do_cleanup_waitfor_listener (const octave_value& listener,
 
       caseless_str pname = c(3).string_value ();
 
-      gh_manager::auto_lock guard;
+      gh_manager& gh_mgr
+        = octave::__get_gh_manager__ ("do_cleanup_waitfor_listener");
 
-      graphics_handle gh = gh_manager::lookup (h);
+      octave::autolock guard (gh_mgr.graphics_lock ());
+
+      graphics_handle gh = gh_mgr.lookup (h);
 
       if (gh.ok ())
         {
-          graphics_object go = gh_manager::get_object (gh);
+          graphics_object go = gh_mgr.get_object (gh);
 
           if (go.get_properties ().has_property (pname))
             {
@@ -13678,13 +14114,15 @@ DECLARE_STATIC_FUNX (waitfor_listener, args, )
 
           caseless_str pname = args(4).string_value ();
 
-          gh_manager::auto_lock guard;
+          gh_manager& gh_mgr = octave::__get_gh_manager__ ("waitfor_listener");
 
-          graphics_handle gh = gh_manager::lookup (h);
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
+          graphics_handle gh = gh_mgr.lookup (h);
 
           if (gh.ok ())
             {
-              graphics_object go = gh_manager::get_object (gh);
+              graphics_object go = gh_mgr.get_object (gh);
               octave_value pvalue = go.get (pname);
 
               if (compare_property_values (pvalue, args(5)))
@@ -13710,8 +14148,8 @@ DECLARE_STATIC_FUNX (waitfor_del_listener, args, )
   return ovl ();
 }
 
-DEFUN (waitfor, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (waitfor, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} waitfor (@var{h})
 @deftypefnx {} {} waitfor (@var{h}, @var{prop})
 @deftypefnx {} {} waitfor (@var{h}, @var{prop}, @var{value})
@@ -13777,6 +14215,8 @@ In all cases, typing CTRL-C stops program execution immediately.
 
   double timeout = 0;
 
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
   if (args.length () > 1)
     {
       pname = args(1).xstring_value ("waitfor: PROP must be a string");
@@ -13828,13 +14268,13 @@ In all cases, typing CTRL-C stops program execution immediately.
 
           octave_value ov_listener (listener);
 
-          gh_manager::auto_lock guard;
+          octave::autolock guard (gh_mgr.graphics_lock ());
 
-          graphics_handle gh = gh_manager::lookup (h);
+          graphics_handle gh = gh_mgr.lookup (h);
 
           if (gh.ok ())
             {
-              graphics_object go = gh_manager::get_object (gh);
+              graphics_object go = gh_mgr.get_object (gh);
 
               if (max_arg_index >= 2
                   && compare_property_values (go.get (pname), args(2)))
@@ -13923,9 +14363,9 @@ In all cases, typing CTRL-C stops program execution immediately.
     {
       if (true)
         {
-          gh_manager::auto_lock guard;
+          octave::autolock guard (gh_mgr.graphics_lock ());
 
-          graphics_handle gh = gh_manager::lookup (h);
+          graphics_handle gh = gh_mgr.lookup (h);
 
           if (gh.ok ())
             {
@@ -13954,8 +14394,8 @@ In all cases, typing CTRL-C stops program execution immediately.
   return ovl ();
 }
 
-DEFUN (__zoom__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__zoom__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})
 @deftypefnx {} {} __zoom__ (@var{axes}, "out")
 @deftypefnx {} {} __zoom__ (@var{axes}, "reset")
@@ -13969,14 +14409,16 @@ Undocumented internal function.
 
   double h = args(0).double_value ();
 
-  gh_manager::auto_lock guard;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
 
-  graphics_handle handle = gh_manager::lookup (h);
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
+  graphics_handle handle = gh_mgr.lookup (h);
 
   if (! handle.ok ())
     error ("__zoom__: invalid handle");
 
-  graphics_object ax = gh_manager::get_object (handle);
+  graphics_object ax = gh_mgr.get_object (handle);
 
   axes::properties& ax_props
     = dynamic_cast<axes::properties&> (ax.get_properties ());
@@ -14008,8 +14450,8 @@ Undocumented internal function.
   return ovl ();
 }
 
-DEFUN (__get_frame__, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (__get_frame__, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {@var{cdata} =} __get_frame__ (@var{hfig})
 Internal function.
 
@@ -14022,12 +14464,15 @@ uint8 array.
 
   double h = args(0).xdouble_value ("__get_frame__: HFIG is not a handle");
 
-  graphics_object go = gh_manager::get_object (h);
+  gh_manager& gh_mgr = interp.get_gh_manager ();
+
+  graphics_object go = gh_mgr.get_object (h);
+
   if (! go || ! go.isa ("figure"))
     error ("__get_frame__: HFIG is not a figure");
 
   // For Matlab compatibility, getframe must flush the event queue.
-  gh_manager::process_events ();
+  gh_mgr.process_events ();
 
   return ovl (go.get_toolkit ().get_pixels (go));
 }

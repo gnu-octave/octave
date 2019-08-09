@@ -36,6 +36,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "Panel.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
+
 namespace QtHandles
 {
 
@@ -166,13 +169,16 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Panel::eventFilter");
+
         if (watched == qObject ())
           {
             switch (xevent->type ())
               {
               case QEvent::Resize:
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   graphics_object go = object ();
 
                   if (go.valid_object ())
@@ -202,7 +208,7 @@ namespace QtHandles
 
                   if (m->button () == Qt::RightButton)
                     {
-                      gh_manager::auto_lock lock;
+                      octave::autolock guard (gh_mgr.graphics_lock ());
 
                       graphics_object go = object ();
 
@@ -224,7 +230,7 @@ namespace QtHandles
               case QEvent::Resize:
                 if (qWidget<QWidget> ()->isVisible ())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
 
                     graphics_object go = object ();
 

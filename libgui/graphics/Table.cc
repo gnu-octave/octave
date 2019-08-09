@@ -46,6 +46,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Table.h"
 #include "QtHandlesUtils.h"
 
+#include "graphics.h"
+#include "interpreter-private.h"
 #include "oct-stream.h"
 #include "oct-string.h"
 #include "oct-strstrm.h"
@@ -560,7 +562,11 @@ namespace QtHandles
       return;
 
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Table::comboBoxCurrentIndexChanged");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     octave_value data = octave_value (m_curData);
     bool ok = false;
 
@@ -676,7 +682,10 @@ namespace QtHandles
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Table::checkBoxClicked");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
 
     bool new_value = ! checkBox->isChecked ();
 
@@ -789,7 +798,11 @@ namespace QtHandles
     if (m_blockUpdates)
       return;
     m_blockUpdates = true;
-    gh_manager::auto_lock lock;
+
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Table::itemChanged");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     octave_value data = octave_value (m_curData);
 
     int row = item->row ();
@@ -1497,6 +1510,8 @@ namespace QtHandles
   bool
   Table::eventFilter (QObject *watched, QEvent *xevent)
   {
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Table::eventFilter");
+
     //uitable::properties& tp = properties<uitable> ();
     if (qobject_cast<QTableWidget *> (watched))
       {
@@ -1504,7 +1519,8 @@ namespace QtHandles
           {
           case QEvent::Resize:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               graphics_object go = object ();
               if (go.valid_object ())
                 {
@@ -1518,7 +1534,8 @@ namespace QtHandles
 
           case QEvent::MouseButtonPress:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
               const uitable::properties& tp =
@@ -1552,7 +1569,7 @@ namespace QtHandles
               QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
               if (m_keyPressHandlerDefined)
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
 
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
                   graphics_object fig = object ().get_ancestor ("figure");
@@ -1636,7 +1653,8 @@ namespace QtHandles
             {
               if (m_keyReleaseHandlerDefined)
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   QKeyEvent *k = dynamic_cast<QKeyEvent *> (xevent);
 
                   octave_scalar_map keyData = Utils::makeKeyEventStruct (k);
@@ -1659,7 +1677,8 @@ namespace QtHandles
           {
           case QEvent::MouseButtonPress:
             {
-              gh_manager::auto_lock lock;
+              octave::autolock guard (gh_mgr.graphics_lock ());
+
               QMouseEvent *m = dynamic_cast<QMouseEvent *> (xevent);
               graphics_object go = object ();
               const uitable::properties& tp = Utils::properties<uitable> (go);

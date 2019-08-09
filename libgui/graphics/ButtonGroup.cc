@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
+#include "interpreter-private.h"
 #include "ov-struct.h"
 
 namespace QtHandles
@@ -183,13 +184,16 @@ namespace QtHandles
   {
     if (! m_blockUpdates)
       {
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonGroup::eventFilter");
+
         if (watched == qObject ())
           {
             switch (xevent->type ())
               {
               case QEvent::Resize:
                 {
-                  gh_manager::auto_lock lock;
+                  octave::autolock guard (gh_mgr.graphics_lock ());
+
                   graphics_object go = object ();
 
                   if (go.valid_object ())
@@ -219,7 +223,7 @@ namespace QtHandles
 
                   if (m->button () == Qt::RightButton)
                     {
-                      gh_manager::auto_lock lock;
+                      octave::autolock guard (gh_mgr.graphics_lock ());
 
                       ContextMenu::executeAt (properties (), m->globalPos ());
                     }
@@ -237,7 +241,7 @@ namespace QtHandles
               case QEvent::Resize:
                 if (qWidget<QWidget> ()->isVisible ())
                   {
-                    gh_manager::auto_lock lock;
+                    octave::autolock guard (gh_mgr.graphics_lock ());
 
                     properties ().update_boundingbox ();
                   }
@@ -353,8 +357,13 @@ namespace QtHandles
       case uibuttongroup::properties::ID_SELECTEDOBJECT:
         {
           graphics_handle h = pp.get_selectedobject ();
-          gh_manager::auto_lock lock;
-          graphics_object go = gh_manager::get_object (h);
+
+          gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonGroup::update");
+
+          octave::autolock guard (gh_mgr.graphics_lock ());
+
+          graphics_object go = gh_mgr.get_object (h);
+
           Object *selectedObject = qt_graphics_toolkit::toolkitObject (go);
           ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
                                         (selectedObject);
@@ -454,7 +463,10 @@ namespace QtHandles
     Q_UNUSED (toggled);
     if (! m_blockUpdates)
       {
-        gh_manager::auto_lock lock;
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonGroup::buttonToggled");
+
+        octave::autolock guard (gh_mgr.graphics_lock ());
+
         uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
         graphics_handle oldValue = bp.get_selectedobject ();
@@ -479,7 +491,10 @@ namespace QtHandles
   {
     Q_UNUSED (btn);
 
-    gh_manager::auto_lock lock;
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonGroup::buttonClicked");
+
+    octave::autolock guard (gh_mgr.graphics_lock ());
+
     uibuttongroup::properties& bp = properties<uibuttongroup> ();
 
     graphics_handle oldValue = bp.get_selectedobject ();

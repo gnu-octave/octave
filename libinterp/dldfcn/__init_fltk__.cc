@@ -93,6 +93,7 @@ To initialize:
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "gtk-manager.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-map.h"
 #include "oct-opengl.h"
@@ -152,13 +153,17 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    octave::gl2ps_print (m_glfcns, gh_manager::get_object (m_number),
-                         cmd, term);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::print");
+
+    octave::gl2ps_print (m_glfcns, gh_mgr.get_object (m_number), cmd, term);
   }
 
   uint8NDArray get_pixels (void)
   {
-    m_renderer.draw (gh_manager::get_object (m_number));
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::get_pixels");
+
+    m_renderer.draw (gh_mgr.get_object (m_number));
+
     return m_renderer.get_pixels (w (), h ());
   }
 
@@ -219,7 +224,9 @@ private:
         m_glfcns.glViewport (0, 0, w (), h ());
       }
 
-    m_renderer.draw (gh_manager::get_object (m_number));
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("OpenGL_fltk::draw");
+
+    m_renderer.draw (gh_mgr.get_object (m_number));
 
     if (zoom ())
       overlay ();
@@ -398,7 +405,10 @@ public:
 
     for (octave_idx_type ii = 0; ii < uimenu_childs.numel (); ii++)
       {
-        graphics_object kidgo = gh_manager::get_object (uimenu_childs (ii));
+        gh_manager& gh_mgr
+          = octave::__get_gh_manager__ ("fltk_uimenu::do_find_uimenu_children");
+
+        graphics_object kidgo = gh_mgr.get_object (uimenu_childs (ii));
 
         if (kidgo.valid_object () && kidgo.isa ("uimenu"))
           {
@@ -625,9 +635,12 @@ public:
     update_visible (uimenup);
     update_seperator (uimenup);
 
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::add_to_menu");
+
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
-        graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
+        graphics_object kgo = gh_mgr.get_object (kids (len - (ii + 1)));
+
         if (kgo.valid_object ())
           {
             uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
@@ -647,7 +660,7 @@ public:
     // create any delayed menus
     for (size_t ii = 0; ii < delayed_menus.size (); ii++)
       {
-        graphics_object kgo = gh_manager::get_object (kids (delayed_menus[ii]));
+        graphics_object kgo = gh_mgr.get_object (kids (delayed_menus[ii]));
 
         if (kgo.valid_object ())
           {
@@ -665,10 +678,14 @@ public:
     Matrix kids = find_uimenu_children (figp);
     int len = kids.numel ();
     int count = 0;
+
     m_menubar->clear ();
+
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::add_to_menu");
+
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
-        graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
+        graphics_object kgo = gh_mgr.get_object (kids (len - (ii + 1)));
 
         if (kgo.valid_object ())
           {
@@ -690,7 +707,7 @@ public:
     // create any delayed menus
     for (size_t ii = 0; ii < delayed_menus.size (); ii++)
       {
-        graphics_object kgo = gh_manager::get_object (kids (delayed_menus[ii]));
+        graphics_object kgo = gh_mgr.get_object (kids (delayed_menus[ii]));
 
         if (kgo.valid_object ())
           {
@@ -710,9 +727,11 @@ public:
     kids = find_uimenu_children (prop);
     int len = kids.numel ();
 
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("fltk_uimenu::remove_from_menu");
+
     for (octave_idx_type ii = 0; ii < len; ii++)
       {
-        graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
+        graphics_object kgo = gh_mgr.get_object (kids (len - (ii + 1)));
 
         if (kgo.valid_object ())
           {
@@ -910,7 +929,9 @@ public:
 
   void uimenu_update (const graphics_handle& gh, int id)
   {
-    graphics_object uimenu_obj = gh_manager::get_object (gh);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::uimenu_update");
+
+    graphics_object uimenu_obj = gh_mgr.get_object (gh);
 
     if (uimenu_obj.valid_object () && uimenu_obj.isa ("uimenu"))
       {
@@ -1128,9 +1149,14 @@ private:
         graphics_handle gh = m_fp.get_currentaxes ();
         if (gh.ok ())
           {
-            graphics_object go = gh_manager::get_object (gh);
+            gh_manager& gh_mgr
+              = octave::__get_gh_manager__ ("plot_window::set_on_ax_obj");
+
+            graphics_object go = gh_mgr.get_object (gh);
+
             axes::properties& ap
               = dynamic_cast<axes::properties&>(go.get_properties ());
+
             ap.set (name, value);
           }
       }
@@ -1161,7 +1187,9 @@ private:
   void pixel2pos (const graphics_handle& ax, int px, int py, double& xx,
                   double& yy) const
   {
-    pixel2pos (gh_manager::get_object (ax), px, py, xx, yy);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2pos");
+
+    pixel2pos (gh_mgr.get_object (ax), px, py, xx, yy);
   }
 
   void pixel2pos (graphics_object ax, int px, int py, double& xx,
@@ -1182,13 +1210,15 @@ private:
     Matrix kids = m_fp.get_children ();
     int len = kids.numel ();
 
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2axes_or_ca");
+
     for (int k = 0; k < len; k++)
       {
-        graphics_handle hnd = gh_manager::lookup (kids(k));
+        graphics_handle hnd = gh_mgr.lookup (kids(k));
 
         if (hnd.ok ())
           {
-            graphics_object kid = gh_manager::get_object (hnd);
+            graphics_object kid = gh_mgr.get_object (hnd);
 
             if (kid.valid_object () && kid.isa ("axes"))
               {
@@ -1208,7 +1238,9 @@ private:
   void pixel2status (const graphics_handle& ax, int px0, int py0,
                      int px1 = -1, int py1 = -1)
   {
-    pixel2status (gh_manager::get_object (ax), px0, py0, px1, py1);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::pixel2status");
+
+    pixel2status (gh_mgr.get_object (ax), px0, py0, px1, py1);
   }
 
   void pixel2status (graphics_object ax, int px0, int py0,
@@ -1253,8 +1285,14 @@ private:
       {
         Matrix pos = m_fp.map_from_boundingbox (px, py);
         m_fp.set_currentpoint (pos);
-        graphics_object robj = gh_manager::get_object (m_fp.get_parent ());
+
+        gh_manager& gh_mgr
+          = octave::__get_gh_manager__ ("plot_window::set_currentpoint");
+
+        graphics_object robj = gh_mgr.get_object (m_fp.get_parent ());
+
         root_figure::properties& rp
+
           = dynamic_cast<root_figure::properties&> (robj.get_properties ());
         rp.set_currentfigure (m_fp.get___myhandle__ ().value ());
       }
@@ -1468,6 +1506,8 @@ private:
         // See Event Propagation http://www.fltk.org/doc-1.3/events.html
         static bool key_resent_detected = false;
 
+        gh_manager& gh_mgr = octave::__get_gh_manager__ ("plot_window::handle");
+
         switch (event)
           {
           case FL_SHORTCUT:
@@ -1512,7 +1552,7 @@ private:
 
                       if (gh.ok ())
                         {
-                          m_ax_obj = gh_manager::get_object (gh);
+                          m_ax_obj = gh_mgr.get_object (gh);
                           set_axes_currentpoint (m_ax_obj, m_pos_x, m_pos_y);
                         }
                     }
@@ -1612,7 +1652,7 @@ private:
 
               if (gh.ok ())
                 {
-                  m_ax_obj = gh_manager::get_object (gh);
+                  m_ax_obj = gh_mgr.get_object (gh);
                   set_axes_currentpoint (m_ax_obj, m_pos_x, m_pos_y);
                 }
 
@@ -1718,9 +1758,9 @@ private:
             case FL_MOUSEWHEEL:
               {
                 graphics_object ax
-                  = gh_manager::get_object (pixel2axes_or_ca (Fl::event_x (),
-                                                              Fl::event_y ()
-                                                              - menu_dy ()));
+                  = gh_mgr.get_object (pixel2axes_or_ca (Fl::event_x (),
+                                                            Fl::event_y ()
+                                                            - menu_dy ()));
                 if (ax && ax.isa ("axes"))
                   {
                     axes::properties& ap
@@ -2188,7 +2228,10 @@ private:
 
   static int hnd2idx (double h)
   {
-    graphics_object fobj = gh_manager::get_object (h);
+    gh_manager& gh_mgr = octave::__get_gh_manager__ ("figure_manager::hnd2idx");
+
+    graphics_object fobj = gh_mgr.get_object (h);
+
     if (fobj &&  fobj.isa ("figure"))
       {
         figure::properties& fp
@@ -2259,7 +2302,11 @@ public:
         uimenu::properties& uimenup
           = dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
         std::string fltk_label = uimenup.get_label ();
-        graphics_object go = gh_manager::get_object (uimenu_obj.get_parent ());
+
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+        graphics_object go = gh_mgr.get_object (uimenu_obj.get_parent ());
+
         if (go.isa ("uimenu"))
           fltk_label = dynamic_cast<const uimenu::properties&>
                        (go.get_properties ()).get___fltk_label__ ()
@@ -2339,7 +2386,11 @@ public:
   void redraw_figure (const graphics_object& go) const
   {
     // We scan all figures and add those which use FLTK.
-    graphics_object obj = gh_manager::get_object (0);
+
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+    graphics_object obj = gh_mgr.get_object (0);
+
     if (obj && obj.isa ("root"))
       {
         base_properties& props = obj.get_properties ();
@@ -2347,7 +2398,8 @@ public:
 
         for (octave_idx_type n = 0; n < children.numel (); n++)
           {
-            graphics_object fobj = gh_manager::get_object (children (n));
+            graphics_object fobj = gh_mgr.get_object (children (n));
+
             if (fobj && fobj.isa ("figure"))
               {
                 figure::properties& fp
@@ -2430,8 +2482,8 @@ private:
 
 #endif
 
-DEFUN_DLD (__fltk_check__, , ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__fltk_check__, interp, , ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {} __fltk_check__ ()
 Undocumented internal function.  Calls Fl::check ()
 @end deftypefn */)
@@ -2440,7 +2492,7 @@ Undocumented internal function.  Calls Fl::check ()
   Fl::check ();
 
   if (Vdrawnow_requested)
-    Fdrawnow ();
+    Fdrawnow (interp);
 
   return octave_value_list ();
 #else

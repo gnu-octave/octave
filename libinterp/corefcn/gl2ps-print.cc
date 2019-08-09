@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 
 #include "gl-render.h"
+#include "interpreter-private.h"
 #include "oct-opengl.h"
 #include "sighandlers.h"
 #include "sysdep.h"
@@ -99,7 +100,10 @@ namespace octave
     static bool has_alpha (const graphics_handle& h)
     {
       bool retval = false;
-      graphics_object go = gh_manager::get_object (h);
+
+      gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_alpha");
+
+      graphics_object go = gh_mgr.get_object (h);
 
       if (! go.valid_object ())
         return retval;
@@ -288,7 +292,10 @@ namespace octave
   has_2D_axes (const graphics_handle& h)
   {
     bool retval = true;
-    graphics_object go = gh_manager::get_object (h);
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("gl2ps_renderer::has_2D_axes");
+
+    graphics_object go = gh_mgr.get_object (h);
 
     if (! go.valid_object ())
       return retval;

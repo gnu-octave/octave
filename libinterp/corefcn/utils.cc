@@ -1307,8 +1307,11 @@ namespace octave
 
     // Allow free access to graphics resources while the interpreter thread
     // is asleep
+
+    gh_manager& gh_mgr = __get_gh_manager__ ("sleep");
+
     if (do_graphics_events)
-      gh_manager::unlock ();
+      gh_mgr.unlock ();
 
     if (math::isinf (seconds))
       {
@@ -1325,7 +1328,7 @@ namespace octave
             octave_quit ();
 
             if (do_graphics_events)
-              gh_manager::process_events ();
+              gh_mgr.process_events ();
 
             c = kbhit (false);
           }
@@ -1346,7 +1349,7 @@ namespace octave
 
             if (do_graphics_events)
               {
-                gh_manager::process_events ();
+                gh_mgr.process_events ();
 
                 now.stamp ();
                 remaining_time = end_time - now.double_value ();

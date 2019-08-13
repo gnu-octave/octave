@@ -120,6 +120,8 @@ extern int octave_rl_prefer_env_winsize (int);
 
 extern void octave_rl_done (int);
 
+extern int octave_rl_input_interrupted (void);
+
 extern char * octave_rl_filename_completion_function (const char *, int);
 
 extern void octave_rl_set_basic_word_break_characters (const char *);

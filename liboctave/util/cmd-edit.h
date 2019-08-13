@@ -187,6 +187,8 @@ namespace octave
 
     static bool interrupt (bool = true);
 
+    static bool input_interrupted (void);
+
     static int current_command_number (void);
 
     static void reset_current_command_number (int n);
@@ -357,6 +359,8 @@ namespace octave
     virtual bool do_prefer_env_winsize (bool) { return false; }
 
     virtual void do_interrupt (bool) { }
+
+    virtual bool do_input_interrupted (void) { return false; }
 
     virtual void do_handle_interrupt_signal (void) { }
 

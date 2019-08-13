@@ -191,14 +191,7 @@ namespace octave
 
     virtual void run_first (void) = 0;
 
-    void run (size_t num)
-    {
-      if (num > size ())
-        num = size ();
-
-      for (size_t i = 0; i < num; i++)
-        run_first ();
-    }
+    void run (size_t num);
 
     void run (void) { run (size ()); }
 

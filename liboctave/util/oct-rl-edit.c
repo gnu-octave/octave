@@ -282,6 +282,12 @@ octave_rl_done (int arg)
   rl_done = arg;
 }
 
+int
+octave_rl_input_interrupted (void)
+{
+  return rl_done;
+}
+
 char *
 octave_rl_filename_completion_function (const char *text, int state)
 {

@@ -61,6 +61,7 @@ UTIL_C_SRC = \
   %reldir%/oct-rl-hist.c
 
 UTIL_SRC = \
+  %reldir%/action-container.cc \
   %reldir%/cmd-edit.cc \
   %reldir%/cmd-hist.cc \
   %reldir%/data-conv.cc \

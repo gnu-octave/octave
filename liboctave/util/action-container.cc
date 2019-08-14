@@ -35,12 +35,15 @@ namespace octave
       {
         run_first ();
 
-        // If input_interrupted is TRUE, a user callback event has
+        // If event_loop_interrupted is TRUE, a user callback event has
         // requested that we break out of the readline event handler to
         // process a command or other action.
 
-        if (command_editor::input_interrupted ())
-          break;
+        if (command_editor::event_loop_interrupted ())
+          {
+            command_editor::interrupt_event_loop (false);
+            break;
+          }
       }
   }
 }

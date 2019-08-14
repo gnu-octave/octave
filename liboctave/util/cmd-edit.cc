@@ -195,8 +195,6 @@ namespace octave
 
     void do_interrupt (bool);
 
-    bool do_input_interrupted (void);
-
     void do_handle_interrupt_signal (void);
 
     static int operate_and_get_next (int, int);
@@ -770,12 +768,6 @@ namespace octave
   gnu_readline::do_interrupt (bool arg)
   {
     ::octave_rl_done (arg);
-  }
-
-  bool
-  gnu_readline::do_input_interrupted (void)
-  {
-    return ::octave_rl_input_interrupted ();
   }
 
   void
@@ -1646,10 +1638,17 @@ namespace octave
     return retval;
   }
 
-  bool
-  command_editor::input_interrupted (void)
+  void
+  command_editor::interrupt_event_loop (bool arg)
   {
-    return instance_ok () ? instance->do_input_interrupted  () : false;
+    if (instance_ok ())
+      instance->do_interrupt_event_loop (arg);
+  }
+
+  bool
+  command_editor::event_loop_interrupted (void)
+  {
+    return instance_ok () ? instance->do_event_loop_interrupted  () : false;
   }
 
   void

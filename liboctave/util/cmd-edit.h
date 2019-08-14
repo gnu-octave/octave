@@ -42,7 +42,7 @@ namespace octave
 
     command_editor (void)
       : command_number (0), m_rows (24), m_cols (80), interrupted (false),
-        initial_input ()
+        m_interrupt_event_loop (false), initial_input ()
       { }
 
   public:
@@ -187,7 +187,9 @@ namespace octave
 
     static bool interrupt (bool = true);
 
-    static bool input_interrupted (void);
+    static void interrupt_event_loop (bool flag = true);
+
+    static bool event_loop_interrupted (void);
 
     static int current_command_number (void);
 
@@ -360,9 +362,14 @@ namespace octave
 
     virtual void do_interrupt (bool) { }
 
-    virtual bool do_input_interrupted (void) { return false; }
-
     virtual void do_handle_interrupt_signal (void) { }
+
+    void do_interrupt_event_loop (bool arg) { m_interrupt_event_loop = arg; }
+
+    bool do_event_loop_interrupted (void) const
+    {
+      return m_interrupt_event_loop;
+    }
 
     int do_insert_initial_input (void);
 
@@ -379,6 +386,8 @@ namespace octave
     int m_cols;
 
     bool interrupted;
+
+    bool m_interrupt_event_loop;
 
     std::string initial_input;
   };

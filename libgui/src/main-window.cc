@@ -1032,6 +1032,7 @@ namespace octave
          command_editor::set_initial_input (pending_input);
          command_editor::replace_line (command.toStdString ());
          command_editor::redisplay ();
+         command_editor::interrupt_event_loop ();
          command_editor::accept_line ();
        });
 
@@ -1074,7 +1075,7 @@ namespace octave
 
          command_editor::set_initial_input (pending_input);
          command_editor::redisplay ();
-
+         command_editor::interrupt_event_loop ();
          command_editor::accept_line ();
        });
 

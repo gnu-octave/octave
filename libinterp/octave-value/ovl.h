@@ -43,43 +43,43 @@ octave_value_list
 public:
 
   octave_value_list (void)
-    : data (), names () { }
+    : m_data (), m_names () { }
 
   explicit octave_value_list (octave_idx_type n)
-    : data (n), names () { }
+    : m_data (n), m_names () { }
 
   octave_value_list (octave_idx_type n, const octave_value& val)
-    : data (n, val), names () { }
+    : m_data (n, val), m_names () { }
 
   octave_value_list (const octave_value& tc)
-    : data (1, tc), names () { }
+    : m_data (1, tc), m_names () { }
 
   template<template <typename...> class OV_Container>
   octave_value_list (const OV_Container<octave_value>& args)
-    : data (args.size ()), names ()
+    : m_data (args.size ()), m_names ()
   {
     auto p = args.begin ();
 
-    for (size_t i = 0; i < data.size (); i++)
-      data[i] = *p++;
+    for (size_t i = 0; i < m_data.size (); i++)
+      m_data[i] = *p++;
   }
 
   octave_value_list (const Array<octave_value>& a)
-    : data (a.numel ()), names ()
+    : m_data (a.numel ()), m_names ()
   {
     for (octave_idx_type i = 0; i < a.numel (); i++)
-      data[i] = a(i);
+      m_data[i] = a(i);
   }
 
   octave_value_list (const Cell& c)
-    : data (c.numel ()), names ()
+    : m_data (c.numel ()), m_names ()
   {
     for (octave_idx_type i = 0; i < c.numel (); i++)
-      data[i] = c(i);
+      m_data[i] = c(i);
   }
 
   octave_value_list (const octave_value_list& obj)
-    : data (obj.data), names (obj.names) { }
+    : m_data (obj.m_data), m_names (obj.m_names) { }
 
   // Concatenation constructor.
   octave_value_list (const std::list<octave_value_list>&);
@@ -90,8 +90,8 @@ public:
   {
     if (this != &obj)
       {
-        data = obj.data;
-        names = obj.names;
+        m_data = obj.m_data;
+        m_names = obj.m_names;
       }
 
     return *this;
@@ -101,12 +101,12 @@ public:
   {
     Array<octave_value> retval;
 
-    if (data.size () > 0)
+    if (m_data.size () > 0)
       {
         retval.resize (dim_vector (1, length ()));
 
         for (octave_idx_type i = 0; i < retval.numel (); i++)
-          retval(i) = data[i];
+          retval(i) = m_data[i];
       }
 
     return retval;
@@ -120,13 +120,13 @@ public:
 
   const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return data.size (); }
+  octave_idx_type length (void) const { return m_data.size (); }
 
   bool empty (void) const { return length () == 0; }
 
   void resize (octave_idx_type n, const octave_value& rfv = octave_value ())
   {
-    data.resize (n, rfv);
+    m_data.resize (n, rfv);
   }
 
   octave_value_list& prepend (const octave_value& val);
@@ -145,14 +145,14 @@ public:
 
     octave_idx_type tlen = len > 0 ? len : 0;
     std::vector<octave_value> slice_data (tlen);
-    auto beg = data.begin () + offset;
+    auto beg = m_data.begin () + offset;
     auto end = beg + len;
     std::copy (beg, end, slice_data.begin ());
 
     octave_value_list retval = slice_data;
 
-    if (tags && len > 0 && names.numel () > 0)
-      retval.names = names.linear_slice (offset, std::min (offset + len, names.numel ()));
+    if (tags && len > 0 && m_names.numel () > 0)
+      retval.m_names = m_names.linear_slice (offset, std::min (offset + len, m_names.numel ()));
 
     return retval;
   }
@@ -171,33 +171,33 @@ public:
 
   string_vector make_argv (const std::string& = "") const;
 
-  void stash_name_tags (const string_vector& nm) { names = nm; }
+  void stash_name_tags (const string_vector& nm) { m_names = nm; }
 
-  string_vector name_tags (void) const { return names; }
+  string_vector name_tags (void) const { return m_names; }
 
   void make_storable_values (void);
 
-  octave_value& xelem (octave_idx_type i) { return data[i]; }
+  octave_value& xelem (octave_idx_type i) { return m_data[i]; }
 
-  void clear (void) { data.clear (); }
+  void clear (void) { m_data.clear (); }
 
 private:
 
-  std::vector<octave_value> data;
+  std::vector<octave_value> m_data;
 
-  // This list of strings can be used to tag each element of data with
+  // This list of strings can be used to tag each element of m_data with
   // a name.  By default, it is empty.
-  string_vector names;
+  string_vector m_names;
 
   octave_value& elem (octave_idx_type n)
   {
     if (n >= length ())
       resize (n + 1);
 
-    return data[n];
+    return m_data[n];
   }
 
-  const octave_value& elem (octave_idx_type n) const { return data[n]; }
+  const octave_value& elem (octave_idx_type n) const { return m_data[n]; }
 
 };
 

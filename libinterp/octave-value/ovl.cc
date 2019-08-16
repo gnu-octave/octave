@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "error.h"
 #include "ovl.h"
-#include "Cell.h"
 
 // We are likely to have a lot of octave_value_list objects to allocate,
 // so make the grow_size large.
@@ -46,15 +45,15 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
 
   // Optimize single-element case
   if (n == 1)
-    data = lst.front ().data;
+    m_data = lst.front ().m_data;
   else if (nel > 0)
     {
-      data.resize (nel);
+      m_data.resize (nel);
       octave_idx_type k = 0;
       for (const auto& ovl : lst)
         {
           for (octave_idx_type i = 0; i < ovl.length (); i++)
-            data[k++] = ovl(i);
+            m_data[k++] = ovl(i);
         }
 
       assert (k == nel);
@@ -263,13 +262,13 @@ void
 octave_value_list::make_storable_values (void)
 {
   octave_idx_type len = length ();
-  const std::vector<octave_value>& cdata = data;
+  const std::vector<octave_value>& cdata = m_data;
 
   for (octave_idx_type i = 0; i < len; i++)
     {
       // This is optimized so that we don't force a copy unless necessary.
       octave_value tmp = cdata[i].storable_value ();
       if (! tmp.is_copy_of (cdata[i]))
-        data[i] = tmp;
+        m_data[i] = tmp;
     }
 }

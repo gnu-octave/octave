@@ -46,23 +46,37 @@ public:
     : data (), names () { }
 
   explicit octave_value_list (octave_idx_type n)
-    : data (dim_vector (1, n)), names () { }
+    : data (n), names () { }
 
   octave_value_list (octave_idx_type n, const octave_value& val)
-    : data (dim_vector (1, n), val), names () { }
+    : data (n, val), names () { }
 
   octave_value_list (const octave_value& tc)
-    : data (dim_vector (1, 1), tc), names () { }
+    : data (1, tc), names () { }
 
   template<template <typename...> class OV_Container>
   octave_value_list (const OV_Container<octave_value>& args)
-    : data (args, dim_vector (1, args.size ())), names () { }
+    : data (args.size ()), names ()
+  {
+    auto p = args.begin ();
 
-  octave_value_list (const Array<octave_value>& d)
-    : data (d.as_row ()), names () { }
+    for (size_t i = 0; i < data.size (); i++)
+      data[i] = *p++;
+  }
 
-  octave_value_list (const Cell& tc)
-    : data (tc.as_row ()), names () { }
+  octave_value_list (const Array<octave_value>& a)
+    : data (a.numel ()), names ()
+  {
+    for (octave_idx_type i = 0; i < a.numel (); i++)
+      data[i] = a(i);
+  }
+
+  octave_value_list (const Cell& c)
+    : data (c.numel ()), names ()
+  {
+    for (octave_idx_type i = 0; i < c.numel (); i++)
+      data[i] = c(i);
+  }
 
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
@@ -83,7 +97,20 @@ public:
     return *this;
   }
 
-  Array<octave_value> array_value (void) const { return data; }
+  Array<octave_value> array_value (void) const
+  {
+    Array<octave_value> retval;
+
+    if (data.size () > 0)
+      {
+        retval.resize (dim_vector (1, length ()));
+
+        for (octave_idx_type i = 0; i < retval.numel (); i++)
+          retval(i) = data[i];
+      }
+
+    return retval;
+  }
 
   Cell cell_value (void) const { return array_value (); }
 
@@ -93,13 +120,13 @@ public:
 
   const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return data.numel (); }
+  octave_idx_type length (void) const { return data.size (); }
 
   bool empty (void) const { return length () == 0; }
 
   void resize (octave_idx_type n, const octave_value& rfv = octave_value ())
   {
-    data.resize (dim_vector (1, n), rfv);
+    data.resize (n, rfv);
   }
 
   octave_value_list& prepend (const octave_value& val);
@@ -115,14 +142,17 @@ public:
   {
     // linear_slice uses begin/end indices instead of offset and length.
     // Avoid calling with upper bound out of range.
-    // linear_slice handles the case of len < 0.
 
-    octave_value_list retval
-      = data.linear_slice (offset, std::min (offset + len, length ()));
+    octave_idx_type tlen = len > 0 ? len : 0;
+    std::vector<octave_value> slice_data (tlen);
+    auto beg = data.begin () + offset;
+    auto end = beg + len;
+    std::copy (beg, end, slice_data.begin ());
+
+    octave_value_list retval = slice_data;
 
     if (tags && len > 0 && names.numel () > 0)
-      retval.names = names.linear_slice (offset, std::min (offset + len,
-                                                           names.numel ()));
+      retval.names = names.linear_slice (offset, std::min (offset + len, names.numel ()));
 
     return retval;
   }
@@ -147,16 +177,16 @@ public:
 
   void make_storable_values (void);
 
-  octave_value& xelem (octave_idx_type i) { return data.xelem (i); }
+  octave_value& xelem (octave_idx_type i) { return data[i]; }
 
   void clear (void) { data.clear (); }
 
 private:
 
-  Array<octave_value> data;
+  std::vector<octave_value> data;
 
-  // This list of strings can be used to tag each element of data with a name.
-  // By default, it is empty.
+  // This list of strings can be used to tag each element of data with
+  // a name.  By default, it is empty.
   string_vector names;
 
   octave_value& elem (octave_idx_type n)
@@ -164,11 +194,10 @@ private:
     if (n >= length ())
       resize (n + 1);
 
-    return data(n);
+    return data[n];
   }
 
-  const octave_value& elem (octave_idx_type n) const
-  { return data(n); }
+  const octave_value& elem (octave_idx_type n) const { return data[n]; }
 
 };
 

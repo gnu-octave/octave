@@ -49,13 +49,14 @@ octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
     data = lst.front ().data;
   else if (nel > 0)
     {
-      data.resize (dim_vector (1, nel));
+      data.resize (nel);
       octave_idx_type k = 0;
       for (const auto& ovl : lst)
         {
-          data.assign (idx_vector (k, k + ovl.length ()), ovl.data);
-          k += ovl.length ();
+          for (octave_idx_type i = 0; i < ovl.length (); i++)
+            data[k++] = ovl(i);
         }
+
       assert (k == nel);
     }
 
@@ -262,13 +263,13 @@ void
 octave_value_list::make_storable_values (void)
 {
   octave_idx_type len = length ();
-  const Array<octave_value>& cdata = data;
+  const std::vector<octave_value>& cdata = data;
 
   for (octave_idx_type i = 0; i < len; i++)
     {
       // This is optimized so that we don't force a copy unless necessary.
-      octave_value tmp = cdata(i).storable_value ();
-      if (! tmp.is_copy_of (cdata (i)))
-        data(i) = tmp;
+      octave_value tmp = cdata[i].storable_value ();
+      if (! tmp.is_copy_of (cdata[i]))
+        data[i] = tmp;
     }
 }

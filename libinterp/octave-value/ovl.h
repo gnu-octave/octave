@@ -56,13 +56,7 @@ public:
 
   template<template <typename...> class OV_Container>
   octave_value_list (const OV_Container<octave_value>& args)
-    : m_data (args.size ()), m_names ()
-  {
-    auto p = args.begin ();
-
-    for (size_t i = 0; i < m_data.size (); i++)
-      m_data[i] = *p++;
-  }
+    : m_data (args.begin (), args.end ()), m_names () { }
 
   octave_value_list (const Array<octave_value>& a)
     : m_data (a.numel ()), m_names ()
@@ -101,12 +95,12 @@ public:
   {
     Array<octave_value> retval;
 
-    if (m_data.size () > 0)
+    if (! m_data.empty ())
       {
         retval.resize (dim_vector (1, length ()));
 
         for (octave_idx_type i = 0; i < retval.numel (); i++)
-          retval(i) = m_data[i];
+          retval.xelem (i) = m_data[i];
       }
 
     return retval;
@@ -152,7 +146,8 @@ public:
     octave_value_list retval = slice_data;
 
     if (tags && len > 0 && m_names.numel () > 0)
-      retval.m_names = m_names.linear_slice (offset, std::min (offset + len, m_names.numel ()));
+      retval.m_names = m_names.linear_slice (offset, std::min (offset + len,
+                                                               m_names.numel ()));
 
     return retval;
   }
@@ -185,10 +180,11 @@ private:
 
   std::vector<octave_value> m_data;
 
-  // This list of strings can be used to tag each element of m_data with
-  // a name.  By default, it is empty.
+  // The list of strings can be used to tag each element of m_data with a name.
+  // By default, it is empty.
   string_vector m_names;
 
+  // elem will automatically resize array for out-of-bounds requests.
   octave_value& elem (octave_idx_type n)
   {
     if (n >= length ())

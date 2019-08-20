@@ -3237,7 +3237,7 @@ namespace octave
                             || (base_expr_val.is_classdef_meta ()
                                 && ! base_expr_val.is_package ()));
 
-    std::list<octave_value_list> idx;
+    std::list<octave_value_list> idx_list;
 
     octave_value partial_expr_val = base_expr_val;
 
@@ -3258,7 +3258,7 @@ namespace octave
 
                     octave_value_list tmp_list
                       = base_expr_val.subsref (type.substr (beg, i-beg),
-                                               idx, nargout);
+                                               idx_list, nargout);
 
                     partial_expr_val
                       = tmp_list.length () ? tmp_list(0) : octave_value ();
@@ -3273,7 +3273,7 @@ namespace octave
                         retval = partial_expr_val;
 
                         beg = i;
-                        idx.clear ();
+                        idx_list.clear ();
 
                         if (partial_expr_val.isobject ()
                             || partial_expr_val.isjava ()
@@ -3305,16 +3305,16 @@ namespace octave
         switch (type[i])
           {
           case '(':
-            idx.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
+            idx_list.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
             break;
 
           case '{':
-            idx.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
+            idx_list.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
             break;
 
           case '.':
-            idx.push_back (octave_value
-                           (idx_expr.get_struct_index (*this, p_arg_nm, p_dyn_field)));
+            idx_list.push_back (octave_value
+                                (idx_expr.get_struct_index (*this, p_arg_nm, p_dyn_field)));
             break;
 
           default:
@@ -3327,9 +3327,10 @@ namespace octave
       }
 
 
-    // If ! idx.empty () that means we still have stuff to index otherwise
-    // they would have been dealt with and idx would have been emptied.
-    if (! idx.empty ())
+    // If ! idx_list.empty () that means we still have stuff to index
+    // otherwise they would have been dealt with and idx_list would have
+    // been emptied.
+    if (! idx_list.empty ())
       {
         // This is for +package and other classdef_meta objects
         if (! base_expr_val.is_function ()
@@ -3338,9 +3339,9 @@ namespace octave
             try
               {
                 retval = base_expr_val.subsref (type.substr (beg, n-beg),
-                                                idx, nargout);
+                                                idx_list, nargout);
                 beg = n;
-                idx.clear ();
+                idx_list.clear ();
               }
             catch (index_exception& e)
               {
@@ -3359,7 +3360,24 @@ namespace octave
               {
                 try
                   {
-                    retval = fcn->call (*this, nargout, idx);
+                    // FIXME: is it possible for the IDX_LIST to have
+                    // more than one element here?  Do we need to check?
+
+                    octave_value_list final_args;
+
+                    if (idx_list.size () != 1)
+                      error ("unexpected extra index at end of expression");
+
+                    if (type[beg] != '(')
+                      error ("invalid index type '%c' for function call",
+                             type[beg]);
+
+                    final_args = idx_list.front ();
+
+                    // FIXME: Do we ever need the names of the arguments
+                    // passed to FCN here?
+
+                    retval = fcn->call (*this, nargout, final_args);
                   }
                 catch (index_exception& e)
                   {
@@ -3383,7 +3401,7 @@ namespace octave
           {
             octave_value_list final_args;
 
-            if (! idx.empty ())
+            if (! idx_list.empty ())
               {
                 if (n - beg != 1)
                   error ("unexpected extra index at end of expression");
@@ -3392,7 +3410,7 @@ namespace octave
                   error ("invalid index type '%c' for function call",
                          type[beg]);
 
-                final_args = idx.front ();
+                final_args = idx_list.front ();
               }
 
             retval = fcn->call (*this, nargout, final_args);
@@ -3407,7 +3425,7 @@ namespace octave
     // there is only a single register (either an octave_value or an
     // octave_value_list) not a stack.
 
-    idx.clear ();
+    idx_list.clear ();
     partial_expr_val = octave_value ();
     base_expr_val = octave_value ();
     val = octave_value ();

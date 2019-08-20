@@ -226,7 +226,7 @@ endfunction
 function print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
 
   if ((n + sk + rtsk + rgrs) > 0)
-    printf (" PASS %4d/%-4d", p, n);
+    printf (" pass %4d/%-4d", p, n);
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
       printf ("\n%72s %3d", "FAIL ", nfail);

@@ -222,6 +222,9 @@ Internal function.  Returns 1 on successful system call and 0 otherwise.
   // ShellExecute returns a value greater than 32 if successful.
   return octave_value (reinterpret_cast<ptrdiff_t> (status) > 32);
 #else
+  // Quote file path
+  file = "\"" + file + "\"";
+
 #  if defined (__APPLE__)
 #    define FSYSTEM_OPEN_STR "open "
 #  else

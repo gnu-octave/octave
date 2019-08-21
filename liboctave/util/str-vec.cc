@@ -42,7 +42,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 // Create a string vector from a NULL terminated list of C strings.
 
 string_vector::string_vector (const char * const *s)
-  : Array<std::string> ()
+  : m_data ()
 {
   octave_idx_type n = 0;
 
@@ -64,7 +64,7 @@ string_vector::string_vector (const char * const *s)
 // nonnegative.
 
 string_vector::string_vector (const char * const *s, octave_idx_type n)
-  : Array<std::string> (dim_vector (n, 1))
+  : m_data (dim_vector (n, 1))
 {
   for (octave_idx_type i = 0; i < n; i++)
     elem (i) = s[i];
@@ -75,7 +75,7 @@ string_vector::sort (bool make_uniq)
 {
   // Don't use Array<std::string>::sort () to allow sorting in place.
   octave_sort<std::string> lsort;
-  lsort.sort (Array<std::string>::fortran_vec (), numel ());
+  lsort.sort (m_data.fortran_vec (), numel ());
 
   if (make_uniq)
     uniq ();

@@ -77,7 +77,8 @@ public:
 
   octave_value_list (octave_value_list&& obj) = default;
 
-  // Concatenation constructor.
+  // Concatenation constructors.
+  octave_value_list (const std::list<octave_value>&);
   octave_value_list (const std::list<octave_value_list>&);
 
   ~octave_value_list (void) = default;

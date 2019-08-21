@@ -1796,7 +1796,7 @@ namespace octave
 
     int len = arg_list->length ();
 
-    std::list<octave_value_list> args;
+    std::list<octave_value> args;
 
     auto p = arg_list->begin ();
     for (int k = 0; k < len; k++)
@@ -1817,18 +1817,20 @@ namespace octave
             octave_value tmp = evaluate (elt);
 
             if (tmp.is_cs_list ())
-              args.push_back (tmp.list_value ());
+              {
+                octave_value_list tmp_ovl = tmp.list_value ();
+
+                for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
+                  args.push_back (tmp_ovl(i));
+              }
             else if (tmp.is_defined ())
               args.push_back (tmp);
           }
         else
-          {
-            args.push_back (octave_value ());
-            break;
-          }
+          break;
       }
 
-    return args;
+    return octave_value_list (args);
   }
 
   octave_value_list

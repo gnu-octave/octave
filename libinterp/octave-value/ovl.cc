@@ -31,6 +31,19 @@ along with Octave; see the file COPYING.  If not, see
 // We are likely to have a lot of octave_value_list objects to allocate,
 // so make the grow_size large.
 
+octave_value_list::octave_value_list (const std::list<octave_value>& lst)
+{
+  size_t nel = lst.size ();
+
+  if (nel > 0)
+    {
+      m_data.resize (nel);
+      octave_idx_type k = 0;
+      for (const auto& ov : lst)
+        m_data[k++] = ov;
+    }
+}
+
 octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
 {
   octave_idx_type n = 0;

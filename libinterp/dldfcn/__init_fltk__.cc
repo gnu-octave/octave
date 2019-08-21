@@ -2496,6 +2496,8 @@ Undocumented internal function.  Calls Fl::check ()
 
   return octave_value_list ();
 #else
+  octave_unused_parameter (interp);
+
   err_disabled_feature ("__fltk_check__", "OpenGL and FLTK");
 #endif
 }

@@ -75,6 +75,8 @@ public:
   octave_value_list (const octave_value_list& obj)
     : m_data (obj.m_data), m_names (obj.m_names) { }
 
+  octave_value_list (octave_value_list&& obj) = default;
+
   // Concatenation constructor.
   octave_value_list (const std::list<octave_value_list>&);
 
@@ -90,6 +92,8 @@ public:
 
     return *this;
   }
+
+  octave_value_list& operator = (octave_value_list&& obj) = default;
 
   Array<octave_value> array_value (void) const
   {

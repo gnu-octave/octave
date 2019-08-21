@@ -300,11 +300,24 @@ public:
     rep->count++;
   }
 
+  Array (Array<T>&& a)
+    : dimensions (std::move (a.dimensions)), rep (a.rep),
+      slice_data (a.slice_data), slice_len (a.slice_len)
+  {
+    a.rep = nullptr;
+    a.slice_data = nullptr;
+    a.slice_len = 0;
+  }
+
 public:
 
   virtual ~Array (void)
   {
-    if (--rep->count == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && --rep->count == 0)
       delete rep;
   }
 
@@ -321,6 +334,31 @@ public:
         dimensions = a.dimensions;
         slice_data = a.slice_data;
         slice_len = a.slice_len;
+      }
+
+    return *this;
+  }
+
+  Array<T>& operator = (Array<T>&& a)
+  {
+    if (this != &a)
+      {
+        dimensions = std::move (a.dimensions);
+
+        // Because we define a move constructor and a move assignment
+        // operator, rep may be a nullptr here.  We should only need to
+        // protect the destructor in a similar way.
+
+        if (rep && --rep->count == 0)
+          delete rep;
+
+        rep = a.rep;
+        slice_data = a.slice_data;
+        slice_len = a.slice_len;
+
+        a.rep = nullptr;
+        a.slice_data = nullptr;
+        a.slice_len = 0;
       }
 
     return *this;

@@ -258,7 +258,9 @@ public:
   dim_vector (const dim_vector& dv) : rep (dv.rep)
   { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
 
-  // FIXME: Should be private, but required by array constructor for jit
+  dim_vector (dim_vector&& dv) : rep (dv.rep) { dv.rep = nullptr; }
+
+// FIXME: Should be private, but required by array constructor for jit
   explicit dim_vector (octave_idx_type *r) : rep (r) { }
 
   static dim_vector alloc (int n)
@@ -280,9 +282,31 @@ public:
     return *this;
   }
 
+  dim_vector& operator = (dim_vector&& dv)
+  {
+    if (&dv != this)
+      {
+        // Because we define a move constructor and a move assignment
+        // operator, rep may be a nullptr here.  We should only need to
+        // protect the destructor in a similar way.
+
+        if (rep && OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+          freerep ();
+
+        rep = dv.rep;
+        dv.rep = nullptr;
+      }
+
+    return *this;
+  }
+
   ~dim_vector (void)
   {
-    if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
       freerep ();
   }
 

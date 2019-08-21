@@ -47,6 +47,8 @@ public:
 
   string_vector (const string_vector& s) : m_data (s.m_data) { }
 
+  string_vector (string_vector&& s) : m_data (std::move (s.m_data)) { }
+
   //! Constructor for STL containers of std::string.
   //!
   //! Templated constructor for any template class with std::string as the
@@ -67,6 +69,14 @@ public:
   {
     if (this != &s)
       m_data = s.m_data;
+
+    return *this;
+  }
+
+  string_vector& operator = (string_vector&& s)
+  {
+    if (this != &s)
+      m_data = std::move (s.m_data);
 
     return *this;
   }

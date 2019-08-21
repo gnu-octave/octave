@@ -302,9 +302,15 @@ public:
   // Copy constructor.
 
   octave_value (const octave_value& a)
+    : rep (a.rep)
   {
-    rep = a.rep;
     rep->count++;
+  }
+
+  octave_value (octave_value&& a)
+    : rep (a.rep)
+  {
+    a.rep = nullptr;
   }
 
   // This should only be called for derived types.
@@ -318,7 +324,11 @@ public:
 
   ~octave_value (void)
   {
-    if (--rep->count == 0)
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the move assignment operator in a similar way.
+
+    if (rep && --rep->count == 0)
       delete rep;
   }
 
@@ -362,6 +372,24 @@ public:
 
         rep = a.rep;
         rep->count++;
+      }
+
+    return *this;
+  }
+
+  octave_value& operator = (octave_value&& a)
+  {
+    // Because we define a move constructor and a move assignment
+    // operator, rep may be a nullptr here.  We should only need to
+    // protect the destructor in a similar way.
+
+    if (this != &a)
+      {
+        if (rep && --rep->count == 0)
+          delete rep;
+
+        rep = a.rep;
+        a.rep = nullptr;
       }
 
     return *this;

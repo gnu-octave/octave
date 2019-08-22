@@ -42,8 +42,7 @@ octave_value_list
 {
 public:
 
-  octave_value_list (void)
-    : m_data (), m_names () { }
+  octave_value_list (void) = default;
 
   explicit octave_value_list (octave_idx_type n)
     : m_data (n), m_names () { }
@@ -72,8 +71,7 @@ public:
       m_data[i] = c(i);
   }
 
-  octave_value_list (const octave_value_list& obj)
-    : m_data (obj.m_data), m_names (obj.m_names) { }
+  octave_value_list (const octave_value_list& obj) = default;
 
   octave_value_list (octave_value_list&& obj) = default;
 
@@ -83,16 +81,7 @@ public:
 
   ~octave_value_list (void) = default;
 
-  octave_value_list& operator = (const octave_value_list& obj)
-  {
-    if (this != &obj)
-      {
-        m_data = obj.m_data;
-        m_names = obj.m_names;
-      }
-
-    return *this;
-  }
+  octave_value_list& operator = (const octave_value_list& obj) = default;
 
   octave_value_list& operator = (octave_value_list&& obj) = default;
 

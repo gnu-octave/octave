@@ -117,6 +117,7 @@ COREFCN_SRC = \
   %reldir%/__contourc__.cc \
   %reldir%/__dsearchn__.cc \
   %reldir%/__expint__.cc \
+  %reldir%/__ftp__.cc \
   %reldir%/__gammainc__.cc \
   %reldir%/__ichol__.cc \
   %reldir%/__ilu__.cc \

@@ -97,8 +97,8 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
   ## there is "parent node".
   stk = [-1, 0];
 
-  ## Stack which is use to draw the graph edge (it have to be
-  ## uninterupted line).
+  ## Stack which is used to draw the graph edge (it has to be an
+  ## uninterrupted line).
   skelet = 0;
 
   ## The top of the stack.
@@ -110,7 +110,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
     endif
     ## Add to idx the vector of parent descendants.
     stk = [stk; [idx', ones(fliplr(size(idx)))*par_number]];
-    ## Add to stack the records relevant to parent descandant s.
+    ## Add to stack the records relevant to parent descendant s.
     if (par_number != 0)
       skelet = [skelet; ([ones(size(idx))*par_number; idx])(:)];
     endif

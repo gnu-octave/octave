@@ -22,7 +22,7 @@
 ## @deftypefn  {} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0}, @dots{})
 ## @deftypefnx {} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{M}, [], @var{x0}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicgstab (@var{A}, @var{b}, @dots{})
-## Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative
+## Solve @code{A x = b} using the stabilized Bi-conjugate gradient iterative
 ## method.
 ##
 ## The input parameters are:
@@ -90,7 +90,7 @@
 ## @item @var{relres} is the relative residual obtained with as
 ## @code{(@var{A}*@var{x}-@var{b}) / @code{norm(@var{b})}}.
 ##
-## @item @var{iter} is the (possibily half) iteration which @var{x} is
+## @item @var{iter} is the (possibly half) iteration which @var{x} is
 ## computed.  If it is an half iteration then it is @code{@var{iter} + 0.5}
 ##
 ## @item @var{resvec} is a vector containing the residual of each half and

@@ -76,7 +76,7 @@
 ## @noindent
 ## where @var{A}_approx is a matrix of size @var{A} but only rank @var{k}.
 ##
-## @var{flag} returns 0 if the algorithm has succesfully converged, and 1
+## @var{flag} returns 0 if the algorithm has successfully converged, and 1
 ## otherwise.  The test for convergence is
 ##
 ## @example
@@ -217,7 +217,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       p = min (length (zind), k - length (ind));
       ind = [ind; zind(1:p)];
     elseif (length (ind) > k)
-      ## Too many eigenvalues returned.  Select according to criterium.
+      ## Too many eigenvalues returned.  Select according to criterion.
       if (b_sigma == 0)
         ind = ind(end+1-k:end); # smallest eigenvalues
       else

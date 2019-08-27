@@ -252,7 +252,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   iter = iter_min = 0;
   flag = 1;  # Default flag is "maximum number of iterations reached"
   resvec = zeros (maxit + 1, 1);
-  r0 = b - Afun (x, "notransp", varargin{:});  # Residual of the sytem
+  r0 = b - Afun (x, "notransp", varargin{:});  # Residual of the system
   s0 = c - Afun (x, "transp", varargin{:});    # Res. of the "dual system"
   resvec(1) = norm (r0, 2);
 

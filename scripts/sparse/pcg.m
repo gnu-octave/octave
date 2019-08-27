@@ -356,7 +356,7 @@ function [x_min, flag, relres, iter_min, resvec, eigest] =...
     x += alpha * p;
     r -= alpha * w;
     resvec(iter, 1) = norm (r);
-    ## Chek if the iterated has minimum residual
+    ## Check if the iterated has minimum residual
     if (resvec (iter,1) <= resvec (iter_min + 1,1))
       x_min = x;
       iter_min = iter - 1;

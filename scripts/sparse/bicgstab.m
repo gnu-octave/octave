@@ -236,7 +236,7 @@ function [x_min, flag, relres, iter_min, resvec] = ...
   resvec = zeros (d_maxit,1);
   x = x_min = x_pr = x0;
   iter = iter_min = 0;
-  ## deafult setting of flag is 1 (i.e. max number of iterations reached)
+  ## default setting of flag is 1 (i.e. max number of iterations reached)
   flag = 1;
 
   res = b - feval (Afun, x, varargin{:});

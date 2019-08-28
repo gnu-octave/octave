@@ -2955,16 +2955,14 @@ namespace octave
         if (val.is_function ())
           fcn = val.function_value (true);
 
-        int nargout = m_nargout_stack.top ();
-
         if (fcn && ! (expr.is_postfix_indexed ()
                       && fcn->accepts_postfix_index (expr.postfix_index ())))
           {
-            retval = fcn->call (*this, nargout);
+            retval = fcn->call (*this, m_nargout);
           }
         else
           {
-            if (expr.print_result () && nargout == 0
+            if (expr.print_result () && m_nargout == 0
                 && statement_printing_enabled ())
               {
                 octave_value_list args = ovl (val);
@@ -3108,8 +3106,6 @@ namespace octave
   {
     octave_value_list retval;
 
-    int nargout = m_nargout_stack.top ();
-
     std::string type = idx_expr.type_tags ();
     std::list<tree_argument_list *> args = idx_expr.arg_lists ();
     std::list<string_vector> arg_nm = idx_expr.arg_names ();
@@ -3182,7 +3178,7 @@ namespace octave
               {
                 try
                   {
-                    retval = fcn->call (*this, nargout, first_args);
+                    retval = fcn->call (*this, m_nargout, first_args);
                   }
                 catch (index_exception& e)
                   {
@@ -3260,7 +3256,7 @@ namespace octave
 
                     octave_value_list tmp_list
                       = base_expr_val.subsref (type.substr (beg, i-beg),
-                                               idx_list, nargout);
+                                               idx_list, m_nargout);
 
                     partial_expr_val
                       = tmp_list.length () ? tmp_list(0) : octave_value ();
@@ -3341,7 +3337,7 @@ namespace octave
             try
               {
                 retval = base_expr_val.subsref (type.substr (beg, n-beg),
-                                                idx_list, nargout);
+                                                idx_list, m_nargout);
                 beg = n;
                 idx_list.clear ();
               }
@@ -3379,7 +3375,7 @@ namespace octave
                     // FIXME: Do we ever need the names of the arguments
                     // passed to FCN here?
 
-                    retval = fcn->call (*this, nargout, final_args);
+                    retval = fcn->call (*this, m_nargout, final_args);
                   }
                 catch (index_exception& e)
                   {
@@ -3415,7 +3411,7 @@ namespace octave
                 final_args = idx_list.front ();
               }
 
-            retval = fcn->call (*this, nargout, final_args);
+            retval = fcn->call (*this, m_nargout, final_args);
           }
       }
 
@@ -3688,9 +3684,7 @@ namespace octave
   void
   tree_evaluator::visit_constant (tree_constant& expr)
   {
-    int nargout = m_nargout_stack.top ();
-
-    if (nargout > 1)
+    if (m_nargout > 1)
       error ("invalid number of output arguments for constant expression");
 
     push_result (expr.value ());
@@ -4420,9 +4414,8 @@ namespace octave
 
         assert (f);
 
-        int nargout = m_nargout_stack.top ();
+        push_result (f->call (*this, m_nargout));
 
-        push_result (f->call (*this, nargout));
         return;
       }
 
@@ -4472,9 +4465,9 @@ namespace octave
   {
     unwind_protect frame;
 
-    m_nargout_stack.push (nargout);
+    frame.protect_var (m_nargout);
 
-    frame.add_method (m_nargout_stack, &value_stack<int>::pop);
+    m_nargout = nargout;
 
     expr->accept (*this);
   }

@@ -132,7 +132,7 @@ namespace octave
       : m_interpreter (interp), m_statement_context (SC_OTHER),
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
         m_expr_result_value_list (), m_lvalue_list_stack (),
-        m_nargout_stack (), m_autoload_map (), m_bp_table (*this),
+        m_nargout (0), m_autoload_map (), m_bp_table (*this),
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
         m_debugger_stack (), m_max_recursion_depth (256),
@@ -829,7 +829,7 @@ namespace octave
 
     value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
 
-    value_stack<int> m_nargout_stack;
+    int m_nargout;
 
     // List of autoloads (function -> file mapping).
     std::map<std::string, std::string> m_autoload_map;

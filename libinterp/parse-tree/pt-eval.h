@@ -131,7 +131,7 @@ namespace octave
     tree_evaluator (interpreter& interp)
       : m_interpreter (interp), m_statement_context (SC_OTHER),
         m_result_type (RT_UNDEFINED), m_expr_result_value (),
-        m_expr_result_value_list (), m_lvalue_list_stack (),
+        m_expr_result_value_list (), m_lvalue_list (nullptr),
         m_nargout (0), m_autoload_map (), m_bp_table (*this),
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
@@ -309,12 +309,6 @@ namespace octave
     bool isargout (int nargout, int iout) const;
 
     void isargout (int nargout, int nout, bool *isargout) const;
-
-    const std::list<octave_lvalue> * lvalue_list (void) const
-    {
-      return (m_lvalue_list_stack.empty ()
-              ? nullptr : m_lvalue_list_stack.top ());
-    }
 
     void push_result (const octave_value& val)
     {
@@ -827,7 +821,7 @@ namespace octave
     octave_value m_expr_result_value;
     octave_value_list m_expr_result_value_list;
 
-    value_stack<const std::list<octave_lvalue>*> m_lvalue_list_stack;
+    const std::list<octave_lvalue> *m_lvalue_list;
 
     int m_nargout;
 

@@ -1206,7 +1206,7 @@ namespace octave
   {
     Matrix retval;
 
-    const std::list<octave_lvalue> *lvalues = lvalue_list ();
+    const std::list<octave_lvalue> *lvalues = m_lvalue_list;
 
     if (! lvalues)
       return retval;
@@ -1238,7 +1238,7 @@ namespace octave
   bool
   tree_evaluator::isargout (int nargout, int iout) const
   {
-    const std::list<octave_lvalue> *lvalues = lvalue_list ();
+    const std::list<octave_lvalue> *lvalues = m_lvalue_list;
 
     if (iout >= std::max (nargout, 1))
       return false;
@@ -1263,7 +1263,7 @@ namespace octave
   void
   tree_evaluator::isargout (int nargout, int nout, bool *isargout) const
   {
-    const std::list<octave_lvalue> *lvalues = lvalue_list ();
+    const std::list<octave_lvalue> *lvalues = m_lvalue_list;
 
     if (lvalues)
       {
@@ -3148,10 +3148,8 @@ namespace octave
 
                 unwind_protect frame;
 
-                m_lvalue_list_stack.push (nullptr);
-
-                frame.add_method (m_lvalue_list_stack,
-                                  &value_stack<const std::list<octave_lvalue>*>::pop);
+                frame.protect_var (m_lvalue_list);
+                m_lvalue_list = nullptr;
 
                 string_vector anm = *p_arg_nm;
                 first_args = convert_to_const_vector (al);
@@ -3449,10 +3447,8 @@ namespace octave
 
     unwind_protect frame;
 
-    m_lvalue_list_stack.push (nullptr);
-
-    frame.add_method (m_lvalue_list_stack,
-                      &value_stack<const std::list<octave_lvalue>*>::pop);
+    frame.protect_var (m_lvalue_list);
+    m_lvalue_list = nullptr;
 
     octave_idx_type nr = expr.length ();
     octave_idx_type nc = -1;
@@ -3516,10 +3512,8 @@ namespace octave
 
         std::list<octave_lvalue> lvalue_list = make_lvalue_list (lhs);
 
-        m_lvalue_list_stack.push (&lvalue_list);
-
-        frame.add_method (m_lvalue_list_stack,
-                          &value_stack<const std::list<octave_lvalue>*>::pop);
+        frame.protect_var (m_lvalue_list);
+        m_lvalue_list = &lvalue_list;
 
         octave_idx_type n_out = 0;
 
@@ -3842,10 +3836,8 @@ namespace octave
             std::list<octave_lvalue> lvalue_list;
             lvalue_list.push_back (ult);
 
-            m_lvalue_list_stack.push (&lvalue_list);
-
-            frame.add_method (m_lvalue_list_stack,
-                              &value_stack<const std::list<octave_lvalue>*>::pop);
+            frame.protect_var (m_lvalue_list);
+            m_lvalue_list = &lvalue_list;
 
             if (ult.numel () != 1)
               err_invalid_structure_assignment ();
@@ -4578,10 +4570,8 @@ namespace octave
 
         unwind_protect frame;
 
-        m_lvalue_list_stack.push (nullptr);
-
-        frame.add_method (m_lvalue_list_stack,
-                          &value_stack<const std::list<octave_lvalue>*>::pop);
+        frame.protect_var (m_lvalue_list);
+        m_lvalue_list = nullptr;
 
         if (rvalue && object && args->has_magic_end ()
             && object->is_undefined ())

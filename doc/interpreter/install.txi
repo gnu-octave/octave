@@ -658,6 +658,40 @@ to use 64-bit integers, but most systems do not provide packages built
 this way.  If you wish to experiment with large arrays, the following
 information may be helpful.
 
+To determine the integer size of the BLAS library used by Octave, the
+following code can be executed:
+
+@example
+@group
+clear all;
+N = 2^31;
+## The following line requires about 8 GB of RAM!
+a = b = ones (N, 1, "single");
+c = a' * b
+@end group
+@end example
+
+If the BLAS library uses 32-bit integers, an error will be thrown:
+
+@example
+@group
+error: integer dimension or index out of range for Fortran
+INTEGER type
+@end group
+@end example
+
+Otherwise, if the BLAS library uses 64-bit integers, the result is:
+
+@example
+c = 2^31 = 2147483648
+@end example
+
+Note that the test case above usually requires twice the memory, if
+@var{a} and @var{b} are not assigned by @code{a = b = @dots{}}.
+Note further, that the data type @code{single} has a precision of
+about 23 binary bits.  In this particular example no rounding errors
+occur.
+
 The following instructions were tested with the development version of
 Octave and GCC 4.3.4 on an x86_64 Debian system and may be out of date
 now.  Please report any problems or corrections on the Octave bug

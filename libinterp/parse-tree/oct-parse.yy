@@ -2535,7 +2535,7 @@ namespace octave
           {
             tree_evaluator& tw = interp.get_evaluator ();
 
-            octave_value tmp = tw.evaluate (e);
+            octave_value tmp = e->evaluate (tw);
 
             tree_constant *tc_retval
               = new tree_constant (tmp, e->line (), e->column ());
@@ -4112,7 +4112,7 @@ namespace octave
         tree_evaluator& tw
           = __get_evaluator__ ("validate_matrix_for_assignment");
 
-        octave_value ov = tw.evaluate (e);
+        octave_value ov = e->evaluate (tw);
 
         delete e;
 
@@ -4187,7 +4187,7 @@ namespace octave
           {
             tree_evaluator& tw = interp.get_evaluator ();
 
-            octave_value tmp = tw.evaluate (array_list);
+            octave_value tmp = array_list->evaluate (tw);
 
             tree_constant *tc_retval
               = new tree_constant (tmp, array_list->line (),

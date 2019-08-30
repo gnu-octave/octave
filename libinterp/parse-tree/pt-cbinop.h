@@ -58,6 +58,13 @@ namespace octave
     tree_expression * clhs (void) { return m_lhs; }
     tree_expression * crhs (void) { return m_rhs; }
 
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_compound_binary_expression (*this);

@@ -165,7 +165,7 @@ namespace octave
       {
         octave_quit ();
 
-        octave_value tmp = tw.evaluate (elt);
+        octave_value tmp = elt->evaluate (tw);
 
         if (tmp.is_undefined ())
           return;

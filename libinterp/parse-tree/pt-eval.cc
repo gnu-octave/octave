@@ -551,7 +551,7 @@ namespace octave
                     if (silent)
                       expr->set_print_flag (false);
 
-                    retval = evaluate_n (expr, nargout);
+                    retval = std::move (expr->evaluate_n (*this, nargout));
 
                     bool do_bind_ans = false;
 
@@ -762,87 +762,9 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle& anon_fh)
+  tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle&)
   {
-    // FIXME: should CMD_LIST be limited to a single expression?
-    // I think that is what Matlab does.
-
-    tree_parameter_list *param_list = anon_fh.parameter_list ();
-    tree_expression *expr = anon_fh.expression ();
-
-    symbol_scope af_scope = anon_fh.scope ();
-
-    symbol_scope new_scope;
-    if (af_scope)
-      new_scope = af_scope.dup ();
-
-    tree_parameter_list *param_list_dup
-      = param_list ? param_list->dup (new_scope) : nullptr;
-
-    tree_parameter_list *ret_list = nullptr;
-
-    tree_statement_list *stmt_list = nullptr;
-
-    symbol_scope parent_scope = get_current_scope ();
-
-    new_scope.set_parent (parent_scope);
-    new_scope.set_primary_parent (parent_scope);
-
-    if (expr)
-      {
-        tree_expression *expr_dup = expr->dup (new_scope);
-        tree_statement *stmt = new tree_statement (expr_dup, nullptr);
-        stmt_list = new tree_statement_list (stmt);
-      }
-
-    tree_anon_scopes anon_fcn_ctx (anon_fh);
-
-    std::set<std::string> free_vars = anon_fcn_ctx.free_variables ();
-
-    octave_user_function::local_vars_map local_var_init_vals;
-
-    stack_frame& frame = m_call_stack.get_current_stack_frame ();
-
-    for (auto& name : free_vars)
-      {
-        octave_value val = frame.varval (name);
-
-        if (val.is_defined ())
-          local_var_init_vals[name] = val;
-      }
-
-    octave_user_function *af
-      = new octave_user_function (new_scope, param_list_dup, ret_list,
-                                  stmt_list, local_var_init_vals);
-
-    octave_function *curr_fcn = m_call_stack.current ();
-
-    if (curr_fcn)
-      {
-        // FIXME: maybe it would be better to just stash curr_fcn
-        // instead of individual bits of info about it?
-
-        af->stash_parent_fcn_name (curr_fcn->name ());
-        af->stash_dir_name (curr_fcn->dir_name ());
-
-        // The following is needed so that class method dispatch works
-        // properly for anonymous functions that wrap class methods.
-
-        if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
-          af->stash_dispatch_class (curr_fcn->dispatch_class ());
-
-        af->stash_fcn_file_name (curr_fcn->fcn_file_name ());
-      }
-
-    af->mark_as_anonymous_function ();
-
-    octave_value ov_fcn (af);
-
-    // octave_value fh (octave_fcn_binder::maybe_binder (ov_fcn, m_interpreter));
-
-    octave_value fh (new octave_fcn_handle (ov_fcn, octave_fcn_handle::anonymous));
-
-    push_result (fh);
+    panic_impossible ();
   }
 
   void
@@ -852,170 +774,21 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_binary_expression (tree_binary_expression& expr)
+  tree_evaluator::visit_binary_expression (tree_binary_expression&)
   {
-    octave_value val;
-
-    tree_expression *op_lhs = expr.lhs ();
-    tree_expression *op_rhs = expr.rhs ();
-    octave_value::binary_op etype = expr.op_type ();
-
-    if (expr.is_eligible_for_braindead_shortcircuit ())
-      {
-        if (op_lhs)
-          {
-            octave_value a = evaluate (op_lhs);
-
-            if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
-              {
-                bool result = false;
-
-                bool a_true = a.is_true ();
-
-                if (a_true)
-                  {
-                    if (etype == octave_value::op_el_or)
-                      {
-                        expr.matlab_style_short_circuit_warning ("|");
-                        push_result (octave_value (true));
-                        return;
-                      }
-                  }
-                else
-                  {
-                    if (etype == octave_value::op_el_and)
-                      {
-                        expr.matlab_style_short_circuit_warning ("&");
-                        push_result (octave_value (false));
-                        return;
-                      }
-                  }
-
-                if (op_rhs)
-                  {
-                    octave_value b = evaluate (op_rhs);
-
-                    result = b.is_true ();
-                  }
-
-                push_result (octave_value (result));
-                return;
-              }
-          }
-      }
-
-    if (op_lhs)
-      {
-        octave_value a = evaluate (op_lhs);
-
-        if (a.is_defined () && op_rhs)
-          {
-            octave_value b = evaluate (op_rhs);
-
-            if (b.is_defined ())
-              {
-                profiler::enter<tree_binary_expression>
-                  block (m_profiler, expr);
-
-                // Note: The profiler does not catch the braindead
-                // short-circuit evaluation code above, but that should be
-                // ok.  The evaluation of operands and the operator itself
-                // is entangled and it's not clear where to start/stop
-                // timing the operator to make it reasonable.
-
-                type_info& ti = m_interpreter.get_type_info ();
-
-                val = ::do_binary_op (ti, etype, a, b);
-              }
-          }
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_boolean_expression (tree_boolean_expression& expr)
+  tree_evaluator::visit_boolean_expression (tree_boolean_expression&)
   {
-    octave_value val;
-
-    bool result = false;
-
-    // This evaluation is not caught by the profiler, since we can't find
-    // a reasonable place where to time.  Note that we don't want to
-    // include evaluation of LHS or RHS into the timing, but this is
-    // entangled together with short-circuit evaluation here.
-
-    tree_expression *op_lhs = expr.lhs ();
-
-    if (op_lhs)
-      {
-        octave_value a = evaluate (op_lhs);
-
-        bool a_true = a.is_true ();
-
-        tree_boolean_expression::type etype = expr.op_type ();
-
-        if (a_true)
-          {
-            if (etype == tree_boolean_expression::bool_or)
-              {
-                push_result (octave_value (true));
-                return;
-              }
-          }
-        else
-          {
-            if (etype == tree_boolean_expression::bool_and)
-              {
-                push_result (octave_value (false));
-                return;
-              }
-          }
-
-        tree_expression *op_rhs = expr.rhs ();
-
-        if (op_rhs)
-          {
-            octave_value b = evaluate (op_rhs);
-
-            result = b.is_true ();
-          }
-
-        val = octave_value (result);
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_compound_binary_expression (tree_compound_binary_expression& expr)
+  tree_evaluator::visit_compound_binary_expression (tree_compound_binary_expression&)
   {
-    octave_value val;
-
-    tree_expression *op_lhs = expr.clhs ();
-
-    if (op_lhs)
-      {
-        octave_value a = evaluate (op_lhs);
-
-        tree_expression *op_rhs = expr.crhs ();
-
-        if (a.is_defined () && op_rhs)
-          {
-            octave_value b = evaluate (op_rhs);
-
-            if (b.is_defined ())
-              {
-                octave_value::compound_binary_op etype = expr.cop_type ();
-
-                type_info& ti = m_interpreter.get_type_info ();
-
-                val = ::do_binary_op (ti, etype, a, b);
-              }
-          }
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
@@ -1038,66 +811,9 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_colon_expression (tree_colon_expression& expr)
+  tree_evaluator::visit_colon_expression (tree_colon_expression&)
   {
-    octave_value val;
-
-    tree_expression *op_base = expr.base ();
-    tree_expression *op_limit = expr.limit ();
-
-    if (! op_base || ! op_limit)
-      {
-        push_result (octave_value (val));
-        return;
-      }
-
-    octave_value ov_base = evaluate (op_base);
-
-    octave_value ov_limit = evaluate (op_limit);
-
-    tree_expression *op_increment = expr.increment ();
-
-    if (ov_base.isobject () || ov_limit.isobject ())
-      {
-        octave_value_list tmp1;
-
-        if (op_increment)
-          {
-            octave_value ov_increment = evaluate (op_increment);
-
-            tmp1(2) = ov_limit;
-            tmp1(1) = ov_increment;
-            tmp1(0) = ov_base;
-          }
-        else
-          {
-            tmp1(1) = ov_limit;
-            tmp1(0) = ov_base;
-          }
-
-        symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-        octave_value fcn = symtab.find_function ("colon", tmp1);
-
-        if (! fcn.is_defined ())
-          error ("can not find overloaded colon function");
-
-        octave_value_list tmp2 = feval (fcn, tmp1, 1);
-
-        val = tmp2 (0);
-      }
-    else
-      {
-        octave_value ov_increment = 1.0;
-
-        if (op_increment)
-          ov_increment = evaluate (op_increment);
-
-        val = do_colon_op (ov_base, ov_increment, ov_limit,
-                           expr.is_for_cmd_expr ());
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
@@ -1235,60 +951,6 @@ namespace octave
     return retval;
   }
 
-  bool
-  tree_evaluator::isargout (int nargout, int iout) const
-  {
-    const std::list<octave_lvalue> *lvalues = m_lvalue_list;
-
-    if (iout >= std::max (nargout, 1))
-      return false;
-    else if (lvalues)
-      {
-        int k = 0;
-        for (const auto& lval : *lvalues)
-          {
-            if (k == iout)
-              return ! lval.is_black_hole ();
-            k += lval.numel ();
-            if (k > iout)
-              break;
-          }
-
-        return true;
-      }
-    else
-      return true;
-  }
-
-  void
-  tree_evaluator::isargout (int nargout, int nout, bool *isargout) const
-  {
-    const std::list<octave_lvalue> *lvalues = m_lvalue_list;
-
-    if (lvalues)
-      {
-        int k = 0;
-        for (const auto& lval : *lvalues)
-          {
-            if (lval.is_black_hole ())
-              isargout[k++] = false;
-            else
-              {
-                int l = std::min (k + lval.numel (),
-                                  static_cast<octave_idx_type> (nout));
-                while (k < l)
-                  isargout[k++] = true;
-              }
-          }
-      }
-    else
-      for (int i = 0; i < nout; i++)
-        isargout[i] = true;
-
-    for (int i = std::max (nargout, 1); i < nout; i++)
-      isargout[i] = false;
-  }
-
   octave_value
   tree_evaluator::evaluate (tree_decl_elt *elt)
   {
@@ -1296,7 +958,7 @@ namespace octave
 
     tree_identifier *id = elt->ident ();
 
-    return id ? evaluate (id).storable_value () : octave_value ();
+    return id ? id->evaluate (*this).storable_value () : octave_value ();
   }
 
   bool
@@ -1814,7 +1476,7 @@ namespace octave
 
         if (elt)
           {
-            octave_value tmp = evaluate (elt);
+            octave_value tmp = std::move (elt->evaluate (*this));
 
             if (tmp.is_cs_list ())
               {
@@ -1852,10 +1514,7 @@ namespace octave
         for (tree_decl_elt *elt : *ret_list)
           {
             if (is_defined (elt->ident ()))
-              {
-                octave_value tmp = evaluate (elt);
-                retval(i) = tmp;
-              }
+              retval(i) = std::move (evaluate (elt));
 
             i++;
           }
@@ -1869,7 +1528,7 @@ namespace octave
         int i = 0;
 
         for (tree_decl_elt *elt : *ret_list)
-          retval(i++) = evaluate (elt);
+          retval(i++) = std::move (evaluate (elt));
 
         for (octave_idx_type j = 0; j < vlen; j++)
           retval(i++) = varargout(j);
@@ -1890,7 +1549,7 @@ namespace octave
       {
         octave_lvalue ult = id->lvalue (*this);
 
-        octave_value init_val = evaluate (expr);
+        octave_value init_val = std::move (expr->evaluate (*this));
 
         ult.assign (octave_value::op_asn_eq, init_val);
 
@@ -1906,7 +1565,7 @@ namespace octave
   {
     tree_expression *label = expr->case_label ();
 
-    octave_value label_value = evaluate (label);
+    octave_value label_value = std::move (label->evaluate (*this));
 
     if (label_value.is_defined ())
       {
@@ -2383,6 +2042,9 @@ namespace octave
     if (m_debug_mode)
       do_breakpoint (cmd.is_active_breakpoint (*this));
 
+    // FIXME: tree_decl_init_list is not derived from tree, so should it
+    // really have an accept method?
+
     tree_decl_init_list *init_list = cmd.initializer_list ();
 
     if (init_list)
@@ -2392,6 +2054,9 @@ namespace octave
   void
   tree_evaluator::visit_decl_init_list (tree_decl_init_list& lst)
   {
+    // FIXME: tree_decl_elt is not derived from tree, so should it
+    // really have an accept method?
+
     for (tree_decl_elt *elt : lst)
       elt->accept (*this);
   }
@@ -2419,7 +2084,7 @@ namespace octave
             octave_value init_val;
 
             if (expr)
-              init_val = evaluate (expr);
+              init_val = std::move (expr->evaluate (*this));
             else
               init_val = Matrix ();
 
@@ -2453,7 +2118,7 @@ namespace octave
 
     tree_expression *expr = cmd.control_expr ();
 
-    octave_value rhs = evaluate (expr);
+    octave_value rhs = expr->evaluate (*this);
 
 #if defined (HAVE_LLVM)
     if (tree_jit::execute (cmd, rhs))
@@ -2588,7 +2253,7 @@ namespace octave
 
     tree_expression *expr = cmd.control_expr ();
 
-    octave_value rhs = evaluate (expr);
+    octave_value rhs = std::move (expr->evaluate (*this));
 
     if (rhs.is_undefined ())
       return;
@@ -2834,7 +2499,7 @@ namespace octave
             {
               m_call_stack.set_location (stmt->line (), stmt->column ());
 
-              retval = evaluate_n (expr, nargout);
+              retval = std::move (expr->evaluate_n (*this, nargout));
             }
         }
       else
@@ -2922,64 +2587,9 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_identifier (tree_identifier& expr)
+  tree_evaluator::visit_identifier (tree_identifier&)
   {
-    octave_value_list retval;
-
-    symbol_record sym = expr.symbol ();
-
-    octave_value val = varval (sym);
-
-    if (val.is_undefined ())
-      {
-        symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-        val = symtab.find_function (sym.name ());
-      }
-
-    if (val.is_defined ())
-      {
-        // GAGME -- this would be cleaner if we required
-        // parens to indicate function calls.
-        //
-        // If this identifier refers to a function, we need to know
-        // whether it is indexed so that we can do the same thing
-        // for 'f' and 'f()'.  If the index is present and the function
-        // object declares it can handle it, return the function object
-        // and let tree_index_expression::rvalue handle indexing.
-        // Otherwise, arrange to call the function here, so that we don't
-        // return the function definition as a value.
-
-        octave_function *fcn = nullptr;
-
-        if (val.is_function ())
-          fcn = val.function_value (true);
-
-        if (fcn && ! (expr.is_postfix_indexed ()
-                      && fcn->accepts_postfix_index (expr.postfix_index ())))
-          {
-            retval = fcn->call (*this, m_nargout);
-          }
-        else
-          {
-            if (expr.print_result () && m_nargout == 0
-                && statement_printing_enabled ())
-              {
-                octave_value_list args = ovl (val);
-                args.stash_name_tags (string_vector (expr.name ()));
-                feval ("display", args);
-              }
-
-            push_result (val);
-            return;
-          }
-      }
-    else if (sym.is_added_static ())
-      expr.static_workspace_error ();
-    else
-      expr.eval_undefined_error ();
-
-    push_result (retval);
+    panic_impossible ();
   }
 
   void
@@ -2997,6 +2607,9 @@ namespace octave
         echo_code (line);
         m_echo_file_pos = line + 1;
       }
+
+    // FIXME: tree_if_command_list is not derived from tree, so should it
+    // really have an accept method?
 
     tree_if_command_list *lst = cmd.cmd_list ();
 
@@ -3030,635 +2643,28 @@ namespace octave
       }
   }
 
-  // Unlike Matlab, which does not allow the result of a function call
-  // or array indexing expression to be further indexed, Octave attempts
-  // to handle arbitrary index expressions.  For example, Octave allows
-  // expressions like
-  //
-  //   svd (rand (10))(1:5)
-  //
-  // Although octave_value objects may contain function objects, no
-  // indexing operation or function call is supposed to return them
-  // directly.  Instead, the language is supposed to only allow function
-  // objects to be stored as function handles (named or anonymous) or as
-  // inline functions.  The only place a function object should appear
-  // directly is if the symbol stored in a tree_identifier object
-  // resolves to a function.  This means that the only place we need to
-  // look for functions is in the first element of the index
-  // expression.
-  //
-  // Steps:
-  //
-  //  * Obtain the initial value from the expression component of the
-  //    tree_index_expression object.  If it is a tree_identifier object
-  //    indexed by '(args)' and the identifier is not a variable, then
-  //    peform a function call.  Use the (optional) arguments to perform
-  //    the function lookup so we choose the correct function or class
-  //    method to call.  Otherwise, evaluate the first expression
-  //    without any additional arguments.
-  //
-  //  * Iterate over the remaining elements of the index expression and
-  //    call the octave_value::subsref method.  If indexing a class or
-  //    classdef object, build up a list of indices for a call to the
-  //    subsref method for the object.  Otherwise, use the result of
-  //    each temporary evaluation for the next index element.
-  //
-  //  * If not indexing a class or classdef object and any partial
-  //    expression evaluation produces a class or classdef object, then
-  //    build up a complete argument list from that point on for a final
-  //    subsref call for that object.
-  //
-  //    Multiple partial evaluations may be required.  For example,
-  //    given a class or classdef object X, then for the expression
-  //
-  //      x.a{end}(2:end).b
-  //
-  //    we must evaluate x.a to obtain the size for the first {end}
-  //    expression, then we must evaluate x.a{end} to obtain the size
-  //    for the second (2:end) expression.  Finally, the complete
-  //    expression may be evaluated.
-  //
-  //    If X is a cell array in the above expression, and none of the
-  //    intermediate evaluations produces a class or classdef object,
-  //    then the evaluation is performed as the following series of
-  //    steps
-  //
-  //      tmp = x.a
-  //      tmp = tmp{end}
-  //      tmp = tmp(2:end)
-  //      result = tmp.b
-  //
-  //    If any of the partial evaluations produces a class or classdef
-  //    object, then the subsref method for that object is called as
-  //    described above.  For example, suppose x.a produces a classdef
-  //    object.  Then the evaluation is performed as the following
-  //    series of steps
-  //
-  //      base_expr = tmp = x.a
-  //      tmp = base_expr{end}
-  //      base_expr{end}(2:end).b
-  //
-  //    In the last two steps, the partial value computed in the
-  //    previous step is used to determine the value of END.
-
   void
-  tree_evaluator::visit_index_expression (tree_index_expression& idx_expr)
+  tree_evaluator::visit_index_expression (tree_index_expression&)
   {
-    octave_value_list retval;
-
-    std::string type = idx_expr.type_tags ();
-    std::list<tree_argument_list *> args = idx_expr.arg_lists ();
-    std::list<string_vector> arg_nm = idx_expr.arg_names ();
-    std::list<tree_expression *> dyn_field = idx_expr.dyn_fields ();
-
-    assert (! args.empty ());
-
-    auto p_args = args.begin ();
-    auto p_arg_nm = arg_nm.begin ();
-    auto p_dyn_field = dyn_field.begin ();
-
-    int n = args.size ();
-    int beg = 0;
-
-    octave_value base_expr_val;
-
-    tree_expression *expr = idx_expr.expression ();
-
-    if (expr->is_identifier () && type[beg] == '(')
-      {
-        tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
-
-        bool is_var = is_variable (expr);
-
-        std::string nm =  id->name ();
-
-        if (is_var && idx_expr.is_word_list_cmd ())
-          error ("%s used as variable and later as function", nm.c_str ());
-
-        if (! is_var)
-          {
-            octave_value_list first_args;
-
-            tree_argument_list *al = *p_args;
-
-            if (al && al->length () > 0)
-              {
-                // Function calls inside an argument list can't have
-                // ignored output arguments.
-
-                unwind_protect frame;
-
-                frame.protect_var (m_lvalue_list);
-                m_lvalue_list = nullptr;
-
-                string_vector anm = *p_arg_nm;
-                first_args = convert_to_const_vector (al);
-                first_args.stash_name_tags (anm);
-              }
-
-            symbol_record sym = id->symbol ();
-
-            octave_value val = varval (sym);
-
-            if (val.is_undefined ())
-              {
-                symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-                val = symtab.find_function (sym.name (), first_args);
-              }
-
-            octave_function *fcn = nullptr;
-
-            if (val.is_function ())
-              fcn = val.function_value (true);
-
-            if (fcn)
-              {
-                try
-                  {
-                    retval = fcn->call (*this, m_nargout, first_args);
-                  }
-                catch (index_exception& e)
-                  {
-                    final_index_error (e, expr);
-                  }
-
-                beg++;
-                p_args++;
-                p_arg_nm++;
-                p_dyn_field++;
-
-                if (n > beg)
-                  {
-                    // More indices to follow.  Silently ignore
-                    // extra output values.
-
-                    if (retval.length () == 0)
-                      error ("indexing undefined value");
-                    else
-                      base_expr_val = retval(0);
-                  }
-                else
-                  {
-                    // No more indices, so we are done.
-
-                    // See note at end of function about deleting
-                    // temporaries prior to pushing result.
-
-                    base_expr_val = octave_value ();
-                    first_args = octave_value_list ();
-
-                    push_result (retval);
-                    return;
-                  }
-              }
-          }
-      }
-
-    if (base_expr_val.is_undefined ())
-      base_expr_val = evaluate (expr);
-
-    // If we are indexing an object or looking at something like
-    //
-    //   classname.static_function (args, ...);
-    //
-    // then we'll just build a complete index list for one big subsref
-    // call.  If the expression we are indexing is a classname then
-    // base_expr_val will be an octave_classdef_meta object.  If we have
-    // files in a +packagename folder, they will also be an
-    // octave_classdef_meta object, but we don't want to index them.
-
-    bool indexing_object = (base_expr_val.isobject ()
-                            || base_expr_val.isjava ()
-                            || (base_expr_val.is_classdef_meta ()
-                                && ! base_expr_val.is_package ()));
-
-    std::list<octave_value_list> idx_list;
-
-    octave_value partial_expr_val = base_expr_val;
-
-    for (int i = beg; i < n; i++)
-      {
-        if (i > beg)
-          {
-            tree_argument_list *al = *p_args;
-
-            if (! indexing_object || (al && al->has_magic_end ()))
-              {
-                // Evaluate what we have so far to find the value to
-                // pass to the END function.
-
-                try
-                  {
-                    // Silently ignore extra output values.
-
-                    octave_value_list tmp_list
-                      = base_expr_val.subsref (type.substr (beg, i-beg),
-                                               idx_list, m_nargout);
-
-                    partial_expr_val
-                      = tmp_list.length () ? tmp_list(0) : octave_value ();
-
-                    if (! indexing_object)
-                      {
-                        base_expr_val = partial_expr_val;
-
-                        if (partial_expr_val.is_cs_list ())
-                          err_indexed_cs_list ();
-
-                        retval = partial_expr_val;
-
-                        beg = i;
-                        idx_list.clear ();
-
-                        if (partial_expr_val.isobject ()
-                            || partial_expr_val.isjava ()
-                            || (partial_expr_val.is_classdef_meta ()
-                                && ! partial_expr_val.is_package ()))
-                          {
-                            // Found an object, so now we'll build up
-                            // complete index list for one big subsref
-                            // call from this point on.
-
-                            // FIXME: is is also possible to have a
-                            // static method call buried somewhere in
-                            // the depths of a complex indexing
-                            // expression so that we would also need to
-                            // check for an octave_classdef_meta object
-                            // here?
-
-                            indexing_object = true;
-                          }
-                      }
-                  }
-                catch (index_exception& e)
-                  {
-                    final_index_error (e, expr);
-                  }
-              }
-          }
-
-        switch (type[i])
-          {
-          case '(':
-            idx_list.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
-            break;
-
-          case '{':
-            idx_list.push_back (make_value_list (*p_args, *p_arg_nm, &partial_expr_val));
-            break;
-
-          case '.':
-            idx_list.push_back (octave_value
-                                (idx_expr.get_struct_index (*this, p_arg_nm, p_dyn_field)));
-            break;
-
-          default:
-            panic_impossible ();
-          }
-
-        p_args++;
-        p_arg_nm++;
-        p_dyn_field++;
-      }
-
-
-    // If ! idx_list.empty () that means we still have stuff to index
-    // otherwise they would have been dealt with and idx_list would have
-    // been emptied.
-    if (! idx_list.empty ())
-      {
-        // This is for +package and other classdef_meta objects
-        if (! base_expr_val.is_function ()
-            || base_expr_val.is_classdef_meta ())
-          {
-            try
-              {
-                retval = base_expr_val.subsref (type.substr (beg, n-beg),
-                                                idx_list, m_nargout);
-                beg = n;
-                idx_list.clear ();
-              }
-            catch (index_exception& e)
-              {
-                final_index_error (e, expr);
-              }
-          }
-        else
-          {
-            // FIXME: we want this to only be a superclass constructor
-            // call Should we actually make a check for this or are all
-            // other types of calls already dealt with?
-
-            octave_function *fcn = base_expr_val.function_value ();
-
-            if (fcn)
-              {
-                try
-                  {
-                    // FIXME: is it possible for the IDX_LIST to have
-                    // more than one element here?  Do we need to check?
-
-                    octave_value_list final_args;
-
-                    if (idx_list.size () != 1)
-                      error ("unexpected extra index at end of expression");
-
-                    if (type[beg] != '(')
-                      error ("invalid index type '%c' for function call",
-                             type[beg]);
-
-                    final_args = idx_list.front ();
-
-                    // FIXME: Do we ever need the names of the arguments
-                    // passed to FCN here?
-
-                    retval = fcn->call (*this, m_nargout, final_args);
-                  }
-                catch (index_exception& e)
-                  {
-                    final_index_error (e, expr);
-                  }
-              }
-          }
-      }
-
-    // FIXME: when can the following happen?  In what case does indexing
-    // result in a value that is a function?  Classdef method calls?
-    // Something else?
-
-    octave_value val = (retval.length () ? retval(0) : octave_value ());
-
-    if (val.is_function ())
-      {
-        octave_function *fcn = val.function_value (true);
-
-        if (fcn)
-          {
-            octave_value_list final_args;
-
-            if (! idx_list.empty ())
-              {
-                if (n - beg != 1)
-                  error ("unexpected extra index at end of expression");
-
-                if (type[beg] != '(')
-                  error ("invalid index type '%c' for function call",
-                         type[beg]);
-
-                final_args = idx_list.front ();
-              }
-
-            retval = fcn->call (*this, m_nargout, final_args);
-          }
-      }
-
-    // Delete any temporary values prior to pushing the result and
-    // returning so that destructors for any temporary classdef handle
-    // objects will be called before we return.  Otherwise, the
-    // destructor may push result values that will wipe out the result
-    // that we push below.  Although the method name is "push_result"
-    // there is only a single register (either an octave_value or an
-    // octave_value_list) not a stack.
-
-    idx_list.clear ();
-    partial_expr_val = octave_value ();
-    base_expr_val = octave_value ();
-    val = octave_value ();
-
-    push_result (retval);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_matrix (tree_matrix& expr)
+  tree_evaluator::visit_matrix (tree_matrix&)
   {
-    tm_const tmp (expr, *this);
-
-    push_result (tmp.concat (m_string_fill_char));
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_cell (tree_cell& expr)
+  tree_evaluator::visit_cell (tree_cell&)
   {
-    octave_value retval;
-
-    // Function calls inside an argument list can't have ignored
-    // output arguments.
-
-    unwind_protect frame;
-
-    frame.protect_var (m_lvalue_list);
-    m_lvalue_list = nullptr;
-
-    octave_idx_type nr = expr.length ();
-    octave_idx_type nc = -1;
-
-    Cell val;
-
-    octave_idx_type i = 0;
-
-    for (tree_argument_list *elt : expr)
-      {
-        octave_value_list row = convert_to_const_vector (elt);
-
-        if (nr == 1)
-          // Optimize the single row case.
-          val = row.cell_value ();
-        else if (nc < 0)
-          {
-            nc = row.length ();
-
-            val = Cell (nr, nc);
-          }
-        else
-          {
-            octave_idx_type this_nc = row.length ();
-
-            if (this_nc != nc)
-              {
-                if (this_nc == 0)
-                  continue;  // blank line
-                else
-                  error ("number of columns must match");
-              }
-          }
-
-        for (octave_idx_type j = 0; j < nc; j++)
-          val(i,j) = row(j);
-
-        i++;
-      }
-
-    if (i < nr)
-      val.resize (dim_vector (i, nc));  // there were blank rows
-
-    retval = val;
-
-    push_result (retval);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_multi_assignment (tree_multi_assignment& expr)
+  tree_evaluator::visit_multi_assignment (tree_multi_assignment&)
   {
-    octave_value_list val;
-
-    tree_expression *rhs = expr.right_hand_side ();
-
-    if (rhs)
-      {
-        unwind_protect frame;
-
-        tree_argument_list *lhs = expr.left_hand_side ();
-
-        std::list<octave_lvalue> lvalue_list = make_lvalue_list (lhs);
-
-        frame.protect_var (m_lvalue_list);
-        m_lvalue_list = &lvalue_list;
-
-        octave_idx_type n_out = 0;
-
-        for (const auto& lval : lvalue_list)
-          n_out += lval.numel ();
-
-        // The following trick is used to keep rhs_val constant.
-        const octave_value_list rhs_val1 = evaluate_n (rhs, n_out);
-        const octave_value_list rhs_val = (rhs_val1.length () == 1
-                                           && rhs_val1(0).is_cs_list ()
-                                           ? rhs_val1(0).list_value ()
-                                           : rhs_val1);
-
-        octave_idx_type k = 0;
-
-        octave_idx_type n = rhs_val.length ();
-
-        // To avoid copying per elements and possible optimizations, we
-        // postpone joining the final values.
-        std::list<octave_value_list> retval_list;
-
-        auto q = lhs->begin ();
-
-        for (octave_lvalue ult : lvalue_list)
-          {
-            tree_expression *lhs_elt = *q++;
-
-            octave_idx_type nel = ult.numel ();
-
-            if (nel != 1)
-              {
-                // Huge kluge so that wrapper scripts with lines like
-                //
-                //   [varargout{1:nargout}] = fcn (args);
-                //
-                // Will work the same as calling fcn directly when nargout
-                // is 0 and fcn produces more than one output even when
-                // nargout is 0.  This only works if varargout has not yet
-                // been defined.  See also bug #43813.
-
-                if (lvalue_list.size () == 1 && nel == 0 && n > 0
-                    && ! ult.is_black_hole () && ult.is_undefined ()
-                    && ult.index_type () == "{" && ult.index_is_empty ())
-                  {
-                    // Convert undefined lvalue with empty index to a cell
-                    // array with a single value and indexed by 1 to
-                    // handle a single output.
-
-                    nel = 1;
-
-                    ult.define (Cell (1, 1));
-
-                    ult.clear_index ();
-                    std::list<octave_value_list> idx;
-                    idx.push_back (octave_value_list (octave_value (1)));
-                    ult.set_index ("{", idx);
-                  }
-
-                if (k + nel > n)
-                  error ("some elements undefined in return list");
-
-                // This element of the return list expects a
-                // comma-separated list of values.  Slicing avoids
-                // copying.
-
-                octave_value_list ovl = rhs_val.slice (k, nel);
-
-                ult.assign (octave_value::op_asn_eq, octave_value (ovl));
-
-                retval_list.push_back (ovl);
-
-                k += nel;
-              }
-            else
-              {
-                if (k < n)
-                  {
-                    if (ult.is_black_hole ())
-                      {
-                        k++;
-                        continue;
-                      }
-                    else
-                      {
-                        octave_value tmp = rhs_val(k);
-
-                        if (tmp.is_undefined ())
-                          error ("element number %" OCTAVE_IDX_TYPE_FORMAT
-                                 " undefined in return list", k+1);
-
-                        ult.assign (octave_value::op_asn_eq, tmp);
-
-                        retval_list.push_back (tmp);
-
-                        k++;
-                      }
-                  }
-                else
-                  {
-                    // This can happen for a function like
-                    //
-                    //   function varargout = f ()
-                    //     varargout{1} = nargout;
-                    //   endfunction
-                    //
-                    // called with
-                    //
-                    //    [a, ~] = f ();
-                    //
-                    // Then the list of of RHS values will contain one
-                    // element but we are iterating over the list of all
-                    // RHS values.  We shouldn't complain that a value we
-                    // don't need is missing from the list.
-
-                    if (! ult.is_black_hole ())
-                      error ("element number %" OCTAVE_IDX_TYPE_FORMAT
-                             " undefined in return list", k+1);
-
-                    k++;
-                    continue;
-                  }
-              }
-
-            if (expr.print_result () && statement_printing_enabled ())
-              {
-                // We clear any index here so that we can get
-                // the new value of the referenced object below,
-                // instead of the indexed value (which should be
-                // the same as the right hand side value).
-
-                ult.clear_index ();
-
-                octave_value lhs_val = ult.value ();
-
-                octave_value_list args = ovl (lhs_val);
-                args.stash_name_tags (string_vector (lhs_elt->name ()));
-                feval ("display", args);
-              }
-          }
-
-        // Concatenate return values.
-        val = retval_list;
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
@@ -3676,22 +2682,15 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_constant (tree_constant& expr)
+  tree_evaluator::visit_constant (tree_constant&)
   {
-    if (m_nargout > 1)
-      error ("invalid number of output arguments for constant expression");
-
-    push_result (expr.value ());
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_fcn_handle (tree_fcn_handle& expr)
+  tree_evaluator::visit_fcn_handle (tree_fcn_handle&)
   {
-    std::string nm = expr.name ();
-
-    octave_value fh = make_fcn_handle (m_interpreter, nm);
-
-    push_result (fh);
+    panic_impossible ();
   }
 
   void
@@ -3701,90 +2700,15 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_postfix_expression (tree_postfix_expression& expr)
+  tree_evaluator::visit_postfix_expression (tree_postfix_expression&)
   {
-    octave_value val;
-
-    tree_expression *op = expr.operand ();
-
-    if (op)
-      {
-        octave_value::unary_op etype = expr.op_type ();
-
-        if (etype == octave_value::op_incr || etype == octave_value::op_decr)
-          {
-            octave_lvalue ref = op->lvalue (*this);
-
-            val = ref.value ();
-
-            profiler::enter<tree_postfix_expression> block (m_profiler, expr);
-
-            ref.do_unary_op (etype);
-          }
-        else
-          {
-            octave_value op_val = evaluate (op);
-
-            if (op_val.is_defined ())
-              {
-                profiler::enter<tree_postfix_expression>
-                  block (m_profiler, expr);
-
-                type_info& ti = m_interpreter.get_type_info ();
-
-                val = ::do_unary_op (ti, etype, op_val);
-              }
-          }
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_prefix_expression (tree_prefix_expression& expr)
+  tree_evaluator::visit_prefix_expression (tree_prefix_expression&)
   {
-    octave_value val;
-
-    tree_expression *op = expr.operand ();
-
-    if (op)
-      {
-        octave_value::unary_op etype = expr.op_type ();
-
-        if (etype == octave_value::op_incr || etype == octave_value::op_decr)
-          {
-            octave_lvalue op_ref = op->lvalue (*this);
-
-            profiler::enter<tree_prefix_expression> block (m_profiler, expr);
-
-            op_ref.do_unary_op (etype);
-
-            val = op_ref.value ();
-          }
-        else
-          {
-            octave_value op_val = evaluate (op);
-
-            if (op_val.is_defined ())
-              {
-                profiler::enter<tree_prefix_expression>
-                  block (m_profiler, expr);
-
-                // Attempt to do the operation in-place if it is unshared
-                // (a temporary expression).
-                if (op_val.get_count () == 1)
-                  val = op_val.do_non_const_unary_op (etype);
-                else
-                  {
-                    type_info& ti = m_interpreter.get_type_info ();
-
-                    val = ::do_unary_op (ti, etype, op_val);
-                  }
-              }
-          }
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
@@ -3817,81 +2741,9 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_simple_assignment (tree_simple_assignment& expr)
+  tree_evaluator::visit_simple_assignment (tree_simple_assignment&)
   {
-    octave_value val;
-
-    tree_expression *rhs = expr.right_hand_side ();
-
-    if (rhs)
-      {
-        tree_expression *lhs = expr.left_hand_side ();
-
-        try
-          {
-            unwind_protect frame;
-
-            octave_lvalue ult = lhs->lvalue (*this);
-
-            std::list<octave_lvalue> lvalue_list;
-            lvalue_list.push_back (ult);
-
-            frame.protect_var (m_lvalue_list);
-            m_lvalue_list = &lvalue_list;
-
-            if (ult.numel () != 1)
-              err_invalid_structure_assignment ();
-
-            octave_value rhs_val = evaluate (rhs);
-
-            if (rhs_val.is_undefined ())
-              error ("value on right hand side of assignment is undefined");
-
-            if (rhs_val.is_cs_list ())
-              {
-                const octave_value_list lst = rhs_val.list_value ();
-
-                if (lst.empty ())
-                  error ("invalid number of elements on RHS of assignment");
-
-                rhs_val = lst(0);
-              }
-
-            octave_value::assign_op etype = expr.op_type ();
-
-            ult.assign (etype, rhs_val);
-
-            if (etype == octave_value::op_asn_eq)
-              val = rhs_val;
-            else
-              val = ult.value ();
-
-            if (expr.print_result () && statement_printing_enabled ())
-              {
-                // We clear any index here so that we can
-                // get the new value of the referenced
-                // object below, instead of the indexed
-                // value (which should be the same as the
-                // right hand side value).
-
-                ult.clear_index ();
-
-                octave_value lhs_val = ult.value ();
-
-                octave_value_list args = ovl (lhs_val);
-                args.stash_name_tags (string_vector (lhs->name ()));
-                feval ("display", args);
-              }
-          }
-        catch (index_exception& e)
-          {
-            e.set_var (lhs->name ());
-            std::string msg = e.message ();
-            error_with_id (e.err_id (), "%s", msg.c_str ());
-          }
-      }
-
-    push_result (val);
+    panic_impossible ();
   }
 
   void
@@ -3937,7 +2789,7 @@ namespace octave
                 // evaluate the expression and that should take care of
                 // everything, binding ans as necessary?
 
-                octave_value tmp_result = evaluate (expr, 0);
+                octave_value tmp_result = expr->evaluate (*this, 0);
 
                 if (tmp_result.is_defined ())
                   {
@@ -4058,7 +2910,7 @@ namespace octave
       error ("missing value in switch command near line %d, column %d",
              cmd.line (), cmd.column ());
 
-    octave_value val = evaluate (expr);
+    octave_value val = std::move (expr->evaluate (*this));
 
     tree_switch_case_list *lst = cmd.case_list ();
 
@@ -4388,41 +3240,15 @@ namespace octave
   }
 
   void
-  tree_evaluator::visit_superclass_ref (tree_superclass_ref& expr)
+  tree_evaluator::visit_superclass_ref (tree_superclass_ref&)
   {
-    std::string meth = expr.method_name ();
-    std::string cls = expr.class_name ();
-
-    octave_value tmp = octave_classdef::superclass_ref (meth, cls);
-
-    if (! expr.is_postfix_indexed ())
-      {
-        // There was no index, so this superclass_ref object is not
-        // part of an index expression.  It is also not an identifier in
-        // the syntax tree but we need to handle it as if it were.  So
-        // call the function here.
-
-        octave_function *f = tmp.function_value (true);
-
-        assert (f);
-
-        push_result (f->call (*this, m_nargout));
-
-        return;
-      }
-
-    // The superclass_ref function object will be indexed as part of the
-    // enclosing index expression.
-
-    push_result (tmp);
+    panic_impossible ();
   }
 
   void
-  tree_evaluator::visit_metaclass_query (tree_metaclass_query& expr)
+  tree_evaluator::visit_metaclass_query (tree_metaclass_query&)
   {
-    std::string cls = expr.class_name ();
-
-    push_result (octave_classdef::metaclass_query (cls));
+    panic_impossible ();
   }
 
   void tree_evaluator::bind_ans (const octave_value& val, bool print)
@@ -4450,18 +3276,6 @@ namespace octave
               }
           }
       }
-  }
-
-  void
-  tree_evaluator::evaluate_internal (tree_expression *expr, int nargout)
-  {
-    unwind_protect frame;
-
-    frame.protect_var (m_nargout);
-
-    m_nargout = nargout;
-
-    expr->accept (*this);
   }
 
   void
@@ -4546,7 +3360,7 @@ namespace octave
   {
     bool expr_value = false;
 
-    octave_value t1 = evaluate (expr);
+    octave_value t1 = std::move (expr->evaluate (*this));
 
     if (t1.is_defined ())
       return t1.is_true ();
@@ -4554,49 +3368,6 @@ namespace octave
       error ("%s: undefined value used in conditional expression", warn_for);
 
     return expr_value;
-  }
-
-  octave_value_list
-  tree_evaluator::make_value_list (tree_argument_list *args,
-                                   const string_vector& arg_nm,
-                                   const octave_value *object, bool rvalue)
-  {
-    octave_value_list retval;
-
-    if (args)
-      {
-        // Function calls inside an argument list can't have ignored
-        // output arguments.
-
-        unwind_protect frame;
-
-        frame.protect_var (m_lvalue_list);
-        m_lvalue_list = nullptr;
-
-        if (rvalue && object && args->has_magic_end ()
-            && object->is_undefined ())
-          err_invalid_inquiry_subscript ();
-
-        retval = convert_to_const_vector (args, object);
-      }
-
-    octave_idx_type n = retval.length ();
-
-    if (n > 0)
-      retval.stash_name_tags (arg_nm);
-
-    return retval;
-  }
-
-  std::list<octave_lvalue>
-  tree_evaluator::make_lvalue_list (tree_argument_list *lhs)
-  {
-    std::list<octave_lvalue> retval;
-
-    for (tree_expression *elt : *lhs)
-      retval.push_back (elt->lvalue (*this));
-
-    return retval;
   }
 
   octave_value
@@ -4774,6 +3545,46 @@ namespace octave
                           bool return_list, bool verbose)
   {
     return m_call_stack.do_who (argc, argv, return_list, verbose);
+  }
+
+  octave_value_list
+  tree_evaluator::make_value_list (tree_argument_list *args,
+                                   const string_vector& arg_nm,
+                                   const octave_value *object, bool rvalue)
+  {
+    octave_value_list retval;
+
+    if (args)
+      {
+        unwind_protect frame;
+
+        frame.protect_var (m_lvalue_list);
+        m_lvalue_list = nullptr;
+
+        if (rvalue && object && args->has_magic_end ()
+            && object->is_undefined ())
+          err_invalid_inquiry_subscript ();
+
+        retval = convert_to_const_vector (args, object);
+      }
+
+    octave_idx_type n = retval.length ();
+
+    if (n > 0)
+      retval.stash_name_tags (arg_nm);
+
+    return retval;
+  }
+
+  std::list<octave_lvalue>
+  tree_evaluator::make_lvalue_list (tree_argument_list *lhs)
+  {
+    std::list<octave_lvalue> retval;
+
+    for (tree_expression *elt : *lhs)
+      retval.push_back (elt->lvalue (*this));
+
+    return retval;
   }
 
   void

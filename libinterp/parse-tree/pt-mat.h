@@ -65,6 +65,13 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    octave_value evaluate (tree_evaluator&, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_matrix (*this);

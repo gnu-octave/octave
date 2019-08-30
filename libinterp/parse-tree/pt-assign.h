@@ -79,6 +79,13 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_simple_assignment (*this);
@@ -147,6 +154,15 @@ namespace octave
     tree_expression * right_hand_side (void) { return m_rhs; }
 
     tree_expression * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1)
+    {
+      octave_value_list retval = evaluate_n (tw, nargout);
+
+      return retval.length () > 0 ? retval(0) : octave_value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1);
 
     void accept (tree_walker& tw)
     {

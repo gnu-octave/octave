@@ -24,12 +24,41 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "interpreter.h"
 #include "ov.h"
 #include "pt-cbinop.h"
+#include "pt-eval.h"
 #include "pt-unop.h"
 
 namespace octave
 {
+  octave_value
+  tree_compound_binary_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    if (m_lhs)
+      {
+        octave_value a = std::move (m_lhs->evaluate (tw));
+
+        if (a.is_defined () && m_rhs)
+          {
+            octave_value b = std::move (m_rhs->evaluate (tw));
+
+            if (b.is_defined ())
+              {
+                interpreter& interp = tw.get_interpreter ();
+
+                type_info& ti = interp.get_type_info ();
+
+                val = ::do_binary_op (ti, m_etype, a, b);
+              }
+          }
+      }
+
+    return val;
+  }
+
   typedef tree_expression* tree_expression_ptr_t;
 
   // If a tree expression is a transpose or hermitian transpose, return

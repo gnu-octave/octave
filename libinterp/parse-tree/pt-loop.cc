@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "pt-arg-list.h"
+#include "pt-exp.h"
 #include "pt-loop.h"
 #include "pt-stmt.h"
 

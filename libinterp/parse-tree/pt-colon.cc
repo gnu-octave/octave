@@ -24,7 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "interpreter.h"
+#include "parse.h"
 #include "pt-colon.h"
+#include "pt-eval.h"
 
 namespace octave
 {
@@ -42,5 +45,61 @@ namespace octave
     new_ce->copy_base (*this);
 
     return new_ce;
+  }
+
+  octave_value tree_colon_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    if (! m_base || ! m_limit)
+      return val;
+
+    octave_value ov_base = std::move (m_base->evaluate (tw));
+
+    octave_value ov_limit = std::move (m_limit->evaluate (tw));
+
+    if (ov_base.isobject () || ov_limit.isobject ())
+      {
+        octave_value_list tmp1;
+
+        if (m_increment)
+          {
+            octave_value ov_increment = std::move (m_increment->evaluate (tw));
+
+            tmp1(2) = ov_limit;
+            tmp1(1) = ov_increment;
+            tmp1(0) = ov_base;
+          }
+        else
+          {
+            tmp1(1) = ov_limit;
+            tmp1(0) = ov_base;
+          }
+
+        interpreter& interp = tw.get_interpreter ();
+
+        symbol_table& symtab = interp.get_symbol_table ();
+
+        octave_value fcn = symtab.find_function ("colon", tmp1);
+
+        if (! fcn.is_defined ())
+          error ("can not find overloaded colon function");
+
+        octave_value_list tmp2 = feval (fcn, tmp1, 1);
+
+        val = tmp2 (0);
+      }
+    else
+      {
+        octave_value ov_increment = 1.0;
+
+        if (m_increment)
+          ov_increment = std::move (m_increment->evaluate (tw));
+
+        val = do_colon_op (ov_base, ov_increment, ov_limit,
+                           is_for_cmd_expr ());
+      }
+
+    return val;
   }
 }

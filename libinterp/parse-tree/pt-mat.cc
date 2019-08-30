@@ -25,11 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun.h"
+#include "ov.h"
 #include "ovl.h"
 #include "pt-arg-list.h"
+#include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
-#include "ov.h"
+#include "pt-tm-const.h"
 #include "variables.h"
 
 #include "ov-cx-mat.h"
@@ -39,6 +41,14 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  octave_value
+  tree_matrix::evaluate (tree_evaluator& tw, int)
+  {
+    tm_const tmp (*this, tw);
+
+    return tmp.concat (tw.string_fill_char ());
+  }
+
   std::string
   get_concat_class (const std::string& c1, const std::string& c2)
   {

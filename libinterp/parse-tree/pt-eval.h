@@ -33,10 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bp-table.h"
 #include "call-stack.h"
+#include "oct-lvalue.h"
 #include "ov.h"
 #include "ovl.h"
 #include "profiler.h"
-#include "pt-exp.h"
 #include "pt-walk.h"
 
 class octave_user_code;
@@ -51,13 +51,6 @@ namespace octave
   class debugger;
   class interpreter;
   class unwind_protect;
-
-  enum result_type
-  {
-    RT_UNDEFINED = 0,
-    RT_VALUE = 1,
-    RT_VALUE_LIST = 2
-  };
 
   // How to evaluate the code that the parse trees represent.
 
@@ -130,9 +123,7 @@ namespace octave
 
     tree_evaluator (interpreter& interp)
       : m_interpreter (interp), m_statement_context (SC_OTHER),
-        m_result_type (RT_UNDEFINED), m_expr_result_value (),
-        m_expr_result_value_list (), m_lvalue_list (nullptr),
-        m_nargout (0), m_autoload_map (), m_bp_table (*this),
+        m_lvalue_list (nullptr), m_autoload_map (), m_bp_table (*this),
         m_call_stack (*this), m_profiler (), m_debug_frame (0),
         m_debug_mode (false), m_quiet_breakpoint_flag (false),
         m_debugger_stack (), m_max_recursion_depth (256),
@@ -305,79 +296,6 @@ namespace octave
     };
 
     Matrix ignored_fcn_outputs (void) const;
-
-    bool isargout (int nargout, int iout) const;
-
-    void isargout (int nargout, int nout, bool *isargout) const;
-
-    void push_result (const octave_value& val)
-    {
-      m_result_type = RT_VALUE;
-      m_expr_result_value = val;
-    }
-
-    void push_result (const octave_value_list& vals)
-    {
-      m_result_type = RT_VALUE_LIST;
-      m_expr_result_value_list = vals;
-    }
-
-    octave_value evaluate (tree_expression *expr, int nargout = 1)
-    {
-      octave_value retval;
-
-      evaluate_internal (expr, nargout);
-
-      switch (m_result_type)
-        {
-        case RT_UNDEFINED:
-          panic_impossible ();
-          break;
-
-        case RT_VALUE:
-          retval = m_expr_result_value;
-          m_expr_result_value = octave_value ();
-          break;
-
-        case RT_VALUE_LIST:
-          retval = (m_expr_result_value_list.empty ()
-                    ? octave_value () : m_expr_result_value_list(0));
-          m_expr_result_value_list = octave_value_list ();
-          break;
-        }
-
-      m_result_type = RT_UNDEFINED;
-
-      return retval;
-    }
-
-    octave_value_list evaluate_n (tree_expression *expr, int nargout = 1)
-    {
-      octave_value_list retval;
-
-      evaluate_internal (expr, nargout);
-
-      switch (m_result_type)
-        {
-        case RT_UNDEFINED:
-          panic_impossible ();
-          break;
-
-        case RT_VALUE:
-          retval = ovl (m_expr_result_value);
-          m_expr_result_value = octave_value ();
-          break;
-
-        case RT_VALUE_LIST:
-          retval = m_expr_result_value_list;
-          m_expr_result_value_list = octave_value_list ();
-          break;
-        }
-
-      m_result_type = RT_UNDEFINED;
-
-      return retval;
-    }
 
     octave_value evaluate (tree_decl_elt *);
 
@@ -708,6 +626,16 @@ namespace octave
 
     bool in_top_level_repl (void) const { return m_in_top_level_repl; }
 
+    const std::list<octave_lvalue> * lvalue_list (void) const
+    {
+      return m_lvalue_list;
+    }
+
+    void set_lvalue_list (const std::list<octave_lvalue> *lst)
+    {
+      m_lvalue_list = lst;
+    }
+
     int breaking (void) const { return m_breaking; }
 
     int breaking (int n)
@@ -765,6 +693,13 @@ namespace octave
     octave_value do_who (int argc, const string_vector& argv,
                          bool return_list, bool verbose = false);
 
+    octave_value_list
+    make_value_list (tree_argument_list *args,
+                     const string_vector& arg_nm,
+                     const octave_value *object, bool rvalue = true);
+
+    std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
+
     void push_echo_state (unwind_protect& frame, int type,
                           const std::string& file_name, size_t pos = 1);
 
@@ -778,21 +713,12 @@ namespace octave
 
     bool maybe_push_echo_state_cleanup (void);
 
-    void evaluate_internal (tree_expression *expr, int nargout);
-
     void do_breakpoint (tree_statement& stmt);
 
     void do_breakpoint (bool is_breakpoint,
                         bool is_end_of_fcn_or_script = false);
 
     bool is_logically_true (tree_expression *expr, const char *warn_for);
-
-    octave_value_list
-    make_value_list (tree_argument_list *args,
-                     const string_vector& arg_nm,
-                     const octave_value *object, bool rvalue = true);
-
-    std::list<octave_lvalue> make_lvalue_list (tree_argument_list *);
 
     // For unwind-protect.
     void uwp_set_echo_state (bool state, const std::string& file_name,
@@ -817,13 +743,7 @@ namespace octave
     // The context for the current evaluation.
     stmt_list_type m_statement_context;
 
-    result_type m_result_type;
-    octave_value m_expr_result_value;
-    octave_value_list m_expr_result_value_list;
-
     const std::list<octave_lvalue> *m_lvalue_list;
-
-    int m_nargout;
 
     // List of autoloads (function -> file mapping).
     std::map<std::string, std::string> m_autoload_map;

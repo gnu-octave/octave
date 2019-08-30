@@ -24,8 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "ov.h"
 #include "ov-classdef.h"
 #include "pt-classdef.h"
+#include "pt-eval.h"
 
 namespace octave
 {
@@ -41,6 +43,32 @@ namespace octave
     return new_scr;
   }
 
+  octave_value_list
+  tree_superclass_ref::evaluate_n (tree_evaluator& tw, int nargout)
+  {
+    octave_value tmp
+      = octave_classdef::superclass_ref (m_method_name, m_class_name);
+
+    if (! is_postfix_indexed ())
+      {
+        // There was no index, so this superclass_ref object is not
+        // part of an index expression.  It is also not an identifier in
+        // the syntax tree but we need to handle it as if it were.  So
+        // call the function here.
+
+        octave_function *f = tmp.function_value (true);
+
+        assert (f);
+
+        return f->call (tw, nargout);
+      }
+
+    // The superclass_ref function object will be indexed as part of the
+    // enclosing index expression.
+
+    return ovl (tmp);
+  }
+
   tree_metaclass_query *
   tree_metaclass_query::dup (symbol_scope&) const
   {
@@ -50,6 +78,12 @@ namespace octave
     new_mcq->copy_base (*this);
 
     return new_mcq;
+  }
+
+  octave_value
+  tree_metaclass_query::evaluate (tree_evaluator&, int)
+  {
+    return octave_classdef::metaclass_query (m_class_name);
   }
 
   // Classdef attribute

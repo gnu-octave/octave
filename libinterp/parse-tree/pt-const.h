@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value_list;
 
+#include "error.h"
 #include "ov.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
@@ -38,6 +39,7 @@ class octave_value_list;
 namespace octave
 {
   class symbol_scope;
+  class tree_evaluator;
 
   class tree_constant : public tree_expression
   {
@@ -95,6 +97,19 @@ namespace octave
     void stash_original_text (const std::string& s) { m_orig_text = s; }
 
     std::string original_text (void) const { return m_orig_text; }
+
+    octave_value evaluate (tree_evaluator&, int nargout = 1)
+    {
+      if (nargout > 1)
+        error ("invalid number of output arguments for constant expression");
+
+      return value ();
+    }
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
 
   private:
 

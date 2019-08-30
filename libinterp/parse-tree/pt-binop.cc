@@ -25,8 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "error.h"
+#include "interpreter.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-binop.h"
+#include "pt-eval.h"
 #include "variables.h"
 
 namespace octave
@@ -60,6 +63,83 @@ namespace octave
     new_be->copy_base (*this);
 
     return new_be;
+  }
+
+  octave_value
+  tree_binary_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    if (is_eligible_for_braindead_shortcircuit ())
+      {
+        if (m_lhs)
+          {
+            octave_value a = std::move (m_lhs->evaluate (tw));
+
+            if (a.ndims () == 2 && a.rows () == 1 && a.columns () == 1)
+              {
+                bool result = false;
+
+                bool a_true = a.is_true ();
+
+                if (a_true)
+                  {
+                    if (m_etype == octave_value::op_el_or)
+                      {
+                        matlab_style_short_circuit_warning ("|");
+                        return octave_value (true);
+                      }
+                  }
+                else
+                  {
+                    if (m_etype == octave_value::op_el_and)
+                      {
+                        matlab_style_short_circuit_warning ("&");
+                        return octave_value (false);
+                      }
+                  }
+
+                if (m_rhs)
+                  {
+                    octave_value b = std::move (m_rhs->evaluate (tw));
+
+                    result = b.is_true ();
+                  }
+
+                return octave_value (result);
+              }
+          }
+      }
+
+    if (m_lhs)
+      {
+        octave_value a = std::move (m_lhs->evaluate (tw));
+
+        if (a.is_defined () && m_rhs)
+          {
+            octave_value b = std::move (m_rhs->evaluate (tw));
+
+            if (b.is_defined ())
+              {
+                profiler::enter<tree_binary_expression>
+                  block (tw.get_profiler (), *this);
+
+                // Note: The profiler does not catch the braindead
+                // short-circuit evaluation code above, but that should be
+                // ok.  The evaluation of operands and the operator itself
+                // is entangled and it's not clear where to start/stop
+                // timing the operator to make it reasonable.
+
+                interpreter& interp = tw.get_interpreter ();
+
+                type_info& ti = interp.get_type_info ();
+
+                val = ::do_binary_op (ti, m_etype, a, b);
+              }
+          }
+      }
+
+    return val;
   }
 
   // Boolean expressions.
@@ -97,5 +177,47 @@ namespace octave
     new_be->copy_base (*this);
 
     return new_be;
+  }
+
+  octave_value
+  tree_boolean_expression::evaluate (tree_evaluator& tw, int)
+  {
+    octave_value val;
+
+    bool result = false;
+
+    // This evaluation is not caught by the profiler, since we can't find
+    // a reasonable place where to time.  Note that we don't want to
+    // include evaluation of LHS or RHS into the timing, but this is
+    // entangled together with short-circuit evaluation here.
+
+    if (m_lhs)
+      {
+        octave_value a = std::move (m_lhs->evaluate (tw));
+
+        bool a_true = a.is_true ();
+
+        if (a_true)
+          {
+            if (m_etype == tree_boolean_expression::bool_or)
+              return octave_value (true);
+          }
+        else
+          {
+            if (m_etype == tree_boolean_expression::bool_and)
+              return octave_value (false);
+          }
+
+        if (m_rhs)
+          {
+            octave_value b = std::move (m_rhs->evaluate (tw));
+
+            result = b.is_true ();
+          }
+
+        val = octave_value (result);
+      }
+
+    return val;
   }
 }

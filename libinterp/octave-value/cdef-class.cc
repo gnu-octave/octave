@@ -827,7 +827,7 @@ namespace octave
               return std::string ("private");
           }
 
-        return tw.evaluate (expr);
+        return expr->evaluate (tw);
       }
     else
       return octave_value (true);
@@ -1102,7 +1102,7 @@ namespace octave
                     tree_expression *expr = prop_p->expression ();
                     if (expr)
                       {
-                        octave_value pvalue = tw.evaluate (expr);
+                        octave_value pvalue = expr->evaluate (tw);
 
 #if DEBUG_TRACE
                         std::cerr << "property default: "

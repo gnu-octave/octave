@@ -74,6 +74,13 @@ namespace octave
 
     tree_expression * dup (symbol_scope& scope) const;
 
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
+
     void accept (tree_walker& tw)
     {
       tw.visit_fcn_handle (*this);
@@ -129,6 +136,13 @@ namespace octave
     bool has_parent_scope (void) const { return m_parent_scope.is_valid (); }
 
     tree_expression * dup (symbol_scope& scope) const;
+
+    octave_value evaluate (tree_evaluator& tw, int nargout = 1);
+
+    octave_value_list evaluate_n (tree_evaluator& tw, int nargout = 1)
+    {
+      return ovl (evaluate (tw, nargout));
+    }
 
     void accept (tree_walker& tw) { tw.visit_anon_fcn_handle (*this); }
 

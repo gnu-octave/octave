@@ -31,12 +31,12 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 
 #include "pt.h"
+#include "pt-eval.h"
 
 namespace octave
 {
   class symbol_scope;
   class octave_lvalue;
-  class tree_evaluator;
 
   // A base class for expressions.
 
@@ -133,6 +133,11 @@ namespace octave
       postfix_index_type = e.postfix_index_type;
       print_flag = e.print_flag;
     }
+
+    virtual octave_value evaluate (tree_evaluator& tw, int nargout = 1) = 0;
+
+    virtual octave_value_list
+    evaluate_n (tree_evaluator& tw, int nargout = 1) = 0;
 
   protected:
 

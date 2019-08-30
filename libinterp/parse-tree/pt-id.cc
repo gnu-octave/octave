@@ -80,6 +80,66 @@ namespace octave
     return new_id;
   }
 
+  octave_value_list
+  tree_identifier::evaluate_n (tree_evaluator& tw, int nargout)
+  {
+    octave_value_list retval;
+
+    octave_value val = tw.varval (m_sym);
+
+    if (val.is_undefined ())
+      {
+        interpreter& interp = tw.get_interpreter ();
+
+        symbol_table& symtab = interp.get_symbol_table ();
+
+        val = symtab.find_function (m_sym.name ());
+      }
+
+    if (val.is_defined ())
+      {
+        // GAGME -- this would be cleaner if we required
+        // parens to indicate function calls.
+        //
+        // If this identifier refers to a function, we need to know
+        // whether it is indexed so that we can do the same thing
+        // for 'f' and 'f()'.  If the index is present and the function
+        // object declares it can handle it, return the function object
+        // and let tree_index_expression::rvalue handle indexing.
+        // Otherwise, arrange to call the function here, so that we don't
+        // return the function definition as a value.
+
+        octave_function *fcn = nullptr;
+
+        if (val.is_function ())
+          fcn = val.function_value (true);
+
+        if (fcn && ! (is_postfix_indexed ()
+                      && fcn->accepts_postfix_index (postfix_index ())))
+          {
+            retval = fcn->call (tw, nargout);
+          }
+        else
+          {
+            if (print_result () && nargout == 0
+                && tw.statement_printing_enabled ())
+              {
+                octave_value_list args = ovl (val);
+                args.stash_name_tags (string_vector (name ()));
+                feval ("display", args);
+              }
+
+            retval = ovl (val);
+          }
+      }
+    else if (m_sym.is_added_static ())
+      static_workspace_error ();
+    else
+      eval_undefined_error ();
+
+    return retval;
+  }
+
   octave_lvalue
   tree_black_hole::lvalue (tree_evaluator& tw)
   {

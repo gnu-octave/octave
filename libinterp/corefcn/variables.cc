@@ -486,6 +486,7 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 
 ## Don't search path for absolute filenames
 %!test
+%! old_dir = cd (tempdir ());
 %! tname = tempname (pwd ());
 %! unwind_protect
 %!   ## open/close file to create it, equivalent of touch
@@ -495,6 +496,7 @@ Octave trusts .oct/.mex files instead of @nospell{sandboxing} them.
 %!   assert (exist (fullfile (pwd (), fname), "file"), 2);
 %! unwind_protect_cleanup
 %!   unlink (tname);
+%!   cd (old_dir);
 %! end_unwind_protect
 %! assert (exist (fullfile (pwd (), "%nonexistentfile%"), "file"), 0);
 

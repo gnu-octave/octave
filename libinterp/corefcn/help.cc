@@ -841,8 +841,9 @@ the return value is an empty cell array.
 
 /*
 %!test
+%! old_dir = cd (tempdir ());
 %! f = tempname (".", "oct_");
-%! fcn_name = f(3:end);
+%! [~, fcn_name] = fileparts (f);
 %! f = [f ".m"];
 %! unwind_protect
 %!   fid = fopen (f, "w+");
@@ -856,6 +857,7 @@ the return value is an empty cell array.
 %!   assert (d{2} (3), 6);
 %! unwind_protect_cleanup
 %!   unlink (f);
+%!   cd (old_dir);
 %! end_unwind_protect
 */
 

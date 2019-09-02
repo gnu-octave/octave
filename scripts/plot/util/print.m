@@ -824,9 +824,9 @@ function cmd = epstool (opts, filein, fileout)
     pipein = true;
     filein = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = sprintf ("& del %s ", strrep (filein, '/', '\'));
+      cleanup = sprintf ('& del "%s" ', strrep (filein, '/', '\'));
     else
-      cleanup = sprintf ("; rm %s ", filein);
+      cleanup = sprintf ('; rm "%s" ', filein);
     endif
   else
     pipein = false;
@@ -836,9 +836,9 @@ function cmd = epstool (opts, filein, fileout)
     pipeout = true;
     fileout = [tempname() ".eps"];
     if (dos_shell)
-      cleanup = [cleanup, sprintf("& del %s ", strrep (fileout, '/', '\'))];
+      cleanup = [cleanup, sprintf('& del "%s" ', strrep (fileout, '/', '\'))];
     else
-      cleanup = [cleanup, sprintf("; rm %s ", fileout)];
+      cleanup = [cleanup, sprintf('; rm "%s" ', fileout)];
     endif
   else
     pipeout = false;
@@ -1078,15 +1078,15 @@ function cmd = pstoedit (opts, devopt, do_svg = true)
       cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
     else
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
-      endi;f
     endif
   else
     cmd = svgconvert (opts, devopt);
     if (dos_shell)
-      cmd = sprintf ("%s & %s -ssp -f %s %%s 2> NUL", cmd, ...
-                     opts.pstoedit_binary, devopt);
+      cmd = sprintf ('%s & %s -ssp -f %s "%%s" 2> NUL', cmd, ...
+                     undo_string_escapes (opts.pstoedit_binary), ...
+                     undo_string_escapes (devopt));
     else
-      cmd = sprintf ("%s ; %s -ssp -f %s %%s 2> /dev/null", cmd,  ...
+      cmd = sprintf ('%s ; %s -ssp -f %s "%%s" 2> /dev/null', cmd,  ...
                      opts.pstoedit_binary, devopt);
     endif
   endif
@@ -1116,9 +1116,10 @@ function cmd = svgconvert (opts, devopt)
       fontdir = __octave_config_info__ ("octfontsdir");
     endif
 
-    cmd = sprintf ("%s - %%s %3.2f %s %d \"%%s\"", opts.svgconvert_binary, ...
+    cmd = sprintf ('%s - %%s %3.2f "%s" %d "%%s"', ...
+                   undo_string_escapes (opts.svgconvert_binary), ...
                    get (0, "screenpixelsperinch"), ...
-                   fullfile (fontdir, "FreeSans.otf"), 1);
+                   undo_string_escapes (fullfile (fontdir, "FreeSans.otf")), 1);
 
     if (opts.debug)
       fprintf ("svgconvert command: '%s'\n", cmd);

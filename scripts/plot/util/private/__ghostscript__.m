@@ -124,9 +124,9 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     else
       offsetfile = [tempname() ".ps"];
       if (dos_shell)
-        cleanup_cmd = ["del " strrep(offsetfile, '/', '\')];
+        cleanup_cmd = sprintf ('del "%s"', strrep (offsetfile, '/', '\'));
       else
-        cleanup_cmd = ["rm " offsetfile];
+        cleanup_cmd = sprintf ('rm "%s"', strrep (offsetfile, '/', '\'));
       endif
     endif
     unwind_protect
@@ -176,7 +176,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
     endif
   endif
   if (! isempty (offsetfile) && format_for_printer)
-    cmd = sprintf ("%s %s", cmd, offsetfile);
+    cmd = sprintf ('%s "%s"', cmd, offsetfile);
   endif
   if (! isempty (opts.source))
     cmd = sprintf ("%s %s", cmd, opts.source);

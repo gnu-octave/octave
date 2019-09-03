@@ -312,7 +312,11 @@ namespace octave
               }
           }
 
-        if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
+        if (matches == PCRE_ERROR_BADUTF8)
+          (*current_liboctave_error_handler)
+            ("%s: internal error calling pcre_exec; "
+             "the input string is invalid UTF-8", who.c_str ());
+        else if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
           (*current_liboctave_error_handler)
             ("%s: internal error calling pcre_exec; "
              "error code from pcre_exec is %i", who.c_str (), matches);

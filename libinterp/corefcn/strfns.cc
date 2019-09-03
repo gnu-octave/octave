@@ -886,7 +886,7 @@ Convert byte stream @var{native_bytes} to UTF-8 using @var{codepage}.
   if (args(0).is_string ())
     return ovl (args(0));
 
-  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
@@ -938,11 +938,11 @@ Convert UTF-8 string @var{utf8_str} to byte stream @var{native_bytes} using
   if (nargin != 2)
     print_usage ();
 
-  std::string tmp = args(1).xstring_value ("CODEPAGE must be a string");
+  std::string tmp = args(1).string_value ();
   const char *codepage
     = (tmp.empty () ? octave_locale_charset_wrapper () : tmp.c_str ());
 
-  charNDArray utf8_str = args(0).xchar_array_value ("UTF8_STR must be a string");
+  charNDArray utf8_str = args(0).char_array_value ();
 
   const uint8_t *src = reinterpret_cast<const uint8_t *> (utf8_str.data ());
   size_t srclen = utf8_str.numel ();

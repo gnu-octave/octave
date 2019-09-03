@@ -47,9 +47,9 @@
 ##
 ## @example
 ## @group
-## x = 0:2;
-## y = x;
-## z = x' * y;
+## x = 0:3;
+## y = 0:2;
+## z = y' * x;
 ## contour (x, y, z, 2:3)
 ## @end group
 ## @end example

@@ -65,8 +65,8 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
 
   utf8_str = __native2unicode__ (native_bytes, codepage);
 
-  if (iscolumn (native_bytes))
-    utf8_str = utf8_str';
+  if (! isrow (native_bytes))
+    utf8_str = utf8_str.';
   endif
 
 endfunction

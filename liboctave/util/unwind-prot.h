@@ -127,6 +127,133 @@ namespace octave
         }
     }
   };
+
+  // In most cases, the following are preferred for efficiency.  Some
+  // cases may require the flexibility of the general unwind_protect
+  // mechanism defined above.
+
+  // Perform action at end of the current scope when unwind_action
+  // object destructor is called.
+  //
+  // For example:
+  //
+  //   void fcn (int val) { ... }
+  //
+  // ...
+  //
+  //   {
+  //     int val = 42;
+  //
+  //     // template parameters, std::bind and std::function provide
+  //     // flexibility in calling forms:
+  //
+  //     unwind_action act1 (fcn, val);
+  //     unwind_action act2 ([val] (void) { fcn (val); });
+  //   }
+  //
+  // NOTE: Don't forget to provide a name for the unwind_action
+  // variable.  If you write
+  //
+  //   unwind_action /* NO NAME! */ (...);
+  //
+  // then the destructor for the temporary anonymous object will be
+  // called immediately after the object is constructed instead of at
+  // the end of teh current scope.
+
+  class unwind_action
+  {
+  public:
+
+    template <typename F, typename... Args>
+    unwind_action (F&& fcn, Args&&... args)
+      : m_fcn (std::bind (fcn, args...))
+    { }
+
+    // No copying!
+
+    unwind_action (const unwind_action&) = delete;
+
+    unwind_action& operator = (const unwind_action&) = delete;
+
+    ~unwind_action (void) { m_fcn (); }
+
+  private:
+
+    std::function<void (void)> m_fcn;
+  };
+
+  // Reset a variable value at the end of the current scope when
+  // unwind_protect_var object destructor is called.
+  //
+  // For example:
+  //
+  //   {
+  //     int x = 42;
+  //     unwind_protect_var<int> upv (x);  // X will be reset at end of scope
+  //     x = 13;                           // Set temporary value.
+  //   }
+  //
+  // Temporary value may be set at construction:
+  //
+  //   {
+  //     int x = ...;
+  //     unwind_protect_var<int> upv (x, 13);  // X will be reset.
+  //                                           // temporary value is 13.
+  //   }
+  //
+  // NOTE: Don't forget to provide a name for the unwind_protect_var
+  // variable.  If you write
+  //
+  //   unwind_protect_var<type> /* NO NAME! */ (...);
+  //
+  // then the destructor for the temporary anonymous object will be
+  // called immediately after the object is constructed instead of at
+  // the end of teh current scope.
+  //
+  // FIXME: Once we are able to use C++17, class template argument
+  // deduction will allow us to omit the explicit template type from the
+  // constructor expression:
+  //
+  //   unwind_protect_var upv (...);
+
+  template <typename T>
+  class unwind_protect_var
+  {
+  public:
+
+    // Ensure that the value referenced by REF will be reset when this
+    // unwind_protect_var object goes out of scope.
+
+    explicit unwind_protect_var (T& ref)
+      : m_ref (ref), m_val (ref)
+    { }
+
+    // Set the value referenced by REF to NEW_VAL and ensure that it
+    // will be reset to its original value when this
+    // unwind_protect_var object goes out of scope.
+
+    unwind_protect_var (T& ref, const T& new_val)
+      : m_ref (ref), m_val (ref)
+    {
+      m_ref = new_val;
+    }
+
+    // No copying!
+
+    unwind_protect_var (const unwind_protect_var&) = delete;
+
+    unwind_protect_var& operator = (const unwind_protect_var&) = delete;
+
+    ~unwind_protect_var (void)
+    {
+      m_ref = m_val;
+    }
+
+  private:
+
+    T& m_ref;
+    T m_val;
+  };
 }
 
 #endif

@@ -48,10 +48,10 @@ namespace octave
   octave_value
   tree_cell::evaluate (tree_evaluator& tw, int)
   {
-    unwind_protect frame;
-
-    frame.add_method (tw, &tree_evaluator::set_lvalue_list,
-                      tw.lvalue_list ());
+    unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+                       {
+                         tw.set_lvalue_list (lvl);
+                       }, tw.lvalue_list ());
     tw.set_lvalue_list (nullptr);
 
     octave_idx_type nr = length ();

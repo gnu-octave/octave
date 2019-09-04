@@ -81,15 +81,15 @@ namespace octave
       {
         try
           {
-            unwind_protect frame;
-
             octave_lvalue ult = m_lhs->lvalue (tw);
 
             std::list<octave_lvalue> lvalue_list;
             lvalue_list.push_back (ult);
 
-            frame.add_method (tw, &tree_evaluator::set_lvalue_list,
-                              tw.lvalue_list ());
+            unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+                               {
+                                 tw.set_lvalue_list (lvl);
+                               }, tw.lvalue_list ());
             tw.set_lvalue_list (&lvalue_list);
 
             if (ult.numel () != 1)
@@ -181,12 +181,12 @@ namespace octave
 
     if (m_rhs)
       {
-        unwind_protect frame;
-
         std::list<octave_lvalue> lvalue_list = tw.make_lvalue_list (m_lhs);
 
-        frame.add_method (tw, &tree_evaluator::set_lvalue_list,
-                          tw.lvalue_list ());
+        unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+                           {
+                             tw.set_lvalue_list (lvl);
+                           }, tw.lvalue_list ());
         tw.set_lvalue_list (&lvalue_list);
 
         octave_idx_type n_out = 0;

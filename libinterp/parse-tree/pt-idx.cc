@@ -481,10 +481,11 @@ namespace octave
 
             if (al && al->length () > 0)
               {
-                unwind_protect frame;
+                unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+                                   {
+                                     tw.set_lvalue_list (lvl);
+                                   }, tw.lvalue_list ());
 
-                frame.add_method (tw, &tree_evaluator::set_lvalue_list,
-                                  tw.lvalue_list ());
                 tw.set_lvalue_list (nullptr);
 
                 string_vector anm = *p_arg_nm;

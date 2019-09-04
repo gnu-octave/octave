@@ -358,11 +358,7 @@ namespace octave
       {
         try
           {
-            unwind_protect frame;
-
-            frame.protect_var (m_in_top_level_repl);
-
-            m_in_top_level_repl = true;
+            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
 
             es.reset ();
 
@@ -621,11 +617,11 @@ namespace octave
 
     error_system& es = m_interpreter.get_error_system ();
 
-    unwind_protect frame;
-
     int bem = es.buffer_error_messages ();
-    frame.add_method (es, &error_system::set_buffer_error_messages, bem);
-
+    unwind_action act ([&es, bem] (void)
+                       {
+                         es.buffer_error_messages (bem);
+                       });
     es.buffer_error_messages (bem + 1);
 
     int parse_status = 0;
@@ -675,10 +671,10 @@ namespace octave
                                             const std::string& try_code,
                                             int nargout)
   {
-    unwind_protect frame;
-
-    frame.add_method (m_call_stack, &call_stack::restore_frame,
-                      m_call_stack.current_frame ());
+    unwind_action act ([this] (size_t frm)
+                       {
+                         m_call_stack.restore_frame (frm);
+                       }, m_call_stack.current_frame ());
 
     if (context == "caller")
       m_call_stack.goto_caller_frame ();
@@ -699,10 +695,10 @@ namespace octave
   {
     octave_value_list retval;
 
-    unwind_protect frame;
-
-    frame.add_method (m_call_stack, &call_stack::restore_frame,
-                      m_call_stack.current_frame ());
+    unwind_action act1 ([this] (size_t frm)
+                        {
+                          m_call_stack.restore_frame (frm);
+                        }, m_call_stack.current_frame ());
 
     if (context == "caller")
       m_call_stack.goto_caller_frame ();
@@ -714,8 +710,10 @@ namespace octave
     error_system& es = m_interpreter.get_error_system ();
 
     int bem = es.buffer_error_messages ();
-    frame.add_method (es, &error_system::set_buffer_error_messages, bem);
-
+    unwind_action act2 ([&es, bem] (void)
+                        {
+                          es.buffer_error_messages (bem);
+                        });
     es.buffer_error_messages (bem + 1);
 
     int parse_status = 0;
@@ -1104,10 +1102,10 @@ namespace octave
     // by geting a reference to the caller or base stack frame and
     // calling assign on that?
 
-    unwind_protect frame;
-
-    frame.add_method (m_call_stack, &call_stack::restore_frame,
-                      m_call_stack.current_frame ());
+    unwind_action act ([this] (size_t frm)
+                       {
+                         m_call_stack.restore_frame (frm);
+                       }, m_call_stack.current_frame ());
 
     if (context == "caller")
       m_call_stack.goto_caller_frame ();
@@ -1447,14 +1445,12 @@ namespace octave
                          && ! (object->is_function ()
                                || object->is_function_handle ()));
 
-    unwind_protect frame;
+    unwind_protect_var<const octave_value *> upv1 (m_indexed_object);
+    unwind_protect_var<int> upv2 (m_index_position);
+    unwind_protect_var<int> upv3 (m_num_indices);
 
     if (stash_object)
-      {
-        frame.protect_var (m_indexed_object);
-
-        m_indexed_object = object;
-      }
+      m_indexed_object = object;
 
     int len = arg_list->length ();
 
@@ -1465,9 +1461,6 @@ namespace octave
       {
         if (stash_object)
           {
-            frame.protect_var (m_index_position);
-            frame.protect_var (m_num_indices);
-
             m_index_position = k;
             m_num_indices = len;
           }
@@ -2110,11 +2103,7 @@ namespace octave
     // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
     // and cmd.maxproc_expr ();
 
-    unwind_protect frame;
-
-    frame.protect_var (m_in_loop_command);
-
-    m_in_loop_command = true;
+    unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -2245,11 +2234,7 @@ namespace octave
     if (m_debug_mode)
       do_breakpoint (cmd.is_active_breakpoint (*this));
 
-    unwind_protect frame;
-
-    frame.protect_var (m_in_loop_command);
-
-    m_in_loop_command = true;
+    unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.control_expr ();
 
@@ -2960,12 +2945,11 @@ namespace octave
         {
           try
             {
-              unwind_protect inner_frame;
-
               int itc = es.in_try_catch ();
-              inner_frame.add_method (es, &error_system::set_in_try_catch,
-                                      es.in_try_catch ());
-
+              unwind_action act ([&es, itc] (void)
+                                 {
+                                   es.in_try_catch (itc);
+                                 });
               es.in_try_catch (itc + 1);
 
               try_code->accept (*this);
@@ -3153,11 +3137,7 @@ namespace octave
       return;
 #endif
 
-    unwind_protect frame;
-
-    frame.protect_var (m_in_loop_command);
-
-    m_in_loop_command = true;
+    unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.condition ();
 
@@ -3203,11 +3183,7 @@ namespace octave
       return;
 #endif
 
-    unwind_protect frame;
-
-    frame.protect_var (m_in_loop_command);
-
-    m_in_loop_command = true;
+    unwind_protect_var<bool> upv (m_in_loop_command, true);
 
     tree_expression *expr = cmd.condition ();
     int until_line = cmd.line ();
@@ -3556,10 +3532,8 @@ namespace octave
 
     if (args)
       {
-        unwind_protect frame;
-
-        frame.protect_var (m_lvalue_list);
-        m_lvalue_list = nullptr;
+        unwind_protect_var<const std::list<octave_lvalue> *>
+          upv (m_lvalue_list, nullptr);
 
         if (rvalue && object && args->has_magic_end ()
             && object->is_undefined ())

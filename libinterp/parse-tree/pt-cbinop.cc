@@ -39,11 +39,11 @@ namespace octave
 
     if (m_lhs)
       {
-        octave_value a = std::move (m_lhs->evaluate (tw));
+        octave_value a = m_lhs->evaluate (tw);
 
         if (a.is_defined () && m_rhs)
           {
-            octave_value b = std::move (m_rhs->evaluate (tw));
+            octave_value b = m_rhs->evaluate (tw);
 
             if (b.is_defined ())
               {

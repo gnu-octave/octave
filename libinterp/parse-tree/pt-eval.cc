@@ -547,7 +547,7 @@ namespace octave
                     if (silent)
                       expr->set_print_flag (false);
 
-                    retval = std::move (expr->evaluate_n (*this, nargout));
+                    retval = expr->evaluate_n (*this, nargout);
 
                     bool do_bind_ans = false;
 
@@ -1469,7 +1469,7 @@ namespace octave
 
         if (elt)
           {
-            octave_value tmp = std::move (elt->evaluate (*this));
+            octave_value tmp = elt->evaluate (*this);
 
             if (tmp.is_cs_list ())
               {
@@ -1507,7 +1507,7 @@ namespace octave
         for (tree_decl_elt *elt : *ret_list)
           {
             if (is_defined (elt->ident ()))
-              retval(i) = std::move (evaluate (elt));
+              retval(i) = evaluate (elt);
 
             i++;
           }
@@ -1521,7 +1521,7 @@ namespace octave
         int i = 0;
 
         for (tree_decl_elt *elt : *ret_list)
-          retval(i++) = std::move (evaluate (elt));
+          retval(i++) = evaluate (elt);
 
         for (octave_idx_type j = 0; j < vlen; j++)
           retval(i++) = varargout(j);
@@ -1542,7 +1542,7 @@ namespace octave
       {
         octave_lvalue ult = id->lvalue (*this);
 
-        octave_value init_val = std::move (expr->evaluate (*this));
+        octave_value init_val = expr->evaluate (*this);
 
         ult.assign (octave_value::op_asn_eq, init_val);
 
@@ -1558,7 +1558,7 @@ namespace octave
   {
     tree_expression *label = expr->case_label ();
 
-    octave_value label_value = std::move (label->evaluate (*this));
+    octave_value label_value = label->evaluate (*this);
 
     if (label_value.is_defined ())
       {
@@ -2077,7 +2077,7 @@ namespace octave
             octave_value init_val;
 
             if (expr)
-              init_val = std::move (expr->evaluate (*this));
+              init_val = expr->evaluate (*this);
             else
               init_val = Matrix ();
 
@@ -2238,7 +2238,7 @@ namespace octave
 
     tree_expression *expr = cmd.control_expr ();
 
-    octave_value rhs = std::move (expr->evaluate (*this));
+    octave_value rhs = expr->evaluate (*this);
 
     if (rhs.is_undefined ())
       return;
@@ -2484,7 +2484,7 @@ namespace octave
             {
               m_call_stack.set_location (stmt->line (), stmt->column ());
 
-              retval = std::move (expr->evaluate_n (*this, nargout));
+              retval = expr->evaluate_n (*this, nargout);
             }
         }
       else
@@ -2895,7 +2895,7 @@ namespace octave
       error ("missing value in switch command near line %d, column %d",
              cmd.line (), cmd.column ());
 
-    octave_value val = std::move (expr->evaluate (*this));
+    octave_value val = expr->evaluate (*this);
 
     tree_switch_case_list *lst = cmd.case_list ();
 
@@ -3336,7 +3336,7 @@ namespace octave
   {
     bool expr_value = false;
 
-    octave_value t1 = std::move (expr->evaluate (*this));
+    octave_value t1 = expr->evaluate (*this);
 
     if (t1.is_defined ())
       return t1.is_true ();

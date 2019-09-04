@@ -554,7 +554,7 @@ namespace octave
       }
 
     if (base_expr_val.is_undefined ())
-      base_expr_val = std::move (m_expr->evaluate (tw));
+      base_expr_val = m_expr->evaluate (tw);
 
     // If we are indexing an object or looking at something like
     //

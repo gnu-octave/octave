@@ -54,9 +54,9 @@ namespace octave
     if (! m_base || ! m_limit)
       return val;
 
-    octave_value ov_base = std::move (m_base->evaluate (tw));
+    octave_value ov_base = m_base->evaluate (tw);
 
-    octave_value ov_limit = std::move (m_limit->evaluate (tw));
+    octave_value ov_limit = m_limit->evaluate (tw);
 
     if (ov_base.isobject () || ov_limit.isobject ())
       {
@@ -64,7 +64,7 @@ namespace octave
 
         if (m_increment)
           {
-            octave_value ov_increment = std::move (m_increment->evaluate (tw));
+            octave_value ov_increment = m_increment->evaluate (tw);
 
             tmp1(2) = ov_limit;
             tmp1(1) = ov_increment;
@@ -94,7 +94,7 @@ namespace octave
         octave_value ov_increment = 1.0;
 
         if (m_increment)
-          ov_increment = std::move (m_increment->evaluate (tw));
+          ov_increment = m_increment->evaluate (tw);
 
         val = do_colon_op (ov_base, ov_increment, ov_limit,
                            is_for_cmd_expr ());

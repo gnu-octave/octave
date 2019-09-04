@@ -74,7 +74,7 @@ namespace octave
           }
         else
           {
-            octave_value op_val = std::move (m_op->evaluate (tw));
+            octave_value op_val = m_op->evaluate (tw);
 
             if (op_val.is_defined ())
               {
@@ -135,7 +135,7 @@ namespace octave
           }
         else
           {
-            octave_value op_val = std::move (m_op->evaluate (tw));
+            octave_value op_val = m_op->evaluate (tw);
 
             if (op_val.is_defined ())
               {

@@ -417,7 +417,8 @@ namespace octave
       {
         QString var_name = get_var_name (index);
 
-        // FIXME: this looks suspciously unsafe.
+        // FIXME: the following does not appear to be thread safe.
+
         interpreter& interp
           = __get_interpreter__ ("workspace_view::handle_contextmenu_copy_value");
 

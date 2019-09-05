@@ -1286,6 +1286,8 @@ namespace octave
                                                const QString& curr_dir,
                                                int line)
   {
+    // FIXME: the following does not appear to be thread safe.
+
     interpreter& interp
       = __get_interpreter__ ("main_window::handle_edit_mfile_request");
 

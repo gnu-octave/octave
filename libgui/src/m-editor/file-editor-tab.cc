@@ -379,6 +379,8 @@ namespace octave
           cond = '(' + cond + ") || (" + _edit_area->selectedText () + ')';
       }
 
+    // FIXME: the following does not appear to be thread safe.
+
     interpreter& interp
       = __get_interpreter__ ("handle_context_menu_break_condition");
 
@@ -2110,6 +2112,8 @@ namespace octave
   bool file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
                                               const QString& base_name_q)
   {
+    // FIXME: the following does not appear to be thread safe.
+
     interpreter& interp
       = __get_interpreter__ ("file_editor_tab::exit_debug_and_clear");
 

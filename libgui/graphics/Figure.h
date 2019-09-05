@@ -77,6 +77,9 @@ namespace QtHandles
     QWidget * menu (void);
     void updateStatusBar (ColumnVector pt);
 
+    void do_connections (const QObject *receiver,
+                         const QObject *emitter = nullptr);
+
     bool eventNotifyBefore (QObject *watched, QEvent *event);
     void eventNotifyAfter (QObject *watched, QEvent *event);
 

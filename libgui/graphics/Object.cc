@@ -215,4 +215,71 @@ namespace QtHandles
     return nullptr;
   }
 
+  void
+  Object::do_connections (const QObject *receiver, const QObject *emitter)
+  {
+    if (! emitter)
+      emitter = this;
+
+    connect (emitter,
+             SIGNAL (interpreter_event (const octave::fcn_callback&)),
+             receiver,
+             SLOT (interpreter_event (const octave::fcn_callback&)));
+
+    connect (emitter,
+             SIGNAL (interpreter_event (const octave::meth_callback&)),
+             receiver,
+             SLOT (interpreter_event (const octave::meth_callback&)));
+
+    connect (emitter,
+             SIGNAL (interpreter_event (const octave::meth_callback&)),
+             receiver,
+             SLOT (interpreter_event (const octave::meth_callback&)));
+
+    connect (emitter,
+             SIGNAL (gh_callback_event (const graphics_handle&,
+                                        const std::string&)),
+             receiver,
+             SLOT (gh_callback_event (const graphics_handle&,
+                                      const std::string&)));
+
+    connect (emitter,
+             SIGNAL (gh_callback_event (const graphics_handle&,
+                                        const std::string&,
+                                        const octave_value&)),
+             receiver,
+             SLOT (gh_callback_event (const graphics_handle&,
+                                      const std::string&,
+                                      const octave_value&)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&, bool)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&, bool)));
+
+    connect (emitter,
+             SIGNAL (gh_set_event (const graphics_handle&,
+                                   const std::string&,
+                                   const octave_value&,
+                                   bool, bool)),
+             receiver,
+             SLOT (gh_set_event (const graphics_handle&,
+                                 const std::string&,
+                                 const octave_value&,
+                                 bool, bool)));
+  }
+
 }

@@ -45,6 +45,9 @@ namespace QtHandles
 
     static Panel * create (const graphics_object& go);
 
+    void do_connections (const QObject *receiver,
+                         const QObject *emitter = nullptr);
+
   protected:
     void update (int pId);
     void redraw (void);

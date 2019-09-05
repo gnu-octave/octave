@@ -588,6 +588,13 @@ namespace QtHandles
                                 .arg (pt(1), 0, 'g', 5));
   }
 
+  void
+  Figure::do_connections (const QObject *receiver, const QObject* /* emitter */)
+  {
+    Object::do_connections (receiver);
+    Object::do_connections (receiver, m_container->canvas (m_handle));
+  }
+
   QWidget*
   Figure::menu (void)
   {

@@ -431,66 +431,7 @@ namespace QtHandles
                 if (obj)
                   {
                     proxy->setObject (obj);
-
-                    connect (obj,
-                             SIGNAL (interpreter_event (const octave::fcn_callback&)),
-                             this,
-                             SLOT (interpreter_event (const octave::fcn_callback&)));
-
-                    connect (obj,
-                             SIGNAL (interpreter_event (const octave::meth_callback&)),
-                             this,
-                             SLOT (interpreter_event (const octave::meth_callback&)));
-
-                    connect (obj,
-                             SIGNAL (interpreter_event (const octave::meth_callback&)),
-                             this,
-                             SLOT (interpreter_event (const octave::meth_callback&)));
-
-                    connect (obj,
-                             SIGNAL (gh_callback_event (const graphics_handle&,
-                                                        const std::string&)),
-                             this,
-                             SLOT (gh_callback_event (const graphics_handle&,
-                                                      const std::string&)));
-
-                    connect (obj,
-                             SIGNAL (gh_callback_event (const graphics_handle&,
-                                                        const std::string&,
-                                                        const octave_value&)),
-                             this,
-                             SLOT (gh_callback_event (const graphics_handle&,
-                                                      const std::string&,
-                                                      const octave_value&)));
-
-                    connect (obj,
-                             SIGNAL (gh_set_event (const graphics_handle&,
-                                                   const std::string&,
-                                                   const octave_value&)),
-                             this,
-                             SLOT (gh_set_event (const graphics_handle&,
-                                                 const std::string&,
-                                                 const octave_value&)));
-
-                    connect (obj,
-                             SIGNAL (gh_set_event (const graphics_handle&,
-                                                   const std::string&,
-                                                   const octave_value&, bool)),
-                             this,
-                             SLOT (gh_set_event (const graphics_handle&,
-                                                 const std::string&,
-                                                 const octave_value&, bool)));
-
-                    connect (obj,
-                             SIGNAL (gh_set_event (const graphics_handle&,
-                                                   const std::string&,
-                                                   const octave_value&,
-                                                   bool, bool)),
-                             this,
-                             SLOT (gh_set_event (const graphics_handle&,
-                                                 const std::string&,
-                                                 const octave_value&,
-                                                 bool, bool)));
+                    obj->do_connections (this);
                   }
               }
             else

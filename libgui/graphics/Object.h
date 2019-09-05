@@ -78,6 +78,9 @@ namespace QtHandles
 
     static Object * fromQObject (QObject *obj);
 
+    virtual void do_connections (const QObject *receiver,
+                                 const QObject *emitter = nullptr);
+
   signals:
 
     void interpreter_event (const octave::fcn_callback& fcn);

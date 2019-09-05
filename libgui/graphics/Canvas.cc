@@ -1022,7 +1022,7 @@ namespace QtHandles
             if (redrawFigure)
               redraw (false);
           }
-        
+
         if (! figObj.get ("windowscrollwheelfcn").isempty ())
           {
             octave_scalar_map eventData = Utils::makeScrollEventStruct (event);

@@ -147,11 +147,11 @@ namespace QtHandles
 
     frame->installEventFilter (this);
     m_container->installEventFilter (this);
-    
+
     graphics_object fig (go.get_ancestor ("figure"));
     if (! fig.get ("keypressfcn").isempty ())
       m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
-    
+
     if (! fig.get ("keyreleasefcn").isempty ())
       m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
 
@@ -403,6 +403,13 @@ namespace QtHandles
           m_title->move (frame->width () / 2 - sz.width () / 2,
                          frame->height () - sz.height ());
       }
+  }
+
+  void
+  Panel::do_connections (const QObject *receiver, const QObject* /* emitter */)
+  {
+    Object::do_connections (receiver);
+    Object::do_connections (receiver, m_container->canvas (m_handle));
   }
 
 };

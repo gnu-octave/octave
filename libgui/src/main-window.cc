@@ -1286,90 +1286,97 @@ namespace octave
                                                const QString& curr_dir,
                                                int line)
   {
-    // FIXME: the following does not appear to be thread safe.
+    emit interpreter_event
+      ([this, fname, ffile, curr_dir, line] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
 
-    interpreter& interp
-      = __get_interpreter__ ("main_window::handle_edit_mfile_request");
+         // Split possible subfuntions
+         QStringList fcn_list = fname.split ('>');
+         QString fcn_name = fcn_list.at (0) + ".m";
 
-    // Split possible subfuntions
-    QStringList fcn_list = fname.split ('>');
-    QString fcn_name = fcn_list.at (0) + ".m";
+         // FIXME: could use symbol_exist directly, but we may also want
+         // to fix that to be a member function in the interpreter
+         // class?
 
-    // Is it a regular function within the search path? (Call Fexist)
-    octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
-    int type = fct (0).int_value ();
+         // Is it a regular function within the search path? (Call Fexist)
+         octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
+         int type = fct (0).int_value ();
 
-    QString message = QString ();
-    QString filename = QString ();
+         QString message = QString ();
+         QString filename = QString ();
 
-    switch (type)
-      {
-        case 3:
-        case 5:
-        case 103:
-          message = tr ("%1 is a built-in, compiled or inline\n"
-                        "function and can not be edited.");
-          break;
+         switch (type)
+           {
+           case 3:
+           case 5:
+           case 103:
+             message = tr ("%1 is a built-in, compiled or inline\n"
+                           "function and can not be edited.");
+             break;
 
-        case 2:
-          octave_value_list file_path
-              = Ffile_in_loadpath (interp, ovl (fcn_name.toStdString ()), 0);
-          if (file_path.length () > 0)
-            filename = QString::fromStdString (file_path (0).string_value ());
-          break;
-      }
+           case 2:
+             // FIXME: could use a load_path function directly.
+             octave_value_list file_path
+               = Ffile_in_loadpath (interp, ovl (fcn_name.toStdString ()), 0);
+             if (file_path.length () > 0)
+               filename = QString::fromStdString (file_path (0).string_value ());
+             break;
+           }
 
-    if (filename.isEmpty () && message.isEmpty ())
-      {
-        // No error so far, but function still not known
-        // -> try directory of edited file
-        // get directory
-        QDir dir;
-        if (ffile.isEmpty ())
-          {
-            if (curr_dir.isEmpty ())
-              dir = QDir (m_current_directory_combo_box->itemText (0));
-            else
-              dir = QDir (curr_dir);
-          }
-        else
-          dir = QDir (QFileInfo (ffile).canonicalPath ());
+         if (filename.isEmpty () && message.isEmpty ())
+           {
+             // No error so far, but function still not known
+             // -> try directory of edited file
+             // get directory
+             QDir dir;
+             if (ffile.isEmpty ())
+               {
+                 if (curr_dir.isEmpty ())
+                   dir = QDir (m_current_directory_combo_box->itemText (0));
+                 else
+                   dir = QDir (curr_dir);
+               }
+             else
+               dir = QDir (QFileInfo (ffile).canonicalPath ());
 
-        QFileInfo file = QFileInfo (dir, fcn_name);
-        if (file.exists ())
-          filename = file.canonicalFilePath (); // local file exists
-        else
-          {
-            // local file does not exist -> try private directory
-            file = QFileInfo (ffile);
-            file = QFileInfo (QDir (file.canonicalPath () + "/private"),
-                              fcn_name);
-            if (file.exists ())
-              filename = file.canonicalFilePath ();  // private function exists
-            else
-              message = tr ("Can not find function %1");  // no file found
+             QFileInfo file = QFileInfo (dir, fcn_name);
+             if (file.exists ())
+               filename = file.canonicalFilePath (); // local file exists
+             else
+               {
+                 // local file does not exist -> try private directory
+                 file = QFileInfo (ffile);
+                 file = QFileInfo (QDir (file.canonicalPath () + "/private"),
+                                   fcn_name);
+                 if (file.exists ())
+                   filename = file.canonicalFilePath ();  // private function exists
+                 else
+                   message = tr ("Can not find function %1");  // no file found
 
-          }
-      }
+               }
+           }
 
-    if (! message.isEmpty ())
-      {
-        QMessageBox *msgBox
-          = new QMessageBox (QMessageBox::Critical,
-                             tr ("Octave Editor"),
-                             message.arg (fname),
-                             QMessageBox::Ok, this);
+         if (! message.isEmpty ())
+           {
+             QMessageBox *msgBox
+               = new QMessageBox (QMessageBox::Critical,
+                                  tr ("Octave Editor"),
+                                  message.arg (fname),
+                                  QMessageBox::Ok, this);
 
-        msgBox->setWindowModality (Qt::NonModal);
-        msgBox->setAttribute (Qt::WA_DeleteOnClose);
-        msgBox->show ();
-        return;
-      }
+             msgBox->setWindowModality (Qt::NonModal);
+             msgBox->setAttribute (Qt::WA_DeleteOnClose);
+             msgBox->show ();
+             return;
+           }
 
-    if (! filename.endsWith (".m"))
-      filename.append (".m");
+         if (! filename.endsWith (".m"))
+           filename.append (".m");
 
-    emit open_file_signal (filename, QString (), line);  // default encoding
+         // default encoding
+         emit open_file_signal (filename, QString (), line);
+       });
   }
 
   void main_window::handle_insert_debugger_pointer_request (const QString& file,

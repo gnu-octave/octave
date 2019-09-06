@@ -417,19 +417,25 @@ namespace octave
       {
         QString var_name = get_var_name (index);
 
-        // FIXME: the following does not appear to be thread safe.
+        emit interpreter_event
+          ([var_name] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
 
-        interpreter& interp
-          = __get_interpreter__ ("workspace_view::handle_contextmenu_copy_value");
+             octave_value val = interp.varval (var_name.toStdString ());
 
-        octave_value val = interp.varval (var_name.toStdString ());
-        if (val.is_undefined ())
-          val = 0;
-        std::ostringstream buf;
-        val.print_raw (buf, true);
+             if (val.is_undefined ())
+               val = 0;
 
-        QClipboard *clipboard = QApplication::clipboard ();
-        clipboard->setText (QString::fromStdString (buf.str ()));
+             std::ostringstream buf;
+             val.print_raw (buf, true);
+
+             // FIXME: is the following operation thread safe or should
+             // it be done with a signal/slot connection?
+
+             QClipboard *clipboard = QApplication::clipboard ();
+             clipboard->setText (QString::fromStdString (buf.str ()));
+           });
       }
   }
 

@@ -84,7 +84,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  bool file_editor_tab::_cancelled = false;
+  bool file_editor_tab::m_cancelled = false;
 
   //! A file_editor_tab object consists of a text area and three left margins.
   //! The first holds breakpoints, bookmarks, and the debug program counter.
@@ -95,21 +95,21 @@ namespace octave
   // messages don't affect grandparents.
   file_editor_tab::file_editor_tab (const QString& directory_arg)
   {
-    _lexer_apis = nullptr;
-    _is_octave_file = true;
-    _lines_changed = false;
+    m_lexer_apis = nullptr;
+    m_is_octave_file = true;
+    m_lines_changed = false;
 
-    _ced = directory_arg;
+    m_ced = directory_arg;
 
-    _file_name = "";
-    _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
+    m_file_name = "";
+    m_file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
-    _edit_area = new octave_qscintilla (this);
-    _line = 0;
-    _col  = 0;
+    m_edit_area = new octave_qscintilla (this);
+    m_line = 0;
+    m_col  = 0;
 
-    _bp_lines.clear ();      // start with empty lists of breakpoints
-    _bp_conditions.clear ();
+    m_bp_lines.clear ();      // start with empty lists of breakpoints
+    m_bp_conditions.clear ();
     m_bp_restore_count = 0;
 
     m_breakpoint_info.remove_next = false;
@@ -118,126 +118,126 @@ namespace octave
     // Initialize last modification date to now
     m_last_modified = QDateTime::currentDateTimeUtc();
 
-    connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
+    connect (m_edit_area, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (handle_cursor_moved (int,int)));
 
-    connect (_edit_area, SIGNAL (SCN_CHARADDED (int)),
+    connect (m_edit_area, SIGNAL (SCN_CHARADDED (int)),
              this, SLOT (handle_char_added (int)));
 
-    connect (_edit_area, SIGNAL (SCN_DOUBLECLICK (int, int, int)),
+    connect (m_edit_area, SIGNAL (SCN_DOUBLECLICK (int, int, int)),
              this, SLOT (handle_double_click (int, int, int)));
 
-    connect (_edit_area, SIGNAL (linesChanged ()),
+    connect (m_edit_area, SIGNAL (linesChanged ()),
              this, SLOT (handle_lines_changed ()));
 
-    connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
+    connect (m_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
              this, SLOT (handle_context_menu_edit (const QString&)));
 
     // create statusbar for row/col indicator and eol mode
-    _status_bar = new QStatusBar (this);
+    m_status_bar = new QStatusBar (this);
 
     // row- and col-indicator
-    _row_indicator = new QLabel ("", this);
-    QFontMetrics fm = _row_indicator->fontMetrics ();
-    _row_indicator->setMinimumSize (4.5*fm.averageCharWidth (),0);
+    m_row_indicator = new QLabel ("", this);
+    QFontMetrics fm = m_row_indicator->fontMetrics ();
+    m_row_indicator->setMinimumSize (4.5*fm.averageCharWidth (),0);
     QLabel *row_label = new QLabel (tr ("line:"), this);
-    _col_indicator = new QLabel ("", this);
-    _col_indicator->setMinimumSize (4*fm.averageCharWidth (),0);
+    m_col_indicator = new QLabel ("", this);
+    m_col_indicator->setMinimumSize (4*fm.averageCharWidth (),0);
     QLabel *col_label = new QLabel (tr ("col:"), this);
-    _status_bar->addWidget (row_label, 0);
-    _status_bar->addWidget (_row_indicator, 0);
-    _status_bar->addWidget (col_label, 0);
-    _status_bar->addWidget (_col_indicator, 0);
+    m_status_bar->addWidget (row_label, 0);
+    m_status_bar->addWidget (m_row_indicator, 0);
+    m_status_bar->addWidget (col_label, 0);
+    m_status_bar->addWidget (m_col_indicator, 0);
 
     // status bar: encoding
     QLabel *enc_label = new QLabel (tr ("encoding:"), this);
-    _enc_indicator = new QLabel ("",this);
-    _status_bar->addWidget (enc_label, 0);
-    _status_bar->addWidget (_enc_indicator, 0);
-    _status_bar->addWidget (new QLabel (" ", this), 0);
+    m_enc_indicator = new QLabel ("",this);
+    m_status_bar->addWidget (enc_label, 0);
+    m_status_bar->addWidget (m_enc_indicator, 0);
+    m_status_bar->addWidget (new QLabel (" ", this), 0);
 
     // status bar: eol mode
     QLabel *eol_label = new QLabel (tr ("eol:"), this);
-    _eol_indicator = new QLabel ("",this);
-    _status_bar->addWidget (eol_label, 0);
-    _status_bar->addWidget (_eol_indicator, 0);
-    _status_bar->addWidget (new QLabel (" ", this), 0);
+    m_eol_indicator = new QLabel ("",this);
+    m_status_bar->addWidget (eol_label, 0);
+    m_status_bar->addWidget (m_eol_indicator, 0);
+    m_status_bar->addWidget (new QLabel (" ", this), 0);
 
     // Leave the find dialog box out of memory until requested.
-    _find_dialog = nullptr;
+    m_find_dialog = nullptr;
 
     // symbols
-    _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
-    _edit_area->setMarginSensitivity (1, true);
-    _edit_area->markerDefine (QsciScintilla::RightTriangle, marker::bookmark);
-    _edit_area->setMarkerBackgroundColor (QColor (0,0,232), marker::bookmark);
-    _edit_area->markerDefine (QsciScintilla::Circle, marker::breakpoint);
-    _edit_area->setMarkerBackgroundColor (QColor (192,0,0), marker::breakpoint);
-    _edit_area->markerDefine (QsciScintilla::Circle, marker::cond_break);
-    _edit_area->setMarkerBackgroundColor (QColor (255,127,0), marker::cond_break);
-    _edit_area->markerDefine (QsciScintilla::RightArrow, marker::debugger_position);
-    _edit_area->setMarkerBackgroundColor (QColor (255,255,0),
+    m_edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
+    m_edit_area->setMarginSensitivity (1, true);
+    m_edit_area->markerDefine (QsciScintilla::RightTriangle, marker::bookmark);
+    m_edit_area->setMarkerBackgroundColor (QColor (0,0,232), marker::bookmark);
+    m_edit_area->markerDefine (QsciScintilla::Circle, marker::breakpoint);
+    m_edit_area->setMarkerBackgroundColor (QColor (192,0,0), marker::breakpoint);
+    m_edit_area->markerDefine (QsciScintilla::Circle, marker::cond_break);
+    m_edit_area->setMarkerBackgroundColor (QColor (255,127,0), marker::cond_break);
+    m_edit_area->markerDefine (QsciScintilla::RightArrow, marker::debugger_position);
+    m_edit_area->setMarkerBackgroundColor (QColor (255,255,0),
                                           marker::debugger_position);
-    _edit_area->markerDefine (QsciScintilla::RightArrow,
+    m_edit_area->markerDefine (QsciScintilla::RightArrow,
                               marker::unsure_debugger_position);
-    _edit_area->setMarkerBackgroundColor (QColor (192,192,192),
+    m_edit_area->setMarkerBackgroundColor (QColor (192,192,192),
                                           marker::unsure_debugger_position);
 
-    connect (_edit_area, SIGNAL (marginClicked (int, int,
+    connect (m_edit_area, SIGNAL (marginClicked (int, int,
                                                 Qt::KeyboardModifiers)),
              this, SLOT (handle_margin_clicked (int, int,
                                                 Qt::KeyboardModifiers)));
 
-    connect (_edit_area, SIGNAL (context_menu_break_condition_signal (int)),
+    connect (m_edit_area, SIGNAL (context_menu_break_condition_signal (int)),
              this, SLOT (handle_context_menu_break_condition (int)));
 
     // line numbers
-    _edit_area->setMarginsForegroundColor (QColor (96, 96, 96));
-    _edit_area->setMarginsBackgroundColor (QColor (232, 232, 220));
-    _edit_area->setMarginType (2, QsciScintilla::TextMargin);
+    m_edit_area->setMarginsForegroundColor (QColor (96, 96, 96));
+    m_edit_area->setMarginsBackgroundColor (QColor (232, 232, 220));
+    m_edit_area->setMarginType (2, QsciScintilla::TextMargin);
 
     // other features
-    _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
-    _edit_area->setAutoIndent (true);
-    _edit_area->setIndentationWidth (2);
-    _edit_area->setIndentationsUseTabs (false);
+    m_edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
+    m_edit_area->setAutoIndent (true);
+    m_edit_area->setIndentationWidth (2);
+    m_edit_area->setIndentationsUseTabs (false);
 
-    _edit_area->setUtf8 (true);
+    m_edit_area->setUtf8 (true);
 
     // auto completion
-    _edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCSETCANCELATSTART, false);
+    m_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCSETCANCELATSTART, false);
 
     QVBoxLayout *edit_area_layout = new QVBoxLayout ();
-    edit_area_layout->addWidget (_edit_area);
-    edit_area_layout->addWidget (_status_bar);
+    edit_area_layout->addWidget (m_edit_area);
+    edit_area_layout->addWidget (m_status_bar);
     edit_area_layout->setMargin (0);
     edit_area_layout->setSpacing (0);
     setLayout (edit_area_layout);
 
     // connect modified signal
-    connect (_edit_area, SIGNAL (modificationChanged (bool)),
+    connect (m_edit_area, SIGNAL (modificationChanged (bool)),
              this, SLOT (update_window_title (bool)));
 
-    connect (_edit_area, SIGNAL (copyAvailable (bool)),
+    connect (m_edit_area, SIGNAL (copyAvailable (bool)),
              this, SLOT (handle_copy_available (bool)));
 
-    connect (&_file_system_watcher, SIGNAL (fileChanged (const QString&)),
+    connect (&m_file_system_watcher, SIGNAL (fileChanged (const QString&)),
              this, SLOT (file_has_changed (const QString&)));
 
     QSettings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
 
-    setFocusProxy (_edit_area);
+    setFocusProxy (m_edit_area);
 
     // encoding, not updated with the settings
     QString locale_enc_name =
       QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
-    _encoding = settings->value ("editor/default_encoding", locale_enc_name)
+    m_encoding = settings->value ("editor/default_encoding", locale_enc_name)
                 .toString ();
-    _enc_indicator->setText (_encoding);
+    m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet
-    _new_encoding = _encoding;
+    m_new_encoding = m_encoding;
   }
 
   file_editor_tab::~file_editor_tab (void)
@@ -246,21 +246,21 @@ namespace octave
     emit remove_all_breakpoints ();
     emit remove_all_positions ();
 
-    // Destroy items attached to _edit_area.
-    QsciLexer *lexer = _edit_area->lexer ();
+    // Destroy items attached to m_edit_area.
+    QsciLexer *lexer = m_edit_area->lexer ();
     if (lexer)
       {
         delete lexer;
-        _edit_area->setLexer (nullptr);
+        m_edit_area->setLexer (nullptr);
       }
-    if (_find_dialog)
+    if (m_find_dialog)
       {
-        delete _find_dialog;
-        _find_dialog = nullptr;
+        delete m_find_dialog;
+        m_find_dialog = nullptr;
       }
 
-    // Destroy _edit_area.
-    delete _edit_area;
+    // Destroy m_edit_area.
+    delete m_edit_area;
   }
 
   void file_editor_tab::set_encoding (const QString& new_encoding)
@@ -268,15 +268,15 @@ namespace octave
     if (new_encoding.isEmpty ())
       return;
 
-    _encoding = new_encoding;
-    _enc_indicator->setText (_encoding);
-    if (! _edit_area->text ().isEmpty ())
+    m_encoding = new_encoding;
+    m_enc_indicator->setText (m_encoding);
+    if (! m_edit_area->text ().isEmpty ())
       set_modified (true);
   }
 
   void file_editor_tab::closeEvent (QCloseEvent *e)
   {
-    _cancelled = false;  // prevent unwanted interaction of previous
+    m_cancelled = false;  // prevent unwanted interaction of previous
     // exits of octave which were canceled by the user
 
     if (check_file_modified () == QMessageBox::Cancel)
@@ -294,7 +294,7 @@ namespace octave
 
   void file_editor_tab::set_current_directory (const QString& dir)
   {
-    _ced = dir;
+    m_ced = dir;
   }
 
   void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
@@ -311,7 +311,7 @@ namespace octave
                     + word_at_cursor + "[\t ]*$");
 
     int pos_fct = -1;
-    QStringList lines = _edit_area->text ().split ("\n");
+    QStringList lines = m_edit_area->text ().split ("\n");
 
     int line;
     for (line = 0; line < lines.count (); line++)
@@ -329,15 +329,15 @@ namespace octave
     if (pos_fct > -1)
       {
         // reg expr. found: it is an internal function
-        _edit_area->setCursorPosition (line, pos_fct);
-        _edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
+        m_edit_area->setCursorPosition (line, pos_fct);
+        m_edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
         // SCI_VISIBLEFROMDOCLINE
-        int vis_line = _edit_area->SendScintilla (2220, line);
-        _edit_area->SendScintilla (2613, vis_line); // SCI_SETFIRSTVISIBLELINE
+        int vis_line = m_edit_area->SendScintilla (2220, line);
+        m_edit_area->SendScintilla (2613, vis_line); // SCI_SETFIRSTVISIBLELINE
         return;
       }
 
-    emit edit_mfile_request (word_at_cursor, _file_name, _ced, -1);
+    emit edit_mfile_request (word_at_cursor, m_file_name, m_ced, -1);
   }
 
   // If "dbstop if ..." selected from context menu, create a conditional
@@ -351,32 +351,32 @@ namespace octave
       return;
 
     QString cond;
-    bp_info info (_file_name, linenr+1); // Get function name & dir from filename.
+    bp_info info (m_file_name, linenr+1); // Get function name & dir from filename.
 
     // Search for previous condition.  FIXME: is there a more direct way?
-    if (_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
+    if (m_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
       {
-        emit report_marker_linenr (_bp_lines, _bp_conditions);
-        for (int i = 0; i < _bp_lines.length (); i++)
-          if (_bp_lines.value (i) == linenr)
+        emit report_marker_linenr (m_bp_lines, m_bp_conditions);
+        for (int i = 0; i < m_bp_lines.length (); i++)
+          if (m_bp_lines.value (i) == linenr)
             {
-              cond = _bp_conditions.value (i);
+              cond = m_bp_conditions.value (i);
               break;
             }
-        _bp_lines.clear ();
-        _bp_conditions.clear ();
+        m_bp_lines.clear ();
+        m_bp_conditions.clear ();
       }
 
     // If text selected by the mouse, default to that instead
     // If both present, use the OR of them, to avoid accidental overwriting
     // FIXME: If both are present, show old condition unselected and
     //        the selection (in edit area) selected (in the dialog).
-    if (_edit_area->hasSelectedText ())
+    if (m_edit_area->hasSelectedText ())
       {
         if (cond == "")
-          cond = _edit_area->selectedText ();
+          cond = m_edit_area->selectedText ();
         else
-          cond = '(' + cond + ") || (" + _edit_area->selectedText () + ')';
+          cond = '(' + cond + ") || (" + m_edit_area->selectedText () + ')';
       }
 
     // FIXME: the following does not appear to be thread safe.
@@ -440,36 +440,36 @@ namespace octave
   void file_editor_tab::set_file_name (const QString& fileName)
   {
     // update tracked file if we really have a file on disk
-    QStringList trackedFiles = _file_system_watcher.files ();
+    QStringList trackedFiles = m_file_system_watcher.files ();
     if (! trackedFiles.isEmpty ())
-      _file_system_watcher.removePath (_file_name);
+      m_file_system_watcher.removePath (m_file_name);
     if (! fileName.isEmpty () && QFile::exists (fileName))
     {
-      _file_system_watcher.addPath (fileName);
+      m_file_system_watcher.addPath (fileName);
       m_last_modified =  QFileInfo (fileName).lastModified ().toUTC ();
     }
 
     // update lexer and file name variable if file name changes
-    if (_file_name != fileName)
+    if (m_file_name != fileName)
       {
-        _file_name = fileName;
+        m_file_name = fileName;
         update_lexer ();
       }
 
     // update the file editor with current editing directory
-    emit editor_state_changed (_copy_available, _is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file);
 
     // add the new file to the most-recently-used list
-    emit mru_add_file (_file_name, _encoding);
+    emit mru_add_file (m_file_name, m_encoding);
   }
 
   // valid_file_name (file): checks whether "file" names a file.
-  // By default, "file" is empty; then _file_name is checked
+  // By default, "file" is empty; then m_file_name is checked
   bool file_editor_tab::valid_file_name (const QString& file)
   {
     if (file.isEmpty ())
       {
-        if (_file_name.isEmpty ())
+        if (m_file_name.isEmpty ())
           return false;
         else
           return true;
@@ -486,7 +486,7 @@ namespace octave
   bool file_editor_tab::unchanged_or_saved (void)
   {
     bool retval = true;
-    if (_edit_area->isModified () || ! valid_file_name ())
+    if (m_edit_area->isModified () || ! valid_file_name ())
       {
         int ans = QMessageBox::question (nullptr, tr ("Octave Editor"),
                                          tr ("Cannot add breakpoint to modified or unnamed file.\n"
@@ -494,7 +494,7 @@ namespace octave
                                          QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
 
         if (ans == QMessageBox::Save)
-          save_file (_file_name, false);
+          save_file (m_file_name, false);
         else
           retval = false;
       }
@@ -509,14 +509,14 @@ namespace octave
   {
     if (margin == 1)
       {
-        unsigned int markers_mask = _edit_area->markersAtLine (editor_linenr);
+        unsigned int markers_mask = m_edit_area->markersAtLine (editor_linenr);
 
         if (state & Qt::ControlModifier)
           {
             if (markers_mask & (1 << marker::bookmark))
-              _edit_area->markerDelete (editor_linenr, marker::bookmark);
+              m_edit_area->markerDelete (editor_linenr, marker::bookmark);
             else
-              _edit_area->markerAdd (editor_linenr, marker::bookmark);
+              m_edit_area->markerAdd (editor_linenr, marker::bookmark);
           }
         else
           {
@@ -538,11 +538,11 @@ namespace octave
     // Create a new lexer
     QsciLexer *lexer = nullptr;
 
-    _is_octave_file = false;
+    m_is_octave_file = false;
 
     // Find the required lexer from file extensions
-    if (_file_name.endsWith (".m")
-        || _file_name.endsWith ("octaverc"))
+    if (m_file_name.endsWith (".m")
+        || m_file_name.endsWith ("octaverc"))
       {
 #if defined (HAVE_LEXER_OCTAVE)
         lexer = new QsciLexerOctave ();
@@ -551,36 +551,36 @@ namespace octave
 #else
         lexer = new octave_txt_lexer ();
 #endif
-        _is_octave_file = true;
+        m_is_octave_file = true;
       }
 
     if (! lexer)
       {
-        if (_file_name.endsWith (".c")
-            || _file_name.endsWith (".cc")
-            || _file_name.endsWith (".cpp")
-            || _file_name.endsWith (".cxx")
-            || _file_name.endsWith (".c++")
-            || _file_name.endsWith (".h")
-            || _file_name.endsWith (".hh")
-            || _file_name.endsWith (".hpp")
-            || _file_name.endsWith (".h++"))
+        if (m_file_name.endsWith (".c")
+            || m_file_name.endsWith (".cc")
+            || m_file_name.endsWith (".cpp")
+            || m_file_name.endsWith (".cxx")
+            || m_file_name.endsWith (".c++")
+            || m_file_name.endsWith (".h")
+            || m_file_name.endsWith (".hh")
+            || m_file_name.endsWith (".hpp")
+            || m_file_name.endsWith (".h++"))
           {
             lexer = new QsciLexerCPP ();
           }
-        else if (_file_name.endsWith (".pl"))
+        else if (m_file_name.endsWith (".pl"))
           {
             lexer = new QsciLexerPerl ();
           }
-        else if (_file_name.endsWith (".bat"))
+        else if (m_file_name.endsWith (".bat"))
           {
             lexer = new QsciLexerBatch ();
           }
-        else if (_file_name.endsWith (".diff"))
+        else if (m_file_name.endsWith (".diff"))
           {
             lexer = new QsciLexerDiff ();
           }
-        else if (_file_name.endsWith (".sh"))
+        else if (m_file_name.endsWith (".sh"))
           {
             lexer = new QsciLexerBash ();
           }
@@ -589,10 +589,10 @@ namespace octave
             // new, no yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
             lexer = new QsciLexerOctave ();
-            _is_octave_file = true;
+            m_is_octave_file = true;
 #elif defined (HAVE_LEXER_MATLAB)
             lexer = new QsciLexerMatlab ();
-            _is_octave_file = true;
+            m_is_octave_file = true;
 #else
             lexer = new octave_txt_lexer ();
 #endif
@@ -605,7 +605,7 @@ namespace octave
       }
 
     // Get any existing lexer
-    QsciLexer *old_lexer = _edit_area->lexer ();
+    QsciLexer *old_lexer = m_edit_area->lexer ();
 
     // If new file, no lexer, or lexer has changed,
     // delete old one and set the newly created as current lexer
@@ -615,10 +615,10 @@ namespace octave
         // Delete and set new lexer
         if (old_lexer)
           delete old_lexer;
-        _edit_area->setLexer (lexer);
+        m_edit_area->setLexer (lexer);
 
         // build information for auto completion (APIs)
-        _lexer_apis = new QsciAPIs (lexer);
+        m_lexer_apis = new QsciAPIs (lexer);
 
         // Get the settings for this new lexer
         update_lexer_settings ();
@@ -636,13 +636,13 @@ namespace octave
   // when a) the lexer changes or b) the settings have changed.
   void file_editor_tab::update_lexer_settings (void)
   {
-    QsciLexer *lexer = _edit_area->lexer ();
+    QsciLexer *lexer = m_edit_area->lexer ();
 
     QSettings *settings = resource_manager::get_settings ();
 
-    if (_lexer_apis)
+    if (m_lexer_apis)
       {
-        _lexer_apis->cancelPreparation ();  // stop preparing if apis exists
+        m_lexer_apis->cancelPreparation ();  // stop preparing if apis exists
 
         bool update_apis = false;  // flag, whether update of apis files
 
@@ -673,7 +673,7 @@ namespace octave
 
         QCoreApplication::setApplicationName (tmp_app_name);  // Restore name
 
-        if (_is_octave_file)
+        if (m_is_octave_file)
           {
             // Keywords and Builtins do not change, these informations can be
             // stored in prepared form in a file. Information on function are
@@ -681,19 +681,19 @@ namespace octave
             // completed, the date of any existing file is checked.
 
             // Keywords are always used
-            _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
+            m_prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
 
             // Buitlins are only used if the user settings say so
             if (octave_builtins)
-              _prep_apis_file += 'b';
+              m_prep_apis_file += 'b';
 
             if (octave_functions)
-              _prep_apis_file += 'f';
+              m_prep_apis_file += 'f';
 
-            _prep_apis_file += ".pap"; // final name of apis file
+            m_prep_apis_file += ".pap"; // final name of apis file
 
             // check whether the APIs info needs to be prepared and saved
-            QFileInfo apis_file = QFileInfo (_prep_apis_file);
+            QFileInfo apis_file = QFileInfo (m_prep_apis_file);
             // flag whether apis file needs update
             update_apis = ! apis_file.exists ();
 
@@ -711,13 +711,13 @@ namespace octave
         else  // no octave file, just add extension
           {
 
-            _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+            m_prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
 
           }
 
         // Make sure the apis file is usable, otherwise the gui might crash,
         // e.g., in case of max. number of opened files
-        QFile f (_prep_apis_file);
+        QFile f (m_prep_apis_file);
 
         bool apis_usable = f.open (QIODevice::ReadOnly);
         if (! apis_usable)
@@ -729,7 +729,7 @@ namespace octave
           f.close ();
 
         if (apis_usable
-            && (update_apis || ! _lexer_apis->loadPrepared (_prep_apis_file)))
+            && (update_apis || ! m_lexer_apis->loadPrepared (m_prep_apis_file)))
           {
             // either we have decided to update the apis file or
             // no prepared info was loaded, prepare and save if possible
@@ -739,7 +739,7 @@ namespace octave
             QStringList keyword_list;
             int i,j;
 
-            if (_is_octave_file)
+            if (m_is_octave_file)
               {
                 // octave: get keywords from internal informations depending on
                 //         user preferences
@@ -760,36 +760,36 @@ namespace octave
             else
               {
 
-                _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+                m_prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
 
                 for (i=1; i<=3; i++) // test the first 5 keyword sets
                   {
                     keyword = QString (lexer->keywords (i));           // get list
                     keyword_list = keyword.split (QRegExp (R"(\s+)")); // split
                     for (j = 0; j < keyword_list.size (); j++)         // add to API
-                      _lexer_apis->add (keyword_list.at (j));
+                      m_lexer_apis->add (keyword_list.at (j));
                   }
               }
 
             // disconnect slot for saving prepared info if already connected
-            disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), nullptr, nullptr);
+            disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()), nullptr, nullptr);
             // check whether path for prepared info exists or can be created
             if (QDir ("/").mkpath (prep_apis_path))
               {
                 // path exists, apis info can be saved there
-                connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
                          this, SLOT (save_apis_info ()));
               }
 
-            _lexer_apis->prepare ();  // prepare apis info
+            m_lexer_apis->prepare ();  // prepare apis info
 
           }
       }
 
     lexer->readSettings (*settings);
 
-    _edit_area->setCaretForegroundColor (lexer->color (0));
-    _edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
+    m_edit_area->setCaretForegroundColor (lexer->color (0));
+    m_edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
 
     // set some colors depending on selected background color of the lexer
     QColor bg = lexer->paper (0);
@@ -805,22 +805,22 @@ namespace octave
     v = bv + (fv - bv)/5;
 
     bg.setHsv (h,s,v);
-    _edit_area->setEdgeColor (bg);
+    m_edit_area->setEdgeColor (bg);
 
     v = bv + (fv - bv)/8;
     bg.setHsv (h,s,v);
     v = bv + (fv - bv)/4;
     fg.setHsv (h,s,v);
 
-    _edit_area->setMarkerForegroundColor (lexer->color (0));
-    _edit_area->setMarginsForegroundColor (lexer->color (0));
-    _edit_area->setMarginsBackgroundColor (bg);
-    _edit_area->setFoldMarginColors (bg,fg);
+    m_edit_area->setMarkerForegroundColor (lexer->color (0));
+    m_edit_area->setMarginsForegroundColor (lexer->color (0));
+    m_edit_area->setMarginsBackgroundColor (bg);
+    m_edit_area->setFoldMarginColors (bg,fg);
 
     // color indicator for highlighting all occurrences:
     // applications highlight color with more transparency
     QColor hg = QApplication::palette ().color (QPalette::Highlight);
-    _edit_area->set_selection_marker_color (hg);
+    m_edit_area->set_selection_marker_color (hg);
 
     // fix line number width with respect to the font size of the lexer and
     // set the line numbers font depending on the lexers font
@@ -838,10 +838,10 @@ namespace octave
           font_size = 4;
         line_numbers_font.setPointSize (font_size);
 
-        _edit_area->setMarginsFont (line_numbers_font);
+        m_edit_area->setMarginsFont (line_numbers_font);
       }
     else
-      _edit_area->setMarginWidth (2,0);
+      m_edit_area->setMarginWidth (2,0);
   }
 
 
@@ -852,12 +852,12 @@ namespace octave
     Cell key_list = keys.cell_value ();
 
     for (int idx = 0; idx < key_list.numel (); idx++)
-      _lexer_apis->add (QString (key_list.elem (idx).string_value ().data ()));
+      m_lexer_apis->add (QString (key_list.elem (idx).string_value ().data ()));
   }
 
   void file_editor_tab::save_apis_info (void)
   {
-    _lexer_apis->savePrepared (_prep_apis_file);
+    m_lexer_apis->savePrepared (m_prep_apis_file);
   }
 
   // Slot for editors signal is its toplevel state has changed
@@ -866,21 +866,21 @@ namespace octave
     // The find dialog has to be re-created since making the editor
     // floating or docked obviously changes the parent/child relation
     // of the find dialog
-    if (_find_dialog == nullptr)
+    if (m_find_dialog == nullptr)
       return;
     else
       {
-        if (_find_dialog->isVisible ())
+        if (m_find_dialog->isVisible ())
           {
-            _find_dialog->save_data (&m_find_dlg_data);     // Save current data
-            delete _find_dialog;
-            _find_dialog = nullptr;
+            m_find_dialog->save_data (&m_find_dlg_data);     // Save current data
+            delete m_find_dialog;
+            m_find_dialog = nullptr;
 
             find_create ();                                 // Create new dialog
 
-            _find_dialog->restore_data (&m_find_dlg_data);  // Restore data
+            m_find_dialog->restore_data (&m_find_dlg_data);  // Restore data
 
-            _edit_area->setFocus ();
+            m_edit_area->setFocus ();
           }
       }
   }
@@ -890,7 +890,7 @@ namespace octave
   {
     if (ID != this)
       return;
-    _edit_area->setFocus ();
+    m_edit_area->setFocus ();
   }
 
   void file_editor_tab::context_help (const QWidget *ID, bool doc)
@@ -898,7 +898,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->context_help_doc (doc);
+    m_edit_area->context_help_doc (doc);
   }
 
   void file_editor_tab::context_edit (const QWidget *ID)
@@ -906,16 +906,16 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->context_edit ();
+    m_edit_area->context_edit ();
   }
 
   void file_editor_tab::check_modified_file (void)
   {
-    if (_cancelled)
+    if (m_cancelled)
       return;
 
     if (check_file_modified () == QMessageBox::Cancel)
-      _cancelled = true;
+      m_cancelled = true;
   }
 
   void file_editor_tab::save_file (const QWidget *ID)
@@ -923,7 +923,7 @@ namespace octave
     if (ID != this)
       return;
 
-    save_file (_file_name);
+    save_file (m_file_name);
   }
 
   void file_editor_tab::save_file (const QWidget *ID, const QString& fileName,
@@ -953,7 +953,7 @@ namespace octave
     QPrintDialog printDlg (printer, this);
 
     if (printDlg.exec () == QDialog::Accepted)
-      printer->printRange (_edit_area);
+      printer->printRange (m_edit_area);
 
     delete printer;
   }
@@ -963,9 +963,9 @@ namespace octave
     if (ID != this)
       return;
 
-    if (_edit_area->isModified () | ! valid_file_name ())
+    if (m_edit_area->isModified () | ! valid_file_name ())
       {
-        save_file (_file_name);  // save file dialog
+        save_file (m_file_name);  // save file dialog
         if (! valid_file_name ())
           return;   // still invalid filename: "save as" was cancelled
       }
@@ -976,7 +976,7 @@ namespace octave
         // the returned line number. Store whether to remove this breakpoint
         // afterwards.
         int first_bp_line
-              = _edit_area->markerFindNext (0, (1 << marker::breakpoint)) + 1;
+              = m_edit_area->markerFindNext (0, (1 << marker::breakpoint)) + 1;
 
         // Set flag for storing the line number of the breakpoint
         m_breakpoint_info.remove_next = true;
@@ -986,7 +986,7 @@ namespace octave
         handle_request_add_breakpoint (1, QString ());
       }
 
-    QFileInfo info (_file_name);
+    QFileInfo info (m_file_name);
     emit run_file_signal (info);
   }
 
@@ -995,7 +995,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->context_run ();
+    m_edit_area->context_run ();
   }
 
   void file_editor_tab::toggle_bookmark (const QWidget *ID)
@@ -1004,12 +1004,12 @@ namespace octave
       return;
 
     int line, cur;
-    _edit_area->getCursorPosition (&line, &cur);
+    m_edit_area->getCursorPosition (&line, &cur);
 
-    if (_edit_area->markersAtLine (line) & (1 << marker::bookmark))
-      _edit_area->markerDelete (line, marker::bookmark);
+    if (m_edit_area->markersAtLine (line) & (1 << marker::bookmark))
+      m_edit_area->markerDelete (line, marker::bookmark);
     else
-      _edit_area->markerAdd (line, marker::bookmark);
+      m_edit_area->markerAdd (line, marker::bookmark);
   }
 
   // Move the text cursor to the closest bookmark
@@ -1020,17 +1020,17 @@ namespace octave
       return;
 
     int line, cur;
-    _edit_area->getCursorPosition (&line, &cur);
+    m_edit_area->getCursorPosition (&line, &cur);
 
     line++; // Find bookmark strictly after the current line.
 
-    int nextline = _edit_area->markerFindNext (line, (1 << marker::bookmark));
+    int nextline = m_edit_area->markerFindNext (line, (1 << marker::bookmark));
 
     // Wrap.
     if (nextline == -1)
-      nextline = _edit_area->markerFindNext (1, (1 << marker::bookmark));
+      nextline = m_edit_area->markerFindNext (1, (1 << marker::bookmark));
 
-    _edit_area->setCursorPosition (nextline, 0);
+    m_edit_area->setCursorPosition (nextline, 0);
   }
 
   // Move the text cursor to the closest bookmark
@@ -1041,18 +1041,18 @@ namespace octave
       return;
 
     int line, cur;
-    _edit_area->getCursorPosition (&line, &cur);
+    m_edit_area->getCursorPosition (&line, &cur);
 
     line--; // Find bookmark strictly before the current line.
 
-    int prevline = _edit_area->markerFindPrevious (line, (1 << marker::bookmark));
+    int prevline = m_edit_area->markerFindPrevious (line, (1 << marker::bookmark));
 
     // Wrap.  Should use the last line of the file, not 1<<15
     if (prevline == -1)
-      prevline = _edit_area->markerFindPrevious (_edit_area->lines (),
+      prevline = m_edit_area->markerFindPrevious (m_edit_area->lines (),
                                                  (1 << marker::bookmark));
 
-    _edit_area->setCursorPosition (prevline, 0);
+    m_edit_area->setCursorPosition (prevline, 0);
   }
 
   void file_editor_tab::remove_bookmark (const QWidget *ID)
@@ -1060,7 +1060,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->markerDeleteAll (marker::bookmark);
+    m_edit_area->markerDeleteAll (marker::bookmark);
   }
 
   file_editor_tab::bp_info::bp_info (const QString& fname, int l,
@@ -1097,14 +1097,14 @@ namespace octave
   void file_editor_tab::handle_request_add_breakpoint (int line,
                                                        const QString& condition)
   {
-    bp_info info (_file_name, line, condition);
+    bp_info info (m_file_name, line, condition);
 
     add_breakpoint_event (info);
   }
 
   void file_editor_tab::handle_request_remove_breakpoint (int line)
   {
-    bp_info info (_file_name, line);
+    bp_info info (m_file_name, line);
 
     emit interpreter_event
       ([info] (interpreter& interp)
@@ -1129,9 +1129,9 @@ namespace octave
       return;
 
     int editor_linenr, cur;
-    _edit_area->getCursorPosition (&editor_linenr, &cur);
+    m_edit_area->getCursorPosition (&editor_linenr, &cur);
 
-    if (_edit_area->markersAtLine (editor_linenr) & (1 << marker::breakpoint))
+    if (m_edit_area->markersAtLine (editor_linenr) & (1 << marker::breakpoint))
       request_remove_breakpoint_via_editor_linenr (editor_linenr);
     else
       {
@@ -1148,18 +1148,18 @@ namespace octave
       return;
 
     int line, cur;
-    _edit_area->getCursorPosition (&line, &cur);
+    m_edit_area->getCursorPosition (&line, &cur);
 
     line++; // Find breakpoint strictly after the current line.
 
-    int nextline = _edit_area->markerFindNext (line, (1 << marker::breakpoint));
-    int nextcond = _edit_area->markerFindNext (line, (1 << marker::cond_break));
+    int nextline = m_edit_area->markerFindNext (line, (1 << marker::breakpoint));
+    int nextcond = m_edit_area->markerFindNext (line, (1 << marker::cond_break));
 
     // Check if the next conditional breakpoint is before next unconditional one.
     if (nextcond != -1 && (nextcond < nextline || nextline == -1))
       nextline = nextcond;
 
-    _edit_area->setCursorPosition (nextline, 0);
+    m_edit_area->setCursorPosition (nextline, 0);
   }
 
   // Move the text cursor to the closest breakpoint (conditional or unconditional)
@@ -1170,18 +1170,18 @@ namespace octave
       return;
 
     int line, cur, prevline, prevcond;
-    _edit_area->getCursorPosition (&line, &cur);
+    m_edit_area->getCursorPosition (&line, &cur);
 
     line--; // Find breakpoint strictly before the current line.
 
-    prevline = _edit_area->markerFindPrevious (line, (1 << marker::breakpoint));
-    prevcond = _edit_area->markerFindPrevious (line, (1 << marker::cond_break));
+    prevline = m_edit_area->markerFindPrevious (line, (1 << marker::breakpoint));
+    prevcond = m_edit_area->markerFindPrevious (line, (1 << marker::cond_break));
 
     // Check if the prev conditional breakpoint is closer than the unconditional.
     if (prevcond != -1 && prevcond > prevline)
       prevline = prevcond;
 
-    _edit_area->setCursorPosition (prevline, 0);
+    m_edit_area->setCursorPosition (prevline, 0);
   }
 
   void file_editor_tab::remove_all_breakpoints (const QWidget *ID)
@@ -1189,7 +1189,7 @@ namespace octave
     if (ID != this)
       return;
 
-    bp_info info (_file_name);
+    bp_info info (m_file_name);
 
     emit interpreter_event
       ([info] (interpreter& interp)
@@ -1210,7 +1210,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->SendScintilla (sci_msg);
+    m_edit_area->SendScintilla (sci_msg);
   }
 
   void file_editor_tab::comment_selected_text (const QWidget *ID, bool input_str)
@@ -1259,8 +1259,8 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->convertEols (eol_mode);
-    _edit_area->setEolMode (eol_mode);
+    m_edit_area->convertEols (eol_mode);
+    m_edit_area->setEolMode (eol_mode);
     update_eol_indicator ();
   }
 
@@ -1269,7 +1269,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->zoomIn (1);
+    m_edit_area->zoomIn (1);
     auto_margin_width ();
   }
 
@@ -1278,7 +1278,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->zoomOut (1);
+    m_edit_area->zoomOut (1);
     auto_margin_width ();
   }
 
@@ -1287,7 +1287,7 @@ namespace octave
     if (ID != this)
       return;
 
-    _edit_area->zoomTo (0);
+    m_edit_area->zoomTo (0);
     auto_margin_width ();
   }
 
@@ -1295,7 +1295,7 @@ namespace octave
   {
     // Find dialog is going to hide.  Save location of window for
     // when it is reshown.
-    m_find_dlg_data.geometry = _find_dialog->geometry ();
+    m_find_dlg_data.geometry = m_find_dialog->geometry ();
     m_find_dlg_data.is_visible = false;
   }
 
@@ -1312,12 +1312,12 @@ namespace octave
 
     // Since find_create shows the dialog without activating the widget
     // (which is reuqired in other cases) do this manually here
-    _find_dialog->activateWindow ();
+    m_find_dialog->activateWindow ();
 
     // Initiate search text from possible selection and save the initial
     // data from the dialog on the defined structure
-    _find_dialog->init_search_text ();
-    _find_dialog->save_data (&m_find_dlg_data);
+    m_find_dialog->init_search_text ();
+    m_find_dialog->save_data (&m_find_dlg_data);
   }
 
   void file_editor_tab::add_breakpoint_event (const bp_info& info)
@@ -1360,31 +1360,31 @@ namespace octave
     // better, but individual find dialogs has the nice feature of
     // retaining position per file editor tabs, which can be undocked.
 
-    if (! _find_dialog)
+    if (! m_find_dialog)
       {
-        _find_dialog = new find_dialog (_edit_area,
+        m_find_dialog = new find_dialog (m_edit_area,
                                         m_find_dlg_data.actions,
                                         this);
-        connect (_find_dialog, SIGNAL (finished (int)),
+        connect (m_find_dialog, SIGNAL (finished (int)),
                  this, SLOT (handle_find_dialog_finished (int)));
 
         connect (this, SIGNAL (request_find_next ()),
-                 _find_dialog, SLOT (find_next ()));
+                 m_find_dialog, SLOT (find_next ()));
 
         connect (this, SIGNAL (request_find_previous ()),
-                 _find_dialog, SLOT (find_prev ()));
+                 m_find_dialog, SLOT (find_prev ()));
 
-        _find_dialog->setWindowModality (Qt::NonModal);
+        m_find_dialog->setWindowModality (Qt::NonModal);
       }
-    else if (! _find_dialog->isVisible ())
+    else if (! m_find_dialog->isVisible ())
       {
-        _find_dialog->setGeometry (m_find_dlg_data.geometry);
-        QPoint p = _find_dialog->pos ();
-        _find_dialog->move (p.x ()+10, p.y ()+10);
+        m_find_dialog->setGeometry (m_find_dlg_data.geometry);
+        QPoint p = m_find_dialog->pos ();
+        m_find_dialog->move (p.x ()+10, p.y ()+10);
       }
 
-    _find_dialog->setAttribute(Qt::WA_ShowWithoutActivating);
-    _find_dialog->show ();
+    m_find_dialog->setAttribute(Qt::WA_ShowWithoutActivating);
+    m_find_dialog->show ();
   }
 
   void file_editor_tab::find_next (const QWidget *ID)
@@ -1416,15 +1416,15 @@ namespace octave
       {
         bool ok = false;
         int index;
-        _edit_area->getCursorPosition (&line, &index);
-        line = QInputDialog::getInt (_edit_area, tr ("Goto line"),
+        m_edit_area->getCursorPosition (&line, &index);
+        line = QInputDialog::getInt (m_edit_area, tr ("Goto line"),
                                      tr ("Line number"), line+1, 1,
-                                     _edit_area->lines (), 1, &ok);
+                                     m_edit_area->lines (), 1, &ok);
         if (ok)
-          _edit_area->setCursorPosition (line-1, 0);
+          m_edit_area->setCursorPosition (line-1, 0);
       }
     else  // go to given line without dialog
-      _edit_area->setCursorPosition (line-1, 0);
+      m_edit_area->setCursorPosition (line-1, 0);
 
     center_current_line (false);  // only center line if at top or bottom
   }
@@ -1435,9 +1435,9 @@ namespace octave
       return;
 
     if (select)
-      _edit_area->selectToMatchingBrace ();
+      m_edit_area->selectToMatchingBrace ();
     else
-      _edit_area->moveToMatchingBrace ();
+      m_edit_area->moveToMatchingBrace ();
   }
 
   void file_editor_tab::show_auto_completion (const QWidget *ID)
@@ -1445,19 +1445,19 @@ namespace octave
     if (ID != this)
       return;
 
-    QsciScintilla::AutoCompletionSource s = _edit_area->autoCompletionSource ();
+    QsciScintilla::AutoCompletionSource s = m_edit_area->autoCompletionSource ();
     switch (s)
       {
       case QsciScintilla::AcsAll:
-        _edit_area->autoCompleteFromAll ();
+        m_edit_area->autoCompleteFromAll ();
         break;
 
       case QsciScintilla::AcsAPIs:
-        _edit_area->autoCompleteFromAPIs ();
+        m_edit_area->autoCompleteFromAPIs ();
         break;
 
       case QsciScintilla::AcsDocument:
-        _edit_area->autoCompleteFromDocument ();
+        m_edit_area->autoCompleteFromDocument ();
         break;
 
       case QsciScintilla::AcsNone:
@@ -1468,12 +1468,12 @@ namespace octave
   void file_editor_tab::do_indent_selected_text (bool indent)
   {
     // FIXME:
-    _edit_area->beginUndoAction ();
+    m_edit_area->beginUndoAction ();
 
-    if (_edit_area->hasSelectedText ())
+    if (m_edit_area->hasSelectedText ())
       {
         int lineFrom, lineTo, colFrom, colTo;
-        _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
+        m_edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
         if (colTo == 0)  // the beginning of last line is not selected
           lineTo--;        // stop at line above
@@ -1481,37 +1481,37 @@ namespace octave
         for (int i = lineFrom; i <= lineTo; i++)
           {
             if (indent)
-              _edit_area->indent (i);
+              m_edit_area->indent (i);
             else
-              _edit_area->unindent (i);
+              m_edit_area->unindent (i);
           }
         //set selection on (un)indented section
-        _edit_area->setSelection (lineFrom, 0, lineTo,
-                                  _edit_area->text (lineTo).length ()-1);
+        m_edit_area->setSelection (lineFrom, 0, lineTo,
+                                  m_edit_area->text (lineTo).length ()-1);
       }
     else
       {
         int cpline, col;
-        _edit_area->getCursorPosition (&cpline, &col);
+        m_edit_area->getCursorPosition (&cpline, &col);
         if (indent)
-          _edit_area->indent (cpline);
+          m_edit_area->indent (cpline);
         else
-          _edit_area->unindent (cpline);
+          m_edit_area->unindent (cpline);
       }
 
-    _edit_area->endUndoAction ();
+    m_edit_area->endUndoAction ();
   }
 
   void file_editor_tab::do_smart_indent_line_or_selected_text (void)
   {
-    _edit_area->beginUndoAction ();
+    m_edit_area->beginUndoAction ();
 
     int lineFrom, lineTo;
 
-    if (_edit_area->hasSelectedText ())
+    if (m_edit_area->hasSelectedText ())
       {
         int colFrom, colTo;
-        _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
+        m_edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
         if (colTo == 0)  // the beginning of last line is not selected
           lineTo--;        // stop at line above
@@ -1519,21 +1519,21 @@ namespace octave
     else
       {
         int col;
-        _edit_area->getCursorPosition (&lineFrom, &col);
+        m_edit_area->getCursorPosition (&lineFrom, &col);
 
         lineTo = lineFrom;
       }
 
-    _edit_area->smart_indent_line_or_selected_text (lineFrom, lineTo);
+    m_edit_area->smart_indent_line_or_selected_text (lineFrom, lineTo);
 
-    _edit_area->endUndoAction ();
+    m_edit_area->endUndoAction ();
   }
 
   void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
   {
     QRegExp rxc;
     QString ws = "^([ \\t]*)";
-    QStringList comment_str = _edit_area->comment_string (comment);
+    QStringList comment_str = m_edit_area->comment_string (comment);
     QString used_comment_str = comment_str.at (0);
 
     if (comment)
@@ -1593,16 +1593,16 @@ namespace octave
 
     // Do the commenting/uncommenting
     int len = 0, lenc = 0;
-    _edit_area->beginUndoAction ();
+    m_edit_area->beginUndoAction ();
 
-    if (_edit_area->hasSelectedText ())
+    if (m_edit_area->hasSelectedText ())
       {
         int lineFrom, lineTo, colFrom, colTo;
         int change_col_from = 1;
         int change_col_to = 1;
         bool removed;
 
-        _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
+        m_edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
         if (colTo == 0)  // the beginning of last line is not selected
           lineTo--;        // stop at line above
@@ -1611,18 +1611,18 @@ namespace octave
           {
             if (comment)
               {
-                _edit_area->insertAt (used_comment_str, i, 0);
+                m_edit_area->insertAt (used_comment_str, i, 0);
               }
             else
               {
-                QString line (_edit_area->text (i));
+                QString line (m_edit_area->text (i));
                 if ((removed = line.contains (rxc)))
                   {
                     len = rxc.matchedLength ();   // complete length
                     QString matched_text = rxc.capturedTexts ().at (0);
                     lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
-                    _edit_area->setSelection (i, len-lenc, i, len);
-                    _edit_area->removeSelectedText ();
+                    m_edit_area->setSelection (i, len-lenc, i, len);
+                    m_edit_area->removeSelectedText ();
                   }
 
                 // handle case, where the selection remains unchanged
@@ -1651,28 +1651,28 @@ namespace octave
           }
 
         // set updated selection area
-        _edit_area->setSelection (lineFrom, colFrom, lineTo, colTo);
+        m_edit_area->setSelection (lineFrom, colFrom, lineTo, colTo);
       }
     else
       {
         int cpline, col;
-        _edit_area->getCursorPosition (&cpline, &col);
+        m_edit_area->getCursorPosition (&cpline, &col);
         if (comment)
-          _edit_area->insertAt (used_comment_str, cpline, 0);
+          m_edit_area->insertAt (used_comment_str, cpline, 0);
         else
           {
-            QString line (_edit_area->text (cpline));
+            QString line (m_edit_area->text (cpline));
             if (line.contains (rxc))
               {
                 len = rxc.matchedLength ();   // complete length
                 QString matched_text = rxc.capturedTexts ().at (0);
                 lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
-                _edit_area->setSelection (cpline, len-lenc, cpline, len);
-                _edit_area->removeSelectedText ();
+                m_edit_area->setSelection (cpline, len-lenc, cpline, len);
+                m_edit_area->removeSelectedText ();
               }
           }
       }
-    _edit_area->endUndoAction ();
+    m_edit_area->endUndoAction ();
   }
 
   void file_editor_tab::update_window_title (bool modified)
@@ -1684,13 +1684,13 @@ namespace octave
       title = tr ("<unnamed>");
     else
       {
-        if (_long_title)
-          title = _file_name;
+        if (m_long_title)
+          title = m_file_name;
         else
           {
-            QFileInfo file (_file_name);
+            QFileInfo file (m_file_name);
             title = file.fileName ();
-            tooltip = _file_name;
+            tooltip = m_file_name;
           }
       }
 
@@ -1699,8 +1699,8 @@ namespace octave
 
   void file_editor_tab::handle_copy_available (bool enableCopy)
   {
-    _copy_available = enableCopy;
-    emit editor_state_changed (_copy_available, _is_octave_file);
+    m_copy_available = enableCopy;
+    emit editor_state_changed (m_copy_available, m_is_octave_file);
   }
 
   // show_dialog: shows a modal or non modal dialog depending on input arg
@@ -1719,11 +1719,11 @@ namespace octave
   int file_editor_tab::check_file_modified (void)
   {
     int decision = QMessageBox::Yes;
-    if (_edit_area->isModified ())
+    if (m_edit_area->isModified ())
       {
         // File is modified but not saved, ask user what to do.  The file
         // editor tab can't be made parent because it may be deleted depending
-        // upon the response.  Instead, change the _edit_area to read only.
+        // upon the response.  Instead, change the m_edit_area to read only.
         QMessageBox::StandardButtons buttons = QMessageBox::Save |
                                                QMessageBox::Discard |
                                                QMessageBox::Cancel;
@@ -1736,7 +1736,7 @@ namespace octave
 
         QString file;
         if (valid_file_name ())
-          file = _file_name;
+          file = m_file_name;
         else
           file = tr ("<unnamed>");
 
@@ -1750,13 +1750,13 @@ namespace octave
                              buttons, qobject_cast<QWidget *> (parent ()));
 
         msgBox->setDefaultButton (QMessageBox::Save);
-        _edit_area->setReadOnly (true);
+        m_edit_area->setReadOnly (true);
         connect (msgBox, SIGNAL (finished (int)),
                  this, SLOT (handle_file_modified_answer (int)));
 
         show_dialog (msgBox, true);
 
-        if (_cancelled)
+        if (m_cancelled)
           return QMessageBox::Cancel;
         else
           return decision;
@@ -1775,7 +1775,7 @@ namespace octave
     if (decision == QMessageBox::Save)
       {
         // Save file, but do not remove from editor.
-        save_file (_file_name, false, false);
+        save_file (m_file_name, false, false);
       }
     else if (decision == QMessageBox::Discard)
       {
@@ -1784,20 +1784,20 @@ namespace octave
     else
       {
         // User canceled, allow editing again.
-        _edit_area->setReadOnly (false);
-        _cancelled = true;
+        m_edit_area->setReadOnly (false);
+        m_cancelled = true;
       }
   }
 
   void file_editor_tab::set_modified (bool modified)
   {
-    _edit_area->setModified (modified);
+    m_edit_area->setModified (modified);
   }
 
   void file_editor_tab::recover_from_exit (void)
   {
     // reset the possibly still existing read only state
-    _edit_area->setReadOnly (false);
+    m_edit_area->setReadOnly (false);
 
     // if we are in this slot and the list of breakpoint is not empty,
     // then this tab was saved during an exit of the applications (not
@@ -1808,21 +1808,21 @@ namespace octave
 
   void file_editor_tab::check_restore_breakpoints (void)
   {
-    if (! _bp_lines.isEmpty ())
+    if (! m_bp_lines.isEmpty ())
       {
         // At least one breakpoint is present.
         // Get rid of breakpoints at old (now possibly invalid) linenumbers
         remove_all_breakpoints (this);
 
         // and set breakpoints at the new linenumbers
-        m_bp_restore_count = _bp_lines.length ();
-        for (int i = 0; i < _bp_lines.length (); i++)
-          handle_request_add_breakpoint (_bp_lines.value (i) + 1,
-                                         _bp_conditions.value (i));
+        m_bp_restore_count = m_bp_lines.length ();
+        for (int i = 0; i < m_bp_lines.length (); i++)
+          handle_request_add_breakpoint (m_bp_lines.value (i) + 1,
+                                         m_bp_conditions.value (i));
 
         // Keep the list of breakpoints empty, except after explicit requests.
-        _bp_lines.clear ();
-        _bp_conditions.clear ();
+        m_bp_lines.clear ();
+        m_bp_conditions.clear ();
       }
   }
 
@@ -1840,11 +1840,11 @@ namespace octave
       return file.errorString ();
 
     int col = 0, line = 0;
-    if (fileName == _file_name)
+    if (fileName == m_file_name)
       {
         // We have to reload the current file, thus get current cursor position
-        line = _line;
-        col = _col;
+        line = m_line;
+        col = m_col;
       }
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
@@ -1854,7 +1854,7 @@ namespace octave
 
     // decode
     QTextCodec::ConverterState st;
-    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+    QTextCodec *codec = QTextCodec::codecForName (m_encoding.toLatin1 ());
     if (codec == nullptr)
       codec = QTextCodec::codecForLocale ();
 
@@ -1865,7 +1865,7 @@ namespace octave
     if (st.invalidChars > 0)
       {
         // Set read only
-        _edit_area->setReadOnly (true);
+        m_edit_area->setReadOnly (true);
 
         // Message box for user decision
         QString msg = tr ("There were problems reading the file\n"
@@ -1873,7 +1873,7 @@ namespace octave
                           "with the selected encoding %2.\n\n"
                           "Modifying and saving the file might "
                           "cause data loss!")
-                          .arg (file_to_load).arg (_encoding);
+                          .arg (file_to_load).arg (m_encoding);
         QMessageBox *msg_box = new QMessageBox ();
         msg_box->setIcon (QMessageBox::Warning);
         msg_box->setText (msg);
@@ -1890,19 +1890,19 @@ namespace octave
         msg_box->show ();
       }
 
-    _edit_area->setText (text);
-    _edit_area->setEolMode (detect_eol_mode ());
+    m_edit_area->setText (text);
+    m_edit_area->setEolMode (detect_eol_mode ());
 
     QApplication::restoreOverrideCursor ();
 
-    _copy_available = false;     // no selection yet available
+    m_copy_available = false;     // no selection yet available
     set_file_name (file_to_load);
     update_window_title (false); // window title (no modification)
-    _edit_area->setModified (false); // loaded file is not modified yet
+    m_edit_area->setModified (false); // loaded file is not modified yet
 
     update_eol_indicator ();
 
-    _edit_area->setCursorPosition (line, col);
+    m_edit_area->setCursorPosition (line, col);
 
     // FIXME: (BREAKPOINTS) At this point it would be nice to put any set
     // breakpoints on the margin.  In order to do this, somehow the
@@ -1949,7 +1949,7 @@ namespace octave
 
         QComboBox *enc_combo = new QComboBox ();
         resource_manager::combo_encoding (enc_combo);
-        _new_encoding = enc_combo->currentText ();
+        m_new_encoding = enc_combo->currentText ();
         connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
                  this , SLOT (handle_current_enc_changed (const QString&)));
 
@@ -1971,24 +1971,24 @@ namespace octave
         if (answer == QDialog::Accepted)
           {
             // Reload the file with new encoding but using the same tab
-            QString reload_file_name = _file_name;  // store file name
-            _file_name = "";  // force reuse of this tab when opening a new file
-            emit request_open_file (reload_file_name, _new_encoding);
+            QString reload_file_name = m_file_name;  // store file name
+            m_file_name = "";  // force reuse of this tab when opening a new file
+            emit request_open_file (reload_file_name, m_new_encoding);
           }
       }
 
     // Continue editing, set writable again
-    _edit_area->setReadOnly (false);
+    m_edit_area->setReadOnly (false);
   }
 
   void file_editor_tab::handle_current_enc_changed (const QString& enc)
   {
-    _new_encoding = enc;
+    m_new_encoding = enc;
   }
 
   QsciScintilla::EolMode file_editor_tab::detect_eol_mode (void)
   {
-    QByteArray text = _edit_area->text ().toLatin1 ();
+    QByteArray text = m_edit_area->text ().toLatin1 ();
 
     QByteArray eol_lf = QByteArray (1,0x0a);
     QByteArray eol_cr = QByteArray (1,0x0d);
@@ -2031,23 +2031,23 @@ namespace octave
 
   void file_editor_tab::update_eol_indicator (void)
   {
-    switch (_edit_area->eolMode ())
+    switch (m_edit_area->eolMode ())
       {
       case QsciScintilla::EolWindows:
-        _eol_indicator->setText ("CRLF");
+        m_eol_indicator->setText ("CRLF");
         break;
       case QsciScintilla::EolMac:
-        _eol_indicator->setText ("CR");
+        m_eol_indicator->setText ("CR");
         break;
       case QsciScintilla::EolUnix:
-        _eol_indicator->setText ("LF");
+        m_eol_indicator->setText ("LF");
         break;
       }
   }
 
   void file_editor_tab::update_breakpoints ()
   {
-    if (_file_name.isEmpty ())
+    if (m_file_name.isEmpty ())
       return;
 
     // Create and queue the command object.
@@ -2078,7 +2078,7 @@ namespace octave
 
     for (octave_idx_type i = 0; i < n_dbg; i++)
       {
-        if (file (i).string_value () == _file_name.toStdString ())
+        if (file (i).string_value () == m_file_name.toStdString ())
           do_breakpoint_marker (true, this, line (i).int_value (),
                                 QString::fromStdString (cond (i).string_value ()));
       }
@@ -2097,14 +2097,14 @@ namespace octave
 #else
     int eol_mode = QsciScintilla::EolUnix;
 #endif
-    _edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
+    m_edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",eol_mode).toInt ()));
 
     update_eol_indicator ();
 
     update_lexer ();
 
-    _edit_area->setText (commands);
-    _edit_area->setModified (false); // new file is not modified yet
+    m_edit_area->setText (commands);
+    m_edit_area->setModified (false); // new file is not modified yet
   }
 
   // Force reloading of a file after it is saved.
@@ -2198,7 +2198,7 @@ namespace octave
         return;
       }
 
-    _encoding = _new_encoding;    // consider a possible new encoding
+    m_encoding = m_new_encoding;    // consider a possible new encoding
 
     // set the desired codec (if suitable for contents)
     QTextCodec *codec = check_valid_codec ();
@@ -2206,7 +2206,7 @@ namespace octave
       return;   // No valid codec
 
     // Get a list of breakpoint line numbers, before  exit_debug_and_clear().
-    emit report_marker_linenr (_bp_lines, _bp_conditions);
+    emit report_marker_linenr (m_bp_lines, m_bp_conditions);
 
     // get the absolute path (if existing)
     QFileInfo file_info = QFileInfo (saveFileName);
@@ -2224,9 +2224,9 @@ namespace octave
     QFile file (file_to_save);
 
     // stop watching file
-    QStringList trackedFiles = _file_system_watcher.files ();
+    QStringList trackedFiles = m_file_system_watcher.files ();
     if (trackedFiles.contains (file_to_save))
-      _file_system_watcher.removePath (file_to_save);
+      m_file_system_watcher.removePath (file_to_save);
 
     // open the file for writing
     if (! file.open (QIODevice::WriteOnly))
@@ -2234,7 +2234,7 @@ namespace octave
         // Unsuccessful, begin watching file again if it was being
         // watched previously.
         if (trackedFiles.contains (file_to_save))
-          _file_system_watcher.addPath (file_to_save);
+          m_file_system_watcher.addPath (file_to_save);
 
         // Create a NonModal message about error.
         QMessageBox *msgBox
@@ -2255,7 +2255,7 @@ namespace octave
     out.setCodec (codec);
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
-    out << _edit_area->text ();
+    out << m_edit_area->text ();
     out.flush ();
     QApplication::restoreOverrideCursor ();
     file.flush ();
@@ -2272,8 +2272,8 @@ namespace octave
     update_window_title (false);
 
     // files is save -> not modified, update encoding in statusbar
-    _edit_area->setModified (false);
-    _enc_indicator->setText (_encoding);
+    m_edit_area->setModified (false);
+    m_enc_indicator->setText (m_encoding);
 
     if (remove_on_success)
       {
@@ -2293,8 +2293,8 @@ namespace octave
     // Simply put up the file chooser dialog box with a slot connection
     // then return control to the system waiting for a file selection.
 
-    // reset _new_encoding
-    _new_encoding = _encoding;
+    // reset m_new_encoding
+    m_new_encoding = m_encoding;
 
     // If the tab is removed in response to a QFileDialog signal, the tab
     // can't be a parent.
@@ -2303,7 +2303,7 @@ namespace octave
       {
         // If tab is closed, "this" cannot be parent in which case modality
         // has no effect.  Disable editing instead.
-        _edit_area->setReadOnly (true);
+        m_edit_area->setReadOnly (true);
         fileDialog = new QFileDialog ();
       }
     else
@@ -2318,8 +2318,8 @@ namespace octave
 
     if (valid_file_name ())
       {
-        fileDialog->selectFile (_file_name);
-        QFileInfo file_info (_file_name);
+        fileDialog->selectFile (m_file_name);
+        QFileInfo file_info (m_file_name);
         if (file_info.suffix () != "m")
           {
             // it is not an octave file
@@ -2330,7 +2330,7 @@ namespace octave
     else
       {
         fileDialog->selectFile ("");
-        fileDialog->setDirectory (_ced);
+        fileDialog->setDirectory (m_ced);
 
         // propose a name corresponding to the function name
         QString fname = get_function_name ();
@@ -2404,10 +2404,10 @@ namespace octave
 
   QTextCodec* file_editor_tab::check_valid_codec ()
   {
-    QTextCodec *codec = QTextCodec::codecForName (_encoding.toLatin1 ());
+    QTextCodec *codec = QTextCodec::codecForName (m_encoding.toLatin1 ());
 
     // "SYSTEM" is used as alias for the locale encoding.
-    if ((! codec) && _encoding.startsWith("SYSTEM"))
+    if ((! codec) && m_encoding.startsWith("SYSTEM"))
       codec = QTextCodec::codecForLocale ();
 
     if (! codec)
@@ -2416,12 +2416,12 @@ namespace octave
                                tr ("Octave Editor"),
                                tr ("The current encoding %1\n"
                                    "can not be applied.\n\n"
-                                   "Please select another one!").arg (_encoding));
+                                   "Please select another one!").arg (m_encoding));
 
         return nullptr;
       }
 
-    QString editor_text = _edit_area->text ();
+    QString editor_text = m_edit_area->text ();
     bool can_encode = codec->canEncode (editor_text);
 
     // We cannot rely on QTextCodec::canEncode because it uses the
@@ -2435,7 +2435,7 @@ namespace octave
 
         size_t length;
         char *res_str =
-          octave_u32_conv_to_encoding_strict (_encoding.toStdString ().c_str (),
+          octave_u32_conv_to_encoding_strict (m_encoding.toStdString ().c_str (),
                                               src, u32_str.size (), &length);
         if (! res_str)
           {
@@ -2454,7 +2454,7 @@ namespace octave
                                    tr ("The current editor contents can not be encoded\n"
                                        "with the selected encoding %1.\n"
                                        "Using it would result in data loss!\n\n"
-                                       "Please select another one!").arg (_encoding),
+                                       "Please select another one!").arg (m_encoding),
                                    QMessageBox::Cancel | QMessageBox::Ignore,
                                    QMessageBox::Cancel);
 
@@ -2469,10 +2469,10 @@ namespace octave
 
   void file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
   {
-    if (_save_as_desired_eol != _edit_area->eolMode ())
-      convert_eol (this,_save_as_desired_eol);
+    if (m_save_as_desired_eol != m_edit_area->eolMode ())
+      convert_eol (this,m_save_as_desired_eol);
 
-    if (saveFileName == _file_name)
+    if (saveFileName == m_file_name)
       {
         save_file (saveFileName);
       }
@@ -2488,15 +2488,15 @@ namespace octave
 
   void file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
   {
-    if (_save_as_desired_eol != _edit_area->eolMode ())
+    if (m_save_as_desired_eol != m_edit_area->eolMode ())
       {
-        _edit_area->setReadOnly (false);  // was set to read-only in save_file_as
-        convert_eol (this,_save_as_desired_eol);
-        _edit_area->setReadOnly (true);   // restore read-only mode
+        m_edit_area->setReadOnly (false);  // was set to read-only in save_file_as
+        convert_eol (this,m_save_as_desired_eol);
+        m_edit_area->setReadOnly (true);   // restore read-only mode
       }
 
-    // saveFileName == _file_name can not happen, because we only can get here
-    // when we close a tab and _file_name is not a valid filename yet
+    // saveFileName == m_file_name can not happen, because we only can get here
+    // when we close a tab and m_file_name is not a valid filename yet
 
     // Have editor check for conflict, delete tab after save.
     if (check_valid_identifier (saveFileName))
@@ -2508,18 +2508,18 @@ namespace octave
   void file_editor_tab::handle_save_file_as_answer_cancel (void)
   {
     // User canceled, allow editing again.
-    _edit_area->setReadOnly (false);
+    m_edit_area->setReadOnly (false);
   }
 
   void file_editor_tab::file_has_changed (const QString&, bool do_close)
   {
-    bool file_exists = QFile::exists (_file_name);
+    bool file_exists = QFile::exists (m_file_name);
 
     if (file_exists && ! do_close)
       {
         // Test if file is really modified or if just the timezone has
         // changed. In the latter, just return without doing anything
-        QDateTime modified = QFileInfo (_file_name).lastModified ().toUTC ();
+        QDateTime modified = QFileInfo (m_file_name).lastModified ().toUTC ();
 
         if (modified <= m_last_modified)
           return;
@@ -2530,31 +2530,31 @@ namespace octave
     // Prevent popping up multiple message boxes when the file has
     // been changed multiple times by temporarily removing from the
     // file watcher.
-    QStringList trackedFiles = _file_system_watcher.files ();
+    QStringList trackedFiles = m_file_system_watcher.files ();
     if (! trackedFiles.isEmpty ())
-      _file_system_watcher.removePath (_file_name);
+      m_file_system_watcher.removePath (m_file_name);
 
     if (file_exists && ! do_close)
       {
 
         // The file is modified
-        if (_always_reload_changed_files)
-          load_file (_file_name);
+        if (m_always_reload_changed_files)
+          load_file (m_file_name);
 
         else
           {
             // give editor and this tab the focus,
             // possibly making the editor visible if it is hidden
             emit set_focus_editor_signal (this);
-            _edit_area->setFocus ();
+            m_edit_area->setFocus ();
 
             // Create a WindowModal message that blocks the edit area
-            // by making _edit_area parent.
+            // by making m_edit_area parent.
             QMessageBox *msgBox
               = new QMessageBox (QMessageBox::Warning,
                                  tr ("Octave Editor"),
                                  tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                                 arg (_file_name),
+                                 arg (m_file_name),
                                  QMessageBox::Yes | QMessageBox::No, this);
 
             connect (msgBox, SIGNAL (finished (int)),
@@ -2569,7 +2569,7 @@ namespace octave
       {
         // If desired and if file is not modified,
         // close the file without any user interaction
-        if (do_close && ! _edit_area->isModified ())
+        if (do_close && ! m_edit_area->isModified ())
           {
             handle_file_resave_answer (QMessageBox::Cancel);
             return;
@@ -2578,24 +2578,24 @@ namespace octave
         // give editor and this tab the focus,
         // possibly making the editor visible  if it is hidden
         emit set_focus_editor_signal (this);
-        _edit_area->setFocus ();
+        m_edit_area->setFocus ();
 
         QString modified = "";
-        if (_edit_area->isModified ())
+        if (m_edit_area->isModified ())
           modified = tr ("\n\nWarning: The contents in the editor is modified!");
 
         // Create a WindowModal message. The file editor tab can't be made
         // parent because it may be deleted depending upon the response.
-        // Instead, change the _edit_area to read only.
+        // Instead, change the m_edit_area to read only.
         QMessageBox *msgBox
           = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                              tr ("It seems that the file\n"
                                  "%1\n"
                                  "has been deleted or renamed. Do you want to save it now?%2").
-                             arg (_file_name).arg (modified),
+                             arg (m_file_name).arg (modified),
                              QMessageBox::Save | QMessageBox::Close, nullptr);
 
-        _edit_area->setReadOnly (true);
+        m_edit_area->setReadOnly (true);
 
         connect (msgBox, SIGNAL (finished (int)),
                  this, SLOT (handle_file_resave_answer (int)));
@@ -2616,26 +2616,26 @@ namespace octave
     // code folding
     if (settings->value ("editor/code_folding",true).toBool ())
       {
-        _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
-        _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
+        m_edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
+        m_edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
       }
     else
       {
-        _edit_area->setFolding (QsciScintilla::NoFoldStyle, 3);
+        m_edit_area->setFolding (QsciScintilla::NoFoldStyle, 3);
       }
 
     // status bar
     if (settings->value ("editor/show_edit_status_bar",true).toBool ())
-      _status_bar->show ();
+      m_status_bar->show ();
     else
-      _status_bar->hide ();
+      m_status_bar->hide ();
 
     //highlight current line color
     QVariant default_var = QColor (240, 240, 240);
     QColor setting_color = settings->value ("editor/highlight_current_line_color",
                                             default_var).value<QColor> ();
-    _edit_area->setCaretLineBackgroundColor (setting_color);
-    _edit_area->setCaretLineVisible
+    m_edit_area->setCaretLineBackgroundColor (setting_color);
+    m_edit_area->setCaretLineVisible
       (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
     bool match_keywords = settings->value
@@ -2651,115 +2651,115 @@ namespace octave
         source = QsciScintilla::AcsAPIs;
     else if (match_document)
       source = QsciScintilla::AcsDocument;
-    _edit_area->setAutoCompletionSource (source);
+    m_edit_area->setAutoCompletionSource (source);
 
-    _edit_area->setAutoCompletionReplaceWord
+    m_edit_area->setAutoCompletionReplaceWord
       (settings->value ("editor/codeCompletion_replace",false).toBool ());
-    _edit_area->setAutoCompletionCaseSensitivity
+    m_edit_area->setAutoCompletionCaseSensitivity
       (settings->value ("editor/codeCompletion_case",true).toBool ());
 
     if (settings->value ("editor/codeCompletion", true).toBool ())
-      _edit_area->setAutoCompletionThreshold
+      m_edit_area->setAutoCompletionThreshold
         (settings->value ("editor/codeCompletion_threshold",2).toInt ());
     else
-      _edit_area->setAutoCompletionThreshold (-1);
+      m_edit_area->setAutoCompletionThreshold (-1);
 
     if (settings->value ("editor/show_white_space",false).toBool ())
       if (settings->value ("editor/show_white_space_indent",false).toBool ())
-        _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
+        m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
       else
-        _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
+        m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
     else
-      _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
+      m_edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
 
-    _edit_area->setEolVisibility (settings->value ("editor/show_eol_chars",false).toBool ());
+    m_edit_area->setEolVisibility (settings->value ("editor/show_eol_chars",false).toBool ());
 
     if (settings->value ("editor/showLineNumbers", true).toBool ())
       {
-        _edit_area->setMarginLineNumbers (2, true);
+        m_edit_area->setMarginLineNumbers (2, true);
         auto_margin_width ();
-        connect (_edit_area, SIGNAL (linesChanged ()),
+        connect (m_edit_area, SIGNAL (linesChanged ()),
                  this, SLOT (auto_margin_width ()));
       }
     else
       {
-        _edit_area->setMarginLineNumbers (2, false);
-        disconnect (_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
+        m_edit_area->setMarginLineNumbers (2, false);
+        disconnect (m_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
       }
 
-    _smart_indent = settings->value ("editor/auto_indent",true).toBool ();
-    _edit_area->setAutoIndent (_smart_indent);
-    _edit_area->setTabIndents
+    m_smart_indent = settings->value ("editor/auto_indent",true).toBool ();
+    m_edit_area->setAutoIndent (m_smart_indent);
+    m_edit_area->setTabIndents
       (settings->value ("editor/tab_indents_line",false).toBool ());
-    _edit_area->setBackspaceUnindents
+    m_edit_area->setBackspaceUnindents
       (settings->value ("editor/backspace_unindents_line",false).toBool ());
-    _edit_area->setIndentationGuides
+    m_edit_area->setIndentationGuides
       (settings->value ("editor/show_indent_guides",false).toBool ());
-    _edit_area->setIndentationsUseTabs
+    m_edit_area->setIndentationsUseTabs
       (settings->value ("editor/indent_uses_tabs",false).toBool ());
-    _edit_area->setIndentationWidth
+    m_edit_area->setIndentationWidth
       (settings->value ("editor/indent_width",2).toInt ());
 
-    _edit_area->setTabWidth
+    m_edit_area->setTabWidth
       (settings->value ("editor/tab_width",2).toInt ());
 
     m_ind_char_width = 1;
-    if (_edit_area->indentationsUseTabs ())
-      m_ind_char_width = _edit_area->tabWidth ();
+    if (m_edit_area->indentationsUseTabs ())
+      m_ind_char_width = m_edit_area->tabWidth ();
 
-    _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
+    m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
                                settings->value ("editor/show_hscroll_bar",true).toBool ());
-    _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
-    _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
+    m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
+    m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
-    _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
-    update_window_title (_edit_area->isModified ());
+    m_long_title = settings->value ("editor/longWindowTitle", false).toBool ();
+    update_window_title (m_edit_area->isModified ());
 
-    _auto_endif = settings->value ("editor/auto_endif",1).toInt ();
+    m_auto_endif = settings->value ("editor/auto_endif",1).toInt ();
 
     // long line marker
     int line_length = settings->value ("editor/long_line_column",80).toInt ();
-    _edit_area->setEdgeColumn (line_length);
+    m_edit_area->setEdgeColumn (line_length);
 
     if (settings->value ("editor/long_line_marker",true).toBool ())
       {
         if (settings->value ("editor/long_line_marker_line",true).toBool ())
-          _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
+          m_edit_area->setEdgeMode (QsciScintilla::EdgeLine);
         else
           {
             if (settings->value ("editor/long_line_marker_background",false)
                 .toBool ())
-              _edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
+              m_edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
             else
-              _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
+              m_edit_area->setEdgeMode (QsciScintilla::EdgeLine);
           }
       }
     else
-      _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
+      m_edit_area->setEdgeMode (QsciScintilla::EdgeNone);
 
     // line wrapping and breaking
-    _edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
-    _edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
+    m_edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
+    m_edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
 
     if (settings->value ("editor/wrap_lines",false).toBool ())
-      _edit_area->setWrapMode (QsciScintilla::WrapWord);
+      m_edit_area->setWrapMode (QsciScintilla::WrapWord);
     else
-      _edit_area->setWrapMode (QsciScintilla::WrapNone);
+      m_edit_area->setWrapMode (QsciScintilla::WrapNone);
 
     if (settings->value ("editor/break_lines",false).toBool ())
-      _line_break = line_length;
+      m_line_break = line_length;
     else
-      _line_break = 0;
+      m_line_break = 0;
 
-    _line_break_comments =
+    m_line_break_comments =
       settings->value ("editor/break_lines_comments",false).toBool ();
 
     // highlight all occurrences of a word selected by a double click
-    _highlight_all_occurrences =
+    m_highlight_all_occurrences =
       settings->value ("editor/highlight_all_occurrences", true).toBool ();
 
     // reload changed files
-    _always_reload_changed_files =
+    m_always_reload_changed_files =
       settings->value ("editor/always_reload_changed_files",false).toBool ();
 
     // Set cursor blinking depending on the settings.
@@ -2773,16 +2773,16 @@ namespace octave
       cursor_blinking = settings->value ("terminal/cursorBlinking",true).toBool ();
 
     if (cursor_blinking)
-      _edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,500);
+      m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,500);
     else
-      _edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,0);
+      m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD,0);
 
   }
 
 
   void file_editor_tab::auto_margin_width (void)
   {
-    _edit_area->setMarginWidth (2, "1" + QString::number (_edit_area->lines ()));
+    m_edit_area->setMarginWidth (2, "1" + QString::number (m_edit_area->lines ()));
   }
 
   // the following close request was changed from a signal slot into a
@@ -2800,26 +2800,26 @@ namespace octave
     if (ID != this)
       {
         // Widget may be going out of focus.  If so, record location.
-        if (_find_dialog)
+        if (m_find_dialog)
           {
-            if (_find_dialog->isVisible ())
+            if (m_find_dialog->isVisible ())
               {
-                m_find_dlg_data.geometry = _find_dialog->geometry ();
-                _find_dialog->hide ();
+                m_find_dlg_data.geometry = m_find_dialog->geometry ();
+                m_find_dialog->hide ();
               }
           }
         return;
       }
 
-    if (_find_dialog && m_find_dlg_data.is_visible)
+    if (m_find_dialog && m_find_dlg_data.is_visible)
       {
-        _find_dialog->setGeometry (m_find_dlg_data.geometry);
-        QPoint p = _find_dialog->pos ();
-        _find_dialog->move (p.x ()+10, p.y ()+10);
-        _find_dialog->show ();
+        m_find_dialog->setGeometry (m_find_dlg_data.geometry);
+        QPoint p = m_find_dialog->pos ();
+        m_find_dialog->move (p.x ()+10, p.y ()+10);
+        m_find_dialog->show ();
       }
 
-    emit editor_state_changed (_copy_available, _is_octave_file);
+    emit editor_state_changed (m_copy_available, m_is_octave_file);
   }
 
   void file_editor_tab::file_name_query (const QWidget *ID)
@@ -2830,7 +2830,7 @@ namespace octave
       return;
 
     // This list also includes windows with name ""
-    emit add_filename_to_list (_file_name, _encoding, this);
+    emit add_filename_to_list (m_file_name, m_encoding, this);
   }
 
   void file_editor_tab::handle_file_reload_answer (int decision)
@@ -2838,12 +2838,12 @@ namespace octave
     if (decision == QMessageBox::Yes)
       {
         // reload: file is readded to the file watcher in set_file_name ()
-        load_file (_file_name);
+        load_file (m_file_name);
       }
     else
       {
         // do not reload: readd to the file watche
-        _file_system_watcher.addPath (_file_name);
+        m_file_system_watcher.addPath (m_file_name);
       }
   }
 
@@ -2852,8 +2852,8 @@ namespace octave
     // check decision of user in dialog
     if (decision == QMessageBox::Save)
       {
-        save_file (_file_name);  // readds file to watcher in set_file_name ()
-        _edit_area->setReadOnly (false);  // delete read only flag
+        save_file (m_file_name);  // readds file to watcher in set_file_name ()
+        m_edit_area->setReadOnly (false);  // delete read only flag
       }
     else
       {
@@ -2861,7 +2861,7 @@ namespace octave
         // Set modified to false to prevent the dialog box when the close event
         // is posted. If the user cancels the close in this dialog the tab is
         // left open with a non-existing file.
-        _edit_area->setModified (false);
+        m_edit_area->setModified (false);
         close ();
       }
   }
@@ -2877,7 +2877,7 @@ namespace octave
       {
         marker *dp;
 
-        if (_edit_area->isModified ())
+        if (m_edit_area->isModified ())
           {
             // The best that can be done if the editor contents has been
             // modified is to see if there is a match with the original
@@ -2891,7 +2891,7 @@ namespace octave
             if (editor_linenr != -1)
               {
                 // Match with an existing breakpoint.
-                dp = new marker (_edit_area, line,
+                dp = new marker (m_edit_area, line,
                                  marker::debugger_position, editor_linenr);
               }
             else
@@ -2903,7 +2903,7 @@ namespace octave
                   {
                     // Make a guess by using an offset from the breakpoint.
                     int linenr_guess = editor_linenr + line - original_linenr;
-                    dp = new marker (_edit_area, line,
+                    dp = new marker (m_edit_area, line,
                                      marker::unsure_debugger_position,
                                      linenr_guess);
                   }
@@ -2911,14 +2911,14 @@ namespace octave
                   {
                     // Can't make a very good guess, so just use the debugger
                     // line number.
-                    dp = new marker (_edit_area, line,
+                    dp = new marker (m_edit_area, line,
                                      marker::unsure_debugger_position);
                   }
               }
           }
         else
           {
-            dp = new marker (_edit_area, line, marker::debugger_position);
+            dp = new marker (m_edit_area, line, marker::debugger_position);
 
             // In case of a not modified file we might have to remove
             // a breakpoint here if we have stepped into the file
@@ -2979,7 +2979,7 @@ namespace octave
 
             if (bp == nullptr)
               {
-                bp = new marker (_edit_area, line,
+                bp = new marker (m_edit_area, line,
                                  cond == "" ? marker::breakpoint
                                  : marker::cond_break, cond);
 
@@ -3014,26 +3014,26 @@ namespace octave
   void file_editor_tab::center_current_line (bool always)
   {
     long int visible_lines
-      = _edit_area->SendScintilla (QsciScintillaBase::SCI_LINESONSCREEN);
+      = m_edit_area->SendScintilla (QsciScintillaBase::SCI_LINESONSCREEN);
 
     if (visible_lines > 2)
       {
         int line, index;
-        _edit_area->getCursorPosition (&line, &index);
+        m_edit_area->getCursorPosition (&line, &index);
         // compensate for "folding":
         // step 1: expand the current line, if it was folded
-        _edit_area->SendScintilla (2232, line);   // SCI_ENSUREVISIBLE
+        m_edit_area->SendScintilla (2232, line);   // SCI_ENSUREVISIBLE
 
         // step 2: map file line num to "visible" one // SCI_VISIBLEFROMDOCLINE
-        int vis_line = _edit_area->SendScintilla (2220, line);
+        int vis_line = m_edit_area->SendScintilla (2220, line);
 
-        int first_line = _edit_area->firstVisibleLine ();
+        int first_line = m_edit_area->firstVisibleLine ();
 
         if (always || vis_line == first_line
             || vis_line > first_line + visible_lines - 2)
           {
             first_line += (vis_line - first_line - (visible_lines - 1) / 2);
-            _edit_area->SendScintilla (2613, first_line); // SCI_SETFIRSTVISIBLELINE
+            m_edit_area->SendScintilla (2613, first_line); // SCI_SETFIRSTVISIBLELINE
           }
       }
   }
@@ -3041,57 +3041,57 @@ namespace octave
   void file_editor_tab::handle_lines_changed (void)
   {
     // the related signal is emitted before cursor-move-signal!
-    _lines_changed = true;
+    m_lines_changed = true;
   }
 
   void file_editor_tab::handle_cursor_moved (int line, int col)
   {
-    if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
+    if (m_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
       show_auto_completion (this);
 
-    if (_lines_changed)  // cursor moved and lines have changed
+    if (m_lines_changed)  // cursor moved and lines have changed
       {
-        _lines_changed = false;
-        if (_is_octave_file && line == _line+1 && col < _col)
+        m_lines_changed = false;
+        if (m_is_octave_file && line == m_line+1 && col < m_col)
           {
             // Obviously, we have a newline here
-            if (_smart_indent || _auto_endif)
-              _edit_area->smart_indent (_smart_indent, _auto_endif,
-                                        _line, m_ind_char_width);
+            if (m_smart_indent || m_auto_endif)
+              m_edit_area->smart_indent (m_smart_indent, m_auto_endif,
+                                        m_line, m_ind_char_width);
           }
       }
 
-    _line = line;
-    _col  = col;
+    m_line = line;
+    m_col  = col;
 
-    _row_indicator->setNum (line+1);
-    _col_indicator->setNum (col+1);
+    m_row_indicator->setNum (line+1);
+    m_col_indicator->setNum (col+1);
   }
 
   // Slot that is entered each time a new character was typed.
   // It is used for handling line breaking if this is desired.
   // The related signal is emitted after the signal for a moved cursor
-  // such that _col and _line can not be used for current position.
+  // such that m_col and m_line can not be used for current position.
   void file_editor_tab::handle_char_added (int)
   {
-    if (_line_break)
+    if (m_line_break)
       {
         // If line breaking is desired, get the current line and column.
         // For taking the tab width into consideration, use own function
         int line, col, pos;
-        _edit_area->get_current_position (&pos, &line, &col);
+        m_edit_area->get_current_position (&pos, &line, &col);
 
         // immediately return if line has not reached the max. line length
-        if (col <= _line_break)
+        if (col <= m_line_break)
           return;
 
         // If line breaking is only desired in comments,
         // return if not in a comment
         int style_comment = octave_qscintilla::ST_NONE;
-        if (_line_break_comments)
+        if (m_line_break_comments)
           {
             // line breaking only in comments, check for comment style
-            style_comment = _edit_area->is_style_comment ();
+            style_comment = m_edit_area->is_style_comment ();
             if (! style_comment)
               return;       // no comment, return
           }
@@ -3101,17 +3101,17 @@ namespace octave
         // the column from the QScintila function without taking tab lengths
         // into account, since the calculation from line/col to position ignores
         // this, too
-        _edit_area->getCursorPosition (&line, &col);
+        m_edit_area->getCursorPosition (&line, &col);
         int c = 0;
         int col_space = col;
-        int indentation = _edit_area->indentation (line);
+        int indentation = m_edit_area->indentation (line);
 
         // Search the first occurence of space or tab backwards starting from
         // the current column (col_space).
         while (c != ' ' && c != '\t' && col_space > indentation)
           {
-            pos = _edit_area->positionFromLineIndex (line, col_space--);
-            c = _edit_area->SendScintilla (QsciScintillaBase::SCI_GETCHARAT, pos);
+            pos = m_edit_area->positionFromLineIndex (line, col_space--);
+            c = m_edit_area->SendScintilla (QsciScintillaBase::SCI_GETCHARAT, pos);
           }
 
         // If a space or tab was found, break at this char,
@@ -3123,15 +3123,15 @@ namespace octave
         // Insert a newline char for breaking the line possibly followed
         // by a line comment string
         QString newline = QString ("\n");
-        style_comment = _edit_area->is_style_comment ();
+        style_comment = m_edit_area->is_style_comment ();
         if (style_comment == octave_qscintilla::ST_LINE_COMMENT)
-          newline = newline + _edit_area->comment_string ().at (0);
-        _edit_area->insertAt (newline, line, col_newline);
+          newline = newline + m_edit_area->comment_string ().at (0);
+        m_edit_area->insertAt (newline, line, col_newline);
 
         // Automatically indent the new line to the indentation of previous line
         // and set the cursor position to the end of the indentation.
-        _edit_area->setIndentation (line + 1, indentation);
-        _edit_area->SendScintilla (QsciScintillaBase::SCI_LINEEND);
+        m_edit_area->setIndentation (line + 1, indentation);
+        m_edit_area->SendScintilla (QsciScintillaBase::SCI_LINEEND);
       }
   }
 
@@ -3142,22 +3142,22 @@ namespace octave
       {
         // double clicks without modifier
         // clear any existing indicators of this type
-        _edit_area->clear_selection_markers ();
+        m_edit_area->clear_selection_markers ();
 
-        if (_highlight_all_occurrences)
+        if (m_highlight_all_occurrences)
           {
             // Clear any previous selection.
-            _edit_area->set_word_selection ();
+            m_edit_area->set_word_selection ();
 
             // highlighting of all occurrences of the clicked word is enabled
 
             // get the resulting cursor position
             // (required if click was beyond a line ending)
             int line, col;
-            _edit_area->getCursorPosition (&line, &col);
+            m_edit_area->getCursorPosition (&line, &col);
 
             // get the word at the cursor (if any)
-            QString word = _edit_area->wordAtLineIndex (line, col);
+            QString word = m_edit_area->wordAtLineIndex (line, col);
             word = word.trimmed ();
 
             if (! word.isEmpty ())
@@ -3165,11 +3165,11 @@ namespace octave
                 // word is not empty, so find all occurrences of the word
 
                 // remember first visible line for restoring the view afterwards
-                int first_line = _edit_area->firstVisibleLine ();
+                int first_line = m_edit_area->firstVisibleLine ();
 
                 // search for first occurrence of the detected word
                 bool find_result_available
-                  = _edit_area->findFirst (word,
+                  = m_edit_area->findFirst (word,
                                            false,   // no regexp
                                            true,    // case sensitive
                                            true,    // whole words only
@@ -3189,20 +3189,20 @@ namespace octave
                 while (find_result_available)
                   {
                     // get cursor position after having found an occurrence
-                    _edit_area->getCursorPosition (&oline, &ocol);
+                    m_edit_area->getCursorPosition (&oline, &ocol);
                     // mark the selection
-                    _edit_area->show_selection_markers (oline, ocol-wlen, oline, ocol);
+                    m_edit_area->show_selection_markers (oline, ocol-wlen, oline, ocol);
 
                     // find next occurrence
-                    find_result_available = _edit_area->findNext ();
+                    find_result_available = m_edit_area->findNext ();
                   }
 
                 // restore the visible area of the file, the cursor position,
                 // and the selection
-                _edit_area->setFirstVisibleLine (first_line);
-                _edit_area->setCursorPosition (line, col);
-                _edit_area->setSelection (line, col - wlen, line, col);
-                _edit_area->set_word_selection (word);
+                m_edit_area->setFirstVisibleLine (first_line);
+                m_edit_area->setCursorPosition (line, col);
+                m_edit_area->setSelection (line, col - wlen, line, col);
+                m_edit_area->set_word_selection (word);
               }
           }
       }
@@ -3216,7 +3216,7 @@ namespace octave
     QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\\s]+)[\t ]*$");
     QRegExp rxfun5 ("^[\t ]*classdef[\t ]+([^\\s]+)[\t ]*$");
 
-    QStringList lines = _edit_area->text ().split ("\n");
+    QStringList lines = m_edit_area->text ().split ("\n");
 
     for (int i = 0; i < lines.count (); i++)
       {

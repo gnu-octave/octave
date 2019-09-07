@@ -59,13 +59,13 @@ namespace octave
 
     ~file_editor_tab (void);
 
-    octave_qscintilla * qsci_edit_area (void) { return _edit_area; }
+    octave_qscintilla * qsci_edit_area (void) { return m_edit_area; }
 
     // Will initiate close if associated with the identifier tag.
     bool conditional_close (void);
 
-    static void reset_cancel (void) {_cancelled = false;}
-    static bool was_cancelled (void) {return _cancelled;}
+    static void reset_cancel (void) { m_cancelled = false; }
+    static bool was_cancelled (void) { return m_cancelled; }
 
     void update_breakpoints ();
 
@@ -287,59 +287,60 @@ namespace octave
     QsciScintilla::EolMode detect_eol_mode (void);
     void update_eol_indicator (void);
 
-    octave_qscintilla *_edit_area;
+    octave_qscintilla *m_edit_area;
 
-    QStatusBar *_status_bar;
-    QLabel *_row_indicator;
-    QLabel *_col_indicator;
-    QLabel *_eol_indicator;
-    QLabel *_enc_indicator;
+    QStatusBar *m_status_bar;
+    QLabel *m_row_indicator;
+    QLabel *m_col_indicator;
+    QLabel *m_eol_indicator;
+    QLabel *m_enc_indicator;
 
-    QsciScintilla::EolMode _save_as_desired_eol;
+    QsciScintilla::EolMode m_save_as_desired_eol;
 
-    QString _file_name;
-    QString _file_name_short;
-    QString _ced;
-    QString _encoding;
-    QString _new_encoding;
+    QString m_file_name;
+    QString m_file_name_short;
+    QString m_ced;
+    QString m_encoding;
+    QString m_new_encoding;
     QDateTime m_last_modified;
 
-    bool _long_title;
-    bool _copy_available;
-    bool _is_octave_file;
-    bool _always_reload_changed_files;
-    bool _smart_indent;
-    int _auto_endif;
+    bool m_long_title;
+    bool m_copy_available;
+    bool m_is_octave_file;
+    bool m_always_reload_changed_files;
+    bool m_smart_indent;
+    int m_auto_endif;
     int m_ind_char_width;
 
-    QFileSystemWatcher _file_system_watcher;
+    QFileSystemWatcher m_file_system_watcher;
 
-    QIntList _bp_lines;
-    QStringList _bp_conditions;
+    QIntList m_bp_lines;
+    QStringList m_bp_conditions;
 
-    QsciAPIs *_lexer_apis;
-    QString _prep_apis_file;
+    QsciAPIs *m_lexer_apis;
+    QString m_prep_apis_file;
 
-    static bool _cancelled;
+    static bool m_cancelled;
 
-    int _line_break;
-    bool _line_break_comments;
-    int _line;
-    int _col;
-    bool _lines_changed;
-    bool _highlight_all_occurrences;
+    int m_line_break;
+    bool m_line_break_comments;
+    int m_line;
+    int m_col;
+    bool m_lines_changed;
+    bool m_highlight_all_occurrences;
     int m_bp_restore_count;
 
-    struct
-      {
-        bool        remove_next;
-        int         remove_line;
-        int         do_not_remove_line;
-      } m_breakpoint_info;
+    struct breakpoint_info
+    {
+      bool remove_next;
+      int remove_line;
+      int do_not_remove_line;
+    };
 
-    find_dialog *_find_dialog;
+    breakpoint_info m_breakpoint_info;
+
+    find_dialog *m_find_dialog;
     find_dialog::find_dialog_data m_find_dlg_data;
-
   };
 }
 

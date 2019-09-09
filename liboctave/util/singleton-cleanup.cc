@@ -27,11 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "singleton-cleanup.h"
 
-singleton_cleanup_list *singleton_cleanup_list::instance = nullptr;
+singleton_cleanup_list *singleton_cleanup_list::s_instance = nullptr;
 
 singleton_cleanup_list::~singleton_cleanup_list (void)
 {
-  for (fptr fcn : fcn_list)
+  for (fptr fcn : m_fcn_list)
     {
       fcn ();
     }
@@ -42,8 +42,8 @@ singleton_cleanup_list::instance_ok (void)
 {
   bool retval = true;
 
-  if (! instance)
-    instance = new singleton_cleanup_list ();
+  if (! s_instance)
+    s_instance = new singleton_cleanup_list ();
 
   return retval;
 }

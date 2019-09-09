@@ -135,40 +135,40 @@ namespace octave
   {
     std::ostringstream buf;
 
-    if (var.empty () || var == "<unknown>")
+    if (m_var.empty () || m_var == "<unknown>")
       buf << "index ";
     else
-      buf << var;
+      buf << m_var;
 
-    bool show_parens = dim > 0;
+    bool show_parens = m_dim > 0;
 
     if (show_parens)
       {
-        if (dim < 5)
+        if (m_dim < 5)
           {
             buf << '(';
 
-            for (octave_idx_type i = 1; i < dim; i++)
+            for (octave_idx_type i = 1; i < m_dim; i++)
               buf << "_,";
           }
         else
-          buf << "(...[x" << dim - 1 << "]...";
+          buf << "(...[x" << m_dim - 1 << "]...";
       }
 
     buf << idx ();
 
     if (show_parens)
       {
-        if (nd - dim < 5)
+        if (m_nd - m_dim < 5)
           {
-            for (octave_idx_type i = 0; i < nd - dim; i++)
+            for (octave_idx_type i = 0; i < m_nd - m_dim; i++)
               buf << ",_";
 
-            if (nd >= dim)
+            if (m_nd >= m_dim)
               buf << ')';
           }
         else
-          buf << "...[x" << nd - dim << "]...)";
+          buf << "...[x" << m_nd - m_dim << "]...)";
       }
 
     return buf.str ();
@@ -245,26 +245,26 @@ namespace octave
 
     out_of_range (const std::string& value, octave_idx_type nd_in,
                   octave_idx_type dim_in)
-      : index_exception (value, nd_in, dim_in), extent (0)
+      : index_exception (value, nd_in, dim_in), m_size (), m_extent (0)
     { }
 
     std::string details (void) const
     {
       std::string expl;
 
-      if (nd >= size.ndims ())   // if not an index slice
+      if (m_nd >= m_size.ndims ())   // if not an index slice
         {
-          if (var != "")
-            expl = "but " + var + " has size ";
+          if (m_var != "")
+            expl = "but " + m_var + " has size ";
           else
             expl = "but object has size ";
 
-          expl = expl + size.str ('x');
+          expl = expl + m_size.str ('x');
         }
       else
         {
           std::ostringstream buf;
-          buf << extent;
+          buf << m_extent;
           expl = "out of bound " + buf.str ();
         }
 
@@ -277,17 +277,17 @@ namespace octave
       return error_id_index_out_of_bounds;
     }
 
-    void set_size (const dim_vector& size_in) { size = size_in; }
+    void set_size (const dim_vector& size_in) { m_size = size_in; }
 
-    void set_extent (octave_idx_type ext) { extent = ext; }
+    void set_extent (octave_idx_type ext) { m_extent = ext; }
 
   private:
 
     // Dimension of object being accessed.
-    dim_vector size;
+    dim_vector m_size;
 
     // Length of dimension being accessed.
-    octave_idx_type extent;
+    octave_idx_type m_extent;
   };
 
   // Complain of an index that is out of range, but we don't know matrix size

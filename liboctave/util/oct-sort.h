@@ -111,7 +111,7 @@ public:
 
   ~octave_sort (void);
 
-  void set_compare (compare_fcn_type comp) { compare = comp; }
+  void set_compare (compare_fcn_type comp) { m_compare = comp; }
 
   void set_compare (sortmode mode);
 
@@ -185,13 +185,13 @@ private:
 
   struct s_slice
   {
-    octave_idx_type base, len;
+    octave_idx_type m_base, m_len;
   };
 
   struct MergeState
   {
     MergeState (void)
-      : min_gallop (), a (nullptr), ia (nullptr), alloced (0), n (0)
+      : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
 
     // No copying!
@@ -201,10 +201,10 @@ private:
     MergeState& operator = (const MergeState&) = delete;
 
     ~MergeState (void)
-    { delete [] a; delete [] ia; }
+    { delete [] m_a; delete [] m_ia; }
 
     void reset (void)
-    { min_gallop = MIN_GALLOP; n = 0; }
+    { m_min_gallop = MIN_GALLOP; m_n = 0; }
 
     void getmem (octave_idx_type need);
 
@@ -214,13 +214,13 @@ private:
     // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
     // it higher for random data, and lower for highly structured
     // data.
-    octave_idx_type min_gallop;
+    octave_idx_type m_min_gallop;
 
     // 'a' is temp storage to help with merges.  It contains room for
     // alloced entries.
-    T *a;               // may point to temparray below
-    octave_idx_type *ia;
-    octave_idx_type alloced;
+    T *m_a;               // may point to temparray below
+    octave_idx_type *m_ia;
+    octave_idx_type m_alloced;
 
     // A stack of n pending runs yet to be merged.  Run #i starts at
     // address base[i] and extends for len[i] elements.  It's always
@@ -230,13 +230,13 @@ private:
     //
     // so we could cut the storage for this, but it's a minor amount,
     // and keeping all the info explicit simplifies the code.
-    octave_idx_type n;
-    struct s_slice pending[MAX_MERGE_PENDING];
+    octave_idx_type m_n;
+    struct s_slice m_pending[MAX_MERGE_PENDING];
   };
 
-  compare_fcn_type compare;
+  compare_fcn_type m_compare;
 
-  MergeState *ms;
+  MergeState *m_ms;
 
   template <typename Comp>
   void binarysort (T *data, octave_idx_type nel,
@@ -341,7 +341,7 @@ class
 vec_index
 {
 public:
-  T vec;
-  octave_idx_type indx;
+  T m_vec;
+  octave_idx_type m_indx;
 };
 #endif

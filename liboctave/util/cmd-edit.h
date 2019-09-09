@@ -41,8 +41,8 @@ namespace octave
   protected:
 
     command_editor (void)
-      : command_number (0), m_rows (24), m_cols (80), interrupted (false),
-        m_interrupt_event_loop (false), initial_input ()
+      : m_command_number (0), m_rows (24), m_cols (80), m_interrupted (false),
+        m_interrupt_event_loop (false), m_initial_input ()
       { }
 
   public:
@@ -222,9 +222,13 @@ namespace octave
     static std::set<event_hook_fcn> event_hook_set;
 
     // The real thing.
-    static command_editor *instance;
+    static command_editor *s_instance;
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    static void cleanup_instance (void)
+    {
+      delete s_instance;
+      s_instance = nullptr;
+    }
 
     static void handle_interrupt_signal (void);
 
@@ -380,16 +384,16 @@ namespace octave
     void error (const std::string&);
 
     // The current command number.
-    int command_number;
+    int m_command_number;
 
     int m_rows;
     int m_cols;
 
-    bool interrupted;
+    bool m_interrupted;
 
     bool m_interrupt_event_loop;
 
-    std::string initial_input;
+    std::string m_initial_input;
   };
 }
 

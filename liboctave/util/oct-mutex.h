@@ -37,7 +37,7 @@ namespace octave
   public:
     friend class mutex;
 
-    base_mutex (void) : count (1) { }
+    base_mutex (void) : m_count (1) { }
 
     virtual ~base_mutex (void) = default;
 
@@ -48,7 +48,7 @@ namespace octave
     virtual bool try_lock (void);
 
   private:
-    refcount<int> count;
+    refcount<int> m_count;
   };
 
   class
@@ -59,26 +59,26 @@ namespace octave
     mutex (void);
 
     mutex (const mutex& m)
-      : rep (m.rep)
+      : m_rep (m.m_rep)
     {
-      rep->count++;
+      m_rep->m_count++;
     }
 
     ~mutex (void)
     {
-      if (--rep->count == 0)
-        delete rep;
+      if (--m_rep->m_count == 0)
+        delete m_rep;
     }
 
     mutex& operator = (const mutex& m)
     {
-      if (rep != m.rep)
+      if (m_rep != m.m_rep)
         {
-          if (--rep->count == 0)
-            delete rep;
+          if (--m_rep->m_count == 0)
+            delete m_rep;
 
-          rep = m.rep;
-          rep->count++;
+          m_rep = m.m_rep;
+          m_rep->m_count++;
         }
 
       return *this;
@@ -86,21 +86,21 @@ namespace octave
 
     void lock (void)
     {
-      rep->lock ();
+      m_rep->lock ();
     }
 
     void unlock (void)
     {
-      rep->unlock ();
+      m_rep->unlock ();
     }
 
     bool try_lock (void)
     {
-      return rep->try_lock ();
+      return m_rep->try_lock ();
     }
 
   protected:
-    base_mutex *rep;
+    base_mutex *m_rep;
   };
 
   class

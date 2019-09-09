@@ -53,7 +53,7 @@ namespace octave
 {
   char * do_completer_word_break_hook ();
 
-  command_editor *command_editor::instance = nullptr;
+  command_editor *command_editor::s_instance = nullptr;
 
   std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
 
@@ -1061,19 +1061,19 @@ namespace octave
   {
     bool retval = true;
 
-    if (! instance)
+    if (! s_instance)
       {
         make_command_editor ();
 
-        if (instance)
+        if (s_instance)
           {
-            instance->set_event_hook (event_handler);
+            s_instance->set_event_hook (event_handler);
 
             singleton_cleanup_list::add (cleanup_instance);
           }
       }
 
-    if (! instance)
+    if (! s_instance)
       (*current_liboctave_error_handler)
         ("unable to create command history object!");
 
@@ -1084,30 +1084,30 @@ namespace octave
   command_editor::make_command_editor (void)
   {
 #if defined (USE_READLINE)
-    instance = new gnu_readline ();
+    s_instance = new gnu_readline ();
 #else
-    instance = new default_command_editor ();
+    s_instance = new default_command_editor ();
 #endif
   }
 
   void
   command_editor::force_default_editor (void)
   {
-    delete instance;
-    instance = new default_command_editor ();
+    delete s_instance;
+    s_instance = new default_command_editor ();
   }
 
   void
   command_editor::set_initial_input (const std::string& text)
   {
     if (instance_ok ())
-      instance->initial_input = text;
+      s_instance->m_initial_input = text;
   }
 
   int
   command_editor::insert_initial_input (void)
   {
-    return instance_ok () ? instance->do_insert_initial_input () : 0;
+    return instance_ok () ? s_instance->do_insert_initial_input () : 0;
   }
 
   int
@@ -1169,7 +1169,7 @@ namespace octave
   command_editor::set_name (const std::string& n)
   {
     if (instance_ok ())
-      instance->do_set_name (n);
+      s_instance->do_set_name (n);
   }
 
   std::string
@@ -1187,10 +1187,10 @@ namespace octave
 
     if (instance_ok ())
       {
-        if (! instance->initial_input.empty ())
+        if (! s_instance->m_initial_input.empty ())
           add_pre_input_hook (command_editor::insert_initial_input);
 
-        retval = instance->do_readline (prompt, eof);
+        retval = s_instance->do_readline (prompt, eof);
       }
 
     return retval;
@@ -1200,249 +1200,241 @@ namespace octave
   command_editor::set_input_stream (FILE *f)
   {
     if (instance_ok ())
-      instance->do_set_input_stream (f);
+      s_instance->do_set_input_stream (f);
   }
 
   FILE *
   command_editor::get_input_stream (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_input_stream () : nullptr;
+    return instance_ok () ? s_instance->do_get_input_stream () : nullptr;
   }
 
   void
   command_editor::set_output_stream (FILE *f)
   {
     if (instance_ok ())
-      instance->do_set_output_stream (f);
+      s_instance->do_set_output_stream (f);
   }
 
   FILE *
   command_editor::get_output_stream (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_output_stream () : nullptr;
+    return instance_ok () ? s_instance->do_get_output_stream () : nullptr;
   }
 
   void
   command_editor::redisplay (void)
   {
     if (instance_ok ())
-      instance->do_redisplay ();
+      s_instance->do_redisplay ();
   }
 
   int
   command_editor::terminal_rows (void)
   {
-    return (instance_ok ())
-           ? instance->do_terminal_rows () : -1;
+    return instance_ok () ? s_instance->do_terminal_rows () : -1;
   }
 
   int
   command_editor::terminal_cols (void)
   {
-    return (instance_ok ())
-           ? instance->do_terminal_cols () : -1;
+    return instance_ok () ? s_instance->do_terminal_cols () : -1;
   }
 
   void
   command_editor::clear_screen (bool skip_redisplay)
   {
     if (instance_ok ())
-      instance->do_clear_screen (skip_redisplay);
+      s_instance->do_clear_screen (skip_redisplay);
   }
 
   void
   command_editor::resize_terminal (void)
   {
     if (instance_ok ())
-      instance->do_resize_terminal ();
+      s_instance->do_resize_terminal ();
   }
 
   void
   command_editor::set_screen_size (int ht, int wd)
   {
     if (instance_ok ())
-      instance->do_set_screen_size (ht, wd);
+      s_instance->do_set_screen_size (ht, wd);
   }
 
   std::string
   command_editor::decode_prompt_string (const std::string& s)
   {
-    return (instance_ok ())
-           ? instance->do_decode_prompt_string (s) : "";
+    return instance_ok () ? s_instance->do_decode_prompt_string (s) : "";
   }
 
   int
   command_editor::current_command_number (void)
   {
-    return (instance_ok ())
-           ? instance->command_number : 0;
+    return instance_ok () ? s_instance->m_command_number : 0;
   }
 
   void
   command_editor::reset_current_command_number (int n)
   {
     if (instance_ok ())
-      instance->command_number = n;
+      s_instance->m_command_number = n;
   }
 
   void
   command_editor::increment_current_command_number (void)
   {
     if (instance_ok ())
-      instance->command_number++;
+      s_instance->m_command_number++;
   }
 
   void
   command_editor::restore_terminal_state (void)
   {
     if (instance_ok ())
-      instance->do_restore_terminal_state ();
+      s_instance->do_restore_terminal_state ();
   }
 
   void
   command_editor::blink_matching_paren (bool flag)
   {
     if (instance_ok ())
-      instance->do_blink_matching_paren (flag);
+      s_instance->do_blink_matching_paren (flag);
   }
 
   bool
   command_editor::erase_empty_line (bool flag)
   {
-    return instance_ok () ? instance->do_erase_empty_line (flag) : false;
+    return instance_ok () ? s_instance->do_erase_empty_line (flag) : false;
   }
 
   void
   command_editor::set_basic_word_break_characters (const std::string& s)
   {
     if (instance_ok ())
-      instance->do_set_basic_word_break_characters (s);
+      s_instance->do_set_basic_word_break_characters (s);
   }
 
   void
   command_editor::set_completer_word_break_characters (const std::string& s)
   {
     if (instance_ok ())
-      instance->do_set_completer_word_break_characters (s);
+      s_instance->do_set_completer_word_break_characters (s);
   }
 
   void
   command_editor::set_basic_quote_characters (const std::string& s)
   {
     if (instance_ok ())
-      instance->do_set_basic_quote_characters (s);
+      s_instance->do_set_basic_quote_characters (s);
   }
 
   void
   command_editor::set_filename_quote_characters (const std::string& s)
   {
     if (instance_ok ())
-      instance->do_set_filename_quote_characters (s);
+      s_instance->do_set_filename_quote_characters (s);
   }
 
   void
   command_editor::set_completer_quote_characters (const std::string& s)
   {
     if (instance_ok ())
-      instance->do_set_completer_quote_characters (s);
+      s_instance->do_set_completer_quote_characters (s);
   }
 
   void
   command_editor::set_completion_append_character (char c)
   {
     if (instance_ok ())
-      instance->do_set_completion_append_character (c);
+      s_instance->do_set_completion_append_character (c);
   }
 
   void
   command_editor::set_completion_function (completion_fcn f)
   {
     if (instance_ok ())
-      instance->do_set_completion_function (f);
+      s_instance->do_set_completion_function (f);
   }
 
   void
   command_editor::set_quoting_function (quoting_fcn f)
   {
     if (instance_ok ())
-      instance->do_set_quoting_function (f);
+      s_instance->do_set_quoting_function (f);
   }
 
   void
   command_editor::set_dequoting_function (dequoting_fcn f)
   {
     if (instance_ok ())
-      instance->do_set_dequoting_function (f);
+      s_instance->do_set_dequoting_function (f);
   }
 
   void
   command_editor::set_char_is_quoted_function (char_is_quoted_fcn f)
   {
     if (instance_ok ())
-      instance->do_set_char_is_quoted_function (f);
+      s_instance->do_set_char_is_quoted_function (f);
   }
 
   void
   command_editor::set_user_accept_line_function (user_accept_line_fcn f)
   {
     if (instance_ok ())
-      instance->do_set_user_accept_line_function (f);
+      s_instance->do_set_user_accept_line_function (f);
   }
 
   command_editor::completion_fcn
   command_editor::get_completion_function (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_completion_function () : nullptr;
+    return instance_ok () ? s_instance->do_get_completion_function () : nullptr;
   }
 
   command_editor::quoting_fcn
   command_editor::get_quoting_function (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_quoting_function () : nullptr;
+    return instance_ok () ? s_instance->do_get_quoting_function () : nullptr;
   }
 
   command_editor::dequoting_fcn
   command_editor::get_dequoting_function (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_dequoting_function () : nullptr;
+    return instance_ok () ? s_instance->do_get_dequoting_function () : nullptr;
   }
 
   command_editor::char_is_quoted_fcn
   command_editor::get_char_is_quoted_function (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_char_is_quoted_function () : nullptr;
+    return (instance_ok ()
+            ? s_instance->do_get_char_is_quoted_function () : nullptr);
   }
 
   command_editor::user_accept_line_fcn
   command_editor::get_user_accept_line_function (void)
   {
-    return (instance_ok ())
-           ? instance->do_get_user_accept_line_function () : nullptr;
+    return (instance_ok ()
+            ? s_instance->do_get_user_accept_line_function () : nullptr);
   }
 
   string_vector
   command_editor::generate_filename_completions (const std::string& text)
   {
-    return (instance_ok ())
-           ? instance->do_generate_filename_completions (text) : string_vector ();
+    return (instance_ok ()
+            ? s_instance->do_generate_filename_completions (text)
+            : string_vector ());
   }
 
   std::string
   command_editor::get_line_buffer (void)
   {
-    return (instance_ok ()) ? instance->do_get_line_buffer () : "";
+    return instance_ok () ? s_instance->do_get_line_buffer () : "";
   }
 
   std::string
   command_editor::get_current_line (void)
   {
-    return (instance_ok ()) ? instance->do_get_current_line () : "";
+    return instance_ok () ? s_instance->do_get_current_line () : "";
   }
 
   // Return the character (offset+1) to the left of the cursor,
@@ -1450,55 +1442,55 @@ namespace octave
   char
   command_editor::get_prev_char (int offset)
   {
-    return (instance_ok ()) ? instance->do_get_prev_char (offset) : '\0';
+    return instance_ok () ? s_instance->do_get_prev_char (offset) : '\0';
   }
 
   void
   command_editor::replace_line (const std::string& text, bool clear_undo)
   {
     if (instance_ok ())
-      instance->do_replace_line (text, clear_undo);
+      s_instance->do_replace_line (text, clear_undo);
   }
 
   void
   command_editor::kill_full_line (void)
   {
     if (instance_ok ())
-      instance->do_kill_full_line ();
+      s_instance->do_kill_full_line ();
   }
 
   void
   command_editor::insert_text (const std::string& text)
   {
     if (instance_ok ())
-      instance->do_insert_text (text);
+      s_instance->do_insert_text (text);
   }
 
   void
   command_editor::newline (void)
   {
     if (instance_ok ())
-      instance->do_newline ();
+      s_instance->do_newline ();
   }
 
   void
   command_editor::accept_line (void)
   {
     if (instance_ok ())
-      instance->do_accept_line ();
+      s_instance->do_accept_line ();
   }
 
   bool
   command_editor::undo (void)
   {
-    return instance_ok () ? instance->do_undo () : false;
+    return instance_ok () ? s_instance->do_undo () : false;
   }
 
   void
   command_editor::clear_undo_list (void)
   {
     if (instance_ok ())
-      instance->do_clear_undo_list ();
+      s_instance->do_clear_undo_list ();
   }
 
   void
@@ -1508,7 +1500,7 @@ namespace octave
       {
         startup_hook_set.insert (f);
 
-        instance->set_startup_hook (startup_handler);
+        s_instance->set_startup_hook (startup_handler);
       }
   }
 
@@ -1523,7 +1515,7 @@ namespace octave
           startup_hook_set.erase (p);
 
         if (startup_hook_set.empty ())
-          instance->restore_startup_hook ();
+          s_instance->restore_startup_hook ();
       }
   }
 
@@ -1534,7 +1526,7 @@ namespace octave
       {
         pre_input_hook_set.insert (f);
 
-        instance->set_pre_input_hook (pre_input_handler);
+        s_instance->set_pre_input_hook (pre_input_handler);
       }
   }
 
@@ -1549,7 +1541,7 @@ namespace octave
           pre_input_hook_set.erase (p);
 
         if (pre_input_hook_set.empty ())
-          instance->restore_pre_input_hook ();
+          s_instance->restore_pre_input_hook ();
       }
   }
 
@@ -1586,7 +1578,7 @@ namespace octave
       {
         std::string file = sys::file_ops::tilde_expand (file_arg);
 
-        instance->do_read_init_file (file);
+        s_instance->do_read_init_file (file);
       }
   }
 
@@ -1594,28 +1586,27 @@ namespace octave
   command_editor::re_read_init_file (void)
   {
     if (instance_ok ())
-      instance->do_re_read_init_file ();
+      s_instance->do_re_read_init_file ();
   }
 
   bool
   command_editor::filename_completion_desired (bool arg)
   {
-    return (instance_ok ())
-           ? instance->do_filename_completion_desired (arg) : false;
+    return (instance_ok ()
+            ? s_instance->do_filename_completion_desired (arg) : false);
   }
 
   bool
   command_editor::filename_quoting_desired (bool arg)
   {
     return (instance_ok ())
-           ? instance->do_filename_quoting_desired (arg) : false;
+           ? s_instance->do_filename_quoting_desired (arg) : false;
   }
 
   bool
   command_editor::prefer_env_winsize (bool arg)
   {
-    return (instance_ok ())
-           ? instance->do_prefer_env_winsize (arg) : false;
+    return instance_ok () ? s_instance->do_prefer_env_winsize (arg) : false;
   }
 
   bool
@@ -1626,11 +1617,11 @@ namespace octave
     if (instance_ok ())
       {
         // Return the current interrupt state.
-        retval = instance->interrupted;
+        retval = s_instance->m_interrupted;
 
-        instance->do_interrupt (arg);
+        s_instance->do_interrupt (arg);
 
-        instance->interrupted = arg;
+        s_instance->m_interrupted = arg;
       }
     else
       retval = false;
@@ -1642,20 +1633,20 @@ namespace octave
   command_editor::interrupt_event_loop (bool arg)
   {
     if (instance_ok ())
-      instance->do_interrupt_event_loop (arg);
+      s_instance->do_interrupt_event_loop (arg);
   }
 
   bool
   command_editor::event_loop_interrupted (void)
   {
-    return instance_ok () ? instance->do_event_loop_interrupted  () : false;
+    return instance_ok () ? s_instance->do_event_loop_interrupted  () : false;
   }
 
   void
   command_editor::handle_interrupt_signal (void)
   {
     if (instance_ok ())
-      instance->do_handle_interrupt_signal ();
+      s_instance->do_handle_interrupt_signal ();
   }
 
   // Return a string which will be printed as a prompt.  The string may
@@ -1859,7 +1850,7 @@ namespace octave
               case '#':
                 {
                   char number_buffer[32];
-                  sprintf (number_buffer, "%d", command_number);
+                  sprintf (number_buffer, "%d", m_command_number);
                   tmpstr = number_buffer;
 
                   break;
@@ -1914,9 +1905,9 @@ namespace octave
   int
   command_editor::do_insert_initial_input (void)
   {
-    std::string input = initial_input;
+    std::string input = m_initial_input;
 
-    initial_input = "";
+    m_initial_input = "";
 
     do_insert_text (input);
 

@@ -44,14 +44,14 @@ namespace octave
 
     index_exception (const std::string& index_arg, octave_idx_type nd_arg = 0,
                      octave_idx_type dim_arg = -1, const char *var_arg = "")
-      : index (index_arg), nd (nd_arg), dim (dim_arg), var (var_arg)
+      : m_index (index_arg), m_nd (nd_arg), m_dim (dim_arg), m_var (var_arg)
     { }
 
     ~index_exception (void) = default;
 
     // Erroneous index value.  Called in what, and by external code
     // (e.g., nth_element) to make a custom error message.
-    std::string idx (void) const { return index; }
+    std::string idx (void) const { return m_index; }
 
     // details set by subclass.
     virtual std::string details (void) const = 0;
@@ -64,29 +64,29 @@ namespace octave
     // Position of error: dimension in error, and number of dimensions.
     void set_pos (octave_idx_type nd_arg, octave_idx_type dim_arg)
     {
-      nd = nd_arg;
-      dim = dim_arg;
+      m_nd = nd_arg;
+      m_dim = dim_arg;
     }
 
     void set_pos_if_unset (octave_idx_type nd_arg, octave_idx_type dim_arg)
     {
-      if (nd == 0)
+      if (m_nd == 0)
         {
-          nd  = nd_arg;
-          dim = dim_arg;
+          m_nd  = nd_arg;
+          m_dim = dim_arg;
         }
     }
 
     // Name of variable being indexed.  eye(2)(1,1) gives "<unknown>".
     void set_var (const std::string& var_arg = "")
     {
-      var = var_arg;
+      m_var = var_arg;
     }
 
   private:
 
     // Value of invalid index.
-    std::string index;
+    std::string m_index;
 
   protected:
 
@@ -94,13 +94,13 @@ namespace octave
     std::string expression (void) const;
 
     // Number of dimensions of indexed object.
-    octave_idx_type nd;
+    octave_idx_type m_nd;
 
     // Dimension number in which invalid index occurred.
-    octave_idx_type dim;
+    octave_idx_type m_dim;
 
     // Name of variable being indexed.
-    std::string var;
+    std::string m_var;
 
   };
 

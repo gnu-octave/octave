@@ -49,26 +49,26 @@ namespace octave
     regexp (const std::string& pat = "",
             const regexp::opts& opt = regexp::opts (),
             const std::string& w = "regexp")
-      : pattern (pat), options (opt), data (nullptr), named_pats (),
-        nnames (0), named_idx (), who (w)
+      : m_pattern (pat), m_options (opt), m_data (nullptr), m_named_pats (),
+        m_names (0), m_named_idx (), m_who (w)
     {
       compile_internal ();
     }
 
     regexp (const regexp& rx)
-      : pattern (rx.pattern), data (rx.data), named_pats (rx.named_pats),
-        nnames (rx.nnames), named_idx (rx.named_idx)
+      : m_pattern (rx.m_pattern), m_data (rx.m_data), m_named_pats (rx.m_named_pats),
+        m_names (rx.m_names), m_named_idx (rx.m_named_idx)
     { }
 
     regexp& operator = (const regexp& rx)
     {
       if (this != &rx)
         {
-          pattern = rx.pattern;
-          data = rx.data;
-          named_pats = rx.named_pats;
-          nnames = rx.nnames;
-          named_idx = rx.named_idx;
+          m_pattern = rx.m_pattern;
+          m_data = rx.m_data;
+          m_named_pats = rx.m_named_pats;
+          m_names = rx.m_names;
+          m_named_idx = rx.m_named_idx;
         }
 
       return *this;
@@ -79,8 +79,8 @@ namespace octave
     void compile (const std::string& pat,
                   const regexp::opts& opt = regexp::opts ())
     {
-      pattern = pat;
-      options = opt;
+      m_pattern = pat;
+      m_options = opt;
       compile_internal ();
     }
 
@@ -139,29 +139,29 @@ namespace octave
     public:
 
       opts (void)
-        : x_case_insensitive (false), x_dotexceptnewline (false),
-          x_emptymatch (false), x_freespacing (false), x_lineanchors (false),
-          x_once (false) { }
+        : m_case_insensitive (false), m_dotexceptnewline (false),
+          m_emptymatch (false), m_freespacing (false), m_lineanchors (false),
+          m_once (false) { }
 
       opts (const opts& o)
-        : x_case_insensitive (o.x_case_insensitive),
-          x_dotexceptnewline (o.x_dotexceptnewline),
-          x_emptymatch (o.x_emptymatch),
-          x_freespacing (o.x_freespacing),
-          x_lineanchors (o.x_lineanchors),
-          x_once (o.x_once)
+        : m_case_insensitive (o.m_case_insensitive),
+          m_dotexceptnewline (o.m_dotexceptnewline),
+          m_emptymatch (o.m_emptymatch),
+          m_freespacing (o.m_freespacing),
+          m_lineanchors (o.m_lineanchors),
+          m_once (o.m_once)
       { }
 
       opts& operator = (const opts& o)
       {
         if (this != &o)
           {
-            x_case_insensitive = o.x_case_insensitive;
-            x_dotexceptnewline = o.x_dotexceptnewline;
-            x_emptymatch = o.x_emptymatch;
-            x_freespacing = o.x_freespacing;
-            x_lineanchors = o.x_lineanchors;
-            x_once = o.x_once;
+            m_case_insensitive = o.m_case_insensitive;
+            m_dotexceptnewline = o.m_dotexceptnewline;
+            m_emptymatch = o.m_emptymatch;
+            m_freespacing = o.m_freespacing;
+            m_lineanchors = o.m_lineanchors;
+            m_once = o.m_once;
           }
 
         return *this;
@@ -169,28 +169,28 @@ namespace octave
 
       ~opts (void) = default;
 
-      void case_insensitive (bool val) { x_case_insensitive = val; }
-      void dotexceptnewline (bool val) { x_dotexceptnewline = val; }
-      void emptymatch (bool val) { x_emptymatch = val; }
-      void freespacing (bool val) { x_freespacing = val; }
-      void lineanchors (bool val) { x_lineanchors = val; }
-      void once (bool val) { x_once = val; }
+      void case_insensitive (bool val) { m_case_insensitive = val; }
+      void dotexceptnewline (bool val) { m_dotexceptnewline = val; }
+      void emptymatch (bool val) { m_emptymatch = val; }
+      void freespacing (bool val) { m_freespacing = val; }
+      void lineanchors (bool val) { m_lineanchors = val; }
+      void once (bool val) { m_once = val; }
 
-      bool case_insensitive (void) const { return x_case_insensitive; }
-      bool dotexceptnewline (void) const { return x_dotexceptnewline; }
-      bool emptymatch (void) const { return x_emptymatch; }
-      bool freespacing (void) const { return x_freespacing; }
-      bool lineanchors (void) const { return x_lineanchors; }
-      bool once (void) const { return x_once; }
+      bool case_insensitive (void) const { return m_case_insensitive; }
+      bool dotexceptnewline (void) const { return m_dotexceptnewline; }
+      bool emptymatch (void) const { return m_emptymatch; }
+      bool freespacing (void) const { return m_freespacing; }
+      bool lineanchors (void) const { return m_lineanchors; }
+      bool once (void) const { return m_once; }
 
     private:
 
-      bool x_case_insensitive;
-      bool x_dotexceptnewline;
-      bool x_emptymatch;
-      bool x_freespacing;
-      bool x_lineanchors;
-      bool x_once;
+      bool m_case_insensitive;
+      bool m_dotexceptnewline;
+      bool m_emptymatch;
+      bool m_freespacing;
+      bool m_lineanchors;
+      bool m_once;
     };
 
     class match_element
@@ -200,32 +200,32 @@ namespace octave
       match_element (const string_vector& nt, const string_vector& t,
                      const std::string& ms, const Matrix& te,
                      double s, double e)
-        : x_match_string (ms), x_named_tokens (nt), x_tokens (t),
-          x_token_extents (te), x_start (s), x_end (e)
+        : m_match_string (ms), m_named_tokens (nt), m_tokens (t),
+          m_token_extents (te), m_start (s), m_end (e)
       { }
 
       match_element (const match_element& a)
-        : x_match_string (a.x_match_string),
-          x_named_tokens (a.x_named_tokens), x_tokens (a.x_tokens),
-          x_token_extents (a.x_token_extents),
-          x_start (a.x_start), x_end (a.x_end)
+        : m_match_string (a.m_match_string),
+          m_named_tokens (a.m_named_tokens), m_tokens (a.m_tokens),
+          m_token_extents (a.m_token_extents),
+          m_start (a.m_start), m_end (a.m_end)
       { }
 
-      std::string match_string (void) const { return x_match_string; }
-      string_vector named_tokens (void) const { return x_named_tokens; }
-      string_vector tokens (void) const { return x_tokens; }
-      Matrix token_extents (void) const { return x_token_extents; }
-      double start (void) const { return x_start; }
-      double end (void) const { return x_end; }
+      std::string match_string (void) const { return m_match_string; }
+      string_vector named_tokens (void) const { return m_named_tokens; }
+      string_vector tokens (void) const { return m_tokens; }
+      Matrix token_extents (void) const { return m_token_extents; }
+      double start (void) const { return m_start; }
+      double end (void) const { return m_end; }
 
     private:
 
-      std::string x_match_string;
-      string_vector x_named_tokens;
-      string_vector x_tokens;
-      Matrix x_token_extents;
-      double x_start;
-      double x_end;
+      std::string m_match_string;
+      string_vector m_named_tokens;
+      string_vector m_tokens;
+      Matrix m_token_extents;
+      double m_start;
+      double m_end;
     };
 
     class match_data : public base_list<match_element>
@@ -233,16 +233,16 @@ namespace octave
     public:
 
       match_data (void)
-        : base_list<match_element> (), named_pats ()
+        : base_list<match_element> (), m_named_pats ()
       { }
 
       match_data (const std::list<match_element>& l, const string_vector& np)
-        : base_list<match_element> (l), named_pats (np)
+        : base_list<match_element> (l), m_named_pats (np)
       { }
 
       match_data (const match_data& rx_lst)
         : base_list<match_element> (rx_lst),
-          named_pats (rx_lst.named_pats)
+          m_named_pats (rx_lst.m_named_pats)
       { }
 
       match_data& operator = (const match_data& rx_lst)
@@ -250,7 +250,7 @@ namespace octave
         if (this != &rx_lst)
           {
             base_list<match_element>::operator = (rx_lst);
-            named_pats = rx_lst.named_pats;
+            m_named_pats = rx_lst.m_named_pats;
           }
 
         return *this;
@@ -258,28 +258,28 @@ namespace octave
 
       ~match_data (void) = default;
 
-      string_vector named_patterns (void) const { return named_pats; }
+      string_vector named_patterns (void) const { return m_named_pats; }
 
     private:
 
-      string_vector named_pats;
+      string_vector m_named_pats;
     };
 
   private:
 
     // The pattern we've been asked to match.
-    std::string pattern;
+    std::string m_pattern;
 
-    opts options;
+    opts m_options;
 
     // Internal data describing the regular expression.
-    void *data;
+    void *m_data;
 
-    std::string m;
-    string_vector named_pats;
-    int nnames;
-    Array<int> named_idx;
-    std::string who;
+    std::string m_m;
+    string_vector m_named_pats;
+    int m_names;
+    Array<int> m_named_idx;
+    std::string m_who;
 
     void free (void);
 

@@ -213,7 +213,7 @@ public:
   // We also provide two special relations: ct, yielding always true,
   // and cf, yielding always false.
 
-#define OCTAVE_REGISTER_INT_CONST_OP(NM, VALUE)     \
+#define OCTAVE_REGISTER_INT_CONST_OP(NM, VALUE) \
   class NM                                      \
   {                                             \
   public:                                       \
@@ -222,7 +222,7 @@ public:
     static const bool gtval = VALUE;            \
                                                 \
     template <typename T>                       \
-    static bool op (T, T) { return VALUE; }     \
+      static bool op (T, T) { return VALUE; }   \
   }
 
   OCTAVE_REGISTER_INT_CONST_OP (ct, true);
@@ -795,58 +795,58 @@ public:
 
   typedef T val_type;
 
-  octave_int (void) : ival () { }
+  octave_int (void) : m_ival () { }
 
-  octave_int (T i) : ival (i) { }
+  octave_int (T i) : m_ival (i) { }
 
 #if defined (OCTAVE_HAVE_OVERLOAD_CHAR_INT8_TYPES)
 
   // Always treat characters as unsigned.
   octave_int (char c)
-    : ival (octave_int_base<T>::truncate_int (static_cast<unsigned char> (c)))
+    : m_ival (octave_int_base<T>::truncate_int (static_cast<unsigned char> (c)))
   { }
 
 #endif
 
   octave_int (double d)
-    : ival (octave_int_base<T>::convert_real (d)) { }
+    : m_ival (octave_int_base<T>::convert_real (d)) { }
 
   octave_int (float d)
-    : ival (octave_int_base<T>::convert_real (d)) { }
+    : m_ival (octave_int_base<T>::convert_real (d)) { }
 
 #if defined (OCTAVE_INT_USE_LONG_DOUBLE)
 
   octave_int (long double d)
-    : ival (octave_int_base<T>::convert_real (d)) { }
+    : m_ival (octave_int_base<T>::convert_real (d)) { }
 
 #endif
 
-  octave_int (bool b) : ival (b) { }
+  octave_int (bool b) : m_ival (b) { }
 
   template <typename U>
   octave_int (const U& i)
-    : ival(octave_int_base<T>::truncate_int (i)) { }
+    : m_ival(octave_int_base<T>::truncate_int (i)) { }
 
   template <typename U>
   octave_int (const octave_int<U>& i)
-    : ival (octave_int_base<T>::truncate_int (i.value ())) { }
+    : m_ival (octave_int_base<T>::truncate_int (i.value ())) { }
 
-  octave_int (const octave_int<T>& i) : ival (i.ival) { }
+  octave_int (const octave_int<T>& i) : m_ival (i.m_ival) { }
 
   octave_int& operator = (const octave_int<T>& i)
   {
-    ival = i.ival;
+    m_ival = i.m_ival;
     return *this;
   }
 
-  T value (void) const { return ival; }
+  T value (void) const { return m_ival; }
 
   const unsigned char * iptr (void) const
   {
-    return reinterpret_cast<const unsigned char *> (& ival);
+    return reinterpret_cast<const unsigned char *> (& m_ival);
   }
 
-  bool operator ! (void) const { return ! ival; }
+  bool operator ! (void) const { return ! m_ival; }
 
   bool bool_value (void) const { return static_cast<bool> (value ()); }
 
@@ -865,7 +865,7 @@ public:
   inline octave_int<T>                          \
   OPNAME () const                               \
   {                                             \
-    return octave_int_arith<T>::NAME (ival);    \
+    return octave_int_arith<T>::NAME (m_ival);  \
   }
 
   OCTAVE_INT_UN_OP (operator -, minus)
@@ -874,19 +874,19 @@ public:
 
 #undef OCTAVE_INT_UN_OP
 
-// Homogeneous binary integer operations.
-#define OCTAVE_INT_BIN_OP(OP, NAME, ARGT)       \
-  inline octave_int<T>                          \
-  operator OP (const ARGT& y) const             \
-  {                                             \
-    return octave_int_arith<T>::NAME (ival, y); \
-  }                                             \
-                                                \
-  inline octave_int<T>&                         \
-  operator OP##= (const ARGT& y)                \
-  {                                             \
-    ival = octave_int_arith<T>::NAME (ival, y); \
-    return *this;                               \
+  // Homogeneous binary integer operations.
+#define OCTAVE_INT_BIN_OP(OP, NAME, ARGT)               \
+  inline octave_int<T>                                  \
+  operator OP (const ARGT& y) const                     \
+  {                                                     \
+    return octave_int_arith<T>::NAME (m_ival, y);       \
+  }                                                     \
+                                                        \
+  inline octave_int<T>&                                 \
+  operator OP##= (const ARGT& y)                        \
+  {                                                     \
+    m_ival = octave_int_arith<T>::NAME (m_ival, y);     \
+    return *this;                                       \
   }
 
   OCTAVE_INT_BIN_OP (+, add, octave_int<T>)
@@ -913,11 +913,11 @@ public:
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  void * mex_get_data (void) const { return const_cast<T *> (&ival); }
+  void * mex_get_data (void) const { return const_cast<T *> (&m_ival); }
 
 private:
 
-  T ival;
+  T m_ival;
 };
 
 template <typename T>

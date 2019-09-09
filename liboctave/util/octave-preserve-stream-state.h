@@ -35,25 +35,25 @@ namespace octave
   public:
 
     preserve_stream_state (std::ios& s)
-      : stream (s), oflags (s.flags ()), oprecision (s.precision ()),
-        owidth (s.width ()), ofill (s.fill ())
+      : m_stream (s), m_oflags (s.flags ()), m_oprecision (s.precision ()),
+        m_owidth (s.width ()), m_ofill (s.fill ())
     { }
 
     ~preserve_stream_state (void)
     {
-      stream.flags (oflags);
-      stream.precision (oprecision);
-      stream.width (owidth);
-      stream.fill (ofill);
+      m_stream.flags (m_oflags);
+      m_stream.precision (m_oprecision);
+      m_stream.width (m_owidth);
+      m_stream.fill (m_ofill);
     }
 
   private:
 
-    std::ios& stream;
-    std::ios::fmtflags oflags;
-    std::streamsize oprecision;
-    int owidth;
-    char ofill;
+    std::ios& m_stream;
+    std::ios::fmtflags m_oflags;
+    std::streamsize m_oprecision;
+    int m_owidth;
+    char m_ofill;
   };
 }
 

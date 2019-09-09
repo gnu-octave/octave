@@ -90,33 +90,33 @@ unsigned int kpse_debug = 0;
 void
 kpse_path_iterator::set_end (void)
 {
-  e = b + 1;
+  m_e = m_b + 1;
 
-  if (e == len)
+  if (m_e == m_len)
     ; // OK, we have found the last element.
-  else if (e > len)
-    b = e = std::string::npos;
+  else if (m_e > m_len)
+    m_b = m_e = std::string::npos;
   else
     {
       // Find the next colon not enclosed by braces (or the end of the
       // path).
 
-      while (e < len && ! octave::directory_path::is_path_sep (path[e]))
-        e++;
+      while (m_e < m_len && ! octave::directory_path::is_path_sep (m_path[m_e]))
+        m_e++;
     }
 }
 
 void
 kpse_path_iterator::next (void)
 {
-  b = e + 1;
+  m_b = m_e + 1;
 
   // Skip any consecutive colons.
-  while (b < len && octave::directory_path::is_path_sep (path[b]))
-    b++;
+  while (m_b < m_len && octave::directory_path::is_path_sep (m_path[m_b]))
+    m_b++;
 
-  if (b >= len)
-    b = e = std::string::npos;
+  if (m_b >= m_len)
+    m_b = m_e = std::string::npos;
   else
     set_end ();
 }
@@ -132,9 +132,9 @@ kpse_truncate_filename (const std::string& name)
 
   std::string ret = name;
 
-  size_t len = name.length ();
+  size_t m_len = name.length ();
 
-  for (size_t i = 0; i < len; i++)
+  for (size_t i = 0; i < m_len; i++)
     {
       if (IS_DIR_SEP (name[i]) || IS_DEVICE_SEP (name[i]))
         {

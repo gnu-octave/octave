@@ -45,30 +45,30 @@ public:
 
   glob_match (const std::string& p,
               unsigned int xopts = pathname | noescape | period)
-    : pat (p), fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
+    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
 
   glob_match (const string_vector& p = string_vector (),
               unsigned int xopts = pathname | noescape | period)
-    : pat (p), fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
+    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
 
   glob_match (const glob_match& gm)
-    : pat (gm.pat), fnmatch_flags (gm.fnmatch_flags) { }
+    : m_pat (gm.m_pat), m_fnmatch_flags (gm.m_fnmatch_flags) { }
 
   glob_match& operator = (const glob_match& gm)
   {
     if (this != &gm)
       {
-        pat = gm.pat;
-        fnmatch_flags = gm.fnmatch_flags;
+        m_pat = gm.m_pat;
+        m_fnmatch_flags = gm.m_fnmatch_flags;
       }
     return *this;
   }
 
   ~glob_match (void) = default;
 
-  void set_pattern (const std::string& p) { pat = p; }
+  void set_pattern (const std::string& p) { m_pat = p; }
 
-  void set_pattern (const string_vector& p) { pat = p; }
+  void set_pattern (const string_vector& p) { m_pat = p; }
 
   bool match (const std::string& str) const;
 
@@ -92,10 +92,10 @@ public:
 private:
 
   // Globbing pattern(s).
-  string_vector pat;
+  string_vector m_pat;
 
   // Option flags.
-  int fnmatch_flags;
+  int m_fnmatch_flags;
 
   int opts_to_fnmatch_flags (unsigned int xopts) const;
 };

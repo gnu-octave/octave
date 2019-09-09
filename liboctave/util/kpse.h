@@ -36,10 +36,14 @@ class kpse_path_iterator
 public:
 
   kpse_path_iterator (const std::string& p)
-    : path (p), b (0), e (0), len (path.length ()) { set_end (); }
+    : m_path (p), m_b (0), m_e (0), m_len (m_path.length ())
+  {
+    set_end ();
+  }
 
   kpse_path_iterator (const kpse_path_iterator& pi)
-    : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
+    : m_path (pi.m_path), m_b (pi.m_b), m_e (pi.m_e), m_len (pi.m_len)
+  { }
 
   kpse_path_iterator operator ++ (int)
   {
@@ -48,16 +52,16 @@ public:
     return retval;
   }
 
-  std::string operator * (void) { return path.substr (b, e-b); }
+  std::string operator * (void) { return m_path.substr (m_b, m_e-m_b); }
 
-  bool operator != (const size_t sz) { return b != sz; }
+  bool operator != (const size_t sz) { return m_b != sz; }
 
 private:
 
-  const std::string& path;
-  size_t b;
-  size_t e;
-  size_t len;
+  const std::string& m_path;
+  size_t m_b;
+  size_t m_e;
+  size_t m_len;
 
   void set_end (void);
   void next (void);

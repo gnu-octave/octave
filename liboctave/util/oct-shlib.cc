@@ -58,35 +58,36 @@ extern int dlclose (void *);
 namespace octave
 {
   dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
-    : count (1), file (f), tm_loaded (), fcn_names (), search_all_loaded (false)
+    : m_count (1), m_fcn_names (), m_file (f), m_time_loaded (),
+      m_search_all_loaded (false)
   {
-    instances[f] = this;
+    s_instances[f] = this;
 
     if (is_out_of_date ())
       (*current_liboctave_warning_with_id_handler)
         ("Octave:warn-future-time-stamp",
-         "timestamp on file %s is in the future", file.c_str ());
+         "timestamp on file %s is in the future", m_file.c_str ());
   }
 
   bool
   dynamic_library::dynlib_rep::is_out_of_date (void) const
   {
-    sys::file_stat fs (file);
-    return (fs && fs.is_newer (tm_loaded));
+    sys::file_stat fs (m_file);
+    return (fs && fs.is_newer (m_time_loaded));
   }
 
   void
   dynamic_library::dynlib_rep::fake_reload (void)
   {
     // We can't actually reload the library, but we'll pretend we did.
-    sys::file_stat fs (file);
-    if (fs && fs.is_newer (tm_loaded))
+    sys::file_stat fs (m_file);
+    if (fs && fs.is_newer (m_time_loaded))
       {
-        tm_loaded = fs.mtime ();
+        m_time_loaded = fs.mtime ();
 
         (*current_liboctave_warning_with_id_handler)
           ("Octave:library-reload",
-           "library %s not reloaded due to existing references", file.c_str ());
+           "library %s not reloaded due to existing references", m_file.c_str ());
       }
   }
 
@@ -94,11 +95,11 @@ namespace octave
   dynamic_library::dynlib_rep::get_instance (const std::string& f, bool fake)
   {
     dynlib_rep *retval = nullptr;
-    std::map<std::string, dynlib_rep *>::iterator p = instances.find (f);
-    if (p != instances.end ())
+    std::map<std::string, dynlib_rep *>::iterator p = s_instances.find (f);
+    if (p != s_instances.end ())
       {
         retval = p->second;
-        retval->count++;
+        retval->m_count++;
         if (fake)
           retval->fake_reload ();
       }
@@ -113,7 +114,7 @@ namespace octave
   {
     std::list<std::string> retval;
 
-    for (const auto& p : fcn_names)
+    for (const auto& p : m_fcn_names)
       retval.push_back (p.first);
 
     return retval;
@@ -122,10 +123,10 @@ namespace octave
   void
   dynamic_library::dynlib_rep::add_fcn_name (const std::string& name)
   {
-    auto p = fcn_names.find (name);
+    auto p = m_fcn_names.find (name);
 
-    if (p == fcn_names.end ())
-      fcn_names[name] = 1;
+    if (p == m_fcn_names.end ())
+      m_fcn_names[name] = 1;
     else
       ++(p->second);
   }
@@ -135,11 +136,11 @@ namespace octave
   {
     bool retval = false;
 
-    auto p = fcn_names.find (fcn_name);
+    auto p = m_fcn_names.find (fcn_name);
 
-    if (p != fcn_names.end () && --(p->second) == 0)
+    if (p != m_fcn_names.end () && --(p->second) == 0)
       {
-        fcn_names.erase (fcn_name);
+        m_fcn_names.erase (fcn_name);
         retval = true;
       }
 
@@ -147,9 +148,9 @@ namespace octave
   }
 
   std::map<std::string, dynamic_library::dynlib_rep *>
-    dynamic_library::dynlib_rep::instances;
+    dynamic_library::dynlib_rep::s_instances;
 
-  dynamic_library::dynlib_rep dynamic_library::nil_rep;
+  dynamic_library::dynlib_rep dynamic_library::s_nil_rep;
 
 #if defined (HAVE_DLOPEN_API)
 
@@ -177,16 +178,16 @@ namespace octave
 
     bool is_open (void) const
     {
-      return (search_all_loaded || library != nullptr);
+      return (m_search_all_loaded || m_library != nullptr);
     }
 
   private:
 
-    void *library;
+    void *m_library;
   };
 
   octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), library (nullptr)
+    : dynamic_library::dynlib_rep (f), m_library (nullptr)
   {
     int flags = 0;
 
@@ -204,31 +205,31 @@ namespace octave
     flags |= RTLD_GLOBAL;
 #  endif
 
-    if (file.empty ())
+    if (m_file.empty ())
       {
-        search_all_loaded = true;
+        m_search_all_loaded = true;
         return;
       }
 
-    library = dlopen (file.c_str (), flags);
+    m_library = dlopen (m_file.c_str (), flags);
 
-    if (! library)
+    if (! m_library)
       {
         const char *msg = dlerror ();
 
         if (msg)
           (*current_liboctave_error_handler) ("%s: failed to load: %s",
-                                              file.c_str (), msg);
+                                              m_file.c_str (), msg);
         else
           (*current_liboctave_error_handler) ("%s: failed to load",
-                                              file.c_str ());
+                                              m_file.c_str ());
       }
   }
 
   octave_dlopen_shlib::~octave_dlopen_shlib (void)
   {
-    if (library)
-      dlclose (library);
+    if (m_library)
+      dlclose (m_library);
   }
 
   void *
@@ -239,17 +240,17 @@ namespace octave
 
     if (! is_open ())
       (*current_liboctave_error_handler)
-        ("shared library %s is not open", file.c_str ());
+        ("shared library %s is not open", m_file.c_str ());
 
     std::string sym_name = name;
 
     if (mangler)
       sym_name = mangler (name);
 
-    if (search_all_loaded)
+    if (m_search_all_loaded)
       function = dlsym (RTLD_DEFAULT, sym_name.c_str ());
     else
-      function = dlsym (library, sym_name.c_str ());
+      function = dlsym (m_library, sym_name.c_str ());
 
     return function;
   }
@@ -276,26 +277,29 @@ namespace octave
 
     void * global_search (const std::string& sym_name);
 
-    bool is_open (void) const { return (search_all_loaded || handle != nullptr); }
+    bool is_open (void) const
+    {
+      return (m_search_all_loaded || m_handle != nullptr);
+    }
 
   private:
 
-    HINSTANCE handle;
+    HINSTANCE m_handle;
   };
 
   static void
   set_dll_directory (const std::string& dir = "")
   {
-    SetDllDirectoryW (dir.empty () ? nullptr
-                                   : sys::u8_to_wstring (dir).c_str ());
+    SetDllDirectoryW (dir.empty ()
+                      ? nullptr : sys::u8_to_wstring (dir).c_str ());
   }
 
   octave_w32_shlib::octave_w32_shlib (const std::string& f)
-    : dynamic_library::dynlib_rep (f), handle (nullptr)
+    : dynamic_library::dynlib_rep (f), m_handle (nullptr)
   {
     if (f.empty())
       {
-        search_all_loaded = true;
+        m_search_all_loaded = true;
         return;
       }
 
@@ -303,11 +307,11 @@ namespace octave
 
     set_dll_directory (dir);
 
-    handle = LoadLibraryW (sys::u8_to_wstring (file).c_str ());
+    m_handle = LoadLibraryW (sys::u8_to_wstring (m_file).c_str ());
 
     set_dll_directory ();
 
-    if (! handle)
+    if (! m_handle)
       {
         DWORD lastError = GetLastError ();
         const char *msg;
@@ -331,14 +335,14 @@ namespace octave
             msg = "library open failed";
           }
 
-        (*current_liboctave_error_handler) ("%s: %s", msg, file.c_str ());
+        (*current_liboctave_error_handler) ("%s: %s", msg, m_file.c_str ());
       }
   }
 
   octave_w32_shlib::~octave_w32_shlib (void)
   {
-    if (handle)
-      FreeLibrary (handle);
+    if (m_handle)
+      FreeLibrary (m_handle);
   }
 
   void *
@@ -396,19 +400,19 @@ namespace octave
   {
     void *function = nullptr;
 
-    if (! search_all_loaded && ! is_open ())
+    if (! m_search_all_loaded && ! is_open ())
       (*current_liboctave_error_handler)
-        ("shared library %s is not open", file.c_str ());
+        ("shared library %s is not open", m_file.c_str ());
 
     std::string sym_name = name;
 
     if (mangler)
       sym_name = mangler (name);
 
-    if (search_all_loaded)
+    if (m_search_all_loaded)
       function = global_search (sym_name);
     else
-      function = reinterpret_cast<void *> (GetProcAddress (handle,
+      function = reinterpret_cast<void *> (GetProcAddress (m_handle,
                                                            sym_name.c_str ()));
 
     return function;

@@ -31,13 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 bool
 glob_match::match (const std::string& str) const
 {
-  return octave::sys::fnmatch (pat, str, fnmatch_flags);
+  return octave::sys::fnmatch (m_pat, str, m_fnmatch_flags);
 }
 
 string_vector
 glob_match::glob (void) const
 {
-  return octave::sys::glob (pat);
+  return octave::sys::glob (m_pat);
 }
 
 int

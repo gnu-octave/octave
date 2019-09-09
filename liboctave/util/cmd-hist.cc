@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  command_history *command_history::instance = nullptr;
+  command_history *command_history::s_instance = nullptr;
 
 #if defined (USE_READLINE)
 
@@ -117,7 +117,7 @@ namespace octave
   void
   gnu_history::do_process_histcontrol (const std::string& control_arg)
   {
-    history_control = 0;
+    m_history_control = 0;
 
     size_t len = control_arg.length ();
     size_t beg = 0;
@@ -136,13 +136,13 @@ namespace octave
             std::string tmp = control_arg.substr (beg, end-beg);
 
             if (tmp == "erasedups")
-              history_control |= HC_ERASEDUPS;
+              m_history_control |= HC_ERASEDUPS;
             else if (tmp == "ignoreboth")
-              history_control |= (HC_IGNDUPS | HC_IGNSPACE);
+              m_history_control |= (HC_IGNDUPS | HC_IGNSPACE);
             else if (tmp == "ignoredups")
-              history_control |= HC_IGNDUPS;
+              m_history_control |= HC_IGNDUPS;
             else if (tmp == "ignorespace")
-              history_control |= HC_IGNSPACE;
+              m_history_control |= HC_IGNSPACE;
             else
               (*current_liboctave_warning_with_id_handler)
                 ("Octave:history-control",
@@ -162,10 +162,10 @@ namespace octave
 
     std::string retval;
 
-    if (history_control & HC_IGNSPACE)
+    if (m_history_control & HC_IGNSPACE)
       retval.append ("ignorespace");
 
-    if (history_control & HC_IGNDUPS)
+    if (m_history_control & HC_IGNDUPS)
       {
         if (retval.length () > 0)
           retval += ':';
@@ -173,7 +173,7 @@ namespace octave
         retval.append ("ignoredups");
       }
 
-    if (history_control & HC_ERASEDUPS)
+    if (m_history_control & HC_ERASEDUPS)
       {
         if (retval.length () > 0)
           retval += ':';
@@ -198,9 +198,9 @@ namespace octave
         if (stmp.back () == '\n')
           stmp.pop_back ();
 
-        int added = ::octave_add_history (stmp.c_str (), history_control);
-        lines_this_session += added;
-        return (added > 0) ? true : false;
+        int added = ::octave_add_history (stmp.c_str (), m_history_control);
+        m_lines_this_session += added;
+        return added > 0 ? true : false;
       }
     return false;
   }
@@ -244,7 +244,7 @@ namespace octave
   int
   gnu_history::do_current_number (void) const
   {
-    return (xsize > 0) ? do_base () + do_where () : -1;
+    return m_size > 0 ? do_base () + do_where () : -1;
   }
 
   void
@@ -309,7 +309,7 @@ namespace octave
           }
         else
           {
-            lines_in_file = do_where ();
+            m_lines_in_file = do_where ();
 
             ::octave_using_history ();
           }
@@ -323,7 +323,7 @@ namespace octave
                               bool must_exist)
   {
     if (from < 0)
-      from = lines_in_file;
+      from = m_lines_in_file;
 
     if (! f.empty ())
       {
@@ -339,7 +339,7 @@ namespace octave
           }
         else
           {
-            lines_in_file = do_where ();
+            m_lines_in_file = do_where ();
 
             ::octave_using_history ();
           }
@@ -351,12 +351,12 @@ namespace octave
   void
   gnu_history::do_write (const std::string& f_arg) const
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (! f.empty ())
           {
@@ -377,18 +377,18 @@ namespace octave
   void
   gnu_history::do_append (const std::string& f_arg)
   {
-    if (initialized)
+    if (m_initialized)
       {
-        if (lines_this_session)
+        if (m_lines_this_session)
           {
-            if (lines_this_session < do_where ())
+            if (m_lines_this_session < do_where ())
               {
                 // Create file if it doesn't already exist.
 
                 std::string f = f_arg;
 
                 if (f.empty ())
-                  f = xfile;
+                  f = m_file;
 
                 if (! f.empty ())
                   {
@@ -401,7 +401,7 @@ namespace octave
                       }
 
                     int status
-                      = ::octave_append_history (lines_this_session, f.c_str ());
+                      = ::octave_append_history (m_lines_this_session, f.c_str ());
 
                     if (status != 0)
                       {
@@ -410,9 +410,9 @@ namespace octave
                         error (status, msg);
                       }
                     else
-                      lines_in_file += lines_this_session;
+                      m_lines_in_file += m_lines_this_session;
 
-                    lines_this_session = 0;
+                    m_lines_this_session = 0;
                   }
                 else
                   error ("gnu_history::append: missing filename");
@@ -424,12 +424,12 @@ namespace octave
   void
   gnu_history::do_truncate_file (const std::string& f_arg, int n) const
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (! f.empty ())
           ::octave_history_truncate_file (f.c_str (), n);
@@ -471,17 +471,17 @@ namespace octave
   void
   gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (! f.empty ())
           {
             if (n < 0)
-              n = xsize;
+              n = m_size;
 
             stifle (n);
 
@@ -499,15 +499,15 @@ namespace octave
   {
     bool retval = true;
 
-    if (! instance)
+    if (! s_instance)
       {
         make_command_history ();
 
-        if (instance)
+        if (s_instance)
           singleton_cleanup_list::add (cleanup_instance);
       }
 
-    if (! instance)
+    if (! s_instance)
       (*current_liboctave_error_handler)
         ("unable to create command history object!");
 
@@ -518,9 +518,9 @@ namespace octave
   command_history::make_command_history (void)
   {
 #if defined (USE_READLINE)
-    instance = new gnu_history ();
+    s_instance = new gnu_history ();
 #else
-    instance = new command_history ();
+    s_instance = new command_history ();
 #endif
   }
 
@@ -530,7 +530,7 @@ namespace octave
                                const std::string & control_arg)
   {
     if (instance_ok ())
-      instance->do_initialize (read_history_file, f_arg, sz, control_arg);
+      s_instance->do_initialize (read_history_file, f_arg, sz, control_arg);
   }
 
   bool
@@ -538,7 +538,7 @@ namespace octave
   {
     // We just want to check the status of an existing instance, not
     // create one.
-    return instance && instance->do_is_initialized ();
+    return s_instance && s_instance->do_is_initialized ();
   }
 
   void
@@ -548,64 +548,60 @@ namespace octave
       {
         std::string f = sys::file_ops::tilde_expand (f_arg);
 
-        instance->do_set_file (f);
+        s_instance->do_set_file (f);
       }
   }
 
   std::string
   command_history::file (void)
   {
-    return (instance_ok ())
-      ? instance->do_file () : "";
+    return instance_ok () ? s_instance->do_file () : "";
   }
 
   void
   command_history::process_histcontrol (const std::string& control_arg)
   {
     if (instance_ok ())
-      instance->do_process_histcontrol (control_arg);
+      s_instance->do_process_histcontrol (control_arg);
   }
 
   std::string
   command_history::histcontrol (void)
   {
-    return (instance_ok ())
-      ? instance->do_histcontrol () : "";
+    return instance_ok () ? s_instance->do_histcontrol () : "";
   }
 
   void
   command_history::set_size (int n)
   {
     if (instance_ok ())
-      instance->do_set_size (n);
+      s_instance->do_set_size (n);
   }
 
   int
   command_history::size (void)
   {
-    return (instance_ok ())
-      ? instance->do_size () : 0;
+    return instance_ok () ? s_instance->do_size () : 0;
   }
 
   void
   command_history::ignore_entries (bool flag)
   {
     if (instance_ok ())
-      instance->do_ignore_entries (flag);
+      s_instance->do_ignore_entries (flag);
   }
 
   bool
   command_history::ignoring_entries (void)
   {
-    return (instance_ok ())
-      ? instance->do_ignoring_entries () : false;
+    return instance_ok () ? s_instance->do_ignoring_entries () : false;
   }
 
   bool
   command_history::add (const std::string& s)
   {
     if (instance_ok ())
-      return instance->do_add (s);
+      return s_instance->do_add (s);
     return false;
   }
 
@@ -613,84 +609,76 @@ namespace octave
   command_history::remove (int n)
   {
     if (instance_ok ())
-      instance->do_remove (n);
+      s_instance->do_remove (n);
   }
 
   void
   command_history::clear (void)
   {
     if (instance_ok ())
-      instance->do_clear ();
+      s_instance->do_clear ();
   }
 
   int
   command_history::where (void)
   {
-    return (instance_ok ())
-      ? instance->do_where () : 0;
+    return instance_ok () ? s_instance->do_where () : 0;
   }
 
   int
   command_history::length (void)
   {
-    return (instance_ok ())
-      ? instance->do_length () : 0;
+    return instance_ok () ? s_instance->do_length () : 0;
   }
 
   int
   command_history::max_input_history (void)
   {
-    return (instance_ok ())
-      ? instance->do_max_input_history () : 0;
+    return instance_ok () ? s_instance->do_max_input_history () : 0;
   }
 
   int
   command_history::base (void)
   {
-    return (instance_ok ())
-      ? instance->do_base () : 0;
+    return instance_ok () ? s_instance->do_base () : 0;
   }
 
   int
   command_history::current_number (void)
   {
-    return (instance_ok ())
-      ? instance->do_current_number () : 0;
+    return instance_ok () ? s_instance->do_current_number () : 0;
   }
 
   void
   command_history::stifle (int n)
   {
     if (instance_ok ())
-      instance->do_stifle (n);
+      s_instance->do_stifle (n);
   }
 
   int
   command_history::unstifle (void)
   {
-    return (instance_ok ())
-      ? instance->do_unstifle () : 0;
+    return instance_ok () ? s_instance->do_unstifle () : 0;
   }
 
   int
   command_history::is_stifled (void)
   {
-    return (instance_ok ())
-      ? instance->do_is_stifled () : 0;
+    return instance_ok () ? s_instance->do_is_stifled () : 0;
   }
 
   void
   command_history::set_mark (int n)
   {
     if (instance_ok ())
-      instance->do_set_mark (n);
+      s_instance->do_set_mark (n);
   }
 
   int
   command_history::goto_mark (void)
   {
-    return (instance_ok ())
-      ? instance->do_goto_mark () : 0;
+    return instance_ok () ? s_instance->do_goto_mark () : 0;
   }
 
   void
@@ -703,7 +691,7 @@ namespace octave
   command_history::read (const std::string& f, bool must_exist)
   {
     if (instance_ok ())
-      instance->do_read (f, must_exist);
+      s_instance->do_read (f, must_exist);
   }
 
   void
@@ -717,56 +705,55 @@ namespace octave
                                bool must_exist)
   {
     if (instance_ok ())
-      instance->do_read_range (f, from, to, must_exist);
+      s_instance->do_read_range (f, from, to, must_exist);
   }
 
   void
   command_history::write (const std::string& f)
   {
     if (instance_ok ())
-      instance->do_write (f);
+      s_instance->do_write (f);
   }
 
   void
   command_history::append (const std::string& f)
   {
     if (instance_ok ())
-      instance->do_append (f);
+      s_instance->do_append (f);
   }
 
   void
   command_history::truncate_file (const std::string& f, int n)
   {
     if (instance_ok ())
-      instance->do_truncate_file (f, n);
+      s_instance->do_truncate_file (f, n);
   }
 
   string_vector
   command_history::list (int limit, bool number_lines)
   {
-    return (instance_ok ())
-      ? instance->do_list (limit, number_lines) : string_vector ();
+    return (instance_ok ()
+            ? s_instance->do_list (limit, number_lines) : string_vector ());
   }
 
   std::string
   command_history::get_entry (int n)
   {
-    return (instance_ok ())
-      ? instance->do_get_entry (n) : "";
+    return instance_ok () ? s_instance->do_get_entry (n) : "";
   }
 
   void
   command_history::replace_entry (int which, const std::string& line)
   {
     if (instance_ok ())
-      instance->do_replace_entry (which, line);
+      s_instance->do_replace_entry (which, line);
   }
 
   void
   command_history::clean_up_and_save (const std::string& f, int n)
   {
     if (instance_ok ())
-      instance->do_clean_up_and_save (f, n);
+      s_instance->do_clean_up_and_save (f, n);
   }
 
   void
@@ -785,49 +772,49 @@ namespace octave
     if (read_history_file)
       command_history::read (false);
 
-    initialized = true;
+    m_initialized = true;
   }
 
   bool
   command_history::do_is_initialized (void) const
   {
-    return initialized;
+    return m_initialized;
   }
 
   void
   command_history::do_set_file (const std::string& f)
   {
-    xfile = f;
+    m_file = f;
   }
 
   std::string
   command_history::do_file (void)
   {
-    return xfile;
+    return m_file;
   }
 
   void
   command_history::do_set_size (int n)
   {
-    xsize = n;
+    m_size = n;
   }
 
   int
   command_history::do_size (void) const
   {
-    return xsize;
+    return m_size;
   }
 
   void
   command_history::do_ignore_entries (bool flag)
   {
-    ignoring_additions = flag;
+    m_ignoring_additions = flag;
   }
 
   bool
   command_history::do_ignoring_entries (void) const
   {
-    return ignoring_additions;
+    return m_ignoring_additions;
   }
 
   bool
@@ -871,7 +858,7 @@ namespace octave
   int
   command_history::do_current_number (void) const
   {
-    return (xsize > 0) ? do_base () + do_where () : -1;
+    return m_size > 0 ? do_base () + do_where () : -1;
   }
 
   void
@@ -917,12 +904,12 @@ namespace octave
   void
   command_history::do_write (const std::string& f_arg) const
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (f.empty ())
           error ("command_history::write: missing filename");
@@ -932,18 +919,18 @@ namespace octave
   void
   command_history::do_append (const std::string& f_arg)
   {
-    if (initialized)
+    if (m_initialized)
       {
-        if (lines_this_session)
+        if (m_lines_this_session)
           {
-            if (lines_this_session < do_where ())
+            if (m_lines_this_session < do_where ())
               {
                 // Create file if it doesn't already exist.
 
                 std::string f = f_arg;
 
                 if (f.empty ())
-                  f = xfile;
+                  f = m_file;
 
                 if (f.empty ())
                   error ("command_history::append: missing filename");
@@ -955,12 +942,12 @@ namespace octave
   void
   command_history::do_truncate_file (const std::string& f_arg, int) const
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (f.empty ())
           error ("command_history::truncate_file: missing filename");
@@ -986,12 +973,12 @@ namespace octave
   void
   command_history::do_clean_up_and_save (const std::string& f_arg, int)
   {
-    if (initialized)
+    if (m_initialized)
       {
         std::string f = f_arg;
 
         if (f.empty ())
-          f = xfile;
+          f = m_file;
 
         if (f.empty ())
           error ("command_history::clean_up_and_save: missing filename");

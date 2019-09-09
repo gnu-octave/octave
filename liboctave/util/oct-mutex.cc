@@ -112,38 +112,38 @@ namespace octave
   {
   public:
     pthread_mutex (void)
-      : base_mutex (), pm ()
+      : base_mutex (), m_pm ()
     {
       pthread_mutexattr_t attr;
 
       pthread_mutexattr_init (&attr);
       pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
-      pthread_mutex_init (&pm, &attr);
+      pthread_mutex_init (&m_pm, &attr);
       pthread_mutexattr_destroy (&attr);
     }
 
     ~pthread_mutex (void)
     {
-      pthread_mutex_destroy (&pm);
+      pthread_mutex_destroy (&m_pm);
     }
 
     void lock (void)
     {
-      pthread_mutex_lock (&pm);
+      pthread_mutex_lock (&m_pm);
     }
 
     void unlock (void)
     {
-      pthread_mutex_unlock (&pm);
+      pthread_mutex_unlock (&m_pm);
     }
 
     bool try_lock (void)
     {
-      return (pthread_mutex_trylock (&pm) == 0);
+      return (pthread_mutex_trylock (&m_pm) == 0);
     }
 
   private:
-    pthread_mutex_t pm;
+    pthread_mutex_t m_pm;
   };
 
   static pthread_t thread_id = 0;
@@ -174,5 +174,5 @@ namespace octave
 #endif
   }
 
-  mutex::mutex (void) : rep (init_rep ()) { }
+  mutex::mutex (void) : m_rep (init_rep ()) { }
 }

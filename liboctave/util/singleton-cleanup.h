@@ -33,7 +33,7 @@ singleton_cleanup_list
 {
 protected:
 
-  singleton_cleanup_list (void) : fcn_list () { }
+  singleton_cleanup_list (void) : m_fcn_list () { }
 
 public:
 
@@ -50,24 +50,32 @@ public:
   static void add (fptr f)
   {
     if (instance_ok ())
-      instance->do_add (f);
+      s_instance->do_add (f);
   }
 
-  static void cleanup (void) { delete instance; instance = nullptr; }
+  static void cleanup (void)
+  {
+    delete s_instance;
+    s_instance = nullptr;
+  }
 
 private:
 
-  static singleton_cleanup_list *instance;
+  static singleton_cleanup_list *s_instance;
 
   static bool instance_ok (void);
 
-  static void cleanup_instance (void) { delete instance; instance = nullptr; }
+  static void cleanup_instance (void)
+  {
+    delete s_instance;
+    s_instance = nullptr;
+  }
 
-  std::set<fptr> fcn_list;
+  std::set<fptr> m_fcn_list;
 
   void do_add (fptr f)
   {
-    fcn_list.insert (f);
+    m_fcn_list.insert (f);
   }
 };
 

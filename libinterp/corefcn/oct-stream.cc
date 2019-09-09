@@ -529,7 +529,10 @@ namespace octave
               }
             goto fini;
 
+            // We accept E and G for compatibility with undocumented
+            // Matlab behavior.
           case 'e': case 'f': case 'g':
+          case 'E': case 'G':
             if (modifier == 'h')
               {
                 nconv = -1;
@@ -717,7 +720,7 @@ namespace octave
             switch (elt->type)
               {
               case 'd': case 'i': case 'o': case 'u': case 'x':
-              case 'e': case 'f': case 'g':
+              case 'e': case 'f': case 'g': case 'E': case 'G':
                 break;
 
               default:
@@ -4337,6 +4340,8 @@ namespace octave
       case 'e':
       case 'f':
       case 'g':
+      case 'E':
+      case 'G':
         {
           int c1 = std::istream::traits_type::eof ();
 
@@ -4862,6 +4867,7 @@ namespace octave
                     break;
 
                   case 'e': case 'f': case 'g':
+                  case 'E': case 'G':
                     {
                       double tmp;
 
@@ -5183,6 +5189,7 @@ namespace octave
             break;
 
           case 'e': case 'f': case 'g':
+          case 'E': case 'G':
             {
               double tmp;
 

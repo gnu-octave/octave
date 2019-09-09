@@ -55,24 +55,9 @@ namespace octave
       compile_internal ();
     }
 
-    regexp (const regexp& rx)
-      : m_pattern (rx.m_pattern), m_data (rx.m_data), m_named_pats (rx.m_named_pats),
-        m_names (rx.m_names), m_named_idx (rx.m_named_idx)
-    { }
+    regexp (const regexp&) = default;
 
-    regexp& operator = (const regexp& rx)
-    {
-      if (this != &rx)
-        {
-          m_pattern = rx.m_pattern;
-          m_data = rx.m_data;
-          m_named_pats = rx.m_named_pats;
-          m_names = rx.m_names;
-          m_named_idx = rx.m_named_idx;
-        }
-
-      return *this;
-    }
+    regexp& operator = (const regexp& rx) = default;
 
     ~regexp (void) { free (); }
 
@@ -143,29 +128,9 @@ namespace octave
           m_emptymatch (false), m_freespacing (false), m_lineanchors (false),
           m_once (false) { }
 
-      opts (const opts& o)
-        : m_case_insensitive (o.m_case_insensitive),
-          m_dotexceptnewline (o.m_dotexceptnewline),
-          m_emptymatch (o.m_emptymatch),
-          m_freespacing (o.m_freespacing),
-          m_lineanchors (o.m_lineanchors),
-          m_once (o.m_once)
-      { }
+      opts (const opts&) = default;
 
-      opts& operator = (const opts& o)
-      {
-        if (this != &o)
-          {
-            m_case_insensitive = o.m_case_insensitive;
-            m_dotexceptnewline = o.m_dotexceptnewline;
-            m_emptymatch = o.m_emptymatch;
-            m_freespacing = o.m_freespacing;
-            m_lineanchors = o.m_lineanchors;
-            m_once = o.m_once;
-          }
-
-        return *this;
-      }
+      opts& operator = (const opts&) = default;
 
       ~opts (void) = default;
 
@@ -204,12 +169,9 @@ namespace octave
           m_token_extents (te), m_start (s), m_end (e)
       { }
 
-      match_element (const match_element& a)
-        : m_match_string (a.m_match_string),
-          m_named_tokens (a.m_named_tokens), m_tokens (a.m_tokens),
-          m_token_extents (a.m_token_extents),
-          m_start (a.m_start), m_end (a.m_end)
-      { }
+      match_element (const match_element&) = default;
+
+      match_element& operator = (const match_element&) = default;
 
       std::string match_string (void) const { return m_match_string; }
       string_vector named_tokens (void) const { return m_named_tokens; }
@@ -240,21 +202,9 @@ namespace octave
         : base_list<match_element> (l), m_named_pats (np)
       { }
 
-      match_data (const match_data& rx_lst)
-        : base_list<match_element> (rx_lst),
-          m_named_pats (rx_lst.m_named_pats)
-      { }
+      match_data (const match_data&) = default;
 
-      match_data& operator = (const match_data& rx_lst)
-      {
-        if (this != &rx_lst)
-          {
-            base_list<match_element>::operator = (rx_lst);
-            m_named_pats = rx_lst.m_named_pats;
-          }
-
-        return *this;
-      }
+      match_data& operator = (const match_data&) = default;
 
       ~match_data (void) = default;
 
@@ -275,7 +225,6 @@ namespace octave
     // Internal data describing the regular expression.
     void *m_data;
 
-    std::string m_m;
     string_vector m_named_pats;
     int m_names;
     Array<int> m_named_idx;

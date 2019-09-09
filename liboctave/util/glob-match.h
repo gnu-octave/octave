@@ -45,24 +45,17 @@ public:
 
   glob_match (const std::string& p,
               unsigned int xopts = pathname | noescape | period)
-    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
+    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts))
+  { }
 
   glob_match (const string_vector& p = string_vector (),
               unsigned int xopts = pathname | noescape | period)
-    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts)) { }
+    : m_pat (p), m_fnmatch_flags (opts_to_fnmatch_flags (xopts))
+  { }
 
-  glob_match (const glob_match& gm)
-    : m_pat (gm.m_pat), m_fnmatch_flags (gm.m_fnmatch_flags) { }
+  glob_match (const glob_match& gm) = default;
 
-  glob_match& operator = (const glob_match& gm)
-  {
-    if (this != &gm)
-      {
-        m_pat = gm.m_pat;
-        m_fnmatch_flags = gm.m_fnmatch_flags;
-      }
-    return *this;
-  }
+  glob_match& operator = (const glob_match& gm) = default;
 
   ~glob_match (void) = default;
 

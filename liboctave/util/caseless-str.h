@@ -35,17 +35,16 @@ public:
   typedef std::string::iterator iterator;
   typedef std::string::const_iterator const_iterator;
 
-  caseless_str (void) : std::string () { }
+  caseless_str (void) = default;
+
   caseless_str (const std::string& s) : std::string (s) { }
   caseless_str (const char *s) : std::string (s) { }
 
-  caseless_str (const caseless_str& name) : std::string (name) { }
+  caseless_str (const caseless_str&) = default;
 
-  caseless_str& operator = (const caseless_str& pname)
-  {
-    std::string::operator = (pname);
-    return *this;
-  }
+  caseless_str& operator = (const caseless_str&) = default;
+
+  ~caseless_str (void) = default;
 
   bool operator < (const std::string& s) const
   {

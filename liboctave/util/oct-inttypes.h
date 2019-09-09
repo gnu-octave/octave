@@ -831,13 +831,11 @@ public:
   octave_int (const octave_int<U>& i)
     : m_ival (octave_int_base<T>::truncate_int (i.value ())) { }
 
-  octave_int (const octave_int<T>& i) : m_ival (i.m_ival) { }
+  octave_int (const octave_int<T>&) = default;
 
-  octave_int& operator = (const octave_int<T>& i)
-  {
-    m_ival = i.m_ival;
-    return *this;
-  }
+  octave_int& operator = (const octave_int<T>&) = default;
+
+  ~octave_int (void) = default;
 
   T value (void) const { return m_ival; }
 

@@ -37,7 +37,7 @@ string_vector
 {
 public:
 
-  string_vector (void) : m_data () { }
+  string_vector (void) = default;
 
   explicit string_vector (octave_idx_type n) : m_data (dim_vector (n, 1)) { }
 
@@ -45,9 +45,9 @@ public:
 
   string_vector (const std::string& s) : m_data (dim_vector (1, 1), s) { }
 
-  string_vector (const string_vector& s) : m_data (s.m_data) { }
+  string_vector (const string_vector&) = default;
 
-  string_vector (string_vector&& s) : m_data (std::move (s.m_data)) { }
+  string_vector (string_vector&&) = default;
 
   //! Constructor for STL containers of std::string.
   //!
@@ -65,21 +65,9 @@ public:
 
   string_vector (const char * const *s, octave_idx_type n);
 
-  string_vector& operator = (const string_vector& s)
-  {
-    if (this != &s)
-      m_data = s.m_data;
+  string_vector& operator = (const string_vector&) = default;
 
-    return *this;
-  }
-
-  string_vector& operator = (string_vector&& s)
-  {
-    if (this != &s)
-      m_data = std::move (s.m_data);
-
-    return *this;
-  }
+  string_vector& operator = (string_vector&&) = default;
 
   ~string_vector (void) = default;
 

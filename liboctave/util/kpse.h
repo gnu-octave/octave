@@ -41,9 +41,13 @@ public:
     set_end ();
   }
 
-  kpse_path_iterator (const kpse_path_iterator& pi)
-    : m_path (pi.m_path), m_b (pi.m_b), m_e (pi.m_e), m_len (pi.m_len)
-  { }
+  kpse_path_iterator (const kpse_path_iterator&) = default;
+
+  // No assignment!
+
+  kpse_path_iterator& operator = (const kpse_path_iterator&) = delete;
+
+  ~kpse_path_iterator (void) = default;
 
   kpse_path_iterator operator ++ (int)
   {
@@ -65,9 +69,6 @@ private:
 
   void set_end (void);
   void next (void);
-
-  // No assignment.
-  kpse_path_iterator& operator = (const kpse_path_iterator&);
 };
 
 extern unsigned int kpse_debug;

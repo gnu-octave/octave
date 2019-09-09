@@ -43,18 +43,11 @@ namespace octave
   {
   public:
 
-    execution_exception (void) : m_stack_trace () { }
+    execution_exception (void) = default;
 
-    execution_exception (const execution_exception& x)
-      : m_stack_trace (x.m_stack_trace) { }
+    execution_exception (const execution_exception&) = default;
 
-    execution_exception& operator = (const execution_exception& x)
-    {
-      if (&x != this)
-        m_stack_trace = x.m_stack_trace;
-
-      return *this;
-    }
+    execution_exception& operator = (const execution_exception&) = default;
 
     ~execution_exception (void) = default;
 

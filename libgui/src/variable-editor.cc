@@ -180,6 +180,9 @@ namespace octave
         m_dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
         m_dock_action->setToolTip (tr ("Dock widget"));
 
+        setWindowFlags (Qt::Window);
+
+        show ();
         activateWindow ();
         setFocus ();
 

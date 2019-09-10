@@ -521,7 +521,9 @@ namespace octave
               modifier = s[i++];
             break;
 
+          // We accept X for compatibility with undocumented Matlab behavior.
           case 'd': case 'i': case 'o': case 'u': case 'x':
+          case 'X':
             if (modifier == 'L')
               {
                 nconv = -1;
@@ -719,7 +721,7 @@ namespace octave
 
             switch (elt->type)
               {
-              case 'd': case 'i': case 'o': case 'u': case 'x':
+              case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
               case 'e': case 'f': case 'g': case 'E': case 'G':
                 break;
 
@@ -4195,6 +4197,7 @@ namespace octave
         break;
 
       case 'x':
+      case 'X':
         is >> std::hex >> value >> std::dec;
         break;
 
@@ -4832,7 +4835,7 @@ namespace octave
                     }
                     break;
 
-                  case 'o': case 'u': case 'x':
+                  case 'o': case 'u': case 'x': case 'X':
                     {
                       switch (elt->modifier)
                         {
@@ -5142,7 +5145,7 @@ namespace octave
             }
             break;
 
-          case 'o': case 'u': case 'x':
+          case 'o': case 'u': case 'x': case 'X':
             {
               switch (elt->modifier)
                 {

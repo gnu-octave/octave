@@ -71,6 +71,9 @@ namespace octave
 
     bool contains_canonical (const std::string& dir_name) const;
 
+    bool contains_file_in_dir (const std::string& file_name,
+                               const std::string& dir_name);
+
     std::string find_method (const std::string& class_name,
                              const std::string& meth,
                              std::string& dir_name,

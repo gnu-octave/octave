@@ -74,9 +74,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "bp-table.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "load-path.h"
 #include "oct-map.h"
-#include "qt-interpreter-events.h"
 #include "ov-usr-fcn.h"
+#include "qt-interpreter-events.h"
 #include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -1111,10 +1112,12 @@ namespace octave
        {
          // INTERPRETER THREAD
 
+         load_path& lp = interp.get_load_path ();
+
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (qt_interpreter_events::file_in_path (info.file, info.dir))
+         if (lp.contains_file_in_dir (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
 
@@ -1198,7 +1201,9 @@ namespace octave
        {
          // INTERPRETER THREAD
 
-         if (qt_interpreter_events::file_in_path (info.file, info.dir))
+         load_path& lp = interp.get_load_path ();
+
+         if (lp.contains_file_in_dir (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
 
@@ -1331,10 +1336,12 @@ namespace octave
        {
          // INTERPRETER THREAD
 
+         load_path& lp = interp.get_load_path ();
+
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
-         if (qt_interpreter_events::file_in_path (info.file, info.dir))
+         if (lp.contains_file_in_dir (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
 

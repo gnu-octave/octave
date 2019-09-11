@@ -166,8 +166,6 @@ namespace octave
 
     void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 
-    static bool file_in_path (const std::string& file, const std::string& dir);
-
     void lock (void) { m_mutex.lock (); }
 
     void wait (void) { m_waitcondition.wait (&m_mutex); }

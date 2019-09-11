@@ -74,6 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "load-path.h"
 #include "oct-map.h"
 #include "octave.h"
 #include "parse.h"
@@ -1058,9 +1059,11 @@ namespace octave
              // Valid identifier: call as function with possibility to
              // debug.
 
+             load_path& lp = interp.get_load_path ();
+
              std::string path = info.absolutePath ().toStdString ();
 
-             if (qt_interpreter_events::file_in_path (file_path, path))
+             if (lp.contains_file_in_dir (file_path, path))
                command_editor::replace_line (function_name.toStdString ());
            }
          else

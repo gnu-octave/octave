@@ -35,6 +35,7 @@
 
 #include "defaults.h"
 #include "defun.h"
+#include "dirfns.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -392,6 +393,80 @@ namespace octave
       }
 
     return retval;
+  }
+
+  bool
+  load_path::contains_file_in_dir (const std::string& file,
+                                   const std::string& dir)
+  {
+    bool ok = false;
+    bool addpath_option = true;
+
+    std::string curr_dir = sys::env::get_current_directory ();
+
+    if (same_file (curr_dir, dir))
+      ok = true;
+    else
+      {
+        bool dir_in_load_path = contains_canonical (dir);
+
+        // get base name, allowing "@class/method.m" (bug #41514)
+        std::string base_file = (file.length () > dir.length ())
+          ? file.substr (dir.length () + 1)
+          : sys::env::base_pathname (file);
+
+        std::string lp_file = find_file (base_file);
+
+        if (dir_in_load_path)
+          {
+            if (same_file (lp_file, file))
+              ok = true;
+          }
+        else
+          {
+            // File directory is not in path.  Is the file in the path in
+            // the current directory?  If so, then changing the current
+            // directory will be needed.  Adding directory to path is
+            // not enough because the file in the current directory would
+            // still be found.
+
+            if (same_file (lp_file, base_file))
+              {
+                if (same_file (curr_dir, dir))
+                  ok = true;
+                else
+                  addpath_option = false;
+              }
+          }
+      }
+
+    if (! ok)
+      {
+        event_manager& evmgr = m_interpreter.get_event_manager ();
+
+        int action
+          = evmgr.debug_cd_or_addpath_error (file, dir, addpath_option);
+
+        switch (action)
+          {
+          case 1:
+            change_to_directory (dir);
+            ok = true;
+            break;
+
+          case 2:
+            {
+              prepend (dir);
+              ok = true;
+            }
+            break;
+
+          default:
+            break;
+          }
+      }
+
+    return ok;
   }
 
   std::list<std::string>

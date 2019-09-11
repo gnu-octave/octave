@@ -33,14 +33,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <QtAlgorithms>
 #include <QMessageBox>
 
+#include "qt-interpreter-events.h"
+#include "set-path-model.h"
+
 #include "pathsearch.h"
 
-#include "event-manager.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
-
-#include "set-path-model.h"
 
 namespace octave
 {
@@ -51,7 +51,6 @@ namespace octave
              this, SLOT (update_data (const QStringList&)));
 
     m_revertible = false;
-    path_to_model ();
   }
 
   std::string set_path_model::to_string (void)
@@ -75,20 +74,16 @@ namespace octave
 
   void set_path_model::model_to_path (void)
   {
-    event_manager& evmgr
-      = __get_event_manager__ ("set_path_model::model_to_path");
-
     std::string path_str = to_string ();
 
-    evmgr.post_event
-      ([path_str] (void)
+    emit interpreter_event
+      ([path_str] (interpreter& interp)
        {
          // INTERPRETER THREAD
 
-         load_path& lp = __get_load_path__ ("set_path_model::model_to_path");
+         load_path& lp = interp.get_load_path ();
 
          lp.set (path_str);
-
        });
   }
 
@@ -105,14 +100,10 @@ namespace octave
   {
     model_to_path ();
 
-    event_manager& evmgr = __get_event_manager__ ("set_path_model::save");
-
-    evmgr.post_event
-      ([] (void)
+    emit interpreter_event
+      ([] (interpreter& interp)
        {
          // INTERPRETER THREAD
-
-         interpreter& interp = __get_interpreter__ ("set_path_model::save");
 
          interp.feval ("savepath");
        });
@@ -291,12 +282,10 @@ namespace octave
 
   void set_path_model::path_to_model (void)
   {
-    event_manager& evmgr = __get_event_manager__ ("set_path_model::path_to_model");
-
-    evmgr.post_event
-      ([this] (void)
+    emit interpreter_event
+      ([this] (interpreter& interp)
        {
-         load_path& lp = __get_load_path__ ("set_path_model::path_to_model");
+         load_path& lp = interp.get_load_path ();
 
          std::list<std::string> dir_list = lp.dir_list ();
 

@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "gui-preferences.h"
 
+#include "ovl.h"
+
 namespace octave
 {
   set_path_dialog::set_path_dialog (QWidget *parent)
@@ -111,6 +113,15 @@ namespace octave
 
     connect (m_save_button, SIGNAL (clicked (void)),
              model, SLOT (save (void)));
+
+    // Any interpreter_event signal from a set_path_model object is
+    // handled the same as for the parent set_path_dialog object.
+
+    connect (model, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (model, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
 
     m_path_list = new QListView (this);
     m_path_list->setWordWrap (false);

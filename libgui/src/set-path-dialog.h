@@ -26,7 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QModelIndex>
 #include <QFileInfo>
 
-#include "ovl.h"
+#include "qt-interpreter-events.h"
+
+class octave_value_list;
 
 class QLabel;
 class QPushButton;
@@ -42,6 +44,10 @@ namespace octave
 
   public:
 
+    // You must call update_model to fully initialize the path displayed
+    // in the dialog.  That may only be done after the intepreter_event
+    // signal connections are made to the Octave interpreter.
+
     set_path_dialog (QWidget *parent = nullptr);
 
     virtual ~set_path_dialog (void);
@@ -54,6 +60,9 @@ namespace octave
 
     void modify_path_signal (const octave_value_list& dir_list,
                              bool rm, bool subdirs);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   public slots:
 

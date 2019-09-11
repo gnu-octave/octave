@@ -1670,14 +1670,30 @@ namespace octave
     m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
     m_set_path_dlg->show ();
 
+    // Any interpreter_event signal from a set_path_dialog object is
+    // handled the same as for the main_window object.
+
+    connect (m_set_path_dlg, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (m_set_path_dlg, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     connect (m_set_path_dlg,
              SIGNAL (modify_path_signal (const octave_value_list&, bool, bool)),
              this, SLOT (modify_path (const octave_value_list&, bool, bool)));
 
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
+
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
+
     connect (qt_link, SIGNAL (update_path_dialog_signal (void)),
              m_set_path_dlg, SLOT (update_model (void)));
+
+    // Now that all the signal connections are in place for the dialog
+    // we can set the initial value of the path in the model.
+
+    m_set_path_dlg->update_model ();
   }
 
   void main_window::find_files (const QString& start_dir)

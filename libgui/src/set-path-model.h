@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileInfo>
 #include <QIcon>
 
+#include "qt-interpreter-events.h"
+
 namespace octave
 {
   class set_path_model : public QAbstractListModel
@@ -78,6 +80,9 @@ namespace octave
   signals:
 
     void update_data_signal (const QStringList& dirs);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
 
   private slots:
 

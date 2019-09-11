@@ -2686,21 +2686,21 @@ template <typename T>
 Array<T>
 Sparse<T>::array_value () const
 {
-  NoAlias< Array<T>> retval (dims (), T ());
+  Array<T> retval (dims (), T ());
   if (rows () == 1)
     {
       octave_idx_type i = 0;
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         {
           if (cidx (j+1) > i)
-            retval(j) = data (i++);
+            retval.xelem (j) = data (i++);
         }
     }
   else
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         for (octave_idx_type i = cidx (j), iu = cidx (j+1); i < iu; i++)
-          retval(ridx (i), j) = data (i);
+          retval.xelem (ridx (i), j) = data (i);
     }
 
   return retval;

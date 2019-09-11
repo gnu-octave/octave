@@ -152,14 +152,12 @@ namespace octave
     tw.goto_frame (tw.debug_frame ());
 
     octave_user_code *caller = tw.current_user_code ();
-    std::string nm;
+    std::string fcn_file_nm, fcn_nm;
 
     if (caller)
       {
-        nm = caller->fcn_file_name ();
-
-        if (nm.empty ())
-          nm = caller->name ();
+        fcn_file_nm = caller->fcn_file_name ();
+        fcn_nm = fcn_file_nm.empty () ? caller->name () : fcn_file_nm;
       }
 
     int curr_debug_line = tw.current_line ();
@@ -168,13 +166,13 @@ namespace octave
 
     input_system& input_sys = m_interpreter.get_input_system ();
 
-    if (! nm.empty ())
+    if (! fcn_nm.empty ())
       {
         if (input_sys.gud_mode ())
           {
             static char ctrl_z = 'Z' & 0x1f;
 
-            buf << ctrl_z << ctrl_z << nm << ':' << curr_debug_line;
+            buf << ctrl_z << ctrl_z << fcn_nm << ':' << curr_debug_line;
           }
         else
           {
@@ -191,12 +189,12 @@ namespace octave
 
             event_manager& evmgr = m_interpreter.get_event_manager ();
 
-            evmgr.enter_debugger_event (nm, curr_debug_line);
+            evmgr.enter_debugger_event (fcn_nm, fcn_file_nm, curr_debug_line);
 
             evmgr.set_workspace ();
 
-            frame.add ([nm, curr_debug_line] (event_manager& ol) {
-                         ol.execute_in_debugger_event (nm, curr_debug_line);
+            frame.add ([fcn_nm, curr_debug_line] (event_manager& ol) {
+                         ol.execute_in_debugger_event (fcn_nm, curr_debug_line);
                        }, std::ref (evmgr));
 
             if (! silent)

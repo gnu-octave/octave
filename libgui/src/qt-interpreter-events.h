@@ -141,7 +141,8 @@ namespace octave
 
     void post_input_event (void);
 
-    void enter_debugger_event (const std::string& file, int line);
+    void enter_debugger_event (const std::string& fcn_name,
+                               const std::string& fcn_file_name, int line);
 
     void execute_in_debugger_event (const std::string& file, int line);
 

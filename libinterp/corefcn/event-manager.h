@@ -185,7 +185,10 @@ namespace octave
     virtual void post_input_event (void) { }
 
     virtual void
-    enter_debugger_event (const std::string& /*file*/, int /*line*/) { }
+    enter_debugger_event (const std::string& /*fcn_name*/,
+                          const std::string& /*fcn_file_name*/,
+                          int /*line*/)
+    { }
 
     virtual void
     execute_in_debugger_event (const std::string& /*file*/, int /*line*/) { }
@@ -456,13 +459,14 @@ namespace octave
         instance->post_input_event ();
     }
 
-    void enter_debugger_event (const std::string& file, int line)
+    void enter_debugger_event (const std::string& fcn_name,
+                               const std::string& fcn_file_name, int line)
     {
       if (enabled ())
         {
           debugging = true;
 
-          instance->enter_debugger_event (file, line);
+          instance->enter_debugger_event (fcn_name, fcn_file_name, line);
         }
     }
 

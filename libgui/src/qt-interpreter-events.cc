@@ -487,20 +487,14 @@ namespace octave
   void qt_interpreter_events::post_input_event (void)
   { }
 
-  void qt_interpreter_events::enter_debugger_event (const std::string& file,
+  void qt_interpreter_events::enter_debugger_event (const std::string& /*fcn_name*/,
+                                                    const std::string& fcn_file_name,
                                                     int line)
   {
-    interpreter& interp
-      = __get_interpreter__ ("qt_interpreter_events::enter_debugger_event");
-
-    octave_value_list fct = F__which__ (interp, ovl (file),0);
-    octave_map map = fct(0).map_value ();
-
-    std::string type = map.contents ("type").data ()[0].string_value ();
-    if (type == "command-line function")
+    if (fcn_file_name.empty ())
       return;
 
-    insert_debugger_pointer (file, line);
+    insert_debugger_pointer (fcn_file_name, line);
 
     emit enter_debugger_signal ();
   }

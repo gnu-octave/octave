@@ -1162,6 +1162,8 @@ namespace octave
         emit interpreter_event
           ([this] (interpreter& interp)
            {
+             // INTERPRETER THREAD
+
              F__db_next_breakpoint_quiet__ (interp,
                                             ovl (m_suppress_dbg_location));
              Fdbstep (interp);

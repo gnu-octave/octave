@@ -896,6 +896,8 @@ namespace QtHandles
                     emit interpreter_event
                       ([this, props] (octave::interpreter& interp)
                        {
+                         // INTERPRETER THREAD
+
                          interp.feval ("annotation", props);
 
                          redraw ();

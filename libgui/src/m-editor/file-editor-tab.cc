@@ -1109,6 +1109,8 @@ namespace octave
     emit interpreter_event
       ([info] (interpreter& interp)
        {
+         // INTERPRETER THREAD
+
          bp_table::intmap line_info;
          line_info[0] = info.line;
 
@@ -1194,6 +1196,8 @@ namespace octave
     emit interpreter_event
       ([info] (interpreter& interp)
        {
+         // INTERPRETER THREAD
+
          if (qt_interpreter_events::file_in_path (info.file, info.dir))
            {
              tree_evaluator& tw = interp.get_evaluator ();
@@ -1325,6 +1329,8 @@ namespace octave
     emit interpreter_event
       ([this, info] (interpreter& interp)
        {
+         // INTERPRETER THREAD
+
          bp_table::intmap line_info;
          line_info[0] = info.line;
 

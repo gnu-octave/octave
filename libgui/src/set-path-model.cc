@@ -285,6 +285,8 @@ namespace octave
     emit interpreter_event
       ([this] (interpreter& interp)
        {
+         // INTERPRETER THREAD
+
          load_path& lp = interp.get_load_path ();
 
          std::list<std::string> dir_list = lp.dir_list ();

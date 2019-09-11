@@ -186,6 +186,8 @@ namespace QtHandles
             emit interpreter_event
               ([] (void)
                {
+                 // INTERPRETER THREAD
+
                  std::rethrow_exception (std::current_exception ());
                });
           }

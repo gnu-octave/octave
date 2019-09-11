@@ -371,7 +371,7 @@ namespace octave
       m_output_system (*this),
       m_history_system (*this),
       m_dynamic_loader (*this),
-      m_load_path (),
+      m_load_path (*this),
       m_load_save_system (*this),
       m_type_info (),
       m_symbol_table (*this),

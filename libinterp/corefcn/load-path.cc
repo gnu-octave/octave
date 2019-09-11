@@ -193,9 +193,9 @@ namespace octave
   std::string load_path::sys_path;
   load_path::abs_dir_cache_type load_path::abs_dir_cache;
 
-  load_path::load_path (void)
-    : package_map (), top_level_package (), dir_info_list (), init_dirs (),
-      m_command_line_path (),
+  load_path::load_path (interpreter& interp)
+    : m_interpreter (interp), package_map (), top_level_package (),
+      dir_info_list (), init_dirs (), m_command_line_path (),
       add_hook ([this] (const std::string& dir) { this->execute_pkg_add (dir); }),
       remove_hook ([this] (const std::string& dir) { this->execute_pkg_del (dir); })
   { }

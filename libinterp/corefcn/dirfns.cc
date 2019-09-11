@@ -65,36 +65,38 @@ along with Octave; see the file COPYING.  If not, see
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
 
-// The time we last time we changed directories.
-octave::sys::time Vlast_chdir_time = 0.0;
-
-static int
-octave_change_to_directory (const std::string& newdir)
+namespace octave
 {
-  std::string xdir = octave::sys::file_ops::tilde_expand (newdir);
+  // The time we last time we changed directories.
+  sys::time Vlast_chdir_time = 0.0;
 
-  int cd_ok = octave::sys::env::chdir (xdir);
+  int change_to_directory (const std::string& newdir)
+  {
+    std::string xdir = octave::sys::file_ops::tilde_expand (newdir);
 
-  if (! cd_ok)
-    error ("%s: %s", newdir.c_str (), std::strerror (errno));
+    int cd_ok = octave::sys::env::chdir (xdir);
 
-  Vlast_chdir_time.stamp ();
+    if (! cd_ok)
+      error ("%s: %s", newdir.c_str (), std::strerror (errno));
 
-  // FIXME: should these actions be handled as a list of functions
-  // to call so users can add their own chdir handlers?
+    Vlast_chdir_time.stamp ();
 
-  octave::interpreter& interp
-    = octave::__get_interpreter__ ("octave_change_to_directory");
+    // FIXME: should these actions be handled as a list of functions
+    // to call so users can add their own chdir handlers?
 
-  octave::load_path& lp = interp.get_load_path ();
+    octave::interpreter& interp
+      = octave::__get_interpreter__ ("octave_change_to_directory");
 
-  lp.update ();
+    octave::load_path& lp = interp.get_load_path ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
+    lp.update ();
 
-  evmgr.change_directory (octave::sys::env::get_current_directory ());
+    octave::event_manager& evmgr = interp.get_event_manager ();
 
-  return cd_ok;
+    evmgr.change_directory (octave::sys::env::get_current_directory ());
+
+    return cd_ok;
+  }
 }
 
 DEFUN (cd, args, nargout,
@@ -143,14 +145,14 @@ present working directory rather than changing to the user's home directory.
       std::string dirname = args(0).xstring_value ("cd: DIR must be a string");
 
       if (! dirname.empty ())
-        octave_change_to_directory (dirname);
+        octave::change_to_directory (dirname);
     }
   else if (nargout == 0)
     {
       std::string home_dir = octave::sys::env::get_home_directory ();
 
       if (! home_dir.empty ())
-        octave_change_to_directory (home_dir);
+        octave::change_to_directory (home_dir);
     }
 
   return retval;

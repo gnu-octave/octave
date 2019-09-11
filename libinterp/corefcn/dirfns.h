@@ -31,7 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-time.h"
 
-// The time we last time we changed directories.
-extern octave::sys::time Vlast_chdir_time;
+namespace octave
+{
+  // FIXME: this function should be a method in the interpreter class.
+  extern int change_to_directory (const std::string& newdir);
+
+  // The time we last time we changed directories.
+  extern sys::time Vlast_chdir_time;
+}
 
 #endif

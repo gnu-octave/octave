@@ -181,6 +181,7 @@ namespace octave
         m_dock_action->setToolTip (tr ("Dock widget"));
 
         setWindowFlags (Qt::Window);
+        setWindowTitle (tr ("Variable Editor: ") + objectName ());
 
         show ();
         activateWindow ();

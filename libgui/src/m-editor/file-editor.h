@@ -320,6 +320,8 @@ namespace octave
 
   private:
 
+    file_editor_tab * make_file_editor_tab (const QString& directory = "");
+
     bool is_editor_console_tabbed (void);
     void construct (void);
     void add_file_editor_tab (file_editor_tab *f, const QString& fn,

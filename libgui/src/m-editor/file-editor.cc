@@ -467,7 +467,7 @@ namespace octave
     // editor tab has yet to be created and there is no object to
     // pass a signal to.  Hence, functionality is here.
 
-    file_editor_tab *fileEditorTab = new file_editor_tab (m_ced);
+    file_editor_tab *fileEditorTab = make_file_editor_tab (m_ced);
     add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
     fileEditorTab->new_file (commands);       // title is updated here
     activate ();                              // focus editor and new tab
@@ -1410,7 +1410,7 @@ namespace octave
 
             // If <unnamed> was absent or modified, create a new tab.
             if (! fileEditorTab)
-              fileEditorTab = new file_editor_tab ();
+              fileEditorTab = make_file_editor_tab ();
 
             fileEditorTab->set_encoding (encoding);
             QString result = fileEditorTab->load_file (openFileName);
@@ -2234,13 +2234,10 @@ namespace octave
     check_actions ();
   }
 
-  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
-                                         int index)
+  file_editor_tab *
+  file_editor::make_file_editor_tab (const QString& directory)
   {
-    if (index == -1)
-      m_tab_widget->addTab (f, fn);
-    else
-      m_tab_widget->insertTab (index, f, fn);
+    file_editor_tab *f = new file_editor_tab (directory);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
@@ -2439,6 +2436,17 @@ namespace octave
 
     connect (f, SIGNAL (interpreter_event (const meth_callback&)),
              this, SIGNAL (interpreter_event (const meth_callback&)));
+
+    return f;
+  }
+
+  void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
+                                         int index)
+  {
+    if (index == -1)
+      m_tab_widget->addTab (f, fn);
+    else
+      m_tab_widget->insertTab (index, f, fn);
 
     m_tab_widget->setCurrentWidget (f);
 

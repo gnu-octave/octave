@@ -26,6 +26,9 @@
 ## Find a value of @var{x} which minimizes the multi-variable function
 ## @var{fun}.
 ##
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.
+##
 ## The search begins at the point @var{x0} and iterates using the
 ## @nospell{Nelder & Mead} Simplex algorithm (a derivative-free method).  This
 ## algorithm is better-suited to functions which have discontinuities or for
@@ -156,6 +159,10 @@ function [x, fval, exitflag, output] = fminsearch (varargin)
       options = [];
       varargin = {};
     endif
+  endif
+
+  if (ischar (fun))
+    fun = str2func (fun);
   endif
 
   if (isempty (options))

@@ -764,6 +764,8 @@ namespace octave
 
             if (m_is_octave_file)
               {
+                // FIXME: the following does not appear to be thread safe.
+
                 // octave: get keywords from internal informations depending on
                 //         user preferences
 

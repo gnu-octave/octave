@@ -228,6 +228,13 @@ namespace octave
     connect (this, SIGNAL (maybe_remove_next (int)),
              this, SLOT (handle_remove_next (int)));
 
+    connect (this, SIGNAL (dbstop_if (const QString&, int, const QString&)),
+             this,
+             SLOT (handle_dbstop_if (const QString&, int, const QString&)));
+
+    connect (this, SIGNAL (request_add_breakpoint (int, const QString&)),
+             this, SLOT (handle_request_add_breakpoint (int, const QString&)));
+
     QSettings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
@@ -355,7 +362,6 @@ namespace octave
       return;
 
     QString cond;
-    bp_info info (m_file_name, linenr+1); // Get function name & dir from filename.
 
     // Search for previous condition.  FIXME: is there a more direct way?
     if (m_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
@@ -383,61 +389,74 @@ namespace octave
           cond = '(' + cond + ") || (" + m_edit_area->selectedText () + ')';
       }
 
-    // FIXME: the following does not appear to be thread safe.
+    emit dbstop_if ("dbstop if", linenr+1, cond);
+  }
 
-    interpreter& interp
-      = __get_interpreter__ ("handle_context_menu_break_condition");
+  // Display dialog in GUI thread to get condtition, then emit
+  // interpreter_event signal to check it in the interpreter thread.
+  // If the dialog returns a valid condition, then either emit a signal
+  // to add the breakpoint in the editor tab or a signal to display a
+  // new dialog.
 
-    bool valid = false;
-    std::string prompt = "dbstop if";
+  void file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
+                                          const QString& cond)
+  {
     bool ok;
-    while (! valid)
+    QString new_cond
+      = QInputDialog::getText (this, tr ("Breakpoint condition"),
+                               prompt, QLineEdit::Normal, cond, &ok);
+
+    // If cancel, don't change breakpoint condition.
+
+    if (ok && ! new_cond.isEmpty ())
       {
-        QString new_condition
-          = QInputDialog::getText (this, tr ("Breakpoint condition"),
-                                   tr (prompt.c_str ()), QLineEdit::Normal, cond,
-                                   &ok);
-        if (ok)     // If cancel, don't change breakpoint condition.
-          {
-            error_system& es = interp.get_error_system ();
+        emit interpreter_event
+          ([this, line, new_cond] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
 
-            try
-              {
-                // Suppress error messages on the console.
-                unwind_protect frame;
+             bool eval_error = false;
 
-                int bem = es.buffer_error_messages ();
-                frame.add_method (es, &error_system::set_buffer_error_messages, bem);
+             error_system& es = interp.get_error_system ();
 
-                es.buffer_error_messages (bem + 1);
+             try
+               {
+                 // Suppress error messages on the console.
+                 unwind_protect frame;
 
-                tree_evaluator& tw = interp.get_evaluator ();
-                bp_table& bptab = tw.get_bp_table ();
+                 int bem = es.buffer_error_messages ();
+                 frame.add_method (es, &error_system::set_buffer_error_messages, bem);
 
-                bptab.condition_valid (new_condition.toStdString ());
-                valid = true;
-              }
-            catch (const index_exception& e) { }
-            catch (const execution_exception& e) { }
-            catch (const interrupt_exception&)
-              {
-                ok = false;
-                valid = true;
-              }
+                 es.buffer_error_messages (bem + 1);
 
-            // In case we repeat, set new prompt.
-            prompt = "ERROR: " + es.last_error_message () + "\n\ndbstop if";
-            cond = new_condition;
-          }
-        else
-          valid = true;
-      }
+                 tree_evaluator& tw = interp.get_evaluator ();
+                 bp_table& bptab = tw.get_bp_table ();
 
-    if (ok)       // If the user didn't cancel, actually set the breakpoint.
-      {
-        info.condition = cond.toStdString ();
+                 bptab.condition_valid (new_cond.toStdString ());
 
-        add_breakpoint_event (info);
+                 // The condition seems OK, so set the conditional
+                 // breakpoint.
+
+                 emit request_add_breakpoint (line, new_cond);
+               }
+             catch (const index_exception& e) { eval_error = true; }
+             catch (const execution_exception& e) { eval_error = true; }
+             catch (const interrupt_exception&) { eval_error = true; }
+
+             if (eval_error)
+               {
+                 // Try again with a prompt that indicates the last
+                 // attempt was an error.
+
+                 std::string msg = es.last_error_message ();
+
+                 QString new_prompt = (tr ("ERROR: ")
+                                       + QString::fromStdString (msg)
+                                       + "\n\ndbstop if");
+
+                 emit dbstop_if (new_prompt, line, "");
+               }
+           });
       }
   }
 
@@ -1339,6 +1358,9 @@ namespace octave
        {
          // INTERPRETER THREAD
 
+         // FIXME: note duplication with the code in
+         // handle_context_menu_break_condition.
+
          load_path& lp = interp.get_load_path ();
 
          bp_table::intmap line_info;
@@ -1351,7 +1373,8 @@ namespace octave
              bp_table& bptab = tw.get_bp_table ();
 
              bp_table::intmap bpmap
-               = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
+               = bptab.add_breakpoint (info.function_name, "", line_info,
+                                       info.condition);
 
              if (! bpmap.empty ())
                {

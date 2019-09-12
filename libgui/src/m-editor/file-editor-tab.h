@@ -194,6 +194,9 @@ namespace octave
 
     void maybe_remove_next (int remove_line);
 
+    void dbstop_if (const QString& prompt, int line, const QString& cond);
+    void request_add_breakpoint (int line, const QString& cond);
+
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to
     // something that simply focuses a window and not actually
@@ -244,6 +247,8 @@ namespace octave
     void handle_lines_changed (void);
 
     void handle_remove_next (int remove_line);
+    void handle_dbstop_if (const QString& prompt, int line,
+                           const QString& cond);
 
   private:
 

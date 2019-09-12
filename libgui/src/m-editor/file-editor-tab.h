@@ -196,6 +196,8 @@ namespace octave
 
     void dbstop_if (const QString& prompt, int line, const QString& cond);
     void request_add_breakpoint (int line, const QString& cond);
+    void request_add_octave_apis (const QStringList&);
+    void api_entries_added (void);
 
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to
@@ -249,6 +251,8 @@ namespace octave
     void handle_remove_next (int remove_line);
     void handle_dbstop_if (const QString& prompt, int line,
                            const QString& cond);
+    void handle_add_octave_apis (const QStringList& api_entries);
+    void handle_api_entries_added (void);
 
   private:
 
@@ -290,7 +294,6 @@ namespace octave
     void check_restore_breakpoints (void);
     void center_current_line (bool always=true);
 
-    void add_octave_apis (octave_value_list key_ovl);
     QString get_function_name (void);
 
     QsciScintilla::EolMode detect_eol_mode (void);
@@ -327,6 +330,7 @@ namespace octave
     QStringList m_bp_conditions;
 
     QsciAPIs *m_lexer_apis;
+    QString m_prep_apis_path;
     QString m_prep_apis_file;
 
     static bool m_cancelled;

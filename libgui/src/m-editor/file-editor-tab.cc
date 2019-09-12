@@ -235,6 +235,8 @@ namespace octave
     connect (this, SIGNAL (request_add_breakpoint (int, const QString&)),
              this, SLOT (handle_request_add_breakpoint (int, const QString&)));
 
+    connect (this, SIGNAL (api_entries_added (void)),
+             this, SLOT (handle_api_entries_added (void)));
     QSettings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
@@ -643,6 +645,9 @@ namespace octave
         // build information for auto completion (APIs)
         m_lexer_apis = new QsciAPIs (lexer);
 
+        connect (this, SIGNAL (request_add_octave_apis (const QStringList&)),
+                 this, SLOT (handle_add_octave_apis (const QStringList&)));
+
         // Get the settings for this new lexer
         update_lexer_settings ();
       }
@@ -685,8 +690,8 @@ namespace octave
 
         QCoreApplication::setApplicationName ("octave");  // Set temp. name
 
-        QString prep_apis_path = local_data_path + "/"
-                                  + QString (OCTAVE_VERSION) + "/qsci/";
+        m_prep_apis_path
+          = local_data_path + "/" + QString (OCTAVE_VERSION) + "/qsci/";
 
         // get settings which infos are used for octave
         bool octave_builtins
@@ -704,7 +709,7 @@ namespace octave
             // completed, the date of any existing file is checked.
 
             // Keywords are always used
-            m_prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
+            m_prep_apis_file = m_prep_apis_path + lexer->lexer () + "_k";
 
             // Buitlins are only used if the user settings say so
             if (octave_builtins)
@@ -717,6 +722,7 @@ namespace octave
 
             // check whether the APIs info needs to be prepared and saved
             QFileInfo apis_file = QFileInfo (m_prep_apis_file);
+
             // flag whether apis file needs update
             update_apis = ! apis_file.exists ();
 
@@ -731,11 +737,10 @@ namespace octave
               }
 
           }
-        else  // no octave file, just add extension
+        else
           {
-
-            m_prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
-
+            // No octave file, just add extension.
+            m_prep_apis_file = m_prep_apis_path + lexer->lexer () + ".pap";
           }
 
         // Make sure the apis file is usable, otherwise the gui might crash,
@@ -758,56 +763,67 @@ namespace octave
             // no prepared info was loaded, prepare and save if possible
 
             // create raw apis info
-            QString keyword;
-            QStringList keyword_list;
-            int i,j;
 
             if (m_is_octave_file)
               {
-                // FIXME: the following does not appear to be thread safe.
+                emit interpreter_event
+                  ([this, octave_functions, octave_builtins] (interpreter& interp)
+                   {
+                     QStringList api_entries;
 
-                // octave: get keywords from internal informations depending on
-                //         user preferences
+                     octave_value_list tmp = Fiskeyword ();
+                     const Cell ctmp = tmp(0).cell_value ();
+                     for (octave_idx_type i = 0; i < ctmp.numel (); i++)
+                       {
+                         std::string kw = ctmp(i).string_value ();
+                         api_entries.append (QString::fromStdString (kw));
+                       }
 
-                // keywords are always used
-                add_octave_apis (Fiskeyword ());            // add new entries
+                     if (octave_builtins)
+                       {
+                         symbol_table& symtab = interp.get_symbol_table ();
 
-                interpreter& interp
-                  = __get_interpreter__ ("file_editor_tab::update_lexer_settings");
+                         string_vector bfl = symtab.built_in_function_names ();
 
-                if (octave_builtins)
-                  add_octave_apis (F__builtins__ (interp));       // add new entries
+                         for (octave_idx_type i = 0; i < bfl.numel (); i++)
+                           api_entries.append (QString::fromStdString (bfl[i]));
+                       }
 
-                if (octave_functions)
-                  add_octave_apis (F__list_functions__ (interp)); // add new entries
 
+                     if (octave_functions)
+                       {
+                         load_path& lp = interp.get_load_path ();
+
+                         string_vector ffl = lp.fcn_names ();
+                         string_vector afl = interp.autoloaded_functions ();
+
+                         for (octave_idx_type i = 0; i < ffl.numel (); i++)
+                           api_entries.append (QString::fromStdString (ffl[i]));
+
+                         for (octave_idx_type i = 0; i < afl.numel (); i++)
+                           api_entries.append (QString::fromStdString (afl[i]));
+                       }
+
+                     emit request_add_octave_apis (api_entries);
+                   });
               }
             else
               {
-
-                m_prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
-
-                for (i=1; i<=3; i++) // test the first 5 keyword sets
+                for (int i = 1; i <= 3; i++)
                   {
-                    keyword = QString (lexer->keywords (i));           // get list
-                    keyword_list = keyword.split (QRegExp (R"(\s+)")); // split
-                    for (j = 0; j < keyword_list.size (); j++)         // add to API
+                    // Get list, split, and add to API.
+
+                    QString keyword = QString (lexer->keywords (i));
+
+                    QStringList keyword_list
+                      = keyword.split (QRegExp (R"(\s+)"));
+
+                    for (int j = 0; j < keyword_list.size (); j++)
                       m_lexer_apis->add (keyword_list.at (j));
                   }
+
+                emit api_entries_added ();
               }
-
-            // disconnect slot for saving prepared info if already connected
-            disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()), nullptr, nullptr);
-            // check whether path for prepared info exists or can be created
-            if (QDir ("/").mkpath (prep_apis_path))
-              {
-                // path exists, apis info can be saved there
-                connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
-                         this, SLOT (save_apis_info ()));
-              }
-
-            m_lexer_apis->prepare ();  // prepare apis info
-
           }
       }
 
@@ -869,15 +885,30 @@ namespace octave
       m_edit_area->setMarginWidth (2,0);
   }
 
-
   // function for adding entries to the octave lexer's APIs
-  void file_editor_tab::add_octave_apis (octave_value_list key_ovl)
+  void file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
   {
-    octave_value keys = key_ovl(0);
-    Cell key_list = keys.cell_value ();
+    for (int idx = 0; idx < api_entries.size (); idx++)
+      m_lexer_apis->add (api_entries.at (idx));
 
-    for (int idx = 0; idx < key_list.numel (); idx++)
-      m_lexer_apis->add (QString (key_list.elem (idx).string_value ().data ()));
+    emit api_entries_added ();
+  }
+
+  void file_editor_tab::handle_api_entries_added (void)
+  {
+    // disconnect slot for saving prepared info if already connected
+    disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                nullptr, nullptr);
+
+    // check whether path for prepared info exists or can be created
+    if (QDir ("/").mkpath (m_prep_apis_path))
+      {
+        // path exists, apis info can be saved there
+        connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
+                 this, SLOT (save_apis_info ()));
+      }
+
+    m_lexer_apis->prepare ();  // prepare apis info
   }
 
   void file_editor_tab::save_apis_info (void)

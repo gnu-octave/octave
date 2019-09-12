@@ -889,15 +889,7 @@ class NoAlias : public ArrayClass
 public:
   NoAlias () : ArrayClass () { }
 
-  // FIXME: this would be simpler once C++0x is available
-  template <typename X>
-    explicit NoAlias (X x) : ArrayClass (x) { }
-
-  template <typename X, typename Y>
-    explicit NoAlias (X x, Y y) : ArrayClass (x, y) { }
-
-  template <typename X, typename Y, typename Z>
-    explicit NoAlias (X x, Y y, Z z) : ArrayClass (x, y, z) { }
+  using ArrayClass::ArrayClass;
 
   T& operator () (octave_idx_type n)
   { return ArrayClass::xelem (n); }

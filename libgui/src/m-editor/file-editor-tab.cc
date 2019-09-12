@@ -225,6 +225,9 @@ namespace octave
     connect (&m_file_system_watcher, SIGNAL (fileChanged (const QString&)),
              this, SLOT (file_has_changed (const QString&)));
 
+    connect (this, SIGNAL (maybe_remove_next (int)),
+             this, SLOT (handle_remove_next (int)));
+
     QSettings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
@@ -1350,15 +1353,26 @@ namespace octave
              bp_table::intmap bpmap
                = bptab.add_breakpoint (info.function_name, "", line_info, info.condition);
 
-             // Store some info breakpoint
-             if (m_breakpoint_info.remove_next && (bpmap.size() > 0))
+             if (! bpmap.empty ())
                {
-                 bp_table::intmap::iterator bp_it = bpmap.begin();
-                 m_breakpoint_info.remove_line = bp_it->second;
-                 m_breakpoint_info.remove_next = false;
+                 bp_table::intmap::iterator bp_it = bpmap.begin ();
+
+                 int remove_line = bp_it->second;
+
+                 emit maybe_remove_next (remove_line);
                }
            }
        });
+  }
+
+  void file_editor_tab::handle_remove_next (int remove_line)
+  {
+    // Store some info breakpoint
+    if (m_breakpoint_info.remove_next)
+      {
+        m_breakpoint_info.remove_line = remove_line;
+        m_breakpoint_info.remove_next = false;
+      }
   }
 
   // This methos creates the find dialog in way that is at first suitable

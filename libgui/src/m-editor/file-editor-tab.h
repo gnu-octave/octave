@@ -192,6 +192,8 @@ namespace octave
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
+    void maybe_remove_next (int remove_line);
+
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to
     // something that simply focuses a window and not actually
@@ -240,6 +242,8 @@ namespace octave
     void handle_char_added (int character);
     void handle_double_click (int p, int l, int modifier);
     void handle_lines_changed (void);
+
+    void handle_remove_next (int remove_line);
 
   private:
 

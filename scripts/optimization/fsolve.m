@@ -24,11 +24,12 @@
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}, @var{fjac}] =} fsolve (@dots{})
 ## Solve a system of nonlinear equations defined by the function @var{fcn}.
 ##
-## @var{fcn} should accept a vector (array) defining the unknown variables,
-## and return a vector of left-hand sides of the equations.  Right-hand sides
-## are defined to be zeros.  In other words, this function attempts to
-## determine a vector @var{x} such that @code{@var{fcn} (@var{x})} gives
-## (approximately) all zeros.
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.  @var{fcn} should accept a vector (array)
+## defining the unknown variables, and return a vector of left-hand sides of
+## the equations.  Right-hand sides are defined to be zeros.  In other words,
+## this function attempts to determine a vector @var{x} such that
+## @code{@var{fcn} (@var{x})} gives (approximately) all zeros.
 ##
 ## @var{x0} is an initial guess for the solution.  The shape of @var{x0} is
 ## preserved in all calls to @var{fcn}, but otherwise is treated as a column

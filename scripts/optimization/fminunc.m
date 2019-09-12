@@ -25,10 +25,13 @@
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##
-## @var{fcn} should accept a vector (array) defining the unknown variables, and
-## return the objective function value, optionally with gradient.
 ## @code{fminunc} attempts to determine a vector @var{x} such that
 ## @code{@var{fcn} (@var{x})} is a local minimum.
+##
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.  @var{fcn} should accept a vector (array)
+## defining the unknown variables, and return the objective function value,
+## optionally with gradient.
 ##
 ## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved in
 ## all calls to @var{fcn}, but otherwise is treated as a column vector.

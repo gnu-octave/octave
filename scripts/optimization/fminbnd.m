@@ -24,7 +24,8 @@
 ## @deftypefnx {} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@dots{})
 ## Find a minimum point of a univariate function.
 ##
-## @var{fun} must be a function handle or name.
+## @var{fun} is a function handle, inline function, or string containing the
+## name of the function to evaluate.
 ##
 ## The starting interval is specified by @var{a} (left boundary) and @var{b}
 ## (right boundary).  The endpoints must be finite.

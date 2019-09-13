@@ -46,7 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "builtin-defun-decls.h"
 #include "defaults.h"
 #include "defun.h"
-#include "dirfns.h"
 #include "error.h"
 #include "errwarn.h"
 #include "help.h"

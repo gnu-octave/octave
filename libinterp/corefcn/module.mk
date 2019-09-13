@@ -27,7 +27,6 @@ COREFCN_INC = \
   %reldir%/defun-dld.h \
   %reldir%/defun-int.h \
   %reldir%/defun.h \
-  %reldir%/dirfns.h \
   %reldir%/display.h \
   %reldir%/dynamic-ld.h \
   %reldir%/environment.h \

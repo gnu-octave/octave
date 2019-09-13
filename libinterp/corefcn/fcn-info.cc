@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 
 #include "defun.h"
-#include "dirfns.h"
 #include "fcn-info.h"
 #include "interpreter-private.h"
 #include "interpreter.h"

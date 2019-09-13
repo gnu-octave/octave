@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
+#include "file-ops.h"
 #include "file-stat.h"
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
@@ -244,6 +245,9 @@ from the list, so if a function was placed in the list multiple times with
 
 namespace octave
 {
+  // The time we last time we changed directories.
+  sys::time Vlast_chdir_time = 0.0;
+
   // Execute commands from a file and catch potential exceptions in a consistent
   // way.  This function should be called anywhere we might parse and execute
   // commands from a file before we have entered the main loop in
@@ -1141,6 +1145,27 @@ namespace octave
   profiler& interpreter::get_profiler (void)
   {
     return m_evaluator.get_profiler ();
+  }
+
+  int interpreter::chdir (const std::string& dir)
+  {
+    std::string xdir = sys::file_ops::tilde_expand (dir);
+
+    int cd_ok = sys::env::chdir (xdir);
+
+    if (! cd_ok)
+      error ("%s: %s", dir.c_str (), std::strerror (errno));
+
+    Vlast_chdir_time.stamp ();
+
+    // FIXME: should these actions be handled as a list of functions
+    // to call so users can add their own chdir handlers?
+
+    m_load_path.update ();
+
+    m_event_manager.change_directory (sys::env::get_current_directory ());
+
+    return cd_ok;
   }
 
   void interpreter::mlock (void)

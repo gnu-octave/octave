@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "child-list.h"
+#include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
 
@@ -62,10 +63,15 @@ extern OCTINTERP_API bool octave_interpreter_ready;
 // TRUE means we've processed all the init code and we are good to go.
 extern OCTINTERP_API bool octave_initialized;
 
+#include "oct-time.h"
+
 namespace octave
 {
   class profiler;
   class child_list;
+
+  // The time we last time we changed directories.
+  extern sys::time Vlast_chdir_time;
 
   // The application object contains a pointer to the current
   // interpreter and the interpreter contains a pointer back to the
@@ -254,6 +260,13 @@ namespace octave
     {
       return *m_gh_manager;
     }
+
+    // Any Octave code that needs to change the current directory should
+    // call this function instead of calling the system chdir function
+    // directly so that the  load-path and GUI may be notified of the
+    // change.
+
+    int chdir (const std::string& dir);
 
     void mlock (void);
 

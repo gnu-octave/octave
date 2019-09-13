@@ -35,7 +35,6 @@
 
 #include "defaults.h"
 #include "defun.h"
-#include "dirfns.h"
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
@@ -450,7 +449,7 @@ namespace octave
         switch (action)
           {
           case 1:
-            change_to_directory (dir);
+            m_interpreter.chdir (dir);
             ok = true;
             break;
 

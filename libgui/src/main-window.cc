@@ -989,11 +989,11 @@ namespace octave
     if (fileInfo.exists () && fileInfo.isDir ())
       {
         emit interpreter_event
-          ([xdir] (void)
+          ([xdir] (interpreter& interp)
            {
              // INTERPRETER THREAD
 
-             Fcd (ovl (xdir.toStdString ()));
+             interp.chdir (xdir.toStdString ());
            });
       }
   }

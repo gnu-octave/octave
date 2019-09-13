@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-txt-lexer.h"
 #include "marker.h"
 
+#include "cmd-edit.h"
 #include "file-ops.h"
 #include "uniconv-wrappers.h"
 
@@ -237,6 +238,13 @@ namespace octave
 
     connect (this, SIGNAL (api_entries_added (void)),
              this, SLOT (handle_api_entries_added (void)));
+
+    connect (this, SIGNAL (confirm_dbquit_and_save_signal (const QString&, const QString&, bool, bool)),
+             this, SLOT (confirm_dbquit_and_save (const QString&, const QString&, bool, bool)));
+
+    connect (this, SIGNAL (do_save_file_signal (const QString&, bool, bool)),
+             this, SLOT (do_save_file (const QString&, bool, bool)));
+
     QSettings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
@@ -2190,83 +2198,39 @@ namespace octave
     m_edit_area->setModified (false); // new file is not modified yet
   }
 
-  // Force reloading of a file after it is saved.
-  // This is needed to get the right line numbers for breakpoints (bug #46632).
-  bool file_editor_tab::exit_debug_and_clear (const QString& full_name_q,
-                                              const QString& base_name_q)
+  void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
+                                                 const QString& base_name,
+                                                 bool remove_on_success,
+                                                 bool restore_breakpoints)
   {
-    // FIXME: the following does not appear to be thread safe.
+    int ans = QMessageBox::question (nullptr, tr ("Debug or Save"),
+                                     tr ("This file is currently being executed.\n"
+                                         "Quit debugging and save?"),
+                                     QMessageBox::Save | QMessageBox::Cancel);
 
-    interpreter& interp
-      = __get_interpreter__ ("file_editor_tab::exit_debug_and_clear");
-
-    symbol_table& symtab = interp.get_symbol_table ();
-
-    std::string base_name = base_name_q.toStdString ();
-    octave_value sym;
-    try
+    if (ans == QMessageBox::Save)
       {
-        sym = symtab.find_user_function (base_name);
+        emit interpreter_event
+          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             tw.dbquit (true);
+
+             command_editor::interrupt (true);
+
+             std::string std_base_name = base_name.toStdString ();
+
+             symbol_table& symtab = interp.get_symbol_table ();
+
+             symtab.clear_user_function (std_base_name);
+
+             emit do_save_file_signal (file_to_save, remove_on_success,
+                                       restore_breakpoints);
+           });
       }
-    catch (const execution_exception& e)
-      {
-        // Ignore syntax error.
-        // It was in the old file on disk; the user may have fixed it already.
-      }
-
-    // Return early if this file is not loaded in the symbol table
-    if (! sym.is_defined () || ! sym.is_user_code ())
-      return true;
-
-    octave_user_code *fcn = sym.user_code_value ();
-
-    std::string full_name = full_name_q.toStdString ();
-    if (sys::canonicalize_file_name (full_name.c_str ())
-        != sys::canonicalize_file_name (fcn->fcn_file_name ().c_str ()))
-      return true;
-
-    // If this file is loaded, check that we aren't currently running it
-    bool retval = true;
-
-    octave_idx_type curr_frame = -1;
-
-    tree_evaluator& tw = interp.get_evaluator ();
-
-    octave_map stk = tw.backtrace (curr_frame, false);
-
-    Cell names = stk.contents ("name");
-    for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
-      {
-        if (names(i).string_value () == base_name)
-          {
-            int ans = QMessageBox::question (nullptr, tr ("Debug or Save"),
-                                             tr ("This file is currently being executed.\n"
-                                                 "Quit debugging and save?"),
-                                             QMessageBox::Save | QMessageBox::Cancel);
-
-            if (ans == QMessageBox::Save)
-              {
-                emit debug_quit_signal ();
-
-                // Wait until dbquit has actually occurred.
-                while (names.numel () > i)
-                  {
-                    sleep (0.01);
-                    stk = tw.backtrace (curr_frame, false);
-                    names = stk.contents ("name");
-                  }
-              }
-            else
-              retval = false;
-            break;
-          }
-      }
-
-    // If we aren't currently running it, or have quit above, force a reload.
-    if (retval == true)
-      symtab.clear_user_function (base_name);
-
-    return retval;
   }
 
   void file_editor_tab::save_file (const QString& saveFileName,
@@ -2288,7 +2252,9 @@ namespace octave
     if (! codec)
       return;   // No valid codec
 
-    // Get a list of breakpoint line numbers, before  exit_debug_and_clear().
+    // Get a list of breakpoint line numbers, before exiting debug mode
+    // and clearing function in interpreter_event action below.
+
     emit report_marker_linenr (m_bp_lines, m_bp_conditions);
 
     // get the absolute path (if existing)
@@ -2297,13 +2263,93 @@ namespace octave
     if (file_info.exists ())
       {
         file_to_save = file_info.canonicalFilePath ();
-        // Force reparse of this function next time it is used (bug #46632)
-        if ((Fisdebugmode ())(0).is_true ()
-            && ! exit_debug_and_clear (file_to_save, file_info.baseName ()))
-          return;
+        QString base_name = file_info.baseName ();
+
+        emit interpreter_event
+          ([this, file_to_save, base_name, remove_on_success, restore_breakpoints] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             // Force reloading of a file after it is saved.
+             // This is needed to get the right line numbers for
+             // breakpoints (bug #46632).
+
+             tree_evaluator& tw = interp.get_evaluator ();
+
+             symbol_table& symtab = interp.get_symbol_table ();
+
+             std::string std_base_name = base_name.toStdString ();
+
+             if (tw.in_debug_repl ())
+               {
+                 octave_value sym;
+                 try
+                   {
+                     sym = symtab.find_user_function (std_base_name);
+                   }
+                 catch (const execution_exception& e)
+                   {
+                     // Ignore syntax error.  It was in the old file on disk;
+                     // the user may have fixed it already.
+                   }
+
+                 // Return early if this file is not loaded in the symbol table
+                 if (! sym.is_defined () || ! sym.is_user_code ())
+                   {
+                     emit do_save_file_signal (file_to_save, remove_on_success,
+                                               restore_breakpoints);
+                     return;
+                   }
+
+                 octave_user_code *fcn = sym.user_code_value ();
+
+                 std::string full_name = file_to_save.toStdString ();
+
+                 if (sys::canonicalize_file_name (full_name)
+                     != sys::canonicalize_file_name (fcn->fcn_file_name ()))
+                   {
+                     emit do_save_file_signal (file_to_save, remove_on_success,
+                                               restore_breakpoints);
+                     return;
+                   }
+
+                 // If this file is loaded, check that we aren't currently
+                 // running it.
+                 // FIXME: is there a better way to get this info?
+
+                 octave_idx_type curr_frame = -1;
+
+                 octave_map stk = tw.backtrace (curr_frame, false);
+
+                 Cell names = stk.contents ("name");
+
+                 for (octave_idx_type i = names.numel () - 1; i >= 0; i--)
+                   {
+                     if (names(i).string_value () == std_base_name)
+                       {
+                         emit confirm_dbquit_and_save_signal
+                           (file_to_save, base_name, remove_on_success,
+                            restore_breakpoints);
+                         return;
+                       }
+                   }
+               }
+
+             symtab.clear_user_function (std_base_name);
+
+             emit do_save_file_signal (file_to_save, remove_on_success,
+                                       restore_breakpoints);
+           });
       }
     else
-      file_to_save = saveFileName;
+      emit do_save_file_signal (saveFileName, remove_on_success,
+                                restore_breakpoints);
+  }
+
+  void file_editor_tab::do_save_file (const QString& file_to_save,
+                                      bool remove_on_success,
+                                      bool restore_breakpoints)
+  {
     QFile file (file_to_save);
 
     // stop watching file
@@ -2335,6 +2381,12 @@ namespace octave
 
     // write the file
     QTextStream out (&file);
+
+    // set the desired codec (if suitable for contents)
+    QTextCodec *codec = check_valid_codec ();
+    if (! codec)
+      return;   // No valid codec
+
     out.setCodec (codec);
 
     QApplication::setOverrideCursor (Qt::WaitCursor);
@@ -2345,11 +2397,11 @@ namespace octave
     file.close ();
 
     // file exists now
-    file_info = QFileInfo (file);
-    file_to_save = file_info.canonicalFilePath ();
+    QFileInfo file_info = QFileInfo (file);
+    QString full_file_to_save = file_info.canonicalFilePath ();
 
     // save filename after closing file as set_file_name starts watching again
-    set_file_name (file_to_save);   // make absolute
+    set_file_name (full_file_to_save);   // make absolute
 
     // set the window title to actual filename (not modified)
     update_window_title (false);

@@ -199,6 +199,14 @@ namespace octave
     void request_add_octave_apis (const QStringList&);
     void api_entries_added (void);
 
+    void do_save_file_signal (const QString& file_to_save,
+                              bool remove_on_success, bool restore_breakpoints);
+
+    void confirm_dbquit_and_save_signal (const QString& file_to_save,
+                                         const QString& base_name,
+                                         bool remove_on_success,
+                                         bool restore_breakpoints);
+
     // FIXME: The following is similar to "process_octave_code"
     // signal.  However, currently that signal is connected to
     // something that simply focuses a window and not actually
@@ -254,6 +262,13 @@ namespace octave
     void handle_add_octave_apis (const QStringList& api_entries);
     void handle_api_entries_added (void);
 
+    void do_save_file (const QString& file_to_save, bool remove_on_success,
+                       bool restore_breakpoints);
+
+    void confirm_dbquit_and_save (const QString& file_to_save,
+                                  const QString& base_name,
+                                  bool remove_on_success,
+                                  bool restore_breakpoints);
   private:
 
     struct bp_info
@@ -272,8 +287,6 @@ namespace octave
     void find_create (void);
 
     bool valid_file_name (const QString& file = QString ());
-    bool exit_debug_and_clear (const QString& full_name,
-                               const QString& base_name);
     void save_file (const QString& saveFileName, bool remove_on_success = false,
                     bool restore_breakpoints = true);
     void save_file_as (bool remove_on_success = false);

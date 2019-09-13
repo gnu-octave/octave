@@ -123,6 +123,8 @@ namespace octave
         m_execution_mode = EX_QUIT;
     }
 
+    bool quitting_debugger (void) const;
+
   private:
 
     interpreter& m_interpreter;
@@ -256,27 +258,8 @@ namespace octave
         if (m_execution_mode == EX_CONTINUE || tw.dbstep_flag ())
           break;
 
-        if (m_execution_mode == EX_QUIT)
-          {
-            // If there is no enclosing debug level or the top-level
-            // repl is not active, handle dbquit the same as dbcont.
-
-            if (m_level > 0 || tw.in_top_level_repl ())
-              throw quit_debug_exception ();
-            else
-              break;
-          }
-
-        if (m_execution_mode == EX_QUIT_ALL)
-          {
-            // If the top-level repl is not active, handle "dbquit all"
-            // the same as dbcont.
-
-            if (tw.in_top_level_repl ())
-              throw quit_debug_exception (true);
-            else
-              break;
-          }
+        if (quitting_debugger ())
+          break;
 
         try
           {
@@ -289,7 +272,13 @@ namespace octave
             int retval = curr_parser.run ();
 
             if (command_editor::interrupt (false))
-              break;
+              {
+                // Break regardless of m_execution_mode value.
+
+                quitting_debugger ();
+
+                break;
+              }
             else
               {
                 if (retval == 0 && curr_parser.m_stmt_list)
@@ -332,6 +321,37 @@ namespace octave
             // Continue in this debug level.
           }
       }
+  }
+
+  bool debugger::quitting_debugger (void) const
+  {
+    if (m_execution_mode == EX_QUIT)
+      {
+        // If there is no enclosing debug level or the top-level
+        // repl is not active, handle dbquit the same as dbcont.
+
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+        if (m_level > 0 || tw.in_top_level_repl ())
+          throw quit_debug_exception ();
+        else
+          return true;
+      }
+
+    if (m_execution_mode == EX_QUIT_ALL)
+      {
+        // If the top-level repl is not active, handle "dbquit all"
+        // the same as dbcont.
+
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+        if (tw.in_top_level_repl ())
+          throw quit_debug_exception (true);
+        else
+          return true;
+      }
+
+    return false;
   }
 
   bool tree_evaluator::at_top_level (void) const

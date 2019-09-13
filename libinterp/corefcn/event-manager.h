@@ -150,7 +150,7 @@ namespace octave
       return -1;
     }
 
-    virtual void change_directory (const std::string& /*dir*/) { }
+    virtual void directory_changed (const std::string& /*dir*/) { }
 
     virtual void
     file_remove (const std::string& /*old_nm*/, const std::string& /*new_nm*/)
@@ -381,10 +381,10 @@ namespace octave
               : 0);
     }
 
-    void change_directory (const std::string& dir)
+    void directory_changed (const std::string& dir)
     {
       if (enabled ())
-        instance->change_directory (dir);
+        instance->directory_changed (dir);
     }
 
     // Methods for removing/renaming files which might be open in editor

@@ -407,9 +407,9 @@ namespace octave
     return retval;
   }
 
-  void qt_interpreter_events::change_directory (const std::string& dir)
+  void qt_interpreter_events::directory_changed (const std::string& dir)
   {
-    emit change_directory_signal (QString::fromStdString (dir));
+    emit directory_changed_signal (QString::fromStdString (dir));
   }
 
   void qt_interpreter_events::update_path_dialog (void)

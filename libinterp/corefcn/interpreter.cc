@@ -1163,7 +1163,7 @@ namespace octave
 
     m_load_path.update ();
 
-    m_event_manager.change_directory (sys::env::get_current_directory ());
+    m_event_manager.directory_changed (sys::env::get_current_directory ());
 
     return cd_ok;
   }

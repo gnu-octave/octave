@@ -155,7 +155,7 @@ namespace octave
     void prepare_to_exit (void);
     void reset_windows (void);
 
-    void change_directory (const QString& dir);
+    void update_octave_directory (const QString& dir);
     void browse_for_directory (void);
     void set_current_working_directory (const QString& dir);
     void change_directory_up (void);

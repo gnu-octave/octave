@@ -943,7 +943,7 @@ namespace octave
     focus_command_window ();
   }
 
-  void main_window::change_directory (const QString& dir)
+  void main_window::update_octave_directory (const QString& dir)
   {
     // Remove existing entry, if any, then add new directory at top and
     // mark it as the current directory.  Finally, update the file list
@@ -2123,13 +2123,13 @@ namespace octave
     connect (qt_link, SIGNAL (clear_workspace_signal (void)),
              m_workspace_model, SLOT (clear_workspace (void)));
 
-    connect (qt_link, SIGNAL (change_directory_signal (QString)),
-             this, SLOT (change_directory (QString)));
+    connect (qt_link, SIGNAL (directory_changed_signal (QString)),
+             this, SLOT (update_octave_directory (QString)));
 
-    connect (qt_link, SIGNAL (change_directory_signal (QString)),
+    connect (qt_link, SIGNAL (directory_changed_signal (QString)),
              m_file_browser_window, SLOT (update_octave_directory (QString)));
 
-    connect (qt_link, SIGNAL (change_directory_signal (QString)),
+    connect (qt_link, SIGNAL (directory_changed_signal (QString)),
              m_editor_window, SLOT (update_octave_directory (QString)));
 
     connect (qt_link,

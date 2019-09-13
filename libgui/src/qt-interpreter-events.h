@@ -112,7 +112,7 @@ namespace octave
                                    const std::string& dir,
                                    bool addpath_option);
 
-    void change_directory (const std::string& dir);
+    void directory_changed (const std::string& dir);
 
     void update_path_dialog (void);
 
@@ -192,7 +192,7 @@ namespace octave
 
     void edit_file_signal (const QString& file);
 
-    void change_directory_signal (const QString& dir);
+    void directory_changed_signal (const QString& dir);
 
     void update_path_dialog_signal (void);
 

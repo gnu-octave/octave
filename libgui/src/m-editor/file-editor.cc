@@ -44,13 +44,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
-#include "event-manager.h"
-#include "oct-env.h"
-#include "oct-map.h"
-#include "utils.h"
-
 #include "main-window.h"
 #include "gui-preferences.h"
+
+#include "oct-env.h"
+
+#include "event-manager.h"
+#include "interpreter.h"
+#include "oct-map.h"
+#include "pt-eval.h"
+#include "utils.h"
 
 namespace octave
 {
@@ -563,10 +566,18 @@ namespace octave
 
   void file_editor::request_run_file (bool)
   {
-    if ((Fisdebugmode ())(0).is_true ())
-      emit request_dbcont_signal ();
-    else
-      emit fetab_run_file (m_tab_widget->currentWidget ());
+    emit interpreter_event
+      ([this] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         tree_evaluator& tw = interp.get_evaluator ();
+
+         if (tw.in_debug_repl ())
+           emit request_dbcont_signal ();
+         else
+           emit fetab_run_file (m_tab_widget->currentWidget ());
+       });
   }
 
   void file_editor::request_step_into_file ()

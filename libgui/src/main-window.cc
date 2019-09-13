@@ -395,7 +395,7 @@ namespace octave
            {
              // INTERPRETER THREAD
 
-             feval ("open", ovl (file));
+             interp.feval ("open", ovl (file));
 
              // Update the workspace since open.m may have loaded new
              // variables.

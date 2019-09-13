@@ -73,6 +73,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "uniconv-wrappers.h"
 
 #include "bp-table.h"
+#include "builtin-defun-decls.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
@@ -777,6 +778,8 @@ namespace octave
                 emit interpreter_event
                   ([this, octave_functions, octave_builtins] (interpreter& interp)
                    {
+                     // INTERPRETER THREAD
+
                      QStringList api_entries;
 
                      octave_value_list tmp = Fiskeyword ();

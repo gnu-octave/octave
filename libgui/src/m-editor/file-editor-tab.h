@@ -41,8 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "marker.h"
 #include "qt-interpreter-events.h"
 
-#include "builtin-defun-decls.h"
-
 class octave_value_list;
 
 namespace octave

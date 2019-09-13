@@ -47,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "qt-interpreter-events.h"
 
-#include "builtin-defun-decls.h"
 #include "interpreter.h"
 #include "load-save.h"
 #include "oct-env.h"

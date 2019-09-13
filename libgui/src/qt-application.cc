@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 #include "signal-wrappers.h"
 
-#include "builtin-defun-decls.h"
 #include "display.h"
 #include "octave.h"
 #include "sysdep.h"

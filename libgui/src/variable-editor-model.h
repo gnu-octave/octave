@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (variable_editor_model_h)
-#define variable_editor_model_h 1
+#if ! defined (octave_variable_editor_model_h)
+#define octave_variable_editor_model_h 1
 
 #include <QAbstractTableModel>
 #include <QMap>

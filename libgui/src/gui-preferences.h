@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (gui_preference_h)
-#define gui_preference_h 1
+#if ! defined (octave_gui_preferences_h)
+#define octave_gui_preferences_h 1
 
 #include <QStringList>
 #include <QStyle>

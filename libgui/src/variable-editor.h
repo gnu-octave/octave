@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (variable_editor_h)
-#define variable_editor_h 1
+#if ! defined (octave_variable_editor_h)
+#define octave_variable_editor_h 1
 
 #include <QHeaderView>
 #include <QSettings>

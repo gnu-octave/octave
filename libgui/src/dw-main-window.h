@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (dw_main_window_h)
-#define dw_main_window_h 1
+#if ! defined (octave_dw_main_window_h)
+#define octave_dw_main_window_h 1
 
 #include <QMainWindow>
 #include <QSettings>

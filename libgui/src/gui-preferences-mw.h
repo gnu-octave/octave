@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (gui_preference_mw_h)
-#define gui_preference_mw_h 1
+#if ! defined (octave_gui_preference_mw_h)
+#define octave_gui_preference_mw_h 1
 
 #include "gui-preferences.h"
 

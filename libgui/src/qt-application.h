@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_octave_gui_h)
-#define octave_octave_gui_h 1
+#if ! defined (octave_qt_application_h)
+#define octave_qt_application_h 1
 
 #include "octave.h"
 

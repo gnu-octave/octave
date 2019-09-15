@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_tab_bar_h 1
 
 #include <QMenu>
-#include <QTabBar>
 #include <QMouseEvent>
+#include <QTabBar>
 
 namespace octave
 {

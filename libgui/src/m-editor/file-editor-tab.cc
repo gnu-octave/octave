@@ -30,6 +30,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
+#include <QApplication>
+#include <QCheckBox>
+#include <QDateTime>
+#include <QDesktopServices>
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPrintDialog>
+#include <QPushButton>
+#include <QStyle>
+#include <QTextBlock>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QVBoxLayout>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1
 #  include <Qsci/qscilexeroctave.h>
@@ -37,36 +53,19 @@ along with Octave; see the file COPYING.  If not, see
 #  define HAVE_LEXER_MATLAB 1
 #  include <Qsci/qscilexermatlab.h>
 #endif
-#include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexerperl.h>
 #include <Qsci/qscilexerbatch.h>
+#include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerdiff.h>
+#include <Qsci/qscilexerperl.h>
 #include <Qsci/qsciprinter.h>
-#include <QApplication>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QVBoxLayout>
-#include <QInputDialog>
-#include <QPrintDialog>
-#include <QDateTime>
-#include <QDesktopServices>
-#include <QTextCodec>
-#include <QStyle>
-#include <QTextBlock>
-#include <QLabel>
-#include <QCheckBox>
-#include <QDialogButtonBox>
-#include <QPushButton>
-
-#include "gui-preferences.h"
-#include "resource-manager.h"
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
-#include "octave-txt-lexer.h"
+#include "gui-preferences.h"
 #include "marker.h"
+#include "octave-txt-lexer.h"
+#include "resource-manager.h"
 
 #include "cmd-edit.h"
 #include "file-ops.h"

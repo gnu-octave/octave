@@ -23,10 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (gui_preference_h)
 #define gui_preference_h 1
 
-//#if defined (HAVE_CONFIG_H)
-//#  include "config.h"
-//#endif
-
 #include <QStringList>
 #include <QStyle>
 #include <QTabWidget>

@@ -30,10 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStackedWidget>
 #include <QTableView>
 
+#include "dw-main-window.h"
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
-#include "dw-main-window.h"
-
 
 class octave_value;
 

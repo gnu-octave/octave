@@ -29,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include <QList>
+#include <QMutex>
 #include <QObject>
 #include <QString>
-#include <QMutex>
 #include <QWaitCondition>
 
 #include "event-manager.h"

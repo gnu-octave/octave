@@ -24,9 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QProcess>
+#include <QSettings>
 
 #include "external-editor-interface.h"
 #include "resource-manager.h"

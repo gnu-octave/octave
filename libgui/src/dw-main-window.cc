@@ -29,12 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QMenu>
 #include <QDockWidget>
+#include <QMenu>
 
+#include "dw-main-window.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "dw-main-window.h"
 
 namespace octave
 {

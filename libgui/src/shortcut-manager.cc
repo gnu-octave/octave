@@ -24,24 +24,25 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QtCore>
-#include <QMessageBox>
-#include <QDebug>
-#include <QGridLayout>
-#include <QApplication>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <QKeySequence>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QHeaderView>
 #include <QAction>
+#include <QApplication>
+#include <QCheckBox>
+#include <QDebug>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QGridLayout>
+#include <QHeaderView>
+#include <QKeySequence>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QtCore>
 
-#include "error.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+
+#include "error.h"
 
 namespace octave
 {

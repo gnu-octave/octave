@@ -23,24 +23,25 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_files_dock_widget_h)
 #define octave_files_dock_widget_h 1
 
-#include <QListView>
+#include <QAction>
+#include <QComboBox>
 #include <QDate>
-#include <QObject>
-#include <QWidget>
-#include <QList>
-#include <QListWidget>
 #include <QFileSystemModel>
+#include <QList>
+#include <QListView>
+#include <QListWidget>
+#include <QMouseEvent>
+#include <QObject>
+#include <QSignalMapper>
 #include <QToolBar>
 #include <QToolButton>
-#include <QVBoxLayout>
-#include <QAction>
 #include <QTreeView>
-#include <QMouseEvent>
-#include <QSignalMapper>
+#include <QVBoxLayout>
+#include <QWidget>
 
-#include <QComboBox>
 #include "octave-dock-widget.h"
-#include "ovl.h"
+
+class octave_value_list;
 
 namespace octave
 {

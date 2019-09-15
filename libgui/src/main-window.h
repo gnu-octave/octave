@@ -25,21 +25,21 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_main_window_h 1
 
 // Qt includes
-#include <QMainWindow>
-#include <QThread>
-#include <QTabWidget>
-#include <QStatusBar>
-#include <QToolBar>
-#include <QQueue>
 #include <QCloseEvent>
+#include <QComboBox>
+#include <QMainWindow>
+#include <QPointer>
+#include <QQueue>
+#include <QStatusBar>
+#include <QTabWidget>
+#include <QThread>
+#include <QToolBar>
 #include <QToolButton>
 #include <QTranslator>
-#include <QComboBox>
-#include <QPointer>
 
 // Editor includes
-#include "file-editor-interface.h"
 #include "external-editor-interface.h"
+#include "file-editor-interface.h"
 
 // QTerminal includes
 #include "QTerminal.h"
@@ -49,12 +49,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
 #include "find-files-dialog.h"
-#include "set-path-dialog.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
 #include "octave-dock-widget.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
+#include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"

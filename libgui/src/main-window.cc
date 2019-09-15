@@ -25,36 +25,37 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QKeySequence>
-#include <QApplication>
-#include <QStyleFactory>
-#include <QInputDialog>
-#include <QLabel>
-#include <QMenuBar>
-#include <QMenu>
+#include <utility>
+
 #include <QAction>
-#include <QSettings>
-#include <QStyle>
-#include <QStyleFactory>
-#include <QToolBar>
+#include <QApplication>
+#include <QDateTime>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QIcon>
+#include <QInputDialog>
+#include <QKeySequence>
+#include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSettings>
+#include <QStyle>
+#include <QStyleFactory>
+#include <QStyleFactory>
 #include <QTextBrowser>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
-#include <QDateTime>
-#include <QDebug>
 #include <QTimer>
-
-#include <utility>
+#include <QToolBar>
 
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
+#include "gui-preferences-mw.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "news-reader.h"
@@ -62,7 +63,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "settings-dialog.h"
 #include "shortcut-manager.h"
 #include "welcome-wizard.h"
-#include "gui-preferences-mw.h"
 
 #include "Array.h"
 #include "cmd-edit.h"

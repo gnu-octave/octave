@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_marker_h)
 #define octave_marker_h 1
 
-#include <Qsci/qsciscintilla.h>
 #include <QObject>
+#include <Qsci/qsciscintilla.h>
 
 // Defined for purposes of sending QList<int> as part of signal.
 #include <QList>

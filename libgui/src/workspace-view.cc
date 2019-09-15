@@ -25,23 +25,23 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QInputDialog>
 #include <QApplication>
 #include <QClipboard>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QHeaderView>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QMenu>
-#include <QLabel>
 #include <QCompleter>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QSignalMapper>
+#include <QVBoxLayout>
 
 #include "gui-preferences.h"
-#include "workspace-view.h"
 #include "resource-manager.h"
+#include "workspace-view.h"
 
 #include "interpreter-private.h"
 #include "interpreter.h"

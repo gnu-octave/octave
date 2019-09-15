@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
 #include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -34,8 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QToolBar>
 
-#include "resource-manager.h"
 #include "octave-dock-widget.h"
+#include "resource-manager.h"
 
 namespace octave
 {

@@ -25,9 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QCheckBox>
 #include <QDialog>
-#include <QSettings>
 #include <QLineEdit>
 #include <QRadioButton>
+#include <QSettings>
 
 #include "color-picker.h"
 #include "gui-preferences.h"

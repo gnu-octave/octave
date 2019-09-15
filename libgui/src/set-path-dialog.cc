@@ -24,32 +24,32 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QPushButton>
+#include <QCheckBox>
+#include <QComboBox>
 #include <QDialogButtonBox>
+#include <QDirIterator>
+#include <QFileDialog>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QGridLayout>
-#include <QVBoxLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
+#include <QHeaderView>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QHeaderView>
 #include <QListView>
-#include <QFileDialog>
-#include <QStatusBar>
-#include <QIcon>
 #include <QMenu>
-#include <QFileInfo>
-#include <QTimer>
-#include <QDirIterator>
+#include <QPushButton>
+#include <QStatusBar>
 #include <QTextStream>
-#include <QGroupBox>
-#include <QFileDialog>
+#include <QTimer>
+#include <QVBoxLayout>
 
+#include "gui-preferences.h"
+#include "resource-manager.h"
 #include "set-path-dialog.h"
 #include "set-path-model.h"
-#include "resource-manager.h"
-#include "gui-preferences.h"
 
 #include "ovl.h"
 

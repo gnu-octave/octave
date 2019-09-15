@@ -24,21 +24,21 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_file_editor_tab_h 1
 
 #include <QAbstractButton>
-#include <QWidget>
 #include <QCloseEvent>
 #include <QDateTime>
-#include <QFileSystemWatcher>
-#include <QSettings>
 #include <QFileInfo>
-#include <Qsci/qsciapis.h>
-#include <QStatusBar>
+#include <QFileSystemWatcher>
 #include <QLabel>
+#include <QSettings>
+#include <QStatusBar>
+#include <QWidget>
+#include <Qsci/qsciapis.h>
 
 #include "find-dialog.h"
-#include "octave-qscintilla.h"
 // Only needed for typedef of "QIntList", which may be typedefed
 // elsewhere.  Could use common location.
 #include "marker.h"
+#include "octave-qscintilla.h"
 #include "qt-interpreter-events.h"
 
 class octave_value_list;

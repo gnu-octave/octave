@@ -24,21 +24,18 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <iostream>
-
-#include <string>
 #include <algorithm>
+#include <string>
 
 #include <QFileIconProvider>
-#include <QtAlgorithms>
 #include <QMessageBox>
+#include <QtAlgorithms>
 
 #include "qt-interpreter-events.h"
 #include "set-path-model.h"
 
 #include "pathsearch.h"
 
-#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 

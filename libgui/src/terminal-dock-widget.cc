@@ -27,14 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDesktopWidget>
 
+#include "gui-preferences.h"
+#include "resource-manager.h"
+#include "terminal-dock-widget.h"
+
 #include "quit.h"
 #include "signal-wrappers.h"
 
 #include "sighandlers.h"
-
-#include "terminal-dock-widget.h"
-#include "resource-manager.h"
-#include "gui-preferences.h"
 
 namespace octave
 {

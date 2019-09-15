@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (gui_preference_mw_h)
 #define gui_preference_mw_h 1
 
+#include "gui-preferences.h"
 
 // Main window preferences
 

@@ -24,11 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_octave_dock_widget_h 1
 
 #include <QDockWidget>
-#include <QSettings>
 #include <QIcon>
 #include <QMainWindow>
-#include <QToolButton>
 #include <QMouseEvent>
+#include <QSettings>
+#include <QToolButton>
 
 #include "qt-interpreter-events.h"
 

@@ -25,26 +25,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <utility>
+
 #include <QApplication>
 #include <QFile>
 #include <QTextCodec>
 #include <QThread>
-#include <QTranslator>
 #include <QTimer>
-
-#include <utility>
+#include <QTranslator>
 
 #include "dialog.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "octave-qobject.h"
-#include "qt-interpreter-events.h"
 #include "qt-application.h"
+#include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
-#include "ovl.h"
 #include "oct-env.h"
 #include "version.h"
+
+#include "ovl.h"
 
 namespace octave
 {

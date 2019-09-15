@@ -24,28 +24,27 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "gui-preferences.h"
-#include "resource-manager.h"
-#include "files-dock-widget.h"
-
 #include <QApplication>
 #include <QClipboard>
-#include <QFileInfo>
 #include <QCompleter>
-#include <QProcess>
 #include <QDebug>
-#include <QHeaderView>
-#include <QLineEdit>
-#include <QSizePolicy>
-#include <QMenu>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QToolButton>
-#include <QUrl>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProcess>
+#include <QSizePolicy>
+#include <QToolButton>
+#include <QUrl>
 
+#include "files-dock-widget.h"
+#include "gui-preferences.h"
 #include "qt-interpreter-events.h"
+#include "resource-manager.h"
 
 #include "interpreter.h"
 #include "load-save.h"

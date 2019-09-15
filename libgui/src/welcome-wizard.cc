@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QPushButton>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
@@ -36,8 +36,8 @@ along with Octave; see the file COPYING.  If not, see
   #include <windows.h>
 #endif
 
-#include "welcome-wizard.h"
 #include "resource-manager.h"
+#include "welcome-wizard.h"
 
 namespace octave
 {

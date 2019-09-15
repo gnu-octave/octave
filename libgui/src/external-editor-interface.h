@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_external_editor_interface_h)
 #define octave_external_editor_interface_h 1
 
-#include <QWidget>
 #include <QString>
+#include <QWidget>
 
 namespace octave
 {

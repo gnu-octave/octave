@@ -23,8 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_set_path_dialog_h 1
 
 #include <QDialog>
-#include <QModelIndex>
 #include <QFileInfo>
+#include <QModelIndex>
 
 #include "qt-interpreter-events.h"
 

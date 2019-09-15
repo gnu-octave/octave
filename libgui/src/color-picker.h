@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_color_picker_h)
 #define octave_color_picker_h 1
 
-#include <QPushButton>
 #include <QColorDialog>
+#include <QPushButton>
 
 namespace octave
 {

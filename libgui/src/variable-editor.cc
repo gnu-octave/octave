@@ -40,19 +40,19 @@ along with Octave; see the file COPYING.  If not, see
 #include <QScrollBar>
 #include <QSignalMapper>
 #include <QStackedWidget>
+#include <QTabWidget>
 #include <QTableView>
 #include <QTextEdit>
-#include <QTabWidget>
 #include <QToolBar>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "dw-main-window.h"
+#include "gui-preferences.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "variable-editor.h"
 #include "variable-editor-model.h"
-#include "gui-preferences.h"
+#include "variable-editor.h"
 
 namespace octave
 {

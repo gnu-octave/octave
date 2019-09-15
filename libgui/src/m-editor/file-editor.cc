@@ -26,10 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_QSCINTILLA)
 
-#include "file-editor.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
@@ -44,8 +40,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
-#include "main-window.h"
+#include "file-editor.h"
 #include "gui-preferences.h"
+#include "main-window.h"
+#include "resource-manager.h"
+#include "shortcut-manager.h"
 
 #include "oct-env.h"
 

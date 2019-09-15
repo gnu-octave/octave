@@ -24,15 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_dialog_h)
 #define octave_dialog_h 1
 
+#include <QAbstractButton>
+#include <QDialog>
+#include <QFileDialog>
+#include <QItemSelectionModel>
+#include <QLineEdit>
+#include <QList>
+#include <QMessageBox>
 #include <QMutex>
 #include <QWaitCondition>
-#include <QAbstractButton>
-#include <QList>
-#include <QItemSelectionModel>
-#include <QDialog>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QFileDialog>
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;

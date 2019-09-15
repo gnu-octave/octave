@@ -23,13 +23,13 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_shortcut_manager_h)
 #define octave_shortcut_manager_h 1
 
-#include <QWidget>
-#include <QTreeWidget>
-#include <QLineEdit>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSettings>
 #include <QShortcut>
+#include <QTreeWidget>
+#include <QWidget>
 
 namespace octave
 {

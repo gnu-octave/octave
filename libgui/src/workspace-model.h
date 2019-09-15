@@ -25,13 +25,13 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_workspace_model_h 1
 
 #include <QAbstractTableModel>
-#include <QVector>
-#include <QSemaphore>
-#include <QStringList>
 #include <QChar>
-#include <QList>
 #include <QColor>
+#include <QList>
+#include <QSemaphore>
 #include <QSettings>
+#include <QStringList>
+#include <QVector>
 
 #include "syminfo.h"
 

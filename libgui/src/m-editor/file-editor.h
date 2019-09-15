@@ -23,18 +23,17 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_file_editor_h)
 #define octave_file_editor_h 1
 
-#include <QToolBar>
-#include <QAction>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QCloseEvent>
-#include <QTabWidget>
-#include <QStackedWidget>
+#include <map>
 
+#include <QAction>
+#include <QCloseEvent>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-
-#include <map>
+#include <QMenuBar>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QTabWidget>
+#include <QToolBar>
 
 #include "file-editor-interface.h"
 #include "file-editor-tab.h"

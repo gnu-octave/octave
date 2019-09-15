@@ -24,8 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_file_editor_interface_h 1
 
 #include <QMenu>
-#include <QToolBar>
 #include <QSettings>
+#include <QToolBar>
+
 #include "octave-dock-widget.h"
 
 namespace octave

@@ -24,18 +24,18 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_workspace_view_h)
 #define octave_workspace_view_h 1
 
-#include <QItemDelegate>
-#include <QTableView>
-#include <QSemaphore>
-#include <QComboBox>
-#include <QSortFilterProxyModel>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QSemaphore>
 #include <QSignalMapper>
-
-#include "ov.h"
+#include <QSortFilterProxyModel>
+#include <QTableView>
 
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
+
+class octave_value;
 
 namespace octave
 {

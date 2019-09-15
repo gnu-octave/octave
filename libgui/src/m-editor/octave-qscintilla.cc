@@ -30,6 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Qsci/qscilexer.h>
 
+#include <QKeySequence>
+#include <QMimeData>
+#include <QShortcut>
+#include <QToolTip>
+#include <QVBoxLayout>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1
 #  include <Qsci/qscilexeroctave.h>
@@ -37,28 +42,20 @@ along with Octave; see the file COPYING.  If not, see
 #  define HAVE_LEXER_MATLAB 1
 #  include <Qsci/qscilexermatlab.h>
 #endif
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexerbash.h>
-#include <Qsci/qscilexerperl.h>
-#include <Qsci/qscilexerbatch.h>
-#include <Qsci/qscilexerdiff.h>
-
 #include <Qsci/qscicommandset.h>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerbatch.h>
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerdiff.h>
+#include <Qsci/qscilexerperl.h>
 
-#include <QKeySequence>
-#include <QMimeData>
-#include <QShortcut>
-#include <QToolTip>
-#include <QVBoxLayout>
-
-#include "gui-preferences.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-
-#include "octave-qscintilla.h"
 #include "file-editor-tab.h"
+#include "gui-preferences.h"
 // FIXME: hardwired marker numbers?
 #include "marker.h"
+#include "octave-qscintilla.h"
+#include "resource-manager.h"
+#include "shortcut-manager.h"
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".

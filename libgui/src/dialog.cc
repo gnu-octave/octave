@@ -25,22 +25,22 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "dialog.h"
-#include "resource-manager.h"
-
+#include <QFileInfo>
+#include <QListView>
 #include <QString>
 #include <QStringList>
 #include <QStringListModel>
-#include <QListView>
-#include <QFileInfo>
 // Could replace most of these with #include <QtGui>
-#include <QMessageBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QGroupBox>
 #include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include "dialog.h"
+#include "resource-manager.h"
 
 namespace octave
 {

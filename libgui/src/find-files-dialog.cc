@@ -24,23 +24,23 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QPushButton>
+#include <QCheckBox>
+#include <QComboBox>
 #include <QDialogButtonBox>
+#include <QDirIterator>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QGridLayout>
+#include <QGroupBox>
+#include <QHeaderView>
+#include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QHeaderView>
-#include <QTableView>
-#include <QFileDialog>
+#include <QPushButton>
 #include <QStatusBar>
-#include <QIcon>
-#include <QFileInfo>
-#include <QTimer>
-#include <QDirIterator>
+#include <QTableView>
 #include <QTextStream>
-#include <QGroupBox>
+#include <QTimer>
 
 #include "find-files-dialog.h"
 #include "find-files-model.h"

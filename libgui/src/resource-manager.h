@@ -23,9 +23,9 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_resource_manager_h)
 #define octave_resource_manager_h 1
 
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QIcon>
-#include <QComboBox>
 #include <QMap>
 #include <QSettings>
 #include <QTranslator>

@@ -24,6 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include "main-window.h"
+#include "octave-qobject.h"
+#include "qt-application.h"
+
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-syscalls.h"
@@ -32,10 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "display.h"
 #include "octave.h"
 #include "sysdep.h"
-
-#include "main-window.h"
-#include "octave-qobject.h"
-#include "qt-application.h"
 
 namespace octave
 {

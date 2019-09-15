@@ -28,22 +28,16 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "resource-manager.h"
-#include "shortcut-manager.h"
-#include "variable-editor.h"
-#include "workspace-model.h"
-#include "settings-dialog.h"
-
 #include <QButtonGroup>
 #include <QDir>
-#include <QFileInfo>
 #include <QFileDialog>
-#include <QVector>
+#include <QFileInfo>
 #include <QHash>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStyleFactory>
 #include <QTextCodec>
+#include <QVector>
 
 #if defined (HAVE_QSCINTILLA)
 #  include "octave-qscintilla.h"
@@ -64,6 +58,12 @@ along with Octave; see the file COPYING.  If not, see
 #  include <Qsci/qscilexerbatch.h>
 #  include <Qsci/qscilexerdiff.h>
 #endif
+
+#include "resource-manager.h"
+#include "settings-dialog.h"
+#include "shortcut-manager.h"
+#include "variable-editor.h"
+#include "workspace-model.h"
 
 namespace octave
 {

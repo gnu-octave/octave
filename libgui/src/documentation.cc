@@ -24,10 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "defaults.h"
-#include "file-ops.h"
-#include "oct-env.h"
-
 #include <QAction>
 #include <QApplication>
 #include <QCompleter>
@@ -46,9 +42,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "documentation.h"
+#include "gui-preferences.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
-#include "gui-preferences.h"
+
+#include "defaults.h"
+#include "file-ops.h"
+#include "oct-env.h"
 
 namespace octave
 {

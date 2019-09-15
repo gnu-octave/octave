@@ -25,12 +25,11 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_qscintilla_h)
 #define octave_octave_qscintilla_h 1
 
-#include <Qsci/qsciscintilla.h>
-
 #include <QContextMenuEvent>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
+#include <Qsci/qsciscintilla.h>
 
 namespace octave
 {

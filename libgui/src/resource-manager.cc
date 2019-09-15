@@ -26,28 +26,28 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-#include <QFile>
 #include <QDir>
-#include <QNetworkProxy>
+#include <QFile>
 #include <QLibraryInfo>
 #include <QMessageBox>
+#include <QNetworkProxy>
 #if defined (HAVE_QSTANDARDPATHS)
 #  include <QStandardPaths>
 #endif
 #include <QTextCodec>
 
-#include "error.h"
+#include "QTerminal.h"
+#include "gui-preferences.h"
+#include "resource-manager.h"
+#include "variable-editor.h"
+#include "workspace-model.h"
+
 #include "file-ops.h"
-#include "help.h"
 #include "oct-env.h"
 
 #include "defaults.h"
-
-#include "QTerminal.h"
-#include "workspace-model.h"
-#include "variable-editor.h"
-#include "resource-manager.h"
-#include "gui-preferences.h"
+#include "error.h"
+#include "help.h"
 
 namespace octave
 {

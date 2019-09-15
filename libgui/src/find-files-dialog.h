@@ -23,16 +23,16 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_find_files_dialog_h 1
 
 #include <QDialog>
-#include <QModelIndex>
 #include <QFileInfo>
+#include <QModelIndex>
 
+class QCheckBox;
+class QDirIterator;
 class QLineEdit;
 class QPushButton;
+class QStatusBar;
 class QTableView;
 class QTimer;
-class QDirIterator;
-class QCheckBox;
-class QStatusBar;
 
 namespace octave
 {

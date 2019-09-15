@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "interpreter-qobject.h"
 #include "octave-qobject.h"
-#include "qt-interpreter-events.h"
 #include "qt-application.h"
+#include "qt-interpreter-events.h"
 
 #include "input.h"
 #include "interpreter.h"

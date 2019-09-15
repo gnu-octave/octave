@@ -24,10 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_set_path_model_h 1
 
 #include <QAbstractListModel>
-#include <QStringList>
-#include <QList>
 #include <QFileInfo>
 #include <QIcon>
+#include <QList>
+#include <QStringList>
 
 #include "qt-interpreter-events.h"
 

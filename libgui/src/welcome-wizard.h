@@ -24,8 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_welcome_wizard_h)
 #define octave_welcome_wizard_h 1
 
-#include <QDialog>
 #include <QCheckBox>
+#include <QDialog>
 #include <QLabel>
 
 namespace octave

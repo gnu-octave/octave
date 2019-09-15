@@ -23,12 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_history_dock_widget_h)
 #define octave_history_dock_widget_h 1
 
+#include <QCheckBox>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include <QStringListModel>
-#include <QComboBox>
-#include <QCheckBox>
 
 #include "octave-dock-widget.h"
 

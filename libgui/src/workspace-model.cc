@@ -27,15 +27,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <QTreeWidget>
 #include <QSettings>
+#include <QTreeWidget>
+
+#include "gui-preferences.h"
+#include "resource-manager.h"
+#include "workspace-model.h"
 
 #include "syminfo.h"
 #include "utils.h"
-
-#include "resource-manager.h"
-#include "gui-preferences.h"
-#include "workspace-model.h"
 
 namespace octave
 {

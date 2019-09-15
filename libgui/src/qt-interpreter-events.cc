@@ -32,22 +32,22 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPushButton>
 #include <QStringList>
 
+#include "dialog.h"
+#include "qt-interpreter-events.h"
+#include "resource-manager.h"
+
 #include "oct-env.h"
 #include "str-vec.h"
 
 #include "builtin-defun-decls.h"
-#include "dialog.h"
 #include "error.h"
 #include "interpreter-private.h"
 #include "load-path.h"
-#include "ov.h"
-#include "octave.h"
 #include "oct-map.h"
+#include "octave.h"
+#include "ov.h"
 #include "syminfo.h"
 #include "utils.h"
-
-#include "qt-interpreter-events.h"
-#include "resource-manager.h"
 
 Q_DECLARE_METATYPE (octave_value)
 Q_DECLARE_METATYPE (octave::symbol_info_list)

@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 
 #include "QTerminal.h"
+
 #include "octave-dock-widget.h"
 
 namespace octave

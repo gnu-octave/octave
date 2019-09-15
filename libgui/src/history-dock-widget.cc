@@ -26,19 +26,19 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QApplication>
 #include <QClipboard>
-#include <QVBoxLayout>
-#include <QMenu>
-#include <QScrollBar>
 #include <QCompleter>
 #include <QLabel>
+#include <QMenu>
+#include <QScrollBar>
+#include <QVBoxLayout>
 
-#include "error.h"
-#include "resource-manager.h"
 #include "gui-preferences.h"
+#include "history-dock-widget.h"
+#include "resource-manager.h"
 
 #include "cmd-hist.h"
 
-#include "history-dock-widget.h"
+#include "error.h"
 
 namespace octave
 {

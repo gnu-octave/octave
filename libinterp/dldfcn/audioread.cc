@@ -98,9 +98,9 @@ is stored in the audio file.
 
   frame.add_fcn (safe_close, file);
 
-  OCTAVE_LOCAL_BUFFER (float, data, info.frames * info.channels);
+  OCTAVE_LOCAL_BUFFER (double, data, info.frames * info.channels);
 
-  sf_read_float (file, data, info.frames * info.channels);
+  sf_read_double (file, data, info.frames * info.channels);
 
   sf_count_t start = 0;
   sf_count_t end = info.frames;
@@ -153,13 +153,13 @@ is stored in the audio file.
           switch (info.format & SF_FORMAT_SUBMASK)
             {
             case SF_FORMAT_PCM_S8:
-              ret_audio = int8NDArray (audio * 127);
+              ret_audio = int8NDArray (audio * 128);
               break;
             case SF_FORMAT_PCM_U8:
-              ret_audio = uint8NDArray (audio * 127 + 127);
+              ret_audio = uint8NDArray (audio * 128 + 128);
               break;
             case SF_FORMAT_PCM_16:
-              ret_audio = int16NDArray (audio * 32767);
+              ret_audio = int16NDArray (audio * 32768);
               break;
             case SF_FORMAT_PCM_24:
               ret_audio = int32NDArray (audio * 8388608);
@@ -288,11 +288,11 @@ Comment.
   double scale = 1.0;
 
   if (args(1).is_uint8_type ())
-    bias = scale = std::pow (2.0, 7);
+    bias = scale = 127.5;
   else if (args(1).is_int16_type ())
-    scale = std::pow (2.0, 15);
+    scale = 32768;       // 2^15
   else if (args(1).is_int32_type ())
-    scale = std::pow (2.0, 31);
+    scale = 2147483648;  // 2^31
   else if (args(1).isinteger ())
     err_wrong_type_arg ("audiowrite", args(1));
 
@@ -313,7 +313,7 @@ Comment.
   if (audio.rows () == 1)
     audio = audio.transpose ();
 
-  OCTAVE_LOCAL_BUFFER (float, data, items_to_write);
+  OCTAVE_LOCAL_BUFFER (double, data, items_to_write);
 
   sf_count_t idx = 0;
   for (int i = 0; i < audio.rows (); i++)
@@ -431,6 +431,8 @@ Comment.
 
   frame.add_fcn (safe_close, file);
 
+  sf_command (file, SFC_SET_NORM_DOUBLE, NULL, SF_TRUE);
+  sf_command (file, SFC_SET_CLIPPING, NULL, SF_TRUE) ;
   sf_command (file, SFC_SET_VBR_ENCODING_QUALITY, &quality, sizeof (quality));
 
   if (title != "")
@@ -453,7 +455,7 @@ Comment.
       if (items_to_write - offset < chunk_size)
         chunk_size = items_to_write - offset;
 
-      sf_count_t items_written = sf_write_float (file, data+offset, chunk_size);
+      sf_count_t items_written = sf_write_double (file, data+offset, chunk_size);
 
       if (items_written != chunk_size)
         error ("audiowrite: write failed, wrote %" PRId64 " of %" PRId64
@@ -478,6 +480,68 @@ Comment.
 }
 
 /*
+## Joint audiowrite/audioread tests
+## 8-bit Unsigned PCM
+%!testif HAVE_SNDFILE <*56889>
+%! fname = [tempname() ".wav"];
+%! unwind_protect
+%!   y1 = uint8 ([0, 1, 2, 253, 254, 255]);
+%!   audiowrite (fname, y1, 8000, "BitsPerSample", 8);
+%!   y2 = audioread (fname, "native");
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+%! assert (y1(:), y2);
+
+## 8-bit Signed PCM
+%!testif HAVE_SNDFILE <*56889>
+%! fname = [tempname() ".au"];
+%! unwind_protect
+%!   y1 = uint8 ([0, 1, 2, 253, 254, 255]);
+%!   audiowrite (fname, y1, 8000, "BitsPerSample", 8);
+%!   y2 = audioread (fname, "native");
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+%! assert (y2, int8 ([-128; -127; -126; 125; 126; 127]));
+
+## 16-bit Signed PCM
+%!testif HAVE_SNDFILE <*56889>
+%! fname = [tempname() ".wav"];
+%! unwind_protect
+%!   y1 = int16 ([-32768, -32767, -32766, 32765, 32766, 32767]);
+%!   audiowrite (fname, y1, 8000, "BitsPerSample", 16);
+%!   y2 = audioread (fname, "native");
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+%! assert (y1(:), y2);
+
+## 24-bit Signed PCM
+%!testif HAVE_SNDFILE <*56889>
+%! fname = [tempname() ".au"];
+%! unwind_protect
+%!   y1 = [-8388608, -8388607, -8388606, 8388605, 8388606, 8388607] / 8388608;
+%!   audiowrite (fname, y1, 8000, "BitsPerSample", 24);
+%!   y2 = audioread (fname, "native");
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+%! assert (int32 ([-8388608; -8388607; -8388606; 8388605; 8388606; 8388607]),
+%!         y2);
+
+## 32-bit Signed PCM
+%!testif HAVE_SNDFILE <*56889>
+%! fname = [tempname() ".wav"];
+%! unwind_protect
+%!   y1 = int32 ([-2147483648, -2147483647, -2147483646, 2147483645, 2147483646, 2147483647 ]);
+%!   audiowrite (fname, y1, 8000, "BitsPerSample", 32);
+%!   y2 = audioread (fname, "native");
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+%! assert (y1(:), y2);
+
 ## Test input validation
 %!testif HAVE_SNDFILE
 %! fail ("audiowrite (1, 1, 8e3)", "FILENAME must be a string");

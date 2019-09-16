@@ -298,9 +298,11 @@ Comment.
 
   Matrix audio = args(1).matrix_value ();
 
-  // FIXME: SampleRate is supposed to be a positive scalar greater than 0
-  //        Need check for that, and possibly convert to uint.
+  if (! args(2).is_scalar_type () || ! args(2).isnumeric ())
+    error ("audiowrite: sample rate FS must be a positive scalar integer");
   int samplerate = args(2).int_value ();
+  if (samplerate < 1)
+    error ("audiowrite: sample rate FS must be a positive scalar integer");
 
   std::string ext;
   size_t dotpos = filename.find_last_of ('.');
@@ -546,6 +548,9 @@ Comment.
 %!testif HAVE_SNDFILE
 %! fail ("audiowrite (1, 1, 8e3)", "FILENAME must be a string");
 %! fail ("audiowrite ('foo', int64 (1), 8e3)", "wrong type argument 'int64 scalar'");
+%! fail ("audiowrite ('foo', [0 1], [8e3, 8e3])", "FS must be a positive scalar");
+%! fail ("audiowrite ('foo', 1, {8e3})", "FS must be a .* integer");
+%! fail ("audiowrite ('foo', 1, -8e3)", "FS must be a positive");
 %! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample')", "invalid number of arguments");
 %! fail ("audiowrite ('foo', 1, 8e3, 'bitspersample', 48)", "wrong number of bits specified");
 %! fail ("audiowrite ('foo', 1, 8e3, 'quality', [2 3 4])", "Quality value must be a scalar");

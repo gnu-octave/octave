@@ -2184,16 +2184,24 @@ OCTAVE_CHECK_LIB(sundials_nvecserial, [SUNDIALS NVECTOR],
 
 ### Check for SUNDIALS IDA library and header.
 
+save_CPPFLAGS="$CPPFLAGS"
+save_LDFLAGS="$LDFLAGS"
 save_LIBS="$LIBS"
 LIBS="$SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+LDFLAGS="$SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+CPPFLAGS="$SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
 OCTAVE_CHECK_LIB(sundials_ida, [SUNDIALS IDA],
   [SUNDIALS IDA library not found.  The solvers ode15i and ode15s will be disabled.],
   [ida/ida.h ida.h], [IDAInit],
   [], [don't use SUNDIALS IDA library, disable solvers ode15i and ode15s])
+CPPFLAGS="$save_CPPFLAGS"
+LDFLAGS="$save_LDFLAGS"
 LIBS="$save_LIBS"
 
 ### Check for SUNDIALS library features, some required, some optional.
 
+CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
 LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
 if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
   dnl Any of the following tests could determine that SUNDIALS is incompatible
@@ -2217,6 +2225,8 @@ if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
     OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU
   fi
 fi
+CPPFLAGS="$save_CPPFLAGS"
+LDFLAGS="$save_LDFLAGS"
 LIBS="$save_LIBS"
 
 dnl Define this way instead of with an #if in oct-conf-post.h so that

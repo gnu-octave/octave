@@ -834,7 +834,7 @@ namespace octave
       return result;
 
     if (type == REG_DWORD)
-      value = octave_int32 (*data);
+      value = octave_int32 (*(reinterpret_cast<DWORD *> (data)));
     else if (type == REG_SZ || type == REG_EXPAND_SZ)
       value = string_vector (sys::u8_from_wstring (reinterpret_cast<wchar_t *> (data)));
 

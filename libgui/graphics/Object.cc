@@ -232,11 +232,6 @@ namespace QtHandles
              SLOT (interpreter_event (const octave::meth_callback&)));
 
     connect (emitter,
-             SIGNAL (interpreter_event (const octave::meth_callback&)),
-             receiver,
-             SLOT (interpreter_event (const octave::meth_callback&)));
-
-    connect (emitter,
              SIGNAL (gh_callback_event (const graphics_handle&,
                                         const std::string&)),
              receiver,

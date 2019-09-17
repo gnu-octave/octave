@@ -40,15 +40,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-graphics-toolkit.h"
 
 #include "annotation-dialog.h"
-
-#include "graphics.h"
-#include "interpreter-private.h"
-#include "interpreter.h"
-#include "oct-opengl.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
 #include "builtin-defun-decls.h"
+#include "graphics.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
+#include "oct-opengl.h"
 
 namespace QtHandles
 {

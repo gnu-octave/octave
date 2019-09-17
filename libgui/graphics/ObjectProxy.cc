@@ -28,11 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 #include <QThread>
 
-#include "oct-mutex.h"
-#include "utils.h"
-
 #include "Object.h"
 #include "ObjectProxy.h"
+
+#include "oct-mutex.h"
+#include "utils.h"
 
 namespace QtHandles
 {

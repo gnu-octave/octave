@@ -38,7 +38,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-interpreter-events.h"
 #include "variable-editor-model.h"
 
+#include "Cell.h"
 #include "interpreter.h"
+#include "oct-map.h"
 #include "ov.h"
 #include "parse.h"
 #include "pr-flt-fmt.h"

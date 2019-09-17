@@ -51,16 +51,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "FigureWindow.h"
 #include "QtHandlesUtils.h"
 
+#include "qt-interpreter-events.h"
+
 #include "file-ops.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "version.h"
 
-#include "interpreter-private.h"
-
-#include "qt-interpreter-events.h"
-
 #include "builtin-defun-decls.h"
+#include "interpreter-private.h"
 
 namespace QtHandles
 {

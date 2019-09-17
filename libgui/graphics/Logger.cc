@@ -24,11 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <cstdio>
+
 #include <QMutex>
 #include <QMutexLocker>
 #include <QProcessEnvironment>
-
-#include <cstdio>
 
 #include "Logger.h"
 

@@ -32,15 +32,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 #include <QThread>
 
+#include "qt-graphics-toolkit.h"
+#include "QtHandlesUtils.h"
+#include "__init_qt__.h"
+
 #include "defun-dld.h"
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "interpreter.h"
 #include "symtab.h"
-
-#include "qt-graphics-toolkit.h"
-#include "QtHandlesUtils.h"
-#include "__init_qt__.h"
 
 // PKG_ADD: if (__have_feature__ ("QT") && __have_feature__ ("OPENGL") && have_window_system () && __event_manager_enabled__ ()) register_graphics_toolkit ("qt"); endif
 

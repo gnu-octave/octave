@@ -24,14 +24,13 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "event-manager.h"
+#include "GLCanvas.h"
+#include "gl-select.h"
+
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
 #include "interpreter-private.h"
-
-#include "GLCanvas.h"
-#include "gl-select.h"
 
 namespace QtHandles
 {

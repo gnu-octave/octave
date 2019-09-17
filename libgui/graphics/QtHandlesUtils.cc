@@ -24,14 +24,11 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
+#include <list>
+
 #include <QApplication>
 #include <QKeyEvent>
 #include <QMouseEvent>
-
-#include <list>
-
-#include "ov.h"
-#include "graphics.h"
 
 #include "Container.h"
 #include "KeyMap.h"
@@ -40,6 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-graphics-toolkit.h"
 
 #include "oct-string.h"
+
+#include "graphics.h"
+#include "ov.h"
 
 namespace QtHandles
 {

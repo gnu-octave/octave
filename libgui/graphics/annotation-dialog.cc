@@ -24,16 +24,14 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include "annotation-dialog.h"
-#include "ui-annotation-dialog.h"
-
-#include "QtHandlesUtils.h"
-
-#include "resource-manager.h"
-
 #include <QColorDialog>
 #include <QPushButton>
 #include <QPalette>
+
+#include "QtHandlesUtils.h"
+#include "annotation-dialog.h"
+#include "resource-manager.h"
+#include "ui-annotation-dialog.h"
 
 using namespace QtHandles;
 

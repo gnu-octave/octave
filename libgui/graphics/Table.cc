@@ -24,22 +24,21 @@ along with Octave; see the file COPYING.  If not, see
 #  include "config.h"
 #endif
 
-#include <QEvent>
-#include <QFrame>
-#include <QLabel>
-#include <QMouseEvent>
-#include <QTimer>
-
 #include <QCheckBox>
 #include <QComboBox>
+#include <QEvent>
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QModelIndexList>
+#include <QMouseEvent>
 #include <QString>
 #include <QStringList>
 #include <QTableWidget>
 #include <QTableWidgetItem>
-#include <QHBoxLayout>
+#include <QTimer>
 
 #include "Container.h"
 #include "ContextMenu.h"

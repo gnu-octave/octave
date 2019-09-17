@@ -417,9 +417,18 @@ namespace octave
                       "public", Matrix (), "private"));
 
     m_meta_class.install_property
+      (make_property (m_meta_class, "SuperclassList",
+                      make_fcn_handle (class_get_superclasses,
+                                       "meta.class>get.SuperclassList"),
+                      "public", Matrix (), "private"));
+
+    // FIXME: Matlab supports this property under "SuperclassList".
+    //        Octave, however, has supported this under "SuperClassList".
+    //        Alias the property.  Remove in Octave version 8.1.
+    m_meta_class.install_property
       (make_property (m_meta_class, "SuperClassList",
                       make_fcn_handle (class_get_superclasses,
-                                       "meta.class>get.SuperClassList"),
+                                       "meta.class>get.SuperclassList"),
                       "public", Matrix (), "private"));
 
     // meta.class methods

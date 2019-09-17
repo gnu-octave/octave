@@ -80,6 +80,9 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   measured in points, *not* pixels.  Compared to previous versions
   of Octave, some lines and markers will appear 4/3 larger.
 
+- The meta.class property "SuperClassList" has been renamed
+  "Superclasslist" for Matlab compatibility.  The original name will
+  exist as an alias until Octave version 8.1.
 
 ### Alphabetical list of new functions added in Octave 6
 

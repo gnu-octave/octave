@@ -1247,6 +1247,9 @@ namespace octave
     int get_undelim (void);
 
     // Read character that will be got by the next get.
+    // FIXME: This will not set EOF if delimited stream is at EOF and a peek
+    // is attempted.  This does *NOT* behave like C++ input stream.
+    // For a compatible peek function, use peek_undelim.  See bug #56917.
     int peek (void) { return eof () ? std::istream::traits_type::eof () : *idx; }
 
     // Read character that will be got by the next get.
@@ -1317,7 +1320,7 @@ namespace octave
     // Position after last character in buffer.
     char *eob;
 
-    // True if there is delimiter in the bufer after idx.
+    // True if there is delimiter in the buffer after idx.
     bool delimited;
 
     // Longest lookahead required.
@@ -3048,7 +3051,7 @@ namespace octave
                         std::string& val) const
   {
     int c1 = std::istream::traits_type::eof ();
-    std::ostringstream obuf;              // Is this optimized for growing?
+    std::ostringstream obuf;   // FIXME: is this optimized for growing?
 
     while (is && ((c1 = (is && ! is.eof ())
                    ? is.get_undelim ()
@@ -3199,9 +3202,9 @@ namespace octave
         scan_caret (is, R"(")", val);     // read everything until "
         is.get ();                        // swallow "
 
-        while (is && is.peek () == '"')  // if double ", insert one in stream,
-          {                               // and keep looking for single "
-            is.get ();
+        while (is && is.peek_undelim () == '"')  // if double ",
+          {                                      // insert one in stream,
+            is.get ();                           // keep looking for single "
             std::string val1;
             scan_caret (is, R"(")", val1);
             val = val + '"' + val1;
@@ -3835,6 +3838,7 @@ namespace octave
 
     if (c1 != std::istream::traits_type::eof ())
       is.putback (c1);
+
     return c1;
   }
 

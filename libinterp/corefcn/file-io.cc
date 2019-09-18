@@ -2294,8 +2294,13 @@ as the name of the function when reporting errors.
 %! unwind_protect_cleanup
 %!   unlink (f);
 %! end_unwind_protect
-*/
 
+%!test <*56917>
+%! str = '"a,b","c"';
+%! obs = textscan (str, "%q", "delimiter", ",");
+%! assert (obs, { { "a,b"; "c" } });
+
+*/
 // These tests have end-comment sequences, so can't just be in a comment
 #if 0
 ## Test unfinished comment

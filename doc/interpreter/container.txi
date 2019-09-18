@@ -550,6 +550,8 @@ be converted to another type of container before being treated.
 
 @DOCSTRING(struct2cell)
 
+@DOCSTRING(namedargs2cell)
+
 @node containers.Map
 @section containers.Map
 @cindex Map

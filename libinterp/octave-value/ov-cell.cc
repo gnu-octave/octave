@@ -1355,7 +1355,7 @@ c(2,1,:)(:)
 @end group
 @end example
 
-@seealso{cell2struct, fieldnames}
+@seealso{cell2struct, namedargs2cell, fieldnames}
 @end deftypefn */)
 {
   if (args.length () != 1)

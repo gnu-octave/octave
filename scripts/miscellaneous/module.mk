@@ -52,6 +52,7 @@ FCN_FILE_DIRS += \
   %reldir%/mkdir.m \
   %reldir%/mkoctfile.m \
   %reldir%/movefile.m \
+  %reldir%/namedargs2cell.m \
   %reldir%/namelengthmax.m \
   %reldir%/nargchk.m \
   %reldir%/narginchk.m \

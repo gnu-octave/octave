@@ -71,7 +71,6 @@ namespace octave
     extern const char *CXX;
     extern const char *DEFAULT_PAGER;
     extern const char *DEFS;
-    extern const char *DL_LD;
     extern const char *DL_LDFLAGS;
     extern const char *EXEEXT;
     extern const char *GCC_VERSION;
@@ -108,7 +107,6 @@ namespace octave
     extern const char *KLU_LIBS;
     extern const char *LAPACK_LIBS;
     extern const char *LDFLAGS;
-    extern const char *LD_CXX;
     extern const char *LD_STATIC_FLAG;
     extern const char *LEXLIB;
     extern const char *LEX;
@@ -151,7 +149,6 @@ namespace octave
     extern const char *RDYNAMIC_FLAG;
     extern const char *READLINE_LIBS;
     extern const char *SHARED_LIBS;
-    extern const char *SH_LD;
     extern const char *SH_LDFLAGS;
     extern const char *STATIC_LIBS;
     extern const char *SUITESPARSECONFIG_LIBS;

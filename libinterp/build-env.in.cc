@@ -107,8 +107,6 @@ namespace octave
 
     const char *DEFS = %OCTAVE_CONF_DEFS%;
 
-    const char *DL_LD = %OCTAVE_CONF_DL_LD%;
-
     const char *DL_LDFLAGS = %OCTAVE_CONF_DL_LDFLAGS%;
 
     const char *EXEEXT = %OCTAVE_CONF_EXEEXT%;
@@ -180,8 +178,6 @@ namespace octave
     const char *LAPACK_LIBS = %OCTAVE_CONF_LAPACK_LIBS%;
 
     const char *LDFLAGS = %OCTAVE_CONF_LDFLAGS%;
-
-    const char *LD_CXX = %OCTAVE_CONF_LD_CXX%;
 
     const char *LD_STATIC_FLAG = %OCTAVE_CONF_LD_STATIC_FLAG%;
 
@@ -266,8 +262,6 @@ namespace octave
     const char *READLINE_LIBS = %OCTAVE_CONF_READLINE_LIBS%;
 
     const char *SHARED_LIBS = %OCTAVE_CONF_SHARED_LIBS%;
-
-    const char *SH_LD = %OCTAVE_CONF_SH_LD%;
 
     const char *SH_LDFLAGS = %OCTAVE_CONF_SH_LDFLAGS%;
 

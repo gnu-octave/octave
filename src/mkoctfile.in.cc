@@ -244,6 +244,8 @@ initialize (void)
 
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
 
+  vars["CXXLD"] = get_variable ("CXXLD", vars["CXX"]);
+
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
 
   vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
@@ -261,8 +263,6 @@ initialize (void)
   vars["DEPEND_EXTRA_SED_PATTERN"]
     = get_variable ("DEPEND_EXTRA_SED_PATTERN",
                     %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
-
-  vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
 
   vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
                                      %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
@@ -307,8 +307,6 @@ initialize (void)
                                         %OCTAVE_CONF_OCT_LINK_OPTS%);
 
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
-
-  vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
 
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
                                          %OCTAVE_CONF_LD_STATIC_FLAG%);
@@ -392,22 +390,22 @@ static std::string help_msg =
 "                            ALL_CFLAGS                  INCLUDEDIR\n"
 "                            ALL_CXXFLAGS                LAPACK_LIBS\n"
 "                            ALL_FFLAGS                  LDFLAGS\n"
-"                            ALL_LDFLAGS                 LD_CXX\n"
-"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
-"                            CC                          LIBDIR\n"
-"                            CFLAGS                      LIBOCTAVE\n"
-"                            CPICFLAG                    LIBOCTINTERP\n"
-"                            CPPFLAGS                    OCTAVE_LINK_OPTS\n"
-"                            CXX                         OCTINCLUDEDIR\n"
-"                            CXXFLAGS                    OCTAVE_LIBS\n"
-"                            CXXPICFLAG                  OCTAVE_LINK_DEPS\n"
-"                            DL_LD                       OCTLIBDIR\n"
-"                            DL_LDFLAGS                  OCT_LINK_DEPS\n"
-"                            F77                         OCT_LINK_OPTS\n"
-"                            F77_INTEGER8_FLAG           RDYNAMIC_FLAG\n"
-"                            FFLAGS                      SPECIAL_MATH_LIB\n"
-"                            FPICFLAG                    XTRA_CFLAGS\n"
-"                            INCFLAGS                    XTRA_CXXFLAGS\n"
+"                            ALL_LDFLAGS                 LD_STATIC_FLAG\n"
+"                            BLAS_LIBS                   LIBDIR\n"
+"                            CC                          LIBOCTAVE\n"
+"                            CFLAGS                      LIBOCTINTERP\n"
+"                            CPICFLAG                    OCTAVE_LINK_OPTS\n"
+"                            CPPFLAGS                    OCTINCLUDEDIR\n"
+"                            CXX                         OCTAVE_LIBS\n"
+"                            CXXFLAGS                    OCTAVE_LINK_DEPS\n"
+"                            CXXLD                       OCTLIBDIR\n"
+"                            CXXPICFLAG                  OCT_LINK_DEPS\n"
+"                            DL_LDFLAGS                  OCT_LINK_OPTS\n"
+"                            F77                         RDYNAMIC_FLAG\n"
+"                            F77_INTEGER8_FLAG           SPECIAL_MATH_LIB\n"
+"                            FFLAGS                      XTRA_CFLAGS\n"
+"                            FPICFLAG                    XTRA_CXXFLAGS\n"
+"                            INCFLAGS\n"
 "\n"
 "                          Octave configuration variables as above, but\n"
 "                          currently unused by mkoctfile.\n"
@@ -695,8 +693,8 @@ main (int argc, char **argv)
             vars["CC"] += " -d";
           if (vars["CXX"] == "cc-msvc")
             vars["CXX"] += " -d";
-          if (vars["DL_LD"] == "cc-msvc")
-            vars["DL_LD"] += " -d";
+          if (vars["CXXLD"] == "cc-msvc")
+            vars["CXXLD"] += " -d";
         }
       else if (arg == "-h" || arg == "-?" || arg == "-help" || arg == "--help")
         {
@@ -1083,13 +1081,13 @@ main (int argc, char **argv)
 
   if (link_stand_alone)
     {
-      if (! vars["LD_CXX"].empty ())
+      if (! vars["CXXLD"].empty ())
         {
           octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
                       + ' ' + vars["OCTAVE_LIBS"];
 
           std::string cmd
-            = (vars["LD_CXX"] + ' ' + vars["CPPFLAGS"] + ' '
+            = (vars["CXXLD"] + ' ' + vars["CPPFLAGS"] + ' '
                + vars["ALL_CXXFLAGS"] + ' ' + vars["RDYNAMIC_FLAG"] + ' '
                + vars["ALL_LDFLAGS"] + ' ' + pass_on_options + ' '
                + output_option + ' ' + objfiles + ' ' + libfiles + ' '
@@ -1119,7 +1117,7 @@ main (int argc, char **argv)
 #endif
 
       std::string cmd
-        = (vars["DL_LD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
+        = (vars["CXXLD"] + ' ' + vars["ALL_CXXFLAGS"] + ' '
            + vars["DL_LDFLAGS"] + ' ' + vars["LDFLAGS"] + ' ' + pass_on_options
            + " -o " + octfile + ' ' + objfiles + ' ' + libfiles + ' '
            + ldflags + ' ' + vars["LFLAGS"] + ' ' + octave_libs + ' '

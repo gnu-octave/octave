@@ -85,9 +85,9 @@
 ## variables.  These are used in commands that @code{mkoctfile} executes.
 ##
 ## @example
-##    ALL_CFLAGS                  LAPACK_LIBS
-##    ALL_CXXFLAGS                LDFLAGS
-##    ALL_FFLAGS                  LD_CXX
+##    ALL_CFLAGS                  INCLUDEDIR
+##    ALL_CXXFLAGS                LAPACK_LIBS
+##    ALL_FFLAGS                  LDFLAGS
 ##    ALL_LDFLAGS                 LD_STATIC_FLAG
 ##    BLAS_LIBS                   LFLAGS
 ##    CC                          LIBDIR
@@ -96,15 +96,14 @@
 ##    CPPFLAGS                    OCTAVE_LINK_OPTS
 ##    CXX                         OCTINCLUDEDIR
 ##    CXXFLAGS                    OCTAVE_LIBS
-##    CXXPICFLAG                  OCTAVE_LINK_DEPS
-##    DL_LD                       OCTLIBDIR
+##    CXXLD                       OCTAVE_LINK_DEPS
+##    CXXPICFLAG                  OCTLIBDIR
 ##    DL_LDFLAGS                  OCT_LINK_DEPS
 ##    F77                         OCT_LINK_OPTS
 ##    F77_INTEGER8_FLAG           RDYNAMIC_FLAG
 ##    FFLAGS                      SPECIAL_MATH_LIB
 ##    FPICFLAG                    XTRA_CFLAGS
 ##    INCFLAGS                    XTRA_CXXFLAGS
-##    INCLUDEDIR
 ## @end example
 ##
 ## Octave configuration variables as above, but currently unused by

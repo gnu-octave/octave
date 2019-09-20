@@ -418,10 +418,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           || fw > pr_output_traits<T>::max_field_width))
     {
       if (print_g)
-        {
-          int prec = output_precision ();
-          fmt = float_format (prec+5, prec);
-        }
+        fmt = float_format (prec+5, prec);
       else
         {
           // e+ddd
@@ -585,10 +582,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
                   || fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
-        {
-          int prec = output_precision ();
-          fmt = float_format (prec+5, prec);
-        }
+        fmt = float_format (prec+5, prec);
       else
         {
           int ex = 4;
@@ -763,7 +757,6 @@ make_complex_format (int x_max, int x_min, int r_x,
     {
       if (print_g)
         {
-          int prec = output_precision ();
           int width = prec + 5;
           r_fmt = float_format (width, prec);
           i_fmt = float_format (width, prec);
@@ -989,7 +982,6 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     {
       if (print_g)
         {
-          int prec = output_precision ();
           int width = prec + 5;
           r_fmt = float_format (width, prec);
           i_fmt = float_format (width, prec);
@@ -1196,10 +1188,7 @@ make_range_format (int x_max, int x_min, int all_ints)
                   || fw > pr_output_traits<T>::max_field_width))))
     {
       if (print_g)
-        {
-          int prec = output_precision ();
-          fmt = float_format (prec+5, prec);
-        }
+        fmt = float_format (prec+5, prec);
       else
         {
           int ex = 4;

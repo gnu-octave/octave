@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <istream>
 #include <ostream>
+#include <type_traits>
 
 #include "Array-util.h"
 #include "lo-blas-proto.h"
@@ -421,22 +422,39 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 // other operations
 
 ComplexRowVector
-linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
+linspace (const Complex& x1, const Complex& x2, octave_idx_type n_in)
 {
   NoAlias<ComplexRowVector> retval;
 
-  if (n < 1)
+  if (n_in < 1)
     return retval;
-  else
-    retval.clear (n);
+  else if (n_in == 1)
+    {
+      retval.resize (1, x2);
+      return retval;
+    }
 
+  // Use unsigned type (guaranteed n_in > 1 at this point) so that divisions
+  // by 2 can be replaced by compiler with shift right instructions.
+  typedef std::make_unsigned<octave_idx_type>::type unsigned_octave_idx_type;
+
+  unsigned_octave_idx_type n = n_in;
+
+  // Set endpoints, rather than calculate, for maximum accuracy.
+  retval.clear (n);
   retval(0) = x1;
-
-  Complex delta = (x1 == x2) ? 0 : (x2 - x1) / (n - 1.0);
-  for (octave_idx_type i = 1; i < n-1; i++)
-    retval(i) = x1 + static_cast<double> (i)*delta;
-
   retval(n-1) = x2;
+
+  // Construct linspace symmetrically from both ends.
+  Complex delta = (x2 - x1) / (n - 1.0);
+  unsigned_octave_idx_type n2 = n/2;
+  for (unsigned_octave_idx_type i = 1; i < n2; i++)
+    {
+      retval(i) = x1 + static_cast<double> (i)*delta;
+      retval(n-1-i) = x2 - static_cast<double> (i)*delta;
+    }
+  if (n % 2 == 1)  // Middle element if number of elements is odd.
+    retval(n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2.0);
 
   return retval;
 }

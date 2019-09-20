@@ -97,16 +97,21 @@ endfunction
 %! assert (size (x2) == [1, 10] && abs (x2(1) - 10) < eps && abs (x2(10) - 100) < eps);
 %! assert (size (x3) == [1, 10] && abs (x3(1) - 10) < eps && abs (x3(10) - 0.01) < eps);
 %! assert (size (x4) == [1, 10] && abs (x4(1) - 10) < eps && abs (x4(10) - pi) < sqrt (eps));
+
+## Edge cases
 %!assert (logspace (Inf, Inf, 3), [Inf, Inf, Inf])
-%!assert (logspace (-Inf, -Inf, 3), [0, 0, 0])
-%!assert (logspace (-Inf, Inf, 3), [0, NaN, Inf])
+%!assert (logspace (-Inf, Inf, 3), [0, 1, Inf])
 %!assert (logspace (Inf + 1i, Inf + 1i, 3), repmat (complex (-Inf,Inf), [1, 3]))
 %!assert (logspace (-Inf + 1i, Inf + 1i, 3), [0, NaN + NaN * 1i, complex(-Inf, Inf)])
 %!assert (logspace (0, Inf, 3), [1, Inf, Inf])
 %!assert (logspace (0, -Inf, 3), [1, 0, 0])
-%!assert (logspace (-Inf, 0, 3), [0, NaN, 1])
-%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
-%!assert (logspace (Inf, -Inf, 3), [Inf, NaN, 0])
+%!assert (logspace (Inf, -Inf, 3), [Inf, 1, 0])
+
+## FIXME: These are bizarre corner cases for Matlab compatibility.  See
+## bug #56933.  This is marked as "Won't Fix", but if linspace is updated at
+## some point then these tests can be re-instated.
+##%!assert (logspace (-Inf, 0, 3), [0, NaN, 1])
+##%!assert (logspace (Inf, 0, 3), [Inf, NaN, 1])
 
 ## Test input validation
 %!error logspace ()

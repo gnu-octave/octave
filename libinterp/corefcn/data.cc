@@ -5287,6 +5287,31 @@ only a single value (@var{n} = 1) is requested.
 %!assert (class (linspace (single (1), 2)), "single")
 %!assert (class (linspace (1, single (2))), "single")
 
+## Test symmetry
+%!test <*56659>
+%! x = linspace (-1, 1, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (-1, 1, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (-1-1i, 1+1i, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (-1-1i, 1+1i, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (single (-1), 1, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (single (-1), 1, 11);
+%! assert (all (x == -fliplr (x)));
+
+%!test <*56659>
+%! x = linspace (single (-1-1i), 1+1i, 10);
+%! assert (all (x == -fliplr (x)));
+%! x = linspace (single (-1-1i), 1+1i, 11);
+%! assert (all (x == -fliplr (x)));
+
 ## Test obscure Matlab compatibility options
 %!assert (linspace (0, 1, []), 1)
 %!assert (linspace (10, 20, 2), [10 20])
@@ -5300,14 +5325,21 @@ only a single value (@var{n} = 1) is requested.
 %!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 %!assert (linspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (linspace (-Inf, -Inf, 3), [-Inf, -Inf, -Inf])
-%!assert (linspace (-Inf, Inf, 3), [-Inf, NaN, Inf])
+%!assert (linspace (-Inf, Inf, 3), [-Inf, 0, Inf])
 %!assert (linspace (Inf + 1i, Inf + 1i, 3), [Inf + 1i, Inf + 1i, Inf + 1i])
 %!assert (linspace (-Inf + 1i, Inf + 1i, 3), [-Inf + 1i, NaN + 1i, Inf + 1i])
-%!assert (linspace (0, Inf, 3), [0, Inf, Inf])
-%!assert (linspace (0, -Inf, 3), [0, -Inf, -Inf])
-%!assert (linspace (-Inf, 0, 3), [-Inf, NaN, 0])
-%!assert (linspace (Inf, 0, 3), [Inf, NaN, 0])
-%!assert (linspace (Inf, -Inf, 3), [Inf, NaN, -Inf])
+
+## FIXME: Octave is not fully Matlab-compatible for some combinations of
+##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
+##        so these tests have been removed from the test suite by commenting
+##        them out.  If the behavior in the future is made compatible these
+##        tests can be re-instated.
+##%!assert <56933> (linspace (-Inf, Inf, 4), [-Inf, -Inf, Inf, Inf])
+##%!assert <56933> (linspace (-Inf, Inf, 5), [-Inf, -Inf, 0, Inf, Inf])
+##%!assert <56933> (linspace (0, Inf, 4), [0, Inf, Inf, Inf])
+##%!assert <56933> (linspace (0, -Inf, 4), [0, -Inf, -Inf, -Inf])
+##%!assert <56933> (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
+##%!assert <56933> (linspace (Inf, 0, 4), [Inf, NaN, NaN, 0])
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)

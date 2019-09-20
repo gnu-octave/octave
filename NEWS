@@ -13,6 +13,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   accept a new sorting option `"stable"` which will return output values
   in the same order as the input, rather than in ascending order.
 
+- The `linspace` function now produces symmetrical sequences when the
+  endpoints are symmetric.  This is more intuitive and also compatible
+  with recent changes made in Matlab R2019b.
+
 #### Graphics backend
 
 - Graphic primitives now accept a color property value of `"none"`

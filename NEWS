@@ -34,6 +34,10 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   to change the shape of the cursor (pointer in Matlab-speak) displayed
   in a plot window.
 
+- The figure property `"paperpositionmode"` now has the default `"auto"`
+  rather than `"manual"`.  This change is more intuitive and is
+  Matlab compatible.
+
 - The appearance of patterned lines `"LineStyle" = ":"|"--"|"-."` has
   been improved for small widths (`"LineWidth"` less than 1.5 pixels)
   which is a common scenario.

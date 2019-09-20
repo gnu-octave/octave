@@ -1937,7 +1937,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   ac_octave_save_LIBS=$LIBS
   LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
   dnl Current API functions present in SUNDIALS version 4
-  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense])
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate])
   dnl FIXME: The purpose of the following tests is to detect the deprecated
   dnl API from SUNDIALS version 3, which should only be used if the current
   dnl API tests above failed. For now, always test for ida_direct.h.

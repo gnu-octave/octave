@@ -395,13 +395,17 @@ namespace octave
     if (m_havejacsparse)
       {
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
-        // FIXME : one should not allocate space for a full Jacobian
-        // when using a sparse format.  Consider allocating less space
-        // then possibly using SUNSparseMatrixReallocate to increase it.
+#    if defined (HAVE_SUNSPARSEMATRIX_REALLOCATE)
+        // Initially allocate memory for 0 entries. We will reallocate when we
+        // get the Jacobian matrix from the user and know the actual number of
+        // entries.
+        m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, 0, CSC_MAT);
+#    else
         // FIXME: m_num*m_num might be larger than the largest
         // octave_f77_int_type (integer overflow).  Consider using a save
         // calculation method.
         m_sunJacMatrix = SUNSparseMatrix (m_num, m_num, m_num*m_num, CSC_MAT);
+#    endif
         if (! m_sunJacMatrix)
           error ("Unable to create sparse Jacobian for Sundials");
 
@@ -481,6 +485,18 @@ namespace octave
       jac = (*m_jacspfun) (y, yp, t, cj, m_ida_jac);
     else
       jac = (*m_jacspcell) (m_spdfdy, m_spdfdyp, cj);
+
+#    if defined (HAVE_SUNSPARSEMATRIX_REALLOCATE)
+    octave_f77_int_type nnz = to_f77_int (jac.nnz ());
+    if (nnz > SUNSparseMatrix_NNZ (Jac))
+      {
+        // Allocate required memory for sparse Jacobian defined in user function
+        // This will always be required once since we set the number of
+        // non-zero elements to zero initially.
+        if (SUNSparseMatrix_Reallocate (Jac, nnz))
+          error("Unable to allocate sufficient memory for IDA sparse matrix");
+      }
+#    endif
 
     SUNMatZero_Sparse (Jac);
     // We have to use "sunindextype *" here but still need to check that

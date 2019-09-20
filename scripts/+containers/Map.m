@@ -448,9 +448,17 @@ classdef Map < handle
       ## When concatenating maps, the data type of all values must be
       ## consistent with the ValueType of the leftmost map.
       keySet = cell (1, 0);
+      keyTypes = cell (1, 0);
       for i = 1:numel (varargin)
         keySet = [keySet, keys(varargin{i})];
+        keyTypes = [keyTypes, varargin{i}.KeyType];
       endfor
+      if (numel (unique (keyTypes)) != 1)
+        if (any (strcmp (keyTypes, "char")))
+          error ("containers.Map: cannot concatenate maps with numeric and string keys");
+        endif
+        keySet = cellfun (@(x) feval (keyTypes{1}, x), keySet, "UniformOutput", false);
+      endif
       valueSet = cell (1, 0);
       for i = 1:numel (varargin)
         valueSet = [valueSet, values(varargin{i})];
@@ -485,6 +493,8 @@ classdef Map < handle
         else
           keys = cell2mat (keys);
         endif
+      elseif (! isa (keys, this.KeyType))
+        keys = feval (this.KeyType, keys);
       endif
       keys = num2hex (keys);  # Force to char matrix with single logical column
       if (cell_input)
@@ -725,6 +735,34 @@ endclassdef
 %!   assert (m.keys (), {key});
 %! endfor
 
+## Test using mixed numerical keys (subsref)
+%!test <*56594>
+%! key = [1, 2, 3];
+%! val = {"One", "Two", "Three"};
+%! types = {"double", "single", "int32", "uint32", "int64", "uint64", ...
+%!          "int8", "uint8", "int16", "uint16"};
+%! for type1 = types
+%!   type = type1{1};
+%!   k = feval (type, key);
+%!   m = containers.Map (k, val);
+%!   for type2 = [types, "logical"]
+%!     type = type2{1};
+%!     k = feval (type, key(1));
+%!     assert (m(k), "One");
+%!   endfor
+%! endfor
+
+## Test using mixed numerical keys (subsasgn)
+%!test <*56594>
+%! key = [1, 2, 3];
+%! val = {"One", "Two", "Three"};
+%! m = containers.Map(key, val);
+%! m (uint32 (1)) = "Four";
+%! assert (m.Count, uint64(3));
+%! assert (keys (m), {1, 2, 3});
+%! assert (m(1), "Four");
+%! assert (m(uint16 (1)), "Four");
+
 ## Test sort order of keys and values
 %!test
 %! key = {"d","a","b"};
@@ -750,6 +788,13 @@ endclassdef
 %! k = keys (m3);
 %! assert (numel (k), 2);
 %! assert (k, {"a", "b"});
+%! m1 = containers.Map (1, 1);
+%! m2 = containers.Map (single ([2, 3]), {2, 3});
+%! m3 = [m1, m2];
+%! assert (m3.KeyType, "double");
+%! assert (keys (m3), {1, 2, 3});
+%! m3 = [m2, m1];
+%! assert (m3.KeyType, "single");
 
 ## Test input validation
 %!error containers.Map (1,2,3)
@@ -805,3 +850,7 @@ endclassdef
 %! m1 = containers.Map ("KeyType", "cell", "ValueType", "any");
 %!error <unsupported ValueType>
 %! m1 = containers.Map ("KeyType", "char", "ValueType", "cell");
+%!error
+%! m1 = containers.Map (1, 1);
+%! m2 = containers.Map ("a", 2);
+%! m3 = [m1, m2];

@@ -32,6 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
 #  include <algorithm>
 #endif
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include <windows.h>
+#endif
 
 #include <vector>
 
@@ -702,6 +705,17 @@ namespace octave
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
       // Canonical Windows file separator is backslash.
       std::replace (retval.begin (), retval.end (), '/', '\\');
+#endif
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+      // Get a more canonical name wrt case and full names
+      std::wstring w_tmp = L"\\\\?\\" + u8_to_wstring (retval);
+      wchar_t w_long[32767] = L"";
+      int w_len = GetLongPathNameW (w_tmp.c_str (), w_long, 32767);
+      if (w_len > 4)
+        retval = u8_from_wstring (std::wstring (w_long+4, w_len-4));
+      if (retval[1] == ':')
+        retval[0] = toupper (retval[0]);
 #endif
 
       if (retval.empty ())

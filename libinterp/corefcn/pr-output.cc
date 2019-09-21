@@ -1360,6 +1360,15 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
             }
         }
     }
+  else if (val == 0)
+    {
+      octave::preserve_stream_state stream_state (os);
+
+      if (fw > 0)
+        os << std::setw (fw) << "0";
+      else
+        os << "0";
+    }
   else if (octave::math::isna (val))
     {
       octave::preserve_stream_state stream_state (os);

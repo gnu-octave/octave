@@ -1416,7 +1416,7 @@ pr_float (std::ostream& os, const float_display_format& fmt, T val)
 {
   double scale = fmt.scale_factor ();
 
-  if (Vfixed_point_format && ! print_g && scale != 1)
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
     val /= scale;
 
   pr_any_float (os, fmt.real_format (), val);
@@ -1442,7 +1442,7 @@ pr_float (std::ostream& os, const float_display_format& fmt,
   T scale = static_cast<T> (dscale);
 
   std::complex<T> tmp
-    = ((Vfixed_point_format && ! print_g && scale != 1)
+    = ((Vfixed_point_format && ! (print_g || print_e) && scale != 1)
        ? cval / scale : cval);
 
   T r = tmp.real ();
@@ -1513,7 +1513,7 @@ print_empty_nd_array (std::ostream& os, const dim_vector& dims,
 static inline void
 pr_scale_header (std::ostream& os, double scale)
 {
-  if (Vfixed_point_format && ! print_g && scale != 1)
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
     {
       octave::preserve_stream_state stream_state (os);
 

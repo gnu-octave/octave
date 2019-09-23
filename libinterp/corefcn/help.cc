@@ -713,9 +713,9 @@ DEFMETHOD (get_help_text, interp, args, ,
 @deftypefn {} {[@var{text}, @var{format}] =} get_help_text (@var{name})
 Return the raw help text of function @var{name}.
 
-The raw help text is returned in @var{text} and the format in @var{format}
-The format is a string which is one of @qcode{"texinfo"},
-@qcode{"html"}, or @qcode{"plain text"}.
+The raw help text is returned in @var{text} and the format in @var{format}.
+The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
+@w{@qcode{"plain text"}}.
 @seealso{get_help_text_from_file}
 @end deftypefn */)
 {
@@ -738,9 +738,9 @@ DEFMETHOD (get_help_text_from_file, interp, args, ,
 @deftypefn {} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})
 Return the raw help text from the file @var{fname}.
 
-The raw help text is returned in @var{text} and the format in @var{format}
-The format is a string which is one of @qcode{"texinfo"},
-@qcode{"html"}, or @qcode{"plain text"}.
+The raw help text is returned in @var{text} and the format in @var{format}.
+The format is a string which is one of @qcode{"texinfo"}, @qcode{"html"}, or
+@w{@qcode{"plain text"}}.
 @seealso{get_help_text}
 @end deftypefn */)
 {

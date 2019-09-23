@@ -88,7 +88,7 @@ endfunction
 %! toolkit = graphics_toolkit ();
 %! graphics_toolkit ("gnuplot");
 %! unwind_protect
-%!   h1 = figure ("visible", "off");
+%!   h1 = figure ("visible", "off", "paperposition", [0.25, 2.5, 8.0, 6.0]);
 %!   x = 0:0.1:2*pi;
 %!   y1 = sin (x);
 %!   y2 = exp (x - 1);

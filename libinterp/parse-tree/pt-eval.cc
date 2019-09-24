@@ -195,8 +195,9 @@ namespace octave
 
             evmgr.set_workspace ();
 
-            frame.add ([fcn_nm, curr_debug_line] (event_manager& ol) {
-                         ol.execute_in_debugger_event (fcn_nm, curr_debug_line);
+            frame.add ([fcn_nm, curr_debug_line] (event_manager& evmgr) {
+                         evmgr.execute_in_debugger_event (fcn_nm,
+                                                          curr_debug_line);
                        }, std::ref (evmgr));
 
             if (! silent)

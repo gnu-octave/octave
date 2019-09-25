@@ -84,28 +84,28 @@ namespace octave
 
     virtual ~interpreter_events (void) = default;
 
-    virtual void update_path_dialog (void) {  }
+    // Dialogs.
 
-    virtual bool confirm_shutdown (void) { return false; }
+    typedef std::list<std::pair<std::string, std::string>> filter_list;
 
-    virtual bool copy_image_to_clipboard (const std::string& /*file*/)
+    virtual std::list<std::string>
+    file_dialog (const filter_list& /*filter*/,
+                 const std::string& /*title*/,
+                 const std::string& /*filename*/,
+                 const std::string& /*dirname*/,
+                 const std::string& /*multimode*/)
     {
-      return false;
+      return std::list<std::string> ();
     }
 
-    virtual bool edit_file (const std::string& /*file*/) { return false; }
-
-    virtual bool prompt_new_edit_file (const std::string& /*file*/)
+    virtual std::list<std::string>
+    input_dialog (const std::list<std::string>& /*prompt*/,
+                  const std::string& /*title*/,
+                  const std::list<float>& /*nr*/,
+                  const std::list<float>& /*nc*/,
+                  const std::list<std::string>& /*defaults*/)
     {
-      return false;
-    }
-
-    virtual std::string
-    question_dialog (const std::string& /*msg*/, const std::string& /*title*/,
-                     const std::string& /*btn1*/, const std::string& /*btn2*/,
-                     const std::string& /*btn3*/, const std::string& /*btndef*/)
-    {
-      return "";
+      return std::list<std::string> ();
     }
 
     virtual std::pair<std::list<int>, int>
@@ -120,26 +120,35 @@ namespace octave
       return std::pair<std::list<int>, int> ();
     }
 
-    virtual std::list<std::string>
-    input_dialog (const std::list<std::string>& /*prompt*/,
-                  const std::string& /*title*/,
-                  const std::list<float>& /*nr*/,
-                  const std::list<float>& /*nc*/,
-                  const std::list<std::string>& /*defaults*/)
+    virtual std::string
+    question_dialog (const std::string& /*msg*/, const std::string& /*title*/,
+                     const std::string& /*btn1*/, const std::string& /*btn2*/,
+                     const std::string& /*btn3*/, const std::string& /*btndef*/)
     {
-      return std::list<std::string> ();
+      return "";
     }
 
-    typedef std::list<std::pair<std::string, std::string>> filter_list;
+    virtual void update_path_dialog (void) {  }
 
-    virtual std::list<std::string>
-    file_dialog (const filter_list& /*filter*/,
-                 const std::string& /*title*/,
-                 const std::string& /*filename*/,
-                 const std::string& /*dirname*/,
-                 const std::string& /*multimode*/)
+    virtual void show_preferences (void) { }
+
+    virtual void show_doc (const std::string& /*file*/) { }
+
+    virtual bool edit_file (const std::string& /*file*/) { return false; }
+
+    virtual void
+    edit_variable (const std::string& /*name*/, const octave_value& /*val*/)
+    { }
+
+    // Other requests for user interaction, usually some kind of
+    // confirmation before another action.  Could these be reformulated
+    // using the question_dialog action?
+
+    virtual bool confirm_shutdown (void) { return false; }
+
+    virtual bool prompt_new_edit_file (const std::string& /*file*/)
     {
-      return std::list<std::string> ();
+      return false;
     }
 
     virtual int
@@ -150,6 +159,39 @@ namespace octave
       return -1;
     }
 
+    // Requests for information normally stored in the GUI.
+
+    virtual uint8NDArray get_named_icon (const std::string& /*icon_name*/)
+    {
+      return uint8NDArray ();
+    }
+
+    virtual std::string gui_preference (const std::string& /*key*/,
+                                        const std::string& /*value*/)
+    {
+      return "";
+    }
+
+    // Requests for GUI action that do not require user interaction.
+    // These are different from other notifications in that they are not
+    // associated with changes in the interpreter state (like a change
+    // in the current working directory or command history).
+
+    virtual bool copy_image_to_clipboard (const std::string& /*file*/)
+    {
+      return false;
+    }
+
+    virtual void
+    execute_command_in_terminal (const std::string& /*command*/) { }
+
+    virtual void register_doc (const std::string& /*file*/) { }
+
+    virtual void unregister_doc (const std::string& /*file*/) { }
+
+    // Notifications of events in the interpreter that a GUI will
+    // normally wish to respond to.
+
     virtual void directory_changed (const std::string& /*dir*/) { }
 
     virtual void
@@ -157,14 +199,6 @@ namespace octave
     { }
 
     virtual void file_renamed (bool) { }
-
-    virtual void
-    execute_command_in_terminal (const std::string& /*command*/) { }
-
-    virtual uint8NDArray get_named_icon (const std::string& /*icon_name*/)
-    {
-      return uint8NDArray ();
-    }
 
     virtual void
     set_workspace (bool /*top_level*/, bool /*debug*/,
@@ -198,24 +232,6 @@ namespace octave
     virtual void
     update_breakpoint (bool /*insert*/, const std::string& /*file*/,
                        int /*line*/, const std::string& /*cond*/)
-    { }
-
-    virtual void show_preferences (void) { }
-
-    virtual std::string gui_preference (const std::string& /*key*/,
-                                        const std::string& /*value*/)
-    {
-      return "";
-    }
-
-    virtual void show_doc (const std::string& /*file*/) { }
-
-    virtual void register_doc (const std::string& /*file*/) { }
-
-    virtual void unregister_doc (const std::string& /*file*/) { }
-
-    virtual void
-    edit_variable (const std::string& /*name*/, const octave_value& /*val*/)
     { }
   };
 
@@ -289,46 +305,32 @@ namespace octave
     // (directory or workspace changed, for example) or to request the
     // GUI to perform some action (display a dialog, for example).
 
-    void update_path_dialog (void)
-    {
-      if (octave::application::is_gui_running () && enabled ())
-        instance->update_path_dialog ();
-    }
+    // Please keep this list of declarations in the same order as the
+    // ones above in the interpreter_events class.
 
-    bool confirm_shutdown (void)
-    {
-      bool retval = true;
+    typedef std::list<std::pair<std::string, std::string>> filter_list;
 
-      if (enabled ())
-        retval = instance->confirm_shutdown ();
-
-      return retval;
-    }
-
-    bool copy_image_to_clipboard (const std::string& file)
-    {
-      return enabled () ? instance->copy_image_to_clipboard (file) : false;
-    }
-
-    bool edit_file (const std::string& file)
-    {
-      return enabled () ? instance->edit_file (file) : false;
-    }
-
-    bool prompt_new_edit_file (const std::string& file)
-    {
-      return enabled () ? instance->prompt_new_edit_file (file) : false;
-    }
-
-    std::string
-    question_dialog (const std::string& msg, const std::string& title,
-                     const std::string& btn1, const std::string& btn2,
-                     const std::string& btn3, const std::string& btndef)
+    std::list<std::string>
+    file_dialog (const filter_list& filter, const std::string& title,
+                 const std::string& filename, const std::string& dirname,
+                 const std::string& multimode)
     {
       return (enabled ()
-              ? instance->question_dialog (msg, title, btn1,
-                                           btn2, btn3, btndef)
-              : "");
+              ? instance->file_dialog (filter, title, filename, dirname,
+                                       multimode)
+              : std::list<std::string> ());
+    }
+
+    std::list<std::string>
+    input_dialog (const std::list<std::string>& prompt,
+                  const std::string& title,
+                  const std::list<float>& nr,
+                  const std::list<float>& nc,
+                  const std::list<std::string>& defaults)
+    {
+      return (enabled ()
+              ? instance->input_dialog (prompt, title, nr, nc, defaults)
+              : std::list<std::string> ());
     }
 
     std::pair<std::list<int>, int>
@@ -348,29 +350,74 @@ namespace octave
               : std::pair<std::list<int>, int> ());
     }
 
-    std::list<std::string>
-    input_dialog (const std::list<std::string>& prompt,
-                  const std::string& title,
-                  const std::list<float>& nr,
-                  const std::list<float>& nc,
-                  const std::list<std::string>& defaults)
+    std::string
+    question_dialog (const std::string& msg, const std::string& title,
+                     const std::string& btn1, const std::string& btn2,
+                     const std::string& btn3, const std::string& btndef)
     {
       return (enabled ()
-              ? instance->input_dialog (prompt, title, nr, nc, defaults)
-              : std::list<std::string> ());
+              ? instance->question_dialog (msg, title, btn1,
+                                           btn2, btn3, btndef)
+              : "");
     }
 
-    typedef std::list<std::pair<std::string, std::string>> filter_list;
-
-    std::list<std::string>
-    file_dialog (const filter_list& filter, const std::string& title,
-                 const std::string& filename, const std::string& dirname,
-                 const std::string& multimode)
+    void update_path_dialog (void)
     {
-      return (enabled ()
-              ? instance->file_dialog (filter, title, filename, dirname,
-                                       multimode)
-              : std::list<std::string> ());
+      if (octave::application::is_gui_running () && enabled ())
+        instance->update_path_dialog ();
+    }
+
+    bool show_preferences (void)
+    {
+      if (enabled ())
+        {
+          instance->show_preferences ();
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool show_doc (const std::string& file)
+    {
+      if (enabled ())
+        {
+          instance->show_doc (file);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool edit_file (const std::string& file)
+    {
+      return enabled () ? instance->edit_file (file) : false;
+    }
+
+    bool edit_variable (const std::string& name, const octave_value& val)
+    {
+      if (enabled ())
+        {
+          instance->edit_variable (name, val);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool confirm_shutdown (void)
+    {
+      bool retval = true;
+
+      if (enabled ())
+        retval = instance->confirm_shutdown ();
+
+      return retval;
+    }
+
+    bool prompt_new_edit_file (const std::string& file)
+    {
+      return enabled () ? instance->prompt_new_edit_file (file) : false;
     }
 
     int debug_cd_or_addpath_error (const std::string& file,
@@ -379,6 +426,53 @@ namespace octave
       return (enabled ()
               ? instance->debug_cd_or_addpath_error (file, dir, addpath_option)
               : 0);
+    }
+
+    uint8NDArray get_named_icon (const std::string& icon_name)
+    {
+      return (enabled ()
+              ? instance->get_named_icon (icon_name) : uint8NDArray ());
+    }
+
+    std::string gui_preference (const std::string& key,
+                                const std::string& value)
+    {
+      return enabled () ? instance->gui_preference (key, value) : "";
+    }
+
+    bool copy_image_to_clipboard (const std::string& file)
+    {
+      return enabled () ? instance->copy_image_to_clipboard (file) : false;
+    }
+
+    // Preserves pending input.
+    void execute_command_in_terminal (const std::string& command)
+    {
+      if (enabled ())
+        instance->execute_command_in_terminal (command);
+    }
+
+    bool register_doc (const std::string& file)
+    {
+      if (enabled ())
+        {
+          instance->register_doc (file);
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool unregister_doc (const std::string& file)
+    {
+      if (enabled ())
+        {
+          instance->unregister_doc (file);
+          return true;
+        }
+      else
+        return false;
+
     }
 
     void directory_changed (const std::string& dir)
@@ -398,19 +492,6 @@ namespace octave
     {
       if (octave::application::is_gui_running () && enabled ())
         instance->file_renamed (load_new);
-    }
-
-    // Preserves pending input.
-    void execute_command_in_terminal (const std::string& command)
-    {
-      if (enabled ())
-        instance->execute_command_in_terminal (command);
-    }
-
-    uint8NDArray get_named_icon (const std::string& icon_name)
-    {
-      return (enabled ()
-              ? instance->get_named_icon (icon_name) : uint8NDArray ());
     }
 
     void set_workspace (void);
@@ -491,68 +572,6 @@ namespace octave
     {
       if (enabled ())
         instance->update_breakpoint (insert, file, line, cond);
-    }
-
-    bool show_preferences (void)
-    {
-      if (enabled ())
-        {
-          instance->show_preferences ();
-          return true;
-        }
-      else
-        return false;
-    }
-
-    std::string gui_preference (const std::string& key,
-                                const std::string& value)
-    {
-      return enabled () ? instance->gui_preference (key, value) : "";
-    }
-
-    bool show_doc (const std::string& file)
-    {
-      if (enabled ())
-        {
-          instance->show_doc (file);
-          return true;
-        }
-      else
-        return false;
-    }
-
-    bool register_doc (const std::string& file)
-    {
-      if (enabled ())
-        {
-          instance->register_doc (file);
-          return true;
-        }
-      else
-        return false;
-    }
-
-    bool unregister_doc (const std::string& file)
-    {
-      if (enabled ())
-        {
-          instance->unregister_doc (file);
-          return true;
-        }
-      else
-        return false;
-
-    }
-
-    bool edit_variable (const std::string& name, const octave_value& val)
-    {
-      if (enabled ())
-        {
-          instance->edit_variable (name, val);
-          return true;
-        }
-      else
-        return false;
     }
 
   private:

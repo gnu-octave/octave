@@ -75,18 +75,16 @@ namespace octave
 
     ~qt_interpreter_events (void) = default;
 
-    bool confirm_shutdown (void);
+    std::list<std::string>
+    file_dialog (const filter_list& filter, const std::string& title,
+                 const std::string& filename, const std::string& pathname,
+                 const std::string& multimode);
 
-    bool copy_image_to_clipboard (const std::string& file);
-
-    bool edit_file (const std::string& file);
-
-    bool prompt_new_edit_file (const std::string& file);
-
-    std::string
-    question_dialog (const std::string& msg, const std::string& title,
-                     const std::string& btn1, const std::string& btn2,
-                     const std::string& btn3, const std::string& btndef);
+    std::list<std::string>
+    input_dialog (const std::list<std::string>& prompt,
+                  const std::string& title, const std::list<float>& nr,
+                  const std::list<float>& nc,
+                  const std::list<std::string>& defaults);
 
     std::pair<std::list<int>, int>
     list_dialog (const std::list<std::string>& list,
@@ -97,33 +95,48 @@ namespace octave
                  const std::string& ok_string,
                  const std::string& cancel_string);
 
-    std::list<std::string>
-    input_dialog (const std::list<std::string>& prompt,
-                  const std::string& title, const std::list<float>& nr,
-                  const std::list<float>& nc,
-                  const std::list<std::string>& defaults);
+    std::string
+    question_dialog (const std::string& msg, const std::string& title,
+                     const std::string& btn1, const std::string& btn2,
+                     const std::string& btn3, const std::string& btndef);
 
-    std::list<std::string>
-    file_dialog (const filter_list& filter, const std::string& title,
-                 const std::string& filename, const std::string& pathname,
-                 const std::string& multimode);
+    void update_path_dialog (void);
+
+    void show_preferences (void);
+
+    void show_doc (const std::string& file);
+
+    bool edit_file (const std::string& file);
+
+    void edit_variable (const std::string& name, const octave_value& val);
+
+    bool confirm_shutdown (void);
+
+    bool prompt_new_edit_file (const std::string& file);
 
     int debug_cd_or_addpath_error (const std::string& file,
                                    const std::string& dir,
                                    bool addpath_option);
 
-    void directory_changed (const std::string& dir);
+    uint8NDArray get_named_icon (const std::string& icon_name);
 
-    void update_path_dialog (void);
+    std::string gui_preference (const std::string& key,
+                                const std::string& value);
+
+    bool copy_image_to_clipboard (const std::string& file);
+
+    void execute_command_in_terminal (const std::string& command);
+
+    void register_doc (const std::string& file);
+
+    void unregister_doc (const std::string& file);
+
+    void directory_changed (const std::string& dir);
 
     void file_remove (const std::string& old_name,
                       const std::string& new_name);
 
     void file_renamed (bool load_new = true);
-
-    void execute_command_in_terminal (const std::string& command);
-
-    uint8NDArray get_named_icon (const std::string& icon_name);
 
     void set_workspace (bool top_level, bool debug,
                         const symbol_info_list& syminfo,
@@ -150,19 +163,6 @@ namespace octave
 
     void update_breakpoint (bool insert, const std::string& file, int line,
                             const std::string& cond);
-
-    void show_preferences (void);
-
-    std::string gui_preference (const std::string& key,
-                                const std::string& value);
-
-    void show_doc (const std::string& file);
-
-    void register_doc (const std::string& file);
-
-    void unregister_doc (const std::string& file);
-
-    void edit_variable (const std::string& name, const octave_value& val);
 
     void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
 

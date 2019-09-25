@@ -56,147 +56,6 @@ Q_DECLARE_METATYPE (octave::meth_callback)
 
 namespace octave
 {
-  qt_interpreter_events::qt_interpreter_events (void)
-    : interpreter_events (), m_shutdown_confirm_result (false)
-  {
-    qRegisterMetaType<octave_value> ("octave_value");
-    qRegisterMetaType<symbol_info_list> ("symbol_info_list");
-
-    qRegisterMetaType<fcn_callback> ("fcn_callback");
-    qRegisterMetaType<meth_callback> ("meth_callback");
-  }
-
-  bool qt_interpreter_events::confirm_shutdown (void)
-  {
-    // Lock the mutex before emitting signal.
-    lock ();
-
-    emit confirm_shutdown_signal ();
-
-    // Wait while the GUI shuts down.
-    wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    unlock ();
-
-    return m_shutdown_confirm_result;
-  }
-
-  bool qt_interpreter_events::copy_image_to_clipboard (const std::string& file)
-  {
-    emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
-
-    return true;
-  }
-
-  bool qt_interpreter_events::edit_file (const std::string& file)
-  {
-    emit edit_file_signal (QString::fromStdString (file));
-
-    return true;
-  }
-
-  bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
-  {
-    QSettings *settings = resource_manager::get_settings ();
-
-    if (! settings || settings->value ("editor/create_new_file",false).toBool ())
-      return true;
-
-    std::string abs_fname = sys::env::make_absolute (file);
-
-    QStringList btn;
-    QStringList role;
-    role << "YesRole" << "RejectRole";
-    btn << tr ("Create") << tr ("Cancel");
-
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_dialog
-      (tr ("File\n%1\ndoes not exist. Do you want to create it?").
-       arg (QString::fromStdString (abs_fname)),
-       tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    QString answer = uiwidget_creator.get_dialog_button ();
-
-    uiwidget_creator.unlock ();
-
-    return (answer == tr ("Create"));
-  }
-
-  uint8NDArray qt_interpreter_events::get_named_icon (const std::string& icon_name)
-  {
-    uint8NDArray retval;
-    QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
-    if (! icon.isNull ())
-      {
-        QImage img = icon.pixmap (QSize (32, 32)).toImage ();
-
-        if (img.format () == QImage::Format_ARGB32_Premultiplied)
-          {
-            retval.resize (dim_vector (img.height (), img.width (), 4), 0);
-            uint8_t* bits = img.bits ();
-            for (int i = 0; i < img.height (); i++)
-              for (int j = 0; j < img.width (); j++)
-                {
-                  retval(i,j,2) = bits[0];
-                  retval(i,j,1) = bits[1];
-                  retval(i,j,0) = bits[2];
-                  retval(i,j,3) = bits[3];
-                  bits += 4;
-                }
-          }
-      }
-    return retval;
-  }
-
-  std::string
-  qt_interpreter_events::question_dialog (const std::string& msg,
-                                          const std::string& title,
-                                          const std::string& btn1,
-                                          const std::string& btn2,
-                                          const std::string& btn3,
-                                          const std::string& btndef)
-  {
-    QStringList btn;
-    QStringList role;
-    // Must use ResetRole which is left-aligned for all OS and WM.
-    role << "ResetRole" << "ResetRole" << "ResetRole";
-    btn << QString::fromStdString (btn1);
-    if (btn2 == "")
-      role.removeAt (0);
-    else
-      btn << QString::fromStdString (btn2);
-    btn << QString::fromStdString (btn3);
-
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                    QString::fromStdString (title),
-                                    "quest", btn,
-                                    QString::fromStdString (btndef),
-                                    role);
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
-
-    uiwidget_creator.unlock ();
-
-    return answer;
-  }
-
   static QStringList
   make_qstring_list (const std::list<std::string>& lst)
   {
@@ -241,72 +100,14 @@ namespace octave
     return retval;
   }
 
-  std::pair<std::list<int>, int>
-  qt_interpreter_events::list_dialog (const std::list<std::string>& list,
-                                      const std::string& mode,
-                                      int width, int height,
-                                      const std::list<int>& initial,
-                                      const std::string& name,
-                                      const std::list<std::string>& prompt,
-                                      const std::string& ok_string,
-                                      const std::string& cancel_string)
+  qt_interpreter_events::qt_interpreter_events (void)
+    : interpreter_events (), m_shutdown_confirm_result (false)
   {
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
+    qRegisterMetaType<octave_value> ("octave_value");
+    qRegisterMetaType<symbol_info_list> ("symbol_info_list");
 
-    uiwidget_creator.signal_listview (make_qstring_list (list),
-                                      QString::fromStdString (mode),
-                                      width, height,
-                                      QList<int>::fromStdList (initial),
-                                      QString::fromStdString (name),
-                                      make_qstring_list (prompt),
-                                      QString::fromStdString (ok_string),
-                                      QString::fromStdString (cancel_string));
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    const QIntList *selected = uiwidget_creator.get_list_index ();
-    int ok = uiwidget_creator.get_dialog_result ();
-
-    uiwidget_creator.unlock ();
-
-    return std::pair<std::list<int>, int> (selected->toStdList (), ok);
-  }
-
-  std::list<std::string>
-  qt_interpreter_events::input_dialog (const std::list<std::string>& prompt,
-                                       const std::string& title,
-                                       const std::list<float>& nr,
-                                       const std::list<float>& nc,
-                                       const std::list<std::string>& defaults)
-  {
-    std::list<std::string> retval;
-
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
-                                         QString::fromStdString (title),
-                                         QFloatList::fromStdList (nr),
-                                         QFloatList::fromStdList (nc),
-                                         make_qstring_list (defaults));
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    const QStringList *inputLine = uiwidget_creator.get_string_list ();
-
-    uiwidget_creator.unlock ();
-
-    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
-      retval.push_back (it->toStdString ());
-
-    return retval;
+    qRegisterMetaType<fcn_callback> ("fcn_callback");
+    qRegisterMetaType<meth_callback> ("meth_callback");
   }
 
   std::list<std::string>
@@ -344,6 +145,193 @@ namespace octave
     uiwidget_creator.unlock ();
 
     return retval;
+  }
+
+  std::list<std::string>
+  qt_interpreter_events::input_dialog (const std::list<std::string>& prompt,
+                                       const std::string& title,
+                                       const std::list<float>& nr,
+                                       const std::list<float>& nc,
+                                       const std::list<std::string>& defaults)
+  {
+    std::list<std::string> retval;
+
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
+
+    uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
+                                         QString::fromStdString (title),
+                                         QFloatList::fromStdList (nr),
+                                         QFloatList::fromStdList (nc),
+                                         make_qstring_list (defaults));
+
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    const QStringList *inputLine = uiwidget_creator.get_string_list ();
+
+    uiwidget_creator.unlock ();
+
+    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
+      retval.push_back (it->toStdString ());
+
+    return retval;
+  }
+
+  std::pair<std::list<int>, int>
+  qt_interpreter_events::list_dialog (const std::list<std::string>& list,
+                                      const std::string& mode,
+                                      int width, int height,
+                                      const std::list<int>& initial,
+                                      const std::string& name,
+                                      const std::list<std::string>& prompt,
+                                      const std::string& ok_string,
+                                      const std::string& cancel_string)
+  {
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
+
+    uiwidget_creator.signal_listview (make_qstring_list (list),
+                                      QString::fromStdString (mode),
+                                      width, height,
+                                      QList<int>::fromStdList (initial),
+                                      QString::fromStdString (name),
+                                      make_qstring_list (prompt),
+                                      QString::fromStdString (ok_string),
+                                      QString::fromStdString (cancel_string));
+
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    const QIntList *selected = uiwidget_creator.get_list_index ();
+    int ok = uiwidget_creator.get_dialog_result ();
+
+    uiwidget_creator.unlock ();
+
+    return std::pair<std::list<int>, int> (selected->toStdList (), ok);
+  }
+
+  std::string
+  qt_interpreter_events::question_dialog (const std::string& msg,
+                                          const std::string& title,
+                                          const std::string& btn1,
+                                          const std::string& btn2,
+                                          const std::string& btn3,
+                                          const std::string& btndef)
+  {
+    QStringList btn;
+    QStringList role;
+    // Must use ResetRole which is left-aligned for all OS and WM.
+    role << "ResetRole" << "ResetRole" << "ResetRole";
+    btn << QString::fromStdString (btn1);
+    if (btn2 == "")
+      role.removeAt (0);
+    else
+      btn << QString::fromStdString (btn2);
+    btn << QString::fromStdString (btn3);
+
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
+
+    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
+                                    QString::fromStdString (title),
+                                    "quest", btn,
+                                    QString::fromStdString (btndef),
+                                    role);
+
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
+
+    uiwidget_creator.unlock ();
+
+    return answer;
+  }
+
+  void qt_interpreter_events::update_path_dialog (void)
+  {
+    emit update_path_dialog_signal ();
+  }
+
+  void qt_interpreter_events::show_preferences (void)
+  {
+    emit show_preferences_signal ();
+  }
+
+  void qt_interpreter_events::show_doc (const std::string& file)
+  {
+    emit show_doc_signal (QString::fromStdString (file));
+  }
+
+  bool qt_interpreter_events::edit_file (const std::string& file)
+  {
+    emit edit_file_signal (QString::fromStdString (file));
+
+    return true;
+  }
+
+  void qt_interpreter_events::edit_variable (const std::string& expr,
+                                             const octave_value& val)
+  {
+    emit edit_variable_signal (QString::fromStdString (expr), val);
+  }
+
+  bool qt_interpreter_events::confirm_shutdown (void)
+  {
+    // Lock the mutex before emitting signal.
+    lock ();
+
+    emit confirm_shutdown_signal ();
+
+    // Wait while the GUI shuts down.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    unlock ();
+
+    return m_shutdown_confirm_result;
+  }
+
+  bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
+  {
+    QSettings *settings = resource_manager::get_settings ();
+
+    if (! settings || settings->value ("editor/create_new_file",false).toBool ())
+      return true;
+
+    std::string abs_fname = sys::env::make_absolute (file);
+
+    QStringList btn;
+    QStringList role;
+    role << "YesRole" << "RejectRole";
+    btn << tr ("Create") << tr ("Cancel");
+
+    // Lock mutex before signaling.
+    uiwidget_creator.lock ();
+
+    uiwidget_creator.signal_dialog
+      (tr ("File\n%1\ndoes not exist. Do you want to create it?").
+       arg (QString::fromStdString (abs_fname)),
+       tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
+
+    // Wait while the user is responding to message box.
+    uiwidget_creator.wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+
+    QString answer = uiwidget_creator.get_dialog_button ();
+
+    uiwidget_creator.unlock ();
+
+    return (answer == tr ("Create"));
   }
 
   // Prompt to allow file to be run by setting cwd (or if
@@ -407,14 +395,78 @@ namespace octave
     return retval;
   }
 
+  uint8NDArray qt_interpreter_events::get_named_icon (const std::string& icon_name)
+  {
+    uint8NDArray retval;
+    QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
+    if (! icon.isNull ())
+      {
+        QImage img = icon.pixmap (QSize (32, 32)).toImage ();
+
+        if (img.format () == QImage::Format_ARGB32_Premultiplied)
+          {
+            retval.resize (dim_vector (img.height (), img.width (), 4), 0);
+            uint8_t* bits = img.bits ();
+            for (int i = 0; i < img.height (); i++)
+              for (int j = 0; j < img.width (); j++)
+                {
+                  retval(i,j,2) = bits[0];
+                  retval(i,j,1) = bits[1];
+                  retval(i,j,0) = bits[2];
+                  retval(i,j,3) = bits[3];
+                  bits += 4;
+                }
+          }
+      }
+    return retval;
+  }
+
+  std::string
+  qt_interpreter_events::gui_preference (const std::string& key,
+                                         const std::string& value)
+  {
+    QString pref_value;
+
+    // Lock the mutex before signaling
+    lock ();
+
+    // Emit the signal for changing or getting a preference
+    emit gui_preference_signal (QString::fromStdString (key),
+                                QString::fromStdString (value), &pref_value);
+
+    // Wait for the GUI and unlock when resumed
+    wait ();
+    unlock ();
+
+    return pref_value.toStdString ();
+  }
+
+  bool qt_interpreter_events::copy_image_to_clipboard (const std::string& file)
+  {
+    emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
+
+    return true;
+  }
+
+  void qt_interpreter_events::execute_command_in_terminal
+  (const std::string& command)
+  {
+    emit execute_command_in_terminal_signal (QString::fromStdString (command));
+  }
+
+  void qt_interpreter_events::register_doc (const std::string& file)
+  {
+    emit register_doc_signal (QString::fromStdString (file));
+  }
+
+  void qt_interpreter_events::unregister_doc (const std::string& file)
+  {
+    emit unregister_doc_signal (QString::fromStdString (file));
+  }
+
   void qt_interpreter_events::directory_changed (const std::string& dir)
   {
     emit directory_changed_signal (QString::fromStdString (dir));
-  }
-
-  void qt_interpreter_events::update_path_dialog (void)
-  {
-    emit update_path_dialog_signal ();
   }
 
   void qt_interpreter_events::file_remove (const std::string& old_name,
@@ -435,12 +487,6 @@ namespace octave
   void qt_interpreter_events::file_renamed (bool load_new)
   {
     emit file_renamed_signal (load_new);
-  }
-
-  void qt_interpreter_events::execute_command_in_terminal
-  (const std::string& command)
-  {
-    emit execute_command_in_terminal_signal (QString::fromStdString (command));
   }
 
   void qt_interpreter_events::set_workspace (bool top_level, bool debug,
@@ -520,52 +566,6 @@ namespace octave
   {
     emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
                                           line, QString::fromStdString (cond));
-  }
-
-  void qt_interpreter_events::show_preferences (void)
-  {
-    emit show_preferences_signal ();
-  }
-
-  std::string
-  qt_interpreter_events::gui_preference (const std::string& key,
-                                         const std::string& value)
-  {
-    QString pref_value;
-
-    // Lock the mutex before signaling
-    lock ();
-
-    // Emit the signal for changing or getting a preference
-    emit gui_preference_signal (QString::fromStdString (key),
-                                QString::fromStdString (value), &pref_value);
-
-    // Wait for the GUI and unlock when resumed
-    wait ();
-    unlock ();
-
-    return pref_value.toStdString ();
-  }
-
-  void qt_interpreter_events::show_doc (const std::string& file)
-  {
-    emit show_doc_signal (QString::fromStdString (file));
-  }
-
-  void qt_interpreter_events::register_doc (const std::string& file)
-  {
-    emit register_doc_signal (QString::fromStdString (file));
-  }
-
-  void qt_interpreter_events::unregister_doc (const std::string& file)
-  {
-    emit unregister_doc_signal (QString::fromStdString (file));
-  }
-
-  void qt_interpreter_events::edit_variable (const std::string& expr,
-                                             const octave_value& val)
-  {
-    emit edit_variable_signal (QString::fromStdString (expr), val);
   }
 
   void

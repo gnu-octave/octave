@@ -592,7 +592,7 @@ namespace octave
 
     std::string prompt = args(0).xstring_value ("input: unrecognized argument");
 
-    output_system& output_sys = __get_output_system__ ("do_sync");
+    output_system& output_sys = m_interpreter.get_output_system ();
 
     output_sys.reset ();
 

@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "cdef-manager.h"
 #include "cdef-utils.h"
 #include "interpreter.h"
-#include "interpreter-private.h"
 #include "ov-classdef.h"
 
 namespace octave
@@ -289,7 +288,7 @@ namespace octave
 
     std::list<std::string> names = lp.get_all_package_names ();
 
-    cdef_manager& cdm = __get_cdef_manager__ ("package_getAllPackages");
+    cdef_manager& cdm = interp.get_cdef_manager ();
 
     toplevel_packages["meta"] = cdm.find_package ("meta", false, false);
 

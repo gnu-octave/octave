@@ -490,8 +490,8 @@ namespace octave
   }
 }
 
-DEFUN (diary, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (diary, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} diary
 @deftypefnx {} {} diary on
 @deftypefnx {} {} diary off
@@ -529,7 +529,7 @@ stored.
   if (nargin > 1)
     print_usage ();
 
-  octave::output_system& output_sys = octave::__get_output_system__ ("Fdiary");
+  octave::output_system& output_sys = interp.get_output_system ();
 
   if (nargout > 0)
     {

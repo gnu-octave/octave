@@ -1184,8 +1184,8 @@ exit all debugging levels and return to the Octave prompt.
   return ovl ();
 }
 
-DEFUN (isdebugmode, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (isdebugmode, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} isdebugmode ()
 Return true if in debugging mode, otherwise false.
 @seealso{dbwhere, dbstack, dbstatus}
@@ -1194,7 +1194,7 @@ Return true if in debugging mode, otherwise false.
   if (args.length () != 0)
     print_usage ();
 
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("Fisdebugmode");
+  octave::tree_evaluator& tw = interp.get_evaluator ();
 
   return ovl (tw.in_debug_repl ());
 }

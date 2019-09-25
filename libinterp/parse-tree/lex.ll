@@ -109,7 +109,6 @@ object) relevant global values before and after the nested call.
 #include "error.h"
 #include "errwarn.h"
 #include "input.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
 #include "lex.h"
 #include "octave.h"
@@ -2128,12 +2127,7 @@ namespace octave
   lexical_feedback::symbol_table_context::curr_scope (void) const
   {
     if (empty ())
-      {
-        symbol_scope scope
-          = __get_current_scope__ ("lexical_feedback::symbol_table_context::curr_scope");
-
-        return scope;
-      }
+      return m_interpreter.get_current_scope ();
     else
       return m_frame_stack.front ();
   }

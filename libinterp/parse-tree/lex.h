@@ -55,8 +55,8 @@ namespace octave
     {
     public:
 
-      symbol_table_context (void)
-        : m_frame_stack () { }
+      symbol_table_context (interpreter& interp)
+        : m_interpreter (interp), m_frame_stack () { }
 
       ~symbol_table_context (void) { clear (); }
 
@@ -77,6 +77,8 @@ namespace octave
       symbol_scope parent_scope (void) const;
 
     private:
+
+      interpreter& m_interpreter;
 
       std::deque<symbol_scope> m_frame_stack;
     };
@@ -257,8 +259,9 @@ namespace octave
       std::deque<token *> m_buffer;
     };
 
-    lexical_feedback (void)
-      : m_end_of_input (false),
+    lexical_feedback (interpreter& interp)
+      : m_interpreter (interp),
+        m_end_of_input (false),
         m_allow_command_syntax (true),
         m_at_beginning_of_statement (true),
         m_looking_at_anon_fcn_args (false),
@@ -306,7 +309,7 @@ namespace octave
         m_looking_at_object_index (),
         m_parsed_function_name (),
         m_pending_local_variables (),
-        m_symtab_context (),
+        m_symtab_context (interp),
         m_nesting_level (),
         m_tokens ()
     {
@@ -343,6 +346,8 @@ namespace octave
 
     void mark_as_variable (const std::string& nm);
     void mark_as_variables (const std::list<std::string>& lst);
+
+    interpreter& m_interpreter;
 
     // true means that we have encountered eof on the input stream.
     bool m_end_of_input;
@@ -593,8 +598,8 @@ namespace octave
     };
 
     base_lexer (interpreter& interp)
-      : lexical_feedback (), m_scanner (nullptr), m_input_buf (),
-        m_comment_buf (), m_interpreter (interp)
+      : lexical_feedback (interp), m_scanner (nullptr), m_input_buf (),
+        m_comment_buf ()
     {
       init ();
     }
@@ -703,9 +708,6 @@ namespace octave
 
     // Object that collects comment text.
     comment_buffer m_comment_buf;
-
-    // Interpreter that contains us, if any.
-    interpreter& m_interpreter;
 
     virtual void increment_promptflag (void) = 0;
 

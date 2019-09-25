@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <initializer_list>
 #include <string>
 
+#include "oct-atomic.h"
 #include "oct-refcount.h"
 
 template <typename T> class Array;
@@ -94,6 +95,16 @@ private:
 
   octave_idx_type& count (void) const { return rep[-2]; }
 
+  octave_idx_type increment_count (void)
+  {
+    return octave_atomic_increment (&(count ()));
+  }
+
+  octave_idx_type decrement_count (void)
+  {
+    return octave_atomic_decrement (&(count ()));
+  }
+
   //! Construct a new rep with count = 1 and ndims given.
 
   static octave_idx_type * newrep (int ndims)
@@ -153,7 +164,7 @@ private:
       {
         octave_idx_type *new_rep = clonerep ();
 
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = new_rep;
@@ -253,10 +264,10 @@ public:
   static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())
-  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
+  { increment_count (); }
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
-  { OCTAVE_ATOMIC_INCREMENT (&(count ())); }
+  { increment_count (); }
 
   dim_vector (dim_vector&& dv) : rep (dv.rep) { dv.rep = nullptr; }
 
@@ -272,11 +283,11 @@ public:
   {
     if (&dv != this)
       {
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+       if (decrement_count () == 0)
           freerep ();
 
         rep = dv.rep;
-        OCTAVE_ATOMIC_INCREMENT (&(count ()));
+        increment_count ();
       }
 
     return *this;
@@ -290,7 +301,7 @@ public:
         // operator, rep may be a nullptr here.  We should only need to
         // protect the destructor in a similar way.
 
-        if (rep && OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (rep && decrement_count () == 0)
           freerep ();
 
         rep = dv.rep;
@@ -306,7 +317,7 @@ public:
     // operator, rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (rep && OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+    if (rep && decrement_count () == 0)
       freerep ();
   }
 
@@ -339,7 +350,7 @@ public:
       {
         octave_idx_type *r = resizerep (n, fill_value);
 
-        if (OCTAVE_ATOMIC_DECREMENT (&(count ())) == 0)
+        if (decrement_count () == 0)
           freerep ();
 
         rep = r;

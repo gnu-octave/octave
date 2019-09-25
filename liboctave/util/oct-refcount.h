@@ -25,48 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-config.h"
 
-#if (defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT) \
-     && (defined (__GNUC__) || defined (_MSC_VER)))
-
-#  if defined (__GNUC__)
-
-#    define OCTAVE_ATOMIC_INCREMENT(x) __sync_add_and_fetch (x,  1)
-#    define OCTAVE_ATOMIC_DECREMENT(x) __sync_add_and_fetch (x, -1)
-#    define OCTAVE_ATOMIC_POST_INCREMENT(x) __sync_fetch_and_add (x,  1)
-#    define OCTAVE_ATOMIC_POST_DECREMENT(x) __sync_fetch_and_add (x, -1)
-
-#  elif defined (_MSC_VER)
-
-#    include <intrin.h>
-
-#    define OCTAVE_ATOMIC_INCREMENT(x)                  \
-  _InterlockedIncrement (static_cast<long *> (x))
-
-#    define OCTAVE_ATOMIC_DECREMENT(x)                  \
-  _InterlockedDecrement (static_cast<long *> (x))
-
-#    define OCTAVE_ATOMIC_POST_INCREMENT(x)             \
-  _InterlockedExchangeAdd (static_cast<long *> (x))
-
-#    define OCTAVE_ATOMIC_POST_DECREMENT(x)             \
-  _InterlockedExchangeAdd (static_cast<long *> (x))
-
-#  endif
-
-#else
-
-// Generic non-locking versions
-
-#  define OCTAVE_ATOMIC_INCREMENT(x) ++(*(x))
-#  define OCTAVE_ATOMIC_DECREMENT(x) --(*(x))
-#  define OCTAVE_ATOMIC_POST_INCREMENT(x) (*(x))++
-#  define OCTAVE_ATOMIC_POST_DECREMENT(x) (*(x))--
-
-#endif
+#include <atomic>
 
 namespace octave
 {
-
   // Encapsulates a reference counter.
 
   template <typename T>
@@ -80,30 +42,36 @@ namespace octave
       : m_count (initial_count)
     { }
 
+    refcount (const refcount&) = delete;
+
+    refcount& operator = (const refcount&) = delete;
+
+    ~refcount (void) = default;
+
     // Increment/Decrement.  int is postfix.
     count_type operator++ (void)
     {
-      return OCTAVE_ATOMIC_INCREMENT (&m_count);
+      return ++m_count;
     }
 
     count_type operator++ (int)
     {
-      return OCTAVE_ATOMIC_POST_INCREMENT (&m_count);
+      return m_count++;
     }
 
     count_type operator-- (void)
     {
-      return OCTAVE_ATOMIC_DECREMENT (&m_count);
+      return --m_count;
     }
 
     count_type operator-- (int)
     {
-      return OCTAVE_ATOMIC_POST_DECREMENT (&m_count);
+      return m_count--;
     }
 
     count_type value (void) const
     {
-      return static_cast<count_type const volatile&> (m_count);
+      return m_count.load ();
     }
 
     operator count_type (void) const
@@ -111,14 +79,9 @@ namespace octave
       return value ();
     }
 
-    count_type * get (void)
-    {
-      return &m_count;
-    }
-
   private:
 
-    count_type m_count;
+    std::atomic<T> m_count;
   };
 }
 

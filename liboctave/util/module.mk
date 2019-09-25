@@ -19,6 +19,7 @@ UTIL_INC = \
   %reldir%/lo-error.h \
   %reldir%/octave-preserve-stream-state.h \
   %reldir%/quit.h \
+  %reldir%/oct-atomic.h \
   %reldir%/oct-base64.h \
   %reldir%/oct-binmap.h \
   %reldir%/oct-cmplx.h \
@@ -74,6 +75,7 @@ UTIL_SRC = \
   %reldir%/lo-regexp.cc \
   %reldir%/lo-utils.cc \
   %reldir%/quit.cc \
+  %reldir%/oct-atomic.c \
   %reldir%/oct-base64.cc \
   %reldir%/oct-glob.cc \
   %reldir%/oct-inttypes.cc \

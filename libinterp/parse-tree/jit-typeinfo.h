@@ -102,7 +102,7 @@ namespace octave
       return *m_array;
     }
 
-    int *m_ref_count;
+    int m_ref_count;
 
     U *m_slice_data;
     octave_idx_type m_slice_len;

@@ -839,7 +839,7 @@ public:
   //@{
   //! WARNING: Only call these functions from jit
 
-  int * jit_ref_count (void) { return rep->count.get (); }
+  int jit_ref_count (void) { return rep->count.value (); }
 
   T * jit_slice_data (void) const { return slice_data; }
 

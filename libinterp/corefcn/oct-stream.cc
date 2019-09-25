@@ -6043,10 +6043,7 @@ namespace octave
 
   stream::stream (base_stream *bs)
     : m_rep (bs)
-  {
-    if (m_rep)
-      m_rep->m_count = 1;
-  }
+  { }
 
   stream::~stream (void)
   {

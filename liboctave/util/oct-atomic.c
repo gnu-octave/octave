@@ -1,0 +1,45 @@
+/*
+
+Copyright (C) 2019 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<https://www.gnu.org/licenses/>.
+
+*/
+
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
+#include "oct-atomic.h"
+
+#include <stdatomic.h>
+
+octave_idx_type
+octave_atomic_increment (octave_idx_type *x)
+{
+  atomic_fetch_add (x, 1);
+
+  return *x;
+}
+
+octave_idx_type
+octave_atomic_decrement (octave_idx_type *x)
+{
+  atomic_fetch_sub (x, 1);
+
+  return *x;
+}

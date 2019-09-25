@@ -298,7 +298,7 @@ namespace octave
     bool done = false;
 
     // optimize for the simple case (no resizing and no errors)
-    if (*array->jit_ref_count () == 1
+    if (array->jit_ref_count () == 1
         && index->all_elements_are_ints ())
       {
         // this code is similar to idx_vector::fill, but we avoid allocating an

@@ -69,7 +69,7 @@ namespace octave
     base_stream (std::ios::openmode arg_md = std::ios::in | std::ios::out,
                  mach_info::float_format ff = mach_info::native_float_format (),
                  const std::string& encoding = "utf-8")
-      : m_count (0), m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
+      : m_count (1), m_mode (arg_md), m_flt_fmt (ff), m_encoding (encoding),
         m_fail (false), m_open_state (true), m_errmsg ()
     { }
 

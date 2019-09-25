@@ -208,8 +208,6 @@ namespace octave
         (*current_liboctave_error_handler)
           ("sparse_qr: sparse matrix QR factorization filled");
 
-      count = 1;
-
 #else
 
       octave_unused_parameter (order);
@@ -978,8 +976,6 @@ namespace octave
       if (! N)
         (*current_liboctave_error_handler)
           ("sparse_qr: sparse matrix QR factorization filled");
-
-      count = 1;
 
 #else
 

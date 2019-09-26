@@ -195,33 +195,7 @@ namespace octave
         || (klass.ok () && ! cls.ok ())
         || (! klass.ok () && cls.ok ()))
       {
-        unregister_object ();
         klass = cls;
-        register_object ();
-      }
-  }
-
-  void
-  cdef_object_base::register_object (void)
-  {
-    if (klass.ok ())
-      {
-        cdef_class cls (get_class ());
-
-        if (cls.ok ())
-          cls.register_object ();
-      }
-  }
-
-  void
-  cdef_object_base::unregister_object (void)
-  {
-    if (klass.ok ())
-      {
-        cdef_class cls (get_class ());
-
-        if (cls.ok ())
-          cls.unregister_object ();
       }
   }
 

@@ -55,7 +55,7 @@ namespace octave
     public:
       cdef_class_rep (void)
         : cdef_meta_object_rep (), member_count (0), handle_class (false),
-          object_count (0), meta (false)
+          meta (false)
       { }
 
       cdef_class_rep (const std::list<cdef_class>& superclasses);
@@ -127,10 +127,6 @@ namespace octave
 
       bool is_handle_class (void) const { return handle_class; }
 
-      void register_object (void) { object_count++; }
-
-      void unregister_object (void) { object_count--; }
-
       octave_idx_type static_count (void) const { return member_count; }
 
       void destroy (void)
@@ -198,10 +194,6 @@ namespace octave
 
       std::list<cdef_class> implicit_ctor_list;
 
-      // The number of objects of this class.
-
-      refcount<octave_idx_type> object_count;
-
       // TRUE if this class is a built-in meta class.
 
       bool meta;
@@ -213,12 +205,7 @@ namespace octave
       typedef std::map<std::string,cdef_property>::iterator property_iterator;
       typedef std::map<std::string,cdef_property>::const_iterator property_const_iterator;
 
-      cdef_class_rep (const cdef_class_rep& c)
-        : cdef_meta_object_rep (c), directory (c.directory),
-          method_map (c.method_map), property_map (c.property_map),
-          member_count (c.member_count), handle_class (c.handle_class),
-          implicit_ctor_list (c.implicit_ctor_list),
-          object_count (c.object_count), meta (c.meta) { }
+      cdef_class_rep (const cdef_class_rep& c) = default;
     };
 
   public:
@@ -383,10 +370,6 @@ namespace octave
     void mark_as_meta_class (void) { get_rep ()->mark_as_meta_class (); }
 
     bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
-
-    void register_object (void) { get_rep ()->register_object (); }
-
-    void unregister_object (void) { get_rep ()->unregister_object (); }
 
   public:
 

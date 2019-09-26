@@ -79,7 +79,7 @@ namespace octave
 
   cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
     : cdef_meta_object_rep (), member_count (0), handle_class (false),
-      object_count (0), meta (false)
+      meta (false)
   {
     put ("SuperClasses", to_ov (superclasses));
     implicit_ctor_list = superclasses;

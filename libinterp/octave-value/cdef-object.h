@@ -342,13 +342,11 @@ namespace octave
 
     cdef_object_base (void)
       : cdef_object_rep (), klass ()
-    {
-      register_object ();
-    }
+    { }
 
     cdef_object_base& operator = (const cdef_object_base&) = delete;
 
-    ~cdef_object_base (void) { unregister_object (); }
+    ~cdef_object_base (void) { }
 
     cdef_class get_class (void) const;
 
@@ -366,15 +364,9 @@ namespace octave
     // Restricted copying!
     cdef_object_base (const cdef_object_base& obj)
       : cdef_object_rep (obj), klass (obj.klass)
-    {
-      register_object ();
-    }
+    { }
 
   private:
-
-    void register_object (void);
-
-    void unregister_object (void);
 
     // The class of the object
     cdef_object klass;

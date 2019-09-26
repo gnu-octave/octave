@@ -134,7 +134,7 @@ protected:
 
     T *data;
     octave_idx_type len;
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
     ArrayRep (T *d, octave_idx_type l)
       : data (new T [l]), len (l), count (1)

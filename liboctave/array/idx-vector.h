@@ -114,7 +114,7 @@ private:
 
     virtual Array<octave_idx_type> as_array (void);
 
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
     bool err;
   };

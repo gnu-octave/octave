@@ -94,7 +94,7 @@ namespace octave
 
     public:
 
-      refcount<int> m_count;
+      refcount<octave_idx_type> m_count;
 
     protected:
 

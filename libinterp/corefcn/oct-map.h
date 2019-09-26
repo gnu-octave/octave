@@ -47,7 +47,7 @@ octave_fields
     fields_rep (const fields_rep& other)
       : std::map<std::string, octave_idx_type> (other), count (1) { }
 
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
   private:
     fields_rep& operator = (const fields_rep&); // no assignment!

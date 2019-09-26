@@ -417,7 +417,7 @@ private:
 
 private:
   int id;
-  octave::refcount<int> count;
+  octave::refcount<octave_idx_type> count;
   std::string name;
   graphics_handle parent;
   bool hidden;

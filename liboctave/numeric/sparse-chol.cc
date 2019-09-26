@@ -117,7 +117,7 @@ namespace octave
 
       double rcond (void) const { return cond; }
 
-      refcount<int> count;
+      refcount<octave_idx_type> count;
 
     private:
 

@@ -126,7 +126,7 @@ public:
 
 private:
   std::string name;
-  octave::refcount<int> count;
+  octave::refcount<octave_idx_type> count;
 
 private:
   void gripe_if_tkit_invalid (const std::string& fname) const

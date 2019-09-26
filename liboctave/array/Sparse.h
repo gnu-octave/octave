@@ -65,7 +65,7 @@ protected:
     octave_idx_type nzmx;
     octave_idx_type nrows;
     octave_idx_type ncols;
-    octave::refcount<int> count;
+    octave::refcount<octave_idx_type> count;
 
     SparseRep (void)
       : d (new T [1]), r (new octave_idx_type [1] {}),

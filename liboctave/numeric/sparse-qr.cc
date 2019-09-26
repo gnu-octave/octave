@@ -114,7 +114,7 @@ namespace octave
       typename SPARSE_T::dense_matrix_type
       Q (void) const;
 
-      refcount<int> count;
+      refcount<octave_idx_type> count;
 
       octave_idx_type nrows;
       octave_idx_type ncols;

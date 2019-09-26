@@ -48,7 +48,7 @@ namespace octave
     virtual bool try_lock (void);
 
   private:
-    refcount<int> m_count;
+    refcount<octave_idx_type> m_count;
   };
 
   class

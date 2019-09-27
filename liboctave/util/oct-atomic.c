@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 octave_idx_type
 octave_atomic_increment (octave_idx_type *x)
 {
-  atomic_fetch_add (x, 1);
+  // This cast appears to be needed for some versions of clang.
+  atomic_fetch_add ((_Atomic octave_idx_type *) x, 1);
 
   return *x;
 }
@@ -42,7 +43,8 @@ octave_atomic_increment (octave_idx_type *x)
 octave_idx_type
 octave_atomic_decrement (octave_idx_type *x)
 {
-  atomic_fetch_sub (x, 1);
+  // This cast appears to be needed for some versions of clang.
+  atomic_fetch_sub ((_Atomic octave_idx_type *) x, 1);
 
   return *x;
 }

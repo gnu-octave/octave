@@ -26,7 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-atomic.h"
 
-#include <stdatomic.h>
+/* Some versions of GCC can't compile stdatomic.h with -fopenmp.  */
+
+#if defined (OCTAVE_STDATOMIC_H_OK)
+#  include <stdatomic.h>
 
 octave_idx_type
 octave_atomic_increment (octave_idx_type *x)
@@ -43,3 +46,46 @@ octave_atomic_decrement (octave_idx_type *x)
 
   return *x;
 }
+
+#elif defined (__GNUC__)
+
+#warning "foobar"
+
+octave_idx_type
+octave_atomic_increment (octave_idx_type *x)
+{
+  return __sync_add_and_fetch (x,  1);
+}
+
+octave_idx_type
+octave_atomic_decrement (octave_idx_type *x)
+{
+  return __sync_sub_and_fetch (x, 1);
+}
+
+#elif defined (_MSC_VER)
+#  include <intrin.h>
+
+octave_idx_type
+octave_atomic_increment (octave_idx_type *x)
+{
+#if defined (OCTAVE_ENABLE_64)
+  return _InterlockedIncrement64 (x);
+#else
+  return _InterlockedIncrement (x);
+#endif
+}
+
+octave_idx_type
+octave_atomic_decrement (octave_idx_type *x)
+{
+#if defined (OCTAVE_ENABLE_64)
+  return _InterlockedDecrement64 (x);
+#else
+  return _InterlockedDecrement (x);
+#endif
+}
+
+#else
+#  error "Octave requires atomic integer increment and decrement functions"
+#endif

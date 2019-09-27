@@ -1085,6 +1085,24 @@ dnl Use multiple AC_CHECKs to avoid line continuations '\' in list.
 AC_CHECK_HEADERS([dlfcn.h floatingpoint.h fpu_control.h grp.h])
 AC_CHECK_HEADERS([ieeefp.h pthread.h pwd.h sys/ioctl.h])
 
+## Some versions of GCC fail when using -fopenmp and including
+## stdatomic.h, so we try to work around that.  Use the compile_ifelse
+## macro because we are trying to test the case of the header file
+## existing but not being usable.  The default warning from the
+## check_headers macro is not appropriate here.
+AC_CACHE_CHECK([whether stdatomic.h can be compiled],
+  [octave_cv_stdatomic_h_ok],
+  [AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+    #include <stdatomic.h>
+    ]])],
+    octave_cv_stdatomic_h_ok=yes,
+    octave_cv_stdatomic_h_ok=no)
+  ])
+if test $octave_cv_stdatomic_h_ok = yes; then
+  AC_DEFINE(OCTAVE_STDATOMIC_H_OK, 1,
+    [Define to 1 if stdatomic.h can be compiled.])
+fi
+
 ## Find a termio header to include.
 
 AC_CHECK_HEADERS([termios.h], have_termios_h=yes, have_termios_h=no)

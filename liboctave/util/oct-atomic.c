@@ -51,8 +51,6 @@ octave_atomic_decrement (octave_idx_type *x)
 
 #elif defined (__GNUC__)
 
-#warning "foobar"
-
 octave_idx_type
 octave_atomic_increment (octave_idx_type *x)
 {

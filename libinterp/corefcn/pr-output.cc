@@ -403,10 +403,15 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           ld = digits;
           rd = (prec > digits ? prec - digits : prec);
         }
-      else
+      else if (digits < 0)
         {
           ld = 1;
           rd = (prec > digits ? prec - digits : prec);
+        }
+      else
+        {
+          ld = 1;
+          rd = (prec > digits ? prec - 1 : prec);
         }
 
       fw = 1 + ld + 1 + rd;
@@ -546,11 +551,17 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -560,11 +571,17 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -721,11 +738,17 @@ make_complex_format (int x_max, int x_min, int r_x,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -735,11 +758,17 @@ make_complex_format (int x_max, int x_min, int r_x,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -940,11 +969,17 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -954,11 +989,17 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);
@@ -1154,11 +1195,17 @@ make_range_format (int x_max, int x_min, int all_ints)
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max++;
         }
-      else
+      else if (x_max < 0)
         {
           ld_max = 1;
           rd_max = (prec > x_max ? prec - x_max : prec);
           x_max = -x_max + 1;
+        }
+      else
+        {
+          ld_max = 1;
+          rd_max = (prec > 1 ? prec - 1 : prec);
+          x_max = 1;
         }
 
       int ld_min, rd_min;
@@ -1168,11 +1215,17 @@ make_range_format (int x_max, int x_min, int all_ints)
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min++;
         }
-      else
+      else if (x_min < 0)
         {
           ld_min = 1;
           rd_min = (prec > x_min ? prec - x_min : prec);
           x_min = -x_min + 1;
+        }
+      else
+        {
+          ld_min = 1;
+          rd_min = (prec > 1 ? prec - 1 : prec);
+          x_min = 1;
         }
 
       ld = (ld_max > ld_min ? ld_max : ld_min);

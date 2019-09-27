@@ -564,3 +564,19 @@ Undocumented internal function.
 
   return ovl (evmgr.unregister_doc (file));
 }
+
+DEFMETHOD (__event_manager_copy_image_to_clipboard__, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_copy_image_to_clipboard__ (@var{filename})
+Undocumented internal function.
+@end deftypefn */)
+{
+  std::string file;
+
+  if (args.length () >= 1)
+    file = args(0).string_value();
+
+  octave::event_manager& evmgr = interp.get_event_manager ();
+  evmgr.copy_image_to_clipboard (file);
+  return ovl ();
+}

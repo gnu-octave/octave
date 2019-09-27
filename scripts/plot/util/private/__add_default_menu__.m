@@ -62,6 +62,9 @@ function __add_default_menu__ (hf, hmenu = [], htb = [])
             "callback", "clf (gcbf ());");
     uimenu (hui, "label", "Reset Figure",
             "callback", "reset (gcbf ());");
+    uimenu (hui, "label", "Copy Figure to Clipboard", ...
+            "callback", @clipboard_cb, "separator", "on", ...
+            "accelerator", "c");
     hmenu(2) = hui;
 
     ## Tools menu
@@ -380,4 +383,18 @@ function auto_cb (h)
   if (! isempty (hax))
     axis (hax, "auto");
   endif
+endfunction
+
+function clipboard_cb (h)
+  hf = gcbf ();
+  fname = tempname ();
+  props = {"inverthardcopy", "paperposition", "paperpositionmode"};
+  values = get (hf, props);
+  set (hf, "inverthardcopy", "off", "paperpositionmode", "auto");
+  unwind_protect
+    print ("-r0", "-dpng", "-svgconvert", fname);
+    __event_manager_copy_image_to_clipboard__ (fname);
+  unwind_protect_cleanup
+    set (hf, props, values);
+  end_unwind_protect
 endfunction

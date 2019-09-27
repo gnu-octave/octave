@@ -1691,8 +1691,6 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
       CPPFLAGS="$save_CPPFLAGS"
       CXXFLAGS="$save_CXXFLAGS"
 
-      OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION
-
       use_qscintilla=yes
     fi
   fi

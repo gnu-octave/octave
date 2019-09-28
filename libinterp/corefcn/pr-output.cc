@@ -124,8 +124,7 @@ calc_scale_exp (const int& x)
   // compiler dependent if any of the arguments are negative.  Since
   // this function will need to work on negative arguments, and we want
   // to avoid portability issues, we re-implement the modulo function to
-  // the desired behavior (truncation).  There may be a gnulib
-  // replacement.
+  // the desired behavior (truncation).  There may be a gnulib replacement.
 
   // ISO/IEC 14882:2003 : Programming languages -- C++. 5.6.4: ISO,
   // IEC. 2003 . "the binary % operator yields the remainder from the
@@ -1479,6 +1478,11 @@ template <typename T>
 static inline void
 pr_imag_float (std::ostream& os, const float_display_format& fmt, T val)
 {
+  double scale = fmt.scale_factor ();
+
+  if (Vfixed_point_format && ! (print_g || print_e) && scale != 1)
+    val /= scale;
+
   pr_any_float (os, fmt.imag_format (), val);
 }
 
@@ -1487,24 +1491,13 @@ static inline void
 pr_float (std::ostream& os, const float_display_format& fmt,
           const std::complex<T>& cval)
 {
-  // FIXME: should we range check this value?  It is stored as a double
-  // to simplify the implementation, but should always correspond to the
-  // type of value we are displaying.
-
-  double dscale = fmt.scale_factor ();
-  T scale = static_cast<T> (dscale);
-
-  std::complex<T> tmp
-    = ((Vfixed_point_format && ! (print_g || print_e) && scale != 1)
-       ? cval / scale : cval);
-
-  T r = tmp.real ();
+  T r = cval.real ();
 
   pr_float (os, fmt, r);
 
   if (! bank_format)
     {
-      T i = tmp.imag ();
+      T i = cval.imag ();
       if (! (hex_format || bit_format) && lo_ieee_signbit (i))
         {
           os << " - ";

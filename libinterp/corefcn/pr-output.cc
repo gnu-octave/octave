@@ -529,7 +529,7 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       fw = rd + 3;
       if (inf_or_nan && fw < 4)
         fw = 4;
@@ -939,9 +939,9 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       i_fw = rd + 1;
-      r_fw = i_fw + 1;
+      r_fw = i_fw + 2;
       if (inf_or_nan && i_fw < 3)
         {
           i_fw = 3;
@@ -1183,7 +1183,7 @@ make_range_format (int x_max, int x_min, int all_ints)
     }
   else if (Vfixed_point_format && ! print_g)
     {
-      rd = prec;
+      rd = prec - 1;
       fw = rd + 3;
     }
   else

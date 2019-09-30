@@ -203,8 +203,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   find_leg_hdl = (nargs == 0);  # possibly overridden
   propvals = {};
 
-  ## Find "location" and "orientation" property/value pairs
-  foundpos = foundorient = false;
+  ## Find "location", "orientation", "textposition" property/value pairs
+  foundpos = foundorient = foundtextpos = false;
   i = nargs - 1;
   while (i > 0)
     pos = varargin{i};
@@ -223,6 +223,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       endif
       varargin(i:i+1) = [];
       nargs -= 2;
+    elseif (strcmpi (pos, "textposition") && ischar (str))
+      if (! foundtextpos)
+        textpos = lower (str);
+        foundtextpos = true;
+      endif
+      varargin(i:i+1) = [];
+      nargs -= 2;
     endif
     i -= 2;
   endwhile
@@ -230,6 +237,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   ## Validate the orientation
   if (! any (strcmp (orientation, {"vertical", "horizontal", "default"})))
     error ("legend: unrecognized legend orientation");
+  endif
+
+  ## Validate the texposition
+  if (! any (strcmp (textpos, {"left", "right", "default"})))
+    error ("legend: unrecognized legend textposition");
   endif
 
   ## Validate the location type

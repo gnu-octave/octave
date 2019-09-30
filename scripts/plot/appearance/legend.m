@@ -669,6 +669,13 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           set (hlegend, propvals{:});
         endif
 
+        ## Special case of PROPERTY "edgecolor" (bug #56968)
+        ec_idx = find (strcmpi (propvals, "edgecolor"), 1, "last");
+        if (! isempty (ec_idx))
+          ec_color = propvals{ec_idx + 1};
+          set (hlegend, "xcolor", ec_color, "ycolor", ec_color);
+        endif
+
         ## Text objects in key inherit visual properties from legend object
         legprops = { "fontunits", "fontangle", "fontname", "fontsize", ...
                      "fontweight", "interpreter", "textcolor" };

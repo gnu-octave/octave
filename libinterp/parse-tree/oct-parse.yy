@@ -5270,7 +5270,7 @@ s = evalc ("t = 42"), t
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("1");
-%!   assert (str, "ans =  1\n");
+%!   assert (str, "ans = 1\n");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -5293,7 +5293,7 @@ s = evalc ("t = 42"), t
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("y = 2");
-%!   assert (str, "y =  2\n");
+%!   assert (str, "y = 2\n");
 %!   assert (y, 2);
 %! unwind_protect_cleanup
 %!   format (old_fmt);
@@ -5312,7 +5312,7 @@ s = evalc ("t = 42"), t
 
 %!function [a, b] = __f_evalc ()
 %!  printf ("foo");
-%!  fprintf (stdout, "bar");
+%!  fprintf (stdout, "bar ");
 %!  disp (pi);
 %!  a = 1;
 %!  b = 2;

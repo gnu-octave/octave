@@ -368,9 +368,9 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
     }
   else if (bank_format)
     {
-      fw = (digits < 0 ? 5 : digits + 4);
-      if (inf_or_nan && fw < 5)
-        fw = 5;
+      fw = (digits < 0 ? 4 : digits + 3);
+      if (inf_or_nan)
+        fw = 3;
       rd = 2;
     }
   else if (hex_format)
@@ -383,17 +383,15 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
       fw = 8 * sizeof (T);
       rd = 0;
     }
-  else if (inf_or_nan || int_only)
+  else if (inf_or_nan)
     {
-      fw = 1 + digits;
-      if (inf_or_nan && fw < 4)
-        fw = 4;
-
-      if (int_only)
-        {
-          ld = digits;
-          rd = 0;
-        }
+      fw = 3;
+    }
+  else if (int_only)
+    {
+      fw = digits;
+      ld = digits;
+      rd = 0;
     }
   else
     {
@@ -413,7 +411,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           rd = (prec > digits ? prec - 1 : prec);
         }
 
-      fw = 1 + ld + 1 + rd;
+      fw = ld + 1 + rd;
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
@@ -422,7 +420,7 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           || fw > pr_output_traits<T>::max_field_width))
     {
       if (print_g)
-        fmt = float_format (prec+5, prec);
+        fmt = float_format (prec, prec);
       else
         {
           // e+ddd
@@ -431,17 +429,23 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
           if (print_eng)
             {
               // -ddd.
-              fw = 5 + prec + ex;
-              if (inf_or_nan && fw < 6)
-                fw = 6;
+              fw = 1 + prec + ex;
+              if (inf_or_nan)
+                {
+                  fw = 3;
+                  ex = 0;
+                }
               fmt = float_format (fw, ex, prec - 1, std::ios::fixed);
             }
           else
             {
               // -d.
-              fw = 3 + prec + ex;
-              if (inf_or_nan && fw < 4)
-                fw = 4;
+              fw = prec + ex;
+              if (inf_or_nan)
+                {
+                  fw = 3;
+                  ex = 0;
+                }
               fmt = float_format (fw, ex, prec - 1, std::ios::scientific);
             }
         }
@@ -3458,7 +3462,7 @@ of properly displaying the object's name.  This can be done by using the
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("x = 1.1; display (x)");
-%!   assert (str, "x =  1.1000\n");
+%!   assert (str, "x = 1.1000\n");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -3469,7 +3473,7 @@ of properly displaying the object's name.  This can be done by using the
 %! unwind_protect
 %!   format short;
 %!   str = evalc ("display (1.1)");
-%!   assert (str, " 1.1000\n");
+%!   assert (str, "1.1000\n");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
@@ -3939,9 +3943,9 @@ format and format spacing.
 %!   ## Test one of the formats
 %!   format long;
 %!   str = disp (pi);
-%!   assert (str, " 3.141592653589793\n");
+%!   assert (str, "3.141592653589793\n");
 %!   str = disp (single (pi));
-%!   assert (str, " 3.1415927\n");
+%!   assert (str, "3.1415927\n");
 %!   new_fmt = format ();
 %!   assert (new_fmt, "long");
 %!   ## Test resetting format

@@ -1192,30 +1192,30 @@ elem_xpow (const NDArray& a, double b)
     }
   else
     {
-      NoAlias<NDArray> result (a.dims ());
+      NDArray result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i);
+            result.xelem (i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i) * a(i);
+            result.xelem (i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = 1.0 / a(i);
+            result.xelem (i) = 1.0 / a(i);
         }
       else
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), ib);
+              result.xelem (i) = std::pow (a(i), ib);
             }
         }
 
@@ -2501,30 +2501,30 @@ elem_xpow (const FloatNDArray& a, float b)
     }
   else
     {
-      NoAlias<FloatNDArray> result (a.dims ());
+      FloatNDArray result (a.dims ());
 
       int ib = static_cast<int> (b);
       if (ib == 2)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i);
+            result.xelem (i) = a(i) * a(i);
         }
       else if (ib == 3)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = a(i) * a(i) * a(i);
+            result.xelem (i) = a(i) * a(i) * a(i);
         }
       else if (ib == -1)
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
-            result(i) = 1.0f / a(i);
+            result.xelem (i) = 1.0f / a(i);
         }
       else
         {
           for (octave_idx_type i = 0; i < a.numel (); i++)
             {
               octave_quit ();
-              result(i) = std::pow (a(i), ib);
+              result.xelem (i) = std::pow (a(i), ib);
             }
         }
 

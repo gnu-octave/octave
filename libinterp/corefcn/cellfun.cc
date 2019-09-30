@@ -1925,7 +1925,7 @@ template <typename Array2D>
 static Cell
 do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd == 1 || nd == 2);
   assert (a.ndims () == 2);
 
@@ -1950,7 +1950,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);
-          retval(i) = a.index (idx_vector (l, u));
+          retval.xelem (i) = a.index (idx_vector (l, u));
           l = u;
         }
     }
@@ -1968,7 +1968,7 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
           {
             octave_quit ();
 
-            retval(i,j) = a.index (ridx[i], cidx[j]);
+            retval.xelem (i,j) = a.index (ridx[i], cidx[j]);
           }
     }
 
@@ -1982,7 +1982,7 @@ template <typename ArrayND>
 Cell
 do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
@@ -2011,7 +2011,7 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  NoAlias< Array<idx_vector>> ra_idx
+  Array<idx_vector> ra_idx
     (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
   for (octave_idx_type j = 0; j < retval.numel (); j++)
@@ -2019,9 +2019,9 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
       octave_quit ();
 
       for (int i = 0; i < nd; i++)
-        ra_idx(i) = idx[i][ridx[i]];
+        ra_idx.xelem (i) = idx[i][ridx[i]];
 
-      retval(j) = a.index (ra_idx);
+      retval.xelem (j) = a.index (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2046,7 +2046,7 @@ do_mat2cell (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 Cell
 do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 {
-  NoAlias<Cell> retval;
+  Cell retval;
   assert (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
@@ -2085,7 +2085,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
       for (int i = 0; i < nd; i++)
         ra_idx(i) = idx[i][ridx[i]];
 
-      retval(j) = a.do_index_op (ra_idx);
+      retval.xelem (j) = a.do_index_op (ra_idx);
 
       rdv.increment_index (ridx);
     }
@@ -2285,7 +2285,7 @@ do_cellslices_nda (const NDA& array,
                             || (dim == 1 && array.rows () == 1)))
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval(i) = array.index (idx_vector (lb(i) - 1, ub(i)));
+        retval.xelem (i) = array.index (idx_vector (lb(i) - 1, ub(i)));
     }
   else
     {
@@ -2300,7 +2300,7 @@ do_cellslices_nda (const NDA& array,
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx(dim) = idx_vector (lb(i) - 1, ub(i));
-          retval(i) = array.index (idx);
+          retval.xelem (i) = array.index (idx);
         }
     }
 
@@ -2420,7 +2420,7 @@ slicing is done along the first non-singleton dimension.
       for (octave_idx_type i = 0; i < n; i++)
         {
           idx(dim) = Range (lb(i), ub(i));
-          retcell(i) = x.do_index_op (idx);
+          retcell.xelem (i) = x.do_index_op (idx);
         }
     }
 
@@ -2461,7 +2461,7 @@ indexing keyword @code{end} is not available.
 
   const Cell x = args(0).xcell_value ("cellindexmat: X must be a cell");
 
-  NoAlias<Cell> y (x.dims ());
+  Cell y (x.dims ());
   octave_idx_type nel = x.numel ();
   octave_value_list idx = args.slice (1, args.length () - 1);
 
@@ -2471,7 +2471,7 @@ indexing keyword @code{end} is not available.
 
       octave_value tmp = x(i);
 
-      y(i) = tmp.do_index_op (idx);
+      y.xelem (i) = tmp.do_index_op (idx);
     }
 
   return octave_value (y);

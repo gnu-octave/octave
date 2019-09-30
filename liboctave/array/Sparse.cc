@@ -1507,9 +1507,9 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
           // Lookup.
           // FIXME: Could specialize for sorted idx?
-          NoAlias< Array<octave_idx_type>> lidx (dim_vector (new_nr, new_nc));
+          Array<octave_idx_type> lidx (dim_vector (new_nr, new_nc));
           for (octave_idx_type i = 0; i < new_nr*new_nc; i++)
-            lidx(i) = lblookup (ridx (), nz, idxa(i));
+            lidx.xelem (i) = lblookup (ridx (), nz, idxa(i));
 
           // Count matches.
           retval = Sparse<T> (idxa.rows (), idxa.cols ());
@@ -1518,11 +1518,11 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
               octave_idx_type nzj = 0;
               for (octave_idx_type i = 0; i < new_nr; i++)
                 {
-                  octave_idx_type l = lidx(i, j);
+                  octave_idx_type l = lidx.xelem (i, j);
                   if (l < nz && ridx (l) == idxa(i, j))
                     nzj++;
                   else
-                    lidx(i, j) = nz;
+                    lidx.xelem (i, j) = nz;
                 }
               retval.xcidx (j+1) = retval.xcidx (j) + nzj;
             }
@@ -1534,7 +1534,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           for (octave_idx_type j = 0; j < new_nc; j++)
             for (octave_idx_type i = 0; i < new_nr; i++)
               {
-                octave_idx_type l = lidx(i, j);
+                octave_idx_type l = lidx.xelem (i, j);
                 if (l < nz)
                   {
                     retval.data (k) = data (l);

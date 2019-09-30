@@ -426,7 +426,7 @@ operator * (const FloatComplexRowVector& v, const FloatComplexColumnVector& a)
 FloatComplexRowVector
 linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
 {
-  NoAlias<FloatComplexRowVector> retval;
+  FloatComplexRowVector retval;
 
   if (n_in < 1)
     return retval;
@@ -444,19 +444,19 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
 
   // Set endpoints, rather than calculate, for maximum accuracy.
   retval.clear (n);
-  retval(0) = x1;
-  retval(n-1) = x2;
+  retval.xelem (0) = x1;
+  retval.xelem (n-1) = x2;
 
   // Construct linspace symmetrically from both ends.
   FloatComplex delta = (x2 - x1) / (n - 1.0f);
   unsigned_octave_idx_type n2 = n/2;
   for (unsigned_octave_idx_type i = 1; i < n2; i++)
     {
-      retval(i) = x1 + static_cast<float> (i)*delta;
-      retval(n-1-i) = x2 - static_cast<float> (i)*delta;
+      retval.xelem (i) = x1 + static_cast<float> (i)*delta;
+      retval.xelem (n-1-i) = x2 - static_cast<float> (i)*delta;
     }
   if (n % 2 == 1)  // Middle element if number of elements is odd.
-    retval(n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2.0f);
+    retval.xelem (n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2.0f);
 
   return retval;
 }

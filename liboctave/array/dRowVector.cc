@@ -267,7 +267,7 @@ operator >> (std::istream& is, RowVector& a)
 RowVector
 linspace (double x1, double x2, octave_idx_type n_in)
 {
-  NoAlias<RowVector> retval;
+  RowVector retval;
 
   if (n_in < 1)
     return retval;
@@ -285,19 +285,19 @@ linspace (double x1, double x2, octave_idx_type n_in)
 
   // Set endpoints, rather than calculate, for maximum accuracy.
   retval.clear (n);
-  retval(0) = x1;
-  retval(n-1) = x2;
+  retval.xelem (0) = x1;
+  retval.xelem (n-1) = x2;
 
   // Construct linspace symmetrically from both ends.
   double delta = (x2 - x1) / (n - 1);
   unsigned_octave_idx_type n2 = n/2;
   for (unsigned_octave_idx_type i = 1; i < n2; i++)
     {
-      retval(i) = x1 + i*delta;
-      retval(n-1-i) = x2 - i*delta;
+      retval.xelem (i) = x1 + i*delta;
+      retval.xelem (n-1-i) = x2 - i*delta;
     }
   if (n % 2 == 1)  // Middle element if number of elements is odd.
-    retval(n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2);
+    retval.xelem (n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2);
 
   return retval;
 }

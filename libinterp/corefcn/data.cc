@@ -2722,10 +2722,10 @@ Example 4: number of output arguments < number of dimensions
         {
           int ndims = dimensions.ndims ();
 
-          NoAlias<Matrix> m (1, ndims);
+          Matrix m (1, ndims);
 
           for (int i = 0; i < ndims; i++)
-            m(i) = dimensions(i);
+            m.xelem (i) = dimensions(i);
 
           retval(0) = m;
         }
@@ -7887,7 +7887,7 @@ endfor
 
   octave_value x = args(0);
 
-  NoAlias< Array<octave_idx_type>> r (rm.dims ());
+  Array<octave_idx_type> r (rm.dims ());
 
   for (octave_idx_type i = 0; i < rm.numel (); i++)
     {
@@ -7895,7 +7895,7 @@ endfor
       if (static_cast<double> (rx) != rm(i))
         error ("repelems: R must be a matrix of integers");
 
-      r(i) = rx;
+      r.xelem (i) = rx;
     }
 
   switch (x.builtin_type ())

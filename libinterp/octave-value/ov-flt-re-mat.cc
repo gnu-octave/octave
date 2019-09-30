@@ -738,7 +738,7 @@ static octave_value
 do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 {
   octave_idx_type n = a.numel ();
-  NoAlias<FloatNDArray> rr (a.dims ());
+  FloatNDArray rr (a.dims ());
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -746,21 +746,21 @@ do_rc_map (const FloatNDArray& a, FloatComplex (&fcn) (float))
 
       FloatComplex tmp = fcn (a(i));
       if (tmp.imag () == 0.0)
-        rr(i) = tmp.real ();
+        rr.xelem (i) = tmp.real ();
       else
         {
-          NoAlias<FloatComplexNDArray> rc (a.dims ());
+          FloatComplexNDArray rc (a.dims ());
 
           for (octave_idx_type j = 0; j < i; j++)
-            rc(j) = rr(j);
+            rc.xelem (j) = rr.xelem (j);
 
-          rc(i) = tmp;
+          rc.xelem (i) = tmp;
 
           for (octave_idx_type j = i+1; j < n; j++)
             {
               octave_quit ();
 
-              rc(j) = fcn (a(j));
+              rc.xelem (j) = fcn (a(j));
             }
 
           return new octave_float_complex_matrix (rc);

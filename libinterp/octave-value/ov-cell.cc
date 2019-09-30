@@ -1382,7 +1382,7 @@ c(2,1,:)(:)
   for (int i = 1; i < result_dv.ndims (); i++)
     result_dv(i) = m_dv(i-1);
 
-  NoAlias<Cell> c (result_dv);
+  Cell c (result_dv);
 
   octave_idx_type n_elts = m.numel ();
 
@@ -1390,7 +1390,7 @@ c(2,1,:)(:)
   // we don't need a key lookup at all.
   for (octave_idx_type j = 0; j < n_elts; j++)
     for (octave_idx_type i = 0; i < num_fields; i++)
-      c(i,j) = m.contents(i)(j);
+      c.xelem (i,j) = m.contents(i)(j);
 
   return ovl (c);
 }

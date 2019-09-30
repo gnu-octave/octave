@@ -1311,9 +1311,8 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
 
       // Unless explicitly asked for, always print in big-endian format.
 
-      // FIXME: will bad things happen if we are
-      // interrupted before resetting the format flags and fill
-      // character?
+      // FIXME: Will bad things happen if we are interrupted before resetting
+      //        the format flags and fill character?
 
       octave::mach_info::float_format flt_fmt =
         octave::mach_info::native_float_format ();
@@ -2721,6 +2720,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     {
       octave::preserve_stream_state stream_state (os);
 
+      os.fill ('0');
       os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1 || octave::mach_info::words_big_endian ())

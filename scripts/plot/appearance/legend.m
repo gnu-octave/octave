@@ -204,16 +204,23 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   propvals = {};
 
   ## Find "location" and "orientation" property/value pairs
+  foundpos = foundorient = false;
   i = nargs - 1;
   while (i > 0)
     pos = varargin{i};
     str = varargin{i+1};
     if (strcmpi (pos, "location") && ischar (str))
-      location = lower (str);
+      if (! foundpos)
+        location = lower (str);
+        foundpos = true;
+      endif
       varargin(i:i+1) = [];
       nargs -= 2;
     elseif (strcmpi (pos, "orientation") && ischar (str))
-      orientation = lower (str);
+      if (! foundorient)
+        orientation = lower (str);
+        foundorient = true;
+      endif
       varargin(i:i+1) = [];
       nargs -= 2;
     endif

@@ -417,7 +417,8 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
   if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e || print_g || print_eng
           || ld + rd > pr_output_traits<T>::digits10
-          || fw > pr_output_traits<T>::max_field_width))
+          || fw > pr_output_traits<T>::max_field_width
+          || ld + rd > (1.5 * prec)))
     {
       if (print_g)
         fmt = float_format (prec, prec);
@@ -599,7 +600,8 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
       && (print_e || print_eng || print_g
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
-                  || fw > pr_output_traits<T>::max_field_width))))
+                  || fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
         fmt = float_format (prec+6, prec);
@@ -785,7 +787,8 @@ make_complex_format (int x_max, int x_min, int r_x,
       && (print_e || print_eng || print_g
           || ld + rd > pr_output_traits<T>::digits10
           || r_fw > pr_output_traits<T>::max_field_width
-          || i_fw > pr_output_traits<T>::max_field_width))
+          || i_fw > pr_output_traits<T>::max_field_width
+          || ld + rd > (1.5 * prec)))
     {
       if (print_g)
         {
@@ -1022,7 +1025,8 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
                   || r_fw > pr_output_traits<T>::max_field_width
-                  || i_fw > pr_output_traits<T>::max_field_width))))
+                  || i_fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
         {
@@ -1241,7 +1245,8 @@ make_range_format (int x_max, int x_min, int all_ints)
       && (print_e || print_eng || print_g
           || (! Vfixed_point_format
               && (ld + rd > pr_output_traits<T>::digits10
-                  || fw > pr_output_traits<T>::max_field_width))))
+                  || fw > pr_output_traits<T>::max_field_width
+                  || ld + rd > (1.5 * prec)))))
     {
       if (print_g)
         fmt = float_format (prec+6, prec);

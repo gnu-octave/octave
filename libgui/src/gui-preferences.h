@@ -55,6 +55,8 @@ const gui_pref global_mono_font ("monospace_font", global_font_family);
 const QString octgui_toolbar_style ("margin-top: 1px; margin-bottom: 1px;"
                                     "margin-left: 3px; margin-right: 3px;"
                                     "border: 0px;");
+const QString octgui_menubar_style ("margin-top: 0px; margin-bottom: 0px;"
+                                    "margin-left: 0px; margin-right: opx;");
 const QString octgui_filterbar_style ("margin-top: 1px; margin-bottom: 1px;"
                                       "margin-left: 3px; margin-right: 3px;");
 

@@ -1706,10 +1706,6 @@ namespace octave
     m_menu_bar->setNativeMenuBar (false);
 
     m_tool_bar = new QToolBar (editor_widget);
-    m_tool_bar->setStyleSheet (m_tool_bar->styleSheet ()
-             + QString ("margin-top: 1px; margin-bottom: 1px;"
-                        "margin-left: 3px; margin-right: 3px;"
-                        "border: 0px;"));
     m_tool_bar->setMovable (true);
 
     m_tab_widget = new file_editor_tab_widget (editor_widget);

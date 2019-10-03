@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-dock-widget.h"
 #include "resource-manager.h"
+#include "gui-preferences.h"
 
 namespace octave
 {
@@ -479,6 +480,12 @@ namespace octave
     notice_settings (settings);  // call individual handler
 
     set_style (false);
+
+    // Compacter design
+    QToolBar* toolbar = findChild <QToolBar *> ();
+    if (toolbar)
+      toolbar->setStyleSheet (toolbar->styleSheet () + octgui_toolbar_style);
+
   }
 
   void

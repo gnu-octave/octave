@@ -90,6 +90,8 @@ namespace octave
     filter_layout->setMargin(0);
     m_filter_widget->setLayout (filter_layout);
 
+    m_filter->setStyleSheet (m_filter->styleSheet () + octgui_filterbar_style);
+
     QVBoxLayout *ws_layout = new QVBoxLayout ();
     ws_layout->addWidget (m_filter_widget);
     ws_layout->addWidget (m_view);

@@ -51,6 +51,13 @@ const QString global_font_family = "Courier";
 #endif
 const gui_pref global_mono_font ("monospace_font", global_font_family);
 
+// Compacter Style for some widgets
+const QString octgui_toolbar_style ("margin-top: 1px; margin-bottom: 1px;"
+                                    "margin-left: 3px; margin-right: 3px;"
+                                    "border: 0px;");
+const QString octgui_filterbar_style ("margin-top: 1px; margin-bottom: 1px;"
+                                      "margin-left: 3px; margin-right: 3px;");
+
 // Icon size (in preferences: values -1, 0, 1)
 const QStyle::PixelMetric global_icon_sizes[3] =
 {

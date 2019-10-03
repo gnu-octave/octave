@@ -289,6 +289,9 @@ namespace octave
     m_filter->setSizePolicy (sizePol);
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
+    m_filter->setStyleSheet (m_filter->styleSheet () + octgui_filterbar_style);
+
+
     QLabel *filter_label = new QLabel (tr ("Filter"));
 
     m_filter_checkbox = new QCheckBox ();

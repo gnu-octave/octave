@@ -53,7 +53,7 @@ namespace octave
   // Use static fields for the best efficiency.
   // NOTE: C++0x will allow these two to be merged into one.
   static const char *bt_fieldnames[] =
-    { "file", "name", "line", "column", "scope", nullptr };
+    { "file", "name", "line", "column", nullptr };
 
   static const octave_fields bt_fields (bt_fieldnames);
 

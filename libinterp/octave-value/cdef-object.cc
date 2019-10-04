@@ -78,16 +78,14 @@ namespace octave
 
             warning ("interrupt occurred in handle class delete method");
           }
-        catch (const execution_exception&)
+        catch (const execution_exception& ee)
           {
-            octave::error_system& es
-              = octave::__get_error_system__ ("cdef_object::release");
+            interpreter::recover_from_exception ();
 
-            std::string msg = es.last_error_message ();
+            std::string msg = ee.message ();
 
             warning ("error caught while executing handle class delete method:\n%s\n",
                      msg.c_str ());
-
           }
         catch (const exit_exception&)
           {

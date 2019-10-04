@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 /* The signal header is just needed for the sig_atomic_t type.  */
 #if defined (__cplusplus)
 #  include <csignal>
+#  include <iosfwd>
+#  include <list>
 #  include <string>
 extern "C" {
 #else
@@ -38,12 +40,65 @@ extern "C" {
 
 namespace octave
 {
+  class frame_info
+  {
+  public:
+
+    frame_info (void) = default;
+
+    frame_info (const std::string& file_name, const std::string& fcn_name,
+                int line, int column)
+      : m_file_name (file_name), m_fcn_name (fcn_name), m_line (line),
+        m_column (column)
+    { }
+
+    frame_info (const frame_info&) = default;
+
+    frame_info& operator = (const frame_info&) = default;
+
+    ~frame_info (void) = default;
+
+    std::string file_name (void) const { return m_file_name; }
+
+    std::string fcn_name (void) const { return m_fcn_name; }
+
+    int line (void) const { return m_line; }
+
+    int column (void) const { return m_column; }
+
+  private:
+
+    std::string m_file_name;
+
+    std::string m_fcn_name;
+
+    int m_line;
+
+    int m_column;
+  };
+
+  inline bool operator == (const frame_info& a, const frame_info& b)
+  {
+    return (a.file_name () == b.file_name ()
+            && a.fcn_name () == b.fcn_name ()
+            && a.line () == b.line ()
+            && a.column () == b.column ());
+  }
+
   class
   execution_exception
   {
   public:
 
-    execution_exception (void) = default;
+    typedef std::list<frame_info> stack_info_type;
+
+    execution_exception (const std::string& err_type = "error",
+                         const std::string& id = "",
+                         const std::string& message = "unspecified error",
+                         const stack_info_type& stack_info = stack_info_type ())
+      : m_err_type (err_type), m_id (id), m_message (message),
+        m_stack_info (stack_info)
+    { }
 
     execution_exception (const execution_exception&) = default;
 
@@ -51,24 +106,50 @@ namespace octave
 
     ~execution_exception (void) = default;
 
-    virtual void set_stack_trace (const std::string& st)
+    void set_err_type (const std::string& et)
     {
-      m_stack_trace = st;
+      m_err_type = et;
     }
 
-    virtual void set_stack_trace (void)
+    std::string err_type (void) const { return m_err_type; }
+
+    virtual std::string stack_trace (void) const;
+
+    void set_identifier (const std::string& id)
     {
-      m_stack_trace = "";
+      m_id = id;
     }
 
-    virtual std::string info (void) const
+    virtual std::string identifier (void) const { return m_id; }
+
+    void set_message (const std::string& msg)
     {
-      return m_stack_trace;
+      m_message = msg;
     }
+
+    virtual std::string message (void) const { return m_message; }
+
+    virtual stack_info_type stack_info (void) const
+    {
+      return m_stack_info;
+    }
+
+    void set_stack_info (const stack_info_type& stack_info)
+    {
+      m_stack_info = stack_info;
+    }
+
+    virtual void display (std::ostream& os) const;
 
   private:
 
-    std::string m_stack_trace;
+    std::string m_err_type;
+
+    std::string m_id;
+
+    std::string m_message;
+
+    stack_info_type m_stack_info;
   };
 
   class

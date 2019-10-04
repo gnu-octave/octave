@@ -216,10 +216,10 @@ namespace octave
     if (silent)
       command_editor::erase_empty_line (true);
 
-    std::string msg = buf.str ();
+    std::string stopped_in_msg = buf.str ();
 
-    if (! msg.empty ())
-      std::cerr << msg << std::endl;
+    if (! stopped_in_msg.empty ())
+      std::cerr << stopped_in_msg << std::endl;
 
     std::string tmp_prompt = prompt;
     if (m_level > 0)
@@ -266,8 +266,6 @@ namespace octave
           {
             Vtrack_line_num = false;
 
-            es.reset ();
-
             curr_parser.reset ();
 
             int retval = curr_parser.run ();
@@ -306,10 +304,8 @@ namespace octave
           }
         catch (const execution_exception& ee)
           {
-            std::string stack_trace = ee.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
 
             // Ignore errors when in debugging mode;
             interpreter::recover_from_exception ();
@@ -379,8 +375,6 @@ namespace octave
           {
             unwind_protect_var<bool> upv (m_in_top_level_repl, true);
 
-            es.reset ();
-
             repl_parser.reset ();
 
             if (at_top_level ())
@@ -443,12 +437,10 @@ namespace octave
                       << e.message () << " -- trying to return to prompt"
                       << std::endl;
           }
-        catch (const execution_exception& e)
+        catch (const execution_exception& ee)
           {
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
+            es.save_exception (ee);
+            es.display_exception (ee, std::cerr);
 
             if (interactive)
               m_interpreter.recover_from_exception ();
@@ -634,13 +626,6 @@ namespace octave
 
     error_system& es = m_interpreter.get_error_system ();
 
-    int bem = es.buffer_error_messages ();
-    unwind_action act ([&es, bem] (void)
-                       {
-                         es.buffer_error_messages (bem);
-                       });
-    es.buffer_error_messages (bem + 1);
-
     int parse_status = 0;
 
     bool execution_error = false;
@@ -651,8 +636,9 @@ namespace octave
       {
         tmp = eval_string (try_code, nargout > 0, parse_status, nargout);
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& ee)
       {
+        es.save_exception (ee);
         interpreter::recover_from_exception ();
 
         execution_error = true;
@@ -660,11 +646,6 @@ namespace octave
 
     if (parse_status != 0 || execution_error)
       {
-        // Set up for letting the user print any messages from
-        // errors that occurred in the first part of this eval().
-
-        es.buffer_error_messages (es.buffer_error_messages () - 1);
-
         tmp = eval_string (catch_code, nargout > 0, parse_status, nargout);
 
         retval = (nargout > 0) ? tmp : octave_value_list ();
@@ -726,13 +707,6 @@ namespace octave
 
     error_system& es = m_interpreter.get_error_system ();
 
-    int bem = es.buffer_error_messages ();
-    unwind_action act2 ([&es, bem] (void)
-                        {
-                          es.buffer_error_messages (bem);
-                        });
-    es.buffer_error_messages (bem + 1);
-
     int parse_status = 0;
 
     bool execution_error = false;
@@ -743,8 +717,9 @@ namespace octave
       {
         tmp = eval_string (try_code, nargout > 0, parse_status, nargout);
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& ee)
       {
+        es.save_exception (ee);
         interpreter::recover_from_exception ();
 
         execution_error = true;
@@ -752,11 +727,6 @@ namespace octave
 
     if (parse_status != 0 || execution_error)
       {
-        // Set up for letting the user print any messages from
-        // errors that occurred in the first part of this eval().
-
-        es.buffer_error_messages (es.buffer_error_messages () - 1);
-
         tmp = eval_string (catch_code, nargout > 0, parse_status, nargout);
 
         retval = (nargout > 0) ? tmp : octave_value_list ();
@@ -1735,6 +1705,18 @@ namespace octave
     return m_call_stack.backtrace_frames ();
   }
 
+  std::list<frame_info>
+  tree_evaluator::backtrace_info (octave_idx_type& curr_user_frame,
+                                  bool print_subfn) const
+  {
+    return m_call_stack.backtrace_info (curr_user_frame, print_subfn);
+  }
+
+  std::list<frame_info> tree_evaluator::backtrace_info (void) const
+  {
+    return m_call_stack.backtrace_info ();
+  }
+
   octave_map
   tree_evaluator::backtrace (octave_idx_type& curr_user_frame,
                              bool print_subfn) const
@@ -1742,7 +1724,7 @@ namespace octave
     return m_call_stack.backtrace (curr_user_frame, print_subfn);
   }
 
-  octave_map tree_evaluator::backtrace (void)
+  octave_map tree_evaluator::backtrace (void) const
   {
     return m_call_stack.backtrace ();
   }
@@ -1750,6 +1732,34 @@ namespace octave
   octave_map tree_evaluator::empty_backtrace (void) const
   {
     return m_call_stack.empty_backtrace ();
+  }
+
+  std::string tree_evaluator::backtrace_message (void) const
+  {
+    std::list<frame_info> frames = backtrace_info ();
+
+    std::ostringstream buf;
+
+    for (const auto& frm : frames)
+      {
+        buf << "    " << frm.fcn_name ();
+
+        int line = frm.line ();
+
+        if (line > 0)
+          {
+            buf << " at line " << line;
+
+            int column = frm.column ();
+
+            if (column > 0)
+              buf << " column " << column;
+
+            buf << "\n";
+          }
+      }
+
+    return buf.str ();
   }
 
   void tree_evaluator::push_dummy_scope (const std::string& name)
@@ -2962,17 +2972,11 @@ namespace octave
         {
           try
             {
-              int itc = es.in_try_catch ();
-              unwind_action act ([&es, itc] (void)
-                                 {
-                                   es.in_try_catch (itc);
-                                 });
-              es.in_try_catch (itc + 1);
-
               try_code->accept (*this);
             }
-          catch (const execution_exception&)
+          catch (const execution_exception& ee)
             {
+              es.save_exception (ee);
               interpreter::recover_from_exception ();
 
               execution_error = true;
@@ -3041,8 +3045,11 @@ namespace octave
         if (list)
           list->accept (*this);
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& ee)
       {
+        error_system& es = m_interpreter.get_error_system ();
+
+        es.save_exception (ee);
         interpreter::recover_from_exception ();
 
         if (m_breaking || m_returning)
@@ -3108,12 +3115,15 @@ namespace octave
           {
             unwind_protect_code->accept (*this);
           }
-        catch (const execution_exception&)
+        catch (const execution_exception& ee)
           {
+            error_system& es = m_interpreter.get_error_system ();
+
             // FIXME: Maybe we should be able to temporarily set the
             // interpreter's exception handling state to something "safe"
             // while the cleanup block runs instead of just resetting it
             // here?
+            es.save_exception (ee);
             interpreter::recover_from_exception ();
 
             // Run the cleanup code on exceptions, so that it is run even

@@ -106,8 +106,6 @@ get_output_list (octave::error_system& es,
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
 
-          es.buffer_error_messages (es.buffer_error_messages () - 1);
-
           tmp = octave::feval (error_handler, errlist, nargout);
         }
       else
@@ -540,14 +538,6 @@ nevermind:
     }
 
   octave::error_system& es = interp.get_error_system ();
-
-  octave::unwind_protect frame;
-
-  int bem = es.buffer_error_messages ();
-  frame.add_method (es, &octave::error_system::set_buffer_error_messages, bem);
-
-  if (error_handler.is_defined ())
-    es.buffer_error_messages (bem + 1);
 
   // Apply functions.
 
@@ -1233,15 +1223,6 @@ arrayfun (@@str2num, [1234],
         }
 
       octave::error_system& es = interp.get_error_system ();
-
-      octave::unwind_protect frame;
-
-      int bem = es.buffer_error_messages ();
-      frame.add_method (es, &octave::error_system::set_buffer_error_messages,
-                        bem);
-
-      if (error_handler.is_defined ())
-        es.buffer_error_messages (bem + 1);
 
       // Apply functions.
 

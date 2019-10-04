@@ -1399,10 +1399,8 @@ maybe_missing_function_hook (const std::string& name)
   octave::interpreter& interp
     = octave::__get_interpreter__ ("maybe_missing_function_hook");
 
-  octave::error_system& es = interp.get_error_system ();
-
   // Don't do this if we're handling errors.
-  if (es.buffer_error_messages () || Vmissing_function_hook.empty ())
+  if (Vmissing_function_hook.empty ())
     return;
 
   octave::symbol_table& symtab = interp.get_symbol_table ();

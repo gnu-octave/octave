@@ -1264,10 +1264,11 @@ namespace octave
                 initialize ();
               }
           }
-        catch (const execution_exception&)
+        catch (const execution_exception& ee)
           {
-            // Skip updating if we don't know where we are,
-            // but don't treat it as an error.
+            // Skip updating if we don't know where we are, but don't
+            // treat it as an error.
+
             interpreter::recover_from_exception ();
           }
       }

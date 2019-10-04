@@ -35,6 +35,8 @@ class octave_user_script;
 class octave_value;
 class octave_value_list;
 
+#include "quit.h"
+
 #include "stack-frame.h"
 #include "symscope.h"
 
@@ -227,7 +229,20 @@ namespace octave
     std::list<stack_frame *>
     backtrace_frames (octave_idx_type& curr_user_frame) const;
 
+    // List of raw stack frames.
+
     std::list<stack_frame *> backtrace_frames (void) const;
+
+    // List of stack_info objects that can be used in liboctave and
+    // stored in the execution_exception object.
+
+    std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
+                                          bool print_subfn = true) const;
+
+    std::list<frame_info> backtrace_info (void) const;
+
+    // The same as backtrace_info but in the form of a struct array
+    // object that may be used in the interpreter.
 
     octave_map backtrace (octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;

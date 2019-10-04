@@ -271,12 +271,9 @@ namespace octave
       }
     catch (const execution_exception& e)
       {
-        std::string stack_trace = e.info ();
+        interpreter& interp = __get_interpreter__ ("safe_source_file");
 
-        if (! stack_trace.empty ())
-          std::cerr << stack_trace;
-
-        interpreter::recover_from_exception ();
+        interp.handle_exception (e);
 
         return 1;
       }
@@ -806,12 +803,7 @@ namespace octave
               }
             catch (const execution_exception& e)
               {
-                std::string stack_trace = e.info ();
-
-                if (! stack_trace.empty ())
-                  std::cerr << stack_trace;
-
-                recover_from_exception ();
+                handle_exception (e);
               }
           }
 
@@ -916,9 +908,9 @@ namespace octave
 
         return 1;
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& e)
       {
-        recover_from_exception ();
+        handle_exception (e);
 
         return 1;
       }
@@ -1056,8 +1048,6 @@ namespace octave
         std::string fcn = atexit_functions.front ();
 
         atexit_functions.pop_front ();
-
-        OCTAVE_SAFE_CALL (m_error_system.reset, ());
 
         OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
@@ -1671,6 +1661,18 @@ namespace octave
     return m_evaluator.autoloaded_functions ();
   }
 
+  void interpreter::handle_exception (const execution_exception& e)
+  {
+    m_error_system.save_exception (e);
+
+    // FIXME: use a separate stream instad of std::cerr directly so that
+    // error messages can be redirected more easily?  Pass the message
+    // to an event manager function?
+    m_error_system.display_exception (e, std::cerr);
+
+    recover_from_exception ();
+  }
+
   void interpreter::recover_from_exception (void)
   {
     can_interrupt = true;
@@ -1748,9 +1750,9 @@ namespace octave
       {
         interpreter::recover_from_exception ();
       }
-    catch (const execution_exception&)
+    catch (const execution_exception& e)
       {
-        interpreter::recover_from_exception ();
+        handle_exception (e);
       }
   }
 }

@@ -621,6 +621,35 @@ namespace octave
     return backtrace_frames (curr_user_frame);
   }
 
+  std::list<frame_info>
+  call_stack::backtrace_info (octave_idx_type& curr_user_frame,
+                              bool print_subfn) const
+  {
+    std::list<stack_frame *> frames = backtrace_frames (curr_user_frame);
+
+    std::list<frame_info> retval;
+
+    for (const auto *frm : frames)
+      {
+        if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
+            || frm->is_scope_frame ())
+          {
+            retval.push_back (frame_info (frm->fcn_file_name (),
+                                          frm->fcn_name (print_subfn),
+                                          frm->line (), frm->column ()));
+          }
+      }
+
+    return retval;
+  }
+
+  std::list<frame_info> call_stack::backtrace_info (void) const
+  {
+    octave_idx_type curr_user_frame = -1;
+
+    return backtrace_info (curr_user_frame, true);
+  }
+
   octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
                                     bool print_subfn) const
   {

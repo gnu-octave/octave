@@ -189,12 +189,9 @@ namespace octave
 
             unwind_protect frame;
 
-            frame.add_method (es, &error_system::set_discard_error_messages,
-                              es.discard_error_messages ());
             frame.add_method (es, &error_system::set_discard_warning_messages,
                               es.discard_warning_messages ());
 
-            es.discard_error_messages (true);
             es.discard_warning_messages (true);
 
             try
@@ -555,13 +552,7 @@ namespace octave
           {
             eval_error = true;
 
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              std::cerr << stack_trace;
-
-            if (m_interpreter.interactive ())
-              interpreter::recover_from_exception ();
+            m_interpreter.handle_exception (e);
           }
 
         flush_stdout ();

@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstring>
 
+#include <ostream>
+#include <sstream>
 #include <new>
 
 #include "quit.h"
@@ -33,6 +35,60 @@ along with Octave; see the file COPYING.  If not, see
 void (*octave_signal_hook) (void) = nullptr;
 void (*octave_interrupt_hook) (void) = nullptr;
 void (*octave_bad_alloc_hook) (void) = nullptr;
+
+namespace octave
+{
+  std::string execution_exception::stack_trace (void) const
+  {
+    size_t nframes = m_stack_info.size ();
+
+    if (nframes == 0)
+      return std::string ();
+
+    std::ostringstream buf;
+
+    buf << "error: called from\n";
+
+    for (const auto& frm : m_stack_info)
+      {
+        buf << "    " << frm.fcn_name ();
+
+        int line = frm.line ();
+
+        if (line > 0)
+          {
+            buf << " at line " << line;
+
+            int column = frm.column ();
+
+            if (column > 0)
+              buf << " column " << column;
+          }
+
+        buf << "\n";
+      }
+
+    return buf.str ();
+  }
+
+  void execution_exception::display (std::ostream& os) const
+  {
+    if (! m_message.empty ())
+      {
+        os << m_err_type << ": " << m_message;
+
+        if (m_message.back () != '\n')
+          {
+            os << "\n";
+
+            std::string st = stack_trace ();
+
+            if (! st.empty ())
+              os << st;
+          }
+      }
+  }
+}
 
 void
 octave_handle_signal (void)

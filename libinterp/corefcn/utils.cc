@@ -1372,8 +1372,8 @@ namespace octave
   }
 }
 
-DEFMETHOD (isindex, interp, args, ,
-           doc: /* -*- texinfo -*-
+DEFUN (isindex, args, ,
+       doc: /* -*- texinfo -*-
 @deftypefn  {} {} isindex (@var{ind})
 @deftypefnx {} {} isindex (@var{ind}, @var{n})
 Return true if @var{ind} is a valid index.
@@ -1400,14 +1400,6 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
     n = args(1).idx_type_value ();
 
   octave_value retval;
-
-  octave::error_system& es = interp.get_error_system ();
-
-  octave::unwind_protect frame;
-
-  frame.add_method (es, &octave::error_system::set_discard_error_messages,
-                    es.discard_error_messages ());
-  es.discard_error_messages (true);
 
   try
     {

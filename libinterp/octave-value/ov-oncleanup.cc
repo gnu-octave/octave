@@ -174,12 +174,11 @@ octave_oncleanup::call_object_destructor (void)
 
       warning ("onCleanup: interrupt occurred in cleanup action");
     }
-  catch (const octave::execution_exception&)
+  catch (const octave::execution_exception& ee)
     {
-      octave::error_system& es
-        = octave::__get_error_system__ ("octave_oncleanup::call_object_destructor");
+      octave::interpreter::recover_from_exception ();
 
-      std::string msg = es.last_error_message ();
+      std::string msg = ee.message ();
 
       warning ("onCleanup: error caught while executing cleanup function:\n%s\n",
                msg.c_str ());

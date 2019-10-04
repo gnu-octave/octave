@@ -45,12 +45,6 @@ namespace octave
   {
   public:
 
-    enum try_option
-      {
-        buffer = 1,
-        discard = 2,
-      };
-
     error_system (interpreter& interp);
 
     error_system (const error_system&) = delete;
@@ -58,13 +52,6 @@ namespace octave
     error_system& operator = (const error_system&) = delete;
 
     ~error_system (void) = default;
-
-    void reset (void)
-    {
-      m_buffer_error_messages = 0;
-      m_in_try_catch = 0;
-      m_discard_error_messages = false;
-    }
 
     octave_value debug_on_error (const octave_value_list& args, int nargout);
 
@@ -102,45 +89,6 @@ namespace octave
     {
       bool val = m_debug_on_warning;
       m_debug_on_warning = flag;
-      return val;
-    }
-
-    octave_value buffer_error_messages (const octave_value_list& args, int nargout);
-
-    void set_buffer_error_messages (int val) { m_buffer_error_messages = val; }
-
-    int buffer_error_messages (void) const { return m_buffer_error_messages; }
-
-    int buffer_error_messages (int new_val)
-    {
-      int val = m_buffer_error_messages;
-      m_buffer_error_messages = new_val;
-      return val;
-    }
-
-    octave_value in_try_catch (const octave_value_list& args, int nargout);
-
-    void set_in_try_catch (int val) { m_in_try_catch = val; }
-
-    int in_try_catch (void) const { return m_in_try_catch; }
-
-    int in_try_catch (int new_val)
-    {
-      int val = m_in_try_catch;
-      m_in_try_catch = new_val;
-      return val;
-    }
-
-    octave_value discard_error_messages (const octave_value_list& args, int nargout);
-
-    void set_discard_error_messages (bool flag) { m_discard_error_messages = flag; }
-
-    bool discard_error_messages (void) const { return m_discard_error_messages; }
-
-    bool discard_error_messages (bool flag)
-    {
-      bool val = m_discard_error_messages;
-      m_discard_error_messages = flag;
       return val;
     }
 
@@ -296,25 +244,22 @@ namespace octave
                  const char *id, const char *fmt, va_list args,
                  bool with_cfn = false);
 
-    void maybe_enter_debugger (execution_exception& e,
-                               bool show_stack_trace = false);
-
     void vwarning (const char *name, const char *id, const char *fmt,
                    va_list args);
 
     OCTAVE_NORETURN
-    void error_1 (execution_exception& e, std::ostream& os,
-                  const char *name, const char *id, const char *fmt,
-                  va_list args, bool with_cfn = false);
+    void error_1 (execution_exception& e, const char *id, const char *fmt,
+                  va_list args);
 
     OCTAVE_NORETURN
-    void error_1 (std::ostream& os, const char *name, const char *id,
-                  const char *fmt, va_list args, bool with_cfn);
+    void error_1 (const char *id, const char *fmt, va_list args);
+
+    OCTAVE_NORETURN
+    void vusage (const char *id, const char *fmt, va_list args);
 
     void vwarning (const char *id, const char *fmt, va_list args);
 
-    void rethrow_error (const char *id, const char *fmt, ...);
-
+    OCTAVE_NORETURN
     void rethrow_error (const std::string& id, const std::string& msg,
                         const octave_map& stack);
 
@@ -336,8 +281,25 @@ namespace octave
 
     void initialize_default_warning_state (void);
 
-    void interpreter_try (octave::unwind_protect& frame,
-                          try_option = buffer);
+    void interpreter_try (octave::unwind_protect& frame);
+
+    // Throw execution_exception or, if debug_on_error is TRUE, enter
+    // debugger.  If stack_info is empty, use current call stack.
+
+    OCTAVE_NORETURN
+    void throw_error (const std::string& err_type,
+                      const std::string& id,
+                      const std::string& message,
+                      const std::list<frame_info>& stack_info
+                        = std::list<frame_info> ());
+
+    OCTAVE_NORETURN
+    void throw_error (execution_exception& e);
+
+    void save_exception (const execution_exception& e);
+
+    void display_exception (const execution_exception& e,
+                            std::ostream& os) const;
 
   private:
 
@@ -358,21 +320,6 @@ namespace octave
     //! is encountered.
 
     bool m_debug_on_warning;
-
-    //! Tell the error handler whether to print messages, or just store
-    //! them for later.  Used for handling errors in eval() and
-    //! the 'unwind_protect' statement.
-
-    int m_buffer_error_messages;
-
-    //! The number of layers of try / catch blocks we're in.  Used to print
-    //! "caught error" instead of "error" when "dbstop if caught error" is on.
-
-    int m_in_try_catch;
-
-    //! TRUE means error messages are turned off.
-
-    bool m_discard_error_messages;
 
     //! TRUE means warning messages are turned off.
 
@@ -425,9 +372,6 @@ namespace octave
 
 extern OCTINTERP_API int warning_enabled (const std::string& id);
 
-extern OCTINTERP_API octave::execution_exception
-make_execution_exception (const char *who);
-
 extern OCTINTERP_API void
 vmessage (const char *name, const char *fmt, va_list args);
 
@@ -472,14 +416,6 @@ OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void
 parse_error (const char *fmt, ...);
-
-extern OCTINTERP_API void
-vmessage_with_id (const char *id, const char *name, const char *fmt,
-                  va_list args);
-
-OCTAVE_FORMAT_PRINTF (3, 4)
-extern OCTINTERP_API void
-message_with_id (const char *id, const char *name, const char *fmt, ...);
 
 OCTAVE_NORETURN
 extern OCTINTERP_API void
@@ -543,14 +479,12 @@ set_warning_state (const octave_value_list& args);
 
 extern OCTINTERP_API void disable_warning (const std::string& id);
 
-extern OCTINTERP_API void
-interpreter_try (octave::unwind_protect&,
-                 octave::error_system::try_option = octave::error_system::buffer);
+extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 OCTAVE_DEPRECATED (6, "this variable is obsolete and always has the value 0")
 extern OCTINTERP_API int error_state;
 
-OCTAVE_DEPRECATED (6, "use 'error_system::reset' instead")
-extern OCTINTERP_API void reset_error_handler (void);
+OCTAVE_DEPRECATED (6, "this function is obsolete and should not be needed")
+inline void reset_error_handler (void) { }
 
 #endif

@@ -425,20 +425,20 @@ namespace octave
            {
              // INTERPRETER THREAD
 
-             bool eval_error = false;
-
              error_system& es = interp.get_error_system ();
+
+             unwind_protect frame;
+
+             // Prevent an error in the evaluation here from sending us
+             // into the debugger.
+
+             es.interpreter_try (frame);
+
+             bool eval_error = false;
+             std::string msg;
 
              try
                {
-                 // Suppress error messages on the console.
-                 unwind_protect frame;
-
-                 int bem = es.buffer_error_messages ();
-                 frame.add_method (es, &error_system::set_buffer_error_messages, bem);
-
-                 es.buffer_error_messages (bem + 1);
-
                  tree_evaluator& tw = interp.get_evaluator ();
                  bp_table& bptab = tw.get_bp_table ();
 
@@ -449,16 +449,25 @@ namespace octave
 
                  emit request_add_breakpoint (line, new_cond);
                }
-             catch (const index_exception& e) { eval_error = true; }
-             catch (const execution_exception& e) { eval_error = true; }
-             catch (const interrupt_exception&) { eval_error = true; }
+             catch (const execution_exception& e)
+               {
+                 interpreter::recover_from_exception ();
+
+                 msg = e.message ();
+                 eval_error = true;
+               }
+             catch (const interrupt_exception&)
+               {
+                 interpreter::recover_from_exception ();
+
+                 msg = "evaluation interrupted";
+                 eval_error = true;
+               }
 
              if (eval_error)
                {
                  // Try again with a prompt that indicates the last
                  // attempt was an error.
-
-                 std::string msg = es.last_error_message ();
 
                  QString new_prompt = (tr ("ERROR: ")
                                        + QString::fromStdString (msg)
@@ -2291,6 +2300,8 @@ namespace octave
                    }
                  catch (const execution_exception& e)
                    {
+                     interpreter::recover_from_exception ();
+
                      // Ignore syntax error.  It was in the old file on disk;
                      // the user may have fixed it already.
                    }

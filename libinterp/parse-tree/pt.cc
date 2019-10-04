@@ -90,10 +90,9 @@ namespace octave
           }
         catch (const execution_exception& e)
           {
-            interpreter& interp = tw.get_interpreter ();
-            error_system& es = interp.get_error_system ();
+            interpreter::recover_from_exception ();
 
-            std::string tmp = es.last_error_message ();
+            std::string tmp = e.message ();
 
             warning ("Error evaluating breakpoint condition:\n    %s",
                      tmp.c_str ());

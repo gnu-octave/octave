@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
+#include "quit.h"
+
 #include "bp-table.h"
 #include "builtin-defun-decls.h"
 #include "defun.h"
@@ -51,156 +53,36 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-static void verror (bool save_last_error, std::ostream& os, const char *name,
-                    const char *id, const char *fmt, va_list args,
-                    bool with_cfn = false)
+static std::string
+format_message (const char *fmt, va_list args)
 {
-  octave::error_system& es = octave::__get_error_system__ ("verror");
+  if (! fmt)
+    return "";
 
-  es.verror (save_last_error, os, name, id, fmt, args, with_cfn);
-}
+  std::ostringstream output_buf;
 
-static void
-vpr_where (std::ostream& os, const char *fmt, va_list args)
-{
-  if (fmt)
-    {
-      if (*fmt)
-        {
-          size_t len = strlen (fmt);
+  octave::vformat (output_buf, fmt, args);
 
-          if (len > 0)
-            {
-              if (fmt[len - 1] == '\n')
-                {
-                  if (len > 1)
-                    {
-                      std::string tmp_fmt (fmt, len - 1);
-                      verror (false, os, nullptr, "", tmp_fmt.c_str (), args);
-                    }
-                }
-              else
-                verror (false, os, nullptr, "", fmt, args);
-            }
-        }
-    }
-  else
-    panic ("vpr_where: invalid format");
-}
-
-static void
-pr_where_internal (std::ostream& os, const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  vpr_where (os, fmt, args);
-  va_end (args);
-}
-
-struct
-error_stack_frame
-{
-  std::string name;
-  int line;
-  int column;
-};
-
-static void
-pr_where (std::ostream& os, const char *who,
-          const std::list<error_stack_frame>& frames)
-{
-  size_t nframes = frames.size ();
-
-  if (nframes > 0)
-    pr_where_internal (os, "%s: called from\n", who);
-
-  for (const auto& frm : frames)
-    {
-      std::string fcn_name = frm.name;
-      int line = frm.line;
-      int column = frm.column;
-
-      if (line > 0)
-        {
-          if (column > 0)
-            pr_where_internal (os, "    %s at line %d column %d\n",
-                        fcn_name.c_str (), line, column);
-          else
-            pr_where_internal (os, "    %s at line %d\n",
-                               fcn_name.c_str (), line);
-        }
-      else
-        pr_where_internal (os, "    %s\n", fcn_name.c_str ());
-    }
-}
-
-static void
-pr_where (std::ostream& os, const char *who)
-{
-  octave::tree_evaluator& tw = octave::__get_evaluator__ ("pr_where");
-
-  std::list<octave::stack_frame *> call_stack_frames = tw.backtrace_frames ();
-
-  // Print the error message only if it is different from the previous one;
-  // Makes the output more concise and readable.
-  call_stack_frames.unique ();
-
-  std::list<error_stack_frame> frames;
-  for (const auto *frm : call_stack_frames)
-    {
-      error_stack_frame frame;
-
-      frame.name = frm->fcn_name ();
-      frame.line = frm->line ();
-      frame.column = frm->column ();
-
-      frames.push_back (frame);
-    }
-
-  pr_where (os, who, frames);
-}
-
-static void
-maybe_enter_debugger (octave::execution_exception& e,
-                      bool show_stack_trace = false)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("maybe_enter_debugger");
-
-  es.maybe_enter_debugger (e, show_stack_trace);
+  return output_buf.str ();
 }
 
 OCTAVE_NORETURN
 static void
-vusage (octave::execution_exception& e, const char *id,
-        const char *fmt, va_list args)
-{
-  verror (true, std::cerr, "usage", id, fmt, args);
-
-  maybe_enter_debugger (e);
-
-  throw e;
-}
-
-OCTAVE_NORETURN
-static void
-error_1 (octave::execution_exception& e, std::ostream& os,
-         const char *name, const char *id, const char *fmt,
-         va_list args, bool with_cfn = false)
+error_1 (octave::execution_exception& e, const char *id, const char *fmt,
+         va_list args)
 {
   octave::error_system& es = octave::__get_error_system__ ("error_1");
 
-  es.error_1 (e, os, name, id, fmt, args, with_cfn);
+  es.error_1 (e, id, fmt, args);
 }
 
 OCTAVE_NORETURN
 static void
-error_1 (std::ostream& os, const char *name, const char *id,
-         const char *fmt, va_list args, bool with_cfn = false)
+error_1 (const char *id, const char *fmt, va_list args)
 {
   octave::error_system& es = octave::__get_error_system__ ("error_1");
 
-  es.error_1 (os, name, id, fmt, args, with_cfn);
+  es.error_1 (id, fmt, args);
 }
 
 static int
@@ -229,11 +111,56 @@ vwarning (const char *id, const char *fmt, va_list args)
   es.vwarning (id, fmt, args);
 }
 
-static std::list<error_stack_frame>
+// Use static fields for the best efficiency.
+// NOTE: C++0x will allow these two to be merged into one.
+static const char *bt_fieldnames[] =
+  { "file", "name", "line", "column", nullptr };
+
+static const octave_fields bt_fields (bt_fieldnames);
+
+static octave_map
+make_stack_map (const std::list<octave::frame_info>& frames)
+{
+  size_t nframes = frames.size ();
+
+  octave_map retval (dim_vector (nframes, 1), bt_fields);
+
+  Cell& file = retval.contents (0);
+  Cell& name = retval.contents (1);
+  Cell& line = retval.contents (2);
+  Cell& column = retval.contents (3);
+
+  bool have_column = false;
+
+  octave_idx_type k = 0;
+
+  for (const auto& frm : frames)
+    {
+      file(k) = frm.file_name ();
+      name(k) = frm.fcn_name ();
+      line(k) = frm.line ();
+      int c = frm.column ();
+      if (c > 0)
+        {
+          have_column = true;
+          column(k) = c;
+        }
+
+      k++;
+    }
+
+  if (! have_column)
+    retval.rmfield ("column");
+
+  return retval;
+}
+
+static std::list<octave::frame_info>
 make_stack_frame_list (const octave_map& stack)
 {
-  std::list<error_stack_frame> frames;
+  std::list<octave::frame_info> frames;
 
+  Cell file = stack.contents ("file");
   Cell name = stack.contents ("name");
   Cell line = stack.contents ("line");
   Cell column;
@@ -247,15 +174,11 @@ make_stack_frame_list (const octave_map& stack)
   octave_idx_type nel = name.numel ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    {
-      error_stack_frame frame;
-
-      frame.name = name(i).string_value ();
-      frame.line = line(i).int_value ();
-      frame.column = (have_column ? column(i).int_value () : -1);
-
-      frames.push_back (frame);
-    }
+    frames.push_back (octave::frame_info (file(i).string_value (),
+                                          name(i).string_value (),
+                                          line(i).int_value (),
+                                          (have_column
+                                           ? column(i).int_value () : -1)));
 
   return frames;
 }
@@ -265,7 +188,7 @@ defun_usage_message (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (octave_stdout, nullptr, "", fmt, args);
+  error_1 ("", fmt, args);
   va_end (args);
 }
 
@@ -403,9 +326,6 @@ namespace octave
       m_debug_on_error (false),
       m_debug_on_caught (false),
       m_debug_on_warning (false),
-      m_buffer_error_messages (0),
-      m_in_try_catch (0),
-      m_discard_error_messages (false),
       m_discard_warning_messages (false),
       m_beep_on_error (false),
       m_backtrace_on_warning (true),
@@ -440,29 +360,6 @@ namespace octave
   {
     return set_internal_variable (m_debug_on_warning, args, nargout,
                                   "debug_on_warning");
-  }
-
-  octave_value
-  error_system::buffer_error_messages (const octave_value_list& args,
-                                        int nargout)
-  {
-    return set_internal_variable (m_buffer_error_messages, args, nargout,
-                                  "buffer_error_messages");
-  }
-
-  octave_value
-  error_system::in_try_catch (const octave_value_list& args, int nargout)
-  {
-    return set_internal_variable (m_in_try_catch, args, nargout,
-                                  "in_try_catch");
-  }
-
-  octave_value
-  error_system::discard_error_messages (const octave_value_list& args,
-                                        int nargout)
-  {
-    return set_internal_variable (m_discard_error_messages, args, nargout,
-                                  "discard_error_messages");
   }
 
   octave_value
@@ -607,196 +504,95 @@ namespace octave
     return retval;
   }
 
-  void error_system::verror (bool save_last_error, std::ostream& os,
-                             const char *name, const char *id,
-                             const char *fmt, va_list args, bool with_cfn)
+  void error_system::vusage (const char *id, const char *fmt, va_list args)
   {
-    if (discard_error_messages () && ! debug_on_caught ())
-      return;
+    std::string str_id = id ? id : "";
+    std::string message = format_message (fmt, args);
 
-    if (! buffer_error_messages () || debug_on_caught ())
-      flush_stdout ();
-
-    // FIXME: we really want to capture the message before it has all the
-    //        formatting goop attached to it.  We probably also want just the
-    //        message, not the traceback information.
-
-    std::ostringstream output_buf;
-
-    vformat (output_buf, fmt, args);
-
-    std::string base_msg = output_buf.str ();
-
-    bool to_beep_or_not_to_beep_p = beep_on_error ();
-
-    std::string msg_string;
-
-    if (to_beep_or_not_to_beep_p)
-      msg_string = "\a";
-
-    if (name)
-      {
-        if (in_try_catch () && ! strcmp (name, "error"))
-          msg_string += "caught error: ";
-        else
-          msg_string += std::string (name) + ": ";
-      }
-
-    tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-    // If with_fcn is specified, we'll attempt to prefix the message with the name
-    // of the current executing function.  But we'll do so only if:
-    // 1. the name is not empty (anonymous function)
-    // 2. it is not already there (including the following colon)
-    if (with_cfn)
-      {
-        std::string cfn = tw.current_function_name ();
-
-        if (! cfn.empty ())
-          {
-            cfn += ':';
-            if (cfn.length () > base_msg.length ()
-                || base_msg.compare (0, cfn.length (), cfn) != 0)
-              msg_string += cfn + ' ';
-          }
-      }
-
-    msg_string += base_msg + '\n';
-
-    if (save_last_error)
-      {
-        // This is the first error in a possible series.
-
-        last_error_id (id);
-        last_error_message (base_msg);
-        last_error_stack (tw.in_user_code ()
-                          ? tw.backtrace () : tw.empty_backtrace ());
-      }
-
-    if (! buffer_error_messages () || debug_on_caught ())
-      {
-        octave_diary << msg_string;
-        os << msg_string;
-      }
-  }
-
-  void error_system::maybe_enter_debugger (execution_exception& e,
-                                           bool show_stack_trace)
-  {
-    tree_evaluator& tw = m_interpreter.get_evaluator ();
-    bp_table& bptab = tw.get_bp_table ();
-
-    if ((m_interpreter.interactive () || application::forced_interactive ())
-        && ((debug_on_error ()
-             && bptab.debug_on_err (last_error_id ()))
-            || (debug_on_caught ()
-                && bptab.debug_on_caught (last_error_id ())))
-        && tw.in_user_code ())
-      {
-        if (show_stack_trace)
-          {
-            std::string stack_trace = e.info ();
-
-            if (! stack_trace.empty ())
-              {
-                std::cerr << stack_trace;
-
-                e.set_stack_trace ();
-              }
-          }
-
-        tw.enter_debugger ();
-      }
+    throw_error ("usage", id, message);
   }
 
   void error_system::vwarning (const char *name, const char *id,
                                const char *fmt, va_list args)
   {
-    if (discard_warning_messages ())
-      return;
-
     flush_stdout ();
 
-    std::ostringstream output_buf;
-
-    vformat (output_buf, fmt, args);
-
-    // FIXME: we really want to capture the message before it has all the
-    //        formatting goop attached to it.  We probably also want just the
-    //        message, not the traceback information.
-
-    std::string base_msg = output_buf.str ();
+    std::string base_msg = format_message (fmt, args);
     std::string msg_string;
 
     if (name)
       msg_string = std::string (name) + ": ";
 
-    msg_string += base_msg + '\n';
+    msg_string += base_msg;
+
+    bool fmt_suppresses_backtrace = false;
+    size_t fmt_len = (fmt ? strlen (fmt) : 0);
+    fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
+
+    if (! fmt_suppresses_backtrace)
+      msg_string += '\n';
 
     last_warning_id (id);
     last_warning_message (base_msg);
 
+    if (discard_warning_messages ())
+      return;
+
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    bool in_user_code = tw.in_user_code ();
+
     if (! quiet_warning ())
       {
         octave_diary << msg_string;
-
         std::cerr << msg_string;
-      }
-  }
 
-  void error_system::error_1 (execution_exception& e, std::ostream& os,
-                              const char *name, const char *id,
-                              const char *fmt, va_list args, bool with_cfn)
-  {
-    bool show_stack_trace = false;
-
-    if (fmt)
-      {
-        if (*fmt)
+        if (! fmt_suppresses_backtrace && in_user_code
+            && backtrace_on_warning ()
+            && ! discard_warning_messages ())
           {
-            size_t len = strlen (fmt);
+            std::string bt_msg = tw.backtrace_message ();
 
-            if (len > 0)
-              {
-                if (fmt[len - 1] == '\n')
-                  {
-                    if (len > 1)
-                      {
-                        std::string tmp_fmt (fmt, len - 1);
-                        verror (true, os, name, id, tmp_fmt.c_str (),
-                                args, with_cfn);
-                      }
+            if (! bt_msg.empty ())
+              bt_msg = "warning: called from\n" + bt_msg;
 
-                    // If format ends with newline, suppress stack trace.
-                    e.set_stack_trace ();
-                  }
-                else
-                  {
-                    verror (true, os, name, id, fmt, args, with_cfn);
-
-                    tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-                    if (tw.in_user_code () && ! discard_error_messages ())
-                      show_stack_trace = true;
-                  }
-              }
+            octave_diary << bt_msg << std::endl;
+            std::cerr << bt_msg << std::endl;
           }
       }
-    else
-      panic ("error_1: invalid format");
 
-    maybe_enter_debugger (e, show_stack_trace);
+    bp_table& bptab = tw.get_bp_table ();
 
-    throw e;
+    if ((m_interpreter.interactive ()
+         || application::forced_interactive ())
+        && debug_on_warning () && in_user_code && bptab.debug_on_warn (id))
+      {
+        unwind_protect frame;
+
+        frame.protect_var (m_debug_on_warning);
+        m_debug_on_warning = false;
+
+        tw.enter_debugger ();
+      }
   }
 
-  void error_system::error_1 (std::ostream& os, const char *name,
-                              const char *id, const char *fmt,
-                              va_list args, bool with_cfn = false)
+  void error_system::error_1 (execution_exception& e, const char *id,
+                              const char *fmt, va_list args)
   {
-    execution_exception e = make_execution_exception ("error");
+    e.set_identifier (id);
+    e.set_message (format_message (fmt, args));
 
-    error_1 (e, os, name, id, fmt, args, with_cfn);
+    throw_error (e);
+  }
+
+  void error_system::error_1 (const char *id, const char *fmt,
+                              va_list args)
+  {
+    std::string message = format_message (fmt, args);
+
+    std::list<frame_info> stack_info;
+
+    throw_error ("error", id, message);
   }
 
   void error_system::vwarning (const char *id, const char *fmt, va_list args)
@@ -807,101 +603,37 @@ namespace octave
       {
         // Handle this warning as an error.
 
-        error_1 (std::cerr, "error", id, fmt, args);
+        error_1 (id, fmt, args);
       }
     else if (warn_opt == 1)
-      {
-        bool fmt_suppresses_backtrace = false;
-        size_t fmt_len = (fmt ? strlen (fmt) : 0);
-        fmt_suppresses_backtrace = (fmt_len > 0 && fmt[fmt_len-1] == '\n');
-
-        if (fmt_suppresses_backtrace && fmt_len > 1)
-          {
-            // Strip newline before issuing warning
-            std::string tmp_fmt (fmt, fmt_len - 1);
-            vwarning ("warning", id, tmp_fmt.c_str (), args);
-          }
-        else
-          vwarning ("warning", id, fmt, args);
-
-        tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-        bool in_user_code = tw.in_user_code ();
-
-        if (! fmt_suppresses_backtrace && in_user_code
-            && backtrace_on_warning ()
-            && ! discard_warning_messages ())
-          pr_where (std::cerr, "warning");
-
-        bp_table& bptab = tw.get_bp_table ();
-
-        if ((m_interpreter.interactive ()
-             || application::forced_interactive ())
-            && debug_on_warning () && in_user_code && bptab.debug_on_warn (id))
-          {
-            unwind_protect frame;
-
-            frame.protect_var (m_debug_on_warning);
-            m_debug_on_warning = false;
-
-            tw.enter_debugger ();
-          }
-      }
-  }
-
-  void error_system::rethrow_error (const char *id, const char *fmt, ...)
-  {
-    va_list args;
-    va_start (args, fmt);
-    verror (false, std::cerr, nullptr, id, fmt, args);
-    va_end (args);
+      vwarning ("warning", id, fmt, args);
   }
 
   void error_system::rethrow_error (const std::string& id,
                                     const std::string& msg,
                                     const octave_map& stack)
   {
-    execution_exception e = make_execution_exception ("error");
+    std::list<frame_info> stack_info;
+
+    execution_exception e ("error", id, msg, stack_info);
 
     if (! stack.isempty ()
         && ! (stack.contains ("file") && stack.contains ("name")
               && stack.contains ("line")))
       error ("rethrow: STACK struct must contain the fields 'file', 'name', and 'line'");
 
-    last_error_id (id);
-    last_error_message (msg);
-    last_error_stack (stack);
-
-    size_t len = msg.length ();
-
-    std::string tmp_msg (msg);
-    if (len > 1 && tmp_msg[len-1] == '\n')
-      {
-        tmp_msg.erase (len - 1);
-
-        rethrow_error (id.c_str (), "%s\n", tmp_msg.c_str ());
-      }
-    else
-      rethrow_error (id.c_str (), "%s", tmp_msg.c_str ());
-
     if (! stack.isempty ())
-      {
-        std::ostringstream buf;
+      e.set_stack_info (make_stack_frame_list (stack));
 
-        pr_where (buf, "error", make_stack_frame_list (stack));
-
-        e.set_stack_trace (buf.str ());
-      }
-
-    throw e;
+    throw_error (e);
   }
 
   void error_system::vpanic (const char *fmt, va_list args)
   {
-    buffer_error_messages (0);
-    discard_error_messages (false);
+    // Is there any point in trying to write the panic message to the
+    // diary?
 
-    verror (false, std::cerr, "panic", "", fmt, args);
+    std::cerr << "panic: " << format_message (fmt, args) << std::endl;
 
     abort ();
   }
@@ -1101,7 +833,7 @@ namespace octave
 
   void error_system::initialize_default_warning_state (void)
   {
-    warning_options (octave::init_warning_options ("on"));
+    warning_options (init_warning_options ("on"));
 
     // Most people will want to have the following disabled.
 
@@ -1120,22 +852,8 @@ namespace octave
     disable_warning ("Octave:variable-switch-label");
   }
 
-  void error_system::interpreter_try (octave::unwind_protect& frame,
-                                      try_option opt)
+  void error_system::interpreter_try (unwind_protect& frame)
   {
-    switch (opt)
-      {
-      case buffer:
-        frame.protect_var (m_buffer_error_messages);
-        m_buffer_error_messages++;
-        break;
-
-      case discard:
-        frame.protect_var (m_discard_error_messages);
-        m_discard_error_messages = true;
-        break;
-      }
-
     frame.protect_var (m_debug_on_error);
     m_debug_on_error = false;
 
@@ -1145,26 +863,89 @@ namespace octave
     // Leave debug_on_caught as it was, so errors in try/catch are still
     // caught.
   }
-}
 
-octave::execution_exception
-make_execution_exception (const char *who)
-{
-  std::ostringstream buf;
+  void error_system::throw_error (const std::string& err_type,
+                                  const std::string& id,
+                                  const std::string& message,
+                                  const std::list<frame_info>& stack_info_arg)
+  {
+    std::list<frame_info> stack_info = stack_info_arg;
 
-  pr_where (buf, who);
+    if (stack_info.empty ())
+      {
+        tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-  octave::execution_exception retval;
+        stack_info = tw.backtrace_info ();
 
-  retval.set_stack_trace (buf.str ());
+        // Print the error message only if it is different from the
+        // previous one; makes the output more concise and readable.
 
-  return retval;
+        stack_info.unique ();
+      }
+
+    execution_exception ex (err_type, id, message, stack_info);
+
+    throw_error (ex);
+  }
+
+  void error_system::throw_error (execution_exception& ex)
+  {
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+    bp_table& bptab = tw.get_bp_table ();
+
+    if ((m_interpreter.interactive () || application::forced_interactive ())
+        && ((debug_on_error ()
+             && bptab.debug_on_err (last_error_id ()))
+            || (debug_on_caught ()
+                && bptab.debug_on_caught (last_error_id ())))
+        && tw.in_user_code ())
+      {
+        save_exception (ex);
+        display_exception (ex, std::cerr);
+
+        tw.enter_debugger ();
+      }
+
+    // Throw the exception even if we entered the debugger.
+
+    throw ex;
+  }
+
+  void error_system::save_exception (const execution_exception& e)
+  {
+    last_error_id (e.identifier ());
+    std::string message = e.message ();
+    std::string xmsg
+      = (message.size () > 0 && message.back () == '\n'
+         ? message.substr (0, message.size () - 1) : message);
+    last_error_message (xmsg);
+    last_error_stack (make_stack_map (e.stack_info ()));
+  }
+
+  void error_system::display_exception (const execution_exception& e,
+                                        std::ostream& os) const
+  {
+    if (m_beep_on_error)
+      os << "\a";
+
+    e.display (octave_diary);
+    e.display (os);
+  }
 }
 
 void
 vmessage (const char *name, const char *fmt, va_list args)
 {
-  verror (false, std::cerr, name, "", fmt, args);
+  std::string message;
+
+  if (name)
+    message = std::string (name) + ": ";
+
+  message += format_message (fmt, args);
+
+  octave_diary << message << std::endl;
+  std::cerr << message << std::endl;
 }
 
 void
@@ -1177,27 +958,11 @@ message (const char *name, const char *fmt, ...)
 }
 
 void
-vmessage_with_id (const char *name, const char *id, const char *fmt,
-                  va_list args)
-{
-  verror (false, std::cerr, name, id, fmt, args);
-}
-
-void
-message_with_id (const char *name, const char *id, const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  vmessage_with_id (name, id, fmt, args);
-  va_end (args);
-}
-
-void
 vusage_with_id (const char *id, const char *fmt, va_list args)
 {
-  octave::execution_exception e = make_execution_exception ("usage");
+  octave::error_system& es = octave::__get_error_system__ ("warning_enabled");
 
-  vusage (e, id, fmt, args);
+  es.vusage (id, fmt, args);
 }
 
 void
@@ -1212,7 +977,7 @@ usage_with_id (const char *id, const char *fmt, ...)
 void
 verror (const char *fmt, va_list args)
 {
-  error_1 (std::cerr, "error", "", fmt, args);
+  error_1 ("", fmt, args);
 }
 
 void
@@ -1227,7 +992,7 @@ error (const char *fmt, ...)
 void
 verror (octave::execution_exception& e, const char *fmt, va_list args)
 {
-  error_1 (e, std::cerr, "error", "", fmt, args);
+  error_1 (e, "", fmt, args);
 }
 
 void
@@ -1242,7 +1007,7 @@ error (octave::execution_exception& e, const char *fmt, ...)
 void
 verror_with_cfn (const char *fmt, va_list args)
 {
-  error_1 (std::cerr, "error", "", fmt, args, true);
+  error_1 ("", fmt, args);
 }
 
 void
@@ -1257,7 +1022,7 @@ error_with_cfn (const char *fmt, ...)
 void
 verror_with_id (const char *id, const char *fmt, va_list args)
 {
-  error_1 (std::cerr, "error", id, fmt, args);
+  error_1 (id, fmt, args);
 }
 
 void
@@ -1272,7 +1037,7 @@ error_with_id (const char *id, const char *fmt, ...)
 void
 verror_with_id_cfn (const char *id, const char *fmt, va_list args)
 {
-  error_1 (std::cerr, "error", id, fmt, args, true);
+  error_1 (id, fmt, args);
 }
 
 void
@@ -1324,7 +1089,7 @@ warning_with_id (const char *id, const char *fmt, ...)
 void
 vparse_error (const char *fmt, va_list args)
 {
-  error_1 (std::cerr, nullptr, "", fmt, args);
+  error_1 ("", fmt, args);
 }
 
 void
@@ -1339,7 +1104,7 @@ parse_error (const char *fmt, ...)
 void
 vparse_error_with_id (const char *id, const char *fmt, va_list args)
 {
-  error_1 (std::cerr, nullptr, id, fmt, args);
+  error_1 (id, fmt, args);
 }
 
 void
@@ -1348,15 +1113,6 @@ parse_error_with_id (const char *id, const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   vparse_error_with_id (id, fmt, args);
-  va_end (args);
-}
-
-void
-rethrow_error (const char *id, const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  error_1 (std::cerr, nullptr, id, fmt, args);
   va_end (args);
 }
 
@@ -1420,8 +1176,8 @@ error.  Typically @var{err} is returned from @code{lasterror}.
   return ovl ();
 }
 
-DEFUN (error, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (error, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} error (@var{template}, @dots{})
 @deftypefnx {} {} error (@var{id}, @var{template}, @dots{})
 Display an error message and stop m-file execution.
@@ -1516,9 +1272,9 @@ disable escape sequence expansion use a second backslash before the sequence
 
   octave_value retval;
 
-  octave_value_list nargs = args;
-
   std::string id;
+  std::string message;
+  std::list<octave::frame_info> stack_info;
 
   bool have_fmt = false;
 
@@ -1539,7 +1295,7 @@ disable escape sequence expansion use a second backslash before the sequence
           octave_value c = m.getfield ("message");
 
           if (c.is_string ())
-            nargs(0) = c.string_value ();
+            message = c.string_value ();
         }
 
       if (m.contains ("identifier"))
@@ -1550,15 +1306,50 @@ disable escape sequence expansion use a second backslash before the sequence
             id = c.string_value ();
         }
 
-      // FIXME: also need to handle "stack" field in error structure,
-      //        but that will require some more significant surgery on
-      //        handle_message, error_with_id, etc.
+      if (m.contains ("stack"))
+        {
+          octave_value c = m.getfield ("stack");
+
+          if (c.isstruct ())
+            stack_info = make_stack_frame_list (c.map_value ());
+        }
     }
   else
-    have_fmt = maybe_extract_message_id ("error", args, nargs, id);
+    {
+      octave_value_list nargs = args;
 
-  handle_message (error_with_id, id.c_str (), "unspecified error",
-                  nargs, have_fmt);
+      have_fmt = maybe_extract_message_id ("error", args, nargs, id);
+
+      if (nargs.length () == 0)
+        message = "unspecified error";
+      else
+        {
+          octave_value arg;
+
+          if (have_fmt)
+            {
+              octave_value_list tmp = Fsprintf (nargs, 1);
+              arg = tmp(0);
+            }
+          else
+            arg = nargs(0);
+
+          if (arg.is_defined ())
+            {
+              if (arg.isempty ())
+                message = "";
+              else if (arg.is_string ())
+                message = arg.string_value ();
+            }
+        }
+    }
+
+  if (message.empty ())
+    return retval;
+
+  octave::error_system& es = interp.get_error_system ();
+
+  es.throw_error ("error", id, message, stack_info);
 
   return retval;
 }
@@ -2381,25 +2172,15 @@ last_warning_id (void)
 }
 
 void
-interpreter_try (octave::unwind_protect& frame,
-                 octave::error_system::try_option opt)
+interpreter_try (octave::unwind_protect& frame)
 {
   octave::error_system& es
     = octave::__get_error_system__ ("interpreter_try");
 
-  es.interpreter_try (frame, opt);
+  es.interpreter_try (frame);
 }
 
 // Deprecated variables and functions.
 
 // This variable is obsolete and always has the value 0.
 int error_state = 0;
-
-void
-reset_error_handler (void)
-{
-  octave::error_system& es
-    = octave::__get_error_system__ ("reset_error_handler");
-
-  es.reset ();
-}

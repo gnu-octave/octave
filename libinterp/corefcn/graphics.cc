@@ -3726,7 +3726,7 @@ base_graphics_object::remove_all_listeners (void)
 
       octave::unwind_protect frame;
 
-      interpreter_try (frame, octave::error_system::discard);
+      interpreter_try (frame);
 
       try
         {

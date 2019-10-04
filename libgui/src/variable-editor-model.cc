@@ -1027,7 +1027,7 @@ namespace octave
 
              emit update_data_signal (val);
            }
-         catch (execution_exception&)
+         catch (const execution_exception&)
            {
              clear_update_pending ();
 
@@ -1148,7 +1148,7 @@ namespace octave
 
         emit update_data_signal (val);
       }
-    catch (execution_exception&)
+    catch (const execution_exception&)
       {
         QString msg = (QString ("variable '%1' is invalid or undefined")
                        .arg (QString::fromStdString (nm)));
@@ -1174,7 +1174,7 @@ namespace octave
 
              init_from_oct (interp);
            }
-         catch  (execution_exception&)
+         catch (const execution_exception&)
            {
              evaluation_error (expr);
            }

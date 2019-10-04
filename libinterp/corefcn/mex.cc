@@ -3253,6 +3253,10 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
     {
       if (mex_context->trap_feval_error)
         {
+          // FIXME: is there a way to indicate what error occurred?
+          // Should the error message be displayed here?  Do we need to
+          // save the exception info for lasterror?
+
           octave::interpreter::recover_from_exception ();
 
           execution_error = true;

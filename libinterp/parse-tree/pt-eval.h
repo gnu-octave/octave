@@ -448,12 +448,19 @@ namespace octave
 
     std::list<stack_frame *> backtrace_frames () const;
 
+    std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
+                                          bool print_subfn = true) const;
+
+    std::list<frame_info> backtrace_info (void) const;
+
     octave_map backtrace (octave_idx_type& curr_user_frame,
                           bool print_subfn = true) const;
 
-    octave_map backtrace ();
+    octave_map backtrace (void) const;
 
     octave_map empty_backtrace (void) const;
+
+    std::string backtrace_message (void) const;
 
     void push_dummy_scope (const std::string& name);
     void pop_scope (void);

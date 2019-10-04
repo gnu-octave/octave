@@ -2504,12 +2504,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.add_method (es, &error_system::set_discard_error_messages,
-                      es.discard_error_messages ());
     frame.add_method (es, &error_system::set_discard_warning_messages,
                       es.discard_warning_messages ());
 
-    es.discard_error_messages (true);
     es.discard_warning_messages (true);
 
     if (! base || ! limit)
@@ -4172,12 +4169,9 @@ namespace octave
 
     unwind_protect frame;
 
-    frame.add_method (es, &error_system::set_discard_error_messages,
-                      es.discard_error_messages ());
     frame.add_method (es, &error_system::set_discard_warning_messages,
                       es.discard_warning_messages ());
 
-    es.discard_error_messages (true);
     es.discard_warning_messages (true);
 
     if (array_list->all_elements_are_constant ())
@@ -5166,25 +5160,6 @@ Like @code{eval}, except that the expressions are evaluated in the context
 }
 
 static void
-maybe_print_last_error_message (bool *doit)
-{
-  if (doit && *doit)
-    {
-      // Print error message again, which was lost because of the stderr
-      // buffer.  Note: this keeps error_state and last_error_stack
-      // intact.
-
-      octave::error_system& es
-        = octave::__get_error_system__ ("maybe_print_last_error_message");
-
-      std::string id = es.last_error_id ();
-      std::string msg = es.last_error_message ();
-
-      message_with_id ("error", id.c_str (), "%s", msg.c_str ());
-    }
-}
-
-static void
 restore_octave_stdout (std::streambuf *buf)
 {
   octave_stdout.flush ();
@@ -5227,6 +5202,8 @@ s = evalc ("t = 42"), t
 @seealso{eval, diary}
 @end deftypefn */)
 {
+  octave_value_list retval;
+
   int nargin = args.length ();
 
   if (nargin == 0 || nargin > 2)
@@ -5244,22 +5221,28 @@ s = evalc ("t = 42"), t
   std::streambuf* old_out_buf = out_stream.rdbuf (buffer.rdbuf ());
   std::streambuf* old_err_buf = err_stream.rdbuf (buffer.rdbuf ());
 
-  bool eval_error_occurred = true;
-
   octave::unwind_protect frame;
 
-  frame.add_fcn (maybe_print_last_error_message, &eval_error_occurred);
   frame.add_fcn (restore_octave_stdout, old_out_buf);
   frame.add_fcn (restore_octave_stderr, old_err_buf);
 
   // call standard eval function
-  octave_value_list retval;
+
   int eval_nargout = std::max (0, nargout - 1);
 
-  retval = Feval (interp, args, eval_nargout);
-  eval_error_occurred = false;
+  try
+    {
+      retval = Feval (interp, args, eval_nargout);
+    }
+  catch (const octave::execution_exception& ee)
+    {
+      buffer << "error: " << ee.message () << std::endl;
+
+      throw;
+    }
 
   retval.prepend (buffer.str ());
+
   return retval;
 }
 
@@ -5335,11 +5318,13 @@ s = evalc ("t = 42"), t
 
 %!test
 %! warning ("off", "quiet", "local");
-%! assert (evalc ("warning ('foo')"), "warning: foo\n");
+%! str = evalc ("warning ('foo')");
+%! assert (str(1:13), "warning: foo\n");
 
 %!test
 %! warning ("off", "quiet", "local");
-%! assert (evalc ("error ('foo')", "warning ('bar')"), "warning: bar\n");
+%! str = evalc ("error ('foo')", "warning ('bar')");
+%! assert (str(1:13), "warning: bar\n");
 
 %!error evalc ("switch = 13;")
 

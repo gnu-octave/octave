@@ -87,10 +87,6 @@ namespace QtHandles
     bar->setFloatable (false);
     bar->setMovable (false);
     bar->setVisible (tp.is_visible ());
-    bar->setStyleSheet (bar->styleSheet ()
-                        + QString ("margin-top: 1px; margin-bottom: 1px;"
-                                   "margin-left: 3px; margin-right: 3px;"
-                                   "border: 0px;"));
 
     m_empty = addEmptyAction (bar);
 

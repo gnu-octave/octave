@@ -586,10 +586,10 @@ rational_approx (T val, int len)
       T frac = val - n;
       int m = 0;
 
-      std::ostringstream buf2;
-      buf2.flags (std::ios::fixed);
-      buf2 << std::setprecision (0) << static_cast<int> (n);
-      s = buf2.str ();
+      std::ostringstream init_buf;
+      init_buf.flags (std::ios::fixed);
+      init_buf << std::setprecision (0) << static_cast<int> (n);
+      s = init_buf.str ();
 
       while (true)
         {
@@ -624,8 +624,11 @@ rational_approx (T val, int len)
               if (buf.str ().length () > static_cast<unsigned int> (len + 2))
                 break;
             }
-          else if (buf.str ().length () > static_cast<unsigned int> (len))
-            break;
+          else
+            {
+              if (buf.str ().length () > static_cast<unsigned int> (len))
+                break;
+            }
 
           if (std::abs (n) > std::numeric_limits<int>::max ()
               || std::abs (d) > std::numeric_limits<int>::max ())
@@ -636,7 +639,7 @@ rational_approx (T val, int len)
 
       if (lastd < 0)
         {
-          // Move sign to the top
+          // Move negative sign from denominator to numerator
           lastd = - lastd;
           lastn = - lastn;
           std::ostringstream buf;
@@ -650,6 +653,6 @@ rational_approx (T val, int len)
   return s;
 }
 
-// instanciate the template for float and double
+// instantiate the template for float and double
 template std::string rational_approx <float> (float val, int len);
 template std::string rational_approx <double> (double val, int len);

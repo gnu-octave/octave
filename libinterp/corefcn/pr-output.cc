@@ -240,19 +240,46 @@ operator << (std::ostream& os, const pr_rational_float<T>& prf)
   octave::preserve_stream_state stream_state (os);
 
   float_format real_fmt = prf.m_ff;
+  bool have_neg_sign = prf.m_val < 0;
 
   int fw = (rat_string_len > 0 ? rat_string_len : real_fmt.width ());
-  std::string s = rational_approx (prf.m_val, fw);
+  std::string s;
+
+  if (have_neg_sign)
+    s = rational_approx (prf.m_val, fw);
+  else
+    s = rational_approx (prf.m_val, fw-1);
 
   if (fw >= 0)
     os << std::setw (fw);
 
   os.flags (real_fmt.format_flags ());
 
-  if (fw > 0 && s.length () > static_cast<unsigned int> (fw))
-    os << '*';
-  else
-    os << s;
+  if (s == "0")
+    s = '*';
+  else if (fw > 0)
+    {
+      if (s.find ('/') != std::string::npos)
+        {
+          if (s.length () > (static_cast<unsigned int> (fw)))
+            s = '*';
+        }
+      else
+        {
+          if (have_neg_sign)
+            {
+              if (s.length () > (static_cast<unsigned int> (fw) - 2))
+                s = '*';
+            }
+          else
+            {
+              if (s.length () > (static_cast<unsigned int> (fw) - 3))
+                s = '*';
+            }
+        }
+    }
+
+  os << s;
 
   return os;
 }

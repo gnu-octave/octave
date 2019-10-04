@@ -111,78 +111,6 @@ vwarning (const char *id, const char *fmt, va_list args)
   es.vwarning (id, fmt, args);
 }
 
-// Use static fields for the best efficiency.
-// NOTE: C++0x will allow these two to be merged into one.
-static const char *bt_fieldnames[] =
-  { "file", "name", "line", "column", nullptr };
-
-static const octave_fields bt_fields (bt_fieldnames);
-
-static octave_map
-make_stack_map (const std::list<octave::frame_info>& frames)
-{
-  size_t nframes = frames.size ();
-
-  octave_map retval (dim_vector (nframes, 1), bt_fields);
-
-  Cell& file = retval.contents (0);
-  Cell& name = retval.contents (1);
-  Cell& line = retval.contents (2);
-  Cell& column = retval.contents (3);
-
-  bool have_column = false;
-
-  octave_idx_type k = 0;
-
-  for (const auto& frm : frames)
-    {
-      file(k) = frm.file_name ();
-      name(k) = frm.fcn_name ();
-      line(k) = frm.line ();
-      int c = frm.column ();
-      if (c > 0)
-        {
-          have_column = true;
-          column(k) = c;
-        }
-
-      k++;
-    }
-
-  if (! have_column)
-    retval.rmfield ("column");
-
-  return retval;
-}
-
-static std::list<octave::frame_info>
-make_stack_frame_list (const octave_map& stack)
-{
-  std::list<octave::frame_info> frames;
-
-  Cell file = stack.contents ("file");
-  Cell name = stack.contents ("name");
-  Cell line = stack.contents ("line");
-  Cell column;
-  bool have_column = false;
-  if (stack.contains ("column"))
-    {
-      have_column = true;
-      column = stack.contents ("column");
-    }
-
-  octave_idx_type nel = name.numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    frames.push_back (octave::frame_info (file(i).string_value (),
-                                          name(i).string_value (),
-                                          line(i).int_value (),
-                                          (have_column
-                                           ? column(i).int_value () : -1)));
-
-  return frames;
-}
-
 static void
 defun_usage_message (const char *fmt, ...)
 {
@@ -426,6 +354,78 @@ namespace octave
   {
     return set_internal_variable (m_last_error_id, args, nargout,
                                   "last_error_id");
+  }
+
+  // Use static fields for the best efficiency.
+  // NOTE: C++0x will allow these two to be merged into one.
+  static const char *bt_fieldnames[] =
+    { "file", "name", "line", "column", nullptr };
+
+  static const octave_fields bt_fields (bt_fieldnames);
+
+  octave_map
+  error_system::make_stack_map (const std::list<octave::frame_info>& frames)
+  {
+    size_t nframes = frames.size ();
+
+    octave_map retval (dim_vector (nframes, 1), bt_fields);
+
+    Cell& file = retval.contents (0);
+    Cell& name = retval.contents (1);
+    Cell& line = retval.contents (2);
+    Cell& column = retval.contents (3);
+
+    bool have_column = false;
+
+    octave_idx_type k = 0;
+
+    for (const auto& frm : frames)
+      {
+        file(k) = frm.file_name ();
+        name(k) = frm.fcn_name ();
+        line(k) = frm.line ();
+        int c = frm.column ();
+        if (c > 0)
+          {
+            have_column = true;
+            column(k) = c;
+          }
+
+        k++;
+      }
+
+    if (! have_column)
+      retval.rmfield ("column");
+
+    return retval;
+  }
+
+  std::list<octave::frame_info>
+  error_system::make_stack_frame_list (const octave_map& stack)
+  {
+    std::list<octave::frame_info> frames;
+
+    Cell file = stack.contents ("file");
+    Cell name = stack.contents ("name");
+    Cell line = stack.contents ("line");
+    Cell column;
+    bool have_column = false;
+    if (stack.contains ("column"))
+      {
+        have_column = true;
+        column = stack.contents ("column");
+      }
+
+    octave_idx_type nel = name.numel ();
+
+    for (octave_idx_type i = 0; i < nel; i++)
+      frames.push_back (octave::frame_info (file(i).string_value (),
+                                            name(i).string_value (),
+                                            line(i).int_value (),
+                                            (have_column
+                                             ? column(i).int_value () : -1)));
+
+    return frames;
   }
 
   // For given warning ID, return 0 if warnings are disabled, 1 if
@@ -1311,7 +1311,8 @@ disable escape sequence expansion use a second backslash before the sequence
           octave_value c = m.getfield ("stack");
 
           if (c.isstruct ())
-            stack_info = make_stack_frame_list (c.map_value ());
+            stack_info
+              = octave::error_system::make_stack_frame_list (c.map_value ());
         }
     }
   else

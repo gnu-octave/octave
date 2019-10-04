@@ -2953,43 +2953,49 @@ namespace octave
         m_echo_file_pos = line + 1;
       }
 
-    error_system& es = m_interpreter.get_error_system ();
-
     bool execution_error = false;
+    octave_scalar_map err_map;
 
-    {
-      // unwind frame before catch block
-      unwind_protect frame;
+    tree_statement_list *try_code = cmd.body ();
 
-      interpreter_try (frame);
+    if (try_code)
+      {
+        // unwind frame before catch block
 
-      // The catch code is *not* added to unwind_protect stack;
-      // it doesn't need to be run on interrupts.
+        unwind_protect frame;
 
-      tree_statement_list *try_code = cmd.body ();
+        interpreter_try (frame);
 
-      if (try_code)
-        {
-          try
-            {
-              try_code->accept (*this);
-            }
-          catch (const execution_exception& ee)
-            {
-              es.save_exception (ee);
-              interpreter::recover_from_exception ();
+        // The catch code is *not* added to unwind_protect stack; it
+        // doesn't need to be run on interrupts.
 
-              execution_error = true;
-            }
-        }
-      // Unwind to let the user print any messages from
-      // errors that occurred in the body of the try_catch statement,
-      // or throw further errors.
-    }
+        try
+          {
+            try_code->accept (*this);
+          }
+        catch (const execution_exception& ee)
+          {
+            execution_error = true;
+
+            error_system& es = m_interpreter.get_error_system ();
+
+            es.save_exception (ee);
+
+            err_map.assign ("message", es.last_error_message ());
+            err_map.assign ("identifier", es.last_error_id ());
+            err_map.assign ("stack", es.last_error_stack ());
+
+            interpreter::recover_from_exception ();
+          }
+
+        // Actions attached to unwind_protect frame will run here, prior
+        // to executing the catch block.
+      }
 
     if (execution_error)
       {
         tree_statement_list *catch_code = cmd.cleanup ();
+
         if (catch_code)
           {
             tree_identifier *expr_id = cmd.identifier ();
@@ -2998,13 +3004,7 @@ namespace octave
               {
                 octave_lvalue ult = expr_id->lvalue (*this);
 
-                octave_scalar_map err;
-
-                err.assign ("message", es.last_error_message ());
-                err.assign ("identifier", es.last_error_id ());
-                err.assign ("stack", es.last_error_stack ());
-
-                ult.assign (octave_value::op_asn_eq, err);
+                ult.assign (octave_value::op_asn_eq, err_map);
               }
 
             // perform actual "catch" block

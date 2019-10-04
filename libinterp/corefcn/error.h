@@ -234,6 +234,12 @@ namespace octave
       return val;
     }
 
+    static octave_map
+    make_stack_map (const std::list<octave::frame_info>& frames);
+
+    static std::list<octave::frame_info>
+    make_stack_frame_list (const octave_map& stack);
+
     //! For given warning ID, return 0 if warnings are disabled, 1 if
     //! enabled, and 2 if the given ID should be an error instead of a
     //! warning.

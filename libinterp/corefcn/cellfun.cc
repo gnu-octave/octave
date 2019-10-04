@@ -84,7 +84,10 @@ get_output_list (octave::error_system& es,
     {
       if (error_handler.is_defined ())
         {
-          octave::interpreter::recover_from_exception ();
+          octave::interpreter& interp
+            = octave::__get_interpreter__ ("get_output_list");
+
+          interp.recover_from_exception ();
 
           execution_error = true;
         }

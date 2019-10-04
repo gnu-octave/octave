@@ -161,6 +161,9 @@ octave_oncleanup::call_object_destructor (void)
   frame.protect_var (quit_allowed);
   quit_allowed = false;
 
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("octave_oncleanup::call_object_destructor");
+
   interpreter_try (frame);
 
   try
@@ -170,13 +173,13 @@ octave_oncleanup::call_object_destructor (void)
     }
   catch (const octave::interrupt_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       warning ("onCleanup: interrupt occurred in cleanup action");
     }
   catch (const octave::execution_exception& ee)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       std::string msg = ee.message ();
 

@@ -90,7 +90,9 @@ namespace octave
           }
         catch (const execution_exception& e)
           {
-            interpreter::recover_from_exception ();
+            interpreter& interp = tw.get_interpreter ();
+
+            interp.recover_from_exception ();
 
             std::string tmp = e.message ();
 
@@ -98,6 +100,7 @@ namespace octave
                      tmp.c_str ());
           }
       }
+
     return retval;
   }
 }

@@ -1269,7 +1269,10 @@ namespace octave
             // Skip updating if we don't know where we are, but don't
             // treat it as an error.
 
-            interpreter::recover_from_exception ();
+            interpreter& interp
+              = __get_interpreter__ ("load_path::dir_info::update");
+
+            interp.recover_from_exception ();
           }
       }
     // Absolute path, check timestamp to see whether it requires re-caching
@@ -1337,7 +1340,10 @@ namespace octave
             // Skip updating if we don't know where we are but don't treat
             // it as an error.
 
-            interpreter::recover_from_exception ();
+            interpreter& interp
+              = __get_interpreter__ ("load_path::dir_info::initialize");
+
+            interp.recover_from_exception ();
           }
       }
     else

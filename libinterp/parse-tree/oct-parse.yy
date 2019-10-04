@@ -2550,7 +2550,7 @@ namespace octave
           }
         catch (const execution_exception&)
           {
-            interpreter::recover_from_exception ();
+            interp.recover_from_exception ();
           }
       }
     else
@@ -4200,7 +4200,7 @@ namespace octave
           }
         catch (const execution_exception&)
           {
-            interpreter::recover_from_exception ();
+            interp.recover_from_exception ();
           }
       }
 

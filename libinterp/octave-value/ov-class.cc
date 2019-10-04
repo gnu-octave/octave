@@ -1037,8 +1037,10 @@ octave_class::reconstruct_exemplar (void)
     retval = true;
   else
     {
-      octave::symbol_table& symtab
-        = octave::__get_symbol_table__ ("octave_class::reconstruct_exemplar");
+      octave::interpreter& interp
+        = octave::__get_interpreter__  ("octave_class::reconstruct_exemplar");
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       octave_value ctor = symtab.find_method (c_name, c_name);
 
@@ -1075,7 +1077,7 @@ octave_class::reconstruct_exemplar (void)
             }
           catch (const octave::execution_exception&)
             {
-              octave::interpreter::recover_from_exception ();
+              interp.recover_from_exception ();
 
               execution_error = true;
             }

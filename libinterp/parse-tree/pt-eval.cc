@@ -308,7 +308,7 @@ namespace octave
             es.display_exception (ee, std::cerr);
 
             // Ignore errors when in debugging mode;
-            interpreter::recover_from_exception ();
+            m_interpreter.recover_from_exception ();
           }
         catch (const quit_debug_exception& qde)
           {
@@ -639,7 +639,7 @@ namespace octave
     catch (const execution_exception& ee)
       {
         es.save_exception (ee);
-        interpreter::recover_from_exception ();
+        m_interpreter.recover_from_exception ();
 
         execution_error = true;
       }
@@ -720,7 +720,7 @@ namespace octave
     catch (const execution_exception& ee)
       {
         es.save_exception (ee);
-        interpreter::recover_from_exception ();
+        m_interpreter.recover_from_exception ();
 
         execution_error = true;
       }
@@ -2834,7 +2834,7 @@ namespace octave
             // Otherwise, jump out of here.
 
             if (m_debug_mode)
-              interpreter::recover_from_exception ();
+              m_interpreter.recover_from_exception ();
             else
               throw;
           }
@@ -2985,7 +2985,7 @@ namespace octave
             err_map.assign ("identifier", es.last_error_id ());
             err_map.assign ("stack", es.last_error_stack ());
 
-            interpreter::recover_from_exception ();
+            m_interpreter.recover_from_exception ();
           }
 
         // Actions attached to unwind_protect frame will run here, prior
@@ -3050,7 +3050,7 @@ namespace octave
         error_system& es = m_interpreter.get_error_system ();
 
         es.save_exception (ee);
-        interpreter::recover_from_exception ();
+        m_interpreter.recover_from_exception ();
 
         if (m_breaking || m_returning)
           frame.discard (2);
@@ -3124,7 +3124,7 @@ namespace octave
             // while the cleanup block runs instead of just resetting it
             // here?
             es.save_exception (ee);
-            interpreter::recover_from_exception ();
+            m_interpreter.recover_from_exception ();
 
             // Run the cleanup code on exceptions, so that it is run even
             // in case of interrupt or out-of-memory.
@@ -3137,7 +3137,7 @@ namespace octave
         catch (const interrupt_exception&)
           {
             // The comments above apply here as well.
-            interpreter::recover_from_exception ();
+            m_interpreter.recover_from_exception ();
             do_unwind_protect_cleanup_code (cleanup_code);
             throw;
           }

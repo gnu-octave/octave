@@ -177,8 +177,8 @@ to run using @code{atexit}.
 
 DEFALIAS (exit, quit);
 
-DEFUN (atexit, args, nargout,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (atexit, interp, args, nargout,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} atexit (@var{fcn})
 @deftypefnx {} {} atexit (@var{fcn}, @var{flag})
 Register a function to be called when Octave exits.
@@ -234,7 +234,7 @@ from the list, so if a function was placed in the list multiple times with
     octave::interpreter::add_atexit_function (arg);
   else
     {
-      bool found = octave::interpreter::remove_atexit_function (arg);
+      bool found = interp.remove_atexit_function (arg);
 
       if (nargout > 0)
         retval = ovl (found);
@@ -259,20 +259,20 @@ namespace octave
                                bool require_file = true,
                                const std::string& warn_for = "")
   {
+    interpreter& interp = __get_interpreter__ ("safe_source_file");
+
     try
       {
         source_file (file_name, context, verbose, require_file, warn_for);
       }
     catch (const interrupt_exception&)
       {
-        interpreter::recover_from_exception ();
+        interp.recover_from_exception ();
 
         return 1;
       }
     catch (const execution_exception& e)
       {
-        interpreter& interp = __get_interpreter__ ("safe_source_file");
-
         interp.handle_exception (e);
 
         return 1;
@@ -1748,7 +1748,7 @@ namespace octave
       }
     catch (const interrupt_exception&)
       {
-        interpreter::recover_from_exception ();
+        recover_from_exception ();
       }
     catch (const execution_exception& e)
       {

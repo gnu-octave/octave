@@ -95,7 +95,10 @@ namespace octave
       }
     catch (const execution_exception&)
       {
-        interpreter::recover_from_exception ();
+        octave::interpreter& interp
+          = __get_interpreter__ ("convert_to_valid_int");
+
+        interp.recover_from_exception ();
 
         conv_err = 1;
       }

@@ -3737,7 +3737,10 @@ base_graphics_object::remove_all_listeners (void)
         }
       catch (const octave::execution_exception&)
         {
-          octave::interpreter::recover_from_exception ();
+          octave::interpreter& interp
+            = octave::__get_interpreter__ ("remove_all_listeners");
+
+          interp.recover_from_exception ();
         }
     }
 }
@@ -12092,7 +12095,7 @@ gh_manager::execute_callback (const graphics_handle& h,
               es.last_error_id ("");
               es.last_error_message ("execution error in graphics callback function");
 
-              octave::interpreter::recover_from_exception ();
+              m_interpreter.recover_from_exception ();
             }
         }
       else if (cb.iscell () && cb.length () > 0
@@ -12130,7 +12133,7 @@ gh_manager::execute_callback (const graphics_handle& h,
             es.last_error_id ("");
             es.last_error_message ("execution error in graphics callback function");
 
-            octave::interpreter::recover_from_exception ();
+            m_interpreter.recover_from_exception ();
           }
 
       // Redraw after interacting with a user-interface (ui*) object.

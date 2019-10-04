@@ -451,14 +451,14 @@ namespace octave
                }
              catch (const execution_exception& e)
                {
-                 interpreter::recover_from_exception ();
+                 interp.recover_from_exception ();
 
                  msg = e.message ();
                  eval_error = true;
                }
              catch (const interrupt_exception&)
                {
-                 interpreter::recover_from_exception ();
+                 interp.recover_from_exception ();
 
                  msg = "evaluation interrupted";
                  eval_error = true;
@@ -2300,7 +2300,7 @@ namespace octave
                    }
                  catch (const execution_exception& e)
                    {
-                     interpreter::recover_from_exception ();
+                     interp.recover_from_exception ();
 
                      // Ignore syntax error.  It was in the old file on disk;
                      // the user may have fixed it already.

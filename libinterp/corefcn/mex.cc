@@ -3241,6 +3241,8 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
   for (int i = 0; i < nargin; i++)
     args(i) = mxArray::as_octave_value (argin[i]);
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexCallMATLAB");
+
   bool execution_error = false;
 
   octave_value_list retval;
@@ -3257,7 +3259,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
           // Should the error message be displayed here?  Do we need to
           // save the exception info for lasterror?
 
-          octave::interpreter::recover_from_exception ();
+          interp.recover_from_exception ();
 
           execution_error = true;
         }
@@ -3326,6 +3328,8 @@ mexEvalString (const char *s)
 {
   int retval = 0;
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+
   int parse_status;
   bool execution_error = false;
 
@@ -3333,14 +3337,11 @@ mexEvalString (const char *s)
 
   try
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("mexEvalString");
-
       ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       execution_error = true;
     }
@@ -3356,6 +3357,8 @@ mexEvalStringWithTrap (const char *s)
 {
   mxArray *mx = nullptr;
 
+  octave::interpreter& interp = octave::__get_interpreter__ ("mexEvalString");
+
   int parse_status;
   bool execution_error = false;
 
@@ -3363,14 +3366,11 @@ mexEvalStringWithTrap (const char *s)
 
   try
     {
-      octave::interpreter& interp
-        = octave::__get_interpreter__ ("mexEvalString");
-
       ret = interp.eval_string (std::string (s), false, parse_status, 0);
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       execution_error = true;
     }

@@ -1372,8 +1372,8 @@ namespace octave
   }
 }
 
-DEFUN (isindex, args, ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (isindex, interp, args, ,
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} isindex (@var{ind})
 @deftypefnx {} {} isindex (@var{ind}, @var{n})
 Return true if @var{ind} is a valid index.
@@ -1412,7 +1412,7 @@ character @nospell{"@xbackslashchar{}0"}, it will always be a valid index.
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter::recover_from_exception ();
+      interp.recover_from_exception ();
 
       retval = false;
     }

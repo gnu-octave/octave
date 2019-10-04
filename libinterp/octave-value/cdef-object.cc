@@ -65,6 +65,8 @@ namespace octave
         frame.protect_var (quit_allowed);
         quit_allowed = false;
 
+        interpreter& interp = __get_interpreter__ ("cdef_object_rep::release");
+
         interpreter_try (frame);
 
         try
@@ -74,13 +76,13 @@ namespace octave
           }
         catch (const interrupt_exception&)
           {
-            interpreter::recover_from_exception ();
+            interp.recover_from_exception ();
 
             warning ("interrupt occurred in handle class delete method");
           }
         catch (const execution_exception& ee)
           {
-            interpreter::recover_from_exception ();
+            interp.recover_from_exception ();
 
             std::string msg = ee.message ();
 

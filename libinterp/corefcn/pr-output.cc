@@ -3260,7 +3260,7 @@ x = str2num (r)
 }
 
 /*
-%!test
+%!test <56941>
 %! [old_fmt, old_spacing] = format ();
 %! unwind_protect
 %!   format short;

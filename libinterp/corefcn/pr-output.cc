@@ -3219,6 +3219,9 @@ x = str2num (r)
   if (! arg.isnumeric ())
     error ("rats: X must be numeric");
 
+  if (arg.isempty ())
+    return ovl (octave_value (""));
+
   // Convert to N-D arrays to 2-D arrays for Matlab compatibility
   if (arg.ndims () > 2)
     {
@@ -3290,7 +3293,9 @@ x = str2num (r)
 %! s = rats (x,4);
 %! assert (ndims (s) == 2);
 %! assert (rows (s) == 2);
-%! assert (columns (s) == 3);
+%! assert (columns (s) == 3 * 6);
+
+%!assert <57004> (rats ([]), '')
 
 */
 

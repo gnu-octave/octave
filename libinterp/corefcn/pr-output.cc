@@ -3219,6 +3219,13 @@ x = str2num (r)
   if (! arg.isnumeric ())
     error ("rats: X must be numeric");
 
+  // Convert to N-D arrays to 2-D arrays for Matlab compatibility
+  if (arg.ndims () > 2)
+    {
+      dim_vector dv (arg.rows (), arg.numel () / arg.rows ());
+      arg = arg.reshape (dv);
+    }
+
   octave::unwind_protect frame;
 
   frame.protect_var (rat_string_len);
@@ -3277,6 +3284,14 @@ x = str2num (r)
 %!   format (old_fmt);
 %!   format (old_spacing);
 %! end_unwind_protect
+
+%!test <57003>
+%! x = ones (2,1,3);
+%! s = rats (x,4);
+%! assert (ndims (s) == 2);
+%! assert (rows (s) == 2);
+%! assert (columns (s) == 3);
+
 */
 
 DEFUN (disp, args, nargout,

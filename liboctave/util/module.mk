@@ -55,7 +55,6 @@ UTIL_C_SRC = \
   %reldir%/f2c-main.c \
   %reldir%/lo-cutils.c \
   %reldir%/blaswrap.c \
-  %reldir%/cquit.c \
   %reldir%/f77-fcn.c \
   %reldir%/lo-error.c \
   %reldir%/oct-rl-edit.c \

@@ -659,7 +659,7 @@ namespace octave
         // exception occurred, not just throwing an
         // execution exception.
         if (execution_error)
-          octave_throw_execution_exception ();
+          throw execution_exception ();
       }
 
     return retval;
@@ -740,7 +740,7 @@ namespace octave
         // exception occurred, not just throwing an
         // execution exception.
         if (execution_error)
-          octave_throw_execution_exception ();
+          throw execution_exception ();
       }
 
     return retval;

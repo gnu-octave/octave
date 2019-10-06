@@ -197,14 +197,6 @@ namespace octave
 
 #endif
 
-enum octave_exception
-{
-  octave_no_exception = 0,
-  octave_exec_exception = 1,
-  octave_alloc_exception = 3,
-  octave_quit_exception = 4
-};
-
 /*
   > 0: interrupt pending
     0: no interrupt pending
@@ -212,43 +204,16 @@ enum octave_exception
 */
 OCTAVE_API extern sig_atomic_t octave_interrupt_state;
 
-OCTAVE_API extern sig_atomic_t octave_exception_state;
-
-OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
-OCTAVE_API extern sig_atomic_t octave_exit_exception_status;
-
-OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
-OCTAVE_API extern sig_atomic_t octave_exit_exception_safe_to_return;
-
 OCTAVE_API extern volatile sig_atomic_t octave_signal_caught;
 
 OCTAVE_API extern void octave_handle_signal (void);
 
-OCTAVE_NORETURN OCTAVE_API extern void octave_throw_interrupt_exception (void);
-
-OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
-
-OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
-
-OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
-OCTAVE_NORETURN OCTAVE_API extern void
-octave_throw_exit_exception (int exit_status, int safe_to_return);
-
-OCTAVE_API extern void octave_rethrow_exception (void);
-
 #if defined (__cplusplus)
-
-OCTAVE_DEPRECATED (4.4, "see the Octave documentation for other options")
-extern OCTAVE_API void
-clean_up_and_exit (int exit_status, bool safe_to_return = false);
 
 inline void octave_quit (void)
 {
   if (octave_signal_caught)
-    {
-      octave_signal_caught = 0;
-      octave_handle_signal ();
-    }
+    octave_handle_signal ();
 };
 
 #define OCTAVE_QUIT octave_quit ()
@@ -259,21 +224,18 @@ inline void octave_quit (void)
   do                                            \
     {                                           \
       if (octave_signal_caught)                 \
-        {                                       \
-          octave_signal_caught = 0;             \
-          octave_handle_signal ();              \
-        }                                       \
+        octave_handle_signal ();                \
     }                                           \
   while (0)
+
 #endif
 
 /* The following macros are obsolete.  Interrupting immediately by
    calling siglongjmp or similar from a signal handler is asking for
-   trouble.  We need another way to handle that situation.  Rather
-   than remove them, however, please leave them in place until we can
-   either find a replacement or determine that a given block of code
-   does not need special treatment.  They are defined to create a
-   dummy do-while block to match the previous definitions.  */
+   trouble.  Rather than remove them, however, please leave them in
+   place so that old code that uses them will continue to compile.  They
+   are defined to create a dummy do-while block to match the previous
+   definitions.  */
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE     \
   do                                                    \
@@ -305,7 +267,6 @@ inline void octave_quit (void)
 
 extern OCTAVE_API void (*octave_signal_hook) (void);
 extern OCTAVE_API void (*octave_interrupt_hook) (void);
-extern OCTAVE_API void (*octave_bad_alloc_hook) (void);
 
 #endif
 

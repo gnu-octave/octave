@@ -335,7 +335,7 @@ namespace octave
     verror_with_cfn (fmt, args);
     va_end (args);
 
-    octave_throw_execution_exception ();
+    throw execution_exception ();
   }
 
   OCTAVE_NORETURN static void
@@ -346,7 +346,7 @@ namespace octave
     verror_with_id_cfn (id, fmt, args);
     va_end (args);
 
-    octave_throw_execution_exception ();
+    throw execution_exception ();
   }
 
   static void initialize_error_handlers (void)
@@ -886,7 +886,6 @@ namespace octave
 
     octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 
@@ -930,7 +929,6 @@ namespace octave
 
     octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 
@@ -984,7 +982,6 @@ namespace octave
 
     octave_signal_hook = respond_to_pending_signals;
     octave_interrupt_hook = nullptr;
-    octave_bad_alloc_hook = nullptr;
 
     catch_interrupts ();
 
@@ -1678,7 +1675,6 @@ namespace octave
     can_interrupt = true;
     octave_interrupt_state = 0;
     octave_signal_caught = 0;
-    octave_exception_state = octave_no_exception;
     octave_restore_signal_mask ();
     catch_interrupts ();
   }

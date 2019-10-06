@@ -486,6 +486,7 @@ namespace octave
     QToolBar* toolbar = findChild <QToolBar *> ();
     if (toolbar)
       toolbar->setStyleSheet (toolbar->styleSheet () + octgui_toolbar_style);
+
     QMenuBar* menubar = findChild <QMenuBar *> ();
     if (menubar)
       menubar->setStyleSheet (menubar->styleSheet () + octgui_menubar_style);

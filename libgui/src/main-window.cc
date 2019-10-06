@@ -2631,9 +2631,7 @@ namespace octave
   {
     m_main_tool_bar = addToolBar (tr ("Toolbar"));
     m_main_tool_bar->setStyleSheet (m_main_tool_bar->styleSheet ()
-             + QString ("margin-top: 1px; margin-bottom: 1px;"
-                        "margin-left: 3px; margin-right: 3px;"
-                        "border: 0px;"));
+                                    + octgui_toolbar_style);
 
     m_main_tool_bar->setObjectName ("MainToolBar");
     m_main_tool_bar->addAction (m_new_script_action);

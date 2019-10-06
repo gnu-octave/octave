@@ -87,14 +87,14 @@ namespace octave
     filter_layout->addWidget (filter_label);
     filter_layout->addWidget (m_filter_checkbox);
     filter_layout->addWidget (m_filter);
-    filter_layout->setMargin(0);
-    m_filter_widget->setLayout (filter_layout);
+    filter_layout->setMargin (0);
 
-    m_filter->setStyleSheet (m_filter->styleSheet () + octgui_filterbar_style);
+    m_filter_widget->setLayout (filter_layout);
 
     QVBoxLayout *ws_layout = new QVBoxLayout ();
     ws_layout->addWidget (m_filter_widget);
     ws_layout->addWidget (m_view);
+    ws_layout->setSpacing (0);
 
     QSettings *settings = resource_manager::get_settings ();
 

@@ -53,6 +53,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "qt-interpreter-events.h"
 
+#include "../src/gui-preferences.h"
+
 #include "file-ops.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -137,6 +139,8 @@ namespace QtHandles
     m_menuBar = new MenuBar (win);
     win->setMenuBar (m_menuBar);
     m_menuBar->addReceiver (this);
+    m_menuBar->setStyleSheet (m_menuBar->styleSheet () + octgui_menubar_style);
+
 
     // Status bar
     m_statusBar = win->statusBar ();

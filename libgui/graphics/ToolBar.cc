@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ToolBar.h"
 #include "QtHandlesUtils.h"
 
+#include "../src/gui-preferences.h"
+
 namespace QtHandles
 {
 
@@ -87,6 +89,8 @@ namespace QtHandles
     bar->setFloatable (false);
     bar->setMovable (false);
     bar->setVisible (tp.is_visible ());
+    bar->setStyleSheet (bar->styleSheet () + octgui_toolbar_style);
+
 
     m_empty = addEmptyAction (bar);
 

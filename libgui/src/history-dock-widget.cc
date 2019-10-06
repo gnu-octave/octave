@@ -289,9 +289,6 @@ namespace octave
     m_filter->setSizePolicy (sizePol);
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
-    m_filter->setStyleSheet (m_filter->styleSheet () + octgui_filterbar_style);
-
-
     QLabel *filter_label = new QLabel (tr ("Filter"));
 
     m_filter_checkbox = new QCheckBox ();
@@ -313,6 +310,7 @@ namespace octave
     hist_layout->addWidget (m_history_list_view);
 
     hist_layout->setMargin (2);
+    hist_layout->setSpacing (0);
     widget ()->setLayout (hist_layout);
 
     // Init state of the filter

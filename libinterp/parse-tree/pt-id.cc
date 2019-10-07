@@ -44,15 +44,22 @@ namespace octave
     int l = line ();
     int c = column ();
 
-    maybe_missing_function_hook (name ());
+    std::string msg = "'" + name () + "' undefined";
 
-    if (l == -1 && c == -1)
-      error_with_id ("Octave:undefined-function",
-                     "'%s' undefined", name ().c_str ());
-    else
-      error_with_id ("Octave:undefined-function",
-                     "'%s' undefined near line %d column %d",
-                     name ().c_str (), l, c);
+    if (l > 0)
+      {
+        msg += " near line " + std::to_string (l);
+
+        if (c > 0)
+          msg += ", column " + std::to_string (l);
+      }
+
+    std::string missing_msg = maybe_missing_function_hook (name ());
+
+    if (! missing_msg.empty ())
+      msg += "\n\n" + missing_msg;
+
+    error_with_id ("Octave:undefined-function", "%s", msg.c_str ());
   }
 
   octave_lvalue

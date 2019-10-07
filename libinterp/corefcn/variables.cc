@@ -1381,8 +1381,8 @@ DEFUN (missing_function_hook, args, nargout,
 @deftypefn  {} {@var{val} =} missing_function_hook ()
 @deftypefnx {} {@var{old_val} =} missing_function_hook (@var{new_val})
 @deftypefnx {} {} missing_function_hook (@var{new_val}, "local")
-Query or set the internal variable that specifies the function to call when
-an unknown identifier is requested.
+Query or set the internal variable that specifies the function to call
+to provide extra information when an unknown identifier is referenced.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.
@@ -1393,7 +1393,7 @@ The original variable value is restored when exiting the function.
   return SET_INTERNAL_VARIABLE (missing_function_hook);
 }
 
-void
+std::string
 maybe_missing_function_hook (const std::string& name)
 {
   octave::interpreter& interp
@@ -1401,7 +1401,7 @@ maybe_missing_function_hook (const std::string& name)
 
   // Don't do this if we're handling errors.
   if (Vmissing_function_hook.empty ())
-    return;
+    return "";
 
   octave::symbol_table& symtab = interp.get_symbol_table ();
 
@@ -1418,8 +1418,13 @@ maybe_missing_function_hook (const std::string& name)
       Vmissing_function_hook.clear ();
 
       // Call.
-      octave::feval (func_name, octave_value (name));
+      octave_value_list tmp = octave::feval (func_name, octave_value (name), 1);
+
+      if (tmp.length () == 1 && tmp(0).is_string ())
+        return tmp(0).string_value ();
     }
+
+  return "";
 }
 
 DEFMETHOD (__varval__, interp, args, ,

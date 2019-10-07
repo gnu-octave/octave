@@ -508,7 +508,7 @@ function txt = __unimplemented__ (fcn)
 
     otherwise
       if (ismember (fcn, missing_functions ()))
-        txt = ["the '" fcn "' function is not yet implemented in Octave"];
+        txt = ["The '" fcn "' function is not yet implemented in Octave."];
       else
         is_matlab_function = false;
         txt = "";
@@ -523,7 +523,7 @@ function txt = __unimplemented__ (fcn)
   endif
 
   if (nargout == 0)
-    warning ("Octave:missing-function", "%s\n", txt);
+    error ("Octave:missing-function", "%s\n", txt);
   endif
 
 endfunction
@@ -534,7 +534,7 @@ function txt = check_package (fcn, name, classes)
     classes = {};
   endif
 
-  txt = sprintf ("the '%s' function belongs to the %s package from Octave Forge",
+  txt = sprintf ("The '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
 
   [~, status] = pkg ("describe", name);
@@ -1373,7 +1373,11 @@ endfunction
 %!test
 %! str = __unimplemented__ ("no_name_function");
 %! assert (isempty (str));
+
+%!test
 %! str = __unimplemented__ ("matlabrc");
 %! assert (str(1:71), "matlabrc is not implemented.  Octave uses the file '.octaverc' instead.");
+
+%!test
 %! str = __unimplemented__ ("MException");
-%! assert (str(1:58), "the 'MException' function is not yet implemented in Octave");
+%! assert (str(1:58), "The 'MException' function is not yet implemented in Octave");

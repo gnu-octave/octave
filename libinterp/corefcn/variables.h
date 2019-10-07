@@ -110,7 +110,8 @@ set_internal_variable (int& var, const octave_value_list& args,
 #define SET_INTERNAL_VARIABLE_CHOICES(NM, CHOICES)              \
   set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
 
-extern OCTINTERP_API void maybe_missing_function_hook (const std::string& name);
+extern OCTINTERP_API std::string
+maybe_missing_function_hook (const std::string& name);
 
 OCTAVE_DEPRECATED (5, "this function will be removed in a future version of Octave")
 extern OCTINTERP_API string_vector

@@ -68,14 +68,14 @@ namespace octave
       {
         return QApplication::notify (receiver, ev);
       }
-    catch (execution_exception&)
+    catch (execution_exception& ee)
       {
         emit interpreter_event
-          ([] (void)
+          ([ee] (void)
            {
              // INTERPRETER THREAD
 
-             std::rethrow_exception (std::current_exception ());
+             throw ee;
            });
       }
 

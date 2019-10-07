@@ -180,14 +180,14 @@ namespace QtHandles
                 fbo.release ();
               }
           }
-        catch (octave::execution_exception& e)
+        catch (octave::execution_exception& ee)
           {
             emit interpreter_event
-              ([] (void)
+              ([ee] (void)
                {
                  // INTERPRETER THREAD
 
-                 std::rethrow_exception (std::current_exception ());
+                 throw ee;
                });
           }
 

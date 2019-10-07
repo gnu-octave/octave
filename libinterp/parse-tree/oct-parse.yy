@@ -4411,20 +4411,21 @@ namespace octave
       {
         status = octave_pull_parse (pstate, *this);
       }
-    catch (execution_exception& e)
+    catch (const execution_exception&)
       {
-        std::string file = m_lexer.m_fcn_file_full_name;
+        // FIXME: In previous versions, we emitted a parse error here
+        // but that is not always correct because the error could have
+        // happened inside a GUI callback functions executing in the
+        // readline event_hook loop.  Maybe we need a separate exception
+        // class for parse errors?
 
-        if (file.empty ())
-          error (e, "parse error");
-        else
-          error (e, "parse error in %s", file.c_str ());
+        throw;
       }
     catch (const exit_exception&)
       {
         throw;
       }
-    catch (interrupt_exception &)
+    catch (const interrupt_exception&)
       {
         throw;
       }

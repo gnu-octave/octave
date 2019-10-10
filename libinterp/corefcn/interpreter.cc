@@ -1430,76 +1430,77 @@ namespace octave
     if (! full_file.empty ())
       ffile = sys::fopen (full_file, "rb");
 
-    if (ffile)
+    if (! ffile)
       {
-        unwind_action act ([ffile] (void)
-                           {
-                             fclose (ffile);
-                           });
+        if (require_file)
+          error ("no such file, '%s'", full_file.c_str ());
 
-        parser parser (ffile, *this);
-
-        parser.m_curr_class_name = dispatch_type;
-        parser.m_curr_package_name = package_name;
-        parser.m_autoloading = autoload;
-        parser.m_fcn_file_from_relative_lookup = relative_lookup;
-
-        parser.m_lexer.m_force_script = force_script;
-        parser.m_lexer.prep_for_file ();
-        parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
-
-        parser.m_lexer.m_fcn_file_name = file;
-        parser.m_lexer.m_fcn_file_full_name = full_file;
-        parser.m_lexer.m_dir_name = dir_name;
-        parser.m_lexer.m_package_name = package_name;
-
-        int status = parser.run ();
-
-        octave_value ov_fcn = parser.m_primary_fcn;
-
-        if (status == 0)
-          {
-            if (parser.m_lexer.m_reading_classdef_file
-                && parser.classdef_object ())
-              {
-                // Convert parse tree for classdef object to
-                // meta.class info (and stash it in the symbol
-                // table?).  Return pointer to constructor?
-
-                if (ov_fcn.is_defined ())
-                  panic_impossible ();
-
-                bool is_at_folder = ! dispatch_type.empty ();
-
-                std::shared_ptr<tree_classdef> cdef_obj
-                  = parser.classdef_object();
-
-                return cdef_obj->make_meta_class (*this, is_at_folder);
-              }
-            else if (ov_fcn.is_defined ())
-              {
-                retval = ov_fcn;
-
-                octave_function *fcn = ov_fcn.function_value ();
-
-                fcn->maybe_relocate_end ();
-
-                if (parser.m_parsing_subfunctions)
-                  {
-                    if (! parser.m_endfunction_found)
-                      parser.m_subfunction_names.reverse ();
-
-                    fcn->stash_subfunction_names (parser.m_subfunction_names);
-                  }
-              }
-          }
-        else
-          error ("parse error while reading file %s", full_file.c_str ());
+        return octave_value ();
       }
-    else if (require_file)
-      error ("no such file, '%s'", full_file.c_str ());
 
-    return retval;
+    unwind_action act ([ffile] (void)
+                       {
+                         fclose (ffile);
+                       });
+
+    parser parser (ffile, *this);
+
+    parser.m_curr_class_name = dispatch_type;
+    parser.m_curr_package_name = package_name;
+    parser.m_autoloading = autoload;
+    parser.m_fcn_file_from_relative_lookup = relative_lookup;
+
+    parser.m_lexer.m_force_script = force_script;
+    parser.m_lexer.prep_for_file ();
+    parser.m_lexer.m_parsing_class_method = ! dispatch_type.empty ();
+
+    parser.m_lexer.m_fcn_file_name = file;
+    parser.m_lexer.m_fcn_file_full_name = full_file;
+    parser.m_lexer.m_dir_name = dir_name;
+    parser.m_lexer.m_package_name = package_name;
+
+    int err = parser.run ();
+
+    if (err)
+      error ("parse error while reading file %s", full_file.c_str ());
+
+    octave_value ov_fcn = parser.m_primary_fcn;
+
+    if (parser.m_lexer.m_reading_classdef_file
+        && parser.classdef_object ())
+      {
+        // Convert parse tree for classdef object to
+        // meta.class info (and stash it in the symbol
+        // table?).  Return pointer to constructor?
+
+        if (ov_fcn.is_defined ())
+          panic_impossible ();
+
+        bool is_at_folder = ! dispatch_type.empty ();
+
+        std::shared_ptr<tree_classdef> cdef_obj
+          = parser.classdef_object();
+
+        return cdef_obj->make_meta_class (*this, is_at_folder);
+      }
+    else if (ov_fcn.is_defined ())
+      {
+        octave_function *fcn = ov_fcn.function_value ();
+
+        fcn->maybe_relocate_end ();
+
+        if (parser.m_parsing_subfunctions)
+          {
+            if (! parser.m_endfunction_found)
+              parser.m_subfunction_names.reverse ();
+
+            fcn->stash_subfunction_names (parser.m_subfunction_names);
+          }
+
+        return ov_fcn;
+      }
+
+    return octave_value ();
   }
 
   bool interpreter::at_top_level (void) const

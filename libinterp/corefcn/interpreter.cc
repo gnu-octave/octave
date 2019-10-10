@@ -256,14 +256,13 @@ namespace octave
   static int safe_source_file (const std::string& file_name,
                                const std::string& context = "",
                                bool verbose = false,
-                               bool require_file = true,
-                               const std::string& warn_for = "")
+                               bool require_file = true)
   {
     interpreter& interp = __get_interpreter__ ("safe_source_file");
 
     try
       {
-        source_file (file_name, context, verbose, require_file, warn_for);
+        source_file (file_name, context, verbose, require_file);
       }
     catch (const interrupt_exception&)
       {
@@ -968,7 +967,7 @@ namespace octave
     bool verbose = false;
     bool require_file = true;
 
-    return safe_source_file (fname, context, verbose, require_file, "octave");
+    return safe_source_file (fname, context, verbose, require_file);
   }
 
   int interpreter::main_loop (void)
@@ -1409,11 +1408,9 @@ namespace octave
 
   void interpreter::source_file (const std::string& file_name,
                                  const std::string& context, bool verbose,
-                                 bool require_file,
-                                 const std::string& warn_for)
+                                 bool require_file)
   {
-    m_evaluator.source_file (file_name, context, verbose, require_file,
-                             warn_for);
+    m_evaluator.source_file (file_name, context, verbose, require_file);
   }
 
   octave_value
@@ -1424,8 +1421,7 @@ namespace octave
                                const std::string& package_name,
                                bool require_file,
                                bool force_script, bool autoload,
-                               bool relative_lookup,
-                               const std::string& warn_for)
+                               bool relative_lookup)
   {
     octave_value retval;
 
@@ -1502,9 +1498,6 @@ namespace octave
       }
     else if (require_file)
       error ("no such file, '%s'", full_file.c_str ());
-    else if (! warn_for.empty ())
-      error ("%s: unable to open file '%s'", warn_for.c_str (),
-             full_file.c_str ());
 
     return retval;
   }

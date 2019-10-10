@@ -4538,7 +4538,7 @@ namespace octave
 
         octave_value ov_fcn
           = interp.parse_fcn_file (full_file, file, "", "", "", true,
-                                   false, false, false, "");
+                                   false, false, false);
 
         if (ov_fcn.is_defined ())
           {
@@ -4626,7 +4626,7 @@ namespace octave
         octave_value ov_fcn
           = interp.parse_fcn_file (file.substr (0, len - 2), nm, dir_name,
                                    dispatch_type, package_name, false,
-                                   autoload, autoload, relative_lookup, "");
+                                   autoload, autoload, relative_lookup);
 
         if (ov_fcn.is_defined ())
           {
@@ -4651,7 +4651,7 @@ namespace octave
       {
         retval = interp.parse_fcn_file (file, nm, dir_name, dispatch_type,
                                         package_name, true, autoload,
-                                        autoload, relative_lookup, "");
+                                        autoload, relative_lookup);
       }
 
     return retval;
@@ -4766,11 +4766,11 @@ namespace octave
 
   void
   source_file (const std::string& file_name, const std::string& context,
-               bool verbose, bool require_file, const std::string& warn_for)
+               bool verbose, bool require_file)
   {
     interpreter& interp = __get_interpreter__ ("source_file");
 
-    interp.source_file (file_name, context, verbose, require_file, warn_for);
+    interp.source_file (file_name, context, verbose, require_file);
   }
 }
 
@@ -5391,7 +5391,7 @@ Undocumented internal function.
 
   octave_value ov_fcn
     = interp.parse_fcn_file (full_file, file, dir_name, "", "", true, false,
-                             false, false, "__parse_file__");
+                             false, false);
 
   return retval;
 }

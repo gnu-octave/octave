@@ -1129,8 +1129,7 @@ namespace octave
   void
   tree_evaluator::source_file (const std::string& file_name,
                                const std::string& context,
-                               bool verbose, bool require_file,
-                               const std::string& warn_for)
+                               bool verbose, bool require_file)
   {
     // Map from absolute name of script file to recursion level.  We
     // use a map instead of simply placing a limit on recursion in the
@@ -1249,7 +1248,7 @@ namespace octave
             ov_code = m_interpreter.parse_fcn_file (file_full_name, file_name,
                                                     dir_name, "", "",
                                                     require_file, true, false,
-                                                    false, warn_for);
+                                                    false);
           }
         catch (execution_exception& e)
           {

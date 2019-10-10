@@ -1416,13 +1416,6 @@ namespace octave
                              warn_for);
   }
 
-  static void
-  safe_fclose (FILE *f)
-  {
-    if (f)
-      fclose (static_cast<FILE *> (f));
-  }
-
   octave_value
   interpreter::parse_fcn_file (const std::string& full_file,
                                const std::string& file,
@@ -1436,19 +1429,6 @@ namespace octave
   {
     octave_value retval;
 
-    unwind_protect frame;
-
-    // Open function file and parse.
-
-    FILE *in_stream = command_editor::get_input_stream ();
-
-    frame.add_fcn (command_editor::set_input_stream, in_stream);
-
-    frame.add_fcn (command_history::ignore_entries,
-                   command_history::ignoring_entries ());
-
-    command_history::ignore_entries ();
-
     FILE *ffile = nullptr;
 
     if (! full_file.empty ())
@@ -1456,7 +1436,10 @@ namespace octave
 
     if (ffile)
       {
-        frame.add_fcn (safe_fclose, ffile);
+        unwind_action act ([ffile] (void)
+                           {
+                             fclose (ffile);
+                           });
 
         parser parser (ffile, *this);
 

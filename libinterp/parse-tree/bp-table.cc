@@ -230,13 +230,17 @@ namespace octave
         else
           {
             tree_statement *stmt = nullptr;
-            if (! parser.m_stmt_list)
+
+            std::shared_ptr<tree_statement_list> stmt_list
+              = parser.statement_list ();
+
+            if (! stmt_list)
               error ("dbstop: "
                      "condition is not empty, but has nothing to evaluate");
             else
               {
-                if (parser.m_stmt_list->length () == 1
-                    && (stmt = parser.m_stmt_list->front ())
+                if (stmt_list->length () == 1
+                    && (stmt = stmt_list->front ())
                     && stmt->is_expression ())
                   {
                     tree_expression *expr = stmt->expression ();

@@ -382,14 +382,14 @@ static void yyerror (octave::base_parser& parser, const char *s);
 input           : simple_list '\n'
                   {
                     $$ = nullptr;
-                    parser.m_stmt_list = $1;
+                    parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
                     YYACCEPT;
                   }
                 | simple_list END_OF_INPUT
                   {
                     $$ = nullptr;
                     lexer.m_end_of_input = true;
-                    parser.m_stmt_list = $1;
+                    parser.statement_list (std::shared_ptr<octave::tree_statement_list> ($1));
                     YYACCEPT;
                   }
                 | parse_error
@@ -2185,14 +2185,12 @@ namespace octave
       m_max_fcn_depth (-1), m_curr_fcn_depth (-1), m_primary_fcn_scope (),
       m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
       m_primary_fcn_ptr (nullptr), m_subfunction_names (),
-      m_classdef_object (nullptr), m_stmt_list (nullptr), m_lexer (lxr),
+      m_classdef_object (), m_stmt_list (), m_lexer (lxr),
       m_parser_state (yypstate_new ())
   { }
 
   base_parser::~base_parser (void)
   {
-    delete m_stmt_list;
-
     delete &m_lexer;
 
     // FIXME: Deleting the internal Bison parser state structure does
@@ -2222,10 +2220,8 @@ namespace octave
     m_function_scopes.clear ();
     m_primary_fcn_ptr  = nullptr;
     m_subfunction_names.clear ();
-    m_classdef_object = nullptr;
-
-    delete m_stmt_list;
-    m_stmt_list = nullptr;
+    m_classdef_object.reset ();
+    m_stmt_list.reset ();
 
     m_lexer.reset ();
 
@@ -3837,7 +3833,7 @@ namespace octave
                                      tree_statement_list *local_fcns)
   {
     if (m_lexer.m_reading_classdef_file)
-      m_classdef_object = cls;
+      m_classdef_object = std::shared_ptr<tree_classdef> (cls);
 
     if (local_fcns)
       {

@@ -280,9 +280,12 @@ namespace octave
               }
             else
               {
-                if (retval == 0 && curr_parser.m_stmt_list)
+                if (retval == 0)
                   {
-                    curr_parser.m_stmt_list->accept (tw);
+                    std::shared_ptr<tree_statement_list> stmt_list
+                      = curr_parser.statement_list ();
+
+                    stmt_list->accept (tw);
 
                     if (octave_completion_matches_called)
                       octave_completion_matches_called = false;
@@ -387,9 +390,12 @@ namespace octave
 
             if (retval == 0)
               {
-                if (repl_parser.m_stmt_list)
+                std::shared_ptr<tree_statement_list> stmt_list
+                  = repl_parser.statement_list ();
+
+                if (stmt_list)
                   {
-                    repl_parser.m_stmt_list->accept (*this);
+                    stmt_list->accept (*this);
 
                     octave_quit ();
 
@@ -543,12 +549,15 @@ namespace octave
 
         if (parse_status == 0)
           {
-            if (eval_parser.m_stmt_list)
+            std::shared_ptr<tree_statement_list> stmt_list
+              = eval_parser.statement_list ();
+
+            if (stmt_list)
               {
                 tree_statement *stmt = nullptr;
 
-                if (eval_parser.m_stmt_list->length () == 1
-                    && (stmt = eval_parser.m_stmt_list->front ())
+                if (stmt_list->length () == 1
+                    && (stmt = stmt_list->front ())
                     && stmt->is_expression ())
                   {
                     tree_expression *expr = stmt->expression ();
@@ -572,7 +581,7 @@ namespace octave
                       retval = octave_value_list ();
                   }
                 else if (nargout == 0)
-                  eval_parser.m_stmt_list->accept (*this);
+                  stmt_list->accept (*this);
                 else
                   error ("eval: invalid use of statement list");
 

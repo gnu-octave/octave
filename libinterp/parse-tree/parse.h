@@ -27,11 +27,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
-#include <string>
-
 #include <deque>
 #include <map>
+#include <memory>
 #include <set>
+#include <string>
 
 #include "lex.h"
 #include "pt-misc.h"
@@ -153,6 +153,26 @@ namespace octave
     ~base_parser (void);
 
     void reset (void);
+
+    void classdef_object (const std::shared_ptr<tree_classdef>& obj)
+    {
+      m_classdef_object = obj;
+    }
+
+    std::shared_ptr<tree_classdef> classdef_object (void) const
+    {
+      return m_classdef_object;
+    }
+
+    void statement_list (const std::shared_ptr<tree_statement_list>& lst)
+    {
+      m_stmt_list = lst;
+    }
+
+    std::shared_ptr<tree_statement_list> statement_list (void) const
+    {
+      return m_stmt_list;
+    }
 
     // Error mesages for mismatched end tokens.
     void end_token_error (token *tok, token::end_tok_type expected);
@@ -467,10 +487,10 @@ namespace octave
     std::list<std::string> m_subfunction_names;
 
     // Pointer to the classdef object we just parsed, if any.
-    tree_classdef *m_classdef_object;
+    std::shared_ptr<tree_classdef> m_classdef_object;
 
     // Result of parsing input.
-    tree_statement_list *m_stmt_list;
+    std::shared_ptr <tree_statement_list> m_stmt_list;
 
     // State of the lexer.
     base_lexer& m_lexer;

@@ -1483,7 +1483,7 @@ namespace octave
         if (status == 0)
           {
             if (parser.m_lexer.m_reading_classdef_file
-                && parser.m_classdef_object)
+                && parser.classdef_object ())
               {
                 // Convert parse tree for classdef object to
                 // meta.class info (and stash it in the symbol
@@ -1494,22 +1494,13 @@ namespace octave
 
                 bool is_at_folder = ! dispatch_type.empty ();
 
-                try
-                  {
-                    fcn_ptr = parser.m_classdef_object->make_meta_class (*this, is_at_folder);
-                  }
-                catch (const execution_exception&)
-                  {
-                    delete parser.m_classdef_object;
-                    throw;
-                  }
+                std::shared_ptr<tree_classdef> cdef_obj
+                  = parser.classdef_object();
+
+                fcn_ptr = cdef_obj->make_meta_class (*this, is_at_folder);
 
                 if (fcn_ptr)
                   retval = octave_value (fcn_ptr);
-
-                delete parser.m_classdef_object;
-
-                parser.m_classdef_object = nullptr;
               }
             else if (fcn_ptr)
               {

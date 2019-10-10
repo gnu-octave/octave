@@ -249,8 +249,8 @@ function h = findobj (varargin)
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
               if (ischar (pvalue{np}) && ischar (p.(pname{np})))
                 match(nh,np) = strcmpi (pvalue{np}, p.(pname{np}));
-              elseif (isnumeric (pvalue{np} && isnumeric (p.(pname{np}))))
-                match(nh,np) = (pvalue{np} == p.(pname{np}));
+              elseif (isnumeric (pvalue{np}) && isnumeric (p.(pname{np})))
+                match(nh,np) = all ((pvalue{np} == p.(pname{np}))(:));
               else
                 match(nh,np) = isequal (pvalue{np}, p.(pname{np}));
               endif

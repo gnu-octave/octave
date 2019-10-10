@@ -244,11 +244,11 @@ namespace octave
         // Analyze the constructor code to determine what superclass
         // constructors are called explicitly.
 
-        octave_function *of = meth.get_function ().function_value (true);
+        octave_value ov_fcn = meth.get_function ();
 
-        if (of)
+        if (ov_fcn.is_defined ())
           {
-            octave_user_function *uf = of->user_function_value (true);
+            octave_user_function *uf = ov_fcn.user_function_value (true);
 
             if (uf)
               {
@@ -1152,11 +1152,9 @@ namespace octave
     return retval;
   }
 
-  octave_function*
+  octave_value
   cdef_class::get_method_function (const std::string& /* nm */)
   {
-    octave_classdef_meta *p = new octave_classdef_meta (*this);
-
-    return p;
+    return octave_value (new octave_classdef_meta (*this));
   }
 }

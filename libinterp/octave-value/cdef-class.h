@@ -330,9 +330,9 @@ namespace octave
       return get_rep ()->get_method (nm);
     }
 
-    octave_function * get_method_function (const std::string& nm);
+    octave_value get_method_function (const std::string& nm);
 
-    octave_function * get_constructor_function (void)
+    octave_value get_constructor_function (void)
     {
       return get_method_function (get_name ());
     }

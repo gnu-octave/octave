@@ -608,31 +608,25 @@ namespace octave
 
     // install built-in classes into the symbol table
     symtab.install_built_in_function
-      ("meta.class",
-       octave_value (m_meta_class.get_constructor_function ()));
+      ("meta.class", m_meta_class.get_constructor_function ());
 
     symtab.install_built_in_function
-      ("meta.method",
-       octave_value (m_meta_method.get_constructor_function ()));
+      ("meta.method", m_meta_method.get_constructor_function ());
 
     symtab.install_built_in_function
-      ("meta.property",
-       octave_value (m_meta_property.get_constructor_function ()));
+      ("meta.property", m_meta_property.get_constructor_function ());
 
     symtab.install_built_in_function
-      ("meta.package",
-       octave_value (m_meta_package.get_constructor_function ()));
+      ("meta.package", m_meta_package.get_constructor_function ());
 
     // FIXME: meta.event and meta.dynproperty are not implemented
     //        and should not be installed into symbol table.
 
     //  symtab.install_built_in_function
-    //    ("meta.event",
-    //     octave_value (tmp_meta_event.get_constructor_function ()));
+    //    ("meta.event", tmp_meta_event.get_constructor_function ());
 
     //  symtab.install_built_in_function
-    //    ("meta.dynproperty",
-    //     octave_value (tmp_meta_dynproperty.get_constructor_function ()));
+    //    ("meta.dynproperty", tmp_meta_dynproperty.get_constructor_function ());
   }
 
   cdef_class
@@ -687,12 +681,10 @@ namespace octave
     return cdef_class ();
   }
 
-  octave_function *
+  octave_value
   cdef_manager::find_method_symbol (const std::string& method_name,
                                     const std::string& class_name)
   {
-    octave_function *retval = nullptr;
-
     cdef_class cls = find_class (class_name, false, false);
 
     if (cls.ok ())
@@ -700,10 +692,10 @@ namespace octave
         cdef_method meth = cls.find_method (method_name);
 
         if (meth.ok ())
-          retval = new octave_classdef_meta (meth);
+          return octave_value (new octave_classdef_meta (meth));
       }
 
-    return retval;
+    return octave_value ();
   }
 
   cdef_package
@@ -746,17 +738,15 @@ namespace octave
     return retval;
   }
 
-  octave_function *
+  octave_value
   cdef_manager::find_package_symbol (const std::string& pack_name)
   {
-    octave_function *retval = nullptr;
-
     cdef_package pack = find_package (pack_name, false);
 
     if (pack.ok ())
-      retval = new octave_classdef_meta (pack);
+      return octave_value (new octave_classdef_meta (pack));
 
-    return retval;
+    return octave_value ();
   }
 
   cdef_class

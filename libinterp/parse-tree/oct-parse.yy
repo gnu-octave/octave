@@ -1475,7 +1475,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                         // after parsing the function.  Any function
                         // definitions found in the file have already
                         // been stored in the symbol table or in
-                        // base_parser::m_primary_fcn_ptr.
+                        // base_parser::m_primary_fcn.
 
                         // Unused symbol table context.
                         lexer.m_symtab_context.pop ();
@@ -2184,9 +2184,8 @@ namespace octave
       m_parsing_subfunctions (false), m_parsing_local_functions (false),
       m_max_fcn_depth (-1), m_curr_fcn_depth (-1), m_primary_fcn_scope (),
       m_curr_class_name (), m_curr_package_name (), m_function_scopes (),
-      m_primary_fcn_ptr (nullptr), m_subfunction_names (),
-      m_classdef_object (), m_stmt_list (), m_lexer (lxr),
-      m_parser_state (yypstate_new ())
+      m_primary_fcn (), m_subfunction_names (), m_classdef_object (),
+      m_stmt_list (), m_lexer (lxr), m_parser_state (yypstate_new ())
   { }
 
   base_parser::~base_parser (void)
@@ -2218,7 +2217,7 @@ namespace octave
     m_curr_class_name = "";
     m_curr_package_name = "";
     m_function_scopes.clear ();
-    m_primary_fcn_ptr  = nullptr;
+    m_primary_fcn = octave_value ();
     m_subfunction_names.clear ();
     m_classdef_object.reset ();
     m_stmt_list.reset ();
@@ -3289,7 +3288,7 @@ namespace octave
 
     script->stash_fcn_file_time (now);
 
-    m_primary_fcn_ptr = script;
+    m_primary_fcn = octave_value (script);
   }
 
   // Define a function.
@@ -3452,7 +3451,7 @@ namespace octave
 
     if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
-      m_primary_fcn_ptr = fcn;
+      m_primary_fcn = octave_value (fcn);
 
     return fcn;
   }
@@ -3528,7 +3527,7 @@ namespace octave
             // Otherwise, it is just inserted in the symbol table,
             // either as a subfunction or nested function (see above),
             // or as the primary function for the file, via
-            // m_primary_fcn_ptr (see also load_fcn_from_file,,
+            // m_primary_fcn (see also load_fcn_from_file,,
             // parse_fcn_file, and
             // fcn_info::fcn_info_rep::find_user_function).
 

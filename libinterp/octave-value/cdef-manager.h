@@ -53,14 +53,14 @@ namespace octave
     cdef_class find_class (const std::string& name, bool error_if_not_found = true,
                            bool load_if_not_found = true);
 
-    octave_function * find_method_symbol (const std::string& method_name,
-                                          const std::string& class_name);
+    octave_value find_method_symbol (const std::string& method_name,
+                                     const std::string& class_name);
 
     cdef_package find_package (const std::string& name,
                                bool error_if_not_found = true,
                                bool load_if_not_found = true);
 
-    octave_function * find_package_symbol (const std::string& pack_name);
+    octave_value find_package_symbol (const std::string& pack_name);
 
     void register_class (const cdef_class& cls)
     {

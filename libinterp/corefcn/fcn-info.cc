@@ -160,10 +160,7 @@ namespace octave
         cdef_manager& cdm
           = __get_cdef_manager__ ("fcn_info::fcn_info_rep::load_class_method");
 
-        octave_function *cm = cdm.find_method_symbol (name, dispatch_type);
-
-        if (cm)
-          retval = octave_value (cm);
+        retval = cdm.find_method_symbol (name, dispatch_type);
 
         if (! retval.is_defined ())
           {
@@ -1034,10 +1031,7 @@ namespace octave
         cdef_manager& cdm
           = __get_cdef_manager__ ("fcn_info::fcn_info_rep::find_package");
 
-        octave_function *fcn = cdm.find_package_symbol (full_name ());
-
-        if (fcn)
-          package = octave_value (fcn);
+        package = cdm.find_package_symbol (full_name ());
       }
 
     return package;

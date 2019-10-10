@@ -1438,8 +1438,6 @@ namespace octave
 
     unwind_protect frame;
 
-    octave_function *fcn_ptr = nullptr;
-
     // Open function file and parse.
 
     FILE *in_stream = command_editor::get_input_stream ();
@@ -1478,7 +1476,7 @@ namespace octave
 
         int status = parser.run ();
 
-        fcn_ptr = parser.m_primary_fcn_ptr;
+        octave_value ov_fcn = parser.m_primary_fcn;
 
         if (status == 0)
           {
@@ -1489,7 +1487,7 @@ namespace octave
                 // meta.class info (and stash it in the symbol
                 // table?).  Return pointer to constructor?
 
-                if (fcn_ptr)
+                if (ov_fcn.is_defined ())
                   panic_impossible ();
 
                 bool is_at_folder = ! dispatch_type.empty ();
@@ -1497,23 +1495,22 @@ namespace octave
                 std::shared_ptr<tree_classdef> cdef_obj
                   = parser.classdef_object();
 
-                fcn_ptr = cdef_obj->make_meta_class (*this, is_at_folder);
-
-                if (fcn_ptr)
-                  retval = octave_value (fcn_ptr);
+                return cdef_obj->make_meta_class (*this, is_at_folder);
               }
-            else if (fcn_ptr)
+            else if (ov_fcn.is_defined ())
               {
-                retval = octave_value (fcn_ptr);
+                retval = ov_fcn;
 
-                fcn_ptr->maybe_relocate_end ();
+                octave_function *fcn = ov_fcn.function_value ();
+
+                fcn->maybe_relocate_end ();
 
                 if (parser.m_parsing_subfunctions)
                   {
                     if (! parser.m_endfunction_found)
                       parser.m_subfunction_names.reverse ();
 
-                    fcn_ptr->stash_subfunction_names (parser.m_subfunction_names);
+                    fcn->stash_subfunction_names (parser.m_subfunction_names);
                   }
               }
           }

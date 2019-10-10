@@ -479,7 +479,7 @@ namespace octave
     parent_scope_info m_function_scopes;
 
     // Pointer to the primary user function or user script function.
-    octave_function *m_primary_fcn_ptr;
+    octave_value m_primary_fcn;
 
     // List of subfunction names, initially in the order they are
     // installed in the symbol table, then ordered as they appear in the

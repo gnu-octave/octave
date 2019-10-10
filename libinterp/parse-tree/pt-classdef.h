@@ -788,8 +788,8 @@ namespace octave
 
     const std::string& package_name (void) const { return m_pack_name; }
 
-    octave_function * make_meta_class (interpreter& interp,
-                                       bool is_at_folder = false);
+    octave_value make_meta_class (interpreter& interp,
+                                  bool is_at_folder = false);
 
     void accept (tree_walker& tw)
     {

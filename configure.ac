@@ -669,11 +669,11 @@ AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
 save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-OCTAVE_BLAS_WITH_F77_FUNC([:], [:],
+OCTAVE_BLAS_WITH_F77_FUNC([], [],
   [ax_blas_ok=yes
   AC_MSG_CHECKING([BLAS can be called from Fortran])
   AC_MSG_RESULT([yes assumed for cross compilation])])
-AX_LAPACK([:], [:])
+AX_LAPACK
 
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
@@ -683,8 +683,8 @@ if test $ax_blas_ok = no; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
 
-  OCTAVE_BLAS_WITH_F77_FUNC([:], [:])
-  AX_LAPACK([:], [:])
+  OCTAVE_BLAS_WITH_F77_FUNC
+  AX_LAPACK
 
   ## Restore FFLAGS, with -ff2c if that was helpful
   if test $ax_blas_ok = yes; then
@@ -712,8 +712,8 @@ if test $ax_blas_ok = no; then
          save_FFLAGS="$FFLAGS"
          FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-         OCTAVE_BLAS_WITH_F77_FUNC([:], [:])
-         AX_LAPACK([:], [:])
+         OCTAVE_BLAS_WITH_F77_FUNC
+         AX_LAPACK
 
          ## Restore FFLAGS.
          FFLAGS="$save_FFLAGS"

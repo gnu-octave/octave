@@ -89,7 +89,7 @@ extern int octave_lex (YYSTYPE *, void *);
 
 static void yyerror (octave::base_parser& parser, const char *s);
 
-#define lexer parser.m_lexer
+#define lexer (parser.get_lexer ())
 #define scanner lexer.m_scanner
 
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -1280,29 +1280,10 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab : // empty
                   {
+                    if (! parser.push_fcn_symtab ())
+                      YYABORT;
+
                     $$ = 0;
-
-                    parser.m_curr_fcn_depth++;
-
-                    if (parser.m_max_fcn_depth < parser.m_curr_fcn_depth)
-                      parser.m_max_fcn_depth = parser.m_curr_fcn_depth;
-
-                    // Will get a real name later.
-                    lexer.m_symtab_context.push (octave::symbol_scope ("parser:push_fcn_symtab"));
-                    parser.m_function_scopes.push (lexer.m_symtab_context.curr_scope ());
-
-                    if (! lexer.m_reading_script_file
-                        && parser.m_curr_fcn_depth == 0
-                        && ! parser.m_parsing_subfunctions)
-                      parser.m_primary_fcn_scope
-                        = lexer.m_symtab_context.curr_scope ();
-
-                    if (lexer.m_reading_script_file
-                        && parser.m_curr_fcn_depth > 0)
-                      {
-                        parser.bison_error ("nested functions not implemented in this context");
-                        YYABORT;
-                      }
                   }
                 ;
 
@@ -1448,7 +1429,7 @@ return_list1    : identifier
 
 parsing_local_fcns
                 : // empty
-                  { parser.m_parsing_local_functions = true; }
+                  { parser.parsing_local_functions (true); }
                 ;
 
 push_script_symtab : // empty
@@ -1523,33 +1504,12 @@ function_beg    : push_fcn_symtab FCN
 
 fcn_name        : identifier
                   {
-                    std::string id = $1->name ();
-
-                    // Make classdef local functions unique from
-                    // classdef methods.
-
-                    if (parser.m_parsing_local_functions
-                        && parser.m_curr_fcn_depth == 0)
-                      id = lexer.m_fcn_file_name + ">" + id;
-
-                    if (! parser.m_function_scopes.name_current_scope (id))
+                    $$ = parser.make_fcn_name ($1);
+                    if (! $$)
                       {
-                        parser.bison_error ("duplicate subfunction or nested function name",
-                                            $1->line (), $1->column ());
-
-                        delete $1;
-
+                        // make_fcn_name deleted $1.
                         YYABORT;
                       }
-
-                    octave::symbol_scope curr_scope
-                      = lexer.m_symtab_context.curr_scope ();
-                    curr_scope.cache_name (id);
-
-                    lexer.m_parsed_function_name.top () = true;
-                    lexer.m_maybe_classdef_get_set_method = false;
-
-                    $$ = $1;
                   }
                 | GET '.' identifier
                   {
@@ -1573,7 +1533,7 @@ fcn_name        : identifier
 
 function_end    : END
                   {
-                    parser.m_endfunction_found = true;
+                    parser.endfunction_found (true);
 
                     if (parser.end_token_ok ($1, octave::token::function_end))
                       $$ = parser.make_end ("endfunction", false,
@@ -1593,7 +1553,7 @@ function_end    : END
 //                      YYABORT;
 //                    }
 
-                    if (parser.m_endfunction_found)
+                    if (parser.endfunction_found ())
                       {
                         parser.bison_error ("inconsistent function endings -- "
                                  "if one function is explicitly ended, "
@@ -2321,43 +2281,30 @@ namespace octave
     return ettype == expected || ettype == token::simple_end;
   }
 
-  // Maybe print a warning if an assignment expression is used as the
-  // test in a logical expression.
-
-  void
-  base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
+  bool
+  base_parser::push_fcn_symtab (void)
   {
-    if (expr->is_assignment_expression ()
-        && expr->paren_count () < 2)
-      {
-        if (m_lexer.m_fcn_file_full_name.empty ())
-          warning_with_id
-            ("Octave:assign-as-truth-value",
-             "suggest parenthesis around assignment used as truth value");
-        else
-          warning_with_id
-            ("Octave:assign-as-truth-value",
-             "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
-      }
-  }
+    m_curr_fcn_depth++;
 
-  // Maybe print a warning about switch labels that aren't constants.
+    if (m_max_fcn_depth < m_curr_fcn_depth)
+      m_max_fcn_depth = m_curr_fcn_depth;
 
-  void
-  base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
-  {
-    if (! expr->is_constant ())
+    // Will get a real name later.
+    m_lexer.m_symtab_context.push (octave::symbol_scope ("parser:push_fcn_symtab"));
+    m_function_scopes.push (m_lexer.m_symtab_context.curr_scope ());
+
+    if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
+        && ! m_parsing_subfunctions)
+      m_primary_fcn_scope = m_lexer.m_symtab_context.curr_scope ();
+
+    if (m_lexer.m_reading_script_file && m_curr_fcn_depth > 0)
       {
-        if (m_lexer.m_fcn_file_full_name.empty ())
-          warning_with_id ("Octave:variable-switch-label",
-                           "variable switch label");
-        else
-          warning_with_id
-            ("Octave:variable-switch-label",
-             "variable switch label near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
+        bison_error ("nested functions not implemented in this context");
+
+        return false;
       }
+
+    return true;
   }
 
   // Make a constant.
@@ -3291,6 +3238,34 @@ namespace octave
     m_primary_fcn = octave_value (script);
   }
 
+  tree_identifier *
+  base_parser::make_fcn_name (tree_identifier *id)
+  {
+    std::string id_name = id->name ();
+
+    // Make classdef local functions unique from classdef methods.
+
+    if (m_parsing_local_functions && m_curr_fcn_depth == 0)
+      id_name = m_lexer.m_fcn_file_name + ">" + id_name;
+
+    if (! m_function_scopes.name_current_scope (id_name))
+      {
+        bison_error ("duplicate subfunction or nested function name",
+                     id->line (), id->column ());
+
+        delete id;
+        return nullptr;
+      }
+
+    octave::symbol_scope curr_scope = m_lexer.m_symtab_context.curr_scope ();
+    curr_scope.cache_name (id_name);
+
+    m_lexer.m_parsed_function_name.top () = true;
+    m_lexer.m_maybe_classdef_get_set_method = false;
+
+    return id;
+  }
+
   // Define a function.
 
   // FIXME: combining start_function, finish_function, and
@@ -4222,21 +4197,6 @@ namespace octave
             : new tree_constant (octave_value (Cell ())));
   }
 
-  void
-  base_parser::maybe_warn_missing_semi (tree_statement_list *t)
-  {
-    if (m_curr_fcn_depth >= 0)
-      {
-        tree_statement *tmp = t->back ();
-
-        if (tmp->is_expression ())
-          warning_with_id
-            ("Octave:missing-semicolon",
-             "missing semicolon near line %d, column %d in file '%s'",
-             tmp->line (), tmp->column (), m_lexer.m_fcn_file_full_name.c_str ());
-      }
-  }
-
   tree_statement_list *
   base_parser::set_stmt_print_flag (tree_statement_list *list,
                                     char sep, bool warn_missing_semi)
@@ -4591,6 +4551,60 @@ namespace octave
       }
 
     return octave_value ();
+  }
+
+  // Maybe print a warning if an assignment expression is used as the
+  // test in a logical expression.
+
+  void
+  base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
+  {
+    if (expr->is_assignment_expression ()
+        && expr->paren_count () < 2)
+      {
+        if (m_lexer.m_fcn_file_full_name.empty ())
+          warning_with_id
+            ("Octave:assign-as-truth-value",
+             "suggest parenthesis around assignment used as truth value");
+        else
+          warning_with_id
+            ("Octave:assign-as-truth-value",
+             "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
+             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
+      }
+  }
+
+  // Maybe print a warning about switch labels that aren't constants.
+
+  void
+  base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
+  {
+    if (! expr->is_constant ())
+      {
+        if (m_lexer.m_fcn_file_full_name.empty ())
+          warning_with_id ("Octave:variable-switch-label",
+                           "variable switch label");
+        else
+          warning_with_id
+            ("Octave:variable-switch-label",
+             "variable switch label near line %d, column %d in file '%s'",
+             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
+      }
+  }
+
+  void
+  base_parser::maybe_warn_missing_semi (tree_statement_list *t)
+  {
+    if (m_curr_fcn_depth >= 0)
+      {
+        tree_statement *tmp = t->back ();
+
+        if (tmp->is_expression ())
+          warning_with_id
+            ("Octave:missing-semicolon",
+             "missing semicolon near line %d, column %d in file '%s'",
+             tmp->line (), tmp->column (), m_lexer.m_fcn_file_full_name.c_str ());
+      }
   }
 
   std::string

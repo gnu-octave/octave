@@ -152,6 +152,10 @@ namespace octave
 
     ~base_parser (void);
 
+    base_lexer& get_lexer (void) const { return m_lexer; }
+
+    bool at_end_of_input (void) const { return m_lexer.m_end_of_input; }
+
     void reset (void);
 
     void classdef_object (const std::shared_ptr<tree_classdef>& obj)
@@ -174,18 +178,34 @@ namespace octave
       return m_stmt_list;
     }
 
+    void parsing_local_functions (bool flag)
+    {
+      m_parsing_local_functions = flag;
+    }
+
+    bool parsing_local_functions (void) const
+    {
+      return m_parsing_local_functions;
+    }
+
+    void endfunction_found (bool flag)
+    {
+      m_endfunction_found = flag;
+    }
+
+    bool endfunction_found (void) const
+    {
+      return m_endfunction_found;
+    }
+
     // Error mesages for mismatched end tokens.
     void end_token_error (token *tok, token::end_tok_type expected);
 
     // Check to see that end tokens are properly matched.
     bool end_token_ok (token *tok, token::end_tok_type expected);
 
-    // Maybe print a warning if an assignment expression is used as the
-    // test in a logical expression.
-    void maybe_warn_assign_as_truth_value (tree_expression *expr);
-
-    // Maybe print a warning about switch labels that aren't constants.
-    void maybe_warn_variable_switch_label (tree_expression *expr);
+    // Handle pushing symbol table for new function scope.
+    bool push_fcn_symtab (void);
 
     // Build a constant.
     tree_constant * make_constant (int op, token *tok_val);
@@ -293,6 +313,10 @@ namespace octave
 
     // Define a script.
     void make_script (tree_statement_list *cmds, tree_statement *end_script);
+
+    // Handle identifier that is recognized as a function name.
+    tree_identifier *
+    make_fcn_name (tree_identifier *id);
 
     // Define a function.
     tree_function_def *
@@ -402,9 +426,6 @@ namespace octave
     // Finish building a cell list.
     tree_expression * finish_cell (tree_cell *c);
 
-    // Maybe print a warning.  Duh.
-    void maybe_warn_missing_semi (tree_statement_list *);
-
     // Set the print flag for a statement based on the separator type.
     tree_statement_list *
     set_stmt_print_flag (tree_statement_list *, char, bool);
@@ -435,6 +456,8 @@ namespace octave
                     const std::string& dispatch_type,
                     const std::string& package_name, bool require_file,
                     bool force_script, bool autoload, bool relative_lookup);
+
+  protected:
 
     // Contains error message if Bison-generated parser returns non-zero
     // status.
@@ -504,6 +527,18 @@ namespace octave
 
     // Internal state of the Bison parser.
     void *m_parser_state;
+
+  private:
+
+    // Maybe print a warning if an assignment expression is used as the
+    // test in a logical expression.
+    void maybe_warn_assign_as_truth_value (tree_expression *expr);
+
+    // Maybe print a warning about switch labels that aren't constants.
+    void maybe_warn_variable_switch_label (tree_expression *expr);
+
+    // Maybe print a warning.
+    void maybe_warn_missing_semi (tree_statement_list *);
   };
 
   // Publish externally used friend functions.

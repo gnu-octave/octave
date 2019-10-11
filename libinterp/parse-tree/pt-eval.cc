@@ -416,7 +416,7 @@ namespace octave
                     if (octave_completion_matches_called)
                       octave_completion_matches_called = false;
                   }
-                else if (repl_parser.m_lexer.m_end_of_input)
+                else if (repl_parser.at_end_of_input ())
                   {
                     retval = EOF;
                     break;
@@ -588,7 +588,7 @@ namespace octave
                 if (returning () || breaking () || continuing ())
                   break;
               }
-            else if (eval_parser.m_lexer.m_end_of_input)
+            else if (eval_parser.at_end_of_input ())
               break;
           }
       }

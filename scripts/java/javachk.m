@@ -130,17 +130,24 @@ function msg = javachk (feature, caller = "")
 endfunction
 
 
-%!test
+%!testif ; ! __octave_config_info__().build_features.JAVA
 %! msg = javachk ("desktop");
-%! assert (msg.message, "javachk: this function is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.message, "javachk: this function is not supported, Octave was not compiled with Java support");
+%! assert (msg.identifier, "Octave:javachk:java-not-supported");
+
+%!testif HAVE_JAVA
+%! msg = javachk ("desktop");
+%! assert (msg.message, 'javachk: this function is not supported, Java feature "desktop" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
-%!test
+
+%!testif HAVE_JAVA
 %! msg = javachk ("desktop", "Java DESKTOP");
-%! assert (msg.message, "javachk: Java DESKTOP is not supported, Java feature \"desktop\" is not available");
+%! assert (msg.message, 'javachk: Java DESKTOP is not supported, Java feature "desktop" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
-%!test
+
+%!testif HAVE_JAVA
 %! msg = javachk ("nosuchfeature");
-%! assert (msg.message, "javachk: this function is not supported, Java feature \"nosuchfeature\" is not available");
+%! assert (msg.message, 'javachk: this function is not supported, Java feature "nosuchfeature" is not available');
 %! assert (msg.identifier, "Octave:javachk:feature-not-available");
 
 %!testif HAVE_JAVA; usejava ("jvm")

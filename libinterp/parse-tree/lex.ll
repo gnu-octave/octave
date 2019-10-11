@@ -3756,8 +3756,13 @@ namespace octave
     // buffer one line at a time, while also setting
     // m_current_input_line.  Some care will be needed if a single line
     // of input arrives in multiple calls to append_input.
+    //
+    // OR, should we require that the input string to append_input
+    // IS a single line of input?  That seems to be what we are doing
+    // here by setting m_current_input_line to input.
 
     m_input_buf.fill (input, eof);
+    m_current_input_line = input;
   }
 
   int

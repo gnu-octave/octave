@@ -141,8 +141,10 @@ namespace octave
     connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
              this, SLOT (handle_octave_finished (int)));
 
+#if ! defined (Q_OS_MAC)
     connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
              m_main_thread, SLOT (quit (void)));
+#endif
 
     connect (m_main_thread, SIGNAL (finished (void)),
              m_main_thread, SLOT (deleteLater (void)));
@@ -204,6 +206,11 @@ namespace octave
 
   void base_qobject::handle_octave_finished (int exit_status)
   {
+#if defined (Q_OS_MAC)
+    // fprintf to stderr is needed by macOS, for poorly-understood reasons.
+    fprintf (stderr, "\n");
+    m_main_thread->quit ();
+#endif
     qApp->exit (exit_status);
   }
 

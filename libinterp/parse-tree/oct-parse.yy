@@ -4418,11 +4418,12 @@ namespace octave
 
         if (token < 0)
           {
+            status = -1;
+
             if (! eof && m_lexer.at_end_of_buffer ())
-              {
-                status = -1;
-                break;
-              }
+              return status;
+
+            break;
           }
 
         yypstate *pstate = static_cast<yypstate *> (m_parser_state);

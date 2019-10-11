@@ -429,6 +429,13 @@ namespace octave
     // Generic error messages.
     void bison_error (const std::string& s, int l = -1, int c = -1);
 
+    friend octave_value
+    parse_fcn_file (interpreter& interp, const std::string& full_file,
+                    const std::string& file, const std::string& dir_name,
+                    const std::string& dispatch_type,
+                    const std::string& package_name, bool require_file,
+                    bool force_script, bool autoload, bool relative_lookup);
+
     // Contains error message if Bison-generated parser returns non-zero
     // status.
     std::string m_parse_error_msg;
@@ -498,6 +505,15 @@ namespace octave
     // Internal state of the Bison parser.
     void *m_parser_state;
   };
+
+  // Publish externally used friend functions.
+
+  extern OCTAVE_API octave_value
+  parse_fcn_file (interpreter& interp, const std::string& full_file,
+                  const std::string& file, const std::string& dir_name,
+                  const std::string& dispatch_type,
+                  const std::string& package_name, bool require_file,
+                  bool force_script, bool autoload, bool relative_lookup);
 
   class parser : public base_parser
   {

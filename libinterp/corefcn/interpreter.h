@@ -350,14 +350,6 @@ namespace octave
                       const std::string& context = "",
                       bool verbose = false, bool require_file = true);
 
-    octave_value parse_fcn_file (const std::string& full_file,
-                                 const std::string& file,
-                                 const std::string& dir_name,
-                                 const std::string& dispatch_type,
-                                 const std::string& package_name,
-                                 bool require_file, bool force_script,
-                                 bool autoload, bool relative_lookup);
-
     bool at_top_level (void) const;
 
     bool isglobal (const std::string& name) const;

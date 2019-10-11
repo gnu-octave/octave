@@ -1245,10 +1245,9 @@ namespace octave
       {
         try
           {
-            ov_code = m_interpreter.parse_fcn_file (file_full_name, file_name,
-                                                    dir_name, "", "",
-                                                    require_file, true, false,
-                                                    false);
+            ov_code = parse_fcn_file (m_interpreter, file_full_name,
+                                      file_name, dir_name, "", "",
+                                      require_file, true, false, false);
           }
         catch (execution_exception& e)
           {

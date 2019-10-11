@@ -1326,6 +1326,18 @@ OCTAVE_ENABLE_READLINE
 ## Find a termlib to use.
 OCTAVE_CHECK_LIB_TERMLIB
 
+### Use push parser by default now.
+
+ENABLE_COMMAND_LINE_PUSH_PARSER=yes
+AC_ARG_ENABLE([command-line-push-parser],
+  [AS_HELP_STRING([--disable-command-line-push-parser],
+    [don't use Bison's push parser interface in the command line REPL])],
+  [if test "$enableval" = no; then ENABLE_COMMAND_LINE_PUSH_PARSER=no; fi], [])
+if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER, 1,
+    [Define to 1 to use Bison's push parser interface in the command line REPL.])
+fi
+
 ### Check for ZLIB library.
 
 OCTAVE_CHECK_LIB(z, ZLIB,
@@ -3113,6 +3125,7 @@ Octave is now configured for $canonical_host_type
   Build shared libraries:               $SHARED_LIBS
   Dynamic Linking API:                  $DL_API_MSG
   Include support for GNU readline:     $USE_READLINE
+  Use push parser in comand line REPL:  $ENABLE_COMMAND_LINE_PUSH_PARSER
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
   OpenMP SMP multithreading:            $ENABLE_OPENMP

@@ -363,12 +363,26 @@ namespace octave
   {
     int retval = 0;
 
-    // The parser takes ownership of the lexer and will delete it when
-    // the parser goes out of scope.
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+    input_reader reader (m_interpreter);
+
+    // Attach input_reader object to parser so that the promptflag can
+    // be adjusted automatically when we are parsing multi-line
+    // commands.
+
+    push_parser repl_parser (m_interpreter, &reader);
+
+#else
+
+    // The pull parser takes ownership of the lexer and will delete it
+    // when the parser goes out of scope.
 
     parser repl_parser (interactive
                         ? new lexer (m_interpreter)
                         : new lexer (stdin, m_interpreter));
+
+#endif
 
     error_system& es = m_interpreter.get_error_system ();
 
@@ -386,7 +400,29 @@ namespace octave
                 reset_debug_state ();
               }
 
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+            do
+              {
+                bool eof;
+
+                std::string input_line = reader.get_input (eof);
+
+                if (eof)
+                  {
+                    retval = EOF;
+                    break;
+                  }
+
+                retval = repl_parser.run (input_line, false);
+              }
+            while (retval < 0);
+
+#else
+
             retval = repl_parser.run ();
+
+#endif
 
             if (retval == 0)
               {

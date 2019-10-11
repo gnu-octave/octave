@@ -364,12 +364,6 @@ specified option.
            { "ENABLE_64", false },
 #endif
 
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-           { "ENABLE_ATOMIC_REFCOUNT", true },
-#else
-           { "ENABLE_ATOMIC_REFCOUNT", false },
-#endif
-
 #if defined (ENABLE_DOCS)
            { "ENABLE_DOCS", true },
 #else

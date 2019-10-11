@@ -543,21 +543,6 @@ if test $ENABLE_BOUNDS_CHECK = yes; then
   OCTAVE_CONFIGURE_WARNING([warn_bounds_check])
 fi
 
-### Use atomic operations for internal reference counting.
-### This is required for thread-safe behavior (Qt Handles) but incurs a
-### significant slowdown.  Enabled by default until a higher performing
-### solution can be found.
-
-ENABLE_ATOMIC_REFCOUNT=yes
-AC_ARG_ENABLE([atomic-refcount],
-  [AS_HELP_STRING([--disable-atomic-refcount],
-    [Do not use atomic operations for internal reference counting.  This option is required for thread-safe behavior as used in the GUI's Qt plotting toolkit.  Performance for CLI-only builds is improved by disabling this feature.])],
-  [if test "$enableval" = no; then ENABLE_ATOMIC_REFCOUNT=no; fi], [])
-if test $ENABLE_ATOMIC_REFCOUNT = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_ATOMIC_REFCOUNT, 1,
-    [Define to 1 to use atomic operations for reference counting.])
-fi
-
 ### Check for pthread library
 
 AX_PTHREAD
@@ -3145,13 +3130,6 @@ if test $opengl_graphics = no; then
   AC_MSG_WARN([The libraries needed for OpenGL graphics were not found.])
   AC_MSG_WARN([Creating plots is still possible if gnuplot is installed.])
   warn_msg_printed=true
-fi
-
-if test $ENABLE_ATOMIC_REFCOUNT = no; then
-  AC_MSG_WARN([])
-  AC_MSG_WARN([atomic reference counting disabled.])
-  AC_MSG_WARN([This feature allows safe access to Octave data from another thread,])
-  AC_MSG_WARN([and is required when using the GUI's Qt toolkit for plotting.])
 fi
 
 if $warn_msg_printed; then

@@ -203,10 +203,6 @@ typedef unsigned long ino_t;
 
 /* Backward compatibility */
 
-#if defined (OCTAVE_ENABLE_ATOMIC_REFCOUNT)
-#  define USE_ATOMIC_REFCOUNT 1
-#endif
-
 #if defined (OCTAVE_ENABLE_64)
 #  define USE_64_BIT_IDX_T 1
 #endif

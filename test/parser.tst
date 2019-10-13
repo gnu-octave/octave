@@ -352,3 +352,9 @@
 %!test <*54465>
 %! fail ("x = matlab_short_circuit ()", "warning", "Matlab-style short-circuit operation performed for operator |");
 %! assert (x == 0);
+
+%!test <*56959>
+%! fail ("i:5", "warning", "complex portion of colon arguments is ignored");
+%! fail ("1:5*i", "warning", "complex portion of colon arguments is ignored");
+%! fail ("1:i:5", "warning", "complex portion of colon arguments is ignored");
+

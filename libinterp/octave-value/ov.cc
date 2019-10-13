@@ -2552,7 +2552,7 @@ do_colon_op (const octave_value& base, const octave_value& increment,
 
       if (base.iscomplex () || limit.iscomplex ()
           || (increment.is_defined () && increment.iscomplex ()))
-        warning ("complex portion of colon arguments is ignored");
+        warning ("imaginary part of complex colon arguments is ignored");
 
       Matrix m_base, m_limit, m_increment;
 

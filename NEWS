@@ -3,12 +3,6 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 ### General improvements
 
-- The `edit` function option `"editinplace"` now defaults to `true` and
-  the option `"home"` now defaults to the empty matrix `[]`.  Files will
-  no longer be copied to the user's HOME directory for editing.  The old
-  behavior can be restored by setting `"editinplace"` to `false` and
-  `"home"` to `"~/octave"`.
-
 - The `intersect`, `setdiff', `setxor`, `union`, and `unique` functions
   accept a new sorting option `"stable"` which will return output values
   in the same order as the input, rather than in ascending order.
@@ -16,6 +10,19 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - The `linspace` function now produces symmetrical sequences when the
   endpoints are symmetric.  This is more intuitive and also compatible
   with recent changes made in Matlab R2019b.
+
+- The `edit` function option `"editinplace"` now defaults to `true` and
+  the option `"home"` now defaults to the empty matrix `[]`.  Files will
+  no longer be copied to the user's HOME directory for editing.  The old
+  behavior can be restored by setting `"editinplace"` to `false` and
+  `"home"` to `"~/octave"`.
+
+- The `format` command supports two new options: `uppercase` and
+  `lowercase` (default).  With the default, print a lowercase 'e' for
+  the exponent character in scientific notation and lowercase 'a-f' for
+  the hex digits representing 10-15.  With `uppercase`, print 'E' and
+  'A-F' instead.  The previous uppercase formats, `E` and `G`, no longer
+  control the case of the output.
 
 #### Graphics backend
 

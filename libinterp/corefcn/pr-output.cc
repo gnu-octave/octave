@@ -104,8 +104,8 @@ static bool print_e = false;
 // TRUE means use a g format.
 static bool print_g = false;
 
-// TRUE means print E instead of e for exponent field.
-static bool print_big_e = false;
+// TRUE means print uppercase E in exponent field and A-F in hex format.
+static bool uppercase_format = false;
 
 // TRUE means use an engineering format.
 static bool print_eng = false;
@@ -200,11 +200,19 @@ operator << (std::ostream& os, const pr_engineering_float<T>& pef)
   int ex = pef.exponent ();
   if (ex < 0)
     {
-      os << std::setw (0) << "e-";
+      if (uppercase_format)
+        os << std::setw (0) << "E-";
+      else
+        os << std::setw (0) << "e-";
       ex = -ex;
     }
   else
-    os << std::setw (0) << "e+";
+    {
+      if (uppercase_format)
+        os << std::setw (0) << "E+";
+      else
+        os << std::setw (0) << "e+";
+    }
 
   os << std::setw (real_fmt.exponent_width () - 2)
      << std::setfill ('0') << ex;
@@ -477,14 +485,14 @@ make_real_format (int digits, bool inf_or_nan, bool int_only)
               fmt = float_format (fw, ex, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && (inf_or_nan || int_only))
     fmt = float_format (fw, ld);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (fmt);
 }
@@ -653,14 +661,14 @@ make_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
               fmt = float_format (fw, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && int_or_inf_or_nan)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (scale, fmt);
 }
@@ -855,7 +863,7 @@ make_complex_format (int x_max, int x_min, int r_x,
             }
         }
 
-      if (print_big_e)
+      if (uppercase_format)
         {
           r_fmt.uppercase ();
           i_fmt.uppercase ();
@@ -1093,7 +1101,7 @@ make_complex_matrix_format (int x_max, int x_min, int r_x_max,
             }
         }
 
-      if (print_big_e)
+      if (uppercase_format)
         {
           r_fmt.uppercase ();
           i_fmt.uppercase ();
@@ -1294,14 +1302,14 @@ make_range_format (int x_max, int x_min, int all_ints)
               fmt = float_format (fw, prec - 1, std::ios::scientific);
             }
         }
-
-      if (print_big_e)
-        fmt.uppercase ();
     }
   else if (! bank_format && all_ints)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
+
+  if (uppercase_format)
+    fmt.uppercase ();
 
   return float_display_format (scale, fmt);
 }
@@ -1406,7 +1414,10 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
         = octave::mach_info::native_float_format ();
 
       os.fill ('0');
-      os.flags (std::ios::right | std::ios::hex);
+      if (uppercase_format)
+        os.flags (std::ios::right | std::ios::hex | std::ios::uppercase);
+      else
+        os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1
           || flt_fmt == octave::mach_info::flt_fmt_ieee_big_endian)
@@ -2812,7 +2823,10 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
       octave::preserve_stream_state stream_state (os);
 
       os.fill ('0');
-      os.flags (std::ios::right | std::ios::hex);
+      if (uppercase_format)
+        os.flags (std::ios::right | std::ios::hex | std::ios::uppercase);
+      else
+        os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1 || octave::mach_info::words_big_endian ())
         {
@@ -3546,7 +3560,6 @@ init_format_state (void)
   hex_format = 0;
   bit_format = 0;
   print_e = false;
-  print_big_e = false;
   print_g = false;
   print_eng = false;
 }
@@ -3562,6 +3575,7 @@ set_format_style (int argc, const string_vector& argv)
   if (--argc > 0)
     {
       std::string arg = argv[idx++];
+      std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
       format = arg;
 
       if (arg == "short")
@@ -3576,22 +3590,10 @@ set_format_style (int argc, const string_vector& argv)
                   init_format_state ();
                   print_e = true;
                 }
-              else if (arg == "E")
-                {
-                  init_format_state ();
-                  print_e = true;
-                  print_big_e = true;
-                }
               else if (arg == "g")
                 {
                   init_format_state ();
                   print_g = true;
-                }
-              else if (arg == "G")
-                {
-                  init_format_state ();
-                  print_g = true;
-                  print_big_e = true;
                 }
               else if (arg == "eng")
                 {
@@ -3612,27 +3614,13 @@ set_format_style (int argc, const string_vector& argv)
           print_e = true;
           set_output_prec (5);
         }
-      else if (arg == "shortE")
-        {
-          init_format_state ();
-          print_e = true;
-          print_big_e = true;
-          set_output_prec (5);
-        }
       else if (arg == "shortg")
         {
           init_format_state ();
           print_g = true;
           set_output_prec (5);
         }
-      else if (arg == "shortG")
-        {
-          init_format_state ();
-          print_g = true;
-          print_big_e = true;
-          set_output_prec (5);
-        }
-      else if (arg == "shortEng")
+      else if (arg == "shorteng")
         {
           init_format_state ();
           print_eng = true;
@@ -3650,22 +3638,10 @@ set_format_style (int argc, const string_vector& argv)
                   init_format_state ();
                   print_e = true;
                 }
-              else if (arg == "E")
-                {
-                  init_format_state ();
-                  print_e = true;
-                  print_big_e = true;
-                }
               else if (arg == "g")
                 {
                   init_format_state ();
                   print_g = true;
-                }
-              else if (arg == "G")
-                {
-                  init_format_state ();
-                  print_g = true;
-                  print_big_e = true;
                 }
               else if (arg == "eng")
                 {
@@ -3686,27 +3662,13 @@ set_format_style (int argc, const string_vector& argv)
           print_e = true;
           set_output_prec (16);
         }
-      else if (arg == "longE")
-        {
-          init_format_state ();
-          print_e = true;
-          print_big_e = true;
-          set_output_prec (16);
-        }
       else if (arg == "longg")
         {
           init_format_state ();
           print_g = true;
           set_output_prec (16);
         }
-      else if (arg == "longG")
-        {
-          init_format_state ();
-          print_g = true;
-          print_big_e = true;
-          set_output_prec (16);
-        }
-      else if (arg == "longEng")
+      else if (arg == "longeng")
         {
           init_format_state ();
           print_eng = true;
@@ -3780,6 +3742,16 @@ set_format_style (int argc, const string_vector& argv)
           Vcompact_format = false;
           return;
         }
+      else if (arg == "lowercase")
+        {
+          uppercase_format = false;
+          return;
+        }
+      else if (arg == "uppercase")
+        {
+          uppercase_format = true;
+          return;
+        }
       else
         error ("format: unrecognized format state '%s'", arg.c_str ());
     }
@@ -3798,7 +3770,7 @@ DEFUN (format, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} format
 @deftypefnx {} {} format options
-@deftypefnx {} {[@var{format}, @var{formatspacing}] =} format
+@deftypefnx {} {[@var{format}, @var{formatspacing}, @var{uppercase}] =} format
 Reset or specify the format of the output produced by @code{disp} and Octave's
 normal echoing mechanism.
 
@@ -3808,11 +3780,11 @@ one of the conversion functions such as @code{single}, @code{uint8},
 @code{int64}, etc.
 
 By default, Octave displays 5 significant digits in a human readable form
-(option @samp{short} paired with @samp{loose} format for matrices).  If
-@code{format} is invoked without any options, this default format is restored.
+(option @samp{short}, option @samp{lowercase}, and option @samp{loose} format
+for matrices).  If @code{format} is invoked without any options, this default
+format is restored.
 
-Valid formats for floating point numbers are listed in the following
-table.
+Valid formats for floating point numbers are listed in the following table.
 
 @table @code
 @item short
@@ -3831,12 +3803,6 @@ and an exponent (power of 10).  The mantissa has 5 significant digits in the
 short format.  In the long format, double values are displayed with 16
 significant digits and single values are displayed with 8.  For example,
 with the @samp{short e} format, @code{pi} is displayed as @code{3.1416e+00}.
-
-@item  short E
-@itemx long E
-Identical to @samp{short e} or @samp{long e} but displays an uppercase @samp{E}
-to indicate the exponent.  For example, with the @samp{long E} format,
-@code{pi} is displayed as @code{3.141592653589793E+00}.
 
 @item  short g
 @itemx long g
@@ -3861,11 +3827,6 @@ ans =
 Identical to @samp{short e} or @samp{long e} but displays the value using an
 engineering format, where the exponent is divisible by 3.  For example, with
 the @samp{short eng} format, @code{10 * pi} is displayed as @code{31.416e+00}.
-
-@item  long G
-@itemx short G
-Identical to @samp{short g} or @samp{long g} but displays an uppercase @samp{E}
-to indicate the exponent.
 
 @item  free
 @itemx none
@@ -3946,6 +3907,18 @@ small integers.  For example, with the @samp{rat} format, @code{pi} is
 displayed as @code{355/113}.
 @end table
 
+The following two options affect the display of scientific and hex notations.
+
+@table @code
+@item lowercase (default)
+Use a lowercase @samp{e} for the exponent character in scientific notation and
+lowercase @samp{a-f} for the hex digits representing 10-15.
+
+@item uppercase
+Use an uppercase @samp{E} for the exponent character in scientific notation and
+uppercase @samp{A-F} for the hex digits representing 10-15.
+@end table
+
 The following two options affect the display of all matrices.
 
 @table @code
@@ -3953,22 +3926,24 @@ The following two options affect the display of all matrices.
 Remove blank lines around column number labels and between matrices producing
 more compact output with more data per page.
 
-@item loose
+@item loose (default)
 Insert blank lines above and below column number labels and between matrices to
-produce a more readable output with less data per page.  (default).
+produce a more readable output with less data per page.
 @end table
 
-If called with one or two output arguments, and no inputs, return the current
-format and format spacing.
+If called with one to three output arguments, and no inputs, return the current
+format, format spacing, and uppercase preference.
 
 @seealso{fixed_point_format, output_precision, split_long_rows, print_empty_dimensions, rats}
 @end deftypefn */)
 {
   octave_value_list retval (std::min (nargout, 2));
 
+  int nargin = args.length ();
+
   if (nargout == 0)
     {
-      int argc = args.length () + 1;
+      int argc = nargin + 1;
 
       string_vector argv = args.make_argv ("format");
 
@@ -3976,8 +3951,11 @@ format and format spacing.
     }
   else
     {
-      if (args.length () > 0)
+      if (nargin > 0)
         warning ("format: cannot query and set format at the same time, ignoring set operation");
+
+      if (nargout >= 3)
+        retval(2) = (uppercase_format ? "uppercase" : "lowercase");
 
       if (nargout >= 2)
         retval(1) = (Vcompact_format ? "compact" : "loose");
@@ -3990,16 +3968,17 @@ format and format spacing.
 
 /*
 %!test
-%! [old_fmt, old_spacing] = format ();
+%! [old_fmt, old_spacing, old_uppercase] = format ();
 %! unwind_protect
 %!   ## Test one of the formats
-%!   format long;
+%!   format long e;
+%!   format uppercase;
 %!   str = disp (pi);
-%!   assert (str, "3.141592653589793\n");
+%!   assert (str, "3.141592653589793E+00\n");
 %!   str = disp (single (pi));
-%!   assert (str, "3.1415927\n");
+%!   assert (str, "3.1415927E+00\n");
 %!   new_fmt = format ();
-%!   assert (new_fmt, "long");
+%!   assert (new_fmt, "longe");
 %!   ## Test resetting format
 %!   format compact;
 %!   [~, new_spacing] = format ();
@@ -4011,6 +3990,7 @@ format and format spacing.
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);
+%!   format (old_uppercase);
 %! end_unwind_protect
 
 %!test <*53427>

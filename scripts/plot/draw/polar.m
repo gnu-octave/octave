@@ -25,6 +25,11 @@
 ## @deftypefnx {} {@var{h} =} polar (@dots{})
 ## Create a 2-D plot from polar coordinates @var{theta} and @var{rho}.
 ##
+## The input @var{theta} is assumed to be radians and is converted to degrees
+## for plotting. If you have degrees then you must convert
+## (@pxref{XREFcart2pol,,cart2pol}) to radians before passing the data to this
+## function.
+##
 ## If a single complex input @var{cplx} is given then the real part is used
 ## for @var{theta} and the imaginary part is used for @var{rho}.
 ##
@@ -44,7 +49,7 @@
 ## @code{xtick}, @code{ytick}.  The first is a list of tick locations in the
 ## radial (rho) direction; The second is a list of tick locations in the
 ## angular (theta) direction specified in degrees, i.e., in the range 0--359.
-## @seealso{rose, compass, plot}
+## @seealso{rose, compass, plot, cart2pol}
 ## @end deftypefn
 
 ## Author: jwe

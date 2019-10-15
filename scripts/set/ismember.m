@@ -90,7 +90,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
     tf = real_argout{1} & imag_argout{1};
     if (isargout (2))
       s_idx = zeros (size (real_argout{2}));
-      s_idx(tf) = real_argout{2}(tf);
+      s_idx(tf) = min (real_argout{2}(tf), imag_argout{2}(tf));
     endif
     return
   endif
@@ -264,31 +264,35 @@ endfunction
 %! assert (ismember (abc, {abc}), [false; false; false]);
 
 %!test <*52437>
-%! [tf, s_idx] = ismember ([5 4-3j 3+4j], [5 4-3j 3+4j]);
-%! assert (tf, logical ([1 1 1]))
-%! assert (s_idx, [1 2 3])
+%! [tf, s_idx] = ismember ([5, 4-3j, 3+4j], [5, 4-3j, 3+4j]);
+%! assert (tf, logical ([1, 1, 1]));
+%! assert (s_idx, [1, 2, 3]);
 %!
-%! [tf, s_idx] = ismember ([5 4-3j 3+4j], 5);
-%! assert (tf, logical ([1 0 0]))
-%! assert (s_idx, [1 0 0])
+%! [tf, s_idx] = ismember ([5, 4-3j, 3+4j], 5);
+%! assert (tf, logical ([1, 0, 0]));
+%! assert (s_idx, [1, 0, 0]);
 %!
-%! [tf, s_idx] = ismember ([5 5 5], 4-3j);
-%! assert (tf, logical ([0 0 0]))
-%! assert (s_idx, [0 0 0])
+%! [tf, s_idx] = ismember ([5, 5, 5], 4-3j);
+%! assert (tf, logical ([0, 0, 0]));
+%! assert (s_idx, [0, 0, 0]);
 %!
-%! [tf, s_idx] = ismember ([5 4-3j 3+4j; 5i 6 6i], [5 6]);
-%! assert (tf, logical ([1 0 0; 0 1 0]))
-%! assert (s_idx, [1 0 0; 0 2 0])
+%! [tf, s_idx] = ismember ([5, 4-3j, 3+4j; 5i, 6, 6i], [5, 6]);
+%! assert (tf, logical ([1, 0, 0; 0, 1, 0]));
+%! assert (s_idx, [1, 0, 0; 0, 2, 0]);
 %!
-%! [tf, s_idx] = ismember ([5 4-3j 3+4j; 5 4-3j 3+4j], [5 5 5], "rows");
-%! assert (tf, logical ([0; 0]))
-%! assert (s_idx, [0; 0])
+%! [tf, s_idx] = ismember ([5, 4-3j, 3+4j; 5, 4-3j, 3+4j], [5, 5, 5], "rows");
+%! assert (tf, logical ([0; 0]));
+%! assert (s_idx, [0; 0]);
 %!
-%! [tf, s_idx] = ismember ([5 5 5], [5 4-3j 3+4j; 5 5 5], "rows");
-%! assert (tf, true)
-%! assert (s_idx, 2)
+%! [tf, s_idx] = ismember ([5, 5, 5], [5, 4-3j, 3+4j; 5, 5, 5], "rows");
+%! assert (tf, true);
+%! assert (s_idx, 2);
 %!
-%! [tf] = ismember ([5 4-3j 3+4j], 5);
-%! assert (tf, logical ([1 0 0]))
-%! [~, s_idx] = ismember ([5 4-3j 3+4j], 5);
-%! assert (s_idx, [1 0 0])
+%! tf = ismember ([5, 4-3j, 3+4j], 5);
+%! assert (tf, logical ([1, 0, 0]))
+%! [~, s_idx] = ismember ([5, 4-3j, 3+4j], 5);
+%! assert (s_idx, [1, 0, 0]);
+%!
+%! [tf, s_idx] = ismember (-1-1j, [-1-1j, -1+3j, -1+1j]);
+%! assert (tf, true);
+%! assert (s_idx, 1);

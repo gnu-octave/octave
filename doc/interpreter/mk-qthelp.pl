@@ -34,7 +34,7 @@ while (<$HTML>)
 {
   if (/^\s*<li>/)
   {
-    ($href, $text) = m|href="([^"]*)">(.*)</a>|;
+    ($href, $text) = m|href="([^"]*)"[^<>]*>(.*)</a>|;
     # Sanitize text
     $text =~ s/<[^>]*>//g;         # remove xml-looking blocks like <code>
     $text =~ s/&rsquo;/&#8217;/g;  # Code for apostrophe

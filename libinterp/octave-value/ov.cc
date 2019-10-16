@@ -2550,9 +2550,15 @@ do_colon_op (const octave_value& base, const octave_value& increment,
       bool result_is_str = (base.is_string () && limit.is_string ());
       bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
 
+      if (base.numel () > 1 || limit.numel () > 1
+          || (increment.is_defined () && increment.numel () > 1))
+        warning_with_id ("Octave:colon-nonscalar-argument",
+                         "colon arguments should be scalars");
+
       if (base.iscomplex () || limit.iscomplex ()
           || (increment.is_defined () && increment.iscomplex ()))
-        warning ("imaginary part of complex colon arguments is ignored");
+        warning_with_id ("Octave:colon-complex-argument",
+                         "imaginary part of complex colon arguments is ignored");
 
       Matrix m_base, m_limit, m_increment;
 

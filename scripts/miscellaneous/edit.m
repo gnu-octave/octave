@@ -553,7 +553,7 @@ function retval = default_user (long_form)
     retval = ent.gecos;
     pos = strfind (retval, ",");
     if (! isempty (pos))
-      retval = retval(1:pos-1);
+      retval = retval(1:pos(1)-1);
     endif
   else
     retval = ent.name;

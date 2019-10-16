@@ -1606,6 +1606,7 @@ namespace octave
     Fstruct_levels_to_print (octave_value (0));
 
     disable_warning ("Octave:abbreviated-property-match");
+    disable_warning ("Octave:colon-nonscalar-argument");
     disable_warning ("Octave:data-file-in-path");
     disable_warning ("Octave:function-name-clash");
     disable_warning ("Octave:possible-matlab-short-circuit-operator");

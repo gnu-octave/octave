@@ -140,6 +140,20 @@
 ## By default, the @code{Octave:built-in-variable-assignment} warning is
 ## enabled.
 ##
+## @item Octave:colon-complex-argument
+## If the @code{Octave:colon-complex-argument} warning is enabled, a warning
+## is issued when one of the three arguments to the colon operator (base,
+## increment, limit) is a complex value.  For example, @code{1:3*i} will
+## cause a warning to be emitted.
+## By default, the @code{Octave:colon-complex-argument} warning is enabled.
+##
+## @item Octave:colon-nonscalar-argument
+## If the @code{Octave:colon-nonscalar-argument} warning is enabled, a warning
+## is issued when one of the three arguments to the colon operator (base,
+## increment, limit) is not a scalar.  For example, @code{1:[3, 5]} will
+## cause a warning to be emitted.
+## By default, the @code{Octave:colon-nonscalar-argument} warning is enabled.
+##
 ## @item Octave:data-file-in-path
 ## If the @code{Octave:data-file-in-path} warning is enabled, a warning is
 ## issued when Octave does not find the target of a file operation such as

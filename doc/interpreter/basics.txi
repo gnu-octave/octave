@@ -267,6 +267,7 @@ and disable the following warnings
 @example
 @group
 Octave:abbreviated-property-match
+Octave:colon-nonscalar-argument
 Octave:data-file-in-path
 Octave:function-name-clash
 Octave:possible-matlab-short-circuit-operator

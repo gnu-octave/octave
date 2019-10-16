@@ -29,10 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
+#include <memory>
 #include <string>
 
 #include "hook-fcn.h"
-#include "oct-refcount.h"
 #include "oct-time.h"
 #include "ovl.h"
 #include "pager.h"
@@ -198,11 +198,11 @@ namespace octave
     friend class input_reader;
 
     base_reader (interpreter& interp)
-      : m_interpreter (interp), m_count (1), m_pflag (0)
+      : m_interpreter (interp), m_pflag (0)
     { }
 
     base_reader (const base_reader& x)
-      : m_interpreter (x.m_interpreter), m_count (1), m_pflag (x.m_pflag)
+      : m_interpreter (x.m_interpreter), m_pflag (x.m_pflag)
     { }
 
     virtual ~base_reader (void) = default;
@@ -240,8 +240,6 @@ namespace octave
 
   private:
 
-    refcount<octave_idx_type> m_count;
-
     int m_pflag;
 
     static const std::string s_in_src;
@@ -257,28 +255,11 @@ namespace octave
 
     input_reader (interpreter& interp, const std::string& str);
 
-    input_reader (const input_reader& ir)
-    {
-      m_rep = ir.m_rep;
-      m_rep->m_count++;
-    }
+    input_reader (const input_reader& ir) = default;
 
-    input_reader& operator = (const input_reader& ir)
-    {
-      if (&ir != this)
-        {
-          m_rep = ir.m_rep;
-          m_rep->m_count++;
-        }
+    input_reader& operator = (const input_reader& ir) = default;
 
-      return *this;
-    }
-
-    ~input_reader (void)
-    {
-      if (--m_rep->m_count == 0)
-        delete m_rep;
-    }
+    ~input_reader (void) = default;
 
     void reset (void) { return m_rep->reset (); }
 
@@ -317,7 +298,7 @@ namespace octave
 
   private:
 
-    base_reader *m_rep;
+    std::shared_ptr<base_reader> m_rep;
   };
 }
 

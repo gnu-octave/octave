@@ -3761,6 +3761,7 @@ set_format_style (int argc, const string_vector& argv)
       set_output_prec (5);
       format = "short";
       Vcompact_format = false;
+      uppercase_format = false;
     }
 
   format_string = format;
@@ -3984,9 +3985,10 @@ format, format spacing, and uppercase preference.
 %!   [~, new_spacing] = format ();
 %!   assert (new_spacing, "compact");
 %!   format;
-%!   [new_fmt, new_spacing] = format ();
+%!   [new_fmt, new_spacing, new_case] = format ();
 %!   assert (new_fmt, "short");
 %!   assert (new_spacing, "loose");
+%!   assert (new_case, "lowercase");
 %! unwind_protect_cleanup
 %!   format (old_fmt);
 %!   format (old_spacing);

@@ -2441,16 +2441,6 @@ namespace octave
   {
     tree_expression *retval = nullptr;
 
-    interpreter& interp = __get_interpreter__ ("finish_colon_expression");
-    error_system& es = interp.get_error_system ();
-
-    unwind_protect frame;
-
-    frame.add_method (es, &error_system::set_discard_warning_messages,
-                      es.discard_warning_messages ());
-
-    es.discard_warning_messages (true);
-
     if (! base || ! limit)
       {
         delete base;
@@ -2463,40 +2453,61 @@ namespace octave
     int l = base->line ();
     int c = base->column ();
 
-    tree_colon_expression *e
+    tree_colon_expression *expr
       = new tree_colon_expression (base, limit, incr, l, c);
+
+    retval = expr;
 
     if (base->is_constant () && limit->is_constant ()
         && (! incr || incr->is_constant ()))
       {
+        interpreter& interp = __get_interpreter__ ("finish_colon_expression");
+
         try
           {
+            // If the evaluation generates a warning message, restore
+            // the previous value of last_warning_message and skip the
+            // conversion to a constant value.
+
+            unwind_protect frame;
+
+            error_system& es = interp.get_error_system ();
+
+            frame.add_method (es, &error_system::set_last_warning_message,
+                              es.last_warning_message (""));
+
+            frame.add_method (es, &error_system::set_discard_warning_messages,
+                              es.discard_warning_messages (true));
+
             tree_evaluator& tw = interp.get_evaluator ();
 
-            octave_value tmp = e->evaluate (tw);
+            octave_value tmp = expr->evaluate (tw);
 
-            tree_constant *tc_retval
-              = new tree_constant (tmp, e->line (), e->column ());
+            std::string msg = es.last_warning_message ();
 
-            std::ostringstream buf;
+            if (msg.empty ())
+              {
+                tree_constant *tc_retval
+                  = new tree_constant (tmp, expr->line (), expr->column ());
 
-            tree_print_code tpc (buf);
+                std::ostringstream buf;
 
-            e->accept (tpc);
+                tree_print_code tpc (buf);
 
-            tc_retval->stash_original_text (buf.str ());
+                expr->accept (tpc);
 
-            delete e;
+                tc_retval->stash_original_text (buf.str ());
 
-            retval = tc_retval;
+                delete expr;
+
+                retval = tc_retval;
+              }
           }
         catch (const execution_exception&)
           {
             interp.recover_from_exception ();
           }
       }
-    else
-      retval = e;
 
     return retval;
   }
@@ -4134,39 +4145,50 @@ namespace octave
   {
     tree_expression *retval = array_list;
 
-    interpreter& interp = __get_interpreter__ ("finish_array_list");
-    error_system& es = interp.get_error_system ();
-
-    unwind_protect frame;
-
-    frame.add_method (es, &error_system::set_discard_warning_messages,
-                      es.discard_warning_messages ());
-
-    es.discard_warning_messages (true);
-
     if (array_list->all_elements_are_constant ())
       {
+        interpreter& interp = __get_interpreter__ ("finish_array_list");
+
         try
           {
+            // If the evaluation generates a warning message, restore
+            // the previous value of last_warning_message and skip the
+            // conversion to a constant value.
+
+            unwind_protect frame;
+
+            error_system& es = interp.get_error_system ();
+
+            frame.add_method (es, &error_system::set_last_warning_message,
+                              es.last_warning_message (""));
+
+            frame.add_method (es, &error_system::set_discard_warning_messages,
+                              es.discard_warning_messages (true));
+
             tree_evaluator& tw = interp.get_evaluator ();
 
             octave_value tmp = array_list->evaluate (tw);
 
-            tree_constant *tc_retval
-              = new tree_constant (tmp, array_list->line (),
-                                   array_list->column ());
+            std::string msg = es.last_warning_message ();
 
-            std::ostringstream buf;
+            if (msg.empty ())
+              {
+                tree_constant *tc_retval
+                  = new tree_constant (tmp, array_list->line (),
+                                       array_list->column ());
 
-            tree_print_code tpc (buf);
+                std::ostringstream buf;
 
-            array_list->accept (tpc);
+                tree_print_code tpc (buf);
 
-            tc_retval->stash_original_text (buf.str ());
+                array_list->accept (tpc);
 
-            delete array_list;
+                tc_retval->stash_original_text (buf.str ());
 
-            retval = tc_retval;
+                delete array_list;
+
+                retval = tc_retval;
+              }
           }
         catch (const execution_exception&)
           {

@@ -3572,196 +3572,224 @@ set_format_style (int argc, const string_vector& argv)
   int idx = 1;
   std::string format;
 
-  if (--argc > 0)
-    {
-      std::string arg = argv[idx++];
-      std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
-      format = arg;
-
-      if (arg == "short")
-        {
-          if (--argc > 0)
-            {
-              arg = argv[idx++];
-              format.append (arg);
-
-              if (arg == "e")
-                {
-                  init_format_state ();
-                  print_e = true;
-                }
-              else if (arg == "g")
-                {
-                  init_format_state ();
-                  print_g = true;
-                }
-              else if (arg == "eng")
-                {
-                  init_format_state ();
-                  print_eng = true;
-                }
-              else
-                error ("format: unrecognized option 'short %s'", arg.c_str ());
-            }
-          else
-            init_format_state ();
-
-          set_output_prec (5);
-        }
-      else if (arg == "shorte")
-        {
-          init_format_state ();
-          print_e = true;
-          set_output_prec (5);
-        }
-      else if (arg == "shortg")
-        {
-          init_format_state ();
-          print_g = true;
-          set_output_prec (5);
-        }
-      else if (arg == "shorteng")
-        {
-          init_format_state ();
-          print_eng = true;
-          set_output_prec (5);
-        }
-      else if (arg == "long")
-        {
-          if (--argc > 0)
-            {
-              arg = argv[idx++];
-              format.append (arg);
-
-              if (arg == "e")
-                {
-                  init_format_state ();
-                  print_e = true;
-                }
-              else if (arg == "g")
-                {
-                  init_format_state ();
-                  print_g = true;
-                }
-              else if (arg == "eng")
-                {
-                  init_format_state ();
-                  print_eng = true;
-                }
-              else
-                error ("format: unrecognized option 'long %s'", arg.c_str ());
-            }
-          else
-            init_format_state ();
-
-          set_output_prec (16);
-        }
-      else if (arg == "longe")
-        {
-          init_format_state ();
-          print_e = true;
-          set_output_prec (16);
-        }
-      else if (arg == "longg")
-        {
-          init_format_state ();
-          print_g = true;
-          set_output_prec (16);
-        }
-      else if (arg == "longeng")
-        {
-          init_format_state ();
-          print_eng = true;
-          set_output_prec (16);
-        }
-      else if (arg == "hex")
-        {
-          init_format_state ();
-          hex_format = 1;
-        }
-      else if (arg == "native-hex")
-        {
-          init_format_state ();
-          hex_format = 2;
-        }
-      else if (arg == "bit")
-        {
-          init_format_state ();
-          bit_format = 1;
-        }
-      else if (arg == "native-bit")
-        {
-          init_format_state ();
-          bit_format = 2;
-        }
-      else if (arg == "+" || arg == "plus")
-        {
-          if (--argc > 0)
-            {
-              arg = argv[idx++];
-              format.append (arg);
-
-              if (arg.length () == 3)
-                plus_format_chars = arg;
-              else
-                error ("format: invalid option for plus format");
-            }
-          else
-            plus_format_chars = "+- ";
-
-          init_format_state ();
-          plus_format = true;
-        }
-      else if (arg == "rat")
-        {
-          init_format_state ();
-          rat_format = true;
-        }
-      else if (arg == "bank")
-        {
-          init_format_state ();
-          bank_format = true;
-        }
-      else if (arg == "free")
-        {
-          init_format_state ();
-          free_format = true;
-        }
-      else if (arg == "none")
-        {
-          init_format_state ();
-          free_format = true;
-        }
-      else if (arg == "compact")
-        {
-          Vcompact_format = true;
-          return;
-        }
-      else if (arg == "loose")
-        {
-          Vcompact_format = false;
-          return;
-        }
-      else if (arg == "lowercase")
-        {
-          uppercase_format = false;
-          return;
-        }
-      else if (arg == "uppercase")
-        {
-          uppercase_format = true;
-          return;
-        }
-      else
-        error ("format: unrecognized format state '%s'", arg.c_str ());
-    }
-  else
+  argc--;
+  if (argc == 0)
     {
       init_format_state ();
       set_output_prec (5);
       format = "short";
       Vcompact_format = false;
       uppercase_format = false;
+    }
+  else
+    {
+      format = format_string;   // Initialize with existing value
+      while (argc-- > 0)
+        {
+          std::string arg = argv[idx++];
+          std::transform (arg.begin (), arg.end (), arg.begin (), tolower);
+
+          if (arg == "short")
+            {
+              format = arg;
+              if (argc > 0)
+                {
+                  arg = argv[idx];
+                  if (arg == "e")
+                    {
+                      init_format_state ();
+                      print_e = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else if (arg == "g")
+                    {
+                      init_format_state ();
+                      print_g = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else if (arg == "eng")
+                    {
+                      init_format_state ();
+                      print_eng = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else
+                    init_format_state ();
+                }
+              else
+                init_format_state ();
+
+              set_output_prec (5);
+            }
+          else if (arg == "shorte")
+            {
+              format = arg;
+              init_format_state ();
+              print_e = true;
+              set_output_prec (5);
+            }
+          else if (arg == "shortg")
+            {
+              format = arg;
+              init_format_state ();
+              print_g = true;
+              set_output_prec (5);
+            }
+          else if (arg == "shorteng")
+            {
+              format = arg;
+              init_format_state ();
+              print_eng = true;
+              set_output_prec (5);
+            }
+          else if (arg == "long")
+            {
+              format = arg;
+              if (argc > 0)
+                {
+                  arg = argv[idx];
+
+                  if (arg == "e")
+                    {
+                      init_format_state ();
+                      print_e = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else if (arg == "g")
+                    {
+                      init_format_state ();
+                      print_g = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else if (arg == "eng")
+                    {
+                      init_format_state ();
+                      print_eng = true;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else
+                    init_format_state ();
+                }
+              else
+                init_format_state ();
+
+              set_output_prec (16);
+            }
+          else if (arg == "longe")
+            {
+              format = arg;
+              init_format_state ();
+              print_e = true;
+              set_output_prec (16);
+            }
+          else if (arg == "longg")
+            {
+              format = arg;
+              init_format_state ();
+              print_g = true;
+              set_output_prec (16);
+            }
+          else if (arg == "longeng")
+            {
+              format = arg;
+              init_format_state ();
+              print_eng = true;
+              set_output_prec (16);
+            }
+          else if (arg == "hex")
+            {
+              format = arg;
+              init_format_state ();
+              hex_format = 1;
+            }
+          else if (arg == "native-hex")
+            {
+              format = arg;
+              init_format_state ();
+              hex_format = 2;
+            }
+          else if (arg == "bit")
+            {
+              format = arg;
+              init_format_state ();
+              bit_format = 1;
+            }
+          else if (arg == "native-bit")
+            {
+              format = arg;
+              init_format_state ();
+              bit_format = 2;
+            }
+          else if (arg == "+" || arg == "plus")
+            {
+              format = arg;
+              if (argc > 0)
+                {
+                  arg = argv[idx];
+
+                  if (arg.length () == 3)
+                    {
+                      plus_format_chars = arg;
+                      format.append (arg);
+                      argc--;
+                      idx++;
+                    }
+                  else
+                    plus_format_chars = "+- ";
+                }
+              else
+                plus_format_chars = "+- ";
+
+              init_format_state ();
+              plus_format = true;
+            }
+          else if (arg == "rat")
+            {
+              format = arg;
+              init_format_state ();
+              rat_format = true;
+            }
+          else if (arg == "bank")
+            {
+              format = arg;
+              init_format_state ();
+              bank_format = true;
+            }
+          else if (arg == "free")
+            {
+              format = arg;
+              init_format_state ();
+              free_format = true;
+            }
+          else if (arg == "none")
+            {
+              format = arg;
+              init_format_state ();
+              free_format = true;
+            }
+          else if (arg == "compact")
+            Vcompact_format = true;
+          else if (arg == "loose")
+            Vcompact_format = false;
+          else if (arg == "lowercase")
+            uppercase_format = false;
+          else if (arg == "uppercase")
+            uppercase_format = true;
+          else
+            error ("format: unrecognized format state '%s'", arg.c_str ());
+        }
     }
 
   format_string = format;

@@ -589,8 +589,12 @@ namespace octave
   {
   public:
 
-    push_parser (interpreter& interp)
-      : base_parser (*(new push_lexer (interp)))
+    // Allow the input_reader object to be attached to the lexer so that
+    // the prompt flag can be adjusted automatically when we are parsing
+    // multi-line commands.
+
+    push_parser (interpreter& interp, input_reader *reader = nullptr)
+      : base_parser (*(new push_lexer (interp, reader)))
     { }
 
     // No copying!

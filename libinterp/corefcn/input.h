@@ -54,7 +54,6 @@ class octave_value;
 namespace octave
 {
   class interpreter;
-  class base_lexer;
 
   class input_system
   {
@@ -198,12 +197,12 @@ namespace octave
 
     friend class input_reader;
 
-    base_reader (base_lexer& lxr)
-      : m_count (1), m_pflag (0), m_lexer (lxr)
+    base_reader (interpreter& interp)
+      : m_interpreter (interp), m_count (1), m_pflag (0)
     { }
 
     base_reader (const base_reader& x)
-      : m_count (1), m_pflag (x.m_pflag), m_lexer (x.m_lexer)
+      : m_interpreter (x.m_interpreter), m_count (1), m_pflag (x.m_pflag)
     { }
 
     virtual ~base_reader (void) = default;
@@ -229,25 +228,21 @@ namespace octave
 
     std::string octave_gets (bool& eof);
 
-    virtual bool reading_fcn_file (void) const;
-
-    virtual bool reading_classdef_file (void) const;
-
-    virtual bool reading_script_file (void) const;
-
     virtual bool input_from_terminal (void) const { return false; }
 
     virtual bool input_from_file (void) const { return false; }
 
     virtual bool input_from_eval_string (void) const { return false; }
 
+  protected:
+
+    interpreter& m_interpreter;
+
   private:
 
     refcount<octave_idx_type> m_count;
 
     int m_pflag;
-
-    base_lexer& m_lexer;
 
     static const std::string s_in_src;
   };
@@ -256,11 +251,11 @@ namespace octave
   {
   public:
 
-    input_reader (base_lexer& lxr);
+    input_reader (interpreter& interp);
 
-    input_reader (FILE *file, base_lexer& lxr);
+    input_reader (interpreter& interp, FILE *file);
 
-    input_reader (const std::string& str, base_lexer& lxr);
+    input_reader (interpreter& interp, const std::string& str);
 
     input_reader (const input_reader& ir)
     {

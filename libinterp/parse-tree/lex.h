@@ -775,15 +775,15 @@ namespace octave
   public:
 
     lexer (interpreter& interp)
-      : base_lexer (interp), m_reader (*this)
+      : base_lexer (interp), m_reader (interp)
     { }
 
     lexer (FILE *file, interpreter& interp)
-      : base_lexer (interp), m_reader (file, *this)
+      : base_lexer (interp), m_reader (interp, file)
     { }
 
     lexer (const std::string& eval_string, interpreter& interp)
-      : base_lexer (interp), m_reader (eval_string, *this)
+      : base_lexer (interp), m_reader (interp, eval_string)
     { }
 
     // No copying!

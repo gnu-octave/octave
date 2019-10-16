@@ -53,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "lex.h"
 #include "load-path.h"
 #include "octave.h"
 #include "oct-map.h"
@@ -685,13 +684,11 @@ namespace octave
     // Process pre input event hook function prior to flushing output and
     // printing the prompt.
 
-    interpreter& interp = __get_interpreter__ ("base_reader::octave_gets");
+    tree_evaluator& tw = m_interpreter.get_evaluator ();
 
-    tree_evaluator& tw = interp.get_evaluator ();
+    event_manager& evmgr = m_interpreter.get_event_manager ();
 
-    event_manager& evmgr = interp.get_event_manager ();
-
-    if (interp.interactive ())
+    if (m_interpreter.interactive ())
       {
         if (! tw.in_debug_repl ())
           evmgr.exit_debugger_event ();
@@ -703,7 +700,7 @@ namespace octave
 
     bool history_skip_auto_repeated_debugging_command = false;
 
-    input_system& input_sys = interp.get_input_system ();
+    input_system& input_sys = m_interpreter.get_input_system ();
 
     std::string ps = (m_pflag > 0) ? input_sys.PS1 () : input_sys.PS2 ();
 
@@ -711,7 +708,7 @@ namespace octave
 
     pipe_handler_error_count = 0;
 
-    output_system& output_sys = interp.get_output_system ();
+    output_system& output_sys = m_interpreter.get_output_system ();
 
     output_sys.reset ();
 
@@ -724,7 +721,7 @@ namespace octave
     if (retval != "\n"
         && retval.find_first_not_of (" \t\n\r") != std::string::npos)
       {
-        load_path& lp = interp.get_load_path ();
+        load_path& lp = m_interpreter.get_load_path ();
 
         lp.update ();
 
@@ -762,25 +759,10 @@ namespace octave
     // Process post input event hook function after the internal history
     // list has been updated.
 
-    if (interp.interactive ())
+    if (m_interpreter.interactive ())
       evmgr.post_input_event ();
 
     return retval;
-  }
-
-  bool base_reader::reading_fcn_file (void) const
-  {
-    return m_lexer.m_reading_fcn_file;
-  }
-
-  bool base_reader::reading_classdef_file (void) const
-  {
-    return m_lexer.m_reading_classdef_file;
-  }
-
-  bool base_reader::reading_script_file (void) const
-  {
-    return m_lexer.m_reading_script_file;
   }
 
   class
@@ -788,8 +770,8 @@ namespace octave
   {
   public:
 
-    terminal_reader (base_lexer& lxr)
-      : base_reader (lxr)
+    terminal_reader (interpreter& interp)
+      : base_reader (interp)
     { }
 
     std::string get_input (bool& eof);
@@ -808,8 +790,8 @@ namespace octave
   {
   public:
 
-    file_reader (FILE *f_arg, base_lexer& lxr)
-      : base_reader (lxr), m_file (f_arg) { }
+    file_reader (interpreter& interp, FILE *f_arg)
+      : base_reader (interp), m_file (f_arg) { }
 
     std::string get_input (bool& eof);
 
@@ -829,8 +811,8 @@ namespace octave
   {
   public:
 
-    eval_string_reader (const std::string& str, base_lexer& lxr)
-      : base_reader (lxr), m_eval_string (str)
+    eval_string_reader (interpreter& interp, const std::string& str)
+      : base_reader (interp), m_eval_string (str)
     { }
 
     std::string get_input (bool& eof);
@@ -846,16 +828,16 @@ namespace octave
     static const std::string s_in_src;
   };
 
-  input_reader::input_reader (base_lexer& lxr)
-    : m_rep (new terminal_reader (lxr))
+  input_reader::input_reader (interpreter& interp)
+    : m_rep (new terminal_reader (interp))
   { }
 
-  input_reader::input_reader (FILE *file, base_lexer& lxr)
-    : m_rep (new file_reader (file, lxr))
+  input_reader::input_reader (interpreter& interp, FILE *file)
+    : m_rep (new file_reader (interp, file))
   { }
 
-  input_reader::input_reader (const std::string& str, base_lexer& lxr)
-    : m_rep (new eval_string_reader (str, lxr))
+  input_reader::input_reader (interpreter& interp, const std::string& str)
+    : m_rep (new eval_string_reader (interp, str))
   { }
 
   const std::string base_reader::s_in_src ("invalid");
@@ -883,8 +865,7 @@ namespace octave
 
     std::string src_str = octave_fgets (m_file, eof);
 
-    input_system& input_sys
-      = __get_input_system__ ("get_input");
+    input_system& input_sys = m_interpreter.get_input_system ();
 
     std::string mfile_encoding = input_sys.mfile_encoding ();
 

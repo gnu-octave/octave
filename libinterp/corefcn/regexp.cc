@@ -662,8 +662,8 @@ DEFUN (regexp, args, nargout,
 @deftypefnx {} {[@dots{}] =} regexp (@var{str}, @var{pat}, "@var{opt1}", @dots{})
 Regular expression string matching.
 
-Search for @var{pat} in @var{str} and return the positions and substrings of
-any matches, or empty values if there are none.
+Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
+substrings of any matches, or empty values if there are none.
 
 The matched pattern @var{pat} can include any of the standard regex
 operators, including:
@@ -1195,9 +1195,9 @@ DEFUN (regexpi, args, nargout,
 
 Case insensitive regular expression string matching.
 
-Search for @var{pat} in @var{str} and return the positions and substrings of
-any matches, or empty values if there are none.  @xref{XREFregexp,,regexp},
-for details on the syntax of the search pattern.
+Search for @var{pat} in UTF-8 encoded @var{str} and return the positions and
+substrings of any matches, or empty values if there are none.
+@xref{XREFregexp,,regexp}, for details on the syntax of the search pattern.
 @seealso{regexp}
 @end deftypefn */)
 {
@@ -1395,6 +1395,8 @@ Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.
 
 The pattern is a regular expression as documented for @code{regexp}.
 @xref{XREFregexp,,regexp}.
+
+All strings must be UTF-8 encoded.
 
 The replacement string may contain @code{$i}, which substitutes for the ith
 set of parentheses in the match string.  For example,

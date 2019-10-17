@@ -390,6 +390,7 @@ namespace octave
       m_inhibit_startup_message (false),
       m_load_path_initialized (false),
       m_history_initialized (false),
+      m_in_top_level_repl (false),
       m_initialized (false)
   {
     // FIXME: When thread_local storage is used by default, this message
@@ -972,8 +973,10 @@ namespace octave
 
   int interpreter::main_loop (void)
   {
+    int retval = 0;
+
     if (! m_app_context)
-      return 0;
+      return retval;
 
     octave_save_signal_mask ();
 
@@ -988,7 +991,128 @@ namespace octave
 
     // The big loop.
 
-    return m_evaluator.repl (m_interactive);
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+    input_reader reader (*this);
+
+    // Attach input_reader object to parser so that the promptflag can
+    // be adjusted automatically when we are parsing multi-line
+    // commands.
+
+    push_parser repl_parser (*this, &reader);
+
+#else
+
+    // The pull parser takes ownership of the lexer and will delete it
+    // when the parser goes out of scope.
+
+    parser repl_parser (m_interactive
+                        ? new lexer (*this) : new lexer (stdin, *this));
+
+#endif
+
+    do
+      {
+        try
+          {
+            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+
+            repl_parser.reset ();
+
+            if (m_evaluator.at_top_level ())
+              {
+                m_evaluator.dbstep_flag (0);
+                m_evaluator.reset_debug_state ();
+              }
+
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+            do
+              {
+                bool eof;
+
+                std::string input_line = reader.get_input (eof);
+
+                if (eof)
+                  {
+                    retval = EOF;
+                    break;
+                  }
+
+                retval = repl_parser.run (input_line, false);
+              }
+            while (retval < 0);
+
+#else
+
+            retval = repl_parser.run ();
+
+#endif
+            if (retval == 0)
+              {
+                std::shared_ptr<tree_statement_list>
+                  stmt_list = repl_parser.statement_list ();
+
+                if (stmt_list)
+                  {
+                    m_evaluator.eval (stmt_list, m_interactive);
+                  }
+                else if (repl_parser.at_end_of_input ())
+                  {
+                    retval = EOF;
+                    break;
+                  }
+              }
+          }
+        catch (const interrupt_exception&)
+          {
+            recover_from_exception ();
+
+            // Required newline when the user does Ctrl+C at the prompt.
+            if (m_interactive)
+              octave_stdout << "\n";
+          }
+        catch (const index_exception& e)
+          {
+            recover_from_exception ();
+
+            std::cerr << "error: unhandled index exception: "
+                      << e.message () << " -- trying to return to prompt"
+                      << std::endl;
+          }
+        catch (const execution_exception& ee)
+          {
+            m_error_system.save_exception (ee);
+            m_error_system.display_exception (ee, std::cerr);
+
+            if (m_interactive)
+              recover_from_exception ();
+            else
+              {
+                // We should exit with a nonzero status.
+                retval = 1;
+                break;
+              }
+          }
+        catch (const std::bad_alloc&)
+          {
+            recover_from_exception ();
+
+            std::cerr << "error: out of memory -- trying to return to prompt"
+                      << std::endl;
+          }
+      }
+    while (retval == 0);
+
+    if (retval == EOF)
+      {
+        if (m_interactive)
+          octave_stdout << "\n";
+
+        return 0;
+      }
+
+    return retval;
   }
 
   // Call a function with exceptions handled to avoid problems with

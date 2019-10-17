@@ -330,9 +330,7 @@ namespace octave
         // If there is no enclosing debug level or the top-level
         // repl is not active, handle dbquit the same as dbcont.
 
-        tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-        if (m_level > 0 || tw.in_top_level_repl ())
+        if (m_level > 0 || m_interpreter.in_top_level_repl ())
           throw quit_debug_exception ();
         else
           return true;
@@ -343,9 +341,7 @@ namespace octave
         // If the top-level repl is not active, handle "dbquit all"
         // the same as dbcont.
 
-        tree_evaluator& tw = m_interpreter.get_evaluator ();
-
-        if (tw.in_top_level_repl ())
+        if (m_interpreter.in_top_level_repl ())
           throw quit_debug_exception (true);
         else
           return true;
@@ -359,169 +355,36 @@ namespace octave
     return m_call_stack.at_top_level ();
   }
 
-  int tree_evaluator::repl (bool interactive)
+  void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
+                             bool interactive)
   {
-    int retval = 0;
-
-#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
-
-    input_reader reader (m_interpreter);
-
-    // Attach input_reader object to parser so that the promptflag can
-    // be adjusted automatically when we are parsing multi-line
-    // commands.
-
-    push_parser repl_parser (m_interpreter, &reader);
-
-#else
-
-    // The pull parser takes ownership of the lexer and will delete it
-    // when the parser goes out of scope.
-
-    parser repl_parser (interactive
-                        ? new lexer (m_interpreter)
-                        : new lexer (stdin, m_interpreter));
-
-#endif
-
-    error_system& es = m_interpreter.get_error_system ();
-
-    do
+    try
       {
-        try
+        stmt_list->accept (*this);
+
+        octave_quit ();
+
+        if (! interactive)
           {
-            unwind_protect_var<bool> upv (m_in_top_level_repl, true);
+            bool quit = (m_returning || m_breaking);
 
-            repl_parser.reset ();
+            if (m_returning)
+              m_returning = 0;
 
-            if (at_top_level ())
-              {
-                m_dbstep_flag = 0;
-                reset_debug_state ();
-              }
+            if (m_breaking)
+              m_breaking--;
 
-#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
-
-            do
-              {
-                bool eof;
-
-                std::string input_line = reader.get_input (eof);
-
-                if (eof)
-                  {
-                    retval = EOF;
-                    break;
-                  }
-
-                retval = repl_parser.run (input_line, false);
-              }
-            while (retval < 0);
-
-#else
-
-            retval = repl_parser.run ();
-
-#endif
-
-            if (retval == 0)
-              {
-                std::shared_ptr<tree_statement_list> stmt_list
-                  = repl_parser.statement_list ();
-
-                if (stmt_list)
-                  {
-                    stmt_list->accept (*this);
-
-                    octave_quit ();
-
-                    if (! interactive)
-                      {
-                        bool quit = (m_returning || m_breaking);
-
-                        if (m_returning)
-                          m_returning = 0;
-
-                        if (m_breaking)
-                          m_breaking--;
-
-                        if (quit)
-                          break;
-                      }
-
-                    if (octave_completion_matches_called)
-                      octave_completion_matches_called = false;
-                  }
-                else if (repl_parser.at_end_of_input ())
-                  {
-                    retval = EOF;
-                    break;
-                  }
-              }
-          }
-        catch (const interrupt_exception&)
-          {
-            m_interpreter.recover_from_exception ();
-
-            // Required newline when the user does Ctrl+C at the prompt.
-            if (interactive)
-              octave_stdout << "\n";
-          }
-        catch (const quit_debug_exception&)
-          {
-            m_interpreter.recover_from_exception ();
-          }
-        catch (const index_exception& e)
-          {
-            m_interpreter.recover_from_exception ();
-
-            std::cerr << "error: unhandled index exception: "
-                      << e.message () << " -- trying to return to prompt"
-                      << std::endl;
-          }
-        catch (const execution_exception& ee)
-          {
-            es.save_exception (ee);
-            es.display_exception (ee, std::cerr);
-
-            if (interactive)
-              m_interpreter.recover_from_exception ();
-            else
-              {
-                // We should exit with a nonzero status.
-                retval = 1;
-                break;
-              }
-          }
-        catch (const std::bad_alloc&)
-          {
-            m_interpreter.recover_from_exception ();
-
-            std::cerr << "error: out of memory -- trying to return to prompt"
-                      << std::endl;
+            if (quit)
+              return;
           }
 
-#if defined (DBSTOP_NANINF)
-        error_system& es = m_interpreter.get_error_system ();
-
-        if (es.debug_on_naninf ())
-          {
-            if (setjump (naninf_jump) != 0)
-              debug_or_throw_exception (true);  // true = stack trace
-          }
-#endif
+        if (octave_completion_matches_called)
+          octave_completion_matches_called = false;
       }
-    while (retval == 0);
-
-    if (retval == EOF)
+    catch (const quit_debug_exception&)
       {
-        if (interactive)
-          octave_stdout << "\n";
-
-        retval = 0;
+        m_interpreter.recover_from_exception ();
       }
-
-    return retval;
   }
 
   std::string

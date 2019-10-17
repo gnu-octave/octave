@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iosfwd>
 #include <list>
+#include <memory>
 #include <set>
 #include <stack>
 #include <string>
@@ -134,7 +135,7 @@ namespace octave
         m_echo_files (), m_in_loop_command (false),
         m_breaking (0), m_continuing (0), m_returning (0),
         m_indexed_object (nullptr), m_index_position (0),
-        m_num_indices (0), m_in_top_level_repl (false)
+        m_num_indices (0)
       { }
 
     // No copying!
@@ -147,7 +148,8 @@ namespace octave
 
     bool at_top_level (void) const;
 
-    int repl (bool interactive);
+    void eval (std::shared_ptr<tree_statement_list>& stmt_list,
+               bool interactive);
 
     std::string mfilename (const std::string& opt = "") const;
 
@@ -630,8 +632,6 @@ namespace octave
 
     int num_indices (void) const { return m_num_indices; }
 
-    bool in_top_level_repl (void) const { return m_in_top_level_repl; }
-
     const std::list<octave_lvalue> * lvalue_list (void) const
     {
       return m_lvalue_list;
@@ -832,9 +832,6 @@ namespace octave
     const octave_value *m_indexed_object;
     int m_index_position;
     int m_num_indices;
-
-    // TRUE if we are in the top level interactive read eval print loop.
-    bool m_in_top_level_repl;
   };
 }
 

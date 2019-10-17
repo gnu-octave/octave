@@ -197,6 +197,26 @@ namespace octave
 
 #endif
 
+enum
+octave_exception
+{
+  octave_no_exception
+  OCTAVE_DEPRECATED (6, "the 'octave_no_exception' enum value is an obsolete internal value; any uses should be removed")
+  = 0,
+
+  octave_exec_exception
+  OCTAVE_DEPRECATED (6, "the 'octave_exec_exception' enum value is an obsolete internal value; any uses should be removed")
+  = 1,
+
+  octave_alloc_exception
+  OCTAVE_DEPRECATED (6, "the 'octave_alloc_exception' enum value is an obsolete internal value; any uses should be removed")
+  = 3,
+
+  octave_quit_exception
+  OCTAVE_DEPRECATED (6, "the 'octave_quit_exception' enum value is an obsolete internal value; any uses should be removed")
+   = 4
+};
+
 /*
   > 0: interrupt pending
     0: no interrupt pending
@@ -204,16 +224,34 @@ namespace octave
 */
 OCTAVE_API extern sig_atomic_t octave_interrupt_state;
 
+OCTAVE_DEPRECATED (6, "'octave_exception_state' is an obsolete internal variable; any uses should be removed")
+OCTAVE_API extern sig_atomic_t octave_exception_state;
+
 OCTAVE_API extern volatile sig_atomic_t octave_signal_caught;
 
 OCTAVE_API extern void octave_handle_signal (void);
+
+OCTAVE_DEPRECATED (6, "use 'throw octave::interrupt_exception' instead")
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_interrupt_exception (void);
+
+OCTAVE_DEPRECATED (6, "use 'throw octave::execution_exception' instead")
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_execution_exception (void);
+
+OCTAVE_DEPRECATED (6, "use 'throw std::bad_alloc' instead")
+OCTAVE_NORETURN OCTAVE_API extern void octave_throw_bad_alloc (void);
+
+OCTAVE_DEPRECATED (6, "use 'throw' instead")
+OCTAVE_API extern void octave_rethrow_exception (void);
 
 #if defined (__cplusplus)
 
 inline void octave_quit (void)
 {
   if (octave_signal_caught)
-    octave_handle_signal ();
+    {
+      octave_signal_caught = 0;
+      octave_handle_signal ();
+    }
 };
 
 #define OCTAVE_QUIT octave_quit ()
@@ -224,10 +262,12 @@ inline void octave_quit (void)
   do                                            \
     {                                           \
       if (octave_signal_caught)                 \
-        octave_handle_signal ();                \
+        {                                       \
+          octave_signal_caught = 0;             \
+          octave_handle_signal ();              \
+        }                                       \
     }                                           \
   while (0)
-
 #endif
 
 /* The following macros are obsolete.  Interrupting immediately by
@@ -267,6 +307,9 @@ inline void octave_quit (void)
 
 extern OCTAVE_API void (*octave_signal_hook) (void);
 extern OCTAVE_API void (*octave_interrupt_hook) (void);
+
+OCTAVE_DEPRECATED (6, "'octave_bad_alloc_hook' is obsolete and no longer used")
+extern OCTAVE_API void (*octave_bad_alloc_hook) (void);
 
 #endif
 

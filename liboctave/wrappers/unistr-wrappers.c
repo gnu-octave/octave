@@ -28,6 +28,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "unistr-wrappers.h"
 
+const uint8_t *
+octave_u8_check_wrapper (const uint8_t *src, size_t n)
+{
+  return u8_check (src, n);
+}
+
 int
 octave_u8_strmblen_wrapper (const uint8_t *src)
 {

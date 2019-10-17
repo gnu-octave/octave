@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "lo-regexp.h"
 #include "str-vec.h"
+#include "unistr-wrappers.h"
 
 namespace octave
 {
@@ -246,6 +247,12 @@ namespace octave
   regexp::match_data
   regexp::match (const std::string& buffer)
   {
+    // check if input is valid utf-8
+    const uint8_t *buf_str = reinterpret_cast<const uint8_t *> (buffer.c_str ());
+    if (octave_u8_check_wrapper (buf_str, buffer.length ()))
+      (*current_liboctave_error_handler)
+        ("%s: the input string is invalid UTF-8", m_who.c_str ());
+
     regexp::match_data retval;
 
     std::list<regexp::match_element> lst;
@@ -280,7 +287,7 @@ namespace octave
 
         int matches = pcre_exec (re, nullptr, buffer.c_str (),
                                  buffer.length (), idx,
-                                 (idx ? PCRE_NOTBOL : 0),
+                                 PCRE_NO_UTF8_CHECK | (idx ? PCRE_NOTBOL : 0),
                                  ovector, (subpatterns+1)*3);
 
         if (matches == PCRE_ERROR_MATCHLIMIT)
@@ -307,16 +314,13 @@ namespace octave
                 pe.match_limit *= 10;
                 matches = pcre_exec (re, &pe, buffer.c_str (),
                                      buffer.length (), idx,
-                                     (idx ? PCRE_NOTBOL : 0),
+                                     PCRE_NO_UTF8_CHECK
+                                     | (idx ? PCRE_NOTBOL : 0),
                                      ovector, (subpatterns+1)*3);
               }
           }
 
-        if (matches == PCRE_ERROR_BADUTF8)
-          (*current_liboctave_error_handler)
-            ("%s: internal error calling pcre_exec; "
-             "the input string is invalid UTF-8", m_who.c_str ());
-        else if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
+        if (matches < 0 && matches != PCRE_ERROR_NOMATCH)
           (*current_liboctave_error_handler)
             ("%s: internal error calling pcre_exec; "
              "error code from pcre_exec is %i", m_who.c_str (), matches);

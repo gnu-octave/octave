@@ -1316,7 +1316,10 @@ OCTAVE_CHECK_LIB(qhull, QHull,
 ### Check for PCRE regex library.
 
 OCTAVE_CHECK_LIB(pcre, PCRE,
-  [], [pcre.h pcre/pcre.h], [pcre_compile], [], [], [],
+  [], [pcre.h pcre/pcre.h], [pcre_compile], [], [],
+  [OCTAVE_CHECK_LIB_PCRE_OK([],
+    [AC_MSG_ERROR([PCRE library must be built with UTF support (--enable-utf)])])
+  ],
   [libpcre], [REQUIRED])
 
 ### Check for readline library.

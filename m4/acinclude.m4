@@ -1456,6 +1456,40 @@ AC_DEFUN([OCTAVE_CHECK_LIB_QHULL_OK], [
   fi
 ])
 dnl
+dnl Check whether PCRE is compiled with --enable-utf.
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_PCRE_OK], [
+  AC_CACHE_CHECK([whether PCRE library was compiled with UTF support],
+    [octave_cv_lib_pcre_ok],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        #include <stdio.h>
+        #if defined (HAVE_PCRE_H)
+        #  include <pcre.h>
+        #elif defined (HAVE_PCRE_PCRE_H)
+        #  include <pcre/pcre.h>
+        #endif
+        ]], [[
+        const char *pattern = "test";
+        const char *err;
+        int erroffset;
+        pcre *data = pcre_compile (pattern, PCRE_UTF8, &err, &erroffset, nullptr);
+        return (! data);
+      ]])],
+      octave_cv_lib_pcre_ok=yes,
+      octave_cv_lib_pcre_ok=no,
+      octave_cv_lib_pcre_ok=yes)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_lib_pcre_ok = yes; then
+    $1
+    :
+  else
+    $2
+    :
+  fi
+])
+dnl
 dnl Check whether sndfile library is modern enough to include things like Ogg
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [

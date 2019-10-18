@@ -663,6 +663,8 @@ namespace octave
 
   int interpreter::execute (void)
   {
+    int exit_status = 0;
+
     try
       {
         initialize ();
@@ -670,8 +672,6 @@ namespace octave
         // We ignore errors in startup files.
 
         execute_startup_files ();
-
-        int exit_status = 0;
 
         if (m_app_context)
           {
@@ -713,6 +713,8 @@ namespace octave
       {
         return ex.exit_status ();
       }
+
+    return exit_status;
   }
 
   void interpreter::display_startup_message (void) const
@@ -870,6 +872,9 @@ namespace octave
 
   int interpreter::execute_eval_option_code (void)
   {
+    if (! m_app_context)
+      return 0;
+
     const cmdline_options& options = m_app_context->options ();
 
     std::string code_to_eval = options.code_to_eval ();
@@ -915,6 +920,9 @@ namespace octave
 
   int interpreter::execute_command_line_file (void)
   {
+    if (! m_app_context)
+      return 0;
+
     const cmdline_options& options = m_app_context->options ();
 
     unwind_protect frame;
@@ -969,10 +977,7 @@ namespace octave
 
   int interpreter::main_loop (void)
   {
-    int retval = 0;
-
-    if (! m_app_context)
-      return retval;
+    int exit_status = 0;
 
     octave_save_signal_mask ();
 
@@ -1029,22 +1034,22 @@ namespace octave
 
                 if (eof)
                   {
-                    retval = EOF;
+                    exit_status = EOF;
                     break;
                   }
 
-                retval = repl_parser.run (input_line, false);
+                exit_status = repl_parser.run (input_line, false);
 
                 prompt = command_editor::decode_prompt_string (m_input_system.PS2 ());
               }
-            while (retval < 0);
+            while (exit_status < 0);
 
 #else
 
-            retval = repl_parser.run ();
+            exit_status = repl_parser.run ();
 
 #endif
-            if (retval == 0)
+            if (exit_status == 0)
               {
                 std::shared_ptr<tree_statement_list>
                   stmt_list = repl_parser.statement_list ();
@@ -1057,7 +1062,7 @@ namespace octave
                   }
                 else if (repl_parser.at_end_of_input ())
                   {
-                    retval = EOF;
+                    exit_status = EOF;
                     break;
                   }
               }
@@ -1088,7 +1093,7 @@ namespace octave
             else
               {
                 // We should exit with a nonzero status.
-                retval = 1;
+                exit_status = 1;
                 break;
               }
           }
@@ -1100,17 +1105,17 @@ namespace octave
                       << std::endl;
           }
       }
-    while (retval == 0);
+    while (exit_status == 0);
 
-    if (retval == EOF)
+    if (exit_status == EOF)
       {
         if (m_interactive)
           octave_stdout << "\n";
 
-        return 0;
+        exit_status = 0;
       }
 
-    return retval;
+    return exit_status;
   }
 
   // Call a function with exceptions handled to avoid problems with

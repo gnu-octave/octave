@@ -3961,7 +3961,7 @@ Insert blank lines above and below column number labels and between matrices to
 produce a more readable output with less data per page.
 @end table
 
-If @code{format} is called with multiple competing options, the most right one
+If @code{format} is called with multiple competing options, the rightmost one
 is used.  In case of an error the format remains unchanged.
 
 If called with one to three output arguments, and no inputs, return the current

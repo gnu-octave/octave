@@ -30,7 +30,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
      format long e uppercase loose
 
-  Note, that in case of multiple competing format options the most right
+  Note, that in case of multiple competing format options the rightmost
   one is used and in case of an error the previous format remains
   unchanged.
 

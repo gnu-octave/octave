@@ -24,12 +24,22 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   'A-F' instead.  The previous uppercase formats, `E` and `G`, no longer
   control the case of the output.
 
+  Additionally, the `format` command can be called with multiple options
+  for controlling the format, spacing, and case in arbitrary order.
+  For example:
+
+     format long e uppercase loose
+
+  Note, that in case of multiple competing format options the most right
+  one is used and in case of an error the previous format remains
+  unchanged.
+
 - New warnings have been added about questionable uses of the colon ':'
   range operator.  Each has a new warning ID so that it can be disabled
   if desired.
     Octave:colon-complex-argument   : when any arg is complex
     Octave:colon-nonscalar-argument : when any arg is non-scalar
-  
+
 #### Graphics backend
 
 - Graphic primitives now accept a color property value of `"none"`

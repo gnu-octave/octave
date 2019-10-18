@@ -3813,7 +3813,8 @@ By default, Octave displays 5 significant digits in a human readable form
 for matrices).  If @code{format} is invoked without any options, this default
 format is restored.
 
-Valid formats for floating point numbers are listed in the following table.
+Valid format options for floating point numbers are listed in the following
+table.
 
 @table @code
 @item short
@@ -3959,6 +3960,9 @@ more compact output with more data per page.
 Insert blank lines above and below column number labels and between matrices to
 produce a more readable output with less data per page.
 @end table
+
+If @code{format} is called with multiple competing options, the most right one
+is used.  In case of an error the format remains unchanged.
 
 If called with one to three output arguments, and no inputs, return the current
 format, format spacing, and uppercase preference.

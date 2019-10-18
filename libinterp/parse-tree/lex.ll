@@ -3711,8 +3711,15 @@ namespace octave
 
     if (m_input_buf.empty ())
       {
+        input_system& input_sys = m_interpreter.get_input_system ();
+
+        std::string ps
+          = promptflag () > 0 ? input_sys.PS1 () : input_sys.PS2 ();
+
+        std::string prompt = command_editor::decode_prompt_string (ps);
+
         bool eof = false;
-        m_current_input_line = m_reader.get_input (eof);
+        m_current_input_line = m_reader.get_input (prompt, eof);
 
         m_input_buf.fill (m_current_input_line, eof);
 

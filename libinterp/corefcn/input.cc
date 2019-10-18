@@ -673,7 +673,7 @@ namespace octave
     return retval;
   }
 
-  std::string base_reader::octave_gets (bool& eof)
+  std::string base_reader::octave_gets (const std::string& prompt, bool& eof)
   {
     octave_quit ();
 
@@ -701,10 +701,6 @@ namespace octave
     bool history_skip_auto_repeated_debugging_command = false;
 
     input_system& input_sys = m_interpreter.get_input_system ();
-
-    std::string ps = (m_pflag > 0) ? input_sys.PS1 () : input_sys.PS2 ();
-
-    std::string prompt = command_editor::decode_prompt_string (ps);
 
     pipe_handler_error_count = 0;
 
@@ -774,7 +770,7 @@ namespace octave
       : base_reader (interp)
     { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -793,7 +789,7 @@ namespace octave
     file_reader (interpreter& interp, FILE *f_arg)
       : base_reader (interp), m_file (f_arg) { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -815,7 +811,7 @@ namespace octave
       : base_reader (interp), m_eval_string (str)
     { }
 
-    std::string get_input (bool& eof);
+    std::string get_input (const std::string& prompt, bool& eof);
 
     std::string input_source (void) const { return s_in_src; }
 
@@ -845,19 +841,19 @@ namespace octave
   const std::string terminal_reader::s_in_src ("terminal");
 
   std::string
-  terminal_reader::get_input (bool& eof)
+  terminal_reader::get_input (const std::string& prompt, bool& eof)
   {
     octave_quit ();
 
     eof = false;
 
-    return octave_gets (eof);
+    return octave_gets (prompt, eof);
   }
 
   const std::string file_reader::s_in_src ("file");
 
   std::string
-  file_reader::get_input (bool& eof)
+  file_reader::get_input (const std::string& /*prompt*/, bool& eof)
   {
     octave_quit ();
 
@@ -907,7 +903,7 @@ namespace octave
   const std::string eval_string_reader::s_in_src ("eval_string");
 
   std::string
-  eval_string_reader::get_input (bool& eof)
+  eval_string_reader::get_input (const std::string& /*prompt*/, bool& eof)
   {
     octave_quit ();
 

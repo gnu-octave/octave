@@ -1029,9 +1029,16 @@ namespace octave
 
             do
               {
-                bool eof;
+                int promptflag = repl_parser.promptflag ();
 
-                std::string input_line = reader.get_input (eof);
+                std::string ps
+                  = (promptflag > 0
+                     ? m_input_system.PS1 () : m_input_system.PS2 ());
+
+                std::string prompt = command_editor::decode_prompt_string (ps);
+
+                bool eof = false;
+                std::string input_line = reader.get_input (prompt, eof);
 
                 if (eof)
                   {

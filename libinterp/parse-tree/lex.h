@@ -709,13 +709,20 @@ namespace octave
     // Object that collects comment text.
     comment_buffer m_comment_buf;
 
-    virtual void increment_promptflag (void) = 0;
+    int m_promptflag;
 
-    virtual void decrement_promptflag (void) = 0;
+    void increment_promptflag (void) { m_promptflag++; }
 
-    virtual int promptflag (void) const = 0;
+    void decrement_promptflag (void) { m_promptflag--; }
 
-    virtual int promptflag (int) = 0;
+    int promptflag (void) const { return m_promptflag; }
+
+    int promptflag (int n)
+    {
+      int retval = m_promptflag;
+      m_promptflag = n;
+      return retval;
+    }
 
     virtual std::string input_source (void) const { return "unknown"; }
 
@@ -799,14 +806,6 @@ namespace octave
       base_lexer::reset ();
     }
 
-    void increment_promptflag (void) { m_reader.increment_promptflag (); }
-
-    void decrement_promptflag (void) { m_reader.decrement_promptflag (); }
-
-    int promptflag (void) const { return m_reader.promptflag (); }
-
-    int promptflag (int n) { return m_reader.promptflag (n); }
-
     std::string input_source (void) const
     {
       return m_reader.input_source ();
@@ -838,25 +837,25 @@ namespace octave
   public:
 
     push_lexer (interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input ("", false);
     }
 
     push_lexer (const std::string& input, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input (input, false);
     }
 
     push_lexer (bool eof, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input ("", eof);
     }
 
     push_lexer (const std::string& input, bool eof, interpreter& interp)
-      : base_lexer (interp), m_pflag (1)
+      : base_lexer (interp)
     {
       append_input (input, eof);
     }
@@ -869,35 +868,11 @@ namespace octave
 
     bool is_push_lexer (void) const { return true; }
 
-    void reset (void)
-    {
-      promptflag (1);
-
-      base_lexer::reset ();
-    }
-
     void append_input (const std::string& input, bool eof);
-
-    void increment_promptflag (void) { m_pflag++; }
-
-    void decrement_promptflag (void) { m_pflag--; }
-
-    int promptflag (void) const { return m_pflag; }
-
-    int promptflag (int n)
-    {
-      int retval = m_pflag;
-      m_pflag = n;
-      return retval;
-    }
 
     std::string input_source (void) const { return "push buffer"; }
 
     int fill_flex_buffer (char *buf, unsigned int max_size);
-
-  protected:
-
-    int m_pflag;
   };
 }
 

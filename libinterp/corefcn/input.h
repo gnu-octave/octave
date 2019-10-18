@@ -207,7 +207,7 @@ namespace octave
 
     virtual ~base_reader (void) = default;
 
-    virtual std::string get_input (bool& eof) = 0;
+    virtual std::string get_input (const std::string& prompt, bool& eof) = 0;
 
     virtual std::string input_source (void) const { return s_in_src; }
 
@@ -226,7 +226,7 @@ namespace octave
       return retval;
     }
 
-    std::string octave_gets (bool& eof);
+    std::string octave_gets (const std::string& prompt, bool& eof);
 
     virtual bool input_from_terminal (void) const { return false; }
 
@@ -271,9 +271,9 @@ namespace octave
 
     int promptflag (int n) { return m_rep->promptflag (n); }
 
-    std::string get_input (bool& eof)
+    std::string get_input (const std::string& prompt, bool& eof)
     {
-      return m_rep->get_input (eof);
+      return m_rep->get_input (prompt, eof);
     }
 
     std::string input_source (void) const

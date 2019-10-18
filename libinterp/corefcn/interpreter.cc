@@ -707,10 +707,6 @@ namespace octave
               command_editor::blink_matching_paren (false);
           }
 
-        // Avoid counting commands executed from startup or script files.
-
-        command_editor::reset_current_command_number (1);
-
         return main_loop ();
       }
     catch (const exit_exception& ex)
@@ -1055,6 +1051,8 @@ namespace octave
 
                 if (stmt_list)
                   {
+                    command_editor::increment_current_command_number ();
+
                     m_evaluator.eval (stmt_list, m_interactive);
                   }
                 else if (repl_parser.at_end_of_input ())

@@ -737,11 +737,7 @@ namespace octave
         if (! history_skip_auto_repeated_debugging_command)
           {
             if (command_history::add (retval))
-              {
-                evmgr.append_history (retval);
-                if (! tw.in_debug_repl ())
-                  command_editor::increment_current_command_number ();
-              }
+              evmgr.append_history (retval);
           }
 
         octave_diary << retval;

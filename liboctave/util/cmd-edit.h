@@ -41,7 +41,7 @@ namespace octave
   protected:
 
     command_editor (void)
-      : m_command_number (0), m_rows (24), m_cols (80), m_interrupted (false),
+      : m_command_number (1), m_rows (24), m_cols (80), m_interrupted (false),
         m_interrupt_event_loop (false), m_initial_input ()
       { }
 

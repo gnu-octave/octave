@@ -135,7 +135,7 @@ namespace octave
     bool m_in_debug_repl;
   };
 
-  void debugger::repl (const std::string& prompt)
+  void debugger::repl (const std::string& prompt_arg)
   {
     unwind_protect frame;
 
@@ -221,9 +221,9 @@ namespace octave
     if (! stopped_in_msg.empty ())
       std::cerr << stopped_in_msg << std::endl;
 
-    std::string tmp_prompt = prompt;
+    std::string tmp_prompt = prompt_arg;
     if (m_level > 0)
-      tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt;
+      tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
 
     frame.add_method (input_sys, &input_system::set_PS1, input_sys.PS1 ());
     input_sys.PS1 (tmp_prompt);
@@ -250,7 +250,17 @@ namespace octave
           }
       }
 
-    parser curr_parser (m_interpreter);
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+
+    input_reader reader (m_interpreter);
+
+    push_parser debug_parser (m_interpreter);
+
+#else
+
+    parser debug_parser (m_interpreter);
+
+#endif
 
     error_system& es = m_interpreter.get_error_system ();
 
@@ -266,10 +276,37 @@ namespace octave
           {
             Vtrack_line_num = false;
 
-            curr_parser.reset ();
+            debug_parser.reset ();
 
-            int retval = curr_parser.run ();
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
+            int retval = 0;
+
+            std::string prompt
+              = command_editor::decode_prompt_string (tmp_prompt);
+
+            do
+              {
+                bool eof = false;
+                std::string input_line = reader.get_input (prompt, eof);
+
+                if (eof)
+                  {
+                    retval = EOF;
+                    break;
+                  }
+
+                retval = debug_parser.run (input_line, false);
+
+                prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+              }
+            while (retval < 0);
+
+#else
+
+            int retval = debug_parser.run ();
+
+#endif
             if (command_editor::interrupt (false))
               {
                 // Break regardless of m_execution_mode value.
@@ -283,7 +320,7 @@ namespace octave
                 if (retval == 0)
                   {
                     std::shared_ptr<tree_statement_list> stmt_list
-                      = curr_parser.statement_list ();
+                      = debug_parser.statement_list ();
 
                     stmt_list->accept (tw);
 

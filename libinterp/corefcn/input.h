@@ -198,11 +198,11 @@ namespace octave
     friend class input_reader;
 
     base_reader (interpreter& interp)
-      : m_interpreter (interp), m_pflag (0)
+      : m_interpreter (interp)
     { }
 
     base_reader (const base_reader& x)
-      : m_interpreter (x.m_interpreter), m_pflag (x.m_pflag)
+      : m_interpreter (x.m_interpreter)
     { }
 
     virtual ~base_reader (void) = default;
@@ -210,21 +210,6 @@ namespace octave
     virtual std::string get_input (const std::string& prompt, bool& eof) = 0;
 
     virtual std::string input_source (void) const { return s_in_src; }
-
-    void reset (void) { promptflag (1); }
-
-    void increment_promptflag (void) { m_pflag++; }
-
-    void decrement_promptflag (void) { m_pflag--; }
-
-    int promptflag (void) const { return m_pflag; }
-
-    int promptflag (int n)
-    {
-      int retval = m_pflag;
-      m_pflag = n;
-      return retval;
-    }
 
     std::string octave_gets (const std::string& prompt, bool& eof);
 
@@ -239,8 +224,6 @@ namespace octave
     interpreter& m_interpreter;
 
   private:
-
-    int m_pflag;
 
     static const std::string s_in_src;
   };
@@ -260,16 +243,6 @@ namespace octave
     input_reader& operator = (const input_reader& ir) = default;
 
     ~input_reader (void) = default;
-
-    void reset (void) { return m_rep->reset (); }
-
-    void increment_promptflag (void) { m_rep->increment_promptflag (); }
-
-    void decrement_promptflag (void) { m_rep->decrement_promptflag (); }
-
-    int promptflag (void) const { return m_rep->promptflag (); }
-
-    int promptflag (int n) { return m_rep->promptflag (n); }
 
     std::string get_input (const std::string& prompt, bool& eof)
     {

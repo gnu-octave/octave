@@ -709,21 +709,6 @@ namespace octave
     // Object that collects comment text.
     comment_buffer m_comment_buf;
 
-    int m_promptflag;
-
-    void increment_promptflag (void) { m_promptflag++; }
-
-    void decrement_promptflag (void) { m_promptflag--; }
-
-    int promptflag (void) const { return m_promptflag; }
-
-    int promptflag (int n)
-    {
-      int retval = m_promptflag;
-      m_promptflag = n;
-      return retval;
-    }
-
     virtual std::string input_source (void) const { return "unknown"; }
 
     virtual bool input_from_terminal (void) const { return false; }
@@ -782,15 +767,16 @@ namespace octave
   public:
 
     lexer (interpreter& interp)
-      : base_lexer (interp), m_reader (interp)
+      : base_lexer (interp), m_reader (interp), m_initial_input (true)
     { }
 
     lexer (FILE *file, interpreter& interp)
-      : base_lexer (interp), m_reader (interp, file)
+      : base_lexer (interp), m_reader (interp, file), m_initial_input (true)
     { }
 
     lexer (const std::string& eval_string, interpreter& interp)
-      : base_lexer (interp), m_reader (interp, eval_string)
+      : base_lexer (interp), m_reader (interp, eval_string),
+        m_initial_input (true)
     { }
 
     // No copying!
@@ -801,7 +787,7 @@ namespace octave
 
     void reset (void)
     {
-      m_reader.reset ();
+      m_initial_input = true;
 
       base_lexer::reset ();
     }
@@ -829,6 +815,13 @@ namespace octave
     int fill_flex_buffer (char *buf, unsigned int max_size);
 
     input_reader m_reader;
+
+    // TRUE means we are filling the input buffer for the first time.
+    // Otherwise, we are requesting more input to complete the parse
+    // and, if printing a prompt, should use the secondary prompt
+    // string.
+
+    bool m_initial_input;
   };
 
   class

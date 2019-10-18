@@ -457,14 +457,6 @@ namespace octave
                     const std::string& package_name, bool require_file,
                     bool force_script, bool autoload, bool relative_lookup);
 
-    void increment_promptflag (void) { m_lexer.increment_promptflag (); }
-
-    void decrement_promptflag (void) { m_lexer.decrement_promptflag (); }
-
-    int promptflag (void) const { return m_lexer.promptflag (); }
-
-    int promptflag (int n) { return m_lexer.promptflag (n); }
-
   protected:
 
     // Contains error message if Bison-generated parser returns non-zero

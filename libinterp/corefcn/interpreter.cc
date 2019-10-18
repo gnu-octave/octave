@@ -995,10 +995,6 @@ namespace octave
 
     input_reader reader (*this);
 
-    // Attach input_reader object to parser so that the promptflag can
-    // be adjusted automatically when we are parsing multi-line
-    // commands.
-
     push_parser repl_parser (*this);
 
 #else
@@ -1027,16 +1023,11 @@ namespace octave
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
 
+            std::string prompt
+              = command_editor::decode_prompt_string (m_input_system.PS1 ());
+
             do
               {
-                int promptflag = repl_parser.promptflag ();
-
-                std::string ps
-                  = (promptflag > 0
-                     ? m_input_system.PS1 () : m_input_system.PS2 ());
-
-                std::string prompt = command_editor::decode_prompt_string (ps);
-
                 bool eof = false;
                 std::string input_line = reader.get_input (prompt, eof);
 
@@ -1047,6 +1038,8 @@ namespace octave
                   }
 
                 retval = repl_parser.run (input_line, false);
+
+                prompt = command_editor::decode_prompt_string (m_input_system.PS2 ());
               }
             while (retval < 0);
 

@@ -245,7 +245,6 @@ object) relevant global values before and after the nested call.
 #define HANDLE_STRING_CONTINUATION                      \
    do                                                   \
      {                                                  \
-       curr_lexer->decrement_promptflag ();             \
        curr_lexer->m_input_line_number++;               \
        curr_lexer->m_current_input_column = 1;          \
                                                         \
@@ -609,8 +608,6 @@ ANY_INCLUDING_NL (.|{NL})
         else
           curr_lexer->m_looking_at_matrix_or_assign_lhs = true;
 
-        curr_lexer->decrement_promptflag ();
-
         curr_lexer->m_bracketflag++;
 
         curr_lexer->push_start_state (MATRIX_START);
@@ -655,8 +652,6 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->pop_start_state ();
       }
 
-    curr_lexer->decrement_promptflag ();
-
     curr_lexer->push_start_state (BLOCK_COMMENT_START);
 
   }
@@ -693,11 +688,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_block_comment_nesting_level--;
 
     if (curr_lexer->m_block_comment_nesting_level == 0)
-      {
-        curr_lexer->increment_promptflag ();
-
-        curr_lexer->pop_start_state ();
-      }
+      curr_lexer->pop_start_state ();
   }
 
 %{
@@ -1679,7 +1670,6 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_at_beginning_of_statement = false;
 
         curr_lexer->m_nesting_level.paren ();
-        curr_lexer->decrement_promptflag ();
 
         return curr_lexer->handle_token ('(');
       }
@@ -1786,8 +1776,6 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_current_input_column += yyleng;
         curr_lexer->m_looking_for_object_index = false;
         curr_lexer->m_at_beginning_of_statement = false;
-
-        curr_lexer->decrement_promptflag ();
 
         curr_lexer->m_braceflag++;
 
@@ -2401,9 +2389,6 @@ namespace octave
 
     m_symtab_context.clear ();
 
-    // We do want a prompt by default.
-    promptflag (1);
-
     // Only ask for input from stdin if we are expecting interactive
     // input.
 
@@ -2687,25 +2672,21 @@ namespace octave
           case for_kw:
           case parfor_kw:
           case while_kw:
-            decrement_promptflag ();
             m_looping++;
             break;
 
           case do_kw:
             m_at_beginning_of_statement = true;
-            decrement_promptflag ();
             m_looping++;
             break;
 
           case try_kw:
           case unwind_protect_kw:
             m_at_beginning_of_statement = true;
-            decrement_promptflag ();
             break;
 
           case if_kw:
           case switch_kw:
-            decrement_promptflag ();
             break;
 
           case get_kw:
@@ -2734,8 +2715,6 @@ namespace octave
 
           case classdef_kw:
             // 'classdef' is always a keyword.
-            decrement_promptflag ();
-
             if (! m_force_script && m_token_count == 0 && input_from_file ())
               {
                 m_reading_classdef_file = true;
@@ -2744,8 +2723,6 @@ namespace octave
             break;
 
           case function_kw:
-            decrement_promptflag ();
-
             m_defining_func++;
             m_parsed_function_name.push (false);
 
@@ -2975,7 +2952,6 @@ namespace octave
         m_at_beginning_of_statement = saved_bos;
       }
 
-    decrement_promptflag ();
     m_input_line_number++;
     m_current_input_column = 1;
   }
@@ -3714,7 +3690,7 @@ namespace octave
         input_system& input_sys = m_interpreter.get_input_system ();
 
         std::string ps
-          = promptflag () > 0 ? input_sys.PS1 () : input_sys.PS2 ();
+          = m_initial_input ? input_sys.PS1 () : input_sys.PS2 ();
 
         std::string prompt = command_editor::decode_prompt_string (ps);
 
@@ -3745,6 +3721,8 @@ namespace octave
       status = m_input_buf.copy_chunk (buf, max_size);
     else
       status = YY_NULL;
+
+    m_initial_input = false;
 
     return status;
   }

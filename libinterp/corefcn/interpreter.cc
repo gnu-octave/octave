@@ -890,11 +890,7 @@ namespace octave
 
     std::string code_to_eval = options.code_to_eval ();
 
-    unwind_protect frame;
-
-    frame.add_method (this, &interpreter::interactive, m_interactive);
-
-    m_interactive = false;
+    unwind_protect_var<bool> upv (m_interactive, false);
 
     int parse_status = 0;
 

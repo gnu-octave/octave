@@ -655,6 +655,19 @@ namespace octave
 
     initialize_load_path ();
 
+    octave_save_signal_mask ();
+
+    can_interrupt = true;
+
+    octave_signal_hook = respond_to_pending_signals;
+    octave_interrupt_hook = nullptr;
+
+    catch_interrupts ();
+
+    // FIXME: could we eliminate this variable or make it not be global?
+    // Global used to communicate with signal handler.
+    octave_initialized = true;
+
     m_initialized = true;
   }
 
@@ -668,8 +681,6 @@ namespace octave
     try
       {
         initialize ();
-
-        // We ignore errors in startup files.
 
         execute_startup_files ();
 
@@ -881,17 +892,6 @@ namespace octave
 
     unwind_protect frame;
 
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
-
     frame.add_method (this, &interpreter::interactive, m_interactive);
 
     m_interactive = false;
@@ -926,17 +926,6 @@ namespace octave
     const cmdline_options& options = m_app_context->options ();
 
     unwind_protect frame;
-
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
 
     frame.add_method (this, &interpreter::interactive, m_interactive);
 
@@ -978,17 +967,6 @@ namespace octave
   int interpreter::main_loop (void)
   {
     int exit_status = 0;
-
-    octave_save_signal_mask ();
-
-    can_interrupt = true;
-
-    octave_signal_hook = respond_to_pending_signals;
-    octave_interrupt_hook = nullptr;
-
-    catch_interrupts ();
-
-    octave_initialized = true;
 
     // The big loop.
 

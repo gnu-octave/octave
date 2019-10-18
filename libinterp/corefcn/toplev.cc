@@ -364,6 +364,12 @@ specified option.
            { "ENABLE_64", false },
 #endif
 
+#if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
+           { "ENABLE_COMMAND_LINE_PUSH_PARSER", true },
+#else
+           { "ENABLE_COMMAND_LINE_PUSH_PARSER", false },
+#endif
+
 #if defined (ENABLE_DOCS)
            { "ENABLE_DOCS", true },
 #else

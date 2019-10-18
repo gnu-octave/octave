@@ -999,7 +999,7 @@ namespace octave
     // be adjusted automatically when we are parsing multi-line
     // commands.
 
-    push_parser repl_parser (*this, &reader);
+    push_parser repl_parser (*this);
 
 #else
 

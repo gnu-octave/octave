@@ -67,8 +67,7 @@ x.c = "string";
 @end group
 @end example
 
-@c The following line should have a trailing space.
-@opindex . @ @ @
+@opindex @code{.} structure field access
 @noindent
 create a structure with three elements.  The @samp{.} character separates
 the structure name (in the example above @code{x}) from the field name and

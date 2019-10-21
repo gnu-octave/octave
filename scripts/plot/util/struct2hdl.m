@@ -163,6 +163,8 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
     h = createimage (s, par);
   elseif (strcmp (s.type, "surface"))
     h = createsurface (s, par);
+  elseif (strcmp (s.type, "light"))
+    h = createlight (s, par);
   elseif (strcmp (s.type, "hggroup"))
     [h, s, p] = createhg (s, p, par, hilev);
   elseif (any (strcmp (s.type, {"uimenu", "uicontextmenu",...
@@ -367,6 +369,11 @@ endfunction
 
 function h = createsurface (s, par)
   h = surface ("parent", par);
+  addmissingprops (h, s.properties);
+endfunction
+
+function h = createlight (s, par)
+  h = light ("parent", par);
   addmissingprops (h, s.properties);
 endfunction
 

@@ -197,24 +197,17 @@ namespace octave
 
 #endif
 
+  // The following enum values are deprecated and will eventually be
+  // removed from Octave, but there seems to be no universally good way
+  // to tag them with an attribute that will generate a warning.
+
 enum
 octave_exception
 {
-  octave_no_exception
-  OCTAVE_DEPRECATED (6, "the 'octave_no_exception' enum value is an obsolete internal value; any uses should be removed")
-  = 0,
-
-  octave_exec_exception
-  OCTAVE_DEPRECATED (6, "the 'octave_exec_exception' enum value is an obsolete internal value; any uses should be removed")
-  = 1,
-
-  octave_alloc_exception
-  OCTAVE_DEPRECATED (6, "the 'octave_alloc_exception' enum value is an obsolete internal value; any uses should be removed")
-  = 3,
-
-  octave_quit_exception
-  OCTAVE_DEPRECATED (6, "the 'octave_quit_exception' enum value is an obsolete internal value; any uses should be removed")
-   = 4
+  octave_no_exception = 0,
+  octave_exec_exception = 1,
+  octave_alloc_exception = 3,
+  octave_quit_exception = 4
 };
 
 /*

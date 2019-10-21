@@ -274,8 +274,6 @@ namespace octave
 
         try
           {
-            Vtrack_line_num = false;
-
             debug_parser.reset ();
 
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
@@ -819,8 +817,6 @@ namespace octave
     //
     // tree_print_code tpc (octave_stdout);
     // stmt.accept (tpc);
-
-    Vtrack_line_num = false;
 
     debugger *dbgr = new debugger (m_interpreter, m_debugger_stack.size ());
 
@@ -2301,10 +2297,6 @@ namespace octave
 
     frame.add_method (m_call_stack, &call_stack::pop);
 
-    // Update line number even if debugging.
-    frame.protect_var (Vtrack_line_num);
-    Vtrack_line_num = true;
-
     frame.protect_var (m_statement_context);
     m_statement_context = SC_SCRIPT;
 
@@ -2376,10 +2368,6 @@ namespace octave
     // eval_undefined_error().
 
     m_call_stack.push (&user_function, &frame, closure_frames);
-
-    frame.protect_var (Vtrack_line_num);
-    // update source line numbers, even if debugging
-    Vtrack_line_num = true;
 
     frame.add_method (m_call_stack, &call_stack::pop);
 
@@ -2711,13 +2699,7 @@ namespace octave
       {
         if (m_statement_context == SC_FUNCTION
             || m_statement_context == SC_SCRIPT)
-          {
-            // Skip commands issued at a debug> prompt to avoid disturbing
-            // the state of the program we are debugging.
-
-            if (Vtrack_line_num)
-              m_call_stack.set_location (stmt.line (), stmt.column ());
-          }
+          m_call_stack.set_location (stmt.line (), stmt.column ());
 
         try
           {

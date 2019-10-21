@@ -1112,8 +1112,6 @@ function returns.
 
   if (n != 0)
     {
-      Vtrack_line_num = true;
-
       tw.set_dbstep_flag (n);
 
       // If we set the dbstep flag, we also need to reset debug_mode.
@@ -1140,8 +1138,6 @@ Leave command-line debugging mode and continue code execution normally.
 
   if (args.length () != 0)
     print_usage ();
-
-  Vtrack_line_num = true;
 
   tw.dbcont ();
 

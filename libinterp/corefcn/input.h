@@ -44,7 +44,7 @@ extern bool octave_completion_matches_called;
 // the next user prompt.
 extern OCTINTERP_API bool Vdrawnow_requested;
 
-// TRUE if we are not executing a command direct from debug> prompt.
+OCTAVE_DEPRECATED (6, "'Vtrack_line_num' is an obsolete internal variable; any uses should be removed")
 extern OCTINTERP_API bool Vtrack_line_num;
 
 extern octave::sys::time Vlast_prompt_time;

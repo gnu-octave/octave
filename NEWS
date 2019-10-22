@@ -28,7 +28,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
   for controlling the format, spacing, and case in arbitrary order.
   For example:
 
-     format long e uppercase loose
+     `format long e uppercase loose`
 
   Note, that in case of multiple competing format options the rightmost
   one is used and in case of an error the previous format remains
@@ -37,13 +37,14 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 - New warnings have been added about questionable uses of the colon ':'
   range operator.  Each has a new warning ID so that it can be disabled
   if desired.
-    Octave:colon-complex-argument   : when any arg is complex
-    Octave:colon-nonscalar-argument : when any arg is non-scalar
+
+    `Octave:colon-complex-argument`   : when any arg is complex  
+    `Octave:colon-nonscalar-argument` : when any arg is non-scalar
 
 - The `regexp` and related functions now correctly handle and *require*
   strings in UTF-8 encoding.  As with any other function that requires
   strings to be encoded in Octave's native encoding, you can use
-  "native2unicode" to convert from your preferred locale.  For example,
+  `native2unicode` to convert from your preferred locale.  For example,
   the copyright symbol in UTF-8 is `native2unicode (169, "latin1")`.
 
 #### Graphics backend
@@ -55,12 +56,12 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 - A new property `"FontSmoothing"` has been added to text and axes
   objects that controls whether anti-aliasing is used during the
-  rendering of characters.  The default is "on" which produces smooth,
+  rendering of characters.  The default is `"on"` which produces smooth,
   more visually appealing text.
 
 - The figure property `"windowscrollwheelfcn"`is now implemented.
-  This makes it possible to provide a callback function to be executed when
-  users manipulate the mouse wheel on a given figure.
+  This makes it possible to provide a callback function to be executed
+  when users manipulate the mouse wheel on a given figure.
 
 - The figure properties `"pointer"`, `"pointershapecdata"`, and
   `"pointershapehotspot"` are now implemented.  This makes it possible
@@ -123,17 +124,17 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 ### Alphabetical list of new functions added in Octave 6
 
-- `lightangle`
-- `namedargs2cell`
-- `newline`
-- `rotx`
-- `roty`
-- `rotz`
-- `verLessThan`
-- `web`
-- `weboptions`
-- `webread`
-- `webwrite`
+* `lightangle`
+* `namedargs2cell`
+* `newline`
+* `rotx`
+* `roty`
+* `rotz`
+* `verLessThan`
+* `web`
+* `weboptions`
+* `webread`
+* `webwrite`
 
 
 ### Deprecated functions and properties

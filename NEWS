@@ -3,7 +3,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 
 ### General improvements
 
-- The `intersect`, `setdiff', `setxor`, `union`, and `unique` functions
+- The `intersect`, `setdiff`, `setxor`, `union`, and `unique` functions
   accept a new sorting option `"stable"` which will return output values
   in the same order as the input, rather than in ascending order.
 

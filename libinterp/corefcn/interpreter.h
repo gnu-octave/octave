@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-config.h"
 
 #include <map>
+#include <stack>
 #include <string>
 
 #include "child-list.h"
@@ -79,6 +80,31 @@ namespace octave
   // both) of them...
 
   class application;
+
+  class temporary_file_list
+  {
+  public:
+
+    temporary_file_list (void) : m_files () { }
+
+    // No copying!
+
+    temporary_file_list (const temporary_file_list&) = delete;
+
+    temporary_file_list& operator = (const temporary_file_list&) = delete;
+
+    ~temporary_file_list (void);
+
+    void insert (const std::string& file);
+
+    void cleanup (void);
+
+  private:
+
+    // List of temporary files to delete when we exit.
+    std::set<std::string> m_files;
+
+  };
 
   class OCTINTERP_API interpreter
   {
@@ -407,6 +433,10 @@ namespace octave
 
     void recover_from_exception (void);
 
+    void mark_for_deletion (const std::string& file);
+
+    void cleanup_tmp_files (void);
+
     static void add_atexit_function (const std::string& fname);
 
     static bool remove_atexit_function (const std::string& fname);
@@ -440,6 +470,8 @@ namespace octave
     void cleanup (void);
 
     application *m_app_context;
+
+    temporary_file_list m_tmp_files;
 
     display_info m_display_info;
 

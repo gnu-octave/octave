@@ -42,9 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 
 #include <iomanip>
-#include <stack>
 #include <string>
-#include <vector>
 
 #if defined (HAVE_ZLIB_H)
 #  include <zlib.h>
@@ -66,6 +64,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "errwarn.h"
 #include "file-io.h"
+#include "interpreter-private.h"
 #include "interpreter.h"
 #include "load-path.h"
 #include "oct-fstrm.h"
@@ -80,29 +79,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
-
-// List of files to delete when we exit or crash.
-//
-// FIXME: this should really be static,
-//        but that causes problems on some systems.
-std::stack <std::string> tmp_files;
-
-void
-mark_for_deletion (const std::string& file)
-{
-  tmp_files.push (file);
-}
-
-void
-cleanup_tmp_files (void)
-{
-  while (! tmp_files.empty ())
-    {
-      std::string filename = tmp_files.top ();
-      tmp_files.pop ();
-      octave_unlink_wrapper (filename.c_str ());
-    }
-}
 
 static void
 normalize_fopen_mode (std::string& mode, bool& use_zlib)
@@ -3034,7 +3010,7 @@ message.
           retval(1) = nm;
 
           if (nargin == 2 && args(1).is_true ())
-            mark_for_deletion (nm);
+            interp.mark_for_deletion (nm);
         }
     }
 
@@ -3221,4 +3197,26 @@ It is useful for error messages and prompts.
   octave::stream_list& streams = interp.get_stream_list ();
 
   return const_value ("stderr", args, streams.stderr_file ());
+}
+
+// Deprecated variables and functions.
+
+// Deprecated in Octave 6.
+void
+mark_for_deletion (const std::string& file)
+{
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("mark_for_deletion");
+
+  interp.mark_for_deletion (file);
+}
+
+// Deprecated in Octave 6.
+void
+cleanup_tmp_files (void)
+{
+  octave::interpreter& interp
+    = octave::__get_interpreter__ ("cleanup_tmp_files");
+
+  interp.cleanup_tmp_files ();
 }

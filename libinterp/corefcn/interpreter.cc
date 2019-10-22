@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
+#include <set>
 #include <string>
 #include <iostream>
 
@@ -245,6 +246,28 @@ from the list, so if a function was placed in the list multiple times with
 
 namespace octave
 {
+  temporary_file_list::~temporary_file_list (void)
+  {
+    cleanup ();
+  }
+
+  void temporary_file_list::insert (const std::string& file)
+  {
+    m_files.insert (file);
+  }
+
+  void temporary_file_list::cleanup (void)
+  {
+    while (! m_files.empty ())
+      {
+        auto it = m_files.begin ();
+
+        octave_unlink_wrapper (it->c_str ());
+
+        m_files.erase (it);
+      }
+  }
+
   // The time we last time we changed directories.
   sys::time Vlast_chdir_time = 0.0;
 
@@ -362,6 +385,7 @@ namespace octave
 
   interpreter::interpreter (application *app_context)
     : m_app_context (app_context),
+      m_tmp_files (),
       m_display_info (),
       m_environment (),
       m_settings (),
@@ -1167,8 +1191,6 @@ namespace octave
 
     m_gtk_manager.unload_all_toolkits ();
 
-    OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
-
     // FIXME:  May still need something like this to ensure that
     // destructors for class objects will run properly.  Should that be
     // done earlier?  Before or after atexit functions are executed?
@@ -1653,6 +1675,16 @@ namespace octave
     octave_signal_caught = 0;
     octave_restore_signal_mask ();
     catch_interrupts ();
+  }
+
+  void interpreter::mark_for_deletion (const std::string& file)
+  {
+    m_tmp_files.insert (file);
+  }
+
+  void interpreter::cleanup_tmp_files (void)
+  {
+    m_tmp_files.cleanup ();
   }
 
   // Functions to call when the interpreter exits.

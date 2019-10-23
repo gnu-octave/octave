@@ -94,8 +94,6 @@ DEFMETHOD (dbstop, interp, args, ,
 @deftypefnx {} {} dbstop if @var{event} @var{ID}
 @deftypefnx {} {} dbstop (@var{bp_struct})
 @deftypefnx {} {@var{rline} =} dbstop @dots{}
-dbstop in waveClass at waveClass.plotEta
-dbstop waveClass at waveClass.plotEta
 
 Set breakpoints for the built-in debugger.
 

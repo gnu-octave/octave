@@ -809,12 +809,36 @@ DEFUN (history_file, args, nargout,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} history_file ()
 @deftypefnx {} {@var{old_val} =} history_file (@var{new_val})
-Query or set the internal variable that specifies the name of the
-file used to store command history.
+Query or set the internal variable that specifies the name of the file used to
+store command history.
+
+All future commands issued during the current Octave session will be written to
+this new file (if the current setting of @code{history_save} allows for this).
 
 The default value is @file{~/.octave_hist}, but may be overridden by the
 environment variable @w{@env{OCTAVE_HISTFILE}}.
-@seealso{history_size, history_save, history_timestamp_format_string}
+
+Programming Notes:
+
+If you want to permanently change the location of Octave's history file you
+need to issue the @code{history_file} command in every new Octave session.
+This can be achieved by using Octave's @file{.octaverc} startup file.
+
+If you also want to read the saved history commands of past Octave sessions
+from this different history file, then you need to use the additional command
+@code{history -r} after setting the new value of the history file.  Example
+code in Octave's startup file to do this might look like this:
+
+@example
+@group
+history_file ("~/new/.octave_hist");
+if (exist (history_file ()))
+  history ("-r", history_file());
+endif
+@end group
+@end example
+
+@seealso{history, history_control, history_save, history_size, history_timestamp_format_string}
 @end deftypefn */)
 {
   octave_value retval;

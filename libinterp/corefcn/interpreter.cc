@@ -1027,6 +1027,13 @@ namespace octave
 
             do
               {
+                // Reset status each time through the read loop so that
+                // it won't be set to -1 and cause us to exit the outer
+                // loop early if there is an exception while reading
+                // input or parsing.
+
+                exit_status = 0;
+
                 bool eof = false;
                 std::string input_line = reader.get_input (prompt, eof);
 

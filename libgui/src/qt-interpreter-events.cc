@@ -103,6 +103,9 @@ namespace octave
   qt_interpreter_events::qt_interpreter_events (void)
     : interpreter_events (), m_shutdown_confirm_result (false)
   {
+    qRegisterMetaType<QIntList> ("QIntList");
+    qRegisterMetaType<QFloatList> ("QFloatList");
+
     qRegisterMetaType<octave_value> ("octave_value");
     qRegisterMetaType<symbol_info_list> ("symbol_info_list");
 

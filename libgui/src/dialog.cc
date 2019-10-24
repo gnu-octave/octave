@@ -49,13 +49,73 @@ namespace octave
   QUIWidgetCreator::QUIWidgetCreator (void)
     : QObject (), m_dialog_result (-1), m_dialog_button (),
       m_string_list (), m_list_index (), m_path_name ()
-  { }
+  {
+    connect (this,
+             SIGNAL (create_dialog (const QString&, const QString&,
+                                    const QString&, const QStringList&,
+                                    const QString&, const QStringList&)),
+             this,
+             SLOT (handle_create_dialog (const QString&, const QString&,
+                                         const QString&, const QStringList&,
+                                         const QString&, const QStringList&)));
+
+    connect (this,
+             SIGNAL (create_listview (const QStringList&, const QString&,
+                                      int, int, const QIntList&,
+                                      const QString&, const QStringList&,
+                                      const QString&, const QString&)),
+             this,
+             SLOT (handle_create_listview (const QStringList&, const QString&,
+                                           int, int, const QIntList&,
+                                           const QString&, const QStringList&,
+                                           const QString&, const QString&)));
+
+    connect (this,
+             SIGNAL (create_inputlayout (const QStringList&, const QString&,
+                                         const QFloatList&, const QFloatList&,
+                                         const QStringList&)),
+             this,
+             SLOT (handle_create_inputlayout (const QStringList&,
+                                              const QString&,
+                                              const QFloatList&,
+                                              const QFloatList&,
+                                              const QStringList&)));
+
+    connect (this,
+             SIGNAL (create_filedialog (const QStringList&,const QString&,
+                                        const QString&, const QString&,
+                                        const QString&)),
+             this,
+             SLOT (handle_create_filedialog (const QStringList&, const QString&,
+                                             const QString&, const QString&,
+                                             const QString&)));
+  }
 
   QString QUIWidgetCreator::rm_amp (const QString& text)
   {
     QString text_wo_amp = text;
     text_wo_amp.replace (QRegExp ("&(\\w)"), "\\1");
     return text_wo_amp;
+  }
+
+  // Create a message dialog with specified string, buttons and decorative
+  // text.
+
+  void QUIWidgetCreator::handle_create_dialog (const QString& message,
+                                               const QString& title,
+                                               const QString& icon,
+                                               const QStringList& button,
+                                               const QString& defbutton,
+                                               const QStringList& role)
+  {
+    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
+                                                       button, defbutton, role);
+
+    connect (message_dialog, SIGNAL (buttonClicked (QAbstractButton *)),
+             this, SLOT (dialog_button_clicked (QAbstractButton *)));
+
+    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    message_dialog->show ();
   }
 
   void QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
@@ -87,6 +147,29 @@ namespace octave
     wake_all ();
   }
 
+  // Create a list dialog with specified list, initially selected, mode,
+  // view size and decorative text.
+
+  void QUIWidgetCreator::handle_create_listview (const QStringList& list,
+                                                 const QString& mode,
+                                                 int wd, int ht,
+                                                 const QIntList& initial,
+                                                 const QString& name,
+                                                 const QStringList& prompt,
+                                                 const QString& ok_string,
+                                                 const QString& cancel_string)
+  {
+    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
+                                              initial, name, prompt,
+                                              ok_string, cancel_string);
+
+    connect (list_dialog, SIGNAL (finish_selection (const QIntList&, int)),
+             this, SLOT (list_select_finished (const QIntList&, int)));
+
+    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    list_dialog->show ();
+  }
+
   void QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                                int button_pressed)
   {
@@ -103,6 +186,24 @@ namespace octave
     wake_all ();
   }
 
+  // Create an input dialog with specified prompts and defaults, title and
+  // row/column size specifications.
+  void QUIWidgetCreator::handle_create_inputlayout (const QStringList& prompt,
+                                                    const QString& title,
+                                                    const QFloatList& nr,
+                                                    const QFloatList& nc,
+                                                    const QStringList& defaults)
+  {
+    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
+                                                 defaults);
+
+    connect (input_dialog, SIGNAL (finish_input (const QStringList&, int)),
+             this, SLOT (input_finished (const QStringList&, int)));
+
+    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    input_dialog->show ();
+  }
+
   void QUIWidgetCreator::input_finished (const QStringList& input,
                                          int button_pressed)
   {
@@ -117,6 +218,24 @@ namespace octave
 
     // Wake up Octave process so that it continues.
     wake_all ();
+  }
+
+  void QUIWidgetCreator::handle_create_filedialog (const QStringList& filters,
+                                                   const QString& title,
+                                                   const QString& filename,
+                                                   const QString& dirname,
+                                                   const QString& multimode)
+  {
+    FileDialog *file_dialog = new FileDialog (filters, title, filename,
+                                              dirname, multimode);
+
+    connect (file_dialog, SIGNAL (finish_input (const QStringList&,
+                                                const QString&, int)),
+             this, SLOT (filedialog_finished (const QStringList&,
+                                              const QString&, int)));
+
+    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
+    file_dialog->show ();
   }
 
   void QUIWidgetCreator::filedialog_finished (const QStringList& files,
@@ -201,10 +320,6 @@ namespace octave
               }
           }
       }
-
-    connect (this, SIGNAL (buttonClicked (QAbstractButton *)),
-             &uiwidget_creator,
-             SLOT (dialog_button_clicked (QAbstractButton *)));
   }
 
   ListDialog::ListDialog (const QStringList& list, const QString& mode,
@@ -299,10 +414,6 @@ namespace octave
 
     connect (buttonCancel, SIGNAL (clicked ()),
              this, SLOT (buttonCancel_clicked ()));
-
-    connect (this, SIGNAL (finish_selection (const QIntList&, int)),
-             &uiwidget_creator,
-             SLOT (list_select_finished (const QIntList&, int)));
 
     connect (view, SIGNAL (doubleClicked (const QModelIndex&)),
              this, SLOT (item_double_clicked (const QModelIndex&)));
@@ -414,10 +525,6 @@ namespace octave
 
     connect (buttonCancel, SIGNAL (clicked ()),
              this, SLOT (buttonCancel_clicked ()));
-
-    connect (this, SIGNAL (finish_input (const QStringList&, int)),
-             &uiwidget_creator,
-             SLOT (input_finished (const QStringList&, int)));
   }
 
   void InputDialog::buttonOk_clicked (void)
@@ -490,12 +597,8 @@ namespace octave
 
     selectFile (filename);
 
-    connect (this,
-             SIGNAL (finish_input (const QStringList&, const QString&, int)),
-             &uiwidget_creator,
-             SLOT (filedialog_finished (const QStringList&, const QString&,
-                                        int)));
     connect (this, SIGNAL (accepted ()), this, SLOT (acceptSelection ()));
+
     connect (this, SIGNAL (rejected ()), this, SLOT (rejectSelection ()));
   }
 

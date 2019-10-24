@@ -143,11 +143,34 @@ namespace octave
                             const QString& multimode);
   public slots:
 
+    void handle_create_dialog (const QString& message, const QString& title,
+                               const QString& icon, const QStringList& button,
+                               const QString& defbutton,
+                               const QStringList& role);
+
     void dialog_button_clicked (QAbstractButton *button);
+
+    void handle_create_listview (const QStringList& list, const QString& mode,
+                                 int width, int height,
+                                 const QIntList& initial,
+                                 const QString& name,
+                                 const QStringList& prompt,
+                                 const QString& ok_string,
+                                 const QString& cancel_string);
 
     void list_select_finished (const QIntList& selected, int button_pressed);
 
+    void handle_create_inputlayout (const QStringList&, const QString&,
+                                    const QFloatList&, const QFloatList&,
+                                    const QStringList&);
+
     void input_finished (const QStringList& input, int button_pressed);
+
+    void handle_create_filedialog (const QStringList& filters,
+                                   const QString& title,
+                                   const QString& filename,
+                                   const QString& dirname,
+                                   const QString& multimode);
 
     void filedialog_finished (const QStringList& files, const QString& path,
                               int filterindex);

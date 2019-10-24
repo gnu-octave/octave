@@ -32,12 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "interpreter-qobject.h"
 
-// Defined for purposes of sending QList<int> as part of signal.
-typedef QList<int> QIntList;
-
-// Defined for purposes of sending QList<float> as part of signal.
-typedef QList<float> QFloatList;
-
 namespace octave
 {
   class main_window;
@@ -112,29 +106,6 @@ namespace octave
 
     void copy_image_to_clipboard (const QString& file, bool remove_file);
 
-    void handle_create_dialog (const QString& message, const QString& title,
-                               const QString& icon, const QStringList& button,
-                               const QString& defbutton,
-                               const QStringList& role);
-
-    void handle_create_listview (const QStringList& list, const QString& mode,
-                                 int width, int height,
-                                 const QIntList& initial,
-                                 const QString& name,
-                                 const QStringList& prompt,
-                                 const QString& ok_string,
-                                 const QString& cancel_string);
-
-    void handle_create_inputlayout (const QStringList&, const QString&,
-                                    const QFloatList&, const QFloatList&,
-                                    const QStringList&);
-
-    void handle_create_filedialog (const QStringList& filters,
-                                   const QString& title,
-                                   const QString& filename,
-                                   const QString& dirname,
-                                   const QString& multimode);
-
     void interpreter_event (const fcn_callback& fcn);
 
     void interpreter_event (const meth_callback& meth);
@@ -160,8 +131,6 @@ namespace octave
     interpreter_qobject *m_interpreter_qobj;
 
     QThread *m_main_thread;
-
-    void connect_uiwidget_links (void);
   };
 
   //! This object provides a command-line interface to Octave that may

@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTimer>
 #include <QTranslator>
 
-#include "dialog.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "octave-qobject.h"
@@ -135,8 +134,6 @@ namespace octave
 
     // Force left-to-right alignment (see bug #46204)
     m_qapplication->setLayoutDirection (Qt::LeftToRight);
-
-    connect_uiwidget_links ();
 
     connect (m_interpreter_qobj, SIGNAL (octave_finished_signal (int)),
              this, SLOT (handle_octave_finished (int)));
@@ -257,121 +254,6 @@ namespace octave
 
     if (remove_file)
       QFile::remove (file);
-  }
-
-  // Create a message dialog with specified string, buttons and decorative
-  // text.
-
-  void base_qobject::handle_create_dialog (const QString& message,
-                                           const QString& title,
-                                           const QString& icon,
-                                           const QStringList& button,
-                                           const QString& defbutton,
-                                           const QStringList& role)
-  {
-    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
-                                                       button, defbutton, role);
-    message_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    message_dialog->show ();
-  }
-
-  // Create a list dialog with specified list, initially selected, mode,
-  // view size and decorative text.
-
-  void base_qobject::handle_create_listview (const QStringList& list,
-                                             const QString& mode,
-                                             int wd, int ht,
-                                             const QIntList& initial,
-                                             const QString& name,
-                                             const QStringList& prompt,
-                                             const QString& ok_string,
-                                             const QString& cancel_string)
-  {
-    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
-                                              initial, name, prompt,
-                                              ok_string, cancel_string);
-
-    list_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    list_dialog->show ();
-  }
-
-  // Create an input dialog with specified prompts and defaults, title and
-  // row/column size specifications.
-  void base_qobject::handle_create_inputlayout (const QStringList& prompt,
-                                                const QString& title,
-                                                const QFloatList& nr,
-                                                const QFloatList& nc,
-                                                const QStringList& defaults)
-  {
-    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
-                                                 defaults);
-
-    input_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    input_dialog->show ();
-  }
-
-  void base_qobject::handle_create_filedialog (const QStringList& filters,
-                                               const QString& title,
-                                               const QString& filename,
-                                               const QString& dirname,
-                                               const QString& multimode)
-  {
-    FileDialog *file_dialog = new FileDialog (filters, title, filename,
-                                              dirname, multimode);
-
-    file_dialog->setAttribute (Qt::WA_DeleteOnClose);
-    file_dialog->show ();
-  }
-
-  // Connect the signals emitted when the Octave thread wants to create
-  // a dialog box of some sort.  Perhaps a better place for this would be
-  // as part of the QUIWidgetCreator class.  However, mainWindow currently
-  // is not a global variable and not accessible for connecting.
-
-  void base_qobject::connect_uiwidget_links (void)
-  {
-    connect (&uiwidget_creator,
-             SIGNAL (create_dialog (const QString&, const QString&,
-                                    const QString&, const QStringList&,
-                                    const QString&, const QStringList&)),
-             this,
-             SLOT (handle_create_dialog (const QString&, const QString&,
-                                         const QString&, const QStringList&,
-                                         const QString&, const QStringList&)));
-
-    // Register QIntList so that list of ints may be part of a signal.
-    qRegisterMetaType<QIntList> ("QIntList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_listview (const QStringList&, const QString&,
-                                      int, int, const QIntList&,
-                                      const QString&, const QStringList&,
-                                      const QString&, const QString&)),
-             this,
-             SLOT (handle_create_listview (const QStringList&, const QString&,
-                                           int, int, const QIntList&,
-                                           const QString&, const QStringList&,
-                                           const QString&, const QString&)));
-
-    // Register QFloatList so that list of floats may be part of a signal.
-    qRegisterMetaType<QFloatList> ("QFloatList");
-    connect (&uiwidget_creator,
-             SIGNAL (create_inputlayout (const QStringList&, const QString&,
-                                         const QFloatList&, const QFloatList&,
-                                         const QStringList&)),
-             this,
-             SLOT (handle_create_inputlayout (const QStringList&, const QString&,
-                                              const QFloatList&,
-                                              const QFloatList&,
-                                              const QStringList&)));
-
-    connect (&uiwidget_creator,
-             SIGNAL (create_filedialog (const QStringList &,const QString&,
-                                        const QString&, const QString&,
-                                        const QString&)),
-             this,
-             SLOT (handle_create_filedialog (const QStringList &, const QString&,
-                                             const QString&, const QString&,
-                                             const QString&)));
   }
 
   cli_qobject::cli_qobject (qt_application& app_context)

@@ -50,19 +50,26 @@ function h = findall (varargin)
 endfunction
 
 
-%!testif HAVE_OPENGL, HAVE_QT; have_window_system () && any (strcmp ("qt", available_graphics_toolkits ()))
-%! toolkit = graphics_toolkit ("qt");
+%!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = findall (hf);
-%!   all_handles(1) = {"figure"};
-%!   all_handles(2,1) = {"uitoolbar"};
-%!   all_handles(3:5) = {"uimenu"};
-%!   all_handles([6:7, 9]) = {"uipushtool"};
-%!   all_handles([8, 10:13]) = {"uitoggletool"};
-%!   all_handles(14:33) = {"uimenu"};
-%!   assert (get (h, "type"), all_handles);
+%!   types = {"uitoolbar"};
+%!   htb = uitoolbar (hf);
+%!   types = [types {"uimenu", "uimenu", "uimenu", ...
+%!                   "uimenu", "uimenu", "uimenu"}];
+%!   hm1 = uimenu (hf, "label", "menu1", "handlevisibility", "off");
+%!   uimenu (hm1, "label", "menu1");
+%!   hm2 = uimenu (hf, "label", "menu2", "handlevisibility", "off");
+%!   uimenu (hm2, "label", "menu2");
+%!   hm3 = uimenu (hf, "label", "menu3");
+%!   uimenu (hm3, "label", "menu3");
+%!   types = [types {"uipushtool", "uitoggletool", "uipushtool"}];
+%!   uipushtool (htb, "handlevisibility", "off");
+%!   uitoggletool (htb);
+%!   uipushtool (htb);
+%!   h = setxor (findall (hf), h);
+%!   assert (get (h, "type"), types(:));
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   graphics_toolkit (toolkit);
 %! end_unwind_protect

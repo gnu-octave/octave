@@ -42,22 +42,21 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace QtHandles
 {
+  static QIcon makeEmptyIcon (void)
+  {
+    QPixmap pix (16, 16);
+
+    pix.fill (Qt::transparent);
+
+    return QIcon (pix);
+  }
 
   static QAction*
   addEmptyAction (QToolBar *bar)
   {
-    static QIcon _empty;
+    static const QIcon empty_icon = makeEmptyIcon ();
 
-    if (_empty.isNull ())
-      {
-        QPixmap pix (16, 16);
-
-        pix.fill (Qt::transparent);
-
-        _empty = QIcon (pix);
-      }
-
-    QAction *a = bar->addAction (_empty, "Empty Toolbar");
+    QAction *a = bar->addAction (empty_icon, "Empty Toolbar");
 
     a->setEnabled (false);
     a->setToolTip ("");

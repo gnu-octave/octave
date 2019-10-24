@@ -50,7 +50,7 @@ namespace octave
 
     QUIWidgetCreator (void);
 
-    ~QUIWidgetCreator (void);
+    ~QUIWidgetCreator (void) = default;
 
   public:
 
@@ -94,7 +94,7 @@ namespace octave
       return true;
     };
 
-    const QIntList * get_list_index (void) { return m_list_index; }
+    QIntList get_list_index (void) const { return m_list_index; }
 
     bool signal_inputlayout (const QStringList& prompt, const QString& title,
                              const QFloatList& nr, const QFloatList& nc,
@@ -108,7 +108,7 @@ namespace octave
       return true;
     };
 
-    const QStringList * get_string_list (void) { return m_string_list; }
+    QStringList get_string_list (void) const { return m_string_list; }
 
     bool signal_filedialog (const QStringList& filters, const QString& title,
                             const QString& filename, const QString& dirname,
@@ -118,7 +118,7 @@ namespace octave
       return true;
     }
 
-    const QString * get_dialog_path (void) { return m_path_name; }
+    QString get_dialog_path (void) const { return m_path_name; }
 
     void lock (void) { m_mutex.lock (); }
     void wait (void) { m_waitcondition.wait (&m_mutex); }
@@ -162,10 +162,10 @@ namespace octave
 
     // The list could conceivably be big.  Not sure how things are
     // stored internally, so keep off of the stack.
-    QStringList *m_string_list;
-    QIntList *m_list_index;
+    QStringList m_string_list;
+    QIntList m_list_index;
 
-    QString *m_path_name;
+    QString m_path_name;
 
     // GUI objects cannot be accessed in the non-GUI thread.  However,
     // signals can be sent to slots across threads with proper

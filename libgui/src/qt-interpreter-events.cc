@@ -134,12 +134,12 @@ namespace octave
     // The GUI has sent a signal and the thread has been awakened.
 
     // Add all the file dialog results to a string list.
-    const QStringList *inputLine = uiwidget_creator.get_string_list ();
+    QStringList inputLine = uiwidget_creator.get_string_list ();
 
-    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
+    for (auto it = inputLine.begin (); it != inputLine.end (); it++)
       retval.push_back (it->toStdString ());
 
-    retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
+    retval.push_back (uiwidget_creator.get_dialog_path ().toStdString ());
     retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
 
     uiwidget_creator.unlock ();
@@ -170,11 +170,11 @@ namespace octave
 
     // The GUI has sent a signal and the thread has been awakened.
 
-    const QStringList *inputLine = uiwidget_creator.get_string_list ();
+    QStringList inputLine = uiwidget_creator.get_string_list ();
 
     uiwidget_creator.unlock ();
 
-    for (auto it = inputLine->begin (); it != inputLine->end (); it++)
+    for (auto it = inputLine.begin (); it != inputLine.end (); it++)
       retval.push_back (it->toStdString ());
 
     return retval;
@@ -207,12 +207,12 @@ namespace octave
 
     // The GUI has sent a signal and the thread has been awakened.
 
-    const QIntList *selected = uiwidget_creator.get_list_index ();
+    QIntList selected = uiwidget_creator.get_list_index ();
     int ok = uiwidget_creator.get_dialog_result ();
 
     uiwidget_creator.unlock ();
 
-    return std::pair<std::list<int>, int> (selected->toStdList (), ok);
+    return std::pair<std::list<int>, int> (selected.toStdList (), ok);
   }
 
   std::string

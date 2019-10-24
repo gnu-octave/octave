@@ -48,16 +48,8 @@ namespace octave
 
   QUIWidgetCreator::QUIWidgetCreator (void)
     : QObject (), m_dialog_result (-1), m_dialog_button (),
-      m_string_list (new QStringList ()), m_list_index (new QIntList ()),
-      m_path_name (new QString ())
+      m_string_list (), m_list_index (), m_path_name ()
   { }
-
-  QUIWidgetCreator::~QUIWidgetCreator (void)
-  {
-    delete m_string_list;
-    delete m_list_index;
-    delete m_path_name;
-  }
 
   QString QUIWidgetCreator::rm_amp (const QString& text)
   {
@@ -102,7 +94,7 @@ namespace octave
     lock ();
 
     // Store the value so that builtin functions can retrieve.
-    *m_list_index = selected;
+    m_list_index = selected;
     m_dialog_result = button_pressed;
 
     unlock ();
@@ -118,7 +110,7 @@ namespace octave
     lock ();
 
     // Store the value so that builtin functions can retrieve.
-    *m_string_list = input;
+    m_string_list = input;
     m_dialog_result = button_pressed;
 
     unlock ();
@@ -135,9 +127,9 @@ namespace octave
     lock ();
 
     // Store the value so that builtin functions can retrieve.
-    *m_string_list = files;
+    m_string_list = files;
     m_dialog_result = filterindex;
-    *m_path_name = path;
+    m_path_name = path;
 
     unlock ();
 

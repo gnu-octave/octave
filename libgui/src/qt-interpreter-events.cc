@@ -61,8 +61,8 @@ namespace octave
   {
     QStringList retval;
 
-    for (auto it = lst.begin (); it != lst.end (); it++)
-      retval.append (QString::fromStdString (*it));
+    for (const auto& s : lst)
+      retval.append (QString::fromStdString (s));
 
     return retval;
   }
@@ -77,10 +77,10 @@ namespace octave
     // (optional).  Qt wants a list of filters in the format of
     // 'FilterName (space separated exts)'.
 
-    for (auto it = lst.begin (); it != lst.end (); it++)
+    for (const auto& ext_name : lst)
       {
-        QString ext = QString::fromStdString (it->first);
-        QString name = QString::fromStdString (it->second);
+        QString ext = QString::fromStdString (ext_name.first);
+        QString name = QString::fromStdString (ext_name.second);
 
         // Strip out extensions from name and replace ';' with spaces in
         // list.
@@ -136,8 +136,8 @@ namespace octave
     // Add all the file dialog results to a string list.
     QStringList inputLine = uiwidget_creator.get_string_list ();
 
-    for (auto it = inputLine.begin (); it != inputLine.end (); it++)
-      retval.push_back (it->toStdString ());
+    for (const auto& s : inputLine)
+      retval.push_back (s.toStdString ());
 
     retval.push_back (uiwidget_creator.get_dialog_path ().toStdString ());
     retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
@@ -174,8 +174,8 @@ namespace octave
 
     uiwidget_creator.unlock ();
 
-    for (auto it = inputLine.begin (); it != inputLine.end (); it++)
-      retval.push_back (it->toStdString ());
+    for (const auto& s : inputLine)
+      retval.push_back (s.toStdString ());
 
     return retval;
   }

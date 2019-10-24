@@ -133,7 +133,6 @@ const gui_pref ed_default_enc
 // Files dock widget
 
 const gui_pref fb_column_state ("filesdockwidget/column_state", QVariant ());
-const gui_pref fb_show_ ("filesdockwidget/column_state", QVariant ());
 const gui_pref fb_mru_list ("filesdockwidget/mru_dir_list", QVariant (QStringList ()));
 const gui_pref fb_show_size ("filesdockwidget/showFileSize", QVariant (false));
 const gui_pref fb_show_type ("filesdockwidget/showFileType", QVariant (false));

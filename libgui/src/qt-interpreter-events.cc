@@ -101,7 +101,8 @@ namespace octave
   }
 
   qt_interpreter_events::qt_interpreter_events (void)
-    : interpreter_events (), m_shutdown_confirm_result (false)
+    : interpreter_events (), m_shutdown_confirm_result (false),
+      m_mutex (), m_waitcondition (), m_uiwidget_creator ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
     qRegisterMetaType<QFloatList> ("QFloatList");
@@ -121,11 +122,11 @@ namespace octave
                                       const std::string& multimode)
   {
     QStringList lst
-      = uiwidget_creator.file_dialog (make_filter_list (filter),
-                                      QString::fromStdString (title),
-                                      QString::fromStdString (filename),
-                                      QString::fromStdString (dirname),
-                                      QString::fromStdString (multimode));
+      = m_uiwidget_creator.file_dialog (make_filter_list (filter),
+                                        QString::fromStdString (title),
+                                        QString::fromStdString (filename),
+                                        QString::fromStdString (dirname),
+                                        QString::fromStdString (multimode));
 
     std::list<std::string> retval;
 
@@ -143,11 +144,11 @@ namespace octave
                                        const std::list<std::string>& defaults)
   {
     QStringList lst
-      = uiwidget_creator.input_dialog (make_qstring_list (prompt),
-                                       QString::fromStdString (title),
-                                       QFloatList::fromStdList (nr),
-                                       QFloatList::fromStdList (nc),
-                                       make_qstring_list (defaults));
+      = m_uiwidget_creator.input_dialog (make_qstring_list (prompt),
+                                         QString::fromStdString (title),
+                                         QFloatList::fromStdList (nr),
+                                         QFloatList::fromStdList (nc),
+                                         make_qstring_list (defaults));
     std::list<std::string> retval;
 
     for (const auto& s : lst)
@@ -167,14 +168,14 @@ namespace octave
                                       const std::string& cancel_string)
   {
     QPair<QIntList, int> result
-      = uiwidget_creator.list_dialog (make_qstring_list (list),
-                                      QString::fromStdString (mode),
-                                      width, height,
-                                      QList<int>::fromStdList (initial),
-                                      QString::fromStdString (name),
-                                      make_qstring_list (prompt),
-                                      QString::fromStdString (ok_string),
-                                      QString::fromStdString (cancel_string));
+      = m_uiwidget_creator.list_dialog (make_qstring_list (list),
+                                        QString::fromStdString (mode),
+                                        width, height,
+                                        QList<int>::fromStdList (initial),
+                                        QString::fromStdString (name),
+                                        make_qstring_list (prompt),
+                                        QString::fromStdString (ok_string),
+                                        QString::fromStdString (cancel_string));
 
     return std::pair<std::list<int>, int> (result.first.toStdList (),
                                            result.second);
@@ -203,11 +204,11 @@ namespace octave
     buttons << QString::fromStdString (btn3);
 
     QString answer
-      = uiwidget_creator.message_dialog (QString::fromStdString (msg),
-                                         QString::fromStdString (title),
-                                         icon, buttons,
-                                         QString::fromStdString (btndef),
-                                         role);
+      = m_uiwidget_creator.message_dialog (QString::fromStdString (msg),
+                                           QString::fromStdString (title),
+                                           icon, buttons,
+                                           QString::fromStdString (btndef),
+                                           role);
 
     return answer.toStdString ();
   }
@@ -271,7 +272,7 @@ namespace octave
     role << "YesRole" << "RejectRole";
     btn << tr ("Create") << tr ("Cancel");
 
-    QString answer = uiwidget_creator.message_dialog
+    QString answer = m_uiwidget_creator.message_dialog
       (tr ("File\n%1\ndoes not exist. Do you want to create it?").
        arg (QString::fromStdString (abs_fname)),
        tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
@@ -315,8 +316,8 @@ namespace octave
     role << "RejectRole";
 
     QString result
-      = uiwidget_creator.message_dialog (msg, title, "quest", btn,
-                                         cancel_txt, role);
+      = m_uiwidget_creator.message_dialog (msg, title, "quest", btn,
+                                           cancel_txt, role);
 
     if (result == cd_txt)
       retval = 1;

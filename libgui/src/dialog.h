@@ -164,8 +164,6 @@ namespace octave
     QWaitCondition m_waitcondition;
   };
 
-  extern QUIWidgetCreator uiwidget_creator;
-
   class MessageDialog : public QMessageBox
   {
     Q_OBJECT

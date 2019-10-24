@@ -44,8 +44,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  QUIWidgetCreator uiwidget_creator;
-
   QUIWidgetCreator::QUIWidgetCreator (void)
     : QObject (), m_dialog_result (-1), m_dialog_button (),
       m_string_list (), m_list_index (), m_path_name ()

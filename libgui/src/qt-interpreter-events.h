@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "event-manager.h"
 
+#include "dialog.h"
+
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
@@ -185,6 +187,8 @@ namespace octave
     QMutex m_mutex;
 
     QWaitCondition m_waitcondition;
+
+    QUIWidgetCreator m_uiwidget_creator;
 
   signals:
 

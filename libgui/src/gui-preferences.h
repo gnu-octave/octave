@@ -33,9 +33,20 @@ along with Octave; see the file COPYING.  If not, see
 
 struct gui_pref
 {
-  gui_pref (const QString& key_, QVariant def_): key (key_), def (def_) {}
-  QString   key;  // the key name
-  QVariant  def;  // the default value
+  gui_pref (const QString& key_arg, const QVariant& def_arg)
+    : key (key_arg), def (def_arg)
+  { }
+
+  // No copying!
+
+  gui_pref (const gui_pref&) = delete;
+
+  gui_pref& operator = (const gui_pref&) = delete;
+
+  ~gui_pref (void) = default;
+
+  const QString key;   // the key name
+  const QVariant def;  // the default value
 };
 
 

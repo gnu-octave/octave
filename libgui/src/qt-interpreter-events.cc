@@ -120,32 +120,17 @@ namespace octave
                                       const std::string& dirname,
                                       const std::string& multimode)
   {
+    QStringList lst
+      = uiwidget_creator.file_dialog (make_filter_list (filter),
+                                      QString::fromStdString (title),
+                                      QString::fromStdString (filename),
+                                      QString::fromStdString (dirname),
+                                      QString::fromStdString (multimode));
+
     std::list<std::string> retval;
 
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_filedialog (make_filter_list (filter),
-                                        QString::fromStdString (title),
-                                        QString::fromStdString (filename),
-                                        QString::fromStdString (dirname),
-                                        QString::fromStdString (multimode));
-
-    // Wait while the user is responding to dialog.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    // Add all the file dialog results to a string list.
-    QStringList inputLine = uiwidget_creator.get_string_list ();
-
-    for (const auto& s : inputLine)
+    for (const auto& s : lst)
       retval.push_back (s.toStdString ());
-
-    retval.push_back (uiwidget_creator.get_dialog_path ().toStdString ());
-    retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
-
-    uiwidget_creator.unlock ();
 
     return retval;
   }
@@ -157,27 +142,15 @@ namespace octave
                                        const std::list<float>& nc,
                                        const std::list<std::string>& defaults)
   {
+    QStringList lst
+      = uiwidget_creator.input_dialog (make_qstring_list (prompt),
+                                       QString::fromStdString (title),
+                                       QFloatList::fromStdList (nr),
+                                       QFloatList::fromStdList (nc),
+                                       make_qstring_list (defaults));
     std::list<std::string> retval;
 
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_inputlayout (make_qstring_list (prompt),
-                                         QString::fromStdString (title),
-                                         QFloatList::fromStdList (nr),
-                                         QFloatList::fromStdList (nc),
-                                         make_qstring_list (defaults));
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    QStringList inputLine = uiwidget_creator.get_string_list ();
-
-    uiwidget_creator.unlock ();
-
-    for (const auto& s : inputLine)
+    for (const auto& s : lst)
       retval.push_back (s.toStdString ());
 
     return retval;
@@ -193,10 +166,8 @@ namespace octave
                                       const std::string& ok_string,
                                       const std::string& cancel_string)
   {
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_listview (make_qstring_list (list),
+    QPair<QIntList, int> result
+      = uiwidget_creator.list_dialog (make_qstring_list (list),
                                       QString::fromStdString (mode),
                                       width, height,
                                       QList<int>::fromStdList (initial),
@@ -205,17 +176,8 @@ namespace octave
                                       QString::fromStdString (ok_string),
                                       QString::fromStdString (cancel_string));
 
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    QIntList selected = uiwidget_creator.get_list_index ();
-    int ok = uiwidget_creator.get_dialog_result ();
-
-    uiwidget_creator.unlock ();
-
-    return std::pair<std::list<int>, int> (selected.toStdList (), ok);
+    return std::pair<std::list<int>, int> (result.first.toStdList (),
+                                           result.second);
   }
 
   std::string
@@ -226,36 +188,28 @@ namespace octave
                                           const std::string& btn3,
                                           const std::string& btndef)
   {
-    QStringList btn;
+    QString icon = "quest";
+    QStringList buttons;
     QStringList role;
+
     // Must use ResetRole which is left-aligned for all OS and WM.
     role << "ResetRole" << "ResetRole" << "ResetRole";
-    btn << QString::fromStdString (btn1);
+
+    buttons << QString::fromStdString (btn1);
     if (btn2 == "")
       role.removeAt (0);
     else
-      btn << QString::fromStdString (btn2);
-    btn << QString::fromStdString (btn3);
+      buttons << QString::fromStdString (btn2);
+    buttons << QString::fromStdString (btn3);
 
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
+    QString answer
+      = uiwidget_creator.message_dialog (QString::fromStdString (msg),
+                                         QString::fromStdString (title),
+                                         icon, buttons,
+                                         QString::fromStdString (btndef),
+                                         role);
 
-    uiwidget_creator.signal_dialog (QString::fromStdString (msg),
-                                    QString::fromStdString (title),
-                                    "quest", btn,
-                                    QString::fromStdString (btndef),
-                                    role);
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    std::string answer = uiwidget_creator.get_dialog_button ().toStdString ();
-
-    uiwidget_creator.unlock ();
-
-    return answer;
+    return answer.toStdString ();
   }
 
   void qt_interpreter_events::update_path_dialog (void)
@@ -317,32 +271,16 @@ namespace octave
     role << "YesRole" << "RejectRole";
     btn << tr ("Create") << tr ("Cancel");
 
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_dialog
+    QString answer = uiwidget_creator.message_dialog
       (tr ("File\n%1\ndoes not exist. Do you want to create it?").
        arg (QString::fromStdString (abs_fname)),
        tr ("Octave Editor"), "quest", btn, tr ("Create"), role);
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    QString answer = uiwidget_creator.get_dialog_button ();
-
-    uiwidget_creator.unlock ();
 
     return (answer == tr ("Create"));
   }
 
   // Prompt to allow file to be run by setting cwd (or if
-  // addpath_option==true, alternatively setting the path).  This uses a
-  // QMessageBox unlike other functions in this file, because
-  // uiwidget_creator.waitcondition.wait hangs when called from
-  // file_editor_tab::handle_context_menu_break_condition().  (FIXME:
-  // why hang?)
+  // addpath_option==true, alternatively setting the path).
 
   int
   qt_interpreter_events::debug_cd_or_addpath_error (const std::string& file,
@@ -376,19 +314,9 @@ namespace octave
     btn << cancel_txt;
     role << "RejectRole";
 
-    // Lock mutex before signaling.
-    uiwidget_creator.lock ();
-
-    uiwidget_creator.signal_dialog (msg, title, "quest", btn, cancel_txt, role);
-
-    // Wait while the user is responding to message box.
-    uiwidget_creator.wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    QString result = uiwidget_creator.get_dialog_button ();
-
-    uiwidget_creator.unlock ();
+    QString result
+      = uiwidget_creator.message_dialog (msg, title, "quest", btn,
+                                         cancel_txt, role);
 
     if (result == cd_txt)
       retval = 1;

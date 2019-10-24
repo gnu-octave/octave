@@ -56,67 +56,34 @@ namespace octave
 
     QString rm_amp (const QString& text);
 
-    void signal_dialog (const QString& message, const QString& title,
-                        const QString& icon, const QStringList& button,
-                        const QString& defbutton, const QStringList& role)
-    {
-      // Store button text before a window-manager adds accelerators
-      m_button_list = button;
-
-      // Use the last button in the list as the reject result, i.e., when no
-      // button is pressed such as in the case of the upper right close tab.
-      if (! button.isEmpty ())
-        m_dialog_button = button.last ();
-
-      QString xicon = icon;
-      if (xicon.isEmpty ())
-        xicon = "none";
-
-      emit create_dialog (message, title, xicon, button, defbutton, role);
-    };
+    QString message_dialog (const QString& message, const QString& title,
+                            const QString& icon, const QStringList& button,
+                            const QString& defbutton, const QStringList& role);
 
     int get_dialog_result (void) { return m_dialog_result; }
 
     QString get_dialog_button (void) { return m_dialog_button; }
 
-    bool signal_listview (const QStringList& list, const QString& mode,
-                          int wd, int ht, const QList<int>& initial,
-                          const QString& name, const QStringList& prompt,
-                          const QString& ok_string,
-                          const QString& cancel_string)
-    {
-      if (list.isEmpty ())
-        return false;
-
-      emit create_listview (list, mode, wd, ht, initial, name,
-                            prompt, ok_string, cancel_string);
-
-      return true;
-    };
+    QPair<QIntList, int> list_dialog (const QStringList& list,
+                                      const QString& mode,
+                                      int wd, int ht,
+                                      const QList<int>& initial,
+                                      const QString& name,
+                                      const QStringList& prompt,
+                                      const QString& ok_string,
+                                      const QString& cancel_string);
 
     QIntList get_list_index (void) const { return m_list_index; }
 
-    bool signal_inputlayout (const QStringList& prompt, const QString& title,
-                             const QFloatList& nr, const QFloatList& nc,
-                             const QStringList& defaults)
-    {
-      if (prompt.isEmpty ())
-        return false;
-
-      emit create_inputlayout (prompt, title, nr, nc, defaults);
-
-      return true;
-    };
+    QStringList input_dialog (const QStringList& prompt, const QString& title,
+                              const QFloatList& nr, const QFloatList& nc,
+                              const QStringList& defaults);
 
     QStringList get_string_list (void) const { return m_string_list; }
 
-    bool signal_filedialog (const QStringList& filters, const QString& title,
-                            const QString& filename, const QString& dirname,
-                            const QString& multimode)
-    {
-      emit create_filedialog (filters, title, filename, dirname, multimode);
-      return true;
-    }
+    QStringList file_dialog (const QStringList& filters, const QString& title,
+                             const QString& filename, const QString& dirname,
+                             const QString& multimode);
 
     QString get_dialog_path (void) const { return m_path_name; }
 

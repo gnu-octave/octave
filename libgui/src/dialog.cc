@@ -98,8 +98,104 @@ namespace octave
     return text_wo_amp;
   }
 
+  QString QUIWidgetCreator::message_dialog (const QString& message,
+                                            const QString& title,
+                                            const QString& icon,
+                                            const QStringList& buttons,
+                                            const QString& defbutton,
+                                            const QStringList& role)
+  {
+    QMutexLocker autolock (&m_mutex);
+
+    // Store button text before a window-manager adds accelerators.
+    m_button_list = buttons;
+
+    // Use the last button in the list as the reject result, i.e., when no
+    // button is pressed such as in the case of the upper right close tab.
+    if (! buttons.isEmpty ())
+      m_dialog_button = buttons.last ();
+
+    QString xicon = icon;
+    if (xicon.isEmpty ())
+      xicon = "none";
+
+    emit create_dialog (message, title, xicon, buttons, defbutton, role);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return m_dialog_button;
+  };
+
+  QPair<QIntList, int>
+  QUIWidgetCreator::list_dialog (const QStringList& list, const QString& mode,
+                                 int wd, int ht, const QList<int>& initial,
+                                 const QString& name,
+                                 const QStringList& prompt,
+                                 const QString& ok_string,
+                                 const QString& cancel_string)
+  {
+    if (list.isEmpty ())
+      return QPair<QIntList, int> ();
+
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_listview (list, mode, wd, ht, initial, name,
+                          prompt, ok_string, cancel_string);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return QPair<QIntList, int> (m_list_index, m_dialog_result);
+  };
+
   // Create a message dialog with specified string, buttons and decorative
   // text.
+
+  QStringList QUIWidgetCreator::input_dialog (const QStringList& prompt,
+                                              const QString& title,
+                                              const QFloatList& nr,
+                                              const QFloatList& nc,
+                                              const QStringList& defaults)
+  {
+    if (prompt.isEmpty ())
+      return QStringList ();
+
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_inputlayout (prompt, title, nr, nc, defaults);
+
+    // Wait while the user is responding to message box.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    return m_string_list;
+  };
+
+  QStringList QUIWidgetCreator::file_dialog (const QStringList& filters,
+                                             const QString& title,
+                                             const QString& filename,
+                                             const QString& dirname,
+                                             const QString& multimode)
+  {
+    QMutexLocker autolock (&m_mutex);
+
+    emit create_filedialog (filters, title, filename, dirname, multimode);
+
+    // Wait while the user is responding to dialog.
+    wait ();
+
+    // The GUI has sent a signal and the thread has been awakened.
+    // Add all the file dialog results to a string list.
+    QStringList retval;
+    retval << m_string_list
+           << m_path_name
+           << QString::number (m_dialog_result);
+
+    return retval;
+  }
 
   void QUIWidgetCreator::handle_create_dialog (const QString& message,
                                                const QString& title,
@@ -120,9 +216,6 @@ namespace octave
 
   void QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     if (button)   // button is NULL when dialog is closed
       {
         // Check for a matching button text while ignoring accelerators because
@@ -140,8 +233,6 @@ namespace octave
 
     // The value should always be 1 for the Octave functions.
     m_dialog_result = 1;
-
-    unlock ();
 
     // Wake up Octave process so that it continues.
     wake_all ();
@@ -173,14 +264,9 @@ namespace octave
   void QUIWidgetCreator::list_select_finished (const QIntList& selected,
                                                int button_pressed)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
     m_list_index = selected;
     m_dialog_result = button_pressed;
-
-    unlock ();
 
     // Wake up Octave process so that it continues.
     wake_all ();
@@ -207,14 +293,9 @@ namespace octave
   void QUIWidgetCreator::input_finished (const QStringList& input,
                                          int button_pressed)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
     m_string_list = input;
     m_dialog_result = button_pressed;
-
-    unlock ();
 
     // Wake up Octave process so that it continues.
     wake_all ();
@@ -242,15 +323,10 @@ namespace octave
                                               const QString& path,
                                               int filterindex)
   {
-    // Wait for link thread to go to sleep state.
-    lock ();
-
     // Store the value so that builtin functions can retrieve.
     m_string_list = files;
     m_dialog_result = filterindex;
     m_path_name = path;
-
-    unlock ();
 
     // Wake up Octave process so that it continues.
     wake_all ();

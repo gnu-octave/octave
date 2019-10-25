@@ -427,7 +427,7 @@ namespace octave
     varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 
     varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value (cs_font.key, default_font)).toString ()));
-    varedit_fontSize->setValue (settings->value ("variable_editor/font_size", QVariant (10)).toInt ());
+    varedit_fontSize->setValue (settings->value (ve_font_size.key, ve_font_size.def).toInt ());
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_font, SLOT (setDisabled (bool)));
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
@@ -911,7 +911,7 @@ namespace octave
       }
     settings->setValue (ed_uncomment_str.key, rb_uncomment);
 
-    settings->setValue ("editor/default_encoding", editor_combo_encoding->currentText ());
+    settings->setValue (ed_default_enc.key, editor_combo_encoding->currentText ());
     settings->setValue ("editor/auto_indent", editor_auto_ind_checkbox->isChecked ());
     settings->setValue ("editor/tab_indents_line", editor_tab_ind_checkbox->isChecked ());
     settings->setValue ("editor/backspace_unindents_line", editor_bs_unind_checkbox->isChecked ());
@@ -929,7 +929,7 @@ namespace octave
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
     settings->setValue ("terminal/fontSize", terminal_fontSize->value ());
-    settings->setValue ("terminal/fontName", terminal_fontName->currentFont ().family ());
+    settings->setValue (cs_font.key, terminal_fontName->currentFont ().family ());
 
     // file browser
     settings->setValue (fb_sync_octdir.key, sync_octave_directory->isChecked ());
@@ -1018,7 +1018,7 @@ namespace octave
     settings->setValue ("variable_editor/use_terminal_font", varedit_useTerminalFont->isChecked ());
     settings->setValue ("variable_editor/alternate_rows", varedit_alternate->isChecked ());
     settings->setValue ("variable_editor/font_name", varedit_font->currentFont ().family ());
-    settings->setValue ("variable_editor/font_size", varedit_fontSize->value ());
+    settings->setValue (ve_font_size.key, varedit_fontSize->value ());
     write_varedit_colors (settings);
 
     // shortcuts

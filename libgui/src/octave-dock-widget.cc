@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenuBar>
 
 #include "gui-preferences-global.h"
+#include "gui-preferences-mw.h"
 #include "octave-dock-widget.h"
 #include "resource-manager.h"
 
@@ -326,13 +327,13 @@ namespace octave
     // Since floating widget has no parent, we have to read it
     QSettings *settings = resource_manager::get_settings ();
 
-    settings->setValue ("MainWindow/windowState", m_parent->saveState ());
+    settings->setValue (mw_state.key, m_parent->saveState ());
     // Stay window, otherwise will bounce back to window by default because
     // there is no layout information for this widget in the saved settings.
     setParent (m_parent, Qt::Window);
     m_parent->addDockWidget (Qt::BottomDockWidgetArea, this);
     // recover old window states, hide and re-show new added widget
-    m_parent->restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+    m_parent->restoreState (settings->value (mw_state.key).toByteArray ());
     setFloating (false);
 
     // adjust the (un)dock icon

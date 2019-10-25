@@ -28,6 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 // Variable Editor preferences
 
 const gui_pref
-ve_font ("variable_editor/font_size", QVariant ());
+ve_font_size ("variable_editor/font_size", QVariant ());
 
 #endif

@@ -1390,8 +1390,8 @@ namespace octave
       }
     else
       {
-        font_name = settings->value (ve_font.key, default_font).toString ();
-        font_size = settings->value ("variable_editor/font_size", 10).toInt ();
+        font_name = settings->value ("variable_editor/font_name", default_font).toString ();
+        font_size = settings->value (ve_font_size.key, ve_font_size.def).toInt ();
       }
 
     m_font = QFont (font_name, font_size);

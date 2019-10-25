@@ -263,7 +263,7 @@ namespace octave
     // encoding, not updated with the settings
     QString locale_enc_name =
       QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
-    m_encoding = settings->value ("editor/default_encoding", locale_enc_name)
+    m_encoding = settings->value (ed_default_enc.key, locale_enc_name)
                 .toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet

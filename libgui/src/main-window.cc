@@ -1528,8 +1528,8 @@ namespace octave
         return;
       }
 
-    settings->setValue ("MainWindow/geometry", saveGeometry ());
-    settings->setValue ("MainWindow/windowState", saveState ());
+    settings->setValue (mw_geometry.key, saveGeometry ());
+    settings->setValue (mw_state.key, saveState ());
     // write the list of recent used directories
     QStringList curr_dirs;
     for (int i=0; i<m_current_directory_combo_box->count (); i++)

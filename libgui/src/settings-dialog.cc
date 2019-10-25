@@ -59,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #  include <Qsci/qscilexerdiff.h>
 #endif
 
+#include "gui-preferences-all.h"
 #include "resource-manager.h"
 #include "settings-dialog.h"
 #include "shortcut-manager.h"

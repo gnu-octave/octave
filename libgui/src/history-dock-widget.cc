@@ -32,7 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QScrollBar>
 #include <QVBoxLayout>
 
-#include "gui-preferences.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
 #include "history-dock-widget.h"
 #include "resource-manager.h"
 

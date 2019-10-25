@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSignalMapper>
 #include <QVBoxLayout>
 
-#include "gui-preferences.h"
+#include "gui-preferences-ws.h"
 #include "resource-manager.h"
 #include "workspace-view.h"
 

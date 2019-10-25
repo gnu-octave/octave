@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include "gui-preferences.h"
+#include "gui-preferences-pd.h"
 #include "resource-manager.h"
 #include "set-path-dialog.h"
 #include "set-path-model.h"
@@ -165,7 +165,7 @@ namespace octave
 
     QSettings *settings = resource_manager::get_settings ();
     restoreGeometry (
-            settings->value(path_dialog_geometry.key).toByteArray());
+            settings->value(pd_geometry.key).toByteArray());
   }
 
   set_path_dialog::~set_path_dialog (void)
@@ -300,7 +300,7 @@ namespace octave
   void set_path_dialog::save_settings ()
   {
     QSettings *settings = resource_manager::get_settings ();
-    settings->setValue (path_dialog_geometry.key, saveGeometry ());
+    settings->setValue (pd_geometry.key, saveGeometry ());
   }
 
   void set_path_dialog::closeEvent (QCloseEvent *e)

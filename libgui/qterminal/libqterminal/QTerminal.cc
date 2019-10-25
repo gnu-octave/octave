@@ -21,9 +21,10 @@ see <https://www.gnu.org/licenses/>.
 
 */
 
-#include "QTerminal.h"
-#include "gui-preferences.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
 
+#include "QTerminal.h"
 #if defined (Q_OS_WIN32)
 # include "win32/QWinTerminalImpl.h"
 #else

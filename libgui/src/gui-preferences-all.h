@@ -20,39 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_gui_preferences_h)
-#define octave_gui_preferences_h 1
-
-#include <QStringList>
-#include <QStyle>
-#include <QTabWidget>
-#include <QTextCodec>
-#include <QVariant>
-
-// Structure for the definition of pairs: key and default value
-
-struct gui_pref
-{
-  gui_pref (const QString& key_arg, const QVariant& def_arg)
-    : key (key_arg), def (def_arg)
-  { }
-
-  // No copying!
-
-  gui_pref (const gui_pref&) = delete;
-
-  gui_pref& operator = (const gui_pref&) = delete;
-
-  ~gui_pref (void) = default;
-
-  const QString key;   // the key name
-  const QVariant def;  // the default value
-};
+#if ! defined (octave_gui_preferences_all_h)
+#define octave_gui_preferences_all_h 1
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-mw.h"
 #include "gui-preferences-pd.h"
 #include "gui-preferences-ve.h"
 #include "gui-preferences-ws.h"

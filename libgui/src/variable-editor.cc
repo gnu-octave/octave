@@ -48,7 +48,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "dw-main-window.h"
-#include "gui-preferences.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
+#include "gui-preferences-ve.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 #include "variable-editor-model.h"

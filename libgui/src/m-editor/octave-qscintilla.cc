@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerperl.h>
 
 #include "file-editor-tab.h"
-#include "gui-preferences.h"
+#include "gui-preferences-ed.h"
 // FIXME: hardwired marker numbers?
 #include "marker.h"
 #include "octave-qscintilla.h"

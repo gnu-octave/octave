@@ -27,7 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDesktopWidget>
 
-#include "gui-preferences.h"
+#include "gui-preferences-cs.h"
+#include "gui-preferences-global.h"
 #include "resource-manager.h"
 #include "terminal-dock-widget.h"
 

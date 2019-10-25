@@ -186,8 +186,16 @@ noinst_HEADERS += \
   %reldir%/documentation-dock-widget.h \
   %reldir%/documentation.h \
   %reldir%/dw-main-window.h \
-  %reldir%/gui-preferences.h \
+  %reldir%/gui-preferences-all.h \
+  %reldir%/gui-preferences-cs.h \
+  %reldir%/gui-preferences-ed.h \
+  %reldir%/gui-preferences-fb.h \
+  %reldir%/gui-preferences-global.h \
   %reldir%/gui-preferences-mw.h \
+  %reldir%/gui-preferences-pd.h \
+  %reldir%/gui-preferences-ve.h \
+  %reldir%/gui-preferences-ws.h \
+  %reldir%/gui-preferences.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
   %reldir%/history-dock-widget.h \

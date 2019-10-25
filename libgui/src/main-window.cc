@@ -55,6 +55,8 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_QSCINTILLA)
 #  include "file-editor.h"
 #endif
+#include "gui-preferences-ed.h"
+#include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
@@ -2629,7 +2631,7 @@ namespace octave
   {
     m_main_tool_bar = addToolBar (tr ("Toolbar"));
     m_main_tool_bar->setStyleSheet (m_main_tool_bar->styleSheet ()
-                                    + octgui_toolbar_style);
+                                    + global_toolbar_style);
 
     m_main_tool_bar->setObjectName ("MainToolBar");
     m_main_tool_bar->addAction (m_new_script_action);

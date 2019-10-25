@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QTreeWidget>
 
-#include "gui-preferences.h"
+#include "gui-preferences-ws.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 

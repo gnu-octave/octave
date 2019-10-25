@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "documentation.h"
-#include "gui-preferences.h"
+#include "gui-preferences-global.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 

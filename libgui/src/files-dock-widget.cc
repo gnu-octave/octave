@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QUrl>
 
 #include "files-dock-widget.h"
-#include "gui-preferences.h"
+#include "gui-preferences-fb.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 

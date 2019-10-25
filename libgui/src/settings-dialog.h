@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 
 #include "color-picker.h"
-#include "gui-preferences.h"
+#include "gui-preferences-ed.h"
 #include "ui-settings-dialog.h"
 
 class QsciLexer;

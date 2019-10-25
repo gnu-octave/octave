@@ -41,7 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscicommandset.h>
 
 #include "file-editor.h"
-#include "gui-preferences.h"
+#include "gui-preferences-ed.h"
+#include "gui-preferences-global.h"
 #include "main-window.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"

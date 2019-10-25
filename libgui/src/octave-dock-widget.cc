@@ -35,9 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolBar>
 #include <QMenuBar>
 
+#include "gui-preferences-global.h"
 #include "octave-dock-widget.h"
 #include "resource-manager.h"
-#include "gui-preferences.h"
 
 namespace octave
 {
@@ -485,11 +485,11 @@ namespace octave
     // Compacter design
     QToolBar* toolbar = findChild <QToolBar *> ();
     if (toolbar)
-      toolbar->setStyleSheet (toolbar->styleSheet () + octgui_toolbar_style);
+      toolbar->setStyleSheet (toolbar->styleSheet () + global_toolbar_style);
 
     QMenuBar* menubar = findChild <QMenuBar *> ();
     if (menubar)
-      menubar->setStyleSheet (menubar->styleSheet () + octgui_menubar_style);
+      menubar->setStyleSheet (menubar->styleSheet () + global_menubar_style);
 
   }
 

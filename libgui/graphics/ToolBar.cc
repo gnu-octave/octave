@@ -34,11 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTimer>
 #include <QToolBar>
 
+#include "gui-preferences-global.h"
+
 #include "Figure.h"
 #include "ToolBar.h"
 #include "QtHandlesUtils.h"
-
-#include "../src/gui-preferences.h"
 
 namespace QtHandles
 {
@@ -88,7 +88,7 @@ namespace QtHandles
     bar->setFloatable (false);
     bar->setMovable (false);
     bar->setVisible (tp.is_visible ());
-    bar->setStyleSheet (bar->styleSheet () + octgui_toolbar_style);
+    bar->setStyleSheet (bar->styleSheet () + global_toolbar_style);
 
 
     m_empty = addEmptyAction (bar);

@@ -56,6 +56,7 @@
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-sysdep.h"
+#include "localcharset-wrapper.h"
 #include "mkostemp-wrapper.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -498,8 +499,9 @@ an error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
 corresponding system error message.  The @var{mode} is a one or two
 character string that specifies whether the file is to be opened for
 reading, writing, or both.  The @var{encoding} is a character string with a
-valid code page identifier.  This code page is used when strings are read from
-or written to the file.
+valid encoding identifier.  This encoding is used when strings are read from
+or written to the file.  By default, the same encoding is used like for reading
+.m files.
 
 The second form of the @code{fopen} function returns a vector of file ids
 corresponding to all the currently open files, excluding the
@@ -620,7 +622,11 @@ after data has been written then the write should be followed by a call to
 
   octave_value arch = (nargin > 2) ? args(2) : octave_value ("native");
 
-  octave_value encoding = (nargin > 3) ? args(3) : octave_value ("utf-8");
+  octave::input_system& input_sys = interp.get_input_system ();
+  octave_value encoding = (nargin > 3) ? args(3)
+                          : octave_value (input_sys.mfile_encoding ());
+  if (encoding.string_value () == "system")
+    encoding = octave_value (octave_locale_charset_wrapper ());
 
   int fid = -1;
 

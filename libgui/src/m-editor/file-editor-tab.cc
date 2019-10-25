@@ -216,6 +216,15 @@ namespace octave
     edit_area_layout->setSpacing (0);
     setLayout (edit_area_layout);
 
+    // Any interpreter_event signal from a file_editor_tab_widget is
+    // handled the same as for the parent main_window object.
+
+    connect (m_edit_area, SIGNAL (interpreter_event (const fcn_callback&)),
+             this, SIGNAL (interpreter_event (const fcn_callback&)));
+
+    connect (m_edit_area, SIGNAL (interpreter_event (const meth_callback&)),
+             this, SIGNAL (interpreter_event (const meth_callback&)));
+
     // connect modified signal
     connect (m_edit_area, SIGNAL (modificationChanged (bool)),
              this, SLOT (update_window_title (bool)));

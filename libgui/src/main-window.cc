@@ -1037,8 +1037,7 @@ namespace octave
          command_editor::accept_line ();
        });
 
-    if (focus_console_after_command ())
-      focus_command_window ();
+    focus_console_after_command ();
   }
 
   void main_window::run_file_in_terminal (const QFileInfo& info)
@@ -1082,8 +1081,7 @@ namespace octave
          command_editor::accept_line ();
        });
 
-    if (focus_console_after_command ())
-      focus_command_window ();
+    focus_console_after_command ();
   }
 
   void main_window::handle_new_figure_request (void)
@@ -2749,10 +2747,11 @@ namespace octave
     qt_link->wake_all ();
   }
 
-  bool main_window::focus_console_after_command (void)
+  void main_window::focus_console_after_command (void)
   {
     QSettings *settings = resource_manager::get_settings ();
-    return settings->value ("terminal/focus_after_command",false).toBool ();
+    if (settings->value ("terminal/focus_after_command",false).toBool ())
+      focus_command_window ();
   }
 
   void main_window::configure_shortcuts (void)

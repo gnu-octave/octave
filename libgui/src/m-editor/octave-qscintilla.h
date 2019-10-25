@@ -29,7 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
+#include <QSettings>
 #include <Qsci/qsciscintilla.h>
+
+#include "qt-interpreter-events.h"
 
 namespace octave
 {
@@ -83,14 +86,22 @@ namespace octave
     void show_doc_signal (const QString&);
     void context_menu_break_condition_signal (int);
     void context_menu_break_once (int);
+    void interpreter_event (const meth_callback& meth);
+    void ctx_menu_run_finished_signal (bool, QTemporaryFile*,
+                                       QTemporaryFile*, QTemporaryFile*);
+    void focus_console_after_command_signal (void);
 
   private slots:
+
+    void ctx_menu_run_finished (bool, QTemporaryFile*,
+                                QTemporaryFile*, QTemporaryFile*);
 
     void contextmenu_help (bool);
     void contextmenu_doc (bool);
     void contextmenu_help_doc (bool);
     void contextmenu_edit (bool);
     void contextmenu_run (bool);
+    void contextmenu_run_temp_error (void);
 
     void contextmenu_break_condition (bool);
     void contextmenu_break_once (const QPoint&);

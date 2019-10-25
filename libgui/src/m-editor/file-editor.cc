@@ -2263,6 +2263,10 @@ namespace octave
              SIGNAL (execute_command_in_terminal_signal (const QString&)),
              main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
+    connect (f->qsci_edit_area (),
+             SIGNAL (focus_console_after_command_signal (void)),
+             main_win (), SLOT (focus_console_after_command (void)));
+
     // Signals from the file editor_tab
     connect (f, SIGNAL (file_name_changed (const QString&, const QString&, bool)),
              this, SLOT (handle_file_name_changed (const QString&,

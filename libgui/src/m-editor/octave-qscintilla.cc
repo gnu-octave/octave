@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// Author: Torsten <ttl@justmail.de>
+// Author: Torsten Lilge <ttl-octave@mailbox.org>
 
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
@@ -30,7 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <Qsci/qscilexer.h>
 
+#include <QDir>
 #include <QKeySequence>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QShortcut>
 #include <QToolTip>
@@ -56,6 +58,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qscintilla.h"
 #include "resource-manager.h"
 #include "shortcut-manager.h"
+
+#include "builtin-defun-decls.h"
+#include "cmd-edit.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".
@@ -111,6 +118,12 @@ namespace octave
 
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
+
+    connect (this, SIGNAL (ctx_menu_run_finished_signal (bool, QTemporaryFile*,
+                                                         QTemporaryFile*, QTemporaryFile*)),
+             this, SLOT (ctx_menu_run_finished (bool, QTemporaryFile*,
+                                                QTemporaryFile*, QTemporaryFile*)),
+             Qt::QueuedConnection);
 
     // clear scintilla edit shortcuts that are handled by the editor
     QsciCommandSet *cmd_set = standardCommands ();
@@ -748,13 +761,151 @@ namespace octave
     emit context_menu_edit_signal (m_word_at_cursor);
   }
 
+  void octave_qscintilla::contextmenu_run_temp_error (void)
+  {
+    QMessageBox::critical (this, tr ("Octave Editor"),
+                        tr ("Creating temporary files failed.\n"
+                            "Make sure you have write access to temp. directory\n"
+                             "%1\n\n"
+                             "\"Run Selection\" requires temporary files.").arg (QDir::tempPath ()));
+  }
+
   void octave_qscintilla::contextmenu_run (bool)
   {
-    QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
-                                                  QString::SkipEmptyParts);
-    for (int i = 0; i < commands.size (); i++)
-      emit execute_command_in_terminal_signal (commands.at (i));
+
+    // Create tmp file required for adding command to history
+    QPointer<QTemporaryFile> tmp_hist
+        = resource_manager::create_tmp_file (); // empty tmp file for history
+
+    // Create tmp file required for the script echoing and adding cmd to hist
+    QPointer<QTemporaryFile> tmp_script
+        = resource_manager::create_tmp_file ("m"); // tmp script file
+
+    bool tmp = (tmp_hist && tmp_hist->open () &&
+                tmp_script && tmp_script->open());
+    if (! tmp)
+      {
+        // tmp files not working: use old way to run selection
+        contextmenu_run_temp_error ();
+        return;
+      }
+
+    tmp_hist->close ();
+
+    QString tmp_hist_name = QFileInfo (tmp_hist->fileName ()).baseName ();
+    QString tmp_script_name = QFileInfo (tmp_script->fileName ()).baseName ();
+
+    // Create tmp file with script for echoing a command and adding
+    // the the history
+    QString echo_hist = QString (
+        "function cnt = %2 (oldcnt, i, command, line)\n"
+        "   cnt = oldcnt;\n"
+        "   if cnt < i\n"
+        "       cnt = i;\n"
+        "       disp ([PS1, command]);\n"
+        "       if (history_save ())\n"
+        "           fid = fopen ('%1','w');\n"
+        "           if (fid != -1)\n"
+        "               fprintf (fid, [line,'\\n']);\n"
+        "               fclose (fid);\n"
+        "           end;\n"
+        "           history -r '%1'\n"
+        "       end\n"
+        "   end\n"
+        " end\n").arg (tmp_hist->fileName ()).arg (tmp_script_name);
+
+    tmp_script->write (echo_hist.toUtf8 ());
+    tmp_script->close ();
+
+    // Take selected code and extend it by commands for echoing each
+    // evaluated line and for adding the line to the history (use script)
+
+    QString tmp_dir = QFileInfo (tmp_script->fileName ()).absolutePath ();
+    QString code = QString ("%1 = -1;\n\n").arg (tmp_hist_name);
+
+    // Split contents into single lines and complete commands
+    QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
+                                               QString::SkipEmptyParts);
+
+    for (int i = 0; i < lines.count (); i++)
+      {
+        QString line = lines.at (i);
+        line = line.replace (QString ("%"), QString ("%%"));
+
+        code += QString ("%1 = %2 (%1, %3, '%4', '%5');\n"
+                         "%4\n\n")
+                         .arg (tmp_hist_name)
+                         .arg (tmp_script_name)
+                         .arg (i)
+                         .arg (lines.at (i))
+                         .arg (line);
+      }
+
+    code += QString ("clear %1 %2_fcn;\n")
+                     .arg (tmp_hist_name).arg (tmp_script_name);
+
+    // Create tmp file with the code to be executed by the interpreter
+    QPointer<QTemporaryFile> tmp_file
+        = resource_manager::create_tmp_file ("m", code);
+
+    tmp = (tmp_file && tmp_file->open ());
+    if (! tmp)
+      {
+        // tmp files not working: use old way to run selection
+        contextmenu_run_temp_error ();
+        return;
+      }
+    tmp_file->close ();
+
+    // Disable opening a file at a breakpoint in case keyboard () is used
+    QSettings* settings = resource_manager::get_settings ();
+    bool show_dbg_file = settings->value (ed_show_dbg_file.key,
+                                       ed_show_dbg_file.def).toBool ();
+    settings->setValue (ed_show_dbg_file.key, false);
+
+    emit focus_console_after_command_signal ();
+
+    // Let the interpreter execute the tmp file
+    emit interpreter_event
+      ([this, tmp_file, tmp_hist, tmp_script, show_dbg_file] (interpreter& interp)
+       {
+         // INTERPRETER THREAD
+
+         std::string file = tmp_file->fileName ().toStdString ();
+
+         std::string pending_input = command_editor::get_current_line ();
+
+         // Add tmp dir to the path for echo/hist script
+         octave_value_list path =
+            ovl (QFileInfo (tmp_script->fileName ()).absolutePath ().toStdString ());
+         Faddpath (interp, path);
+         interp.source_file (file);
+         Frmpath (interp, path);
+
+         command_editor::replace_line ("");
+         command_editor::set_initial_input (pending_input);
+         command_editor::redisplay ();
+         command_editor::interrupt_event_loop ();
+         command_editor::accept_line ();
+
+         // Done, restore settings and remove tmp files
+         emit ctx_menu_run_finished_signal (show_dbg_file,
+                                            tmp_file, tmp_hist, tmp_script);
+       });
   }
+
+  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file,
+                                                 QTemporaryFile* tmp_file,
+                                                 QTemporaryFile* tmp_hist,
+                                                 QTemporaryFile* tmp_script)
+  {
+    QSettings *settings = resource_manager::get_settings ();
+    settings->setValue (ed_show_dbg_file.key, show_dbg_file);
+    resource_manager::remove_tmp_file (tmp_file);
+    resource_manager::remove_tmp_file (tmp_hist);
+    resource_manager::remove_tmp_file (tmp_script);
+  }
+
 
   // wrappers for dbstop related context menu items
 

@@ -68,7 +68,7 @@ namespace octave
 
   resource_manager::resource_manager (void)
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
-      m_default_settings (nullptr)
+      m_default_settings (nullptr), m_temporary_files ()
   {
     // Let QSettings decide where to put the ini file with gui preferences
     m_default_settings
@@ -124,6 +124,9 @@ namespace octave
   {
     delete m_settings;
     delete m_default_settings;
+
+    for (int i = m_temporary_files.count () - 1; i >=0; i--)
+      remove_tmp_file (m_temporary_files.at (i));
   }
 
   QString resource_manager::get_gui_translation_dir (void)
@@ -486,5 +489,44 @@ namespace octave
       combo->setCurrentIndex (0);
 
     combo->setMaxVisibleItems (12);
+  }
+
+  QPointer<QTemporaryFile>
+  resource_manager::do_create_tmp_file (const QString& extension,
+                                        const QString& contents)
+  {
+    QString ext = extension;
+    if ((! ext.isEmpty ()) && (! ext.startsWith ('.')))
+      ext = QString (".") + ext;
+
+    // Create octave dir within temp. dir
+    QString tmp_dir = QDir::tempPath () + QDir::separator() + "octave";
+    QDir::temp ().mkdir ("octave");
+
+    // Create temp. file
+    QPointer<QTemporaryFile> tmp_file
+        = new QTemporaryFile (tmp_dir + QDir::separator() +
+                              "octave_XXXXXX" + ext, this);
+
+    if (tmp_file->open ())
+    {
+      tmp_file->write (contents.toUtf8 ());
+      tmp_file->close ();
+
+      m_temporary_files << tmp_file;
+    }
+
+    return tmp_file;
+  }
+
+  void resource_manager::do_remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
+  {
+    if (tmp_file)
+      {
+        if (tmp_file->exists ())
+          tmp_file->remove ();
+
+        m_temporary_files.removeAll (tmp_file);
+      }
   }
 }

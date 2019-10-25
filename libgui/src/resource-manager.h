@@ -27,8 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDesktopServices>
 #include <QIcon>
 #include <QMap>
+#include <QPointer>
 #include <QSettings>
 #include <QTranslator>
+#include <QTemporaryFile>
 
 namespace octave
 {
@@ -120,6 +122,19 @@ namespace octave
       return instance_ok () ? instance->do_is_first_run () : true;
     }
 
+    static QPointer<QTemporaryFile> create_tmp_file (
+                                          const QString& extension = QString (),
+                                          const QString& contents = QString ())
+    {
+      return instance_ok () ? instance->do_create_tmp_file (extension, contents) : QPointer<QTemporaryFile> ();
+    }
+
+    static void remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
+    {
+      if (instance_ok ())
+        instance->do_remove_tmp_file (tmp_file);
+    }
+
     static QString storage_class_chars (void) { return "agp"; }
     static QStringList storage_class_names (void);
     static QList<QColor> storage_class_default_colors (void);
@@ -152,6 +167,11 @@ namespace octave
 
     QString do_get_default_font_family (void);
 
+    QPointer<QTemporaryFile> do_create_tmp_file (const QString& extension,
+                                                 const QString& contents);
+
+    void do_remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
+
     void do_reload_settings (void);
 
     void do_set_settings (const QString& file);
@@ -174,6 +194,8 @@ namespace octave
     QSettings *m_settings;
 
     QSettings *m_default_settings;
+
+    QList<QTemporaryFile *> m_temporary_files;
   };
 }
 

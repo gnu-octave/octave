@@ -422,7 +422,7 @@ namespace octave
     // variable editor
     varedit_columnWidth->setValue (settings->value ("variable_editor/column_width", 100).toInt ());
     varedit_autoFitColumnWidth->setChecked (settings->value ("variable_editor/autofit_column_width", false).toBool ());
-    varedit_autofitType->setCurrentIndex (settings->value ("autofit_type", 0).toInt ());
+    varedit_autofitType->setCurrentIndex (settings->value ("variable_editor/autofit_type", 0).toInt ());
     varedit_rowHeight->setValue (settings->value ("variable_editor/row_height", 10).toInt ());
     varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 

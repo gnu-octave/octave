@@ -4104,7 +4104,11 @@ namespace octave
           }
 
         if (is.good () || (is.eof () && char_count > 0))
-          retval = buf.str ();
+          {
+            retval = buf.str ();
+            if (encoding ().compare ("utf-8"))
+              retval = string::u8_from_encoding (who, retval, encoding ());
+          }
         else
           {
             err = true;

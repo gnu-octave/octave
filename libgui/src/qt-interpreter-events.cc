@@ -248,17 +248,12 @@ namespace octave
 
   bool qt_interpreter_events::confirm_shutdown (void)
   {
-    // Lock the mutex before emitting signal.
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     emit confirm_shutdown_signal ();
 
     // Wait for result.
     wait ();
-
-    // The GUI has sent a signal and the thread has been awakened.
-
-    unlock ();
 
     return m_shutdown_confirm_result;
   }
@@ -364,16 +359,14 @@ namespace octave
   {
     QString pref_value;
 
-    // Lock the mutex before signaling
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     // Emit the signal for changing or getting a preference
     emit gui_preference_signal (QString::fromStdString (key),
                                 QString::fromStdString (value), &pref_value);
 
-    // Wait for the GUI and unlock when resumed
+    // Wait for response (pref_value).
     wait ();
-    unlock ();
 
     return pref_value.toStdString ();
   }
@@ -409,16 +402,14 @@ namespace octave
   void qt_interpreter_events::file_remove (const std::string& old_name,
                                            const std::string& new_name)
   {
-    // Lock the mutex before signaling
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     // Emit the signal for the editor for closing the file if it is open
     emit file_remove_signal (QString::fromStdString (old_name),
                              QString::fromStdString (new_name));
 
-    // Wait for the GUI and unlock when resumed
+    // Wait for file removal to complete before continuing.
     wait ();
-    unlock ();
   }
 
   void qt_interpreter_events::file_renamed (bool load_new)

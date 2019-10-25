@@ -240,7 +240,7 @@ namespace octave
     QString class_chars = resource_manager::storage_class_chars ();
 
     m_enable_colors =
-        settings->value (ws_enable_colors.key, ws_enable_colors.key).toBool ();
+        settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();
 
     for (int i = 0; i < class_chars.length (); i++)
       {

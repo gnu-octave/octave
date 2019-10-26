@@ -52,9 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 static std::string
 do_regexp_ptn_string_escapes (const std::string& s, bool is_sq_str)
 {
-  std::string retval = "(*UTF8)";
+  std::string retval;
 
-  size_t i = 7;
+  size_t i = 0;
   size_t j = 0;
   size_t len = s.length ();
 

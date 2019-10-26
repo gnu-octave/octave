@@ -234,7 +234,8 @@ namespace octave
       = (  (m_options.case_insensitive () ? PCRE_CASELESS : 0)
          | (m_options.dotexceptnewline () ? 0 : PCRE_DOTALL)
          | (m_options.lineanchors () ? PCRE_MULTILINE : 0)
-         | (m_options.freespacing () ? PCRE_EXTENDED : 0));
+         | (m_options.freespacing () ? PCRE_EXTENDED : 0)
+         | PCRE_UTF8);
 
     m_data = pcre_compile (buf_str.c_str (), pcre_options,
                          &err, &erroffset, nullptr);

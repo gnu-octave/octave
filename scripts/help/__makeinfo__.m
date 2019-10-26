@@ -96,6 +96,13 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
   text = regexprep (text, '@seealso', '@xseealso');
 
+  ## We don't want *ref macros to clutter plain text output with "Note ..."
+  if (strcmp (output_type, "plain text"))
+    text  = regexprep (text, '@ref{(?:[^}]*?),?(?:XREF)?([^,}]+)}', '$1');
+    text  = regexprep (text, '@xref{(?:[^}]*?),?(?:XREF)?([^,}]+)}', 'See $1');
+    text  = regexprep (text, '@pxref{(?:[^}]*?),?(?:XREF)?([^,}]+)}', 'see $1');
+  endif
+
   file = texi_macros_file ();
   fid = fopen (file, "r");
   if (fid < 0)
@@ -128,7 +135,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-        cmd = sprintf ('%s --no-headers --no-warn --force --no-validate --output=- "%s"',
+        cmd = sprintf ('%s --no-headers --no-warn --force --no-validate --plaintext --output=- "%s"',
                        makeinfo_program (), name);
       case "html"
         cmd = sprintf ('%s --no-headers --html --no-warn --no-validate --force --output=- "%s"',

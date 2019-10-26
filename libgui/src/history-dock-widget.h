@@ -44,14 +44,6 @@ namespace octave
 
     ~history_dock_widget (void) = default;
 
-  public slots:
-
-    void set_history (const QStringList& hist);
-    void append_history (const QString& hist_entry);
-    void clear_history (void);
-    void save_settings (void);
-    void notice_settings (const QSettings *);
-
   signals:
 
     void information (const QString& message);
@@ -65,6 +57,14 @@ namespace octave
     //! "Create script" from the popup menu.
 
     void command_create_script (const QString& commands);
+
+  public slots:
+
+    void set_history (const QStringList& hist);
+    void append_history (const QString& hist_entry);
+    void clear_history (void);
+    void save_settings (void);
+    void notice_settings (const QSettings *);
 
   private slots:
 

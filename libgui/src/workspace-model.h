@@ -75,6 +75,11 @@ namespace octave
 
     symbol_info_list get_symbol_info (void) const { return m_syminfo_list; }
 
+  signals:
+
+    void model_changed (void);
+    void prompt_variable_editor(void);
+
   public slots:
 
     void set_workspace (bool top_level, bool debug,
@@ -83,11 +88,6 @@ namespace octave
     void clear_workspace (void);
 
     void notice_settings (const QSettings *);
-
-  signals:
-
-    void model_changed (void);
-    void prompt_variable_editor(void);
 
   private:
 

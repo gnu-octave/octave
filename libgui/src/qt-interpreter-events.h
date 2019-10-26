@@ -180,22 +180,6 @@ namespace octave
 
     void confirm_shutdown_octave (void);
 
-  private:
-
-    void insert_debugger_pointer (const std::string& file, int line);
-
-    void delete_debugger_pointer (const std::string& file, int line);
-
-    base_qobject& m_octave_qobj;
-
-    bool m_shutdown_confirm_result;
-
-    QMutex m_mutex;
-
-    QWaitCondition m_waitcondition;
-
-    QUIWidgetCreator m_uiwidget_creator;
-
   signals:
 
     void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
@@ -249,6 +233,22 @@ namespace octave
     void refresh_variable_editor_signal (void);
 
     void confirm_shutdown_signal (void);
+
+  private:
+
+    void insert_debugger_pointer (const std::string& file, int line);
+
+    void delete_debugger_pointer (const std::string& file, int line);
+
+    base_qobject& m_octave_qobj;
+
+    bool m_shutdown_confirm_result;
+
+    QMutex m_mutex;
+
+    QWaitCondition m_waitcondition;
+
+    QUIWidgetCreator m_uiwidget_creator;
   };
 }
 

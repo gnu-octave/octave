@@ -298,6 +298,30 @@ namespace octave
 
     void tab_to_front (void);
 
+  signals:
+
+    void updated (void);
+
+    void finished (void);
+
+    void command_signal (const QString& cmd);
+
+    void refresh_signal (void);
+
+    void clear_content_signal (void);
+
+    void copy_clipboard_signal (void);
+
+    void paste_clipboard_signal (void);
+
+    void level_up_signal (void);
+
+    void save_signal (void);
+
+    void delete_selected_signal (void);
+
+    void selected_command_signal (const QString& cmd);
+
   public slots:
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
@@ -331,30 +355,6 @@ namespace octave
     // Send command to Octave interpreter.
     // %1 in CMD is replaced with the value of selected_to_octave.
     void relay_selected_command (const QString& cmd);
-
-  signals:
-
-    void updated (void);
-
-    void finished (void);
-
-    void command_signal (const QString& cmd);
-
-    void refresh_signal (void);
-
-    void clear_content_signal (void);
-
-    void copy_clipboard_signal (void);
-
-    void paste_clipboard_signal (void);
-
-    void level_up_signal (void);
-
-    void save_signal (void);
-
-    void delete_selected_signal (void);
-
-    void selected_command_signal (const QString& cmd);
 
   protected:
 

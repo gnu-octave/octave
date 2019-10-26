@@ -41,15 +41,15 @@ namespace octave
         m_connect_to_web (connect_to_web)
     { }
 
-  public slots:
-
-    void process (void);
-
   signals:
 
     void display_news_signal (const QString& news);
 
     void finished (void);
+
+  public slots:
+
+    void process (void);
 
   private:
 

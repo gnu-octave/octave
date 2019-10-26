@@ -67,6 +67,13 @@ namespace octave
 
     QVariant data (const QModelIndex& idx, int role) const;
 
+  signals:
+
+    void update_data_signal (const QStringList& dirs);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void path_to_model (void);
@@ -76,13 +83,6 @@ namespace octave
     void revert (void);
 
     void revert_last (void);
-
-  signals:
-
-    void update_data_signal (const QStringList& dirs);
-
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
 
   private slots:
 

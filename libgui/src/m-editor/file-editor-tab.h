@@ -67,6 +67,66 @@ namespace octave
 
     void update_breakpoints ();
 
+  signals:
+
+    void file_name_changed (const QString& fileName,
+                            const QString& toolTip,
+                            bool modified);
+    void editor_state_changed (bool copy_available, bool is_octave_file);
+    void set_focus_editor_signal (QWidget *);
+    void tab_remove_request (void);
+    void add_filename_to_list (const QString&, const QString&, QWidget *);
+    void mru_add_file (const QString& file_name, const QString& encoding);
+    void editor_check_conflict_save (const QString& saveFileName,
+                                     bool remove_on_success);
+    void run_file_signal (const QFileInfo& info);
+    void request_open_file (const QString&, const QString& = QString ());
+    void edit_mfile_request (const QString&, const QString&,
+                             const QString&, int);
+
+    void request_find_next (void);
+    void request_find_previous (void);
+
+    void update_breakpoints_signal (const octave_value_list& args);
+
+    void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
+    void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
+    void remove_all_breakpoints (void);
+    void find_translated_line_number (int original_linenr,
+                                      int& translated_linenr, marker*&);
+    void find_linenr_just_before (int linenr, int& original_linenr,
+                                  int& editor_linenr);
+    void report_marker_linenr (QIntList& lines, QStringList& conditions);
+    void remove_position_via_debugger_linenr (int debugger_linenr);
+    void remove_all_positions (void);
+
+    void debug_quit_signal (void);
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
+    void maybe_remove_next (int remove_line);
+
+    void dbstop_if (const QString& prompt, int line, const QString& cond);
+    void request_add_breakpoint (int line, const QString& cond);
+    void request_add_octave_apis (const QStringList&);
+    void api_entries_added (void);
+
+    void do_save_file_signal (const QString& file_to_save,
+                              bool remove_on_success, bool restore_breakpoints);
+
+    void confirm_dbquit_and_save_signal (const QString& file_to_save,
+                                         const QString& base_name,
+                                         bool remove_on_success,
+                                         bool restore_breakpoints);
+
+    // FIXME: The following is similar to "process_octave_code"
+    // signal.  However, currently that signal is connected to
+    // something that simply focuses a window and not actually
+    // communicate with Octave.
+    //
+    // void evaluate_octave_command (const QString& command);
+
   public slots:
 
     void update_window_title (bool modified);
@@ -152,71 +212,6 @@ namespace octave
 
     void update_breakpoints_handler (const octave_value_list& argout);
 
-  signals:
-
-    void file_name_changed (const QString& fileName,
-                            const QString& toolTip,
-                            bool modified);
-    void editor_state_changed (bool copy_available, bool is_octave_file);
-    void set_focus_editor_signal (QWidget *);
-    void tab_remove_request (void);
-    void add_filename_to_list (const QString&, const QString&, QWidget *);
-    void mru_add_file (const QString& file_name, const QString& encoding);
-    void editor_check_conflict_save (const QString& saveFileName,
-                                     bool remove_on_success);
-    void run_file_signal (const QFileInfo& info);
-    void request_open_file (const QString&, const QString& = QString ());
-    void edit_mfile_request (const QString&, const QString&,
-                             const QString&, int);
-
-    void request_find_next (void);
-    void request_find_previous (void);
-
-    void update_breakpoints_signal (const octave_value_list& args);
-
-    void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
-    void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
-    void remove_all_breakpoints (void);
-    void find_translated_line_number (int original_linenr,
-                                      int& translated_linenr, marker*&);
-    void find_linenr_just_before (int linenr, int& original_linenr,
-                                  int& editor_linenr);
-    void report_marker_linenr (QIntList& lines, QStringList& conditions);
-    void remove_position_via_debugger_linenr (int debugger_linenr);
-    void remove_all_positions (void);
-
-    void debug_quit_signal (void);
-
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
-
-    void maybe_remove_next (int remove_line);
-
-    void dbstop_if (const QString& prompt, int line, const QString& cond);
-    void request_add_breakpoint (int line, const QString& cond);
-    void request_add_octave_apis (const QStringList&);
-    void api_entries_added (void);
-
-    void do_save_file_signal (const QString& file_to_save,
-                              bool remove_on_success, bool restore_breakpoints);
-
-    void confirm_dbquit_and_save_signal (const QString& file_to_save,
-                                         const QString& base_name,
-                                         bool remove_on_success,
-                                         bool restore_breakpoints);
-
-    // FIXME: The following is similar to "process_octave_code"
-    // signal.  However, currently that signal is connected to
-    // something that simply focuses a window and not actually
-    // communicate with Octave.
-    //
-    // void evaluate_octave_command (const QString& command);
-
-  protected:
-
-    void closeEvent (QCloseEvent *event);
-    void set_file_name (const QString& fileName);
-
   private slots:
 
     // When user closes message box for decoding problems
@@ -267,6 +262,12 @@ namespace octave
                                   const QString& base_name,
                                   bool remove_on_success,
                                   bool restore_breakpoints);
+
+  protected:
+
+    void closeEvent (QCloseEvent *event);
+    void set_file_name (const QString& fileName);
+
   private:
 
     struct bp_info

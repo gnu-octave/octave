@@ -70,6 +70,10 @@ namespace octave
 
     void set_cond (const QString& cond) { m_condition = cond; }
 
+  signals:
+
+    void request_remove (int original_linenr);
+
   public slots:
 
     void handle_remove_via_original_linenr (int original_linenr);
@@ -85,10 +89,6 @@ namespace octave
     void handle_marker_line_deleted (int mhandle);
     void handle_marker_line_undeleted (int mhandle);
     void handle_report_editor_linenr (QIntList& lines, QStringList& conditions);
-
-  signals:
-
-    void request_remove (int original_linenr);
 
   private:
 

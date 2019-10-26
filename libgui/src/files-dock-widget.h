@@ -57,6 +57,45 @@ namespace octave
 
     ~files_dock_widget (void) = default;
 
+  signals:
+
+    //! Emitted, whenever the user requested to open a file.
+
+    void open_file (const QString& fileName);
+
+    //! Emitted, whenever the currently displayed directory changed.
+
+    void displayed_directory_changed (const QString& dir);
+
+    //! Emitted, whenever the user requested to load a file in the text editor.
+
+    void load_file_signal (const QString& fileName);
+
+    //! Emitted, whenever the user requested to open an unknown type file.
+
+    void open_any_signal (const QString& fileName);
+
+    //! Emitted, whenever the user requested to run a file.
+
+    void run_file_signal (const QFileInfo& info);
+
+    //! Emitted, whenever wants to search for a file .
+
+    void find_files_signal (const QString& startdir);
+
+    //! Emitted, whenever the user removes or renames a file.
+
+    void file_remove_signal (const QString& old_name, const QString& new_name);
+
+    //! Emitted, when a file or directory is renamed.
+
+    void file_renamed_signal (bool);
+
+    //! Emitted, when the path has to be modified
+
+    void modify_path_signal (const octave_value_list& dir_list,
+                             bool rm, bool subdirs);
+
   public slots:
 
     //! Slot for handling a change in directory via double click.
@@ -137,45 +176,6 @@ namespace octave
     void pasteClipboard ();
     void selectAll ();
     //!@}
-
-  signals:
-
-    //! Emitted, whenever the user requested to open a file.
-
-    void open_file (const QString& fileName);
-
-    //! Emitted, whenever the currently displayed directory changed.
-
-    void displayed_directory_changed (const QString& dir);
-
-    //! Emitted, whenever the user requested to load a file in the text editor.
-
-    void load_file_signal (const QString& fileName);
-
-    //! Emitted, whenever the user requested to open an unknown type file.
-
-    void open_any_signal (const QString& fileName);
-
-    //! Emitted, whenever the user requested to run a file.
-
-    void run_file_signal (const QFileInfo& info);
-
-    //! Emitted, whenever wants to search for a file .
-
-    void find_files_signal (const QString& startdir);
-
-    //! Emitted, whenever the user removes or renames a file.
-
-    void file_remove_signal (const QString& old_name, const QString& new_name);
-
-    //! Emitted, when a file or directory is renamed.
-
-    void file_renamed_signal (bool);
-
-    //! Emitted, when the path has to be modified
-
-    void modify_path_signal (const octave_value_list& dir_list,
-                             bool rm, bool subdirs);
 
   private:
 

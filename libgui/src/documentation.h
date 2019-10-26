@@ -95,6 +95,10 @@ namespace octave
     documentation (QWidget *parent = nullptr);
     ~documentation (void);
 
+  signals:
+
+    void show_single_result (const QUrl&);
+
   public slots:
 
     void notice_settings (const QSettings *settings);
@@ -124,10 +128,6 @@ namespace octave
 
     void update_history_menus (void);
     void open_hist_url (QAction *a);
-
-  signals:
-
-    void show_single_result (const QUrl&);
 
   private:
 

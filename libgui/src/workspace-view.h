@@ -49,14 +49,6 @@ namespace octave
 
     ~workspace_view (void) = default;
 
-  public slots:
-
-    void setModel (workspace_model *model);
-
-    void notice_settings (const QSettings *);
-
-    void save_settings (void);
-
   signals:
 
     //! Signal that user had requested a command on a variable.
@@ -70,6 +62,14 @@ namespace octave
     //! Signal that user wants to edit a variable.
 
     void edit_variable_signal (const QString&, const octave_value&);
+
+  public slots:
+
+    void setModel (workspace_model *model);
+
+    void notice_settings (const QSettings *);
+
+    void save_settings (void);
 
   protected slots:
 

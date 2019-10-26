@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_interpreter_qobject_h)
 #define octave_interpreter_qobject_h 1
 
-#include <memory>
-
 #include <QObject>
 
 #include "qt-interpreter-events.h"
@@ -42,13 +40,11 @@ namespace octave
 
   public:
 
-    interpreter_qobject (base_qobject *oct_qobj);
+    interpreter_qobject (base_qobject& oct_qobj);
 
     ~interpreter_qobject (void) = default;
 
-    qt_interpreter_events * qt_link (void) { return m_qt_link.get (); }
-
-    void confirm_shutdown (bool closenow);
+    qt_interpreter_events * qt_link (void);
 
     void interpreter_event (const fcn_callback& fcn);
 
@@ -86,11 +82,9 @@ namespace octave
 
   private:
 
-    base_qobject *m_octave_qobject;
+    base_qobject& m_octave_qobj;
 
     interpreter *m_interpreter;
-
-    std::shared_ptr<qt_interpreter_events> m_qt_link;
   };
 }
 

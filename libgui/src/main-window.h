@@ -79,13 +79,15 @@ namespace octave
     typedef std::pair <std::string, std::string> name_pair;
     typedef std::pair <int, int> int_pair;
 
-    main_window (base_qobject& qapp);
+    main_window (base_qobject& oct_qobj);
 
     ~main_window (void);
 
     bool command_window_has_focus (void) const;
 
     void focus_command_window (void);
+
+    bool confirm_shutdown (void);
 
   signals:
 
@@ -151,7 +153,6 @@ namespace octave
 
     void show_about_octave (void);
     void notice_settings (const QSettings *settings);
-    bool confirm_shutdown_octave (void);
     void prepare_to_exit (void);
     void reset_windows (void);
 

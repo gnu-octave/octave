@@ -35,31 +35,22 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  interpreter_qobject::interpreter_qobject (base_qobject *oct_qobj)
-    : QObject (), m_octave_qobject (oct_qobj), m_interpreter (nullptr),
-      m_qt_link (new qt_interpreter_events ())
+  interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
+    : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
   { }
 
   void interpreter_qobject::execute (void)
   {
     // The Octave application context owns the interpreter.
 
-    qt_application& app_context = m_octave_qobject->app_context ();
+    qt_application& app_context = m_octave_qobj.app_context ();
 
     interpreter& interp = app_context.create_interpreter ();
 
     event_manager& evmgr = interp.get_event_manager ();
 
-    evmgr.connect_link (m_qt_link);
+    evmgr.connect_link (m_octave_qobj.get_qt_interpreter_events ());
     evmgr.enable ();
-
-    connect (qt_link (), SIGNAL (confirm_shutdown_signal (void)),
-             m_octave_qobject, SLOT (confirm_shutdown_octave (void)));
-
-    connect (qt_link (),
-             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
-             m_octave_qobject,
-             SLOT (copy_image_to_clipboard (const QString&, bool)));
 
     int exit_status = 0;
 
@@ -128,16 +119,8 @@ namespace octave
     evmgr.post_event (meth);
   }
 
-  void interpreter_qobject::confirm_shutdown (bool closenow)
+  qt_interpreter_events * interpreter_qobject::qt_link (void)
   {
-    // Wait for link thread to go to sleep state.
-    m_qt_link->lock ();
-
-    m_qt_link->shutdown_confirmation (closenow);
-
-    m_qt_link->unlock ();
-
-    // Awake the worker thread so that it continues shutting down (or not).
-    m_qt_link->wake_all ();
+    return m_octave_qobj.qt_link ();
   }
 }

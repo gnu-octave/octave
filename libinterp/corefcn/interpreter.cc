@@ -1740,7 +1740,7 @@ namespace octave
     m_tmp_files.cleanup ();
   }
 
-  void interpreter::quit (int exit_status, bool force)
+  void interpreter::quit (int exit_status, bool force, bool confirm)
   {
     if (! force)
       {
@@ -1766,7 +1766,7 @@ namespace octave
 
             // Check for confirmation.
 
-            if (! m_event_manager.confirm_shutdown ())
+            if (confirm && ! m_event_manager.confirm_shutdown ())
               return;
           }
         catch (const execution_exception& ee)

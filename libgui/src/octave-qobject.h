@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_octave_qobject_h)
 #define octave_octave_qobject_h 1
 
+#include <memory>
+
 #include <QApplication>
 #include <QList>
 #include <QObject>
@@ -36,6 +38,7 @@ namespace octave
 {
   class main_window;
   class qt_application;
+  class qt_interpreter_events;
 
   //! This class is a simple wrapper around QApplication so that we can
   //! reimplement QApplication::notify.  The octave_qapplication object
@@ -91,6 +94,16 @@ namespace octave
     // The Qt QApplication.
     QApplication * qapplication (void) { return m_qapplication; };
 
+    std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
+    {
+      return m_qt_interpreter_events;
+    }
+
+    qt_interpreter_events * qt_link (void)
+    {
+      return m_qt_interpreter_events.get ();
+    }
+
     interpreter_qobject * interpreter_qobj (void)
     {
       return m_interpreter_qobj;
@@ -98,17 +111,17 @@ namespace octave
 
     QThread *main_thread (void) { return m_main_thread; }
 
+    virtual bool confirm_shutdown (void);
+
   public slots:
 
     void handle_octave_finished (int);
 
-    virtual void confirm_shutdown_octave (void);
-
-    void copy_image_to_clipboard (const QString& file, bool remove_file);
-
     void interpreter_event (const fcn_callback& fcn);
 
     void interpreter_event (const meth_callback& meth);
+
+    void copy_image_to_clipboard (const QString& file, bool remove_file);
 
   protected:
 
@@ -127,6 +140,8 @@ namespace octave
     QTranslator *m_qsci_tr;
 
     bool m_translators_installed;
+
+    std::shared_ptr<qt_interpreter_events> m_qt_interpreter_events;
 
     interpreter_qobject *m_interpreter_qobj;
 
@@ -160,9 +175,7 @@ namespace octave
 
     ~gui_qobject (void);
 
-  public slots:
-
-    void confirm_shutdown_octave (void);
+    bool confirm_shutdown (void);
 
   private:
 

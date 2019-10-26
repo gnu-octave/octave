@@ -437,7 +437,7 @@ namespace octave
 
     void cleanup_tmp_files (void);
 
-    void quit (int exit_status, bool force = false);
+    void quit (int exit_status, bool force = false, bool confirm = true);
 
     void cancel_quit (bool flag) { m_cancel_quit = flag; }
 

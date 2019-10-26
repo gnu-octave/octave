@@ -103,7 +103,8 @@ namespace octave
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
       m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
-      m_interpreter_qobj (new interpreter_qobject (this)),
+      m_qt_interpreter_events (new qt_interpreter_events (*this)),
+      m_interpreter_qobj (new interpreter_qobject (*this)),
       m_main_thread (new QThread ())
   {
     std::string show_gui_msgs =
@@ -161,6 +162,10 @@ namespace octave
 
     connect (m_qapplication, SIGNAL (interpreter_event (const meth_callback&)),
              this, SLOT (interpreter_event (const meth_callback&)));
+
+    connect (qt_link (),
+             SIGNAL (copy_image_to_clipboard_signal (const QString&, bool)),
+             this, SLOT (copy_image_to_clipboard (const QString&, bool)));
   }
 
   base_qobject::~base_qobject (void)
@@ -256,6 +261,11 @@ namespace octave
     return m_qapplication->exec ();
   }
 
+  bool base_qobject::confirm_shutdown (void)
+  {
+    return true;
+  }
+
   void base_qobject::handle_octave_finished (int exit_status)
   {
 #if defined (Q_OS_MAC)
@@ -290,11 +300,6 @@ namespace octave
     // interpreter_qobject slots.
 
     m_interpreter_qobj->interpreter_event (meth);
-  }
-
-  void base_qobject::confirm_shutdown_octave (void)
-  {
-    m_interpreter_qobj->confirm_shutdown (true);
   }
 
   void base_qobject::copy_image_to_clipboard (const QString& file,
@@ -346,13 +351,8 @@ namespace octave
     delete m_main_window;
   }
 
-  void gui_qobject::confirm_shutdown_octave (void)
+  bool gui_qobject::confirm_shutdown (void)
   {
-    bool closenow = true;
-
-    if (m_main_window)
-      closenow = m_main_window->confirm_shutdown_octave ();
-
-    m_interpreter_qobj->confirm_shutdown (closenow);
+    return m_main_window ? m_main_window->confirm_shutdown () : true;
   }
 }

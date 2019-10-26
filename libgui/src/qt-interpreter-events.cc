@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 
 #include "dialog.h"
+#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
@@ -100,9 +101,10 @@ namespace octave
     return retval;
   }
 
-  qt_interpreter_events::qt_interpreter_events (void)
-    : interpreter_events (), m_shutdown_confirm_result (false),
-      m_mutex (), m_waitcondition (), m_uiwidget_creator ()
+  qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
+    : interpreter_events (), m_octave_qobj (oct_qobj),
+      m_shutdown_confirm_result (false), m_mutex (),
+      m_waitcondition (), m_uiwidget_creator ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
     qRegisterMetaType<QFloatList> ("QFloatList");
@@ -112,6 +114,9 @@ namespace octave
 
     qRegisterMetaType<fcn_callback> ("fcn_callback");
     qRegisterMetaType<meth_callback> ("meth_callback");
+
+    connect (this, SIGNAL (confirm_shutdown_signal (void)),
+             this, SLOT (confirm_shutdown_octave (void)));
   }
 
   std::list<std::string>
@@ -248,7 +253,7 @@ namespace octave
 
     emit confirm_shutdown_signal ();
 
-    // Wait while the GUI shuts down.
+    // Wait for result.
     wait ();
 
     // The GUI has sent a signal and the thread has been awakened.
@@ -512,5 +517,17 @@ namespace octave
                                                   int line)
   {
     emit delete_debugger_pointer_signal (QString::fromStdString (file), line);
+  }
+
+  void
+  qt_interpreter_events::confirm_shutdown_octave (void)
+  {
+    lock ();
+
+    m_shutdown_confirm_result = m_octave_qobj.confirm_shutdown ();
+
+    unlock ();
+
+    wake_all ();
   }
 }

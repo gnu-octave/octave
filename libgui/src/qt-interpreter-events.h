@@ -45,6 +45,8 @@ class octave_value;
 
 namespace octave
 {
+  class base_qobject;
+
   // The functions in this class are not normally called directly, but
   // are invoked from the Octave interpreter thead by methods in the
   // event_manager class.  In most cases, they should only translate
@@ -67,7 +69,7 @@ namespace octave
 
   public:
 
-    qt_interpreter_events (void);
+    qt_interpreter_events (base_qobject& oct_qobj);
 
     // No copying!
 
@@ -166,8 +168,6 @@ namespace octave
     void update_breakpoint (bool insert, const std::string& file, int line,
                             const std::string& cond);
 
-    void shutdown_confirmation (bool sd) { m_shutdown_confirm_result = sd; }
-
     void lock (void) { m_mutex.lock (); }
 
     void wait (void) { m_waitcondition.wait (&m_mutex); }
@@ -176,11 +176,17 @@ namespace octave
 
     void wake_all (void) { m_waitcondition.wakeAll (); }
 
+  public slots:
+
+    void confirm_shutdown_octave (void);
+
   private:
 
     void insert_debugger_pointer (const std::string& file, int line);
 
     void delete_debugger_pointer (const std::string& file, int line);
+
+    base_qobject& m_octave_qobj;
 
     bool m_shutdown_confirm_result;
 

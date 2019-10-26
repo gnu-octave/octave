@@ -99,8 +99,8 @@ namespace octave
 #endif
   }
 
-  main_window::main_window (base_qobject& qobj)
-    : QMainWindow (), m_octave_qobj (qobj), m_workspace_model (nullptr),
+  main_window::main_window (base_qobject& oct_qobj)
+    : QMainWindow (), m_octave_qobj (oct_qobj), m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
@@ -116,7 +116,7 @@ namespace octave
     if (resource_manager::is_first_run ())
       {
         // Before wizard.
-        qobj.config_translators ();
+        m_octave_qobj.config_translators ();
 
         welcome_wizard welcomeWizard;
 
@@ -132,7 +132,7 @@ namespace octave
         resource_manager::reload_settings ();
 
         // After settings.
-        qobj.config_translators ();
+        m_octave_qobj.config_translators ();
       }
 
     resource_manager::update_network_settings ();
@@ -251,6 +251,32 @@ namespace octave
   void main_window::focus_command_window (void)
   {
     m_command_window->activate ();
+  }
+
+  bool main_window::confirm_shutdown (void)
+  {
+    bool closenow = true;
+
+    QSettings *settings = resource_manager::get_settings ();
+
+    if (settings->value ("prompt_to_exit", false).toBool ())
+      {
+        int ans = QMessageBox::question (this, tr ("Octave"),
+                                         tr ("Are you sure you want to exit Octave?"),
+                                         (QMessageBox::Ok
+                                          | QMessageBox::Cancel),
+                                         QMessageBox::Ok);
+
+        if (ans != QMessageBox::Ok)
+          closenow = false;
+      }
+
+#if defined (HAVE_QSCINTILLA)
+    if (closenow)
+      closenow = m_editor_window->check_closing ();
+#endif
+
+    return closenow;
   }
 
   // catch focus changes and determine the active dock widget
@@ -897,32 +923,6 @@ namespace octave
     else
       QApplication::setCursorFlashTime (0);  // no flashing
 
-  }
-
-  bool main_window::confirm_shutdown_octave (void)
-  {
-    bool closenow = true;
-
-    QSettings *settings = resource_manager::get_settings ();
-
-    if (settings->value ("prompt_to_exit", false).toBool ())
-      {
-        int ans = QMessageBox::question (this, tr ("Octave"),
-                                         tr ("Are you sure you want to exit Octave?"),
-                                         (QMessageBox::Ok
-                                          | QMessageBox::Cancel),
-                                         QMessageBox::Ok);
-
-        if (ans != QMessageBox::Ok)
-          closenow = false;
-      }
-
-#if defined (HAVE_QSCINTILLA)
-    if (closenow)
-      closenow = m_editor_window->check_closing ();
-#endif
-
-    return closenow;
   }
 
   void main_window::prepare_to_exit (void)
@@ -1892,15 +1892,27 @@ namespace octave
 
   void main_window::closeEvent (QCloseEvent *e)
   {
-    e->ignore ();
+    if (confirm_shutdown ())
+      {
+        // FIXME: Instead of ignoring the event and posting an
+        // interpreter event, should we just accept the event and
+        // shutdown and clean up the interprter as part of closing the
+        // GUI?  Going that route might make it easier to close the GUI
+        // without having to stop the interpreter, for example, if the
+        // GUI is started from the interpreter command line.
 
-    emit interpreter_event
-      ([] (interpreter& interp)
-       {
-         // INTERPRETER THREAD
+        e->ignore ();
 
-         Fquit (interp);
-       });
+        emit interpreter_event
+          ([] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             interp.quit (0, false, false);
+           });
+      }
+    else
+      e->ignore ();
   }
 
   void main_window::construct_central_widget (void)

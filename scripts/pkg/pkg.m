@@ -563,6 +563,10 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = rebuild (prefix, archprefix, global_list, files,
                                    verbose);
         global_packages = save_order (global_packages);
+        if (ispc)
+          ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+          global_packages = standardize_paths (global_packages);
+        endif
         save (global_list, "global_packages");
         if (nargout)
           local_packages = global_packages;
@@ -571,6 +575,9 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = rebuild (prefix, archprefix, local_list, files,
                                   verbose);
         local_packages = save_order (local_packages);
+        if (ispc)
+          local_packages = standardize_paths (local_packages);
+        endif
         save (local_list, "local_packages");
         if (! nargout)
           clear ("local_packages");

@@ -257,11 +257,18 @@ function install (files, handle_deps, prefix, archprefix, verbose,
     if (global_install)
       idx = setdiff (1:length (global_packages), packages_to_uninstall);
       global_packages = save_order ({global_packages{idx}, descriptions{:}});
+      if (ispc)
+        ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+        global_packages = standardize_paths (global_packages);
+      endif
       save (global_list, "global_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
       idx = setdiff (1:length (local_packages), packages_to_uninstall);
       local_packages = save_order ({local_packages{idx}, descriptions{:}});
+      if (ispc)
+        local_packages = standardize_paths (local_packages);
+      endif
       save (local_list, "local_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     endif

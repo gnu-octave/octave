@@ -137,6 +137,10 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         unlink (global_list);
       else
         global_packages = save_order (remaining_packages);
+        if (ispc)
+          ## On Windows ensure LFN paths are saved rather than 8.3 style paths
+          global_packages = standardize_paths (global_packages);
+        endif
         save (global_list, "global_packages");
       endif
     else
@@ -144,6 +148,9 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
         unlink (local_list);
       else
         local_packages = save_order (remaining_packages);
+        if (ispc)
+          local_packages = standardize_paths (local_packages);
+        endif
         save (local_list, "local_packages");
       endif
     endif

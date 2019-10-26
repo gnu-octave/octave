@@ -8,6 +8,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/default_prefix.m \
   %reldir%/private/describe.m \
   %reldir%/private/dirempty.m \
+  %reldir%/private/standardize_paths.m \
   %reldir%/private/get_description.m \
   %reldir%/private/get_forge_download.m \
   %reldir%/private/get_forge_pkg.m \

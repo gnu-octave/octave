@@ -116,7 +116,7 @@
 ## @end table
 ##
 ## Programming Note: This function is a wrapper which calls @code{movfun}.
-## For additional options and documentation, @xref{XREFmovfun,,movfun}.
+## For additional options and documentation, @pxref{XREFmovfun,,movfun}.
 ##
 ## @seealso{movfun, movslice, movmax, movmean, movmedian, movmin, movprod, movstd, movsum, movvar}
 ## @end deftypefn

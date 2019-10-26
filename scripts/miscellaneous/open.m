@@ -33,10 +33,10 @@
 ## Open the data file with @code{load}.  If no return value @var{output}
 ## is requested, variables are loaded in the base workspace.  Otherwise
 ## @var{output} will be a structure containing loaded data.
-## @xref{XREFload, , load function}.
+## @xref{XREFload,,load function}.
 ##
 ## @item .ofig
-## Open the figure with hgload.  @xref{XREFhgload, , hgload function}.
+## Open the figure with @code{hgload}.  @xref{XREFhgload,,hgload function}.
 ##
 ## @item .fig, .ofig
 ## Load the figure

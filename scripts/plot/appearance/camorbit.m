@@ -88,7 +88,7 @@
 ## (Note: the rotation by @var{phi} is unaffected by @qcode{"camera"}.)
 ##
 ## The @code{camorbit} command modifies two camera properties:
-## @pxref{XREFcampos,,campos} and @pxref{XREFcamup,,camup}.
+## @ref{XREFcampos,,campos} and @ref{XREFcamup,,camup}.
 ##
 ## By default, this command affects the current axis; alternatively, an axis
 ## can be specified by the optional argument @var{hax}.

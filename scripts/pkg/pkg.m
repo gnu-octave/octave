@@ -40,20 +40,20 @@
 ##
 ## @noindent
 ## installs the package found in the file @file{image-1.0.0.tar.gz}.  The
-## file containing the package can be an url, e.g.
+## file containing the package can be a URL, e.g.,
 ##
 ## @example
 ## pkg install 'http://somewebsite.org/image-1.0.0.tar.gz'
 ## @end example
 ##
 ## @noindent
-## installs the package found in the given url.  This
+## installs the package found in the given URL.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @noindent
 ## @emph{Security risk}: no verification of the package is performed
 ## before the installation.  It has the same security issues as manually
-## downloading the package from the given url and installing it.
+## downloading the package from the given URL and installing it.
 ##
 ## @noindent
 ## @emph{No support}: the GNU Octave community is not responsible for
@@ -411,7 +411,7 @@ function [local_packages, global_packages] = pkg (varargin)
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
-            error ("pkg: could not download file %s from url %s",
+            error ("pkg: could not download file %s from URL %s",
                    local_files{i}, urls{i});
           endif
         else

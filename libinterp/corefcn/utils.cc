@@ -137,7 +137,117 @@ namespace octave
   {
     return same_file_internal (f, g);
   }
+}
 
+DEFUN (is_same_file, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{same} =} is_same_file (@var{filepath1}, @var{filepath2})
+Return true if @var{filepath1} and @var{filepath2} both refer to the same file.
+
+Depending on the file system and platform, the same file or folder can be
+referred to with different paths.  This function returns true if the paths in
+@var{filepath1} and @var{filepath2} actually refer to the same file or folder,
+and false otherwise.
+
+If either @var{filepath1} or @var{filepath2} is a cell array of strings, then an
+array of the same size is returned, containing the values described above for
+every member of the cell array.  The other argument may also be a cell
+array of strings (of the same size) or character string.
+
+@seealso{canonicalize_file_name, strcmp}
+@end deftypefn */)
+{
+  if (args.length () != 2)
+    print_usage ();
+
+  octave_value retval;
+
+  bool s1_string = args(0).is_string ();
+  bool s1_cell = args(0).iscell ();
+  bool s2_string = args(1).is_string ();
+  bool s2_cell = args(1).iscell ();
+
+  if (s1_string && s2_string)
+    {
+      std::string file1 = args(0).string_value ();
+      std::string file2 = args(1).string_value ();
+
+      retval = octave::same_file (file1, file2);
+    }
+  else if ((s1_string && s2_cell) || (s1_cell && s2_string))
+    {
+      octave_value str_val, cell_val;
+
+      if (s1_string)
+        {
+          str_val = args(0);
+          cell_val = args(1);
+        }
+      else
+        {
+          str_val = args(1);
+          cell_val = args(0);
+        }
+
+      const Cell cell = cell_val.cell_value ();
+      const std::string str = str_val.string_value ();
+
+      boolNDArray output (cell_val.dims (), false);
+
+      if (! cell_val.iscellstr ())
+        error ("is_same_file: cell values must contain strings");
+
+      for (octave_idx_type idx = 0; idx < cell.numel (); idx++)
+        output(idx) = octave::same_file (str, cell(idx).string_value ());
+
+      retval = output;
+    }
+  else if (s1_cell && s2_cell)
+    {
+      if (! args(0).iscellstr () || ! args(1).iscellstr ())
+        error ("is_same_file: cell values must contain strings");
+
+      const Cell cell1 = args(0).cell_value ();
+      const Cell cell2 = args(1).cell_value ();
+
+      const dim_vector size1 = cell1.dims ();
+      const dim_vector size2 = cell2.dims ();
+
+      if (size1 != size2)
+        error ("is_same_file: nonconformant cell arrays");
+
+      boolNDArray output (size1, false);
+
+      for (octave_idx_type idx = 0; idx < cell1.numel (); idx++)
+        output(idx) = octave::same_file (cell1(idx).string_value (),
+                                         cell2(idx).string_value ());
+
+      retval = output;
+    }
+  else
+    error ("is_same_file: input must be cell strings or strings");
+
+  return retval;
+}
+
+/*
+%!testif ; ! ispc ()
+%! assert (is_same_file ("~", tilde_expand ("~")), true);
+%!testif ; ispc ()
+%! assert (is_same_file (tolower (getenv ("OCTAVE_HOME")),
+%!                       toupper (getenv ("OCTAVE_HOME"))), true);
+%!assert (is_same_file ({pwd(), ".", tempdir()}, canonicalize_file_name (".")),
+%!        [true, true, false])
+
+%!error is_same_file ()
+%!error is_same_file ("foo")
+%!error is_same_file ("foo", 1)
+%!error is_same_file ("foo", {1,2,3})
+*/
+
+
+namespace octave
+{
   int almost_match (const std::string& std, const std::string& s,
                     int min_match_len, int case_sens)
   {

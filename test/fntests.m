@@ -32,7 +32,7 @@ srcdir = canonicalize_file_name (xdir);
 topsrcdir = canonicalize_file_name (fullfile (xdir, ".."));
 topbuilddir = canonicalize_file_name (fullfile (currdir, ".."));
 
-if (strcmp (currdir, srcdir))
+if (is_same_file (currdir, srcdir))
   testdirs = {srcdir};
 else
   testdirs = {currdir, srcdir};
@@ -45,7 +45,7 @@ local_script_tree = canonicalize_file_name (fullfile (currdir, "../scripts"));
 
 fundirs = {liboctave_tree, src_tree, script_tree};
 
-if (! strcmp (currdir, srcdir))
+if (! is_same_file (currdir, srcdir))
   fundirs{end+1} = local_script_tree;
 endif
 

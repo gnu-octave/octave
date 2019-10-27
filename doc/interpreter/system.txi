@@ -222,6 +222,8 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(is_absolute_filename)
 
+@DOCSTRING(is_same_file)
+
 @DOCSTRING(is_rooted_relative_filename)
 
 @DOCSTRING(recycle)

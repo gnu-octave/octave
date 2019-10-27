@@ -137,13 +137,13 @@ function retval = dir (directory)
           endif
         endif
         tmpdir = regexprep (fn, re, '$1');
-        if (strcmp (fn, tmpdir))
+        if (is_same_file (fn, tmpdir))
           ## regexrep failed to match, no directory component.
           tmpdir = ".";
         endif
         fn = regexprep (fn, re, '$2$3');
         info(++cnt).name = fn;
-        if (! strcmp (last_dir, tmpdir))
+        if (! is_same_file (last_dir, tmpdir))
           ## Caching mechanism to speed up function
           last_dir = tmpdir;
           last_absdir = canonicalize_file_name (last_dir);

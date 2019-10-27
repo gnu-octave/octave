@@ -71,7 +71,7 @@ function run (script)
       evalin ("caller", sprintf ("source ('%s%s');", f, ext),
               "rethrow (lasterror ())");
     unwind_protect_cleanup
-      if (strcmp (scriptdir, pwd ()))
+      if (is_same_file (scriptdir, pwd ()))
         cd (startdir);
       endif
     end_unwind_protect
@@ -125,10 +125,10 @@ endfunction
 %!   ## Check if temporary directory is on the loadpath.
 %!   ## Function 'dir_in_loadpath' is broken for this use case, so code a test.
 %!   dirs = strsplit (path (), pathsep ());
-%!   tstval1 = any (strcmp (tmp_dir, dirs));
+%!   tstval1 = any (is_same_file (tmp_dir, dirs));
 %!   run (test_function);
 %!   dirs = strsplit (path (), pathsep ());
-%!   tstval2 = any (strcmp (tmp_dir, dirs));
+%!   tstval2 = any (is_same_file (tmp_dir, dirs));
 %!   assert (tstval1, false);
 %!   assert (tstval2, true);
 %! unwind_protect_cleanup

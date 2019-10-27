@@ -503,8 +503,7 @@ function copy_files (desc, packdir, global_install)
       error ("couldn't copy files to the installation directory");
     endif
     if (isfolder (fullfile (desc.dir, getarch ()))
-        && ! strcmp (canonicalize_file_name (fullfile (desc.dir, getarch ())),
-                     canonicalize_file_name (octfiledir)))
+        && ! is_same_file (fullfile (desc.dir, getarch ()), octfiledir))
       if (! isfolder (octfiledir))
         ## Can be required to create up to three levels of dirs.
         octm1 = fileparts (octfiledir);

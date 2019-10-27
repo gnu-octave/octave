@@ -221,6 +221,17 @@ function filelist = unpack (file, dir = [], filetype = "")
     file = __w2mpth__ (file);
   endif
 
+  ## Create the output directory if necessary.
+  s = stat (dir);
+  if (isempty (s))
+    [status, msg] = mkdir (dir);
+    if (! status)
+      error ("unpack: mkdir failed to create %s: %s", dir, msg);
+    endif
+  elseif (! S_ISDIR (s.mode))
+    error ("unpack: %s: not a directory", dir);
+  endif
+
   if (isfield (commandlist, tolower (nodotext)))
     [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
     origdir = pwd ();
@@ -234,7 +245,7 @@ function filelist = unpack (file, dir = [], filetype = "")
     if (cenddir(end) == filesep)
       cenddir(end) = [];
     endif
-    needmove = move && ! strcmp (cstartdir, cenddir);
+    needmove = move && ! is_same_file (cstartdir, cenddir);
     if (nargout > 0 || needmove)
       command = commandv;
     else
@@ -244,17 +255,6 @@ function filelist = unpack (file, dir = [], filetype = "")
     warning ("unpack: unrecognized FILETYPE <%s>", nodotext);
     filelist = {};
     return;
-  endif
-
-  ## Create the directory if necessary.
-  s = stat (dir);
-  if (isempty (s))
-    [status, msg] = mkdir (dir);
-    if (! status)
-      error ("unpack: mkdir failed to create %s: %s", dir, msg);
-    endif
-  elseif (! S_ISDIR (s.mode))
-    error ("unpack: %s: not a directory", dir);
   endif
 
   ## Save and restore the TAR_OPTIONS environment variable used by GNU tar.

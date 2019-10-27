@@ -916,7 +916,7 @@ namespace octave
     int opts = QFileDialog::ShowDirsOnly;
     if (! resource_manager::get_settings ()->value (
                                   global_use_native_dialogs.key,
-                                  global_use_native_dialogs.def).toBool ());
+                                  global_use_native_dialogs.def).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

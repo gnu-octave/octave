@@ -4016,8 +4016,8 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
     case oct_data_conv::dt_double:
       {
-        if (val == 1 && dims.ndims () == 2 && dims(0) == 1)
-          retval = Range (1.0, 0.0, dims(1));  // packed form
+        if (dims.ndims () == 2 && dims(0) == 1)
+          retval = Range (static_cast<double> (val), 0.0, dims(1));
         else
           retval = NDArray (dims, val);
       }
@@ -4088,7 +4088,10 @@ fill_matrix (const octave_value_list& args, double val, float fval,
       break;
 
     case oct_data_conv::dt_double:
-      retval = NDArray (dims, val);
+      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
+        retval = Range (val, 0.0, dims(1));  // Packed form
+      else
+        retval = NDArray (dims, val);
       break;
 
     default:
@@ -4151,7 +4154,10 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       break;
 
     case oct_data_conv::dt_double:
-      retval = NDArray (dims, val);
+      if (dims.ndims () == 2 && dims(0) == 1 && octave::math::isfinite (val))
+        retval = Range (val, 0.0, dims(1));  // Packed form
+      else
+        retval = NDArray (dims, val);
       break;
 
     default:

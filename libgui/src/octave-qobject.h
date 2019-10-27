@@ -98,6 +98,13 @@ namespace octave
 
     QThread *main_thread (void) { return m_main_thread; }
 
+  private:
+
+#if defined (Q_OS_MAC)
+    // FIXME: Does this need to be a private member function of base_qobject?
+    void disable_app_nap (void);
+#endif
+
   public slots:
 
     void handle_octave_finished (int);

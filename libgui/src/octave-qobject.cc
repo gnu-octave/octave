@@ -41,6 +41,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
+#if defined (Q_OS_MAC)
+   // ObjC interface is needed for App Nap control
+#  include <objc/runtime.h>
+#  include <objc/message.h>
+#endif
+
 #include "oct-env.h"
 #include "version.h"
 
@@ -132,6 +138,12 @@ namespace octave
 
     qRegisterMetaType<octave_value_list> ("octave_value_list");
 
+#if defined (Q_OS_MAC)
+    // Mac App Nap feature causes pause() and sleep() to misbehave.
+    // Disable it for the entire program run.
+    disable_app_nap ();
+#endif
+
     // Force left-to-right alignment (see bug #46204)
     m_qapplication->setLayoutDirection (Qt::LeftToRight);
 
@@ -165,6 +177,54 @@ namespace octave
 
     string_vector::delete_c_str_vec (m_argv);
   }
+
+#if defined (Q_OS_MAC)
+  // FIXME: Does this need to be a private member function of base_qobject?
+  //        Or should it be a file local static function?
+  void base_qobject::disable_app_nap (void)
+  {
+    Class process_info_class;
+    SEL process_info_selector;
+    SEL begin_activity_with_options_selector;
+    id process_info;
+    id reason_string;
+
+    // Option codes found at https://stackoverflow.com/questions/22784886/what-can-make-nanosleep-drift-with-exactly-10-sec-on-mac-os-x-10-9/32729281#32729281
+    unsigned long long NSActivityUserInitiatedAllowingIdleSystemSleep = 0x00FFFFFFULL;
+    unsigned long long NSActivityLatencyCritical = 0xFF00000000ULL;
+
+    // Avoid errors on older versions of OS X
+    process_info_class = (Class) objc_getClass ("NSProcessInfo");
+    if (process_info_class == nil)
+      return;
+
+    process_info_selector = sel_getUid ("processInfo");
+    if (class_getClassMethod (process_info_class, process_info_selector) == NULL)
+      return;
+
+    begin_activity_with_options_selector = sel_getUid ("beginActivityWithOptions:reason:");
+    if (class_getInstanceMethod (process_info_class,
+                                 begin_activity_with_options_selector) == NULL)
+      return;
+
+    if ((process_info = objc_msgSend ((id)process_info_class, process_info_selector)) == nil)
+      return;
+
+    reason_string = objc_msgSend (objc_getClass ("NSString"),
+                                  sel_getUid ("alloc"));
+    reason_string = objc_msgSend (reason_string,
+                                  sel_getUid ("initWithUTF8String:"),
+                                  "App Nap causes pause() malfunction");
+
+    // Start an Activity that suppresses App Nap.  This Activity will run for
+    // the entire duration of the Octave process.  This is intentional,
+    // not a leak.
+    osx_latencycritical_activity = objc_msgSend (process_info,
+        begin_activity_with_options_selector,
+        NSActivityUserInitiatedAllowingIdleSystemSleep | NSActivityLatencyCritical,
+        reason_string);
+  }
+#endif
 
   void base_qobject::config_translators (void)
   {

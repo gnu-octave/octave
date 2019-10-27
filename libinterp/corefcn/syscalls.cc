@@ -1333,7 +1333,7 @@ DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
 Return the canonical name of file @var{fname}.
 
 If the file does not exist the empty string ("") is returned.
-@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename}
+@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename, is_same_file}
 @end deftypefn */)
 {
   if (args.length () != 1)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2017-2019 Torsten <mttl@mailbox.de>
+Copyright (C) 2017-2019 Torsten <ttl-octave@mailbox.org>
 
 This file is part of Octave.
 
@@ -82,5 +82,10 @@ global_icon_theme ("use_system_icon_theme", QVariant (true));
 
 const gui_pref
 global_style ("style", QVariant ("default"));
+
+// Other
+
+const gui_pref
+global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));
 
 #endif

@@ -914,8 +914,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    if (! resource_manager::get_settings ()->value (
+                                  global_use_native_dialogs.key,
+                                  global_use_native_dialogs.def).toBool ());
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

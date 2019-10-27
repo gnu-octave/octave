@@ -210,7 +210,9 @@ namespace octave
     // FIXME: This preference can be deprecated / removed if all display
     //       managers, especially KDE, run those dialogs without hangs or
     //       delays from the start (bug #54607).
-    cb_use_native_file_dialogs->setChecked (settings->value ("use_native_file_dialogs", true).toBool ());
+    cb_use_native_file_dialogs->setChecked (settings->value (
+                                    global_use_native_dialogs.key,
+                                    global_use_native_dialogs.def).toBool ());
 
     // Cursor blinking: consider old terminal related setting if not yet set
     // FIXME: This pref. can be deprecated / removed if Qt adds support for
@@ -550,8 +552,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    if (! resource_manager::get_settings ()->value (
+                                    global_use_native_dialogs.key,
+                                    global_use_native_dialogs.def).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory
@@ -844,7 +847,7 @@ namespace octave
     settings->setValue (global_icon_theme.key, cb_system_icon_theme->isChecked ());
 
     // native file dialogs
-    settings->setValue ("use_native_file_dialogs", cb_use_native_file_dialogs->isChecked ());
+    settings->setValue (global_use_native_dialogs.key, cb_use_native_file_dialogs->isChecked ());
 
     // cursor blinking
     settings->setValue ("cursor_blinking", cb_cursor_blinking->isChecked ());

@@ -270,6 +270,9 @@ namespace octave
   {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
+    // FIXME: When Octave switches to C++17, consider replacing this function
+    //        by https://en.cppreference.com/w/cpp/filesystem/equivalent.
+
     bool retval = false;
 
     std::wstring file1w = sys::u8_to_wstring (file1);
@@ -305,7 +308,13 @@ namespace octave
               {
                 retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
                           && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-                          && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+                          && hfi1.nFileIndexLow == hfi2.nFileIndexLow
+                          && hfi1.nFileSizeHigh == hfi2.nFileSizeHigh
+                          && hfi1.nFileSizeLow == hfi2.nFileSizeLow
+                          && hfi1.ftLastWriteTime.dwLowDateTime
+                             == hfi2.ftLastWriteTime.dwLowDateTime
+                          && hfi1.ftLastWriteTime.dwHighDateTime
+                             == hfi2.ftLastWriteTime.dwHighDateTime);
               }
 
             CloseHandle (hfile2);

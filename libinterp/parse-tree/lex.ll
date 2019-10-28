@@ -630,13 +630,16 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// Gobble comments.
+// Gobble comments.  Both BLOCK_COMMENT_START and LINE_COMMENT_START
+// are exclusive start states.  We try to grab a continuous series of
+// line-oriented comments as a single collection of comments.
 %}
 
 %{
-// Start of a block comment.  If the comment marker appears immediately
-// after a block of full-line comments, finish the full line comment
-// block.
+// Start of a block comment.  Since comment start states are exclusive,
+// this pattern will not match a block comment that immediately follows
+// a line-oriented comment.  All we need to do is push the matched text
+// back on the input stream and push the new start state.
 %}
 
 ^{S}*{CCHAR}\{{S}*{NL} {
@@ -644,16 +647,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     yyless (0);
 
-    if (curr_lexer->start_state () == LINE_COMMENT_START)
-      {
-        if (! curr_lexer->m_comment_text.empty ())
-          curr_lexer->finish_comment (octave::comment_elt::full_line);
-
-        curr_lexer->pop_start_state ();
-      }
-
     curr_lexer->push_start_state (BLOCK_COMMENT_START);
-
   }
 
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
@@ -670,8 +664,12 @@ ANY_INCLUDING_NL (.|{NL})
 
 %{
 // End of a block comment.  If this block comment is nested inside
-// another, wait for the outermost block comment block to be closed
-// before storing the comment.
+// another, wait for the outermost block comment to be closed before
+// storing the comment.
+
+// NOTE: This pattern must appear before the one below.  Both may match
+// the same text and this one should take precedence over the one that
+// follows.
 %}
 
 <BLOCK_COMMENT_START>^{S}*{CCHAR}\}{S}*{NL} {
@@ -714,72 +712,65 @@ ANY_INCLUDING_NL (.|{NL})
     yyless (0);
   }
 
+%{
+// Beginning of a block comment while we are looking at a series of
+// line-oriented comments.  Finish previous comment, push current
+// text back on input stream, and switch start states.
+
+// NOTE: This pattern must appear before the one below.  Both may match
+// the same text and this one should take precedence over the one that
+// follows.
+%}
+
+<LINE_COMMENT_START>^{S}*{CCHAR}\{{S}*{NL} {
+    curr_lexer->lexer_debug ("<LINE_COMMENT_START>^{S}*{CCHAR}\\{{S}*{NL}");
+
+    if (! curr_lexer->m_comment_text.empty ())
+      curr_lexer->finish_comment (octave::comment_elt::full_line);
+
+    curr_lexer->pop_start_state ();
+    curr_lexer->push_start_state (BLOCK_COMMENT_START);
+    yyless (0);
+  }
+
+%{
+// Line-oriented comment.  If we are at the beginning of a line, this is
+// part of a series of full-line comments.  Otherwise, this is an end of
+// line comment.  We don't need to parse the matched text to determine
+// whether we are looking at the start of a block comment as that
+// pattern is handled above.
+
+// NOTE: This pattern must appear before the one below.  Both may match
+// the same text and this one should take precedence over the one that
+// follows.
+%}
+
 <LINE_COMMENT_START>{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
     curr_lexer->lexer_debug ("<LINE_COMMENT_START>{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
 
-    bool full_line_comment = curr_lexer->m_current_input_column == 1;
-    curr_lexer->m_input_line_number++;
-    curr_lexer->m_current_input_column = 1;
+    // Grab text of comment without leading space or comment
+    // characters.
 
-    bool have_space = false;
-    size_t len = yyleng;
     size_t i = 0;
-    while (i < len)
-      {
-        char c = yytext[i];
-        if (is_space_or_tab (c))
-          {
-            have_space = true;
-            i++;
-          }
-        else
-          break;
-      }
+    while (i < yyleng && is_space_or_tab (yytext[i]))
+      i++;
 
-    size_t num_comment_chars = 0;
+    bool have_space = (i > 0);
 
-    while (i < len)
-      {
-        char c = yytext[i];
-        if (c == '#' || c == '%')
-          {
-            num_comment_chars++;
-            i++;
-          }
-        else
-          break;
-      }
+    while (i < yyleng && (yytext[i] == '#' || yytext[i] == '%'))
+      i++;
 
     curr_lexer->m_comment_text += &yytext[i];
 
-    if (full_line_comment)
+    if (curr_lexer->m_current_input_column == 1)
       {
-        if (num_comment_chars == 1 && yytext[i++] == '{')
-          {
-            bool looks_like_block_comment = true;
-
-            while (i < len)
-              {
-                char c = yytext[i++];
-                if (! is_space_or_tab_or_eol (c))
-                  {
-                    looks_like_block_comment = false;
-                    break;
-                  }
-              }
-
-            if (looks_like_block_comment)
-              {
-                yyless (0);
-
-                curr_lexer->finish_comment (octave::comment_elt::full_line);
-
-                curr_lexer->pop_start_state ();
-              }
-          }
+        curr_lexer->m_input_line_number++;
+        curr_lexer->m_current_input_column = 1;
       }
     else
       {
+        // End of line comment.
+
         if (have_space)
           curr_lexer->mark_previous_token_trailing_space ();
 
@@ -787,13 +778,21 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->pop_start_state ();
 
+        // Push the newline character back on the input and skip
+        // incrementing the line count so we don't have to duplicate
+        // all the possible actions that happen with newlines here.
+
         curr_lexer->xunput ('\n');
-        curr_lexer->m_input_line_number--;
+
+        // The next action should recognize a newline character and set
+        // the input column back to 1, but we should try to keep the
+        // input column location accurate anyway, so update here.
+        curr_lexer->m_current_input_column += yyleng;
       }
   }
 
 %{
-// End of a block of full-line comments.
+// End of a series of full-line comments.
 %}
 
 <LINE_COMMENT_START>{ANY_INCLUDING_NL} {
@@ -807,7 +806,7 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// End of a block of full-line comments.
+// End of file will also end a series of full-line comments.
 %}
 
 <LINE_COMMENT_START><<EOF>> {

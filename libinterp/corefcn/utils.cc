@@ -231,7 +231,8 @@ return true.
 }
 
 /*
-%!assert (is_same_file ("~", tilde_expand ("~")))
+%!testif ; ! ispc ()
+%! assert (is_same_file ("~", tilde_expand ("~")));
 %!testif ; ispc ()
 %! assert (is_same_file (tolower (getenv ("OCTAVE_HOME")),
 %!                       toupper (getenv ("OCTAVE_HOME"))), true);

@@ -437,6 +437,15 @@ namespace octave
 
     void cleanup_tmp_files (void);
 
+    void quit (int exit_status, bool force = false);
+
+    void cancel_quit (bool flag) { m_cancel_quit = flag; }
+
+    bool executing_finish_script (void) const
+    {
+      return m_executing_finish_script;
+    }
+
     static void add_atexit_function (const std::string& fname);
 
     static bool remove_atexit_function (const std::string& fname);
@@ -532,6 +541,10 @@ namespace octave
 
     // TRUE if we are in the top level interactive read eval print loop.
     bool m_in_top_level_repl;
+
+    bool m_cancel_quit;
+
+    bool m_executing_finish_script;
 
     bool m_initialized;
 

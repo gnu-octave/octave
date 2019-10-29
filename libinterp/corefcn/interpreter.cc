@@ -133,11 +133,16 @@ Undocumented internal function.
 
 DEFMETHOD (quit, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {} exit
-@deftypefnx {} {} exit (@var{status})
-@deftypefnx {} {} quit
+@deftypefn  {} {} quit
+@deftypefnx {} {} quit cancel
+@deftypefnx {} {} quit force
+@deftypefnx {} {} quit ("cancel")
+@deftypefnx {} {} quit ("force")
 @deftypefnx {} {} quit (@var{status})
-Exit the current Octave session.
+@deftypefnx {} {} quit (@var{status}, "force")
+Quit the current Octave session.
+
+The @code{exit} function is an alias for @code{quit}.
 
 If the optional integer value @var{status} is supplied, pass that value to
 the operating system as Octave's exit status.  The default value is zero.
@@ -145,33 +150,76 @@ the operating system as Octave's exit status.  The default value is zero.
 When exiting, Octave will attempt to run the m-file @file{finish.m} if it
 exists.  User commands to save the workspace or clean up temporary files
 may be placed in that file.  Alternatively, another m-file may be scheduled
-to run using @code{atexit}.
+to run using @code{atexit}.  If an error occurs while executing the
+@file{finish.m} file, Octave does not exit and control is returned to
+the command prompt.
+
+If the optional argument @qcode{"cancel"} is provided, Octave does not
+exit and control is returned to the command prompt.  This feature allows
+the @code{finish.m} file to cancel the quit process.
+
+If the user preference to request confirmation before exiting, Octave
+will display a dialog and give the user an option to cancel the exit
+process.
+
+If the optional argument @qcode{"force"} is provided, no confirmation is
+requested, and the execution of the @file{finish.m} file is skipped.
 @seealso{atexit}
 @end deftypefn */)
 {
-  // Confirm OK to shutdown.  Note: A dynamic function installation similar
-  // to overriding polymorphism for which the GUI can install its own "quit"
-  // yet call this base "quit" could be nice.  No link would be needed here.
+  int numel = args.length ();
 
-  octave::event_manager& evmgr = interp.get_event_manager ();
-
-  if (! evmgr.confirm_shutdown ())
-    return ovl ();
-
-  if (! quit_allowed)
-    error ("quit: not supported in embedded mode");
+  if (numel > 2)
+    print_usage ();
 
   int exit_status = 0;
 
-  if (args.length () > 0)
-    exit_status = args(0).nint_value ();
+  bool force = false;
+  bool cancel = false;
 
-  // Instead of simply calling exit, we thrown an exception so that no
-  // matter where the call to quit occurs, we will run the
-  // unwind_protect stack, clear the OCTAVE_LOCAL_BUFFER allocations,
-  // etc. before exiting.
+  if (numel == 2)
+    {
+      exit_status = args(0).xnint_value ("quit: STATUS must be an integer");
+      std::string frc
+        = args(1).xstring_value ("quit: second argument must be a string");
 
-  throw octave::exit_exception (exit_status);
+      if (frc == "force")
+        force = true;
+      else
+        error (R"(quit: second argument must be string "force")");
+    }
+  else if (numel == 1)
+    {
+      if (args(0).is_string ())
+        {
+          const char *msg
+            = R"(quit: option must be string "cancel" or "force")";
+
+          std::string opt = args(0).xstring_value (msg);
+
+          if (opt == "cancel")
+            cancel = true;
+          else if (opt == "force")
+            force = true;
+          else
+            error (msg);
+        }
+      else
+        exit_status = args(0).xnint_value ("quit: STATUS must be an integer");
+    }
+
+  if (cancel)
+    {
+      if (interp.executing_finish_script ())
+        {
+          interp.cancel_quit (true);
+          return ovl ();
+        }
+      else
+        error (R"(invalid use of "cancel" option)");
+    }
+
+  interp.quit (exit_status, force);
 
   return ovl ();
 }
@@ -415,6 +463,8 @@ namespace octave
       m_load_path_initialized (false),
       m_history_initialized (false),
       m_in_top_level_repl (false),
+      m_cancel_quit (false),
+      m_executing_finish_script (false),
       m_initialized (false)
   {
     // FIXME: When thread_local storage is used by default, this message
@@ -839,10 +889,6 @@ namespace octave
                 handle_exception (e);
               }
           }
-
-        // Schedule the Matlab compatible finish.m file to run if it exists
-        // anywhere in the load path when exiting Octave.
-        add_atexit_function ("__finish__");
 
         // Try to execute commands from $HOME/$OCTAVE_INITFILE and
         // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
@@ -1692,6 +1738,46 @@ namespace octave
   void interpreter::cleanup_tmp_files (void)
   {
     m_tmp_files.cleanup ();
+  }
+
+  void interpreter::quit (int exit_status, bool force)
+  {
+    if (! force)
+      {
+        try
+          {
+            // Attempt to execute finish.m.  If it throws an
+            // exception, cancel quitting.
+
+            bool cancel = false;
+
+            if (symbol_exist ("finish.m", "file"))
+              {
+                unwind_protect_var<bool> upv1 (m_executing_finish_script, true);
+                unwind_protect_var<bool> upv2 (m_cancel_quit);
+
+                evalin ("base", "finish", 0);
+
+                cancel = m_cancel_quit;
+              }
+
+            if (cancel)
+              return;
+
+            // Check for confirmation.
+
+            if (! m_event_manager.confirm_shutdown ())
+              return;
+          }
+        catch (const execution_exception& ee)
+          {
+            handle_exception (ee);
+
+            return;
+          }
+      }
+
+    throw exit_exception (exit_status);
   }
 
   // Functions to call when the interpreter exits.

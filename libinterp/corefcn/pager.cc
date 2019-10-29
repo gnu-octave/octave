@@ -657,8 +657,10 @@ DEFMETHOD (page_output_immediately, interp, args, nargout,
 Query or set the internal variable that controls whether Octave sends
 output to the pager as soon as it is available.
 
-Otherwise, Octave buffers its output and waits until just before the prompt
-is printed to flush it to the pager.
+When the value is @code{false}, Octave buffers its output and waits until just
+before the prompt is printed to flush it to the pager.  This is the default.
+
+When @code{page_screen_output} is @code{false}, this variable has no effect.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

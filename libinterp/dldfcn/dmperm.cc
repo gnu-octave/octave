@@ -134,7 +134,7 @@ of the blocks.  If @var{S} is square then @code{@var{r} == @var{S}}.
 
 The method used is described in: @nospell{A. Pothen & C.-J. Fan.}
 @cite{Computing the Block Triangular Form of a Sparse Matrix}.
-@nospell{ACM} Trans. Math. Software, 16(4):303-324, 1990.
+@nospell{ACM} Trans. Math. Software, 16(4):303--324, 1990.
 @seealso{colamd, ccolamd}
 @end deftypefn */)
 {

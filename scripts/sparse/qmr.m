@@ -73,7 +73,7 @@
 ## @item
 ## @nospell{R. Freund and N. Nachtigal}, @cite{QMR: a quasi-minimal residual
 ## method for non-Hermitian linear systems}, @nospell{Numerische Mathematik},
-## 1991, 60, pp. 315-339.
+## 1991, 60, pp. 315--339.
 ##
 ## @item
 ## @nospell{ R. Barrett, M. Berry, T. Chan, J. Demmel, J. Donato, J. Dongarra},

@@ -45,7 +45,7 @@
 ## default, this option is @qcode{"off"} because it may sometimes deliver
 ## unexpected (though mathematically correct) results.
 ##
-## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}--when
+## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn}---when
 ## called with two output arguments---also returns the Jacobian matrix of
 ## partial first derivatives at the requested point.
 ##

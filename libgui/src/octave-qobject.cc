@@ -181,7 +181,7 @@ namespace octave
 #if defined (Q_OS_MAC)
   // FIXME: Does this need to be a private member function of base_qobject?
   //        Or should it be a file local static function?
-  void base_qobject::disable_app_nap (void)
+  void disable_app_nap (void)
   {
     Class process_info_class;
     SEL process_info_selector;
@@ -194,7 +194,7 @@ namespace octave
     unsigned long long NSActivityLatencyCritical = 0xFF00000000ULL;
 
     // Avoid errors on older versions of OS X
-    process_info_class = (Class) objc_getClass ("NSProcessInfo");
+    process_info_class = static_cast<Class> (objc_getClass ("NSProcessInfo"));
     if (process_info_class == nil)
       return;
 
@@ -207,7 +207,7 @@ namespace octave
                                  begin_activity_with_options_selector) == NULL)
       return;
 
-    if ((process_info = objc_msgSend ((id)process_info_class, process_info_selector)) == nil)
+    if ((process_info = objc_msgSend (static_cast<id> (process_info_class), process_info_selector)) == nil)
       return;
 
     reason_string = objc_msgSend (objc_getClass ("NSString"),

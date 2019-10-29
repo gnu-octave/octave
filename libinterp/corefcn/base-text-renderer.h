@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "dMatrix.h"
+#include "oct-map.h"
 #include "uint8NDArray.h"
 
 #include "text-engine.h"
@@ -65,6 +66,9 @@ namespace octave
     virtual void
     set_font (const std::string& name, const std::string& weight,
               const std::string& angle, double size) = 0;
+
+    virtual octave_map
+    get_system_fonts (void) = 0;
 
     virtual void set_color (const Matrix& c) = 0;
 

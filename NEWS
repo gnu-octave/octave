@@ -131,6 +131,7 @@ Summary of important user-visible changes for version 6 (yyyy-mm-dd):
 * `rotx`
 * `roty`
 * `rotz`
+* `uisetfont`
 * `verLessThan`
 * `web`
 * `weboptions`

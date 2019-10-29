@@ -14479,3 +14479,17 @@ uint8 array.
 
   return ovl (go.get_toolkit ().get_pixels (go));
 }
+
+DEFUN (__get_system_fonts__, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{font_struct} =} __get_system_fonts__ ()
+Internal function.
+@end deftypefn */)
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  octave::text_renderer txt_renderer;
+
+  return ovl (txt_renderer.get_system_fonts ());
+}

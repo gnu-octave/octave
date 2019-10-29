@@ -165,6 +165,13 @@ namespace octave
               : nullptr);
     }
 
+    static octave_map get_system_fonts (void)
+    {
+      return (instance_ok ()
+              ? instance->do_get_system_fonts ()
+              : octave_map ());
+    }
+
     static void font_destroyed (FT_Face face)
     {
       if (instance_ok ())
@@ -182,6 +189,88 @@ namespace octave
     // weak references to the fonts, strong references are only present
     // in class text_renderer.
     ft_cache cache;
+
+    static octave_map do_get_system_fonts (void)
+    {
+      static octave_map font_map;
+
+      if (font_map.isempty ())
+        {
+          FcConfig *config = FcConfigGetCurrent();
+          FcPattern *pat = FcPatternCreate ();
+          FcObjectSet *os = FcObjectSetBuild (FC_FAMILY, FC_SLANT, FC_WEIGHT,
+                                              FC_CHARSET, nullptr);
+          FcFontSet *fs = FcFontList (config, pat, os);
+
+          if (fs->nfont > 0)
+            {
+              // Mark fonts that have at least all printable ASCII chars
+              FcCharSet *minimal_charset =  FcCharSetCreate ();
+              for (int i = 32; i < 127; i++)
+                FcCharSetAddChar (minimal_charset, static_cast<FcChar32> (i));
+
+              string_vector fields (4);
+              fields(0) = "family";
+              fields(1) = "angle";
+              fields(2) = "weight";
+              fields(3) = "suitable";
+
+              dim_vector dv (1, fs->nfont);
+              Cell families (dv);
+              Cell angles (dv);
+              Cell weights (dv);
+              Cell suitable (dv);
+
+              unsigned char *family;
+              int val;
+              for (int i = 0; fs && i < fs->nfont; i++)
+                {
+                  FcPattern *font = fs->fonts[i];
+                  if (FcPatternGetString (font, FC_FAMILY, 0, &family)
+                      == FcResultMatch)
+                    families(i) = std::string (reinterpret_cast<char*> (family));
+                  else
+                    families(i) = "unknown";
+
+                  if (FcPatternGetInteger (font, FC_SLANT, 0, &val)
+                      == FcResultMatch)
+                    angles(i) = (val == FC_SLANT_ITALIC
+                                 || val == FC_SLANT_OBLIQUE)
+                                ? "italic" : "normal";
+                  else
+                    angles(i) = "unknown";
+
+                  if (FcPatternGetInteger (font, FC_WEIGHT, 0, &val)
+                      == FcResultMatch)
+                    weights(i) = (val == FC_WEIGHT_BOLD
+                                  || val == FC_WEIGHT_DEMIBOLD)
+                                 ? "bold" : "normal";
+                  else
+                    weights(i) = "unknown";
+
+                  FcCharSet *cset;
+                  if (FcPatternGetCharSet (font, FC_CHARSET, 0, &cset)
+                      == FcResultMatch)
+                    suitable(i) = (FcCharSetIsSubset (minimal_charset, cset)
+                                   ? true : false);
+                  else
+                    suitable(i) = false;
+                }
+
+              font_map = octave_map (dv, fields);
+
+              font_map.assign ("family", families);
+              font_map.assign ("angle", angles);
+              font_map.assign ("weight", weights);
+              font_map.assign ("suitable", suitable);
+
+              if (fs)
+                FcFontSetDestroy (fs);
+            }
+        }
+
+      return font_map;
+    }
 
     FT_Face do_get_font (const std::string& name, const std::string& weight,
                          const std::string& angle, double size)
@@ -418,6 +507,8 @@ namespace octave
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
 
+    octave_map get_system_fonts (void);
+
     void set_color (const Matrix& c);
 
     void set_mode (int m);
@@ -546,12 +637,18 @@ namespace octave
   };
 
   void
-  ft_text_renderer::set_font (const std::string& name, const std::string& weight,
+  ft_text_renderer::set_font (const std::string& name,
+                              const std::string& weight,
                               const std::string& angle, double size)
   {
     // FIXME: take "fontunits" into account
-
     font = ft_font (name, weight, angle, size, nullptr);
+  }
+
+  octave_map
+  ft_text_renderer::get_system_fonts (void)
+  {
+    return ft_manager::get_system_fonts ();
   }
 
   void
@@ -920,7 +1017,7 @@ namespace octave
                 mblen = 1;
                 u32_c = 0xFFFD;
               }
-                
+
             n -= mblen;
 
             if (m_do_strlist && mode == MODE_RENDER)

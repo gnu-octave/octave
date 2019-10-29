@@ -86,6 +86,9 @@ errors, and for getting text input from the user.
 @cindex dialog, displaying a warning dialog
 @DOCSTRING(warndlg)
 
+@cindex dialog, displaying a font selection dialog
+@DOCSTRING(uisetfont)
+
 For creating new dialog types, there is a dialog function.
 
 @cindex dialog, displaying a modal dialog

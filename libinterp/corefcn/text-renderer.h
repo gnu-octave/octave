@@ -67,6 +67,8 @@ namespace octave
     void set_font (const std::string& name, const std::string& weight,
                    const std::string& angle, double size);
 
+    octave_map get_system_fonts (void);
+
     void set_color (const Matrix& c);
 
     void text_to_pixels (const std::string& txt,

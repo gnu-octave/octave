@@ -93,6 +93,17 @@ namespace octave
       rep->set_anti_aliasing (val);
   }
 
+  octave_map
+  text_renderer::get_system_fonts (void)
+  {
+    octave_map retval;
+
+    if (ok ())
+      retval = rep->get_system_fonts ();
+
+    return retval;
+  }
+
   void
   text_renderer::set_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size)

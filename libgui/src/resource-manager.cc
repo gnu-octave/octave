@@ -195,16 +195,6 @@ namespace octave
     return workspace_model::storage_class_default_colors ();
   }
 
-  QStringList resource_manager::terminal_color_names (void)
-  {
-    return QTerminal::color_names ();
-  }
-
-  QList<QColor> resource_manager::terminal_default_colors (void)
-  {
-    return QTerminal::default_colors ();
-  }
-
   QList<QColor> resource_manager::varedit_default_colors(void)
   {
     return variable_editor::default_colors ();

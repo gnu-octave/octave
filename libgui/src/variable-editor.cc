@@ -1386,7 +1386,7 @@ namespace octave
     if (m_use_terminal_font)
       {
         font_name = settings->value (cs_font.key, default_font).toString ();
-        font_size = settings->value ("terminal/fontSize", 10).toInt ();
+        font_size = settings->value (cs_font_size.key, cs_font_size.def).toInt ();
       }
     else
       {

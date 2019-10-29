@@ -885,10 +885,12 @@ namespace octave
     //       getting the cursor blink preferences from all OS environments
     bool cursor_blinking;
 
-    if (settings->contains ("cursor_blinking"))
-      cursor_blinking = settings->value ("cursor_blinking",true).toBool ();
+    if (settings->contains (global_cursor_blinking.key))
+      cursor_blinking = settings->value (global_cursor_blinking.key,
+                                         global_cursor_blinking.def).toBool ();
     else
-      cursor_blinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+      cursor_blinking = settings->value (cs_cursor_blinking.key,
+                                         cs_cursor_blinking.def).toBool ();
 
     if (cursor_blinking)
       QApplication::setCursorFlashTime (1000);  // 1000 ms flash time

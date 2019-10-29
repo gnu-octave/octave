@@ -20,17 +20,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_gui_preferences_all_h)
-#define octave_gui_preferences_all_h 1
+#if ! defined (octave_gui_preferences_sc_h)
+#define octave_gui_preferences_sc_h 1
 
-#include "gui-preferences-cs.h"
-#include "gui-preferences-ed.h"
-#include "gui-preferences-fb.h"
-#include "gui-preferences-global.h"
-#include "gui-preferences-mw.h"
-#include "gui-preferences-pd.h"
-#include "gui-preferences-ve.h"
-#include "gui-preferences-sc.h"
-#include "gui-preferences-ws.h"
+#include "gui-preferences.h"
 
+// Console preferences
+
+const gui_pref
+sc_main_edit_copy ("shortcuts/main_edit:copy", QVariant (QKeySequence::Copy));
+
+const gui_pref
+sc_main_ctrld ("shortcuts/main_ctrld", QVariant (false));
 #endif

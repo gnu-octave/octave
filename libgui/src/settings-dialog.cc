@@ -217,15 +217,17 @@ namespace octave
     // Cursor blinking: consider old terminal related setting if not yet set
     // FIXME: This pref. can be deprecated / removed if Qt adds support for
     //       getting the cursor blink preferences from all OS environments
-    if (settings->contains ("cursor_blinking"))
+    if (settings->contains (global_cursor_blinking.key))
       {
         // Preference exists, read its value
-        cb_cursor_blinking->setChecked (settings->value ("cursor_blinking", true).toBool ());
+        cb_cursor_blinking->setChecked (settings->value
+            (global_cursor_blinking.key, global_cursor_blinking.def).toBool ());
       }
     else
       {
         // Pref. does not exist, so take old terminal related pref.
-        cb_cursor_blinking->setChecked (settings->value ("terminal/cursorBlinking", true).toBool ());
+        cb_cursor_blinking->setChecked (settings->value
+                    (cs_cursor_blinking.key, cs_cursor_blinking.def).toBool ());
       }
 
     // prompt on exit
@@ -362,14 +364,14 @@ namespace octave
     // terminal
     QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
     terminal_fontName->setCurrentFont (QFont (settings->value (cs_font.key, default_font).toString ()));
-    terminal_fontSize->setValue (settings->value ("terminal/fontSize", 10).toInt ());
-    terminal_history_buffer->setValue (settings->value ("terminal/history_buffer", 1000).toInt ());
-    terminal_cursorUseForegroundColor->setChecked (settings->value ("terminal/cursorUseForegroundColor", true).toBool ());
+    terminal_fontSize->setValue (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
+    terminal_history_buffer->setValue (settings->value (cs_hist_buffer.key, cs_hist_buffer.def).toInt ());
+    terminal_cursorUseForegroundColor->setChecked (settings->value (cs_cursor_use_fgcol.key, cs_cursor_use_fgcol.def).toBool ());
     terminal_focus_command->setChecked (settings->value ("terminal/focus_after_command", false).toBool ());
     terminal_print_dbg_location->setChecked (settings->value ("terminal/print_debug_location", false).toBool ());
 
-    QString cursorType
-      = settings->value ("terminal/cursorType", "ibeam").toString ();
+    QString cursor_type
+      = settings->value (cs_cursor.key, cs_cursor.def).toString ();
 
     QStringList items;
     items << QString ("0") << QString ("1") << QString ("2");
@@ -378,12 +380,14 @@ namespace octave
     terminal_cursorType->setItemText (1, tr ("Block Cursor"));
     terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
 
-    if (cursorType == "ibeam")
-      terminal_cursorType->setCurrentIndex (0);
-    else if (cursorType == "block")
-      terminal_cursorType->setCurrentIndex (1);
-    else if (cursorType == "underline")
-      terminal_cursorType->setCurrentIndex (2);
+    for (unsigned int i = 0; i < cs_cursor_types.size (); i++)
+      {
+        if (cursor_type.toStdString () == cs_cursor_types[i])
+        {
+          terminal_cursorType->setCurrentIndex (i);
+          break;
+        }
+      }
 
     // file browser
     connect (sync_octave_directory, SIGNAL (toggled (bool)),
@@ -850,7 +854,7 @@ namespace octave
     settings->setValue (global_use_native_dialogs.key, cb_use_native_file_dialogs->isChecked ());
 
     // cursor blinking
-    settings->setValue ("cursor_blinking", cb_cursor_blinking->isChecked ());
+    settings->setValue (global_cursor_blinking.key, cb_cursor_blinking->isChecked ());
 
     // promp to exit
     settings->setValue ("prompt_to_exit", cb_prompt_to_exit->isChecked ());
@@ -931,7 +935,7 @@ namespace octave
     settings->setValue ("editor/always_reload_changed_files", editor_reload_changed_files->isChecked ());
     settings->setValue (ed_show_dbg_file.key, editor_show_dbg_file->isChecked ());
 
-    settings->setValue ("terminal/fontSize", terminal_fontSize->value ());
+    settings->setValue (cs_font_size.key, terminal_fontSize->value ());
     settings->setValue (cs_font.key, terminal_fontName->currentFont ().family ());
 
     // file browser
@@ -947,20 +951,20 @@ namespace octave
     settings->setValue ("proxyPort", proxyPort->text ());
     settings->setValue ("proxyUserName", proxyUserName->text ());
     settings->setValue ("proxyPassword", proxyPassword->text ());
-    settings->setValue ("terminal/cursorUseForegroundColor", terminal_cursorUseForegroundColor->isChecked ());
+    settings->setValue (cs_cursor_use_fgcol.key, terminal_cursorUseForegroundColor->isChecked ());
     settings->setValue ("terminal/focus_after_command", terminal_focus_command->isChecked ());
     settings->setValue ("terminal/print_debug_location", terminal_print_dbg_location->isChecked ());
-    settings->setValue ("terminal/history_buffer", terminal_history_buffer->value ());
+    settings->setValue (cs_hist_buffer.key, terminal_history_buffer->value ());
 
     // the cursor
-    QString cursorType;
-    switch (terminal_cursorType->currentIndex ())
-      {
-      case 0: cursorType = "ibeam"; break;
-      case 1: cursorType = "block"; break;
-      case 2: cursorType = "underline";  break;
-      }
-    settings->setValue ("terminal/cursorType", cursorType);
+    QString cursor_type;
+    unsigned int cursor_int = terminal_cursorType->currentIndex ();
+    if ((cursor_int > 0) && (cursor_int < cs_cursor_types.size ()))
+      cursor_type = QString (cs_cursor_types[cursor_int].data ());
+    else
+      cursor_type = cs_cursor.def.toString ();
+
+    settings->setValue (cs_cursor.key, cursor_type);
 
 #if defined (HAVE_QSCINTILLA)
     // editor styles: create lexer, get dialog contents, and write settings
@@ -1115,26 +1119,20 @@ namespace octave
 
   void settings_dialog::read_terminal_colors (QSettings *settings)
   {
-
-    QList<QColor> default_colors = resource_manager::terminal_default_colors ();
-    QStringList class_names = resource_manager::terminal_color_names ();
-    QString class_chars = resource_manager::terminal_color_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (cs_colors_count);
+    QVector<color_picker*> color (cs_colors_count);
 
     int column = 0;
     int row = 0;
-    for (int i = 0; i < nr_of_classes; i++)
+    for (unsigned int i = 0; i < cs_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    " + cs_color_names.at (i));
         description[i]->setAlignment (Qt::AlignRight);
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("terminal/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+        QVariant default_var = cs_colors[i].def;
+        QColor setting_color = settings->value (cs_colors[i].key, cs_colors[i].def).value<QColor> ();
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("terminal_color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (cs_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
@@ -1152,14 +1150,13 @@ namespace octave
 
   void settings_dialog::write_terminal_colors (QSettings *settings)
   {
-    QString class_chars = resource_manager::terminal_color_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < cs_color_names.size (); i++)
       {
-        color = terminal_colors_box->findChild <color_picker *> ("terminal_color_" + class_chars.mid (i, 1));
+        color = terminal_colors_box->findChild <color_picker *> (cs_colors[i].key);
         if (color)
-          settings->setValue ("terminal/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (cs_colors[i].key, color->color ());
       }
 
     settings->sync ();

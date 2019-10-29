@@ -45,10 +45,6 @@ public:
 
   static QTerminal *create (QWidget *xparent = nullptr);
 
-  static QList<QColor> default_colors (void);
-
-  static QStringList color_names (void);
-
   virtual ~QTerminal (void) = default;
 
   virtual void setTerminalFont (const QFont& font) = 0;
@@ -66,9 +62,9 @@ public:
 
   enum CursorType
   {
-    UnderlineCursor,
+    IBeamCursor,
     BlockCursor,
-    IBeamCursor
+    UnderlineCursor
   };
 
   virtual void setCursorType (CursorType type, bool blinking)

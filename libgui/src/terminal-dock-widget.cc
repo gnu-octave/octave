@@ -68,7 +68,8 @@ namespace octave
     QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
     font.setFamily
       (settings->value (cs_font.key, default_font).toString ());
-    font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+    font.setPointSize
+      (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
 
     QFontMetrics metrics(font);
 

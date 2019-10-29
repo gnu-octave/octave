@@ -88,4 +88,7 @@ global_style ("style", QVariant ("default"));
 const gui_pref
 global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));
 
+const gui_pref
+global_cursor_blinking ("cursor_blinking", QVariant (true));
+
 #endif

@@ -22,6 +22,7 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include "gui-preferences-cs.h"
+#include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
 
 #include "QTerminal.h"
@@ -39,38 +40,6 @@ QTerminal::create (QWidget *xparent)
 #else
   return new QUnixTerminalImpl (xparent);
 #endif
-}
-
-QList<QColor>
-QTerminal::default_colors (void)
-{
-  static QList<QColor> colors;
-
-  if (colors.isEmpty ())
-    {
-      colors << QColor(0,0,0)
-             << QColor(255,255,255)
-             << QColor(192,192,192)
-             << QColor(128,128,128);
-    }
-
-  return colors;
-}
-
-QStringList
-QTerminal::color_names (void)
-{
-  static QStringList names;
-
-  if (names.isEmpty ())
-    {
-      names << QObject::tr ("foreground")
-            << QObject::tr ("background")
-            << QObject::tr ("selection")
-            << QObject::tr ("cursor");
-    }
-
-  return names;
 }
 
 // slot for disabling the interrupt action when terminal loses focus
@@ -230,54 +199,55 @@ QTerminal::notice_settings (const QSettings *settings)
   QString default_font = settings->value (global_mono_font.key, global_mono_font.def).toString ();
   term_font.setFamily
     (settings->value (cs_font.key, default_font).toString ());
-  term_font.setPointSize (settings->value ("terminal/fontSize", 10).toInt ());
+  term_font.setPointSize
+    (settings->value (cs_font_size.key, cs_font_size.def).toInt ());
   setTerminalFont (term_font);
 
   QFontMetrics metrics (term_font);
   setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
-  QString cursorType
-    = settings->value ("terminal/cursorType", "ibeam").toString ();
+  QString cursor_type
+    = settings->value (cs_cursor.key, cs_cursor.def).toString ();
 
-  bool cursorBlinking;
-  if (settings->contains ("cursor_blinking"))
-    cursorBlinking = settings->value ("cursor_blinking",true).toBool ();
+  bool cursor_blinking;
+  if (settings->contains (global_cursor_blinking.key))
+    cursor_blinking = settings->value (global_cursor_blinking.key,
+                                       global_cursor_blinking.def).toBool ();
   else
-    cursorBlinking = settings->value ("terminal/cursorBlinking",true).toBool ();
+    cursor_blinking = settings->value (cs_cursor_blinking.key,
+                                       cs_cursor_blinking.def).toBool ();
 
-  if (cursorType == "ibeam")
-    setCursorType (QTerminal::IBeamCursor, cursorBlinking);
-  else if (cursorType == "block")
-    setCursorType (QTerminal::BlockCursor, cursorBlinking);
-  else if (cursorType == "underline")
-    setCursorType (QTerminal::UnderlineCursor, cursorBlinking);
+  for (int ct = IBeamCursor; ct <= UnderlineCursor; ct++)
+    {
+      if (cursor_type.toStdString () == cs_cursor_types[ct])
+        {
+          setCursorType ((CursorType) ct, cursor_blinking);
+          break;
+        }
+    }
 
   bool cursorUseForegroundColor
-    = settings->value ("terminal/cursorUseForegroundColor", true).toBool ();
-
-  QList<QColor> colors = default_colors ();
+    = settings->value (cs_cursor_use_fgcol.key, cs_cursor_use_fgcol.def).toBool ();
 
   setForegroundColor
-    (settings->value ("terminal/color_f",
-                      QVariant (colors.at (0))).value<QColor> ());
+    (settings->value (cs_colors[0].key, cs_colors[0].def).value<QColor> ());
 
   setBackgroundColor
-    (settings->value ("terminal/color_b",
-                      QVariant (colors.at (1))).value<QColor> ());
+    (settings->value (cs_colors[1].key, cs_colors[1].def).value<QColor> ());
 
   setSelectionColor
-    (settings->value ("terminal/color_s",
-                      QVariant (colors.at (2))).value<QColor> ());
+    (settings->value (cs_colors[2].key, cs_colors[2].def).value<QColor> ());
 
-  setCursorColor
-    (cursorUseForegroundColor,
-     settings->value ("terminal/color_c",
-                      QVariant (colors.at (3))).value<QColor> ());
-  setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
+  setCursorColor (cursorUseForegroundColor,
+     settings->value (cs_colors[3].key, cs_colors[3].def).value<QColor> ());
+
+  setScrollBufferSize (settings->value (cs_hist_buffer.key,
+                                        cs_hist_buffer.def).toInt ());
 
   // check whether Copy shortcut is Ctrl-C
   QKeySequence sc;
-  sc = QKeySequence (settings->value ("shortcuts/main_edit:copy").toString ());
+  sc = QKeySequence (settings->value (sc_main_edit_copy.key,
+                                      sc_main_edit_copy.def).toString ());
 
   // if sc is empty, shortcuts are not yet in the settings (take the default)
   if (sc.isEmpty ())         // QKeySequence::Copy as second argument in
@@ -289,6 +259,6 @@ QTerminal::notice_settings (const QSettings *settings)
   has_extra_interrupt (extra_ir_action);
 
   // check whether shortcut Ctrl-D is in use by the main-window
-  bool ctrld = settings->value ("shortcuts/main_ctrld",false).toBool ();
+  bool ctrld = settings->value (sc_main_ctrld.key, sc_main_ctrld.def).toBool ();
   _nop_action->setEnabled (! ctrld);
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2017-2019 Torsten <mttl@mailbox.de>
+Copyright (C) 2017-2019 Torsten Lilge <ttl-octave@mailbox.de>
 
 This file is part of Octave.
 
@@ -29,5 +29,42 @@ along with Octave; see the file COPYING.  If not, see
 
 const gui_pref
 cs_font ("terminal/fontName", QVariant ());
+
+const gui_pref
+cs_font_size ("terminal/fontSize", QVariant (10));
+
+const std::vector<std::string> cs_cursor_types =
+{
+  "ibeam",
+  "block",
+  "underline"
+};
+
+const gui_pref
+cs_cursor ("terminal/cursorType", QVariant ("ibeam"));
+
+const gui_pref
+cs_cursor_blinking ("terminal/cursorBlinking", QVariant (true));
+
+const gui_pref
+cs_cursor_use_fgcol ("terminal/cursorUseForegroundColor", QVariant (true));
+
+const gui_pref
+cs_hist_buffer ("terminal/history_buffer", QVariant (1000));
+
+const unsigned int cs_colors_count = 4;
+const gui_pref cs_colors[cs_colors_count] =
+{
+  {"terminal/color_f", QVariant (QColor(0,0,0))},
+  {"terminal/color_b", QVariant (QColor(255,255,255))},
+  {"terminal/color_s", QVariant (QColor(192,192,192))},
+  {"terminal/color_c", QVariant (QColor(128,128,128))}
+};
+const QStringList
+cs_color_names (QStringList ()
+             << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "foreground")
+             << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "background")
+             << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "selection")
+             << QT_TRANSLATE_NOOP ("QTerminal::QTerminal", "cursor"));
 
 #endif

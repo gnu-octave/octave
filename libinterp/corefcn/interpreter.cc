@@ -202,7 +202,7 @@ requested, and the execution of the @file{finish.m} file is skipped.
           else if (opt == "force")
             force = true;
           else
-            error (msg);
+            error ("%s", msg);
         }
       else
         exit_status = args(0).xnint_value ("quit: STATUS must be an integer");

@@ -210,13 +210,12 @@ requested, and the execution of the @file{finish.m} file is skipped.
 
   if (cancel)
     {
+      // No effect if "quit cancel" appears outside of finish script.
+
       if (interp.executing_finish_script ())
-        {
-          interp.cancel_quit (true);
-          return ovl ();
-        }
-      else
-        error (R"(invalid use of "cancel" option)");
+        interp.cancel_quit (true);
+
+      return ovl ();
     }
 
   interp.quit (exit_status, force);

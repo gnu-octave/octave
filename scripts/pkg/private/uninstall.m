@@ -74,13 +74,14 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
     ## Compute the packages that will remain installed.
     idx = setdiff (1:num_packages, delete_idx);
     remaining_packages = {installed_pkgs_lst{idx}};
+    to_delete_packages = {installed_pkgs_lst{delete_idx}};
 
     ## Check dependencies.
     if (handle_deps)
       error_text = "";
       for i = 1:length (remaining_packages)
         desc = remaining_packages{i};
-        bad_deps = get_unsatisfied_deps (desc, remaining_packages);
+        bad_deps = get_unsatisfied_deps (desc, to_delete_packages, true);
 
         ## Will the uninstallation break any dependencies?
         if (! isempty (bad_deps))

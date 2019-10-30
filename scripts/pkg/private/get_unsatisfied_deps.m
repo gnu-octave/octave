@@ -18,11 +18,12 @@
 ## <https://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst})
+## @deftypefn {} {@var{bad_deps} =} get_unsatisfied_deps (@var{desc}, @var{installed_pkgs_lst}, @var{uninstall_flag})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
+function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst,
+                                          uninstall_flag = false)
 
   bad_deps = {};
 
@@ -37,13 +38,13 @@ function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
       endif
       ## Is the current dependency not Octave?
     else
-      ok = false;
+      ok = xor (false, uninstall_flag);
       for i = 1:length (installed_pkgs_lst)
         cur_name = installed_pkgs_lst{i}.name;
         cur_version = installed_pkgs_lst{i}.version;
         if (strcmp (dep.package, cur_name)
             && compare_versions (cur_version, dep.version, dep.operator))
-          ok = true;
+          ok = xor (true, uninstall_flag);
           break;
         endif
       endfor

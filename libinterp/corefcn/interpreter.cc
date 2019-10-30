@@ -1745,9 +1745,6 @@ namespace octave
       {
         try
           {
-            // Attempt to execute finish.m.  If it throws an
-            // exception, cancel quitting.
-
             bool cancel = false;
 
             if (symbol_exist ("finish.m", "file"))
@@ -1768,11 +1765,16 @@ namespace octave
             if (confirm && ! m_event_manager.confirm_shutdown ())
               return;
           }
-        catch (const execution_exception& ee)
+        catch (const execution_exception&)
           {
-            handle_exception (ee);
+            // Catch execution_exceptions so we don't throw an
+            // exit_exception if there is an in finish.m.  But throw it
+            // again so that will be handled as any other
+            // execution_exception by the evaluator.  This way, errors
+            // will be ignored properly and we won't exit if quit is
+            // called recursively from finish.m.
 
-            return;
+            throw;
           }
       }
 

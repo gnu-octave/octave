@@ -386,11 +386,9 @@ namespace octave
 
   void qt_interpreter_events::get_named_icon_slot (const QString& name)
   {
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     m_result = QVariant::fromValue (resource_manager::icon (name));
-
-    unlock ();
 
     wake_all ();
   }
@@ -557,11 +555,9 @@ namespace octave
   void
   qt_interpreter_events::confirm_shutdown_octave (void)
   {
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     m_result = m_octave_qobj.confirm_shutdown ();
-
-    unlock ();
 
     wake_all ();
   }
@@ -579,8 +575,7 @@ namespace octave
   qt_interpreter_events::gui_preference_slot (const QString& key,
                                               const QString& value)
   {
-    // Wait for worker to suspend
-    lock ();
+    QMutexLocker autolock (&m_mutex);
 
     QSettings *settings = resource_manager::get_settings ();
 
@@ -598,9 +593,6 @@ namespace octave
       }
 
     m_result = read_value;
-
-    // We are done: Unlock and wake the worker thread
-    unlock ();
 
     wake_all ();
   }
@@ -646,6 +638,4 @@ namespace octave
 
     return adjusted_value;
   }
-
-  
 }

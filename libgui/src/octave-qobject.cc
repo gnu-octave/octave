@@ -353,6 +353,10 @@ namespace octave
 
   bool gui_qobject::confirm_shutdown (void)
   {
+    // Currently, we forward to main_window::confirm_shutdown instead of
+    // just displaying a dialog box here because the main_window also
+    // knows about and is responsible for notifying the editor.
+
     return m_main_window ? m_main_window->confirm_shutdown () : true;
   }
 }

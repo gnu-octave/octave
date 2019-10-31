@@ -237,6 +237,11 @@ namespace octave
     emit show_preferences_signal ();
   }
 
+  void qt_interpreter_events::apply_preferences (void)
+  {
+    emit apply_new_settings ();
+  }
+
   void qt_interpreter_events::show_doc (const std::string& file)
   {
     emit show_doc_signal (QString::fromStdString (file));

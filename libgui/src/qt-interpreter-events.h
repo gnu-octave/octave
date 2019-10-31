@@ -109,6 +109,8 @@ namespace octave
 
     void show_preferences (void);
 
+    void apply_preferences (void);
+
     void show_doc (const std::string& file);
 
     bool edit_file (const std::string& file);
@@ -242,6 +244,8 @@ namespace octave
     void get_named_icon_signal (const QString& name);
 
     void settings_changed (const QSettings *);
+
+    void apply_new_settings (void);
 
   private:
 

@@ -132,6 +132,8 @@ namespace octave
 
     virtual void show_preferences (void) { }
 
+    virtual void apply_preferences (void) { }
+
     virtual void show_doc (const std::string& /*file*/) { }
 
     virtual bool edit_file (const std::string& /*file*/) { return false; }
@@ -372,6 +374,17 @@ namespace octave
       if (enabled ())
         {
           instance->show_preferences ();
+          return true;
+        }
+      else
+        return false;
+    }
+
+    bool apply_preferences (void)
+    {
+      if (enabled ())
+        {
+          instance->apply_preferences ();
           return true;
         }
       else

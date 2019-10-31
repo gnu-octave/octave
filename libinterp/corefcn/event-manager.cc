@@ -407,6 +407,17 @@ Undocumented internal function.
   return ovl (evmgr.show_preferences ());
 }
 
+DEFMETHOD (__event_manager_apply_preferences__, interp, , ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {} __event_manager_apply_preferences__ ()
+Undocumented internal function.
+@end deftypefn */)
+{
+  octave::event_manager& evmgr = interp.get_event_manager ();
+
+  return ovl (evmgr.apply_preferences ());
+}
+
 DEFMETHOD (__event_manager_gui_preference__, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} __event_manager_gui_preference__ ()

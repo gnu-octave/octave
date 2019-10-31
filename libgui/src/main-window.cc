@@ -2132,6 +2132,9 @@ namespace octave
     connect (qt_link, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
 
+    connect (qt_link, SIGNAL (apply_new_settings (void)),
+             this, SLOT (request_reload_settings (void)));
+
     connect (qt_link,
              SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),
              m_workspace_model,

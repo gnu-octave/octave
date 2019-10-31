@@ -117,6 +117,9 @@ namespace octave
 
     connect (this, SIGNAL (confirm_shutdown_signal (void)),
              this, SLOT (confirm_shutdown_octave (void)));
+
+    connect (this, SIGNAL (get_named_icon_signal (const QString&)),
+             this, SLOT (get_named_icon_slot (const QString&)));
   }
 
   std::list<std::string>
@@ -327,30 +330,56 @@ namespace octave
     return retval;
   }
 
-  uint8NDArray qt_interpreter_events::get_named_icon (const std::string& icon_name)
+  uint8NDArray qt_interpreter_events::get_named_icon (const std::string& name)
   {
-    uint8NDArray retval;
-    QIcon icon = resource_manager::icon (QString::fromStdString (icon_name));
-    if (! icon.isNull ())
-      {
-        QImage img = icon.pixmap (QSize (32, 32)).toImage ();
+    QMutexLocker autolock (&m_mutex);
 
-        if (img.format () == QImage::Format_ARGB32_Premultiplied)
+    emit get_named_icon_signal (QString::fromStdString (name));
+
+    // Wait for result.
+    wait ();
+
+    uint8NDArray empty_img;
+
+    if (m_get_named_icon_result.isNull ())
+      return empty_img;
+
+    QImage img = m_get_named_icon_result.pixmap (QSize (32, 32)).toImage ();
+
+    if (img.format () != QImage::Format_ARGB32_Premultiplied)
+      return empty_img;
+
+    dim_vector dims (img.height (), img.width (), 4);
+
+    uint8NDArray retval (dims, 0);
+
+    uint8_t *bits = img.bits ();
+
+    for (int i = 0; i < img.height (); i++)
+      {
+        for (int j = 0; j < img.width (); j++)
           {
-            retval.resize (dim_vector (img.height (), img.width (), 4), 0);
-            uint8_t* bits = img.bits ();
-            for (int i = 0; i < img.height (); i++)
-              for (int j = 0; j < img.width (); j++)
-                {
-                  retval(i,j,2) = bits[0];
-                  retval(i,j,1) = bits[1];
-                  retval(i,j,0) = bits[2];
-                  retval(i,j,3) = bits[3];
-                  bits += 4;
-                }
+            retval(i,j,2) = bits[0];
+            retval(i,j,1) = bits[1];
+            retval(i,j,0) = bits[2];
+            retval(i,j,3) = bits[3];
+
+            bits += 4;
           }
       }
+
     return retval;
+  }
+
+  void qt_interpreter_events::get_named_icon_slot (const QString& name)
+  {
+    lock ();
+
+    m_get_named_icon_result = resource_manager::icon (name);
+
+    unlock ();
+
+    wake_all ();
   }
 
   std::string

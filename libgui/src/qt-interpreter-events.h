@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
+#include <QIcon>
 #include <QList>
 #include <QMutex>
 #include <QObject>
@@ -180,6 +181,8 @@ namespace octave
 
     void confirm_shutdown_octave (void);
 
+    void get_named_icon_slot (const QString& name);
+
   signals:
 
     void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
@@ -234,6 +237,8 @@ namespace octave
 
     void confirm_shutdown_signal (void);
 
+    void get_named_icon_signal (const QString& name);
+
   private:
 
     void insert_debugger_pointer (const std::string& file, int line);
@@ -243,6 +248,8 @@ namespace octave
     base_qobject& m_octave_qobj;
 
     bool m_shutdown_confirm_result;
+
+    QIcon m_get_named_icon_result;
 
     QMutex m_mutex;
 

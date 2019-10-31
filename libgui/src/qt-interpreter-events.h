@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <string>
 
-#include <QIcon>
 #include <QList>
 #include <QMutex>
 #include <QObject>
@@ -247,9 +246,7 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
-    bool m_shutdown_confirm_result;
-
-    QIcon m_get_named_icon_result;
+    QVariant m_result;
 
     QMutex m_mutex;
 

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDialog>
 #include <QDir>
+#include <QIcon>
 #include <QMetaType>
 #include <QPushButton>
 #include <QStringList>
@@ -102,9 +103,8 @@ namespace octave
   }
 
   qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
-    : interpreter_events (), m_octave_qobj (oct_qobj),
-      m_shutdown_confirm_result (false), m_mutex (),
-      m_waitcondition (), m_uiwidget_creator ()
+    : interpreter_events (), m_octave_qobj (oct_qobj), m_result (),
+      m_mutex (), m_waitcondition (), m_uiwidget_creator ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
     qRegisterMetaType<QFloatList> ("QFloatList");
@@ -258,7 +258,7 @@ namespace octave
     // Wait for result.
     wait ();
 
-    return m_shutdown_confirm_result;
+    return m_result.toBool ();
   }
 
   bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
@@ -341,10 +341,12 @@ namespace octave
 
     uint8NDArray empty_img;
 
-    if (m_get_named_icon_result.isNull ())
+    QIcon icon = m_result.value<QIcon> ();
+
+    if (icon.isNull ())
       return empty_img;
 
-    QImage img = m_get_named_icon_result.pixmap (QSize (32, 32)).toImage ();
+    QImage img = icon.pixmap (QSize (32, 32)).toImage ();
 
     if (img.format () != QImage::Format_ARGB32_Premultiplied)
       return empty_img;
@@ -375,7 +377,7 @@ namespace octave
   {
     lock ();
 
-    m_get_named_icon_result = resource_manager::icon (name);
+    m_result = QVariant::fromValue (resource_manager::icon (name));
 
     unlock ();
 
@@ -544,7 +546,7 @@ namespace octave
   {
     lock ();
 
-    m_shutdown_confirm_result = m_octave_qobj.confirm_shutdown ();
+    m_result = m_octave_qobj.confirm_shutdown ();
 
     unlock ();
 

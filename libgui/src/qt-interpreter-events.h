@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QMutex>
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QWaitCondition>
 
@@ -182,6 +183,8 @@ namespace octave
 
     void get_named_icon_slot (const QString& name);
 
+    void gui_preference_slot (const QString& key, const QString& value);
+
   signals:
 
     void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
@@ -222,7 +225,7 @@ namespace octave
 
     void show_preferences_signal (void);
 
-    void gui_preference_signal (const QString&, const QString&, QString*);
+    void gui_preference_signal (const QString& key, const QString& value);
 
     void show_doc_signal (const QString& file);
 
@@ -238,7 +241,11 @@ namespace octave
 
     void get_named_icon_signal (const QString& name);
 
+    void settings_changed (const QSettings *);
+
   private:
+
+    QString gui_preference_adjust (const QString& key, const QString& value);
 
     void insert_debugger_pointer (const std::string& file, int line);
 

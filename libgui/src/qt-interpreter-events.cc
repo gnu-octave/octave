@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 
 #include "dialog.h"
+#include "gui-preferences-ed.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
@@ -120,6 +121,11 @@ namespace octave
 
     connect (this, SIGNAL (get_named_icon_signal (const QString&)),
              this, SLOT (get_named_icon_slot (const QString&)));
+
+    connect (this,
+             SIGNAL (gui_preference_signal (const QString&, const QString&)),
+             this,
+             SLOT (gui_preference_slot (const QString&, const QString&)));
   }
 
   std::list<std::string>
@@ -394,12 +400,14 @@ namespace octave
 
     // Emit the signal for changing or getting a preference
     emit gui_preference_signal (QString::fromStdString (key),
-                                QString::fromStdString (value), &pref_value);
+                                QString::fromStdString (value));
 
     // Wait for response (pref_value).
     wait ();
 
-    return pref_value.toStdString ();
+    QString pref = m_result.toString ();
+
+    return pref.toStdString ();
   }
 
   bool qt_interpreter_events::copy_image_to_clipboard (const std::string& file)
@@ -552,4 +560,87 @@ namespace octave
 
     wake_all ();
   }
+
+  // If VALUE is empty, return current value of preference named by KEY.
+  //
+  // If VALUE is not empty, set preference named by KEY to VALUE return
+  // previous value.
+  //
+  // FIXME: should we have separate get and set functions?  With only
+  // one, we don't allow a preference value to be set to the empty
+  // string.
+
+  void
+  qt_interpreter_events::gui_preference_slot (const QString& key,
+                                              const QString& value)
+  {
+    // Wait for worker to suspend
+    lock ();
+
+    QSettings *settings = resource_manager::get_settings ();
+
+    QString read_value = settings->value (key).toString ();
+
+    // Some preferences need extra handling
+    QString adjusted_value = gui_preference_adjust (key, value);
+
+    if (! adjusted_value.isEmpty () && (read_value != adjusted_value))
+      {
+        // Change settings only for new, non-empty values
+        settings->setValue (key, QVariant (adjusted_value));
+
+        emit settings_changed (settings);
+      }
+
+    m_result = read_value;
+
+    // We are done: Unlock and wake the worker thread
+    unlock ();
+
+    wake_all ();
+  }
+
+  QString
+  qt_interpreter_events::gui_preference_adjust (const QString& key,
+                                                const QString& value)
+  {
+    // Immediately return if no new value is given.
+
+    if (value.isEmpty ())
+      return value;
+
+    QString adjusted_value = value;
+
+    // Not all encodings are available. Encodings are uppercase and do
+    // not use CPxxx but IBMxxx or WINDOWS-xxx.
+
+    if (key == ed_default_enc.key)
+      {
+        adjusted_value = adjusted_value.toUpper ();
+
+        QStringList codecs;
+        resource_manager::get_codecs (&codecs);
+
+        QRegExp re ("^CP(\\d+)$");
+
+        if (adjusted_value == "SYSTEM")
+          adjusted_value =
+            QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
+        else if (re.indexIn (adjusted_value) > -1)
+          {
+            if (codecs.contains ("IBM" + re.cap (1)))
+              adjusted_value = "IBM" + re.cap (1);
+            else if (codecs.contains ("WINDOWS-" + re.cap (1)))
+              adjusted_value = "WINDOWS-" + re.cap (1);
+            else
+              adjusted_value.clear ();
+          }
+        else if (! codecs.contains (adjusted_value))
+          adjusted_value.clear ();
+      }
+
+    return adjusted_value;
+  }
+
+  
 }

@@ -2129,6 +2129,9 @@ namespace octave
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
+    connect (qt_link, SIGNAL (settings_changed (const QSettings *)),
+             this, SLOT (notice_settings (const QSettings *)));
+
     connect (qt_link,
              SIGNAL (set_workspace_signal (bool, bool, const symbol_info_list&)),
              m_workspace_model,
@@ -2171,12 +2174,6 @@ namespace octave
     connect (qt_link,
              SIGNAL (show_preferences_signal (void)),
              this, SLOT (process_settings_dialog_request (void)));
-
-    connect (qt_link,
-             SIGNAL (gui_preference_signal (const QString&, const QString&,
-                                            QString*)),
-             this, SLOT (gui_preference (const QString&, const QString&,
-                                         QString*)));
 
     connect (qt_link,
              SIGNAL (edit_file_signal (const QString&)),
@@ -2695,72 +2692,6 @@ namespace octave
 
     connect (m_undo_action, SIGNAL (triggered (void)),
              this, SLOT (handle_undo_request (void)));
-  }
-
-  QString main_window::gui_preference_adjust (const QString& key,
-                                              const QString& value)
-  {
-    QString adjusted_value = value;
-
-    // Immediately return if no new value is given
-    if (adjusted_value.isEmpty ())
-      return adjusted_value;
-
-    // Not all encodings are available. Encodings are uppercase and do not
-    // use CPxxx but IBMxxx or WINDOWS-xxx.
-    if (key == ed_default_enc.key)
-      {
-        adjusted_value = adjusted_value.toUpper ();
-
-        QStringList codecs;
-        resource_manager::get_codecs (&codecs);
-
-        QRegExp re ("^CP(\\d+)$");
-        if (adjusted_value == "SYSTEM")
-          adjusted_value =
-            QTextCodec::codecForLocale ()->name ().toUpper ().prepend ("SYSTEM (").append (")");
-        else if (re.indexIn (adjusted_value) > -1)
-          {
-            if (codecs.contains ("IBM" + re.cap (1)))
-              adjusted_value = "IBM" + re.cap (1);
-            else if (codecs.contains ("WINDOWS-" + re.cap (1)))
-              adjusted_value = "WINDOWS-" + re.cap (1);
-            else
-              adjusted_value.clear ();
-          }
-        else if (! codecs.contains (adjusted_value))
-          adjusted_value.clear ();
-      }
-
-    return adjusted_value;
-  }
-
-  void main_window::gui_preference (const QString& key, const QString& value,
-                                    QString* read_value)
-  {
-    QSettings *settings = resource_manager::get_settings ();
-    *read_value = settings->value (key).toString ();
-
-    interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
-
-    qt_interpreter_events *qt_link = interp_qobj->qt_link ();
-
-    // Wait for worker to suspend
-    qt_link->lock ();
-
-    // Some preferences need extra handling
-    QString adjusted_value = gui_preference_adjust (key, value);
-
-    if (! adjusted_value.isEmpty () && (*read_value != adjusted_value))
-      {
-        // Change settings only for new, non-empty values
-        settings->setValue (key, QVariant (adjusted_value));
-        emit settings_changed (settings);
-      }
-
-    // We are done: Unlock and wake the worker thread
-    qt_link->unlock ();
-    qt_link->wake_all ();
   }
 
   void main_window::focus_console_after_command (void)

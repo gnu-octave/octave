@@ -198,8 +198,6 @@ namespace octave
     void pasteClipboard (void);
     void selectAll (void);
 
-    void gui_preference (const QString& key, const QString& value,
-                         QString* read_value);
     void focus_console_after_command (void);
     void handle_show_doc (const QString& file);
     void handle_register_doc (const QString& file);
@@ -282,8 +280,6 @@ namespace octave
     void construct_news_menu (QMenuBar *p);
 
     void construct_tool_bar (void);
-
-    QString gui_preference_adjust (const QString& key, const QString& value);
 
     void configure_shortcuts (void);
 

@@ -1,6 +1,7 @@
 #include <octave/oct.h>
+#include <octave/interpreter.h>
 
-DEFUN_DLD (globaldemo, args, , "Global Demo")
+DEFMETHOD_DLD (globaldemo, interp, args, , "Global Demo")
 {
   if (args.length () != 1)
     print_usage ();
@@ -9,14 +10,16 @@ DEFUN_DLD (globaldemo, args, , "Global Demo")
 
   std::string s = args(0).string_value ();
 
-  octave_value tmp = get_global_value (s, true);
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+
+  octave_value tmp = symtab.global_varval (s);
 
   if (tmp.is_defined ())
     retval = tmp;
   else
     retval = "Global variable not found";
 
-  set_global_value ("a", 42.0);
+  symtab.global_assign ("a", 42.0);
 
   return retval;
 }

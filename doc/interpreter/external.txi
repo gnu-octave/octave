@@ -876,11 +876,11 @@ The conversion to an @code{octave_value} is handled by the sparse
 
 Global variables allow variables in the global scope to be accessed.  Global
 variables can be accessed within oct-files by using the support functions
-@w{@code{get_global_value}} and @w{@code{set_global_value}}.
-@w{@code{get_global_value}} takes two arguments, the first is a string
-representing the variable name to obtain.  The second argument is a boolean
-argument specifying what to do if no global variable of the desired name is
-found.  An example of the use of these two functions is
+@w{@code{global_varval}} and @w{@code{global_assign}} from the current
+interpreter's symbol table.  Both functions take as first argument a string
+representing the variable name to be obtained or assigned.  The second
+argument of @w{@code{global_assign}} is the value to be assigned.  An
+example of the use of these two functions is
 
 @example
 @EXAMPLEFILE(globaldemo.cc)

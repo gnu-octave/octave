@@ -106,10 +106,12 @@ namespace octave
     QMutexLocker autolock (&m_mutex);
 
     // Store button text before a window-manager adds accelerators.
+
     m_button_list = buttons;
 
-    // Use the last button in the list as the reject result, i.e., when no
-    // button is pressed such as in the case of the upper right close tab.
+    // Use the last button in the list as the reject result, i.e., when
+    // no button is pressed such as in the case of the upper right close
+    // tab.
     if (! buttons.isEmpty ())
       m_dialog_button = buttons.last ();
 
@@ -149,8 +151,8 @@ namespace octave
     return QPair<QIntList, int> (m_list_index, m_dialog_result);
   };
 
-  // Create a message dialog with specified string, buttons and decorative
-  // text.
+  // Create a message dialog with specified string, buttons and
+  // decorative text.
 
   QStringList QUIWidgetCreator::input_dialog (const QStringList& prompt,
                                               const QString& title,
@@ -202,8 +204,8 @@ namespace octave
                                                const QString& defbutton,
                                                const QStringList& role)
   {
-    MessageDialog *message_dialog = new MessageDialog (message, title, icon,
-                                                       button, defbutton, role);
+    MessageDialog *message_dialog
+      = new MessageDialog (message, title, icon, button, defbutton, role);
 
     connect (message_dialog, SIGNAL (buttonClicked (QAbstractButton *)),
              this, SLOT (dialog_button_clicked (QAbstractButton *)));
@@ -214,16 +216,21 @@ namespace octave
 
   void QUIWidgetCreator::dialog_button_clicked (QAbstractButton *button)
   {
-    if (button)   // button is NULL when dialog is closed
+    // button is NULL when dialog is closed.
+    if (button)
       {
-        // Check for a matching button text while ignoring accelerators because
-        // the window manager may have added one in the passed button
+        // Check for a matching button text while ignoring accelerators
+        // because the window manager may have added one in the passed
+        // button.
+
         QString text_clean = rm_amp (button->text ());
+
         for (int i = 0; i < m_button_list.count (); i++)
           {
             if (rm_amp (m_button_list.at (i)) == text_clean)
               {
-                m_dialog_button = m_button_list.at (i); // text w/o extra accelerator
+                // Text w/o extra accelerator.
+                m_dialog_button = m_button_list.at (i);
                 break;
               }
           }
@@ -248,9 +255,9 @@ namespace octave
                                                  const QString& ok_string,
                                                  const QString& cancel_string)
   {
-    ListDialog *list_dialog = new ListDialog (list, mode, wd, ht,
-                                              initial, name, prompt,
-                                              ok_string, cancel_string);
+    ListDialog *list_dialog
+      = new ListDialog (list, mode, wd, ht, initial, name, prompt,
+                        ok_string, cancel_string);
 
     connect (list_dialog, SIGNAL (finish_selection (const QIntList&, int)),
              this, SLOT (list_select_finished (const QIntList&, int)));
@@ -263,6 +270,7 @@ namespace octave
                                                int button_pressed)
   {
     // Store the value so that builtin functions can retrieve.
+
     m_list_index = selected;
     m_dialog_result = button_pressed;
 
@@ -270,16 +278,17 @@ namespace octave
     wake_all ();
   }
 
-  // Create an input dialog with specified prompts and defaults, title and
-  // row/column size specifications.
+  // Create an input dialog with specified prompts and defaults, title
+  // and row/column size specifications.
+
   void QUIWidgetCreator::handle_create_inputlayout (const QStringList& prompt,
                                                     const QString& title,
                                                     const QFloatList& nr,
                                                     const QFloatList& nc,
                                                     const QStringList& defaults)
   {
-    InputDialog *input_dialog = new InputDialog (prompt, title, nr, nc,
-                                                 defaults);
+    InputDialog *input_dialog
+      = new InputDialog (prompt, title, nr, nc, defaults);
 
     connect (input_dialog, SIGNAL (finish_input (const QStringList&, int)),
              this, SLOT (input_finished (const QStringList&, int)));
@@ -292,6 +301,7 @@ namespace octave
                                          int button_pressed)
   {
     // Store the value so that builtin functions can retrieve.
+
     m_string_list = input;
     m_dialog_result = button_pressed;
 
@@ -305,8 +315,8 @@ namespace octave
                                                    const QString& dirname,
                                                    const QString& multimode)
   {
-    FileDialog *file_dialog = new FileDialog (filters, title, filename,
-                                              dirname, multimode);
+    FileDialog *file_dialog
+      = new FileDialog (filters, title, filename, dirname, multimode);
 
     connect (file_dialog, SIGNAL (finish_input (const QStringList&,
                                                 const QString&, int)),
@@ -322,6 +332,7 @@ namespace octave
                                               int filterindex)
   {
     // Store the value so that builtin functions can retrieve.
+
     m_string_list = files;
     m_dialog_result = filterindex;
     m_path_name = path;
@@ -344,7 +355,9 @@ namespace octave
 
     // Interpret the icon string, because enumeration QMessageBox::Icon can't
     // easily be made to pass through a signal.
+
     QMessageBox::Icon eicon = QMessageBox::NoIcon;
+
     if (qsicon == "error")
       eicon = QMessageBox::Critical;
     else if (qsicon == "warn")
@@ -353,9 +366,11 @@ namespace octave
       eicon = QMessageBox::Information;
     else if (qsicon == "quest")
       eicon = QMessageBox::Question;
+
     setIcon (eicon);
 
     int N = (qsbutton.size () < role.size () ? qsbutton.size () : role.size ());
+
     if (N == 0)
       addButton (QMessageBox::Ok);
     else
@@ -363,7 +378,9 @@ namespace octave
         for (int i = 0; i < N; i++)
           {
             // Interpret the button role string, because enumeration
-            // QMessageBox::ButtonRole can't be made to pass through a signal.
+            // QMessageBox::ButtonRole can't be made to pass through a
+            // signal.
+
             QString srole = role.at (i);
             QMessageBox::ButtonRole erole = QMessageBox::InvalidRole;
             if (srole == "ResetRole")
@@ -380,6 +397,7 @@ namespace octave
             QPushButton *pbutton = addButton (qsbutton.at (i), erole);
             if (qsbutton.at (i) == defbutton)
               setDefaultButton (pbutton);
+
             // Make the last button the button pressed when <esc> key activated.
             if (i == N-1)
               {
@@ -502,6 +520,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QModelIndexList selected_index = selector->selectedIndexes ();
     QIntList selected_int;
 
@@ -517,6 +536,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QIntList empty;
 
     emit finish_selection (empty, 0);
@@ -605,6 +625,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QStringList string_result;
     for (int i = 0; i < input_line.size (); i++)
       string_result << input_line.at (i)->text ();
@@ -616,6 +637,7 @@ namespace octave
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
+
     QStringList empty;
     emit finish_input (empty, 0);
     done (QDialog::Rejected);
@@ -701,17 +723,17 @@ namespace octave
     for (int i = 0; i < string_result.size (); i++)
       string_result[i] = QFileInfo (string_result[i]).fileName ();
 
-    // if not showing only dirs, add end slash for the path component
+    // If not showing only dirs, add end slash for the path component.
     if (testOption (QFileDialog::ShowDirsOnly)  == false)
       path += '/';
 
-    // convert to native slashes
+    // Convert to native slashes.
     path = QDir::toNativeSeparators (path);
 
     QStringList name_filters = nameFilters ();
     idx = name_filters.indexOf (selectedNameFilter ()) + 1;
 
-    // send the selected info
+    // Send the selected info.
     emit finish_input (string_result, path, idx);
   }
 }

@@ -506,6 +506,8 @@ namespace octave
 
     std::list<std::string> global_variable_names (void) const;
 
+    std::list<std::string> top_level_variable_names (void) const;
+
     std::list<std::string> variable_names (void) const;
 
     octave_user_code * get_user_code (const std::string& fname = "",

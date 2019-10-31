@@ -1693,6 +1693,11 @@ namespace octave
     return m_evaluator.global_variable_names ();
   }
 
+  std::list<std::string> interpreter::top_level_variable_names (void)
+  {
+    return m_evaluator.top_level_variable_names ();
+  }
+
   std::list<std::string> interpreter::variable_names (void)
   {
     return m_evaluator.variable_names ();

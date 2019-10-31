@@ -421,9 +421,11 @@ namespace octave
 
     void clear_symbol_regexp (const std::string& pat);
 
-    std::list<std::string> global_variable_names (void);
-
     std::list<std::string> variable_names (void);
+
+    std::list<std::string> top_level_variable_names (void);
+
+    std::list<std::string> global_variable_names (void);
 
     std::list<std::string> user_function_names (void);
 

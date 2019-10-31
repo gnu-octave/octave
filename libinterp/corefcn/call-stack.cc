@@ -735,11 +735,6 @@ namespace octave
     return m_cs[m_curr_frame]->regexp (pattern);
   }
 
-  std::list<std::string> call_stack::variable_names (void) const
-  {
-    return m_cs[m_curr_frame]->variable_names ();
-  }
-
   std::list<std::string> call_stack::global_variable_names (void) const
   {
     std::list<std::string> retval;
@@ -753,6 +748,16 @@ namespace octave
     retval.sort ();
 
     return retval;
+  }
+
+  std::list<std::string> call_stack::top_level_variable_names (void) const
+  {
+    return m_cs[0]->variable_names ();
+  }
+
+  std::list<std::string> call_stack::variable_names (void) const
+  {
+    return m_cs[m_curr_frame]->variable_names ();
   }
 
   void call_stack::clear_global_variable (const std::string& name)

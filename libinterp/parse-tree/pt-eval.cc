@@ -1873,6 +1873,11 @@ namespace octave
     return m_call_stack.global_variable_names ();
   }
 
+  std::list<std::string> tree_evaluator::top_level_variable_names (void) const
+  {
+    return m_call_stack.top_level_variable_names ();
+  }
+
   std::list<std::string> tree_evaluator::variable_names (void) const
   {
     return m_call_stack.variable_names ();

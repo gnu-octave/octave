@@ -261,9 +261,11 @@ namespace octave
 
     std::list<symbol_record> regexp (const std::string& pattern) const;
 
-    std::list<std::string> variable_names (void) const;
-
     std::list<std::string> global_variable_names (void) const;
+
+    std::list<std::string> top_level_variable_names (void) const;
+
+    std::list<std::string> variable_names (void) const;
 
     void clear_global_variable (const std::string& name);
 

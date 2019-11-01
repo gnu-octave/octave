@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QAction>
 #include <QApplication>
 #include <QCompleter>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>

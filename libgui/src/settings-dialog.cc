@@ -93,7 +93,7 @@ namespace octave
   {
     setupUi (this);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       {
@@ -527,7 +527,7 @@ namespace octave
   {
     if (tab.isEmpty ())
       {
-        QSettings *settings = resource_manager::get_settings ();
+        gui_settings *settings = resource_manager::get_settings ();
         if (settings)
           tabWidget->setCurrentIndex (settings->value ("settings/last_tab", 0).toInt ());
       }
@@ -617,7 +617,7 @@ namespace octave
   }
 
   void settings_dialog::read_lexer_settings (QsciLexer *lexer,
-                                             QSettings *settings)
+                                             gui_settings *settings)
   {
 #if defined (HAVE_QSCINTILLA)
 
@@ -719,7 +719,7 @@ namespace octave
   }
 
   void settings_dialog::write_lexer_settings (QsciLexer *lexer,
-                                              QSettings *settings)
+                                              gui_settings *settings)
   {
 #if defined (HAVE_QSCINTILLA)
 
@@ -815,7 +815,7 @@ namespace octave
 
   void settings_dialog::write_changed_settings (bool closing)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     // the icon set
     QString widget_icon_set = "NONE";
@@ -1039,7 +1039,7 @@ namespace octave
     settings->sync ();
   }
 
-  void settings_dialog::read_workspace_colors (QSettings *settings)
+  void settings_dialog::read_workspace_colors (gui_settings *settings)
   {
     // Construct the grid with all color related settings
     QList<QColor> default_colors =
@@ -1100,7 +1100,7 @@ namespace octave
     workspace_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_workspace_colors (QSettings *settings)
+  void settings_dialog::write_workspace_colors (gui_settings *settings)
   {
     settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
     settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
@@ -1117,7 +1117,7 @@ namespace octave
     settings->sync ();
   }
 
-  void settings_dialog::read_terminal_colors (QSettings *settings)
+  void settings_dialog::read_terminal_colors (gui_settings *settings)
   {
     QGridLayout *style_grid = new QGridLayout ();
     QVector<QLabel*> description (cs_colors_count);
@@ -1148,7 +1148,7 @@ namespace octave
     terminal_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_terminal_colors (QSettings *settings)
+  void settings_dialog::write_terminal_colors (gui_settings *settings)
   {
     color_picker *color;
 
@@ -1162,7 +1162,7 @@ namespace octave
     settings->sync ();
   }
 
-  void settings_dialog::read_varedit_colors (QSettings *settings)
+  void settings_dialog::read_varedit_colors (gui_settings *settings)
   {
     QList<QColor> default_colors = variable_editor::default_colors ();
     QStringList class_names = variable_editor::color_names ();
@@ -1198,7 +1198,7 @@ namespace octave
     varedit_colors_box->setLayout (style_grid);
   }
 
-  void settings_dialog::write_varedit_colors (QSettings *settings)
+  void settings_dialog::write_varedit_colors (gui_settings *settings)
   {
     QString class_chars = resource_manager::varedit_color_chars ();
     color_picker *color;

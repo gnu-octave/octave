@@ -30,13 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSettings>
 #include <QStyle>
 #include <QToolBar>
 #include <QMenuBar>
 
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
+#include "gui-settings.h"
 #include "octave-dock-widget.h"
 #include "resource-manager.h"
 
@@ -190,8 +190,8 @@ namespace octave
     connect (this, SIGNAL (visibilityChanged (bool)),
              this, SLOT (handle_visibility_changed (bool)));
 
-    connect (p, SIGNAL (settings_changed (const QSettings*)),
-             this, SLOT (handle_settings (const QSettings*)));
+    connect (p, SIGNAL (settings_changed (const gui_settings *)),
+             this, SLOT (handle_settings (const gui_settings *)));
 
     connect (p, SIGNAL (active_dock_changed (octave_dock_widget*,
                                              octave_dock_widget*)),
@@ -325,7 +325,7 @@ namespace octave
     bool vis = isVisible ();
 
     // Since floating widget has no parent, we have to read it
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     settings->setValue (mw_state.key, m_parent->saveState ());
     // Stay window, otherwise will bounce back to window by default because
@@ -417,7 +417,7 @@ namespace octave
   }
 
   void
-  octave_dock_widget::handle_settings (const QSettings *settings)
+  octave_dock_widget::handle_settings (const gui_settings *settings)
   {
     m_custom_style
       = settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
@@ -516,7 +516,7 @@ namespace octave
   {
     // save state of this dock-widget
     QString name = objectName ();
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       return;

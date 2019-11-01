@@ -397,7 +397,7 @@ namespace octave
       case SCLEX_MATLAB:
 #endif
         {
-          QSettings *settings = resource_manager::get_settings ();
+          gui_settings *settings = resource_manager::get_settings ();
           int comment_string;
 
           if (comment)
@@ -862,7 +862,7 @@ namespace octave
     tmp_file->close ();
 
     // Disable opening a file at a breakpoint in case keyboard () is used
-    QSettings* settings = resource_manager::get_settings ();
+    gui_settings* settings = resource_manager::get_settings ();
     bool show_dbg_file = settings->value (ed_show_dbg_file.key,
                                        ed_show_dbg_file.def).toBool ();
     settings->setValue (ed_show_dbg_file.key, false);
@@ -903,7 +903,7 @@ namespace octave
                                                  QTemporaryFile* tmp_hist,
                                                  QTemporaryFile* tmp_script)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
     resource_manager::remove_tmp_file (tmp_file);
     resource_manager::remove_tmp_file (tmp_hist);

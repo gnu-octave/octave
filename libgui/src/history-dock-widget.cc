@@ -89,7 +89,7 @@ namespace octave
 
   void history_dock_widget::save_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       return;
@@ -315,7 +315,7 @@ namespace octave
     widget ()->setLayout (hist_layout);
 
     // Init state of the filter
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     m_filter_shown
       = settings->value ("history_dock_widget/filter_shown",true).toBool ();
@@ -344,7 +344,7 @@ namespace octave
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }
 
-  void history_dock_widget::notice_settings (const QSettings *settings)
+  void history_dock_widget::notice_settings (const gui_settings *settings)
   {
     QFont font = QFont ();
 

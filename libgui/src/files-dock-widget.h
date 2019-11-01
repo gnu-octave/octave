@@ -128,7 +128,7 @@ namespace octave
 
     //! Tells the widget to react on changed settings.
 
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     void save_settings (void);
 

@@ -26,11 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_variable_editor_h 1
 
 #include <QHeaderView>
-#include <QSettings>
 #include <QStackedWidget>
 #include <QTableView>
 
 #include "dw-main-window.h"
+#include "gui-settings.h"
 #include "octave-dock-widget.h"
 #include "tab-bar.h"
 
@@ -326,7 +326,7 @@ namespace octave
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
 
-    void notice_settings (const QSettings *);
+    void notice_settings (const gui_settings *);
 
     void edit_variable (const QString& name, const octave_value& val);
 

@@ -41,7 +41,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QStyleFactory>
@@ -58,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
+#include "gui-settings.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
 #include "news-reader.h"
@@ -175,7 +175,7 @@ namespace octave
 
     m_default_style = qapp->style ()->objectName ();
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     bool connect_to_web = true;
     QDateTime last_checked;
@@ -257,7 +257,7 @@ namespace octave
   {
     bool closenow = true;
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings->value ("prompt_to_exit", false).toBool ())
       {
@@ -345,7 +345,7 @@ namespace octave
 
   void main_window::request_reload_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings)
       emit settings_changed (settings);
@@ -659,7 +659,7 @@ namespace octave
 
   void main_window::load_and_display_community_news (int serial)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     bool connect_to_web
       = (settings
@@ -798,9 +798,10 @@ namespace octave
                         QString::fromStdString (message));
   }
 
-  void main_window::notice_settings (const QSettings *settings)
+  void main_window::notice_settings (const gui_settings *settings)
   {
-    // QSettings pointer is checked before emitting.
+    if (! settings)
+      return;
 
     // Get desired style from preferences or take the default one if
     // the desired one is not found
@@ -929,7 +930,7 @@ namespace octave
   {
     // Find files dialog is constructed dynamically, not at time of main_window
     // construction.  Connecting it to qApp aboutToQuit signal would have
-    // caused it to run after QSettings deleted.
+    // caused it to run after gui_settings is deleted.
     if (m_find_files_dlg)
       m_find_files_dlg->save_settings ();
 
@@ -1221,7 +1222,7 @@ namespace octave
     // Open file isn't a file_editor_tab or editor function since the file
     // might be opened in an external editor. Hence, functionality is here.
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     bool is_internal = m_editor_window
                        && ! settings->value ("useCustomFileEditor",false).toBool ();
 
@@ -1264,7 +1265,7 @@ namespace octave
     // editor window or the main window. The latter is chosen, if a custom
     // editor is used or qscintilla is not available
     QWidget *p = m_editor_window;
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (! p || settings->value ("useCustomFileEditor",false).toBool ())
       p = this;
     QString new_name = QInputDialog::getText (p, tr ("New Function"),
@@ -1423,11 +1424,11 @@ namespace octave
 
   void main_window::read_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       {
-        qDebug ("Error: QSettings pointer from resource manager is NULL.");
+        qDebug ("Error: gui_settings pointer from resource manager is NULL.");
         return;
       }
 
@@ -1448,7 +1449,7 @@ namespace octave
     emit init_terminal_size_signal ();
   }
 
-  void main_window::set_window_layout (QSettings *settings)
+  void main_window::set_window_layout (gui_settings *settings)
   {
     // Restore main window state and geometry from settings file or, in case
     // of an error from the default layout
@@ -1523,10 +1524,10 @@ namespace octave
 
   void main_window::write_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (! settings)
       {
-        qDebug ("Error: QSettings pointer from resource manager is NULL.");
+        qDebug ("Error: gui_settings pointer from resource manager is NULL.");
         return;
       }
 
@@ -1618,7 +1619,7 @@ namespace octave
   void main_window::handle_octave_ready (void)
   {
     // actions after the startup files are executed
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
@@ -1833,7 +1834,7 @@ namespace octave
   void main_window::restore_create_file_setting (void)
   {
     // restore the new files creation setting
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     settings->setValue ("editor/create_new_file",false);
     disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                 this, SLOT (restore_create_file_setting (void)));
@@ -1966,7 +1967,7 @@ namespace octave
 
     construct_tool_bar ();
 
-    // Order is important.  Deleting QSettings must be last.
+    // Order is important.  Deleting gui_settings must be last.
     connect (qApp, SIGNAL (aboutToQuit (void)),
              m_command_window, SLOT (save_settings (void)));
 
@@ -1994,15 +1995,15 @@ namespace octave
     connect (qApp, SIGNAL (aboutToQuit (void)),
              shortcut_manager::instance, SLOT (cleanup_instance (void)));
 
-    // QSettings are saved upon deletion (i.e., cleanup_instance)
+    // gui_settings are saved upon deletion (i.e., cleanup_instance)
     connect (qApp, SIGNAL (aboutToQuit (void)),
              resource_manager::instance, SLOT (cleanup_instance (void)));
 
     connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
              this, SLOT (focus_changed (QWidget*, QWidget*)));
 
-    connect (this, SIGNAL (settings_changed (const QSettings *)),
-             this, SLOT (notice_settings (const QSettings *)));
+    connect (this, SIGNAL (settings_changed (const gui_settings *)),
+             this, SLOT (notice_settings (const gui_settings *)));
 
     connect (this, SIGNAL (editor_focus_changed (bool)),
              this, SLOT (disable_menu_shortcuts (bool)));
@@ -2129,8 +2130,8 @@ namespace octave
 
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
-    connect (qt_link, SIGNAL (settings_changed (const QSettings *)),
-             this, SLOT (notice_settings (const QSettings *)));
+    connect (qt_link, SIGNAL (settings_changed (const gui_settings *)),
+             this, SLOT (notice_settings (const gui_settings *)));
 
     connect (qt_link, SIGNAL (apply_new_settings (void)),
              this, SLOT (request_reload_settings (void)));
@@ -2699,7 +2700,7 @@ namespace octave
 
   void main_window::focus_console_after_command (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (settings->value ("terminal/focus_after_command",false).toBool ())
       focus_command_window ();
   }

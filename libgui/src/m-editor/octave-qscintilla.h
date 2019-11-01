@@ -29,9 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
-#include <QSettings>
 #include <Qsci/qsciscintilla.h>
 
+#include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 namespace octave

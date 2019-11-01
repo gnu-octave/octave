@@ -39,7 +39,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
   protected slots:
 

@@ -60,7 +60,7 @@ namespace octave
     connect (m_timer, SIGNAL (timeout (void)),
              this, SLOT (look_for_files (void)));
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QLabel *file_name_label = new QLabel (tr ("Named:"));
     m_file_name_edit = new QLineEdit;
@@ -210,7 +210,7 @@ namespace octave
 
   void find_files_dialog::save_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       return;

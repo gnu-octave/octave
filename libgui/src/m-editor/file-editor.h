@@ -117,12 +117,12 @@ namespace octave
 
     void check_actions (void);
     void empty_script (bool startup, bool visible);
-    void restore_session (QSettings *settings);
+    void restore_session (gui_settings *settings);
 
   signals:
 
     void fetab_toplevel_changed (bool);
-    void fetab_settings_changed (const QSettings *settings);
+    void fetab_settings_changed (const gui_settings *settings);
     void fetab_change_request (const QWidget *ID);
     void fetab_file_name_query (const QWidget *ID);
     // Save is a ping-pong type of communication
@@ -272,7 +272,7 @@ namespace octave
     void handle_file_renamed (bool load_new = true);
 
     // Tells the editor to react on changed settings.
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     void set_shortcuts (void);
 

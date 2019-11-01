@@ -24,7 +24,6 @@ see <https://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
-#include <QSettings>
 #include <QKeySequence>
 #include <QWidget>
 #include <QStringList>
@@ -35,7 +34,10 @@ see <https://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QAction>
 
+#include "gui-settings.h"
 #include "resource-manager.h"
+
+using octave::gui_settings;
 
 class QTerminal : public QWidget
 {
@@ -109,7 +111,7 @@ public slots:
 
   virtual void handleCustomContextMenuRequested (const QPoint& at);
 
-  void notice_settings (const QSettings *settings);
+  void notice_settings (const gui_settings *settings);
 
   virtual void init_terminal_size (void) { }
 
@@ -187,8 +189,8 @@ protected:
     connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
              xparent, SLOT (execute_command_in_terminal (const QString&)));
 
-    connect (xparent, SIGNAL (settings_changed (const QSettings *)),
-             this, SLOT (notice_settings (const QSettings *)));
+    connect (xparent, SIGNAL (settings_changed (const gui_settings *)),
+             this, SLOT (notice_settings (const gui_settings *)));
 
     connect (xparent, SIGNAL (init_terminal_size_signal ()),
              this, SLOT (init_terminal_size ()));

@@ -28,9 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QPushButton>
 #include <QPalette>
 
+#include "gui-settings.h"
+#include "resource-manager.h"
+
 #include "QtHandlesUtils.h"
 #include "annotation-dialog.h"
-#include "resource-manager.h"
 #include "ui-annotation-dialog.h"
 
 using namespace QtHandles;
@@ -48,7 +50,7 @@ annotation_dialog::init ()
 {
   ui->setupUi (this);
 
-  QSettings *settings = octave::resource_manager::get_settings ();
+  octave::gui_settings *settings = octave::resource_manager::get_settings ();
 
   // restore last geometry
   if (settings)
@@ -92,7 +94,7 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QDialogButtonBox::ButtonRole button_role
     = ui->button_box->buttonRole (button);
 
-  QSettings *settings = octave::resource_manager::get_settings ();
+  octave::gui_settings *settings = octave::resource_manager::get_settings ();
 
   // save position
   if (settings)

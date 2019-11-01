@@ -28,9 +28,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QIcon>
 #include <QMap>
 #include <QPointer>
-#include <QSettings>
 #include <QTranslator>
 #include <QTemporaryFile>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -52,7 +53,7 @@ namespace octave
 
     ~resource_manager ();
 
-    static QSettings * get_settings (void)
+    static gui_settings * get_settings (void)
     {
       return instance_ok () ? instance->do_get_settings () : nullptr;
     }
@@ -65,7 +66,7 @@ namespace octave
       return QIcon ();
     }
 
-    static QSettings * get_default_settings (void)
+    static gui_settings * get_default_settings (void)
     {
       return instance_ok () ? instance->do_get_default_settings () : nullptr;
     }
@@ -153,9 +154,9 @@ namespace octave
 
     static bool instance_ok (void);
 
-    QSettings * do_get_settings (void) const;
+    gui_settings * do_get_settings (void) const;
 
-    QSettings * do_get_default_settings (void) const;
+    gui_settings * do_get_default_settings (void) const;
 
     QString do_get_settings_directory (void);
 
@@ -187,9 +188,9 @@ namespace octave
 
     QString m_settings_file;
 
-    QSettings *m_settings;
+    gui_settings *m_settings;
 
-    QSettings *m_default_settings;
+    gui_settings *m_default_settings;
 
     QList<QTemporaryFile *> m_temporary_files;
   };

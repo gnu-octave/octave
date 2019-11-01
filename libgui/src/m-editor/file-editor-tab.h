@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QLabel>
-#include <QSettings>
 #include <QStatusBar>
 #include <QWidget>
 #include <Qsci/qsciapis.h>
@@ -37,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-dialog.h"
 // Only needed for typedef of "QIntList", which may be typedefed
 // elsewhere.  Could use common location.
+#include "gui-settings.h"
 #include "marker.h"
 #include "octave-qscintilla.h"
 #include "qt-interpreter-events.h"
@@ -136,7 +136,7 @@ namespace octave
                                 Qt::KeyboardModifiers state);
 
     // Tells the editor tab to react on changed settings.
-    void notice_settings (const QSettings *settings, bool init = false);
+    void notice_settings (const gui_settings *settings, bool init = false);
 
     // Change to a different editor tab by identifier tag.
     void change_editor_state (const QWidget *ID);

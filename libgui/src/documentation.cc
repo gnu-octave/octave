@@ -560,7 +560,7 @@ namespace octave
       m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
-  void documentation::notice_settings (const QSettings *settings)
+  void documentation::notice_settings (const gui_settings *settings)
   {
     // If m_help_engine is not defined, the object accessed by this method
     // are not valid. Thus, just return in this case
@@ -908,7 +908,7 @@ namespace octave
       QDesktopServices::openUrl (url);
   }
 
-  void documentation_browser::notice_settings (const QSettings *)
+  void documentation_browser::notice_settings (const gui_settings *)
   { }
 
   QVariant documentation_browser::loadResource (int type, const QUrl &url)

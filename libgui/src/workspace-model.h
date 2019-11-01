@@ -29,9 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QColor>
 #include <QList>
 #include <QSemaphore>
-#include <QSettings>
 #include <QStringList>
 #include <QVector>
+
+#include "gui-settings.h"
 
 #include "syminfo.h"
 
@@ -87,7 +88,7 @@ namespace octave
 
     void clear_workspace (void);
 
-    void notice_settings (const QSettings *);
+    void notice_settings (const gui_settings *);
 
   private:
 

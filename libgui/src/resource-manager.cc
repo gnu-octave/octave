@@ -71,10 +71,10 @@ namespace octave
     : m_settings_directory (), m_settings_file (), m_settings (nullptr),
       m_default_settings (nullptr), m_temporary_files ()
   {
-    // Let QSettings decide where to put the ini file with gui preferences
+    // Let gui_settings decide where to put the ini file with gui preferences
     m_default_settings
-              = new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                              "octave", "octave-gui");
+      = new gui_settings (QSettings::IniFormat, QSettings::UserScope,
+                          "octave", "octave-gui");
 
     m_settings_file = m_default_settings->fileName ();
 
@@ -107,9 +107,9 @@ namespace octave
 
         if (ofile.exists ())
           {
-            // Old settings file exists, create a QSettings object related
+            // Old settings file exists, create a gui_settings object related
             // to it and copy all available keys to the new settings
-            QSettings old_settings (old_settings_file, QSettings::IniFormat);
+            gui_settings old_settings (old_settings_file, QSettings::IniFormat);
 
             QStringList keys = old_settings.allKeys ();
             for (int i = 0; i < keys.count(); i++)
@@ -150,7 +150,7 @@ namespace octave
 
     QString language = "SYSTEM";  // take system language per default
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings)
       {
@@ -215,12 +215,12 @@ namespace octave
     return retval;
   }
 
-  QSettings * resource_manager::do_get_settings (void) const
+  gui_settings * resource_manager::do_get_settings (void) const
   {
     return m_settings;
   }
 
-  QSettings * resource_manager::do_get_default_settings (void) const
+  gui_settings * resource_manager::do_get_default_settings (void) const
   {
     return m_default_settings;
   }
@@ -321,7 +321,7 @@ namespace octave
   void resource_manager::do_set_settings (const QString& file)
   {
     delete m_settings;
-    m_settings = new QSettings (file, QSettings::IniFormat);
+    m_settings = new gui_settings (file, QSettings::IniFormat);
 
     if (! (QFile::exists (m_settings->fileName ())
            && m_settings->isWritable ()

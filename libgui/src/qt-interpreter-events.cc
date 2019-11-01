@@ -274,7 +274,7 @@ namespace octave
 
   bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
@@ -577,7 +577,7 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QString read_value = settings->value (key).toString ();
 

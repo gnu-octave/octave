@@ -163,7 +163,7 @@ namespace octave
 
     setLayout (main_layout);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     restoreGeometry (
             settings->value(pd_geometry.key).toByteArray());
   }
@@ -299,7 +299,7 @@ namespace octave
 
   void set_path_dialog::save_settings ()
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     settings->setValue (pd_geometry.key, saveGeometry ());
   }
 

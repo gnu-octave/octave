@@ -157,7 +157,7 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     QString sc_run = settings->value ("shortcuts/editor_run:run_file").toString ();
     QString sc_cont = settings->value ("shortcuts/main_debug:continue").toString ();
 
@@ -219,7 +219,7 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (settings->value ("useCustomFileEditor",false).toBool ())
       return;  // do not open an empty script in the external editor
 
@@ -265,7 +265,7 @@ namespace octave
     request_new_file ("");
   }
 
-  void file_editor::restore_session (QSettings *settings)
+  void file_editor::restore_session (gui_settings *settings)
   {
     //restore previous session
     if (! settings->value ("editor/restoreSession", true).toBool ())
@@ -426,7 +426,7 @@ namespace octave
     // Here, the application or the editor will be closed -> store the session
 
     // Save open files for restoring in next session; this only is possible
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     // save filenames (even if last session will not be restored next time)
     // together with encoding and the tab index
@@ -1127,7 +1127,7 @@ namespace octave
     m_tmp_closed_files.clear ();
   }
 
-  void file_editor::notice_settings (const QSettings *settings)
+  void file_editor::notice_settings (const gui_settings *settings)
   {
     int size_idx = settings->value (global_icon_size.key,
                                     global_icon_size.def).toInt ();
@@ -1321,7 +1321,7 @@ namespace octave
     if (m_closed && visible)
       {
         m_closed = false;
-        QSettings *settings = resource_manager::get_settings ();
+        gui_settings *settings = resource_manager::get_settings ();
         restore_session (settings);
       }
 
@@ -1383,7 +1383,7 @@ namespace octave
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     bool show_dbg_file
       = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
 
@@ -1660,7 +1660,7 @@ namespace octave
   // handler for the close event
   void file_editor::closeEvent (QCloseEvent *e)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (settings->value ("editor/hiding_closes_files",false).toBool ())
       {
         if (check_closing ())
@@ -1734,7 +1734,7 @@ namespace octave
     m_tab_widget = new file_editor_tab_widget (editor_widget);
 
     // the mru-list and an empty array of actions
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
     m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
                             .toStringList ();
@@ -2329,8 +2329,8 @@ namespace octave
              this, SLOT (set_focus (QWidget*)));
 
     // Signals from the file_editor non-trivial operations
-    connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
-             f, SLOT (notice_settings (const QSettings *)));
+    connect (this, SIGNAL (fetab_settings_changed (const gui_settings *)),
+             f, SLOT (notice_settings (const gui_settings *)));
 
     connect (this, SIGNAL (fetab_change_request (const QWidget*)),
              f, SLOT (change_editor_state (const QWidget*)));
@@ -2520,7 +2520,7 @@ namespace octave
       }
 
     // save actual mru-list in settings
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     settings->setValue ("editor/mru_file_list", m_mru_files);
     settings->setValue ("editor/mru_file_encodings", m_mru_files_encodings);
@@ -2530,7 +2530,7 @@ namespace octave
   bool file_editor::call_custom_editor (const QString& file_name, int line)
   {
     // Check if the user wants to use a custom file editor.
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings->value ("useCustomFileEditor",false).toBool ())
       {
@@ -2549,7 +2549,7 @@ namespace octave
 
   void file_editor::toggle_preference (const QString& preference, bool def)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     bool old = settings->value (preference,def).toBool ();
     settings->setValue (preference,! old);
     notice_settings (settings);

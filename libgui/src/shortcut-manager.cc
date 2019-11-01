@@ -491,7 +491,7 @@ namespace octave
   }
 
   // write one or all actual shortcut set(s) into a settings file
-  void shortcut_manager::do_write_shortcuts (QSettings *settings,
+  void shortcut_manager::do_write_shortcuts (gui_settings *settings,
                                              bool closing)
   {
     bool sc_ctrld = false;
@@ -706,7 +706,7 @@ namespace octave
         if (file.isEmpty ())
           return false;
 
-        QSettings osc_settings (file, QSettings::IniFormat);
+        gui_settings osc_settings (file, QSettings::IniFormat);
 
         if (osc_settings.status () !=  QSettings::NoError)
           {
@@ -822,7 +822,7 @@ namespace octave
 
   // import a shortcut set from a given settings file or reset to
   // the defaults (settings = 0) and refresh the tree view
-  void shortcut_manager::import_shortcuts (QSettings *settings)
+  void shortcut_manager::import_shortcuts (gui_settings *settings)
   {
     for (int i = 0; i < m_sc.count (); i++)
       {

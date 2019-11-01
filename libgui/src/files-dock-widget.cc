@@ -184,7 +184,7 @@ namespace octave
     connect (m_sync_browser_directory_action, SIGNAL (triggered ()), this,
              SLOT (do_sync_browser_directory ()));
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     // FIXME: what should happen if settings is 0?
 
     // Create the QFileSystemModel starting in the desired directory
@@ -303,7 +303,7 @@ namespace octave
 
   void files_dock_widget::save_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       return;
@@ -404,7 +404,7 @@ namespace octave
             QString abs_fname = fileInfo.absoluteFilePath ();
 
             QString suffix = fileInfo.suffix ().toLower ();
-            QSettings *settings = resource_manager::get_settings ();
+            gui_settings *settings = resource_manager::get_settings ();
             QString ext = settings->value (fb_txt_file_ext.key,
                                            fb_txt_file_ext.def).toString ();
             QStringList extensions = ext.split (";", QString::SkipEmptyParts);
@@ -432,7 +432,7 @@ namespace octave
 
   void files_dock_widget::toggle_header (int col)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
     bool shown = settings->value (key,false).toBool ();
@@ -463,7 +463,7 @@ namespace octave
       delete m_sig_mapper;
     m_sig_mapper = new QSignalMapper (this);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -856,7 +856,7 @@ namespace octave
       }
   }
 
-  void files_dock_widget::notice_settings (const QSettings *settings)
+  void files_dock_widget::notice_settings (const gui_settings *settings)
   {
     // Qsettings pointer is checked before emitting.
 

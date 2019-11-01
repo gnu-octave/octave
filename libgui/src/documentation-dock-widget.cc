@@ -56,7 +56,7 @@ namespace octave
       delete m_docs;
   }
 
-  void documentation_dock_widget::notice_settings (const QSettings *settings)
+  void documentation_dock_widget::notice_settings (const gui_settings *settings)
   {
     m_docs->notice_settings (settings);
   }

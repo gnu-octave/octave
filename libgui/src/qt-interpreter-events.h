@@ -31,13 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QMutex>
 #include <QObject>
-#include <QSettings>
 #include <QString>
 #include <QWaitCondition>
 
-#include "event-manager.h"
-
 #include "dialog.h"
+#include "gui-settings.h"
+
+#include "event-manager.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -243,7 +243,7 @@ namespace octave
 
     void get_named_icon_signal (const QString& name);
 
-    void settings_changed (const QSettings *);
+    void settings_changed (const gui_settings *);
 
     void apply_new_settings (void);
 

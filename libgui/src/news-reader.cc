@@ -65,7 +65,7 @@ namespace octave
           {
             if (m_serial >= 0)
               {
-                QSettings *settings = resource_manager::get_settings ();
+                gui_settings *settings = resource_manager::get_settings ();
 
                 if (settings)
                   {

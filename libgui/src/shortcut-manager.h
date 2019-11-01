@@ -26,10 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
-#include <QSettings>
 #include <QShortcut>
 #include <QTreeWidget>
 #include <QWidget>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -86,7 +87,7 @@ namespace octave
         instance->do_init_data ();
     }
 
-    static void write_shortcuts (QSettings *settings, bool closing)
+    static void write_shortcuts (gui_settings *settings, bool closing)
     {
       if (instance_ok ())
         instance->do_write_shortcuts (settings, closing);
@@ -134,13 +135,13 @@ namespace octave
 
     void init (const QString&, const QString&, const QKeySequence&);
     void do_init_data ();
-    void do_write_shortcuts (QSettings *settings, bool closing);
+    void do_write_shortcuts (gui_settings *settings, bool closing);
     void do_set_shortcut (QAction *action, const QString& key);
     void do_shortcut (QShortcut *sc, const QString& key);
     void do_fill_treewidget (QTreeWidget *tree_view);
     bool do_import_export (int action);
     void shortcut_dialog (int);
-    void import_shortcuts (QSettings *settings);
+    void import_shortcuts (gui_settings *settings);
     bool overwrite_all_shortcuts (void);
 
     class shortcut_t
@@ -199,7 +200,7 @@ namespace octave
     QLabel *m_label_default;
     int m_handled_index;
 
-    QSettings *m_settings;
+    gui_settings *m_settings;
   };
 }
 

@@ -24,7 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_dw_main_window_h 1
 
 #include <QMainWindow>
-#include <QSettings>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -47,7 +48,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const QSettings*);
+    void notice_settings (const gui_settings *);
 
   protected slots:
 

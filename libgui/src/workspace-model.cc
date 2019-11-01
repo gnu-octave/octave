@@ -27,10 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include <QSettings>
 #include <QTreeWidget>
 
 #include "gui-preferences-ws.h"
+#include "gui-settings.h"
 #include "resource-manager.h"
 #include "workspace-model.h"
 
@@ -233,7 +233,7 @@ namespace octave
   }
 
   void
-  workspace_model::notice_settings (const QSettings *settings)
+  workspace_model::notice_settings (const gui_settings *settings)
   {
     QList<QColor> default_colors =
       resource_manager::storage_class_default_colors ();

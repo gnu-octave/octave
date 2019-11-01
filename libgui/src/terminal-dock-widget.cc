@@ -61,7 +61,7 @@ namespace octave
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);

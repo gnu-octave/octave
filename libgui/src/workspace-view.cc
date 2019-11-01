@@ -96,7 +96,7 @@ namespace octave
     ws_layout->addWidget (m_view);
     ws_layout->setSpacing (0);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings)
       {
@@ -177,7 +177,7 @@ namespace octave
     m_view->setModel (&m_filter_model);
 
     // set the sorting after a model was set, it would be ignored otherwise
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     m_view->sortByColumn (settings->value ("workspaceview/sort_by_column",0).toInt (),
                           static_cast<Qt::SortOrder> (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
 
@@ -185,7 +185,7 @@ namespace octave
   }
 
   void
-  workspace_view::notice_settings (const QSettings *settings)
+  workspace_view::notice_settings (const gui_settings *settings)
   {
     int i;
 
@@ -230,7 +230,7 @@ namespace octave
   void
   workspace_view::save_settings (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (! settings)
       return;
@@ -295,7 +295,7 @@ namespace octave
     QMenu menu (this);
     QSignalMapper sig_mapper (this);
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -315,7 +315,7 @@ namespace octave
   void
   workspace_view::toggle_header (int col)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
     bool shown = settings->value (key,true).toBool ();

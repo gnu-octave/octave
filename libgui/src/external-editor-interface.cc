@@ -26,9 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QMessageBox>
 #include <QProcess>
-#include <QSettings>
 
 #include "external-editor-interface.h"
+#include "gui-settings.h"
 #include "resource-manager.h"
 
 namespace octave
@@ -97,7 +97,7 @@ namespace octave
   // Get and verify the settings of the external editor program
   QString external_editor_interface::external_editor (void)
   {
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     QString editor = settings->value ("customFileEditor").toString ();
 
     // check the settings (avoid an empty string)

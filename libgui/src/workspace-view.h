@@ -67,7 +67,7 @@ namespace octave
 
     void setModel (workspace_model *model);
 
-    void notice_settings (const QSettings *);
+    void notice_settings (const gui_settings *);
 
     void save_settings (void);
 

@@ -130,7 +130,7 @@ namespace octave
   }
 
   // Update the settings
-  void dw_main_window::notice_settings (const QSettings*)
+  void dw_main_window::notice_settings (const gui_settings *)
   {
     shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
     shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");

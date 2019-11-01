@@ -137,6 +137,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-documentation.cc \
   %reldir%/moc-dw-main-window.cc \
   %reldir%/moc-files-dock-widget.cc \
+  %reldir%/moc-gui-settings.cc \
   %reldir%/moc-history-dock-widget.cc \
   %reldir%/moc-interpreter-qobject.cc \
   %reldir%/moc-main-window.cc \
@@ -197,6 +198,7 @@ noinst_HEADERS += \
   %reldir%/gui-preferences-ve.h \
   %reldir%/gui-preferences-ws.h \
   %reldir%/gui-preferences.h \
+  %reldir%/gui-settings.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
   %reldir%/history-dock-widget.h \
@@ -237,6 +239,7 @@ noinst_HEADERS += \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
+  %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \
   %reldir%/m-editor/file-editor-tab.cc \

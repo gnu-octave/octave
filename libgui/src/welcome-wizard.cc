@@ -141,7 +141,7 @@ namespace octave
 
     resource_manager::reload_settings ();
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (settings)
       {

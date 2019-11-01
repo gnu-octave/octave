@@ -254,7 +254,7 @@ namespace octave
     connect (this, SIGNAL (do_save_file_signal (const QString&, bool, bool)),
              this, SLOT (do_save_file (const QString&, bool, bool)));
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     if (settings)
       notice_settings (settings, true);
 
@@ -696,7 +696,7 @@ namespace octave
   {
     QsciLexer *lexer = m_edit_area->lexer ();
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     if (m_lexer_apis)
       {
@@ -1656,7 +1656,7 @@ namespace octave
         if (input_str)
           {
             bool ok;
-            QSettings *settings = resource_manager::get_settings ();
+            gui_settings *settings = resource_manager::get_settings ();
 
             used_comment_str
               = QInputDialog::getText (this, tr ("Comment selected text"),
@@ -2097,7 +2097,7 @@ namespace octave
 #else
     int os_eol_mode = QsciScintilla::EolUnix;
 #endif
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
     QsciScintilla::EolMode eol_mode
       = static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
 
@@ -2180,7 +2180,7 @@ namespace octave
   {
     update_window_title (false); // window title (no modification)
 
-    QSettings *settings = resource_manager::get_settings ();
+    gui_settings *settings = resource_manager::get_settings ();
 
     // set the eol mode from the settings or depending on the OS if the entry is
     // missing in the settings
@@ -2746,9 +2746,10 @@ namespace octave
       }
   }
 
-  void file_editor_tab::notice_settings (const QSettings *settings, bool init)
+  void file_editor_tab::notice_settings (const gui_settings *settings, bool init)
   {
-    // QSettings pointer is checked before emitting.
+    if (! settings)
+      return;
 
     if (! init)
       update_lexer_settings ();

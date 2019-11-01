@@ -1154,7 +1154,7 @@ namespace octave
   {
     if (m_stylesheet.isEmpty ())
       {
-        QSettings *settings = resource_manager::get_settings ();
+        gui_settings *settings = resource_manager::get_settings ();
         notice_settings (settings);
       }
 
@@ -1358,7 +1358,7 @@ namespace octave
   }
 
   void
-  variable_editor::notice_settings (const QSettings *settings)
+  variable_editor::notice_settings (const gui_settings *settings)
   {
     m_main->notice_settings (settings); // update settings in parent main win
 

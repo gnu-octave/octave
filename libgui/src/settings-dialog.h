@@ -27,10 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDialog>
 #include <QLineEdit>
 #include <QRadioButton>
-#include <QSettings>
 
 #include "color-picker.h"
 #include "gui-preferences-ed.h"
+#include "gui-settings.h"
 #include "ui-settings-dialog.h"
 
 class QsciLexer;
@@ -71,19 +71,19 @@ namespace octave
 
   private:
 
-    void read_lexer_settings (QsciLexer *lexer, QSettings *settings);
-    void write_lexer_settings (QsciLexer *lexer, QSettings *settings);
+    void read_lexer_settings (QsciLexer *lexer, gui_settings *settings);
+    void write_lexer_settings (QsciLexer *lexer, gui_settings *settings);
 
     void write_changed_settings (bool closing);
 
-    void read_workspace_colors (QSettings *settings);
-    void write_workspace_colors (QSettings *settings);
+    void read_workspace_colors (gui_settings *settings);
+    void write_workspace_colors (gui_settings *settings);
 
-    void read_terminal_colors (QSettings *settings);
-    void write_terminal_colors (QSettings *settings);
+    void read_terminal_colors (gui_settings *settings);
+    void write_terminal_colors (gui_settings *settings);
 
-    void read_varedit_colors (QSettings *settings);
-    void write_varedit_colors (QSettings *settings);
+    void read_varedit_colors (gui_settings *settings);
+    void write_varedit_colors (gui_settings *settings);
 
     color_picker *m_widget_title_bg_color;
     color_picker *m_widget_title_bg_color_active;

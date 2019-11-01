@@ -24,9 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_file_editor_interface_h 1
 
 #include <QMenu>
-#include <QSettings>
 #include <QToolBar>
 
+#include "gui-settings.h"
 #include "octave-dock-widget.h"
 
 namespace octave
@@ -68,7 +68,7 @@ namespace octave
 
     virtual void empty_script (bool, bool) = 0;
 
-    virtual void restore_session (QSettings *) = 0;
+    virtual void restore_session (gui_settings *) = 0;
 
     virtual void enable_menu_shortcuts (bool enable) = 0;
 

@@ -94,7 +94,7 @@ namespace octave
     void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
     void editor_focus_changed (bool);
 
-    void settings_changed (const QSettings *);
+    void settings_changed (const gui_settings *);
     void init_terminal_size_signal (void);
     void new_file_signal (const QString&);
     void open_file_signal (const QString&);
@@ -152,7 +152,7 @@ namespace octave
                                           = QString ());
 
     void show_about_octave (void);
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
     void prepare_to_exit (void);
     void reset_windows (void);
 
@@ -190,7 +190,7 @@ namespace octave
 
     void read_settings (void);
     void init_terminal_size (void);
-    void set_window_layout (QSettings *settings);
+    void set_window_layout (gui_settings *settings);
     void write_settings (void);
     void connect_visibility_changed (void);
 

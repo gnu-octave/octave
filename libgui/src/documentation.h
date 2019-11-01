@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QComboBox>
 #include <QMenu>
-#include <QSettings>
 #include <QShortcut>
 #include <QSplitter>
 #include <QTextBrowser>
@@ -33,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QWidget>
 #include <QtHelp/QHelpEngine>
+
+#include "gui-settings.h"
 
 namespace octave
 {
@@ -53,7 +54,7 @@ namespace octave
 
     void handle_index_clicked (const QUrl& url,
                                const QString& keyword = QString ());
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     //! Zooming in and out while taking care of the zoom level
     //!@{
@@ -101,7 +102,7 @@ namespace octave
 
   public slots:
 
-    void notice_settings (const QSettings *settings);
+    void notice_settings (const gui_settings *settings);
 
     void copyClipboard (void);
     void pasteClipboard (void);

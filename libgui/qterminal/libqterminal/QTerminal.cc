@@ -189,9 +189,10 @@ void QTerminal::doc_on_expression ()
 }
 
 void
-QTerminal::notice_settings (const QSettings *settings)
+QTerminal::notice_settings (const gui_settings *settings)
 {
-  // QSettings pointer is checked before emitting.
+  if (! settings)
+    return;
 
   // Set terminal font:
   QFont term_font = QFont ();

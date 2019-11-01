@@ -27,9 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QIcon>
 #include <QMainWindow>
 #include <QMouseEvent>
-#include <QSettings>
 #include <QToolButton>
 
+#include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 namespace octave
@@ -117,9 +117,9 @@ namespace octave
 
     virtual void handle_visibility (bool visible);
 
-    virtual void notice_settings (const QSettings*) { }
+    virtual void notice_settings (const gui_settings *) { }
 
-    void handle_settings (const QSettings*);
+    void handle_settings (const gui_settings *);
 
     void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 

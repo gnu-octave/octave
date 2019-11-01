@@ -42,9 +42,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  label_dock_widget::label_dock_widget (QWidget *p)
-    : QDockWidget (p), m_default_float_button (nullptr),
-      m_default_close_button (nullptr)
+  label_dock_widget::label_dock_widget (QWidget *p, resource_manager& rmgr)
+    : QDockWidget (p), m_resource_manager (rmgr),
+      m_default_float_button (nullptr), m_default_close_button (nullptr)
   {
     QStyle *st = style ();
     m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
@@ -176,9 +176,10 @@ namespace octave
                      .arg ((icon_size*2)/3). arg((icon_size*7)/3);
   }
 
-  octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
-    : label_dock_widget (p), m_recent_float_geom (), m_recent_dock_geom (),
-      m_waiting_for_mouse_button_release (false)
+  octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
+                                          resource_manager& rmgr)
+    : label_dock_widget (p, rmgr), m_recent_float_geom (),
+      m_recent_dock_geom (), m_waiting_for_mouse_button_release (false)
   {
     setObjectName (obj_name);
 
@@ -244,7 +245,7 @@ namespace octave
 
     setFeatures (QDockWidget::AllDockWidgetFeatures);
 
-    handle_settings (resource_manager::get_settings ());
+    handle_settings (m_resource_manager.get_settings ());
   }
 
   // connect signal visibility changed to related slot (called from main-window)
@@ -325,7 +326,7 @@ namespace octave
     bool vis = isVisible ();
 
     // Since floating widget has no parent, we have to read it
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     settings->setValue (mw_state.key, m_parent->saveState ());
     // Stay window, otherwise will bounce back to window by default because
@@ -516,7 +517,7 @@ namespace octave
   {
     // save state of this dock-widget
     QString name = objectName ();
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings)
       return;
@@ -757,13 +758,13 @@ namespace octave
     // The keys are also used in the settings dialog, but
     // octave_dock_widget::handle_settings is already called at program start.
     // These tests can be removed in a future version of Octave (version 6).
-    resource_manager::update_settings_key ("Dockwidgets/title_bg_color",
+    m_resource_manager.update_settings_key ("Dockwidgets/title_bg_color",
                                            "DockWidgets/title_bg_color");
-    resource_manager::update_settings_key ("Dockwidgets/title_bg_color_active",
+    m_resource_manager.update_settings_key ("Dockwidgets/title_bg_color_active",
                                            "DockWidgets/title_bg_color_active");
-    resource_manager::update_settings_key ("Dockwidgets/title_fg_color",
+    m_resource_manager.update_settings_key ("Dockwidgets/title_fg_color",
                                            "DockWidgets/title_fg_color");
-    resource_manager::update_settings_key ("Dockwidgets/title_fg_color_active",
+    m_resource_manager.update_settings_key ("Dockwidgets/title_fg_color_active",
                                            "DockWidgets/title_fg_color_active");
   }
 }

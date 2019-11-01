@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "QTerminal.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
+#include "octave-qobject.h"
 #include "resource-manager.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
@@ -52,7 +53,25 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  resource_manager *resource_manager::instance = nullptr;
+  base_qobject& __get_octave_qobject__ (const std::string& who)
+  {
+    base_qobject *oct_qobj = base_qobject::the_octave_qobject ();
+
+    if (! oct_qobj)
+      {
+        abort ();
+        error ("%s: octave_qobject context missing", who.c_str ());
+      }
+
+    return *oct_qobj;
+  }
+
+  resource_manager& __get_resource_manager__ (const std::string& who)
+  {
+    base_qobject& oct_qobj = __get_octave_qobject__ (who);
+
+    return oct_qobj.get_resource_manager ();
+  }
 
   static QString
   default_qt_settings_file (void)
@@ -150,7 +169,8 @@ namespace octave
 
     QString language = "SYSTEM";  // take system language per default
 
-    gui_settings *settings = resource_manager::get_settings ();
+    resource_manager& rmgr = __get_resource_manager__ ("");
+    gui_settings *settings = rmgr.get_settings ();
 
     if (settings)
       {
@@ -205,37 +225,27 @@ namespace octave
     return variable_editor::color_names ();
   }
 
-  bool resource_manager::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      instance = new resource_manager ();
-
-    return retval;
-  }
-
-  gui_settings * resource_manager::do_get_settings (void) const
+  gui_settings * resource_manager::get_settings (void) const
   {
     return m_settings;
   }
 
-  gui_settings * resource_manager::do_get_default_settings (void) const
+  gui_settings * resource_manager::get_default_settings (void) const
   {
     return m_default_settings;
   }
 
-  QString resource_manager::do_get_settings_directory (void)
+  QString resource_manager::get_settings_directory (void)
   {
     return m_settings_directory;
   }
 
-  QString resource_manager::do_get_settings_file (void)
+  QString resource_manager::get_settings_file (void)
   {
     return m_settings_file;
   }
 
-  QString resource_manager::do_get_default_font_family (void)
+  QString resource_manager::get_default_font_family (void)
   {
     // Get the default monospaced font
 #if defined (HAVE_QFONT_MONOSPACE)
@@ -253,9 +263,9 @@ namespace octave
     return default_family;
   }
 
-  void resource_manager::do_reload_settings (void)
+  void resource_manager::reload_settings (void)
   {
-    QString default_family = do_get_default_font_family ();
+    QString default_family = get_default_font_family ();
 
     if (! QFile::exists (m_settings_file))
       {
@@ -269,7 +279,7 @@ namespace octave
         QString settings_text = in.readAll ();
         qt_settings.close ();
 
-        default_family = do_get_default_font_family ();
+        default_family = get_default_font_family ();
 
         QString default_font_size = "10";
 
@@ -309,7 +319,7 @@ namespace octave
         user_settings.close ();
       }
 
-    do_set_settings (m_settings_file);
+    set_settings (m_settings_file);
 
     // Write the default monospace font into the settings for later use by
     // console and editor as fallbacks of their font prefernces.
@@ -318,7 +328,7 @@ namespace octave
 
   }
 
-  void resource_manager::do_set_settings (const QString& file)
+  void resource_manager::set_settings (const QString& file)
   {
     delete m_settings;
     m_settings = new gui_settings (file, QSettings::IniFormat);
@@ -335,14 +345,14 @@ namespace octave
 
         QMessageBox::critical (nullptr,
                                QString (QT_TR_NOOP ("Octave Critical Error")),
-                               msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+                               msg.arg (get_settings_file ()).arg (get_settings_directory ()));
 
         exit (1);
       }
   }
 
-  bool resource_manager::do_update_settings_key (const QString& old_key,
-                                                 const QString& new_key)
+  bool resource_manager::update_settings_key (const QString& old_key,
+                                              const QString& new_key)
   {
     if (m_settings->contains (old_key))
       {
@@ -355,12 +365,12 @@ namespace octave
     return false;
   }
 
-  bool resource_manager::do_is_first_run (void) const
+  bool resource_manager::is_first_run (void) const
   {
     return ! QFile::exists (m_settings_file);
   }
 
-  void resource_manager::do_update_network_settings (void)
+  void resource_manager::update_network_settings (void)
   {
     if (m_settings)
       {
@@ -392,7 +402,7 @@ namespace octave
       }
   }
 
-  QIcon resource_manager::do_icon (const QString& icon_name, bool fallback)
+  QIcon resource_manager::icon (const QString& icon_name, bool fallback)
   {
     // If system icon theme is not desired, take own icon files
     if (! m_settings->value (global_icon_theme.key, global_icon_theme.def).toBool ())
@@ -408,7 +418,7 @@ namespace octave
   }
 
   // get a list of all available encodings
-  void resource_manager::do_get_codecs (QStringList *codecs)
+  void resource_manager::get_codecs (QStringList *codecs)
   {
     // get the codec name for each mib
     QList<int> all_mibs = QTextCodec::availableMibs ();
@@ -428,10 +438,11 @@ namespace octave
   }
 
   // initialize a given combo box with available text encodings
-  void resource_manager::do_combo_encoding (QComboBox *combo, QString current)
+  void resource_manager::combo_encoding (QComboBox *combo,
+                                         const QString& current)
   {
     QStringList all_codecs;
-    do_get_codecs (&all_codecs);
+    get_codecs (&all_codecs);
 
     // get the value from the settings file if no current encoding is given
     QString enc = current;
@@ -483,8 +494,8 @@ namespace octave
   }
 
   QPointer<QTemporaryFile>
-  resource_manager::do_create_tmp_file (const QString& extension,
-                                        const QString& contents)
+  resource_manager::create_tmp_file (const QString& extension,
+                                     const QString& contents)
   {
     QString ext = extension;
     if ((! ext.isEmpty ()) && (! ext.startsWith ('.')))
@@ -510,7 +521,7 @@ namespace octave
     return tmp_file;
   }
 
-  void resource_manager::do_remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
+  void resource_manager::remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
   {
     if (tmp_file)
       {

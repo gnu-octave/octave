@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
 
   class dw_main_window : public QMainWindow
   {
@@ -36,7 +37,7 @@ namespace octave
 
   public:
 
-    dw_main_window (QWidget *parent = nullptr);
+    dw_main_window (resource_manager& rmgr, QWidget *parent = nullptr);
 
     ~dw_main_window (void) = default;
 
@@ -69,10 +70,12 @@ namespace octave
 
     void request_switch (int direction);
 
-    QList<QDockWidget *> m_dw_list;
-
     QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member, QWidget *receiver);
+
+    resource_manager& m_resource_manager;
+
+    QList<QDockWidget *> m_dw_list;
 
     QAction *m_close_action;
     QAction *m_close_all_action;

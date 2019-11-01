@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "color-picker.h"
 #include "gui-preferences-ed.h"
 #include "gui-settings.h"
+#include "resource-manager.h"
 #include "ui-settings-dialog.h"
 
 class QsciLexer;
@@ -43,7 +44,7 @@ namespace octave
   {
     Q_OBJECT public:
 
-    explicit settings_dialog (QWidget *parent,
+    explicit settings_dialog (QWidget *parent, resource_manager& rmgr,
                               const QString& desired_tab = QString ());
 
     ~settings_dialog (void) = default;
@@ -84,6 +85,8 @@ namespace octave
 
     void read_varedit_colors (gui_settings *settings);
     void write_varedit_colors (gui_settings *settings);
+
+    resource_manager& m_resource_manager;
 
     color_picker *m_widget_title_bg_color;
     color_picker *m_widget_title_bg_color_active;

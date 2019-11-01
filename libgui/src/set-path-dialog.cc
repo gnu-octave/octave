@@ -55,8 +55,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  set_path_dialog::set_path_dialog (QWidget *parent)
-    : QDialog (parent)
+  set_path_dialog::set_path_dialog (QWidget *parent, resource_manager& rmgr)
+    : QDialog (parent), m_resource_manager (rmgr)
   {
     setWindowTitle (tr ("Set Path"));
 
@@ -163,7 +163,7 @@ namespace octave
 
     setLayout (main_layout);
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     restoreGeometry (
             settings->value(pd_geometry.key).toByteArray());
   }
@@ -299,7 +299,7 @@ namespace octave
 
   void set_path_dialog::save_settings ()
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     settings->setValue (pd_geometry.key, saveGeometry ());
   }
 

@@ -108,9 +108,9 @@ namespace octave
     return retval;
   }
 
-  octave_qscintilla::octave_qscintilla (QWidget *p)
-    : QsciScintilla (p), m_word_at_cursor (), m_selection (),
-      m_selection_replacement (), m_selection_line (-1),
+  octave_qscintilla::octave_qscintilla (QWidget *p, resource_manager& rmgr)
+    : QsciScintilla (p), m_resource_manager (rmgr), m_word_at_cursor (),
+      m_selection (), m_selection_replacement (), m_selection_line (-1),
       m_selection_col (-1), m_indicator_id (1)
   {
     connect (this, SIGNAL (textChanged (void)),
@@ -397,7 +397,7 @@ namespace octave
       case SCLEX_MATLAB:
 #endif
         {
-          gui_settings *settings = resource_manager::get_settings ();
+          gui_settings *settings = m_resource_manager.get_settings ();
           int comment_string;
 
           if (comment)
@@ -775,11 +775,11 @@ namespace octave
 
     // Create tmp file required for adding command to history
     QPointer<QTemporaryFile> tmp_hist
-        = resource_manager::create_tmp_file (); // empty tmp file for history
+        = m_resource_manager.create_tmp_file (); // empty tmp file for history
 
     // Create tmp file required for the script echoing and adding cmd to hist
     QPointer<QTemporaryFile> tmp_script
-        = resource_manager::create_tmp_file ("m"); // tmp script file
+        = m_resource_manager.create_tmp_file ("m"); // tmp script file
 
     bool tmp = (tmp_hist && tmp_hist->open () &&
                 tmp_script && tmp_script->open());
@@ -850,7 +850,7 @@ namespace octave
 
     // Create tmp file with the code to be executed by the interpreter
     QPointer<QTemporaryFile> tmp_file
-        = resource_manager::create_tmp_file ("m", code);
+        = m_resource_manager.create_tmp_file ("m", code);
 
     tmp = (tmp_file && tmp_file->open ());
     if (! tmp)
@@ -862,7 +862,7 @@ namespace octave
     tmp_file->close ();
 
     // Disable opening a file at a breakpoint in case keyboard () is used
-    gui_settings* settings = resource_manager::get_settings ();
+    gui_settings* settings = m_resource_manager.get_settings ();
     bool show_dbg_file = settings->value (ed_show_dbg_file.key,
                                        ed_show_dbg_file.def).toBool ();
     settings->setValue (ed_show_dbg_file.key, false);
@@ -903,11 +903,11 @@ namespace octave
                                                  QTemporaryFile* tmp_hist,
                                                  QTemporaryFile* tmp_script)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     settings->setValue (ed_show_dbg_file.key, show_dbg_file);
-    resource_manager::remove_tmp_file (tmp_file);
-    resource_manager::remove_tmp_file (tmp_hist);
-    resource_manager::remove_tmp_file (tmp_script);
+    m_resource_manager.remove_tmp_file (tmp_file);
+    m_resource_manager.remove_tmp_file (tmp_hist);
+    m_resource_manager.remove_tmp_file (tmp_script);
   }
 
 

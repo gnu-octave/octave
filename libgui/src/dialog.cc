@@ -660,8 +660,10 @@ namespace octave
     setDirectory (dirname);
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr
+      = __get_resource_manager__ ("FileDialog::FileDialog");
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       setOption(QFileDialog::DontUseNativeDialog);
 
     if (multimode == "on")         // uigetfile multiselect=on

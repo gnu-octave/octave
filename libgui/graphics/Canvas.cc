@@ -72,6 +72,17 @@ namespace QtHandles
     m_redrawBlocked = block;
   }
 
+  static QCursor
+  make_cursor (const QString& name, int hot_x  = -1, int hot_y = -1)
+  {
+    octave::resource_manager& rmgr
+      = octave::__get_resource_manager__ ("make_cursor");
+
+    QIcon icon = rmgr.icon (name);
+
+    return QCursor (icon.pixmap (22, 22), hot_x, hot_y);
+  }
+
   void
   Canvas::setCursor (MouseMode mode, std::string fallback,
                      QImage cdata, Matrix hotspot)
@@ -89,24 +100,15 @@ namespace QtHandles
               if (fallback == "arrow")
                 cursor = Qt::ArrowCursor;
               else if (fallback == "botl")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("bottom_left_corner").pixmap (22,22),
-                                  5, 16);
+                cursor = make_cursor ("bottom_left_corner", 5, 16);
               else if (fallback == "botr")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("bottom_right_corner").pixmap (22, 22),
-                                  16, 16);
+                cursor = make_cursor ("bottom_right_corner", 16, 16);
               else if (fallback == "bottom")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("bottom_side").pixmap (22, 22),
-                                  11, 16);
+                cursor = make_cursor ("bottom_side", 11, 16);
               else if (fallback == "circle")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("circle").pixmap (22, 22),
-                                  10, 10);
+                cursor = make_cursor ("circle", 10, 10);
               else if (fallback == "cross" || fallback == "crosshair")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("cross").pixmap (22, 22), 10, 10);
+                cursor = make_cursor ("cross", 10, 10);
               else if (fallback == "custom")
                 {
                   if (hotspot(0) > cdata.width () || hotspot(0) < 1.0
@@ -118,31 +120,21 @@ namespace QtHandles
                                     static_cast<int> (hotspot(0) - 1));
                 }
               else if (fallback == "fleur")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("fleur").pixmap (22, 22), 10, 4);
+                cursor = make_cursor ("fleur", 10, 4);
               else if (fallback == "hand")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("hand2").pixmap (22, 22), 7, 3);
+                cursor = make_cursor ("hand2", 7, 3);
               else if (fallback == "ibeam")
                 cursor = Qt::IBeamCursor;
               else if (fallback == "left")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("left_side").pixmap (22, 22), 4, 10);
+                cursor = make_cursor ("left_side", 4, 10);
               else if (fallback == "right")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("right_side").pixmap (22, 22),
-                                  17, 10);
+                cursor = make_cursor ("right_side", 17, 10);
               else if (fallback == "top")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("top_side").pixmap (22, 22), 11, 4);
+                cursor = make_cursor ("top_side", 11, 4);
               else if (fallback == "topl")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("top_left_corner").pixmap (22, 22),
-                                  4, 4);
+                cursor = make_cursor ("top_left_corner", 4, 4);
               else if (fallback == "topr")
-                cursor = QCursor (octave::resource_manager::icon
-                                  ("top_right_corner").pixmap (22, 22),
-                                  16, 4);
+                cursor = make_cursor ("top_right_corner", 16, 4);
               else if (fallback == "watch")
                 cursor = Qt::BusyCursor;
             }
@@ -152,13 +144,11 @@ namespace QtHandles
             break;
 
           case PanMode:
-            cursor = QCursor (octave::resource_manager::icon ("figure-pan")
-                              .pixmap (22, 22));
+            cursor = make_cursor ("figure-pan");
             break;
 
           case RotateMode:
-            cursor = QCursor (octave::resource_manager::icon ("figure-rotate")
-                              .pixmap (22, 22));
+            cursor = make_cursor ("figure-rotate");
             break;
 
           case TextMode:
@@ -166,13 +156,11 @@ namespace QtHandles
             break;
 
           case ZoomInMode:
-            cursor = QCursor (octave::resource_manager::icon ("figure-zoom-in")
-                              .pixmap (22, 22), 9, 9);
+            cursor = make_cursor ("figure-zoom-in", 9, 9);
             break;
 
           case ZoomOutMode:
-            cursor = QCursor (octave::resource_manager::icon ("figure-zoom-out")
-                              .pixmap (22, 22), 9, 9);
+            cursor = make_cursor ("figure-zoom-out", 9, 9);
             break;
 
           default:

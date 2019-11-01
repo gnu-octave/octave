@@ -45,6 +45,8 @@ class octave_value_list;
 
 namespace octave
 {
+  class resource_manager;
+
   //!  Dock widget to display files in the current directory.
 
   class files_dock_widget : public octave_dock_widget
@@ -53,7 +55,7 @@ namespace octave
 
   public:
 
-    files_dock_widget (QWidget *parent = nullptr);
+    files_dock_widget (QWidget *parent, resource_manager& rmgr);
 
     ~files_dock_widget (void) = default;
 

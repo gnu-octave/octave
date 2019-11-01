@@ -33,6 +33,10 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
+
+  extern resource_manager& __get_resource_manager__ (const std::string& who);
+
   class resource_manager : public QObject
   {
     Q_OBJECT
@@ -51,134 +55,56 @@ namespace octave
 
     ~resource_manager ();
 
-    static gui_settings * get_settings (void)
-    {
-      return instance_ok () ? instance->do_get_settings () : nullptr;
-    }
+    QString get_gui_translation_dir (void);
 
-    static QIcon icon (const QString& icon_name, bool fallback = true)
-    {
-      if (instance_ok ())
-        return instance->do_icon (icon_name, fallback);
+    void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
+                             QTranslator *gui_tr);
 
-      return QIcon ();
-    }
+    QString storage_class_chars (void) { return "agp"; }
 
-    static gui_settings * get_default_settings (void)
-    {
-      return instance_ok () ? instance->do_get_default_settings () : nullptr;
-    }
+    QStringList storage_class_names (void);
 
-    static QString get_settings_file (void)
-    {
-      return instance_ok () ? instance->do_get_settings_file () : QString ();
-    }
+    QList<QColor> storage_class_default_colors (void);
 
-    static void reload_settings (void)
-    {
-      if (instance_ok ())
-        instance->do_reload_settings ();
-    }
+    QString varedit_color_chars (void) {return "fbsha"; }
 
-    static void set_settings (const QString& file)
-    {
-      if (instance_ok ())
-        instance->do_set_settings (file);
-    }
+    QStringList varedit_color_names (void);
 
-    static bool update_settings_key (const QString& new_key,
-                                     const QString& old_key)
-    {
-      return (instance_ok ()
-              ? instance->do_update_settings_key (new_key, old_key)
-              : false);
-    }
+    QList<QColor> varedit_default_colors (void);
 
-    static void get_codecs (QStringList *codecs)
-    {
-      if (instance_ok ())
-        instance->do_get_codecs (codecs);
-    }
+    gui_settings * get_settings (void) const;
 
-    static void combo_encoding (QComboBox *combo, QString current = QString ())
-    {
-      if (instance_ok ())
-        instance->do_combo_encoding (combo, current);
-    }
+    gui_settings * get_default_settings (void) const;
 
-    static QString get_gui_translation_dir (void);
+    QString get_settings_directory (void);
 
-    static void config_translators (QTranslator*, QTranslator*, QTranslator*);
+    QString get_settings_file (void);
 
-    static void update_network_settings (void)
-    {
-      if (instance_ok ())
-        instance->do_update_network_settings ();
-    }
+    QString get_default_font_family (void);
 
-    static bool is_first_run (void)
-    {
-      return instance_ok () ? instance->do_is_first_run () : true;
-    }
+    QPointer<QTemporaryFile>
+    create_tmp_file (const QString& extension = QString (),
+                     const QString& contents = QString ());
 
-    static QPointer<QTemporaryFile> create_tmp_file (
-                                          const QString& extension = QString (),
-                                          const QString& contents = QString ())
-    {
-      return instance_ok () ? instance->do_create_tmp_file (extension, contents) : QPointer<QTemporaryFile> ();
-    }
+    void remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
 
-    static void remove_tmp_file (QPointer<QTemporaryFile> tmp_file)
-    {
-      if (instance_ok ())
-        instance->do_remove_tmp_file (tmp_file);
-    }
+    void reload_settings (void);
 
-    static QString storage_class_chars (void) { return "agp"; }
-    static QStringList storage_class_names (void);
-    static QList<QColor> storage_class_default_colors (void);
+    void set_settings (const QString& file);
 
-    static resource_manager *instance;
+    bool update_settings_key (const QString& new_key, const QString& old_key);
 
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    bool is_first_run (void) const;
 
-    static QString varedit_color_chars (void) {return "fbsha"; }
-    static QStringList varedit_color_names (void);
-    static QList<QColor> varedit_default_colors (void);
+    void update_network_settings (void);
+
+    QIcon icon (const QString& icon_name, bool fallback = true);
+
+    void get_codecs (QStringList *codecs);
+
+    void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
   private:
-
-    static bool instance_ok (void);
-
-    gui_settings * do_get_settings (void) const;
-
-    gui_settings * do_get_default_settings (void) const;
-
-    QString do_get_settings_directory (void);
-
-    QString do_get_settings_file (void);
-
-    QString do_get_default_font_family (void);
-
-    QPointer<QTemporaryFile> do_create_tmp_file (const QString& extension,
-                                                 const QString& contents);
-
-    void do_remove_tmp_file (QPointer<QTemporaryFile> tmp_file);
-
-    void do_reload_settings (void);
-
-    void do_set_settings (const QString& file);
-
-    bool do_update_settings_key (const QString& new_key, const QString& old_key);
-
-    bool do_is_first_run (void) const;
-
-    void do_update_network_settings (void);
-
-    QIcon do_icon (const QString& icon, bool fallback);
-
-    void do_get_codecs (QStringList *codecs);
-    void do_combo_encoding (QComboBox *combo, QString current);
 
     QString m_settings_directory;
 

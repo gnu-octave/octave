@@ -104,8 +104,9 @@ namespace octave
   }
 
   qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
-    : interpreter_events (), m_octave_qobj (oct_qobj), m_result (),
-      m_mutex (), m_waitcondition (), m_uiwidget_creator ()
+    : interpreter_events (), m_octave_qobj (oct_qobj),
+      m_resource_manager (m_octave_qobj.get_resource_manager ()),
+      m_result (), m_mutex (), m_waitcondition (), m_uiwidget_creator ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
     qRegisterMetaType<QFloatList> ("QFloatList");
@@ -274,7 +275,7 @@ namespace octave
 
   bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
@@ -388,7 +389,7 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    m_result = QVariant::fromValue (resource_manager::icon (name));
+    m_result = QVariant::fromValue (m_resource_manager.icon (name));
 
     wake_all ();
   }
@@ -577,7 +578,7 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     QString read_value = settings->value (key).toString ();
 
@@ -616,7 +617,7 @@ namespace octave
         adjusted_value = adjusted_value.toUpper ();
 
         QStringList codecs;
-        resource_manager::get_codecs (&codecs);
+        m_resource_manager.get_codecs (&codecs);
 
         QRegExp re ("^CP(\\d+)$");
 

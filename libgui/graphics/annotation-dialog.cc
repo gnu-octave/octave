@@ -50,7 +50,10 @@ annotation_dialog::init ()
 {
   ui->setupUi (this);
 
-  octave::gui_settings *settings = octave::resource_manager::get_settings ();
+  octave::resource_manager& rmgr
+      = octave::__get_resource_manager__ ("annotation_dialog::init");
+
+  octave::gui_settings *settings = rmgr.get_settings ();
 
   // restore last geometry
   if (settings)
@@ -94,7 +97,10 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   QDialogButtonBox::ButtonRole button_role
     = ui->button_box->buttonRole (button);
 
-  octave::gui_settings *settings = octave::resource_manager::get_settings ();
+  octave::resource_manager& rmgr
+      = octave::__get_resource_manager__ ("annotation_dialog::button_clicked");
+
+  octave::gui_settings *settings = rmgr.get_settings ();
 
   // save position
   if (settings)

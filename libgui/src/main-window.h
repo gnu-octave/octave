@@ -289,6 +289,8 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
+    resource_manager& m_resource_manager;
+
     workspace_model *m_workspace_model;
 
     QHash<QMenu*, QStringList> m_hash_menu_text;

@@ -135,18 +135,21 @@ protected:
 
   QTerminal (QWidget *xparent = nullptr) : QWidget (xparent)
   {
+    octave::resource_manager& rmgr
+      = octave::__get_resource_manager__ ("QTerminal::QTerminal");
+
     // context menu
     setContextMenuPolicy (Qt::CustomContextMenu);
 
     _contextMenu = new QMenu (this);
 
     _copy_action
-      = _contextMenu->addAction (octave::resource_manager::icon ("edit-copy"),
-                                 tr ("Copy"), this, SLOT (copyClipboard ()));
+      = _contextMenu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+                                 SLOT (copyClipboard ()));
 
     _paste_action
-      = _contextMenu->addAction (octave::resource_manager::icon ("edit-paste"),
-                                 tr ("Paste"), this, SLOT (pasteClipboard ()));
+      = _contextMenu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+                                 SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 

@@ -95,7 +95,9 @@ namespace octave
 
   // Make parent null for the file editor tab so that warning WindowModal
   // messages don't affect grandparents.
-  file_editor_tab::file_editor_tab (const QString& directory_arg)
+  file_editor_tab::file_editor_tab (resource_manager& rmgr,
+                                    const QString& directory_arg)
+    : m_resource_manager (rmgr)
   {
     m_lexer_apis = nullptr;
     m_is_octave_file = true;
@@ -106,7 +108,7 @@ namespace octave
     m_file_name = "";
     m_file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
-    m_edit_area = new octave_qscintilla (this);
+    m_edit_area = new octave_qscintilla (this, m_resource_manager);
     m_line = 0;
     m_col  = 0;
 
@@ -254,7 +256,7 @@ namespace octave
     connect (this, SIGNAL (do_save_file_signal (const QString&, bool, bool)),
              this, SLOT (do_save_file (const QString&, bool, bool)));
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     if (settings)
       notice_settings (settings, true);
 
@@ -696,7 +698,7 @@ namespace octave
   {
     QsciLexer *lexer = m_edit_area->lexer ();
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (m_lexer_apis)
       {
@@ -1656,7 +1658,7 @@ namespace octave
         if (input_str)
           {
             bool ok;
-            gui_settings *settings = resource_manager::get_settings ();
+            gui_settings *settings = m_resource_manager.get_settings ();
 
             used_comment_str
               = QInputDialog::getText (this, tr ("Comment selected text"),
@@ -2040,7 +2042,7 @@ namespace octave
                             "This does not change the default encoding.\n"));
 
         QComboBox *enc_combo = new QComboBox ();
-        resource_manager::combo_encoding (enc_combo);
+        m_resource_manager.combo_encoding (enc_combo);
         m_new_encoding = enc_combo->currentText ();
         connect (enc_combo, SIGNAL (currentTextChanged (const QString&)),
                  this , SLOT (handle_current_enc_changed (const QString&)));
@@ -2097,7 +2099,7 @@ namespace octave
 #else
     int os_eol_mode = QsciScintilla::EolUnix;
 #endif
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     QsciScintilla::EolMode eol_mode
       = static_cast<QsciScintilla::EolMode> (settings->value ("editor/default_eol_mode",os_eol_mode).toInt ());
 
@@ -2180,7 +2182,7 @@ namespace octave
   {
     update_window_title (false); // window title (no modification)
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     // set the eol mode from the settings or depending on the OS if the entry is
     // missing in the settings
@@ -2482,7 +2484,7 @@ namespace octave
     fileDialog->setViewMode (QFileDialog::Detail);
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
                                                     true).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 

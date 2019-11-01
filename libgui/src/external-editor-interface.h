@@ -29,14 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
+
   class external_editor_interface : public QWidget
   {
-
     Q_OBJECT
 
   public:
 
-    external_editor_interface (QWidget *main_win);
+    external_editor_interface (QWidget *main_win, resource_manager& rmgr);
 
     ~external_editor_interface (void) = default;
 
@@ -61,6 +62,8 @@ namespace octave
   private:
 
     QString external_editor (void);
+
+    resource_manager& m_resource_manager;
   };
 }
 

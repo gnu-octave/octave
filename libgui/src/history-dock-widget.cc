@@ -44,8 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  history_dock_widget::history_dock_widget (QWidget *p)
-    : octave_dock_widget ("HistoryDockWidget", p)
+  history_dock_widget::history_dock_widget (QWidget *p, resource_manager& rmgr)
+    : octave_dock_widget ("HistoryDockWidget", p, rmgr)
   {
     setStatusTip (tr ("Browse and search the command history."));
 
@@ -90,7 +90,7 @@ namespace octave
 
   void history_dock_widget::save_settings (void)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings)
       return;
@@ -139,11 +139,11 @@ namespace octave
 
     if (index.isValid () && index.column () == 0)
       {
-        menu.addAction (resource_manager::icon ("edit-copy"),
+        menu.addAction (m_resource_manager.icon ("edit-copy"),
                         tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
         menu.addAction (tr ("Evaluate"), this,
                         SLOT (handle_contextmenu_evaluate (bool)));
-        menu.addAction (resource_manager::icon ("document-new"),
+        menu.addAction (m_resource_manager.icon ("document-new"),
                         tr ("Create script"), this,
                         SLOT (handle_contextmenu_create_script (bool)));
       }
@@ -315,7 +315,7 @@ namespace octave
     widget ()->setLayout (hist_layout);
 
     // Init state of the filter
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     m_filter_shown
       = settings->value (hw_filter_shown.key, hw_filter_shown.def).toBool ();

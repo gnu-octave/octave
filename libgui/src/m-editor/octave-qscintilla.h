@@ -36,13 +36,15 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
+
   class octave_qscintilla : public QsciScintilla
   {
     Q_OBJECT
 
   public:
 
-    octave_qscintilla (QWidget *p);
+    octave_qscintilla (QWidget *p, resource_manager& rmgr);
 
     ~octave_qscintilla (void) = default;
 
@@ -123,6 +125,8 @@ namespace octave
 
     void auto_close (int auto_endif, int l,
                      const QString& line, QString& first_word);
+
+    resource_manager& m_resource_manager;
 
     QString m_word_at_cursor;
 

@@ -42,9 +42,10 @@ class QToolBar;
 
 namespace octave
 {
+  class resource_manager;
+
   class variable_editor_model;
   class variable_editor_view;
-
 
   // The individual variable subwindow class
 
@@ -54,7 +55,7 @@ namespace octave
 
   public:
 
-    variable_dock_widget (QWidget *p = nullptr);
+    variable_dock_widget (QWidget *p, resource_manager& rmgr);
 
   signals:
 
@@ -129,7 +130,7 @@ namespace octave
 
   public:
 
-    variable_editor_stack (QWidget *p = nullptr);
+    variable_editor_stack (QWidget *p, resource_manager& rmgr);
 
     variable_editor_view *edit_view (void) {return m_edit_view;};
 
@@ -153,6 +154,8 @@ namespace octave
 
     QTextEdit *make_disp_view (QWidget *parent);
 
+    resource_manager& m_resource_manager;
+
     variable_editor_view *m_edit_view;
 
     QTextEdit *m_disp_view;
@@ -165,7 +168,7 @@ namespace octave
 
   public:
 
-    variable_editor_view (QWidget *p = nullptr);
+    variable_editor_view (QWidget *p, resource_manager& rmgr);
 
     void setModel (QAbstractItemModel *model);
 
@@ -211,6 +214,8 @@ namespace octave
   private:
 
     void add_edit_actions (QMenu *menu, const QString& qualifier_string);
+
+    resource_manager& m_resource_manager;
 
     variable_editor_model *m_var_model;
   };
@@ -280,7 +285,7 @@ namespace octave
 
   public:
 
-    variable_editor (QWidget *parent = nullptr);
+    variable_editor (QWidget *parent, resource_manager& rmgr);
 
     ~variable_editor (void) = default;
 

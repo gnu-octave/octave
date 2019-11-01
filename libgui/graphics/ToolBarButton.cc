@@ -33,6 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace QtHandles
 {
+  static QIcon get_icon (const std::string& name)
+  {
+    octave::resource_manager& rmgr
+      = octave::__get_resource_manager__ ("get_icon");
+
+    return rmgr.icon (QString::fromStdString (name));
+  }
 
   template <typename T>
   ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction *action)
@@ -51,7 +58,7 @@ namespace QtHandles
         QIcon ico;
         std::string name = tp.get___named_icon__ ();
         if (! name.empty ())
-          ico = octave::resource_manager::icon (QString::fromStdString (name));
+          ico = get_icon (name);
 
         action->setIcon (ico);
       }
@@ -106,7 +113,8 @@ namespace QtHandles
               QIcon ico;
               std::string name = tp.get___named_icon__ ();
               if (! name.empty ())
-                ico = octave::resource_manager::icon (QString::fromStdString (name));
+                ico = get_icon (name);
+
               action->setIcon (ico);
             }
           else

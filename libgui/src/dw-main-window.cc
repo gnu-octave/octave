@@ -39,25 +39,25 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
 
-  dw_main_window::dw_main_window (QWidget *p)
-    : QMainWindow (p)
+  dw_main_window::dw_main_window (resource_manager& rmgr, QWidget *p)
+    : QMainWindow (p), m_resource_manager (rmgr)
   {
     // Adding the actions for closing the dock widgets
     m_close_action
       = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("&Close"),
                     SLOT (request_close ()), this);
 
     m_close_all_action
       = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("Close &All"),
                     SLOT (request_close_all ()), this);
 
     m_close_others_action
       = add_action (nullptr,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("Close &Other"),
                     SLOT (request_close_other ()), this);
 
@@ -76,7 +76,7 @@ namespace octave
     m_actions_list << m_switch_left_action;
     m_actions_list << m_switch_right_action;
 
-    notice_settings (resource_manager::get_settings ());
+    notice_settings (m_resource_manager.get_settings ());
   }
 
 

@@ -55,9 +55,9 @@ namespace octave
 {
   // The documentation splitter, which is the main widget
   // of the doc dock widget
-  documentation::documentation (QWidget *p)
+  documentation::documentation (QWidget *p, resource_manager& rmgr)
     : QSplitter (Qt::Horizontal, p),
-      m_doc_widget (p),
+      m_resource_manager (rmgr), m_doc_widget (p),
       m_tool_bar (new QToolBar (p)),
       m_query_string (QString ()),
       m_prev_pages_menu (new QMenu (p)),
@@ -140,13 +140,13 @@ namespace octave
     QToolButton *forward_button = new QToolButton (find_footer);
     forward_button->setText (tr ("Search forward"));
     forward_button->setToolTip (tr ("Search forward"));
-    forward_button->setIcon (resource_manager::icon ("go-down"));
+    forward_button->setIcon (m_resource_manager.icon ("go-down"));
     connect (forward_button, SIGNAL (pressed (void)),
              this, SLOT(find (void)));
     QToolButton *backward_button = new QToolButton (find_footer);
     backward_button->setText (tr ("Search backward"));
     backward_button->setToolTip (tr ("Search backward"));
-    backward_button->setIcon (resource_manager::icon ("go-up"));
+    backward_button->setIcon (m_resource_manager.icon ("go-up"));
     connect (backward_button, SIGNAL (pressed (void)),
              this, SLOT(find_backward (void)));
     QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
@@ -163,7 +163,7 @@ namespace octave
     v_box_browser_find->addWidget (find_footer);
     browser_find->setLayout (v_box_browser_find);
 
-    notice_settings (resource_manager::get_settings ());
+    notice_settings (m_resource_manager.get_settings ());
 
     m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
     connect (m_findnext_shortcut, SIGNAL (activated (void)),
@@ -318,10 +318,10 @@ namespace octave
   void documentation::construct_tool_bar (void)
   {
     // Home, Previous, Next
-    m_action_go_home = add_action (resource_manager::icon ("go-home"),
+    m_action_go_home = add_action (m_resource_manager.icon ("go-home"),
                                    tr ("Go home"), SLOT (home (void)),
                                    m_doc_browser, m_tool_bar);
-    m_action_go_prev = add_action (resource_manager::icon ("go-previous"),
+    m_action_go_prev = add_action (m_resource_manager.icon ("go-previous"),
                                    tr ("Go back"), SLOT (backward (void)),
                                    m_doc_browser, m_tool_bar);
     m_action_go_prev->setEnabled (false);
@@ -335,7 +335,7 @@ namespace octave
     popdown_button_prev_pages->setCheckable (false);
     popdown_button_prev_pages->setArrowType(Qt::DownArrow);
     m_tool_bar->addWidget (popdown_button_prev_pages);
-    m_action_go_next = add_action (resource_manager::icon ("go-next"),
+    m_action_go_next = add_action (m_resource_manager.icon ("go-next"),
                                    tr ("Go forward"), SLOT (forward (void)),
                                    m_doc_browser, m_tool_bar);
     m_action_go_next->setEnabled (false);
@@ -378,19 +378,19 @@ namespace octave
 
     // Find
     m_tool_bar->addSeparator ();
-    m_action_find = add_action (resource_manager::icon ("edit-find"),
+    m_action_find = add_action (m_resource_manager.icon ("edit-find"),
                                    tr ("Find"), SLOT (activate_find (void)),
                                    this, m_tool_bar);
 
     // Zoom
     m_tool_bar->addSeparator ();
-    m_action_zoom_in = add_action (resource_manager::icon ("zoom-in"),
+    m_action_zoom_in = add_action (m_resource_manager.icon ("zoom-in"),
                                    tr ("Zoom in"), SLOT (zoom_in (void)),
                                    m_doc_browser, m_tool_bar);
-    m_action_zoom_out = add_action (resource_manager::icon ("zoom-out"),
+    m_action_zoom_out = add_action (m_resource_manager.icon ("zoom-out"),
                                     tr ("Zoom out"), SLOT (zoom_out (void)),
                                     m_doc_browser, m_tool_bar);
-    m_action_zoom_original = add_action (resource_manager::icon ("zoom-original"),
+    m_action_zoom_original = add_action (m_resource_manager.icon ("zoom-original"),
                                    tr ("Zoom original"), SLOT (zoom_original (void)),
                                    m_doc_browser, m_tool_bar);
   }

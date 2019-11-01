@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "marker.h"
 #include "octave-qscintilla.h"
 #include "qt-interpreter-events.h"
+#include "resource-manager.h"
 
 class octave_value_list;
 
@@ -53,7 +54,7 @@ namespace octave
 
   public:
 
-    file_editor_tab (const QString& directory = "");
+    file_editor_tab (resource_manager& rmgr, const QString& directory = "");
 
     ~file_editor_tab (void);
 
@@ -267,6 +268,8 @@ namespace octave
     void set_file_name (const QString& fileName);
 
   private:
+
+    resource_manager& m_resource_manager;
 
     struct bp_info
     {

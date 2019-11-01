@@ -39,8 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  workspace_model::workspace_model (QObject *p)
-    : QAbstractTableModel (p)
+  workspace_model::workspace_model (resource_manager& rmgr, QObject *p)
+    : QAbstractTableModel (p), m_resource_manager (rmgr)
   {
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));
@@ -52,7 +52,7 @@ namespace octave
     // classes in the workspace view. The structure is
     // m_storage_class_colors(1,2,...,colors):        background colors
     // m_storage_class_colors(colors+1,...,2*colors): foreground colors
-    int colors = resource_manager::storage_class_chars ().length ();
+    int colors = m_resource_manager.storage_class_chars ().length ();
     for (int i = 0; i < 2*colors; i++)
       m_storage_class_colors.append (QColor (Qt::white));
 
@@ -136,7 +136,7 @@ namespace octave
         if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
             && m_enable_colors)
           {
-            QString class_chars = resource_manager::storage_class_chars ();
+            QString class_chars = m_resource_manager.storage_class_chars ();
             int actual_class
               = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
@@ -182,7 +182,7 @@ namespace octave
                 {
                   QString sclass;
 
-                  QString class_chars = resource_manager::storage_class_chars ();
+                  QString class_chars = m_resource_manager.storage_class_chars ();
 
                   int actual_class
                     = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
@@ -190,7 +190,7 @@ namespace octave
                   if (actual_class >= 0)
                     {
                       QStringList class_names
-                        = resource_manager::storage_class_names ();
+                        = m_resource_manager.storage_class_names ();
 
                       sclass = class_names.at (actual_class);
                     }
@@ -236,8 +236,8 @@ namespace octave
   workspace_model::notice_settings (const gui_settings *settings)
   {
     QList<QColor> default_colors =
-      resource_manager::storage_class_default_colors ();
-    QString class_chars = resource_manager::storage_class_chars ();
+      m_resource_manager.storage_class_default_colors ();
+    QString class_chars = m_resource_manager.storage_class_chars ();
 
     m_enable_colors =
         settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();

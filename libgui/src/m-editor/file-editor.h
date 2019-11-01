@@ -88,7 +88,7 @@ namespace octave
       }
     };
 
-    file_editor (QWidget *p);
+    file_editor (QWidget *p, resource_manager& rmgr);
 
     ~file_editor (void);
 

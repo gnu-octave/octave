@@ -88,12 +88,13 @@ namespace octave
 
 #endif
 
-  settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
-    : QDialog (p), Ui::settings_dialog ()
+  settings_dialog::settings_dialog (QWidget *p, resource_manager& rmgr,
+                                    const QString& desired_tab)
+    : QDialog (p), Ui::settings_dialog (), m_resource_manager (rmgr)
   {
     setupUi (this);
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings)
       {
@@ -107,7 +108,7 @@ namespace octave
       }
 
     // look for available language files and the actual settings
-    QString qm_dir_name = resource_manager::get_gui_translation_dir ();
+    QString qm_dir_name = m_resource_manager.get_gui_translation_dir ();
     QDir qm_dir (qm_dir_name);
     QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"), QDir::Files | QDir::Readable, QDir::Name);
 
@@ -251,7 +252,7 @@ namespace octave
     editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers", true).toBool ());
     editor_linenr_size->setValue (settings->value ("editor/line_numbers_size", 0).toInt ());
 
-    resource_manager::combo_encoding (editor_combo_encoding);
+    m_resource_manager.combo_encoding (editor_combo_encoding);
 
     default_var = QColor (240, 240, 240);
     QColor setting_color = settings->value ("editor/highlight_current_line_color", default_var).value<QColor> ();
@@ -527,7 +528,7 @@ namespace octave
   {
     if (tab.isEmpty ())
       {
-        gui_settings *settings = resource_manager::get_settings ();
+        gui_settings *settings = m_resource_manager.get_settings ();
         if (settings)
           tabWidget->setCurrentIndex (settings->value ("settings/last_tab", 0).toInt ());
       }
@@ -556,9 +557,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
-    if (! resource_manager::get_settings ()->value (
-                                    global_use_native_dialogs.key,
-                                    global_use_native_dialogs.def).toBool ())
+
+    gui_settings *settings = m_resource_manager.get_settings ();
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory
@@ -815,7 +817,7 @@ namespace octave
 
   void settings_dialog::write_changed_settings (bool closing)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     // the icon set
     QString widget_icon_set = "NONE";
@@ -1042,10 +1044,10 @@ namespace octave
   void settings_dialog::read_workspace_colors (gui_settings *settings)
   {
     // Construct the grid with all color related settings
-    QList<QColor> default_colors =
-      resource_manager::storage_class_default_colors ();
-    QStringList class_names = resource_manager::storage_class_names ();
-    QString class_chars = resource_manager::storage_class_chars ();
+    QList<QColor> default_colors
+      = m_resource_manager.storage_class_default_colors ();
+    QStringList class_names = m_resource_manager.storage_class_names ();
+    QString class_chars = m_resource_manager.storage_class_chars ();
     int nr_of_classes = class_chars.length ();
 
     QGridLayout *style_grid = new QGridLayout ();
@@ -1105,7 +1107,7 @@ namespace octave
     settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
     settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
 
-    QString class_chars = resource_manager::storage_class_chars ();
+    QString class_chars = m_resource_manager.storage_class_chars ();
     color_picker *color;
 
     for (int i = 0; i < class_chars.length (); i++)
@@ -1166,7 +1168,7 @@ namespace octave
   {
     QList<QColor> default_colors = variable_editor::default_colors ();
     QStringList class_names = variable_editor::color_names ();
-    QString class_chars = resource_manager::varedit_color_chars ();
+    QString class_chars = m_resource_manager.varedit_color_chars ();
     int nr_of_classes = class_chars.length ();
 
     QGridLayout *style_grid = new QGridLayout ();
@@ -1200,7 +1202,7 @@ namespace octave
 
   void settings_dialog::write_varedit_colors (gui_settings *settings)
   {
-    QString class_chars = resource_manager::varedit_color_chars ();
+    QString class_chars = m_resource_manager.varedit_color_chars ();
     color_picker *color;
 
     for (int i = 0; i < class_chars.length (); i++)

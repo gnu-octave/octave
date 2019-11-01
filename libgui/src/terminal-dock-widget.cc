@@ -39,8 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  terminal_dock_widget::terminal_dock_widget (QWidget *p)
-    : octave_dock_widget ("TerminalDockWidget", p),
+  terminal_dock_widget::terminal_dock_widget (QWidget *p,
+                                              resource_manager& rmgr)
+    : octave_dock_widget ("TerminalDockWidget", p, rmgr),
       m_terminal (QTerminal::create (p))
   {
     m_terminal->setObjectName ("OctaveTerminal");
@@ -61,7 +62,7 @@ namespace octave
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);

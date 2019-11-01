@@ -120,7 +120,10 @@ namespace octave
     QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
 #endif
 
-    m_settings = resource_manager::get_settings ();
+    resource_manager& rmgr
+      = __get_resource_manager__ ("shortcut_manager::shortcut_manager");
+
+    m_settings = rmgr.get_settings ();
   }
 
   void shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
@@ -688,7 +691,7 @@ namespace octave
 
         // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
         int opts = 0;  // No options by default.
-        if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+        if (! m_settings->value ("use_native_file_dialogs",
                                                         true).toBool ())
           opts = QFileDialog::DontUseNativeDialog;
 

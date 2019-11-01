@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
+
   class welcome_wizard : public QDialog
   {
     Q_OBJECT
@@ -38,13 +40,15 @@ namespace octave
 
     typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
 
-    welcome_wizard (QWidget *parent = nullptr);
+    welcome_wizard (resource_manager& rmgr, QWidget *parent = nullptr);
 
     ~welcome_wizard (void) = default;
 
     void adjust_size (void);
 
   private:
+
+    resource_manager& m_resource_manager;
 
     QList<page_creator_fptr> m_page_ctor_list;
     QList<page_creator_fptr>::iterator m_page_list_iterator;

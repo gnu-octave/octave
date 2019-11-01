@@ -84,8 +84,8 @@ namespace octave
 
   // File editor
 
-  file_editor::file_editor (QWidget *p)
-    : file_editor_interface (p)
+  file_editor::file_editor (QWidget *p, resource_manager& rmgr)
+    : file_editor_interface (p, rmgr)
   {
     // Set current editing directory before construct because loaded
     // files will change ced accordingly.
@@ -157,7 +157,7 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     QString sc_run = settings->value ("shortcuts/editor_run:run_file").toString ();
     QString sc_cont = settings->value ("shortcuts/main_debug:continue").toString ();
 
@@ -219,7 +219,7 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     if (settings->value ("useCustomFileEditor",false).toBool ())
       return;  // do not open an empty script in the external editor
 
@@ -426,7 +426,7 @@ namespace octave
     // Here, the application or the editor will be closed -> store the session
 
     // Save open files for restoring in next session; this only is possible
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     // save filenames (even if last session will not be restored next time)
     // together with encoding and the tab index
@@ -819,7 +819,7 @@ namespace octave
                 m_tab_widget->setTabToolTip (i, tip);
                 if (modified)
                   m_tab_widget->setTabIcon (i,
-                                  resource_manager::icon ("document-save"));
+                                  m_resource_manager.icon ("document-save"));
                 else
                   m_tab_widget->setTabIcon (i, QIcon ());
               }
@@ -1321,7 +1321,7 @@ namespace octave
     if (m_closed && visible)
       {
         m_closed = false;
-        gui_settings *settings = resource_manager::get_settings ();
+        gui_settings *settings = m_resource_manager.get_settings ();
         restore_session (settings);
       }
 
@@ -1383,7 +1383,7 @@ namespace octave
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     bool show_dbg_file
       = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
 
@@ -1660,7 +1660,7 @@ namespace octave
   // handler for the close event
   void file_editor::closeEvent (QCloseEvent *e)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     if (settings->value ("editor/hiding_closes_files",false).toBool ())
       {
         if (check_closing ())
@@ -1734,7 +1734,7 @@ namespace octave
     m_tab_widget = new file_editor_tab_widget (editor_widget);
 
     // the mru-list and an empty array of actions
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
     m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
                             .toStringList ();
@@ -1776,13 +1776,13 @@ namespace octave
 
     m_save_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("document-save"),
+                    m_resource_manager.icon ("document-save"),
                     tr ("&Save File"),
                     SLOT (request_save_file (bool)));
 
     m_save_as_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("document-save-as"),
+                    m_resource_manager.icon ("document-save-as"),
                     tr ("Save File &As..."),
                     SLOT (request_save_file_as (bool)));
 
@@ -1790,19 +1790,19 @@ namespace octave
 
     m_close_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("&Close"),
                     SLOT (request_close_file (bool)));
 
     m_close_all_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("Close All"),
                     SLOT (request_close_all_files (bool)));
 
     m_close_others_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("window-close",false),
+                    m_resource_manager.icon ("window-close",false),
                     tr ("Close Other Files"),
                     SLOT (request_close_other_files (bool)));
 
@@ -1810,7 +1810,7 @@ namespace octave
 
     m_print_action
       = add_action (m_fileMenu,
-                    resource_manager::icon ("document-print"),
+                    m_resource_manager.icon ("document-print"),
                     tr ("Print..."),
                     SLOT (request_print_file (bool)));
 
@@ -1820,7 +1820,7 @@ namespace octave
 
     m_redo_action
       = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-redo"),
+                    m_resource_manager.icon ("edit-redo"),
                     tr ("&Redo"),
                     SLOT (request_redo (bool)));
     m_redo_action->setEnabled (false);
@@ -1829,14 +1829,14 @@ namespace octave
 
     m_cut_action
       = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-cut"),
+                    m_resource_manager.icon ("edit-cut"),
                     tr ("Cu&t"),
                     SLOT (request_cut (bool)));
     m_cut_action->setEnabled (false);
 
     m_find_action
       = add_action (m_edit_menu,
-                    resource_manager::icon ("edit-find-replace"),
+                    m_resource_manager.icon ("edit-find-replace"),
                     tr ("&Find and Replace..."),
                     SLOT (request_find (bool)));
 
@@ -2018,12 +2018,12 @@ namespace octave
 
     m_preferences_action
       = add_action (m_edit_menu,
-                    resource_manager::icon ("preferences-system"),
+                    m_resource_manager.icon ("preferences-system"),
                     tr ("&Preferences..."),
                     SLOT (request_preferences (bool)));
 
     m_styles_preferences_action
-      = add_action (m_edit_menu,  resource_manager::icon ("preferences-system"),
+      = add_action (m_edit_menu,  m_resource_manager.icon ("preferences-system"),
                     tr ("&Styles Preferences..."),
                     SLOT (request_styles_preferences (bool)));
 
@@ -2086,12 +2086,12 @@ namespace octave
     view_menu->addSeparator ();
 
     m_zoom_in_action
-      = add_action (view_menu, resource_manager::icon ("zoom-in"),
+      = add_action (view_menu, m_resource_manager.icon ("zoom-in"),
                     tr ("Zoom &In"),
                     SLOT (zoom_in (bool)));
 
     m_zoom_out_action
-      = add_action (view_menu, resource_manager::icon ("zoom-out"),
+      = add_action (view_menu, m_resource_manager.icon ("zoom-out"),
                     tr ("Zoom &Out"),
                     SLOT (zoom_out (bool)));
 
@@ -2115,25 +2115,25 @@ namespace octave
 
     m_toggle_breakpoint_action
       = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-toggle"),
+                    m_resource_manager.icon ("bp-toggle"),
                     tr ("Toggle &Breakpoint"),
                     SLOT (request_toggle_breakpoint (bool)));
 
     m_next_breakpoint_action
       = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-next"),
+                    m_resource_manager.icon ("bp-next"),
                     tr ("&Next Breakpoint"),
                     SLOT (request_next_breakpoint (bool)));
 
     m_previous_breakpoint_action
       = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-prev"),
+                    m_resource_manager.icon ("bp-prev"),
                     tr ("Pre&vious Breakpoint"),
                     SLOT (request_previous_breakpoint (bool)));
 
     m_remove_all_breakpoints_action
       = add_action (m_debug_menu,
-                    resource_manager::icon ("bp-rm-all"),
+                    m_resource_manager.icon ("bp-rm-all"),
                     tr ("&Remove All Breakpoints"),
                     SLOT (request_remove_breakpoint (bool)));
 
@@ -2147,7 +2147,7 @@ namespace octave
 
     m_run_action
       = add_action (_run_menu,
-                    resource_manager::icon ("system-run"),
+                    m_resource_manager.icon ("system-run"),
                     tr ("Save File and Run / Continue"),
                     SLOT (request_run_file (bool)));
 
@@ -2270,7 +2270,7 @@ namespace octave
   file_editor_tab *
   file_editor::make_file_editor_tab (const QString& directory)
   {
-    file_editor_tab *f = new file_editor_tab (directory);
+    file_editor_tab *f = new file_editor_tab (m_resource_manager, directory);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
@@ -2520,7 +2520,7 @@ namespace octave
       }
 
     // save actual mru-list in settings
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     settings->setValue ("editor/mru_file_list", m_mru_files);
     settings->setValue ("editor/mru_file_encodings", m_mru_files_encodings);
@@ -2530,7 +2530,7 @@ namespace octave
   bool file_editor::call_custom_editor (const QString& file_name, int line)
   {
     // Check if the user wants to use a custom file editor.
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (settings->value ("useCustomFileEditor",false).toBool ())
       {
@@ -2549,7 +2549,7 @@ namespace octave
 
   void file_editor::toggle_preference (const QString& preference, bool def)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     bool old = settings->value (preference,def).toBool ();
     settings->setValue (preference,! old);
     notice_settings (settings);

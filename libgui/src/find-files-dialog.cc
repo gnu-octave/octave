@@ -48,11 +48,11 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  find_files_dialog::find_files_dialog (QWidget *p)
-    : QDialog (p)
+  find_files_dialog::find_files_dialog (QWidget *p, resource_manager& rmgr)
+    : QDialog (p), m_resource_manager (rmgr)
   {
     setWindowTitle (tr ("Find Files"));
-    setWindowIcon (resource_manager::icon ("edit-find"));
+    setWindowIcon (m_resource_manager.icon ("edit-find"));
 
     m_dir_iterator = nullptr;
 
@@ -60,7 +60,7 @@ namespace octave
     connect (m_timer, SIGNAL (timeout (void)),
              this, SLOT (look_for_files (void)));
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     QLabel *file_name_label = new QLabel (tr ("Named:"));
     m_file_name_edit = new QLineEdit;
@@ -210,7 +210,7 @@ namespace octave
 
   void find_files_dialog::save_settings (void)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings)
       return;
@@ -315,7 +315,7 @@ namespace octave
   {
     int opts = 0;  // No options by default.
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! resource_manager::get_settings ()->value ("use_native_file_dialogs",
+    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
                                                     true).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 

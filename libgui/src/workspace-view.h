@@ -39,13 +39,15 @@ class octave_value;
 
 namespace octave
 {
+  class resource_manager;
+
   class workspace_view : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    workspace_view (QWidget *parent = nullptr);
+    workspace_view (QWidget *parent, resource_manager& rmgr);
 
     ~workspace_view (void) = default;
 

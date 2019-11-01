@@ -49,8 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  workspace_view::workspace_view (QWidget *p)
-    : octave_dock_widget ("WorkspaceView", p),
+  workspace_view::workspace_view (QWidget *p, resource_manager& rmgr)
+    : octave_dock_widget ("WorkspaceView", p, rmgr),
       m_view (new QTableView (this)),
       m_filter_checkbox (new QCheckBox ()),
       m_filter (new QComboBox (this)),
@@ -96,7 +96,7 @@ namespace octave
     ws_layout->addWidget (m_view);
     ws_layout->setSpacing (0);
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (settings)
       {
@@ -177,7 +177,7 @@ namespace octave
     m_view->setModel (&m_filter_model);
 
     // set the sorting after a model was set, it would be ignored otherwise
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     m_view->sortByColumn (settings->value ("workspaceview/sort_by_column",0).toInt (),
                           static_cast<Qt::SortOrder> (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
 
@@ -201,14 +201,14 @@ namespace octave
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));
-        int colors = resource_manager::storage_class_chars ().length ();
+        int colors = m_resource_manager.storage_class_chars ().length ();
         for (i = 0; i < colors; i++)
           {
             tool_tip +=
               QString (R"(<div style="background-color:%1;color:%2">%3</div>)")
               .arg (m_model->storage_class_color (i).name ())
               .arg (m_model->storage_class_color (i + colors).name ())
-              .arg (resource_manager::storage_class_names ().at (i));
+              .arg (m_resource_manager.storage_class_names ().at (i));
           }
       }
 
@@ -230,7 +230,7 @@ namespace octave
   void
   workspace_view::save_settings (void)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (! settings)
       return;
@@ -295,7 +295,7 @@ namespace octave
     QMenu menu (this);
     QSignalMapper sig_mapper (this);
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -315,7 +315,7 @@ namespace octave
   void
   workspace_view::toggle_header (int col)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
     bool shown = settings->value (key,true).toBool ();

@@ -36,9 +36,9 @@ along with Octave; see the file COPYING.  If not, see
   #include <windows.h>
 #endif
 
+#include "gui-preferences-nr.h"
 #include "resource-manager.h"
 #include "welcome-wizard.h"
-#include "gui-preferences-nr.h"
 
 namespace octave
 {
@@ -51,9 +51,9 @@ namespace octave
     return logo;
   };
 
-  welcome_wizard::welcome_wizard (QWidget *p)
-    : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
-      m_current_page (initial_page::create (this)),
+  welcome_wizard::welcome_wizard (resource_manager& rmgr, QWidget *p)
+    : QDialog (p), m_resource_manager (rmgr), m_page_ctor_list (),
+      m_page_list_iterator (), m_current_page (initial_page::create (this)),
       m_allow_web_connect_state (false),
       m_max_height (0), m_max_width (0)
   {
@@ -140,9 +140,9 @@ namespace octave
   {
     // Create default settings file.
 
-    resource_manager::reload_settings ();
+    m_resource_manager.reload_settings ();
 
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
 
     if (settings)
       {
@@ -167,13 +167,16 @@ namespace octave
     ft.setPointSize (20);
     m_title->setFont (ft);
 
+    resource_manager& rmgr
+      = __get_resource_manager__ ("shortcut_manager::shortcut_manager");
+
     m_message->setText
       (tr ("<html><body>\n"
            "<p>You seem to be using the Octave graphical interface for the first time on this computer.\n"
            "Click 'Next' to create a configuration file and launch Octave.</p>\n"
            "<p>The configuration file is stored in<br>%1.</p>\n"
            "</body></html>").
-       arg (resource_manager::get_settings_file ()));
+       arg (rmgr.get_settings_file ()));
     m_message->setWordWrap (true);
     m_message->setMinimumWidth (400);
 

@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStringList>
 
 #include "interpreter-qobject.h"
+#include "resource-manager.h"
 
 namespace octave
 {
@@ -94,6 +95,11 @@ namespace octave
     // The Qt QApplication.
     QApplication * qapplication (void) { return m_qapplication; };
 
+    resource_manager& get_resource_manager (void)
+    {
+      return m_resource_manager;
+    }
+
     std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
     {
       return m_qt_interpreter_events;
@@ -136,6 +142,8 @@ namespace octave
     char **m_argv;
 
     octave_qapplication *m_qapplication;
+
+    resource_manager m_resource_manager;
 
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;

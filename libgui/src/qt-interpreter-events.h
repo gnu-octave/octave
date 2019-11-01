@@ -47,6 +47,7 @@ class octave_value;
 namespace octave
 {
   class base_qobject;
+  class resource_manager;
 
   // The functions in this class are not normally called directly, but
   // are invoked from the Octave interpreter thead by methods in the
@@ -256,6 +257,8 @@ namespace octave
     void delete_debugger_pointer (const std::string& file, int line);
 
     base_qobject& m_octave_qobj;
+
+    resource_manager& m_resource_manager;
 
     QVariant m_result;
 

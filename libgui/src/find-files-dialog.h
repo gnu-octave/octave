@@ -36,13 +36,15 @@ class QTimer;
 
 namespace octave
 {
+  class resource_manager;
+
   class find_files_dialog : public QDialog
   {
     Q_OBJECT
 
   public:
 
-    find_files_dialog (QWidget *parent = nullptr);
+    find_files_dialog (QWidget *parent, resource_manager& rmgr);
 
     virtual ~find_files_dialog (void);
 
@@ -69,6 +71,8 @@ namespace octave
   private:
 
     bool is_match (const QFileInfo& info);
+
+    resource_manager& m_resource_manager;
 
     QLineEdit *m_start_dir_edit;
     QLineEdit *m_file_name_edit;

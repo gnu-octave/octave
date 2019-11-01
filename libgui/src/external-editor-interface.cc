@@ -33,8 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  external_editor_interface::external_editor_interface (QWidget *p)
-    : QWidget (p)
+  external_editor_interface::external_editor_interface (QWidget *p,
+                                                        resource_manager& rmgr)
+    : QWidget (p), m_resource_manager (rmgr)
   { }
 
   // Calling the external editor
@@ -97,7 +98,7 @@ namespace octave
   // Get and verify the settings of the external editor program
   QString external_editor_interface::external_editor (void)
   {
-    gui_settings *settings = resource_manager::get_settings ();
+    gui_settings *settings = m_resource_manager.get_settings ();
     QString editor = settings->value ("customFileEditor").toString ();
 
     // check the settings (avoid an empty string)

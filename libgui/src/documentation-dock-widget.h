@@ -28,13 +28,15 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class resource_manager;
+
   class documentation_dock_widget : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    documentation_dock_widget (QWidget *parent = nullptr);
+    documentation_dock_widget (QWidget *parent, resource_manager& rmgr);
     ~documentation_dock_widget (void);
 
   public slots:

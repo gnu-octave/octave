@@ -2633,10 +2633,14 @@ and runs it if it exists.
       std::string arg = args(i).xstring_value ("rmpath: all arguments must be strings");
       std::list<std::string> dir_elts = octave::split_path (arg);
 
-      for (const auto& dir : dir_elts)
+      for (auto dir : dir_elts)
         {
           //dir = regexprep (dir_elts{j}, '//+', "/");
           //dir = regexprep (dir, '/$', "");
+
+          std::string canonical_dir = octave::sys::canonicalize_file_name (dir);
+          if (! canonical_dir.empty ())
+            dir = canonical_dir;
 
           if (! lp.remove (dir))
             warning ("rmpath: %s: not found", dir.c_str ());

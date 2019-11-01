@@ -50,13 +50,16 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   workspace_view::workspace_view (QWidget *p)
-    : octave_dock_widget ("WorkspaceView", p), m_view (new QTableView (this))
+    : octave_dock_widget ("WorkspaceView", p),
+      m_view (new QTableView (this)),
+      m_filter_checkbox (new QCheckBox ()),
+      m_filter (new QComboBox (this)),
+      m_filter_widget (new QWidget (this))
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("Workspace"));
     setStatusTip (tr ("View the variables in the active workspace."));
 
-    m_filter = new QComboBox (this);
     m_filter->setToolTip (tr ("Enter text to filter the workspace"));
     m_filter->setEditable (true);
     m_filter->setMaxCount (MaxFilterHistory);
@@ -67,8 +70,6 @@ namespace octave
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
     QLabel *filter_label = new QLabel (tr ("Filter"));
-
-    m_filter_checkbox = new QCheckBox ();
 
     m_view->setWordWrap (false);
     m_view->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -81,7 +82,6 @@ namespace octave
     setWidget (new QWidget (this));
 
     // Create the layouts
-    m_filter_widget = new QWidget (this);
     QHBoxLayout *filter_layout = new QHBoxLayout ();
 
     filter_layout->addWidget (filter_label);
@@ -225,8 +225,6 @@ namespace octave
     m_columns_shown_keys.append ("workspaceview/show_dimension");
     m_columns_shown_keys.append ("workspaceview/show_value");
     m_columns_shown_keys.append ("workspaceview/show_attribute");
-
-    m_sig_mapper = nullptr;
   }
 
   void
@@ -257,9 +255,6 @@ namespace octave
     settings->sync ();
 
     octave_dock_widget::save_settings ();
-
-    if (m_sig_mapper)
-      delete m_sig_mapper;
   }
 
   void
@@ -298,23 +293,21 @@ namespace octave
   workspace_view::header_contextmenu_requested (const QPoint& mpos)
   {
     QMenu menu (this);
-
-    if (m_sig_mapper)
-      delete m_sig_mapper;
-    m_sig_mapper = new QSignalMapper (this);
+    QSignalMapper sig_mapper (this);
 
     QSettings *settings = resource_manager::get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
         QAction *action = menu.addAction (m_columns_shown.at (i),
-                                          m_sig_mapper, SLOT (map ()));
-        m_sig_mapper->setMapping (action, i);
+                                          &sig_mapper, SLOT (map ()));
+        sig_mapper.setMapping (action, i);
         action->setCheckable (true);
         action->setChecked (settings->value (m_columns_shown_keys.at (i),true).toBool ());
       }
 
-    connect (m_sig_mapper, SIGNAL (mapped (int)), this, SLOT (toggle_header (int)));
+    connect (&sig_mapper, SIGNAL (mapped (int)),
+             this, SLOT (toggle_header (int)));
 
     menu.exec (m_view->mapToGlobal (mpos));
   }

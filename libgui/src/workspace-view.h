@@ -122,7 +122,6 @@ namespace octave
 
     QStringList m_columns_shown;
     QStringList m_columns_shown_keys;
-    QSignalMapper *m_sig_mapper;
   };
 }
 

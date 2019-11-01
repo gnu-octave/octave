@@ -309,15 +309,19 @@ namespace octave
     m_cancelled = false;  // prevent unwanted interaction of previous
     // exits of octave which were canceled by the user
 
-    if (check_file_modified () == QMessageBox::Cancel)
+    int save_dialog = check_file_modified (true);
+    if ((save_dialog == QMessageBox::Cancel) ||
+        (save_dialog == QMessageBox::Save))
       {
-        // ignore close event if file is not saved and user cancels
-        // closing this window
+        // Ignore close event if file is saved or user cancels
+        // closing this window. In case of saving, tab is closed after
+        // successful saving.
         e->ignore ();
       }
     else
       {
         e->accept ();
+        emit tab_ready_to_close ();
         emit tab_remove_request ();
       }
   }
@@ -998,7 +1002,7 @@ namespace octave
     if (m_cancelled)
       return;
 
-    if (check_file_modified () == QMessageBox::Cancel)
+    if (check_file_modified (false) == QMessageBox::Cancel)
       m_cancelled = true;
   }
 
@@ -1827,7 +1831,7 @@ namespace octave
       }
   }
 
-  int file_editor_tab::check_file_modified (void)
+  int file_editor_tab::check_file_modified (bool remove)
   {
     int decision = QMessageBox::Yes;
     if (m_edit_area->isModified ())
@@ -1862,42 +1866,19 @@ namespace octave
 
         msgBox->setDefaultButton (QMessageBox::Save);
         m_edit_area->setReadOnly (true);
-        connect (msgBox, SIGNAL (finished (int)),
-                 this, SLOT (handle_file_modified_answer (int)));
 
-        show_dialog (msgBox, true);
+        decision = msgBox->exec (); // show_dialog (msgBox, true);
 
-        if (m_cancelled)
-          return QMessageBox::Cancel;
-        else
-          return decision;
-      }
-    else
-      {
-        // Nothing was modified.  Leave tab present in case user
-        // decides to cancel some point further along.
+        if (decision == QMessageBox::Cancel)
+          {
+            m_cancelled = true;
+            m_edit_area->setReadOnly (false);
+          }
+        else if (decision == QMessageBox::Save)
+          save_file (m_file_name, remove, false);   // Remove on success
       }
 
     return decision;
-  }
-
-  void file_editor_tab::handle_file_modified_answer (int decision)
-  {
-    if (decision == QMessageBox::Save)
-      {
-        // Save file, but do not remove from editor.
-        save_file (m_file_name, false, false);
-      }
-    else if (decision == QMessageBox::Discard)
-      {
-        // User doesn't want to save, leave tab and remove subsequently.
-      }
-    else
-      {
-        // User canceled, allow editing again.
-        m_edit_area->setReadOnly (false);
-        m_cancelled = true;
-      }
   }
 
   void file_editor_tab::set_modified (bool modified)
@@ -2431,6 +2412,8 @@ namespace octave
     // files is save -> not modified, update encoding in statusbar
     m_edit_area->setModified (false);
     m_enc_indicator->setText (m_encoding);
+
+    emit tab_ready_to_close ();
 
     if (remove_on_success)
       {

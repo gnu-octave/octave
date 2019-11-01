@@ -401,6 +401,28 @@ namespace octave
         return false;
       }
 
+    // Wait for all editor tabs to have saved their files if required
+    m_number_of_tabs = m_editor_tab_map.size ();
+
+    for (auto p = m_editor_tab_map.cbegin ();
+         p != m_editor_tab_map.cend (); p++)
+      {
+        QString file_name = p->first;   // get file name of tab
+        connect (static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID),
+                 SIGNAL (tab_ready_to_close (void)),
+                 this, SLOT (handle_tab_ready_to_close (void)));
+      }
+
+    return true;
+  }
+
+  void file_editor::handle_tab_ready_to_close (void)
+  {
+    m_number_of_tabs--;
+
+    if (m_number_of_tabs > 0)
+      return;
+
     // Here, the application or the editor will be closed -> store the session
 
     // Save open files for restoring in next session; this only is possible
@@ -415,7 +437,7 @@ namespace octave
 
     // save all open tabs before they are definitely closed
     for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+        p != m_editor_tab_map.cend (); p++)
       {
         QString file_name = p->first;   // get file name of tab
         if (! file_name.isEmpty ())      // do not append unnamed files
@@ -427,7 +449,7 @@ namespace octave
             file_editor_tab *editor_tab
               = static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID);
             fet_index.append (index.setNum
-                              (m_tab_widget->indexOf (editor_tab)));
+                             (m_tab_widget->indexOf (editor_tab)));
 
             int l, c;
             editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
@@ -456,7 +478,7 @@ namespace octave
 
     setVisible (vis);
 
-    return true;
+    octave_dock_widget::close ();
   }
 
   void file_editor::request_new_file (const QString& commands)
@@ -1646,7 +1668,7 @@ namespace octave
             // all tabs are closed without cancelling,
             // store closing state for restoring session when shown again
             m_closed = true;
-            e->accept ();
+            e->ignore ();
           }
         else
           {

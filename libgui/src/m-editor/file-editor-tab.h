@@ -69,6 +69,7 @@ namespace octave
 
   signals:
 
+    void tab_ready_to_close (void);
     void file_name_changed (const QString& fileName,
                             const QString& toolTip,
                             bool modified);
@@ -223,9 +224,6 @@ namespace octave
     // When user closes message box for resave question.
     void handle_file_resave_answer (int decision);
 
-    // When user closes message box for modified question.
-    void handle_file_modified_answer (int decision);
-
     // When user closes find_dialog box.
     void handle_find_dialog_finished (int decision);
 
@@ -298,7 +296,7 @@ namespace octave
     void update_lexer_settings (void);
 
     void show_dialog (QDialog *dlg, bool modal);
-    int check_file_modified (void);
+    int check_file_modified (bool remove = false);
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);
     void do_smart_indent_line_or_selected_text (void);

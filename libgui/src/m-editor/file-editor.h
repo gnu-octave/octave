@@ -187,6 +187,7 @@ namespace octave
     void set_focus (QWidget *fet);
     void enable_menu_shortcuts (bool);
     bool check_closing (void);
+    void handle_tab_ready_to_close (void);
 
     void request_new_file (const QString& commands);
     void request_close_file (bool);
@@ -342,6 +343,7 @@ namespace octave
 
     QMenu * add_menu (QMenuBar *p, QString text);
 
+    int m_number_of_tabs;
     std::map<QString, tab_info> m_editor_tab_map;
     QHash<QMenu*, QStringList> m_hash_menu_text;
 

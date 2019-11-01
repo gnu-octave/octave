@@ -2238,33 +2238,33 @@ namespace octave
   genpath (const std::string& dirname, const string_vector& skip)
   {
     std::string retval;
-  string_vector dirlist;
-  std::string msg;
+    string_vector dirlist;
+    std::string msg;
 
-  if (! sys::get_dirlist (dirname, dirlist, msg))
-    return retval;
+    if (! sys::get_dirlist (dirname, dirlist, msg))
+      return retval;
 
-  retval = dirname;
+    retval = dirname;
 
-  dirlist = dirlist.sort (false);
+    dirlist = dirlist.sort (false);
 
-  octave_idx_type len = dirlist.numel ();
+    octave_idx_type len = dirlist.numel ();
 
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      std::string elt = dirlist[i];
+    for (octave_idx_type i = 0; i < len; i++)
+      {
+        std::string elt = dirlist[i];
 
-      bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
-                     || elt[0] == '+');
+        bool skip_p = (elt == "." || elt == ".." || elt[0] == '@'
+                       || elt[0] == '+');
 
-      if (! skip_p)
-        {
-          for (octave_idx_type j = 0; j < skip.numel (); j++)
-            {
-              skip_p = (elt == skip[j]);
-              if (skip_p)
-                break;
-            }
+        if (! skip_p)
+          {
+            for (octave_idx_type j = 0; j < skip.numel (); j++)
+              {
+                skip_p = (elt == skip[j]);
+                if (skip_p)
+                  break;
+              }
 
             if (! skip_p)
               {

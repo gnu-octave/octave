@@ -99,6 +99,8 @@ namespace octave
   // we can handle forward Octave interpreter exceptions from the GUI
   // thread to the interpreter thread.
 
+  base_qobject *base_qobject::s_instance = nullptr;
+
   base_qobject::base_qobject (qt_application& app_context)
     : QObject (), m_app_context (app_context),
       m_argc (m_app_context.sys_argc ()),
@@ -110,6 +112,12 @@ namespace octave
       m_interpreter_qobj (new interpreter_qobject (*this)),
       m_main_thread (new QThread ())
   {
+    if (s_instance)
+      throw std::runtime_error
+        ("only one octave_qobject object may be active");
+
+    s_instance = this;
+
     std::string show_gui_msgs =
       sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 

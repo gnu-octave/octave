@@ -123,6 +123,8 @@ namespace octave
 
     void copy_image_to_clipboard (const QString& file, bool remove_file);
 
+    static base_qobject * the_octave_qobject (void) { return s_instance; }
+
   protected:
 
     qt_application& m_app_context;
@@ -146,6 +148,8 @@ namespace octave
     interpreter_qobject *m_interpreter_qobj;
 
     QThread *m_main_thread;
+
+    static base_qobject *s_instance;
   };
 
   //! This object provides a command-line interface to Octave that may

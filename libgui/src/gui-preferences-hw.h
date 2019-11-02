@@ -20,19 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave_gui_preferences_all_h)
-#define octave_gui_preferences_all_h 1
+#if ! defined (octave_gui_preferences_hw_h)
+#define octave_gui_preferences_hw_h 1
 
-#include "gui-preferences-cs.h"
-#include "gui-preferences-ed.h"
-#include "gui-preferences-fb.h"
-#include "gui-preferences-global.h"
-#include "gui-preferences-hw.h"
-#include "gui-preferences-mw.h"
-#include "gui-preferences-nr.h"
-#include "gui-preferences-pd.h"
-#include "gui-preferences-ve.h"
-#include "gui-preferences-sc.h"
-#include "gui-preferences-ws.h"
+#include "gui-preferences.h"
+
+// News Reader properties
+
+const gui_pref
+hw_filter_active ("history_dock_widget/filter_active", QVariant (false));
+
+const gui_pref
+hw_filter_shown ("history_dock_widget/filter_shown", QVariant (true));
+
+const gui_pref
+hw_mru_list ("history_dock_widget/mru_list", QVariant ());
 
 #endif

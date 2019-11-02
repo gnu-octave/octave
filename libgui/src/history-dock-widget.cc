@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-hw.h"
 #include "history-dock-widget.h"
 #include "resource-manager.h"
 
@@ -94,14 +95,13 @@ namespace octave
     if (! settings)
       return;
 
-    settings->setValue ("history_dock_widget/filter_active",
-                        m_filter_checkbox->isChecked ());
-    settings->setValue ("history_dock_widget/filter_shown", m_filter_shown);
+    settings->setValue (hw_filter_active.key, m_filter_checkbox->isChecked ());
+    settings->setValue (hw_filter_shown.key, m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings->setValue ("history_dock_widget/mru_list", mru);
+    settings->setValue (hw_mru_list.key, mru);
 
     settings->sync ();
 
@@ -318,14 +318,14 @@ namespace octave
     gui_settings *settings = resource_manager::get_settings ();
 
     m_filter_shown
-      = settings->value ("history_dock_widget/filter_shown",true).toBool ();
+      = settings->value (hw_filter_shown.key, hw_filter_shown.def).toBool ();
     m_filter_widget->setVisible (m_filter_shown);
 
     m_filter->addItems
-      (settings->value ("history_dock_widget/mru_list").toStringList ());
+      (settings->value (hw_mru_list.key, hw_mru_list.def).toStringList ());
 
     bool filter_state
-      = settings->value ("history_dock_widget/filter_active", false).toBool ();
+      = settings->value (hw_filter_active.key, hw_filter_active.def).toBool ();
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 

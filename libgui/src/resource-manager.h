@@ -140,8 +140,6 @@ namespace octave
 
     static resource_manager *instance;
 
-  public slots:
-
     static void cleanup_instance (void) { delete instance; instance = nullptr; }
 
     static QString varedit_color_chars (void) {return "fbsha"; }

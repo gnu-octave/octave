@@ -41,10 +41,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
 
+// Bug #55940 (Disable App Nap on Mac)
+#if 0
 #if defined (Q_OS_MAC)
    // ObjC interface is needed for App Nap control
 #  include <objc/runtime.h>
 #  include <objc/message.h>
+#endif
 #endif
 
 #include "oct-env.h"
@@ -139,10 +142,14 @@ namespace octave
 
     qRegisterMetaType<octave_value_list> ("octave_value_list");
 
+
+// Bug #55940 (Disable App Nap on Mac)
+#if 0
 #if defined (Q_OS_MAC)
     // Mac App Nap feature causes pause() and sleep() to misbehave.
     // Disable it for the entire program run.
     disable_app_nap ();
+#endif
 #endif
 
     // Force left-to-right alignment (see bug #46204)
@@ -183,6 +190,8 @@ namespace octave
     string_vector::delete_c_str_vec (m_argv);
   }
 
+// Bug #55940 (Disable App Nap on Mac)
+#if 0
 #if defined (Q_OS_MAC)
   // FIXME: Does this need to be a private member function of base_qobject?
   //        Or should it be a file local static function?
@@ -229,6 +238,7 @@ namespace octave
         NSActivityUserInitiatedAllowingIdleSystemSleep | NSActivityLatencyCritical,
         reason_string);
   }
+#endif
 #endif
 
   void base_qobject::config_translators (void)

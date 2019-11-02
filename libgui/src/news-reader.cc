@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "news-reader.h"
 #include "resource-manager.h"
+#include "gui-preferences-nr.h"
 
 #include "url-transfer.h"
 #include "version.h"
@@ -69,7 +70,7 @@ namespace octave
 
                 if (settings)
                   {
-                    settings->setValue ("news/last_time_checked",
+                    settings->setValue (nr_last_time.key,
                                         QDateTime::currentDateTime ());
 
                     settings->sync ();
@@ -93,7 +94,7 @@ namespace octave
                       {
                         if (settings)
                           {
-                            settings->setValue ("news/last_news_item",
+                            settings->setValue (nr_last_news.key,
                                                 curr_page_serial);
 
                             settings->sync ();

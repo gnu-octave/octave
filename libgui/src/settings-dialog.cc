@@ -402,7 +402,7 @@ namespace octave
 
     le_file_browser_extensions->setText (settings->value (fb_txt_file_ext.key, fb_txt_file_ext.def).toString ());
 
-    checkbox_allow_web_connect->setChecked (settings->value ("news/allow_web_connection", false).toBool ());
+    checkbox_allow_web_connect->setChecked (settings->value (nr_allow_connection.key, nr_allow_connection.def).toBool ());
     useProxyServer->setChecked (settings->value ("useProxyServer", false).toBool ());
     proxyHostName->setText (settings->value ("proxyHostName").toString ());
 
@@ -944,7 +944,7 @@ namespace octave
     settings->setValue (fb_startup_dir.key, le_file_browser_dir->text ());
     settings->setValue (fb_txt_file_ext.key, le_file_browser_extensions->text ());
 
-    settings->setValue ("news/allow_web_connection", checkbox_allow_web_connect->isChecked ());
+    settings->setValue (nr_allow_connection.key, checkbox_allow_web_connect->isChecked ());
     settings->setValue ("useProxyServer", useProxyServer->isChecked ());
     settings->setValue ("proxyType", proxyType->currentText ());
     settings->setValue ("proxyHostName", proxyHostName->text ());

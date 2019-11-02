@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
+#include "gui-preferences-nr.h"
 #include "gui-preferences-pd.h"
 #include "gui-preferences-ve.h"
 #include "gui-preferences-sc.h"

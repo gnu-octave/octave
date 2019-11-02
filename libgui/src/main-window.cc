@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-mw.h"
+#include "gui-preferences-nr.h"
 #include "gui-settings.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
@@ -185,12 +186,13 @@ namespace octave
     if (settings)
       {
         connect_to_web
-          = settings->value ("news/allow_web_connection", false).toBool ();
+          = settings->value (nr_allow_connection.key,
+                             nr_allow_connection.def).toBool ();
 
         last_checked
-          = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
+          = settings->value (nr_last_time.key, nr_last_time.def).toDateTime ();
 
-        serial = settings->value ("news/last_news_item", 0).toInt ();
+        serial = settings->value (nr_last_news.key, nr_last_news.def).toInt ();
         m_default_encoding = settings->value (ed_default_enc.key,
                                               ed_default_enc.def).toString ();
       }
@@ -663,7 +665,8 @@ namespace octave
 
     bool connect_to_web
       = (settings
-         ? settings->value ("news/allow_web_connection", false).toBool ()
+         ? settings->value (nr_allow_connection.key,
+                            nr_allow_connection.def).toBool ()
          : true);
 
     QString base_url = "https://octave.org";

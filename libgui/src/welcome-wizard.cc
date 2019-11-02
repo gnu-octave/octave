@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "resource-manager.h"
 #include "welcome-wizard.h"
+#include "gui-preferences-nr.h"
 
 namespace octave
 {
@@ -145,7 +146,7 @@ namespace octave
 
     if (settings)
       {
-        settings->setValue ("news/allow_web_connection",
+        settings->setValue (nr_allow_connection.key,
                             m_allow_web_connect_state);
 
         settings->sync ();
@@ -249,9 +250,11 @@ namespace octave
 
     QHBoxLayout *checkbox_layout = new QHBoxLayout;
 
-    // FIXME: Synchronize the initial state of this checkbox with the default
-    // value of "news/allow_web_connection" stored elsewhere.
-    m_checkbox->setCheckState (Qt::Unchecked);
+    bool allow_connection = nr_allow_connection.def.toBool ();
+    if (allow_connection)
+      m_checkbox->setCheckState (Qt::Checked);
+    else
+      m_checkbox->setCheckState (Qt::Unchecked);
 
     m_checkbox_message->setText
       (tr ("<html><head>\n"

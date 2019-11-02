@@ -52,6 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
+
+#  include "lo-sysdep.h"
 #endif
 
 // Define the characters which separate components of filenames and
@@ -162,18 +164,19 @@ kpse_truncate_filename (const std::string& name)
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
+static inline bool
+READABLE (const std::string& fn)
+{
 #if defined (OCTAVE_USE_WINDOWS_API)
-static inline bool
-READABLE (const std::string& fn)
-{
-  const char *t = fn.c_str ();
-  return (GetFileAttributes (t) != 0xFFFFFFFF
-          && ! (GetFileAttributes (t) & FILE_ATTRIBUTE_DIRECTORY));
-}
+
+  std::wstring w_fn = L"\\\\?\\" + octave::sys::u8_to_wstring (fn);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  return (f_attr != 0xFFFFFFFF && ! (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
 #else
-static inline bool
-READABLE (const std::string& fn)
-{
+
   bool retval = false;
 
   const char *t = fn.c_str ();
@@ -186,8 +189,9 @@ READABLE (const std::string& fn)
     }
 
   return retval;
-}
+
 #endif
+}
 
 /* POSIX invented the brain-damage of not necessarily truncating
    filename components; the system's behavior is defined by the value of

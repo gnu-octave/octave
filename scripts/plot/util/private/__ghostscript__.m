@@ -126,7 +126,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin)
       if (dos_shell)
         cleanup_cmd = sprintf ('del "%s"', strrep (offsetfile, '/', '\'));
       else
-        cleanup_cmd = sprintf ('rm "%s"', strrep (offsetfile, '/', '\'));
+        cleanup_cmd = sprintf ('rm "%s"', offsetfile);
       endif
     endif
     unwind_protect

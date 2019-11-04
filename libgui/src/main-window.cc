@@ -251,7 +251,6 @@ namespace octave
     delete m_find_files_dlg;
     delete m_release_notes_window;
     delete m_community_news_window;
-    delete m_community_news_window;
   }
 
   bool main_window::command_window_has_focus (void) const

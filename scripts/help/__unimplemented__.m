@@ -1298,7 +1298,6 @@ function rlist = missing_functions ()
   "uiradiobutton",
   "uisave",
   "uisetcolor",
-  "uisetfont",
   "uisetpref",
   "uislider",
   "uispinner",

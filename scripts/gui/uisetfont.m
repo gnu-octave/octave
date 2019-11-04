@@ -340,7 +340,6 @@ endfunction
 
 function cb_list_value_changed (h, evt, hlists, htext, sysfonts)
 
-  keyboard;
   if (h == hlists(1))
     set (hlists(2), "string", getstylestring (sysfonts(get (h, "value"))),
                     "value", 1);

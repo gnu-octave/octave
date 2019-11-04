@@ -58,6 +58,8 @@ namespace octave
 
   };
 
+  class base_qobject;
+
   class shortcut_manager : public QWidget
   {
     Q_OBJECT
@@ -71,7 +73,7 @@ namespace octave
       OSC_DEFAULT = 2
     };
 
-    shortcut_manager (void);
+    shortcut_manager (base_qobject& oct_qobj);
 
     // No copying!
 
@@ -81,47 +83,17 @@ namespace octave
 
     ~shortcut_manager (void) = default;
 
-    static void init_data (void)
-    {
-      if (instance_ok ())
-        instance->do_init_data ();
-    }
+    void init_data (void);
 
-    static void write_shortcuts (gui_settings *settings, bool closing)
-    {
-      if (instance_ok ())
-        instance->do_write_shortcuts (settings, closing);
-    }
+    void write_shortcuts (gui_settings *settings, bool closing);
 
-    static void set_shortcut (QAction *action, const QString& key)
-    {
-      if (instance_ok ())
-        instance->do_set_shortcut (action, key);
-    }
+    void set_shortcut (QAction *action, const QString& key);
 
-    static void shortcut (QShortcut *sc, const QString& key)
-    {
-      if (instance_ok () && sc)
-        instance->do_shortcut (sc, key);
-    }
+    void shortcut (QShortcut *sc, const QString& key);
 
-    static void fill_treewidget (QTreeWidget *tree_view)
-    {
-      if (instance_ok ())
-        instance->do_fill_treewidget (tree_view);
-    }
+    void fill_treewidget (QTreeWidget *tree_view);
 
-    static void import_export (int action)
-    {
-      if (instance_ok ())
-        instance->do_import_export (action);
-    }
-
-    static shortcut_manager *instance;
-
-  public slots:
-
-    static void cleanup_instance (void) { delete instance; instance = nullptr; }
+    bool import_export (int action);
 
   protected slots:
 
@@ -131,15 +103,7 @@ namespace octave
 
   private:
 
-    static bool instance_ok (void);
-
     void init (const QString&, const QString&, const QKeySequence&);
-    void do_init_data ();
-    void do_write_shortcuts (gui_settings *settings, bool closing);
-    void do_set_shortcut (QAction *action, const QString& key);
-    void do_shortcut (QShortcut *sc, const QString& key);
-    void do_fill_treewidget (QTreeWidget *tree_view);
-    bool do_import_export (int action);
     void shortcut_dialog (int);
     void import_shortcuts (gui_settings *settings);
     bool overwrite_all_shortcuts (void);
@@ -188,6 +152,8 @@ namespace octave
       QKeySequence m_default_sc;
     };
 
+    base_qobject& m_octave_qobj;
+
     QList<shortcut_t> m_sc;
     QHash<QString, int> m_shortcut_hash;
     QHash<QString, int> m_action_hash;
@@ -199,8 +165,6 @@ namespace octave
     enter_shortcut *m_edit_actual;
     QLabel *m_label_default;
     int m_handled_index;
-
-    gui_settings *m_settings;
   };
 }
 

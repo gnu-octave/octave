@@ -62,7 +62,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-all.h"
 #include "octave-qobject.h"
 #include "settings-dialog.h"
-#include "shortcut-manager.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
 
@@ -451,10 +450,12 @@ namespace octave
 
     // shortcuts
 
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
     cb_prevent_readline_conflicts->setChecked (settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
 
     // initialize the tree view with all shortcut data
-    shortcut_manager::fill_treewidget (shortcuts_treewidget);
+    scmgr.fill_treewidget (shortcuts_treewidget);
 
     // connect the buttons for import/export of the shortcut sets
     connect (btn_import_shortcut_set, SIGNAL (clicked (void)),
@@ -607,17 +608,23 @@ namespace octave
 
   void settings_dialog::import_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_IMPORT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_IMPORT);
   }
 
   void settings_dialog::export_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_EXPORT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_EXPORT);
   }
 
   void settings_dialog::default_shortcut_set (void)
   {
-    shortcut_manager::import_export (shortcut_manager::OSC_DEFAULT);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.import_export (shortcut_manager::OSC_DEFAULT);
   }
 
   void settings_dialog::read_lexer_settings (QsciLexer *lexer,
@@ -1034,8 +1041,10 @@ namespace octave
     write_varedit_colors (settings);
 
     // shortcuts
+
     settings->setValue ("shortcuts/prevent_readline_conflicts", cb_prevent_readline_conflicts->isChecked ());
-    shortcut_manager::write_shortcuts (settings, closing);
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.write_shortcuts (settings, closing);
 
     // settings dialog's geometry
     settings->setValue ("settings/last_tab", tabWidget->currentIndex ());

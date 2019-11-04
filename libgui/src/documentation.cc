@@ -580,15 +580,17 @@ namespace octave
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     // Shortcuts
-    shortcut_manager::set_shortcut (m_action_find, "editor_edit:find_replace");
-    shortcut_manager::shortcut (m_findnext_shortcut, "editor_edit:find_next");
-    shortcut_manager::shortcut (m_findprev_shortcut, "editor_edit:find_previous");
-    shortcut_manager::set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
-    shortcut_manager::set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
-    shortcut_manager::set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
-    shortcut_manager::set_shortcut (m_action_go_home, "doc_browser:go_home");
-    shortcut_manager::set_shortcut (m_action_go_prev, "doc_browser:go_back");
-    shortcut_manager::set_shortcut (m_action_go_next, "doc_browser:go_next");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
+    scmgr.set_shortcut (m_action_find, "editor_edit:find_replace");
+    scmgr.shortcut (m_findnext_shortcut, "editor_edit:find_next");
+    scmgr.shortcut (m_findprev_shortcut, "editor_edit:find_previous");
+    scmgr.set_shortcut (m_action_zoom_in, "editor_view:zoom_in");
+    scmgr.set_shortcut (m_action_zoom_out, "editor_view:zoom_out");
+    scmgr.set_shortcut (m_action_zoom_original, "editor_view:zoom_normal");
+    scmgr.set_shortcut (m_action_go_home, "doc_browser:go_home");
+    scmgr.set_shortcut (m_action_go_prev, "doc_browser:go_back");
+    scmgr.set_shortcut (m_action_go_next, "doc_browser:go_next");
   }
 
   void documentation::copyClipboard (void)

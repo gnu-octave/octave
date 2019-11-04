@@ -128,12 +128,14 @@ namespace octave
   // Update the settings
   void dw_main_window::notice_settings (const gui_settings *)
   {
-    shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
-    shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
-    shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
 
-    shortcut_manager::set_shortcut (m_switch_left_action, "editor_tabs:switch_left_tab");
-    shortcut_manager::set_shortcut (m_switch_right_action, "editor_tabs:switch_right_tab");
+    scmgr.set_shortcut (m_close_action, "editor_file:close");
+    scmgr.set_shortcut (m_close_all_action, "editor_file:close_all");
+    scmgr.set_shortcut (m_close_others_action, "editor_file:close_other");
+
+    scmgr.set_shortcut (m_switch_left_action, "editor_tabs:switch_left_tab");
+    scmgr.set_shortcut (m_switch_right_action, "editor_tabs:switch_right_tab");
   }
 
 

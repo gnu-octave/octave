@@ -170,7 +170,8 @@ namespace octave
 
   void file_editor::handle_exit_debug_mode (void)
   {
-    shortcut_manager::set_shortcut (m_run_action, "editor_run:run_file");
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.set_shortcut (m_run_action, "editor_run:run_file");
     m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
   }
 
@@ -1232,88 +1233,90 @@ namespace octave
     // Shortcuts also available in the main window, as well as the realted
     // ahotcuts, are defined in main_window and added to the editor
 
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
     // File menu
-    shortcut_manager::set_shortcut (m_edit_function_action, "editor_file:edit_function");
-    shortcut_manager::set_shortcut (m_save_action, "editor_file:save");
-    shortcut_manager::set_shortcut (m_save_as_action, "editor_file:save_as");
-    shortcut_manager::set_shortcut (m_close_action, "editor_file:close");
-    shortcut_manager::set_shortcut (m_close_all_action, "editor_file:close_all");
-    shortcut_manager::set_shortcut (m_close_others_action, "editor_file:close_other");
-    shortcut_manager::set_shortcut (m_print_action, "editor_file:print");
+    scmgr.set_shortcut (m_edit_function_action, "editor_file:edit_function");
+    scmgr.set_shortcut (m_save_action, "editor_file:save");
+    scmgr.set_shortcut (m_save_as_action, "editor_file:save_as");
+    scmgr.set_shortcut (m_close_action, "editor_file:close");
+    scmgr.set_shortcut (m_close_all_action, "editor_file:close_all");
+    scmgr.set_shortcut (m_close_others_action, "editor_file:close_other");
+    scmgr.set_shortcut (m_print_action, "editor_file:print");
 
     // Edit menu
-    shortcut_manager::set_shortcut (m_redo_action, "editor_edit:redo");
-    shortcut_manager::set_shortcut (m_cut_action, "editor_edit:cut");
-    shortcut_manager::set_shortcut (m_find_action, "editor_edit:find_replace");
-    shortcut_manager::set_shortcut (m_find_next_action, "editor_edit:find_next");
-    shortcut_manager::set_shortcut (m_find_previous_action, "editor_edit:find_previous");
+    scmgr.set_shortcut (m_redo_action, "editor_edit:redo");
+    scmgr.set_shortcut (m_cut_action, "editor_edit:cut");
+    scmgr.set_shortcut (m_find_action, "editor_edit:find_replace");
+    scmgr.set_shortcut (m_find_next_action, "editor_edit:find_next");
+    scmgr.set_shortcut (m_find_previous_action, "editor_edit:find_previous");
 
-    shortcut_manager::set_shortcut (m_delete_start_word_action, "editor_edit:delete_start_word");
-    shortcut_manager::set_shortcut (m_delete_end_word_action, "editor_edit:delete_end_word");
-    shortcut_manager::set_shortcut (m_delete_start_line_action, "editor_edit:delete_start_line");
-    shortcut_manager::set_shortcut (m_delete_end_line_action, "editor_edit:delete_end_line");
-    shortcut_manager::set_shortcut (m_delete_line_action, "editor_edit:delete_line");
-    shortcut_manager::set_shortcut (m_copy_line_action, "editor_edit:copy_line");
-    shortcut_manager::set_shortcut (m_cut_line_action, "editor_edit:cut_line");
-    shortcut_manager::set_shortcut (m_duplicate_selection_action, "editor_edit:duplicate_selection");
-    shortcut_manager::set_shortcut (m_transpose_line_action, "editor_edit:transpose_line");
-    shortcut_manager::set_shortcut (m_comment_selection_action, "editor_edit:comment_selection");
-    shortcut_manager::set_shortcut (m_uncomment_selection_action, "editor_edit:uncomment_selection");
-    shortcut_manager::set_shortcut (m_comment_var_selection_action, "editor_edit:comment_var_selection");
+    scmgr.set_shortcut (m_delete_start_word_action, "editor_edit:delete_start_word");
+    scmgr.set_shortcut (m_delete_end_word_action, "editor_edit:delete_end_word");
+    scmgr.set_shortcut (m_delete_start_line_action, "editor_edit:delete_start_line");
+    scmgr.set_shortcut (m_delete_end_line_action, "editor_edit:delete_end_line");
+    scmgr.set_shortcut (m_delete_line_action, "editor_edit:delete_line");
+    scmgr.set_shortcut (m_copy_line_action, "editor_edit:copy_line");
+    scmgr.set_shortcut (m_cut_line_action, "editor_edit:cut_line");
+    scmgr.set_shortcut (m_duplicate_selection_action, "editor_edit:duplicate_selection");
+    scmgr.set_shortcut (m_transpose_line_action, "editor_edit:transpose_line");
+    scmgr.set_shortcut (m_comment_selection_action, "editor_edit:comment_selection");
+    scmgr.set_shortcut (m_uncomment_selection_action, "editor_edit:uncomment_selection");
+    scmgr.set_shortcut (m_comment_var_selection_action, "editor_edit:comment_var_selection");
 
-    shortcut_manager::set_shortcut (m_upper_case_action, "editor_edit:upper_case");
-    shortcut_manager::set_shortcut (m_lower_case_action, "editor_edit:lower_case");
-    shortcut_manager::set_shortcut (m_indent_selection_action, "editor_edit:indent_selection");
-    shortcut_manager::set_shortcut (m_unindent_selection_action, "editor_edit:unindent_selection");
-    shortcut_manager::set_shortcut (m_smart_indent_line_or_selection_action, "editor_edit:smart_indent_line_or_selection");
-    shortcut_manager::set_shortcut (m_completion_action, "editor_edit:completion_list");
-    shortcut_manager::set_shortcut (m_goto_line_action, "editor_edit:goto_line");
-    shortcut_manager::set_shortcut (m_move_to_matching_brace, "editor_edit:move_to_brace");
-    shortcut_manager::set_shortcut (m_sel_to_matching_brace, "editor_edit:select_to_brace");
-    shortcut_manager::set_shortcut (m_toggle_bookmark_action, "editor_edit:toggle_bookmark");
-    shortcut_manager::set_shortcut (m_next_bookmark_action, "editor_edit:next_bookmark");
-    shortcut_manager::set_shortcut (m_previous_bookmark_action, "editor_edit:previous_bookmark");
-    shortcut_manager::set_shortcut (m_remove_bookmark_action, "editor_edit:remove_bookmark");
-    shortcut_manager::set_shortcut (m_preferences_action, "editor_edit:preferences");
-    shortcut_manager::set_shortcut (m_styles_preferences_action, "editor_edit:styles_preferences");
+    scmgr.set_shortcut (m_upper_case_action, "editor_edit:upper_case");
+    scmgr.set_shortcut (m_lower_case_action, "editor_edit:lower_case");
+    scmgr.set_shortcut (m_indent_selection_action, "editor_edit:indent_selection");
+    scmgr.set_shortcut (m_unindent_selection_action, "editor_edit:unindent_selection");
+    scmgr.set_shortcut (m_smart_indent_line_or_selection_action, "editor_edit:smart_indent_line_or_selection");
+    scmgr.set_shortcut (m_completion_action, "editor_edit:completion_list");
+    scmgr.set_shortcut (m_goto_line_action, "editor_edit:goto_line");
+    scmgr.set_shortcut (m_move_to_matching_brace, "editor_edit:move_to_brace");
+    scmgr.set_shortcut (m_sel_to_matching_brace, "editor_edit:select_to_brace");
+    scmgr.set_shortcut (m_toggle_bookmark_action, "editor_edit:toggle_bookmark");
+    scmgr.set_shortcut (m_next_bookmark_action, "editor_edit:next_bookmark");
+    scmgr.set_shortcut (m_previous_bookmark_action, "editor_edit:previous_bookmark");
+    scmgr.set_shortcut (m_remove_bookmark_action, "editor_edit:remove_bookmark");
+    scmgr.set_shortcut (m_preferences_action, "editor_edit:preferences");
+    scmgr.set_shortcut (m_styles_preferences_action, "editor_edit:styles_preferences");
 
-    shortcut_manager::set_shortcut (m_conv_eol_windows_action, "editor_edit:conv_eol_winows");
-    shortcut_manager::set_shortcut (m_conv_eol_unix_action,    "editor_edit:conv_eol_unix");
-    shortcut_manager::set_shortcut (m_conv_eol_mac_action,     "editor_edit:conv_eol_mac");
+    scmgr.set_shortcut (m_conv_eol_windows_action, "editor_edit:conv_eol_winows");
+    scmgr.set_shortcut (m_conv_eol_unix_action,    "editor_edit:conv_eol_unix");
+    scmgr.set_shortcut (m_conv_eol_mac_action,     "editor_edit:conv_eol_mac");
 
     // View menu
-    shortcut_manager::set_shortcut (m_show_linenum_action, "editor_view:show_line_numbers");
-    shortcut_manager::set_shortcut (m_show_whitespace_action, "editor_view:show_white_spaces");
-    shortcut_manager::set_shortcut (m_show_eol_action, "editor_view:show_eol_chars");
-    shortcut_manager::set_shortcut (m_show_indguide_action, "editor_view:show_ind_guides");
-    shortcut_manager::set_shortcut (m_show_longline_action, "editor_view:show_long_line");
-    shortcut_manager::set_shortcut (m_show_toolbar_action, "editor_view:show_toolbar");
-    shortcut_manager::set_shortcut (m_show_statusbar_action, "editor_view:show_statusbar");
-    shortcut_manager::set_shortcut (m_show_hscrollbar_action, "editor_view:show_hscrollbar");
-    shortcut_manager::set_shortcut (m_zoom_in_action, "editor_view:zoom_in");
-    shortcut_manager::set_shortcut (m_zoom_out_action, "editor_view:zoom_out");
-    shortcut_manager::set_shortcut (m_zoom_normal_action, "editor_view:zoom_normal");
-    shortcut_manager::set_shortcut (m_sort_tabs_action, "editor_view:sort_tabs");
+    scmgr.set_shortcut (m_show_linenum_action, "editor_view:show_line_numbers");
+    scmgr.set_shortcut (m_show_whitespace_action, "editor_view:show_white_spaces");
+    scmgr.set_shortcut (m_show_eol_action, "editor_view:show_eol_chars");
+    scmgr.set_shortcut (m_show_indguide_action, "editor_view:show_ind_guides");
+    scmgr.set_shortcut (m_show_longline_action, "editor_view:show_long_line");
+    scmgr.set_shortcut (m_show_toolbar_action, "editor_view:show_toolbar");
+    scmgr.set_shortcut (m_show_statusbar_action, "editor_view:show_statusbar");
+    scmgr.set_shortcut (m_show_hscrollbar_action, "editor_view:show_hscrollbar");
+    scmgr.set_shortcut (m_zoom_in_action, "editor_view:zoom_in");
+    scmgr.set_shortcut (m_zoom_out_action, "editor_view:zoom_out");
+    scmgr.set_shortcut (m_zoom_normal_action, "editor_view:zoom_normal");
+    scmgr.set_shortcut (m_sort_tabs_action, "editor_view:sort_tabs");
 
     // Debug menu
-    shortcut_manager::set_shortcut (m_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
-    shortcut_manager::set_shortcut (m_next_breakpoint_action, "editor_debug:next_breakpoint");
-    shortcut_manager::set_shortcut (m_previous_breakpoint_action, "editor_debug:previous_breakpoint");
-    shortcut_manager::set_shortcut (m_remove_all_breakpoints_action, "editor_debug:remove_breakpoints");
+    scmgr.set_shortcut (m_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
+    scmgr.set_shortcut (m_next_breakpoint_action, "editor_debug:next_breakpoint");
+    scmgr.set_shortcut (m_previous_breakpoint_action, "editor_debug:previous_breakpoint");
+    scmgr.set_shortcut (m_remove_all_breakpoints_action, "editor_debug:remove_breakpoints");
 
     // Run menu
-    shortcut_manager::set_shortcut (m_run_action, "editor_run:run_file");
-    shortcut_manager::set_shortcut (m_run_selection_action, "editor_run:run_selection");
+    scmgr.set_shortcut (m_run_action, "editor_run:run_file");
+    scmgr.set_shortcut (m_run_selection_action, "editor_run:run_selection");
 
     // Help menu
-    shortcut_manager::set_shortcut (m_context_help_action, "editor_help:help_keyword");
-    shortcut_manager::set_shortcut (m_context_doc_action,  "editor_help:doc_keyword");
+    scmgr.set_shortcut (m_context_help_action, "editor_help:help_keyword");
+    scmgr.set_shortcut (m_context_doc_action,  "editor_help:doc_keyword");
 
     // Tab navigation without menu entries
-    shortcut_manager::set_shortcut (m_switch_left_tab_action, "editor_tabs:switch_left_tab");
-    shortcut_manager::set_shortcut (m_switch_right_tab_action, "editor_tabs:switch_right_tab");
-    shortcut_manager::set_shortcut (m_move_tab_left_action, "editor_tabs:move_tab_left");
-    shortcut_manager::set_shortcut (m_move_tab_right_action, "editor_tabs:move_tab_right");
+    scmgr.set_shortcut (m_switch_left_tab_action, "editor_tabs:switch_left_tab");
+    scmgr.set_shortcut (m_switch_right_tab_action, "editor_tabs:switch_right_tab");
+    scmgr.set_shortcut (m_move_tab_left_action, "editor_tabs:move_tab_left");
+    scmgr.set_shortcut (m_move_tab_right_action, "editor_tabs:move_tab_right");
 
   }
 

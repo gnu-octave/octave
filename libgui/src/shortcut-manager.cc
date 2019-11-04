@@ -109,9 +109,8 @@ namespace octave
   }
 
 
-  shortcut_manager *shortcut_manager::instance = nullptr;
-
-  shortcut_manager::shortcut_manager (void)
+  shortcut_manager::shortcut_manager (base_qobject& oct_qobj)
+    : m_octave_qobj (oct_qobj)
   {
     setObjectName ("Shortcut_Manager");
 
@@ -119,108 +118,9 @@ namespace octave
 #if defined (Q_OS_MAC)
     QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
 #endif
-
-    resource_manager& rmgr
-      = __get_resource_manager__ ("shortcut_manager::shortcut_manager");
-
-    m_settings = rmgr.get_settings ();
   }
 
-  void shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
-  {
-    if (col != 2)
-      return;
-
-    int i = m_item_index_hash[item];
-    if (i == 0)
-      return;  // top-level-item clicked
-
-    shortcut_dialog (i-1); // correct to index starting at 0
-  }
-
-  void shortcut_manager::shortcut_dialog_finished (int result)
-  {
-    if (result == QDialog::Rejected)
-      return;
-
-    // check for duplicate
-    int double_index = m_shortcut_hash[m_edit_actual->text ()] - 1;
-
-    if (double_index >= 0 && double_index != m_handled_index)
-      {
-        int ret = QMessageBox::warning (this, tr ("Double Shortcut"),
-                                        tr ("The chosen shortcut\n  \"%1\"\n"
-                                            "is already used for the action\n  \"%2\".\n"
-                                            "Do you want to use the shortcut anyhow removing it "
-                                            "from the previous action?")
-                                        .arg (m_edit_actual->text ())
-                                        .arg (m_sc.at (double_index).m_description),
-                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-        if (ret == QMessageBox::Yes)
-          {
-            shortcut_t double_shortcut = m_sc.at (double_index);
-            double_shortcut.m_actual_sc = QKeySequence ();
-            m_sc.replace (double_index, double_shortcut);
-            m_index_item_hash[double_index]->setText (2, QString ());
-          }
-        else
-          return;
-      }
-
-    shortcut_t shortcut = m_sc.at (m_handled_index);
-    if (! shortcut.m_actual_sc.isEmpty ())
-      m_shortcut_hash.remove (shortcut.m_actual_sc.toString ());
-    shortcut.m_actual_sc = m_edit_actual->text ();
-    m_sc.replace (m_handled_index, shortcut);
-
-    m_index_item_hash[m_handled_index]->setText (2, shortcut.m_actual_sc.toString ());
-
-    if (! shortcut.m_actual_sc.isEmpty ())
-      m_shortcut_hash[shortcut.m_actual_sc.toString ()] = m_handled_index + 1;
-  }
-
-  void shortcut_manager::shortcut_dialog_set_default (void)
-  {
-    m_edit_actual->setText (m_label_default->text ());
-  }
-
-  bool shortcut_manager::instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      instance = new shortcut_manager ();
-
-    return retval;
-  }
-
-  void shortcut_manager::init (const QString& description, const QString& key,
-                               const QKeySequence& def_sc)
-  {
-    QKeySequence actual
-      = QKeySequence (m_settings->value ("shortcuts/" + key, def_sc).toString ());
-
-    // append the new shortcut to the list
-    shortcut_t shortcut_info;
-    shortcut_info.m_description = description;
-    shortcut_info.m_settings_key = key;
-    shortcut_info.m_actual_sc = actual;
-    shortcut_info.m_default_sc = def_sc;
-    m_sc << shortcut_info;
-
-    // insert shortcut in order check for duplicates later
-    if (! actual.isEmpty ())
-      m_shortcut_hash[actual.toString ()] = m_sc.count ();
-    m_action_hash[key] = m_sc.count ();
-
-    // check whether ctrl+d is used from main window, i.e. is a global shortcut
-    if (key.startsWith ("main_")
-        && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
-      m_settings->setValue ("shortcuts/main_ctrld",true);
-  }
-
-  void shortcut_manager::do_init_data (void)
+  void shortcut_manager::init_data (void)
   {
     Qt::KeyboardModifier ctrl;
     int prefix;
@@ -241,7 +141,10 @@ namespace octave
 
     // actions of the main window
 
-    m_settings->setValue ("shortcuts/main_ctrld",false); // reset use fo ctrl-d
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    settings->setValue ("shortcuts/main_ctrld",false); // reset use fo ctrl-d
 
     // file
     init (tr ("New File"), "main_file:new_file", QKeySequence::New);
@@ -494,7 +397,7 @@ namespace octave
   }
 
   // write one or all actual shortcut set(s) into a settings file
-  void shortcut_manager::do_write_shortcuts (gui_settings *settings,
+  void shortcut_manager::write_shortcuts (gui_settings *settings,
                                              bool closing)
   {
     bool sc_ctrld = false;
@@ -520,33 +423,39 @@ namespace octave
     settings->sync ();      // sync the settings file
   }
 
-  void shortcut_manager::do_set_shortcut (QAction *action, const QString& key)
+  void shortcut_manager::set_shortcut (QAction *action, const QString& key)
   {
     int index;
 
     index = m_action_hash[key] - 1;
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
     if (index > -1 && index < m_sc.count ())
       action->setShortcut
-        (QKeySequence (m_settings->value ("shortcuts/" + key, m_sc.at (index).m_default_sc).toString ()));
+        (QKeySequence (settings->value ("shortcuts/" + key, m_sc.at (index).m_default_sc).toString ()));
     else
       qDebug () << "Key: " << key << " not found in m_action_hash";
   }
 
-  void shortcut_manager::do_shortcut (QShortcut *sc, const QString& key)
+  void shortcut_manager::shortcut (QShortcut *sc, const QString& key)
   {
     int index;
 
     index = m_action_hash[key] - 1;
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
     if (index > -1 && index < m_sc.count ())
-      sc->setKey (QKeySequence (m_settings->value ("shortcuts/" + key,
+      sc->setKey (QKeySequence (settings->value ("shortcuts/" + key,
                                 m_sc.at (index).m_default_sc).toString ()));
     else
       qDebug () << "Key: " << key << " not found in m_action_hash";
   }
 
-  void shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
+  void shortcut_manager::fill_treewidget (QTreeWidget *tree_view)
   {
     m_dialog = nullptr;
     m_level_hash.clear ();
@@ -667,14 +576,13 @@ namespace octave
         m_item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
         m_index_item_hash[i] = tree_item;
       }
-
   }
 
   // import or export of shortcut sets,
   // called from settings dialog when related buttons are clicked;
   // returns true on success, false otherwise
   bool
-  shortcut_manager::do_import_export (int action)
+  shortcut_manager::import_export (int action)
   {
     // ask to save the current shortcuts, maybe abort import
     if (action == OSC_DEFAULT || action == OSC_IMPORT)
@@ -691,7 +599,9 @@ namespace octave
 
         // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
         int opts = 0;  // No options by default.
-        if (! m_settings->value ("use_native_file_dialogs",
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
+        if (! settings->value ("use_native_file_dialogs",
                                                         true).toBool ())
           opts = QFileDialog::DontUseNativeDialog;
 
@@ -722,7 +632,7 @@ namespace octave
             if (action == OSC_IMPORT)
               import_shortcuts (&osc_settings);   // import (special action)
             else if (action == OSC_EXPORT)
-              do_write_shortcuts (&osc_settings, false); // export, (save settings)
+              write_shortcuts (&osc_settings, false); // export, (save settings)
           }
       }
     else
@@ -731,6 +641,93 @@ namespace octave
       }
 
     return true;
+  }
+
+  void shortcut_manager::handle_double_clicked (QTreeWidgetItem *item, int col)
+  {
+    if (col != 2)
+      return;
+
+    int i = m_item_index_hash[item];
+    if (i == 0)
+      return;  // top-level-item clicked
+
+    shortcut_dialog (i-1); // correct to index starting at 0
+  }
+
+  void shortcut_manager::shortcut_dialog_finished (int result)
+  {
+    if (result == QDialog::Rejected)
+      return;
+
+    // check for duplicate
+    int double_index = m_shortcut_hash[m_edit_actual->text ()] - 1;
+
+    if (double_index >= 0 && double_index != m_handled_index)
+      {
+        int ret = QMessageBox::warning (this, tr ("Double Shortcut"),
+                                        tr ("The chosen shortcut\n  \"%1\"\n"
+                                            "is already used for the action\n  \"%2\".\n"
+                                            "Do you want to use the shortcut anyhow removing it "
+                                            "from the previous action?")
+                                        .arg (m_edit_actual->text ())
+                                        .arg (m_sc.at (double_index).m_description),
+                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+        if (ret == QMessageBox::Yes)
+          {
+            shortcut_t double_shortcut = m_sc.at (double_index);
+            double_shortcut.m_actual_sc = QKeySequence ();
+            m_sc.replace (double_index, double_shortcut);
+            m_index_item_hash[double_index]->setText (2, QString ());
+          }
+        else
+          return;
+      }
+
+    shortcut_t shortcut = m_sc.at (m_handled_index);
+    if (! shortcut.m_actual_sc.isEmpty ())
+      m_shortcut_hash.remove (shortcut.m_actual_sc.toString ());
+    shortcut.m_actual_sc = m_edit_actual->text ();
+    m_sc.replace (m_handled_index, shortcut);
+
+    m_index_item_hash[m_handled_index]->setText (2, shortcut.m_actual_sc.toString ());
+
+    if (! shortcut.m_actual_sc.isEmpty ())
+      m_shortcut_hash[shortcut.m_actual_sc.toString ()] = m_handled_index + 1;
+  }
+
+  void shortcut_manager::shortcut_dialog_set_default (void)
+  {
+    m_edit_actual->setText (m_label_default->text ());
+  }
+
+  void shortcut_manager::init (const QString& description, const QString& key,
+                               const QKeySequence& def_sc)
+  {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+
+    QKeySequence actual
+      = QKeySequence (settings->value ("shortcuts/" + key, def_sc).toString ());
+
+    // append the new shortcut to the list
+    shortcut_t shortcut_info;
+    shortcut_info.m_description = description;
+    shortcut_info.m_settings_key = key;
+    shortcut_info.m_actual_sc = actual;
+    shortcut_info.m_default_sc = def_sc;
+    m_sc << shortcut_info;
+
+    // insert shortcut in order check for duplicates later
+    if (! actual.isEmpty ())
+      m_shortcut_hash[actual.toString ()] = m_sc.count ();
+    m_action_hash[key] = m_sc.count ();
+
+    // check whether ctrl+d is used from main window, i.e. is a global shortcut
+    if (key.startsWith ("main_")
+        && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+      settings->setValue ("shortcuts/main_ctrld",true);
   }
 
   void shortcut_manager::shortcut_dialog (int index)
@@ -868,7 +865,7 @@ namespace octave
 
     if (ret == QMessageBox::Save)
       {
-        if (do_import_export (OSC_EXPORT))
+        if (import_export (OSC_EXPORT))
           return true;  // go ahead
       }
 

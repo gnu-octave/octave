@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "interpreter-qobject.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 
 namespace octave
 {
@@ -100,6 +101,11 @@ namespace octave
       return m_resource_manager;
     }
 
+    shortcut_manager& get_shortcut_manager (void)
+    {
+      return m_shortcut_manager;
+    }
+
     std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
     {
       return m_qt_interpreter_events;
@@ -144,6 +150,8 @@ namespace octave
     octave_qapplication *m_qapplication;
 
     resource_manager m_resource_manager;
+
+    shortcut_manager m_shortcut_manager;
 
     QTranslator *m_qt_tr;
     QTranslator *m_gui_tr;

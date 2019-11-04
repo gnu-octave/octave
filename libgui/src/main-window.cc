@@ -151,7 +151,12 @@ namespace octave
     sys::env::putenv ("TERM", "xterm");
 #endif
 
-    shortcut_manager::init_data ();
+    // FIXME: can we do this job when creating the shortcut manager?
+    // A quick look shows that it may require some coordination with the
+    // resource manager.  Startup is complicated, but maybe we can make
+    // it simpler?
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    scmgr.init_data ();
 
     construct_central_widget ();
 
@@ -2011,9 +2016,6 @@ namespace octave
     connect (qApp, SIGNAL (aboutToQuit (void)),
              this, SLOT (prepare_to_exit (void)));
 
-    connect (qApp, SIGNAL (aboutToQuit (void)),
-             shortcut_manager::instance, SLOT (cleanup_instance (void)));
-
     connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
              this, SLOT (focus_changed (QWidget*, QWidget*)));
 
@@ -2724,82 +2726,66 @@ namespace octave
 
   void main_window::configure_shortcuts (void)
   {
+    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+
     // file menu
-    shortcut_manager::set_shortcut (m_open_action, "main_file:open_file");
-    shortcut_manager::set_shortcut (m_new_script_action, "main_file:new_file");
-    shortcut_manager::set_shortcut (m_new_function_action,
-                                    "main_file:new_function");
-    shortcut_manager::set_shortcut (m_new_function_action, "main_file:new_figure");
-    shortcut_manager::set_shortcut (m_load_workspace_action,
-                                    "main_file:load_workspace");
-    shortcut_manager::set_shortcut (m_save_workspace_action,
-                                    "main_file:save_workspace");
-    shortcut_manager::set_shortcut (m_exit_action,"main_file:exit");
+    scmgr.set_shortcut (m_open_action, "main_file:open_file");
+    scmgr.set_shortcut (m_new_script_action, "main_file:new_file");
+    scmgr.set_shortcut (m_new_function_action, "main_file:new_function");
+    scmgr.set_shortcut (m_new_function_action, "main_file:new_figure");
+    scmgr.set_shortcut (m_load_workspace_action, "main_file:load_workspace");
+    scmgr.set_shortcut (m_save_workspace_action, "main_file:save_workspace");
+    scmgr.set_shortcut (m_exit_action, "main_file:exit");
 
     // edit menu
-    shortcut_manager::set_shortcut (m_copy_action, "main_edit:copy");
-    shortcut_manager::set_shortcut (m_paste_action, "main_edit:paste");
-    shortcut_manager::set_shortcut (m_undo_action, "main_edit:undo");
-    shortcut_manager::set_shortcut (m_select_all_action, "main_edit:select_all");
-    shortcut_manager::set_shortcut (m_clear_clipboard_action,
-                                    "main_edit:clear_clipboard");
-    shortcut_manager::set_shortcut (m_find_files_action, "main_edit:find_in_files");
-    shortcut_manager::set_shortcut (m_clear_command_history_action,
-                                    "main_edit:clear_history");
-    shortcut_manager::set_shortcut (m_clear_command_window_action,
-                                    "main_edit:clear_command_window");
-    shortcut_manager::set_shortcut (m_clear_workspace_action,
-                                    "main_edit:clear_workspace");
-    shortcut_manager::set_shortcut (m_set_path_action, "main_edit:set_path");
-    shortcut_manager::set_shortcut (m_preferences_action, "main_edit:preferences");
+    scmgr.set_shortcut (m_copy_action, "main_edit:copy");
+    scmgr.set_shortcut (m_paste_action, "main_edit:paste");
+    scmgr.set_shortcut (m_undo_action, "main_edit:undo");
+    scmgr.set_shortcut (m_select_all_action, "main_edit:select_all");
+    scmgr.set_shortcut (m_clear_clipboard_action, "main_edit:clear_clipboard");
+    scmgr.set_shortcut (m_find_files_action, "main_edit:find_in_files");
+    scmgr.set_shortcut (m_clear_command_history_action, "main_edit:clear_history");
+    scmgr.set_shortcut (m_clear_command_window_action, "main_edit:clear_command_window");
+    scmgr.set_shortcut (m_clear_workspace_action, "main_edit:clear_workspace");
+    scmgr.set_shortcut (m_set_path_action, "main_edit:set_path");
+    scmgr.set_shortcut (m_preferences_action, "main_edit:preferences");
 
     // debug menu
-    shortcut_manager::set_shortcut (m_debug_step_over, "main_debug:step_over");
-    shortcut_manager::set_shortcut (m_debug_step_into, "main_debug:step_into");
-    shortcut_manager::set_shortcut (m_debug_step_out,  "main_debug:step_out");
-    shortcut_manager::set_shortcut (m_debug_continue,  "main_debug:continue");
-    shortcut_manager::set_shortcut (m_debug_quit,  "main_debug:quit");
+    scmgr.set_shortcut (m_debug_step_over, "main_debug:step_over");
+    scmgr.set_shortcut (m_debug_step_into, "main_debug:step_into");
+    scmgr.set_shortcut (m_debug_step_out, "main_debug:step_out");
+    scmgr.set_shortcut (m_debug_continue, "main_debug:continue");
+    scmgr.set_shortcut (m_debug_quit, "main_debug:quit");
 
     // window menu
-    shortcut_manager::set_shortcut (m_show_command_window_action,
-                                    "main_window:show_command");
-    shortcut_manager::set_shortcut (m_show_history_action,
-                                    "main_window:show_history");
-    shortcut_manager::set_shortcut (m_show_workspace_action,
-                                    "main_window:show_workspace");
-    shortcut_manager::set_shortcut (m_show_file_browser_action,
-                                    "main_window:show_file_browser");
-    shortcut_manager::set_shortcut (m_show_editor_action,
-                                    "main_window:show_editor");
-    shortcut_manager::set_shortcut (m_show_documentation_action,
-                                    "main_window:show_doc");
-    shortcut_manager::set_shortcut (m_show_variable_editor_action,
-                                    "main_window:show_variable_editor");
-    shortcut_manager::set_shortcut (m_command_window_action, "main_window:command");
-    shortcut_manager::set_shortcut (m_history_action, "main_window:history");
-    shortcut_manager::set_shortcut (m_workspace_action,  "main_window:workspace");
-    shortcut_manager::set_shortcut (m_file_browser_action,
-                                    "main_window:file_browser");
-    shortcut_manager::set_shortcut (m_editor_action, "main_window:editor");
-    shortcut_manager::set_shortcut (m_documentation_action, "main_window:doc");
-    shortcut_manager::set_shortcut (m_variable_editor_action,
-                                    "main_window:variable_editor");
-    shortcut_manager::set_shortcut (m_reset_windows_action, "main_window:reset");
+    scmgr.set_shortcut (m_show_command_window_action, "main_window:show_command");
+    scmgr.set_shortcut (m_show_history_action, "main_window:show_history");
+    scmgr.set_shortcut (m_show_workspace_action, "main_window:show_workspace");
+    scmgr.set_shortcut (m_show_file_browser_action, "main_window:show_file_browser");
+    scmgr.set_shortcut (m_show_editor_action, "main_window:show_editor");
+    scmgr.set_shortcut (m_show_documentation_action, "main_window:show_doc");
+    scmgr.set_shortcut (m_show_variable_editor_action, "main_window:show_variable_editor");
+    scmgr.set_shortcut (m_command_window_action, "main_window:command");
+    scmgr.set_shortcut (m_history_action, "main_window:history");
+    scmgr.set_shortcut (m_workspace_action, "main_window:workspace");
+    scmgr.set_shortcut (m_file_browser_action, "main_window:file_browser");
+    scmgr.set_shortcut (m_editor_action, "main_window:editor");
+    scmgr.set_shortcut (m_documentation_action, "main_window:doc");
+    scmgr.set_shortcut (m_variable_editor_action, "main_window:variable_editor");
+    scmgr.set_shortcut (m_reset_windows_action, "main_window:reset");
 
     // help menu
-    shortcut_manager::set_shortcut (m_ondisk_doc_action, "main_help:ondisk_doc");
-    shortcut_manager::set_shortcut (m_online_doc_action, "main_help:online_doc");
-    shortcut_manager::set_shortcut (m_report_bug_action, "main_help:report_bug");
-    shortcut_manager::set_shortcut (m_octave_packages_action, "main_help:packages");
-    shortcut_manager::set_shortcut (m_contribute_action, "main_help:contribute");
-    shortcut_manager::set_shortcut (m_developer_action, "main_help:developer");
-    shortcut_manager::set_shortcut (m_about_octave_action, "main_help:about");
+    scmgr.set_shortcut (m_ondisk_doc_action, "main_help:ondisk_doc");
+    scmgr.set_shortcut (m_online_doc_action, "main_help:online_doc");
+    scmgr.set_shortcut (m_report_bug_action, "main_help:report_bug");
+    scmgr.set_shortcut (m_octave_packages_action, "main_help:packages");
+    scmgr.set_shortcut (m_contribute_action, "main_help:contribute");
+    scmgr.set_shortcut (m_developer_action, "main_help:developer");
+    scmgr.set_shortcut (m_about_octave_action, "main_help:about");
 
     // news menu
-    shortcut_manager::set_shortcut (m_release_notes_action,
-                                    "main_news:release_notes");
-    shortcut_manager::set_shortcut (m_current_news_action,
-                                    "main_news:community_news");
+    scmgr.set_shortcut (m_release_notes_action, "main_news:release_notes");
+    scmgr.set_shortcut (m_current_news_action, "main_news:community_news");
   }
 
   QList<octave_dock_widget *> main_window::dock_widget_list (void)

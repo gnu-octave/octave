@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "qt-application.h"
 #include "qt-interpreter-events.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 
 // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)
@@ -157,7 +158,7 @@ namespace octave
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
-      m_resource_manager (),
+      m_resource_manager (), m_shortcut_manager (*this),
       m_qt_tr (new QTranslator ()), m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()), m_translators_installed (false),
       m_qt_interpreter_events (new qt_interpreter_events (*this)),

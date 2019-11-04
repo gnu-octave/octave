@@ -63,9 +63,6 @@ namespace octave
     // Will initiate close if associated with the identifier tag.
     bool conditional_close (void);
 
-    static void reset_cancel (void) { m_cancelled = false; }
-    static bool was_cancelled (void) { return m_cancelled; }
-
     void update_breakpoints ();
 
   signals:
@@ -150,7 +147,6 @@ namespace octave
     void set_current_directory (const QString& dir);
     void context_help (const QWidget *ID, bool);
     void context_edit (const QWidget *ID);
-    void check_modified_file (void);
     void save_file (const QWidget *ID);
     void save_file (const QWidget *ID, const QString& fileName,
                     bool remove_on_success);
@@ -299,7 +295,9 @@ namespace octave
     void update_lexer_settings (void);
 
     void show_dialog (QDialog *dlg, bool modal);
+  public:
     int check_file_modified (bool remove = false);
+  private:
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);
     void do_smart_indent_line_or_selected_text (void);
@@ -345,8 +343,6 @@ namespace octave
     QsciAPIs *m_lexer_apis;
     QString m_prep_apis_path;
     QString m_prep_apis_file;
-
-    static bool m_cancelled;
 
     int m_line_break;
     bool m_line_break_comments;

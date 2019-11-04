@@ -81,6 +81,14 @@ namespace octave
     return qobject_cast<tab_bar *> (tabBar ());
   }
 
+  std::list<file_editor_tab *>
+  file_editor_tab_widget::tab_list (void) const
+  {
+    std::list<file_editor_tab *> retval;
+    for (int i = 0; i < count (); i++)
+      retval.push_back (static_cast<file_editor_tab *> (widget (i)));
+    return retval;
+  }
 
   // File editor
 
@@ -379,40 +387,36 @@ namespace octave
 
   bool file_editor::check_closing (void)
   {
-    // When the application or the editor is closing and the user wants to close
-    // all files in the latter case all editor tabs are checked whether
-    // they need to be saved. During these ckecked the tabs are not closed
-    // since the user might cancel closing octave during one of these saving
-    // dialogs. Therefore, saving the session for restoring at next start
-    // is not done before the application is definitely closing
+    // When the application or the editor is closing and the user wants
+    // to close all files in the latter case all editor tabs are checked
+    // whether they need to be saved. During these ckecked the tabs are
+    // not closed since the user might cancel closing octave during one
+    // of these saving dialogs. Therefore, saving the session for
+    // restoring at next start is not done before the application is
+    // definitely closing.
 
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
 
-    // Save all tabs with confirmation.
-    file_editor_tab::reset_cancel ();
-    emit fetab_check_modified_file ();
-
-    // If there was a cancellation, make the already saved/discarded tabs
-    // recovering from the exit by removing the read-only state and by
-    // recovering the debugger breakpoints. Finally return false in order to
-    // cancel closing the application or the editor
-    if (file_editor_tab::was_cancelled ())
+    for (auto fe_tab : fe_tab_lst)
       {
-        emit fetab_recover_from_exit ();
-        return false;
+        // If there was a cancellation, make the already saved/discarded
+        // tabs recovering from the exit by removing the read-only state
+        // and by recovering the debugger breakpoints. Finally return
+        // false in order to cancel closing the application or the
+        // editor
+
+        if (fe_tab->check_file_modified (false) == QMessageBox::Cancel)
+          {
+            emit fetab_recover_from_exit ();
+            return false;
+          }
       }
 
-    // Wait for all editor tabs to have saved their files if required
-    m_number_of_tabs = m_editor_tab_map.size ();
-
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+    for (auto fe_tab : fe_tab_lst)
       {
-        QString file_name = p->first;   // get file name of tab
-        connect (static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID),
-                 SIGNAL (tab_ready_to_close (void)),
+        // Wait for all editor tabs to have saved their files if required
+
+        connect (fe_tab, SIGNAL (tab_ready_to_close (void)),
                  this, SLOT (handle_tab_ready_to_close (void)));
       }
 
@@ -2292,9 +2296,6 @@ namespace octave
     connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
                                             bool)),
              f, SLOT (save_file (const QWidget*, const QString&, bool)));
-
-    connect (this, SIGNAL (fetab_check_modified_file (void)),
-             f, SLOT (check_modified_file (void)));
 
     // Signals from the file_editor trivial operations
     connect (this, SIGNAL (fetab_recover_from_exit (void)),

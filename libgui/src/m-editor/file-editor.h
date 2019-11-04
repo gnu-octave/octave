@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if ! defined (octave_file_editor_h)
 #define octave_file_editor_h 1
 
+#include <list>
 #include <map>
 
 #include <QAction>
@@ -56,6 +57,8 @@ namespace octave
     ~file_editor_tab_widget (void) = default;
 
     tab_bar * get_tab_bar (void) const;
+
+    std::list<file_editor_tab *> tab_list (void) const;
   };
 
   // the class for the file editor
@@ -134,7 +137,6 @@ namespace octave
     // No fetab_new, functionality in editor
     void fetab_context_help (const QWidget *ID, bool);
     void fetab_context_edit (const QWidget *ID);
-    void fetab_check_modified_file (void);
     void fetab_save_file (const QWidget *ID);
     void fetab_save_file_as (const QWidget *ID);
     void fetab_print_file (const QWidget *ID);

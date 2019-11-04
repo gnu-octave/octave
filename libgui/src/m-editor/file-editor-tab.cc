@@ -86,8 +86,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  bool file_editor_tab::m_cancelled = false;
-
   //! A file_editor_tab object consists of a text area and three left margins.
   //! The first holds breakpoints, bookmarks, and the debug program counter.
   //! The second holds line numbers.  The third holds "fold" marks, to hide
@@ -309,9 +307,6 @@ namespace octave
 
   void file_editor_tab::closeEvent (QCloseEvent *e)
   {
-    m_cancelled = false;  // prevent unwanted interaction of previous
-    // exits of octave which were canceled by the user
-
     int save_dialog = check_file_modified (true);
     if ((save_dialog == QMessageBox::Cancel) ||
         (save_dialog == QMessageBox::Save))
@@ -999,15 +994,6 @@ namespace octave
       return;
 
     m_edit_area->context_edit ();
-  }
-
-  void file_editor_tab::check_modified_file (void)
-  {
-    if (m_cancelled)
-      return;
-
-    if (check_file_modified (false) == QMessageBox::Cancel)
-      m_cancelled = true;
   }
 
   void file_editor_tab::save_file (const QWidget *ID)
@@ -1875,10 +1861,7 @@ namespace octave
         decision = msgBox->exec (); // show_dialog (msgBox, true);
 
         if (decision == QMessageBox::Cancel)
-          {
-            m_cancelled = true;
-            m_edit_area->setReadOnly (false);
-          }
+          m_edit_area->setReadOnly (false);
         else if (decision == QMessageBox::Save)
           save_file (m_file_name, remove, false);   // Remove on success
       }

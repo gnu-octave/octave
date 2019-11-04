@@ -52,8 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
 #include "octave-dock-widget.h"
+#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
-#include "resource-manager.h"
 #include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
@@ -288,8 +288,6 @@ namespace octave
     void update_default_encoding (const QString& default_encoding);
 
     base_qobject& m_octave_qobj;
-
-    resource_manager& m_resource_manager;
 
     workspace_model *m_workspace_model;
 

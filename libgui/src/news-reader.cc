@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QString>
 
 #include "news-reader.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "gui-preferences-nr.h"
 
 #include "url-transfer.h"
@@ -66,7 +66,8 @@ namespace octave
           {
             if (m_serial >= 0)
               {
-                gui_settings *settings = m_resource_manager.get_settings ();
+                resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+                gui_settings *settings = rmgr.get_settings ();
 
                 if (settings)
                   {

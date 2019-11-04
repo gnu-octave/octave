@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-ed.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
-#include "resource-manager.h"
 
 #include "oct-env.h"
 #include "str-vec.h"
@@ -105,7 +104,6 @@ namespace octave
 
   qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
     : interpreter_events (), m_octave_qobj (oct_qobj),
-      m_resource_manager (m_octave_qobj.get_resource_manager ()),
       m_result (), m_mutex (), m_waitcondition (), m_uiwidget_creator ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
@@ -275,7 +273,8 @@ namespace octave
 
   bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings || settings->value ("editor/create_new_file",false).toBool ())
       return true;
@@ -389,7 +388,8 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    m_result = QVariant::fromValue (m_resource_manager.icon (name));
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    m_result = QVariant::fromValue (rmgr.icon (name));
 
     wake_all ();
   }
@@ -578,7 +578,8 @@ namespace octave
   {
     QMutexLocker autolock (&m_mutex);
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QString read_value = settings->value (key).toString ();
 
@@ -617,7 +618,8 @@ namespace octave
         adjusted_value = adjusted_value.toUpper ();
 
         QStringList codecs;
-        m_resource_manager.get_codecs (&codecs);
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        rmgr.get_codecs (&codecs);
 
         QRegExp re ("^CP(\\d+)$");
 

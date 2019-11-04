@@ -29,13 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "external-editor-interface.h"
 #include "gui-settings.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 
 namespace octave
 {
   external_editor_interface::external_editor_interface (QWidget *p,
-                                                        resource_manager& rmgr)
-    : QWidget (p), m_resource_manager (rmgr)
+                                                        base_qobject& oct_qobj)
+    : QWidget (p), m_octave_qobj (oct_qobj)
   { }
 
   // Calling the external editor
@@ -98,7 +98,8 @@ namespace octave
   // Get and verify the settings of the external editor program
   QString external_editor_interface::external_editor (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     QString editor = settings->value ("customFileEditor").toString ();
 
     // check the settings (avoid an empty string)

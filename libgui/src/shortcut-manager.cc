@@ -39,7 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QtCore>
 
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
 
 #include "error.h"

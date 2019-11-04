@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-global.h"
 #include "gui-preferences-hw.h"
 #include "history-dock-widget.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 
 #include "cmd-hist.h"
 
@@ -44,8 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  history_dock_widget::history_dock_widget (QWidget *p, resource_manager& rmgr)
-    : octave_dock_widget ("HistoryDockWidget", p, rmgr)
+  history_dock_widget::history_dock_widget (QWidget *p, base_qobject& oct_qobj)
+    : octave_dock_widget ("HistoryDockWidget", p, oct_qobj)
   {
     setStatusTip (tr ("Browse and search the command history."));
 
@@ -90,7 +90,8 @@ namespace octave
 
   void history_dock_widget::save_settings (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings)
       return;
@@ -139,12 +140,13 @@ namespace octave
 
     if (index.isValid () && index.column () == 0)
       {
-        menu.addAction (m_resource_manager.icon ("edit-copy"),
-                        tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+        menu.addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+                        SLOT (handle_contextmenu_copy (bool)));
         menu.addAction (tr ("Evaluate"), this,
                         SLOT (handle_contextmenu_evaluate (bool)));
-        menu.addAction (m_resource_manager.icon ("document-new"),
-                        tr ("Create script"), this,
+        menu.addAction (rmgr.icon ("document-new"), tr ("Create script"), this,
                         SLOT (handle_contextmenu_create_script (bool)));
       }
     if (m_filter_shown)
@@ -315,7 +317,8 @@ namespace octave
     widget ()->setLayout (hist_layout);
 
     // Init state of the filter
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     m_filter_shown
       = settings->value (hw_filter_shown.key, hw_filter_shown.def).toBool ();

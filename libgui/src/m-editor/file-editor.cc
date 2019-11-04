@@ -44,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "main-window.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
 
 #include "oct-env.h"
@@ -84,8 +84,8 @@ namespace octave
 
   // File editor
 
-  file_editor::file_editor (QWidget *p, resource_manager& rmgr)
-    : file_editor_interface (p, rmgr)
+  file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
+    : file_editor_interface (p, oct_qobj)
   {
     // Set current editing directory before construct because loaded
     // files will change ced accordingly.
@@ -157,7 +157,8 @@ namespace octave
 
   void file_editor::handle_enter_debug_mode (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     QString sc_run = settings->value ("shortcuts/editor_run:run_file").toString ();
     QString sc_cont = settings->value ("shortcuts/main_debug:continue").toString ();
 
@@ -219,7 +220,8 @@ namespace octave
   // 2. When the editor becomes visible when octave is running
   void file_editor::empty_script (bool startup, bool visible)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     if (settings->value ("useCustomFileEditor",false).toBool ())
       return;  // do not open an empty script in the external editor
 
@@ -426,7 +428,8 @@ namespace octave
     // Here, the application or the editor will be closed -> store the session
 
     // Save open files for restoring in next session; this only is possible
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     // save filenames (even if last session will not be restored next time)
     // together with encoding and the tab index
@@ -811,6 +814,8 @@ namespace octave
     QObject *fileEditorTab = sender ();
     if (fileEditorTab)
       {
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
         for (int i = 0; i < m_tab_widget->count (); i++)
           {
             if (m_tab_widget->widget (i) == fileEditorTab)
@@ -818,8 +823,7 @@ namespace octave
                 m_tab_widget->setTabText (i, fname);
                 m_tab_widget->setTabToolTip (i, tip);
                 if (modified)
-                  m_tab_widget->setTabIcon (i,
-                                  m_resource_manager.icon ("document-save"));
+                  m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
                 else
                   m_tab_widget->setTabIcon (i, QIcon ());
               }
@@ -1321,7 +1325,8 @@ namespace octave
     if (m_closed && visible)
       {
         m_closed = false;
-        gui_settings *settings = m_resource_manager.get_settings ();
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+        gui_settings *settings = rmgr.get_settings ();
         restore_session (settings);
       }
 
@@ -1383,7 +1388,8 @@ namespace octave
     if (call_custom_editor (openFileName, line))
       return;   // custom editor called
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     bool show_dbg_file
       = settings->value (ed_show_dbg_file.key, ed_show_dbg_file.def).toBool ();
 
@@ -1660,7 +1666,8 @@ namespace octave
   // handler for the close event
   void file_editor::closeEvent (QCloseEvent *e)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     if (settings->value ("editor/hiding_closes_files",false).toBool ())
       {
         if (check_closing ())
@@ -1733,8 +1740,10 @@ namespace octave
 
     m_tab_widget = new file_editor_tab_widget (editor_widget);
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     // the mru-list and an empty array of actions
-    gui_settings *settings = m_resource_manager.get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
     m_mru_files = settings->value ("editor/mru_file_list").toStringList ();
     m_mru_files_encodings = settings->value ("editor/mru_file_encodings")
                             .toStringList ();
@@ -1775,79 +1784,61 @@ namespace octave
     m_fileMenu->addSeparator ();
 
     m_save_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("document-save"),
-                    tr ("&Save File"),
-                    SLOT (request_save_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("document-save"),
+                    tr ("&Save File"), SLOT (request_save_file (bool)));
 
     m_save_as_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("document-save-as"),
+      = add_action (m_fileMenu, rmgr.icon ("document-save-as"),
                     tr ("Save File &As..."),
                     SLOT (request_save_file_as (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_close_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("window-close",false),
-                    tr ("&Close"),
-                    SLOT (request_close_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+                    tr ("&Close"), SLOT (request_close_file (bool)));
 
     m_close_all_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("window-close",false),
-                    tr ("Close All"),
-                    SLOT (request_close_all_files (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
+                    tr ("Close All"), SLOT (request_close_all_files (bool)));
 
     m_close_others_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("window-close",false),
+      = add_action (m_fileMenu, rmgr.icon ("window-close",false),
                     tr ("Close Other Files"),
                     SLOT (request_close_other_files (bool)));
 
     m_fileMenu->addSeparator ();
 
     m_print_action
-      = add_action (m_fileMenu,
-                    m_resource_manager.icon ("document-print"),
-                    tr ("Print..."),
-                    SLOT (request_print_file (bool)));
+      = add_action (m_fileMenu, rmgr.icon ("document-print"),
+                    tr ("Print..."), SLOT (request_print_file (bool)));
 
     // edit menu (undo, copy, paste and select all later via main window)
 
     m_edit_menu = add_menu (m_menu_bar, tr ("&Edit"));
 
     m_redo_action
-      = add_action (m_edit_menu,
-                    m_resource_manager.icon ("edit-redo"),
-                    tr ("&Redo"),
-                    SLOT (request_redo (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-redo"),
+                    tr ("&Redo"), SLOT (request_redo (bool)));
     m_redo_action->setEnabled (false);
 
     m_edit_menu->addSeparator ();
 
     m_cut_action
-      = add_action (m_edit_menu,
-                    m_resource_manager.icon ("edit-cut"),
-                    tr ("Cu&t"),
-                    SLOT (request_cut (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-cut"),
+                    tr ("Cu&t"), SLOT (request_cut (bool)));
     m_cut_action->setEnabled (false);
 
     m_find_action
-      = add_action (m_edit_menu,
-                    m_resource_manager.icon ("edit-find-replace"),
-                    tr ("&Find and Replace..."),
-                    SLOT (request_find (bool)));
+      = add_action (m_edit_menu, rmgr.icon ("edit-find-replace"),
+                    tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
     m_find_next_action
-      = add_action (m_edit_menu,
-                    tr ("Find &Next..."),
+      = add_action (m_edit_menu, tr ("Find &Next..."),
                     SLOT (request_find_next (bool)));
 
     m_find_previous_action
-      = add_action (m_edit_menu,
-                    tr ("Find &Previous..."),
+      = add_action (m_edit_menu, tr ("Find &Previous..."),
                     SLOT (request_find_previous (bool)));
 
     m_edit_menu->addSeparator ();
@@ -1855,105 +1846,87 @@ namespace octave
     m_edit_cmd_menu = m_edit_menu->addMenu (tr ("&Commands"));
 
     m_delete_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete Line"),
                     SLOT (request_delete_line (bool)));
 
     m_copy_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Copy Line"),
+      = add_action (m_edit_cmd_menu, tr ("Copy Line"),
                     SLOT (request_copy_line (bool)));
 
     m_cut_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Cut Line"),
+      = add_action (m_edit_cmd_menu, tr ("Cut Line"),
                     SLOT (request_cut_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_delete_start_word_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to Start of Word"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to Start of Word"),
                     SLOT (request_delete_start_word (bool)));
 
     m_delete_end_word_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to End of Word"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to End of Word"),
                     SLOT (request_delete_end_word (bool)));
 
     m_delete_start_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to Start of Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to Start of Line"),
                     SLOT (request_delete_start_line (bool)));
 
     m_delete_end_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Delete to End of Line"),
+      = add_action (m_edit_cmd_menu, tr ("Delete to End of Line"),
                     SLOT (request_delete_end_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_duplicate_selection_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Duplicate Selection/Line"),
+      = add_action (m_edit_cmd_menu, tr ("Duplicate Selection/Line"),
                     SLOT (request_duplicate_selection (bool)));
 
     m_transpose_line_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("Transpose Line"),
+      = add_action (m_edit_cmd_menu, tr ("Transpose Line"),
                     SLOT (request_transpose_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_completion_action
-      = add_action (m_edit_cmd_menu,
-                    tr ("&Show Completion List"),
+      = add_action (m_edit_cmd_menu, tr ("&Show Completion List"),
                     SLOT (request_completion (bool)));
 
     m_edit_fmt_menu = m_edit_menu->addMenu (tr ("&Format"));
 
     m_upper_case_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Uppercase Selection"),
+      = add_action (m_edit_fmt_menu, tr ("&Uppercase Selection"),
                     SLOT (request_upper_case (bool)));
 
     m_lower_case_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Lowercase Selection"),
+      = add_action (m_edit_fmt_menu, tr ("&Lowercase Selection"),
                     SLOT (request_lower_case (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
     m_comment_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Comment"),
+      = add_action (m_edit_fmt_menu, tr ("&Comment"),
                     SLOT (request_comment_selected_text (bool)));
 
     m_uncomment_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Uncomment"),
+      = add_action (m_edit_fmt_menu, tr ("&Uncomment"),
                     SLOT (request_uncomment_selected_text (bool)));
 
     m_comment_var_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Comment (Choosing String)"),
+      = add_action (m_edit_fmt_menu, tr ("Comment (Choosing String)"),
                     SLOT (request_comment_var_selected_text (bool)));
 
     m_edit_fmt_menu->addSeparator ();
 
     m_indent_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Indent Selection Rigidly"),
+      = add_action (m_edit_fmt_menu, tr ("&Indent Selection Rigidly"),
                     SLOT (request_indent_selected_text (bool)));
 
     m_unindent_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("&Unindent Selection Rigidly"),
+      = add_action (m_edit_fmt_menu, tr ("&Unindent Selection Rigidly"),
                     SLOT (request_unindent_selected_text (bool)));
 
     m_smart_indent_line_or_selection_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Indent Code"),
+      = add_action (m_edit_fmt_menu, tr ("Indent Code"),
                     SLOT (request_smart_indent_line_or_selected_text (void)));
 
     m_edit_fmt_menu->addSeparator ();
@@ -1964,8 +1937,7 @@ namespace octave
                     SLOT (request_conv_eol_windows (bool)));
 
     m_conv_eol_unix_action
-      = add_action (m_edit_fmt_menu,
-                    tr ("Convert Line Endings to &Unix (LF)"),
+      = add_action (m_edit_fmt_menu, tr ("Convert Line Endings to &Unix (LF)"),
                     SLOT (request_conv_eol_unix (bool)));
 
     m_conv_eol_mac_action
@@ -1976,54 +1948,46 @@ namespace octave
     m_edit_nav_menu = m_edit_menu->addMenu (tr ("Navi&gation"));
 
     m_goto_line_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Go &to Line..."),
+      = add_action (m_edit_nav_menu, tr ("Go &to Line..."),
                     SLOT (request_goto_line (bool)));
 
     m_edit_cmd_menu->addSeparator ();
 
     m_move_to_matching_brace
-      = add_action (m_edit_nav_menu,
-                    tr ("Move to Matching Brace"),
+      = add_action (m_edit_nav_menu, tr ("Move to Matching Brace"),
                     SLOT (request_move_match_brace (bool)));
 
     m_sel_to_matching_brace
-      = add_action (m_edit_nav_menu,
-                    tr ("Select to Matching Brace"),
+      = add_action (m_edit_nav_menu, tr ("Select to Matching Brace"),
                     SLOT (request_sel_match_brace (bool)));
 
     m_edit_nav_menu->addSeparator ();
 
     m_next_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("&Next Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("&Next Bookmark"),
                     SLOT (request_next_bookmark (bool)));
 
     m_previous_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Pre&vious Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("Pre&vious Bookmark"),
                     SLOT (request_previous_bookmark (bool)));
 
     m_toggle_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("Toggle &Bookmark"),
+      = add_action (m_edit_nav_menu, tr ("Toggle &Bookmark"),
                     SLOT (request_toggle_bookmark (bool)));
 
     m_remove_bookmark_action
-      = add_action (m_edit_nav_menu,
-                    tr ("&Remove All Bookmarks"),
+      = add_action (m_edit_nav_menu, tr ("&Remove All Bookmarks"),
                     SLOT (request_remove_bookmark (bool)));
 
     m_edit_menu->addSeparator ();
 
     m_preferences_action
-      = add_action (m_edit_menu,
-                    m_resource_manager.icon ("preferences-system"),
+      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
                     tr ("&Preferences..."),
                     SLOT (request_preferences (bool)));
 
     m_styles_preferences_action
-      = add_action (m_edit_menu,  m_resource_manager.icon ("preferences-system"),
+      = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
                     tr ("&Styles Preferences..."),
                     SLOT (request_styles_preferences (bool)));
 
@@ -2034,71 +1998,59 @@ namespace octave
     m_view_editor_menu = view_menu->addMenu (tr ("&Editor"));
 
     m_show_linenum_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Line Numbers"),
+      = add_action (m_view_editor_menu, tr ("Show &Line Numbers"),
                     SLOT (show_line_numbers (bool)));
     m_show_linenum_action->setCheckable (true);
 
     m_show_whitespace_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Whitespace Characters"),
+      = add_action (m_view_editor_menu, tr ("Show &Whitespace Characters"),
                     SLOT (show_white_space (bool)));
     m_show_whitespace_action->setCheckable (true);
 
     m_show_eol_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show Line &Endings"),
+      = add_action (m_view_editor_menu, tr ("Show Line &Endings"),
                     SLOT (show_eol_chars (bool)));
     m_show_eol_action->setCheckable (true);
 
     m_show_indguide_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Indentation Guides"),
+      = add_action (m_view_editor_menu, tr ("Show &Indentation Guides"),
                     SLOT (show_indent_guides (bool)));
     m_show_indguide_action->setCheckable (true);
 
     m_show_longline_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show Long Line &Marker"),
+      = add_action (m_view_editor_menu, tr ("Show Long Line &Marker"),
                     SLOT (show_long_line (bool)));
     m_show_longline_action->setCheckable (true);
 
     m_view_editor_menu->addSeparator ();
 
     m_show_toolbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Toolbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Toolbar"),
                     SLOT (show_toolbar (bool)));
     m_show_toolbar_action->setCheckable (true);
 
     m_show_statusbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Statusbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Statusbar"),
                     SLOT (show_statusbar (bool)));
     m_show_statusbar_action->setCheckable (true);
 
     m_show_hscrollbar_action
-      = add_action (m_view_editor_menu,
-                    tr ("Show &Horizontal Scrollbar"),
+      = add_action (m_view_editor_menu, tr ("Show &Horizontal Scrollbar"),
                     SLOT (show_hscrollbar (bool)));
     m_show_hscrollbar_action->setCheckable (true);
 
     view_menu->addSeparator ();
 
     m_zoom_in_action
-      = add_action (view_menu, m_resource_manager.icon ("zoom-in"),
-                    tr ("Zoom &In"),
+      = add_action (view_menu, rmgr.icon ("zoom-in"), tr ("Zoom &In"),
                     SLOT (zoom_in (bool)));
 
     m_zoom_out_action
-      = add_action (view_menu, m_resource_manager.icon ("zoom-out"),
-                    tr ("Zoom &Out"),
+      = add_action (view_menu, rmgr.icon ("zoom-out"), tr ("Zoom &Out"),
                     SLOT (zoom_out (bool)));
 
     m_zoom_normal_action
-      = add_action (view_menu,
-                    tr ("&Normal Size"),
-                    SLOT (zoom_normal (bool)));
+      = add_action (view_menu, tr ("&Normal Size"), SLOT (zoom_normal (bool)));
 
     view_menu->addSeparator ();
 
@@ -2114,26 +2066,22 @@ namespace octave
     m_debug_menu = add_menu (m_menu_bar, tr ("&Debug"));
 
     m_toggle_breakpoint_action
-      = add_action (m_debug_menu,
-                    m_resource_manager.icon ("bp-toggle"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-toggle"),
                     tr ("Toggle &Breakpoint"),
                     SLOT (request_toggle_breakpoint (bool)));
 
     m_next_breakpoint_action
-      = add_action (m_debug_menu,
-                    m_resource_manager.icon ("bp-next"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-next"),
                     tr ("&Next Breakpoint"),
                     SLOT (request_next_breakpoint (bool)));
 
     m_previous_breakpoint_action
-      = add_action (m_debug_menu,
-                    m_resource_manager.icon ("bp-prev"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-prev"),
                     tr ("Pre&vious Breakpoint"),
                     SLOT (request_previous_breakpoint (bool)));
 
     m_remove_all_breakpoints_action
-      = add_action (m_debug_menu,
-                    m_resource_manager.icon ("bp-rm-all"),
+      = add_action (m_debug_menu, rmgr.icon ("bp-rm-all"),
                     tr ("&Remove All Breakpoints"),
                     SLOT (request_remove_breakpoint (bool)));
 
@@ -2147,7 +2095,7 @@ namespace octave
 
     m_run_action
       = add_action (_run_menu,
-                    m_resource_manager.icon ("system-run"),
+                    rmgr.icon ("system-run"),
                     tr ("Save File and Run / Continue"),
                     SLOT (request_run_file (bool)));
 
@@ -2270,7 +2218,7 @@ namespace octave
   file_editor_tab *
   file_editor::make_file_editor_tab (const QString& directory)
   {
-    file_editor_tab *f = new file_editor_tab (m_resource_manager, directory);
+    file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
@@ -2520,7 +2468,8 @@ namespace octave
       }
 
     // save actual mru-list in settings
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     settings->setValue ("editor/mru_file_list", m_mru_files);
     settings->setValue ("editor/mru_file_encodings", m_mru_files_encodings);
@@ -2530,7 +2479,8 @@ namespace octave
   bool file_editor::call_custom_editor (const QString& file_name, int line)
   {
     // Check if the user wants to use a custom file editor.
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (settings->value ("useCustomFileEditor",false).toBool ())
       {
@@ -2549,7 +2499,8 @@ namespace octave
 
   void file_editor::toggle_preference (const QString& preference, bool def)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     bool old = settings->value (preference,def).toBool ();
     settings->setValue (preference,! old);
     notice_settings (settings);

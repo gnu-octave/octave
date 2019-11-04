@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "workspace-model.h"
 
 #include "syminfo.h"
@@ -39,8 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  workspace_model::workspace_model (resource_manager& rmgr, QObject *p)
-    : QAbstractTableModel (p), m_resource_manager (rmgr)
+  workspace_model::workspace_model (base_qobject& oct_qobj, QObject *p)
+    : QAbstractTableModel (p), m_octave_qobj (oct_qobj)
   {
     m_columnNames.append (tr ("Name"));
     m_columnNames.append (tr ("Class"));
@@ -52,7 +52,8 @@ namespace octave
     // classes in the workspace view. The structure is
     // m_storage_class_colors(1,2,...,colors):        background colors
     // m_storage_class_colors(colors+1,...,2*colors): foreground colors
-    int colors = m_resource_manager.storage_class_chars ().length ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    int colors = rmgr.storage_class_chars ().length ();
     for (int i = 0; i < 2*colors; i++)
       m_storage_class_colors.append (QColor (Qt::white));
 
@@ -136,7 +137,8 @@ namespace octave
         if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
             && m_enable_colors)
           {
-            QString class_chars = m_resource_manager.storage_class_chars ();
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            QString class_chars = rmgr.storage_class_chars ();
             int actual_class
               = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
@@ -182,15 +184,17 @@ namespace octave
                 {
                   QString sclass;
 
-                  QString class_chars = m_resource_manager.storage_class_chars ();
+                  resource_manager& rmgr
+                    = m_octave_qobj.get_resource_manager ();
+
+                  QString class_chars = rmgr.storage_class_chars ();
 
                   int actual_class
                     = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
 
                   if (actual_class >= 0)
                     {
-                      QStringList class_names
-                        = m_resource_manager.storage_class_names ();
+                      QStringList class_names = rmgr.storage_class_names ();
 
                       sclass = class_names.at (actual_class);
                     }
@@ -235,9 +239,10 @@ namespace octave
   void
   workspace_model::notice_settings (const gui_settings *settings)
   {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     QList<QColor> default_colors =
-      m_resource_manager.storage_class_default_colors ();
-    QString class_chars = m_resource_manager.storage_class_chars ();
+      rmgr.storage_class_default_colors ();
+    QString class_chars = rmgr.storage_class_chars ();
 
     m_enable_colors =
         settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();

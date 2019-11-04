@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 
 #include "dialog.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 
 namespace octave
 {

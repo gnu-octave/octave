@@ -31,14 +31,16 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class base_qobject;
+
   class file_editor_interface : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    file_editor_interface (QWidget *p, resource_manager& rmgr)
-      : octave_dock_widget ("FileEditor", p, rmgr)
+    file_editor_interface (QWidget *p, base_qobject& oct_qobj)
+      : octave_dock_widget ("FileEditor", p, oct_qobj)
     { }
 
     virtual ~file_editor_interface (void) = default;

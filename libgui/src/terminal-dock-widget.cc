@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "terminal-dock-widget.h"
 
 #include "quit.h"
@@ -40,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
-                                              resource_manager& rmgr)
-    : octave_dock_widget ("TerminalDockWidget", p, rmgr),
+                                              base_qobject& oct_qobj)
+    : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
       m_terminal (QTerminal::create (p))
   {
     m_terminal->setObjectName ("OctaveTerminal");
@@ -62,7 +62,8 @@ namespace octave
 
     // Chose a reasonable size at startup in order to avoid truncated
     // startup messages
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);

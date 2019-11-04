@@ -43,8 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "files-dock-widget.h"
 #include "gui-preferences-fb.h"
+#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
-#include "resource-manager.h"
 
 #include "interpreter.h"
 #include "load-save.h"
@@ -67,8 +67,8 @@ namespace octave
     }
   };
 
-  files_dock_widget::files_dock_widget (QWidget *p, resource_manager& rmgr)
-    : octave_dock_widget ("FilesDockWidget", p, rmgr)
+  files_dock_widget::files_dock_widget (QWidget *p, base_qobject& oct_qobj)
+    : octave_dock_widget ("FilesDockWidget", p, oct_qobj)
   {
     setWindowIcon (QIcon (":/actions/icons/logo.png"));
     set_title (tr ("File Browser"));
@@ -127,49 +127,50 @@ namespace octave
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_current_directory->setSizePolicy (sizePol);
 
-    QAction *directory_up_action = new QAction (m_resource_manager.icon ("go-up"),
-                                                "", m_navigation_tool_bar);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    QAction *directory_up_action
+      = new QAction (rmgr.icon ("go-up"), "", m_navigation_tool_bar);
     directory_up_action->setToolTip (tr ("One directory up"));
 
     m_sync_browser_directory_action
-      = new QAction (m_resource_manager.icon ("go-first"),
-                     tr ("Show Octave directory"), m_navigation_tool_bar);
+      = new QAction (rmgr.icon ("go-first"), tr ("Show Octave directory"),
+                     m_navigation_tool_bar);
     m_sync_browser_directory_action->setToolTip (tr ("Go to current Octave directory"));
     m_sync_browser_directory_action->setEnabled (false);
 
     m_sync_octave_directory_action
-      = new QAction (m_resource_manager.icon ("go-last"),
-                     tr ("Set Octave directory"), m_navigation_tool_bar);
+      = new QAction (rmgr.icon ("go-last"), tr ("Set Octave directory"),
+                     m_navigation_tool_bar);
     m_sync_octave_directory_action->setToolTip (tr ("Set Octave directory to current browser directory"));
     m_sync_octave_directory_action->setEnabled (false);
 
     QToolButton *popdown_button = new QToolButton ();
     popdown_button->setToolTip (tr ("Actions on current directory"));
     QMenu *popdown_menu = new QMenu ();
-    popdown_menu->addAction (m_resource_manager.icon ("user-home"),
-                             tr ("Show Home Directory"),
-                             this, SLOT (popdownmenu_home (bool)));
+    popdown_menu->addAction (rmgr.icon ("user-home"),
+                             tr ("Show Home Directory"), this,
+                             SLOT (popdownmenu_home (bool)));
     popdown_menu->addAction (m_sync_browser_directory_action);
     popdown_menu->addAction (m_sync_octave_directory_action);
     popdown_button->setMenu (popdown_menu);
     popdown_button->setPopupMode (QToolButton::InstantPopup);
-    popdown_button->setDefaultAction (new QAction (m_resource_manager.icon ("applications-system"),
-                                                   "",
-                                                   m_navigation_tool_bar));
+    popdown_button->setDefaultAction (new QAction (rmgr.icon ("applications-system"),
+                                                   "", m_navigation_tool_bar));
 
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (m_resource_manager.icon ("folder"),
+    popdown_menu->addAction (rmgr.icon ("folder"),
                              tr ("Set Browser Directory..."),
                              this, SLOT (popdownmenu_search_dir (bool)));
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (m_resource_manager.icon ("edit-find"),
+    popdown_menu->addAction (rmgr.icon ("edit-find"),
                              tr ("Find Files..."),
                              this, SLOT (popdownmenu_findfiles (bool)));
     popdown_menu->addSeparator ();
-    popdown_menu->addAction (m_resource_manager.icon ("document-new"),
+    popdown_menu->addAction (rmgr.icon ("document-new"),
                              tr ("New File..."),
                              this, SLOT (popdownmenu_newfile (bool)));
-    popdown_menu->addAction (m_resource_manager.icon ("folder-new"),
+    popdown_menu->addAction (rmgr.icon ("folder-new"),
                              tr ("New Directory..."),
                              this, SLOT (popdownmenu_newdir (bool)));
 
@@ -184,7 +185,7 @@ namespace octave
     connect (m_sync_browser_directory_action, SIGNAL (triggered ()), this,
              SLOT (do_sync_browser_directory ()));
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
     // FIXME: what should happen if settings is 0?
 
     // Create the QFileSystemModel starting in the desired directory
@@ -303,7 +304,8 @@ namespace octave
 
   void files_dock_widget::save_settings (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings)
       return;
@@ -404,7 +406,8 @@ namespace octave
             QString abs_fname = fileInfo.absoluteFilePath ();
 
             QString suffix = fileInfo.suffix ().toLower ();
-            gui_settings *settings = m_resource_manager.get_settings ();
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            gui_settings *settings = rmgr.get_settings ();
             QString ext = settings->value (fb_txt_file_ext.key,
                                            fb_txt_file_ext.def).toString ();
             QStringList extensions = ext.split (";", QString::SkipEmptyParts);
@@ -432,7 +435,8 @@ namespace octave
 
   void files_dock_widget::toggle_header (int col)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QString key = m_columns_shown_keys.at (col);
     bool shown = settings->value (key,false).toBool ();
@@ -463,7 +467,8 @@ namespace octave
       delete m_sig_mapper;
     m_sig_mapper = new QSignalMapper (this);
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     for (int i = 0; i < m_columns_shown.size (); i++)
       {
@@ -506,8 +511,10 @@ namespace octave
                                 | QItemSelectionModel::Rows);
           }
 
+        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
         // construct the context menu depending on item
-        menu.addAction (m_resource_manager.icon ("document-open"), tr ("Open"),
+        menu.addAction (rmgr.icon ("document-open"), tr ("Open"),
                         this, SLOT (contextmenu_open (bool)));
 
         if (info.isDir ())
@@ -524,7 +531,7 @@ namespace octave
                         this, SLOT (contextmenu_copy_selection (bool)));
 
         if (info.isFile () && info.suffix () == "m")
-          menu.addAction (m_resource_manager.icon ("media-playback-start"),
+          menu.addAction (rmgr.icon ("media-playback-start"),
                           tr ("Run"), this, SLOT (contextmenu_run (bool)));
 
         if (info.isFile ())
@@ -533,7 +540,7 @@ namespace octave
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (m_resource_manager.icon ("go-first"),
+            menu.addAction (rmgr.icon ("go-first"),
                             tr ("Set Current Directory"),
                             this, SLOT (contextmenu_setcurrentdir (bool)));
 
@@ -553,23 +560,23 @@ namespace octave
 
             menu.addSeparator ();
 
-            menu.addAction (m_resource_manager.icon ("edit-find"),
+            menu.addAction (rmgr.icon ("edit-find"),
                             tr ("Find Files..."), this,
                             SLOT (contextmenu_findfiles (bool)));
           }
 
         menu.addSeparator ();
         menu.addAction (tr ("Rename..."), this, SLOT (contextmenu_rename (bool)));
-        menu.addAction (m_resource_manager.icon ("edit-delete"),
+        menu.addAction (rmgr.icon ("edit-delete"),
                         tr ("Delete..."), this, SLOT (contextmenu_delete (bool)));
 
         if (info.isDir ())
           {
             menu.addSeparator ();
-            menu.addAction (m_resource_manager.icon ("document-new"),
+            menu.addAction (rmgr.icon ("document-new"),
                             tr ("New File..."),
                             this, SLOT (contextmenu_newfile (bool)));
-            menu.addAction (m_resource_manager.icon ("folder-new"),
+            menu.addAction (rmgr.icon ("folder-new"),
                             tr ("New Directory..."),
                             this, SLOT (contextmenu_newdir (bool)));
           }
@@ -914,9 +921,10 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    if (! m_resource_manager.get_settings ()->value (
-                                  global_use_native_dialogs.key,
-                                  global_use_native_dialogs.def).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

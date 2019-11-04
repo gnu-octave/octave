@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   class dw_main_window : public QMainWindow
   {
@@ -37,7 +37,7 @@ namespace octave
 
   public:
 
-    dw_main_window (resource_manager& rmgr, QWidget *parent = nullptr);
+    dw_main_window (base_qobject& oct_qboj, QWidget *parent = nullptr);
 
     ~dw_main_window (void) = default;
 
@@ -73,7 +73,7 @@ namespace octave
     QAction *add_action (QMenu *menu, const QIcon& icon, const QString& text,
                          const char *member, QWidget *receiver);
 
-    resource_manager& m_resource_manager;
+    base_qobject& m_octave_qobj;
 
     QList<QDockWidget *> m_dw_list;
 

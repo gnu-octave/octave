@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ToolBarButton.h"
 #include "QtHandlesUtils.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 
 namespace QtHandles
 {

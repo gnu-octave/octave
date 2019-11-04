@@ -38,7 +38,7 @@ class QHBoxLayout;
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   class set_path_dialog : public QDialog
   {
@@ -50,7 +50,7 @@ namespace octave
     // in the dialog.  That may only be done after the intepreter_event
     // signal connections are made to the Octave interpreter.
 
-    set_path_dialog (QWidget *parent, resource_manager& rmgr);
+    set_path_dialog (QWidget *parent, base_qobject& oct_qobj);
 
     virtual ~set_path_dialog (void);
 
@@ -93,7 +93,7 @@ namespace octave
 
     void add_dir_common (bool subdirs);
 
-    resource_manager& m_resource_manager;
+    base_qobject& m_octave_qobj;
 
     QLabel *m_info_label;
     QPushButton *m_reload_button;

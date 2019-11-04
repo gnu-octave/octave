@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-ve.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
 #include "variable-editor-model.h"
 #include "variable-editor.h"
@@ -89,8 +89,8 @@ namespace octave
   // Variable dock widget
 
   variable_dock_widget::variable_dock_widget (QWidget *p,
-                                              resource_manager& rmgr)
-    : label_dock_widget (p, rmgr)
+                                              base_qobject& oct_qobj)
+    : label_dock_widget (p, oct_qobj)
 // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
       , m_waiting_for_mouse_move (false)
@@ -120,8 +120,9 @@ namespace octave
     m_prev_geom = QRect (0, 0, 0, 0);
 
     QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
-    m_fullscreen_action = new QAction
-      (m_resource_manager.icon ("view-fullscreen", false), "", this);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    m_fullscreen_action
+      = new QAction (rmgr.icon ("view-fullscreen", false), "", this);
     m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
     QToolButton *fullscreen_button = new QToolButton (m_title_widget);
     fullscreen_button->setDefaultAction (m_fullscreen_action);
@@ -156,7 +157,8 @@ namespace octave
         if (m_full_screen)
           {
             setGeometry (m_prev_geom);
-            m_fullscreen_action->setIcon (m_resource_manager.icon ("view-fullscreen", false));
+            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+            m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
             m_full_screen = false;
           }
         m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -214,10 +216,12 @@ namespace octave
   variable_dock_widget::change_fullscreen (void)
   {
 #if defined (HAVE_QGUIAPPLICATION)
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     if (! m_full_screen)
       {
         m_prev_floating = isFloating ();
-        m_fullscreen_action->setIcon (m_resource_manager.icon ("view-restore", false));
+        m_fullscreen_action->setIcon (rmgr.icon ("view-restore", false));
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr ("Restore geometry"));
         else
@@ -237,7 +241,7 @@ namespace octave
       }
     else
       {
-        m_fullscreen_action->setIcon (m_resource_manager.icon ("view-fullscreen", false));
+        m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
         setGeometry (m_prev_geom);
         if (m_prev_floating)
           m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -370,9 +374,9 @@ namespace octave
   // Variable editor stack
 
   variable_editor_stack::variable_editor_stack (QWidget *p,
-                                                resource_manager& rmgr)
-    : QStackedWidget (p), m_resource_manager (rmgr),
-      m_edit_view (new variable_editor_view (this, m_resource_manager))
+                                                base_qobject& oct_qobj)
+    : QStackedWidget (p), m_octave_qobj (oct_qobj),
+      m_edit_view (new variable_editor_view (this, m_octave_qobj))
   {
     setFocusPolicy (Qt::StrongFocus);
 
@@ -455,8 +459,9 @@ namespace octave
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -480,8 +485,8 @@ namespace octave
   // Custom editable variable table view
 
   variable_editor_view::variable_editor_view (QWidget *p,
-                                              resource_manager& rmgr)
-    : QTableView (p), m_resource_manager (rmgr), m_var_model (nullptr)
+                                              base_qobject& oct_qobj)
+    : QTableView (p), m_octave_qobj (oct_qobj), m_var_model (nullptr)
   {
     setWordWrap (false);
     setContextMenuPolicy (Qt::CustomContextMenu);
@@ -587,29 +592,31 @@ namespace octave
   variable_editor_view::add_edit_actions (QMenu *menu,
                                           const QString& qualifier_string)
   {
-    menu->addAction (m_resource_manager.icon ("edit-cut"),
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    menu->addAction (rmgr.icon ("edit-cut"),
                      tr ("Cut") + qualifier_string,
                      this, SLOT (cutClipboard ()));
 
-    menu->addAction (m_resource_manager.icon ("edit-copy"),
+    menu->addAction (rmgr.icon ("edit-copy"),
                      tr ("Copy") + qualifier_string,
                      this, SLOT (copyClipboard ()));
 
-    menu->addAction (m_resource_manager.icon ("edit-paste"),
+    menu->addAction (rmgr.icon ("edit-paste"),
                      tr ("Paste"),
                      this, SLOT (pasteClipboard ()));
 
     menu->addSeparator ();
 
-    menu->addAction (m_resource_manager.icon ("edit-delete"),
+    menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Clear") + qualifier_string,
                      this, SLOT (clearContent ()));
 
-    menu->addAction (m_resource_manager.icon ("edit-delete"),
+    menu->addAction (rmgr.icon ("edit-delete"),
                      tr ("Delete") + qualifier_string,
                      this, SLOT (delete_selected ()));
 
-    menu->addAction (m_resource_manager.icon ("document-new"),
+    menu->addAction (rmgr.icon ("document-new"),
                      tr ("Variable from Selection"),
                      this, SLOT (createVariable ()));
   }
@@ -1037,9 +1044,9 @@ namespace octave
 
   // Variable editor.
 
-  variable_editor::variable_editor (QWidget *p, resource_manager& rmgr)
-    : octave_dock_widget ("VariableEditor", p, rmgr),
-      m_main (new dw_main_window (rmgr)),
+  variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
+    : octave_dock_widget ("VariableEditor", p, oct_qobj),
+      m_main (new dw_main_window (oct_qobj)),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
       m_default_height (100),
@@ -1077,7 +1084,9 @@ namespace octave
 
     // Colors.
 
-    for (int i = 0; i < m_resource_manager.varedit_color_chars ().length (); i++)
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    for (int i = 0; i < rmgr.varedit_color_chars ().length (); i++)
       m_table_colors.append (QColor (Qt::white));
 
     // Use an MDI area that is shrunk to nothing as the central widget.
@@ -1156,9 +1165,11 @@ namespace octave
   void
   variable_editor::edit_variable (const QString& name, const octave_value& val)
   {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     if (m_stylesheet.isEmpty ())
       {
-        gui_settings *settings = m_resource_manager.get_settings ();
+        gui_settings *settings = rmgr.get_settings ();
         notice_settings (settings);
       }
 
@@ -1186,7 +1197,7 @@ namespace octave
       }
 
     variable_dock_widget *page
-      = new variable_dock_widget (this, m_resource_manager);
+      = new variable_dock_widget (this, m_octave_qobj);
 
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
@@ -1206,7 +1217,7 @@ namespace octave
 #endif
 
     variable_editor_stack *stack
-      = new variable_editor_stack (page, m_resource_manager);
+      = new variable_editor_stack (page, m_octave_qobj);
 
     stack->setObjectName (name);
     page->setWidget (stack);
@@ -1379,9 +1390,11 @@ namespace octave
     m_alternate_rows = settings->value ("variable_editor/alternate_rows",
                                         false).toBool ();
 
-    QList<QColor> default_colors = m_resource_manager.varedit_default_colors ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
-    QString class_chars = m_resource_manager.varedit_color_chars ();
+    QList<QColor> default_colors = rmgr.varedit_default_colors ();
+
+    QString class_chars = rmgr.varedit_color_chars ();
 
     m_use_terminal_font = settings->value ("variable_editor/use_terminal_font",
                                            true).toBool ();
@@ -1629,9 +1642,11 @@ namespace octave
 
     m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     QAction *action;
-    action = add_tool_bar_button (m_resource_manager.icon ("document-save"),
-                                  tr ("Save"), this, SLOT (save ()));
+    action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
+                                  this, SLOT (save ()));
     addAction (action);
     action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     action->setShortcuts (QKeySequence::Save);
@@ -1639,16 +1654,16 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (m_resource_manager.icon ("edit-cut"),
-                                  tr ("Cut"), this, SLOT (cutClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-cut"), tr ("Cut"),
+                                  this, SLOT (cutClipboard ()));
     action->setStatusTip(tr("Cut data to clipboard"));
 
-    action = add_tool_bar_button (m_resource_manager.icon ("edit-copy"),
-                                  tr ("Copy"), this, SLOT (copyClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-copy"), tr ("Copy"),
+                                  this, SLOT (copyClipboard ()));
     action->setStatusTip(tr("Copy data to clipboard"));
 
-    action = add_tool_bar_button (m_resource_manager.icon ("edit-paste"),
-                                  tr ("Paste"), this, SLOT (pasteClipboard ()));
+    action = add_tool_bar_button (rmgr.icon ("edit-paste"), tr ("Paste"),
+                                  this, SLOT (pasteClipboard ()));
     action->setStatusTip(tr("Paste clipboard into variable data"));
 
     m_tool_bar->addSeparator ();
@@ -1657,15 +1672,14 @@ namespace octave
     // QAction *print_action; /icons/fileprint.png
     // m_tool_bar->addSeparator ();
 
-    action = new QAction (m_resource_manager.icon ("plot-xy-curve"),
-                          tr ("Plot"), m_tool_bar);
+    action = new QAction (rmgr.icon ("plot-xy-curve"), tr ("Plot"), m_tool_bar);
     action->setToolTip (tr ("Plot Selected Data"));
     QToolButton *plot_tool_button = new HoverToolButton (m_tool_bar);
     plot_tool_button->setDefaultAction (action);
 
     plot_tool_button->setText (tr ("Plot"));
     plot_tool_button->setToolTip (tr ("Plot selected data"));
-    plot_tool_button->setIcon (m_resource_manager.icon ("plot-xy-curve"));
+    plot_tool_button->setIcon (rmgr.icon ("plot-xy-curve"));
 
     plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
@@ -1684,8 +1698,8 @@ namespace octave
 
     m_tool_bar->addSeparator ();
 
-    action = add_tool_bar_button (m_resource_manager.icon ("go-up"),
-                                  tr ("Up"), this, SLOT (levelUp ()));
+    action = add_tool_bar_button (rmgr.icon ("go-up"), tr ("Up"), this,
+                                  SLOT (levelUp ()));
     action->setStatusTip(tr("Go one level up in variable hierarchy"));
 
     // The QToolButton mouse-clicks change active window, so connect all

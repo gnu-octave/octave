@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   class history_dock_widget : public octave_dock_widget
   {
@@ -42,7 +42,7 @@ namespace octave
 
   public:
 
-    history_dock_widget (QWidget *parent, resource_manager& rmgr);
+    history_dock_widget (QWidget *parent, base_qobject& oct_qobj);
 
     ~history_dock_widget (void) = default;
 

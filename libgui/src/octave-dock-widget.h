@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   // The few decoration items common to both main window and variable editor.
 
@@ -44,7 +44,7 @@ namespace octave
 
   public:
 
-    label_dock_widget (QWidget *p, resource_manager& rmgr);
+    label_dock_widget (QWidget *p, base_qobject& oct_qobj);
 
     // set_title() uses the custom title bar while setWindowTitle() uses
     // the default title bar (with style sheets)
@@ -65,7 +65,7 @@ namespace octave
 
   protected:
 
-    resource_manager& m_resource_manager;
+    base_qobject& m_octave_qobj;
 
     int m_icon_size;
     QWidget *m_title_widget;
@@ -85,7 +85,7 @@ namespace octave
   public:
 
     octave_dock_widget (const QString& obj_name, QWidget *p,
-                        resource_manager& rmgr);
+                        base_qobject& oct_qobj);
 
     virtual ~octave_dock_widget (void) = default;
 

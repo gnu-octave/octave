@@ -33,33 +33,29 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMenu>
 
 #include "dw-main-window.h"
-#include "resource-manager.h"
+#include "octave-qobject.h"
 #include "shortcut-manager.h"
 
 namespace octave
 {
 
-  dw_main_window::dw_main_window (resource_manager& rmgr, QWidget *p)
-    : QMainWindow (p), m_resource_manager (rmgr)
+  dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
+    : QMainWindow (p), m_octave_qobj (oct_qobj)
   {
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     // Adding the actions for closing the dock widgets
     m_close_action
-      = add_action (nullptr,
-                    m_resource_manager.icon ("window-close",false),
-                    tr ("&Close"),
-                    SLOT (request_close ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("&Close"), SLOT (request_close ()), this);
 
     m_close_all_action
-      = add_action (nullptr,
-                    m_resource_manager.icon ("window-close",false),
-                    tr ("Close &All"),
-                    SLOT (request_close_all ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("Close &All"), SLOT (request_close_all ()), this);
 
     m_close_others_action
-      = add_action (nullptr,
-                    m_resource_manager.icon ("window-close",false),
-                    tr ("Close &Other"),
-                    SLOT (request_close_other ()), this);
+      = add_action (nullptr, rmgr.icon ("window-close", false),
+                    tr ("Close &Other"), SLOT (request_close_other ()), this);
 
     m_switch_left_action
       = add_action (nullptr, QIcon (), tr ("Switch to &Left Widget"),
@@ -76,7 +72,7 @@ namespace octave
     m_actions_list << m_switch_left_action;
     m_actions_list << m_switch_right_action;
 
-    notice_settings (m_resource_manager.get_settings ());
+    notice_settings (rmgr.get_settings ());
   }
 
 

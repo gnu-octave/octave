@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   class terminal_dock_widget : public octave_dock_widget
   {
@@ -40,7 +40,7 @@ namespace octave
 
   public:
 
-    terminal_dock_widget (QWidget *parent, resource_manager& rmgr);
+    terminal_dock_widget (QWidget *parent, base_qobject& oct_qobj);
 
     ~terminal_dock_widget (void);
 

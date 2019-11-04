@@ -41,6 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
+  class base_qobject;
+
   // subclassed QTabWidget for using custom tabbar
 
   class file_editor_tab_widget : public QTabWidget
@@ -88,7 +90,7 @@ namespace octave
       }
     };
 
-    file_editor (QWidget *p, resource_manager& rmgr);
+    file_editor (QWidget *p, base_qobject& oct_qobj);
 
     ~file_editor (void);
 

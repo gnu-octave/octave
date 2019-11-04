@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   //! Documentation browser derived from Textbrowser
 
@@ -95,7 +95,7 @@ namespace octave
 
   public:
 
-    documentation (QWidget *parent, resource_manager& rmgr);
+    documentation (QWidget *parent, base_qobject& oct_qobj);
     ~documentation (void);
 
   signals:
@@ -143,7 +143,7 @@ namespace octave
     //! Select all occurrences of a string in the doc browser
     void select_all_occurrences (const QString& text);
 
-    resource_manager& m_resource_manager;
+    base_qobject& m_octave_qobj;
 
     QHelpEngine *m_help_engine;
     QString m_internal_search;

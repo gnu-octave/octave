@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
+  class base_qobject;
 
   class news_reader : public QObject
   {
@@ -37,10 +37,10 @@ namespace octave
 
   public:
 
-    news_reader (resource_manager& rmgr, const QString& base_url,
+    news_reader (base_qobject& oct_qobj, const QString& base_url,
                  const QString& page, int serial = -1,
                  bool connect_to_web = false)
-      : QObject (), m_resource_manager (rmgr), m_base_url (base_url),
+      : QObject (), m_octave_qobj (oct_qobj), m_base_url (base_url),
         m_page (page), m_serial (serial), m_connect_to_web (connect_to_web)
     { }
 
@@ -56,7 +56,7 @@ namespace octave
 
   private:
 
-    resource_manager& m_resource_manager;
+    base_qobject& m_octave_qobj;
 
     QString m_base_url;
     QString m_page;

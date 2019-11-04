@@ -89,13 +89,13 @@ along with Octave; see the file COPYING.  If not, see
 namespace octave
 {
   static file_editor_interface *
-  create_default_editor (QWidget *p, resource_manager& rmgr)
+  create_default_editor (QWidget *p, base_qobject& oct_qobj)
   {
 #if defined (HAVE_QSCINTILLA)
-    return new file_editor (p, rmgr);
+    return new file_editor (p, oct_qobj);
 #else
     octave_unused_parameter (p);
-    octave_unused_parameter (rmgr);
+    octave_unused_parameter (oct_qobj);
 
     return 0;
 #endif
@@ -103,13 +103,12 @@ namespace octave
 
   main_window::main_window (base_qobject& oct_qobj)
     : QMainWindow (), m_octave_qobj (oct_qobj),
-      m_resource_manager (m_octave_qobj.get_resource_manager ()),
       m_workspace_model (nullptr),
       m_status_bar (nullptr), m_command_window (nullptr),
       m_history_window (nullptr), m_file_browser_window (nullptr),
       m_doc_browser_window (nullptr), m_editor_window (nullptr),
       m_workspace_window (nullptr), m_variable_editor_window (nullptr),
-      m_external_editor (new external_editor_interface (this, m_resource_manager)),
+      m_external_editor (new external_editor_interface (this, m_octave_qobj)),
       m_active_editor (m_external_editor), m_settings_dlg (nullptr),
       m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
       m_release_notes_window (nullptr), m_community_news_window (nullptr),
@@ -117,29 +116,31 @@ namespace octave
       m_prevent_readline_conflicts (true), m_suppress_dbg_location (true),
       m_closing (false), m_file_encoding (QString ())
   {
-    if (m_resource_manager.is_first_run ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+    if (rmgr.is_first_run ())
       {
         // Before wizard.
         m_octave_qobj.config_translators ();
 
-        welcome_wizard welcomeWizard (m_resource_manager);
+        welcome_wizard welcomeWizard (m_octave_qobj);
 
         if (welcomeWizard.exec () == QDialog::Rejected)
           exit (1);
 
         // Install settings file.
-        m_resource_manager.reload_settings ();
+        rmgr.reload_settings ();
       }
     else
       {
         // Get settings file.
-        m_resource_manager.reload_settings ();
+        rmgr.reload_settings ();
 
         // After settings.
         m_octave_qobj.config_translators ();
       }
 
-    m_resource_manager.update_network_settings ();
+    rmgr.update_network_settings ();
 
     // We provide specific terminal capabilities, so ensure that
     // TERM is always set appropriately.
@@ -154,16 +155,15 @@ namespace octave
 
     construct_central_widget ();
 
-    m_workspace_model = new workspace_model (m_resource_manager);
+    m_workspace_model = new workspace_model (m_octave_qobj);
     m_status_bar = new QStatusBar ();
-    m_command_window = new terminal_dock_widget (this, m_resource_manager);
-    m_history_window = new history_dock_widget (this, m_resource_manager);
-    m_file_browser_window = new files_dock_widget (this, m_resource_manager);
-    m_doc_browser_window
-      = new documentation_dock_widget (this, m_resource_manager);
-    m_editor_window = create_default_editor (this, m_resource_manager);
-    m_variable_editor_window = new variable_editor (this, m_resource_manager);
-    m_workspace_window = new workspace_view (this, m_resource_manager);
+    m_command_window = new terminal_dock_widget (this, m_octave_qobj);
+    m_history_window = new history_dock_widget (this, m_octave_qobj);
+    m_file_browser_window = new files_dock_widget (this, m_octave_qobj);
+    m_doc_browser_window = new documentation_dock_widget (this, m_octave_qobj);
+    m_editor_window = create_default_editor (this, m_octave_qobj);
+    m_variable_editor_window = new variable_editor (this, m_octave_qobj);
+    m_workspace_window = new workspace_view (this, m_octave_qobj);
 
     // Set active editor depending on editor window. If the latter is
     // not initialized (qscintilla not present), use the external editor.
@@ -180,7 +180,7 @@ namespace octave
 
     m_default_style = qapp->style ()->objectName ();
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    gui_settings *settings = rmgr.get_settings ();
 
     bool connect_to_web = true;
     QDateTime last_checked;
@@ -263,7 +263,8 @@ namespace octave
   {
     bool closenow = true;
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (settings->value ("prompt_to_exit", false).toBool ())
       {
@@ -351,7 +352,8 @@ namespace octave
 
   void main_window::request_reload_settings (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (settings)
       emit settings_changed (settings);
@@ -366,8 +368,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file
@@ -390,8 +393,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
-    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file = file_arg;
@@ -665,7 +669,8 @@ namespace octave
 
   void main_window::load_and_display_community_news (int serial)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     bool connect_to_web
       = (settings
@@ -678,8 +683,8 @@ namespace octave
 
     QThread *worker_thread = new QThread;
 
-    news_reader *reader = new news_reader (m_resource_manager, base_url,
-                                           page, serial, connect_to_web);
+    news_reader *reader = new news_reader (m_octave_qobj, base_url, page,
+                                           serial, connect_to_web);
 
     reader->moveToThread (worker_thread);
 
@@ -786,8 +791,7 @@ namespace octave
         return;
       }
 
-    m_settings_dlg
-      = new settings_dialog (this, m_resource_manager, desired_tab);
+    m_settings_dlg = new settings_dialog (this, m_octave_qobj, desired_tab);
 
     connect (m_settings_dlg, SIGNAL (apply_new_settings (void)),
              this, SLOT (request_reload_settings (void)));
@@ -900,7 +904,8 @@ namespace octave
     m_suppress_dbg_location
       = ! settings->value ("terminal/print_debug_location", false).toBool ();
 
-    m_resource_manager.update_network_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    rmgr.update_network_settings ();
 
     emit active_dock_changed (nullptr, m_active_dock); // update dock widget styles
 
@@ -975,8 +980,9 @@ namespace octave
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
-    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir
@@ -1230,7 +1236,8 @@ namespace octave
     // Open file isn't a file_editor_tab or editor function since the file
     // might be opened in an external editor. Hence, functionality is here.
 
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     bool is_internal = m_editor_window
                        && ! settings->value ("useCustomFileEditor",false).toBool ();
 
@@ -1247,8 +1254,7 @@ namespace octave
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! m_resource_manager.get_settings ()->value ("use_native_file_dialogs",
-                                                    true).toBool ())
+    if (! settings->value ("use_native_file_dialogs", true).toBool ())
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
@@ -1273,7 +1279,8 @@ namespace octave
     // editor window or the main window. The latter is chosen, if a custom
     // editor is used or qscintilla is not available
     QWidget *p = m_editor_window;
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     if (! p || settings->value ("useCustomFileEditor",false).toBool ())
       p = this;
     QString new_name = QInputDialog::getText (p, tr ("New Function"),
@@ -1432,7 +1439,8 @@ namespace octave
 
   void main_window::read_settings (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     if (! settings)
       {
@@ -1532,7 +1540,8 @@ namespace octave
 
   void main_window::write_settings (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     if (! settings)
       {
         qDebug ("Error: gui_settings pointer from resource manager is NULL.");
@@ -1627,7 +1636,8 @@ namespace octave
   void main_window::handle_octave_ready (void)
   {
     // actions after the startup files are executed
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
@@ -1680,7 +1690,7 @@ namespace octave
     if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
       return;
 
-    m_set_path_dlg = new set_path_dialog (this, m_resource_manager);
+    m_set_path_dlg = new set_path_dialog (this, m_octave_qobj);
 
     m_set_path_dlg->setModal (false);
     m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
@@ -1717,7 +1727,7 @@ namespace octave
 
     if (! m_find_files_dlg)
       {
-        m_find_files_dlg = new find_files_dialog (this, m_resource_manager);
+        m_find_files_dlg = new find_files_dialog (this, m_octave_qobj);
 
         connect (m_find_files_dlg, SIGNAL (finished (int)),
                  this, SLOT (find_files_finished (int)));
@@ -1842,7 +1852,8 @@ namespace octave
   void main_window::restore_create_file_setting (void)
   {
     // restore the new files creation setting
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     settings->setValue ("editor/create_new_file",false);
     disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                 this, SLOT (restore_create_file_setting (void)));
@@ -2292,9 +2303,9 @@ namespace octave
 
     construct_new_menu (file_menu);
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     m_open_action
-      = file_menu->addAction (m_resource_manager.icon ("document-open"),
-                              tr ("Open..."));
+      = file_menu->addAction (rmgr.icon ("document-open"), tr ("Open..."));
     m_open_action->setShortcutContext (Qt::ApplicationShortcut);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
@@ -2333,9 +2344,9 @@ namespace octave
   {
     QMenu *new_menu = p->addMenu (tr ("New"));
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     m_new_script_action
-      = new_menu->addAction (m_resource_manager.icon ("document-new"),
-                             tr ("New Script"));
+      = new_menu->addAction (rmgr.icon ("document-new"), tr ("New Script"));
     m_new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
     m_new_function_action = new_menu->addAction (tr ("New Function..."));
@@ -2372,20 +2383,21 @@ namespace octave
 
     QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     m_undo_action
-      = edit_menu->addAction (m_resource_manager.icon ("edit-undo"), tr ("Undo"));
+      = edit_menu->addAction (rmgr.icon ("edit-undo"), tr ("Undo"));
     m_undo_action->setShortcutContext (Qt::ApplicationShortcut);
 
     edit_menu->addSeparator ();
 
     m_copy_action
-      = edit_menu->addAction (m_resource_manager.icon ("edit-copy"),
-                              tr ("Copy"), this, SLOT (copyClipboard (void)));
+      = edit_menu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+                              SLOT (copyClipboard (void)));
     m_copy_action->setShortcutContext (Qt::ApplicationShortcut);
 
     m_paste_action
-      = edit_menu->addAction (m_resource_manager.icon ("edit-paste"),
-                              tr ("Paste"), this, SLOT (pasteClipboard (void)));
+      = edit_menu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+                              SLOT (pasteClipboard (void)));
     m_paste_action->setShortcutContext (Qt::ApplicationShortcut);
 
     m_select_all_action
@@ -2399,8 +2411,7 @@ namespace octave
     edit_menu->addSeparator ();
 
     m_find_files_action
-      = edit_menu->addAction (m_resource_manager.icon ("edit-find"),
-                              tr ("Find Files..."));
+      = edit_menu->addAction (rmgr.icon ("edit-find"), tr ("Find Files..."));
 
     edit_menu->addSeparator ();
 
@@ -2419,7 +2430,7 @@ namespace octave
       = edit_menu->addAction (tr ("Set Path"));
 
     m_preferences_action
-      = edit_menu->addAction (m_resource_manager.icon ("preferences-system"),
+      = edit_menu->addAction (rmgr.icon ("preferences-system"),
                               tr ("Preferences..."));
 
     connect (m_find_files_action, SIGNAL (triggered (void)),
@@ -2457,8 +2468,8 @@ namespace octave
                                                     const QString& item,
                                                     const char *member)
   {
-    QAction *action = add_action (m_debug_menu,
-                                  m_resource_manager.icon (QString (icon)),
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    QAction *action = add_action (m_debug_menu, rmgr.icon (QString (icon)),
                                   item, member);
 
     action->setEnabled (false);
@@ -2679,11 +2690,12 @@ namespace octave
     // need to delete these upon destroying this main_window.
     m_main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
     m_main_tool_bar->addWidget (m_current_directory_combo_box);
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     QAction *current_dir_up
-      = m_main_tool_bar->addAction (m_resource_manager.icon ("go-up"),
+      = m_main_tool_bar->addAction (rmgr.icon ("go-up"),
                                     tr ("One directory up"));
     QAction *current_dir_search
-      = m_main_tool_bar->addAction (m_resource_manager.icon ("folder"),
+      = m_main_tool_bar->addAction (rmgr.icon ("folder"),
                                     tr ("Browse directories"));
 
     connect (m_current_directory_combo_box, SIGNAL (activated (QString)),
@@ -2704,7 +2716,8 @@ namespace octave
 
   void main_window::focus_console_after_command (void)
   {
-    gui_settings *settings = m_resource_manager.get_settings ();
+    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings *settings = rmgr.get_settings ();
     if (settings->value ("terminal/focus_after_command",false).toBool ())
       focus_command_window ();
   }

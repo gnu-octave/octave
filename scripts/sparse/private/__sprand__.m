@@ -56,7 +56,13 @@ function S = __sprand__ (varargin)
     if (nargin == 5)
       mn = m*n;
       k = round (d*mn);
-      if (mn > sizemax ())
+      ## FIXME: randperm() should be fixed to handle large values
+      if (__have_feature__ ("ENABLE_64"))
+        max_numel = intmax ("int64");
+      else
+        max_numel = intmax ("int32");
+      endif
+      if (mn > max_numel)
         ## randperm will overflow, so use alternative methods
 
         idx = unique (fix (rand (1.01*k, 1) * mn)) + 1;

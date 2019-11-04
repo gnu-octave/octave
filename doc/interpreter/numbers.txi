@@ -277,11 +277,10 @@ For clarity, it is probably best to always use commas and semicolons to
 separate matrix elements and rows.
 
 The maximum number of elements in a matrix is fixed when Octave is compiled.
-The allowable number can be queried with the function @code{sizemax}.  Note
-that other factors, such as the amount of memory available on your machine,
-may limit the maximum size of matrices to something smaller.
-
-@DOCSTRING(sizemax)
+If compiled with 64-bit index pointers the limit is @code{intmax ("int64")},
+otherwise it is @code{intmax ("int32")}.  Note that other factors, such as the
+amount of memory available on your machine, may limit the maximum size of
+matrices to something smaller.
 
 When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned

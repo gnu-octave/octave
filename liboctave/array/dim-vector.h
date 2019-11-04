@@ -261,6 +261,7 @@ private:
 
 public:
 
+  OCTAVE_DEPRECATED (6, "dim_vector::dim_max () is deprecated; any uses should be removed")
   static octave_idx_type dim_max (void);
 
   explicit dim_vector (void) : rep (nil_rep ())

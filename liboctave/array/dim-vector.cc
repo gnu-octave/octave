@@ -39,6 +39,7 @@ dim_vector::nil_rep (void)
   return zv.rep;
 }
 
+// FIXME: DEPRECATED, remove in version 8.
 // The maximum allowed value for a dimension extent.  This will normally be a
 // tiny bit off the maximum value of octave_idx_type.
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
@@ -102,7 +103,7 @@ dim_vector::num_ones (void) const
 octave_idx_type
 dim_vector::safe_numel (void) const
 {
-  octave_idx_type idx_max = dim_max ();
+  octave_idx_type idx_max = std::numeric_limits<octave_idx_type>::max ();
   octave_idx_type n = 1;
   int n_dims = ndims ();
 

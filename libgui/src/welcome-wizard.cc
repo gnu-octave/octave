@@ -168,7 +168,7 @@ namespace octave
     m_title->setFont (ft);
 
     resource_manager& rmgr
-      = __get_resource_manager__ ("shortcut_manager::shortcut_manager");
+      = __get_resource_manager__ ("initial_page::initial_page");
 
     m_message->setText
       (tr ("<html><body>\n"

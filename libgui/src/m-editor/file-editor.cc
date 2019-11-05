@@ -444,20 +444,22 @@ namespace octave
     QStringList fet_lines;
 
     // save all open tabs before they are definitely closed
-    for (auto p = m_editor_tab_map.cbegin ();
-        p != m_editor_tab_map.cend (); p++)
+
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
+
+    for (auto editor_tab : editor_tab_lst)
       {
-        QString file_name = p->first;   // get file name of tab
-        if (! file_name.isEmpty ())      // do not append unnamed files
+        QString file_name = editor_tab->file_name ();
+
+        // Don't append unnamed files.
+
+        if (! file_name.isEmpty ())
           {
             fetFileNames.append (file_name);
-            fet_encodings.append (m_editor_tab_map[file_name].encoding);
+            fet_encodings.append (editor_tab->encoding ());
 
             QString index;
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (m_editor_tab_map[file_name].fet_ID);
-            fet_index.append (index.setNum
-                             (m_tab_widget->indexOf (editor_tab)));
+            fet_index.append (index.setNum (m_tab_widget->indexOf (editor_tab)));
 
             int l, c;
             editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
@@ -477,12 +479,10 @@ namespace octave
     // hidden before, this state has to be restored afterwards
     bool vis = isVisible ();
 
-    for (int i = m_tab_widget->count () - 1; i >= 0; i--)
-      {
-        // backwards loop since m_tab_widget->count () changes during the loop
-        delete m_tab_widget->widget (i);
-        m_tab_widget->removeTab (i);
-      }
+    for (auto editor_tab : editor_tab_lst)
+      delete editor_tab;
+
+    m_tab_widget->clear ();
 
     setVisible (vis);
 

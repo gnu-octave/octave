@@ -403,11 +403,11 @@ namespace octave
             else
               include_graph = old_print_cmd;
 
-            size_t n_begin = include_graph.find_first_not_of (' ');
+            size_t n_begin = include_graph.find_first_not_of (" \"'");
 
             if (n_begin != std::string::npos)
               {
-                size_t n_end = include_graph.find_last_not_of (' ');
+                size_t n_end = include_graph.find_last_not_of (" \"'");
                 include_graph = include_graph.substr (n_begin,
                                                       n_end - n_begin + 1);
               }

@@ -203,6 +203,7 @@ noinst_HEADERS += \
   %reldir%/gui-settings.h \
   %reldir%/external-editor-interface.h \
   %reldir%/files-dock-widget.h \
+  %reldir%/graphics-init.h \
   %reldir%/history-dock-widget.h \
   %reldir%/interpreter-qobject.h \
   %reldir%/m-editor/file-editor-interface.h \
@@ -241,6 +242,7 @@ noinst_HEADERS += \
   %reldir%/dw-main-window.cc \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
+  %reldir%/graphics-init.cc \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \
@@ -284,6 +286,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
   @QT_CPPFLAGS@ \
   -I$(srcdir)/libgui/qterminal/libqterminal \
   -Ilibgui/src -I$(srcdir)/libgui/src \
+  -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -I$(srcdir)/%reldir%/m-editor \
   -Iliboctave \
   -I$(srcdir)/liboctave/array \

@@ -1,7 +1,5 @@
 if AMCOND_BUILD_QT_GRAPHICS
 
-LIBOCTGUI_GRAPHICS_LIB = %reldir%/__init_qt__.la
-
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
@@ -30,17 +28,17 @@ $(OCTAVE_GUI_GRAPHICS_MOC): | %reldir%/$(octave_dirstamp)
 DIRSTAMP_FILES += \
   %reldir%/$(octave_dirstamp)
 
-__init_qt___MOC = \
+libgraphics_MOC = \
   $(OCTAVE_GUI_GRAPHICS_MOC)
 
-__init_qt___UI = \
+libgraphics_UI = \
   %reldir%/annotation-dialog.ui
 
-__init_qt___UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(__init_qt___UI))
+libgraphics_UI_H = $(patsubst %reldir%/%.ui, %reldir%/ui-%.h, $(libgraphics_UI))
 
-$(__init_qt___UI_H): | %reldir%/$(octave_dirstamp)
+$(libgraphics_UI_H): | %reldir%/$(octave_dirstamp)
 
-BUILT_SOURCES += $(__init_qt___UI_H)
+BUILT_SOURCES += $(libgraphics_UI_H)
 
 noinst_HEADERS += \
   %reldir%/BaseControl.h \
@@ -76,14 +74,13 @@ noinst_HEADERS += \
   %reldir%/ToggleTool.h \
   %reldir%/ToolBar.h \
   %reldir%/ToolBarButton.h \
-  %reldir%/__init_qt__.h \
   %reldir%/annotation-dialog.h \
   %reldir%/gl-select.h \
   %reldir%/qopengl-functions.h \
   %reldir%/qt-graphics-toolkit.h \
   $(TEMPLATE_SRC)
 
-%canon_reldir%___init_qt___la_SOURCES = \
+%canon_reldir%_libgraphics_la_SOURCES = \
   %reldir%/BaseControl.cc \
   %reldir%/ButtonControl.cc \
   %reldir%/ButtonGroup.cc \
@@ -114,7 +111,6 @@ noinst_HEADERS += \
   %reldir%/ToggleButtonControl.cc \
   %reldir%/ToggleTool.cc \
   %reldir%/ToolBar.cc \
-  %reldir%/__init_qt__.cc \
   %reldir%/annotation-dialog.cc \
   %reldir%/gl-select.cc \
   %reldir%/qt-graphics-toolkit.cc
@@ -122,9 +118,9 @@ noinst_HEADERS += \
 TEMPLATE_SRC = \
   %reldir%/ToolBarButton.cc
 
-nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC)
+nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
 
-%canon_reldir%___init_qt___la_CPPFLAGS = \
+%canon_reldir%_libgraphics_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
@@ -144,55 +140,26 @@ nodist_%canon_reldir%___init_qt___la_SOURCES = $(__init_qt___MOC)
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-%canon_reldir%___init_qt___la_LDFLAGS = \
-  -avoid-version -module $(NO_UNDEFINED_LDFLAG) \
+%canon_reldir%_libgraphics_la_LDFLAGS = \
   $(QT_OPENGL_LDFLAGS) \
   $(WARN_LDFLAGS)
 
-DLD_LIBOCTGUI_LIBADD = $(OCT_GUI_LINK_DEPS)
-
-%canon_reldir%___init_qt___la_LIBADD = \
-  $(DLD_LIBOCTGUI_LIBADD) \
+%canon_reldir%_libgraphics_la_LIBADD = \
+  $(OCT_GUI_LINK_DEPS) \
   $(QT_OPENGL_LIBS) \
   $(OPENGL_LIBS)
 
-%canon_reldir%___init_qt___la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
+%canon_reldir%_libgraphics_la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
 
-octlib_LTLIBRARIES += $(LIBOCTGUI_GRAPHICS_LIB)
-
-GRAPHICS_DEFUN_FILES = %reldir%/__init_qt__.cc
-
-GRAPHICS_OCT_FILES = $(LIBOCTGUI_GRAPHICS_LIB:.la=.oct)
-
-OCTAVE_INTERPRETER_TARGETS += $(GRAPHICS_OCT_FILES)
-
-OCT_FILE_LIBS += $(LIBOCTGUI_GRAPHICS_LIB)
-
-OCT_FILES += $(GRAPHICS_OCT_FILES)
-
-## Use stamp files to avoid problems with checking timestamps
-## of symbolic links
-
-%reldir%/__init_qt__.oct : $(LIBOCTGUI_GRAPHICS_LIB)
-	$(AM_V_GEN)$(INSTALL_PROGRAM) %reldir%/.libs/$(shell $(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $<) $@
-
-GRAPHICS_PKG_ADD_FILE = %reldir%/PKG_ADD
-
-%reldir%/PKG_ADD: $(GRAPHICS_DEFUN_FILES) $(srcdir)/build-aux/mk-pkg-add.sh | %reldir%/$(octave_dirstamp)
-	$(AM_V_GEN)rm -f $@-t && \
-	$(SHELL) $(srcdir)/build-aux/mk-pkg-add.sh "$(srcdir)" $(GRAPHICS_DEFUN_FILES) > $@-t && \
-	mv $@-t $@
-
-OCT_FILE_PKG_ADD_FILES += \
-  $(GRAPHICS_PKG_ADD_FILE)
+noinst_LTLIBRARIES += %reldir%/libgraphics.la
 
 libgui_EXTRA_DIST += \
-  $(__init_qt___UI)
+  $(libgraphics_UI)
 
 libgui_CLEANFILES += \
   $(GRAPHICS_OCT_FILES) \
   $(GRAPHICS_PKG_ADD_FILE) \
-  $(__init_qt___MOC) \
-  $(__init_qt___UI_H)
+  $(libgraphics_MOC) \
+  $(libgraphics_UI_H)
 
 endif

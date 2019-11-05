@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2019 Michael Goffioul
+Copyright (C) 2019 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,21 +20,20 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if ! defined (octave__init_qt___h)
-#define octave__init_qt___h 1
+#if ! defined (octave_graphics_init_h)
+#define octave_graphics_init_h 1
 
-namespace QtHandles
-{
+#include <QObject>
 
-  bool __init__ (void);
-
-}
+#include "qt-interpreter-events.h"
 
 namespace octave
 {
-  class symbol_table;
-}
+  class interpreter;
 
-extern void install___init_qt___functions (octave::symbol_table&);
+  class base_qobject;
+
+  extern void graphics_init (interpreter& interp, base_qobject& oct_qobj);
+}
 
 #endif

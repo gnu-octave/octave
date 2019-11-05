@@ -2606,26 +2606,25 @@ namespace octave
   // Check whether this file is already open in the editor.
   QWidget * file_editor::find_tab_widget (const QString& file)
   {
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::string std_file = file.toStdString ();
 
-    // Check all tabs for the given file name
-    QWidget *retval = nullptr;
+    std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
 
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+    for (auto fe_tab : fe_tab_lst)
       {
-        QString tab_file = p->first;
-        if (same_file (file.toStdString (), tab_file.toStdString ())
-            || file == tab_file)     // needed as same_file ("","") is false.
-          {
-            retval = p->second.fet_ID;
-            break;
-          }
+        QString tab_file = fe_tab->file_name ();
+
+        // We check file == tab_file because
+        //
+        //   same_file ("", "")
+        //
+        // is false
+
+        if (same_file (std_file, tab_file.toStdString ()) || file == tab_file)
+          return fe_tab;
       }
 
-    return retval;
+    return nullptr;
   }
 
   QAction * file_editor::add_action (QMenu *menu, const QString& text,

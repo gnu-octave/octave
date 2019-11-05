@@ -65,6 +65,8 @@ namespace octave
 
     void update_breakpoints ();
 
+    QString file_name (void) const { return m_file_name; }
+
   signals:
 
     void tab_ready_to_close (void);

@@ -27,16 +27,23 @@ along with Octave; see the file COPYING.  If not, see
 
 class QRadioButton;
 
+namespace octave
+{
+  class base_qobject;
+}
+
 namespace QtHandles
 {
 
   class RadioButtonControl : public ButtonControl
   {
   public:
-    RadioButtonControl (const graphics_object& go, QRadioButton *box);
+    RadioButtonControl (octave::base_qobject& oct_qobj, const graphics_object& go,
+                        QRadioButton *box);
     ~RadioButtonControl (void);
 
-    static RadioButtonControl * create (const graphics_object& go);
+    static RadioButtonControl * create (octave::base_qobject& oct_qobj,
+                                        const graphics_object& go);
   };
 
 }

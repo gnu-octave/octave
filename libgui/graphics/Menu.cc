@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Menu.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
@@ -58,7 +60,7 @@ namespace QtHandles
   }
 
   Menu*
-  Menu::create (const graphics_object& go)
+  Menu::create (octave::base_qobject& oct_qobj, const graphics_object& go)
   {
     Object *parent_obj = Object::parentObject (go);
 
@@ -67,13 +69,14 @@ namespace QtHandles
         QObject *qObj = parent_obj->qObject ();
 
         if (qObj)
-          return new Menu (go, new QAction (qObj), parent_obj);
+          return new Menu (oct_qobj, go, new QAction (qObj), parent_obj);
       }
 
     return nullptr;
   }
 
-  Menu::Menu (const graphics_object& go, QAction *action, Object *xparent)
+  Menu::Menu (octave::base_qobject&, const graphics_object& go,
+              QAction *action, Object *xparent)
     : Object (go, action), m_parent (nullptr), m_separator (nullptr)
   {
     uimenu::properties& up = properties<uimenu> ();

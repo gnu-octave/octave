@@ -29,6 +29,11 @@ class QCheckBox;
 class QTableWidget;
 class QTableWidgetItem;
 
+namespace octave
+{
+  class base_qobject;
+}
+
 namespace QtHandles
 {
 
@@ -39,14 +44,16 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    Table (const graphics_object& go, QTableWidget* tableWidget);
+    Table (octave::base_qobject& oct_qobj, const graphics_object& go,
+           QTableWidget* tableWidget);
     ~Table (void);
 
     Container* innerContainer (void) { return m_container; }
 
     bool eventFilter (QObject* watched, QEvent* event);
 
-    static Table* create (const graphics_object& go);
+    static Table* create (octave::base_qobject& oct_qobj,
+                          const graphics_object& go);
 
   protected:
     void update (int pId);

@@ -42,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
+#include "octave-qobject.h"
+
 #include "interpreter-private.h"
 #include "ov-struct.h"
 
@@ -94,7 +96,8 @@ namespace QtHandles
   }
 
   ButtonGroup*
-  ButtonGroup::create (const graphics_object& go)
+  ButtonGroup::create (octave::base_qobject& oct_qobj,
+                       const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -105,15 +108,17 @@ namespace QtHandles
         if (container)
           {
             QFrame *frame = new QFrame (container);
-            return new ButtonGroup (go, new QButtonGroup (frame), frame);
+            return new ButtonGroup (oct_qobj, go, new QButtonGroup (frame),
+                                    frame);
           }
       }
 
     return nullptr;
   }
 
-  ButtonGroup::ButtonGroup (const graphics_object& go, QButtonGroup *buttongroup,
-                            QFrame *frame)
+  ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
+                            const graphics_object& go,
+                            QButtonGroup *buttongroup, QFrame *frame)
     : Object (go, frame), m_hiddenbutton(nullptr), m_container (nullptr),
       m_title (nullptr), m_blockUpdates (false)
   {
@@ -134,7 +139,7 @@ namespace QtHandles
     m_hiddenbutton->hide ();
     m_buttongroup->addButton (m_hiddenbutton);
 
-    m_container = new Container (frame);
+    m_container = new Container (frame, oct_qobj);
     m_container->canvas (m_handle);
 
     connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),

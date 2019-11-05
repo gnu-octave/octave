@@ -38,8 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-  Container::Container (QWidget *xparent)
-    : ContainerBase (xparent), m_canvas (nullptr)
+  Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj)
+    : ContainerBase (xparent), m_octave_qobj (oct_qobj), m_canvas (nullptr)
   {
     setFocusPolicy (Qt::ClickFocus);
   }
@@ -62,8 +62,8 @@ namespace QtHandles
           {
             graphics_object fig = go.get_ancestor ("figure");
 
-            m_canvas = Canvas::create (fig.get ("renderer").string_value (),
-                                       this, gh);
+            m_canvas = Canvas::create (m_octave_qobj, gh, this,
+                                       fig.get ("renderer").string_value ());
 
             connect (m_canvas, SIGNAL (interpeter_event (const fcn_callback&)),
                      this, SIGNAL (interpeter_event (const fcn_callback&)));

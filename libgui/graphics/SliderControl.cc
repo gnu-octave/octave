@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "SliderControl.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
 #include "graphics.h"
 #include "interpreter-private.h"
 
@@ -39,7 +41,8 @@ namespace QtHandles
 {
 
   SliderControl*
-  SliderControl::create (const graphics_object& go)
+  SliderControl::create (octave::base_qobject& oct_qobj,
+                         const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -48,15 +51,16 @@ namespace QtHandles
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new SliderControl (go, new QScrollBar (container));
+          return new SliderControl (oct_qobj, go, new QScrollBar (container));
       }
 
     return nullptr;
   }
 
-  SliderControl::SliderControl (const graphics_object& go,
+  SliderControl::SliderControl (octave::base_qobject& oct_qobj,
+                                const graphics_object& go,
                                 QAbstractSlider *slider)
-    : BaseControl (go, slider), m_blockUpdates (false)
+    : BaseControl (oct_qobj, go, slider), m_blockUpdates (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

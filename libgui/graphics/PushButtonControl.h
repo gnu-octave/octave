@@ -27,16 +27,23 @@ along with Octave; see the file COPYING.  If not, see
 
 class QPushButton;
 
+namespace octave
+{
+  class base_qobject;
+}
+
 namespace QtHandles
 {
 
   class PushButtonControl : public ButtonControl
   {
   public:
-    PushButtonControl (const graphics_object& go, QPushButton *btn);
+    PushButtonControl (octave::base_qobject& oct_qobj, const graphics_object& go,
+                       QPushButton *btn);
     ~PushButtonControl (void);
 
-    static PushButtonControl * create (const graphics_object& go);
+    static PushButtonControl * create (octave::base_qobject& oct_qobj,
+                                       const graphics_object& go);
 
   protected:
     void update (int pId);

@@ -107,17 +107,18 @@ namespace QtHandles
   }
 
   Figure*
-  Figure::create (const graphics_object& go)
+  Figure::create (octave::base_qobject& oct_qobj, const graphics_object& go)
   {
-    return new Figure (go, new FigureWindow ());
+    return new Figure (oct_qobj, go, new FigureWindow ());
   }
 
-  Figure::Figure (const graphics_object& go, FigureWindow *win)
+  Figure::Figure (octave::base_qobject& oct_qobj, const graphics_object& go,
+                  FigureWindow *win)
     : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
       m_menuBar (nullptr), m_innerRect (), m_outerRect (),
       m_previousHeight (0), m_resizable (true)
   {
-    m_container = new Container (win);
+    m_container = new Container (win, oct_qobj);
     win->setCentralWidget (m_container);
 
     connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),

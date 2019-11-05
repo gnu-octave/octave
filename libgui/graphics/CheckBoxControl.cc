@@ -29,11 +29,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "CheckBoxControl.h"
 #include "Container.h"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
   CheckBoxControl*
-  CheckBoxControl::create (const graphics_object& go)
+  CheckBoxControl::create (octave::base_qobject& oct_qobj,
+                           const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -42,14 +45,15 @@ namespace QtHandles
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new CheckBoxControl (go, new QCheckBox (container));
+          return new CheckBoxControl (oct_qobj, go, new QCheckBox (container));
       }
 
     return nullptr;
   }
 
-  CheckBoxControl::CheckBoxControl (const graphics_object& go, QCheckBox *box)
-    : ButtonControl (go, box)
+  CheckBoxControl::CheckBoxControl (octave::base_qobject& oct_obj,
+                                    const graphics_object& go, QCheckBox *box)
+    : ButtonControl (oct_obj, go, box)
   {
     box->setAutoFillBackground (true);
   }

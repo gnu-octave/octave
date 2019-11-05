@@ -31,11 +31,14 @@ along with Octave; see the file COPYING.  If not, see
 #include "TextEdit.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
   EditControl*
-  EditControl::create (const graphics_object& go)
+  EditControl::create (octave::base_qobject& oct_qobj,
+                       const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -48,17 +51,19 @@ namespace QtHandles
             uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
             if ((up.get_max () - up.get_min ()) > 1)
-              return new EditControl (go, new TextEdit (container));
+              return new EditControl (oct_qobj, go, new TextEdit (container));
             else
-              return new EditControl (go, new QLineEdit (container));
+              return new EditControl (oct_qobj, go, new QLineEdit (container));
           }
       }
 
     return nullptr;
   }
 
-  EditControl::EditControl (const graphics_object& go, QLineEdit *edit)
-    : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
+  EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            const graphics_object& go, QLineEdit *edit)
+    : BaseControl (oct_qobj, go, edit), m_multiLine (false),
+      m_textChanged (false)
   {
     init (edit);
   }
@@ -86,8 +91,10 @@ namespace QtHandles
              SLOT (returnPressed (void)));
   }
 
-  EditControl::EditControl (const graphics_object& go, TextEdit *edit)
-    : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
+  EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            const graphics_object& go, TextEdit *edit)
+    : BaseControl (oct_qobj, go, edit), m_multiLine (true),
+      m_textChanged (false)
   {
     init (edit);
   }

@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ListBoxControl.h"
 #include "QtHandlesUtils.h"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
@@ -65,7 +67,8 @@ namespace QtHandles
   }
 
   ListBoxControl*
-  ListBoxControl::create (const graphics_object& go)
+  ListBoxControl::create (octave::base_qobject& oct_qobj,
+                          const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -74,14 +77,16 @@ namespace QtHandles
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new ListBoxControl (go, new QListWidget (container));
+          return new ListBoxControl (oct_qobj, go, new QListWidget (container));
       }
 
     return nullptr;
   }
 
-  ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget *list)
-    : BaseControl (go, list), m_blockCallback (false), m_selectionChanged (false)
+  ListBoxControl::ListBoxControl (octave::base_qobject& oct_qobj,
+                                  const graphics_object& go, QListWidget *list)
+    : BaseControl (oct_qobj, go, list), m_blockCallback (false),
+      m_selectionChanged (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 class QFrame;
 class QLabel;
 
+namespace octave
+{
+  class base_qobject;
+}
+
 namespace QtHandles
 {
 
@@ -36,14 +41,16 @@ namespace QtHandles
   class Panel : public Object
   {
   public:
-    Panel (const graphics_object& go, QFrame *frame);
+    Panel (octave::base_qobject& oct_qobj, const graphics_object& go,
+           QFrame *frame);
     ~Panel (void);
 
     Container * innerContainer (void) { return m_container; }
 
     bool eventFilter (QObject *watched, QEvent *event);
 
-    static Panel * create (const graphics_object& go);
+    static Panel * create (octave::base_qobject& oct_qobj,
+                           const graphics_object& go);
 
     void do_connections (const QObject *receiver,
                          const QObject *emitter = nullptr);

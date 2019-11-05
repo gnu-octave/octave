@@ -28,6 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 class QLineEdit;
 class QWidget;
 
+namespace octave
+{
+  class base_qobject;
+}
+
 namespace QtHandles
 {
 
@@ -38,11 +43,16 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    EditControl (const graphics_object& go, QLineEdit *edit);
-    EditControl (const graphics_object& go, TextEdit *edit);
+    EditControl (octave::base_qobject& oct_qobj, const graphics_object& go,
+                 QLineEdit *edit);
+
+    EditControl (octave::base_qobject& oct_qobj, const graphics_object& go,
+                 TextEdit *edit);
+
     ~EditControl (void);
 
-    static EditControl * create (const graphics_object& go);
+    static EditControl * create (octave::base_qobject& oct_qobj,
+                                 const graphics_object& go);
 
   protected:
     void update (int pId);

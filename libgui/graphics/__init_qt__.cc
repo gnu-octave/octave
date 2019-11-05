@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QRegExp>
 #include <QThread>
 
+#include "octave-qobject.h"
 #include "qt-graphics-toolkit.h"
 #include "QtHandlesUtils.h"
 #include "__init_qt__.h"
@@ -66,15 +67,20 @@ namespace QtHandles
 
             gh_mgr.enable_event_processing (true);
 
-            octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+            // FIXME: temporary?
+            octave::base_qobject& octave_qobj
+              = *(octave::base_qobject::the_octave_qobject ());
 
-            qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
+            qt_graphics_toolkit *qt_gtk
+              = new qt_graphics_toolkit (interp, octave_qobj);
 
             if (QThread::currentThread ()
                 != QApplication::instance ()->thread ())
               qt_gtk->moveToThread (QApplication::instance ()->thread ());
 
             graphics_toolkit tk (qt_gtk);
+
+            octave::gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
             gtk_mgr.load_toolkit (tk);
 

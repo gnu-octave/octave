@@ -93,7 +93,8 @@ namespace QtHandles
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (const graphics_object& go, QWidget *w)
+  BaseControl::BaseControl (octave::base_qobject&, const graphics_object& go,
+                            QWidget *w)
     : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
   {
     qObject ()->setObjectName ("UIControl");

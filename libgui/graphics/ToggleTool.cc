@@ -28,11 +28,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ToolBarButton.cc"
 
+#include "octave-qobject.h"
+
 namespace QtHandles
 {
 
   ToggleTool*
-  ToggleTool::create (const graphics_object& go)
+  ToggleTool::create (octave::base_qobject& oct_qobj, const graphics_object& go)
   {
     Object *parent = Object::parentObject (go);
 
@@ -41,14 +43,15 @@ namespace QtHandles
         QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
-          return new ToggleTool (go, new QAction (parentWidget));
+          return new ToggleTool (oct_qobj, go, new QAction (parentWidget));
       }
 
     return nullptr;
   }
 
-  ToggleTool::ToggleTool (const graphics_object& go, QAction *action)
-    : ToolBarButton<uitoggletool> (go, action)
+  ToggleTool::ToggleTool (octave::base_qobject& oct_qobj,
+                          const graphics_object& go, QAction *action)
+    : ToolBarButton<uitoggletool> (oct_qobj, go, action)
   {
     uitoggletool::properties& tp = properties<uitoggletool> ();
 

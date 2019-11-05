@@ -26,6 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "Object.h"
 
 class QAction;
+class QIcon;
+
+namespace octave
+{
+  class base_qobject;
+}
 
 namespace QtHandles
 {
@@ -36,7 +42,8 @@ namespace QtHandles
   class ToolBarButton : public Object
   {
   public:
-    ToolBarButton (const graphics_object& go, QAction *action);
+    ToolBarButton (octave::base_qobject& oct_qobj, const graphics_object& go,
+                   QAction *action);
     ~ToolBarButton (void);
 
     Container * innerContainer (void) { return nullptr; }
@@ -45,7 +52,10 @@ namespace QtHandles
     void update (int pId);
 
   private:
+    octave::base_qobject& m_octave_qobj;
     QAction *m_separator;
+
+    QIcon get_icon (const std::string& name);
   };
 
 };

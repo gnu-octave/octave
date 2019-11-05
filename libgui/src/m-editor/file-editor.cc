@@ -922,7 +922,7 @@ namespace octave
                                          bool remove_on_success)
   {
     // Check whether this file is already open in the editor.
-    QWidget *tab = find_tab_widget (saveFileName);
+    file_editor_tab *tab = find_tab_widget (saveFileName);
 
     if (tab)
       {
@@ -990,7 +990,7 @@ namespace octave
     if (! file.isEmpty ())
       {
         // Check whether this file is already open in the editor.
-        QWidget *tab = find_tab_widget (file);
+        file_editor_tab *tab = find_tab_widget (file);
 
         if (tab)
           {
@@ -1054,8 +1054,7 @@ namespace octave
         else
           {
             // It is a single file. Is it open?
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (find_tab_widget (old_names.at (i)));
+            file_editor_tab *editor_tab = find_tab_widget (old_names.at (i));
 
             if (editor_tab)
               {
@@ -1409,7 +1408,7 @@ namespace octave
     else
       {
         // Check whether this file is already open in the editor.
-        QWidget *tab = find_tab_widget (openFileName);
+        file_editor_tab *tab = find_tab_widget (openFileName);
 
         if (tab)
           {
@@ -1447,7 +1446,7 @@ namespace octave
             tab = find_tab_widget ("");
             if (tab)
               {
-                fileEditorTab = static_cast<file_editor_tab *>(tab);
+                fileEditorTab = tab;
                 if (fileEditorTab->qsci_edit_area ()->isModified ())
                   fileEditorTab = nullptr;
                 else
@@ -2601,7 +2600,7 @@ namespace octave
   }
 
   // Check whether this file is already open in the editor.
-  QWidget * file_editor::find_tab_widget (const QString& file)
+  file_editor_tab * file_editor::find_tab_widget (const QString& file)
   {
     std::string std_file = file.toStdString ();
 

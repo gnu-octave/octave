@@ -2517,20 +2517,18 @@ namespace octave
     QDir old_dir (old_name);
     session_data f_data;
 
-    // Have all file editor tabs signal what their filenames are.
-    m_editor_tab_map.clear ();
-    emit fetab_file_name_query (nullptr);
+    std::list<file_editor_tab *> editor_tab_lst = m_tab_widget->tab_list ();
 
-    // Loop over all open files and pick those within old_dir
-    for (auto p = m_editor_tab_map.cbegin ();
-         p != m_editor_tab_map.cend (); p++)
+    for (auto editor_tab : editor_tab_lst)
       {
-        if (p->first.isEmpty ())
+        QString file_name = editor_tab->file_name ();
+
+        if (file_name.isEmpty ())
           continue;   // Nothing to do, no valid file name
 
         // Get abs. file path and its path relative to the removed directory
-        QString rel_path_to_file = old_dir.relativeFilePath (p->first);
-        QString abs_path_to_file = old_dir.absoluteFilePath (p->first);
+        QString rel_path_to_file = old_dir.relativeFilePath (file_name);
+        QString abs_path_to_file = old_dir.absoluteFilePath (file_name);
 
         // Test whether the file is located within the directory that will
         // be removed. For this, two conditions must be met:
@@ -2546,22 +2544,21 @@ namespace octave
             // The currently considered file is included in the
             // removed/renamed diectory: Delete it.
             m_no_focus = true;  // Remember for not focussing editor
-            file_editor_tab *editor_tab
-              = static_cast<file_editor_tab *> (p->second.fet_ID);
+
             if (editor_tab)
               {
                 // Get index and line
                 int l, c;
                 editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
                 f_data.line = l + 1;
-                f_data.index = m_tab_widget->indexOf (p->second.fet_ID);
+                f_data.index = m_tab_widget->indexOf (editor_tab);
                 // Close
                 editor_tab->file_has_changed (QString (), true);
               }
             m_no_focus = false;  // Back to normal
 
             // Store file for possible later reload
-            f_data.file_name = p->first;
+            f_data.file_name = file_name;
 
             // Add the new file path and the encoding for later reloading
             // if new_name is given
@@ -2575,19 +2572,19 @@ namespace octave
                     // This means, we have to add the name (not the path)
                     // of the old dir and the relative path to the file
                     // to new dir.
-                    append_to_new_dir = old_dir.dirName () +
-                                        "/" + rel_path_to_file;
+                    append_to_new_dir
+                      = old_dir.dirName () + "/" + rel_path_to_file;
                   }
                 else
                   append_to_new_dir = rel_path_to_file;
 
                 f_data.new_file_name
-                        = new_dir.absoluteFilePath (append_to_new_dir);
+                  = new_dir.absoluteFilePath (append_to_new_dir);
               }
             else
               f_data.new_file_name = ""; // no new name, just removing this file
 
-            f_data.encoding = p->second.encoding; // store the encoding
+            f_data.encoding = editor_tab->encoding (); // store the encoding
 
             // Store data in list for later reloading
             m_tmp_closed_files << f_data;

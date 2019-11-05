@@ -66,6 +66,7 @@ namespace octave
     void update_breakpoints ();
 
     QString file_name (void) const { return m_file_name; }
+    QString encoding (void) const { return m_encoding; }
 
   signals:
 

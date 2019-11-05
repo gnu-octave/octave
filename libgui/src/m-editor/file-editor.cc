@@ -1058,21 +1058,13 @@ namespace octave
 
             if (editor_tab)
               {
-                // YES: Get and store the related encoding
-                for (editor_tab_map_const_iterator p = m_editor_tab_map.begin ();
-                      p != m_editor_tab_map.end (); p++)
-                  {
-                    if (editor_tab == p->second.fet_ID)
-                      {
-                        // Get index and line
-                        f_data.encoding = p->second.encoding;
-                        f_data.index = m_tab_widget->indexOf (editor_tab);
-                        int l, c;
-                        editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
-                        f_data.line = l + 1;
-                        break;
-                      }
-                  }
+                // Get index and line.
+
+                f_data.encoding = editor_tab->encoding ();
+                f_data.index = m_tab_widget->indexOf (editor_tab);
+                int l, c;
+                editor_tab->qsci_edit_area ()->getCursorPosition (&l, &c);
+                f_data.line = l + 1;
 
                 // Close it silently
                 m_no_focus = true;  // Remember for not focussing editor

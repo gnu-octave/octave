@@ -257,13 +257,13 @@ namespace octave
 
     base_qobject& m_octave_qobj;
 
+    QUIWidgetCreator m_uiwidget_creator;
+
     QVariant m_result;
 
     QMutex m_mutex;
 
     QWaitCondition m_waitcondition;
-
-    QUIWidgetCreator m_uiwidget_creator;
   };
 }
 

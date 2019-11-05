@@ -44,9 +44,9 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  QUIWidgetCreator::QUIWidgetCreator (void)
-    : QObject (), m_dialog_result (-1), m_dialog_button (),
-      m_string_list (), m_list_index (), m_path_name ()
+  QUIWidgetCreator::QUIWidgetCreator (base_qobject& oct_qobj)
+    : QObject (), m_octave_qobj (oct_qobj), m_dialog_result (-1),
+      m_dialog_button (), m_string_list (), m_list_index (), m_path_name ()
   {
     connect (this,
              SIGNAL (create_dialog (const QString&, const QString&,
@@ -205,7 +205,8 @@ namespace octave
                                                const QStringList& role)
   {
     MessageDialog *message_dialog
-      = new MessageDialog (message, title, icon, button, defbutton, role);
+      = new MessageDialog (m_octave_qobj, message, title, icon,
+                           button, defbutton, role);
 
     connect (message_dialog, SIGNAL (buttonClicked (QAbstractButton *)),
              this, SLOT (dialog_button_clicked (QAbstractButton *)));
@@ -256,8 +257,8 @@ namespace octave
                                                  const QString& cancel_string)
   {
     ListDialog *list_dialog
-      = new ListDialog (list, mode, wd, ht, initial, name, prompt,
-                        ok_string, cancel_string);
+      = new ListDialog (m_octave_qobj, list, mode, wd, ht, initial,
+                        name, prompt, ok_string, cancel_string);
 
     connect (list_dialog, SIGNAL (finish_selection (const QIntList&, int)),
              this, SLOT (list_select_finished (const QIntList&, int)));
@@ -288,7 +289,7 @@ namespace octave
                                                     const QStringList& defaults)
   {
     InputDialog *input_dialog
-      = new InputDialog (prompt, title, nr, nc, defaults);
+      = new InputDialog (m_octave_qobj, prompt, title, nr, nc, defaults);
 
     connect (input_dialog, SIGNAL (finish_input (const QStringList&, int)),
              this, SLOT (input_finished (const QStringList&, int)));
@@ -316,7 +317,8 @@ namespace octave
                                                    const QString& multimode)
   {
     FileDialog *file_dialog
-      = new FileDialog (filters, title, filename, dirname, multimode);
+      = new FileDialog (m_octave_qobj, filters, title, filename,
+                        dirname, multimode);
 
     connect (file_dialog, SIGNAL (finish_input (const QStringList&,
                                                 const QString&, int)),
@@ -341,9 +343,8 @@ namespace octave
     wake_all ();
   }
 
-  MessageDialog::MessageDialog (const QString& message,
-                                const QString& title,
-                                const QString& qsicon,
+  MessageDialog::MessageDialog (base_qobject&, const QString& message,
+                                const QString& title, const QString& qsicon,
                                 const QStringList& qsbutton,
                                 const QString& defbutton,
                                 const QStringList& role)
@@ -414,9 +415,10 @@ namespace octave
       }
   }
 
-  ListDialog::ListDialog (const QStringList& list, const QString& mode,
-                          int wd, int ht, const QList<int>& initial,
-                          const QString& title, const QStringList& prompt,
+  ListDialog::ListDialog (base_qobject&, const QStringList& list,
+                          const QString& mode, int wd, int ht,
+                          const QList<int>& initial, const QString& title,
+                          const QStringList& prompt,
                           const QString& ok_string,
                           const QString& cancel_string)
     : QDialog (), m_model (new QStringListModel (list))
@@ -554,9 +556,9 @@ namespace octave
     buttonOk_clicked ();
   }
 
-  InputDialog::InputDialog (const QStringList& prompt, const QString& title,
-                            const QFloatList& nr, const QFloatList& nc,
-                            const QStringList& defaults)
+  InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
+                            const QString& title, const QFloatList& nr,
+                            const QFloatList& nc, const QStringList& defaults)
     : QDialog ()
   {
 
@@ -648,9 +650,10 @@ namespace octave
     buttonCancel_clicked ();
   }
 
-  FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
-                          const QString& filename, const QString& dirname,
-                          const QString& multimode)
+  FileDialog::FileDialog (base_qobject& oct_qobj,
+                          const QStringList& name_filters,
+                          const QString& title, const QString& filename,
+                          const QString& dirname, const QString& multimode)
     : QFileDialog ()
   {
     // Create a NonModal message.
@@ -660,8 +663,7 @@ namespace octave
     setDirectory (dirname);
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    resource_manager& rmgr
-      = __get_resource_manager__ ("FileDialog::FileDialog");
+    resource_manager& rmgr = oct_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
     if (! settings->value ("use_native_file_dialogs", true).toBool ())
       setOption(QFileDialog::DontUseNativeDialog);

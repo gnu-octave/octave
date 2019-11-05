@@ -104,7 +104,8 @@ namespace octave
 
   qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
     : interpreter_events (), m_octave_qobj (oct_qobj),
-      m_result (), m_mutex (), m_waitcondition (), m_uiwidget_creator ()
+      m_uiwidget_creator (oct_qobj), m_result (), m_mutex (),
+      m_waitcondition ()
   {
     qRegisterMetaType<QIntList> ("QIntList");
     qRegisterMetaType<QFloatList> ("QFloatList");

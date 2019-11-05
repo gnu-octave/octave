@@ -77,7 +77,6 @@ namespace octave
     void editor_state_changed (bool copy_available, bool is_octave_file);
     void set_focus_editor_signal (QWidget *);
     void tab_remove_request (void);
-    void add_filename_to_list (const QString&, const QString&, QWidget *);
     void mru_add_file (const QString& file_name, const QString& encoding);
     void editor_check_conflict_save (const QString& saveFileName,
                                      bool remove_on_success);
@@ -141,9 +140,6 @@ namespace octave
 
     // Change to a different editor tab by identifier tag.
     void change_editor_state (const QWidget *ID);
-
-    // Simply transmit filename.
-    void file_name_query (const QWidget *ID);
 
     void handle_toplevel_changed (bool);
     void set_focus (const QWidget *ID);

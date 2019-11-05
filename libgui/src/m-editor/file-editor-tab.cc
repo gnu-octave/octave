@@ -2957,17 +2957,6 @@ namespace octave
     emit editor_state_changed (m_copy_available, m_is_octave_file);
   }
 
-  void file_editor_tab::file_name_query (const QWidget *ID)
-  {
-    // A zero (null pointer) means that all file editor tabs
-    // should respond, otherwise just the desired file editor tab.
-    if (ID != this && ID != nullptr)
-      return;
-
-    // This list also includes windows with name ""
-    emit add_filename_to_list (m_file_name, m_encoding, this);
-  }
-
   void file_editor_tab::handle_file_reload_answer (int decision)
   {
     if (decision == QMessageBox::Yes)

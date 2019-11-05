@@ -867,14 +867,6 @@ namespace octave
 
   }
 
-  void file_editor::handle_add_filename_to_list (const QString& fileName,
-                                                 const QString& encoding, QWidget *ID)
-  {
-    // Should we allow multiple tabs for a single file?
-    m_editor_tab_map[fileName].fet_ID = ID;
-    m_editor_tab_map[fileName].encoding = encoding;
-  }
-
   // context menu of edit area
   void file_editor::active_tab_changed (int index)
   {
@@ -2247,12 +2239,6 @@ namespace octave
     connect (f, SIGNAL (tab_remove_request ()),
              this, SLOT (handle_tab_remove_request ()));
 
-    connect (f, SIGNAL (add_filename_to_list (const QString&,
-                                              const QString&, QWidget*)),
-             this, SLOT (handle_add_filename_to_list (const QString&,
-                                                      const QString&,
-                                                      QWidget*)));
-
     connect (f, SIGNAL (editor_check_conflict_save (const QString&, bool)),
              this, SLOT (check_conflict_save (const QString&, bool)));
 
@@ -2280,9 +2266,6 @@ namespace octave
 
     connect (this, SIGNAL (fetab_change_request (const QWidget*)),
              f, SLOT (change_editor_state (const QWidget*)));
-
-    connect (this, SIGNAL (fetab_file_name_query (const QWidget*)),
-             f, SLOT (file_name_query (const QWidget*)));
 
     connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
                                             bool)),

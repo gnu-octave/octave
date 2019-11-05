@@ -69,15 +69,6 @@ namespace octave
 
   public:
 
-    struct tab_info
-    {
-      QWidget *fet_ID;
-      QString encoding;
-    };
-
-    typedef std::map<QString, tab_info>::iterator editor_tab_map_iterator;
-    typedef std::map<QString, tab_info>::const_iterator editor_tab_map_const_iterator;
-
     // struct that allows to sort with respect to the tab index
     struct session_data
     {
@@ -129,7 +120,6 @@ namespace octave
     void fetab_toplevel_changed (bool);
     void fetab_settings_changed (const gui_settings *settings);
     void fetab_change_request (const QWidget *ID);
-    void fetab_file_name_query (const QWidget *ID);
     // Save is a ping-pong type of communication
     void fetab_save_file (const QWidget *ID, const QString& fileName,
                           bool remove_on_success);
@@ -257,8 +247,6 @@ namespace octave
                                    bool modified);
     void handle_tab_close_request (int index);
     void handle_tab_remove_request (void);
-    void handle_add_filename_to_list (const QString& fileName,
-                                      const QString& encoding, QWidget *ID);
     void active_tab_changed (int index);
     void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
     void handle_mru_add_file (const QString& file_name, const QString& encoding);
@@ -348,7 +336,6 @@ namespace octave
     QMenu * add_menu (QMenuBar *p, QString text);
 
     int m_number_of_tabs;
-    std::map<QString, tab_info> m_editor_tab_map;
     QHash<QMenu*, QStringList> m_hash_menu_text;
 
     QString m_ced;

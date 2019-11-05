@@ -856,6 +856,7 @@ namespace octave
                 m_tab_widget->removeTab (i);
                 // Deleting sender is dodgy, but works because the signal
                 // is the last item in the sender's routines.
+                // FIXME: can we use deleteLater here?
                 delete fileEditorTab;
                 break;
               }

@@ -53,7 +53,8 @@ namespace octave
 
   welcome_wizard::welcome_wizard (base_qobject& oct_qobj, QWidget *p)
     : QDialog (p), m_octave_qobj (oct_qobj), m_page_ctor_list (),
-      m_page_list_iterator (), m_current_page (initial_page::create (this)),
+      m_page_list_iterator (),
+      m_current_page (initial_page::create (oct_qobj, this)),
       m_allow_web_connect_state (false),
       m_max_height (0), m_max_width (0)
   {
@@ -114,7 +115,7 @@ namespace octave
     delete m_current_page;
     delete layout ();
 
-    m_current_page = (*m_page_list_iterator) (this);
+    m_current_page = (*m_page_list_iterator) (m_octave_qobj, this);
 
     QVBoxLayout *new_layout = new QVBoxLayout ();
     setLayout (new_layout);
@@ -156,7 +157,7 @@ namespace octave
     QDialog::accept ();
   }
 
-  initial_page::initial_page (welcome_wizard *wizard)
+  initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Welcome to Octave!"), this)),
       m_message (new QLabel (this)),
@@ -168,8 +169,7 @@ namespace octave
     ft.setPointSize (20);
     m_title->setFont (ft);
 
-    resource_manager& rmgr
-      = __get_resource_manager__ ("initial_page::initial_page");
+    resource_manager& rmgr = oct_qobj.get_resource_manager ();
 
     m_message->setText
       (tr ("<html><body>\n"
@@ -215,7 +215,8 @@ namespace octave
     connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  setup_community_news::setup_community_news (welcome_wizard *wizard)
+  setup_community_news::setup_community_news (base_qobject&,
+                                              welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Community News"), this)),
       m_message (new QLabel (this)),
@@ -311,7 +312,7 @@ namespace octave
     connect (m_cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  final_page::final_page (welcome_wizard *wizard)
+  final_page::final_page (base_qobject&, welcome_wizard *wizard)
     : QWidget (wizard),
       m_title (new QLabel (tr ("Enjoy!"), this)),
       m_message (new QLabel (this)),

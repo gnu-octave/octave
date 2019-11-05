@@ -38,7 +38,7 @@ namespace octave
 
   public:
 
-    typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
+    typedef QWidget *(*page_creator_fptr) (base_qobject&, welcome_wizard *);
 
     welcome_wizard (base_qobject& oct_qobj, QWidget *parent = nullptr);
 
@@ -75,12 +75,15 @@ namespace octave
 
   public:
 
-    initial_page (welcome_wizard *wizard);
+    initial_page (base_qobject& oct_qobj, welcome_wizard *wizard);
 
     ~initial_page (void) = default;
 
     static QWidget *
-    create (welcome_wizard *wizard) { return new initial_page (wizard); }
+    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    {
+      return new initial_page (oct_qobj, wizard);
+    }
 
   private:
 
@@ -98,12 +101,15 @@ namespace octave
 
   public:
 
-    setup_community_news (welcome_wizard *wizard);
+    setup_community_news (base_qobject& oct_qobj, welcome_wizard *wizard);
 
     ~setup_community_news (void) = default;
 
     static QWidget *
-    create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
+    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    {
+      return new setup_community_news (oct_qobj, wizard);
+    }
 
   private:
 
@@ -124,12 +130,15 @@ namespace octave
 
   public:
 
-    final_page (welcome_wizard *wizard);
+    final_page (base_qobject& oct_qobj, welcome_wizard *wizard);
 
     ~final_page (void) = default;
 
     static QWidget *
-    create (welcome_wizard *wizard) { return new final_page (wizard); }
+    create (base_qobject& oct_qobj, welcome_wizard *wizard)
+    {
+      return new final_page (oct_qobj, wizard);
+    }
 
   private:
 

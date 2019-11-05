@@ -2383,7 +2383,7 @@ do
 
   case $build_os in
     mingw* | msdosmsvc)
-      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is
+      ## Under Win32 platform, we want JAVA_HOME to be in MSYS format; that is,
       ## without colon and backslashes, as it is also used as path separator.
       ## Use quoted paths as Java may be installed in a path with whitespaces
       ## (e.g. C:\Program Files\Java\...).
@@ -2486,7 +2486,7 @@ do
   fi
 
   if test -z "$JAVA_LDPATH"; then
-    ## Java failed to find it's own library path.  Guess wildly.
+    ## Java failed to find its own library path.  Guess wildly.
     JAVA_TMP_LDPATH=`ls -d $JAVA_HOME/jre/lib/*/client`
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} `ls -d $JAVA_HOME/jre/lib/*/server`"
     ## Add some paths that might work on Macs.
@@ -2890,7 +2890,7 @@ AC_CONFIG_COMMANDS_PRE([
   ## Doing things like
   ##
   ##   configure --prefix=/some/where
-  ##   make --prefix="/some/where/else
+  ##   make --prefix=/some/where/else
   ##
   ## won't work properly and is not allowed when building Octave.
 

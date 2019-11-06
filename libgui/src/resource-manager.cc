@@ -53,26 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  base_qobject& __get_octave_qobject__ (const std::string& who)
-  {
-    base_qobject *oct_qobj = base_qobject::the_octave_qobject ();
-
-    if (! oct_qobj)
-      {
-        abort ();
-        error ("%s: octave_qobject context missing", who.c_str ());
-      }
-
-    return *oct_qobj;
-  }
-
-  resource_manager& __get_resource_manager__ (const std::string& who)
-  {
-    base_qobject& oct_qobj = __get_octave_qobject__ (who);
-
-    return oct_qobj.get_resource_manager ();
-  }
-
   static QString
   default_qt_settings_file (void)
   {
@@ -169,13 +149,13 @@ namespace octave
 
     QString language = "SYSTEM";  // take system language per default
 
-    resource_manager& rmgr = __get_resource_manager__ ("");
-    gui_settings *settings = rmgr.get_settings ();
+    // FIXME: can we somehow ensure that the settings object will always
+    // be initialize and valid?
 
-    if (settings)
+    if (m_settings)
       {
         // get the locale from the settings if already available
-        language = settings->value ("language", "SYSTEM").toString ();
+        language = m_settings->value ("language", "SYSTEM").toString ();
       }
 
     // load the translations depending on the settings

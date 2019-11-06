@@ -33,10 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 
 namespace octave
 {
-  class resource_manager;
-
-  extern resource_manager& __get_resource_manager__ (const std::string& who);
-
   class resource_manager : public QObject
   {
     Q_OBJECT

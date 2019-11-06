@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QAction>
 #include <QApplication>
+#include <QClipboard>
 #include <QDateTime>
 #include <QDebug>
 #include <QDesktopServices>

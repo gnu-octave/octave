@@ -43,7 +43,18 @@ nodist_%canon_reldir%_libqterminal_la_SOURCES = $(%canon_reldir%_libqterminal_la
   $(AM_CPPFLAGS) \
   @QT_CPPFLAGS@ \
   -I$(srcdir)/libgui/qterminal/libqterminal \
-  -I$(srcdir)/libgui/src
+  -I$(srcdir)/libgui/src \
+  -Iliboctave \
+  -I$(srcdir)/liboctave/array \
+  -Iliboctave/numeric -I$(srcdir)/liboctave/numeric \
+  -Iliboctave/operators -I$(srcdir)/liboctave/operators \
+  -I$(srcdir)/liboctave/system \
+  -I$(srcdir)/liboctave/util \
+  -Ilibinterp -I$(srcdir)/libinterp \
+  -Ilibinterp/parse-tree -I$(srcdir)/libinterp/parse-tree \
+  -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
+  -I$(srcdir)/libinterp/octave-value \
+  -I$(srcdir)/liboctave/wrappers
 
 %canon_reldir%_libqterminal_la_CFLAGS = ${CPICFLAG} ${XTRA_CFLAGS}
 

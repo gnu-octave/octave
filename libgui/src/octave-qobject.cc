@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <utility>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QFile>
 #include <QTextCodec>
 #include <QThread>

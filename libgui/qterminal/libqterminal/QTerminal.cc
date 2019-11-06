@@ -21,9 +21,21 @@ see <https://www.gnu.org/licenses/>.
 
 */
 
+#include <QKeySequence>
+#include <QWidget>
+#include <QStringList>
+#include <QColor>
+#include <QList>
+#include <QMenu>
+#include <QClipboard>
+#include <QApplication>
+#include <QAction>
+
 #include "gui-preferences-cs.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
+#include "octave-qobject.h"
+#include "resource-manager.h"
 
 #include "QTerminal.h"
 #if defined (Q_OS_WIN32)
@@ -33,13 +45,23 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (QWidget *xparent)
+QTerminal::create (octave::base_qobject& oct_qobj, QWidget *xparent)
 {
 #if defined (Q_OS_WIN32)
-  return new QWinTerminalImpl (xparent);
+  QTerminal *terminal = new QWinTerminalImpl (xparent);
 #else
-  return new QUnixTerminalImpl (xparent);
+  QTerminal *terminal = new QUnixTerminalImpl (xparent);
 #endif
+
+  // FIXME: this function should probably be called from or part of the
+  // QTerminal constructor, but I think that would mean some major
+  // surgery because then the constructor for QTerminal and the derived
+  // Unix- and Windows-specific versions would need access to the
+  // base_qobject object, or the design would have to change significantly.
+
+  terminal->construct (oct_qobj, xparent);
+
+  return terminal;
 }
 
 // slot for disabling the interrupt action when terminal loses focus
@@ -262,4 +284,95 @@ QTerminal::notice_settings (const gui_settings *settings)
   // check whether shortcut Ctrl-D is in use by the main-window
   bool ctrld = settings->value (sc_main_ctrld.key, sc_main_ctrld.def).toBool ();
   _nop_action->setEnabled (! ctrld);
+}
+
+void
+QTerminal::construct (octave::base_qobject& oct_qobj, QWidget *xparent)
+{
+  octave::resource_manager& rmgr = oct_qobj.get_resource_manager ();
+
+  // context menu
+  setContextMenuPolicy (Qt::CustomContextMenu);
+
+  _contextMenu = new QMenu (this);
+
+  _copy_action
+    = _contextMenu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+                               SLOT (copyClipboard ()));
+
+  _paste_action
+    = _contextMenu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+                               SLOT (pasteClipboard ()));
+
+  _contextMenu->addSeparator ();
+
+  _selectall_action
+    = _contextMenu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
+
+  _run_selection_action
+    = _contextMenu->addAction (tr ("Run Selection"), this,
+                               SLOT (run_selection ()));
+
+  m_edit_selected_action
+    = _contextMenu->addAction (tr ("Edit selection"), this,
+                               SLOT (edit_selected ()));
+  m_help_selected_action
+    = _contextMenu->addAction (tr ("Help on selection"), this,
+                               SLOT (help_on_expression ()));
+  m_doc_selected_action
+    = _contextMenu->addAction (tr ("Documentation on selection"), this,
+                               SLOT (doc_on_expression ()));
+
+  _edit_action = _contextMenu->addAction (tr (""), this, SLOT (edit_file ()));
+
+  _contextMenu->addSeparator ();
+
+  _contextMenu->addAction (tr ("Clear Window"), parent (),
+                           SLOT (handle_clear_command_window_request ()));
+
+  connect (this, SIGNAL (customContextMenuRequested (QPoint)),
+           this, SLOT (handleCustomContextMenuRequested (QPoint)));
+
+  connect (this, SIGNAL (report_status_message (const QString&)),
+           xparent, SLOT (report_status_message (const QString&)));
+
+  connect (this, SIGNAL (show_doc_signal (const QString&)),
+           xparent, SLOT (handle_show_doc (const QString&)));
+
+  connect (this, SIGNAL (edit_mfile_request (const QString&, int)),
+           xparent, SLOT (edit_mfile (const QString&, int)));
+
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           xparent, SLOT (execute_command_in_terminal (const QString&)));
+
+  connect (xparent, SIGNAL (settings_changed (const gui_settings *)),
+           this, SLOT (notice_settings (const gui_settings *)));
+
+  connect (xparent, SIGNAL (init_terminal_size_signal ()),
+           this, SLOT (init_terminal_size ()));
+
+  connect (xparent, SIGNAL (copyClipboard_signal ()),
+           this, SLOT (copyClipboard ()));
+
+  connect (xparent, SIGNAL (pasteClipboard_signal ()),
+           this, SLOT (pasteClipboard ()));
+
+  connect (xparent, SIGNAL (selectAll_signal ()),
+           this, SLOT (selectAll ()));
+
+  // extra interrupt action
+  _interrupt_action = new QAction (this);
+  addAction (_interrupt_action);
+
+  _interrupt_action->setShortcut
+    (QKeySequence (Qt::ControlModifier + Qt::Key_C));
+
+  connect (_interrupt_action, SIGNAL (triggered ()),
+           this, SLOT (terminal_interrupt ()));
+
+  // dummy (nop) action catching Ctrl-D in terminal, no connection
+  _nop_action = new QAction (this);
+  addAction (_nop_action);
+
+  _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
 }

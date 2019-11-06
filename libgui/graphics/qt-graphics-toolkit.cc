@@ -370,82 +370,85 @@ namespace QtHandles
 
     graphics_object go (gh_mgr.get_object (graphics_handle (handle)));
 
-    if (go.valid_object ())
+    if (! go.valid_object ())
       {
-        if (go.get_properties ().is_beingdeleted ())
-          qWarning ("qt_graphics_toolkit::create_object: object is being deleted");
-        else
-          {
-            ObjectProxy *proxy = qt_graphics_toolkit::toolkitObjectProxy (go);
-
-            if (proxy)
-              {
-                Logger::debug ("qt_graphics_toolkit::create_object: "
-                               "create %s from thread %08x",
-                               go.type ().c_str (), QThread::currentThreadId ());
-
-                Object *obj = nullptr;
-
-                if (go.isa ("figure"))
-                  obj = Figure::create (m_octave_qobj, go);
-                else if (go.isa ("uicontrol"))
-                  {
-                    uicontrol::properties& up =
-                      Utils::properties<uicontrol> (go);
-
-                    if (up.style_is ("pushbutton"))
-                      obj = PushButtonControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("edit"))
-                      obj = EditControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("checkbox"))
-                      obj = CheckBoxControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("radiobutton"))
-                      obj = RadioButtonControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("togglebutton"))
-                      obj = ToggleButtonControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("text"))
-                      obj = TextControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("popupmenu"))
-                      obj = PopupMenuControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("slider"))
-                      obj = SliderControl::create (m_octave_qobj, go);
-                    else if (up.style_is ("listbox"))
-                      obj = ListBoxControl::create (m_octave_qobj, go);
-                  }
-                else if (go.isa ("uibuttongroup"))
-                  obj = ButtonGroup::create (m_octave_qobj, go);
-                else if (go.isa ("uipanel"))
-                  obj = Panel::create (m_octave_qobj, go);
-                else if (go.isa ("uimenu"))
-                  obj = Menu::create (m_octave_qobj, go);
-                else if (go.isa ("uicontextmenu"))
-                  obj = ContextMenu::create (m_octave_qobj, go);
-                else if (go.isa ("uitable"))
-                  obj = Table::create (m_octave_qobj, go);
-                else if (go.isa ("uitoolbar"))
-                  obj = ToolBar::create (m_octave_qobj, go);
-                else if (go.isa ("uipushtool"))
-                  obj = PushTool::create (m_octave_qobj, go);
-                else if (go.isa ("uitoggletool"))
-                  obj = ToggleTool::create (m_octave_qobj, go);
-                else
-                  qWarning ("qt_graphics_toolkit::create_object: unsupported type '%s'",
-                            go.type ().c_str ());
-
-                if (obj)
-                  {
-                    proxy->setObject (obj);
-                    obj->do_connections (this);
-                  }
-              }
-            else
-              qWarning ("qt_graphics_toolkit::create_object: no proxy for handle %g",
-                        handle);
-          }
+        qWarning ("qt_graphics_toolkit::create_object: invalid object for handle %g",
+                  handle);
+        return;
       }
+
+    if (go.get_properties ().is_beingdeleted ())
+      {
+        qWarning ("qt_graphics_toolkit::create_object: object is being deleted");
+        return;
+      }
+
+    ObjectProxy *proxy = qt_graphics_toolkit::toolkitObjectProxy (go);
+
+    if (! proxy)
+      {
+        qWarning ("qt_graphics_toolkit::create_object: no proxy for handle %g",
+                  handle);
+        return;
+      }
+
+    Logger::debug ("qt_graphics_toolkit::create_object: "
+                   "create %s from thread %08x",
+                   go.type ().c_str (), QThread::currentThreadId ());
+
+    Object *obj = nullptr;
+
+    if (go.isa ("figure"))
+      obj = Figure::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uicontrol"))
+      {
+        uicontrol::properties& up =
+          Utils::properties<uicontrol> (go);
+
+        if (up.style_is ("pushbutton"))
+          obj = PushButtonControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("edit"))
+          obj = EditControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("checkbox"))
+          obj = CheckBoxControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("radiobutton"))
+          obj = RadioButtonControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("togglebutton"))
+          obj = ToggleButtonControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("text"))
+          obj = TextControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("popupmenu"))
+          obj = PopupMenuControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("slider"))
+          obj = SliderControl::create (m_octave_qobj, m_interpreter, go);
+        else if (up.style_is ("listbox"))
+          obj = ListBoxControl::create (m_octave_qobj, m_interpreter, go);
+      }
+    else if (go.isa ("uibuttongroup"))
+      obj = ButtonGroup::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uipanel"))
+      obj = Panel::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uimenu"))
+      obj = Menu::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uicontextmenu"))
+      obj = ContextMenu::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uitable"))
+      obj = Table::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uitoolbar"))
+      obj = ToolBar::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uipushtool"))
+      obj = PushTool::create (m_octave_qobj, m_interpreter, go);
+    else if (go.isa ("uitoggletool"))
+      obj = ToggleTool::create (m_octave_qobj, m_interpreter, go);
     else
-      qWarning ("qt_graphics_toolkit::create_object: invalid object for handle %g",
-                handle);
+      qWarning ("qt_graphics_toolkit::create_object: unsupported type '%s'",
+                go.type ().c_str ());
+
+    if (obj)
+      {
+        proxy->setObject (obj);
+        obj->do_connections (this);
+      }
   }
 
   void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,

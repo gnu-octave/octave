@@ -37,24 +37,25 @@ namespace QtHandles
 
   TextControl*
   TextControl::create (octave::base_qobject& oct_qobj,
-                       const graphics_object& go)
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new TextControl (oct_qobj, go, new QLabel (container));
+          return new TextControl (oct_qobj, interp, go, new QLabel (container));
       }
 
     return nullptr;
   }
 
   TextControl::TextControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
                             const graphics_object& go, QLabel *label)
-    : BaseControl (oct_qobj, go, label)
+    : BaseControl (oct_qobj, interp, go, label)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 

@@ -31,6 +31,7 @@ class QWidget;
 namespace octave
 {
   class base_qobject;
+  class interpreter;
 }
 
 namespace QtHandles
@@ -43,16 +44,17 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    EditControl (octave::base_qobject& oct_qobj, const graphics_object& go,
-                 QLineEdit *edit);
+    EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, QLineEdit *edit);
 
-    EditControl (octave::base_qobject& oct_qobj, const graphics_object& go,
-                 TextEdit *edit);
+    EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, TextEdit *edit);
 
     ~EditControl (void);
 
-    static EditControl * create (octave::base_qobject& oct_qobj,
-                                 const graphics_object& go);
+    static EditControl *
+    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_object& go);
 
   protected:
     void update (int pId);

@@ -36,8 +36,9 @@ namespace QtHandles
 {
   template <typename T>
   ToolBarButton<T>::ToolBarButton (octave::base_qobject& oct_qobj,
+                                   octave::interpreter& interp,
                                    const graphics_object& go, QAction *action)
-    : Object (go, action), m_octave_qobj (oct_qobj), m_separator (nullptr)
+    : Object (oct_qobj, interp, go, action), m_separator (nullptr)
   {
     typename T::properties& tp = properties<T> ();
 

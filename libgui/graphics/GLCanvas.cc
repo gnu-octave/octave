@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gl-render.h"
 #include "gl2ps-print.h"
 #include "graphics.h"
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
@@ -48,9 +48,10 @@ namespace QtHandles
 #endif
 
   GLCanvas::GLCanvas (octave::base_qobject& oct_qobj,
+                      octave::interpreter& interp,
                       const graphics_handle& gh, QWidget *xparent)
     : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (oct_qobj, gh), m_glfcns (), m_renderer (m_glfcns)
+      Canvas (oct_qobj, interp, gh), m_glfcns (), m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -68,7 +69,7 @@ namespace QtHandles
   void
   GLCanvas::draw (const graphics_handle& gh)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::draw");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard  (gh_mgr.graphics_lock ());
 
@@ -89,7 +90,7 @@ namespace QtHandles
   {
     uint8NDArray retval;
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::do_getPixels");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     graphics_object go = gh_mgr.get_object (gh);
 
@@ -141,7 +142,7 @@ namespace QtHandles
   GLCanvas::do_print (const QString& file_cmd, const QString& term,
                       const graphics_handle& handle)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("GLCanvas::do_print");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard  (gh_mgr.graphics_lock ());
 

@@ -32,30 +32,31 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qobject.h"
 
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
 
   ContextMenu*
   ContextMenu::create (octave::base_qobject& oct_qobj,
-                       const graphics_object& go)
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *xparent = Object::parentObject (go);
+    Object *xparent = parentObject (interp, go);
 
     if (xparent)
       {
         QWidget *w = xparent->qWidget<QWidget> ();
 
-        return new ContextMenu (oct_qobj, go, new QMenu (w));
+        return new ContextMenu (oct_qobj, interp, go, new QMenu (w));
       }
 
     return nullptr;
   }
 
-  ContextMenu::ContextMenu (octave::base_qobject&,
+  ContextMenu::ContextMenu (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
                             const graphics_object& go, QMenu *xmenu)
-    : Object (go, xmenu)
+    : Object (oct_qobj, interp, go, xmenu)
   {
     xmenu->setAutoFillBackground (true);
 
@@ -116,13 +117,14 @@ namespace QtHandles
   }
 
   void
-  ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
+  ContextMenu::executeAt (octave::interpreter& interp,
+                          const base_properties& props, const QPoint& pt)
   {
     graphics_handle h = props.get_uicontextmenu ();
 
     if (h.ok ())
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ContextMenu::executeAt");
+        gh_manager& gh_mgr = interp.get_gh_manager ();
         octave::autolock guard (gh_mgr.graphics_lock ());
 
         graphics_object go = gh_mgr.get_object (h);

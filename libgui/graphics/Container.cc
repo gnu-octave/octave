@@ -33,13 +33,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 
 #include "graphics.h"
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
 
-  Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj)
-    : ContainerBase (xparent), m_octave_qobj (oct_qobj), m_canvas (nullptr)
+  Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj,
+                        octave::interpreter& interp)
+    : ContainerBase (xparent), m_octave_qobj (oct_qobj),
+      m_interpreter (interp),  m_canvas (nullptr)
   {
     setFocusPolicy (Qt::ClickFocus);
   }
@@ -52,7 +54,7 @@ namespace QtHandles
   {
     if (! m_canvas && xcreate)
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Container::canvas");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -62,7 +64,7 @@ namespace QtHandles
           {
             graphics_object fig = go.get_ancestor ("figure");
 
-            m_canvas = Canvas::create (m_octave_qobj, gh, this,
+            m_canvas = Canvas::create (m_octave_qobj, m_interpreter, gh, this,
                                        fig.get ("renderer").string_value ());
 
             connect (m_canvas, SIGNAL (interpeter_event (const fcn_callback&)),
@@ -131,7 +133,7 @@ namespace QtHandles
     if (m_canvas)
       m_canvas->qWidget ()->setGeometry (0, 0, width (), height ());
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Container::resizeEvent");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 

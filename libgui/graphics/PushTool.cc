@@ -34,24 +34,27 @@ namespace QtHandles
 {
 
   PushTool*
-  PushTool::create (octave::base_qobject& oct_qobj, const graphics_object& go)
+  PushTool::create (octave::base_qobject& oct_qobj,
+                    octave::interpreter& interp, const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         QWidget *parentWidget = parent->qWidget<QWidget> ();
 
         if (parentWidget)
-          return new PushTool (oct_qobj, go, new QAction (parentWidget));
+          return new PushTool (oct_qobj, interp, go,
+                               new QAction (parentWidget));
       }
 
     return nullptr;
   }
 
   PushTool::PushTool (octave::base_qobject& oct_qobj,
+                      octave::interpreter& interp,
                       const graphics_object& go, QAction *action)
-    : ToolBarButton<uipushtool> (oct_qobj, go, action)
+    : ToolBarButton<uipushtool> (oct_qobj, interp, go, action)
   {
     connect (action, SIGNAL (triggered (bool)), this, SLOT (clicked (void)));
   }

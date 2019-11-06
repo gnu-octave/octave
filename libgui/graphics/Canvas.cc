@@ -45,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "builtin-defun-decls.h"
 #include "graphics.h"
-#include "interpreter-private.h"
 #include "interpreter.h"
 #include "oct-opengl.h"
 
@@ -179,7 +178,7 @@ namespace QtHandles
   Canvas::updateCurrentPoint (const graphics_object& fig,
                               const graphics_object& obj, QMouseEvent *event)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::updateCurrentPoint");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -219,7 +218,7 @@ namespace QtHandles
   Canvas::updateCurrentPoint (const graphics_object& fig,
                               const graphics_object& obj)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::updateCurrentPoint");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -258,10 +257,8 @@ namespace QtHandles
   }
 
   static void
-  autoscale_axes (axes::properties& ap)
+  autoscale_axes (gh_manager& gh_mgr, axes::properties& ap)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("autoscale_axes");
-
     octave::autolock guard (gh_mgr.graphics_lock ());
 
     // Reset zoom stack
@@ -277,7 +274,7 @@ namespace QtHandles
   {
     if (! m_redrawBlocked)
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasPaintEvent");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -345,7 +342,7 @@ namespace QtHandles
     Matrix children = obj.get_properties ().get_all_children ();
     octave_idx_type num_children = children.numel ();
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::select_object");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     for (int i = 0; i < num_children; i++)
       {
@@ -443,7 +440,7 @@ namespace QtHandles
   void
   Canvas::canvasMouseMoveEvent (QMouseEvent *event)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasMouseMoveEvent");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -578,7 +575,7 @@ namespace QtHandles
   void
   Canvas::canvasMousePressEvent (QMouseEvent *event)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasMousePressEvent");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -677,7 +674,8 @@ namespace QtHandles
 
               // Show context menu of the selected object
               if (currentObj && event->button () == Qt::RightButton)
-                ContextMenu::executeAt (currentObj.get_properties (),
+                ContextMenu::executeAt (m_interpreter,
+                                        currentObj.get_properties (),
                                         event->globalPos ());
             }
             break;
@@ -712,7 +710,7 @@ namespace QtHandles
                       {
                         axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                        autoscale_axes (ap);
+                        autoscale_axes (gh_mgr, ap);
                       }
                     else
                       {
@@ -746,7 +744,7 @@ namespace QtHandles
                           axes::properties& ap =
                             Utils::properties<axes> (axesObj);
 
-                          autoscale_axes (ap);
+                          autoscale_axes (gh_mgr, ap);
                         }
                         break;
 
@@ -790,7 +788,7 @@ namespace QtHandles
   void
   Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasMouseReleaseEvent");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     if ((m_mouseMode == ZoomInMode || m_mouseMode == ZoomOutMode)
         && m_mouseAxes.ok ())
@@ -900,7 +898,7 @@ namespace QtHandles
   void
   Canvas::canvasWheelEvent (QWheelEvent *event)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasWheelEvent");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -1025,7 +1023,7 @@ namespace QtHandles
   {
     if (m_eventMask & KeyPress)
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasKeyPressEvent");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -1056,7 +1054,7 @@ namespace QtHandles
   {
     if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Canvas::canvasKeyReleaseEvent");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -1075,13 +1073,13 @@ namespace QtHandles
     return false;
   }
 
-  Canvas*
-  Canvas::create (octave::base_qobject& oct_qobj,
+  Canvas *
+  Canvas::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
                   const graphics_handle& handle, QWidget *parent,
                   const std::string& /* name */)
   {
     // Only OpenGL
-    return new GLCanvas (oct_qobj, handle, parent);
+    return new GLCanvas (oct_qobj, interp, handle, parent);
   }
 
 }

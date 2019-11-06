@@ -31,6 +31,7 @@ class QObject;
 namespace octave
 {
   class base_qobject;
+  class interpreter;
 }
 
 namespace QtHandles
@@ -39,8 +40,8 @@ namespace QtHandles
   class BaseControl : public Object
   {
   public:
-    BaseControl (octave::base_qobject& oct_qobj, const graphics_object& go,
-                 QWidget *w);
+    BaseControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, QWidget *w);
     ~BaseControl (void);
 
     Container * innerContainer (void) { return nullptr; }

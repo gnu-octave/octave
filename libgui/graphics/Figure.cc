@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 
 #include "builtin-defun-decls.h"
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
@@ -107,18 +107,19 @@ namespace QtHandles
   }
 
   Figure*
-  Figure::create (octave::base_qobject& oct_qobj, const graphics_object& go)
+  Figure::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                  const graphics_object& go)
   {
-    return new Figure (oct_qobj, go, new FigureWindow ());
+    return new Figure (oct_qobj, interp, go, new FigureWindow ());
   }
 
-  Figure::Figure (octave::base_qobject& oct_qobj, const graphics_object& go,
-                  FigureWindow *win)
-    : Object (go, win), m_blockUpdates (false), m_figureToolBar (nullptr),
-      m_menuBar (nullptr), m_innerRect (), m_outerRect (),
-      m_previousHeight (0), m_resizable (true)
+  Figure::Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                  const graphics_object& go, FigureWindow *win)
+    : Object (oct_qobj, interp, go, win), m_blockUpdates (false),
+      m_figureToolBar (nullptr), m_menuBar (nullptr), m_innerRect (),
+      m_outerRect (), m_previousHeight (0), m_resizable (true)
   {
-    m_container = new Container (win, oct_qobj);
+    m_container = new Container (win, oct_qobj, interp);
     win->setCentralWidget (m_container);
 
     connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
@@ -194,7 +195,7 @@ namespace QtHandles
   QString
   Figure::fileName (void)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::fileName");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -208,7 +209,7 @@ namespace QtHandles
   void
   Figure::setFileName (const QString& name)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::setFileName");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -220,7 +221,7 @@ namespace QtHandles
   MouseMode
   Figure::mouseMode (void)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::mouseMode");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -332,7 +333,7 @@ namespace QtHandles
 
     if (canvas)
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::slotGetPixels");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         gh_mgr.process_events ();
         octave::autolock guard (gh_mgr.graphics_lock ());
@@ -406,7 +407,7 @@ namespace QtHandles
             QTimer::singleShot (0, win, SLOT (show ()));
             if (! fp.is___gl_window__ ())
               {
-                gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::update");
+                gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
                 octave::autolock guard (gh_mgr.graphics_lock ());
                 fp.set ("__gl_window__", "on");
@@ -563,7 +564,7 @@ namespace QtHandles
   void
   Figure::updateFigureHeight (int dh)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::updateFigureHeight");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
     graphics_object go = object ();
@@ -672,7 +673,7 @@ namespace QtHandles
           {
             figure::properties& fp = properties<figure> ();
 
-            gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::eventNotifyBefore");
+            gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
             graphics_object root = gh_mgr.get_object (0);
 
@@ -723,7 +724,7 @@ namespace QtHandles
       {
         if (watched == m_container)
           {
-            gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::eventNotifyAfter");
+            gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
             switch (xevent->type ())
               {
@@ -860,7 +861,7 @@ namespace QtHandles
     QWindow* window = qWidget<QMainWindow> ()->windowHandle ();
     QScreen* screen = window->screen ();
 
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::figureWindowShown");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 
@@ -876,7 +877,7 @@ namespace QtHandles
   Figure::screenChanged (QScreen* screen)
   {
 #if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("Figure::screenChanged");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
 

@@ -30,6 +30,7 @@ class QLabel;
 namespace octave
 {
   class base_qobject;
+  class interpreter;
 }
 
 namespace QtHandles
@@ -38,12 +39,13 @@ namespace QtHandles
   class TextControl : public BaseControl
   {
   public:
-    TextControl (octave::base_qobject& oct_qobj, const graphics_object& go,
-                 QLabel *label);
+    TextControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+                 const graphics_object& go, QLabel *label);
     ~TextControl (void);
 
-    static TextControl * create (octave::base_qobject& oct_qobj,
-                                 const graphics_object& go);
+    static TextControl *
+    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_object& go);
 
   protected:
     void update (int pId);

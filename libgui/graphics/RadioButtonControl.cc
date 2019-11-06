@@ -38,16 +38,17 @@ namespace QtHandles
 
   RadioButtonControl*
   RadioButtonControl::create (octave::base_qobject& oct_qobj,
+                              octave::interpreter& interp,
                               const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new RadioButtonControl (oct_qobj, go,
+          return new RadioButtonControl (oct_qobj, interp, go,
                                          new QRadioButton (container));
       }
 
@@ -55,11 +56,12 @@ namespace QtHandles
   }
 
   RadioButtonControl::RadioButtonControl (octave::base_qobject& oct_qobj,
+                                          octave::interpreter& interp,
                                           const graphics_object& go,
                                           QRadioButton *radio)
-    : ButtonControl (oct_qobj, go, radio)
+    : ButtonControl (oct_qobj, interp, go, radio)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
     ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
     if (btnGroup)
       btnGroup->addButton (radio);

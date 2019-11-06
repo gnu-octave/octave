@@ -41,6 +41,7 @@ class octave_value_list;
 namespace octave
 {
   class base_qobject;
+  class interpreter;
 }
 
 namespace QtHandles
@@ -77,9 +78,10 @@ namespace QtHandles
 
     virtual QWidget * qWidget (void) = 0;
 
-    static Canvas * create (octave::base_qobject& oct_qobj,
-                            const graphics_handle& handle, QWidget *parent,
-                            const std::string& name);
+    static Canvas *
+    create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_handle& handle, QWidget *parent,
+            const std::string& name);
 
     virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
 
@@ -113,8 +115,10 @@ namespace QtHandles
                            const graphics_handle& handle) = 0;
 
   protected:
-    Canvas (octave::base_qobject& oct_qobj, const graphics_handle& handle)
+    Canvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+            const graphics_handle& handle)
       : m_octave_qobj (oct_qobj),
+        m_interpreter (interp),
         m_handle (handle),
         m_redrawBlocked (false),
         m_mouseMode (NoMode),
@@ -145,11 +149,14 @@ namespace QtHandles
                         bool axes_only = false,
                         std::vector<std::string> omit = std::vector<std::string> ());
 
+  protected:
+    octave::base_qobject& m_octave_qobj;
+    octave::interpreter& m_interpreter;
+
   private:
 
     QCursor make_cursor (const QString& name, int hot_x  = -1, int hot_y = -1);
 
-    octave::base_qobject& m_octave_qobj;
     graphics_handle m_handle;
     bool m_redrawBlocked;
     MouseMode m_mouseMode;

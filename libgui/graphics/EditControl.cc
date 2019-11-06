@@ -38,9 +38,9 @@ namespace QtHandles
 
   EditControl*
   EditControl::create (octave::base_qobject& oct_qobj,
-                       const graphics_object& go)
+                       octave::interpreter& interp, const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
@@ -51,9 +51,11 @@ namespace QtHandles
             uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
             if ((up.get_max () - up.get_min ()) > 1)
-              return new EditControl (oct_qobj, go, new TextEdit (container));
+              return new EditControl (oct_qobj, interp, go,
+                                      new TextEdit (container));
             else
-              return new EditControl (oct_qobj, go, new QLineEdit (container));
+              return new EditControl (oct_qobj, interp, go,
+                                      new QLineEdit (container));
           }
       }
 
@@ -61,8 +63,9 @@ namespace QtHandles
   }
 
   EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
                             const graphics_object& go, QLineEdit *edit)
-    : BaseControl (oct_qobj, go, edit), m_multiLine (false),
+    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (false),
       m_textChanged (false)
   {
     init (edit);
@@ -92,8 +95,9 @@ namespace QtHandles
   }
 
   EditControl::EditControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
                             const graphics_object& go, TextEdit *edit)
-    : BaseControl (oct_qobj, go, edit), m_multiLine (true),
+    : BaseControl (oct_qobj, interp, go, edit), m_multiLine (true),
       m_textChanged (false)
   {
     init (edit);

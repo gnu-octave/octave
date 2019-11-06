@@ -36,24 +36,27 @@ namespace QtHandles
 
   CheckBoxControl*
   CheckBoxControl::create (octave::base_qobject& oct_qobj,
+                           octave::interpreter& interp,
                            const graphics_object& go)
   {
-    Object *parent = Object::parentObject (go);
+    Object *parent = parentObject (interp, go);
 
     if (parent)
       {
         Container *container = parent->innerContainer ();
 
         if (container)
-          return new CheckBoxControl (oct_qobj, go, new QCheckBox (container));
+          return new CheckBoxControl (oct_qobj, interp, go,
+                                      new QCheckBox (container));
       }
 
     return nullptr;
   }
 
   CheckBoxControl::CheckBoxControl (octave::base_qobject& oct_obj,
+                                    octave::interpreter& interp,
                                     const graphics_object& go, QCheckBox *box)
-    : ButtonControl (oct_obj, go, box)
+    : ButtonControl (oct_obj, interp, go, box)
   {
     box->setAutoFillBackground (true);
   }

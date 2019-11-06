@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "graphics.h"
-#include "interpreter-private.h"
 
 class QKeyEvent;
 class QMouseEvent;
@@ -70,15 +69,6 @@ namespace QtHandles
     inline typename T::properties&
     properties (graphics_object obj)
     { return dynamic_cast<typename T::properties&> (obj.get_properties ()); }
-
-    template <typename T>
-    inline typename T::properties&
-    properties (const graphics_handle& h)
-    {
-      gh_manager& gh_mgr = octave::__get_gh_manager__ ("Utils::properties");
-
-      return Utils::properties<T> (gh_mgr.get_object (h));
-    }
 
     QImage makeImageFromCData (const octave_value& v, int width = -1,
                                int height = -1);

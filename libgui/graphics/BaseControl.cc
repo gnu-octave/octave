@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 
 #include "graphics.h"
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
@@ -93,9 +93,11 @@ namespace QtHandles
     w->setPalette (p);
   }
 
-  BaseControl::BaseControl (octave::base_qobject&, const graphics_object& go,
-                            QWidget *w)
-    : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
+  BaseControl::BaseControl (octave::base_qobject& oct_qobj,
+                            octave::interpreter& interp,
+                            const graphics_object& go, QWidget *w)
+    : Object (oct_qobj, interp, go, w), m_normalizedFont (false),
+      m_keyPressHandlerDefined (false)
   {
     qObject ()->setObjectName ("UIControl");
     init (w);
@@ -199,7 +201,7 @@ namespace QtHandles
   bool
   BaseControl::eventFilter (QObject *watched, QEvent *xevent)
   {
-    gh_manager& gh_mgr = octave::__get_gh_manager__ ("BaseControl::eventFilter");
+    gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     switch (xevent->type ())
       {
@@ -238,7 +240,7 @@ namespace QtHandles
                   emit gh_callback_event (m_handle, "buttondownfcn");
 
                   if (m->button () == Qt::RightButton)
-                    ContextMenu::executeAt (up, m->globalPos ());
+                    ContextMenu::executeAt (m_interpreter, up, m->globalPos ());
                 }
               else
                 {

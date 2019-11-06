@@ -32,15 +32,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "QtHandlesUtils.h"
 
 #include "graphics.h"
-#include "interpreter-private.h"
+#include "interpreter.h"
 
 namespace QtHandles
 {
 
   ButtonControl::ButtonControl (octave::base_qobject& oct_qobj,
+                                octave::interpreter& interp,
                                 const graphics_object& go,
                                 QAbstractButton *btn)
-    : BaseControl (oct_qobj, go, btn), m_blockCallback (false)
+    : BaseControl (oct_qobj, interp, go, btn), m_blockCallback (false)
   {
     uicontrol::properties& up = properties<uicontrol> ();
 
@@ -97,9 +98,9 @@ namespace QtHandles
                     btn->setChecked (false);
                     if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
                       {
-                        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonControl::update");
+                        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-                        Object *parent = Object::parentObject (gh_mgr.get_object (up.get___myhandle__ ()));
+                        Object *parent = Object::parentObject (m_interpreter, gh_mgr.get_object (up.get___myhandle__ ()));
                         ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
                         if (btnGroup)
                           btnGroup->selectNothing ();
@@ -125,7 +126,7 @@ namespace QtHandles
 
     if (! m_blockCallback && btn->isCheckable ())
       {
-        gh_manager& gh_mgr = octave::__get_gh_manager__ ("ButtonControl::toggled");
+        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
         octave::autolock guard (gh_mgr.graphics_lock ());
 

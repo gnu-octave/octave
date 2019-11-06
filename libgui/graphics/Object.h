@@ -32,6 +32,12 @@ class QObject;
 class QString;
 class QWidget;
 
+namespace octave
+{
+  class base_qobject;
+  class interpreter;
+}
+
 namespace QtHandles
 {
 
@@ -43,7 +49,8 @@ namespace QtHandles
     Q_OBJECT
 
   public:
-    Object (const graphics_object& go, QObject *obj = nullptr);
+    Object (octave::base_qobject& qobj, octave::interpreter& interp,
+            const graphics_object& go, QObject *obj = nullptr);
 
     virtual ~Object (void);
 
@@ -111,7 +118,9 @@ namespace QtHandles
     void objectDestroyed (QObject *obj = nullptr);
 
   protected:
-    static Object * parentObject (const graphics_object& go);
+    static Object *
+    parentObject (octave::interpreter& interp, const graphics_object& go);
+
     void init (QObject *obj, bool callBase = false);
 
     virtual void update (int pId);
@@ -123,6 +132,9 @@ namespace QtHandles
     virtual void beingDeleted (void);
 
   protected:
+
+    octave::base_qobject& m_octave_qobj;
+    octave::interpreter& m_interpreter;
 
     // Store the graphics object directly so that it will exist when
     // we need it.  Previously, it was possible for the graphics

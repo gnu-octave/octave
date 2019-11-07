@@ -178,6 +178,13 @@ octave_get_sig_number (const char *signame, int *signum)
       return true;
 #endif
     }
+  else if (! strcmp (signame, "SIGKILL"))
+    {
+#if defined (SIGKILL)
+      *signum = SIGKILL;
+      return true;
+#endif
+    }
   else if (! strcmp (signame, "SIGLOST"))
     {
 #if defined (SIGLOST)

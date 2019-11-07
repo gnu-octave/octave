@@ -396,6 +396,18 @@ namespace octave
     // definitely closing.
 
     std::list<file_editor_tab *> fe_tab_lst = m_tab_widget->tab_list ();
+    m_number_of_tabs = fe_tab_lst.size ();
+
+    for (auto fe_tab : fe_tab_lst)
+      {
+        // Wait for all editor tabs to have saved their files if required
+
+        connect (fe_tab, SIGNAL (tab_ready_to_close (void)),
+                 this, SLOT (handle_tab_ready_to_close (void)),
+                 Qt::UniqueConnection);
+      }
+
+    m_closing_canceled = false;
 
     for (auto fe_tab : fe_tab_lst)
       {
@@ -408,16 +420,14 @@ namespace octave
         if (fe_tab->check_file_modified (false) == QMessageBox::Cancel)
           {
             emit fetab_recover_from_exit ();
+
+            m_closing_canceled = true;
+
+            for (auto fet : fe_tab_lst)
+              disconnect (fet, SIGNAL (tab_ready_to_close (void)), 0, 0 );
+
             return false;
           }
-      }
-
-    for (auto fe_tab : fe_tab_lst)
-      {
-        // Wait for all editor tabs to have saved their files if required
-
-        connect (fe_tab, SIGNAL (tab_ready_to_close (void)),
-                 this, SLOT (handle_tab_ready_to_close (void)));
       }
 
     return true;
@@ -425,6 +435,9 @@ namespace octave
 
   void file_editor::handle_tab_ready_to_close (void)
   {
+    if (m_closing_canceled)
+      return;
+
     m_number_of_tabs--;
 
     if (m_number_of_tabs > 0)
@@ -1663,8 +1676,9 @@ namespace octave
       {
         if (check_closing ())
           {
-            // all tabs are closed without cancelling,
-            // store closing state for restoring session when shown again
+            // All tabs are closed without cancelling,
+            // store closing state for restoring session when shown again.
+            // Editor is closing when session data is stored in preferences
             m_closed = true;
             e->ignore ();
           }

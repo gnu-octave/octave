@@ -448,6 +448,7 @@ namespace octave
 
     int m_marker_breakpoint;
 
+    bool m_closing_canceled;
     bool m_closed;
     bool m_no_focus;
 

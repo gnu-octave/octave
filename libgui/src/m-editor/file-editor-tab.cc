@@ -319,7 +319,6 @@ namespace octave
     else
       {
         e->accept ();
-        emit tab_ready_to_close ();
         emit tab_remove_request ();
       }
   }
@@ -1863,7 +1862,13 @@ namespace octave
         if (decision == QMessageBox::Cancel)
           m_edit_area->setReadOnly (false);
         else if (decision == QMessageBox::Save)
-          save_file (m_file_name, remove, false);   // Remove on success
+          save_file (m_file_name, remove, false);
+        else
+          emit tab_ready_to_close ();
+      }
+    else
+      {
+        emit tab_ready_to_close ();
       }
 
     return decision;

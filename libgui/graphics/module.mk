@@ -140,17 +140,6 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   -Ilibinterp/corefcn -I$(srcdir)/libinterp/corefcn \
   -I$(srcdir)/libinterp/octave-value
 
-%canon_reldir%_libgraphics_la_LDFLAGS = \
-  $(QT_OPENGL_LDFLAGS) \
-  $(WARN_LDFLAGS)
-
-%canon_reldir%_libgraphics_la_LIBADD = \
-  $(OCT_GUI_LINK_DEPS) \
-  $(QT_OPENGL_LIBS) \
-  $(OPENGL_LIBS)
-
-%canon_reldir%_libgraphics_la_DEPENDENCIES = $(OCT_GUI_LINK_DEPS)
-
 noinst_LTLIBRARIES += %reldir%/libgraphics.la
 
 libgui_EXTRA_DIST += \

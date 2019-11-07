@@ -1387,15 +1387,7 @@ namespace octave
 
          if (! message.isEmpty ())
            {
-             QMessageBox *msgBox
-               = new QMessageBox (QMessageBox::Critical,
-                                  tr ("Octave Editor"),
-                                  message.arg (fname),
-                                  QMessageBox::Ok, this);
-
-             msgBox->setWindowModality (Qt::NonModal);
-             msgBox->setAttribute (Qt::WA_DeleteOnClose);
-             msgBox->show ();
+             emit warning_function_not_found_signal (message.arg (fname));
              return;
            }
 
@@ -1405,6 +1397,16 @@ namespace octave
          // default encoding
          emit open_file_signal (filename, QString (), line);
        });
+  }
+
+  void main_window::warning_function_not_found (const QString& message)
+  {
+    QMessageBox *msgBox = new QMessageBox (QMessageBox::Critical,
+                                           tr ("Octave Editor"),
+                                           message, QMessageBox::Ok, this);
+    msgBox->setWindowModality (Qt::NonModal);
+    msgBox->setAttribute (Qt::WA_DeleteOnClose);
+    msgBox->show ();
   }
 
   void main_window::handle_insert_debugger_pointer_request (const QString& file,
@@ -2051,6 +2053,14 @@ namespace octave
 
     connect (m_file_browser_window, SIGNAL (find_files_signal (const QString&)),
              this, SLOT (find_files (const QString&)));
+
+    // Connections for signals from the interpreter thread where the slot
+    // should be executed by the gui thread
+
+    connect (this, SIGNAL (warning_function_not_found_signal (const QString&)),
+             this, SLOT (warning_function_not_found (const QString&)));
+
+    // Build the window with widgets
 
     setWindowTitle ("Octave");
 

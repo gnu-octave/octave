@@ -117,6 +117,8 @@ namespace octave
 
     void add_actions_signal (QList <QAction *> action_list);
 
+    void warning_function_not_found_signal (const QString& message);
+
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
 
@@ -238,6 +240,8 @@ namespace octave
     void restore_create_file_setting (void);
     void set_file_encoding (const QString& new_encoding);
     void request_open_files (const QStringList& open_file_names);
+
+    void warning_function_not_found (const QString& message);
 
     //! Opens the variable editor for @p name.
 

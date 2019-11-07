@@ -884,9 +884,29 @@ namespace octave
          // Add tmp dir to the path for echo/hist script
          octave_value_list path =
             ovl (QFileInfo (tmp_script->fileName ()).absolutePath ().toStdString ());
+
+         // Add tmp dir to the path
          Faddpath (interp, path);
-         interp.source_file (file);
+
+         try
+           {
+             // Do the job
+             interp.source_file (file);
+           }
+         catch (const execution_exception& e)
+           {
+             // Catch errors otherwise the rest of the interpreter
+             // will not be executed (cleaning up). Clean up before.
+             Frmpath (interp, path);
+             emit ctx_menu_run_finished_signal (show_dbg_file,
+                                                tmp_file, tmp_hist, tmp_script);
+             throw (e);
+           }
+
+         // Clean up
          Frmpath (interp, path);
+         emit ctx_menu_run_finished_signal (show_dbg_file,
+                                            tmp_file, tmp_hist, tmp_script);
 
          command_editor::replace_line ("");
          command_editor::set_initial_input (pending_input);
@@ -894,9 +914,6 @@ namespace octave
          command_editor::interrupt_event_loop ();
          command_editor::accept_line ();
 
-         // Done, restore settings and remove tmp files
-         emit ctx_menu_run_finished_signal (show_dbg_file,
-                                            tmp_file, tmp_hist, tmp_script);
        });
   }
 

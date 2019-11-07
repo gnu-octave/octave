@@ -43,7 +43,6 @@ namespace octave
   class event_manager;
   class gtk_manager;
   class help_system;
-  class history_system;
   class input_system;
   class interpreter;
   class load_path;
@@ -61,8 +60,6 @@ namespace octave
   extern gh_manager& __get_gh_manager__ (const std::string& who);
 
   extern help_system& __get_help_system__ (const std::string& who);
-
-  extern history_system& __get_history_system__ (const std::string& who);
 
   extern input_system& __get_input_system__ (const std::string& who);
 

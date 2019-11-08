@@ -21,6 +21,10 @@ see <https://www.gnu.org/licenses/>.
 
 */
 
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
+
 #include <QKeySequence>
 #include <QWidget>
 #include <QStringList>

@@ -2847,7 +2847,7 @@ OCTAVE_GUI_LINK_DEPS=""
 OCTAVE_GUI_LINK_OPTS=""
 
 if test $build_qt_gui = yes; then
-  LIBOCTGUI_LINK_DEPS="$QT_LIBS QT_OPENGL_LIBS"
+  LIBOCTGUI_LINK_DEPS="$QT_LIBS $QT_OPENGL_LIBS"
   LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS $QT_OPENGL_LDFLAGS"
 
   if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then

@@ -267,16 +267,14 @@ QTerminal::notice_settings (const gui_settings *settings)
   setScrollBufferSize (settings->value (cs_hist_buffer.key,
                                         cs_hist_buffer.def).toInt ());
 
-  // check whether Copy shortcut is Ctrl-C
-  QKeySequence sc;
-  sc = QKeySequence (settings->value (sc_main_edit_copy.key).toString ());
+  // If the Copy shortcut is Ctrl-C, then set up to allow Ctrl-C to also
+  // be processed as the interrupt character in the command window.
 
-  // if sc is empty, shortcuts are not yet in the settings (take the default)
-  if (sc.isEmpty ())         // QKeySequence::Copy as second argument in
-    sc = QKeySequence::Copy; // settings->value () does not work!
+  QVariant tmp = settings->value (sc_main_edit_copy.key, sc_main_edit_copy.def);
+  QKeySequence sc = tmp.value<QKeySequence> ();
 
   //  dis- or enable extra interrupt action
-  bool extra_ir_action = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C));
+  bool extra_ir_action = (sc == QKeySequence (Qt::ControlModifier | Qt::Key_C));
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 

@@ -269,8 +269,7 @@ QTerminal::notice_settings (const gui_settings *settings)
 
   // check whether Copy shortcut is Ctrl-C
   QKeySequence sc;
-  sc = QKeySequence (settings->value (sc_main_edit_copy.key,
-                                      sc_main_edit_copy.def).toString ());
+  sc = QKeySequence (settings->value (sc_main_edit_copy.key).toString ());
 
   // if sc is empty, shortcuts are not yet in the settings (take the default)
   if (sc.isEmpty ())         // QKeySequence::Copy as second argument in

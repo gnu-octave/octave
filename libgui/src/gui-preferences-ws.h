@@ -33,4 +33,54 @@ ws_enable_colors ("workspaceview/enable_colors", QVariant (false));
 const gui_pref
 ws_hide_tool_tips ("workspaceview/hide_tools_tips", QVariant (false));
 
+const gui_pref
+ws_filter_active ("workspaceview/filter_active", QVariant (false));
+
+const gui_pref
+ws_filter_shown ("workspaceview/filter_shown", QVariant (true));
+
+const gui_pref
+ws_column_state ("workspaceview/column_state", QVariant ());
+
+const gui_pref
+ws_sort_column ("workspaceview/sort_by_column", QVariant (0));
+
+const gui_pref
+ws_sort_order ("workspaceview/sort_order", QVariant (Qt::AscendingOrder));
+
+const gui_pref
+ws_mru_list ("workspaceview/mru_list", QVariant ());
+
+const QStringList ws_columns_shown (QStringList ()
+    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Class")
+    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Dimension")
+    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Value")
+    << QT_TRANSLATE_NOOP ("workspace_view::notice_settings", "Attribute"));
+
+const QStringList ws_columns_shown_keys (QStringList ()
+    << "workspaceview/show_class"
+    << "workspaceview/show_dimension"
+    << "workspaceview/show_value"
+    << "workspaceview/show_attribute");
+
+const gui_pref
+ws_max_filter_history ("workspaceview/max_filter_history", QVariant (10));
+
+const int ws_colors_count = 3;
+
+const gui_pref ws_colors[ws_colors_count] =
+{
+  {"terminal/color_a", QVariant (QColor(190,255,255))},
+  {"terminal/color_g", QVariant (QColor(255,255,190))},
+  {"terminal/color_p", QVariant (QColor(255,190,255))}
+};
+
+const QString ws_class_chars ("agp");
+
+const QStringList
+ws_color_names (QStringList ()
+             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "argument")
+             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "global")
+             << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "persistant"));
+
 #endif

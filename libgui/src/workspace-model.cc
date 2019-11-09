@@ -52,41 +52,9 @@ namespace octave
     // classes in the workspace view. The structure is
     // m_storage_class_colors(1,2,...,colors):        background colors
     // m_storage_class_colors(colors+1,...,2*colors): foreground colors
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    int colors = rmgr.storage_class_chars ().length ();
-    for (int i = 0; i < 2*colors; i++)
+    for (unsigned int i = 0; i < 2*ws_colors_count; i++)
       m_storage_class_colors.append (QColor (Qt::white));
 
-  }
-
-  QList<QColor>
-  workspace_model::storage_class_default_colors (void)
-  {
-    QList<QColor> colors;
-
-    if (colors.isEmpty ())
-      {
-        colors << QColor (190, 255, 255)
-               << QColor (255, 255, 190)
-               << QColor (255, 190, 255);
-      }
-
-    return colors;
-  }
-
-  QStringList
-  workspace_model::storage_class_names (void)
-  {
-    QStringList names;
-
-    if (names.isEmpty ())
-      {
-        names << QObject::tr ("argument")
-              << QObject::tr ("global")
-              << QObject::tr ("persistent");
-      }
-
-    return names;
   }
 
   int
@@ -137,16 +105,14 @@ namespace octave
         if ((role == Qt::BackgroundColorRole || role == Qt::ForegroundRole)
             && m_enable_colors)
           {
-            resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-            QString class_chars = rmgr.storage_class_chars ();
             int actual_class
-              = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
+              = ws_class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
             if (actual_class >= 0)
               {
                 // Valid class: Get backgorund (normal indexes) or foreground
                 // color (indexes with offset)
                 if (role == Qt::ForegroundRole)
-                  actual_class += class_chars.length ();
+                  actual_class += ws_colors_count;
 
                 return QVariant (m_storage_class_colors.at (actual_class));
               }
@@ -184,20 +150,11 @@ namespace octave
                 {
                   QString sclass;
 
-                  resource_manager& rmgr
-                    = m_octave_qobj.get_resource_manager ();
-
-                  QString class_chars = rmgr.storage_class_chars ();
-
                   int actual_class
-                    = class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
+                    = ws_class_chars.indexOf (m_scopes[idx.row ()].toLatin1 ());
 
                   if (actual_class >= 0)
-                    {
-                      QStringList class_names = rmgr.storage_class_names ();
-
-                      sclass = class_names.at (actual_class);
-                    }
+                    sclass = ws_color_names.at (actual_class);
 
                   if (m_complex_flags[idx.row ()])
                     {
@@ -239,26 +196,19 @@ namespace octave
   void
   workspace_model::notice_settings (const gui_settings *settings)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QList<QColor> default_colors =
-      rmgr.storage_class_default_colors ();
-    QString class_chars = rmgr.storage_class_chars ();
-
     m_enable_colors =
         settings->value (ws_enable_colors.key, ws_enable_colors.def).toBool ();
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("workspaceview/color_"
-                                                + class_chars.mid (i,1),
-                                                default_var).value<QColor> ();
+        QColor setting_color = settings->value (ws_colors[i].key,
+                                                ws_colors[i].def).value<QColor> ();
 
         QPalette p (setting_color);
         m_storage_class_colors.replace (i,setting_color);
 
         QColor fg_color = p.color (QPalette::WindowText);
-        m_storage_class_colors.replace (i + class_chars.length (), fg_color);
+        m_storage_class_colors.replace (i + ws_colors_count, fg_color);
 
       }
   }

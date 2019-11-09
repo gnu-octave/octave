@@ -185,16 +185,6 @@ namespace octave
 
   }
 
-  QStringList resource_manager::storage_class_names (void)
-  {
-    return workspace_model::storage_class_names ();
-  }
-
-  QList<QColor> resource_manager::storage_class_default_colors (void)
-  {
-    return workspace_model::storage_class_default_colors ();
-  }
-
   QList<QColor> resource_manager::varedit_default_colors(void)
   {
     return variable_editor::default_colors ();

@@ -1056,16 +1056,9 @@ namespace octave
   void settings_dialog::read_workspace_colors (gui_settings *settings)
   {
     // Construct the grid with all color related settings
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QList<QColor> default_colors
-      = rmgr.storage_class_default_colors ();
-    QStringList class_names = rmgr.storage_class_names ();
-    QString class_chars = rmgr.storage_class_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (ws_colors_count);
+    QVector<color_picker*> color (ws_colors_count);
 
     int column = 0;
     int row = 0;
@@ -1080,17 +1073,17 @@ namespace octave
     m_ws_hide_tool_tips->setChecked
       (settings->value (ws_hide_tool_tips.key, ws_hide_tool_tips.def).toBool ());
 
-    for (int i = 0; i < nr_of_classes; i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    " + ws_color_names.at (i));
         description[i]->setAlignment (Qt::AlignRight);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  description[i], SLOT(setEnabled (bool)));
 
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("workspaceview/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+        QColor setting_color = settings->value (ws_colors[i].key,
+                                                ws_colors[i].def).value<QColor> ();
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (ws_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         connect (m_ws_enable_colors, SIGNAL (toggled (bool)),
                  color[i], SLOT(setEnabled (bool)));
@@ -1120,15 +1113,13 @@ namespace octave
     settings->setValue (ws_enable_colors.key, m_ws_enable_colors->isChecked ());
     settings->setValue (ws_hide_tool_tips.key, m_ws_hide_tool_tips->isChecked ());
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QString class_chars = rmgr.storage_class_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ws_colors_count; i++)
       {
-        color = workspace_colors_box->findChild <color_picker *> ("color_" + class_chars.mid (i, 1));
+        color = workspace_colors_box->findChild <color_picker *> (ws_colors[i].key);
         if (color)
-          settings->setValue ("workspaceview/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (ws_colors[i].key, color->color ());
       }
     settings->sync ();
   }

@@ -119,11 +119,6 @@ namespace octave
     QComboBox *m_filter;
     QWidget *m_filter_widget;
     bool m_filter_shown;
-
-    enum { MaxFilterHistory = 10 };
-
-    QStringList m_columns_shown;
-    QStringList m_columns_shown_keys;
   };
 }
 

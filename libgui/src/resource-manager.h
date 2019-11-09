@@ -56,12 +56,6 @@ namespace octave
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
 
-    QString storage_class_chars (void) { return "agp"; }
-
-    QStringList storage_class_names (void);
-
-    QList<QColor> storage_class_default_colors (void);
-
     QString varedit_color_chars (void) {return "fbsha"; }
 
     QStringList varedit_color_names (void);

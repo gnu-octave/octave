@@ -62,7 +62,7 @@ namespace octave
 
     m_filter->setToolTip (tr ("Enter text to filter the workspace"));
     m_filter->setEditable (true);
-    m_filter->setMaxCount (MaxFilterHistory);
+    m_filter->setMaxCount (ws_max_filter_history.def.toInt ());
     m_filter->setInsertPolicy (QComboBox::NoInsert);
     m_filter->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -101,7 +101,8 @@ namespace octave
 
     if (settings)
       {
-        m_filter_shown = settings->value ("workspaceview/filter_shown",true).toBool ();
+        m_filter_shown = settings->value (ws_filter_shown.key,
+                                          ws_filter_shown.def).toBool ();
         m_filter_widget->setVisible (m_filter_shown);
 
         ws_layout->setMargin (2);
@@ -115,7 +116,7 @@ namespace octave
         m_view->setSortingEnabled (true);
         // Initialize column order and width of the workspace
         m_view->horizontalHeader ()->restoreState
-          (settings->value ("workspaceview/column_state").toByteArray ());
+          (settings->value (ws_column_state.key).toByteArray ());
 
         // Set header properties for sorting
 #if defined (HAVE_QHEADERVIEW_SETSECTIONSCLICKABLE)
@@ -128,9 +129,9 @@ namespace octave
 #else
         m_view->horizontalHeader ()->setMovable (true);
 #endif
-        m_view->horizontalHeader ()->setSortIndicator (settings->value ("workspaceview/sort_by_column",0).toInt (),
-                                                       static_cast<Qt::SortOrder>
-                                                       (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
+        m_view->horizontalHeader ()->setSortIndicator (
+            settings->value (ws_sort_column.key, ws_sort_column.def).toInt (),
+            static_cast<Qt::SortOrder> (settings->value (ws_sort_order.key, ws_sort_order.def).toUInt ()));
         m_view->horizontalHeader ()->setSortIndicatorShown (true);
 
         m_view->horizontalHeader ()->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -139,10 +140,10 @@ namespace octave
                  this, SLOT (header_contextmenu_requested (const QPoint &)));
 
         // Init state of the filter
-        m_filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
+        m_filter->addItems (settings->value (ws_mru_list.key).toStringList ());
 
         bool filter_state =
-          settings->value ("workspaceview/filter_active", false).toBool ();
+          settings->value (ws_filter_active.key, ws_filter_active.def).toBool ();
         m_filter_checkbox->setChecked (filter_state);
         filter_activate (filter_state);
       }
@@ -180,8 +181,9 @@ namespace octave
     // set the sorting after a model was set, it would be ignored otherwise
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    m_view->sortByColumn (settings->value ("workspaceview/sort_by_column",0).toInt (),
-                          static_cast<Qt::SortOrder> (settings->value ("workspaceview/sort_order", Qt::AscendingOrder).toUInt ()));
+    m_view->sortByColumn (
+      settings->value (ws_sort_column.key ,ws_sort_column.def).toInt (),
+      static_cast<Qt::SortOrder> (settings->value (ws_sort_order.key, ws_sort_column.def).toUInt ()));
 
     m_model = model;
   }
@@ -189,12 +191,10 @@ namespace octave
   void
   workspace_view::notice_settings (const gui_settings *settings)
   {
-    int i;
-
     m_model->notice_settings (settings); // update colors of model first
 
-    for (i = 0; i < m_columns_shown_keys.size (); i++)
-      m_view->setColumnHidden (i + 1, ! settings->value (m_columns_shown_keys.at (i),true).toBool ());
+    for (int i = 0; i < ws_columns_shown.length (); i++)
+      m_view->setColumnHidden (i + 1, ! settings->value (ws_columns_shown_keys.at (i),true).toBool ());
 
     QString tool_tip;
 
@@ -203,31 +203,18 @@ namespace octave
       {
         tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
         tool_tip += QString (tr ("Colors for variable attributes:"));
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        int colors = rmgr.storage_class_chars ().length ();
-        for (i = 0; i < colors; i++)
+
+        for (int i = 0; i < ws_colors_count; i++)
           {
             tool_tip +=
               QString (R"(<div style="background-color:%1;color:%2">%3</div>)")
               .arg (m_model->storage_class_color (i).name ())
-              .arg (m_model->storage_class_color (i + colors).name ())
-              .arg (rmgr.storage_class_names ().at (i));
+              .arg (m_model->storage_class_color (i + ws_colors_count).name ())
+              .arg (ws_color_names.at (i));
           }
       }
 
     setToolTip (tool_tip);
-
-    m_columns_shown = QStringList ();
-    m_columns_shown.append (tr ("Class"));
-    m_columns_shown.append (tr ("Dimension"));
-    m_columns_shown.append (tr ("Value"));
-    m_columns_shown.append (tr ("Attribute"));
-
-    m_columns_shown_keys = QStringList ();
-    m_columns_shown_keys.append ("workspaceview/show_class");
-    m_columns_shown_keys.append ("workspaceview/show_dimension");
-    m_columns_shown_keys.append ("workspaceview/show_value");
-    m_columns_shown_keys.append ("workspaceview/show_attribute");
   }
 
   void
@@ -239,22 +226,21 @@ namespace octave
     if (! settings)
       return;
 
-    settings->setValue ("workspaceview/column_state",
+    settings->setValue (ws_column_state.key,
                         m_view->horizontalHeader ()->saveState ());
 
     int sort_column = m_view->horizontalHeader ()->sortIndicatorSection ();
     Qt::SortOrder sort_order = m_view->horizontalHeader ()->sortIndicatorOrder ();
-    settings->setValue ("workspaceview/sort_by_column", sort_column);
-    settings->setValue ("workspaceview/sort_order", sort_order);
+    settings->setValue (ws_sort_column.key, sort_column);
+    settings->setValue (ws_sort_order.key, sort_order);
 
-    settings->setValue ("workspaceview/filter_active",
-                        m_filter_checkbox->isChecked ());
-    settings->setValue ("workspaceview/filter_shown", m_filter_shown);
+    settings->setValue (ws_filter_active.key, m_filter_checkbox->isChecked ());
+    settings->setValue (ws_filter_shown.key, m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings->setValue ("workspaceview/mru_list", mru);
+    settings->setValue (ws_mru_list.key, mru);
 
     settings->sync ();
 
@@ -302,13 +288,13 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    for (int i = 0; i < m_columns_shown.size (); i++)
+    for (int i = 0; i < ws_columns_shown.length (); i++)
       {
-        QAction *action = menu.addAction (m_columns_shown.at (i),
+        QAction *action = menu.addAction (ws_columns_shown.at (i),
                                           &sig_mapper, SLOT (map ()));
         sig_mapper.setMapping (action, i);
         action->setCheckable (true);
-        action->setChecked (settings->value (m_columns_shown_keys.at (i),true).toBool ());
+        action->setChecked (settings->value (ws_columns_shown_keys.at (i),true).toBool ());
       }
 
     connect (&sig_mapper, SIGNAL (mapped (int)),
@@ -323,7 +309,7 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
 
-    QString key = m_columns_shown_keys.at (col);
+    QString key = ws_columns_shown_keys.at (col);
     bool shown = settings->value (key,true).toBool ();
 
     m_view->setColumnHidden (col + 1, shown);

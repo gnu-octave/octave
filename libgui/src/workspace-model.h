@@ -54,10 +54,6 @@ namespace octave
 
     ~workspace_model (void) = default;
 
-    static QList<QColor> storage_class_default_colors (void);
-
-    static QStringList storage_class_names (void);
-
     int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
     int columnCount (const QModelIndex& parent = QModelIndex ()) const;

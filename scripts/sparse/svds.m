@@ -179,12 +179,14 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       b_k = k;  # Normal case, find just the k largest eigenvalues
     endif
 
+    ## FIXME: singular values are always real.  Until eigs() guarantees
+    ## real results for symmetric inputs (bug #57196), use real() here.
     if (nargout > 1)
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
                            b_k, b_sigma, b_opts);
-      s = diag (s);
+      s = real (diag (s));
     else
-      s = eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts);
+      s = real (eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts));
     endif
 
     if (ischar (sigma))
@@ -271,21 +273,21 @@ endfunction
 %! rand ("state", 42);
 %! opts.v0 = rand (2*n,1);  # Initialize eigs ARPACK starting vector
 %!                          # to guarantee reproducible results
-%!
+
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (A,k);
 %! s2 = diag (s2);
 %! assert (flag, ! 1);
 %! tol = 10 * eps() * norm(s2, 1);
 %! assert (s2, s(end:-1:end-k+1), tol);
-%!
+
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! [u2,s2,v2,flag] = svds (A,k,0,opts);
 %! s2 = diag (s2);
 %! assert (flag, ! 1);
 %! tol = 10 * eps() * norm(s2, 1);
 %! assert (s2, s(k:-1:1), tol);
-%!
+
 %!testif HAVE_ARPACK, HAVE_UMFPACK
 %! idx = floor (n/2);
 %! % Don't put sigma right on a singular value or there are convergence issues
@@ -295,7 +297,7 @@ endfunction
 %! assert (flag, ! 1);
 %! tol = 10 * eps() * norm(s2, 1);
 %! assert (s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), tol);
-%!
+
 %!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (zeros (10), k);
 %! assert (u2, eye (10, k));
@@ -305,6 +307,11 @@ endfunction
 %!testif HAVE_ARPACK
 %! s = svds (speye (10));
 %! assert (s, ones (6, 1), 8*eps);
+
+%!testif HAVE_ARPACK <57185>
+%! z = complex (ones (10), ones (10));
+%! s = svds (z);
+%! assert (isreal (s));
 
 %!test
 %! ## Restore random number generator seed at end of tests

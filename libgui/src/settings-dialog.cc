@@ -428,11 +428,7 @@ namespace octave
 
     // variable editor
     varedit_columnWidth->setValue (settings->value (ve_column_width.key, ve_column_width.def).toInt ());
-    varedit_autoFitColumnWidth->setChecked (settings->value ("variable_editor/autofit_column_width", false).toBool ());
-    varedit_autofitType->setCurrentIndex (settings->value ("variable_editor/autofit_type", 0).toInt ());
     varedit_rowHeight->setValue (settings->value (ve_row_height.key, ve_row_height.def).toInt ());
-
-    varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 
     varedit_font->setCurrentFont (QFont (settings->value (ve_font_name.key,
                                                           settings->value (cs_font.key, default_font)).toString ()));
@@ -1031,11 +1027,8 @@ namespace octave
     write_terminal_colors (settings);
 
     // Variable editor
-    settings->setValue ("variable_editor/autofit_column_width", varedit_autoFitColumnWidth->isChecked ());
-    settings->setValue ("variable_editor/autofit_type", varedit_autofitType->currentIndex ());
     settings->setValue (ve_column_width.key, varedit_columnWidth->value ());
     settings->setValue (ve_row_height.key, varedit_rowHeight->value ());
-    settings->setValue ("variable_editor/autofit_row_height", varedit_rowAutofit->isChecked ());
     settings->setValue (ve_use_terminal_font.key, varedit_useTerminalFont->isChecked ());
     settings->setValue (ve_alternate_rows.key, varedit_alternate->isChecked ());
     settings->setValue (ve_font_name.key, varedit_font->currentFont ().family ());

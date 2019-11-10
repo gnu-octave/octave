@@ -185,16 +185,6 @@ namespace octave
 
   }
 
-  QList<QColor> resource_manager::varedit_default_colors(void)
-  {
-    return variable_editor::default_colors ();
-  }
-
-  QStringList resource_manager::varedit_color_names(void)
-  {
-    return variable_editor::color_names ();
-  }
-
   gui_settings * resource_manager::get_settings (void) const
   {
     return m_settings;

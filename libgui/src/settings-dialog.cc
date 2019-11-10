@@ -427,23 +427,25 @@ namespace octave
     read_terminal_colors (settings);
 
     // variable editor
-    varedit_columnWidth->setValue (settings->value ("variable_editor/column_width", 100).toInt ());
+    varedit_columnWidth->setValue (settings->value (ve_column_width.key, ve_column_width.def).toInt ());
     varedit_autoFitColumnWidth->setChecked (settings->value ("variable_editor/autofit_column_width", false).toBool ());
     varedit_autofitType->setCurrentIndex (settings->value ("variable_editor/autofit_type", 0).toInt ());
-    varedit_rowHeight->setValue (settings->value ("variable_editor/row_height", 10).toInt ());
+    varedit_rowHeight->setValue (settings->value (ve_row_height.key, ve_row_height.def).toInt ());
+
     varedit_rowAutofit->setChecked (settings->value ("variable_editor/autofit_row_height", true).toBool ());
 
-    varedit_font->setCurrentFont (QFont (settings->value ("variable_editor/font_name", settings->value (cs_font.key, default_font)).toString ()));
+    varedit_font->setCurrentFont (QFont (settings->value (ve_font_name.key,
+                                                          settings->value (cs_font.key, default_font)).toString ()));
     varedit_fontSize->setValue (settings->value (ve_font_size.key, ve_font_size.def).toInt ());
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_font, SLOT (setDisabled (bool)));
     connect (varedit_useTerminalFont, SIGNAL (toggled (bool)),
              varedit_fontSize, SLOT (setDisabled (bool)));
-    varedit_useTerminalFont->setChecked (settings->value ("variable_editor/use_terminal_font", false).toBool ());
+    varedit_useTerminalFont->setChecked (settings->value (ve_use_terminal_font.key, ve_use_terminal_font.def).toBool ());
     varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
     varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
 
-    varedit_alternate->setChecked (settings->value ("variable_editor/alternate_rows", QVariant (false)).toBool ());
+    varedit_alternate->setChecked (settings->value (ve_alternate_rows.key, ve_alternate_rows.def).toBool ());
 
     // variable editor colors
     read_varedit_colors (settings);
@@ -1031,12 +1033,12 @@ namespace octave
     // Variable editor
     settings->setValue ("variable_editor/autofit_column_width", varedit_autoFitColumnWidth->isChecked ());
     settings->setValue ("variable_editor/autofit_type", varedit_autofitType->currentIndex ());
-    settings->setValue ("variable_editor/column_width", varedit_columnWidth->value ());
-    settings->setValue ("variable_editor/row_height", varedit_rowHeight->value ());
+    settings->setValue (ve_column_width.key, varedit_columnWidth->value ());
+    settings->setValue (ve_row_height.key, varedit_rowHeight->value ());
     settings->setValue ("variable_editor/autofit_row_height", varedit_rowAutofit->isChecked ());
-    settings->setValue ("variable_editor/use_terminal_font", varedit_useTerminalFont->isChecked ());
-    settings->setValue ("variable_editor/alternate_rows", varedit_alternate->isChecked ());
-    settings->setValue ("variable_editor/font_name", varedit_font->currentFont ().family ());
+    settings->setValue (ve_use_terminal_font.key, varedit_useTerminalFont->isChecked ());
+    settings->setValue (ve_alternate_rows.key, varedit_alternate->isChecked ());
+    settings->setValue (ve_font_name.key, varedit_font->currentFont ().family ());
     settings->setValue (ve_font_size.key, varedit_fontSize->value ());
     write_varedit_colors (settings);
 
@@ -1171,26 +1173,26 @@ namespace octave
 
   void settings_dialog::read_varedit_colors (gui_settings *settings)
   {
-    QList<QColor> default_colors = variable_editor::default_colors ();
-    QStringList class_names = variable_editor::color_names ();
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QString class_chars = rmgr.varedit_color_chars ();
-    int nr_of_classes = class_chars.length ();
-
     QGridLayout *style_grid = new QGridLayout ();
-    QVector<QLabel*> description (nr_of_classes);
-    QVector<color_picker*> color (nr_of_classes);
+    QVector<QLabel*> description (ve_colors_count);
+    QVector<color_picker*> color (ve_colors_count);
 
     int column = 0;
     int row = 0;
-    for (int i = 0; i < nr_of_classes; i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        description[i] = new QLabel ("    " + class_names.at (i));
+        description[i] = new QLabel ("    " + ve_color_names.at (i));
         description[i]->setAlignment (Qt::AlignRight);
-        QVariant default_var = default_colors.at (i);
-        QColor setting_color = settings->value ("variable_editor/color_" + class_chars.mid (i, 1), default_var).value<QColor> ();
+
+        // The default colors are given as color roles for
+        // the application's palette
+        QColor default_color = qApp->palette ().color
+                              (ve_colors[i].def.value<QPalette::ColorRole> ());
+        QColor setting_color =
+            settings->value (ve_colors[i].key, default_color).value<QColor> ();
+
         color[i] = new color_picker (setting_color);
-        color[i]->setObjectName ("varedit_color_" + class_chars.mid (i, 1));
+        color[i]->setObjectName (ve_colors[i].key);
         color[i]->setMinimumSize (30, 10);
         style_grid->addWidget (description[i], row, 2*column);
         style_grid->addWidget (color[i], row, 2*column+1);
@@ -1208,15 +1210,13 @@ namespace octave
 
   void settings_dialog::write_varedit_colors (gui_settings *settings)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QString class_chars = rmgr.varedit_color_chars ();
     color_picker *color;
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        color = varedit_colors_box->findChild <color_picker *> ("varedit_color_" + class_chars.mid (i, 1));
+        color = varedit_colors_box->findChild <color_picker *> (ve_colors[i].key);
         if (color)
-          settings->setValue ("variable_editor/color_" + class_chars.mid (i, 1), color->color ());
+          settings->setValue (ve_colors[i].key, color->color ());
       }
 
     settings->sync ();

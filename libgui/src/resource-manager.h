@@ -56,12 +56,6 @@ namespace octave
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
 
-    QString varedit_color_chars (void) {return "fbsha"; }
-
-    QStringList varedit_color_names (void);
-
-    QList<QColor> varedit_default_colors (void);
-
     gui_settings * get_settings (void) const;
 
     gui_settings * get_default_settings (void) const;

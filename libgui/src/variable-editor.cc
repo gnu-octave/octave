@@ -461,7 +461,8 @@ namespace octave
     int opts = 0;  // No options by default.
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
     gui_settings *settings = rmgr.get_settings ();
-    if (! settings->value ("use_native_file_dialogs", true).toBool ())
+    if (! settings->value (global_use_native_dialogs.key,
+                           global_use_native_dialogs.def).toBool ())
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -1084,9 +1085,7 @@ namespace octave
 
     // Colors.
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-    for (int i = 0; i < rmgr.varedit_color_chars ().length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       m_table_colors.append (QColor (Qt::white));
 
     // Use an MDI area that is shrunk to nothing as the central widget.
@@ -1342,34 +1341,6 @@ namespace octave
     emit refresh_signal ();
   }
 
-  QList<QColor>
-  variable_editor::default_colors (void)
-  {
-    QList<QColor> colorlist;
-
-    colorlist << qApp->palette ().color (QPalette::WindowText);
-    colorlist << qApp->palette ().color (QPalette::Base);
-    colorlist << qApp->palette ().color (QPalette::HighlightedText);
-    colorlist << qApp->palette ().color (QPalette::Highlight);
-    colorlist << qApp->palette ().color (QPalette::AlternateBase);
-
-    return colorlist;
-  }
-
-  QStringList
-  variable_editor::color_names (void)
-  {
-    QStringList output;
-
-    output << tr("Foreground");
-    output << tr("Background");
-    output << tr("Selected Foreground");
-    output << tr("Selected Background");
-    output << tr("Alternate Background");
-
-    return output;
-  }
-
   void
   variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
   {
@@ -1381,23 +1352,17 @@ namespace octave
   {
     m_main->notice_settings (settings); // update settings in parent main win
 
-    m_default_width = settings->value ("variable_editor/column_width",
-                                       100).toInt ();
+    m_default_width = settings->value (ve_column_width.key,
+                                       ve_column_width.def).toInt ();
 
-    m_default_height = settings->value ("variable_editor/row_height",
-                                        10).toInt ();
+    m_default_height = settings->value (ve_row_height.key,
+                                        ve_row_height.def).toInt ();
 
-    m_alternate_rows = settings->value ("variable_editor/alternate_rows",
-                                        false).toBool ();
+    m_alternate_rows = settings->value (ve_alternate_rows.key,
+                                        ve_alternate_rows.def).toBool ();
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-    QList<QColor> default_colors = rmgr.varedit_default_colors ();
-
-    QString class_chars = rmgr.varedit_color_chars ();
-
-    m_use_terminal_font = settings->value ("variable_editor/use_terminal_font",
-                                           true).toBool ();
+    m_use_terminal_font = settings->value (ve_use_terminal_font.key,
+                                           ve_use_terminal_font.def).toBool ();
 
     QString font_name;
     int font_size;
@@ -1411,7 +1376,7 @@ namespace octave
       }
     else
       {
-        font_name = settings->value ("variable_editor/font_name", default_font).toString ();
+        font_name = settings->value (ve_font_name.key, default_font).toString ();
         font_size = settings->value (ve_font_size.key, ve_font_size.def).toInt ();
       }
 
@@ -1421,20 +1386,16 @@ namespace octave
 
     m_add_font_height = fm.height ();
 
-    for (int i = 0; i < class_chars.length (); i++)
+    for (int i = 0; i < ve_colors_count; i++)
       {
-        QVariant default_var;
-        if (i < default_colors.length ())
-          default_var = default_colors.at (i);
-        else
-          default_var = QColor ();
+        // The default colors are given as color roles for
+        // the application's palette
+        QColor default_color = qApp->palette ().color
+                              (ve_colors[i].def.value<QPalette::ColorRole> ());
+        QColor setting_color =
+            settings->value (ve_colors[i].key, default_color).value<QColor> ();
 
-        QColor setting_color = settings->value ("variable_editor/color_"
-                                                + class_chars.mid (i, 1),
-                                                default_var).value<QColor> ();
-
-        if (i < m_table_colors.length ())
-          m_table_colors.replace (i, setting_color);
+        m_table_colors.replace (i, setting_color);
       }
 
     update_colors ();

@@ -297,10 +297,6 @@ namespace octave
 
     void refresh (void);
 
-    static QList<QColor> default_colors (void);
-
-    static QStringList color_names (void);
-
     void tab_to_front (void);
 
   signals:

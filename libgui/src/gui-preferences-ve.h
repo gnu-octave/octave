@@ -25,9 +25,46 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "gui-preferences.h"
 
+#include <QApplication>
+
 // Variable Editor preferences
 
 const gui_pref
-ve_font_size ("variable_editor/font_size", QVariant ());
+ve_use_terminal_font ("variable_editor/use_terminal_font", QVariant (true));
+
+const gui_pref
+ve_font_name ("variable_editor/font_name", QVariant ());
+
+const gui_pref
+ve_font_size ("variable_editor/font_size", QVariant (10));
+
+const gui_pref
+ve_column_width ("variable_editor/column_width", QVariant (100));
+
+const gui_pref
+ve_row_height ("variable_editor/row_height", QVariant (10));
+
+const gui_pref
+ve_alternate_rows ("variable_editor/alternate_rows", QVariant (false));
+
+const int ve_colors_count = 5;
+
+const QString ve_color_chars ("fbsha");
+
+const gui_pref ve_colors[ve_colors_count] =
+{
+  {"variable_editor/color_f", QVariant (QPalette::WindowText)},
+  {"variable_editor/color_b", QVariant (QPalette::Base)},
+  {"variable_editor/color_s", QVariant (QPalette::HighlightedText)},
+  {"variable_editor/color_h", QVariant (QPalette::Highlight)},
+  {"variable_editor/color_a", QVariant (QPalette::AlternateBase)}
+};
+
+const QStringList ve_color_names (QStringList ()
+    << QT_TRANSLATE_NOOP ("variable_editor::variable_editor", "Foreground")
+    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Background")
+    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Selected Foreground")
+    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Selected Background")
+    << QT_TRANSLATE_NOOP ("workspace_model::workspace_model", "Alternate Background"));
 
 #endif

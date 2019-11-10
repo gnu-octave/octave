@@ -49,12 +49,6 @@ struct gui_pref
   const QVariant def;  // the default value
 };
 
-#include "gui-preferences-cs.h"
-#include "gui-preferences-ed.h"
-#include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
-#include "gui-preferences-pd.h"
-#include "gui-preferences-ve.h"
-#include "gui-preferences-ws.h"
 
 #endif

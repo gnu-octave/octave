@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
+#include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "marker.h"
 #include "octave-qobject.h"

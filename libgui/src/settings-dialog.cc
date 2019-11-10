@@ -157,16 +157,15 @@ namespace octave
     icon_group->addButton (general_icon_graphic);
     icon_group->addButton (general_icon_letter);
     QString widget_icon_set =
-      settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
+      settings->value (dw_icon_set.key, dw_icon_set.def).toString ();
     general_icon_octave->setChecked (true);  // the default (if invalid set)
     general_icon_octave->setChecked (widget_icon_set == "NONE");
     general_icon_graphic->setChecked (widget_icon_set == "GRAPHIC");
     general_icon_letter->setChecked (widget_icon_set == "LETTER");
 
     // custom title bar of dock widget
-    QVariant default_var = QColor (255, 255, 255);
-    QColor bg_color = settings->value ("DockWidgets/title_bg_color",
-                                       default_var).value<QColor> ();
+    QColor bg_color = settings->value (dw_title_bg_color.key,
+                                       dw_title_bg_color.def).value<QColor> ();
     m_widget_title_bg_color = new color_picker (bg_color);
     m_widget_title_bg_color->setEnabled (false);
     layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
@@ -174,9 +173,8 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color, SLOT (setEnabled (bool)));
 
-    default_var = QColor (192, 192, 192);
-    QColor bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
-                                              default_var).value<QColor> ();
+    QColor bg_color_active = settings->value (dw_title_bg_color_active.key,
+                                              dw_title_bg_color_active.def).value<QColor> ();
     m_widget_title_bg_color_active = new color_picker (bg_color_active);
     m_widget_title_bg_color_active->setEnabled (false);
     layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
@@ -184,9 +182,8 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_bg_color_active, SLOT (setEnabled (bool)));
 
-    default_var = QColor (0, 0, 0);
-    QColor fg_color = settings->value ("DockWidgets/title_fg_color",
-                                       default_var).value<QColor> ();
+    QColor fg_color = settings->value (dw_title_fg_color.key,
+                                       dw_title_fg_color.def).value<QColor> ();
     m_widget_title_fg_color = new color_picker (fg_color);
     m_widget_title_fg_color->setEnabled (false);
     layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
@@ -194,9 +191,8 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color, SLOT (setEnabled (bool)));
 
-    default_var = QColor (0, 0, 0);
-    QColor fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
-                                              default_var).value<QColor> ();
+    QColor fg_color_active = settings->value (dw_title_fg_color_active.key,
+                                              dw_title_fg_color_active.def).value<QColor> ();
     m_widget_title_fg_color_active = new color_picker (fg_color_active);
     m_widget_title_fg_color_active->setEnabled (false);
     layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
@@ -204,8 +200,10 @@ namespace octave
     connect (cb_widget_custom_style, SIGNAL (toggled (bool)),
              m_widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
-    sb_3d_title->setValue (settings->value ("DockWidgets/widget_title_3d", 50).toInt ());
-    cb_widget_custom_style->setChecked (settings->value ("DockWidgets/widget_title_custom_style", false).toBool ());
+    sb_3d_title->setValue (settings->value (dw_title_3d.key,
+                                            dw_title_3d.def).toInt ());
+    cb_widget_custom_style->setChecked (settings->value (dw_title_custom_style.key,
+                                                         dw_title_custom_style.def).toBool ());
 
     // Native file dialogs.
     // FIXME: This preference can be deprecated / removed if all display
@@ -254,7 +252,7 @@ namespace octave
 
     rmgr.combo_encoding (editor_combo_encoding);
 
-    default_var = QColor (240, 240, 240);
+    QColor default_var = QColor (240, 240, 240);
     QColor setting_color = settings->value ("editor/highlight_current_line_color", default_var).value<QColor> ();
     m_editor_current_line_color = new color_picker (setting_color);
     editor_grid_current_line->addWidget (m_editor_current_line_color, 0, 3);
@@ -833,7 +831,7 @@ namespace octave
       widget_icon_set = "LETTER";
     else if (general_icon_graphic->isChecked ())
       widget_icon_set = "GRAPHIC";
-    settings->setValue ("DockWidgets/widget_icon_set", widget_icon_set);
+    settings->setValue (dw_icon_set.key, widget_icon_set);
 
     // language
     QString language = comboBox_language->currentText ();
@@ -848,12 +846,12 @@ namespace octave
     settings->setValue (global_style.key, selected_style);
 
     // dock widget title bar
-    settings->setValue ("DockWidgets/widget_title_custom_style", cb_widget_custom_style->isChecked ());
-    settings->setValue ("DockWidgets/widget_title_3d", sb_3d_title->value ());
-    settings->setValue ("DockWidgets/title_bg_color", m_widget_title_bg_color->color ());
-    settings->setValue ("DockWidgets/title_bg_color_active", m_widget_title_bg_color_active->color ());
-    settings->setValue ("DockWidgets/title_fg_color", m_widget_title_fg_color->color ());
-    settings->setValue ("DockWidgets/title_fg_color_active", m_widget_title_fg_color_active->color ());
+    settings->setValue (dw_title_custom_style.key, cb_widget_custom_style->isChecked ());
+    settings->setValue (dw_title_3d.key, sb_3d_title->value ());
+    settings->setValue (dw_title_bg_color.key, m_widget_title_bg_color->color ());
+    settings->setValue (dw_title_bg_color_active.key, m_widget_title_bg_color_active->color ());
+    settings->setValue (dw_title_fg_color.key, m_widget_title_fg_color->color ());
+    settings->setValue (dw_title_fg_color_active.key, m_widget_title_fg_color_active->color ());
 
     // icon size and theme
     int icon_size = icon_size_large->isChecked () - icon_size_small->isChecked ();

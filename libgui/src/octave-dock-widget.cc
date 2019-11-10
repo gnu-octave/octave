@@ -34,7 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolBar>
 #include <QMenuBar>
 
-#include "gui-preferences-global.h"
+#include "gui-preferences.h"
+#include "gui-preferences-dw.h"
 #include "gui-preferences-mw.h"
 #include "gui-settings.h"
 #include "octave-dock-widget.h"
@@ -423,24 +424,25 @@ namespace octave
   octave_dock_widget::handle_settings (const gui_settings *settings)
   {
     m_custom_style
-      = settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
+      = settings->value (dw_title_custom_style.key,
+                         dw_title_custom_style.def).toBool ();
 
-    m_title_3d
-      = settings->value ("DockWidgets/widget_title_3d",50).toInt ();
+    m_title_3d = settings->value (dw_title_3d.key, dw_title_3d.def).toInt ();
 
-    QColor default_var = QColor (0,0,0);
-    m_fg_color = settings->value ("DockWidgets/title_fg_color",
-                                  default_var).value<QColor> ();
-    default_var = QColor (0,0,0);
-    m_fg_color_active = settings->value ("DockWidgets/title_fg_color_active",
-                                         default_var).value<QColor> ();
+    m_fg_color
+      = settings->value (dw_title_fg_color.key,
+                         dw_title_fg_color.def).value<QColor> ();
 
-    default_var = QColor (255,255,255);
-    m_bg_color = settings->value ("DockWidgets/title_bg_color",
-                                  default_var).value<QColor> ();
-    default_var = QColor (192,192,192);
-    m_bg_color_active = settings->value ("DockWidgets/title_bg_color_active",
-                                         default_var).value<QColor> ();
+    m_fg_color_active
+      = settings->value (dw_title_fg_color_active.key,
+                         dw_title_fg_color_active.def).value<QColor> ();
+
+    m_bg_color = settings->value (dw_title_bg_color.key,
+                                  dw_title_bg_color.def).value<QColor> ();
+
+    m_bg_color_active
+      = settings->value (dw_title_bg_color_active.key,
+                         dw_title_bg_color_active.def).value<QColor> ();
 
     QColor bcol (m_bg_color);
     QColor bcola (m_bg_color_active);
@@ -469,9 +471,9 @@ namespace octave
     available_size.getCoords (&x1, &y1, &x2, &y2);
     QRect default_size = QRect (x1+16, y1+32, x2/3, 2*y2/3);
 
-    m_recent_float_geom = settings->value ("DockWidgets/" + objectName ()
-                                           + "_floating_geometry",
-                                           default_size).toRect ();
+    m_recent_float_geom
+      = settings->value (dw_float_geometry.key.arg (objectName ()),
+                         default_size).toRect ();
 
     QWidget dummy;
     dummy.setGeometry (m_recent_float_geom);
@@ -479,8 +481,9 @@ namespace octave
     if (QApplication::desktop ()->screenNumber (&dummy) == -1)
       m_recent_float_geom = default_size;
 
-    m_recent_dock_geom = settings->value ("DockWidgets/" + objectName (),
-                                          QByteArray ()).toByteArray ();
+    m_recent_dock_geom
+      = settings->value (dw_dock_geometry.key.arg (objectName ()),
+                         dw_dock_geometry.def).toByteArray ();
 
     notice_settings (settings);  // call individual handler
 
@@ -527,19 +530,16 @@ namespace octave
 
     store_geometry ();
 
-    settings->beginGroup ("DockWidgets");
-
     // conditional needed?
     if (! m_recent_float_geom.isNull ())
-      settings->setValue (name + "_floating_geometry", m_recent_float_geom);
+      settings->setValue (dw_float_geometry.key.arg (name), m_recent_float_geom);
 
     if (! m_recent_dock_geom.isEmpty ())
-      settings->setValue (name, m_recent_dock_geom);
-    settings->setValue (name+"Visible", isVisible ()); // store visibility
-    settings->setValue (name+"Floating", isFloating ()); // store floating
-    settings->setValue (name+"_minimized", isMinimized ()); // store minimized
+      settings->setValue (dw_dock_geometry.key.arg (name), m_recent_dock_geom);
+    settings->setValue (dw_is_visible.key.arg (name), isVisible ()); // store visibility
+    settings->setValue (dw_is_floating.key.arg (name), isFloating ()); // store floating
+    settings->setValue (dw_is_minimized.key.arg (name), isMinimized ()); // store minimized
 
-    settings->endGroup ();
     settings->sync ();
   }
 
@@ -766,15 +766,15 @@ namespace octave
     resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
 
     rmgr.update_settings_key ("Dockwidgets/title_bg_color",
-                              "DockWidgets/title_bg_color");
+                              dw_title_bg_color.key);
 
     rmgr.update_settings_key ("Dockwidgets/title_bg_color_active",
-                              "DockWidgets/title_bg_color_active");
+                              dw_title_bg_color_active.key);
 
     rmgr.update_settings_key ("Dockwidgets/title_fg_color",
-                              "DockWidgets/title_fg_color");
+                              dw_title_fg_color.key);
 
     rmgr.update_settings_key ("Dockwidgets/title_fg_color_active",
-                              "DockWidgets/title_fg_color_active");
+                              dw_title_fg_color_active.key);
   }
 }

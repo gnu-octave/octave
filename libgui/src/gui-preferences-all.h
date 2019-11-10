@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_gui_preferences_all_h 1
 
 #include "gui-preferences-cs.h"
+#include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"

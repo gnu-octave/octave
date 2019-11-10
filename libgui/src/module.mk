@@ -189,6 +189,7 @@ noinst_HEADERS += \
   %reldir%/dw-main-window.h \
   %reldir%/gui-preferences-all.h \
   %reldir%/gui-preferences-cs.h \
+  %reldir%/gui-preferences-dw.h \
   %reldir%/gui-preferences-ed.h \
   %reldir%/gui-preferences-fb.h \
   %reldir%/gui-preferences-global.h \

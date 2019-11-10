@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 #include "gui-preferences.h"
 #include "gui-preferences-cs.h"
+#include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-mw.h"
 #include "gui-preferences-nr.h"
@@ -839,31 +840,15 @@ namespace octave
 
     // the widget's icons (when floating)
     QString icon_set
-      = settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
-
-    static struct
-    {
-      QString name;
-      QString path;
-    }
-
-    widget_icon_data[] =
-    {
-      // array of possible icon sets (name, path (complete for NONE))
-      // the first entry here is the default!
-      {"NONE",    ":/actions/icons/logo.png"},
-      {"GRAPHIC", ":/actions/icons/graphic_logo_"},
-      {"LETTER",  ":/actions/icons/letter_logo_"},
-      {"", ""} // end marker has empty name
-    };
+      = settings->value (dw_icon_set.key, dw_icon_set.def).toString ();
 
     int count = 0;
     int icon_set_found = 0; // default
 
-    while (! widget_icon_data[count].name.isEmpty ())
+    while (! dw_icon_set_names[count].name.isEmpty ())
       {
         // while not end of data
-        if (widget_icon_data[count].name == icon_set)
+        if (dw_icon_set_names[count].name == icon_set)
           {
             // data of desired icon set found
             icon_set_found = count;
@@ -879,14 +864,14 @@ namespace octave
         if (! name.isEmpty ())
           {
             // if children has a name
-            icon = widget_icon_data[icon_set_found].path; // prefix | octave-logo
-            if (widget_icon_data[icon_set_found].name != "NONE")
+            icon = dw_icon_set_names[icon_set_found].path; // prefix | octave-logo
+            if (dw_icon_set_names[icon_set_found].name != "NONE")
               icon += name + ".png"; // add widget name and ext.
             widget->setWindowIcon (QIcon (icon));
           }
       }
-    if (widget_icon_data[icon_set_found].name != "NONE")
-      m_release_notes_icon = widget_icon_data[icon_set_found].path
+    if (dw_icon_set_names[icon_set_found].name != "NONE")
+      m_release_notes_icon = dw_icon_set_names[icon_set_found].path
                              + "ReleaseWidget.png";
     else
       m_release_notes_icon = ":/actions/icons/logo.png";
@@ -1498,9 +1483,9 @@ namespace octave
             if (settings)
               {
                 floating = settings->value
-                  ("DockWidgets/" + name + "Floating", false).toBool ();
+                  (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
                 visible = settings->value
-                  ("DockWidgets/" + name + "Visible", true).toBool ();
+                  (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
               }
 
             // If floating, make window from widget.
@@ -1510,8 +1495,9 @@ namespace octave
 
                 if (visible)
                   {
-                    if (settings && settings->value ("DockWidgets/" + name
-                                                     + "_minimized").toBool ())
+                    if (settings
+                        && settings->value (dw_is_minimized.key.arg (name),
+                                            dw_is_minimized.def).toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);

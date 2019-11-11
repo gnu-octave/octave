@@ -1178,7 +1178,7 @@ namespace octave
         // The default colors are given as color roles for
         // the application's palette
         QColor default_color = qApp->palette ().color
-                              ((QPalette::ColorRole) ve_colors[i].def.toInt ());
+                              (static_cast<QPalette::ColorRole> (ve_colors[i].def.toInt ()));
         QColor setting_color =
             settings->value (ve_colors[i].key, default_color).value<QColor> ();
 

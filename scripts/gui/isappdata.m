@@ -42,12 +42,10 @@ function valid = isappdata (h, name)
 
   valid = false (size (h));
   for i = 1:numel (h)
-    try
-      appdata = get (h(i), "__appdata__");
-      if (isfield (appdata, name))
-        valid(i) = true;
-      endif
-    end_try_catch
+    appdata = get (h(i), "__appdata__");
+    if (isfield (appdata, name))
+      valid(i) = true;
+    endif
   endfor
 
 endfunction

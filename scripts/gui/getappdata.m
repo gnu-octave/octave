@@ -62,11 +62,11 @@ function value = getappdata (h, name)
     if (numel (h) != 1)
       error ("getappdata: Only one handle H may be used when fetching appdata");
     endif
-    try
-      value = get (h, "__appdata__");
-    catch
+
+    value = get (h, "__appdata__");
+    if (isempty (value))
       value = struct ();
-    end_try_catch
+    endif
   endif
 
 endfunction

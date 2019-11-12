@@ -2385,6 +2385,7 @@ protected:
     bool_property visible u , "on"
 
     // Octave-specific properties
+    any_property __appdata__ h , Matrix ()
     bool_property __modified__ hs , "on"
     graphics_handle __myhandle__ fhrs , mh
   END_PROPERTIES

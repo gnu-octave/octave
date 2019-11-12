@@ -73,12 +73,7 @@ function setappdata (h, varargin)
   endif
 
   for hg = h
-    try
-      appdata = get (hg, "__appdata__");
-    catch
-      appdata = struct ();
-      addproperty ("__appdata__", hg, "any", appdata);
-    end_try_catch
+    appdata = get (hg, "__appdata__");
 
     ## Slow, but not likely to be that many elements in loop
     for narg = 1:2:numel (varargin)
